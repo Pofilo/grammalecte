@@ -13,4 +13,4 @@ Grammalecte is a fork of Lightproof
     from László Németh (nemeth /at/ numbertext /dot/ org)
     http://cgit.freedesktop.org/libreoffice/lightproof/
 
-Required : Python 3.3
+Required : Python 3.6
