@@ -1,0 +1,100 @@
+
+= Grammalecte API =
+
+Sorry, PEP8. CamelCase here. Writer legacy & JavaScript.
+
+
+== grammalecte.ibdawg ==
+
+    .IBDAWG
+        .__init__(dic_name)
+            Loads the dictionary dic_name from the folder _dictionaries.
+
+        .lookup(word)
+            Returns True if word is in the dictionary else False.
+
+        .isValid(word)
+            Returns True if word is in the dictionary else False. Several casing tried.
+
+        .isValidToken(token)
+            Returns True if token (combination of words) is valid. Several casing tried.
+
+        .getMorph(word)
+            Returns the list of morphologies of word.
+
+
+== grammalecte.fr ==
+
+    Grammar checker for French language
+
+    .load()
+        Initialize the grammar checker.
+
+    .parse(paragraph)
+        Returns a list of errors found in the paragraph.
+
+    .setOptions(dict_options)
+        Change the grammar checking options.
+
+    .getDictionary()
+        Returns the dictionary (IBDAWG)
+
+
+== grammalecte.fr.conj ==
+
+    .isVerb(word)
+        Returns True is word exists in the list of verb (infinite form)
+
+    .getConj(verb, tense, who)
+        Returns conjugation of verb with subject who at tense (can be an empty string)
+            tense has to be:
+                :Y      infinitif
+                :PQ     participes passés et présent
+                :Ip     indicatif présent
+                :Iq     imparfait
+                :Is     passé simple
+                :If     futur
+                :K      conditionnel
+                :Sp     subjonctif présent
+                :Sq     subjonctif imparfait
+                :E      impératif
+
+            who has to be:
+                :P      participe présent
+                :Q1     participe passé masculin singulier ou invariable
+                :Q2     participe passé masculin pluriel
+                :Q3     participe passé féminin singulier
+                :Q4     participe passé féminin pluriel
+
+                :1s     première personne au singulier 
+                        (1ś pour une éventuelle forme interrogative spécifique)
+                :2s     deuxième personne au singulier
+                :3s     troisième personne au singulier
+                :1p     première personne au pluriel
+                :2p     deuxième personne au pluriel
+                :3p     troisième personne au pluriel
+
+        Exception ValueError is raised if failed to retrieve information.
+
+    .hasConj(verb, tense, who)
+        Returns False if no conjugation with subject who at tense else True.
+        Exception ValueError is raised if failed to retrieve information.
+
+    .Verb
+        .__init__(verb)
+
+        .dConj
+            Attribute. Dictionary of all conjugations.
+
+        .sInfo
+            Attribute. Readable informations about the verb.
+
+        .infinitif(bPro, bNeg, bTpsCo, bInt, bFem)
+
+        .participePasse(sWho)
+
+        .participePresent(bPro, bNeg, bTpsCo, bInt, bFem)
+
+        .conjugue(sTemps, sWho, bPro, bNeg, bTpsCo, bInt, bFem)
+
+        .imperatif(sWho, bPro, bNeg, bTpsCo, bFem)

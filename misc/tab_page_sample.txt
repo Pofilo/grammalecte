@@ -1,0 +1,73 @@
+REM  *****  BASIC  *****
+REM doesn’t work on LO (Bug)
+
+Option Explicit
+
+' a simple script to create a tabcontol
+Sub TestTab
+	Dim dialogModel as Object
+	dialogModel = CreateUnoService("com.sun.star.awt.UnoControlDialogModel")
+	dialogModel.PositionX = 0
+	dialogModel.PositionY = 0
+	dialogModel.Width = 200
+	dialogModel.Height = 150
+
+	Dim buttonModel as Object
+	buttonModel = dialogModel.CreateInstance("com.sun.star.awt.UnoControlButtonModel")
+	buttonModel.PositionX = 75
+	buttonModel.PositionY = 130
+	buttonModel.Width = 50
+	buttonModel.Height = 14
+	buttonModel.Label = "test"
+	buttonModel.TabIndex = 1
+
+	dim tabsModel as Object	
+	tabsModel = dialogModel.CreateInstance("com.sun.star.awt.tab.UnoControlTabPageContainerModel")
+	tabsModel.PositionX = 6
+	tabsModel.PositionY = 6
+	tabsModel.Width = 188
+	tabsModel.Height = 120
+	tabsModel.TabIndex = 2
+	
+	dialogModel.insertByName("bu",buttonModel)
+	dialogModel.insertByName("tab",tabsModel)
+
+	Dim dialog as Object
+	dialog = CreateUnoService("com.sun.star.awt.UnoControlDialog")
+	dialog.setModel(dialogModel)
+	
+	dim args() 
+	args = Array(1)
+
+	Dim tabPageModel as Object
+	tabPageModel = dialogModel.createInstance("com.sun.star.awt.tab.UnoControlTabPageModel")
+	tabPageModel.initialize(args)
+	tabPageModel.Title = "Page 1"
+	
+	args = Array(2)
+	Dim tabPageModel2 as Object
+	tabPageModel2 = dialogModel.createInstance("com.sun.star.awt.tab.UnoControlTabPageModel")
+	tabPageModel2.initialize(args)
+	tabPageModel2.Title = "Page 2"
+
+	Dim fixedTextModel as Object
+	fixedTextModel = tabPageModel.createinstance("com.sun.star.awt.UnoControlFixedTextModel")
+	fixedTextModel.PositionX = 10
+	fixedTextModel.PositionY = 10
+	fixedTextModel.Width = 50
+	fixedTextModel.Height = 30
+	fixedTextModel.Label = "FixedText"
+
+	tabPageModel.insertByName("intab",fixedTextModel)
+
+	Dim toolkit as Object
+	toolkit = CreateUnoService("com.sun.star.awt.Toolkit")
+	dialog.createPeer(toolkit,null)
+	
+	tabsModel.insertByIndex(0,tabPageModel)
+	tabsModel.insertByIndex(1,tabPageModel2)
+
+	dialog.getControl("tab").ActiveTabPageID = 1
+
+	dialog.execute()
+End Sub

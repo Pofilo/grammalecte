@@ -1,0 +1,470 @@
+
+WRITING RULES FOR GRAMMALECTE
+
+
+= Principles =
+
+Grammalecte is a multi-passes grammar checker engine. On the first pass, the
+engine checks the text paragraph by paragraph. On the next passes, the engine
+check the text sentence by sentence.
+
+The command to add a new pass is:
+[++]
+
+You shoudn’t need more than two passes, but you can create as many passes as
+you wish.
+
+In each pass, you can write as many rules as you need.
+
+A rule is defined by:
+- a regex pattern trigger
+- a list of actions (can’t be empty)
+- [optional] flags “LCR” for the regex word boundaries and case sensitiveness
+- [optional] user option name for activating/disactivating the rule
+
+There is no limit to the number of actions and the type of actions a rule can
+launch. Each action has its own condition to be triggered.
+
+There are three kind of actions:
+- Error warning, with a message and optionaly suggestions and optionally an URL
+- Text transformation, modifying internally the checked text
+- Disambigation action, setting tags on a position
+
+
+The rules file for your language must be named “rules.grx”.
+The options file must be named “option.txt”.
+The settings file must be named “config.ini”.
+
+All these files are simple utf-8 text file.
+UTF-8 is mandatory.
+
+
+
+= Rule syntax =
+
+__LCR__  pattern
+    <<- condition ->> error_suggestions  # message_error|http://awebsite.net...
+    <<- condition ~>> text_rewriting
+    <<- condition =>> commands_for_disambigation
+    ...
+
+Patterns are written with the Python syntax for regular expressions:
+http://docs.python.org/library/re.html
+
+There can be one or several actions for each rule, executed the order they are
+written.
+
+Conditions are optional, i.e.:
+    <<- ~>> replacement
+
+
+LCR flags means:
+- Left boundary for the regex
+- Case sensitiveness
+- Right boundary for the regex
+
+Left boundary:  [  word boundary  or  <  no word boundary
+right boundary:  ]  word boundary  or  >  no word boundary
+Case sensitiveness:
+    i: case insensitive
+    s: case sensitive
+    u: uppercase allowed for lowercased characters
+        i.e.:  "Word"  becomes  "W[oO][rR][dD]"
+
+Examples:
+__[i]__  pattern
+__<s]__  pattern
+__[u>__  pattern
+__<s>__  pattern
+...
+
+User option activating/disactivating is possible with an option name placed
+just after the LCR flags, i.e.:
+__[i]/useroption1__  pattern
+__[u]/useroption2__  pattern
+__[s>/useroption1__  pattern
+__<u>/useroption3__  pattern
+__<i>/useroption3__  pattern
+...
+
+The LCR flags are also optional. If you don’t set these flags, the default LCR
+flags will be:
+__[i]__
+
+Example. Report “foo” in the text and suggest "bar":
+
+foo <<- ->> bar # Use bar instead of foo.
+
+Example. Recognize and suggest missing hyphen and rewrite internally the text
+with the hyphen:
+
+__[s]__ foo bar
+    <<- ->> foo-bar # Missing hyphen.
+    <<- ~>> foo-bar
+
+
+== Simple-line or multi-line rules ==
+
+Rules can be break to multiple lines by leading tabulators or spaces.
+You should use 4 spaces.
+
+Examples:
+
+__<s>__ pattern <<- condition
+    ->> replacement
+    # message
+    <<- condition ->> suggestion # message
+    <<- condition
+    ~>> text_rewriting
+    <<- =>> disambiguation
+
+__<s>__ pattern <<- condition ->> replacement # message
+
+
+== Comments ==
+
+Lines beginning with # are comments.
+
+Example. No action done.
+
+# pattern <<- ->> foo bar # message
+
+
+== End of file ==
+
+With the command:
+
+#END
+
+the compiler won’t go further. Whatever is written after will be considered
+as comments.
+
+
+== Whitespaces at the border of patterns or suggestions ==
+
+Example. Recognize double or more spaces and suggests a single space:
+
+__<s>__  "  +" <<- ->> " " # Extra space(s).
+
+ASCII " characters protect spaces in the pattern and in the replacement text.
+
+
+== Pattern groups and back references ==
+
+It is usually useful to retrieve parts of the matched pattern. We simply use
+parenthesis in pattern to get groups with back references.
+
+Example. Suggest a word with correct quotation marks:
+
+\"(\w+)\" <<- ->> “\1” # Correct quotation marks.
+
+Example. Suggest the missing space after the !, ? or . signs:
+
+__<i]__ \b([?!.])([A-Z]+) <<- ->> \1 \2 # Missing space?
+
+Example. Back reference in messages.
+
+(fooo) bar <<- ->> foo bar # “\1” should be:
+
+
+== Name definitions ==
+
+Grammalecte supports name definitions to simplify the description of the
+complex rules.
+
+Example.
+
+DEF: name pattern
+
+Usage in the rules:
+
+({name}) (\w+) ->> "\1-\2" # Missing hyphen?
+
+
+== Multiple suggestions ==
+
+Use | in the replacement text to add multiple suggestions:
+
+Example 7. Foo, FOO, Bar and BAR suggestions for the input word "foo".
+
+foo <<- ->> Foo|FOO|Bar|BAR # Did you mean:
+
+
+== No suggestion ==
+
+You can display message without making suggestions. For this purpose,
+use a single character _ in the suggestion field.
+
+Example. No suggestion.
+
+foobar <<- ->> _ # Message
+
+
+== Positioning ==
+
+Positioning is valid only for error creation and text rewriting.
+
+By default, the full pattern will be underlined with blue. You can shorten the
+underlined text area by specifying a back reference group of the pattern.
+Instead of writing ->>, write -n>>  n being the number of a back reference
+group. Actually,  ->>  is similar to  -0>>
+
+Example.
+
+(ying) and yang <<- -1>> yin # Did you mean:
+__[s]__ (Mr.) [A-Z]\w+ <<- ~1>> Mr
+
+=== Comparison ===
+
+Rule A:
+ying and yang       <<- ->>     yin and yang        # Did you mean:
+
+Rule B:
+(ying) and yang     <<- -1>>    yin                 # Did you mean:
+
+With the rule A, the full pattern is underlined:
+    ying and yang
+    ^^^^^^^^^^^^^
+
+With the rule B, only the first group is underlined:
+    ying and yang
+    ^^^^
+
+
+== Longer explanations with URLs ==
+
+Warning messages can contain optional URL for longer explanations separated by "|":
+
+(your|her|our|their)['’]s
+    <<- ->> \1s
+    # Possessive pronoun:|http://en.wikipedia.org/wiki/Possessive_pronoun
+
+
+
+= Text rewriting =
+
+Example. Replacing a string by another
+
+Mr. [A-Z]\w+ <<- ~>> Mister
+
+WARNING: The replacing text must be shorter than the replaced text or have the
+same length. Breaking this rule will misplace following error reports. You
+have to ensure yourself the rules comply with this constraint, Grammalecte
+won’t do it for you.
+
+Specific commands for text rewriting
+
+~>> *
+    replace by whitespaces
+
+~>> @
+    replace by arobases, useful mostly at firt pass, where it is advised to
+    check usage of punctuations and whitespaces.
+    @ are automatically removed at the beginning of the second pass.
+
+You can use positioning with text rewriting actions.
+
+Mr(. [A-Z]\w+) <<- ~1>> *
+
+You can also call Python expressions.
+
+__[s]__ Mr. ([a-z]\w+) <<- ~1>> =\1.upper()
+
+
+
+= Disambiguation =
+
+When Grammalecte analyses a word with morph or morphex, before requesting the
+POS tags to the dictionary, it checks if there is a stored marker for the
+position where the word is. If there is a marker, Grammalecte uses the stored
+data and don’t make request to the dictionary.
+
+The disambigation commands store POS tags at the position of a word.
+
+There is 3 commands for disambigation.
+- select(n, pattern)
+    stores at position n only the POS tags of the word matching the pattern.
+- exclude(n, pattern)
+    stores at position n the POS tags of the word, except those matching the
+    pattern.
+- define(n, definition)
+    stores at position n the POS tags in definition.
+
+Examples.
+    =>> select(\1, "po:noun is:pl")
+    =>> exclude(\1, "po:verb")
+    =>> define(\1, "po:adv")
+    =>> exclude(\1, "po:verb") and define(\2, "po:adv") and select(\3, "po:adv")
+
+Note: select, exclude and define ALWAYS return True.
+
+If select and exclude generate an empty list, no marker is set.
+
+With define, you can set a list of POS tags. Example:
+
+define(\1, "po:nom is:plur|po:adj is:sing|po:adv")
+
+This will store a list of tags at the position of the first group:
+["po:nom is:plur", "po:adj is:sing", "po:adv"]
+
+
+
+= Conditions =
+
+Conditions are Python expressions, they must return a value, which will be
+evaluated as boolean. You can use the usual Python syntax and libraries.
+
+You can call pattern subgroups via \0, \1, \2…
+
+Example:
+    
+    these (\w+)
+        <<- \1 == "man" -1>> men        # Man is a singular noun. Use the plural form:
+
+You can also apply functions to subgroups like:
+    \1.startswith("a")
+    \3.islower()
+    re.match("pattern", \2)
+    …
+
+
+== Standard functions ==
+
+word(n)
+    catches the nth next word after the pattern (separated only by white spaces).
+    returns None if no word catched
+
+word(-n)
+    catches the nth next word before the pattern (separated only by white spaces).
+    returns None if no word catched
+
+after(regex[, neg_regex])
+    checks if the text after the pattern matches the regex.
+
+before(regex[, neg_regex])
+    checks if the text before the pattern matches the regex.
+
+textarea(regex[, neg_regex])
+    checks if the full text of the checked area (paragraph or sentence) matches the regex.
+
+morph(n, regex[, strict=True][, noword=False])
+    checks if all tags of the word in group n match the regex.
+    if strict = False, returns True only if one of tags matches the regex.
+    if there is no word at position n, returns the value of noword.
+
+morphex(n, regex, neg_regex[, noword=False])
+    checks if one of the tags of the word in group n match the regex and
+           if no tags matches the neg_regex.
+    if there is no word at position n, returns the value of noword.
+
+option(option_name)
+    returns True if option_name is activated else False
+
+Note: the analysis is done on the preprocessed text.
+
+
+== Default variables ==
+
+sCountry
+
+It contains the current country locale of the checked paragraph.
+
+colour <<- sCountry == "US" ->> color # Use American English spelling.
+
+
+
+= Expressions in the suggestions =
+
+Suggestions (and warning messages) started by an equal sign are Python string expressions
+extended with possible back references and named definitions:
+
+Example:
+
+foo\w+ ->> = '"' + \0.upper() + '"' # With uppercase letters and quoation marks
+
+All words beginning with "foo" will be recognized, and the suggestion is
+the uppercase form of the string with ASCII quoation marks: eg. foom ->> "FOOM".
+
+
+
+
+//////////////////////////////// OLD ///////////////////////////////////////
+
+= Text preprocessing and multi-passes checking =
+
+On each pass, Lightproof uses rules written in the text preprocessor to modify
+internally the text before checking the text.
+
+The text preprocessor is useful to simplify texts and write simplier checking
+rules.
+
+For example, sentences with the same grammar mistake:
+These “cats” are blacks.
+These cats are “blacks”.
+These cats are absolutely blacks.
+These stupid “cats” are all blacks.
+These unknown cats are as per usual blacks.
+
+Instead of writting complex rules or several rules to find mistakes for all possible
+cases, you can use the text preprocessor to simplify the text.
+
+To remove the chars “”, write:
+[“”] ->> *
+
+The * means: replace text by whitespaces.
+as per usual ->> *
+
+Similarly to grammar rules, you can add conditions:
+\w+ly <<- morph(\0, "adverb") ->> *
+
+You can also remove a group reference:
+these (\w+) (\w+) <<- morph(\1, "adjective") and morph(\2, "noun") -1>> *
+(am|are|is|were|was) (all) -2>> *
+
+With these rules, you get the following sentences:
+These  cats  are blacks.
+These cats are  blacks .
+These cats are            blacks.
+These         cats  are     blacks.
+These         cats are              blacks.
+
+These grammar mistakes can be detected with one simple rule:
+
+these +(\w+) +are +(\w+s)
+	<<- morph(\1, "noun") and morph(\2, "plural")
+	-2>> _ # Adjectives are invariable.
+
+Instead of replacing text with whitespaces, you can replace text with @.
+
+https?://\S+ ->> @
+
+This is useful if at first pass you write rules to check successive whitespaces.
+@ are automatically removed at the second pass.
+
+You can also replace any text as you wish.
+
+Mister ->> Mr
+(Mrs?)[.] ->> \1
+
+
+
+With the multi-passes checking and the text preprocessor, it is advised to
+remove or simplify the text which has been checked on the previous pass.
+
+
+
+= Typical problems =
+
+
+
+== Pattern matching ==
+
+Repeating pattern matching of a single rule continues after the previous matching, so
+instead of general multiword patterns, like
+
+(\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
+
+use
+
+(\w+) <<- some_check(\1, word(1)) ->> \1, # foo
+

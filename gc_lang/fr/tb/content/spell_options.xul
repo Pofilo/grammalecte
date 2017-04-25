@@ -1,0 +1,40 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://grammarchecker/content/spell_options.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://grammarchecker/locale/spell_options.dtd">
+
+<dialog
+  id="grammalecte-spelloptions-window"
+  title="&window.title;"
+  orient="vertical"
+  buttons="accept,cancel"
+  ondialogaccept="oDialogControl.setDictionaries();"
+  ondialogcancel="return;"
+  width="400"
+  height="660"
+  onload="oDialogControl.load();"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Other elements go here -->
+  
+  <dialogheader id="grammalecte-title" title="&dialogheader.label;" description=""/>
+
+  <groupbox id="dictchoice">
+    <caption id="grouptitle" label="&grouptitle;" />
+    <description id="warning">&warning;</description>
+    
+    <checkbox id="fr-FR-modern" class="option" label="&option.modern.label;" />
+    <description class="dicdescr">&option.modern.descr;</description>
+    <checkbox id="fr-FR-classic" class="option" label="&option.classic.label;" />
+    <description class="dicdescr">&option.classic.descr;</description>
+    <checkbox id="fr-FR-reform" class="option" label="&option.reform.label;" />
+    <description class="dicdescr">&option.reform.descr;</description>
+    <checkbox id="fr-FR-classic-reform" class="option" label="&option.allvar.label;" />
+    <description class="dicdescr">&option.allvar.descr;</description>
+  </groupbox>
+
+  <script type="application/x-javascript" src="spell_options.js"/>
+  <script type="application/x-javascript" src="spellchecker.js"/>
+
+</dialog>

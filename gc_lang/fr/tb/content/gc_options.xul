@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://grammarchecker/content/gc_options.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://grammarchecker/locale/gc_options.dtd">
+
+<dialog
+  id="grammalecte-gcoptions-window"
+  title="&window.title;"
+  orient="vertical"
+  buttons="accept, cancel, extra1"
+  ondialogaccept="oOptControl.save();"
+  ondialogcancel="return;"
+  buttonlabelextra1="&defaultbutton.label;"
+  ondialogextra1="oOptControl.reset();"
+  defaultButton="accept"
+  width="400"
+  onload="document.getElementById('grammalecte-gcoptions-window').centerWindowOnScreen();"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Other elements go here -->
+  
+  <dialogheader id="grammalecte-title" title="&dialogheader.label;" description="" />
+
+  <tabbox id="tabs_options" selectedIndex="0">
+    <tabs>
+${sXULTabs}
+    </tabs>
+    <tabpanels>
+${sXULTabPanels}
+    </tabpanels>
+  </tabbox>
+
+  <script type="application/x-javascript" src="gc_options.js" />
+
+</dialog>

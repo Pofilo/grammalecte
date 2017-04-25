@@ -1,0 +1,133 @@
+%YAML 1.2
+---
+# See http://www.sublimetext.com/docs/3/syntax.html
+name: Grammalecte rules
+file_extensions:
+  - grx
+scope: source.grammalecte
+contexts:
+  main:
+    # Strings begin and end with quotes, and use backslashes as an escape
+    # character
+    - match: '"[^"]*"'
+      scope: string.quoted.double
+      #push: double_quoted_string
+
+    # Comments begin with a '#' and finish at the end of the line
+    - match: '#'
+      scope: punctuation.definition.comment
+      push: line_comment
+
+    # Numbers
+    - match: '\b(-)?[0-9.]+\b'
+      scope: constant.numeric
+
+    # Keywords are if, else.
+    # Note that blackslashes don't need to be escaped within single quoted
+    # strings in YAML. When using single quoted strings, only single quotes
+    # need to be escaped: this is done by using two single quotes next to each
+    # other.
+    - match: '\b(?:if|else|and|or|not|in)\b'
+      scope: keyword.python
+
+    - match: '\b(?:True|False|None)\b'
+      scope: constant.language
+    
+    - match: '\b(?:spell|morph|morphex|stem|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|select|exclude|analysex?|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
+      scope: entity.name.function
+
+    - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:upper|lower|digit|title))\b'
+      scope: support.function
+
+    - match: '\becho\b'
+      scope: support.function.debug
+
+    - match: '\bre\b'
+      scope: support.class
+
+    # Rule options
+    - match: '^__[\[<]([isu])[\]>](/\w+|)(\(\w+\)|)(![0-9]|)__|</?js>'
+      scope: rule.options
+      captures:
+        1: rule.casing
+        2: rule.optionname
+        3: rule.rulename
+        4: rule.priority
+
+    # Definitions and options
+    - match: '^OPT(?:GROUP|LANG|PRIORITY)/|^OPTSOFTWARE:'
+      scope: options.command
+
+    - match: '^OPT(?:LABEL|)/'
+      scope: options.parameter
+
+    - match: '^DEF: '
+      scope: definition
+
+    # Tests & TODO
+    - match: '^TEST: (?:__[a-zA-Z0-9]+__ |)'
+      scope: test
+
+    - match: '^TODO: '
+      scope: todo
+
+    # JS groups positioning codes
+    - match: ' @@[0-9w,$*>:]+'
+      scope: comment.line.percentage
+
+    # rule delimiters
+    - match: '<<-|>>>'
+      scope: keyword.action
+    - match: '__also__'
+      scope: keyword.condition.green
+    - match: '__else__'
+      scope: keyword.condition.red
+    - match: '-(\d*)>>'
+      scope: keyword.error
+      captures:
+        1: keyword.error.group
+    - match: '~(\d*)>>'
+      scope: keyword.textprocessor
+      captures:
+        1: keyword.textprocessor.group
+    - match: '=>>'
+      scope: keyword.disambiguator
+
+    # Escaped chars
+    - match: '\\(?:\d+|w|d|b|n|s|t)'
+      scope: constant.character.escape
+
+    # URL
+    - match: '\| ?https?://[\w./%?&=#+-]+'
+      scope: string.other
+
+    # Example errors
+    - match: '{{.+?}}'
+      scope: message.error
+
+    # special chars
+    - match: '[@=*^?!:+<>]'
+      scope: keyword.other
+
+    - match: '\(\?(?:[:=!]|<!)|[(|)]'
+      scope: keyword.parenthesis
+
+    - match: '\[|[]{}]'
+      scope: keyword.brackets
+
+#  double_quoted_string:
+#    - meta_scope: string.quoted.double
+#    - match: '\\.'
+#      scope: constant.character.escape
+#    - match: '(?:"|$)'
+#      scope: punctuation.definition.string.end
+#      pop: true
+
+  line_comment:
+    - meta_scope: comment.line
+    - match: '\\[0-9]+'
+      scope: constant.character.escape
+    - match: '\| ?https?://[\w./%?&=#+-]+'
+      scope: string.other
+    - match: $
+      pop: true

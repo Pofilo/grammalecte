@@ -1,0 +1,125 @@
+# Options and title texts for the Settings and conditional rules
+#
+# The Lightproof dialogs contain only grouped checkboxes.
+#
+# Format of the dialog definition:
+#
+# GroupID: OptionID, OptionID ...
+# Group2ID: OptionID, OptionID ...
+# ...
+# [Language_code=title of the window]
+# OptionID=title of the option
+# Option2ID=title of the option
+#
+# The first language is the default language for other locales
+# (use en_US or the common language of your country)
+#
+# The OptionIDs declared here are used in the rules, too. For example:
+#
+# foo <<- option("style") ->> bar # bar is far better
+#
+# this rule depends from the state of the "style" checkbox.
+
+# options (starred options are checked)
+
+
+basic: *typo *apos, *esp *nbsp, *tu *maj, *num *virg, *unit *nf, liga mapos, chim ocr
+gramm: *conf *sgpl, *gn
+verbs: *infi *gv *ppas, *imp *inte *vmode
+style: *bs *pleo, redon1 redon2, neg
+misc: *date mc
+debug: idrule
+
+# titles
+
+[en_US=Grammar checking (French)]
+basic=Typography
+typo=Typographical glyphs
+apos=Typographical apostrophe\nDetects typewriter apostrophes. You may get automatically typographical apostrophes in Tools > Autocorrect options > Localized options > Single quote > Replace (checkbox).
+esp=Unuseful spaces\nChecks spaces at the beginning and the end of lines.
+nbsp=Non-breakable spaces\nChecks the use of non-breakable spaces with the following punctuation marks: « ! ? : ; » (deactivate it if you use a Graphite font)
+eif=Narrow non breaking spaces [!]\nTo set narrow non breaking spaces before the characters “? ! ;”
+maj=Capitals\nChecks the use of uppercase and lowercase letters (i.e. « la raison d’État », « les Européens »).
+virg=Commas\nMissing commas before “mais”, “car” and “etc.”.
+tu=Hyphens\nChecks missing or useless hyphens.
+num=Numbers\nLarge numbers and « O » instead of « 0 ».
+unit=Non-breaking spaces before units of measurement
+nf=French standards
+liga=Report typographical ligatures\nLigatures of fi, fl, ff, ffi, ffl, ft, st.
+mapos=Missing apostrophes after single letters [!]\nMissing apostrophes after l d s n c j m t ç. This option is mostly useful to detect defects of digitized texts and is not recommended for scientific texts.
+chim=Chemistry [!]\nTypography for molecules (H₂O, CO₂, etc.)
+ocr=OCR errors [!]\nWarning: many false positives.
+
+gramm=Agreement, plurals, confusions
+conf=Confusions, homonyms and false friends\nSeeks errors often due to homonymy (i.e. confusions between « faîte » et « faite »).
+sgpl=Plural (locutions)\nChecks the use of plural and singular in locutions.
+gn=Agreement (gender and number)\nAgreement between nouns and adjectives.
+
+verbs=Verbs
+gv=Conjugation\nAgreement between verbs and their subject.
+infi=Infinitive\nChecks confusions between infinitive forms and other forms.
+imp=Imperative mood\nChecks particularly verbs at second person singular (i.e. errors such as: « vas … », « prend … », « manges … »).
+inte=Interrogative mood\nChecks interrogative forms and suggests linking the personal pronouns with verbs.
+ppas=Past participles, adjectives\nChecks subject agreement with past participles and adjectives
+vmode=Verbal modes
+
+style=Style
+bs=Popular style\nUnderlines misuse of language though informal and commonly used.
+pleo=Pleonasms\nSemantic replications, like « au jour d’aujourd’hui », « monter en haut », etc.
+neg=Negation adverb [!]\nNe … pas, ne … jamais, etc.
+redon1=Duplicates in paragraph [!]\nAre excluded grammatical words, words beginning by a capital letter, and also “être” and “avoir”.
+redon2=Duplicates in sentence [!]\nAre excluded grammatical words, and also “être” and “avoir”.
+
+misc=Miscellaneous
+mc=Compound words [!]\nCheck if words with hyphen exist in the dictionary (except those beginning by ex-, mi-, quasi-, semi-, non-, demi- and other common prefixes)
+date=Date validity
+
+debug=Debug
+idrule=Display control rule identifier [!]\nDisplay control rule identifier in the context menu message
+
+
+[fr_FR=Grammalecte (Français)]
+
+basic=Typographie
+typo=Signes typographiques
+apos=Apostrophe typographique\nCorrection des apostrophes droites. Automatisme possible dans le menu Outils > Options d’autocorrection > Options linguistiques > Guillemets simples > Remplacer (à cocher)
+esp=Espaces surnuméraires\nSignale les espaces inutiles en début et en fin de ligne.
+nbsp=Espaces insécables\nVérifie les espaces insécables avec les ponctuations « ! ? : ; » (à désactiver si vous utilisez une police Graphite)
+eif=Espaces insécables fines [!]\nPour placer des espaces insécables fines avant les ponctuations « ? ! ; »
+maj=Majuscules\nVérifie l’utilisation des majuscules et des minuscules (par exemple, « la raison d’État », « les Européens »).
+virg=Virgules\nVirgules manquantes avant “mais”, “car” et “etc.”.
+tu=Traits d’union\nCherche les traits d’union manquants ou inutiles.
+num=Nombres\nEspaces insécables sur les grands nombres (> 10 000). Vérifie la présence de « O » au lieu de « 0 ».
+unit=Espaces insécables avant unités de mesure
+nf=Normes françaises
+liga=Signaler ligatures typographiques\nLigatures de fi, fl, ff, ffi, ffl, ft, st.
+mapos=Apostrophes manquantes après lettres isolées [!]\nApostrophes manquantes après les lettres l d s n c j m t ç. Cette option sert surtout à repérer les défauts de numérisation des textes et est déconseillée pour les textes scientifiques.
+chim=Chimie [!]\nTypographie des composés chimiques (H₂O, CO₂, etc.).
+ocr=Erreurs de numérisation (OCR) [!]\nErreurs de reconnaissance optique des caractères. Beaucoup de faux positifs.
+
+gramm=Accords, pluriels et confusions
+conf=Confusions, homonymes et faux-amis\nCherche des erreurs souvent dues à l’homonymie (par exemple, les confusions entre « faîte » et « faite »).
+sgpl=Pluriels (locutions)\nVérifie l’usage du pluriel ou du singulier dans certaines locutions.
+gn=Accords de genre et de nombre\nAccords des noms et des adjectifs.
+
+verbs=Verbes
+gv=Conjugaisons\nAccord des verbes avec leur sujet.
+infi=Infinitif\nConfusion entre l’infinitif et d’autres formes.
+imp=Impératif\nVérifie notamment la deuxième personne du singulier (par exemple, les erreurs : « vas … », « prend … », « manges … »).
+inte=Interrogatif\nVérifie les formes interrogatives et suggère de lier les pronoms personnels avec les verbes.
+ppas=Participes passés, adjectifs
+vmode=Modes verbaux
+
+style=Style
+bs=Populaire\nSouligne un langage courant considéré comme erroné, comme « malgré que ».
+pleo=Pléonasmes\nRepère des redondances sémantiques, comme « au jour d’aujourd’hui », « monter en haut », etc.
+neg=Adverbe de négation [!]\nNe … pas, ne … jamais, etc.
+redon1=Répétitions dans le paragraphe [!]\nSont exclus les mots grammaticaux, ceux commençant par une majuscule, ainsi que “être” et “avoir”.
+redon2=Répétitions dans la phrase [!]\nSont exclus les mots grammaticaux, ainsi que “être” et “avoir”.
+
+misc=Divers
+mc=Mots composés [!]\nVérifie si les mots composés à trait d’union existent dans le dictionnaire (hormis ceux commençant par ex-, mi-, quasi-, semi-, non-, demi- et d’autres préfixes communs).
+date=Validité des dates
+
+debug=Débogage
+idrule=Identifiant des règles de contrôle [!]\nAffiche l’identifiant de la règle de contrôle dans les messages d’erreur.
