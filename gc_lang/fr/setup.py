@@ -15,7 +15,7 @@ from setuptools import setup, find_packages
 #     long_description = f.read()
 
 setup(
-    name='grammalecte',
+    name='Grammalecte-fr',
 
     # Versions should comply with PEP440.  For a discussion on single-sourcing
     # the version across setup.py and the project code, see
@@ -89,14 +89,18 @@ setup(
     # installed, specify them here.  If using Python 2.6 or less, then these
     # have to be included in MANIFEST.in as well.
     package_data={
-        'dictionary': ['_dictionaries/French.bdic'],
+        'grammalecte': ['_dictionaries/French.bdic', '*.txt'],
+        '': ['*.py', '*.txt', '*.ini']
     },
+    include_package_data=True,
 
     # Although 'package_data' is the preferred approach, in some case you may
     # need to place data files outside of your packages. See:
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
+    data_files=[('', ['cli.py', 'server.py', 'bottle.py', 'README.txt', 'license.txt', \
+                      'server_options.fr.ini', 'server_options._global.ini'])],
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
