@@ -131,6 +131,7 @@ def genUserId ():
 
 def parseParagraph (iParagraph, sText, oTokenizer, oDict, dOptions, bDebug=False, bEmptyIfNoErrors=False):
     aGrammErrs = gce.parse(sText, "FR", bDebug, dOptions)
+    aGrammErrs = list(aGrammErrs)
     aSpellErrs = []
     for dToken in oTokenizer.genTokens(sText):
         if dToken['sType'] == "WORD" and not oDict.isValidToken(dToken['sValue']):
