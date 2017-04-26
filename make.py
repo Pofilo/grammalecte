@@ -307,7 +307,7 @@ def createServerZip (sLang, dVars, spLangPack):
     for spf in ["cli.py", "server.py", "bottle.py", "server_options._global.ini", "server_options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
-        hZip.writestr("setup.py", fileFile("gc_lang/fr/setup.py", dVars))
+    hZip.writestr("setup.py", fileFile("gc_lang/fr/setup.py", dVars))
 
 
 def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sDicName, sAddPath=""):
