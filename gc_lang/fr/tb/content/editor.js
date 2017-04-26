@@ -9,6 +9,14 @@ class Editor {
         this.lRootNodes = ["DIV", "UL", "OL"];
     };
 
+    _getTextFromNode (xNode) {
+        if ("innerHTML" in xNode) {
+            return xNode.innerHTML;
+        } else {
+            return xNode.textContent;
+        }
+    };
+
     * _getParsableNodes (xRootNode=this.xEditor.rootElement) {
         // recursive function
         try {
@@ -34,7 +42,7 @@ class Editor {
             let i = 0;
             for (let xNode of this._getParsableNodes()) {
                 this.lNode.push(xNode);
-                yield [i, xNode.innerHTML];
+                yield [i, this._getTextFromNode(xNode)];
                 i += 1;
             }
         } catch (e) {
@@ -59,7 +67,7 @@ class Editor {
 
     getParagraph (iPara) {
         try {
-            return this.lNode[iPara].innerHTML;
+            return this._getTextFromNode(this.lNode[iPara]);
         } catch (e) {
             Cu.reportError(e);
         }
@@ -67,7 +75,12 @@ class Editor {
 
     writeParagraph (iPara, sText) {
         try {
-            this.lNode[iPara].innerHTML = sText;
+            let xNode = this.lNode[iPara];
+            if ("innerHTML" in xNode) {
+                xNode.innerHTML = sText;
+            } else {
+                xNode.textContent = sText;
+            }
         } catch (e) {
             Cu.reportError(e);
         }
