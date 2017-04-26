@@ -167,7 +167,7 @@ function createAboutPanel () {
                 right: 0,
                 bottom: 0
             },
-            width: 320,
+            width: 340,
             height: 670
         });
 
