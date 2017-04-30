@@ -2740,6 +2740,7 @@ __[i]/conf(conf_de_dès_par_vconj)__
     <<- \1[0].islower() and morph(\1, ":V.*:[123][sp]") -1>> =suggSimil(\1, ":[NA]")                # Incohérence : « \1 » est une forme verbale conjuguée.
 
 TEST: par {{bloque}} de données
+TEST: il s’agit de {{mette}} en évidence.
 
 
 __[i]/conf(conf_d_une_vconj)__
@@ -2860,6 +2861,7 @@ __[i]/conf(conf_de_plus_en_plus_verbe)__
     # Incohérence avec « de plus en plus » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: de plus en plus {{gagnait}} par la folie.
+TEST: de plus en plus {{concerner}} par ce problème
 TEST: avec quel zèle ils remplissent leurs devoirs de citoyens (de plus en plus deviennent enseignant·e·s, infirmier·e·s ou s’engagent dans l’armée, etc.).
 TEST: il faut de plus en plus aider ces gens.
 
@@ -6696,6 +6698,7 @@ TEST: Elle a {{mie}} son plus bel ensemble.
 TEST: Les éléments {{mi}} en évidence suffisent à le désigner comme coupable.
 TEST: Ils étaient partis au restaurant après avoir {{mi}} à jour son profil.
 TEST: elles ont dansé, {{mie}} à jour leur carnet et sont parties.
+TEST: après avoir {{mi}} ses souliers tenir
 
 
 # n’est-ce pas - ai / es / est
@@ -6943,6 +6946,9 @@ __[i]/conf(conf_pu)__
     ({avoir}) +(pu(?:es?|s)) @@0,$ <<- morph(\1, ":V0a", False) -2>> pu                   # Confusion. Pour le participe passé de pouvoir, écrivez :
 
 TEST: Ils étaient partis au restaurant après avoir {{pue}} dire un mot.           ->> pu
+TEST: avoir {{pus}} réussir
+TEST: ce qu’ils ont {{pue}}
+TEST: il a {{pues}} partir
 
 
 # quand même / comme même
@@ -7130,7 +7136,7 @@ __[i]/conf(conf_son_qqch)__
     and not before(r"(?i)\bce que? |[mts]’en +$")
     -1>> son                        # Confusion : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 __[i]/conf(conf_qui_sont_les)__
-    qui +(son) (?:[lmtscd]es|leurs|[nv]os)
+    qui +(son) +(?:[lmtscd]es|leurs|[nv]os)  @@w
     <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
 TEST: ne leur {{son}} pas odieux.
@@ -7282,19 +7288,6 @@ TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 # nouveau / nouvel
 # TODO
-
-
-# TESTS À TRIER
-
-TEST: après avoir {{mi}} ses souliers tenir
-TEST: avoir {{pus}} réussir
-TEST: ce qu’ils ont {{pue}}
-TEST: il a {{pues}} partir
-
-TEST: de plus en plus {{concerner}} par ce problème
-TEST: après avoir mis à jour sont {{profile}}.
-TEST: il s’agit de {{mette}} en évidence.
-
 
 
 
@@ -8481,6 +8474,7 @@ __[i]/ppas(ppas_sont)__
     <<- __else__ and morphex(\1, ":V", ":(?:N|A|Q|W|G|3p)") and not before(r"(?i)\bce que?\b")
     -1>> =suggVerbPpas(\1, ":m:p")  # Incohérence : « \1 » n’est pas un participe passé.
 
+TEST: après avoir mis à jour sont {{profile}}.
 
 
 #### SE CROIRE/CONSIDÉRER/MONTRER/PENSER/RÉVÉLER/SAVOIR/SENTIR/VOIR/VOULOIR + PARTICIPE PASSÉ/ADJ
@@ -10348,6 +10342,7 @@ TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.
 TEST: Ils ont à plusieurs reprises {{perdus}} leur sang-froid.
 TEST: Ces attaques à main armée {{donne}} la chair de poule.
 TEST: Réfléchir à tête reposée {{prends}} du temps.
+
 
 
 #######################################################################################################################
