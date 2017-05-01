@@ -370,7 +370,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
             copyAndFileTemplate("gc_core/py/lang_core/"+sf, spLangPack+"/"+sf, dVars)
     print("+ Modules: ", end="")
     for sf in os.listdir(spLang+"/modules"):
-        if not sf.endswith(".tpl.py") and not sf.startswith("gce_"):
+        if not sf.startswith("gce_"):
             file_util.copy_file(spLang+"/modules/"+sf, spLangPack)
             print(sf, end=", ")
     print()
@@ -417,7 +417,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
                 copyAndFileTemplate("gc_core/js/lang_core/"+sf, spLangPack+"/"+sf, dVars)
         print("+ Modules: ", end="")
         for sf in os.listdir(spLang+"/modules-js"):
-            if not sf.endswith(".tpl.js") and not sf.startswith("gce_"):
+            if not sf.startswith("gce_"):
                 copyAndFileTemplate(spLang+"/modules-js/"+sf, spLangPack+"/"+sf, dVars)
                 print(sf, end=", ")
         print()
