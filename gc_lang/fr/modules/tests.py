@@ -6,25 +6,13 @@ import os
 import re
 import time
 
-try:
-    import grammalecte.ibdawg as ibdawg
-    import grammalecte.fr as gce
-    import grammalecte.fr.conj as conj
-    import grammalecte.fr.phonet as phonet
-    import grammalecte.fr.mfsp as mfsp
-    from grammalecte.echo import echo
-except ImportError:
-    import sys
-    sys.path.append(os.path.abspath('.'))
-    sys.path.append(os.path.abspath('..'))
-    import grammalecte.ibdawg as ibdawg
-    import grammalecte.fr as gce
-    import grammalecte.fr.conj as conj
-    import grammalecte.fr.phonet as phonet
-    import grammalecte.fr.mfsp as mfsp
-    from grammalecte.echo import echo
 
-
+from .. import ibdawg
+from . import gc_engine as gce
+from . import conj
+from . import phonet
+from . import mfsp
+from ..echo import echo
 
 
 def _fuckBackslashUTF8 (s):
@@ -139,45 +127,42 @@ class TestGrammarChecking (unittest.TestCase):
 
     def test_parse (self):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
-        bShowUntested = False
-        for sf in [ "gc_test.txt" ]:
-            with self.subTest(msg=sf):
-                with open("./tests/fr/"+sf, "r", encoding="utf-8") as hSrc:
-                    for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
-                        sLineNum = sLine[:10].strip()
-                        sLine = sLine[10:].strip()
-                        sOption = None
-                        m = zOption.search(sLine)
-                        if m:
-                            sLine = sLine[m.end():]
-                            sOption = m.group(1)
-                        if "->>" in sLine:
-                            sErrorText, sExceptedSuggs = self._splitTestLine(sLine)
-                            if sExceptedSuggs.startswith('"') and sExceptedSuggs.endswith('"'):
-                                sExceptedSuggs = sExceptedSuggs[1:-1]
-                        else:
-                            sErrorText = sLine.strip()
-                            sExceptedSuggs = ""
-                        sExpectedErrors = self._getExpectedErrors(sErrorText)
-                        sTextToCheck = sErrorText.replace("}}", "").replace("{{", "")
-                        sFoundErrors, sListErr, sFoundSuggs = self._getFoundErrors(sTextToCheck, sOption)
-                        self.assertEqual(sExpectedErrors, sFoundErrors, \
-                                         "\n# Line num: " + sLineNum + \
-                                         "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
-                                         "\n  expected: " + sExpectedErrors + \
-                                         "\n  found:    " + sFoundErrors + \
-                                         "\n  errors:   \n" + sListErr)
-                        if sExceptedSuggs:
-                            self.assertEqual(sExceptedSuggs, sFoundSuggs, "\n# Line num: " + sLineNum + "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + "\n  errors:   \n" + sListErr)
-                bShowUntested = True
-        if bShowUntested:
-            i = 0
-            for sOpt, sLineId, sRuleId in gce.listRules():
-                if sLineId not in self._aRuleTested and not re.match("[0-9]+[sp]$", sRuleId):
-                    echo(sRuleId, end= ", ")
-                    i += 1
-            if i:
-                echo("\n[{} untested rules]".format(i))
+        spHere, spfThisFile = os.path.split(__file__)
+        with open(os.path.join(spHere, "gc_test.txt"), "r", encoding="utf-8") as hSrc:
+            for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
+                sLineNum = sLine[:10].strip()
+                sLine = sLine[10:].strip()
+                sOption = None
+                m = zOption.search(sLine)
+                if m:
+                    sLine = sLine[m.end():]
+                    sOption = m.group(1)
+                if "->>" in sLine:
+                    sErrorText, sExceptedSuggs = self._splitTestLine(sLine)
+                    if sExceptedSuggs.startswith('"') and sExceptedSuggs.endswith('"'):
+                        sExceptedSuggs = sExceptedSuggs[1:-1]
+                else:
+                    sErrorText = sLine.strip()
+                    sExceptedSuggs = ""
+                sExpectedErrors = self._getExpectedErrors(sErrorText)
+                sTextToCheck = sErrorText.replace("}}", "").replace("{{", "")
+                sFoundErrors, sListErr, sFoundSuggs = self._getFoundErrors(sTextToCheck, sOption)
+                self.assertEqual(sExpectedErrors, sFoundErrors, \
+                                 "\n# Line num: " + sLineNum + \
+                                 "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
+                                 "\n  expected: " + sExpectedErrors + \
+                                 "\n  found:    " + sFoundErrors + \
+                                 "\n  errors:   \n" + sListErr)
+                if sExceptedSuggs:
+                    self.assertEqual(sExceptedSuggs, sFoundSuggs, "\n# Line num: " + sLineNum + "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + "\n  errors:   \n" + sListErr)
+        # untested rules
+        i = 0
+        for sOpt, sLineId, sRuleId in gce.listRules():
+            if sLineId not in self._aRuleTested and not re.match("[0-9]+[sp]$", sRuleId):
+                echo(sRuleId, end= ", ")
+                i += 1
+        if i:
+            echo("\n[{} untested rules]".format(i))
 
     def _splitTestLine (self, sLine):
         sText, sSugg = sLine.split("->>")
@@ -233,6 +218,7 @@ def perf (sVersion):
             with timeblock(sText[:sText.find(".")], hDst):
                 aErrs = gce.parse(sText)
         hDst.write("\n")
+
 
 def main():
     unittest.main()

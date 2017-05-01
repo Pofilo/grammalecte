@@ -351,11 +351,6 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
         return
     dVars.update(compile_rules.make(lRules, dVars['lang'], bJavaScript))
 
-    # generating test files
-    with open("tests/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy:
-        hDstPy.write("# TESTS FOR LANG [" + sLang + "]\n\n")
-        hDstPy.write(dVars['gctests'])
-
     ## READ GRAMMAR CHECKER PLUGINS
     print("PYTHON:")
     print("+ Plugins: ", end="")
@@ -379,6 +374,11 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
             file_util.copy_file(spLang+"/modules/"+sf, spLangPack)
             print(sf, end=", ")
     print()
+
+    # TEST FILES
+    with open("grammalecte/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy:
+        hDstPy.write("# TESTS FOR LANG [" + sLang + "]\n\n")
+        hDstPy.write(dVars['gctests'])
 
     createOXT(spLang, dVars, xConfig._sections['oxt'], spLangPack, bInstallOXT)
 
@@ -490,7 +490,7 @@ def main ():
             if xArgs.tests or xArgs.perf:
                 print("> Running tests")
                 try:
-                    tests = importlib.import_module("tests."+sLang+"_test")
+                    tests = importlib.import_module("grammalecte."+sLang+".tests")
                     print(tests.__file__)
                 except ImportError:
                     print("# Error. Couldn't import file {}_test.py in folder tests".format(sLang))
