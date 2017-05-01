@@ -535,7 +535,8 @@ def prepareOptions (lOptionLines):
 
 
 def make (lRules, sLang, bJavaScript):
-    "compile rules"
+    "compile rules, returns a dictionary of values"
+    # for clarity purpose, don’t create any file here
 
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
@@ -557,7 +558,7 @@ def make (lRules, sLang, bJavaScript):
                 print("Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
-            lTest.append("{:<8}".format(i) + "  " + sLine[5:].lstrip())
+            lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
             pass
         elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTLABEL/", "OPTPRIORITY/")):
@@ -576,13 +577,6 @@ def make (lRules, sLang, bJavaScript):
     except:
         traceback.print_exc()
         exit()
-
-    # generating test files
-    print("  generating test files...")
-    with open("tests/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy:
-        hDstPy.write("# TESTS FOR LANG ["+sLang+"]\n\n")
-        for sLine in lTest:
-            hDstPy.write(sLine)
 
     # tests
     print("  list tests...")
