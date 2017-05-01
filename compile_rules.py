@@ -579,12 +579,15 @@ def make (lRules, sLang, bJavaScript):
 
     # generating test files
     print("  generating test files...")
-    with open("tests/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy, \
-         open("gc_lang/"+sLang+"/modules-js/tests_data.json", "w", encoding="utf-8", newline="\n") as hDstJS:
+    with open("tests/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy:
         hDstPy.write("# TESTS FOR LANG ["+sLang+"]\n\n")
         for sLine in lTest:
             hDstPy.write(sLine)
-        hDstJS.write('{ "aData": ' + json.dumps(lTest, ensure_ascii=False) + " }\n")
+
+    # tests
+    print("  list tests...")
+    sGCTests = "\n".join(lTest)
+    sGCTestsJS = '{ "aData": ' + json.dumps(lTest, ensure_ascii=False) + " }\n"
 
     # processing
     print("  preparing rules...")
@@ -638,6 +641,8 @@ def make (lRules, sLang, bJavaScript):
 
     d = { "callables": sPyCallables,
           "callablesJS": sJSCallables,
+          "gctests": sGCTests,
+          "gctestsJS": sGCTestsJS,
           "paragraph_rules": mergeRulesByOption(lParagraphRules),
           "sentence_rules": mergeRulesByOption(lSentenceRules),
           "paragraph_rules_JS": writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
