@@ -175,20 +175,20 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     cCaseMode = 'i'         # i: case insensitive,  s: case sensitive,  u: uppercasing allowed
     cWordLimitLeft = '['    # [: word limit, <: no specific limit
     cWordLimitRight = ']'   # ]: word limit, >: no specific limit
-    m = re.match("^__([[<]\\w[]>])(/[a-zA-Z0-9]+|)(\\(\\w+\\)|)(![0-9]|)__ *", s)
+    m = re.match("^__(?P<borders_and_case>[[<]\\w[]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\)|)(?P<priority>![0-9]|)__ *", s)
     if m:
-        cWordLimitLeft = m.group(1)[0]
-        cCaseMode = m.group(1)[1]
-        cWordLimitRight = m.group(1)[2]
-        sOption = m.group(2)[1:]  if m.group(2)  else False
-        if m.group(3):
-            sRuleId =  m.group(3)[1:-1]
+        cWordLimitLeft = m.group('borders_and_case')[0]
+        cCaseMode = m.group('borders_and_case')[1]
+        cWordLimitRight = m.group('borders_and_case')[2]
+        sOption = m.group('option')[1:]  if m.group('option')  else False
+        if m.group('ruleid'):
+            sRuleId =  m.group('ruleid')[1:-1]
             if sRuleId in RULESET:
                 print("# Warning. Several rules have the same id: " + sRuleId)
             RULESET.add(sRuleId)
         nPriority = dOptPriority.get(sOption, 4)
-        if m.group(4):
-            nPriority = int(m.group(4)[1:])
+        if m.group('priority'):
+            nPriority = int(m.group('priority')[1:])
         s = s[m.end(0):]
     else:
         print("# Warning. No option defined at line: " + sLineId)
