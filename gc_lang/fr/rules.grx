@@ -8977,7 +8977,7 @@ TEST: — {{Allé}} prendre une cuite.
 __[i]/imp(imp_vgroupe2_vgroupe3_t)__
     ^ *(\w+t)(?![- ](?:je|tu|[nv]ous|ils?|elles?|on|t-ils?|t-elles?))  @@$
     <<- morphex(\1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire)") and analyse(\1[:-1]+"s", ":E:2s", False)
-    and not (re.search("(?i)^vient$", \1) and after("^ +l[ea]"))
+    and not (re.search("(?i)^vient$", \1) and after("^ +(?:l[ea]|se |s’)"))
     and not (re.search("(?i)^dit$", \1) and after("^ +[A-ZÉÈÂÎ]"))
     -1>> =\1[:-1]+"s"                                                               # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 __[i]/imp(imp_ne_vgroupe2_vgroupe3_t)__
@@ -8989,6 +8989,7 @@ TEST: {{Finit}} ton assiette.
 TEST: Ne {{pourrit}} pas l’ambiance.
 TEST: Suffit de s’en servir.
 TEST: Et ne doit pas être rejeté dans les limbes.
+TEST: Vient s’ajouter à ce contexte la perception, partagée par beaucoup, du caractère fortement menaçant de l’environnement économique et géopolitique.
 
 
 # verbes du 3ᵉ groupe en -d
