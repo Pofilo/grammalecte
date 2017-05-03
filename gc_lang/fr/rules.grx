@@ -424,7 +424,7 @@ __[s]__  \d+[.:]\d+[.:]\d+[.:]\d+  <<- ~>> *
 # mètres (m)
 __[s>__  "\d+ (m) "  @@w <<- ~1>> _
 # heures
-__[s]__  (?:à |)[012]?\d[h:]\d\d(?:[m:]\d\ds?|) <<- ~>> *
+__[s]__  (?:de |à |)[012]?\d[h:]\d\d(?:[m:]\d\ds?|) <<- ~>> *
 # crochets
 __[s]__  \[…\] <<- ~>> *
 __[s]__  \[({w_1})\] @@1
@@ -1895,7 +1895,7 @@ TEST: __ocr__ {{Us}} arrive demain.
 
 
 # il / i1 / if / 11
-__[i]/ocr(ocr_il_ils2)__
+__[i]/ocr(ocr_il_ils3)__
     [i1][1f]s?
     <<- not \0.endswith("s") ->> Il|il                                                              # Erreur de numérisation ?
     <<- __else__ ->> Ils|ils                                                                        # Erreur de numérisation ?
@@ -3104,7 +3104,7 @@ __[i]/conf(conf_qui_se_verbe)__
     qui (ce) ({w_2})  @@4,$
     <<- morphex(\2, ":V", ":[NAQ].*:[me]") or before(r"(?i)\b[cs]e +")
     -1>> se                                                                 # Confusion probable. Exemples : ce bâtiment, se perdre.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
-__[i]/conf(conf_ce_être)__
+__[i]/conf(conf_ceux_ce_être)__
     (ceux) (?:ne |)(?:sont|serai(?:en|)[ts]?|f[uû](?:ren|)t|n’(?!ayant|étant)\w+) @@0
     <<- -1>> ce                                                             # Confusion.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
 __[s]/conf(conf_ce_ne_être_doit)__
@@ -3455,10 +3455,10 @@ TEST: Elle va regarder ça de plus {{prêt}}.
 __[i]/conf(conf_quant_à)__
     (?<![dD]e )(quand) (?:à|aux?)  @@0
     <<- not morph(word(-1), ">(?:arriver|venir|à|revenir|partir|aller) ") -1>> quant                # Confusion probable. Quand = à quel moment. Quant à = à propos de.
-__[i]/conf(conf_quand)__    quant(?! à| aux?| est[ -]il d(?:es?|u) ) <<- ->> quand                  # Confusion. Quand = à quel moment. Quant à = à propos de.
+__[i]/conf(conf_quand1)__   quant(?! à| aux?| est[ -]il d(?:es?|u) ) <<- ->> quand                  # Confusion. Quand = à quel moment. Quant à = à propos de.
 __[i]/conf(conf_qu_en1)__   (quan[dt]) est[ -]il d(?:es?|u) @@0 <<- -1>> qu’en                      # Confusion. Ce qu’il en est de… → Qu’en est-il de… ?
 __[i]/conf(conf_qu_en2)__   (quan[dt]) ({w_2}ant) @@0,$ <<- morph(\2, ":P", False) -1>> qu’en       # Confusion probable.
-__[i]/conf(conf_quand)__
+__[i]/conf(conf_quand2)__
     (qu en) (?:je|tu|ils?) @@0
     <<- not after("^ +ne s(?:ai[st]|u[st]|urent|avai(?:[ts]|ent)) ") -1>> quand                     # Confusion probable. Pour évoquer un moment, écrivez :
 
@@ -6960,7 +6960,7 @@ TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}
 
 
 # quel que soit / quoi qu’il en soit
-__[i]/conf(conf_quel_que_soit)__
+__[i]/conf(conf_quel_que_soit1)__
     quelques? soi(?:ent|t|s|)
     <<- ->> quel que soit|quelle que soit|quels que soient|quelles que soient             # Confusion.|https://fr.wiktionary.org/wiki/quel_que_soit
 __[i]/conf(conf_quoi_qu_il_en_soit)__
@@ -7105,7 +7105,7 @@ __[i]/conf(conf_en_soi)__
     (?<!’)en (soit)  @@3
     <<- morph(word(1), ":[GY]", True, True) and not before("(?i)quel(?:s|les?|) qu $|on $|il $") and not after(" soit ")
     -1>> soi                                                                                        # Confusion probable.
-__[i]/conf(conf_quel_que_soit)__
+__[i]/conf(conf_quel_que_soit2)__
     quel(?:le|)s? que (soi(?:es?|)) @@$ <<- -1>> soit|soient                                        # Confusion probable. 
 __[i]/conf(conf_soi_même1)__
     (soi[tes]s? mêmes?) @@$
@@ -8028,7 +8028,7 @@ TEST: Je me laisse de quoi finir.
 TEST: Il te laisse trois jours de délai.
 
 
-__[i]/ppas(ppas_me_te_laisser_adj)__
+__[i]/ppas(ppas_nous_les_laisser_adj)__
     (nous|les) +(laiss\w*) +({w_3})  @@0,w,$
     <<- morph(\2, ">laisser ", False) and morphex(\3, ":[AQ].*:s", ":(?:[YG]|[AQ].*:[ip])")
     and (\1.endswith("es") or ( \1.endswith("us") and not \2.endswith("ons") )) -3>> =suggPlur(@)   # Accord avec « \1 » : « \3 » devrait être au pluriel.
@@ -8553,29 +8553,29 @@ __[i]/ppas(ppas_elles_se_verbe)__
 TEST: elles se sentent {{perdu}}
 
 
-__[i]/ppas(ppas_le_verbe)__
+__[i]/ppas(ppas_le_verbe_pensée)__
     le ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[esx])  @@w,$
     <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ]:(?:[me]:p|f)", ":(?:G|Y|[AQ]:m:[is])")
     -2>> =suggMasSing(@)                                                     # Accord avec le COD “le” : « \2 » doit être au masculin singulier.
-__[i]/ppas(ppas_la_verbe)__
+__[i]/ppas(ppas_la_verbe_pensée)__
     la ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[uiéesx])  @@w,$
     <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ]:(?:[fe]:p|m)", ":(?:G|Y|[AQ]:f:[is])")
     -2>> =suggFemSing(@)                                                     # Accord avec le COD “la” : « \2 » doit être au féminin singulier.
-__[i]/ppas(ppas_les_verbe)__
+__[i]/ppas(ppas_les_verbe_pensée)__
     les ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2})  @@w,$
     <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ].*:s", ":(?:G|Y|[AQ].*:[ip])")
     -2>> =suggPlur(@)                                                        # Accord avec le COD “les” : « \2 » doit être au pluriel.
-__[i]/ppas(ppas_me_te_verbe)__
+__[i]/ppas(ppas_me_te_verbe_pensée)__
     ([mt]e) ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[sx])  @@0,w,$
     <<- morph(\2, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\3, ":[AQ].*:p", ":(?:G|Y|[AQ].*:[is])")
     -3>> =suggSing(@)                                                        # Accord avec le pronom “\1” : « \3 » doit être au singulier.
-__[i]/ppas(ppas_se_verbe)__
+__[i]/ppas(ppas_se_verbe_pensée)__
     se ((?:trouv|consid[éè]r|cr[ouû]|rend)\w*) +({w_3})  @@w,$
     <<- morph(\1, ">(?:trouver|considérer|croire|rendre) .*:3s", False) and morphex(\2, ":[AQ].*:p", ":(?:G|Y|[AQ].*:[is])")
     -2>> =suggSing(@)                                                        # Accord avec le pronom “se” (le verbe étant au singulier) : « \2 » doit être au singulier.
     <<- morph(\1, ">(?:trouver|considérer|croire|rendre) .*:3p", False) and morphex(\2, ":[AQ].*:s", ":(?:G|Y|[AQ].*:[ip])")
     -2>> =suggSing(@)                                                        # Accord avec le pronom “se” (le verbe étant au pluriel) : « \2 » doit être au pluriel.
-__[i]/ppas(ppas_nous_verbe)__
+__[i]/ppas(ppas_nous_verbe_pensée)__
     nous ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2})  @@w,$
     <<- ( morphex(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", ":1p")
     or (morph(\1, ">(?:trouver|considérer|croire) .*:1p", False) and before(r"\bn(?:ous|e) +$")) )
@@ -8683,7 +8683,7 @@ __[i]/ppas(ppas_qui_avoir)__
 TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du bien.
 
 
-__[i]/ppas(ppas_avoir)__
+__[i]/ppas(ppas_avoir_ppas_mas_sing)__
     avoir +({w_2})  @@$
     <<- not re.search("(?i)^(?:confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \1)
     and morphex(\1, ":Q.*:(?:f|m:p)", ":m:[si]") and before("(?i)(?:après +$|sans +$|pour +$|que? +$|quand +$|, +$|^ *$)")
@@ -8792,7 +8792,7 @@ __[i]/ppas(ppas_ce_que_pronom_avoir)__
 TEST: ce que ça a {{donnée}}
 
 
-__[i]/ppas(ppas_avoir)__
+__[i]/ppas(ppas_avoir_conf_infi)__
     ({avoir}) +({w_2}e[rz])  @@0,$
     <<- not re.search("^(?:A|avions)$", \1) and morph(\1, ":V0a", False) and morph(\2, ":V.+:(?:Y|2p)", False)
     -2>> =suggVerbPpas(@, ":m:s")                                                                   # Incohérence avec « \1 » : « \2 » n’est pas un participe passé.
@@ -10239,12 +10239,12 @@ TEST: J’aimerai ces cours-là autant que les autres.
 TEST: J’aimerai la danse et la musique, puisque vous l’exigez.
 
 
-__[i>/vmode(vmode_j_aurais_aimé_que_avoir_être)__
-    j’(aurai) +(?:aimé|souhaité|préféré|voulu) +(?:que? |> )  @@2
+__[i>/vmode(vmode_j_aurais_aimé_que_avoir_être1)__
+    j’(aurai) +(?:aimé|souhaité|préféré|voulu) +(?:que? |ne |> )  @@2
     <<- -1>> aurais|eusse                           # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
-__[i]/vmode(vmode_j_aurais_aimé_que_avoir_être)__
-    j’(aurai) +(?:aimé|souhaité|préféré|voulu) +({infi}|ne)  @@2,$
-    <<- morph(\2, ":[YX]", False)
+__[i]/vmode(vmode_j_aurais_aimé_que_avoir_être2)__
+    j’(aurai) +(?:aimé|souhaité|préféré|voulu) +(?:[nmtsl]’|)({infi})  @@2,$
+    <<- morph(\2, ":Y", False)
     -1>> aurais|eusse                               # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
 
 TEST: J’{{aurai}} aimé nous offrir ce magnifique cadeau.

@@ -10,6 +10,8 @@ from distutils import file_util
 DEF = {}
 FUNCTIONS = []
 
+RULESET = set()     # set of rule-ids to check if there is several rules with the same id
+
 JSREGEXES = {}
 
 WORDLIMITLEFT  = r"(?<![\w.,–-])"   # r"(?<![-.,—])\b"  seems slower
@@ -181,12 +183,15 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         sOption = m.group(2)[1:]  if m.group(2)  else False
         if m.group(3):
             sRuleId =  m.group(3)[1:-1]
+            if sRuleId in RULESET:
+                print("# Warning. Several rules have the same id: " + sRuleId)
+            RULESET.add(sRuleId)
         nPriority = dOptPriority.get(sOption, 4)
         if m.group(4):
             nPriority = int(m.group(4)[1:])
         s = s[m.end(0):]
     else:
-        print("Warning. No option defined at line: " + sLineId)
+        print("# Warning. No option defined at line: " + sLineId)
 
     #### REGEX TRIGGER
     i = s.find(" <<-")
@@ -222,10 +227,10 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     nGroup = countGroupInRegex(sRegex)
     if nGroup > 0:
         if not tGroups:
-            print("# warning: groups positioning code for JavaScript should be defined at line " + sLineId)
+            print("# Warning: groups positioning code for JavaScript should be defined at line " + sLineId)
         else:
             if nGroup != len(tGroups):
-                print("# error: groups positioning code irrelevant at line " + sLineId)
+                print("# Error: groups positioning code irrelevant at line " + sLineId)
 
     ## word limit
     if cWordLimitLeft == '[' and not sRegex.startswith(("^", '’', "'", ",")):
@@ -320,46 +325,46 @@ def createAction (sIdAction, sAction, nGroup):
             FUNCTIONS.append(("m"+sIdAction, sMsg))
             for x in re.finditer("group[(](\d+)[)]", sMsg):
                 if int(x.group(1)) > nGroup:
-                    print("# error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                    print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
             sMsg = "=m"+sIdAction
         else:
             for x in re.finditer(r"\\(\d+)", sMsg):
                 if int(x.group(1)) > nGroup:
-                    print("# error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                    print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
             if re.search("[.]\\w+[(]", sMsg):
-                print("# error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
+                print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
             
     if sAction[0:1] == "=" or cAction == "=":
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
-            print("# error in action at line " + sIdAction + ": second argument for define must be a list of strings")
+            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         sAction = prepareFunction(sAction)
         sAction = sAction.replace("m.group(i[4])", "m.group("+str(iGroup)+")")
         for x in re.finditer("group[(](\d+)[)]", sAction):
             if int(x.group(1)) > nGroup:
-                print("# error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
     else:
         for x in re.finditer(r"\\(\d+)", sAction):
             if int(x.group(1)) > nGroup:
-                print("# error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
         if re.search("[.]\\w+[(]", sAction):
-            print("# error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
+            print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
 
     if cAction == "-":
         ## error detected
         if not sAction:
-            print("# error in action at line " + sIdAction + ":  This action is empty.")
+            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
             FUNCTIONS.append(("s"+sIdAction, sAction[1:]))
             sAction = "=s"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
-            print("# error in action at line " + sIdAction + ":  the message is empty.")
+            print("# Error in action at line " + sIdAction + ":  the message is empty.")
         return [sCondition, cAction, sAction, iGroup, sMsg, sURL]
     elif cAction == "~":
         ## text preprocessor
         if not sAction:
-            print("# error in action at line " + sIdAction + ":  This action is empty.")
+            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
             FUNCTIONS.append(("p"+sIdAction, sAction[1:]))
             sAction = "=p"+sIdAction
@@ -371,7 +376,7 @@ def createAction (sIdAction, sAction, nGroup):
         if sAction[0:1] == "=":
             sAction = sAction[1:]
         if not sAction:
-            print("# error in action at line " + sIdAction + ":  This action is empty.")
+            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         FUNCTIONS.append(("d"+sIdAction, sAction))
         sAction = "d"+sIdAction
         return [sCondition, cAction, sAction]
