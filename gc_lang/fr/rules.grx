@@ -526,10 +526,10 @@ TEST: Je suis là. {{viens}}.                                              ->> V
 TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
 __[s]/maj(majuscule_en_début_phrase)__
-    ^ *([a-zéèâàô][\w-]+)
-    <<- after("[.] +\w+") -1>> =\1.capitalize()                                                     # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+    ^ *([a-zéèâàô][\w-]+)  @@$
+    <<- after("\w\w[.] +\w+") -1>> =\1.capitalize()                                                     # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
-TEST: je suis disponible quand tu veux. Mais pas aujourd’hui.
+TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 
 
 ## virgules manquantes
@@ -3095,7 +3095,7 @@ __[i]/conf(conf_se_verbe1)__
     <<- morph(\2, ":Y")  and \1 != "CE" -1>> se                             # Confusion. Ce chien, ce chat… Se demander, se croire…
 __[i]/conf(conf_se_verbe2)__
     (ce) (?!faire)({w_2})  @@0,3
-    <<- morph(\2, ":V[123].*:(?:Y|[123][sp])") and not morph(\2, ">(?:devoir|pouvoir) ") and \2[0].islower() and \1 != "CE"
+    <<- morph(\2, ":V[123].*:(?:Y|[123][sp])") and not morph(\2, ">(?:devoir|pouvoir|sembler) ") and \2[0].islower() and \1 != "CE"
     -1>> se                                                                 # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 __[i]/conf(conf_pour_ce_faire)__
     pour (se) faire,? ({w_2})  @@5,$
@@ -3150,6 +3150,7 @@ TEST: les expatriés éloignés ou ceux habitant ici
 TEST: les photographies de ceux n’ayant pas dépassé sept sur vingt.
 TEST: Pensez-vous que ceux ne sachant même pas ce qu’est une VHS peuvent y trouver leur compte ?
 TEST: la réduction de ma liberté intellectuelle et celle de ceux autour de moi
+TEST: […] qui ne peut être si ardente qu’elle ne se doive, ce semble, éteindre par la moindre goutte de sang qui sorte de leurs plaies.
 
 
 # ces / ses / c’est
@@ -7759,7 +7760,7 @@ __[i]/ocr(ocr_avoir_participes_passés)__
 
 TEST: __ocr__ vous serez {{couche}} en terre.
 TEST: __ocr__ nous serons {{presses}} de monter à bord de ce train-ci.
-TEST: __ocr__ elle était toujours persuadée que B. serait {{acquitte}}
+TEST: __ocr__ Elle était toujours persuadée que B. serait {{acquitte}}
 TEST: __ocr__ je reconnais que j’ai pas {{traîne}}
 TEST: __ocr__ elle est fauchée et a {{emprunte}} de l’argent
 TEST: __ocr__ Alors il lui est {{remonte}} dessus
@@ -8568,11 +8569,11 @@ TEST: elles se sentent {{perdu}}
 
 __[i]/ppas(ppas_le_verbe_pensée)__
     le ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[esx])  @@w,$
-    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ]:(?:[me]:p|f)", ":(?:G|Y|[AQ]:m:[is])")
+    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ].*:(?:[me]:p|f)", ":(?:G|Y|[AQ].*:m:[is])")
     -2>> =suggMasSing(@)                                                     # Accord avec le COD “le” : « \2 » doit être au masculin singulier.
 __[i]/ppas(ppas_la_verbe_pensée)__
     la ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[uiéesx])  @@w,$
-    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ]:(?:[fe]:p|m)", ":(?:G|Y|[AQ]:f:[is])")
+    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà) ", False) and morphex(\2, ":[AQ].*:(?:[fe]:p|m)", ":(?:G|Y|[AQ]:f:[is])")
     -2>> =suggFemSing(@)                                                     # Accord avec le COD “la” : « \2 » doit être au féminin singulier.
 __[i]/ppas(ppas_les_verbe_pensée)__
     les ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2})  @@w,$
@@ -8606,6 +8607,7 @@ TEST: Il me considère {{stupides}}
 TEST: Elle nous trouve {{stupide}}
 TEST: Je les crois {{capable}} du pire
 TEST: la voilà {{perdu}}
+TEST: la voilà {{forcé}} à abandonner
 TEST: nous nous crûmes {{perdu}}
 TEST: Elle me rend {{folles}}.
 TEST: l’homme se considère {{instruits}} alors qu’il n’est qu’un aveugle qui tâtonne.
