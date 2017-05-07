@@ -525,6 +525,12 @@ __[s]/maj(majuscule_après_point)__
 TEST: Je suis là. {{viens}}.                                              ->> Viens
 TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
+__[s]/maj(majuscule_en_début_phrase)__
+    ^ *([a-zéèâàô][\w-]+)
+    <<- after("[.] +\w+") -1>> =\1.capitalize()                                                     # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+
+TEST: je suis disponible quand tu veux. Mais pas aujourd’hui.
+
 
 ## virgules manquantes
 __[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     # Avant « etc. », il faut mettre une virgule.
