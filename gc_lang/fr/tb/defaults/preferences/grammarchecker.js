@@ -8,3 +8,4 @@ pref("extensions.grammarchecker.bDictModern", false);
 pref("extensions.grammarchecker.bDictClassic", true);
 pref("extensions.grammarchecker.bDictReform", false);
 pref("extensions.grammarchecker.bDictClassicReform", false);
+pref("extensions.grammarchecker.bCheckSignature", true);

@@ -25,7 +25,13 @@ class Editor {
                 if (xNode.className !== "moz-cite-prefix" && xNode.tagName !== "BLOCKQUOTE"
                     && (xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")))
                     && xNode.textContent !== "") {
-                    if (xNode.tagName === undefined || this.lParsableNodes.includes(xNode.tagName)) {
+                    //echo("<"+xNode.tagName+">["+xNode.textContent+"]");
+                    if (xNode.tagName === undefined) {
+                        if (!prefs.getBoolPref("bCheckSignature") && xNode.textContent.startsWith("-- ")) {
+                            break;
+                        }
+                        yield xNode;
+                    } else if (this.lParsableNodes.includes(xNode.tagName)) {
                         yield xNode;
                     } else if (this.lRootNodes.includes(xNode.tagName)) {
                         yield* this._getParsableNodes(xNode);

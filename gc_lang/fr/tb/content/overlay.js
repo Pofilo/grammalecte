@@ -492,6 +492,9 @@ var oGrammarChecker = {
     onOpenSpellOptions: function (e) {
         this.openDialog("chrome://grammarchecker/content/spell_options.xul", "", "chrome, dialog, modal, resizable=no");
     },
+    onOpenOptions: function (e) {
+        this.openDialog("chrome://grammarchecker/content/options.xul", "", "chrome, dialog, modal, resizable=no");
+    },
     onOpenTextFormatter: function (e) {
         oTextFormatter.openPanel();
     },
