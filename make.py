@@ -436,6 +436,7 @@ def main ():
     xParser.add_argument("-d", "--dict", help="generate FSA dictionary", action="store_true")
     xParser.add_argument("-t", "--tests", help="run unit tests", action="store_true")
     xParser.add_argument("-p", "--perf", help="run performance tests", action="store_true")
+    xParser.add_argument("-pm", "--perf_memo", help="run performance tests and store results in perf_memo.txt", action="store_true")
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Nightly for XPI testing", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
@@ -487,7 +488,7 @@ def main ():
             sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, )
 
             # tests
-            if xArgs.tests or xArgs.perf:
+            if xArgs.tests or xArgs.perf or xArgs.perf_memo:
                 print("> Running tests")
                 try:
                     tests = importlib.import_module("grammalecte."+sLang+".tests")
@@ -498,8 +499,9 @@ def main ():
                     if xArgs.tests:
                         xTestSuite = unittest.TestLoader().loadTestsFromModule(tests)
                         unittest.TextTestRunner().run(xTestSuite)
-                    if xArgs.perf:
-                        tests.perf(sVersion)
+                    if xArgs.perf or xArgs.perf_memo:
+                        hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if xArgs.perf_memo  else None
+                        tests.perf(sVersion, hDst)
 
             # Firefox
             if xArgs.firefox:

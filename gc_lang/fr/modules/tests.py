@@ -203,21 +203,24 @@ def timeblock (label, hDst):
     finally:
         end = time.perf_counter()
         print('{} : {}'.format(label, end - start))
-        hDst.write("{:<12.6}".format(end-start))
+        if hDst:
+            hDst.write("{:<12.6}".format(end-start))
 
 
-def perf (sVersion):
+def perf (sVersion, hDst=None):
     print("\nPerformance tests")
     gce.load()
     aErrs = gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")
 
-    with open("./tests/fr/perf.txt", "r", encoding="utf-8") as hSrc, \
-         open("./tests/fr/perf_memo.txt", "a", encoding="utf-8", newline="\n") as hDst:
-        hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
+    spHere, spfThisFile = os.path.split(__file__)
+    with open(os.path.join(spHere, "perf.txt"), "r", encoding="utf-8") as hSrc:
+        if hDst:
+            hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
         for sText in ( s.strip() for s in hSrc if not s.startswith("#") and s.strip() ):
             with timeblock(sText[:sText.find(".")], hDst):
                 aErrs = gce.parse(sText)
-        hDst.write("\n")
+        if hDst:
+            hDst.write("\n")
 
 
 def main():
