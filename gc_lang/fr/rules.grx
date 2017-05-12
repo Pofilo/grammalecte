@@ -8201,14 +8201,21 @@ TEST: celles qui redeviennent {{méchante}}
 
 
 __[i]/ppas(ppas_avoir_été)__
-    ({avoir}) +été +({w_2})  @@0,$
-    <<- morph(\1, ">avoir ", False) and morphex(\2, ":[123]s", ":[GNAQWY]")
-    -2>> =suggVerbPpas(@)                                                    # Après « avoir été », il faut un participe passé.
-
+    (({avoir}) +été) +({w_2})  @@0,0,$
+    <<- morph(\2, ":V0a", False) >>>
+    <<- morphex(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(@)           # Après « avoir été », il faut un participe passé.
+    <<- not (morph(\2, ":(?:Sq|K):3s", False) and before("[çcCÇ]’$|[cC]e n’$|[çÇ]a (?:n’|)$")) >>>
+    <<- morph(\3, ":Y", False) -1>> _                                       # Tournure familière. Utilisez « être allé » plutôt que « avoir été ».
+    <<- morph(\3, ":V1..t.*:Y", False) -3>> =suggVerbPpas(@)                    # Incohérence. Après « avoir été », il faut un participe passé (à moins que « avoir été » signifie ici « être allé »).
+    
 TEST: j’ai été {{instruis}} par elle
 TEST: avoir été {{prit}} par surprise
-
-
+TEST: Ils {{ont été}} {{réaliser}} à partir d’éléments naturels.
+TEST: J’{{ai été}} camper dans les Alpes.
+TEST: Tu {{as été}} prendre du bois.
+TEST: J’{{ai été}} {{chercher}} du pain.
+TEST: Ç’eût été prendre des vessies pour des lanternes.
+TEST: C’eût été foncer tête baissée dans la gueule du loup.
 
 
 ## pouvoir/sembler/paraître/vouloir/devoir/croire/déclarer/penser/dire/affirmer + être/avoir été
@@ -11101,7 +11108,6 @@ TEST: Le mille marin est une mesure de longueur …
 TEST: Il regagna sa chambre seul.
 TEST: Il prenait ses repas seul.
 TEST: « Venez vous asseoir, Pierre », dit Patrick.
-TEST: J’ai été camper dans les Alpes.
 TEST: C’eût été manquer de réalisme que de penser que…
 TEST: Écrit dans un anglais facile.
 
@@ -12023,7 +12029,6 @@ TEST: Il faut être aveugle pour ne pas voir ça.
 TEST: Il était officier.
 TEST: Crois-tu que je sois aveugle ?
 TEST: Les Allemandes sont toutes des délurées.
-TEST: Tu as été prendre du bois.
 TEST: La fille là-bas est Marie.
 TEST: Ce serait attaquer les droits de l’homme.
 TEST: Il faut soit partir, soit attendre.
@@ -12032,7 +12037,6 @@ TEST: Il a reçu ta lettre
 TEST: Il a dû manger.
 TEST: Tu as beau pleurer.
 TEST: L’unique prix que tu as à payer est de laisser ce monde derrière.
-TEST: J’ai été chercher du pain.
 TEST: Avoir hâte d’être dehors.
 TEST: J’ai toutes ces pommes à porter.
 TEST: J’ai cela en tête.
@@ -13515,7 +13519,7 @@ TEST: — Voici, ma chère cousine, ce que vous m’avez demandé ce matin.
 TEST: Elle fut tellement surprise que je n’osai pas insister. J’essayai cependant de ranimer sa mémoire, mais elle nia avec force, crut que je me moquais d’elle, et faillit, à la fin, se fâcher.
 TEST: Voilà ! je viens de rentrer ; et je n’ai pu déjeuner, tant cette expérience m’a bouleversé.
 TEST: 19 juillet. — Beaucoup de personnes à qui j’ai raconté cette aventure se sont moquées de moi. Je ne sais plus que penser. Le sage dit : Peut-être ?
-TEST: 21 juillet. — J’ai été dîner à Bougival, puis j’ai passé la soirée au bal des canotiers. Décidément, tout dépend des lieux et des milieux.
+TEST: 21 juillet. — J’{{ai été}} dîner à Bougival, puis j’ai passé la soirée au bal des canotiers. Décidément, tout dépend des lieux et des milieux.
 TEST: Croire au surnaturel dans l’île de la Grenouillère, serait le comble de la folie… mais au sommet du mont Saint-Michel ?… mais dans les Indes ?
 TEST: Nous subissons effroyablement l’influence de ce qui nous entoure. Je rentrerai chez moi la semaine prochaine.
 TEST: 30 juillet. — Je suis revenu dans ma maison depuis hier. Tout va bien.
