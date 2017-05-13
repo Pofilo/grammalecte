@@ -1390,7 +1390,7 @@ __[i]/tu(tu_week_end)__                week (ends?) @@$ <<- ->> week-\1         
 
 TEST: Ils font des tests {{à tout va}}
 TEST: marre de faire des {{allers retours}}
-TEST: le {{bouche à oreille}}
+TEST: {{le}} {{bouche à oreille}}
 TEST: à ce {{moment là}}                                                        ->> moment-là
 TEST: une {{plus value}}                                                        ->> plus-value
 TEST: Il est {{en-dessous}} de tout.                                            ->> en dessous
@@ -3312,6 +3312,23 @@ TEST: faut l’emmener chez le docteur.
 TEST: Faut Linux, sinon ça marchera jamais.
 
 
+# golf / golfe
+__[i]/conf(conf_golf)__
+    (champion(?:ne|nat|)s?|clubs?|joueu(?:r|se)s?|parcours|sacs?|balles?|terrains?|tournois?|compétitions?|passionnée?s?|écoles?|professeurs?|parties?|professionnel(?:le|)s?|amateure?s?|stages?|journées?|après-midi|matinées?|heures?|fédérations?|fans?) de (golfe)  @@0,$
+    <<- -2>> golf                                                           # Confusion. Le golfe est une zone de mer ou d’un lac avancée dans les terres. Ex : Le golfe Persique.
+__[i]/conf(conf_golfe)__
+    (golf) (persique|d[ue] (?:Bengale|Botnie|Gascogne|Gabès|Guinée|Lion|Morbihan|Mexique|Porto|Saint-Laurent|Thaïlande|Tonkin|Tunis|Winam)|d’(?:Aden|Ajaccio|Alaska|Hammamet))  @@0,$
+    <<- -1>> golfe                                                          # Confusion. Le golf est un sport.
+__[i]/conf(conf_Golfe)__
+    (?:guerre|émir|monarchie)s? du (golf) @@$ <<- -1>> Golfe                # Confusion. Le golf est un sport.             
+
+TEST: Il a réalisé un documentaire sur la guerre du {{Golf}}.
+TEST: C’est un bon joueur de {{golfe}}.
+TEST: Le {{golf}} Persique est presque une mer fermée.
+TEST: J’ai fait de la voile dans le {{golf}} du Morbihan.
+TEST: Le {{golf}} d’Aden.
+
+
 # haut delà / au-delà
 __[i]/conf(conf_au_delà)__      haut[- ]del[àa] <<- ->> au-delà             # Confusion. 
 
@@ -4350,7 +4367,7 @@ __[i]__  prix (Nobel) @@5 <<- ~1>> *
 __[s]__  Amérique (centrale|du (?:Nord|Sud)) @@$ <<- ~1>> *
 __[s]__  ([A-ZÉÈÂ][\w-]+) ([A-ZÉÈÂ][\w-]+) @@0,$ <<- morph(\1, ":M[12]", False) and (morph(\2, ":(?:M[12]|V)", False) or not spell(\2)) ~2>> *
 __[s]__  (?:de |d’)([A-ZÉÈÂ][\w-]+) +(?:et|ou) +(?:de |d’)([A-ZÉÈÂ][\w-]+) @@w,$ <<- morph(\1, ":M", False) and morph(\2, ":M", False) ~>> *
-__[s]__  (?:de |d’)([A-ZÉÈÂ][\w-]+) @@$ <<- morph(\1, ":M", False) ~>> *
+__[s]__  (?:de |d’)([A-ZÉÈÂ][\w-]+) @@$ <<- morph(\1, ":M", False) or not spell(\1) ~>> *
 __[s]__  entre ([A-ZÉÈÂ][\w-]*) +et ([A-ZÉÈÂ][\w-]*) @@6,$ <<- morph(\1, ":(?:M[12]|N)") and morph(\2, ":(?:M[12]|N)") ~>> *
 __[s]__  en ([A-ZÉ][\w-]+) @@3 <<- morph(\1, ":MP") ~>> *
 __[u]__  (?:[lc]e|du) (?:baron|docteur|député|duc|frère|prince|professeur|roi|sénateur|mir) ([A-ZÉÈÂ][\w-]+) @@$ <<- morph(\1, ":M[12]", False) ~1>> *
@@ -6579,23 +6596,6 @@ __[i]/conf(conf_gent)__
     # Confusion. « Gente » est un adjectif vieilli. Utiliser « gent » pour désigner un groupe de personnes.
 
 TEST: la {{gente}} masculine est grossière et l’a toujours été.
-
-
-# golf / golfe
-__[i]/conf(conf_golf)__
-    (champion(?:ne|nat|)s?|clubs?|joueu(?:r|se)s?|parcours|sacs?|balles?|terrains?|tournois?|compétitions?|passionnée?s?|écoles?|professeurs?|parties?|professionnel(?:le|)s?|amateure?s?|stages?|journées?|après-midi|matinées?|heures?|fédérations?|fans?) de (golfe)  @@0,$
-    <<- -2>> golf                                                           # Confusion. Le golfe est une zone de mer ou d’un lac avancée dans les terres. Ex : Le golfe Persique.
-__[i]/conf(conf_golfe)__
-    (golf) (persique|d[ue] (?:Bengale|Botnie|Gascogne|Gabès|Guinée|Lion|Morbihan|Mexique|Porto|Saint-Laurent|Thaïlande|Tonkin|Tunis|Winam)|d’(?:Aden|Ajaccio|Alaska|Hammamet))  @@0,$
-    <<- -1>> golfe                                                          # Confusion. Le golf est un sport.
-__[i]/conf(conf_Golfe)__
-    (?:guerre|émir|monarchie)s? du (golf) @@$ <<- -1>> Golfe                # Confusion. Le golf est un sport.             
-
-TEST: Il a réalisé un documentaire sur la guerre du {{Golf}}.
-TEST: C’est un bon joueur de {{golfe}}.
-TEST: Le {{golf}} Persique est presque une mer fermée.
-TEST: J’ai fait de la voile dans le {{golf}} du Morbihan.
-TEST: Le {{golf}} d’Aden.
 
 
 # gré / grès
