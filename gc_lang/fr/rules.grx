@@ -266,8 +266,8 @@ DEF: w4             \w\w\w\w+
 
 # Espaces surnuméraires
 # Note : les tabulations ne sont pas soulignées dans LibreOffice. Mais l’erreur est bien présente.
-__<s>/tab(tabs_début_ligne)__           ^[      ]+ <<- ->> ""                  # Espace(s) en début de ligne à supprimer : utilisez les retraits de paragraphe.
-__<s>/tab(tabs_fin_ligne)__             [       ]+$ <<- ->> ""                 # Espace(s) en fin de ligne à supprimer.
+__<s>/tab(tab_début_ligne)__           ^[      ]+ <<- ->> ""                   # Espace(s) en début de ligne à supprimer : utilisez les retraits de paragraphe.
+__<s>/tab(tab_fin_ligne)__             [       ]+$ <<- ->> ""                  # Espace(s) en fin de ligne à supprimer.
 
 TEST: __tab__ {{    }}Espaces surnuméraires.                                    ->> ""
 TEST: __tab__ {{        }}— Je suis là…
@@ -275,9 +275,9 @@ TEST: __tab__ Espaces surnuméraires.{{              }}                         
 TEST: __tab__ Fin de ligne{{    }}
 
 
-__<s>/esp(espaces_début_ligne)__        ^[   ]+ <<- ->> ""                      # Espace(s) en début de ligne à supprimer : utilisez les retraits de paragraphe (ou les tabulations à la rigueur).
-__<s>/esp(espaces_fin_ligne)__          [   ]+$ <<- ->> ""                                          # Espace(s) en fin de ligne à supprimer.
-__<s>/esp(espaces_milieu_ligne)__       (?:\b|[.?!,:;%‰‱˚»”])(  +) @@$ <<- -1>> " "                 # Espace(s) surnuméraire(s) à supprimer.
+__<s>/esp(esp_début_ligne)__        ^[   ]+ <<- ->> ""                          # Espace(s) en début de ligne à supprimer : utilisez les retraits de paragraphe (ou les tabulations à la rigueur).
+__<s>/esp(esp_fin_ligne)__          [   ]+$ <<- ->> ""                                              # Espace(s) en fin de ligne à supprimer.
+__<s>/esp(esp_milieu_ligne)__       (?:\b|[.?!,:;%‰‱˚»”])(  +) @@$ <<- -1>> " "                     # Espace(s) surnuméraire(s) à supprimer.
 
 TEST: {{         }}Encore des espaces surnuméraires.                    ->> ""
 TEST: {{ }}— Je suis là…
@@ -287,15 +287,15 @@ TEST: Espaces{{                 }}surnuméraires.                        ->> " "
 
 
 # Espaces insécable et sécable, et tabulations
-__<s>/esp(espaces_mélangés1)__              (?:  |  ) <<- ->> " | "                                 # Incohérence : l’espace insécable à côté de l’espace sécable n’a pas d’effet.
-__<s>/esp(espaces_mélangés2)__              (?:\u0009[  ]|[  ]\u0009) <<- ->> " |	"                   # Incohérence : espace et tabulation.
+__<s>/esp(esp_mélangés1)__              (?:  |  ) <<- ->> " | "                                     # Incohérence : l’espace insécable à côté de l’espace sécable n’a pas d’effet.
+__<s>/esp(esp_mélangés2)__              (?:\u0009[  ]|[  ]\u0009) <<- ->> " |	"                     # Incohérence : espace et tabulation.
 
 TEST: J’espère que ça ne va pas durer trop longtemps avec Mr{{  }}Paul.
 TEST: J’espère que ça ne{{ 	}}va pas durer. (Ici, espace suivi d’une tabulation)
 
 
 # Espaces insécables multiples
-__<s>/esp(espaces_insécables_multiples)__   "[  ][  ]+" <<- ->> " | "                               # Espace(s) insécable(s) surnuméraire(s) à supprimer.
+__<s>/esp(esp_insécables_multiples)__   "[  ][  ]+" <<- ->> " | "                                   # Espace(s) insécable(s) surnuméraire(s) à supprimer.
 
 TEST: «{{  }}Je suis partie. »
 TEST: « Je suis partie.{{  }}»
