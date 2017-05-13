@@ -184,7 +184,8 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         if m.group('ruleid'):
             sRuleId =  m.group('ruleid')[1:-1]
             if sRuleId in RULESET:
-                print("# Warning. Several rules have the same id: " + sRuleId)
+                print("# Error. Several rules have the same id: " + sRuleId)
+                exit()
             RULESET.add(sRuleId)
         nPriority = dOptPriority.get(sOption, 4)
         if m.group('priority'):
@@ -269,7 +270,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     lActions = []
     nAction = 1
     for sAction in s.split(" <<- "):
-        t = createAction(sLineId + "_" + str(nAction), sAction, nGroup)
+        t = createAction(sRuleId + "_" + str(nAction), sAction, nGroup)
         nAction += 1
         if t:
             lActions.append(t)
@@ -292,13 +293,13 @@ def createAction (sIdAction, sAction, nGroup):
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = prepareFunction(sCondition)
-        FUNCTIONS.append(("c"+sIdAction, sCondition))
+        FUNCTIONS.append(("c_"+sIdAction, sCondition))
         for x in re.finditer("[.](?:group|start|end)[(](\d+)[)]", sCondition):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in condition at line " + sIdAction + " ("+str(nGroup)+" groups only)")
         if ".match" in sCondition:
             print("# Error. JS compatibility. Don't use .match() in condition, use .search()")
-        sCondition = "c"+sIdAction
+        sCondition = "c_"+sIdAction
     else:
         sCondition = None
 
@@ -322,11 +323,11 @@ def createAction (sIdAction, sAction, nGroup):
             sMsg = sMsg[:mURL.start(0)].strip()
         if sMsg[0:1] == "=":
             sMsg = prepareFunction(sMsg[1:])
-            FUNCTIONS.append(("m"+sIdAction, sMsg))
+            FUNCTIONS.append(("m_"+sIdAction, sMsg))
             for x in re.finditer("group[(](\d+)[)]", sMsg):
                 if int(x.group(1)) > nGroup:
                     print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-            sMsg = "=m"+sIdAction
+            sMsg = "=m_"+sIdAction
         else:
             for x in re.finditer(r"\\(\d+)", sMsg):
                 if int(x.group(1)) > nGroup:
@@ -350,24 +351,24 @@ def createAction (sIdAction, sAction, nGroup):
             print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
 
     if cAction == "-":
-        ## error detected
+        ## error detected --> suggestion
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            FUNCTIONS.append(("s"+sIdAction, sAction[1:]))
-            sAction = "=s"+sIdAction
+            FUNCTIONS.append(("s_"+sIdAction, sAction[1:]))
+            sAction = "=s_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
             print("# Error in action at line " + sIdAction + ":  the message is empty.")
         return [sCondition, cAction, sAction, iGroup, sMsg, sURL]
     elif cAction == "~":
-        ## text preprocessor
+        ## text processor
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            FUNCTIONS.append(("p"+sIdAction, sAction[1:]))
-            sAction = "=p"+sIdAction
+            FUNCTIONS.append(("p_"+sIdAction, sAction[1:]))
+            sAction = "=p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sCondition, cAction, sAction, iGroup]
@@ -377,8 +378,8 @@ def createAction (sIdAction, sAction, nGroup):
             sAction = sAction[1:]
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
-        FUNCTIONS.append(("d"+sIdAction, sAction))
-        sAction = "d"+sIdAction
+        FUNCTIONS.append(("d_"+sIdAction, sAction))
+        sAction = "d_"+sIdAction
         return [sCondition, cAction, sAction]
     elif cAction == ">":
         ## no action, break loop if condition is False
