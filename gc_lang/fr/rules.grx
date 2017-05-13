@@ -382,60 +382,101 @@ TEST: « J’en suis “malade”. »
 
 
 # e-mail
-__<i>__  \w[\w.-]*@\w[\w.-]*\w[.]\w+ <<- ~>> *
+__<i>(p_email)__
+    \w[\w.-]*@\w[\w.-]*\w[.]\w+ <<- ~>> *
+
 # URL
-__<i>__  https?://[\w./?&!%=+*"'@$#-]+ <<- ~>> *
-__<i]__  ({w_2})[.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl) @@0 <<- ~>> =\1.capitalize()
+__<i>(p_URL)__
+    https?://[\w./?&!%=+*"'@$#-]+ <<- ~>> *
+__<i](p_URL2)__
+    ({w_2})[.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl) @@0 <<- ~>> =\1.capitalize()
+
 # Numéro de chapitre
-__<i>__  ^\d+[.][\d.-]* <<- ~>> *
+__<i>(p_chapitre)__
+    ^\d+[.][\d.-]* <<- ~>> *
+
 # Numéro suivi de plusieurs espaces, considéré comme une numérotation de chapitre
-__<i>__  ^\d+(?:  +|\t+) <<- ~>> *
+__<i>(p_num_chapitre)__
+    ^\d+(?:  +|\t+) <<- ~>> *
+
 # bibliographie
-__[s>__  [cC](?:f|hap|oll?)([.]) @@$ <<- ~1>> *
-__[s]__  p[.] ?\d+(?:-\d+|) <<- ~>> *
-__[s]__  pp[.] ?\d+-\d+ <<- ~>> *
-__[i]__  figure (\d+(?:[.:-]\d+|))  @@0 <<- ~1>> *
-__[i]__  art(?:icle|[.]) (1er|\d+(?:[.:-]\d+|)) @@$ <<- ~1>> *
-__[s>__  av[.] <<- ~>> av
+__[s>(p_chap_coll_cf)__     [cC](?:f|hap|oll?)([.]) @@$ <<- ~1>> *
+__[s](p_page)__             p[.] ?\d+(?:-\d+|) <<- ~>> *
+__[s](p_pages)__            pp[.] ?\d+-\d+ <<- ~>> *
+__[i](p_figure)__           figure (\d+(?:[.:-]\d+|))  @@0 <<- ~1>> *
+__[i](p_article)__          art(?:icle|[.]) (1er|\d+(?:[.:-]\d+|)) @@$ <<- ~1>> *
+__[s>(p_av)__               av[.] <<- ~>> av
+
 # versus
-__[s>__  vs[.]
-    <<- ->> "vs "                                                                                   # Pas de point après cette abréviation.
+__[s>(p_vs)__
+    vs[.]
+    <<- ->> "vs "               # Pas de point après cette abréviation.
     <<- ~>> vs
+
 # sigles
-__<s>__  ([A-Z][.][A-Z][.](?:[A-Z][.])*) +[A-ZÉÀÂÊÎÈÔ]  @@0  <<- ~1>> =\1.replace(".", "")+"."
-__[s>__  [a-zA-Z][.][a-zA-Z][.](?:[a-zA-Z][.])*
+__<s>(p_sigle1)__
+    ([A-Z][.][A-Z][.](?:[A-Z][.])*) +[A-ZÉÀÂÊÎÈÔ]  @@0  <<- ~1>> =\1.replace(".", "")+"."
+__[s>(p_sigle2)__
+    [a-zA-Z][.][a-zA-Z][.](?:[a-zA-Z][.])*
     <<- not re.search(r"(?i)^(?:i\.e\.|s\.[tv]\.p\.|e\.g\.|a\.k\.a\.|c\.q\.f\.d\.|b\.a\.|n\.b\.)$", \0) ->> =\0.replace(".", "").upper()
     # Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
     <<- \0 != "b.a." ~>> =\0.replace(".", "_")
-__[s>__  J[.]-[A-Z][.] <<- ~>> =\0.replace(".", "").replace("-","")
+__[s>(p_sigle3)__
+    J[.]-[A-Z][.] <<- ~>> =\0.replace(".", "").replace("-","")
+
 # Ne pas scinder la phrase si les points de suspension sont suivis d’une minuscule
-__<s>__  ({w1})(…)(?= [a-zéèêàâîô])  @@0,$ <<- not re.search("(?i)^etc", \1) ~2>> ,
+__<s>(p_points_suspension)__
+    ({w1})(…)(?= [a-zéèêàâîô])  @@0,$ <<- not re.search("(?i)^etc", \1) ~2>> ,
+
 # Mr et MM
-__[s>__  (M[.]) (?:[A-ZÉÈÎ]\w+|l[e'’])  @@0 <<- ~1>> Mr
-__[s>__  MM[.] <<- ~>> "MM "
-__[s>__  M(?:r|gr|me|[.]) [A-ZÉ]([.])(?=\W+[a-zéèêâîïû]) @@$ <<- ~1>> *
+__[s>(p_M_point)__
+    (M[.]) (?:[A-ZÉÈÎ]\w+|l[e'’])  @@0 <<- ~1>> Mr
+__[s>(p_MM_point)__
+    MM[.] <<- ~>> "MM "
+__[s>(p_Mr_Mgr_Mme_point)__
+    M(?:r|gr|me|[.]) [A-ZÉ]([.])(?=\W+[a-zéèêâîïû]) @@$ <<- ~1>> *
+
 # Patronyme réduit à une seule lettre
-__[s]__  ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.][  ]([A-ZÉÈÂ][\w-]+)) @@0,$,$ <<- morph(\1, ":M[12]", False) and (morph(\3, ":(?:M[12]|V)", False) or not spell(\3)) ~2>> *
-__[s>__  ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.]) @@0,$ <<- morph(\1, ":M[12]", False) and after("^\W+[a-zéèêîïâ]") ~2>> *
+__[s](p_prénom_lettre_point_patronyme)__
+    ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.][  ]([A-ZÉÈÂ][\w-]+)) @@0,$,$
+    <<- morph(\1, ":M[12]", False) and (morph(\3, ":(?:M[12]|V)", False) or not spell(\3)) ~2>> *
+__[s>(p_prénom_lettre_point)__
+    ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.]) @@0,$
+    <<- morph(\1, ":M[12]", False) and after("^\W+[a-zéèêîïâ]") ~2>> *
+
 # Patronymes composés avec Le/La/Les
-__[s]__  [A-ZÉÈÂÎ][\w-]+[-–—]L(?:es?|a) [A-ZÉÈÂÎ][\w-]+ <<- ~>> =\0.replace(" ", "_")
+__[s](p_patronyme_composé_avec_le_la_les)__
+    [A-ZÉÈÂÎ][\w-]+[-–—]L(?:es?|a) [A-ZÉÈÂÎ][\w-]+ <<- ~>> =\0.replace(" ", "_")
+
 # IP
-__[s]__  \d+[.:]\d+[.:]\d+[.:]\d+  <<- ~>> *
+__[s](p_adresse_IP)__
+    \d+[.:]\d+[.:]\d+[.:]\d+  <<- ~>> *
+
 # mètres (m)
-__[s>__  "\d+ (m) "  @@w <<- ~1>> _
+__[s>(p_chiffres_m)__
+    "\d+ (m) "  @@w <<- ~1>> _
+
 # heures
-__[s]__  (?:de |à |)[012]?\d[h:]\d\d(?:[m:]\d\ds?|) <<- ~>> *
+__[s](p_heures)__
+    (?:de |à |)[012]?\d[h:]\d\d(?:[m:]\d\ds?|) <<- ~>> *
+
 # crochets
-__[s]__  \[…\] <<- ~>> *
-__[s]__  \[({w_1})\] @@1
+__[s](p_points_suspension_entre_crochets)__
+    \[…\] <<- ~>> *
+__[s](p_mot_entre_crochets)__
+    \[({w_1})\] @@1
     <<- \1.isdigit() ~>> *
     <<- __else__ ~>> _
-__[s]__  \(…\)
-    <<- ->> […]                                                                                     # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
+__[s](points_suspension_entre_parenthèses)__
+    \(…\)
+    <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
     <<- ~>> *
+
 # Divers
-__[i]__ France ([23450O]) @@$ <<- ~>> France_\1
-__[u]__ cac 40 <<- ~>> CAC40
+__[i](p_FranceTV)__
+    France ([23450O]) @@$ <<- ~>> France_\1
+__[u](p_CAC40)__
+    cac 40 <<- ~>> CAC40
 
 
 
