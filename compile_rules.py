@@ -11,6 +11,7 @@ dDEF = {}
 lFUNCTIONS = []
 
 aRULESET = set()     # set of rule-ids to check if there is several rules with the same id
+nRULEWITHOUTNAME = 0
 
 dJSREGEXES = {}
 
@@ -165,6 +166,7 @@ def countGroupInRegex (sRegex):
 def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     "returns rule as list [option name, regex, bCaseInsensitive, identifier, list of actions]"
     global dJSREGEXES
+    global nRULEWITHOUTNAME
 
     #### OPTIONS
     sLineId = str(nIdLine) + ("p" if bParagraph else "s")
@@ -187,6 +189,8 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
                 print("# Error. Several rules have the same id: " + sRuleId)
                 exit()
             aRULESET.add(sRuleId)
+        else:
+            nRULEWITHOUTNAME += 1
         nPriority = dOptPriority.get(sOption, 4)
         if m.group('priority'):
             nPriority = int(m.group('priority')[1:])
@@ -638,6 +642,8 @@ def make (lRules, sLang, bJavaScript):
     sJSCallables += "}\n"
 
     displayStats(lParagraphRules, lSentenceRules)
+
+    print("Unnamed rules: " + str(nRULEWITHOUTNAME))
 
     d = { "callables": sPyCallables,
           "callablesJS": sJSCallables,
