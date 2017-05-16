@@ -4365,41 +4365,56 @@ __[i](p_nombre_heure)__
     (?:à|de) (?:d(?:eu|i)x|tr(?:ois|eize)|qu(?:at(?:re|orze)|inze)|cinq|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt) +heures(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt)|) <<- ~>> *
 
 ## Conditionnel
-__[i]__  à ({w_2}) pour cent @@2 <<- morph(\1, ":B", False) ~>> *
-__[i]__  (au moins) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
-__[i]__  au hasard <<- isEndOfNG() ~>> *
-__[i]__  aussi ({w_2}) que (?:nécessaire|possible) @@6 <<- morph(\1, ":W", False) ~>> *
-__[i]__  au sens (?:le (?:plus|moins) |)({w_2}) du terme @@w <<- morph(\1, ":A .*:m:s", False) ~>> *
-#__[i]__  aussi ({w_2}) que ce soit
-__[i]__  (nombre) des? @@0 <<- morph(word(-1), ":(?:R|C[sc])", False, True) ~1>> *
-__[i]__  à ({w_2}) reprises @@2 <<- morph(\1, ":B", False) or re.search("(?i)^(?:plusieurs|maintes)", \1) ~>> *
-__[i]__  bien entendu <<- morph(word(1), ":[NAQR]", False, True) ~>> *
-__[i]__  ({w_2}) (comme (?:eux|elles?|lui|ça|celui-(?:ci|là)|celles?-(?:ci|là)|ceux(?:ci|là)|l[ea] [nv]ôtre|le [mts]ien|la [mts]ienne|les (?:[nv]ôtres|sien(?:ne|)s))) @@0,$
+__[i](p_à_xxx_pour_cent)__          à ({w_2}) pour cent @@2 <<- morph(\1, ":B", False) ~>> *
+__[i](p_au_moins)__                 (au moins) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
+__[i](p_au_hasard)__                au hasard <<- isEndOfNG() ~>> *
+__[i](p_aussi_adv_que_possible)__   aussi ({w_2}) que (?:nécessaire|possible) @@6 <<- morph(\1, ":W", False) ~>> *
+__[i](p_au_sens_adj_du_terme)__     au sens (?:le (?:plus|moins) |)({w_2}) du terme @@w <<- morph(\1, ":A .*:m:s", False) ~>> *
+#__[i](p_aussi_xxx_que_ce_soit)__   aussi ({w_2}) que ce soit
+__[i](p_nombre_de)__                (nombre) des? @@0 <<- morph(word(-1), ":(?:R|C[sc])", False, True) ~1>> *
+__[i](p_à_xxx_reprises)__           à ({w_2}) reprises @@2 <<- morph(\1, ":B", False) or re.search("(?i)^(?:plusieurs|maintes)", \1) ~>> *
+__[i](p_bien_entendu)__             bien entendu <<- morph(word(1), ":[NAQR]", False, True) ~>> *
+__[i](p_comme_pronom)__
+    ({w_2}) (comme (?:eux|elles?|lui|ça|celui-(?:ci|là)|celles?-(?:ci|là)|ceux(?:ci|là)|l[ea] [nv]ôtre|le [mts]ien|la [mts]ienne|les (?:[nv]ôtres|sien(?:ne|)s))) @@0,$
     <<- morphex(\1, ":[NAQ]", ":V0") ~2>> *
-__[i]__  ({w_2}) (pêle-mêle) @@0,$ <<- not morph(\1, ":D", False) ~2>> *
-__[i]__  ({w_2}) (droit) devant @@0,w <<- not morph(\1, ":D.*:[me]:[si]", False) ~2>> *
-__[i]__  dans (?:la (?:(?:grande |)majorité|plupart) des|de (?:tr[èo][sp] |)nombreux) cas <<- not morph(word(1), ":([AQ].*:[me]:[pi])", False, False) ~>> *
-__[i]__  (du coup) ({w_1}) @@0,$ <<- not morph(\2, ":A", False) ~1>> *
-__[i]__  (d[eouû]\w+|cr[ouû]\w+|pens\w+|imagin\w+|estim\w+) (l(?:eur|ui)|nous|vous) être @@0,w
+__[i](p_pêle_mêle)__                ({w_2}) (pêle-mêle) @@0,$ <<- not morph(\1, ":D", False) ~2>> *
+__[i](p_droit_devant)__             ({w_2}) (droit) devant @@0,w <<- not morph(\1, ":D.*:[me]:[si]", False) ~2>> *
+__[i](p_dans_xxx_cas)__
+    dans (?:la (?:(?:grande |)majorité|plupart) des|de (?:tr[èo][sp] |)nombreux|maints) cas
+    <<- not morph(word(1), ":([AQ].*:[me]:[pi])", False, False) ~>> *
+__[i](p_du_coup)__
+    (du coup) ({w_1}) @@0,$
+    <<- not morph(\2, ":A", False) ~1>> *
+__[i](p_verbe_pronom_être)__
+    (d[eouû]\w+|cr[ouû]\w+|pens\w+|imagin\w+|estim\w+) (l(?:eur|ui)|nous|vous) être @@0,w
     <<- morph(\1, ">(?:croire|devoir|estimer|imaginer|penser) ") ~2>> *
-__[i]__  (en partie) ({w_2}) @@0,$ <<- morph(\1, ":(?:R|D|[123]s|X)", False) ~1>> *
-__[i]__  (en quelques (?:années|semaines|minutes)) +({w_2}) @@0,$ <<- not morph(\2, ":[AQ]:[ef]:[si]", False) ~1>> *
-__[i]__  (en quelques (?:jours|mois|siècles)) +({w_2}) @@0,$ <<- not morph(\2, ":[AQ]:[em]:[si]", False) ~1>> *
-__[i]__  entre (?:eux|elles|nous|vous)(?: et (?:moi|toi|nous|vous|elles|eux)|) <<- not before(r"(?i)\b(?:il +|n’)$") ~>> *
-__[i]__  haut et fort <<- not morph(word(-1), ":D", False, False) ~>> *
-__[i]__  hélas <<- not before(r"(?i)\bt(?:u|oi qui)[ ,]") ~>> *
-__[i]__  nécessité fait loi <<- not morph(word(-1), ":D", False, False) ~>> *
-__[i]__  (non|par trop) ({w_2}) @@0,$ <<- morph(\2, ":A", False) ~1>> *
-__[i]__  plein est <<- not morph(word(-1), ":D", False, False) ~>> *
-__[i]__  (?:plus|moins|aussi) ({w3}) que prévu @@w <<- morph(\1, ":W", False) ~>> *
-__[i]__  (?:plus|moins|aussi) ({w3}) (que (?:les autres|l’autre)) @@w,$ <<- morphex(\1, ":[AW]", ":G") ~2>> *
-__[i]__  plus ({w3}) (les une?s que les autres) @@5,$ <<- morph(\1, ":[AW]", False) ~2>> *
-__[i]__  (pour autant (?:que (?:je sache|tu saches|nous sachions|vous sachiez)|qu (?:il|elle)(?: sache|s sachent))) ({w_1})  @@0,$
+__[i](p_en_partie)__
+    (en partie) ({w_2}) @@0,$
+    <<- morph(\1, ":(?:R|D|[123]s|X)", False) ~1>> *
+__[i](p_en_quelques_tps)__
+    (en quelques (?:années|décennies|semaines|heures|minutes)) +({w_2}) @@0,$
+    <<- not morph(\2, ":[AQ]:[ef]:[si]", False) ~1>> *
+__[i](p_en_quelques_tps)__
+    (en quelques (?:jours|mois|trimestres|semestres|siècles|millénaires)) +({w_2}) @@0,$
+    <<- not morph(\2, ":[AQ]:[em]:[si]", False) ~1>> *
+__[i](p_entre_pronom_et_pronom)__
+    entre (?:eux|elles|nous|vous)(?: et (?:moi|toi|nous|vous|elles|eux)|)
+    <<- not before(r"(?i)\b(?:il +|n’)$") ~>> *
+__[i](p_haut_et_fort)__             haut et fort <<- not morph(word(-1), ":D", False, False) ~>> *
+__[i](p_hélas)__                    hélas <<- not before(r"(?i)\bt(?:u|oi qui)[ ,]") ~>> *
+__[i](p_nécessité_fait_loi)__       nécessité fait loi <<- not morph(word(-1), ":D", False, False) ~>> *
+__[i](p_non_par_trop)__             (non|par trop) ({w_2}) @@0,$ <<- morph(\2, ":A", False) ~1>> *
+__[i](p_plein_est)__                plein est <<- not morph(word(-1), ":D", False, False) ~>> *
+__[i](p_plus_adv_que_prévu)__       (?:plus|moins|aussi) ({w3}) que prévu @@w <<- morph(\1, ":W", False) ~>> *
+__[i](p_plus_adv_que_les_autres)__  (?:plus|moins|aussi) ({w3}) (que (?:les autres|l’autre)) @@w,$ <<- morphex(\1, ":[AW]", ":G") ~2>> *
+__[i](p_plus_adv_les_uns_que_les_autres)__  plus ({w3}) (les une?s que les autres) @@5,$ <<- morph(\1, ":[AW]", False) ~2>> *
+__[i](p_pour_autant_que_su)__
+    (pour autant (?:que (?:je sache|tu saches|nous sachions|vous sachiez)|qu (?:il|elle)(?: sache|s sachent))) ({w_1})  @@0,$
     <<- not morph(\2, ":Y", False) ~1>> *
-#__[i]__  avec ({w1}) <<- morph(\1, ":N") and not re.search("(?i)^(force|air)$", \1) and not morph(word(1), ":A", False) ~>> *
-__[i]__  ({w_2}) +(tête baissée) @@0,$ <<- morphex(\1, ":[NV]", ":D") ~2>> *
-__[i]__  ((?:pas |)tant que ça) ({w1}) @@0,$ <<- not morph(\2, ":(?:3s|X)", False) ~1>> *
-__[i]__  (?:le|un|ce|[mts]on) (putain d(?:e +|’))({w_2}) @@*,$ <<- morph(\2, ":[me]", False) ~1>> *
+#__[i](p_avec)__  avec ({w1}) <<- morph(\1, ":N") and not re.search("(?i)^(force|air)$", \1) and not morph(word(1), ":A", False) ~>> *
+__[i](p_tête_baissée)__             ({w_2}) +(tête baissée) @@0,$ <<- morphex(\1, ":[NV]", ":D") ~2>> *
+__[i](p_tant_que_ça)__              ((?:pas |)tant que ça) ({w1}) @@0,$ <<- not morph(\2, ":(?:3s|X)", False) ~1>> *
+__[i](p_putain_de)__                (?:le|un|ce|[mts]on) (putain d(?:e +|’))({w_2}) @@*,$ <<- morph(\2, ":[me]", False) ~1>> *
 
 # Noms propres
 __[i](p_cocktail_Molotov)__     cocktails? (Molotov) @@$ <<- ~1>> *
