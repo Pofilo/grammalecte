@@ -4338,23 +4338,31 @@ __[i](p_voie_de_recours)__              voies? (de recours) @@$ <<- ~1>> *
 __[i](p_usine_à_gaz)__                  usines? (à gaz) @@$ <<- ~1>> *
 
 # simplification des nombres
-__<i]__  dix-(?:sept|huit|neuf) <<- ~>> dix
-__[i]__  (?:vingt|trente|quarante|cinquante)(-(?:deux|trois|quatre|cinq|six|sept|huit|neuf|et-un)| et un) @@$ <<- ~1>> *
-__[i]__  soixante-(?:d(?:eux|ix|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|six|sept|huit|neuf|quinze|seize| et (?:un|onze)|-et-(?:un|onze))
+__<i](p_10_qqch)__
+    dix-(?:sept|huit|neuf) <<- ~>> dix
+__[i](p_20_30_40_50_qqch)__
+    (?:vingt|trente|quarante|cinquante)(-(?:deux|trois|quatre|cinq|six|sept|huit|neuf|et-un)| et un) @@$ <<- ~1>> *
+__[i](p_60_qqch)__
+    soixante-(?:d(?:eux|ix|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|six|sept|huit|neuf|quinze|seize| et (?:un|onze)|-et-(?:un|onze))
     <<- ~>> soixante
-__[i]__  quatre-vingt-(?:un|d(?:eux|ix|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|six|sept|huit|neuf|onze|quinze|seize)
+__[i](p_80_qqch)__
+    quatre-vingt-(?:un|d(?:eux|ix|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|six|sept|huit|neuf|onze|quinze|seize)
     <<- ~>> quatre-vingts
-
-__[i]__  ((?:d(?:eux|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|s(?:ix|seize)|sept|huit|neuf|onze|quinze) cents) +({w_2})  @@0,$ 
+__[i](p_qqch_100)__
+    ((?:d(?:eux|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|s(?:ix|seize)|sept|huit|neuf|onze|quinze) cents) +({w_2})  @@0,$ 
     <<- morphex(\2, ":[NAQ].*:[pi]", ":(?:G|3p)") ~1>> cent
-__[i]__  (?:deux|trois|quatre|cinq|six|sept|huit|neuf|cent) (?:cent |)mille
+__[i](p_qqch_1000)__
+    (?:deux|trois|quatre|cinq|six|sept|huit|neuf|cent) (?:cent |)mille
     <<- ~>> mille
 
-__[i]__  (?:le(?:ur|)s|des|ses|ces|mes|tes|nos|vos) +((?:quelque +|)(?:d(?:eux|ix|ouze)|tr(?:ois|eize|ente)|qua(?:t(?:re(?:-vingts|)|orze)|rante)|cinq(?:uante|)|s(?:ix|eize|oixante)|sept|huit|neuf|onze|quinze|vingt|cent|mille|\d+)) +({w_2})  @@w,$ 
+__[i](p_det_plur_nombre_nom)__
+    (?:le(?:ur|)s|des|ses|ces|mes|tes|nos|vos) +((?:quelque +|)(?:d(?:eux|ix|ouze)|tr(?:ois|eize|ente)|qua(?:t(?:re(?:-vingts|)|orze)|rante)|cinq(?:uante|)|s(?:ix|eize|oixante)|sept|huit|neuf|onze|quinze|vingt|cent|mille|\d+)) +({w_2})  @@w,$ 
     <<- morphex(\2, ":[NAQ].*:[pi]", ":(?:G|3p)") ~1>> *
 
-__[i]__  (?:à |d(?:e +|’))une +heure(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt|décente|(?:très |)tardive)|) <<- ~>> *
-__[i]__  (?:à|de) (?:d(?:eu|i)x|tr(?:ois|eize)|qu(?:at(?:re|orze)|inze)|cinq|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt) +heures(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt)|) <<- ~>> *
+__[i](p_une_heure)__
+    (?:à |d(?:e +|’))une +heure(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt|décente|(?:très |)tardive)|) <<- ~>> *
+__[i](p_nombre_heure)__
+    (?:à|de) (?:d(?:eu|i)x|tr(?:ois|eize)|qu(?:at(?:re|orze)|inze)|cinq|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt) +heures(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt)|) <<- ~>> *
 
 ## Conditionnel
 __[i]__  à ({w_2}) pour cent @@2 <<- morph(\1, ":B", False) ~>> *
@@ -4394,53 +4402,76 @@ __[i]__  ((?:pas |)tant que ça) ({w1}) @@0,$ <<- not morph(\2, ":(?:3s|X)", Fal
 __[i]__  (?:le|un|ce|[mts]on) (putain d(?:e +|’))({w_2}) @@*,$ <<- morph(\2, ":[me]", False) ~1>> *
 
 # Noms propres
-__[i]__  cocktails? (Molotov) @@$ <<- ~1>> *
-__[i]__  effets? (Streisand) @@$ <<- ~1>> *
-__[i]__  prix (Nobel) @@5 <<- ~1>> *
-__[s]__  Amérique (centrale|du (?:Nord|Sud)) @@$ <<- ~1>> *
-__[s]__  ([A-ZÉÈÂ][\w-]+) ([A-ZÉÈÂ][\w-]+) @@0,$ <<- morph(\1, ":M[12]", False) and (morph(\2, ":(?:M[12]|V)", False) or not spell(\2)) ~2>> *
-__[s]__  (?:de |d’)([A-ZÉÈÂ][\w-]+) +(?:et|ou) +(?:de |d’)([A-ZÉÈÂ][\w-]+) @@w,$ <<- morph(\1, ":M", False) and morph(\2, ":M", False) ~>> *
-__[s]__  (?:de |d’)([A-ZÉÈÂ][\w-]+) @@$ <<- morph(\1, ":M", False) or not spell(\1) ~>> *
-__[s]__  entre ([A-ZÉÈÂ][\w-]*) +et ([A-ZÉÈÂ][\w-]*) @@6,$ <<- morph(\1, ":(?:M[12]|N)") and morph(\2, ":(?:M[12]|N)") ~>> *
-__[s]__  en ([A-ZÉ][\w-]+) @@3 <<- morph(\1, ":MP") ~>> *
-__[u]__  (?:[lc]e|du) (?:baron|docteur|député|duc|frère|prince|professeur|roi|sénateur|mir) ([A-ZÉÈÂ][\w-]+) @@$ <<- morph(\1, ":M[12]", False) ~1>> *
-__[u]__  (?:la|cette) (?:baronne|docteure?|députée|duchesse|sœur|princesse|professeure?|reine|sénatrice) ([A-ZÉÈÂ][\w-]+) @@$
+__[i](p_cocktail_Molotov)__     cocktails? (Molotov) @@$ <<- ~1>> *
+__[i](p_effet_Streisand)__      effets? (Streisand) @@$ <<- ~1>> *
+__[i](p_prix_Nobel)__           prix (Nobel) @@5 <<- ~1>> *
+__[s](p_Amérique)__             Amérique (centrale|du (?:Nord|Sud)) @@$ <<- ~1>> *
+__[s](p_nom_propre_nom_propre)__
+    ([A-ZÉÈÂ][\w-]+) ([A-ZÉÈÂ][\w-]+) @@0,$
+    <<- morph(\1, ":M[12]", False) and (morph(\2, ":(?:M[12]|V)", False) or not spell(\2)) ~2>> *
+__[s](p_de_nom_propre_et_ou_de_nom_propre)__
+    (?:de |d’)([A-ZÉÈÂ][\w-]+) +(?:et|ou) +(?:de |d’)([A-ZÉÈÂ][\w-]+) @@w,$
+    <<- morph(\1, ":M", False) and morph(\2, ":M", False) ~>> *
+__[s](p_de_nom_propre)__
+    (?:de |d’)([A-ZÉÈÂ][\w-]+) @@$
+    <<- morph(\1, ":M", False) or not spell(\1) ~>> *
+__[s](p_entre_nom_propre_et_nom_propre)__
+    entre ([A-ZÉÈÂ][\w-]*) +et ([A-ZÉÈÂ][\w-]*) @@6,$
+    <<- morph(\1, ":(?:M[12]|N)") and morph(\2, ":(?:M[12]|N)") ~>> *
+__[s](p_en_nom_propre)__
+    en ([A-ZÉ][\w-]+) @@3 <<- morph(\1, ":MP") ~>> *
+__[u](p_titre_masculin_nom_propre)__
+    (?:[lc]e|du) (?:baron|docteur|député|duc|frère|prince|professeur|roi|sénateur|mir) ([A-ZÉÈÂ][\w-]+) @@$
     <<- morph(\1, ":M[12]", False) ~1>> *
-__[s]__  M(?:r|lle|me|gr|iss) ([A-ZÉÈÂ][\w-]+) @@$ <<- ~1>> *
-__[s]__  ([A-ZÉÈÊ][\w-]+) +et (lui|elles?|eux|[nv]ous|[mt]oi) @@0,$
+__[u](p_titre_féminin_nom_propre)__
+    (?:la|cette) (?:baronne|docteure?|députée|duchesse|sœur|princesse|professeure?|reine|sénatrice) ([A-ZÉÈÂ][\w-]+) @@$
+    <<- morph(\1, ":M[12]", False) ~1>> *
+__[s](p_titre_abrégé_nom_propre)__
+    M(?:r|lle|me|gr|iss) ([A-ZÉÈÂ][\w-]+) @@$ <<- ~1>> *
+__[s](p_nom_propre_et_pronom)__
+    ([A-ZÉÈÊ][\w-]+) +et (lui|elles?|eux|[nv]ous|[mt]oi) @@0,$
     <<- morph(\1, ":[MT]", False) and morph(word(-1), ":Cs", False, True) and not before(r"\b(?:plus|moins|aussi) .* que +$")
     ~>> =rewriteSubject(\1,\2)
 
 # après être, après avoir
-__[i]__  ({etre}) +(à jamais|un jour|sous peu|du moins|avant tout|de passage|frère et sœur|mari et femme|père et mère|papa et maman|monnaie courante|pieds et poings liés|partie (?:intégrante|prenante))  @@0,$
+__[i](p_être_qqch)__
+    ({etre}) +(à jamais|un jour|sous peu|du moins|avant tout|de passage|frère et sœur|mari et femme|père et mère|papa et maman|monnaie courante|pieds et poings liés|partie (?:intégrante|prenante))  @@0,$
     <<- morph(\1, ":V0e", False) ~2>> *
-__[i]__  ([ésf]\w+)-(?:ils|[nv]ous|elles) +(frère et sœur|mari et femme|père et mère|papa et maman|bon marché|meilleur marché)  @@0,$
+__[i](p_être_pronom_qqch)__
+    ([ésf]\w+)-(?:ils|[nv]ous|elles) +(frère et sœur|mari et femme|père et mère|papa et maman|bon marché|meilleur marché)  @@0,$
     <<- morph(\1, ":V0e", False) ~2>> *
-__[i]__  ({w1}) +(on ne peut (?:pas |)(?:plus|moins)|plus que) +({w2})  @@0,w,$
+__[i](p_qqch_on_ne_peut_plus_que)__
+    ({w1}) +(on ne peut (?:pas |)(?:plus|moins)|plus que) +({w2})  @@0,w,$
     <<- morph(\1, ":(?:V0e|N)", False) and morph(\3, ":[AQ]", False) ~2>> *
-__[i]__  ({avoir_etre}) +(pas|jamais|plus|en partie|point|tous (?:deux|trois)|somme toute)  @@0,$
+__[i](p_avoir_être_loc_adv1)__
+    ({avoir_etre}) +(pas|jamais|plus|en partie|point|tous (?:deux|trois)|somme toute)  @@0,$
     <<- morph(\1, ":V0", False) ~2>> *
-__[i]__  ({avoir_etre}) +(beaucoup|bien entendu|dans (?:leur |son |l’)ensemble|à ce(?:t (?:instant|endroit)| moment)|sans peine|un (?:moment|peu|minimum|petit peu|tout petit peu)) +({w_2})  @@0,w,$
+__[i](p_avoir_être_loc_adv2)__
+    ({avoir_etre}) +(beaucoup|bien entendu|dans (?:leur |son |l’)ensemble|à ce(?:t (?:instant|endroit)| moment)|sans peine|un (?:moment|peu|minimum|petit peu|tout petit peu)) +({w_2})  @@0,w,$
     <<- morph(\1, ":V0", False) and morph(\3, ":[QY]", False) ~2>> *
-__[i]__  ({avoir}) +(besoin|bon (?:dos|pied,? bon œil)|confiance|crainte|faim|forme humaine|honte|partie (?:gagnée|liée)|peur|soif|voix au chapitre)  @@0,$
+__[i](p_avoir_loc_adv)__
+    ({avoir}) +(besoin|bon (?:dos|pied,? bon œil)|confiance|crainte|faim|forme humaine|honte|partie (?:gagnée|liée)|peur|soif|voix au chapitre)  @@0,$
     <<- morph(\1, ":V0a", False) and not (\2 == "crainte" and before(r"\w")) ~2>> *
-__[i]__  ({avoir})-(?:je|tu|ils?|elles?|nous|vous|on) +(besoin|bon (?:dos|pied,? bon œil)|confiance|crainte|faim|forme humaine|honte|partie (?:gagnée|liée)|peur|soif|voix au chapitre)  @@0,$
+__[i](p_avoir_pronom_loc_adv)__
+    ({avoir})-(?:je|tu|ils?|elles?|nous|vous|on) +(besoin|bon (?:dos|pied,? bon œil)|confiance|crainte|faim|forme humaine|honte|partie (?:gagnée|liée)|peur|soif|voix au chapitre)  @@0,$
     <<- morph(\1, ":V0a", False) ~2>> *
-__[i]__  ({avoir}) +(tou(?:te|)s les ({w_2})) +({w_2})  @@0,w,>3:$,$
+__[i](p_avoir_tous_toutes_les)__
+    ({avoir}) +(tou(?:te|)s les ({w_2})) +({w_2})  @@0,w,>3:$,$
     <<- morph(\1, ":V0a", False) and morph(\3, ":B", False) and morph(\4, ":(?:Q|V1.*:Y)", False) ~2>> *
 
 # elle aussi + adj
-__[i]__  (elle aussi) +({w_3}) @@0,$ <<- morph(\2, ":A:[fe]:s", False) ~1>> *
-__[i]__  (elles aussi) +({w_3}) @@0,$ <<- morph(\2, ":A:[fe]:p", False) ~1>> *
+__[i](p_elle_aussi)__   (elle aussi) +({w_3}) @@0,$ <<- morph(\2, ":A:[fe]:s", False) ~1>> *
+__[i](p_elles_aussi)__  (elles aussi) +({w_3}) @@0,$ <<- morph(\2, ":A:[fe]:p", False) ~1>> *
 
 # après verbe
-__[i]__  ({w1}) (?:pas |)(jour et nuit|quand même(?: pas|)) @@0,$ <<- morph(\1, ":V", False) ~2>> *
-__[i]__  ({w_2}) (bien entendu|juste|ensemble) @@0,$ <<- morph(\1, ":V[123]") ~2>> *
-__[i]__  ({w_2}) ((?:fort|très|super) (?:bien|mal)|bien|mal) @@0,$ <<- morph(\1, ":V[123]", False) ~2>> *
-__[i]__  ({w_1}) ((?:[mt]oi|[nv]ous|elles?|lui|eux) aussi) @@0,$ <<- morph(\1, ":V", False) ~2>> *
-__[i]__  (?:tout |)aussi <<- ~>> *
-__[i]__  aussi(?:tôt|) <<- ~>> *
-__[i]__  ({w_1}) (même) @@0,$ <<- morphex(\1, ":V", ":G") ~2>> *
+__[i](p_verbe_loc_adv1)__   ({w1}) (?:pas |)(jour et nuit|quand même(?: pas|)) @@0,$ <<- morph(\1, ":V", False) ~2>> *
+__[i](p_verbe_loc_adv2)__   ({w_2}) (bien entendu|juste|ensemble) @@0,$ <<- morph(\1, ":V[123]") ~2>> *
+__[i](p_verbe_loc_adv3)__   ({w_2}) ((?:fort|très|super) (?:bien|mal)|bien|mal) @@0,$ <<- morph(\1, ":V[123]", False) ~2>> *
+__[i](p_tout_aussi)__       (?:tout |)aussi <<- ~>> *
+__[i](p_aussi_aussitôt)__   aussi(?:tôt|) <<- ~>> *
+__[i](p_verbe_pronom_aussi)__   ({w_1}) ((?:[mt]oi|[nv]ous|elles?|lui|eux) aussi) @@0,$ <<- morph(\1, ":V", False) ~2>> *
+__[i](p_verbe_même)__       ({w_1}) (même) @@0,$ <<- morphex(\1, ":V", ":G") ~2>> *
+
 
 # avant adjectifs, avant adverbes
 __[i](p_au_moins)__
