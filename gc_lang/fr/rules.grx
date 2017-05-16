@@ -3939,21 +3939,34 @@ TEST: ne jamais beaucoup bosser, c’est sa devise.
 #
 
 # Dates
-__[s]__  (?:[dD]epuis le|[lL]e|[dD]u|[aA]u|[jJ]usqu au|[àÀ] compter du) (?:1(?:er|ᵉʳ)|\d\d?) (?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)(?: \d+| dernier| prochain|) <<- ~>> *
-__[i]__  en l’an (?:de grâce |)\d+ <<- ~>> *
-__[s]__  (?:[eE]n +|[dD](?:e +|’))(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor) +\d{2,4}
-    <<- ~>> *
-__[i]__  en \d\d+ <<- not morph(word(1), ":[AN].*:[pi]", False, False) ~>> *
-__[i]__  un (\d+) ({w_2}) @@w,$ <<- morph(\2, ":A.*:s")  ~1>> *
-__[i]__  (de \d\d+) ({w_2}) @@0,$ <<- morph(\2, ":A.*:s", False) ~1>> *
-__[s]__  [àÀ] la mi-(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)(?:\d{2,4}|) <<- ~>> *
-__[i]__  [àÀ] l’(?:été|automne|hiver) \d{2,4}  <<- ~>> *
-__[i]__  au printemps \d{2,4}  <<- ~>> *
+__[s](p_date)__
+    (?:[dD]epuis le|[lL]e|[dD]u|[aA]u|[jJ]usqu au|[àÀ] compter du) (?:1(?:er|ᵉʳ)|\d\d?) (?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)(?: \d+| dernier| prochain|) <<- ~>> *
+__[i](p_en_l_an_de_grâce_année)__
+    en l’an (?:de grâce |)\d+ <<- ~>> *
+__[s](p_en_de_mois_année)__
+    (?:[eE]n +|[dD](?:e +|’))(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor) +\d{2,4} <<- ~>> *
+__[i](p_en_année)__
+    en \d\d+ <<- not morph(word(1), ":[AN].*:[pi]", False, False) ~>> *
+__[i](p_de_année)__
+    (de \d\d+) ({w_2}) @@0,$ <<- morph(\2, ":A.*:s", False) ~1>> *
+__[s](p_à_la_mi_mois)__
+    [àÀ] la mi-(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)(?:\d{2,4}|) <<- ~>> *
+__[i](p_à_l_été_automne_hiver)__
+    à l’(?:été|automne|hiver) \d{2,4}  <<- ~>> *
+__[i](p_au_printemps)__
+    au printemps \d{2,4}  <<- ~>> *
 
 TEST: Une étude de 2005 publiée dans le Journal
 TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consacrée à Silicon Valley.
 TEST: c’est donc la cinquième en 50 ans
+
+
+# nombres
+__[i](p_un_nombre)__
+    un (\d+) ({w_2}) @@w,$ <<- morph(\2, ":A.*:s")  ~1>> *
+
 TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
+
 
 ## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
 __[i]__  [mt]oi (seule?) @@4 <<- ~1>> *
@@ -4427,31 +4440,44 @@ __[i]__  aussi(?:tôt|) <<- ~>> *
 __[i]__  ({w_1}) (même) @@0,$ <<- morphex(\1, ":V", ":G") ~2>> *
 
 # avant adjectifs, avant adverbes
-__[i]__  (au moins) ({w_2})  @@0,$
+__[i](p_au_moins)__
+    (au moins) ({w_2})  @@0,$
     <<- not morph(\2, "[NAQ].*:[me]:[si]", False) ~1>> *
-__[i]__  le ({w_2}) (le plus) ({w_2})  @@3,w,$
+__[i](p_le_xxx_le_plus_adj)__
+    le ({w_2}) (le plus) ({w_2})  @@3,w,$
     <<- morphex(\1, ":[NAQ].*:[me]", ":G") and morph(\3, ":[AQ].*:[me]", False) ~2>> *
-__[i]__  la ({w_2}) (la plus) ({w_2})  @@3,w,$
+__[i](p_la_xxx_la_plus_adj)__
+    la ({w_2}) (la plus) ({w_2})  @@3,w,$
     <<- morphex(\1, ":[NAQ].*:[fe]", ":G") and morph(\3, ":[AQ].*:[fe]", False) ~2>> *
-__[i]__  [ld]es ({w_2}) (les plus) ({w_2})  @@4,w,$
+__[i](p_les_xxx_les_plus_adj)__
+    [ld]es ({w_2}) (les plus) ({w_2})  @@4,w,$
     <<- morphex(\1, ":[NAQ].*:[pi]", ":[123][sp]") and morph(\3, ":[AQ].*:[pi]", False) ~2>> * 
-__[i]__  bien sûr(?! de) <<- ~>> *
-__[i]__  (bien|mal|(?:fort|super) (?:bien|mal)|fort) +({w_2})  @@0,$
+__[i](p_bien_sûr)__
+    bien sûr(?! de) <<- ~>> *
+__[i](p_bien_mal_fort_adj_adv)__
+    (bien|mal|(?:fort|super) (?:bien|mal)|fort) +({w_2})  @@0,$
     <<- morph(\2, ":[AW]") ~1>> *
-__[i]__  (à (?:demi|peine|peu près)|depuis peu|quelque peu|pas très|un (?:petit |)peu(?: plus| moins|)|un minimum|peu|plus|moins|si) +({w_2})  @@0,$
+__[i](p_loc_adj_adv)__
+    (à (?:demi|peine|peu près)|depuis peu|quelque peu|pas très|un (?:petit |)peu(?: plus| moins|)|peu|plus|moins|si) +({w_2})  @@0,$
     <<- morph(\2, ":[AW]", False) ~1>> *
-__[i]__  (un (?:brin|chou[iï]a|rien|tantinet|soupçon)(?: trop|)) ({w_2}) @@0,$
+__[i](p_un_brin_chouïa_rien_tantinet_soupçon)__
+    (un (?:brin|chou[iï]a|rien|minimum|soupçon|tantinet)(?: trop|)) ({w_2}) @@0,$
     <<- morph(\2, ":[AQ]", False) ~1>> *
-__[i]__  (?:assez|trop) +(\w+ment)  @@$
+__[i](p_assez_trop_adv_xxxment)__
+    (?:assez|trop) +(\w+ment)  @@$
     <<- morphex(\1, ":W", ":3p") ~>> *
-__[i]__  (assez|trop) +({w_2})  @@0,$
+__[i](p_assez_trop_adj_adv)__
+    (assez|trop) +({w_2})  @@0,$
     <<- morphex(\2, ":[AW]", ":[123][sp]") ~1>> *
 
 # adverbes en -ment
-__[i]__  ({w_2}) (l[ea] (?:plus|moins) (\w+ment)) ({w_2})  @@0,w,>2:$,$
+__[i](p_le_la_plus_moins_adv_xxxment)__
+    ({w_2}) (l[ea] (?:plus|moins) (\w+ment)) ({w_2})  @@0,w,>2:$,$
     <<- morph(\1, ":[NAQ]", False) and morph(\3, ":W", False) and morph(\4, ":[AQ]", False) ~2>> *
-__[i]__  complètement <<- not morph(word(-1), ":D", False, True) ~>> *
-__[i]__  (\w+ment)(?: parlant|) @@0 <<- morph(\1, ":W\\b") ~>> *
+__[i](p_complètement)__
+    complètement <<- not morph(word(-1), ":D", False, True) ~>> *
+__[i](p_adverbe_xxxment)__
+    (\w+ment)(?: parlant|) @@0 <<- morph(\1, ":W\\b") ~>> *
 
 # couleurs invariables
 __[i](p_couleurs_invariables)__
