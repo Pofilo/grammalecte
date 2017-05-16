@@ -7,15 +7,15 @@ import json
 from distutils import file_util
 
 
-DEF = {}
-FUNCTIONS = []
+dDEF = {}
+lFUNCTIONS = []
 
-RULESET = set()     # set of rule-ids to check if there is several rules with the same id
+aRULESET = set()     # set of rule-ids to check if there is several rules with the same id
 
-JSREGEXES = {}
+dJSREGEXES = {}
 
-WORDLIMITLEFT  = r"(?<![\w.,–-])"   # r"(?<![-.,—])\b"  seems slower
-WORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
+sWORDLIMITLEFT  = r"(?<![\w.,–-])"   # r"(?<![-.,—])\b"  seems slower
+sWORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
 
 
 def prepareFunction (s):
@@ -164,7 +164,7 @@ def countGroupInRegex (sRegex):
 
 def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     "returns rule as list [option name, regex, bCaseInsensitive, identifier, list of actions]"
-    global JSREGEXES
+    global dJSREGEXES
 
     #### OPTIONS
     sLineId = str(nIdLine) + ("p" if bParagraph else "s")
@@ -183,10 +183,10 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         sOption = m.group('option')[1:]  if m.group('option')  else False
         if m.group('ruleid'):
             sRuleId =  m.group('ruleid')[1:-1]
-            if sRuleId in RULESET:
+            if sRuleId in aRULESET:
                 print("# Error. Several rules have the same id: " + sRuleId)
                 exit()
-            RULESET.add(sRuleId)
+            aRULESET.add(sRuleId)
         nPriority = dOptPriority.get(sOption, 4)
         if m.group('priority'):
             nPriority = int(m.group('priority')[1:])
@@ -210,7 +210,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     # JS regex
     m = re.search("<js>.+</js>i?", sRegex)
     if m:
-        JSREGEXES[sLineId] = m.group(0)
+        dJSREGEXES[sLineId] = m.group(0)
         sRegex = sRegex[:m.start()].strip()
     if "<js>" in sRegex or "</js>" in sRegex:
         print("# Error: JavaScript regex not delimited at line " + sLineId)
@@ -221,7 +221,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         sRegex = sRegex[1:-1]
 
     ## definitions
-    for sDef, sRepl in DEF.items():
+    for sDef, sRepl in dDEF.items():
         sRegex = sRegex.replace(sDef, sRepl)
 
     ## count number of groups (must be done before modifying the regex)
@@ -235,9 +235,9 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
 
     ## word limit
     if cWordLimitLeft == '[' and not sRegex.startswith(("^", '’', "'", ",")):
-        sRegex = WORDLIMITLEFT + sRegex
+        sRegex = sWORDLIMITLEFT + sRegex
     if cWordLimitRight == ']' and not sRegex.endswith(("$", '’', "'", ",")):
-        sRegex = sRegex + WORDLIMITRIGHT
+        sRegex = sRegex + sWORDLIMITRIGHT
 
     ## casing mode
     if cCaseMode == "i":
@@ -282,7 +282,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
 
 def createAction (sIdAction, sAction, nGroup):
     "returns an action to perform as a tuple (condition, action type, action[, iGroup [, message, URL ]])"
-    global FUNCTIONS
+    global lFUNCTIONS
 
     m = re.search(r"([-~=>])(\d*|)>>", sAction)
     if not m:
@@ -293,7 +293,7 @@ def createAction (sIdAction, sAction, nGroup):
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = prepareFunction(sCondition)
-        FUNCTIONS.append(("c_"+sIdAction, sCondition))
+        lFUNCTIONS.append(("c_"+sIdAction, sCondition))
         for x in re.finditer("[.](?:group|start|end)[(](\d+)[)]", sCondition):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in condition at line " + sIdAction + " ("+str(nGroup)+" groups only)")
@@ -323,7 +323,7 @@ def createAction (sIdAction, sAction, nGroup):
             sMsg = sMsg[:mURL.start(0)].strip()
         if sMsg[0:1] == "=":
             sMsg = prepareFunction(sMsg[1:])
-            FUNCTIONS.append(("m_"+sIdAction, sMsg))
+            lFUNCTIONS.append(("m_"+sIdAction, sMsg))
             for x in re.finditer("group[(](\d+)[)]", sMsg):
                 if int(x.group(1)) > nGroup:
                     print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
@@ -355,7 +355,7 @@ def createAction (sIdAction, sAction, nGroup):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            FUNCTIONS.append(("s_"+sIdAction, sAction[1:]))
+            lFUNCTIONS.append(("s_"+sIdAction, sAction[1:]))
             sAction = "=s_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
@@ -367,7 +367,7 @@ def createAction (sIdAction, sAction, nGroup):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            FUNCTIONS.append(("p_"+sIdAction, sAction[1:]))
+            lFUNCTIONS.append(("p_"+sIdAction, sAction[1:]))
             sAction = "=p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
@@ -378,7 +378,7 @@ def createAction (sIdAction, sAction, nGroup):
             sAction = sAction[1:]
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
-        FUNCTIONS.append(("d_"+sIdAction, sAction))
+        lFUNCTIONS.append(("d_"+sIdAction, sAction))
         sAction = "d_"+sIdAction
         return [sCondition, cAction, sAction]
     elif cAction == ">":
@@ -406,8 +406,8 @@ def regex2js (sRegex):
         sRegex = sRegex.replace("(?i)", "")
         bCaseInsensitive = True
     lNegLookBeforeRegex = []
-    if WORDLIMITLEFT in sRegex:
-        sRegex = sRegex.replace(WORDLIMITLEFT, "")
+    if sWORDLIMITLEFT in sRegex:
+        sRegex = sRegex.replace(sWORDLIMITLEFT, "")
         lNegLookBeforeRegex = ["[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ.,–-]$"]
     sRegex = sRegex.replace("[\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ")
     sRegex = sRegex.replace("\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ]")
@@ -440,7 +440,7 @@ def pyRuleToJS (lRule):
         if aAction[1] == "-":
             aAction[4] = aAction[4].replace("« ", "«&nbsp;").replace(" »", "&nbsp;»")
     # js regexes
-    lRuleJS[1], lNegLookBehindRegex = regex2js( JSREGEXES.get(lRuleJS[3], lRuleJS[1]) )
+    lRuleJS[1], lNegLookBehindRegex = regex2js( dJSREGEXES.get(lRuleJS[3], lRuleJS[1]) )
     lRuleJS.append(lNegLookBehindRegex)
     return lRuleJS
 
@@ -546,7 +546,7 @@ def make (lRules, sLang, bJavaScript):
 
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
-    global DEF
+    global dDEF
     lLine = []
     lRuleLine = []
     lTest = []
@@ -559,7 +559,7 @@ def make (lRules, sLang, bJavaScript):
         elif sLine.startswith("DEF:"):
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
             if m:
-                DEF["{"+m.group(1)+"}"] = m.group(2)
+                dDEF["{"+m.group(1)+"}"] = m.group(2)
             else:
                 print("Error in definition: ", end="")
                 print(sLine.strip())
@@ -615,7 +615,7 @@ def make (lRules, sLang, bJavaScript):
     print("  creating callables...")
     sPyCallables = "# generated code, do not edit\n"
     sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
-    for sFuncName, sReturn in FUNCTIONS:
+    for sFuncName, sReturn in lFUNCTIONS:
         cType = sFuncName[0:1]
         if cType == "c": # condition
             sParams = "s, sx, m, dDA, sCountry, bCondMemo"
