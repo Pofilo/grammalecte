@@ -191,7 +191,6 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
             aRULESET.add(sRuleId)
         else:
             nRULEWITHOUTNAME += 1
-            print(sLineId)
         nPriority = dOptPriority.get(sOption, 4)
         if m.group('priority'):
             nPriority = int(m.group('priority')[1:])
