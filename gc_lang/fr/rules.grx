@@ -978,12 +978,12 @@ TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
 #
 
 # Trait d’union conditionnel (u00AD)
-__<i>__  \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑", "")
-__<i>__  \w+‑\w+ <<- ~>> =\0.replace("‑", "")
+__<i>(p_trait_union_conditionnel1)__    \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑", "")
+__<i>(p_trait_union_conditionnel2)__    \w+‑\w+ <<- ~>> =\0.replace("‑", "")
 
 # empêcher la scission en fin de dialogue
-__<s>__  ([?!…][?!…  ]*)[ "'”» ]*,  @@0 <<- ~1>> *
-__<s>__  ([?!…][?!…  ]*)[ "'”» ]*[a-zéèêîô]  @@0 <<- ~1>> ,
+__<s>(p_fin_dialogue1)__    ([?!…][?!…  ]*)[ "'”» ]*,  @@0 <<- ~1>> *
+__<s>(p_fin_dialogue2)__    ([?!…][?!…  ]*)[ "'”» ]*[a-zéèêîô]  @@0 <<- ~1>> ,
 
 TEST: « Je suis donc perdu ? », dit Paul.
 TEST: “C’est bon !”, croit savoir Marie.
@@ -2902,7 +2902,8 @@ TEST: Ce que nous réussissons presque sera considéré comme un échec.
 
 
 # élimination de presque
-__[i]__  presque <<- ~>> *
+__[i](p_presque)__
+    presque <<- ~>> *
 
 __[i]/conf(conf_chez_vconj)__
     chez +({w2})  @@$
@@ -3786,9 +3787,12 @@ TEST: comme {{convenus}}                                      ->> convenu
 
 #### TOUT / TOUS / TOUTE / TOUTES
 
-__[i]__  fai(?:tes|sons|s)-(?:les|[nv]ous) (tou(?:te|)s) @@$ <<- ~1>> *
-__[i]__  (tout) (?:débuts|petits) @@0 <<- before(r"\b(aux|[ldmts]es|[nv]os) +$") ~1>> *
-__[i]__  (?:[ldmtsc]es|[nv]os|leurs) (tout) ({w_2})  @@w,$
+__[i](p_fais_les_tous)__
+    fai(?:tes|sons|s)-(?:les|[nv]ous) (tou(?:te|)s) @@$ <<- ~1>> *
+__[i](p_tout_débuts_petits)__
+    (tout) (?:débuts|petits) @@0 <<- before(r"\b(aux|[ldmtsc]es|[nv]os|leurs) +$") ~1>> *
+__[i](p_les_tout_xxx)__
+    (?:[ldmtsc]es|[nv]os|leurs|aux) (tout) ({w_2})  @@w,$
     <<- morph(\2, ":[AQ].*:[pi]", False) ~1>> *
 
 
@@ -3910,7 +3914,8 @@ TEST: __neg__ Il {{y}} a jamais d’eau.
 
 #### INFINITIF
 
-__[i]__  ne (?:pas|plus|jamais) +(beaucoup|trop)  @@$ <<- ~1>> *
+__[i](p_ne_plus_pas_jamais_beaucoup_trop_rien)__
+    ne (?:pas|plus|jamais) +(beaucoup|trop|rien)  @@$ <<- ~1>> *
 
 __[i]/infi(infi_ne)__
     ne (?:pas|rien|jamais(?: rien| plus|)|plus(?: jamais| rien| guère|)|guère|point) (?:non plus |)(?:l(?:e(?:ur|s|)|a|ui) |nous |vous |[mtsl]’(?:en |y |)|[mts]e |en |y |)({w_1})
@@ -8820,7 +8825,8 @@ TEST: elle se révèle d’ailleurs être une alliée de taille
 #__[i]/conj__  fait(s|e|es) ({w1}) <<- morph(\2, ":V") and not morph(\2, ":Y")
 #   ->> fait \1                      # Le participe passé de faire reste au masculin singulier s’il est suivi par un verbe à l’infinitif.
 
-__[i]__     les ({avoir}) +(fait) +(?:[mts](?:e +|’)|)({infi}) @@w,w,$ <<- morph(\1, ">avoir ", False) and morph(\3, ":Y", False) ~2>> _
+__[i](p_les_avoir_fait_vinfi)__
+    les ({avoir}) +(fait) +(?:[mts](?:e +|’)|)({infi}) @@w,w,$ <<- morph(\1, ">avoir ", False) and morph(\3, ":Y", False) ~2>> _
 
 __[i]/ppas(ppas_pronom_avoir)__
     (j’|je |tu |ils? |elles? |[nv]ous |on |et )(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,$
