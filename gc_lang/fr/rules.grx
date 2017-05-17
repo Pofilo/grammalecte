@@ -1123,62 +1123,63 @@ TEST: le {{30 février}}
 #
 
 # fin de phrase
-__<s>__  [.?!:;…][ .?!… »”")]*$  <<- ~>> *
+__<s>(p_fin_de_phrase)__        [.?!:;…][ .?!… »”")]*$  <<- ~>> *
 
 # début de phrase
-__<s>__  ^ *[-–—] <<- ~>> *
+__<s>(p_début_de_phrase)__      ^ *[-–—] <<- ~>> *
 
 # Guillemets et exposants
-__<s>__  [«»“”"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
+__<s>(p_guillemets_exposants)__ [«»“”"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
 
 # Chapitres et références
-__<s>__  [[({][\dIVXLCDM]+, \d+[])}]   <js>[\[\(\{][\dIVXLCDM]+, \d+[\]\)\}]</js>   <<- ~>> *
+__<s>(p_chapitre_référence)__   [[({][\dIVXLCDM]+, \d+[])}]   <js>[\[\(\{][\dIVXLCDM]+, \d+[\]\)\}]</js>   <<- ~>> *
 
 # simplification des mots grammaticaux élidés
-__[i>__  (lorsqu|puisqu|quoiqu|jusqu|qu)’ @@0 <<- ~>> \1
+__[i>(p_qu_apostrophe)__        (lorsqu|puisqu|quoiqu|jusqu|qu)’ @@0 <<- ~>> \1
 
 # le, la ou les chose(s)
-__[i>__  l[ea] ou les {w_2}([(]s[)]) @@$ <<- ~1>> s
-__[i]__  l(e ou la|a ou le) {w_2} @@1 <<- ~1>> ’
+__[i>(p_le_ou_les)__            l[ea] ou les {w_2}([(]s[)]) @@$ <<- ~1>> s
+__[i](p_le_ou_la)__             l(e ou la|a ou le) {w_2} @@1 <<- ~1>> ’
 
 # les références aux notes
-__[i]__  [a-zéèâàôîù][a-zéèâàôîù-]+(\d+) @@$ <<- not morph(\0, ":", False) ~1>> *
+__[i](p_références_aux_notes)__ [a-zéèâàôîù][a-zéèâàôîù-]+(\d+) @@$ <<- not morph(\0, ":", False) ~1>> *
 
 # faux positifs avec adverbes de négation
-__[i]__  pas mal <<- not morph(word(-1), ":D", False) ~>> *
-__[i]__  pas assez ({w_2}) @@$ <<- morph(\1, ":A", False) and not morph(word(-1), ":D", False) ~>> *
+__[i](p_pas_mal)__              pas mal <<- not morph(word(-1), ":D", False) ~>> *
+__[i](p_pas_assez)__            pas assez ({w_2}) @@$ <<- morph(\1, ":A", False) and not morph(word(-1), ":D", False) ~>> *
 
 # faux positifs avec «à chez»
-__[i]__  de chez \w+ (?:à|jusqu à) chez (?:moi|toi|lui|elles?|eux|nous|vous) <<- ~>> * 
-__[i]__  (jusqu à|de) chez @@0 <<- ~1>> *
+__[i](p_de_chez_à_chez_pronom)__    de chez \w+ (?:à|jusqu à) chez (?:moi|toi|lui|elles?|eux|nous|vous) <<- ~>> * 
+__[i](p_de_chez)__                  (jusqu à|de) chez @@0 <<- ~1>> *
 
 # faux positifs
-__[i]__  en tout et pour tout <<- ~>> *
-__[i]__  au (sortir) de?s?  @@3 <<- ~1>> *
-__[i]__  au revoir <<- ~>> au_revoir
+__[i](p_en_tout_et_pour_tout)__ en tout et pour tout <<- ~>> *
+__[i](p_au_sortir_de)__         au (sortir) de?s?  @@3 <<- ~1>> *
+__[i](p_au_revoir)__            au revoir <<- ~>> au_revoir
 
 # singletons entre parenthèses / crochets / accolades
-__<s>__  [(]\w+[)] <js>\([a-zA-Z]+\)</js> <<- ~>> *
-__<s>__  [{]\w+[}] <js>\{[a-zA-Z]+\}</js> <<- ~>> *
-__<s>__  [[]\w+[]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
+__<s>(p_singleton_parenthèses)__    [(]\w+[)] <js>\([a-zA-Z]+\)</js> <<- ~>> *
+__<s>(p_singleton_accolades)__      [{]\w+[}] <js>\{[a-zA-Z]+\}</js> <<- ~>> *
+__<s>(p_singleton_crochets)__       [[]\w+[]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
 
 # Avocats
-__[s]__  (Me) [A-ZÉÂÔÈ][\w-]+ @@0 <<- ~1>> *
+__[s](p_Me_nom_propre)__        (Me) [A-ZÉÂÔÈ][\w-]+ @@0 <<- ~1>> *
 
 # Évènements
-__[s]__  Mai 68 <<- ~>> Mai-68
+__[s](p_Mai_68)__               Mai 68 <<- ~>> Mai-68
 
 # Rois, reines, papes et vaniteux du même acabit
-__[s]__  [A-ZÉÂÔÈ]\w+ ([XVI]+|I(?:er|ᵉʳ)) @@$ <<- \1 != "I" ~1>> *
+__[s](p_titres_et_ordinaux)__   [A-ZÉÂÔÈ]\w+ ([XVI]+|I(?:er|ᵉʳ)) @@$ <<- \1 != "I" ~1>> *
 
 # Marques
-__[i]__  Peugeot (\d0\d\d?) @@$ <<- ~1>> *
+__[i](p_Peugeot)__              Peugeot (\d0\d\d?) @@$ <<- ~1>> *
 
 # alors que / dès lors que (éviter d’accorder un participe passé avec un pseudo-COD antérieur)
-__[i]__  (alors|dès lors) que?  @@0 <<- ~1>> _
+__[i](p_alors_dès_lors_que)__   (alors|dès lors) que?  @@0 <<- ~1>> _
 
 # Fusion des mots “multiples” (expérimental)
-__[s]__  [A-Z][a-z]+ [A-Z][a-z]+
+__[s](p_fusion_mots_multiples)__
+    [A-Z][a-z]+ [A-Z][a-z]+
     <<- spell(\0.replace(" ", "_")) ~>> =\0.replace(" ", "_")
 
 
@@ -4563,7 +4564,7 @@ __[i](p_donc_dorénavant)__              do(?:nc|rénavant)                     
 __[i](p_enfin_ensuite_encore)__         en(?:fin|suite|core)                        <<- ~>> *
 __[i](p_guère)__                        guère                                       <<- ~>> *
 __[i](p_jadis)__                        jadis                                       <<- ~>> *
-__[i](p_jamais)__                       jamais           <<- not before(r"(?i)\bne +$") ~>> *
+__[i](p_jamais1)__                      jamais           <<- not before(r"(?i)\bne +$") ~>> *
 __[i](p_loin_longtemps)__               lo(?:in|ngtemps)                            <<- ~>> *
 __[i](p_mouais)__                       mouais                                      <<- ~>> *
 __[i](p_naguère)__                      n(?:aguère|éanmoins)                        <<- ~>> *
@@ -7799,57 +7800,64 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 #
 
 ### @ : we remove @ we introduced after le/la/les in some cases
-__<s>__  @ <<- ~>> *
+__<s>(p_arobase)__      @ <<- ~>> *
 
 ### Avant les verbes (ôter seulement les COI!)
-__[i]__  ne (leur|lui)(?! en) @@3 <<- ~1>> *
+__[i](p_ne_leur_lui)__  ne (leur|lui)(?! en) @@3 <<- ~1>> *
 
 ### Après les verbes
-__[i]__  jamais <<- ~>> *
-__[i]__  guère <<- ~>> *
-__[i]__  ({w1}) (pas|point|rien|bien|ensemble) @@0,$ <<- morph(\1, ":V", False) ~2>> *
-__[i]__  \w+-(?:je|tu|ils?|elles?|on|[nv]ous) (pas|point|rien|bien|ensemble) @@$ <<- ~1>> *
+__[i](p_jamais2)__      jamais <<- ~>> *
+#__[i](p_guère)__        guère <<- ~>> *
+__[i](p_pas_point_rien_bien_ensemble1)__
+    ({w1}) (pas|point|rien|bien|ensemble) @@0,$ <<- morph(\1, ":V", False) ~2>> *
+__[i](p_pas_point_rien_bien_ensemble2)__
+    \w+-(?:je|tu|ils?|elles?|on|[nv]ous) (pas|point|rien|bien|ensemble) @@$ <<- ~1>> *
 
 # sembler le croire/penser/présumer/supposer/envisager/imaginer
-__[i]__  que +(sembl\w+) +(l(?:e (?:penser|croire|présumer|supposer)|’(?:envisager|imaginer))) @@w,$
+__[i](p_que_semble_le_penser)__
+    que +(sembl\w+) +(l(?:e (?:penser|croire|présumer|supposer)|’(?:envisager|imaginer))) @@w,$
     <<- morph(\1, ">sembler ", False) ~2>> *
 
 ### tous / tout / toute / toutes
-__[i]__  (tout) (?:le|ce|[mts]on|leur) @@0 <<- ~1>> *
-__[i]__  (toute) (?:la|cette|[mts](?:a|on)|leur) @@0 <<- ~1>> *
-__[i]__  (tou(?:te|)s) (?:[csmlt]es|[vn]os|leurs) @@0 <<- ~1>> *
+__[i](p_tout_det_mas)__     (tout) (?:le|ce|[mts]on|leur) @@0 <<- ~1>> *
+__[i](p_toute_det_fem)__    (toute) (?:la|cette|[mts](?:a|on)|leur) @@0 <<- ~1>> *
+__[i](p_tous_det_plur)__    (tou(?:te|)s) (?:[csmlt]es|[vn]os|leurs) @@0 <<- ~1>> *
 
 ### Simplification des groupes nominaux
 
 # désambiguïsation - pour contrer le faux positif qui veut accorder fois avec le participe passé de la proposition suivante
-__[s]__  (fois )que? @@0 <<- ~1>> fois=
-__[i]__  que (l’)on  @@4 <<- ~1>> *
+__[s](p_fois_que)__         (fois )que? @@0 <<- ~1>> fois=
+__[i](p_que_l_on)__         que (l’)on  @@4 <<- ~1>> *
 
 
-__[i]__  beaucoup (de (?:monde|temps)) @@9 <<- ~1>> _
-__[i]__  en pleine? ({w_2}) @@$
-    <<- morph(\1, ":[NAQ]", False) and isEndOfNG() ~>> *
-__[i]__  en tant que tel(?:s|lles?|) <<- ~>> *
+__[i](p_beaucoup_de_monde_temps)__  beaucoup (de (?:monde|temps)) @@9 <<- ~1>> _
+__[i](p_en_plein_xxx)__             en pleine? ({w_2}) @@$ <<- morph(\1, ":[NAQ]", False) and isEndOfNG() ~>> *
+__[i](p_en_tant_que_tel)__          en tant que tel(?:s|lles?|) <<- ~>> *
 
 # de +
-__[i]__  d(?:e |’)({infi}) @@$
+__[i](p_de_vinfi)__
+    d(?:e |’)({infi}) @@$
     <<- morph(\1, ":V[123]_i", False) and isNextNotCOD() ~>> *
-__[i]__  de (?:manière|façon) +(?:non +|)({w_2}) +et +(?:non +|)({w_2})  @@w,$
+__[i](p_de_manière_façon_xxx_et_xxx)__
+    de (?:manière|façon) +(?:non +|)({w_2}) +et +(?:non +|)({w_2})  @@w,$
     <<- morph(\1, ":A", False) and morphex(\2, ":A", ":[GM]") ~>> *
-__[i]__  de (?:manière|façon) +(?:non +|)({w_2})  @@$
+__[i](p_de_manière_façon)__
+    de (?:manière|façon) +(?:non +|)({w_2})  @@$
     <<- morph(\1, ":A", False) ~>> *
-__[i]__  d(?:e +|’)({w_2}) +({w_2})  @@w,$
+__[i](p_de_nom_adj)__
+    d(?:e +|’)({w_2}) +({w_2})  @@w,$
     <<- morph(\1, ":[NAQ].*:s", False) and morphex(\2, ":[NAQ].*:s", ":[GV]") and isEndOfNG() ~>> *
 
-__[i]__  (?:les? |la |l’|des |ce(?:s|tte|t|) |[mts](?:es|on|a) |[nv]o(?:s|tre) |leurs? |certaine?s? |quelques |aux? ) *({w2}) +({w2})  @@w,$
+__[i](p_det_nom_adj_nom_adj)__
+    (?:les? |la |l’|des |ce(?:s|tte|t|) |[mts](?:es|on|a) |[nv]o(?:s|tre) |leurs? |certaine?s? |quelques |aux? ) *({w2}) +({w2})  @@w,$
     <<- morphex(\1, ":[NAQ]", ":V0") and morphex(\2, ":[NAQ]", ":(?:G|[123][sp]|P)")
     ~2>> *
 
-__[i]__  aucune? (de [nv]ous|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
-__[i]__  aucune? +(des +{w_2}) +ne? @@w <<- ~1>> *
-__[i]__  chacune? (de [nv]ous|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
-__[i]__  l’une? (de [nv]ous|des [nv]ôtres|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
-__[i]__  la plupart (des {w_2}) @@11 <<- ~1>> *
+__[i](p_aucun_de_pronom)__      aucune? (de [nv]ous|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
+__[i](p_aucun_des_xxx_ne)__     aucune? +(des +{w_2}) +ne? @@w <<- ~1>> *
+__[i](p_chacun_de_pronom)__     chacune? (de [nv]ous|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
+__[i](p_l_un_de_pronom)__       l’une? (de [nv]ous|des [nv]ôtres|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
+__[i](p_la_plupart_des_xxx)__   la plupart (des {w_2}) @@11 <<- ~1>> *
 
 # groupe déjà partiellement simplifié (selon les règles de la passe 3)
 __[i](p_groupes_déjà_simplifiés)__
