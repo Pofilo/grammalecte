@@ -503,20 +503,20 @@ TEST: Marion Maréchal-Le Pen. Afin que Maréchal ne soit pas analysé comme un 
 
 
 # HTML
-__<i>/html__  &amp;[a-zA-Z]+; <<- ~>> _
-__<i>/html__  &lt; <<- ~>> "   <"
-__<i>/html__  &gt; <<- ~>> >
-__<i>/html__  &amp; <<- ~>> &
-__<i>/html__  &nbsp; <<- ~>> *
-__<i>/html__  <\w+.*?> <<- ~>> *
-__<i>/html__  </\w+ *> <<- ~>> *
-__<i>/html__  \[/?\w+\] <<- ~>> *
+__<i>/html(p_html_amp_xxx)__            &amp;[a-zA-Z]+; <<- ~>> _
+__<i>/html(p_html_lt)__                 &lt; <<- ~>> "   <"
+__<i>/html(p_html_gt)__                 &gt; <<- ~>> >
+__<i>/html(p_html_amp)__                &amp; <<- ~>> &
+__<i>/html(p_html_nbsp)__               &nbsp; <<- ~>> *
+__<i>/html(p_html_balise_ouvrante)__    <\w+.*?> <<- ~>> *
+__<i>/html(p_html_balise_fermante)__    </\w+ *> <<- ~>> *
+__<i>/html(p_html_pseudo_balise)__      \[/?\w+\] <<- ~>> *
 
 
 # LATEX
-__<i]/latex__  \\[a-z]+ <<- ~>> *
-__<i>/latex__  \\[,;/\\] <<- ~>> *
-__<s>/latex__  \{(?:abstract|align|cases|center|description|enumerate|equation|figure|flush(?:left|right)|gather|minipage|multline|quot(?:ation|e)|SaveVerbatim|table|tabular|thebibliography|[vV]erbatim|verse|wrapfigure)\} <<- ~>> *
+__<i]/latex(p_latex1)__     \\[a-z]+ <<- ~>> *
+__<i>/latex(p_latex2)__     \\[,;/\\] <<- ~>> *
+__<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumerate|equation|figure|flush(?:left|right)|gather|minipage|multline|quot(?:ation|e)|SaveVerbatim|table|tabular|thebibliography|[vV]erbatim|verse|wrapfigure)\} <<- ~>> *
 
 
 
@@ -6983,13 +6983,13 @@ TEST: Qui {{on}} {{tant}} de malheurs !
 TEST: qui on blâme, ce soir ?
 
 
-__[i]/conf__
+__[i]/conf(conf_xxx_on1)__
     {w_2}-(ont) @@$ <<- -1>> on       # Incohérence : “ont” est une forme conjuguée du verbe “avoir” (par exemple: “ils ont”). Pour le pronom personnel, écrivez :
 
 TEST: peut-{{ont}} y arriver avec si peu de moyens ?
 
 
-__[i]/conf__
+__[i]/conf(conf_xxx_on2)__
     ({w_2})( ont)  @@w,$
     <<- morph(\1, ":3s", False) and before("^ *$|, $") -2>> -on
     # Confusion probable : “ont” est une forme conjuguée du verbe “avoir”. Pour le pronom personnel, écrivez “on” et mettez un trait d’union puisqu’il s’agit d’une question.
@@ -8410,7 +8410,8 @@ TEST: C’eût été foncer tête baissée dans la gueule du loup.
 
 ## pouvoir/sembler/paraître/vouloir/devoir/croire/déclarer/penser/dire/affirmer + être/avoir été
 
-__[i]/ppas__ risqu\w+ +(d’)être @@* <<- ~1>> *
+__[i](p_risque_d_être)__
+    risqu\w+ +(d’)être @@* <<- ~1>> *
 
 __[i]/ppas(ppas_je_verbe_être)__
     j(?:e|’(?:y|en)) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2}) @@w,$
