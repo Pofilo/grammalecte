@@ -9110,13 +9110,21 @@ TEST: Et, nous laissant étonnés d’être encore là sans y avoir rien compris
 
 
 ## 2pl
-__[i]/conj(conj_vous_verbe)__
-    ^ *vous +({w2})  @@$
+__[i]/conj(conj_vous_verbe1)__
+    ^ *vous +({w3})  @@$
     <<- morphex(\1, ":V", ":(?:G|Y|P|2p|3[sp])") and not after("^ +(?:je|ils?|elles?|on|[vn]ous) ")
     -1>> =suggVerb(@, ":2p")
     # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: Vous {{arrivais}} trop tard.
+
+
+__[i]/conj(conj_vous_verbe2)__
+    vous [nm](?:e +(?:les? |l’|la |[nv]ous |)|’)({w_3})  @@$
+    <<- morphex(\1, ":V", ":2p") and not word(-1) -1>> =suggVerb(@, ":2p")      # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+TEST: vous ne l’{{avait}} pas vu.
+TEST: je crois, vous m’{{avais}} trompé… 
 
 
 ## se + incohérence
