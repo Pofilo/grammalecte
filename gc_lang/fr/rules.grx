@@ -9165,6 +9165,19 @@ TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
 
 #### IMPÉRATIF !
 
+# Confusions
+
+__[i]/imp(imp_confusion_2e_pers_pluriel)__
+    ({w_2}(?:er|ai[st]|ée?s?)) moi  @@0
+    <<- morph(\1, ":V", False) and not word(-1)
+    ->> =suggVerbTense(\1, ":E", ":2p") + "-moi"                                    # Confusion probable. Pour l’impératif, écrivez :
+
+TEST: {{Donner moi}} une chance
+TEST: je vous en prie, {{prenais moi}} avec vous.
+TEST: {{avançait moi}} de l’argent
+TEST: {{filé moi}} du fric, bon sang !
+
+
 # verbes du 1er et du 3ᵉ groupe en -e
 __[i]/imp(imp_vgroupe1)__
     ^ *(\w+es)(?![- ](?:je|tu|[nv]ous|ils?|elles?|t-ils?|t-elles?))  @@$
