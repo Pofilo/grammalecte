@@ -3598,6 +3598,34 @@ TEST: Car {{s’en}} était vraiment fini !
 TEST: elle {{sang}} était voulu
 
 
+## son / sont
+__[i]/conf(conf_ne_sont)__
+    ne (?:l(?:e|eur|ui) |[nv]ous |)(son)  @@$
+    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+__[i]/conf(conf_me_te_se_son)!6__
+    [mts]e (son)  @@3
+    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+__[i]/conf(conf_son_qqch)__
+    (sont) ({w_2})  @@0,$
+    <<- morphex(\2, ":[NA].*:[me]:s|>[aeéiîou].* :[NA].*:f:s", ":[GW]")
+    and morphex(word(-1), ":V|>(?:à|avec|chez|dès|contre|devant|derrière|en|par|pour|sans|sur) ", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[mts]e) ", True)
+    and not before(r"(?i)\bce que? |[mts]’en +$")
+    -1>> son                        # Confusion : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+__[i]/conf(conf_qui_sont_les)__
+    qui +(son) @@$
+    <<- morph(word(1), ":[DR]", False, True) -1>> sont      # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+
+TEST: ne leur {{son}} pas odieux.
+TEST: Ces chiens me {{son}} odieux.
+TEST: {{sont}} {{pain}}
+TEST: en {{sont}} {{absence}}
+TEST: qui {{son}} ces gens ?
+TEST: ces gens qui {{son}}, dans le meilleur des cas, des imbéciles ne peuvent nous aider.
+TEST: elles s’en sont mal portées
+TEST: ils en sont reconnaissants
+TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
+
+
 # statu / statut
 __[i]/conf(conf_statu_quo)__
     statu[tse] quo <<- ->> statu quo                                                      # Confusion.|https://fr.wiktionary.org/wiki/statu_quo
@@ -7308,33 +7336,6 @@ TEST: Penser par {{soit même}}…
 TEST: S’aimer {{soit-même}}, c’est le début d’une grande histoire d’amour. (Oscar Wilde)
 TEST: Je regrette que l’on en soit encore à des considérations que je croyais dépassées
 TEST: Quoi qu’il en soit
-
-
-# son / sont
-__[i]/conf(conf_ne_sont)__
-    ne (?:l(?:e|eur|ui) |[nv]ous |)(son)  @@$
-    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
-__[i]/conf(conf_me_te_se_son)!6__
-    [mts]e (son)  @@3
-    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
-__[i]/conf(conf_son_qqch)__
-    (sont) ({w_2})  @@0,$
-    <<- morphex(\2, ":[NA].*:[me]:s|>[aeéiîou].* :[NA].*:f:s", ":[GW]")
-    and morphex(word(-1), ":V|>(?:à|avec|chez|dès|contre|devant|derrière|en|par|pour|sans|sur) ", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[mts]e) ", True)
-    and not before(r"(?i)\bce que? |[mts]’en +$")
-    -1>> son                        # Confusion : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
-__[i]/conf(conf_qui_sont_les)__
-    qui +(son) +(?:[lmtscd]es|leurs|[nv]os)  @@w
-    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
-
-TEST: ne leur {{son}} pas odieux.
-TEST: Ces chiens me {{son}} odieux.
-TEST: {{sont}} {{pain}}
-TEST: en {{sont}} {{absence}}
-TEST: qui {{son}} ces gens ?
-TEST: elles s’en sont mal portées
-TEST: ils en sont reconnaissants
-TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
 
 
 # sur / sûr
