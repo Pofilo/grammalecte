@@ -10318,7 +10318,7 @@ TEST: Comment {{danse}} les femmes ?
 
 __[i]/conj(conj_que_où_comment_verbe_sujet)__
     (?:que?|où|comment|combien) +({w_1}[es])(?! je| tu) @@$
-    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N)") -1>> =suggVerb(@, ":3s")   # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
@@ -10330,6 +10330,16 @@ __[i]/conj(conj_que_où_verbe_sujet_3sg)__
 
 TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
 
+
+__[i]/conj(conj_puisse)__
+    (puisses?) ({w_2})  @@0,$
+    <<- not word(-1) >>>
+    <<- morph(\2, ":D.*:p", False) -1>> puissent                                    # Conjugaison erronée. Ce verbe devrait s’accorder au substantif qui le suit.
+    <<- __else__ and \1.endswith("s") and \2 != "tu" and not before(r"(?i)\btu ")
+    -1>> puisse                                                                     # Conjugaison erronée. Sujet “tu” introuvable.
+
+TEST: {{puisse}} les hommes enfin comprendre leurs erreurs.                         ->> puissent
+TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.               ->> puisse
 
 
 #### INTERROGATIVES ?
