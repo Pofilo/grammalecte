@@ -79,7 +79,7 @@ class TestGrammarChecking {
         if (bShowUntested) {
             i = 0;
             for (let [sOpt, sLineId, sRuleId] of gce.listRules()) {
-                if (!this._aRuleTested.has(sLineId) && !/^[0-9]+[sp]$/.test(sRuleId)) {
+                if (!this._aRuleTested.has(sLineId) && !/^[0-9]+[sp]$|^[pd]_/.test(sRuleId)) {
                     sUntestedRules += sRuleId + ", ";
                     i += 1;
                 }
