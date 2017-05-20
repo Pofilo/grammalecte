@@ -466,6 +466,7 @@ __[s](p_points_suspension_entre_crochets)__
 __[s](p_mot_entre_crochets)__
     \[({w_1})\] @@1
     <<- \1.isdigit() ~>> *
+    <<- __else__ and morph(\1, ":G", False) ~>> =" " + \1 + " "
     <<- __else__ ~>> _
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
@@ -498,6 +499,7 @@ TEST: Si l’on peut comprendre que Mme S. ait voulu être prise au sérieux
 TEST: C’est le b.a.-ba du métier.
 TEST: qui a été le plus honnête [Rires]
 TEST: Marion Maréchal-Le Pen. Afin que Maréchal ne soit pas analysé comme un impératif, “Le Pen” devient “Le_Pen”.
+TEST: Car [je] deviendrai plus insaisissable que jamais.
 #TEST: des <b>{{homme}}</b>
 #TEST: des [b]{{femme}}[/b]
 
@@ -4082,6 +4084,7 @@ __[i](p_ces_derniers_temps)__   ces derniers temps <<- ~>> *
 __[i](p_ceux_d_entre_pronom)__  ce(?:lui|lles?|ux) (d’entre (?:[nv]ous|eux|elles)) @@$ <<- ~1>> *
 __[i](p_cette_fois_là)__        cette fois-(?:là|ci) <<- ~>> *
 __[i](p_chacun_d_entre_nous)__  chacune? (d’entre (?:[nv]ous|eux|elles)) @@$ <<- ~1>> *
+__[i](p_chemin_de_fer)__        chemins? (de fer) <<- ~1>> *
 __[i](p_chez)__                 chez (?:[mt]oi|lui|e(?:ux|lles?)|[nv]ous|autrui|quelqu’une?|on ne sait qui) <<- ~>> *
 __[i](p_comme_qqch)__           comme (?:avant|autrefois|d’habitude|toujours|de juste|bon (?:me|te|l(?:ui|eur)|[nv]ous) semble|au bon vieux temps|cul et chemise|frappée?s? par la foudre|n’importe où(?: ailleurs|)|par (?:enchantement|magie|un fait exprès)|promis|si de rien n’était|tout un chacun) <<- ~>> *
 __[i](p_comme_tant_d_autres)__  comme tant d’autres (?:avant|après) (?:[mts]oi|lui|[nv]ous|eux|elles?)(?! qui) <<- ~>> *
