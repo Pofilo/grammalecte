@@ -225,7 +225,7 @@ def main ():
                 echo("textformatter on"  if xArgs.debug  else "textformatter off")
             elif sText == "/help" or sText == "/h":
                 echo(_HELP)
-            elif sText == "/lopt" or sText == "/l":
+            elif sText == "/lopt" or sText == "/lo":
                 gce.displayOptions("fr")
             elif sText.startswith("/lr"):
                 sText = sText.strip()
