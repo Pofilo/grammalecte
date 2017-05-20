@@ -4567,7 +4567,7 @@ __[i](p_le_la_plus_moins_adv_xxxment)__
 __[i](p_complètement)__
     complètement <<- not morph(word(-1), ":D", False, True) ~>> *
 __[i](p_adverbe_xxxment)__
-    (\w+ment)(?: parlant|) @@0 <<- morph(\1, ":W\\b") ~>> *
+    (\w+ment)(?: parlant| pas|) @@0 <<- morph(\1, ":W\\b") ~>> *
 
 # couleurs invariables
 __[i](p_couleurs_invariables)__
@@ -8046,6 +8046,18 @@ TEST: je les imagine forts et intelligents.
 TEST: elles les veulent forts et astucieux.
 TEST: les écarts ont été plus forts en une génération
 TEST: Avec le même nombre de bulletins, les xénophobes apparaîtront plus forts.
+
+
+__[i]/sgpl(sgpl_bien)__
+    biens
+    <<- morphex(word(-1), ":V", ":D.*:p|:A.*:p", False) ->> bien                                    # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
+
+TEST: Ils vont {{biens}}.
+TEST: Elles travaillaient vraiment {{biens}}.
+TEST: Il ne comprenait vraiment pas très {{biens}} ces principes de base.
+TEST: Il a de grands biens.
+TEST: Ce sont des biens de peu de valeur.
+
 
 
 #### INFINITIF
