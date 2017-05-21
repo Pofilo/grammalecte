@@ -3795,6 +3795,78 @@ TEST: C’que j’comprends, c’est qu’il y a des limites à ce qu’on peut 
 TEST: la tentation pour certains médias de ne tout simplement pas rémunérer notre travail si celui-ci n’est finalement pas publié.
 
 
+
+## Incohérences avec formes verbales 1sg et 2sg sans sujet
+__[i](p_notre_père_qui_es_au_cieux)__   notre père (qui est? aux cieux) @@11 <<- ~1>> *
+
+__[i]/conj(conj_xxxai_sans_sujet)!3__
+    \w*ai(?! je)
+    <<- ( morph(\0, ":1s") or ( before("> +$") and morph(\0, ":1s", False) ) ) and not (\0[0:1].isupper() and before0(r"\w"))
+    and not before(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) )")
+    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+__[i]/conj(conj_xxxes_sans_sujet)!3__
+    \w*es(?! tu)
+    <<- morphex(\0, ":2s", ":(?:E|G|W|M|J|[13][sp]|2p)") and not \0[0:1].isupper() and not before("^ *$")
+    and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
+    and not before(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
+    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+__[i]/conj(conj_xxxas_sans_sujet)!3__
+    \w+as(?! tu)
+    <<- morphex(\0, ":2s", ":(?:G|W|M|J|[13][sp]|2p)") and not (\0[0:1].isupper() and before0(r"\w"))
+    and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
+    and not before(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
+    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+__[i]/conj(conj_xxxxs_sans_sujet)!3__
+    \w+[iudnrtpcï]s(?! (?:tu|je))
+    <<- morphex(\0, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)") and not (\0[0:1].isupper() and before0(r"\w"))
+    and ( not morph(\0, ":[NAQ]", False) or before("> +$") or ( re.search("(?i)^étais$", \0) and not morph(word(-1), ":[DA].*:p", False, True) ) )
+    and not before(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) |t(?:u |[’']|oi,? qui |oi seul ))")
+    ->> =suggVerb(@, ":3s")                                                  # Incohérence. Le sujet de cette forme verbale est introuvable.
+__[i]/conj(conj_peux_veux_sans_sujet)!3__
+    [pv]eux(?! (?:tu|je))
+    <<- not (\0[0:1].isupper() and before0(r"\w")) and not before(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) |t(?:u |[’']|oi,? qui |oi seul ))")
+    ->> =suggVerb(@, ":3s")                                                  # Incohérence. Le sujet de cette forme verbale est introuvable.
+__[i]/conj(conj_équivaux_prévaux_sans_sujet)!3__
+    (?:équi|pré|)vaux(?! (?:tu|je))
+    <<- not (\0[0:1].isupper() and before0(r"\w"))
+    and not (\0 == "vaux" and morph(word(-1), ":(?:R|D.*:p)", False, False))
+    and not before(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) |t(?:u |[’']|oi,? qui |oi seul ))")
+    ->> =suggVerb(@, ":3s")                                                  # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+TEST: Caroline, quand l’heure viendra, {{décideras}} de la conduite à tenir.
+TEST: ceux-là, dans tous les cas de figure et dans tous les coups ratés, {{comprenais}} mal pourquoi on leur en voulait.
+TEST: Lui, quand il y pensait, en {{arrivai}} à chaque fois à la même conclusion.
+TEST: Elle, ici et dans tous les cas de figure, {{veux}} toujours en faire plus.
+TEST: Le total de cette opération, contrairement à ce qu’on pense, {{équivaux}} à au moins trois d’entre eux.
+TEST: {{j'}}ai signalé que {{j'}}essayais de regrouper les paragraphes. (Tests avec apostrophe droite.)
+TEST: je me questionne, {{exiges}} des réponses mais n’en obtiens pas…
+TEST: dans tous les cas de figure imaginés par cette bande de nuls, il n’y en a pas un qui les sauvera.
+TEST: ces gens qui vont par monts et par vaux.
+
+
+## Incohérences avec formes verbales 1pl et 2pl sans sujet
+__[i]/conj(conj_xxxons_sans_sujet)!3__
+    \w+ons(?! nous)
+    <<- morphex(\0, ":V.*:1p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
+    and not before0(r"\b(?:[nN]ous(?:-mêmes?|)|[eE]t moi(?:-même|)|[nN]i (?:moi|nous)),? ")
+    ->> =suggVerb(@, ":3p")                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
+__[i]/conj(conj_xxxez_sans_sujet)!3__
+    \w+ez(?! vous)
+    <<- morphex(\0, ":V.*:2p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
+    and not before0(r"\b(?:[vV]ous(?:-mêmes?|)|[eE]t toi(?:-même|)|[tT]oi(?:-même|) et|[nN]i (?:vous|toi)),? ")
+    ->> _                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
+
+TEST: les hommes et les femmes, qui sans un bruit, sans une parole amère, {{continuerons}} leur tâche n’en seront pas plus récompensés.
+TEST: il était dit que cette femme et son frère {{promènerez}} leur chien à cette heure de la journée.
+TEST: cet homme et cette femme {{pouvez}} y parvenir avec de la persévérance
+TEST: Comme on lui disait que vous-même aviez déjà consulté le notaire
+TEST: ce sont des terroristes et ça ne nous arrivera pas à nous, qui n’avons rien à nous reprocher
+TEST: mes supérieurs et moi-même avons pris la décision de ne pas vendre
+TEST: Ni lui ni moi n’avions mangé
+TEST: Mon épouse et moi-même avons toujours dit
+
+
+
 #### SGPL
 
 ## plus que prévu / mois que prévu
@@ -4347,7 +4419,6 @@ __[i](p_mode_de)__                      modes? (de (?:paiement|scrutin|vie)) @@$
 __[i](p_mot_de_passe)__                 mots? (de passe) @@$ <<- ~1>> *
 __[i](p_moule_à_qqch)__                 moules? (à (?:gaufres?|gâteaux?|brioche|manqué|savarin|charlotte)) @@$ <<- ~1>> *
 __[i](p_noix_de)__                      noix (de (?:cajou|p[ée]can|coco|lavage|muscade|veau|macadamia)) @@$ <<- ~1>> *
-__[i](p_notre_père_qui_es_au_cieux)__   notre père (qui est? aux cieux) @@11 <<- ~1>> *
 __[i](p_numéro)__
     numéro (un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix(?:-sept|-huit|-neuf|)|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante(?:-dix|)|quatre-vingt(?:-dix|)|cent|mille|\d+) @@$
     <<- before(r"\b[lL]a +$") =>> define(\0, [">numéro :N:f:s"])
@@ -9850,7 +9921,7 @@ __[i]/conj(conj_mieux_vaut)__
     mieux (va(?:ux|lais|udrais))  @@$
     <<- -1>> =\1[:-1]+"t"                                    # Conjugaison erronée. Accord avec “mieux” : utilisez la 3ᵉ personne du singulier.
 
-TEST: Mieux {{vaux}} ne rien dire.
+TEST: avec toi qui ne sais rien de rien, mieux {{vaux}} ne rien dire.
 TEST: Mais là-bas mieux {{valais}} ouvrir sa gueule que se taire.
 
 
@@ -9952,47 +10023,6 @@ TEST: une crise {{violent}}
 TEST: un cri {{violes}}
 
 
-## Incohérences avec formes verbales 1sg et 2sg
-__[i]/conj(conj_xxxai_sans_sujet)__
-    \w*ai(?! je)
-    <<- ( morph(\0, ":1s") or ( before("> +$") and morph(\0, ":1s", False) ) ) and not (\0[0:1].isupper() and before0(r"\w"))
-    and not before0(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) )")
-    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
-__[i]/conj(conj_xxxes_sans_sujet)__
-    \w*es(?! tu)
-    <<- morphex(\0, ":2s", ":(?:E|G|W|M|J|[13][sp]|2p)") and not \0[0:1].isupper() and not before("^ *$")
-    and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
-    and not before0(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
-    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
-__[i]/conj(conj_xxxas_sans_sujet)__
-    \w+as(?! tu)
-    <<- morphex(\0, ":2s", ":(?:G|W|M|J|[13][sp]|2p)") and not (\0[0:1].isupper() and before0(r"\w"))
-    and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
-    and not before0(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
-    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
-__[i]/conj(conj_xxxxs_sans_sujet)__
-    \w+[iudnrtpcï]s(?! (?:tu|je))
-    <<- morphex(\0, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)") and not (\0[0:1].isupper() and before0(r"\w"))
-    and ( not morph(\0, ":[NAQ]", False) or before("> +$") or ( re.search("(?i)^étais$", \0) and not morph(word(-1), ":[DA].*:p", False, True) ) )
-    and not before0(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) |t(?:u |[’']|oi,? qui |oi seul ))")
-    ->> =suggVerb(@, ":3s")                                                  # Incohérence. Le sujet de cette forme verbale est introuvable.
-__[i]/conj(conj_peux_veux_sans_sujet)__
-    [pv]eux(?! (?:tu|je))
-    <<- not (\0[0:1].isupper() and before0(r"\w")) and not before0(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) |t(?:u |[’']|oi,? qui |oi seul ))")
-    ->> =suggVerb(@, ":3s")                                                  # Incohérence. Le sujet de cette forme verbale est introuvable.
-__[i]/conj(conj_équivaux_prévaux_sans_sujet)__
-    (?:équi|pré|)vaux(?! (?:tu|je))
-    <<- not (\0[0:1].isupper() and before0(r"\w")) and not before0(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) |t(?:u |[’']|oi,? qui |oi seul ))")
-    ->> =suggVerb(@, ":3s")                                                  # Incohérence. Le sujet de cette forme verbale est introuvable.
-
-TEST: Caroline, quand l’heure viendra, {{décideras}} de la conduite à tenir.
-TEST: ceux-là, dans tous les cas de figure et dans tous les coups ratés, {{comprenais}} mal pourquoi on leur en voulait.
-TEST: Lui, quand il y pensait, en {{arrivai}} à chaque fois à la même conclusion.
-TEST: Elle, ici et dans tous les cas de figure, {{veux}} toujours en faire plus.
-TEST: Le total de cette opération, contrairement à ce qu’on pense, {{équivaux}} à au moins trois d’entre eux.
-TEST: {{j'}}ai signalé que {{j'}}essayais de regrouper les paragraphes. (Tests avec apostrophe droite.)
-
-
 ## 1pl
 __[i]/conj(conj_nous_pronom)__
     ^ *nous +> +({w1})  @@$
@@ -10027,27 +10057,6 @@ TEST: vous {{donné}} du bonheur
 TEST: vous lui {{donner}} du temps
 TEST: vous qui {{avançait}} dans la nuit comme des ombres furtives
 
-
-## Incohérences avec formes verbales 1pl et 2pl
-__[i]/conj(conj_xxxons_sans_sujet)__
-    \w+ons(?! nous)
-    <<- morphex(\0, ":V.*:1p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
-    and not before0(r"\b(?:[nN]ous(?:-mêmes?|)|[eE]t moi(?:-même|)|[nN]i (?:moi|nous)),? ")
-    ->> =suggVerb(@, ":3p")                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
-__[i]/conj(conj_xxxez_sans_sujet)__
-    \w+ez(?! vous)
-    <<- morphex(\0, ":V.*:2p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
-    and not before0(r"\b(?:[vV]ous(?:-mêmes?|)|[eE]t toi(?:-même|)|[tT]oi(?:-même|) et|[nN]i (?:vous|toi)),? ")
-    ->> _                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
-
-TEST: les hommes et les femmes, qui sans un bruit, sans une parole amère, {{continuerons}} leur tâche n’en seront pas plus récompensés.
-TEST: il était dit que cette femme et son frère {{promènerez}} leur chien à cette heure de la journée.
-TEST: cet homme et cette femme {{pouvez}} y parvenir avec de la persévérance
-TEST: Comme on lui disait que vous-même aviez déjà consulté le notaire
-TEST: ce sont des terroristes et ça ne nous arrivera pas à nous, qui n’avons rien à nous reprocher
-TEST: mes supérieurs et moi-même avons pris la décision de ne pas vendre
-TEST: Ni lui ni moi n’avions mangé
-TEST: Mon épouse et moi-même avons toujours dit
 
 
 ## 3pl
