@@ -322,6 +322,7 @@ class Dictionnaire:
                "# file, You can obtain one at http://mozilla.org/MPL/2.0/.\n\n" + \
                "# AFFIXES DU {} v{}\n".format(dTplVars['name'], self.sVersion) + \
                "# par Olivier R. -- licence MPL 2.0\n" + \
+               "# Généré le " + time.strftime("%d-%m-%Y à %H:%M") + "\n" \
                "# Pour améliorer le dictionnaire, allez sur http://www.dicollecte.org/\n\n"
                
         with open(spDst+'/'+dTplVars['asciiName']+'.aff', 'w', encoding='utf-8', newline="\n") as hDst:
