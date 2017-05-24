@@ -313,6 +313,7 @@ var oGrammarChecker = {
     },
     _purgeTags: function (sText) {
         sText = sText.replace(/<br ?\/?>/ig, " ");
+        sText = sText.replace(/<font size="[+-]\d+">/g, "");
         return sText.replace(/<\/? ?[a-zA-Z]+ ?>/g, "");
     },
     _createNodeSpellErrorDescription: function (xEditor, nError, dErr, iParagraph) {
