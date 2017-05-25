@@ -6265,8 +6265,15 @@ TEST: de mon point de {{vues}}
 
 ############################## CONFUSIONS, HOMONYMES ET FAUX-AMIS ###############################
 
-# acre / âcre
+# abuser / abusé / abusif
+__[i]/conf(conf_abusif)__
+    c’est +(abus(?:é|er))
+    <<- not word(1) -1>> abusif                                 # Confusion. Concernant les actes, on parle de pratiques abusives. On abuse des choses ou des personnes.
 
+TEST: C’est {{abusé}} !
+
+
+# acre / âcre
 __[i]/conf(conf_acre)__
     \d+ (âcres?)  @@$
     <<- -1>> =\1.replace("â", "a").replace("Â", "A")
@@ -10671,6 +10678,7 @@ TODO: Des copains plus vieux que moi qui fumaient.
 TODO: Des copains plus vieux que toi qui fumaient.
 TODO: André Juin était un sculpteur français.
 TODO: La bataille de Monte Cassino révèle le génie militaire du général Juin.
+TODO: Les côtes sont dans leur ensemble extrêmement découpées.
 
 
 #######################################################################################################################
@@ -10755,7 +10763,6 @@ TEST: ces avantages ne sont somme toute pas assez importants
 TEST: les différents partis politiques
 TEST: Certains ont encore du mal à y croire.
 TEST: Élus, chefs d’entreprise, professionnels de l’éducation, représentants des institutions, nous avons besoin de vous.
-TODO: Les côtes sont dans leur ensemble extrêmement {{découpées}}.
 
 ## version 0.5.0
 TEST: J’ai cours à présent.
