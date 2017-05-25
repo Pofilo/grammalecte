@@ -169,7 +169,7 @@ function _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, bDebu
                             }
                             catch (e) {
                                 echo(s);
-                                echo("# id-rule:" + sLineId);
+                                echo("# line id: " + sLineId + "\n# rule id: " + sRuleId);
                                 helpers.logerror(e);
                             }
                         }

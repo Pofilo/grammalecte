@@ -126,7 +126,7 @@ def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, 
                                 elif cActionType == ">":
                                     break
                             except Exception as e:
-                                raise Exception(str(e), sLineId)
+                                raise Exception(str(e), "# " + sLineId + " # " + sRuleId)
     if bChange:
         return (s, dErrs)
     return (False, dErrs)
