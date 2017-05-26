@@ -4543,8 +4543,9 @@ __[i](p_effet_Streisand)__      effets? (Streisand) @@$ <<- ~1>> *
 __[i](p_prix_Nobel)__           prix (Nobel) @@5 <<- ~1>> *
 __[s](p_Amérique)__             Amérique (centrale|du (?:Nord|Sud)) @@$ <<- ~1>> *
 __[s](p_nom_propre_nom_propre)__
-    ([A-ZÉÈÂ][\w-]+) ([A-ZÉÈÂ][\w-]+) @@0,$
-    <<- morph(\1, ":M[12]", False) and (morph(\2, ":(?:M[12]|V)", False) or not spell(\2)) ~2>> *
+    ([A-ZÉÈÂ][\w-]+) (L[ea] |[vV][oa]n |Mac |)([A-ZÉÈÂ][\w-]+) @@0,*,$
+    <<- morph(\1, ":M[12]", False) and (morph(\3, ":(?:M[12]|V)", False) or not spell(\3)) ~3>> *
+    <<- __also__ and \2 != "" ~2>> *
 __[s](p_de_nom_propre_et_ou_de_nom_propre)__
     (?:de |d’)([A-ZÉÈÂ][\w-]+) +(?:et|ou) +(?:de |d’)([A-ZÉÈÂ][\w-]+) @@w,$
     <<- morph(\1, ":M", False) and morph(\2, ":M", False) ~>> *
