@@ -233,7 +233,7 @@ def createOptionsForFirefox (dVars):
 def createFirefoxExtension (sLang, dVars):
     "create extension for Firefox"
     print("Building extension for Firefox")
-    eraseFolder("_build/xpi/"+sLang)
+    createCleanFolder("_build/xpi/"+sLang)
     dir_util.copy_tree("gc_lang/"+sLang+"/xpi/", "_build/xpi/"+sLang)
     dir_util.copy_tree("grammalecte-js", "_build/xpi/"+sLang+"/grammalecte")
     sHTML, dProperties = createOptionsForFirefox(dVars)
