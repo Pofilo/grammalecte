@@ -10189,12 +10189,12 @@ TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même tromp�
 __[i]/conj(conj_det_plur_nom)__
     ([lcmts]es|[nv]os|leurs|quelques|certaine?s|plusieurs) +({w_2}) +(?:qui +|)(?!j’|c’)({w_2})  @@0,w,$
     <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True) and not checkAgreement(\2, \3)
-    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:le|ce(?:tte|t|)|[mts](?:on|a)) .+ entre .+ et ") )
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|ce(?:tte|t|) |[mts](?:on|a) ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 __[i]/conj(conj_det_plur_nom_pronom)__
     ([lcmts]es|[nv]os|leurs|quelques|certaine?s|plusieurs) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
     <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
-    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:le|ce(?:tte|t|)|[mts](?:on|a)) .+ entre .+ et ") )
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|ce(?:tte|t|) |[mts](?:on|a) ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Les abstentions {{est}} présumée manifester un défaut d’opinion marquée
@@ -10213,6 +10213,7 @@ TEST: les charmantes petites mines de toutes les jeunes filles
 TEST: Les pauvres petites dames sont folles
 TEST: Les entrepreneurs ont {{cherchaient}} la reconnaissance sociale
 TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
+TEST: l’écart entre les riches et les pauvres n’était pas si grand.
 
 
 __[i]/conj(conj_des_nom)__
