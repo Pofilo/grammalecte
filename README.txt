@@ -1,5 +1,5 @@
 
-= GRAMMALECTE =
+# GRAMMALECTE
 
 Grammar checker
 
