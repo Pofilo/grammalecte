@@ -4792,7 +4792,7 @@ TEST: Elle fut dès le départ structurée ainsi.
 TEST: Ben voyons, c’est sûr, aucun problème !
 TEST: ça peut être dans huit jours.
 TEST: La secrétaire d’Etat à l’égalité entre les femmes et les hommes hérite de la lutte contre les discriminations
-TEST: les populistes d'Europe centrale et de l'Est ont d'ores et déjà tellement réussi à compromettre les institutions de leur pays
+TEST: les populistes d’Europe centrale et de l’Est ont d’ores et déjà tellement réussi à compromettre les institutions de leur pays
 
 
 #### DÉSAMBIGUÏSATION
@@ -10009,14 +10009,14 @@ TEST: boire immodérément {{nuis}} à la santé
 
 __[i]/conj(conj_det_sing_nom)__
     (?<![dD]’)(l[ea] |une? |l’|[mts](?:on|a) |ce(?:tte|t|) |leur ) *({w_2}) +(?:qui +|)(?!j’|c’)({w_2})  @@0,w,$
-    <<- not (re.search("(?i)^une? +(?:dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|poignée) ", \0) and morph(\3, ":3p", False)) and
-    morphex(word(-1), ":C", ":(?:Y|P)", True) and morph(\2, ":[NAQ].*:[si]", False) and morphex(\3, ":V", ":(?:3s|P|Q|Y|3p!|G)")
+    <<- not (re.search("(?i)^une? +(?:dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|poignée|tas|paquet) ", \0) and morph(\3, ":3p", False))
+    and morphex(word(-1), ":C", ":(?:Y|P)", True) and morph(\2, ":[NAQ].*:[si]", False) and morphex(\3, ":V", ":(?:3s|P|Q|Y|3p!|G)")
     and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[1-3]p", False)) and not before(r"(?i)\bni .* ni\b") and not checkAgreement(\2, \3)
     -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 __[i]/conj(conj_det_sing_nom_pronom)__
     (?<![dD]’)(l[ea] |une? |l’|[mts](?:on|a) |ce(?:tte|t|) |leur |nul(?:le|) ) *({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
-    <<- not (re.search("(?i)^une? +(?:dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|poignée) ", \0) and morph(\3, ":3p", False)) and
-    morphex(word(-1), ":C", ":(?:Y|P)", True) and morph(\2, ":[NAQ].*:[si]", False) and morphex(\3, ":V", ":(?:3s|1p|P|Q|Y|3p!|G)")
+    <<- not (re.search("(?i)^une? +(?:dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|poignée|tas|paquet) ", \0) and morph(\3, ":3p", False))
+    and morphex(word(-1), ":C", ":(?:Y|P)", True) and morph(\2, ":[NAQ].*:[si]", False) and morphex(\3, ":V", ":(?:3s|1p|P|Q|Y|3p!|G)")
     and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[123]p", False)) and not before(r"(?i)\bni .* ni\b")
     -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -10037,6 +10037,8 @@ TEST: J’aimerais aussi que mon problème {{sois}} réglé.                    
 TEST: La proscription de nager {{pourraient}} nous porter préjudice à long terme                    ->> pourrait
 TEST: L’hypothétique nouveau président
 TEST: une majorité de garçons voient mal comment faire
+TEST: un tas de choses pouvaient aller de travers.
+TEST: un paquet de gens futés n’y ont vu que du feu.
 
 
 # confusions noms/adjectifs/verbes (voir règles DPP)
