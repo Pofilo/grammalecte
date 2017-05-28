@@ -3233,6 +3233,9 @@ __[s>/conf(conf_c_est2)__
 __[s]/conf(conf_c_est3)__
     ([scSC]es) (?:qu(?:lle|el?|)|comme|ce(?:t|tte|)|[nv]os|les?|eux|elles)  @@0
     <<- -1>> c’est                                                                          # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
+__[s]/conf(conf_c_est4)__
+    ([scSC]es) ({w_1}) ({w_1}) @@0,w,$
+    <<- morph(\2, ":[WX]", False) and morph(\3, ":[RD]|>pire ", False) -1>> c’est           # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
 __[i]/conf(conf_ces_ses)__
     (c’est) ({w_2})  @@0,6 <<- morphex(\2, ":N.*:p", ":(?:G|W|M|A.*:[si])") -1>> ces|ses    # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
 
@@ -3240,6 +3243,7 @@ TEST: {{ses}} au-dessus de ses forces.
 TEST: {{ces}} comme la peste
 TEST: car {{ses}} d’avance perdu
 TEST: {{ces}} qu’il y a tant de pertes
+TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
 TEST: En 2015, c’est Paris et son agglomération qui…
 
@@ -4365,6 +4369,7 @@ __[i](p_armée_de)__                     armées? (de (?:l’air|terre)) @@$ <<-
 __[i](p_armé_jusqu_aux_dents_)__        armée?s? (jusqu aux dents) @@$ <<- ~1>> *
 __[i](p_armes)__                        armes? (à feu|de (?:poing|guerre|destruction massive)) @@$ <<- ~1>> *
 __[i](p_attestation_sur_l_honneur)__    (?:attestation|déclaration)s? (sur l’honneur) @@$ <<- ~1>> *
+__[i](p_attendre_de_pied_ferme)__       attend\w* (de pied ferme) @@$ <<- ~1>> *
 __[i](p_ayants_droit)__                 ayants (droit) @@$ <<- ~1>> *
 __[i](p_boite_aux_lettres)__            bo[îi]tes? (aux lettres) @@$ <<- ~1>> *
 __[u](p_bisphenol_A)__                  bisph[ée]nols? (A) @@$ <<- ~1>> *
