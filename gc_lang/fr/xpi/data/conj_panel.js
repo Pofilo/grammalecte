@@ -95,7 +95,7 @@ function createVerbAndConjugate (sVerb) {
                         document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = true;
                         document.getElementById('opro_lbl').style = "color: #CCC;";
-                    } else if (sRawInfo[5] == "q" || sRawInfo[5] == "e") {
+                    } else if (["q", "u", "v", "e"].includes(sRawInfo[5])) {
                         document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = false;
                         document.getElementById('opro_lbl').style = "color: #000;";
@@ -103,7 +103,7 @@ function createVerbAndConjugate (sVerb) {
                         document.getElementById('opro').checked = true;
                         document.getElementById('opro').disabled = true;
                         document.getElementById('opro_lbl').style = "color: #CCC;";
-                    } else if (sRawInfo[5] == "!") {
+                    } else if (sRawInfo[5] == "x") {
                         document.getElementById('opro').textContent = "cas particuliers";
                         document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = true;

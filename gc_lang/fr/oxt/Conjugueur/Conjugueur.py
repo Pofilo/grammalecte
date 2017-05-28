@@ -303,13 +303,13 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
                     if sRawInfo[5] == "_":
                         self.opro.State = False
                         self.opro.Enabled = False
-                    elif sRawInfo[5] == "q" or sRawInfo[5] == "e":
+                    elif sRawInfo[5] in ["q", "u", "v", "e"]:
                         self.opro.State = False
                         self.opro.Enabled = True
                     elif sRawInfo[5] == "p" or sRawInfo[5] == "r":
                         self.opro.State = True
                         self.opro.Enabled = False
-                    elif sRawInfo[5] == "!":
+                    elif sRawInfo[5] == "x":
                         self.opro.Label = "cas particuliers"
                         self.opro.State = False
                         self.opro.Enabled = False

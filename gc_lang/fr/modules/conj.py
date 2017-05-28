@@ -28,8 +28,8 @@ _dTenseIdx = { ":PQ": 0, ":Ip": 1, ":Iq": 2, ":Is": 3, ":If": 4, ":K": 5, ":Sp":
 
 
 
-def isVerb (s):
-    return s in _dVerb
+def isVerb (sVerb):
+    return sVerb in _dVerb
 
 
 def getConj (sVerb, sTense, sWho):
@@ -242,24 +242,24 @@ class Verb ():
             else:
                 self.sVerbAux = "avoir"
             sGroup = _dGroup.get(self._sRawInfo[0], "# erreur ")
-            s = ""
+            sInfo = ""
             if self._sRawInfo[3:4] == "t":
-                s = "transitif"
+                sInfo = "transitif"
             elif self._sRawInfo[4:5] == "n":
-                s = "transitif indirect"
+                sInfo = "transitif indirect"
             elif self._sRawInfo[2:3] == "i":
-                s = "intransitif"
+                sInfo = "intransitif"
             elif self._sRawInfo[5:6] == "r":
-                s = "pronominal réciproque"
+                sInfo = "pronominal réciproque"
             elif self._sRawInfo[5:6] == "p":
-                s = "pronominal"
-            if self._sRawInfo[5:6] == "q" or self._sRawInfo[5:6] == "e":
-                s = s + " (+ usage pronominal)"
+                sInfo = "pronominal"
+            if self._sRawInfo[5:6] in ["q", "u", "v", "e"]:
+                sInfo = sInfo + " (+ usage pronominal)"
             if self._sRawInfo[6:7] == "m":
-                s = s + " impersonnel"
-            if not s:
-                s = "# erreur - code : " + self._sRawInfo
-            return sGroup + " · " + s
+                sInfo = sInfo + " impersonnel"
+            if not sInfo:
+                sInfo = "# erreur - code : " + self._sRawInfo
+            return sGroup + " · " + sInfo
         except:
             traceback.print_exc()
             return "# erreur"
@@ -298,27 +298,27 @@ class Verb ():
             if not self.dConj[":PQ"][":P"]:
                 return ""
             if bTpsCo:
-                s = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":PQ", ":P")  if not bPro  else  getConj("être", ":PQ", ":P")
+                sPartPre = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":PQ", ":P")  if not bPro  else  getConj("être", ":PQ", ":P")
             else:
-                s = self.dConj[":PQ"][":P"]
-            if not s:
+                sPartPre = self.dConj[":PQ"][":P"]
+            if not sPartPre:
                 return ""
-            bEli = True  if _zStartVoy.search(s)  else  False
+            bEli = True  if _zStartVoy.search(sPartPre)  else  False
             if bPro:
                 if self.bProWithEn:
-                    s = "s’en " + s
+                    sPartPre = "s’en " + sPartPre
                 else:
-                    s = "s’" + s  if bEli  else  "se " + s
+                    sPartPre = "s’" + sPartPre  if bEli  else  "se " + sPartPre
             if bNeg:
                 if bEli and not bPro:
-                    s = "n’" + s + " pas"
+                    sPartPre = "n’" + sPartPre + " pas"
                 else:
-                    s = "ne " + s + " pas"
+                    sPartPre = "ne " + sPartPre + " pas"
             if bTpsCo:
-                s += " " + self._seekPpas(bPro, bFem, self._sRawInfo[5] == "r")
+                sPartPre += " " + self._seekPpas(bPro, bFem, self._sRawInfo[5] == "r")
             if bInt:
-                s += " … ?"
-            return s
+                sPartPre += " … ?"
+            return sPartPre
         except:
             traceback.print_exc()
             return "# erreur"
@@ -330,35 +330,35 @@ class Verb ():
             if not bTpsCo and bInt and sWho == ":1s" and self.dConj[sTemps].get(":1ś", False):
                 sWho = ":1ś"
             if bTpsCo:
-                s = _getConjWithTags(self.sVerbAux, self._tTagsAux, sTemps, sWho)  if not bPro  else  getConj("être", sTemps, sWho)
+                sConj = _getConjWithTags(self.sVerbAux, self._tTagsAux, sTemps, sWho)  if not bPro  else  getConj("être", sTemps, sWho)
             else:
-                s = self.dConj[sTemps][sWho]
-            if not s:
+                sConj = self.dConj[sTemps][sWho]
+            if not sConj:
                 return ""
-            bEli = True  if _zStartVoy.search(s)  else  False
+            bEli = True  if _zStartVoy.search(sConj)  else  False
             if bPro:
                 if not self.bProWithEn:
-                    s = _dProObjEl[sWho] + s  if bEli  else _dProObj[sWho] + s
+                    sConj = _dProObjEl[sWho] + sConj  if bEli  else _dProObj[sWho] + sConj
                 else:
-                    s = _dProObjEl[sWho] + "en " + s
+                    sConj = _dProObjEl[sWho] + "en " + sConj
             if bNeg:
-                s = "n’" + s  if bEli and not bPro  else  "ne " + s
+                sConj = "n’" + sConj  if bEli and not bPro  else  "ne " + sConj
             if bInt:
-                if sWho == ":3s" and not _zNeedTeuph.search(s):
-                    s += "-t"
-                s += "-" + self._getPronom(sWho, bFem)
+                if sWho == ":3s" and not _zNeedTeuph.search(sConj):
+                    sConj += "-t"
+                sConj += "-" + self._getPronom(sWho, bFem)
             else:
                 if sWho == ":1s" and bEli and not bNeg and not bPro:
-                    s = "j’" + s
+                    sConj = "j’" + sConj
                 else:
-                    s = self._getPronom(sWho, bFem) + " " + s
+                    sConj = self._getPronom(sWho, bFem) + " " + sConj
             if bNeg:
-                s += " pas"
+                sConj += " pas"
             if bTpsCo:
-                s += " " + self._seekPpas(bPro, bFem, sWho.endswith("p") or self._sRawInfo[5] == "r")
+                sConj += " " + self._seekPpas(bPro, bFem, sWho.endswith("p") or self._sRawInfo[5] == "r")
             if bInt:
-                s += " … ?"
-            return s
+                sConj += " … ?"
+            return sConj
         except:
             traceback.print_exc()
             return "# erreur"
@@ -382,28 +382,28 @@ class Verb ():
             if not self.dConj[":E"][sWho]:
                 return ""
             if bTpsCo:
-                s = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":E", sWho)  if not bPro  else  getConj(u"être", ":E", sWho)
+                sImpe = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":E", sWho)  if not bPro  else  getConj(u"être", ":E", sWho)
             else:
-                s = self.dConj[":E"][sWho]
-            if not s:
+                sImpe = self.dConj[":E"][sWho]
+            if not sImpe:
                 return ""
-            bEli = True  if _zStartVoy.search(s)  else  False
+            bEli = True  if _zStartVoy.search(sImpe)  else  False
             if bNeg:
                 if bPro:
                     if not self.bProWithEn:
                         if bEli and sWho == ":2s":
-                            s = "ne t’" + s + " pas"
+                            sImpe = "ne t’" + sImpe + " pas"
                         else:
-                            s = _dImpeProNeg[sWho] + s + " pas"
+                            sImpe = _dImpeProNeg[sWho] + sImpe + " pas"
                     else:
-                        s = _dImpeProNegEn[sWho] + s + " pas"
+                        sImpe = _dImpeProNegEn[sWho] + sImpe + " pas"
                 else:
-                    s = "n’" + s + " pas"  if bEli  else  "ne " + s + " pas"
+                    sImpe = "n’" + sImpe + " pas"  if bEli  else  "ne " + sImpe + " pas"
             elif bPro:
-                s = s + _dImpeProEn[sWho]  if self.bProWithEn  else  s + _dImpePro[sWho]
+                sImpe = sImpe + _dImpeProEn[sWho]  if self.bProWithEn  else  sImpe + _dImpePro[sWho]
             if bTpsCo:
-                return s + " " + self._seekPpas(bPro, bFem, sWho.endswith("p") or self._sRawInfo[5] == "r")
-            return s
+                return sImpe + " " + self._seekPpas(bPro, bFem, sWho.endswith("p") or self._sRawInfo[5] == "r")
+            return sImpe
         except:
             traceback.print_exc()
             return "# erreur"
