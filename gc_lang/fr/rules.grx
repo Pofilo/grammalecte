@@ -4633,10 +4633,15 @@ __[i](p_avoir_tous_toutes_les)__
     ({avoir}) +(tou(?:te|)s les ({w_2})) +({w_2})  @@0,w,>3:$,$
     <<- morph(\1, ":V0a", False) and morph(\3, ":B", False) and morph(\4, ":(?:Q|V1.*:Y)", False) ~2>> *
 
-
 # elle aussi + adj
-__[i](p_elle_aussi)__           (elle aussi) +({w_3}) @@0,$ <<- morph(\2, ":A:[fe]:s", False) ~1>> *
-__[i](p_elles_aussi)__          (elles aussi) +({w_3}) @@0,$ <<- morph(\2, ":A:[fe]:p", False) ~1>> *
+__[i](p_elle_aussi)__
+    (elle aussi) +({w_3}) @@0,$
+    <<- morph(\2, ":A:[fe]:s", False) ~1>> *
+    <<- __else__ and morphex(\2, ":W", ":3s") and morph(word(1), ":A:[fe]:s", False, True) ~1>> *
+__[i](p_elles_aussi)__
+    (elles aussi) +({w_3}) @@0,$
+    <<- morph(\2, ":A:[fe]:p", False) ~1>> *
+    <<- __else__ and morphex(\2, ":W", ":3p") and morph(word(1), ":A:[fe]:p", False, True) ~1>> *
 
 # après verbe
 __[i](p_verbe_loc_adv1)__       ({w1}) (?:pas |)(jour et nuit|quand même(?: pas|)) @@0,$ <<- morph(\1, ":V", False) ~2>> *
@@ -4823,7 +4828,7 @@ TEST: Ben voyons, c’est sûr, aucun problème !
 TEST: ça peut être dans huit jours.
 TEST: La secrétaire d’Etat à l’égalité entre les femmes et les hommes hérite de la lutte contre les discriminations
 TEST: les populistes d’Europe centrale et de l’Est ont d’ores et déjà tellement réussi à compromettre les institutions de leur pays
-TODO: Deirdre, elle aussi légèrement ostracisée, m’interrogea.
+TEST: Deirdre, elle aussi légèrement ostracisée, m’interrogea.
 
 
 #### DÉSAMBIGUÏSATION
