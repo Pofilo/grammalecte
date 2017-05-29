@@ -3303,8 +3303,37 @@ TEST: ils sont {{d’avantages}} perdus que les autres.
 __[i]/conf(conf_différent)__
     différends?
     <<- morph(word(-1), ":W", False, False) ->> =\0.replace("end", "ent")           # Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez :
+__[i]/conf(conf_différend)__
+    (?:[mts]on|[vn]otre|leur) +(différent) @@$
+    <<- morphex(word(1), ":[GVX]", ":[NAQ]", True)
+    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+__[i]/conf(conf_un_différend)__
+    un (différent)  @@3
+    <<- morphex(word(1), ":[GV]", ":[NAQ]", False)
+    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+__[i]/conf(conf_différends)__
+    (?:leurs|[mts]es|[nv]os) (différents) @@$
+    <<- morphex(word(1), ":[GV]", ":[NAQ]", True)
+    -1>> différends                                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+__[i]/conf(conf_les_différends)__
+    (?:[ld]es) (différents) @@$
+    <<- morphex(word(1), ":G", ":[NAQ]", False)
+    -1>> différends                                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+__[i]/conf(conf_être_différent)__
+    ({etre}) +(?:pas +|)(?:si +|)(différends?)  @@0,$
+    <<- morph(\1, ":V0e", False)
+    -2>> =\2.replace("nd", "nt")                            # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 
 TEST: Très {{différends}} de nous, ces gens-là !
+TEST: Régler votre {{différent}}.
+TEST: Notre {{différent}} avec eux perdure.
+TEST: Un {{différent}} peut toujours se résoudre.
+TEST: J’en ai marre de leurs {{différents}}.
+TEST: Il y a des {{différents}} que nul ne saurait résoudre.
+TEST: Ils sont pas {{différends}} de nous.
+TEST: J’en veux un différent.
+TEST: dans ses différents ouvrages
+TEST: dans ses différents postes gouvernementaux
 
 
 # eh bien, hé bien / et bien
@@ -6704,38 +6733,6 @@ __[i]/conf(conf_deceler_qqch)__
 TEST: il y a une erreur qu’on peut {{desceller}} dans ses analyses.
 TEST: elle a {{dessellé}} une forte hostilité dans ses propos.
 
-
-# différend / différent
-__[i]/conf(conf_différend)__
-    (?:[mts]on|[vn]otre|leur) +(différent) @@$
-    <<- morphex(word(1), ":[GVX]", ":[NAQ]", True)
-    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_un_différend)__
-    un (différent)  @@3
-    <<- morphex(word(1), ":[GV]", ":[NAQ]", False)
-    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_différends)__
-    (?:leurs|[mts]es|[nv]os) (différents) @@$
-    <<- morphex(word(1), ":[GV]", ":[NAQ]", True)
-    -1>> différends                                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_les_différends)__
-    (?:[ld]es) (différents) @@$
-    <<- morphex(word(1), ":G", ":[NAQ]", False)
-    -1>> différends                                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_être_différent)__
-    ({etre}) +(?:pas +|)(?:si +|)(différends?)  @@0,$
-    <<- morph(\1, ":V0e", False)
-    -2>> =\2.replace("nd", "nt")                            # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-
-TEST: Régler votre {{différent}}.
-TEST: Notre {{différent}} avec eux perdure.
-TEST: Un {{différent}} peut toujours se résoudre.
-TEST: J’en ai marre de leurs {{différents}}.
-TEST: Il y a des {{différents}} que nul ne saurait résoudre.
-TEST: Ils sont pas {{différends}} de nous.
-TEST: J’en veux un différent.
-TODO: dans ses différents {{ouvrages}}
-TODO: dans ses différents {{postes}} gouvernementaux
 
 
 # en train / entrain
