@@ -4582,7 +4582,7 @@ __[i](p_prix_Nobel)__           prix (Nobel) @@5 <<- ~1>> *
 __[s](p_Amérique)__             Amérique (centrale|du (?:Nord|Sud)) @@$ <<- ~1>> *
 __[s](p_nom_propre_nom_propre)__
     ([A-ZÉÈÂ][\w-]+) (L[ea] |[vV][oa]n |Ma?c |[dD][eu] |d’|O’|)([A-ZÉÈÂ][\w-]+) @@0,*,$
-    <<- morph(\1, ":M[12]", False) and (morph(\3, ":(?:M[12]|V)", False) or not spell(\3)) ~3>> *
+    <<- morph(\1, ":M[12]", False) ~3>> *
     <<- __also__ and \2 != "" ~2>> *
 __[s](p_de_nom_propre_et_ou_de_nom_propre)__
     (?:de |d’)([A-ZÉÈÂ][\w-]+) +(?:et|ou) +(?:de |d’)([A-ZÉÈÂ][\w-]+) @@w,$
@@ -7639,6 +7639,7 @@ __[s]/maj(maj_mois_mars)__
 TEST: 15 {{Septembre}}                                                  ->> septembre
 TEST: 23 {{Messidor}}                                                   ->> messidor
 TEST: ils viendront en {{Mars}}.                                        ->> mars
+TEST: le comité d’éthique qui statuera dans les meilleurs délais sur la situation de Véronique Avril
 
 
 # Les États
