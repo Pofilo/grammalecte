@@ -9078,12 +9078,14 @@ TEST: nous avions quelque peu {{tempérés}} leurs ardeurs
 __[i]/ppas(ppas_m_t_l_avoir)__
     [lmt]’(?:en +|y +|)({avoir}) +({w_3}) @@2,$
     <<- morph(\1, ">avoir ", False) and morphex(\2, ":(?:Y|[123][sp])", ":[QGWMX]")
+    and not re.search(r"(?i)^t’as +envie", \0)
     -2>> =suggVerbPpas(@, ":m:s")                                                                   # Confusion : employez un participe passé.
 
 TEST: m’avoir {{terminer}}.
 TEST: il m’a {{souffler}} la bonne réponse.
 TEST: elle t’en a {{parle}}.
 TEST: c’est vous qui m’avez {{convertit}}.
+TEST: parce que t’as envie que je le fasse
 
 
 ## COD avant que
