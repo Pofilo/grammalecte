@@ -313,10 +313,11 @@ TEST: voici des (parenthèses{{ )}}, n’est-ce pas ?                        ->
 
 
 # Parenthèses collées
-__<s>/typo(typo_parenthese_fermante_collée)__    [)]\b(?!s\b) <<- ->> ") "                          # Il manque un espace après la parenthèse.
+__<s>/typo(typo_parenthese_fermante_collée)__    [)]\b(?![s¹²³⁴⁵⁶⁷⁸⁹⁰]\b) <<- ->> ") "              # Il manque un espace après la parenthèse.
 __<s>/typo(typo_parenthese_ouvrante_collée)__    \b[(](?=[^)][^)][^)]) <<- ->> " ("                 # Il manque un espace avant la parenthèse.
 
 TEST: C’est au fond du couloir{{(}}celui du deuxième étage{{)}}qu’il se trouve.
+TEST: (a + b)²
 
 
 # Points et espaces
