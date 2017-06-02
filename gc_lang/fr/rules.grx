@@ -1266,7 +1266,7 @@ TEST: Nous préparons une {{contre–attaque}}.
 __[i]/tu(tu_ce_cette_ces_nom_là1)__
     c(?:e[st]?|ette) (({w_2}) là)(?! où)  @@$,w <<- morph(\2, ":[NB]", False) -1>> \2-là            # Il manque probablement un trait d’union.
 __[i]/tu(tu_ce_cette_ces_nom_là2)__
-    c(?:e[st]?|ette) (({w_2}) la)  @@$,w <<- morph(\2, ":[NB]", False) and not word(1) -1>> \2-là   # Il manque probablement un trait d’union.
+    c(?:e[st]?|ette) (({w_2}) la)  @@$,w <<- morph(\2, ":[NB]", False) and isEnd() -1>> \2-là       # Il manque probablement un trait d’union.
 
 TEST: Ces {{trois là}} sont incollables.
 TEST: Je connais bien cette {{sensation là}}.
@@ -1369,7 +1369,7 @@ __[i]/tu(tu_jusque_là)__                jusque là <<- ->> jusque-là          
 __[i]/tu(tu_là_adverbe)__       là (bas|haut|desso?us|dedans|devant|derrière) @@3 <<- ->> là-\1     # Il manque un trait d’union.
 __[i]/tu(tu_n_est_ce_pas)__             n’est(?: ce[ -]pas|-ce-pas) <<- ->> n’est-ce pas            # Un trait d’union.
 __[i]/tu(tu_nord_sud_ouest)__           (nord|sud) ouest @@0 <<- ->> \1-ouest                       # Il manque un trait d’union.
-__[i]/tu(tu_nord_sud_est)__             (nord|sud) est @@0 <<- not word(1) ->> \1-est               # Il manque un trait d’union.
+__[i]/tu(tu_nord_sud_est)__             (nord|sud) est @@0 <<- isEnd() ->> \1-est                   # Il manque un trait d’union.
 __[i]/tu(tu_outre_mer)__                outre mer <<- ->> outre-mer                                 # Il manque un trait d’union.
 __[i]/tu(tu_ouï_dire)__                 ou[iï] dire <<- morph(word(-1), ":G") ->> ouï-dire          # Il manque un trait d’union.
 __[i]/tu(tu_par_préposition)__
@@ -1594,7 +1594,7 @@ TEST: Dès lors qu’on sait comment s’y prendre, aucune raison de faillir.
 # Dialogues
 __[u]/virg(virgule_dialogue_après_nom_propre)__
     ([A-ZÉÈ][\w-]+) (\w+-(?:moi|toi|l(?:ui|a|e(?:ur|s|))|nous|vous|je|tu|ils|elles))  @@0,$
-    <<- morphex(\1, ":M", ":G") and not morph(\2, ":N", False) and not word(-1)
+    <<- morphex(\1, ":M", ":G") and not morph(\2, ":N", False) and isStart()
     -1>> \1,                                                                        # Dialogue ? Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
 TEST: {{Maria}} donnez-vous du temps ?
@@ -1957,7 +1957,7 @@ TEST: __ocr__ ce petit {{rut}} traité comme un chien
 # il / n
 __[s]/ocr(ocr_il)__
     (n )([bcdfghjklmnpqrstvwxz][\w-]+)  @@0,$
-    <<- not word(-1) and morph(\2, ":(?:O[on]|3s)", False) -1>> "il "                               # Erreur de numérisation ?
+    <<- isStart() and morph(\2, ":(?:O[on]|3s)", False) -1>> "il "                                  # Erreur de numérisation ?
 
 TEST: __ocr__ {{n }}contient trop de soufre.
 
@@ -2747,7 +2747,7 @@ TEST: Belle qui tient mon vit captif entre tes doigts.
 
 __[i]/conf(conf_ton_son_verbe)__
     [st]on ({w_2})  @@4
-    <<- morph(\1, ":V.*:(?:Y|[123][sp])") and \1[0].islower() and not word(-1)
+    <<- morph(\1, ":V.*:(?:Y|[123][sp])") and \1[0].islower() and isStart()
     -1>> =suggSimil(\1, ":[NA]:[me]:[si]")                                                          # Incohérence : « \1 » est un verbe.
 
 TEST: ton {{recèle}} a été dévoilé
@@ -2948,7 +2948,7 @@ TEST: il faut de plus en plus aider ces gens.
 __[i]/conf(conf_a_à_tout_à_fait)__  tout (a) fait @@5                                               <<- -1>> à          # Confusion.
 __[i]/conf(conf_a_à_jusqu_à)__      jusqu (a) @@6                                                   <<- -1>> à          # Confusion.
 __[i]/conf(conf_a_à_grâce_à)__      grâce (a) @@6             <<- morph(word(-1), ":[VN]", False, True) -1>> à          # Confusion probable.
-__[i]/conf(conf_a_à_moins_que)__    (a) moins que? @@0                                 <<- not word(-1) -1>> à          # Confusion probable : « à moins que » pour dire « sauf si ».
+__[i]/conf(conf_a_à_moins_que)__    (a) moins que? @@0                                    <<- isStart() -1>> à          # Confusion probable : « à moins que » pour dire « sauf si ».
 __[i]/conf(conf_a_à_tout_à_coup)__  tout h?ah? co[uû][pt]?                                          <<- ->> tout à coup # Confusion.
 __[i]/conf(conf_a_à_coup_sûr)__     a coup s[uû]r                                                   <<- ->> à coup sûr  # Confusion.
 __[i]/conf(conf_a_à_face_à)__       face (a) @@5    <<- not before(r"(?i)\b(?:[lmts]a|leur|une|en) +$") -1>> à          # Confusion.
@@ -3126,7 +3126,7 @@ TEST: Ce sont des clichés {{au}} {{dépend}} d’un grand chef. Tout ça pour f
 # au temps / autant
 __[i]/conf(conf_au_temps_pour_moi)__
     (au ?tant?) pour moi @@0
-    <<- not word(-1) -1>> au temps                                          # Pour reconnaître son erreur, « au temps pour moi » est l’expression recommandée par l’Académie française.
+    <<- isStart() -1>> au temps                                             # Pour reconnaître son erreur, « au temps pour moi » est l’expression recommandée par l’Académie française.
 __[i]/conf(conf_autant_que_faire_se_peut)__
     au t(?:emps|ant?) que f(?:aire|erre|ers?) [sc]e peu[xt]?
     <<- ->> autant que faire se peut                                        # Locution adverbiale : « autant que faire se peut ».|https://fr.wiktionary.org/wiki/autant_que_faire_se_peut
@@ -3265,7 +3265,7 @@ TEST: De fraîche date…
 # d’en / dans
 __[i]/conf(conf_dans1)__
     (d’en|dan) (?:l(?:es?|a)|une?|d(?:es?|u)|[mts](?:on|a|es)|[nv]o(?:tre|s)|ce(?:tte|t|s|))  @@0
-    <<- \1.endswith("en") or before("^ *$") -1>> dans                               # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
+    <<- \1.endswith("en") or isRealStart() -1>> dans                                # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
 __[i]/conf(conf_dans2)__
     ^ *(dents?) (?:l(?:es?|a)|une?|[mts](?:on|a|es)|[nv]o(?:tre|s)|ce(?:tte|t|s|))  @@*
     <<- -1>> dans                                                                   # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
@@ -3340,7 +3340,7 @@ TEST: dans ses différents postes gouvernementaux
 # eh bien, hé bien / et bien
 __[i]/conf(conf_eh_bien)__
     et bien(?! que?| sûr| d’autres| entendu| avant| souvent| longtemps| des| moins| plus| au-delà)
-    <<- not word(-1) and not morph(word(1), ":[WAY]", False, False)
+    <<- isStart() and not morph(word(1), ":[WAY]", False, False)
     ->> eh bien|hé bien                                     # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=h%C3%A9&T3.x=0&T3.y=0
 __[i]/conf(conf_eh_ben)__
     et (ben)  @@3
@@ -3622,10 +3622,10 @@ TEST: Vous n’êtes pas sans {{ignorer}} que…
 
 ## s’en / sens / sans / cent / cens
 __[i]/conf(conf_il_on_s_en)__  (?:ils?|on) (san[sg]|cen[st]|c’en) ({w_2})  @@w,$
-    <<- not word(-1) and morph(\2, ":V", False)
+    <<- isStart() and morph(\2, ":V", False)
     -1>> s’en                                                                                       # Confusion probable.
 __[i]/conf(conf_elle_s_en)__  elles? (san[sg]|cen[st]|c’en) ({w_2})  @@w,$
-    <<- not word(-1) and morph(\2, ":V", False) and not ( \1 == "sans" and morph(\2, ":[NY]", False) )
+    <<- isStart() and morph(\2, ":V", False) and not ( \1 == "sans" and morph(\2, ":[NY]", False) )
     -1>> s’en                                                                                       # Confusion probable.
 
 TEST: il {{c’en}} est vite lassé.
@@ -3840,7 +3840,7 @@ __[i]/conj(conj_xxxai_sans_sujet)!3__
     ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 __[i]/conj(conj_xxxes_sans_sujet)!3__
     \w*es(?! tu)
-    <<- morphex(\0, ":2s", ":(?:E|G|W|M|J|[13][sp]|2p)") and not \0[0:1].isupper() and not before("^ *$")
+    <<- morphex(\0, ":2s", ":(?:E|G|W|M|J|[13][sp]|2p)") and not \0[0:1].isupper() and not isRealStart()
     and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
     and not before(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
     ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
@@ -3933,7 +3933,7 @@ __[i](p_les_tout_xxx)__
 
 
 __[i]/gn(gn_tous_deux)__
-    (tout) deux  @@0 <<- not word(-1) -1>> tous                                                     # Locution pronominale : « tous deux ».|https://fr.wiktionary.org/wiki/tous_deux
+    (tout) deux  @@0 <<- isStart() -1>> tous                                                        # Locution pronominale : « tous deux ».|https://fr.wiktionary.org/wiki/tous_deux
 
 TEST: {{Tout}} deux sont partis les premiers.
 
@@ -4243,7 +4243,7 @@ __[i](p_ex_loc_latine)__        ex (?:nihilo|cathedra|absurdo|abrupto) <<- ~>> *
 __[i](p_face_à_face)__          face à face <<- ~>> *
 __[i](p_nombre_fois_de_suite)__ (?:deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante|cent) fois de suite <<- ~>> *
 __[i](p_grosso_modo)__          grosso modo <<- ~>> *
-__[i](p_grand_bien_lui_fasse)__ grand bien lui fasse <<- not word(-1) ~>> *
+__[i](p_grand_bien_lui_fasse)__ grand bien lui fasse <<- isStart() ~>> *
 __[i](p_hier)__                 (?:avant-|)hier(?: matin| soir| après-midi|) <<- ~>> *
 __[i](p_hors_de_qqch)__         hors (?:de (?:contrôle|portée)|d’(?:atteinte|état de nuire)|du commun) <<- ~>> *
 __[i](p_ici_qqch)__             ici(?: comme ailleurs| ou ailleurs| et (?:là|maintenant)| même|-bas) <<- ~>> *
@@ -4755,7 +4755,7 @@ __<s>(p_balise_vide)__                  [<] +[>]                                
 __[i](p_à_nos_yeux)__
     (à (?:[mts]es|[nv]os|leurs) yeux) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[pi]", False) ~1>> *
 __[i](p_ben_voyons)__
-    ben voyons <<- not word(-1) ~>> *
+    ben voyons <<- isStart() ~>> *
 __[i](p_chaque_année_semaine_journée_décennie)__
     (chaque (?:année|semaine|journée|décennie)) +({w_1}) @@0,$ <<- not morph(\2, ":(?:A.*:[fe]:[si]|Oo|[123][sp])", False) ~1>> *
 __[i](p_chaque_an_jour_mois)__
@@ -4871,7 +4871,7 @@ __[i](p_astuce_désambiguïsation2)__
     ~2>> ~
 __[i](p_astuce_désambiguïsation3)__
     l(?:es? |a |’|eur ) *({w_2})( ) *({w_2})  @@w,**,$
-    <<- isAmbiguousNAV(\3) and ( morphex(\1, ":[NAQ]", ":V0a") or (morphex(\1, ":[NAQ]", ":(?:3[sp]|V0a)") and not word(-1)) )
+    <<- isAmbiguousNAV(\3) and ( morphex(\1, ":[NAQ]", ":V0a") or (morphex(\1, ":[NAQ]", ":(?:3[sp]|V0a)") and isStart()) )
     ~2>> ~
 
 TEST: comme le signe évident d’une politique volontaire
@@ -5954,11 +5954,11 @@ __<i]/sgpl(sgpl_prep_entendu_det)__
     ^ *((Entendu|Excepté|Ôté|Supposé|Passé)(?:es?|s)) +(?:l(?:es?|a)|ce(?:te|t|s|)|leurs?|[mts](?:on|a|es)|[nv]os)  @@*,*
     <<- -1>> \2                                                                                     # Considéré comme préposition, invariable.
 __[i]/sgpl(sgpl_prep_attendu_que)__
-    (attendu(?:es?|s)) que? @@0                         <<- not word(-1) -1>> attendu               # Considéré comme préposition, invariable.
+    (attendu(?:es?|s)) que? @@0                         <<- isStart() -1>> attendu                  # Considéré comme préposition, invariable.
 __[i]/sgpl(sgpl_prep_étant_donné)__
-    étant donné(?:es?|s)                                <<- not word(-1) ->> étant donné            # Considéré comme préposition, invariable.
+    étant donné(?:es?|s)                                <<- isStart() ->> étant donné               # Considéré comme préposition, invariable.
 __[i]/sgpl(sgpl_prep_vu_det)__
-    (vu(?:es?|s)) (?:[lc]es?|la|cette|leurs?|que?) @@0  <<- not word(-1) -1>> vu                    # Considéré comme préposition, invariable.
+    (vu(?:es?|s)) (?:[lc]es?|la|cette|leurs?|que?) @@0  <<- isStart() -1>> vu                       # Considéré comme préposition, invariable.
 
 TEST: {{comprises}} mes prestations sur place
 TEST: {{Exceptés}} les petits, tous sont tombes malades.
@@ -6319,7 +6319,7 @@ TEST: de mon point de {{vues}}
 # abuser / abusé / abusif
 __[i]/conf(conf_abusif)__
     c’est +(abus(?:é|er))  @@$
-    <<- not word(1) -1>> abusif                                 # Confusion. Concernant les actes, on parle de pratiques abusives. On abuse des choses ou des personnes.
+    <<- isEnd() -1>> abusif                                         # Confusion. Concernant les actes, on parle de pratiques abusives. On abuse des choses ou des personnes.
 
 TEST: C’est {{abusé}} !
 
@@ -7073,7 +7073,7 @@ TEST: Dans l’ère du {{digital}}, tout va plus vite.
 ## on / ont
 __[i>/conf(conf_on1)__
     (ont) [nmts]’(?!(?:ils?|elles?))  @@0
-    <<- not word(-1) -1>> on                                                                        # Confusion probable : “ont” est une conjugaison du verbe avoir.
+    <<- isStart() -1>> on                                                                           # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
 TEST: {{ont}} m’assure qu’il n’y en a pas.
 TEST: {{Ont}} n’arrive pas à s’en sortir.
@@ -7096,7 +7096,7 @@ TEST: qui n’ont somme toute que le désir de vivre paisiblement
 __[i]/conf(conf_on3)__
     (ont) (?:l(?:ui|eur)|[nv]ous) ({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:[1-3][sp])", ":(?:G|1p)")
-    and not ( \0.find(" leur ") and morph(\2, ":[NA].*:[si]", False) ) and not word(-1)
+    and not ( \0.find(" leur ") and morph(\2, ":[NA].*:[si]", False) ) and isStart()
     -1>> on                                                                                         # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
 TEST: {{Ont}} lui avait donné du temps
@@ -7332,7 +7332,7 @@ TEST: de {{quoique}} ce soit, je ne veux pas en entendre parler.
 
 # quoiqu’il en coûte
 __[i]/conf(conf_quoi_qu_il_en_coûte)__
-    (quoiqu il) en (?:co[uû]te) @@0 <<- not word(1) -1>> quoi qu’il                       # Confusion probable.
+    (quoiqu il) en (?:co[uû]te) @@0 <<- isEnd() -1>> quoi qu’il                           # Confusion probable.
 
 TEST: Elle y parviendra, {{quoiqu’il}} en coûte.
 
@@ -7451,10 +7451,10 @@ TEST: Quoi qu’il en soit
 
 __[i]/conf(conf_soit1)__
     (soie?s?) ({w_2})  @@0,$
-    <<- not word(-1) and morphex(\2, ":[OC]", ":R") -1>> soit                                       # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
+    <<- isStart() and morphex(\2, ":[OC]", ":R") -1>> soit                                          # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
 __[i]/conf(conf_soit2)__
     (soie?s?) [jtcç]’ @@0
-    <<- not word(-1) -1>> soit                                                                      # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
+    <<- isStart() -1>> soit                                                                         # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
 
 TEST: {{soi}} je vais au cinéma, {{soi}} je m’abstiens.
 TEST: {{soie}} j’arrive avant tout le monde.
@@ -8022,7 +8022,7 @@ __[i](p_lors_de_du_nom)__
 
 ## doute que
 __[i](p_nul_doute_que)__
-    nul doute qu  <<- not word(-1) ~>> *
+    nul doute qu  <<- isStart() ~>> *
 __[i](p_douter_que)__
     (dout\w+)( ) *que?  @@0,*  <<- morph(\1, ">douter ", False) and before(r"(?i)\b(?:[mts]e|[nv]ous) +$") ~2>> ,
 
@@ -8132,7 +8132,7 @@ __[i]/conf(conf_c_en_être)__
     <<- re.search("(?i)^(?:fini|terminé)s?", \2) and morph(word(-1), ":C", False, True)
     -1>> c’en
     # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-    <<- re.search("(?i)^(?:assez|trop)$", \2) and (after("^ +d(?:e |’)") or not word(1))
+    <<- re.search("(?i)^(?:assez|trop)$", \2) and (after("^ +d(?:e |’)") or isEnd())
     -1>> c’en
     # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
     <<- morphex(\2, ":A", ":[GVW]") and morph(word(-1), ":C", False, True)
@@ -9260,7 +9260,7 @@ TEST: Vous {{arrivais}} trop tard.
 
 __[i]/conj(conj_vous_verbe2)__
     vous [nm](?:e +(?:les? |l’|la |[nv]ous |)|’)({w_3})  @@$
-    <<- morphex(\1, ":V", ":2p") and not word(-1) -1>> =suggVerb(@, ":2p")      # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
+    <<- morphex(\1, ":V", ":2p") and isStart() -1>> =suggVerb(@, ":2p")         # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: vous ne l’{{avait}} pas vu.
 TEST: je crois, vous m’{{avais}} trompé… 
@@ -9316,7 +9316,7 @@ TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
 
 __[i]/imp(imp_confusion_2e_pers_pluriel)__
     ({w_2}(?:er|ai[st]|ée?s?)) moi  @@0
-    <<- morph(\1, ":V", False) and not word(-1)
+    <<- morph(\1, ":V", False) and isStart()
     ->> =suggVerbTense(\1, ":E", ":2p") + "-moi"                                    # Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance
@@ -9542,7 +9542,7 @@ __[i]/imp(imp_union_aller_y)!5__
     <<- not morph(word(1), ":Y", False, False) ->> =\0.replace(" ", "-")                            # Il manque un trait d’union.
 __[i]/imp(imp_union_vas_y)!5__
     vas? y
-    <<- not word(-1) and not morph(word(1), ":Y", False, False) ->> vas-y                           # Il manque un trait d’union.
+    <<- isStart() and not morph(word(1), ":Y", False, False) ->> vas-y                              # Il manque un trait d’union.
 __[i]/imp(imp_union_convenir_en)__
     conv(?:iens|enez|enons) en(?! partie) <<- ->> =\0.replace(" ", "-")                             # Il manque un trait d’union.
 
@@ -9587,7 +9587,7 @@ __[i](p_pro_per_obj23)__    (nous) ({w_2}) @@0,5 <<- morphex(\2, ":(?:[123][sp]|
 __[i](p_pro_per_obj24)__    (vous) ({w_2}) @@0,5 <<- morphex(\2, ":(?:[123][sp]|Y)", ":(?:A|G|M|2p)") ~1>> >
 __[i](p_pro_per_obj25)__    (?:à|de) ([nv]ous|lui|les?|en)(?! qui) @@$ <<- ~1>> >
 __[i](p_pro_per_obj26)__    (s’)({w4}) @@0,2 <<- morph(\2, ":V", False) ~1>> >
-__[i](p_pro_per_obj27)__    (?:je|tu|ils?|elles?|on) (l’|l(?:es?|a|ui|eur) +|[nv]ous +){w_2} @@* <<- not word(-1) ~1>> >
+__[i](p_pro_per_obj27)__    (?:je|tu|ils?|elles?|on) (l’|l(?:es?|a|ui|eur) +|[nv]ous +){w_2} @@* <<- isStart() ~1>> >
 __[i](p_pro_per_obj28)__    (?:je|tu|ils?|elles?|on|[nv]ous|ce(?:ux|elles?|lui|la|) qui) (l’)({w4}) @@*,$ <<- morph(\2, ":V", False) ~1>> >
 __[i](p_pro_per_obj29)__    (t’(?:en|y)) ({w_2}) @@0,$ <<- not morph(\2, ":2s", False) or before(r"(?i)\b(?:je|tu|on|ils?|elles?|nous) +$") ~1>> >
 __[i](p_pro_per_obj30)__    (t’)({w_2}) @@0,$ <<- not morph(\2, ":2s|>(ils?|elles?|on) ", False) or before(r"(?i)\b(?:je|tu|on|ils?|elles?|nous) +$") ~1>> >
@@ -10062,7 +10062,7 @@ __[i]/conj(conj_det_nom_ambiguïté1)__
 
 __[i]/conj(conj_det_nom_ambiguïté2)__
     (l(?:e(?:ur|) |a |’)) *({w_2})~ *({w_2})  @@0,w,$
-    <<- morphex(word(-1), ":C", ":(?:Y|P)", True) and isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", not word(-1))
+    <<- morphex(word(-1), ":C", ":(?:Y|P)", True) and isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", isStart())
     and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":(?:[123]p|p)", False)) and not before(r"(?i)\bni .* ni\b")
     -3>> =suggVerb(@, ":3s", suggSing)                          # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
@@ -10266,7 +10266,7 @@ TEST: vos filles {{passes}} ce matin
 
 __[i]/conj(conj_les_nom_ambiguïté)__
     les +({w_2})~ *({w_2})  @@w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":p", ":3p", not word(-1))
+    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":p", ":3p", isStart())
     -2>> =suggVerb(@, ":3p", suggPlur)                      # Accord avec « les \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
 TEST: les grands {{danse}}
@@ -10284,7 +10284,7 @@ TEST: les chattes {{danse}}
 
 __[i]/conj(conj_certains_nom_ambiguïté)__
     certains +({w_2})~ *({w_2})  @@w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":m:p", ":3p", not word(-1))
+    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":m:p", ":3p", isStart())
     -2>> =suggVerb(@, ":3p", suggMasPlur)                   # Accord avec « certains \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
 TEST: certains hommes {{marchandes}} sans cesse
@@ -10292,7 +10292,7 @@ TEST: certains hommes {{marchandes}} sans cesse
 
 __[i]/conj(conj_certaines_nom_ambiguïté)__
     certaines +({w_2})~ *({w_2})  @@w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":f:p", ":3p", not word(-1))
+    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":f:p", ":3p", isStart())
     -2>> =suggVerb(@, ":3p", suggFemPlur)                   # Accord avec « certaines \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
 TEST: certaines femmes {{danse}} beaucoup
@@ -10416,7 +10416,7 @@ TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard�
 
 __[i]/conj(conj_puisse)__
     (puisses?) ({w_2})  @@0,$
-    <<- not word(-1) >>>
+    <<- isStart() >>>
     <<- morph(\2, ":D.*:p", False) -1>> puissent                                    # Conjugaison erronée. Ce verbe devrait s’accorder au substantif qui le suit.
     <<- __else__ and \1.endswith("s") and \2 != "tu" and not before(r"(?i)\btu ")
     -1>> puisse                                                                     # Conjugaison erronée. Sujet “tu” introuvable.
@@ -10591,11 +10591,11 @@ TEST: Quand j’aurai soif et faim, je m’arrêterai.
 # Si suivi du conditionnel ou du subjonctif
 __[i]/vmode(vmode_si_sujet1)__
     si +({w1}) +>? *({w_2})  @@w,$
-    <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":[SK]", ":(?:G|V0|I)") and not word(-1)
+    <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":[SK]", ":(?:G|V0|I)") and isStart()
     -2>> _                                                                          # Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
 __[i]/vmode(vmode_si_sujet2)__
     (?:si [jt]’|s’ils? )>? *({w_2})  @@$
-    <<- morphex(\1, ":[SK]", ":(?:G|V0|I)") and not word(-1)
+    <<- morphex(\1, ":[SK]", ":(?:G|V0|I)") and isStart()
     -1>> _                                                                          # Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
 
 TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
