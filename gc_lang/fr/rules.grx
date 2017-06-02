@@ -3880,12 +3880,12 @@ TEST: ces gens qui vont par monts et par vaux.
 
 ## Incohérences avec formes verbales 1pl et 2pl sans sujet
 __[i]/conj(conj_xxxons_sans_sujet)!3__
-    \w+ons(?! nous)
+    \w+(?:ons|[âîûn]mes)(?! nous)
     <<- morphex(\0, ":V.*:1p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
     and not before0(r"\b(?:[nN]ous(?:-mêmes?|)|[eE]t moi(?:-même|)|[nN]i (?:moi|nous)),? ")
     ->> =suggVerb(@, ":3p")                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
 __[i]/conj(conj_xxxez_sans_sujet)!3__
-    \w+ez(?! vous)
+    \w+(?:ez|[âîûn]tes)(?! vous)
     <<- morphex(\0, ":V.*:2p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
     and not before0(r"\b(?:[vV]ous(?:-mêmes?|)|[eE]t toi(?:-même|)|[tT]oi(?:-même|) et|[nN]i (?:vous|toi)),? ")
     ->> _                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
