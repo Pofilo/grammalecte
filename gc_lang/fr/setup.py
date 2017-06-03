@@ -100,7 +100,7 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
-    data_files=[('', ['cli.py', 'server.py', 'bottle.py', 'README.txt', 'license.txt', \
+    data_files=[('', ['cli.py', 'server.py', 'bottle.py', 'README.txt', 'LICENSE.txt', \
                       'server_options.fr.ini', 'server_options._global.ini'])],
 
     # To provide executable scripts, use entry points in preference to the
