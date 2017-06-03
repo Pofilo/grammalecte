@@ -532,13 +532,12 @@ __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumera
 
 
 ### Écritures épicènes invariables
+# Attention, lors de la deuxième passe, on se sert du désambiguïsateur
 
 __[u](typo_écriture_épicène_pluriel)__
     ({w_1}[éuitsrn])[-·–—.(/]([nt]|)e[-·–—.)/]s  @@0,**
-    <<- option("typo") and not \0.endswith("·e·s")
-    ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s                                                        # Écriture épicène brouillon. Préférez écrire lisiblement. Sinon, utilisez les points médians.
-    <<- morphex(\1, ":[NAQ]", ":G") =>> define(\0, [":N:A:Q:e:p"])
-    <<- ~>> \1s
+    <<- option("typo") and not \0.endswith("·e·s") ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s         # Écriture épicène brouillon. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- ~>> \1-\2e-s
 
 TEST: nous sommes {{déconsidéré-e-s}}.
 TEST: serons-nous toujours {{perdu.e.s}}.
@@ -546,14 +545,14 @@ TEST: les illustres {{inconnu(e)s}}.
 TEST: la situation des {{salarié/e/s}}.
 TEST: des {{Iranien-ne-s}} sont venues                                  ->> Iraniens et Iraniennes|Iraniennes et Iraniens|Iranien·ne·s
 TEST: rendez-vous avec des {{écrivain(e)s}}                             ->> écrivains et écrivaines|écrivaines et écrivains|écrivain·e·s
+TEST: la graphie “{{militant(e)s}}”.
 TEST: ces militant·e·s {{acharné}}.
 
 
 __[i](typo_écriture_épicène_singulier)__
     ({w_2}[éuitsrn])(?:[-·–—./]e|[(]e[)])  @@0
     <<- option("typo") and not \0.endswith("·e") ->> \1·e                                           # Écriture épicène. Utilisez les points médians. (Note : écriture journalistique brouillon.)
-    <<- morph(\1, ":[NAQ]", False) =>> define(\0, [":N:A:Q:e:s"])
-    <<- ~>> \1e
+    <<- ~>> \1-e
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
@@ -1076,6 +1075,18 @@ TEST: C’est la {{3ème}} fois…                   ->> 3ᵉ|3e
 TEST: Non, la {{2è}} fois.                      ->> 2ᵉ|2e
 TEST: Le {{XXIème}} siècle.                     ->> XXIᵉ|XXIe
 TEST: le {{XXè}} siècle.                        ->> XXᵉ|XXe
+
+
+#
+# Écritures épicènes invariables
+#
+__[i](d_typo_écriture_épicène_pluriel)__
+    ({w_1}[éuitsrn])-(?:[nt]|)e-s  @@0
+    <<- morphex(\1, ":[NAQ]", ":G") =>> define(\1, [":N:A:Q:e:p"])
+
+__[i](d_typo_écriture_épicène_singulier)__
+    ({w_2}[éuitsrn])-e  @@0
+    <<- morph(\1, ":[NAQ]", False) =>> define(\1, [":N:A:Q:e:s"])
 
 
 #
