@@ -2673,6 +2673,16 @@ TEST: Comment lutter contre la cupidité des {{ayant droits}}
 # Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
 
 
+# Mon, ton, son : euphonie
+__[i]/gn(gn_mon_ton_son_euphonie)__
+    ([mts]a) +({w_2})  @@0,$
+    <<- morphex(\2, ">[aâeéèêiîoôuûyœæ].+:[NAQ].*:f", ":[eGW]") -1>> =\1.replace("a", "on")         # Même si « \2 » est féminin, on utilise « mon/ton/son » pour faire la liaison.|http://fr.wikipedia.org/wiki/Euphonie
+
+TEST: {{ta}} aimée                                            ->> ton
+TEST: {{ma}} obligée                                          ->> mon
+TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
+
+
 
 #### CONFUSIONS
 __[s>/conf(conf_ne_n)__     [nN]e n’                        <<- ->> ne m’|n’                        # Incohérence. Double négation.
@@ -5094,21 +5104,16 @@ __[i]/gn(gn_cette_accord)__
     <<- __also__ and hasFemForm(\2) -2>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 __[i]/gn(gn_ma_ta_sa_accord)__
-    ([mts]a) {1,3}({w_2})  @@0,$
+    ([mts]a) +({w_2})  @@0,$
     <<- morphex(\2, ":[NAQ].*:m", ":[efGW]") -1>> =\1.replace("a", "on")                            # Accord de genre erroné : « \2 » est masculin.
     <<- __also__ and not re.search("(?i)^[aâeéèêiîoôuûyœæ]", \2) and hasFemForm(\2)
     -2>> =suggFemSing(@, True)                                                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- morphex(\2, ">[aâeéèêiîoôuûyœæ].+:[NAQ].*:f", ":[eGW]") -1>> =\1.replace("a", "on")         # Même si « \2 » est féminin, on utilise « mon/ton/son » pour faire la liaison.|http://fr.wikipedia.org/wiki/Euphonie
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: {{une}} des {{chats}}
-TEST: {{ma}} amour                                            ->> mon
-TEST: {{ma}} obligé                                           ->> mon
 TEST: {{ma}} {{parti}}
 TEST: {{une}} kyste                                           ->> un
-TEST: {{ma}} armure                                           ->> mon
 TEST: {{Cette}} {{animal}} mort.
-TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
 
 
 __[i]/gn(gn_certains_accord)__
