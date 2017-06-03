@@ -77,8 +77,8 @@ def makeConj (sp, bJS=False):
                     if sTag == "ppre":
                         dConj[":PQ"][":P"] = defineSuffixCode(sLemma, sFlex)
                 else:
-                    mode, g = sTag.split(maxsplit=1)
                     try:
+                        mode, g = sTag.split(maxsplit=1)
                         mode = dTrad[mode]
                         g = dTrad[g]
                         if dConj[mode][g] == "":
@@ -87,7 +87,7 @@ def makeConj (sp, bJS=False):
                             # comment gérer les autres graphies ?
                             pass
                     except:
-                        print(sLemma.encode("utf-8").decode("ascii"), " - non géré: ", mode, " / ", g)
+                        print(sLemma.encode("utf-8").decode("ascii"), " - ", sTag, " - non géré: ", mode, " / ", g)
             elif line == "$":
                 # we store the dictionary of rules for this lemma
                 if dConj[":Ip"][":1ś"] == "2è":
