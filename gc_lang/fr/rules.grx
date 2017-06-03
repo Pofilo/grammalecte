@@ -8398,7 +8398,7 @@ TEST: j’étais {{perdus}}                                                     
 TEST: j’aurais été {{perdus}} sans toi                                            ->> perdu
 TEST: je n’étais pas {{perdus}}                                                   ->> perdu
 TEST: Je suis {{contents}}.                                                       ->> content
-TEST: J’ai été {{contents}}.                                                      ->> content
+TEST: J’en ai été {{contents}}.                                                   ->> content
 TEST: Je parais {{contents}}.                                                     ->> content
 TEST: Je dirais que la vie est un peu moins {{cher}} en France.
 TEST: Je semble {{contents}}.                                                     ->> content
@@ -8415,10 +8415,11 @@ __[i]/ppas(ppas_tu_verbe)__
 
 TEST: tu n’es pas {{petites}}
 TEST: tu es {{insignifiants}}
+TEST: tu deviens vraiment très {{forts}} à ce jeu.
 
 
 __[i]/ppas(ppas_il_verbe)__
-    (il|ce|ce qui|celui +qui|ça +qui|lui +qui|celui-(?:ci|là) +qui|quiconque) +(?:ne +|n’|)((?:es|étai|f[uû]|se[mr]|soi|dev|re(?:dev|st)|par)\w*|a(?:it|vait|ura(?:it|)|) +été|e[uû]t +été) +({w_2})  @@0,w,$
+    (il|ce|ce qui|celui +qui|ça +qui|lui +qui|celui-(?:ci|là) +(?:qui +|)|quiconque) +(?:ne +|n’|)((?:es|étai|f[uû]|se[mr]|soi|dev|re(?:dev|st)|par)\w*|a(?:it|vait|ura(?:it|)|) +été|e[uû]t +été) +({w_2})  @@0,w,$
     <<- (morph(\2, ">(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre) ", False) or \2.endswith(" été"))
     and (morphex(\3, ":[NAQ].*:p", ":[GWYsi]") or morphex(\3, ":[AQ].*:f", ":[GWYme]"))
     -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
@@ -8427,9 +8428,9 @@ TEST: Il semble être {{partis}} pour toujours.                                 
 TEST: Il est {{demander}} à chacun de participer.
 TEST: Il est {{contents}}.                                                        ->> content
 TEST: Il est {{laisser}} à lui-même
-TEST: il ne semble pas {{étonnés}}
-TEST: il paraît {{stupides}}
-
+TEST: celui qui ne semble pas {{étonnés}}
+TEST: c’est ça qui paraît {{stupides}}
+TEST: celui-là semble {{perdus}} dans ses pensées.
 
 __[i]/ppas(ppas_c_être)__
     c’(?:est|était|e[uû]t +été) +({w_2})  @@$
