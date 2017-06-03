@@ -397,11 +397,13 @@ const xHotkeyGC = hotkeys.Hotkey({
             xGCPanel.show({position: xMainButton});
         }
         xActiveWorker = null;
-        sendTextToPanel("Quoi ? Racontes ! Racontes-moi ! Bon sangg, parles ! Oui. Il y a des menteur partout. "
-                      + "Je suit sidérés par la brutales arrogance de cette homme-là. Quelle salopard ! Un escrocs de la pire espece. "
-                      + "Quant sera t’il châtiés pour ses <i>mensonge</i> ?             Merde ! J’en aie marre.\n"
-                      + "Deuxièmes <b>test</b>. On va finir par par y arrivé! Il faux persévéré... Encore et encore.\n"
-                      + "Aujourd'hui, je m'en fou. Il est au travaille.\nJ’en veux 10 %.\nJe suit le CAC40 de près.\nIl y aura encore des attentas.");
+        sendTextToPanel("Je connait ma <i>destinées</i>. Un jour s'attachera à mon nom le souvenir de quelque chose de formidable, "
+                      + "- le souvenir d’une crise comme il n'y en eut jamaiss sur terre, le souvenir de la plus profonde collision des consciences, "
+                      + "le souvenirs d’un jugement prononcé contre tout tout ce qui jusqu’à présent à été cru, exigé, sanctifié. "
+                      + "Je ne suis pas un homme, je suis de la dynamite. Et, avec cela, il n’y a en moi rien d’un fondateur de religion. "
+                      + "Les religions sont les affaires de la populace. "
+                      + "J’aie besoin de me laver les mains, après avoir été en contact avec des hommes religieux...\n"
+                      + "Vous, je parie que vous n’appriéciez guère le concept de vidéoprotection. Y a t’il pourtant rien de plus sécurisant ?");
     }
 });
 
