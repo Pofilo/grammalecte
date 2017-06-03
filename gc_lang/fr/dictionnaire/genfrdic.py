@@ -820,7 +820,7 @@ class Entree:
             sErr += 'premier caractère inconnu: ' + self.lemma[0]
         if re.search(r"\s$", self.lemma):
             sErr += 'espace en fin de lemme'
-        if re.match(r"v[0123]", self.po) and not re.match(r"[eas_][ix_][tx_][nx_][pqreuvx_][mx_][ex_z][ax_z]", self.po[2:10]):
+        if re.match(r"v[0123]", self.po) and not re.match(r"[eas_][ix_][tx_][nx_][pqreuvx_][mx_][ex_z][ax_z]\b", self.po[2:10]):
             sErr += 'verbe inconnu: ' + self.po
         if (re.match(r"S[*.]", self.flags) and re.search("[sxz]$", self.lemma)) or (re.match(r"X[*.]", self.flags) and not re.search("[ul]$", self.lemma)):
             sErr += 'drapeau inutile'
