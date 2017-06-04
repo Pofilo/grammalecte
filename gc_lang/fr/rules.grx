@@ -10231,14 +10231,33 @@ TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même tromp�
 
 
 __[i]/conj(conj_det_plur_nom)__
-    ([lcmts]es|[nv]os|leurs|quelques|certaine?s|plusieurs) +({w_2}) +(?:qui +|)(?!j’|c’)({w_2})  @@0,w,$
-    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True) and not checkAgreement(\2, \3)
-    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|ce(?:tte|t|) |[mts](?:on|a) ).+ entre .+ et ") )
+    ([cmts]es|[nv]os|leurs|quelques) +({w_2}) +({w_2})  @@0,w,$
+    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True)
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
+    <<- not checkAgreement(\2, \3)
+    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+    <<- isAmbiguousAndWrong(\2, \3, ":p", ":3p")
+    -3>> =suggVerb(@, ":3p", suggPlur)                      # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+__[i]/conj(conj_det_plur_nom_qui)__
+    ([cmts]es|[nv]os|leurs|quelques) +({w_2}) +qui +({w_2})  @@0,w,$
+    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True)
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 __[i]/conj(conj_det_plur_nom_pronom)__
-    ([lcmts]es|[nv]os|leurs|quelques|certaine?s|plusieurs) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
+    ([cmts]es|[nv]os|leurs|quelques) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
     <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
-    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|ce(?:tte|t|) |[mts](?:on|a) ).+ entre .+ et ") )
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+__[i]/conj(conj_det_plur_nom_confusion)__
+    (les|certaine?s|plusieurs) +({w_2}) +(?:qui +|)({w_2})  @@0,w,$
+    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True) and not checkAgreement(\2, \3)
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+__[i]/conj(conj_det_plur_nom_pronom_confusion)__
+    (les|certaine?s|plusieurs) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
+    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Les abstentions {{est}} présumée manifester un défaut d’opinion marquée
@@ -10252,6 +10271,8 @@ TEST: les récompenses distribuées à parts égales {{était}}…
 TEST: Les États-Unis d’Amérique se {{compose}} de 50 états.
 TEST: Les enfants en {{manges}}.
 TEST: Les ombres la {{donnes}}
+TEST: mes filles {{passe}} ce matin
+TEST: vos filles {{passes}} ce matin
 TEST: Les grands hommes politiques
 TEST: les charmantes petites mines de toutes les jeunes filles
 TEST: Les pauvres petites dames sont folles
@@ -10274,15 +10295,6 @@ TEST: des femmes qui {{conduise}} la marche du monde.
 
 
 # confusions noms/adjectifs/verbes (voir règles DPP)
-__[i]/conj(conj_det_plur_nom_ambiguïté)__
-    ([cmts]es|[nv]os|leurs|quelques|plusieurs) +({w_2})~ *({w_2})  @@0,w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
-    -3>> =suggVerb(@, ":3p", suggPlur)                      # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-
-TEST: mes filles {{passe}} ce matin
-TEST: vos filles {{passes}} ce matin
-
-
 __[i]/conj(conj_les_nom_ambiguïté)__
     les +({w_2})~ *({w_2})  @@w,$
     <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":p", ":3p", isStart())
