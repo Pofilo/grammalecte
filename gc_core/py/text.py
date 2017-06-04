@@ -85,8 +85,8 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
 def getReadableError (dErr):
     "Returns an error dErr as a readable error"
     try:
-        s = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId} : ".format(**dErr)
-        s += dErr.get("sMessage", "# error : message not found")
+        s = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
+        s += "  " + dErr.get("sMessage", "# error : message not found")
         if dErr.get("aSuggestions", None):
             s += "\n  > Suggestions : " + " | ".join(dErr.get("aSuggestions", "# error : suggestions not found"))
         if dErr.get("URL", None):

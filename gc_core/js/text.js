@@ -39,8 +39,8 @@ function* wrap (sText, nWidth=80) {
 function getReadableError (oErr) {
     // Returns an error oErr as a readable error
     try {
-        let s = "\n* " + oErr['nStart'] + ":" + oErr['nEnd'] + "  # " + oErr['sRuleId']+"  : ";
-        s += oErr["sMessage"];
+        let s = "\n* " + oErr['nStart'] + ":" + oErr['nEnd'] + "  # " + oErr['sRuleId']+":\n";
+        s += "  " + oErr["sMessage"];
         if (oErr["aSuggestions"].length > 0) {
             s += "\n  > Suggestions : " + oErr["aSuggestions"].join(" | ");
         }
