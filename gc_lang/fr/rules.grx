@@ -4883,18 +4883,18 @@ __[i>(p_astuce_ils_elles_le_la_les)__
 ### DPP: Désambiguïsation par distinction des mots qui sont à la fois (verbes conjugués ET (noms ET/OU adjectifs))
 # Cette distinction est nécessaire seulement pour les mots suivant un groupe nominal.
 # Exemples : finis, donne(s), avance(s), bavarde(s)
-__[i](p_astuce_désambiguïsation1)__
-    (?<![lL]’)une? ({w_2})( ) *({w_2})  @@w,**,$
-    <<- isAmbiguousNAV(\3) and morphex(\1, ":[NAQ]", ">telle ")
-    ~2>> ~
-__[i](p_astuce_désambiguïsation2)__
-    (?:d(?:es? |’)|[mts](?:es|on|a) |ce(?:s|t(?:te|)|rtaine?s|) |[nv](?:otre|os) |leurs |quelques ) *({w_2})( ) *({w_2}) @@w,**,$
-    <<- isAmbiguousNAV(\3) and morphex(\1, ":[NAQ]", ">telle ") and not re.search("^[dD](?:’une?|e l(?:a|eur)) ", \0)
-    ~2>> ~
-__[i](p_astuce_désambiguïsation3)__
-    l(?:es? |a |’|eur ) *({w_2})( ) *({w_2})  @@w,**,$
-    <<- isAmbiguousNAV(\3) and ( morphex(\1, ":[NAQ]", ":V0a") or (morphex(\1, ":[NAQ]", ":(?:3[sp]|V0a)") and isStart()) )
-    ~2>> ~
+#__[i](p_astuce_désambiguïsation1)__
+#    (?<![lL]’)une? ({w_2})( ) *({w_2})  @@w,**,$
+#    <<- isAmbiguousNAV(\3) and morphex(\1, ":[NAQ]", ">telle ")
+#    ~2>> ~
+#__[i](p_astuce_désambiguïsation2)__
+#    (?:d(?:es? |’)|[mts](?:es|on|a) |ce(?:s|t(?:te|)|rtaine?s|) |[nv](?:otre|os) |leurs |quelques ) *({w_2})( ) *({w_2}) @@w,**,$
+#    <<- isAmbiguousNAV(\3) and morphex(\1, ":[NAQ]", ">telle ") and not re.search("^[dD](?:’une?|e l(?:a|eur)) ", \0)
+#    ~2>> ~
+#__[i](p_astuce_désambiguïsation3)__
+#    l(?:es? |a |’|eur ) *({w_2})( ) *({w_2})  @@w,**,$
+#    <<- isAmbiguousNAV(\3) and ( morphex(\1, ":[NAQ]", ":V0a") or (morphex(\1, ":[NAQ]", ":(?:3[sp]|V0a)") and isStart()) )
+#    ~2>> ~
 
 TEST: comme le signe évident d’une politique volontaire
 TEST: c’était le signe évident d’une politique volontaire
