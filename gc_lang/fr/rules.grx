@@ -10043,7 +10043,7 @@ __[i]/conj(conj_det_sing_nom)__
     and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[123]?p", False)) and not before(r"(?i)\bni .* ni ") >>>
     <<- not checkAgreement(\2, \3)
     -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
-    <<- isAmbiguousAndWrong(\2, \3, ":s", ":3s")
+    <<- __else__ and isAmbiguousAndWrong(\2, \3, ":s", ":3s")
     -3>> =suggVerb(@, ":3s", suggSing)                  # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 __[i]/conj(conj_det_sing_nom_confusion)__
     (?<![dD]’)(l(?:e(?:ur|) |a |’)) *({w_2}) +({w_2})  @@0,w,$
@@ -10052,7 +10052,7 @@ __[i]/conj(conj_det_sing_nom_confusion)__
     and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[123]?p", False)) and not before(r"(?i)\bni .* ni ") >>>
     <<- not checkAgreement(\2, \3)
     -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
-    <<- isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", isStart())
+    <<- __else__ and isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", isStart())
     -3>> =suggVerb(@, ":3s", suggSing)                  # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 __[i]/conj(conj_det_sing_nom_qui)__
     (?<![dD]’)(l[ea] |une? |l’|[mts](?:on|a) |ce(?:tte|t|) |leur ) *({w_2}) +qui +({w_2})  @@0,w,$
