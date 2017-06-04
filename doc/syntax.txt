@@ -1,38 +1,36 @@
 
 WRITING RULES FOR GRAMMALECTE
 
+Note: This documentation is obsolete right now.
 
-= Principles =
+# Principles #
 
-Grammalecte is a multi-passes grammar checker engine. On the first pass, the
-engine checks the text paragraph by paragraph. On the next passes, the engine
+Grammalecte is a bi-passes grammar checker engine. On the first pass, the
+engine checks the text paragraph by paragraph. On the second passe, the engine
 check the text sentence by sentence.
 
-The command to add a new pass is:
+The command to switch to the second pass is:
 [++]
-
-You shoudn’t need more than two passes, but you can create as many passes as
-you wish.
 
 In each pass, you can write as many rules as you need.
 
 A rule is defined by:
-- a regex pattern trigger
-- a list of actions (can’t be empty)
-- [optional] flags “LCR” for the regex word boundaries and case sensitiveness
-- [optional] user option name for activating/disactivating the rule
+* [optional] flags “LCR” for the regex word boundaries and case sensitiveness
+* a regex pattern trigger
+* a list of actions (can’t be empty)
+* [optional] user option name for activating/disactivating the rule
+* [optional] rule name
 
 There is no limit to the number of actions and the type of actions a rule can
 launch. Each action has its own condition to be triggered.
 
 There are three kind of actions:
-- Error warning, with a message and optionaly suggestions and optionally an URL
+- Error warning, with a message, and optionally suggestions, and optionally an URL
 - Text transformation, modifying internally the checked text
 - Disambigation action, setting tags on a position
 
 
 The rules file for your language must be named “rules.grx”.
-The options file must be named “option.txt”.
 The settings file must be named “config.ini”.
 
 All these files are simple utf-8 text file.
@@ -40,9 +38,9 @@ UTF-8 is mandatory.
 
 
 
-= Rule syntax =
+# Rule syntax #
 
-__LCR__  pattern
+__LCR/option(rulename)__  pattern
     <<- condition ->> error_suggestions  # message_error|http://awebsite.net...
     <<- condition ~>> text_rewriting
     <<- condition =>> commands_for_disambigation
@@ -59,48 +57,66 @@ Conditions are optional, i.e.:
 
 
 LCR flags means:
-- Left boundary for the regex
-- Case sensitiveness
-- Right boundary for the regex
+* L: Left boundary for the regex
+* C: Case sensitiveness
+* R: Right boundary for the regex
 
-Left boundary:  [  word boundary  or  <  no word boundary
-right boundary:  ]  word boundary  or  >  no word boundary
-Case sensitiveness:
-    i: case insensitive
-    s: case sensitive
-    u: uppercase allowed for lowercased characters
-        i.e.:  "Word"  becomes  "W[oO][rR][dD]"
+Left boundary (L):
+    `[`   word boundary
+    `<`   no word boundary
+
+right boundary (R):
+    `]`   word boundary
+    `>`   no word boundary
+
+Case sensitiveness (C):
+    `i`     case insensitive
+    `s`     case sensitive
+    `u`     uppercase allowed for lowercased characters
+            i.e.:  "Word"  becomes  "W[oO][rR][dD]"
 
 Examples:
-__[i]__  pattern
-__<s]__  pattern
-__[u>__  pattern
-__<s>__  pattern
-...
+    __[i]__  pattern
+    __<s]__  pattern
+    __[u>__  pattern
+    __<s>__  pattern
+    ...
+
 
 User option activating/disactivating is possible with an option name placed
 just after the LCR flags, i.e.:
-__[i]/useroption1__  pattern
-__[u]/useroption2__  pattern
-__[s>/useroption1__  pattern
-__<u>/useroption3__  pattern
-__<i>/useroption3__  pattern
-...
+    __[i]/option1__  pattern
+    __[u]/option2__  pattern
+    __[s>/option1__  pattern
+    __<u>/option3__  pattern
+    __<i>/option3__  pattern
+    ...
+
+Rules can be named:
+    __[i]/option1(name1)__  pattern
+    __[u]/option2(name2)__  pattern
+    __[s>/option1(name3)__  pattern
+    __<u>/option3(name4)__  pattern
+    __<i>/option3(name5)__  pattern
+    ...
+
+Each rule name must be unique.
+
 
 The LCR flags are also optional. If you don’t set these flags, the default LCR
 flags will be:
-__[i]__
+    __[i]__
 
 Example. Report “foo” in the text and suggest "bar":
 
-foo <<- ->> bar # Use bar instead of foo.
+    foo <<- ->> bar # Use bar instead of foo.
 
 Example. Recognize and suggest missing hyphen and rewrite internally the text
 with the hyphen:
 
-__[s]__ foo bar
-    <<- ->> foo-bar # Missing hyphen.
-    <<- ~>> foo-bar
+    __[s]__ foo bar
+        <<- ->> foo-bar # Missing hyphen.
+        <<- ~>> foo-bar
 
 
 == Simple-line or multi-line rules ==
@@ -110,46 +126,42 @@ You should use 4 spaces.
 
 Examples:
 
-__<s>__ pattern <<- condition
-    ->> replacement
-    # message
-    <<- condition ->> suggestion # message
-    <<- condition
-    ~>> text_rewriting
-    <<- =>> disambiguation
+    __<s>__ pattern
+        <<- condition ->> replacement
+        # message
+        <<- condition ->> suggestion # message
+        <<- condition
+        ~>> text_rewriting
+        <<- =>> disambiguation
 
-__<s>__ pattern <<- condition ->> replacement # message
+    __<s>__ pattern <<- condition ->> replacement # message
 
 
-== Comments ==
+## Comments ##
 
 Lines beginning with # are comments.
 
-Example. No action done.
 
-# pattern <<- ->> foo bar # message
-
-
-== End of file ==
+## End of file ##
 
 With the command:
 
-#END
+`#END`
 
-the compiler won’t go further. Whatever is written after will be considered
-as comments.
+at the beginning of a line, the compiler won’t go further.
+Whatever is written after will be considered as comments.
 
 
-== Whitespaces at the border of patterns or suggestions ==
+## Whitespaces at the border of patterns or suggestions ##
 
 Example. Recognize double or more spaces and suggests a single space:
 
-__<s>__  "  +" <<- ->> " " # Extra space(s).
+    __<s>__  "  +" <<- ->> " " # Extra space(s).
 
 ASCII " characters protect spaces in the pattern and in the replacement text.
 
 
-== Pattern groups and back references ==
+## Pattern groups and back references ##
 
 It is usually useful to retrieve parts of the matched pattern. We simply use
 parenthesis in pattern to get groups with back references.
@@ -167,7 +179,7 @@ Example. Back reference in messages.
 (fooo) bar <<- ->> foo bar # “\1” should be:
 
 
-== Name definitions ==
+## Name definitions ##
 
 Grammalecte supports name definitions to simplify the description of the
 complex rules.
@@ -181,7 +193,7 @@ Usage in the rules:
 ({name}) (\w+) ->> "\1-\2" # Missing hyphen?
 
 
-== Multiple suggestions ==
+## Multiple suggestions ##
 
 Use | in the replacement text to add multiple suggestions:
 
@@ -190,7 +202,7 @@ Example 7. Foo, FOO, Bar and BAR suggestions for the input word "foo".
 foo <<- ->> Foo|FOO|Bar|BAR # Did you mean:
 
 
-== No suggestion ==
+## No suggestion ##
 
 You can display message without making suggestions. For this purpose,
 use a single character _ in the suggestion field.
@@ -200,7 +212,7 @@ Example. No suggestion.
 foobar <<- ->> _ # Message
 
 
-== Positioning ==
+## Positioning ##
 
 Positioning is valid only for error creation and text rewriting.
 
@@ -214,7 +226,7 @@ Example.
 (ying) and yang <<- -1>> yin # Did you mean:
 __[s]__ (Mr.) [A-Z]\w+ <<- ~1>> Mr
 
-=== Comparison ===
+### Comparison ###
 
 Rule A:
 ying and yang       <<- ->>     yin and yang        # Did you mean:
@@ -231,7 +243,7 @@ With the rule B, only the first group is underlined:
     ^^^^
 
 
-== Longer explanations with URLs ==
+## Longer explanations with URLs ##
 
 Warning messages can contain optional URL for longer explanations separated by "|":
 
@@ -241,7 +253,7 @@ Warning messages can contain optional URL for longer explanations separated by "
 
 
 
-= Text rewriting =
+# Text rewriting #
 
 Example. Replacing a string by another
 
@@ -272,7 +284,7 @@ __[s]__ Mr. ([a-z]\w+) <<- ~1>> =\1.upper()
 
 
 
-= Disambiguation =
+# Disambiguation #
 
 When Grammalecte analyses a word with morph or morphex, before requesting the
 POS tags to the dictionary, it checks if there is a stored marker for the
@@ -309,7 +321,7 @@ This will store a list of tags at the position of the first group:
 
 
 
-= Conditions =
+# Conditions #
 
 Conditions are Python expressions, they must return a value, which will be
 evaluated as boolean. You can use the usual Python syntax and libraries.
@@ -328,7 +340,7 @@ You can also apply functions to subgroups like:
     …
 
 
-== Standard functions ==
+## Standard functions ##
 
 word(n)
     catches the nth next word after the pattern (separated only by white spaces).
@@ -363,7 +375,7 @@ option(option_name)
 Note: the analysis is done on the preprocessed text.
 
 
-== Default variables ==
+## Default variables ##
 
 sCountry
 
@@ -373,7 +385,7 @@ colour <<- sCountry == "US" ->> color # Use American English spelling.
 
 
 
-= Expressions in the suggestions =
+# Expressions in the suggestions #
 
 Suggestions (and warning messages) started by an equal sign are Python string expressions
 extended with possible back references and named definitions:
