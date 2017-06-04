@@ -10236,7 +10236,7 @@ __[i]/conj(conj_det_plur_nom)__
     and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
     <<- not checkAgreement(\2, \3)
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
-    <<- isAmbiguousAndWrong(\2, \3, ":p", ":3p")
+    <<- __else__ and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
     -3>> =suggVerb(@, ":3p", suggPlur)                      # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 __[i]/conj(conj_det_plur_nom_qui)__
     ([cmts]es|[nv]os|leurs|quelques) +({w_2}) +qui +({w_2})  @@0,w,$
@@ -10249,9 +10249,27 @@ __[i]/conj(conj_det_plur_nom_pronom)__
     and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
+TEST: Ses « chiens » {{coure}} sur ma pelouse.
+TEST: mes filles {{passe}} ce matin
+TEST: vos filles {{passes}} ce matin
+TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
+
+
 __[i]/conj(conj_det_plur_nom_confusion)__
-    (les|certaine?s|plusieurs) +({w_2}) +(?:qui +|)({w_2})  @@0,w,$
-    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True) and not checkAgreement(\2, \3)
+    (les|certaine?s|plusieurs) +({w_2}) +({w_2})  @@0,w,$
+    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True)
+    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
+    <<- not checkAgreement(\2, \3)
+    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+    <<- __else__ and (\1 == "les" or \1 == "Les") and isVeryAmbiguousAndWrong(\1, \2, ":p", ":3p", isStart())
+    -3>> =suggVerb(@, ":3p", suggPlur)                      # Accord avec « les \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+    <<- __else__ and (\1 == "certains" or \1 == "Certains") and isVeryAmbiguousAndWrong(\2, \3, ":m:p", ":3p", isStart())
+    -3>> =suggVerb(@, ":3p", suggMasPlur)                   # Accord avec « certains \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+    <<- __else__ and (\1 == "certaines" or \1 == "Certaines") and isVeryAmbiguousAndWrong(\2, \3, ":f:p", ":3p", isStart())
+    -3>> =suggVerb(@, ":3p", suggFemPlur)                   # Accord avec « certaines \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
+__[i]/conj(conj_det_plur_nom_qui_confusion)__
+    (les|certaine?s|plusieurs) +({w_2}) +qui +({w_2})  @@0,w,$
+    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True)
     and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 __[i]/conj(conj_det_plur_nom_pronom_confusion)__
@@ -10265,20 +10283,29 @@ TEST: Les cours de culture générale nous {{apporte}} de l’ouverture d’espr
 TEST: Les hommes ne le lui {{pardonnes}} pas.
 TEST: Les infirmières à mi-temps ne {{travaille}} pas dans cette aile.
 TEST: les données, en quantité plus que suffisante, {{indique}} que…
-TEST: Ses « chiens » {{coure}} sur ma pelouse.
 TEST: Les hommes comme celui-là {{mange}} comme deux.
 TEST: les récompenses distribuées à parts égales {{était}}…
 TEST: Les États-Unis d’Amérique se {{compose}} de 50 états.
 TEST: Les enfants en {{manges}}.
 TEST: Les ombres la {{donnes}}
-TEST: mes filles {{passe}} ce matin
-TEST: vos filles {{passes}} ce matin
 TEST: Les grands hommes politiques
 TEST: les charmantes petites mines de toutes les jeunes filles
 TEST: Les pauvres petites dames sont folles
 TEST: Les entrepreneurs ont {{cherchaient}} la reconnaissance sociale
-TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
 TEST: l’écart entre les riches et les pauvres n’était pas si grand.
+TEST: les grands {{danse}}
+TEST: les filles {{passes}} ce matin
+TEST: les marchands {{marche}}
+TEST: les marchands {{plie}}
+TEST: les marchands {{paye}}
+TEST: les marchands {{marchande}}
+TEST: les marchandes {{paie}}
+TEST: les marchandes {{marchande}}
+TEST: les chattes {{finis}}
+TEST: les chattes {{manges}}
+TEST: les chattes {{danse}}
+TEST: certains hommes {{marchandes}} sans cesse
+TEST: certaines femmes {{danse}} beaucoup
 
 
 __[i]/conj(conj_des_nom)__
@@ -10292,42 +10319,6 @@ __[i]/conj(conj_des_nom_qui)__
 
 TEST: Des hommes {{arrive}}.
 TEST: des femmes qui {{conduise}} la marche du monde.
-
-
-# confusions noms/adjectifs/verbes (voir règles DPP)
-__[i]/conj(conj_les_nom_ambiguïté)__
-    les +({w_2})~ *({w_2})  @@w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":p", ":3p", isStart())
-    -2>> =suggVerb(@, ":3p", suggPlur)                      # Accord avec « les \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-
-TEST: les grands {{danse}}
-TEST: les filles {{passes}} ce matin
-TEST: les marchands {{marche}}
-TEST: les marchands {{plie}}
-TEST: les marchands {{paye}}
-TEST: les marchands {{marchande}}
-TEST: les marchandes {{paie}}
-TEST: les marchandes {{marchande}}
-TEST: les chattes {{finis}}
-TEST: les chattes {{manges}}
-TEST: les chattes {{danse}}
-
-
-__[i]/conj(conj_certains_nom_ambiguïté)__
-    certains +({w_2})~ *({w_2})  @@w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":m:p", ":3p", isStart())
-    -2>> =suggVerb(@, ":3p", suggMasPlur)                   # Accord avec « certains \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-
-TEST: certains hommes {{marchandes}} sans cesse
-
-
-__[i]/conj(conj_certaines_nom_ambiguïté)__
-    certaines +({w_2})~ *({w_2})  @@w,$
-    <<- morphex(word(-1), ":C", ":[YP]", True) and isVeryAmbiguousAndWrong(\1, \2, ":f:p", ":3p", isStart())
-    -2>> =suggVerb(@, ":3p", suggFemPlur)                   # Accord avec « certaines \1… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
-
-TEST: certaines femmes {{danse}} beaucoup
-
 
 
 ## Quel(le) que soit / quel(le)s que soient
