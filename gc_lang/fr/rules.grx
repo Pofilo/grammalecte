@@ -9469,7 +9469,7 @@ TEST: {{Écartes}} de moi cette coupe.
 
 ## Traits d’union manquants
 __[i]/imp(imp_union_moi_toi)__
-    (?<![’~])({w_2}) ([mt]oi)(?! même)  @@0,$
+    (?<!’)({w_2}) ([mt]oi)(?! même)  @@0,$
     <<- morphex(\1, ":E", ":[GM]")
     ->> \1-\2
     # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
@@ -9478,7 +9478,7 @@ TEST: {{Apportez moi}} ce dictionnaire
 
 
 __[i]/imp(imp_union_nous_vous_lui_y)__
-    (?<![’~])({w_2}) ([nv]ous|lui|y)(?! en| y| est)  @@0,$
+    (?<!’)({w_2}) ([nv]ous|lui|y)(?! en| y| est)  @@0,$
     <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:Y|3[sp])", True) and morph(word(-1), ":Cc", False, True) and not before("~ +$")
     ->> \1-\2
     # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
@@ -9487,7 +9487,7 @@ TEST: {{Donne nous}} du café.
 
 
 __[i]/imp(imp_union_les)__
-    (?<![’~])({w_2}) les(?! plus| moins| mieux| trop| très| en| y)  @@0
+    (?<!’)({w_2}) les(?! plus| moins| mieux| trop| très| en| y)  @@0
     <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:N|A|Q|Y|B|3[sp])", True) and morph(word(-1), ":Cc", False, True) and not before("~ +$")
     ->> \1-les
     # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
@@ -9497,7 +9497,7 @@ TEST: Prenez les 5 ou 6 revues
 
 
 __[i]/imp(imp_union_le_la_leur)__
-    (?<![’~])({w_2}) (l(?:e(?:ur|)|a))(?! plus| moins| mieux| peu| plupart| trop| très| une?)  @@0,$
+    (?<!’)({w_2}) (l(?:e(?:ur|)|a))(?! plus| moins| mieux| peu| plupart| trop| très| une?)  @@0,$
     <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:N|A|Q|Y|MP|H|T)", True) and morph(word(-1), ":Cc", False, True) and not before("~ +$")
     ->> \1-\2
     # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
