@@ -66,7 +66,7 @@ class TestGrammarChecking {
                     nTotal = nTotal + 1;
                 }
                 i = i + 1;
-                if (i % 100 === 0) {
+                if (i % 1000 === 0) {
                     yield i.toString();
                 }
             }
