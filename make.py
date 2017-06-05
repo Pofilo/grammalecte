@@ -263,12 +263,11 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
                 print(sf, end=", ")
         print()
 
-        build_module = None
         try:
             build_module = importlib.import_module("gc_lang."+sLang+".build")
         except ImportError:
             print("# No complementary builder <build.py> in folder gc_lang/"+sLang)
-        if build_module:
+        else:
             build_module.build(sLang, dVars, spLangPack)
 
     return dVars['version']
