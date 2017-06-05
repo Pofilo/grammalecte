@@ -6762,7 +6762,6 @@ TEST: il y a une erreur qu’on peut {{desceller}} dans ses analyses.
 TEST: elle a {{dessellé}} une forte hostilité dans ses propos.
 
 
-
 # en train / entrain
 __[i]/conf(conf_en_train)__
     entrain <<- morph(word(-1), ":V0e", False, False) ->> en train              # Confusion. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
@@ -6779,6 +6778,22 @@ __[i]/conf(conf_à_l_envi)__
 TEST: Ils s’amusèrent à l’{{envie}} et oublièrent tous leurs soucis.
 TEST: Je résiste à l’envie de manger du chocolat.
 TEST: On ne s’intéresse pas à l’école ni à l’âge, mais aux compétences et à l’envie de partager.
+
+
+# et / est
+__[i]/conf(conf_est)__
+    (et) +({w_4}) *$ @@0,$
+    <<- before_chk1(r"(?i)^ *(?:l[ea]|ce(?:tte|t|)|mon|[nv]otre) +(\w[\w-]+\w) +$", ":[NA].*:[is]", ":G")
+    -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
+    <<- before_chk1(r"(?i)^ *(?:ton) +(\w[\w-]+\w) +$", ":N.*:[is]", ":[GA]")
+    -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
+    <<- before_chk1(r"^ *([A-ZÉÈ][\w-]+\w) +$", ":M", ":G") -1>> est                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
+
+TEST: ce chien {{et}} malade.
+TEST: ton chat {{et}} cinglé.
+TEST: Pauline {{et}} fatiguée.
+TEST: ton implacable et amère du vieux roi.
+TEST: son cristallin et aigu
 
 
 # faite / faîte / fait
@@ -8113,6 +8128,7 @@ TEST: __ocr__ la longueur de la circonférence étant égale à…
 
 
 #### CONFUSIONS
+
 
 ## guerre / guère
 __[i]/conf(conf_ne_pronom_pronom_verbe_guère)__
