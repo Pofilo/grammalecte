@@ -13,7 +13,7 @@
 
 ## Commands ##
 
-** build a language **
+**Build a language**
 
     make.py LANG
         generate the LibreOffice extension and the package folder.
@@ -21,14 +21,14 @@
 
         This script uses the file `config.ini` in the folder `gc_lang/LANG`.
 
-** First build **
+**First build**
 
     Type:
         make.py LANG -js
 
     This command is required to generate all necessary files.
 
-** options **
+**Options**
 
     -b --build_data
         Launch the script `build_data.py` in the folder `gc_lang/LANG`.
