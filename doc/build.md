@@ -1,4 +1,3 @@
-
 # How to build
 
 ## Required ##
@@ -15,55 +14,66 @@
 
 **Build a language**
 
-    make.py LANG
-        generate the LibreOffice extension and the package folder.
-        LANG is the lang code (ISO 639).
+`make.py LANG`
 
-        This script uses the file `config.ini` in the folder `gc_lang/LANG`.
+> Generate the LibreOffice extension and the package folder.
+> LANG is the lang code (ISO 639).
+
+> This script uses the file `config.ini` in the folder `gc_lang/LANG`.
 
 **First build**
 
-    Type:
-        make.py LANG -js
+`make.py LANG -js`
 
-    This command is required to generate all necessary files.
+> This command is required to generate all necessary files.
 
 **Options**
 
-    -b --build_data
-        Launch the script `build_data.py` in the folder `gc_lang/LANG`.
+`-b --build_data`
 
-    -d --dict
-        Generate the indexable binary dictionary from the lexicon in the folder `lexicons`.
+> Launch the script `build_data.py` in the folder `gc_lang/LANG`.
 
-    -js --javascript
-        Also generate JavaScript extensions.
-        Without this option only Python modules, data and extensions are generated.
+`-d --dict`
 
-    -t --tests
-        Run unit tests.
+> Generate the indexable binary dictionary from the lexicon in the folder `lexicons`.
 
-    -i --install
-        Install the LibreOffice extension.
+`-js --javascript`
 
-    -fx --firefox
-        Launch Firefox Nightly.
-        Unit tests can be lanched from Firefox, with CTRL+SHIFT+F12.
+> Also generate JavaScript extensions.
+> Without this option, only Python modules, data and extensions are generated.
 
-    -tb --thunderbird
-        Launch Thunderbird.
+`-t --tests`
+
+> Run unit tests.
+
+`-i --install`
+
+> Install the LibreOffice extension.
+
+`-fx --firefox`
+
+> Launch Firefox Nightly.
+> Unit tests can be lanched from Firefox, with CTRL+SHIFT+F12.
+
+`-tb --thunderbird`
+
+> Launch Thunderbird.
 
 
 ## Examples ##
 
-    Full rebuild:
+Full rebuild:
+
         make.py LANG -b -d -js
 
-    After modifying grammar rules:
+After modifying grammar rules:
+
         make.py LANG -t
 
-    If you modify the lexicon:
+If you modify the lexicon:
+
         make.py LANG -d -js
 
-    If you modify your script build_data.py:
+If you modify your script `build_data.py`:
+
         make.py LANG -b -js
