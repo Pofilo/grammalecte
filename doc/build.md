@@ -3,12 +3,12 @@
 
 ## Required ##
 
-    Python 3.6
-    Firefox Nightly
-    NodeJS
-        npm
-        jpm
-    Thunderbird
+* Python 3.6
+* Firefox Nightly
+* NodeJS
+  * npm
+  * jpm
+* Thunderbird
 
 
 ## Commands ##
