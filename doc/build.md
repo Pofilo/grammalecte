@@ -1,5 +1,5 @@
 
-# BUILDER
+# How to build
 
 ## Required ##
 
