@@ -45,9 +45,12 @@
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
 
 
-#
-# OPTIONS ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-#
+!!
+!!
+!! Options                                                                                          
+!!
+!!
+
 OPTGROUP/basic: typo apos, esp tab, nbsp unit, tu maj, num virg, nf chim, ocr mapos, liga
 OPTGROUP/gramm: conf sgpl gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
@@ -193,9 +196,12 @@ OPTLABEL/idrule:    Display control rule identifier [!]|Display control rule ide
 
 
 
-#
-# DÉFINITIONS ************************************************************************************
-#
+!!
+!!
+!! Définitions pour les regex                                                                       
+!!
+!!
+
 DEF: avoir          [aeo]\w*
 DEF: etre           [êeésf]\w+
 DEF: avoir_etre     [aeêésfo]\w*
@@ -214,55 +220,55 @@ DEF: w4             \w\w\w\w+
 
 
 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# //////////////////////////////////////// PASSE 0 ////////////////////////////////////////
-# paragraphe par paragraphe
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!! PASSE 0: PARAGRAPHE PAR PARAGRAPHE                                                               
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
 
 
 
-#
-# //////////////////////////////////////// CONTRÔLE DES ESPACES ////////////////////////////////////////
-#
-
+!!
+!!
+!!! Espaces & tabulations                                                                           
+!!
+!!
 
 # Espaces surnuméraires
 # Note : les tabulations ne sont pas soulignées dans LibreOffice. Mais l’erreur est bien présente.
@@ -377,10 +383,11 @@ TEST: « J’en suis “malade”. »
 
 
 
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-#
-
+!!!
+!!!
+!!! Processeur: efface les ponctuations gênantes (URL, sigles, abréviations, IP, heures, etc.)      
+!!!
+!!!
 
 # e-mail
 __<i>(p_email)__
@@ -505,6 +512,12 @@ TEST: Car [je] deviendrai plus insaisissable que jamais.
 #TEST: des [b]{{femme}}[/b]
 
 
+!!!
+!!!
+!!! Processeur: balises HTML et LaTeX                                                               
+!!!
+!!!
+
 # HTML
 __<i>/html(p_html_amp_xxx)__            &amp;[a-zA-Z]+; <<- ~>> _
 __<i>/html(p_html_lt)__                 &lt; <<- ~>> "   <"
@@ -522,14 +535,11 @@ __<i>/latex(p_latex2)__     \\[,;/\\] <<- ~>> *
 __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumerate|equation|figure|flush(?:left|right)|gather|minipage|multline|quot(?:ation|e)|SaveVerbatim|table|tabular|thebibliography|[vV]erbatim|verse|wrapfigure)\} <<- ~>> *
 
 
-
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
-
-
-############################## TYPOGRAPHIE ##############################
-
+!!
+!!
+!!!! Typographie, virgules, espaces insécables, unités de mesure…                                   
+!!
+!!
 
 ### Écritures épicènes invariables
 # Attention, lors de la deuxième passe, on se sert du désambiguïsateur
@@ -907,9 +917,7 @@ __[s]/chim(chim_molécules)__
 TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
 
 
-#
-# GRANDS NOMBRES ---------------------------------------------------------------------------------
-#
+!!!! Grands nombres                                                                                 
 
 __[s]/num(num_grand_nombre_soudé)__
     \d\d\d\d\d+
@@ -943,9 +951,8 @@ TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 
 
 
-#
-# DATES ------------------------------------------------------------------------------------------
-#
+!!!! Dates                                                                                          
+
 __[i]/date(date_nombres)__
     (?<!\d[ /.-])(\d\d?)[ /.-](\d\d?)[ /.-](\d\d\d+)(?![ /.-]\d)  @@0,w,$
     <<- not checkDate(\1, \2, \3) and not before(r"(?i)\bversions? +$") ->> _                       # Cette date est invalide.
@@ -958,9 +965,7 @@ TEST: le {{81/01/2012}}
 TEST: 12-12-2012
 
 
-#
-# REDONDANCES (dans le paragraphe) ---------------------------------------------------------------
-#
+!!!! Redondances                                                                                    
 
 __[i]/redon1(redondances_paragraphe)__
     ({w_4})[  ,.;!?:].*[  ](\1)  @@0,$
@@ -972,12 +977,11 @@ TEST: __redon1__ Tu es son {{avenir}}. Et lui aussi est ton {{avenir}}.
 TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
 
 
-
-
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-# Dernier nettoyage avant coupure du paragraphe en phrases
-#
+!!!
+!!!
+!!! Processeur: Dernier nettoyage avant coupure du paragraphe en phrases                            
+!!!
+!!!
 
 # Trait d’union conditionnel (u00AD)
 __<i>(p_trait_union_conditionnel1)__    \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑", "")
@@ -993,56 +997,54 @@ TEST: “Parce que… ?” finit par demander Paul.
 TEST: « Dans quel pays sommes-nous ? » demanda un manifestant. 
 
 
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!! PASSE 1: PHRASE PAR PHRASE                                                                       
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# //////////////////////////////////////// PASSE 1 ////////////////////////////////////////
-# phrase par phrase
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
 [++]
 
 
 
-#
-# DOUBLONS (casse identique) ---------------------------------------------------------------------
-#
+!!!! Doublons (casse identique)                                                                     
+
 __[s](doublon)__
     ({w1}) {1,3}\1  @@0
     <<- not re.search("(?i)^([nv]ous|faire|en|la|lui|donnant|œuvre|h[éoa]|hou|olé|joli|Bora|couvent|dément|sapiens|très|vroum|[0-9]+)$", \1)
@@ -1053,9 +1055,7 @@ __[s](doublon)__
 TEST: Il y a un {{doublon doublon}}.
 
 
-#
-# NOMBRES : TYPOGRAPHIE --------------------------------------------------------------------------
-#
+!!!! Nombres: typographie                                                                           
 
 #(\d\d\d\d)-(\d\d\d\d)   <<- ->> \1–\2                              # Ne pas séparer deux dates par un trait d’union, mais par un tiret demi-cadratin.
 
@@ -1077,9 +1077,9 @@ TEST: Le {{XXIème}} siècle.                     ->> XXIᵉ|XXIe
 TEST: le {{XXè}} siècle.                        ->> XXᵉ|XXe
 
 
-#
-# Écritures épicènes invariables
-#
+
+!!!! Écritures épicènes invariables                                                                 
+
 __[i](d_typo_écriture_épicène_pluriel)__
     ({w_1}[éuitsrn])-(?:[nt]|)e-s  @@0
     <<- morphex(\1, ":[NAQ]", ":G") =>> define(\1, [":N:A:Q:e:p"])
@@ -1089,9 +1089,7 @@ __[i](d_typo_écriture_épicène_singulier)__
     <<- morph(\1, ":[NAQ]", False) =>> define(\1, [":N:A:Q:e:s"])
 
 
-#
-# DATES ------------------------------------------------------------------------------------------
-#
+!!!! Dates                                                                                          
 
 __[i]/date(date_jour_mois_année)__
     (\d\d?) (janvier|février|ma(?:rs|i)|a(?:vril|o[ûu]t)|jui(?:n|llet)|septembre|octobre|novembre|décembre) (\d\d\d+)  @@0,w,$ 
@@ -1131,10 +1129,11 @@ TEST: le {{30 février}}
 
 
 
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-# épuration des signes inutiles et quelques simplifications
-#
+!!!
+!!!
+!!! Processeur: épuration des signes inutiles et quelques simplifications                           
+!!!
+!!!
 
 # fin de phrase
 __<s>(p_fin_de_phrase)__        [.?!:;…][ .?!… »”")]*$  <<- ~>> *
@@ -1200,13 +1199,11 @@ __[s](p_fusion_mots_multiples)__
 TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
 
 
-
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
-
-
-############################## LIAISONS - TRAITS D’UNION ##############################
+!!
+!!
+!!!! Traits d’union                                                                                 
+!!
+!!
 
 __<i]/tu(tu_t_euphonique1)__
     (-t[’' ])(il|elle|on)  @@0,$  <<- -1>> -t-      # Pour le “t” euphonique, il faut deux traits d’union.
@@ -1602,6 +1599,8 @@ TEST: Elle y arriva {{lors qu}}’elle trouva l’astuce permettant l’ouvertur
 TEST: Dès lors qu’on sait comment s’y prendre, aucune raison de faillir.
 
 
+!!!! Virgules                                                                                       
+
 # Dialogues
 __[u]/virg(virgule_dialogue_après_nom_propre)__
     ([A-ZÉÈ][\w-]+) (\w+-(?:moi|toi|l(?:ui|a|e(?:ur|s|))|nous|vous|je|tu|ils|elles))  @@0,$
@@ -1636,7 +1635,9 @@ TEST: Il va la {{tuer}} Paul.
 TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
 
 
-# Apostrophe manquante (voir règle à la passe précédente)
+
+!!!! Apostrophe manquante (2)                                                                       
+
 __<s>/typo(typo_apostrophe_manquante_audace2)__
     ^ *([LDSNCJMTÇ] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@*
     <<- option("mapos") -1>> =\1[:-1]+"’"                                                           # Il manque peut-être une apostrophe.
@@ -1644,8 +1645,9 @@ __<s>/typo(typo_apostrophe_manquante_audace2)__
 TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 
 
-## A / À
-# accentuation la préposition en début de phrase
+
+!!!! A / À: accentuation la préposition en début de phrase
+
 __<s]/typo(typo_À_début_phrase1)__
     ^ *(A) (?!t[’-](?:ils?|elles?|on))({w_2})  @@*,$
     <<- morphex(\2, ":[GNAY]", ":(?:Q|3s)|>(?:priori|post[eé]riori|contrario|capella|fortiori) ")
@@ -1663,9 +1665,11 @@ TEST: A priori, nul ne peut y parvenir sans une aide extérieure.
 
 
 
-#
-# //////////////////////////////////////// DÉSAMBIGUÏSATEUR ////////////////////////////////////////
-#
+!!!
+!!!
+!!! Désambiguïsation                                                                                
+!!!
+!!!
 
 # mots grammaticaux
 __[i](d_dans)__
@@ -1737,12 +1741,13 @@ TEST: nul ne sait qui arriva à ce pauvre Paul surpris par la pluie.
 TEST: elle finit par être très fière de son fils.
 
 
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
 
 
-############################## OCR (expérimental) ##############################
+!!
+!!
+!!!! OCR                                                                                            
+!!
+!!
 
 # ?
 __<s]/ocr(ocr_point_interrogation)__
@@ -2373,8 +2378,11 @@ TEST: __ocr__ elle s’{{avance*}} sur le seuil
 TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
 
 
-############################## RÈGLES DE BASE ##############################
-
+!!
+!!
+!!!! Incohérences de base                                                                           
+!!
+!!
 
 ### double négation
 __[i](double_négation)__
@@ -2404,9 +2412,11 @@ TEST: je ne sais {{des}} {{ses}} choses.
 
 
 
-################################################## STYLE ##################################################
-
-########## Basique
+!!
+!!
+!!!! Style                                                                                          
+!!
+!!
 
 #__bs__  Mr <<- ->> M.                          # M. est l’usage courant pour “Monsieur”. « Mr » est l’abréviation ancienne, française.
 
@@ -2503,8 +2513,6 @@ __[i]/bs(bs_malgré_que)__
 TEST: {{Malgré que}} je sois fou.
 
 
-
-
 ######### Expressions impropres
 
 #([mts]e|[nv]ous) (rappel\w+) (de) <<- word(1) != "ne" and not morph(word(1), ":V")
@@ -2514,7 +2522,11 @@ TEST: {{Malgré que}} je sois fou.
 #enjoindre à qqn de faire qqch
 
 
-########## Pléonasmes
+!!
+!!
+!!!! Pléonasmes                                                                                     
+!!
+!!
 
 __[i]/pleo(pleo_abolir)__               (abol\w+) (?:absolument|entièrement|compl[èé]tement|totalement) @@0 <<- morph(\1, ">abolir ", False) ->> \1         # Pléonasme.
 __[i]/pleo(pleo_acculer)__              (accul\w+) aux? pieds? du mur @@0 <<- morph(\1, ">acculer ", False) ->> \1                                          # Pléonasme.
@@ -2665,6 +2677,7 @@ TEST: {{différer à une date ultérieure}}      ->> différer
 TEST: {{reporter à plus tard}}                ->> reporter
 
 
+
 # ayants droit
 __[i]/sgpl(sgpl_ayants_droit)__
     [ldcs]es (ayant[- ]droits?) @@4 <<- -1>> ayants droit                 # Au singulier : « un ayant droit ». Au pluriel : « des ayants droit ».
@@ -2683,8 +2696,12 @@ TEST: {{ma}} obligée                                          ->> mon
 TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
 
 
+!!
+!!
+!!!! Confusions                                                                                     
+!!
+!!
 
-#### CONFUSIONS
 __[s>/conf(conf_ne_n)__     [nN]e n’                        <<- ->> ne m’|n’                        # Incohérence. Double négation.
 __[s>/conf(conf_pronoms1)__ [mtMT]e ([nmst](?:’|e )) @@$    <<- ->> \1                              # Incohérence.
 __[s>/conf(conf_pronoms2)__ [sS]e ([mst](?:’|e )) @@$       <<- ->> \1                              # Incohérence.
@@ -3850,6 +3867,11 @@ TEST: C’que j’comprends, c’est qu’il y a des limites à ce qu’on peut 
 TEST: la tentation pour certains médias de ne tout simplement pas rémunérer notre travail si celui-ci n’est finalement pas publié.
 TEST: Ne parfois pas être celui qui sabote l’ambiance.
 
+!!
+!!
+!!!! Formes verbales sans sujet                                                                     
+!!
+!!
 
 ## Incohérences avec formes verbales 1sg et 2sg sans sujet
 __[i](p_notre_père_qui_es_au_cieux)__   notre père (qui est? aux cieux) @@11 <<- ~1>> *
@@ -3942,7 +3964,11 @@ TEST: comme {{convenus}}                                      ->> convenu
 
 
 
-#### TOUT / TOUS / TOUTE / TOUTES
+!!
+!!
+!!!! Tout, tous, toute, toutes                                                                      
+!!
+!!
 
 __[i](p_fais_les_tous)__
     fai(?:tes|sons|s)-(?:les|[nv]ous) (tou(?:te|)s) @@$ <<- ~1>> *
@@ -4040,7 +4066,12 @@ TEST: aux tout débuts, il y eut bien des erreurs
 TEST: comment les inégalités sociales impactent la santé des tout petits
 
 
-#### ADVERBES DE NÉGATION
+
+!!
+!!
+!!!! Adverbes de négation                                                                           
+!!
+!!
 
 __[i]/neg(ne_manquant1)__
     (?:je|tu|ils?|on|elles?) ([bcdfgjklmnpqrstvwxz][\w-]*) (pas|rien|jamais|guère)  @@w,$
@@ -4102,11 +4133,11 @@ TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 
 
-
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-# épuration des adverbes, locutions adverbiales, interjections et expressions usuelles
-#
+!!!
+!!!
+!!! Processeur: épuration des adverbes, locutions adverbiales, interjections et expressions usuelles
+!!!
+!!!
 
 # Dates
 __[s](p_date)__
@@ -4856,8 +4887,12 @@ TEST: les populistes d’Europe centrale et de l’Est ont d’ores et déjà te
 TEST: Deirdre, elle aussi légèrement ostracisée, m’interrogea.
 
 
-#### DÉSAMBIGUÏSATION
 
+!!!
+!!!
+!!! Désambiguïsation (deprecated)
+!!!
+!!!
 #__[i]__  ({avoir}) +({w_1}[eiuts])  @@0,$
 #    <<- morph(\1, ":V0a", False) and morphex(\1, ":Q", ":G")
 #    =>> exclude(\2, ":A")
@@ -4907,7 +4942,7 @@ TEST: ce que c’est : le signe évident d’une politique volontaire
 #
 
 
-#### Redondances
+!!!! Redondances dans la phrase                                                                     
  
 __[i]/redon2(redondances_phrase)__
     ({w_4})[ ,].* (\1)  @@0,$
@@ -4922,7 +4957,11 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 
 
 
-############################## GROUPE NOMINAL ##############################
+!!
+!!
+!!!! Groupe nominal (1)                                                                             
+!!
+!!
 
 #### 1 mot
 
@@ -5474,7 +5513,12 @@ __[i]/gn(gn_trouver_ça_adj)__
 TEST: ils trouvent ça de plus en plus {{idiots}}              ->> idiot
 
 
-#### 2 mots
+
+!!
+!!
+!!!! Groupe nominal (2)                                                                             
+!!
+!!
 
 ## Sans article
 
@@ -5861,7 +5905,12 @@ TEST: Les couleurs rouge, jaune et verte ne doivent pas être utilisées
 TEST: des passeports américain, canadien, néerlandais, allemand et britannique.
 
 
-#### 3 mots
+
+!!
+!!
+!!!! Groupe nominal (3)                                                                             
+!!
+!!
 
 ## nombre
 
@@ -5901,7 +5950,11 @@ TEST: ces petites sottes {{déjantée}}
 
 
 
-#### Accords avec de / des / du
+!!
+!!
+!!!! Groupe nominal: Accords avec de / des / du                                                     
+!!
+!!
 
 __[i]/gn(gn_devinette1)__
     (?:[lmts]a|une|cette) +{w_2} +d(?:e (?:[lmts]a|cette)|’une) +(?!des )({w_2}) +({w_2})  @@w,$
@@ -5958,7 +6011,11 @@ TEST: {{de telles sorte}}
 
 
 
-############################## SINGULIERS & PLURIELS ##############################
+!!
+!!
+!!!! Singuliers & Pluriels                                                                          
+!!
+!!
 
 #### Prépositions
 
@@ -6332,7 +6389,11 @@ TEST: de mon point de {{vues}}
 
 
 
-############################## CONFUSIONS, HOMONYMES ET FAUX-AMIS ###############################
+!!
+!!
+!!!! Confusions                                                                                     
+!!
+!!
 
 # abuser / abusé / abusif
 __[i]/conf(conf_abusif)__
@@ -7635,7 +7696,7 @@ TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 
 
-############################## MOTS COMPOSÉS ###############################
+!!!! Mots composés                                                                                  
 
 __[i]/mc(mc_mot_composé)__
     ({w2})-({w2})  @@0,$
@@ -7649,7 +7710,12 @@ __[i]/mc(mc_mot_composé)__
 TEST: __mc__ des {{portes-avions}}.
 
 
-############################## MAJUSCULES & MINUSCULES ###############################
+
+!!
+!!
+!!!! Casse: majuscules et minuscules                                                                
+!!
+!!
 
 # Les jours
 __[s]/maj(maj_jours_semaine)__
@@ -7806,10 +7872,35 @@ TEST: Elle en prendra vingt {{Grammes}}.
 
 
 
-################################################################# CONJUGAISONS ##############################################################################
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!! Conjugaisons                                                                                    
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
 
 
-#### INFINITIF
+!!
+!!
+!!!! Infinitif                                                                                      
+!!
+!!
+
 __[i]/infi(infi_à_en)__
     à en ({w_2}) @@5
     <<- morphex(\1, ":V", ":Y") -1>> =suggVerbInfi(@)                                               # Le verbe devrait être à l’infinitif.
@@ -7918,7 +8009,6 @@ __[i]/infi(infi_verbe_de)__
 TEST: cessez d’{{anesthésié}} ces gens !
 
 
-
 ## INFINITIFS ERRONÉS
 
 __[i]/infi(infi_adjectifs_masculins_singuliers)__
@@ -7952,7 +8042,7 @@ TEST: tes doutes {{remâcher}} deviennent difficiles à vivre.
 
 
 
-#### PARTICIPES PRÉSENTS
+!!!! Particpes présents                                                                             
 
 __[i]/conj(conj_participe_présent)__  (?:ne|lui|me|te|se|nous|vous) ({w_2}ants)  @@$
     <<- morph(\1, ":A", False) -1>> =\1[:-1]                                                        # Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
@@ -7961,9 +8051,11 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 
 
 
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-#
+!!!
+!!!
+!!! Processeur: simplification des substantifs                                                      
+!!!
+!!!
 
 ### @ : we remove @ we introduced after le/la/les in some cases
 __<s>(p_arobase)__      @ <<- ~>> *
@@ -8085,12 +8177,7 @@ TEST: Nous nous doutons bien qu’il y a une entourloupe derrière cette affaire
 
 
 
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
-
-
-#### OCR
+!!!! OCR                                                                                            
 
 # Participes passés
 __[i]/ocr(ocr_être_participes_passés)__
@@ -8127,8 +8214,8 @@ TEST: __ocr__ la longueur de la circonférence étant égale à…
 # Fonctionne avec nous serons, mais pas nous sommes (bug de JavaScript?)
 
 
-#### CONFUSIONS
 
+!!!! Confusions                                                                                     
 
 ## guerre / guère
 __[i]/conf(conf_ne_pronom_pronom_verbe_guère)__
@@ -8188,7 +8275,10 @@ __[i]/conf(conf_aller_de_soi)__
 TEST: cela ne va pas de {{soit}}.
 
 
-#### ADVERBES
+
+!!!! Adverbes après verbe                                                                           
+
+# fort
 __[i]/sgpl(sgpl_verbe_fort)__
     ({w_2}) +(forts)  @@0,$
     <<- morphex(\1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre) .*:(?:[123]p|P|Q)|>(?:affirmer|trouver|croire|désirer|estime|préférer|penser|imaginer|voir|vouloir|aimer|adorer|souhaiter) ")
@@ -8205,6 +8295,7 @@ TEST: les écarts ont été plus forts en une génération
 TEST: Avec le même nombre de bulletins, les xénophobes apparaîtront plus forts.
 
 
+# bien
 __[i]/sgpl(sgpl_bien)__
     biens
     <<- morphex(word(-1), ":V", ":D.*:p|:A.*:p", False) ->> bien                                    # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
@@ -8217,7 +8308,11 @@ TEST: Ce sont des biens de peu de valeur.
 
 
 
-#### INFINITIF
+!!
+!!
+!!!! Infinitif                                                                                      
+!!
+!!
 
 __[i]/infi(infi_d_en_y)__
     d’(?:en|y) +({w_2}(?:ée?s?|ai[st]?|ez))  @@$
@@ -8305,8 +8400,11 @@ __[i]/infi(infi_lui)__
 TEST: lui {{mangée}} beaucoup.
 
 
-
-#### USAGE PRONOMINAL : SE + ÊTRE + VERBE
+!!
+!!
+!!!! Participes passés: se +être +verbe                                                             
+!!
+!!
 
 __[i]/ppas(ppas_je_me_être_verbe)__
     je +(?:ne +|)m(?:e +|’(?:y +|))(?:s[uo]i[st]|étai[st]|fu(?:sses?|s|t)|serai[st]?) +({w_3}) @@$
@@ -8391,7 +8489,12 @@ TEST: des soins que je m’étais donnés.
 TEST: Si t’es pas contente, t’achètes pas.
 
 
-#### PRONOM + LAISSER + ADJ
+
+!!
+!!
+!!!! Participes passés: se +laisser +adjectif                                                       
+!!
+!!
 
 __[i]/ppas(ppas_me_te_laisser_adj)__
     ([mt]e|l[ae]) +(laiss\w*) +({w_3})  @@0,w,$
@@ -8419,8 +8522,11 @@ TEST: ils nous laisseront étourdis.
 TEST: nous laisserons étourdi cet homme.
 
 
-
-#### ÊTRE / AVOIR ÉTÉ / SEMBLER (+ÊTRE via PP) / DEVENIR / RESTER / DEVENIR / REDEVENIR / PARAÎTRE + PARTICIPE PASSÉ / ADJ
+!!
+!!
+!!!! Participes passés: être, avoir été, sembler (+être via pp), devenir, rester, (re)devenir, paraître + participe passé / adj
+!!
+!!
 
 __[i]/ppas(ppas_je_verbe)__
     j(?:e +|’(?:y +|en +|))(?:ne +|n’|)((?:s[oue]|étai|fus|dev|re(?:dev|st)|par)\w*|a(?:ie?|vais|urais?) +été|eus(?:se|) +été) +({w_2})  @@w,$
@@ -8580,7 +8686,11 @@ TEST: Ç’eût été prendre des vessies pour des lanternes.
 TEST: C’eût été foncer tête baissée dans la gueule du loup.
 
 
-## pouvoir/sembler/paraître/vouloir/devoir/croire/déclarer/penser/dire/affirmer + être/avoir été
+!!
+!!
+!!!! Participes passés: pouvoir/sembler/paraître/vouloir/devoir/croire/déclarer/penser/dire/affirmer + être/avoir été
+!!
+!!
 
 __[i](p_risque_d_être)__
     risqu\w+ +(d’)être @@* <<- ~1>> *
@@ -8688,7 +8798,9 @@ TEST: elles souhaitent être plus {{considérée}}
 
 
 
-## Contrôle de l’accord en nombre avec la conjugaison de « être »
+!!!! Participes passés: accord en nombre avec la conjugaison de « être »                            
+
+## Contrôle de l’
 __[i]/ppas(ppas_être_accord_singulier)__
     ({w_2}) +(?:qui +|)(?:ne +|n’|)(?:est|était|f[uû]t|sera(?:it|)|a(?:vait|ura|urait|it|) +été|e[uû]t +été) +({w_2})  @@0,$
     <<- morphex(\2, ":[NAQ].*:p", ":[GMWYsi]") and not morph(\1, ":G", False)
@@ -8700,8 +8812,8 @@ __[i]/ppas(ppas_être_accord_pluriel)__
     -2>> =suggPlur(@)                                                        # Accord avec « être » : « \2 » devrait être au pluriel.
 
 
+!!!! Participes passés: accord en genre avec le substantif précédent                                
 
-## Contrôle de l’accord en genre avec le substantif précédent
 __[i]/ppas(ppas_sujet_être_accord_genre)__
     (?<![dD]’)(une? |les? |la |l’|ce(?:s|t|tte|) |[mts](?:on|a|es) |[nv]os |leurs? ) *({w_2}) +(?:qui +|)(?:ne +|n’|)(?:est|étai(?:en|)t|f[uû]t|sera(?:i(?:en|)t|)|soi(?:en|)t|s(?:er|)ont|fu(?:r|ss)ent) +({w_2})  @@0,w,$
     <<- not re.search("(?i)^légion$", \3)
@@ -8739,7 +8851,8 @@ TEST: Martine est très {{intelligent}}.
 TEST: Martine n’est pas très {{intelligent}}.
 
 
-## accords avec l’adjectif précédant le pronom
+
+!!!! Accords avec l’adjectif précédant le pronom                                                    
 
 __[i]/ppas(ppas_adj_accord_je_tu)__
     ^ *({w_2}s),? (je?|tu)  @@*,$
@@ -8796,7 +8909,12 @@ TEST: Elles se sont {{rendues}} compte
 TEST: La puissance publique s’en est-elle rendu compte ?
 
 
-## Inversion verbe/sujet
+
+!!
+!!
+!!!! Inversion verbe/sujet                                                                          
+!!
+!!
 __[i]/ppas(ppas_inversion_être_je)__
     (?:s[ou]is|étais|fus(?:sé|)|serais?)-je +({w_2})  @@$
     <<- morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:p)", ":[GWsi]")
@@ -8849,8 +8967,6 @@ TEST: Est-ce former de futurs travailleurs ou bien des citoyens
 
 
 
-
-
 ## Accord et incohérences 
 __[i]/ppas(ppas_sont)__
     sont ({w_2})  @@5
@@ -8862,7 +8978,12 @@ __[i]/ppas(ppas_sont)__
 TEST: après avoir mis à jour sont {{profile}}.
 
 
-#### SE CROIRE/CONSIDÉRER/MONTRER/PENSER/RÉVÉLER/SAVOIR/SENTIR/VOIR/VOULOIR + PARTICIPE PASSÉ/ADJ
+
+!!
+!!
+!!!! Se croire/considérer/montrer/penser/révéler/savoir/sentir/voir/vouloir + participe passé/adj   
+!!
+!!
 
 __[i]/ppas(ppas_je_me_verbe)__
     je +(?:ne +|)me +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@w,$
@@ -8993,7 +9114,11 @@ TEST: elle se révèle d’ailleurs être une alliée de taille
 
 
 
-#### AVOIR + PARTICIPES PASSÉS
+!!
+!!
+!!!! Avoir + participes passés                                                                      
+!!
+!!
 
 #__[i]/conj__  fait(s|e|es) ({w1}) <<- morph(\2, ":V") and not morph(\2, ":Y")
 #   ->> fait \1                      # Le participe passé de faire reste au masculin singulier s’il est suivi par un verbe à l’infinitif.
@@ -9124,7 +9249,12 @@ TEST: c’est vous qui m’avez {{convertit}}.
 TEST: parce que t’as envie que je le fasse
 
 
-## COD avant que
+
+!!
+!!
+!!!! COD précédent que                                                                                  
+!!
+!!
 
 __[i]/ppas(ppas_det_plur_COD_que_avoir)__
     ([ldmtsc]es) +({w_2}) +que? +(?:j’|tu |ils? |[nv]ous |elles? |on ) *(?:ne +|n’|)({avoir}) +({w_2}[éiust]e?)(?! [mts]’)  @@0,w,w,$
@@ -9193,7 +9323,9 @@ __[i]/ppas(ppas_avoir_conf_infi)__
 TEST: Avoir {{marcher}} toute la journée m’a épuisée.
 
 
-## du / dû
+
+!!!! du / dû                                                                                        
+
 __[i]/ppas(ppas_avoir_dû_vinfi)__
     ({avoir}) +(due?s?) +(?:[mts]’|)({w_2})  @@0,w,$
     <<- morph(\1, ":V0a", False) and (morph(\3, ":Y") or re.search("^(?:[mtsn]e|[nv]ous|leur|lui)$", \3))
@@ -9234,7 +9366,12 @@ TEST: Ai-je déjà {{signez}} le contrat ?
 TEST: A-t-il déjà {{signer}} le contrat ?
 
 
-# formes interrogatives
+!!
+!!
+!!!! Participes passés avec formes interrogatives                                                   
+!!
+!!
+
 __[i]/ppas(ppas_avoir_pronom1)__
     (?<![ltm]’)({avoir})[- ](?:je|tu|ils?|elles?|t-(?:ils?|elles?|on)|on) +({w2})  @@0,$
     <<- morph(\1, ":V0a", False) and morphex(\2, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and \2 != "prise"
@@ -9315,10 +9452,23 @@ TEST: avec ceux se trouvant sur leur chemin
 
 
 
+!!!! Confusions ou/où                                                                               
 
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-#
+__[i]/conf(conf_det_nom_où_pronom)__
+    ^ *(?:l(?:es? +|a +|’)|[nv]o(?:s|tre) +|ce(?:t|tte|s|) +|[mts](?:es|on|a) +|des +)({w_2}) +(ou) +(?:je|tu|ils?|elles? +> +\w+|[nv]ous +> +\w+)  @@w,w
+    <<- morphex(\1, ":[NAQ]", ":G")
+    -2>> où                                                                         # Confusion probable. Pour évoquer un lieu ou un moment, écrivez :|http://fr.wiktionary.org/wiki/o%C3%B9
+
+TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
+
+
+
+
+!!!
+!!!
+!!! Processeur avant impératif                                                                      
+!!!
+!!!
 
 __<i>(p_n_importe_qui_quoi)__       n(’)importe quo?i @@1 <<- ~1>> `
 __<i](p_premier_ne_pro_per_obj1)__  ^ *ne l(?:es?|a) l(?:ui|eur) <<- ~>> >
@@ -9329,26 +9479,14 @@ __<i>(p_premier_ne_pro_per_obj5)__  ^ *n’(?:en |y |) <<- ~>> >
 __<i>(p_premier_ne_pro_per_obj6)__  ^ *ne (?:l’|) <<- ~>> >
 
 
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
 
-
-#### CONFUSIONS
-
-## ou / où
-__[i]/conf(conf_det_nom_où_pronom)__
-    ^ *(?:l(?:es? +|a +|’)|[nv]o(?:s|tre) +|ce(?:t|tte|s|) +|[mts](?:es|on|a) +|des +)({w_2}) +(ou) +(?:je|tu|ils?|elles? +> +\w+|[nv]ous +> +\w+)  @@w,w
-    <<- morphex(\1, ":[NAQ]", ":G")
-    -2>> où                                                                         # Confusion probable. Pour évoquer un lieu ou un moment, écrivez :|http://fr.wiktionary.org/wiki/o%C3%B9
-
-TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
-
-
-#### IMPÉRATIF !
+!!
+!!
+!!!! Impératif !                                                                                    
+!!
+!!
 
 # Confusions
-
 __[i]/imp(imp_confusion_2e_pers_pluriel)__
     ({w_2}(?:er|ai[st]|ée?s?)) moi  @@0
     <<- morph(\1, ":V", False) and isStart()
@@ -9483,7 +9621,12 @@ TEST: {{Vas}} au diable !
 TEST: {{Écartes}} de moi cette coupe.
 
 
-## Traits d’union manquants
+!!
+!!
+!!!! Impératif: traits d’union manquants                                                            
+!!
+!!
+
 __[i]/imp(imp_union_moi_toi)__
     (?<![’~])({w_2}) ([mt]oi)(?! même)  @@0,$
     <<- morphex(\1, ":E", ":[GM]")
@@ -9587,10 +9730,11 @@ TEST: {{convenez en}}, c’est une belle affaire malgré son prix élevé
 
 
 
-#
-# //////////////////////////////////////// PRÉPROCESSEUR ////////////////////////////////////////
-# Destruction des pronoms qui précèdent un verbe et de l’adverbe de négation “ne”.
-#
+!!!
+!!!
+!!! Processeur: destruction des pronoms qui précèdent un verbe et de l’adverbe de négation “ne”.
+!!!
+!!!
 
 # Brainfuck (ici, prudence !)
 __[i](p_pro_per_obj01)__    ne +(?:l(?:ui|eur|a|es?)|[mts]e|[nv]ous) +(?:l(?:a|es?|ui|eur)|en|y) <<- ~>> >
@@ -9634,9 +9778,12 @@ __<s>(p_pro_per_obj35)__    > +> <<- ~>> >
 # Fin du Brainfuck
 
 
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
+
+!!
+!!
+!!!! Confusions                                                                                     
+!!
+!!
 
 #### CONFUSION a / à
 __[i]/conf(conf_pronom_verbe_à)__
@@ -9679,7 +9826,11 @@ TEST: l’humour est affaire de culture
 
 
 
-#### INFINITIF
+!!
+!!
+!!!! Infinitif                                                                                      
+!!
+!!
 
 __[i]/infi(infi_comment_où)__
     (?:comment|où) +({w_2}(?:ée?s?|ez))  @@$
@@ -9783,7 +9934,11 @@ __[i]/ppas(ppas_être)__
 TEST: ils sont {{tromper}} par tous ces hypocrites.
 
 
-#### CONJUGAISON
+!!
+!!
+!!!! Conjugaison                                                                                    
+!!
+!!
 
 ## 1sg
 __[i]/conj(conj_j)__
@@ -10408,7 +10563,11 @@ TEST: Samantha et Eva leur {{décrive}} une leçon.
 
 
 
-#### INVERSION VERBE SUJET
+!!
+!!
+!!!! Inversion verbe sujet                                                                          
+!!
+!!
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_sing)__
     (?:que?|où|comment) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
@@ -10460,7 +10619,12 @@ TEST: {{puisse}} les hommes enfin comprendre leurs erreurs.                     
 TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.               ->> puisse
 
 
-#### INTERROGATIVES ?
+
+!!
+!!
+!!!! Formes interrogatives ?                                                                        
+!!
+!!
 
 __[i]/inte(inte_union_xxxe_je)__
     (?<![jJ]’)({w_2}[éèe]) je(?! +[nmts]’)  @@0
@@ -10589,7 +10753,12 @@ TEST: Avais-je partie liée avec lui ?
 TEST: il {{avait}} parti.
 
 
-#### CONTRÔLE DES MODES
+
+!!
+!!
+!!!! Modes verbaux                                                                                  
+!!
+!!
 
 # conditionnel / futur
 
@@ -10703,7 +10872,52 @@ TEST: Après que Paul {{ait}} mangé son repas.
 TEST: Après qu’il {{soit}} parti, il plut.
 
 
-# À TRIER
+
+
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!! TESTS: Faux positifs potentiels                                                                  
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+
+!!! À trier                                                                                         
 TEST: L’homme sur le bateau de Patrick {{viens}} de temps en temps {{mangé}} chez moi.
 TEST: Ces marchands {{passe}} leur temps à se quereller.
 TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
@@ -10742,15 +10956,11 @@ TODO: La bataille de Monte Cassino révèle le génie militaire du général Jui
 TODO: Les côtes sont dans leur ensemble extrêmement découpées.
 
 
-#######################################################################################################################
-#### FAUX POSITIFS POTENTIELS #########################################################################################
-#######################################################################################################################
-
-## Indécidable
+!!! Indécidable                                                                                     
 TEST: Du sable fin grippe les rouages (accord avec ce qui précède).
 TEST: Du monde noir sortent les envahisseurs (accord avec ce qui suit).
 
-## Autres tests
+!!! Autres tests                                                                                    
 TEST: Ça a l’air de t’aller.
 TEST: Et je m’en sors.
 TEST: C’est à chacun d’entre nous de suivre le modèle d’Amos.
@@ -10811,6 +11021,8 @@ TEST: Cela a trait avec l’histoire complexe d’une nation qui a été prise e
 TEST: Enfin, les thèmes de la nouvelle réforme ont été longuement débattus.
 TEST: Le moral des ménages au plus haut depuis 2007
 
+
+!!! Tests historiques                                                                               
 
 ## Version 0.5.14
 TEST: par le léger tissu de rayonne qui les protégeait en ce moment.
@@ -11585,8 +11797,10 @@ TEST: À qui mieux mieux, à qui mieux mieux
 TEST: L’est est loin, la gare de l’est aussi.
 
 
-## EXEMPLES REPRIS DE LANGUAGETOOL
+
+!!! Tests repris de LanguageTool                                                                    
 ## NOTE : ces textes contiennent parfois des erreurs (corrigées quand repérées par le correcteur)
+
 TEST: Au voisinage du zéro absolu de température.
 TEST: La couronne périphérique alterne falaises abruptes et plages.
 TEST: Henri VIII rencontre François Ier.
@@ -13651,8 +13865,7 @@ TEST: Le 29 février 2020.
 TEST: Le 29-février-2004
 
 
-# LE HORLA
-# Guy de Maupassant
+!!! Le Horla, de Guy de Maupassant                                                                  
 # Nouvelle intégrale (228 lignes)
 # Certains points diffèrent du texte original tiré de Wikisource :
 # — les paragraphes sont souvent scindés pour des raisons pratiques.
@@ -14024,8 +14237,7 @@ TEST: Non… non… sans aucun doute, sans aucun doute… il n’est pas mort…
 # FIN DU HORLA
 
 
-# DOUBLE ASSASSINAT DANS LA RUE MORGUE
-# d’Edgar Poe
+!!! Double assassinat dans la rue morgue, d’Edgar Poe                                               
 # Texte tiré de Wikisource
 # Les paragraphes ont été découpés pour réduire la longueur des tests.
 TEST: DOUBLE ASSASSINAT DANS LA RUE MORGUE — Edgar Poe
@@ -14569,7 +14781,7 @@ TEST: Je veux parler de sa manie de nier ce qui est, et d’expliquer ce qui n�
 # FIN DU DOUBLE ASSASSINAT DANS LA RUE MORGUE
 
 
-# VERS DORÉS, de Pythagore
+!!! Vers Dorés, de Pythagore                                                                        
 # Origine?
 TEST: Aux dieux, suivant les lois, rends de justes hommages ;
 TEST: Respecte le serment, les héros et les sages ;
@@ -14669,8 +14881,7 @@ TEST: Note : Chez les Pythagoriciens, la monade ou l’unité représente Dieu-
 # FIN DES VERS DORÉS DE PYTHAGORE
 
 
-# ÉPÎTRE DU FEU PHILOSOPHIQUE
-# De Jean Pontanus
+!!! Épître du feu philosophique, de Jean Pontanus                                                   
 # Les paragraphes ont été découpés et ne correspondent pas à ceux du texte.
 TEST: Épître du Feu Philosophique
 TEST: Lettre concernant la pierre dite philosophale
