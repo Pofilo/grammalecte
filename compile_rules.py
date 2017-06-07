@@ -552,6 +552,10 @@ def prepareOptions (lOptionLines):
     return dOptions, dOptPriority
 
 
+def printBookmark (nLevel, sComment, nLine):
+    print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
+
+
 def make (lRules, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
@@ -563,8 +567,10 @@ def make (lRules, sLang, bJavaScript):
     lRuleLine = []
     lTest = []
     lOpt = []
+    printBookmark(0, "PASS 0: PARAGRAPH BY PARAGRAPH", 0)
     for i, sLine in enumerate(lRules, 1):
         if sLine.startswith('#END'):
+            printBookmark(0, "BREAK BY #END", i)
             break
         elif sLine.startswith("#"):
             pass
@@ -583,6 +589,12 @@ def make (lRules, sLang, bJavaScript):
             lOpt.append(sLine)
         elif re.match("[  \t]*$", sLine):
             pass
+        elif sLine.startswith("!!"):
+            if sLine[2:].strip():
+                printBookmark(1, sLine[2:].strip(), i)
+        elif sLine.startswith("[++]"):
+            printBookmark(0, "PASS 1: SENTENCE BY SENTENCE", i)
+            lRuleLine.append([i, "[++]"])
         elif sLine.startswith(("    ", "\t")):
             lRuleLine[len(lRuleLine)-1][1] += " " + sLine.strip()
         else:
