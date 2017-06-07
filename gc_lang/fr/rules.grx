@@ -214,60 +214,55 @@ DEF: w4             \w\w\w\w+
 
 
 
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-# //////////////////////////////////////// PASSE 0 ////////////////////////////////////////
-# paragraphe par paragraphe
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
-#
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!! PASSE 1: PARAGRAPHE PAR PARAGRAPHE                                                               
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
+!!
 
 
 
-#
-# //////////////////////////////////////// CONTRÔLE DES ESPACES ////////////////////////////////////////
-#
-
-!!
-!!
-!! Contrôle: espaces & tabulations                                                                  
-!!
-!!
+!!!
+!!!
+!!! Contrôle: espaces & tabulations                                                                 
+!!!
+!!!
 
 # Espaces surnuméraires
 # Note : les tabulations ne sont pas soulignées dans LibreOffice. Mais l’erreur est bien présente.
@@ -382,11 +377,11 @@ TEST: « J’en suis “malade”. »
 
 
 
-!!
-!!
-!! Processeur: efface les ponctuations gênantes (URL, sigles, abréviations, IP, heures, etc.)       
-!!
-!!
+!!!
+!!!
+!!! Processeur: efface les ponctuations gênantes (URL, sigles, abréviations, IP, heures, etc.)      
+!!!
+!!!
 
 # e-mail
 __<i>(p_email)__
@@ -511,11 +506,11 @@ TEST: Car [je] deviendrai plus insaisissable que jamais.
 #TEST: des [b]{{femme}}[/b]
 
 
-!!
-!!
-!! Processeur: balises HTML et LaTeX                                                               
-!!
-!!
+!!!
+!!!
+!!! Processeur: balises HTML et LaTeX                                                               
+!!!
+!!!
 
 # HTML
 __<i>/html(p_html_amp_xxx)__            &amp;[a-zA-Z]+; <<- ~>> _
@@ -535,11 +530,11 @@ __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumera
 
 
 
-!!
-!!
-!! Contrôle: typographie, virgules, espaces insécables, unités de mesure…                           
-!!
-!!
+!!!
+!!!
+!!! Contrôle: typographie, virgules, espaces insécables, unités de mesure…                          
+!!!
+!!!
 
 ### Écritures épicènes invariables
 # Attention, lors de la deuxième passe, on se sert du désambiguïsateur
@@ -918,9 +913,9 @@ TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
 
 
 
-!!
-!! Contrôle: grands nombres                                                                         
-!!
+!!!
+!!! Contrôle: grands nombres                                                                         
+!!!
 
 __[s]/num(num_grand_nombre_soudé)__
     \d\d\d\d\d+
@@ -954,9 +949,9 @@ TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 
 
 
-!!
-!! Contrôle: dates                                                                                  
-!!
+!!!
+!!! Contrôle: dates                                                                                  
+!!!
 
 __[i]/date(date_nombres)__
     (?<!\d[ /.-])(\d\d?)[ /.-](\d\d?)[ /.-](\d\d\d+)(?![ /.-]\d)  @@0,w,$
@@ -970,9 +965,9 @@ TEST: le {{81/01/2012}}
 TEST: 12-12-2012
 
 
-!!
-!! Contrôle: redondances                                                                            
-!!
+!!!
+!!! Contrôle: redondances                                                                            
+!!!
 
 __[i]/redon1(redondances_paragraphe)__
     ({w_4})[  ,.;!?:].*[  ](\1)  @@0,$
@@ -985,9 +980,9 @@ TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
 
 
 
-!!
-!! Processeur: Dernier nettoyage avant coupure du paragraphe en phrases                             
-!!
+!!!
+!!! Processeur: Dernier nettoyage avant coupure du paragraphe en phrases                             
+!!!
 
 # Trait d’union conditionnel (u00AD)
 __<i>(p_trait_union_conditionnel1)__    \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑", "")
@@ -1023,7 +1018,7 @@ TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 !!
 !!
 !!
-[++] PASSE 1: phrase par phrase                                                                     
+!! PASSE 1: PHRASE PAR PHRASE                                                                       
 !!
 !!
 !!
@@ -1045,6 +1040,7 @@ TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 !!
 !!
 
+[++]
 
 
 #

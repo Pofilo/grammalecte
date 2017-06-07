@@ -567,7 +567,8 @@ def make (lRules, sLang, bJavaScript):
     lRuleLine = []
     lTest = []
     lOpt = []
-    printBookmark(0, "PASS 0: PARAGRAPH BY PARAGRAPH", 0)
+    zBookmark = re.compile("^!!+")
+
     for i, sLine in enumerate(lRules, 1):
         if sLine.startswith('#END'):
             printBookmark(0, "BREAK BY #END", i)
@@ -590,11 +591,10 @@ def make (lRules, sLang, bJavaScript):
         elif re.match("[  \t]*$", sLine):
             pass
         elif sLine.startswith("!!"):
-            if sLine[2:].strip():
-                printBookmark(1, sLine[2:].strip(), i)
-        elif sLine.startswith("[++]"):
-            printBookmark(0, "PASS 1: SENTENCE BY SENTENCE", i)
-            lRuleLine.append([i, "[++]"])
+            m = zBookmark.search(sLine)
+            nExMk = len(m.group(0))
+            if sLine[nExMk:].strip():
+                printBookmark(nExMk-2, sLine[nExMk:].strip(), i)
         elif sLine.startswith(("    ", "\t")):
             lRuleLine[len(lRuleLine)-1][1] += " " + sLine.strip()
         else:
