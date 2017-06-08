@@ -1080,7 +1080,7 @@ class Entree:
         sBlank = "           "
         if self.nAKO >= 0:
             for oFlex in self.lFlexions:
-                if oFlex.nMulti > 0 and not oFlex.bFixed:
+                if oFlex.nMulti > 0 and not oFlex.bBlocked:
                     # on trie les entrées avec AKO et sans AKO
                     lEntWithAKO = []
                     lEntNoAKO = []
@@ -1104,13 +1104,13 @@ class Entree:
                             for oFlexD in self.lFlexions:
                                 if oFlex.sFlexion == oFlexD.sFlexion:
                                     hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  >> {1:>10}\n".format(oFlexD, self.nAKO, self.getShortDescr()))
-                                    oFlexD.setOccur(self.nAKO)
+                                    oFlexD.setOccurAndBlock(self.nAKO)
                             for oEntry in lEntWithAKO:
                                 hDst.write("       moyenne connue\n")
                                 for oFlexM in oEntry.lFlexions:
                                     if oFlex.sFlexion == oFlexM.sFlexion:
                                         hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  >> {1:>10}\n".format(oFlexM, oEntry.nAKO, oEntry.getShortDescr()))
-                                        oFlexM.setOccur(oEntry.nAKO)
+                                        oFlexM.setOccurAndBlock(oEntry.nAKO)
                             # on répercute nDiff sur les flexions sans AKO
                             for oEntry in lEntNoAKO:
                                 hDst.write("       sans moyenne connue\n")
@@ -1118,7 +1118,7 @@ class Entree:
                                     if oFlex.sFlexion == oFlexM.sFlexion:
                                         nNewOccur = oFlexM.nOccur + math.ceil((nDiff / len(lEntNoAKO)) / oFlexM.nDup)
                                         hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  +> {1:>10}\n".format(oFlexM, nNewOccur, oEntry.getShortDescr()))
-                                        oFlexM.setOccur(nNewOccur)
+                                        oFlexM.setOccurAndBlock(nNewOccur)
                     else:
                         # Toutes les entrées sont avec AKO : on pondère
                         nFlexOccur = oStatsLex.getFlexionOccur(oFlex.sFlexion)
@@ -1132,13 +1132,13 @@ class Entree:
                             if oFlex.sFlexion == oFlexD.sFlexion:
                                 nNewOccur = math.ceil((nFlexOccur * (self.nAKO / nTotAKO)) / oFlexD.nDup)  if nTotAKO  else 0
                                 hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  %> {1:>10}\n".format(oFlexD, nNewOccur, self.getShortDescr()))
-                                oFlexD.setOccur(nNewOccur)
+                                oFlexD.setOccurAndBlock(nNewOccur)
                         for oEntry in oFlex.lMulti:
                             for oFlexM in oEntry.lFlexions:
                                 if oFlex.sFlexion == oFlexM.sFlexion:
                                     nNewOccur = math.ceil((nFlexOccur * (oEntry.nAKO / nTotAKO)) / oFlexM.nDup)  if nTotAKO  else 0
                                     hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  %> {1:>10}\n".format(oFlexM, nNewOccur, oEntry.getShortDescr()))
-                                    oFlexM.setOccur(nNewOccur)
+                                    oFlexM.setOccurAndBlock(nNewOccur)
         
     def calcFreq (self, nTot):
         self.fFreq = (self.nOccur * 100) / nTot
@@ -1154,7 +1154,7 @@ class Flexion:
         self.sMorph = sMorph
         self.cDic    = cDic
         self.nOccur  = 0
-        self.bFixed  = False
+        self.bBlocked  = False
         self.nDup    = 0    # duplicates in the same entry
         self.nMulti  = 0    # duplicates with other entries
         self.lMulti  = []   # list of similar flexions
@@ -1162,10 +1162,13 @@ class Flexion:
         self.cFq     = ''
         self.metagfx = ''   # métagraphe
         self.metaph2 = ''   # métaphone 2
-        
+    
     def setOccur (self, n):
         self.nOccur = n
-        self.bFixed = True
+
+    def setOccurAndBlock (self, n):
+        self.nOccur = n
+        self.bBlocked = True
 
     def calcOccur (self):
         self.nOccur = math.ceil((self.nOccur / (self.nMulti+1)) / self.nDup)
