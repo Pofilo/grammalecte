@@ -28,7 +28,7 @@ class cd:
 
 def makeDictionaries (sp, sVersion):
     with cd(sp+"/dictionnaire"):
-        os.system("genfrdic.py -s -v "+sVersion)
+        os.system("genfrdic.py -s -gl -v "+sVersion)
 
 
 def makeConj (sp, bJS=False):
