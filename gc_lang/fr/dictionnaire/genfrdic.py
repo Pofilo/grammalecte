@@ -809,9 +809,6 @@ class Entree:
     def __str__ (self):
         return "{0.lemma}/{0.flags} {1}".format(self, self.getMorph(2))
 
-    def display (self):
-        echo(self.__str__())
-
     def check (self):
         sErr = ''
         if self.lemma == '':
@@ -1193,9 +1190,6 @@ class Flexion:
         for v in oStatsLex.dFlexions[self.sFlexion]:
             sOccurs += str(v) + "\t"
         return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sRadical}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
-
-    def display (self):
-        echo(self.__str__())
 
     @classmethod
     def simpleHeader (cls):
