@@ -551,7 +551,7 @@ class Dictionnaire:
         copyTemplate('orthographe', spDic, 'README_dict_fr.txt', dVars)
         createZipFiles(spDic, spDst, sDicName + '.zip')
 
-    def createLibreOfficeExtension (self, spBuild, dTplVars, lDictVars, spGL):
+    def createLibreOfficeExtension (self, spBuild, dTplVars, lDictVars, spDestGL=""):
         # LibreOffice extension
         echo(" * Dictionnaire >> extension pour LibreOffice")
         dTplVars['version'] = self.sVersion
@@ -590,11 +590,11 @@ class Dictionnaire:
         # zip
         createZipFiles(spExt, spBuild, sExtensionName + '.oxt')
         # copy to Grammalecte Project
-        if spGL:
+        if spDestGL:
             echo("   extension copiée dans Grammalecte...")
-            dir_util.copy_tree(spExt+'/dictionaries', spGL)
+            dir_util.copy_tree(spExt+'/dictionaries', spDestGL)
     
-    def createMozillaExtensions (self, spBuild, dTplVars, lDictVars, spDestGL):
+    def createMozillaExtensions (self, spBuild, dTplVars, lDictVars, spDestGL=""):
         # Mozilla extension 1
         echo(" * Dictionnaire >> extension pour Mozilla")
         dTplVars['version'] = self.sVersion
@@ -608,10 +608,11 @@ class Dictionnaire:
         copyTemplate('orthographe', spExt, 'README_dict_fr.txt', dTplVars)
         createZipFiles(spExt, spBuild, sExtensionName + '.xpi')
         # Grammalecte
-        echo(" * Dictionnaire >> copie des dicos dans Grammalecte")
-        for dVars in lDictVars:
-            file_util.copy_file(spDict+'/'+dVars['asciiName']+'.dic', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.dic')
-            file_util.copy_file(spDict+'/'+dVars['asciiName']+'.aff', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.aff')
+        if spDestGL:
+            echo(" * Dictionnaire >> copie des dicos dans Grammalecte")
+            for dVars in lDictVars:
+                file_util.copy_file(spDict+'/'+dVars['asciiName']+'.dic', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.dic')
+                file_util.copy_file(spDict+'/'+dVars['asciiName']+'.aff', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.aff')
     
     def createFileIfqForDB (self, spBuild):
         echo(" * Dictionnaire >> indices de fréquence pour la DB...")
@@ -622,7 +623,7 @@ class Dictionnaire:
                     hDiff.write("{0.iD}\t{0.fq}\n".format(oEntry))
                     hNotes.write("{0.lemma}/{0.flags}\t{0.oldFq} > {0.fq}\n".format(oEntry))
         
-    def createLexiconPackages (self, spBuild, version, oStatsLex, spLexGL):
+    def createLexiconPackages (self, spBuild, version, oStatsLex, spDestGL=""):
         sLexName = LEX_PREFIX + version
         spLex = spBuild + '/' + sLexName
         dir_util.mkpath(spLex)
@@ -634,26 +635,29 @@ class Dictionnaire:
         # zip
         createZipFiles(spLex, spBuild, sLexName + '.zip')
         # copy GC lexicon to Grammalecte
-        file_util.copy_file(spBuild + '/' + sLexName + '.lex', spLexGL + '/French.lex')
-        file_util.copy_file('lexique/French.tagset.txt', spLexGL)
+        if spDestGL:
+            file_util.copy_file(spBuild + '/' + sLexName + '.lex', spDestGL + '/French.lex')
+            file_util.copy_file('lexique/French.tagset.txt', spDestGL)
 
-    def createDictConj (self, spBuild, spCopy):
+    def createDictConj (self, spBuild, spDestGL=""):
         echo(" * Dictionnaire >> fichier de conjugaison...")
         with open(spBuild+'/dictConj.txt', 'w', encoding='utf-8', newline="\n") as hDst:
             for oEntry in self.lEntry:
                 if oEntry.po.startswith("v"):
                     hDst.write(oEntry.getConjugation())
-        echo("   Fichier de conjugaison copié dans Grammalecte...")
-        file_util.copy_file(spBuild+'/dictConj.txt', spCopy)
+        if spDestGL:
+            echo("   Fichier de conjugaison copié dans Grammalecte...")
+            file_util.copy_file(spBuild+'/dictConj.txt', spDestGL)
 
-    def createDictDecl (self, spBuild, spCopy):
+    def createDictDecl (self, spBuild, spDestGL=""):
         echo(" * Dictionnaire >> fichier de déclinaison...")
         with open(spBuild+'/dictDecl.txt', 'w', encoding='utf-8', newline="\n") as hDst:
             for oEntry in self.lEntry:
                 if re.match("[SXFWIA]", oEntry.flags) and (oEntry.po.startswith("nom") or oEntry.po.startswith("adj")):
                     hDst.write(oEntry.getDeclination())
-        echo("   Fichier de déclinaison copié dans Grammalecte...")
-        file_util.copy_file(spBuild+'/dictDecl.txt', spCopy)
+        if spDestGL:
+            echo("   Fichier de déclinaison copié dans Grammalecte...")
+            file_util.copy_file(spBuild+'/dictDecl.txt', spDestGL)
 
     def generateSpellVariants (self, nReq, spBuild):
         if nReq < 1: nReq = 1
@@ -808,9 +812,6 @@ class Entree:
                 
     def __str__ (self):
         return "{0.lemma}/{0.flags} {1}".format(self, self.getMorph(2))
-
-    def display (self):
-        echo(self.__str__())
 
     def check (self):
         sErr = ''
@@ -1079,7 +1080,7 @@ class Entree:
         sBlank = "           "
         if self.nAKO >= 0:
             for oFlex in self.lFlexions:
-                if oFlex.nMulti > 0 and not oFlex.bFixed:
+                if oFlex.nMulti > 0 and not oFlex.bBlocked:
                     # on trie les entrées avec AKO et sans AKO
                     lEntWithAKO = []
                     lEntNoAKO = []
@@ -1103,13 +1104,13 @@ class Entree:
                             for oFlexD in self.lFlexions:
                                 if oFlex.sFlexion == oFlexD.sFlexion:
                                     hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  >> {1:>10}\n".format(oFlexD, self.nAKO, self.getShortDescr()))
-                                    oFlexD.setOccur(self.nAKO)
+                                    oFlexD.setOccurAndBlock(self.nAKO)
                             for oEntry in lEntWithAKO:
                                 hDst.write("       moyenne connue\n")
                                 for oFlexM in oEntry.lFlexions:
                                     if oFlex.sFlexion == oFlexM.sFlexion:
                                         hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  >> {1:>10}\n".format(oFlexM, oEntry.nAKO, oEntry.getShortDescr()))
-                                        oFlexM.setOccur(oEntry.nAKO)
+                                        oFlexM.setOccurAndBlock(oEntry.nAKO)
                             # on répercute nDiff sur les flexions sans AKO
                             for oEntry in lEntNoAKO:
                                 hDst.write("       sans moyenne connue\n")
@@ -1117,7 +1118,7 @@ class Entree:
                                     if oFlex.sFlexion == oFlexM.sFlexion:
                                         nNewOccur = oFlexM.nOccur + math.ceil((nDiff / len(lEntNoAKO)) / oFlexM.nDup)
                                         hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  +> {1:>10}\n".format(oFlexM, nNewOccur, oEntry.getShortDescr()))
-                                        oFlexM.setOccur(nNewOccur)
+                                        oFlexM.setOccurAndBlock(nNewOccur)
                     else:
                         # Toutes les entrées sont avec AKO : on pondère
                         nFlexOccur = oStatsLex.getFlexionOccur(oFlex.sFlexion)
@@ -1131,13 +1132,13 @@ class Entree:
                             if oFlex.sFlexion == oFlexD.sFlexion:
                                 nNewOccur = math.ceil((nFlexOccur * (self.nAKO / nTotAKO)) / oFlexD.nDup)  if nTotAKO  else 0
                                 hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  %> {1:>10}\n".format(oFlexD, nNewOccur, self.getShortDescr()))
-                                oFlexD.setOccur(nNewOccur)
+                                oFlexD.setOccurAndBlock(nNewOccur)
                         for oEntry in oFlex.lMulti:
                             for oFlexM in oEntry.lFlexions:
                                 if oFlex.sFlexion == oFlexM.sFlexion:
                                     nNewOccur = math.ceil((nFlexOccur * (oEntry.nAKO / nTotAKO)) / oFlexM.nDup)  if nTotAKO  else 0
                                     hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  %> {1:>10}\n".format(oFlexM, nNewOccur, oEntry.getShortDescr()))
-                                    oFlexM.setOccur(nNewOccur)
+                                    oFlexM.setOccurAndBlock(nNewOccur)
         
     def calcFreq (self, nTot):
         self.fFreq = (self.nOccur * 100) / nTot
@@ -1153,7 +1154,7 @@ class Flexion:
         self.sMorph = sMorph
         self.cDic    = cDic
         self.nOccur  = 0
-        self.bFixed  = False
+        self.bBlocked  = False
         self.nDup    = 0    # duplicates in the same entry
         self.nMulti  = 0    # duplicates with other entries
         self.lMulti  = []   # list of similar flexions
@@ -1161,10 +1162,13 @@ class Flexion:
         self.cFq     = ''
         self.metagfx = ''   # métagraphe
         self.metaph2 = ''   # métaphone 2
-        
+    
     def setOccur (self, n):
         self.nOccur = n
-        self.bFixed = True
+
+    def setOccurAndBlock (self, n):
+        self.nOccur = n
+        self.bBlocked = True
 
     def calcOccur (self):
         self.nOccur = math.ceil((self.nOccur / (self.nMulti+1)) / self.nDup)
@@ -1193,9 +1197,6 @@ class Flexion:
         for v in oStatsLex.dFlexions[self.sFlexion]:
             sOccurs += str(v) + "\t"
         return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sRadical}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
-
-    def display (self):
-        echo(self.__str__())
 
     @classmethod
     def simpleHeader (cls):
@@ -1508,6 +1509,7 @@ def main ():
     xParser.add_argument("-u", "--uncompress", help="do not use Hunspell compression", action="store_true")
     xParser.add_argument("-s", "--simplify", help="no virtual lemmas", action="store_true")
     xParser.add_argument("-sv", "--spellvariants", help="generate spell variants", action="store_true")
+    xParser.add_argument("-gl", "--grammalecte", help="copy generated files to Grammalecte folders", action="store_true")
     xArgs = xParser.parse_args()
 
     if xArgs.simplify:
@@ -1555,15 +1557,21 @@ def main ():
     
     ### écriture des paquets
     echo("Création des paquets...")
+
+    spLexiconDestGL = "../../../lexicons"  if xArgs.grammalecte  else ""
+    spLibreOfficeExtDestGL = "../oxt/Dictionnaires/dictionaries"  if xArgs.grammalecte  else ""
+    spMozillaExtDestGL = "../xpi/data/dictionaries"  if xArgs.grammalecte  else ""
+    spDataDestGL = "../data"  if xArgs.grammalecte  else ""
+
     if not xArgs.uncompress:
         oFrenchDict.defineAbreviatedTags(xArgs.mode, spfStats)
     oFrenchDict.createFiles(spBuild, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], xArgs.mode, xArgs.simplify)
-    oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], "../oxt/Dictionnaires/dictionaries")
-    oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], "../xpi/data/dictionaries")
-    oFrenchDict.createLexiconPackages(spBuild, xArgs.verdic, oStatsLex, "../../../lexicons")
+    oFrenchDict.createLexiconPackages(spBuild, xArgs.verdic, oStatsLex, spLexiconDestGL)
     oFrenchDict.createFileIfqForDB(spBuild)
-    oFrenchDict.createDictConj(spBuild, "../data")
-    oFrenchDict.createDictDecl(spBuild, "../data")
+    oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], spLibreOfficeExtDestGL)
+    oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], spMozillaExtDestGL)
+    oFrenchDict.createDictConj(spBuild, spDataDestGL)
+    oFrenchDict.createDictDecl(spBuild, spDataDestGL)
 
 
 
