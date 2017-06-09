@@ -421,6 +421,10 @@ __[s>(p_vs)__
     <<- ->> "vs "               # Pas de point après cette abréviation.
     <<- ~>> vs
 
+# version
+__[i](p_version_numéro)__
+    versions? ([0-9]+(?:[.][0-9]+[a-z]?)*) @@$ <<- ~1>> *
+
 # sigles
 __<s>(p_sigle1)__
     ([A-Z][.][A-Z][.](?:[A-Z][.])*) +[A-ZÉÀÂÊÎÈÔ]  @@0  <<- ~1>> =\1.replace(".", "")+"."
@@ -492,6 +496,7 @@ __[u](p_CAC40)__
 TEST: l’{{A.N.P.E.}} n’existe plus
 TEST: ce chien […] ne {{semblez}} pas perdu.
 TEST: ce chat {{(…)}} ne {{semblez}} pas perdu.
+TEST: les tests de la version 3.17.8 {{commmence}} demain.
 TEST: ce nouveau moteur de recherche (http://www.cherche-moi-ça.fr/home.php&lang=fr) fonctionne pas mal.
 TEST: l’A.M. Turing Award 2015
 TEST: Retrouvez-nous sur le Monde.fr
