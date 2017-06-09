@@ -10838,6 +10838,23 @@ TEST: il ne fait aucun doute qu’Amazon le sait.
 TEST: quoi que nous autres hommes ayons pu faire
 
 
+# Bien que + subjonctif
+__[i]/vmode(vmode_bien_que_subjonctif)__
+    bien  ?que? ({w_2}) +>? *({w_2})  @@w,$
+    <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":V.*:I", ":([GSK]|If)|>(?:hériter|recevoir|donner|offrir) ") and isStart()
+    and not ( morph(\2, ":V0a", False) and morph(word(1), ">(?:hériter|recevoir|donner|offrir) ", False) )
+    -2>> =suggVerbMode(@, ":S", \1)                                                                 # Après « bien que », le verbe s’emploie au subjonctif.
+
+TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
+TEST: Bien que je {{prends}} mon mal en patience.
+TEST: C’est un joli bien. Bien qu’il a hérité de son oncle, notez bien.
+TEST: Bien qu’il avait donné à ses enfants.
+
+
+# Malgré que + subjonctif
+# «Malgré que» peut être utilisé délibérément pour un parler populaire qui ignore le subjonctif.
+# --> pas de règle de contrôle sur ce point.
+
 __[i]/vmode(vmode_qqch_que_subjonctif2)__
     (?:à condition|pour peu|il >  peut) +que? +({w1}) +>? *({w_2})  @@w,$
     <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":", ":[GYS]") -2>> =suggVerbMode(@, ":S", \1)    # Ce verbe devrait être au subjonctif.
@@ -10872,23 +10889,6 @@ __[i]/vmode(vmode_après_que_indicatif)__
 TEST: Après qu’il {{ait}} allé
 TEST: Après que Paul {{ait}} mangé son repas.
 TEST: Après qu’il {{soit}} parti, il plut.
-
-
-# Bien que + subjonctif
-__[i]/vmode(vmode_bien_que_subjonctif)__
-    bien  ?que? ({w_2}) +>? *({w_2})  @@w,$
-    <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":V.*:I", ":([GSK]|If)|>(?:hériter|recevoir|donner|offrir) ") and isStart()
-    and not ( morph(\2, ":V0a", False) and morph(word(1), ">(?:hériter|recevoir|donner|offrir) ", False) )
-    -2>> =suggVerbMode(@, ":S", \1)                                                                 # Après « bien que », le verbe s’emploie au subjonctif.
-
-TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
-TEST: Bien que je {{prends}} mon mal en patience.
-TEST: C’est un joli bien. Bien qu’il a hérité de son oncle, notez bien.
-TEST: Bien qu’il avait donné à ses enfants.
-
-# Malgré que + subjonctif
-# «Malgré que» peut être utilisé délibérément pour un parler populaire qui ignore le subjonctif.
-# --> pas de règle de contrôle sur ce point.
 
 
 
