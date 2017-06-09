@@ -496,7 +496,7 @@ __[u](p_CAC40)__
 TEST: l’{{A.N.P.E.}} n’existe plus
 TEST: ce chien […] ne {{semblez}} pas perdu.
 TEST: ce chat {{(…)}} ne {{semblez}} pas perdu.
-TEST: les tests de la version 3.17.8 {{commmence}} demain.
+TEST: les tests de la version 3.17.8 {{commence}} demain.
 TEST: ce nouveau moteur de recherche (http://www.cherche-moi-ça.fr/home.php&lang=fr) fonctionne pas mal.
 TEST: l’A.M. Turing Award 2015
 TEST: Retrouvez-nous sur le Monde.fr
@@ -3212,12 +3212,10 @@ TEST: sa toute nouvelle application de synchronisation de fichiers
 
 
 # ce / se / ceux
-__[i]/conf(conf_se_verbe1)__
-    (ce) (?!faire)({infi})  @@0,3
-    <<- morph(\2, ":Y")  and \1 != "CE" -1>> se                             # Confusion. Ce chien, ce chat… Se demander, se croire…
-__[i]/conf(conf_se_verbe2)__
-    (ce) (?!faire)({w_2})  @@0,3
-    <<- morph(\2, ":V[123].*:(?:Y|[123][sp])") and not morph(\2, ">(?:devoir|pouvoir|sembler) ") and \2[0].islower() and \1 != "CE"
+__[s]/conf(conf_se_verbe)__
+    ([cC]e) ({w_2})  @@0,3
+    <<- \2[0].islower() and \2 != "faire"
+    and ( morphex(\2, ":V[123].*:(?:Y|[123][sp])", ":[NAGM]|>(?:devoir|pouvoir|sembler) ") or re.search("-(?:ils?|elles?|on)$", \2) )
     -1>> se                                                                 # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 __[i]/conf(conf_pour_ce_faire)__
     pour (se) faire,? ({w_2})  @@5,$
@@ -3268,6 +3266,7 @@ TEST: {{se}} {{train}} est en retard
 TEST: {{ceux}} train arrive trop vite.
 TEST: {{ceux}} ne doit pas nous faire oublier ce désastre
 TEST: qui {{ce}} donne en spectacle.
+TEST: {{ce}} prennent-ils pour des experts ?
 TEST: les expatriés éloignés ou ceux habitant ici
 TEST: les photographies de ceux n’ayant pas dépassé sept sur vingt.
 TEST: Pensez-vous que ceux ne sachant même pas ce qu’est une VHS peuvent y trouver leur compte ?
@@ -10721,6 +10720,18 @@ TEST: {{Prends}}-elle                                       ->> Prend
 TEST: {{Menthe}}-t-elle souvent ?
 TEST: {{viennent}}-{{il}} demain ?
 TEST: Le moteur choisi convient-il ?
+
+
+__[s]/inte(inte_ce)__
+    ({w_2})-([cs]e)  @@0,$
+    <<- morphex(\1, ":V", ":3s") -1>> =suggVerb(@, ":3s")                  # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+    <<- morphex(\1, ":", ":V") -1>> =suggSimil(\1, ":3s")                  # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+    <<- \2 == "se" -2>> ce                                                 # Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+
+TEST: était-{{se}} cela, la vérité ineffable ?
+TEST: {{étai}}-ce notre destinée de souffrir ?
+TEST: {{étaient}}-{{se}} ces hommes-là qui allaient nous guider dans les montagnes ?
+TEST: Était-ce des femmes de ce pays ?
 
 
 __[i]/inte(inte_nous)__
