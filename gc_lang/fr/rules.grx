@@ -2926,20 +2926,28 @@ TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 
  
 __[i]/conf(conf_très_verbe)__
-    très +(?!envie)({w2})  @@$
-    <<- morphex(\1, ":(?:Y|[123][sp])", ":[AQW]") -1>> =suggSimil(\1, ":[AW]")              # Incohérence avec « très » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+    très +(?!envie)({w_2})  @@$
+    <<- morphex(\1, ":(?:Y|[123][sp])", ":[AQW]") -1>> =suggSimil(\1, ":[AW]")                      # Incohérence avec « très » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: Il est très {{cite}}.
 TEST: très {{suivit}} par ce détective
 TEST: il était très {{habille}}
 
 
-__[i]/conf(conf_presque_trop_vconj)__
-    (presque|trop) +({w2})  @@0,$
-    <<- morphex(\2, ":[123][sp]", ":[GNAQWM]") and not before(r"(?i)\bce que? ") -2>> _     # Incohérence probable avec « \1 » : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+__[i]/conf(conf_trop_vconj)__
+    trop +({w_2})  @@$
+    <<- morphex(\1, ":[123][sp]", ":(?:[GNAQWM]|3p)") and not before(r"(?i)\bce que? ") -1>> _      # Incohérence probable avec « trop » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: J’ai trop {{mangeais}}.
 TEST: Ce que nous réussissons presque sera considéré comme un échec.
+
+
+__[i]/conf(conf_presque_trop_vconj)__
+    presque +({w2})  @@$
+    <<- morphex(\1, ":[123][sp]", ":[GNAQWM]") and not before(r"(?i)\bce que? |ou $") -1>> _        # Incohérence probable avec « presque » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+
+TEST: presque {{délaissait}} par tout le monde.
+TEST: Tout le monde ou presque déteste ces gens-là.
 
 
 # élimination de presque
@@ -10810,7 +10818,7 @@ TEST: s’ils ne {{mangeraient}} pas tous les jours, ils seraient moins gros.
 
 # Dès que + indicatif
 __[i]/vmode(vmode_dès_que)__
-    dès +que? +({w1}) +>? *({w_2})  @@w,$
+    dès +que? +({w_2}) +>? *({w_2})  @@w,$
     <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":S", ":[IG]")    -2>> =suggVerbMode(@, ":I", \1)     # Ce verbe ne devrait pas être au subjonctif.
 #    <<- morph(\1, ":(?:Os|M)", False) and morph(\2, ":K", False)        -2>> =suggVerbMode(@, ":If", \1)    # Ce verbe ne devrait pas être au conditionnel.
 
@@ -10821,7 +10829,7 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 
 # verbe que + subjonctif
 __[i]/vmode(vmode_qqch_que_subjonctif1)__
-    (afin|pour|quoi|(?:perm|fa|v[oe]|ordonn|exig|désir|dout|suff|préf[éè]r)\w+) +que? +({w1}) +>? *({w_2})  @@0,w,$
+    (afin|pour|quoi|(?:perm|fa|v[oe]|ordonn|exig|désir|dout|suff|préf[éè]r)\w+) +que? +({w_2}) +>? *({w_2})  @@0,w,$
     <<- morph(\1, ">(?:afin|pour|quoi|permettre|falloir|vouloir|ordonner|exiger|désirer|douter|préférer|suffire) ", False)
     and morph(\2, ":(?:Os|M)", False) and morphex(\3, ":I", ":[GYS]")
     and not (morph(\1, ">douter ", False) and morph(\3, ":(?:If|K)", False))
