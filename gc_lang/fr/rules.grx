@@ -10585,7 +10585,7 @@ TEST: Samantha et Eva leur {{décrive}} une leçon.
 !!
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_sing)__
-    (?:que?|où|comment|dont) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
+    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
     <<- morphex(\1, ":(?:[12]s|3p)", ":(?:3s|G|W|3p!)") and not after("^ +(?:et|ou) (?:l(?:es? |a |’|eurs? )|[mts](?:a|on|es) |ce(?:tte|ts|) |[nv]o(?:s|tre) |d(?:u|es) )")
     -1>> =suggVerb(@, ":3s")                                                        # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -10602,7 +10602,7 @@ TEST: où vivent la majorité des immigrés et des enfants d’immigrés
 
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_pluriel)__
-    (?:que?|où|comment|combien|dont) +({w1}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
+    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
     <<- morphex(\1, ":[123]s", ":(?:3p|G|W)") -1>> =suggVerb(@, ":3p")              # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: D’où {{vienne}} les hommes ?
@@ -10612,7 +10612,7 @@ TEST: l’amour dont {{parle}} les femmes
 
 
 __[i]/conj(conj_que_où_comment_verbe_sujet)__
-    (?:que?|où|comment|combien) +({w_1}[es])(?! je| tu) @@$
+    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_1}[es])(?! je| tu) @@$
     <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
@@ -10620,7 +10620,7 @@ TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés
 
 
 __[i]/conj(conj_que_où_verbe_sujet_3sg)__
-    (?:que|où) +> +({w1})(?! [jJ]e| [tT]u| [nNvV]ous| [eE]t )  @@$
+    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +> +({w_1})(?! [jJ]e| [tT]u| [nNvV]ous| [eE]t )  @@$
     <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp])") -1>> =suggVerb(@, ":3s")         # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
