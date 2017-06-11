@@ -9213,10 +9213,10 @@ TEST: je les avais {{trompé}} avec mon baratin.
 
 
 __[i]/ppas(ppas_nous_avoir)__
-    ({w_2}) +nous +({avoir}) +({w_1}(?:[éiut]e?|is|se)) @@0,w,$
-    <<- isRealEnd() and morph(\2, ":V0a", False) and morphex(\1, ":(?:M|Os|N)", ":R") and morphex(\3, ":V[0-3]..t_.*:Q.*:s", ":[GWpi]") and not before(r"\bque +$")
-    -3>> =suggPlur(@)
-    # Accord avec le COD “nous” : Le participe passé « \3 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+    nous +({avoir}) +({w_1}(?:[éiut]e?|se)) @@w,$
+    <<- isRealEnd() and morph(\1, ":V0a", False) and morphex(\2, ":V[0-3]..t_.*:Q.*:s", ":[GWpi]") and morphex(word(-1), ":(?:M|Os|N)", ":R") and not before(r"\bque? +\w[\w-]+ +$")
+    -2>> =suggPlur(@)
+    # Accord avec le COD “nous” : Le participe passé « \2 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Ces maisons nous avaient {{subjugué}}.
 TEST: C’est mot pour mot un script qu’on nous a filé.
