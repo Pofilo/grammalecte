@@ -1,4 +1,5 @@
 #!python3
+# Just a file for one-shot scripts
 
 import os
 import sys
@@ -17,9 +18,10 @@ def readFile (spf):
     else:
         print("# Error: file not found.")
 
+# --------------------------------------------------------------------------------------------------
 
-def createFile (spfSrc, spfDst):
-    with open(spfDst, "w", encoding="utf-8") as hDst:
+def listUnknownWords (spf):
+    with open(spf+".res.txt", "w", encoding="utf-8") as hDst:
         for sLine in readFile(spfSrc):
             sLine = sLine.strip()
             if sLine:
@@ -27,6 +29,7 @@ def createFile (spfSrc, spfDst):
                     if not oDict.isValid(sWord): 
                         hDst.write(sWord+"\n")
 
+# --------------------------------------------------------------------------------------------------
 
 def createLexStatFile (spf, dStat):
     dWord = {}
@@ -52,13 +55,33 @@ def readStatFile (spf, dStat):
     return dStat
 
 
-def main ():
+def readStatFilesAndCreateLexicon ():
     dStat = {}
     readStatFile("stats1.txt", dStat)
     readStatFile("stats2.txt", dStat)
     readStatFile("stats3.txt", dStat)
     createLexStatFile("propositions.txt", dStat)
-    
+
+# --------------------------------------------------------------------------------------------------
+
+def isMoreThanOneSetInList (lSet):
+    aFirst = lSet.pop(0)
+    for aSet in lSet:
+        if aSet != aFirst:
+            return True
+    return False
+
+def filterLinesWithWordsWithDifferentStems (spf):
+    with open(spf+".res.txt", "w", encoding="utf-8") as hDst:
+        for sLine in readFile(spf):
+            lStemSet = [ set(oDict.stem(sWord))  for sWord in sLine.strip().split()]
+            if isMoreThanOneSetInList(lStemSet):
+                hDst.write(sLine)
+
+def filterHomophonicWords ():
+    filterLinesWithWordsWithDifferentStems("homophones.txt")
+
+# --------------------------------------------------------------------------------------------------
 
 if __name__ == '__main__' :
-    main()
+    filterHomophonicWords()
