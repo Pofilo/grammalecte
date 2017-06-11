@@ -6877,6 +6877,7 @@ TEST: On ne s’intéresse pas à l’école ni à l’âge, mais aux compétenc
 # et / est
 __[i]/conf(conf_est)__
     (et) +({w_4}) *$ @@0,$
+    <<- morph(\2, ":[QA]", False) >>>
     <<- before_chk1(r"(?i)^ *(?:l[ea]|ce(?:tte|t|)|mon|[nv]otre) +(\w[\w-]+\w) +$", ":[NA].*:[is]", ":G")
     -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
     <<- before_chk1(r"(?i)^ *(?:ton) +(\w[\w-]+\w) +$", ":N.*:[is]", ":[GA]")
@@ -6888,6 +6889,19 @@ TEST: ton chat {{et}} cinglé.
 TEST: Pauline {{et}} fatiguée.
 TEST: ton implacable et amère !
 TEST: son cristallin et aigu
+TEST: Les pays ibériques et scandinaves ont signé le traité.
+TEST: Les gouvernements espagnol et mexicain ont signé le traité.
+
+
+__[i]/conf(conf_où_est)__
+    où (et) +({w_1}) @@0,$
+    <<- morphex(\2, ":D", ":R|>(?:quand|pourquoi)") or (\2 == "l" and after("^’")) 
+    -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
+
+TEST: où {{et}} cet ennemi ?
+TEST: où {{et}} l’homme qui est passé ce matin ?
+TEST: Je veux savoir où et quand, où et pouquoi.
+TEST: où et avec qui ?
 
 
 # faite / faîte / fait
