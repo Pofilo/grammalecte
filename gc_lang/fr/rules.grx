@@ -3523,6 +3523,27 @@ TEST: ces gens {{on}} {{souvent}} tort.
 TEST: Je voulais qu’on soit ensemble.
 
 
+# ou / où
+__[i]/conf(conf_où_verbe)__
+    ^(Ou) ({w_2}) @@0,3 <<- morphex(\2, ":3[sp]", ":Y") -1>> Où                             # Confusion probable. Utilisez “où” pour “en quel lieu”.
+__[i]/conf(conf_au_moment_par_d_où)__
+    (?:au moment |jusqu |par |d’)(ou) @@$ <<- -1>> où                                       # Confusion. On écrit “ceci ou cela” mais “où aller ?”, “par où aller”, “au moment où”…
+__[i]/conf(conf_vers_où)__
+    vers (ou) @@5 <<- not morph(word(-1), ":D", False, False) -1>> où                       # Confusion probable. On écrit “ceci ou cela” mais “vers où aller ?”
+__[i]/conf(conf_jusqu_où_au_cas_où)__
+    (?:au|le|des) cas (ou) @@$ <<- -1>> où                                                  # Confusion. On écrit “ceci ou cela” mais “où aller ?”
+__[i]/conf(conf_à_partir_du_temps_où)__
+    à partir d(?:u (?:moment|jour|mois)|e l’(?:instant|année|heure)|e la (?:minute|semaine|seconde)) +(ou) @@$
+    <<- -1>> où                                                                             # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+
+TEST: {{Ou}} sont tes affaires ?
+TEST: au moment {{ou}} elle allait enfin réussir
+TEST: vers {{ou}} se tourner quand tout va mal ?
+TEST: pour le cas {{ou}} on serait arrêté dans notre élan.
+TEST: à partir du moment {{ou}} il est entré.
+TEST: à partir de l’instant {{ou}} elle est venue.
+
+
 # pale / pâle
 __[i]/conf(conf_pale_pâle1)__
     (?:bien|tr(?:ès|op)|si|vraiment|tellement) +(pales?)  @@$
@@ -7279,22 +7300,6 @@ __[i]/conf(conf_xxx_on2)__
 
 TEST: peut{{ ont}} y arriver ?
 TEST: les politiques de l’offre ont échoué.
-
-
-# ou / où
-__[i]/conf(conf_où_verbe)__
-    ^(Ou) ({w_2}) @@0,3 <<- morphex(\2, ":3[sp]", ":Y") -1>> Où                             # Confusion probable. Utilisez “où” pour “en quel lieu”.
-__[i]/conf(conf_au_moment_par_d_où)__
-    (?:au moment |jusqu |par |d’)(ou) @@$ <<- -1>> où                                       # Confusion. On écrit “ceci ou cela” mais “où aller ?”, “par où aller”, “au moment où”…
-__[i]/conf(conf_vers_où)__
-    vers (ou) @@5 <<- not morph(word(-1), ":D", False, False) -1>> où                       # Confusion probable. On écrit “ceci ou cela” mais “vers où aller ?”
-__[i]/conf(conf_jusqu_où_au_cas_où)__
-    (?:au|le|des) cas (ou) @@$ <<- -1>> où                                                  # Confusion. On écrit “ceci ou cela” mais “où aller ?”
-
-TEST: {{Ou}} sont tes affaires ?
-TEST: au moment {{ou}} elle allait enfin réussir
-TEST: vers {{ou}} se tourner quand tout va mal ?
-TEST: pour le cas {{ou}} on serait arrêté dans notre élan.
 
 
 # pain / pin
