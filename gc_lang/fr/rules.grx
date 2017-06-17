@@ -7240,11 +7240,12 @@ __[i]/conf(conf_les_nôtres)__
     <<- not (\1 == "Notre" and after("Père")) -1>> =\1.replace("otre", "ôtre")                      # Confusion : « notre possession », « la nôtre ».
 __[i]/conf(conf_notre_votre_qqch)__
     ([nv]ôtres?) ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(les?|la|du|des|aux?) +") and morph(\2, ":[NAQ]", False)
+    <<- not before(r"(?i)\b(les?|la|du|des|aux?) +") and morphex(\2, ":[NAQ]", ":D")
     -1>> =\1.replace("ôtre", "otre").rstrip("s")                                                    # Confusion : « notre possession », « la nôtre ».
 
 TEST: C’est la {{votre}} ?
 TEST: {{nôtre}} père est si âgé.
+TEST: nous vous proposons de faire vôtre une autre volonté
 
 
 # nulle part
@@ -9340,7 +9341,7 @@ TEST: parce que t’as envie que je le fasse
 
 !!
 !!
-!!!! COD précédent que                                                                                  
+!!!! COD précédant que                                                                                  
 !!
 !!
 

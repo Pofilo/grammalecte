@@ -55,7 +55,7 @@ def getVtyp (sVerb):
     return _lVtyp[_dVerb[sVerb][0]]
 
 
-def getSimil (sWord, sMorph):
+def getSimil (sWord, sMorph, sFilter=None):
     if ":V" not in sMorph:
         return set()
     sInfi = sMorph[1:sMorph.find(" ")]
