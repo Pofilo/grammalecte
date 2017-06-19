@@ -8501,25 +8501,27 @@ TEST: lui {{mangée}} beaucoup.
 
 __[i]/ppas(ppas_je_me_être_verbe)__
     je +(?:ne +|)m(?:e +|’(?:y +|))(?:s[uo]i[st]|étai[st]|fu(?:sses?|s|t)|serai[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:p", ":(?:G|Q.*:[si])") and isRealEnd() and not before(r"\b[qQ]ue? +$")
+    <<- morphex(\1, ":Q.*:p", ":(?:G|Q.*:[si])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
     -1>> suggVerbPpas(\1, ":m:s")                                                                   # Si ce participe passé se rapporte bien à “je”, il devrait être au singulier.
 
 TEST: je ne me suis jamais {{perdus}}
+TEST: c’est de ce château que je me suis {{enfuis}}.
 TEST: je me suis donné du temps.
 
 
 __[i]/ppas(ppas_tu_te_être_verbe)__
     tu +(?:ne +|)t(?:e +|’(?:y +|))(?:est?|soi[st]|étai[st]|fu(?:sses?|s|t)|serai[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:p", ":(?:G|Q.*:[si])") and isRealEnd() and not before(r"\b[qQ]ue? +$")
+    <<- morphex(\1, ":Q.*:p", ":(?:G|Q.*:[si])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
     -1>> suggVerbPpas(\1, ":m:s")                                                                   # Si ce participe passé se rapporte bien à “tu”, il devrait être au singulier.
 
 TEST: tu t’es finalement {{retrouvés}} en mauvaise posture.
 TEST: tu ne t’étais pas laissé le temps d’y réfléchir.
 
 
+
 __[i]/ppas(ppas_il_se_être_verbe)__
     il +(?:ne +|)s(?:e +|’(?:y +|))(?:est?|soi[st]|étai[st]|fu(?:sses?|s|t)|serai?[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:f|m:p)", ":(?:G|Q.*:m:[si])") and isRealEnd() and not before(r"\b[qQ]ue? +$")
+    <<- morphex(\1, ":Q.*:(?:f|m:p)", ":(?:G|Q.*:m:[si])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
     -1>> suggVerbPpas(\1, ":m:s")                                                                   # Si ce participe passé se rapporte bien à “il”, il devrait être au masculin singulier.
 
 TEST: le dédale dans lequel il se serait {{perdue}}
@@ -8528,7 +8530,7 @@ TEST: il s’était perdu dans la forêt.
 
 __[i]/ppas(ppas_elle_se_être_verbe)__
     elle +(?:ne +|)s(?:e +|’(?:y +|))(?:est?|soi[st]|étai[st]|fu(?:sses?|s|t)|serai?[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:m|f:p)", ":(?:G|Q.*:f:[si])") and isRealEnd() and not morph(word(-1), ":R|>que ", False, False)
+    <<- morphex(\1, ":Q.*:(?:m|f:p)", ":(?:G|Q.*:f:[si])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not morph(word(-1), ":R|>que ", False, False)) )
     -1>> suggVerbPpas(\1, ":f:s")                                                                   # Si ce participe passé se rapporte bien à “elle”, il devrait être au féminin singulier.
 
 TEST: elle s’y était {{préparé}}.
@@ -8537,7 +8539,7 @@ TEST: elle s’était trouvé un mari.
 
 __[i]/ppas(ppas_nous_nous_être_verbe)__
     nous +(?:ne +|)nous +(?:y +|)(?:sommes|étions|fûmes|fussions|seri?ons) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:s", ":(?:G|Q.*:[pi])") and isRealEnd() and not morph(word(-1), ":R|>que ", False, False)
+    <<- morphex(\1, ":Q.*:s", ":(?:G|Q.*:[pi])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not morph(word(-1), ":R|>que ", False, False)) )
     -1>> suggVerbPpas(\1, ":p")                                                                     # Si ce participe passé se rapporte bien à “nous”, il devrait être au pluriel.
 
 TEST: Nous nous étions {{cru}} au paradis.
@@ -8545,7 +8547,7 @@ TEST: Nous nous étions {{cru}} au paradis.
 
 __[i]/ppas(ppas_ils_se_être_verbe)__
     ils +(?:ne +|)s(?:e +|’(?:y +|))(?:so(?:ie|)nt|étaient|fu(?:r|ss)ent|ser(?:aie|o)nt) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:f|m:s)", ":(?:G|Q.*:m:[pi])") and isRealEnd() and not before(r"\b[qQ]ue? +$")
+    <<- morphex(\1, ":Q.*:(?:f|m:s)", ":(?:G|Q.*:m:[pi])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
     -1>> suggVerbPpas(\1, ":m:p")                                                                   # Si ce participe passé se rapporte bien à “ils”, il devrait être au masculin pluriel.
 
 TEST: ils s’y étaient {{abandonné}} avec ferveur
@@ -8553,7 +8555,7 @@ TEST: ils s’y étaient {{abandonné}} avec ferveur
 
 __[i]/ppas(ppas_elles_se_être_verbe)__
     elles +(?:ne +|)s(?:e +|’(?:y +|))(?:so(?:ie|)nt|étaient|fu(?:r|ss)ent|ser(?:aie|o)nt) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:m|f:s)", ":(?:G|Q.*:f:[pi])") and isRealEnd() and not morph(word(-1), ":R|>que ", False, False)
+    <<- morphex(\1, ":Q.*:(?:m|f:s)", ":(?:G|Q.*:f:[pi])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not morph(word(-1), ":R|>que ", False, False)) )
     -1>> suggVerbPpas(\1, ":f:p")                                                                   # Si ce participe passé se rapporte bien à “elles”, il devrait être au féminin pluriel.
 
 TEST: elles ne s’y étaient pas {{donnée}}.
