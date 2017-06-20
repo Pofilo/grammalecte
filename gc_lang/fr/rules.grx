@@ -9459,12 +9459,32 @@ TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
 !!!
 
 __<i>(p_n_importe_qui_quoi)__       n(’)importe quo?i @@1 <<- ~1>> `
-__<i](p_premier_ne_pro_per_obj1)__  ^ *ne l(?:es?|a) l(?:ui|eur) <<- ~>> >
-__<i](p_premier_ne_pro_per_obj2)__  ^ *ne (?:[mt]’|l(?:ui|eur) )en <<- ~>> >
-__<i](p_premier_ne_pro_per_obj3)__  ^ *ne (?:[mt]e|[nv]ous) (?:les?|la|en) <<- ~>> >
-__<i](p_premier_ne_pro_per_obj4)__  ^ *ne +(?:en|l(?:es?|a|’(?:en|y))|[mt](?:e|’(?:en|y))|[nv]ous) <<- ~>> >
-__<i>(p_premier_ne_pro_per_obj5)__  ^ *n’(?:en |y |) <<- ~>> >
-__<i>(p_premier_ne_pro_per_obj6)__  ^ *ne (?:l’|) <<- ~>> >
+
+
+__<i](p_premier_ne_pro_per_obj1)__
+    ^( *ne l(?:es?|a) l(?:ui|eur)) ({w_2})  @@0,$
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- ~1>> *
+__<i](p_premier_ne_pro_per_obj2)__
+    ^( *ne (?:[mt]’|l(?:ui|eur) )en) ({w_2})  @@0,$
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- ~1>> *
+__<i](p_premier_ne_pro_per_obj3)__
+    ^( *ne (?:[mt]e|[nv]ous) (?:les?|la|en)) ({w_2})  @@0,$
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- ~1>> *
+__<i](p_premier_ne_pro_per_obj4)__
+    ^( *ne +(?:en|l(?:es?|a|’(?:en|y))|[mt](?:e|’(?:en|y))|[nv]ous)) ({w_2})  @@0,$
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- ~1>> *
+__<i>(p_premier_ne_pro_per_obj5)__
+    ^( *n’(?:en |y |))({w_2})  @@0,$
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- ~1>> *
+__<i>(p_premier_ne_pro_per_obj6)__
+    ^( *ne (?:l’|))({w_2})  @@0,$
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- ~1>> *
 
 
 
@@ -9491,13 +9511,10 @@ __[i]/imp(imp_vgroupe1)__
     ^ *(\w+es)(?![- ](?:je|tu|[nv]ous|ils?|elles?|t-ils?|t-elles?))  @@$
     <<- morphex(\1, ":V[13].*:Ip.*:2s", ":[GNAM]")
     -1>> =\1[:-1]                                                                   # S’il s’agit d’un impératif, pas de “s”.
-__[i]/imp(imp_ne_vgroupe1)__
-    ^ *> +(\w+es)(?![- ](?:je|tu|[nv]ous|ils?|elles?|t-ils?|t-elles?))  @@$
-    <<- morphex(\1, ":V[13].*:Ip.*:2s", ":G")
-    -1>> =\1[:-1]                                                                   # S’il s’agit d’un impératif, pas de “s”.
 
 TEST: {{Apportes}} ton fric à cet homme.
 TEST: N’{{abandonnes}} pas si vite.
+TEST: Ne {{demandes}} rien, tais-toi.
 TEST: Castres est une belle ville.
 TEST: Limoges aussi.
 
@@ -9518,10 +9535,6 @@ __[i]/imp(imp_vgroupe2_vgroupe3_t)__
     and not (re.search("(?i)^vient$", \1) and after("^ +(?:l[ea]|se |s’)"))
     and not (re.search("(?i)^dit$", \1) and after("^ +[A-ZÉÈÂÎ]"))
     -1>> =\1[:-1]+"s"                                                               # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
-__[i]/imp(imp_ne_vgroupe2_vgroupe3_t)__
-    ^ *> +(\w+t)(?![- ](?:je|tu|[nv]ous|ils?|elles?|on|t-ils?|t-elles?))  @@$
-    <<- morphex(\1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire)") and analyse(\1[:-1]+"s", ":E:2s", False)
-    -1>> =\1[:-1]+"s"                                                               # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
 TEST: {{Finit}} ton assiette.
 TEST: Ne {{pourrit}} pas l’ambiance.
@@ -9536,10 +9549,6 @@ __[i]/imp(imp_vgroupe3_d)__
     <<- morphex(\1, ":V3.*:Ip.*:3s", ":[GNA]")
     and not (re.search("(?i)^répond$", \1) and after("^ +[A-ZÉÈÂÎ]"))
     -1>> \1s                                                                        # S’il s’agit d’un impératif, ajoutez un “s”.
-__[i]/imp(imp_ne_vgroupe3_d)__
-    ^ *> +(\w+d)(?![- ](?:je|tu|[nv]ous|ils?|elles?|on|t-ils?|t-elles?))  @@$
-    <<- morphex(\1, ":V3.*:Ip.*:3s", ":G")
-    -1>> \1s                                                                        # S’il s’agit d’un impératif, ajoutez un “s”.
 
 TEST: {{Prend}} le chemin de droite.
 TEST: N’{{attend}} pas qu’elle vienne.
@@ -9548,7 +9557,7 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 
 # aller
 __[i]/imp(imp_va)__
-    ^[ >]*(vas)(?! (?:tu|ils?|elles?|t-ils?|t-elles?))  @@$
+    ^ *(vas)(?! (?:tu|ils?|elles?|t-ils?|t-elles?))  @@$
     <<- -1>> va                                                                     # S’il s’agit d’un impératif, pas de “s”.
 
 TEST: {{Vas}} lui mettre une branlée.
@@ -9557,11 +9566,8 @@ TEST: {{Vas}} lui mettre une branlée.
 # être
 __[i]/imp(imp_sois)__
     ^ *(soit) +({w_2})  @@*,$
-    <<- morphex(\2, ":A", ":G") and not after(r"\bsoit\b")
+    <<- morph(\1, ":V") or (morphex(\2, ":A", ":G") and not after(r"\bsoit\b"))
     -1>> sois                                                                       # S’il s’agit d’un impératif, écrivez « sois ».
-__[i]/imp(imp_ne_sois)__
-    ^ *> +(soit)  @@$
-    <<- -1>> sois                                                                   # S’il s’agit d’un impératif, écrivez « sois ».
 
 TEST: {{Soit}} cohérent avec toi-même.
 TEST: Ne {{soit}} pas con.
