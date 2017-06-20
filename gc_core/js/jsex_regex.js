@@ -41,7 +41,7 @@ if (RegExp.prototype.__grammalecte__ === undefined) {
                         m.end.push(this.lastIndex);
                     } else if (codePos === "w") {
                         // word in the middle of the pattern
-                        iPos = m[0].search("[ ~’,()«»“”]"+m[i]+"[ ,’~()«»“”]") + 1 + m.index
+                        iPos = m[0].search("[ ’,()«»“”]"+m[i]+"[ ,’()«»“”]") + 1 + m.index
                         m.start.push(iPos);
                         m.end.push(iPos + m[i].length)
                     } else if (codePos === "*") {
