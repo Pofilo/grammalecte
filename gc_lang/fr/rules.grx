@@ -5357,14 +5357,36 @@ __[i]/gn(gn_leurs_accord)__
     <<- __also__ -1>> leur                                                                          # Accord de nombre erroné avec « \2 ».
 
 TEST: {{leurs}} {{action}}
+TEST: {{leur}} {{données}}
 
 
 __[i]/gn(gn_det_pluriel_accord)__
-    (?:[dcmts]es|[nv]os|quelques|lesdits|aux|moult) +({w_2})  @@$
+    (?:[dmts]es|[nv]os|quelques|lesdits|moult) +({w_2})  @@$
     <<- (morphex(\1, ":[NAQ].*:s", ":[ipGW]")
-    and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)))
-    or \1 in aREGULARPLURAL
+    and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False))) or \1 in aREGULARPLURAL
     -1>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au pluriel.
+
+TEST: des {{pain}}                                            ->> pains
+TEST: Quelques {{homme}}.                                     ->> hommes
+TEST: plusieurs {{femme}} sont venues.
+TEST: une personne ou plusieurs ayant décidé de façon déterminée et coordonnée de faire cuire la grenouille
+
+
+__[i]/gn(gn_ces_aux_pluriel_accord)__
+    (ces|aux) +({w_2})  @@0,$
+    <<- (morphex(\2, ":[NAQ].*:s", ":[ipGW]")
+    and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False))) or \2 in aREGULARPLURAL
+    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au pluriel.
+    <<- __also__ and morphex(\2, ">[bcdfglklmnpqrstvwxz].*:m", ":f") >>>
+    <<- \1.endswith("x") or \1.endswith("X") -1>> au                                                # Accord de nombre erroné : « \2 » est au pluriel.
+    <<- __else__ -1>> ce                                                                            # Accord de nombre erroné : « \2 » est au pluriel.
+
+TEST: {{ces}} {{détournement}} de fonds et ces vols
+TEST: ces {{étudiant}} sont légion.
+TEST: je vais {{aux}} {{cinéma}}
+TEST: il l’a donné aux {{étudiant}}
+
+
 __[i]/gn(gn_plusieurs_accord)__
     plusieurs +({w_2})  @@$
     <<- (morphex(\1, ":[NAQ].*:s", ":[ipGWP]")
@@ -5372,12 +5394,7 @@ __[i]/gn(gn_plusieurs_accord)__
     or \1 in aREGULARPLURAL
     -1>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au pluriel.
 
-TEST: des {{pain}}                                            ->> pains
-TEST: ces {{détournement}} de fonds et ces vols
-TEST: Quelques {{homme}}.                                     ->> hommes
-TEST: {{leur}} {{données}}
-TEST: plusieurs {{femme}} sont venues.
-TEST: une personne ou plusieurs ayant décidé de façon déterminée et coordonnée de faire cuire la grenouille
+TEST: plusieurs {{foi}} par jour.
 
 
 ## Cas particuliers
