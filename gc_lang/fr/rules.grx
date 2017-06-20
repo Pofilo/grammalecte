@@ -9786,8 +9786,7 @@ __[i](p_pro_per_obj11)__
     <<- __also__ ~1>> *
 __[i](p_pro_per_obj12)__
     (?<!’)(en) ({w_2}) @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
+    <<- morph(\2, ":(?:[123][sp]|P|Y)") ~1>> *
 __[i](p_pro_per_obj13)__
     (?:tu|il|on) (en) +({w_1})  @@w,$
     <<- not morph(word(-1), ":[123]s", False, False) ~1>> *
@@ -10031,11 +10030,13 @@ TEST: pour s’y {{donnait}} le plus souvent.
 __[i]/ppas(ppas_être)__
     (?<![cC]’)({etre}) +({w_2}er)  @@0,$
     <<- morph(\1, ":V0e", False) and (morphex(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB) and not re.search("(?i)^(?:soit|été)$", \1)
-    and not morph(word(-1), ":Y|>ce", False, False) and not before("(?i)ce (?:>|qu|que >) $")
-    and not before_chk1(r"({w_2}) +> $", ":Y") and not before_chk1(r"^ *>? *(\w[\w-]+)", ":Y")
+    and not morph(word(-1), ":Y|>ce", False, False) and not before("(?i)ce que? +$")
+    and not morph(word(-1), ":Y", False, False) and not before_chk1(r"^ *>? *(\w[\w-]+)", ":Y")
     -2>> =suggVerbPpas(@)                                                   # Incohérence. Après « être », le verbe ne doit pas être à l’infinitif.
 
 TEST: ils sont {{tromper}} par tous ces hypocrites.
+TEST: Jeûner n’est pas seulement cesser de manger.
+TEST: Ne pas aimer n’est pas oublier l’autre.
 
 
 !!
@@ -10053,16 +10054,16 @@ __[i]/conj(conj_je)__
     (je) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:1s|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:1s", False, False))
     -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-__[i]/conj(conj_je_pronom)__
-    (je) +> +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:1s|G|1p)")
-    -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+#__[i]/conj(conj_je_pronom)__
+#    (je) +> +({w_1})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:1s|G|1p)")
+#    -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 __[i]/conj(conj_j_en_y)__
-    (j’(?:y|en)) +>? *({w_1})  @@0,$
+    (j’(?:y|en)) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:1s|G|1p)")
     -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 __[i]/conj(conj_moi_qui)__
-    (moi +qui) +>? *({w_1})  @@0,$
+    (moi +qui) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:1s|G|1p|3p!)")
     -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 
@@ -10087,12 +10088,12 @@ __[i]/conj(conj_tu)__
     (tu) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:G|[ISK].*:2s)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:2s", False, False))
     -2>> =suggVerb(@, ":2s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 2ᵉ personne du singulier.
-__[i]/conj(conj_tu_pronom)__
-    (tu) +> +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:G|[ISK].*:2s)")
-    -2>> =suggVerb(@, ":2s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 2ᵉ personne du singulier.
+#__[i]/conj(conj_tu_pronom)__
+#    (tu) +> +({w_1})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:G|[ISK].*:2s)")
+#    -2>> =suggVerb(@, ":2s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 2ᵉ personne du singulier.
 __[i]/conj(conj_toi_qui)__
-    (toi +qui) +>? *({w_1})  @@0,$
+    (toi +qui) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:G|2p|3p!|[ISK].*:2s)")
     -2>> =suggVerb(@, ":2s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 2ᵉ personne du singulier.
 
@@ -10109,11 +10110,11 @@ __[i]/conj(conj_il)__
     <<- morphex(\2, ":V", ":(?:3s|P|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:3s", False, False))
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
     <<- __also__ and morph(\2, ":3p", False) -1>> ils        # Accord avec « \2 ».
-__[i]/conj(conj_il_pronom)__
-    (il) +> +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3s|P|G)")
-    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
-    <<- __also__ and morph(\2, ":3p", False) -1>> ils        # Accord avec « \2 ».
+#__[i]/conj(conj_il_pronom)__
+#    (il) +> +({w_1})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:3s|P|G)")
+#    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
+#    <<- __also__ and morph(\2, ":3p", False) -1>> ils        # Accord avec « \2 ».
 
 TEST: {{Il}} {{accusent}}.
 TEST: il {{bus}} du vin.
@@ -10132,10 +10133,10 @@ __[i]/conj(conj_on)__
     (on) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:3s|P|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:3s", False, False))
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
-__[i]/conj(conj_on_pronom)__
-    (on) +> +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3s|P|G)")
-    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
+#__[i]/conj(conj_on_pronom)__
+#    (on) +> +({w_1})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:3s|P|G)")
+#    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: on {{remué}} beaucoup.
 TEST: on {{refuses}} tout cela
@@ -10146,10 +10147,10 @@ __[i]/conj(conj_quiconque)__
     quiconque +({w_1})  @@$
     <<- morphex(\1, ":V", ":(?:3s|P|G|Q.*:m:[si])")
     -1>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « quiconque ». Le verbe devrait être à la 3ᵉ personne du singulier.
-__[i]/conj(conj_quiconque_pronom)__
-    quiconque +> +({w_1})  @@$
-    <<- morphex(\1, ":V", ":(?:3s|P|G)")
-    -1>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « quiconque ». Le verbe devrait être à la 3ᵉ personne du singulier.
+#__[i]/conj(conj_quiconque_pronom)__
+#    quiconque +> +({w_1})  @@$
+#    <<- morphex(\1, ":V", ":(?:3s|P|G)")
+#    -1>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « quiconque ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: Quiconque {{pensez}} s’en sortir se trompait lourdement.
 TEST: Il voulut punir quiconque s’y {{adonnaient}}.
@@ -10157,12 +10158,12 @@ TEST: quiconque issu de la gauche n’a aucune chance.
 
 
 __[i]/conj(conj_ce)__
-    (ce) +>? *({w_1})  @@0,$
+    (ce) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:N|A|3s|P|Q|G|V0e.*:3p)")
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 __[i]/conj(conj_celui_celle_qui)__
-    (ce(?:lui|lle|) +qui) +>? *({w_1})  @@0,$
+    (ce(?:lui|lle|) +qui) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:3s|P|Q|G)")
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -10172,8 +10173,8 @@ TEST: celui qui {{pensent}} mal de toute chose
 
 
 __[i]/conj(conj_ça)__
-    (ça|chacune?|l’une?|ce(?:ci|la|lui-(?:ci|là)|lle-(?:ci|là))|n`importe quo?i|quelqu(?:’une?|e chose))(?: +qui|) +>? *({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3s|P|Q|G|3p!)") and not morph(word(-1), ":[VR]|>de", False, False)
+    (ça|chacune?|l’une?|ce(?:ci|la|lui-(?:ci|là)|lle-(?:ci|là))|n`importe quo?i|quelqu(?:’une?|e chose)) +(?:qui +|)({w_1})  @@0,$
+    <<- morphex(\2, ":V", ":(?:3s|P|Q|G|3p!)") and not morph(word(-1), ":[VR]|>de ", False, False)
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: chacun {{fais}} comme il peut
@@ -10192,13 +10193,13 @@ TEST: Y avait-il seulement quelqu’un pour vouloir soumettre ses recherches ?
 
 
 __[i]/conj(conj_tout)__
-    tout +>? *({w_1})  @@$
+    tout +({w_1})  @@$
     <<- morphex(\1, ":V", ":(?:3s|P|Q|Y|G|3p!)") and not morph(word(-1), ":[VRD]|>de", False, False)
     and not( morph(\1, ":(?:Y|N.*:m:[si])", False) and not re.search(" (?:qui|>) ", \0) )
     -1>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « tout ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 __[i]/conj(conj_tout_qui)__
-    tout +qui +>? *({w_1})  @@$
+    tout +qui +({w_1})  @@$
     <<- morphex(\1, ":V", ":(?:3s|P|Q|G|3p!)") and not morph(word(-1), ":[VRD]|>de", False, False)
     and not( morph(\1, ":(?:Y|N.*:m:[si])", False) and not re.search(" (?:qui|>) ", \0) )
     -1>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « tout ». Le verbe devrait être à la 3ᵉ personne du singulier.
@@ -10212,7 +10213,7 @@ TEST: J’essaie de bien tout vous expliquer.
 
 
 __[i]/conj(conj_lequel_laquelle)__
-    (l(?:equel|aquelle))(?: +qui|) +>? *({w_1})  @@0,$
+    (l(?:equel|aquelle)) +(?:qui +|)({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:3s|P|Q|G|3p!)") and not morph(word(-1), ":[VR]|>de", False, False)
     and not( morph(\2, ":Y", False) and not re.search(" (?:qui|>) ", \0) )
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
@@ -10241,11 +10242,11 @@ __[i]/conj(conj_elle)__
     and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:3s", False, False))
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
     <<- __also__ and morph(\2, ":3p", False) -1>> elles      # Accord avec « \2 ».
-__[i]/conj(conj_elle_pronom)__
-    (?<![dD]’)(elle) +> +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3s|P|G)") and not morph(word(-1), ":R|>(?:et|ou)", False, False)
-    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
-    <<- __also__ and morph(\2, ":3p", False) -1>> elles      # Accord avec « \2 ».
+#__[i]/conj(conj_elle_pronom)__
+#    (?<![dD]’)(elle) +> +({w_1})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:3s|P|G)") and not morph(word(-1), ":R|>(?:et|ou)", False, False)
+#    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
+#    <<- __also__ and morph(\2, ":3p", False) -1>> elles      # Accord avec « \2 ».
 
 TEST: Elle {{conquis}}.
 TEST: Elle {{finis}}.
@@ -10293,21 +10294,24 @@ __[i]/conj(conj_un_une_des)__
     -2>> =suggVerb(@, ":3s")                                # Conjugaison erronée. Accord avec « \1… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: un des ingénieurs {{vinrent}} nous dire quoi faire.
+TEST: un des membres présents au conseil {{demandent}} un vote à bulletin secret
+TEST: une des femmes de ce conseil ne {{céderaient}} jamais au chantage.
 TEST: une des femmes présente ses résultats.
 
 
-__[i]/conj(conj_un_une_des_pronom)__
+__[i]/conj(conj_un_une_des_qui)__
     (une? des {w_2}) +qui +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3s|P|G)") and morphex(word(-1), ":C", ":(?:Y|P|Q|[123][sp]|R)", True)
+    <<- morphex(\2, ":V", ":(?:3[sp]|P|G)") and morphex(word(-1), ":C", ":(?:Y|P|Q|[123][sp]|R)", True)
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
-TEST: un des membres présents au conseil {{demandent}} un vote à bulletin secret
-TEST: une des femmes de ce conseil ne {{céderaient}} jamais au chantage.
+TEST: un des chats qui {{venez}} nous ennuyer tous les jours.
+TEST: un des hommes qui vient.
+TEST: une des dames qui se sentent mal à l’aise dans cet avion est venue nous trouver.
 TEST: l’un des chants les plus diffusés pendant la Révolution culturelle
 
 
 __[i]/conj(conj_infi)__
-    ^ *({infi}) +>? *({w_2})  @@*,$
+    ^ *({infi}) +({w_2})  @@*,$
     <<- morph(\1, ":Y", False) and morph(\2, ":V.[a-z_!?]+(?!.*:(?:3s|P|Q|Y|3p!))") 
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -10340,13 +10344,13 @@ __[i]/conj(conj_det_sing_nom_qui)__
     and morphex(\2, ":[NAQ].*:[si]", ":G") and morphex(\3, ":V", ":(?:3s|P|Q|Y|3p!|G)") and morphex(word(-1), ":C", ":(?:Y|P)", True)
     and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[123]p", False)) and not before(r"(?i)\bni .* ni ")
     -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
-__[i]/conj(conj_det_sing_nom_pronom)__
-    (?<![dD]’)(l[ea] |une? |l’|[mts](?:on|a) |ce(?:tte|t|) |leur |nul(?:le|) ) *({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
-    <<- not ( re.search("(?i)^(?:une? +(?:dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet) |la +moitié) ", \0)
-    and morph(\3, ":3p", False) )
-    and morphex(\2, ":[NAQ].*:[si]", ":G") and morphex(\3, ":V", ":(?:3s|1p|P|Q|Y|3p!|G)") and morphex(word(-1), ":C", ":(?:Y|P)", True)
-    and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[123]p", False)) and not before(r"(?i)\bni .* ni ")
-    -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
+#__[i]/conj(conj_det_sing_nom_pronom)__
+#    (?<![dD]’)(l[ea] |une? |l’|[mts](?:on|a) |ce(?:tte|t|) |leur |nul(?:le|) ) *({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
+#    <<- not ( re.search("(?i)^(?:une? +(?:dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet) |la +moitié) ", \0)
+#    and morph(\3, ":3p", False) )
+#    and morphex(\2, ":[NAQ].*:[si]", ":G") and morphex(\3, ":V", ":(?:3s|1p|P|Q|Y|3p!|G)") and morphex(word(-1), ":C", ":(?:Y|P)", True)
+#    and not (before(r"(?i)\b(?:et|ou) +$") and morph(\3, ":[123]p", False)) and not before(r"(?i)\bni .* ni ")
+#    -3>> =suggVerb(@, ":3s")                            # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: La {{N.S.A.}} {{espionneras}} toujours tout le monde
 TEST: La suspicion envers les élus {{accroissaient}}…                                               ->> accroissait
@@ -10422,10 +10426,10 @@ __[i]/conj(conj_ils)__
     <<- morphex(\2, ":V", ":(?:3p|P|Q|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:3p", False, False))
     -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
     <<- __also__ and morph(\2, ":3s", False) -1>> il        # Accord avec « \2 ».
-__[i]/conj(conj_ils_pronom)__
-    (ils) +> +({w_2})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3p|P|G)") -2>> =suggVerb(@, ":3p")   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
-    <<- __also__ and morph(\2, ":3s", False) -1>> il                # Accord avec « \2 ».
+#__[i]/conj(conj_ils_pronom)__
+#    (ils) +> +({w_2})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:3p|P|G)") -2>> =suggVerb(@, ":3p")   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+#    <<- __also__ and morph(\2, ":3s", False) -1>> il                # Accord avec « \2 ».
 
 TEST: {{Ils}} {{vienne}} souvent.
 TEST: Ils ne m’{{attends}} pas.
@@ -10442,7 +10446,7 @@ TEST: Celles qui {{pense}}.
 
 
 __[i]/conj(conj_ceux_là_celles_ci_lesquels)__
-    (ce(?:ux-(?:ci|là)|lles-(?:ci|là))|lesquel(?:le|)s) (?:qui +|)({w_1})  @@0,$
+    (ce(?:ux-(?:ci|là)|lles-(?:ci|là))|lesquel(?:le|)s) +(?:qui +|)({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:3p|P|Q|G)") and not morph(word(-1), ":[VR]", False, False)
     and not (morph(\2, ":Y", False) and re.search(r"(?i)lesquel", \1) and not re.search(" qui |>", \0))
     -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
@@ -10456,11 +10460,11 @@ __[i]/conj(conj_elles)__
     <<- morphex(\2, ":V", ":(?:3p|P|Q|G)") and not morph(word(-1), ":R", False, False) and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:3p", False, False))
     -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
     <<- __also__ and morph(\2, ":3s", False) -1>> elle      # Accord avec « \2 ».
-__[i]/conj(conj_elles_pronom)__
-    (?<![dD]’)(elles) +> +({w_2})  @@0,$
-    <<- morphex(\2, ":V", ":(?:3p|P|G)") and not morph(word(-1), ":R", False, False)
-    -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
-    <<- __also__ and morph(\2, ":3s", False) -1>> elle      # Accord avec « \2 ».
+#__[i]/conj(conj_elles_pronom)__
+#    (?<![dD]’)(elles) +> +({w_2})  @@0,$
+#    <<- morphex(\2, ":V", ":(?:3p|P|G)") and not morph(word(-1), ":R", False, False)
+#    -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+#    <<- __also__ and morph(\2, ":3s", False) -1>> elle      # Accord avec « \2 ».
 
 TEST: {{elles}} {{avance}} rapidement sur ce projet
 TEST: {{Elles}} n’y {{comprenne}} rien
@@ -10507,7 +10511,7 @@ TEST: beaucoup entre la peste et le choléra.
 
 
 __[i]/conj(conj_certains_tous_plusieurs)__
-    (?<!de )(certaine?s|tou(?:te|)s|plusieurs) (?:qui +|)({w_2})  @@0,$
+    (?<!de )(certaine?s|tou(?:te|)s|plusieurs) +(?:qui +|)({w_2})  @@0,$
     <<- morphex(\2, ":V", ":(?:G|N|A|3p|P|Q)") and not morph(word(-1), ":[VR]", False, False)
     -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
@@ -10528,11 +10532,11 @@ __[i]/conj(conj_det_plur_nom_qui)__
     <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True)
     and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
-__[i]/conj(conj_det_plur_nom_pronom)__
-    ([cmts]es|[nv]os|leurs|quelques) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
-    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
-    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
-    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+#__[i]/conj(conj_det_plur_nom_pronom)__
+#    ([cmts]es|[nv]os|leurs|quelques) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
+#    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
+#    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+#    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Ses « chiens » {{coure}} sur ma pelouse.
 TEST: mes filles {{passe}} ce matin
@@ -10559,11 +10563,11 @@ __[i]/conj(conj_det_plur_nom_qui_confusion)__
     <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Q|Y|G|A.*:e:[pi])") and morphex(word(-1), ":C", ":[YP]", True)
     and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
     -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
-__[i]/conj(conj_det_plur_nom_pronom_confusion)__
-    (les|certaine?s|plusieurs) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
-    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
-    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
-    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+#__[i]/conj(conj_det_plur_nom_pronom_confusion)__
+#    (les|certaine?s|plusieurs) +({w_2}) +(?:qui +|)> +({w_2})  @@0,w,$
+#    <<- morph(\2, ":[NAQ].*:[pi]", False) and morphex(\3, ":V", ":(?:[13]p|P|Y|G)") and morphex(word(-1), ":C", ":[YP]", True)
+#    and not( morph(\3, ":3s", False) and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+#    -3>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « \1 \2… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Les abstentions {{est}} présumée manifester un défaut d’opinion marquée
 TEST: Les cours de culture générale nous {{apporte}} de l’ouverture d’esprit.
@@ -10602,12 +10606,12 @@ __[i]/conj(conj_des_nom1)__
     <<- morph(\1, ":[NAQ].*:[pi]", False) and morphex(\2, ":V", ":(?:[13]p|P|G|Q|A.*:[pi])") and morph(word(1), ":(?:R|D.*:p)|>au ", False, True) >>>
     <<- not morph(\2, ":[NA]", False) -2>> =suggVerb(@, ":3p")                          # Conjugaison erronée. Accord avec « des \1… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
     <<- __else__ and not checkAgreement(\1, \2) -2>> =suggVerb(@, ":3p", suggPlur)      # Conjugaison erronée. Accord avec « des \1… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
-__[i]/conj(conj_des_nom2)__
-    ^ *des +({w_2}) +> +({w_2})  @@w,$
-    <<- morph(\1, ":[NAQ].*:[pi]", False) and morphex(\2, ":V", ":(?:[13]p|P|G|Q)") and morph(word(1), ":(?:R|D.*:p)|>au ", False, True)
-    -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « des \1… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+#__[i]/conj(conj_des_nom2)__
+#    ^ *des +({w_2}) +> +({w_2})  @@w,$
+#    <<- morph(\1, ":[NAQ].*:[pi]", False) and morphex(\2, ":V", ":(?:[13]p|P|G|Q)") and morph(word(1), ":(?:R|D.*:p)|>au ", False, True)
+#    -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « des \1… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 __[i]/conj(conj_des_nom_qui)__
-    ^ *des +({w_2}) +qui +(?:> +|)({w_2})  @@w,$
+    ^ *des +({w_2}) +qui +({w_2})  @@w,$
     <<- morph(\1, ":[NAQ].*:[pi]", False) and morphex(\2, ":V", ":(?:[13]p|P|G)")
     -2>> =suggVerb(@, ":3p")                                # Conjugaison erronée. Accord avec « des \1… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
@@ -10728,9 +10732,9 @@ TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et s
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
 
 
-__[i]/conj(conj_que_où_verbe_sujet_3sg)__
-    (?:que|où) +> +({w1})(?! [jJ]e| [tT]u| [nNvV]ous| [eE]t )  @@$
-    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp])") -1>> =suggVerb(@, ":3s")         # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+#__[i]/conj(conj_que_où_verbe_sujet_3sg)__
+#    (?:que|où) +> +({w1})(?! [jJ]e| [tT]u| [nNvV]ous| [eE]t )  @@$
+#    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp])") -1>> =suggVerb(@, ":3s")         # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
 
@@ -10754,38 +10758,36 @@ TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.           
 !!
 
 __[i]/inte(inte_union_xxxe_je)__
-    (?<![jJ]’)({w_2}[éèe]) je(?! +[nmts]’)  @@0
-    <<- morphex(\1, ":V.*:1[sŝś]", ":[GNW]") and not before(r"(?i)\bje +>? *$") and not morph(word(1), ":(?:Oo|X|1s)", False, False)
+    (?<![jJ]’)({w_2}[éèe]) je  @@0
+    <<- morphex(\1, ":V.*:1[sŝś]", ":[GNW]") and not before(r"(?i)\bje +$") and morphex(word(1), ":", ":(?:Oo|X|1s)", True)
     ->> =\1[:-1]+"é-je"                                                                             # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_xxx_je)__
-    (?<![jJ]’)({w_2}[is]) je(?! +[nmts]’)  @@0
-    <<- morphex(\1, ":V.*:1s", ":[GNW]") and not before(r"(?i)\b(?:je|tu) +>? *$") and not morph(word(1), ":(?:Oo|X|1s)", False, False)
+    (?<![jJ]’)({w_2}[is]) je  @@0
+    <<- morphex(\1, ":V.*:1s", ":[GNW]") and not before(r"(?i)\b(?:je|tu) +$") and morphex(word(1), ":", ":(?:Oo|X|1s)", True)
     ->> \1-je                                                                                       # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_tu)__
     ({w_1}s) tu  @@0
-    <<- not after("^ +(?:en|y|ne|>)") and morphex(\1, ":V.*:2s", ":[GNW]") and not before(r"(?i)\b(?:je|tu) +>? *$")
+    <<- morphex(\1, ":V.*:2s", ":[GNW]") and not before(r"(?i)\b(?:je|tu) +$") and morphex(word(1), ":", ":2s", True)
     ->> \1-tu                                                                                       # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_il_on)__
     ({w_2}[td]) (?:il|on)  @@0
-    <<- not after("^ +(?:en|y|ne|>)") and morphex(\1, ":V.*:3s", ":[GNW]") and not before(r"(?i)\b(?:ce|il|elle|on) +>? *$")
+    <<- morphex(\1, ":V.*:3s", ":[GNW]") and not before(r"(?i)\b(?:ce|il|elle|on) +$") and morphex(word(1), ":", ":3s|>y ", True)
     ->> =\0.replace(" ", "-")                                                                       # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_elle)__
     (?<!c’)({w_2}[td]) elle  @@0
-    <<- not after("^ +(?:en|y|ne|aussi|>)") and morphex(\1, ":V.*:3s", ":[GNW]") and not before(r"(?i)\b(?:ce|il|elle|on) +>? *$")
+    <<- morphex(\1, ":V.*:3s", ":[GNW]") and not before(r"(?i)\b(?:ce|il|elle|on) +$") and morphex(word(1), ":", ":3s", True)
     ->> \1-elle                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_nous)__
     ({w_2}ons) nous  @@0
-    <<- not after("^ +(?:en|y|ne|aussi|>)") and morphex(\1, ":V.*:1p", ":[GNW]")
-    and not morph(word(-1), ":Os", False, False) and not morph(word(1), ":Y", False, False)
+    <<- morphex(\1, ":V.*:1p", ":[GNW]") and not morph(word(-1), ":Os", False, False) and morphex(word(1), ":", ":(?:Y|1p)", True)
     ->> \1-nous                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_vous)__
     ({w_2}ez) vous  @@0
-    <<- not after("^ +(?:en|y|ne|aussi|>)") and not \1.endswith("euillez") and morphex(\1, ":V.*:2p", ":[GNW]")
-    and not morph(word(-1), ":Os", False, False) and not morph(word(1), ":Y", False, False)
+    <<- morphex(\1, ":V.*:2p", ":[GNW]|>vouloir .*:E:2p") and not morph(word(-1), ":Os", False, False) and morphex(word(1), ":", ":(?:Y|2p)", True)
     ->> \1-vous                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_ils_elles)__
     ({w_1}nt) (?:ils|elles)  @@0
-    <<- not after("^ +(?:en|y|ne|aussi|>)") and morphex(\1, ":V.*:3p", ":[GNW]") and not before(r"(?i)\b(?:ce|ils|elles) +>? *$")
+    <<- morphex(\1, ":V.*:3p", ":[GNW]") and not before(r"(?i)\b(?:ce|ils|elles) +$") and morphex(word(1), ":", ":3p", True)
     ->> =\0.replace(" ", "-")                                                                       # Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{mangé je}} {{ça}} avec dégoût ?
@@ -10798,6 +10800,7 @@ TEST: {{retrouverons nous}} enfin la tranquilité ?
 TEST: Mais {{soutiendrez vous}} cette proposition ?
 TEST: {{Viendront ils}} demain ?
 TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que personne ne parlait de celui qui avait fait ça.
+TEST: Veuillez vous instruire avant de contester ces mesures.
 
 
 __[i]/inte(inte_je)__
