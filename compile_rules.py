@@ -359,7 +359,7 @@ def createAction (sIdAction, sAction, nGroup):
         for x in re.finditer(r"\\(\d+)", sAction):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-        if re.search("[.]\\w+[(]", sAction):
+        if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
             print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
 
     if cAction == "-":
