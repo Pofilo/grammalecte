@@ -1073,38 +1073,38 @@ TEST: {{3O}} (chiffre avec un O).                                         ->> 30
 
 # Nombres ordinaux
 __[s]/typo(typo_ordinaux_premier)__
-    1 ?i?è?(?:er|re)s?
+    1 ?(?:ier|i?ère)s?
     <<- ->> =\0.replace(" ", "").replace("è", "").replace("i", "").replace("e", "ᵉ").replace("r", "ʳ").replace("s", "ˢ")
     # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premier : 1ᵉʳˢ. Première : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_deuxième)__
-    2 ?n?de?s?
+    2 ?nde?s?
     <<- ->> =\0.replace(" ", "").replace("n", "").replace("d", "ᵈ").replace("e", "ᵉ").replace("s", "ˢ")
     # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_nième)__
-    ([0-9]+) ?(?:è|i?[èe]me|e)s?  @@0
+    ([0-9]+) ?(?:è|i?[èe]me)s?  @@0
     <<- \0.endswith("s") ->> \1ᵉˢ                                                                   # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
     <<- __else__ ->> \1ᵉ                                                                            # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_romain_premier)__
-    I ?i?è?(?:er|re)s?
+    I ?(?:ier|i?ère)s?
     <<- ->> =\0.replace(" ", "").replace("è", "").replace("i", "").replace("e", "ᵉ").replace("r", "ʳ").replace("s", "ˢ")
     # Nombre ordinal romain. Premier : 1ᵉʳ. Première : Iʳᵉ. Premier : Iᵉʳˢ. Première : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_romain_deuxième)__
-    II ?n?de?s?
+    II ?nde?s?
     <<- ->> =\0.replace(" ", "").replace("n", "").replace("d", "ᵈ").replace("e", "ᵉ").replace("s", "ˢ")
     # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_romains_nième)__
-    ([IVXLCM]{1,3}) ?(?:è|i?[èe]me|e)s?  @@0
+    ([IVXLCM]{1,3}) ?(?:è|i?[èe]me)s?  @@0
     <<- not morph(\0, ":G", False) >>>
     <<- \0.endswith("s") ->> \1ᵉˢ                                                                   # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
     <<- __else__ ->> \1ᵉ                                                                            # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: la {{1ière}} fois, c’est la plus dure     ->> 1ʳᵉ
-TEST: le {{1er}} de chaque semaine              ->> 1ᵉʳ
+TEST: le {{1ier}} de chaque semaine             ->> 1ᵉʳ
 TEST: le {{2nd}} du mois                        ->> 2ᵈ
 TEST: les {{3ièmes}} années                     ->> 3ᵉˢ
 TEST: C’est la {{3ème}} fois…                   ->> 3ᵉ
 TEST: Non, la {{2è}} fois.                      ->> 2ᵉ
-TEST: François {{Ier}}                          ->> Iᵉʳ
+TEST: François {{Iier}}                         ->> Iᵉʳ
 TEST: le {{IInd}} siècle                        ->> IIᵈ
 TEST: le {{VIième}} siècle                      ->> VIᵉ
 TEST: Le {{XXIème}} siècle.                     ->> XXIᵉ
