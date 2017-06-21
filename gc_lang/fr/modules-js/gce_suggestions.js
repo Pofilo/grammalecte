@@ -529,7 +529,7 @@ function formatNumber (s) {
     let nEnd = nLen;
     while (nEnd > 0) {
         let nStart = Math.max(nEnd-3, 0);
-        sRes = sRes ? s.slice(nStart, nEnd) + " " + sRes : sRes = s.slice(nStart, nEnd);
+        sRes = sRes ? s.slice(nStart, nEnd) + " " + sRes : sRes = s.slice(nStart, nEnd);
         nEnd = nEnd - 3;
     }
     // binaire
@@ -538,7 +538,7 @@ function formatNumber (s) {
         let sBin = "";
         while (nEnd > 0) {
             let nStart = Math.max(nEnd-4, 0);
-            sBin = sBin ? s.slice(nStart, nEnd) + " " + sBin : sBin = s.slice(nStart, nEnd);
+            sBin = sBin ? s.slice(nStart, nEnd) + " " + sBin : sBin = s.slice(nStart, nEnd);
             nEnd = nEnd - 4;
         }
         sRes += "|" + sBin;
@@ -546,16 +546,16 @@ function formatNumber (s) {
     // numéros de téléphone
     if (nLen == 10) {
         if (s.startsWith("0")) {
-            sRes += "|" + s.slice(0,2) + " " + s.slice(2,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);   // téléphone français
+            sRes += "|" + s.slice(0,2) + " " + s.slice(2,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);   // téléphone français
             if (s[1] == "4" && (s[2]=="7" || s[2]=="8" || s[2]=="9")) {
-                sRes += "|" + s.slice(0,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);    // mobile belge
+                sRes += "|" + s.slice(0,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);    // mobile belge
             }
-            sRes += "|" + s.slice(0,3) + " " + s.slice(3,6) + " " + s.slice(6,8) + " " + s.slice(8);        // téléphone suisse
+            sRes += "|" + s.slice(0,3) + " " + s.slice(3,6) + " " + s.slice(6,8) + " " + s.slice(8);        // téléphone suisse
         }
-        sRes += "|" + s.slice(0,4) + " " + s.slice(4,7) + "-" + s.slice(7);                                 // téléphone canadien ou américain
+        sRes += "|" + s.slice(0,4) + " " + s.slice(4,7) + "-" + s.slice(7);                                 // téléphone canadien ou américain
     } else if (nLen == 9 && s.startsWith("0")) {
-        sRes += "|" + s.slice(0,3) + " " + s.slice(3,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 1
-        sRes += "|" + s.slice(0,2) + " " + s.slice(2,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 2
+        sRes += "|" + s.slice(0,3) + " " + s.slice(3,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 1
+        sRes += "|" + s.slice(0,2) + " " + s.slice(2,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 2
     }
     return sRes;
 }
