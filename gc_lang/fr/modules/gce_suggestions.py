@@ -405,7 +405,7 @@ _zBinary = re.compile("^[01]+$")
 
 def formatNumber (s):
     nLen = len(s)
-    if nLen <= 4:
+    if nLen < 4:
         return s
     sRes = ""
     # nombre ordinaire

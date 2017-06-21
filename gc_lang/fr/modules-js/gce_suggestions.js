@@ -521,7 +521,7 @@ function suggLesLa (sWord) {
 
 function formatNumber (s) {
     let nLen = s.length;
-    if (nLen <= 4 ) {
+    if (nLen < 4 ) {
         return s;
     }
     let sRes = "";

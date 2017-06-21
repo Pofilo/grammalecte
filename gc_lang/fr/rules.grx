@@ -720,38 +720,6 @@ TEST: Raisons {{:.}} trop, c’est trop.
 
 #__<s]/typo__  °C <<- ->> ℃                                                      # Typographie. Utilisez le signe des degrés approprié.
 
-# Espaces insécables avant unités de mesure
-__[s]/unit(unit_nbsp_avant_unités1)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![’'])  @@0,0
-    <<- -1>> "\2 "
-    # Avec une unité de mesure, mettez un espace insécable.
-__[s]/unit(unit_nbsp_avant_unités2)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
-    <<- morphex(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3)
-    -1>> "\2 "
-    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-__[s]/unit(unit_nbsp_avant_unités3)__
-    ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
-    <<- (not re.search("^[0-9][0-9]{1,3}$", \2) and not spell(\3)) or morphex(\3, ";S", ":[VCR]") or mbUnit(\3)
-    -1>> "\2 "
-    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
-
-TEST: Ça a duré {{3}}µs
-TEST: Ça a duré {{3,5 }}µs
-TEST: il y en a {{3 }}m²
-TEST: il a fait {{10}}%
-TEST: Ça coûte {{13,4}}¥.
-TEST: il mesure {{30,3 }}cm
-TEST: il est monté à {{18 }}%
-TEST: une température de {{22,4 }}°C
-TEST: il en veut {{18}}kg
-TEST: il me le propose pour {{243 }}gCO2/kWh
-TEST: il me le propose pour {{243,4 }}gCO2/kWh
-TEST: en l’an 2000 Urgondorletroll eut une idée
-TEST: 1998 s’annonce grandiose.
-TEST: il y en a 3,43 milliards.
-TEST: je veux 200 euros.
-
 
 # Espaces insécables
 __<s>/nbsp(nbsp_ajout_avant_double_ponctuation)__   \b[?!;]  <<- sCountry != "CA" ->> =" "+\0               # Il manque un espace insécable.
@@ -922,27 +890,73 @@ __[s]/chim(chim_molécules)__
 TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
 
 
+!!!! Espaces insécables avant unités de mesure                                                      
+
+__[s]/unit(unit_nbsp_avant_unités1)__
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![’'])  @@0,0
+    <<- -1>> "\2 "
+    # Avec une unité de mesure, mettez un espace insécable.
+__[s]/unit(unit_nbsp_avant_unités2)__
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
+    <<- morphex(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3)
+    -1>> "\2 "
+    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+__[s]/unit(unit_nbsp_avant_unités3)__
+    ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
+    <<- (\2.__len__() > 4 and not spell(\3)) or morphex(\3, ";S", ":[VCR]") or mbUnit(\3)
+    -1>> "\2 "
+    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+
+TEST: Ça a duré {{3}}µs
+TEST: Ça a duré {{3,5 }}µs
+TEST: il y en a {{3 }}m²
+TEST: il a fait {{10}}%
+TEST: Ça coûte {{13,4}}¥.
+TEST: il mesure {{30,3 }}cm
+TEST: il est monté à {{18 }}%
+TEST: une température de {{22,4 }}°C
+TEST: il en veut {{18}}kg
+TEST: il me le propose pour {{243 }}gCO2/kWh
+TEST: il me le propose pour {{243,4 }}gCO2/kWh
+TEST: en l’an 2000 Urgondorletroll eut une idée
+TEST: 1998 s’annonce grandiose.
+TEST: il y en a 3,43 milliards.
+TEST: je veux 200 euros.
+
+
 !!!! Grands nombres                                                                                 
 
 __[s]/num(num_grand_nombre_soudé)__
-    \d\d\d\d\d+
-    <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *") ->> =formatNumber(\0)                 # Formatage des grands nombres.
+    \d\d\d\d+
+    <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *$") >>>
+    <<- \0.__len__() > 4 ->> =formatNumber(\0)                                                      # Formatage des grands nombres.
+    <<- __else__
+        and after("^(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])")
+        or after(r"^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\w’'])")
+    ->> =formatNumber(\0)                                                                           # Formatage des grands nombres.
 
-TEST: {{12345}}                               ->> 12 345
-TEST: {{123456}}                              ->> 123 456
-TEST: {{1234567}}                             ->> 1 234 567
-TEST: {{12345678}}                            ->> 12 345 678
-TEST: {{023456789}}                           ->> 023 456 789|023 45 67 89|02 345 67 89
-TEST: {{0234567890}}                          ->> 0 234 567 890|02 34 56 78 90|023 456 78 90|0234 567-890
-TEST: {{12345678901}}                         ->> 12 345 678 901
-TEST: {{112798931830912839}}                  ->> 112 798 931 830 912 839
-TEST: {{2308393909}}                          ->> 2 308 393 909|2308 393-909
+__[s]/num(num_nombre_quatre_chiffres)__
+    (?<!,)(\d\d\d\d)[  ]([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*) @@0,$
+    <<- morphex(\2, ";S", ":[VCR]") or mbUnit(\2) -1>> =formatNumber(\1)                            # Formatage des grands nombres
+
+TEST: {{12345}}                                 ->> 12 345
+TEST: {{123456}}                                ->> 123 456
+TEST: {{1234567}}                               ->> 1 234 567
+TEST: {{12345678}}                              ->> 12 345 678
+TEST: {{023456789}}                             ->> 023 456 789|023 45 67 89|02 345 67 89
+TEST: {{0234567890}}                            ->> 0 234 567 890|02 34 56 78 90|023 456 78 90|0234 567-890
+TEST: {{12345678901}}                           ->> 12 345 678 901
+TEST: {{112798931830912839}}                    ->> 112 798 931 830 912 839
+TEST: {{2308393909}}                            ->> 2 308 393 909|2308 393-909
+TEST: {{2024}},9                                ->> 2 024
+TEST: {{4000}} Å                                ->> 4 000
+TEST: {{3240}} µA                               ->> 3 240
 
 
 __[s>(num_grand_nombre_avec_points)__
     \d\d?\d?(?:[.]\d\d\d)+(?![0-9])
     <<- option("num") ->> =\0.replace(".", " ")                                                     # Grands nombres : utilisez des espaces insécables plutôt que des points.
-    <<- ~>> =\0.replace(".", "")
+    <<- ~>> =\0.replace(".", "_")
 
 TEST: il cumule {{200.000.000}} de pertes sèches
 
@@ -950,7 +964,7 @@ TEST: il cumule {{200.000.000}} de pertes sèches
 __[s](num_grand_nombre_avec_espaces)__
     \d\d?\d?(?: \d\d\d)+
     <<- option("num") ->> =\0.replace(" ", " ")                                                     # Grands nombres : utilisez des espaces insécables.
-    <<- ~>> =\0.replace(" ", "")
+    <<- ~>> =\0.replace(" ", "_")
 
 TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 
