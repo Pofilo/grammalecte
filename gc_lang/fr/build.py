@@ -53,7 +53,7 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
     sExtensionName = dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
     spfZip = "_build/" + sExtensionName
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack, dVars['js_binary_dic'])
+    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".json")
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     dVars = _createOptionsForThunderbird(dVars)

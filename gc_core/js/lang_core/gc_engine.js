@@ -297,7 +297,7 @@ function listRules (sFilter=null) {
 
 function load () {
     try {
-        _oDict = new ibdawg.IBDAWG("${js_binary_dic}");
+        _oDict = new ibdawg.IBDAWG("${dic_name}.json");
     }
     catch (e) {
         helpers.logerror(e);

@@ -288,7 +288,7 @@ except ImportError:
 def load ():
     global _oDict
     try:
-        _oDict = IBDAWG("${py_binary_dic}")
+        _oDict = IBDAWG("${dic_name}.bdic")
     except:
         traceback.print_exc()
 

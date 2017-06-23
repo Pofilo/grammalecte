@@ -76,7 +76,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
 
     # Package and parser
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['py_binary_dic'], "pythonpath/")
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic", "pythonpath/")
     hZip.write("cli.py", "pythonpath/cli.py")
 
     # Extension files
@@ -154,7 +154,7 @@ def createServerZip (sLang, dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['py_binary_dic'])
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic")
     for spf in ["cli.py", "server.py", "bottle.py", "server_options._global.ini", "server_options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
