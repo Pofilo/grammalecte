@@ -270,13 +270,14 @@ def makePhonetTable (sp, bJS=False):
         lSet = []
         for sLine in hSrc.readlines():
             if not sLine.startswith("#") and sLine.strip():
-                aWord = set(sLine.strip().split())
+                lWord = sLine.strip().split()
                 aMore = set()
-                for sWord in aWord:
+                for sWord in lWord:
                     if sWord.endswith("er") and conj.isVerb(sWord):
                         aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
-                aWord = aWord.union(aMore)
-                lSet.append(aWord)
+                lWord.extend(list(aMore))
+                lSet.append(lWord)
+                #print(lWord)
         # dictionary of words
         dWord = {}
         for i, aSet in enumerate(lSet):
