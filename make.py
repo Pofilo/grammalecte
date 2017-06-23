@@ -314,18 +314,8 @@ def main ():
             if build_data_module:
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
             if xArgs.dict or not os.path.exists("grammalecte/_dictionaries"):
-                import grammalecte.dawg as fsa
-                from grammalecte.ibdawg import IBDAWG
-                # fsa builder
-                oDAWG = fsa.DAWG(dVars['lexicon_src'], dVars['lang_name'], dVars['stemming_method'])
-                dir_util.mkpath("grammalecte/_dictionaries")
-                oDAWG.writeInfo("grammalecte/_dictionaries/" + dVars['py_binary_dic'] + ".info.txt")
-                oDAWG.createBinary("grammalecte/_dictionaries/" + dVars['py_binary_dic'], int(dVars['fsa_method']))
-                if xArgs.javascript:
-                    dir_util.mkpath("grammalecte-js/_dictionaries")
-                    oDic = IBDAWG(dVars['py_binary_dic'])
-                    #oDic.writeAsJSObject("gc_lang/"+sLang+"/modules-js/dictionary.js")
-                    oDic.writeAsJSObject("grammalecte-js/_dictionaries/"+dVars['js_binary_dic'])
+                import lex_build
+                lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], dVars['stemming_method'], int(dVars['fsa_method']), xArgs.javascript)
             if build_data_module:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
 
