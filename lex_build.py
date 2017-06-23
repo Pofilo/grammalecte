@@ -8,7 +8,7 @@ import grammalecte.dawg as fsa
 from grammalecte.ibdawg import IBDAWG
 
 
-def build (spfSrc, sLangName, sDicName, cStemmingMethod, nCompressMethod, bJSON=False):
+def build (spfSrc, sLangName, sDicName, bJSON=False, cStemmingMethod="S", nCompressMethod=1):
     "transform a text lexicon as a binary indexable dictionary"
     oDAWG = fsa.DAWG(spfSrc, sLangName, cStemmingMethod)
     dir_util.mkpath("grammalecte/_dictionaries")

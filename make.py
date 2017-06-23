@@ -315,7 +315,7 @@ def main ():
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
             if xArgs.dict or not os.path.exists("grammalecte/_dictionaries"):
                 import lex_build
-                lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], dVars['stemming_method'], int(dVars['fsa_method']), xArgs.javascript)
+                lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], xArgs.javascript, dVars['stemming_method'], int(dVars['fsa_method']))
             if build_data_module:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
 
