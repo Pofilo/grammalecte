@@ -277,7 +277,9 @@ def main ():
     print("Python: " + sys.version)
     xParser = argparse.ArgumentParser()
     xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
-    xParser.add_argument("-b", "--build_data", help="launch build_data.py", action="store_true")
+    xParser.add_argument("-b", "--build_data", help="launch build_data.py (part 1 and 2)", action="store_true")
+    xParser.add_argument("-bb", "--build_data_before", help="launch build_data.py (only part 1: before dictionary building)", action="store_true")
+    xParser.add_argument("-ba", "--build_data_after", help="launch build_data.py (only part 2: before dictionary building)", action="store_true")
     xParser.add_argument("-d", "--dict", help="generate FSA dictionary", action="store_true")
     xParser.add_argument("-t", "--tests", help="run unit tests", action="store_true")
     xParser.add_argument("-p", "--perf", help="run performance tests", action="store_true")
@@ -287,6 +289,10 @@ def main ():
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
     xParser.add_argument("-i", "--install", help="install the extension in Writer (path of unopkg must be set in config.ini)", action="store_true")
     xArgs = xParser.parse_args()
+
+    if xArgs.build_data:
+        xArgs.build_data_before = True
+        xArgs.build_data_after = True
 
     dir_util.mkpath("_build")
     dir_util.mkpath("grammalecte")
@@ -305,18 +311,18 @@ def main ():
 
             # build data
             build_data_module = None
-            if xArgs.build_data:
+            if xArgs.build_data_before or xArgs.build_data_after:
                 # lang data
                 try:
                     build_data_module = importlib.import_module("gc_lang."+sLang+".build_data")
                 except ImportError:
                     print("# Error. Couldn’t import file build_data.py in folder gc_lang/"+sLang)
-            if build_data_module:
+            if build_data_module and xArgs.build_data_before:
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
             if xArgs.dict or not os.path.exists("grammalecte/_dictionaries"):
                 import lex_build
                 lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], xArgs.javascript, dVars['stemming_method'], int(dVars['fsa_method']))
-            if build_data_module:
+            if build_data_module and xArgs.build_data_after:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
 
             # make
