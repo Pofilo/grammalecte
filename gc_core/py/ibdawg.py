@@ -44,9 +44,9 @@ class IBDAWG:
         self.nAff = int(l[7])
         self.cStemming = l[8]
         if self.cStemming == "S":
-            self.funcStemming = st.getStemFromSuffixCode
+            self.funcStemming = st.changeWordWithSuffixCode
         elif self.cStemming == "A":
-            self.funcStemming = st.getStemFromAffixCode
+            self.funcStemming = st.changeWordWithAffixCode
         else:
             self.funcStemming = st.noStemming
         self.nTag = self.nArcVal - self.nChar - self.nAff

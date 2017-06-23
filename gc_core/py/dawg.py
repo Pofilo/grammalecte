@@ -18,7 +18,7 @@ from .progressbar import ProgressBar
 
 
 def readFile (spf):
-    print("Read lexicon: " + spf)
+    print(" < Read lexicon: " + spf)
     if os.path.isfile(spf):
         with open(spf, "r", encoding="utf-8") as hSrc:
             for sLine in hSrc:
@@ -69,7 +69,7 @@ def getElemsFromFile (spf):
                 #print(sFlex, sStem, sTag)
                 yield (sFlex, sStem, sTag)
                 if sTag2:
-                    sFlex2 = st.getStemFromSuffixCode(sFlex, sSfxCode)
+                    sFlex2 = st.changeWordWithSuffixCode(sFlex, sSfxCode)
                     #print(sFlex2, sStem, sTag2)
                     yield (sFlex2, sStem, sTag2)
     if nErr:
@@ -163,9 +163,9 @@ class DAWG:
         self.nTag = self.nArcVal - self.nChar - nAff
         self.cStemming = cStemming
         if cStemming == "A":
-            self.funcStemming = st.getStemFromAffixCode
+            self.funcStemming = st.changeWordWithAffixCode
         elif cStemming == "S":    
-            self.funcStemming = st.getStemFromSuffixCode
+            self.funcStemming = st.changeWordWithSuffixCode
         else:
             self.funcStemming = st.noStemming
         

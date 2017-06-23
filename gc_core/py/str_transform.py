@@ -73,10 +73,10 @@ def defineSuffixCode (sFlex, sStem):
         jSfx += 1
     return chr(len(sFlex)-jSfx+48) + sStem[jSfx:]  
 
-def getStemFromSuffixCode (sFlex, sSfxCode):
+def changeWordWithSuffixCode (sWord, sSfxCode):
     if sSfxCode == "0":
-        return sFlex
-    return sFlex[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sFlex + sSfxCode[1:]
+        return sWord
+    return sWord[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sWord + sSfxCode[1:]
 
 
 # Prefix and suffix
@@ -124,12 +124,12 @@ def longestCommonSubstring (s1, s2):
                 M[x][y] = 0
     return s1[x_longest-longest : x_longest]
 
-def getStemFromAffixCode (sFlex, sAffCode):
+def changeWordWithAffixCode (sWord, sAffCode):
     if sAffCode == "0":
-        return sFlex
+        return sWord
     if '/' not in sAffCode:
         return "# error #"
     sPfxCode, sSfxCode = sAffCode.split('/')
-    sFlex = sPfxCode[1:] + sFlex[(ord(sPfxCode[0])-48):] 
-    return sFlex[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sFlex + sSfxCode[1:]
+    sWord = sPfxCode[1:] + sWord[(ord(sPfxCode[0])-48):] 
+    return sWord[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sWord + sSfxCode[1:]
 
