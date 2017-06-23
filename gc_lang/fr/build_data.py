@@ -276,8 +276,8 @@ def makePhonetTable (sp, bJS=False):
                     if sWord.endswith("er") and conj.isVerb(sWord):
                         aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
                 lWord.extend(list(aMore))
-                lSet.append(lWord)
-                #print(lWord)
+                lSet.append(sorted(set(lWord)))
+                print(lWord)
         # dictionary of words
         dWord = {}
         for i, aSet in enumerate(lSet):
