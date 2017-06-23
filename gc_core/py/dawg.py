@@ -18,6 +18,7 @@ from .progressbar import ProgressBar
 
 
 def readFile (spf):
+    print("Read lexicon: " + spf)
     if os.path.isfile(spf):
         with open(spf, "r", encoding="utf-8") as hSrc:
             for sLine in hSrc:
@@ -28,9 +29,10 @@ def readFile (spf):
         raise OSError("# Error. File not found or not loadable: " + spf)
 
 
-def getElemsFromFile (spf, bCompressedDic=False):
+def getElemsFromFile (spf):
+    "returns tuple of (flexion, stem, tags) from lexicon file"
     nErr = 0
-    if not bCompressedDic:
+    if not spf.endswith(".clex"):
         for sLine in readFile(spf):
             try:
                 sFlex, sStem, sTag = sLine.split("\t")
@@ -38,12 +40,25 @@ def getElemsFromFile (spf, bCompressedDic=False):
             except:
                 nErr += 1
     else:
-        sTag = ":_" # neutral tag
+        sTag = "_" # neutral tag
+        sTag2 = ""
         for sLine in readFile(spf):
             if sLine.startswith("[") and sLine.endswith("]"):
-                sTag = sLine[1:-1]
-                continue
+                # tag line
+                if "-->" in sLine:
+                    try:
+                        sTag, sSfxCode, sTag2 = sLine[1:-1].split(" --> ")
+                    except:
+                        nErr += 1
+                        continue
+                    sTag = sTag.strip()
+                    sSfxCode = sSfxCode.strip()
+                    sTag2 = sTag2.strip()
+                else:
+                    sTag = sLine[1:-1]
+                    sTag2 = ""
             else:
+                # entry line
                 if "\t" in sLine:
                     if sLine.count("\t") > 1:
                         nErr += 1
@@ -51,7 +66,12 @@ def getElemsFromFile (spf, bCompressedDic=False):
                     sFlex, sStem = sLine.split("\t")
                 else:
                     sFlex = sStem = sLine
+                #print(sFlex, sStem, sTag)
                 yield (sFlex, sStem, sTag)
+                if sTag2:
+                    sFlex2 = st.getStemFromSuffixCode(sFlex, sSfxCode)
+                    #print(sFlex2, sStem, sTag2)
+                    yield (sFlex2, sStem, sTag2)
     if nErr:
         print(" # Lines ignored: {:>10}".format(nErr))
 
@@ -65,7 +85,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, spfSrc, sLangName, cStemming, bCompressedDic=False):
+    def __init__ (self, spfSrc, sLangName, cStemming):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -84,7 +104,7 @@ class DAWG:
         nErr = 0
         
         # read lexicon
-        for sFlex, sStem, sTag in getElemsFromFile(spfSrc, bCompressedDic):
+        for sFlex, sStem, sTag in getElemsFromFile(spfSrc):
             # chars
             for c in sFlex:
                 if c not in dChar:
