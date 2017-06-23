@@ -2,6 +2,7 @@
 
 # Lexicon builder
 
+import argparse
 from distutils import dir_util
 
 import grammalecte.dawg as fsa
@@ -17,13 +18,20 @@ def build (spfSrc, sLangName, sDicName, bJSON=False, cStemmingMethod="S", nCompr
     if bJSON:
         dir_util.mkpath("grammalecte-js/_dictionaries")
         oDic = IBDAWG(sDicName + ".bdic")
-        #oDic.writeAsJSObject("gc_lang/"+sLang+"/modules-js/dictionary.js")
         oDic.writeAsJSObject("grammalecte-js/_dictionaries/" + sDicName + ".json")
 
 
 def main ():
-    print("todo")
-
+    xParser = argparse.ArgumentParser()
+    xParser.add_argument("src_lexicon", type=str, help="path and file name of the source lexicon")
+    xParser.add_argument("lang_name", type=str, help="language name")
+    xParser.add_argument("dic_name", type=str, help="dictionary file name (without extension)")
+    xParser.add_argument("-js", "--json", help="Build dictionary in JSON", action="store_true")
+    xParser.add_argument("-s", "--stemming", help="stemming method: S=suffixes, A=affixes, N=no stemming", type=str, choices=["S", "A", "N"], default="S")
+    xParser.add_argument("-c", "--compress", help="compression method: 1, 2 (beta), 3, (beta)", type=int, choices=[1, 2, 3], default=1)
+    xArgs = xParser.parse_args()
+    build(xArgs.src_lexicon, xArgs.lang_name, xArgs.dic_name, xArgs.json)
+    
 
 if __name__ == '__main__':
     main()
