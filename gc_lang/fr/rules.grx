@@ -4556,7 +4556,8 @@ __[i](p_vent_debout_contre)__   (vent debout) contre @@0 <<- ~1>> *
 # Déterminant + nombre
 __[i](p_dét_plur_nombre_nom)__
     (?:[dmts]es|nos|vos|le(?:ur|)s) (\d+(?: ou \d+|)) ({w_2})  @@w,$
-    <<- not re.search("(?i)^(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)s?$", \2) ~1>> *
+    <<- morphex(\2, ":[NA].*:[pi]", ":(?:V0|3p)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)")
+    ~1>> *
 
 ## Simplifications des substantifs
 __[i](p_arc_à_poulies)__                arcs? (à poulies) @@$ <<- ~1>> *
@@ -5003,7 +5004,7 @@ TEST: La secrétaire d’Etat à l’égalité entre les femmes et les hommes h�
 TEST: les populistes d’Europe centrale et de l’Est ont d’ores et déjà tellement réussi à compromettre les institutions de leur pays
 TEST: Deirdre, elle aussi légèrement ostracisée, m’interrogea.
 TEST: des échanges pair à pair
-
+TEST: Les 27 ont préféré tout au long de la journée vanter un nouvel espoir dans leur avenir commun.
 
 
 !!!
