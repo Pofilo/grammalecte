@@ -98,6 +98,21 @@ def getSimil (sWord, sMorph, sFilter=None):
     return aSugg
 
 
+def getConjSimilInfiV1 (sInfi):
+    if sInfi not in _dVerb:
+        return set()
+    tTags = _getTags(sInfi)
+    aSugg = set()
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2s"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3s"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3p"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Is", ":1s"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":2p"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2p"))
+    aSugg.discard("")
+    return aSugg
+
+
 def _getTags (sVerb):
     "returns tuple of tags (usable with functions _getConjWithTags and _hasConjWithTags)"
     if sVerb not in _dVerb:

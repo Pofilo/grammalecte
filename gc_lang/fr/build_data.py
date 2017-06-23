@@ -11,6 +11,7 @@ import os
 import grammalecte.ibdawg as ibdawg
 from grammalecte.echo import echo
 from grammalecte.str_transform import defineSuffixCode
+import grammalecte.fr.conj as conj
 
 
 class cd:
@@ -269,7 +270,13 @@ def makePhonetTable (sp, bJS=False):
         lSet = []
         for sLine in hSrc.readlines():
             if not sLine.startswith("#") and sLine.strip():
-                lSet.append(sorted(sLine.strip().split()))
+                aWord = set(sLine.strip().split())
+                aMore = set()
+                for sWord in aWord:
+                    if sWord.endswith("er") and conj.isVerb(sWord):
+                        aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
+                aWord = aWord.union(aMore)
+                lSet.append(aWord)
         # dictionary of words
         dWord = {}
         for i, aSet in enumerate(lSet):
