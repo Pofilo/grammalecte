@@ -17,6 +17,46 @@ from . import str_transform as st
 from .progressbar import ProgressBar
 
 
+def readFile (spf):
+    if os.path.isfile(spf):
+        with open(spf, "r", encoding="utf-8") as hSrc:
+            for sLine in hSrc:
+                sLine = sLine.strip()
+                if sLine and not sLine.startswith("#"):
+                    yield sLine
+    else:
+        raise OSError("# Error. File not found or not loadable: " + spf)
+
+
+def getElemsFromFile (spf, bCompressedDic=False):
+    nErr = 0
+    if not bCompressedDic:
+        for sLine in readFile(spf):
+            try:
+                sFlex, sStem, sTag = sLine.split("\t")
+                yield (sFlex, sStem, sTag)
+            except:
+                nErr += 1
+    else:
+        sTag = ":_" # neutral tag
+        for sLine in readFile(spf):
+            if sLine.startswith("[") and sLine.endswith("]"):
+                sTag = sLine[1:-1]
+                continue
+            else:
+                if "\t" in sLine:
+                    if sLine.count("\t") > 1:
+                        nErr += 1
+                        continue
+                    sFlex, sStem = sLine.split("\t")
+                else:
+                    sFlex = sStem = sLine
+                yield (sFlex, sStem, sTag)
+    if nErr:
+        print(" # Lines ignored: {:>10}".format(nErr))
+
+
+
 class DAWG:
     """DIRECT ACYCLIC WORD GRAPH"""
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
@@ -25,7 +65,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, spfSrc, sLangName, cStemming):
+    def __init__ (self, spfSrc, sLangName, cStemming, bCompressedDic=False):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -35,8 +75,7 @@ class DAWG:
         elif cStemming == "N":
             funcStemmingGen = st.noStemming
         else:
-            print("# Error code: {}".format(cStemming))
-            exit()
+            raise ValueError("# Error. Unknown stemming code: {}".format(cStemming))
 
         lEntry = []
         lChar = ['']; dChar = {}; nChar = 1; dCharOccur = {}
@@ -45,43 +84,30 @@ class DAWG:
         nErr = 0
         
         # read lexicon
-        with open(spfSrc, 'r', encoding='utf-8') as hSrc:
-            print(" > Reading lexicon: " + spfSrc + " ...")
-            for line in hSrc:
-                line = line.strip()
-                if not (line.startswith('#') or line == ''):
-                    try:
-                        flex, stem, tag = line.split("\t")
-                    except:
-                        nErr += 1
-                        continue
-                    # chars
-                    for c in flex:
-                        if c not in dChar:
-                            dChar[c] = nChar
-                            lChar.append(c)
-                            nChar += 1
-                        dCharOccur[c] = dCharOccur.get(c, 0) + 1
-                    # affixes to find stem from flexion
-                    aff = funcStemmingGen(flex, stem)
-                    if aff not in dAff:
-                        dAff[aff] = nAff
-                        lAff.append(aff)
-                        nAff += 1
-                    dAffOccur[aff] = dCharOccur.get(aff, 0) + 1
-                    # tags
-                    if tag not in dTag:
-                        dTag[tag] = nTag
-                        lTag.append(tag)
-                        nTag += 1
-                    dTagOccur[tag] = dTagOccur.get(tag, 0) + 1
-                    lEntry.append((flex, dAff[aff], dTag[tag]))
-            hSrc.close()
-        if nErr:
-            print(" # Lines ignored: {:>10}".format(nErr))
-        if not(lEntry):
-            print(" # Empty lexicon")
-            exit()
+        for sFlex, sStem, sTag in getElemsFromFile(spfSrc, bCompressedDic):
+            # chars
+            for c in sFlex:
+                if c not in dChar:
+                    dChar[c] = nChar
+                    lChar.append(c)
+                    nChar += 1
+                dCharOccur[c] = dCharOccur.get(c, 0) + 1
+            # affixes to find stem from flexion
+            aff = funcStemmingGen(sFlex, sStem)
+            if aff not in dAff:
+                dAff[aff] = nAff
+                lAff.append(aff)
+                nAff += 1
+            dAffOccur[aff] = dCharOccur.get(aff, 0) + 1
+            # tags
+            if sTag not in dTag:
+                dTag[sTag] = nTag
+                lTag.append(sTag)
+                nTag += 1
+            dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
+            lEntry.append((sFlex, dAff[aff], dTag[sTag]))
+        if not lEntry:
+            raise ValueError("# Error. Empty lexicon")
         
         # Preparing DAWG
         print(" > Preparing list of words")
@@ -115,7 +141,7 @@ class DAWG:
         self.lArcVal = lVal
         self.nArcVal = len(lVal)
         self.nTag = self.nArcVal - self.nChar - nAff
-        self.cStemming = cStemming.upper()
+        self.cStemming = cStemming
         if cStemming == "A":
             self.funcStemming = st.getStemFromAffixCode
         elif cStemming == "S":    
