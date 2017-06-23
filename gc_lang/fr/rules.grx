@@ -3587,15 +3587,15 @@ TEST: Je voulais qu’on soit ensemble.
 
 # ou / où
 __[i]/conf(conf_où_verbe)__
-    ^(Ou) ({w_2}) @@0,3 <<- morphex(\2, ":3[sp]", ":Y") -1>> Où                             # Confusion probable. Utilisez “où” pour “en quel lieu”.
+    ^(Ou) ({w_2}) @@0,3 <<- morphex(\2, ":3[sp]", ":Y") -1>> Où                             # Confusion probable. La conjonction “ou” signale une alternative. Utilisez “où” pour “en quel lieu”.
 __[i]/conf(conf_au_moment_par_d_où)__
-    (?:au moment |jusqu |par |d’)(ou) @@$ <<- -1>> où                                       # Confusion. On écrit “ceci ou cela” mais “où aller ?”, “par où aller”, “au moment où”…
+    (?:au moment |jusqu |par |d’)(ou) @@$ <<- -1>> où                                       # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 __[i]/conf(conf_vers_où)__
-    vers (ou) @@5 <<- not morph(word(-1), ":D", False, False) -1>> où                       # Confusion probable. On écrit “ceci ou cela” mais “vers où aller ?”
+    vers (ou) @@5 <<- not morph(word(-1), ":D", False, False) -1>> où                       # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 __[i]/conf(conf_jusqu_où_au_cas_où)__
-    (?:au|le|des) cas (ou) @@$ <<- -1>> où                                                  # Confusion. On écrit “ceci ou cela” mais “où aller ?”
+    (?:au|le|des) cas (ou) @@$ <<- -1>> où                                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 __[i]/conf(conf_à_partir_du_temps_où)__
-    à partir d(?:u (?:moment|jour|mois)|e l’(?:instant|année|heure)|e la (?:minute|semaine|seconde)) +(ou) @@$
+    à partir d(?:u (?:lieu|moment|jour|mois)|e l’(?:instant|année|heure)|e la (?:minute|semaine|seconde)) +(ou) @@$
     <<- -1>> où                                                                             # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
 TEST: {{Ou}} sont tes affaires ?
@@ -4535,7 +4535,7 @@ __[i](p_plus_loc_adv)__         plus (?:près|loin|tôt|tard|ou moins|que (?:né
 ## Simplification partielle
 __[i](p_tout_au_long_de)__      (tout au long) d(?:es?|u) @@0 <<- not morph(word(-1), ":R", False, False) ~1>> au
 __[i](p_à_loc_de1)__            à (bonne distance|bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|l’(?:aff[ûu]t|arrière|autre bout|aune|avant|écart|égard|extérieur|encontre|ins(?:u|tar)|intérieur|opposé|orée|approche)|la (?:hauteur|portée|suite)|partir|portée|pro(?:ximité|pos)|quelques (?:mètres|kilomètres|lieues|pas|centaines de mètres|minutes|heures)|rebours) d(?:es?|u) @@2 <<- ~1>> *
-__[i](p_à_loc_de2)__            à (base|grand(?: renfort|s coups)|raison) de? @@2 <<- ~1>> *
+__[i](p_à_loc_de2)__            à (base|force|grand(?: renfort|s coups)|raison) de? @@2 <<- ~1>> *
 __[i](p_au_loc_de)__            au (bout|beau milieu|courant|cours|détriment|fin fond|grand dam|fur et à mesure|gré|l(?:ieu|ong|arge)|milieu|nez et à la barbe|plus profond|profit|s(?:ein|ortir|ujet)|vu(?: et au su|)) d(?:es?|u) @@3 <<- ~1>> *
 __[i](p_aux_loc_de)__           aux (abords|dépens) d(?:es?|u) @@4 <<- ~1>> *
 __[i](p_ceux_et_celles_qui)__   ceux (et celles?) +qui @@5 <<- ~1>> *
