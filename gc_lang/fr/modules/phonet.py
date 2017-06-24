@@ -18,10 +18,10 @@ def hasSimil (sWord, sPattern=None):
         return True
     if sWord[0:1].isupper():
         sWord = sWord.lower()
-    if sWord in _dWord:
-        if sPattern:
-            return any(re.search(sPattern, sMorph)  for sSimil in getSimil(sWord)  for sMorph in _dMorph.get(sSimil, []))
-        return True
+        if sWord in _dWord:
+            if sPattern:
+                return any(re.search(sPattern, sMorph)  for sSimil in getSimil(sWord)  for sMorph in _dMorph.get(sSimil, []))
+            return True
     return False
 
 
@@ -33,8 +33,8 @@ def getSimil (sWord):
         return _lSet[_dWord[sWord]]
     if sWord[0:1].isupper():
         sWord = sWord.lower()
-    if sWord in _dWord:
-        return _lSet[_dWord[sWord]]
+        if sWord in _dWord:
+            return _lSet[_dWord[sWord]]
     return []
 
 

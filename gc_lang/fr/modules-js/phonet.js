@@ -24,11 +24,14 @@ function hasSimil (sWord, sPattern=null) {
     }
     if (sWord.slice(0,1)._isUpperCase()) {
         sWord = sWord.toLowerCase();
+        if (_dWord.has(sWord)) {
+            if (sPattern) {
+                return getSimil(sWord).some(sSimil => _dMorph._get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
+            }
+            return true;
+        }
     }
-    if (sPattern) {
-        return getSimil(sWord).some(sSimil => _dMorph._get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
-    }
-    return _dWord.has(sWord);
+    return false;
 }
 
 function getSimil (sWord) {
@@ -41,9 +44,9 @@ function getSimil (sWord) {
     }
     if (sWord.slice(0,1)._isUpperCase()) {
         sWord = sWord.toLowerCase();
-    }
-    if (_dWord.has(sWord)) {
-        return _lSet[_dWord.get(sWord)];
+        if (_dWord.has(sWord)) {
+            return _lSet[_dWord.get(sWord)];
+        }
     }
     return [];
 }
