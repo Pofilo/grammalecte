@@ -1698,6 +1698,7 @@ TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 __<s]/typo(typo_À_début_phrase1)__
     ^ *(A) (?!t[’-](?:ils?|elles?|on))({w_2})  @@*,$
     <<- morphex(\2, ":[GNAY]", ":(?:Q|3s)|>(?:priori|post[eé]riori|contrario|capella|fortiori) ")
+        or (\2 == "bientôt" and isEnd())
     -1>> À                                                                                          # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
 __<s>/typo(typo_À_début_phrase2)__
     ^ *(A) [ldnms]’  @@*  <<- -1>> À                                                                # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
@@ -1708,7 +1709,11 @@ TEST: {{A}} vaincre sans péril, on triomphe sans gloire.
 TEST: « {{A}} partir de maintenant, ce ne sera plus comme avant.
 TEST: — {{A}} n’en plus pouvoir
 TEST: — {{A}} t’emmener loin de tout ceci.
+TEST: {{A}} bientôt, mon ami.
+TEST: A bientôt fini son devoir.
 TEST: A priori, nul ne peut y parvenir sans une aide extérieure.
+TEST: A devient notre meilleure chance d’y parvenir.
+
 
 
 
