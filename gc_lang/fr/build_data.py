@@ -277,7 +277,7 @@ def makePhonetTable (sp, bJS=False):
                         aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
                 lWord.extend(list(aMore))
                 lSet.append(sorted(set(lWord)))
-                print(lWord)
+                #print(lWord)
         # dictionary of words
         dWord = {}
         for i, aSet in enumerate(lSet):
