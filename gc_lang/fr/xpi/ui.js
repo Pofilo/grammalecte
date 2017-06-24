@@ -81,7 +81,7 @@ function loadGrammarChecker (bSetPanelOptions=false) {
     if (xGCEWorker === null) {
         // Grammar checker
         xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
-        let xPromise = xGCEWorker.post('loadGrammarChecker', [sp.prefs["sGCOptions"]]);
+        let xPromise = xGCEWorker.post('loadGrammarChecker', [sp.prefs["sGCOptions"], "Firefox"]);
         xPromise.then(
             function (aVal) {
                 sp.prefs["sGCOptions"] = aVal;

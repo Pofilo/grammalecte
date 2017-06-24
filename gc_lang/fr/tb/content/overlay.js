@@ -49,7 +49,7 @@ var oGrammarChecker = {
             // Grammar checker
             echo('Loading Grammalecte');
             this.xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
-            let xPromise = this.xGCEWorker.post('loadGrammarChecker', [prefs.getCharPref("sGCOptions")]);
+            let xPromise = this.xGCEWorker.post('loadGrammarChecker', [prefs.getCharPref("sGCOptions"), "Thunderbird"]);
             xPromise.then(
                 function (aVal) {
                     echo(aVal);

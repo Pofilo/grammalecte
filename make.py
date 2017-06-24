@@ -146,7 +146,7 @@ def createServerOptions (sLang, dOptData):
             for lLineOpt in lOpt:
                 for sOpt in lLineOpt:
                     hDst.write("# " + dOptData["dOptLabel"][sLang].get(sOpt, "[no label found]")[0] + "\n")
-                    hDst.write(sOpt + " = " + ("1" if dOptData["dOptPython"].get(sOpt, None) else "0") + "\n")
+                    hDst.write(sOpt + " = " + ("1" if dOptData["dOptServer"].get(sOpt, None) else "0") + "\n")
         hDst.write("html = 1\n")
 
 
@@ -240,6 +240,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
 
         # options data struct
         dVars["dOptJavaScript"] = json.dumps(list(dVars["dOptJavaScript"].items()))
+        dVars["dOptFirefox"] = json.dumps(list(dVars["dOptFirefox"].items()))
+        dVars["dOptThunderbird"] = json.dumps(list(dVars["dOptThunderbird"].items()))
         
         # create folder
         spLangPack = "grammalecte-js/"+sLang

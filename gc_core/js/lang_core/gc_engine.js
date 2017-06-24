@@ -35,11 +35,12 @@ const _zEndOfParagraph = new RegExp ("[-  .,;?!…–—]*$", "ig");
 
 // grammar rules and dictionary
 //const _rules = require("./gc_rules.js");
+let _sContext = "";                                 // what software is running
 const _rules = require("resource://grammalecte/${lang}/gc_rules.js");
-let _dOptions = gc_options.dOpt._shallowCopy();     // duplication necessary, to be able to reset to default
+let _dOptions = null;
 let _aIgnoredRules = new Set();
 let _oDict = null;
-let _dAnalyses = new Map();                        // cache for data from dictionary
+let _dAnalyses = new Map();                         // cache for data from dictionary
 
 
 ///// Parsing
@@ -295,9 +296,11 @@ function listRules (sFilter=null) {
 
 //////// init
 
-function load () {
+function load (sContext="JavaScript") {
     try {
         _oDict = new ibdawg.IBDAWG("${dic_name}.json");
+        _sContext = sContext;
+        _dOptions = gc_options.getOptions(sContext)._shallowCopy();     // duplication necessary, to be able to reset to default
     }
     catch (e) {
         helpers.logerror(e);
@@ -319,11 +322,11 @@ function getOptions () {
 }
 
 function getDefaultOptions () {
-    return gc_options.dOpt._shallowCopy();
+    return gc_options.getOptions(_sContext)._shallowCopy();
 }
 
 function resetOptions () {
-    _dOptions = gc_options.dOpt._shallowCopy();
+    _dOptions = gc_options.getOptions(_sContext)._shallowCopy();
 }
 
 function getDictionary () {

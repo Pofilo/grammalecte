@@ -54,23 +54,28 @@ let oTokenizer = null;
 let oDict = null;
 let oLxg = null;
 
-function loadGrammarChecker (sGCOptions="") {
+function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
     if (gce === null) {
-        gce = require("resource://grammalecte/fr/gc_engine.js");
-        helpers = require("resource://grammalecte/helpers.js");
-        text = require("resource://grammalecte/text.js");
-        tkz = require("resource://grammalecte/tokenizer.js");
-        lxg = require("resource://grammalecte/fr/lexicographe.js");
-        oTokenizer = new tkz.Tokenizer("fr");
-        helpers.setLogOutput(worker.log);
-        gce.load();
-        oDict = gce.getDictionary();
-        oLxg = new lxg.Lexicographe(oDict);
-        if (sGCOptions !== "") {
-            gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+        try {
+            gce = require("resource://grammalecte/fr/gc_engine.js");
+            helpers = require("resource://grammalecte/helpers.js");
+            text = require("resource://grammalecte/text.js");
+            tkz = require("resource://grammalecte/tokenizer.js");
+            lxg = require("resource://grammalecte/fr/lexicographe.js");
+            oTokenizer = new tkz.Tokenizer("fr");
+            helpers.setLogOutput(worker.log);
+            gce.load(sContext);
+            oDict = gce.getDictionary();
+            oLxg = new lxg.Lexicographe(oDict);
+            if (sGCOptions !== "") {
+                gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+            }
+            // we always retrieve options from the gce, for setOptions filters obsolete options
+            return gce.getOptions()._toString();
         }
-        // we always retrieve options from the gce, for setOptions filters obsolete options
-        return gce.getOptions()._toString();
+        catch (e) {
+            worker.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+        }
     }
 }
 
