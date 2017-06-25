@@ -6537,6 +6537,25 @@ TEST: de mon point de {{vues}}
 !!
 !!
 
+# à / a
+__[i]/conf(conf_suite_à)__
+    suite (a) ({w1})
+    <<- morph(\2, ":D|>[ld] ", False) and isStart() -1>> à          # Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
+TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
+
+
+__[i]/conf(conf_à)__
+    (a) (?:[mt]oi|eux|elles?)
+    <<- not before(r"(?i)\b(?:il |elle |n’) *$") -1>> à             # Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: Je le donne {{a}} toi.
+TEST: Elle a eux pour lui donner des conseils.
+TEST: Elle a elle réussi… (Formulation douteuse.)
+TEST: Il a toi pour l’aider.
+
+
 # abuser / abusé / abusif
 __[i]/conf(conf_abusif)__
     c’est +(abus(?:é|er))  @@$
