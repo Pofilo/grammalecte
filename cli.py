@@ -207,9 +207,7 @@ def main ():
             elif sText.startswith("!"):
                 for sWord in sText[1:].strip().split():
                     if sWord:
-                        echo("* suggestions for: " + sWord)
-                        for sSugg in oDict.suggest(sWord):
-                            echo("  > " + sSugg)
+                        echo(" | ".join(oDict.suggest(sWord)))
             elif sText.startswith("/+ "):
                 gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
                 echo("done")

@@ -4,10 +4,15 @@
 import os
 import traceback
 import pkgutil
+from itertools import chain
 
 from . import str_transform as st
 from . import char_player as cp
 from .echo import echo
+
+
+def show (nDeep, sText):
+    print(nDeep * "  " + sText)
 
 
 class IBDAWG:
@@ -51,9 +56,11 @@ class IBDAWG:
         else:
             self.funcStemming = st.noStemming
         self.nTag = self.nArcVal - self.nChar - self.nAff
+        # <dChar> to get the value of an arc, <dVal> to get the char of an arc with its value
         self.dChar = {}
         for i in range(1, self.nChar):
             self.dChar[self.lArcVal[i]] = i
+        self.dVal = { v: k  for k, v in self.dChar.items() }
             
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
@@ -67,15 +74,18 @@ class IBDAWG:
             self.morph = self._morph1
             self.stem = self._stem1
             self._lookupArcNode = self._lookupArcNode1
+            self._getArcs = self._getArcs1
             self._writeNodes = self._writeNodes1
         elif self.nVersion == 2:
             self.morph = self._morph2
             self.stem = self._stem2
             self._lookupArcNode = self._lookupArcNode2
+            self._getArcs = self._getArcs2
             self._writeNodes = self._writeNodes2
         elif self.nVersion == 3:
             self.morph = self._morph3
             self.stem = self._stem3
+            self._getArcs = self._getArcs3
             self._lookupArcNode = self._lookupArcNode3
             self._writeNodes = self._writeNodes3
         else:
@@ -165,21 +175,75 @@ class IBDAWG:
                 return False
         return int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask
 
-    def suggest (self, sWord, iAddr=0, sNewWord=""):
-        "not finished"
+    def suggest (self, sWord):
+        "returns a set of similar words"
+        # first, we check for similar words
+        return set(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
+        lSugg = self._suggest(sWord)
+        if not lSugg:
+            lSugg.extend(self._suggest(sWord[1:]))
+            lSugg.extend(self._suggest(sWord[:-1]))
+            lSugg.extend(self._suggest(sWord[1:-1]))
+            if not lSugg:
+                lSugg.extend(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
+        return set(lSugg)
+
+    def _suggest (self, sWord, cPrevious='', nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         # RECURSIVE FUNCTION
         if not sWord:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                show(nDeep, "!!! " + sNewWord + " !!!")
                 return [sNewWord]
             return []
+        #show(nDeep, "<" + sWord + ">  ===>  " + sNewWord)
         lSugg = []
-        for cChar, jAddr in self._getSimilarArcs(sWord[0:1], iAddr):
-            lSugg.extend(self.suggest(sWord[1:], jAddr, sNewWord+cChar))
+        cCurrent = sWord[0:1]
+        for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
+            #show(nDeep, cChar)
+            lSugg.extend(self._suggest(sWord[1:], cCurrent, nDeep+1, jAddr, sNewWord+cChar))
+        if not bAvoidLoop: # avoid infinite loop
+            #show(nDeep, ":no loop:")
+            if cPrevious == cCurrent:
+                # same char, we remove 1 char without adding 1 to <sNewWord>
+                lSugg.extend(self._suggest(sWord[1:], cCurrent, nDeep+1, iAddr, sNewWord))
+            for sRepl in cp.d1toX.get(cCurrent, ()):
+                #show(nDeep, sRepl)
+                lSugg.extend(self._suggest(sRepl + sWord[1:], cCurrent, nDeep+1, iAddr, sNewWord, True))
+            if len(sWord) == 1:
+                #show(nDeep, ":end of word:")
+                # end of word
+                for sRepl in cp.dFinal1.get(sWord, ()):
+                    #show(nDeep, sRepl)
+                    lSugg.extend(self._suggest(sRepl, cCurrent, nDeep+1, iAddr, sNewWord, True))
         return lSugg
 
     def _getSimilarArcs (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
-        for c in cp.dSimilarChar.get(cChar, [cChar]):
+        for c in cp.d1to1.get(cChar, [cChar]):
+            if c in self.dChar:
+                jAddr = self._lookupArcNode(self.dChar[c], iAddr)
+                if jAddr:
+                    yield (c, jAddr)
+
+    def _suggestWithCrushedUselessChars (self, sWord, cPrevious='', nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+        if not sWord:
+            if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                show(nDeep, "!!! " + sNewWord + " !!!")
+                return [sNewWord]
+            return []
+        lSugg = []
+        cCurrent = sWord[0:1]
+        for cChar, jAddr in self._getSimilarArcsAndCrushedChars(cCurrent, iAddr):
+            show(nDeep, cChar)
+            lSugg.extend(self._suggestWithCrushedUselessChars(sWord[1:], cCurrent, nDeep+1, jAddr, sNewWord+cChar))
+        return lSugg
+
+    def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
+        "generator: yield similar char of <cChar> and address of the following node"
+        for nVal, jAddr in self._getArcs(iAddr):
+            if self.dVal.get(nVal, "") in cp.aUselessChar:
+                yield (self.dVal[nVal], jAddr)
+        for c in cp.d1to1.get(cChar, [cChar]):
             if c in self.dChar:
                 jAddr = self._lookupArcNode(self.dChar[c], iAddr)
                 if jAddr:
@@ -266,6 +330,16 @@ class IBDAWG:
                 if (nRawArc & self._lastArcMask):
                     return None
                 iAddr = iEndArcAddr+self.nBytesNodeAddress
+
+    def _getArcs1 (self, iAddr):
+        "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
+        while True:
+            iEndArcAddr = iAddr+self.nBytesArc
+            nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
+            yield (nRawArc & self._arcMask, int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big'))
+            if (nRawArc & self._lastArcMask):
+                break
+            iAddr = iEndArcAddr+self.nBytesNodeAddress
 
     def _writeNodes1 (self, spfDest):
         "for debugging only"
