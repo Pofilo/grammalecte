@@ -6,6 +6,7 @@ import traceback
 import pkgutil
 
 from . import str_transform as st
+from . import char_player as cp
 from .echo import echo
 
 
@@ -164,7 +165,7 @@ class IBDAWG:
                 return False
         return int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask
 
-    def getSugg (self, sWord, iAddr=0, sNewWord=""):
+    def suggest (self, sWord, iAddr=0, sNewWord=""):
         "not finished"
         # RECURSIVE FUNCTION
         if not sWord:
@@ -172,21 +173,17 @@ class IBDAWG:
                 return [sNewWord]
             return []
         lSugg = []
-        lArc = self._getSimilarArcs(sWord[0:1], iAddr)
-        if lArc:
-            for t in lArc:
-                lSugg.extend(self._lookupAndSuggest(sWord[1:], t[1], sNewWord+t[0]))
-        else:
-            pass
+        for cChar, jAddr in self._getSimilarArcs(sWord[0:1], iAddr):
+            lSugg.extend(self.suggest(sWord[1:], jAddr, sNewWord+cChar))
         return lSugg
 
     def _getSimilarArcs (self, cChar, iAddr):
-        lArc = []
-        for c in st.dSimilarChars.get(cChar, cChar):
-            jAddr = self._lookupArcNode(self.dChar[c], iAddr)
-            if jAddr:
-                lArc.append((c, iAddr))
-        return lArc
+        "generator: yield similar char of <cChar> and address of the following node"
+        for c in cp.dSimilarChar.get(cChar, [cChar]):
+            if c in self.dChar:
+                jAddr = self._lookupArcNode(self.dChar[c], iAddr)
+                if jAddr:
+                    yield (c, jAddr)
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"

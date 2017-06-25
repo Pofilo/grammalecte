@@ -20,6 +20,7 @@ _EXAMPLE = "Quoi ? Racontes ! Racontes-moi ! Bon sangg, parles ! Oui. Il y a 
 _HELP = """
     /help                       /h      show this text
     ?word1 [word2] ...                  words analysis
+    !word                               suggestion
     /lopt                       /lo     list options
     /+ option1 [option2] ...            activate grammar checking options
     /- option1 [option2] ...            deactivate grammar checking options
@@ -200,9 +201,15 @@ def main ():
             if sText.startswith("?"):
                 for sWord in sText[1:].strip().split():
                     if sWord:
-                        echo("* {}".format(sWord))
+                        echo("* " + sWord)
                         for sMorph in oDict.getMorph(sWord):
                             echo("  {:<32} {}".format(sMorph, oLexGraphe.formatTags(sMorph)))
+            elif sText.startswith("!"):
+                for sWord in sText[1:].strip().split():
+                    if sWord:
+                        echo("* suggestions for: " + sWord)
+                        for sSugg in oDict.suggest(sWord):
+                            echo("  > " + sSugg)
             elif sText.startswith("/+ "):
                 gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
                 echo("done")
