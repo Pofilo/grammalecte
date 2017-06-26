@@ -154,14 +154,14 @@ class IBDAWG:
         if sWord[0:1].isupper():
             if len(sWord) > 1:
                 if sWord.istitle():
-                    return bool(self.lookup(sWord.lower()))
+                    return self.lookup(sWord.lower())
                 if sWord.isupper():
                     if self.bOptNumSigle:
                         return True
-                    return bool(self.lookup(sWord.lower()) or self.lookup(sWord.capitalize()))
-                return bool(self.lookup(sWord[:1].lower() + sWord[1:]))
+                    return self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
+                return self.lookup(sWord[:1].lower() + sWord[1:])
             else:
-                return bool(self.lookup(sWord.lower()))
+                return self.lookup(sWord.lower())
         return False
 
     def lookup (self, sWord):
@@ -173,7 +173,7 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr == None:
                 return False
-        return int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask
+        return bool(int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask)
 
     def suggest (self, sWord):
         "returns a set of similar words"
@@ -192,7 +192,7 @@ class IBDAWG:
         # RECURSIVE FUNCTION
         if not sWord:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                show(nDeep, "!!! " + sNewWord + " !!!")
+                show(nDeep, "___" + sNewWord + "___")
                 return [sNewWord]
             return []
         #show(nDeep, "<" + sWord + ">  ===>  " + sNewWord)
@@ -209,6 +209,9 @@ class IBDAWG:
             for sRepl in cp.d1toX.get(cCurrent, ()):
                 #show(nDeep, sRepl)
                 lSugg.extend(self._suggest(sRepl + sWord[1:], nDeep+1, iAddr, sNewWord, True))
+            for sRepl in cp.d2toX.get(sWord[0:2], ()):
+                #show(nDeep, sRepl)
+                lSugg.extend(self._suggest(sRepl + sWord[2:], nDeep+1, iAddr, sNewWord, True))
             if len(sWord) == 2:
                 for sRepl in cp.dFinal2.get(sWord, ()):
                     #show(nDeep, sRepl)
