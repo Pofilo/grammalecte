@@ -171,6 +171,7 @@ dFinal1 = {
 }
 
 dFinal2 = {
+    "ai": ("aient", "ais", "et"),
     "an": ("ant", "ent"),
     "en": ("ent", "ant"),
     "ei": ("ait", "ais"),
@@ -181,82 +182,10 @@ dFinal2 = {
 
 # Préfixes
 
-aPfx = ("anti", "contre", "mé", "im", "in", "ir", "par", "pré", "re", "ré", "sans", "sous", "sur")
-
-
-# Keyboards
-
-dBépo = {
-    # on présume que le bépoète est moins susceptible de faire des erreurs de frappe que l’azertyste.
-    # ligne 2
-    "b": "éa",
-    "é": "bpu",
-    "p": "éoi",
-    "o": "pèe",
-    "è": "o",
-    "v": "dt",
-    "d": "vls",
-    "l": "djr",
-    "j": "lzn",
-    "z": "jmw",
-    # ligne 3
-    "a": "ubà",
-    "u": "aiéy",
-    "i": "uepx",
-    "e": "io",
-    "c": "t",
-    "t": "csvq",
-    "s": "trdg",
-    "r": "snlh",
-    "n": "rmjf",
-    "m": "nzç",
-    # ligne 4
-    "à": "yêa",
-    "y": "àxu",
-    "x": "ywi",
-    "w": "z",
-    "k": "c",
-    "q": "gt",
-    "g": "qhs",
-    "h": "gfr",
-    "f": "hçn",
-    "ç": "fm",
-}
-
-dAzerty = {
-    # ligne 1
-    "é": "az",
-    "è": "yu",
-    "ç": "àio",
-    "à": "op",
-    # ligne 2
-    "a": "zéqs",
-    "z": "aesqd",
-    "e": "zrdsf",
-    "r": "etfdg",
-    "t": "rygfh",
-    "y": "tuhgj",
-    "u": "yijhk",
-    "i": "uokjl",
-    "o": "iplkm",
-    "p": "oml",
-    # ligne 3
-    "q": "sawz",
-    "s": "qdzwxe",
-    "d": "sfexcr",
-    "f": "dgrcvt",
-    "g": "fhtvby",
-    "h": "gjybnu",
-    "j": "hkuni",
-    "k": "jlio",
-    "l": "kmop",
-    "m": "lùp",
-    "ù": "m",
-    # ligne 4
-    "w": "xqs",
-    "x": "wcsd",
-    "c": "xvdf",
-    "v": "cbfg",
-    "b": "vngh",
-    "n": "bhj",
-}
+aPfx1 = frozenset([
+    "anti", "archi", "contre", "hyper", "mé", "méta", "im", "in", "ir", "par", "proto",
+    "pseudo", "pré", "re", "ré", "sans", "sous", "supra", "sur", "ultra"
+])
+aPfx2 = frozenset([
+    "belgo", "franco", "génito", "gynéco", "médico", "russo"
+])
