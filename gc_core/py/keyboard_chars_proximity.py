@@ -9,8 +9,9 @@ def getKeyboardList ():
     return _dKeyboardMap.keys()
 
 
-# bépo, colemak and dvorak users are assumed to do less typing errors.
 _dKeyboardMap = {
+    # keyboards by alphabetical order
+    # bépo, colemak and dvorak users are assumed to do less typing errors.
     "azerty": {
         # fr
         # line 1
