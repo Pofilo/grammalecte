@@ -56,11 +56,11 @@ class IBDAWG:
         else:
             self.funcStemming = st.noStemming
         self.nTag = self.nArcVal - self.nChar - self.nAff
-        # <dChar> to get the value of an arc, <dVal> to get the char of an arc with its value
+        # <dChar> to get the value of an arc, <dArcVal> to get the char of an arc with its value
         self.dChar = {}
         for i in range(1, self.nChar):
             self.dChar[self.lArcVal[i]] = i
-        self.dVal = { v: k  for k, v in self.dChar.items() }
+        self.dArcVal = { v: k  for k, v in self.dChar.items() }
             
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
@@ -245,8 +245,8 @@ class IBDAWG:
     def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
         for nVal, jAddr in self._getArcs(iAddr):
-            if self.dVal.get(nVal, "") in cp.aUselessChar:
-                yield (self.dVal[nVal], jAddr)
+            if self.dArcVal.get(nVal, "") in cp.aUselessChar:
+                yield (self.dArcVal[nVal], jAddr)
         for c in cp.d1to1.get(cChar, [cChar]):
             if c in self.dChar:
                 jAddr = self._lookupArcNode(self.dChar[c], iAddr)
