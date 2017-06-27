@@ -30,7 +30,7 @@ def getConfig (sLang):
     try:
         xConfig.read("gc_lang/" + sLang + "/config.ini", encoding="utf-8")
     except:
-        print("Config file in project [" + sLang + "] not found")
+        print("# Error. Can’t read config file [" + sLang + "]")
         exit()
     return xConfig
 
