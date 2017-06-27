@@ -425,6 +425,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             xWindowPeer.setPointer(xPointer)
             for x in xWindowPeer.Windows:
                 x.setPointer(xPointer)
+            # ICU: & is $0 in replacement field
             # NOTE: A LOT OF REGEX COULD BE MERGED IF ICU ENGINE WAS NOT SO BUGGY
             # "([;?!…])(?=[:alnum:])" => "$1 " doesn’t work properly
             # "(?<=[:alnum:])([;?!…])" => " $1 " doesn’t work properly
@@ -518,17 +519,18 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                         n += self._replaceText(xElem, "(?<=[]…)»}])[?]$", " ?", True)
                         n += self._replaceText(xElem, "(?<=[]…)»}])!", " !", True)
                         n += self._replaceText(xElem, "[  ]+([:;?!])", " $1", True)
+                    # réparations
                     n -= self._replaceText(xElem, "([[(])[   ]([!?:;])", "$1$2", True)
                     n -= self._replaceText(xElem, "(?<=http)[   ]://", "://", True)
                     n -= self._replaceText(xElem, "(?<=https)[   ]://", "://", True)
                     n -= self._replaceText(xElem, "(?<=ftp)[   ]://", "://", True)
-                    n -= self._replaceText(xElem, "(?<=&)amp[   ];", "amp;", True)          # ICU: & is $0 in replacement field
-                    n -= self._replaceText(xElem, "(?<=&)nbsp[   ];", "nbsp;", True)        # ICU: & is $0 in replacement field
-                    n -= self._replaceText(xElem, "(?<=&)lt[   ];", "lt;", True)            # ICU: & is $0 in replacement field
-                    n -= self._replaceText(xElem, "(?<=&)gt[   ];", "gt;", True)            # ICU: & is $0 in replacement field
-                    n -= self._replaceText(xElem, "(?<=&)apos[   ];", "apos;", True)        # ICU: & is $0 in replacement field
-                    n -= self._replaceText(xElem, "(?<=&)quot[   ];", "quot;", True)        # ICU: & is $0 in replacement field
-                    n -= self._replaceText(xElem, "(?<=&)thinsp[   ];", "thinsp;", True)    # ICU: & is $0 in replacement field
+                    n -= self._replaceText(xElem, "(?<=&)amp[   ];", "amp;", True)          
+                    n -= self._replaceText(xElem, "(?<=&)nbsp[   ];", "nbsp;", True)
+                    n -= self._replaceText(xElem, "(?<=&)lt[   ];", "lt;", True)
+                    n -= self._replaceText(xElem, "(?<=&)gt[   ];", "gt;", True)
+                    n -= self._replaceText(xElem, "(?<=&)apos[   ];", "apos;", True)
+                    n -= self._replaceText(xElem, "(?<=&)quot[   ];", "quot;", True)
+                    n -= self._replaceText(xElem, "(?<=&)thinsp[   ];", "thinsp;", True)
                     self.nbsp1_res.Label = str(n)
                     self.pbar.ProgressValue += 1
                 if self.nbsp2.State:
@@ -571,7 +573,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                 self.nbsp.State = False
                 self._switchCheckBox(self.nbsp)
             self.pbar.ProgressValue = 15
-            # espaces manquants
+            # points médians
             if self.typo.State:
                 if self.typo6.State:
                     n = self._replaceText(xElem, "\\bN\\.([ms])\\b", "N·$1", True, True) # N·m et N·m-1, N·s
@@ -599,10 +601,11 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     n += self._replaceText(xElem, "\\b(Y|Z|E|P|T|G|M|k|h|da|d|c|m|µ|n|p|f|a|z|y)Ω\\b", "$1Ω", True, True)
                     self.typo6_res.Label = str(n)
                     self.pbar.ProgressValue += 1
+            # espaces manquants
             if self.space.State:
                 if self.space1.State:
                     n = self._replaceText(xElem, ";(?=[:alnum:])", "; ", True)
-                    n += self._replaceText(xElem, "\\?(?=[A-ZÉÈÊÂÀÎ])", "? ", True)
+                    n += self._replaceText(xElem, "\\?(?=[A-ZÉÈÊÂÀÎ])", "? ", True, True)
                     n += self._replaceText(xElem, "!(?=[:alnum:])", "! ", True)
                     n += self._replaceText(xElem, "…(?=[:alnum:])", "… ", True)
                     n += self._replaceText(xElem, "\\.(?=[A-ZÉÈÎ][:alpha:])", ". ", True, True)
@@ -610,7 +613,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     n += self._replaceText(xElem, ",(?=[:alpha:])", ", ", True)
                     n += self._replaceText(xElem, "([:alpha:]),([0-9])", "$1, $2", True)
                     n += self._replaceText(xElem, ":(?=[:alpha:])", ": ", True)
-                    # exceptions:
+                    # réparations
                     n -= self._replaceText(xElem, "(?<=DnT), w\\b", ",w", True, True)
                     n -= self._replaceText(xElem, "(?<=DnT), A\\b", ",A", True, True)
                     self.space1_res.Label = str(n)
