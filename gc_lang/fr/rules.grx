@@ -7189,21 +7189,35 @@ TEST: il ne {{là}} croit pas.
 # la / l’a
 __[i]/conf(conf_il_elle_on_la_vconj)__
     (?:il|elle|on) (?:nous |vous |)(l’a) +([bcdfghjklmnpqrstvwxz][\w-]+)  @@w,$
-    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez :
+    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
 __[i]/conf(conf_ne_la_vconj)__
     ne (?:nous |vous |)(l’a) +([bcdfghjklmnpqrstvwxz][\w-]+) @@w,$
-    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez :
+    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
 __[i]/conf(conf_ne_la_lui_leur)__
     ne (l’a) l(?:ui|eur)  @@3
-    <<- -1>> la                                                                                     # Confusion probable. Pour un pronom objet féminin, écrivez :
+    <<- -1>> la                                                                                     # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
 __[i]/conf(conf_me_se_se_la_vconj)__
     [mts]e (l’a) +([bcdfghjklmnpqrstvwxz][\w-]+)  @@3,$
-    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez :
+    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
 
 TEST: on {{l’a}} {{prit}} pour une idiote.
 TEST: il ne {{l’a}} {{connaît}} pas.
 TEST: elle ne {{l’a}} leur donne pas sans condition.
 TEST: elle se {{l’a}} {{réserve}} pour elle-même.
+
+__[i]/conf(conf_il_elle_on_l_a)__
+    (?:il|elle|on) (?:vous |nous |)(la) +({w_2}) @@w,$
+    <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+__[i]/conf(conf_ne_l_a)__
+    ne (?:vous |nous |)(la) +({w_2}) @@w,$
+    <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+__[i]/conf(conf_me_te_l_a)__
+    [mt]e (la) +({w_2})  @@w,$
+    <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+TEST: il {{la}} {{donnée}}.
+TEST: ne {{la}} {{donné}} que contraint et forcé…
+TEST: celle-là, tu {{la}} commandée comment ?
 
 
 # laissez-passer / laissez-faire

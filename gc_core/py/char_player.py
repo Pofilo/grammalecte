@@ -154,21 +154,21 @@ d2toX = {
 
 dFinal1 = {
     "a": ("as", "at", "ant", "ah"),
-    "c": ("ch",)
+    "c": ("ch",),
     "e": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait", "ent", "eh"),
     "é": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
     "è": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
     "ê": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
     "ë": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
-    "g": ("gh",)
+    "g": ("gh",),
     "i": ("is", "it", "ie", "in"),
     "n": ("nt", "nd", "ns", "nh"),
     "o": ("aut", "ot", "os"),
     "ô": ("aut", "ot", "os"),
     "ö": ("aut", "ot", "os"),
-    "p": ("ph",)
-    "s": ("sh",)
-    "t": ("th",)
+    "p": ("ph",),
+    "s": ("sh",),
+    "t": ("th",),
     "u": ("ut", "us", "uh"),
 }
 
