@@ -87,14 +87,14 @@ function getVtyp (sVerb) {
     return _lVtyp[_dVerb[sVerb][0]];
 }
 
-function getSimil (sWord, sMorph) {
+function getSimil (sWord, sMorph, sFilter=null) {
     if (!sMorph.includes(":V")) {
         return new Set();
     }
     let sInfi = sMorph.slice(1, sMorph.indexOf(" "));
     let tTags = _getTags(sInfi);
     let aSugg = new Set();
-    if (sMorph.includes(":Q")) {
+    if (sMorph.includes(":Q") || sMorph.includes(":Y")) {
         // we suggest conjugated forms
         if (sMorph.includes(":V1")) {
             aSugg.add(sInfi);
@@ -129,6 +129,9 @@ function getSimil (sWord, sMorph) {
         // if there is only one past participle (epi inv), unreliable.
         if (aSugg.size === 1) {
             aSugg.clear();
+        }
+        if (sMorph.includes(":V1")) {
+            aSugg.add(sInfi);
         }
     }
     return aSugg;

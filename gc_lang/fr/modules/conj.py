@@ -61,7 +61,7 @@ def getSimil (sWord, sMorph, sFilter=None):
     sInfi = sMorph[1:sMorph.find(" ")]
     tTags = _getTags(sInfi)
     aSugg = set()
-    if ":Q" in sMorph:
+    if ":Q" in sMorph or ":Y" in sMorph:
         # we suggest conjugated forms
         if ":V1" in sMorph:
             aSugg.add(sInfi)
@@ -95,6 +95,8 @@ def getSimil (sWord, sMorph, sFilter=None):
         # if there is only one past participle (epi inv), unreliable.
         if len(aSugg) == 1:
             aSugg.clear()
+        if ":V1" in sMorph:
+            aSugg.add(sInfi)
     return aSugg
 
 

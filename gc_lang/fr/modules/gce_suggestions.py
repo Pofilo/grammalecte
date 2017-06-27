@@ -378,7 +378,7 @@ def suggSimil (sWord, sPattern=None):
     # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = phonet.selectSimil(sWord, sPattern)
     for sMorph in _dAnalyses.get(sWord, []):
-        for e in conj.getSimil(sWord, sMorph):
+        for e in conj.getSimil(sWord, sMorph, sPattern):
             aSugg.add(e)
         #aSugg = aSugg.union(conj.getSimil(sWord, sMorph))
     if aSugg:

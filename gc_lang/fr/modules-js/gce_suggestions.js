@@ -491,7 +491,7 @@ function suggSimil (sWord, sPattern) {
     // return list of words phonetically similar to sWord and whom POS is matching sPattern
     let aSugg = phonet.selectSimil(sWord, sPattern);
     for (let sMorph of _dAnalyses._get(sWord, [])) {
-        for (let e of conj.getSimil(sWord, sMorph)) {
+        for (let e of conj.getSimil(sWord, sMorph, sPattern)) {
             aSugg.add(e); 
         }
     }
