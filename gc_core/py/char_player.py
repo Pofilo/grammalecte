@@ -153,23 +153,23 @@ d2toX = {
 # End of word
 
 dFinal1 = {
-    "a": ("as", "at", "ant"),
-
-    "e": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait", "ent"),
+    "a": ("as", "at", "ant", "ah"),
+    "c": ("ch",)
+    "e": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait", "ent", "eh"),
     "é": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
     "è": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
     "ê": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
     "ë": ("et", "er", "ets", "ée", "ez", "ai", "ais", "ait"),
-
+    "g": ("gh",)
     "i": ("is", "it", "ie", "in"),
-
-    "n": ("nt", "nd", "ns"),
-
+    "n": ("nt", "nd", "ns", "nh"),
     "o": ("aut", "ot", "os"),
     "ô": ("aut", "ot", "os"),
     "ö": ("aut", "ot", "os"),
-
-    "u": ("ut", "us"),
+    "p": ("ph",)
+    "s": ("sh",)
+    "t": ("th",)
+    "u": ("ut", "us", "uh"),
 }
 
 dFinal2 = {
