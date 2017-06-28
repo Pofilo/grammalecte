@@ -208,6 +208,8 @@ def main ():
                 for sWord in sText[1:].strip().split():
                     if sWord:
                         echo(" | ".join(oDict.suggest(sWord)))
+            elif sText.startswith(">"):
+                oDict.drawPath(sText[1:].strip())
             elif sText.startswith("/+ "):
                 gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
                 echo("done")

@@ -56,11 +56,11 @@ class IBDAWG:
         else:
             self.funcStemming = st.noStemming
         self.nTag = self.nArcVal - self.nChar - self.nAff
-        # <dChar> to get the value of an arc, <dArcVal> to get the char of an arc with its value
+        # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         self.dChar = {}
         for i in range(1, self.nChar):
             self.dChar[self.lArcVal[i]] = i
-        self.dArcVal = { v: k  for k, v in self.dChar.items() }
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
             
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
@@ -175,6 +175,15 @@ class IBDAWG:
                 return False
         return bool(int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask)
 
+    def getMorph (self, sWord):
+        "retrieves morphologies list, different casing allowed"
+        l = self.morph(sWord)
+        if sWord[0:1].isupper():
+            l.extend(self.morph(sWord.lower()))
+            if sWord.isupper() and len(sWord) > 1:
+                l.extend(self.morph(sWord.capitalize()))
+        return l
+
     def suggest (self, sWord):
         "returns a set of similar words"
         # first, we check for similar words
@@ -248,22 +257,31 @@ class IBDAWG:
     def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
         for nVal, jAddr in self._getArcs(iAddr):
-            if self.dArcVal.get(nVal, "") in cp.aUselessChar:
-                yield (self.dArcVal[nVal], jAddr)
+            if self.dCharVal.get(nVal, None) in cp.aUselessChar:
+                yield (self.dCharVal[nVal], jAddr)
         for c in cp.d1to1.get(cChar, [cChar]):
             if c in self.dChar:
                 jAddr = self._lookupArcNode(self.dChar[c], iAddr)
                 if jAddr:
                     yield (c, jAddr)
 
-    def getMorph (self, sWord):
-        "retrieves morphologies list, different casing allowed"
-        l = self.morph(sWord)
-        if sWord[0:1].isupper():
-            l.extend(self.morph(sWord.lower()))
-            if sWord.isupper() and len(sWord) > 1:
-                l.extend(self.morph(sWord.capitalize()))
-        return l
+    def drawPath (self, sWord, iAddr=0):
+        if not sWord:
+            return
+        iPos = -1
+        n = 0
+        print(sWord[0:1] + ": ", end="")
+        for nVal, jAddr in self._getArcs(iAddr):
+            if nVal in self.dCharVal:
+                print(self.dCharVal[nVal], end="")
+                if self.dCharVal[nVal] == sWord[0:1]:
+                    iNextNodeAddr = jAddr
+                    iPos = n
+                n += 1
+        if iPos >= 0:
+            print("\n   "+ " " * iPos + "|")
+            self.drawPath(sWord[1:], iNextNodeAddr)
+
 
     # def morph (self, sWord):
     #     is defined in __init__
