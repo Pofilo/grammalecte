@@ -7205,19 +7205,20 @@ TEST: il ne {{l’a}} {{connaît}} pas.
 TEST: elle ne {{l’a}} leur donne pas sans condition.
 TEST: elle se {{l’a}} {{réserve}} pour elle-même.
 
+
 __[i]/conf(conf_il_elle_on_l_a)__
-    (?:il|elle|on) (?:vous |nous |)(la) +({w_2}) @@w,$
+    (?:il|elle|on) (?:vous |nous |)(la)[ @]+({w_2}) @@w,$
     <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 __[i]/conf(conf_ne_l_a)__
-    ne (?:vous |nous |)(la) +({w_2}) @@w,$
+    ne (?:vous |nous |)(la)[ @]+({w_2}) @@w,$
     <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 __[i]/conf(conf_me_te_l_a)__
-    [mt]e (la) +({w_2})  @@w,$
+    [mt]e (la)[ @]+({w_2})  @@w,$
     <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 
 TEST: il {{la}} {{donnée}}.
 TEST: ne {{la}} {{donné}} que contraint et forcé…
-TEST: celle-là, tu {{la}} commandée comment ?
+TEST: celle-là, il me {{la}} {{commandée}} ?
 
 
 # laissez-passer / laissez-faire
