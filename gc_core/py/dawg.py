@@ -17,6 +17,7 @@ from . import str_transform as st
 from .progressbar import ProgressBar
 
 
+
 def readFile (spf):
     print(" < Read lexicon: " + spf)
     if os.path.isfile(spf):
@@ -105,6 +106,7 @@ class DAWG:
         
         # read lexicon
         for sFlex, sStem, sTag in getElemsFromFile(spfSrc):
+            addWordToCharDict(sFlex)
             # chars
             for c in sFlex:
                 if c not in dChar:
@@ -181,6 +183,7 @@ class DAWG:
         self.countArcs()
         self.sortNodes()
         self.sortNodeArcs(dValOccur)
+        #self.sortNodeArcs2 (self.root, "")
         self.displayInfo()
 
     # BUILD DAWG
@@ -247,6 +250,14 @@ class DAWG:
         for oNode in self.minimizedNodes:
             oNode.sortArcs(dValOccur)
     
+    def sortNodeArcs2 (self, oNode, cPrevious=""):
+        # recursive function
+        dCharOccur = getCharOrderForPreviousChar(cPrevious)
+        if dCharOccur:
+            oNode.sortArcs2(dCharOccur, self.lArcVal)
+        for nArcVal, oNextNode in oNode.arcs.items():
+            self.sortNodeArcs2(oNextNode, self.lArcVal[nArcVal])
+
     def sortNodes (self):
         print(" > Sort nodes")
         for oNode in self.root.arcs.values():
@@ -529,7 +540,10 @@ class DawgNode:
         return self.__str__() == other.__str__()
 
     def sortArcs (self, dValOccur):
-        self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur[t[0]], reverse=True))
+        self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur.get(t[0], 0), reverse=True))
+
+    def sortArcs2 (self, dValOccur, lArcVal):
+        self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur.get(lArcVal[t[0]], 0), reverse=True))
 
     # VERSION 1 =====================================================================================================
     def convToBytes1 (self, nBytesArc, nBytesNodeAddress):
@@ -732,3 +746,30 @@ class DawgNode:
             else:
                 s += "  {:<20}  {:0>16}  i{:_>10}   #{:_>10}\n".format(lVal[arc], bin(val)[2:], self.arcs[arc].i, self.arcs[arc].addr)
         return s
+
+
+
+# Another attempt to sort node arcs
+
+_dCharOrder = {
+    # key: previous char, value: dictionary of chars {c: nValue}
+    "": {}
+}
+
+
+def addWordToCharDict (sWord):
+    cPrevious = ""
+    for cChar in sWord:
+        if cPrevious not in _dCharOrder:
+            _dCharOrder[cPrevious] = {}
+        _dCharOrder[cPrevious][cChar] = _dCharOrder[cPrevious].get(cChar, 0) + 1
+        cPrevious = cChar
+
+
+def getCharOrderForPreviousChar (cChar):
+    return _dCharOrder.get(cChar, None)
+
+
+def displayCharOrder ():
+    for key, value in _dCharOrder.items():
+        print("[" + key + "]: ", ", ".join([ c+":"+str(n)  for c, n  in  sorted(value.items(), key=lambda t: t[1], reverse=True) ]))
