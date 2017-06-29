@@ -266,11 +266,10 @@ class IBDAWG:
                     yield (c, jAddr)
 
     def drawPath (self, sWord, iAddr=0):
-        if not sWord:
-            return
+        cChar = sWord[0:1]  if sWord  else " "
         iPos = -1
         n = 0
-        print(sWord[0:1] + ": ", end="")
+        print(cChar + ": ", end="")
         for nVal, jAddr in self._getArcs(iAddr):
             if nVal in self.dCharVal:
                 print(self.dCharVal[nVal], end="")
@@ -278,6 +277,8 @@ class IBDAWG:
                     iNextNodeAddr = jAddr
                     iPos = n
                 n += 1
+        if not sWord:
+            return
         if iPos >= 0:
             print("\n   "+ " " * iPos + "|")
             self.drawPath(sWord[1:], iNextNodeAddr)
