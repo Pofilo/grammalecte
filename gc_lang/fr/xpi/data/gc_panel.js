@@ -7,6 +7,16 @@ let bExpanded = true;
 	Events
 */
 
+if (Date.now() < Date.UTC(2017, 6, 12)) {
+	try {
+		document.getElementById('special_message').style.display = "block";
+		document.getElementById('errorlist').style.padding = "20px 20px 30px 20px";
+	} catch (e) {
+		console.log(e.message + e.lineNumber);
+	}
+}
+
+
 document.getElementById('close').addEventListener("click", function (event) {
 	bExpanded = true; // size is reset in ui.js
 	self.port.emit('closePanel');
