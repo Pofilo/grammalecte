@@ -283,11 +283,28 @@ class IBDAWG:
             print("\n   "+ " " * iPos + "|")
             self.drawPath(sWord[1:], iNextNodeAddr)
 
+    def select (self, sFilter=""):
+        "generator: returns all entries which morphology fits <sFilter>"
+        print("Filter: " + sFilter)
+        yield from self._select1(sFilter, 0, "")
+
 
     # def morph (self, sWord):
     #     is defined in __init__
 
     # VERSION 1
+    def _select1 (self, sFilter, iAddr, sWord):
+        # recursive generator
+        for nVal, jAddr in self._getArcs1(iAddr):
+            if nVal < self.nChar:
+                # simple character
+                yield from self._select1(sFilter, jAddr, sWord + self.lArcVal[nVal])
+            else:
+                sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
+                for nMorphVal, _ in self._getArcs1(jAddr):
+                    if not sFilter or sFilter in self.lArcVal[nMorphVal]:
+                        yield sEntry + "\t" + self.lArcVal[nMorphVal]
+
     def _morph1 (self, sWord):
         "returns morphologies of sWord"
         iAddr = 0

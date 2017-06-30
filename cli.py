@@ -21,6 +21,8 @@ _HELP = """
     /help                       /h      show this text
     ?word1 [word2] ...                  words analysis
     !word                               suggestion
+    >word                               draw path of word in the word graph
+    =filter                             show all entries whose morphology fits to filter
     /lopt                       /lo     list options
     /+ option1 [option2] ...            activate grammar checking options
     /- option1 [option2] ...            deactivate grammar checking options
@@ -210,6 +212,9 @@ def main ():
                         echo(" | ".join(oDict.suggest(sWord)))
             elif sText.startswith(">"):
                 oDict.drawPath(sText[1:].strip())
+            elif sText.startswith("="):
+                for sRes in oDict.select(sText[1:].strip()):
+                    echo(sRes)
             elif sText.startswith("/+ "):
                 gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
                 echo("done")
