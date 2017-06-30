@@ -7207,13 +7207,13 @@ TEST: elle se {{l’a}} {{réserve}} pour elle-même.
 
 
 __[i]/conf(conf_il_elle_on_l_a)__
-    (?:il|elle|on) (?:vous |nous |)(la)[ @]+({w_2}) @@w,$
+    (?:il|elle|on) (?:vous |nous |)(la)[ @]+({w_2}) @@*,$
     <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 __[i]/conf(conf_ne_l_a)__
-    ne (?:vous |nous |)(la)[ @]+({w_2}) @@w,$
+    ne (?:vous |nous |)(la)[ @]+({w_2}) @@*,$
     <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 __[i]/conf(conf_me_te_l_a)__
-    [mt]e (la)[ @]+({w_2})  @@w,$
+    [mt]e (la)[ @]+({w_2})  @@*,$
     <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui ") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 
 TEST: il {{la}} {{donnée}}.
@@ -10848,7 +10848,7 @@ __[i]/inte(inte_union_il_on)__
     <<- not after("^ +(?:en|y|ne|>)") and morphex(\1, ":V.*:3s", ":[GNW]") and not before(r"(?i)\b(?:ce|il|elle|on) +>? *$")
     ->> =\0.replace(" ", "-")                                                                       # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_elle)__
-    (?<!c’)({w_2}[td]) elle  @@0
+    (?<![cC]’)({w_2}[td]) elle  @@0
     <<- not after("^ +(?:en|y|ne|aussi|>)") and morphex(\1, ":V.*:3s", ":[GNW]") and not before(r"(?i)\b(?:ce|il|elle|on) +>? *$")
     ->> \1-elle                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_nous)__
@@ -10862,7 +10862,7 @@ __[i]/inte(inte_union_vous)__
     and not morph(word(-1), ":Os", False, False) and not morph(word(1), ":Y", False, False)
     ->> \1-vous                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_ils_elles)__
-    ({w_1}nt) (?:ils|elles)  @@0
+    (?<![cC]’)({w_1}nt) (?:ils|elles)  @@0
     <<- not after("^ +(?:en|y|ne|aussi|>)") and morphex(\1, ":V.*:3p", ":[GNW]") and not before(r"(?i)\b(?:ce|ils|elles) +>? *$")
     ->> =\0.replace(" ", "-")                                                                       # Forme interrogative ? Mettez un trait d’union.
 
@@ -10876,7 +10876,7 @@ TEST: {{retrouverons nous}} enfin la tranquilité ?
 TEST: Mais {{soutiendrez vous}} cette proposition ?
 TEST: {{Viendront ils}} demain ?
 TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que personne ne parlait de celui qui avait fait ça.
-TEST: C’était elle qui avait pris le contrôle
+TEST: C’était elle qui avait pris le contrôle.
 
 
 __[i]/inte(inte_je)__
@@ -10981,10 +10981,10 @@ TEST: il {{avait}} parti.
 # conditionnel / futur
 
 __[i]/vmode(vmode_j_aimerais_vinfi)__
-    j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai) +({w_1})  @@w,$
+    j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai|désirerai) +({w_1})  @@w,$
     <<- morphex(\2, ":[YX]|>y ", "R") -1>> \1s                                  # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
 __[i>/vmode(vmode_j_aimerais_pronom)__
-    j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai) +(?:que? |>)  @@w
+    j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai|désirerai) +(?:que? |>)  @@w
     <<- -1>> \1s                                                                # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
 
 TEST: J’{{aimerai}} savoir ce dont il retourne.
@@ -10995,10 +10995,10 @@ TEST: J’aimerai la danse et la musique, puisque vous l’exigez.
 
 
 __[i>/vmode(vmode_j_aurais_aimé_que_avoir_être1)__
-    j’(aurai) +(?:aimé|souhaité|préféré|voulu) +(?:que? |ne |> )  @@2
+    j’(aurai) +(?:aimé|souhaité|préféré|voulu|apprécié|désiré) +(?:que? |ne |> )  @@2
     <<- -1>> aurais|eusse                           # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
 __[i]/vmode(vmode_j_aurais_aimé_que_avoir_être2)__
-    j’(aurai) +(?:aimé|souhaité|préféré|voulu) +(?:[nmtsl]’|)({infi})  @@2,$
+    j’(aurai) +(?:aimé|souhaité|préféré|voulu|apprécié|désiré) +(?:[nmtsl]’|)({infi})  @@2,$
     <<- morph(\2, ":Y", False)
     -1>> aurais|eusse                               # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
 
