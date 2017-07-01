@@ -7142,6 +7142,15 @@ __[i]/conf(conf_gent)__
 TEST: la {{gente}} masculine est grossière et l’a toujours été.
 
 
+# goutte / goûte
+__[i]/conf(conf_goutte)__
+    (go[ûu]tes?) d(?:e +(?:lait|liquide|sang|sueur|sperme|salive|javel|bière|miel|mercure|peinture|pluie|rosée|vin|vinaigre|whisky|rhum|folie)|’(?:alcool|acide|amour|eau|huile|urine)) @@0
+    <<- -1>> \1.replace("û", "u").replace("t", "tt")        # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.
+
+TEST: Une {{goûte}} de pluie
+TEST: tu sais, les {{goutes}} de pluie, ça mouille.
+
+
 # gré / grès
 __[i]/conf(conf_à_leur_gré)__
     à (?:[mts]on|[nv]otre|leur) (grès) @@$ <<- -1>> gré                                   # Confusion probable. Le grès est une roche détritique.
