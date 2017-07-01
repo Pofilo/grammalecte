@@ -3418,9 +3418,13 @@ TEST: ils sont {{d’avantages}} perdus que les autres.
 __[i]/conf(conf_différent)__
     différends?
     <<- morph(word(-1), ":W", False, False) ->> =\0.replace("end", "ent")           # Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez :
-__[i]/conf(conf_différend)__
-    (?:[mts]on|[vn]otre|leur) +(différent) @@$
+__[i]/conf(conf_différend1)__
+    (?:mon|[vn]otre|leur) +(différent) @@$
     <<- morphex(word(1), ":[GVX]", ":[NAQ]", True)
+    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+__[i]/conf(conf_différend2)__
+    [ts]on +(différent) @@$
+    <<- morphex(word(1), ":[GVX]", ":[NAQ]", True) and not morph(word(-1), ":D", False, False)
     -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 __[i]/conf(conf_un_différend)__
     un (différent)  @@3
@@ -3445,7 +3449,9 @@ TEST: Notre {{différent}} avec eux perdure.
 TEST: Un {{différent}} peut toujours se résoudre.
 TEST: J’en ai marre de leurs {{différents}}.
 TEST: Il y a des {{différents}} que nul ne saurait résoudre.
+TEST: ce qui l’occupe, c’est son {{différent}} avec eux.
 TEST: Ils sont pas {{différends}} de nous.
+TEST: Cette fois, il parla avec un ton différent.
 TEST: J’en veux un différent.
 TEST: dans ses différents ouvrages
 TEST: dans ses différents postes gouvernementaux
