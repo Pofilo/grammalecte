@@ -189,50 +189,50 @@ class IBDAWG:
         "returns a set of similar words"
         # first, we check for similar words
         #return set(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
-        lSugg = self._suggest(sWord)
-        if not lSugg:
-            lSugg.extend(self._suggest(sWord[1:]))
-            lSugg.extend(self._suggest(sWord[:-1]))
-            lSugg.extend(self._suggest(sWord[1:-1]))
-            if not lSugg:
-                lSugg.extend(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
-        return set(lSugg)
+        aSugg = self._suggest(sWord)
+        if not aSugg:
+            aSugg.update(self._suggest(sWord[1:]))
+            aSugg.update(self._suggest(sWord[:-1]))
+            aSugg.update(self._suggest(sWord[1:-1]))
+            if not aSugg:
+                aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
+        return aSugg
 
     def _suggest (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         # RECURSIVE FUNCTION
+        aSugg = set()
         if not sWord:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                show(nDeep, "___" + sNewWord + "___")
-                return [sNewWord]
-            return []
+                #show(nDeep, "___" + sNewWord + "___")
+                aSugg.add(sNewWord)
+            return aSugg
         #show(nDeep, "<" + sWord + ">  ===>  " + sNewWord)
-        lSugg = []
         cCurrent = sWord[0:1]
         for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
             #show(nDeep, cChar)
-            lSugg.extend(self._suggest(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
+            aSugg.update(self._suggest(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
         if not bAvoidLoop: # avoid infinite loop
             #show(nDeep, ":no loop:")
             if cCurrent == sWord[1:2]:
                 # same char, we remove 1 char without adding 1 to <sNewWord>
-                lSugg.extend(self._suggest(sWord[1:], nDeep+1, iAddr, sNewWord))
+                aSugg.update(self._suggest(sWord[1:], nDeep+1, iAddr, sNewWord))
             for sRepl in cp.d1toX.get(cCurrent, ()):
                 #show(nDeep, sRepl)
-                lSugg.extend(self._suggest(sRepl + sWord[1:], nDeep+1, iAddr, sNewWord, True))
+                aSugg.update(self._suggest(sRepl + sWord[1:], nDeep+1, iAddr, sNewWord, True))
             for sRepl in cp.d2toX.get(sWord[0:2], ()):
                 #show(nDeep, sRepl)
-                lSugg.extend(self._suggest(sRepl + sWord[2:], nDeep+1, iAddr, sNewWord, True))
+                aSugg.update(self._suggest(sRepl + sWord[2:], nDeep+1, iAddr, sNewWord, True))
             if len(sWord) == 2:
                 for sRepl in cp.dFinal2.get(sWord, ()):
                     #show(nDeep, sRepl)
-                    lSugg.extend(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
+                    aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
             elif len(sWord) == 1:
                 #show(nDeep, ":end of word:")
                 # end of word
                 for sRepl in cp.dFinal1.get(sWord, ()):
                     #show(nDeep, sRepl)
-                    lSugg.extend(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
-        return lSugg
+                    aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
+        return aSugg
 
     def _getSimilarArcs (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
@@ -243,17 +243,17 @@ class IBDAWG:
                     yield (c, jAddr)
 
     def _suggestWithCrushedUselessChars (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+        aSugg = set()
         if not sWord:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
                 show(nDeep, "!!! " + sNewWord + " !!!")
-                return [sNewWord]
-            return []
-        lSugg = []
+                aSugg.add(sNewWord)
+            return aSugg
         cCurrent = sWord[0:1]
         for cChar, jAddr in self._getSimilarArcsAndCrushedChars(cCurrent, iAddr):
             show(nDeep, cChar)
-            lSugg.extend(self._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
-        return lSugg
+            aSugg.update(self._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
+        return aSugg
 
     def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
