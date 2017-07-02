@@ -4949,6 +4949,8 @@ __[i](p_chaque_année_semaine_journée_décennie)__
     (chaque (?:année|semaine|journée|décennie)) +({w_1}) @@0,$ <<- not morph(\2, ":(?:A.*:[fe]:[si]|Oo|[123][sp])", False) ~1>> *
 __[i](p_chaque_an_jour_mois)__
     (chaque (?:an|jour|mois)) +({w_1}) @@0,$ <<- not morph(\2, ":(?:A.*:[me]:[si]|Oo|[123][sp])", False) ~1>> *
+__[i](p_d_évidence)__
+    (d’évidence) +({w_1})  @@0,$ <<- not morph(\2, ":A.*:[fe]:[si]", False) ~1>> *
 __[i](p_dans_l_ensemble)__
     (dans l’ensemble) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
 __[i](p_de_ce_seul_fait)__
@@ -5023,6 +5025,7 @@ TEST: les populistes d’Europe centrale et de l’Est ont d’ores et déjà te
 TEST: Deirdre, elle aussi légèrement ostracisée, m’interrogea.
 TEST: des échanges pair à pair
 TEST: Les 27 ont préféré tout au long de la journée vanter un nouvel espoir dans leur avenir commun.
+TEST: lorsqu’une campagne de malwares déployée dans un pays cible ne peut d’évidence y rester confinée.
 
 
 !!!
@@ -7145,7 +7148,7 @@ TEST: la {{gente}} masculine est grossière et l’a toujours été.
 # goutte / goûte
 __[i]/conf(conf_goutte)__
     (go[ûu]tes?) d(?:e +(?:lait|liquide|sang|sueur|sperme|salive|javel|bière|miel|mercure|peinture|pluie|rosée|vin|vinaigre|whisky|rhum|folie)|’(?:alcool|acide|amour|eau|huile|urine)) @@0
-    <<- -1>> \1.replace("û", "u").replace("t", "tt")        # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.
+    <<- -1>> =\1.replace("û", "u").replace("t", "tt")           # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.
 
 TEST: Une {{goûte}} de pluie
 TEST: tu sais, les {{goutes}} de pluie, ça mouille.
