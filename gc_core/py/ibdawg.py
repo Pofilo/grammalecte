@@ -204,6 +204,8 @@ class IBDAWG:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
                 #show(nDeep, "___" + sNewWord + "___")
                 aSugg.add(sNewWord)
+            for sTail in self._getTails(iAddr):
+                aSugg.add(sNewWord+sTail)
             return aSugg
         #show(nDeep, "<" + sWord + ">  ===>  " + sNewWord)
         cCurrent = sWord[0:1]
@@ -240,6 +242,17 @@ class IBDAWG:
                 jAddr = self._lookupArcNode(self.dChar[c], iAddr)
                 if jAddr:
                     yield (c, jAddr)
+
+    def _getTails (self, iAddr, sTail="", n=2):
+        "return a list of suffixes ending at a distance of <n> from <iAddr>"
+        aTails = set()
+        for nVal, jAddr in self._getArcs(iAddr):
+            if nVal < self.nChar:
+                if int.from_bytes(self.byDic[jAddr:jAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                    aTails.add(sTail + self.dCharVal[nVal])
+                if n:
+                    aTails.update(self._getTails(jAddr, sTail+self.dCharVal[nVal], n-1))
+        return aTails
 
     def _suggestWithCrushedUselessChars (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         aSugg = set()
