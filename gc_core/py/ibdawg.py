@@ -1,5 +1,4 @@
 #!python3
-# -*- coding: UTF-8 -*-
 
 import os
 import traceback
@@ -188,7 +187,7 @@ class IBDAWG:
     def suggest (self, sWord):
         "returns a set of similar words"
         # first, we check for similar words
-        #return set(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
+        #return self._suggestWithCrushedUselessChars(cp.clearWord(sWord))
         aSugg = self._suggest(sWord)
         if not aSugg:
             aSugg.update(self._suggest(sWord[1:]))
@@ -199,7 +198,7 @@ class IBDAWG:
         return aSugg
 
     def _suggest (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
-        # RECURSIVE FUNCTION
+        # recursive function
         aSugg = set()
         if not sWord:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
