@@ -191,13 +191,12 @@ class IBDAWG:
         aSugg = self._suggest(sWord)
         if not aSugg:
             aSugg.update(self._suggest(sWord[1:]))
-            aSugg.update(self._suggest(sWord[:-1]))
-            aSugg.update(self._suggest(sWord[1:-1]))
             if not aSugg:
                 aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
         return aSugg
 
     def _suggest (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+        "returns a set of suggestions for <sWord>"
         # recursive function
         aSugg = set()
         if not sWord:
@@ -230,6 +229,7 @@ class IBDAWG:
             elif len(sWord) == 1:
                 #show(nDeep, ":end of word:")
                 # end of word
+                aSugg.update(self._suggest("", nDeep+1, iAddr, sNewWord, True))
                 for sRepl in cp.dFinal1.get(sWord, ()):
                     #show(nDeep, sRepl)
                     aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
@@ -250,7 +250,7 @@ class IBDAWG:
             if nVal < self.nChar:
                 if int.from_bytes(self.byDic[jAddr:jAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
                     aTails.add(sTail + self.dCharVal[nVal])
-                if n:
+                if n and not aTails:
                     aTails.update(self._getTails(jAddr, sTail+self.dCharVal[nVal], n-1))
         return aTails
 
@@ -272,11 +272,7 @@ class IBDAWG:
         for nVal, jAddr in self._getArcs(iAddr):
             if self.dCharVal.get(nVal, None) in cp.aUselessChar:
                 yield (self.dCharVal[nVal], jAddr)
-        for c in cp.d1to1.get(cChar, [cChar]):
-            if c in self.dChar:
-                jAddr = self._lookupArcNode(self.dChar[c], iAddr)
-                if jAddr:
-                    yield (c, jAddr)
+        yield from self._getSimilarArcs(cChar, iAddr)
 
     def drawPath (self, sWord, iAddr=0):
         cChar = sWord[0:1]  if sWord  else " "

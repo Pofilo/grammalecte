@@ -79,7 +79,7 @@ OPT/conf:           True        True        True        True        True        
 OPT/sgpl:           True        True        True        True        True        True
 OPT/gn:             True        True        True        True        True        True
 OPT/infi:           True        True        True        True        True        True
-OPT/conj:           True        True        False       True        True        True
+OPT/conj:           True        True        True        True        True        True
 OPT/ppas:           True        True        True        True        True        True
 OPT/imp:            True        True        True        True        True        True
 OPT/inte:           True        True        True        True        True        True
@@ -565,11 +565,20 @@ TEST: ces militant·e·s {{acharné}}.
 
 __[i](typo_écriture_épicène_singulier)__
     ({w_2}[éuitsrn])(?:[-·–—./]e|[(]e[)])  @@0
-    <<- option("typo") and not \0.endswith("·e") ->> \1·e                                           # Écriture épicène. Utilisez les points médians. (Note : écriture journalistique brouillon.)
+    <<- option("typo") and not \0.endswith("·e") ->> \1·e                                           # Écriture épicène. Utilisez un point médian. (Note : écriture journalistique brouillon.)
     <<- ~>> \1-e
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
+
+
+#__[i](typo_écriture_nombre_invariable)__
+#    ({w_2})(?:[-·–—./]s|[(]s[)])  @@0
+#    <<- option("typo") and not \0.endswith("·s") ->> \1·s                                           # Utilisez un point médian. (Note : écriture journalistique brouillon.)
+#    <<- ~>> \1-s    
+#
+#TEST: le ou les partis {{appelé(s)}}
+#TEST: Appelé·s, levez-vous.
 
 
 # Majuscules après un point
@@ -584,7 +593,7 @@ TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
 __[s]/maj(majuscule_en_début_phrase)__
     ^ *([a-zéèâàô][\w-]+)  @@$
-    <<- after("\w\w[.] +\w+") -1>> =\1.capitalize()                                                     # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+    <<- after("\w\w[.] +\w+") -1>> =\1.capitalize()                                                 # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 
@@ -10688,6 +10697,8 @@ TEST: les chattes {{manges}}
 TEST: les chattes {{danse}}
 TEST: certains hommes {{marchandes}} sans cesse
 TEST: certaines femmes {{danse}} beaucoup
+TEST: Sauf que l’un comme l’autre avaient dû y renoncer.
+TEST: L’un comme l’autre devaient y renoncer.
 
 
 __[i]/conj(conj_des_nom1)__
