@@ -2,9 +2,33 @@
 # useful for suggestion mechanism
 
 
+# distance between words
+def distanceBetweenWords (s1, s2):
+    "distance of Damerau-Levenshtein between <s1> and <s2>"
+    # https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
+    d = {}
+    nLen1 = len(s1)
+    nLen2 = len(s2)
+    for i in range(-1, nLen1+1):
+        d[i, -1] = i + 1
+    for j in range(-1, nLen2+1):
+        d[-1, j] = j + 1
+    for i in range(nLen1):
+        for j in range(nLen2):
+            nCost = 0  if s1[i] == s2[j]  else 1
+            d[i, j] = min(
+                d[i-1, j]   + 1,        # Deletion
+                d[i,   j-1] + 1,        # Insertion
+                d[i-1, j-1] + nCost,    # Substitution
+            )
+            if i and j and s1[i] == s2[j-1] and s1[i-1] == s2[j]:
+                d[i, j] = min(d[i, j], d[i-2, j-2] + nCost)     # Transposition
+    return d[nLen1-1, nLen2-1]
+
+
 # Method: Remove Useless Chars
 
-_dUselessChar = {
+_dVovels = {
     'a': '',  'e': '',  'i': '',  'o': '',  'u': '',  'y': '',
     'à': '',  'é': '',  'î': '',  'ô': '',  'û': '',  'ÿ': '',
     'â': '',  'è': '',  'ï': '',  'ö': '',  'ù': '',  'ŷ': '',
@@ -14,13 +38,15 @@ _dUselessChar = {
     'h': '',  'œ': '',  'æ': ''
  }
 
-_CHARMAP = str.maketrans(_dUselessChar)
+_xTransVovels = str.maketrans(_dVovels)
 
-aUselessChar = frozenset(_dUselessChar.keys())
+
+aVovels = frozenset(_dVovels.keys())
+
 
 def clearWord (sWord):
     "remove vovels and h"
-    return sWord.translate(_CHARMAP)
+    return sWord[0:1].replace("h", "") + sWord[1:].translate(_xTransVovels)
 
 
 # Similar chars

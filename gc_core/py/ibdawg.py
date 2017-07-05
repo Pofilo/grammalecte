@@ -184,8 +184,8 @@ class IBDAWG:
                 l.extend(self.morph(sWord.capitalize()))
         return l
 
-    def suggest (self, sWord):
-        "returns a set of similar words"
+    def suggest (self, sWord, nMaxSugg=10):
+        "returns a set of suggestions for <sWord>"
         # first, we check for similar words
         #return self._suggestWithCrushedUselessChars(cp.clearWord(sWord))
         aSugg = self._suggest(sWord)
@@ -193,44 +193,44 @@ class IBDAWG:
             aSugg.update(self._suggest(sWord[1:]))
             if not aSugg:
                 aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
-        return aSugg
+        return sorted(aSugg, key=lambda sSugg: cp.distanceBetweenWords(sWord, sSugg))
 
-    def _suggest (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
-        "returns a set of suggestions for <sWord>"
+    def _suggest (self, sRemain, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+        "returns a set of suggestions"
         # recursive function
         aSugg = set()
-        if not sWord:
+        if not sRemain:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
                 #show(nDeep, "___" + sNewWord + "___")
                 aSugg.add(sNewWord)
             for sTail in self._getTails(iAddr):
                 aSugg.add(sNewWord+sTail)
             return aSugg
-        #show(nDeep, "<" + sWord + ">  ===>  " + sNewWord)
-        cCurrent = sWord[0:1]
+        #show(nDeep, "<" + sRemain + ">  ===>  " + sNewWord)
+        cCurrent = sRemain[0:1]
         for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
             #show(nDeep, cChar)
-            aSugg.update(self._suggest(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
+            aSugg.update(self._suggest(sRemain[1:], nDeep+1, jAddr, sNewWord+cChar))
         if not bAvoidLoop: # avoid infinite loop
             #show(nDeep, ":no loop:")
-            if cCurrent == sWord[1:2]:
+            if cCurrent == sRemain[1:2]:
                 # same char, we remove 1 char without adding 1 to <sNewWord>
-                aSugg.update(self._suggest(sWord[1:], nDeep+1, iAddr, sNewWord))
+                aSugg.update(self._suggest(sRemain[1:], nDeep+1, iAddr, sNewWord))
             for sRepl in cp.d1toX.get(cCurrent, ()):
                 #show(nDeep, sRepl)
-                aSugg.update(self._suggest(sRepl + sWord[1:], nDeep+1, iAddr, sNewWord, True))
-            for sRepl in cp.d2toX.get(sWord[0:2], ()):
+                aSugg.update(self._suggest(sRepl + sRemain[1:], nDeep+1, iAddr, sNewWord, True))
+            for sRepl in cp.d2toX.get(sRemain[0:2], ()):
                 #show(nDeep, sRepl)
-                aSugg.update(self._suggest(sRepl + sWord[2:], nDeep+1, iAddr, sNewWord, True))
-            if len(sWord) == 2:
-                for sRepl in cp.dFinal2.get(sWord, ()):
+                aSugg.update(self._suggest(sRepl + sRemain[2:], nDeep+1, iAddr, sNewWord, True))
+            if len(sRemain) == 2:
+                for sRepl in cp.dFinal2.get(sRemain, ()):
                     #show(nDeep, sRepl)
                     aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
-            elif len(sWord) == 1:
+            elif len(sRemain) == 1:
                 #show(nDeep, ":end of word:")
                 # end of word
-                aSugg.update(self._suggest("", nDeep+1, iAddr, sNewWord, True))
-                for sRepl in cp.dFinal1.get(sWord, ()):
+                aSugg.update(self._suggest("", nDeep+1, iAddr, sNewWord, True)) # remove last char and go on
+                for sRepl in cp.dFinal1.get(sRemain, ()):
                     #show(nDeep, sRepl)
                     aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
         return aSugg
@@ -270,7 +270,7 @@ class IBDAWG:
     def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
         for nVal, jAddr in self._getArcs(iAddr):
-            if self.dCharVal.get(nVal, None) in cp.aUselessChar:
+            if self.dCharVal.get(nVal, None) in cp.aVovels:
                 yield (self.dCharVal[nVal], jAddr)
         yield from self._getSimilarArcs(cChar, iAddr)
 
