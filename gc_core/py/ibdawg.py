@@ -216,6 +216,9 @@ class IBDAWG:
             if cCurrent == sRemain[1:2]:
                 # same char, we remove 1 char without adding 1 to <sNewWord>
                 aSugg.update(self._suggest(sRemain[1:], nDeep+1, iAddr, sNewWord))
+            else:
+                # switching chars
+                aSugg.update(self._suggest(sRemain[1:2]+sRemain[0:1]+sRemain[2:], nDeep+1, iAddr, sNewWord, True))
             for sRepl in cp.d1toX.get(cCurrent, ()):
                 #show(nDeep, sRepl)
                 aSugg.update(self._suggest(sRepl + sRemain[1:], nDeep+1, iAddr, sNewWord, True))
