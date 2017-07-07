@@ -2,7 +2,7 @@
 # Wrapper for the IBDAWG class.
 # Useful to check several dictionaries at once.
 
-import ibdawg
+from . import ibdawg
 
 
 dDictionaries = {
