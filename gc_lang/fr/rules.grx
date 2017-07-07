@@ -9347,13 +9347,14 @@ TEST: Ils avaient barre sur lui.
 __[i]/ppas(ppas_det_nom_avoir)__
     (l(?:’|es? |a |eurs )|ce(?:s|tte|t|rtaine?s|) |des |quelques |[mts](?:es|on|a) |[nv]o(?:s|tre) ) *({w_2}) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,w,$
     <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \4) and morph(word(-1), ">puisque? ", False, True)
-    and morph(\3, ":V0a", False) and not \4.isupper() and morphex(\4, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+    and not morph(\2, ":G", False) and morph(\3, ":V0a", False) and not \4.isupper() and morphex(\4, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
     and not (\3 == "avions" and morph(\4, ":3[sp]", False))
     -4>> =suggMasSing(@)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Les femmes lui avait {{conseillées}} de se taire.
 TEST: le mur avait {{était}} détruit
+TEST: Certains les ont d’abord jugés trop lents.
 
 
 __[i]/ppas(ppas_les_avoir)__
