@@ -11069,16 +11069,17 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 
 # verbe que + subjonctif
 __[i]/vmode(vmode_qqch_que_subjonctif1)__
-    (afin|pour|quoi|(?:perm|fa|v[oe]|ordonn|exig|désir|dout|suff|préf[éè]r)\w+) +que? +({w_2}) +>? *({w_2})  @@0,w,$
-    <<- morph(\1, ">(?:afin|pour|quoi|permettre|falloir|vouloir|ordonner|exiger|désirer|douter|préférer|suffire) ", False)
+    (afin|avant|pour|quoi|(?:perm|fa|v[oe]|ordonn|exig|désir|dout|suff|préf[éè]r)\w+) +que? +({w_2}) +>? *({w_2})  @@0,w,$
+    <<- morph(\1, ">(?:afin|avant|pour|quoi|permettre|falloir|vouloir|ordonner|exiger|désirer|douter|préférer|suffire) ", False)
     and morph(\2, ":(?:Os|M)", False) and morphex(\3, ":I", ":[GYS]")
     and not (morph(\1, ">douter ", False) and morph(\3, ":(?:If|K)", False))
-    -3>> =suggVerbMode(@, ":S", \2)                                                 # Ce verbe devrait être au subjonctif.
+    -3>> =suggVerbMode(@, ":S", \2)                                                 # Après « \1 que », ce verbe devrait être au subjonctif.
 
 TEST: Il suffit qu’il {{court}} plus
 TEST: Je veux qu’il {{finit}} son repas.
 TEST: quoi qu’il en {{conclut}}
 TEST: Je ne veux pas que tu {{es}} des ennuis
+TEST: Avant que tu {{pars}}, je voudrais qu’on discute.
 TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
