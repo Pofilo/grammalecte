@@ -9878,6 +9878,17 @@ TEST: Notez le peu de cas qui en est fait en général dans les médias
 TEST: deux fois par an, souligne le Dr Assouline
 
 
+__[i]/imp(imp_laisser_le_la_les_infi)__
+    ((laiss\w+) l(?:es|a)) +({w_2})  @@0,0,$
+    <<- morph(\2, ">laisser ", False) and morphex(\3, ":(?:Y|X|Oo)", ":[NAB]")
+    -1>> =\1.replace(" ", "-")
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+
+TEST: {{Laisse les}} entrer…
+TEST: {{Laissez la}} venir…
+TEST: Laisse les chiens tranquilles
+TEST: Laissez la peste leur pourrir la vie encore quelque temps.
+
 
 __<i]/imp(imp_apostrophe_m_t_en)__
     ([ -][mt])-en @@0
