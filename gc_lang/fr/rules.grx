@@ -8900,8 +8900,8 @@ __[i](p_risque_d_être)__
     risqu\w+ +(d’)être @@* <<- ~1>> *
 
 __[i]/ppas(ppas_je_verbe_être)__
-    j(?:e|’(?:y|en)) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2}) @@w,$
-    <<- morph(\1, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    j(?:e|’(?:y|en)) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2}) @@w,$
+    <<- morph(\1, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and morphex(\2, ":[NAQ].*:p", ":[GWYsi]")
     -2>> =suggSing(@)                                                        # Accord avec le sujet « je » : « \2 » devrait être au singulier.
 
@@ -8913,18 +8913,19 @@ TEST: je voudrais bien être dans ses souliers
 
 
 __[i]/ppas(ppas_tu_verbe_être)__
-    tu +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@w,$
-    <<- morph(\1, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    tu +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@w,$
+    <<- morph(\1, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and morphex(\2, ":[NAQ].*:p", ":[GWYsi]")
     -2>> =suggSing(@)                                                        # Accord avec le sujet « tu » : « \2 » devrait être au singulier.
 
 TEST: tu ne crois pas être {{meilleurs}}.
 TEST: tu ne crois pas avoir été {{découvertes}}
+TEST: tu vas être {{payées}}
 
 
 __[i]/ppas(ppas_il_verbe_être)__
-    (il|ce|ce qui|celui +qui|ça +qui|lui +qui|celui-(?:ci|là) +qui|quiconque) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (il|ce|ce qui|celui +qui|ça +qui|lui +qui|celui-(?:ci|là) +qui|quiconque) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@0,w,$
+    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and (morphex(\3, ":[NAQ].*:p", ":[GWYsi]") or morphex(\3, ":[AQ].*:f", ":[GWYme]"))
     -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
 
@@ -8936,18 +8937,19 @@ TEST: lui qui ne pensait jamais être {{reconnus}}.
 
 
 __[i]/ppas(ppas_ça_verbe_être)__
-    (ça|ce(?:la|ci)|celui-(?:ci|là)|lequel) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (ça|ce(?:la|ci)|celui-(?:ci|là)|lequel) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@0,w,$
+    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and (morphex(\3, ":[NAQ].*:p", ":[MWYsi]") or morphex(\3, ":[AQ].*:f", ":[GWYme]"))
     and not morph(word(-1), ":R", False, False)
     -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
 
 TEST: ça ne semble pas avoir été {{conçus}} pour ça.
+TEST: lequel allait être {{renvoyée}} de l’établissement.
 
 
 __[i]/ppas(ppas_elle_verbe_être)__
-    (elle|celle-(?:ci|là)|laquelle) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (elle|celle-(?:ci|là)|laquelle) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@0,w,$
+    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and (morphex(\3, ":[NAQ].*:p", ":[GWYsi]") or morphex(\3, ":[AQ].*:m", ":[GWYfe]"))
     and not morph(word(-1), ":R", False, False)
     -3>> =suggFemSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au féminin singulier.
@@ -8957,8 +8959,8 @@ TEST: ici, elle ne risque pas d’être {{attaquées}}
 
 
 __[i]/ppas(ppas_elle_qui_verbe_être)__
-    (c?elle +qui) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2}) @@0,w,$
-    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (c?elle +qui) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2}) @@0,w,$
+    <<- morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and (morphex(\3, ":[NAQ].*:p", ":[MWYsi]") or morphex(\3, ":[AQ].*:m", ":[GWYfe]"))
     -3>> =suggFemSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au féminin singulier.
 
@@ -8966,8 +8968,8 @@ TEST: celle qui pense être {{découvert}}
 
 
 __[i]/ppas(ppas_nous_verbe_être)__
-    (?<![nN][oO][uU][sS] )nous +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@w,$
-    <<- not re.search("(?i)^légion$", \2) and morph(\1, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (?<![nN][oO][uU][sS] )nous +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@w,$
+    <<- not re.search("(?i)^légion$", \2) and morph(\1, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and morph(\1, ":1p", False) and morphex(\2, ":[NAQ].*:s", ":[GWYpi]")
     -2>> =suggPlur(@)                                                        # Accord avec le sujet « nous » : « \2 » devrait être au pluriel.
 
@@ -8976,8 +8978,8 @@ TEST: nous ne devons pas être {{instruit}}
 
 
 __[i]/ppas(ppas_ils_verbe_être)__
-    (ils|c?eux +qui|ceux-(?:ci|là)|lesquels) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@0,w,$
-    <<- not re.search("(?i)^légion$", \3) and morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (ils|c?eux +qui|ceux-(?:ci|là)|lesquels) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@0,w,$
+    <<- not re.search("(?i)^légion$", \3) and morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and (morphex(\3, ":[NAQ].*:s", ":[GWYpi]") or morphex(\3, ":[AQ].*:f", ":[GWYme]"))
     and (not re.search("^(?:ceux-(?:ci|là)|lesquels)$", \1) or not morph(word(-1), ":R", False, False))
     -3>> =suggMasPlur(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin pluriel.
@@ -8986,8 +8988,8 @@ TEST: ils croient être {{perdu}}
 
 
 __[i]/ppas(ppas_elles_verbe_être)__
-    (elles|c?elles +qui|celles-(?:ci|là)|lesquelles) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|imagin|v[eo]u|a(?:ffirm|im|dor)|risqu)\w+) +(?:être|avoir été) +({w_2})  @@0,w,$
-    <<- not re.search("(?i)^légion$", \3) and morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer) ", False)
+    (elles|c?elles +qui|celles-(?:ci|là)|lesquelles) +(?:ne +|n’|)((?:p[aeouûr]|s(?:embl|ouhait)|cr[ouû]|d[eouûéiî]|estim|i(?:magin|r)|v(?:[eo]u|a)|a(?:ffirm|im|dor|ll)|risqu)\w*) +(?:être|avoir été) +({w_2})  @@0,w,$
+    <<- not re.search("(?i)^légion$", \3) and morph(\2, ">(?:sembler|para[îi]tre|pouvoir|penser|préférer|croire|d(?:evoir|éclarer|ésirer|étester|ire)|vouloir|affirmer|aimer|adorer|souhaiter|estimer|imaginer|risquer|aller) ", False)
     and (morphex(\3, ":[NAQ].*:s", ":[GWYpi]") or morphex(\3, ":[AQ].*:m", ":[GWYfe]"))
     and (not re.search("^(?:elles|celles-(?:ci|là)|lesquelles)$", \1) or not morph(word(-1), ":R", False, False))
     -3>> =suggFemPlur(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au féminin pluriel.
