@@ -3127,7 +3127,6 @@ __[i]/conf(conf_a_participe_passé_ou_vconj)__
     <<- morph(\2, ":V2.*:Ip:3s") -2>> =suggVerbPpas(@, ":m:s")                                      # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
     <<- __also__ -1>> a                                                                             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
     <<- __else__ -2>> _                                                                             # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
-
 __[i]/conf(conf_a_à_locutions1)__
     (a) (?:nouveau|présent|(?:bonne distance|bord|cause|contre-courant|côté|court|défaut|droite|gauche|l’(?:arrière|autre bout|écart|égard|extérieur|aune|avant|encontre|ins(?:u|tar)|intérieur|opposé)|la (?:portée|suite)|partir|portée|propos|rebours) d(?:es?|u))  @@0
     <<- -1>> à                                                                                      # Confusion. Utilisez la préposition “à”.
@@ -3150,6 +3149,7 @@ __[s]/conf(conf_a_à_infi)__
 __[s]/conf(conf_a_à_après_interrogative)__
     \w+-(?:je|ils?|elles?|je|tu|on|vous|nous) (a)(?! priori| posteriori| fortiori)  @@$
     <<- -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
 
 TEST: Cette femme {{à}} été confondue avec une autre.
 TEST: L’homme {{à}} ouvert la boîte.
@@ -3211,6 +3211,16 @@ TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
 TEST: elle à qui nous avons donné notre cœur et pour laquelle nous avons tout tenté pour la faire aimer de nos concitoyens.
 TEST: jusqu’à parfois se mettre en danger
+
+
+__[i]/conf(conf_mener_à_bien)__
+    (m[eèé]n\w+) (a) bien  @@0,w
+    <<- morph(\1, ">mener ", False) and ( not before(r"\bque? ") or morph(word(-1), ">(?:falloir|aller|pouvoir) ", False, True) )
+    -2>> à                  # Confusion probable. Dans cette locution, utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mener_%C3%A0_bien
+
+TEST: Mener {{a}} bien cette guerre sera plus difficile qu’on le pense.
+TEST: Je peux mener {{a}} bien cette opération.
+TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 
 
 __[s]/conf(conf_m_a_tuer)__
