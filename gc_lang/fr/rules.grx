@@ -8686,7 +8686,7 @@ __[i]/ppas(ppas_se_être)__
     [mts](?:e +|’(?:y +|en +|))({etre}) +({w_2})  @@w,$
     <<- morph(\1, ">être ", False) >>>
     <<- morphex(\2, ":(?:Y|[123][sp])", ":Q") and not re.search(r"(?i)^t’(?:es|étais)", \0)
-    -2>> =suggVerbPpas(@)                                                                           # Incohérence. Après « s’être », le verbe doit être un participe passé, pas à l’infinitif.
+    -2>> =suggVerbPpas(@)                                                                           # Incohérence. Après « s’être », le verbe doit être un participe passé.
     <<- __else__ and morph(\1, ":[123]s", False) and morph(\2, ":Q.*:p", False) and not before(r"(?i)\bque?[, ]|\bon (?:ne |)$")
     and not re.search(r"(?i)^t’(?:es|étais)", \0)
     -2>> =suggSing(@)                                                                               # Le participe passé devrait être au singulier.
