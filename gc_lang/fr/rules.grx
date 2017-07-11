@@ -3217,10 +3217,19 @@ __[i]/conf(conf_mener_à_bien)__
     (m[eèé]n\w+) (a) bien  @@0,w
     <<- morph(\1, ">mener ", False) and ( not before(r"\bque? ") or morph(word(-1), ">(?:falloir|aller|pouvoir) ", False, True) )
     -2>> à                  # Confusion probable. Dans cette locution, utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mener_%C3%A0_bien
+    <<- __also__ ~>> \1
 
 TEST: Mener {{a}} bien cette guerre sera plus difficile qu’on le pense.
 TEST: Je peux mener {{a}} bien cette opération.
 TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
+
+
+__[i]/conf(conf_mettre_à_profit)__
+    (m(?:i[st]|ett)\w*).* (a) profit  @@0,w
+    <<- morph(\1, ">mettre ", False) -2>> à     # Confusion probable. Dans « mettre à profit », utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mettre_%C3%A0_profit
+
+TEST: Mettre {{a}} profit ses compétences
+TEST: Il a mis son talent {{a}} profit.
 
 
 __[s]/conf(conf_m_a_tuer)__
