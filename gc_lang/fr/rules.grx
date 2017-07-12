@@ -9819,16 +9819,15 @@ TEST: {{Ait}} la foi !
 
 # Contrôle
 __[i]/imp(imp_verbe_lui_le_la_les_leur)__
-    ({w2})-l(?:ui|es?|a|eur)  @@0
+    ({w2})-(l(?:ui|es?|a|eurs?))  @@0,$
     <<- not morph(\1, ":E|>chez", False) and spell(\1)
-    -1>> =suggVerbImpe(\1)
-    # Erreur : ceci n’est pas une forme impérative.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+    -1>> =suggVerbImpe(\1)                                  # Ceci n’est pas une forme impérative.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+    <<- \2 == "leurs" -2>> leur                             # Le pronom personnel objet ne prend pas de “s”, “leurs” est un déterminants (exemple : leurs affaires).
 
 __[i]/imp(imp_verbe_moi_toi_m_t_en)__
     ({w2})-[tm](?:oi|’en)  @@0
     <<- not morph(\1, ":E|>chez", False) and spell(\1)
-    -1>> =suggVerbTense(\1, ":E", ":2s")
-    # Erreur : ceci n’est pas une forme impérative.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+    -1>> =suggVerbTense(\1, ":E", ":2s")                    # Ceci n’est pas une forme impérative.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
 
 TEST: {{prend}}-m’en trois, s’il te plaît.
 TEST: {{Sert}}-toi d’eux autant que tu le peux, puis casse-toi.
@@ -9849,6 +9848,7 @@ TEST: {{Sert}} le plat.
 TEST: {{Attend}} la correction.
 TEST: {{Vas}} au diable !
 TEST: {{Écartes}} de moi cette coupe.
+TEST: explique-{{leurs}} de quoi il est question.
 
 
 !!
