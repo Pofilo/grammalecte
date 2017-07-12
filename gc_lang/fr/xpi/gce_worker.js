@@ -86,24 +86,14 @@ function parse (sText, sLang, bDebug, bContext) {
 
 function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
     let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
-    let aSpellErr = [];
-    for (let oToken of oTokenizer.genTokens(sText)) {
-        if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
-            aSpellErr.push(oToken);
-        }
-    }
+    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
 
 function parseAndTag (sText, iParagraph, sLang, bDebug) {
     sText = text.addHtmlEntities(sText);
-    let aSpellErr = [];
-    for (let oToken of oTokenizer.genTokens(sText)) {
-        if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
-            aSpellErr.push(oToken);
-        }
-    }
     let aGrammErr = gce.parse(sText, sLang, bDebug);
+    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
     let sHtml = text.tagParagraph(sText, iParagraph, aGrammErr, aSpellErr);
     return sHtml;
 }
@@ -158,5 +148,25 @@ function fullTests (sGCOptions="") {
 // Lexicographer
 
 function analyzeWords (sText) {
-    return oLxg.analyzeText(sText);
+    getListOfElements(sText);
+    return oLxg.getHTMLForText(sText);
+}
+
+function getListOfElements (sText) {
+    try {
+        helpers.echo("=================================================");
+        let aElem = [];
+        let aRes = null;
+        for (let oToken of oTokenizer.genTokens(sText)) {
+            aRes = oLxg.getInfoForToken(oToken);
+            if (aRes) {
+                helpers.echo(aRes);
+                aElem = aElem.concat(aRes);
+            }
+        }
+        return JSON.stringify(aElem);
+    }
+    catch (e) {
+        helpers.logerror(e);
+    }
 }

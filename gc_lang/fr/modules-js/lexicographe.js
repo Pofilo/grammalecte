@@ -4,9 +4,11 @@
 "use strict";
 
 ${string}
+${map}
 
 
 const helpers = require("resource://grammalecte/helpers.js");
+const tkz = require("resource://grammalecte/tokenizer.js");
 
 
 const _dTAGS = new Map ([
@@ -157,6 +159,30 @@ const _dAD = new Map ([
     ["s'en", " (se) pronom personnel objet + (en) pronom adverbial"]
 ]);
 
+const _dSeparator = new Map ([
+    ['.', "point"],
+    ['·', "point médian"],
+    ['…', "points de suspension"],
+    [';', "point-virgule"],
+    [',', "virgule"],
+    ['?', "point d’interrogation"],
+    ['!', "point d’exclamation"],
+    ['(', "parenthèse ouvrante"],
+    [')', "parenthèse fermante"],
+    ['[', "crochet ouvrante"],
+    [']', "crochet fermante"],
+    ['{', "accolade ouvrante"],
+    ['}', "accolade fermante"],
+    ['—', "tiret cadratin"],
+    ['–', "tiret demi-cadratin"],
+    ['«', "guillemet ouvrant (chevrons)"],
+    ['»', "guillemet fermant (chevrons)"],
+    ['“', "guillemet ouvrant double"],
+    ['”', "guillemet fermant double"],
+    ['‘', "guillemet ouvrant"],
+    ['’', "guillemet fermant"],
+]);
+
 
 class Lexicographe {
 
@@ -167,20 +193,67 @@ class Lexicographe {
         this._zTag = new RegExp ("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*][^:;/]*", "g");
     };
 
-    analyzeText (sText) {
+    getInfoForToken (oToken) {
+        // Token: .sType, .sValue, .nStart, .nEnd
+        let m = null;
+        try {
+            helpers.echo(oToken);
+            switch (oToken.sType) {
+                case 'SEPARATOR':
+                    return [oToken.sType, oToken.sValue, _dSeparator._get(oToken.sValue, "caractère indéterminé")];
+                    break;
+                case 'NUM':
+                    return [oToken.sType, oToken.sValue, "nombre"];
+                    break;
+                case 'LINK':
+                    return [oToken.sType, oToken.sValue.slice(0,40)+"…", "hyperlien"];
+                    break;
+                case 'ELPFX':
+                    sTemp = oToken.sValue.replace("’", "'").replace("`", "'").toLowerCase();
+                    return [oToken.sType, oToken.sValue, _dPFX._get(sTemp, "préfixe élidé inconnu")];
+                    break;
+                case 'WORD': 
+                    if (oToken.sValue._count("-") > 4) {
+                        return ["COMPLEX", oToken.sValue, "élément complexe indéterminé"];
+                    }
+                    else if (this.oDict.isValidToken(oToken.sValue)) {
+                        let lMorph = this.oDict.getMorph(oToken.sValue);
+                        let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
+                        return [ oToken.sType, oToken.sValue, [aElem] ];
+                    }
+                    else if (m = this._zCompoundWord.exec(oToken.sValue)) {
+                        // mots composés
+                        let lMorph = this.oDict.getMorph(m[1]);
+                        let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
+                        aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
+                        return [ oToken.sType, oToken.sValue, [aElem] ];
+                    }
+                    else {
+                        return ["INCONNU", oToken.sValue, "inconnu du dictionnaire"];
+                    }
+                    break;
+            }
+        }
+        catch (e) {
+            helpers.logerror(e);
+        }
+        return null
+    };
+
+    getHTMLForText (sText) {
         sText = sText.replace(/[.,.?!:;…\/()\[\]“”«»"„{}–—#+*<>%=\n]/g, " ").replace(/\s+/g, " ");
         let iStart = 0;
         let iEnd = 0;
         let sHtml = '<div class="paragraph">\n';
         while ((iEnd = sText.indexOf(" ", iStart)) !== -1) {
-            sHtml += this.analyzeWord(sText.slice(iStart, iEnd));
+            sHtml += this.getHTMLForToken(sText.slice(iStart, iEnd));
             iStart = iEnd + 1;
         }
-        sHtml += this.analyzeWord(sText.slice(iStart));
+        sHtml += this.getHTMLForToken(sText.slice(iStart));
         return sHtml + '</div>\n';
-    }
+    };
 
-    analyzeWord (sWord) {
+    getHTMLForToken (sWord) {
         try {
             if (!sWord) {
                 return "";
@@ -207,9 +280,9 @@ class Lexicographe {
             // Morphologies
             let lMorph = this.oDict.getMorph(sWord);
             if (lMorph.length === 1) {
-                sHtml += "<p><b>" + sWord + "</b> <s>:</s> " + this.formatTags(lMorph[0]) + "</p>\n";
+                sHtml += "<p><b>" + sWord + "</b> <s>:</s> " + this._formatTags(lMorph[0]) + "</p>\n";
             } else if (lMorph.length > 1) {
-                sHtml += "<p><b>" + sWord + "</b><ul><li>" + [for (s of lMorph) if (s.includes(":")) this.formatTags(s)].join(" </li><li> ") + "</li></ul></p>\n";
+                sHtml += "<p><b>" + sWord + "</b><ul><li>" + [for (s of lMorph) if (s.includes(":")) this._formatTags(s)].join(" </li><li> ") + "</li></ul></p>\n";
             } else {
                 sHtml += '<p><b class="unknown">' + sWord + "</b> <s>:</s>  absent du dictionnaire<p>\n";
             }
@@ -227,7 +300,7 @@ class Lexicographe {
         }
     };
 
-    formatTags (sTags) {
+    _formatTags (sTags) {
         let sRes = "";
         sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
         let m;
