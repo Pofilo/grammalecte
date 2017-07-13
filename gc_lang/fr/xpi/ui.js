@@ -349,10 +349,11 @@ function checkConsistency (sText) {
 }
 
 function checkAndSendToPanel (sIdParagraph, sText) {
-    let xPromise = xGCEWorker.post('parseAndTag', [sText, parseInt(sIdParagraph), "FR", false]);
+    let xPromise = xGCEWorker.post('parseAndSpellcheck', [sText, "FR", false, false]);
     xPromise.then(
         function (aVal) {
-            xGCPanel.port.emit("refreshParagraph", sIdParagraph, aVal);
+            sText = text.addHtmlEntities(sText);
+            xGCPanel.port.emit("refreshParagraph", sText, sIdParagraph, aVal);
         },
         function (aReason) {
             console.error('Promise rejected - ', aReason);

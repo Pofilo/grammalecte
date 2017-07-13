@@ -45,10 +45,8 @@ self.port.on("addParagraph", function (sText, iParagraph, sJSON) {
 	addParagraph(sText, iParagraph, sJSON);
 });
 
-self.port.on("refreshParagraph", function (sIdParagr, sHtml) {
-	document.getElementById("paragr"+sIdParagr).innerHTML = sHtml;
-	let sClassName = (sHtml.includes('<u id="err')) ? "paragraph softred" : "paragraph softgreen";
-	document.getElementById("paragr"+sIdParagr).className = sClassName;
+self.port.on("refreshParagraph", function (sText, sIdParagr, sJSON) {
+	refreshParagraph(sText, sIdParagr, sJSON);
 });
 
 self.port.on("showMessage", function (sText) {
@@ -129,13 +127,11 @@ function addParagraph (sText, iParagraph, sJSON) {
 		// paragraph
 		let xParagraph = document.createElement("p");
 		xParagraph.id = "paragr" + iParagraph.toString();
-		xParagraph.className = (true) ? "paragraph" : "paragraph softred";
 		xParagraph.lang = "fr";
-		xParagraph.style.spellchecker = "false";
+		xParagraph.setAttribute("spellcheck", false);
 		let oErrors = JSON.parse(sJSON);
-		let aSpellErr = oErrors.aSpellErr;
-		let aGrammErr = oErrors.aGrammErr;
-		_tagParagraph(sText, xParagraph, iParagraph, aGrammErr, aSpellErr);
+		xParagraph.className = (oErrors.aGrammErr.length || oErrors.aSpellErr.length) ? "paragraph softred" : "paragraph";
+		_tagParagraph(sText, xParagraph, iParagraph, oErrors.aGrammErr, oErrors.aSpellErr);
 		xNodeDiv.appendChild(xParagraph);
 		// actions
 		let xDivActions = document.createElement("div");
@@ -157,6 +153,19 @@ function addParagraph (sText, iParagraph, sJSON) {
 		xDivActions.appendChild(xDivCheck);
 		xNodeDiv.appendChild(xDivActions);
 		document.getElementById("errorlist").appendChild(xNodeDiv);
+	}
+	catch (e) {
+		showError(e);
+	}
+}
+
+function refreshParagraph (sText, sIdParagr, sJSON) {
+	try {
+		let xParagraph = document.getElementById("paragr"+sIdParagr);
+		let oErrors = JSON.parse(sJSON);
+		xParagraph.className = (oErrors.aGrammErr.length || oErrors.aSpellErr.length) ? "paragraph softred" : "paragraph softgreen";
+		xParagraph.textContent = "";
+		_tagParagraph(sText, xParagraph, sIdParagr, oErrors.aGrammErr, oErrors.aSpellErr);
 	}
 	catch (e) {
 		showError(e);
@@ -219,7 +228,7 @@ function _getGrammarTooltip (oErr) {
 	let xSpan = document.createElement("span");
 	xSpan.id = "tooltip" + oErr['sId'];
 	xSpan.className = "tooltip";
-	xSpan.setAttribute("contenteditable", "false");
+	xSpan.setAttribute("contenteditable", false);
 	xSpan.appendChild(document.createTextNode(oErr["sMessage"]+" "));
 	xSpan.appendChild(_createIgnoreButton(oErr["sId"]));
 	if (oErr["URL"] !== "") {

@@ -90,18 +90,6 @@ function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
 
-function parseAndTag (sText, iParagraph, sLang, bDebug) {
-    sText = text.addHtmlEntities(sText);
-    let aGrammErr = gce.parse(sText, sLang, bDebug);
-    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
-    let sHtml = text.tagParagraph(sText, iParagraph, aGrammErr, aSpellErr);
-    return sHtml;
-}
-
-function parseAndGenerateParagraph (sText, iParagraph, sLang, bDebug) {
-    return text.createHTMLBlock(parseAndTag(sText, iParagraph, sLang, bDebug), iParagraph);
-}
-
 function getOptions () {
     return gce.getOptions()._toString();
 }
