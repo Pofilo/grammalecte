@@ -163,6 +163,7 @@ const _dSeparator = new Map ([
     ['.', "point"],
     ['·', "point médian"],
     ['…', "points de suspension"],
+    [':', "deux-points"],
     [';', "point-virgule"],
     [',', "virgule"],
     ['?', "point d’interrogation"],
@@ -173,6 +174,7 @@ const _dSeparator = new Map ([
     [']', "crochet fermante"],
     ['{', "accolade ouvrante"],
     ['}', "accolade fermante"],
+    ['-', "tiret"],
     ['—', "tiret cadratin"],
     ['–', "tiret demi-cadratin"],
     ['«', "guillemet ouvrant (chevrons)"],
@@ -181,6 +183,12 @@ const _dSeparator = new Map ([
     ['”', "guillemet fermant double"],
     ['‘', "guillemet ouvrant"],
     ['’', "guillemet fermant"],
+    ['/', "signe de la division"],
+    ['+', "signe de l’addition"],
+    ['*', "signe de la multiplication"],
+    ['=', "signe de l’égalité"],
+    ['<', "inférieur à"],
+    ['>', "supérieur à"],
 ]);
 
 
@@ -195,41 +203,42 @@ class Lexicographe {
 
     getInfoForToken (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
+        // return a list [type, token_string, values]
         let m = null;
         try {
             helpers.echo(oToken);
             switch (oToken.sType) {
                 case 'SEPARATOR':
-                    return [oToken.sType, oToken.sValue, _dSeparator._get(oToken.sValue, "caractère indéterminé")];
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dSeparator._get(oToken.sValue, "caractère indéterminé")] };
                     break;
                 case 'NUM':
-                    return [oToken.sType, oToken.sValue, "nombre"];
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: ["nombre"] };
                     break;
                 case 'LINK':
-                    return [oToken.sType, oToken.sValue.slice(0,40)+"…", "hyperlien"];
+                    return { sType: oToken.sType, sValue: oToken.sValue.slice(0,40)+"…", aLabel: ["hyperlien"] };
                     break;
                 case 'ELPFX':
-                    sTemp = oToken.sValue.replace("’", "'").replace("`", "'").toLowerCase();
-                    return [oToken.sType, oToken.sValue, _dPFX._get(sTemp, "préfixe élidé inconnu")];
+                    let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dPFX._get(sTemp, "préfixe élidé inconnu")] };
                     break;
                 case 'WORD': 
                     if (oToken.sValue._count("-") > 4) {
-                        return ["COMPLEX", oToken.sValue, "élément complexe indéterminé"];
+                        return { sType: "COMPLEX", sValue: oToken.sValue, aLabel: ["élément complexe indéterminé"] };
                     }
                     else if (this.oDict.isValidToken(oToken.sValue)) {
                         let lMorph = this.oDict.getMorph(oToken.sValue);
                         let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
-                        return [ oToken.sType, oToken.sValue, [aElem] ];
+                        return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem};
                     }
                     else if (m = this._zCompoundWord.exec(oToken.sValue)) {
                         // mots composés
                         let lMorph = this.oDict.getMorph(m[1]);
                         let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
                         aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
-                        return [ oToken.sType, oToken.sValue, [aElem] ];
+                        return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem };
                     }
                     else {
-                        return ["INCONNU", oToken.sValue, "inconnu du dictionnaire"];
+                        return { sType: "UNKNOWN", sValue: oToken.sValue, aLabel: ["inconnu du dictionnaire"] };
                     }
                     break;
             }
@@ -237,10 +246,11 @@ class Lexicographe {
         catch (e) {
             helpers.logerror(e);
         }
-        return null
+        return null;
     };
 
     getHTMLForText (sText) {
+        // deprecated
         sText = sText.replace(/[.,.?!:;…\/()\[\]“”«»"„{}–—#+*<>%=\n]/g, " ").replace(/\s+/g, " ");
         let iStart = 0;
         let iEnd = 0;
@@ -254,6 +264,7 @@ class Lexicographe {
     };
 
     getHTMLForToken (sWord) {
+        // deprecated
         try {
             if (!sWord) {
                 return "";

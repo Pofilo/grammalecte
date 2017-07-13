@@ -571,15 +571,15 @@ async function analyzeWords (sText) {
     try {
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                sRes = await xGCEWorker.post('analyzeWords', [sParagraph])
-                xLxgPanel.port.emit("addElem", sRes);
+                sRes = await xGCEWorker.post('getListOfElements', [sParagraph]);
+                xLxgPanel.port.emit("addParagraphElems", sRes);
                 nParagraph += 1;
             }
         }
-        xLxgPanel.port.emit("addElem", '<p class="message">' + _("numberOfParagraphs") + " " + nParagraph + '</p>');
+        xLxgPanel.port.emit("addMessage", 'message', _("numberOfParagraphs") + " " + nParagraph);
     }
     catch (e) {
-        xLxgPanel.port.emit("addElem", '<p class="bug">'+e.message+"</p>");
+        xLxgPanel.port.emit("addMessage", 'bug', e.message);
     }
     xLxgPanel.port.emit("stopWaitIcon");
 }

@@ -147,20 +147,13 @@ function fullTests (sGCOptions="") {
 
 // Lexicographer
 
-function analyzeWords (sText) {
-    getListOfElements(sText);
-    return oLxg.getHTMLForText(sText);
-}
-
 function getListOfElements (sText) {
     try {
-        helpers.echo("=================================================");
         let aElem = [];
         let aRes = null;
         for (let oToken of oTokenizer.genTokens(sText)) {
             aRes = oLxg.getInfoForToken(oToken);
             if (aRes) {
-                helpers.echo(aRes);
                 aElem = aElem.concat(aRes);
             }
         }
