@@ -154,7 +154,7 @@ function getListOfElements (sText) {
         for (let oToken of oTokenizer.genTokens(sText)) {
             aRes = oLxg.getInfoForToken(oToken);
             if (aRes) {
-                aElem = aElem.concat(aRes);
+                aElem = aElem.append(aRes);
             }
         }
         return JSON.stringify(aElem);
