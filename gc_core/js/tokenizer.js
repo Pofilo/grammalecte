@@ -56,7 +56,13 @@ class Tokenizer {
             for (let [zRegex, sType] of this.aRules) {
                 try {
                     if ((m = zRegex.exec(sText)) !== null) {
-                        yield { "sType": sType, "sValue": m[0], "nStart": i, "nEnd": i + m[0].length }
+                        if (sType == 'SEPARATOR') {
+                            for (let c of m[0]) {
+                                yield { "sType": sType, "sValue": c, "nStart": i, "nEnd": i + m[0].length }    
+                            }
+                        } else {
+                            yield { "sType": sType, "sValue": m[0], "nStart": i, "nEnd": i + m[0].length }    
+                        }
                         nCut = m[0].length;
                         break;
                     }
