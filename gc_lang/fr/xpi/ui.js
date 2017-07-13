@@ -418,16 +418,16 @@ async function sendTextToPanel (sText) {
         sText = sText.normalize("NFC"); // remove combining diacritics
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                sRes = await xGCEWorker.post('parseAndGenerateParagraph', [sParagraph, iParagraph, "FR", false])
-                xGCPanel.port.emit("addElem", sRes);
+                sRes = await xGCEWorker.post('parseAndSpellcheck', [sParagraph, "FR", false, false]);
+                xGCPanel.port.emit("addParagraph", sParagraph, iParagraph, sRes);
                 nParagraph += 1;
             }
             iParagraph += 1;
         }
-        xGCPanel.port.emit("addElem", '<p class="message">' + _("numberOfParagraphs") + " " + nParagraph + '</p>');
+        xGCPanel.port.emit("addMessage", 'message', _("numberOfParagraphs") + " " + nParagraph);
     }
     catch (e) {
-        xGCPanel.port.emit("addElem", '<p class="bug">' + e.message + '</p>');
+        xGCPanel.port.emit("addMessage", 'bug', e.message);
     }
     xGCPanel.port.emit("end");
 }

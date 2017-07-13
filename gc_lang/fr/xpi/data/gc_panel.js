@@ -7,14 +7,7 @@ let bExpanded = true;
 	Events
 */
 
-if (Date.now() < Date.UTC(2017, 6, 12)) {
-	try {
-		document.getElementById('special_message').style.display = "block";
-		document.getElementById('errorlist').style.padding = "20px 20px 30px 20px";
-	} catch (e) {
-		console.log(e.message + e.lineNumber);
-	}
-}
+showSpecialMessage();
 
 
 document.getElementById('close').addEventListener("click", function (event) {
@@ -44,10 +37,12 @@ self.port.on("setPanelWidth", function (n) {
 	nPanelWidth = n;
 });
 
-self.port.on("addElem", function (sHtml) {
-	let xElem = document.createElement("div");
-	xElem.innerHTML = sHtml;
-	document.getElementById("errorlist").appendChild(xElem);
+self.port.on("addMessage", function (sClass, sText) {
+    addMessage(sClass, sText);
+});
+
+self.port.on("addParagraph", function (sText, iParagraph, sJSON) {
+	addParagraph(sText, iParagraph, sJSON);
 });
 
 self.port.on("refreshParagraph", function (sIdParagr, sHtml) {
@@ -76,21 +71,7 @@ self.port.on("end", function() {
 });
 
 self.port.on("suggestionsFor", function (sWord, sSuggestions, sTooltipId) {
-	// spell checking suggestions
-	//console.log(sWord + ": " + sSuggestions);
-	if (sSuggestions === "") {
-		document.getElementById(sTooltipId).innerHTML += "Aucune.";
-	} else if (sSuggestions.startsWith("#")) {
-		document.getElementById(sTooltipId).innerHTML += sSuggestions;
-	} else {
-		let lSugg = sSuggestions.split("|");
-		let iSugg = 0;
-		let sElemId = sTooltipId.slice(7);
-		for (let sSugg of lSugg) {
-			document.getElementById(sTooltipId).innerHTML += '<a id="sugg' + sElemId + "-" + iSugg + '" class="sugg" href="#" onclick="return false;">' + sSugg + '</a> ';
-			iSugg += 1;
-		}
-	}
+	setSpellSuggestionsFor(sWord, sSuggestions, sTooltipId);
 });
 
 
@@ -130,6 +111,181 @@ window.addEventListener(
 	Actions
 */
 
+function showError (e) {
+	console.error("\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+}
+
+function addMessage (sClass, sText) {
+    let xNode = document.createElement("p");
+    xNode.className = sClass;
+    xNode.textContent = sText;
+    document.getElementById("errorlist").appendChild(xNode);
+}
+
+function addParagraph (sText, iParagraph, sJSON) {
+	try {
+		let xNodeDiv = document.createElement("div");
+		xNodeDiv.className = "paragraph_block";
+		// paragraph
+		let xParagraph = document.createElement("p");
+		xParagraph.id = "paragr" + iParagraph.toString();
+		xParagraph.className = (true) ? "paragraph" : "paragraph softred";
+		xParagraph.lang = "fr";
+		xParagraph.style.spellchecker = "false";
+		let oErrors = JSON.parse(sJSON);
+		let aSpellErr = oErrors.aSpellErr;
+		let aGrammErr = oErrors.aGrammErr;
+		_tagParagraph(sText, xParagraph, iParagraph, aGrammErr, aSpellErr);
+		xNodeDiv.appendChild(xParagraph);
+		// actions
+		let xDivActions = document.createElement("div");
+		xDivActions.className = "actions";
+		let xDivClose = document.createElement("div");
+		xDivClose.id = "end" + iParagraph.toString();
+		xDivClose.className = "button red";
+		xDivClose.textContent = "×";
+		let xDivEdit = document.createElement("div");
+		xDivEdit.id = "edit" + iParagraph.toString();
+		xDivEdit.className = "button";
+		xDivEdit.textContent = "Éditer";
+		let xDivCheck = document.createElement("div");
+		xDivCheck.id = "check" + iParagraph.toString();
+		xDivCheck.className = "button green";
+		xDivCheck.textContent = "Réanalyser";
+		xDivActions.appendChild(xDivClose);
+		xDivActions.appendChild(xDivEdit);
+		xDivActions.appendChild(xDivCheck);
+		xNodeDiv.appendChild(xDivActions);
+		document.getElementById("errorlist").appendChild(xNodeDiv);
+	}
+	catch (e) {
+		showError(e);
+	}
+}
+
+function _tagParagraph (sParagraph, xParagraph, iParagraph, aSpellErr, aGrammErr) {
+	try {
+		if (aGrammErr.length === 0  &&  aSpellErr.length === 0) {
+            xParagraph.textContent = sParagraph;
+            return
+        }
+        aGrammErr.push(...aSpellErr);
+        aGrammErr.sort(function (a, b) {
+            if (a["nStart"] < b["nStart"])
+                return -1;
+            if (a["nStart"] > b["nStart"])
+                return 1;
+            return 0;
+        });
+
+		let nErr = 0; // we count errors to give them an identifier
+        let nEndLastErr = 0;
+        for (let oErr of aGrammErr) {
+            let nStart = oErr["nStart"];
+            let nEnd = oErr["nEnd"];
+            if (nStart >= nEndLastErr) {
+                oErr["sId"] = iParagraph.toString() + "_" + nErr.toString(); // error identifier
+                if (nEndLastErr < nStart) {
+                	xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr, nStart)));
+                }
+                xParagraph.appendChild(_createError(sParagraph.slice(nStart, nEnd), oErr));
+                xParagraph.insertAdjacentHTML("beforeend", "<!-- err_end -->");
+                nEndLastErr = nEnd;
+            }
+            nErr += 1;
+        }
+        if (nEndLastErr < sParagraph.length) {
+        	xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr)));
+        }
+	}
+	catch (e) {
+		showError(e);
+	}
+}
+
+function _createError (sUnderlined, oErr) {
+	let xNodeErr = document.createElement("u");
+	xNodeErr.id = "err" + oErr['sId'];
+	xNodeErr.className = "error " + oErr['sType'];
+	xNodeErr.textContent = sUnderlined;
+	xNodeErr.setAttribute("href", "#");
+	xNodeErr.setAttribute("onclick", "return false;");
+	let xTooltip = (oErr['sType'] !== "WORD") ? _getGrammarTooltip(oErr) : _getSpellingTooltip(oErr);
+	xNodeErr.appendChild(xTooltip);
+	return xNodeErr;
+}
+
+function _getGrammarTooltip (oErr) {
+	let xSpan = document.createElement("span");
+	xSpan.id = "tooltip" + oErr['sId'];
+	xSpan.className = "tooltip";
+	xSpan.setAttribute("contenteditable", "false");
+	xSpan.appendChild(document.createTextNode(oErr["sMessage"]+" "));
+	xSpan.appendChild(_createIgnoreButton(oErr["sId"]));
+	if (oErr["URL"] !== "") {
+		xSpan.appendChild(_createInfoLink(oErr["URL"]));
+	}
+	if (oErr["aSuggestions"].length > 0) {
+		xSpan.appendChild(document.createElement("br"));
+		xSpan.appendChild(_createSuggestionLabel());
+		xSpan.appendChild(document.createElement("br"));
+		let iSugg = 0;
+        for (let sSugg of oErr["aSuggestions"]) {
+        	xSpan.appendChild(_createSuggestion(oErr["sId"], iSugg, sSugg));
+            xSpan.appendChild(document.createTextNode(" "));
+            iSugg += 1;
+        }
+	}
+	return xSpan;
+}
+
+function _getSpellingTooltip (oErr) {
+	let xSpan = document.createElement("span");
+	xSpan.id = "tooltip" + oErr['sId'];
+	xSpan.className = "tooltip";
+	xSpan.setAttribute("contenteditable", "false");
+	xSpan.appendChild(document.createTextNode("Mot inconnu du dictionnaire. "));
+	xSpan.appendChild(_createIgnoreButton(oErr["sId"]));
+	xSpan.appendChild(document.createElement("br"));
+	xSpan.appendChild(_createSuggestionLabel());
+	xSpan.appendChild(document.createElement("br"));
+	return xSpan;
+}
+
+function _createIgnoreButton (sErrorId) {
+	let xIgnore = document.createElement("a");
+	xIgnore.id = "ignore" + sErrorId;
+	xIgnore.className = "ignore";
+	xIgnore.setAttribute("href", "#");
+	xIgnore.setAttribute("onclick", "return false;");
+	xIgnore.textContent = "IGNORER";
+	return xIgnore;
+}
+
+function _createInfoLink (sURL) {
+	let xInfo = document.createElement("a");
+	xInfo.setAttribute("href", sURL);
+	xInfo.setAttribute("onclick", "return false;");
+	xInfo.textContent = "Infos…";
+	return xInfo;
+}
+
+function _createSuggestionLabel () {
+	let xNode = document.createElement("s");
+	xNode.textContent = "Suggestions :";
+	return xNode;
+}
+
+function _createSuggestion (sErrId, iSugg, sSugg) {
+	let xNodeSugg = document.createElement("a");
+	xNodeSugg.id = "sugg" + sErrId + "-" + iSugg.toString();
+	xNodeSugg.className = "sugg";
+	xNodeSugg.setAttribute("href", "#");
+	xNodeSugg.setAttribute("onclick", "return false;");
+	xNodeSugg.textContent = sSugg;
+	return xNodeSugg;
+}
+
 function closeMessageBox () {
 	document.getElementById("messagebox").style.display = "none";
 	document.getElementById("message").textContent = "";
@@ -145,8 +301,9 @@ function applySuggestion (sElemId) { // sugg
 		document.getElementById(sIdErr).removeAttribute("style");
 		self.port.emit("correction", sIdParagr, getPurgedTextOfElem("paragr"+sIdParagr));
 		stopWaitIcon("paragr"+sIdParagr);
-	} catch (e) {
-		console.log(e.message + e.lineNumber);
+	}
+	catch (e) {
+		showError(e);
 	}
 }
 
@@ -168,7 +325,7 @@ function showTooltip (sElemId) {  // err
 	}
 	xTooltipElem.setAttribute("contenteditable", false);
 	xTooltipElem.className = 'tooltip_on';
-	if (document.getElementById(sElemId).className === "error spell"  &&  xTooltipElem.textContent.endsWith(":")) {
+	if (document.getElementById(sElemId).className === "error WORD"  &&  xTooltipElem.textContent.endsWith(":")) {
 		// spelling mistake
 		self.port.emit("getSuggestionsForTo", document.getElementById(sElemId).innerHTML.replace(/<span .*$/, "").trim(), sTooltipId);
 	}
@@ -237,6 +394,26 @@ function hideAllTooltips () {
 	}
 }
 
+function setSpellSuggestionsFor (sWord, sSuggestions, sTooltipId) {
+	// spell checking suggestions
+	//console.log(sWord + ": " + sSuggestions);
+	let xTooltip = document.getElementById(sTooltipId);
+	if (sSuggestions === "") {
+		xTooltip.appendChild(document.createTextNode("Aucune."));
+	} else if (sSuggestions.startsWith("#")) {
+		xTooltip.appendChild(document.createTextNode(sSuggestions));
+	} else {
+		let lSugg = sSuggestions.split("|");
+		let iSugg = 0;
+		let sElemId = sTooltipId.slice(7);
+		for (let sSugg of lSugg) {
+			xTooltip.appendChild(_createSuggestion(sElemId, iSugg, sSugg));
+			xTooltip.appendChild(document.createTextNode(" "));
+			iSugg += 1;
+		}
+	}
+}
+
 function copyToClipboard () {
 	startWaitIcon();
 	try {
@@ -270,4 +447,15 @@ function stopWaitIcon (sIdParagr=null) {
 		document.getElementById(sIdParagr).style.opacity = 1;
 	}
 	document.getElementById("waiticon").hidden = true;
+}
+
+function showSpecialMessage () {
+	if (Date.now() < Date.UTC(2017, 6, 12)) {
+		try {
+			document.getElementById('special_message').style.display = "block";
+			document.getElementById('errorlist').style.padding = "20px 20px 30px 20px";
+		} catch (e) {
+			showError(e);
+		}
+	}
 }
