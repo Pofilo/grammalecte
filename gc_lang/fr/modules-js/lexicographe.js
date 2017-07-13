@@ -248,68 +248,6 @@ class Lexicographe {
         return null;
     };
 
-    getHTMLForText (sText) {
-        // deprecated
-        sText = sText.replace(/[.,.?!:;…\/()\[\]“”«»"„{}–—#+*<>%=\n]/g, " ").replace(/\s+/g, " ");
-        let iStart = 0;
-        let iEnd = 0;
-        let sHtml = '<div class="paragraph">\n';
-        while ((iEnd = sText.indexOf(" ", iStart)) !== -1) {
-            sHtml += this.getHTMLForToken(sText.slice(iStart, iEnd));
-            iStart = iEnd + 1;
-        }
-        sHtml += this.getHTMLForToken(sText.slice(iStart));
-        return sHtml + '</div>\n';
-    };
-
-    getHTMLForToken (sWord) {
-        // deprecated
-        try {
-            if (!sWord) {
-                return "";
-            }
-            if (sWord._count("-") > 4) {
-                return '<p><b class="mbok">' + sWord + "</b> <s>:</s> élément complexe indéterminé</p>\n";
-            }
-            if (sWord._isDigit()) {
-                return '<p><b class="nb">' + sWord + "</b> <s>:</s> nombre</p>\n";
-            }
-
-            let sHtml = "";
-            // préfixes élidés
-            let m = this._zElidedPrefix.exec(sWord);
-            if (m !== null) {
-                sWord = m[2];
-                sHtml += "<p><b>" + m[1] + "’</b> <s>:</s> " + _dPFX.get(m[1].toLowerCase()) + " </p>\n";
-            }
-            // mots composés
-            let m2 = this._zCompoundWord.exec(sWord);
-            if (m2 !== null) {
-                sWord = m2[1];
-            }
-            // Morphologies
-            let lMorph = this.oDict.getMorph(sWord);
-            if (lMorph.length === 1) {
-                sHtml += "<p><b>" + sWord + "</b> <s>:</s> " + this._formatTags(lMorph[0]) + "</p>\n";
-            } else if (lMorph.length > 1) {
-                sHtml += "<p><b>" + sWord + "</b><ul><li>" + [for (s of lMorph) if (s.includes(":")) this._formatTags(s)].join(" </li><li> ") + "</li></ul></p>\n";
-            } else {
-                sHtml += '<p><b class="unknown">' + sWord + "</b> <s>:</s>  absent du dictionnaire<p>\n";
-            }
-            // suffixe d’un mot composé
-            if (m2) {
-                sHtml += "<p>-<b>" + m2[2] + "</b> <s>:</s> " + this._formatSuffix(m2[2].toLowerCase()) + "</p>\n";
-            }
-            // Verbes
-            //let aVerb = new Set([ for (s of lMorph) if (s.includes(":V")) s.slice(1, s.indexOf(" ")) ]);
-            return sHtml;
-        }
-        catch (e) {
-            helpers.logerror(e);
-            return "#erreur";
-        }
-    };
-
     _formatTags (sTags) {
         let sRes = "";
         sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
