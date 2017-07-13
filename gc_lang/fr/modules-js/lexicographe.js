@@ -206,7 +206,6 @@ class Lexicographe {
         // return a list [type, token_string, values]
         let m = null;
         try {
-            helpers.echo(oToken);
             switch (oToken.sType) {
                 case 'SEPARATOR':
                     return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dSeparator._get(oToken.sValue, "caractère indéterminé")] };
