@@ -68,37 +68,43 @@ self.port.on("end", function() {
 	document.getElementById("copy_to_clipboard").style.display = "block";
 });
 
-self.port.on("suggestionsFor", function (sWord, sSuggestions, sTooltipId) {
-	setSpellSuggestionsFor(sWord, sSuggestions, sTooltipId);
+self.port.on("suggestionsFor", function (sWord, sSuggestions, sErrId) {
+	setSpellSuggestionsFor(sWord, sSuggestions, sErrId);
 });
 
 
 window.addEventListener(
 	"click",
 	function (xEvent) {
-		let xElem = xEvent.target;
-		if (xElem.id) {
-			if (xElem.id.startsWith("sugg")) {
-				applySuggestion(xElem.id);
-			} else if (xElem.id.startsWith("ignore")) {
-				ignoreError(xElem.id);
-			} else if (xElem.id.startsWith("check")) {
-				sendBackAndCheck(xElem.id);
-			} else if (xElem.id.startsWith("edit")) {
-				switchEdition(xElem.id);
-			} else if (xElem.id.startsWith("end")) {
-				document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
-			} else if (xElem.tagName === "U" && xElem.id.startsWith("err")) {
-				showTooltip(xElem.id);
-			} else if (xElem.id.startsWith("resize")) {
-				self.port.emit("resize", xElem.id, 10);
+		try {
+			let xElem = xEvent.target;
+			if (xElem.id) {
+				if (xElem.id.startsWith("sugg")) {
+					applySuggestion(xElem.id);
+				} else if (xElem.id.endsWith("_ignore")) {
+					ignoreError(xElem.id);
+				} else if (xElem.id.startsWith("check")) {
+					sendBackAndCheck(xElem.id);
+				} else if (xElem.id.startsWith("edit")) {
+					switchEdition(xElem.id);
+				} else if (xElem.id.startsWith("end")) {
+					document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
+				} else if (xElem.tagName === "U" && xElem.id.startsWith("err")
+						   && xElem.className !== "corrected" && xElem.className !== "ignored") {
+					showTooltip(xElem.id);
+				} else if (xElem.id.startsWith("resize")) {
+					self.port.emit("resize", xElem.id, 10);
+				} else {
+					hideAllTooltips();
+				}
+			} else if (xElem.tagName === "A") {
+				self.port.emit("openURL", xElem.getAttribute("href"));
 			} else {
 				hideAllTooltips();
 			}
-		} else if (xElem.tagName === "A") {
-			self.port.emit("openURL", xElem.getAttribute("href"));
-		} else {
-			hideAllTooltips();
+		}
+		catch (e) {
+			showError(e);
 		}
 	},
 	false
@@ -111,6 +117,11 @@ window.addEventListener(
 
 function showError (e) {
 	console.error("\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+}
+
+function closeMessageBox () {
+	document.getElementById("messagebox").style.display = "none";
+	document.getElementById("message").textContent = "";
 }
 
 function addMessage (sClass, sText) {
@@ -203,7 +214,7 @@ function _tagParagraph (sParagraph, xParagraph, iParagraph, aSpellErr, aGrammErr
             }
             nErr += 1;
         }
-        if (nEndLastErr < sParagraph.length) {
+        if (nEndLastErr <= sParagraph.length) {
         	xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr)));
         }
 	}
@@ -217,72 +228,92 @@ function _createError (sUnderlined, oErr) {
 	xNodeErr.id = "err" + oErr['sId'];
 	xNodeErr.className = "error " + oErr['sType'];
 	xNodeErr.textContent = sUnderlined;
+	xNodeErr.dataset.error_id = oErr['sId'];
+	xNodeErr.dataset.error_type = (oErr['sType'] === "WORD") ? "spelling" : "grammar";
 	xNodeErr.setAttribute("href", "#");
 	xNodeErr.setAttribute("onclick", "return false;");
-	let xTooltip = (oErr['sType'] !== "WORD") ? _getGrammarTooltip(oErr) : _getSpellingTooltip(oErr);
-	xNodeErr.appendChild(xTooltip);
+	if (xNodeErr.dataset.error_type === "grammar") {
+		xNodeErr.dataset.gc_message = oErr['sMessage'];
+		xNodeErr.dataset.gc_url = oErr['URL'];
+		if (xNodeErr.dataset.gc_message.includes(" #")) {
+			xNodeErr.dataset.line_id = oErr['sLineId'];
+			xNodeErr.dataset.rule_id = oErr['sRuleId'];
+		}
+		xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
+	}
 	return xNodeErr;
 }
 
-function _getGrammarTooltip (oErr) {
-	let xSpan = document.createElement("span");
-	xSpan.id = "tooltip" + oErr['sId'];
-	xSpan.className = "tooltip";
-	xSpan.setAttribute("contenteditable", false);
-	xSpan.appendChild(document.createTextNode(oErr["sMessage"]+" "));
-	xSpan.appendChild(_createIgnoreButton(oErr["sId"]));
-	if (oErr["URL"] !== "") {
-		xSpan.appendChild(_createInfoLink(oErr["URL"]));
+function applySuggestion (sSuggId) { // sugg
+	try {
+		let sErrorId = document.getElementById(sSuggId).dataset.error_id;
+		let sIdParagr = sErrorId.slice(0, sErrorId.indexOf("_"));
+		startWaitIcon("paragr"+sIdParagr);
+		let xNodeErr = document.getElementById("err" + sErrorId);
+		xNodeErr.textContent = document.getElementById(sSuggId).textContent;
+		xNodeErr.className = "corrected";
+		xNodeErr.removeAttribute("style");
+		self.port.emit("correction", sIdParagr, document.getElementById("paragr"+sIdParagr).textContent);
+		hideAllTooltips();
+		stopWaitIcon("paragr"+sIdParagr);
 	}
-	if (oErr["aSuggestions"].length > 0) {
-		xSpan.appendChild(document.createElement("br"));
-		xSpan.appendChild(_createSuggestionLabel());
-		xSpan.appendChild(document.createElement("br"));
-		let iSugg = 0;
-        for (let sSugg of oErr["aSuggestions"]) {
-        	xSpan.appendChild(_createSuggestion(oErr["sId"], iSugg, sSugg));
-            xSpan.appendChild(document.createTextNode(" "));
-            iSugg += 1;
-        }
+	catch (e) {
+		showError(e);
 	}
-	return xSpan;
 }
 
-function _getSpellingTooltip (oErr) {
-	let xSpan = document.createElement("span");
-	xSpan.id = "tooltip" + oErr['sId'];
-	xSpan.className = "tooltip";
-	xSpan.setAttribute("contenteditable", "false");
-	xSpan.appendChild(document.createTextNode("Mot inconnu du dictionnaire. "));
-	xSpan.appendChild(_createIgnoreButton(oErr["sId"]));
-	xSpan.appendChild(document.createElement("br"));
-	xSpan.appendChild(_createSuggestionLabel());
-	xSpan.appendChild(document.createElement("br"));
-	return xSpan;
+function ignoreError (sIgnoreButtonId) {  // ignore
+	try {
+		console.log("ignore button: " + sIgnoreButtonId + " // error id: " + document.getElementById(sIgnoreButtonId).dataset.error_id);
+		let xNodeErr = document.getElementById("err"+document.getElementById(sIgnoreButtonId).dataset.error_id);
+		xNodeErr.className = "ignored";
+		xNodeErr.removeAttribute("style");
+		hideAllTooltips();
+	}
+	catch (e) {
+		showError(e);
+	}
 }
 
-function _createIgnoreButton (sErrorId) {
-	let xIgnore = document.createElement("a");
-	xIgnore.id = "ignore" + sErrorId;
-	xIgnore.className = "ignore";
-	xIgnore.setAttribute("href", "#");
-	xIgnore.setAttribute("onclick", "return false;");
-	xIgnore.textContent = "IGNORER";
-	return xIgnore;
-}
-
-function _createInfoLink (sURL) {
-	let xInfo = document.createElement("a");
-	xInfo.setAttribute("href", sURL);
-	xInfo.setAttribute("onclick", "return false;");
-	xInfo.textContent = "Infos…";
-	return xInfo;
-}
-
-function _createSuggestionLabel () {
-	let xNode = document.createElement("s");
-	xNode.textContent = "Suggestions :";
-	return xNode;
+function showTooltip (sNodeErrorId) {  // err
+	try {
+		hideAllTooltips();
+		let xNodeError = document.getElementById(sNodeErrorId);
+		let sTooltipId = (xNodeError.dataset.error_type === "grammar") ? "gc_tooltip" : "sc_tooltip";
+		let xNodeTooltip = document.getElementById(sTooltipId);
+		let nLimit = nPanelWidth - 320; // paragraph width - tooltip width
+		xNodeTooltip.style.top = (xNodeError.offsetTop + 16) + "px";
+		xNodeTooltip.style.left = (xNodeError.offsetLeft > nLimit) ? nLimit + "px" : xNodeError.offsetLeft + "px";
+		if (xNodeError.dataset.error_type === "grammar") {
+			// grammar error
+			document.getElementById("gc_message").textContent = xNodeError.dataset.gc_message;
+			if (xNodeError.dataset.gc_url != "") {
+				document.getElementById("gc_url").style.display = "inline";
+				document.getElementById("gc_url").setAttribute("href", xNodeError.dataset.gc_url);
+			} else {
+				document.getElementById("gc_url").style.display = "none";
+			}
+			document.getElementById("gc_ignore").dataset.error_id = xNodeError.dataset.error_id;
+			let iSugg = 0;
+			let xGCSugg = document.getElementById("gc_sugg_block");
+			xGCSugg.textContent = "";
+	        for (let sSugg of xNodeError.dataset.suggestions.split("|")) {
+	        	xGCSugg.appendChild(_createSuggestion(xNodeError.dataset.error_id, iSugg, sSugg));
+	            xGCSugg.appendChild(document.createTextNode(" "));
+	            iSugg += 1;
+	        }
+		}
+		xNodeTooltip.style.display = "block";
+		if (xNodeError.dataset.error_type === "spelling") {
+			// spelling mistake
+			document.getElementById("sc_ignore").dataset.error_id = xNodeError.dataset.error_id;
+			//console.log("getSuggFor: " + xNodeError.textContent.trim() + " // error_id: " + xNodeError.dataset.error_id);
+			self.port.emit("getSuggestionsForTo", xNodeError.textContent.trim(), xNodeError.dataset.error_id);
+		}
+	}
+	catch (e) {
+		showError(e);
+	}
 }
 
 function _createSuggestion (sErrId, iSugg, sSugg) {
@@ -291,150 +322,73 @@ function _createSuggestion (sErrId, iSugg, sSugg) {
 	xNodeSugg.className = "sugg";
 	xNodeSugg.setAttribute("href", "#");
 	xNodeSugg.setAttribute("onclick", "return false;");
+	xNodeSugg.dataset.error_id = sErrId;
 	xNodeSugg.textContent = sSugg;
 	return xNodeSugg;
 }
 
-function closeMessageBox () {
-	document.getElementById("messagebox").style.display = "none";
-	document.getElementById("message").textContent = "";
+function switchEdition (sEditButtonId) {  // edit
+	let xParagraph = document.getElementById("paragr" + sEditButtonId.slice(4));
+	if (xParagraph.hasAttribute("contenteditable") === false
+		|| xParagraph.getAttribute("contenteditable") === "false") {
+		xParagraph.setAttribute("contenteditable", true);
+		document.getElementById(sEditButtonId).className = "button orange";
+		xParagraph.focus();
+	} else {
+		xParagraph.setAttribute("contenteditable", false);
+		document.getElementById(sEditButtonId).className = "button";
+	}
 }
 
-function applySuggestion (sElemId) { // sugg
+function sendBackAndCheck (sCheckButtonId) {  // check
+	startWaitIcon();
+	let sIdParagr = sCheckButtonId.slice(5);
+	self.port.emit("modifyAndCheck", sIdParagr, document.getElementById("paragr"+sIdParagr).textContent);
+	stopWaitIcon();
+}
+
+function hideAllTooltips () {
+	document.getElementById("gc_tooltip").style.display = "none";
+	document.getElementById("sc_tooltip").style.display = "none";
+}
+
+function setSpellSuggestionsFor (sWord, sSuggestions, sErrId) {
+	// spell checking suggestions
 	try {
-		let sIdParagr = sElemId.slice(4, sElemId.indexOf("_"));
-		startWaitIcon("paragr"+sIdParagr);
-		let sIdErr = "err" + sElemId.slice(4, sElemId.indexOf("-"));
-		document.getElementById(sIdErr).textContent = document.getElementById(sElemId).textContent;
-		document.getElementById(sIdErr).className = "corrected";
-		document.getElementById(sIdErr).removeAttribute("style");
-		self.port.emit("correction", sIdParagr, getPurgedTextOfElem("paragr"+sIdParagr));
-		stopWaitIcon("paragr"+sIdParagr);
+		// console.log("setSuggestionsFor: " + sWord + " > " + sSuggestions + " // " + sErrId);
+		let xSuggBlock = document.getElementById("sc_sugg_block");
+		xSuggBlock.textContent = "";
+		if (sSuggestions === "") {
+			xSuggBlock.appendChild(document.createTextNode("Aucune."));
+		} else if (sSuggestions.startsWith("#")) {
+			xSuggBlock.appendChild(document.createTextNode(sSuggestions));
+		} else {
+			let lSugg = sSuggestions.split("|");
+			let iSugg = 0;
+			for (let sSugg of lSugg) {
+				xSuggBlock.appendChild(_createSuggestion(sErrId, iSugg, sSugg));
+				xSuggBlock.appendChild(document.createTextNode(" "));
+				iSugg += 1;
+			}
+		}
 	}
 	catch (e) {
 		showError(e);
 	}
 }
 
-function ignoreError (sElemId) {  // ignore
-	let sIdErr = "err" + sElemId.slice(6);
-	let xTooltipElem = document.getElementById("tooltip"+sElemId.slice(6));
-	document.getElementById(sIdErr).removeChild(xTooltipElem);
-	document.getElementById(sIdErr).className = "ignored";
-	document.getElementById(sIdErr).removeAttribute("style");
-}
-
-function showTooltip (sElemId) {  // err
-	hideAllTooltips();
-	let sTooltipId = "tooltip" + sElemId.slice(3);
-	let xTooltipElem = document.getElementById(sTooltipId);
-	let nLimit = nPanelWidth - 300; // paragraph width - tooltip width
-	if (document.getElementById(sElemId).offsetLeft > nLimit) {
-		xTooltipElem.style.left = "-" + (document.getElementById(sElemId).offsetLeft - nLimit) + "px";
-	}
-	xTooltipElem.setAttribute("contenteditable", false);
-	xTooltipElem.className = 'tooltip_on';
-	if (document.getElementById(sElemId).className === "error WORD"  &&  xTooltipElem.textContent.endsWith(":")) {
-		// spelling mistake
-		self.port.emit("getSuggestionsForTo", document.getElementById(sElemId).innerHTML.replace(/<span .*$/, "").trim(), sTooltipId);
-	}
-}
-
-function switchEdition (sElemId) {  // edit
-	let sId = "paragr" + sElemId.slice(4);
-	if (document.getElementById(sId).hasAttribute("contenteditable") === false
-		|| document.getElementById(sId).getAttribute("contenteditable") === "false") {
-		document.getElementById(sId).setAttribute("contenteditable", true);
-		document.getElementById(sElemId).className = "button orange";
-		document.getElementById(sId).focus();
-	} else {
-		document.getElementById(sId).setAttribute("contenteditable", false);
-		document.getElementById(sElemId).className = "button";
-	}
-}
-
-function sendBackAndCheck (sElemId) {  // check
-	startWaitIcon();
-	let sIdParagr = sElemId.slice(5);
-	self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfElem("paragr"+sIdParagr));
-	stopWaitIcon();
-}
-
-function getPurgedTextOfElem (sId) {
-	// Note : getPurgedTextOfElem2 should work better if not buggy.
-	// if user writes in error, Fx adds tags <u></u>, we also remove style attribute
-	let xParagraphElem = document.getElementById(sId);
-	for (xNode of xParagraphElem.getElementsByTagName("u")) {
-		if (xNode.id.startsWith('err')) {
-			xNode.innerHTML = xNode.innerHTML.replace(/<\/?u>/g, "");
-			xNode.removeAttribute("style");
-		}
-	}
-	// we remove style attribute on tooltip
-	for (xNode of xParagraphElem.getElementsByTagName("span")) {
-		if (xNode.id.startsWith('tooltip')) {
-			xNode.removeAttribute("style");
-		}
-	}
-	// now, we remove tooltips, then errors, and we change some html entities
-	let sText = xParagraphElem.innerHTML;
-	sText = sText.replace(/<br\/? *> *$/ig, "");
-	sText = sText.replace(/<span id="tooltip.+?<\/span>/g, "");
-	sText = sText.replace(/<u id="err\w+" class="[\w ]+" href="#" onclick="return false;">(.+?)<\/u><!-- err_end -->/g, "$1");
-	sText = sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-	return sText;
-}
-
-function getPurgedTextOfElem2 (sId) {
-	// It is better to remove tooltips via DOM and retrieve textContent,
-	// but for some reason getElementsByClassName “hazardously” forgets elements.
-	// Unused. Needs investigation.
-	let xParagraphElem = document.getElementById(sId).cloneNode(true);
-	for (let xNode of xParagraphElem.getElementsByClassName("tooltip")) {
-		xNode.parentNode.removeChild(xNode);
-	}
-	return xParagraphElem.textContent;
-}
-
-function hideAllTooltips () {
-	for (let xElem of document.getElementsByClassName("tooltip_on")) {
-		xElem.className = "tooltip";
-		xElem.removeAttribute("style");
-	}
-}
-
-function setSpellSuggestionsFor (sWord, sSuggestions, sTooltipId) {
-	// spell checking suggestions
-	//console.log(sWord + ": " + sSuggestions);
-	let xTooltip = document.getElementById(sTooltipId);
-	if (sSuggestions === "") {
-		xTooltip.appendChild(document.createTextNode("Aucune."));
-	} else if (sSuggestions.startsWith("#")) {
-		xTooltip.appendChild(document.createTextNode(sSuggestions));
-	} else {
-		let lSugg = sSuggestions.split("|");
-		let iSugg = 0;
-		let sElemId = sTooltipId.slice(7);
-		for (let sSugg of lSugg) {
-			xTooltip.appendChild(_createSuggestion(sElemId, iSugg, sSugg));
-			xTooltip.appendChild(document.createTextNode(" "));
-			iSugg += 1;
-		}
-	}
-}
-
 function copyToClipboard () {
 	startWaitIcon();
 	try {
-		document.getElementById("clipboard_msg").textContent = "copie en cours…";
+		let xClipboardButton = document.getElementById("clipboard_msg");
+		xClipboardButton.textContent = "copie en cours…";
 		let sText = "";
 		for (let xNode of document.getElementById("errorlist").getElementsByClassName("paragraph")) {
-			sText += getPurgedTextOfElem(xNode.id);
-			sText += "\n";
+			sText += xNode.textContent + "\n";
 		}
 		self.port.emit('copyToClipboard', sText);
-		document.getElementById("clipboard_msg").textContent = "-> presse-papiers";
-		window.setTimeout(function() { document.getElementById("clipboard_msg").textContent = "∑"; } , 3000);
+		xClipboardButton.textContent = "-> presse-papiers";
+		window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 3000);
 	}
 	catch (e) {
 		console.log(e.lineNumber + ": " +e.message);
