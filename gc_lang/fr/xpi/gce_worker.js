@@ -126,7 +126,7 @@ function fullTests (sGCOptions="") {
     let sAllRes = "";
     for (let sRes of oTest.testParse()) {
         dump(sRes+"\n");
-        sAllRes += sRes+"<br/>";
+        sAllRes += sRes+"\n";
     }
     gce.setOptions(dMemoOptions);
     return sAllRes;
