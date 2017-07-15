@@ -95,6 +95,8 @@ window.addEventListener(
                     showTooltip(xElem.id);
                 } else if (xElem.id.startsWith("resize")) {
                     self.port.emit("resize", xElem.id, 10);
+                } else if (xElem.id === "gc_url") {
+                    self.port.emit("openURL", xElem.getAttribute("href"));
                 } else {
                     hideAllTooltips();
                 }
@@ -255,7 +257,7 @@ function applySuggestion (sSuggId) { // sugg
         xNodeErr.textContent = document.getElementById(sSuggId).textContent;
         xNodeErr.className = "corrected";
         xNodeErr.removeAttribute("style");
-        self.port.emit("correction", sIdParagr, document.getElementById("paragr"+sIdParagr).textContent);
+        self.port.emit("correction", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
         hideAllTooltips();
         stopWaitIcon("paragr"+sIdParagr);
     }
@@ -345,7 +347,7 @@ function _createSuggestion (sErrId, iSugg, sSugg) {
 function sendBackAndCheck (sCheckButtonId) {  // check
     startWaitIcon();
     let sIdParagr = sCheckButtonId.slice(5);
-    self.port.emit("modifyAndCheck", sIdParagr, document.getElementById("paragr"+sIdParagr).textContent);
+    self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
     stopWaitIcon();
 }
 
@@ -377,6 +379,12 @@ function setSpellSuggestionsFor (sWord, sSuggestions, sErrId) {
     catch (e) {
         showError(e);
     }
+}
+
+function getPurgedTextOfParagraph (sNodeParagrId) {
+    let sText = document.getElementById(sNodeParagrId).textContent;
+    sText = sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    return sText;
 }
 
 function copyToClipboard () {
