@@ -143,18 +143,19 @@ function addParagraph (sText, iParagraph, sJSON) {
         xDivActions.className = "actions";
         let xDivClose = document.createElement("div");
         xDivClose.id = "end" + iParagraph.toString();
-        xDivClose.className = "button red";
+        xDivClose.className = "button red bold";
         xDivClose.textContent = "×";
+        xDivActions.appendChild(xDivClose);
         /*let xDivEdit = document.createElement("div");
         xDivEdit.id = "edit" + iParagraph.toString();
         xDivEdit.className = "button";
-        xDivEdit.textContent = "Éditer";*/
+        xDivEdit.textContent = "Éditer";
+        xDivActions.appendChild(xDivEdit);*/
         let xDivCheck = document.createElement("div");
         xDivCheck.id = "check" + iParagraph.toString();
         xDivCheck.className = "button green";
         xDivCheck.textContent = "Réanalyser";
-        xDivActions.appendChild(xDivClose);
-        //xDivActions.appendChild(xDivEdit);
+        xDivCheck.setAttribute("title", "Réanalyser le texte");
         xDivActions.appendChild(xDivCheck);
         xNodeDiv.appendChild(xDivActions);
         // paragraph
