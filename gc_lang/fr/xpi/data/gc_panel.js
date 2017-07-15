@@ -86,8 +86,8 @@ window.addEventListener(
                     ignoreError(xElem.id);
                 } else if (xElem.id.startsWith("check")) {
                     sendBackAndCheck(xElem.id);
-                } else if (xElem.id.startsWith("edit")) {
-                    switchEdition(xElem.id);
+                /*} else if (xElem.id.startsWith("edit")) {
+                    switchEdition(xElem.id);*/
                 } else if (xElem.id.startsWith("end")) {
                     document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
                 } else if (xElem.tagName === "U" && xElem.id.startsWith("err")
@@ -136,15 +136,6 @@ function addParagraph (sText, iParagraph, sJSON) {
     try {
         let xNodeDiv = document.createElement("div");
         xNodeDiv.className = "paragraph_block";
-        // paragraph
-        let xParagraph = document.createElement("p");
-        xParagraph.id = "paragr" + iParagraph.toString();
-        xParagraph.lang = "fr";
-        xParagraph.setAttribute("spellcheck", false);
-        let oErrors = JSON.parse(sJSON);
-        xParagraph.className = (oErrors.aGrammErr.length || oErrors.aSpellErr.length) ? "paragraph softred" : "paragraph";
-        _tagParagraph(sText, xParagraph, iParagraph, oErrors.aGrammErr, oErrors.aSpellErr);
-        xNodeDiv.appendChild(xParagraph);
         // actions
         let xDivActions = document.createElement("div");
         xDivActions.className = "actions";
@@ -152,18 +143,28 @@ function addParagraph (sText, iParagraph, sJSON) {
         xDivClose.id = "end" + iParagraph.toString();
         xDivClose.className = "button red";
         xDivClose.textContent = "×";
-        let xDivEdit = document.createElement("div");
+        /*let xDivEdit = document.createElement("div");
         xDivEdit.id = "edit" + iParagraph.toString();
         xDivEdit.className = "button";
-        xDivEdit.textContent = "Éditer";
+        xDivEdit.textContent = "Éditer";*/
         let xDivCheck = document.createElement("div");
         xDivCheck.id = "check" + iParagraph.toString();
         xDivCheck.className = "button green";
         xDivCheck.textContent = "Réanalyser";
         xDivActions.appendChild(xDivClose);
-        xDivActions.appendChild(xDivEdit);
+        //xDivActions.appendChild(xDivEdit);
         xDivActions.appendChild(xDivCheck);
         xNodeDiv.appendChild(xDivActions);
+        // paragraph
+        let xParagraph = document.createElement("p");
+        xParagraph.id = "paragr" + iParagraph.toString();
+        xParagraph.lang = "fr";
+        xParagraph.setAttribute("spellcheck", false);
+        xParagraph.setAttribute("contenteditable", true);
+        let oErrors = JSON.parse(sJSON);
+        xParagraph.className = (oErrors.aGrammErr.length || oErrors.aSpellErr.length) ? "paragraph softred" : "paragraph";
+        _tagParagraph(sText, xParagraph, iParagraph, oErrors.aGrammErr, oErrors.aSpellErr);
+        xNodeDiv.appendChild(xParagraph);
         document.getElementById("errorlist").appendChild(xNodeDiv);
     }
     catch (e) {
@@ -328,7 +329,7 @@ function _createSuggestion (sErrId, iSugg, sSugg) {
     return xNodeSugg;
 }
 
-function switchEdition (sEditButtonId) {  // edit
+/*function switchEdition (sEditButtonId) {  // edit
     let xParagraph = document.getElementById("paragr" + sEditButtonId.slice(4));
     if (xParagraph.hasAttribute("contenteditable") === false
         || xParagraph.getAttribute("contenteditable") === "false") {
@@ -339,7 +340,7 @@ function switchEdition (sEditButtonId) {  // edit
         xParagraph.setAttribute("contenteditable", false);
         document.getElementById(sEditButtonId).className = "button";
     }
-}
+}*/
 
 function sendBackAndCheck (sCheckButtonId) {  // check
     startWaitIcon();
