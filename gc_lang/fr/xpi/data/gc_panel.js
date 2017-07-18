@@ -301,7 +301,7 @@ function showTooltip (sNodeErrorId) {  // err
         let xNodeTooltipArrow = document.getElementById(sTooltipId+"_arrow"); 
         let nLimit = nPanelWidth - 330; // paragraph width - tooltip width
         xNodeTooltipArrow.style.top = (xNodeErr.offsetTop + 16) + "px"
-        xNodeTooltipArrow.style.left = (xNodeErr.offsetLeft + Math.floor(xNodeErr.offsetWidth / 2)) + "px"
+        xNodeTooltipArrow.style.left = (xNodeErr.offsetLeft + Math.floor((xNodeErr.offsetWidth / 2))-4) + "px" // 4 is half the width of the arrow.
         xNodeTooltip.style.top = (xNodeErr.offsetTop + 20) + "px";
         xNodeTooltip.style.left = (xNodeErr.offsetLeft > nLimit) ? nLimit + "px" : xNodeErr.offsetLeft + "px";
         if (xNodeErr.dataset.error_type === "grammar") {
