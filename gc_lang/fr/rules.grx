@@ -2457,19 +2457,47 @@ TEST: Ce que tu ne fais {{pas jamais}}.
 
 ### incohérences globales (attention à la casse du 2e mot, car beaucoup de sigles peuvent tromper)
 __[s](incohérences_globales1)__
-    ([clmtsCLMTS]es|[nvNV]os|[aA]ux) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
+    ([clmtsCLMTS]es|[nvNV]os) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
     <<- -2>> =suggSimil(\2, ":[NA].*:[pi]")         # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 __[s](incohérences_globales2)__
-    ([cC]e(?:tte|t|)|[mtsMTS]a|[mM]on|[aA]u) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
+    ([cC]e(?:tte|t|)|[mtsMTS]a|[mM]on) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
     <<- -2>> =suggSimil(\2, ":[NA].*:[si]")         # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+TEST: {{Ces}} {{cette}} canaille qui nous a donné tant de fil à retordre.
+TEST: Mon {{il}} est une merveille.
+
+
+__[s](incohérence_globale_au_qqch)__
+    ([aA]u) ({w2})  @@0,$
+    <<- not \2.isupper() >>>
+    <<- morph(\2, ">(?:[cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on|parce) ", False)
+    -2>> =suggSimil(\2, ":[NA].*:[si]")                                                             # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    <<- __else__ and morph(\2, ">quelle ", False) ->> auquel|auxquels|auxquelles                    # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
+    <<- __else__ and \2 == "combien" and morph(word(1), ":[AY]", False) -1>> ô                      # Incohérence probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
+
+TEST: au {{nos}} enfants.
+TEST: {{Au quel}} faut-il s’adresser ?
+TEST: Au MES, rien de nouveau.
+
+
+__[s](incohérence_globale_aux_qqch)__
+    ([aA]ux) ({w2})  @@0,$
+    <<- not \2.isupper() >>>
+    <<- morph(\2, ">(?:[cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on|parce) ", False)
+    -2>> =suggSimil(\2, ":[NA].*:[pi]")                                                             # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    <<- __else__ and morph(\2, ">quelle ", False) ->> auxquels|auxquelles                           # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
+    <<- __else__ and \2 == "combien" and morph(word(1), ":[AY]", False) -1>> ô                      # Incohérence probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
+
+TEST: ils jouent aux {{des}}.
+TEST: {{Aux quels}} a-t-il adressé sa requête. ?
+TEST: Des individus {{aux}} combien sensibles aux usages.
+
+
 __[s](incohérences_globales3)__
     ([dD]es) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
     <<- -2>> =suggSimil(\2, ":[NA].*:[pi]")         # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
     <<- -1>> de                                     # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
-TEST: Au MES, rien de nouveau
-TEST: {{Ces}} {{cette}} canaille qui nous a donné tant de fil à retordre.
-TEST: Mon {{il}} est une merveille.
 TEST: je ne sais {{des}} {{ses}} choses.
 
 
