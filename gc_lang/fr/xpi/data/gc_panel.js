@@ -4,6 +4,14 @@ let nPanelWidth = 0;  // must be set at launch
 let bExpanded = true;
 
 /*
+    Ignored errors
+    idendified by <sIgnoredKey>
+    sIgnoredKey: <iParagraph:nStart:nEnd:sUnderlined> 
+*/
+let aIgnoredErrors = new Set();
+
+
+/*
     Events
 */
 
@@ -57,6 +65,7 @@ self.port.on("showMessage", function (sText) {
 
 self.port.on("clearErrors", function (sHtml) {
     document.getElementById("errorlist").textContent = "";
+    aIgnoredErrors.clear();
     hideAllTooltips();
 });
 
@@ -209,7 +218,8 @@ function _tagParagraph (sParagraph, xParagraph, iParagraph, aSpellErr, aGrammErr
             let nStart = oErr["nStart"];
             let nEnd = oErr["nEnd"];
             if (nStart >= nEndLastErr) {
-                oErr["sId"] = iParagraph.toString() + "_" + nErr.toString(); // error identifier
+                oErr['sErrorId'] = iParagraph.toString() + "_" + nErr.toString(); // error identifier
+                oErr['sIgnoredKey'] = iParagraph.toString() + ":" + nStart.toString() + ":" + nEnd.toString() + ":" + sParagraph.slice(nStart, nEnd);
                 if (nEndLastErr < nStart) {
                     xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr, nStart)));
                 }
@@ -230,10 +240,10 @@ function _tagParagraph (sParagraph, xParagraph, iParagraph, aSpellErr, aGrammErr
 
 function _createError (sUnderlined, oErr) {
     let xNodeErr = document.createElement("u");
-    xNodeErr.id = "err" + oErr['sId'];
-    xNodeErr.className = "error " + oErr['sType'];
+    xNodeErr.id = "err" + oErr['sErrorId'];
     xNodeErr.textContent = sUnderlined;
-    xNodeErr.dataset.error_id = oErr['sId'];
+    xNodeErr.dataset.error_id = oErr['sErrorId'];
+    xNodeErr.dataset.ignored_key = oErr['sIgnoredKey'];
     xNodeErr.dataset.error_type = (oErr['sType'] === "WORD") ? "spelling" : "grammar";
     xNodeErr.setAttribute("href", "#");
     xNodeErr.setAttribute("onclick", "return false;");
@@ -246,6 +256,7 @@ function _createError (sUnderlined, oErr) {
         }
         xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
     }
+    xNodeErr.className = (aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "ignored" : "error " + oErr['sType'];
     return xNodeErr;
 }
 
@@ -269,8 +280,9 @@ function applySuggestion (sSuggId) { // sugg
 
 function ignoreError (sIgnoreButtonId) {  // ignore
     try {
-        console.log("ignore button: " + sIgnoreButtonId + " // error id: " + document.getElementById(sIgnoreButtonId).dataset.error_id);
+        //console.log("ignore button: " + sIgnoreButtonId + " // error id: " + document.getElementById(sIgnoreButtonId).dataset.error_id);
         let xNodeErr = document.getElementById("err"+document.getElementById(sIgnoreButtonId).dataset.error_id);
+        aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
         xNodeErr.className = "ignored";
         xNodeErr.removeAttribute("style");
         hideAllTooltips();
@@ -283,37 +295,37 @@ function ignoreError (sIgnoreButtonId) {  // ignore
 function showTooltip (sNodeErrorId) {  // err
     try {
         hideAllTooltips();
-        let xNodeError = document.getElementById(sNodeErrorId);
-        let sTooltipId = (xNodeError.dataset.error_type === "grammar") ? "gc_tooltip" : "sc_tooltip";
+        let xNodeErr = document.getElementById(sNodeErrorId);
+        let sTooltipId = (xNodeErr.dataset.error_type === "grammar") ? "gc_tooltip" : "sc_tooltip";
         let xNodeTooltip = document.getElementById(sTooltipId);
         let nLimit = nPanelWidth - 330; // paragraph width - tooltip width
-        xNodeTooltip.style.top = (xNodeError.offsetTop + 16) + "px";
-        xNodeTooltip.style.left = (xNodeError.offsetLeft > nLimit) ? nLimit + "px" : xNodeError.offsetLeft + "px";
-        if (xNodeError.dataset.error_type === "grammar") {
+        xNodeTooltip.style.top = (xNodeErr.offsetTop + 16) + "px";
+        xNodeTooltip.style.left = (xNodeErr.offsetLeft > nLimit) ? nLimit + "px" : xNodeErr.offsetLeft + "px";
+        if (xNodeErr.dataset.error_type === "grammar") {
             // grammar error
-            document.getElementById("gc_message").textContent = xNodeError.dataset.gc_message;
-            if (xNodeError.dataset.gc_url != "") {
+            document.getElementById("gc_message").textContent = xNodeErr.dataset.gc_message;
+            if (xNodeErr.dataset.gc_url != "") {
                 document.getElementById("gc_url").style.display = "inline";
-                document.getElementById("gc_url").setAttribute("href", xNodeError.dataset.gc_url);
+                document.getElementById("gc_url").setAttribute("href", xNodeErr.dataset.gc_url);
             } else {
                 document.getElementById("gc_url").style.display = "none";
             }
-            document.getElementById("gc_ignore").dataset.error_id = xNodeError.dataset.error_id;
+            document.getElementById("gc_ignore").dataset.error_id = xNodeErr.dataset.error_id;
             let iSugg = 0;
             let xGCSugg = document.getElementById("gc_sugg_block");
             xGCSugg.textContent = "";
-            for (let sSugg of xNodeError.dataset.suggestions.split("|")) {
-                xGCSugg.appendChild(_createSuggestion(xNodeError.dataset.error_id, iSugg, sSugg));
+            for (let sSugg of xNodeErr.dataset.suggestions.split("|")) {
+                xGCSugg.appendChild(_createSuggestion(xNodeErr.dataset.error_id, iSugg, sSugg));
                 xGCSugg.appendChild(document.createTextNode(" "));
                 iSugg += 1;
             }
         }
         xNodeTooltip.style.display = "block";
-        if (xNodeError.dataset.error_type === "spelling") {
+        if (xNodeErr.dataset.error_type === "spelling") {
             // spelling mistake
-            document.getElementById("sc_ignore").dataset.error_id = xNodeError.dataset.error_id;
-            //console.log("getSuggFor: " + xNodeError.textContent.trim() + " // error_id: " + xNodeError.dataset.error_id);
-            self.port.emit("getSuggestionsForTo", xNodeError.textContent.trim(), xNodeError.dataset.error_id);
+            document.getElementById("sc_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+            //console.log("getSuggFor: " + xNodeErr.textContent.trim() + " // error_id: " + xNodeErr.dataset.error_id);
+            self.port.emit("getSuggestionsForTo", xNodeErr.textContent.trim(), xNodeErr.dataset.error_id);
         }
     }
     catch (e) {
