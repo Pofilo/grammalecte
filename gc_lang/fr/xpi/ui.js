@@ -352,7 +352,6 @@ function checkAndSendToPanel (sIdParagraph, sText) {
     let xPromise = xGCEWorker.post('parseAndSpellcheck', [sText, "FR", false, false]);
     xPromise.then(
         function (aVal) {
-            sText = text.addHtmlEntities(sText);
             xGCPanel.port.emit("refreshParagraph", sText, sIdParagraph, aVal);
         },
         function (aReason) {
