@@ -306,7 +306,14 @@ function showTooltip (sNodeErrorId) {  // err
         xNodeTooltip.style.left = (xNodeErr.offsetLeft > nLimit) ? nLimit + "px" : xNodeErr.offsetLeft + "px";
         if (xNodeErr.dataset.error_type === "grammar") {
             // grammar error
-            document.getElementById("gc_message").textContent = xNodeErr.dataset.gc_message;
+            if (xNodeErr.dataset.gc_message.includes(" ##")) {
+                let n = xNodeErr.dataset.gc_message.indexOf(" ##");
+                document.getElementById("gc_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
+                document.getElementById("gc_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
+                document.getElementById("gc_rule_id").style.display = "block";
+            } else {
+                document.getElementById("gc_message").textContent = xNodeErr.dataset.gc_message;
+            }
             if (xNodeErr.dataset.gc_url != "") {
                 document.getElementById("gc_url").style.display = "inline";
                 document.getElementById("gc_url").setAttribute("href", xNodeErr.dataset.gc_url);
@@ -370,6 +377,7 @@ function sendBackAndCheck (sCheckButtonId) {  // check
 
 function hideAllTooltips () {
     document.getElementById("gc_tooltip").style.display = "none";
+    document.getElementById("gc_rule_id").style.display = "none";
     document.getElementById("sc_tooltip").style.display = "none";
     document.getElementById("gc_tooltip_arrow").style.display = "none";
     document.getElementById("sc_tooltip_arrow").style.display = "none";
