@@ -1,0 +1,90 @@
+/*
+    flexbox:
+    https://css-tricks.com/snippets/css/a-guide-to-flexbox/
+*/
+
+
+/* Cleaner */
+
+* { margin: 0; padding: 0; }
+img { border: none; }
+
+
+/* Generic classes */
+
+.fleft { float: left; }
+.fright { float: right; }
+.fleftm { float: left; margin-right: 10px; }
+.frightm { float: right; margin-left: 10px; }
+.clearer { clear: both; font-size: 0; height: 0; }
+.center { text-align: center; }
+
+
+a:link, a:visited {
+    color: hsl(210, 70%, 40%);
+    /*text-decoration: none;*/
+}
+a:hover, a:active {
+    text-shadow: 0 0 2px hsl(210, 80%, 60%);
+}
+
+a.extlink:hover:after {
+    content: " >";
+}
+
+::-moz-selection {
+    background-color: hsl(210, 50%, 60%);
+    color: hsl(210, 20%, 100%);
+    text-shadow: 0 0 2px hsl(210, 80%, 20%);
+    border-radius: 2px;
+}
+::selection {
+    background-color: hsl(210, 50%, 60%);
+    color: hsl(210, 20%, 100%);
+    text-shadow: 0 0 2px hsl(210, 80%, 20%);
+    border-radius: 2px;
+}
+
+
+/* Main classes */
+
+html {
+    box-sizing: border-box;
+    width: 530px;
+    height: 600px;
+    font-family: "Trebuchet MS", "Liberation Sans", sans-serif;
+}
+body {
+    width: 530px;
+    height: 600px;
+}
+
+#main {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    background-color: hsl(210, 0%, 100%);
+    min-height: 100%;
+}
+#left {
+    width: 30px;
+    padding: 20px;
+    background-color: hsl(210, 10%, 96%);
+    border-right: solid 1px hsl(210, 0%, 70%);
+    color: hsl(210, 10%, 96%);
+}
+
+#page {
+    background-color: hsl(210, 0%, 100%);
+    padding: 10px;
+}
+
+#page p {
+    margin: 10px 0 5px 0;
+}
+#page h2 {
+    margin: 20px 0 10px 0;
+    color: hsl(210, 70%, 70%);
+    font: bold 42px 'Yanone Kaffeesatz', "Liberation Sans Narrow", sans-serif;
+}
