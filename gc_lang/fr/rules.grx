@@ -7898,15 +7898,16 @@ TEST: Elle a acheté un nouveau fond de {{tain}}.
 
 # tort / tord
 __[i]/conf(conf_à_tort)__
-    à (tords?) @@2 <<- -1>> tort                                    # Confusion : “tord” est une conjugaison du verbe tordre.
+    à (tor[de]?s?) @@2 <<- -1>> tort                                # Confusion : “tord” est une conjugaison du verbe tordre.
 __[i]/conf(conf_avoir_tort)__
-    ({avoir}) +(tords?) @@0,$
-    <<- morph(\1, ">avoir ", False) -2>> tort                       # Confusion : “tord” est une conjugaison du verbe tordre.
+    ({avoir}|donn\w+) +(tor[ed]?s?) @@0,$
+    <<- morph(\1, ">(?:avoir|donner) ", False) -2>> tort            # Confusion : “tord” est une conjugaison du verbe tordre.
 
 TEST: elles seront à {{tord}} accusées.
 TEST: ils ont {{tords}}…
 TEST: ils ont {{tord}}.
 TEST: ils n’ont pas {{tord}}.
+TEST: je ne peux pas lui donner {{tord}}.
 
 
 # venimeux / vénéneux
