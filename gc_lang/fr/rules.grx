@@ -4699,7 +4699,9 @@ __[i](p_maréchal_des_logis)__           maréchale?s? (des logis(?:[ -]chef|)) 
 __[i](p_mère_au_foyer)__                mères? (au foyer) @@$ <<- ~1>> *
 __[i](p_metteur_en_scène)__             metteu(?:r|se)s? (en scène) @@$ <<- ~1>> *
 __[i](p_mineur_de_moins_de_x_ans)__     mineure?s? (de moins de ({w1}) ans) @@$,>1:w <<- \2.isdigit() or morph(\2, ":B", False) ~1>> *
-__[i](p_mise)__                         mis(?:es?|) (à (?:jour|niveau|plat|l’écart)|au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|scène|terre)) @@$ <<- ~1>> *
+__[i](p_mettre_qqch)__
+    (m(?:et|[iî][mst])\w*) +(à (?:jour|niveau|plat|l’écart)|au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@$
+    <<- morph(\1, ">mettre ", False) ~2>> *
 __[i](p_mode_de)__                      modes? (de (?:paiement|scrutin|vie)) @@$ <<- ~1>> *
 __[i](p_mot_de_passe)__                 mots? (de passe) @@$ <<- ~1>> *
 __[i](p_motion_de)__                    motions? (de (?:blâme|censure|défiance)) @@$ <<- ~1>> *
