@@ -3243,6 +3243,14 @@ TEST: elle à qui nous avons donné notre cœur et pour laquelle nous avons tout
 TEST: jusqu’à parfois se mettre en danger
 
 
+__[i]/conf(conf_celui_celle_à_qui)__
+    ce(?:lui|lles?|ux) (a) qui
+    <<- -1>> à                                  # Confusion. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: Ceux {{a}} qui nous avons notifié le problème sont partis.
+TEST: Il y a qui au dîner ce soir ?
+
+
 __[i]/conf(conf_mener_à_bien)__
     (m[eèé]n\w+) (a) bien  @@0,w
     <<- morph(\1, ">mener ", False) and ( not before(r"\bque? ") or morph(word(-1), ">(?:falloir|aller|pouvoir) ", False, True) )
@@ -4675,7 +4683,7 @@ __[i](p_état_de)__                      états? (d’(?:âme|e(?:sprit|xtrême 
 __[i](p_faire_qqch)__
     (f[aiîeo]\w*) +(tous(?: deux| trois|) +|)(allusion|assaut|confiance|compliqué|chaud|débat|demi-tour|froid|gr(?:ise mine|and cas)|h(?:alte|onte)|ma(?:chine|rche) arrière|p(?:art(?:ie(?: intégrante|)|)|eur|rofil bas)|rage|salle comble|sens|table rase|volte-face|ce que bon (?:me|te|lui|leur|nous|vous) semble) @@0,*,$
     <<- morph(\1, ">faire ", False) ~2>> *
-    <<- morph(\1, ">faire ", False) ~3>> *
+    <<- __also__ ~3>> *
 __[i](p_expérience_utilisateur)__       expériences? +(utilisateurs?) @@$ <<- ~1>> *
 __[i](p_fard_à_paupières)__             fards? (à paupières) @@$ <<- ~1>> *
 __[i](p_fille)__                        filles? (au pair|à (?:papa|maman)) @@$ <<- ~1>> *
