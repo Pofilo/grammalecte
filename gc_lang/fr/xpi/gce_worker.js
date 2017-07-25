@@ -86,30 +86,8 @@ function parse (sText, sLang, bDebug, bContext) {
 
 function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
     let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
-    let aSpellErr = [];
-    for (let oToken of oTokenizer.genTokens(sText)) {
-        if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
-            aSpellErr.push(oToken);
-        }
-    }
+    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
-}
-
-function parseAndTag (sText, iParagraph, sLang, bDebug) {
-    sText = text.addHtmlEntities(sText);
-    let aSpellErr = [];
-    for (let oToken of oTokenizer.genTokens(sText)) {
-        if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
-            aSpellErr.push(oToken);
-        }
-    }
-    let aGrammErr = gce.parse(sText, sLang, bDebug);
-    let sHtml = text.tagParagraph(sText, iParagraph, aGrammErr, aSpellErr);
-    return sHtml;
-}
-
-function parseAndGenerateParagraph (sText, iParagraph, sLang, bDebug) {
-    return text.createHTMLBlock(parseAndTag(sText, iParagraph, sLang, bDebug), iParagraph);
 }
 
 function getOptions () {
@@ -148,7 +126,7 @@ function fullTests (sGCOptions="") {
     let sAllRes = "";
     for (let sRes of oTest.testParse()) {
         dump(sRes+"\n");
-        sAllRes += sRes+"<br/>";
+        sAllRes += sRes+"\n";
     }
     gce.setOptions(dMemoOptions);
     return sAllRes;
@@ -157,6 +135,19 @@ function fullTests (sGCOptions="") {
 
 // Lexicographer
 
-function analyzeWords (sText) {
-    return oLxg.analyzeText(sText);
+function getListOfElements (sText) {
+    try {
+        let aElem = [];
+        let aRes = null;
+        for (let oToken of oTokenizer.genTokens(sText)) {
+            aRes = oLxg.getInfoForToken(oToken);
+            if (aRes) {
+                aElem.push(aRes);
+            }
+        }
+        return JSON.stringify(aElem);
+    }
+    catch (e) {
+        helpers.logerror(e);
+    }
 }

@@ -7,15 +7,12 @@ header {
     padding: 10px 20px;
     border-bottom: 1px solid hsl(0, 0%, 90%);
     color: hsl(0, 0%, 0%);
-    z-index: 99;
 }
 
-
-
 body {
-	background-color: hsl(0, 0%, 98%);
-	font-family: Tahoma, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
-	overflow-x: hidden;
+    background-color: hsl(0, 0%, 98%);
+    font-family: Tahoma, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+    overflow-x: hidden;
     color: hsl(0, 0%, 0%);
 }
 
@@ -52,11 +49,15 @@ body {
     color: hsla(0, 0%, 100%, .9);
     font-size: 16px;
     font-weight: bold;
-    z-index: 99;
 }
 #message {
     padding: 10px 20px;
 }
+
+
+/*
+    Error list
+*/
 
 #errorlist {
     padding: 60px 20px 30px 20px;
@@ -71,9 +72,14 @@ body {
     border-radius: 3px;
     text-align: center;
 }
+
 #errorlist p.green {
     background-color: hsla(120, 10%, 50%, 1);
     color: hsla(120, 0%, 96%, 1);
+}
+
+.paragraph_block {
+    margin: 0 0 10px 0;
 }
 
 .paragraph {
@@ -88,7 +94,7 @@ body {
     background-color: hsla(0, 20%, 90%, 1);
 }
 .softgreen {
-    background-color: hsla(120, 20%, 90%, 1);
+    background-color: hsla(120, 15%, 90%, 1);
 }
 
 .paragraph a {
@@ -105,32 +111,8 @@ body {
     text-shadow: 0 0 3px hsl(210, 30%, 60%);
 }
 
-.paragraph a.sugg {
-    padding: 1px 6px;
-    background-color: hsla(150, 50%, 40%, 1);
-    color: hsla(150, 0%, 96%, 1);
-    border-radius: 2px;
-    cursor: pointer;
+.paragraph u {
     text-decoration: none;
-}
-.paragraph a.sugg:hover {
-    background-color: hsla(150, 70%, 30%, 1);
-    color: hsla(0, 0%, 100%, 1);
-    text-shadow: 0 0 3px hsl(150, 30%, 60%);
-}
-
-.paragraph a.ignore {
-    padding: 0 2px;
-    background-color: hsla(30, 20%, 60%, 1);
-    color: hsla(30, 0%, 96%, 1);
-    border-radius: 2px;
-    cursor: pointer;
-    text-decoration: none;
-}
-.paragraph a.ignore:hover {
-    background-color: hsla(30, 20%, 50%, 1);
-    color: hsla(0, 0%, 100%, 1);
-    text-shadow: 0 0 3px hsl(30, 30%, 60%);
 }
 
 .paragraph u.corrected,
@@ -154,58 +136,143 @@ body {
     cursor: pointer;
 }
 
-.paragraph u.error .tooltip, .paragraph u.error .tooltip_on {
+
+/* 
+    TOOLTIPS
+*/
+.tooltip {
     position: absolute;
-    background-color: hsla(210, 10%, 90%, 1);
+    display: none;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 0 6px hsla(0, 0%, 0%, 0.3);
     font-family: Tahoma, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
-    top: 90%;
-    left: 0;
-    width: 250px;
     font-size: 12px;
     line-height: 18px;
-    color: hsla(0, 10%, 20%, 1);
     cursor: default;
-    /*visibility: hidden;*/
+    text-decoration: none;
+}
+#gc_tooltip {
+    border: 3px solid hsl(210, 50%, 30%);
+    color: hsla(210, 10%, 20%, 1);
+}
+#sc_tooltip {
+    border: 3px solid hsl(0, 50%, 30%);
+    color: hsla(0, 10%, 20%, 1);
+}
+#gc_tooltip_arrow, #sc_tooltip_arrow {
+    position: absolute;
     display: none;
-    padding: 10px;
-    box-shadow: 0 0 6px hsla(0, 0%, 0%, 0.3);
-    z-index: 10;
-    border: 2px solid hsl(0, 0%, 0%);
-    border-radius: 3px;
-    text-decoration: none;
 }
-.paragraph u.error .tooltip_on {
-    display: block;
-}
-
-.tooltip_on s {
-    color: hsla(0, 0%, 66%, 1);
-    font-weight: bold;
-    font-size: 8px;
-    line-height: 16px;
-    text-transform: uppercase;
-    text-decoration: none;
-}
-
-.debug {
-    float: right;
-    background-color: hsla(0, 5%, 35%, 1);
+#gc_tooltip #gc_rule_id {
+    display: none;
+    margin: 0 0 5px 0;
+    border: 1px solid hsl(210, 50%, 60%);
+    background-color: hsl(210, 50%, 40%);
     padding: 2px 5px;
-    margin-left: 5px;
     border-radius: 2px;
-    color: hsla(0, 0%, 96%, 1);
+    color: hsla(210, 0%, 96%, 1);
     font-size: 11px;
     font-style: normal;
+    text-align: center;
+}
+#gc_message_block {
+    padding: 5px 10px 10px 10px;
+    background-color: hsl(210, 50%, 30%);
+    color: hsl(210, 50%, 96%);
+}
+#sc_message_block {
+    padding: 5px 10px 10px 10px;
+    background-color: hsl(0, 50%, 30%);
+    color: hsl(0, 50%, 96%);
+}
+#gc_message, #sc_message {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+a#gc_ignore, a#sc_ignore {
+    padding: 0 2px;
+    background-color: hsla(30, 30%, 40%, 1);
+    color: hsla(30, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+a#gc_ignore:hover, a#sc_ignore:hover {
+    background-color: hsla(30, 30%, 50%, 1);
+    color: hsla(0, 0%, 100%, 1);
+    text-shadow: 0 0 3px hsl(30, 30%, 60%);
+}
+a#gc_url {
+    padding: 0 2px;
+    background-color: hsla(210, 50%, 50%, 1);
+    color: hsla(210, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+a#gc_url:hover {
+    background-color: hsla(210, 50%, 60%, 1);
+    color: hsla(0, 0%, 100%, 1);
+    text-shadow: 0 0 3px hsl(210, 30%, 60%);
+}
+#gc_sugg_title {
+    padding: 0 10px;
+    background-color: hsl(210, 10%, 90%);
+    color: hsl(210, 50%, 30%);
+    font-size: 10px;
+    font-weight: bold;
+}
+#sc_sugg_title {
+    padding: 0 10px;
+    background-color: hsl(0, 10%, 90%);
+    color: hsl(0, 50%, 30%);
+    font-size: 9px;
+    font-weight: bold;
+}
+#gc_sugg_block {
+    padding: 10px;
+    background-color: hsl(210, 10%, 96%);
+    border-radius: 0 0 2px 2px;
+    line-height: 20px;
+}
+#sc_sugg_block {
+    padding: 10px;
+    background-color: hsl(0, 10%, 96%);
+    border-radius: 0 0 2px 2px;
+    line-height: 20px;
+}
+#gc_sugg_block a.sugg {
+    padding: 1px 6px;
+    background-color: hsla(180, 60%, 40%, 1);
+    color: hsla(180, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+#gc_sugg_block a.sugg:hover {
+    background-color: hsla(180, 70%, 45%, 1);
+    color: hsla(0, 0%, 100%, 1);
+}
+#sc_sugg_block a.sugg {
+    padding: 1px 6px;
+    background-color: hsla(30, 90%, 45%, 1);
+    color: hsla(30, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+#sc_sugg_block a.sugg:hover {
+    background-color: hsla(30, 100%, 50%, 1);
+    color: hsla(0, 0%, 100%, 1);
 }
 
-.data {
-    font-style: normal;
-}
-
+/*
+    Action buttons
+*/
 
 .actions {
-    margin-top: -10px;
-    margin-bottom: 10px;
+    margin: 0 0 5px 10px;
 }
 
 .actions .button {
@@ -218,7 +285,6 @@ body {
     height: 18px;*/
     cursor: pointer;
     font-size: 14px;
-    font-weight: bold;
     color: hsl(0, 0%, 96%);
     border-radius: 2px;
 }
@@ -251,6 +317,9 @@ body {
     background-color: hsl(30, 70%, 40%);
     color: hsl(30, 0%, 100%);
 }
+.actions .bold {
+    font-weight: bold;
+}
 
 
 /*
@@ -268,12 +337,12 @@ body {
 }
 
 /* elems */
-.spell {
+.WORD {
     background-color: hsl(0, 50%, 50%);
     color: hsl(0, 0%, 96%);
     /*text-decoration: underline wavy hsl(0, 50%, 50%);*/
 }
-.spell:hover {
+.WORD:hover {
     background-color: hsl(0, 60%, 40%);
     color: hsl(0, 0%, 100%);
 }

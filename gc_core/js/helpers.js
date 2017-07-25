@@ -32,6 +32,15 @@ function logerror (e, bStack=false) {
     }
 }
 
+function inspect (o) {
+    let sMsg = "__inspect__: " + typeof o;
+    for (let sParam in o) {
+        sMsg += "\n" + sParam + ": " + o.sParam;
+    }
+    sMsg += "\n" + JSON.stringify(o) + "\n__end__";
+    echo(sMsg);
+}
+
 
 // load ressources in workers (suggested by Mozilla extensions reviewers)
 // for more options have a look here: https://gist.github.com/Noitidart/ec1e6b9a593ec7e3efed
@@ -80,9 +89,10 @@ function mapToObject (m) {
     return obj;
 }
 
+exports.setLogOutput = setLogOutput;
 exports.echo = echo;
 exports.logerror = logerror;
+exports.inspect = inspect;
 exports.objectToMap = objectToMap;
 exports.mapToObject = mapToObject;
-exports.setLogOutput = setLogOutput;
 exports.loadFile = loadFile;

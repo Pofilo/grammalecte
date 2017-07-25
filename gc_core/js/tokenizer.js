@@ -5,13 +5,12 @@
 
 const helpers = require("resource://grammalecte/helpers.js");
 
-
 const aPatterns = {
     // All regexps must start with ^.
     "default":
         [
             [/^[   \t]+/, 'SPACE'],
-            [/^[,.;:!?…«»“”"()/·]+/, 'SEPARATOR'],
+            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]+/, 'SEPARATOR'],
             [/^(?:https?:\/\/|www[.]|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_]+[@.][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_]+[@.])[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.\/?&!%=+*"'@$#-]+/, 'LINK'],
             [/^[#@][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+/, 'TAG'],
             [/^<[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+.*?>|<\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+ *>/, 'HTML'],
@@ -24,7 +23,7 @@ const aPatterns = {
     "fr":
         [
             [/^[   \t]+/, 'SPACE'],
-            [/^[,.;:!?…«»“”"()/·]+/, 'SEPARATOR'],
+            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]+/, 'SEPARATOR'],
             [/^(?:https?:\/\/|www[.]|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_]+[@.][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_]+[@.])[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.\/?&!%=+*"'@$#-]+/, 'LINK'],
             [/^[#@][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+/, 'TAG'],
             [/^<[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+.*?>|<\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+ *>/, 'HTML'],
@@ -32,7 +31,7 @@ const aPatterns = {
             [/^&\w+;(?:\w+;|)/, 'HTMLENTITY'],
             [/^(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`]/i, 'ELPFX'],
             [/^\d\d?[hm]\d\d\b/, 'HOUR'],
-            [/^\d+(?:er|nd|e|de|ième|ème|eme)\b/, 'ORDINAL'],
+            [/^\d+(?:er|nd|e|de|ième|ème|eme)s?\b/, 'ORDINAL'],
             [/^-?\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)*/, 'WORD']
         ]
@@ -46,7 +45,7 @@ class Tokenizer {
         if (!aPatterns.hasOwnProperty(sLang)) {
             this.sLang = "default";
         }
-        this.aRules = aPatterns[sLang];
+        this.aRules = aPatterns[this.sLang];
     };
 
     * genTokens (sText) {
@@ -57,7 +56,13 @@ class Tokenizer {
             for (let [zRegex, sType] of this.aRules) {
                 try {
                     if ((m = zRegex.exec(sText)) !== null) {
-                        yield { "sType": sType, "sValue": m[0], "nStart": i, "nEnd": i + m[0].length }
+                        if (sType == 'SEPARATOR') {
+                            for (let c of m[0]) {
+                                yield { "sType": sType, "sValue": c, "nStart": i, "nEnd": i + m[0].length }    
+                            }
+                        } else {
+                            yield { "sType": sType, "sValue": m[0], "nStart": i, "nEnd": i + m[0].length }    
+                        }
                         nCut = m[0].length;
                         break;
                     }
@@ -69,6 +74,16 @@ class Tokenizer {
             i += nCut;
             sText = sText.slice(nCut);
         }
+    };
+
+    getSpellingErrors (sText, oDict) {
+        let aSpellErr = [];
+        for (let oToken of this.genTokens(sText)) {
+            if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
+                aSpellErr.push(oToken);
+            }
+        }
+        return aSpellErr;
     }
 }
 

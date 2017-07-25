@@ -451,7 +451,7 @@ def pyRuleToJS (lRule):
     for aAction in lRuleJS[6]:
         if aAction[1] == "-":
             aAction[2] = aAction[2].replace(" ", " ") # nbsp --> nnbsp
-            aAction[4] = aAction[4].replace("« ", "«&nbsp;").replace(" »", "&nbsp;»")
+            aAction[4] = aAction[4].replace("« ", "« ").replace(" »", " »").replace(" :", " :").replace(" :", " :")
     # js regexes
     lRuleJS[1], lNegLookBehindRegex = regex2js( dJSREGEXES.get(lRuleJS[3], lRuleJS[1]) )
     lRuleJS.append(lNegLookBehindRegex)

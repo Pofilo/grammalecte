@@ -220,7 +220,7 @@ function _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppe
         sMessage = sMsg._expand(m);
     }
     if (bIdRule) {
-        sMessage += "  #" + sLineId + " #" + sRuleId;
+        sMessage += " ##" + sLineId + " #" + sRuleId;
     }
     oErr["sMessage"] = sMessage;
     // URL

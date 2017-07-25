@@ -39,15 +39,16 @@ function* wrap (sText, nWidth=80) {
 function getReadableError (oErr) {
     // Returns an error oErr as a readable error
     try {
-        let s = "\n* " + oErr['nStart'] + ":" + oErr['nEnd'] + "  # " + oErr['sRuleId']+":\n";
-        s += "  " + oErr["sMessage"];
+        let sResult = "\n* " + oErr['nStart'] + ":" + oErr['nEnd'] 
+                    + "  # " + oErr['sLineId'] + "  # " + oErr['sRuleId'] + ":\n";
+        sResult += "  " + oErr["sMessage"];
         if (oErr["aSuggestions"].length > 0) {
-            s += "\n  > Suggestions : " + oErr["aSuggestions"].join(" | ");
+            sResult += "\n  > Suggestions : " + oErr["aSuggestions"].join(" | ");
         }
         if (oErr["URL"] !== "") {
-            s += "\n  > URL: " + oErr["URL"];
+            sResult += "\n  > URL: " + oErr["URL"];
         }
-        return s;
+        return sResult;
     }
     catch (e) {
         helpers.logerror(e);

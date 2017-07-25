@@ -349,10 +349,10 @@ function checkConsistency (sText) {
 }
 
 function checkAndSendToPanel (sIdParagraph, sText) {
-    let xPromise = xGCEWorker.post('parseAndTag', [sText, parseInt(sIdParagraph), "FR", false]);
+    let xPromise = xGCEWorker.post('parseAndSpellcheck', [sText, "FR", false, false]);
     xPromise.then(
         function (aVal) {
-            xGCPanel.port.emit("refreshParagraph", sIdParagraph, aVal);
+            xGCPanel.port.emit("refreshParagraph", sText, sIdParagraph, aVal);
         },
         function (aReason) {
             console.error('Promise rejected - ', aReason);
@@ -418,16 +418,16 @@ async function sendTextToPanel (sText) {
         sText = sText.normalize("NFC"); // remove combining diacritics
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                sRes = await xGCEWorker.post('parseAndGenerateParagraph', [sParagraph, iParagraph, "FR", false])
-                xGCPanel.port.emit("addElem", sRes);
+                sRes = await xGCEWorker.post('parseAndSpellcheck', [sParagraph, "FR", false, false]);
+                xGCPanel.port.emit("addParagraph", sParagraph, iParagraph, sRes);
                 nParagraph += 1;
             }
             iParagraph += 1;
         }
-        xGCPanel.port.emit("addElem", '<p class="message">' + _("numberOfParagraphs") + " " + nParagraph + '</p>');
+        xGCPanel.port.emit("addMessage", 'message', _("numberOfParagraphs") + " " + nParagraph);
     }
     catch (e) {
-        xGCPanel.port.emit("addElem", '<p class="bug">' + e.message + '</p>');
+        xGCPanel.port.emit("addMessage", 'bug', e.message);
     }
     xGCPanel.port.emit("end");
 }
@@ -571,15 +571,15 @@ async function analyzeWords (sText) {
     try {
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                sRes = await xGCEWorker.post('analyzeWords', [sParagraph])
-                xLxgPanel.port.emit("addElem", sRes);
+                sRes = await xGCEWorker.post('getListOfElements', [sParagraph]);
+                xLxgPanel.port.emit("addParagraphElems", sRes);
                 nParagraph += 1;
             }
         }
-        xLxgPanel.port.emit("addElem", '<p class="message">' + _("numberOfParagraphs") + " " + nParagraph + '</p>');
+        xLxgPanel.port.emit("addMessage", 'message', _("numberOfParagraphs") + " " + nParagraph);
     }
     catch (e) {
-        xLxgPanel.port.emit("addElem", '<p class="bug">'+e.message+"</p>");
+        xLxgPanel.port.emit("addMessage", 'bug', e.message);
     }
     xLxgPanel.port.emit("stopWaitIcon");
 }
