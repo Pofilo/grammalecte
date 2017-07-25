@@ -168,7 +168,7 @@ function createAboutPanel () {
                 bottom: 0
             },
             width: 340,
-            height: 670
+            height: 730
         });
 
         xAboutPanel.port.emit("calcDefaultPanelHeight");
