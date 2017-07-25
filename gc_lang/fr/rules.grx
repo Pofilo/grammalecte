@@ -4677,6 +4677,7 @@ __[i](p_faire_qqch)__
     <<- morph(\1, ">faire ", False) ~2>> *
     <<- morph(\1, ">faire ", False) ~3>> *
 __[i](p_expérience_utilisateur)__       expériences? +(utilisateurs?) @@$ <<- ~1>> *
+__[i](p_fard_à_paupières)__             fards? (à paupières) @@$ <<- ~1>> *
 __[i](p_fille)__                        filles? (au pair|à (?:papa|maman)) @@$ <<- ~1>> *
 __[i](p_fils)__                         fils (à (?:papa|maman)) @@$ <<- ~1>> *
 __[s](p_femme_de)__                     [fF]emmes? (de (?:chambre|lettres|loi|ménage)|d’(?:âge mûr|affaires|exception|É(?:tat|glise)|honneur)) @@$ <<- ~1>> *
@@ -4700,7 +4701,7 @@ __[i](p_mère_au_foyer)__                mères? (au foyer) @@$ <<- ~1>> *
 __[i](p_metteur_en_scène)__             metteu(?:r|se)s? (en scène) @@$ <<- ~1>> *
 __[i](p_mineur_de_moins_de_x_ans)__     mineure?s? (de moins de ({w1}) ans) @@$,>1:w <<- \2.isdigit() or morph(\2, ":B", False) ~1>> *
 __[i](p_mettre_qqch)__
-    (m(?:et|[iî][mst])\w*) +(à (?:jour|niveau|plat|l’écart)|au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@$
+    (m(?:et|[iî][mst])\w*) +(à (?:jour|niveau|plat|l’écart)|au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@0,$
     <<- morph(\1, ">mettre ", False) ~2>> *
 __[i](p_mode_de)__                      modes? (de (?:paiement|scrutin|vie)) @@$ <<- ~1>> *
 __[i](p_mot_de_passe)__                 mots? (de passe) @@$ <<- ~1>> *
