@@ -53,18 +53,18 @@ document.getElementById('conjugueur').addEventListener("click", function (event)
 });
 
 document.getElementById('website').addEventListener("click", function (event) {
-	self.port.emit('openURL', "http://www.dicollecte.org/grammalecte/");
+	self.port.emit('openURL', "http://www.dicollecte.org/");
 });
 
 document.getElementById('mainsponsor').addEventListener("click", function (event) {
-	self.port.emit('openURL', "http://www.lamouette.org/");
+	self.port.emit('openURL', "http://lamouette.org/");
 });
 document.getElementById('mainsponsor2').addEventListener("click", function (event) {
-	self.port.emit('openURL', "http://www.algoo.fr/");
+	self.port.emit('openURL', "https://www.algoo.fr/");
 });
 
 document.getElementById('othersponsors').addEventListener("click", function (event) {
-	self.port.emit('openURL', "http://www.dicollecte.org/grammalecte/soutiens.php");
+	self.port.emit('openURL', "http://www.dicollecte.org/#thanks");
 });
 
 
