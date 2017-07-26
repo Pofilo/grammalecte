@@ -1,6 +1,14 @@
-// Background script
-// for calling the grammar checker engine
+/*
+import { echo } from "mymodule";
 
+try {
+    echo("It works! At last!");
+}
+catch (e) {
+    console.error(e);
+}
+*/
+"use strict";
 
 let gce = null; // module: grammar checker engine
 let text = null;
@@ -113,8 +121,15 @@ function getListOfElements (sText) {
 
 
 function handleMessage (oRequest, xSender, sendResponse) {
-  console.log(`content script sent a message: ${oRequest.content}`);
+  console.log(`[background] received: ${oRequest.content}`);
   sendResponse({response: "response from background script"});
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
+
+try {
+    loadGrammarChecker();
+}
+catch (e) {
+    console.error(e);
+}

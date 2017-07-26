@@ -57,11 +57,11 @@ function showPage (sPageName) {
 }
 
 function handleResponse(message) {
-  console.log(`background script sent a response: ${message.response}`);
+  console.log(`[Panel] received: ${message.response}`);
 }
 
 function handleError(error) {
-  console.log(`Error: ${error}`);
+  console.log(`[Panel] Error: ${error}`);
 }
 
 function sendMessage (sMessage) {

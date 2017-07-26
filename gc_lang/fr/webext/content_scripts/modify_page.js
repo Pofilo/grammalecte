@@ -1,9 +1,12 @@
+import { echo } from "../mymodule";
 
-function do_something (request, sender, sendResponse) {
-  //removeEverything();
+echo("CONTENT SCRIPRT!!!");
+
+function handleMessage2 (oRequest, xSender, sendResponse) {
+  console.log(`[Content script] received: ${oRequest.content}`);
   change(request.myparam);
-  console.log("DONE!!");
-  browser.runtime.onMessage.removeListener(do_something);
+  //browser.runtime.onMessage.removeListener(handleMessage);
+  sendResponse({response: "response from content script"});
 }
 
 function removeEverything () {
@@ -22,4 +25,4 @@ function change (param) {
 /*
   Assign do_something() as a listener for messages from the extension.
 */
-browser.runtime.onMessage.addListener(do_something);
+browser.runtime.onMessage.addListener(handleMessage2);
