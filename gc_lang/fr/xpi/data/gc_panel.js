@@ -245,8 +245,8 @@ function _createError (sUnderlined, oErr) {
     xNodeErr.dataset.error_id = oErr['sErrorId'];
     xNodeErr.dataset.ignored_key = oErr['sIgnoredKey'];
     xNodeErr.dataset.error_type = (oErr['sType'] === "WORD") ? "spelling" : "grammar";
-    xNodeErr.setAttribute("href", "#");
-    xNodeErr.setAttribute("onclick", "return false;");
+    /*xNodeErr.setAttribute("href", "#");
+    xNodeErr.setAttribute("onclick", "return false;");*/
     if (xNodeErr.dataset.error_type === "grammar") {
         xNodeErr.dataset.gc_message = oErr['sMessage'];
         xNodeErr.dataset.gc_url = oErr['URL'];
@@ -348,8 +348,8 @@ function _createSuggestion (sErrId, iSugg, sSugg) {
     let xNodeSugg = document.createElement("a");
     xNodeSugg.id = "sugg" + sErrId + "-" + iSugg.toString();
     xNodeSugg.className = "sugg";
-    xNodeSugg.setAttribute("href", "#");
-    xNodeSugg.setAttribute("onclick", "return false;");
+    /*xNodeSugg.setAttribute("href", "#");
+    xNodeSugg.setAttribute("onclick", "return false;");*/
     xNodeSugg.dataset.error_id = sErrId;
     xNodeSugg.textContent = sSugg;
     return xNodeSugg;
