@@ -9,7 +9,7 @@ function capitalizeArray (aArray) {
     // can’t map on user defined function??
     let aNew = [];
     for (let i = 0; i < aArray.length; i = i + 1) {
-        aNew[i] = aArray[i]._toCapitalize();
+        aNew[i] = aArray[i].gl_toCapitalize();
     }
     return aNew;
 }
@@ -86,7 +86,7 @@ function parse (sText, sCountry="${country_default}", bDebug=false, bContext=fal
             //echo(sText.slice(iStart, iEnd));
             try {
                 [_, errs] = _proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
-                dErrors._update(errs);
+                dErrors.gl_update(errs);
             }
             catch (e) {
                 helpers.logerror(e);
@@ -118,7 +118,7 @@ function _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, bDebu
         if (!sOption || option(sOption)) {
             for (let [zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions, lGroups, lNegLookBefore] of lRuleGroup) {
                 if (!_aIgnoredRules.has(sRuleId)) {
-                    while ((m = zRegex._exec2(s, lGroups, lNegLookBefore)) !== null) {
+                    while ((m = zRegex.gl_exec2(s, lGroups, lNegLookBefore)) !== null) {
                         bCondMemo = null;
                         /*if (bDebug) {
                             echo(">>>> Rule # " + sLineId + " - Text: " + s + " opt: "+ sOption);
@@ -153,7 +153,7 @@ function _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, bDebu
                                             //echo("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
                                             oEvalFunc[sWhat](s, m, dDA);
                                             if (bDebug) {
-                                                echo("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA._toString());
+                                                echo("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
                                             }
                                             break;
                                         case ">":
@@ -196,7 +196,7 @@ function _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppe
     if (sRepl[0] === "=") {
         let sugg = oEvalFunc[sRepl.slice(1)](s, m);
         if (sugg) {
-            if (bUppercase && m[iGroup].slice(0,1)._isUpperCase()) {
+            if (bUppercase && m[iGroup].slice(0,1).gl_isUpperCase()) {
                 oErr["aSuggestions"] = capitalizeArray(sugg.split("|"));
             } else {
                 oErr["aSuggestions"] = sugg.split("|");
@@ -207,17 +207,17 @@ function _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppe
     } else if (sRepl == "_") {
         oErr["aSuggestions"] = [];
     } else {
-        if (bUppercase && m[iGroup].slice(0,1)._isUpperCase()) {
-            oErr["aSuggestions"] = capitalizeArray(sRepl._expand(m).split("|"));
+        if (bUppercase && m[iGroup].slice(0,1).gl_isUpperCase()) {
+            oErr["aSuggestions"] = capitalizeArray(sRepl.gl_expand(m).split("|"));
         } else {
-            oErr["aSuggestions"] = sRepl._expand(m).split("|");
+            oErr["aSuggestions"] = sRepl.gl_expand(m).split("|");
         }
     }
     // Message
     if (sMsg[0] === "=") {
         sMessage = oEvalFunc[sMsg.slice(1)](s, m)
     } else {
-        sMessage = sMsg._expand(m);
+        sMessage = sMsg.gl_expand(m);
     }
     if (bIdRule) {
         sMessage += " ##" + sLineId + " #" + sRuleId;
@@ -247,11 +247,11 @@ function _rewrite (s, sRepl, iGroup, m, bUppercase) {
     } else if (sRepl.slice(0,1) === "=") {
         sNew = oEvalFunc[sRepl.slice(1)](s, m);
         sNew = sNew + " ".repeat(ln-sNew.length);
-        if (bUppercase && m[iGroup].slice(0,1)._isUpperCase()) {
-            sNew = sNew._toCapitalize();
+        if (bUppercase && m[iGroup].slice(0,1).gl_isUpperCase()) {
+            sNew = sNew.gl_toCapitalize();
         }
     } else {
-        sNew = sRepl._expand(m);
+        sNew = sRepl.gl_expand(m);
         sNew = sNew + " ".repeat(ln-sNew.length);
     }
     //echo("\n"+s+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup])
@@ -300,7 +300,7 @@ function load (sContext="JavaScript") {
     try {
         _oDict = new ibdawg.IBDAWG("${dic_name}.json");
         _sContext = sContext;
-        _dOptions = gc_options.getOptions(sContext)._shallowCopy();     // duplication necessary, to be able to reset to default
+        _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
     }
     catch (e) {
         helpers.logerror(e);
@@ -314,7 +314,7 @@ function setOption (sOpt, bVal) {
 }
 
 function setOptions (dOpt) {
-    _dOptions._updateOnlyExistingKeys(dOpt);
+    _dOptions.gl_updateOnlyExistingKeys(dOpt);
 }
 
 function getOptions () {
@@ -322,11 +322,11 @@ function getOptions () {
 }
 
 function getDefaultOptions () {
-    return gc_options.getOptions(_sContext)._shallowCopy();
+    return gc_options.getOptions(_sContext).gl_shallowCopy();
 }
 
 function resetOptions () {
-    _dOptions = gc_options.getOptions(_sContext)._shallowCopy();
+    _dOptions = gc_options.getOptions(_sContext).gl_shallowCopy();
 }
 
 function getDictionary () {
@@ -520,7 +520,7 @@ function look (s, zPattern, zNegPattern=null) {
 
 function look_chk1 (dDA, s, nOffset, zPattern, sPatternGroup1, sNegPatternGroup1=null) {
     // returns True if s has pattern zPattern and m.group(1) has pattern sPatternGroup1
-    let m = zPattern._exec2(s, null);
+    let m = zPattern.gl_exec2(s, null);
     if (!m) {
         return false;
     }

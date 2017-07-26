@@ -1,8 +1,8 @@
 
 // regex
 
-if (RegExp.prototype.__grammalecte__ === undefined) {
-    RegExp.prototype._exec2 = function (sText, aGroupsPos, aNegLookBefore=null) {
+if (RegExp.prototype.grammalecte === undefined) {
+    RegExp.prototype.gl_exec2 = function (sText, aGroupsPos, aNegLookBefore=null) {
         let m;
         while ((m = this.exec(sText)) !== null) {
             // we have to iterate over sText here too
@@ -76,5 +76,5 @@ if (RegExp.prototype.__grammalecte__ === undefined) {
         return m;
     }
 
-    RegExp.prototype.__grammalecte__ = true;
+    RegExp.prototype.grammalecte = true;
 }

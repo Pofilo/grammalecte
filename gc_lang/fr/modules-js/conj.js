@@ -382,7 +382,7 @@ class Verb {
             return "";
         }
         let sConj;
-        if (!bTpsCo && bInt && sWho == ":1s" && this.dConj.get(sTemps)._get(":1ś", false)) {
+        if (!bTpsCo && bInt && sWho == ":1s" && this.dConj.get(sTemps).gl_get(":1ś", false)) {
             sWho = ":1ś";
         }
         if (bTpsCo) {

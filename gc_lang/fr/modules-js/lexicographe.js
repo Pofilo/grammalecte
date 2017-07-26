@@ -208,7 +208,7 @@ class Lexicographe {
         try {
             switch (oToken.sType) {
                 case 'SEPARATOR':
-                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dSeparator._get(oToken.sValue, "caractère indéterminé")] };
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dSeparator.gl_get(oToken.sValue, "caractère indéterminé")] };
                     break;
                 case 'NUM':
                     return { sType: oToken.sType, sValue: oToken.sValue, aLabel: ["nombre"] };
@@ -218,10 +218,10 @@ class Lexicographe {
                     break;
                 case 'ELPFX':
                     let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
-                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dPFX._get(sTemp, "préfixe élidé inconnu")] };
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dPFX.gl_get(sTemp, "préfixe élidé inconnu")] };
                     break;
                 case 'WORD': 
-                    if (oToken.sValue._count("-") > 4) {
+                    if (oToken.sValue.gl_count("-") > 4) {
                         return { sType: "COMPLEX", sValue: oToken.sValue, aLabel: ["élément complexe indéterminé"] };
                     }
                     else if (this.oDict.isValidToken(oToken.sValue)) {
@@ -266,7 +266,7 @@ class Lexicographe {
             helpers.echo(sRes);
             return sRes;
         }
-        return sRes._trimRight(",");
+        return sRes.gl_trimRight(",");
     };
 
     _formatSuffix (s) {

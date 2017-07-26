@@ -89,7 +89,7 @@ class IBDAWG {
             return true;
         }
         if (sToken.includes("-")) {
-            if (sToken._count("-") > 4) {
+            if (sToken.gl_count("-") > 4) {
                 return true;
             }
             return sToken.split("-").every(sWord  =>  this.isValid(sWord)); 
@@ -108,16 +108,16 @@ class IBDAWG {
         if (this.lookup(sWord)) {
             return true;
         }
-        if (sWord.charAt(0)._isUpperCase()) {
+        if (sWord.charAt(0).gl_isUpperCase()) {
             if (sWord.length > 1) {
-                if (sWord._isTitle()) {
+                if (sWord.gl_isTitle()) {
                     return !!this.lookup(sWord.toLowerCase());
                 }
-                if (sWord._isUpperCase()) {
+                if (sWord.gl_isUpperCase()) {
                     if (this.bOptNumSigle) {
                         return true;
                     }
-                    return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord._toCapitalize()));
+                    return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord.gl_toCapitalize()));
                 }
                 return !!this.lookup(sWord.slice(0, 1).toLowerCase() + sWord.slice(1));
             } else {
@@ -156,10 +156,10 @@ class IBDAWG {
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
         let l = this.morph(sWord);
-        if (sWord[0]._isUpperCase()) {
+        if (sWord[0].gl_isUpperCase()) {
             l = l.concat(this.morph(sWord.toLowerCase()));
-            if (sWord._isUpperCase() && sWord.length > 1) {
-                l = l.concat(this.morph(sWord._toCapitalize()));
+            if (sWord.gl_isUpperCase() && sWord.length > 1) {
+                l = l.concat(this.morph(sWord.gl_toCapitalize()));
             }
         }
         return l;

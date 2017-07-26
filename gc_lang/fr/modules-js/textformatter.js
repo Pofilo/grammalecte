@@ -251,7 +251,7 @@ const dDefaultOptions = new Map ([
     ["ma_1letter_uppercase", false]
 ]);
 
-const dOptions = dDefaultOptions._shallowCopy();
+const dOptions = dDefaultOptions.gl_shallowCopy();
 
 
 class TextFormatter {
@@ -262,7 +262,7 @@ class TextFormatter {
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
-            dOptions._updateOnlyExistingKeys(dOpt);
+            dOptions.gl_updateOnlyExistingKeys(dOpt);
         }
         for (let [sOptName, bVal] of dOptions) {
             if (bVal && oReplTable.has(sOptName)) {

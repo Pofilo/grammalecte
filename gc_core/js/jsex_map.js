@@ -1,8 +1,8 @@
 
 // Map
 
-if (Map.prototype.__grammalecte__ === undefined) {
-    Map.prototype._shallowCopy = function () {
+if (Map.prototype.grammalecte === undefined) {
+    Map.prototype.gl_shallowCopy = function () {
         let oNewMap = new Map();
         for (let [key, val] of this.entries()) {
             oNewMap.set(key, val);
@@ -10,7 +10,7 @@ if (Map.prototype.__grammalecte__ === undefined) {
         return oNewMap;
     }
 
-    Map.prototype._get = function (key, defaultValue) {
+    Map.prototype.gl_get = function (key, defaultValue) {
         let res = this.get(key);
         if (res !== undefined) {
             return res;
@@ -18,7 +18,7 @@ if (Map.prototype.__grammalecte__ === undefined) {
         return defaultValue;
     }
 
-    Map.prototype._toString = function () {
+    Map.prototype.gl_toString = function () {
         // Default .toString() gives nothing useful
         let sRes = "{ ";
         for (let [k, v] of this.entries()) {
@@ -29,13 +29,13 @@ if (Map.prototype.__grammalecte__ === undefined) {
         return sRes;
     }
 
-    Map.prototype._update = function (dDict) {
+    Map.prototype.gl_update = function (dDict) {
         for (let [k, v] of dDict.entries()) {
             this.set(k, v);
         }
     }
 
-    Map.prototype._updateOnlyExistingKeys = function (dDict) {
+    Map.prototype.gl_updateOnlyExistingKeys = function (dDict) {
         for (let [k, v] of dDict.entries()) {
             if (this.has(k)){
                 this.set(k, v);
@@ -43,5 +43,5 @@ if (Map.prototype.__grammalecte__ === undefined) {
         }
     }
 
-    Map.prototype.__grammalecte__ = true;
+    Map.prototype.grammalecte = true;
 }

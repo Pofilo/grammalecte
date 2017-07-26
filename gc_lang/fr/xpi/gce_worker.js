@@ -71,7 +71,7 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
                 gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
             }
             // we always retrieve options from the gce, for setOptions filters obsolete options
-            return gce.getOptions()._toString();
+            return gce.getOptions().gl_toString();
         }
         catch (e) {
             worker.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
@@ -91,26 +91,26 @@ function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
 }
 
 function getOptions () {
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function getDefaultOptions () {
-    return gce.getDefaultOptions()._toString();
+    return gce.getDefaultOptions().gl_toString();
 }
 
 function setOptions (sGCOptions) {
     gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function setOption (sOptName, bValue) {
     gce.setOptions(new Map([ [sOptName, bValue] ]));
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function resetOptions () {
     gce.resetOptions();
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function fullTests (sGCOptions="") {

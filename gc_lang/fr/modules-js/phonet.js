@@ -18,15 +18,15 @@ function hasSimil (sWord, sPattern=null) {
     }
     if (_dWord.has(sWord)) {
         if (sPattern) {
-            return getSimil(sWord).some(sSimil => _dMorph._get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
+            return getSimil(sWord).some(sSimil => _dMorph.gl_get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
         }
         return true;
     }
-    if (sWord.slice(0,1)._isUpperCase()) {
+    if (sWord.slice(0,1).gl_isUpperCase()) {
         sWord = sWord.toLowerCase();
         if (_dWord.has(sWord)) {
             if (sPattern) {
-                return getSimil(sWord).some(sSimil => _dMorph._get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
+                return getSimil(sWord).some(sSimil => _dMorph.gl_get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
             }
             return true;
         }
@@ -42,7 +42,7 @@ function getSimil (sWord) {
     if (_dWord.has(sWord)) {
         return _lSet[_dWord.get(sWord)];
     }
-    if (sWord.slice(0,1)._isUpperCase()) {
+    if (sWord.slice(0,1).gl_isUpperCase()) {
         sWord = sWord.toLowerCase();
         if (_dWord.has(sWord)) {
             return _lSet[_dWord.get(sWord)];
@@ -58,7 +58,7 @@ function selectSimil (sWord, sPattern) {
     }
     let aSelect = new Set();
     for (let sSimil of getSimil(sWord)) {
-        for (let sMorph of _dMorph._get(sSimil, [])) {
+        for (let sMorph of _dMorph.gl_get(sSimil, [])) {
             if (sMorph.search(sPattern) >= 0) {
                 aSelect.add(sSimil);
             }
