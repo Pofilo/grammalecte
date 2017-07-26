@@ -53,14 +53,14 @@ document.getElementById('conjugueur').addEventListener("click", function (event)
 });
 
 document.getElementById('website').addEventListener("click", function (event) {
-	self.port.emit('openURL', "http://www.dicollecte.org/");
+	self.port.emit('openURL', "http://www.dicollecte.org/?from=grammalecte-fx");
 });
 
 document.getElementById('mainsponsor').addEventListener("click", function (event) {
-	self.port.emit('openURL', "http://lamouette.org/");
+	self.port.emit('openURL', "http://lamouette.org/?from=grammalecte-fx");
 });
 document.getElementById('mainsponsor2').addEventListener("click", function (event) {
-	self.port.emit('openURL', "https://www.algoo.fr/");
+	self.port.emit('openURL', "https://www.algoo.fr/?from=grammalecte-fx");
 });
 
 document.getElementById('othersponsors').addEventListener("click", function (event) {

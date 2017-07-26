@@ -82,7 +82,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             lblVersion = self._addWidget('lblVersion', 'FixedText', 5, 90, nLblWidth, 10, Label = dUI.get('version', "#err"), Align = 1, FontDescriptor = xFD2)
             lblLicense = self._addWidget('lblLicense', 'FixedText', 5, 100, nLblWidth, 10, Label = dUI.get('license', "#err"), Align = 1, FontDescriptor = xFD2)
             lblWebsite = self._addWidget('lblWebsite', 'FixedHyperlink', 5, 110, nLblWidth, 10, Label = dUI.get('website', "#err"), Align = 1, \
-                                         URL="http://www.dicollecte.org/", FontDescriptor = xFD1, TextColor = nURLcolor)
+                                         URL="http://www.dicollecte.org/?from=grammalecte-lo", FontDescriptor = xFD1, TextColor = nURLcolor)
 
             # Python version
             self._addWidget('lblpython', 'FixedText', 10, 125, nLblWidth, 10, Align = 1, TextColor = 0x888888, FontDescriptor = xFD2, \
@@ -94,10 +94,10 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             # sponsors
             lblMsg = self._addWidget('lblMsg', 'FixedText', 10, 155, nLblWidth, 10, Label = dUI.get('message', "#err"), FontDescriptor = xFD2, Align = 1)
             lblURL1 = self._addWidget('lblURL1', 'FixedHyperlink', 10, 170, nLblWidth, 10, Label = dUI.get('sponsor', "#err"), \
-                                      Align = 1, URL="http://lamouette.org/", FontDescriptor = xFD3, TextColor = nURLcolor)
+                                      Align = 1, URL="http://lamouette.org/?from=grammalecte-lo", FontDescriptor = xFD3, TextColor = nURLcolor)
             imgSponsor = self._addWidget('imgSponsor', 'ImageControl', 5, 180, 150, 50, ImageURL = sExtPath+"/img/LaMouette_small.png", Border = 0, ScaleMode = 1)
             lblURL2 = self._addWidget('lblURL2', 'FixedHyperlink', 10, 235, nLblWidth, 10, Label = dUI.get('sponsor2', "#err"), \
-                                      Align = 1, URL="https://www.algoo.fr/", FontDescriptor = xFD3, TextColor = nURLcolor)
+                                      Align = 1, URL="https://www.algoo.fr/?from=grammalecte-lo", FontDescriptor = xFD3, TextColor = nURLcolor)
             imgSponsor2 = self._addWidget('imgSponsor2', 'ImageControl', 5, 245, 150, 50, ImageURL = sExtPath+"/img/Algoo_logo.png", Border = 0, ScaleMode = 1)
             lblURL3 = self._addWidget('lblURL3', 'FixedHyperlink', 10, 300, nLblWidth, 10, Label = dUI.get('link', "#err"), \
                                       Align = 1, URL="http://www.dicollecte.org/#thanks", FontDescriptor = xFD1, TextColor = nURLcolor)
