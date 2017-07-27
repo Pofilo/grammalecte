@@ -264,37 +264,38 @@ function mbNprMasNotFem (lMorph) {
 }
 
 
-
-exports.getLemmaOfMorph = getLemmaOfMorph;
-exports.checkAgreement = checkAgreement;
-exports.checkConjVerb = checkConjVerb;
-exports.getGender = getGender;
-exports.getNumber = getNumber;
-exports.isNom = isNom;
-exports.isNomNotAdj = isNomNotAdj;
-exports.isAdj = isAdj;
-exports.isNomAdj = isNomAdj;
-exports.isNomVconj = isNomVconj;
-exports.isInv = isInv;
-exports.isSg = isSg;
-exports.isPl = isPl;
-exports.isEpi = isEpi;
-exports.isMas = isMas;
-exports.isFem = isFem;
-exports.mbNom = mbNom;
-exports.mbAdj = mbAdj;
-exports.mbAdjNb = mbAdjNb;
-exports.mbNomAdj = mbNomAdj;
-exports.mbNomNotAdj = mbNomNotAdj;
-exports.mbPpasNomNotAdj = mbPpasNomNotAdj;
-exports.mbVconj = mbVconj;
-exports.mbVconj123 = mbVconj123;
-exports.mbMG = mbMG;
-exports.mbInv = mbInv;
-exports.mbSg = mbSg;
-exports.mbPl = mbPl;
-exports.mbEpi = mbEpi;
-exports.mbMas = mbMas;
-exports.mbFem = mbFem;
-exports.mbNpr = mbNpr;
-exports.mbNprMasNotFem = mbNprMasNotFem;
+if (typeof(exports) !== 'undefined') {
+    exports.getLemmaOfMorph = getLemmaOfMorph;
+    exports.checkAgreement = checkAgreement;
+    exports.checkConjVerb = checkConjVerb;
+    exports.getGender = getGender;
+    exports.getNumber = getNumber;
+    exports.isNom = isNom;
+    exports.isNomNotAdj = isNomNotAdj;
+    exports.isAdj = isAdj;
+    exports.isNomAdj = isNomAdj;
+    exports.isNomVconj = isNomVconj;
+    exports.isInv = isInv;
+    exports.isSg = isSg;
+    exports.isPl = isPl;
+    exports.isEpi = isEpi;
+    exports.isMas = isMas;
+    exports.isFem = isFem;
+    exports.mbNom = mbNom;
+    exports.mbAdj = mbAdj;
+    exports.mbAdjNb = mbAdjNb;
+    exports.mbNomAdj = mbNomAdj;
+    exports.mbNomNotAdj = mbNomNotAdj;
+    exports.mbPpasNomNotAdj = mbPpasNomNotAdj;
+    exports.mbVconj = mbVconj;
+    exports.mbVconj123 = mbVconj123;
+    exports.mbMG = mbMG;
+    exports.mbInv = mbInv;
+    exports.mbSg = mbSg;
+    exports.mbPl = mbPl;
+    exports.mbEpi = mbEpi;
+    exports.mbMas = mbMas;
+    exports.mbFem = mbFem;
+    exports.mbNpr = mbNpr;
+    exports.mbNprMasNotFem = mbNprMasNotFem;
+}

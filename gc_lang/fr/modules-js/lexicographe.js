@@ -285,4 +285,6 @@ class Lexicographe {
 }
 
 
-exports.Lexicographe = Lexicographe;
+if (typeof(exports) !== 'undefined') {
+    exports.Lexicographe = Lexicographe;
+}

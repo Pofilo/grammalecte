@@ -54,5 +54,7 @@ function getStemFromAffixCode (sFlex, sAffCode) {
 }
 
 
-exports.getStemFromSuffixCode = getStemFromSuffixCode;
-exports.getStemFromAffixCode = getStemFromAffixCode;
+if (typeof(exports) !== 'undefined') {
+    exports.getStemFromSuffixCode = getStemFromSuffixCode;
+    exports.getStemFromAffixCode = getStemFromAffixCode;
+}

@@ -171,8 +171,10 @@ function getSpellingErrorHTML (oErr) {
 }
 
 
-exports.getParagraph = getParagraph;
-exports.addHtmlEntities = addHtmlEntities;
-exports.createHTMLBlock = createHTMLBlock;
-exports.tagParagraph = tagParagraph;
-exports.getReadableError = getReadableError;
+if (typeof(exports) !== 'undefined') {
+    exports.getParagraph = getParagraph;
+    exports.addHtmlEntities = addHtmlEntities;
+    exports.createHTMLBlock = createHTMLBlock;
+    exports.tagParagraph = tagParagraph;
+    exports.getReadableError = getReadableError;
+}

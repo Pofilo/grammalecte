@@ -288,4 +288,6 @@ class IBDAWG {
 }
 
 
-exports.IBDAWG = IBDAWG;
+if (typeof(exports) !== 'undefined') {
+    exports.IBDAWG = IBDAWG;
+}

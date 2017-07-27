@@ -79,7 +79,9 @@ function _modifyStringWithSuffixCode (sWord, sSfx) {
 }
 
 
-exports.isFemForm = isFemForm;
-exports.getMasForm = getMasForm;
-exports.hasMiscPlural = hasMiscPlural;
-exports.getMiscPlural = getMiscPlural;
+if (typeof(exports) !== 'undefined') {
+    exports.isFemForm = isFemForm;
+    exports.getMasForm = getMasForm;
+    exports.hasMiscPlural = hasMiscPlural;
+    exports.getMiscPlural = getMiscPlural;
+}

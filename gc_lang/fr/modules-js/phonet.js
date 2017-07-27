@@ -68,6 +68,8 @@ function selectSimil (sWord, sPattern) {
 }
 
 
-exports.hasSimil = hasSimil;
-exports.getSimil = getSimil;
-exports.selectSimil = selectSimil;
+if (typeof(exports) !== 'undefined') {
+    exports.hasSimil = hasSimil;
+    exports.getSimil = getSimil;
+    exports.selectSimil = selectSimil;
+}

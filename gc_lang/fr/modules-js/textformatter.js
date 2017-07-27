@@ -279,6 +279,7 @@ class TextFormatter {
     }
 }
 
+
 if (typeof(exports) !== 'undefined') {
     exports.TextFormatter = TextFormatter;
     exports.oReplTable = oReplTable;

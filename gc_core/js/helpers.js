@@ -68,9 +68,6 @@ function loadFile (spf) {
 }
 
 
-    
-
-
 // conversions
 function objectToMap (obj) {
     let m = new Map();
@@ -89,10 +86,13 @@ function mapToObject (m) {
     return obj;
 }
 
-exports.setLogOutput = setLogOutput;
-exports.echo = echo;
-exports.logerror = logerror;
-exports.inspect = inspect;
-exports.objectToMap = objectToMap;
-exports.mapToObject = mapToObject;
-exports.loadFile = loadFile;
+
+if (typeof(exports) !== 'undefined') {
+    exports.setLogOutput = setLogOutput;
+    exports.echo = echo;
+    exports.logerror = logerror;
+    exports.inspect = inspect;
+    exports.objectToMap = objectToMap;
+    exports.mapToObject = mapToObject;
+    exports.loadFile = loadFile;
+}

@@ -147,4 +147,7 @@ class TestGrammarChecking {
 
 }
 
-exports.TestGrammarChecking = TestGrammarChecking;
+
+if (typeof(exports) !== 'undefined') {
+    exports.TestGrammarChecking = TestGrammarChecking;
+}

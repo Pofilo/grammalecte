@@ -19,6 +19,9 @@ const dOpt = {
 
 const dOptLabel = ${dOptLabel};
 
-exports.getOptions = getOptions;
-exports.lStructOpt = lStructOpt;
-exports.dOptLabel = dOptLabel;
+
+if (typeof(exports) !== 'undefined') {
+	exports.getOptions = getOptions;
+	exports.lStructOpt = lStructOpt;
+	exports.dOptLabel = dOptLabel;
+}

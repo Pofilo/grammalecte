@@ -606,18 +606,19 @@ ${callablesJS}
 
 
 
-
-exports.load = load;
-exports.parse = parse;
-exports.lang = lang;
-exports.version = version;
-exports.getDictionary = getDictionary;
-exports.setOption = setOption;
-exports.setOptions = setOptions;
-exports.getOptions = getOptions;
-exports.getDefaultOptions = getDefaultOptions;
-exports.resetOptions = resetOptions;
-exports.ignoreRule = ignoreRule;
-exports.reactivateRule = reactivateRule;
-exports.resetIgnoreRules = resetIgnoreRules;
-exports.listRules = listRules;
+if (typeof(exports) !== 'undefined') {
+    exports.load = load;
+    exports.parse = parse;
+    exports.lang = lang;
+    exports.version = version;
+    exports.getDictionary = getDictionary;
+    exports.setOption = setOption;
+    exports.setOptions = setOptions;
+    exports.getOptions = getOptions;
+    exports.getDefaultOptions = getDefaultOptions;
+    exports.resetOptions = resetOptions;
+    exports.ignoreRule = ignoreRule;
+    exports.reactivateRule = reactivateRule;
+    exports.resetIgnoreRules = resetIgnoreRules;
+    exports.listRules = listRules;
+}

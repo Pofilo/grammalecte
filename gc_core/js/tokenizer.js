@@ -87,4 +87,7 @@ class Tokenizer {
     }
 }
 
-exports.Tokenizer = Tokenizer;
+
+if (typeof(exports) !== 'undefined') {
+    exports.Tokenizer = Tokenizer;
+}

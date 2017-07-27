@@ -488,6 +488,7 @@ class Verb {
     }
 }
 
+
 if (typeof(exports) !== 'undefined') {
     // Used for Grammalecte library.
     // In content scripts, these variable are directly reachable
