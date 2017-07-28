@@ -1,14 +1,23 @@
-/*
-import { echo } from "mymodule";
 
+
+/*
 try {
-    echo("It works! At last!");
+    console.log("BEFORE");
+    //var myhelpers = require('./grammalecte/helpers.js');
+    require(['./grammalecte/helpers.js'], function (foo) {
+        console.log("LOADING");
+        echo("MODULE LOADED2");
+    });
+    console.log("AFTER");
 }
 catch (e) {
+    console.log("\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
     console.error(e);
-}
-*/
-"use strict";
+}*/
+
+echo("VA TE FAIRE FOUTRE");
+
+
 
 let gce = null; // module: grammar checker engine
 let text = null;
@@ -127,9 +136,4 @@ function handleMessage (oRequest, xSender, sendResponse) {
 
 browser.runtime.onMessage.addListener(handleMessage);
 
-try {
-    loadGrammarChecker();
-}
-catch (e) {
-    console.error(e);
-}
+

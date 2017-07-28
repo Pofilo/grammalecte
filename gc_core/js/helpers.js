@@ -7,11 +7,11 @@
 // In Thunderbird, you can’t access to console directly. So it’s required to pass a log function.
 let funcOutput = null;
 
-export function setLogOutput (func) {
+function setLogOutput (func) {
     funcOutput = func;
 }
 
-export function echo (obj) {
+function echo (obj) {
     if (funcOutput !== null) {
         funcOutput(obj);
     } else {
@@ -20,7 +20,7 @@ export function echo (obj) {
     return true;
 }
 
-export function logerror (e, bStack=false) {
+function logerror (e, bStack=false) {
     let sMsg = "\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message;
     if (bStack) {
         sMsg += "\n--- Stack ---\n" + e.stack;
@@ -36,7 +36,7 @@ export function logerror (e, bStack=false) {
 // load ressources in workers (suggested by Mozilla extensions reviewers)
 // for more options have a look here: https://gist.github.com/Noitidart/ec1e6b9a593ec7e3efed
 // if not in workers, use sdk/data.load() instead
-export function loadFile (spf) {
+function loadFile (spf) {
     try {
         let xRequest;
         if (typeof XMLHttpRequest !== "undefined") {
@@ -60,7 +60,7 @@ export function loadFile (spf) {
 
 
 // conversions
-export function objectToMap (obj) {
+function objectToMap (obj) {
     let m = new Map();
     for (let param in obj) {
         //console.log(param + " " + obj[param]);
@@ -69,10 +69,21 @@ export function objectToMap (obj) {
     return m;
 }
 
-export function mapToObject (m) {
+function mapToObject (m) {
     let obj = {};
     for (let [k, v] of m) {
         obj[k] = v;
     }
     return obj;
+}
+
+if (typeof(exports) !== 'undefined') {
+    // Used for Grammalecte library.
+    // In content scripts, these variable are directly reachable
+    exports.setLogOutput = setLogOutput;
+    exports.echo = echo;
+    exports.logerror = logerror;
+    exports.loadFile = loadFile;
+    exports.objectToMap = objectToMap;
+    exports.mapToObject = mapToObject;
 }
