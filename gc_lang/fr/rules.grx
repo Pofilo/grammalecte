@@ -2409,7 +2409,16 @@ TEST: __ocr__ si vous {{La}} désirez
 TEST: __ocr__ sa main se referme sur {{Je}} livre
 
 
-__[s>/ocr(ocr_casse2)__
+__[s]/ocr(ocr_casse2)__
+    {w2}-(On|Ils?|Elles?|Tu|Je|Nous|Vous|Mêmes?|Ci|Là|Une?s)
+    <<- -1>> =\1.lower()                                                                            # Erreur de numérisation ? Casse douteuse.
+
+TEST: __ocr__ Part-{{On}} demain ?
+TEST: __ocr__ À ce compte-{{Ci}}, on n’en viendra jamais à bout.
+TEST: __ocr__ Quelques-{{Uns}} sont incapables d’y parvenir.
+
+
+__[s>/ocr(ocr_casse3)__
     [LDNMTSCÇ]’
     <<- before(r"(?i)\w") ->> =\0.lower()                                                           # Erreur de numérisation ? Casse douteuse.
 
