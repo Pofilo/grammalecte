@@ -92,7 +92,7 @@ if (typeof(exports) !== 'undefined') {
     exports.echo = echo;
     exports.logerror = logerror;
     exports.inspect = inspect;
+    exports.loadFile = loadFile;
     exports.objectToMap = objectToMap;
     exports.mapToObject = mapToObject;
-    exports.loadFile = loadFile;
 }
