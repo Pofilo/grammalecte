@@ -4454,7 +4454,10 @@ __[i](p_comme_qqch)__           comme (?:avant|autrefois|d’habitude|toujours|d
 __[i](p_comme_tant_d_autres)__  comme tant d’autres (?:avant|après) (?:[mts]oi|lui|[nv]ous|eux|elles?)(?! qui) <<- ~>> *
 __[i](p_contrairement_aux_apparences)__     contrairement aux apparences <<- ~>> *
 __[i](p_contre_qqch)__          contre (?:mauvaise fortune,? bon cœur|nature|toute (?:attente|vraisemblance)|vents et marées|[mts]oi|lui|elles?|[nv]ous|eux|(?:[mts]on|[nv]otre|leur) gré) <<- ~>> *
-__[i](p_côte_à_côte)__          côte à côte <<- ~>> *
+__[i](loc_côte_à_côte)__
+    c[ôo]tt?es? [àaá] c[ôo]tt?es?
+    <<- not re.search("(?i)^côte à côte$", \0) ->> côte à côte      # Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
+    <<- ~>> *
 __[i](p_coute_que_coute)__      co[ûu]te que co[ûu]te <<- ~>> *
 __[i](p_crois_le_ou_non)__      cro(?:yez|ois)-le ou (?:non|pas) <<- ~>> *
 __[i](p_cul_par_dessur_tête)__  cul par-dessus tête <<- ~>> *
@@ -4614,6 +4617,9 @@ __[i](p_une_fois)__             une fois <<- ~>> _
 __[i](p_urbi_et_orbi)__         urbi et orbi <<- ~>> *
 __[i](p_v_divers)__             v(?:aille que vaille|entre à terre|ers nulle part) <<- ~>> *
 
+TEST: ils vont et viennent, toujours {{cotes a cotes}}…
+
+
 # je / tu / il / elles / nous / vous / ils / elles 
 __[i](p_je_vous_en_prie)__      je (?:t’en|vous en) (?:prie|supplie) <<- ~>> *
 __[i](p_nous_vous_en_prions)__  nous (?:t’en|vous en) (?:prions|supplions) <<- ~>> *
@@ -4674,8 +4680,8 @@ __[i](loc_bombe)__
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](loc_canne_à)__
-    (cann?es?) (([àa]) (?:pêche|sucre)s?) @@$,w
-    <<- \1.find("ane") -1>> \1.replace("ane", "anne")   # Confusion : la cane est la femelle du canard.|https://fr.wiktionary.org/wiki/canne
+    (cann?es?) (([àa]) (?:pêche|sucre)s?) @@0,$,w
+    <<- \1.find("ane") -1>> =\1.replace("ane", "anne")  # Confusion : la cane est la femelle du canard.|https://fr.wiktionary.org/wiki/canne
     <<- \3 == "a" -3>> à                                # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
 __[i](loc_chair_à)__
