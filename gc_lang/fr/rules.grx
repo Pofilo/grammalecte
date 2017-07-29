@@ -4673,6 +4673,11 @@ __[i](loc_bombe)__
     bombes? (([àa]) (?:eau|fragmentation|retardement)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
+__[i](loc_canne_à)__
+    (cann?es?) (([àa]) (?:pêche|sucre)s?) @@$,w
+    <<- \1.find("ane") -1>> \1.replace("ane", "anne")   # Confusion : la cane est la femelle du canard.|https://fr.wiktionary.org/wiki/canne
+    <<- \3 == "a" -3>> à                                # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~2>> *
 __[i](loc_chair_à)__
     chairs? (([àa]) (?:pâté|canons?)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
