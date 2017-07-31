@@ -16,7 +16,7 @@ def build (sLang, dVars, spLangPack):
 
 def createWebExtension (sLang, dVars):
     "create Web-extension"
-    print("Building Web-extension")
+    print("Building WebExtension")
     helpers.createCleanFolder("_build/webext/"+sLang)
     dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
     dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
