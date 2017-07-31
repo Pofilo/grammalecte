@@ -912,6 +912,7 @@ window.addEventListener("click", function (xEvent) {
 window.addEventListener("load", function (xEvent) {
     oDictIgniter.init();
     oGrammarChecker.loadGC();
+    //oGrammarChecker.fullTests();
 }, false);
 
 window.addEventListener("compose-window-init", function (xEvent) {
