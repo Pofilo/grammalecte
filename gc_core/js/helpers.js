@@ -3,24 +3,19 @@
 
 "use strict";
 
-// In Firefox, there is no console.log in PromiseWorker, but there is worker.log.
-// In Thunderbird, you can’t access to console directly. So it’s required to pass a log function.
-var funcOutput = null;
 
 var helpers = {
+    // In Firefox, there is no console.log in PromiseWorker, but there is worker.log.
+    // In Thunderbird, you can’t access to console directly. So it’s required to pass a log function.
+    funcOutput: null,
+
     setLogOutput: function (func) {
-        try {
-            funcOutput = func;
-        }
-        catch (e) {
-            func(e);
-            console.error(e);
-        }
+        this.funcOutput = func;
     },
 
     echo: function (obj) {
-        if (funcOutput !== null) {
-            funcOutput(obj);
+        if (this.funcOutput !== null) {
+            this.funcOutput(obj);
         } else {
             console.log(obj);
         }
@@ -32,8 +27,8 @@ var helpers = {
         if (bStack) {
             sMsg += "\n--- Stack ---\n" + e.stack;
         }
-        if (funcOutput !== null) {
-            funcOutput(sMsg);
+        if (this.funcOutput !== null) {
+            this.funcOutput(sMsg);
         } else {
             console.error(sMsg);
         }
@@ -93,8 +88,8 @@ var helpers = {
 }
 
 
-
 if (typeof(exports) !== 'undefined') {
+    export.funcOutput = helpers.funcOutput;
     exports.setLogOutput = helpers.setLogOutput;
     exports.echo = helpers.echo;
     exports.logerror = helpers.logerror;
