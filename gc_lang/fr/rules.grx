@@ -4669,10 +4669,11 @@ __[i](loc_arc_à_poulies)__
     <<- ~1>> *
 __[i](p_armée_de)__                     armées? (de (?:l’air|terre)) @@$ <<- ~1>> *
 __[i](p_armé_jusqu_aux_dents_)__        armée?s? (jusqu aux dents) @@$ <<- ~1>> *
-__[i](p_armes)__
-    armes? (([àa]) feu|de (?:poing|guerre|destruction massive)) @@$,w
-    <<- \1.startswith("a ") -2>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+__[i](loc_armes_à_feu)__
+    armes? (([àa]) feu) @@$,w
+    <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
+__[i](p_armes_de_qqch)__                armes? (de (?:poing|guerre|destruction massive)) @@$ <<- ~1>> *
 __[i](p_attestation_sur_l_honneur)__    (?:attestation|déclaration)s? (sur l’honneur) @@$ <<- ~1>> *
 __[i](p_attendre_de_pied_ferme)__       attend\w* (de pied ferme) @@$ <<- ~1>> *
 __[i](p_ayants_droit)__                 ayants (droit) @@$ <<- ~1>> *
@@ -4731,12 +4732,9 @@ __[i](loc_fard_à_paupières)__
     fards? (([àa]) paupières) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](loc_fille_à)__
-    filles? (([àa]) (?:papa|maman)|au pair) @@$,w
-    <<- \1.startswith("a ") -2>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~1>> *
-__[i](loc_fils_à)__
-    fils (([àa]) (?:papa|maman)) @@$,w
+__[i](p_fille_au_pair)__                filles? (au pair) @@$ <<- ~1>> *
+__[i](loc_fils_fille_à)__
+    fil(?:les?|s) (([àa]) (?:papa|maman)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[s](p_femme_de)__                     [fF]emmes? (de (?:chambre|lettres|loi|ménage)|d’(?:âge mûr|affaires|exception|É(?:tat|glise)|honneur)) @@$ <<- ~1>> *
@@ -4765,11 +4763,12 @@ __[i](p_maréchal_des_logis)__           maréchale?s? (des logis(?:[ -]chef|)) 
 __[i](p_mère_au_foyer)__                mères? (au foyer) @@$ <<- ~1>> *
 __[i](p_metteur_en_scène)__             metteu(?:r|se)s? (en scène) @@$ <<- ~1>> *
 __[i](p_mineur_de_moins_de_x_ans)__     mineure?s? (de moins de ({w1}) ans) @@$,>1:w <<- \2.isdigit() or morph(\2, ":B", False) ~1>> *
-__[i](loc_mettre_qqch)__
-    (m(?:et|[iî][mst])\w*) +(([àa]) (?:jour|niveau|plat|l’écart)|au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@0,$,w
+__[i](loc_mettre_à_qqch)__
+    (m(?:et|[iî][mst])\w*) +(([àa]) (?:jour|niveau|plat|l’écart)) @@0,$,w
     <<- morph(\1, ">mettre ", False) >>>
-    <<- \2.startswith("a ") -3>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
+__[i](p_mettre_qqch)__                  (m(?:et|[iî][mst])\w*) +(au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@0,$ <<- morph(\1, ">mettre ", False) ~2>> *
 __[i](p_mode_de)__                      modes? (de (?:paiement|scrutin|vie)) @@$ <<- ~1>> *
 __[i](p_mot_de_passe)__                 mots? (de passe) @@$ <<- ~1>> *
 __[i](p_motion_de)__                    motions? (de (?:blâme|censure|défiance)) @@$ <<- ~1>> *
@@ -4791,11 +4790,12 @@ __[i](p_pièce_de)__                     pièces? (de (?:théâtre|monnaie|\d+ (
 __[i](p_partie_de_jambe_en_l_air)__     parties? (de jambes en l’air) @@$ <<- ~1>> *
 __[i](p_porte_de)__                     portes? (de (?:service|garage)) @@$ <<- ~1>> *
 __[i](p_poudre_aux_yeux)__              poudres? (aux yeux) @@$ <<- ~1>> *
-__[i](loc_prendre)__
-    (pr[eiî]\w+) +(([àa]) la légère|au dépourvu|de court|en charge|ombrage|pour argent comptant|par surprise|soin) @@0,$,w
+__[i](loc_prendre_à_la_légère)__
+    (pr[eiî]\w+) +(([àa]) la légère) @@0,$,w
     <<- morph(\1, ">prendre ", False) >>>
-    <<- \2.startswith("a ") -3>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
+__[i](p_prendre)__                      (pr[eiî]\w+) +(au dépourvu|de court|en charge|ombrage|pour argent comptant|par surprise|soin) @@0,$ <<- morph(\1, ">prendre ", False) ~2>> *
 __[i](p_quelqu_un_d_autre)__            quelqu un (d’autre) @@$ <<- ~1>> *
 __[i](loc_remire_à_plat)__
     remise?s? (([àa]) plat) @@$,w
@@ -4830,10 +4830,11 @@ __[i](p_taille)__                       taille (\d+) @@$ <<- ~1>> *
 __[i](p_taux_de_qqch)__                 taux (d’(?:abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure)|de (?:change|cholest[ée]rol|glycémie|fécondité|participation|testostérone|TVA)) @@$ <<- ~1>> *
 __[i](p_tête_de_déterré)__              têtes? (de déterrée?s?) @@$ <<- ~1>> *
 __[i](loc_tenir_compte)__
-    (t[eiî]\w+) +(([àa]) distance|compte) d(?:es?|u) @@0,$,w
+    (t[eiî]\w+) +(([àa]) distance) d(?:es?|u) @@0,$,w
     <<- morph(\1, ">tenir ", False) >>>
-    <<- \2.startswith("a ") -3>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
+__[i](p_tenir_compte)__                 (t[eiî]\w+) +(compte) d(?:es?|u) @@0,w <<- morph(\1, ">tenir ", False) ~2>> *
 __[i](p_tout_un_chacun)__               (tout un) chacun @@0 <<- ~1>> *
 __[i](p_tour_de_passe_passe)__          tours? (de passe-passe) @@$ <<- ~1>> *
 __[i](p_trier_sur_le_volet)__           (tri\w+) (sur le volet) @@0,$ <<- morph(\1, ">trier ", False) ~2>> *
