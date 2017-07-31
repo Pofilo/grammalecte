@@ -10,7 +10,18 @@ import helpers
 def build (sLang, dVars, spLangPack):
     "complementary build launched from make.py"
     createFirefoxExtension(sLang, dVars)
+    createWebExtension(sLang, dVars)
     createThunderbirdExtension(sLang, dVars, spLangPack)
+
+
+def createWebExtension (sLang, dVars):
+    "create Web-extension"
+    print("Building Web-extension")
+    helpers.createCleanFolder("_build/webext/"+sLang)
+    dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
+    dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
+    with helpers.cd("_build/webext/"+sLang):
+        os.system("web-ext build")
 
 
 def createFirefoxExtension (sLang, dVars):

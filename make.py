@@ -288,6 +288,7 @@ def main ():
     xParser.add_argument("-pm", "--perf_memo", help="run performance tests and store results in perf_memo.txt", action="store_true")
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Nightly for XPI testing", action="store_true")
+    xParser.add_argument("-we", "--web_ext", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
     xParser.add_argument("-i", "--install", help="install the extension in Writer (path of unopkg must be set in config.ini)", action="store_true")
     xArgs = xParser.parse_args()
@@ -350,6 +351,10 @@ def main ():
             if xArgs.firefox:
                 with helpers.cd("_build/xpi/"+sLang):
                     os.system("jpm run -b nightly")
+
+            if xArgs.web_ext:
+                with helpers.cd("_build/webext/"+sLang):
+                    os.system(r'web-ext run --firefox="' + dVars['fx_beta_path'] + '" --browser-console')            
 
             # Thunderbird
             if xArgs.thunderbird:
