@@ -89,7 +89,6 @@ var helpers = {
 
 
 if (typeof(exports) !== 'undefined') {
-    exports.funcOutput = helpers.funcOutput;
     exports.setLogOutput = helpers.setLogOutput;
     exports.echo = helpers.echo;
     exports.logerror = helpers.logerror;
