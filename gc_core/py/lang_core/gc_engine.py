@@ -28,13 +28,14 @@ name = "${name}"
 version = "${version}"
 author = "${author}"
 
-# grammar rules and dictionary
-_sContext = ""                          # what software is running
-_rules = None                           # module gc_rules
+_rules = None                               # module gc_rules
+
+# data
+_sAppContext = ""                           # what software is running
 _dOptions = None
 _aIgnoredRules = set()
 _oDict = None
-_dAnalyses = {}                         # cache for data from dictionary
+_dAnalyses = {}                             # cache for data from dictionary
 
 
 
@@ -288,11 +289,11 @@ except ImportError:
 
 def load (sContext="Python"):
     global _oDict
-    global _sContext
+    global _sAppContext
     global _dOptions
     try:
         _oDict = IBDAWG("${dic_name}.bdic")
-        _sContext = sContext
+        _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
     except:
         traceback.print_exc()
@@ -314,7 +315,7 @@ def getOptions ():
 
 
 def getDefaultOptions ():
-    return dict(gc_options.getOptions(_sContext))
+    return dict(gc_options.getOptions(_sAppContext))
 
 
 def getOptionsLabels (sLang):
@@ -329,7 +330,7 @@ def displayOptions (sLang):
 
 def resetOptions ():
     global _dOptions
-    _dOptions = dict(gc_options.getOptions(_sContext))
+    _dOptions = dict(gc_options.getOptions(_sAppContext))
 
 
 def getDictionary ():
