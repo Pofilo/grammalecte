@@ -4,12 +4,14 @@
 ${string}
 ${regex}
 
-const lParagraphRules = ${paragraph_rules_JS};
+const gc_rules = {
+    lParagraphRules: ${paragraph_rules_JS},
 
-const lSentenceRules = ${sentence_rules_JS};
+    lSentenceRules: ${sentence_rules_JS}
+}
 
 
 if (typeof(exports) !== 'undefined') {
-	exports.lParagraphRules = lParagraphRules;
-	exports.lSentenceRules = lSentenceRules;
+    exports.lParagraphRules = gc_rules.lParagraphRules;
+    exports.lSentenceRules = gc_rules.lSentenceRules;
 }
