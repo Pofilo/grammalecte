@@ -3713,6 +3713,8 @@ TEST: elles sont si {{pales}}.
 TEST: cette {{pale}} imitation d’un chef-d’œuvre
 
 
+
+
 # peu / peux / peut / peut-être
 __[i]/conf(conf_peut_adv)__
     (?<![dDuUnN][eEnN] )(peu) (?:pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement) @@0
@@ -7703,8 +7705,22 @@ TEST: Prendre Damien {{à parti}}.
 
 
 # pâte / patte
+__[i]/conf(conf_pâtes)__
+    (p[aâ]t?tes?) +(alimentaires?|alsaciennes?|chinoises?|feuilletées?|italiennes?|thermiques?|au (?:basilic|beurre|saumon|pesto|poulet|thon)|[àa] (?:crêpes?|gaufres?|pizzas?|tartes?|modeler|tartiner)|d’am[ea]ndes?|de fruits?) @@0,$
+    <<- re.search("(?i)^pattes?", \1) -1>> =\1.replace("att", "ât")                                 # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
+    <<- \2.startswith("d’amende") -2>> d’amande                                                     # Confusion. L’amende est une peine. Pour le fruit de l’amandier, écrivez “amande”.
+    <<- \2.startswith("a ") -2>> =\2.replace("a ", "à ")                                            # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: Prépare la {{patte}} à tarte.
+TEST: Ils mangent souvent des {{pattes}} au thon.
+TEST: Des {{pattes}} alimentaires.
+TEST: Elles ont acheté de la {{patte}} à tartiner.
+TEST: La pâte {{a pizza}} est plus épaisse que la pâte à crêpes.
+TEST: Elle adore la pâte {{d’amende}}.
+
+
 __[i]/conf(conf_coq_en_pâte)__
-    (?:coqs?) en (pattes?) @@$ <<- -1>> pâte                                              # Confusion. Patte = jambe. Pâte = matière pâteuse.
+    (?:coqs?) en (pattes?) @@$ <<- -1>> pâte                                                        # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
 TEST: Il est comme un coq en {{pattes}} là.
 
