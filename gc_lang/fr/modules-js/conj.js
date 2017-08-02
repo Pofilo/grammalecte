@@ -481,7 +481,7 @@ class Verb {
 
 if (typeof(exports) !== 'undefined') {
     // used within Grammalecte library
-    let helpers = require("resource://grammalecte/helpers.js");
+    helpers = require("resource://grammalecte/helpers.js");
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 } else {
     // used within Firefox content script (conjugation panel).
