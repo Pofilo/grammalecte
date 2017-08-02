@@ -5,10 +5,10 @@ if (typeof(exports) !== 'undefined') {
 }
 
 
-const _oData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
-const _dWord = helpers.objectToMap(_oData.dWord);
-const _lSet = _oData.lSet;
-const _dMorph = helpers.objectToMap(_oData.dMorph);
+const _oPhonetData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
+const _dPhonetWord = helpers.objectToMap(_oPhonetData.dWord);
+const _lPhonetSet = _oPhonetData.lSet;
+const _dPhonetMorph = helpers.objectToMap(_oPhonetData.dMorph);
 
 
 var phonet = {
@@ -17,17 +17,17 @@ var phonet = {
         if (!sWord) {
             return false;
         }
-        if (_dWord.has(sWord)) {
+        if (_dPhonetWord.has(sWord)) {
             if (sPattern) {
-                return this.getSimil(sWord).some(sSimil => _dMorph.gl_get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
+                return this.getSimil(sWord).some(sSimil => _dPhonetMorph.gl_get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
             }
             return true;
         }
         if (sWord.slice(0,1).gl_isUpperCase()) {
             sWord = sWord.toLowerCase();
-            if (_dWord.has(sWord)) {
+            if (_dPhonetWord.has(sWord)) {
                 if (sPattern) {
-                    return this.getSimil(sWord).some(sSimil => _dMorph.gl_get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
+                    return this.getSimil(sWord).some(sSimil => _dPhonetMorph.gl_get(sSimil, []).some(sMorph => sMorph.search(sPattern) >= 0));
                 }
                 return true;
             }
@@ -40,13 +40,13 @@ var phonet = {
         if (!sWord) {
             return [];
         }
-        if (_dWord.has(sWord)) {
-            return _lSet[_dWord.get(sWord)];
+        if (_dPhonetWord.has(sWord)) {
+            return _lPhonetSet[_dPhonetWord.get(sWord)];
         }
         if (sWord.slice(0,1).gl_isUpperCase()) {
             sWord = sWord.toLowerCase();
-            if (_dWord.has(sWord)) {
-                return _lSet[_dWord.get(sWord)];
+            if (_dPhonetWord.has(sWord)) {
+                return _lPhonetSet[_dPhonetWord.get(sWord)];
             }
         }
         return [];
@@ -59,7 +59,7 @@ var phonet = {
         }
         let aSelect = new Set();
         for (let sSimil of this.getSimil(sWord)) {
-            for (let sMorph of _dMorph.gl_get(sSimil, [])) {
+            for (let sMorph of _dPhonetMorph.gl_get(sSimil, [])) {
                 if (sMorph.search(sPattern) >= 0) {
                     aSelect.add(sSimil);
                 }

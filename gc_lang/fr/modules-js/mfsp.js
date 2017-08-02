@@ -8,20 +8,20 @@ if (typeof(exports) !== 'undefined') {
 }
 
 
-const _oData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
+const _oMfspData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
 
 // list of affix codes
-const _lTagMiscPlur = _oData.lTagMiscPlur;
-const _lTagMasForm = _oData.lTagMasForm;
+const _lTagMiscPlur = _oMfspData.lTagMiscPlur;
+const _lTagMasForm = _oMfspData.lTagMasForm;
 
 // dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them
-const _dMiscPlur = helpers.objectToMap(_oData.dMiscPlur);
+const _dMiscPlur = helpers.objectToMap(_oMfspData.dMiscPlur);
 
 // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
-const _dMasForm = helpers.objectToMap(_oData.dMasForm);
+const _dMasForm = helpers.objectToMap(_oMfspData.dMasForm);
 
 
-var mfsp = {
+const mfsp = {
     isFemForm: function (sWord) {
         // returns True if sWord exists in _dMasForm
         return _dMasForm.has(sWord);
