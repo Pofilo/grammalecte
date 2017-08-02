@@ -2,7 +2,7 @@
 
 // Note: 48 is the ASCII code for "0"
 
-var str_transform = {
+const str_transform = {
     getStemFromSuffixCode: function (sFlex, sSfxCode) {
         // Suffix only
         if (sSfxCode == "0") {

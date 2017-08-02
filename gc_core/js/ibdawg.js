@@ -2,8 +2,11 @@
 
 "use strict";
 
-const st = require("resource://grammalecte/str_transform.js");
-const helpers = require("resource://grammalecte/helpers.js");
+
+if (typeof(exports) !== 'undefined') {
+    var str_transform = require("resource://grammalecte/str_transform.js");
+    var helpers = require("resource://grammalecte/helpers.js");
+}
 
 
 // String
@@ -41,11 +44,11 @@ class IBDAWG {
         //this.byDic = new Uint8Array(this.byDic);  // not quicker, even slower
 
         if (this.cStemming == "S") {
-            this.funcStemming = st.getStemFromSuffixCode;
+            this.funcStemming = str_transform.getStemFromSuffixCode;
         } else if (this.cStemming == "A") {
-            this.funcStemming = st.getStemFromAffixCode;
+            this.funcStemming = str_transform.getStemFromAffixCode;
         } else {
-            this.funcStemming = st.noStemming;
+            this.funcStemming = str_transform.noStemming;
         }
 
         // Configuring DAWG functions according to nVersion

@@ -5,6 +5,17 @@ ${regex}
 ${map}
 
 
+if (typeof(exports) !== 'undefined') {
+    var ibdawg = require("resource://grammalecte/ibdawg.js");
+    var helpers = require("resource://grammalecte/helpers.js");
+    var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
+    var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
+    var cregex = require("resource://grammalecte/${lang}/cregex.js");
+    var text = require("resource://grammalecte/text.js");
+    var echo = require("resource://grammalecte/helpers.js").echo;
+}
+
+
 function capitalizeArray (aArray) {
     // can’t map on user defined function??
     let aNew = [];
@@ -14,13 +25,6 @@ function capitalizeArray (aArray) {
     return aNew;
 }
 
-const ibdawg = require("resource://grammalecte/ibdawg.js");
-const helpers = require("resource://grammalecte/helpers.js");
-const gc_options = require("resource://grammalecte/${lang}/gc_options.js");
-const gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
-const cr = require("resource://grammalecte/${lang}/cregex.js");
-const text = require("resource://grammalecte/text.js");
-const echo = require("resource://grammalecte/helpers.js").echo;
 
 // data
 let _sAppContext = "";                                  // what software is running

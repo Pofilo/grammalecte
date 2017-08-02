@@ -198,7 +198,7 @@ const oReplTable = {
 };
 
 
-const dDefaultOptions = new Map ([
+const dTFDefaultOptions = new Map ([
     ["ts_units", true],
     ["start_of_paragraph", true],
     ["end_of_paragraph", true],
@@ -251,7 +251,7 @@ const dDefaultOptions = new Map ([
     ["ma_1letter_uppercase", false]
 ]);
 
-const dOptions = dDefaultOptions.gl_shallowCopy();
+const dTFOptions = dTFDefaultOptions.gl_shallowCopy();
 
 
 class TextFormatter {
@@ -262,9 +262,9 @@ class TextFormatter {
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
-            dOptions.gl_updateOnlyExistingKeys(dOpt);
+            dTFOptions.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of dOptions) {
+        for (let [sOptName, bVal] of dTFOptions) {
             if (bVal && oReplTable.has(sOptName)) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     sText = sText.replace(zRgx, sRep);
@@ -275,7 +275,7 @@ class TextFormatter {
     };
 
     getDefaultOptions () {
-        return dDefaultOptions;
+        return dTFDefaultOptions;
     }
 }
 

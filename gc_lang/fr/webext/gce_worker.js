@@ -1,29 +1,28 @@
-
-
 /*
-try {
-    console.log("BEFORE");
-    //var myhelpers = require('./grammalecte/helpers.js');
-    require(['./grammalecte/helpers.js'], function (foo) {
-        console.log("LOADING");
-        echo("MODULE LOADED2");
-    });
-    console.log("AFTER");
-}
-catch (e) {
-    console.log("\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
-    console.error(e);
-}*/
+    WARNING.
 
-echo("VA TE FAIRE FOUTRE");
+    JavaScript still sucks.
+    No module available in WebExtension at the moment! :(
+    No require, no import/export.
 
+    In order to use the same base of code with XUL-addon for Thunderbird and SDK-addon for Firefox,
+    all modules have been “objectified”. And while they are still imported via “require”
+    in the previous extensions, they are loaded as background scripts in WebExtension sharing
+    the same memory space (it seems)…
 
+    When JavaScript become a modern language, “deobjectify” the modules…
 
-let gce = null; // module: grammar checker engine
-let text = null;
-let tkz = null; // module: tokenizer
-let lxg = null; // module: lexicographer
-let helpers = null;
+    ATM, import/export are not available by default:
+    — Chrome 60 – behind the Experimental Web Platform flag in chrome:flags.
+    — Firefox 54 – behind the dom.moduleScripts.enabled setting in about:config.
+    — Edge 15 – behind the Experimental JavaScript Features setting in about:flags.
+
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/import
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
+*/
+
+helpers.echo("START");
+
 
 let oTokenizer = null;
 let oDict = null;

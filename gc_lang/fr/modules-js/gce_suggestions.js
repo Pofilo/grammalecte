@@ -1,8 +1,10 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Suggestion mechanisms
 
-const conj = require("resource://grammalecte/fr/conj.js");
-const mfsp = require("resource://grammalecte/fr/mfsp.js");
-const phonet = require("resource://grammalecte/fr/phonet.js");
+if (typeof(exports) !== 'undefined') {
+    var conj = require("resource://grammalecte/fr/conj.js");
+    var mfsp = require("resource://grammalecte/fr/mfsp.js");
+    var phonet = require("resource://grammalecte/fr/phonet.js");
+}
 
 
 //// verbs
@@ -197,7 +199,7 @@ function suggPlur (sFlex, sWordToAgree=null) {
         if (!_dAnalyses.has(sWordToAgree) && !_storeMorphFromFSA(sWordToAgree)) {
             return "";
         }
-        let sGender = cr.getGender(_dAnalyses.gl_get(sWordToAgree, []));
+        let sGender = cregex.getGender(_dAnalyses.gl_get(sWordToAgree, []));
         if (sGender == ":m") {
             return suggMasPlur(sFlex);
         } else if (sGender == ":f") {
@@ -263,14 +265,14 @@ function suggMasSing (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
                 aSugg.add(suggSing(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     mfsp.getMasForm(sStem, false).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q1") && conj.hasConj(sVerb, ":PQ", ":Q3")) {
                 // We also check if the verb has a feminine form.
                 // If not, we consider it’s better to not suggest the masculine one, as it can be considered invariable.
@@ -299,14 +301,14 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
                 aSugg.add(suggPlur(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     mfsp.getMasForm(sStem, true).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q2")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q2"));
             } else if (conj.hasConj(sVerb, ":PQ", ":Q1")) {
@@ -340,14 +342,14 @@ function suggFemSing (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
                 aSugg.add(suggSing(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     aSugg.add(sStem);
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q3")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q3"));
             }
@@ -374,14 +376,14 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
                 aSugg.add(suggPlur(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     aSugg.add(sStem+"s");
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q4")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q4"));
             }

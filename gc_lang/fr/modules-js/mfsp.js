@@ -2,7 +2,11 @@
 
 "use strict";
 
-const helpers = require("resource://grammalecte/helpers.js");
+
+if (typeof(exports) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
+
 
 const _oData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
 

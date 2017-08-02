@@ -1,6 +1,9 @@
 // Grammalecte - Suggestion phonétique
 
-const helpers = require("resource://grammalecte/helpers.js");
+if (typeof(exports) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
+
 
 const _oData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
 const _dWord = helpers.objectToMap(_oData.dWord);

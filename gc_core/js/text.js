@@ -2,9 +2,13 @@
 
 "use strict";
 
-const helpers = require("resource://grammalecte/helpers.js");
 
-var text = {
+if (typeof(exports) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
+
+
+const text = {
     getParagraph: function* (sText) {
         // generator: returns paragraphs of text
         let iStart = 0;

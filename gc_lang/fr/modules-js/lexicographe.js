@@ -7,9 +7,9 @@ ${string}
 ${map}
 
 
-const helpers = require("resource://grammalecte/helpers.js");
-const tkz = require("resource://grammalecte/tokenizer.js");
-
+if (typeof(exports) !== 'undefined') {
+    const helpers = require("resource://grammalecte/helpers.js");
+}
 
 const _dTAGS = new Map ([
     [':G', "[mot grammatical]"],

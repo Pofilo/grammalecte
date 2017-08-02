@@ -3,7 +3,9 @@
 "use strict";
 
 
-const helpers = require("resource://grammalecte/helpers.js");
+if (typeof(exports) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
 
 
 class TestGrammarChecking {
