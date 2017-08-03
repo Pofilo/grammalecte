@@ -280,14 +280,14 @@ var gc_engine = {
     listRules: function (sFilter=null) {
         // generator: returns tuple (sOption, sLineId, sRuleId)
         try {
-            for ([sOption, lRuleGroup] of _getRules(true)) {
+            for ([sOption, lRuleGroup] of this._getRules(true)) {
                 for ([_, _, sLineId, sRuleId, _, _] of lRuleGroup) {
                     if (!sFilter || sRuleId.test(sFilter)) {
                         yield [sOption, sLineId, sRuleId];
                     }
                 }
             }
-            for ([sOption, lRuleGroup] of _getRules(false)) {
+            for ([sOption, lRuleGroup] of this._getRules(false)) {
                 for ([_, _, sLineId, sRuleId, _, _] of lRuleGroup) {
                     if (!sFilter || sRuleId.test(sFilter)) {
                         yield [sOption, sLineId, sRuleId];

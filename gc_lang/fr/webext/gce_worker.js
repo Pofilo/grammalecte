@@ -21,46 +21,30 @@
     https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Statements/export
 */
 
-helpers.echo("START");
 
-helpers.echo(conj.getConj("devenir", ":E", ":2s"));
-
-helpers.echo(mfsp.getMasForm("emmerdeuse", true));
-helpers.echo(mfsp.getMasForm("pointilleuse", false));
-
-helpers.echo(phonet.getSimil("est"));
-
-let oDict = new IBDAWG("French.json");
-helpers.echo(oDict.getMorph("merde"));
-
-gc_engine.load("JavaScript");
-let aRes = gc_engine.parse("Je suit...");
-for (let oErr of aRes) {
-    helpers.echo(text.getReadableError(oErr));
-}
 
 
 let oTokenizer = null;
 let oLxg = null;
 
 function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
-    if (gce === null) {
+    if (gc_engine === null) {
         try {
-            gce = require("resource://grammalecte/fr/gc_engine.js");
+            gc_engine = require("resource://grammalecte/fr/gc_engine.js");
             helpers = require("resource://grammalecte/helpers.js");
             text = require("resource://grammalecte/text.js");
             tkz = require("resource://grammalecte/tokenizer.js");
             lxg = require("resource://grammalecte/fr/lexicographe.js");
             oTokenizer = new tkz.Tokenizer("fr");
             helpers.setLogOutput(console.log);
-            gce.load(sContext);
-            oDict = gce.getDictionary();
+            gc_engine.load(sContext);
+            oDict = gc_engine.getDictionary();
             oLxg = new lxg.Lexicographe(oDict);
             if (sGCOptions !== "") {
-                gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+                gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
             }
-            // we always retrieve options from the gce, for setOptions filters obsolete options
-            return gce.getOptions()._toString();
+            // we always retrieve options from the gc_engine, for setOptions filters obsolete options
+            return gc_engine.getOptions()._toString();
         }
         catch (e) {
             console.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
@@ -69,56 +53,52 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
 }
 
 function parse (sText, sLang, bDebug, bContext) {
-    let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
+    let aGrammErr = gc_engine.parse(sText, sLang, bDebug, bContext);
     return JSON.stringify(aGrammErr);
 }
 
 function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
-    let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
+    let aGrammErr = gc_engine.parse(sText, sLang, bDebug, bContext);
     let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
 
 function getOptions () {
-    return gce.getOptions()._toString();
+    return gc_engine.getOptions()._toString();
 }
 
 function getDefaultOptions () {
-    return gce.getDefaultOptions()._toString();
+    return gc_engine.getDefaultOptions()._toString();
 }
 
 function setOptions (sGCOptions) {
-    gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    return gce.getOptions()._toString();
+    gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+    return gc_engine.getOptions()._toString();
 }
 
 function setOption (sOptName, bValue) {
-    gce.setOptions(new Map([ [sOptName, bValue] ]));
-    return gce.getOptions()._toString();
+    gc_engine.setOptions(new Map([ [sOptName, bValue] ]));
+    return gc_engine.getOptions()._toString();
 }
 
 function resetOptions () {
-    gce.resetOptions();
-    return gce.getOptions()._toString();
+    gc_engine.resetOptions();
+    return gc_engine.getOptions()._toString();
 }
 
-function fullTests (sGCOptions="") {
-    if (!gce || !oDict) {
+function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":true}') {
+    if (!gc_engine || !oDict) {
         return "# Error: grammar checker or dictionary not loaded."
     }
-    let dMemoOptions = gce.getOptions();
+    let dMemoOptions = gc_engine.getOptions();
     if (sGCOptions) {
-        gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+        gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
     }
-    let tests = require("resource://grammalecte/tests.js");
-    let oTest = new tests.TestGrammarChecking(gce);
-    let sAllRes = "";
+    let oTest = new TestGrammarChecking(gc_engine);
     for (let sRes of oTest.testParse()) {
-        dump(sRes+"\n");
-        sAllRes += sRes+"\n";
+        helpers.echo(sRes+"\n");
     }
-    gce.setOptions(dMemoOptions);
-    return sAllRes;
+    gc_engine.setOptions(dMemoOptions);
 }
 
 
@@ -150,4 +130,22 @@ function handleMessage (oRequest, xSender, sendResponse) {
 
 browser.runtime.onMessage.addListener(handleMessage);
 
+helpers.echo("START");
 
+helpers.echo(conj.getConj("devenir", ":E", ":2s"));
+
+helpers.echo(mfsp.getMasForm("emmerdeuse", true));
+helpers.echo(mfsp.getMasForm("pointilleuse", false));
+
+helpers.echo(phonet.getSimil("est"));
+
+let oDict = new IBDAWG("French.json");
+helpers.echo(oDict.getMorph("merde"));
+
+gc_engine.load("JavaScript");
+let aRes = gc_engine.parse("Je suit...");
+for (let oErr of aRes) {
+    helpers.echo(text.getReadableError(oErr));
+}
+
+//fullTests();

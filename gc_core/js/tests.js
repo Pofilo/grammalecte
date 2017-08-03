@@ -3,7 +3,7 @@
 "use strict";
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
 }
 
@@ -17,8 +17,8 @@ class TestGrammarChecking {
 
     * testParse (bDebug=false) {
         const t0 = Date.now();
-        const aData = JSON.parse(helpers.loadFile("resource://grammalecte/"+this.gce.lang+"/tests_data.json")).aData;
-        //const aData = require("resource://grammalecte/"+this.gce.lang+"/tests_data.js").aData;
+        let sURL = (typeof(browser) !== 'undefined') ? browser.extension.getURL("grammalecte/"+this.gce.lang+"/tests_data.json") : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
+        const aData = JSON.parse(helpers.loadFile(sURL)).aData;
         let nInvalid = 0
         let nTotal = 0
         let sErrorText;
@@ -80,7 +80,7 @@ class TestGrammarChecking {
 
         if (bShowUntested) {
             i = 0;
-            for (let [sOpt, sLineId, sRuleId] of gce.listRules()) {
+            for (let [sOpt, sLineId, sRuleId] of this.gce.listRules()) {
                 if (!this._aRuleTested.has(sLineId) && !/^[0-9]+[sp]$|^[pd]_/.test(sRuleId)) {
                     sUntestedRules += sRuleId + ", ";
                     i += 1;
@@ -126,9 +126,9 @@ class TestGrammarChecking {
         try {
             let aErrs = [];
             if (sOption) {
-                gce.setOption(sOption, true);
+                this.gce.setOption(sOption, true);
                 aErrs = this.gce.parse(sLine, "FR", bDebug);
-                gce.setOption(sOption, false);
+                this.gce.setOption(sOption, false);
             } else {
                 aErrs = this.gce.parse(sLine, "FR", bDebug);
             }
