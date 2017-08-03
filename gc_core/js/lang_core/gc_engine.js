@@ -6,13 +6,12 @@ ${map}
 
 
 if (typeof(require) !== 'undefined') {
-    var IBDAWG = require("resource://grammalecte/ibdawg.js").IBDAWG;
     var helpers = require("resource://grammalecte/helpers.js");
+    var echo = require("resource://grammalecte/helpers.js").echo;
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
     var text = require("resource://grammalecte/text.js");
-    var echo = require("resource://grammalecte/helpers.js").echo;
 }
 
 
@@ -312,7 +311,12 @@ var gc_engine = {
 
     load: function (sContext="JavaScript") {
         try {
-            _oDict = new IBDAWG("${dic_name}.json");
+            if (typeof(require) !== 'undefined') {
+                var ibdawg = require("resource://grammalecte/ibdawg.js");
+                _oDict = new ibdawg.IBDAWG("${dic_name}.json");
+            } else {
+                _oDict = new IBDAWG("${dic_name}.json");
+            }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
         }

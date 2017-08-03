@@ -33,6 +33,11 @@ helpers.echo(phonet.getSimil("est"));
 let oDict = new IBDAWG("French.json");
 helpers.echo(oDict.getMorph("merde"));
 
+gc_engine.load("JavaScript");
+let aRes = gc_engine.parse("Je suit...");
+for (let oErr of aRes) {
+    helpers.echo(text.getReadableError(oErr));
+}
 
 
 let oTokenizer = null;
