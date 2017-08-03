@@ -5,7 +5,7 @@ if (typeof(require) !== 'undefined') {
 }
 
 
-const phonet = {
+var phonet = {
     _dWord: {},
     _lSet: [],
     _dMorph: {},

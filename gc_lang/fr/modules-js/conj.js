@@ -6,7 +6,7 @@
 ${map}
 
 
-const conj = {
+var conj = {
     _lVtyp: [],
     _lTags: [],
     _dPatternConj: {},

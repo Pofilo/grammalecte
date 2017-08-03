@@ -8,7 +8,7 @@ ${map}
 
 
 if (typeof(exports) !== 'undefined') {
-    const helpers = require("resource://grammalecte/helpers.js");
+    var helpers = require("resource://grammalecte/helpers.js");
 }
 
 const _dTAGS = new Map ([

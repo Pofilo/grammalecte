@@ -4,7 +4,7 @@
 ${string}
 ${regex}
 
-const gc_rules = {
+var gc_rules = {
     lParagraphRules: ${paragraph_rules_JS},
 
     lSentenceRules: ${sentence_rules_JS}

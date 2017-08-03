@@ -34,7 +34,7 @@ let _oDict = null;
 let _dAnalyses = new Map();                             // cache for data from dictionary
 
 
-const gc_engine = {
+var gc_engine = {
 
     //// Informations
 

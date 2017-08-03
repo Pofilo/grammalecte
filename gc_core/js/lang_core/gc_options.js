@@ -3,7 +3,7 @@
 ${map}
 
 
-const gc_options = {
+var gc_options = {
     getOptions: function (sContext="JavaScript") {
         if (this.dOpt.hasOwnProperty(sContext)) {
             return this.dOpt[sContext];

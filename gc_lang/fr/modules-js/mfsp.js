@@ -8,7 +8,7 @@ if (typeof(require) !== 'undefined') {
 }
 
 
-const mfsp = {
+var mfsp = {
     // list of affix codes
     _lTagMiscPlur: [],
     _lTagMasForm: [],

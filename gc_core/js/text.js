@@ -8,7 +8,7 @@ if (typeof(exports) !== 'undefined') {
 }
 
 
-const text = {
+var text = {
     getParagraph: function* (sText) {
         // generator: returns paragraphs of text
         let iStart = 0;
