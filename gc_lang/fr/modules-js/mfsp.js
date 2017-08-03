@@ -3,33 +3,41 @@
 "use strict";
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
 }
 
 
-const _oMfspData = JSON.parse(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
-
-// list of affix codes
-const _lTagMiscPlur = _oMfspData.lTagMiscPlur;
-const _lTagMasForm = _oMfspData.lTagMasForm;
-
-// dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them
-const _dMiscPlur = helpers.objectToMap(_oMfspData.dMiscPlur);
-
-// dictionary of feminine forms and tags to generate masculine forms (singular and plural)
-const _dMasForm = helpers.objectToMap(_oMfspData.dMasForm);
-
-
 const mfsp = {
+    // list of affix codes
+    _lTagMiscPlur: null,
+    _lTagMasForm: null,
+    // dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them
+    _dMiscPlur: {},
+    // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
+    _dMasForm: {},
+
+    init: function (sJSONData) {
+        try {
+            let _oData = JSON.parse(sJSONData);
+            this._lTagMiscPlur = _oData.lTagMiscPlur;
+            this._lTagMasForm = _oData.lTagMasForm;
+            this._dMiscPlur = helpers.objectToMap(_oData.dMiscPlur);
+            this._dMasForm = helpers.objectToMap(_oData.dMasForm);
+        }
+        catch (e) {
+            console.error(e);
+        }
+    },
+
     isFemForm: function (sWord) {
-        // returns True if sWord exists in _dMasForm
-        return _dMasForm.has(sWord);
+        // returns True if sWord exists in this._dMasForm
+        return this._dMasForm.has(sWord);
     },
 
     getMasForm: function (sWord, bPlur) {
         // returns masculine form with feminine form
-        if (_dMasForm.has(sWord)) {
+        if (this._dMasForm.has(sWord)) {
             return [ for (sTag of this._whatSuffixCode(sWord, bPlur))  this._modifyStringWithSuffixCode(sWord, sTag) ];
         }
         return [];
@@ -37,20 +45,20 @@ const mfsp = {
 
     hasMiscPlural: function (sWord) {
         // returns True if sWord exists in dMiscPlur
-        return _dMiscPlur.has(sWord);
+        return this._dMiscPlur.has(sWord);
     },
 
     getMiscPlural: function (sWord) {
         // returns plural form with singular form
-        if (_dMiscPlur.has(sWord)) {
-            return [ for (sTag of _lTagMiscPlur[_dMiscPlur.get(sWord)].split("|"))  this._modifyStringWithSuffixCode(sWord, sTag) ];
+        if (this._dMiscPlur.has(sWord)) {
+            return [ for (sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|"))  this._modifyStringWithSuffixCode(sWord, sTag) ];
         }
         return [];
     },
 
     _whatSuffixCode: function (sWord, bPlur) {
         // necessary only for dMasFW
-        let sSfx = _lTagMasForm[_dMasForm.get(sWord)];
+        let sSfx = this._lTagMasForm[this._dMasForm.get(sWord)];
         if (sSfx.includes("/")) {
             if (bPlur) {
                 return sSfx.slice(sSfx.indexOf("/")+1).split("|");
@@ -80,6 +88,18 @@ const mfsp = {
             return "## erreur, code : " + sSfx + " ##";
         }
     }
+}
+
+
+// Initialization
+if (typeof(browser) !== 'undefined') {
+    // WebExtension
+    mfsp.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/mfsp_data.json")));
+} else if (typeof(require) !== 'undefined') {
+    // Add-on SDK and Thunderbird
+    mfsp.init(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
+} else {
+    console.log("Error: Impossible d’initialiser le module mfsp");
 }
 
 

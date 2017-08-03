@@ -25,6 +25,8 @@ helpers.echo("START");
 
 helpers.echo(conj.getConj("devenir", ":E", ":2s"));
 
+helpers.echo(mfsp.getMasForm("emmerdeuse", true));
+helpers.echo(mfsp.getMasForm("pointilleuse", false));
 
 let oTokenizer = null;
 let oDict = null;

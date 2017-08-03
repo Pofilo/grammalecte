@@ -481,7 +481,7 @@ class Verb {
 if (typeof(browser) !== 'undefined') {
     // WebExtension
     conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
-} else if (typeof(exports) !== 'undefined') {
+} else if (typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     let helpers = require("resource://grammalecte/helpers.js");
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
