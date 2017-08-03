@@ -3,7 +3,7 @@
 "use strict";
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof(require) !== 'undefined') {
     var str_transform = require("resource://grammalecte/str_transform.js");
     var helpers = require("resource://grammalecte/helpers.js");
 }
@@ -20,10 +20,9 @@ class IBDAWG {
 
     constructor (sDicName) {
         try {
-            const dict = JSON.parse(helpers.loadFile("resource://grammalecte/_dictionaries/"+sDicName));
+            let sURL = (typeof(browser) !== 'undefined') ? browser.extension.getURL("grammalecte/_dictionaries/"+sDicName) : "resource://grammalecte/_dictionaries/"+sDicName;
+            const dict = JSON.parse(helpers.loadFile(sURL));
             Object.assign(this, dict);
-            //const dict = require("resource://grammalecte/"+sLang+"/dictionary.js");
-            //Object.assign(this, dict.dictionary);
         }
         catch (e) {
             throw Error("# Error. File not found or not loadable.\n" + e.message + "\n");

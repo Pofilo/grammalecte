@@ -30,9 +30,12 @@ helpers.echo(mfsp.getMasForm("pointilleuse", false));
 
 helpers.echo(phonet.getSimil("est"));
 
+let oDict = new IBDAWG("French.json");
+helpers.echo(oDict.getMorph("merde"));
+
+
 
 let oTokenizer = null;
-let oDict = null;
 let oLxg = null;
 
 function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {

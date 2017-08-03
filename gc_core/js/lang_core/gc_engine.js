@@ -5,8 +5,8 @@ ${regex}
 ${map}
 
 
-if (typeof(exports) !== 'undefined') {
-    var ibdawg = require("resource://grammalecte/ibdawg.js");
+if (typeof(require) !== 'undefined') {
+    var IBDAWG = require("resource://grammalecte/ibdawg.js").IBDAWG;
     var helpers = require("resource://grammalecte/helpers.js");
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
@@ -312,7 +312,7 @@ const gc_engine = {
 
     load: function (sContext="JavaScript") {
         try {
-            _oDict = new ibdawg.IBDAWG("${dic_name}.json");
+            _oDict = new IBDAWG("${dic_name}.json");
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
         }
