@@ -7,8 +7,8 @@ ${map}
 
 
 const conj = {
-    _lVtyp: null,
-    _lTags: null,
+    _lVtyp: [],
+    _lTags: [],
     _dPatternConj: {},
     _dVerb: {},
 

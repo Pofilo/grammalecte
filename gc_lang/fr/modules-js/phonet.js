@@ -6,9 +6,9 @@ if (typeof(require) !== 'undefined') {
 
 
 const phonet = {
-    _dWord: null,
-    _lSet: null,
-    _dMorph: null,
+    _dWord: {},
+    _lSet: [],
+    _dMorph: {},
 
     init: function (sJSONData) {
         try {

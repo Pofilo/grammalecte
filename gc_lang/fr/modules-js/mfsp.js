@@ -10,8 +10,8 @@ if (typeof(require) !== 'undefined') {
 
 const mfsp = {
     // list of affix codes
-    _lTagMiscPlur: null,
-    _lTagMasForm: null,
+    _lTagMiscPlur: [],
+    _lTagMasForm: [],
     // dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them
     _dMiscPlur: {},
     // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
@@ -104,6 +104,11 @@ if (typeof(browser) !== 'undefined') {
 
 
 if (typeof(exports) !== 'undefined') {
+    exports._lTagMiscPlur = mfsp._lTagMiscPlur;
+    exports._lTagMasForm = mfsp._lTagMasForm;
+    exports._dMiscPlur = mfsp._dMiscPlur;
+    exports._dMasForm = mfsp._dMasForm;
+    exports.init = mfsp.init;
     exports.isFemForm = mfsp.isFemForm;
     exports.getMasForm = mfsp.getMasForm;
     exports.hasMiscPlural = mfsp.hasMiscPlural;
