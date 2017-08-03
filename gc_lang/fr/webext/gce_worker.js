@@ -23,6 +23,8 @@
 
 helpers.echo("START");
 
+helpers.echo(conj.getConj("devenir", ":E", ":2s"));
+
 
 let oTokenizer = null;
 let oDict = null;

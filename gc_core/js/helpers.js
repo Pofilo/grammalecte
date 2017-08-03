@@ -51,8 +51,7 @@ var helpers = {
             let xRequest;
             if (typeof XMLHttpRequest !== "undefined") {
                 xRequest = new XMLHttpRequest();
-            }
-            else {
+            } else {
                 // JS bullshit again… necessary for Thunderbird
                 let { Cc, Ci } = require("chrome");
                 xRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();

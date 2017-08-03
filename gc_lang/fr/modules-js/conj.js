@@ -6,8 +6,6 @@
 ${map}
 
 
-let helpers = null; // module not loaded in Firefox content script
-
 const conj = {
     _lVtyp: null,
     _lTags: null,
@@ -479,16 +477,22 @@ class Verb {
 }
 
 
-if (typeof(exports) !== 'undefined') {
-    // used within Grammalecte library
-    helpers = require("resource://grammalecte/helpers.js");
+// Initialization
+if (typeof(browser) !== 'undefined') {
+    // WebExtension
+    conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
+} else if (typeof(exports) !== 'undefined') {
+    // Add-on SDK and Thunderbird
+    let helpers = require("resource://grammalecte/helpers.js");
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
-} else {
+} else if (typeof(self) !== 'undefined') {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
     self.port.on("provideConjData", function (sJSONData) {
         conj.init(sJSONData);
     });
+} else {
+    console.log("Error: Impossible d’initialiser le module conj");
 }
 
 
