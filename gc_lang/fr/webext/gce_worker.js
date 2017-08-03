@@ -28,6 +28,9 @@ helpers.echo(conj.getConj("devenir", ":E", ":2s"));
 helpers.echo(mfsp.getMasForm("emmerdeuse", true));
 helpers.echo(mfsp.getMasForm("pointilleuse", false));
 
+helpers.echo(phonet.getSimil("est"));
+
+
 let oTokenizer = null;
 let oDict = null;
 let oLxg = null;
