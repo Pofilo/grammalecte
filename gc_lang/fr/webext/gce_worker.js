@@ -1,9 +1,14 @@
 /*
-    WARNING.
+    WORKER:
+    https://developer.mozilla.org/en-US/docs/Web/API/Worker
+    https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope
+
 
     JavaScript still sucks.
     No module available in WebExtension at the moment! :(
     No require, no import/export.
+
+    In Worker, we have importScripts() which imports everything in this scope.
 
     In order to use the same base of code with XUL-addon for Thunderbird and SDK-addon for Firefox,
     all modules have been “objectified”. And while they are still imported via “require”
@@ -22,7 +27,26 @@
 */
 
 
+console.log("GC Engine Worker [start]");
+console.log(self);
 
+importScripts("grammalecte/helpers.js");
+importScripts("grammalecte/str_transform.js");
+importScripts("grammalecte/ibdawg.js");
+importScripts("grammalecte/text.js");
+importScripts("grammalecte/tokenizer.js");
+importScripts("grammalecte/fr/conj.js");
+importScripts("grammalecte/fr/mfsp.js");
+importScripts("grammalecte/fr/phonet.js");
+importScripts("grammalecte/fr/cregex.js");
+importScripts("grammalecte/fr/gc_options.js");
+importScripts("grammalecte/fr/gc_rules.js");
+importScripts("grammalecte/fr/gc_engine.js");
+importScripts("grammalecte/tests.js");
+
+
+
+helpers.echo("helpers echo");
 
 let oTokenizer = null;
 let oLxg = null;
@@ -123,13 +147,6 @@ function getListOfElements (sText) {
 }
 
 
-function handleMessage (oRequest, xSender, sendResponse) {
-  console.log(`[background] received: ${oRequest.content}`);
-  sendResponse({response: "response from background script"});
-}
-
-browser.runtime.onMessage.addListener(handleMessage);
-
 helpers.echo("START");
 
 helpers.echo(conj.getConj("devenir", ":E", ":2s"));
@@ -148,4 +165,7 @@ for (let oErr of aRes) {
     helpers.echo(text.getReadableError(oErr));
 }
 
+
 //fullTests();
+
+
