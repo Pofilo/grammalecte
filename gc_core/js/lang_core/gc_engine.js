@@ -1,5 +1,7 @@
 // Grammar checker engine
 
+//"use strict";
+
 ${string}
 ${regex}
 ${map}
@@ -86,7 +88,7 @@ var gc_engine = {
                 dDA.clear();
                 //echo(sText.slice(iStart, iEnd));
                 try {
-                    [_, errs] = this._proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
+                    [sNew, errs] = this._proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
                     dErrors.gl_update(errs);
                 }
                 catch (e) {
@@ -219,6 +221,7 @@ var gc_engine = {
             }
         }
         // Message
+        let sMessage = "";
         if (sMsg[0] === "=") {
             sMessage = oEvalFunc[sMsg.slice(1)](s, m)
         } else {
@@ -280,15 +283,15 @@ var gc_engine = {
     listRules: function (sFilter=null) {
         // generator: returns tuple (sOption, sLineId, sRuleId)
         try {
-            for ([sOption, lRuleGroup] of this._getRules(true)) {
-                for ([_, _, sLineId, sRuleId, _, _] of lRuleGroup) {
+            for (let [sOption, lRuleGroup] of this._getRules(true)) {
+                for (let [x1, x2, sLineId, sRuleId, x3, x4] of lRuleGroup) {
                     if (!sFilter || sRuleId.test(sFilter)) {
                         yield [sOption, sLineId, sRuleId];
                     }
                 }
             }
-            for ([sOption, lRuleGroup] of this._getRules(false)) {
-                for ([_, _, sLineId, sRuleId, _, _] of lRuleGroup) {
+            for (let [sOption, lRuleGroup] of this._getRules(false)) {
+                for (let [x1, x2, sLineId, sRuleId, x3, x4] of lRuleGroup) {
                     if (!sFilter || sRuleId.test(sFilter)) {
                         yield [sOption, sLineId, sRuleId];
                     }
