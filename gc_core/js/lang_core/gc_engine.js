@@ -477,17 +477,17 @@ function stem (sWord) {
 
 function nextword (s, iStart, n) {
     // get the nth word of the input string or empty string
-    let z = new RegExp("^( +[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+){" + (n-1).toString() + "} +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+)", "i");
+    let z = new RegExp("^(?: +[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+){" + (n-1).toString() + "} +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+)", "ig");
     let m = z.exec(s.slice(iStart));
     if (!m) {
         return null;
     }
-    return [iStart + RegExp.lastIndex - m[2].length, m[2]];
+    return [iStart + z.lastIndex - m[1].length, m[1]];
 }
 
 function prevword (s, iEnd, n) {
     // get the (-)nth word of the input string or empty string
-    let z = new RegExp("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+) +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+ +){" + (n-1).toString() + "}$", "i");
+    let z = new RegExp("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+) +(?:[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+ +){" + (n-1).toString() + "}$", "i");
     let m = z.exec(s.slice(0, iEnd));
     if (!m) {
         return null;
@@ -495,17 +495,17 @@ function prevword (s, iEnd, n) {
     return [m.index, m[1]];
 }
 
-const _zNextWord = new RegExp ("^ +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_-]*)", "i");
-const _zPrevWord = new RegExp ("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_-]*) +$", "i");
-
 function nextword1 (s, iStart) {
     // get next word (optimization)
+    let _zNextWord = new RegExp ("^ +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_-]*)", "ig");
     let m = _zNextWord.exec(s.slice(iStart));
     if (!m) {
         return null;
     }
-    return [iStart + RegExp.lastIndex - m[1].length, m[1]];
+    return [iStart + _zNextWord.lastIndex - m[1].length, m[1]];
 }
+
+const _zPrevWord = new RegExp ("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_-]*) +$", "i");
 
 function prevword1 (s, iEnd) {
     // get previous word (optimization)
