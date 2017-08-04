@@ -1,6 +1,6 @@
 // Grammar checker engine
 
-//"use strict";
+"use strict";
 
 ${string}
 ${regex}
@@ -88,7 +88,7 @@ var gc_engine = {
                 dDA.clear();
                 //echo(sText.slice(iStart, iEnd));
                 try {
-                    [sNew, errs] = this._proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
+                    [, errs] = this._proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
                     dErrors.gl_update(errs);
                 }
                 catch (e) {
@@ -200,7 +200,7 @@ var gc_engine = {
         oErr["sRuleId"] = sRuleId;
         oErr["sType"] = (sOption) ? sOption : "notype";
         // suggestions
-        if (sRepl[0] === "=") {
+        if (sRepl.slice(0,1) === "=") {
             let sugg = oEvalFunc[sRepl.slice(1)](s, m);
             if (sugg) {
                 if (bUppercase && m[iGroup].slice(0,1).gl_isUpperCase()) {
@@ -222,7 +222,7 @@ var gc_engine = {
         }
         // Message
         let sMessage = "";
-        if (sMsg[0] === "=") {
+        if (sMsg.slice(0,1) === "=") {
             sMessage = oEvalFunc[sMsg.slice(1)](s, m)
         } else {
             sMessage = sMsg.gl_expand(m);
@@ -284,14 +284,14 @@ var gc_engine = {
         // generator: returns tuple (sOption, sLineId, sRuleId)
         try {
             for (let [sOption, lRuleGroup] of this._getRules(true)) {
-                for (let [x1, x2, sLineId, sRuleId, x3, x4] of lRuleGroup) {
+                for (let [,, sLineId, sRuleId,,] of lRuleGroup) {
                     if (!sFilter || sRuleId.test(sFilter)) {
                         yield [sOption, sLineId, sRuleId];
                     }
                 }
             }
             for (let [sOption, lRuleGroup] of this._getRules(false)) {
-                for (let [x1, x2, sLineId, sRuleId, x3, x4] of lRuleGroup) {
+                for (let [,, sLineId, sRuleId,,] of lRuleGroup) {
                     if (!sFilter || sRuleId.test(sFilter)) {
                         yield [sOption, sLineId, sRuleId];
                     }
