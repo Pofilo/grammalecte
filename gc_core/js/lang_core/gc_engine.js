@@ -280,7 +280,7 @@ var gc_engine = {
         _aIgnoredRules.delete(sRuleId);
     },
 
-    listRules: function (sFilter=null) {
+    listRules: function* (sFilter=null) {
         // generator: returns tuple (sOption, sLineId, sRuleId)
         try {
             for (let [sOption, lRuleGroup] of this._getRules(true)) {
