@@ -117,26 +117,26 @@ function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
 }
 
 function getOptions () {
-    return gc_engine.getOptions()._toString();
+    return gc_engine.getOptions().gl_toString();
 }
 
 function getDefaultOptions () {
-    return gc_engine.getDefaultOptions()._toString();
+    return gc_engine.getDefaultOptions().gl_toString();
 }
 
 function setOptions (sGCOptions) {
     gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    return gc_engine.getOptions()._toString();
+    return gc_engine.getOptions().gl_toString();
 }
 
 function setOption (sOptName, bValue) {
     gc_engine.setOptions(new Map([ [sOptName, bValue] ]));
-    return gc_engine.getOptions()._toString();
+    return gc_engine.getOptions().gl_toString();
 }
 
 function resetOptions () {
     gc_engine.resetOptions();
-    return gc_engine.getOptions()._toString();
+    return gc_engine.getOptions().gl_toString();
 }
 
 function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":true}') {
