@@ -18,9 +18,9 @@ ${string}
 class IBDAWG {
     // INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 
-    constructor (sDicName) {
+    constructor (sDicName, sPath="") {
         try {
-            let sURL = (typeof(browser) !== 'undefined') ? browser.extension.getURL("grammalecte/_dictionaries/"+sDicName) : "resource://grammalecte/_dictionaries/"+sDicName;
+            let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/_dictionaries/"+sDicName;
             const dict = JSON.parse(helpers.loadFile(sURL));
             Object.assign(this, dict);
         }

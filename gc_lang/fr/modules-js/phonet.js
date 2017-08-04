@@ -6,9 +6,9 @@ if (typeof(require) !== 'undefined') {
 
 
 var phonet = {
-    _dWord: {},
+    _dWord: new Map(),
     _lSet: [],
-    _dMorph: {},
+    _dMorph: new Map(),
 
     init: function (sJSONData) {
         try {
@@ -88,7 +88,7 @@ if (typeof(browser) !== 'undefined') {
     // Add-on SDK and Thunderbird
     phonet.init(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
 } else {
-    console.log("Error: Impossible d’initialiser le module phonet");
+    console.log("Module phonet non initialisé");
 }
 
 

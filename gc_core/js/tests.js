@@ -10,14 +10,15 @@ if (typeof(require) !== 'undefined') {
 
 class TestGrammarChecking {
 
-    constructor (gce) {
+    constructor (gce, spfTests="") {
         this.gce = gce;
+        this.spfTests = spfTests
         this._aRuleTested = new Set();
     };
 
     * testParse (bDebug=false) {
         const t0 = Date.now();
-        let sURL = (typeof(browser) !== 'undefined') ? browser.extension.getURL("grammalecte/"+this.gce.lang+"/tests_data.json") : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
+        let sURL = (this.spfTests !== "") ? this.spfTests : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
         const aData = JSON.parse(helpers.loadFile(sURL)).aData;
         let nInvalid = 0
         let nTotal = 0

@@ -13,9 +13,9 @@ var mfsp = {
     _lTagMiscPlur: [],
     _lTagMasForm: [],
     // dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them
-    _dMiscPlur: {},
+    _dMiscPlur: new Map(),
     // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
-    _dMasForm: {},
+    _dMasForm: new Map(),
 
     init: function (sJSONData) {
         try {
@@ -99,7 +99,7 @@ if (typeof(browser) !== 'undefined') {
     // Add-on SDK and Thunderbird
     mfsp.init(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
 } else {
-    console.log("Error: Impossible d’initialiser le module mfsp");
+    console.log("Module mfsp non initialisé");
 }
 
 

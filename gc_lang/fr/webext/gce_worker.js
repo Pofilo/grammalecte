@@ -4,7 +4,7 @@
     https://developer.mozilla.org/en-US/docs/Web/API/DedicatedWorkerGlobalScope
 
 
-    JavaScript still sucks.
+    JavaScript sucks.
     No module available in WebExtension at the moment! :(
     No require, no import/export.
 
@@ -42,38 +42,67 @@ importScripts("grammalecte/fr/cregex.js");
 importScripts("grammalecte/fr/gc_options.js");
 importScripts("grammalecte/fr/gc_rules.js");
 importScripts("grammalecte/fr/gc_engine.js");
+importScripts("grammalecte/fr/lexicographe.js");
 importScripts("grammalecte/tests.js");
 
 
+/*
+    Warning.
+    Initialization can’t be completed at startup, for we need the path of the path of the extension
+    to load data stored in JSON files.
+    This path is retrieved in background.js and passed with the following event.
+*/
+onmessage = function (e) {
+    if (e.data[0] == "init") {
+        loadGrammarChecker(e.data[1]);
+    }
+}
 
-helpers.echo("helpers echo");
-
+let oDict = null;
 let oTokenizer = null;
 let oLxg = null;
+let oTest = null;
 
-function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
-    if (gc_engine === null) {
-        try {
-            gc_engine = require("resource://grammalecte/fr/gc_engine.js");
-            helpers = require("resource://grammalecte/helpers.js");
-            text = require("resource://grammalecte/text.js");
-            tkz = require("resource://grammalecte/tokenizer.js");
-            lxg = require("resource://grammalecte/fr/lexicographe.js");
-            oTokenizer = new tkz.Tokenizer("fr");
-            helpers.setLogOutput(console.log);
-            gc_engine.load(sContext);
-            oDict = gc_engine.getDictionary();
-            oLxg = new lxg.Lexicographe(oDict);
-            if (sGCOptions !== "") {
-                gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-            }
-            // we always retrieve options from the gc_engine, for setOptions filters obsolete options
-            return gc_engine.getOptions()._toString();
+function loadGrammarChecker (sCGDataPath, sGCOptions="", sContext="JavaScript") {
+    try {
+        console.log("Loading… path: " + sCGDataPath);
+        conj.init(helpers.loadFile(sCGDataPath + "/grammalecte/fr/conj_data.json"));
+        phonet.init(helpers.loadFile(sCGDataPath + "/grammalecte/fr/phonet_data.json"));
+        mfsp.init(helpers.loadFile(sCGDataPath + "/grammalecte/fr/mfsp_data.json"));
+        oTest = new TestGrammarChecking(gc_engine, sCGDataPath+"/grammalecte/fr/tests_data.json");
+        console.log("JSON loaded");
+
+        oTokenizer = new Tokenizer("fr");
+        console.log("Tokenizer loaded");
+
+        gc_engine.load(sContext, sCGDataPath+"grammalecte/_dictionaries");
+        oDict = gc_engine.getDictionary();
+
+        oLxg = new Lexicographe(oDict);
+        if (sGCOptions !== "") {
+            gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
         }
-        catch (e) {
-            console.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+        helpers.echo("START");
+
+        helpers.echo(conj.getConj("devenir", ":E", ":2s"));
+
+        helpers.echo(mfsp.getMasForm("emmerdeuse", true));
+        helpers.echo(mfsp.getMasForm("pointilleuse", false));
+
+        helpers.echo(phonet.getSimil("est"));
+
+        let aRes = gc_engine.parse("Je suit...");
+        for (let oErr of aRes) {
+            helpers.echo(text.getReadableError(oErr));
         }
+        fullTests();
+        // we always retrieve options from the gc_engine, for setOptions filters obsolete options
+        //return gce.getOptions().gl_toString();
     }
+    catch (e) {
+        console.error("\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+    }
+
 }
 
 function parse (sText, sLang, bDebug, bContext) {
@@ -118,7 +147,7 @@ function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":tru
     if (sGCOptions) {
         gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
     }
-    let oTest = new TestGrammarChecking(gc_engine);
+    
     for (let sRes of oTest.testParse()) {
         helpers.echo(sRes+"\n");
     }
@@ -145,27 +174,3 @@ function getListOfElements (sText) {
     }
     return JSON.stringify([]);
 }
-
-
-helpers.echo("START");
-
-helpers.echo(conj.getConj("devenir", ":E", ":2s"));
-
-helpers.echo(mfsp.getMasForm("emmerdeuse", true));
-helpers.echo(mfsp.getMasForm("pointilleuse", false));
-
-helpers.echo(phonet.getSimil("est"));
-
-let oDict = new IBDAWG("French.json");
-helpers.echo(oDict.getMorph("merde"));
-
-gc_engine.load("JavaScript");
-let aRes = gc_engine.parse("Je suit...");
-for (let oErr of aRes) {
-    helpers.echo(text.getReadableError(oErr));
-}
-
-
-//fullTests();
-
-
