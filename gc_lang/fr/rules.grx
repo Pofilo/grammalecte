@@ -6759,13 +6759,14 @@ TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
 TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
 
 
-__[i]/conf(conf_tout_à_l_air)__
-    tout (à) l’air +({w_2})
-    <<- morph(\2, ":[AR]", False) and morph(word(-1), ":Cs", False, True)
+__[i]/conf(conf_pronom_à_l_air)__
+    (?:tout|ça|ce(?:ci|la)) (à) l’air +({w_2})
+    <<- morphex(\2, ":[AR]", ">libre ") and morph(word(-1), ":Cs", False, True)
     -1>> a                                                          # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
 
 TEST: lorsque tout {{à}} l’air fini, c’est trompeur.
 TEST: Tout {{à}} l’air complètement foutu…
+TEST: Ça {{à}} l’air génial.
 TEST: Tout à la benne.
 
 
