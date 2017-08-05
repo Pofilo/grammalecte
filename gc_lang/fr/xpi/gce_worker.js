@@ -79,13 +79,13 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
     }
 }
 
-function parse (sText, sLang, bDebug, bContext) {
-    let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
+function parse (sText, sCountry, bDebug, bContext) {
+    let aGrammErr = gce.parse(sText, sCountry, bDebug, bContext);
     return JSON.stringify(aGrammErr);
 }
 
-function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
-    let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
+function parseAndSpellcheck (sText, sCountry, bDebug, bContext) {
+    let aGrammErr = gce.parse(sText, sCountry, bDebug, bContext);
     let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
