@@ -8092,14 +8092,20 @@ TEST: ce champignon {{venimeux}}.
 # verre / vers / vert / ver
 __[i]/conf(conf_ver)__
     (?:[lc]e|du|un) (ver(?:re|t)s?) +(?:qui +|)(?:est +|étai[ts] +|serai?[st]? +|f[uû][ts] +|)dans le fruit  @@3
-    <<- -1>> ver            # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). Pour l’animal, écrivez :
+    <<- -1>> ver
+    # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
 __[i]/conf(conf_ver_de_terre)__
     (ver(?:re|t)s?) de terre @@0
     <<- -1>> =\1.replace("re", "").replace("t", "")
-    # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). Pour l’animal, écrivez :
+    # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
+__[i]/conf(conf_verre)__
+    (vert?s?) d(?:e (?:bière|cidre|contact|champagne|chianti|dégustation|jus|lait|limonade|rosé|rhum|sécurité|thé|vin|whisky)s?|’(?:alcool|absinthe|eau|urine)) @@0
+    <<- -1>> verre|verres
+    # Confusion probable. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
 
 TEST: en finir avec le {{vert}} qui était dans le fruit.
 TEST: un immonde {{vert}} de terre
+TEST: Un {{ver}} de bière fraîche.
 
 
 # vieil / vieux
