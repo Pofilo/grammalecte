@@ -354,7 +354,7 @@ def main ():
 
             if xArgs.web_ext:
                 with helpers.cd("_build/webext/"+sLang):
-                    os.system(r'web-ext run --firefox="' + dVars['fx_beta_path'] + '" --browser-console')            
+                    os.system(r'web-ext run --firefox="' + dVars['fx_nightly_path'] + '" --browser-console')            
 
             # Thunderbird
             if xArgs.thunderbird:
