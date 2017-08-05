@@ -130,13 +130,13 @@ function loadGrammarChecker (sExtensionPath, sGCOptions="", sContext="JavaScript
 
 function parse (sText, sCountry, bDebug, bContext) {
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
-    postMessage(["grammar_errors", {aGrammErr: JSON.stringify(aGrammErr)}]);
+    postMessage(["grammar_errors", {aGrammErr: aGrammErr}]);
 }
 
 function parseAndSpellcheck (sText, sCountry, bDebug, bContext) {
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
     let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
-    postMessage(["spelling_and_grammar_errors", {aGrammErr: JSON.stringify(aGrammErr), aSpellErr: JSON.stringify(aSpellErr)}]);
+    postMessage(["spelling_and_grammar_errors", {aGrammErr: aGrammErr, aSpellErr: aSpellErr}]);
 }
 
 function getOptions () {
@@ -204,11 +204,10 @@ function getListOfTokens (sText) {
                 aElem.push(aRes);
             }
         }
-        postMessage(["tokens", JSON.stringify(aElem)]);
+        postMessage(["tokens", aElem]);
     }
     catch (e) {
         helpers.logerror(e);
         postMessage(["error", e.message]);
     }
-    
 }

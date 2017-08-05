@@ -5,7 +5,6 @@
 let xGCEWorker = new Worker("gce_worker.js");
 
 xGCEWorker.onmessage = function (e) {
-    console.log("Received from Worker:");
     switch (e.data[0]) {
         case "grammar_errors":
             console.log("GRAMMAR ERRORS");
