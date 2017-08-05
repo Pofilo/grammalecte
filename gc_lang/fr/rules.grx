@@ -6759,6 +6759,16 @@ TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
 TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
 
 
+__[i]/conf(conf_tout_à_l_air)__
+    tout (à) l’air +({w_2})
+    <<- morph(\2, ":[AR]", False) and morph(word(-1), ":Cs", False, True)
+    -1>> a                                                          # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
+
+TEST: lorsque tout {{à}} l’air fini, c’est trompeur.
+TEST: Tout {{à}} l’air complètement foutu…
+TEST: Tout à la benne.
+
+
 __[i]/conf(conf_à)__
     (a) (?:[mt]oi|eux|elles?)  @@0
     <<- not before(r"(?i)\b(?:il |elle |n’) *$") -1>> à             # Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
