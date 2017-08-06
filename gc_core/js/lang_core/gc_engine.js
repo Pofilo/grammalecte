@@ -13,8 +13,14 @@ if (typeof(require) !== 'undefined') {
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
     var text = require("resource://grammalecte/text.js");
+    var echo = helpers.echo;
 }
-
+else if (typeof(console) !== "undefined") {
+    var echo = function (o) { console.log(o); return true; };
+}
+else {
+    var echo = function () { return true; }
+}
 
 function capitalizeArray (aArray) {
     // can’t map on user defined function??
