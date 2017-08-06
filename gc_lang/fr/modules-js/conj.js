@@ -485,7 +485,7 @@ if (typeof(browser) !== 'undefined') {
     // Add-on SDK and Thunderbird
     let helpers = require("resource://grammalecte/helpers.js");
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
-} else if (typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) === "undefined") {
+} else if (typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
     self.port.on("provideConjData", function (sJSONData) {
