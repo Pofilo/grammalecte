@@ -39,7 +39,7 @@ const aTkzPatterns = {
             [/^-?\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)*/, 'WORD']
         ]
-}
+};
 
 
 class Tokenizer {
@@ -50,7 +50,7 @@ class Tokenizer {
             this.sLang = "default";
         }
         this.aRules = aTkzPatterns[this.sLang];
-    };
+    }
 
     * genTokens (sText) {
         let m;
@@ -78,7 +78,7 @@ class Tokenizer {
             i += nCut;
             sText = sText.slice(nCut);
         }
-    };
+    }
 
     getSpellingErrors (sText, oDict) {
         let aSpellErr = [];

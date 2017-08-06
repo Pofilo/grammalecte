@@ -104,7 +104,7 @@ var gc_engine = {
     _zEndOfParagraph: new RegExp ("[-  .,;?!…–—]*$", "ig"),
 
     _getSentenceBoundaries: function* (sText) {
-        let mBeginOfSentence = this._zBeginOfParagraph.exec(sText)
+        let mBeginOfSentence = this._zBeginOfParagraph.exec(sText);
         let iStart = this._zBeginOfParagraph.lastIndex;
         let m;
         while ((m = this._zEndOfSentence.exec(sText)) !== null) {
@@ -134,7 +134,7 @@ var gc_engine = {
                             // action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try {
                                     //echo(oEvalFunc[sFuncCond]);
-                                    bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo))
+                                    bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo));
                                     if (bCondMemo) {
                                         switch (cActionType) {
                                             case "-":
@@ -223,7 +223,7 @@ var gc_engine = {
         // Message
         let sMessage = "";
         if (sMsg.slice(0,1) === "=") {
-            sMessage = oEvalFunc[sMsg.slice(1)](s, m)
+            sMessage = oEvalFunc[sMsg.slice(1)](s, m);
         } else {
             sMessage = sMsg.gl_expand(m);
         }
@@ -355,7 +355,7 @@ var gc_engine = {
     resetOptions: function () {
         _dOptions = gc_options.getOptions(_sAppContext).gl_shallowCopy();
     }
-}
+};
 
 
 //////// Common functions

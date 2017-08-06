@@ -88,7 +88,7 @@ var mfsp = {
             return "## erreur, code : " + sSfx + " ##";
         }
     }
-}
+};
 
 
 // Initialization

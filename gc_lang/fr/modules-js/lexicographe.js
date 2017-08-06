@@ -199,7 +199,7 @@ class Lexicographe {
         this._zElidedPrefix = new RegExp ("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp ("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
         this._zTag = new RegExp ("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*][^:;/]*", "g");
-    };
+    }
 
     getInfoForToken (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
@@ -246,7 +246,7 @@ class Lexicographe {
             helpers.logerror(e);
         }
         return null;
-    };
+    }
 
     _formatTags (sTags) {
         let sRes = "";
@@ -267,7 +267,7 @@ class Lexicographe {
             return sRes;
         }
         return sRes.gl_trimRight(",");
-    };
+    }
 
     _formatSuffix (s) {
         if (s.startsWith("t-")) {
@@ -281,7 +281,7 @@ class Lexicographe {
         }
         let nPos = s.indexOf("-");
         return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos+1));
-    };
+    }
 }
 
 

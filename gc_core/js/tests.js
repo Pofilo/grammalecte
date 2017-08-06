@@ -12,16 +12,16 @@ class TestGrammarChecking {
 
     constructor (gce, spfTests="") {
         this.gce = gce;
-        this.spfTests = spfTests
+        this.spfTests = spfTests;
         this._aRuleTested = new Set();
-    };
+    }
 
     * testParse (bDebug=false) {
         const t0 = Date.now();
         let sURL = (this.spfTests !== "") ? this.spfTests : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
         const aData = JSON.parse(helpers.loadFile(sURL)).aData;
-        let nInvalid = 0
-        let nTotal = 0
+        let nInvalid = 0;
+        let nTotal = 0;
         let sErrorText;
         let sSugg;
         let sExpectedErrors;
@@ -64,7 +64,7 @@ class TestGrammarChecking {
                               "\n  expected: " + sExpectedErrors +
                               "\n  found:    " + sFoundErrors +
                               "\n  errors:   \n" + sListErr;
-                        nInvalid = nInvalid + 1
+                        nInvalid = nInvalid + 1;
                     }
                     nTotal = nTotal + 1;
                 }
@@ -95,7 +95,7 @@ class TestGrammarChecking {
         const t1 = Date.now();
         yield "Tests parse finished in " + ((t1-t0)/1000).toString()
             + " s\nTotal errors: " + nInvalid.toString() + " / " + nTotal.toString();
-    };
+    }
 
     _getExpectedErrors (sLine) {
         try {
@@ -121,7 +121,7 @@ class TestGrammarChecking {
             helpers.logerror(e);
         }
         return " ".repeat(sLine.length);
-    };
+    }
 
     _getFoundErrors (sLine, bDebug, sOption) {
         try {
@@ -146,7 +146,7 @@ class TestGrammarChecking {
             helpers.logerror(e);
         }
         return [" ".repeat(sLine.length), ""];
-    };
+    }
 
 }
 

@@ -75,7 +75,7 @@ function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
 function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond) {
     //// use it if sWord1 can be also a verb; word2 is assumed to be true via isAmbiguousNAV
     // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null)
+    let a2 = _dAnalyses.gl_get(sWord2, null);
     if (!a2 || a2.length === 0) {
         return false;
     }
@@ -103,7 +103,7 @@ function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bL
 
 function checkAgreement (sWord1, sWord2) {
     // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null)
+    let a2 = _dAnalyses.gl_get(sWord2, null);
     if (!a2 || a2.length === 0) {
         return true;
     }
