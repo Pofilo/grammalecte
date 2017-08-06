@@ -467,7 +467,7 @@ function stem (sWord) {
     if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
         return [];
     }
-    return [ for (s of _dAnalyses.get(sWord))  s.slice(1, s.indexOf(" ")) ];
+    return _dAnalyses.get(sWord).map( s => s.slice(1, s.indexOf(" ")) );
 }
 
 
@@ -571,7 +571,7 @@ function select (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (_dAnalyses.get(sWord).length === 1) {
         return true;
     }
-    let lSelect = [ for (sMorph of _dAnalyses.get(sWord))  if (sMorph.search(sPattern) !== -1)  sMorph ];
+    let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
     //echo("lSelect: "+lSelect.toString());
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {
@@ -596,7 +596,7 @@ function exclude (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (_dAnalyses.get(sWord).length === 1) {
         return true;
     }
-    let lSelect = [ for (sMorph of _dAnalyses.get(sWord))  if (sMorph.search(sPattern) === -1)  sMorph ];
+    let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
     //echo("lSelect: "+lSelect.toString());
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {

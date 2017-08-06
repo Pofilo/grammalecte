@@ -226,13 +226,19 @@ class Lexicographe {
                     }
                     else if (this.oDict.isValidToken(oToken.sValue)) {
                         let lMorph = this.oDict.getMorph(oToken.sValue);
-                        let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
+                        let aElem = [];
+                        for (let s of lMorph){
+                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        }
                         return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem};
                     }
                     else if (m = this._zCompoundWord.exec(oToken.sValue)) {
                         // mots composés
                         let lMorph = this.oDict.getMorph(m[1]);
-                        let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
+                        let aElem = [];
+                        for (let s of lMorph){
+                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        }
                         aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
                         return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem };
                     }
