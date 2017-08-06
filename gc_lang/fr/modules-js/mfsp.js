@@ -38,11 +38,11 @@ var mfsp = {
     getMasForm: function (sWord, bPlur) {
         // returns masculine form with feminine form
         if (this._dMasForm.has(sWord)) {
-            let masForm = [];
-            for (var sTag of this._whatSuffixCode(sWord, bPlur)){
-                masForm.push( this._modifyStringWithSuffixCode(sWord, sTag) );
+            let aMasForm = [];
+            for (let sTag of this._whatSuffixCode(sWord, bPlur)){
+                aMasForm.push( this._modifyStringWithSuffixCode(sWord, sTag) );
             }
-            return masForm;
+            return aMasForm;
         }
         return [];
     },
@@ -55,11 +55,11 @@ var mfsp = {
     getMiscPlural: function (sWord) {
         // returns plural form with singular form
         if (this._dMiscPlur.has(sWord)) {
-            let miscPlurial = [];
-            for (var sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|")){
-                miscPlurial.push( this._modifyStringWithSuffixCode(sWord, sTag) );
+            let aMiscPlural = [];
+            for (let sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|")){
+                aMiscPlural.push( this._modifyStringWithSuffixCode(sWord, sTag) );
             }
-            return miscPlurial;
+            return aMiscPlural;
         }
         return [];
     },

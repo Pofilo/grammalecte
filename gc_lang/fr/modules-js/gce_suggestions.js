@@ -144,7 +144,7 @@ function suggVerbImpe (sFlex) {
 
 function suggVerbInfi (sFlex) {
     //return stem(sFlex).join("|");
-    return [ stem(sFlex).filter(sStem => conj.isVerb(sStem)) ].join("|");
+    return stem(sFlex).filter(sStem => conj.isVerb(sStem)).join("|");
 }
 
 

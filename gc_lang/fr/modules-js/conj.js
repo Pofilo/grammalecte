@@ -99,7 +99,7 @@ var conj = {
                 aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
                 aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":1s"));
                 aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":3s"));
-            } else if (isMorph.includes(":V0a")) {
+            } else if (sMorph.includes(":V0a")) {
                 aSugg.add("eus");
                 aSugg.add("eut");
             } else {
