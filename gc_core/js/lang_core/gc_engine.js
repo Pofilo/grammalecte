@@ -9,7 +9,6 @@ ${map}
 
 if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
-    var echo = require("resource://grammalecte/helpers.js").echo;
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
@@ -86,7 +85,7 @@ var gc_engine = {
         for (let [iStart, iEnd] of this._getSentenceBoundaries(sText)) {
             if (4 < (iEnd - iStart) < 2000) {
                 dDA.clear();
-                //echo(sText.slice(iStart, iEnd));
+                //helpers.echo(sText.slice(iStart, iEnd));
                 try {
                     [, errs] = this._proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
                     dErrors.gl_update(errs);
@@ -128,18 +127,18 @@ var gc_engine = {
                         while ((m = zRegex.gl_exec2(s, lGroups, lNegLookBefore)) !== null) {
                             bCondMemo = null;
                             /*if (bDebug) {
-                                echo(">>>> Rule # " + sLineId + " - Text: " + s + " opt: "+ sOption);
+                                helpers.echo(">>>> Rule # " + sLineId + " - Text: " + s + " opt: "+ sOption);
                             }*/
                             for (let [sFuncCond, cActionType, sWhat, ...eAct] of lActions) {
                             // action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try {
-                                    //echo(oEvalFunc[sFuncCond]);
+                                    //helpers.echo(oEvalFunc[sFuncCond]);
                                     bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo));
                                     if (bCondMemo) {
                                         switch (cActionType) {
                                             case "-":
                                                 // grammar error
-                                                //echo("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
+                                                //helpers.echo("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
                                                 nErrorStart = nOffset + m.start[eAct[0]];
                                                 if (!dErrs.has(nErrorStart) || nPriority > dPriority.get(nErrorStart)) {
                                                     dErrs.set(nErrorStart, this._createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext));
@@ -148,26 +147,26 @@ var gc_engine = {
                                                 break;
                                             case "~":
                                                 // text processor
-                                                //echo("-> text processor by " + sLineId + "\nzRegex: " + zRegex.source);
+                                                //helpers.echo("-> text processor by " + sLineId + "\nzRegex: " + zRegex.source);
                                                 s = this._rewrite(s, sWhat, eAct[0], m, bUppercase);
                                                 bChange = true;
                                                 if (bDebug) {
-                                                    echo("~ " + s + "  -- " + m[eAct[0]] + "  # " + sLineId);
+                                                    helpers.echo("~ " + s + "  -- " + m[eAct[0]] + "  # " + sLineId);
                                                 }
                                                 break;
                                             case "=":
                                                 // disambiguation
-                                                //echo("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
+                                                //helpers.echo("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
                                                 oEvalFunc[sWhat](s, m, dDA);
                                                 if (bDebug) {
-                                                    echo("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
+                                                    helpers.echo("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
                                                 }
                                                 break;
                                             case ">":
                                                 // we do nothing, this test is just a condition to apply all following actions
                                                 break;
                                             default:
-                                                echo("# error: unknown action at " + sLineId);
+                                                helpers.echo("# error: unknown action at " + sLineId);
                                         }
                                     } else {
                                         if (cActionType == ">") {
@@ -176,8 +175,8 @@ var gc_engine = {
                                     }
                                 }
                                 catch (e) {
-                                    echo(s);
-                                    echo("# line id: " + sLineId + "\n# rule id: " + sRuleId);
+                                    helpers.echo(s);
+                                    helpers.echo("# line id: " + sLineId + "\n# rule id: " + sRuleId);
                                     helpers.logerror(e);
                                 }
                             }
@@ -262,7 +261,7 @@ var gc_engine = {
             sNew = sRepl.gl_expand(m);
             sNew = sNew + " ".repeat(ln-sNew.length);
         }
-        //echo("\n"+s+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup])
+        //helpers.echo("\n"+s+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup])
         return s.slice(0, m.start[iGroup]) + sNew + s.slice(m.end[iGroup]);
     },
 
@@ -368,23 +367,23 @@ function option (sOpt) {
 function displayInfo (dDA, aWord) {
     // for debugging: info of word
     if (!aWord) {
-        echo("> nothing to find");
+        helpers.echo("> nothing to find");
         return true;
     }
     if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
-        echo("> not in FSA");
+        helpers.echo("> not in FSA");
         return true;
     }
     if (dDA.has(aWord[0])) {
-        echo("DA: " + dDA.get(aWord[0]));
+        helpers.echo("DA: " + dDA.get(aWord[0]));
     }
-    echo("FSA: " + _dAnalyses.get(aWord[1]));
+    helpers.echo("FSA: " + _dAnalyses.get(aWord[1]));
     return true;
 }
 
 function _storeMorphFromFSA (sWord) {
     // retrieves morphologies list from _oDict -> _dAnalyses
-    //echo("register: "+sWord + " " + _oDict.getMorph(sWord).toString())
+    //helpers.echo("register: "+sWord + " " + _oDict.getMorph(sWord).toString())
     _dAnalyses.set(sWord, _oDict.getMorph(sWord));
     return !!_dAnalyses.get(sWord);
 }
@@ -392,19 +391,19 @@ function _storeMorphFromFSA (sWord) {
 function morph (dDA, aWord, sPattern, bStrict=true, bNoWord=false) {
     // analyse a tuple (position, word), return true if sPattern in morphologies (disambiguation on)
     if (!aWord) {
-        //echo("morph: noword, returns " + bNoWord);
+        //helpers.echo("morph: noword, returns " + bNoWord);
         return bNoWord;
     }
-    //echo("aWord: "+aWord.toString());
+    //helpers.echo("aWord: "+aWord.toString());
     if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
         return false;
     }
     let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _dAnalyses.get(aWord[1]);
-    //echo("lMorph: "+lMorph.toString());
+    //helpers.echo("lMorph: "+lMorph.toString());
     if (lMorph.length === 0) {
         return false;
     }
-    //echo("***");
+    //helpers.echo("***");
     if (bStrict) {
         return lMorph.every(s  =>  (s.search(sPattern) !== -1));
     }
@@ -414,19 +413,19 @@ function morph (dDA, aWord, sPattern, bStrict=true, bNoWord=false) {
 function morphex (dDA, aWord, sPattern, sNegPattern, bNoWord=false) {
     // analyse a tuple (position, word), returns true if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)
     if (!aWord) {
-        //echo("morph: noword, returns " + bNoWord);
+        //helpers.echo("morph: noword, returns " + bNoWord);
         return bNoWord;
     }
-    //echo("aWord: "+aWord.toString());
+    //helpers.echo("aWord: "+aWord.toString());
     if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
         return false;
     }
     let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _dAnalyses.get(aWord[1]);
-    //echo("lMorph: "+lMorph.toString());
+    //helpers.echo("lMorph: "+lMorph.toString());
     if (lMorph.length === 0) {
         return false;
     }
-    //echo("***");
+    //helpers.echo("***");
     // check negative condition
     if (lMorph.some(s  =>  (s.search(sNegPattern) !== -1))) {
         return false;
@@ -509,14 +508,14 @@ const _zPrevWord = new RegExp ("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-
 
 function prevword1 (s, iEnd) {
     // get previous word (optimization)
-    //echo("prev1, s:"+s);
-    //echo("prev1, s.slice(0, iEnd):"+s.slice(0, iEnd));
+    //helpers.echo("prev1, s:"+s);
+    //helpers.echo("prev1, s.slice(0, iEnd):"+s.slice(0, iEnd));
     let m = _zPrevWord.exec(s.slice(0, iEnd));
-    //echo("prev1, m:"+m);
+    //helpers.echo("prev1, m:"+m);
     if (!m) {
         return null;
     }
-    //echo("prev1: " + m.index + " " + m[1]);
+    //helpers.echo("prev1: " + m.index + " " + m[1]);
     return [m.index, m[1]];
 }
 
@@ -567,12 +566,12 @@ function select (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
         return true;
     }
-    //echo("morph: "+_dAnalyses.get(sWord).toString());
+    //helpers.echo("morph: "+_dAnalyses.get(sWord).toString());
     if (_dAnalyses.get(sWord).length === 1) {
         return true;
     }
     let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
-    //echo("lSelect: "+lSelect.toString());
+    //helpers.echo("lSelect: "+lSelect.toString());
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {
             dDA.set(nPos, lSelect);
@@ -597,7 +596,7 @@ function exclude (dDA, nPos, sWord, sPattern, lDefault=null) {
         return true;
     }
     let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
-    //echo("lSelect: "+lSelect.toString());
+    //helpers.echo("lSelect: "+lSelect.toString());
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {
             dDA.set(nPos, lSelect);
