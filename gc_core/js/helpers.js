@@ -63,7 +63,7 @@ var helpers = {
         }
         catch (e) {
             this.logerror(e);
-            return null
+            return null;
         }
     },
 
@@ -84,7 +84,7 @@ var helpers = {
         }
         return obj;
     }
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {

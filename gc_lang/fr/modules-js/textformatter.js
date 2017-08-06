@@ -258,7 +258,7 @@ class TextFormatter {
 
     constructor () {
         this.sLang = "fr";
-    };
+    }
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
@@ -272,7 +272,7 @@ class TextFormatter {
             }
         }
         return sText;
-    };
+    }
 
     getDefaultOptions () {
         return dTFDefaultOptions;

@@ -99,7 +99,7 @@ var conj = {
                 aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
                 aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":1s"));
                 aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":3s"));
-            } else if (isMorph.includes(":V0a")) {
+            } else if (sMorph.includes(":V0a")) {
                 aSugg.add("eus");
                 aSugg.add("eut");
             } else {
@@ -170,7 +170,7 @@ var conj = {
             return "## erreur, code : " + sSfx + " ##";
         }
     }
-}
+};
 
 
 class Verb {
@@ -272,7 +272,7 @@ class Verb {
                 [":2p", conj._getConjWithTags(sVerb, this._tTags, ":E", ":2p")]
             ])]
         ]);
-    };
+    }
 
     _readableInfo () {
         // returns readable infos
@@ -300,7 +300,7 @@ class Verb {
             sInfo = "# erreur - code : " + this._sRawInfo;
         }
         return sGroup + " · " + sInfo;
-    };
+    }
 
     infinitif (bPro, bNeg, bTpsCo, bInt, bFem) {
         let sInfi;
@@ -326,11 +326,11 @@ class Verb {
             sInfi += " … ?";
         }
         return sInfi;
-    };
+    }
 
     participePasse (sWho) {
         return this.dConj.get(":PQ").get(sWho);
-    };
+    }
 
     participePresent (bPro, bNeg, bTpsCo, bInt, bFem) {
         if (!this.dConj.get(":PQ").get(":P")) {
@@ -338,7 +338,7 @@ class Verb {
         }
         let sPartPre;
         if (bTpsCo) {
-            sPartPre = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":PQ", ":P") : getConj("être", ":PQ", ":P");
+            sPartPre = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":PQ", ":P") : conj.getConj("être", ":PQ", ":P");
         } else {
             sPartPre = this.dConj.get(":PQ").get(":P");
         }
@@ -363,7 +363,7 @@ class Verb {
             sPartPre += " … ?";
         }
         return sPartPre;
-    };
+    }
 
     conjugue (sTemps, sWho, bPro, bNeg, bTpsCo, bInt, bFem) {
         if (!this.dConj.get(sTemps).get(sWho)) {
@@ -374,7 +374,7 @@ class Verb {
             sWho = ":1ś";
         }
         if (bTpsCo) {
-            sConj = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, sTemps, sWho) : getConj("être", sTemps, sWho);
+            sConj = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, sTemps, sWho) : conj.getConj("être", sTemps, sWho);
         } else {
             sConj = this.dConj.get(sTemps).get(sWho);
         }
@@ -414,7 +414,7 @@ class Verb {
             sConj += " … ?";
         }
         return sConj;
-    };
+    }
 
     _getPronom (sWho, bFem) {
         if (sWho == ":3s") {
@@ -427,7 +427,7 @@ class Verb {
             return "elles";
         }
         return conj._dProSuj.get(sWho);
-    };
+    }
 
     imperatif (sWho, bPro, bNeg, bTpsCo, bFem) {
         if (!this.dConj.get(":E").get(sWho)) {
@@ -435,7 +435,7 @@ class Verb {
         }
         let sImpe;
         if (bTpsCo) {
-            sImpe = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":E", sWho) : getConj("être", ":E", sWho);
+            sImpe = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":E", sWho) : conj.getConj("être", ":E", sWho);
         } else {
             sImpe = this.dConj.get(":E").get(sWho);
         }
@@ -460,7 +460,7 @@ class Verb {
             return sImpe + " " + this._seekPpas(bPro, bFem, sWho.endsWith("p") || this._sRawInfo[5] == "r");
         }
         return sImpe;
-    };
+    }
 
     _seekPpas (bPro, bFem, bPlur) {
         if (!bPro && this.sVerbAux == "avoir") {

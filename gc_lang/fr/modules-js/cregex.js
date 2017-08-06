@@ -263,7 +263,7 @@ var cregex = {
         }
         return lMorph.some(s  =>  this._zNPm.test(s));
     }
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {

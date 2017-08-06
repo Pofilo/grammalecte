@@ -23,7 +23,7 @@ var str_transform = {
         sFlex = sPfxCode.slice(1) + sFlex.slice(sPfxCode.charCodeAt(0)-48);
         return sSfxCode[0] == '0' ? sFlex + sSfxCode.slice(1) : sFlex.slice(0, -(sSfxCode.charCodeAt(0)-48)) + sSfxCode.slice(1);
     }
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {

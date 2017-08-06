@@ -77,7 +77,7 @@ var phonet = {
         }
         return aSelect;
     }
-}
+};
 
 
 // Initialization

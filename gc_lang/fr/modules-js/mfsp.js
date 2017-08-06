@@ -38,7 +38,11 @@ var mfsp = {
     getMasForm: function (sWord, bPlur) {
         // returns masculine form with feminine form
         if (this._dMasForm.has(sWord)) {
-            return [ for (sTag of this._whatSuffixCode(sWord, bPlur))  this._modifyStringWithSuffixCode(sWord, sTag) ];
+            let aMasForm = [];
+            for (let sTag of this._whatSuffixCode(sWord, bPlur)){
+                aMasForm.push( this._modifyStringWithSuffixCode(sWord, sTag) );
+            }
+            return aMasForm;
         }
         return [];
     },
@@ -51,7 +55,11 @@ var mfsp = {
     getMiscPlural: function (sWord) {
         // returns plural form with singular form
         if (this._dMiscPlur.has(sWord)) {
-            return [ for (sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|"))  this._modifyStringWithSuffixCode(sWord, sTag) ];
+            let aMiscPlural = [];
+            for (let sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|")){
+                aMiscPlural.push( this._modifyStringWithSuffixCode(sWord, sTag) );
+            }
+            return aMiscPlural;
         }
         return [];
     },
@@ -88,7 +96,7 @@ var mfsp = {
             return "## erreur, code : " + sSfx + " ##";
         }
     }
-}
+};
 
 
 // Initialization

@@ -59,7 +59,7 @@ var text = {
             return "\n# Error. Data: " + oErr.toString();
         }
     }
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {

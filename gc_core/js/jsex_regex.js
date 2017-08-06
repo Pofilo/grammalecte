@@ -42,19 +42,19 @@ if (RegExp.prototype.grammalecte === undefined) {
                             m.end.push(this.lastIndex);
                         } else if (codePos === "w") {
                             // word in the middle of the pattern
-                            iPos = m[0].search("[ ’,()«»“”]"+m[i]+"[ ,’()«»“”]") + 1 + m.index
+                            iPos = m[0].search("[ ’,()«»“”]"+m[i]+"[ ,’()«»“”]") + 1 + m.index;
                             m.start.push(iPos);
-                            m.end.push(iPos + m[i].length)
+                            m.end.push(iPos + m[i].length);
                         } else if (codePos === "*") {
                             // anywhere
                             iPos = m[0].indexOf(m[i]) + m.index;
                             m.start.push(iPos);
-                            m.end.push(iPos + m[i].length)
+                            m.end.push(iPos + m[i].length);
                         } else if (codePos === "**") {
                             // anywhere after previous group
                             iPos = m[0].indexOf(m[i], m.end[i-1]-m.index) + m.index;
                             m.start.push(iPos);
-                            m.end.push(iPos + m[i].length)
+                            m.end.push(iPos + m[i].length);
                         } else if (codePos.startsWith(">")) {
                             // >x:_
                             // todo: look in substring x
@@ -83,7 +83,7 @@ if (RegExp.prototype.grammalecte === undefined) {
             }
         }
         return m;
-    }
+    };
 
     RegExp.prototype.grammalecte = true;
 }
