@@ -508,14 +508,10 @@ const _zPrevWord = new RegExp ("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-
 
 function prevword1 (s, iEnd) {
     // get previous word (optimization)
-    //helpers.echo("prev1, s:"+s);
-    //helpers.echo("prev1, s.slice(0, iEnd):"+s.slice(0, iEnd));
     let m = _zPrevWord.exec(s.slice(0, iEnd));
-    //helpers.echo("prev1, m:"+m);
     if (!m) {
         return null;
     }
-    //helpers.echo("prev1: " + m.index + " " + m[1]);
     return [m.index, m[1]];
 }
 
@@ -566,12 +562,10 @@ function select (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
         return true;
     }
-    //helpers.echo("morph: "+_dAnalyses.get(sWord).toString());
     if (_dAnalyses.get(sWord).length === 1) {
         return true;
     }
     let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
-    //helpers.echo("lSelect: "+lSelect.toString());
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {
             dDA.set(nPos, lSelect);
@@ -596,7 +590,6 @@ function exclude (dDA, nPos, sWord, sPattern, lDefault=null) {
         return true;
     }
     let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
-    //helpers.echo("lSelect: "+lSelect.toString());
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {
             dDA.set(nPos, lSelect);
