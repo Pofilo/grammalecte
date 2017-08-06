@@ -350,7 +350,7 @@ def main ():
             # Firefox
             if xArgs.firefox:
                 with helpers.cd("_build/xpi/"+sLang):
-                    os.system("jpm run -b nightly")
+                    os.system('jpm run -b "' + dVars['fx_dev_path'] + '"')
 
             if xArgs.web_ext:
                 with helpers.cd("_build/webext/"+sLang):
