@@ -565,7 +565,7 @@ function select (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (_dAnalyses.get(sWord).length === 1) {
         return true;
     }
-    let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
+    let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) !== -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != _dAnalyses.get(sWord).length) {
             dDA.set(nPos, lSelect);
