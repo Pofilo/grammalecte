@@ -338,7 +338,7 @@ class Verb {
         }
         let sPartPre;
         if (bTpsCo) {
-            sPartPre = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":PQ", ":P") : getConj("être", ":PQ", ":P");
+            sPartPre = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":PQ", ":P") : conj.getConj("être", ":PQ", ":P");
         } else {
             sPartPre = this.dConj.get(":PQ").get(":P");
         }
@@ -374,7 +374,7 @@ class Verb {
             sWho = ":1ś";
         }
         if (bTpsCo) {
-            sConj = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, sTemps, sWho) : getConj("être", sTemps, sWho);
+            sConj = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, sTemps, sWho) : conj.getConj("être", sTemps, sWho);
         } else {
             sConj = this.dConj.get(sTemps).get(sWho);
         }
@@ -435,7 +435,7 @@ class Verb {
         }
         let sImpe;
         if (bTpsCo) {
-            sImpe = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":E", sWho) : getConj("être", ":E", sWho);
+            sImpe = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":E", sWho) : conj.getConj("être", ":E", sWho);
         } else {
             sImpe = this.dConj.get(":E").get(sWho);
         }
