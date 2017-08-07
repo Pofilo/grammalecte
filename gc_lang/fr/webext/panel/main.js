@@ -1,5 +1,8 @@
 // Main panel
 
+"use strict";
+
+
 function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }

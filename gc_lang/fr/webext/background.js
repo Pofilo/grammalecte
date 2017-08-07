@@ -2,10 +2,6 @@
 
 "use strict";
 
-/*
-    
-*/
-let funcSendResultBack = null;
 
 /*
     Worker (separate thread to avoid freezing Firefox)
