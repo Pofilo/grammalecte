@@ -85,6 +85,9 @@ onmessage = function (e) {
         case "resetOptions":
             resetOptions();
             break;
+        case "textToTest":
+            textToTest(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext);
+            break;
         case "fullTests":
             fullTests();
             break;
@@ -173,6 +176,19 @@ function tests () {
     }
 }
 
+function textToTest (sText, sCountry, bDebug, bContext) {
+    if (!gc_engine || !oDict) {
+        postMessage(["error", "# Error: grammar checker or dictionary not loaded."]);
+        return;
+    }
+    let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
+    let sMsg = "";
+    for (let oErr of aGrammErr) {
+        sMsg += text.getReadableError(oErr) + "\n";
+    }
+    postMessage(["text_to_test_result", sMsg]);
+}
+
 function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":true}') {
     if (!gc_engine || !oDict) {
         postMessage(["error", "# Error: grammar checker or dictionary not loaded."]);
@@ -188,7 +204,7 @@ function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":tru
         console.log(sRes);
     }
     gc_engine.setOptions(dMemoOptions);
-    postMessage(["tests_results", sMsg]);
+    postMessage(["fulltests_result", sMsg]);
 }
 
 
