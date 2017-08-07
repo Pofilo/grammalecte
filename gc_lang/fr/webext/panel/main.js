@@ -44,11 +44,11 @@ function showPage (sPageName) {
     if (sPageName === "conj_page") {
       document.body.style.width = "600px";
       document.documentElement.style.width = "600px";
-      document.getElementById("movewindow").style.display = "none";
+      //document.getElementById("movewindow").style.display = "none";
     } else {
       document.body.style.width = "530px";
       document.documentElement.style.width = "530px";
-      document.getElementById("movewindow").style.display = "block";
+      //document.getElementById("movewindow").style.display = "block";
     }
   }
   catch (e) {
