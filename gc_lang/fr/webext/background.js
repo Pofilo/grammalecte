@@ -26,7 +26,6 @@ xGCEWorker.onmessage = function (e) {
             break;
         case "fulltests_result":
             console.log("TESTS RESULTS");
-            //console.log(e.data[1]);
             browser.runtime.sendMessage({sCommand: "fulltests_result", sResult: e.data[1]});
             break;
         case "options":
@@ -48,19 +47,22 @@ xGCEWorker.onmessage = function (e) {
 
 xGCEWorker.postMessage(["init", {sExtensionPath: browser.extension.getURL("."), sOptions: "", sContext: "Firefox"}]);
 
-xGCEWorker.postMessage(["parseAndSpellcheck", {sText: "C’est terribles, ils va tout perdrre.", sCountry: "FR", bDebug: false, bContext: false}]);
-
-xGCEWorker.postMessage(["getListOfTokens", {sText: "J’en ai assez de ces âneries ! Merci bien. Ça suffira."}]);
-
-
 
 /*
     Messages from the extension (not the Worker)
 */
 function handleMessage (oRequest, xSender, sendResponse) {
-    console.log(xSender);
-    console.log(sendResponse);
+    //console.log(xSender);
     switch(oRequest.sCommand) {
+        case "parse":
+            xGCEWorker.postMessage(["parse", {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}]);
+            break;
+        case "parse_and_spellcheck":
+            xGCEWorker.postMessage(["parseAndSpellcheck", {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}]);
+            break;
+        case "get_list_of_tokens":
+            xGCEWorker.postMessage(["getListOfTokens", {sText: oRequest.sText}]);
+            break;
         case "text_to_test":
             xGCEWorker.postMessage(["textToTest", {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}]);
             break;
