@@ -74,3 +74,35 @@ function handleMessage (oRequest, xSender, sendResponse) {
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
+
+
+/*
+    Context Menu
+*/
+browser.contextMenus.create({
+    id: "grammar_checking",
+    title: "Correction grammaticale",
+    contexts: ["selection", "editable", "page"]
+});
+
+browser.contextMenus.create({
+    id: "lexicographer",
+    title: "Lexicographe",
+    contexts: ["selection", "editable", "page"]
+});
+
+browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
+    // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
+    // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
+    console.log(xInfo);
+    console.log(xTab);
+    console.log("Item " + xInfo.menuItemId + " clicked in tab " + xTab.id);
+    console.log("editable: " + xInfo.editable + " · selected: " + xInfo.selectionText);
+    // confusing: no way to get the node where we click?!
+    switch (xInfo.menuItemId) {
+        case "grammar_checking":
+            break;
+        case "lexicographer":
+            break;
+    }
+});
