@@ -53,8 +53,13 @@
 
 `-fx --firefox`
 
-> Launch Firefox Nightly.
+> Launch Firefox Developper (before Firefox 57).
 > Unit tests can be lanched from Firefox, with CTRL+SHIFT+F12.
+
+`-we --webext`
+
+> Launch Firefox Nightly (Firefox 57+).
+> Unit tests can be lanched from the menu.
 
 `-tb --thunderbird`
 
