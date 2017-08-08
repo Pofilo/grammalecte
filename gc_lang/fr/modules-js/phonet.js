@@ -1,4 +1,5 @@
 // Grammalecte - Suggestion phonétique
+/*jslint esversion: 6*/
 
 if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");

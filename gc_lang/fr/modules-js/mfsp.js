@@ -1,4 +1,6 @@
 // Grammalecte
+/*jslint esversion: 6*/
+/*global console,require,exports,browser*/
 
 "use strict";
 

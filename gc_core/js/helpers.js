@@ -1,5 +1,7 @@
 
 // HELPERS
+/*jslint esversion: 6*/
+/*global console,require,exports,XMLHttpRequest*/
 
 "use strict";
 

@@ -1,4 +1,6 @@
 // Grammalecte - text formatter
+/*jslint esversion: 6*/
+/*global exports*/
 
 "use strict";
 

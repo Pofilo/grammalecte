@@ -1,4 +1,6 @@
 // Grammar checker engine
+/*jslint esversion: 6*/
+/*global console,require,exports*/
 
 "use strict";
 

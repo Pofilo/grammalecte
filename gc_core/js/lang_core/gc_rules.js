@@ -1,4 +1,7 @@
 // Grammar checker rules
+/*jslint esversion: 6*/
+/*global exports*/
+
 "use strict";
 
 ${string}

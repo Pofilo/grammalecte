@@ -1,5 +1,7 @@
 // Grammalecte - Conjugueur
-// License: GPL 3
+// License: GPL 
+/*jslint esversion: 6*/
+/*global console,require,exports,self,browser*/
 
 "use strict";
 

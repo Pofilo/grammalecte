@@ -1,5 +1,6 @@
 
 // String
+/*jslint esversion: 6*/
 
 if (String.prototype.grammalecte === undefined) {
     String.prototype.gl_count = function (sSearch, bOverlapping) {

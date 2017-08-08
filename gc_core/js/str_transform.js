@@ -1,4 +1,5 @@
 //// STRING TRANSFORMATION
+/*jslint esversion: 6*/
 
 // Note: 48 is the ASCII code for "0"
 

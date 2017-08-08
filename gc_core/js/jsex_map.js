@@ -1,5 +1,6 @@
 
 // Map
+/*jslint esversion: 6*/
 
 if (Map.prototype.grammalecte === undefined) {
     Map.prototype.gl_shallowCopy = function () {
