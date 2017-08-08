@@ -1,6 +1,6 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Suggestion mechanisms
 
-if (typeof(exports) !== 'undefined') {
+if (typeof(require) !== 'undefined') {
     var conj = require("resource://grammalecte/fr/conj.js");
     var mfsp = require("resource://grammalecte/fr/mfsp.js");
     var phonet = require("resource://grammalecte/fr/phonet.js");

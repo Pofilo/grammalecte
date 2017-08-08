@@ -4,7 +4,7 @@
 "use strict";
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
 }
 
