@@ -16,6 +16,7 @@ var conj = {
     _dPatternConj: {},
     _dVerb: {},
 
+    isInit: false,
     init: function (sJSONData) {
         try {
             let _oData = JSON.parse(sJSONData);
@@ -482,18 +483,20 @@ class Verb {
 
 
 // Initialization
-if (typeof(browser) !== 'undefined') {
+if (!conj.isInit && typeof(browser) !== 'undefined') {
     // WebExtension (but not in Worker)
     conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
-} else if (typeof(require) !== 'undefined') {
+} else if (!conj.isInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
-} else if (typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
+} else if ( !conj.isInit && typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
     self.port.on("provideConjData", function (sJSONData) {
         conj.init(sJSONData);
     });    
+} else if (conj.isInit){
+    console.log("Module conj déjà initialisé");
 } else {
     console.log("Module conj non initialisé");
 }

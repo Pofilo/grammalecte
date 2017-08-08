@@ -10,6 +10,7 @@ var phonet = {
     _lSet: [],
     _dMorph: new Map(),
 
+    isInit: false,
     init: function (sJSONData) {
         try {
             let _oData = JSON.parse(sJSONData);
@@ -81,12 +82,14 @@ var phonet = {
 
 
 // Initialization
-if (typeof(browser) !== 'undefined') {
+if (!phonet.isInit && typeof(browser) !== 'undefined') {
     // WebExtension
     phonet.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/phonet_data.json")));
-} else if (typeof(require) !== 'undefined') {
+} else if (!phonet.isInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     phonet.init(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
+} else if (phonet.isInit){
+    console.log("Module phonet déjà initialisé");
 } else {
     console.log("Module phonet non initialisé");
 }

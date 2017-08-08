@@ -17,6 +17,7 @@ var mfsp = {
     // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
     _dMasForm: new Map(),
 
+    isInit: false,
     init: function (sJSONData) {
         try {
             let _oData = JSON.parse(sJSONData);
@@ -100,12 +101,14 @@ var mfsp = {
 
 
 // Initialization
-if (typeof(browser) !== 'undefined') {
+if (!mfsp.isInit && typeof(browser) !== 'undefined') {
     // WebExtension
     mfsp.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/mfsp_data.json")));
-} else if (typeof(require) !== 'undefined') {
+} else if (!mfsp.isInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     mfsp.init(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
+} else if (mfsp.isInit){
+    console.log("Module mfsp déjà initialisé");
 } else {
     console.log("Module mfsp non initialisé");
 }
