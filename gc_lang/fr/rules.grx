@@ -11379,6 +11379,16 @@ TEST: Après que Paul {{ait}} mangé son repas.
 TEST: Après qu’il {{soit}} parti, il plut.
 
 
+# Quand/lorsque + indicatif
+__[i]/vmode(vmode_quand_lorsque_indicatif)__
+    (?:quand|lorsque?) ({w_2}) +>? *({w_2})  @@w,$
+    <<- morph(\1, ":(?:Os|M)", False) and (morphex(\2, ":V.*:S", ":[GI]") or morph(\2, ":V0e.*:S", False))
+    -2>> =suggVerbMode(@, ":I", \1)
+    # Après « quand » ou « lorsque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+
+TEST: quand elle {{rencontrât}} son créateur
+TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
+
 
 
 !!
