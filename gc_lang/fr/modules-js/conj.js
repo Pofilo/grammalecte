@@ -1,5 +1,5 @@
 // Grammalecte - Conjugueur
-// License: GPL 
+// License: GPL 3
 /*jslint esversion: 6*/
 /*global console,require,exports,self,browser*/
 
