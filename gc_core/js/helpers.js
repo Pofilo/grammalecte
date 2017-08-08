@@ -58,6 +58,7 @@ var helpers = {
                 xRequest.QueryInterface(Ci.nsIXMLHttpRequest);
             }
             xRequest.open('GET', spf, false); // 3rd arg is false for synchronous, sync is acceptable in workers
+            xRequest.overrideMimeType('text/json');
             xRequest.send();
             return xRequest.responseText;
         }
