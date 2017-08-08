@@ -2,6 +2,9 @@
 
 "use strict";
 
+function showError (e) {
+    console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+}
 
 /*
     Worker (separate thread to avoid freezing Firefox)
@@ -10,38 +13,45 @@ let xGCEWorker = new Worker("gce_worker.js");
 
 xGCEWorker.onmessage = function (e) {
     // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
-    switch (e.data[0]) {
-        case "grammar_errors":
-            console.log("GRAMMAR ERRORS");
-            console.log(e.data[1].aGrammErr);
-            browser.runtime.sendMessage({sCommand: "grammar_errors", aGrammErr: e.data[1].aGrammErr});
-            break;
-        case "spelling_and_grammar_errors":
-            console.log("SPELLING AND GRAMMAR ERRORS");
-            console.log(e.data[1].aSpellErr);
-            console.log(e.data[1].aGrammErr);
-            break;
-        case "text_to_test_result":
-            browser.runtime.sendMessage({sCommand: "text_to_test_result", sResult: e.data[1]});
-            break;
-        case "fulltests_result":
-            console.log("TESTS RESULTS");
-            browser.runtime.sendMessage({sCommand: "fulltests_result", sResult: e.data[1]});
-            break;
-        case "options":
-            console.log("OPTIONS");
-            console.log(e.data[1]);
-            break;
-        case "tokens":
-            console.log("TOKENS");
-            console.log(e.data[1]);
-            break;
-        case "error":
-            console.log("ERROR");
-            console.log(e.data[1]);
-            break;
-        default:
-            console.log("Unknown command: " + e.data[0]);
+    try {
+        switch (e.data[0]) {
+            case "grammar_errors":
+                console.log("GRAMMAR ERRORS");
+                console.log(e.data[1].aGrammErr);
+                browser.runtime.sendMessage({sCommand: "grammar_errors", aGrammErr: e.data[1].aGrammErr});
+                break;
+            case "spelling_and_grammar_errors":
+                console.log("SPELLING AND GRAMMAR ERRORS");
+                console.log(e.data[1].aSpellErr);
+                console.log(e.data[1].aGrammErr);
+                break;
+            case "text_to_test_result":
+                browser.runtime.sendMessage({sCommand: "text_to_test_result", sResult: e.data[1]});
+                break;
+            case "fulltests_result":
+                console.log("TESTS RESULTS");
+                browser.runtime.sendMessage({sCommand: "fulltests_result", sResult: e.data[1]});
+                break;
+            case "options":
+                console.log("OPTIONS");
+                console.log(e.data[1]);
+                break;
+            case "tokens":
+                console.log("TOKENS");
+                console.log(e.data[1]);
+                browser.browserAction.setPopup({popup: "panel/main.html"});
+                browser.runtime.sendMessage({sCommand: "show_tokens", oResult: e.data[1]});
+                break;
+            case "error":
+                console.log("ERROR");
+                console.log(e.data[1]);
+                break;
+            default:
+                console.log("Unknown command: " + e.data[0]);
+        }
+    }
+    catch (e) {
+        showError(e);
     }
 };
 
@@ -103,6 +113,9 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
         case "grammar_checking":
             break;
         case "lexicographer":
+            if (xInfo.selectionText) {
+                xGCEWorker.postMessage(["getListOfTokens", {sText: xInfo.selectionText}]);
+            }
             break;
     }
 });
