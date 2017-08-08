@@ -6,6 +6,10 @@
 ${map}
 
 
+if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
+
 var conj = {
     _lVtyp: [],
     _lTags: [],
@@ -483,7 +487,6 @@ if (typeof(browser) !== 'undefined') {
     conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
 } else if (typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
-    let helpers = require("resource://grammalecte/helpers.js");
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 } else if (typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
     // used within Firefox content script (conjugation panel).
