@@ -17,6 +17,7 @@ var phonet = {
             this._dWord = helpers.objectToMap(_oData.dWord);
             this._lSet = _oData.lSet;
             this._dMorph = helpers.objectToMap(_oData.dMorph);
+            this.isInit = true;
         }
         catch (e) {
             console.error(e);

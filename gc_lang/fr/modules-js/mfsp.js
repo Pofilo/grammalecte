@@ -25,6 +25,7 @@ var mfsp = {
             this._lTagMasForm = _oData.lTagMasForm;
             this._dMiscPlur = helpers.objectToMap(_oData.dMiscPlur);
             this._dMasForm = helpers.objectToMap(_oData.dMasForm);
+            this.isInit = true;
         }
         catch (e) {
             console.error(e);

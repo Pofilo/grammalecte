@@ -24,6 +24,7 @@ var conj = {
             this._lTags = _oData.lTags;
             this._dPatternConj = _oData.dPatternConj;
             this._dVerb = _oData.dVerb;
+            this.isInit = true;
         }
         catch (e) {
             console.error(e);
