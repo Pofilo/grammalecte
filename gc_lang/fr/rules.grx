@@ -5924,7 +5924,6 @@ __[i]/gn(gn_2m_pfx_de_sur_avec_après)__
     <<- __also__ -1>> =switchPlural(@)                                                              # Accord de nombre erroné avec « \2 ».
 
 TEST: Ils ont de {{grandes}} {{oreille}}
-TEST: certains hommes {{petite}}
 TEST: de {{grands}} {{homme}}
 TEST: de {{manière}} {{légal}}
 TEST: de {{petite}} {{homme}}
@@ -5934,6 +5933,13 @@ TEST: De {{mauvaises}} {{hommes}}
 TEST: Ces produits sont de {{belle}} {{qualités}}.
 TEST: Après être demeurée assise pendant quelque temps, elle se leva
 TEST: ils choisissent de devenir indépendants
+
+__[i]/gn(gn_de_manière_façon)__
+    de +(manière|façon) +({w_3})  @@w,$
+    <<- morphex(\2, ":A.*:(m|f:p)", ":[GM]") -2>> =suggFemSing(@)                                   # Accord erroné avec “\1” : l’adjectif devrait être au féminin singulier.
+
+TEST: il fit cela tans de fois et avec brio de manière {{élégant}}.
+TEST: elle s’y prit avec cet individu de façon {{charmant}}.
 
 
 ## l’
@@ -6159,6 +6165,7 @@ __[i]/gn(gn_2m_det_mas_plur_après_et_ou_de)__
     -2>> =suggMasPlur(@)                                                                            # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: certains claviers {{dégueulasse}}
+TEST: certains hommes {{petite}}
 TEST: elle se rappelle de quels rapports {{désastreuses}} il s’agit.
 TEST: chez certains la revue Limite provoque des crises d’hystérie.
 
