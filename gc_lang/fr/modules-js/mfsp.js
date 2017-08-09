@@ -1,4 +1,6 @@
 // Grammalecte
+/*jslint esversion: 6*/
+/*global console,require,exports,browser*/
 
 "use strict";
 
@@ -17,6 +19,7 @@ var mfsp = {
     // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
     _dMasForm: new Map(),
 
+    bInit: false,
     init: function (sJSONData) {
         try {
             let _oData = JSON.parse(sJSONData);
@@ -24,6 +27,7 @@ var mfsp = {
             this._lTagMasForm = _oData.lTagMasForm;
             this._dMiscPlur = helpers.objectToMap(_oData.dMiscPlur);
             this._dMasForm = helpers.objectToMap(_oData.dMasForm);
+            this.bInit = true;
         }
         catch (e) {
             console.error(e);
@@ -100,12 +104,14 @@ var mfsp = {
 
 
 // Initialization
-if (typeof(browser) !== 'undefined') {
+if (!mfsp.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
     mfsp.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/mfsp_data.json")));
-} else if (typeof(require) !== 'undefined') {
+} else if (!mfsp.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     mfsp.init(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
+} else if (mfsp.bInit){
+    console.log("Module mfsp déjà initialisé");
 } else {
     console.log("Module mfsp non initialisé");
 }

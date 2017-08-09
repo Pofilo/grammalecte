@@ -1,4 +1,6 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Suggestion mechanisms
+/*jslint esversion: 6*/
+/*global require*/
 
 if (typeof(require) !== 'undefined') {
     var conj = require("resource://grammalecte/fr/conj.js");

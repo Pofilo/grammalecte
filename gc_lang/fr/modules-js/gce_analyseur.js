@@ -1,4 +1,5 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Parsing functions for French language
+/*jslint esversion: 6*/
 
 function rewriteSubject (s1, s2) {
     // s1 is supposed to be prn/patr/npr (M[12P])

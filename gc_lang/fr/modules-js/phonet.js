@@ -1,4 +1,5 @@
 // Grammalecte - Suggestion phonétique
+/*jslint esversion: 6*/
 
 if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
@@ -10,12 +11,14 @@ var phonet = {
     _lSet: [],
     _dMorph: new Map(),
 
+    bInit: false,
     init: function (sJSONData) {
         try {
             let _oData = JSON.parse(sJSONData);
             this._dWord = helpers.objectToMap(_oData.dWord);
             this._lSet = _oData.lSet;
             this._dMorph = helpers.objectToMap(_oData.dMorph);
+            this.bInit = true;
         }
         catch (e) {
             console.error(e);
@@ -81,12 +84,14 @@ var phonet = {
 
 
 // Initialization
-if (typeof(browser) !== 'undefined') {
+if (!phonet.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
     phonet.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/phonet_data.json")));
-} else if (typeof(require) !== 'undefined') {
+} else if (!phonet.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     phonet.init(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
+} else if (phonet.bInit){
+    console.log("Module phonet déjà initialisé");
 } else {
     console.log("Module phonet non initialisé");
 }

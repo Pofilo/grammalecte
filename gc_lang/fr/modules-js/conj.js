@@ -1,10 +1,16 @@
 // Grammalecte - Conjugueur
 // License: GPL 3
+/*jslint esversion: 6*/
+/*global console,require,exports,self,browser*/
 
 "use strict";
 
 ${map}
 
+
+if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
 
 var conj = {
     _lVtyp: [],
@@ -12,6 +18,7 @@ var conj = {
     _dPatternConj: {},
     _dVerb: {},
 
+    bInit: false,
     init: function (sJSONData) {
         try {
             let _oData = JSON.parse(sJSONData);
@@ -19,6 +26,7 @@ var conj = {
             this._lTags = _oData.lTags;
             this._dPatternConj = _oData.dPatternConj;
             this._dVerb = _oData.dVerb;
+            this.bInit = true;
         }
         catch (e) {
             console.error(e);
@@ -478,19 +486,20 @@ class Verb {
 
 
 // Initialization
-if (typeof(browser) !== 'undefined') {
+if (!conj.bInit && typeof(browser) !== 'undefined') {
     // WebExtension (but not in Worker)
     conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
-} else if (typeof(require) !== 'undefined') {
+} else if (!conj.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
-    let helpers = require("resource://grammalecte/helpers.js");
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
-} else if (typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
+} else if ( !conj.bInit && typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
     self.port.on("provideConjData", function (sJSONData) {
         conj.init(sJSONData);
     });    
+} else if (conj.bInit){
+    console.log("Module conj déjà initialisé");
 } else {
     console.log("Module conj non initialisé");
 }

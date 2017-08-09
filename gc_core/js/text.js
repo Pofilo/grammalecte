@@ -1,4 +1,6 @@
 // JavaScript
+/*jslint esversion: 6*/
+/*global require,exports*/
 
 "use strict";
 

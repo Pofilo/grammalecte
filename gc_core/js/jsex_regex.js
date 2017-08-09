@@ -1,5 +1,6 @@
 
 // regex
+/*jslint esversion: 6*/
 
 if (RegExp.prototype.grammalecte === undefined) {
     RegExp.prototype.gl_exec2 = function (sText, aGroupsPos, aNegLookBefore=null) {

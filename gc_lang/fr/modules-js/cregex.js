@@ -1,4 +1,5 @@
 //// Grammalecte - Compiled regular expressions
+/*jslint esversion: 6*/
 
 
 var cregex = {

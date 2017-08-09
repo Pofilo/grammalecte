@@ -1,5 +1,7 @@
 // JavaScript
 // Very simple tokenizer
+/*jslint esversion: 6*/
+/*global require,exports*/
 
 "use strict";
 
