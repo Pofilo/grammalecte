@@ -39,8 +39,11 @@ xGCEWorker.onmessage = function (e) {
             case "tokens":
                 console.log("TOKENS");
                 console.log(e.data[1]);
-                browser.browserAction.setPopup({popup: "panel/main.html"});
-                browser.runtime.sendMessage({sCommand: "show_tokens", oResult: e.data[1]});
+                let xLxgTab = browser.tabs.create({
+                    url: browser.extension.getURL("panel/lexicographer.html"),
+                });
+                xLxgTab.then(onCreated, onError);
+                break;
                 break;
             case "error":
                 console.log("ERROR");
@@ -155,12 +158,97 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             });
             xConjTab.then(onCreated, onError);
             break;
-    }
-
-    
+    }    
 });
 
 
+async function newwin () {
+    console.log("Async on");
+    const getActive = browser.tabs.query({ currentWindow: true, active: true, });
+    const xWindowInfo = await browser.windows.getLastFocused();
+    // the pop-up will not resize itself as the panel would, so the dimensions can be passed as query params 'w' and 'h'
+    const width = 710, height = 980; // the maximum size for panels is somewhere around 700x800. Firefox needs some additional pixels: 14x42 for FF54 on Win 10 with dpi 1.25
+    const left = Math.round(xWindowInfo.left + xWindowInfo.width - width - 25);
+    const top = Math.round(xWindowInfo.top + 74); // the actual frame height of the main window varies, but 74px should place the pop-up at the bottom if the button
+    const xWin = await browser.windows.create({
+        type: 'panel', url: browser.extension.getURL("panel/conjugueur.html"), top: top, left: left, width: width, height: height,
+    });
+    browser.windows.update(xWin.id, { top:top, left:left, }); // firefox currently ignores top and left in .create(), so move it here
+    console.log("Async done");
+}
 
-    
+//newwin();
 
+
+/*
+    Worker (separate thread to avoid freezing Firefox)
+*/
+/*
+let xGCESharedWorker = new SharedWorker("gce_sharedworker.js");
+
+xGCESharedWorker.port.onmessage = function (e) {
+    // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
+    try {
+        switch (e.data[0]) {
+            case "grammar_errors":
+                console.log("GRAMMAR ERRORS");
+                console.log(e.data[1].aGrammErr);
+                //browser.runtime.sendMessage({sCommand: "grammar_errors", aGrammErr: e.data[1].aGrammErr});
+                break;
+            case "spelling_and_grammar_errors":
+                console.log("SPELLING AND GRAMMAR ERRORS");
+                console.log(e.data[1].aSpellErr);
+                console.log(e.data[1].aGrammErr);
+                break;
+            case "text_to_test_result":
+                console.log("TESTS RESULTS");
+                console.log(e.data[1]);
+                break;
+            case "fulltests_result":
+                console.log("TESTS RESULTS");
+                console.log(e.data[1]);
+                break;
+            case "options":
+                console.log("OPTIONS");
+                console.log(e.data[1]);
+                break;
+            case "tokens":
+                console.log("TOKENS");
+                console.log(e.data[1]);
+                let xLxgTab = browser.tabs.create({
+                    url: browser.extension.getURL("panel/lexicographer.html"),
+                });
+                xLxgTab.then(onCreated, onError);
+                break;
+            case "error":
+                console.log("ERROR");
+                console.log(e.data[1]);
+                break;
+            default:
+                console.log("Unknown command: " + e.data[0]);
+        }
+    }
+    catch (e) {
+        showError(e);
+    }
+};
+
+console.log("Content script [worker]");
+console.log(xGCESharedWorker);
+
+
+//xGCESharedWorker.port.start();
+//console.log("Content script [port started]");
+
+xGCESharedWorker.port.postMessage(["init", {sExtensionPath: browser.extension.getURL("."), sOptions: "", sContext: "Firefox"}]);
+
+console.log("Content script [worker initialzed]");
+
+xGCESharedWorker.port.postMessage(["parse", {sText: "Vas... J’en aie mare...", sCountry: "FR", bDebug: false, bContext: false}]);
+//xGCESharedWorker.port.postMessage(["parseAndSpellcheck", {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}]);
+//xGCESharedWorker.port.postMessage(["getListOfTokens", {sText: oRequest.sText}]);
+//xGCESharedWorker.port.postMessage(["textToTest", {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}]);
+//xGCESharedWorker.port.postMessage(["fullTests"]);
+
+
+*/
