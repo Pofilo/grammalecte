@@ -17,16 +17,6 @@ function showPage (sPageName) {
         }
         // show the selected one
         document.getElementById(sPageName).style.display = "block";
-        // specific modifications
-        if (sPageName === "conj_page") {
-            document.body.style.width = "600px";
-            document.documentElement.style.width = "600px";
-            //document.getElementById("movewindow").style.display = "none";
-        } else {
-            document.body.style.width = "530px";
-            document.documentElement.style.width = "530px";
-            //document.getElementById("movewindow").style.display = "block";
-        }
     }
     catch (e) {
         showError(e);

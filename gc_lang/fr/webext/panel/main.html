@@ -16,12 +16,10 @@
           </header>
           <ul>
             <li class="select" data-page="home_page"><i class="fa fa-home icon"></i> 1.</li>
-            <li class="select" data-page="conj_page"><i class="fa fa-star icon"></i> CJ</li>
             <li class="select" data-page="tf_page"><i class="fa fa-photo icon"></i> TF</li>
             <li class="select" data-page="gc_page"><i class="fa fa-question-circle icon"></i> CG</li>
             <li class="select" data-page="gc_options_page"><i class="fa fa-coffee icon"></i> OP1</li>
             <li class="select" data-page="sc_options_page"><i class="fa fa-keyboard-o icon"></i> OP2</li>
-            <li class="select" data-page="lxg_page"><i class="fa fa-keyboard-o icon"></i> LXG</li>
             <li class="select" data-page="test_page"><i class="fa fa-keyboard-o icon"></i> TST</li>
           </ul>
         </nav>
@@ -55,11 +53,6 @@
           <h1>OPTIONS ORTHOGRAPHIQUES</h1>
         </section>
 
-        <section id="lxg_page" class="page">
-          <h1>LEXICOGRAPHE</h1>
-          <div id="tokens_list"></div>
-        </section>
-
         <section id="test_page" class="page">
           <div id="test_cmd">
             <h1>TESTS</h1>
@@ -68,153 +61,6 @@
           </div>
           <pre id="tests_result"></pre>
         </section>
-
-        <section id="conj_page" class="page">
-          <h1>CONJUGUEUR</h1>
-          <p class="right" style="margin: 10px 30px 0 0">
-            <input type="text" id="verb" name="verb" maxlength="40" value="" placeholder="entrez un verbe" autofocus />
-            <a id="conjugate" href="#">Conjuguer</a>
-          <p>
-
-          <div class="clearer"></div>
-
-          <p id="conj_smallnote" hidden>Ce verbe n’a pas encore été vérifié. C’est pourquoi les options “pronominal” et “temps composés” sont désactivées.</p>
-          <p id="conj_options">
-            <label for="oneg">Négation</label> <input type="checkbox" id="oneg" name="oneg" value="ON"  /> 
-            · <label id="opro_lbl" for="opro">Pronominal</label> <input type="checkbox" id="opro" name="opro" value="ON"  />
-            · <label for="ofem">Féminin</label> <input type="checkbox" id="ofem" name="ofem" value="ON"  />
-            <br/> <label for="oint">Interrogatif</label> <input type="checkbox" id="oint" name="oint" value="ON"  />
-            · <label id="otco_lbl" for="otco">Temps composés</label> <input type="checkbox" id="otco" name="otco" value="ON"  />
-          </p>
-
-          <h2 id="verb_title" class="center">&nbsp;</h2>
-          <p id="info" class="center">&nbsp;</p>
-
-          <!-- section 1 -->
-          <div class="colonne">
-            <div id="infinitif" class="box">
-              <h3 id="infinitif_title">Infinitif</h3>
-              <p id="infi">&nbsp;</p>
-            </div>
-            <div id="imperatif" class="box">
-              <h3 id="imperatif_title">Impératif</h3>
-              <h4 id="impe_temps">Présent</h4>
-              <p id="impe1">&nbsp;</p>
-              <p id="impe2">&nbsp;</p>
-              <p id="impe3">&nbsp;</p>
-            </div>
-          </div>
-          
-          <div class="colsep">&nbsp;</div>
-          
-          <div class="colonne">
-            <div id="partpre" class="box">
-              <h3 id="partpre_title">Participe présent</h3>
-              <p id="ppre">&nbsp;</p>
-            </div>
-            <div id="partpas" class="box">
-              <h3 id="partpas_title">Participes passés</h3>
-              <p id="ppas1">&nbsp;</p>
-              <p id="ppas2">&nbsp;</p>
-              <p id="ppas3">&nbsp;</p>
-              <p id="ppas4">&nbsp;</p>
-            </div>
-          </div>
-
-          <div class="clearer"></div>
-
-          <!-- section 2 -->
-          <div class="colonne">
-            <div id="indicatif" class="box">
-              <h3 id="indicatif_title">Indicatif</h3>
-              <div id="ipre">
-                <h4 id="ipre_temps">Présent</h4>
-                <p id="ipre1">&nbsp;</p>
-                <p id="ipre2">&nbsp;</p>
-                <p id="ipre3">&nbsp;</p>
-                <p id="ipre4">&nbsp;</p>
-                <p id="ipre5">&nbsp;</p>
-                <p id="ipre6">&nbsp;</p>
-              </div>
-              <div id="iimp">
-                <h4 id="iimp_temps">Imparfait</h4>
-                <p id="iimp1">&nbsp;</p>
-                <p id="iimp2">&nbsp;</p>
-                <p id="iimp3">&nbsp;</p>
-                <p id="iimp4">&nbsp;</p>
-                <p id="iimp5">&nbsp;</p>
-                <p id="iimp6">&nbsp;</p>
-              </div>
-              <div id="ipsi">
-                <h4 id="ipsi_temps">Passé simple</h4>
-                <p id="ipsi1">&nbsp;</p>
-                <p id="ipsi2">&nbsp;</p>
-                <p id="ipsi3">&nbsp;</p>
-                <p id="ipsi4">&nbsp;</p>
-                <p id="ipsi5">&nbsp;</p>
-                <p id="ipsi6">&nbsp;</p>
-              </div>
-              <div id="ifut">
-                <h4 id="ifut_temps">Futur</h4>
-                <p id="ifut1">&nbsp;</p>
-                <p id="ifut2">&nbsp;</p>
-                <p id="ifut3">&nbsp;</p>
-                <p id="ifut4">&nbsp;</p>
-                <p id="ifut5">&nbsp;</p>
-                <p id="ifut6">&nbsp;</p>
-              </div>
-            </div>
-          </div>
-          
-          <div class="colsep">&nbsp;</div>
-          
-          <div class="colonne">
-            <div id="subjonctif" class="box">
-              <h3 id="subjontif_title">Subjonctif</h3>
-              <div id="spre">
-                <h4 id="spre_temps">Présent</h4>
-                <p id="spre1">&nbsp;</p>
-                <p id="spre2">&nbsp;</p>
-                <p id="spre3">&nbsp;</p>
-                <p id="spre4">&nbsp;</p>
-                <p id="spre5">&nbsp;</p>
-                <p id="spre6">&nbsp;</p>
-              </div>
-              <div id="simp">
-                <h4 id="simp_temps">Imparfait</h4>
-                <p id="simp1">&nbsp;</p>
-                <p id="simp2">&nbsp;</p>
-                <p id="simp3">&nbsp;</p>
-                <p id="simp4">&nbsp;</p>
-                <p id="simp5">&nbsp;</p>
-                <p id="simp6">&nbsp;</p>
-              </div>
-            </div>
-            <div id="conditionnel" class="box">
-              <h3 id="conditionnel_title">Conditionnel</h3>
-              <div id="conda">
-                <h4 id="conda_temps">Présent</h4>
-                <p id="conda1">&nbsp;</p>
-                <p id="conda2">&nbsp;</p>
-                <p id="conda3">&nbsp;</p>
-                <p id="conda4">&nbsp;</p>
-                <p id="conda5">&nbsp;</p>
-                <p id="conda6">&nbsp;</p>
-              </div>
-              <div id="condb">
-                <h4 id="condb_temps">&nbsp;</h4>
-                <p id="condb1">&nbsp;</p>
-                <p id="condb2">&nbsp;</p>
-                <p id="condb3">&nbsp;</p>
-                <p id="condb4">&nbsp;</p>
-                <p id="condb5">&nbsp;</p>
-                <p id="condb6">&nbsp;</p>
-              </div>
-            </div>
-          </div>
-
-          <div class="clearer"></div>
-        </section> <!-- conjugueur -->
 
         <section id="tf_page" class="page">
           <h1>FORMATEUR DE TEXTE</h1>
