@@ -191,29 +191,29 @@ xGCESharedWorker.port.onmessage = function (e) {
     try {
         switch (e.data[0]) {
             case "grammar_errors":
-                console.log("GRAMMAR ERRORS");
+                console.log("GRAMMAR ERRORS (SHARE)");
                 console.log(e.data[1].aGrammErr);
                 //browser.runtime.sendMessage({sCommand: "grammar_errors", aGrammErr: e.data[1].aGrammErr});
                 break;
             case "spelling_and_grammar_errors":
-                console.log("SPELLING AND GRAMMAR ERRORS");
+                console.log("SPELLING AND GRAMMAR ERRORS (SHARE)");
                 console.log(e.data[1].aSpellErr);
                 console.log(e.data[1].aGrammErr);
                 break;
             case "text_to_test_result":
-                console.log("TESTS RESULTS");
+                console.log("TESTS RESULTS (SHARE)");
                 console.log(e.data[1]);
                 break;
             case "fulltests_result":
-                console.log("TESTS RESULTS");
+                console.log("TESTS RESULTS (SHARE)");
                 console.log(e.data[1]);
                 break;
             case "options":
-                console.log("OPTIONS");
+                console.log("OPTIONS (SHARE)");
                 console.log(e.data[1]);
                 break;
             case "tokens":
-                console.log("TOKENS");
+                console.log("TOKENS (SHARE)");
                 console.log(e.data[1]);
                 let xLxgTab = browser.tabs.create({
                     url: browser.extension.getURL("panel/lexicographer.html"),
@@ -221,11 +221,11 @@ xGCESharedWorker.port.onmessage = function (e) {
                 xLxgTab.then(onCreated, onError);
                 break;
             case "error":
-                console.log("ERROR");
+                console.log("ERROR (SHARE)");
                 console.log(e.data[1]);
                 break;
             default:
-                console.log("Unknown command: " + e.data[0]);
+                console.log("Unknown command (SHARE): " + e.data[0]);
         }
     }
     catch (e) {
