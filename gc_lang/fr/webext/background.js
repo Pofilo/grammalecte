@@ -120,6 +120,9 @@ function onError(error) {
   console.log(`Error: ${error}`);
 }
 
+let xConjWindow = null;
+let xConjTab = null;
+
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
@@ -137,7 +140,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             }
             break;
         case "conjugueur_panel":
-            var xConjWindow = browser.windows.create({
+            xConjWindow = browser.windows.create({
                 url: browser.extension.getURL("panel/conjugueur.html"),
                 type: "detached_panel",
                 width: 710,
@@ -146,7 +149,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             xConjWindow.then(onCreated, onError);
             break;
         case "conjugueur_tab":
-            var xConjTab = browser.tabs.create({
+            xConjTab = browser.tabs.create({
                 url: browser.extension.getURL("panel/conjugueur.html"),
                 pinned: true
             });
