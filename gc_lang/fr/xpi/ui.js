@@ -397,10 +397,10 @@ const xHotkeyGC = hotkeys.Hotkey({
             xGCPanel.show({position: xMainButton});
         }
         xActiveWorker = null;
-        sendTextToPanel("Je connait ma <i>destinées</i>. Un jour s'attachera à mon nom le souvenir de quelque chose de formidable, "
-                      + "- le souvenir d’une crise comme il n'y en eut jamaiss sur terre, le souvenir de la plus profonde collision des consciences, "
-                      + "le souvenirs d’un jugement prononcé contre tout tout ce qui jusqu’à présent à été cru, exigé, sanctifié. "
-                      + "Je ne suis pas un homme, je suis de la dynamite. Et, avec cela, il n’y a en moi rien d’un fondateur de religion. "
+        sendTextToPanel('"Je" connait ma <i>destinées</i>. Un jour s’attachera à mon nom le souvenir de quelque chose de formidable, '
+                      + "- le souvenir d'une crise comme il n'y en eut jamaiss sur terre, le souvenir de la plus profonde collision des consciences, "
+                      + "le souvenirs d’un jugement prononcé contre tout tout se qui jusqu’à présent à été cru, exigé, sanctifié. "
+                      + "Je ne sui pas un homme, je suis de la dynamite. Et, avec cela, il n’y a en moi rien d’un fondateur de religion. "
                       + "Les religions sont les affaires de la populace. "
                       + "J’aie besoin de me laver les mains, après avoir été en contact avec des hommes religieux...\n"
                       + "Vous, je parie que vous n’appriéciez guère le concept de vidéoprotection. Y a t’il pourtant rien de plus sécurisant ?");
