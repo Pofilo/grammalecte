@@ -42,18 +42,18 @@ window.addEventListener(
         if (xElem.id) {
             switch (xElem.id) {
                 case "text_to_test":
-                    browser.runtime.sendMessage({sCommand: "text_to_test", sText: document.getElementById("text_to_test").value});
+                    browser.runtime.sendMessage({sCommand: "textToTest", dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {}});
                     break;
                 case "fulltests":
                     document.getElementById("tests_result").textContent = "Veuillez patienter…";
-                    browser.runtime.sendMessage({sCommand: "fulltests"});
+                    browser.runtime.sendMessage({sCommand: "fullTests", dParam: {}, dInfo: {}});
                     break;
             }
         } else if (xElem.className === "select") {
             showPage(xElem.dataset.page);
-        } else if (xElem.tagName === "A") {
+        }/* else if (xElem.tagName === "A") {
             openURL(xElem.getAttribute("href"));
-        }
+        }*/
     },
     false
 );

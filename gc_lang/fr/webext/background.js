@@ -21,12 +21,23 @@ xGCEWorker.onmessage = function (e) {
                 break;
             case "parse":
                 console.log("GRAMMAR ERRORS");
-                console.log(result);
+                if (typeof(dInfo.iReturnPort) === "number") {
+                    let xPort = aConnx[dInfo.iReturnPort];
+                    xPort.postMessage(e.data);
+                } else {
+                    console.log("[background] don’t know where to send results");
+                    console.log(e.data);
+                }
                 break;
             case "parseAndSpellcheck":
                 console.log("SPELLING AND GRAMMAR ERRORS");
-                console.log(result.aSpellErr);
-                console.log(result.aGrammErr);
+                if (typeof(dInfo.iReturnPort) === "number") {
+                    let xPort = aConnx[dInfo.iReturnPort];
+                    xPort.postMessage(e.data);
+                } else {
+                    console.log("[background] don’t know where to send results");
+                    console.log(e.data);
+                }
                 break;
             case "textToTest":
                 console.log("TEXT TO TEXT RESULTS");
@@ -67,31 +78,65 @@ xGCEWorker.postMessage({sCommand: "init", dParam: {sExtensionPath: browser.exten
 
 
 /*
+    Ports from content-scripts
+*/
+
+let aConnx = [];
+
+
+/*
     Messages from the extension (not the Worker)
 */
 function handleMessage (oRequest, xSender, sendResponse) {
     //console.log(xSender);
-    switch(oRequest.sCommand) {
+    console.log("[background] received:");
+    console.log(oRequest);
+    switch (oRequest.sCommand) {
         case "parse":
-            xGCEWorker.postMessage({sCommand: "parse", dParam: {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {}});
-            break;
-        case "parse_and_spellcheck":
-            xGCEWorker.postMessage({sCommand: "parseAndSpellcheck", dParam: {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {}});
-            break;
-        case "get_list_of_tokens":
-            xGCEWorker.postMessage({sCommand: "getListOfTokens", dParam: {sText: oRequest.sText}, dInfo: {}});
-            break;
-        case "text_to_test":
-            xGCEWorker.postMessage({sCommand: "textToTest", dParam: {sText: oRequest.sText, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {}});
-            break;
-        case "fulltests":
-            xGCEWorker.postMessage({sCommand: "fullTests", dParam: {}, dInfo: {}});
+        case "parseAndSpellcheck":
+        case "getListOfTokens":
+        case "textToTest":
+        case "getOptions":
+        case "getDefaultOptions":
+        case "setOptions":
+        case "setOption":
+        case "fullTests":
+            xGCEWorker.postMessage(oRequest);
             break;
     }
     //sendResponse({response: "response from background script"});
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
+
+
+function handleConnexion (p) {
+    var xPort = p;
+    let iPortId = aConnx.length; // identifier for the port: each port can be found at aConnx[iPortId]
+    aConnx.push(xPort);
+    console.log("Port: " + p.name + ", id: " + iPortId);
+    xPort.onMessage.addListener(function (oRequest) {
+        console.log("[background] message via connexion:");
+        console.log(oRequest);
+        switch (oRequest.sCommand) {
+            case "getCurrentTabId":
+                xPort.postMessage({sActionDone: "getCurrentTabId", result: "getCurrentTabId()", dInfo: null, bError: false});
+                break;
+            case "parse":
+            case "parseAndSpellcheck":
+            case "getListOfTokens":
+                oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to received answer
+                console.log(oRequest);
+                xGCEWorker.postMessage(oRequest);
+                break;
+            default:
+                console.log("[background] Unknown command: " + oRequest.sCommand);
+        }
+    });
+    xPort.postMessage({sActionDone: "newId", result: iPortId});
+}
+
+browser.runtime.onConnect.addListener(handleConnexion);
 
 
 /*
@@ -167,6 +212,14 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
 });
 
 
+async function getCurrentTabId () {
+    let xTab = await browser.tabs.getCurrent();
+    return xTab.id;
+}
+
+/*
+    TESTS ONLY
+*/
 async function newwin () {
     // test for popup window-like, which doesn’t close when losing the focus
     console.log("Async on");
