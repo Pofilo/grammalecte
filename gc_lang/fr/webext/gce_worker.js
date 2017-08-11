@@ -29,7 +29,7 @@
 "use strict";
 
 
-console.log("GC Engine Worker [start]");
+console.log("[Worker] GC Engine Worker [start]");
 //console.log(self);
 
 importScripts("grammalecte/helpers.js");
@@ -54,51 +54,81 @@ importScripts("grammalecte/tests.js");
 */
 
 
+function createResponse (sActionDone, result, dInfo, bError=false) {
+    return {
+        "sActionDone": sActionDone,
+        "result": result, // can be of any type
+        "dInfo": dInfo,
+        "bError": bError
+    };
+}
+
+function createErrorResult (e, sDescr="no description") {
+    return {
+        "sType": "error",
+        "sDescription": sDescr,
+        "sMessage": e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message
+    };
+}
+
+function showData (e) {
+    for (let sParam in e) {
+        console.log(sParam);
+        console.log(e[sParam]);
+    }
+}
+
+
 /*
     Message Event Object
     https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
 */
 onmessage = function (e) {
-    let oParam = e.data[1];
-    switch (e.data[0]) {
+    console.log("[Worker] message received");
+    let {sCommand, dParam, dInfo} = e.data;
+    switch (sCommand) {
         case "init":
-            loadGrammarChecker(oParam.sExtensionPath, oParam.sOptions, oParam.sContext);
+            init(dParam.sExtensionPath, dParam.sOptions, dParam.sContext, dInfo);
             break;
         case "parse":
-            parse(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext);
+            parse(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
             break;
         case "parseAndSpellcheck":
-            parseAndSpellcheck(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext);
+            parseAndSpellcheck(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
             break;
         case "getOptions":
-            getOptions();
+            getOptions(dInfo);
             break;
         case "getDefaultOptions":
-            getDefaultOptions();
+            getDefaultOptions(dInfo);
             break;
         case "setOptions":
-            setOptions(oParam.sOptions);
+            setOptions(dParam.sOptions, dInfo);
             break;
         case "setOption":
-            setOption(oParam.sOptName, oParam.bValue);
+            setOption(dParam.sOptName, dParam.bValue, dInfo);
             break;
         case "resetOptions":
-            resetOptions();
+            resetOptions(dInfo);
             break;
         case "textToTest":
-            textToTest(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext);
+            textToTest(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
             break;
         case "fullTests":
-            fullTests();
+            fullTests('{"nbsp":true, "esp":true, "unit":true, "num":true}', dInfo);
             break;
         case "getListOfTokens":
-            getListOfTokens(oParam.sText);
+            getListOfTokens(dParam.sText, dInfo);
             break;
         default:
-            console.log("Unknown command: " + e.data[0]);
+            console.log("Unknown command: " + sCommand);
+            showData(e.data);
     }
 }
 
+
+
+let bInitDone = false;
 
 let oDict = null;
 let oTokenizer = null;
@@ -106,63 +136,69 @@ let oLxg = null;
 let oTest = null;
 
 
-function loadGrammarChecker (sExtensionPath, sGCOptions="", sContext="JavaScript") {
+function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
     try {
-        console.log("Loading… Extension path: " + sExtensionPath);
-        conj.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/conj_data.json"));
-        phonet.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/phonet_data.json"));
-        mfsp.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/mfsp_data.json"));
-        console.log("Modules have been initialized…");
-        gc_engine.load(sContext, sExtensionPath+"grammalecte/_dictionaries");
-        oDict = gc_engine.getDictionary();
-        oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
-        oLxg = new Lexicographe(oDict);
-        if (sGCOptions !== "") {
-            gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+        if (!bInitDone) {
+            console.log("[Worker] Loading… Extension path: " + sExtensionPath);
+            conj.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/conj_data.json"));
+            phonet.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/phonet_data.json"));
+            mfsp.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/mfsp_data.json"));
+            console.log("[Worker] Modules have been initialized…");
+            gc_engine.load(sContext, sExtensionPath+"grammalecte/_dictionaries");
+            oDict = gc_engine.getDictionary();
+            oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
+            oLxg = new Lexicographe(oDict);
+            if (sGCOptions !== "") {
+                gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+            }
+            oTokenizer = new Tokenizer("fr");
+            tests();
+            bInitDone = true;
+        } else {
+            console.log("[Worker] Already initialized…")
         }
-        oTokenizer = new Tokenizer("fr");
-        tests();
         // we always retrieve options from the gc_engine, for setOptions filters obsolete options
-        postMessage(["options", gc_engine.getOptions().gl_toString()]);
+        postMessage(createResponse("init", gc_engine.getOptions().gl_toString(), dInfo));
     }
     catch (e) {
-        console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
-        postMessage(["error", e.message]);
+        helpers.logerror(e);
+        postMessage(createResponse("init", createErrorResult(e, "init failed"), dInfo, true));
     }
 }
 
-function parse (sText, sCountry, bDebug, bContext) {
+
+function parse (sText, sCountry, bDebug, bContext, dInfo={}) {
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
-    postMessage(["grammar_errors", {aGrammErr: aGrammErr}]);
+    postMessage({sActionDone: "parse", result: aGrammErr, dInfo: dInfo});
 }
 
-function parseAndSpellcheck (sText, sCountry, bDebug, bContext) {
+function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
     let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
-    postMessage(["spelling_and_grammar_errors", {aGrammErr: aGrammErr, aSpellErr: aSpellErr}]);
+    postMessage(createResponse("parseAndSpellcheck", {aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo));
 }
 
-function getOptions () {
-    postMessage(["options", gc_engine.getOptions().gl_toString()]);
+function getOptions (dInfo={}) {
+    postMessage(createResponse("getOptions", gc_engine.getOptions().gl_toString(), dInfo));
 }
 
-function getDefaultOptions () {
-    postMessage(["options", gc_engine.getDefaultOptions().gl_toString()]);
+function getDefaultOptions (dInfo={}) {
+    postMessage(createResponse("getDefaultOptions", gc_engine.getDefaultOptions().gl_toString(), dInfo));
 }
 
-function setOptions (sGCOptions) {
+function setOptions (sGCOptions, dInfo={}) {
     gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    postMessage(["options", gc_engine.getOptions().gl_toString()]);
+    postMessage(createResponse("setOptions", gc_engine.getOptions().gl_toString(), dInfo));
 }
 
-function setOption (sOptName, bValue) {
+function setOption (sOptName, bValue, dInfo={}) {
     gc_engine.setOptions(new Map([ [sOptName, bValue] ]));
-    postMessage(["options", gc_engine.getOptions().gl_toString()]);
+    postMessage(createResponse("setOption", gc_engine.getOptions().gl_toString(), dInfo));
 }
 
-function resetOptions () {
+function resetOptions (dInfo={}) {
     gc_engine.resetOptions();
-    postMessage(["options", gc_engine.getOptions().gl_toString()]);
+    postMessage(createResponse("resetOptions", gc_engine.getOptions().gl_toString(), dInfo));
 }
 
 function tests () {
@@ -176,9 +212,9 @@ function tests () {
     }
 }
 
-function textToTest (sText, sCountry, bDebug, bContext) {
+function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
     if (!gc_engine || !oDict) {
-        postMessage(["error", "# Error: grammar checker or dictionary not loaded."]);
+        postMessage(createResponse("textToTest", "# Grammar checker or dictionary not loaded.", dInfo));
         return;
     }
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
@@ -186,12 +222,12 @@ function textToTest (sText, sCountry, bDebug, bContext) {
     for (let oErr of aGrammErr) {
         sMsg += text.getReadableError(oErr) + "\n";
     }
-    postMessage(["text_to_test_result", sMsg]);
+    postMessage(createResponse("textToTest", sMsg, dInfo));
 }
 
-function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":true}') {
+function fullTests (sGCOptions="", dInfo={}) {
     if (!gc_engine || !oDict) {
-        postMessage(["error", "# Error: grammar checker or dictionary not loaded."]);
+        postMessage(createResponse("fullTests", "# Grammar checker or dictionary not loaded.", dInfo));
         return;
     }
     let dMemoOptions = gc_engine.getOptions();
@@ -204,13 +240,14 @@ function fullTests (sGCOptions='{"nbsp":true, "esp":true, "unit":true, "num":tru
         console.log(sRes);
     }
     gc_engine.setOptions(dMemoOptions);
-    postMessage(["fulltests_result", sMsg]);
+    postMessage(createResponse("fullTests", sMsg, dInfo));
 }
+
 
 
 // Lexicographer
 
-function getListOfTokens (sText) {
+function getListOfTokens (sText, dInfo={}) {
     try {
         let aElem = [];
         let aRes = null;
@@ -220,10 +257,10 @@ function getListOfTokens (sText) {
                 aElem.push(aRes);
             }
         }
-        postMessage(["tokens", aElem]);
+        postMessage(createResponse("getListOfTokens", aElem, dInfo));
     }
     catch (e) {
         helpers.logerror(e);
-        postMessage(["error", e.message]);
+        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true));
     }
 }
