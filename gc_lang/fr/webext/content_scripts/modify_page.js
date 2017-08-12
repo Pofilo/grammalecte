@@ -36,7 +36,7 @@ function createWrapper (xTextArea) {
     try {
         let xParentElement = xTextArea.parentElement;
         let xWrapper = document.createElement("div");
-        xWrapper.style = "padding: 5px; color: hsl(210, 10%, 90%); background-color: hsl(210, 50%, 50%); border-radius: 3px;";
+        xWrapper.className = "grammalecte_wrapper";
         xWrapper.id = nWrapper + 1;
         nWrapper += 1;
         xParentElement.insertBefore(xWrapper, xTextArea);
@@ -49,8 +49,6 @@ function createWrapper (xTextArea) {
     }
 }
 
-let sButtonStyle = "display: inline-block; padding: 0 5px; margin-left: 5px; background-color: hsl(210, 50%, 60%); border-radius: 2px; cursor: pointer;";
-
 function createWrapperToolbar (xTextArea) {
     try {
         let xToolbar = document.createElement("div");
@@ -62,28 +60,28 @@ function createWrapperToolbar (xTextArea) {
         xToolbar.appendChild(document.createTextNode("Grammalecte"));
         let xConjButton = document.createElement("div");
         xConjButton.textContent = "Conjuguer";
-        xConjButton.style = sButtonStyle;
+        xConjButton.className = "grammalecte_wrapper_button";
         xConjButton.onclick = function() {
             createConjPanel();
         };
         xToolbar.appendChild(xConjButton);
         let xTFButton = document.createElement("div");
         xTFButton.textContent = "Formater";
-        xTFButton.style = sButtonStyle;
+        xTFButton.className = "grammalecte_wrapper_button";
         xTFButton.onclick = function() {
             createTFPanel(xTextArea);
         };
         xToolbar.appendChild(xTFButton);
         let xLxgButton = document.createElement("div");
         xLxgButton.textContent = "Analyser";
-        xLxgButton.style = sButtonStyle;
+        xLxgButton.className = "grammalecte_wrapper_button";
         xLxgButton.onclick = function() {
             createLxgPanel(xTextArea);
         };
         xToolbar.appendChild(xLxgButton);
         let xGCButton = document.createElement("div");
         xGCButton.textContent = "Corriger";
-        xGCButton.style = sButtonStyle;
+        xGCButton.className = "grammalecte_wrapper_button";
         xGCButton.onclick = function() {
             xPort.postMessage({sCommand: "parseAndSpellcheck", dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {sTextAreaId: xTextArea.id}});
         };
@@ -101,7 +99,7 @@ function createConjPanel () {
         xConjPanel.style.display = "block";
     } else {
         // create the panel
-        xConjPanel = createPanelFrame("conj_panel", "Conjugueur");
+        xConjPanel = createPanelFrame("grammalecte_conj_panel", "Conjugueur");
         document.body.appendChild(xConjPanel);
     }
 }
@@ -112,9 +110,9 @@ function createTFPanel (xTextArea) {
         xTFPanel.style.display = "block";
     } else {
         // create the panel
-        xTFPanel = createPanelFrame("tf_panel", "Formateur de texte");
+        xTFPanel = createPanelFrame("grammalecte_tf_panel", "Formateur de texte");
         document.body.appendChild(xTFPanel);
-        document.getElementById("tf_panel_content").appendChild(createTextFormatter(xTextArea));
+        document.getElementById("grammalecte_tf_panel_content").appendChild(createTextFormatter(xTextArea));
     }
 }
 
@@ -124,7 +122,7 @@ function createLxgPanel (xTextArea) {
         xLxgPanel.style.display = "block";
     } else {
         // create the panel
-        xLxgPanel = createPanelFrame("lxg_panel", "Lexicographe");
+        xLxgPanel = createPanelFrame("grammalecte_lxg_panel", "Lexicographe");
         document.body.appendChild(xLxgPanel);
     }
 }
@@ -135,9 +133,9 @@ function createGCPanel (oErrors) {
         xGCPanel.style.display = "block";
     } else {
         // create the panel
-        xGCPanel = createPanelFrame("gc_panel", "Correcteur");
+        xGCPanel = createPanelFrame("grammalecte_gc_panel", "Correcteur");
         document.body.appendChild(xGCPanel);
-        document.getElementById("gc_panel_content").appendChild(document.createTextNode(JSON.stringify(oErrors)));
+        document.getElementById("grammalecte_gc_panel_content").appendChild(document.createTextNode(JSON.stringify(oErrors)));
     }
 }
 

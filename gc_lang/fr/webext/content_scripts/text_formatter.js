@@ -7,7 +7,8 @@ function createTextFormatter (xTextArea) {
     let xTFNode = document.createElement("div");
     try {
         // Options
-        let xOptions = createNode("div", {id: "tf_options"});
+        let xOptions = createNode("div", {id: "grammalecte_tf_options"});
+        let xColumn1 = createNode("div", {className: "grammalecte_tf_column"});
         let xSSP = createFieldset("group_ssp", true, "Espaces surnuméraires");
         xSSP.appendChild(createOptionInputAndLabel("o_start_of_paragraph", true, "En début de paragraphe"));
         xSSP.appendChild(createOptionInputAndLabel("o_end_of_paragraph", true, "En fin de paragraphe"));
@@ -27,6 +28,7 @@ function createTextFormatter (xTextArea) {
         xNBSP.appendChild(createOptionInputAndLabel("o_nbsp_before_units", true, "Avant les unités de mesure"));
         let xDelete = createFieldset("group_delete", true, "Suppressions");
         xDelete.appendChild(createOptionInputAndLabel("o_erase_non_breaking_hyphens", true, "Tirets conditionnels"));
+        let xColumn2 = createNode("div", {className: "grammalecte_tf_column"});
         let xTypo = createFieldset("group_typo", true, "Signes typographiques");
         xTypo.appendChild(createOptionInputAndLabel("o_ts_apostrophe", true, "Apostrophe (’)"));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_ellipsis", true, "Points de suspension (…)"));
@@ -44,20 +46,22 @@ function createTextFormatter (xTextArea) {
         let xStruct = createFieldset("group_struct", false, "Restructuration [!]");
         xStruct.appendChild(createOptionInputAndLabel("o_remove_hyphens_at_end_of_paragraphs", false, "Enlever césures en fin de ligne/paragraphe [!]"));
         xStruct.appendChild(createOptionInputAndLabel("o_merge_contiguous_paragraphs", false, "Fusionner les paragraphes contigus [!]"));
-        xOptions.appendChild(xSSP);
-        xOptions.appendChild(xSpace);
-        xOptions.appendChild(xNBSP);
-        xOptions.appendChild(xDelete);
-        xOptions.appendChild(xTypo);
-        xOptions.appendChild(xMisc);
-        xOptions.appendChild(xStruct);
+        xColumn1.appendChild(xSSP);
+        xColumn1.appendChild(xSpace);
+        xColumn1.appendChild(xNBSP);
+        xColumn1.appendChild(xDelete);
+        xColumn2.appendChild(xTypo);
+        xColumn2.appendChild(xMisc);
+        xColumn2.appendChild(xStruct);
+        xOptions.appendChild(xColumn1);
+        xOptions.appendChild(xColumn2);
         // Actions
-        let xActions = createNode("div", {id: "tf_actions"});
-        xActions.appendChild(createNode("div", {id: "tf_reset", textContent: "Par défaut", className: "button blue"}));
-        xActions.appendChild(createNode("progress", {id: "progressbar", style: "width: 25px"}));
-        xActions.appendChild(createNode("span", {id: "time_res"}));
-        xActions.appendChild(createNode("div", {id: "tf_apply", textContent: "Appliquer", className: "button green"}));
-        xActions.appendChild(createNode("div", {id: "infomsg", textContent: "blabla"}));
+        let xActions = createNode("div", {id: "grammalecte_tf_actions"});
+        xActions.appendChild(createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_button", style: "background-color: hsl(210, 50%, 50%)"}));
+        xActions.appendChild(createNode("progress", {id: "grammalecte_progressbar", style: "width: 25px"}));
+        xActions.appendChild(createNode("span", {id: "grammalecte_time_res"}));
+        xActions.appendChild(createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_button", style: "background-color: hsl(180, 50%, 50%)"}));
+        //xActions.appendChild(createNode("div", {id: "grammalecte_infomsg", textContent: "blabla"}));
         // create result
         xTFNode.appendChild(xOptions);
         xTFNode.appendChild(xActions);
@@ -85,7 +89,7 @@ function createOptionInputAndLabel (sId, bDefault, sLabel) {
     let xOption = createNode("div", {className: "blockopt underline"});
     let xInput = createCheckbox(sId, bDefault, "option");
     let xLabel = createLabel(sId, sLabel, "opt_lbl largew");
-    let xResult = createNode("div", {id: "res_"+sId, className: "result fright"});
+    let xResult = createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "9999"});
     // create result
     xOption.appendChild(xResult);
     xOption.appendChild(xInput);
