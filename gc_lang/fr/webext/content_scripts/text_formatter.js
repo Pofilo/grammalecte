@@ -7,7 +7,7 @@ function createTextFormatter (xTextArea) {
     let xTFNode = document.createElement("div");
     try {
         // Options
-        let xOptions = createDiv("tf_options", "");
+        let xOptions = createNode("div", {id: "tf_options"});
         let xSSP = createFieldset("group_ssp", true, "Espaces surnuméraires");
         xSSP.appendChild(createOptionInputAndLabel("o_start_of_paragraph", true, "En début de paragraphe"));
         xSSP.appendChild(createOptionInputAndLabel("o_end_of_paragraph", true, "En fin de paragraphe"));
@@ -52,13 +52,12 @@ function createTextFormatter (xTextArea) {
         xOptions.appendChild(xMisc);
         xOptions.appendChild(xStruct);
         // Actions
-        let xActions = createDiv("tf_actions", "");
-        let xPgBarBox = createDiv("tf_progressbarbox", "");
-        xPgBarBox.innerHTML = '<progress id="progressbar" style="width: 400px;"></progress> <span id="time_res"></span>';
-        xActions.appendChild(createDiv("tf_reset", "Par défaut", "button blue"));
-        xActions.appendChild(xPgBarBox);
-        xActions.appendChild(createDiv("tf_apply", "Appliquer", "button green"));
-        xActions.appendChild(createDiv("infomsg", "blabla"));
+        let xActions = createNode("div", {id: "tf_actions"});
+        xActions.appendChild(createNode("div", {id: "tf_reset", textContent: "Par défaut", className: "button blue"}));
+        xActions.appendChild(createNode("progress", {id: "progressbar", style: "width: 25px"}));
+        xActions.appendChild(createNode("span", {id: "time_res"}));
+        xActions.appendChild(createNode("div", {id: "tf_apply", textContent: "Appliquer", className: "button green"}));
+        xActions.appendChild(createNode("div", {id: "infomsg", textContent: "blabla"}));
         // create result
         xTFNode.appendChild(xOptions);
         xTFNode.appendChild(xActions);
@@ -71,9 +70,7 @@ function createTextFormatter (xTextArea) {
 }
 
 function createFieldset (sId, bDefault, sLabel) {
-    let xFieldset = document.createElement("fieldset");
-    xFieldset.id = sId;
-    xFieldset.className = "groupblock";
+    let xFieldset = createNode("fieldset", {id: sId, className: "groupblock"});
     let xLegend = document.createElement("legend");
     let xInput = createCheckbox("o_"+sId, bDefault, "option");
     let xLabel = createLabel(xInput.id, sLabel);
@@ -85,11 +82,10 @@ function createFieldset (sId, bDefault, sLabel) {
 }
 
 function createOptionInputAndLabel (sId, bDefault, sLabel) {
-    let xOption = document.createElement("div");
-    xOption.className = "blockopt underline";
+    let xOption = createNode("div", {className: "blockopt underline"});
     let xInput = createCheckbox(sId, bDefault, "option");
     let xLabel = createLabel(sId, sLabel, "opt_lbl largew");
-    let xResult = createDiv("res_"+sId, "", "result fright");
+    let xResult = createNode("div", {id: "res_"+sId, className: "result fright"});
     // create result
     xOption.appendChild(xResult);
     xOption.appendChild(xInput);

@@ -43,7 +43,6 @@ function createWrapper (xTextArea) {
         xWrapper.appendChild(xTextArea); // move textarea in wrapper
         let xToolbar = createWrapperToolbar(xTextArea);
         xWrapper.appendChild(xToolbar);
-        //loadImage("GrammalecteTitle", "img/logo-16.png");
     }
     catch (e) {
         showError(e);
@@ -57,12 +56,8 @@ function createWrapperToolbar (xTextArea) {
         let xToolbar = document.createElement("div");
         xToolbar.style = "display: flex; justify-content: flex-end; margin-top: 5px; padding: 5px 10px;";
         /*let xLogo = document.createElement("img");
-        xLogo.src = browser.extension.getURL("img/logo-16.png");
+        xLogo.src = browser.extension.getURL("img/logo-16.png"); // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
         xTitle.appendChild(xLogo);*/
-
-        let xImagePlace = document.createElement("span");
-        xImagePlace.className = "GrammalecteTitle";
-        xToolbar.appendChild(xImagePlace);
 
         xToolbar.appendChild(document.createTextNode("Grammalecte"));
         let xConjButton = document.createElement("div");
@@ -106,7 +101,7 @@ function createConjPanel () {
         xConjPanel.style.display = "block";
     } else {
         // create the panel
-        xConjPanel = createPanelFrame("conj_panel", "Conjugueur", 500, 900);
+        xConjPanel = createPanelFrame("conj_panel", "Conjugueur");
         document.body.appendChild(xConjPanel);
     }
 }
@@ -117,7 +112,7 @@ function createTFPanel (xTextArea) {
         xTFPanel.style.display = "block";
     } else {
         // create the panel
-        xTFPanel = createPanelFrame("tf_panel", "Formateur de texte", 800, 500);
+        xTFPanel = createPanelFrame("tf_panel", "Formateur de texte");
         document.body.appendChild(xTFPanel);
         document.getElementById("tf_panel_content").appendChild(createTextFormatter(xTextArea));
     }
@@ -129,7 +124,7 @@ function createLxgPanel (xTextArea) {
         xLxgPanel.style.display = "block";
     } else {
         // create the panel
-        xLxgPanel = createPanelFrame("lxg_panel", "Lexicographe", 400, 800);
+        xLxgPanel = createPanelFrame("lxg_panel", "Lexicographe");
         document.body.appendChild(xLxgPanel);
     }
 }
@@ -140,7 +135,7 @@ function createGCPanel (oErrors) {
         xGCPanel.style.display = "block";
     } else {
         // create the panel
-        xGCPanel = createPanelFrame("gc_panel", "Correcteur", 400, 800);
+        xGCPanel = createPanelFrame("gc_panel", "Correcteur");
         document.body.appendChild(xGCPanel);
         document.getElementById("gc_panel_content").appendChild(document.createTextNode(JSON.stringify(oErrors)));
     }

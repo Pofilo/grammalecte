@@ -4,23 +4,18 @@
 "use strict";
 
 
-function createPanelFrame (sId, sTitle, nWidth, nHeight) {
+function createPanelFrame (sId, sTitle) {
     try {
-        let xPanel = document.createElement("div");
-        xPanel.style = "position: fixed; left: 50%; top: 50%; z-index: 100; border-radius: 10px;"
-                     + "color: hsl(210, 10%, 4%); background-color: hsl(210, 20%, 90%); border: 10px solid hsla(210, 20%, 70%, .5);"
-                     + 'font-family: "Trebuchet MS", "Liberation Sans", sans-serif;'
-                     + getPanelSize(nWidth, nHeight);
-        let xBar = document.createElement("div");
-        xBar.style = "position: fixed; width: "+nWidth+"px ; background-color: hsl(210, 0%, 100%); border-bottom: 1px solid hsl(210, 10%, 50%); font-size: 20px;";
+        let xPanel = createNode("div", {id: sId, className: "grammalecte_panel"});
+        let xBar = createNode("div", {className: "grammalecte_title_bar"});
         xBar.appendChild(createCloseButton(xPanel));
-        let xTitle = createDiv(sId+"_title", "", "", "padding: 10px 20px;");
+        let xTitle = createNode("div", {className: "grammalecte_title"});
         xTitle.appendChild(createLogo());
-        xTitle.appendChild(createDiv(sId+"_label", "Grammalecte · " + sTitle, "", "display: inline-block; padding: 0 10px;"));
+        xTitle.appendChild(createNode("div", {className: "grammalecte_label", textContent: "Grammalecte · " + sTitle}));
         xBar.appendChild(xTitle);
         xPanel.appendChild(xBar);
-        xPanel.appendChild(createDiv(sId+"_empty_space", "", "", "height: 50px;")); // empty space to fill behind the title bar
-        xPanel.appendChild(createDiv(sId+"_content", "", "", "overflow: auto;"));
+        //xPanel.appendChild(createNode("div", {className: "grammalecte_empty_space_under_title_bar"}));
+        xPanel.appendChild(createNode("div", {id: sId+"_content", className: "grammalecte_panel_content"}));
         return xPanel;
     }
     catch (e) {
@@ -28,16 +23,9 @@ function createPanelFrame (sId, sTitle, nWidth, nHeight) {
     }
 }
 
-function getPanelSize (nWidth, nHeight) {
-    let s = "width: "+ nWidth.toString() + "px; height: " + nHeight.toString() + "px;";
-    s += "margin-top: -" + (nHeight/2).toString() + "px; margin-left: -" + (nWidth/2).toString() + "px;";
-    return s;
-}
-
 function createCloseButton (xParentNode) {
     let xButton = document.createElement("div");
-    xButton.style = "float: right; padding: 2px 10px; color: hsl(210, 0%, 100%); text-align: center;"
-                  + "font-size: 22px; font-weight: bold; background-color: hsl(0, 80%, 50%); border-radius: 0 0 0 3px; cursor: pointer;";
+    xButton.className = "grammalecte_close_button";
     xButton.textContent = "×";
     xButton.onclick = function () {
         xParentNode.style.display = "none";
@@ -49,13 +37,15 @@ function createCloseButton (xParentNode) {
 /*
     Common functions
 */
-function createDiv (sId, sContent, sClass="", sStyle="") {
-    let xDiv = document.createElement("div");
-    xDiv.id = sId;
-    xDiv.className = sClass;
-    xDiv.style = sStyle;
-    xDiv.textContent = sContent;
-    return xDiv;
+function createNode (sType, oAttr) {
+    try {
+        let xNode = document.createElement(sType);
+        Object.assign(xNode, oAttr);
+        return xNode;
+    }
+    catch (e) {
+        showError(e);
+    }
 }
 
 function createCheckbox (sId, bDefault, sClass="")  {
