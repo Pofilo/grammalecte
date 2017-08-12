@@ -83,7 +83,7 @@ function createWrapperToolbar (xTextArea) {
         xLxgButton.textContent = "Analyser";
         xLxgButton.style = sButtonStyle;
         xLxgButton.onclick = function() {
-            console.log("Analyser");
+            createLxgPanel(xTextArea);
         };
         xToolbar.appendChild(xLxgButton);
         let xGCButton = document.createElement("div");
@@ -106,22 +106,32 @@ function createConjPanel () {
         xConjPanel.style.display = "block";
     } else {
         // create the panel
-        xConjPanel = document.createElement("div");
-        xConjPanel.style = "position: fixed; left: 50%; top: 50%; z-index: 100; height: 400px; margin-top: -200px; width: 600px; margin-left: -300px; border-radius: 10px;"
-                         + " color: hsl(210, 10%, 4%); background-color: hsl(210, 20%, 90%); border: 10px solid hsla(210, 20%, 70%, .5);";
-        xConjPanel.textContent = "Conjugueur";
-        xConjPanel.setAttribute("draggable", true);
-        xConjPanel.appendChild(createCloseButton(xConjPanel));
+        xConjPanel = createPanelFrame("conj_panel", "Conjugueur", 500, 900);
         document.body.appendChild(xConjPanel);
     }
 }
 
 function createTFPanel (xTextArea) {
     console.log("Formateur de texte");
+    if (xTFPanel !== null) {
+        xTFPanel.style.display = "block";
+    } else {
+        // create the panel
+        xTFPanel = createPanelFrame("tf_panel", "Formateur de texte", 800, 500);
+        xTFPanel.appendChild(createTextFormatter(xTextArea));
+        document.body.appendChild(xTFPanel);
+    }
 }
 
 function createLxgPanel (xTextArea) {
-    console.log("Analyse");
+    console.log("Lexicographe");
+    if (xLxgPanel !== null) {
+        xLxgPanel.style.display = "block";
+    } else {
+        // create the panel
+        xLxgPanel = createPanelFrame("lxg_panel", "Lexicographe", 400, 800);
+        document.body.appendChild(xLxgPanel);
+    }
 }
 
 function createGCPanel (oErrors) {
@@ -130,38 +140,10 @@ function createGCPanel (oErrors) {
         xGCPanel.style.display = "block";
     } else {
         // create the panel
-        xGCPanel = document.createElement("div");
-        xGCPanel.style = "position: fixed; left: 50%; top: 50%; z-index: 100; height: 400px; margin-top: -200px; width: 600px; margin-left: -300px; border-radius: 10px;"
-                         + " color: hsl(210, 10%, 4%); background-color: hsl(210, 20%, 90%); border: 10px solid hsla(210, 20%, 70%, .5);";
-        xGCPanel.textContent = JSON.stringify(oErrors);
-        xGCPanel.setAttribute("draggable", true);
-        xGCPanel.appendChild(createCloseButton(xGCPanel));
+        xGCPanel = createPanelFrame("gc_panel", "Correcteur", 400, 800);
+        xGCPanel.appendChild(document.createTextNode(JSON.stringify(oErrors)));
         document.body.appendChild(xGCPanel);
     }
-}
-
-function createCloseButton (xParentNode) {
-    let xButton = document.createElement("div");
-    xButton.style = "float: right; width: 20px; padding: 5px 10px; color: hsl(210, 0%, 100%); text-align: center;"
-                  + "font-size: 20px; font-weight: bold; background-color: hsl(0, 80%, 50%); border-radius: 0 0 0 3px; cursor: pointer;";
-    xButton.textContent = "×";
-    xButton.onclick = function () {
-        xParentNode.style.display = "none";
-    }
-    return xButton;
-}
-
-function loadImage (sContainerClass, sImagePath) {
-    let xRequest = new XMLHttpRequest();
-    xRequest.open('GET', browser.extension.getURL("")+sImagePath, false);
-    xRequest.responseType = "arraybuffer";
-    xRequest.send();
-    let blobTxt = new Blob([xRequest.response], {type: 'image/png'});
-    let img = document.createElement('img');
-    img.src = (URL || webkitURL).createObjectURL(blobTxt);
-    Array.filter(document.getElementsByClassName(sContainerClass), function (oElem) {
-        oElem.appendChild(img);
-    });
 }
 
 
