@@ -43,7 +43,7 @@ function createWrapper (xTextArea) {
         xWrapper.appendChild(xTextArea); // move textarea in wrapper
         let xToolbar = createWrapperToolbar(xTextArea);
         xWrapper.appendChild(xToolbar);
-        loadImage("GrammalecteTitle", "img/logo-16.png");
+        //loadImage("GrammalecteTitle", "img/logo-16.png");
     }
     catch (e) {
         showError(e);
@@ -118,8 +118,8 @@ function createTFPanel (xTextArea) {
     } else {
         // create the panel
         xTFPanel = createPanelFrame("tf_panel", "Formateur de texte", 800, 500);
-        xTFPanel.appendChild(createTextFormatter(xTextArea));
         document.body.appendChild(xTFPanel);
+        document.getElementById("tf_panel_content").appendChild(createTextFormatter(xTextArea));
     }
 }
 
@@ -141,8 +141,8 @@ function createGCPanel (oErrors) {
     } else {
         // create the panel
         xGCPanel = createPanelFrame("gc_panel", "Correcteur", 400, 800);
-        xGCPanel.appendChild(document.createTextNode(JSON.stringify(oErrors)));
         document.body.appendChild(xGCPanel);
+        document.getElementById("gc_panel_content").appendChild(document.createTextNode(JSON.stringify(oErrors)));
     }
 }
 
