@@ -41,48 +41,24 @@ class GrammalectePanel {
     _createButtons () {
         let xButtonLine = createNode("div", {className: "grammalecte_panel_commands"});
         if (this.bMovable) {
-            xButtonLine.appendChild(this._createMoveButtonTop());
-            xButtonLine.appendChild(this._createMoveButtonLeft());
-            xButtonLine.appendChild(this._createMoveButtonMiddle());
-            xButtonLine.appendChild(this._createMoveButtonRight());
-            xButtonLine.appendChild(this._createMoveButtonBottom());
+            xButtonLine.appendChild(this._createMoveButton("stickToTop", "¯", "Coller en haut"));
+            xButtonLine.appendChild(this._createMoveButton("stickToLeft", "«", "Coller à gauche"));
+            xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
+            xButtonLine.appendChild(this._createMoveButton("stickToRight", "»", "Coller à droite"));
+            xButtonLine.appendChild(this._createMoveButton("stickToBottom", "_", "Coller en bas"));
         }
         xButtonLine.appendChild(this._createCloseButton());
         return xButtonLine;
     }
 
-    _createMoveButtonLeft () {
-        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "‹"});
-        xButton.onclick = function () { this.stickToLeft(); }.bind(this);
-        return xButton;
-    }
-
-    _createMoveButtonMiddle () {
-        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "·"});
-        xButton.onclick = function () { this.center(); }.bind(this);
-        return xButton;
-    }
-
-    _createMoveButtonRight () {
-        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "›"});
-        xButton.onclick = function () { this.stickToRight(); }.bind(this);
-        return xButton;
-    }
-
-    _createMoveButtonTop () {
-        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "^"});
-        xButton.onclick = function () { this.stickToTop(); }.bind(this);
-        return xButton;
-    }
-
-    _createMoveButtonBottom () {
-        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "ˇ"});
-        xButton.onclick = function () { this.stickToBottom(); }.bind(this);
+    _createMoveButton (sAction, sLabel, sTitle) {
+        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: sLabel, title: sTitle});
+        xButton.onclick = function () { this[sAction](); }.bind(this);
         return xButton;
     }
 
     _createCloseButton () {
-        let xButton = createNode("div", {className: "grammalecte_close_button", textContent: "×"});
+        let xButton = createNode("div", {className: "grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
         xButton.onclick = function () { this.hide(); }.bind(this);  // better than writing “let that = this;” before the function?
         return xButton;
     }
