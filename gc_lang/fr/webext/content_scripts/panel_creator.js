@@ -3,34 +3,138 @@
 
 "use strict";
 
+console.log("[Content script] Panel creator");
 
-function createPanelFrame (sId, sTitle) {
-    try {
-        let xPanel = createNode("div", {id: sId, className: "grammalecte_panel"});
-        let xBar = createNode("div", {className: "grammalecte_title_bar"});
-        xBar.appendChild(createCloseButton(xPanel));
-        let xTitle = createNode("div", {className: "grammalecte_title"});
-        xTitle.appendChild(createLogo());
-        xTitle.appendChild(createNode("div", {className: "grammalecte_label", textContent: "Grammalecte · " + sTitle}));
-        xBar.appendChild(xTitle);
-        xPanel.appendChild(xBar);
-        //xPanel.appendChild(createNode("div", {className: "grammalecte_empty_space_under_title_bar"}));
-        xPanel.appendChild(createNode("div", {id: sId+"_content", className: "grammalecte_panel_content"}));
-        return xPanel;
-    }
-    catch (e) {
-        showError(e);
-    }
-}
 
-function createCloseButton (xParentNode) {
-    let xButton = document.createElement("div");
-    xButton.className = "grammalecte_close_button";
-    xButton.textContent = "×";
-    xButton.onclick = function () {
-        xParentNode.style.display = "none";
+class GrammalectePanel {
+
+    constructor (sId, sTitle, nWidth, nHeight, bMovable=true) {
+        this.sId = sId;
+        this.sContentId = sId+"_content";
+        this.nWidth = nWidth;
+        this.nHeight = nHeight;
+        this.bMovable = bMovable;
+        this.xContentNode = createNode("div", {id: this.sContentId, className: "grammalecte_panel_content"});
+        this.xPanelNode = this._createPanel(sTitle);
+        this.center();
     }
-    return xButton;
+
+    _createPanel (sTitle) {
+        try {
+            let xPanel = createNode("div", {id: this.sId, className: "grammalecte_panel"});
+            let xBar = createNode("div", {className: "grammalecte_panel_bar"});
+            xBar.appendChild(this._createButtons());
+            let xTitle = createNode("div", {className: "grammalecte_panel_title"});
+            xTitle.appendChild(createLogo());
+            xTitle.appendChild(createNode("div", {className: "grammalecte_panel_label", textContent: "Grammalecte · " + sTitle}));
+            xBar.appendChild(xTitle);
+            xPanel.appendChild(xBar);
+            //xPanel.appendChild(createNode("div", {className: "grammalecte_empty_space_under_title_bar"}));
+            xPanel.appendChild(this.xContentNode);
+            return xPanel;
+        }
+        catch (e) {
+            showError(e);
+        }
+    }
+
+    _createButtons () {
+        let xButtonLine = createNode("div", {className: "grammalecte_panel_commands"});
+        if (this.bMovable) {
+            xButtonLine.appendChild(this._createMoveButtonTop());
+            xButtonLine.appendChild(this._createMoveButtonLeft());
+            xButtonLine.appendChild(this._createMoveButtonMiddle());
+            xButtonLine.appendChild(this._createMoveButtonRight());
+            xButtonLine.appendChild(this._createMoveButtonBottom());
+        }
+        xButtonLine.appendChild(this._createCloseButton());
+        return xButtonLine;
+    }
+
+    _createMoveButtonLeft () {
+        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "‹"});
+        xButton.onclick = function () { this.stickToLeft(); }.bind(this);
+        return xButton;
+    }
+
+    _createMoveButtonMiddle () {
+        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "·"});
+        xButton.onclick = function () { this.center(); }.bind(this);
+        return xButton;
+    }
+
+    _createMoveButtonRight () {
+        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "›"});
+        xButton.onclick = function () { this.stickToRight(); }.bind(this);
+        return xButton;
+    }
+
+    _createMoveButtonTop () {
+        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "^"});
+        xButton.onclick = function () { this.stickToTop(); }.bind(this);
+        return xButton;
+    }
+
+    _createMoveButtonBottom () {
+        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: "ˇ"});
+        xButton.onclick = function () { this.stickToBottom(); }.bind(this);
+        return xButton;
+    }
+
+    _createCloseButton () {
+        let xButton = createNode("div", {className: "grammalecte_close_button", textContent: "×"});
+        xButton.onclick = function () { this.hide(); }.bind(this);  // better than writing “let that = this;” before the function?
+        return xButton;
+    }
+
+    setContent (xNode) {
+        this.xContentNode.appendChild(xNode);
+    }
+
+    insertIntoPage () {
+        document.body.appendChild(this.xPanelNode);
+    }
+
+    show () {
+        this.xPanelNode.style.display = "block";
+    }
+
+    hide () {
+        this.xPanelNode.style.display = "none";
+    }
+
+    center () {
+        this.xPanelNode.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${this.nHeight}px; margin-top: -${this.nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
+    }
+
+    stickToLeft () {
+        let nHeight = window.innerHeight-100;
+        this.xPanelNode.style = `top: 50%; left: -10px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
+    }
+
+    stickToRight () {
+        let nHeight = window.innerHeight-100;
+        this.xPanelNode.style = `top: 50%; right: -10px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
+    }
+
+    stickToTop () {
+        let nWidth = Math.floor(window.innerWidth/2);
+        this.xPanelNode.style = `top: -10px; left: 50%; width: ${nWidth}px; height: ${Math.floor(window.innerHeight*0.45)}px; margin-left: -${nWidth/2}px;`;
+    }
+
+    stickToBottom () {
+        let nWidth = Math.floor(window.innerWidth/2);
+        this.xPanelNode.style = `bottom: -10px; left: 50%; width: ${nWidth}px; height: ${Math.floor(window.innerHeight*0.45)}px; margin-left: -${nWidth/2}px;`;
+    }
+
+    reduce () {
+        // todo
+    }
+
+    logInnerHTML () {
+        // for debugging
+        console.log(this.xPanelNode.innerHTML);
+    }
 }
 
 

@@ -58,8 +58,8 @@ function createTextFormatter (xTextArea) {
         // Actions
         let xActions = createNode("div", {id: "grammalecte_tf_actions"});
         xActions.appendChild(createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_button", style: "background-color: hsl(210, 50%, 50%)"}));
-        xActions.appendChild(createNode("progress", {id: "grammalecte_progressbar", style: "width: 25px"}));
-        xActions.appendChild(createNode("span", {id: "grammalecte_time_res"}));
+        xActions.appendChild(createNode("progress", {id: "grammalecte_tf_progressbar"}));
+        xActions.appendChild(createNode("span", {id: "grammalecte_tf_time_res"}));
         xActions.appendChild(createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_button", style: "background-color: hsl(180, 50%, 50%)"}));
         //xActions.appendChild(createNode("div", {id: "grammalecte_infomsg", textContent: "blabla"}));
         // create result

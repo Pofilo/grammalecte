@@ -15,10 +15,10 @@ console.log("[Content script] Start");
 let nTadId = null;
 let nWrapper = 0;
 
-let xConjPanel = null;
-let xTFPanel = null;
-let xLxgPanel = null;
-let xGCPanel = null;
+let oConjPanel = null;
+let oTFPanel = null;
+let oLxgPanel = null;
+let oGCPanel = null;
 
 
 function showError (e) {
@@ -95,47 +95,48 @@ function createWrapperToolbar (xTextArea) {
 
 function createConjPanel () {
     console.log("Conjugueur");
-    if (xConjPanel !== null) {
-        xConjPanel.style.display = "block";
+    if (oConjPanel !== null) {
+        oConjPanel.show();
     } else {
         // create the panel
-        xConjPanel = createPanelFrame("grammalecte_conj_panel", "Conjugueur");
-        document.body.appendChild(xConjPanel);
+        oConjPanel = new GrammalectePanel("grammalecte_conj_panel", "Conjugueur", 600, 600);
+        oConjPanel.insertIntoPage();
     }
 }
 
 function createTFPanel (xTextArea) {
     console.log("Formateur de texte");
-    if (xTFPanel !== null) {
-        xTFPanel.style.display = "block";
+    if (oTFPanel !== null) {
+        oTFPanel.show();
     } else {
         // create the panel
-        xTFPanel = createPanelFrame("grammalecte_tf_panel", "Formateur de texte");
-        document.body.appendChild(xTFPanel);
-        document.getElementById("grammalecte_tf_panel_content").appendChild(createTextFormatter(xTextArea));
+        oTFPanel = new GrammalectePanel("grammalecte_tf_panel", "Formateur de texte", 800, 600, false);
+        oTFPanel.logInnerHTML();
+        oTFPanel.setContent(createTextFormatter(xTextArea));
+        oTFPanel.insertIntoPage();
     }
 }
 
 function createLxgPanel (xTextArea) {
     console.log("Lexicographe");
-    if (xLxgPanel !== null) {
-        xLxgPanel.style.display = "block";
+    if (oLxgPanel !== null) {
+        oLxgPanel.show();
     } else {
         // create the panel
-        xLxgPanel = createPanelFrame("grammalecte_lxg_panel", "Lexicographe");
-        document.body.appendChild(xLxgPanel);
+        oLxgPanel = new GrammalectePanel("grammalecte_lxg_panel", "Lexicographe", 500, 700);
+        oLxgPanel.insertIntoPage();
     }
 }
 
 function createGCPanel (oErrors) {
     console.log("Correction grammaticale");
-    if (xGCPanel !== null) {
-        xGCPanel.style.display = "block";
+    if (oGCPanel !== null) {
+        oGCPanel.show();
     } else {
         // create the panel
-        xGCPanel = createPanelFrame("grammalecte_gc_panel", "Correcteur");
-        document.body.appendChild(xGCPanel);
-        document.getElementById("grammalecte_gc_panel_content").appendChild(document.createTextNode(JSON.stringify(oErrors)));
+        oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Correcteur", 500, 700);
+        oGCPanel.setContent(document.createTextNode(JSON.stringify(oErrors)));
+        oGCPanel.insertIntoPage();
     }
 }
 
