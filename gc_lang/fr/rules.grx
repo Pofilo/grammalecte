@@ -2649,6 +2649,7 @@ __[i]/pleo(pleo_comparer)__             (compar\w+) entre (?:eux|elles) @@0 <<- 
 __[i]/pleo(pleo_contraindre)__          (contrai\w+) malgré (?:soi|eux|lui|moi|elle|toi) @@0 <<- morph(\1, ">contraindre ", False) ->> \1       # Pléonasme.
 __[i]/pleo(pleo_descendre)__            (descend\w+) en bas(?! de) @@0 <<- ->> \1                                                               # Pléonasme.
 __[i]/pleo(pleo_dessiner)__             (dessin\w+) un dessin @@0 <<- ->> \1                                                                    # Pléonasme.
+__[i]/pleo(pleo_dorénavant)__           à (?:partir|compter) de dorénavant <<- ->> dorénavant|à partir de maintenant                            # Pléonasme.
 __[i]/pleo(pleo_donc_par_conséquent)__  donc par conséquent <<- ->> donc|par conséquent|c’est pourquoi                                          # Pléonasme.
 __[i]/pleo(pleo_enchevêtrer)__          (enchevêtr\w+) les uns dans les autres @@0 <<- morph(\1, ">enchevêtrer ", False) ->> \1                 # Pléonasme.
 __[i]/pleo(pleo_entraider)__            (entraid\w+) (?:mutuellement|les uns les autres) @@0 <<- morph(\1, ">entraider ", False) ->> \1         # Pléonasme.
@@ -2717,6 +2718,7 @@ TEST: {{bourrasques de vent}}                       ->> bourrasques
 TEST: {{contraint malgré lui}}                      ->> contraint
 TEST: {{contraindre malgré eux}}                    ->> contraindre
 TEST: {{applaudir des deux mains}}                  ->> applaudir
+TEST: Car {{à partir de dorénavant}}, ce sera…      ->> dorénavant|à partir de maintenant
 TEST: {{erreurs involontaires}}                     ->> erreurs
 TEST: {{hasards imprévus}}                          ->> hasards
 TEST: {{méandres sinueux}}                          ->> méandres
