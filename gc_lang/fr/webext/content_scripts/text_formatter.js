@@ -33,11 +33,14 @@ function createTextFormatter (xTextArea) {
         xTypo.appendChild(createOptionInputAndLabel("o_ts_apostrophe", true, "Apostrophe (’)"));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_ellipsis", true, "Points de suspension (…)"));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_dash_middle", true, "Tirets d’incise :"));
+        xTypo.appendChild(createRadioBoxHyphens("hyphen1", "o_ts_m_dash_middle", "o_ts_n_dash_middle", false));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_dash_start", true, "Tirets en début de paragraphe :"));
+        xTypo.appendChild(createRadioBoxHyphens("hyphen2", "o_ts_m_dash_start", "o_ts_n_dash_start", true));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_quotation_marks", true, "Modifier les guillemets droits (\" et ')"));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_units", true, "Points médians des unités (N·m, Ω·m…)"));
         xTypo.appendChild(createOptionInputAndLabel("o_ts_spell", true, "Ligatures (cœur…) et diacritiques (ça, État…)"));
-        xTypo.appendChild(createOptionInputAndLabel("o_ts_ligature", true, "Ligatures"));
+        xTypo.appendChild(createRadioBoxLigatures());
+        xTypo.appendChild(createLigaturesSelection());
         let xMisc = createFieldset("group_misc", true, "Divers");
         xMisc.appendChild(createOptionInputAndLabel("o_ordinals_no_exponant", true, "Ordinaux (15e, XXIe…)"));
         xMisc.appendChild(createOptionInputAndLabel("o_etc", true, "Et cætera, etc."));
@@ -73,224 +76,75 @@ function createTextFormatter (xTextArea) {
     return xTFNode;
 }
 
+
+/*
+    Common options
+*/
 function createFieldset (sId, bDefault, sLabel) {
     let xFieldset = createNode("fieldset", {id: sId, className: "groupblock"});
     let xLegend = document.createElement("legend");
-    let xInput = createCheckbox("o_"+sId, bDefault, "option");
-    let xLabel = createLabel(xInput.id, sLabel);
-    // create result
-    xLegend.appendChild(xInput);
-    xLegend.appendChild(xLabel);
+    xLegend.appendChild(createNode("input", {type: "checkbox", id: "o_"+sId, className: "option"}, {default: bDefault}));
+    xLegend.appendChild(createNode("label", {htmlFor: "o_"+sId, textContent: sLabel}));
     xFieldset.appendChild(xLegend);
     return xFieldset;
 }
 
 function createOptionInputAndLabel (sId, bDefault, sLabel) {
     let xOption = createNode("div", {className: "blockopt underline"});
-    let xInput = createCheckbox(sId, bDefault, "option");
-    let xLabel = createLabel(sId, sLabel, "opt_lbl largew");
-    let xResult = createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "9999"});
-    // create result
-    xOption.appendChild(xResult);
-    xOption.appendChild(xInput);
-    xOption.appendChild(xLabel);
+    xOption.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
+    xOption.appendChild(createNode("label", {htmlFor: sId, textContent: sLabel, className: "opt_lbl largew"}));
+    xOption.appendChild(createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "9999"}));
     return xOption;
 }
 
+
+/*
+    Hyphens
+*/
+function createRadioBoxHyphens (sName, sIdEmDash, sIdEnDash, bDefaultEmDash) {
+    let xLine = createNode("div", {className: "blockopt"});
+    xLine.appendChild(createNode("input", {type: "radio", id: sIdEmDash, name: sName, className:"option"}, {default: bDefaultEmDash}));
+    xLine.appendChild(createNode("label", {htmlFor: sIdEmDash, className: "opt_lbl", textContent: "cadratin (—)"}));
+    xLine.appendChild(createNode("input", {type: "radio", id: sIdEnDash, name: sName, className:"option"}, {default: !bDefaultEmDash}));
+    xLine.appendChild(createNode("label", {htmlFor: sIdEnDash, className: "opt_lbl", textContent: "demi-cadratin (–)"}));
+    return xLine;
+}
+
+
+/*
+    Ligatures
+*/
+function createRadioBoxLigatures () {
+    let xLine = createNode("div", {className: "blockopt underline"});
+    xLine.appendChild(createOptionInputAndLabel("o_ts_ligature", true, "Ligatures"));
+    xLine.appendChild(createNode("input", {type: "radio", id: "o_ts_ligature_do", name: "liga", className:"option"}, {default: false}));
+    xLine.appendChild(createNode("label", {htmlFor: "o_ts_ligature_do", className: "opt_lbl", textContent: "faire"}));
+    xLine.appendChild(createNode("input", {type: "radio", id: "o_ts_ligature_undo", name: "liga", className:"option"}, {default: true}));
+    xLine.appendChild(createNode("label", {htmlFor: "o_ts_ligature_undo", className: "opt_lbl", textContent: "défaire"}));
+    return xLine;
+}
+
+function createLigaturesSelection () {
+    let xLine = createNode("div", {className: "blockopt"});
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_ff", "ff", true));
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_fi", "fi", true));
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_ffi", "ffi", true));
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_fl", "fl", true));
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_ffl", "ffl", true));
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_ft", "ft", true));
+    xLine.appendChild(createLigatureCheckboxAndLabel("o_ts_ligature_st", "st", false));
+    return xLine;
+}
+
+function createLigatureCheckboxAndLabel (sId, sLabel, bDefault) {
+    let xInlineBlock = createNode("div", {style: "display: inline-block;"});
+    xInlineBlock.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
+    xInlineBlock.appendChild(createNode("label", {htmlFor: sId, className: "opt_lbl", textContent: sLabel}));
+    return xInlineBlock;
+}
+
 let sTFinnerHTML = ' \
-<h1>FORMATEUR DE TEXTE</h1> \
-<div id="tf_options"> \
- \
-<!-- Supernumerary spaces --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_ssp" class="option" data-default="true" /><label for="o_group_ssp" data-l10n-en="tf_ssp">${tf_ssp}</label></legend> \
-  <div id="group_ssp" class="groupblock"> \
-    <div class="blockopt underline"> \
-      <div id="res_o_start_of_paragraph" class="result fright"></div> \
-      <input type="checkbox" id="o_start_of_paragraph" class="option" data-default="true" /> \
-      <label for="o_start_of_paragraph" class="opt_lbl largew" data-l10n-en="tf_start_of_paragraph">${tf_start_of_paragraph}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_end_of_paragraph" class="result fright"></div> \
-      <input type="checkbox" id="o_end_of_paragraph" class="option" data-default="true" /> \
-      <label for="o_end_of_paragraph" class="opt_lbl largew" data-l10n-en="tf_end_of_paragraph">${tf_end_of_paragraph}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_between_words" class="result fright"></div> \
-      <input type="checkbox" id="o_between_words" class="option" data-default="true" /> \
-      <label for="o_between_words" class="opt_lbl largew" data-l10n-en="tf_between_words">${tf_between_words}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_before_punctuation" class="result fright"></div> \
-      <input type="checkbox" id="o_before_punctuation" class="option" data-default="true" /> \
-      <label for="o_before_punctuation" class="opt_lbl largew" data-l10n-en="tf_before_punctuation">${tf_before_punctuation}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_within_parenthesis" class="result fright"></div> \
-      <input type="checkbox" id="o_within_parenthesis" class="option" data-default="true" /> \
-      <label for="o_within_parenthesis" class="opt_lbl largew" data-l10n-en="tf_within_parenthesis">${tf_within_parenthesis}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_within_square_brackets" class="result fright"></div> \
-      <input type="checkbox" id="o_within_square_brackets" class="option" data-default="true" /> \
-      <label for="o_within_square_brackets" class="opt_lbl largew" data-l10n-en="tf_within_square_brackets">${tf_within_square_brackets}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_within_quotation_marks" class="result fright"></div> \
-      <input type="checkbox" id="o_within_quotation_marks" class="option" data-default="true" /> \
-      <label for="o_within_quotation_marks" class="opt_lbl largew" data-l10n-en="tf_within_quotation_marks">${tf_within_quotation_marks}</label> \
-    </div> \
-  </div> \
-</fieldset> \
- \
-<!-- Missing spaces --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_space" class="option" data-default="true" /><label for="o_group_space" data-l10n-en="tf_space">${tf_space}</label></legend> \
-  <div id="group_space" class="groupblock"> \
-    <div class="blockopt underline"> \
-      <div id="res_o_add_space_after_punctuation" class="result fright"></div> \
-      <input type="checkbox" id="o_add_space_after_punctuation" class="option" data-default="true" /> \
-      <label for="o_add_space_after_punctuation" class="opt_lbl reducedw" data-l10n-en="tf_add_space_after_punctuation">${tf_add_space_after_punctuation}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_add_space_around_hyphens" class="result fright"></div> \
-      <input type="checkbox" id="o_add_space_around_hyphens" class="option" data-default="true" /> \
-      <label for="o_add_space_around_hyphens" class="opt_lbl largew" data-l10n-en="tf_add_space_around_hyphens">${tf_add_space_around_hyphens}</label> \
-    </div> \
-  </div> \
-</fieldset> \
- \
-<!-- Non breaking spaces --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_nbsp" class="option" data-default="true" /><label for="o_group_nbsp" data-l10n-en="tf_nbsp">${tf_nbsp}</label></legend> \
-  <div id="group_nbsp" class="groupblock"> \
-    <div class="blockopt underline"> \
-      <div id="res_o_nbsp_before_punctuation" class="result fright"></div> \
-      <input type="checkbox" id="o_nbsp_before_punctuation" class="option" data-default="true" /> \
-      <label for="o_nbsp_before_punctuation" class="opt_lbl reducedw" data-l10n-en="tf_nbsp_before_punctuation">${tf_nbsp_before_punctuation}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_nbsp_within_quotation_marks" class="result fright"></div> \
-      <input type="checkbox" id="o_nbsp_within_quotation_marks" class="option" data-default="true" /> \
-      <label for="o_nbsp_within_quotation_marks" class="opt_lbl reducedw" data-l10n-en="tf_nbsp_within_quotation_marks">${tf_nbsp_within_quotation_marks}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_nbsp_before_symbol" class="result fright"></div> \
-      <input type="checkbox" id="o_nbsp_before_symbol" class="option" data-default="true" /> \
-      <label for="o_nbsp_before_symbol" class="opt_lbl largew" data-l10n-en="tf_nbsp_before_symbol">${tf_nbsp_before_symbol}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_nbsp_within_numbers" class="result fright"></div> \
-      <input type="checkbox" id="o_nbsp_within_numbers" class="option" data-default="true" /> \
-      <label for="o_nbsp_within_numbers" class="opt_lbl reducedw" data-l10n-en="tf_nbsp_within_numbers">${tf_nbsp_within_numbers}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_nbsp_before_units" class="result fright"></div> \
-      <input type="checkbox" id="o_nbsp_before_units" class="option" data-default="true" /> \
-      <label for="o_nbsp_before_units" class="opt_lbl largew" data-l10n-en="tf_nbsp_before_units">${tf_nbsp_before_units}</label> \
-    </div> \
-  </div> \
-</fieldset> \
- \
-<!-- Deletions --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_delete" class="option" data-default="true" /><label for="o_group_delete" data-l10n-en="tf_delete">${tf_delete}</label></legend> \
-  <div id="group_delete" class="groupblock"> \
-    <div class="blockopt underline"> \
-      <div id="res_o_erase_non_breaking_hyphens" class="result fright"></div> \
-      <input type="checkbox" id="o_erase_non_breaking_hyphens" class="option" data-default="true" /> \
-      <label for="o_erase_non_breaking_hyphens" class="opt_lbl largew" data-l10n-en="tf_erase_non_breaking_hyphens">${tf_erase_non_breaking_hyphens}</label> \
-    </div> \
-  </div> \
-</fieldset> \
- \
-<!-- Typographical signs --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_typo" class="option" data-default="true" /><label for="o_group_typo" data-l10n-en="tf_typo">${tf_typo}</label></legend> \
-  <div id="group_typo" class="groupblock"> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_apostrophe" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_apostrophe" class="option" data-default="true" /> \
-      <label for="o_ts_apostrophe" class="opt_lbl largew" data-l10n-en="tf_ts_apostrophe">${tf_ts_apostrophe}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_ellipsis" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_ellipsis" class="option" data-default="true" /> \
-      <label for="o_ts_ellipsis" class="opt_lbl largew" data-l10n-en="tf_ts_ellipsis">${tf_ts_ellipsis}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_dash_middle" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_dash_middle" class="option" data-default="true" /> \
-      <label for="o_ts_dash_middle" class="opt_lbl largew" data-l10n-en="tf_ts_dash_middle">${tf_ts_dash_middle}</label> \
-    </div> \
-    <div class="blockopt"> \
-      <div class="inlineblock indent"> \
-        <input type="radio" name="hyphen1" id="o_ts_m_dash_middle" class="option" data-default="false" /><label for="o_ts_m_dash_middle" class="opt_lbl" data-l10n-en="tf_emdash">${tf_emdash}</label> \
-      </div> \
-      <div class="inlineblock indent"> \
-        <input type="radio" name="hyphen1" id="o_ts_n_dash_middle" class="option" data-default="true" /><label for="o_ts_n_dash_middle" class="opt_lbl" data-l10n-en="tf_endash">${tf_endash}</label> \
-      </div> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_dash_start" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_dash_start" class="option" data-default="true" /> \
-      <label for="o_ts_dash_start" class="opt_lbl largew" data-l10n-en="tf_ts_dash_start">${tf_ts_dash_start}</label> \
-    </div> \
-    <div class="blockopt"> \
-      <div class="inlineblock indent"> \
-        <input type="radio" name="hyphen2" id="o_ts_m_dash_start" class="option"  data-default="true" /><label for="o_ts_m_dash_start" class="opt_lbl" data-l10n-en="tf_emdash">${tf_emdash}</label> \
-      </div> \
-      <div class="inlineblock indent"> \
-        <input type="radio" name="hyphen2" id="o_ts_n_dash_start" class="option" data-default="false" /><label for="o_ts_n_dash_start" class="opt_lbl" data-l10n-en="tf_endash">${tf_endash}</label> \
-      </div> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_quotation_marks" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_quotation_marks" class="option" data-default="true" /> \
-      <label for="o_ts_quotation_marks" class="opt_lbl largew" data-l10n-en="tf_ts_quotation_marks">${tf_ts_quotation_marks}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_units" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_units" class="option" data-default="true" /> \
-      <label for="o_ts_units" class="opt_lbl largew" data-l10n-en="tf_ts_units">${tf_ts_units}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_spell" class="result fright"></div> \
-      <input type="checkbox" id="o_ts_spell" class="option" data-default="true" /> \
-      <label for="o_ts_spell" class="opt_lbl largew" data-l10n-en="tf_ts_spell">${tf_ts_spell}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ts_ligature" class="result fright"></div> \
-      <div class="inlineblock"> \
-        <input type="checkbox" id="o_ts_ligature" class="option" data-default="false" /> \
-        <label for="o_ts_ligature" class="opt_lbl" data-l10n-en="tf_ts_ligature">${tf_ts_ligature}</label> \
-      </div> \
-      <div class="inlineblock indent"> \
-        <input type="radio" id="o_ts_ligature_do" name="liga" class="option" data-default="false" /> \
-        <label for="o_ts_ligature_do" class="opt_lbl" data-l10n-en="tf_ts_ligature_do">${tf_ts_ligature_do}</label> \
-      </div> \
-      <div class="inlineblock indent"> \
-        <input type="radio" id="o_ts_ligature_undo" name="liga" class="option" data-default="true" /> \
-        <label for="o_ts_ligature_undo" class="opt_lbl" data-l10n-en="tf_ts_ligature_undo">${tf_ts_ligature_undo}</label> \
-      </div> \
-    </div> \
- \
-    <div class="blockopt"> \
-      <div class="inlineblock indent"><input type="checkbox" id="o_ts_ligature_ff" class="option" data-default="true" /><label for="o_ts_ligature_ff" class="opt_lbl">ff</label></div> \
-      &nbsp; <div class="inlineblock"><input type="checkbox" id="o_ts_ligature_fi" class="option" data-default="true" /><label for="o_ts_ligature_fi" class="opt_lbl">fi</label></div> \
-      &nbsp; <div class="inlineblock"><input type="checkbox" id="o_ts_ligature_ffi" class="option" data-default="true" /><label for="o_ts_ligature_ffi" class="opt_lbl">ffi</label></div> \
-      &nbsp; <div class="inlineblock"><input type="checkbox" id="o_ts_ligature_fl" class="option" data-default="true" /><label for="o_ts_ligature_fl" class="opt_lbl">fl</label></div> \
-      &nbsp; <div class="inlineblock"><input type="checkbox" id="o_ts_ligature_ffl" class="option" data-default="true" /><label for="o_ts_ligature_ffl" class="opt_lbl">ffl</label></div> \
-      &nbsp; <div class="inlineblock"><input type="checkbox" id="o_ts_ligature_ft" class="option" data-default="true" /><label for="o_ts_ligature_ft" class="opt_lbl">ft</label></div> \
-      &nbsp; <div class="inlineblock"><input type="checkbox" id="o_ts_ligature_st" class="option" data-default="false" /><label for="o_ts_ligature_st" class="opt_lbl">st</label></div> \
-    </div> \
-  </div> \
-</fieldset> \
- \
 <!-- Misc --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_misc" class="option" data-default="true" /><label for="o_group_misc" data-l10n-en="tf_misc">${tf_misc}</label></legend> \
-  <div id="group_misc" class="groupblock"> \
     <div class="blockopt underline"> \
       <div id="res_o_ordinals_no_exponant" class="result fright"></div> \
       <input type="checkbox" id="o_ordinals_no_exponant" class="option" data-default="true" /> \
@@ -299,21 +153,6 @@ let sTFinnerHTML = ' \
         <input type="checkbox" id="o_ordinals_exponant" class="option" data-default="true" /> \
         <label for="o_ordinals_exponant" class="opt_lbl smallw" data-l10n-en="tf_ordinals_exponant">${tf_ordinals_exponant}</label> \
       </div> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_etc" class="result fright"></div> \
-      <input type="checkbox" id="o_etc" class="option" data-default="true" /> \
-      <label for="o_etc" class="opt_lbl largew" data-l10n-en="tf_etc">${tf_etc}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_missing_hyphens" class="result fright"></div> \
-      <input type="checkbox" id="o_missing_hyphens" class="option" data-default="true" /> \
-      <label for="o_missing_hyphens" class="opt_lbl largew" data-l10n-en="tf_missing_hyphens">${tf_missing_hyphens}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_ma_word" class="result fright"></div> \
-      <input type="checkbox" id="o_ma_word" class="option" data-default="true" /> \
-      <label for="o_ma_word" class="opt_lbl largew" data-l10n-en="tf_ma_word">${tf_ma_word}</label> \
     </div> \
     <div class="blockopt"> \
       <div class="inlineblock indent"> \
@@ -325,32 +164,4 @@ let sTFinnerHTML = ' \
         <label for="o_ma_1letter_uppercase" class="opt_lbl" data-l10n-en="tf_ma_1letter_uppercase">${tf_ma_1letter_uppercase}</label> \
       </div> \
     </div> \
-  </div> \
-</fieldset> \
- \
-<!-- Restructuration --> \
-<fieldset> \
-  <legend><input type="checkbox" id="o_group_struct" class="option" data-default="false" /><label for="o_group_struct" data-l10n-en="tf_struct">${tf_struct}</label></legend> \
-  <div id="group_struct" class="groupblock"> \
-    <div class="blockopt underline"> \
-      <div id="res_o_remove_hyphens_at_end_of_paragraphs" class="result fright"></div> \
-      <input type="checkbox" id="o_remove_hyphens_at_end_of_paragraphs" class="option" data-default="false" /> \
-      <label for="o_remove_hyphens_at_end_of_paragraphs" class="opt_lbl largew"  data-l10n-en="tf_remove_hyphens_at_end_of_paragraphs">${tf_remove_hyphens_at_end_of_paragraphs}</label> \
-    </div> \
-    <div class="blockopt underline"> \
-      <div id="res_o_merge_contiguous_paragraphs" class="result fright"></div> \
-      <input type="checkbox" id="o_merge_contiguous_paragraphs" class="option" data-default="false" /> \
-      <label for="o_merge_contiguous_paragraphs" class="opt_lbl largew" data-l10n-en="tf_merge_contiguous_paragraphs">${tf_merge_contiguous_paragraphs}</label> \
-    </div> \
-  </div> \
-</fieldset> \
-</div> \
- \
-<div id="tf_actions"> \
-  <div id="tf_reset" class="button blue" data-l10n-en="Default">Par défaut</div> \
-  <div id="tf_apply" class="button green fright" data-l10n-en="Apply">Appliquer</div> \
-  <div id="tf_progressbarbox"><progress id="progressbar" style="width: 400px;"></progress> <span id="time_res"></span></div> \
-  <!--<div class="clearer"></div> \
-  <div id="infomsg" data-l10n-id="tf_infomsg"></div>--> \
-</div> \
 ';

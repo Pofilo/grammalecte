@@ -117,31 +117,18 @@ class GrammalectePanel {
 /*
     Common functions
 */
-function createNode (sType, oAttr) {
+function createNode (sType, oAttr, oDataset=null) {
     try {
         let xNode = document.createElement(sType);
         Object.assign(xNode, oAttr);
+        if (oDataset) {
+            Object.assign(xNode.dataset, oDataset);
+        }
         return xNode;
     }
     catch (e) {
         showError(e);
     }
-}
-
-function createCheckbox (sId, bDefault, sClass="")  {
-    let xInput = document.createElement("input");
-    xInput.type = "checkbox";
-    xInput.id = sId;
-    xInput.className = sClass;
-    xInput.dataset.default = bDefault;
-    return xInput;
-}
-
-function createLabel (sForId, sLabel, sClass="") {
-    let xLabel = document.createElement("label");
-    xLabel.setAttribute("for", sForId);
-    xLabel.textContent = sLabel;
-    return xLabel;
 }
 
 function createLogo () {
