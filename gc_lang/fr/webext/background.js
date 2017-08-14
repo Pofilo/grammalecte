@@ -52,16 +52,21 @@ xGCEWorker.onmessage = function (e) {
             case "setOptions":
             case "setOption":
                 console.log("OPTIONS");
-                console.log(e.data[1]);
+                
                 break;
             case "getListOfTokens":
                 console.log("TOKENS");
-                console.log(e.data[1]);
-                let xLxgTab = browser.tabs.create({
+                if (typeof(dInfo.iReturnPort) === "number") {
+                    let xPort = aConnx[dInfo.iReturnPort];
+                    xPort.postMessage(e.data);
+                } else {
+                    console.log("[background] don’t know where to send results");
+                    console.log(e.data);
+                }
+                /*let xLxgTab = browser.tabs.create({
                     url: browser.extension.getURL("panel/lexicographer.html"),
                 });
-                xLxgTab.then(onCreated, onError);
-                break;
+                xLxgTab.then(onCreated, onError);*/
                 break;
             default:
                 console.log("Unknown command: " + sActionDone);

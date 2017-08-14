@@ -63,7 +63,7 @@ class GrammalectePanel {
         return xButton;
     }
 
-    setContent (xNode) {
+    setContentNode (xNode) {
         this.xContentNode.appendChild(xNode);
     }
 

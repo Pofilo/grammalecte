@@ -51,40 +51,29 @@ function createWrapper (xTextArea) {
 
 function createWrapperToolbar (xTextArea) {
     try {
-        let xToolbar = document.createElement("div");
-        xToolbar.style = "display: flex; justify-content: flex-end; margin-top: 5px; padding: 5px 10px;";
-        /*let xLogo = document.createElement("img");
-        xLogo.src = browser.extension.getURL("img/logo-16.png"); // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-        xTitle.appendChild(xLogo);*/
-
-        xToolbar.appendChild(document.createTextNode("Grammalecte"));
-        let xConjButton = document.createElement("div");
-        xConjButton.textContent = "Conjuguer";
-        xConjButton.className = "grammalecte_wrapper_button";
-        xConjButton.onclick = function() {
-            createConjPanel();
-        };
-        xToolbar.appendChild(xConjButton);
-        let xTFButton = document.createElement("div");
-        xTFButton.textContent = "Formater";
-        xTFButton.className = "grammalecte_wrapper_button";
-        xTFButton.onclick = function() {
-            createTFPanel(xTextArea);
-        };
-        xToolbar.appendChild(xTFButton);
-        let xLxgButton = document.createElement("div");
-        xLxgButton.textContent = "Analyser";
-        xLxgButton.className = "grammalecte_wrapper_button";
+        let xToolbar = createNode("div", {className: "grammalecte_wrapper_toolbar"});
+        let xConjButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Conjuguer"});
+        xConjButton.onclick = function() { createConjPanel(); };
+        let xTFButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Formater"});
+        xTFButton.onclick = function() { createTFPanel(xTextArea); };
+        let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
         xLxgButton.onclick = function() {
             createLxgPanel(xTextArea);
+            xPort.postMessage({sCommand: "getListOfTokens", dParam: {sText: xTextArea.value}, dInfo: {sTextAreaId: xTextArea.id}});
         };
-        xToolbar.appendChild(xLxgButton);
-        let xGCButton = document.createElement("div");
-        xGCButton.textContent = "Corriger";
-        xGCButton.className = "grammalecte_wrapper_button";
+        let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
         xGCButton.onclick = function() {
+            createGCPanel();
             xPort.postMessage({sCommand: "parseAndSpellcheck", dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {sTextAreaId: xTextArea.id}});
         };
+        // Create
+        //xToolbar.appendChild(createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
+        // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
+        xToolbar.appendChild(createLogo());
+        xToolbar.appendChild(document.createTextNode("Grammalecte"));
+        xToolbar.appendChild(xConjButton);
+        xToolbar.appendChild(xTFButton);
+        xToolbar.appendChild(xLxgButton);
         xToolbar.appendChild(xGCButton);
         return xToolbar;
     }
@@ -112,7 +101,7 @@ function createTFPanel (xTextArea) {
         // create the panel
         oTFPanel = new GrammalectePanel("grammalecte_tf_panel", "Formateur de texte", 800, 600, false);
         oTFPanel.logInnerHTML();
-        oTFPanel.setContent(createTextFormatter(xTextArea));
+        oTFPanel.setContentNode(createTextFormatter(xTextArea));
         oTFPanel.insertIntoPage();
     }
 }
@@ -120,24 +109,30 @@ function createTFPanel (xTextArea) {
 function createLxgPanel (xTextArea) {
     console.log("Lexicographe");
     if (oLxgPanel !== null) {
+        oLxgPanelContent.clear();
         oLxgPanel.show();
     } else {
         // create the panel
         oLxgPanel = new GrammalectePanel("grammalecte_lxg_panel", "Lexicographe", 500, 700);
+        oLxgPanel.setContentNode(oLxgPanelContent.getNode());
         oLxgPanel.insertIntoPage();
     }
 }
 
-function createGCPanel (oErrors) {
+function createGCPanel () {
     console.log("Correction grammaticale");
     if (oGCPanel !== null) {
+        oGCPanelContent.clear();
         oGCPanel.show();
     } else {
         // create the panel
         oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Correcteur", 500, 700);
-        oGCPanel.setContent(document.createTextNode(JSON.stringify(oErrors)));
         oGCPanel.insertIntoPage();
     }
+}
+
+function updateGCPanel (oErrors) {
+    oGCPanel.setContentNode(document.createTextNode(JSON.stringify(oErrors)));
 }
 
 
@@ -169,10 +164,11 @@ xPort.onMessage.addListener(function (oMessage) {
             break;
         case "parseAndSpellcheck":
             console.log(result);
-            createGCPanel(result);
+            updateGCPanel(result);
             break;
         case "getListOfTokens":
             console.log(result);
+            oLxgPanelContent.addListOfTokens(result);
             break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);
