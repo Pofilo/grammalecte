@@ -326,26 +326,31 @@ def createAction (sIdAction, sAction, nGroup):
     if cAction == "-":
         ## error
         iMsg = sAction.find(" # ")
-        sMsg = sAction[iMsg+3:].strip()
-        sAction = sAction[:iMsg].strip()
-        sURL = ""
-        mURL = re.search("[|] *(https?://.*)", sMsg)
-        if mURL:
-            sURL = mURL.group(1).strip()
-            sMsg = sMsg[:mURL.start(0)].strip()
-        if sMsg[0:1] == "=":
-            sMsg = prepareFunction(sMsg[1:])
-            lFUNCTIONS.append(("m_"+sIdAction, sMsg))
-            for x in re.finditer("group[(](\d+)[)]", sMsg):
-                if int(x.group(1)) > nGroup:
-                    print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-            sMsg = "=m_"+sIdAction
+        if iMsg == -1:
+            sMsg = "# Error. Error message not found."
+            sURL = ""
+            print(sMsg + " Action id: " + sIdAction)
         else:
-            for x in re.finditer(r"\\(\d+)", sMsg):
-                if int(x.group(1)) > nGroup:
-                    print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-            if re.search("[.]\\w+[(]", sMsg):
-                print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
+            sMsg = sAction[iMsg+3:].strip()
+            sAction = sAction[:iMsg].strip()
+            sURL = ""
+            mURL = re.search("[|] *(https?://.*)", sMsg)
+            if mURL:
+                sURL = mURL.group(1).strip()
+                sMsg = sMsg[:mURL.start(0)].strip()
+            if sMsg[0:1] == "=":
+                sMsg = prepareFunction(sMsg[1:])
+                lFUNCTIONS.append(("m_"+sIdAction, sMsg))
+                for x in re.finditer("group[(](\d+)[)]", sMsg):
+                    if int(x.group(1)) > nGroup:
+                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                sMsg = "=m_"+sIdAction
+            else:
+                for x in re.finditer(r"\\(\d+)", sMsg):
+                    if int(x.group(1)) > nGroup:
+                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                if re.search("[.]\\w+[(]", sMsg):
+                    print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
             
     if sAction[0:1] == "=" or cAction == "=":
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
