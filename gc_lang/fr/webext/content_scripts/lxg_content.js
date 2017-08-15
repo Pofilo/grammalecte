@@ -6,11 +6,14 @@ const oLxgPanelContent = {
 
     _xContentNode: createNode("div", {id: "grammalecte_lxg_panel_content"}),
 
+    _nCount: 0,
+
     getNode: function () {
         return this._xContentNode;
     },
 
     clear: function () {
+        this._nCount = 0;
         while (this._xContentNode.firstChild) {
             this._xContentNode.removeChild(this._xContentNode.firstChild);
         }
@@ -29,7 +32,9 @@ const oLxgPanelContent = {
     addListOfTokens: function (lTokens) {
         try {
             if (lTokens) {
+                this._nCount += 1;
                 let xNodeDiv = createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
+                xNodeDiv.appendChild(createNode("div", {className: "num", textContent: this._nCount}));
                 for (let oToken of lTokens) {
                     xNodeDiv.appendChild(this._createTokenNode(oToken));
                 }

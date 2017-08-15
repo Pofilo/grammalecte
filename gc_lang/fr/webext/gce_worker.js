@@ -251,15 +251,17 @@ function fullTests (sGCOptions="", dInfo={}) {
 function getListOfTokens (sText, dInfo={}) {
     try {
         for (let sParagraph of text.getParagraph(sText)) {
-            let aElem = [];
-            let aRes = null;
-            for (let oToken of oTokenizer.genTokens(sParagraph)) {
-                aRes = oLxg.getInfoForToken(oToken);
-                if (aRes) {
-                    aElem.push(aRes);
+            if (sParagraph.trim() !== "") {
+                let aElem = [];
+                let aRes = null;
+                for (let oToken of oTokenizer.genTokens(sParagraph)) {
+                    aRes = oLxg.getInfoForToken(oToken);
+                    if (aRes) {
+                        aElem.push(aRes);
+                    }
                 }
+                postMessage(createResponse("getListOfTokens", aElem, dInfo, false));
             }
-            postMessage(createResponse("getListOfTokens", aElem, dInfo, false));
         }
         postMessage(createResponse("getListOfTokens", null, dInfo, true));
     }
