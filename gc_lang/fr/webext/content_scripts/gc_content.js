@@ -179,10 +179,14 @@ const oGCPanelContent = {
                 let iSugg = 0;
                 let xGCSugg = document.getElementById("gc_sugg_block");
                 xGCSugg.textContent = "";
-                for (let sSugg of xNodeErr.dataset.suggestions.split("|")) {
-                    xGCSugg.appendChild(this._createSuggestion(xNodeErr.dataset.error_id, iSugg, sSugg));
-                    xGCSugg.appendChild(document.createTextNode(" "));
-                    iSugg += 1;
+                if (xNodeErr.dataset.suggestions.length > 0) {
+                    for (let sSugg of xNodeErr.dataset.suggestions.split("|")) {
+                        xGCSugg.appendChild(this._createSuggestion(xNodeErr.dataset.error_id, iSugg, sSugg));
+                        xGCSugg.appendChild(document.createTextNode(" "));
+                        iSugg += 1;
+                    }
+                } else {
+                    xGCSugg.textContent = "Aucune.";
                 }
             }
             xNodeTooltipArrow.style.display = "block";
