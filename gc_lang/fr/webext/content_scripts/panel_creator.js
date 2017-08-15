@@ -80,7 +80,8 @@ class GrammalectePanel {
     }
 
     center () {
-        this.xPanelNode.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${this.nHeight}px; margin-top: -${this.nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
+        let nHeight = window.innerHeight-100;
+        this.xPanelNode.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
     }
 
     stickToLeft () {
