@@ -29,8 +29,12 @@ const oLxgPanelContent = {
     addListOfTokens: function (lTokens) {
         try {
             let xNodeDiv = createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
-            for (let oToken of lTokens) {
-                xNodeDiv.appendChild(this._createTokenNode(oToken));
+            if (lTokens.length > 0) {
+                for (let oToken of lTokens) {
+                    xNodeDiv.appendChild(this._createTokenNode(oToken));
+                }
+            } else {
+                xNodeDiv.appendChild(document.createTextNode("Aucun token connu détecté.")); 
             }
             this._xContentNode.appendChild(xNodeDiv);
         }

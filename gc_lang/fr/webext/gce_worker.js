@@ -54,11 +54,12 @@ importScripts("grammalecte/tests.js");
 */
 
 
-function createResponse (sActionDone, result, dInfo, bError=false) {
+function createResponse (sActionDone, result, dInfo, bEnd, bError=false) {
     return {
         "sActionDone": sActionDone,
         "result": result, // can be of any type
         "dInfo": dInfo,
+        "bEnd": bEnd,
         "bError": bError
     };
 }
@@ -158,11 +159,11 @@ function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
             console.log("[Worker] Already initialized…")
         }
         // we always retrieve options from the gc_engine, for setOptions filters obsolete options
-        postMessage(createResponse("init", gc_engine.getOptions().gl_toString(), dInfo));
+        postMessage(createResponse("init", gc_engine.getOptions().gl_toString(), dInfo, true));
     }
     catch (e) {
         helpers.logerror(e);
-        postMessage(createResponse("init", createErrorResult(e, "init failed"), dInfo, true));
+        postMessage(createResponse("init", createErrorResult(e, "init failed"), dInfo, true, true));
     }
 }
 
@@ -175,30 +176,30 @@ function parse (sText, sCountry, bDebug, bContext, dInfo={}) {
 function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
     let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
-    postMessage(createResponse("parseAndSpellcheck", {aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo));
+    postMessage(createResponse("parseAndSpellcheck", {aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
 }
 
 function getOptions (dInfo={}) {
-    postMessage(createResponse("getOptions", gc_engine.getOptions().gl_toString(), dInfo));
+    postMessage(createResponse("getOptions", gc_engine.getOptions().gl_toString(), dInfo, true));
 }
 
 function getDefaultOptions (dInfo={}) {
-    postMessage(createResponse("getDefaultOptions", gc_engine.getDefaultOptions().gl_toString(), dInfo));
+    postMessage(createResponse("getDefaultOptions", gc_engine.getDefaultOptions().gl_toString(), dInfo, true));
 }
 
 function setOptions (sGCOptions, dInfo={}) {
     gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    postMessage(createResponse("setOptions", gc_engine.getOptions().gl_toString(), dInfo));
+    postMessage(createResponse("setOptions", gc_engine.getOptions().gl_toString(), dInfo, true));
 }
 
 function setOption (sOptName, bValue, dInfo={}) {
     gc_engine.setOptions(new Map([ [sOptName, bValue] ]));
-    postMessage(createResponse("setOption", gc_engine.getOptions().gl_toString(), dInfo));
+    postMessage(createResponse("setOption", gc_engine.getOptions().gl_toString(), dInfo, true));
 }
 
 function resetOptions (dInfo={}) {
     gc_engine.resetOptions();
-    postMessage(createResponse("resetOptions", gc_engine.getOptions().gl_toString(), dInfo));
+    postMessage(createResponse("resetOptions", gc_engine.getOptions().gl_toString(), dInfo, true));
 }
 
 function tests () {
@@ -214,7 +215,7 @@ function tests () {
 
 function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
     if (!gc_engine || !oDict) {
-        postMessage(createResponse("textToTest", "# Grammar checker or dictionary not loaded.", dInfo));
+        postMessage(createResponse("textToTest", "# Grammar checker or dictionary not loaded.", dInfo, true));
         return;
     }
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
@@ -222,12 +223,12 @@ function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
     for (let oErr of aGrammErr) {
         sMsg += text.getReadableError(oErr) + "\n";
     }
-    postMessage(createResponse("textToTest", sMsg, dInfo));
+    postMessage(createResponse("textToTest", sMsg, dInfo, true));
 }
 
 function fullTests (sGCOptions="", dInfo={}) {
     if (!gc_engine || !oDict) {
-        postMessage(createResponse("fullTests", "# Grammar checker or dictionary not loaded.", dInfo));
+        postMessage(createResponse("fullTests", "# Grammar checker or dictionary not loaded.", dInfo, true));
         return;
     }
     let dMemoOptions = gc_engine.getOptions();
@@ -240,7 +241,7 @@ function fullTests (sGCOptions="", dInfo={}) {
         console.log(sRes);
     }
     gc_engine.setOptions(dMemoOptions);
-    postMessage(createResponse("fullTests", sMsg, dInfo));
+    postMessage(createResponse("fullTests", sMsg, dInfo, true));
 }
 
 
@@ -249,18 +250,21 @@ function fullTests (sGCOptions="", dInfo={}) {
 
 function getListOfTokens (sText, dInfo={}) {
     try {
-        let aElem = [];
-        let aRes = null;
-        for (let oToken of oTokenizer.genTokens(sText)) {
-            aRes = oLxg.getInfoForToken(oToken);
-            if (aRes) {
-                aElem.push(aRes);
+        for (let sParagraph of text.getParagraph(sText)) {
+            let aElem = [];
+            let aRes = null;
+            for (let oToken of oTokenizer.genTokens(sParagraph)) {
+                aRes = oLxg.getInfoForToken(oToken);
+                if (aRes) {
+                    aElem.push(aRes);
+                }
             }
+            postMessage(createResponse("getListOfTokens", aElem, dInfo, false));
         }
-        postMessage(createResponse("getListOfTokens", aElem, dInfo));
+        postMessage(createResponse("getListOfTokens", null, dInfo, true));
     }
     catch (e) {
         helpers.logerror(e);
-        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true));
+        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true, true));
     }
 }

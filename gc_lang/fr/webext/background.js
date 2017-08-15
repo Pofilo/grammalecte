@@ -14,23 +14,15 @@ let xGCEWorker = new Worker("gce_worker.js");
 xGCEWorker.onmessage = function (e) {
     // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
     try {
-        let {sActionDone, result, dInfo, bError} = e.data;
+        let {sActionDone, result, dInfo} = e.data;
         switch (sActionDone) {
             case "init":
                 console.log("INIT DONE");
                 break;
             case "parse":
-                console.log("GRAMMAR ERRORS");
-                if (typeof(dInfo.iReturnPort) === "number") {
-                    let xPort = aConnx[dInfo.iReturnPort];
-                    xPort.postMessage(e.data);
-                } else {
-                    console.log("[background] don’t know where to send results");
-                    console.log(e.data);
-                }
-                break;
             case "parseAndSpellcheck":
-                console.log("SPELLING AND GRAMMAR ERRORS");
+            case "getListOfTokens":
+                console.log("Action done: " + sActionDone);
                 if (typeof(dInfo.iReturnPort) === "number") {
                     let xPort = aConnx[dInfo.iReturnPort];
                     xPort.postMessage(e.data);
@@ -52,21 +44,6 @@ xGCEWorker.onmessage = function (e) {
             case "setOptions":
             case "setOption":
                 console.log("OPTIONS");
-                
-                break;
-            case "getListOfTokens":
-                console.log("TOKENS");
-                if (typeof(dInfo.iReturnPort) === "number") {
-                    let xPort = aConnx[dInfo.iReturnPort];
-                    xPort.postMessage(e.data);
-                } else {
-                    console.log("[background] don’t know where to send results");
-                    console.log(e.data);
-                }
-                /*let xLxgTab = browser.tabs.create({
-                    url: browser.extension.getURL("panel/lexicographer.html"),
-                });
-                xLxgTab.then(onCreated, onError);*/
                 break;
             default:
                 console.log("Unknown command: " + sActionDone);
@@ -130,7 +107,7 @@ function handleConnexion (p) {
             case "parse":
             case "parseAndSpellcheck":
             case "getListOfTokens":
-                oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to received answer
+                oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
                 console.log(oRequest);
                 xGCEWorker.postMessage(oRequest);
                 break;
