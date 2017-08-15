@@ -6,6 +6,8 @@ const oGCPanelContent = {
 
     _xContentNode: createNode("div", {id: "grammalecte_gc_panel_content"}),
 
+    aIgnoredErrors: new Map(),
+
     getNode: function () {
         return this._xContentNode;
     },
@@ -16,42 +18,44 @@ const oGCPanelContent = {
         }
     },
 
-    addParagraphResult: function (sText, iId, oErrors) {
+    addParagraphResult: function (oResult) {
         try {
-            let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
-            // actions
-            let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
-            let xCloseButton = createNode("div", {id: "end" + iId.toString(), className: "grammalecte_paragraph_close_button", textContent: "×"});
-            let xAnalyseButton = createNode("div", {id: "check" + iId.toString(), className: "grammalecte_paragraph_analyse_button", textContent: "Réanalyser"});
-            xActionsBar.appendChild(xAnalyseButton);
-            xActionsBar.appendChild(xCloseButton);
-            // paragraph
-            let xParagraph = createNode("p", {id: iId, lang: "fr", spellcheck: "false", contenteditable: "true"});
-            xParagraph.className = (oErrors.aGrammErr.length || oErrors.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
-            this._tagParagraph(sText, xParagraph, iParagraph, oErrors.aGrammErr, oErrors.aSpellErr);
-            // creation
-            xNodeDiv.appendChild(xActionsBar);
-            xNodeDiv.appendChild(xParagraph);
-            this._xContentNode.appendChild(xNodeDiv);
+            if (oResult) {
+                let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
+                // actions
+                let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
+                let xCloseButton = createNode("div", {id: "end" + oResult.sParaNum, className: "grammalecte_paragraph_close_button", textContent: "×"});
+                let xAnalyseButton = createNode("div", {id: "check" + oResult.sParaNum, className: "grammalecte_paragraph_analyse_button", textContent: "Réanalyser"});
+                xActionsBar.appendChild(xAnalyseButton);
+                xActionsBar.appendChild(xCloseButton);
+                // paragraph
+                let xParagraph = createNode("p", {id: "paragr"+oResult.sParaNum, lang: "fr", spellcheck: "false", contenteditable: "true"});
+                xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
+                this._tagParagraph(xParagraph, oResult.sParagraph, oResult.sParaNum, oResult.aGrammErr, oResult.aSpellErr);
+                // creation
+                xNodeDiv.appendChild(xActionsBar);
+                xNodeDiv.appendChild(xParagraph);
+                this._xContentNode.appendChild(xNodeDiv);
+            }
         }
         catch (e) {
             showError(e);
         }
     },
 
-    refreshParagraph: function (sText, sId, oErrors) {
+    refreshParagraph: function (oResult) {
         try {
             let xParagraph = document.getElementById("paragr"+sIdParagr);
-            xParagraph.className = (oErrors.aGrammErr.length || oErrors.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
+            xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
             xParagraph.textContent = "";
-            this._tagParagraph(sText, xParagraph, iParagraph, oErrors.aGrammErr, oErrors.aSpellErr);
+            this._tagParagraph(xParagraph, oResult.sParagraph, oResult.sParaNum, oResult.aGrammErr, oResult.aSpellErr);
         }
         catch (e) {
             showError(e);
         }
     },
 
-    _tagParagraph: function (sParagraph, xParagraph, iParagraph, aSpellErr, aGrammErr) {
+    _tagParagraph: function (xParagraph, sParagraph, sParaNum, aSpellErr, aGrammErr) {
         try {
             if (aGrammErr.length === 0  &&  aSpellErr.length === 0) {
                 xParagraph.textContent = sParagraph;
@@ -71,8 +75,8 @@ const oGCPanelContent = {
                 let nStart = oErr["nStart"];
                 let nEnd = oErr["nEnd"];
                 if (nStart >= nEndLastErr) {
-                    oErr['sErrorId'] = iParagraph.toString() + "_" + nErr.toString(); // error identifier
-                    oErr['sIgnoredKey'] = iParagraph.toString() + ":" + nStart.toString() + ":" + nEnd.toString() + ":" + sParagraph.slice(nStart, nEnd);
+                    oErr['sErrorId'] = sParaNum + "_" + nErr.toString(); // error identifier
+                    oErr['sIgnoredKey'] = sParaNum + ":" + nStart.toString() + ":" + nEnd.toString() + ":" + sParagraph.slice(nStart, nEnd);
                     if (nEndLastErr < nStart) {
                         xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr, nStart)));
                     }
@@ -107,7 +111,7 @@ const oGCPanelContent = {
             }
             xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
         }
-        xNodeErr.className = (aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "ignored" : "error " + oErr['sType'];
+        xNodeErr.className = (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "ignored" : "error " + oErr['sType'];
         return xNodeErr;
     },
 
@@ -133,7 +137,7 @@ const oGCPanelContent = {
         try {
             //console.log("ignore button: " + sIgnoreButtonId + " // error id: " + document.getElementById(sIgnoreButtonId).dataset.error_id);
             let xNodeErr = document.getElementById("err"+document.getElementById(sIgnoreButtonId).dataset.error_id);
-            aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
+            this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "ignored";
             xNodeErr.removeAttribute("style");
             this.hideAllTooltips();

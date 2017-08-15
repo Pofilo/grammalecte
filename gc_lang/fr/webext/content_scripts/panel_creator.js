@@ -14,7 +14,7 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bMovable = bMovable;
-        this.xContentNode = createNode("div", {id: this.sContentId, className: "grammalecte_panel_content"});
+        this.xContentNode = createNode("div", {className: "grammalecte_panel_content"});
         this.xPanelNode = this._createPanel(sTitle);
         this.center();
     }

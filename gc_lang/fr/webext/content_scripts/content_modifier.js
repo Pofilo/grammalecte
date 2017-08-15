@@ -58,7 +58,7 @@ function createWrapperToolbar (xTextArea) {
         xTFButton.onclick = function() { createTFPanel(xTextArea); };
         let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
         xLxgButton.onclick = function() {
-            createLxgPanel(xTextArea);
+            createLxgPanel();
             xPort.postMessage({sCommand: "getListOfTokens", dParam: {sText: xTextArea.value}, dInfo: {sTextAreaId: xTextArea.id}});
         };
         let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
@@ -106,7 +106,7 @@ function createTFPanel (xTextArea) {
     }
 }
 
-function createLxgPanel (xTextArea) {
+function createLxgPanel () {
     console.log("Lexicographe");
     if (oLxgPanel !== null) {
         oLxgPanelContent.clear();
@@ -127,12 +127,9 @@ function createGCPanel () {
     } else {
         // create the panel
         oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Correcteur", 500, 700);
+        oGCPanel.setContentNode(oGCPanelContent.getNode());
         oGCPanel.insertIntoPage();
     }
-}
-
-function updateGCPanel (oErrors) {
-    oGCPanel.setContentNode(document.createTextNode(JSON.stringify(oErrors)));
 }
 
 
@@ -164,7 +161,7 @@ xPort.onMessage.addListener(function (oMessage) {
             break;
         case "parseAndSpellcheck":
             console.log(result);
-            updateGCPanel(result);
+            oGCPanelContent.addParagraphResult(result);
             break;
         case "getListOfTokens":
             console.log(result);

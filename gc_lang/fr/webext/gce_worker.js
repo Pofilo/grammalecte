@@ -137,6 +137,15 @@ let oLxg = null;
 let oTest = null;
 
 
+/*
+    Technical note:
+    This worker don’t work as a PromiseWorker (which returns a promise),  so when we send request
+    to this worker, we can’t wait the return of the answer just after the request made.
+    The answer is received by the background in another function (onmessage).
+    That’s why the full text to analyze is send in one block, but analyse is returned paragraph
+    by paragraph.
+*/
+
 function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
     try {
         if (!bInitDone) {
@@ -153,7 +162,7 @@ function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
                 gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
             }
             oTokenizer = new Tokenizer("fr");
-            tests();
+            //tests();
             bInitDone = true;
         } else {
             console.log("[Worker] Already initialized…")
@@ -169,14 +178,22 @@ function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
 
 
 function parse (sText, sCountry, bDebug, bContext, dInfo={}) {
-    let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
-    postMessage({sActionDone: "parse", result: aGrammErr, dInfo: dInfo});
+    for (let sParagraph of text.getParagraph(sText)) {
+        let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
+        postMessage(createResponse("parse", aGrammErr, dInfo, false));
+    }
+    postMessage(createResponse("parse", null, dInfo, true));
 }
 
 function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
-    let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
-    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
-    postMessage(createResponse("parseAndSpellcheck", {aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
+    let n = 0;
+    for (let sParagraph of text.getParagraph(sText)) {
+        let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
+        let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
+        n += 1;
+        postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, sParaNum: n.toString(), aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
+    }
+    postMessage(createResponse("parseAndSpellcheck", null, dInfo, true));
 }
 
 function getOptions (dInfo={}) {
