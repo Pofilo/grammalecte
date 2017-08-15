@@ -1,0 +1,335 @@
+/*
+    Grammar checker
+*/
+#grammalecte_gc_panel_content {
+    padding: 5px;
+}
+
+.grammalecte_paragraph_block {
+    margin: 0 0 10px 0;
+}
+
+.grammalecte_paragraph {
+    background-color: hsla(0, 0%, 90%, 1);
+    padding: 10px;
+    border-radius: 2px;
+    font-size: 14px;
+    font-family : "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
+    color: hsl(0, 0%, 0%);
+}
+
+.grammalecte_paragraph a {
+    background-color: hsla(210, 50%, 50%, 1);
+    padding: 1px 5px;
+    border-radius: 2px;
+    color: hsla(210, 0%, 96%, 1);
+    cursor: pointer;
+    text-decoration: none;
+}
+.grammalecte_paragraph a:hover {
+    background-color: hsla(210, 60%, 40%, 1);
+    color: hsla(0, 0%, 100%, 1);
+    text-shadow: 0 0 3px hsl(210, 30%, 60%);
+}
+
+.grammalecte_paragraph u {
+    text-decoration: none;
+}
+
+.grammalecte_paragraph u.corrected,
+.grammalecte_paragraph u.ignored {
+    background-color: hsla(120, 50%, 70%, 1);
+    color: hsla(0, 0%, 4%, 1);
+    border-radius: 2px;
+    text-decoration: none;
+}
+.grammalecte_paragraph u.ignored {
+    background-color: hsla(30, 20%, 80%, 1);
+}
+
+.grammalecte_paragraph u.error {
+    position: relative;
+    cursor: pointer;
+    border-radius: 2px;
+    text-decoration: none; /* to remove for wavy underlines */
+}
+.grammalecte_paragraph u.error:hover {
+    cursor: pointer;
+}
+
+
+/* 
+    TOOLTIPS
+*/
+.tooltip {
+    position: absolute;
+    display: none;
+    width: 300px;
+    border-radius: 5px;
+    box-shadow: 0 0 6px hsla(0, 0%, 0%, 0.3);
+    font-family: Tahoma, "Lucida Grande", "Lucida Sans Unicode", "Lucida Sans", sans-serif;
+    font-size: 12px;
+    line-height: 18px;
+    cursor: default;
+    text-decoration: none;
+}
+#gc_tooltip {
+    border: 3px solid hsl(210, 50%, 30%);
+    color: hsla(210, 10%, 20%, 1);
+}
+#sc_tooltip {
+    border: 3px solid hsl(0, 50%, 30%);
+    color: hsla(0, 10%, 20%, 1);
+}
+#gc_tooltip_arrow, #sc_tooltip_arrow {
+    position: absolute;
+    display: none;
+}
+#gc_tooltip #gc_rule_id {
+    display: none;
+    margin: 0 0 5px 0;
+    border: 1px solid hsl(210, 50%, 60%);
+    background-color: hsl(210, 50%, 40%);
+    padding: 2px 5px;
+    border-radius: 2px;
+    color: hsla(210, 0%, 96%, 1);
+    font-size: 11px;
+    font-style: normal;
+    text-align: center;
+}
+#gc_message_block {
+    padding: 5px 10px 10px 10px;
+    background-color: hsl(210, 50%, 30%);
+    color: hsl(210, 50%, 96%);
+}
+#sc_message_block {
+    padding: 5px 10px 10px 10px;
+    background-color: hsl(0, 50%, 30%);
+    color: hsl(0, 50%, 96%);
+}
+#gc_message, #sc_message {
+    font-size: 15px;
+    margin-bottom: 5px;
+}
+a#gc_ignore, a#sc_ignore {
+    padding: 0 2px;
+    background-color: hsla(30, 30%, 40%, 1);
+    color: hsla(30, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+a#gc_ignore:hover, a#sc_ignore:hover {
+    background-color: hsla(30, 30%, 50%, 1);
+    color: hsla(0, 0%, 100%, 1);
+    text-shadow: 0 0 3px hsl(30, 30%, 60%);
+}
+a#gc_url {
+    padding: 0 2px;
+    background-color: hsla(210, 50%, 50%, 1);
+    color: hsla(210, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+a#gc_url:hover {
+    background-color: hsla(210, 50%, 60%, 1);
+    color: hsla(0, 0%, 100%, 1);
+    text-shadow: 0 0 3px hsl(210, 30%, 60%);
+}
+#gc_sugg_title {
+    padding: 0 10px;
+    background-color: hsl(210, 10%, 90%);
+    color: hsl(210, 50%, 30%);
+    font-size: 10px;
+    font-weight: bold;
+}
+#sc_sugg_title {
+    padding: 0 10px;
+    background-color: hsl(0, 10%, 90%);
+    color: hsl(0, 50%, 30%);
+    font-size: 9px;
+    font-weight: bold;
+}
+#gc_sugg_block {
+    padding: 10px;
+    background-color: hsl(210, 10%, 96%);
+    border-radius: 0 0 2px 2px;
+    line-height: 20px;
+}
+#sc_sugg_block {
+    padding: 10px;
+    background-color: hsl(0, 10%, 96%);
+    border-radius: 0 0 2px 2px;
+    line-height: 20px;
+}
+#gc_sugg_block a.sugg {
+    padding: 1px 6px;
+    background-color: hsla(180, 60%, 40%, 1);
+    color: hsla(180, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+#gc_sugg_block a.sugg:hover {
+    background-color: hsla(180, 70%, 45%, 1);
+    color: hsla(0, 0%, 100%, 1);
+}
+#sc_sugg_block a.sugg {
+    padding: 1px 6px;
+    background-color: hsla(30, 90%, 45%, 1);
+    color: hsla(30, 0%, 96%, 1);
+    border-radius: 2px;
+    cursor: pointer;
+    text-decoration: none;
+}
+#sc_sugg_block a.sugg:hover {
+    background-color: hsla(30, 100%, 50%, 1);
+    color: hsla(0, 0%, 100%, 1);
+}
+
+/*
+    Action buttons
+*/
+
+.actions {
+    margin: 0 0 5px 10px;
+}
+
+.actions .button {
+    background-color: hsl(0, 0%, 50%);
+    text-align: center;
+    float: right;
+    margin-left: 2px;
+    padding: 1px 4px 3px 4px;
+    /*width: 18px;
+    height: 18px;*/
+    cursor: pointer;
+    font-size: 14px;
+    color: hsl(0, 0%, 96%);
+    border-radius: 2px;
+}
+.actions .button:hover {
+    background-color: hsl(0, 0%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+
+.actions .green {
+    background-color: hsl(120, 30%, 50%);
+    color: hsl(0, 0%, 96%);
+}
+.actions .green:hover {
+    background-color: hsl(120, 50%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+.actions .red {
+    background-color: hsl(0, 30%, 50%);
+    color: hsl(0, 0%, 96%);
+}
+.actions .red:hover {
+    background-color: hsl(0, 50%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+.actions .orange {
+    background-color: hsl(30, 50%, 50%);
+    color: hsl(30, 0%, 96%);
+}
+.actions .orange:hover {
+    background-color: hsl(30, 70%, 40%);
+    color: hsl(30, 0%, 100%);
+}
+.actions .bold {
+    font-weight: bold;
+}
+
+
+/*
+    ERRORS
+*/
+
+.error {
+    /* default color */
+    background-color: hsl(240, 10%, 50%);
+    color: hsl(240, 0%, 96%);
+}
+.error:hover {
+    background-color: hsl(240, 10%, 40%);
+    color: hsl(240, 0%, 100%);
+}
+
+/* elems */
+.WORD {
+    background-color: hsl(0, 50%, 50%);
+    color: hsl(0, 0%, 96%);
+    /*text-decoration: underline wavy hsl(0, 50%, 50%);*/
+}
+.WORD:hover {
+    background-color: hsl(0, 60%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+
+/* elems */
+.typo, .esp, .nbsp, .eif, .maj, .virg, .tu, .num, .unit, .nf, .liga, .mapos, .chim {
+    background-color: hsl(30, 70%, 50%);
+    color: hsl(30, 10%, 96%);
+    /*text-decoration: underline wavy hsl(30, 70%, 50%);*/
+}
+.typo:hover, .esp:hover, .nbsp:hover, .eif:hover, .maj:hover, .virg:hover, .tu:hover, .num:hover, .unit:hover, .nf:hover, .liga:hover, .mapos:hover, .chim:hover {
+    background-color: hsl(30, 80%, 45%);
+    color: hsl(30, 10%, 96%);
+}
+
+/* elems */
+.apos {
+    background-color: hsl(40, 90%, 50%);
+    color: hsl(40, 10%, 96%);
+    /*text-decoration: underline wavy hsl(40, 70%, 45%);*/
+}
+.apos:hover {
+    background-color: hsl(40, 100%, 45%);
+    color: hsl(40, 10%, 96%);
+}
+
+/* elems */
+.gn, .sgpl {
+    background-color: hsl(210, 50%, 50%);
+    color: hsl(210, 10%, 96%);
+    /*text-decoration: underline wavy hsl(210, 50%, 50%);*/
+}
+.gn:hover, .sgpl:hover {
+    background-color: hsl(210, 60%, 40%);
+    color: hsl(210, 10%, 96%);
+}
+
+/* elems */
+.conj, .infi, .imp, .inte, .ppas, .vmode  {
+    background-color: hsl(300, 30%, 40%);
+    color: hsl(300, 10%, 96%);
+    /*text-decoration: underline wavy hsl(300, 40%, 40%);*/
+}
+.conj:hover, .infi:hover, .imp:hover, .inte:hover, .ppas:hover, .vmode:hover {
+    background-color: hsl(300, 40%, 30%);
+    color: hsl(300, 10%, 96%);
+}
+
+/* elems */
+.conf, .ocr {
+    background-color: hsl(270, 40%, 30%);
+    color: hsl(270, 10%, 96%);
+    /*text-decoration: underline wavy hsl(270, 40%, 30%);*/
+}
+.conf:hover, .ocr:hover {
+    background-color: hsl(270, 50%, 20%);
+    color: hsl(270, 10%, 96%);
+}
+
+/* elems */
+.bs, .pleo, .neg, .redon1, .redon2, .mc, .date, .notype {
+    background-color: hsl(180, 50%, 40%);
+    color: hsl(180, 10%, 96%);
+    /*text-decoration: underline wavy hsl(180, 50%, 40%);*/
+}
+.bs:hover, .pleo:hover, .neg:hover, .redon1:hover, .redon2:hover, .mc:hover, .date:hover, .notype:hover {
+    background-color: hsl(180, 60%, 30%);
+    color: hsl(180, 10%, 96%);
+}
