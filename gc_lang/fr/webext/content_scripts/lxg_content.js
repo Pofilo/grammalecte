@@ -47,7 +47,7 @@ const oLxgPanelContent = {
     },
 
     _createTokenNode: function (oToken) {
-        let xTokenNode = createNode("div", {className: "grammalecte_token " + oToken.sType});
+        let xTokenNode = createNode("div", {className: "grammalecte_token"});
         xTokenNode.appendChild(createNode("b", {className: oToken.sType, textContent: oToken.sValue}));
         xTokenNode.appendChild(createNode("s", {textContent: " : "}));
         if (oToken.aLabel.length === 1) {
