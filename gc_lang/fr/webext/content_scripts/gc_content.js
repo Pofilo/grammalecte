@@ -10,10 +10,10 @@ function onGrammalecteGCPanelClick (xEvent) {
                 oGCPanelContent.applySuggestion(xElem.id);
             } else if (xElem.id.endsWith("_ignore")) {
                 oGCPanelContent.ignoreError(xElem.id);
-            } else if (xElem.id.startsWith("check")) {
-                //oGCPanelContent.sendBackAndCheck(xElem.id);
-            } else if (xElem.id.startsWith("end")) {
-                //document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
+            } else if (xElem.id.startsWith("grammalecte_check")) {
+                oGCPanelContent.recheckParagraph(xElem.id);
+            } else if (xElem.id.startsWith("grammalecte_end")) {
+                document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
             } else if (xElem.tagName === "U" && xElem.id.startsWith("err")
                        && xElem.className !== "corrected" && xElem.className !== "ignored") {
                 oGrammalecteTooltip.show(xElem.id);
@@ -61,14 +61,21 @@ const oGCPanelContent = {
         this.aIgnoredErrors.clear();
     },
 
+    recheckParagraph: function (sCheckButtonId) {  // check
+        //startWaitIcon();
+        let sIdParagr = sCheckButtonId.slice(5);
+        self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
+        //stopWaitIcon();
+    },
+
     addParagraphResult: function (oResult) {
         try {
             if (oResult) {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = createNode("div", {className: "grammalecte_actions"});
-                let xCloseButton = createNode("div", {id: "end" + oResult.sParaNum, className: "button red blod", textContent: "×"});
-                let xAnalyseButton = createNode("div", {id: "check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"});
+                let xAnalyseButton = createNode("div", {id: "grammalecte_check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"});
+                let xCloseButton = createNode("div", {id: "grammalecte_end" + oResult.sParaNum, className: "button red blod", textContent: "×"});
                 xActionsBar.appendChild(xAnalyseButton);
                 xActionsBar.appendChild(xCloseButton);
                 // paragraph
@@ -217,14 +224,6 @@ const oGCPanelContent = {
     }
 }
 
-
-
-function sendBackAndCheck (sCheckButtonId) {  // check
-    startWaitIcon();
-    let sIdParagr = sCheckButtonId.slice(5);
-    self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
-    stopWaitIcon();
-}
 
 function getPurgedTextOfParagraph (sNodeParagrId) {
     let sText = document.getElementById(sNodeParagrId).textContent;
