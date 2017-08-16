@@ -11264,16 +11264,17 @@ TEST: il {{avait}} parti.
 
 __[i]/vmode(vmode_j_aimerais_vinfi)__
     j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai|désirerai|adorerai) +({w_1})  @@w,$
-    <<- morphex(\2, ":[YX]|>y ", "R") -1>> \1s                                  # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
+    <<- morphex(\2, ":[YX]|>y ", "R") and isStart() -1>> \1s        # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
 __[i>/vmode(vmode_j_aimerais_pronom)__
     j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai|désirerai|adorerai) +(?:que? |>)  @@w
-    <<- -1>> \1s                                                                # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
+    <<- isStart() -1>> \1s                                          # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
 
 TEST: J’{{aimerai}} savoir ce dont il retourne.
 TEST: dans tous les cas j’{{aimerai}} ne rien savoir
 TEST: Je {{voudrai}} qu’il soit déjà là.
 TEST: J’aimerai ces cours-là autant que les autres.
 TEST: J’aimerai la danse et la musique, puisque vous l’exigez.
+TEST: Je sais que j’aimerai ça, tout comme lui.
 
 
 __[i>/vmode(vmode_j_aurais_aimé_que_avoir_être1)__
