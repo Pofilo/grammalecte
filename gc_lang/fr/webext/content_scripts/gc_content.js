@@ -6,18 +6,18 @@ function onGrammalecteGCPanelClick (xEvent) {
     try {
         let xElem = xEvent.target;
         if (xElem.id) {
-            if (xElem.id.startsWith("sugg")) {
+            if (xElem.id.startsWith("grammalecte_sugg")) {
                 oGCPanelContent.applySuggestion(xElem.id);
-            } else if (xElem.id.endsWith("_ignore")) {
+            } else if (xElem.id === "grammalecte_tooltip_ignore") {
                 oGCPanelContent.ignoreError(xElem.id);
             } else if (xElem.id.startsWith("grammalecte_check")) {
-                oGCPanelContent.recheckParagraph(xElem.id);
-            } else if (xElem.id.startsWith("grammalecte_end")) {
+                oGCPanelContent.recheckParagraph(xElem.id.slice(17));
+            } else if (xElem.id.startsWith("grammalecte_hide")) {
                 document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
-            } else if (xElem.tagName === "U" && xElem.id.startsWith("err")
+            } else if (xElem.tagName === "U" && xElem.id.startsWith("grammalecte_err")
                        && xElem.className !== "corrected" && xElem.className !== "ignored") {
                 oGrammalecteTooltip.show(xElem.id);
-            } else if (xElem.id === "gc_url") {
+            } else if (xElem.id === "grammalecte_tooltip_url") {
                 oGCPanelContent.openURL(xElem.getAttribute("href"));
             } else {
                 oGrammalecteTooltip.hide();
@@ -35,6 +35,14 @@ function onGrammalecteGCPanelClick (xEvent) {
 
 
 const oGCPanelContent = {
+    /*
+        KEYS for identifiers:
+            grammalecte_paragraph{Id} : [paragraph number]
+            grammalecte_check{Id}     : [paragraph number]
+            grammalecte_hide{Id}      : [paragraph number]
+            grammalecte_error{Id}     : [paragraph number]-[error_number]
+            grammalecte_sugg{Id}      : [paragraph number]-[error_number]--[suggestion_number]
+    */
 
     bInitDone: false,
 
@@ -61,25 +69,17 @@ const oGCPanelContent = {
         this.aIgnoredErrors.clear();
     },
 
-    recheckParagraph: function (sCheckButtonId) {  // check
-        //startWaitIcon();
-        let sIdParagr = sCheckButtonId.slice(5);
-        self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
-        //stopWaitIcon();
-    },
-
     addParagraphResult: function (oResult) {
         try {
             if (oResult) {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = createNode("div", {className: "grammalecte_actions"});
-                let xAnalyseButton = createNode("div", {id: "grammalecte_check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"});
-                let xCloseButton = createNode("div", {id: "grammalecte_end" + oResult.sParaNum, className: "button red blod", textContent: "×"});
-                xActionsBar.appendChild(xAnalyseButton);
-                xActionsBar.appendChild(xCloseButton);
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"}));
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.sParaNum, className: "button red bold", textContent: "×"}));
                 // paragraph
-                let xParagraph = createNode("p", {id: "paragr"+oResult.sParaNum, lang: "fr", spellcheck: "false", contenteditable: "true"});
+                let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.sParaNum, lang: "fr", contentEditable: "true"});
+                xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
                 xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.sParaNum, oResult.aGrammErr, oResult.aSpellErr);
                 // creation
@@ -93,12 +93,24 @@ const oGCPanelContent = {
         }
     },
 
-    refreshParagraph: function (oResult) {
+    recheckParagraph: function (sParagraphNum) {
+        //startWaitIcon();
+        let sParagraphId = "grammalecte_paragraph" + sParagraphNum;
+        let xParagraph = document.getElementById(sParagraphId);
+        xPort.postMessage({
+            sCommand: "parseAndSpellcheck1",
+            dParam: {sText: this.getPurgedTextOfParagraph(xParagraph.textContent), sCountry: "FR", bDebug: false, bContext: false},
+            dInfo: {sParagraphId: sParagraphId}
+        });
+        //stopWaitIcon();
+    },
+
+    refreshParagraph: function (sParagraphId, oResult) {
         try {
-            let xParagraph = document.getElementById("paragr"+sIdParagr);
+            let xParagraph = document.getElementById(sParagraphId);
             xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
             xParagraph.textContent = "";
-            this._tagParagraph(xParagraph, oResult.sParagraph, oResult.sParaNum, oResult.aGrammErr, oResult.aSpellErr);
+            this._tagParagraph(xParagraph, oResult.sParagraph, sParagraphId.slice(21), oResult.aGrammErr, oResult.aSpellErr);
         }
         catch (e) {
             showError(e);
@@ -125,8 +137,8 @@ const oGCPanelContent = {
                 let nStart = oErr["nStart"];
                 let nEnd = oErr["nEnd"];
                 if (nStart >= nEndLastErr) {
-                    oErr['sErrorId'] = sParaNum + "_" + nErr.toString(); // error identifier
-                    oErr['sIgnoredKey'] = sParaNum + ":" + nStart.toString() + ":" + nEnd.toString() + ":" + sParagraph.slice(nStart, nEnd);
+                    oErr['sErrorId'] = sParaNum + "-" + nErr.toString(); // error identifier
+                    oErr['sIgnoredKey'] = sParaNum + ":" + nStart.toString() + ":" + sParagraph.slice(nStart, nEnd);
                     if (nEndLastErr < nStart) {
                         xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr, nStart)));
                     }
@@ -147,7 +159,7 @@ const oGCPanelContent = {
 
     _createError: function (sUnderlined, oErr) {
         let xNodeErr = document.createElement("u");
-        xNodeErr.id = "err" + oErr['sErrorId'];
+        xNodeErr.id = "grammalecte_err" + oErr['sErrorId'];
         xNodeErr.textContent = sUnderlined;
         xNodeErr.dataset.error_id = oErr['sErrorId'];
         xNodeErr.dataset.ignored_key = oErr['sIgnoredKey'];
@@ -165,15 +177,16 @@ const oGCPanelContent = {
         return xNodeErr;
     },
 
-    applySuggestion: function (sSuggId) { // sugg
+    applySuggestion: function (sNodeSuggId) { // sugg
         try {
-            let sErrorId = document.getElementById(sSuggId).dataset.error_id;
-            let sIdParagr = sErrorId.slice(0, sErrorId.indexOf("_"));
-            let xNodeErr = document.getElementById("err" + sErrorId);
-            xNodeErr.textContent = document.getElementById(sSuggId).textContent;
+            console.log(sNodeSuggId);
+            let sErrorId = document.getElementById(sNodeSuggId).dataset.error_id;
+            //let sParaNum = sErrorId.slice(0, sErrorId.indexOf("-"));
+            console.log("grammalecte_err"+sErrorId);
+            let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
+            xNodeErr.textContent = document.getElementById(sNodeSuggId).textContent;
             xNodeErr.className = "corrected";
             xNodeErr.removeAttribute("style");
-            //self.port.emit("correction", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
             oGrammalecteTooltip.hide();
         }
         catch (e) {
@@ -183,16 +196,21 @@ const oGCPanelContent = {
 
     ignoreError: function (sIgnoreButtonId) {  // ignore
         try {
-            //console.log("ignore button: " + sIgnoreButtonId + " // error id: " + document.getElementById(sIgnoreButtonId).dataset.error_id);
-            let xNodeErr = document.getElementById("err"+document.getElementById(sIgnoreButtonId).dataset.error_id);
+            console.log(sIgnoreButtonId);
+            let sErrorId = document.getElementById(sIgnoreButtonId).dataset.error_id;
+            console.log("grammalecte_err"+sErrorId);
+            let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "ignored";
-            xNodeErr.removeAttribute("style");
             oGrammalecteTooltip.hide();
         }
         catch (e) {
             showError(e);
         }
+    },
+
+    getPurgedTextOfParagraph: function (sText) {
+        return sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
     },
 
     addSummary: function () {
@@ -207,10 +225,10 @@ const oGCPanelContent = {
     copyToClipboard: function () {
         startWaitIcon();
         try {
-            let xClipboardButton = document.getElementById("clipboard_msg");
+            let xClipboardButton = document.getElementById("grammalecte_clipboard_button");
             xClipboardButton.textContent = "copie en cours…";
             let sText = "";
-            for (let xNode of document.getElementById("errorlist").getElementsByClassName("paragraph")) {
+            for (let xNode of document.getElementById("grammalecte_paragraph_list").getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
             self.port.emit('copyToClipboard', sText);
@@ -224,12 +242,6 @@ const oGCPanelContent = {
     }
 }
 
-
-function getPurgedTextOfParagraph (sNodeParagrId) {
-    let sText = document.getElementById(sNodeParagrId).textContent;
-    sText = sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-    return sText;
-}
 
 
 const oGrammalecteTooltip = {
@@ -326,7 +338,7 @@ const oGrammalecteTooltip = {
 
     _createSuggestion: function (sErrId, iSugg, sSugg) {
         let xNodeSugg = document.createElement("a");
-        xNodeSugg.id = "sugg" + sErrId + "-" + iSugg.toString();
+        xNodeSugg.id = "grammalecte_sugg" + sErrId + "--" + iSugg.toString();
         xNodeSugg.className = "sugg";
         xNodeSugg.dataset.error_id = sErrId;
         xNodeSugg.textContent = sSugg;

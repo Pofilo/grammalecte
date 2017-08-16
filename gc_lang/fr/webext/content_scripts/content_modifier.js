@@ -59,12 +59,20 @@ function createWrapperToolbar (xTextArea) {
         let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
         xLxgButton.onclick = function() {
             createLxgPanel();
-            xPort.postMessage({sCommand: "getListOfTokens", dParam: {sText: xTextArea.value}, dInfo: {sTextAreaId: xTextArea.id}});
+            xPort.postMessage({
+                sCommand: "getListOfTokens",
+                dParam: {sText: xTextArea.value},
+                dInfo: {sTextAreaId: xTextArea.id}
+            });
         };
         let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
         xGCButton.onclick = function() {
             createGCPanel();
-            xPort.postMessage({sCommand: "parseAndSpellcheck", dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {sTextAreaId: xTextArea.id}});
+            xPort.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: {sTextAreaId: xTextArea.id}
+            });
         };
         // Create
         //xToolbar.appendChild(createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
@@ -148,9 +156,10 @@ browser.runtime.onMessage.addListener(handleMessage);
 
 
 /*
-    Connexion
+    Connexion to the background
 */
 let xPort = browser.runtime.connect({name: "content-script port"});
+
 xPort.onMessage.addListener(function (oMessage) {
     console.log("[Content script] received…");
     let {sActionDone, result, dInfo, bError} = oMessage;
@@ -160,18 +169,27 @@ xPort.onMessage.addListener(function (oMessage) {
             nTadId = result;
             break;
         case "parseAndSpellcheck":
-            console.log(result);
+            console.log("[content script] received: parseAndSpellcheck");
             oGCPanelContent.addParagraphResult(result);
             break;
+        case "parseAndSpellcheck1":
+            console.log("[content script] received: parseAndSpellcheck1");
+            oGCPanelContent.refreshParagraph(dInfo.sParagraphId, result);
+            break;
         case "getListOfTokens":
-            console.log(result);
+            console.log("[content script] received: getListOfTokens");
             oLxgPanelContent.addListOfTokens(result);
             break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
-xPort.postMessage({sCommand: "getCurrentTabId", dParam: {}, dInfo: {}});
+
+xPort.postMessage({
+    sCommand: "getCurrentTabId",
+    dParam: {},
+    dInfo: {}
+});
 
 /*document.body.addEventListener("click", function () {
     xPort.postMessage({greeting: "they clicked the page!"});

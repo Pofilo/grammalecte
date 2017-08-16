@@ -21,6 +21,7 @@ xGCEWorker.onmessage = function (e) {
                 break;
             case "parse":
             case "parseAndSpellcheck":
+            case "parseAndSpellcheck1":
             case "getListOfTokens":
                 console.log("Action done: " + sActionDone);
                 if (typeof(dInfo.iReturnPort) === "number") {
@@ -76,6 +77,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
     switch (oRequest.sCommand) {
         case "parse":
         case "parseAndSpellcheck":
+        case "parseAndSpellcheck1":
         case "getListOfTokens":
         case "textToTest":
         case "getOptions":
@@ -85,6 +87,8 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "fullTests":
             xGCEWorker.postMessage(oRequest);
             break;
+        default:
+            console.log("[background] Unknown command: " + oRequest.sCommand);
     }
     //sendResponse({response: "response from background script"});
 }
@@ -106,6 +110,7 @@ function handleConnexion (p) {
                 break;
             case "parse":
             case "parseAndSpellcheck":
+            case "parseAndSpellcheck1":
             case "getListOfTokens":
                 oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
                 console.log(oRequest);

@@ -97,6 +97,8 @@ onmessage = function (e) {
         case "parseAndSpellcheck":
             parseAndSpellcheck(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
             break;
+        case "parseAndSpellcheck1":
+            parseAndSpellcheck1(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
         case "getOptions":
             getOptions(dInfo);
             break;
@@ -194,6 +196,12 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
         postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, sParaNum: n.toString(), aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
     }
     postMessage(createResponse("parseAndSpellcheck", null, dInfo, true));
+}
+
+function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) {
+    let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
+    let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
+    postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
 }
 
 function getOptions (dInfo={}) {
