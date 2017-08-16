@@ -370,3 +370,63 @@ const oGrammalecteTooltip = {
         }
     }
 }
+
+
+const oGrammalecteTextareaControl = {
+
+    xTextarea: null,
+
+    dParagraph: new Map(),
+
+    setTextarea: function (xNode) {
+        this.xTextarea = xNode;
+        this.xTextarea.disabled = true;
+    },
+
+    clear: function () {
+        this.xTextarea.disabled = false;
+        this.xTextarea = null;
+        this.dParagraph.clear();
+    },
+
+    setParagraph (iParagraph, sText) {
+        this.dParagraph.set(iParagraph, sText);
+    },
+
+    getParagraph (iParagraph) {
+        return dParagraphs.has(iParagraph) ? this.dParagraphs.get(iParagraph) : this.getNthParagraph(iParagraph);
+    },
+
+    getNthParagraph: function (iParagraph) {
+        if (this.xTextarea !== null) {
+            let sText = this.xTextarea.value;
+            let i = 0;
+            let iStart = 0;
+            while (i < iParagraph && ((iStart = sText.indexOf("\n", iStart)) !== -1)) {
+                i++;
+                iStart++;
+            }
+            if (i === iParagraph) {
+                return ((iEnd = sText.indexOf("\n", iStart)) !== -1) ? sText.slice(iStart, iEnd) : sText.slice(iStart);
+            }
+            return "# Erreur. Paragraphe introuvable.";
+        }
+        return "# Erreur. Zone de texte introuvable.";
+    },
+
+    rewrite: function () {
+        try {
+            if (this.xTextarea !== null) {
+                let sText = "";
+                let i = 0;
+                for (let sParagraph of this.xTextarea.value.split("\n")) {
+                    sText += (dParagraphs.has(i)) ? dParagraphs.get(i) + "\n" : sParagraph + "\n";
+                    i += 1;
+                }
+                this.xTextarea.value = sText.slice(0,-1);
+            }
+        } catch (e) {
+            showError(e);
+        }
+    }
+}
