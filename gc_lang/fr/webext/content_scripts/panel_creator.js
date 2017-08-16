@@ -15,6 +15,7 @@ class GrammalectePanel {
         this.nHeight = nHeight;
         this.bMovable = bMovable;
         this.xContentNode = createNode("div", {className: "grammalecte_panel_content"});
+        this.xWaitIcon = this._createWaitIcon();
         this.xPanelNode = this._createPanel(sTitle);
         this.center();
     }
@@ -23,14 +24,12 @@ class GrammalectePanel {
         try {
             let xPanel = createNode("div", {id: this.sId, className: "grammalecte_panel"});
             let xBar = createNode("div", {className: "grammalecte_panel_bar"});
-            xBar.appendChild(this._createWaitIcon());
             xBar.appendChild(this._createButtons());
             let xTitle = createNode("div", {className: "grammalecte_panel_title"});
             xTitle.appendChild(createLogo());
             xTitle.appendChild(createNode("div", {className: "grammalecte_panel_label", textContent: sTitle}));
             xBar.appendChild(xTitle);
             xPanel.appendChild(xBar);
-            //xPanel.appendChild(createNode("div", {className: "grammalecte_empty_space_under_title_bar"}));
             xPanel.appendChild(this.xContentNode);
             return xPanel;
         }
@@ -39,17 +38,9 @@ class GrammalectePanel {
         }
     }
 
-    _createWaitIcon () {
-        let xWaitIcon = createNode("div", {id: "grammalecte_wait_icon", className: "grammalecte_spinner"});
-        xWaitIcon.appendChild(createNode("div", {id: "bounce1"}));
-        xWaitIcon.appendChild(createNode("div", {id: "bounce2"}));
-        return xWaitIcon;
-    }
-
     _createButtons () {
         let xButtonLine = createNode("div", {className: "grammalecte_panel_commands"});
-        
-
+        xButtonLine.appendChild(this.xWaitIcon);
         if (this.bMovable) {
             xButtonLine.appendChild(this._createMoveButton("stickToTop", "¯", "Coller en haut"));
             xButtonLine.appendChild(this._createMoveButton("stickToLeft", "«", "Coller à gauche"));
@@ -59,6 +50,13 @@ class GrammalectePanel {
         }
         xButtonLine.appendChild(this._createCloseButton());
         return xButtonLine;
+    }
+
+    _createWaitIcon () {
+        let xWaitIcon = createNode("div", {className: "grammalecte_spinner"});
+        xWaitIcon.appendChild(createNode("div", {className: "bounce1"}));
+        xWaitIcon.appendChild(createNode("div", {className: "bounce2"}));
+        return xWaitIcon;
     }
 
     _createMoveButton (sAction, sLabel, sTitle) {
@@ -124,11 +122,11 @@ class GrammalectePanel {
     }
     
     startWaitIcon () {
-        document.getElementById("grammalecte_waiticon").hidden = false;
+        this.xWaitIcon.style.visibility = "visible";
     }
 
     stopWaitIcon () {
-        document.getElementById("grammalecte_waiticon").hidden = true;
+        this.xWaitIcon.style.visibility = "hidden";
     }
 }
 

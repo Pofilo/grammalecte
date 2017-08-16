@@ -74,7 +74,7 @@ const oGCPanelContent = {
             if (oResult) {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
-                let xActionsBar = createNode("div", {className: "grammalecte_actions"});
+                let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
                 xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"}));
                 xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.sParaNum, className: "button red bold", textContent: "×"}));
                 // paragraph

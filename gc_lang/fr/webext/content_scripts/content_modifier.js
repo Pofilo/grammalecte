@@ -59,6 +59,7 @@ function createWrapperToolbar (xTextArea) {
         let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
         xLxgButton.onclick = function() {
             createLxgPanel();
+            oLxgPanel.startWaitIcon();
             xPort.postMessage({
                 sCommand: "getListOfTokens",
                 dParam: {sText: xTextArea.value},
@@ -68,6 +69,7 @@ function createWrapperToolbar (xTextArea) {
         let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
         xGCButton.onclick = function() {
             createGCPanel();
+            oGCPanel.startWaitIcon();
             xPort.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
@@ -162,7 +164,7 @@ let xPort = browser.runtime.connect({name: "content-script port"});
 
 xPort.onMessage.addListener(function (oMessage) {
     console.log("[Content script] received…");
-    let {sActionDone, result, dInfo, bError} = oMessage;
+    let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
     switch (sActionDone) {
         case "getCurrentTabId":
             console.log("[Content script] tab id: " + result);
@@ -170,7 +172,11 @@ xPort.onMessage.addListener(function (oMessage) {
             break;
         case "parseAndSpellcheck":
             console.log("[content script] received: parseAndSpellcheck");
-            oGCPanelContent.addParagraphResult(result);
+            if (!bEnd) {
+                oGCPanelContent.addParagraphResult(result);
+            } else {
+                oGCPanel.stopWaitIcon();
+            }
             break;
         case "parseAndSpellcheck1":
             console.log("[content script] received: parseAndSpellcheck1");
@@ -178,7 +184,11 @@ xPort.onMessage.addListener(function (oMessage) {
             break;
         case "getListOfTokens":
             console.log("[content script] received: getListOfTokens");
-            oLxgPanelContent.addListOfTokens(result);
+            if (!bEnd) {
+                oLxgPanelContent.addListOfTokens(result);
+            } else {
+                oLxgPanel.stopWaitIcon();
+            }
             break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);
