@@ -2,20 +2,63 @@
 
 "use strict";
 
+function onGrammalecteGCPanelClick (xEvent) {
+    try {
+        let xElem = xEvent.target;
+        if (xElem.id) {
+            if (xElem.id.startsWith("sugg")) {
+                oGCPanelContent.applySuggestion(xElem.id);
+            } else if (xElem.id.endsWith("_ignore")) {
+                oGCPanelContent.ignoreError(xElem.id);
+            } else if (xElem.id.startsWith("check")) {
+                //oGCPanelContent.sendBackAndCheck(xElem.id);
+            } else if (xElem.id.startsWith("end")) {
+                //document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
+            } else if (xElem.tagName === "U" && xElem.id.startsWith("err")
+                       && xElem.className !== "corrected" && xElem.className !== "ignored") {
+                oGrammalecteTooltip.show(xElem.id);
+            } else if (xElem.id === "gc_url") {
+                oGCPanelContent.openURL(xElem.getAttribute("href"));
+            } else {
+                oGrammalecteTooltip.hide();
+            }
+        } else if (xElem.tagName === "A") {
+            oGCPanelContent.openURL(xElem.getAttribute("href"));
+        } else {
+            oGrammalecteTooltip.hide();
+        }
+    }
+    catch (e) {
+        showError(e);
+    }
+}
+
+
 const oGCPanelContent = {
 
-    _xContentNode: createNode("div", {id: "grammalecte_gc_panel_content"}),
+    bInitDone: false,
 
-    aIgnoredErrors: new Map(),
+    xContentNode: null,
+    xParagraphList: null,
 
-    getNode: function () {
-        return this._xContentNode;
+    aIgnoredErrors: new Set(),
+
+    init: function () {
+        this.xContentNode = createNode("div", {id: "grammalecte_gc_panel_content"});
+        this.xParagraphList = createNode("div", {id: "grammalecte_paragraph_list"});
+        this.xContentNode.appendChild(this.xParagraphList);
+        this.xContentNode.addEventListener("click", onGrammalecteGCPanelClick, false);
+        oGrammalecteTooltip.init();
+        this.xContentNode.appendChild(oGrammalecteTooltip.xTooltip);
+        this.bInitDone = true;
+        return this.xContentNode;
     },
 
     clear: function () {
-        while (this._xContentNode.firstChild) {
-            this._xContentNode.removeChild(this._xContentNode.firstChild);
+        while (this.xParagraphList.firstChild) {
+            this.xParagraphList.removeChild(this.xParagraphList.firstChild);
         }
+        this.aIgnoredErrors.clear();
     },
 
     addParagraphResult: function (oResult) {
@@ -23,9 +66,9 @@ const oGCPanelContent = {
             if (oResult) {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
-                let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
-                let xCloseButton = createNode("div", {id: "end" + oResult.sParaNum, className: "grammalecte_paragraph_close_button", textContent: "×"});
-                let xAnalyseButton = createNode("div", {id: "check" + oResult.sParaNum, className: "grammalecte_paragraph_analyse_button", textContent: "Réanalyser"});
+                let xActionsBar = createNode("div", {className: "grammalecte_actions"});
+                let xCloseButton = createNode("div", {id: "end" + oResult.sParaNum, className: "button red blod", textContent: "×"});
+                let xAnalyseButton = createNode("div", {id: "check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"});
                 xActionsBar.appendChild(xAnalyseButton);
                 xActionsBar.appendChild(xCloseButton);
                 // paragraph
@@ -35,7 +78,7 @@ const oGCPanelContent = {
                 // creation
                 xNodeDiv.appendChild(xActionsBar);
                 xNodeDiv.appendChild(xParagraph);
-                this._xContentNode.appendChild(xNodeDiv);
+                this.xParagraphList.appendChild(xNodeDiv);
             }
         }
         catch (e) {
@@ -119,14 +162,12 @@ const oGCPanelContent = {
         try {
             let sErrorId = document.getElementById(sSuggId).dataset.error_id;
             let sIdParagr = sErrorId.slice(0, sErrorId.indexOf("_"));
-            startWaitIcon("paragr"+sIdParagr);
             let xNodeErr = document.getElementById("err" + sErrorId);
             xNodeErr.textContent = document.getElementById(sSuggId).textContent;
             xNodeErr.className = "corrected";
             xNodeErr.removeAttribute("style");
-            self.port.emit("correction", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
-            this.hideAllTooltips();
-            stopWaitIcon("paragr"+sIdParagr);
+            //self.port.emit("correction", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
+            oGrammalecteTooltip.hide();
         }
         catch (e) {
             showError(e);
@@ -140,44 +181,111 @@ const oGCPanelContent = {
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "ignored";
             xNodeErr.removeAttribute("style");
-            this.hideAllTooltips();
+            oGrammalecteTooltip.hide();
         }
         catch (e) {
             showError(e);
         }
     },
 
-    showTooltip: function (sNodeErrorId) {  // err
+    addSummary: function () {
+        // todo
+    },
+
+    addMessage: function (sMessage) {
+        let xNode = createNode("div", {className: "grammalecte_gc_panel_message", textContent: sMessage});
+        this.xParagraphList.appendChild(xNode);
+    },
+
+    copyToClipboard: function () {
+        startWaitIcon();
         try {
-            this.hideAllTooltips();
+            let xClipboardButton = document.getElementById("clipboard_msg");
+            xClipboardButton.textContent = "copie en cours…";
+            let sText = "";
+            for (let xNode of document.getElementById("errorlist").getElementsByClassName("paragraph")) {
+                sText += xNode.textContent + "\n";
+            }
+            self.port.emit('copyToClipboard', sText);
+            xClipboardButton.textContent = "-> presse-papiers";
+            window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 3000);
+        }
+        catch (e) {
+            console.log(e.lineNumber + ": " +e.message);
+        }
+        stopWaitIcon();
+    }
+}
+
+
+
+function sendBackAndCheck (sCheckButtonId) {  // check
+    startWaitIcon();
+    let sIdParagr = sCheckButtonId.slice(5);
+    self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
+    stopWaitIcon();
+}
+
+function getPurgedTextOfParagraph (sNodeParagrId) {
+    let sText = document.getElementById(sNodeParagrId).textContent;
+    sText = sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
+    return sText;
+}
+
+
+const oGrammalecteTooltip = {
+
+    xTooltip: null,
+
+    xTooltipArrow: createNode("img", {
+        id: "grammalecte_tooltip_arrow",
+        src: "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAECAYAAACzzX7wAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwQAADsEBuJFr7QAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xNkRpr/UAAAAlSURBVBhXY/j//z8cq/kW/wdhZDEMSXRFWCVhGKwAmwQCF/8HAGUkScGH4cM8AAAAAElFTkSuQmCC",
+        alt: "^"
+    }),
+
+    xTooltipSuggBlock: null,
+
+    init: function () {
+        this.xTooltip = createNode("div", {id: "grammalecte_tooltip"});
+        let xMessageBlock = createNode("div", {id: "grammalecte_tooltip_message_block"});
+        xMessageBlock.appendChild(createNode("p", {id: "grammalecte_tooltip_rule_id"}));
+        xMessageBlock.appendChild(createNode("p", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
+        xMessageBlock.appendChild(createNode("a", {id: "grammalecte_tooltip_ignore", href: "#", onclick: "return false;", textContent: "Ignorer"}));
+        xMessageBlock.appendChild(createNode("a", {id: "grammalecte_tooltip_url", href: "#", onclick: "return false;", textContent: "Voulez-vous en savoir plus ?…"}));
+        this.xTooltip.appendChild(xMessageBlock);
+        this.xTooltip.appendChild(createNode("div", {id: "grammalecte_tooltip_sugg_title", textContent: "SUGGESTIONS :"}));
+        this.xTooltipSuggBlock = createNode("div", {id: "grammalecte_tooltip_sugg_block"});
+        this.xTooltip.appendChild(this.xTooltipSuggBlock);
+    },
+
+    show: function (sNodeErrorId) {  // err
+        try {
             let xNodeErr = document.getElementById(sNodeErrorId);
-            let sTooltipId = (xNodeErr.dataset.error_type === "grammar") ? "gc_tooltip" : "sc_tooltip";
-            let xNodeTooltip = document.getElementById(sTooltipId);
-            let xNodeTooltipArrow = document.getElementById(sTooltipId+"_arrow"); 
-            let nLimit = nPanelWidth - 330; // paragraph width - tooltip width
-            xNodeTooltipArrow.style.top = (xNodeErr.offsetTop + 16) + "px"
-            xNodeTooltipArrow.style.left = (xNodeErr.offsetLeft + Math.floor((xNodeErr.offsetWidth / 2))-4) + "px" // 4 is half the width of the arrow.
-            xNodeTooltip.style.top = (xNodeErr.offsetTop + 20) + "px";
-            xNodeTooltip.style.left = (xNodeErr.offsetLeft > nLimit) ? nLimit + "px" : xNodeErr.offsetLeft + "px";
+            let nLimit = 500 - 330; // paragraph width - tooltip width
+            this.xTooltipArrow.style.top = (xNodeErr.offsetTop + 16) + "px"
+            this.xTooltipArrow.style.left = (xNodeErr.offsetLeft + Math.floor((xNodeErr.offsetWidth / 2))-4) + "px" // 4 is half the width of the arrow.
+            this.xTooltip.style.top = (xNodeErr.offsetTop + 20) + "px";
+            this.xTooltip.style.left = (xNodeErr.offsetLeft > nLimit) ? nLimit + "px" : xNodeErr.offsetLeft + "px";
             if (xNodeErr.dataset.error_type === "grammar") {
                 // grammar error
                 if (xNodeErr.dataset.gc_message.includes(" ##")) {
                     let n = xNodeErr.dataset.gc_message.indexOf(" ##");
-                    document.getElementById("gc_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
-                    document.getElementById("gc_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
-                    document.getElementById("gc_rule_id").style.display = "block";
+                    document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
+                    document.getElementById("grammalecte_tooltip_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
+                    document.getElementById("grammalecte_tooltip_rule_id").style.display = "block";
                 } else {
-                    document.getElementById("gc_message").textContent = xNodeErr.dataset.gc_message;
+                    document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message;
+                    document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 }
                 if (xNodeErr.dataset.gc_url != "") {
-                    document.getElementById("gc_url").style.display = "inline";
-                    document.getElementById("gc_url").setAttribute("href", xNodeErr.dataset.gc_url);
+                    document.getElementById("grammalecte_tooltip_url").style.display = "inline";
+                    document.getElementById("grammalecte_tooltip_url").setAttribute("href", xNodeErr.dataset.gc_url);
                 } else {
-                    document.getElementById("gc_url").style.display = "none";
+                    document.getElementById("grammalecte_tooltip_url").style.display = "none";
                 }
-                document.getElementById("gc_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
                 let iSugg = 0;
-                let xGCSugg = document.getElementById("gc_sugg_block");
+                let xGCSugg = document.getElementById("grammalecte_tooltip_sugg_block");
                 xGCSugg.textContent = "";
                 if (xNodeErr.dataset.suggestions.length > 0) {
                     for (let sSugg of xNodeErr.dataset.suggestions.split("|")) {
@@ -189,18 +297,32 @@ const oGCPanelContent = {
                     xGCSugg.textContent = "Aucune.";
                 }
             }
-            xNodeTooltipArrow.style.display = "block";
-            xNodeTooltip.style.display = "block";
+            this.xTooltipArrow.style.display = "block";
+            this.xTooltip.style.display = "block";
             if (xNodeErr.dataset.error_type === "spelling") {
                 // spelling mistake
-                document.getElementById("sc_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                document.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
+                document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                while (this.xTooltipSuggBlock.firstChild) {
+                    this.xTooltipSuggBlock.removeChild(this.xTooltipSuggBlock.firstChild);
+                }
                 //console.log("getSuggFor: " + xNodeErr.textContent.trim() + " // error_id: " + xNodeErr.dataset.error_id);
-                self.port.emit("getSuggestionsForTo", xNodeErr.textContent.trim(), xNodeErr.dataset.error_id);
+                //self.port.emit("getSuggestionsForTo", xNodeErr.textContent.trim(), xNodeErr.dataset.error_id);
+                this.setSpellSuggestionsFor(xNodeErr.textContent.trim(), "", xNodeErr.dataset.error_id);
             }
         }
         catch (e) {
             showError(e);
         }
+    },
+
+    setTooltipColor: function (bBlue) {
+        // todo
+    },
+
+    hide () {
+        this.xTooltipArrow.style.display = "none";
+        this.xTooltip.style.display = "none";
     },
 
     _createSuggestion: function (sErrId, iSugg, sSugg) {
@@ -216,7 +338,7 @@ const oGCPanelContent = {
         // spell checking suggestions
         try {
             // console.log("setSuggestionsFor: " + sWord + " > " + sSuggestions + " // " + sErrId);
-            let xSuggBlock = document.getElementById("sc_sugg_block");
+            let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
             xSuggBlock.textContent = "";
             if (sSuggestions === "") {
                 xSuggBlock.appendChild(document.createTextNode("Aucune."));
@@ -235,84 +357,5 @@ const oGCPanelContent = {
         catch (e) {
             showError(e);
         }
-    },
-
-    hideAllTooltips: function () {
-        document.getElementById("gc_tooltip").style.display = "none";
-        document.getElementById("gc_rule_id").style.display = "none";
-        document.getElementById("sc_tooltip").style.display = "none";
-        document.getElementById("gc_tooltip_arrow").style.display = "none";
-        document.getElementById("sc_tooltip_arrow").style.display = "none";
-    },
-
-    addSummary: function () {
-        // todo
-    },
-
-    addMessage: function (sMessage) {
-        let xNode = createNode("div", {className: "grammalecte_gc_panel_message", textContent: sMessage});
-        this._xContentNode.appendChild(xNode);
     }
-}
-
-    
-
-    
-
-    
-
-
-
-
-
-function sendBackAndCheck (sCheckButtonId) {  // check
-    startWaitIcon();
-    let sIdParagr = sCheckButtonId.slice(5);
-    self.port.emit("modifyAndCheck", sIdParagr, getPurgedTextOfParagraph("paragr"+sIdParagr));
-    stopWaitIcon();
-}
-
-
-
-
-
-function getPurgedTextOfParagraph (sNodeParagrId) {
-    let sText = document.getElementById(sNodeParagrId).textContent;
-    sText = sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
-    return sText;
-}
-
-function copyToClipboard () {
-    startWaitIcon();
-    try {
-        let xClipboardButton = document.getElementById("clipboard_msg");
-        xClipboardButton.textContent = "copie en cours…";
-        let sText = "";
-        for (let xNode of document.getElementById("errorlist").getElementsByClassName("paragraph")) {
-            sText += xNode.textContent + "\n";
-        }
-        self.port.emit('copyToClipboard', sText);
-        xClipboardButton.textContent = "-> presse-papiers";
-        window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 3000);
-    }
-    catch (e) {
-        console.log(e.lineNumber + ": " +e.message);
-    }
-    stopWaitIcon();
-}
-
-function startWaitIcon (sIdParagr=null) {
-    if (sIdParagr) {
-        document.getElementById(sIdParagr).disabled = true;
-        document.getElementById(sIdParagr).style.opacity = .3;
-    }
-    document.getElementById("waiticon").hidden = false;
-}
-
-function stopWaitIcon (sIdParagr=null) {
-    if (sIdParagr) {
-        document.getElementById(sIdParagr).disabled = false;
-        document.getElementById(sIdParagr).style.opacity = 1;
-    }
-    document.getElementById("waiticon").hidden = true;
 }

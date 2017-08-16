@@ -58,10 +58,87 @@
 }
 
 
-/* 
-    TOOLTIPS
+.grammalecte_paragraph_actions {
+    margin: 0 0 5px 10px;
+}
+.grammalecte_paragraph_actions .close_button {
+    background-color: hsl(0, 0%, 50%);
+    text-align: center;
+    float: right;
+    margin-left: 2px;
+    padding: 1px 4px 3px 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: hsl(0, 0%, 96%);
+    border-radius: 2px;
+    background-color: hsl(0, 30%, 50%);
+    color: hsl(0, 0%, 96%);
+}
+
+
+/*
+    Action buttons
 */
-.tooltip {
+
+.grammalecte_actions {
+    margin: 0 0 5px 10px;
+}
+
+.grammalecte_actions .button {
+    background-color: hsl(0, 0%, 50%);
+    text-align: center;
+    float: right;
+    margin-left: 2px;
+    padding: 1px 4px 3px 4px;
+    cursor: pointer;
+    font-size: 14px;
+    color: hsl(0, 0%, 96%);
+    border-radius: 2px;
+}
+.grammalecte_actions .button:hover {
+    background-color: hsl(0, 0%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+
+.grammalecte_actions .green {
+    background-color: hsl(120, 30%, 50%);
+    color: hsl(0, 0%, 96%);
+}
+.grammalecte_actions .green:hover {
+    background-color: hsl(120, 50%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+.grammalecte_actions .red {
+    background-color: hsl(0, 30%, 50%);
+    color: hsl(0, 0%, 96%);
+}
+.grammalecte_actions .red:hover {
+    background-color: hsl(0, 50%, 40%);
+    color: hsl(0, 0%, 100%);
+}
+.grammalecte_actions .orange {
+    background-color: hsl(30, 50%, 50%);
+    color: hsl(30, 0%, 96%);
+}
+.grammalecte_actions .orange:hover {
+    background-color: hsl(30, 70%, 40%);
+    color: hsl(30, 0%, 100%);
+}
+.grammalecte_actions .bold {
+    font-weight: bold;
+}
+
+
+
+/* 
+    TOOLTIP
+*/
+#grammalecte_tooltip_arrow {
+    position: absolute;
+    display: none;
+}
+
+#grammalecte_tooltip {
     position: absolute;
     display: none;
     width: 300px;
@@ -72,22 +149,19 @@
     line-height: 18px;
     cursor: default;
     text-decoration: none;
-}
-#gc_tooltip {
     border: 3px solid hsl(210, 50%, 30%);
     color: hsla(210, 10%, 20%, 1);
+    z-index: 1000;
 }
-#sc_tooltip {
-    border: 3px solid hsl(0, 50%, 30%);
-    color: hsla(0, 10%, 20%, 1);
+
+#grammalecte_tooltip_message_block {
+    padding: 5px 10px 10px 10px;
+    background-color: hsl(210, 50%, 30%);
+    color: hsl(210, 50%, 96%);
 }
-#gc_tooltip_arrow, #sc_tooltip_arrow {
-    position: absolute;
+#grammalecte_tooltip_rule_id {
     display: none;
-}
-#gc_tooltip #gc_rule_id {
-    display: none;
-    margin: 0 0 5px 0;
+    margin-bottom: 5px;
     border: 1px solid hsl(210, 50%, 60%);
     background-color: hsl(210, 50%, 40%);
     padding: 2px 5px;
@@ -97,21 +171,11 @@
     font-style: normal;
     text-align: center;
 }
-#gc_message_block {
-    padding: 5px 10px 10px 10px;
-    background-color: hsl(210, 50%, 30%);
-    color: hsl(210, 50%, 96%);
-}
-#sc_message_block {
-    padding: 5px 10px 10px 10px;
-    background-color: hsl(0, 50%, 30%);
-    color: hsl(0, 50%, 96%);
-}
-#gc_message, #sc_message {
+#grammalecte_tooltip_message {
     font-size: 15px;
     margin-bottom: 5px;
 }
-a#gc_ignore, a#sc_ignore {
+a#grammalecte_tooltip_ignore {
     padding: 0 2px;
     background-color: hsla(30, 30%, 40%, 1);
     color: hsla(30, 0%, 96%, 1);
@@ -119,12 +183,12 @@ a#gc_ignore, a#sc_ignore {
     cursor: pointer;
     text-decoration: none;
 }
-a#gc_ignore:hover, a#sc_ignore:hover {
+a#grammalecte_tooltip_ignore:hover {
     background-color: hsla(30, 30%, 50%, 1);
     color: hsla(0, 0%, 100%, 1);
     text-shadow: 0 0 3px hsl(30, 30%, 60%);
 }
-a#gc_url {
+a#grammalecte_tooltip_url {
     padding: 0 2px;
     background-color: hsla(210, 50%, 50%, 1);
     color: hsla(210, 0%, 96%, 1);
@@ -132,38 +196,25 @@ a#gc_url {
     cursor: pointer;
     text-decoration: none;
 }
-a#gc_url:hover {
+a#grammalecte_tooltip_url:hover {
     background-color: hsla(210, 50%, 60%, 1);
     color: hsla(0, 0%, 100%, 1);
     text-shadow: 0 0 3px hsl(210, 30%, 60%);
 }
-#gc_sugg_title {
+#grammalecte_tooltip_sugg_title {
     padding: 0 10px;
     background-color: hsl(210, 10%, 90%);
     color: hsl(210, 50%, 30%);
     font-size: 10px;
     font-weight: bold;
 }
-#sc_sugg_title {
-    padding: 0 10px;
-    background-color: hsl(0, 10%, 90%);
-    color: hsl(0, 50%, 30%);
-    font-size: 9px;
-    font-weight: bold;
-}
-#gc_sugg_block {
+#grammalecte_tooltip_sugg_block {
     padding: 10px;
     background-color: hsl(210, 10%, 96%);
     border-radius: 0 0 2px 2px;
     line-height: 20px;
 }
-#sc_sugg_block {
-    padding: 10px;
-    background-color: hsl(0, 10%, 96%);
-    border-radius: 0 0 2px 2px;
-    line-height: 20px;
-}
-#gc_sugg_block a.sugg {
+#grammalecte_tooltip_sugg_block a.sugg {
     padding: 1px 6px;
     background-color: hsla(180, 60%, 40%, 1);
     color: hsla(180, 0%, 96%, 1);
@@ -171,32 +222,21 @@ a#gc_url:hover {
     cursor: pointer;
     text-decoration: none;
 }
-#gc_sugg_block a.sugg:hover {
+#grammalecte_tooltip_sugg_block a.sugg:hover {
     background-color: hsla(180, 70%, 45%, 1);
     color: hsla(0, 0%, 100%, 1);
 }
-#sc_sugg_block a.sugg {
-    padding: 1px 6px;
-    background-color: hsla(30, 90%, 45%, 1);
-    color: hsla(30, 0%, 96%, 1);
-    border-radius: 2px;
-    cursor: pointer;
-    text-decoration: none;
-}
-#sc_sugg_block a.sugg:hover {
-    background-color: hsla(30, 100%, 50%, 1);
-    color: hsla(0, 0%, 100%, 1);
-}
+
 
 /*
     Action buttons
 */
 
-.actions {
+.grammalecte_paragraph_actions {
     margin: 0 0 5px 10px;
 }
 
-.actions .button {
+.grammalecte_paragraph_actions .button {
     background-color: hsl(0, 0%, 50%);
     text-align: center;
     float: right;
@@ -209,36 +249,36 @@ a#gc_url:hover {
     color: hsl(0, 0%, 96%);
     border-radius: 2px;
 }
-.actions .button:hover {
+.grammalecte_paragraph_actions .button:hover {
     background-color: hsl(0, 0%, 40%);
     color: hsl(0, 0%, 100%);
 }
 
-.actions .green {
+.grammalecte_paragraph_actions .green {
     background-color: hsl(120, 30%, 50%);
     color: hsl(0, 0%, 96%);
 }
-.actions .green:hover {
+.grammalecte_paragraph_actions .green:hover {
     background-color: hsl(120, 50%, 40%);
     color: hsl(0, 0%, 100%);
 }
-.actions .red {
+.grammalecte_paragraph_actions .red {
     background-color: hsl(0, 30%, 50%);
     color: hsl(0, 0%, 96%);
 }
-.actions .red:hover {
+.grammalecte_paragraph_actions .red:hover {
     background-color: hsl(0, 50%, 40%);
     color: hsl(0, 0%, 100%);
 }
-.actions .orange {
+.grammalecte_paragraph_actions .orange {
     background-color: hsl(30, 50%, 50%);
     color: hsl(30, 0%, 96%);
 }
-.actions .orange:hover {
+.grammalecte_paragraph_actions .orange:hover {
     background-color: hsl(30, 70%, 40%);
     color: hsl(30, 0%, 100%);
 }
-.actions .bold {
+.grammalecte_paragraph_actions .bold {
     font-weight: bold;
 }
 
@@ -247,89 +287,145 @@ a#gc_url:hover {
     ERRORS
 */
 
-.error {
+.grammalecte_paragraph .error {
     /* default color */
     background-color: hsl(240, 10%, 50%);
     color: hsl(240, 0%, 96%);
 }
-.error:hover {
+.grammalecte_paragraph .error:hover {
     background-color: hsl(240, 10%, 40%);
     color: hsl(240, 0%, 100%);
 }
 
 /* elems */
-.WORD {
+.grammalecte_paragraph .WORD {
     background-color: hsl(0, 50%, 50%);
     color: hsl(0, 0%, 96%);
     /*text-decoration: underline wavy hsl(0, 50%, 50%);*/
 }
-.WORD:hover {
+.grammalecte_paragraph .WORD:hover {
     background-color: hsl(0, 60%, 40%);
     color: hsl(0, 0%, 100%);
 }
 
 /* elems */
-.typo, .esp, .nbsp, .eif, .maj, .virg, .tu, .num, .unit, .nf, .liga, .mapos, .chim {
+.grammalecte_paragraph .typo, 
+.grammalecte_paragraph .esp, 
+.grammalecte_paragraph .nbsp, 
+.grammalecte_paragraph .eif, 
+.grammalecte_paragraph .maj, 
+.grammalecte_paragraph .virg, 
+.grammalecte_paragraph .tu, 
+.grammalecte_paragraph .num, 
+.grammalecte_paragraph .unit, 
+.grammalecte_paragraph .nf, 
+.grammalecte_paragraph .liga, 
+.grammalecte_paragraph .mapos, 
+.grammalecte_paragraph .chim {
     background-color: hsl(30, 70%, 50%);
     color: hsl(30, 10%, 96%);
     /*text-decoration: underline wavy hsl(30, 70%, 50%);*/
 }
-.typo:hover, .esp:hover, .nbsp:hover, .eif:hover, .maj:hover, .virg:hover, .tu:hover, .num:hover, .unit:hover, .nf:hover, .liga:hover, .mapos:hover, .chim:hover {
+
+.grammalecte_paragraph .typo:hover, 
+.grammalecte_paragraph .esp:hover, 
+.grammalecte_paragraph .nbsp:hover, 
+.grammalecte_paragraph .eif:hover, 
+.grammalecte_paragraph .maj:hover, 
+.grammalecte_paragraph .virg:hover, 
+.grammalecte_paragraph .tu:hover, 
+.grammalecte_paragraph .num:hover, 
+.grammalecte_paragraph .unit:hover, 
+.grammalecte_paragraph .nf:hover, 
+.grammalecte_paragraph .liga:hover, 
+.grammalecte_paragraph .mapos:hover, 
+.grammalecte_paragraph .chim:hover {
     background-color: hsl(30, 80%, 45%);
     color: hsl(30, 10%, 96%);
 }
 
 /* elems */
-.apos {
+.grammalecte_paragraph .apos {
     background-color: hsl(40, 90%, 50%);
     color: hsl(40, 10%, 96%);
     /*text-decoration: underline wavy hsl(40, 70%, 45%);*/
 }
-.apos:hover {
+.grammalecte_paragraph .apos:hover {
     background-color: hsl(40, 100%, 45%);
     color: hsl(40, 10%, 96%);
 }
 
 /* elems */
-.gn, .sgpl {
+.grammalecte_paragraph .gn,
+.grammalecte_paragraph .sgpl {
     background-color: hsl(210, 50%, 50%);
     color: hsl(210, 10%, 96%);
     /*text-decoration: underline wavy hsl(210, 50%, 50%);*/
 }
-.gn:hover, .sgpl:hover {
+.grammalecte_paragraph .gn:hover,
+.grammalecte_paragraph .sgpl:hover {
     background-color: hsl(210, 60%, 40%);
     color: hsl(210, 10%, 96%);
 }
 
 /* elems */
-.conj, .infi, .imp, .inte, .ppas, .vmode  {
+.grammalecte_paragraph .conj, 
+.grammalecte_paragraph .infi, 
+.grammalecte_paragraph .imp, 
+.grammalecte_paragraph .inte, 
+.grammalecte_paragraph .ppas, 
+.grammalecte_paragraph .vmode  {
     background-color: hsl(300, 30%, 40%);
     color: hsl(300, 10%, 96%);
     /*text-decoration: underline wavy hsl(300, 40%, 40%);*/
 }
-.conj:hover, .infi:hover, .imp:hover, .inte:hover, .ppas:hover, .vmode:hover {
+
+.grammalecte_paragraph .conj:hover, 
+.grammalecte_paragraph .infi:hover, 
+.grammalecte_paragraph .imp:hover, 
+.grammalecte_paragraph .inte:hover, 
+.grammalecte_paragraph .ppas:hover, 
+.grammalecte_paragraph .vmode:hover {
     background-color: hsl(300, 40%, 30%);
     color: hsl(300, 10%, 96%);
 }
 
 /* elems */
-.conf, .ocr {
+.grammalecte_paragraph .conf, 
+.grammalecte_paragraph .ocr {
     background-color: hsl(270, 40%, 30%);
     color: hsl(270, 10%, 96%);
     /*text-decoration: underline wavy hsl(270, 40%, 30%);*/
 }
-.conf:hover, .ocr:hover {
+
+.grammalecte_paragraph .conf:hover, 
+.grammalecte_paragraph .ocr:hover {
     background-color: hsl(270, 50%, 20%);
     color: hsl(270, 10%, 96%);
 }
 
 /* elems */
-.bs, .pleo, .neg, .redon1, .redon2, .mc, .date, .notype {
+.grammalecte_paragraph .bs, 
+.grammalecte_paragraph .pleo, 
+.grammalecte_paragraph .neg, 
+.grammalecte_paragraph .redon1, 
+.grammalecte_paragraph .redon2, 
+.grammalecte_paragraph .mc, 
+.grammalecte_paragraph .date, 
+.grammalecte_paragraph .notype {
     background-color: hsl(180, 50%, 40%);
     color: hsl(180, 10%, 96%);
     /*text-decoration: underline wavy hsl(180, 50%, 40%);*/
 }
-.bs:hover, .pleo:hover, .neg:hover, .redon1:hover, .redon2:hover, .mc:hover, .date:hover, .notype:hover {
+
+.grammalecte_paragraph .bs:hover, 
+.grammalecte_paragraph .pleo:hover, 
+.grammalecte_paragraph .neg:hover, 
+.grammalecte_paragraph .redon1:hover, 
+.grammalecte_paragraph .redon2:hover, 
+.grammalecte_paragraph .mc:hover, 
+.grammalecte_paragraph .date:hover, 
+.grammalecte_paragraph .notype:hover {
     background-color: hsl(180, 60%, 30%);
     color: hsl(180, 10%, 96%);
 }

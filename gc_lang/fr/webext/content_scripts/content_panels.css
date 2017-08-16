@@ -103,3 +103,40 @@
     height: calc(100% - 55px); /* panel height - title_bar */
     overflow: auto;
 }
+
+
+/*
+    CSS Spinner
+    Double bounce
+    http://tobiasahlin.com/spinkit/
+*/
+.grammalecte_spinner {
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    top: 2px;
+    right: 120px;
+}
+.grammalecte_spinner .bounce1,
+.grammalecte_spinner .bounce2 {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background-color: hsl(180, 50%, 75%);
+    opacity: 0.6;
+    position: absolute;
+    top: 0;
+    left: 0;
+    animation: grammalecte-sk-bounce 2.0s infinite ease-in-out;
+}
+.bounce2 {
+    animation-delay: -1.0s;
+}
+
+@keyframes grammalecte-sk-bounce {
+    0%, 100% { 
+        transform: scale(0.0);
+    } 50% { 
+        transform: scale(1.0);
+    }
+}

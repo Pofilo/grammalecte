@@ -114,7 +114,7 @@ function createLxgPanel () {
     } else {
         // create the panel
         oLxgPanel = new GrammalectePanel("grammalecte_lxg_panel", "Lexicographe", 500, 700);
-        oLxgPanel.setContentNode(oLxgPanelContent.getNode());
+        oLxgPanel.setContentNode(oLxgPanelContent.init());
         oLxgPanel.insertIntoPage();
     }
 }
@@ -127,7 +127,7 @@ function createGCPanel () {
     } else {
         // create the panel
         oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Correcteur", 500, 700);
-        oGCPanel.setContentNode(oGCPanelContent.getNode());
+        oGCPanel.setContentNode(oGCPanelContent.init());
         oGCPanel.insertIntoPage();
     }
 }

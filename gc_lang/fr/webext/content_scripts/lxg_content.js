@@ -8,7 +8,7 @@ const oLxgPanelContent = {
 
     _nCount: 0,
 
-    getNode: function () {
+    init: function () {
         return this._xContentNode;
     },
 
