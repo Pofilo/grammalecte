@@ -11,9 +11,9 @@ function onGrammalecteGCPanelClick (xEvent) {
             } else if (xElem.id === "grammalecte_tooltip_ignore") {
                 oGCPanelContent.ignoreError(xElem.id);
             } else if (xElem.id.startsWith("grammalecte_check")) {
-                oGCPanelContent.recheckParagraph(xElem.id.slice(17));
+                oGCPanelContent.recheckParagraph(parseInt(xElem.id.slice(17)));
             } else if (xElem.id.startsWith("grammalecte_hide")) {
-                document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
+                xElem.parentNode.parentNode.style.display = "none";
             } else if (xElem.tagName === "U" && xElem.id.startsWith("grammalecte_err")
                        && xElem.className !== "corrected" && xElem.className !== "ignored") {
                 oGCPanelContent.oTooltip.show(xElem.id);
@@ -26,6 +26,18 @@ function onGrammalecteGCPanelClick (xEvent) {
             oGCPanelContent.openURL(xElem.getAttribute("href"));
         } else {
             oGCPanelContent.oTooltip.hide();
+        }
+    }
+    catch (e) {
+        showError(e);
+    }
+}
+
+function onGrammalecteGCPanelKeyUp (xEvent) {
+    try {
+        let xElem = xEvent.target;
+        if (xElem.id) {
+            console.log(xElem.id);
         }
     }
     catch (e) {
@@ -82,13 +94,18 @@ const oGCPanelContent = {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.sParaNum, className: "button green", textContent: "Réanalyser"}));
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.sParaNum, className: "button red bold", textContent: "×"}));
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "button green", textContent: "Réanalyser"}));
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "button red bold", textContent: "×"}));
                 // paragraph
-                let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.sParaNum, lang: "fr", contentEditable: "true"});
+                let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
                 xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
-                this._tagParagraph(xParagraph, oResult.sParagraph, oResult.sParaNum, oResult.aGrammErr, oResult.aSpellErr);
+                xParagraph.addEventListener("keyup", function (xEvent) {
+                    this.oTAC.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
+                    this.oTAC.write();
+                }.bind(this)
+                , true);
+                this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
                 // creation
                 xNodeDiv.appendChild(xActionsBar);
                 xNodeDiv.appendChild(xParagraph);
@@ -100,19 +117,18 @@ const oGCPanelContent = {
         }
     },
 
-    recheckParagraph: function (sParagraphNum) {
-        let sParagraphId = "grammalecte_paragraph" + sParagraphNum;
+    recheckParagraph: function (iParaNum) {
+        let sParagraphId = "grammalecte_paragraph" + iParaNum;
         let xParagraph = document.getElementById(sParagraphId);
         this.blockParagraph(xParagraph);
-        let sText = this.getPurgedTextOfParagraph(xParagraph.textContent);
+        let sText = this.purgeText(xParagraph.textContent);
         xPort.postMessage({
             sCommand: "parseAndSpellcheck1",
             dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
             dInfo: {sParagraphId: sParagraphId}
         });
-        this.oTAC.setParagraph(parseInt(sParagraphNum), sText);
+        this.oTAC.setParagraph(iParaNum, sText);
         this.oTAC.write();
-        //stopWaitIcon();
     },
 
     refreshParagraph: function (sParagraphId, oResult) {
@@ -128,7 +144,7 @@ const oGCPanelContent = {
         }
     },
 
-    _tagParagraph: function (xParagraph, sParagraph, sParaNum, aSpellErr, aGrammErr) {
+    _tagParagraph: function (xParagraph, sParagraph, iParaNum, aSpellErr, aGrammErr) {
         try {
             if (aGrammErr.length === 0  &&  aSpellErr.length === 0) {
                 xParagraph.textContent = sParagraph;
@@ -148,8 +164,8 @@ const oGCPanelContent = {
                 let nStart = oErr["nStart"];
                 let nEnd = oErr["nEnd"];
                 if (nStart >= nEndLastErr) {
-                    oErr['sErrorId'] = sParaNum + "-" + nErr.toString(); // error identifier
-                    oErr['sIgnoredKey'] = sParaNum + ":" + nStart.toString() + ":" + sParagraph.slice(nStart, nEnd);
+                    oErr['sErrorId'] = iParaNum + "-" + nErr.toString(); // error identifier
+                    oErr['sIgnoredKey'] = iParaNum + ":" + nStart.toString() + ":" + sParagraph.slice(nStart, nEnd);
                     if (nEndLastErr < nStart) {
                         xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr, nStart)));
                     }
@@ -189,13 +205,10 @@ const oGCPanelContent = {
     },
 
     blockParagraph: function (xParagraph) {
-        xParagraph.style = "background-color: hsl(30, 100%, 80%)";
-        xParagraph.disabled = true;
         xParagraph.contentEditable = "false";
     },
 
     freeParagraph: function (xParagraph) {
-        xParagraph.style = "";
         xParagraph.contentEditable = "true";
     },
 
@@ -210,7 +223,7 @@ const oGCPanelContent = {
             xNodeErr.className = "corrected";
             xNodeErr.removeAttribute("style");
             this.oTooltip.hide();
-            this.recheckParagraph(sErrorId.slice(0, sErrorId.indexOf("-")));
+            this.recheckParagraph(parseInt(sErrorId.slice(0, sErrorId.indexOf("-"))));
         }
         catch (e) {
             showError(e);
@@ -232,7 +245,7 @@ const oGCPanelContent = {
         }
     },
 
-    getPurgedTextOfParagraph: function (sText) {
+    purgeText: function (sText) {
         return sText.replace(/&nbsp;/g, " ").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&amp;/g, "&");
     },
 
@@ -332,6 +345,7 @@ oGCPanelContent.oTooltip = {
                 }
             }
             this.xTooltipArrow.style.display = "block";
+            this.xTooltipArrow.style.border = "10px solid hsl(0, 0%, 0%)";
             this.xTooltip.style.display = "block";
             if (xNodeErr.dataset.error_type === "spelling") {
                 // spelling mistake
