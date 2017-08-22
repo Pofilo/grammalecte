@@ -192,8 +192,8 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
         let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
-        n += 1;
         postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, sParaNum: n.toString(), aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
+        n += 1;
     }
     postMessage(createResponse("parseAndSpellcheck", null, dInfo, true));
 }

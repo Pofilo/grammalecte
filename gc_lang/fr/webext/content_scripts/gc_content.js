@@ -16,16 +16,16 @@ function onGrammalecteGCPanelClick (xEvent) {
                 document.getElementById(xElem.id).parentNode.parentNode.style.display = "none";
             } else if (xElem.tagName === "U" && xElem.id.startsWith("grammalecte_err")
                        && xElem.className !== "corrected" && xElem.className !== "ignored") {
-                oGrammalecteTooltip.show(xElem.id);
+                oGCPanelContent.oTooltip.show(xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_url") {
                 oGCPanelContent.openURL(xElem.getAttribute("href"));
             } else {
-                oGrammalecteTooltip.hide();
+                oGCPanelContent.oTooltip.hide();
             }
         } else if (xElem.tagName === "A") {
             oGCPanelContent.openURL(xElem.getAttribute("href"));
         } else {
-            oGrammalecteTooltip.hide();
+            oGCPanelContent.oTooltip.hide();
         }
     }
     catch (e) {
@@ -56,10 +56,17 @@ const oGCPanelContent = {
         this.xParagraphList = createNode("div", {id: "grammalecte_paragraph_list"});
         this.xContentNode.appendChild(this.xParagraphList);
         this.xContentNode.addEventListener("click", onGrammalecteGCPanelClick, false);
-        oGrammalecteTooltip.init();
-        this.xContentNode.appendChild(oGrammalecteTooltip.xTooltip);
+        this.oTooltip.init();
+        this.xContentNode.appendChild(this.oTooltip.xTooltip);
         this.bInitDone = true;
         return this.xContentNode;
+    },
+
+    start: function (xTextArea=null) {
+        this.clear();
+        if (xTextArea) {
+            this.oTAC.setTextArea(xTextArea);
+        }
     },
 
     clear: function () {
@@ -97,11 +104,14 @@ const oGCPanelContent = {
         //startWaitIcon();
         let sParagraphId = "grammalecte_paragraph" + sParagraphNum;
         let xParagraph = document.getElementById(sParagraphId);
+        let sText = this.getPurgedTextOfParagraph(xParagraph.textContent);
         xPort.postMessage({
             sCommand: "parseAndSpellcheck1",
-            dParam: {sText: this.getPurgedTextOfParagraph(xParagraph.textContent), sCountry: "FR", bDebug: false, bContext: false},
+            dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
             dInfo: {sParagraphId: sParagraphId}
         });
+        this.oTAC.setParagraph(parseInt(sParagraphNum), sText);
+        this.oTAC.write();
         //stopWaitIcon();
     },
 
@@ -187,7 +197,7 @@ const oGCPanelContent = {
             xNodeErr.textContent = document.getElementById(sNodeSuggId).textContent;
             xNodeErr.className = "corrected";
             xNodeErr.removeAttribute("style");
-            oGrammalecteTooltip.hide();
+            this.oTooltip.hide();
         }
         catch (e) {
             showError(e);
@@ -202,7 +212,7 @@ const oGCPanelContent = {
             let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "ignored";
-            oGrammalecteTooltip.hide();
+            this.oTooltip.hide();
         }
         catch (e) {
             showError(e);
@@ -244,7 +254,7 @@ const oGCPanelContent = {
 
 
 
-const oGrammalecteTooltip = {
+oGCPanelContent.oTooltip = {
 
     xTooltip: null,
 
@@ -372,61 +382,56 @@ const oGrammalecteTooltip = {
 }
 
 
-const oGrammalecteTextareaControl = {
+oGCPanelContent.oTAC = {
+    // Text area control
 
-    xTextarea: null,
+    _xTextArea: null,
 
-    dParagraph: new Map(),
+    _dParagraph: new Map(),
 
-    setTextarea: function (xNode) {
-        this.xTextarea = xNode;
-        this.xTextarea.disabled = true;
+    setTextArea: function (xNode) {
+        this.clear();
+        this._xTextArea = xNode;
+        this._xTextArea.disabled = true;
+        this._loadText();
     },
 
     clear: function () {
-        this.xTextarea.disabled = false;
-        this.xTextarea = null;
-        this.dParagraph.clear();
+        if (this._xTextArea !== null) {
+            this._xTextArea.disabled = false;
+            this._xTextArea = null;
+        }
+        this._dParagraph.clear();
     },
 
     setParagraph (iParagraph, sText) {
-        this.dParagraph.set(iParagraph, sText);
-    },
-
-    getParagraph (iParagraph) {
-        return dParagraphs.has(iParagraph) ? this.dParagraphs.get(iParagraph) : this.getNthParagraph(iParagraph);
-    },
-
-    getNthParagraph: function (iParagraph) {
-        if (this.xTextarea !== null) {
-            let sText = this.xTextarea.value;
-            let i = 0;
-            let iStart = 0;
-            while (i < iParagraph && ((iStart = sText.indexOf("\n", iStart)) !== -1)) {
-                i++;
-                iStart++;
-            }
-            if (i === iParagraph) {
-                return ((iEnd = sText.indexOf("\n", iStart)) !== -1) ? sText.slice(iStart, iEnd) : sText.slice(iStart);
-            }
-            return "# Erreur. Paragraphe introuvable.";
+        if (this._xTextArea !== null) {
+            this._dParagraph.set(iParagraph, sText);
         }
-        return "# Erreur. Zone de texte introuvable.";
     },
 
-    rewrite: function () {
-        try {
-            if (this.xTextarea !== null) {
-                let sText = "";
-                let i = 0;
-                for (let sParagraph of this.xTextarea.value.split("\n")) {
-                    sText += (dParagraphs.has(i)) ? dParagraphs.get(i) + "\n" : sParagraph + "\n";
-                    i += 1;
-                }
-                this.xTextarea.value = sText.slice(0,-1);
-            }
-        } catch (e) {
-            showError(e);
+    _loadText () {
+        let sText = this._xTextArea.value;
+        let i = 0;
+        let iStart = 0;
+        let iEnd = 0;
+        sText = sText.replace("\r\n", "\n").replace("\r", "\n");
+        while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
+            this._dParagraph.set(i, sText.slice(iStart, iEnd));
+            i++;
+            iStart = iEnd+1;
+        }
+        this._dParagraph.set(i, sText.slice(iStart));
+        console.log("Paragraphs number: " + (i+1));
+    },
+
+    write: function () {
+        if (this._xTextArea !== null) {
+            let sText = "";
+            this._dParagraph.forEach(function (val, key) {
+                sText += val + "\n";
+            });
+            this._xTextArea.value = sText.slice(0,-1);
         }
     }
 }

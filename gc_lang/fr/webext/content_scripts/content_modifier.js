@@ -53,9 +53,13 @@ function createWrapperToolbar (xTextArea) {
     try {
         let xToolbar = createNode("div", {className: "grammalecte_wrapper_toolbar"});
         let xConjButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Conjuguer"});
-        xConjButton.onclick = function() { createConjPanel(); };
+        xConjButton.onclick = function() {
+            createConjPanel();
+        };
         let xTFButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Formater"});
-        xTFButton.onclick = function() { createTFPanel(xTextArea); };
+        xTFButton.onclick = function() {
+            createTFPanel(xTextArea);
+        };
         let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
         xLxgButton.onclick = function() {
             createLxgPanel();
@@ -70,6 +74,7 @@ function createWrapperToolbar (xTextArea) {
         xGCButton.onclick = function() {
             createGCPanel();
             oGCPanel.startWaitIcon();
+            oGCPanelContent.start(xTextArea);
             xPort.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
