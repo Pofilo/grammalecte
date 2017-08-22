@@ -33,18 +33,6 @@ function onGrammalecteGCPanelClick (xEvent) {
     }
 }
 
-function onGrammalecteGCPanelKeyUp (xEvent) {
-    try {
-        let xElem = xEvent.target;
-        if (xElem.id) {
-            console.log(xElem.id);
-        }
-    }
-    catch (e) {
-        showError(e);
-    }
-}
-
 
 const oGCPanelContent = {
     /*
