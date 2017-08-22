@@ -141,7 +141,7 @@ function createGCPanel () {
         oGCPanel.show();
     } else {
         // create the panel
-        oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Correcteur", 500, 700);
+        oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Grammalecte", 500, 700);
         oGCPanel.setContentNode(oGCPanelContent.init());
         oGCPanel.insertIntoPage();
     }

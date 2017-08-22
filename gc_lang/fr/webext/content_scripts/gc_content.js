@@ -101,9 +101,9 @@ const oGCPanelContent = {
     },
 
     recheckParagraph: function (sParagraphNum) {
-        //startWaitIcon();
         let sParagraphId = "grammalecte_paragraph" + sParagraphNum;
         let xParagraph = document.getElementById(sParagraphId);
+        this.blockParagraph(xParagraph);
         let sText = this.getPurgedTextOfParagraph(xParagraph.textContent);
         xPort.postMessage({
             sCommand: "parseAndSpellcheck1",
@@ -121,6 +121,7 @@ const oGCPanelContent = {
             xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
             xParagraph.textContent = "";
             this._tagParagraph(xParagraph, oResult.sParagraph, sParagraphId.slice(21), oResult.aGrammErr, oResult.aSpellErr);
+            this.freeParagraph(xParagraph);
         }
         catch (e) {
             showError(e);
@@ -187,6 +188,17 @@ const oGCPanelContent = {
         return xNodeErr;
     },
 
+    blockParagraph: function (xParagraph) {
+        xParagraph.style = "background-color: hsl(30, 100%, 80%)";
+        xParagraph.disabled = true;
+        xParagraph.contentEditable = "false";
+    },
+
+    freeParagraph: function (xParagraph) {
+        xParagraph.style = "";
+        xParagraph.contentEditable = "true";
+    },
+
     applySuggestion: function (sNodeSuggId) { // sugg
         try {
             console.log(sNodeSuggId);
@@ -198,6 +210,7 @@ const oGCPanelContent = {
             xNodeErr.className = "corrected";
             xNodeErr.removeAttribute("style");
             this.oTooltip.hide();
+            this.recheckParagraph(sErrorId.slice(0, sErrorId.indexOf("-")));
         }
         catch (e) {
             showError(e);
