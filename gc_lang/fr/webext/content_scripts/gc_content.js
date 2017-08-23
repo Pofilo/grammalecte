@@ -50,7 +50,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xContentNode = createNode("div", {id: "grammalecte_gc_panel_content"});
         this.xParagraphList = createNode("div", {id: "grammalecte_paragraph_list"});
         this.xContentNode.appendChild(this.xParagraphList);
-        this.xContentNode.addEventListener("click", onGrammalecteGCPanelClick, false);
+        this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
         this.oTooltip = new GrammalecteTooltip(this.xContentNode);
         this.xPanelContent.appendChild(this.xContentNode);
         this.oTAC = new GrammalecteTextAreaControl();

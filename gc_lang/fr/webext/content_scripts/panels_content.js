@@ -8,12 +8,12 @@ console.log("[Content script] Panel creator");
 
 class GrammalectePanel {
 
-    constructor (sId, sTitle, nWidth, nHeight, bMovable=true) {
+    constructor (sId, sTitle, nWidth, nHeight, bFlexible=true) {
         this.sId = sId;
         this.sContentId = sId+"_content";
         this.nWidth = nWidth;
         this.nHeight = nHeight;
-        this.bMovable = bMovable;
+        this.bFlexible = bFlexible;
         this.xPanelContent = createNode("div", {className: "grammalecte_panel_content"});
         this.xWaitIcon = this._createWaitIcon();
         this.xPanelNode = this._createPanel(sTitle);
@@ -41,13 +41,11 @@ class GrammalectePanel {
     _createButtons () {
         let xButtonLine = createNode("div", {className: "grammalecte_panel_commands"});
         xButtonLine.appendChild(this.xWaitIcon);
-        if (this.bMovable) {
-            xButtonLine.appendChild(this._createMoveButton("stickToTop", "¯", "Coller en haut"));
-            xButtonLine.appendChild(this._createMoveButton("stickToLeft", "«", "Coller à gauche"));
-            xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
-            xButtonLine.appendChild(this._createMoveButton("stickToRight", "»", "Coller à droite"));
-            xButtonLine.appendChild(this._createMoveButton("stickToBottom", "_", "Coller en bas"));
-        }
+        xButtonLine.appendChild(this._createMoveButton("stickToTop", "¯", "Coller en haut"));
+        xButtonLine.appendChild(this._createMoveButton("stickToLeft", "«", "Coller à gauche"));
+        xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
+        xButtonLine.appendChild(this._createMoveButton("stickToRight", "»", "Coller à droite"));
+        xButtonLine.appendChild(this._createMoveButton("stickToBottom", "_", "Coller en bas"));
         xButtonLine.appendChild(this._createCloseButton());
         return xButtonLine;
     }
@@ -88,28 +86,30 @@ class GrammalectePanel {
     }
 
     center () {
-        let nHeight = window.innerHeight-100;
+        let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
         this.xPanelNode.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
     }
 
     stickToLeft () {
-        let nHeight = window.innerHeight-100;
+        let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
         this.xPanelNode.style = `top: 50%; left: -2px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
     }
 
     stickToRight () {
-        let nHeight = window.innerHeight-100;
+        let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
         this.xPanelNode.style = `top: 50%; right: -2px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
     }
 
     stickToTop () {
-        let nWidth = Math.floor(window.innerWidth/2);
-        this.xPanelNode.style = `top: -2px; left: 50%; width: ${nWidth}px; height: ${Math.floor(window.innerHeight*0.45)}px; margin-left: -${nWidth/2}px;`;
+        let nWidth = (this.bFlexible) ? Math.floor(window.innerWidth/2) : this.nWidth;
+        let nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
+        this.xPanelNode.style = `top: -2px; left: 50%; width: ${nWidth}px; height: ${nHeight}px; margin-left: -${nWidth/2}px;`;
     }
 
     stickToBottom () {
-        let nWidth = Math.floor(window.innerWidth/2);
-        this.xPanelNode.style = `bottom: -2px; left: 50%; width: ${nWidth}px; height: ${Math.floor(window.innerHeight*0.45)}px; margin-left: -${nWidth/2}px;`;
+        let nWidth = (this.bFlexible) ? Math.floor(window.innerWidth/2) : this.nWidth;
+        let nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
+        this.xPanelNode.style = `bottom: -2px; left: 50%; width: ${nWidth}px; height: ${nHeight}px; margin-left: -${nWidth/2}px;`;
     }
 
     reduce () {
