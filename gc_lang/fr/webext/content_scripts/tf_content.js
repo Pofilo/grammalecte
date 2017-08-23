@@ -60,6 +60,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xMisc.appendChild(this._createSimpleOption("o_etc", true, "Et cætera, etc."));
             xMisc.appendChild(this._createSimpleOption("o_missing_hyphens", true, "Traits d’union manquants"));
             xMisc.appendChild(this._createSimpleOption("o_ma_word", true, "Apostrophes manquantes"));
+            xMisc.appendChild(this._createSingleLetterOptions());
             let xStruct = this._createFieldset("group_struct", false, "Restructuration [!]");
             xStruct.appendChild(this._createSimpleOption("o_remove_hyphens_at_end_of_paragraphs", false, "Enlever césures en fin de ligne/paragraphe [!]"));
             xStruct.appendChild(this._createSimpleOption("o_merge_contiguous_paragraphs", false, "Fusionner les paragraphes contigus [!]"));
@@ -84,15 +85,12 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xTFNode.appendChild(xActions);
         }
         catch (e) {
-            //console.error(e);
             showError(e);
         }
         return xTFNode;
     }
 
-    /*
-        Common options
-    */
+    // Common options
     _createFieldset (sId, bDefault, sLabel) {
         let xFieldset = createNode("fieldset", {id: sId, className: "groupblock"});
         let xLegend = document.createElement("legend");
@@ -103,63 +101,119 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     _createSimpleOption (sId, bDefault, sLabel) {
-        let xOption = createNode("div", {className: "blockopt underline"});
-        xOption.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
-        xOption.appendChild(createNode("label", {htmlFor: sId, textContent: sLabel, className: "opt_lbl largew"}));
-        xOption.appendChild(createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "9999"}));
-        return xOption;
-    }
-
-
-    /*
-        Hyphens
-    */
-    _createRadioBoxHyphens (sName, sIdEmDash, sIdEnDash, bDefaultEmDash) {
-        let xLine = createNode("div", {className: "blockopt"});
-        xLine.appendChild(createNode("input", {type: "radio", id: sIdEmDash, name: sName, className:"option"}, {default: bDefaultEmDash}));
-        xLine.appendChild(createNode("label", {htmlFor: sIdEmDash, className: "opt_lbl", textContent: "cadratin (—)"}));
-        xLine.appendChild(createNode("input", {type: "radio", id: sIdEnDash, name: sName, className:"option"}, {default: !bDefaultEmDash}));
-        xLine.appendChild(createNode("label", {htmlFor: sIdEnDash, className: "opt_lbl", textContent: "demi-cadratin (–)"}));
+        let xLine = createNode("div", {className: "blockopt underline"});
+        xLine.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
+        xLine.appendChild(createNode("label", {htmlFor: sId, textContent: sLabel, className: "opt_lbl largew"}));
+        xLine.appendChild(createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "9999"}));
         return xLine;
     }
 
+    // Hyphens
+    _createRadioBoxHyphens (sName, sIdEmDash, sIdEnDash, bDefaultEmDash) {
+        let xLine = createNode("div", {className: "blockopt indent"});
+        xLine.appendChild(this._createInlineRadioOption(sName, sIdEmDash, "cadratin (—)", bDefaultEmDash));
+        xLine.appendChild(this._createInlineRadioOption(sName, sIdEnDash, "demi-cadratin (—)", !bDefaultEmDash));
+        return xLine;
+    }
 
-    /*
-        Ligatures
-    */
+    // Ligatures
     _createRadioBoxLigatures () {
         let xLine = createNode("div", {className: "blockopt underline"});
-        xLine.appendChild(this._createSimpleOption("o_ts_ligature", true, "Ligatures"));
-        xLine.appendChild(createNode("input", {type: "radio", id: "o_ts_ligature_do", name: "liga", className:"option"}, {default: false}));
-        xLine.appendChild(createNode("label", {htmlFor: "o_ts_ligature_do", className: "opt_lbl", textContent: "faire"}));
-        xLine.appendChild(createNode("input", {type: "radio", id: "o_ts_ligature_undo", name: "liga", className:"option"}, {default: true}));
-        xLine.appendChild(createNode("label", {htmlFor: "o_ts_ligature_undo", className: "opt_lbl", textContent: "défaire"}));
+        xLine.appendChild(createNode("div", {id: "res_"+"o_ts_ligature", className: "grammalecte_tf_result", textContent: "9999"}));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature", "Ligatures", true));
+        xLine.appendChild(this._createInlineRadioOption("liga", "o_ts_ligature_do", "faire", false));
+        xLine.appendChild(this._createInlineRadioOption("liga", "o_ts_ligature_undo", "défaire", true));
         return xLine;
     }
 
     _createLigaturesSelection () {
-        let xLine = createNode("div", {className: "blockopt"});
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_ff", "ff", true));
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_fi", "fi", true));
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_ffi", "ffi", true));
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_fl", "fl", true));
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_ffl", "ffl", true));
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_ft", "ft", true));
-        xLine.appendChild(this._createLigatureCheckboxAndLabel("o_ts_ligature_st", "st", false));
+        let xLine = createNode("div", {className: "blockopt indent"});
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_ff", "ff", true));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_fi", "fi", true));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_ffi", "ffi", true));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_fl", "fl", true));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_ffl", "ffl", true));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_ft", "ft", true));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_st", "st", false));
         return xLine;
     }
 
-    _createLigatureCheckboxAndLabel (sId, sLabel, bDefault) {
-        let xInlineBlock = createNode("div", {style: "display: inline-block;"});
+    // Apostrophes
+    _createSingleLetterOptions () {
+        let xLine = createNode("div", {className: "blockopt indent"});
+        xLine.appendChild(this._createInlineCheckboxOption("o_ma_1letter_lowercase", "lettres isolées (j’ n’ m’ t’ s’ c’ d’ l’)", false));
+        xLine.appendChild(this._createInlineCheckboxOption("o_ma_1letter_uppercase", "Maj.", false));
+        return xLine;
+    }
+
+    // Inline option block
+    _createInlineCheckboxOption (sId, sLabel, bDefault) {
+        let xInlineBlock = createNode("div", {className: "inlineblock"});
         xInlineBlock.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
+        xInlineBlock.appendChild(createNode("label", {htmlFor: sId, textContent: sLabel, className: "opt_lbl"}));
+        return xInlineBlock;
+    }
+
+    _createInlineRadioOption (sName, sId, sLabel, bDefault) {
+        let xInlineBlock = createNode("div", {className: "inlineblock"});
+        xInlineBlock.appendChild(createNode("input", {type: "radio", id: sId, name: sName, className:"option"}, {default: bDefault}));
         xInlineBlock.appendChild(createNode("label", {htmlFor: sId, className: "opt_lbl", textContent: sLabel}));
         return xInlineBlock;
     }
+
+
+    /*
+        Actions
+    */
+    switchGroup (sOptName) {
+        if (document.getElementById(sOptName).checked) {
+            document.getElementById(sOptName.slice(2)).style.opacity = 1;
+        } else {
+            document.getElementById(sOptName.slice(2)).style.opacity = 0.3;
+        }
+    }
+
+
+    reset () {
+        this.resetProgressBar();
+        for (let xNode of document.getElementsByClassName("option")) {
+            xNode.checked = (xNode.dataset.default === "true");
+            if (xNode.id.startsWith("o_group_")) {
+                switchGroup(xNode.id);
+            }
+        }
+    }
+
+    resetProgressBar () {
+        document.getElementById('progressbar').value = 0;
+        document.getElementById('time_res').textContent = "";
+    }
+
+    setOptions (oOptions) {
+        for (let sOptName in oOptions) {
+            //console.log(sOptName + ":" + oOptions[sOptName]);
+            if (document.getElementById(sOptName) !== null) {
+                document.getElementById(sOptName).checked = oOptions[sOptName];
+                if (sOptName.startsWith("o_group_")) {
+                    switchGroup(sOptName);
+                } 
+                if (document.getElementById("res_"+sOptName) !== null) {
+                    document.getElementById("res_"+sOptName).textContent = "";
+                }
+            }
+        }
+    }
+
+    saveOptions () {
+        let oOptions = {};
+        for (let xNode of document.getElementsByClassName("option")) {
+            oOptions[xNode.id] = xNode.checked;
+        }
+        self.port.emit("saveOptions", JSON.stringify(oOptions));
+    }
+
+
 }
-
-    
-
-
 
 
 let sTFinnerHTML = ' \
@@ -171,16 +225,6 @@ let sTFinnerHTML = ' \
       <div class="secondoption"> \
         <input type="checkbox" id="o_ordinals_exponant" class="option" data-default="true" /> \
         <label for="o_ordinals_exponant" class="opt_lbl smallw" data-l10n-en="tf_ordinals_exponant">${tf_ordinals_exponant}</label> \
-      </div> \
-    </div> \
-    <div class="blockopt"> \
-      <div class="inlineblock indent"> \
-        <input type="checkbox" id="o_ma_1letter_lowercase" class="option" /> \
-        <label for="o_ma_1letter_lowercase" class="opt_lbl" data-l10n-en="tf_ma_1letter_lowercase">${tf_ma_1letter_lowercase}</label> \
-      </div> \
-      <div class="inlineblock indent"> \
-        <input type="checkbox" id="o_ma_1letter_uppercase" class="option" /> \
-        <label for="o_ma_1letter_uppercase" class="opt_lbl" data-l10n-en="tf_ma_1letter_uppercase">${tf_ma_1letter_uppercase}</label> \
       </div> \
     </div> \
 ';

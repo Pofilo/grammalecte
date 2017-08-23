@@ -115,7 +115,7 @@ function createTFPanel (xTextArea) {
         oTFPanel.show();
     } else {
         // create the panel
-        oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 600, false);
+        oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 620, false);
         oTFPanel.logInnerHTML();
         oTFPanel.setTextArea(xTextArea);
         oTFPanel.insertIntoPage();

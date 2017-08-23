@@ -69,10 +69,6 @@ class GrammalectePanel {
         return xButton;
     }
 
-    setContentNode (xNode) {
-        this.xPanelContent.appendChild(xNode);
-    }
-
     insertIntoPage () {
         document.body.appendChild(this.xPanelNode);
     }
