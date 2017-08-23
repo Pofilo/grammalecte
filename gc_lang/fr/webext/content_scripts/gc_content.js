@@ -70,6 +70,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.aIgnoredErrors.clear();
     }
 
+    hide () {
+        this.xPanelNode.style.display = "none";
+        this.oTAC.clear();
+    }
+
     addParagraphResult (oResult) {
         try {
             if (oResult) {
