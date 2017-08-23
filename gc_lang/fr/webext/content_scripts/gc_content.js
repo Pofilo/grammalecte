@@ -77,7 +77,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     addParagraphResult (oResult) {
         try {
-            if (oResult) {
+            if (oResult && oResult.sParagraph.trim() !== "" && (oResult.aGrammErr.length > 0 || oResult.aSpellErr.length > 0)) {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
