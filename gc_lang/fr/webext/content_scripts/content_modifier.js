@@ -74,7 +74,7 @@ function createWrapperToolbar (xTextArea) {
         xGCButton.onclick = function() {
             createGCPanel();
             oGCPanel.startWaitIcon();
-            oGCPanelContent.start(xTextArea);
+            oGCPanel.start(xTextArea);
             xPort.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
@@ -111,12 +111,13 @@ function createConjPanel () {
 function createTFPanel (xTextArea) {
     console.log("Formateur de texte");
     if (oTFPanel !== null) {
+        oTFPanel.setTextArea(xTextArea);
         oTFPanel.show();
     } else {
         // create the panel
-        oTFPanel = new GrammalectePanel("grammalecte_tf_panel", "Formateur de texte", 800, 600, false);
+        oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 600, false);
         oTFPanel.logInnerHTML();
-        oTFPanel.setContentNode(createTextFormatter(xTextArea));
+        oTFPanel.setTextArea(xTextArea);
         oTFPanel.insertIntoPage();
     }
 }
@@ -124,12 +125,11 @@ function createTFPanel (xTextArea) {
 function createLxgPanel () {
     console.log("Lexicographe");
     if (oLxgPanel !== null) {
-        oLxgPanelContent.clear();
+        oLxgPanel.clear();
         oLxgPanel.show();
     } else {
         // create the panel
-        oLxgPanel = new GrammalectePanel("grammalecte_lxg_panel", "Lexicographe", 500, 700);
-        oLxgPanel.setContentNode(oLxgPanelContent.init());
+        oLxgPanel = new GrammalecteLexicographer("grammalecte_lxg_panel", "Lexicographe", 500, 700);
         oLxgPanel.insertIntoPage();
     }
 }
@@ -137,12 +137,11 @@ function createLxgPanel () {
 function createGCPanel () {
     console.log("Correction grammaticale");
     if (oGCPanel !== null) {
-        oGCPanelContent.clear();
+        oGCPanel.clear();
         oGCPanel.show();
     } else {
         // create the panel
-        oGCPanel = new GrammalectePanel("grammalecte_gc_panel", "Grammalecte", 500, 700);
-        oGCPanel.setContentNode(oGCPanelContent.init());
+        oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
         oGCPanel.insertIntoPage();
     }
 }
@@ -178,19 +177,19 @@ xPort.onMessage.addListener(function (oMessage) {
         case "parseAndSpellcheck":
             console.log("[content script] received: parseAndSpellcheck");
             if (!bEnd) {
-                oGCPanelContent.addParagraphResult(result);
+                oGCPanel.addParagraphResult(result);
             } else {
                 oGCPanel.stopWaitIcon();
             }
             break;
         case "parseAndSpellcheck1":
             console.log("[content script] received: parseAndSpellcheck1");
-            oGCPanelContent.refreshParagraph(dInfo.sParagraphId, result);
+            oGCPanel.refreshParagraph(dInfo.sParagraphId, result);
             break;
         case "getListOfTokens":
             console.log("[content script] received: getListOfTokens");
             if (!bEnd) {
-                oLxgPanelContent.addListOfTokens(result);
+                oLxgPanel.addListOfTokens(result);
             } else {
                 oLxgPanel.stopWaitIcon();
             }

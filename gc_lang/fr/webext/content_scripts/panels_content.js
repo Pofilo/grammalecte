@@ -14,7 +14,7 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bMovable = bMovable;
-        this.xContentNode = createNode("div", {className: "grammalecte_panel_content"});
+        this.xPanelContent = createNode("div", {className: "grammalecte_panel_content"});
         this.xWaitIcon = this._createWaitIcon();
         this.xPanelNode = this._createPanel(sTitle);
         this.center();
@@ -30,7 +30,7 @@ class GrammalectePanel {
             xTitle.appendChild(createNode("div", {className: "grammalecte_panel_label", textContent: sTitle}));
             xBar.appendChild(xTitle);
             xPanel.appendChild(xBar);
-            xPanel.appendChild(this.xContentNode);
+            xPanel.appendChild(this.xPanelContent);
             return xPanel;
         }
         catch (e) {
@@ -72,7 +72,7 @@ class GrammalectePanel {
     }
 
     setContentNode (xNode) {
-        this.xContentNode.appendChild(xNode);
+        this.xPanelContent.appendChild(xNode);
     }
 
     insertIntoPage () {
@@ -127,6 +127,10 @@ class GrammalectePanel {
 
     stopWaitIcon () {
         this.xWaitIcon.style.visibility = "hidden";
+    }
+
+    openURL (sURL) {
+        // todo
     }
 }
 

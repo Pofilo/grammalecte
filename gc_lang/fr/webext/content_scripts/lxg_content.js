@@ -2,34 +2,33 @@
 
 "use strict";
 
-const oLxgPanelContent = {
+class GrammalecteLexicographer extends GrammalectePanel {
 
-    _xContentNode: createNode("div", {id: "grammalecte_lxg_panel_content"}),
+    constructor (...args) {
+        super(...args);
+        this._nCount = 0;
+        this._xContentNode = createNode("div", {id: "grammalecte_lxg_panel_content"});
+        this.xPanelContent.appendChild(this._xContentNode);
+    }
 
-    _nCount: 0,
-
-    init: function () {
-        return this._xContentNode;
-    },
-
-    clear: function () {
+    clear () {
         this._nCount = 0;
         while (this._xContentNode.firstChild) {
             this._xContentNode.removeChild(this._xContentNode.firstChild);
         }
-    },
+    }
 
-    addSeparator: function (sText) {
+    addSeparator (sText) {
         if (this._xContentNode.textContent !== "") {
             this._xContentNode.appendChild(createNode("div", {className: "grammalecte_lxg_separator", textContent: sText}));
         }
-    },
+    }
 
-    addMessage: function (sClass, sText) {
+    addMessage (sClass, sText) {
         this._xContentNode.appendChild(createNode("div", {className: sClass, textContent: sText}));
-    },
+    }
 
-    addListOfTokens: function (lTokens) {
+    addListOfTokens (lTokens) {
         try {
             if (lTokens) {
                 this._nCount += 1;
@@ -44,9 +43,9 @@ const oLxgPanelContent = {
         catch (e) {
             showError(e);
         }
-    },
+    }
 
-    _createTokenNode: function (oToken) {
+    _createTokenNode (oToken) {
         let xTokenNode = createNode("div", {className: "grammalecte_token"});
         xTokenNode.appendChild(createNode("b", {className: oToken.sType, textContent: oToken.sValue}));
         xTokenNode.appendChild(createNode("s", {textContent: " : "}));
@@ -60,9 +59,9 @@ const oLxgPanelContent = {
             xTokenNode.appendChild(xTokenList);
         }
         return xTokenNode;
-    },
+    }
 
-    setHidden: function (sClass, bHidden) {
+    setHidden (sClass, bHidden) {
         for (let xNode of document.getElementsByClassName(sClass)) {
             xNode.hidden = bHidden;
         }
