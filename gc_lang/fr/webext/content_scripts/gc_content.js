@@ -7,25 +7,25 @@ function onGrammalecteGCPanelClick (xEvent) {
         let xElem = xEvent.target;
         if (xElem.id) {
             if (xElem.id.startsWith("grammalecte_sugg")) {
-                oGCPanel.applySuggestion(xElem.id);
+                oGrammalecte.oGCPanel.applySuggestion(xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_ignore") {
-                oGCPanel.ignoreError(xElem.id);
+                oGrammalecte.oGCPanel.ignoreError(xElem.id);
             } else if (xElem.id.startsWith("grammalecte_check")) {
-                oGCPanel.recheckParagraph(parseInt(xElem.id.slice(17)));
+                oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.id.slice(17)));
             } else if (xElem.id.startsWith("grammalecte_hide")) {
                 xElem.parentNode.parentNode.style.display = "none";
             } else if (xElem.tagName === "U" && xElem.id.startsWith("grammalecte_err")
                        && xElem.className !== "corrected" && xElem.className !== "ignored") {
-                oGCPanel.oTooltip.show(xElem.id);
+                oGrammalecte.oGCPanel.oTooltip.show(xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_url") {
-                oGCPanel.openURL(xElem.getAttribute("href"));
+                oGrammalecte.oGCPanel.openURL(xElem.getAttribute("href"));
             } else {
-                oGCPanel.oTooltip.hide();
+                oGrammalecte.oGCPanel.oTooltip.hide();
             }
         } else if (xElem.tagName === "A") {
-            oGCPanel.openURL(xElem.getAttribute("href"));
+            oGrammalecte.oGCPanel.openURL(xElem.getAttribute("href"));
         } else {
-            oGCPanel.oTooltip.hide();
+            oGrammalecte.oGCPanel.oTooltip.hide();
         }
     }
     catch (e) {

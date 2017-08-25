@@ -133,13 +133,13 @@ browser.runtime.onConnect.addListener(handleConnexion);
 browser.contextMenus.create({
     id: "grammar_checking",
     title: "Correction grammaticale",
-    contexts: ["selection", "editable", "page"]
+    contexts: ["selection", "editable"]
 });
 
 browser.contextMenus.create({
     id: "lexicographer",
     title: "Lexicographe",
-    contexts: ["selection", "editable", "page"]
+    contexts: ["selection", "editable"]
 });
 
 browser.contextMenus.create({
