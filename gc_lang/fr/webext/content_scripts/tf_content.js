@@ -13,10 +13,6 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         this.xTextArea = null;
     }
 
-    setTextArea (xTextArea) {
-        this.xTextArea = xTextArea;
-    }
-
     _createTextFormatter () {
         let xTFNode = document.createElement("div");
         try {
@@ -78,7 +74,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             let xDefaultButton = createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_button", style: "background-color: hsl(210, 50%, 50%)"});
             xDefaultButton.addEventListener("click", () => { this.reset(); });
             let xApplyButton = createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_button", style: "background-color: hsl(180, 50%, 50%)"});
-            xApplyButton.addEventListener("click", () => { this.apply(); });
+            xApplyButton.addEventListener("click", () => { this.saveOptions(); this.apply(); });
             xActions.appendChild(xDefaultButton);
             xActions.appendChild(createNode("progress", {id: "grammalecte_tf_progressbar"}));
             xActions.appendChild(createNode("span", {id: "grammalecte_tf_time_res", textContent: "…"}));
@@ -181,6 +177,12 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     /*
         Actions
     */
+    start (xTextArea) {
+        this.xTextArea = xTextArea;
+        let xPromise = browser.storage.local.get("tf_options");
+        xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+    }
+
     switchGroup (sOptName) {
         if (document.getElementById(sOptName).checked) {
             document.getElementById(sOptName.slice(2)).style.opacity = 1;
@@ -206,16 +208,17 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     setOptions (oOptions) {
-        for (let sOptName in oOptions) {
-            //console.log(sOptName + ":" + oOptions[sOptName]);
-            if (document.getElementById(sOptName) !== null) {
-                document.getElementById(sOptName).checked = oOptions[sOptName];
-                if (sOptName.startsWith("o_group_")) {
-                    switchGroup(sOptName);
-                } 
-                if (document.getElementById("res_"+sOptName) !== null) {
-                    document.getElementById("res_"+sOptName).textContent = "";
-                }
+        if (oOptions.hasOwnProperty("tf_options")) {
+            oOptions = oOptions.tf_options;
+        }
+        for (let xNode of document.getElementsByClassName("option")) {
+            //console.log(xNode.id + " > " + oOptions.hasOwnProperty(xNode.id) + ": " + oOptions[xNode.id] + " [" + xNode.dataset.default + "]");
+            xNode.checked = (oOptions.hasOwnProperty(xNode.id)) ? oOptions[xNode.id] : (xNode.dataset.default === "true");
+            if (document.getElementById("res_"+xNode.id) !== null) {
+                document.getElementById("res_"+xNode.id).textContent = "";
+            }
+            if (xNode.id.startsWith("o_group_")) {
+                this.switchGroup(xNode.id);
             }
         }
     }
@@ -224,8 +227,9 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         let oOptions = {};
         for (let xNode of document.getElementsByClassName("option")) {
             oOptions[xNode.id] = xNode.checked;
+            console.log(xNode.id + ": " + xNode.checked);
         }
-        self.port.emit("saveOptions", JSON.stringify(oOptions));
+        browser.storage.local.set({"tf_options": oOptions});
     }
 
     apply () {

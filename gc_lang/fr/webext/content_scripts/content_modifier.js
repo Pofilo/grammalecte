@@ -111,13 +111,13 @@ function createConjPanel () {
 function createTFPanel (xTextArea) {
     console.log("Formateur de texte");
     if (oTFPanel !== null) {
-        oTFPanel.setTextArea(xTextArea);
+        oTFPanel.start(xTextArea);
         oTFPanel.show();
     } else {
         // create the panel
         oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 620, false);
         oTFPanel.logInnerHTML();
-        oTFPanel.setTextArea(xTextArea);
+        oTFPanel.start(xTextArea);
         oTFPanel.insertIntoPage();
     }
 }

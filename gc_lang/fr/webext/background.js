@@ -118,6 +118,7 @@ function handleConnexion (p) {
                 break;
             default:
                 console.log("[background] Unknown command: " + oRequest.sCommand);
+                console.log(oRequest);
         }
     });
     xPort.postMessage({sActionDone: "newId", result: iPortId});
