@@ -17,7 +17,6 @@ function showError (e) {
 
 const oGrammalecte = {
 
-    nTadId: null,
     nWrapper: 1,
 
     oConjPanel: null,
@@ -54,14 +53,19 @@ const oGrammalecte = {
             let xConjButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Conjuguer"});
             xConjButton.onclick = function () {
                 this.createConjPanel();
+                //this.oConjPanel.show();
             }.bind(this);
             let xTFButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Formater"});
             xTFButton.onclick = function () {
                 this.createTFPanel(xTextArea);
+                this.oTFPanel.start(xTextArea);
+                this.oTFPanel.show();
             }.bind(this);
             let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
             xLxgButton.onclick = function () {
                 this.createLxgPanel();
+                this.oLxgPanel.clear();
+                this.oLxgPanel.show();
                 this.oLxgPanel.startWaitIcon();
                 xPort.postMessage({
                     sCommand: "getListOfTokens",
@@ -72,8 +76,10 @@ const oGrammalecte = {
             let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
             xGCButton.onclick = function () {
                 this.createGCPanel();
-                this.oGCPanel.startWaitIcon();
+                this.oGCPanel.clear();
+                this.oGCPanel.show();
                 this.oGCPanel.start(xTextArea);
+                this.oGCPanel.startWaitIcon();
                 xPort.postMessage({
                     sCommand: "parseAndSpellcheck",
                     dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
@@ -98,48 +104,29 @@ const oGrammalecte = {
 
     createConjPanel: function () {
         console.log("Conjugueur");
-        if (this.oConjPanel !== null) {
-            this.oConjPanel.show();
-        } else {
-            // create the panel
+        if (this.oConjPanel === null) {
             this.oConjPanel = new GrammalectePanel("grammalecte_conj_panel", "Conjugueur", 600, 600);
             this.oConjPanel.insertIntoPage();
         }
     },
 
     createTFPanel: function (xTextArea) {
-        console.log("Formateur de texte");
-        if (this.oTFPanel !== null) {
-            this.oTFPanel.start(xTextArea);
-            this.oTFPanel.show();
-        } else {
-            // create the panel
+        if (this.oTFPanel === null) {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 620, false);
-            this.oTFPanel.logInnerHTML();
-            this.oTFPanel.start(xTextArea);
+            //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
         }
     },
 
     createLxgPanel: function () {
-        console.log("Lexicographe");
-        if (this.oLxgPanel !== null) {
-            this.oLxgPanel.clear();
-            this.oLxgPanel.show();
-        } else {
-            // create the panel
+        if (this.oLxgPanel === null) {
             this.oLxgPanel = new GrammalecteLexicographer("grammalecte_lxg_panel", "Lexicographe", 500, 700);
             this.oLxgPanel.insertIntoPage();
         }
     },
 
     createGCPanel: function () {
-        console.log("Correction grammaticale");
-        if (this.oGCPanel !== null) {
-            this.oGCPanel.clear();
-            this.oGCPanel.show();
-        } else {
-            // create the panel
+        if (this.oGCPanel === null) {
             this.oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
             this.oGCPanel.insertIntoPage();
         }
@@ -156,10 +143,6 @@ xPort.onMessage.addListener(function (oMessage) {
     console.log("[Content script] received…");
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
     switch (sActionDone) {
-        case "getCurrentTabId":
-            console.log("[Content script] tab id: " + result);
-            oGrammalecte.nTadId = result;
-            break;
         case "parseAndSpellcheck":
             console.log("[content script] received: parseAndSpellcheck");
             if (!bEnd) {
@@ -180,16 +163,28 @@ xPort.onMessage.addListener(function (oMessage) {
                 oGrammalecte.oLxgPanel.stopWaitIcon();
             }
             break;
+        // Design WTF: context menus are made in background, not in content-script.
+        // Commands from context menu received here to initialize panels
+        case "openGCPanel":
+            oGrammalecte.createGCPanel();
+            oGrammalecte.oGCPanel.clear();
+            oGrammalecte.oGCPanel.show();
+            oGrammalecte.oGCPanel.start();
+            oGrammalecte.oGCPanel.startWaitIcon();
+            break;
+        case "openLxgPanel":
+            oGrammalecte.createLxgPanel();
+            oGrammalecte.oLxgPanel.clear();
+            oGrammalecte.oLxgPanel.show();
+            oGrammalecte.oLxgPanel.startWaitIcon();
+            break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
 
-xPort.postMessage({
-    sCommand: "getCurrentTabId",
-    dParam: {},
-    dInfo: {}
-});
 
-
+/*
+    Start
+*/
 oGrammalecte.wrapTextareas();

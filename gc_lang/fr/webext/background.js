@@ -25,7 +25,7 @@ xGCEWorker.onmessage = function (e) {
             case "getListOfTokens":
                 console.log("Action done: " + sActionDone);
                 if (typeof(dInfo.iReturnPort) === "number") {
-                    let xPort = aConnx[dInfo.iReturnPort];
+                    let xPort = dConnx.get(dInfo.iReturnPort);
                     xPort.postMessage(e.data);
                 } else {
                     console.log("[background] don’t know where to send results");
@@ -64,7 +64,7 @@ xGCEWorker.postMessage({sCommand: "init", dParam: {sExtensionPath: browser.exten
     Ports from content-scripts
 */
 
-let aConnx = [];
+let dConnx = new Map();
 
 
 /*
@@ -98,18 +98,13 @@ browser.runtime.onMessage.addListener(handleMessage);
 
 function handleConnexion (p) {
     var xPort = p;
-    let iPortId = aConnx.length; // identifier for the port: each port can be found at aConnx[iPortId]
-    aConnx.push(xPort);
-    console.log("Port: " + p.name + ", id: " + iPortId);
-    console.log(xPort);
+    let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
+    console.log("tab_id: " + iPortId);
+    dConnx.set(iPortId, xPort);
     xPort.onMessage.addListener(function (oRequest) {
         console.log("[background] message via connexion:");
         console.log(oRequest);
         switch (oRequest.sCommand) {
-            case "getCurrentTabId":
-                console.log(getCurrentTabId());
-                xPort.postMessage({sActionDone: "getCurrentTabId", result: "getCurrentTabId()", dInfo: null, bError: false});
-                break;
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
@@ -129,25 +124,25 @@ function handleConnexion (p) {
 browser.runtime.onConnect.addListener(handleConnexion);
 
 
-async function getCurrentTabId () {
-    let xTab = await browser.tabs.getCurrent();
-    return xTab.id;
-}
-
-
 /*
     Context Menu
 */
 browser.contextMenus.create({
-    id: "grammar_checking",
+    id: "parseAndSpellcheck",
     title: "Correction grammaticale",
-    contexts: ["selection", "editable"]
+    contexts: ["selection"]
 });
 
 browser.contextMenus.create({
-    id: "lexicographer",
+    id: "getListOfTokens",
     title: "Lexicographe",
-    contexts: ["selection", "editable"]
+    contexts: ["selection"]
+});
+
+browser.contextMenus.create({
+    id: "whatever",
+    type: "separator",
+    contexts: ["selection"]
 });
 
 browser.contextMenus.create({
@@ -155,6 +150,7 @@ browser.contextMenus.create({
     title: "Conjugueur [fenêtre]",
     contexts: ["all"]
 });
+
 browser.contextMenus.create({
     id: "conjugueur_tab",
     title: "Conjugueur [onglet]",
@@ -169,8 +165,6 @@ function onError(error) {
     console.log(`Error: ${error}`);
 }
 
-let xConjWindow = null;
-let xConjTab = null;
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
@@ -181,15 +175,28 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     console.log("editable: " + xInfo.editable + " · selected: " + xInfo.selectionText);
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
-        case "grammar_checking":
+        case "parseAndSpellcheck": {
+            let xPort = dConnx.get(xTab.id);
+            xPort.postMessage({sActionDone: "openGCPanel", result: null, dInfo: null, bEnd: false, bError: false});
+            xGCEWorker.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: {iReturnPort: xTab.id}
+            });
             break;
-        case "lexicographer":
-            if (xInfo.selectionText) {
-                xGCEWorker.postMessage(["getListOfTokens", {sText: xInfo.selectionText}]);
-            }
+        }
+        case "getListOfTokens": {
+            let xPort = dConnx.get(xTab.id);
+            xPort.postMessage({sActionDone: "openLxgPanel", result: null, dInfo: null, bEnd: false, bError: false});
+            xGCEWorker.postMessage({
+                sCommand: "getListOfTokens",
+                dParam: {sText: xInfo.selectionText},
+                dInfo: {iReturnPort: xTab.id}}
+            );
             break;
+        }
         case "conjugueur_panel":
-            xConjWindow = browser.windows.create({
+            let xConjWindow = browser.windows.create({
                 url: browser.extension.getURL("panel/conjugueur.html"),
                 type: "detached_panel",
                 width: 710,
@@ -198,7 +205,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             xConjWindow.then(onCreated, onError);
             break;
         case "conjugueur_tab":
-            xConjTab = browser.tabs.create({
+            let xConjTab = browser.tabs.create({
                 url: browser.extension.getURL("panel/conjugueur.html")
             });
             xConjTab.then(onCreated, onError);
