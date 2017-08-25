@@ -101,11 +101,13 @@ function handleConnexion (p) {
     let iPortId = aConnx.length; // identifier for the port: each port can be found at aConnx[iPortId]
     aConnx.push(xPort);
     console.log("Port: " + p.name + ", id: " + iPortId);
+    console.log(xPort);
     xPort.onMessage.addListener(function (oRequest) {
         console.log("[background] message via connexion:");
         console.log(oRequest);
         switch (oRequest.sCommand) {
             case "getCurrentTabId":
+                console.log(getCurrentTabId());
                 xPort.postMessage({sActionDone: "getCurrentTabId", result: "getCurrentTabId()", dInfo: null, bError: false});
                 break;
             case "parse":
@@ -125,6 +127,12 @@ function handleConnexion (p) {
 }
 
 browser.runtime.onConnect.addListener(handleConnexion);
+
+
+async function getCurrentTabId () {
+    let xTab = await browser.tabs.getCurrent();
+    return xTab.id;
+}
 
 
 /*
@@ -191,8 +199,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             break;
         case "conjugueur_tab":
             xConjTab = browser.tabs.create({
-                url: browser.extension.getURL("panel/conjugueur.html"),
-                pinned: true
+                url: browser.extension.getURL("panel/conjugueur.html")
             });
             xConjTab.then(onCreated, onError);
             break;
@@ -200,10 +207,6 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
 });
 
 
-async function getCurrentTabId () {
-    let xTab = await browser.tabs.getCurrent();
-    return xTab.id;
-}
 
 /*
     TESTS ONLY
