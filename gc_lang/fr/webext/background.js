@@ -191,8 +191,8 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             xGCEWorker.postMessage({
                 sCommand: "getListOfTokens",
                 dParam: {sText: xInfo.selectionText},
-                dInfo: {iReturnPort: xTab.id}}
-            );
+                dInfo: {iReturnPort: xTab.id}
+            });
             break;
         }
         case "conjugueur_panel":
