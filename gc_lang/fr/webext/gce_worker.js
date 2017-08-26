@@ -29,7 +29,7 @@
 "use strict";
 
 
-console.log("[Worker] GC Engine Worker [start]");
+//console.log("[Worker] GC Engine Worker [start]");
 //console.log(self);
 
 importScripts("grammalecte/helpers.js");
@@ -85,7 +85,6 @@ function showData (e) {
     https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
 */
 onmessage = function (e) {
-    console.log("[Worker] message received");
     let {sCommand, dParam, dInfo} = e.data;
     switch (sCommand) {
         case "init":
@@ -151,11 +150,11 @@ let oTest = null;
 function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
     try {
         if (!bInitDone) {
-            console.log("[Worker] Loading… Extension path: " + sExtensionPath);
+            //console.log("[Worker] Loading… Extension path: " + sExtensionPath);
             conj.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/conj_data.json"));
             phonet.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/phonet_data.json"));
             mfsp.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/mfsp_data.json"));
-            console.log("[Worker] Modules have been initialized…");
+            //console.log("[Worker] Modules have been initialized…");
             gc_engine.load(sContext, sExtensionPath+"grammalecte/_dictionaries");
             oDict = gc_engine.getDictionary();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");

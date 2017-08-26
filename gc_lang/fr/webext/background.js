@@ -17,13 +17,11 @@ xGCEWorker.onmessage = function (e) {
         let {sActionDone, result, dInfo} = e.data;
         switch (sActionDone) {
             case "init":
-                console.log("INIT DONE");
                 break;
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
             case "getListOfTokens":
-                console.log("Action done: " + sActionDone);
                 if (typeof(dInfo.iReturnPort) === "number") {
                     let xPort = dConnx.get(dInfo.iReturnPort);
                     xPort.postMessage(e.data);
@@ -33,11 +31,9 @@ xGCEWorker.onmessage = function (e) {
                 }
                 break;
             case "textToTest":
-                console.log("TEXT TO TEXT RESULTS");
                 browser.runtime.sendMessage({sCommand: "text_to_test_result", sResult: result});
                 break;
             case "fullTests":
-                console.log("FULL TESTS RESULTS");
                 browser.runtime.sendMessage({sCommand: "fulltests_result", sResult: result});
                 break;
             case "getOptions":
@@ -72,8 +68,6 @@ let dConnx = new Map();
 */
 function handleMessage (oRequest, xSender, sendResponse) {
     //console.log(xSender);
-    console.log("[background] received:");
-    console.log(oRequest);
     switch (oRequest.sCommand) {
         case "parse":
         case "parseAndSpellcheck":
@@ -98,18 +92,14 @@ browser.runtime.onMessage.addListener(handleMessage);
 
 function handleConnexion (xPort) {
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
-    console.log("tab_id: " + iPortId);
     dConnx.set(iPortId, xPort);
     xPort.onMessage.addListener(function (oRequest) {
-        console.log("[background] message via connexion:");
-        console.log(oRequest);
         switch (oRequest.sCommand) {
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
             case "getListOfTokens":
                 oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
-                console.log(oRequest);
                 xGCEWorker.postMessage(oRequest);
                 break;
             default:

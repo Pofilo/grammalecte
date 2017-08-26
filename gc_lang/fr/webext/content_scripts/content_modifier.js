@@ -57,7 +57,7 @@ const oGrammalecte = {
             }.bind(this);
             let xTFButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Formater"});
             xTFButton.onclick = function () {
-                this.createTFPanel(xTextArea);
+                this.createTFPanel();
                 this.oTFPanel.start(xTextArea);
                 this.oTFPanel.show();
             }.bind(this);
@@ -103,14 +103,13 @@ const oGrammalecte = {
     },
 
     createConjPanel: function () {
-        console.log("Conjugueur");
         if (this.oConjPanel === null) {
             this.oConjPanel = new GrammalectePanel("grammalecte_conj_panel", "Conjugueur", 600, 600);
             this.oConjPanel.insertIntoPage();
         }
     },
 
-    createTFPanel: function (xTextArea) {
+    createTFPanel: function () {
         if (this.oTFPanel === null) {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 620, false);
             //this.oTFPanel.logInnerHTML();
@@ -140,11 +139,9 @@ const oGrammalecte = {
 let xPort = browser.runtime.connect({name: "content-script port"});
 
 xPort.onMessage.addListener(function (oMessage) {
-    console.log("[Content script] received…");
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
     switch (sActionDone) {
         case "parseAndSpellcheck":
-            console.log("[content script] received: parseAndSpellcheck");
             if (!bEnd) {
                 oGrammalecte.oGCPanel.addParagraphResult(result);
             } else {
@@ -152,11 +149,9 @@ xPort.onMessage.addListener(function (oMessage) {
             }
             break;
         case "parseAndSpellcheck1":
-            console.log("[content script] received: parseAndSpellcheck1");
             oGrammalecte.oGCPanel.refreshParagraph(dInfo.sParagraphId, result);
             break;
         case "getListOfTokens":
-            console.log("[content script] received: getListOfTokens");
             if (!bEnd) {
                 oGrammalecte.oLxgPanel.addListOfTokens(result);
             } else {
