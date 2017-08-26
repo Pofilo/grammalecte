@@ -53,7 +53,7 @@ img { border: none; }
 
 a:link, a:visited {
     color: hsl(210, 70%, 40%);
-    /*text-decoration: none;*/
+    text-decoration: none;
 }
 a:hover, a:active {
     text-shadow: 0 0 2px hsl(210, 80%, 60%);
@@ -85,18 +85,14 @@ body {
 */
 
 #main {
+    display: flex;
     background-color: hsl(210, 0%, 100%);
     min-height: 100%;
 }
 
 #menu {
-    position: fixed;
-    left: 5px;
     width: 50px;
-    border-left: solid 2px hsl(210, 0%, 70%);
-    border-bottom: solid 2px hsl(210, 0%, 70%);
-    border-right: solid 2px hsl(210, 0%, 70%);
-    border-radius: 0 0 5px 5px;
+    border-right: solid 1px hsl(210, 0%, 70%);
     background-color: hsl(210, 10%, 96%);
     color: hsl(210, 10%, 96%);
 }
@@ -115,8 +111,8 @@ body {
     background-color: hsl(210, 10%, 92%);
 }
 
+
 #page {
-    padding-left: 60px;
     background-color: hsl(210, 0%, 100%);
     height: 500px;
     overflow: auto;
@@ -130,51 +126,116 @@ body {
     margin: 10px 0 5px 0;
 }
 
+
+/*
+    Home
+*/
 #home_page {
     display: block;
-    padding: 20px;
+    background-color: hsl(210, 20%, 92%);
+    min-height: 100%;
 }
+#home_page p {
+    margin: 0;
+}
+#home_page #mainlogo {
+    padding: 5px 20px 20px 20px;
+    background-color: hsl(210, 20%, 96%);
+}
+#home_page .notice {
+    margin-top: 5px;
+    font-size: 12px;
+    font-variant-caps: small-caps;
+    color: hsl(210, 20%, 50%);
+}
+#home_page #thanks {
+    padding: 20px 0 0 0;
+    border-top: 1px solid hsl(210, 20%, 88%);
+}
+
+/*
+    Help
+*/
 #help_page {
     display: none;
     padding: 20px;
+    background-color: hsl(0, 50%, 90%);
 }
+
+
+/*
+    Grammar checking options
+*/
 #gc_options_page {
     display: none;
     padding: 20px;
+    background-color: hsl(0, 50%, 90%);
 }
+
+
+/*
+    Spell checking options
+*/
 #sc_options_page {
     display: none;
     padding: 20px;
+}
+#dictionaries_info {
+    margin: 10px 0;
+    padding: 10px;
+    border-radius: 3px;
+    background-color: hsl(0, 50%, 40%);
+    color: hsl(0, 10%, 96%);
+}
+.dict_section {
+    padding: 5px 5px 5px 10px;
+    margin-top: 10px;
+    border-radius: 5px;
+    background-color: hsl(210, 20%, 96%);
+}
+.dict_section label {
+    font-size: 16px;
+    line-height: 20px;
+    color: hsl(210, 20%, 50%);
+    font-weight: bold;
+}
+.dict_description {
+    padding: 0 0 0 20px;
+    color: hsl(0, 0%, 0%);
+    font-size: 12px;
 }
 
 
 /*
   Test page
 */
-
 #test_page {
-  display: none;
+    display: none;
+    background-color: hsl(210, 20%, 96%);
+    min-height: 100%;
 }
 #test_cmd {
     padding: 15px;
-    border-bottom: 1px solid hsl(0, 0%, 90%);
+    background-color: hsl(210, 20%, 92%);
+    border-bottom: 1px solid hsl(210, 20%, 90%);
 }
 #test_cmd textarea {
-    width: 100%;
-    border: 2px solid hsl(0, 0%, 89%);
+    width: 95%;
+    padding: 5px;
+    border: 2px solid hsl(210, 20%, 80%);
+    background-color: hsl(210, 20%, 98%);
     border-radius: 3px;
     resize: vertical;
 }
 
 #tests_result {
     padding: 15px;
-    background-color: hsl(0, 0%, 96%);
 }
 
 #test_page .button {
     display: inline-block;
-    padding: 5px 10px;
-    width: 120px;
+    padding: 5px;
+    width: 100px;
     border-radius: 3px;
     font-size: 12px;
     text-align: center;
