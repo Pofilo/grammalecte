@@ -16,6 +16,7 @@
           </header>
           <ul>
             <li class="select" data-page="home_page"><i class="fa fa-home icon"></i> 1.</li>
+            <li class="select" data-page="help_page"><i class="fa fa-coffee icon"></i> Help</li>
             <li class="select" data-page="gc_options_page"><i class="fa fa-coffee icon"></i> OP1</li>
             <li class="select" data-page="sc_options_page"><i class="fa fa-keyboard-o icon"></i> OP2</li>
             <li class="select" data-page="test_page"><i class="fa fa-keyboard-o icon"></i> TST</li>
@@ -26,21 +27,85 @@
       <div id="page">
 
         <section id="home_page" class="page">
-          <h1>GRAMMALECTE</h1>
-          <div><a href="https://www.dicollecte.org/test.html" target="_blank">TEST</a></div>
+          <p class="center"><img src="../img/logo120_text.png" alt="Grammalecte"></p>
+          <p class="underline center">
+            <b>Version ${version}</b>
+          </p>
+          <p class="underline center">
+            <b>GPL 3 · <a id="website" class="simplelink" href="#" onclick="return false;">Site web</a></b>
+          </p>
+          <p id="links" class="center">
+            <a id="spelling" class="bluebutton" href="#" onclick="return false;">Options</a> ·
+            <a id="conjugueur" class="redbutton" href="#" onclick="return false;">Conjugueur</a>
+          </p>
+          
+          <footer id="thanks">
+              <p class="center" data-l10n-id="thanks1">Grammalecte remercie</p>
+              <p class="center">
+                  <a id="mainsponsor" href="#" onclick="return false;">
+                      <img src="../img/LaMouette.png" alt="La Mouette" style="border: 1px solid #C0C0C0" />
+                  </a>
+              </p>
+              <p class="center">
+                  <a id="mainsponsor2" href="#" onclick="return false;">
+                      <img src="../img/Algoo_logo.png" alt="Algoo" style="border: 1px solid #C0C0C0" />
+                  </a>
+              </p>
+              <p class="center">
+                  <a id="othersponsors" class="link" href="https://www.dicollecte.org/#thanks" onclick="return false;">
+                      <b>et tous ceux qui l’ont soutenu.</b>
+                  </a>
+              </p>
+          </footer>
+        </section>
+
+        <section id="help_page" class="page">
+          <h1>AIDE</h1>
+          <div id="help_section">
+            <p data-l10n-id="useContextMenu"></p>
+            <p class="right"><img src="img/contextmenu.png" title="menu contextuel sur zone de texte" /></p>
+            <p><b data-l10n-id="shortcuts"></b></p>
+            <p><span class="key" data-l10n-id="keyTF"></span> &#10097; <span class="goto" data-l10n-id="keyLabelTF"></span></p>
+            <p><span class="key" data-l10n-id="keyGC"></span> &#10097; <span class="goto" data-l10n-id="keyLabelGC"></span></p>
+            <p><span class="key" data-l10n-id="keyCJ"></span> &#10097; <span class="goto" data-l10n-id="keyLabelCJ"></span></p>
+          </div>
         </section>
 
         <section id="gc_options_page" class="page">
           <h1>OPTIONS GRAMMATICALES</h1>
+          <div id="grammar_options">
+            ${optionsHTML}
+          </div>
+          <p class="center" style="margin: 10px 0;"><a id="default_options" href="#" onclick="return false;">Options par défaut</a></p>
         </section>
 
         <section id="sc_options_page" class="page">
           <h1>OPTIONS ORTHOGRAPHIQUES</h1>
+          <div id="spelling_options">
+            <p id="dictionaries_info" data-l10n-id="dictionaries_info"></p>
+            <div class="dict_section" id="fr-FR-modern_box">
+                <p><input type="checkbox" id="fr-FR-modern" /> <label for="fr-FR-modern">“Moderne”</label></p>
+                <p class="dict_description">Ce dictionnaire propose l’orthographe telle qu’elle est écrite aujourd’hui le plus couramment. C’est le dictionnaire recommandé si le français n’est pas votre langue maternelle ou si vous ne désirez qu’une seule graphie correcte par mot.</p>
+            </div>
+            <div class="dict_section" id="fr-FR-classic_box">
+                <p><input type="checkbox" id="fr-FR-classic" /> <label for="fr-FR-classic">“Classique” (recommandé)</label></p>
+                <p class="dict_description">Il s’agit du dictionnaire “Moderne”, avec des graphies classiques en sus, certaines encore communément utilisées, d’autres désuètes. C’est le dictionnaire recommandé si le français est votre langue maternelle.</p>
+            </div>
+            <div class="dict_section" id="fr-FR-reform_box">
+                <p><input type="checkbox" id="fr-FR-reform" /> <label for="fr-FR-reform">“Réforme 1990”</label></p>
+                <p class="dict_description">Avec ce dictionnaire, seule l’orthographe réformée est reconnue. Attendu que bon nombre de graphies réformées sont considérées comme erronées par beaucoup, ce dictionnaire est déconseillé. Les graphies passées dans l’usage sont déjà incluses dans le dictionnaire “Moderne”.</p>
+            </div>
+            <div class="dict_section" id="fr-FR-classic-reform_box">
+                <p><input type="checkbox" id="fr-FR-classic-reform" /> <label for="fr-FR-classic-reform">“Toutes variantes”</label></p>
+                <p class="dict_description">Ce dictionnaire contient les variantes graphiques, classiques, réformées, ainsi que d’autres plus rares encore. Ce dictionnaire est déconseillé à ceux qui ne connaissent pas très bien la langue française.</p>
+            </div>
+          </div>
         </section>
 
         <section id="test_page" class="page">
           <div id="test_cmd">
             <h1>TESTS</h1>
+            <div><a href="https://www.dicollecte.org/test.html" target="_blank">Page for tests</a></div>
             <textarea id="text_to_test" rows="10"></textarea>
             <div id="fulltests" class="button blue">Tests complets</div> <div id="text_to_test" class="button green fright">Analyser</div>
           </div>
@@ -55,3 +120,4 @@
   </body>
 
 </html>
+   

@@ -96,8 +96,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
 browser.runtime.onMessage.addListener(handleMessage);
 
 
-function handleConnexion (p) {
-    var xPort = p;
+function handleConnexion (xPort) {
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
     console.log("tab_id: " + iPortId);
     dConnx.set(iPortId, xPort);
@@ -146,7 +145,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.create({
-    id: "conjugueur_panel",
+    id: "conjugueur_window",
     title: "Conjugueur [fenêtre]",
     contexts: ["all"]
 });
@@ -157,80 +156,94 @@ browser.contextMenus.create({
     contexts: ["all"]
 });
 
-function onCreated(windowInfo) {
-    console.log(`Created window: ${windowInfo.id}`);
-}
-
-function onError(error) {
-    console.log(`Error: ${error}`);
-}
-
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
-    console.log(xInfo);
-    console.log(xTab);
-    console.log("Item " + xInfo.menuItemId + " clicked in tab " + xTab.id);
-    console.log("editable: " + xInfo.editable + " · selected: " + xInfo.selectionText);
+    //console.log(xInfo);
+    //console.log(xTab);
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
-        case "parseAndSpellcheck": {
-            let xPort = dConnx.get(xTab.id);
-            xPort.postMessage({sActionDone: "openGCPanel", result: null, dInfo: null, bEnd: false, bError: false});
-            xGCEWorker.postMessage({
-                sCommand: "parseAndSpellcheck",
-                dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {iReturnPort: xTab.id}
-            });
+        case "parseAndSpellcheck":
+            parseAndSpellcheckSelectedText(xTab.id, xInfo.selectionText);
             break;
-        }
-        case "getListOfTokens": {
-            let xPort = dConnx.get(xTab.id);
-            xPort.postMessage({sActionDone: "openLxgPanel", result: null, dInfo: null, bEnd: false, bError: false});
-            xGCEWorker.postMessage({
-                sCommand: "getListOfTokens",
-                dParam: {sText: xInfo.selectionText},
-                dInfo: {iReturnPort: xTab.id}
-            });
+        case "getListOfTokens": 
+            getListOfTokensFromSelectedText(xTab.id, xInfo.selectionText);
             break;
-        }
-        case "conjugueur_panel":
-            let xConjWindow = browser.windows.create({
-                url: browser.extension.getURL("panel/conjugueur.html"),
-                type: "detached_panel",
-                width: 710,
-                height: 980
-            });
-            xConjWindow.then(onCreated, onError);
+        case "conjugueur_window":
+            openConjugueurWindow();
             break;
         case "conjugueur_tab":
-            let xConjTab = browser.tabs.create({
-                url: browser.extension.getURL("panel/conjugueur.html")
-            });
-            xConjTab.then(onCreated, onError);
+            openConjugueurTab();
             break;
     }    
 });
 
 
+/*
+    Keyboard shortcuts
+*/
+browser.commands.onCommand.addListener(function (sCommand) {
+    switch (sCommand) {
+        case "conjugueur_tab":
+            openConjugueurTab();
+            break;
+        case "conjugueur_window":
+            openConjugueurWindow();
+            break;
+    }
+});
+
 
 /*
-    TESTS ONLY
+    Actions
 */
-async function newwin () {
-    // test for popup window-like, which doesn’t close when losing the focus
-    console.log("Async on");
-    const getActive = browser.tabs.query({ currentWindow: true, active: true, });
-    const xWindowInfo = await browser.windows.getLastFocused();
-    const width = 710, height = 980; // the maximum size for panels is somewhere around 700x800. Firefox needs some additional pixels: 14x42 for FF54 on Win 10 with dpi 1.25
-    const left = Math.round(xWindowInfo.left + xWindowInfo.width - width - 25);
-    const top = Math.round(xWindowInfo.top + 74); // the actual frame height of the main window varies, but 74px should place the pop-up at the bottom if the button
-    const xWin = await browser.windows.create({
-        type: 'panel', url: browser.extension.getURL("panel/conjugueur.html"), top: top, left: left, width: width, height: height,
+function parseAndSpellcheckSelectedText (iTab, sText) {
+    // send message to the tab
+    let xTabPort = dConnx.get(iTab);
+    xTabPort.postMessage({sActionDone: "openGCPanel", result: null, dInfo: null, bEnd: false, bError: false});
+    // send command to the worker
+    xGCEWorker.postMessage({
+        sCommand: "parseAndSpellcheck",
+        dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+        dInfo: {iReturnPort: iTab}
     });
-    browser.windows.update(xWin.id, { top:top, left:left, }); // firefox currently ignores top and left in .create(), so move it here
-    console.log("Async done");
 }
 
-//newwin();
+function getListOfTokensFromSelectedText (iTab, sText) {
+    // send message to the tab
+    let xTabPort = dConnx.get(iTab);
+    xTabPort.postMessage({sActionDone: "openLxgPanel", result: null, dInfo: null, bEnd: false, bError: false});
+    // send command to the worker
+    xGCEWorker.postMessage({
+        sCommand: "getListOfTokens",
+        dParam: {sText: sText},
+        dInfo: {iReturnPort: iTab}
+    });
+}
+
+function openConjugueurTab () {
+    let xConjTab = browser.tabs.create({
+        url: browser.extension.getURL("panel/conjugueur.html")
+    });
+    xConjTab.then(onCreated, onError);
+}
+
+function openConjugueurWindow () {
+    let xConjWindow = browser.windows.create({
+        url: browser.extension.getURL("panel/conjugueur.html"),
+        type: "detached_panel",
+        width: 710,
+        height: 980
+    });
+    xConjWindow.then(onCreated, onError);
+}
+
+
+function onCreated (windowInfo) {
+    console.log(`Created window: ${windowInfo.id}`);
+}
+
+function onError (error) {
+    console.log(`Error: ${error}`);
+}
