@@ -49,7 +49,7 @@ window.addEventListener(
                     browser.runtime.sendMessage({sCommand: "fullTests", dParam: {}, dInfo: {}});
                     break;
             }
-        } else if (xElem.className === "select") {
+        } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
         }/* else if (xElem.tagName === "A") {
             openURL(xElem.getAttribute("href"));
@@ -83,12 +83,7 @@ function sendMessageAndWaitResponse (oData) {
     Messages received
 */
 function handleMessage (oMessage, xSender, sendResponse) {
-    console.log(xSender);
     switch(oMessage.sCommand) {
-        case "show_tokens":
-            console.log("show tokens");
-            addParagraphOfTokens(oMessage.oResult);
-            break;
         case "text_to_test_result":
             showTestResult(oMessage.sResult);
             break;
@@ -114,63 +109,4 @@ browser.runtime.onMessage.addListener(handleMessage);
 */
 function showTestResult (sText) {
     document.getElementById("tests_result").textContent = sText;
-}
-
-
-/*
-    Lexicographer page
-*/
-
-function addSeparator (sText) {
-    if (document.getElementById("tokens_list").textContent !== "") {
-        let xElem = document.createElement("p");
-        xElem.className = "separator";
-        xElem.textContent = sText;
-        document.getElementById("tokens_list").appendChild(xElem);
-    }
-}
-
-function addMessage (sClass, sText) {
-    let xNode = document.createElement("p");
-    xNode.className = sClass;
-    xNode.textContent = sText;
-    document.getElementById("tokens_list").appendChild(xNode);
-}
-
-function addParagraphOfTokens (lElem) {
-    try {
-        let xNodeDiv = document.createElement("div");
-        xNodeDiv.className = "paragraph";
-        for (let oToken of lElem) {
-            xNodeDiv.appendChild(createTokenNode(oToken));
-        }
-        document.getElementById("tokens_list").appendChild(xNodeDiv);
-    }
-    catch (e) {
-        showError(e);
-    }
-}
-
-function createTokenNode (oToken) {
-    let xTokenNode = document.createElement("div");
-    xTokenNode.className = "token " + oToken.sType;
-    let xTokenValue = document.createElement("b");
-    xTokenValue.className = oToken.sType;
-    xTokenValue.textContent = oToken.sValue;
-    xTokenNode.appendChild(xTokenValue);
-    let xSep = document.createElement("s");
-    xSep.textContent = " : ";
-    xTokenNode.appendChild(xSep);
-    if (oToken.aLabel.length === 1) {
-        xTokenNode.appendChild(document.createTextNode(oToken.aLabel[0]));
-    } else {
-        let xTokenList = document.createElement("ul");
-        for (let sLabel of oToken.aLabel) {
-            let xTokenLine = document.createElement("li");
-            xTokenLine.textContent = sLabel;
-            xTokenList.appendChild(xTokenLine);
-        }
-        xTokenNode.appendChild(xTokenList);
-    }
-    return xTokenNode;
 }
