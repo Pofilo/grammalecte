@@ -519,6 +519,7 @@ def mergeRulesByOption (lRules):
 def prepareOptions (lOptionLines):
     "returns a dictionary with data about options"
     sLang = ""
+    sDefaultUILang = ""
     lStructOpt = []
     lOpt = []
     dOptLabel = {}
@@ -541,6 +542,9 @@ def prepareOptions (lOptionLines):
             m = re.match("OPTLANG/([a-z][a-z](?:_[A-Z][A-Z]|)):(.+)$", sLine)
             sLang = m.group(1)[:2]
             dOptLabel[sLang] = { "__optiontitle__": m.group(2).strip() }
+        elif sLine.startswith("OPTDEFAULTUILANG:"):
+            m = re.match("OPTDEFAULTUILANG: *([a-z][a-z](?:_[A-Z][A-Z]|))$", sLine)
+            sDefaultUILang = m.group(1)[:2]
         elif sLine.startswith("OPTLABEL/"):
             m = re.match("OPTLABEL/([a-z0-9]+):(.+)$", sLine)
             dOptLabel[sLang][m.group(1)] = list(map(str.strip, m.group(2).split("|")))  if "|" in m.group(2)  else  [m.group(2).strip(), ""]
@@ -548,7 +552,7 @@ def prepareOptions (lOptionLines):
             print("# Error. Wrong option line in:\n  ")
             print(sLine)
     print("  options defined for: " + ", ".join([ t[0] for t in lOpt ]))
-    dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel }
+    dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel, "sDefaultUILang": sDefaultUILang }
     dOptions.update({ "dOpt"+k: v  for k, v in lOpt })
     return dOptions, dOptPriority
 
@@ -587,7 +591,7 @@ def make (lRules, sLang, bJavaScript):
             lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
             pass
-        elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTLABEL/", "OPTPRIORITY/")):
+        elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
             lOpt.append(sLine)
         elif re.match("[  \t]*$", sLine):
             pass
