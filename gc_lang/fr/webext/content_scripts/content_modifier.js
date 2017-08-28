@@ -127,6 +127,7 @@ const oGrammalecte = {
     createGCPanel: function () {
         if (this.oGCPanel === null) {
             this.oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
+            //this.oGCPanel.logInnerHTML();
             this.oGCPanel.insertIntoPage();
         }
     }

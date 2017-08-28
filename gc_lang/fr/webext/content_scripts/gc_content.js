@@ -11,7 +11,7 @@ function onGrammalecteGCPanelClick (xEvent) {
             } else if (xElem.id === "grammalecte_tooltip_ignore") {
                 oGrammalecte.oGCPanel.ignoreError(xElem.id);
             } else if (xElem.id.startsWith("grammalecte_check")) {
-                oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.id.slice(17)));
+                oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.dataset.para_num));
             } else if (xElem.id.startsWith("grammalecte_hide")) {
                 xElem.parentNode.parentNode.style.display = "none";
             } else if (xElem.tagName === "U" && xElem.id.startsWith("grammalecte_err")
@@ -81,7 +81,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "button green", textContent: "Réanalyser"}));
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "button green", textContent: "Réanalyser"}, {para_num: oResult.iParaNum}));
                 xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "button red bold", textContent: "×"}));
                 // paragraph
                 let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
