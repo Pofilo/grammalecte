@@ -147,7 +147,7 @@ let oTest = null;
     by paragraph.
 */
 
-function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
+function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
     try {
         if (!bInitDone) {
             //console.log("[Worker] Loading… Extension path: " + sExtensionPath);
@@ -159,8 +159,8 @@ function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
             oDict = gc_engine.getDictionary();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
             oLxg = new Lexicographe(oDict);
-            if (sGCOptions !== "") {
-                gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+            if (dOptions !== null) {
+                gc_engine.setOptions(dOptions);
             }
             oTokenizer = new Tokenizer("fr");
             //tests();
@@ -169,7 +169,7 @@ function init (sExtensionPath, sGCOptions="", sContext="JavaScript", dInfo={}) {
             console.log("[Worker] Already initialized…")
         }
         // we always retrieve options from the gc_engine, for setOptions filters obsolete options
-        postMessage(createResponse("init", gc_engine.getOptions().gl_toString(), dInfo, true));
+        postMessage(createResponse("init", gc_engine.getOptions(), dInfo, true));
     }
     catch (e) {
         helpers.logerror(e);
@@ -204,26 +204,27 @@ function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) 
 }
 
 function getOptions (dInfo={}) {
-    postMessage(createResponse("getOptions", gc_engine.getOptions().gl_toString(), dInfo, true));
+    postMessage(createResponse("getOptions", gc_engine.getOptions(), dInfo, true));
 }
 
 function getDefaultOptions (dInfo={}) {
-    postMessage(createResponse("getDefaultOptions", gc_engine.getDefaultOptions().gl_toString(), dInfo, true));
+    postMessage(createResponse("getDefaultOptions", gc_engine.getDefaultOptions(), dInfo, true));
 }
 
-function setOptions (sGCOptions, dInfo={}) {
-    gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    postMessage(createResponse("setOptions", gc_engine.getOptions().gl_toString(), dInfo, true));
+function setOptions (dOptions, dInfo={}) {
+    gc_engine.setOptions(dOptions);
+    postMessage(createResponse("setOptions", gc_engine.getOptions(), dInfo, true));
 }
 
 function setOption (sOptName, bValue, dInfo={}) {
+    console.log(sOptName+": "+bValue);
     gc_engine.setOptions(new Map([ [sOptName, bValue] ]));
-    postMessage(createResponse("setOption", gc_engine.getOptions().gl_toString(), dInfo, true));
+    postMessage(createResponse("setOption", gc_engine.getOptions(), dInfo, true));
 }
 
 function resetOptions (dInfo={}) {
     gc_engine.resetOptions();
-    postMessage(createResponse("resetOptions", gc_engine.getOptions().gl_toString(), dInfo, true));
+    postMessage(createResponse("resetOptions", gc_engine.getOptions(), dInfo, true));
 }
 
 function tests () {

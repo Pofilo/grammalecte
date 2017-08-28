@@ -2,33 +2,9 @@
 
 "use strict";
 
-/*
-    Common functions
-*/
+
 function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
-}
-
-function showPage (sPageName) {
-    try {
-        // hide them all
-        for (let xNodePage of document.getElementsByClassName("page")) {
-            xNodePage.style.display = "none";
-        }
-        // show the selected one
-        document.getElementById(sPageName).style.display = "block";
-    }
-    catch (e) {
-        showError(e);
-    }
-}
-
-function startWaitIcon () {
-    document.getElementById("waiticon").hidden = false;
-}
-
-function stopWaitIcon () {
-    document.getElementById("waiticon").hidden = true;
 }
 
 
@@ -40,14 +16,27 @@ window.addEventListener(
     function (xEvent) {
         let xElem = xEvent.target;
         if (xElem.id) {
-            switch (xElem.id) {
-                case "text_to_test":
-                    browser.runtime.sendMessage({sCommand: "textToTest", dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: false, bContext: false}, dInfo: {}});
-                    break;
-                case "fulltests":
-                    document.getElementById("tests_result").textContent = "Veuillez patienter…";
-                    browser.runtime.sendMessage({sCommand: "fullTests", dParam: {}, dInfo: {}});
-                    break;
+            if (xElem.id === "text_to_test") {
+                browser.runtime.sendMessage({
+                    sCommand: "textToTest",
+                    dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: false, bContext: false},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id === "fulltests") {
+                document.getElementById("tests_result").textContent = "Veuillez patienter…";
+                browser.runtime.sendMessage({
+                    sCommand: "fullTests",
+                    dParam: {},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id.startsWith("option_")) {
+                browser.runtime.sendMessage({
+                    sCommand: "setOption",
+                    dParam: {sOptName: xElem.dataset.option, bValue: xElem.checked},
+                    dInfo: {}
+                });
             }
         } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
@@ -83,30 +72,65 @@ function sendMessageAndWaitResponse (oData) {
     Messages received
 */
 function handleMessage (oMessage, xSender, sendResponse) {
-    switch(oMessage.sCommand) {
-        case "text_to_test_result":
-            showTestResult(oMessage.sResult);
+    let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
+    switch(sActionDone) {
+        case "textToTest":
+        case "fullTests":
+            showTestResult(result);
             break;
-        case "fulltests_result":
-            showTestResult(oMessage.sResult);
+        case "getOptions":
+        case "getDefaultOptions":
             break;
+        default:
+            console.log("GRAMMALECTE. Unknown command: " + oMessage.sCommand);
     }
-    sendResponse({sCommand: "none", sResult: "done"});
+    sendResponse({sCommand: "none", result: "done"});
 }
 
 browser.runtime.onMessage.addListener(handleMessage);
 
 
 /*
-
-    DEDICATED FUNCTIONS 
-
+    Actions
 */
 
+function showPage (sPageName) {
+    try {
+        // hide them all
+        for (let xNodePage of document.getElementsByClassName("page")) {
+            xNodePage.style.display = "none";
+        }
+        // show the selected one
+        document.getElementById(sPageName).style.display = "block";
+        if (sPageName == "gc_options_page") {
+            setGCOptions();
+        }
+    }
+    catch (e) {
+        showError(e);
+    }
+}
 
-/*
-    Test page
-*/
+
 function showTestResult (sText) {
     document.getElementById("tests_result").textContent = sText;
+}
+
+function setGCOptions () {
+    let xPromise = browser.storage.local.get("gc_options");
+    xPromise.then(
+        function (dSavedOptions) {
+            console.log(dSavedOptions);
+            if (dSavedOptions.hasOwnProperty("gc_options")) {
+                for (let [sOpt, bVal] of dSavedOptions.gc_options) {
+                    if (document.getElementById("option_"+sOpt)) {
+                        document.getElementById("option_"+sOpt).checked = bVal;
+                    }
+                }
+            }
+        },
+        function (e) {
+            showError(e);
+        }
+    );
 }

@@ -17,11 +17,13 @@ xGCEWorker.onmessage = function (e) {
         let {sActionDone, result, dInfo} = e.data;
         switch (sActionDone) {
             case "init":
+                browser.storage.local.set({"gc_options": result});
                 break;
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
             case "getListOfTokens":
+                // send result to content script
                 if (typeof(dInfo.iReturnPort) === "number") {
                     let xPort = dConnx.get(dInfo.iReturnPort);
                     xPort.postMessage(e.data);
@@ -31,16 +33,15 @@ xGCEWorker.onmessage = function (e) {
                 }
                 break;
             case "textToTest":
-                browser.runtime.sendMessage({sCommand: "text_to_test_result", sResult: result});
-                break;
             case "fullTests":
-                browser.runtime.sendMessage({sCommand: "fulltests_result", sResult: result});
-                break;
             case "getOptions":
             case "getDefaultOptions":
+                // send result to panel
+                browser.runtime.sendMessage(e.data);
+                break;
             case "setOptions":
             case "setOption":
-                console.log("OPTIONS");
+                browser.storage.local.set({"gc_options": result});
                 break;
             default:
                 console.log("Unknown command: " + sActionDone);
@@ -53,7 +54,29 @@ xGCEWorker.onmessage = function (e) {
 };
 
 
-xGCEWorker.postMessage({sCommand: "init", dParam: {sExtensionPath: browser.extension.getURL("."), sOptions: "", sContext: "Firefox"}, dInfo: {}});
+function init () {
+    let xPromise = browser.storage.local.get("gc_options");
+    xPromise.then(
+        function (dSavedOptions) {
+            let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
+            xGCEWorker.postMessage({
+                sCommand: "init",
+                dParam: {sExtensionPath: browser.extension.getURL("."), dOptions: dOptions, sContext: "Firefox"},
+                dInfo: {}
+            });
+        },
+        function (e) {
+            showError(e);
+            xGCEWorker.postMessage({
+                sCommand: "init",
+                dParam: {sExtensionPath: browser.extension.getURL("."), dOptions: null, sContext: "Firefox"},
+                dInfo: {}
+            });
+        }
+    );
+}
+
+init();
 
 
 /*
