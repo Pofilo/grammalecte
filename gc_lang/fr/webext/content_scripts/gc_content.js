@@ -18,12 +18,10 @@ function onGrammalecteGCPanelClick (xEvent) {
                        && xElem.className !== "corrected" && xElem.className !== "ignored") {
                 oGrammalecte.oGCPanel.oTooltip.show(xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_url") {
-                oGrammalecte.oGCPanel.openURL(xElem.getAttribute("href"));
+                oGrammalecte.oGCPanel.openURL(xElem.dataset.url);
             } else {
                 oGrammalecte.oGCPanel.oTooltip.hide();
             }
-        } else if (xElem.tagName === "A") {
-            oGrammalecte.oGCPanel.openURL(xElem.getAttribute("href"));
         } else {
             oGrammalecte.oGCPanel.oTooltip.hide();
         }
@@ -254,7 +252,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
         document.addEventListener("copy", setClipboardData, true);
         document.execCommand("copy");
-    };
+    }
 
     copyTextToClipboard () {
         this.startWaitIcon();
@@ -265,14 +263,22 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             for (let xNode of document.getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
-            xClipboardButton.textContent = "OK";
             this._copyToClipboard(sText);
+            xClipboardButton.textContent = "OK";
             window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 2000);
         }
         catch (e) {
             showError(e);
         }
         this.stopWaitIcon();
+    }
+
+    openURL (sURL) {
+        xPort.postMessage({
+            sCommand: "openURL",
+            dParam: {"sURL": sURL},
+            dInfo: {}
+        });
     }
 }
 
@@ -290,8 +296,10 @@ class GrammalecteTooltip {
         let xMessageBlock = createNode("div", {id: "grammalecte_tooltip_message_block"});
         xMessageBlock.appendChild(createNode("p", {id: "grammalecte_tooltip_rule_id"}));
         xMessageBlock.appendChild(createNode("p", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
-        xMessageBlock.appendChild(createNode("a", {id: "grammalecte_tooltip_ignore", href: "#", onclick: "return false;", textContent: "Ignorer"}));
-        xMessageBlock.appendChild(createNode("a", {id: "grammalecte_tooltip_url", href: "#", onclick: "return false;", textContent: "Voulez-vous en savoir plus ?…"}));
+        let xActions = xMessageBlock.appendChild(createNode("div", {id: "grammalecte_tooltip_actions"}));
+        xActions.appendChild(createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
+        xActions.appendChild(createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
+        xMessageBlock.appendChild(xActions);
         this.xTooltip.appendChild(xMessageBlock);
         this.xTooltip.appendChild(createNode("div", {id: "grammalecte_tooltip_sugg_title", textContent: "SUGGESTIONS :"}));
         this.xTooltip.appendChild(this.xTooltipSuggBlock);
@@ -319,9 +327,10 @@ class GrammalecteTooltip {
                     document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 }
                 if (xNodeErr.dataset.gc_url != "") {
+                    document.getElementById("grammalecte_tooltip_url").dataset.url = xNodeErr.dataset.gc_url;
                     document.getElementById("grammalecte_tooltip_url").style.display = "inline";
-                    document.getElementById("grammalecte_tooltip_url").setAttribute("href", xNodeErr.dataset.gc_url);
                 } else {
+                    document.getElementById("grammalecte_tooltip_url").dataset.url = "";
                     document.getElementById("grammalecte_tooltip_url").style.display = "none";
                 }
                 document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;

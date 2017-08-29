@@ -34,6 +34,9 @@ xGCEWorker.onmessage = function (e) {
                 break;
             case "textToTest":
             case "fullTests":
+                // send result to panel
+                browser.runtime.sendMessage(e.data);
+                break;
             case "getOptions":
             case "getDefaultOptions":
             case "resetOptions":
@@ -93,22 +96,22 @@ let dConnx = new Map();
 */
 function handleMessage (oRequest, xSender, sendResponse) {
     //console.log(xSender);
-    switch (oRequest.sCommand) {
-        case "parse":
-        case "parseAndSpellcheck":
-        case "parseAndSpellcheck1":
-        case "getListOfTokens":
-        case "textToTest":
+    let {sCommand, dParam, dInfo} = oRequest;
+    switch (sCommand) {
         case "getOptions":
         case "getDefaultOptions":
         case "setOptions":
         case "setOption":
         case "resetOptions":
+        case "textToTest":
         case "fullTests":
             xGCEWorker.postMessage(oRequest);
             break;
+        case "openURL":
+            browser.tabs.create({url: dParam.sURL});
+            break;
         default:
-            console.log("[background] Unknown command: " + oRequest.sCommand);
+            console.log("[background] Unknown command: " + sCommand);
     }
     //sendResponse({response: "response from background script"});
 }
@@ -120,7 +123,8 @@ function handleConnexion (xPort) {
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
     dConnx.set(iPortId, xPort);
     xPort.onMessage.addListener(function (oRequest) {
-        switch (oRequest.sCommand) {
+        let {sCommand, dParam, dInfo} = oRequest;
+        switch (sCommand) {
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
@@ -128,8 +132,11 @@ function handleConnexion (xPort) {
                 oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
                 xGCEWorker.postMessage(oRequest);
                 break;
+            case "openURL":
+                browser.tabs.create({url: dParam.sURL});
+                break;
             default:
-                console.log("[background] Unknown command: " + oRequest.sCommand);
+                console.log("[background] Unknown command: " + sCommand);
                 console.log(oRequest);
         }
     });
