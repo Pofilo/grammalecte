@@ -272,14 +272,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
         this.stopWaitIcon();
     }
-
-    openURL (sURL) {
-        xPort.postMessage({
-            sCommand: "openURL",
-            dParam: {"sURL": sURL},
-            dInfo: {}
-        });
-    }
 }
 
 

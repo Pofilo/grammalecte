@@ -134,7 +134,11 @@ class GrammalectePanel {
     }
 
     openURL (sURL) {
-        // todo
+        xPort.postMessage({
+            sCommand: "openURL",
+            dParam: {"sURL": sURL},
+            dInfo: {}
+        });
     }
 }
 
