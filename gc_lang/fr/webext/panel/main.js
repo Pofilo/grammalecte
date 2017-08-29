@@ -120,7 +120,7 @@ function setGCOptions () {
     let xPromise = browser.storage.local.get("gc_options");
     xPromise.then(
         function (dSavedOptions) {
-            console.log(dSavedOptions);
+            //console.log(dSavedOptions);
             if (dSavedOptions.hasOwnProperty("gc_options")) {
                 for (let [sOpt, bVal] of dSavedOptions.gc_options) {
                     if (document.getElementById("option_"+sOpt)) {

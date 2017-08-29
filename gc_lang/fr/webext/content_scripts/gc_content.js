@@ -203,10 +203,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     applySuggestion (sNodeSuggId) { // sugg
         try {
-            console.log(sNodeSuggId);
             let sErrorId = document.getElementById(sNodeSuggId).dataset.error_id;
             //let sParaNum = sErrorId.slice(0, sErrorId.indexOf("-"));
-            console.log("grammalecte_err"+sErrorId);
             let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
             xNodeErr.textContent = document.getElementById(sNodeSuggId).textContent;
             xNodeErr.className = "corrected";
@@ -221,9 +219,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     ignoreError (sIgnoreButtonId) {  // ignore
         try {
-            console.log(sIgnoreButtonId);
             let sErrorId = document.getElementById(sIgnoreButtonId).dataset.error_id;
-            console.log("grammalecte_err"+sErrorId);
             let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "ignored";
@@ -247,26 +243,40 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xParagraphList.appendChild(xNode);
     }
 
-    copyToClipboard () {
+    _copyToClipboard (sText)  {
+        // recipie from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
+        function setClipboardData (xEvent) {
+            document.removeEventListener("copy", setClipboardData, true);
+            xEvent.stopImmediatePropagation();
+            xEvent.preventDefault();
+            xEvent.clipboardData.setData("text/plain", sText);
+        };
+
+        document.addEventListener("copy", setClipboardData, true);
+        document.execCommand("copy");
+    };
+
+    copyTextToClipboard () {
         this.startWaitIcon();
         try {
             let xClipboardButton = document.getElementById("grammalecte_clipboard_button");
-            xClipboardButton.textContent = "copie en cours…";
+            xClipboardButton.textContent = "->>";
             let sText = "";
-            for (let xNode of document.getElementById("grammalecte_paragraph_list").getElementsByClassName("grammalecte_paragraph")) {
+            for (let xNode of document.getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
-            self.port.emit('copyToClipboard', sText);
-            xClipboardButton.textContent = "-> presse-papiers";
-            window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 3000);
+            xClipboardButton.textContent = "OK";
+            this._copyToClipboard(sText);
+            window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 2000);
         }
         catch (e) {
-            console.log(e.lineNumber + ": " +e.message);
+            showError(e);
         }
         this.stopWaitIcon();
     }
-}
 
+
+}
 
 
 class GrammalecteTooltip {

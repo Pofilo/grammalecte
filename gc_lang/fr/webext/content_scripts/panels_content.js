@@ -10,7 +10,6 @@ class GrammalectePanel {
 
     constructor (sId, sTitle, nWidth, nHeight, bFlexible=true) {
         this.sId = sId;
-        this.sContentId = sId+"_content";
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
@@ -41,6 +40,9 @@ class GrammalectePanel {
     _createButtons () {
         let xButtonLine = createNode("div", {className: "grammalecte_panel_commands"});
         xButtonLine.appendChild(this.xWaitIcon);
+        if (this.sId === "grammalecte_gc_panel") {
+            xButtonLine.appendChild(this._createCopyButton());
+        }
         xButtonLine.appendChild(this._createMoveButton("stickToTop", "¯", "Coller en haut"));
         xButtonLine.appendChild(this._createMoveButton("stickToLeft", "«", "Coller à gauche"));
         xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
@@ -55,6 +57,12 @@ class GrammalectePanel {
         xWaitIcon.appendChild(createNode("div", {className: "bounce1"}));
         xWaitIcon.appendChild(createNode("div", {className: "bounce2"}));
         return xWaitIcon;
+    }
+
+    _createCopyButton () {
+        let xButton = createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
+        xButton.onclick = function () { this.copyTextToClipboard(); }.bind(this);
+        return xButton;
     }
 
     _createMoveButton (sAction, sLabel, sTitle) {
