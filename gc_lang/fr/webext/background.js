@@ -143,14 +143,14 @@ browser.runtime.onConnect.addListener(handleConnexion);
     Context Menu
 */
 browser.contextMenus.create({
-    id: "parseAndSpellcheck",
-    title: "Correction grammaticale",
+    id: "getListOfTokens",
+    title: "Analyser",
     contexts: ["selection"]
 });
 
 browser.contextMenus.create({
-    id: "getListOfTokens",
-    title: "Lexicographe",
+    id: "parseAndSpellcheck",
+    title: "Corriger",
     contexts: ["selection"]
 });
 
