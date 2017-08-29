@@ -244,7 +244,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     _copyToClipboard (sText)  {
-        // recipie from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
+        // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
         function setClipboardData (xEvent) {
             document.removeEventListener("copy", setClipboardData, true);
             xEvent.stopImmediatePropagation();
@@ -274,8 +274,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
         this.stopWaitIcon();
     }
-
-
 }
 
 

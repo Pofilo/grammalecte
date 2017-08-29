@@ -117,7 +117,7 @@ onmessage = function (e) {
             textToTest(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
             break;
         case "fullTests":
-            fullTests('{"nbsp":true, "esp":true, "unit":true, "num":true}', dInfo);
+            fullTests(dInfo);
             break;
         case "getListOfTokens":
             getListOfTokens(dParam.sText, dInfo);
@@ -251,15 +251,18 @@ function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
     postMessage(createResponse("textToTest", sMsg, dInfo, true));
 }
 
-function fullTests (sGCOptions="", dInfo={}) {
+function fullTests (dInfo={}) {
     if (!gc_engine || !oDict) {
         postMessage(createResponse("fullTests", "# Grammar checker or dictionary not loaded.", dInfo, true));
         return;
     }
     let dMemoOptions = gc_engine.getOptions();
-    if (sGCOptions) {
-        gc_engine.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    }
+    let dTestOptions = gc_engine.getDefaultOptions();
+    dTestOptions.set("nbsp", true);
+    dTestOptions.set("esp", true);
+    dTestOptions.set("unit", true);
+    dTestOptions.set("num", true);
+    gc_engine.setOptions(dTestOptions);
     let sMsg = "";
     for (let sRes of oTest.testParse()) {
         sMsg += sRes + "\n";

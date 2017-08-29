@@ -36,8 +36,10 @@ xGCEWorker.onmessage = function (e) {
             case "fullTests":
             case "getOptions":
             case "getDefaultOptions":
+            case "resetOptions":
                 // send result to panel
                 browser.runtime.sendMessage(e.data);
+                browser.storage.local.set({"gc_options": result});
                 break;
             case "setOptions":
             case "setOption":
@@ -101,6 +103,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "getDefaultOptions":
         case "setOptions":
         case "setOption":
+        case "resetOptions":
         case "fullTests":
             xGCEWorker.postMessage(oRequest);
             break;
