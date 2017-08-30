@@ -45,6 +45,9 @@ window.addEventListener(
                     dInfo: {}
                 });
             }
+            else if (xElem.id.startsWith("link_")) {
+                browser.tabs.create({url: xElem.dataset.url});
+            }
         } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
         }/* else if (xElem.tagName === "A") {
