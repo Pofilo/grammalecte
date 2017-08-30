@@ -14,97 +14,34 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
-
-class GrammalecteWrapper {
-
-    constructor (nWrapper, xTextArea) {
-        this.nWrapper = nWrapper;
-        let xParentElement = xTextArea.parentElement;
-        let xWrapper = createNode("div", {id: "grammalecte_wrapper" + nWrapper, className: "grammalecte_wrapper"});
-        xParentElement.insertBefore(xWrapper, xTextArea);
-        xWrapper.appendChild(this._createTitle());
-        xWrapper.appendChild(xTextArea); // move textarea in wrapper
-        xWrapper.appendChild(this._createWrapperToolbar(xTextArea));
-    }
-
-    _createTitle () {
-        return createNode("div", {className: "grammalecte_wrapper_title", textContent: "Grammalecte"});
-    }
-
-    _createWrapperToolbar (xTextArea) {
-        try {
-            let xToolbar = createNode("div", {className: "grammalecte_wrapper_toolbar"});
-            let xConjButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Conjuguer"});
-            xConjButton.onclick = () => { this.showConjButtons(); };
-            let xConjSection = createNode("div", {id: "grammalecte_wrapper_conj_section"+this.nWrapper, className: "grammalecte_wrapper_conj_section"});
-            let xConjButtonTab = createNode("div", {className: "grammalecte_wrapper_button2", textContent: ">Onglet"});
-            xConjButtonTab.onclick = function () {
-                xPort.postMessage({sCommand: "openConjugueurTab", dParam: null, dInfo: null});
-                this.hideConjButtons();
-            }.bind(this);
-            let xConjButtonWin = createNode("div", {className: "grammalecte_wrapper_button2", textContent: ">Fenêtre"});
-            xConjButtonWin.onclick = function () {
-                xPort.postMessage({sCommand: "openConjugueurWindow", dParam: null, dInfo: null});
-                this.hideConjButtons();
-            }.bind(this);
-            let xTFButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Formater"});
-            xTFButton.onclick = function () {
-                oGrammalecte.createTFPanel();
-                oGrammalecte.oTFPanel.start(xTextArea);
-                oGrammalecte.oTFPanel.show();
-            };
-            let xLxgButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Analyser"});
-            xLxgButton.onclick = function () {
-                oGrammalecte.createLxgPanel();
-                oGrammalecte.oLxgPanel.clear();
-                oGrammalecte.oLxgPanel.show();
-                oGrammalecte.oLxgPanel.startWaitIcon();
-                xPort.postMessage({
-                    sCommand: "getListOfTokens",
-                    dParam: {sText: xTextArea.value},
-                    dInfo: {sTextAreaId: xTextArea.id}
-                });
-            };
-            let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
-            xGCButton.onclick = function () {
-                oGrammalecte.createGCPanel();
-                oGrammalecte.oGCPanel.clear();
-                oGrammalecte.oGCPanel.show();
-                oGrammalecte.oGCPanel.start(xTextArea);
-                oGrammalecte.oGCPanel.startWaitIcon();
-                xPort.postMessage({
-                    sCommand: "parseAndSpellcheck",
-                    dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
-                    dInfo: {sTextAreaId: xTextArea.id}
-                });
-            };
-            // Create
-            //xToolbar.appendChild(createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
-            // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-            //xToolbar.appendChild(createLogo());
-            xToolbar.appendChild(xConjButton);
-            xConjSection.appendChild(xConjButtonTab);
-            xConjSection.appendChild(xConjButtonWin);
-            xToolbar.appendChild(xConjSection);
-            xToolbar.appendChild(xTFButton);
-            xToolbar.appendChild(xLxgButton);
-            xToolbar.appendChild(xGCButton);
-            return xToolbar;
+function createNode (sType, oAttr, oDataset=null) {
+    try {
+        let xNode = document.createElement(sType);
+        Object.assign(xNode, oAttr);
+        if (oDataset) {
+            Object.assign(xNode.dataset, oDataset);
         }
-        catch (e) {
-            showError(e);
-        }
+        return xNode;
     }
-
-    showConjButtons () {
-        document.getElementById("grammalecte_wrapper_conj_section"+this.nWrapper).style.display = "block";
-    }
-
-    hideConjButtons () {
-        document.getElementById("grammalecte_wrapper_conj_section"+this.nWrapper).style.display = "none";
+    catch (e) {
+        showError(e);
     }
 }
 
+/*
+function loadImage (sContainerClass, sImagePath) {
+    let xRequest = new XMLHttpRequest();
+    xRequest.open('GET', browser.extension.getURL("")+sImagePath, false);
+    xRequest.responseType = "arraybuffer";
+    xRequest.send();
+    let blobTxt = new Blob([xRequest.response], {type: 'image/png'});
+    let img = document.createElement('img');
+    img.src = (URL || webkitURL).createObjectURL(blobTxt); // webkitURL is obsolete: https://bugs.webkit.org/show_bug.cgi?id=167518
+    Array.filter(document.getElementsByClassName(sContainerClass), function (oElem) {
+        oElem.appendChild(img);
+    });
+}
+*/
 
 const oGrammalecte = {
 
