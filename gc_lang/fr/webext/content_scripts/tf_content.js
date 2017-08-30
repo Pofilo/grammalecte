@@ -227,7 +227,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         let oOptions = {};
         for (let xNode of document.getElementsByClassName("option")) {
             oOptions[xNode.id] = xNode.checked;
-            console.log(xNode.id + ": " + xNode.checked);
+            //console.log(xNode.id + ": " + xNode.checked);
         }
         browser.storage.local.set({"tf_options": oOptions});
     }
