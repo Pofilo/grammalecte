@@ -135,6 +135,12 @@ function handleConnexion (xPort) {
             case "openURL":
                 browser.tabs.create({url: dParam.sURL});
                 break;
+            case "openConjugueurTab":
+                openConjugueurTab();
+                break;
+            case "openConjugueurWindow":
+                openConjugueurWindow();
+                break;
             default:
                 console.log("[background] Unknown command: " + sCommand);
                 console.log(oRequest);
