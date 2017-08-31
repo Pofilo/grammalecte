@@ -1,9 +1,9 @@
 # Useful tools
 
 import os
+import shutil
 import zipfile
 
-from distutils import dir_util, file_util
 from string import Template
 
 
@@ -24,7 +24,7 @@ def unzip (spfZip, spDest, bCreatePath=False):
     "unzip file <spfZip> at <spfDest>"
     if spDest:
         if bCreatePath and not os.path.exists(spDest):
-            dir_util.mkpath(spDest)
+            os.makedirs(spDest, exist_ok=True)
         print("> unzip in: "+ spDest)
         spInstall = os.path.abspath(spDest)
         if os.path.isdir(spInstall):
@@ -39,22 +39,21 @@ def unzip (spfZip, spDest, bCreatePath=False):
 
 def eraseFolder (sp):
     "erase content of a folder"
-    # recursive!!!
     for sf in os.listdir(sp):
-        spf = sp + "/" + sf
-        if os.path.isdir(spf):
-            eraseFolder(spf)
-        else:
-            try:
-                os.remove(spf)
-            except:
-                print("%s not removed" % spf)
+        spf = os.path.join(sp, sf)
+        try:
+            if os.path.isfile(spf):
+                os.unlink(spf)
+            elif os.path.isdir(spf):
+                shutil.rmtree(spf)
+        except Exception as e:
+            print(e)
 
 
 def createCleanFolder (sp):
     "make an empty folder or erase its content if not empty"
     if not os.path.exists(sp):
-        dir_util.mkpath(sp)
+        os.makedirs(sp, exist_ok=True)
     else:
         eraseFolder(sp)
 
