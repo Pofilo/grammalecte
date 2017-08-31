@@ -123,7 +123,7 @@ onmessage = function (e) {
             getListOfTokens(dParam.sText, dInfo);
             break;
         default:
-            console.log("Unknown command: " + sCommand);
+            console.log("[Worker] Unknown command: " + sCommand);
             showData(e.data);
     }
 }
