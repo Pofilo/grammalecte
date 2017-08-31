@@ -2,9 +2,11 @@
 
 "use strict";
 
+
 function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
+
 
 /*
     Worker (separate thread to avoid freezing Firefox)
@@ -49,8 +51,8 @@ xGCEWorker.onmessage = function (e) {
                 browser.storage.local.set({"gc_options": result});
                 break;
             default:
-                console.log("Unknown command: " + sActionDone);
-                console.log(result);
+                console.log("[background] Unknown command: " + sActionDone);
+                console.log(e.data);
         }
     }
     catch (e) {
@@ -112,6 +114,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
             break;
         default:
             console.log("[background] Unknown command: " + sCommand);
+            console.log(oRequest);
     }
     //sendResponse({response: "response from background script"});
 }
@@ -146,7 +149,7 @@ function handleConnexion (xPort) {
                 console.log(oRequest);
         }
     });
-    xPort.postMessage({sActionDone: "newId", result: iPortId});
+    //xPort.postMessage({sActionDone: "newId", result: iPortId});
 }
 
 browser.runtime.onConnect.addListener(handleConnexion);
@@ -189,8 +192,7 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
-    //console.log(xInfo);
-    //console.log(xTab);
+    
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
         case "parseAndSpellcheck":
@@ -205,6 +207,10 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
         case "conjugueur_tab":
             openConjugueurTab();
             break;
+        default:
+            console.log("[Background] Unknown menu id: " + xInfo.menuItemId);
+            console.log(xInfo);
+            console.log(xTab);
     }    
 });
 
@@ -269,8 +275,8 @@ function openConjugueurWindow () {
 }
 
 
-function onCreated (windowInfo) {
-    console.log(`Created window: ${windowInfo.id}`);
+function onCreated (xWindowInfo) {
+    //console.log(`Created window: ${xWindowInfo.id}`);
 }
 
 function onError (error) {
