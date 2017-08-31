@@ -88,9 +88,9 @@ const oGrammalecte = {
 /*
     Connexion to the background
 */
-let xPort = browser.runtime.connect({name: "content-script port"});
+let xGrammalectePort = browser.runtime.connect({name: "content-script port"});
 
-xPort.onMessage.addListener(function (oMessage) {
+xGrammalectePort.onMessage.addListener(function (oMessage) {
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
     switch (sActionDone) {
         case "parseAndSpellcheck":

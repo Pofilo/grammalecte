@@ -27,12 +27,12 @@ class GrammalecteWrapper {
             let xConjSection = createNode("div", {id: "grammalecte_wrapper_conj_section"+this.nWrapper, className: "grammalecte_wrapper_conj_section"});
             let xConjButtonTab = createNode("div", {className: "grammalecte_wrapper_button2", textContent: ">Onglet"});
             xConjButtonTab.onclick = function () {
-                xPort.postMessage({sCommand: "openConjugueurTab", dParam: null, dInfo: null});
+                xGrammalectePort.postMessage({sCommand: "openConjugueurTab", dParam: null, dInfo: null});
                 this.hideConjButtons();
             }.bind(this);
             let xConjButtonWin = createNode("div", {className: "grammalecte_wrapper_button2", textContent: ">Fenêtre"});
             xConjButtonWin.onclick = function () {
-                xPort.postMessage({sCommand: "openConjugueurWindow", dParam: null, dInfo: null});
+                xGrammalectePort.postMessage({sCommand: "openConjugueurWindow", dParam: null, dInfo: null});
                 this.hideConjButtons();
             }.bind(this);
             let xTFButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Formater"});
@@ -47,7 +47,7 @@ class GrammalecteWrapper {
                 oGrammalecte.oLxgPanel.clear();
                 oGrammalecte.oLxgPanel.show();
                 oGrammalecte.oLxgPanel.startWaitIcon();
-                xPort.postMessage({
+                xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
                     dParam: {sText: xTextArea.value},
                     dInfo: {sTextAreaId: xTextArea.id}
@@ -60,7 +60,7 @@ class GrammalecteWrapper {
                 oGrammalecte.oGCPanel.show();
                 oGrammalecte.oGCPanel.start(xTextArea);
                 oGrammalecte.oGCPanel.startWaitIcon();
-                xPort.postMessage({
+                xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
                     dParam: {sText: xTextArea.value, sCountry: "FR", bDebug: false, bContext: false},
                     dInfo: {sTextAreaId: xTextArea.id}

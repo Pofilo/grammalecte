@@ -107,7 +107,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let xParagraph = document.getElementById(sParagraphId);
         this.blockParagraph(xParagraph);
         let sText = this.purgeText(xParagraph.textContent);
-        xPort.postMessage({
+        xGrammalectePort.postMessage({
             sCommand: "parseAndSpellcheck1",
             dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
             dInfo: {sParagraphId: sParagraphId}

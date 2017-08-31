@@ -138,7 +138,7 @@ class GrammalectePanel {
     }
 
     openURL (sURL) {
-        xPort.postMessage({
+        xGrammalectePort.postMessage({
             sCommand: "openURL",
             dParam: {"sURL": sURL},
             dInfo: {}
