@@ -155,7 +155,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                         xParagraph.appendChild(document.createTextNode(sParagraph.slice(nEndLastErr, nStart)));
                     }
                     xParagraph.appendChild(this._createError(sParagraph.slice(nStart, nEnd), oErr));
-                    xParagraph.insertAdjacentHTML("beforeend", "<!-- err_end -->");
                     nEndLastErr = nEnd;
                 }
                 nErr += 1;
