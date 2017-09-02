@@ -475,15 +475,15 @@ def stem (sWord):
 
 def nextword (s, iStart, n):
     "get the nth word of the input string or empty string"
-    m = re.match("( +[\\w%-]+){" + str(n-1) + "} +([\\w%-]+)", s[iStart:])
+    m = re.match("(?: +[\\w%-]+){" + str(n-1) + "} +([\\w%-]+)", s[iStart:])
     if not m:
         return None
-    return (iStart+m.start(2), m.group(2))
+    return (iStart+m.start(1), m.group(1))
 
 
 def prevword (s, iEnd, n):
     "get the (-)nth word of the input string or empty string"
-    m = re.search("([\\w%-]+) +([\\w%-]+ +){" + str(n-1) + "}$", s[:iEnd])
+    m = re.search("([\\w%-]+) +(?:[\\w%-]+ +){" + str(n-1) + "}$", s[:iEnd])
     if not m:
         return None
     return (m.start(1), m.group(1))

@@ -15,7 +15,7 @@ def suggVerb (sFlex, sWho, funcSugg2=None):
             # we get the tense
             aTense = set()
             for sMorph in _dAnalyses.get(sFlex, []): # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-                for m in re.finditer(sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K|P))", sMorph):
+                for m in re.finditer(">"+sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K|P))", sMorph):
                     # stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if m:
                         if m.group(1) == ":Y":

@@ -1,11 +1,17 @@
 // JavaScript
 // Very simple tokenizer
+/*jslint esversion: 6*/
+/*global require,exports*/
 
 "use strict";
 
-const helpers = require("resource://grammalecte/helpers.js");
 
-const aPatterns = {
+if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
+
+
+const aTkzPatterns = {
     // All regexps must start with ^.
     "default":
         [
@@ -35,18 +41,18 @@ const aPatterns = {
             [/^-?\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)*/, 'WORD']
         ]
-}
+};
 
 
 class Tokenizer {
 
     constructor (sLang) {
         this.sLang = sLang;
-        if (!aPatterns.hasOwnProperty(sLang)) {
+        if (!aTkzPatterns.hasOwnProperty(sLang)) {
             this.sLang = "default";
         }
-        this.aRules = aPatterns[this.sLang];
-    };
+        this.aRules = aTkzPatterns[this.sLang];
+    }
 
     * genTokens (sText) {
         let m;
@@ -74,7 +80,7 @@ class Tokenizer {
             i += nCut;
             sText = sText.slice(nCut);
         }
-    };
+    }
 
     getSpellingErrors (sText, oDict) {
         let aSpellErr = [];

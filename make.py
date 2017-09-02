@@ -13,6 +13,7 @@ import argparse
 import importlib
 import unittest
 import json
+import platform
 
 from distutils import dir_util, file_util
 
@@ -350,11 +351,13 @@ def main ():
             # Firefox
             if xArgs.firefox:
                 with helpers.cd("_build/xpi/"+sLang):
-                    os.system("jpm run -b nightly")
+                    spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
+                    os.system('jpm run -b "' + spfFirefox + '"')
 
             if xArgs.web_ext:
                 with helpers.cd("_build/webext/"+sLang):
-                    os.system(r'web-ext run --firefox="' + dVars['fx_beta_path'] + '" --browser-console')            
+                    spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')            
 
             # Thunderbird
             if xArgs.thunderbird:

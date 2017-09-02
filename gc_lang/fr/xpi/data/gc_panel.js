@@ -201,7 +201,7 @@ function _tagParagraph (sParagraph, xParagraph, iParagraph, aSpellErr, aGrammErr
     try {
         if (aGrammErr.length === 0  &&  aSpellErr.length === 0) {
             xParagraph.textContent = sParagraph;
-            return
+            return;
         }
         aGrammErr.push(...aSpellErr);
         aGrammErr.sort(function (a, b) {

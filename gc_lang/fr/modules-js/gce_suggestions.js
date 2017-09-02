@@ -1,8 +1,12 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Suggestion mechanisms
+/*jslint esversion: 6*/
+/*global require*/
 
-const conj = require("resource://grammalecte/fr/conj.js");
-const mfsp = require("resource://grammalecte/fr/mfsp.js");
-const phonet = require("resource://grammalecte/fr/phonet.js");
+if (typeof(require) !== 'undefined') {
+    var conj = require("resource://grammalecte/fr/conj.js");
+    var mfsp = require("resource://grammalecte/fr/mfsp.js");
+    var phonet = require("resource://grammalecte/fr/phonet.js");
+}
 
 
 //// verbs
@@ -17,8 +21,8 @@ function suggVerb (sFlex, sWho, funcSugg2=null) {
             let aTense = new Set();
             for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
                 let m;
-                let zVerb = new RegExp (sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
-                while (m = zVerb.exec(sMorph)) {
+                let zVerb = new RegExp (">"+sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
+                while ((m = zVerb.exec(sMorph)) !== null) {
                     // stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if (m) {
                         if (m[1] === ":Y") {
@@ -141,8 +145,7 @@ function suggVerbImpe (sFlex) {
 }
 
 function suggVerbInfi (sFlex) {
-    //return stem(sFlex).join("|");
-    return [ for (sStem of stem(sFlex)) if (conj.isVerb(sStem)) sStem ].join("|");
+    return stem(sFlex).filter(sStem => conj.isVerb(sStem)).join("|");
 }
 
 
@@ -197,7 +200,7 @@ function suggPlur (sFlex, sWordToAgree=null) {
         if (!_dAnalyses.has(sWordToAgree) && !_storeMorphFromFSA(sWordToAgree)) {
             return "";
         }
-        let sGender = cr.getGender(_dAnalyses.gl_get(sWordToAgree, []));
+        let sGender = cregex.getGender(_dAnalyses.gl_get(sWordToAgree, []));
         if (sGender == ":m") {
             return suggMasPlur(sFlex);
         } else if (sGender == ":f") {
@@ -263,14 +266,14 @@ function suggMasSing (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
                 aSugg.add(suggSing(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     mfsp.getMasForm(sStem, false).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q1") && conj.hasConj(sVerb, ":PQ", ":Q3")) {
                 // We also check if the verb has a feminine form.
                 // If not, we consider it’s better to not suggest the masculine one, as it can be considered invariable.
@@ -299,14 +302,14 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
                 aSugg.add(suggPlur(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     mfsp.getMasForm(sStem, true).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q2")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q2"));
             } else if (conj.hasConj(sVerb, ":PQ", ":Q1")) {
@@ -340,14 +343,14 @@ function suggFemSing (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
                 aSugg.add(suggSing(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     aSugg.add(sStem);
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q3")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q3"));
             }
@@ -374,14 +377,14 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
                 aSugg.add(suggPlur(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     aSugg.add(sStem+"s");
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q4")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q4"));
             }

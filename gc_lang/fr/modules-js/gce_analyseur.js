@@ -1,4 +1,5 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Parsing functions for French language
+/*jslint esversion: 6*/
 
 function rewriteSubject (s1, s2) {
     // s1 is supposed to be prn/patr/npr (M[12P])
@@ -22,7 +23,7 @@ function rewriteSubject (s1, s2) {
     }
     if (s2 == "elle" || s2 == "elles") {
         // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-        if (cr.mbNprMasNotFem(_dAnalyses.gl_get(s1, ""))) {
+        if (cregex.mbNprMasNotFem(_dAnalyses.gl_get(s1, ""))) {
             return "ils";
         }
         // si épicène, indéterminable, mais OSEF, le féminin l’emporte
@@ -34,7 +35,7 @@ function rewriteSubject (s1, s2) {
 function apposition (sWord1, sWord2) {
     // returns true if nom + nom (no agreement required)
     // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    return cr.mbNomNotAdj(_dAnalyses.gl_get(sWord2, "")) && cr.mbPpasNomNotAdj(_dAnalyses.gl_get(sWord1, ""));
+    return cregex.mbNomNotAdj(_dAnalyses.gl_get(sWord2, "")) && cregex.mbPpasNomNotAdj(_dAnalyses.gl_get(sWord1, ""));
 }
 
 function isAmbiguousNAV (sWord) {
@@ -42,10 +43,10 @@ function isAmbiguousNAV (sWord) {
     if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
         return false;
     }
-    if (!cr.mbNomAdj(_dAnalyses.gl_get(sWord, "")) || sWord == "est") {
+    if (!cregex.mbNomAdj(_dAnalyses.gl_get(sWord, "")) || sWord == "est") {
         return false;
     }
-    if (cr.mbVconj(_dAnalyses.gl_get(sWord, "")) && !cr.mbMG(_dAnalyses.gl_get(sWord, ""))) {
+    if (cregex.mbVconj(_dAnalyses.gl_get(sWord, "")) && !cregex.mbMG(_dAnalyses.gl_get(sWord, ""))) {
         return true;
     }
     return false;
@@ -58,7 +59,7 @@ function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
     if (!a2 || a2.length === 0) {
         return false;
     }
-    if (cr.checkConjVerb(a2, sReqMorphConj)) {
+    if (cregex.checkConjVerb(a2, sReqMorphConj)) {
         // verb word2 is ok
         return false;
     }
@@ -66,7 +67,7 @@ function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
     if (!a1 || a1.length === 0) {
         return false;
     }
-    if (cr.checkAgreement(a1, a2) && (cr.mbAdj(a2) || cr.mbAdj(a1))) {
+    if (cregex.checkAgreement(a1, a2) && (cregex.mbAdj(a2) || cregex.mbAdj(a1))) {
         return false;
     }
     return true;
@@ -75,11 +76,11 @@ function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
 function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond) {
     //// use it if sWord1 can be also a verb; word2 is assumed to be true via isAmbiguousNAV
     // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null)
+    let a2 = _dAnalyses.gl_get(sWord2, null);
     if (!a2 || a2.length === 0) {
         return false;
     }
-    if (cr.checkConjVerb(a2, sReqMorphConj)) {
+    if (cregex.checkConjVerb(a2, sReqMorphConj)) {
         // verb word2 is ok
         return false;
     }
@@ -87,14 +88,14 @@ function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bL
     if (!a1 || a1.length === 0) {
         return false;
     }
-    if (cr.checkAgreement(a1, a2) && (cr.mbAdj(a2) || cr.mbAdjNb(a1))) {
+    if (cregex.checkAgreement(a1, a2) && (cregex.mbAdj(a2) || cregex.mbAdjNb(a1))) {
         return false;
     }
     // now, we know there no agreement, and conjugation is also wrong
-    if (cr.isNomAdj(a1)) {
+    if (cregex.isNomAdj(a1)) {
         return true;
     }
-    //if cr.isNomAdjVerb(a1): # considered true
+    //if cregex.isNomAdjVerb(a1): # considered true
     if (bLastHopeCond) {
         return true;
     }
@@ -103,7 +104,7 @@ function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bL
 
 function checkAgreement (sWord1, sWord2) {
     // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null)
+    let a2 = _dAnalyses.gl_get(sWord2, null);
     if (!a2 || a2.length === 0) {
         return true;
     }
@@ -111,7 +112,7 @@ function checkAgreement (sWord1, sWord2) {
     if (!a1 || a1.length === 0) {
         return true;
     }
-    return cr.checkAgreement(a1, a2);
+    return cregex.checkAgreement(a1, a2);
 }
 
 function mbUnit (s) {

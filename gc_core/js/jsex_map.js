@@ -1,5 +1,6 @@
 
 // Map
+/*jslint esversion: 6*/
 
 if (Map.prototype.grammalecte === undefined) {
     Map.prototype.gl_shallowCopy = function () {
@@ -8,7 +9,7 @@ if (Map.prototype.grammalecte === undefined) {
             oNewMap.set(key, val);
         }
         return oNewMap;
-    }
+    };
 
     Map.prototype.gl_get = function (key, defaultValue) {
         let res = this.get(key);
@@ -16,7 +17,7 @@ if (Map.prototype.grammalecte === undefined) {
             return res;
         }
         return defaultValue;
-    }
+    };
 
     Map.prototype.gl_toString = function () {
         // Default .toString() gives nothing useful
@@ -25,15 +26,15 @@ if (Map.prototype.grammalecte === undefined) {
             sRes += (typeof k === "string") ? '"' + k + '": ' : k.toString() + ": ";
             sRes += (typeof v === "string") ? '"' + v + '", ' : v.toString() + ", ";
         }
-        sRes = sRes.slice(0, -2) + " }"
+        sRes = sRes.slice(0, -2) + " }";
         return sRes;
-    }
+    };
 
     Map.prototype.gl_update = function (dDict) {
         for (let [k, v] of dDict.entries()) {
             this.set(k, v);
         }
-    }
+    };
 
     Map.prototype.gl_updateOnlyExistingKeys = function (dDict) {
         for (let [k, v] of dDict.entries()) {
@@ -41,7 +42,7 @@ if (Map.prototype.grammalecte === undefined) {
                 this.set(k, v);
             }
         }
-    }
+    };
 
     Map.prototype.grammalecte = true;
 }

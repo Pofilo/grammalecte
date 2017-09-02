@@ -7,6 +7,7 @@ from itertools import chain
 def getParagraph (sText):
     "generator: returns paragraphs of text"
     iStart = 0
+    sText = sText.replace("\r\n", "\n").replace("\r", "\n")
     iEnd = sText.find("\n", iStart)
     while iEnd != -1:
         yield sText[iStart:iEnd]

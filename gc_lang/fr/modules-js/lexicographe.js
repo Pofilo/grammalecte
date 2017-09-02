@@ -1,5 +1,7 @@
 // Grammalecte - Lexicographe
 // License: MPL 2
+/*jslint esversion: 6*/
+/*global require,exports*/
 
 "use strict";
 
@@ -7,9 +9,9 @@ ${string}
 ${map}
 
 
-const helpers = require("resource://grammalecte/helpers.js");
-const tkz = require("resource://grammalecte/tokenizer.js");
-
+if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
 
 const _dTAGS = new Map ([
     [':G', "[mot grammatical]"],
@@ -199,7 +201,7 @@ class Lexicographe {
         this._zElidedPrefix = new RegExp ("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp ("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
         this._zTag = new RegExp ("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*][^:;/]*", "g");
-    };
+    }
 
     getInfoForToken (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
@@ -226,13 +228,19 @@ class Lexicographe {
                     }
                     else if (this.oDict.isValidToken(oToken.sValue)) {
                         let lMorph = this.oDict.getMorph(oToken.sValue);
-                        let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
+                        let aElem = [];
+                        for (let s of lMorph){
+                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        }
                         return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem};
                     }
                     else if (m = this._zCompoundWord.exec(oToken.sValue)) {
                         // mots composés
                         let lMorph = this.oDict.getMorph(m[1]);
-                        let aElem = [ for (s of lMorph) if (s.includes(":")) this._formatTags(s) ];
+                        let aElem = [];
+                        for (let s of lMorph){
+                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        }
                         aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
                         return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem };
                     }
@@ -246,7 +254,7 @@ class Lexicographe {
             helpers.logerror(e);
         }
         return null;
-    };
+    }
 
     _formatTags (sTags) {
         let sRes = "";
@@ -267,7 +275,7 @@ class Lexicographe {
             return sRes;
         }
         return sRes.gl_trimRight(",");
-    };
+    }
 
     _formatSuffix (s) {
         if (s.startsWith("t-")) {
@@ -281,7 +289,7 @@ class Lexicographe {
         }
         let nPos = s.indexOf("-");
         return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos+1));
-    };
+    }
 }
 
 

@@ -1,70 +1,149 @@
+// Main panel
+
+"use strict";
+
 
 function showError (e) {
-  console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+    console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
-function beastNameToURL(beastName) {
-  switch (beastName) {
-    case "Frog":
-      return browser.extension.getURL("beasts/frog.jpg");
-    case "Snake":
-      return browser.extension.getURL("beasts/snake.jpg");
-    case "Turtle":
-      return browser.extension.getURL("beasts/turtle.jpg");
-  }
-}
 
+/*
+    Events
+*/
 window.addEventListener(
-  "click",
-  function (xEvent) {
-    let xElem = xEvent.target;
-    if (xElem.id) {
-      if (xElem.id) {
-
-      }
-    } else if (xElem.className === "select") {
-      showPage(xElem.dataset.page);
-    } else if (xElem.tagName === "A") {
-      openURL(xElem.getAttribute("href"));
-    }
-  },
-  false
+    "click",
+    function (xEvent) {
+        let xElem = xEvent.target;
+        if (xElem.id) {
+            if (xElem.id === "text_to_test_button") {
+                browser.runtime.sendMessage({
+                    sCommand: "textToTest",
+                    dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: false, bContext: false},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id === "fulltests_button") {
+                document.getElementById("tests_result").textContent = "Veuillez patienter…";
+                browser.runtime.sendMessage({
+                    sCommand: "fullTests",
+                    dParam: {},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id === "default_options_button") {
+                browser.runtime.sendMessage({
+                   sCommand: "resetOptions",
+                   dParam: {},
+                   dInfo: {}
+                });
+            }
+            else if (xElem.id.startsWith("option_")) {
+                browser.runtime.sendMessage({
+                    sCommand: "setOption",
+                    dParam: {sOptName: xElem.dataset.option, bValue: xElem.checked},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id.startsWith("link_")) {
+                browser.tabs.create({url: xElem.dataset.url});
+            }
+        } else if (xElem.className.startsWith("select")) {
+            showPage(xElem.dataset.page);
+        }/* else if (xElem.tagName === "A") {
+            openURL(xElem.getAttribute("href"));
+        }*/
+    },
+    false
 );
 
+
+/* 
+    Message sender
+    and response handling
+*/
+function handleResponse (oResponse) {
+    console.log(`[Panel] received:`);
+    console.log(oResponse);
+}
+
+function handleError (error) {
+    console.log(`[Panel] Error:`);
+    console.log(error);
+}
+
+function sendMessageAndWaitResponse (oData) {
+    let xPromise = browser.runtime.sendMessage(oData);
+    xPromise.then(handleResponse, handleError);  
+}
+
+
+/*
+    Messages received
+*/
+function handleMessage (oMessage, xSender, sendResponse) {
+    let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
+    switch(sActionDone) {
+        case "textToTest":
+        case "fullTests":
+            showTestResult(result);
+            break;
+        case "resetOptions":
+            setGCOptions(result);
+            break;
+        default:
+            console.log("GRAMMALECTE. Unknown command: " + sActionDone);
+    }
+    //sendResponse({sCommand: "none", result: "done"});
+}
+
+browser.runtime.onMessage.addListener(handleMessage);
+
+
+/*
+    Actions
+*/
+
 function showPage (sPageName) {
-  try {
-    // hide them all
-    for (let xNodePage of document.getElementsByClassName("page")) {
-      xNodePage.style.display = "None";
+    try {
+        // hide them all
+        for (let xNodePage of document.getElementsByClassName("page")) {
+            xNodePage.style.display = "none";
+        }
+        // show the selected one
+        document.getElementById(sPageName).style.display = "block";
+        if (sPageName == "gc_options_page") {
+            setGCOptionsFromStorage();
+        }
     }
-    // show the one
-    document.getElementById(sPageName).style.display = "block";
-    sendMessage("Mon message");
-    // specific modifications
-    if (sPageName === "conj_page") {
-      document.body.style.width = "600px";
-      document.documentElement.style.width = "600px";
-      document.getElementById("movewindow").style.display = "none";
-    } else {
-      document.body.style.width = "530px";
-      document.documentElement.style.width = "530px";
-      document.getElementById("movewindow").style.display = "block";
+    catch (e) {
+        showError(e);
     }
-  }
-  catch (e) {
-    showError(e);
-  }
 }
 
-function handleResponse(message) {
-  console.log(`[Panel] received: ${message.response}`);
+
+function showTestResult (sText) {
+    document.getElementById("tests_result").textContent = sText;
 }
 
-function handleError(error) {
-  console.log(`[Panel] Error: ${error}`);
+function setGCOptionsFromStorage () {
+    let xPromise = browser.storage.local.get("gc_options");
+    xPromise.then(
+        function (dSavedOptions) {
+            if (dSavedOptions.hasOwnProperty("gc_options")) {
+                setGCOptions(dSavedOptions.gc_options);
+            }
+        },
+        function (e) {
+            showError(e);
+        }
+    );
 }
 
-function sendMessage (sMessage) {
-  let sending = browser.runtime.sendMessage({content: sMessage});
-  sending.then(handleResponse, handleError);  
+function setGCOptions (dOptions) {
+    for (let [sOpt, bVal] of dOptions) {
+        if (document.getElementById("option_"+sOpt)) {
+            document.getElementById("option_"+sOpt).checked = bVal;
+        }
+    }
 }

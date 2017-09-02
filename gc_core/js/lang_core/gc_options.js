@@ -1,27 +1,33 @@
 // Options for Grammalecte
+/*jslint esversion: 6*/
+/*global exports*/
 
 ${map}
 
-function getOptions (sContext="JavaScript") {
-    if (dOpt.hasOwnProperty(sContext)) {
-        return dOpt[sContext];
-    }
-    return dOpt["JavaScript"];
+
+var gc_options = {
+    getOptions: function (sContext="JavaScript") {
+        if (this.dOpt.hasOwnProperty(sContext)) {
+            return this.dOpt[sContext];
+        }
+        return this.dOpt["JavaScript"];
+    },
+
+    lStructOpt: ${lStructOpt},
+
+    dOpt: {
+        "JavaScript": new Map (${dOptJavaScript}),
+        "Firefox": new Map (${dOptFirefox}),
+        "Thunderbird": new Map (${dOptThunderbird}),
+    },
+
+    dOptLabel: ${dOptLabel}
 }
-
-const lStructOpt = ${lStructOpt};
-
-const dOpt = {
-    "JavaScript": new Map (${dOptJavaScript}),
-    "Firefox": new Map (${dOptFirefox}),
-    "Thunderbird": new Map (${dOptThunderbird}),
-}
-
-const dOptLabel = ${dOptLabel};
 
 
 if (typeof(exports) !== 'undefined') {
-	exports.getOptions = getOptions;
-	exports.lStructOpt = lStructOpt;
-	exports.dOptLabel = dOptLabel;
+	exports.getOptions = gc_options.getOptions;
+	exports.lStructOpt = gc_options.lStructOpt;
+    exports.dOpt = gc_options.dOpt;
+	exports.dOptLabel = gc_options.dOptLabel;
 }
