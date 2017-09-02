@@ -56,9 +56,8 @@ class GrammalecteWrapper {
             let xGCButton = createNode("div", {className: "grammalecte_wrapper_button", textContent: "Corriger"});
             xGCButton.onclick = function () {
                 oGrammalecte.createGCPanel();
-                oGrammalecte.oGCPanel.clear();
-                oGrammalecte.oGCPanel.show();
                 oGrammalecte.oGCPanel.start(xTextArea);
+                oGrammalecte.oGCPanel.show();
                 oGrammalecte.oGCPanel.startWaitIcon();
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
