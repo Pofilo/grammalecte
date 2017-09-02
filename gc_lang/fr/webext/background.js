@@ -192,7 +192,6 @@ browser.contextMenus.create({
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
-    
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
         case "parseAndSpellcheck":

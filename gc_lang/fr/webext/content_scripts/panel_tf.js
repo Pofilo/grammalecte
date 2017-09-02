@@ -71,9 +71,9 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xOptions.appendChild(xColumn2);
             // Actions
             let xActions = createNode("div", {id: "grammalecte_tf_actions"});
-            let xDefaultButton = createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_button"});
+            let xDefaultButton = createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_tf_button"});
             xDefaultButton.addEventListener("click", () => { this.reset(); });
-            let xApplyButton = createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_button"});
+            let xApplyButton = createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_tf_button"});
             xApplyButton.addEventListener("click", () => { this.saveOptions(); this.apply(); });
             xActions.appendChild(xDefaultButton);
             xActions.appendChild(createNode("progress", {id: "grammalecte_tf_progressbar"}));
@@ -94,7 +94,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     _createFieldset (sId, bDefault, sLabel) {
         let xFieldset = createNode("fieldset", {id: sId, className: "groupblock"});
         let xLegend = document.createElement("legend");
-        let xGroupOption = createNode("input", {type: "checkbox", id: "o_"+sId, className: "option"}, {default: bDefault});
+        let xGroupOption = createNode("input", {type: "checkbox", id: "o_"+sId, className: "grammalecte_tf_option"}, {default: bDefault});
         xGroupOption.addEventListener("click", (xEvent) => { this.switchGroup(xEvent.target.id); });
         xLegend.appendChild(xGroupOption);
         xLegend.appendChild(createNode("label", {htmlFor: "o_"+sId, textContent: sLabel}));
@@ -103,8 +103,8 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     _createSimpleOption (sId, bDefault, sLabel) {
-        let xLine = createNode("div", {className: "blockopt underline"});
-        xLine.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
+        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
+        xLine.appendChild(createNode("input", {type: "checkbox", id: sId, className: "grammalecte_tf_option"}, {default: bDefault}));
         xLine.appendChild(createNode("label", {htmlFor: sId, textContent: sLabel, className: "opt_lbl largew"}));
         xLine.appendChild(createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "·"}));
         return xLine;
@@ -112,7 +112,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Hyphens
     _createRadioBoxHyphens (sName, sIdEmDash, sIdEnDash, bDefaultEmDash) {
-        let xLine = createNode("div", {className: "blockopt indent"});
+        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
         xLine.appendChild(this._createInlineRadioOption(sName, sIdEmDash, "cadratin (—)", bDefaultEmDash));
         xLine.appendChild(this._createInlineRadioOption(sName, sIdEnDash, "demi-cadratin (—)", !bDefaultEmDash));
         return xLine;
@@ -120,7 +120,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Ligatures
     _createRadioBoxLigatures () {
-        let xLine = createNode("div", {className: "blockopt underline"});
+        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
         xLine.appendChild(createNode("div", {id: "res_"+"o_ts_ligature", className: "grammalecte_tf_result", textContent: "·"}));
         xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature", "Ligatures", true));
         xLine.appendChild(this._createInlineRadioOption("liga", "o_ts_ligature_do", "faire", false));
@@ -129,7 +129,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     _createLigaturesSelection () {
-        let xLine = createNode("div", {className: "blockopt indent"});
+        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
         xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_ff", "ff", true));
         xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_fi", "fi", true));
         xLine.appendChild(this._createInlineCheckboxOption("o_ts_ligature_ffi", "ffi", true));
@@ -142,7 +142,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Apostrophes
     _createSingleLetterOptions () {
-        let xLine = createNode("div", {className: "blockopt indent"});
+        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
         xLine.appendChild(this._createInlineCheckboxOption("o_ma_1letter_lowercase", "lettres isolées (j’ n’ m’ t’ s’ c’ d’ l’)", false));
         xLine.appendChild(this._createInlineCheckboxOption("o_ma_1letter_uppercase", "Maj.", false));
         return xLine;
@@ -150,7 +150,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Ordinals
     _createOrdinalOptions () {
-        let xLine = createNode("div", {className: "blockopt underline"});
+        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
         xLine.appendChild(createNode("div", {id: "res_"+"o_ordinals_no_exponant", className: "grammalecte_tf_result", textContent: "·"}));
         xLine.appendChild(this._createInlineCheckboxOption("o_ordinals_no_exponant", "Ordinaux (15e, XXIe…)", true));
         xLine.appendChild(this._createInlineCheckboxOption("o_ordinals_exponant", "e → ᵉ", true));
@@ -160,15 +160,15 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Inline option block
     _createInlineCheckboxOption (sId, sLabel, bDefault) {
-        let xInlineBlock = createNode("div", {className: "inlineblock"});
-        xInlineBlock.appendChild(createNode("input", {type: "checkbox", id: sId, className: "option"}, {default: bDefault}));
+        let xInlineBlock = createNode("div", {className: "grammalecte_tf_inlineblock"});
+        xInlineBlock.appendChild(createNode("input", {type: "checkbox", id: sId, className: "grammalecte_tf_option"}, {default: bDefault}));
         xInlineBlock.appendChild(createNode("label", {htmlFor: sId, textContent: sLabel, className: "opt_lbl"}));
         return xInlineBlock;
     }
 
     _createInlineRadioOption (sName, sId, sLabel, bDefault) {
-        let xInlineBlock = createNode("div", {className: "inlineblock"});
-        xInlineBlock.appendChild(createNode("input", {type: "radio", id: sId, name: sName, className:"option"}, {default: bDefault}));
+        let xInlineBlock = createNode("div", {className: "grammalecte_tf_inlineblock"});
+        xInlineBlock.appendChild(createNode("input", {type: "radio", id: sId, name: sName, className:"grammalecte_tf_option"}, {default: bDefault}));
         xInlineBlock.appendChild(createNode("label", {htmlFor: sId, className: "opt_lbl", textContent: sLabel}));
         return xInlineBlock;
     }
@@ -194,7 +194,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     reset () {
         this.resetProgressBar();
-        for (let xNode of document.getElementsByClassName("option")) {
+        for (let xNode of document.getElementsByClassName("grammalecte_tf_option")) {
             xNode.checked = (xNode.dataset.default === "true");
             if (xNode.id.startsWith("o_group_")) {
                 this.switchGroup(xNode.id);
@@ -211,7 +211,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         if (oOptions.hasOwnProperty("tf_options")) {
             oOptions = oOptions.tf_options;
         }
-        for (let xNode of document.getElementsByClassName("option")) {
+        for (let xNode of document.getElementsByClassName("grammalecte_tf_option")) {
             //console.log(xNode.id + " > " + oOptions.hasOwnProperty(xNode.id) + ": " + oOptions[xNode.id] + " [" + xNode.dataset.default + "]");
             xNode.checked = (oOptions.hasOwnProperty(xNode.id)) ? oOptions[xNode.id] : (xNode.dataset.default === "true");
             if (document.getElementById("res_"+xNode.id) !== null) {
@@ -225,7 +225,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     saveOptions () {
         let oOptions = {};
-        for (let xNode of document.getElementsByClassName("option")) {
+        for (let xNode of document.getElementsByClassName("grammalecte_tf_option")) {
             oOptions[xNode.id] = xNode.checked;
             //console.log(xNode.id + ": " + xNode.checked);
         }
