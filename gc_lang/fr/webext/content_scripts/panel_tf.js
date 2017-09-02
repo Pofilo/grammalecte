@@ -71,9 +71,9 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xOptions.appendChild(xColumn2);
             // Actions
             let xActions = createNode("div", {id: "grammalecte_tf_actions"});
-            let xDefaultButton = createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_button", style: "background-color: hsl(210, 50%, 50%)"});
+            let xDefaultButton = createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_button"});
             xDefaultButton.addEventListener("click", () => { this.reset(); });
-            let xApplyButton = createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_button", style: "background-color: hsl(180, 50%, 50%)"});
+            let xApplyButton = createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_button"});
             xApplyButton.addEventListener("click", () => { this.saveOptions(); this.apply(); });
             xActions.appendChild(xDefaultButton);
             xActions.appendChild(createNode("progress", {id: "grammalecte_tf_progressbar"}));
