@@ -14,8 +14,9 @@ function onGrammalecteGCPanelClick (xEvent) {
                 oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.dataset.para_num));
             } else if (xElem.id.startsWith("grammalecte_hide")) {
                 xElem.parentNode.parentNode.style.display = "none";
-            } else if (xElem.tagName === "U" && xElem.id.startsWith("grammalecte_err")
-                       && xElem.className !== "corrected" && xElem.className !== "ignored") {
+            } else if (xElem.id.startsWith("grammalecte_err")
+                       && xElem.className !== "grammalecte_error_corrected"
+                       && xElem.className !== "grammalecte_error_ignored") {
                 oGrammalecte.oGCPanel.oTooltip.show(xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_url") {
                 oGrammalecte.oGCPanel.openURL(xElem.dataset.url);
@@ -79,12 +80,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "button green", textContent: "Réanalyser"}, {para_num: oResult.iParaNum}));
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "button red bold", textContent: "×"}));
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "Réanalyser"}, {para_num: oResult.iParaNum}));
+                xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_red", textContent: "×", style: "font-weight: bold;"}));
                 // paragraph
-                let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
+                let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, className: "grammalecte_paragraph", lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
-                xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
                 xParagraph.addEventListener("keyup", function (xEvent) {
                     this.oTAC.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
                     this.oTAC.write();
@@ -169,7 +169,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     _createError (sUnderlined, oErr) {
-        let xNodeErr = document.createElement("u");
+        let xNodeErr = document.createElement("mark");
         xNodeErr.id = "grammalecte_err" + oErr['sErrorId'];
         xNodeErr.textContent = sUnderlined;
         xNodeErr.dataset.error_id = oErr['sErrorId'];
@@ -184,7 +184,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
             xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
         }
-        xNodeErr.className = (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "ignored" : "error " + oErr['sType'];
+        xNodeErr.className = (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "grammalecte_error_ignored" : "grammalecte_error grammalecte_error_" + oErr['sType'];
         return xNodeErr;
     }
 
@@ -204,7 +204,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             //let sParaNum = sErrorId.slice(0, sErrorId.indexOf("-"));
             let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
             xNodeErr.textContent = document.getElementById(sNodeSuggId).textContent;
-            xNodeErr.className = "corrected";
+            xNodeErr.className = "grammalecte_error_corrected";
             xNodeErr.removeAttribute("style");
             this.oTooltip.hide();
             this.recheckParagraph(parseInt(sErrorId.slice(0, sErrorId.indexOf("-"))));
@@ -219,7 +219,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             let sErrorId = document.getElementById(sIgnoreButtonId).dataset.error_id;
             let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
-            xNodeErr.className = "ignored";
+            xNodeErr.className = "grammalecte_error_ignored";
             this.oTooltip.hide();
         }
         catch (e) {
@@ -367,9 +367,9 @@ class GrammalecteTooltip {
     }
 
     _createSuggestion (sErrId, iSugg, sSugg) {
-        let xNodeSugg = document.createElement("a");
+        let xNodeSugg = document.createElement("div");
         xNodeSugg.id = "grammalecte_sugg" + sErrId + "--" + iSugg.toString();
-        xNodeSugg.className = "sugg";
+        xNodeSugg.className = "grammalecte_tooltip_sugg";
         xNodeSugg.dataset.error_id = sErrId;
         xNodeSugg.textContent = sSugg;
         return xNodeSugg;
