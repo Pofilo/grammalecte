@@ -65,6 +65,7 @@ const oGrammalecte = {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 800, 620, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
+            this.oTFPanel.adjustHeight();
         }
     },
 

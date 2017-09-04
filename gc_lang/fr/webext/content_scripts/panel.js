@@ -11,22 +11,22 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
+        this.xPanelBar = createNode("div", {className: "grammalecte_panel_bar"});
         this.xPanelContent = createNode("div", {className: "grammalecte_panel_content"});
         this.xWaitIcon = this._createWaitIcon();
-        this.xPanelNode = this._createPanel(sTitle);
+        this.xPanel = this._createPanel(sTitle);
         this.center();
     }
 
     _createPanel (sTitle) {
         try {
             let xPanel = createNode("div", {id: this.sId, className: "grammalecte_panel"});
-            let xBar = createNode("div", {className: "grammalecte_panel_bar"});
-            xBar.appendChild(this._createButtons());
+            this.xPanelBar.appendChild(this._createButtons());
             let xTitle = createNode("div", {className: "grammalecte_panel_title"});
             xTitle.appendChild(this._createLogo());
             xTitle.appendChild(createNode("div", {className: "grammalecte_panel_label", textContent: sTitle}));
-            xBar.appendChild(xTitle);
-            xPanel.appendChild(xBar);
+            this.xPanelBar.appendChild(xTitle);
+            xPanel.appendChild(this.xPanelBar);
             xPanel.appendChild(this.xPanelContent);
             return xPanel;
         }
@@ -82,51 +82,56 @@ class GrammalectePanel {
     }
 
     insertIntoPage () {
-        document.body.appendChild(this.xPanelNode);
+        document.body.appendChild(this.xPanel);
     }
 
     show () {
-        this.xPanelNode.style.display = "block";
+        this.xPanel.style.display = "block";
     }
 
     hide () {
-        this.xPanelNode.style.display = "none";
+        this.xPanel.style.display = "none";
     }
 
     center () {
         let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
-        this.xPanelNode.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
+        this.xPanel.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
     }
 
     stickToLeft () {
         let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
-        this.xPanelNode.style = `top: 50%; left: -2px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
+        this.xPanel.style = `top: 50%; left: -2px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
     }
 
     stickToRight () {
         let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
-        this.xPanelNode.style = `top: 50%; right: -2px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
+        this.xPanel.style = `top: 50%; right: -2px; width: ${this.nWidth}px; height: ${nHeight}px; margin-top: -${nHeight/2}px;`;
     }
 
     stickToTop () {
         let nWidth = (this.bFlexible) ? Math.floor(window.innerWidth/2) : this.nWidth;
         let nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
-        this.xPanelNode.style = `top: -2px; left: 50%; width: ${nWidth}px; height: ${nHeight}px; margin-left: -${nWidth/2}px;`;
+        this.xPanel.style = `top: -2px; left: 50%; width: ${nWidth}px; height: ${nHeight}px; margin-left: -${nWidth/2}px;`;
     }
 
     stickToBottom () {
         let nWidth = (this.bFlexible) ? Math.floor(window.innerWidth/2) : this.nWidth;
         let nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
-        this.xPanelNode.style = `bottom: -2px; left: 50%; width: ${nWidth}px; height: ${nHeight}px; margin-left: -${nWidth/2}px;`;
+        this.xPanel.style = `bottom: -2px; left: 50%; width: ${nWidth}px; height: ${nHeight}px; margin-left: -${nWidth/2}px;`;
     }
 
     reduce () {
         // todo
     }
 
+    adjustHeight () {
+        this.xPanelContent.style.height = this.xPanelContent.firstChild.offsetHeight + "px"; // xPanelContent has only one child
+        this.xPanel.style.height = this.xPanelBar.offsetHeight + this.xPanelContent.offsetHeight + 10 + "px";
+    }
+
     logInnerHTML () {
         // for debugging
-        console.log(this.xPanelNode.innerHTML);
+        console.log(this.xPanel.innerHTML);
     }
     
     startWaitIcon () {
