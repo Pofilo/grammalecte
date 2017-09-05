@@ -7,16 +7,16 @@ class GrammalecteWrapper {
 
     constructor (nWrapper, xTextArea) {
         this.nWrapper = nWrapper;
-        let xParentElement = xTextArea.parentElement;
         let xWrapper = createNode("div", {id: "grammalecte_wrapper" + nWrapper, className: "grammalecte_wrapper"});
-        xParentElement.insertBefore(xWrapper, xTextArea);
-        xWrapper.appendChild(this._createTitle());
-        xWrapper.appendChild(xTextArea); // move textarea in wrapper
         xWrapper.appendChild(this._createWrapperToolbar(xTextArea));
+        this._insertAfter(xWrapper, xTextArea);
+        xWrapper.style.marginBottom = xTextArea.style.marginBottom;
+        xTextArea.style.marginBottom = "0px";
+        xWrapper.style.width = xTextArea.style.width;
     }
 
-    _createTitle () {
-        return createNode("div", {className: "grammalecte_wrapper_title", textContent: "Grammalecte"});
+    _insertAfter (xNewNode, xReferenceNode) {
+        xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
     }
 
     _createWrapperToolbar (xTextArea) {
@@ -68,7 +68,7 @@ class GrammalecteWrapper {
             // Create
             //xToolbar.appendChild(createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
             // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-            //xToolbar.appendChild(createLogo());
+            xToolbar.appendChild(createNode("div", {className: "grammalecte_wrapper_title", textContent: "Grammalecte"}))
             xToolbar.appendChild(xConjButton);
             xConjSection.appendChild(xConjButtonTab);
             xConjSection.appendChild(xConjButtonWin);
