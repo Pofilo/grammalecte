@@ -7307,8 +7307,8 @@ __[i]/conf(conf_bonne_mauvaise_foi)__
     <<- not ( \1 == "bonne" and before(r"(?i)\bune +$") and after("(?i)^ +pour toute") ) 
     -2>> foi                                                                                        # Confusion probable.|http://fr.wiktionary.org/wiki/foi
 __[i]/conf(conf_faire_perdre_donner_foi)__
-    ((?:f|perd|donn)\w+) (fois) @@0,$
-    <<- morph(\1, ">(?:faire|perdre|donner) ", False) -2>> foi                                      # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+    ((?:f[aieî]|perd|donn|[ae])\w*) (fois) @@0,$
+    <<- morph(\1, ">(?:faire|perdre|donner|avoir) ", False) -2>> foi                                      # Confusion probable.|http://fr.wiktionary.org/wiki/foi
 
 TEST: C’est une personne de bonne {{fois}}.
 TEST: Mais il a perdu {{fois}} en l’avenir.
