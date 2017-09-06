@@ -45,18 +45,18 @@ function loadImage (sContainerClass, sImagePath) {
 
 const oGrammalecte = {
 
-    nWrapper: 0,
-    lWrapper: [],
+    nMenu: 0,
+    lMenu: [],
 
     oTFPanel: null,
     oLxgPanel: null,
     oGCPanel: null,
 
-    wrapTextareas: function () {
+    createMenus: function () {
         let lNode = document.getElementsByTagName("textarea");
         for (let xNode of lNode) {
-            this.lWrapper.push(new GrammalecteWrapper(this.nWrapper, xNode));
-            this.nWrapper += 1;
+            this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+            this.nMenu += 1;
         }
     },
 
@@ -134,4 +134,4 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
 /*
     Start
 */
-oGrammalecte.wrapTextareas();
+oGrammalecte.createMenus();
