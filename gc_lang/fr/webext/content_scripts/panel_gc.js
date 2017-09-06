@@ -56,6 +56,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     start (xTextArea=null) {
+        this.oTooltip.hide();
         this.clear();
         if (xTextArea) {
             this.oTAC.setTextArea(xTextArea);
