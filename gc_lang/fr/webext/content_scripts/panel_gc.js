@@ -282,7 +282,7 @@ class GrammalecteTooltip {
         this.xTooltipArrow = createNode("img", {
             id: "grammalecte_tooltip_arrow",
             src: " data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xNzNun2MAAAAnSURBVChTY/j//z8cq/kW/wdhZDEMSXRFWCVhGKwAmwQyHngFxf8B5fOGYfeFpYoAAAAASUVORK5CYII=",
-            alt: "^"
+            alt: "^",
         });
         this.xTooltipSuggBlock = createNode("div", {id: "grammalecte_tooltip_sugg_block"});
         let xMessageBlock = createNode("div", {id: "grammalecte_tooltip_message_block"});
