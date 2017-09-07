@@ -7,7 +7,7 @@ class GrammalecteMenu {
 
     constructor (nMenu, xTextArea) {
         this.sMenuId = "grammalecte_menu" + nMenu;
-        let xButton = createNode("div", {className: "grammalecte_menu_main_button"});
+        let xButton = createNode("div", {className: "grammalecte_menu_main_button", textContent: "•"});
         xButton.onclick = () => { this.switchMenu(); };
         let xMenu = this._createMenu(xTextArea);
         this._insertAfter(xButton, xTextArea);
@@ -72,14 +72,14 @@ class GrammalecteMenu {
             xConjButton.appendChild(xConjButtonTab);
             xConjButton.appendChild(xConjButtonWin);
             // Create
-            xMenu.appendChild(createNode("div", {className: "grammalecte_menu_header", textContent: "Grammalecte"}));
+            xMenu.appendChild(createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
             xMenu.appendChild(xTFButton);
             xMenu.appendChild(xLxgButton);
             xMenu.appendChild(xGCButton);
             xMenu.appendChild(xConjButton);
             //xMenu.appendChild(createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
             // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-            xMenu.appendChild(createNode("div", {className: "grammalecte_menu_header"}));
+            xMenu.appendChild(createNode("div", {className: "grammalecte_menu_footer"}));
             return xMenu;
         }
         catch (e) {
