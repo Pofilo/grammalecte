@@ -7,7 +7,7 @@ class GrammalecteMenu {
 
     constructor (nMenu, xTextArea) {
         this.sMenuId = "grammalecte_menu" + nMenu;
-        let xButton = createNode("div", {className: "grammalecte_menu_main_button", textContent: "•"});
+        let xButton = createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         xButton.onclick = () => { this.switchMenu(); };
         let xMenu = this._createMenu(xTextArea);
         this._insertAfter(xButton, xTextArea);
