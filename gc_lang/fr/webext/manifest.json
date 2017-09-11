@@ -13,7 +13,6 @@
 
   "author": "Olivier R.",
   "homepage_url": "https://grammalecte.net",
-
   "description": "Correcteur grammatical pour le français.",
 
   "default_locale": "fr",
@@ -31,14 +30,21 @@
     "default_title": "Grammalecte [fr]",
     "browser_style": false
   },
+
   "background": {
     "scripts": [
       "background.js"
     ]
   },
+
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
+      "exclude_matches": [
+        "*://*.wikisource.org/*",
+        "*://*.wikipedia.org/*",
+        "*://*.wiktionary.org/*"
+      ],
       "css": [
         "content_scripts/panel.css",
         "content_scripts/panel_tf.css",
@@ -57,8 +63,34 @@
         "content_scripts/init.js"
       ],
       "run_at": "document_end"
+    },
+    {
+      "matches": [
+        "*://*.wikisource.org/*",
+        "*://*.wikipedia.org/*",
+        "*://*.wiktionary.org/*"
+      ],
+      "css": [
+        "content_scripts/panel.css",
+        "content_scripts/panel_tf.css",
+        "content_scripts/panel_gc.css",
+        "content_scripts/panel_lxg.css",
+        "content_scripts/menu.css",
+        "3rd/font-awesome-4.7.0/css/font-awesome.min.css"
+      ],
+      "js": [
+        "content_scripts/panel.js",
+        "grammalecte/fr/textformatter.js",
+        "content_scripts/panel_tf.js",
+        "content_scripts/panel_gc.js",
+        "content_scripts/panel_lxg.js",
+        "content_scripts/menu.js",
+        "content_scripts/init.js"
+      ],
+      "run_at": "document_idle"
     }
   ],
+
   "commands": {
     "conjugueur_tab": {
       "suggested_key": {
@@ -73,6 +105,7 @@
       "description": "Ouvre le conjugueur dans une fenêtre"
     }
   },
+
   "web_accessible_resources": [
     "grammalecte/_dictionaries/French.json",
     "grammalecte/fr/conj_data.json",
@@ -81,11 +114,13 @@
     "grammalecte/fr/tests_data.json",
     "img/logo-16.png"
   ],
+
   "permissions": [
     "activeTab",
     "contextMenus",
     "storage"
   ],
+
   "chrome_settings_overrides": {
     "search_provider": {
       "name": "Grammalecte",
