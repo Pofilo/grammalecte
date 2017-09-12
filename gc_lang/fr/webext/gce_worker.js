@@ -248,6 +248,9 @@ function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
     for (let oErr of aGrammErr) {
         sMsg += text.getReadableError(oErr) + "\n";
     }
+    if (sMsg == "") {
+        sMsg =  "Aucune erreur détectée.";
+    }
     postMessage(createResponse("textToTest", sMsg, dInfo, true));
 }
 
