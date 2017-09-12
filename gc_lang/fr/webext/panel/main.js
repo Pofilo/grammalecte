@@ -19,7 +19,7 @@ window.addEventListener(
             if (xElem.id === "text_to_test_button") {
                 browser.runtime.sendMessage({
                     sCommand: "textToTest",
-                    dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: false, bContext: false},
+                    dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: true, bContext: false},
                     dInfo: {}
                 });
             }
