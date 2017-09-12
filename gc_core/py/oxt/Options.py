@@ -141,16 +141,18 @@ class GC_Options (unohelper.Base, XActionListener):
             traceback.print_exc()
 
     def _setDefault (self):
+        dOpt = gce.gc_options.getOptions("Writer")
         for w in self.lxOptions:
-            w.State = gce.gc_options.dOpt.get(w.Name, False)
+            w.State = dOpt.get(w.Name, False)
 
     def load (self, sLang):
         try:
             xChild = self.xNode.getByName(sLang)
-            for sKey in gce.gc_options.dOpt:
+            dOpt = gce.gc_options.getOptions("Writer")
+            for sKey in dOpt:
                 sValue = xChild.getPropertyValue(sKey)
                 if sValue == '':
-                    if gce.gc_options.dOpt[sKey]:
+                    if dOpt[sKey]:
                         sValue = 1
                     else:
                         sValue = 0

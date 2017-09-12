@@ -1,12 +1,18 @@
 #!python3
-# -*- coding: UTF-8 -*-
 
 import os
 import traceback
 import pkgutil
+import re
+from itertools import chain
 
 from . import str_transform as st
+from . import char_player as cp
 from .echo import echo
+
+
+def show (nDeep, sText):
+    print(nDeep * "  " + sText)
 
 
 class IBDAWG:
@@ -44,15 +50,17 @@ class IBDAWG:
         self.nAff = int(l[7])
         self.cStemming = l[8]
         if self.cStemming == "S":
-            self.funcStemming = st.getStemFromSuffixCode
+            self.funcStemming = st.changeWordWithSuffixCode
         elif self.cStemming == "A":
-            self.funcStemming = st.getStemFromAffixCode
+            self.funcStemming = st.changeWordWithAffixCode
         else:
             self.funcStemming = st.noStemming
         self.nTag = self.nArcVal - self.nChar - self.nAff
+        # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         self.dChar = {}
         for i in range(1, self.nChar):
             self.dChar[self.lArcVal[i]] = i
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
             
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
@@ -66,15 +74,18 @@ class IBDAWG:
             self.morph = self._morph1
             self.stem = self._stem1
             self._lookupArcNode = self._lookupArcNode1
+            self._getArcs = self._getArcs1
             self._writeNodes = self._writeNodes1
         elif self.nVersion == 2:
             self.morph = self._morph2
             self.stem = self._stem2
             self._lookupArcNode = self._lookupArcNode2
+            self._getArcs = self._getArcs2
             self._writeNodes = self._writeNodes2
         elif self.nVersion == 3:
             self.morph = self._morph3
             self.stem = self._stem3
+            self._getArcs = self._getArcs3
             self._lookupArcNode = self._lookupArcNode3
             self._writeNodes = self._writeNodes3
         else:
@@ -123,7 +134,7 @@ class IBDAWG:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
     def isValidToken (self, sToken):
-        "checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)"
+        "checks if <sToken> is valid (if there is hyphens in <sToken>, <sToken> is split, each part is checked)"
         if self.isValid(sToken):
             return True
         if "-" in sToken:
@@ -133,7 +144,7 @@ class IBDAWG:
         return False
 
     def isValid (self, sWord):
-        "checks if sWord is valid (different casing tested if the first letter is a capital)"
+        "checks if <sWord> is valid (different casing tested if the first letter is a capital)"
         if not sWord:
             return None
         if "’" in sWord: # ugly hack
@@ -143,18 +154,18 @@ class IBDAWG:
         if sWord[0:1].isupper():
             if len(sWord) > 1:
                 if sWord.istitle():
-                    return bool(self.lookup(sWord.lower()))
+                    return self.lookup(sWord.lower())
                 if sWord.isupper():
                     if self.bOptNumSigle:
                         return True
-                    return bool(self.lookup(sWord.lower()) or self.lookup(sWord.capitalize()))
-                return bool(self.lookup(sWord[:1].lower() + sWord[1:]))
+                    return self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
+                return self.lookup(sWord[:1].lower() + sWord[1:])
             else:
-                return bool(self.lookup(sWord.lower()))
+                return self.lookup(sWord.lower())
         return False
 
     def lookup (self, sWord):
-        "returns True if sWord in dictionary (strict verification)"
+        "returns True if <sWord> in dictionary (strict verification)"
         iAddr = 0
         for c in sWord:
             if c not in self.dChar:
@@ -162,31 +173,7 @@ class IBDAWG:
             iAddr = self._lookupArcNode(self.dChar[c], iAddr)
             if iAddr == None:
                 return False
-        return int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask
-
-    def getSugg (self, sWord, iAddr=0, sNewWord=""):
-        "not finished"
-        # RECURSIVE FUNCTION
-        if not sWord:
-            if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                return [sNewWord]
-            return []
-        lSugg = []
-        lArc = self._getSimilarArcs(sWord[0:1], iAddr)
-        if lArc:
-            for t in lArc:
-                lSugg.extend(self._lookupAndSuggest(sWord[1:], t[1], sNewWord+t[0]))
-        else:
-            pass
-        return lSugg
-
-    def _getSimilarArcs (self, cChar, iAddr):
-        lArc = []
-        for c in st.dSimilarChars.get(cChar, cChar):
-            jAddr = self._lookupArcNode(self.dChar[c], iAddr)
-            if jAddr:
-                lArc.append((c, iAddr))
-        return lArc
+        return bool(int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask)
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
@@ -197,10 +184,143 @@ class IBDAWG:
                 l.extend(self.morph(sWord.capitalize()))
         return l
 
+    def suggest (self, sWord, nMaxSugg=10):
+        "returns a set of suggestions for <sWord>"
+        # first, we check for similar words
+        #return self._suggestWithCrushedUselessChars(cp.clearWord(sWord))
+        aSugg = self._suggest(sWord)
+        if not aSugg:
+            aSugg.update(self._suggest(sWord[1:]))
+            if not aSugg:
+                aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
+        return sorted(aSugg, key=lambda sSugg: cp.distanceBetweenWords(sWord, sSugg))
+
+    def _suggest (self, sRemain, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+        "returns a set of suggestions"
+        # recursive function
+        aSugg = set()
+        if not sRemain:
+            if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                #show(nDeep, "___" + sNewWord + "___")
+                aSugg.add(sNewWord)
+            for sTail in self._getTails(iAddr):
+                aSugg.add(sNewWord+sTail)
+            return aSugg
+        #show(nDeep, "<" + sRemain + ">  ===>  " + sNewWord)
+        cCurrent = sRemain[0:1]
+        for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
+            #show(nDeep, cChar)
+            aSugg.update(self._suggest(sRemain[1:], nDeep+1, jAddr, sNewWord+cChar))
+        if not bAvoidLoop: # avoid infinite loop
+            #show(nDeep, ":no loop:")
+            if cCurrent == sRemain[1:2]:
+                # same char, we remove 1 char without adding 1 to <sNewWord>
+                aSugg.update(self._suggest(sRemain[1:], nDeep+1, iAddr, sNewWord))
+            else:
+                # switching chars
+                aSugg.update(self._suggest(sRemain[1:2]+sRemain[0:1]+sRemain[2:], nDeep+1, iAddr, sNewWord, True))
+            for sRepl in cp.d1toX.get(cCurrent, ()):
+                #show(nDeep, sRepl)
+                aSugg.update(self._suggest(sRepl + sRemain[1:], nDeep+1, iAddr, sNewWord, True))
+            for sRepl in cp.d2toX.get(sRemain[0:2], ()):
+                #show(nDeep, sRepl)
+                aSugg.update(self._suggest(sRepl + sRemain[2:], nDeep+1, iAddr, sNewWord, True))
+            if len(sRemain) == 2:
+                for sRepl in cp.dFinal2.get(sRemain, ()):
+                    #show(nDeep, sRepl)
+                    aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
+            elif len(sRemain) == 1:
+                #show(nDeep, ":end of word:")
+                # end of word
+                aSugg.update(self._suggest("", nDeep+1, iAddr, sNewWord, True)) # remove last char and go on
+                for sRepl in cp.dFinal1.get(sRemain, ()):
+                    #show(nDeep, sRepl)
+                    aSugg.update(self._suggest(sRepl, nDeep+1, iAddr, sNewWord, True))
+        return aSugg
+
+    def _getSimilarArcs (self, cChar, iAddr):
+        "generator: yield similar char of <cChar> and address of the following node"
+        for c in cp.d1to1.get(cChar, [cChar]):
+            if c in self.dChar:
+                jAddr = self._lookupArcNode(self.dChar[c], iAddr)
+                if jAddr:
+                    yield (c, jAddr)
+
+    def _getTails (self, iAddr, sTail="", n=2):
+        "return a list of suffixes ending at a distance of <n> from <iAddr>"
+        aTails = set()
+        for nVal, jAddr in self._getArcs(iAddr):
+            if nVal < self.nChar:
+                if int.from_bytes(self.byDic[jAddr:jAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                    aTails.add(sTail + self.dCharVal[nVal])
+                if n and not aTails:
+                    aTails.update(self._getTails(jAddr, sTail+self.dCharVal[nVal], n-1))
+        return aTails
+
+    def _suggestWithCrushedUselessChars (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+        aSugg = set()
+        if not sWord:
+            if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+                show(nDeep, "!!! " + sNewWord + " !!!")
+                aSugg.add(sNewWord)
+            return aSugg
+        cCurrent = sWord[0:1]
+        for cChar, jAddr in self._getSimilarArcsAndCrushedChars(cCurrent, iAddr):
+            show(nDeep, cChar)
+            aSugg.update(self._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
+        return aSugg
+
+    def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
+        "generator: yield similar char of <cChar> and address of the following node"
+        for nVal, jAddr in self._getArcs(iAddr):
+            if self.dCharVal.get(nVal, None) in cp.aVovels:
+                yield (self.dCharVal[nVal], jAddr)
+        yield from self._getSimilarArcs(cChar, iAddr)
+
+    def drawPath (self, sWord, iAddr=0):
+        cChar = sWord[0:1]  if sWord  else " "
+        iPos = -1
+        n = 0
+        print(cChar + ": ", end="")
+        for nVal, jAddr in self._getArcs(iAddr):
+            if nVal in self.dCharVal:
+                print(self.dCharVal[nVal], end="")
+                if self.dCharVal[nVal] == sWord[0:1]:
+                    iNextNodeAddr = jAddr
+                    iPos = n
+                n += 1
+        if not sWord:
+            return
+        if iPos >= 0:
+            print("\n   "+ " " * iPos + "|")
+            self.drawPath(sWord[1:], iNextNodeAddr)
+
+    def select (self, sPattern=""):
+        "generator: returns all entries which morphology fits <sPattern>"
+        zPattern = None
+        try:
+            zPattern = re.compile(sPattern)
+        except:
+            print("# Error in regex pattern")
+            traceback.print_exc()
+        yield from self._select1(zPattern, 0, "")
+
     # def morph (self, sWord):
     #     is defined in __init__
 
     # VERSION 1
+    def _select1 (self, zPattern, iAddr, sWord):
+        # recursive generator
+        for nVal, jAddr in self._getArcs1(iAddr):
+            if nVal < self.nChar:
+                # simple character
+                yield from self._select1(zPattern, jAddr, sWord + self.lArcVal[nVal])
+            else:
+                sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
+                for nMorphVal, _ in self._getArcs1(jAddr):
+                    if not zPattern or zPattern.search(self.lArcVal[nMorphVal]):
+                        yield sEntry + "\t" + self.lArcVal[nMorphVal]
+
     def _morph1 (self, sWord):
         "returns morphologies of sWord"
         iAddr = 0
@@ -233,7 +353,7 @@ class IBDAWG:
         return []
 
     def _stem1 (self, sWord):
-        "returns stems list of sWord"
+        "returns stems list of <sWord>"
         iAddr = 0
         for c in sWord:
             if c not in self.dChar:
@@ -256,7 +376,7 @@ class IBDAWG:
         return []
 
     def _lookupArcNode1 (self, nVal, iAddr):
-        "looks if nVal is an arc at the node at iAddr, if yes, returns address of next node else None"
+        "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
         while True:
             iEndArcAddr = iAddr+self.nBytesArc
             nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
@@ -269,6 +389,16 @@ class IBDAWG:
                 if (nRawArc & self._lastArcMask):
                     return None
                 iAddr = iEndArcAddr+self.nBytesNodeAddress
+
+    def _getArcs1 (self, iAddr):
+        "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
+        while True:
+            iEndArcAddr = iAddr+self.nBytesArc
+            nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
+            yield (nRawArc & self._arcMask, int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big'))
+            if (nRawArc & self._lastArcMask):
+                break
+            iAddr = iEndArcAddr+self.nBytesNodeAddress
 
     def _writeNodes1 (self, spfDest):
         "for debugging only"
@@ -290,7 +420,7 @@ class IBDAWG:
 
     # VERSION 2
     def _morph2 (self, sWord):
-        "returns morphologies of sWord"
+        "returns morphologies of <sWord>"
         iAddr = 0
         for c in sWord:
             if c not in self.dChar:
@@ -328,7 +458,7 @@ class IBDAWG:
         return []
 
     def _stem2 (self, sWord):
-        "returns stems list of sWord"
+        "returns stems list of <sWord>"
         iAddr = 0
         for c in sWord:
             if c not in self.dChar:
@@ -360,7 +490,7 @@ class IBDAWG:
         return []
 
     def _lookupArcNode2 (self, nVal, iAddr):
-        "looks if nVal is an arc at the node at iAddr, if yes, returns address of next node else None"
+        "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
         while True:
             iEndArcAddr = iAddr+self.nBytesArc
             nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
@@ -405,7 +535,7 @@ class IBDAWG:
 
     # VERSION 3
     def _morph3 (self, sWord):
-        "returns morphologies of sWord"
+        "returns morphologies of <sWord>"
         iAddr = 0
         for c in sWord:
             if c not in self.dChar:
@@ -440,7 +570,7 @@ class IBDAWG:
         return []
 
     def _stem3 (self, sWord):
-        "returns stems list of sWord"
+        "returns stems list of <sWord>"
         iAddr = 0
         for c in sWord:
             if c not in self.dChar:
@@ -464,7 +594,7 @@ class IBDAWG:
         return []
 
     def _lookupArcNode3 (self, nVal, iAddr):
-        "looks if nVal is an arc at the node at iAddr, if yes, returns address of next node else None"
+        "looks if <nVal> is an arc at the node at <iAddr>, if yes, returns address of next node else None"
         iAddrNode = iAddr
         while True:
             iEndArcAddr = iAddr+self.nBytesArc

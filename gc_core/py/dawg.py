@@ -17,6 +17,67 @@ from . import str_transform as st
 from .progressbar import ProgressBar
 
 
+
+def readFile (spf):
+    print(" < Read lexicon: " + spf)
+    if os.path.isfile(spf):
+        with open(spf, "r", encoding="utf-8") as hSrc:
+            for sLine in hSrc:
+                sLine = sLine.strip()
+                if sLine and not sLine.startswith("#"):
+                    yield sLine
+    else:
+        raise OSError("# Error. File not found or not loadable: " + spf)
+
+
+def getElemsFromFile (spf):
+    "returns tuple of (flexion, stem, tags) from lexicon file"
+    nErr = 0
+    if not spf.endswith(".clex"):
+        for sLine in readFile(spf):
+            try:
+                sFlex, sStem, sTag = sLine.split("\t")
+                yield (sFlex, sStem, sTag)
+            except:
+                nErr += 1
+    else:
+        sTag = "_" # neutral tag
+        sTag2 = ""
+        for sLine in readFile(spf):
+            if sLine.startswith("[") and sLine.endswith("]"):
+                # tag line
+                if "-->" in sLine:
+                    try:
+                        sTag, sSfxCode, sTag2 = sLine[1:-1].split(" --> ")
+                    except:
+                        nErr += 1
+                        continue
+                    sTag = sTag.strip()
+                    sSfxCode = sSfxCode.strip()
+                    sTag2 = sTag2.strip()
+                else:
+                    sTag = sLine[1:-1]
+                    sTag2 = ""
+            else:
+                # entry line
+                if "\t" in sLine:
+                    if sLine.count("\t") > 1:
+                        nErr += 1
+                        continue
+                    sFlex, sStem = sLine.split("\t")
+                else:
+                    sFlex = sStem = sLine
+                #print(sFlex, sStem, sTag)
+                yield (sFlex, sStem, sTag)
+                if sTag2:
+                    sFlex2 = st.changeWordWithSuffixCode(sFlex, sSfxCode)
+                    #print(sFlex2, sStem, sTag2)
+                    yield (sFlex2, sStem, sTag2)
+    if nErr:
+        print(" # Lines ignored: {:>10}".format(nErr))
+
+
+
 class DAWG:
     """DIRECT ACYCLIC WORD GRAPH"""
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
@@ -35,8 +96,7 @@ class DAWG:
         elif cStemming == "N":
             funcStemmingGen = st.noStemming
         else:
-            print("# Error code: {}".format(cStemming))
-            exit()
+            raise ValueError("# Error. Unknown stemming code: {}".format(cStemming))
 
         lEntry = []
         lChar = ['']; dChar = {}; nChar = 1; dCharOccur = {}
@@ -45,43 +105,31 @@ class DAWG:
         nErr = 0
         
         # read lexicon
-        with open(spfSrc, 'r', encoding='utf-8') as hSrc:
-            print(" > Reading lexicon: " + spfSrc + " ...")
-            for line in hSrc:
-                line = line.strip()
-                if not (line.startswith('#') or line == ''):
-                    try:
-                        flex, stem, tag = line.split("\t")
-                    except:
-                        nErr += 1
-                        continue
-                    # chars
-                    for c in flex:
-                        if c not in dChar:
-                            dChar[c] = nChar
-                            lChar.append(c)
-                            nChar += 1
-                        dCharOccur[c] = dCharOccur.get(c, 0) + 1
-                    # affixes to find stem from flexion
-                    aff = funcStemmingGen(flex, stem)
-                    if aff not in dAff:
-                        dAff[aff] = nAff
-                        lAff.append(aff)
-                        nAff += 1
-                    dAffOccur[aff] = dCharOccur.get(aff, 0) + 1
-                    # tags
-                    if tag not in dTag:
-                        dTag[tag] = nTag
-                        lTag.append(tag)
-                        nTag += 1
-                    dTagOccur[tag] = dTagOccur.get(tag, 0) + 1
-                    lEntry.append((flex, dAff[aff], dTag[tag]))
-            hSrc.close()
-        if nErr:
-            print(" # Lines ignored: {:>10}".format(nErr))
-        if not(lEntry):
-            print(" # Empty lexicon")
-            exit()
+        for sFlex, sStem, sTag in getElemsFromFile(spfSrc):
+            addWordToCharDict(sFlex)
+            # chars
+            for c in sFlex:
+                if c not in dChar:
+                    dChar[c] = nChar
+                    lChar.append(c)
+                    nChar += 1
+                dCharOccur[c] = dCharOccur.get(c, 0) + 1
+            # affixes to find stem from flexion
+            aff = funcStemmingGen(sFlex, sStem)
+            if aff not in dAff:
+                dAff[aff] = nAff
+                lAff.append(aff)
+                nAff += 1
+            dAffOccur[aff] = dCharOccur.get(aff, 0) + 1
+            # tags
+            if sTag not in dTag:
+                dTag[sTag] = nTag
+                lTag.append(sTag)
+                nTag += 1
+            dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
+            lEntry.append((sFlex, dAff[aff], dTag[sTag]))
+        if not lEntry:
+            raise ValueError("# Error. Empty lexicon")
         
         # Preparing DAWG
         print(" > Preparing list of words")
@@ -101,12 +149,12 @@ class DAWG:
         self.sFile = spfSrc
         self.sLang = sLangName
         self.nEntry = len(lWord)
-        self.previousWord = []
+        self.aPreviousEntry = []
         DawgNode.resetNextId()
-        self.root = DawgNode()
-        self.uncheckedNodes = []  # list of nodes that have not been checked for duplication.
-        self.minimizedNodes = {}  # list of unique nodes that have been checked for duplication.
-        self.sortedNodes = []     # version 2 and 3
+        self.oRoot = DawgNode()
+        self.lUncheckedNodes = []  # list of nodes that have not been checked for duplication.
+        self.lMinimizedNodes = {}  # list of unique nodes that have been checked for duplication.
+        self.lSortedNodes = []     # version 2 and 3
         self.nNode = 0
         self.nArc = 0
         self.dChar = dChar
@@ -115,19 +163,19 @@ class DAWG:
         self.lArcVal = lVal
         self.nArcVal = len(lVal)
         self.nTag = self.nArcVal - self.nChar - nAff
-        self.cStemming = cStemming.upper()
+        self.cStemming = cStemming
         if cStemming == "A":
-            self.funcStemming = st.getStemFromAffixCode
+            self.funcStemming = st.changeWordWithAffixCode
         elif cStemming == "S":    
-            self.funcStemming = st.getStemFromSuffixCode
+            self.funcStemming = st.changeWordWithSuffixCode
         else:
             self.funcStemming = st.noStemming
         
         # build
         lWord.sort()
         oProgBar = ProgressBar(0, len(lWord))
-        for word in lWord:
-            self.insert(word)
+        for aEntry in lWord:
+            self.insert(aEntry)
             oProgBar.increment(1)
         oProgBar.done()
         self.finish()
@@ -135,41 +183,42 @@ class DAWG:
         self.countArcs()
         self.sortNodes()
         self.sortNodeArcs(dValOccur)
+        #self.sortNodeArcs2 (self.oRoot, "")
         self.displayInfo()
 
     # BUILD DAWG
-    def insert (self, word):
-        if word < self.previousWord:
+    def insert (self, aEntry):
+        if aEntry < self.aPreviousEntry:
             sys.exit("# Error: Words must be inserted in alphabetical order.")
         
         # find common prefix between word and previous word
-        commonPrefix = 0
-        for i in range(min(len(word), len(self.previousWord))):
-            if word[i] != self.previousWord[i]:
+        nCommonPrefix = 0
+        for i in range(min(len(aEntry), len(self.aPreviousEntry))):
+            if aEntry[i] != self.aPreviousEntry[i]:
                 break
-            commonPrefix += 1
+            nCommonPrefix += 1
 
-        # Check the uncheckedNodes for redundant nodes, proceeding from last
+        # Check the lUncheckedNodes for redundant nodes, proceeding from last
         # one down to the common prefix size. Then truncate the list at that point.
-        self._minimize(commonPrefix)
+        self._minimize(nCommonPrefix)
 
         # add the suffix, starting from the correct node mid-way through the graph
-        if len(self.uncheckedNodes) == 0:
-            oNode = self.root
+        if len(self.lUncheckedNodes) == 0:
+            oNode = self.oRoot
         else:
-            oNode = self.uncheckedNodes[-1][2]
+            oNode = self.lUncheckedNodes[-1][2]
 
-        iChar = commonPrefix
-        for c in word[commonPrefix:]:
+        iChar = nCommonPrefix
+        for c in aEntry[nCommonPrefix:]:
             oNextNode = DawgNode()
             oNode.arcs[c] = oNextNode
-            self.uncheckedNodes.append((oNode, c, oNextNode))
-            if iChar == (len(word) - 2): 
+            self.lUncheckedNodes.append((oNode, c, oNextNode))
+            if iChar == (len(aEntry) - 2): 
                 oNode.final = True
             iChar += 1
             oNode = oNextNode
         oNode.final = True
-        self.previousWord = word
+        self.aPreviousEntry = aEntry
 
     def finish (self):
         "minimize unchecked nodes"
@@ -177,33 +226,41 @@ class DAWG:
 
     def _minimize (self, downTo):
         # proceed from the leaf up to a certain point
-        for i in range( len(self.uncheckedNodes)-1, downTo-1, -1 ):
-            (parent, char, child) = self.uncheckedNodes[i]
-            if child in self.minimizedNodes:
+        for i in range( len(self.lUncheckedNodes)-1, downTo-1, -1 ):
+            oNode, char, oChildNode = self.lUncheckedNodes[i]
+            if oChildNode in self.lMinimizedNodes:
                 # replace the child with the previously encountered one
-                parent.arcs[char] = self.minimizedNodes[child]
+                oNode.arcs[char] = self.lMinimizedNodes[oChildNode]
             else:
                 # add the state to the minimized nodes.
-                self.minimizedNodes[child] = child
-            self.uncheckedNodes.pop()
+                self.lMinimizedNodes[oChildNode] = oChildNode
+            self.lUncheckedNodes.pop()
 
     def countNodes (self):
-        self.nNode = len(self.minimizedNodes)
+        self.nNode = len(self.lMinimizedNodes)
 
     def countArcs (self):
         self.nArc = 0
-        for node in self.minimizedNodes:
-            self.nArc += len(node.arcs)
+        for oNode in self.lMinimizedNodes:
+            self.nArc += len(oNode.arcs)
     
     def sortNodeArcs (self, dValOccur):
         print(" > Sort node arcs")
-        self.root.sortArcs(dValOccur)
-        for oNode in self.minimizedNodes:
+        self.oRoot.sortArcs(dValOccur)
+        for oNode in self.lMinimizedNodes:
             oNode.sortArcs(dValOccur)
     
+    def sortNodeArcs2 (self, oNode, cPrevious=""):
+        # recursive function
+        dCharOccur = getCharOrderAfterChar(cPrevious)
+        if dCharOccur:
+            oNode.sortArcs2(dCharOccur, self.lArcVal)
+        for nArcVal, oNextNode in oNode.arcs.items():
+            self.sortNodeArcs2(oNextNode, self.lArcVal[nArcVal])
+
     def sortNodes (self):
         print(" > Sort nodes")
-        for oNode in self.root.arcs.values():
+        for oNode in self.oRoot.arcs.values():
             self._parseNodes(oNode)
     
     def _parseNodes (self, oNode):
@@ -211,12 +268,12 @@ class DAWG:
         if oNode.pos > 0:
             return
         oNode.setPos()
-        self.sortedNodes.append(oNode)
+        self.lSortedNodes.append(oNode)
         for oNextNode in oNode.arcs.values():
              self._parseNodes(oNextNode)
         
     def lookup (self, sWord):
-        oNode = self.root
+        oNode = self.oRoot
         for c in sWord:
             if self.dChar.get(c, '') not in oNode.arcs:
                 return False
@@ -224,7 +281,7 @@ class DAWG:
         return oNode.final
 
     def morph (self, sWord):
-        oNode = self.root
+        oNode = self.oRoot
         for c in sWord:
             if self.dChar.get(c, '') not in oNode.arcs:
                 return ''
@@ -253,7 +310,7 @@ class DAWG:
 
     def getArcStats (self):
         d = {}
-        for oNode in self.minimizedNodes:
+        for oNode in self.lMinimizedNodes:
             n = len(oNode.arcs)
             d[n] = d.get(n, 0) + 1
         s = " * Nodes:\n"
@@ -274,15 +331,15 @@ class DAWG:
     def createBinary (self, sPathFile, nMethod, bDebug=False):
         print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nMethod)
         if nMethod == 1:
-            self.nBytesArc = ( ( (self.nArcVal).bit_length() + 2 ) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes1()
+            self.nBytesArc = ( (self.nArcVal.bit_length() + 2) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes1()
             self._calcNumBytesNodeAddress()
             self._calcNodesAddress1()
         elif nMethod == 2:
-            self.nBytesArc = ( ( (self.nArcVal).bit_length() + 3 ) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes2()
+            self.nBytesArc = ( (self.nArcVal.bit_length() + 3) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes2()
             self._calcNumBytesNodeAddress()
             self._calcNodesAddress2()
         elif nMethod == 3:
-            self.nBytesArc = ( ( (self.nArcVal).bit_length() + 3 ) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes3()
+            self.nBytesArc = ( (self.nArcVal.bit_length() + 3) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes3()
             self.nBytesOffset = 1
             self.nMaxOffset = (2 ** (self.nBytesOffset * 8)) - 1
             self._calcNumBytesNodeAddress()
@@ -305,15 +362,15 @@ class DAWG:
 
     def _calcNodesAddress1 (self):
         nBytesNode = self.nBytesArc + self.nBytesNodeAddress
-        iAddr = len(self.root.arcs) * nBytesNode
-        for oNode in self.minimizedNodes:
+        iAddr = len(self.oRoot.arcs) * nBytesNode
+        for oNode in self.lMinimizedNodes:
             oNode.addr = iAddr
             iAddr += max(len(oNode.arcs), 1) * nBytesNode
 
     def _calcNodesAddress2 (self):
         nBytesNode = self.nBytesArc + self.nBytesNodeAddress
-        iAddr = len(self.root.arcs) * nBytesNode
-        for oNode in self.sortedNodes:
+        iAddr = len(self.oRoot.arcs) * nBytesNode
+        for oNode in self.lSortedNodes:
             oNode.addr = iAddr
             iAddr += max(len(oNode.arcs), 1) * nBytesNode
             for oNextNode in oNode.arcs.values():
@@ -324,8 +381,8 @@ class DAWG:
     def _calcNodesAddress3 (self):
         nBytesNode = self.nBytesArc + self.nBytesNodeAddress
         # theorical nodes size if only addresses and no offset
-        self.root.size = len(self.root.arcs) * nBytesNode
-        for oNode in self.sortedNodes:
+        self.oRoot.size = len(self.oRoot.arcs) * nBytesNode
+        for oNode in self.lSortedNodes:
             oNode.size = max(len(oNode.arcs), 1) * nBytesNode
         # rewind and calculate dropdown from the end, several times
         nDiff = self.nBytesNodeAddress - self.nBytesOffset
@@ -333,18 +390,18 @@ class DAWG:
         while not bEnd:
             bEnd = True
             # recalculate addresses
-            iAddr = self.root.size
-            for oNode in self.sortedNodes:
+            iAddr = self.oRoot.size
+            for oNode in self.lSortedNodes:
                 oNode.addr = iAddr
                 iAddr += oNode.size
             # rewind and calculate dropdown from the end, several times
             for i in range(self.nNode-1, -1, -1):
-                nSize = max(len(self.sortedNodes[i].arcs), 1) * nBytesNode
-                for oNextNode in self.sortedNodes[i].arcs.values():
-                    if 1 < (oNextNode.addr - self.sortedNodes[i].addr) < self.nMaxOffset:
+                nSize = max(len(self.lSortedNodes[i].arcs), 1) * nBytesNode
+                for oNextNode in self.lSortedNodes[i].arcs.values():
+                    if 1 < (oNextNode.addr - self.lSortedNodes[i].addr) < self.nMaxOffset:
                         nSize -= nDiff
-                if self.sortedNodes[i].size != nSize:
-                    self.sortedNodes[i].size = nSize
+                if self.lSortedNodes[i].size != nSize:
+                    self.lSortedNodes[i].size = nSize
                     bEnd = False
 
     def _writeBinary (self, sPathFile, nMethod):
@@ -393,16 +450,16 @@ class DAWG:
             hDst.write(b"\0\0\0\0")
             # DAWG: nodes / arcs
             if nMethod == 1:
-                hDst.write(self.root.convToBytes1(self.nBytesArc, self.nBytesNodeAddress))
-                for oNode in self.minimizedNodes:
+                hDst.write(self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress))
+                for oNode in self.lMinimizedNodes:
                     hDst.write(oNode.convToBytes1(self.nBytesArc, self.nBytesNodeAddress))
             elif nMethod == 2:
-                hDst.write(self.root.convToBytes2(self.nBytesArc, self.nBytesNodeAddress))
-                for oNode in self.sortedNodes:
+                hDst.write(self.oRoot.convToBytes2(self.nBytesArc, self.nBytesNodeAddress))
+                for oNode in self.lSortedNodes:
                     hDst.write(oNode.convToBytes2(self.nBytesArc, self.nBytesNodeAddress))
             elif nMethod == 3:
-                hDst.write(self.root.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
-                for oNode in self.sortedNodes:
+                hDst.write(self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
+                for oNode in self.lSortedNodes:
                     hDst.write(oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
             hDst.close()
 
@@ -411,18 +468,18 @@ class DAWG:
         print(" > Write nodes")
         with open(sPathFile+".nodes."+str(nMethod)+".txt", 'w', encoding='utf-8', newline="\n") as hDst:
             if nMethod == 1:
-                hDst.write(self.root.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
-                #hDst.write( ''.join( [ "%02X " %  z  for z in self.root.convToBytes1(self.nBytesArc, self.nBytesNodeAddress) ] ).strip() )
-                for oNode in self.minimizedNodes:
+                hDst.write(self.oRoot.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
+                #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress) ] ).strip() )
+                for oNode in self.lMinimizedNodes:
                     hDst.write(oNode.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
             if nMethod == 2:
-                hDst.write(self.root.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
-                for oNode in self.sortedNodes:
+                hDst.write(self.oRoot.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
+                for oNode in self.lSortedNodes:
                     hDst.write(oNode.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
             if nMethod == 3:
-                hDst.write(self.root.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
-                #hDst.write( ''.join( [ "%02X " %  z  for z in self.root.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset) ] ).strip() )
-                for oNode in self.sortedNodes:
+                hDst.write(self.oRoot.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
+                #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset) ] ).strip() )
+                for oNode in self.lSortedNodes:
                     hDst.write(oNode.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
             hDst.close()
     
@@ -483,7 +540,10 @@ class DawgNode:
         return self.__str__() == other.__str__()
 
     def sortArcs (self, dValOccur):
-        self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur[t[0]], reverse=True))
+        self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur.get(t[0], 0), reverse=True))
+
+    def sortArcs2 (self, dValOccur, lArcVal):
+        self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur.get(lArcVal[t[0]], 0), reverse=True))
 
     # VERSION 1 =====================================================================================================
     def convToBytes1 (self, nBytesArc, nBytesNodeAddress):
@@ -686,3 +746,30 @@ class DawgNode:
             else:
                 s += "  {:<20}  {:0>16}  i{:_>10}   #{:_>10}\n".format(lVal[arc], bin(val)[2:], self.arcs[arc].i, self.arcs[arc].addr)
         return s
+
+
+
+# Another attempt to sort node arcs
+
+_dCharOrder = {
+    # key: previous char, value: dictionary of chars {c: nValue}
+    "": {}
+}
+
+
+def addWordToCharDict (sWord):
+    cPrevious = ""
+    for cChar in sWord:
+        if cPrevious not in _dCharOrder:
+            _dCharOrder[cPrevious] = {}
+        _dCharOrder[cPrevious][cChar] = _dCharOrder[cPrevious].get(cChar, 0) + 1
+        cPrevious = cChar
+
+
+def getCharOrderAfterChar (cChar):
+    return _dCharOrder.get(cChar, None)
+
+
+def displayCharOrder ():
+    for key, value in _dCharOrder.items():
+        print("[" + key + "]: ", ", ".join([ c+":"+str(n)  for c, n  in  sorted(value.items(), key=lambda t: t[1], reverse=True) ]))

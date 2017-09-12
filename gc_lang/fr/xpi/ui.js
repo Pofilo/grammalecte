@@ -81,7 +81,7 @@ function loadGrammarChecker (bSetPanelOptions=false) {
     if (xGCEWorker === null) {
         // Grammar checker
         xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
-        let xPromise = xGCEWorker.post('loadGrammarChecker', [sp.prefs["sGCOptions"]]);
+        let xPromise = xGCEWorker.post('loadGrammarChecker', [sp.prefs["sGCOptions"], "Firefox"]);
         xPromise.then(
             function (aVal) {
                 sp.prefs["sGCOptions"] = aVal;
@@ -168,7 +168,7 @@ function createAboutPanel () {
                 bottom: 0
             },
             width: 340,
-            height: 670
+            height: 730
         });
 
         xAboutPanel.port.emit("calcDefaultPanelHeight");
@@ -349,10 +349,10 @@ function checkConsistency (sText) {
 }
 
 function checkAndSendToPanel (sIdParagraph, sText) {
-    let xPromise = xGCEWorker.post('parseAndTag', [sText, parseInt(sIdParagraph), "FR", false]);
+    let xPromise = xGCEWorker.post('parseAndSpellcheck', [sText, "FR", false, false]);
     xPromise.then(
         function (aVal) {
-            xGCPanel.port.emit("refreshParagraph", sIdParagraph, aVal);
+            xGCPanel.port.emit("refreshParagraph", sText, sIdParagraph, aVal);
         },
         function (aReason) {
             console.error('Promise rejected - ', aReason);
@@ -397,10 +397,10 @@ const xHotkeyGC = hotkeys.Hotkey({
             xGCPanel.show({position: xMainButton});
         }
         xActiveWorker = null;
-        sendTextToPanel("Je connait ma <i>destinées</i>. Un jour s'attachera à mon nom le souvenir de quelque chose de formidable, "
-                      + "- le souvenir d’une crise comme il n'y en eut jamaiss sur terre, le souvenir de la plus profonde collision des consciences, "
-                      + "le souvenirs d’un jugement prononcé contre tout tout ce qui jusqu’à présent à été cru, exigé, sanctifié. "
-                      + "Je ne suis pas un homme, je suis de la dynamite. Et, avec cela, il n’y a en moi rien d’un fondateur de religion. "
+        sendTextToPanel('"Je" connait ma <i>destinées</i>. Un jour s’attachera à mon nom le souvenir de quelque chose de formidable, '
+                      + "- le souvenir d'une crise comme il n'y en eut jamaiss sur terre, le souvenir de la plus profonde collision des consciences, "
+                      + "le souvenirs d’un jugement prononcé contre tout tout se qui jusqu’à présent à été cru, exigé, sanctifié. "
+                      + "Je ne sui pas un homme, je suis de la dynamite. Et, avec cela, il n’y a en moi rien d’un fondateur de religion. "
                       + "Les religions sont les affaires de la populace. "
                       + "J’aie besoin de me laver les mains, après avoir été en contact avec des hommes religieux...\n"
                       + "Vous, je parie que vous n’appriéciez guère le concept de vidéoprotection. Y a t’il pourtant rien de plus sécurisant ?");
@@ -418,16 +418,16 @@ async function sendTextToPanel (sText) {
         sText = sText.normalize("NFC"); // remove combining diacritics
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                sRes = await xGCEWorker.post('parseAndGenerateParagraph', [sParagraph, iParagraph, "FR", false])
-                xGCPanel.port.emit("addElem", sRes);
+                sRes = await xGCEWorker.post('parseAndSpellcheck', [sParagraph, "FR", false, false]);
+                xGCPanel.port.emit("addParagraph", sParagraph, iParagraph, sRes);
                 nParagraph += 1;
             }
             iParagraph += 1;
         }
-        xGCPanel.port.emit("addElem", '<p class="message">' + _("numberOfParagraphs") + " " + nParagraph + '</p>');
+        xGCPanel.port.emit("addMessage", 'message', _("numberOfParagraphs") + " " + nParagraph);
     }
     catch (e) {
-        xGCPanel.port.emit("addElem", '<p class="bug">' + e.message + '</p>');
+        xGCPanel.port.emit("addMessage", 'bug', e.message);
     }
     xGCPanel.port.emit("end");
 }
@@ -571,15 +571,15 @@ async function analyzeWords (sText) {
     try {
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                sRes = await xGCEWorker.post('analyzeWords', [sParagraph])
-                xLxgPanel.port.emit("addElem", sRes);
+                sRes = await xGCEWorker.post('getListOfElements', [sParagraph]);
+                xLxgPanel.port.emit("addParagraphElems", sRes);
                 nParagraph += 1;
             }
         }
-        xLxgPanel.port.emit("addElem", '<p class="message">' + _("numberOfParagraphs") + " " + nParagraph + '</p>');
+        xLxgPanel.port.emit("addMessage", 'message', _("numberOfParagraphs") + " " + nParagraph);
     }
     catch (e) {
-        xLxgPanel.port.emit("addElem", '<p class="bug">'+e.message+"</p>");
+        xLxgPanel.port.emit("addMessage", 'bug', e.message);
     }
     xLxgPanel.port.emit("stopWaitIcon");
 }

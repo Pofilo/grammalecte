@@ -1,8 +1,12 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Suggestion mechanisms
+/*jslint esversion: 6*/
+/*global require*/
 
-const conj = require("resource://grammalecte/fr/conj.js");
-const mfsp = require("resource://grammalecte/fr/mfsp.js");
-const phonet = require("resource://grammalecte/fr/phonet.js");
+if (typeof(require) !== 'undefined') {
+    var conj = require("resource://grammalecte/fr/conj.js");
+    var mfsp = require("resource://grammalecte/fr/mfsp.js");
+    var phonet = require("resource://grammalecte/fr/phonet.js");
+}
 
 
 //// verbs
@@ -15,10 +19,10 @@ function suggVerb (sFlex, sWho, funcSugg2=null) {
         if (tTags) {
             // we get the tense
             let aTense = new Set();
-            for (let sMorph of _dAnalyses._get(sFlex, [])) {
+            for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
                 let m;
-                let zVerb = new RegExp (sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
-                while (m = zVerb.exec(sMorph)) {
+                let zVerb = new RegExp (">"+sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
+                while ((m = zVerb.exec(sMorph)) !== null) {
                     // stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if (m) {
                         if (m[1] === ":Y") {
@@ -141,8 +145,7 @@ function suggVerbImpe (sFlex) {
 }
 
 function suggVerbInfi (sFlex) {
-    //return stem(sFlex).join("|");
-    return [ for (sStem of stem(sFlex)) if (conj.isVerb(sStem)) sStem ].join("|");
+    return stem(sFlex).filter(sStem => conj.isVerb(sStem)).join("|");
 }
 
 
@@ -165,9 +168,9 @@ function suggVerbMode (sFlex, cMode, sSuj) {
     } else {
         return "";
     }
-    let sWho = _dQuiEst._get(sSuj.toLowerCase(), null);
+    let sWho = _dQuiEst.gl_get(sSuj.toLowerCase(), null);
     if (!sWho) {
-        if (sSuj[0]._isLowerCase()) { // pas un pronom, ni un nom propre
+        if (sSuj[0].gl_isLowerCase()) { // pas un pronom, ni un nom propre
             return "";
         }
         sWho = ":3s";
@@ -197,7 +200,7 @@ function suggPlur (sFlex, sWordToAgree=null) {
         if (!_dAnalyses.has(sWordToAgree) && !_storeMorphFromFSA(sWordToAgree)) {
             return "";
         }
-        let sGender = cr.getGender(_dAnalyses._get(sWordToAgree, []));
+        let sGender = cregex.getGender(_dAnalyses.gl_get(sWordToAgree, []));
         if (sGender == ":m") {
             return suggMasPlur(sFlex);
         } else if (sGender == ":f") {
@@ -257,20 +260,20 @@ function suggMasSing (sFlex, bSuggSimil=false) {
     // returns masculine singular forms
     // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses._get(sFlex, [])) {
+    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
                 aSugg.add(suggSing(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     mfsp.getMasForm(sStem, false).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q1") && conj.hasConj(sVerb, ":PQ", ":Q3")) {
                 // We also check if the verb has a feminine form.
                 // If not, we consider it’s better to not suggest the masculine one, as it can be considered invariable.
@@ -293,20 +296,20 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
     // returns masculine plural forms
     // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses._get(sFlex, [])) {
+    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
                 aSugg.add(suggPlur(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     mfsp.getMasForm(sStem, true).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q2")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q2"));
             } else if (conj.hasConj(sVerb, ":PQ", ":Q1")) {
@@ -334,20 +337,20 @@ function suggFemSing (sFlex, bSuggSimil=false) {
     // returns feminine singular forms
     // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses._get(sFlex, [])) {
+    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
                 aSugg.add(suggSing(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     aSugg.add(sStem);
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q3")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q3"));
             }
@@ -368,20 +371,20 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
     // returns feminine plural forms
     // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses._get(sFlex, [])) {
+    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
                 aSugg.add(suggPlur(sFlex));
             } else {
-                let sStem = cr.getLemmaOfMorph(sMorph);
+                let sStem = cregex.getLemmaOfMorph(sMorph);
                 if (mfsp.isFemForm(sStem)) {
                     aSugg.add(sStem+"s");
                 }
             }
         } else {
             // a verb
-            let sVerb = cr.getLemmaOfMorph(sMorph);
+            let sVerb = cregex.getLemmaOfMorph(sMorph);
             if (conj.hasConj(sVerb, ":PQ", ":Q4")) {
                 aSugg.add(conj.getConj(sVerb, ":PQ", ":Q4"));
             }
@@ -427,7 +430,7 @@ function switchGender (sFlex, bPlur=null) {
     // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
     if (bPlur === null) {
-        for (let sMorph of _dAnalyses._get(sFlex, [])) {
+        for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
             if (sMorph.includes(":f")) {
                 if (sMorph.includes(":s")) {
                     aSugg.add(suggMasSing(sFlex));
@@ -446,7 +449,7 @@ function switchGender (sFlex, bPlur=null) {
             }
         }
     } else if (bPlur) {
-        for (let sMorph of _dAnalyses._get(sFlex, [])) {
+        for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
             if (sMorph.includes(":f")) {
                 aSugg.add(suggMasPlur(sFlex));
             } else if (sMorph.includes(":m")) {
@@ -454,7 +457,7 @@ function switchGender (sFlex, bPlur=null) {
             }
         }
     } else {
-        for (let sMorph of _dAnalyses._get(sFlex, [])) {
+        for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
             if (sMorph.includes(":f")) {
                 aSugg.add(suggMasSing(sFlex));
             } else if (sMorph.includes(":m")) {
@@ -470,7 +473,7 @@ function switchGender (sFlex, bPlur=null) {
 
 function switchPlural (sFlex) {
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses._get(sFlex, [])) { // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
+    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) { // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
         if (sMorph.includes(":s")) {
             aSugg.add(suggPlur(sFlex));
         } else if (sMorph.includes(":p")) {
@@ -490,8 +493,8 @@ function hasSimil (sWord, sPattern=null) {
 function suggSimil (sWord, sPattern) {
     // return list of words phonetically similar to sWord and whom POS is matching sPattern
     let aSugg = phonet.selectSimil(sWord, sPattern);
-    for (let sMorph of _dAnalyses._get(sWord, [])) {
-        for (let e of conj.getSimil(sWord, sMorph)) {
+    for (let sMorph of _dAnalyses.gl_get(sWord, [])) {
+        for (let e of conj.getSimil(sWord, sMorph, sPattern)) {
             aSugg.add(e); 
         }
     }
@@ -513,7 +516,7 @@ function suggCeOrCet (sWord) {
 
 function suggLesLa (sWord) {
     // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    if (_dAnalyses._get(sWord, []).some(s  =>  s.includes(":p"))) {
+    if (_dAnalyses.gl_get(sWord, []).some(s  =>  s.includes(":p"))) {
         return "les|la";
     }
     return "la";
@@ -521,7 +524,7 @@ function suggLesLa (sWord) {
 
 function formatNumber (s) {
     let nLen = s.length;
-    if (nLen <= 4 ) {
+    if (nLen < 4 ) {
         return s;
     }
     let sRes = "";
@@ -529,7 +532,7 @@ function formatNumber (s) {
     let nEnd = nLen;
     while (nEnd > 0) {
         let nStart = Math.max(nEnd-3, 0);
-        sRes = sRes ? s.slice(nStart, nEnd) + " " + sRes : sRes = s.slice(nStart, nEnd);
+        sRes = sRes ? s.slice(nStart, nEnd) + " " + sRes : sRes = s.slice(nStart, nEnd);
         nEnd = nEnd - 3;
     }
     // binaire
@@ -538,7 +541,7 @@ function formatNumber (s) {
         let sBin = "";
         while (nEnd > 0) {
             let nStart = Math.max(nEnd-4, 0);
-            sBin = sBin ? s.slice(nStart, nEnd) + " " + sBin : sBin = s.slice(nStart, nEnd);
+            sBin = sBin ? s.slice(nStart, nEnd) + " " + sBin : sBin = s.slice(nStart, nEnd);
             nEnd = nEnd - 4;
         }
         sRes += "|" + sBin;
@@ -546,16 +549,16 @@ function formatNumber (s) {
     // numéros de téléphone
     if (nLen == 10) {
         if (s.startsWith("0")) {
-            sRes += "|" + s.slice(0,2) + " " + s.slice(2,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);   // téléphone français
+            sRes += "|" + s.slice(0,2) + " " + s.slice(2,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);   // téléphone français
             if (s[1] == "4" && (s[2]=="7" || s[2]=="8" || s[2]=="9")) {
-                sRes += "|" + s.slice(0,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);    // mobile belge
+                sRes += "|" + s.slice(0,4) + " " + s.slice(4,6) + " " + s.slice(6,8) + " " + s.slice(8);    // mobile belge
             }
-            sRes += "|" + s.slice(0,3) + " " + s.slice(3,6) + " " + s.slice(6,8) + " " + s.slice(8);        // téléphone suisse
+            sRes += "|" + s.slice(0,3) + " " + s.slice(3,6) + " " + s.slice(6,8) + " " + s.slice(8);        // téléphone suisse
         }
-        sRes += "|" + s.slice(0,4) + " " + s.slice(4,7) + "-" + s.slice(7);                                 // téléphone canadien ou américain
+        sRes += "|" + s.slice(0,4) + " " + s.slice(4,7) + "-" + s.slice(7);                                 // téléphone canadien ou américain
     } else if (nLen == 9 && s.startsWith("0")) {
-        sRes += "|" + s.slice(0,3) + " " + s.slice(3,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 1
-        sRes += "|" + s.slice(0,2) + " " + s.slice(2,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 2
+        sRes += "|" + s.slice(0,3) + " " + s.slice(3,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 1
+        sRes += "|" + s.slice(0,2) + " " + s.slice(2,5) + " " + s.slice(5,7) + " " + s.slice(7,9);          // fixe belge 2
     }
     return sRes;
 }

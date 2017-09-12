@@ -76,7 +76,7 @@ class TestPhonet (unittest.TestCase):
             ["cet", "cette", "sept", "set", "sets"],
             ["dé", "dés", "dès", "dais", "des"],
             ["don", "dons", "dont"],
-            ["été", "étais", "était", "étai", "étés", "étaient"],
+            ["été", "étaie", "étaies", "étais", "était", "étai", "étés", "étaient"],
             ["faire", "fer", "fers", "ferre", "ferres", "ferrent"],
             ["fois", "foi", "foie", "foies"],
             ["la", "là", "las"],
@@ -90,7 +90,7 @@ class TestPhonet (unittest.TestCase):
             ["peu", "peux", "peut"],
             ["ses", "ces", "sais", "sait"],
             ["son", "sons", "sont"],
-            ["tes", "taie", "taies", "thé", "thés"],
+            ["tes", "tais", "tait", "taie", "taies", "thé", "thés"],
             ["toi", "toit", "toits"],
             ["ton", "tons", "thon", "thons", "tond", "tonds"],
             ["voir", "voire"]

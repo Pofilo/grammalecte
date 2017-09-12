@@ -143,7 +143,7 @@ def parseParagraph (iParagraph, sText, oTokenizer, oDict, dOptions, bDebug=False
 
 if __name__ == '__main__':
 
-    gce.load()
+    gce.load("Server")
     echo("Grammalecte v{}".format(gce.version))
     dServerOptions = getServerOptions()
     dGCOptions = getConfigOptions("fr")

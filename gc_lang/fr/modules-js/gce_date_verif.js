@@ -1,4 +1,5 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN
+/*jslint esversion: 6*/
 
 // Check date validity
 

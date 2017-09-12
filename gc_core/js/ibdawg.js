@@ -1,9 +1,14 @@
 //// IBDAWG
+/*jslint esversion: 6*/
+/*global console,require,exports*/
 
 "use strict";
 
-const st = require("resource://grammalecte/str_transform.js");
-const helpers = require("resource://grammalecte/helpers.js");
+
+if (typeof(require) !== 'undefined') {
+    var str_transform = require("resource://grammalecte/str_transform.js");
+    var helpers = require("resource://grammalecte/helpers.js");
+}
 
 
 // String
@@ -15,12 +20,11 @@ ${string}
 class IBDAWG {
     // INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 
-    constructor (sDicName) {
+    constructor (sDicName, sPath="") {
         try {
-            const dict = JSON.parse(helpers.loadFile("resource://grammalecte/_dictionaries/"+sDicName));
+            let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/_dictionaries/"+sDicName;
+            const dict = JSON.parse(helpers.loadFile(sURL));
             Object.assign(this, dict);
-            //const dict = require("resource://grammalecte/"+sLang+"/dictionary.js");
-            //Object.assign(this, dict.dictionary);
         }
         catch (e) {
             throw Error("# Error. File not found or not loadable.\n" + e.message + "\n");
@@ -41,11 +45,11 @@ class IBDAWG {
         //this.byDic = new Uint8Array(this.byDic);  // not quicker, even slower
 
         if (this.cStemming == "S") {
-            this.funcStemming = st.getStemFromSuffixCode;
+            this.funcStemming = str_transform.getStemFromSuffixCode;
         } else if (this.cStemming == "A") {
-            this.funcStemming = st.getStemFromAffixCode;
+            this.funcStemming = str_transform.getStemFromAffixCode;
         } else {
-            this.funcStemming = st.noStemming;
+            this.funcStemming = str_transform.noStemming;
         }
 
         // Configuring DAWG functions according to nVersion
@@ -74,14 +78,14 @@ class IBDAWG {
         //console.log(this.getInfo());
         this.bOptNumSigle = true;
         this.bOptNumAtLast = false;
-    };
+    }
 
     getInfo () {
         return  `  Language: ${this.sLang}      Version: ${this.nVersion}      Stemming: ${this.cStemming}FX\n` +
                 `  Arcs values:  ${this.nArcVal} = ${this.nChar} characters,  ${this.nAff} affixes,  ${this.nTag} tags\n` +
                 `  Dictionary: ${this.nEntries} entries,    ${this.nNode} nodes,   ${this.nArc} arcs\n` +
                 `  Address size: ${this.nBytesNodeAddress} bytes,  Arc size: ${this.nBytesArc} bytes\n`;
-    };
+    }
 
     isValidToken (sToken) {
         // checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)
@@ -89,13 +93,13 @@ class IBDAWG {
             return true;
         }
         if (sToken.includes("-")) {
-            if (sToken._count("-") > 4) {
+            if (sToken.gl_count("-") > 4) {
                 return true;
             }
             return sToken.split("-").every(sWord  =>  this.isValid(sWord)); 
         }
         return false;
-    };
+    }
 
     isValid (sWord) {
         // checks if sWord is valid (different casing tested if the first letter is a capital)
@@ -108,16 +112,16 @@ class IBDAWG {
         if (this.lookup(sWord)) {
             return true;
         }
-        if (sWord.charAt(0)._isUpperCase()) {
+        if (sWord.charAt(0).gl_isUpperCase()) {
             if (sWord.length > 1) {
-                if (sWord._isTitle()) {
+                if (sWord.gl_isTitle()) {
                     return !!this.lookup(sWord.toLowerCase());
                 }
-                if (sWord._isUpperCase()) {
+                if (sWord.gl_isUpperCase()) {
                     if (this.bOptNumSigle) {
                         return true;
                     }
-                    return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord._toCapitalize()));
+                    return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord.gl_toCapitalize()));
                 }
                 return !!this.lookup(sWord.slice(0, 1).toLowerCase() + sWord.slice(1));
             } else {
@@ -125,7 +129,7 @@ class IBDAWG {
             }
         }
         return false;
-    };
+    }
 
     _convBytesToInteger (aBytes) {
         // Byte order = Big Endian (bigger first)
@@ -136,7 +140,7 @@ class IBDAWG {
             nWeight = nWeight - 8;
         }
         return nVal;
-    };
+    }
 
     lookup (sWord) {
         // returns true if sWord in dictionary (strict verification)
@@ -151,23 +155,23 @@ class IBDAWG {
             }
         }
         return Boolean(this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask);
-    };
+    }
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
         let l = this.morph(sWord);
-        if (sWord[0]._isUpperCase()) {
+        if (sWord[0].gl_isUpperCase()) {
             l = l.concat(this.morph(sWord.toLowerCase()));
-            if (sWord._isUpperCase() && sWord.length > 1) {
-                l = l.concat(this.morph(sWord._toCapitalize()));
+            if (sWord.gl_isUpperCase() && sWord.length > 1) {
+                l = l.concat(this.morph(sWord.gl_toCapitalize()));
             }
         }
         return l;
-    };
+    }
 
     // morph (sWord) {
     //     is defined in constructor
-    // };
+    // }
     
     // VERSION 1
     _morph1 (sWord) {
@@ -207,7 +211,7 @@ class IBDAWG {
             return l;
         }
         return [];
-    };
+    }
 
     _stem1 (sWord) {
         // returns stems list of sWord
@@ -237,7 +241,7 @@ class IBDAWG {
             return l;
         }
         return [];
-    };
+    }
 
     _lookupArcNode1 (nVal, iAddr) {
         // looks if nVal is an arc at the node at iAddr, if yes, returns address of next node else None
@@ -257,35 +261,37 @@ class IBDAWG {
                 iAddr = iEndArcAddr + this.nBytesNodeAddress;
             }
         }
-    };
+    }
 
     // VERSION 2
     _morph2 (sWord) {
         // to do
-    };
+    }
 
     _stem2 (sWord) {
         // to do
-    };
+    }
 
     _lookupArcNode2 (nVal, iAddr) {
         // to do
-    };
+    }
 
 
     // VERSION 3
     _morph3 (sWord) {
         // to do
-    };
+    }
 
     _stem3 (sWord) {
         // to do
-    };
+    }
 
     _lookupArcNode3 (nVal, iAddr) {
         // to do
-    };
+    }
 }
 
 
-exports.IBDAWG = IBDAWG;
+if (typeof(exports) !== 'undefined') {
+    exports.IBDAWG = IBDAWG;
+}

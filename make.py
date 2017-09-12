@@ -13,6 +13,7 @@ import argparse
 import importlib
 import unittest
 import json
+import platform
 
 from distutils import dir_util, file_util
 
@@ -30,7 +31,7 @@ def getConfig (sLang):
     try:
         xConfig.read("gc_lang/" + sLang + "/config.ini", encoding="utf-8")
     except:
-        print("Config file in project [" + sLang + "] not found")
+        print("# Error. Can’t read config file [" + sLang + "]")
         exit()
     return xConfig
 
@@ -76,7 +77,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
 
     # Package and parser
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['py_binary_dic'], "pythonpath/")
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic", "pythonpath/")
     hZip.write("cli.py", "pythonpath/cli.py")
 
     # Extension files
@@ -146,7 +147,7 @@ def createServerOptions (sLang, dOptData):
             for lLineOpt in lOpt:
                 for sOpt in lLineOpt:
                     hDst.write("# " + dOptData["dOptLabel"][sLang].get(sOpt, "[no label found]")[0] + "\n")
-                    hDst.write(sOpt + " = " + ("1" if dOptData["dOptPython"].get(sOpt, None) else "0") + "\n")
+                    hDst.write(sOpt + " = " + ("1" if dOptData["dOptServer"].get(sOpt, None) else "0") + "\n")
         hDst.write("html = 1\n")
 
 
@@ -154,7 +155,7 @@ def createServerZip (sLang, dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['py_binary_dic'])
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic")
     for spf in ["cli.py", "server.py", "bottle.py", "server_options._global.ini", "server_options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
@@ -240,6 +241,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
 
         # options data struct
         dVars["dOptJavaScript"] = json.dumps(list(dVars["dOptJavaScript"].items()))
+        dVars["dOptFirefox"] = json.dumps(list(dVars["dOptFirefox"].items()))
+        dVars["dOptThunderbird"] = json.dumps(list(dVars["dOptThunderbird"].items()))
         
         # create folder
         spLangPack = "grammalecte-js/"+sLang
@@ -277,16 +280,23 @@ def main ():
     print("Python: " + sys.version)
     xParser = argparse.ArgumentParser()
     xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
-    xParser.add_argument("-b", "--build_data", help="launch build_data.py", action="store_true")
+    xParser.add_argument("-b", "--build_data", help="launch build_data.py (part 1 and 2)", action="store_true")
+    xParser.add_argument("-bb", "--build_data_before", help="launch build_data.py (only part 1: before dictionary building)", action="store_true")
+    xParser.add_argument("-ba", "--build_data_after", help="launch build_data.py (only part 2: before dictionary building)", action="store_true")
     xParser.add_argument("-d", "--dict", help="generate FSA dictionary", action="store_true")
     xParser.add_argument("-t", "--tests", help="run unit tests", action="store_true")
     xParser.add_argument("-p", "--perf", help="run performance tests", action="store_true")
     xParser.add_argument("-pm", "--perf_memo", help="run performance tests and store results in perf_memo.txt", action="store_true")
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
-    xParser.add_argument("-fx", "--firefox", help="Launch Firefox Nightly for XPI testing", action="store_true")
+    xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for Adden-SDK testing", action="store_true")
+    xParser.add_argument("-we", "--web_ext", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
     xParser.add_argument("-i", "--install", help="install the extension in Writer (path of unopkg must be set in config.ini)", action="store_true")
     xArgs = xParser.parse_args()
+
+    if xArgs.build_data:
+        xArgs.build_data_before = True
+        xArgs.build_data_after = True
 
     dir_util.mkpath("_build")
     dir_util.mkpath("grammalecte")
@@ -305,28 +315,18 @@ def main ():
 
             # build data
             build_data_module = None
-            if xArgs.build_data:
+            if xArgs.build_data_before or xArgs.build_data_after:
                 # lang data
                 try:
                     build_data_module = importlib.import_module("gc_lang."+sLang+".build_data")
                 except ImportError:
                     print("# Error. Couldn’t import file build_data.py in folder gc_lang/"+sLang)
-            if build_data_module:
+            if build_data_module and xArgs.build_data_before:
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
             if xArgs.dict or not os.path.exists("grammalecte/_dictionaries"):
-                import grammalecte.dawg as fsa
-                from grammalecte.ibdawg import IBDAWG
-                # fsa builder
-                oDAWG = fsa.DAWG(dVars['lexicon_src'], dVars['lang_name'], dVars['stemming_method'])
-                dir_util.mkpath("grammalecte/_dictionaries")
-                oDAWG.writeInfo("grammalecte/_dictionaries/" + dVars['py_binary_dic'] + ".info.txt")
-                oDAWG.createBinary("grammalecte/_dictionaries/" + dVars['py_binary_dic'], int(dVars['fsa_method']))
-                if xArgs.javascript:
-                    dir_util.mkpath("grammalecte-js/_dictionaries")
-                    oDic = IBDAWG(dVars['py_binary_dic'])
-                    #oDic.writeAsJSObject("gc_lang/"+sLang+"/modules-js/dictionary.js")
-                    oDic.writeAsJSObject("grammalecte-js/_dictionaries/"+dVars['js_binary_dic'])
-            if build_data_module:
+                import lex_build
+                lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], xArgs.javascript, dVars['stemming_method'], int(dVars['fsa_method']))
+            if build_data_module and xArgs.build_data_after:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
 
             # make
@@ -351,7 +351,13 @@ def main ():
             # Firefox
             if xArgs.firefox:
                 with helpers.cd("_build/xpi/"+sLang):
-                    os.system("jpm run -b nightly")
+                    spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
+                    os.system('jpm run -b "' + spfFirefox + '"')
+
+            if xArgs.web_ext:
+                with helpers.cd("_build/webext/"+sLang):
+                    spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')            
 
             # Thunderbird
             if xArgs.thunderbird:

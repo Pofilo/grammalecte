@@ -4,9 +4,9 @@
 	Events
 */
 
-self.port.on("addElem", function (sHtml) {
-	let xElem = document.createElement("p");
-	xElem.innerHTML = sHtml;
+self.port.on("addElem", function (sText) {
+	let xElem = document.createElement("pre");
+	xElem.textContent = sText;
 	document.getElementById("results").appendChild(xElem);
 });
 

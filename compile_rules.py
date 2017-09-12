@@ -2,9 +2,10 @@
 import re
 import sys
 import traceback
-import copy
 import json
 from distutils import file_util
+
+import compile_rules_js_convert as jsconv
 
 
 dDEF = {}
@@ -58,69 +59,6 @@ def prepareFunction (s):
     s = re.sub(r"\bspell *[(]", '_oDict.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'm.group(\\1)', s)
     return s
-
-
-def py2js (sCode):
-    "convert Python code to JavaScript code"
-    # Python 2.x unicode strings
-    sCode = re.sub('\\b[ur]"', '"', sCode)
-    sCode = re.sub("\\b[ur]'", "'", sCode)
-    # operators
-    sCode = sCode.replace(" and ", " && ")
-    sCode = sCode.replace(" or ", " || ")
-    sCode = re.sub("\\bnot\\b", "!", sCode)
-    sCode = re.sub("(.+) if (.+) else (.+)", "(\\2) ? \\1 : \\3", sCode)
-    # boolean
-    sCode = sCode.replace("False", "false")
-    sCode = sCode.replace("True", "true")
-    sCode = sCode.replace("bool", "Boolean")
-    # methods
-    sCode = sCode.replace(".__len__()", ".length")
-    sCode = sCode.replace(".endswith", ".endsWith")
-    sCode = sCode.replace(".find", ".indexOf")
-    sCode = sCode.replace(".startswith", ".startsWith")
-    sCode = sCode.replace(".lower", ".toLowerCase")
-    sCode = sCode.replace(".upper", ".toUpperCase")
-    sCode = sCode.replace(".isdigit", "._isDigit")
-    sCode = sCode.replace(".isupper", "._isUpperCase")
-    sCode = sCode.replace(".islower", "._isLowerCase")
-    sCode = sCode.replace(".istitle", "._isTitle")
-    sCode = sCode.replace(".capitalize", "._toCapitalize")
-    sCode = sCode.replace(".strip", "._trim")
-    sCode = sCode.replace(".lstrip", "._trimLeft")
-    sCode = sCode.replace(".rstrip", "._trimRight")
-    sCode = sCode.replace('.replace("."', ".replace(/\./g")
-    sCode = sCode.replace('.replace("..."', ".replace(/\.\.\./g")
-    sCode = re.sub('.replace\("([^"]+)" ?,', ".replace(/\\1/g,", sCode)
-    # regex
-    sCode = re.sub('re.search\("([^"]+)", *(m.group\(\\d\))\)', "(\\2.search(/\\1/) >= 0)", sCode)
-    sCode = re.sub(".search\\(/\\(\\?i\\)([^/]+)/\\) >= 0\\)", ".search(/\\1/i) >= 0)", sCode)
-    sCode = re.sub('(look\\(sx?[][.a-z:()]*), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = re.sub('(look\\(sx?[][.a-z:()]*), "([^"]+)"', "\\1, /\\2/", sCode)
-    sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = sCode.replace("(?<!-)", "")  # todo
-    # slices
-    sCode = sCode.replace("[:m.start()]", ".slice(0,m.index)")
-    sCode = sCode.replace("[m.end():]", ".slice(m.end[0])")
-    sCode = sCode.replace("[m.start():m.end()]", ".slice(m.index, m.end[0])")
-    sCode = re.sub("\\[(-?\\d+):(-?\\d+)\\]", ".slice(\\1,\\2)", sCode)
-    sCode = re.sub("\\[(-?\\d+):\\]", ".slice(\\1)", sCode)
-    sCode = re.sub("\\[:(-?\\d+)\\]", ".slice(0,\\1)", sCode)
-    # regex matches
-    sCode = sCode.replace(".end()", ".end[0]")
-    sCode = sCode.replace(".start()", ".index")
-    sCode = sCode.replace("m.group()", "m[0]")
-    sCode = re.sub("\\.start\\((\\d+)\\)", ".start[\\1]", sCode)
-    sCode = re.sub("m\\.group\\((\\d+)\\)", "m[\\1]", sCode)
-    # tuples -> lists
-    sCode = re.sub("\((m\.start\[\\d+\], m\[\\d+\])\)", "[\\1]", sCode)
-    # regex
-    sCode = sCode.replace("\w[\w-]+", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+")
-    sCode = sCode.replace(r"/\w/", "/[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]/")
-    sCode = sCode.replace(r"[\w-]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]")
-    sCode = sCode.replace(r"[\w,]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ,]")
-    return sCode
 
 
 def uppercase (s, sLang):
@@ -217,7 +155,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     # JS groups positioning codes
     m = re.search("@@\\S+", sRegex)
     if m:
-        tGroups = groupsPositioningCodeToList(sRegex[m.start()+2:])
+        tGroups = jsconv.groupsPositioningCodeToList(sRegex[m.start()+2:])
         sRegex = sRegex[:m.start()].strip()
     # JS regex
     m = re.search("<js>.+</js>i?", sRegex)
@@ -326,26 +264,31 @@ def createAction (sIdAction, sAction, nGroup):
     if cAction == "-":
         ## error
         iMsg = sAction.find(" # ")
-        sMsg = sAction[iMsg+3:].strip()
-        sAction = sAction[:iMsg].strip()
-        sURL = ""
-        mURL = re.search("[|] *(https?://.*)", sMsg)
-        if mURL:
-            sURL = mURL.group(1).strip()
-            sMsg = sMsg[:mURL.start(0)].strip()
-        if sMsg[0:1] == "=":
-            sMsg = prepareFunction(sMsg[1:])
-            lFUNCTIONS.append(("m_"+sIdAction, sMsg))
-            for x in re.finditer("group[(](\d+)[)]", sMsg):
-                if int(x.group(1)) > nGroup:
-                    print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-            sMsg = "=m_"+sIdAction
+        if iMsg == -1:
+            sMsg = "# Error. Error message not found."
+            sURL = ""
+            print(sMsg + " Action id: " + sIdAction)
         else:
-            for x in re.finditer(r"\\(\d+)", sMsg):
-                if int(x.group(1)) > nGroup:
-                    print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-            if re.search("[.]\\w+[(]", sMsg):
-                print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
+            sMsg = sAction[iMsg+3:].strip()
+            sAction = sAction[:iMsg].strip()
+            sURL = ""
+            mURL = re.search("[|] *(https?://.*)", sMsg)
+            if mURL:
+                sURL = mURL.group(1).strip()
+                sMsg = sMsg[:mURL.start(0)].strip()
+            if sMsg[0:1] == "=":
+                sMsg = prepareFunction(sMsg[1:])
+                lFUNCTIONS.append(("m_"+sIdAction, sMsg))
+                for x in re.finditer("group[(](\d+)[)]", sMsg):
+                    if int(x.group(1)) > nGroup:
+                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                sMsg = "=m_"+sIdAction
+            else:
+                for x in re.finditer(r"\\(\d+)", sMsg):
+                    if int(x.group(1)) > nGroup:
+                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                if re.search("[.]\\w+[(]", sMsg):
+                    print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
             
     if sAction[0:1] == "=" or cAction == "=":
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
@@ -359,7 +302,7 @@ def createAction (sIdAction, sAction, nGroup):
         for x in re.finditer(r"\\(\d+)", sAction):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-        if re.search("[.]\\w+[(]", sAction):
+        if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
             print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
 
     if cAction == "-":
@@ -401,87 +344,6 @@ def createAction (sIdAction, sAction, nGroup):
         return None
 
 
-def regex2js (sRegex):
-    "converts Python regex to JS regex and returns JS regex and list of negative lookbefore assertions"
-    #   Latin letters: http://unicode-table.com/fr/
-    #   0-9  and  _
-    #   A-Z
-    #   a-z
-    #   À-Ö     00C0-00D6   (upper case)
-    #   Ø-ß     00D8-00DF   (upper case)
-    #   à-ö     00E0-00F6   (lower case)
-    #   ø-ÿ     00F8-00FF   (lower case)
-    #   Ā-ʯ     0100-02AF   (mixed)
-    #   -> a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ
-    bCaseInsensitive = False
-    if "(?i)" in sRegex:
-        sRegex = sRegex.replace("(?i)", "")
-        bCaseInsensitive = True
-    lNegLookBeforeRegex = []
-    if sWORDLIMITLEFT in sRegex:
-        sRegex = sRegex.replace(sWORDLIMITLEFT, "")
-        lNegLookBeforeRegex = ["[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ.,–-]$"]
-    sRegex = sRegex.replace("[\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ")
-    sRegex = sRegex.replace("\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯ]")
-    sRegex = sRegex.replace("[.]", r"\.")
-    if not sRegex.startswith("<js>"):
-        sRegex = sRegex.replace("/", r"\/")
-    m = re.search(r"\(\?<!([^()]+)\)", sRegex)  # Negative lookbefore assertion should always be at the beginning of regex
-    if m:
-        lNegLookBeforeRegex.append(m.group(1)+"$")
-        sRegex = sRegex.replace(m.group(0), "")
-    if "(?<" in sRegex:
-        print("# Warning. Lookbefore assertion not changed in:\n  ")
-        print(sRegex)
-    if sRegex.startswith("<js>"):
-        sRegex = sRegex.replace('<js>', '/').replace('</js>i', '/ig').replace('</js>', '/g')
-    else:
-        sRegex = "/" + sRegex + "/g"
-    if bCaseInsensitive and not sRegex.endswith("/ig"):
-        sRegex = sRegex + "i"
-    if not lNegLookBeforeRegex:
-        lNegLookBeforeRegex = None
-    return (sRegex, lNegLookBeforeRegex)
-
-
-def pyRuleToJS (lRule):
-    lRuleJS = copy.deepcopy(lRule)
-    del lRule[-1] # tGroups positioning codes are useless for Python
-    # error messages
-    for aAction in lRuleJS[6]:
-        if aAction[1] == "-":
-            aAction[4] = aAction[4].replace("« ", "«&nbsp;").replace(" »", "&nbsp;»")
-    # js regexes
-    lRuleJS[1], lNegLookBehindRegex = regex2js( dJSREGEXES.get(lRuleJS[3], lRuleJS[1]) )
-    lRuleJS.append(lNegLookBehindRegex)
-    return lRuleJS
-
-
-def writeRulesToJSArray (lRules):
-    sArray = "[\n"
-    for sOption, aRuleGroup in lRules:
-        sArray += '  ["' + sOption + '", [\n'  if sOption  else  "  [false, [\n"
-        for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
-            sArray += '    [' + sRegex + ", "
-            sArray += "true, " if bCaseInsensitive  else "false, "
-            sArray += '"' + sLineId + '", '
-            sArray += '"' + sRuleId + '", '
-            sArray += str(nPriority) + ", "
-            sArray += json.dumps(lActions, ensure_ascii=False) + ", "
-            sArray += json.dumps(aGroups, ensure_ascii=False) + ", "
-            sArray += json.dumps(aNegLookBehindRegex, ensure_ascii=False) + "],\n"
-        sArray += "  ]],\n"
-    sArray += "]"
-    return sArray
-
-
-def groupsPositioningCodeToList (sGroupsPositioningCode):
-    if not sGroupsPositioningCode:
-        return None
-    return [ int(sCode)  if sCode.isdigit() or (sCode[0:1] == "-" and sCode[1:].isdigit())  else sCode \
-             for sCode in sGroupsPositioningCode.split(",") ]
-
-
 def _calcRulesStats (lRules):
     d = {'=':0, '~': 0, '-': 0, '>': 0}
     for aRule in lRules:
@@ -518,6 +380,7 @@ def mergeRulesByOption (lRules):
 def prepareOptions (lOptionLines):
     "returns a dictionary with data about options"
     sLang = ""
+    sDefaultUILang = ""
     lStructOpt = []
     lOpt = []
     dOptLabel = {}
@@ -540,6 +403,9 @@ def prepareOptions (lOptionLines):
             m = re.match("OPTLANG/([a-z][a-z](?:_[A-Z][A-Z]|)):(.+)$", sLine)
             sLang = m.group(1)[:2]
             dOptLabel[sLang] = { "__optiontitle__": m.group(2).strip() }
+        elif sLine.startswith("OPTDEFAULTUILANG:"):
+            m = re.match("OPTDEFAULTUILANG: *([a-z][a-z](?:_[A-Z][A-Z]|))$", sLine)
+            sDefaultUILang = m.group(1)[:2]
         elif sLine.startswith("OPTLABEL/"):
             m = re.match("OPTLABEL/([a-z0-9]+):(.+)$", sLine)
             dOptLabel[sLang][m.group(1)] = list(map(str.strip, m.group(2).split("|")))  if "|" in m.group(2)  else  [m.group(2).strip(), ""]
@@ -547,7 +413,7 @@ def prepareOptions (lOptionLines):
             print("# Error. Wrong option line in:\n  ")
             print(sLine)
     print("  options defined for: " + ", ".join([ t[0] for t in lOpt ]))
-    dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel }
+    dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel, "sDefaultUILang": sDefaultUILang }
     dOptions.update({ "dOpt"+k: v  for k, v in lOpt })
     return dOptions, dOptPriority
 
@@ -586,7 +452,7 @@ def make (lRules, sLang, bJavaScript):
             lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
             pass
-        elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTLABEL/", "OPTPRIORITY/")):
+        elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
             lOpt.append(sLine)
         elif re.match("[  \t]*$", sLine):
             pass
@@ -630,10 +496,10 @@ def make (lRules, sLang, bJavaScript):
                 if aRule:
                     if bParagraph:
                         lParagraphRules.append(aRule)
-                        lParagraphRulesJS.append(pyRuleToJS(aRule))
+                        lParagraphRulesJS.append(jsconv.pyRuleToJS(aRule, dJSREGEXES, sWORDLIMITLEFT))
                     else:
                         lSentenceRules.append(aRule)
-                        lSentenceRulesJS.append(pyRuleToJS(aRule))
+                        lSentenceRulesJS.append(jsconv.pyRuleToJS(aRule, dJSREGEXES, sWORDLIMITLEFT))
 
     # creating file with all functions callable by rules
     print("  creating callables...")
@@ -657,7 +523,7 @@ def make (lRules, sLang, bJavaScript):
         sPyCallables += "def {} ({}):\n".format(sFuncName, sParams)
         sPyCallables += "    return " + sReturn + "\n"
         sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
-        sJSCallables += "        return " + py2js(sReturn) + ";\n"
+        sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         sJSCallables += "    },\n"
     sJSCallables += "}\n"
 
@@ -671,8 +537,8 @@ def make (lRules, sLang, bJavaScript):
           "gctestsJS": sGCTestsJS,
           "paragraph_rules": mergeRulesByOption(lParagraphRules),
           "sentence_rules": mergeRulesByOption(lSentenceRules),
-          "paragraph_rules_JS": writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
-          "sentence_rules_JS": writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
+          "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
+          "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
     d.update(dOptions)
 
     return d

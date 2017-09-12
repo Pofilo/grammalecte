@@ -4,21 +4,14 @@
         <link rel="stylesheet" type="text/css" href="gc_panel.css" />
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     </head>
-    <script type="text/javascript">
-        // for some reason, onclick onmouseover onmouseout can’t launch function in attached script, so here it is.
-        function showData (sIdErr) {
-            document.getElementById("data"+sIdErr).hidden = false;
-        }
-        function hideData (sIdErr) {
-            document.getElementById("data"+sIdErr).hidden = true;
-        }
-    </script>
     <body class="panel">
         <div style="position: fixed; width: 100%">
             <div id="rightcorner">
-                <a class="rightcornerbutton red" id="close" href="#"><b>×</b></a>
-                <a class="rightcornerbutton cyan" id="expand_reduce" href="#"><b>−</b></a>
-                <a class="rightcornerbutton1 green" id="copy_to_clipboard" href="#" style="display: none;" onclick="return false;"><b id="clipboard_msg">∑</b></a>
+                <a class="rightcornerbutton red" id="close" href="#" title="Fermer"><b>×</b></a>
+                <a class="rightcornerbutton cyan" id="expand_reduce" href="#" title="Réduire/Agrandir"><b>−</b></a>
+                <a class="rightcornerbutton1 green" id="copy_to_clipboard" href="#" style="display: none;" onclick="return false;" title="Copier dans le presse-papiers">
+                    <b id="clipboard_msg">∑</b>
+                </a>
             </div>
             <header>
                 <div id="waiticon" class="spinner">
@@ -30,6 +23,7 @@
                 </div>-->
 
                 <h2>Grammalecte</h2>
+                
             </header>
             <div id="messagebox"><a id="closemsg" class="rightcornerbutton1 red" href="#" onclick="return false;"><b>×</b></a><p id="message"></p></div>
         </div>
@@ -41,11 +35,39 @@
             <div id="resize_w_smaller" class="arrow" style="border-radius: 0 0 0 2px">→</div>
         </div>
         
+        <div id="special_message">
+            <p class="center">Grammalecte a besoin de vous<br>pour poursuivre sa route.</p>
+            <p class="center" style="margin: 10px 0"><a href="https://fr.ulule.com/grammalecte-2/" onclick="return false;">Campagne de financement participatif…</a></p>
+        </div>
 
         <div id="errorlist">
             <!-- result comes here -->
         </div>
 
+        <img id="gc_tooltip_arrow" src="img/gc_tooltip_arrow.png" alt="^">
+        <img id="sc_tooltip_arrow" src="img/sc_tooltip_arrow.png" alt="^">
+
+        <div id="gc_tooltip" class="tooltip">
+            <!-- grammar error -->
+            <div id="gc_message_block">
+                <p id="gc_rule_id"></p>
+                <p id="gc_message">Erreur grammaticale.</p>
+                <a id="gc_ignore" href="#">Ignorer</a> &nbsp; 
+                <a id="gc_url" href="" onclick="return false;">Voulez-vous en savoir plus ?…</a>
+            </div>
+            <div id="gc_sugg_title">SUGGESTIONS :</div>
+            <div id="gc_sugg_block"></div>
+        </div>
+
+        <div id="sc_tooltip" class="tooltip">
+            <!-- spelling error -->
+            <div id="sc_message_block">
+                <p id="sc_message">Mot inconnu du dictionnaire.</p>
+                <a id="sc_ignore" href="#">Ignorer</a>
+            </div>
+            <div id="sc_sugg_title">SUGGESTIONS :</div>
+            <div id="sc_sugg_block"></div>
+        </div>
     </body>
 </html>
 

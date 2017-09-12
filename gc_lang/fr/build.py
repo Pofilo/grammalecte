@@ -10,7 +10,32 @@ import helpers
 def build (sLang, dVars, spLangPack):
     "complementary build launched from make.py"
     createFirefoxExtension(sLang, dVars)
+    createWebExtension(sLang, dVars)
     createThunderbirdExtension(sLang, dVars, spLangPack)
+
+
+def createWebExtension (sLang, dVars):
+    "create Web-extension"
+    print("Building WebExtension")
+    helpers.createCleanFolder("_build/webext/"+sLang)
+    dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
+    dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
+    dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
+    helpers.copyAndFileTemplate("_build/webext/"+sLang+"/panel/main.html", "_build/webext/"+sLang+"/panel/main.html", dVars)
+    with helpers.cd("_build/webext/"+sLang):
+        os.system("web-ext build")
+
+
+def _createOptionsForWebExtension (dVars):
+    sHTML = ""
+    sLang = dVars['sDefaultUILang']
+    for sSection, lOpt in dVars['lStructOpt']:
+        sHTML += f'\n<div id="subsection_{sSection}" class="opt_subsection">\n  <h2 data-l10n-id="option_{sSection}">{dVars["dOptLabel"][sLang][sSection][0]}</h2>\n'
+        for lLineOpt in lOpt:
+            for sOpt in lLineOpt:
+                sHTML += f'  <p><input type="checkbox" id="option_{sOpt}" data-option="{sOpt}"/><label id="option_label_{sOpt}" for="option_{sOpt}" data-l10n-id="option_{sOpt}">{dVars["dOptLabel"][sLang][sOpt][0]}</label></p>\n'
+        sHTML += '</div>\n'
+    return sHTML
 
 
 def createFirefoxExtension (sLang, dVars):
@@ -43,7 +68,7 @@ def _createOptionsForFirefox (dVars):
     # Creating translation data
     dProperties = {}
     for sLang in dVars['dOptLabel'].keys():
-        dProperties[sLang] = "\n".join( [ "option_" + sOpt + " = " + dVars['dOptLabel'][sLang][sOpt][0].replace(" [!]", " [!]")  for sOpt in dVars['dOptLabel'][sLang] ] )
+        dProperties[sLang] = "\n".join( [ "option_" + sOpt + " = " + dVars['dOptLabel'][sLang][sOpt][0].replace(" [!]", " [!]")  for sOpt in dVars['dOptLabel'][sLang] ] )
     return sHTML, dProperties
 
 
@@ -53,7 +78,7 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
     sExtensionName = dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
     spfZip = "_build/" + sExtensionName
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack, dVars['js_binary_dic'])
+    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".json")
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     dVars = _createOptionsForThunderbird(dVars)

@@ -1,4 +1,6 @@
 // Grammalecte - text formatter
+/*jslint esversion: 6*/
+/*global exports*/
 
 "use strict";
 
@@ -64,7 +66,7 @@ const oReplTable = {
     //// missing spaces
     "add_space_after_punctuation":[ [/[;!…](?=[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ])/g, "$& "],
                                     [/[?](?=[A-ZÀ-ÖØ-ßĀ-ʯ])/g, "? "],
-                                    [/\.(?=[a-zA-Zà-öÀ-Öø-ÿØ-ßĀ-ʯ][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ])/g, ". "],
+                                    [/\.(?=[A-ZÀ-ÖØ-ßĀ-ʯ][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ])/g, ". "],
                                     [/\.(?=À)/g, ". "],
                                     [/[,:](?=[a-zA-Zà-öÀ-Öø-ÿØ-ßĀ-ʯ])/g, "$& "],
                                     [/([a-zA-Zà-öÀ-Öø-ÿØ-ßĀ-ʯ]),(?=[0-9])/g, "$1, "] ],
@@ -198,7 +200,7 @@ const oReplTable = {
 };
 
 
-const dDefaultOptions = new Map ([
+const dTFDefaultOptions = new Map ([
     ["ts_units", true],
     ["start_of_paragraph", true],
     ["end_of_paragraph", true],
@@ -251,20 +253,20 @@ const dDefaultOptions = new Map ([
     ["ma_1letter_uppercase", false]
 ]);
 
-const dOptions = dDefaultOptions._shallowCopy();
+const dTFOptions = dTFDefaultOptions.gl_shallowCopy();
 
 
 class TextFormatter {
 
     constructor () {
         this.sLang = "fr";
-    };
+    }
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
-            dOptions._updateOnlyExistingKeys(dOpt);
+            dTFOptions.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of dOptions) {
+        for (let [sOptName, bVal] of dTFOptions) {
             if (bVal && oReplTable.has(sOptName)) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     sText = sText.replace(zRgx, sRep);
@@ -272,12 +274,13 @@ class TextFormatter {
             }
         }
         return sText;
-    };
+    }
 
     getDefaultOptions () {
-        return dDefaultOptions;
+        return dTFDefaultOptions;
     }
 }
+
 
 if (typeof(exports) !== 'undefined') {
     exports.TextFormatter = TextFormatter;

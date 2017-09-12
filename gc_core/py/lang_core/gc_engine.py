@@ -28,12 +28,14 @@ name = "${name}"
 version = "${version}"
 author = "${author}"
 
-# grammar rules and dictionary
-_rules = None
-_dOptions = dict(gc_options.dOpt)       # duplication necessary, to be able to reset to default
+_rules = None                               # module gc_rules
+
+# data
+_sAppContext = ""                           # what software is running
+_dOptions = None
 _aIgnoredRules = set()
 _oDict = None
-_dAnalyses = {}                         # cache for data from dictionary
+_dAnalyses = {}                             # cache for data from dictionary
 
 
 
@@ -285,10 +287,14 @@ except ImportError:
     _createError = _createDictError
 
 
-def load ():
+def load (sContext="Python"):
     global _oDict
+    global _sAppContext
+    global _dOptions
     try:
-        _oDict = IBDAWG("${py_binary_dic}")
+        _oDict = IBDAWG("${dic_name}.bdic")
+        _sAppContext = sContext
+        _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
     except:
         traceback.print_exc()
 
@@ -309,7 +315,7 @@ def getOptions ():
 
 
 def getDefaultOptions ():
-    return dict(gc_options.dOpt)
+    return dict(gc_options.getOptions(_sAppContext))
 
 
 def getOptionsLabels (sLang):
@@ -324,7 +330,7 @@ def displayOptions (sLang):
 
 def resetOptions ():
     global _dOptions
-    _dOptions = dict(gc_options.dOpt)
+    _dOptions = dict(gc_options.getOptions(_sAppContext))
 
 
 def getDictionary ():
@@ -469,15 +475,15 @@ def stem (sWord):
 
 def nextword (s, iStart, n):
     "get the nth word of the input string or empty string"
-    m = re.match("( +[\\w%-]+){" + str(n-1) + "} +([\\w%-]+)", s[iStart:])
+    m = re.match("(?: +[\\w%-]+){" + str(n-1) + "} +([\\w%-]+)", s[iStart:])
     if not m:
         return None
-    return (iStart+m.start(2), m.group(2))
+    return (iStart+m.start(1), m.group(1))
 
 
 def prevword (s, iEnd, n):
     "get the (-)nth word of the input string or empty string"
-    m = re.search("([\\w%-]+) +([\\w%-]+ +){" + str(n-1) + "}$", s[:iEnd])
+    m = re.search("([\\w%-]+) +(?:[\\w%-]+ +){" + str(n-1) + "}$", s[:iEnd])
     if not m:
         return None
     return (m.start(1), m.group(1))

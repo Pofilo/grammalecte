@@ -54,80 +54,63 @@ let oTokenizer = null;
 let oDict = null;
 let oLxg = null;
 
-function loadGrammarChecker (sGCOptions="") {
+function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
     if (gce === null) {
-        gce = require("resource://grammalecte/fr/gc_engine.js");
-        helpers = require("resource://grammalecte/helpers.js");
-        text = require("resource://grammalecte/text.js");
-        tkz = require("resource://grammalecte/tokenizer.js");
-        lxg = require("resource://grammalecte/fr/lexicographe.js");
-        oTokenizer = new tkz.Tokenizer("fr");
-        helpers.setLogOutput(worker.log);
-        gce.load();
-        oDict = gce.getDictionary();
-        oLxg = new lxg.Lexicographe(oDict);
-        if (sGCOptions !== "") {
-            gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+        try {
+            gce = require("resource://grammalecte/fr/gc_engine.js");
+            helpers = require("resource://grammalecte/helpers.js");
+            text = require("resource://grammalecte/text.js");
+            tkz = require("resource://grammalecte/tokenizer.js");
+            lxg = require("resource://grammalecte/fr/lexicographe.js");
+            oTokenizer = new tkz.Tokenizer("fr");
+            helpers.setLogOutput(worker.log);
+            gce.load(sContext);
+            oDict = gce.getDictionary();
+            oLxg = new lxg.Lexicographe(oDict);
+            if (sGCOptions !== "") {
+                gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
+            }
+            // we always retrieve options from the gce, for setOptions filters obsolete options
+            return gce.getOptions().gl_toString();
         }
-        // we always retrieve options from the gce, for setOptions filters obsolete options
-        return gce.getOptions()._toString();
+        catch (e) {
+            worker.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+        }
     }
 }
 
-function parse (sText, sLang, bDebug, bContext) {
-    let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
+function parse (sText, sCountry, bDebug, bContext) {
+    let aGrammErr = gce.parse(sText, sCountry, bDebug, bContext);
     return JSON.stringify(aGrammErr);
 }
 
-function parseAndSpellcheck (sText, sLang, bDebug, bContext) {
-    let aGrammErr = gce.parse(sText, sLang, bDebug, bContext);
-    let aSpellErr = [];
-    for (let oToken of oTokenizer.genTokens(sText)) {
-        if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
-            aSpellErr.push(oToken);
-        }
-    }
+function parseAndSpellcheck (sText, sCountry, bDebug, bContext) {
+    let aGrammErr = gce.parse(sText, sCountry, bDebug, bContext);
+    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
 
-function parseAndTag (sText, iParagraph, sLang, bDebug) {
-    sText = text.addHtmlEntities(sText);
-    let aSpellErr = [];
-    for (let oToken of oTokenizer.genTokens(sText)) {
-        if (oToken.sType === 'WORD' && !oDict.isValidToken(oToken.sValue)) {
-            aSpellErr.push(oToken);
-        }
-    }
-    let aGrammErr = gce.parse(sText, sLang, bDebug);
-    let sHtml = text.tagParagraph(sText, iParagraph, aGrammErr, aSpellErr);
-    return sHtml;
-}
-
-function parseAndGenerateParagraph (sText, iParagraph, sLang, bDebug) {
-    return text.createHTMLBlock(parseAndTag(sText, iParagraph, sLang, bDebug), iParagraph);
-}
-
 function getOptions () {
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function getDefaultOptions () {
-    return gce.getDefaultOptions()._toString();
+    return gce.getDefaultOptions().gl_toString();
 }
 
 function setOptions (sGCOptions) {
     gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function setOption (sOptName, bValue) {
     gce.setOptions(new Map([ [sOptName, bValue] ]));
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function resetOptions () {
     gce.resetOptions();
-    return gce.getOptions()._toString();
+    return gce.getOptions().gl_toString();
 }
 
 function fullTests (sGCOptions="") {
@@ -143,7 +126,7 @@ function fullTests (sGCOptions="") {
     let sAllRes = "";
     for (let sRes of oTest.testParse()) {
         dump(sRes+"\n");
-        sAllRes += sRes+"<br/>";
+        sAllRes += sRes+"\n";
     }
     gce.setOptions(dMemoOptions);
     return sAllRes;
@@ -152,6 +135,19 @@ function fullTests (sGCOptions="") {
 
 // Lexicographer
 
-function analyzeWords (sText) {
-    return oLxg.analyzeText(sText);
+function getListOfElements (sText) {
+    try {
+        let aElem = [];
+        let aRes = null;
+        for (let oToken of oTokenizer.genTokens(sText)) {
+            aRes = oLxg.getInfoForToken(oToken);
+            if (aRes) {
+                aElem.push(aRes);
+            }
+        }
+        return JSON.stringify(aElem);
+    }
+    catch (e) {
+        helpers.logerror(e);
+    }
 }

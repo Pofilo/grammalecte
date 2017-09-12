@@ -55,13 +55,13 @@ def getVtyp (sVerb):
     return _lVtyp[_dVerb[sVerb][0]]
 
 
-def getSimil (sWord, sMorph):
+def getSimil (sWord, sMorph, sFilter=None):
     if ":V" not in sMorph:
         return set()
     sInfi = sMorph[1:sMorph.find(" ")]
     tTags = _getTags(sInfi)
     aSugg = set()
-    if ":Q" in sMorph:
+    if ":Q" in sMorph or ":Y" in sMorph:
         # we suggest conjugated forms
         if ":V1" in sMorph:
             aSugg.add(sInfi)
@@ -95,6 +95,23 @@ def getSimil (sWord, sMorph):
         # if there is only one past participle (epi inv), unreliable.
         if len(aSugg) == 1:
             aSugg.clear()
+        if ":V1" in sMorph:
+            aSugg.add(sInfi)
+    return aSugg
+
+
+def getConjSimilInfiV1 (sInfi):
+    if sInfi not in _dVerb:
+        return set()
+    tTags = _getTags(sInfi)
+    aSugg = set()
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2s"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3s"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":3p"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Is", ":1s"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Ip", ":2p"))
+    aSugg.add(_getConjWithTags(sInfi, tTags, ":Iq", ":2p"))
+    aSugg.discard("")
     return aSugg
 
 

@@ -71,7 +71,7 @@ function createVerbAndConjugate (sVerb) {
                 sVerb = sVerb.slice(0,-1).trim();
             }
 
-            if (!isVerb(sVerb)) {
+            if (!conj.isVerb(sVerb)) {
                 document.getElementById('verb').style = "color: #BB4411;";
             } else {
                 self.port.emit("show");

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="main.css"/>
+    <link rel="stylesheet" href="../3rd/font-awesome-4.7.0/css/font-awesome.min.css"/>
+  </head>
+
+  <body>
+    <div id="main">
+
+      <header id="menu">
+        <nav>
+          <header id="logo">
+            <img src="../img/logo-32.png">
+          </header>
+          <ul>
+            <li class="select" data-page="home_page"><i class="select fa fa-star icon" data-page="home_page"></i></li>
+            <li class="select" data-page="help_page"><i class="select fa fa-question-circle icon" data-page="help_page"></i></li>
+            <li class="select" data-page="gc_options_page"><i class="select fa fa-cogs icon" data-page="gc_options_page"></i></li>
+            <li class="select" data-page="sc_options_page"><i class="select fa fa-cube icon" data-page="sc_options_page"></i></li>
+            <li class="select" data-page="test_page"><i class="select fa fa-flask icon" data-page="test_page"></i></li>
+          </ul>
+        </nav>
+      </header> <!-- #menu -->
+
+      <div id="page">
+
+        <section id="home_page" class="page">
+
+          <div id="mainlogo">
+            <div class="center"><img src="../img/logo120_text.png" alt="Grammalecte"></div>
+            <p class="underline center">
+              Version ${version}
+            </p>
+            <p id="link_website" class="link center" data-url="http://grammalecte.net">Site web</p>
+            <p class="notice center">
+              Grammalecte est un correcteur grammatical open&nbsp;source sous <span id="link_gpl" class="link" data-url="https://www.gnu.org/licenses/gpl.html">licence GPL 3</span>
+            </p>
+          </div>
+          
+          <div id="thanks">
+            <p class="center" data-l10n-id="thanks1">Grammalecte remercie</p>
+            <p class="center"><img id="link_sponsor1" class="link border" src="../img/LaMouette.png" alt="La Mouette" data-url="http://www.lamouette.org/?from=grammalecte-fx" /></p>
+            <p class="center"><img id="link_sponsor2" class="link border" src="../img/Algoo_logo.png" alt="Algoo" data-url="https://www.algoo.fr/?from=grammalecte-fx" /></p>
+            <p id="link_othersponsors" class="link center" data-url="http://grammalecte.net/?thanks">
+              et tous ceux qui l’ont soutenu
+            </p>
+          </div>
+        </section> <!-- #home_page -->
+
+        <section id="help_page" class="page">
+          <h1>AIDE</h1>
+          <div id="help_section">
+            <p>Grammalecte affiche un bouton d’accès au menu en bas à gauche des zones de texte usuelles pour accéder aux fonctionnalités existantes.</p>
+            <p class="right"><img src="../img/menu_button1.png" title="bouton du menu" /></p>
+            <p class="right"><img src="../img/menu_button2.png" title="menu" /></p>
+            <p>Pour les autres zones de texte (HTML éditable), il faut sélectionner le texte et utiliser le menu contextuel.</p>
+            <p class="right"><img src="../img/contextmenu.png" title="menu contextuel sur sélection" /></p>
+            <h2>Raccourcis clavier</h2>
+            <p class="shortcut">CTRL+MAJ+F6</p>
+            <p class="shortcut_label">Conjugueur (dans un onglet)</p>
+            <p class="shortcut">CTRL+MAJ+F7</p>
+            <p class="shortcut_label">Conjugueur (dans une fenêtre)</p>
+          </div>
+        </section> <!-- #help_page -->
+
+        <section id="gc_options_page" class="page">
+          <h1>OPTIONS GRAMMATICALES</h1>
+          <div id="grammar_options">
+            ${webextOptionsHTML}
+          </div>
+          <div id="default_options_button" class="button blue center">Options par défaut</div>
+        </section> <!-- #gc_options_page -->
+
+        <section id="sc_options_page" class="page" style="opacity: .25">
+          <h1>OPTIONS ORTHOGRAPHIQUES</h1>
+          <div id="spelling_options">
+            <p id="dictionaries_info" data-l10n-id="dictionaries_info">Section inactive. Le nouveau système d’extension de Firefox (WebExtension) ne propose pas encore d’interface de programmation pour le correcteur orthographique.</p>
+            <div class="dict_section" id="fr-FR-modern_box">
+                <p><input type="checkbox" id="fr-FR-modern" /> <label for="fr-FR-modern">“Moderne”</label></p>
+                <p class="dict_description">Ce dictionnaire propose l’orthographe telle qu’elle est écrite aujourd’hui le plus couramment. C’est le dictionnaire recommandé si le français n’est pas votre langue maternelle ou si vous ne désirez qu’une seule graphie correcte par mot.</p>
+            </div>
+            <div class="dict_section" id="fr-FR-classic_box">
+                <p><input type="checkbox" id="fr-FR-classic" /> <label for="fr-FR-classic">“Classique” (recommandé)</label></p>
+                <p class="dict_description">Il s’agit du dictionnaire “Moderne”, avec des graphies classiques en sus, certaines encore communément utilisées, d’autres désuètes. C’est le dictionnaire recommandé si le français est votre langue maternelle.</p>
+            </div>
+            <div class="dict_section" id="fr-FR-reform_box">
+                <p><input type="checkbox" id="fr-FR-reform" /> <label for="fr-FR-reform">“Réforme 1990”</label></p>
+                <p class="dict_description">Avec ce dictionnaire, seule l’orthographe réformée est reconnue. Attendu que bon nombre de graphies réformées sont considérées comme erronées par beaucoup, ce dictionnaire est déconseillé. Les graphies passées dans l’usage sont déjà incluses dans le dictionnaire “Moderne”.</p>
+            </div>
+            <div class="dict_section" id="fr-FR-classic-reform_box">
+                <p><input type="checkbox" id="fr-FR-classic-reform" /> <label for="fr-FR-classic-reform">“Toutes variantes”</label></p>
+                <p class="dict_description">Ce dictionnaire contient les variantes graphiques, classiques, réformées, ainsi que d’autres plus rares encore. Ce dictionnaire est déconseillé à ceux qui ne connaissent pas très bien la langue française.</p>
+            </div>
+          </div>
+        </section> <!-- #sc_options_page -->
+
+        <section id="test_page" class="page">
+          <div id="test_cmd">
+            <h1>ZONE DE TEST</h1>
+            <p>Section de contrôle pour le développement du logiciel…</p>
+            <p id="link_testpage" class="link" data-url="https://www.dicollecte.org/test.html">Page de test</p>
+            <textarea id="text_to_test" rows="10"></textarea>
+            <div id="fulltests_button" class="button blue">Tests complets</div> <div id="text_to_test_button" class="button green fright">Analyser</div>
+          </div>
+          <pre id="tests_result"></pre>
+        </section> <!-- #test_page -->
+
+      </div> <!-- #page -->
+
+    </div> <!-- #main -->
+
+    <script src="main.js"></script>
+  </body>
+
+</html>
+   

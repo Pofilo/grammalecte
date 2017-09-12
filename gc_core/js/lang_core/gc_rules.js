@@ -1,13 +1,20 @@
 // Grammar checker rules
+/*jslint esversion: 6*/
+/*global exports*/
+
 "use strict";
 
 ${string}
 ${regex}
 
-const lParagraphRules = ${paragraph_rules_JS};
+var gc_rules = {
+    lParagraphRules: ${paragraph_rules_JS},
 
-const lSentenceRules = ${sentence_rules_JS};
+    lSentenceRules: ${sentence_rules_JS}
+}
 
 
-exports.lParagraphRules = lParagraphRules;
-exports.lSentenceRules = lSentenceRules;
+if (typeof(exports) !== 'undefined') {
+    exports.lParagraphRules = gc_rules.lParagraphRules;
+    exports.lSentenceRules = gc_rules.lSentenceRules;
+}

@@ -27,18 +27,15 @@ document.getElementById('conjugueur').addEventListener("click", function (event)
 */
 
 self.port.on("addSeparator", function (sText) {
-    if (document.getElementById("wordlist").innerHTML !== "") {
-        let xElem = document.createElement("p");
-        xElem.className = "separator";
-        xElem.innerHTML = sText;
-        document.getElementById("wordlist").appendChild(xElem);
-    }
+    addSeparator(sText);
 });
 
-self.port.on("addElem", function (sHtml) {
-    let xElem = document.createElement("div");
-    xElem.innerHTML = sHtml;
-    document.getElementById("wordlist").appendChild(xElem);
+self.port.on("addParagraphElems", function (sJSON) {
+    addParagraphElems(sJSON);
+});
+
+self.port.on("addMessage", function (sClass, sText) {
+    addMessage(sClass, sText);
 });
 
 self.port.on("clear", function (sHtml) {
@@ -66,6 +63,67 @@ window.addEventListener(
     },
     false
 );
+
+
+/*
+    Actions
+*/
+
+function addSeparator (sText) {
+    if (document.getElementById("wordlist").textContent !== "") {
+        let xElem = document.createElement("p");
+        xElem.className = "separator";
+        xElem.textContent = sText;
+        document.getElementById("wordlist").appendChild(xElem);
+    }
+}
+
+function addMessage (sClass, sText) {
+    let xNode = document.createElement("p");
+    xNode.className = sClass;
+    xNode.textContent = sText;
+    document.getElementById("wordlist").appendChild(xNode);
+}
+
+function addParagraphElems (sJSON) {
+    try {
+        let xNodeDiv = document.createElement("div");
+        xNodeDiv.className = "paragraph";
+        let lElem = JSON.parse(sJSON);
+        for (let oToken of lElem) {
+            xNodeDiv.appendChild(createTokenNode(oToken));
+        }
+        document.getElementById("wordlist").appendChild(xNodeDiv);
+    }
+    catch (e) {
+        console.error("\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+        console.error(sJSON);
+    }
+}
+
+function createTokenNode (oToken) {
+    let xTokenNode = document.createElement("div");
+    xTokenNode.className = "token " + oToken.sType;
+    let xTokenValue = document.createElement("b");
+    xTokenValue.className = oToken.sType;
+    xTokenValue.textContent = oToken.sValue;
+    xTokenNode.appendChild(xTokenValue);
+    let xSep = document.createElement("s");
+    xSep.textContent = " : ";
+    xTokenNode.appendChild(xSep);
+    if (oToken.aLabel.length === 1) {
+        xTokenNode.appendChild(document.createTextNode(oToken.aLabel[0]));
+    } else {
+        let xTokenList = document.createElement("ul");
+        for (let sLabel of oToken.aLabel) {
+            let xTokenLine = document.createElement("li");
+            xTokenLine.textContent = sLabel;
+            xTokenList.appendChild(xTokenLine);
+        }
+        xTokenNode.appendChild(xTokenList);
+    }
+    return xTokenNode;
+}
 
 
 // display selection

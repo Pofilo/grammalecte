@@ -1,13 +1,17 @@
 // Grammalecte - Lexicographe
 // License: MPL 2
+/*jslint esversion: 6*/
+/*global require,exports*/
 
 "use strict";
 
 ${string}
+${map}
 
 
-const helpers = require("resource://grammalecte/helpers.js");
-
+if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/helpers.js");
+}
 
 const _dTAGS = new Map ([
     [':G', "[mot grammatical]"],
@@ -157,6 +161,38 @@ const _dAD = new Map ([
     ["s'en", " (se) pronom personnel objet + (en) pronom adverbial"]
 ]);
 
+const _dSeparator = new Map ([
+    ['.', "point"],
+    ['·', "point médian"],
+    ['…', "points de suspension"],
+    [':', "deux-points"],
+    [';', "point-virgule"],
+    [',', "virgule"],
+    ['?', "point d’interrogation"],
+    ['!', "point d’exclamation"],
+    ['(', "parenthèse ouvrante"],
+    [')', "parenthèse fermante"],
+    ['[', "crochet ouvrante"],
+    [']', "crochet fermante"],
+    ['{', "accolade ouvrante"],
+    ['}', "accolade fermante"],
+    ['-', "tiret"],
+    ['—', "tiret cadratin"],
+    ['–', "tiret demi-cadratin"],
+    ['«', "guillemet ouvrant (chevrons)"],
+    ['»', "guillemet fermant (chevrons)"],
+    ['“', "guillemet ouvrant double"],
+    ['”', "guillemet fermant double"],
+    ['‘', "guillemet ouvrant"],
+    ['’', "guillemet fermant"],
+    ['/', "signe de la division"],
+    ['+', "signe de l’addition"],
+    ['*', "signe de la multiplication"],
+    ['=', "signe de l’égalité"],
+    ['<', "inférieur à"],
+    ['>', "supérieur à"],
+]);
+
 
 class Lexicographe {
 
@@ -165,69 +201,62 @@ class Lexicographe {
         this._zElidedPrefix = new RegExp ("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp ("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
         this._zTag = new RegExp ("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*][^:;/]*", "g");
-    };
-
-    analyzeText (sText) {
-        sText = sText.replace(/[.,.?!:;…\/()\[\]“”«»"„{}–—#+*<>%=\n]/g, " ").replace(/\s+/g, " ");
-        let iStart = 0;
-        let iEnd = 0;
-        let sHtml = '<div class="paragraph">\n';
-        while ((iEnd = sText.indexOf(" ", iStart)) !== -1) {
-            sHtml += this.analyzeWord(sText.slice(iStart, iEnd));
-            iStart = iEnd + 1;
-        }
-        sHtml += this.analyzeWord(sText.slice(iStart));
-        return sHtml + '</div>\n';
     }
 
-    analyzeWord (sWord) {
+    getInfoForToken (oToken) {
+        // Token: .sType, .sValue, .nStart, .nEnd
+        // return a list [type, token_string, values]
+        let m = null;
         try {
-            if (!sWord) {
-                return "";
+            switch (oToken.sType) {
+                case 'SEPARATOR':
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dSeparator.gl_get(oToken.sValue, "caractère indéterminé")] };
+                    break;
+                case 'NUM':
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: ["nombre"] };
+                    break;
+                case 'LINK':
+                    return { sType: oToken.sType, sValue: oToken.sValue.slice(0,40)+"…", aLabel: ["hyperlien"] };
+                    break;
+                case 'ELPFX':
+                    let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
+                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dPFX.gl_get(sTemp, "préfixe élidé inconnu")] };
+                    break;
+                case 'WORD': 
+                    if (oToken.sValue.gl_count("-") > 4) {
+                        return { sType: "COMPLEX", sValue: oToken.sValue, aLabel: ["élément complexe indéterminé"] };
+                    }
+                    else if (this.oDict.isValidToken(oToken.sValue)) {
+                        let lMorph = this.oDict.getMorph(oToken.sValue);
+                        let aElem = [];
+                        for (let s of lMorph){
+                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        }
+                        return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem};
+                    }
+                    else if (m = this._zCompoundWord.exec(oToken.sValue)) {
+                        // mots composés
+                        let lMorph = this.oDict.getMorph(m[1]);
+                        let aElem = [];
+                        for (let s of lMorph){
+                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        }
+                        aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
+                        return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem };
+                    }
+                    else {
+                        return { sType: "UNKNOWN", sValue: oToken.sValue, aLabel: ["inconnu du dictionnaire"] };
+                    }
+                    break;
             }
-            if (sWord._count("-") > 4) {
-                return '<p><b class="mbok">' + sWord + "</b> <s>:</s> élément complexe indéterminé</p>\n";
-            }
-            if (sWord._isDigit()) {
-                return '<p><b class="nb">' + sWord + "</b> <s>:</s> nombre</p>\n";
-            }
-
-            let sHtml = "";
-            // préfixes élidés
-            let m = this._zElidedPrefix.exec(sWord);
-            if (m !== null) {
-                sWord = m[2];
-                sHtml += "<p><b>" + m[1] + "’</b> <s>:</s> " + _dPFX.get(m[1].toLowerCase()) + " </p>\n";
-            }
-            // mots composés
-            let m2 = this._zCompoundWord.exec(sWord);
-            if (m2 !== null) {
-                sWord = m2[1];
-            }
-            // Morphologies
-            let lMorph = this.oDict.getMorph(sWord);
-            if (lMorph.length === 1) {
-                sHtml += "<p><b>" + sWord + "</b> <s>:</s> " + this.formatTags(lMorph[0]) + "</p>\n";
-            } else if (lMorph.length > 1) {
-                sHtml += "<p><b>" + sWord + "</b><ul><li>" + [for (s of lMorph) if (s.includes(":")) this.formatTags(s)].join(" </li><li> ") + "</li></ul></p>\n";
-            } else {
-                sHtml += '<p><b class="unknown">' + sWord + "</b> <s>:</s>  absent du dictionnaire<p>\n";
-            }
-            // suffixe d’un mot composé
-            if (m2) {
-                sHtml += "<p>-<b>" + m2[2] + "</b> <s>:</s> " + this._formatSuffix(m2[2].toLowerCase()) + "</p>\n";
-            }
-            // Verbes
-            //let aVerb = new Set([ for (s of lMorph) if (s.includes(":V")) s.slice(1, s.indexOf(" ")) ]);
-            return sHtml;
         }
         catch (e) {
             helpers.logerror(e);
-            return "#erreur";
         }
-    };
+        return null;
+    }
 
-    formatTags (sTags) {
+    _formatTags (sTags) {
         let sRes = "";
         sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
         let m;
@@ -245,8 +274,8 @@ class Lexicographe {
             helpers.echo(sRes);
             return sRes;
         }
-        return sRes._trimRight(",");
-    };
+        return sRes.gl_trimRight(",");
+    }
 
     _formatSuffix (s) {
         if (s.startsWith("t-")) {
@@ -260,8 +289,10 @@ class Lexicographe {
         }
         let nPos = s.indexOf("-");
         return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos+1));
-    };
+    }
 }
 
 
-exports.Lexicographe = Lexicographe;
+if (typeof(exports) !== 'undefined') {
+    exports.Lexicographe = Lexicographe;
+}
