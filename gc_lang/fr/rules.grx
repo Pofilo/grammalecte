@@ -6504,17 +6504,18 @@ TEST: {{de telles sorte}}
 # attendu, compris, non-compris, y compris, entendu, excepté, ôté, ouï, passé, supposé, vu
 # ! problème avec l’ouïe, ouï retiré de la liste
 __<i]/sgpl(sgpl_prep_compris_det)__
-    ^ *((Compris|Non[- ]compris)es?) +(?:l(?:es?|a)|ce(?:te|t|s|)|leurs?|[mts](?:on|a|es)|[nv]os)  @@*,*
+    ^ *((Compris|Non[- ]compris)es?) +(?:l(?:e(?:ur|)s?|a)|ce(?:t(?:te|)|s|)|[mts](?:on|a|es)|[nv]o(?:tre|s))  @@*,*
     <<- -1>> \2                                                                                     # Considéré comme préposition, invariable.
 __<i]/sgpl(sgpl_prep_entendu_det)__
-    ^ *((Entendu|Excepté|Ôté|Supposé|Passé)(?:es?|s)) +(?:l(?:es?|a)|ce(?:te|t|s|)|leurs?|[mts](?:on|a|es)|[nv]os)  @@*,*
+    ^ *((Entendu|Excepté|Ôté|Supposé|Passé)(?:es?|s)) +(?:l(?:e(?:ur|)s?|a)|ce(?:t(?:te|)|s|)|[mts](?:on|a|es)|[nv]o(?:tre|s))  @@*,*
     <<- -1>> \2                                                                                     # Considéré comme préposition, invariable.
 __[i]/sgpl(sgpl_prep_attendu_que)__
     (attendu(?:es?|s)) que? @@0                         <<- isStart() -1>> attendu                  # Considéré comme préposition, invariable.
 __[i]/sgpl(sgpl_prep_étant_donné)__
     étant donné(?:es?|s)                                <<- isStart() ->> étant donné               # Considéré comme préposition, invariable.
 __[i]/sgpl(sgpl_prep_vu_det)__
-    (vu(?:es?|s)) (?:[lc]es?|la|cette|leurs?|que?) @@0  <<- isStart() -1>> vu                       # Considéré comme préposition, invariable.
+    (vu(?:es?|s)) (?:l(?:e(?:ur|)s?|a)|ce(?:t(?:te|)|s|)|[mts](?:on|a|es)|[nv]o(?:tre|s)|que?) @@0
+    <<- isStart() -1>> vu                                                                           # Considéré comme préposition, invariable.
 
 TEST: {{comprises}} mes prestations sur place
 TEST: {{Exceptés}} les petits, tous sont tombes malades.
