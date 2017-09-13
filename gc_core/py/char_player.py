@@ -2,7 +2,7 @@
 # useful for suggestion mechanism
 
 
-def distanceBetweenWords (s1, s2):
+def distanceDamerauLevenshtein (s1, s2):
     "distance of Damerau-Levenshtein between <s1> and <s2>"
     # https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
     d = {}
