@@ -190,8 +190,10 @@ class IBDAWG:
         #return self._suggestWithCrushedUselessChars(cp.clearWord(sWord))
         aSugg = self._suggest(sWord)
         if not aSugg:
+            print("try without first char")
             aSugg.update(self._suggest(sWord[1:]))
             if not aSugg:
+                print("crush useless chars")
                 aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
         return sorted(aSugg, key=lambda sSugg: cp.distanceBetweenWords(sWord, sSugg))
 
@@ -278,6 +280,7 @@ class IBDAWG:
         yield from self._getSimilarArcs(cChar, iAddr)
 
     def drawPath (self, sWord, iAddr=0):
+        "show the path taken by <sWord> in the graph"
         cChar = sWord[0:1]  if sWord  else " "
         iPos = -1
         n = 0
