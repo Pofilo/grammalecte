@@ -187,16 +187,26 @@ class IBDAWG:
     def suggest (self, sWord, nMaxSugg=10):
         "returns a set of suggestions for <sWord>"
         #return self._suggestWithCrushedUselessChars(cp.clearWord(sWord))
-        aSugg = self._suggest(sWord, nMaxDel=len(sWord) // 5)
+        aSugg = set()
+        if sWord.istitle():
+            aSugg.update(self._suggest(sWord, nMaxDel=len(sWord) // 5))
+            aSugg.update(self._suggest(sWord.lower(), nMaxDel=len(sWord) // 5))
+            aSugg = set(map(lambda sSugg: sSugg.title(), aSugg))
+        elif sWord.islower():
+            aSugg.update(self._suggest(sWord, nMaxDel=len(sWord) // 5))
+            aSugg.update(self._suggest(sWord.title(), nMaxDel=len(sWord) // 5))
+        else:
+            aSugg.update(self._suggest(sWord, nMaxDel=len(sWord) // 5))
         if not aSugg:
             print("crush useless chars")
             aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
-        aSugg = filter(lambda x: not x.endswith("è"), aSugg) # fr language
-        return sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sWord, sSugg))
+        aSugg = filter(lambda sSugg: not sSugg.endswith("è") and not sSugg.endswith("È"), aSugg) # fr language 
+        return sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sWord, sSugg))[:nMaxSugg]
 
     def _suggest (self, sRemain, nMaxDel=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         "returns a set of suggestions"
         # recursive function
+        #show(nDeep, sNewWord + ":" + sRemain)
         aSugg = set()
         if not sRemain:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
@@ -205,41 +215,31 @@ class IBDAWG:
             for sTail in self._getTails(iAddr):
                 aSugg.add(sNewWord+sTail)
             return aSugg
-        #show(nDeep, ":" + sRemain + ":  ===>  " + sNewWord)
         cCurrent = sRemain[0:1]
         for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
-            #show(nDeep, "<"+cChar+">")
             aSugg.update(self._suggest(sRemain[1:], nMaxDel, nDeep+1, jAddr, sNewWord+cChar))
         if not bAvoidLoop: # avoid infinite loop
-            #show(nDeep, ":no loop:")
             if cCurrent == sRemain[1:2]:
                 # same char, we remove 1 char without adding 1 to <sNewWord>
-                #show(nDeep, cCurrent*2 + " /2")
                 aSugg.update(self._suggest(sRemain[1:], nMaxDel, nDeep+1, iAddr, sNewWord))
             else:
                 # switching chars
-                #show(nDeep, "switch: "+sRemain[0:2])
                 aSugg.update(self._suggest(sRemain[1:2]+sRemain[0:1]+sRemain[2:], nMaxDel, nDeep+1, iAddr, sNewWord, True))
                 # delete char
                 if nMaxDel > 0:
-                    #show(nDeep, "delete: "+sRemain[0:1])
                     aSugg.update(self._suggest(sRemain[1:], nMaxDel-1, nDeep+1, iAddr, sNewWord, True))
             # Replacements
             for sRepl in cp.d1toX.get(cCurrent, ()):
-                #show(nDeep, cCurrent + " >> " + sRepl)
                 aSugg.update(self._suggest(sRepl + sRemain[1:], nMaxDel, nDeep+1, iAddr, sNewWord, True))
             for sRepl in cp.d2toX.get(sRemain[0:2], ()):
-                #show(nDeep, sRemain[0:2] + " >> " + sRepl)
                 aSugg.update(self._suggest(sRepl + sRemain[2:], nMaxDel, nDeep+1, iAddr, sNewWord, True))
             # end of word
             if len(sRemain) == 2:
                 for sRepl in cp.dFinal2.get(sRemain, ()):
-                    #show(nDeep, "$ " + sRemain + " >> " + sRepl)
                     aSugg.update(self._suggest(sRepl, nMaxDel, nDeep+1, iAddr, sNewWord, True))
             elif len(sRemain) == 1:
                 aSugg.update(self._suggest("", nMaxDel, nDeep+1, iAddr, sNewWord, True)) # remove last char and go on
                 for sRepl in cp.dFinal1.get(sRemain, ()):
-                    #show(nDeep, "$ " + sRemain + " >> " + sRepl)
                     aSugg.update(self._suggest(sRepl, nMaxDel, nDeep+1, iAddr, sNewWord, True))
         return aSugg
 
