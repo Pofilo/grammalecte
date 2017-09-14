@@ -85,8 +85,8 @@ class IBDAWG:
         elif self.nVersion == 3:
             self.morph = self._morph3
             self.stem = self._stem3
-            self._getArcs = self._getArcs3
             self._lookupArcNode = self._lookupArcNode3
+            self._getArcs = self._getArcs3
             self._writeNodes = self._writeNodes3
         else:
             raise ValueError("  # Error: unknown code: {}".format(self.nVersion))
@@ -186,7 +186,6 @@ class IBDAWG:
 
     def suggest (self, sWord, nMaxSugg=10):
         "returns a set of suggestions for <sWord>"
-        #return self._suggestWithCrushedUselessChars(cp.clearWord(sWord))
         aSugg = set()
         if sWord.istitle():
             aSugg.update(self._suggest(sWord, nMaxDel=len(sWord) // 5))

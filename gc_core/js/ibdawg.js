@@ -11,10 +11,10 @@ if (typeof(require) !== 'undefined') {
 }
 
 
-// String
-// Don’t remove. Necessary in TB.
+// Don’t remove <string>. Necessary in TB.
 ${string}
-
+${map}
+${set}
 
 
 class IBDAWG {
@@ -58,18 +58,21 @@ class IBDAWG {
                 this.morph = this._morph1;
                 this.stem = this._stem1;
                 this._lookupArcNode = this._lookupArcNode1;
+                this._getArcs = this._getArcs1;
                 this._writeNodes = this._writeNodes1;
                 break;
             case 2:
                 this.morph = this._morph2;
                 this.stem = this._stem2;
                 this._lookupArcNode = this._lookupArcNode2;
+                this._getArcs = this._getArcs2;
                 this._writeNodes = this._writeNodes2;
                 break;
             case 3:
                 this.morph = this._morph3;
                 this.stem = this._stem3;
                 this._lookupArcNode = this._lookupArcNode3;
+                this._getArcs = this._getArcs3;
                 this._writeNodes = this._writeNodes3;
                 break;
             default:
@@ -169,6 +172,133 @@ class IBDAWG {
         return l;
     }
 
+    suggest (sWord, nMaxSugg=10) {
+        // returns a set of suggestions for <sWord>
+        let aSugg = this._suggest(sWord, nMaxDel=Math.floor(sWord.length / 5));
+        if (sWord.gl_isTitle()) {
+            aSugg.gl_update(this._suggest(sWord.lower(), nMaxDel=Math.floor(sWord.length / 5)));
+            aSugg = new Set(aSugg.map((sSugg) => { return sSugg.title(); }));
+        }
+        else if (sWord.gl_isLowerCase()) {
+            aSugg.gl_update(this._suggest(sWord.title(), nMaxDel=Math.floor(sWord.length / 5)));
+        }
+        if (aSugg.size == 0) {
+            aSugg.gl_update(this._suggestWithCrushedUselessChars(cp.clearWord(sWord)));
+        }
+        aSugg = aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); }); // fr language 
+        return aSugg.sort((sSugg) => { return cp.distanceDamerauLevenshtein(sWord, sSugg); }).slice(0, nMaxSugg);
+    }
+
+    _suggest (sRemain, nMaxDel=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False) {
+        // returns a set of suggestions
+        // recursive function
+        //show(nDeep, sNewWord + ":" + sRemain)
+        let aSugg = new Set();
+        if (sRemain == "") {
+            if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
+                //show(nDeep, "___" + sNewWord + "___");
+                aSugg.add(sNewWord);
+            }
+            for (let sTail of this._getTails(iAddr)) {
+                aSugg.add(sNewWord+sTail);
+            }
+            return aSugg;
+        }
+        let cCurrent = sRemain.slice(0, 1);
+        for (let [cChar, jAddr] of this._getSimilarArcs(cCurrent, iAddr)) {
+            aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxDel, nDeep+1, jAddr, sNewWord+cChar));
+        }
+        if (!bAvoidLoop) { // avoid infinite loop
+            if (cCurrent == sRemain.slice(1, 2)) {
+                // same char, we remove 1 char without adding 1 to <sNewWord>
+                aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxDel, nDeep+1, iAddr, sNewWord));
+            }
+            else {
+                // switching chars
+                aSugg.gl_update(this._suggest(sRemain.slice(1, 2)+sRemain.slice(0, 1)+sRemain.slice(2), nMaxDel, nDeep+1, iAddr, sNewWord, true));
+                // delete char
+                if (nMaxDel > 0) {
+                    aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxDel-1, nDeep+1, iAddr, sNewWord, true));
+                }
+            }
+            // Replacements
+            for (let sRepl of cp.d1toX.gl_get(cCurrent, [])) {
+                aSugg.gl_update(this._suggest(sRepl + sRemain.slice(1), nMaxDel, nDeep+1, iAddr, sNewWord, true));
+            }
+            for (let sRepl of cp.d2toX.gl_get(sRemain[0:2], [])) {
+                aSugg.gl_update(this._suggest(sRepl + sRemain.slice(2), nMaxDel, nDeep+1, iAddr, sNewWord, true));
+            }
+            // end of word
+            if (sRemain.length == 2) {
+                for (let sRepl of cp.dFinal2.gl_get(sRemain, [])) {
+                    aSugg.gl_update(this._suggest(sRepl, nMaxDel, nDeep+1, iAddr, sNewWord, true));
+                }
+            }
+            else if (sRemain.length == 1) {
+                aSugg.gl_update(this._suggest("", nMaxDel, nDeep+1, iAddr, sNewWord, true)); // remove last char and go on
+                for (let sRepl of cp.dFinal1.gl_get(sRemain, [])) {
+                    aSugg.gl_update(this._suggest(sRepl, nMaxDel, nDeep+1, iAddr, sNewWord, true));
+                }
+            }
+        }
+        return aSugg;
+    }
+
+    * _getSimilarArcs (cChar, iAddr) {
+        // generator: yield similar char of <cChar> and address of the following node
+        for (let c of cp.d1to1.gl_get(cChar, [cChar])) {
+            if (this.dChar.has(c)) {
+                let jAddr = this._lookupArcNode(this.dChar.get(c), iAddr);
+                if (jAddr) {
+                    yield [c, jAddr];
+                }
+            }
+        }
+    }
+
+    _getTails (iAddr, sTail="", n=2) {
+        // return a list of suffixes ending at a distance of <n> from <iAddr>
+        let aTails = new Set();
+        for (let [nVal, jAddr] of this._getArcs(iAddr)) {
+            if (nVal < this.nChar) {
+                if (this._convBytesToInteger(this.byDic.slice(jAddr, jAddr+this.nBytesArc)) & this._finalNodeMask) {
+                    aTails.add(sTail + this.dCharVal.get(nVal));
+                }
+                if (n && aTails.size == 0) {
+                    aTails.update(this._getTails(jAddr, sTail+this.dCharVal.get(nVal), n-1));
+                }
+            }
+        }
+        return aTails;
+    }
+
+    _suggestWithCrushedUselessChars (sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False) {
+        let aSugg = new Set();
+        if (sWord.length == 0) {
+            if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
+                show(nDeep, "!!! " + sNewWord + " !!!");
+                aSugg.add(sNewWord);
+            }
+            return aSugg;
+        }
+        let cCurrent = sWord.slice(0, 1);
+        for (let [cChar, jAddr] of this._getSimilarArcsAndCrushedChars(cCurrent, iAddr)) {
+            show(nDeep, cChar);
+            aSugg.gl_update(this._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar));
+        }
+        return aSugg;
+    }
+
+    * _getSimilarArcsAndCrushedChars (cChar, iAddr) {
+        // generator: yield similar char of <cChar> and address of the following node
+        for (let [nVal, jAddr] of this._getArcs(iAddr)) {
+            if (this.dCharVal.get(nVal, null) in cp.aVovels) {
+                yield [this.dCharVal[nVal], jAddr];
+            }
+        }
+        yield* this._getSimilarArcs(cChar, iAddr);
+    }
+
     // morph (sWord) {
     //     is defined in constructor
     // }
@@ -190,17 +320,17 @@ class IBDAWG {
             let l = [];
             let nRawArc = 0;
             while (!(nRawArc & this._lastArcMask)) {
-                var iEndArcAddr = iAddr + this.nBytesArc;
+                let iEndArcAddr = iAddr + this.nBytesArc;
                 nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
-                var nArc = nRawArc & this._arcMask;
+                let nArc = nRawArc & this._arcMask;
                 if (nArc >= this.nChar) {
                     // This value is not a char, this is a stemming code 
-                    var sStem = ">" + this.funcStemming(sWord, this.lArcVal[nArc]);
+                    let sStem = ">" + this.funcStemming(sWord, this.lArcVal[nArc]);
                     // Now , we go to the next node and retrieve all following arcs values, all of them are tags
-                    var iAddr2 = this._convBytesToInteger(this.byDic.slice(iEndArcAddr, iEndArcAddr+this.nBytesNodeAddress));
-                    var nRawArc2 = 0;
+                    let iAddr2 = this._convBytesToInteger(this.byDic.slice(iEndArcAddr, iEndArcAddr+this.nBytesNodeAddress));
+                    let nRawArc2 = 0;
                     while (!(nRawArc2 & this._lastArcMask)) {
-                        var iEndArcAddr2 = iAddr2 + this.nBytesArc;
+                        let iEndArcAddr2 = iAddr2 + this.nBytesArc;
                         nRawArc2 = this._convBytesToInteger(this.byDic.slice(iAddr2, iEndArcAddr2));
                         l.push(sStem + " " + this.lArcVal[nRawArc2 & this._arcMask]);
                         iAddr2 = iEndArcAddr2+this.nBytesNodeAddress;
@@ -229,9 +359,9 @@ class IBDAWG {
             let l = [];
             let nRawArc = 0;
             while (!(nRawArc & this._lastArcMask)) {
-                var iEndArcAddr = iAddr + this.nBytesArc;
+                let iEndArcAddr = iAddr + this.nBytesArc;
                 nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
-                var nArc = nRawArc & this._arcMask;
+                let nArc = nRawArc & this._arcMask;
                 if (nArc >= this.nChar) {
                     // This value is not a char, this is a stemming code 
                     l.push(this.funcStemming(sWord, this.lArcVal[nArc]));
@@ -260,6 +390,19 @@ class IBDAWG {
                 }
                 iAddr = iEndArcAddr + this.nBytesNodeAddress;
             }
+        }
+    }
+
+    _getArcs1 (iAddr) {
+        "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
+        while (true) {
+            let iEndArcAddr = iAddr+this.nBytesArc;
+            let nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
+            yield [nRawArc & this._arcMask, this._convBytesToInteger(this.byDic.slice(iEndArcAddr, iEndArcAddr+this.nBytesNodeAddress))];
+            if (nRawArc & this._lastArcMask) {
+                break;
+            }
+            iAddr = iEndArcAddr+this.nBytesNodeAddress;
         }
     }
 
