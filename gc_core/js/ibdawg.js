@@ -192,9 +192,11 @@ class IBDAWG {
         if (sWord.gl_isTitle()) {
             aSugg = aSugg.map((sSugg) => { return sSugg.gl_toCapitalize(); });
         }
-        return aSugg.sort((sA, sB) => {
-            return char_player.distanceDamerauLevenshtein(sWord, sA) - char_player.distanceDamerauLevenshtein(sWord, sB);
-        }).slice(0, nMaxSugg);
+        let dDistTemp = new Map();
+        aSugg.forEach((sSugg) => { dDistTemp.set(sSugg, char_player.distanceDamerauLevenshtein(sWord, sSugg)); });
+        aSugg = aSugg.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); }).slice(0, nMaxSugg);
+        dDistTemp.clear();
+        return aSugg;
     }
 
     _suggest (sRemain, nMaxDel=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {

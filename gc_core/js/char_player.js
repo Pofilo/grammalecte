@@ -35,7 +35,7 @@ var char_player = {
                     }
                 }
             }
-            console.log(s2 + ": " + matrix[nLen1][nLen2]);
+            //console.log(s2 + ": " + matrix[nLen1][nLen2]);
             return matrix[nLen1][nLen2];
         }
         catch (e) {
