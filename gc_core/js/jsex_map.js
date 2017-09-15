@@ -44,5 +44,13 @@ if (Map.prototype.grammalecte === undefined) {
         }
     };
 
+    Map.prototype.gl_reverse = function () {
+        let dNewMap = new Map();
+        this.forEach((val, key) => {
+            dNewMap.set(val, key);
+        });
+        return dNewMap;
+    };
+
     Map.prototype.grammalecte = true;
 }

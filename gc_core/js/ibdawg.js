@@ -41,8 +41,9 @@ class IBDAWG {
         if (!(this.nVersion == "1" || this.nVersion == "2" || this.nVersion == "3")) {
             throw RangeError("# Error. Unknown dictionary version: " + this.nVersion);
         }
-
+        // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         this.dChar = helpers.objectToMap(this.dChar);
+        this.dCharVal = this.dChar.gl_reverse();
         //this.byDic = new Uint8Array(this.byDic);  // not quicker, even slower
 
         if (this.cStemming == "S") {
@@ -267,10 +268,10 @@ class IBDAWG {
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
             if (nVal < this.nChar) {
                 if (this._convBytesToInteger(this.byDic.slice(jAddr, jAddr+this.nBytesArc)) & this._finalNodeMask) {
-                    aTails.add(sTail + this.dChar.get(nVal));
+                    aTails.add(sTail + this.dCharVal.get(nVal));
                 }
                 if (n && aTails.size == 0) {
-                    aTails.gl_update(this._getTails(jAddr, sTail+this.dChar.get(nVal), n-1));
+                    aTails.gl_update(this._getTails(jAddr, sTail+this.dCharVal.get(nVal), n-1));
                 }
             }
         }
@@ -297,8 +298,8 @@ class IBDAWG {
     * _getSimilarArcsAndCrushedChars (cChar, iAddr) {
         // generator: yield similar char of <cChar> and address of the following node
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
-            if (this.dChar.get(nVal, null) in char_player.aVovels) {
-                yield [this.dChar[nVal], jAddr];
+            if (this.dCharVal.get(nVal, null) in char_player.aVovels) {
+                yield [this.dCharVal[nVal], jAddr];
             }
         }
         yield* this._getSimilarArcs(cChar, iAddr);

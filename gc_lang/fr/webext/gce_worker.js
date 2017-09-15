@@ -288,7 +288,6 @@ function getSpellSuggestions (sWord, dInfo) {
         return;
     }
     let aSugg = oDict.suggest(sWord);
-    console.log(aSugg);
     postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg}, dInfo, true));
 }
 
