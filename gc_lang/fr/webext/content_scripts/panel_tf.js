@@ -48,7 +48,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xTypo.appendChild(this._createRadioBoxHyphens("o_ts_m_dash_start", "o_ts_n_dash_start", true));
             xTypo.appendChild(this._createBlockOption("o_ts_quotation_marks", true, "Modifier les guillemets droits (\" et ')"));
             xTypo.appendChild(this._createBlockOption("o_ts_units", true, "Points médians des unités (N·m, Ω·m…)"));
-            xTypo.appendChild(this._createBlockOption("o_ts_spell", true, "Ligatures (cœur…) et diacritiques (ça, État…)"));
+            xTypo.appendChild(this._createBlockOption("o_ts_spell", true, "Ligatures et diacritiques (cœur, ça,État…)"));
             xTypo.appendChild(this._createRadioBoxLigatures());
             xTypo.appendChild(this._createLigaturesSelection());
             let xMisc = this._createFieldset("group_misc", true, "Divers");
