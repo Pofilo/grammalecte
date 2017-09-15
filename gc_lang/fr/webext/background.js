@@ -25,6 +25,7 @@ xGCEWorker.onmessage = function (e) {
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
             case "getListOfTokens":
+            case "getSpellSuggestions":
                 // send result to content script
                 if (typeof(dInfo.iReturnPort) === "number") {
                     let xPort = dConnx.get(dInfo.iReturnPort);
@@ -132,6 +133,7 @@ function handleConnexion (xPort) {
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
             case "getListOfTokens":
+            case "getSpellSuggestions":
                 oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
                 xGCEWorker.postMessage(oRequest);
                 break;

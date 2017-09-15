@@ -34,6 +34,7 @@
 
 importScripts("grammalecte/helpers.js");
 importScripts("grammalecte/str_transform.js");
+importScripts("grammalecte/char_player.js");
 importScripts("grammalecte/ibdawg.js");
 importScripts("grammalecte/text.js");
 importScripts("grammalecte/tokenizer.js");
@@ -118,6 +119,9 @@ onmessage = function (e) {
             break;
         case "fullTests":
             fullTests(dInfo);
+            break;
+        case "getSpellSuggestions":
+            getSpellSuggestions(dParam.sWord, dInfo);
             break;
         case "getListOfTokens":
             getListOfTokens(dParam.sText, dInfo);
@@ -239,8 +243,8 @@ function tests () {
 }
 
 function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
-    if (!gc_engine || !oDict) {
-        postMessage(createResponse("textToTest", "# Grammar checker or dictionary not loaded.", dInfo, true));
+    if (!gc_engine) {
+        postMessage(createResponse("textToTest", "# Grammar checker not loaded.", dInfo, true));
         return;
     }
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
@@ -255,8 +259,8 @@ function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
 }
 
 function fullTests (dInfo={}) {
-    if (!gc_engine || !oDict) {
-        postMessage(createResponse("fullTests", "# Grammar checker or dictionary not loaded.", dInfo, true));
+    if (!gc_engine) {
+        postMessage(createResponse("fullTests", "# Grammar checker not loaded.", dInfo, true));
         return;
     }
     let dMemoOptions = gc_engine.getOptions();
@@ -275,6 +279,18 @@ function fullTests (dInfo={}) {
     postMessage(createResponse("fullTests", sMsg, dInfo, true));
 }
 
+
+// Spellchecker
+
+function getSpellSuggestions (sWord, dInfo) {
+    if (!oDict) {
+        postMessage(createResponse("getSpellSuggestions", "# Error. Dictionary not loaded.", dInfo, true));
+        return;
+    }
+    let aSugg = oDict.suggest(sWord);
+    console.log(aSugg);
+    postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg}, dInfo, true));
+}
 
 
 // Lexicographer

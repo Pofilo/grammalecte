@@ -110,6 +110,9 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 oGrammalecte.oLxgPanel.stopWaitIcon();
             }
             break;
+        case "getSpellSuggestions":
+            oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, dInfo.sErrorId);
+            break;
         // Design WTF: context menus are made in background, not in content-script.
         // Commands from context menu received here to initialize panels
         case "openGCPanel":

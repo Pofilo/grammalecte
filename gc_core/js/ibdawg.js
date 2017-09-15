@@ -8,6 +8,7 @@
 if (typeof(require) !== 'undefined') {
     var str_transform = require("resource://grammalecte/str_transform.js");
     var helpers = require("resource://grammalecte/helpers.js");
+    var char_player = require("resource://grammalecte/char_player.js");
 }
 
 
@@ -173,23 +174,27 @@ class IBDAWG {
     }
 
     suggest (sWord, nMaxSugg=10) {
-        // returns a set of suggestions for <sWord>
-        let aSugg = this._suggest(sWord, nMaxDel=Math.floor(sWord.length / 5));
+        // returns a array of suggestions for <sWord>
+        let aSugg = this._suggest(sWord, Math.floor(sWord.length / 5));
         if (sWord.gl_isTitle()) {
-            aSugg.gl_update(this._suggest(sWord.lower(), nMaxDel=Math.floor(sWord.length / 5)));
-            aSugg = new Set(aSugg.map((sSugg) => { return sSugg.title(); }));
+            aSugg.gl_update(this._suggest(sWord.toLowerCase(), Math.floor(sWord.length / 5)));
         }
         else if (sWord.gl_isLowerCase()) {
-            aSugg.gl_update(this._suggest(sWord.title(), nMaxDel=Math.floor(sWord.length / 5)));
+            aSugg.gl_update(this._suggest(sWord.gl_toCapitalize(), Math.floor(sWord.length / 5)));
         }
         if (aSugg.size == 0) {
-            aSugg.gl_update(this._suggestWithCrushedUselessChars(cp.clearWord(sWord)));
+            aSugg.gl_update(this._suggestWithCrushedUselessChars(char_player.clearWord(sWord)));
         }
+        // Set to Array
+        aSugg = Array.from(aSugg);
         aSugg = aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); }); // fr language 
-        return aSugg.sort((sSugg) => { return cp.distanceDamerauLevenshtein(sWord, sSugg); }).slice(0, nMaxSugg);
+        if (sWord.gl_isTitle()) {
+            aSugg = aSugg.map((sSugg) => { return sSugg.gl_toCapitalize(); });
+        }
+        return aSugg.sort((sSugg) => { return char_player.distanceDamerauLevenshtein(sWord, sSugg); }).slice(0, nMaxSugg);
     }
 
-    _suggest (sRemain, nMaxDel=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False) {
+    _suggest (sRemain, nMaxDel=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         // returns a set of suggestions
         // recursive function
         //show(nDeep, sNewWord + ":" + sRemain)
@@ -222,21 +227,21 @@ class IBDAWG {
                 }
             }
             // Replacements
-            for (let sRepl of cp.d1toX.gl_get(cCurrent, [])) {
+            for (let sRepl of char_player.d1toX.gl_get(cCurrent, [])) {
                 aSugg.gl_update(this._suggest(sRepl + sRemain.slice(1), nMaxDel, nDeep+1, iAddr, sNewWord, true));
             }
-            for (let sRepl of cp.d2toX.gl_get(sRemain[0:2], [])) {
+            for (let sRepl of char_player.d2toX.gl_get(sRemain.slice(0, 2), [])) {
                 aSugg.gl_update(this._suggest(sRepl + sRemain.slice(2), nMaxDel, nDeep+1, iAddr, sNewWord, true));
             }
             // end of word
             if (sRemain.length == 2) {
-                for (let sRepl of cp.dFinal2.gl_get(sRemain, [])) {
+                for (let sRepl of char_player.dFinal2.gl_get(sRemain, [])) {
                     aSugg.gl_update(this._suggest(sRepl, nMaxDel, nDeep+1, iAddr, sNewWord, true));
                 }
             }
             else if (sRemain.length == 1) {
                 aSugg.gl_update(this._suggest("", nMaxDel, nDeep+1, iAddr, sNewWord, true)); // remove last char and go on
-                for (let sRepl of cp.dFinal1.gl_get(sRemain, [])) {
+                for (let sRepl of char_player.dFinal1.gl_get(sRemain, [])) {
                     aSugg.gl_update(this._suggest(sRepl, nMaxDel, nDeep+1, iAddr, sNewWord, true));
                 }
             }
@@ -246,7 +251,7 @@ class IBDAWG {
 
     * _getSimilarArcs (cChar, iAddr) {
         // generator: yield similar char of <cChar> and address of the following node
-        for (let c of cp.d1to1.gl_get(cChar, [cChar])) {
+        for (let c of char_player.d1to1.gl_get(cChar, [cChar])) {
             if (this.dChar.has(c)) {
                 let jAddr = this._lookupArcNode(this.dChar.get(c), iAddr);
                 if (jAddr) {
@@ -262,17 +267,17 @@ class IBDAWG {
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
             if (nVal < this.nChar) {
                 if (this._convBytesToInteger(this.byDic.slice(jAddr, jAddr+this.nBytesArc)) & this._finalNodeMask) {
-                    aTails.add(sTail + this.dCharVal.get(nVal));
+                    aTails.add(sTail + this.dChar.get(nVal));
                 }
                 if (n && aTails.size == 0) {
-                    aTails.update(this._getTails(jAddr, sTail+this.dCharVal.get(nVal), n-1));
+                    aTails.gl_update(this._getTails(jAddr, sTail+this.dChar.get(nVal), n-1));
                 }
             }
         }
         return aTails;
     }
 
-    _suggestWithCrushedUselessChars (sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False) {
+    _suggestWithCrushedUselessChars (sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         let aSugg = new Set();
         if (sWord.length == 0) {
             if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
@@ -284,7 +289,7 @@ class IBDAWG {
         let cCurrent = sWord.slice(0, 1);
         for (let [cChar, jAddr] of this._getSimilarArcsAndCrushedChars(cCurrent, iAddr)) {
             show(nDeep, cChar);
-            aSugg.gl_update(this._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar));
+            aSugg.gl_update(this._suggestWithCrushedUselessChars(sWord.slice(1), nDeep+1, jAddr, sNewWord+cChar));
         }
         return aSugg;
     }
@@ -292,8 +297,8 @@ class IBDAWG {
     * _getSimilarArcsAndCrushedChars (cChar, iAddr) {
         // generator: yield similar char of <cChar> and address of the following node
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
-            if (this.dCharVal.get(nVal, null) in cp.aVovels) {
-                yield [this.dCharVal[nVal], jAddr];
+            if (this.dChar.get(nVal, null) in char_player.aVovels) {
+                yield [this.dChar[nVal], jAddr];
             }
         }
         yield* this._getSimilarArcs(cChar, iAddr);
@@ -393,7 +398,7 @@ class IBDAWG {
         }
     }
 
-    _getArcs1 (iAddr) {
+    * _getArcs1 (iAddr) {
         "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
         while (true) {
             let iEndArcAddr = iAddr+this.nBytesArc;

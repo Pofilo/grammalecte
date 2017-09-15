@@ -278,6 +278,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 class GrammalecteTooltip {
 
     constructor (xContentNode) {
+        this.sErrorId = null;
         this.xTooltip = createNode("div", {id: "grammalecte_tooltip"});
         this.xTooltipArrow = createNode("img", {
             id: "grammalecte_tooltip_arrow",
@@ -302,6 +303,7 @@ class GrammalecteTooltip {
     show (sNodeErrorId) {  // err
         try {
             let xNodeErr = document.getElementById(sNodeErrorId);
+            this.sErrorId = xNodeErr.dataset.error_id; // we store error_id here to know if spell_suggestions are given to the right word.
             let nLimit = 500 - 330; // paragraph width - tooltip width
             this.xTooltipArrow.style.top = (xNodeErr.offsetTop + 16) + "px";
             this.xTooltipArrow.style.left = (xNodeErr.offsetLeft + Math.floor((xNodeErr.offsetWidth / 2))-4) + "px"; // 4 is half the width of the arrow.
@@ -327,34 +329,40 @@ class GrammalecteTooltip {
                 }
                 document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
                 let iSugg = 0;
-                let xGCSugg = document.getElementById("grammalecte_tooltip_sugg_block");
-                xGCSugg.textContent = "";
+                this.clearSuggestionBlock();
                 if (xNodeErr.dataset.suggestions.length > 0) {
                     for (let sSugg of xNodeErr.dataset.suggestions.split("|")) {
-                        xGCSugg.appendChild(this._createSuggestion(xNodeErr.dataset.error_id, iSugg, sSugg));
-                        xGCSugg.appendChild(document.createTextNode(" "));
+                        this.xTooltipSuggBlock.appendChild(this._createSuggestion(xNodeErr.dataset.error_id, iSugg, sSugg));
+                        this.xTooltipSuggBlock.appendChild(document.createTextNode(" "));
                         iSugg += 1;
                     }
                 } else {
-                    xGCSugg.textContent = "Aucune.";
+                    this.xTooltipSuggBlock.textContent = "Aucune.";
                 }
             }
-            this.xTooltipArrow.style.display = "block";
-            this.xTooltip.style.display = "block";
             if (xNodeErr.dataset.error_type === "spelling") {
                 // spelling mistake
                 document.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
                 document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
-                while (this.xTooltipSuggBlock.firstChild) {
-                    this.xTooltipSuggBlock.removeChild(this.xTooltipSuggBlock.firstChild);
-                }
-                //console.log("getSuggFor: " + xNodeErr.textContent.trim() + " // error_id: " + xNodeErr.dataset.error_id);
-                //self.port.emit("getSuggestionsForTo", xNodeErr.textContent.trim(), xNodeErr.dataset.error_id);
-                this.setSpellSuggestionsFor(xNodeErr.textContent.trim(), "", xNodeErr.dataset.error_id);
+                this.clearSuggestionBlock();
+                this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
+                xGrammalectePort.postMessage({
+                    sCommand: "getSpellSuggestions",
+                    dParam: {sWord: xNodeErr.textContent},
+                    dInfo: {sErrorId: xNodeErr.dataset.error_id}
+                });
             }
+            this.xTooltipArrow.style.display = "block";
+            this.xTooltip.style.display = "block";
         }
         catch (e) {
             showError(e);
+        }
+    }
+
+    clearSuggestionBlock () {
+        while (this.xTooltipSuggBlock.firstChild) {
+            this.xTooltipSuggBlock.removeChild(this.xTooltipSuggBlock.firstChild);
         }
     }
 
@@ -367,36 +375,35 @@ class GrammalecteTooltip {
         this.xTooltip.style.display = "none";
     }
 
-    _createSuggestion (sErrId, iSugg, sSugg) {
+    _createSuggestion (sErrorId, iSugg, sSugg) {
         let xNodeSugg = document.createElement("div");
-        xNodeSugg.id = "grammalecte_sugg" + sErrId + "--" + iSugg.toString();
+        xNodeSugg.id = "grammalecte_sugg" + sErrorId + "--" + iSugg.toString();
         xNodeSugg.className = "grammalecte_tooltip_sugg";
-        xNodeSugg.dataset.error_id = sErrId;
+        xNodeSugg.dataset.error_id = sErrorId;
         xNodeSugg.textContent = sSugg;
         return xNodeSugg;
     }
 
-    setSpellSuggestionsFor (sWord, sSuggestions, sErrId) {
+    setSpellSuggestionsFor (sWord, aSugg, sErrorId) {
         // spell checking suggestions
         try {
-            // console.log("setSuggestionsFor: " + sWord + " > " + sSuggestions + " // " + sErrId);
-            let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
-            xSuggBlock.textContent = "";
-            if (sSuggestions === "") {
-                xSuggBlock.appendChild(document.createTextNode("Aucune."));
-            } else if (sSuggestions.startsWith("#")) {
-                xSuggBlock.appendChild(document.createTextNode(sSuggestions));
-            } else {
-                let lSugg = sSuggestions.split("|");
-                let iSugg = 0;
-                for (let sSugg of lSugg) {
-                    xSuggBlock.appendChild(this._createSuggestion(sErrId, iSugg, sSugg));
-                    xSuggBlock.appendChild(document.createTextNode(" "));
-                    iSugg += 1;
+            if (sErrorId === this.sErrorId) {
+                let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
+                xSuggBlock.textContent = "";
+                if (!aSugg || aSugg.length == 0) {
+                    xSuggBlock.appendChild(document.createTextNode("Aucune."));
+                } else {
+                    let iSugg = 0;
+                    for (let sSugg of aSugg) {
+                        xSuggBlock.appendChild(this._createSuggestion(sErrorId, iSugg, sSugg));
+                        xSuggBlock.appendChild(document.createTextNode(" "));
+                        iSugg += 1;
+                    }
                 }
             }
         }
         catch (e) {
+            xSuggBlock.appendChild(document.createTextNode("# Oups. Le mécanisme de suggestion orthographique a rencontré un bug… (Ce module est encore en phase β.)"));
             showError(e);
         }
     }
