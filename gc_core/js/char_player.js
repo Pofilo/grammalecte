@@ -10,29 +10,33 @@ var char_player = {
         // distance of Damerau-Levenshtein between <s1> and <s2>
         // https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
         try {
-            let d = new Map();
             let nLen1 = s1.length;
             let nLen2 = s2.length;
-            for (let i = -1;  i <= nLen1;  i++) {
-                d.set([i, -1], i + 1);
+            let matrix = [];
+            for (let i = 0;  i <= nLen1;  i++) {
+                matrix[i] = new Array(nLen2 + 1);
             }
-            for (let j = -1;  j <= nLen2;  j++) {
-                d.set([-1, j], j + 1);
+            for (let i = 0;  i <= nLen1;  i++) {
+                matrix[i][0] = i;
             }
-            for (let i = 0;  i < nLen1;  i++) {
-                for (let j = 0;  j < nLen2;  j++) {
+            for (let j = 0;  j <= nLen2;  j++) {
+                matrix[0][j] = j;
+            }
+            for (let i = 1;  i <= nLen1;  i++) {
+                for (let j = 1;  j <= nLen2;  j++) {
                     let nCost = (s1[i] === s2[j]) ? 0 : 1;
-                    d.set([i, j], Math.min(
-                        d.get([i-1, j]) + 1,        // Deletion
-                        d.get([i,   j-1]) + 1,      // Insertion
-                        d.get([i-1, j-1]) + nCost,  // Substitution
-                    ));
-                    if (i && j && s1[i] == s2[j-1] && s1[i-1] == s2[j]) {
-                        d.set([i, j], Math.min(d.get([i, j]), d.get([i-2, j-2]) + nCost));  // Transposition
+                    matrix[i][j] = Math.min(
+                        matrix[i-1][j] + 1,         // Deletion
+                        matrix[i][j-1] + 1,         // Insertion
+                        matrix[i-1][j-1] + nCost    // Substitution
+                    );
+                    if (i > 1 && j > 1 && s1[i] == s2[j-1] && s1[i-1] == s2[j]) {
+                        matrix[i][j] = Math.min(matrix[i][j], matrix[i-2][j-2] + nCost);  // Transposition
                     }
                 }
             }
-            return d.get([nLen1-1, nLen2-1]);
+            console.log(s2 + ": " + matrix[nLen1][nLen2]);
+            return matrix[nLen1][nLen2];
         }
         catch (e) {
             helpers.logerror(e);
