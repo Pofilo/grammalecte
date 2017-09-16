@@ -1,13 +1,16 @@
 /*
     CSS
-    Menu for Grammalecte
+    Button and menu for Grammalecte
 */
 
+/*
+    Button
+*/
 .grammalecte_menu_main_button {
     position: absolute;
-    margin: -10px 0 0 -10px;
-    width: 12px;
-    height: 12px;
+    margin: -8px 0 0 -8px;
+    width: 8px;
+    height: 8px;
     background-color: hsla(210, 80%, 80%, .5);
     border: 4px solid hsla(210, 80%, 60%, .5);
     border-top: 4px solid hsla(210, 100%, 40%, .7);
@@ -15,34 +18,40 @@
     border-radius: 50%;
     text-align: center;
     cursor: pointer;
+    box-shadow: 0 0 0 0 hsla(210, 50%, 50%, .5);
     z-index: 2147483640; /* maximum is 2147483647: https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index */
-    animation: grammalecte-spin 4s ease infinite;
+    animation: grammalecte-spin 2s ease infinite;
 }
 .grammalecte_menu_main_button:hover {
     border: 4px solid hsla(210, 80%, 35%, .5);
     background-color: hsla(210, 80%, 55%, .5);
-    box-shadow: 0 0 10px hsla(210, 100%, 30%, .5);
-    animation: grammalecte-spin 1s linear infinite;
+    animation: grammalecte-spin .5s linear infinite;
 }
 
 @keyframes grammalecte-spin {
     0% {
-        transform: rotate(0deg);
+        transform: rotate(0deg) scale(1);
         border-top: 4px solid hsla(210, 100%, 40%, .7);
         border-bottom: 4px solid hsla(210, 100%, 40%, .7);
     }
-    50% {
-        transform: rotate(180deg);
+    70% {
+        transform: rotate(180deg) scale(.8);
         border-top: 4px solid hsla(0, 100%, 40%, .7);
         border-bottom: 4px solid hsla(0, 100%, 40%, .7);
+        box-shadow: 0 0 0 20px hsla(210, 50%, 50%, 0);
     }
     100% {
-        transform: rotate(360deg);
+        transform: rotate(360deg) scale(1);
         border-top: 4px solid hsla(210, 100%, 40%, .7);
         border-bottom: 4px solid hsla(210, 100%, 40%, .7);
+        box-shadow: 0 0 0 0 hsla(210, 50%, 50%, 0);
     }
 }
 
+
+/*
+    Menu
+*/
 .grammalecte_menu {
     display: none;
     position: absolute;
