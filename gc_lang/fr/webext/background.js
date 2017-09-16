@@ -173,7 +173,7 @@ browser.contextMenus.create({
 });
 
 browser.contextMenus.create({
-    id: "whatever",
+    id: "separator1",
     type: "separator",
     contexts: ["selection"]
 });
@@ -190,6 +190,17 @@ browser.contextMenus.create({
     contexts: ["all"]
 });
 
+browser.contextMenus.create({
+    id: "separator2",
+    type: "separator",
+    contexts: ["editable"]
+});
+
+browser.contextMenus.create({
+    id: "rescanPage",
+    title: "Rechercher à nouveau les zones de texte",
+    contexts: ["editable"]
+});
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
@@ -207,6 +218,10 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             break;
         case "conjugueur_tab":
             openConjugueurTab();
+            break;
+        case "rescanPage":
+            let xPort = dConnx.get(xTab.id);
+            xPort.postMessage({sActionDone: "rescanPage"});
             break;
         default:
             console.log("[Background] Unknown menu id: " + xInfo.menuItemId);

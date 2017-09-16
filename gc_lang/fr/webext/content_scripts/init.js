@@ -60,6 +60,17 @@ const oGrammalecte = {
         }
     },
 
+    rescanPage: function () {
+        if (this.oTFPanel !== null) { this.oTFPanel.hide(); }
+        if (this.oLxgPanel !== null) { this.oLxgPanel.hide(); }
+        if (this.oGCPanel !== null) { this.oGCPanel.hide(); }
+        for (let oMenu of this.lMenu) {
+            oMenu.deleteNodes();
+        }
+        this.lMenu.length = 0; // to clear an array
+        this.createMenus();
+    },
+
     createTFPanel: function () {
         if (this.oTFPanel === null) {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
@@ -127,6 +138,9 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.oLxgPanel.clear();
             oGrammalecte.oLxgPanel.show();
             oGrammalecte.oLxgPanel.startWaitIcon();
+            break;
+        case "rescanPage":
+            oGrammalecte.rescanPage();
             break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);

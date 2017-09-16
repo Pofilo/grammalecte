@@ -7,11 +7,11 @@ class GrammalecteMenu {
 
     constructor (nMenu, xTextArea) {
         this.sMenuId = "grammalecte_menu" + nMenu;
-        let xButton = createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
-        xButton.onclick = () => { this.switchMenu(); };
-        let xMenu = this._createMenu(xTextArea);
-        this._insertAfter(xButton, xTextArea);
-        this._insertAfter(xMenu, xTextArea);
+        this.xButton = createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
+        this.xButton.onclick = () => { this.switchMenu(); };
+        this.xMenu = this._createMenu(xTextArea);
+        this._insertAfter(this.xButton, xTextArea);
+        this._insertAfter(this.xMenu, xTextArea);
     }
 
     _insertAfter (xNewNode, xReferenceNode) {
@@ -85,6 +85,11 @@ class GrammalecteMenu {
         catch (e) {
             showError(e);
         }
+    }
+
+    deleteNodes () {
+        this.xMenu.parentNode.removeChild(this.xMenu);
+        this.xButton.parentNode.removeChild(this.xButton);
     }
 
     switchMenu () {
