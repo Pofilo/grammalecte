@@ -11433,14 +11433,15 @@ TEST: Le moteur choisi convient-il ?
 
 __[s]/inte(inte_ce)__
     ({w_2})-([cs]e)  @@0,$
-    <<- morphex(\1, ":V", ":3s") -1>> =suggVerb(@, ":3s")                  # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
-    <<- morphex(\1, ":", ":V") -1>> =suggSimil(\1, ":3s")                  # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
-    <<- \2 == "se" -2>> ce                                                 # Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+    <<- morphex(\1, ":V", ":(?:3s|V0e.*:3p)") -1>> =suggVerb(@, ":3s")      # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+    <<- morphex(\1, ":", ":V") -1>> =suggSimil(\1, ":3s")                   # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+    <<- \2 == "se" -2>> ce                                                  # Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
 
 TEST: était-{{se}} cela, la vérité ineffable ?
 TEST: {{étai}}-ce notre destinée de souffrir ?
-TEST: {{étaient}}-{{se}} ces hommes-là qui allaient nous guider dans les montagnes ?
+TEST: étaient-{{se}} ces hommes-là qui allaient nous guider dans les montagnes ?
 TEST: Était-ce des femmes de ce pays ?
+TEST: Eh ! dit Athos, ne sont-ce pas des braconniers qu’on arrête là-bas ?
 
 
 __[i]/inte(inte_nous)__
