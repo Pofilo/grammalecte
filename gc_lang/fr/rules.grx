@@ -4755,16 +4755,11 @@ __[i](p_délai_de)__                     délais? (d’attente|de (?:carence|con
 __[i](p_demande_d_asile)__              demandes? (d’asile) @@$ <<- ~1>> *
 __[i](p_diner_aux_chandelles)__         d[îi]ners? (aux chandelles) @@$ <<- ~1>> *
 __[i](p_digne_de)__                     dignes? (de (?:confiance|foi|ce nom)) @@$ <<- ~1>> *
-__[i](p_donner_sens)__                  ((?:re|)donn\w+) +(sens) @@0,$ <<- morph(\1, ">(?:re|)donner ", False) ~2>> * 
 __[i](p_droit)__                        (droit) (?:au but|dans les yeux) @@0 <<- ~1>> *
 __[i](p_droit_comme_un_i)__             droite?s? (comme un i) @@$ <<- ~1>> *
 __[i](p_eau_de)__                       eaux? (de (?:bouleau|bleuet|chaux|coco|javel|jouvence|mer|noix de coco|parfum|pluie|seltz|source|vie)) @@$ <<- ~1>> *
 __[i](p_espérance_de_vie)__             espérances? (de vie) @@$ <<- ~1>> *
 __[i](p_état_de)__                      états? (d’(?:âme|e(?:sprit|xtrême urgence)|urgence)|de (?:conservation|fait|l’art)) @@$ <<- ~1>> *
-__[i](p_faire_qqch)__
-    (f[aiîeo]\w*) +(tous(?: deux| trois|) +|)(allusion|assaut|bonne figure|confiance|compliqué|chaud|débat|demi-tour|fausse route|froid|gr(?:ise mine|and cas)|h(?:alte|onte)|ma(?:chine|rche) arrière|p(?:art(?:ie(?: intégrante|)|)|eur|rofil bas)|rage|salle comble|sens|table rase|volte-face|ce que bon (?:me|te|lui|leur|nous|vous) semble) @@0,*,$
-    <<- morph(\1, ">faire ", False) ~2>> *
-    <<- __also__ ~3>> *
 __[i](p_expérience_utilisateur)__       expériences? +(utilisateurs?) @@$ <<- ~1>> *
 __[i](loc_fard_à_paupières)__
     fards? (([àa]) paupières) @@$,w
@@ -4802,12 +4797,6 @@ __[i](p_maréchal_des_logis)__           maréchale?s? (des logis(?:[ -]chef|)) 
 __[i](p_mère_au_foyer)__                mères? (au foyer) @@$ <<- ~1>> *
 __[i](p_metteur_en_scène)__             metteu(?:r|se)s? (en scène) @@$ <<- ~1>> *
 __[i](p_mineur_de_moins_de_x_ans)__     mineure?s? (de moins de ({w1}) ans) @@$,>1:w <<- \2.isdigit() or morph(\2, ":B", False) ~1>> *
-__[i](loc_mettre_à_qqch)__
-    (m(?:et|[iî][mst])\w*) +(([àa]) (?:jour|niveau|plat|l’écart)) @@0,$,w
-    <<- morph(\1, ">mettre ", False) >>>
-    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~2>> *
-__[i](p_mettre_qqch)__                  (m(?:et|[iî][mst])\w*) +(au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@0,$ <<- morph(\1, ">mettre ", False) ~2>> *
 __[i](p_mode_de)__                      modes? (de (?:paiement|scrutin|vie)) @@$ <<- ~1>> *
 __[i](p_mot_de_passe)__                 mots? (de passe) @@$ <<- ~1>> *
 __[i](p_motion_de)__                    motions? (de (?:blâme|censure|défiance)) @@$ <<- ~1>> *
@@ -4829,12 +4818,6 @@ __[i](p_pièce_de)__                     pièces? (de (?:théâtre|monnaie|\d+ (
 __[i](p_partie_de_jambe_en_l_air)__     parties? (de jambes en l’air) @@$ <<- ~1>> *
 __[i](p_porte_de)__                     portes? (de (?:service|garage)) @@$ <<- ~1>> *
 __[i](p_poudre_aux_yeux)__              poudres? (aux yeux) @@$ <<- ~1>> *
-__[i](loc_prendre_à_la_légère)__
-    (pr[eiî]\w+) +(([àa]) la légère) @@0,$,w
-    <<- morph(\1, ">prendre ", False) >>>
-    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~2>> *
-__[i](p_prendre)__                      (pr[eiî]\w+) +(au dépourvu|de court|en charge|ombrage|pour argent comptant|par surprise|soin) @@0,$ <<- morph(\1, ">prendre ", False) ~2>> *
 __[i](p_preuve_du_contraire)__          preuves? +(?:suffisantes? +|)(du contraire) @@$ <<- ~1>> *
 __[i](p_quelqu_un_d_autre)__            quelqu un (d’autre) @@$ <<- ~1>> *
 __[i](loc_remire_à_plat)__
@@ -4842,7 +4825,6 @@ __[i](loc_remire_à_plat)__
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](p_requête)__                      requêtes? (en (?:nullité|non (?:conciliation|inscription|lieu|révocation de sursis))) @@$ <<- ~1>> *
-__[i](p_rester_lettre_morte)__          (rest\w+) (lettre morte) @@0,$ <<- morph(\1, ">rester ", False) ~2>> *
 __[i](p_roues_avant_arrière)__          roues? (avant|arrière) @@$ <<- ~1>> *
 __[i](p_roulement_à_billes)__           roulement (à billes) @@$ <<- ~1>> *
 __[i](loc_rouge_à_lèvres)__
@@ -4857,7 +4839,6 @@ __[i](p_sac_de_qqch)__                  sacs? (de (?:couchage|sport|voyage)) @@$
 __[i](p_salle)__                        salles? (à manger|d’attente|de (?:bains?|conférence)) @@$ <<- ~1>> *
 __[i](p_sain_de_corps)__                saine?s? (d(?:e corps et d|)’esprit) @@$ <<- ~1>> *
 __[i](p_sclérose_en_plaques)__          scléroses? (en plaques) @@$  <<- ~1>> *
-__[i](p_sembler_paraitre_être)__        (sembl\w+|par[au]\w+) +(être|avoir été) +({w_2}) @@0,w,$ <<- morph(\1, ">(?:sembler|para[îi]tre) ") and morphex(\3, ":A", ":G") ~2>> *
 __[i](loc_silo)__
     silos? (([àa]) (?:grains?|blé)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -4870,20 +4851,12 @@ __[u](p_système)__                      systèmes? (d’exploitation|D) @@$ <<-
 __[i](p_taille)__                       taille (\d+) @@$ <<- ~1>> *
 __[i](p_taux_de_qqch)__                 taux (d’(?:abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure)|de (?:change|cholest[ée]rol|glycémie|fécondité|participation|testostérone|TVA)) @@$ <<- ~1>> *
 __[i](p_tête_de_déterré)__              têtes? (de déterrée?s?) @@$ <<- ~1>> *
-__[i](loc_tenir_compte)__
-    (t[eiî]\w+) +(([àa]) distance) d(?:es?|u) @@0,$,w
-    <<- morph(\1, ">tenir ", False) >>>
-    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~2>> *
-__[i](p_tenir_compte)__                 (t[eiî]\w+) +(compte) d(?:es?|u) @@0,w <<- morph(\1, ">tenir ", False) ~2>> *
 __[i](p_tout_un_chacun)__               (tout un) chacun @@0 <<- ~1>> *
 __[i](p_tour_de_passe_passe)__          tours? (de passe-passe) @@$ <<- ~1>> *
-__[i](p_trier_sur_le_volet)__           (tri\w+) (sur le volet) @@0,$ <<- morph(\1, ">trier ", False) ~2>> *
 __[i](loc_tueur_à_gages)__
     tueu(?:r|se)s? (([àa]) gages) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_venir)__                        (v[eiî]n\w+) ((?:on ne sait|je ne sais) (?:pas |)(?:trop |)d’où) @@0,$ <<- morph(\1, ">venir ", False) ~2>> *
 __[i](p_vecteur)__                      vecteurs? (accélérations?|positions?|rotations?|vitesses?) @@$ <<- ~1>> *
 __[i](loc_vernis_à_ongles)__
     vernis (([àa]) ongles) @@$,w
@@ -4915,13 +4888,11 @@ TEST: Les conséquences des gaz {{a}} effet de serre.
 TEST: devant la machine {{a}} café.
 TEST: Achète un moule {{a}} gaufres.
 TEST: Fais la mise {{a}} jour
-TEST: prendre {{a}} la légère ce test serait une erreur.
 TEST: Elle mit du rouge {{a}} lèvres.
 TEST: on a besoin d’une remise {{a}} plat.
 TEST: passe-moi mon sac {{a}} dos.
 TEST: dans le silo {{a}} grain.
 TEST: sa chambre, c’est une vraie soue {{a}} cochons.
-TEST: il faut se tenir {{a}} distance de ces gens-là.
 TEST: Un tueur {{a}} gages ne s’y prendrait jamais comme ça.
 TEST: Ce n’est que du vernis {{a}} ongles.
 TEST: le vol {{a}} l’étalage est un fléau.
@@ -5220,6 +5191,58 @@ __[i](p_un_moment_instant)__
     (un (?:instant|moment|jour)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
 
 
+## Simplication des locutions verbales
+__[i](p_donner_sens)__
+    ((?:re|)donn\w+) +(sens) @@0,$
+    <<- morph(\1, ">(?:re|)donner ", False) ~2>> *
+__[i](p_faire_qqch)__
+    (f[aiîeo]\w*) +(tous(?: deux| trois|) +|)(allusion|assaut|bonne figure|confiance|compliqué|chaud|débat|demi-tour|fausse route|froid|gr(?:ise mine|and cas)|h(?:alte|onte)|ma(?:chine|rche) arrière|p(?:art(?:ie(?: intégrante|)|)|eur|rofil bas)|rage|salle comble|sens|table rase|volte-face|ce que bon (?:me|te|lui|leur|nous|vous) semble) @@0,*,$
+    <<- morph(\1, ">faire ", False) ~2>> *
+    <<- __also__ ~3>> *
+__[i](loc_mettre_à_qqch)__
+    (m(?:et|[iî][mst])\w*) +(([àa]) (?:jour|niveau|plat|l’écart)) @@0,$,w
+    <<- morph(\1, ">mettre ", False) >>>
+    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~2>> *
+__[i](p_mettre_qqch)__
+    (m(?:et|[iî][mst])\w*) +(au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)) @@0,$
+    <<- morph(\1, ">mettre ", False) ~2>> *
+__[i](loc_prendre_à_la_légère)__
+    (pr[eiî]\w+) +(([àa]) la légère) @@0,$,w
+    <<- morph(\1, ">prendre ", False) >>>
+    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~2>> *
+__[i](p_prendre)__
+    (pr[eiî]\w+) +(au dépourvu|de court|en charge|ombrage|pour argent comptant|par surprise|soin) @@0,$
+    <<- morph(\1, ">prendre ", False) ~2>> *
+__[i](p_rester_lettre_morte)__
+    (rest\w+) (lettre morte) @@0,$
+    <<- morph(\1, ">rester ", False) ~2>> *
+__[i](p_sembler_paraitre_être)__
+    (sembl\w+|par[au]\w+) +(être|avoir été) +({w_2}) @@0,w,$
+    <<- morph(\1, ">(?:sembler|para[îi]tre) ") and morphex(\3, ":A", ":G") ~2>> *
+__[i](loc_tenir_à_distance)__
+    (t[eiî]\w+) +(([àa]) distance) d(?:es?|u) @@0,$,w
+    <<- morph(\1, ">tenir ", False) >>>
+    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~2>> *
+__[i](loc_tenir_compte)__
+    (t[eiî]\w+) +(co(?:mp?|n)tes?) d(?:es?|u) @@0,w
+    <<- \2 != "compte" -2>> compte              # Dans cette locution, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
+    <<- morph(\1, ">tenir ", False) ~2>> *
+__[i](p_trier_sur_le_volet)__
+    (tri\w+) (sur le volet) @@0,$
+    <<- morph(\1, ">trier ", False) ~2>> *
+__[i](p_venir)__
+    (v[eiî]\w+) ((?:on ne sait|je ne sais) (?:pas |)(?:trop |)d’où) @@0,$
+    <<- morph(\1, ">venir ", False) ~2>> *
+
+TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
+TEST: prendre {{a}} la légère ce test serait une erreur.
+TEST: il faut se tenir {{a}} distance de ces gens-là.
+
+
+# Autres tests contre les faux positifs
 TEST: pourquoi faire compliqué quand on peut faire simple
 TEST: Pour ceux et celles qui étaient présents à la cérémonie
 TEST: les pires vilénies suite au mauvais vote du peuple
