@@ -1749,10 +1749,15 @@ __[i](p_astuce_nous_le_la_les)__
     nous (l(?:e(?:ur|s|)|a)) @@$                <<- not morph(word(-1), ":1p", False, False) =>> select(\1, ":Oo")
 __[i](p_astuce_vous_le_la_les)__
     vous (l(?:e(?:ur|s|)|a)) @@$                <<- not morph(word(-1), ":2p", False, False) =>> select(\1, ":Oo")
+__[i](d_nous)__
+    (nous) ({avoir_etre}) @@0,$                 <<- not morph(\2, ":1p", False) =>> exclude(\1, ":Os")
+__[i](d_vous)__
+    (vous) ({avoir_etre}) @@0,$                 <<- not morph(\2, ":2p", False) =>> exclude(\1, ":Os")
 __[i](p_astuce_ils_elles_le_la_les)__
     (?:ils|elles) (l(?:e(?:ur|s|)|a)) @@$       <<- not morph(word(-1), ":3p", False, False) =>> select(\1, ":Oo")
 __[i]__
     [nmts]e (l(?:e(?:ur|s|)|a)) @@$             <<- =>> =select(\1, ":Oo")
+
 
 # verbe
 __[i](d_ne_verbe)__
@@ -9700,10 +9705,10 @@ __[i](p_les_avoir_fait_vinfi)__
     les ({avoir}) +(fait) +(?:[mts](?:e +|’)|)({infi}) @@w,w,$ <<- morph(\1, ">avoir ", False) and morph(\3, ":Y", False) ~2>> _
 
 __[i]/ppas(ppas_pronom_avoir)__
-    (j’|je |tu |ils? |elles? |[nv]ous |on |et )(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">puisque? ", False, True)
-    and morph(\2, ":V0a", False) and not \3.isupper() and morphex(\3, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    -3>> =suggMasSing(@)
+    (?:j’|je |tu |ils? |elles? |on |et )(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@w,$
+    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \2) and morph(word(-1), ">puisque? ", False, True)
+    and morph(\1, ":V0a", False) and not \2.isupper() and morphex(\2, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+    -2>> =suggMasSing(@)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ils leur avaient {{donnés}} du fil à retordre.
@@ -9711,6 +9716,18 @@ TEST: il a {{affronte}} une bande de voleurs de bétail
 TEST: J’ai {{mettrai}} du sel.                                                    ->> mis
 TEST: J’ai {{lut}} son journal.                                                   ->> lu
 TEST: Ils avaient barre sur lui.
+
+
+__[i]/ppas(ppas_nous_vous_avoir)__
+    ([nv]ous) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,$
+    <<- morph(\1, ":Os", False)
+    and not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">puisque? ", False, True)
+    and morph(\2, ":V0a", False) and not \3.isupper() and morphex(\3, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+    -3>> =suggMasSing(@)
+    # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: Nous avons {{donne}} tout notre potentiel.
+TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 
 __[i]/ppas(ppas_det_nom_avoir)__
