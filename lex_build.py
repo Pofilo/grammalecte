@@ -18,7 +18,7 @@ def build (spfSrc, sLangName, sDicName, bJSON=False, cStemmingMethod="S", nCompr
     if bJSON:
         dir_util.mkpath("grammalecte-js/_dictionaries")
         oDic = IBDAWG(sDicName + ".bdic")
-        oDic.writeAsJSObject("grammalecte-js/_dictionaries/" + sDicName + ".json")
+        oDic.writeAsJSObject("grammalecte-js/_dictionaries/" + sDicName + ".json", bBinaryDictAsHexString=True)
 
 
 def main ():

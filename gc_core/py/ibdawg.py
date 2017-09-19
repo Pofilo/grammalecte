@@ -100,7 +100,7 @@ class IBDAWG:
                 "  Dictionary: {0.nEntries:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)
 
-    def writeAsJSObject (self, spfDest, bInJSModule=False):
+    def writeAsJSObject (self, spfDest, bInJSModule=False, bBinaryDictAsHexString=False):
         "write IBDAWG as a JavaScript object in a JavaScript module"
         import json
         with open(spfDest, "w", encoding="utf-8", newline="\n") as hDst:
@@ -112,7 +112,10 @@ class IBDAWG:
                             "sHeader": self.sHeader,
                             "lArcVal": self.lArcVal,
                             "nArcVal": self.nArcVal,
-                            "byDic": [ e  for e in self.byDic ],
+                            # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
+                            # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
+                            # https://github.com/mozilla/addons-linter/issues/1361
+                            "byDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ],
                             "sLang": self.sLang,
                             "nChar": self.nChar,
                             "nBytesArc": self.nBytesArc,

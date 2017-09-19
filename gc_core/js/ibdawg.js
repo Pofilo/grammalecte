@@ -35,6 +35,22 @@ class IBDAWG {
             sName, nVersion, sHeader, lArcVal, nArcVal, byDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
             nEntries, nNode, nArc, nAff, cStemming, nTag, dChar, _arcMask, _finalNodeMask, _lastArcMask, _addrBitMask, nBytesOffset,
         */
+
+        /*
+            Bug workaround.
+            Mozilla’s JS parser sucks. Can’t read file bigger than 4 Mb!
+            So we convert huge hexadecimal string to list of numbers…
+            https://github.com/mozilla/addons-linter/issues/1361
+        */
+        console.log(this.byDic);
+        let lTemp = [];
+        for (let i = 0;  i < this.byDic.length;  i+=2) {
+            lTemp.push(parseInt(this.byDic.slice(i, i+2), 16));
+        }
+        this.byDic = lTemp;
+        console.log("DONE");
+        /* end of bug workaround */
+
         if (!this.sHeader.startsWith("/pyfsa/")) {
             throw TypeError("# Error. Not a pyfsa binary dictionary. Header: " + this.sHeader);
         }
