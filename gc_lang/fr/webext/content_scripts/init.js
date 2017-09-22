@@ -60,6 +60,14 @@ const oGrammalecte = {
         }
     },
 
+    createMenus2 () {
+        let lNode = document.querySelectorAll("[contenteditable]");
+        for (let xNode of lNode) {
+            this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+            this.nMenu += 1;
+        }
+    },
+
     rescanPage: function () {
         if (this.oTFPanel !== null) { this.oTFPanel.hide(); }
         if (this.oLxgPanel !== null) { this.oLxgPanel.hide(); }
@@ -152,3 +160,4 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
     Start
 */
 oGrammalecte.createMenus();
+oGrammalecte.createMenus2();

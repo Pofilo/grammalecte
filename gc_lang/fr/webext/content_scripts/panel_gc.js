@@ -55,11 +55,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.oTAC = new GrammalecteTextAreaControl();
     }
 
-    start (xTextArea=null) {
+    start (xNode=null) {
         this.oTooltip.hide();
         this.clear();
-        if (xTextArea) {
-            this.oTAC.setTextArea(xTextArea);
+        if (xNode && xNode.tagName == "TEXTAREA") {
+            this.oTAC.setTextArea(xNode);
         }
     }
 
@@ -450,7 +450,7 @@ class GrammalecteTextAreaControl {
             iStart = iEnd+1;
         }
         this._dParagraph.set(i, sText.slice(iStart));
-        console.log("Paragraphs number: " + (i+1));
+        //console.log("Paragraphs number: " + (i+1));
     }
 
     write () {
