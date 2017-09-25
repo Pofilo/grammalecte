@@ -2505,10 +2505,10 @@ TEST: Ce que tu ne fais {{pas jamais}}.
 ### incohérences globales (attention à la casse du 2e mot, car beaucoup de sigles peuvent tromper)
 __[s](incohérences_globales1)__
     ([clmtsCLMTS]es|[nvNV]os) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
-    <<- -2>> =suggSimil(\2, ":[NA].*:[pi]")         # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    <<- -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 __[s](incohérences_globales2)__
     ([cC]e(?:tte|t|)|[mtsMTS]a|[mM]on) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
-    <<- -2>> =suggSimil(\2, ":[NA].*:[si]")         # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    <<- -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
 TEST: {{Ces}} {{cette}} canaille qui nous a donné tant de fil à retordre.
 TEST: Mon {{il}} est une merveille.
@@ -2518,7 +2518,7 @@ __[s](incohérence_globale_au_qqch)__
     ([aA]u) ({w2})  @@0,$
     <<- not \2.isupper() >>>
     <<- morph(\2, ">(?:[cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on|parce) ", False)
-    -2>> =suggSimil(\2, ":[NA].*:[si]")                                                             # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                       # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
     <<- __else__ and morph(\2, ">quelle ", False) ->> auquel|auxquels|auxquelles                    # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
     <<- __else__ and \2 == "combien" and morph(word(1), ":[AY]", False) -1>> ô                      # Incohérence probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
 
@@ -2531,7 +2531,7 @@ __[s](incohérence_globale_aux_qqch)__
     ([aA]ux) ({w2})  @@0,$
     <<- not \2.isupper() >>>
     <<- morph(\2, ">(?:[cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on|parce) ", False)
-    -2>> =suggSimil(\2, ":[NA].*:[pi]")                                                             # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                       # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
     <<- __else__ and morph(\2, ">quelle ", False) ->> auxquels|auxquelles                           # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
     <<- __else__ and \2 == "combien" and morph(word(1), ":[AY]", False) -1>> ô                      # Incohérence probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
 
@@ -2542,8 +2542,8 @@ TEST: Des individus {{aux}} combien sensibles aux usages.
 
 __[s](incohérences_globales3)__
     ([dD]es) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
-    <<- -2>> =suggSimil(\2, ":[NA].*:[pi]")         # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
-    <<- -1>> de                                     # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    <<- -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    <<- -1>> de                                                                                     # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
 TEST: je ne sais {{des}} {{ses}} choses.
 
@@ -2867,7 +2867,7 @@ TEST: {{en n’}}{{envoient}} que peu.
 
 __[i]/conf(conf_malgré_le_la_les)__
     malgré l(?:es? +|a +|’)({w_3})  @@$
-    <<- morphex(\1, ":", ":[GNAWM]") -1>> =suggSimil(\1, ":[NA]")                                   # Incohérence : après “malgré”, on devrait trouver un groupe nominal.
+    <<- morphex(\1, ":", ":[GNAWM]") -1>> =suggSimil(\1, ":[NA]", True)                             # Incohérence : après “malgré”, on devrait trouver un groupe nominal.
 
 TEST: malgré l’{{arrête}} qui interdisait le port 
 
@@ -2875,7 +2875,7 @@ TEST: malgré l’{{arrête}} qui interdisait le port
 __[i]/conf(conf_ma_ta_cette_verbe)__
     ([mt]a|cette) +({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:[fe]:[si]")                                                          # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: Cette {{pèle}} est trop fragile.
 
@@ -2885,7 +2885,7 @@ __[i]/conf(conf_sa_verbe)__
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":N.*:[fe]|:[AW]") and \2[0].islower() or \2 == "va"
     -1>> ça                                                                                         # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and hasSimil(\2)
-    -2>> =suggSimil(\2, ":[NA]:[fe]:[si]")                                                          # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: {{sa}} devient difficile.
 TEST: il me tendit {{sa}} {{pèche}}.
@@ -2900,7 +2900,7 @@ TEST: Je prends {{sa}}…
 __[i]/conf(conf_du_cet_au_verbe)__
     (du|cet|au) +({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and not (\2 == "sortir" and re.search(r"(?i)au", \1))
-    -2>> =suggSimil(\2, ":[NA]:[me]:[si]")                                                          # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: cet {{plaît}} est infectée.
 
@@ -2908,7 +2908,7 @@ TEST: cet {{plaît}} est infectée.
 __[i]/conf(conf_ce_verbe)__
     (ce) +(?!faire|peut)({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]:.:[si]|:V0e.*:3[sp]|>devoir") and \2[0].islower() and hasSimil(\2)
-    -2>> =suggSimil(\2, ":[NA]:[me]:[si]")                                                          # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: {{ce}} {{rappelle}} n’en finit pas.
 
@@ -2916,7 +2916,7 @@ TEST: {{ce}} {{rappelle}} n’en finit pas.
 __[i]/conf(conf_mon_verbe)__
     (mon) +({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:.:[si]")                                                             # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:.:[si]", True)                                                       # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: mon {{rackette}} n’a pas porté les fruits espérés.
 TEST: Belle qui tient mon vit captif entre tes doigts.
@@ -2925,7 +2925,7 @@ TEST: Belle qui tient mon vit captif entre tes doigts.
 __[i]/conf(conf_ton_son_verbe)__
     [st]on ({w_2})  @@4
     <<- morph(\1, ":V.*:(?:Y|[123][sp])") and \1[0].islower() and isStart()
-    -1>> =suggSimil(\1, ":[NA]:[me]:[si]")                                                          # Incohérence : « \1 » est un verbe.
+    -1>> =suggSimil(\1, ":[NA]:[me]:[si]", True)                                                    # Incohérence : « \1 » est un verbe.
 
 TEST: ton {{recèle}} a été dévoilé
 
@@ -2933,7 +2933,7 @@ TEST: ton {{recèle}} a été dévoilé
 __[i]/conf(conf_det_plur_verbe)__
     ([dcmts]es|quelques|aux|[nv]os) +({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and not re.search(r"(?i)^quelques? soi(?:ent|t|s)\b", \0)
-    -2>> =suggSimil(\2, ":[NA]:.:[pi]")                                                             # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                       # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: la crainte des {{attentas}} fait feu de tout bois.
 
@@ -2941,7 +2941,7 @@ TEST: la crainte des {{attentas}} fait feu de tout bois.
 __[i]/conf(conf_auxdits_verbe)__
     (auxdits) +({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:[me]:[pi]")                                                          # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:[me]:[pi]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: elle se rendit auxdits {{jardinais}}
 
@@ -2949,14 +2949,14 @@ TEST: elle se rendit auxdits {{jardinais}}
 __[i]/conf(conf_auxdites_verbe)__
     (auxdites) +({w_2})  @@0,$
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]")                                                          # Incohérence avec « \1 » : « \2 » est un verbe.
+    -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: auxdites {{scelles}}, il ne prêta pas attention.
 
 
 __[i]/conf(conf_de_la_vconj)__  de la ({w_2})  @@6
     <<- morphex(\1, ":[123][sp]", ":[NAQ]")
-    -1>> =suggSimil(\1, ":(?:[NA]:[fe]:[si])")                                                      # Incohérence : « \1 » est un verbe.
+    -1>> =suggSimil(\1, ":(?:[NA]:[fe]:[si])", True)                                                # Incohérence : « \1 » est un verbe.
 
 TEST: les petits esprits de la {{pensait}} religieuse
 
@@ -2968,7 +2968,7 @@ TEST: ce peut être un matériau à part entière pour alimenter discussions et 
 __[i]/conf(conf_de_le_nom_ou_vconj)__
     (de le) ({w_2})  @@0,6
     <<- morphex(\2, ":[NAQ].*:[me]", ":[YG]") and \2[0].islower() -1>> du                           # Incohérence : « \2 » est un nom ou un adjectif.
-    <<- morph(\2, ":[123][sp]", False) -2>> =suggSimil(\2, ":Y")                                    # Incohérence : « \2 » est une forme verbale conjuguée.
+    <<- morph(\2, ":[123][sp]", False) -2>> =suggVerbInfi(\2)                                       # Incohérence : « \2 » est une forme verbale conjuguée.
 
 TEST: {{de le}} vin                                           ->> du
 TEST: il n’est pas interdit de le {{pensait}}
@@ -2976,7 +2976,7 @@ TEST: il n’est pas interdit de le {{pensait}}
 
 __[i]/conf(conf_de_l_vconj)__
     de l’({w_2})  @@5
-    <<- morphex(\1, ":[123][sp]", ":[NAQ]") -1>> =suggSimil(\1, ":(?:[NA]:.:[si])")                 # Incohérence : « \1 » est une forme verbale conjuguée.
+    <<- morphex(\1, ":[123][sp]", ":[NAQ]") -1>> =suggSimil(\1, ":[NA]:.:[si]", True)               # Incohérence : « \1 » est une forme verbale conjuguée.
 
 TEST: de l’{{entra}}
 
@@ -2984,14 +2984,14 @@ TEST: de l’{{entra}}
 __[i]/conf(conf_un_verbe)__
     (?<!’)un ({w_2})  @@3
     <<- morph(\1, ":(?:Y|[123][sp])") and not before("(?i)(?:dont|sauf|un à) +$")
-    -1>> =suggSimil(\1, ":[NAQ]:[me]:[si]")                                                         # Incohérence : « \1 » est une forme verbale conjuguée.
+    -1>> =suggSimil(\1, ":[NAQ]:[me]:[si]", True)                                                   # Incohérence : « \1 » est une forme verbale conjuguée.
 
 TEST: un {{maintient}} difficile.
 
 
 __[i]/conf(conf_de_dès_par_vconj)__
     (?:d(?:e|ès)|par) ({w_2})  @@$
-    <<- \1[0].islower() and morph(\1, ":V.*:[123][sp]") -1>> =suggSimil(\1, ":[NA]")                # Incohérence : « \1 » est une forme verbale conjuguée.
+    <<- \1[0].islower() and morph(\1, ":V.*:[123][sp]") -1>> =suggSimil(\1, ":[NA]", True)          # Incohérence : « \1 » est une forme verbale conjuguée.
 
 TEST: par {{bloque}} de données
 TEST: il s’agit de {{mette}} en évidence.
@@ -3000,7 +3000,7 @@ TEST: il s’agit de {{mette}} en évidence.
 __[i]/conf(conf_d_une_vconj)__
     d’(?:une? +|)({w_2})  @@$
     <<- \1[0].islower() and morphex(\1, ":V.*:[123][sp]", ":[GNA]") and not before(r"(?i)\b(?:plus|moins) +$")
-    -1>> =suggSimil(\1, ":[NA]")    # Incohérence : « \1 » est une forme verbale conjuguée.
+    -1>> =suggSimil(\1, ":[NA]", True)                                                              # Incohérence : « \1 » est une forme verbale conjuguée.
 
 TEST: d’une {{habille}} femme
 TEST: plus d’un ont été traumatisés
@@ -3010,7 +3010,7 @@ TEST: plus d’une sont parties aussi vite qu’elles étaient venues
 __[i]/conf(conf_il_on_pas_verbe)__
     (?<!t’)(?:il|on) (?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
     <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)|ou ") and morphex(word(-1), ":", ":3s", True)
-    -1>> =suggSimil(\1, ":(?:3s|Oo)")                                                               # Incohérence : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+    -1>> =suggSimil(\1, ":(?:3s|Oo)", False)                                                        # Incohérence : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: il {{et}} parti.
 
@@ -3018,7 +3018,7 @@ TEST: il {{et}} parti.
 __[i]/conf(conf_ils_pas_verbe)__
     (?<!t’)ils (?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
     <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)|ou ") and morphex(word(-1), ":", ":3p", True)
-    -1>> =suggSimil(\1, ":(?:3p|Oo)")                                                               # Incohérence avec « ils » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+    -1>> =suggSimil(\1, ":(?:3p|Oo)", False)                                                        # Incohérence avec « ils » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: ils {{son}} du même bois.
 TEST: Ils {{étai}} partie au {{restaurent}}
@@ -3027,7 +3027,7 @@ TEST: Ils {{étai}} partie au {{restaurent}}
 __[i]/conf(conf_je_pas_verbe)__
     je (?!soussigné)(?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
     <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)") and morphex(word(-1), ":", ":1s", True)
-    -1>> =suggSimil(\1, ":(?:1s|Oo)")                                                               # Incohérence avec « je » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+    -1>> =suggSimil(\1, ":(?:1s|Oo)", False)                                                        # Incohérence avec « je » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: Je {{travail}}.
 
@@ -3035,7 +3035,7 @@ TEST: Je {{travail}}.
 __[i]/conf(conf_tu_pas_verbe)__
     tu (?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
     <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)") and morphex(word(-1), ":", ":(?:2s|V0e)", True)
-    -1>> =suggSimil(\1, ":(?:2s|Oo)")                                                               # Incohérence avec « tu » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+    -1>> =suggSimil(\1, ":(?:2s|Oo)", False)                                                        # Incohérence avec « tu » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
 
@@ -3066,7 +3066,7 @@ TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
  
 __[i]/conf(conf_très_verbe)__
     très +(?!envie)({w_2})  @@$
-    <<- morphex(\1, ":(?:Y|[123][sp])", ":[AQW]") -1>> =suggSimil(\1, ":[AW]")                      # Incohérence avec « très » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+    <<- morphex(\1, ":(?:Y|[123][sp])", ":[AQW]") -1>> =suggSimil(\1, ":[AW]", True)                # Incohérence avec « très » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: Il est très {{cite}}.
 TEST: très {{suivit}} par ce détective
@@ -3111,7 +3111,7 @@ TEST: Toutes les blagues qu’on fera sur {{entreront}} dans l’histoire !
 __[i]/conf(conf_si_vconj)__
     si +({w2})  @@$
     <<- morphex(\1, ":[123][sp]", ":[GNAQWMT]") and morphex(word(1), ":", ":D", True)
-    -1>> =suggSimil(\1, ":[AWGT]")                                                                  # Incohérence avec « si » : « \1 » ne devrait pas être une forme verbale conjuguée.
+    -1>> =suggSimil(\1, ":[AWGT]", True)                                                            # Incohérence avec « si » : « \1 » ne devrait pas être une forme verbale conjuguée.
 
 TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
 TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
@@ -4047,40 +4047,40 @@ __[i](p_m_enfin)__      m’enfin <<- ~>> *
 __[i]/conf(conf_j_y_en_qqch)__
     (j’(?:en +|y +|))({w_1})  @@0,$
     <<- morphex(\2, ":", ":(?:[123][sp]|O[onw])")
-    -2>> =suggSimil(\2, ":1s")                                                                      # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":1s", False)                                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_ne_qqch)__
     (n(?:e +|’))({w_1})  @@0,$
     <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|O[onw]|X)|>(?:[lmtsn]|surtout|guère|presque|même|tout|parfois|vraiment|réellement) ") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)")                                                      # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)", False)                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
 __[i]/conf(conf_n_y_en_qqch)__
     (n’(?:en|y)) ({w_1})  @@0,$
     <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|O[onw]|X)") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)")                                                         # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_ne_pronom_qqch)__
     (ne (?:l(?:es? +|eur +|a +|’)|[nv]ous))({w_1})  @@0,$
     <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|O[onw]|X)") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)")                                                         # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_me_te_se_qqch)__
     ([mts]e +(?:les? |la |l’|))(?!voi(?:là|ci))({w_1})  @@0,$
     <<- not re.search("(?i)^se que?", \0)
     and morphex(\2, ":", ":(?:[123][sp]|Y|P|Oo)|>[lmts] ") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)")                                                      # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)", False)                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
 __[i]/conf(conf_m_t_s_y_en_qqch)__
     ([mts]’(?:en|y)) (?!voilà)({w_1})  @@0,$
     <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|Oo)") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)")                                                         # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_m_s_qqch)__
     ([ms]’)({w_1})  @@0,2
     <<- morphex(\2, ":", ":(?:[123][sp]|Y|P)|>(?:en|y|ils?) ") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)")                                                         # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_t_qqch)__
     (t’)({w_1})  @@0,2
     <<- morphex(\2, ":", ":(?:[123][sp]|Y|P)|>(?:en|y|ils?|elles?) ") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)")                                                         # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_c_ç_qqch)__
     ([cç]’)({w_1})  @@0,2
     <<- morphex(\2, ":", ":[123][sp]|>(?:en|y|que?) ") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|dire)$", \2)
-    -2>> =suggSimil(\2, ":3s")                                                                      # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+    -2>> =suggSimil(\2, ":3s", False)                                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne l’{{oubli}} pas
 TEST: elle ne la {{croix}} pas
@@ -5311,7 +5311,7 @@ TEST: On aura carte blanche.
 TEST: La seule façon de redonner sens à des notions…
 TEST: Les longues tresses que j’ai pris l’habitude de porter depuis quelque temps et qu’il faut cinq heures pour parfaire.
 TEST: Il est pieds nus.
-TEST: des dossiers secrets {{défense}}
+TEST: des dossiers secrets défense
 
 
 #
@@ -11464,7 +11464,7 @@ TEST: C’était elle qui avait pris le contrôle.
 __[i]/inte(inte_je)__
     ({w1})-je  @@0
     <<- morphex(\1, ":V", ":1[sśŝ]") -1>> =suggVerb(@, ":1ś")                                       # Forme interrogative : « \1 » n’est pas un verbe à la 1ʳᵉ personne du singulier.
-    <<- not morph(\1, ":V", False) -1>> =suggSimil(\1, ":1[sśŝ]")                                   # Forme interrogative : « \1 » n’est pas un verbe à la 1ʳᵉ personne du singulier.
+    <<- not morph(\1, ":V", False) -1>> =suggSimil(\1, ":1[sśŝ]", False)                            # Forme interrogative : « \1 » n’est pas un verbe à la 1ʳᵉ personne du singulier.
 
 TEST: {{Vas}}-je                                            ->> Vais
 TEST: {{Prit}}-je                                           ->> Pris
@@ -11474,7 +11474,7 @@ TEST: {{prix}}-je le temps d’y parvenir ? Oui.
 __[i]/inte(inte_tu)__
     ({w1})-tu  @@0
     <<- morphex(\1, ":V", ":[ISK].*:2s") -1>> =suggVerb(@, ":2s")                                   # Forme interrogative. « \1 » n’est pas un verbe à la 2ᵉ personne du singulier.
-    <<- not morph(\1, ":V", False) -1>> =suggSimil(\1, ":2s")                                       # Forme interrogative : « \1 » n’est pas un verbe à la 2ᵉ personne du singulier.
+    <<- not morph(\1, ":V", False) -1>> =suggSimil(\1, ":2s", False)                                # Forme interrogative : « \1 » n’est pas un verbe à la 2ᵉ personne du singulier.
 
 TEST: {{Peut}}-tu                                           ->> Peux
 TEST: {{peu}}-tu revenir chez moi ?
@@ -11484,7 +11484,7 @@ __[i]/inte(inte_il_elle_on)__
     ({w1})-(?:t-|)(il|elle|on)  @@0,$
     <<- morphex(\1, ":V", ":3s") -1>> =suggVerb(@, ":3s")                                           # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.
     <<- \1 != "t" and (not \1.endswith("oilà") or \2 != "il") and morphex(\1, ":", ":V")
-    -1>> =suggSimil(\1, ":3s")                                                                      # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.
+    -1>> =suggSimil(\1, ":3s", False)                                                               # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.
     <<- not \2.endswith(("n", "N")) and morphex(\1, ":3p", ":3s") -2>> \2s                          # Forme interrogative : accordez “\2” avec le verbe à la 3ᵉ personne du pluriel.
 
 TEST: {{Peux}}-il                                           ->> Peut
@@ -11498,7 +11498,7 @@ TEST: Le moteur choisi convient-il ?
 __[s]/inte(inte_ce)__
     ({w_2})-([cs]e)  @@0,$
     <<- morphex(\1, ":V", ":(?:3s|V0e.*:3p)") -1>> =suggVerb(@, ":3s")      # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
-    <<- morphex(\1, ":", ":V") -1>> =suggSimil(\1, ":3s")                   # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+    <<- morphex(\1, ":", ":V") -1>> =suggSimil(\1, ":3s", False)            # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
     <<- \2 == "se" -2>> ce                                                  # Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
 
 TEST: était-{{se}} cela, la vérité ineffable ?
@@ -11511,7 +11511,7 @@ TEST: Eh ! dit Athos, ne sont-ce pas des braconniers qu’on arrête là-bas�
 __[i]/inte(inte_nous)__
     ({w1})-nous  @@0
     <<- morphex(\1, ":V", ":(?:1p|E:2[sp])") -1>> =suggVerb(@, ":1p")                               # Forme interrogative ou impérative incorrecte.
-    <<- morphex(\1, ":", ":V|>chez ") -1>> =suggSimil(\1, ":1p")                                    # Forme interrogative ou impérative incorrecte.
+    <<- morphex(\1, ":", ":V|>chez ") -1>> =suggSimil(\1, ":1p", False)                             # Forme interrogative ou impérative incorrecte.
 
 TEST: {{Prendront}}-nous                                    ->> Prendrons
 TEST: {{Attendront}}-nous le train                          ->> Attendrons
@@ -11520,7 +11520,7 @@ TEST: {{Attendront}}-nous le train                          ->> Attendrons
 __[i]/inte(inte_vous)__
     ({w1})-vous  @@0
     <<- morphex(\1, ":V", ":2p") -1>> =suggVerb(@, ":2p")                                           # Forme interrogative ou impérative incorrecte.
-    <<- not morph(\1, ":V|>chez ", False) -1>> =suggSimil(\1, ":2p")                                # Forme interrogative ou impérative incorrecte.
+    <<- not morph(\1, ":V|>chez ", False) -1>> =suggSimil(\1, ":2p", False)                         # Forme interrogative ou impérative incorrecte.
 
 TEST: {{Attaquait}}-vous                                    ->> Attaquiez
 TEST: Elle a de nombreux rendez-vous ce matin.
@@ -11532,7 +11532,7 @@ __[i]/inte(inte_ils_elles)__
     <<- morphex(\1, ":V", ":3p") and spell(\1)
     -1>> =suggVerb(@, ":3p")                                                                        # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du pluriel.
     <<- \1 != "t" and not morph(\1, ":V", False) and spell(\1)
-    -1>> =suggSimil(\1, ":3p")                                                                      # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du pluriel.
+    -1>> =suggSimil(\1, ":3p", False)                                                               # Forme interrogative : « \1 » n’est pas un verbe à la 3ᵉ personne du pluriel.
 
 TEST: {{attaquant}}-ils                                     ->> attaquent
 TEST: {{prendrons}}-elles un verre avec moi ?
