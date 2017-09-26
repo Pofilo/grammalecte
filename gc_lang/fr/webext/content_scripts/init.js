@@ -16,7 +16,7 @@ function showError (e) {
 
 // Chrome don’t follow the W3C specification:
 // https://browserext.github.io/browserext/
-if (typeof(chrome) === "object") {
+if (typeof(browser) !== "object") {
     var browser = chrome;
 }
 
