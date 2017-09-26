@@ -9,8 +9,10 @@ function showError (e) {
 
 // Chrome don’t follow the W3C specification:
 // https://browserext.github.io/browserext/
+let bChrome = false;
 if (typeof(browser) !== "object") {
     var browser = chrome;
+    bChrome = true;
 }
 
 
@@ -67,18 +69,23 @@ xGCEWorker.onmessage = function (e) {
     }
 };
 
+function initGrammarChecker (dSavedOptions) {
+    let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
+    xGCEWorker.postMessage({
+        sCommand: "init",
+        dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+        dInfo: {}
+    });
+}
 
 function init () {
+    if (bChrome) {
+        browser.storage.local.get("gc_options", initGrammarChecker);
+        return;
+    }
     let xPromise = browser.storage.local.get("gc_options");
     xPromise.then(
-        function (dSavedOptions) {
-            let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
-            xGCEWorker.postMessage({
-                sCommand: "init",
-                dParam: {sExtensionPath: browser.extension.getURL("."), dOptions: dOptions, sContext: "Firefox"},
-                dInfo: {}
-            });
-        },
+        initGrammarChecker,
         function (e) {
             showError(e);
             xGCEWorker.postMessage({
