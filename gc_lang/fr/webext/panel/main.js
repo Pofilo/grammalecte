@@ -9,8 +9,10 @@ function showError (e) {
 
 // Chrome don’t follow the W3C specification:
 // https://browserext.github.io/browserext/
+let bChrome = false;
 if (typeof(browser) !== "object") {
     var browser = chrome;
+    bChrome = true;
 }
 
 
@@ -132,21 +134,24 @@ function showTestResult (sText) {
     document.getElementById("tests_result").textContent = sText;
 }
 
+
 function setGCOptionsFromStorage () {
+    if (bChrome) {
+        browser.storage.local.get("gc_options", _setGCOptions);
+        return;
+    }
     let xPromise = browser.storage.local.get("gc_options");
-    xPromise.then(
-        function (dSavedOptions) {
-            if (dSavedOptions.hasOwnProperty("gc_options")) {
-                setGCOptions(dSavedOptions.gc_options);
-            }
-        },
-        function (e) {
-            showError(e);
-        }
-    );
+    xPromise.then(_setGCOptions, showError);
+}
+
+function _setGCOptions (dSavedOptions) {
+    if (dSavedOptions.hasOwnProperty("gc_options")) {
+        setGCOptions(dSavedOptions.gc_options);
+    }
 }
 
 function setGCOptions (dOptions) {
+    console.log(dOptions);
     for (let [sOpt, bVal] of dOptions) {
         if (document.getElementById("option_"+sOpt)) {
             document.getElementById("option_"+sOpt).checked = bVal;

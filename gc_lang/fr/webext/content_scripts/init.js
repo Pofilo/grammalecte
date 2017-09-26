@@ -16,8 +16,10 @@ function showError (e) {
 
 // Chrome don’t follow the W3C specification:
 // https://browserext.github.io/browserext/
+let bChrome = false;
 if (typeof(browser) !== "object") {
     var browser = chrome;
+    bChrome = true;
 }
 
 
