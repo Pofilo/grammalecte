@@ -151,10 +151,19 @@ function _setGCOptions (dSavedOptions) {
 }
 
 function setGCOptions (dOptions) {
+    console.log(typeof(dOptions));
     console.log(dOptions);
-    for (let [sOpt, bVal] of dOptions) {
+    /*for (let [sOpt, bVal] of dOptions) {
         if (document.getElementById("option_"+sOpt)) {
             document.getElementById("option_"+sOpt).checked = bVal;
+        }
+    }*/
+    // JS bullshit never ends. For some reason, it’s not a Map anymore on Chrome! 
+    for (let xOption of document.getElementsByClassName("gc_option")) {
+        console.log(xOption.id);
+        let sOpt = xOption.id.slice(7);
+        if (dOptions.has(sOpt)) {
+            xOption.checked = dOptions.get(sOpt);
         }
     }
 }
