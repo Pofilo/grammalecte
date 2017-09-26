@@ -14,6 +14,13 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
+// Chrome don’t follow the W3C specification:
+// https://browserext.github.io/browserext/
+if (typeof(chrome) === "object") {
+    var browser = chrome;
+}
+
+
 function createNode (sType, oAttr, oDataset=null) {
     try {
         let xNode = document.createElement(sType);
