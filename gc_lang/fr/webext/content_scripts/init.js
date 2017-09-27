@@ -23,20 +23,6 @@ if (typeof(browser) !== "object") {
 }
 
 
-function createNode (sType, oAttr, oDataset=null) {
-    try {
-        let xNode = document.createElement(sType);
-        Object.assign(xNode, oAttr);
-        if (oDataset) {
-            Object.assign(xNode.dataset, oDataset);
-        }
-        return xNode;
-    }
-    catch (e) {
-        showError(e);
-    }
-}
-
 /*
 function loadImage (sContainerClass, sImagePath) {
     let xRequest = new XMLHttpRequest();
@@ -100,6 +86,20 @@ const oGrammalecte = {
         if (this.oGCPanel === null) {
             this.oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
             this.oGCPanel.insertIntoPage();
+        }
+    },
+
+    createNode: function (sType, oAttr, oDataset=null) {
+        try {
+            let xNode = document.createElement(sType);
+            Object.assign(xNode, oAttr);
+            if (oDataset) {
+                Object.assign(xNode.dataset, oDataset);
+            }
+            return xNode;
+        }
+        catch (e) {
+            showError(e);
         }
     }
 }
