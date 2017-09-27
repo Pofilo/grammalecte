@@ -486,9 +486,12 @@ class Verb {
 
 
 // Initialization
-if (!conj.bInit && (typeof(browser) !== 'undefined' || typeof(chrome) !== 'undefined')) {
-    // WebExtension (but not in Worker)
+if (!conj.bInit && typeof(browser) !== 'undefined') {
+    // WebExtension Standard (but not in Worker)
     conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
+} else if (!conj.bInit && typeof(chrome) !== 'undefined') {
+    // WebExtension Chrome (but not in Worker)
+    conj.init(helpers.loadFile(chrome.extension.getURL("grammalecte/fr/conj_data.json")));
 } else if (!conj.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
