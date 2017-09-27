@@ -300,6 +300,12 @@ function getListOfTokensFromSelectedText (iTab, sText) {
 }
 
 function openConjugueurTab () {
+    if (bChrome) {
+        browser.tabs.create({
+            url: browser.extension.getURL("panel/conjugueur.html")
+        });
+        return;
+    }
     let xConjTab = browser.tabs.create({
         url: browser.extension.getURL("panel/conjugueur.html")
     });
@@ -307,9 +313,18 @@ function openConjugueurTab () {
 }
 
 function openConjugueurWindow () {
+    if (bChrome) {
+        browser.windows.create({
+            url: browser.extension.getURL("panel/conjugueur.html"),
+            type: "panel",
+            width: 710,
+            height: 980
+        });
+        return;
+    }
     let xConjWindow = browser.windows.create({
         url: browser.extension.getURL("panel/conjugueur.html"),
-        type: "detached_panel",
+        type: "panel",
         width: 710,
         height: 980
     });
