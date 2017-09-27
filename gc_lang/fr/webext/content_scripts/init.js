@@ -50,8 +50,10 @@ const oGrammalecte = {
     createMenus: function () {
         let lNode = document.getElementsByTagName("textarea");
         for (let xNode of lNode) {
-            this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
-            this.nMenu += 1;
+            if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
+                this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+                this.nMenu += 1;
+            }
         }
     },
 
