@@ -151,19 +151,18 @@ function _setGCOptions (dSavedOptions) {
 }
 
 function setGCOptions (dOptions) {
-    console.log(typeof(dOptions));
-    console.log(dOptions);
-    /*for (let [sOpt, bVal] of dOptions) {
+    if (bChrome) {
+        // JS crap again. Chrome can’t store Map object.
+        let m = new Map();
+        for (let param in dOptions) {
+            m.set(param, dOptions[param]);
+        }
+        dOptions = m;
+    }
+    for (let [sOpt, bVal] of dOptions) {
+        console.log(sOpt + ": " + bVal);
         if (document.getElementById("option_"+sOpt)) {
             document.getElementById("option_"+sOpt).checked = bVal;
-        }
-    }*/
-    // JS bullshit never ends. For some reason, it’s not a Map anymore on Chrome! 
-    for (let xOption of document.getElementsByClassName("gc_option")) {
-        console.log(xOption.id);
-        let sOpt = xOption.id.slice(7);
-        if (dOptions.has(sOpt)) {
-            xOption.checked = dOptions.get(sOpt);
         }
     }
 }

@@ -27,7 +27,7 @@ xGCEWorker.onmessage = function (e) {
         let {sActionDone, result, dInfo} = e.data;
         switch (sActionDone) {
             case "init":
-                browser.storage.local.set({"gc_options": result});
+                storeGCOptions(result);
                 break;
             case "parse":
             case "parseAndSpellcheck":
@@ -53,11 +53,11 @@ xGCEWorker.onmessage = function (e) {
             case "resetOptions":
                 // send result to panel
                 browser.runtime.sendMessage(e.data);
-                browser.storage.local.set({"gc_options": result});
+                storeGCOptions(result);
                 break;
             case "setOptions":
             case "setOption":
-                browser.storage.local.set({"gc_options": result});
+                storeGCOptions(result);
                 break;
             default:
                 console.log("[background] Unknown command: " + sActionDone);
@@ -262,6 +262,19 @@ browser.commands.onCommand.addListener(function (sCommand) {
 /*
     Actions
 */
+
+function storeGCOptions (dOptions) {
+    if (bChrome) {
+        // JS crap again. Chrome can’t store Map object.
+        let obj = {};
+        for (let [k, v] of dOptions) {
+            obj[k] = v;
+        }
+        dOptions = obj;
+    }
+    browser.storage.local.set({"gc_options": dOptions});
+}
+
 function parseAndSpellcheckSelectedText (iTab, sText) {
     // send message to the tab
     let xTabPort = dConnx.get(iTab);

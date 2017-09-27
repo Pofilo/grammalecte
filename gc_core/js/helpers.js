@@ -74,7 +74,6 @@ var helpers = {
     objectToMap: function (obj) {
         let m = new Map();
         for (let param in obj) {
-            //console.log(param + " " + obj[param]);
             m.set(param, obj[param]);
         }
         return m;
