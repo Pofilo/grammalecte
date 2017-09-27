@@ -316,7 +316,7 @@ function openConjugueurWindow () {
     if (bChrome) {
         browser.windows.create({
             url: browser.extension.getURL("panel/conjugueur.html"),
-            type: "panel",
+            type: "popup",
             width: 710,
             height: 980
         });
@@ -324,7 +324,7 @@ function openConjugueurWindow () {
     }
     let xConjWindow = browser.windows.create({
         url: browser.extension.getURL("panel/conjugueur.html"),
-        type: "panel",
+        type: "popup",
         width: 710,
         height: 980
     });
