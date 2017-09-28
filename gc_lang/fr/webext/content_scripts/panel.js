@@ -58,8 +58,8 @@ class GrammalectePanel {
 
     _createWaitIcon () {
         let xWaitIcon = oGrammalecte.createNode("div", {className: "grammalecte_spinner"});
-        xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce1"}));
-        xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce2"}));
+        //xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce1"}));
+        //xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce2"}));
         return xWaitIcon;
     }
 
