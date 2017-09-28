@@ -151,8 +151,9 @@ function _setGCOptions (dSavedOptions) {
 }
 
 function setGCOptions (dOptions) {
+    // dOptions is supposed to be a Map
     if (bChrome) {
-        // JS crap again. Chrome can’t store Map object.
+        // JS crap again. Chrome can’t store/send Map object.
         let m = new Map();
         for (let param in dOptions) {
             m.set(param, dOptions[param]);
@@ -160,7 +161,6 @@ function setGCOptions (dOptions) {
         dOptions = m;
     }
     for (let [sOpt, bVal] of dOptions) {
-        console.log(sOpt + ": " + bVal);
         if (document.getElementById("option_"+sOpt)) {
             document.getElementById("option_"+sOpt).checked = bVal;
         }

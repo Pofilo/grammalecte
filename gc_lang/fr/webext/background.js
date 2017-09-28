@@ -52,8 +52,11 @@ xGCEWorker.onmessage = function (e) {
             case "getDefaultOptions":
             case "resetOptions":
                 // send result to panel
-                browser.runtime.sendMessage(e.data);
                 storeGCOptions(result);
+                if (bChrome) {
+                    e.data.result = helpers.mapToObject(e.data.result);
+                }
+                browser.runtime.sendMessage(e.data);
                 break;
             case "setOptions":
             case "setOption":
@@ -266,11 +269,7 @@ browser.commands.onCommand.addListener(function (sCommand) {
 function storeGCOptions (dOptions) {
     if (bChrome) {
         // JS crap again. Chrome can’t store Map object.
-        let obj = {};
-        for (let [k, v] of dOptions) {
-            obj[k] = v;
-        }
-        dOptions = obj;
+        dOptions = helpers.mapToObject(dOptions);
     }
     browser.storage.local.set({"gc_options": dOptions});
 }
