@@ -3466,7 +3466,7 @@ __[s]/conf(conf_c_est3)__
     <<- -1>> c’est                                                                          # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
 __[s]/conf(conf_c_est4)__
     ([scSC]es) ({w_1}) ({w_1}) @@0,w,$
-    <<- morph(\2, ":[WX]", False) and morph(\3, ":[RD]|>pire ", False) -1>> c’est           # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
+    <<- morph(\2, ":[WX]", ":N:.*:[pi]") and morph(\3, ":[RD]|>pire ", False) -1>> c’est           # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
 __[i]/conf(conf_ces_ses)__
     (c’est) ({w_2})  @@0,6 <<- morphex(\2, ":N.*:p", ":(?:G|W|M|A.*:[si])") -1>> ces|ses    # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
 
@@ -3477,6 +3477,7 @@ TEST: {{ces}} qu’il y a tant de pertes
 TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
 TEST: En 2015, c’est Paris et son agglomération qui…
+TEST: Ses pas de danse.
 
 
 # date / datte
