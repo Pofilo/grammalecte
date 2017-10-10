@@ -490,12 +490,12 @@ function hasSimil (sWord, sPattern=null) {
     return phonet.hasSimil(sWord, sPattern);
 }
 
-function suggSimil (sWord, sPattern) {
+function suggSimil (sWord, sPattern=null, bSubst=false) {
     // return list of words phonetically similar to sWord and whom POS is matching sPattern
     let aSugg = phonet.selectSimil(sWord, sPattern);
     for (let sMorph of _dAnalyses.gl_get(sWord, [])) {
-        for (let e of conj.getSimil(sWord, sMorph, sPattern)) {
-            aSugg.add(e); 
+        for (let e of conj.getSimil(sWord, sMorph, bSubst)) {
+            aSugg.add(e);
         }
     }
     if (aSugg.size > 0) {

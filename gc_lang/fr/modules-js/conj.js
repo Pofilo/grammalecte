@@ -83,14 +83,14 @@ var conj = {
         return this._lVtyp[this._dVerb[sVerb][0]];
     },
 
-    getSimil: function (sWord, sMorph, sFilter=null) {
+    getSimil: function (sWord, sMorph, bSubst=false) {
         if (!sMorph.includes(":V")) {
             return new Set();
         }
         let sInfi = sMorph.slice(1, sMorph.indexOf(" "));
         let tTags = this._getTags(sInfi);
         let aSugg = new Set();
-        if (sMorph.includes(":Q") || sMorph.includes(":Y")) {
+        if (!bSubst) {
             // we suggest conjugated forms
             if (sMorph.includes(":V1")) {
                 aSugg.add(sInfi);
@@ -125,9 +125,6 @@ var conj = {
             // if there is only one past participle (epi inv), unreliable.
             if (aSugg.size === 1) {
                 aSugg.clear();
-            }
-            if (sMorph.includes(":V1")) {
-                aSugg.add(sInfi);
             }
         }
         return aSugg;

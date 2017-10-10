@@ -66,7 +66,7 @@ var phonet = {
     },
 
     selectSimil: function (sWord, sPattern) {
-        // return list of words phonetically similar to sWord and whom POS is matching sPattern
+        // return a set of words phonetically similar to sWord and whom POS is matching sPattern
         if (!sPattern) {
             return new Set(this.getSimil(sWord));
         }
