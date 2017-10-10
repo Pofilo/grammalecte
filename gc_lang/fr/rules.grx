@@ -5236,6 +5236,11 @@ __[i](p_rester_lettre_morte)__
 __[i](p_sembler_paraitre_être)__
     (sembl\w+|par[au]\w+) +(être|avoir été) +({w_2}) @@0,w,$
     <<- morph(\1, ">(?:sembler|para[îi]tre) ") and morphex(\3, ":A", ":G") ~2>> *
+__[i](loc_suivre_de_près)__
+    (suiv\w+) +((?:ça +|ce(?:ci|la) +|)de (pr[èé]s?|prêts?)) @@$,$
+    <<- morph(\1, ">suivre ", False) >>>
+    <<- \3 != "près" -3>> près                  # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+    <<- ~2>> *
 __[i](loc_tenir_à_distance)__
     (t[eiî]\w+) +(([àa]) distance) d(?:es?|u) @@0,$,w
     <<- morph(\1, ">tenir ", False) >>>
@@ -5254,6 +5259,7 @@ __[i](p_venir)__
 
 TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
 TEST: prendre {{a}} la légère ce test serait une erreur.
+TEST: on va suivre ça de {{prêt}}.
 TEST: il faut se tenir {{a}} distance de ces gens-là.
 
 
