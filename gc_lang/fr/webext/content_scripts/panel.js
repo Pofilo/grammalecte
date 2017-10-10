@@ -11,8 +11,8 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
-        this.xPanelBar = createNode("div", {className: "grammalecte_panel_bar"});
-        this.xPanelContent = createNode("div", {className: "grammalecte_panel_content"});
+        this.xPanelBar = oGrammalecte.createNode("div", {className: "grammalecte_panel_bar"});
+        this.xPanelContent = oGrammalecte.createNode("div", {className: "grammalecte_panel_content"});
         this.xWaitIcon = this._createWaitIcon();
         this.xPanel = this._createPanel(sTitle);
         this.center();
@@ -20,11 +20,11 @@ class GrammalectePanel {
 
     _createPanel (sTitle) {
         try {
-            let xPanel = createNode("div", {id: this.sId, className: "grammalecte_panel"});
+            let xPanel = oGrammalecte.createNode("div", {id: this.sId, className: "grammalecte_panel"});
             this.xPanelBar.appendChild(this._createButtons());
-            let xTitle = createNode("div", {className: "grammalecte_panel_title"});
+            let xTitle = oGrammalecte.createNode("div", {className: "grammalecte_panel_title"});
             xTitle.appendChild(this._createLogo());
-            xTitle.appendChild(createNode("div", {className: "grammalecte_panel_label", textContent: sTitle}));
+            xTitle.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_panel_label", textContent: sTitle}));
             this.xPanelBar.appendChild(xTitle);
             xPanel.appendChild(this.xPanelBar);
             xPanel.appendChild(this.xPanelContent);
@@ -42,7 +42,7 @@ class GrammalectePanel {
     }
 
     _createButtons () {
-        let xButtonLine = createNode("div", {className: "grammalecte_panel_commands"});
+        let xButtonLine = oGrammalecte.createNode("div", {className: "grammalecte_panel_commands"});
         xButtonLine.appendChild(this.xWaitIcon);
         if (this.sId === "grammalecte_gc_panel") {
             xButtonLine.appendChild(this._createCopyButton());
@@ -57,26 +57,26 @@ class GrammalectePanel {
     }
 
     _createWaitIcon () {
-        let xWaitIcon = createNode("div", {className: "grammalecte_spinner"});
-        xWaitIcon.appendChild(createNode("div", {className: "bounce1"}));
-        xWaitIcon.appendChild(createNode("div", {className: "bounce2"}));
+        let xWaitIcon = oGrammalecte.createNode("div", {className: "grammalecte_spinner"});
+        //xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce1"}));
+        //xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce2"}));
         return xWaitIcon;
     }
 
     _createCopyButton () {
-        let xButton = createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
+        let xButton = oGrammalecte.createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
         xButton.onclick = function () { this.copyTextToClipboard(); }.bind(this);
         return xButton;
     }
 
     _createMoveButton (sAction, sLabel, sTitle) {
-        let xButton = createNode("div", {className: "grammalecte_move_button", textContent: sLabel, title: sTitle});
+        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_move_button", textContent: sLabel, title: sTitle});
         xButton.onclick = function () { this[sAction](); }.bind(this);
         return xButton;
     }
 
     _createCloseButton () {
-        let xButton = createNode("div", {className: "grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
+        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
         xButton.onclick = function () { this.hide(); }.bind(this);  // better than writing “let that = this;” before the function?
         return xButton;
     }

@@ -373,14 +373,13 @@ def hasSimil (sWord, sPattern=None):
     return phonet.hasSimil(sWord, sPattern)
 
 
-def suggSimil (sWord, sPattern=None):
+def suggSimil (sWord, sPattern=None, bSubst=False):
     "return list of words phonetically similar to sWord and whom POS is matching sPattern"
     # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = phonet.selectSimil(sWord, sPattern)
     for sMorph in _dAnalyses.get(sWord, []):
-        for e in conj.getSimil(sWord, sMorph, sPattern):
-            aSugg.add(e)
-        #aSugg = aSugg.union(conj.getSimil(sWord, sMorph))
+        aSugg.update(conj.getSimil(sWord, sMorph, bSubst))
+        break
     if aSugg:
         return "|".join(aSugg)
     return ""

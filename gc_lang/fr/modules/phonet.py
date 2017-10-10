@@ -39,7 +39,7 @@ def getSimil (sWord):
 
 
 def selectSimil (sWord, sPattern):
-    "return list of words phonetically similar to sWord and whom POS is matching sPattern"
+    "return a set of words phonetically similar to sWord and whom POS is matching sPattern"
     if not sPattern:
         return set(getSimil(sWord))
     aSelect = set()

@@ -83,14 +83,14 @@ var conj = {
         return this._lVtyp[this._dVerb[sVerb][0]];
     },
 
-    getSimil: function (sWord, sMorph, sFilter=null) {
+    getSimil: function (sWord, sMorph, bSubst=false) {
         if (!sMorph.includes(":V")) {
             return new Set();
         }
         let sInfi = sMorph.slice(1, sMorph.indexOf(" "));
         let tTags = this._getTags(sInfi);
         let aSugg = new Set();
-        if (sMorph.includes(":Q") || sMorph.includes(":Y")) {
+        if (!bSubst) {
             // we suggest conjugated forms
             if (sMorph.includes(":V1")) {
                 aSugg.add(sInfi);
@@ -125,9 +125,6 @@ var conj = {
             // if there is only one past participle (epi inv), unreliable.
             if (aSugg.size === 1) {
                 aSugg.clear();
-            }
-            if (sMorph.includes(":V1")) {
-                aSugg.add(sInfi);
             }
         }
         return aSugg;
@@ -487,12 +484,15 @@ class Verb {
 
 // Initialization
 if (!conj.bInit && typeof(browser) !== 'undefined') {
-    // WebExtension (but not in Worker)
+    // WebExtension Standard (but not in Worker)
     conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
+} else if (!conj.bInit && typeof(chrome) !== 'undefined') {
+    // WebExtension Chrome (but not in Worker)
+    conj.init(helpers.loadFile(chrome.extension.getURL("grammalecte/fr/conj_data.json")));
 } else if (!conj.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
     conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
-} else if ( !conj.bInit && typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
+} else if (!conj.bInit && typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== "undefined") {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
     self.port.on("provideConjData", function (sJSONData) {

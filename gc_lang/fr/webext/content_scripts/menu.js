@@ -7,7 +7,7 @@ class GrammalecteMenu {
 
     constructor (nMenu, xNode) {
         this.sMenuId = "grammalecte_menu" + nMenu;
-        this.xButton = createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
+        this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => { this.switchMenu(); };
         this.xMenu = this._createMenu(xNode);
         this._insertAfter(this.xButton, xNode);
@@ -21,11 +21,11 @@ class GrammalecteMenu {
     _createMenu (xNode) {
         try {
             let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.textContent;
-            let xMenu = createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
-            xMenu.appendChild(createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
+            let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
+            xMenu.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
             // Text formatter
             if (xNode.tagName == "TEXTAREA") {
-                let xTFButton = createNode("div", {className: "grammalecte_menu_item", textContent: "Formateur de texte"});
+                let xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Formateur de texte"});
                 xTFButton.onclick = () => {
                     this.switchMenu();
                     oGrammalecte.createTFPanel();
@@ -35,7 +35,7 @@ class GrammalecteMenu {
                 xMenu.appendChild(xTFButton);
             }
             // lexicographe
-            let xLxgButton = createNode("div", {className: "grammalecte_menu_item", textContent: "Lexicographe"});
+            let xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Lexicographe"});
             xLxgButton.onclick = () => {
                 this.switchMenu();
                 oGrammalecte.createLxgPanel();
@@ -50,7 +50,7 @@ class GrammalecteMenu {
             };
             xMenu.appendChild(xLxgButton);
             // Grammar checker
-            let xGCButton = createNode("div", {className: "grammalecte_menu_item", textContent: "Correction grammaticale"});
+            let xGCButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Correction grammaticale"});
             xGCButton.onclick = () => {
                 this.switchMenu();
                 oGrammalecte.createGCPanel();
@@ -65,13 +65,13 @@ class GrammalecteMenu {
             };
             xMenu.appendChild(xGCButton);
             // Conjugation tool
-            let xConjButton = createNode("div", {className: "grammalecte_menu_item_block", textContent: "Conjugueur"});
-            let xConjButtonTab = createNode("div", {className: "grammalecte_menu_button", textContent: "Onglet"});
+            let xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item_block", textContent: "Conjugueur"});
+            let xConjButtonTab = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Onglet"});
             xConjButtonTab.onclick = () => {
                 this.switchMenu();
                 xGrammalectePort.postMessage({sCommand: "openConjugueurTab", dParam: null, dInfo: null});
             };
-            let xConjButtonWin = createNode("div", {className: "grammalecte_menu_button", textContent: "Fenêtre"});
+            let xConjButtonWin = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Fenêtre"});
             xConjButtonWin.onclick = () => {
                 this.switchMenu();
                 xGrammalectePort.postMessage({sCommand: "openConjugueurWindow", dParam: null, dInfo: null});
@@ -79,9 +79,9 @@ class GrammalecteMenu {
             xConjButton.appendChild(xConjButtonTab);
             xConjButton.appendChild(xConjButtonWin);
             xMenu.appendChild(xConjButton);
-            //xMenu.appendChild(createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
+            //xMenu.appendChild(oGrammalecte.createNode("img", {scr: browser.extension.getURL("img/logo-16.png")}));
             // can’t work, due to content-script policy: https://bugzilla.mozilla.org/show_bug.cgi?id=1267027
-            xMenu.appendChild(createNode("div", {className: "grammalecte_menu_footer"}));
+            xMenu.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_menu_footer"}));
             return xMenu;
         }
         catch (e) {

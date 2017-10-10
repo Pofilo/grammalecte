@@ -372,7 +372,7 @@ dTableRepl = {
                     ("(?<=\\b[XVICL][XVICL])(i?[èe]me|è|ᵉ)\\b",                 "e",    True, True),
                     ("(?<=\\b[XVICL])(i?[èe]me|è|ᵉ)\\b",                        "e",    True, True),
                     ("(?<=\\b[1I])ᵉʳ\\b",                                       "er",   True, True),
-                    ("(?<=\\b[1I])ʳᵉ\\b",                                       "er",   True, True)
+                    ("(?<=\\b[1I])ʳᵉ\\b",                                       "re",   True, True)
     ],
     "misc2": [
                     ("etc(…|[.][.][.]?)",                       "etc.",         True,   True),

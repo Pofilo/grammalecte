@@ -46,8 +46,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     constructor (...args) {
         super(...args);
         this.aIgnoredErrors = new Set();
-        this.xContentNode = createNode("div", {id: "grammalecte_gc_panel_content"});
-        this.xParagraphList = createNode("div", {id: "grammalecte_paragraph_list"});
+        this.xContentNode = oGrammalecte.createNode("div", {id: "grammalecte_gc_panel_content"});
+        this.xParagraphList = oGrammalecte.createNode("div", {id: "grammalecte_paragraph_list"});
         this.xContentNode.appendChild(this.xParagraphList);
         this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
         this.oTooltip = new GrammalecteTooltip(this.xContentNode);
@@ -78,13 +78,13 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     addParagraphResult (oResult) {
         try {
             if (oResult && (oResult.sParagraph.trim() !== "" || oResult.aGrammErr.length > 0 || oResult.aSpellErr.length > 0)) {
-                let xNodeDiv = createNode("div", {className: "grammalecte_paragraph_block"});
+                let xNodeDiv = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
-                let xActionsBar = createNode("div", {className: "grammalecte_paragraph_actions"});
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "Réanalyser"}, {para_num: oResult.iParaNum}));
-                xActionsBar.appendChild(createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_red", textContent: "×", style: "font-weight: bold;"}));
+                let xActionsBar = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_actions"});
+                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "Réanalyser"}, {para_num: oResult.iParaNum}));
+                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_red", textContent: "×", style: "font-weight: bold;"}));
                 // paragraph
-                let xParagraph = createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, className: "grammalecte_paragraph", lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
+                let xParagraph = oGrammalecte.createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, className: "grammalecte_paragraph", lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
                 xParagraph.addEventListener("keyup", function (xEvent) {
                     this.oTAC.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
@@ -237,7 +237,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     addMessage (sMessage) {
-        let xNode = createNode("div", {className: "grammalecte_gc_panel_message", textContent: sMessage});
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_gc_panel_message", textContent: sMessage});
         this.xParagraphList.appendChild(xNode);
     }
 
@@ -279,22 +279,22 @@ class GrammalecteTooltip {
 
     constructor (xContentNode) {
         this.sErrorId = null;
-        this.xTooltip = createNode("div", {id: "grammalecte_tooltip"});
-        this.xTooltipArrow = createNode("img", {
+        this.xTooltip = oGrammalecte.createNode("div", {id: "grammalecte_tooltip"});
+        this.xTooltipArrow = oGrammalecte.createNode("img", {
             id: "grammalecte_tooltip_arrow",
             src: " data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xNzNun2MAAAAnSURBVChTY/j//z8cq/kW/wdhZDEMSXRFWCVhGKwAmwQyHngFxf8B5fOGYfeFpYoAAAAASUVORK5CYII=",
             alt: "^",
         });
-        this.xTooltipSuggBlock = createNode("div", {id: "grammalecte_tooltip_sugg_block"});
-        let xMessageBlock = createNode("div", {id: "grammalecte_tooltip_message_block"});
-        xMessageBlock.appendChild(createNode("p", {id: "grammalecte_tooltip_rule_id"}));
-        xMessageBlock.appendChild(createNode("p", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
-        let xActions = xMessageBlock.appendChild(createNode("div", {id: "grammalecte_tooltip_actions"}));
-        xActions.appendChild(createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
-        xActions.appendChild(createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
+        this.xTooltipSuggBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_block"});
+        let xMessageBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_message_block"});
+        xMessageBlock.appendChild(oGrammalecte.createNode("p", {id: "grammalecte_tooltip_rule_id"}));
+        xMessageBlock.appendChild(oGrammalecte.createNode("p", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
+        let xActions = xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"}));
+        xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
+        xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
         xMessageBlock.appendChild(xActions);
         this.xTooltip.appendChild(xMessageBlock);
-        this.xTooltip.appendChild(createNode("div", {id: "grammalecte_tooltip_sugg_title", textContent: "SUGGESTIONS :"}));
+        this.xTooltip.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_title", textContent: "SUGGESTIONS :"}));
         this.xTooltip.appendChild(this.xTooltipSuggBlock);
         xContentNode.appendChild(this.xTooltip);
         xContentNode.appendChild(this.xTooltipArrow);

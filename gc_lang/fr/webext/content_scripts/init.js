@@ -14,19 +14,14 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
-function createNode (sType, oAttr, oDataset=null) {
-    try {
-        let xNode = document.createElement(sType);
-        Object.assign(xNode, oAttr);
-        if (oDataset) {
-            Object.assign(xNode.dataset, oDataset);
-        }
-        return xNode;
-    }
-    catch (e) {
-        showError(e);
-    }
+// Chrome don’t follow the W3C specification:
+// https://browserext.github.io/browserext/
+let bChrome = false;
+if (typeof(browser) !== "object") {
+    var browser = chrome;
+    bChrome = true;
 }
+
 
 /*
 function loadImage (sContainerClass, sImagePath) {
@@ -55,8 +50,10 @@ const oGrammalecte = {
     createMenus: function () {
         let lNode = document.getElementsByTagName("textarea");
         for (let xNode of lNode) {
-            this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
-            this.nMenu += 1;
+            if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
+                this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+                this.nMenu += 1;
+            }
         }
     },
 
@@ -99,6 +96,20 @@ const oGrammalecte = {
         if (this.oGCPanel === null) {
             this.oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
             this.oGCPanel.insertIntoPage();
+        }
+    },
+
+    createNode: function (sType, oAttr, oDataset=null) {
+        try {
+            let xNode = document.createElement(sType);
+            Object.assign(xNode, oAttr);
+            if (oDataset) {
+                Object.assign(xNode.dataset, oDataset);
+            }
+            return xNode;
+        }
+        catch (e) {
+            showError(e);
         }
     }
 }

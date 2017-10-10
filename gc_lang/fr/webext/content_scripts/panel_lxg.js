@@ -7,7 +7,7 @@ class GrammalecteLexicographer extends GrammalectePanel {
     constructor (...args) {
         super(...args);
         this._nCount = 0;
-        this._xContentNode = createNode("div", {id: "grammalecte_lxg_panel_content"});
+        this._xContentNode = oGrammalecte.createNode("div", {id: "grammalecte_lxg_panel_content"});
         this.xPanelContent.appendChild(this._xContentNode);
     }
 
@@ -20,20 +20,20 @@ class GrammalecteLexicographer extends GrammalectePanel {
 
     addSeparator (sText) {
         if (this._xContentNode.textContent !== "") {
-            this._xContentNode.appendChild(createNode("div", {className: "grammalecte_lxg_separator", textContent: sText}));
+            this._xContentNode.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_separator", textContent: sText}));
         }
     }
 
     addMessage (sClass, sText) {
-        this._xContentNode.appendChild(createNode("div", {className: sClass, textContent: sText}));
+        this._xContentNode.appendChild(oGrammalecte.createNode("div", {className: sClass, textContent: sText}));
     }
 
     addListOfTokens (lTokens) {
         try {
             if (lTokens) {
                 this._nCount += 1;
-                let xNodeDiv = createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
-                xNodeDiv.appendChild(createNode("div", {className: "grammalecte_lxg_list_num", textContent: this._nCount}));
+                let xNodeDiv = oGrammalecte.createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
+                xNodeDiv.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_list_num", textContent: this._nCount}));
                 for (let oToken of lTokens) {
                     xNodeDiv.appendChild(this._createTokenNode(oToken));
                 }
@@ -46,15 +46,15 @@ class GrammalecteLexicographer extends GrammalectePanel {
     }
 
     _createTokenNode (oToken) {
-        let xTokenNode = createNode("div", {className: "grammalecte_lxg_token_block"});
-        xTokenNode.appendChild(createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
-        xTokenNode.appendChild(createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
+        let xTokenNode = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_block"});
+        xTokenNode.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
+        xTokenNode.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
         if (oToken.aLabel.length === 1) {
             xTokenNode.appendChild(document.createTextNode(oToken.aLabel[0]));
         } else {
-            let xTokenList = createNode("div", {className: "grammalecte_lxg_morph_list"});
+            let xTokenList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
             for (let sLabel of oToken.aLabel) {
-                xTokenList.appendChild(createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel}));
+                xTokenList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel}));
             }
             xTokenNode.appendChild(xTokenList);
         }

@@ -7,6 +7,14 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
+// Chrome don’t follow the W3C specification:
+// https://browserext.github.io/browserext/
+let bChrome = false;
+if (typeof(browser) !== "object") {
+    var browser = chrome;
+    bChrome = true;
+}
+
 
 /*
     Events
@@ -126,21 +134,32 @@ function showTestResult (sText) {
     document.getElementById("tests_result").textContent = sText;
 }
 
+
 function setGCOptionsFromStorage () {
+    if (bChrome) {
+        browser.storage.local.get("gc_options", _setGCOptions);
+        return;
+    }
     let xPromise = browser.storage.local.get("gc_options");
-    xPromise.then(
-        function (dSavedOptions) {
-            if (dSavedOptions.hasOwnProperty("gc_options")) {
-                setGCOptions(dSavedOptions.gc_options);
-            }
-        },
-        function (e) {
-            showError(e);
-        }
-    );
+    xPromise.then(_setGCOptions, showError);
+}
+
+function _setGCOptions (dSavedOptions) {
+    if (dSavedOptions.hasOwnProperty("gc_options")) {
+        setGCOptions(dSavedOptions.gc_options);
+    }
 }
 
 function setGCOptions (dOptions) {
+    // dOptions is supposed to be a Map
+    if (bChrome) {
+        // JS crap again. Chrome can’t store/send Map object.
+        let m = new Map();
+        for (let param in dOptions) {
+            m.set(param, dOptions[param]);
+        }
+        dOptions = m;
+    }
     for (let [sOpt, bVal] of dOptions) {
         if (document.getElementById("option_"+sOpt)) {
             document.getElementById("option_"+sOpt).checked = bVal;

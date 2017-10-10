@@ -17,8 +17,8 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         let xTFNode = document.createElement("div");
         try {
             // Options
-            let xOptions = createNode("div", {id: "grammalecte_tf_options"});
-            let xColumn1 = createNode("div", {className: "grammalecte_tf_column"});
+            let xOptions = oGrammalecte.createNode("div", {id: "grammalecte_tf_options"});
+            let xColumn1 = oGrammalecte.createNode("div", {className: "grammalecte_tf_column"});
             let xSSP = this._createFieldset("group_ssp", true, "Espaces surnuméraires");
             xSSP.appendChild(this._createBlockOption("o_start_of_paragraph", true, "En début de paragraphe"));
             xSSP.appendChild(this._createBlockOption("o_end_of_paragraph", true, "En fin de paragraphe"));
@@ -38,7 +38,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xNBSP.appendChild(this._createBlockOption("o_nbsp_before_units", true, "Avant les unités de mesure"));
             let xDelete = this._createFieldset("group_delete", true, "Suppressions");
             xDelete.appendChild(this._createBlockOption("o_erase_non_breaking_hyphens", true, "Tirets conditionnels"));
-            let xColumn2 = createNode("div", {className: "grammalecte_tf_column"});
+            let xColumn2 = oGrammalecte.createNode("div", {className: "grammalecte_tf_column"});
             let xTypo = this._createFieldset("group_typo", true, "Signes typographiques");
             xTypo.appendChild(this._createBlockOption("o_ts_apostrophe", true, "Apostrophe (’)"));
             xTypo.appendChild(this._createBlockOption("o_ts_ellipsis", true, "Points de suspension (…)"));
@@ -70,16 +70,16 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xOptions.appendChild(xColumn1);
             xOptions.appendChild(xColumn2);
             // Actions
-            let xActions = createNode("div", {id: "grammalecte_tf_actions"});
-            let xDefaultButton = createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_tf_button"});
+            let xActions = oGrammalecte.createNode("div", {id: "grammalecte_tf_actions"});
+            let xDefaultButton = oGrammalecte.createNode("div", {id: "grammalecte_tf_reset", textContent: "Par défaut", className: "grammalecte_tf_button"});
             xDefaultButton.addEventListener("click", () => { this.reset(); });
-            let xApplyButton = createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_tf_button"});
+            let xApplyButton = oGrammalecte.createNode("div", {id: "grammalecte_tf_apply", textContent: "Appliquer", className: "grammalecte_tf_button"});
             xApplyButton.addEventListener("click", () => { this.saveOptions(); this.apply(); });
             xActions.appendChild(xDefaultButton);
-            xActions.appendChild(createNode("progress", {id: "grammalecte_tf_progressbar"}));
-            xActions.appendChild(createNode("span", {id: "grammalecte_tf_time_res", textContent: "…"}));
+            xActions.appendChild(oGrammalecte.createNode("progress", {id: "grammalecte_tf_progressbar"}));
+            xActions.appendChild(oGrammalecte.createNode("span", {id: "grammalecte_tf_time_res", textContent: "…"}));
             xActions.appendChild(xApplyButton);
-            //xActions.appendChild(createNode("div", {id: "grammalecte_infomsg", textContent: "blabla"}));
+            //xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_infomsg", textContent: "blabla"}));
             // create result
             xTFNode.appendChild(xOptions);
             xTFNode.appendChild(xActions);
@@ -92,29 +92,29 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Common options
     _createFieldset (sId, bDefault, sLabel) {
-        let xFieldset = createNode("div", {id: sId, className: "grammalecte_tf_groupblock"});
-        let xGroupOption = createNode("div", {id: "o_"+sId, className: "grammalecte_tf_option grammalecte_tf_option_title_off", textContent: sLabel}, {selected: "false", default: bDefault, linked_ids: ""});
+        let xFieldset = oGrammalecte.createNode("div", {id: sId, className: "grammalecte_tf_groupblock"});
+        let xGroupOption = oGrammalecte.createNode("div", {id: "o_"+sId, className: "grammalecte_tf_option grammalecte_tf_option_title_off", textContent: sLabel}, {selected: "false", default: bDefault, linked_ids: ""});
         xGroupOption.addEventListener("click", (xEvent) => { this.switchOption(xEvent.target.id); this.switchGroup(xEvent.target.id); });
         xFieldset.appendChild(xGroupOption);
         return xFieldset;
     }
 
     _createBlockOption (sId, bDefault, sLabel) {
-        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
+        let xLine = oGrammalecte.createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
         xLine.appendChild(this._createOption(sId, bDefault, sLabel));
-        xLine.appendChild(createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "·"}));
+        xLine.appendChild(oGrammalecte.createNode("div", {id: "res_"+sId, className: "grammalecte_tf_result", textContent: "·"}));
         return xLine;
     }
 
     _createOption (sId, bDefault, sLabel, sLinkedOptionsId="") {
-        let xOption = createNode("div", {id: sId, className: "grammalecte_tf_option grammalecte_tf_option_off", textContent: sLabel}, {selected: "false", default: bDefault, linked_ids: sLinkedOptionsId});
+        let xOption = oGrammalecte.createNode("div", {id: sId, className: "grammalecte_tf_option grammalecte_tf_option_off", textContent: sLabel}, {selected: "false", default: bDefault, linked_ids: sLinkedOptionsId});
         xOption.addEventListener("click", (xEvent) => { this.switchOption(xEvent.target.id); });
         return xOption;
     }
 
     // Hyphens
     _createRadioBoxHyphens (sIdEmDash, sIdEnDash, bDefaultEmDash) {
-        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
+        let xLine = oGrammalecte.createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
         xLine.appendChild(this._createOption(sIdEmDash, bDefaultEmDash, "cadratin (—)", sIdEnDash));
         xLine.appendChild(this._createOption(sIdEnDash, !bDefaultEmDash, "demi-cadratin (—)", sIdEmDash));
         return xLine;
@@ -122,16 +122,16 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Ligatures
     _createRadioBoxLigatures () {
-        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
+        let xLine = oGrammalecte.createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
         xLine.appendChild(this._createOption("o_ts_ligature", true, "Ligatures"));
         xLine.appendChild(this._createOption("o_ts_ligature_do", false, "faire", "o_ts_ligature_undo"));
         xLine.appendChild(this._createOption("o_ts_ligature_undo", true, "défaire", "o_ts_ligature_do"));
-        xLine.appendChild(createNode("div", {id: "res_"+"o_ts_ligature", className: "grammalecte_tf_result", textContent: "·"}));
+        xLine.appendChild(oGrammalecte.createNode("div", {id: "res_"+"o_ts_ligature", className: "grammalecte_tf_result", textContent: "·"}));
         return xLine;
     }
 
     _createLigaturesSelection () {
-        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
+        let xLine = oGrammalecte.createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
         xLine.appendChild(this._createOption("o_ts_ligature_ff", true, "ff"));
         xLine.appendChild(this._createOption("o_ts_ligature_fi", true, "fi"));
         xLine.appendChild(this._createOption("o_ts_ligature_ffi", true, "ffi"));
@@ -144,7 +144,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Apostrophes
     _createSingleLetterOptions () {
-        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
+        let xLine = oGrammalecte.createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_indent"});
         xLine.appendChild(this._createOption("o_ma_1letter_lowercase", false, "lettres isolées (j’ n’ m’ t’ s’ c’ d’ l’)"));
         xLine.appendChild(this._createOption("o_ma_1letter_uppercase", false, "Maj."));
         return xLine;
@@ -152,10 +152,10 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     // Ordinals
     _createOrdinalOptions () {
-        let xLine = createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
+        let xLine = oGrammalecte.createNode("div", {className: "grammalecte_tf_blockopt grammalecte_tf_underline"});
         xLine.appendChild(this._createOption("o_ordinals_no_exponant", true, "Ordinaux (15e, XXIe…)"));
         xLine.appendChild(this._createOption("o_ordinals_exponant", true, "e → ᵉ"));
-        xLine.appendChild(createNode("div", {id: "res_"+"o_ordinals_no_exponant", className: "grammalecte_tf_result", textContent: "·"}));
+        xLine.appendChild(oGrammalecte.createNode("div", {id: "res_"+"o_ordinals_no_exponant", className: "grammalecte_tf_result", textContent: "·"}));
         return xLine;
     }
     
@@ -164,8 +164,12 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     */
     start (xTextArea) {
         this.xTextArea = xTextArea;
-        let xPromise = browser.storage.local.get("tf_options");
-        xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+        if (bChrome) {
+            browser.storage.local.get("tf_options", this.setOptions.bind(this));
+        } else {
+            let xPromise = browser.storage.local.get("tf_options");
+            xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+        }
     }
 
     switchGroup (sOptName) {

@@ -55,13 +55,14 @@ def getVtyp (sVerb):
     return _lVtyp[_dVerb[sVerb][0]]
 
 
-def getSimil (sWord, sMorph, sFilter=None):
+def getSimil (sWord, sMorph, bSubst=False):
     if ":V" not in sMorph:
         return set()
     sInfi = sMorph[1:sMorph.find(" ")]
     tTags = _getTags(sInfi)
     aSugg = set()
-    if ":Q" in sMorph or ":Y" in sMorph:
+    #if ":Q" in sMorph or ":Y" in sMorph:
+    if not bSubst:
         # we suggest conjugated forms
         if ":V1" in sMorph:
             aSugg.add(sInfi)
@@ -95,8 +96,6 @@ def getSimil (sWord, sMorph, sFilter=None):
         # if there is only one past participle (epi inv), unreliable.
         if len(aSugg) == 1:
             aSugg.clear()
-        if ":V1" in sMorph:
-            aSugg.add(sInfi)
     return aSugg
 
 

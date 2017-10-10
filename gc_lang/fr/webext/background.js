@@ -7,6 +7,14 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
+// Chrome don’t follow the W3C specification:
+// https://browserext.github.io/browserext/
+let bChrome = false;
+if (typeof(browser) !== "object") {
+    var browser = chrome;
+    bChrome = true;
+}
+
 
 /*
     Worker (separate thread to avoid freezing Firefox)
@@ -19,7 +27,7 @@ xGCEWorker.onmessage = function (e) {
         let {sActionDone, result, dInfo} = e.data;
         switch (sActionDone) {
             case "init":
-                browser.storage.local.set({"gc_options": result});
+                storeGCOptions(result);
                 break;
             case "parse":
             case "parseAndSpellcheck":
@@ -44,12 +52,15 @@ xGCEWorker.onmessage = function (e) {
             case "getDefaultOptions":
             case "resetOptions":
                 // send result to panel
+                storeGCOptions(result);
+                if (bChrome) {
+                    e.data.result = helpers.mapToObject(e.data.result);
+                }
                 browser.runtime.sendMessage(e.data);
-                browser.storage.local.set({"gc_options": result});
                 break;
             case "setOptions":
             case "setOption":
-                browser.storage.local.set({"gc_options": result});
+                storeGCOptions(result);
                 break;
             default:
                 console.log("[background] Unknown command: " + sActionDone);
@@ -61,18 +72,23 @@ xGCEWorker.onmessage = function (e) {
     }
 };
 
+function initGrammarChecker (dSavedOptions) {
+    let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
+    xGCEWorker.postMessage({
+        sCommand: "init",
+        dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+        dInfo: {}
+    });
+}
 
 function init () {
+    if (bChrome) {
+        browser.storage.local.get("gc_options", initGrammarChecker);
+        return;
+    }
     let xPromise = browser.storage.local.get("gc_options");
     xPromise.then(
-        function (dSavedOptions) {
-            let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
-            xGCEWorker.postMessage({
-                sCommand: "init",
-                dParam: {sExtensionPath: browser.extension.getURL("."), dOptions: dOptions, sContext: "Firefox"},
-                dInfo: {}
-            });
-        },
+        initGrammarChecker,
         function (e) {
             showError(e);
             xGCEWorker.postMessage({
@@ -249,6 +265,15 @@ browser.commands.onCommand.addListener(function (sCommand) {
 /*
     Actions
 */
+
+function storeGCOptions (dOptions) {
+    if (bChrome) {
+        // JS crap again. Chrome can’t store Map object.
+        dOptions = helpers.mapToObject(dOptions);
+    }
+    browser.storage.local.set({"gc_options": dOptions});
+}
+
 function parseAndSpellcheckSelectedText (iTab, sText) {
     // send message to the tab
     let xTabPort = dConnx.get(iTab);
@@ -274,6 +299,12 @@ function getListOfTokensFromSelectedText (iTab, sText) {
 }
 
 function openConjugueurTab () {
+    if (bChrome) {
+        browser.tabs.create({
+            url: browser.extension.getURL("panel/conjugueur.html")
+        });
+        return;
+    }
     let xConjTab = browser.tabs.create({
         url: browser.extension.getURL("panel/conjugueur.html")
     });
@@ -281,9 +312,18 @@ function openConjugueurTab () {
 }
 
 function openConjugueurWindow () {
+    if (bChrome) {
+        browser.windows.create({
+            url: browser.extension.getURL("panel/conjugueur.html"),
+            type: "popup",
+            width: 710,
+            height: 980
+        });
+        return;
+    }
     let xConjWindow = browser.windows.create({
         url: browser.extension.getURL("panel/conjugueur.html"),
-        type: "detached_panel",
+        type: "popup",
         width: 710,
         height: 980
     });
