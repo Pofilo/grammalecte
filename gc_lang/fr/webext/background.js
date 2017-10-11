@@ -176,24 +176,65 @@ browser.runtime.onConnect.addListener(handleConnexion);
 /*
     Context Menu
 */
+
+// Editable content
 browser.contextMenus.create({
-    id: "getListOfTokens",
-    title: "Analyser",
+    id: "getListOfTokensForEditable",
+    title: "Lexicographe (zone de texte)",
+    contexts: ["editable"]
+});
+
+browser.contextMenus.create({
+    id: "parseAndSpellcheckForEditable",
+    title: "Correction grammaticale (zone de texte)",
+    contexts: ["editable"]
+});
+
+browser.contextMenus.create({
+    id: "separator_editable",
+    type: "separator",
+    contexts: ["editable"]
+});
+
+// Page
+browser.contextMenus.create({
+    id: "getListOfTokensForPage",
+    title: "Lexicographe (page)",
+    contexts: ["all"]
+});
+
+browser.contextMenus.create({
+    id: "parseAndSpellcheckForPage",
+    title: "Correction grammaticale (page)",
+    contexts: ["all"]
+});
+
+browser.contextMenus.create({
+    id: "separator_page",
+    type: "separator",
+    contexts: ["all"]
+});
+
+// Selected text
+browser.contextMenus.create({
+    id: "getListOfTokensForSelection",
+    title: "Lexicographe (sélection)",
     contexts: ["selection"]
 });
 
 browser.contextMenus.create({
-    id: "parseAndSpellcheck",
-    title: "Corriger",
+    id: "parseAndSpellcheckForSelection",
+    title: "Correction grammaticale (sélection)",
     contexts: ["selection"]
 });
 
 browser.contextMenus.create({
-    id: "separator1",
+    id: "separator_selection",
     type: "separator",
     contexts: ["selection"]
 });
 
+// Conjugueur
 browser.contextMenus.create({
     id: "conjugueur_window",
     title: "Conjugueur [fenêtre]",
@@ -206,8 +247,9 @@ browser.contextMenus.create({
     contexts: ["all"]
 });
 
+// Rescan page
 browser.contextMenus.create({
-    id: "separator2",
+    id: "separator_rescan",
     type: "separator",
     contexts: ["editable"]
 });
@@ -217,6 +259,7 @@ browser.contextMenus.create({
     title: "Rechercher à nouveau les zones de texte",
     contexts: ["editable"]
 });
+
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
