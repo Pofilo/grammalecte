@@ -280,7 +280,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             xGCEWorker.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {iReturnPort: iTab}
+                dInfo: {iReturnPort: xTab.id}
             });
             break;
         case "rightClickLxgSelectedText":
@@ -288,7 +288,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             xGCEWorker.postMessage({
                 sCommand: "getListOfTokens",
                 dParam: {sText: xInfo.selectionText},
-                dInfo: {iReturnPort: iTab}
+                dInfo: {iReturnPort: xTab.id}
             });
             break;
         // conjugueur

@@ -187,7 +187,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.startGCPanel();
             xGrammalectePort.postMessage({
                 sCommand: "parseAndSpellcheck",
-                dParam: {sText: "je test", sCountry: "FR", bDebug: false, bContext: false},
+                dParam: {sText: document.body.textContent, sCountry: "FR", bDebug: false, bContext: false},
                 dInfo: {sTextAreaId: xRightClickedNode.id}
             });
             break;
@@ -209,7 +209,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.startLxgPanel();
             xGrammalectePort.postMessage({
                 sCommand: "getListOfTokens",
-                dParam: {sText: "Je teste."},
+                dParam: {sText: document.body.textContent},
                 dInfo: {sTextAreaId: xRightClickedNode.id}
             });
             break;
