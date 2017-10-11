@@ -179,13 +179,13 @@ browser.runtime.onConnect.addListener(handleConnexion);
 
 // Editable content
 browser.contextMenus.create({
-    id: "getListOfTokensForEditable",
+    id: "rightClickLxgEditableNode",
     title: "Lexicographe (zone de texte)",
     contexts: ["editable"]
 });
 
 browser.contextMenus.create({
-    id: "parseAndSpellcheckForEditable",
+    id: "rightClickGCEditableNode",
     title: "Correction grammaticale (zone de texte)",
     contexts: ["editable"]
 });
@@ -198,13 +198,13 @@ browser.contextMenus.create({
 
 // Page
 browser.contextMenus.create({
-    id: "getListOfTokensForPage",
+    id: "rightClickLxgPage",
     title: "Lexicographe (page)",
     contexts: ["all"]
 });
 
 browser.contextMenus.create({
-    id: "parseAndSpellcheckForPage",
+    id: "rightClickGCPage",
     title: "Correction grammaticale (page)",
     contexts: ["all"]
 });
@@ -217,13 +217,13 @@ browser.contextMenus.create({
 
 // Selected text
 browser.contextMenus.create({
-    id: "getListOfTokensForSelection",
+    id: "getListOfTokensFromSelectedText",
     title: "Lexicographe (sélection)",
     contexts: ["selection"]
 });
 
 browser.contextMenus.create({
-    id: "parseAndSpellcheckForSelection",
+    id: "parseAndSpellcheckSelectedText",
     title: "Correction grammaticale (sélection)",
     contexts: ["selection"]
 });
@@ -266,18 +266,39 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
-        case "parseAndSpellcheck":
-            parseAndSpellcheckSelectedText(xTab.id, xInfo.selectionText);
+        // editable node
+        // page
+        case "rightClickGCEditableNode":
+        case "rightClickLxgEditableNode":
+        case "rightClickGCPage":
+        case "rightClickLxgPage":
+            sendCommandToTab(xInfo.menuItemId, xTab.id);
             break;
-        case "getListOfTokens": 
-            getListOfTokensFromSelectedText(xTab.id, xInfo.selectionText);
+        // selected text
+        case "rightClickGCSelectedText":
+            sendCommandToTab("rightClickGCSelectedText", xTab.id);
+            xGCEWorker.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: {iReturnPort: iTab}
+            });
             break;
+        case "rightClickLxgSelectedText":
+            sendCommandToTab("rightClickLxgSelectedText", xTab.id);
+            xGCEWorker.postMessage({
+                sCommand: "getListOfTokens",
+                dParam: {sText: xInfo.selectionText},
+                dInfo: {iReturnPort: iTab}
+            });
+            break;
+        // conjugueur
         case "conjugueur_window":
             openConjugueurWindow();
             break;
         case "conjugueur_tab":
             openConjugueurTab();
             break;
+        // rescan page
         case "rescanPage":
             let xPort = dConnx.get(xTab.id);
             xPort.postMessage({sActionDone: "rescanPage"});
@@ -317,28 +338,9 @@ function storeGCOptions (dOptions) {
     browser.storage.local.set({"gc_options": dOptions});
 }
 
-function parseAndSpellcheckSelectedText (iTab, sText) {
-    // send message to the tab
+function sendCommandToTab (sCommand, iTab) {
     let xTabPort = dConnx.get(iTab);
-    xTabPort.postMessage({sActionDone: "openGCPanel", result: null, dInfo: null, bEnd: false, bError: false});
-    // send command to the worker
-    xGCEWorker.postMessage({
-        sCommand: "parseAndSpellcheck",
-        dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-        dInfo: {iReturnPort: iTab}
-    });
-}
-
-function getListOfTokensFromSelectedText (iTab, sText) {
-    // send message to the tab
-    let xTabPort = dConnx.get(iTab);
-    xTabPort.postMessage({sActionDone: "openLxgPanel", result: null, dInfo: null, bEnd: false, bError: false});
-    // send command to the worker
-    xGCEWorker.postMessage({
-        sCommand: "getListOfTokens",
-        dParam: {sText: sText},
-        dInfo: {iReturnPort: iTab}
-    });
+    xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
 }
 
 function openConjugueurTab () {

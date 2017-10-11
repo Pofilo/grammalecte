@@ -99,6 +99,21 @@ const oGrammalecte = {
         }
     },
 
+    startGCPanel: function (xNode=null) {
+        oGrammalecte.createGCPanel();
+        oGrammalecte.oGCPanel.clear();
+        oGrammalecte.oGCPanel.show();
+        oGrammalecte.oGCPanel.start(xNode);
+        oGrammalecte.oGCPanel.startWaitIcon();
+    },
+
+    startLxgPanel: function () {
+        oGrammalecte.createLxgPanel();
+        oGrammalecte.oLxgPanel.clear();
+        oGrammalecte.oLxgPanel.show();
+        oGrammalecte.oLxgPanel.startWaitIcon();
+    },
+
     createNode: function (sType, oAttr, oDataset=null) {
         try {
             let xNode = document.createElement(sType);
@@ -132,6 +147,7 @@ let xGrammalectePort = browser.runtime.connect({name: "content-script port"});
 
 xGrammalectePort.onMessage.addListener(function (oMessage) {
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
+    let sText = "";
     switch (sActionDone) {
         case "parseAndSpellcheck":
             if (!bEnd) {
@@ -153,21 +169,55 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "getSpellSuggestions":
             oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, dInfo.sErrorId);
             break;
-        // Design WTF: context menus are made in background, not in content-script.
-        // Commands from context menu received here to initialize panels
-        case "openGCPanel":
-            oGrammalecte.createGCPanel();
-            oGrammalecte.oGCPanel.clear();
-            oGrammalecte.oGCPanel.show();
-            oGrammalecte.oGCPanel.start();
-            oGrammalecte.oGCPanel.startWaitIcon();
+        /*
+            Commands received from the context menu
+            (Context menu are initialized in background)
+        */
+        // Grammar checker commands
+        case "rightClickGCEditableNode":
+            oGrammalecte.startGCPanel(xRightClickedNode);
+            sText = (xRightClickedNode.tagName == "TEXTAREA") ? xRightClickedNode.value : xRightClickedNode.textContent;
+            xGrammalectePort.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: {sTextAreaId: xRightClickedNode.id}
+            });
             break;
-        case "openLxgPanel":
-            oGrammalecte.createLxgPanel();
-            oGrammalecte.oLxgPanel.clear();
-            oGrammalecte.oLxgPanel.show();
-            oGrammalecte.oLxgPanel.startWaitIcon();
+        case "rightClickGCPage":
+            oGrammalecte.startGCPanel();
+            xGrammalectePort.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: "je test", sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: {sTextAreaId: xRightClickedNode.id}
+            });
             break;
+        case "rightClickGCSelectedText":
+            oGrammalecte.startGCPanel();
+            // selected text is sent to the GC worker in the background script.
+            break;
+        // Lexicographer commands
+        case "rightClickLxgEditableNode":
+            oGrammalecte.startLxgPanel();
+            sText = (xRightClickedNode.tagName == "TEXTAREA") ? xRightClickedNode.value : xRightClickedNode.textContent;
+            xGrammalectePort.postMessage({
+                sCommand: "getListOfTokens",
+                dParam: {sText: sText},
+                dInfo: {sTextAreaId: xRightClickedNode.id}
+            });
+            break;
+        case "rightClickLxgPage":
+            oGrammalecte.startLxgPanel();
+            xGrammalectePort.postMessage({
+                sCommand: "getListOfTokens",
+                dParam: {sText: "Je teste."},
+                dInfo: {sTextAreaId: xRightClickedNode.id}
+            });
+            break;
+        case "rightClickLxgSelectedText":
+            oGrammalecte.startLxgPanel();
+            // selected text is sent to the GC worker in the background script.
+            break;
+        // rescan page command
         case "rescanPage":
             oGrammalecte.rescanPage();
             break;
