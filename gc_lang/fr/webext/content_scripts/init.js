@@ -116,6 +116,16 @@ const oGrammalecte = {
 
 
 /*
+    Node where a right click is done
+    Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
+*/
+let xRightClickedNode = null;
+document.addEventListener('contextmenu', function (xEvent) {
+    xRightClickedNode = xEvent.target;
+}, true);
+
+
+/*
     Connexion to the background
 */
 let xGrammalectePort = browser.runtime.connect({name: "content-script port"});
