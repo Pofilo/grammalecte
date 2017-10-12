@@ -115,7 +115,7 @@ const oGrammalecte = {
     },
 
     getPageText: function () {
-        let sPageText = document.body.textContent;
+        let sPageText = document.body.innerText;
         let nPos = sPageText.indexOf("__grammalecte_panel__");
         if (nPos >= 0) {
             sPageText = sPageText.slice(0, nPos);
