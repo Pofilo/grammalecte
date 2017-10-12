@@ -21,6 +21,7 @@ class GrammalectePanel {
     _createPanel (sTitle) {
         try {
             let xPanel = oGrammalecte.createNode("div", {id: this.sId, className: "grammalecte_panel"});
+            this.xPanelBar.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_panel_invisible_marker", textContent: "__grammalecte_panel__"}));
             this.xPanelBar.appendChild(this._createButtons());
             let xTitle = oGrammalecte.createNode("div", {className: "grammalecte_panel_title"});
             xTitle.appendChild(this._createLogo());

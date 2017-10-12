@@ -114,6 +114,15 @@ const oGrammalecte = {
         oGrammalecte.oLxgPanel.startWaitIcon();
     },
 
+    getPageText: function () {
+        let sPageText = document.body.textContent;
+        let nPos = sPageText.indexOf("__grammalecte_panel__");
+        if (nPos >= 0) {
+            sPageText = sPageText.slice(0, nPos);
+        }
+        return sPageText;
+    },
+
     createNode: function (sType, oAttr, oDataset=null) {
         try {
             let xNode = document.createElement(sType);
@@ -187,7 +196,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.startGCPanel();
             xGrammalectePort.postMessage({
                 sCommand: "parseAndSpellcheck",
-                dParam: {sText: document.body.textContent, sCountry: "FR", bDebug: false, bContext: false},
+                dParam: {sText: oGrammalecte.getPageText(), sCountry: "FR", bDebug: false, bContext: false},
                 dInfo: {sTextAreaId: xRightClickedNode.id}
             });
             break;
@@ -209,7 +218,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.startLxgPanel();
             xGrammalectePort.postMessage({
                 sCommand: "getListOfTokens",
-                dParam: {sText: document.body.textContent},
+                dParam: {sText: oGrammalecte.getPageText()},
                 dInfo: {sTextAreaId: xRightClickedNode.id}
             });
             break;
