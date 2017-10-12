@@ -197,7 +197,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             xGrammalectePort.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: oGrammalecte.getPageText(), sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {sTextAreaId: xRightClickedNode.id}
+                dInfo: {}
             });
             break;
         case "rightClickGCSelectedText":
@@ -219,7 +219,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             xGrammalectePort.postMessage({
                 sCommand: "getListOfTokens",
                 dParam: {sText: oGrammalecte.getPageText()},
-                dInfo: {sTextAreaId: xRightClickedNode.id}
+                dInfo: {}
             });
             break;
         case "rightClickLxgSelectedText":
