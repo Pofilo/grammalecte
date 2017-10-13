@@ -47,6 +47,14 @@ const oGrammalecte = {
     oLxgPanel: null,
     oGCPanel: null,
 
+    xRightClickedNode: null,
+
+    listenRightClick: function () {
+        document.addEventListener('contextmenu', function (xEvent) {
+            this.xRightClickedNode = xEvent.target;
+        }.bind(this), true);
+    },
+
     createMenus: function () {
         let lNode = document.getElementsByTagName("textarea");
         for (let xNode of lNode) {
@@ -143,10 +151,6 @@ const oGrammalecte = {
     Node where a right click is done
     Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
 */
-let xRightClickedNode = null;
-document.addEventListener('contextmenu', function (xEvent) {
-    xRightClickedNode = xEvent.target;
-}, true);
 
 
 /*
@@ -184,12 +188,12 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         */
         // Grammar checker commands
         case "rightClickGCEditableNode":
-            oGrammalecte.startGCPanel(xRightClickedNode);
-            sText = (xRightClickedNode.tagName == "TEXTAREA") ? xRightClickedNode.value : xRightClickedNode.textContent;
+            oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
+            sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
             xGrammalectePort.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {sTextAreaId: xRightClickedNode.id}
+                dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
             });
             break;
         case "rightClickGCPage":
@@ -207,11 +211,11 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Lexicographer commands
         case "rightClickLxgEditableNode":
             oGrammalecte.startLxgPanel();
-            sText = (xRightClickedNode.tagName == "TEXTAREA") ? xRightClickedNode.value : xRightClickedNode.textContent;
+            sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
             xGrammalectePort.postMessage({
                 sCommand: "getListOfTokens",
                 dParam: {sText: sText},
-                dInfo: {sTextAreaId: xRightClickedNode.id}
+                dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
             });
             break;
         case "rightClickLxgPage":
@@ -239,5 +243,6 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
 /*
     Start
 */
+oGrammalecte.listenRightClick();
 oGrammalecte.createMenus();
 oGrammalecte.createMenus2();
