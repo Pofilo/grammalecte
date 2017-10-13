@@ -81,7 +81,9 @@ const oGrammalecte = {
             oMenu.deleteNodes();
         }
         this.lMenu.length = 0; // to clear an array
+        this.listenRightClick();
         this.createMenus();
+        this.createMenus2();
     },
 
     createTFPanel: function () {
@@ -188,13 +190,15 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         */
         // Grammar checker commands
         case "rightClickGCEditableNode":
-            oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
-            sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
-            xGrammalectePort.postMessage({
-                sCommand: "parseAndSpellcheck",
-                dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
-            });
+            if (oGrammalecte.xRightClickedNode !== null) {
+                oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
+                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
+                xGrammalectePort.postMessage({
+                    sCommand: "parseAndSpellcheck",
+                    dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+                    dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
+                });
+            }
             break;
         case "rightClickGCPage":
             oGrammalecte.startGCPanel();
@@ -210,13 +214,15 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             break;
         // Lexicographer commands
         case "rightClickLxgEditableNode":
-            oGrammalecte.startLxgPanel();
-            sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
-            xGrammalectePort.postMessage({
-                sCommand: "getListOfTokens",
-                dParam: {sText: sText},
-                dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
-            });
+            if (oGrammalecte.xRightClickedNode !== null) {
+                oGrammalecte.startLxgPanel();
+                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
+                xGrammalectePort.postMessage({
+                    sCommand: "getListOfTokens",
+                    dParam: {sText: sText},
+                    dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
+                });
+            }
             break;
         case "rightClickLxgPage":
             oGrammalecte.startLxgPanel();
