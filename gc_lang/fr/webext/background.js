@@ -217,13 +217,13 @@ browser.contextMenus.create({
 
 // Selected text
 browser.contextMenus.create({
-    id: "getListOfTokensFromSelectedText",
+    id: "rightClickLxgSelectedText",
     title: "Lexicographe (sélection)",
     contexts: ["selection"]
 });
 
 browser.contextMenus.create({
-    id: "parseAndSpellcheckSelectedText",
+    id: "rightClickGCSelectedText",
     title: "Correction grammaticale (sélection)",
     contexts: ["selection"]
 });
