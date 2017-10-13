@@ -55,6 +55,10 @@ const oGrammalecte = {
         }.bind(this), true);
     },
 
+    clearRightClickedNode: function () {
+        this.xRightClickedNode = null;
+    },
+
     createMenus: function () {
         let lNode = document.getElementsByTagName("textarea");
         for (let xNode of lNode) {

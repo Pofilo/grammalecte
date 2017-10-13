@@ -92,6 +92,7 @@ class GrammalectePanel {
 
     hide () {
         this.xPanel.style.display = "none";
+        oGrammalecte.clearRightClickedNode();
     }
 
     center () {
