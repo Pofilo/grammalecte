@@ -216,11 +216,9 @@ class IBDAWG {
     _suggest (sRemain, nMaxDel=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         // returns a set of suggestions
         // recursive function
-        //show(nDeep, sNewWord + ":" + sRemain)
         let aSugg = new Set();
         if (sRemain == "") {
             if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
-                //show(nDeep, "___" + sNewWord + "___");
                 aSugg.add(sNewWord);
             }
             for (let sTail of this._getTails(iAddr)) {
@@ -300,14 +298,12 @@ class IBDAWG {
         let aSugg = new Set();
         if (sWord.length == 0) {
             if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
-                show(nDeep, "!!! " + sNewWord + " !!!");
                 aSugg.add(sNewWord);
             }
             return aSugg;
         }
         let cCurrent = sWord.slice(0, 1);
         for (let [cChar, jAddr] of this._getSimilarArcsAndCrushedChars(cCurrent, iAddr)) {
-            show(nDeep, cChar);
             aSugg.gl_update(this._suggestWithCrushedUselessChars(sWord.slice(1), nDeep+1, jAddr, sNewWord+cChar));
         }
         return aSugg;
