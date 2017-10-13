@@ -200,19 +200,19 @@ browser.contextMenus.create({
 browser.contextMenus.create({
     id: "rightClickLxgPage",
     title: "Lexicographe (page)",
-    contexts: ["all"]
+    contexts: ["page"]
 });
 
 browser.contextMenus.create({
     id: "rightClickGCPage",
     title: "Correction grammaticale (page)",
-    contexts: ["all"]
+    contexts: ["page"]
 });
 
 browser.contextMenus.create({
     id: "separator_page",
     type: "separator",
-    contexts: ["all"]
+    contexts: ["page"]
 });
 
 // Selected text
