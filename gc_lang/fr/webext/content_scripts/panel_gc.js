@@ -237,7 +237,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     addMessage (sMessage) {
-        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_gc_panel_message", textContent: sMessage});
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_message", textContent: sMessage});
         this.xParagraphList.appendChild(xNode);
     }
 

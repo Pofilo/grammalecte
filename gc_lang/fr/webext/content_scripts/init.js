@@ -198,6 +198,10 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                     dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
                     dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
                 });
+            } else {
+                oGrammalecte.startGCPanel();
+                oGrammalecte.oGCPanel.addMessage("Erreur. Node introuvable… Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
+                oGrammalecte.oGCPanel.stopWaitIcon();
             }
             break;
         case "rightClickGCPage":
@@ -222,6 +226,10 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                     dParam: {sText: sText},
                     dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
                 });
+            } else {
+                oGrammalecte.startLxgPanel();
+                oGrammalecte.oLxgPanel.addMessage("Erreur. Node introuvable… Sélectionnez le texte à analyser et relancez le lexicographe via le menu contextuel.");
+                oGrammalecte.oLxgPanel.stopWaitIcon();
             }
             break;
         case "rightClickLxgPage":
