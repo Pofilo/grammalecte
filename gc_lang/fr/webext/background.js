@@ -177,6 +177,25 @@ browser.runtime.onConnect.addListener(handleConnexion);
     Context Menu
 */
 
+// Selected text
+browser.contextMenus.create({
+    id: "rightClickLxgSelectedText",
+    title: "Lexicographe (sélection)",
+    contexts: ["selection"]
+});
+
+browser.contextMenus.create({
+    id: "rightClickGCSelectedText",
+    title: "Correction grammaticale (sélection)",
+    contexts: ["selection"]
+});
+
+browser.contextMenus.create({
+    id: "separator_selection",
+    type: "separator",
+    contexts: ["selection"]
+});
+
 // Editable content
 browser.contextMenus.create({
     id: "rightClickLxgEditableNode",
@@ -213,25 +232,6 @@ browser.contextMenus.create({
     id: "separator_page",
     type: "separator",
     contexts: ["page"]
-});
-
-// Selected text
-browser.contextMenus.create({
-    id: "rightClickLxgSelectedText",
-    title: "Lexicographe (sélection)",
-    contexts: ["selection"]
-});
-
-browser.contextMenus.create({
-    id: "rightClickGCSelectedText",
-    title: "Correction grammaticale (sélection)",
-    contexts: ["selection"]
-});
-
-browser.contextMenus.create({
-    id: "separator_selection",
-    type: "separator",
-    contexts: ["selection"]
 });
 
 // Conjugueur
