@@ -463,3 +463,17 @@ def undoLigature (c):
     elif c == "ﬆ":
         return "st"
     return "_"
+
+
+
+
+_xNormalizedCharsForInclusiveWriting = str.maketrans({
+    '(': '_',  ')': '_',
+    '.': '_',  '·': '_',
+    '–': '_',  '—': '_',
+    '/': '_'
+ })
+
+
+def normalizeInclusiveWriting (sToken):
+    return sToken.translate(_xNormalizedCharsForInclusiveWriting)

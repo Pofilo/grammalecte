@@ -595,3 +595,25 @@ function undoLigature (c) {
     }
     return "_";
 }
+
+
+const _dNormalizedCharsForInclusiveWriting = new Map([
+    ['(', '_'],  [')', '_'],
+    ['.', '_'],  ['·', '_'],
+    ['–', '_'],  ['—', '_'],
+    ['/', '_']
+]);
+
+function normalizeInclusiveWriting (sToken) {
+    let sRes = "";
+    console.log("==== " + sToken);
+    for (let c of sToken) {
+        if (_dNormalizedCharsForInclusiveWriting.has(c)) {
+            sRes += _dNormalizedCharsForInclusiveWriting.get(c);
+        } else {
+            sRes += c;
+        }
+    }
+    console.log(">>>> " + sRes);
+    return sRes;
+}
