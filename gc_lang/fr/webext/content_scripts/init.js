@@ -192,7 +192,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rightClickGCEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
                 oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
-                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
+                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
                     dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
