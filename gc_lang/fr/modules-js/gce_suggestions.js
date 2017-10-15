@@ -606,7 +606,6 @@ const _dNormalizedCharsForInclusiveWriting = new Map([
 
 function normalizeInclusiveWriting (sToken) {
     let sRes = "";
-    console.log("==== " + sToken);
     for (let c of sToken) {
         if (_dNormalizedCharsForInclusiveWriting.has(c)) {
             sRes += _dNormalizedCharsForInclusiveWriting.get(c);
@@ -614,6 +613,5 @@ function normalizeInclusiveWriting (sToken) {
             sRes += c;
         }
     }
-    console.log(">>>> " + sRes);
     return sRes;
 }
