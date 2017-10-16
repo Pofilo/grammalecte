@@ -162,13 +162,15 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     /*
         Actions
     */
-    start (xTextArea) {
-        this.xTextArea = xTextArea;
-        if (bChrome) {
-            browser.storage.local.get("tf_options", this.setOptions.bind(this));
-        } else {
-            let xPromise = browser.storage.local.get("tf_options");
-            xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+    start (xNode) {
+        if (xNode !== null && xNode.tagName == "TEXTAREA") {
+            this.xTextArea = xNode;
+            if (bChrome) {
+                browser.storage.local.get("tf_options", this.setOptions.bind(this));
+            } else {
+                let xPromise = browser.storage.local.get("tf_options");
+                xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+            }
         }
     }
 

@@ -1,0 +1,65 @@
+/*
+    CSS
+    Message box for Grammalecte
+*/
+
+.grammalecte_message_box {
+    padding: 0;
+    margin: 0;
+    position: fixed;
+    box-sizing: content-box;
+    z-index: 2147483641; /* maximum is 2147483647: https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index */
+    border: 2px solid hsl(210, 10%, 50%);
+    border-radius: 10px 10px 10px 10px;
+    background-color: hsl(210, 0%, 100%);
+    color: hsl(0, 0%, 0%);
+    font-family: "Trebuchet MS", "Fira Sans", "Liberation Sans", sans-serif;
+    box-shadow: 0 0 2px 1px hsla(210, 50%, 50%, .5);
+    line-height: normal;
+    text-shadow: none;
+    text-decoration: none;
+}
+.grammalecte_message_box img {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+.grammalecte_message_box_bar {
+    position: sticky;
+    width: 100%;
+    background-color: hsl(210, 0%, 90%);
+    border-radius: 10px 10px 0 0;
+    border-bottom: 1px solid hsl(210, 10%, 80%);
+    color: hsl(210, 10%, 4%);
+    font-size: 20px;
+}
+.grammalecte_message_box_title {
+    padding: 10px 20px;
+}
+.grammalecte_message_box_label {
+    display: inline-block;
+    padding: 0 10px;
+}
+.grammalecte_message_box_invisible_marker {
+    position: absolute;
+    /*visibility: hidden;*/
+    font-size: 6px;
+    color: hsl(210, 0%, 90%); /* same color than panel_bar background */
+}
+
+.grammalecte_message_box_content {
+    position: absolute;
+    min-width: 100%;
+    height: calc(100% - 55px); /* panel height - title_bar */
+    overflow: auto;
+}
+
+.grammalecte_message_box_message {
+    margin: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    background-color: hsl(0, 50%, 40%);
+    color: hsl(0, 50%, 96%);
+    font-size: 20px;
+}

@@ -38,6 +38,7 @@ function loadImage (sContainerClass, sImagePath) {
 }
 */
 
+
 const oGrammalecte = {
 
     nMenu: 0,
@@ -46,6 +47,8 @@ const oGrammalecte = {
     oTFPanel: null,
     oLxgPanel: null,
     oGCPanel: null,
+
+    oMessageBox: null,
 
     xRightClickedNode: null,
 
@@ -115,6 +118,13 @@ const oGrammalecte = {
         }
     },
 
+    createMessageBox: function () {
+        if (this.oMessageBox === null) {
+            this.oMessageBox = new GrammalecteMessageBox("grammalecte_message_box", "Grammalecte", 400, 300);
+            this.oMessageBox.insertIntoPage();
+        }
+    },
+
     startGCPanel: function (xNode=null) {
         oGrammalecte.createGCPanel();
         oGrammalecte.oGCPanel.clear();
@@ -128,6 +138,18 @@ const oGrammalecte = {
         oGrammalecte.oLxgPanel.clear();
         oGrammalecte.oLxgPanel.show();
         oGrammalecte.oLxgPanel.startWaitIcon();
+    },
+
+    startFTPanel: function (xNode=null) {
+        oGrammalecte.createTFPanel();
+        oGrammalecte.oTFPanel.start(xNode);
+        oGrammalecte.oTFPanel.show();
+    },
+
+    showMessage: function (sMessage) {
+        oGrammalecte.createMessageBox();
+        oGrammalecte.oMessageBox.setMessage(sMessage);
+        oGrammalecte.oMessageBox.show();
     },
 
     getPageText: function () {
@@ -199,9 +221,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                     dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
                 });
             } else {
-                oGrammalecte.startGCPanel();
-                oGrammalecte.oGCPanel.addMessage("Erreur. Node introuvable… Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
-                oGrammalecte.oGCPanel.stopWaitIcon();
+                oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
             }
             break;
         case "rightClickGCPage":
@@ -227,9 +247,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                     dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
                 });
             } else {
-                oGrammalecte.startLxgPanel();
-                oGrammalecte.oLxgPanel.addMessage("Erreur. Node introuvable… Sélectionnez le texte à analyser et relancez le lexicographe via le menu contextuel.");
-                oGrammalecte.oLxgPanel.stopWaitIcon();
+                oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à analyser et relancez le lexicographe via le menu contextuel.");
             }
             break;
         case "rightClickLxgPage":
@@ -243,6 +261,18 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rightClickLxgSelectedText":
             oGrammalecte.startLxgPanel();
             // selected text is sent to the GC worker in the background script.
+            break;
+        // Text formatter command
+        case "rightClickTFEditableNode":
+            if (oGrammalecte.xRightClickedNode !== null) {
+                if (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") {
+                    oGrammalecte.startFTPanel(oGrammalecte.xRightClickedNode);
+                } else {
+                    oGrammalecte.showMessage("Cette zone de texte n’est pas réellement un champ de formulaire, mais un node HTML éditable. Le formateur de texte n’est pas disponible pour ce type de champ de saisie.");
+                }
+            } else {
+                oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié.");
+            }
             break;
         // rescan page command
         case "rescanPage":

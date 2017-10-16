@@ -198,6 +198,12 @@ browser.contextMenus.create({
 
 // Editable content
 browser.contextMenus.create({
+    id: "rightClickTFEditableNode",
+    title: "Formateur de texte (zone de texte)",
+    contexts: ["editable"]
+});
+
+browser.contextMenus.create({
     id: "rightClickLxgEditableNode",
     title: "Lexicographe (zone de texte)",
     contexts: ["editable"]
@@ -268,10 +274,11 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     switch (xInfo.menuItemId) {
         // editable node
         // page
-        case "rightClickGCEditableNode":
+        case "rightClickTFEditableNode":
         case "rightClickLxgEditableNode":
-        case "rightClickGCPage":
+        case "rightClickGCEditableNode":
         case "rightClickLxgPage":
+        case "rightClickGCPage":
             sendCommandToTab(xInfo.menuItemId, xTab.id);
             break;
         // selected text
