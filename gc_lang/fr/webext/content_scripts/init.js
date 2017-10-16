@@ -120,7 +120,7 @@ const oGrammalecte = {
 
     createMessageBox: function () {
         if (this.oMessageBox === null) {
-            this.oMessageBox = new GrammalecteMessageBox("grammalecte_message_box", "Grammalecte", 400, 300);
+            this.oMessageBox = new GrammalecteMessageBox("grammalecte_message_box", "Grammalecte", 400, 250);
             this.oMessageBox.insertIntoPage();
         }
     },
@@ -148,8 +148,8 @@ const oGrammalecte = {
 
     showMessage: function (sMessage) {
         oGrammalecte.createMessageBox();
-        oGrammalecte.oMessageBox.setMessage(sMessage);
         oGrammalecte.oMessageBox.show();
+        oGrammalecte.oMessageBox.addMessage(sMessage);
     },
 
     getPageText: function () {

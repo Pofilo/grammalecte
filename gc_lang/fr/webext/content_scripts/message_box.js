@@ -26,6 +26,7 @@ class GrammalecteMessageBox {
             xTitle.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_message_box_label", textContent: sTitle}));
             this.xMessageBoxBar.appendChild(xTitle);
             xMessageBox.appendChild(this.xMessageBoxBar);
+
             xMessageBox.appendChild(this.xMessageBoxContent);
             return xMessageBox;
         }
@@ -62,10 +63,17 @@ class GrammalecteMessageBox {
 
     hide () {
         this.xMessageBox.style.display = "none";
+        this.clear();
     }
 
-    setMessage (sMessage) {
-    	this.xMessageBoxContent.textContent = sMessage;
+    addMessage (sMessage) {
+    	this.xMessageBoxContent.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_message_box_message", textContent: sMessage}));
+    }
+
+    clear () {
+        while (this.xMessageBoxContent.firstChild) {
+            this.xMessageBoxContent.removeChild(this.xMessageBoxContent.firstChild);
+        }
     }
 
     center () {
