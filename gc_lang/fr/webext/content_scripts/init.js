@@ -126,30 +126,30 @@ const oGrammalecte = {
     },
 
     startGCPanel: function (xNode=null) {
-        oGrammalecte.createGCPanel();
-        oGrammalecte.oGCPanel.clear();
-        oGrammalecte.oGCPanel.show();
-        oGrammalecte.oGCPanel.start(xNode);
-        oGrammalecte.oGCPanel.startWaitIcon();
+        this.createGCPanel();
+        this.oGCPanel.clear();
+        this.oGCPanel.show();
+        this.oGCPanel.start(xNode);
+        this.oGCPanel.startWaitIcon();
     },
 
     startLxgPanel: function () {
-        oGrammalecte.createLxgPanel();
-        oGrammalecte.oLxgPanel.clear();
-        oGrammalecte.oLxgPanel.show();
-        oGrammalecte.oLxgPanel.startWaitIcon();
+        this.createLxgPanel();
+        this.oLxgPanel.clear();
+        this.oLxgPanel.show();
+        this.oLxgPanel.startWaitIcon();
     },
 
     startFTPanel: function (xNode=null) {
-        oGrammalecte.createTFPanel();
-        oGrammalecte.oTFPanel.start(xNode);
-        oGrammalecte.oTFPanel.show();
+        this.createTFPanel();
+        this.oTFPanel.start(xNode);
+        this.oTFPanel.show();
     },
 
     showMessage: function (sMessage) {
-        oGrammalecte.createMessageBox();
-        oGrammalecte.oMessageBox.show();
-        oGrammalecte.oMessageBox.addMessage(sMessage);
+        this.createMessageBox();
+        this.oMessageBox.show();
+        this.oMessageBox.addMessage(sMessage);
     },
 
     getPageText: function () {
