@@ -65,20 +65,30 @@ const oGrammalecte = {
     },
 
     createMenus: function () {
-        let lNode = document.getElementsByTagName("textarea");
-        for (let xNode of lNode) {
-            if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
-                this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
-                this.nMenu += 1;
-            }
+        if (bChrome) {
+            browser.storage.local.get("ui_options", this._createMenus.bind(this));
+            return;
         }
+        browser.storage.local.get("ui_options").then(this._createMenus.bind(this), showError);
     },
 
-    createMenus2 () {
-        let lNode = document.querySelectorAll("[contenteditable]");
-        for (let xNode of lNode) {
-            this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
-            this.nMenu += 1;
+    _createMenus: function (dOptions) {
+        if (dOptions.hasOwnProperty("ui_options")) {
+            dOptions = dOptions.ui_options;
+            if (dOptions.textarea) {
+                for (let xNode of document.getElementsByTagName("textarea")) {
+                    if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
+                        this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+                        this.nMenu += 1;
+                    }
+                }
+            }
+            if (dOptions.editablenode) {
+                for (let xNode of document.querySelectorAll("[contenteditable]")) {
+                    this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+                    this.nMenu += 1;
+                }
+            }
         }
     },
 
@@ -92,7 +102,6 @@ const oGrammalecte = {
         this.lMenu.length = 0; // to clear an array
         this.listenRightClick();
         this.createMenus();
-        this.createMenus2();
     },
 
     createTFPanel: function () {
@@ -289,4 +298,3 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
 */
 oGrammalecte.listenRightClick();
 oGrammalecte.createMenus();
-oGrammalecte.createMenus2();

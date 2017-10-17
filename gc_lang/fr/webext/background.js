@@ -72,6 +72,15 @@ xGCEWorker.onmessage = function (e) {
     }
 };
 
+function initUIOptions (dSavedOptions) {
+    if (!dSavedOptions.hasOwnProperty("ui_options")) {
+        browser.storage.local.set({"ui_options": {
+            textarea: true,
+            editablenode: false
+        }});
+    }
+}
+
 function initGrammarChecker (dSavedOptions) {
     let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
     xGCEWorker.postMessage({
@@ -84,20 +93,11 @@ function initGrammarChecker (dSavedOptions) {
 function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
+        browser.storage.local.get("ui_options", initUIOptions);
         return;
     }
-    let xPromise = browser.storage.local.get("gc_options");
-    xPromise.then(
-        initGrammarChecker,
-        function (e) {
-            showError(e);
-            xGCEWorker.postMessage({
-                sCommand: "init",
-                dParam: {sExtensionPath: browser.extension.getURL("."), dOptions: null, sContext: "Firefox"},
-                dInfo: {}
-            });
-        }
-    );
+    browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
+    browser.storage.local.get("ui_options").then(initUIOptions, showError);
 }
 
 init();

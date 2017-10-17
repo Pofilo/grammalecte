@@ -53,6 +53,9 @@ window.addEventListener(
                     dInfo: {}
                 });
             }
+            else if (xElem.id.startsWith("ui_option_")) {
+                storeUIOptions();
+            }
             else if (xElem.id.startsWith("link_")) {
                 browser.tabs.create({url: xElem.dataset.url});
             }
@@ -123,6 +126,9 @@ function showPage (sPageName) {
         if (sPageName == "gc_options_page") {
             setGCOptionsFromStorage();
         }
+        else if (sPageName == "ui_options_page") {
+            setUIOptionsFromStorage();
+        }
     }
     catch (e) {
         showError(e);
@@ -135,6 +141,43 @@ function showTestResult (sText) {
 }
 
 
+/*
+    UI options
+*/
+
+function setUIOptionsFromStorage () {
+    if (bChrome) {
+        browser.storage.local.get("ui_options", setUIOptions);
+        return;
+    }
+    let xPromise = browser.storage.local.get("ui_options");
+    xPromise.then(setUIOptions, showError);
+}
+
+function setUIOptions (dOptions) {
+    if (!dOptions.hasOwnProperty("ui_options")) {
+        console.log("no ui options found");
+        return;
+    }
+    dOptions = dOptions.ui_options;
+    for (let sOpt in dOptions) {
+        if (document.getElementById("ui_option_"+sOpt)) {
+            document.getElementById("ui_option_"+sOpt).checked = dOptions[sOpt];
+        }
+    }
+}
+
+function storeUIOptions () {
+    browser.storage.local.set({"ui_options": {
+        textarea: ui_option_textarea.checked,
+        editablenode: ui_option_editablenode.checked
+    }});
+}
+
+
+/*
+    GC options
+*/
 function setGCOptionsFromStorage () {
     if (bChrome) {
         browser.storage.local.get("gc_options", _setGCOptions);
