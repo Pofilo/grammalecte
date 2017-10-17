@@ -178,93 +178,24 @@ browser.runtime.onConnect.addListener(handleConnexion);
 */
 
 // Selected text
-browser.contextMenus.create({
-    id: "rightClickLxgSelectedText",
-    title: "Lexicographe (sélection)",
-    contexts: ["selection"]
-});
-
-browser.contextMenus.create({
-    id: "rightClickGCSelectedText",
-    title: "Correction grammaticale (sélection)",
-    contexts: ["selection"]
-});
-
-browser.contextMenus.create({
-    id: "separator_selection",
-    type: "separator",
-    contexts: ["selection"]
-});
-
+browser.contextMenus.create({ id: "rightClickLxgSelectedText",  title: "Lexicographe (sélection)",                  contexts: ["selection"] });
+browser.contextMenus.create({ id: "rightClickGCSelectedText",   title: "Correction grammaticale (sélection)",       contexts: ["selection"] });
+browser.contextMenus.create({ id: "separator_selection",        type: "separator",                                  contexts: ["selection"] });
 // Editable content
-browser.contextMenus.create({
-    id: "rightClickTFEditableNode",
-    title: "Formateur de texte (zone de texte)",
-    contexts: ["editable"]
-});
-
-browser.contextMenus.create({
-    id: "rightClickLxgEditableNode",
-    title: "Lexicographe (zone de texte)",
-    contexts: ["editable"]
-});
-
-browser.contextMenus.create({
-    id: "rightClickGCEditableNode",
-    title: "Correction grammaticale (zone de texte)",
-    contexts: ["editable"]
-});
-
-browser.contextMenus.create({
-    id: "separator_editable",
-    type: "separator",
-    contexts: ["editable"]
-});
-
+browser.contextMenus.create({ id: "rightClickTFEditableNode",   title: "Formateur de texte (zone de texte)",        contexts: ["editable"] });
+browser.contextMenus.create({ id: "rightClickLxgEditableNode",  title: "Lexicographe (zone de texte)",              contexts: ["editable"] });
+browser.contextMenus.create({ id: "rightClickGCEditableNode",   title: "Correction grammaticale (zone de texte)",   contexts: ["editable"] });
+browser.contextMenus.create({ id: "separator_editable",         type: "separator",                                  contexts: ["editable"] });
 // Page
-browser.contextMenus.create({
-    id: "rightClickLxgPage",
-    title: "Lexicographe (page)",
-    contexts: ["page"]
-});
-
-browser.contextMenus.create({
-    id: "rightClickGCPage",
-    title: "Correction grammaticale (page)",
-    contexts: ["page"]
-});
-
-browser.contextMenus.create({
-    id: "separator_page",
-    type: "separator",
-    contexts: ["page"]
-});
-
+browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["page"] });
+browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["page"] });
+browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["page"] });
 // Conjugueur
-browser.contextMenus.create({
-    id: "conjugueur_window",
-    title: "Conjugueur [fenêtre]",
-    contexts: ["all"]
-});
-
-browser.contextMenus.create({
-    id: "conjugueur_tab",
-    title: "Conjugueur [onglet]",
-    contexts: ["all"]
-});
-
+browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
+browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
 // Rescan page
-browser.contextMenus.create({
-    id: "separator_rescan",
-    type: "separator",
-    contexts: ["editable"]
-});
-
-browser.contextMenus.create({
-    id: "rescanPage",
-    title: "Rechercher à nouveau les zones de texte",
-    contexts: ["editable"]
-});
+browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });
+browser.contextMenus.create({ id: "rescanPage",                 title: "Rechercher à nouveau les zones de texte",   contexts: ["editable"] });
 
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
