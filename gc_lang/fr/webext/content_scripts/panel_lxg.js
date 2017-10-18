@@ -24,8 +24,9 @@ class GrammalecteLexicographer extends GrammalectePanel {
         }
     }
 
-    addMessage (sClass, sText) {
-        this._xContentNode.appendChild(oGrammalecte.createNode("div", {className: sClass, textContent: sText}));
+    addMessage (sMessage) {
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_message", textContent: sMessage});
+        this._xContentNode.appendChild(xNode);
     }
 
     addListOfTokens (lTokens) {

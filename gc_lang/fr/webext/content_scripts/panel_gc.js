@@ -52,14 +52,18 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
         this.oTooltip = new GrammalecteTooltip(this.xContentNode);
         this.xPanelContent.appendChild(this.xContentNode);
-        this.oTAC = new GrammalecteTextAreaControl();
+        this.oNodeControl = new GrammalecteNodeControl();
     }
 
-    start (xTextArea=null) {
+    start (xNode=null) {
         this.oTooltip.hide();
         this.clear();
-        if (xTextArea) {
-            this.oTAC.setTextArea(xTextArea);
+        if (xNode) {
+            if (xNode.tagName == "TEXTAREA") {
+                this.oNodeControl.setNode(xNode);
+            } else {
+                this.addMessage("Cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Les modifications ne seront pas répercutées automatiquement. Une fois votre texte corrigé, vous pouvez utiliser le bouton ‹∑› pour copier le texte dans le presse-papiers.");
+            }
         }
     }
 
@@ -72,7 +76,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     hide () {
         this.xPanel.style.display = "none";
-        this.oTAC.clear();
+        this.oNodeControl.clear();
     }
 
     addParagraphResult (oResult) {
@@ -87,8 +91,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 let xParagraph = oGrammalecte.createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, className: "grammalecte_paragraph", lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
                 xParagraph.addEventListener("keyup", function (xEvent) {
-                    this.oTAC.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
-                    this.oTAC.write();
+                    this.oNodeControl.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
+                    this.oNodeControl.write();
                 }.bind(this)
                 , true);
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
@@ -113,8 +117,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
             dInfo: {sParagraphId: sParagraphId}
         });
-        this.oTAC.setParagraph(iParaNum, sText);
-        this.oTAC.write();
+        this.oNodeControl.setParagraph(iParaNum, sText);
+        this.oNodeControl.write();
     }
 
     refreshParagraph (sParagraphId, oResult) {
@@ -237,7 +241,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     addMessage (sMessage) {
-        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_gc_panel_message", textContent: sMessage});
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_message", textContent: sMessage});
         this.xParagraphList.appendChild(xNode);
     }
 
@@ -410,56 +414,63 @@ class GrammalecteTooltip {
 }
 
 
-class GrammalecteTextAreaControl {
+class GrammalecteNodeControl {
 
     constructor () {
-        this._xTextArea = null;
-        this._dParagraph = new Map();
+        this.xNode = null;
+        this.dParagraph = new Map();
+        this.bTextArea = null;
+        this.bWriteEN = false;  // write editable node
     }
 
-    setTextArea (xNode) {
+    setNode (xNode) {
         this.clear();
-        this._xTextArea = xNode;
-        this._xTextArea.disabled = true;
+        this.xNode = xNode;
+        this.bTextArea = (xNode.tagName == "TEXTAREA");
+        this.xNode.disabled = true;
         this._loadText();
     }
 
     clear () {
-        if (this._xTextArea !== null) {
-            this._xTextArea.disabled = false;
-            this._xTextArea = null;
+        if (this.xNode !== null) {
+            this.xNode.disabled = false;
+            this.xNode = null;
         }
-        this._dParagraph.clear();
+        this.dParagraph.clear();
     }
 
     setParagraph (iParagraph, sText) {
-        if (this._xTextArea !== null) {
-            this._dParagraph.set(iParagraph, sText);
+        if (this.xNode !== null) {
+            this.dParagraph.set(iParagraph, sText);
         }
     }
 
     _loadText () {
-        let sText = this._xTextArea.value;
+        let sText = (this.bTextArea) ? this.xNode.value : this.xNode.innerText;
         let i = 0;
         let iStart = 0;
         let iEnd = 0;
         sText = sText.replace("\r\n", "\n").replace("\r", "\n");
         while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
-            this._dParagraph.set(i, sText.slice(iStart, iEnd));
+            this.dParagraph.set(i, sText.slice(iStart, iEnd));
             i++;
             iStart = iEnd+1;
         }
-        this._dParagraph.set(i, sText.slice(iStart));
-        console.log("Paragraphs number: " + (i+1));
+        this.dParagraph.set(i, sText.slice(iStart));
+        //console.log("Paragraphs number: " + (i+1));
     }
 
     write () {
-        if (this._xTextArea !== null) {
+        if (this.xNode !== null && (this.bTextArea || this.bWriteEN)) {
             let sText = "";
-            this._dParagraph.forEach(function (val, key) {
+            this.dParagraph.forEach(function (val, key) {
                 sText += val + "\n";
             });
-            this._xTextArea.value = sText.slice(0,-1);
+            if (this.bTextArea) {
+                this.xNode.value = sText.slice(0,-1);
+            } else {
+                this.xNode.textContent = sText.slice(0,-1);
+            }
         }
     }
 }

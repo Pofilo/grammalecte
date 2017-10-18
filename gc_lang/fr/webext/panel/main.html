@@ -16,11 +16,11 @@
             <img src="../img/logo-32.png">
           </header>
           <ul>
-            <li class="select" data-page="home_page"><i class="select fa fa-star icon" data-page="home_page"></i></li>
-            <li class="select" data-page="help_page"><i class="select fa fa-question-circle icon" data-page="help_page"></i></li>
-            <li class="select" data-page="gc_options_page"><i class="select fa fa-cogs icon" data-page="gc_options_page"></i></li>
-            <li class="select" data-page="sc_options_page"><i class="select fa fa-cube icon" data-page="sc_options_page"></i></li>
-            <li class="select" data-page="test_page"><i class="select fa fa-flask icon" data-page="test_page"></i></li>
+            <li class="select" data-page="home_page"><i class="select fa fa-star icon" data-page="home_page" title="Accueil"></i></li>
+            <li class="select" data-page="ui_options_page"><i class="select fa fa-cube icon" data-page="ui_options_page" title="Options d’interface"></i></li>
+            <li class="select" data-page="gc_options_page"><i class="select fa fa-cog icon" data-page="gc_options_page" title="Options grammaticales"></i></li>
+            <li class="select" data-page="sc_options_page"><i class="select fa fa-book icon" data-page="sc_options_page" title="Options orthographiques"></i></li>
+            <li class="select" data-page="test_page"><i class="select fa fa-flask icon" data-page="test_page" title="Tests"></i></li>
           </ul>
         </nav>
       </header> <!-- #menu -->
@@ -50,21 +50,30 @@
           </div>
         </section> <!-- #home_page -->
 
-        <section id="help_page" class="page">
-          <h1>AIDE</h1>
-          <div id="help_section">
-            <p>Grammalecte affiche un bouton d’accès au menu en bas à gauche des zones de texte usuelles pour accéder aux fonctionnalités existantes.</p>
-            <p class="right"><img src="../img/menu_button1.png" title="bouton du menu" /></p>
-            <p class="right"><img src="../img/menu_button2.png" title="menu" /></p>
-            <p>Pour les autres zones de texte (HTML éditable), il faut sélectionner le texte et utiliser le menu contextuel.</p>
-            <p class="right"><img src="../img/contextmenu.png" title="menu contextuel sur sélection" /></p>
-            <h2>Raccourcis clavier</h2>
-            <p class="shortcut">CTRL+MAJ+6</p>
-            <p class="shortcut_label">Conjugueur (dans un onglet)</p>
-            <p class="shortcut">CTRL+MAJ+7</p>
-            <p class="shortcut_label">Conjugueur (dans une fenêtre)</p>
+        <section id="ui_options_page" class="page">
+          <h1>OPTIONS D’INTERFACE</h1>
+          <h2>Menu contextuel</h2>
+          <p>Les commandes permettant de lancer Grammalecte sont trouvables via le menu contextuel.</p>
+          <p class="right"><img src="../img/contextmenu.png" title="menu contextuel sur sélection" /></p>
+          <h2>Boutons d’accès</h2>
+          <p>Grammalecte peut aussi afficher un bouton d’accès au menu en bas à gauche des zones de texte pour accéder aux fonctionnalités existantes.</p>
+          <p class="right"><img src="../img/menu_button1.png" title="bouton du menu" /></p>
+          <p class="right"><img src="../img/menu_button2.png" title="menu" /></p>
+          <p>Vous pouvez activer ou désactiver l’affichage de ces boutons sur les zones de texte. Il existe deux types de zones de texte.</p>
+          <div class="option_section" id="ui_option_textarea_box">
+              <p><input type="checkbox" id="ui_option_textarea" /> <label for="ui_option_textarea">“Textareas”</label></p>
+              <p class="option_description">Ces zones de texte sont les champs de formulaire usuels pour saisir du texte. Ils ne permettent que la saisie de texte brut, sans fioritures.</p>
           </div>
-        </section> <!-- #help_page -->
+          <div class="option_section" id="ui_option_editablenode_box">
+              <p><input type="checkbox" id="ui_option_editablenode" /> <label for="ui_option_editablenode">“Nodes” éditables</label></p>
+              <p class="option_description">Ces zones de texte sont des sections de page web éditables. Il est fréquent que ces zones de texte apparaissent comme des “textareas” standard. Il est aussi fréquent que ces zones de texte soient couplées avec toutes sortes de logiciels (de simples scripts d’aide à la mise en page ou des applications complexes). Ces zones de texte permettent l’affichage de texte enrichi (italique, gras, hyperlien, images, etc.). Il est assez fréquent que des “textareas” invisibles se cachent derrière ces “nodes” éditables.</p>
+          </div>
+          <h2>Raccourcis clavier</h2>
+          <p class="shortcut">CTRL+MAJ+6</p>
+          <p class="shortcut_label">Conjugueur (dans un onglet)</p>
+          <p class="shortcut">CTRL+MAJ+7</p>
+          <p class="shortcut_label">Conjugueur (dans une fenêtre)</p>
+        </section> <!-- #ui_options_page -->
 
         <section id="gc_options_page" class="page">
           <h1>OPTIONS GRAMMATICALES</h1>
@@ -78,21 +87,21 @@
           <h1>OPTIONS ORTHOGRAPHIQUES</h1>
           <div id="spelling_options">
             <p id="dictionaries_info" data-l10n-id="dictionaries_info">Section inactive. Le nouveau système d’extension de Firefox (WebExtension) ne propose pas encore d’interface de programmation pour le correcteur orthographique.</p>
-            <div class="dict_section" id="fr-FR-modern_box">
+            <div class="option_section" id="fr-FR-modern_box">
                 <p><input type="checkbox" id="fr-FR-modern" /> <label for="fr-FR-modern">“Moderne”</label></p>
-                <p class="dict_description">Ce dictionnaire propose l’orthographe telle qu’elle est écrite aujourd’hui le plus couramment. C’est le dictionnaire recommandé si le français n’est pas votre langue maternelle ou si vous ne désirez qu’une seule graphie correcte par mot.</p>
+                <p class="option_description">Ce dictionnaire propose l’orthographe telle qu’elle est écrite aujourd’hui le plus couramment. C’est le dictionnaire recommandé si le français n’est pas votre langue maternelle ou si vous ne désirez qu’une seule graphie correcte par mot.</p>
             </div>
-            <div class="dict_section" id="fr-FR-classic_box">
+            <div class="option_section" id="fr-FR-classic_box">
                 <p><input type="checkbox" id="fr-FR-classic" /> <label for="fr-FR-classic">“Classique” (recommandé)</label></p>
-                <p class="dict_description">Il s’agit du dictionnaire “Moderne”, avec des graphies classiques en sus, certaines encore communément utilisées, d’autres désuètes. C’est le dictionnaire recommandé si le français est votre langue maternelle.</p>
+                <p class="option_description">Il s’agit du dictionnaire “Moderne”, avec des graphies classiques en sus, certaines encore communément utilisées, d’autres désuètes. C’est le dictionnaire recommandé si le français est votre langue maternelle.</p>
             </div>
-            <div class="dict_section" id="fr-FR-reform_box">
+            <div class="option_section" id="fr-FR-reform_box">
                 <p><input type="checkbox" id="fr-FR-reform" /> <label for="fr-FR-reform">“Réforme 1990”</label></p>
-                <p class="dict_description">Avec ce dictionnaire, seule l’orthographe réformée est reconnue. Attendu que bon nombre de graphies réformées sont considérées comme erronées par beaucoup, ce dictionnaire est déconseillé. Les graphies passées dans l’usage sont déjà incluses dans le dictionnaire “Moderne”.</p>
+                <p class="option_description">Avec ce dictionnaire, seule l’orthographe réformée est reconnue. Attendu que bon nombre de graphies réformées sont considérées comme erronées par beaucoup, ce dictionnaire est déconseillé. Les graphies passées dans l’usage sont déjà incluses dans le dictionnaire “Moderne”.</p>
             </div>
-            <div class="dict_section" id="fr-FR-classic-reform_box">
+            <div class="option_section" id="fr-FR-classic-reform_box">
                 <p><input type="checkbox" id="fr-FR-classic-reform" /> <label for="fr-FR-classic-reform">“Toutes variantes”</label></p>
-                <p class="dict_description">Ce dictionnaire contient les variantes graphiques, classiques, réformées, ainsi que d’autres plus rares encore. Ce dictionnaire est déconseillé à ceux qui ne connaissent pas très bien la langue française.</p>
+                <p class="option_description">Ce dictionnaire contient les variantes graphiques, classiques, réformées, ainsi que d’autres plus rares encore. Ce dictionnaire est déconseillé à ceux qui ne connaissent pas très bien la langue française.</p>
             </div>
           </div>
         </section> <!-- #sc_options_page -->

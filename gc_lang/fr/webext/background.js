@@ -72,6 +72,15 @@ xGCEWorker.onmessage = function (e) {
     }
 };
 
+function initUIOptions (dSavedOptions) {
+    if (!dSavedOptions.hasOwnProperty("ui_options")) {
+        browser.storage.local.set({"ui_options": {
+            textarea: true,
+            editablenode: false
+        }});
+    }
+}
+
 function initGrammarChecker (dSavedOptions) {
     let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
     xGCEWorker.postMessage({
@@ -84,20 +93,11 @@ function initGrammarChecker (dSavedOptions) {
 function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
+        browser.storage.local.get("ui_options", initUIOptions);
         return;
     }
-    let xPromise = browser.storage.local.get("gc_options");
-    xPromise.then(
-        initGrammarChecker,
-        function (e) {
-            showError(e);
-            xGCEWorker.postMessage({
-                sCommand: "init",
-                dParam: {sExtensionPath: browser.extension.getURL("."), dOptions: null, sContext: "Firefox"},
-                dInfo: {}
-            });
-        }
-    );
+    browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
+    browser.storage.local.get("ui_options").then(initUIOptions, showError);
 }
 
 init();
@@ -176,65 +176,67 @@ browser.runtime.onConnect.addListener(handleConnexion);
 /*
     Context Menu
 */
-browser.contextMenus.create({
-    id: "getListOfTokens",
-    title: "Analyser",
-    contexts: ["selection"]
-});
 
-browser.contextMenus.create({
-    id: "parseAndSpellcheck",
-    title: "Corriger",
-    contexts: ["selection"]
-});
+// Selected text
+browser.contextMenus.create({ id: "rightClickLxgSelectedText",  title: "Lexicographe (sélection)",                  contexts: ["selection"] });
+browser.contextMenus.create({ id: "rightClickGCSelectedText",   title: "Correction grammaticale (sélection)",       contexts: ["selection"] });
+browser.contextMenus.create({ id: "separator_selection",        type: "separator",                                  contexts: ["selection"] });
+// Editable content
+browser.contextMenus.create({ id: "rightClickTFEditableNode",   title: "Formateur de texte (zone de texte)",        contexts: ["editable"] });
+browser.contextMenus.create({ id: "rightClickLxgEditableNode",  title: "Lexicographe (zone de texte)",              contexts: ["editable"] });
+browser.contextMenus.create({ id: "rightClickGCEditableNode",   title: "Correction grammaticale (zone de texte)",   contexts: ["editable"] });
+browser.contextMenus.create({ id: "separator_editable",         type: "separator",                                  contexts: ["editable"] });
+// Page
+browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["page"] });
+browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["page"] });
+browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["page"] });
+// Conjugueur
+browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
+browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
+// Rescan page
+browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });
+browser.contextMenus.create({ id: "rescanPage",                 title: "Rechercher à nouveau les zones de texte",   contexts: ["editable"] });
 
-browser.contextMenus.create({
-    id: "separator1",
-    type: "separator",
-    contexts: ["selection"]
-});
-
-browser.contextMenus.create({
-    id: "conjugueur_window",
-    title: "Conjugueur [fenêtre]",
-    contexts: ["all"]
-});
-
-browser.contextMenus.create({
-    id: "conjugueur_tab",
-    title: "Conjugueur [onglet]",
-    contexts: ["all"]
-});
-
-browser.contextMenus.create({
-    id: "separator2",
-    type: "separator",
-    contexts: ["editable"]
-});
-
-browser.contextMenus.create({
-    id: "rescanPage",
-    title: "Rechercher à nouveau les zones de texte",
-    contexts: ["editable"]
-});
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xInfo = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/contextMenus/OnClickData
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
-        case "parseAndSpellcheck":
-            parseAndSpellcheckSelectedText(xTab.id, xInfo.selectionText);
+        // editable node
+        // page
+        case "rightClickTFEditableNode":
+        case "rightClickLxgEditableNode":
+        case "rightClickGCEditableNode":
+        case "rightClickLxgPage":
+        case "rightClickGCPage":
+            sendCommandToTab(xInfo.menuItemId, xTab.id);
             break;
-        case "getListOfTokens": 
-            getListOfTokensFromSelectedText(xTab.id, xInfo.selectionText);
+        // selected text
+        case "rightClickGCSelectedText":
+            sendCommandToTab("rightClickGCSelectedText", xTab.id);
+            xGCEWorker.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: {iReturnPort: xTab.id}
+            });
             break;
+        case "rightClickLxgSelectedText":
+            sendCommandToTab("rightClickLxgSelectedText", xTab.id);
+            xGCEWorker.postMessage({
+                sCommand: "getListOfTokens",
+                dParam: {sText: xInfo.selectionText},
+                dInfo: {iReturnPort: xTab.id}
+            });
+            break;
+        // conjugueur
         case "conjugueur_window":
             openConjugueurWindow();
             break;
         case "conjugueur_tab":
             openConjugueurTab();
             break;
+        // rescan page
         case "rescanPage":
             let xPort = dConnx.get(xTab.id);
             xPort.postMessage({sActionDone: "rescanPage"});
@@ -274,28 +276,9 @@ function storeGCOptions (dOptions) {
     browser.storage.local.set({"gc_options": dOptions});
 }
 
-function parseAndSpellcheckSelectedText (iTab, sText) {
-    // send message to the tab
+function sendCommandToTab (sCommand, iTab) {
     let xTabPort = dConnx.get(iTab);
-    xTabPort.postMessage({sActionDone: "openGCPanel", result: null, dInfo: null, bEnd: false, bError: false});
-    // send command to the worker
-    xGCEWorker.postMessage({
-        sCommand: "parseAndSpellcheck",
-        dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-        dInfo: {iReturnPort: iTab}
-    });
-}
-
-function getListOfTokensFromSelectedText (iTab, sText) {
-    // send message to the tab
-    let xTabPort = dConnx.get(iTab);
-    xTabPort.postMessage({sActionDone: "openLxgPanel", result: null, dInfo: null, bEnd: false, bError: false});
-    // send command to the worker
-    xGCEWorker.postMessage({
-        sCommand: "getListOfTokens",
-        dParam: {sText: sText},
-        dInfo: {iReturnPort: iTab}
-    });
+    xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
 }
 
 function openConjugueurTab () {
