@@ -551,7 +551,7 @@ __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumera
 
 __[i](typo_écriture_épicène_tous_toutes)__
     tous?[.(/·–—-]te[.)/·–—-]?s
-    <<- option("typo") ->> tous et toutes|toutes et tous                                            # Écriture épicène brouillon, dystypographique et imprononçable.
+    <<- option("typo") ->> tous et toutes|toutes et tous                                            # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{tou.tes}} sont là.                                              ->> tous et toutes|toutes et tous
@@ -559,7 +559,7 @@ TEST: {{tou.tes}} sont là.                                              ->> tou
 
 __[i](typo_écriture_épicène_ceux_celles)__
     c[./·–—-]?eux?[./·–—-]elles
-    <<- option("typo") ->> ceux et celles|celles et ceux                                            # Écriture épicène brouillon, dystypographique et imprononçable.
+    <<- option("typo") ->> ceux et celles|celles et ceux                                            # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux et celles|celles et ceux
@@ -567,7 +567,7 @@ TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux
 
 __[u](typo_écriture_épicène_pluriel_eur_divers)__
     ({w_2})eur[.(/·–—-][td]?(rice|euse|[oe]resse)[.)/·–—-]?s  @@0,**
-    <<- option("typo") ->> \1eurs et \1\2s|\1\2s et \1eurs                                          # Écriture épicène brouillon, dystypographique et imprononçable.
+    <<- option("typo") ->> \1eurs et \1\2s|\1\2s et \1eurs                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: travaillons avec les {{instituteur.trice.s}}                          ->> instituteurs et institutrices|institutrices et instituteurs
@@ -575,7 +575,7 @@ TEST: travaillons avec les {{instituteur.trice.s}}                          ->> 
 
 __[u](typo_écriture_épicène_pluriel_eux_euses)__
     ({w_2})eux[.(/·–—-](?:[tdsi]?euse|se)[.)/·–—-]?s  @@0
-    <<- option("typo") ->> \1eux et \1euses|\1euses et \1eux                                        # Écriture épicène brouillon, dystypographique et imprononçable.
+    <<- option("typo") ->> \1eux et \1euses|\1euses et \1eux                                        # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   ->> nombreux et nombreuses|nombreuses et nombreux
@@ -583,7 +583,7 @@ TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   -
 
 __[u](typo_écriture_épicène_pluriel_aux_ales)__
     ({w_2})aux[.(/·–—-][tnmcpb]?ale[.)/·–—-]?s  @@0
-    <<- option("typo") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                                 # Écriture épicène brouillon, dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
+    <<- option("typo") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                                 # Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{locaux·ales}}                                                   ->> locaux et locales|locales et locaux|local·e·s
@@ -591,15 +591,23 @@ TEST: {{locaux·ales}}                                                   ->> loc
 
 __[u](typo_écriture_épicène_pluriel_er_ère)__
     ({w_2})er[.(/·–—-]i?ère[.)/·–—-]?s  @@0
-    <<- option("typo") ->> \1ers et \1ères|\1ères et \1ers                                          # Écriture épicène brouillon, dystypographique et imprononçable.
+    <<- option("typo") ->> \1ers et \1ères|\1ères et \1ers                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: les {{conseiller.ière.s}}                                         ->> conseillers et conseillères|conseillères et conseillers
 
 
+__[u](typo_écriture_épicène_pluriel_if_ive)__
+    ({w_2})if[.(/·–—-][std]?ive[.)/·–—-]?s  @@0
+    <<- option("typo") ->> \1ifs et \1ives|\1ives et \1ifs                                          # Écriture épicène dystypographique et imprononçable.
+    <<- ~>> =normalizeInclusiveWriting(\0)
+
+TEST: {{inclusif.ive.s}}                                                ->> inclusifs et inclusives|inclusives et inclusifs
+
+
 __[u](typo_écriture_épicène_pluriel_e)__
     ({w_1}[éuitsrn])[-·–—.(/]([nt]|)e[-·–—.)/]?s  @@0,**
-    <<- option("typo") and not \0.endswith("·e·s") ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s         # Écriture épicène brouillon et dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- option("typo") and not \0.endswith("·e·s") ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s         # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: nous sommes {{déconsidéré-e-s}}.
@@ -614,8 +622,8 @@ TEST: ces militant·e·s {{acharné}}.
 
 __[i](typo_écriture_épicène_singulier)__
     ({w_1}[éuitsrn])(?:[-·–—./]e|[(]e[)])  @@0
-    <<- option("typo") and (\1 == "un" or \1 == "Un") ->> un ou une                                 # Écriture épicène brouillon et imprononçable. Préférez écrire lisiblement.
-    <<- __else__ and option("typo") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène brouillon. Utilisez un point médian.
+    <<- option("typo") and (\1 == "un" or \1 == "Un") ->> un ou une                                 # Écriture épicène imprononçable. Préférez écrire lisiblement.
+    <<- __else__ and option("typo") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène. Utilisez un point médian.
     <<- ~>> \1-e
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.
