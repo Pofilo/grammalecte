@@ -1787,6 +1787,10 @@ __[i](d_dans)__
     dans
     <<- not morph(word(-1), ":D.*:p|>[a-z]+ièmes ", False, False) =>> select(\0, ":R")
 
+__[i](d_ton_son)__
+    (\w+) ([ts]on)  @@0,$
+    <<- morph(\1, ">(?:le|ce[st]?|ton|mon|son|quel(?:que|)s?|[nv]otre|un|leur|ledit|dudit) ") =>> exclude(\2, ":D")
+
 # Pronoms le/la/les
 __[i](p_astuce_je_le_la_les)__
     je (l(?:e(?:ur|s|)|a)) @@$                  <<- not morph(word(-1), ":1s", False, False) =>> select(\1, ":Oo")
@@ -5095,7 +5099,7 @@ __[i](p_avoir_pronom_loc_adv)__
     <<- morph(\1, ":V0a", False) ~2>> *
 __[i](p_avoir_tous_toutes_les)__
     ({avoir}) +(tou(?:te|)s les ({w_2})) +({w_2})  @@0,w,>3:$,$
-    <<- morph(\1, ":V0a", False) and morph(\3, ":B", False) and morph(\4, ":(?:Q|V1.*:Y)", False) ~2>> *
+    <<- morph(\1, ":V0a", False) and morph(\3, ":B", False) and morph(\4, ">besoin |:(?:Q|V1.*:Y)", False) ~2>> *
 
 # elle aussi + adj
 __[i](p_elle_aussi)__
@@ -5160,7 +5164,7 @@ __[i](p_couleurs_invariables)__
 
 # locutions adjectivales, nominales & couleurs
 __[i](p_locutions_adj_nom_et_couleurs)__
-    ({w_2}) +(bas(?: de gamme|se consommation)|bon (?:enfant|marché|teint|chic,? bon genre)|cl(?:é|ef) en mains?|dernier cri|fleur bleue|grand (?:public|luxe)|grandeur nature|haut(?: de gamme|e (?:résolution|fidélité|tension))|longue (?:distance|portée|durée)|meilleur marché|numéro (?:un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix(?:-sept|-huit|-neuf)|onze|douze|treize|quatorze|quinze|seize|vingt)|plein cadre|top secret|vieux jeu|open source|Créative Commons|pair à pair|pur jus|terre à terre|bleu (?:ciel|marine|roi|saphir|turquoise)|vert (?:émeraude|olive|pomme)|rouge (?:brique|carmin|écarlate|rubis|sang)|jaune sable|blond platine|gris (?:acier|anthracite|perle|souris)|noir (?:d(?:’encre|e jais)|et blanc))
+    ({w_2}) +(bas(?: de gamme|se consommation)|bon (?:enfant|marché|teint|chic,? bon genre)|cl(?:é|ef) en mains?|dernier cri|fleur bleue|grand (?:public|luxe|maximum)|grandeur nature|haut(?: de gamme|e (?:résolution|fidélité|tension))|longue (?:distance|portée|durée)|meilleur marché|numéro (?:un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix(?:-sept|-huit|-neuf)|onze|douze|treize|quatorze|quinze|seize|vingt)|plein cadre|top secret|vieux jeu|open source|Créative Commons|pair à pair|pur jus|terre à terre|bleu (?:ciel|marine|roi|saphir|turquoise)|vert (?:émeraude|olive|pomme)|rouge (?:brique|carmin|écarlate|rubis|sang)|jaune sable|blond platine|gris (?:acier|anthracite|perle|souris)|noir (?:d(?:’encre|e jais)|et blanc))
     @@0,$
     <<- morph(\1, ":(?:N|A|Q|V0e)", False) ~2>> *
 
@@ -5216,6 +5220,8 @@ __<s>(p_balise_vide)__                  [<] +[>]                                
 
 __[i](p_à_nos_yeux)__
     (à (?:[mts]es|[nv]os|leurs) yeux) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[pi]", False) ~1>> *
+__[i](p_au_pire)__
+    (au pire) +({w_1}) @@0,$ <<- morph(\2, ":A", ":N:[me]:[si]") ~1>> *
 __[i](p_ben_voyons)__
     ben voyons <<- isStart() ~>> *
 __[i](p_chaque_année_semaine_journée_décennie)__
@@ -5365,6 +5371,10 @@ TEST: La seule façon de redonner sens à des notions…
 TEST: Les longues tresses que j’ai pris l’habitude de porter depuis quelque temps et qu’il faut cinq heures pour parfaire.
 TEST: Il est pieds nus.
 TEST: des dossiers secrets défense
+TEST: il y en a pour une demi-heure grand maximum aller et retour.
+TEST: nous avions tous les deux besoin d’un peu de réconfort.
+TEST: Une tierce connaissance qui est au pire triviale, mais non nulle.
+
 
 
 #
@@ -5486,6 +5496,7 @@ __[i]/gn(gn_ce_accord)__
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 __[i]/gn(gn_mon_ton_son_accord)__
     ([mts]on) +({w_2})  @@0,$
+    <<- morph(\1, ":D", False) >>>
     <<- morphex(\2, ">[bcdfgjklmnpqrstvwxz].*:[NAQ].*:f", ":[GWme]") -1>> =\1.replace("on", "a")    # Accord de genre erroné : « \2 » est féminin.
     <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
@@ -5508,6 +5519,7 @@ TEST: {{mon}} {{chienne}}
 TEST: cet {{oliviers}}
 TEST: ce {{claviers}}
 TEST: cette bouffe, c’est du {{chiens}}
+TEST: le ton monte.
 
 
 __<i]/gn(gn_la_accord1)__
@@ -8450,7 +8462,7 @@ __[s]/maj(maj_gentilés)__
     -2>> =\2.lower()                                                                                # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
     <<- \2.islower() and not \2.startswith("canadienne") and
     ( re.search("(?i)^(?:certaine?s?|cette|ce[ts]?|[dl]es|[nv]os|quelques|plusieurs|chaque|une|aux)$", \1) or
-    ( re.search("(?i)^un$", \1) and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
+    ( re.search("(?i)^un$", \1) and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") and not before(r"(?i)\bdans +")) )
     -2>> =\2.capitalize()                                                                           # S’il s’agit d’un gentilé, mettez une majuscule.
 
 TEST: des {{français}} sont arrivés                                     ->> Français
@@ -8462,6 +8474,7 @@ TEST: les Îles Britanniques.
 TEST: Allemands contre Grecs, Grecs contre Allemands
 TEST: sept Français sur dix
 TEST: l’océan Indien
+TEST: Je leur explique dans un anglais que la fatigue m’empêche de bien prononcer.
 
 
 __[s]/maj(maj_gentilés2)__
