@@ -6,14 +6,11 @@
 
 class GrammalecteMessageBox {
 
-    constructor (sId, sTitle, nWidth, nHeight) {
+    constructor (sId, sTitle) {
         this.sId = sId;
-        this.nWidth = nWidth;
-        this.nHeight = nHeight;
         this.xMessageBoxBar = oGrammalecte.createNode("div", {className: "grammalecte_message_box_bar"});
         this.xMessageBoxContent = oGrammalecte.createNode("div", {className: "grammalecte_message_box_content"});
         this.xMessageBox = this._createPanel(sTitle);
-        this.center();
     }
 
     _createPanel (sTitle) {
@@ -26,7 +23,6 @@ class GrammalecteMessageBox {
             xTitle.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_message_box_label", textContent: sTitle}));
             this.xMessageBoxBar.appendChild(xTitle);
             xMessageBox.appendChild(this.xMessageBoxBar);
-
             xMessageBox.appendChild(this.xMessageBoxContent);
             return xMessageBox;
         }
@@ -66,17 +62,11 @@ class GrammalecteMessageBox {
         this.clear();
     }
 
-    addMessage (sMessage) {
-    	this.xMessageBoxContent.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_message_box_message", textContent: sMessage}));
+    setMessage (sMessage) {
+        this.xMessageBoxContent.textContent = sMessage;
     }
 
     clear () {
-        while (this.xMessageBoxContent.firstChild) {
-            this.xMessageBoxContent.removeChild(this.xMessageBoxContent.firstChild);
-        }
-    }
-
-    center () {
-        this.xMessageBox.style = `top: 50%; left: 50%; width: ${this.nWidth}px; height: ${this.nHeight}px; margin-top: -${this.nHeight/2}px; margin-left: -${this.nWidth/2}px;`;
+        this.xMessageBoxContent.textContent = "";
     }
 }
