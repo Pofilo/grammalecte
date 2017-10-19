@@ -10349,7 +10349,7 @@ __[i]/imp(imp_union_moi_toi)__
     (?<!’)({w_2}) ([mt]oi)(?! même)  @@0,$
     <<- morphex(\1, ":E", ":[GM]")
     ->> \1-\2
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Apportez moi}} ce dictionnaire
 
@@ -10358,7 +10358,7 @@ __[i]/imp(imp_union_nous_vous_lui_y)__
     (?<!’)({w_2}) ([nv]ous|lui|y)(?! en| y| est)  @@0,$
     <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:Y|3[sp])", True) and morph(word(-1), ":Cc", False, True)
     ->> \1-\2
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne nous}} du café.
 
@@ -10367,7 +10367,7 @@ __[i]/imp(imp_union_les)__
     (?<!’)({w_2}) les(?! plus| moins| mieux| trop| très| en| y)  @@0
     <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:N|A|Q|Y|B|3[sp])", True) and morph(word(-1), ":Cc", False, True)
     ->> \1-les
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{chante les}} avec conviction
 TEST: Prenez les 5 ou 6 revues
@@ -10377,7 +10377,7 @@ __[i]/imp(imp_union_le_la_leur)__
     (?<!’)({w_2}) (l(?:e(?:ur|)|a))(?! plus| moins| mieux| peu| plupart| trop| très| une?)  @@0,$
     <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:N|A|Q|Y|MP|H|T)", True) and morph(word(-1), ":Cc", False, True)
     ->> \1-\2
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
 TEST: {{Dites leur}} que nous sommes là.
@@ -10392,7 +10392,7 @@ __[i]/imp(imp_laisser_le_la_les_infi)__
     ((laiss\w+) l(?:es|a)) +({w_2})  @@0,0,$
     <<- morph(\2, ">laisser ", False) and morphex(\3, ":(?:Y|X|Oo)", ":[NAB]")
     -1>> =\1.replace(" ", "-")
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Laisse les}} entrer…
 TEST: {{Laissez la}} venir…
@@ -10412,7 +10412,7 @@ __[i]/imp(imp_union_m_t_en_y)__
     ({w_2}) [mt]’(?:en|y)  @@0
     <<- morphex(\1, ":E", ":(?:G|M[12])") and morphex(word(1), ":", ":(?:Y|[123][sp])", True)
     ->> =\0.replace(" ", "-")
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{donne m’en}}, s’il te plaît.
 
@@ -10421,7 +10421,7 @@ __[i]/imp(imp_union_verbe_pronom_moi_toi_lui)__
     ({w_2})-(?:en|les|l[ae]) (?:[mt]oi|lui)  @@0
     <<- morph(\1, ":E", False)
     ->> =\0.replace(" ", "-")
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: les analyses, {{donne-les moi}}
 
@@ -10430,7 +10430,7 @@ __[i]/imp(imp_union_verbe_pronom_en_y_leur)__
     ({w_2})-(?:[mt]oi|[nv]ous|lui|leur|l[ae]|les) (?:en|y|leur)  @@0
     <<- morph(\1, ":E", False) and morphex(word(1), ":[RC]", ":[NAQ]", True)
     ->> =\0.replace(" ", "-")
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{prends-leur en}}
 
@@ -10439,7 +10439,7 @@ __[i]/imp(imp_union_verbe_pronom_nous_vous)__
     ({w_2})-l(?:es?|a) (?:[nv]ous)  @@0
     <<- morph(\1, ":E", False) and morphex(word(1), ":[RC]", ":Y", True)
     ->> =\0.replace(" ", "-")
-    # S’il s’agit d’un impératif, mettez un trait d’union.|http://66.46.185.79/bdl/gabarit_bdl.asp?id=4206
+    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{apporte-les nous}}
 
