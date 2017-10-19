@@ -622,7 +622,7 @@ TEST: ces militant·e·s {{acharné}}.
 
 __[i](typo_écriture_épicène_singulier)__
     ({w_1}[éuitsrn])(?:[-·–—./]e|[(]e[)])  @@0
-    <<- option("typo") and (\1 == "un" or \1 == "Un") ->> un ou une                                 # Écriture épicène imprononçable. Préférez écrire lisiblement.
+    <<- option("typo") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
     <<- __else__ and option("typo") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène. Utilisez un point médian.
     <<- ~>> \1-e
 
