@@ -167,7 +167,7 @@ const oGrammalecte = {
         if (nPos >= 0) {
             sPageText = sPageText.slice(0, nPos);
         }
-        return sPageText;
+        return sPageText.normalize("NFC");
     },
 
     createNode: function (sType, oAttr, oDataset=null) {
@@ -226,7 +226,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
-                    dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+                    dParam: {sText: sText.normalize("NFC"), sCountry: "FR", bDebug: false, bContext: false},
                     dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
                 });
             } else {
@@ -252,7 +252,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
                 xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
-                    dParam: {sText: sText},
+                    dParam: {sText: sText.normalize("NFC")},
                     dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
                 });
             } else {

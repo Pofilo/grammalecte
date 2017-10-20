@@ -256,7 +256,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             const t0 = Date.now();
             //window.setCursor("wait"); // change pointer
             this.resetProgressBar();
-            let sText = this.xTextArea.value;
+            let sText = this.xTextArea.value.normalize("NFC");
             document.getElementById('grammalecte_tf_progressbar').max = 7;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
             

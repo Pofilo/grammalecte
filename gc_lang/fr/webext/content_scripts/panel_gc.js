@@ -450,7 +450,7 @@ class GrammalecteNodeControl {
         let i = 0;
         let iStart = 0;
         let iEnd = 0;
-        sText = sText.replace("\r\n", "\n").replace("\r", "\n");
+        sText = sText.replace("\r\n", "\n").replace("\r", "\n").normalize("NFC");
         while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
             this.dParagraph.set(i, sText.slice(iStart, iEnd));
             i++;
@@ -466,10 +466,11 @@ class GrammalecteNodeControl {
             this.dParagraph.forEach(function (val, key) {
                 sText += val + "\n";
             });
+            sText = sText.slice(0,-1).normalize("NFC");
             if (this.bTextArea) {
-                this.xNode.value = sText.slice(0,-1);
+                this.xNode.value = sText;
             } else {
-                this.xNode.textContent = sText.slice(0,-1);
+                this.xNode.textContent = sText;
             }
         }
     }

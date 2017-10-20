@@ -217,7 +217,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             sendCommandToTab("rightClickGCSelectedText", xTab.id);
             xGCEWorker.postMessage({
                 sCommand: "parseAndSpellcheck",
-                dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
+                dParam: {sText: xInfo.selectionText.normalize("NFC"), sCountry: "FR", bDebug: false, bContext: false},
                 dInfo: {iReturnPort: xTab.id}
             });
             break;
@@ -225,7 +225,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             sendCommandToTab("rightClickLxgSelectedText", xTab.id);
             xGCEWorker.postMessage({
                 sCommand: "getListOfTokens",
-                dParam: {sText: xInfo.selectionText},
+                dParam: {sText: xInfo.selectionText.normalize("NFC")},
                 dInfo: {iReturnPort: xTab.id}
             });
             break;
