@@ -9,6 +9,7 @@ class GrammalecteMenu {
         this.sMenuId = "grammalecte_menu" + nMenu;
         this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => { this.switchMenu(); };
+        this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
         this.xMenu = this._createMenu(xNode);
         this._insertAfter(this.xButton, xNode);
         this._insertAfter(this.xMenu, xNode);
