@@ -23,6 +23,9 @@ class GrammalecteMenu {
         try {
             let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.textContent;
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
+            let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
+            xCloseButton.onclick = () => { this.switchMenu(); }
+            xMenu.appendChild(xCloseButton);
             xMenu.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
             // Text formatter
             if (xNode.tagName == "TEXTAREA") {
