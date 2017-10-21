@@ -268,12 +268,12 @@ class IBDAWG:
         aSugg = set()
         if not sWord:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                show(nDeep, "!!! " + sNewWord + " !!!")
+                #show(nDeep, "!!! " + sNewWord + " !!!")
                 aSugg.add(sNewWord)
             return aSugg
         cCurrent = sWord[0:1]
         for cChar, jAddr in self._getSimilarArcsAndCrushedChars(cCurrent, iAddr):
-            show(nDeep, cChar)
+            #show(nDeep, cChar)
             aSugg.update(self._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
         return aSugg
 
