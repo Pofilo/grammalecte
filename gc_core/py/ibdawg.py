@@ -201,7 +201,7 @@ class IBDAWG:
         if not aSugg:
             #print("crush useless chars")
             aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
-        aSugg = filter(lambda sSugg: not sSugg.endswith("è") and not sSugg.endswith("È"), aSugg) # fr language 
+        aSugg = filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSugg) # fr language 
         return sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sWord, sSugg))[:nMaxSugg]
 
     def _suggest (self, sRemain, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
