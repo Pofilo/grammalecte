@@ -191,7 +191,7 @@ class IBDAWG {
     suggest (sWord, nMaxSugg=10) {
         // returns a array of suggestions for <sWord>
         let nMaxDel = Math.floor(sWord.length / 5);
-        let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 2), 1);
+        let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 3), 1);
         let aSugg = this._suggest(sWord, nMaxDel, nMaxHardRepl);
         if (sWord.gl_isTitle()) {
             aSugg.gl_update(this._suggest(sWord.toLowerCase(), nMaxDel, nMaxHardRepl));
