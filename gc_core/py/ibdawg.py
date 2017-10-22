@@ -192,15 +192,12 @@ class IBDAWG:
         aSugg = set()
         nMaxDel = len(sWord) // 5
         nMaxHardRepl = max((len(sWord) - 5) // 2, 1)
+        aSugg.update(self._suggest(sWord, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
         if sWord.istitle():
-            aSugg.update(self._suggest(sWord, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
             aSugg.update(self._suggest(sWord.lower(), nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
             aSugg = set(map(lambda sSugg: sSugg.title(), aSugg))
         elif sWord.islower():
-            aSugg.update(self._suggest(sWord, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
             aSugg.update(self._suggest(sWord.title(), nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
-        else:
-            aSugg.update(self._suggest(sWord, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
         if not aSugg:
             #print("crush useless chars")
             aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
