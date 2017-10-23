@@ -131,6 +131,10 @@ class GrammalectePanel {
         this.xPanel.style.height = this.xPanelBar.offsetHeight + this.xPanelContent.offsetHeight + 10 + "px";
     }
 
+    getWidth () {
+        return this.xPanelContent.offsetWidth;
+    }
+
     logInnerHTML () {
         // for debugging
         console.log(this.xPanel.innerHTML);
