@@ -5315,6 +5315,11 @@ __[i](loc_tenir_compte)__
     (t[eiî]\w+) +(co(?:mp?|n)tes?) d(?:es?|u) @@0,w
     <<- \2 != "compte" -2>> compte              # Dans cette locution, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
     <<- morph(\1, ">tenir ", False) ~2>> *
+__[i](loc_tourner_court)__
+    (tourn\w+) +(cour(?:re|t|s|))  @@0,$
+    <<- morph(\1, ">tourner ", False) >>>
+    <<- \2 != "court" -2>> court                # Locution : tourner court.|https://fr.wiktionary.org/wiki/tourner_court
+    <<- ~2>> *
 __[i](p_trier_sur_le_volet)__
     (tri\w+) (sur le volet) @@0,$
     <<- morph(\1, ">trier ", False) ~2>> *
