@@ -291,8 +291,8 @@ class GrammalecteTooltip {
         });
         this.xTooltipSuggBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_block"});
         let xMessageBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_message_block"});
-        xMessageBlock.appendChild(oGrammalecte.createNode("p", {id: "grammalecte_tooltip_rule_id"}));
-        xMessageBlock.appendChild(oGrammalecte.createNode("p", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
+        xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_rule_id"}));
+        xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
         let xActions = xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"}));
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
