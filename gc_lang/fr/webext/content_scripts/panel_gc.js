@@ -348,6 +348,8 @@ class GrammalecteTooltip {
                 // spelling mistake
                 document.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
                 document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                document.getElementById("grammalecte_tooltip_url").dataset.url = "";
+                document.getElementById("grammalecte_tooltip_url").style.display = "none";
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
                 xGrammalectePort.postMessage({
