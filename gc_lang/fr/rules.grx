@@ -464,6 +464,15 @@ __[s](p_patronyme_composé_avec_le_la_les)__
 __[s](p_adresse_IP)__
     \d+[.:]\d+[.:]\d+[.:]\d+  <<- ~>> *
 
+# Arborescence
+__[s>(p_arborescence_Linux_Mac)__
+    /(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()]+)*  <<- ~>> *
+
+__[i>(p_arborescence_Windows1)__
+    [a-z]:\\Program Files(?: [(]x86[)]|)(?:\\[\w.()]+)*  <<- ~>> *
+__[i>(p_arborescence_Windows2)__
+    [a-z]:\\[\w.()]+(?:\\[\w.()]+)*  <<- ~>> *
+
 # mètres (m)
 __[s>(p_chiffres_m)__
     "\d+ (m) "  @@w <<- ~1>> _
@@ -513,6 +522,9 @@ TEST: C’est le b.a.-ba du métier.
 TEST: qui a été le plus honnête [Rires]
 TEST: Marion Maréchal-Le Pen. Afin que Maréchal ne soit pas analysé comme un impératif, “Le Pen” devient “Le_Pen”.
 TEST: Car [je] deviendrai plus insaisissable que jamais.
+TEST: C’est dans le dossier D:\Data
+TEST: Dossier C:\Program Files (x86)\LibreOffice
+
 #TEST: des <b>{{homme}}</b>
 #TEST: des [b]{{femme}}[/b]
 
