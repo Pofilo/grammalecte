@@ -5,8 +5,8 @@ import re
 _PATTERNS = {
     "default":
         (
-            r'(?P<FOLDER>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()]+)*)',
-            r'(?P<FOLDER>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()]+)*)',
+            r'(?P<FOLDER1>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()]+)*)',
+            r'(?P<FOLDER2>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()]+)*)',
             r'(?P<PUNC>[.,?!:;…«»“”"()/·]+)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w+[@.])[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
@@ -18,8 +18,8 @@ _PATTERNS = {
         ),
     "fr":
         (
-            r'(?P<FOLDER>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()]+)*)',
-            r'(?P<FOLDER>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()]+)*)',
+            r'(?P<FOLDER1>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()]+)*)',
+            r'(?P<FOLDER2>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()]+)*)',
             r'(?P<PUNC>[.,?!:;…«»“”"()/·]+)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w+[@.])[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
