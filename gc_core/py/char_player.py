@@ -309,3 +309,7 @@ aPfx1 = frozenset([
 aPfx2 = frozenset([
     "belgo", "franco", "génito", "gynéco", "médico", "russo"
 ])
+
+aExcludedSfx = frozenset([
+    "je", "tu", "il", "elle", "on", "t-il", "t-elle", "t-on", "nous", "vous", "ils", "elles"
+])

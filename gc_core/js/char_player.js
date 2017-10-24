@@ -326,6 +326,10 @@ var char_player = {
 
     aPfx2: new Set([
         "belgo", "franco", "génito", "gynéco", "médico", "russo"
+    ]),
+
+    aExcludedSfx: new Set([
+        "je", "tu", "il", "elle", "on", "t-il", "t-elle", "t-on", "nous", "vous", "ils", "elles"
     ])
 
 }

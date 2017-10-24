@@ -190,6 +190,14 @@ class IBDAWG {
 
     suggest (sWord, nMaxSugg=10) {
         // returns a array of suggestions for <sWord>
+        let sAdd = "";
+        if (sWord.includes("-")) {
+            let nLastHyphenPos = sWord.lastIndexOf("-");
+            if (char_player.aExcludedSfx.has(sWord.slice(nLastHyphenPos+1))) {
+                sAdd = sWord.slice(nLastHyphenPos);
+                sWord = sWord.slice(0, nLastHyphenPos);
+            }
+        }
         let nMaxDel = Math.floor(sWord.length / 5);
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
         let aSugg = this._suggest(sWord, nMaxDel, nMaxHardRepl);
@@ -212,6 +220,10 @@ class IBDAWG {
         aSugg.forEach((sSugg) => { dDistTemp.set(sSugg, char_player.distanceDamerauLevenshtein(sWord, sSugg)); });
         aSugg = aSugg.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); }).slice(0, nMaxSugg);
         dDistTemp.clear();
+        if (sAdd) {
+            // we add what we removed
+            return aSugg.map( (sSugg) => { return sSugg + sAdd } );
+        }
         return aSugg;
     }
 
