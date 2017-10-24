@@ -191,7 +191,7 @@ class IBDAWG:
         "returns a set of suggestions for <sWord>"
         aSugg = set()
         nMaxDel = len(sWord) // 5
-        nMaxHardRepl = max((len(sWord) - 5) // 3, 1)
+        nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
         aSugg.update(self._suggest(sWord, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
         if sWord.istitle():
             aSugg.update(self._suggest(sWord.lower(), nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
