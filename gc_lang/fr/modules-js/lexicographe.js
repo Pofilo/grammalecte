@@ -222,6 +222,9 @@ class Lexicographe {
                     let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
                     return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dPFX.gl_get(sTemp, "préfixe élidé inconnu")] };
                     break;
+                case 'FOLDER':
+                    return { sType: oToken.sType, sValue: oToken.sValue.slice(0,40)+"…", aLabel: ["dossier"] };
+                    break;
                 case 'WORD': 
                     if (oToken.sValue.gl_count("-") > 4) {
                         return { sType: "COMPLEX", sValue: oToken.sValue, aLabel: ["élément complexe indéterminé"] };
