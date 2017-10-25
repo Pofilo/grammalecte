@@ -318,7 +318,7 @@ var char_player = {
     ]),
 
 
-    // Préfixes
+    // Préfixes et suffixes
     aPfx1: new Set([
         "anti", "archi", "contre", "hyper", "mé", "méta", "im", "in", "ir", "par", "proto",
         "pseudo", "pré", "re", "ré", "sans", "sous", "supra", "sur", "ultra"
@@ -328,13 +328,19 @@ var char_player = {
         "belgo", "franco", "génito", "gynéco", "médico", "russo"
     ]),
 
-    aExcludedSfx: new Set([
-        "je", "tu", "il", "elle", "on", "t-il", "t-elle", "t-on", "nous", "vous", "ils", "elles"
-    ])
+
+    cut: function (sWord) {
+        // returns an arry of strings (prefix, trimed_word, suffix)
+        let m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)(-(?:t-|)(?:ils?|elles|on|je|tu|nous|vous)$)/.exec(sWord);
+        if (m) {
+            return ["", m[1], m[2]];
+        }
+        return ["", sWord, ""];
+    },
+
+    // Other functions
+    filterSugg: function (aSugg) {
+        return aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); });
+    }
 
 }
-
-
-
-
-

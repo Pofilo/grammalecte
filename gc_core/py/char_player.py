@@ -1,6 +1,8 @@
 # list of similar chars
 # useful for suggestion mechanism
 
+import re
+
 
 def distanceDamerauLevenshtein (s1, s2):
     "distance of Damerau-Levenshtein between <s1> and <s2>"
@@ -300,7 +302,7 @@ dFinal2 = {
 }
 
 
-# Préfixes
+# Préfixes et suffixes
 
 aPfx1 = frozenset([
     "anti", "archi", "contre", "hyper", "mé", "méta", "im", "in", "ir", "par", "proto",
@@ -310,6 +312,19 @@ aPfx2 = frozenset([
     "belgo", "franco", "génito", "gynéco", "médico", "russo"
 ])
 
-aExcludedSfx = frozenset([
-    "je", "tu", "il", "elle", "on", "t-il", "t-elle", "t-on", "nous", "vous", "ils", "elles"
-])
+
+_zMotAvecPronom = re.compile("^(?i)(\\w+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous))$")
+
+def cut (sWord):
+    "returns a tuple of strings (prefix, trimed_word, suffix)"
+    m = _zMotAvecPronom.search(sWord)
+    if m:
+        return ("", m.group(1), m.group(2))
+    return ("", sWord, "")
+
+
+# Other functions
+
+def filterSugg (aSugg):
+    "exclude suggestions"
+    return filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSugg)

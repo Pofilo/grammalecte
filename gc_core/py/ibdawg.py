@@ -189,12 +189,7 @@ class IBDAWG:
 
     def suggest (self, sWord, nMaxSugg=10):
         "returns a set of suggestions for <sWord>"
-        sAdd = ""
-        if "-" in sWord:
-            nLastHyphenPos = sWord.rfind("-")
-            if sWord[nLastHyphenPos+1:] in cp.aExcludedSfx:
-                sAdd = sWord[nLastHyphenPos:]
-                sWord = sWord[:nLastHyphenPos]
+        sPfx, sWord, sSfx = cp.cut(sWord)
         nMaxDel = len(sWord) // 5
         nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
         aSugg = self._suggest(sWord, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl)
@@ -206,11 +201,11 @@ class IBDAWG:
         if not aSugg:
             #print("crush useless chars")
             aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
-        aSugg = filter(lambda sSugg: not sSugg.endswith(("è", "È")), aSugg) # fr language 
+        aSugg = cp.filterSugg(aSugg)
         aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sWord, sSugg))[:nMaxSugg]
-        if sAdd:
+        if sSfx or sPfx:
             # we add what we removed
-            return list(map(lambda sSug: sSug+sAdd, aSugg))
+            return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
         return aSugg
 
     def _suggest (self, sRemain, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
