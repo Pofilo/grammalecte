@@ -200,9 +200,10 @@ class IBDAWG:
             aSugg.update(self._suggest(sWord.title(), nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
         if not aSugg:
             #print("crush useless chars")
-            aSugg.update(self._suggestWithCrushedUselessChars(cp.clearWord(sWord)))
+            aSugg.update(self._suggestWithCrushedUselessChars(cp.shrinkWord(sWord)))
         aSugg = cp.filterSugg(aSugg)
-        aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sWord, sSugg))[:nMaxSugg]
+        sCleanWord = cp.cleanWord(sWord)
+        aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sCleanWord, cp.cleanWord(sSugg)))[:nMaxSugg]
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))

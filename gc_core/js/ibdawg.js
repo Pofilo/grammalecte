@@ -203,7 +203,7 @@ class IBDAWG {
             aSugg.gl_update(this._suggest(sWord.gl_toCapitalize(), nMaxDel, nMaxHardRepl));
         }
         if (aSugg.size == 0) {
-            aSugg.gl_update(this._suggestWithCrushedUselessChars(char_player.clearWord(sWord)));
+            aSugg.gl_update(this._suggestWithCrushedUselessChars(char_player.shrinkWord(sWord)));
         }
         // Set to Array
         aSugg = Array.from(aSugg);
@@ -212,7 +212,8 @@ class IBDAWG {
             aSugg = aSugg.map((sSugg) => { return sSugg.gl_toCapitalize(); });
         }
         let dDistTemp = new Map();
-        aSugg.forEach((sSugg) => { dDistTemp.set(sSugg, char_player.distanceDamerauLevenshtein(sWord, sSugg)); });
+        let sCleanWord = char_player.cleanWord(sWord)
+        aSugg.forEach((sSugg) => { dDistTemp.set(sSugg, char_player.distanceDamerauLevenshtein(sCleanWord, char_player.cleanWord(sSugg))); });
         aSugg = aSugg.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); }).slice(0, nMaxSugg);
         dDistTemp.clear();
         if (sSfx || sPfx) {

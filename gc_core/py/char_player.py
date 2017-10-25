@@ -4,6 +4,21 @@
 import re
 
 
+_xTransChars = str.maketrans({
+    'à': 'a',  'é': 'e',  'î': 'i',  'ô': 'o',  'û': 'u',  'ÿ': 'y',
+    'â': 'a',  'è': 'e',  'ï': 'i',  'ö': 'o',  'ù': 'u',  'ŷ': 'y',
+    'ä': 'a',  'ê': 'e',  'í': 'i',  'ó': 'o',  'ü': 'u',  'ý': 'y',
+    'á': 'a',  'ë': 'e',  'ì': 'i',  'ò': 'o',  'ú': 'u',  'ỳ': 'y',
+    'ā': 'a',  'ē': 'e',  'ī': 'i',  'ō': 'o',  'ū': 'u',  'ȳ': 'y',
+    'ñ': 'n',
+    'œ': 'oe',  'æ': 'ae', 
+})
+
+def cleanWord (sWord):
+    "word simplication before calculating distance between words"
+    return sWord.lower().translate(_xTransChars)
+
+
 def distanceDamerauLevenshtein (s1, s2):
     "distance of Damerau-Levenshtein between <s1> and <s2>"
     # https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
@@ -45,7 +60,7 @@ _xTransVovels = str.maketrans(_dVovels)
 aVovels = frozenset(_dVovels.keys())
 
 
-def clearWord (sWord):
+def shrinkWord (sWord):
     "remove vovels and h"
     return sWord[0:1].replace("h", "") + sWord[1:].translate(_xTransVovels)
 

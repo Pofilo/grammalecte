@@ -6,6 +6,26 @@ ${map}
 
 var char_player = {
 
+    _dTransChars: new Map([
+        ['à', 'a'],  ['é', 'e'],  ['î', 'i'],  ['ô', 'o'],  ['û', 'u'],  ['ÿ', 'y'],
+        ['â', 'a'],  ['è', 'e'],  ['ï', 'i'],  ['ö', 'o'],  ['ù', 'u'],  ['ŷ', 'y'],
+        ['ä', 'a'],  ['ê', 'e'],  ['í', 'i'],  ['ó', 'o'],  ['ü', 'u'],  ['ý', 'y'],
+        ['á', 'a'],  ['ë', 'e'],  ['ì', 'i'],  ['ò', 'o'],  ['ú', 'u'],  ['ỳ', 'y'],
+        ['ā', 'a'],  ['ē', 'e'],  ['ī', 'i'],  ['ō', 'o'],  ['ū', 'u'],  ['ȳ', 'y'],
+        ['ñ', 'n'],
+        ['œ', 'oe'], ['æ', 'ae'], 
+    ]),
+
+    cleanWord: function (sWord) {
+        // word simplication before calculating distance between words
+        sWord = sWord.toLowerCase();
+        let sRes = "";
+        for (let c of sWord) {
+            sRes += this._dTransChars.gl_get(c, c);
+        }
+        return sWord;
+    },
+
     distanceDamerauLevenshtein: function (s1, s2) {
         // distance of Damerau-Levenshtein between <s1> and <s2>
         // https://fr.wikipedia.org/wiki/Distance_de_Damerau-Levenshtein
@@ -56,7 +76,7 @@ var char_player = {
         'h', 'œ', 'æ'
     ]),
 
-    clearWord: function (sWord) {
+    shrinkWord: function (sWord) {
         // remove vovels and h
         let sRes = "";
         for (let cChar of sWord.slice(1)) {
