@@ -202,9 +202,6 @@ class IBDAWG {
         else if (sWord.gl_isLowerCase()) {
             aSugg.gl_update(this._suggest(sWord.gl_toCapitalize(), nMaxDel, nMaxHardRepl));
         }
-        if (aSugg.size == 0) {
-            aSugg.gl_update(this._suggestWithCrushedUselessChars(char_player.shrinkWord(sWord)));
-        }
         // Set to Array
         aSugg = Array.from(aSugg);
         aSugg = aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); }); // fr language 
@@ -313,31 +310,6 @@ class IBDAWG {
             }
         }
         return aTails;
-    }
-
-    _suggestWithCrushedUselessChars (sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
-        let aSugg = new Set();
-        if (sWord.length == 0) {
-            if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
-                aSugg.add(sNewWord);
-            }
-            return aSugg;
-        }
-        let cCurrent = sWord.slice(0, 1);
-        for (let [cChar, jAddr] of this._getSimilarArcsAndCrushedChars(cCurrent, iAddr)) {
-            aSugg.gl_update(this._suggestWithCrushedUselessChars(sWord.slice(1), nDeep+1, jAddr, sNewWord+cChar));
-        }
-        return aSugg;
-    }
-
-    * _getSimilarArcsAndCrushedChars (cChar, iAddr) {
-        // generator: yield similar char of <cChar> and address of the following node
-        for (let [nVal, jAddr] of this._getArcs(iAddr)) {
-            if (this.dCharVal.get(nVal, null) in char_player.aVovels) {
-                yield [this.dCharVal[nVal], jAddr];
-            }
-        }
-        yield* this._getSimilarArcs(cChar, iAddr);
     }
 
     // morph (sWord) {

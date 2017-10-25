@@ -198,9 +198,6 @@ class IBDAWG:
             aSugg = set(map(lambda sSugg: sSugg.title(), aSugg))
         elif sWord.islower():
             aSugg.update(self._suggest(sWord.title(), nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
-        if not aSugg:
-            #print("crush useless chars")
-            aSugg.update(self._suggestWithCrushedUselessChars(cp.shrinkWord(sWord)))
         aSugg = cp.filterSugg(aSugg)
         sCleanWord = cp.cleanWord(sWord)
         aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sCleanWord, cp.cleanWord(sSugg)))[:nMaxSugg]
@@ -274,26 +271,6 @@ class IBDAWG:
                 if n and not aTails:
                     aTails.update(self._getTails(jAddr, sTail+self.dCharVal[nVal], n-1))
         return aTails
-
-    def _suggestWithCrushedUselessChars (self, sWord, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
-        aSugg = set()
-        if not sWord:
-            if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                #show(nDeep, "!!! " + sNewWord + " !!!")
-                aSugg.add(sNewWord)
-            return aSugg
-        cCurrent = sWord[0:1]
-        for cChar, jAddr in self._getSimilarArcsAndCrushedChars(cCurrent, iAddr):
-            #show(nDeep, cChar)
-            aSugg.update(self._suggestWithCrushedUselessChars(sWord[1:], nDeep+1, jAddr, sNewWord+cChar))
-        return aSugg
-
-    def _getSimilarArcsAndCrushedChars (self, cChar, iAddr):
-        "generator: yield similar char of <cChar> and address of the following node"
-        for nVal, jAddr in self._getArcs(iAddr):
-            if self.dCharVal.get(nVal, None) in cp.aVovels:
-                yield (self.dCharVal[nVal], jAddr)
-        yield from self._getSimilarArcs(cChar, iAddr)
 
     def drawPath (self, sWord, iAddr=0):
         "show the path taken by <sWord> in the graph"
