@@ -16,7 +16,7 @@ _xTransChars = str.maketrans({
 
 def cleanWord (sWord):
     "word simplication before calculating distance between words"
-    return sWord.lower().translate(_xTransChars)
+    return sWord.lower().translate(_xTransChars).replace("eau", "o").replace("au", "o")
 
 
 def distanceDamerauLevenshtein (s1, s2):

@@ -23,7 +23,7 @@ var char_player = {
         for (let c of sWord) {
             sRes += this._dTransChars.gl_get(c, c);
         }
-        return sWord;
+        return sWord.replace("eau", "o").replace("au", "o");
     },
 
     distanceDamerauLevenshtein: function (s1, s2) {
