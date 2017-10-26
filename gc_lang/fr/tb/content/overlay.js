@@ -298,9 +298,9 @@ var oGrammarChecker = {
                 }
                 let xNodeSugg = document.createElement("span");
                 xNodeSugg.setAttribute("class", "sugg");
-                xNodeSugg.textContent = sSugg;
+                xNodeSugg.textContent = sSugg.replace(" ", " "); // use nnbsp
                 xNodeSugg.addEventListener("click", function (e) {
-                    xEditor.changeParagraph(iParagraph, xNodeSugg.textContent, dErr["nStart"], dErr["nEnd"]);
+                    xEditor.changeParagraph(iParagraph, sSugg, dErr["nStart"], dErr["nEnd"]);
                     xNodeDiv.textContent = "";
                     that.reparseParagraph(xEditor, iParagraph);
                 });
