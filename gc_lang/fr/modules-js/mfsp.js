@@ -113,7 +113,7 @@ if (!mfsp.bInit && typeof(browser) !== 'undefined') {
 } else if (mfsp.bInit){
     console.log("Module mfsp déjà initialisé");
 } else {
-    console.log("Module mfsp non initialisé");
+    //console.log("Module mfsp non initialisé");
 }
 
 

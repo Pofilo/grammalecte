@@ -501,7 +501,7 @@ if (!conj.bInit && typeof(browser) !== 'undefined') {
 } else if (conj.bInit){
     console.log("Module conj déjà initialisé");
 } else {
-    console.log("Module conj non initialisé");
+    //console.log("Module conj non initialisé");
 }
 
 
