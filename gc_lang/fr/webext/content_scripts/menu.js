@@ -31,7 +31,6 @@ class GrammalecteMenu {
 
     _createMenu (xNode) {
         try {
-            let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.textContent;
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
             xCloseButton.onclick = () => { this.switchMenu(); }
@@ -52,6 +51,7 @@ class GrammalecteMenu {
             let xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Lexicographe"});
             xLxgButton.onclick = () => {
                 this.switchMenu();
+                let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.innerText;
                 oGrammalecte.startLxgPanel();
                 xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
@@ -64,6 +64,7 @@ class GrammalecteMenu {
             let xGCButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Correction grammaticale"});
             xGCButton.onclick = () => {
                 this.switchMenu();
+                let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.innerText;
                 oGrammalecte.startGCPanel(xNode);
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",

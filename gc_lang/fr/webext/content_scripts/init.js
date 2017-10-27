@@ -249,7 +249,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rightClickLxgEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
                 oGrammalecte.startLxgPanel();
-                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.textContent;
+                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
                 xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
                     dParam: {sText: sText.normalize("NFC")},
