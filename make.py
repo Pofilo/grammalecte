@@ -357,7 +357,7 @@ def main ():
             if xArgs.web_ext:
                 with helpers.cd("_build/webext/"+sLang):
                     spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
-                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')            
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console --firefox-profile=debug')            
 
             # Thunderbird
             if xArgs.thunderbird:
