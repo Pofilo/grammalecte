@@ -13,10 +13,20 @@ class GrammalecteMenu {
         this.xMenu = this._createMenu(xNode);
         this._insertAfter(this.xButton, xNode);
         this._insertAfter(this.xMenu, xNode);
+        this._createListenersOnReferenceNode(xNode);
     }
 
     _insertAfter (xNewNode, xReferenceNode) {
         xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
+    }
+
+    _createListenersOnReferenceNode (xNode) {
+        xNode.addEventListener('focus', (e) => {
+            this.xButton.style.display = "block";
+        });
+        xNode.addEventListener('blur', (e) => {
+            window.setTimeout(() => {this.xButton.style.display = "none";}, 300);
+        });
     }
 
     _createMenu (xNode) {
@@ -93,7 +103,6 @@ class GrammalecteMenu {
     }
 
     switchMenu () {
-        let xMenu = document.getElementById(this.sMenuId);
-        xMenu.style.display = (xMenu.style.display == "block") ? "none" : "block";
+        this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
     }
 }

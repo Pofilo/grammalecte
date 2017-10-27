@@ -75,8 +75,8 @@ xGCEWorker.onmessage = function (e) {
 function initUIOptions (dSavedOptions) {
     if (!dSavedOptions.hasOwnProperty("ui_options")) {
         browser.storage.local.set({"ui_options": {
-            textarea: false,
-            editablenode: false
+            textarea: true,
+            editablenode: true
         }});
     }
 }
