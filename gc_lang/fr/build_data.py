@@ -324,9 +324,9 @@ def makeLocutions (sp, bJS=False):
 
     sCode = "# generated data (do not edit)\n\n" + \
             "dLocutions = " + str(dLocutions) + "\n"
-    open(sp+"/modules/locutions.py", "w", encoding="utf-8", newline="\n").write(sCode)
+    open(sp+"/modules/locutions_data.py", "w", encoding="utf-8", newline="\n").write(sCode)
     if bJS:
-        open(sp+"/modules-js/locutions.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocutions, ensure_ascii=False))
+        open(sp+"/modules-js/locutions_data.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocutions, ensure_ascii=False))
 
 
 def before (spLaunch, dVars, bJS=False):
