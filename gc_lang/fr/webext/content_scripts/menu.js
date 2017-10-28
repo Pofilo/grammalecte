@@ -14,19 +14,24 @@ class GrammalecteMenu {
         this.xMenu = this._createMenu();
 
         let style = window.getComputedStyle(this.xNode);
-        this.topMargin = -1 * (8 + parseInt(style.marginBottom.replace('px', ''), 10));
+        let topMargin = -1 * (8 + parseInt(style.marginBottom.replace('px', ''), 10));
 
-        this._insertAfter(this.xButton);
-        this.xButton.style.marginTop = this.topMargin + 'px';
+        let insAfterThis = this.xNode;
+        if ( document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')){
+            insAfterThis = this.xNode.parentNode;
+        }
 
-        this._insertAfter(this.xMenu);
-        this.xMenu.style.marginTop = (this.topMargin + 8) + 'px';
+        this._insertAfter(this.xButton, insAfterThis);
+        this.xButton.style.marginTop = topMargin + 'px';
+
+        this._insertAfter(this.xMenu, insAfterThis);
+        this.xMenu.style.marginTop = (topMargin + 8) + 'px';
 
         this._createListenersOnReferenceNode();
     }
 
-    _insertAfter (xNewNode) {
-        this.xNode.parentNode.insertBefore(xNewNode, this.xNode.nextSibling);
+    _insertAfter (xNewNode, xReferenceNode) {
+        xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
     }
 
     _createListenersOnReferenceNode () {
