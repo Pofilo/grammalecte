@@ -41,7 +41,7 @@ class GrammalecteMenu {
     }
 
     _getText () {
-        return (this.xNode.tagName == "TEXTAREA") ? this.xNode.value : this.xNode.innerText;
+        return (this.xNode.tagName == "TEXTAREA") ? this.xNode.value.normalize("NFC") : this.xNode.innerText.normalize("NFC");
     }
 
     _createMenu () {
