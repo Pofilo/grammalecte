@@ -13,28 +13,25 @@ class GrammalecteMenu {
         this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
         this.xMenu = this._createMenu();
 
-        let style = window.getComputedStyle(this.xNode);
-        let topMargin = -1 * (8 + parseInt(style.marginBottom.replace('px', ''), 10));
+        let xStyle = window.getComputedStyle(this.xNode);
+        let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
 
-        let insAfterThis = this.xNode;
-        if ( document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')){
-            insAfterThis = this.xNode.parentNode;
+        let xNodeInsertAfter = this.xNode;
+        if (document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')) {
+            xNodeInsertAfter = this.xNode.parentNode;
         }
 
-        this._insertAfter(this.xButton, insAfterThis);
-        this.xButton.style.marginTop = topMargin + 'px';
-
-        this._insertAfter(this.xMenu, insAfterThis);
-        this.xMenu.style.marginTop = (topMargin + 8) + 'px';
-
-        this._createListenersOnReferenceNode();
+        this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
+        this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
+        this._createListeners();
     }
 
-    _insertAfter (xNewNode, xReferenceNode) {
+    _insertAfter (xNewNode, xReferenceNode, nMarginTop) {
         xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
+        xNewNode.style.marginTop = nMarginTop + "px";
     }
 
-    _createListenersOnReferenceNode () {
+    _createListeners () {
         this.xNode.addEventListener('focus', (e) => {
             this.xButton.style.display = "block";
         });

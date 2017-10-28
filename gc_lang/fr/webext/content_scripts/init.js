@@ -98,7 +98,7 @@ const oGrammalecte = {
         /*
             When a textarea is added via jascript we add the menu :)
         */
-        let this.xObserver = new MutationObserver(function (mutations) {
+        this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
                     if (mutation.addedNodes[i].getElementsByTagName) {
