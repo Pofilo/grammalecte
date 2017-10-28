@@ -52,6 +52,8 @@ const oGrammalecte = {
 
     xRightClickedNode: null,
 
+    xObserver: null,
+
     listenRightClick: function () {
         // Node where a right click is done
         // Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
@@ -90,6 +92,33 @@ const oGrammalecte = {
                 }
             }
         }
+    },
+
+    observePage: function () {
+        /*
+            When a textarea is added via jascript we add the menu :)
+        */
+        let this.xObserver = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                for (let i = 0;  i < mutation.addedNodes.length;  i++){
+                    if (mutation.addedNodes[i].getElementsByTagName) {
+                        if (mutation.addedNodes[i].tagName == "TEXTAREA") {
+                            oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
+                            oGrammalecte.nMenu += 1;
+                        } else {
+                            for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
+                                oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
+                                oGrammalecte.nMenu += 1;
+                            }
+                        }
+                    }
+                }
+            });
+        });
+        this.xObserver.observe(document.body, {
+            childList: true,
+            subtree: true
+        });
     },
 
     rescanPage: function () {
@@ -298,28 +327,4 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
 */
 oGrammalecte.listenRightClick();
 oGrammalecte.createMenus();
-
-/*
-    When a textarea is added via jascript we add the menu :)
-*/
-let observer = new MutationObserver(function(mutations) {
-    mutations.forEach(function(mutation) {
-        for(let i = 0; i < mutation.addedNodes.length; i++){
-            if ( mutation.addedNodes[i].getElementsByTagName ){
-                if ( mutation.addedNodes[i].tagName == "TEXTAREA" ) {
-                    oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
-                    oGrammalecte.nMenu += 1;
-                } else {
-                    for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
-                        oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
-                        oGrammalecte.nMenu += 1;
-                    }
-                }
-            }
-        }
-    });
-});
-observer.observe(document.body, {
-    childList: true,
-    subtree: true
-});
+oGrammalecte.observePage();
