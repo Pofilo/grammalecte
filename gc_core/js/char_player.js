@@ -23,7 +23,7 @@ var char_player = {
         for (let c of sWord) {
             sRes += this._dTransChars.gl_get(c, c);
         }
-        return sWord.replace("eau", "o").replace("au", "o");
+        return sRes.replace("eau", "o").replace("au", "o");
     },
 
     distanceDamerauLevenshtein: function (s1, s2) {
@@ -63,6 +63,12 @@ var char_player = {
         }
     },
 
+    showDistance (s1, s2) {
+        let s1b = this.cleanWord(s1);
+        let s2b = this.cleanWord(s2);
+        console.log(`Distance: ${s1} / ${s2} = ${this.distanceDamerauLevenshtein(s1, s2)})`);
+        console.log(`Distance: ${s1b} / ${s2b} = ${this.distanceDamerauLevenshtein(s1b, s2b)})`);
+    },
 
     // Method: Remove Useless Chars
 

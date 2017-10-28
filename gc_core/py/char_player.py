@@ -42,6 +42,13 @@ def distanceDamerauLevenshtein (s1, s2):
     return d[nLen1-1, nLen2-1]
 
 
+def showDistance (s1, s2):
+    s1b = cleanWord(s1);
+    s2b = cleanWord(s2);
+    print(f"Distance: {s1} / {s2} = {distanceDamerauLevenshtein(s1, s2)}")
+    print(f"Distance: {s1b} / {s2b} = {distanceDamerauLevenshtein(s1b, s2b)}")
+
+
 # Method: Remove Useless Chars
 
 _dVovels = {

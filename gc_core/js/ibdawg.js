@@ -204,12 +204,12 @@ class IBDAWG {
         }
         // Set to Array
         aSugg = Array.from(aSugg);
-        aSugg = aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); }); // fr language 
+        aSugg = char_player.filterSugg(aSugg);
         if (sWord.gl_isTitle()) {
             aSugg = aSugg.map((sSugg) => { return sSugg.gl_toCapitalize(); });
         }
         let dDistTemp = new Map();
-        let sCleanWord = char_player.cleanWord(sWord)
+        let sCleanWord = char_player.cleanWord(sWord);
         aSugg.forEach((sSugg) => { dDistTemp.set(sSugg, char_player.distanceDamerauLevenshtein(sCleanWord, char_player.cleanWord(sSugg))); });
         aSugg = aSugg.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); }).slice(0, nMaxSugg);
         dDistTemp.clear();
