@@ -35,9 +35,9 @@ class GrammalecteMenu {
         this.xNode.addEventListener('focus', (e) => {
             this.xButton.style.display = "block";
         });
-        this.xNode.addEventListener('blur', (e) => {
+        /*this.xNode.addEventListener('blur', (e) => {
             window.setTimeout(() => {this.xButton.style.display = "none";}, 300);
-        });
+        });*/
     }
 
     _getText () {
@@ -48,7 +48,10 @@ class GrammalecteMenu {
         try {
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
-            xCloseButton.onclick = () => { this.switchMenu(); }
+            xCloseButton.onclick = () => {
+                this.xButton.style.display = "none";
+                this.switchMenu();
+            }
             xMenu.appendChild(xCloseButton);
             xMenu.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
             // Text formatter
