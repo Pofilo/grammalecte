@@ -101,15 +101,13 @@ const oGrammalecte = {
         this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
-                    if (mutation.addedNodes[i].getElementsByTagName) {
-                        if (mutation.addedNodes[i].tagName == "TEXTAREA") {
-                            oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
+                    if (mutation.addedNodes[i].tagName == "TEXTAREA") {
+                        oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
+                        oGrammalecte.nMenu += 1;
+                    } else if (mutation.addedNodes[i].getElementsByTagName) {
+                        for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
+                            oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
                             oGrammalecte.nMenu += 1;
-                        } else {
-                            for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
-                                oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
-                                oGrammalecte.nMenu += 1;
-                            }
                         }
                     }
                 }
