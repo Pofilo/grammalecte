@@ -6,30 +6,43 @@
 class GrammalecteMenu {
 
     constructor (nMenu, xNode) {
+        this.xNode = xNode;
         this.sMenuId = "grammalecte_menu" + nMenu;
         this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => { this.switchMenu(); };
         this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
-        this.xMenu = this._createMenu(xNode);
-        this._insertAfter(this.xButton, xNode);
-        this._insertAfter(this.xMenu, xNode);
-        this._createListenersOnReferenceNode(xNode);
+        this.xMenu = this._createMenu();
+
+        let style = window.getComputedStyle(this.xNode);
+        this.topMargin = -1 * (8 + parseInt(style.marginBottom.replace('px', ''), 10));
+
+        this._insertAfter(this.xButton);
+        this.xButton.style.marginTop = this.topMargin + 'px';
+
+        this._insertAfter(this.xMenu);
+        this.xMenu.style.marginTop = (this.topMargin + 8) + 'px';
+
+        this._createListenersOnReferenceNode();
     }
 
-    _insertAfter (xNewNode, xReferenceNode) {
-        xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
+    _insertAfter (xNewNode) {
+        this.xNode.parentNode.insertBefore(xNewNode, this.xNode.nextSibling);
     }
 
-    _createListenersOnReferenceNode (xNode) {
-        xNode.addEventListener('focus', (e) => {
+    _createListenersOnReferenceNode () {
+        this.xNode.addEventListener('focus', (e) => {
             this.xButton.style.display = "block";
         });
-        xNode.addEventListener('blur', (e) => {
+        this.xNode.addEventListener('blur', (e) => {
             window.setTimeout(() => {this.xButton.style.display = "none";}, 300);
         });
     }
 
-    _createMenu (xNode) {
+    _getText () {
+        return (this.xNode.tagName == "TEXTAREA") ? this.xNode.value : this.xNode.innerText;
+    }
+
+    _createMenu () {
         try {
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
@@ -37,12 +50,12 @@ class GrammalecteMenu {
             xMenu.appendChild(xCloseButton);
             xMenu.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
             // Text formatter
-            if (xNode.tagName == "TEXTAREA") {
+            if (this.xNode.tagName == "TEXTAREA") {
                 let xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Formateur de texte"});
                 xTFButton.onclick = () => {
                     this.switchMenu();
                     oGrammalecte.createTFPanel();
-                    oGrammalecte.oTFPanel.start(xNode);
+                    oGrammalecte.oTFPanel.start(this.xNode);
                     oGrammalecte.oTFPanel.show();
                 };
                 xMenu.appendChild(xTFButton);
@@ -51,12 +64,11 @@ class GrammalecteMenu {
             let xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Lexicographe"});
             xLxgButton.onclick = () => {
                 this.switchMenu();
-                let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.innerText;
                 oGrammalecte.startLxgPanel();
                 xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
-                    dParam: {sText: sText},
-                    dInfo: {sTextAreaId: xNode.id}
+                    dParam: {sText: this._getText()},
+                    dInfo: {sTextAreaId: this.xNode.id}
                 });
             };
             xMenu.appendChild(xLxgButton);
@@ -64,12 +76,11 @@ class GrammalecteMenu {
             let xGCButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Correction grammaticale"});
             xGCButton.onclick = () => {
                 this.switchMenu();
-                let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.innerText;
-                oGrammalecte.startGCPanel(xNode);
+                oGrammalecte.startGCPanel(this.xNode);
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
-                    dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-                    dInfo: {sTextAreaId: xNode.id}
+                    dParam: {sText: this._getText(), sCountry: "FR", bDebug: false, bContext: false},
+                    dInfo: {sTextAreaId: this.xNode.id}
                 });
             };
             xMenu.appendChild(xGCButton);

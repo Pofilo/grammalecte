@@ -30,10 +30,10 @@ def _createOptionsForWebExtension (dVars):
     sHTML = ""
     sLang = dVars['sDefaultUILang']
     for sSection, lOpt in dVars['lStructOpt']:
-        sHTML += f'\n<div id="subsection_{sSection}" class="opt_subsection">\n  <h2 data-l10n-id="option_{sSection}">{dVars["dOptLabel"][sLang][sSection][0]}</h2>\n'
+        sHTML += '\n<div id="subsection_{sSection}" class="opt_subsection">\n  <h2 data-l10n-id="option_{sSection}">{dVars["dOptLabel"][sLang][sSection][0]}</h2>\n'
         for lLineOpt in lOpt:
             for sOpt in lLineOpt:
-                sHTML += f'  <p><input type="checkbox" id="option_{sOpt}" class="gc_option" data-option="{sOpt}"/><label id="option_label_{sOpt}" for="option_{sOpt}" data-l10n-id="option_{sOpt}">{dVars["dOptLabel"][sLang][sOpt][0]}</label></p>\n'
+                sHTML += '  <p><input type="checkbox" id="option_{sOpt}" class="gc_option" data-option="{sOpt}"/><label id="option_label_{sOpt}" for="option_{sOpt}" data-l10n-id="option_{sOpt}">{dVars["dOptLabel"][sLang][sOpt][0]}</label></p>\n'
         sHTML += '</div>\n'
     return sHTML
 
