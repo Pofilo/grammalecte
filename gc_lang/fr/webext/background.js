@@ -76,7 +76,7 @@ function initUIOptions (dSavedOptions) {
     if (!dSavedOptions.hasOwnProperty("ui_options")) {
         browser.storage.local.set({"ui_options": {
             textarea: true,
-            editablenode: true
+            editablenode: false
         }});
     }
 }
