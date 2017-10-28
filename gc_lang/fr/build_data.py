@@ -307,6 +307,28 @@ def makePhonetTable (sp, bJS=False):
         open(sp+"/modules-js/phonet_data.json", "w", encoding="utf-8", newline="\n").write(sCode)
 
 
+def makeLocutions (sp, bJS=False):
+    "compile list of locutions in JSON"
+    print("> Locutions ", end="")
+    print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
+    with open(sp+"/data/locutions.txt", 'r', encoding='utf-8') as hSrc:
+        dLocutions = {}
+        for sLine in hSrc.readlines():
+            if not sLine.startswith("#") and sLine.strip():
+                lElem = sLine.strip().split()
+                dCur = dLocutions
+                for sWord in lElem:
+                    if sWord not in dCur:
+                        dCur[sWord] = {}
+                    dCur = dCur[sWord]
+
+    sCode = "# generated data (do not edit)\n\n" + \
+            "dLocutions = " + str(dLocutions) + "\n"
+    open(sp+"/modules/locutions.py", "w", encoding="utf-8", newline="\n").write(sCode)
+    if bJS:
+        open(sp+"/modules-js/locutions.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocutions, ensure_ascii=False))
+
+
 def before (spLaunch, dVars, bJS=False):
     print("========== Build Hunspell dictionaries ==========")
     makeDictionaries(spLaunch, dVars['oxt_version'])
@@ -317,3 +339,4 @@ def after (spLaunch, dVars, bJS=False):
     makeMfsp(spLaunch, bJS)
     makeConj(spLaunch, bJS)
     makePhonetTable(spLaunch, bJS)
+    makeLocutions(spLaunch, bJS)
