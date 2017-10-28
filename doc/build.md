@@ -7,7 +7,8 @@
 * Firefox Nightly
 * NodeJS
   * npm
-  * jpm
+  * jpm : https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm
+  * web-ext : https://developer.mozilla.org/fr/Add-ons/WebExtensions/Getting_started_with_web-ext
 * Thunderbird
 
 

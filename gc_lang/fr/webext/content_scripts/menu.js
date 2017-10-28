@@ -6,43 +6,61 @@
 class GrammalecteMenu {
 
     constructor (nMenu, xNode) {
+        this.xNode = xNode;
         this.sMenuId = "grammalecte_menu" + nMenu;
         this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => { this.switchMenu(); };
         this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
-        this.xMenu = this._createMenu(xNode);
-        this._insertAfter(this.xButton, xNode);
-        this._insertAfter(this.xMenu, xNode);
-        this._createListenersOnReferenceNode(xNode);
+        this.xMenu = this._createMenu();
+
+        let xStyle = window.getComputedStyle(this.xNode);
+        let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
+
+        let xNodeInsertAfter = this.xNode;
+        if (document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')) {
+            xNodeInsertAfter = this.xNode.parentNode;
+        }
+
+        this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
+        this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
+        this._createListeners();
     }
 
-    _insertAfter (xNewNode, xReferenceNode) {
+    _insertAfter (xNewNode, xReferenceNode, nMarginTop) {
         xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
+        xNewNode.style.marginTop = nMarginTop + "px";
     }
 
-    _createListenersOnReferenceNode (xNode) {
-        xNode.addEventListener('focus', (e) => {
+    _createListeners () {
+        this.xNode.addEventListener('focus', (e) => {
             this.xButton.style.display = "block";
         });
-        xNode.addEventListener('blur', (e) => {
+        /*this.xNode.addEventListener('blur', (e) => {
             window.setTimeout(() => {this.xButton.style.display = "none";}, 300);
-        });
+        });*/
     }
 
-    _createMenu (xNode) {
+    _getText () {
+        return (this.xNode.tagName == "TEXTAREA") ? this.xNode.value.normalize("NFC") : this.xNode.innerText.normalize("NFC");
+    }
+
+    _createMenu () {
         try {
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
-            xCloseButton.onclick = () => { this.switchMenu(); }
+            xCloseButton.onclick = () => {
+                this.xButton.style.display = "none";
+                this.switchMenu();
+            }
             xMenu.appendChild(xCloseButton);
             xMenu.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_menu_header", textContent: "GRAMMALECTE"}));
             // Text formatter
-            if (xNode.tagName == "TEXTAREA") {
+            if (this.xNode.tagName == "TEXTAREA") {
                 let xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Formateur de texte"});
                 xTFButton.onclick = () => {
                     this.switchMenu();
                     oGrammalecte.createTFPanel();
-                    oGrammalecte.oTFPanel.start(xNode);
+                    oGrammalecte.oTFPanel.start(this.xNode);
                     oGrammalecte.oTFPanel.show();
                 };
                 xMenu.appendChild(xTFButton);
@@ -51,12 +69,11 @@ class GrammalecteMenu {
             let xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Lexicographe"});
             xLxgButton.onclick = () => {
                 this.switchMenu();
-                let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.innerText;
                 oGrammalecte.startLxgPanel();
                 xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
-                    dParam: {sText: sText},
-                    dInfo: {sTextAreaId: xNode.id}
+                    dParam: {sText: this._getText()},
+                    dInfo: {sTextAreaId: this.xNode.id}
                 });
             };
             xMenu.appendChild(xLxgButton);
@@ -64,12 +81,11 @@ class GrammalecteMenu {
             let xGCButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Correction grammaticale"});
             xGCButton.onclick = () => {
                 this.switchMenu();
-                let sText = (xNode.tagName == "TEXTAREA") ? xNode.value : xNode.innerText;
-                oGrammalecte.startGCPanel(xNode);
+                oGrammalecte.startGCPanel(this.xNode);
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
-                    dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-                    dInfo: {sTextAreaId: xNode.id}
+                    dParam: {sText: this._getText(), sCountry: "FR", bDebug: false, bContext: false},
+                    dInfo: {sTextAreaId: this.xNode.id}
                 });
             };
             xMenu.appendChild(xGCButton);

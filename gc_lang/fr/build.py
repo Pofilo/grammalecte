@@ -9,7 +9,7 @@ import helpers
 
 def build (sLang, dVars, spLangPack):
     "complementary build launched from make.py"
-    createFirefoxExtension(sLang, dVars)
+    #createFirefoxExtension(sLang, dVars)
     createWebExtension(sLang, dVars)
     createThunderbirdExtension(sLang, dVars, spLangPack)
 
