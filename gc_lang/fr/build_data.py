@@ -258,7 +258,7 @@ def makeMfsp (sp, bJS=False):
 def makePhonetTable (sp, bJS=False):
     print("> Correspondances phonétiques ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
-    
+
     try:
         oDict = ibdawg.IBDAWG("French.bdic")
     except:
@@ -318,8 +318,10 @@ def makeLocutions (sp, bJS=False):
                 lElem = sLine.strip().split()
                 dCur = dLocutions
                 for sWord in lElem:
-                    if sWord not in dCur:
+                    if sWord not in dCur and not sWord.startswith(":"):
                         dCur[sWord] = {}
+                    if sWord not in dCur and sWord.startswith(":"):
+                        dCur[sWord] = ''
                     dCur = dCur[sWord]
 
     sCode = "# generated data (do not edit)\n\n" + \

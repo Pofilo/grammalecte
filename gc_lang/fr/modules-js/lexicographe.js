@@ -9,11 +9,11 @@ ${string}
 ${map}
 
 
-if (typeof(require) !== 'undefined') {
+if (typeof (require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
 }
 
-const _dTAGS = new Map ([
+const _dTAGS = new Map([
     [':G', "[mot grammatical]"],
     [':N', " nom,"],
     [':A', " adjectif,"],
@@ -43,12 +43,13 @@ const _dTAGS = new Map ([
     [':Ow', " pronom adverbial,"],
     [':Os', " pronom personnel sujet,"],
     [':Oo', " pronom personnel objet,"],
-    [':C',  " conjonction,"],
-    [':Ĉ',  " conjonction (él.),"],
+    [':C', " conjonction,"],
     [':Cc', " conjonction de coordination,"],
     [':Cs', " conjonction de subordination,"],
-    [':Ĉs', " conjonction de subordination (él.),"],
-    
+
+    [':Ĺ', " locution,"],
+    [':Ĉ', " locution conjonctivale (él.),"],
+    [':Ĉs', " locution conjonctivale de subordination (él.),"],
     [':Ŵ', " locution adverbiale (él.),"],
     [':Ñ', " locution nominale (él.),"],
     [':Â', " locution adjectivale (él.),"],
@@ -68,7 +69,7 @@ const _dTAGS = new Map ([
     [':O1', " 1ʳᵉ pers.,"],
     [':O2', " 2ᵉ pers.,"],
     [':O3', " 3ᵉ pers.,"],
-    
+
     [':e', " épicène"],
     [':m', " masculin"],
     [':f', " féminin"],
@@ -109,7 +110,7 @@ const _dTAGS = new Map ([
     ['/X', ""]
 ]);
 
-const _dPFX = new Map ([
+const _dPFX = new Map([
     ['d', "(de), déterminant épicène invariable"],
     ['l', "(le/la), déterminant masculin/féminin singulier"],
     ['j', "(je), pronom personnel sujet, 1ʳᵉ pers., épicène singulier"],
@@ -125,7 +126,7 @@ const _dPFX = new Map ([
     ['jusqu', "(jusque), préposition"]
 ]);
 
-const _dAD = new Map ([
+const _dAD = new Map([
     ['je', " pronom personnel sujet, 1ʳᵉ pers. sing."],
     ['tu', " pronom personnel sujet, 2ᵉ pers. sing."],
     ['il', " pronom personnel sujet, 3ᵉ pers. masc. sing."],
@@ -135,14 +136,14 @@ const _dAD = new Map ([
     ['vous', " pronom personnel sujet/objet, 2ᵉ pers. plur."],
     ['ils', " pronom personnel sujet, 3ᵉ pers. masc. plur."],
     ['elles', " pronom personnel sujet, 3ᵉ pers. masc. plur."],
-    
+
     ["là", " particule démonstrative"],
     ["ci", " particule démonstrative"],
-    
+
     ['le', " COD, masc. sing."],
     ['la', " COD, fém. sing."],
     ['les', " COD, plur."],
-        
+
     ['moi', " COI (à moi), sing."],
     ['toi', " COI (à toi), sing."],
     ['lui', " COI (à lui ou à elle), sing."],
@@ -161,7 +162,7 @@ const _dAD = new Map ([
     ["s'en", " (se) pronom personnel objet + (en) pronom adverbial"]
 ]);
 
-const _dSeparator = new Map ([
+const _dSeparator = new Map([
     ['.', "point"],
     ['·', "point médian"],
     ['…', "points de suspension"],
@@ -196,70 +197,106 @@ const _dSeparator = new Map ([
 
 class Lexicographe {
 
-    constructor (oDict) {
+    constructor(oDict, oTokenizer, oLocution) {
         this.oDict = oDict;
-        this._zElidedPrefix = new RegExp ("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
-        this._zCompoundWord = new RegExp ("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
-        this._zTag = new RegExp ("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*][^:;/]*", "g");
+        this.oTokenizer = oTokenizer;
+        this.oLocution = JSON.parse(oLocution);
+
+        this._zElidedPrefix = new RegExp("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
+        this._zCompoundWord = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
+        this._zTag = new RegExp("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*][^:;/]*", "g");
+
     }
 
-    getInfoForToken (oToken) {
+    getInfoForToken(oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
         // return a list [type, token_string, values]
         let m = null;
         try {
             switch (oToken.sType) {
                 case 'SEPARATOR':
-                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dSeparator.gl_get(oToken.sValue, "caractère indéterminé")] };
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: [_dSeparator.gl_get(oToken.sValue, "caractère indéterminé")]
+                    };
                     break;
                 case 'NUM':
-                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: ["nombre"] };
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["nombre"]
+                    };
                     break;
                 case 'LINK':
-                    return { sType: oToken.sType, sValue: oToken.sValue.slice(0,40)+"…", aLabel: ["hyperlien"] };
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue.slice(0, 40) + "…",
+                        aLabel: ["hyperlien"]
+                    };
                     break;
                 case 'ELPFX':
                     let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
-                    return { sType: oToken.sType, sValue: oToken.sValue, aLabel: [_dPFX.gl_get(sTemp, "préfixe élidé inconnu")] };
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: [_dPFX.gl_get(sTemp, "préfixe élidé inconnu")]
+                    };
                     break;
                 case 'FOLDER':
-                    return { sType: oToken.sType, sValue: oToken.sValue.slice(0,40)+"…", aLabel: ["dossier"] };
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue.slice(0, 40) + "…",
+                        aLabel: ["dossier"]
+                    };
                     break;
-                case 'WORD': 
+                case 'WORD':
                     if (oToken.sValue.gl_count("-") > 4) {
-                        return { sType: "COMPLEX", sValue: oToken.sValue, aLabel: ["élément complexe indéterminé"] };
-                    }
-                    else if (this.oDict.isValidToken(oToken.sValue)) {
+                        return {
+                            sType: "COMPLEX",
+                            sValue: oToken.sValue,
+                            aLabel: ["élément complexe indéterminé"]
+                        };
+                    } else if (this.oDict.isValidToken(oToken.sValue)) {
                         let lMorph = this.oDict.getMorph(oToken.sValue);
                         let aElem = [];
-                        for (let s of lMorph){
-                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        for (let s of lMorph) {
+                            if (s.includes(":")) aElem.push(this._formatTags(s));
                         }
-                        return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem};
-                    }
-                    else if (m = this._zCompoundWord.exec(oToken.sValue)) {
+                        return {
+                            sType: oToken.sType,
+                            sValue: oToken.sValue,
+                            aLabel: aElem
+                        };
+                    } else if (m = this._zCompoundWord.exec(oToken.sValue)) {
                         // mots composés
                         let lMorph = this.oDict.getMorph(m[1]);
                         let aElem = [];
-                        for (let s of lMorph){
-                            if (s.includes(":"))  aElem.push( this._formatTags(s) );
+                        for (let s of lMorph) {
+                            if (s.includes(":")) aElem.push(this._formatTags(s));
                         }
                         aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
-                        return { sType: oToken.sType, sValue: oToken.sValue, aLabel: aElem };
-                    }
-                    else {
-                        return { sType: "UNKNOWN", sValue: oToken.sValue, aLabel: ["inconnu du dictionnaire"] };
+                        return {
+                            sType: oToken.sType,
+                            sValue: oToken.sValue,
+                            aLabel: aElem
+                        };
+                    } else {
+                        return {
+                            sType: "UNKNOWN",
+                            sValue: oToken.sValue,
+                            aLabel: ["inconnu du dictionnaire"]
+                        };
                     }
                     break;
             }
-        }
-        catch (e) {
+        } catch (e) {
             helpers.logerror(e);
         }
         return null;
     }
 
-    _formatTags (sTags) {
+    _formatTags(sTags) {
         let sRes = "";
         sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
         let m;
@@ -280,7 +317,7 @@ class Lexicographe {
         return sRes.gl_trimRight(",");
     }
 
-    _formatSuffix (s) {
+    _formatSuffix(s) {
         if (s.startsWith("t-")) {
             return "“t” euphonique +" + _dAD.get(s.slice(2));
         }
@@ -291,11 +328,118 @@ class Lexicographe {
             s += '2';
         }
         let nPos = s.indexOf("-");
-        return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos+1));
+        return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos + 1));
+    }
+
+    getListOfTokens(sText, bInfo = true) {
+        let aElem = [];
+        sText = sText.replace("'", "’").trim();
+        if (sText !== "") {
+            let aRes = null;
+            for (let oToken of this.oTokenizer.genTokens(sText)) {
+                if (bInfo) {
+                    aRes = this.getInfoForToken(oToken);
+                    if (aRes) {
+                        aElem.push(aRes);
+                    }
+                } else if (oToken.sType !== "SPACE") {
+                    aElem.push(oToken);
+                }
+            }
+        }
+        return aElem;
+    }
+
+    elpfxToword(sELPFX){
+        return sELPFX.replace('’', 'e');
+    }
+
+    getListOfTokensReduc(sText, bInfo = true) {
+        let lstToken = this.getListOfTokens(sText, false);
+        //console.log(lstToken);
+        //console.log(this.oLocution);
+
+        let id = 0;
+        let aElem = [];
+        let aRes = null;
+        let isType = {'WORD':1,'ELPFX':1};
+        do {
+            let oToken = lstToken[id]
+            let aLocution = this.oLocution[this.elpfxToword(oToken.sValue)];
+            //console.log('Start cherche', oToken.sValue, aLocution);
+            let stop = false;
+            let start = id + 1;
+            let lastTokenWord = '';
+            let ok = false;
+            let oLst = [];
+            oLst.push(oToken);
+            while (!stop && typeof aLocution !== "undefined") {
+                if (start > lstToken.length){
+                    break;
+                }
+                let typeToken = '';
+                let nextToken = lstToken[start];
+                //console.log(start, nextToken, aLocution);
+
+                if ( typeof nextToken !== "undefined" ) {
+                    aLocution = aLocution[this.elpfxToword(nextToken.sValue)];
+                    typeToken = nextToken.sType;
+                } else {
+                    aLocution = "undefined";
+                }
+
+                if ( typeToken in isType && typeof aLocution !== "undefined") {
+                    lastTokenWord = Object.keys(aLocution)[0];
+                    start++;
+                    oLst.push(nextToken);
+                    //console.log( nextToken.sValue );
+                } else if ( !(typeToken in isType) || typeof aLocution == "undefined") {
+                    stop = true;
+                    if ( lastTokenWord.substring(0, 1) == ':' ) {
+                        ok = true;
+                    }
+                }
+            };
+
+            if ( ok ){
+                let word = '';
+                for (let oToken of oLst) {
+                    word += oToken.sValue+' ';
+                    //console.log('***',word);
+                }
+                id = id + oLst.length-1;
+                let tmpToken = {
+                    'nEnd':oLst[oLst.length-1].nEnd,
+                    'nStart':oLst[0].nStart,
+                    'sType':"WORD",
+                    'sValue':word.replace('’ ','’').trim()
+                };
+                if (bInfo) {
+                    aElem.push({
+                        sType: tmpToken.sType,
+                        sValue: tmpToken.sValue,
+                        aLabel: [this._formatTags(lastTokenWord).replace(/(\(él.\))/g,'').trim()]
+                    });
+                } else {
+                    aElem.push(tmpToken);
+                }
+            } else {
+                if (bInfo) {
+                    aRes = this.getInfoForToken(oToken);
+                    if (aRes) {
+                        aElem.push(aRes);
+                    }
+                } else {
+                    aElem.push(oToken);
+                }
+            }
+            id++;
+        } while (id < lstToken.length);
+        return aElem;
     }
 }
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof (exports) !== 'undefined') {
     exports.Lexicographe = Lexicographe;
 }

@@ -140,6 +140,7 @@ let oDict = null;
 let oTokenizer = null;
 let oLxg = null;
 let oTest = null;
+let oLocution = null;
 
 
 /*
@@ -162,11 +163,14 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             gc_engine.load(sContext, sExtensionPath+"grammalecte/_dictionaries");
             oDict = gc_engine.getDictionary();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
-            oLxg = new Lexicographe(oDict);
+            oTokenizer = new Tokenizer("fr");
+
+            oLocution =  helpers.loadFile(sExtensionPath + "/grammalecte/fr/locutions_data.json");
+
+            oLxg = new Lexicographe(oDict, oTokenizer, oLocution);
             if (dOptions !== null) {
                 gc_engine.setOptions(dOptions);
             }
-            oTokenizer = new Tokenizer("fr");
             //tests();
             bInitDone = true;
         } else {
@@ -298,15 +302,7 @@ function getListOfTokens (sText, dInfo={}) {
     try {
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                let aElem = [];
-                let aRes = null;
-                for (let oToken of oTokenizer.genTokens(sParagraph)) {
-                    aRes = oLxg.getInfoForToken(oToken);
-                    if (aRes) {
-                        aElem.push(aRes);
-                    }
-                }
-                postMessage(createResponse("getListOfTokens", aElem, dInfo, false));
+                postMessage(createResponse("getListOfTokens", oLxg.getListOfTokensReduc(sParagraph, true), dInfo, false));
             }
         }
         postMessage(createResponse("getListOfTokens", null, dInfo, true));

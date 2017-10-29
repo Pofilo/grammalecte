@@ -11,12 +11,12 @@ if (typeof(require) !== 'undefined') {
 
 
 var text = {
-    getParagraph: function* (sText) {
+    getParagraph: function* (sText, sSepParagraph = "\n") {
         // generator: returns paragraphs of text
         let iStart = 0;
         let iEnd = 0;
         sText = sText.replace("\r\n", "\n").replace("\r", "\n");
-        while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
+        while ((iEnd = sText.indexOf(sSepParagraph, iStart)) !== -1) {
             yield sText.slice(iStart, iEnd);
             iStart = iEnd + 1;
         }
@@ -45,7 +45,7 @@ var text = {
     getReadableError: function (oErr) {
         // Returns an error oErr as a readable error
         try {
-            let sResult = "\n* " + oErr['nStart'] + ":" + oErr['nEnd'] 
+            let sResult = "\n* " + oErr['nStart'] + ":" + oErr['nEnd']
                         + "  # " + oErr['sLineId'] + "  # " + oErr['sRuleId'] + ":\n";
             sResult += "  " + oErr["sMessage"];
             if (oErr["aSuggestions"].length > 0) {
