@@ -209,7 +209,7 @@ class Lexicographe {
 
     }
 
-    getInfoForToken(oToken) {
+    getInfoForToken (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
         // return a list [type, token_string, values]
         let m = null;
@@ -297,7 +297,7 @@ class Lexicographe {
         return null;
     }
 
-    _formatTags(sTags) {
+    _formatTags (sTags) {
         let sRes = "";
         sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
         let m;
@@ -318,7 +318,7 @@ class Lexicographe {
         return sRes.gl_trimRight(",");
     }
 
-    _formatSuffix(s) {
+    _formatSuffix (s) {
         if (s.startsWith("t-")) {
             return "“t” euphonique +" + _dAD.get(s.slice(2));
         }
@@ -332,7 +332,7 @@ class Lexicographe {
         return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos + 1));
     }
 
-    getListOfTokens(sText, bInfo = true) {
+    getListOfTokens (sText, bInfo = true) {
         let aElem = [];
         sText = sText.replace("'", "’").trim();
         if (sText !== "") {
@@ -351,82 +351,75 @@ class Lexicographe {
         return aElem;
     }
 
-    elpfxToword(sELPFX){
-        return sELPFX.replace('’', 'e').toLowerCase();
+    _unifyStr (sWord){
+        return sWord.replace('’', 'e').toLowerCase();
     }
 
-    getListOfTokensReduc(sText, bInfo = true) {
-        let lstToken = this.getListOfTokens(sText, false);
-        //console.log(lstToken);
-        //console.log(this.oLocution);
-
-        let id = 0;
+    getListOfTokensReduc (sText, bInfo = true) {
+        let aTokenList = this.getListOfTokens(sText, false);
+        let iKey = 0;
         let aElem = [];
         let aRes = null;
         let isType = {'WORD':1,'ELPFX':1};
         do {
-            let oToken = lstToken[id]
-            let aLocution = this.oLocution[this.elpfxToword(oToken.sValue)];
-            //console.log('Start cherche', oToken.sValue, aLocution);
-            let stop = false;
-            let start = id + 1;
-            let lastTokenWord = '';
-            let ok = false;
-            let oLst = [];
-            oLst.push(oToken);
-            while (!stop && typeof aLocution !== "undefined") {
-                if (start > lstToken.length){
+            let oToken = aTokenList[iKey]
+            let aLocution = this.oLocution[this._unifyStr(oToken.sValue)];
+            let bStop = false;
+            let bOk = false;
+            let iKeyTree = iKey + 1;
+            let sTokenTmpKey = '';
+            let aTokenTempList = [];
+            aTokenTempList.push(oToken);
+            while (!bStop && typeof aLocution !== "undefined") {
+                if (iKeyTree > aTokenList.length){
                     break;
                 }
-                let typeToken = '';
-                let nextToken = lstToken[start];
-                //console.log(start, nextToken, aLocution);
+                let sTokenNextType = '';
+                let oTokenNext = aTokenList[iKeyTree];
 
-                if ( typeof nextToken !== "undefined" ) {
-                    aLocution = aLocution[this.elpfxToword(nextToken.sValue)];
-                    typeToken = nextToken.sType;
+                if ( typeof oTokenNext !== "undefined" ) {
+                    aLocution = aLocution[this._unifyStr(oTokenNext.sValue)];
+                    sTokenNextType = oTokenNext.sType;
                 } else {
                     aLocution = "undefined";
                 }
 
-                if ( typeToken in isType && typeof aLocution !== "undefined") {
-                    lastTokenWord = Object.keys(aLocution)[0];
-                    start++;
-                    oLst.push(nextToken);
-                    //console.log( nextToken.sValue );
-                } else if ( !(typeToken in isType) || typeof aLocution == "undefined") {
-                    stop = true;
-                    if ( lastTokenWord.substring(0, 1) == ':' ) {
-                        ok = true;
+                if ( sTokenNextType in isType && typeof aLocution !== "undefined") {
+                    sTokenTmpKey = Object.keys(aLocution)[0];
+                    iKeyTree++;
+                    aTokenTempList.push(oTokenNext);
+                } else if ( !(sTokenNextType in isType) || typeof aLocution == "undefined") {
+                    bStop = true;
+                    if ( sTokenTmpKey.substring(0, 1) == ':' ) {
+                        bOk = true;
                     }
                 }
             };
 
-            if ( ok ){
-                let word = '';
-                for (let oToken of oLst) {
-                    word += oToken.sValue+' ';
-                    //console.log('***',word);
+            if ( bOk ){
+                let sWord = '';
+                for (let oTokenWord of aTokenTempList) {
+                    sWord += oTokenWord.sValue+' ';
                 }
-                id = id + oLst.length-1;
-                let tmpToken = {
-                    'nEnd':oLst[oLst.length-1].nEnd,
-                    'nStart':oLst[0].nStart,
+                iKey = iKey + aTokenTempList.length-1;
+                let oTokenLocution = {
+                    'nEnd':aTokenTempList[aTokenTempList.length-1].nEnd,
+                    'niKeyTree':aTokenTempList[0].niKeyTree,
                     'sType':"LOC",
-                    'sValue':word.replace('’ ','’').trim()
+                    'sValue':sWord.replace('’ ','’').trim()
                 };
                 if (bInfo) {
-                    let formatedTag = [];
-                    for (let oToFormat of lastTokenWord.split('|') ){
-                        formatedTag.push( this._formatTags(oToFormat).replace(/(\(él.\))/g,'').trim() );
+                    let aFormatedTag = [];
+                    for (let sTagMulti of sTokenTmpKey.split('|') ){
+                        aFormatedTag.push( this._formatTags(sTagMulti).replace(/(\(él.\))/g,'').trim() );
                     }
                     aElem.push({
-                        sType: tmpToken.sType,
-                        sValue: tmpToken.sValue,
-                        aLabel: formatedTag
+                        sType: oTokenLocution.sType,
+                        sValue: oTokenLocution.sValue,
+                        aLabel: aFormatedTag
                     });
                 } else {
-                    aElem.push(tmpToken);
+                    aElem.push(oTokenLocution);
                 }
             } else {
                 if (bInfo) {
@@ -438,8 +431,8 @@ class Lexicographe {
                     aElem.push(oToken);
                 }
             }
-            id++;
-        } while (id < lstToken.length);
+            iKey++;
+        } while (iKey < aTokenList.length);
         return aElem;
     }
 }
