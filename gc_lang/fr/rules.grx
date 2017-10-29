@@ -10233,10 +10233,18 @@ __<i>(p_premier_ne_pro_per_obj5)__
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
     <<- ~1>> *
 __<i>(p_premier_ne_pro_per_obj6)__
-    ^( *ne (?:l’|))({w_2})  @@0,$
+    ^( *ne l’)({w_2})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
     <<- ~1>> *
+__<i>(p_premier_ne_pro_per_obj7)__
+    ^( *ne) ({w_2})  @@0,$
+    <<- morphex(\2, ":(?:[123][sp]|P)", ":X") =>> select(\2,":(?:[123][sp]|P)")
+    <<- __also__ ~1>> *
 
+TEST: Ne rien céder.
+TEST: Ne pas manger.
+TEST: Ne manquer de rien.
+TEST: Ne jamais miser sur ces tocards.
 
 
 !!
