@@ -351,7 +351,7 @@ class Lexicographe {
     }
 
     elpfxToword(sELPFX){
-        return sELPFX.replace('’', 'e');
+        return sELPFX.replace('’', 'e').toLowerCase();
     }
 
     getListOfTokensReduc(sText, bInfo = true) {
