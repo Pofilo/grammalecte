@@ -4130,7 +4130,7 @@ __[i]/conf(conf_me_te_se_qqch)__
     -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)", False)                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
 __[i]/conf(conf_m_t_s_y_en_qqch)__
     ([mts]’(?:en|y)) (?!voilà)({w_1})  @@0,$
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|Oo)") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
+    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|X|Oo)|rien ") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
     -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 __[i]/conf(conf_m_s_qqch)__
     ([ms]’)({w_1})  @@0,2
@@ -10219,32 +10219,33 @@ __<i](p_premier_ne_pro_per_obj1)__
 __<i](p_premier_ne_pro_per_obj2)__
     ^( *ne (?:[mt]’|l(?:ui|eur) )en) ({w_2})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- ~1>> *
+    <<- not morph(\1, ":X|>rien ", False) ~1>> *
 __<i](p_premier_ne_pro_per_obj3)__
     ^( *ne (?:[mt]e|[nv]ous) (?:les?|la|en)) ({w_2})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
     <<- ~1>> *
 __<i](p_premier_ne_pro_per_obj4)__
-    ^( *ne +(?:en|l(?:es?|a|’(?:en|y))|[mt](?:e|’(?:en|y))|[nv]ous)) ({w_2})  @@0,$
+    ^( *ne +(?:l(?:es?|a|’(?:en|y))|[mt](?:e|’(?:en|y))|[nv]ous)) ({w_2})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
     <<- ~1>> *
 __<i>(p_premier_ne_pro_per_obj5)__
     ^( *n’(?:en |y |))({w_2})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- ~1>> *
+    <<- not morph(\1, ":X|>rien ", False) ~1>> *
 __<i>(p_premier_ne_pro_per_obj6)__
     ^( *ne l’)({w_2})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
     <<- ~1>> *
 __<i>(p_premier_ne_pro_per_obj7)__
     ^( *ne) ({w_2})  @@0,$
-    <<- morphex(\2, ":(?:[123][sp]|P)", ":X") =>> select(\2,":(?:[123][sp]|P)")
-    <<- __also__ ~1>> *
+    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
+    <<- not morph(\2, ":X|>rien ", False) ~1>> *
 
 TEST: Ne rien céder.
 TEST: Ne pas manger.
 TEST: Ne manquer de rien.
 TEST: Ne jamais miser sur ces tocards.
+TEST: Ne m’en rien laisser.
 
 
 !!
