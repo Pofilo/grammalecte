@@ -317,13 +317,18 @@ def makeLocutions (sp, bJS=False):
     print("> Locutions ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
     dLocutions = {}
+    sVal = ":H"
     for sLine in readFile(sp+"/data/locutions.txt"):
+        if sLine.startswith("[") and sLine.endswith("]"):
+            sLabel, sVal = sLine[1:-1].split("|", 1)
+            continue
         lElem = sLine.split()
         dCur = dLocutions
         for sWord in lElem:
             if sWord not in dCur:
                 dCur[sWord] = {}
             dCur = dCur[sWord]
+        dCur[":"] = sVal
 
     sCode = "# generated data (do not edit)\n\n" + \
             "dLocutions = " + str(dLocutions) + "\n"
