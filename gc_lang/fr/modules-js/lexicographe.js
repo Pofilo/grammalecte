@@ -411,14 +411,18 @@ class Lexicographe {
                 let tmpToken = {
                     'nEnd':oLst[oLst.length-1].nEnd,
                     'nStart':oLst[0].nStart,
-                    'sType':"WORD",
+                    'sType':"LOC",
                     'sValue':word.replace('’ ','’').trim()
                 };
                 if (bInfo) {
+                    let formatedTag = [];
+                    for (let oToFormat of lastTokenWord.split('|') ){
+                        formatedTag.push( this._formatTags(oToFormat).replace(/(\(él.\))/g,'').trim() );
+                    }
                     aElem.push({
                         sType: tmpToken.sType,
                         sValue: tmpToken.sValue,
-                        aLabel: [this._formatTags(lastTokenWord).replace(/(\(él.\))/g,'').trim()]
+                        aLabel: formatedTag
                     });
                 } else {
                     aElem.push(tmpToken);
