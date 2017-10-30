@@ -336,10 +336,9 @@ class Lexicographe {
     getListOfTokens (sText, bInfo = true) {
         let aElem = [];
         if (sText !== "") {
-            let aRes = null;
             for (let oToken of this.oTokenizer.genTokens(sText)) {
                 if (bInfo) {
-                    aRes = this.getInfoForToken(oToken);
+                    let aRes = this.getInfoForToken(oToken);
                     if (aRes) {
                         aElem.push(aRes);
                     }
@@ -359,30 +358,28 @@ class Lexicographe {
         let aTokenList = this.getListOfTokens(sText.replace("'", "’").trim(), false);
         let iKey = 0;
         let aElem = [];
-        let aRes = null;
         do {
-            let oToken = aTokenList[iKey]
-            let aLocution = this.oLocGraph[this._unifyStr(oToken.sValue)];
+            let oToken = aTokenList[iKey];
             let bLocFound = false;
             let iKeyTree = iKey + 1;
             let sTokenTmpKey = '';
-            let aTokenTempList = [];
-            aTokenTempList.push(oToken);
+            let aTokenTempList = [oToken];
             if (oToken.sType == "WORD" || oToken.sType == "ELPFX"){
-                while (typeof(aLocution) !== "undefined") {
+                let oLocNode = this.oLocGraph[this._unifyStr(oToken.sValue)];
+                while (typeof(oLocNode) !== "undefined") {
                     let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
 
                     if (typeof(oTokenNext) !== "undefined") {
-                        aLocution = aLocution[this._unifyStr(oTokenNext.sValue)];
+                        oLocNode = oLocNode[this._unifyStr(oTokenNext.sValue)];
                     } else {
-                        aLocution = "undefined";
+                        oLocNode = "undefined";
                     }
 
-                    if (typeof(aLocution) !== "undefined" && iKeyTree <= aTokenList.length) {
-                        sTokenTmpKey = Object.keys(aLocution)[0];
+                    if (typeof(oLocNode) !== "undefined" && iKeyTree <= aTokenList.length) {
+                        sTokenTmpKey = Object.keys(oLocNode)[0];
                         aTokenTempList.push(oTokenNext);
-                    } else if (typeof(aLocution) == "undefined" || iKeyTree > aTokenList.length) {
+                    } else {
                         if (sTokenTmpKey.substring(0, 1) == ':') {
                             bLocFound = true;
                         }
@@ -398,10 +395,10 @@ class Lexicographe {
                 }
                 iKey = iKey + aTokenTempList.length-1;
                 let oTokenLocution = {
-                    'nEnd':aTokenTempList[aTokenTempList.length-1].nEnd,
-                    'nStart':aTokenTempList[0].nStart,
-                    'sType':"LOC",
-                    'sValue':sWord.replace('’ ','’').trim()
+                    'nEnd': aTokenTempList[aTokenTempList.length-1].nEnd,
+                    'nStart': aTokenTempList[0].nStart,
+                    'sType': "LOC",
+                    'sValue': sWord.replace('’ ','’').trim()
                 };
                 if (bInfo) {
                     let aFormatedTag = [];
@@ -418,7 +415,7 @@ class Lexicographe {
                 }
             } else {
                 if (bInfo) {
-                    aRes = this.getInfoForToken(oToken);
+                    let aRes = this.getInfoForToken(oToken);
                     if (aRes) {
                         aElem.push(aRes);
                     }
