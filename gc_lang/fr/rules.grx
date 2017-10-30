@@ -372,9 +372,22 @@ __<s>/typo(typo_cohérence_guillemets2)__
     (“)[^”«]+?(»)  @@0,$
     <<- not before(r"\w$") -1>> "« "                                                                # Guillemet ouvrant différent du guillemet fermant (»).
     <<- not after(r"^\w") -2>> ”                                                                    # Guillemet fermant différent du guillemet ouvrant (“).
+__<s>/typo(typo_cohérence_guillemets3)__
+    (“)[^”’“«]+?(’)(?!\w)  @@0,$
+    <<- not before(r"\w$") -1>> "‘"                                                                 # Guillemet ouvrant différent du guillemet fermant (’).
+    <<- -2>> ”                                                                                      # Guillemet fermant différent du guillemet ouvrant (“).
+__<s>/typo(typo_cohérence_guillemets4)__
+    (‘)[^’“«]+?(”)  @@0,$
+    <<- not before(r"\w$") -1>> "“"                                                                 # Guillemet ouvrant différent du guillemet fermant (”).
+    <<- not after(r"^\w") -2>> ’                                                                    # Guillemet fermant différent du guillemet ouvrant (‘).
+
 
 TEST: C’est {{«}}stupide{{”}}.
 TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
+TEST: Tu sais, {{‘}}ton ami{{”}} est venu.
+TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
+TEST: « Je suis là.
+TEST: — Oui, nous t’avons vu arriver. »
 TEST: « J’en suis “malade”. »
 
 
