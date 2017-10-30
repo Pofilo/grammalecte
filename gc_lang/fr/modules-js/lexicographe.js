@@ -211,7 +211,7 @@ class Lexicographe {
 
     getInfoForToken (oToken) {
         // Token: .sType, .sValue, .nStart, .nEnd
-        // return a list [type, token_string, values]
+        // return a object {sType, sValue, aLabel}
         let m = null;
         try {
             switch (oToken.sType) {
