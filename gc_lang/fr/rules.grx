@@ -3016,9 +3016,10 @@ __[i]/conf(conf_auxdites_verbe)__
 TEST: auxdites {{scelles}}, il ne prêta pas attention.
 
 
-__[i]/conf(conf_de_la_vconj)__  de la ({w_2})  @@6
-    <<- morphex(\1, ":[123][sp]", ":[NAQ]")
-    -1>> =suggSimil(\1, ":(?:[NA]:[fe]:[si])", True)                                                # Incohérence : « \1 » est un verbe.
+__[i]/conf(conf_de_la_vconj)__  de la +({w_2})  @@6
+    <<- morphex(\1, ":[123][sp]", ":[NAQ]") >>>
+    <<- morphex(\1, ":V1.*:(?:Iq|Ip:2p)", ":1p") -1>> =suggVerbInfi(@)                              # Incohérence : mettez le verbe à l’infinitif (à moins qu’il y ait confusion avec un nom féminin).
+    <<- __else__ -1>> =suggSimil(\1, ":(?:[NA]:[fe]:[si])", False)                                  # Incohérence : « \1 » est un verbe.
 
 TEST: les petits esprits de la {{pensait}} religieuse
 
