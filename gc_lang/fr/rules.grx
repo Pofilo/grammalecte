@@ -9035,21 +9035,30 @@ TEST: Ce sont des biens de peu de valeur.
 !!
 
 __[i]/infi(infi_d_en_y)__
-    d’(?:en|y) +({w_2}(?:ée?s?|ai[st]?|ez))  @@$
+    d’(?:en|y) +({w_2}(?:ée?s?|ai(?:en|)[st]?|ez))  @@$
     <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
 
 TEST: arrête d’y {{consacré}} autant de temps.
 
 
 __[i]/infi(infi_de_pronom)__
-    de (?:[mts]e|les?) +({w_2}(?:ée?s?|ai[st]?|ez))  @@$
+    de (?:[mtsn](?:e +|’(?:en|y|))|les? +)({w_2}(?:ée?s?|ai(?:en|)[st]?|ez))  @@$
     <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
 
 TEST: Il s’agit de me {{donnait}} tout ça.
+TEST: j’étais incapable de m’{{orientait}} dans la bonne direction.
+TEST: ils étaient susceptibles de m’y {{trouvaient}}
+
+
+__[i]/infi(infi_de_pronom)__
+    de la +({w_2}(?:ai(?:en|)[st]?|ez))  @@$
+    <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
+
+TEST: elle était capable de la {{trouvait}} où qu’elle soit.
 
 
 __[i]/infi(infi_de_pronom_le_les_la)__
-    de [mts]e l(?:es?|a) +({w_2}(?:ée?s?|ai[st]?|ez))  @@$
+    de [mtsn]e l(?:es?|a) +({w_2}(?:ée?s?|ai(?:en|)[st]?|ez))  @@$
     <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
     <<- ~>> *
 
