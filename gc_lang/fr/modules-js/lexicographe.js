@@ -360,35 +360,27 @@ class Lexicographe {
         let aElem = [];
         do {
             let oToken = aTokenList[iKey];
-            let bLocFound = false;
-            let iKeyTree = iKey + 1;
             let sTokenTmpKey = '';
             let aTokenTempList = [oToken];
             if (oToken.sType == "WORD" || oToken.sType == "ELPFX"){
+                let iKeyTree = iKey + 1;
                 let oLocNode = this.oLocGraph[this._unifyStr(oToken.sValue)];
-                while (typeof(oLocNode) !== "undefined") {
+                while (oLocNode) {
                     let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
-
-                    if (typeof(oTokenNext) !== "undefined") {
+                    if (oTokenNext) {
                         oLocNode = oLocNode[this._unifyStr(oTokenNext.sValue)];
-                    } else {
-                        oLocNode = "undefined";
                     }
-
-                    if (typeof(oLocNode) !== "undefined" && iKeyTree <= aTokenList.length) {
+                    if (oLocNode && iKeyTree <= aTokenList.length) {
                         sTokenTmpKey = Object.keys(oLocNode)[0];
                         aTokenTempList.push(oTokenNext);
                     } else {
-                        if (sTokenTmpKey.substring(0, 1) == ':') {
-                            bLocFound = true;
-                        }
                         break;
                     }
-                };
+                }
             }
 
-            if (bLocFound) {
+            if (sTokenTmpKey.substring(0, 1) == ':') {
                 let sWord = '';
                 for (let oTokenWord of aTokenTempList) {
                     sWord += oTokenWord.sValue+' ';
