@@ -12,6 +12,7 @@ import grammalecte.ibdawg as ibdawg
 from grammalecte.echo import echo
 from grammalecte.str_transform import defineSuffixCode
 import grammalecte.fr.conj as conj
+import grammalecte.tokenizer as tkz
 
 
 class cd:
@@ -312,23 +313,24 @@ def makeLocutions (sp, bJS=False):
     print("> Locutions ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
     with open(sp+"/data/locutions.txt", 'r', encoding='utf-8') as hSrc:
-        dLocutions = {}
+        dLocGraph = {}
+        oTokenizer = tkz.Tokenizer("fr")
         for sLine in hSrc.readlines():
             if not sLine.startswith("#") and sLine.strip():
-                lElem = sLine.strip().split()
-                dCur = dLocutions
-                for sWord in lElem:
-                    if sWord not in dCur and not sWord.startswith(":"):
+                dCur = dLocGraph
+                sLoc, sTag = sLine.strip().split("\t")
+                for oToken in oTokenizer.genTokens(sLoc.strip()):
+                    sWord = oToken["sValue"]
+                    if sWord not in dCur:
                         dCur[sWord] = {}
-                    if sWord not in dCur and sWord.startswith(":"):
-                        dCur[sWord] = ''
                     dCur = dCur[sWord]
+                dCur[":"] = sTag
 
     sCode = "# generated data (do not edit)\n\n" + \
-            "dLocutions = " + str(dLocutions) + "\n"
+            "dLocutions = " + str(dLocGraph) + "\n"
     open(sp+"/modules/locutions_data.py", "w", encoding="utf-8", newline="\n").write(sCode)
     if bJS:
-        open(sp+"/modules-js/locutions_data.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocutions, ensure_ascii=False))
+        open(sp+"/modules-js/locutions_data.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocGraph, ensure_ascii=False))
 
 
 def before (spLaunch, dVars, bJS=False):

@@ -350,29 +350,25 @@ class Lexicographe {
         return aElem;
     }
 
-    _unifyStr (sWord){
-        return sWord.replace('’', 'e').toLowerCase();
-    }
-
     getListOfTokensReduc (sText, bInfo = true) {
         let aTokenList = this.getListOfTokens(sText.replace("'", "’").trim(), false);
         let iKey = 0;
         let aElem = [];
         do {
             let oToken = aTokenList[iKey];
-            let sTokenTmpKey = '';
+            let sMorphLoc = '';
             let aTokenTempList = [oToken];
             if (oToken.sType == "WORD" || oToken.sType == "ELPFX"){
                 let iKeyTree = iKey + 1;
-                let oLocNode = this.oLocGraph[this._unifyStr(oToken.sValue)];
+                let oLocNode = this.oLocGraph[oToken.sValue.toLowerCase()];
                 while (oLocNode) {
                     let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
                     if (oTokenNext) {
-                        oLocNode = oLocNode[this._unifyStr(oTokenNext.sValue)];
+                        oLocNode = oLocNode[oTokenNext.sValue.toLowerCase()];
                     }
                     if (oLocNode && iKeyTree <= aTokenList.length) {
-                        sTokenTmpKey = Object.keys(oLocNode)[0];
+                        sMorphLoc = oLocNode[":"];
                         aTokenTempList.push(oTokenNext);
                     } else {
                         break;
@@ -380,7 +376,7 @@ class Lexicographe {
                 }
             }
 
-            if (sTokenTmpKey.substring(0, 1) == ':') {
+            if (sMorphLoc) {
                 let sWord = '';
                 for (let oTokenWord of aTokenTempList) {
                     sWord += oTokenWord.sValue+' ';
@@ -394,7 +390,7 @@ class Lexicographe {
                 };
                 if (bInfo) {
                     let aFormatedTag = [];
-                    for (let sTagMulti of sTokenTmpKey.split('|') ){
+                    for (let sTagMulti of sMorphLoc.split('|') ){
                         aFormatedTag.push( this._formatTags(sTagMulti).replace(/( \(él.\))/g,'') );
                     }
                     aElem.push({
