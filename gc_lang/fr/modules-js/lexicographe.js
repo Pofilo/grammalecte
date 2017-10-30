@@ -199,10 +199,10 @@ const _dSeparator = new Map([
 
 class Lexicographe {
 
-    constructor(oDict, oTokenizer, oLocution) {
+    constructor (oDict, oTokenizer, oLocGraph) {
         this.oDict = oDict;
         this.oTokenizer = oTokenizer;
-        this.oLocution = JSON.parse(oLocution);
+        this.oLocGraph = JSON.parse(oLocGraph);
 
         this._zElidedPrefix = new RegExp("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
@@ -362,37 +362,36 @@ class Lexicographe {
         let aRes = null;
         do {
             let oToken = aTokenList[iKey]
-            let aLocution = this.oLocution[this._unifyStr(oToken.sValue)];
-            let bStop = false;
-            let bOk = false;
+            let aLocution = this.oLocGraph[this._unifyStr(oToken.sValue)];
+            let bLocFound = false;
             let iKeyTree = iKey + 1;
             let sTokenTmpKey = '';
             let aTokenTempList = [];
             aTokenTempList.push(oToken);
-            if ( oToken.sType == "WORD" || oToken.sType == "ELPFX" ){
-                while (!bStop && typeof aLocution !== "undefined") {
+            if (oToken.sType == "WORD" || oToken.sType == "ELPFX"){
+                while (typeof(aLocution) !== "undefined") {
                     let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
 
-                    if ( typeof oTokenNext !== "undefined" ) {
+                    if (typeof(oTokenNext) !== "undefined") {
                         aLocution = aLocution[this._unifyStr(oTokenNext.sValue)];
                     } else {
                         aLocution = "undefined";
                     }
 
-                    if ( typeof aLocution !== "undefined" && iKeyTree <= aTokenList.length) {
+                    if (typeof(aLocution) !== "undefined" && iKeyTree <= aTokenList.length) {
                         sTokenTmpKey = Object.keys(aLocution)[0];
                         aTokenTempList.push(oTokenNext);
-                    } else if ( typeof aLocution == "undefined" || iKeyTree > aTokenList.length) {
-                        bStop = true;
-                        if ( sTokenTmpKey.substring(0, 1) == ':' ) {
-                            bOk = true;
+                    } else if (typeof(aLocution) == "undefined" || iKeyTree > aTokenList.length) {
+                        if (sTokenTmpKey.substring(0, 1) == ':') {
+                            bLocFound = true;
                         }
+                        break;
                     }
                 };
             }
 
-            if ( bOk ){
+            if (bLocFound) {
                 let sWord = '';
                 for (let oTokenWord of aTokenTempList) {
                     sWord += oTokenWord.sValue+' ';
@@ -434,6 +433,6 @@ class Lexicographe {
 }
 
 
-if (typeof (exports) !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.Lexicographe = Lexicographe;
 }
