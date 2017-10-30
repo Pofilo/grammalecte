@@ -350,6 +350,17 @@ class Lexicographe {
         return aElem;
     }
 
+    generateInfoForTokenList (lToken) {
+        let aElem = [];
+        for (let oToken of lToken) {
+            let aRes = this.getInfoForToken(oToken);
+            if (aRes) {
+                aElem.push(aRes);
+            }
+        }
+        return aElem;
+    }
+
     getListOfTokensReduc (sText, bInfo=true) {
         let aTokenList = this.getListOfTokens(sText.replace("'", "’").trim(), false);
         let iKey = 0;
@@ -377,25 +388,27 @@ class Lexicographe {
             }
 
             if (sMorphLoc) {
-                let sWord = '';
+                let sValue = '';
                 for (let oTokenWord of aTokenTempList) {
-                    sWord += oTokenWord.sValue+' ';
+                    sValue += oTokenWord.sValue+' ';
                 }
                 let oTokenLocution = {
                     'nStart': aTokenTempList[0].nStart,
                     'nEnd': aTokenTempList[aTokenTempList.length-1].nEnd,
                     'sType': "LOC",
-                    'sValue': sWord.replace('’ ','’').trim()
+                    'sValue': sValue.replace('’ ','’').trim(),
+                    'aSubToken': aTokenTempList
                 };
                 if (bInfo) {
                     let aFormatedTag = [];
-                    for (let sTagMulti of sMorphLoc.split('|') ){
-                        aFormatedTag.push( this._formatTags(sTagMulti).replace(/( \(él.\))/g,'') );
+                    for (let sTagLoc of sMorphLoc.split('|') ){
+                        aFormatedTag.push( this._formatTags(sTagLoc).replace(/( \(él.\))/g,'') );
                     }
                     aElem.push({
                         sType: oTokenLocution.sType,
                         sValue: oTokenLocution.sValue,
-                        aLabel: aFormatedTag
+                        aLabel: aFormatedTag,
+                        aSubElem: this.generateInfoForTokenList(aTokenTempList)
                     });
                 } else {
                     aElem.push(oTokenLocution);
