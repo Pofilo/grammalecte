@@ -334,7 +334,6 @@ class Lexicographe {
 
     getListOfTokens (sText, bInfo = true) {
         let aElem = [];
-        sText = sText.replace("'", "’").trim();
         if (sText !== "") {
             let aRes = null;
             for (let oToken of this.oTokenizer.genTokens(sText)) {
@@ -356,7 +355,7 @@ class Lexicographe {
     }
 
     getListOfTokensReduc (sText, bInfo = true) {
-        let aTokenList = this.getListOfTokens(sText, false);
+        let aTokenList = this.getListOfTokens(sText.replace("'", "’").trim(), false);
         let iKey = 0;
         let aElem = [];
         let aRes = null;
