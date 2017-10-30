@@ -895,10 +895,10 @@ __<s>/typo(typo_guillemets_typographiques_doubles_ouvrants)__
     <<- not before(r"[a-zA-Zéïîùàâäôö]$") ->> « |“                                                  # Guillemets typographiques ouvrants.
 __<s>/typo(typo_guillemets_typographiques_doubles_fermants)__
     [\w.?!,](")(?!\w)  @@*
-    <<- -1>> ”| »                                                                                   # Guillemets typographiques fermants.
+    <<- -1>> " »|”"                                                                                 # Guillemets typographiques fermants.
 
 TEST: {{"}}Le grand homme.”                                                 ->> « |“
-TEST: “Le grand homme.{{"}}                                                 ->> ”| »
+TEST: “Le grand homme.{{"}}                                                 ->> " »|”"
 
 
 __<s>/typo(typo_guillemets_typographiques_simples_ouvrants)__
