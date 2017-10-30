@@ -333,7 +333,7 @@ class Lexicographe {
         return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos + 1));
     }
 
-    getListOfTokens (sText, bInfo = true) {
+    getListOfTokens (sText, bInfo=true) {
         let aElem = [];
         if (sText !== "") {
             for (let oToken of this.oTokenizer.genTokens(sText)) {
@@ -350,7 +350,7 @@ class Lexicographe {
         return aElem;
     }
 
-    getListOfTokensReduc (sText, bInfo = true) {
+    getListOfTokensReduc (sText, bInfo=true) {
         let aTokenList = this.getListOfTokens(sText.replace("'", "’").trim(), false);
         let iKey = 0;
         let aElem = [];
@@ -381,10 +381,9 @@ class Lexicographe {
                 for (let oTokenWord of aTokenTempList) {
                     sWord += oTokenWord.sValue+' ';
                 }
-                iKey = iKey + aTokenTempList.length-1;
                 let oTokenLocution = {
-                    'nEnd': aTokenTempList[aTokenTempList.length-1].nEnd,
                     'nStart': aTokenTempList[0].nStart,
+                    'nEnd': aTokenTempList[aTokenTempList.length-1].nEnd,
                     'sType': "LOC",
                     'sValue': sWord.replace('’ ','’').trim()
                 };
@@ -401,6 +400,7 @@ class Lexicographe {
                 } else {
                     aElem.push(oTokenLocution);
                 }
+                iKey = iKey + aTokenTempList.length;
             } else {
                 if (bInfo) {
                     let aRes = this.getInfoForToken(oToken);
@@ -410,8 +410,8 @@ class Lexicographe {
                 } else {
                     aElem.push(oToken);
                 }
+                iKey++;
             }
-            iKey++;
         } while (iKey < aTokenList.length);
         return aElem;
     }
