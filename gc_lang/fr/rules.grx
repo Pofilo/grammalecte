@@ -5282,6 +5282,11 @@ __[i](p_un_moment_instant)__
 
 
 ## Simplication des locutions verbales
+__[i](loc_arriver)__
+	(arriv\w+) (([aà]) (?:échéance|point nommé)) @@0,$,w
+	<<- morph(\1, ">arriver ", False) >>>
+	<<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+	<<- ~2>> *
 __[i](p_donner_sens)__
     ((?:re|)donn\w+) +(sens) @@0,$
     <<- morph(\1, ">(?:re|)donner ", False) ~2>> *
@@ -5341,6 +5346,7 @@ __[i](p_venir)__
     (v[eiî]\w+) ((?:on ne sait|je ne sais) (?:pas |)(?:trop |)d’où) @@0,$
     <<- morph(\1, ">venir ", False) ~2>> *
 
+TEST: ce contrat arrive {{a}} échéance.
 TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
 TEST: prendre {{a}} la légère ce test serait une erreur.
 TEST: on va suivre ça de {{prêt}}.
