@@ -108,7 +108,8 @@ const _dTAGS = new Map([
     ['/M', ""],
     ['/R', " {réforme}"],
     ['/A', ""],
-    ['/X', ""]
+    ['/X', ""],
+    ['/L', " {latin}"]
 ]);
 
 const _dPFX = new Map([
@@ -359,7 +360,6 @@ class Lexicographe {
         let iKey = 0;
         let aElem = [];
         let aRes = null;
-        let isType = {'WORD':1,'ELPFX':1};
         do {
             let oToken = aTokenList[iKey]
             let aLocution = this.oLocution[this._unifyStr(oToken.sValue)];
@@ -369,31 +369,28 @@ class Lexicographe {
             let sTokenTmpKey = '';
             let aTokenTempList = [];
             aTokenTempList.push(oToken);
-            while (!bStop && typeof aLocution !== "undefined") {
-                if (iKeyTree > aTokenList.length){
-                    break;
-                }
-                let sTokenNextType = '';
-                let oTokenNext = aTokenList[iKeyTree];
-
-                if ( typeof oTokenNext !== "undefined" ) {
-                    aLocution = aLocution[this._unifyStr(oTokenNext.sValue)];
-                    sTokenNextType = oTokenNext.sType;
-                } else {
-                    aLocution = "undefined";
-                }
-
-                if ( sTokenNextType in isType && typeof aLocution !== "undefined") {
-                    sTokenTmpKey = Object.keys(aLocution)[0];
+            if ( oToken.sType == "WORD" || oToken.sType == "ELPFX" ){
+                while (!bStop && typeof aLocution !== "undefined") {
+                    let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
-                    aTokenTempList.push(oTokenNext);
-                } else if ( !(sTokenNextType in isType) || typeof aLocution == "undefined") {
-                    bStop = true;
-                    if ( sTokenTmpKey.substring(0, 1) == ':' ) {
-                        bOk = true;
+
+                    if ( typeof oTokenNext !== "undefined" ) {
+                        aLocution = aLocution[this._unifyStr(oTokenNext.sValue)];
+                    } else {
+                        aLocution = "undefined";
                     }
-                }
-            };
+
+                    if ( typeof aLocution !== "undefined" && iKeyTree <= aTokenList.length) {
+                        sTokenTmpKey = Object.keys(aLocution)[0];
+                        aTokenTempList.push(oTokenNext);
+                    } else if ( typeof aLocution == "undefined" || iKeyTree > aTokenList.length) {
+                        bStop = true;
+                        if ( sTokenTmpKey.substring(0, 1) == ':' ) {
+                            bOk = true;
+                        }
+                    }
+                };
+            }
 
             if ( bOk ){
                 let sWord = '';
@@ -403,14 +400,14 @@ class Lexicographe {
                 iKey = iKey + aTokenTempList.length-1;
                 let oTokenLocution = {
                     'nEnd':aTokenTempList[aTokenTempList.length-1].nEnd,
-                    'niKeyTree':aTokenTempList[0].niKeyTree,
+                    'nStart':aTokenTempList[0].nStart,
                     'sType':"LOC",
                     'sValue':sWord.replace('’ ','’').trim()
                 };
                 if (bInfo) {
                     let aFormatedTag = [];
                     for (let sTagMulti of sTokenTmpKey.split('|') ){
-                        aFormatedTag.push( this._formatTags(sTagMulti).replace(/(\(él.\))/g,'').trim() );
+                        aFormatedTag.push( this._formatTags(sTagMulti).replace(/( \(él.\))/g,'') );
                     }
                     aElem.push({
                         sType: oTokenLocution.sType,
