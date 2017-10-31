@@ -351,9 +351,9 @@ class Lexicographe {
         while ((m = this._zTag.exec(sTags)) !== null) {
             sRes += _dLocTAGS.get(m[0]);
             if (m[0] == ':LV'){
-                for (let sKey of sTagsVerb.split('')) {
+                sTagsVerb.split(/(?!$)/u).forEach(function(sKey) {
                     sRes += _dLocVERB.get(sKey);
-                };
+                });
             }
             if (sRes.length > 100) {
                 break;
