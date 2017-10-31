@@ -3931,7 +3931,8 @@ TEST: Elle va regarder ça de plus {{prêt}}.
 # quand / quant / qu’en
 __[i]/conf(conf_quant_à)__
     (?<![dD]e )(quand) (?:à|aux?)  @@0
-    <<- not morph(word(-1), ">(?:arriver|venir|à|revenir|partir|aller) ") -1>> quant                # Confusion probable. Quand = à quel moment. Quant à = à propos de.
+    <<- not morph(word(-1), ">(?:arriver|venir|à|revenir|partir|aller) ")
+    and not(\0.endswith("à") and after("^ +[mts]on tour[, ]")) -1>> quant                           # Confusion probable. Quand = à quel moment. Quant à = à propos de.
 __[i]/conf(conf_quand1)__   quant(?! à| aux?| est[ -]il d(?:es?|u) ) <<- ->> quand                  # Confusion. Quand = à quel moment. Quant à = à propos de.
 __[i]/conf(conf_qu_en1)__   (quan[dt]) est[ -]il d(?:es?|u) @@0 <<- -1>> qu’en                      # Confusion. Ce qu’il en est de… → Qu’en est-il de… ?
 __[i]/conf(conf_qu_en2)__   (quan[dt]) ({w_2}ant) @@0,$ <<- morph(\2, ":P", False) -1>> qu’en       # Confusion probable.
@@ -3949,6 +3950,7 @@ TEST: {{qu’en}} il vient, c’est l’enfer.
 TEST: il est exact qu’en je ne sais combien de temps il parvint à un résultat inattendu.
 TEST: être rassuré quant à l’avenir du continent européen
 TEST: il comprit trop tard qu’en elle naquit alors le doute qui l’éloigna de lui à jamais.
+TEST: Quand à mon tour je réalise l’imposture, c’est trop tard.
 
 
 # quand bien même
