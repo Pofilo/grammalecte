@@ -630,7 +630,10 @@ TEST: {{inclusif.ive.s}}                                                ->> incl
 
 __[u](typo_écriture_épicène_pluriel_e)__
     ({w_1}[éuitsrn])[-·–—.(/]([nt]|)e[-·–—.)/]?s  @@0,**
-    <<- option("typo") and not \0.endswith("·e·s") ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s         # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- option("typo") and not \0.endswith("·e·s") and not \1.endswith("s")
+    ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s                                                        # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- option("typo") and not \0.endswith("·e·s") and \1.endswith("s")
+    ->> \1 et \1\2es|\1\2es et \1|\1·\2e·s                                                          # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: nous sommes {{déconsidéré-e-s}}.
@@ -639,6 +642,7 @@ TEST: les illustres {{inconnu(e)s}}.
 TEST: la situation des {{salarié/e/s}}.
 TEST: des {{Iranien-ne-s}} sont venues                                  ->> Iraniens et Iraniennes|Iraniennes et Iraniens|Iranien·ne·s
 TEST: rendez-vous avec des {{écrivain(e)s}}                             ->> écrivains et écrivaines|écrivaines et écrivains|écrivain·e·s
+TEST: Avec les {{Berlinois.e.s}} 										->> Berlinois et Berlinoises|Berlinoises et Berlinois|Berlinois·e·s
 TEST: la graphie “{{militant(e)s}}”.
 TEST: ces militant·e·s {{acharné}}.
 
