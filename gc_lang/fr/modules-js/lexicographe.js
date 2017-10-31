@@ -43,19 +43,17 @@ const _dTAGS = new Map([
     [':Ow', " pronom adverbial,"],
     [':Os', " pronom personnel sujet,"],
     [':Oo', " pronom personnel objet,"],
-    [':C', " conjonction,"],
+    [':C',  " conjonction,"],
+    [':Ĉ',  " conjonction (él.),"],
     [':Cc', " conjonction de coordination,"],
     [':Cs', " conjonction de subordination,"],
+    [':Ĉs', " conjonction de subordination (él.),"],
 
-    [':Ĺ', " locution,"],
-    [':Ĉ', " locution conjonctivale (él.),"],
-    [':Ĉs', " locution conjonctivale de subordination (él.),"],
     [':Ŵ', " locution adverbiale (él.),"],
     [':Ñ', " locution nominale (él.),"],
     [':Â', " locution adjectivale (él.),"],
     [':Ṽ', " locution verbale (él.),"],
     [':Ŕ', " locution prépositive (él.),"],
-    [':Ô', " locution pronominales (él.),"],
     [':Ĵ', " locution interjective (él.),"],
 
     [':Zp', " préfixe,"],
@@ -108,8 +106,34 @@ const _dTAGS = new Map([
     ['/M', ""],
     ['/R', " {réforme}"],
     ['/A', ""],
-    ['/X', ""],
+    ['/X', ""]
+]);
+
+const _dLocTAGS = new Map([
+    [':LN', "locution nominale"],
+    [':LA', "locution adjectivale"],
+    [':LV', "locution verbale"],
+    [':LW', "locution adverbiale"],
+    [':LR', "locution prépositive"],
+    [':LO', "locution pronominale"],
+    [':LC', "locution conjonctive"],
+    [':LJ', "locution interjective"],
+
+    [':B', " cardinal"],
+    [':e', " épicène"],
+    [':m', " masculin"],
+    [':f', " féminin"],
+    [':s', " singulier"],
+    [':p', " pluriel"],
+    [':i', " invariable"],
     ['/L', " {latin}"]
+]);
+const _dLocVERB = new Map([
+    ['i', " intransitif"],
+    ['n', " transitif indirect"],
+    ['t', " transitif direct"],
+    ['p', " pronominal"],
+    ['m', " impersonnel"],
 ]);
 
 const _dPFX = new Map([
@@ -319,6 +343,30 @@ class Lexicographe {
         return sRes.gl_trimRight(",");
     }
 
+    _formatTagsLoc (sTags) {
+        let sRes = "";
+        let sTagsVerb = sTags.replace(/(:LV)([a-z].?)(.*)/, '$2');
+        sTags = sTags.replace(/(:LV)([a-z].?)(.*)/, "V$1");
+        let m;
+        while ((m = this._zTag.exec(sTags)) !== null) {
+            sRes += _dLocTAGS.get(m[0]);
+            if (m[0] == ':LV'){
+                for (let sKey of sTagsVerb.split('')) {
+                    sRes += _dLocVERB.get(sKey);
+                };
+            }
+            if (sRes.length > 100) {
+                break;
+            }
+        }
+        if (!sRes) {
+            sRes = "#Erreur. Étiquette inconnue : [" + sTags + "]";
+            helpers.echo(sRes);
+            return sRes;
+        }
+        return sRes.gl_trimRight(",");
+    }
+
     _formatSuffix (s) {
         if (s.startsWith("t-")) {
             return "“t” euphonique +" + _dAD.get(s.slice(2));
@@ -402,7 +450,7 @@ class Lexicographe {
                 if (bInfo) {
                     let aFormatedTag = [];
                     for (let sTagLoc of sMorphLoc.split('|') ){
-                        aFormatedTag.push( this._formatTags(sTagLoc).replace(/( \(él.\))/g,'') );
+                        aFormatedTag.push( this._formatTagsLoc(sTagLoc) );
                     }
                     aElem.push({
                         sType: oTokenLocution.sType,
