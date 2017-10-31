@@ -231,7 +231,7 @@ class Lexicographe {
         this._zElidedPrefix = new RegExp("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
         this._zTag = new RegExp("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*Ṽ][^:;/]*", "g");
-
+        this._zLocTag = new RegExp("(:L[A-Z])([a-z].?)?(.*)");
     }
 
     getInfoForToken (oToken) {
@@ -345,13 +345,13 @@ class Lexicographe {
 
     _formatTagsLoc (sTags) {
         let sRes = "";
-        let sTagsVerb = sTags.replace(/(:LV)([a-z].?)(.*)/, '$2');
-        sTags = sTags.replace(/(:LV)([a-z].?)(.*)/, "V$1");
+        let oTagsVerb = this._zLocTag.exec(sTags);
+        sTags = oTagsVerb[1]+oTagsVerb[3];
         let m;
         while ((m = this._zTag.exec(sTags)) !== null) {
             sRes += _dLocTAGS.get(m[0]);
-            if (m[0] == ':LV'){
-                sTagsVerb.split(/(?!$)/u).forEach(function(sKey) {
+            if (m[0] == ':LV' && oTagsVerb[2]){
+                oTagsVerb[2].split(/(?!$)/u).forEach(function(sKey) {
                     sRes += _dLocVERB.get(sKey);
                 });
             }
