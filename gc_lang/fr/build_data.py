@@ -7,6 +7,7 @@
 
 import json
 import os
+import itertools
 
 import grammalecte.ibdawg as ibdawg
 from grammalecte.echo import echo
@@ -317,7 +318,7 @@ def makeLocutions (sp, bJS=False):
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
     dLocGraph = {}
     oTokenizer = tkz.Tokenizer("fr")
-    for sLine in readFile(sp+"/data/locutions.txt"):
+    for sLine in itertools.chain(readFile(sp+"/data/locutions.txt"), readFile(sp+"/data/locutions_vrac.txt")):
         dCur = dLocGraph
         sLoc, sTag = sLine.split("\t")
         for oToken in oTokenizer.genTokens(sLoc.strip()):
