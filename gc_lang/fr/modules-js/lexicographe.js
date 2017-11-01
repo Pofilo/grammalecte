@@ -414,6 +414,9 @@ class Lexicographe {
                     let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
                     if (oTokenNext) {
+                        if (oTokenNext.sValue == ":") { // temporary fix
+                            break;
+                        }
                         oLocNode = oLocNode[oTokenNext.sValue.toLowerCase()];
                     }
                     if (oLocNode && iKeyTree <= aTokenList.length) {
