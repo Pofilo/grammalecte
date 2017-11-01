@@ -334,7 +334,7 @@ class Lexicographe {
                 break;
             }
         }
-        if (sRes.startsWith(" verbe") && !sRes.endsWith("infinitif")) {
+        if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
             sRes += " [" + sTags.slice(1, sTags.indexOf(" ")) + "]";
         }
         if (!sRes) {
