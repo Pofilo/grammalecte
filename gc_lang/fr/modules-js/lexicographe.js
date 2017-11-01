@@ -330,16 +330,12 @@ class Lexicographe {
         let m;
         while ((m = this._zTag.exec(sTags)) !== null) {
             sRes += _dTAGS.get(m[0]);
-            if (sRes.length > 100) {
-                break;
-            }
         }
         if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
             sRes += " [" + sTags.slice(1, sTags.indexOf(" ")) + "]";
         }
         if (!sRes) {
             sRes = "#Erreur. Étiquette inconnue : [" + sTags + "]";
-            helpers.echo(sRes);
             return sRes;
         }
         return sRes.gl_trimRight(",");
@@ -358,14 +354,10 @@ class Lexicographe {
             let m;
             while ((m = this._zTag.exec(oTagsVerb[5])) !== null) {
                 sRes += _dLocTAGS.get(m[0]);
-                if (sRes.length > 100) {
-                    break;
-                }
             }
         }
         if (!sRes) {
             sRes = "#Erreur. Étiquette inconnue : [" + sTags + "]";
-            helpers.echo(sRes);
             return sRes;
         }
         return sRes.gl_trimRight(",");
