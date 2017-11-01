@@ -131,11 +131,11 @@ const _dLocTAGS = new Map([
 ]);
 
 const _dLocVERB = new Map([
-    ['i', ", intransitif"],
-    ['n', ", transitif indirect"],
-    ['t', ", transitif direct"],
-    ['p', ", pronominal"],
-    ['m', ", impersonnel"],
+    ['i', " intransitive"],
+    ['n', " transitive indirecte"],
+    ['t', " transitive directe"],
+    ['p', " pronominale"],
+    ['m', " impersonnelle"],
 ]);
 
 const _dPFX = new Map([
