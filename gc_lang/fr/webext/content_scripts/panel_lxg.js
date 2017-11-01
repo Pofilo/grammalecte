@@ -51,7 +51,7 @@ class GrammalecteLexicographer extends GrammalectePanel {
         xTokenNode.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
         xTokenNode.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
         if (oToken.aLabel.length === 1) {
-            xTokenNode.appendChild(document.createTextNode(oToken.aLabel[0]));
+            xTokenNode.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: oToken.aLabel[0]}));
         } else {
             let xTokenList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
             for (let sLabel of oToken.aLabel) {
