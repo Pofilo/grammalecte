@@ -131,11 +131,11 @@ const _dLocTAGS = new Map([
 ]);
 
 const _dLocVERB = new Map([
-    ['i', " intransitif"],
-    ['n', " transitif indirect"],
-    ['t', " transitif direct"],
-    ['p', " pronominal"],
-    ['m', " impersonnel"],
+    ['i', ", intransitif"],
+    ['n', ", transitif indirect"],
+    ['t', ", transitif direct"],
+    ['p', ", pronominal"],
+    ['m', ", impersonnel"],
 ]);
 
 const _dPFX = new Map([
@@ -230,10 +230,8 @@ class Lexicographe {
         this.oTokenizer = oTokenizer;
         this.oLocGraph = JSON.parse(oLocGraph);
 
-        this._zElidedPrefix = new RegExp("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
-        this._zTag = new RegExp("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*Ṽ][^:;/]*", "g");
-        this._zLocTag = new RegExp("((:L)([A-Z])?)([a-z].?)?(:.*)?");
+        this._zTag = new RegExp("[:;/][a-zA-Z0-9ÑÂĴĈŔÔṼŴ!][^:;/]*", "g");
     }
 
     getInfoForToken (oToken) {
@@ -335,30 +333,26 @@ class Lexicographe {
             sRes += " [" + sTags.slice(1, sTags.indexOf(" ")) + "]";
         }
         if (!sRes) {
-            sRes = "#Erreur. Étiquette inconnue : [" + sTags + "]";
-            return sRes;
+            return "#Erreur. Étiquette inconnue : [" + sTags + "]";
         }
         return sRes.gl_trimRight(",");
     }
 
     _formatTagsLoc (sTags) {
         let sRes = "";
-        let oTagsVerb = this._zLocTag.exec(sTags);
-        sRes += _dLocTAGS.get(oTagsVerb[1]);
-        if (oTagsVerb[4] && oTagsVerb[1] === ':LV'){
-            oTagsVerb[4].split(/(?!$)/u).forEach(function(sKey) {
-                sRes += _dLocVERB.get(sKey);
-            });
-        }
-        if (oTagsVerb[5]){
-            let m;
-            while ((m = this._zTag.exec(oTagsVerb[5])) !== null) {
+        let m;
+        while ((m = this._zTag.exec(sTags)) !== null) {
+            if (m[0].startsWith(":LV")) {
+                sRes += _dLocTAGS.get(":LV");
+                for (let c of m[0].slice(3)) {
+                    sRes += _dLocVERB.get(c);
+                }
+            } else {
                 sRes += _dLocTAGS.get(m[0]);
             }
         }
         if (!sRes) {
-            sRes = "#Erreur. Étiquette inconnue : [" + sTags + "]";
-            return sRes;
+            return "#Erreur. Étiquette inconnue : [" + sTags + "]";
         }
         return sRes.gl_trimRight(",");
     }
