@@ -28,6 +28,17 @@ class cd:
         os.chdir(self.savedPath)
 
 
+def readFile (spf):
+    if os.path.isfile(spf):
+        with open(spf, "r", encoding="utf-8") as hSrc:
+            for sLine in hSrc:
+                sLine = sLine.strip()
+                if sLine and not sLine.startswith("#"):
+                    yield sLine
+    else:
+        raise OSError("# Error. File not found or not loadable: " + spf)
+
+
 def makeDictionaries (sp, sVersion):
     with cd(sp+"/dictionnaire"):
         os.system("genfrdic.py -s -gl -v "+sVersion)
@@ -50,71 +61,69 @@ def makeConj (sp, bJS=False):
             }
 
     # read lexicon
-    with open(sp+"/data/dictConj.txt", 'r', encoding='utf-8') as hSrc:
-        nStop = 0
-        for n, line in enumerate(hSrc.readlines()):
-            line = line.strip()
-            nTab = line.count("\t")
-            if nTab == 1:
-                # new entry
-                sLemma, sVtyp = line.split("\t")
-                dConj = {   ":PQ": { ":P": "", ":Q1": "", ":Q2": "", ":Q3": "", ":Q4": ""},
-                            ":Ip": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
-                            ":Iq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
-                            ":Is": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
-                            ":If": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
-                            ":K": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
-                            ":Sp": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
-                            ":Sq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
-                            ":E": { ":2s": "", ":1p": "", ":2p": "" }
-                        }
-                if sVtyp not in lVtyp:
-                    dVtyp[sVtyp] = nVtyp
-                    lVtyp.append(sVtyp)
-                    nVtyp += 1
-            elif nTab == 2:
-                # flexion
-                _, sTag, sFlex = line.split("\t")
-                if sTag.count(" ") == 0:
-                    if sTag == "ppre":
-                        dConj[":PQ"][":P"] = defineSuffixCode(sLemma, sFlex)
-                else:
-                    try:
-                        mode, g = sTag.split(maxsplit=1)
-                        mode = dTrad[mode]
-                        g = dTrad[g]
-                        if dConj[mode][g] == "":
-                            dConj[mode][g] = defineSuffixCode(sLemma, sFlex)
-                        else:
-                            # comment gérer les autres graphies ?
-                            pass
-                    except:
-                        print(sLemma.encode("utf-8").decode("ascii"), " - ", sTag, " - non géré: ", mode, " / ", g)
-            elif line == "$":
-                # we store the dictionary of rules for this lemma
-                if dConj[":Ip"][":1ś"] == "2è":
-                    dConj[":Ip"][":1ś"] = "2é"
-                elif sLemma == "pouvoir":
-                    dConj[":Ip"][":1ś"] = "6uis"
-                lConjTags = []
-                for key in [":PQ", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
-                    bFound = False
-                    for i, d in enumerate(dPatternList[key]):
-                        if dConj[key] == d:
-                            bFound = True
-                            lConjTags.append(i)
-                            break
-                    if not bFound:
-                        lConjTags.append(len(dPatternList[key]))
-                        dPatternList[key].append(dConj[key])
-                tConjTags = tuple(lConjTags)
-                if tConjTags not in lTags:
-                    dTags[tConjTags] = nTags
-                    lTags.append(tConjTags)
-                    nTags += 1
-                dVerb[sLemma] = (dVtyp[sVtyp], dTags[tConjTags])
+    nStop = 0
+    for n, sLine in enumerate(readFile(sp+"/data/dictConj.txt")):
+        nTab = sLine.count("\t")
+        if nTab == 1:
+            # new entry
+            sLemma, sVtyp = sLine.split("\t")
+            dConj = {   ":PQ": { ":P": "", ":Q1": "", ":Q2": "", ":Q3": "", ":Q4": ""},
+                        ":Ip": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
+                        ":Iq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
+                        ":Is": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
+                        ":If": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
+                        ":K": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
+                        ":Sp": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
+                        ":Sq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
+                        ":E": { ":2s": "", ":1p": "", ":2p": "" }
+                    }
+            if sVtyp not in lVtyp:
+                dVtyp[sVtyp] = nVtyp
+                lVtyp.append(sVtyp)
+                nVtyp += 1
+        elif nTab == 2:
+            # flexion
+            _, sTag, sFlex = sLine.split("\t")
+            if sTag.count(" ") == 0:
+                if sTag == "ppre":
+                    dConj[":PQ"][":P"] = defineSuffixCode(sLemma, sFlex)
             else:
-                print("# Error - unknown line #", n)
+                try:
+                    mode, g = sTag.split(maxsplit=1)
+                    mode = dTrad[mode]
+                    g = dTrad[g]
+                    if dConj[mode][g] == "":
+                        dConj[mode][g] = defineSuffixCode(sLemma, sFlex)
+                    else:
+                        # comment gérer les autres graphies ?
+                        pass
+                except:
+                    print(sLemma.encode("utf-8").decode("ascii"), " - ", sTag, " - non géré: ", mode, " / ", g)
+        elif sLine == "$":
+            # we store the dictionary of rules for this lemma
+            if dConj[":Ip"][":1ś"] == "2è":
+                dConj[":Ip"][":1ś"] = "2é"
+            elif sLemma == "pouvoir":
+                dConj[":Ip"][":1ś"] = "6uis"
+            lConjTags = []
+            for key in [":PQ", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
+                bFound = False
+                for i, d in enumerate(dPatternList[key]):
+                    if dConj[key] == d:
+                        bFound = True
+                        lConjTags.append(i)
+                        break
+                if not bFound:
+                    lConjTags.append(len(dPatternList[key]))
+                    dPatternList[key].append(dConj[key])
+            tConjTags = tuple(lConjTags)
+            if tConjTags not in lTags:
+                dTags[tConjTags] = nTags
+                lTags.append(tConjTags)
+                nTags += 1
+            dVerb[sLemma] = (dVtyp[sVtyp], dTags[tConjTags])
+        else:
+            print("# Error - unknown line #", n)
 
     # convert tuples to bytes string
     # si ça merde, toute la partie conversion peut être supprimée
@@ -172,68 +181,65 @@ def makeMfsp (sp, bJS=False):
     lTagMiscPlur = []
     dMiscPlur = {}
     dMasForm = {}
-    # read lexicon
-    with open(sp+"/data/dictDecl.txt", 'r', encoding='utf-8') as hSrc:
-        lTag = []
-        lTagMasPl = []
-        for n, line in enumerate(hSrc.readlines()):
-            line = line.strip()
-            nTab = line.count("\t")
-            if nTab == 1:
-                # new entry
-                lTag.clear()
-                lTagMasPl.clear()
-                sLemma, sFlags = line.split("\t")
-                if sFlags.startswith("S"):
-                    cType = "s"
-                elif sFlags.startswith("X"):
-                    cType = "p"
-                elif sFlags.startswith("A"):
-                    cType = "p"
-                elif sFlags.startswith("I"):
-                    cType = "p"
-                elif sFlags.startswith("F"):
-                    cType = "m"
-                elif sFlags.startswith("W"):
-                    cType = "m"
-                else:
-                    cType = "?"
-                    print(" > inconnu : " + sFlags)
-            elif nTab == 2:
-                if cType == "s":
-                    continue
-                _, sFlexTags, sFlex = line.split("\t")
-                if cType == "p":
-                    if sFlexTags.endswith("pl"):
-                        lTag.append(defineSuffixCode(sLemma, sFlex))
-                elif cType == "m":
-                    if sFlexTags.endswith("mas sg") or sFlexTags.endswith("mas inv"):
-                        lTag.append(defineSuffixCode(sLemma, sFlex))
-                    if sFlexTags.endswith("mas pl"):
-                        lTagMasPl.append(defineSuffixCode(sLemma, sFlex))
-                else:
-                    print("erreur: " + cType)
-            elif line == "$":
-                if cType == "s":
-                    aPlurS.add(sLemma)
-                elif cType == "p":
-                    sTag = "|".join(lTag)
-                    if sTag not in dTag:
-                        dTag[sTag] = len(lTagMiscPlur)
-                        lTagMiscPlur.append(sTag)
-                    dMiscPlur[sLemma] = dTag[sTag]
-                elif cType == "m":
-                    sTag = "|".join(lTag)
-                    if lTagMasPl:
-                        sTag += "/" + "|".join(lTagMasPl)
-                    if sTag not in dTag:
-                        dTag[sTag] = len(lTagMasForm)
-                        lTagMasForm.append(sTag)
-                    dMasForm[sLemma] = dTag[sTag]
-                else:
-                    print("unknown tag: " + ctype)
+    lTag = []
+    lTagMasPl = []
+    for n, sLine in enumerate(readFile(sp+"/data/dictDecl.txt")):
+        nTab = sLine.count("\t")
+        if nTab == 1:
+            # new entry
+            lTag.clear()
+            lTagMasPl.clear()
+            sLemma, sFlags = sLine.split("\t")
+            if sFlags.startswith("S"):
+                cType = "s"
+            elif sFlags.startswith("X"):
+                cType = "p"
+            elif sFlags.startswith("A"):
+                cType = "p"
+            elif sFlags.startswith("I"):
+                cType = "p"
+            elif sFlags.startswith("F"):
+                cType = "m"
+            elif sFlags.startswith("W"):
+                cType = "m"
             else:
-                print("# Error - unknown line #", n)
+                cType = "?"
+                print(" > inconnu : " + sFlags)
+        elif nTab == 2:
+            if cType == "s":
+                continue
+            _, sFlexTags, sFlex = sLine.split("\t")
+            if cType == "p":
+                if sFlexTags.endswith("pl"):
+                    lTag.append(defineSuffixCode(sLemma, sFlex))
+            elif cType == "m":
+                if sFlexTags.endswith("mas sg") or sFlexTags.endswith("mas inv"):
+                    lTag.append(defineSuffixCode(sLemma, sFlex))
+                if sFlexTags.endswith("mas pl"):
+                    lTagMasPl.append(defineSuffixCode(sLemma, sFlex))
+            else:
+                print("erreur: " + cType)
+        elif sLine == "$":
+            if cType == "s":
+                aPlurS.add(sLemma)
+            elif cType == "p":
+                sTag = "|".join(lTag)
+                if sTag not in dTag:
+                    dTag[sTag] = len(lTagMiscPlur)
+                    lTagMiscPlur.append(sTag)
+                dMiscPlur[sLemma] = dTag[sTag]
+            elif cType == "m":
+                sTag = "|".join(lTag)
+                if lTagMasPl:
+                    sTag += "/" + "|".join(lTagMasPl)
+                if sTag not in dTag:
+                    dTag[sTag] = len(lTagMasForm)
+                    lTagMasForm.append(sTag)
+                dMasForm[sLemma] = dTag[sTag]
+            else:
+                print("unknown tag: " + ctype)
+        else:
+            print("# Error - unknown line #", n)
 
     ## write file for Python
     sCode = "# generated data (do not edit)\n\n" + \
@@ -266,31 +272,28 @@ def makePhonetTable (sp, bJS=False):
         traceback.print_exc()
         return
 
-    with open(sp+"/data/phonet_simil.txt", 'r', encoding='utf-8') as hSrc:
-        # set of homophonic words
-        lSet = []
-        for sLine in hSrc.readlines():
-            if not sLine.startswith("#") and sLine.strip():
-                lWord = sLine.strip().split()
-                aMore = set()
-                for sWord in lWord:
-                    if sWord.endswith("er") and conj.isVerb(sWord):
-                        aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
-                lWord.extend(list(aMore))
-                lSet.append(sorted(set(lWord)))
-                #print(lWord)
-        # dictionary of words
-        dWord = {}
-        for i, aSet in enumerate(lSet):
-            for sWord in aSet:
-                if oDict.lookup(sWord):
-                    dWord[sWord] = i  # warning, what if word in several sets?
-                else:
-                    echo("Mot inconnu : " + sWord)
-        # dictionary of morphologies
-        dMorph = {}
-        for sWord in dWord:
-            dMorph[sWord] = oDict.getMorph(sWord)
+    # set of homophonic words
+    lSet = []
+    for sLine in readFile(sp+"/data/phonet_simil.txt"):
+        lWord = sLine.split()
+        aMore = set()
+        for sWord in lWord:
+            if sWord.endswith("er") and conj.isVerb(sWord):
+                aMore = aMore.union(conj.getConjSimilInfiV1(sWord))
+        lWord.extend(list(aMore))
+        lSet.append(sorted(set(lWord)))
+    # dictionary of words
+    dWord = {}
+    for i, aSet in enumerate(lSet):
+        for sWord in aSet:
+            if oDict.lookup(sWord):
+                dWord[sWord] = i  # warning, what if word in several sets?
+            else:
+                echo("Mot inconnu : " + sWord)
+    # dictionary of morphologies
+    dMorph = {}
+    for sWord in dWord:
+        dMorph[sWord] = oDict.getMorph(sWord)
 
     # write file for Python
     sCode = "# generated data (do not edit)\n\n" + \
@@ -312,19 +315,17 @@ def makeLocutions (sp, bJS=False):
     "compile list of locutions in JSON"
     print("> Locutions ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
-    with open(sp+"/data/locutions.txt", 'r', encoding='utf-8') as hSrc:
-        dLocGraph = {}
-        oTokenizer = tkz.Tokenizer("fr")
-        for sLine in hSrc.readlines():
-            if not sLine.startswith("#") and sLine.strip():
-                dCur = dLocGraph
-                sLoc, sTag = sLine.strip().split("\t")
-                for oToken in oTokenizer.genTokens(sLoc.strip()):
-                    sWord = oToken["sValue"]
-                    if sWord not in dCur:
-                        dCur[sWord] = {}
-                    dCur = dCur[sWord]
-                dCur[":"] = sTag
+    dLocGraph = {}
+    oTokenizer = tkz.Tokenizer("fr")
+    for sLine in readFile(sp+"/data/locutions.txt"):
+        dCur = dLocGraph
+        sLoc, sTag = sLine.split("\t")
+        for oToken in oTokenizer.genTokens(sLoc.strip()):
+            sWord = oToken["sValue"]
+            if sWord not in dCur:
+                dCur[sWord] = {}
+            dCur = dCur[sWord]
+        dCur[":"] = sTag
 
     sCode = "# generated data (do not edit)\n\n" + \
             "dLocutions = " + str(dLocGraph) + "\n"
