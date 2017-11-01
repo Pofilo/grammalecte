@@ -110,6 +110,7 @@ const _dTAGS = new Map([
 ]);
 
 const _dLocTAGS = new Map([
+    [':L', "locution"],
     [':LN', "locution nominale"],
     [':LA', "locution adjectivale"],
     [':LV', "locution verbale"],
@@ -119,15 +120,16 @@ const _dLocTAGS = new Map([
     [':LC', "locution conjonctive"],
     [':LJ', "locution interjective"],
 
-    [':B', " cardinal"],
+    [':B', " cardinale"],
     [':e', " épicène"],
-    [':m', " masculin"],
-    [':f', " féminin"],
-    [':s', " singulier"],
-    [':p', " pluriel"],
+    [':m', " masculine"],
+    [':f', " féminine"],
+    [':s', " singulière"],
+    [':p', " plurielle"],
     [':i', " invariable"],
     ['/L', " {latin}"]
 ]);
+
 const _dLocVERB = new Map([
     ['i', " intransitif"],
     ['n', " transitif indirect"],
@@ -231,7 +233,7 @@ class Lexicographe {
         this._zElidedPrefix = new RegExp("^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)", "i");
         this._zCompoundWord = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
         this._zTag = new RegExp("[:;/][a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ*Ṽ][^:;/]*", "g");
-        this._zLocTag = new RegExp("(:L[A-Z])([a-z].?)?(.*)");
+        this._zLocTag = new RegExp("((:L)([A-Z])?)([a-z].?)?(:.*)?");
     }
 
     getInfoForToken (oToken) {
@@ -346,17 +348,19 @@ class Lexicographe {
     _formatTagsLoc (sTags) {
         let sRes = "";
         let oTagsVerb = this._zLocTag.exec(sTags);
-        sTags = oTagsVerb[1]+oTagsVerb[3];
-        let m;
-        while ((m = this._zTag.exec(sTags)) !== null) {
-            sRes += _dLocTAGS.get(m[0]);
-            if (m[0] == ':LV' && oTagsVerb[2]){
-                oTagsVerb[2].split(/(?!$)/u).forEach(function(sKey) {
-                    sRes += _dLocVERB.get(sKey);
-                });
-            }
-            if (sRes.length > 100) {
-                break;
+        sRes += _dLocTAGS.get(oTagsVerb[1]);
+        if (oTagsVerb[4] && oTagsVerb[1] === ':LV'){
+            oTagsVerb[4].split(/(?!$)/u).forEach(function(sKey) {
+                sRes += _dLocVERB.get(sKey);
+            });
+        }
+        if (oTagsVerb[5]){
+            let m;
+            while ((m = this._zTag.exec(oTagsVerb[5])) !== null) {
+                sRes += _dLocTAGS.get(m[0]);
+                if (sRes.length > 100) {
+                    break;
+                }
             }
         }
         if (!sRes) {
