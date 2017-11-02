@@ -230,7 +230,7 @@ class Lexicographe {
         this.oTokenizer = oTokenizer;
         this.oLocGraph = JSON.parse(oLocGraph);
 
-        this._zCompoundWord = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
+        this._zInterroVerb = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
         this._zTag = new RegExp("[:;/][a-zA-Z0-9ÑÂĴĈŔÔṼŴ!][^:;/]*", "g");
     }
 
@@ -290,18 +290,21 @@ class Lexicographe {
                             sValue: oToken.sValue,
                             aLabel: ["élément complexe indéterminé"]
                         };
-                    } else if (m = this._zCompoundWord.exec(oToken.sValue)) {
+                    } else if (m = this._zInterroVerb.exec(oToken.sValue)) {
                         // mots composés
                         let lMorph = this.oDict.getMorph(m[1]);
                         let aElem = [];
                         for (let s of lMorph) {
                             if (s.includes(":")) aElem.push(this._formatTags(s));
                         }
-                        aElem.push("-" + m[2] + ": " + this._formatSuffix(m[2].toLowerCase()));
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: aElem
+                            aLabel: ["forme verbale interrogative"],
+                            aSubElem: [
+                                { sType: oToken.sType,  sValue: m[1],           aLabel: aElem },
+                                { sType: oToken.sType,  sValue: "-" + m[2],     aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                            ]
                         };
                     } else if (this.oDict.isValidToken(oToken.sValue)) {
                         let lMorph = this.oDict.getMorph(oToken.sValue);
