@@ -388,15 +388,13 @@ class Lexicographe {
         return aElem;
     }
 
-    generateInfoForTokenList (lToken) {
-        let aElem = [];
+    * generateInfoForTokenList (lToken) {
         for (let oToken of lToken) {
             let aRes = this.getInfoForToken(oToken);
             if (aRes) {
-                aElem.push(aRes);
+                yield aRes;
             }
         }
-        return aElem;
     }
 
     getListOfTokensReduc (sText, bInfo=true) {
@@ -441,15 +439,25 @@ class Lexicographe {
                     'aSubToken': aTokenTempList
                 };
                 if (bInfo) {
+                    let aSubElem = null;
+                    if (sMorphLoc.startsWith("*|")) {
+                        // cette suite de tokens n’est une locution que dans certains cas minoritaires
+                        for (let oElem of this.generateInfoForTokenList(aTokenTempList)) {
+                            aElem.push(oElem);
+                        }
+                    } else {
+                        aSubElem = [...this.generateInfoForTokenList(aTokenTempList)];
+                    }
+                    // cette suite de tokens est la plupart du temps une locution
                     let aFormatedTag = [];
                     for (let sTagLoc of sMorphLoc.split('|') ){
-                        aFormatedTag.push( this._formatTagsLoc(sTagLoc) );
+                        aFormatedTag.push(this._formatTagsLoc(sTagLoc));
                     }
                     aElem.push({
                         sType: oTokenLocution.sType,
                         sValue: oTokenLocution.sValue,
                         aLabel: aFormatedTag,
-                        aSubElem: this.generateInfoForTokenList(aTokenTempList)
+                        aSubElem: aSubElem
                     });
                 } else {
                     aElem.push(oTokenLocution);
