@@ -589,11 +589,13 @@ TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux
 
 
 __[u](typo_écriture_épicène_pluriel_eur_divers)__
-    ({w_2})eur[.(/·–—-][td]?(rice|euse|[oe]resse)[.)/·–—-]?s  @@0,**
-    <<- option("typo") ->> \1eurs et \1\2s|\1\2s et \1eurs                                          # Écriture épicène dystypographique et imprononçable.
+    ({w_2})eur[.(/·–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·–—-]?s  @@0,**
+    <<- option("typo") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs                           # Écriture épicène dystypographique et imprononçable.
+    <<- option("typo") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs                       # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: travaillons avec les {{instituteur.trice.s}}                          ->> instituteurs et institutrices|institutrices et instituteurs
+TEST: La communauté des {{développeur·se·s}} open source                    ->> développeurs et développeuses|développeuses et développeurs
 
 
 __[u](typo_écriture_épicène_pluriel_eux_euses)__
