@@ -283,17 +283,6 @@ class Lexicographe {
                             sValue: oToken.sValue,
                             aLabel: ["élément complexe indéterminé"]
                         };
-                    } else if (this.oDict.isValidToken(oToken.sValue)) {
-                        let lMorph = this.oDict.getMorph(oToken.sValue);
-                        let aElem = [];
-                        for (let s of lMorph) {
-                            if (s.includes(":")) aElem.push(this._formatTags(s));
-                        }
-                        return {
-                            sType: oToken.sType,
-                            sValue: oToken.sValue,
-                            aLabel: (aElem.length > 0) ? aElem : ["mot composé indéterminé"]
-                        };
                     } else if (m = this._zCompoundWord.exec(oToken.sValue)) {
                         // mots composés
                         let lMorph = this.oDict.getMorph(m[1]);
@@ -306,6 +295,17 @@ class Lexicographe {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
                             aLabel: aElem
+                        };
+                    } else if (this.oDict.isValidToken(oToken.sValue)) {
+                        let lMorph = this.oDict.getMorph(oToken.sValue);
+                        let aElem = [];
+                        for (let s of lMorph) {
+                            if (s.includes(":")) aElem.push(this._formatTags(s));
+                        }
+                        return {
+                            sType: oToken.sType,
+                            sValue: oToken.sValue,
+                            aLabel: (aElem.length > 0) ? aElem : ["mot composé indéterminé"]
                         };
                     } else {
                         return {
