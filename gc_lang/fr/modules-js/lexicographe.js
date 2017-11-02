@@ -292,7 +292,7 @@ class Lexicographe {
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: aElem
+                            aLabel: (aElem.length > 0) ? aElem : ["mot composé indéterminé"]
                         };
                     } else if (m = this._zCompoundWord.exec(oToken.sValue)) {
                         // mots composés
