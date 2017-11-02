@@ -419,13 +419,10 @@ class Lexicographe {
                     let oTokenNext = aTokenList[iKeyTree];
                     iKeyTree++;
                     if (oTokenNext) {
-                        if (oTokenNext.sValue == ":") { // temporary fix
-                            break;
-                        }
                         oLocNode = oLocNode[oTokenNext.sValue.toLowerCase()];
                     }
                     if (oLocNode && iKeyTree <= aTokenList.length) {
-                        sMorphLoc = oLocNode[":"];
+                        sMorphLoc = oLocNode["_:_"];
                         aTokenTempList.push(oTokenNext);
                     } else {
                         break;
@@ -452,6 +449,7 @@ class Lexicographe {
                         for (let oElem of this.generateInfoForTokenList(aTokenTempList)) {
                             aElem.push(oElem);
                         }
+                        sMorphLoc = sMorphLoc.slice(2);
                     } else {
                         aSubElem = [...this.generateInfoForTokenList(aTokenTempList)];
                     }

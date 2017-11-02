@@ -326,7 +326,7 @@ def makeLocutions (sp, bJS=False):
             if sWord not in dCur:
                 dCur[sWord] = {}
             dCur = dCur[sWord]
-        dCur[":"] = sTag
+        dCur["_:_"] = sTag
 
     sCode = "# generated data (do not edit)\n\n" + \
             "dLocutions = " + str(dLocGraph) + "\n"
