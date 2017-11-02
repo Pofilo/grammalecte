@@ -1182,8 +1182,8 @@ __[s]/typo(typo_ordinaux_deuxième)__
     # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_nième)__
     ([0-9]+) ?(?:è|i?[èe]me)s?  @@0
-    <<- \0.endswith("s") ->> \1ᵉˢ                                                                   # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
-    <<- __else__ ->> \1ᵉ                                                                            # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+    <<- \0.endswith("s") ->> \1ᵉˢ                                                                   # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+    <<- __else__ ->> \1ᵉ                                                                            # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 __[s]/typo(typo_ordinaux_romain_premier)__
     I ?(?:ier|i?ère)s?
     <<- ->> =\0.replace(" ", "").replace("è", "").replace("i", "").replace("e", "ᵉ").replace("r", "ʳ").replace("s", "ˢ")
