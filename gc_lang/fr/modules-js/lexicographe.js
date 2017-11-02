@@ -13,7 +13,7 @@ if (typeof (require) !== 'undefined') {
     var helpers = require("resource://grammalecte/helpers.js");
 }
 
-const _dTAGS = new Map([
+const _dTag = new Map([
     [':G', "[mot grammatical]"],
     [':N', " nom,"],
     [':A', " adjectif,"],
@@ -109,7 +109,7 @@ const _dTAGS = new Map([
     ['/X', ""]
 ]);
 
-const _dLocTAGS = new Map([
+const _dLocTag = new Map([
     [':L', "locution"],
     [':LN', "locution nominale"],
     [':LA', "locution adjectivale"],
@@ -130,7 +130,7 @@ const _dLocTAGS = new Map([
     ['/L', " {latin}"]
 ]);
 
-const _dLocVERB = new Map([
+const _dLocVerb = new Map([
     ['i', " intransitive"],
     ['n', " transitive indirecte"],
     ['t', " transitive directe"],
@@ -138,7 +138,7 @@ const _dLocVERB = new Map([
     ['m', " impersonnelle"],
 ]);
 
-const _dPFX = new Map([
+const _dElidedPrefix = new Map([
     ['d', "(de), déterminant épicène invariable"],
     ['l', "(le/la), déterminant masculin/féminin singulier"],
     ['j', "(je), pronom personnel sujet, 1ʳᵉ pers., épicène singulier"],
@@ -154,7 +154,7 @@ const _dPFX = new Map([
     ['jusqu', "(jusque), préposition"]
 ]);
 
-const _dAD = new Map([
+const _dPronoms = new Map([
     ['je', " pronom personnel sujet, 1ʳᵉ pers. sing."],
     ['tu', " pronom personnel sujet, 2ᵉ pers. sing."],
     ['il', " pronom personnel sujet, 3ᵉ pers. masc. sing."],
@@ -266,7 +266,7 @@ class Lexicographe {
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [_dPFX.gl_get(sTemp, "préfixe élidé inconnu")]
+                        aLabel: [_dElidedPrefix.gl_get(sTemp, "préfixe élidé inconnu")]
                     };
                     break;
                 case 'FOLDER':
@@ -327,7 +327,7 @@ class Lexicographe {
         sTags = sTags.replace(/V([0-3][ea]?)[itpqnmr_eaxz]+/, "V$1");
         let m;
         while ((m = this._zTag.exec(sTags)) !== null) {
-            sRes += _dTAGS.get(m[0]);
+            sRes += _dTag.get(m[0]);
         }
         if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
             sRes += " [" + sTags.slice(1, sTags.indexOf(" ")) + "]";
@@ -343,12 +343,12 @@ class Lexicographe {
         let m;
         while ((m = this._zTag.exec(sTags)) !== null) {
             if (m[0].startsWith(":LV")) {
-                sRes += _dLocTAGS.get(":LV");
+                sRes += _dLocTag.get(":LV");
                 for (let c of m[0].slice(3)) {
-                    sRes += _dLocVERB.get(c);
+                    sRes += _dLocVerb.get(c);
                 }
             } else {
-                sRes += _dLocTAGS.get(m[0]);
+                sRes += _dLocTag.get(m[0]);
             }
         }
         if (!sRes) {
@@ -359,16 +359,16 @@ class Lexicographe {
 
     _formatSuffix (s) {
         if (s.startsWith("t-")) {
-            return "“t” euphonique +" + _dAD.get(s.slice(2));
+            return "“t” euphonique +" + _dPronoms.get(s.slice(2));
         }
         if (!s.includes("-")) {
-            return _dAD.get(s.replace("’", "'"));
+            return _dPronoms.get(s.replace("’", "'"));
         }
         if (s.endsWith("ous")) {
             s += '2';
         }
         let nPos = s.indexOf("-");
-        return _dAD.get(s.slice(0, nPos)) + " +" + _dAD.get(s.slice(nPos + 1));
+        return _dPronoms.get(s.slice(0, nPos)) + " +" + _dPronoms.get(s.slice(nPos + 1));
     }
 
     getListOfTokens (sText, bInfo=true) {

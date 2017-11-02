@@ -2,6 +2,7 @@
 
 "use strict";
 
+
 class GrammalecteLexicographer extends GrammalectePanel {
 
     constructor (...args) {
