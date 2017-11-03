@@ -63,6 +63,9 @@ class GrammalecteLexicographer extends GrammalectePanel {
     _createTokenDescr (oToken) {
         try {
             let xTokenDescr = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_descr"});
+            if (oToken.sType == "LOCP") {
+                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_also", textContent: "possiblement › "}));
+            }
             xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
             xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
             if (oToken.aLabel.length === 1) {

@@ -302,8 +302,8 @@ class Lexicographe {
                             sValue: oToken.sValue,
                             aLabel: ["forme verbale interrogative"],
                             aSubElem: [
-                                { sType: oToken.sType,  sValue: m[1],           aLabel: aElem },
-                                { sType: oToken.sType,  sValue: "-" + m[2],     aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                                { sType: oToken.sType, sValue: m[1],       aLabel: aElem },
+                                { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
                             ]
                         };
                     } else if (this.oDict.isValidToken(oToken.sValue)) {
@@ -449,6 +449,7 @@ class Lexicographe {
                     let aSubElem = null;
                     if (sMorphLoc.startsWith("*|")) {
                         // cette suite de tokens n’est une locution que dans certains cas minoritaires
+                        oTokenLocution.sType = "LOCP";
                         for (let oElem of this.generateInfoForTokenList(aTokenTempList)) {
                             aElem.push(oElem);
                         }
