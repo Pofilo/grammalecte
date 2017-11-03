@@ -5358,9 +5358,9 @@ __[i](loc_tenir_à_distance)__
     <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
 __[i](loc_tenir_compte)__
-    (t[eiî]\w+) +(co(?:mp?|n)tes?) d(?:es?|u) @@0,w
+    (t[eiî]\w+) +(co(?:mp?|n)tes?|au courant) d(?:es?|u) @@0,w
     <<- morph(\1, ">tenir ", False) >>>
-    <<- \2 != "compte" -2>> compte              # Dans cette locution, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
+    <<- morph(\2, ">co[mn]te ", False) -2>> compte                  # Dans cette locution, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
     <<- ~2>> *
 __[i](p_tirer_profit)__
     (tir\w+) +(profit) d(?:es?|u) @@0,w
