@@ -319,6 +319,8 @@ def makeLocutions (sp, bJS=False):
     dLocGraph = {}
     oTokenizer = tkz.Tokenizer("fr")
     for sLine in itertools.chain(readFile(sp+"/data/locutions.txt"), readFile(sp+"/data/locutions_vrac.txt")):
+        if sLine == "__END__":
+            break
         dCur = dLocGraph
         sLoc, sTag = sLine.split("\t")
         for oToken in oTokenizer.genTokens(sLoc.strip()):
