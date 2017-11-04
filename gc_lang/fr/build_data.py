@@ -34,6 +34,8 @@ def readFile (spf):
         with open(spf, "r", encoding="utf-8") as hSrc:
             for sLine in hSrc:
                 sLine = sLine.strip()
+                if sLine == "__END__":
+                    break
                 if sLine and not sLine.startswith("#"):
                     yield sLine
     else:
@@ -318,9 +320,14 @@ def makeLocutions (sp, bJS=False):
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
     dLocGraph = {}
     oTokenizer = tkz.Tokenizer("fr")
-    for sLine in itertools.chain(readFile(sp+"/data/locutions.txt"), readFile(sp+"/data/locutions_vrac.txt")):
-        if sLine == "__END__":
-            break
+    for sLine in itertools.chain(readFile(sp+"/data/locutions_adverbiales.txt"), \
+                                 readFile(sp+"/data/locutions_prépositives.txt"), \
+                                 readFile(sp+"/data/locutions_conjonctives.txt"), \
+                                 readFile(sp+"/data/locutions_pronominales.txt"), \
+                                 readFile(sp+"/data/locutions_adjectivales.txt"), \
+                                 readFile(sp+"/data/locutions_interjectives.txt"), \
+                                 readFile(sp+"/data/locutions_nominales.txt"), \
+                                 readFile(sp+"/data/locutions_verbales.txt")):
         dCur = dLocGraph
         sLoc, sTag = sLine.split("\t")
         for oToken in oTokenizer.genTokens(sLoc.strip()):
