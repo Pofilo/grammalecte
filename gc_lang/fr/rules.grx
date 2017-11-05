@@ -10859,25 +10859,26 @@ TEST: Ne pas aimer n’est pas oublier l’autre.
 ## 1sg
 __[i]/conj(conj_j)__
     j’({w_1})  @@2
-    <<- morphex(\1, ":V", ":1s|>(?:en|y)")
-    -1>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « je ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- morphex(\1, ":V", ":1s|>(?:en|y) ") >>>
+    <<- \1 == "est" or \1 == "es" -1>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- __else__ -1>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « je ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 __[i]/conj(conj_je)__
     (je) +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:1s|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:1s", False, False))
-    -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-#__[i]/conj(conj_je_pronom)__
-#    (je) +> +({w_1})  @@0,$
-#    <<- morphex(\2, ":V", ":(?:1s|G|1p)")
-#    -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- morphex(\2, ":V", ":(?:1s|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:1s", False, False)) >>>
+    <<- \2 == "est" or \2 == "es" -2>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- __else__ -2>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 __[i]/conj(conj_j_en_y)__
     (j’(?:y|en)) +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:1s|G|1p)")
-    -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- morphex(\2, ":V", ":(?:1s|G|1p)") >>>
+    <<- \2 == "est" or \2 == "es" -2>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- __else__ -2>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 __[i]/conj(conj_moi_qui)__
     (moi +qui) +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:1s|G|1p|3p!)")
-    -2>> =suggVerb(@, ":1s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- morphex(\2, ":V", ":(?:1s|G|1p|3p!)") >>>
+    <<- \2 == "est" or \2 == "es" -2>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
+    <<- __else__ -2>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 
+TEST: je l’{{est}} perdu de vue.                                ->> ai|aie|suis
 TEST: je {{donnerait}} tout pour y parvenir.
 TEST: Je le lui {{prend}}.
 TEST: Je l’{{apprend}}.
