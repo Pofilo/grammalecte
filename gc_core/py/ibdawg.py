@@ -6,13 +6,12 @@ import pkgutil
 import re
 from itertools import chain
 
+#import logging
+#logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
+
 from . import str_transform as st
 from . import char_player as cp
 from .echo import echo
-
-
-def show (nDeep, sText):
-    print(nDeep * "  " + sText)
 
 
 class IBDAWG:
@@ -209,13 +208,14 @@ class IBDAWG:
     def _suggest (self, sRemain, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         "returns a set of suggestions"
         # recursive function
-        #show(nDeep, sNewWord + ":" + sRemain)
+        #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain)
         aSugg = set()
         if not sRemain:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                #show(nDeep, "___" + sNewWord + "___")
+                #logging.info((nDeep * "  ") + "__" + sNewWord + "__")
                 aSugg.add(sNewWord)
             for sTail in self._getTails(iAddr):
+                #logging.info((nDeep * "  ") + "__" + sNewWord+sTail + "__")
                 aSugg.add(sNewWord+sTail)
             return aSugg
         cCurrent = sRemain[0:1]
