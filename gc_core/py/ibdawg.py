@@ -5,6 +5,8 @@ import traceback
 import pkgutil
 import re
 from itertools import chain
+from functools import wraps
+import time
 
 #import logging
 #logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
@@ -12,6 +14,18 @@ from itertools import chain
 from . import str_transform as st
 from . import char_player as cp
 from .echo import echo
+
+
+def timethis (func):
+    "decorator for the execution time"
+    @wraps(func)
+    def wrapper (*args, **kwargs):
+        fStart = time.time()
+        result = func(*args, **kwargs)
+        fEnd = time.time()
+        print(func.__name__, fEnd - fStart)
+        return result
+    return wrapper
 
 
 class IBDAWG:
@@ -186,6 +200,7 @@ class IBDAWG:
                 l.extend(self.morph(sWord.capitalize()))
         return l
 
+    @timethis
     def suggest (self, sWord, nMaxSugg=10):
         "returns a set of suggestions for <sWord>"
         sPfx, sWord, sSfx = cp.cut(sWord)
