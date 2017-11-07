@@ -41,7 +41,7 @@ class SuggResult:
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
-        #print(sSugg)
+        #logging.info((nDeep * "  ") + "__" + sSugg + "__")
         if sSugg not in self.aSugg:
             nDist = st.distanceDamerauLevenshtein(self.sCleanWord, cp.cleanWord(sSugg))
             if nDist <= self.nDistLimit:
@@ -49,7 +49,6 @@ class SuggResult:
                     self.dSugg[nDist] = []
                 self.dSugg[nDist].append(sSugg)
                 self.aSugg.add(sSugg)
-                #logging.info((nDeep * "  ") + "__" + sSugg + "__")
                 if nDist < self.nMinDist:
                     self.nMinDist = nDist
                 self.nDistLimit = min(self.nDistLimit, self.nMinDist+2)
@@ -57,9 +56,9 @@ class SuggResult:
     def getSuggestions (self, nSuggLimit=10, nDistLimit=-1):
         "return a list of suggestions"
         lRes = []
-        #if self.dSugg[0]:
-        #    # we sort the better results with the original word
-        #    self.dSugg[0].sort(key=lambda sSugg: cp.distanceDamerauLevenshtein(self.sWord, sSugg))
+        if self.dSugg[0]:
+            # we sort the better results with the original word
+            self.dSugg[0].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
         for lSugg in self.dSugg.values():
             lRes.extend(lSugg)
             if len(lRes) > nSuggLimit:
@@ -67,6 +66,8 @@ class SuggResult:
         lRes = list(cp.filterSugg(lRes))
         if self.sWord.istitle():
             lRes = list(map(lambda sSugg: sSugg.title(), lRes))
+        elif self.sWord.isupper():
+            lRes = list(map(lambda sSugg: sSugg.upper(), lRes))
         return lRes[:nSuggLimit]
 
     def reset (self):
@@ -269,14 +270,12 @@ class IBDAWG:
         #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain + " · " + sAction)
         if not sRemain:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
-                #logging.info((nDeep * "  ") + "__" + sNewWord + "__")
                 oSuggResult.addSugg(sNewWord)
             for sTail in self._getTails(iAddr):
-                #logging.info((nDeep * "  ") + "__" + sNewWord+sTail + "__")
                 oSuggResult.addSugg(sNewWord+sTail)
             return
         cCurrent = sRemain[0:1]
-        for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
+        for cChar, jAddr in self._getSimilarCharArcs(cCurrent, iAddr):
             self._suggest(oSuggResult, sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar, "*")
         if not bAvoidLoop: # avoid infinite loop
             if cCurrent == sRemain[1:2]:
@@ -323,6 +322,7 @@ class IBDAWG:
         return aSugg
 
     def _suggest2 (self, oSuggResult, nDeep=0, iAddr=0, sNewWord=""):
+        # recursive function
         #logging.info((nDeep * "  ") + sNewWord)
         if nDeep >= oSuggResult.nDistLimit:
             sCleanNewWord = cp.cleanWord(sNewWord)
@@ -341,7 +341,7 @@ class IBDAWG:
             if nVal < self.nChar:
                 yield (self.dCharVal[nVal], jAddr)
 
-    def _getSimilarArcs (self, cChar, iAddr):
+    def _getSimilarCharArcs (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"
         for c in cp.d1to1.get(cChar, [cChar]):
             if c in self.dChar:
@@ -362,17 +362,16 @@ class IBDAWG:
 
     def drawPath (self, sWord, iAddr=0):
         "show the path taken by <sWord> in the graph"
-        cChar = sWord[0:1]  if sWord  else " "
+        c1 = sWord[0:1]  if sWord  else " "
         iPos = -1
         n = 0
-        print(cChar + ": ", end="")
-        for nVal, jAddr in self._getArcs(iAddr):
-            if nVal in self.dCharVal:
-                print(self.dCharVal[nVal], end="")
-                if self.dCharVal[nVal] == sWord[0:1]:
-                    iNextNodeAddr = jAddr
-                    iPos = n
-                n += 1
+        print(c1 + ": ", end="")
+        for c2, jAddr in self._getCharArcs(iAddr):
+            print(c2, end="")
+            if c2 == sWord[0:1]:
+                iNextNodeAddr = jAddr
+                iPos = n
+            n += 1
         if not sWord:
             return
         if iPos >= 0:
