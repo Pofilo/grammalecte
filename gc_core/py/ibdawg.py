@@ -353,7 +353,7 @@ class IBDAWG:
         if not cChar:
             yield from self._getCharArcs(iAddr)
         lTuple = list(self._getCharArcs(iAddr))
-        lTuple.sort(key=lambda t: 0  if t[0] in cp.d1to1.get(cChar, "")  else  1)
+        lTuple.sort(key=lambda t: 0  if t[0] in cp.d1to1.get(cChar, cChar)  else  1)
         yield from lTuple
 
     def _getTails (self, iAddr, sTail="", n=2):
