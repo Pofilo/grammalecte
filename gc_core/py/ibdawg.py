@@ -29,6 +29,7 @@ def timethis (func):
 
 
 class SuggResult:
+    """Structure for storing, classifying and filtering suggestions"""
 
     def __init__ (self, sWord, nDistLimit=-1):
         self.sWord = sWord
@@ -36,17 +37,19 @@ class SuggResult:
         self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
         self.nMinDist = 1000
         self.aSugg = set()
-        self.dSugg = { 0: [],  1: [],  2: [] }
+        self.dSugg = { 0: [],  1: [] }
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
+        #print(sSugg)
         if sSugg not in self.aSugg:
             nDist = st.distanceDamerauLevenshtein(self.sCleanWord, cp.cleanWord(sSugg))
             if nDist <= self.nDistLimit:
                 if nDist not in self.dSugg:
                     self.dSugg[nDist] = []
                 self.dSugg[nDist].append(sSugg)
-                logging.info((nDeep * "  ") + "__" + sSugg + "__")
+                self.aSugg.add(sSugg)
+                #logging.info((nDeep * "  ") + "__" + sSugg + "__")
                 if nDist < self.nMinDist:
                     self.nMinDist = nDist
                 self.nDistLimit = min(self.nDistLimit, self.nMinDist+2)
@@ -54,6 +57,9 @@ class SuggResult:
     def getSuggestions (self, nSuggLimit=10, nDistLimit=-1):
         "return a list of suggestions"
         lRes = []
+        #if self.dSugg[0]:
+        #    # we sort the better results with the original word
+        #    self.dSugg[0].sort(key=lambda sSugg: cp.distanceDamerauLevenshtein(self.sWord, sSugg))
         for lSugg in self.dSugg.values():
             lRes.extend(lSugg)
             if len(lRes) > nSuggLimit:
@@ -62,6 +68,10 @@ class SuggResult:
         if self.sWord.istitle():
             lRes = list(map(lambda sSugg: sSugg.title(), lRes))
         return lRes[:nSuggLimit]
+
+    def reset (self):
+        self.aSugg.clear()
+        self.dSugg.clear()
 
 
 class IBDAWG:
@@ -255,7 +265,6 @@ class IBDAWG:
         return aSugg
 
     def _suggest (self, oSuggResult, sRemain, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", sAction="", bAvoidLoop=False):
-        "returns a set of suggestions"
         # recursive function
         #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain + " · " + sAction)
         if not sRemain:
