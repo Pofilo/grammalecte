@@ -8,8 +8,8 @@ from itertools import chain
 from functools import wraps
 import time
 
-#import logging
-#logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
+import logging
+logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
 
 from . import str_transform as st
 from . import char_player as cp
@@ -220,10 +220,10 @@ class IBDAWG:
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
         return aSugg
 
-    def _suggest (self, sRemain, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
+    def _suggest (self, sRemain, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", sAction="", bAvoidLoop=False):
         "returns a set of suggestions"
         # recursive function
-        #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain)
+        #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain + " · " + sAction)
         aSugg = set()
         if not sRemain:
             if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
@@ -235,38 +235,79 @@ class IBDAWG:
             return aSugg
         cCurrent = sRemain[0:1]
         for cChar, jAddr in self._getSimilarArcs(cCurrent, iAddr):
-            aSugg.update(self._suggest(sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar))
+            aSugg.update(self._suggest(sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar, "*"))
         if not bAvoidLoop: # avoid infinite loop
             if cCurrent == sRemain[1:2]:
                 # same char, we remove 1 char without adding 1 to <sNewWord>
-                aSugg.update(self._suggest(sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord))
+                aSugg.update(self._suggest(sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+"/2"))
             else:
                 # switching chars
-                aSugg.update(self._suggest(sRemain[1:2]+sRemain[0:1]+sRemain[2:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True))
+                aSugg.update(self._suggest(sRemain[1:2]+sRemain[0:1]+sRemain[2:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "><",True))
                 # delete char
                 if nMaxDel > 0:
-                    aSugg.update(self._suggest(sRemain[1:], nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True))
+                    aSugg.update(self._suggest(sRemain[1:], nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "-"+cCurrent, True))
             # Phonetic replacements
             for sRepl in cp.d1toX.get(cCurrent, ()):
-                aSugg.update(self._suggest(sRepl + sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True))
+                aSugg.update(self._suggest(sRepl + sRemain[1:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+">"+sRepl, True))
             for sRepl in cp.d2toX.get(sRemain[0:2], ()):
-                aSugg.update(self._suggest(sRepl + sRemain[2:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True))
+                aSugg.update(self._suggest(sRepl + sRemain[2:], nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain[0:2]+">"+sRepl, True))
             # Hard replacements
             if nDeep > 3 and nMaxHardRepl and len(sRemain) >= 2:
                 for nVal, kAddr in self._getArcs1(iAddr):
                     if nVal in self.dCharVal:
                         cChar = self.dCharVal[nVal]
                         if cChar not in cp.d1to1.get(cCurrent, ""):
-                            aSugg.update(self._suggest(sRemain[1:], nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, True))
+                            aSugg.update(self._suggest(sRemain[1:], nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, "[["+cChar+"]]", True))
             # end of word
             if len(sRemain) == 2:
                 for sRepl in cp.dFinal2.get(sRemain, ()):
-                    aSugg.update(self._suggest(sRepl, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True))
+                    aSugg.update(self._suggest(sRepl, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " >> " + sRepl, True))
             elif len(sRemain) == 1:
-                aSugg.update(self._suggest("", nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True)) # remove last char and go on
+                aSugg.update(self._suggest("", nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " [last char removed] ", True)) # remove last char and go on
                 for sRepl in cp.dFinal1.get(sRemain, ()):
-                    aSugg.update(self._suggest(sRepl, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True))
+                    aSugg.update(self._suggest(sRepl, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " >> " + sRepl, True))
         return aSugg
+
+    @timethis
+    def suggest2 (self, sWord, nMaxSugg=10):
+        "returns a set of suggestions for <sWord>"
+        sPfx, sWord, sSfx = cp.cut(sWord)
+        nMaxDist = (len(sWord) // 3) + 1
+        sCleanWord = cp.cleanWord(sWord)
+        aSugg = self._suggest2(sWord, sCleanWord, nMaxDist)
+        if sWord.istitle():
+            aSugg.update(self._suggest2(sWord.lower(), sCleanWord, nMaxDist))
+            aSugg = set(map(lambda sSugg: sSugg.title(), aSugg))
+        elif sWord.islower():
+            aSugg.update(self._suggest2(sWord.title(), sCleanWord, nMaxDist))
+        aSugg = cp.filterSugg(aSugg)
+        aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceSift4(sCleanWord, cp.cleanWord(sSugg)))[:nMaxSugg]
+        if sSfx or sPfx:
+            # we add what we removed
+            return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
+        return aSugg
+
+    def _suggest2 (self, sWord, sCleanWord, nMaxDist, nDeep=0, iAddr=0, sNewWord=""):
+        #logging.info((nDeep * "  ") + sNewWord)
+        if nDeep >= nMaxDist:
+            sCleanNewWord = cp.cleanWord(sNewWord)
+            if cp.distanceSift4(sCleanWord[:len(sCleanNewWord)], sCleanNewWord) > nMaxDist:
+                return set()
+        aSugg = set()
+        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+            #logging.info((nDeep * "  ") + "__" + sNewWord + "__")
+            sCleanNewWord = cp.cleanWord(sNewWord)
+            if cp.distanceSift4(sCleanWord, sCleanNewWord) <= nMaxDist:
+                aSugg.add(sNewWord)
+        for cChar, jAddr in self._getCharArcs(iAddr):
+            aSugg.update(self._suggest2(sWord, sCleanWord, nMaxDist, nDeep+1, jAddr, sNewWord+cChar))
+        return aSugg
+
+    def _getCharArcs (self, iAddr):
+        "generator: yield all chars and addresses from node at address <iAddr>"
+        for nVal, jAddr in self._getArcs(iAddr):
+            if nVal < self.nChar:
+                yield (self.dCharVal[nVal], jAddr)
 
     def _getSimilarArcs (self, cChar, iAddr):
         "generator: yield similar char of <cChar> and address of the following node"

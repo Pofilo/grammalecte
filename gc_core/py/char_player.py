@@ -49,6 +49,67 @@ def showDistance (s1, s2):
     print(f"Distance: {s1b} / {s2b} = {distanceDamerauLevenshtein(s1b, s2b)}")
 
 
+def distanceSift4 (s1, s2, nMaxOffset=5):
+    "implementation of general Sift4."
+    # https://siderite.blogspot.com/2014/11/super-fast-and-accurate-string-distance.html
+    if not s1:
+        return len(s2)
+    if not s2:
+        return len(s1)
+    nLen1, nLen2 = len(s1), len(s2)
+    i1, i2 = 0, 0   # Cursors for each string
+    nLargestCS = 0  # Largest common substring
+    nLocalCS = 0    # Local common substring
+    nTrans = 0      # Number of transpositions ('ab' vs 'ba')
+    lOffset = []    # Offset pair array, for computing the transpositions
+ 
+    while i1 < nLen1 and i2 < nLen2:
+        if s1[i1] == s2[i2]:
+            nLocalCS += 1
+            # Check if current match is a transposition
+            bTrans = False
+            i = 0
+            while i < len(lOffset):
+                t = lOffset[i]
+                if i1 <= t[0] or i2 <= t[1]:
+                    bTrans = abs(i2-i1) >= abs(t[1] - t[0])
+                    if bTrans:
+                        nTrans += 1
+                    elif not t[2]:
+                        t[2] = True
+                        nTrans += 1
+                    break
+                elif i1 > t[1] and i2 > t[0]:
+                    del lOffset[i]
+                else:
+                    i += 1
+            lOffset.append([i1, i2, bTrans])
+        else:
+            nLargestCS += nLocalCS
+            nLocalCS = 0
+            if i1 != i2:
+                i1 = i2 = min(i1, i2)
+            for i in range(nMaxOffset):
+                if i1 + i >= nLen1 and i2 + i >= nLen2:
+                    break
+                elif i1 + i < nLen1 and s1[i1+i] == s2[i2]:
+                    i1 += i - 1
+                    i2 -= 1
+                    break
+                elif i2 + i < nLen2 and s1[i1] == s2[i2+i]:
+                    i2 += i - 1
+                    i1 -= 1
+                    break
+        i1 += 1
+        i2 += 1
+        if i1 >= nLen1 or i2 >= nLen2:
+            nLargestCS += nLocalCS
+            nLocalCS = 0
+            i1 = i2 = min(i1, i2)
+    nLargestCS += nLocalCS
+    return round(max(nLen1, nLen2) - nLargestCS + nTrans)
+
+
 # Method: Remove Useless Chars
 
 _dVovels = {
