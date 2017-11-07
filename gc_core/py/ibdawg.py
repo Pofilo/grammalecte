@@ -42,7 +42,7 @@ class SuggResult:
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
         if sSugg not in self.aSugg:
-            nDist = st.distanceSift4(self.sCleanWord, cp.cleanWord(sSugg))
+            nDist = st.distanceDamerauLevenshtein(self.sCleanWord, cp.cleanWord(sSugg))
             if nDist <= self.nDistLimit:
                 if nDist not in self.dSugg:
                     self.dSugg[nDist] = []
