@@ -28,6 +28,45 @@ def timethis (func):
     return wrapper
 
 
+class SuggResult:
+
+    def __init__ (self, sWord, nDistLimit=-1):
+        self.sWord = sWord
+        self.sCleanWord = cp.cleanWord(sWord)
+        self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
+        self.nMinDist = 1000
+        self.nMaxDist = 0
+        self.aSugg = set()
+        self.dSugg = { 0: [],  1: [],  2: [] }
+
+    def addSugg (self, sSugg, nDeep=0):
+        "add a suggestion"
+        if sSugg not in self.aSugg:
+            nDist = st.distanceSift4(self.sCleanWord, cp.cleanWord(sSugg))
+            if nDist <= self.nDistLimit:
+                if nDist not in self.dSugg:
+                    self.dSugg[nDist] = []
+                self.dSugg[nDist].append(sSugg)
+                logging.info((nDeep * "  ") + "__" + sSugg + "__")
+                if nDist > self.nMaxDist:
+                    self.nMaxDist = nDist
+                if nDist < self.nMinDist:
+                    self.nMinDist = nDist
+                self.nDistLimit = min(self.nDistLimit, self.nMinDist+2)
+
+    def getSuggestions (self, nSuggLimit=10, nDistLimit=-1):
+        "return a list of suggestions"
+        lRes = []
+        for lSugg in self.dSugg.values():
+            lRes.extend(lSugg)
+            if len(lRes) > nSuggLimit:
+                break
+        lRes = list(cp.filterSugg(lRes))
+        if self.sWord.istitle():
+            lRes = list(map(lambda sSugg: sSugg.title(), lRes))
+        return lRes[:nSuggLimit]
+
+
 class IBDAWG:
     """INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH"""
 
@@ -214,7 +253,7 @@ class IBDAWG:
             aSugg.update(self._suggest(sWord.title(), nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl))
         aSugg = cp.filterSugg(aSugg)
         sCleanWord = cp.cleanWord(sWord)
-        aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceDamerauLevenshtein(sCleanWord, cp.cleanWord(sSugg)))[:nMaxSugg]
+        aSugg = sorted(aSugg, key=lambda sSugg: st.distanceDamerauLevenshtein(sCleanWord, cp.cleanWord(sSugg)))[:nMaxSugg]
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
@@ -272,36 +311,26 @@ class IBDAWG:
     def suggest2 (self, sWord, nMaxSugg=10):
         "returns a set of suggestions for <sWord>"
         sPfx, sWord, sSfx = cp.cut(sWord)
-        nMaxDist = (len(sWord) // 3) + 1
-        sCleanWord = cp.cleanWord(sWord)
-        aSugg = self._suggest2(sWord, sCleanWord, nMaxDist)
-        if sWord.istitle():
-            aSugg.update(self._suggest2(sWord.lower(), sCleanWord, nMaxDist))
-            aSugg = set(map(lambda sSugg: sSugg.title(), aSugg))
-        elif sWord.islower():
-            aSugg.update(self._suggest2(sWord.title(), sCleanWord, nMaxDist))
-        aSugg = cp.filterSugg(aSugg)
-        aSugg = sorted(aSugg, key=lambda sSugg: cp.distanceSift4(sCleanWord, cp.cleanWord(sSugg)))[:nMaxSugg]
+        oSuggResult = SuggResult(sWord)
+        self._suggest2(oSuggResult)
+        aSugg = oSuggResult.getSuggestions()
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
         return aSugg
 
-    def _suggest2 (self, sWord, sCleanWord, nMaxDist, nDeep=0, iAddr=0, sNewWord=""):
+    def _suggest2 (self, oSuggResult, nDeep=0, iAddr=0, sNewWord=""):
         #logging.info((nDeep * "  ") + sNewWord)
-        if nDeep >= nMaxDist:
+        if nDeep >= oSuggResult.nDistLimit:
             sCleanNewWord = cp.cleanWord(sNewWord)
-            if cp.distanceSift4(sCleanWord[:len(sCleanNewWord)], sCleanNewWord) > nMaxDist:
-                return set()
-        aSugg = set()
+            if st.distanceSift4(oSuggResult.sCleanWord[:len(sCleanNewWord)], sCleanNewWord) > oSuggResult.nDistLimit:
+                return
         if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
             #logging.info((nDeep * "  ") + "__" + sNewWord + "__")
-            sCleanNewWord = cp.cleanWord(sNewWord)
-            if cp.distanceSift4(sCleanWord, sCleanNewWord) <= nMaxDist:
-                aSugg.add(sNewWord)
+            oSuggResult.addSugg(sNewWord, nDeep)
         for cChar, jAddr in self._getCharArcs(iAddr):
-            aSugg.update(self._suggest2(sWord, sCleanWord, nMaxDist, nDeep+1, jAddr, sNewWord+cChar))
-        return aSugg
+            self._suggest2(oSuggResult, nDeep+1, jAddr, sNewWord+cChar)
+        return
 
     def _getCharArcs (self, iAddr):
         "generator: yield all chars and addresses from node at address <iAddr>"
