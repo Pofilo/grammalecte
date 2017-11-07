@@ -331,7 +331,7 @@ class IBDAWG:
         if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
             #logging.info((nDeep * "  ") + "__" + sNewWord + "__")
             oSuggResult.addSugg(sNewWord, nDeep)
-        for cChar, jAddr in self._getCharArcs(iAddr):
+        for cChar, jAddr in self._getCharArcsWithPriority(iAddr, oSuggResult.sWord[nDeep:nDeep+1]):
             self._suggest2(oSuggResult, nDeep+1, jAddr, sNewWord+cChar)
         return
 
@@ -348,6 +348,13 @@ class IBDAWG:
                 jAddr = self._lookupArcNode(self.dChar[c], iAddr)
                 if jAddr:
                     yield (c, jAddr)
+
+    def _getCharArcsWithPriority (self, iAddr, cChar):
+        if not cChar:
+            yield from self._getCharArcs(iAddr)
+        lTuple = list(self._getCharArcs(iAddr))
+        lTuple.sort(key=lambda t: 0  if t[0] in cp.d1to1.get(cChar, "")  else  1)
+        yield from lTuple
 
     def _getTails (self, iAddr, sTail="", n=2):
         "return a list of suffixes ending at a distance of <n> from <iAddr>"
