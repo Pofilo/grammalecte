@@ -210,6 +210,7 @@ def main ():
                 for sWord in sText[1:].strip().split():
                     if sWord:
                         echo(" | ".join(oDict.suggest(sWord)))
+                        #echo(" | ".join(oDict.suggest2(sWord)))
             elif sText.startswith(">"):
                 oDict.drawPath(sText[1:].strip())
             elif sText.startswith("="):
