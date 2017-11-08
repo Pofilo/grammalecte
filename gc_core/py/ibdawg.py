@@ -297,11 +297,9 @@ class IBDAWG:
                     self._suggest(oSuggResult, sRepl + sRemain[2:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain[0:2]+">"+sRepl, True)
                 # Hard replacements
                 if nDeep > 3 and nMaxHardRepl:
-                    for nVal, kAddr in self._getArcs1(iAddr):
-                        if nVal in self.dCharVal:
-                            cChar = self.dCharVal[nVal]
-                            if cChar not in cp.d1to1.get(cCurrent, ""):
-                                self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, "[["+cChar+"]]", True)
+                    for cChar, kAddr in self._getCharArcs(iAddr):
+                        if cChar not in cp.d1to1.get(cCurrent, ""):
+                            self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, "[["+cChar+"]]", True)
             # end of word
             if len(sRemain) == 2:
                 for sRepl in cp.dFinal2.get(sRemain, ()):
