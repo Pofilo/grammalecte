@@ -19,6 +19,11 @@ def cleanWord (sWord):
     return sWord.lower().translate(_xTransChars).replace("eau", "o").replace("au", "o")
 
 
+aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")
+aConsonant = set("bcdefghjklmnñpqrstvwxzBCDEFGHJKLMNÑPQRSTVWXZ")
+aDouble = set("bcdfjklmnprstzBCDFJKLMNPRSTZ")  # letter that may be used twice successively
+
+
 # Similar chars
 
 d1to1 = {
@@ -156,12 +161,18 @@ d1toX = {
     "Ç": ("SS", "CC", "QH", "CH"),
     "d": ("dd",),
     "D": ("DD",),
+    "é": ("ai", "ei"),
+    "É": ("AI", "EI"),
+    "è": ("ai", "ei"),
+    "È": ("AI", "EI"),
+    "ê": ("ai", "ei"),
+    "Ê": ("AI", "EI"),
+    "ë": ("ai", "ei"),
+    "Ë": ("AI", "EI"),
     "f": ("ff", "ph"),
     "F": ("FF", "PH"),
     "g": ("gu", "ge", "gg", "gh"),
     "G": ("GU", "GE", "GG", "GH"),
-    "i": ("ii",),
-    "I": ("II",),
     "j": ("jj", "dj"),
     "J": ("JJ", "DJ"),
     "k": ("qu", "ck", "ch", "cu", "kk", "kh"),

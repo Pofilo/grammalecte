@@ -26,6 +26,10 @@ var char_player = {
         return sRes.replace("eau", "o").replace("au", "o");
     },
 
+    aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),
+    aConsonant: new Set("bcdefghjklmnñpqrstvwxzBCDEFGHJKLMNÑPQRSTVWXZ"),
+    aDouble: new Set("bcdfjklmnprstzBCDFJKLMNPRSTZ"),  // letter that may be used twice successively
+
 
     // Similar chars
 
@@ -164,12 +168,18 @@ var char_player = {
         ["Ç", ["SS", "CC", "QH", "CH"]],
         ["d", ["dd",]],
         ["D", ["DD",]],
+        ["é", ["ai", "ei"]],
+        ["É", ["AI", "EI"]],
+        ["è", ["ai", "ei"]],
+        ["È", ["AI", "EI"]],
+        ["ê", ["ai", "ei"]],
+        ["Ê", ["AI", "EI"]],
+        ["ë", ["ai", "ei"]],
+        ["Ë", ["AI", "EI"]],
         ["f", ["ff", "ph"]],
         ["F", ["FF", "PH"]],
         ["g", ["gu", "ge", "gg", "gh"]],
         ["G", ["GU", "GE", "GG", "GH"]],
-        ["i", ["ii",]],
-        ["I", ["II",]],
         ["j", ["jj", "dj"]],
         ["J", ["JJ", "DJ"]],
         ["k", ["qu", "ck", "ch", "cu", "kk", "kh"]],
