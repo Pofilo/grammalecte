@@ -259,24 +259,15 @@ class IBDAWG {
         let nMaxSwitch = Math.max(Math.floor(sWord.length / 3), 1);
         let nMaxDel = Math.floor(sWord.length / 5);
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
-        let aSugg = this._suggest(sWord, nMaxSwitch, nMaxDel, nMaxHardRepl);
+        let oSuggResult = new SuggResult(sWord);
+        this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl);
         if (sWord.gl_isTitle()) {
-            aSugg.gl_update(this._suggest(sWord.toLowerCase(), nMaxSwitch, nMaxDel, nMaxHardRepl));
+            this._suggest(oSuggResult, sWord.toLowerCase(), nMaxSwitch, nMaxDel, nMaxHardRepl);
         }
         else if (sWord.gl_isLowerCase()) {
-            aSugg.gl_update(this._suggest(sWord.gl_toCapitalize(), nMaxSwitch, nMaxDel, nMaxHardRepl));
+            this._suggest(oSuggResult, sWord.gl_toCapitalize(), nMaxSwitch, nMaxDel, nMaxHardRepl);
         }
-        // Set to Array
-        aSugg = Array.from(aSugg);
-        aSugg = char_player.filterSugg(aSugg);
-        if (sWord.gl_isTitle()) {
-            aSugg = aSugg.map((sSugg) => { return sSugg.gl_toCapitalize(); });
-        }
-        let dDistTemp = new Map();
-        let sCleanWord = char_player.cleanWord(sWord);
-        aSugg.forEach((sSugg) => { dDistTemp.set(sSugg, str_transform.distanceDamerauLevenshtein(sCleanWord, char_player.cleanWord(sSugg))); });
-        aSugg = aSugg.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); }).slice(0, nMaxSugg);
-        dDistTemp.clear();
+        let aSugg = oSuggResult.getSuggestions();
         if (sSfx || sPfx) {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx } );
@@ -284,51 +275,50 @@ class IBDAWG {
         return aSugg;
     }
 
-    _suggest (sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
+    _suggest (oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         // returns a set of suggestions
         // recursive function
-        let aSugg = new Set();
         if (sRemain == "") {
             if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
-                aSugg.add(sNewWord);
+                oSuggResult.addSugg(sNewWord);
             }
             for (let sTail of this._getTails(iAddr)) {
-                aSugg.add(sNewWord+sTail);
+                oSuggResult.addSugg(sNewWord+sTail);
             }
-            return aSugg;
+            return;
         }
         let cCurrent = sRemain.slice(0, 1);
         for (let [cChar, jAddr] of this._getSimilarCharArcs(cCurrent, iAddr)) {
-            aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar));
+            this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar);
         }
         if (!bAvoidLoop) { // avoid infinite loop
             if (sRemain.length > 1) {
                 if (cCurrent == sRemain.slice(1, 2)) {
                     // same char, we remove 1 char without adding 1 to <sNewWord>
-                    aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord));
+                    this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord);
                 }
                 else {
                     // switching chars
                     if (nMaxSwitch > 0) {
-                        aSugg.gl_update(this._suggest(sRemain.slice(1, 2)+sRemain.slice(0, 1)+sRemain.slice(2), nMaxSwitch-1, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true));
+                        this._suggest(oSuggResult, sRemain.slice(1, 2)+sRemain.slice(0, 1)+sRemain.slice(2), nMaxSwitch-1, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                     }
                     // delete char
                     if (nMaxDel > 0) {
-                        aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxSwitch, nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true));
+                        this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                     }
                 }
                 // Phonetic replacements
                 for (let sRepl of char_player.d1toX.gl_get(cCurrent, [])) {
-                    aSugg.gl_update(this._suggest(sRepl + sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true));
+                    this._suggest(oSuggResult, sRepl + sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                 }
                 for (let sRepl of char_player.d2toX.gl_get(sRemain.slice(0, 2), [])) {
-                    aSugg.gl_update(this._suggest(sRepl + sRemain.slice(2), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true));
+                    this._suggest(oSuggResult, sRepl + sRemain.slice(2), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                 }
                 // Hard replacements
                 if (nDeep > 3 && nMaxHardRepl && sRemain.length >= 2) {
                     for (let [cChar, kAddr] of this._getCharArcs(iAddr)) {
                         if (!char_player.d1to1.gl_get(cCurrent, "").includes(cChar)) {
-                            aSugg.gl_update(this._suggest(sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, true));
+                            this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, true);
                         }
                     }
                 }
@@ -336,17 +326,16 @@ class IBDAWG {
             // end of word
             if (sRemain.length == 2) {
                 for (let sRepl of char_player.dFinal2.gl_get(sRemain, [])) {
-                    aSugg.gl_update(this._suggest(sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true));
+                    this._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                 }
             }
             else if (sRemain.length == 1) {
-                aSugg.gl_update(this._suggest("", nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true)); // remove last char and go on
+                this._suggest(oSuggResult, "", nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true); // remove last char and go on
                 for (let sRepl of char_player.dFinal1.gl_get(sRemain, [])) {
-                    aSugg.gl_update(this._suggest(sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true));
+                    this._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                 }
             }
         }
-        return aSugg;
     }
 
     * _getCharArcs (iAddr) {

@@ -305,7 +305,7 @@ class IBDAWG:
                 for sRepl in cp.dFinal2.get(sRemain, ()):
                     self._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " >> " + sRepl, True)
             elif len(sRemain) == 1:
-                self._suggest(oSuggResult, "", nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " [last char removed] ", True) # remove last char and go o
+                self._suggest(oSuggResult, "", nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " [last char removed] ", True) # remove last char and go on
                 for sRepl in cp.dFinal1.get(sRemain, ()):
                     self._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain + " >> " + sRepl, True)
         return
