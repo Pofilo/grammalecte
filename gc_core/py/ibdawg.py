@@ -279,28 +279,29 @@ class IBDAWG:
         for cChar, jAddr in self._getSimilarCharArcs(cCurrent, iAddr):
             self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar, "*")
         if not bAvoidLoop: # avoid infinite loop
-            if cCurrent == sRemain[1:2]:
-                # same char, we remove 1 char without adding 1 to <sNewWord>
-                self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+"/2")
-            else:
-                # switching chars
-                if nMaxSwitch:
-                    self._suggest(oSuggResult, sRemain[1:2]+sRemain[0:1]+sRemain[2:], nMaxSwitch-1, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "><",True)
-                # delete char
-                if nMaxDel:
-                    self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "-"+cCurrent, True)
-            # Phonetic replacements
-            for sRepl in cp.d1toX.get(cCurrent, ()):
-                self._suggest(oSuggResult, sRepl + sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+">"+sRepl, True)
-            for sRepl in cp.d2toX.get(sRemain[0:2], ()):
-                self._suggest(oSuggResult, sRepl + sRemain[2:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain[0:2]+">"+sRepl, True)
-            # Hard replacements
-            if nDeep > 3 and nMaxHardRepl and len(sRemain) >= 2:
-                for nVal, kAddr in self._getArcs1(iAddr):
-                    if nVal in self.dCharVal:
-                        cChar = self.dCharVal[nVal]
-                        if cChar not in cp.d1to1.get(cCurrent, ""):
-                            self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, "[["+cChar+"]]", True)
+            if len(sRemain) > 1:
+                if cCurrent == sRemain[1:2]:
+                    # same char, we remove 1 char without adding 1 to <sNewWord>
+                    self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+"/2")
+                else:
+                    # switching chars
+                    if nMaxSwitch:
+                        self._suggest(oSuggResult, sRemain[1:2]+sRemain[0:1]+sRemain[2:], nMaxSwitch-1, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "><",True)
+                    # delete char
+                    if nMaxDel:
+                        self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "-"+cCurrent, True)
+                # Phonetic replacements
+                for sRepl in cp.d1toX.get(cCurrent, ()):
+                    self._suggest(oSuggResult, sRepl + sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+">"+sRepl, True)
+                for sRepl in cp.d2toX.get(sRemain[0:2], ()):
+                    self._suggest(oSuggResult, sRepl + sRemain[2:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain[0:2]+">"+sRepl, True)
+                # Hard replacements
+                if nDeep > 3 and nMaxHardRepl:
+                    for nVal, kAddr in self._getArcs1(iAddr):
+                        if nVal in self.dCharVal:
+                            cChar = self.dCharVal[nVal]
+                            if cChar not in cp.d1to1.get(cCurrent, ""):
+                                self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, "[["+cChar+"]]", True)
             # end of word
             if len(sRemain) == 2:
                 for sRepl in cp.dFinal2.get(sRemain, ()):
