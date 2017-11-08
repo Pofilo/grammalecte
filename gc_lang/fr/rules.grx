@@ -631,12 +631,13 @@ TEST: {{inclusif.ive.s}}                                                ->> incl
 
 
 __[u](typo_écriture_épicène_pluriel_e)__
-    ({w_1}[éuitsrn])[-·–—.(/]([nt]|)e[-·–—.)/]?s  @@0,**
-    <<- option("typo") and not \0.endswith("·e·s") and not \1.endswith("s")
-    ->> \1s et \1\2es|\1\2es et \1s|\1·\2e·s                                                        # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
-    <<- option("typo") and not \0.endswith("·e·s") and \1.endswith("s")
-    ->> \1 et \1\2es|\1\2es et \1|\1·\2e·s                                                          # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    ({w_1}[éuitsrnl])[-·–—.(/]([ntl]?e)[-·–—.)/]?s  @@0,**
     <<- ~>> =normalizeInclusiveWriting(\0)
+    <<- option("typo") and not \0.endswith("les") >>>
+    <<- \1.endswith("s") and not \0.endswith("·e·s")
+    ->> \1 et \1\2s|\1\2s et \1|\1·\2·s                                                             # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- __else__ and not \0.endswith("e·s")
+    ->> \1s et \1\2s|\1\2s et \1s|\1·\2·s                                                           # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
 
 TEST: nous sommes {{déconsidéré-e-s}}.
 TEST: serons-nous toujours {{perdu.e.s}}.
@@ -647,6 +648,7 @@ TEST: rendez-vous avec des {{écrivain(e)s}}                             ->> éc
 TEST: Avec les {{Berlinois.e.s}} 										->> Berlinois et Berlinoises|Berlinoises et Berlinois|Berlinois·e·s
 TEST: la graphie “{{militant(e)s}}”.
 TEST: ces militant·e·s {{acharné}}.
+TEST: chez les {{immortel.le.s}}
 
 
 __[i](typo_écriture_épicène_singulier)__
