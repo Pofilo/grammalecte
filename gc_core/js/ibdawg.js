@@ -18,6 +18,69 @@ ${map}
 ${set}
 
 
+class SuggResult {
+    // Structure for storing, classifying and filtering suggestions
+
+    constructor (sWord, nDistLimit=-1) {
+        this.sWord = sWord;
+        this.sCleanWord = char_player.cleanWord(sWord);
+        this.nDistLimit = (nDistLimit >= 0) ? nDistLimit :  Math.floor(sWord.length / 3) + 1;
+        this.nMinDist = 1000;
+        this.aSugg = new Set();
+        this.dSugg = new Map([ [0, []],  [1, []] ]);
+    }
+
+    addSugg (sSugg, nDeep=0) {
+        // add a suggestion
+        if (!this.aSugg.has(sSugg)) {
+            let nDist = str_transform.distanceDamerauLevenshtein(this.sCleanWord, char_player.cleanWord(sSugg));
+            if (nDist <= this.nDistLimit) {
+                if (!this.dSugg.has(nDist)) {
+                    this.dSugg.set(nDist, []);
+                }
+                this.dSugg.get(nDist).push(sSugg);
+                this.aSugg.add(sSugg);
+                if (nDist < this.nMinDist) {
+                    this.nMinDist = nDist;
+                }
+                this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+2);
+            }
+        }
+    }
+
+    getSuggestions (nSuggLimit=10, nDistLimit=-1) {
+        // return a list of suggestions
+        let lRes = [];
+        if (this.dSugg.get(0).length) {
+            // we sort the better results with the original word
+            let dDistTemp = new Map();
+            lRes.forEach((sSugg) => { dDistTemp.set(sSugg, str_transform.distanceDamerauLevenshtein(this.sWord, sSugg)); });
+            lRes = lRes.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); });
+            dDistTemp.clear();
+        }
+        for (let lSugg of this.dSugg.values()) {
+            for (let sSugg of lSugg) { lRes.push(sSugg); }
+            if (lRes.length > nSuggLimit) {
+                break;
+            }
+        }
+        lRes = char_player.filterSugg(lRes);
+        if (this.sWord.gl_isTitle()) {
+            lRes = lRes.map((sSugg) => { return sSugg.gl_toCapitalize(); });
+        }
+        else if (this.sWord.gl_isUpperCase()) {
+            lRes = lRes.map((sSugg) => { return sSugg.toUpperCase(); });
+        }
+        return lRes.slice(0, nSuggLimit);
+    }
+
+    reset () {
+        this.aSugg.clear();
+        this.dSugg.clear();
+    }
+}
+
+
 class IBDAWG {
     // INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 
