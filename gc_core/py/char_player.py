@@ -20,8 +20,8 @@ def cleanWord (sWord):
 
 
 aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")
-aConsonant = set("bcdefghjklmnñpqrstvwxzBCDEFGHJKLMNÑPQRSTVWXZ")
-aDouble = set("bcdfjklmnprstzBCDFJKLMNPRSTZ")  # letter that may be used twice successively
+aConsonant = set("bcçdfghjklmnñpqrstvwxzBCÇDFGHJKLMNÑPQRSTVWXZ")
+aDouble = set("bcçdfjklmnprstzBCÇDFJKLMNPRSTZ")  # letters that may be used twice successively
 
 
 # Similar chars
@@ -157,18 +157,10 @@ d1toX = {
     "B": ("BB",),
     "c": ("cc", "ss", "qu", "ch"),
     "C": ("CC", "SS", "QU", "CH"),
-    "ç": ("ss", "cc", "qh", "ch"),
-    "Ç": ("SS", "CC", "QH", "CH"),
     "d": ("dd",),
     "D": ("DD",),
     "é": ("ai", "ei"),
     "É": ("AI", "EI"),
-    "è": ("ai", "ei"),
-    "È": ("AI", "EI"),
-    "ê": ("ai", "ei"),
-    "Ê": ("AI", "EI"),
-    "ë": ("ai", "ei"),
-    "Ë": ("AI", "EI"),
     "f": ("ff", "ph"),
     "F": ("FF", "PH"),
     "g": ("gu", "ge", "gg", "gh"),
@@ -202,6 +194,13 @@ d1toX = {
     "z": ("ss", "zh"),
     "Z": ("SS", "ZH"),
 }
+
+
+def get1toXReplacement (cPrev, cCur, cNext):
+    if cCur in aConsonant  and  (cPrev in aConsonant  or  cNext in aConsonant):
+        return ()
+    return d1toX.get(cCur, ())
+
 
 d2toX = {
     "an": ("en",),

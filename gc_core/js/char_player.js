@@ -27,8 +27,8 @@ var char_player = {
     },
 
     aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),
-    aConsonant: new Set("bcdefghjklmnñpqrstvwxzBCDEFGHJKLMNÑPQRSTVWXZ"),
-    aDouble: new Set("bcdfjklmnprstzBCDFJKLMNPRSTZ"),  // letter that may be used twice successively
+    aConsonant: new Set("bcçdfghjklmnñpqrstvwxzBCÇDFGHJKLMNÑPQRSTVWXZ"),
+    aDouble: new Set("bcçdfjklmnprstzBCÇDFJKLMNPRSTZ"),  // letters that may be used twice successively
 
 
     // Similar chars
@@ -164,18 +164,10 @@ var char_player = {
         ["B", ["BB",]],
         ["c", ["cc", "ss", "qu", "ch"]],
         ["C", ["CC", "SS", "QU", "CH"]],
-        ["ç", ["ss", "cc", "qh", "ch"]],
-        ["Ç", ["SS", "CC", "QH", "CH"]],
         ["d", ["dd",]],
         ["D", ["DD",]],
         ["é", ["ai", "ei"]],
         ["É", ["AI", "EI"]],
-        ["è", ["ai", "ei"]],
-        ["È", ["AI", "EI"]],
-        ["ê", ["ai", "ei"]],
-        ["Ê", ["AI", "EI"]],
-        ["ë", ["ai", "ei"]],
-        ["Ë", ["AI", "EI"]],
         ["f", ["ff", "ph"]],
         ["F", ["FF", "PH"]],
         ["g", ["gu", "ge", "gg", "gh"]],
@@ -209,6 +201,13 @@ var char_player = {
         ["z", ["ss", "zh"]],
         ["Z", ["SS", "ZH"]],
     ]),
+
+    get1toXReplacement: function (cPrev, cCur, cNext) {
+        if (this.aConsonant.has(cCur)  &&  (this.aConsonant.has(cPrev)  ||  this.aConsonant.has(cNext))) {
+            return [];
+        }
+        return this.d1toX.gl_get(cCur, []);
+    },
 
     d2toX: new Map([
         ["an", ["en",]],
