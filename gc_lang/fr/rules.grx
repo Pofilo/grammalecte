@@ -359,41 +359,18 @@ __<s>/typo(typo_guillemets_ouvrants_inverses3)__ \w([  ][«“])[  ]*[!?,:;.�
 
 TEST: « Le grand homme{{«}}
 TEST: « La grande femme{{ «}} !
-TEST: Eux et leurs{{ ”}}amis” sont finis !
-TEST: Vos “amis{{“ }}et vous êtes finis !
+TEST: Eux et leurs{{ ”}}amis{{”}} sont finis !
+TEST: Vos {{“}}amis{{“ }}et vous êtes finis !
 
 
-# Cohérence des guillemets
-__<s>/typo(typo_cohérence_guillemets1)__
-    («)[^»“]+?(”)  @@0,$
-    <<- not before(r"\w$") -1>> “                                                                   # Guillemet ouvrant différent du guillemet fermant (”).
-    <<- not after(r"^\w") -2>> " »"                                                                 # Guillemet fermant différent du guillemet ouvrant («).
-__<s>/typo(typo_cohérence_guillemets2)__
-    (“)[^”«]+?(»)  @@0,$
-    <<- not before(r"\w$") -1>> "« "                                                                # Guillemet ouvrant différent du guillemet fermant (»).
-    <<- not after(r"^\w") -2>> ”                                                                    # Guillemet fermant différent du guillemet ouvrant (“).
-__<s>/typo(typo_cohérence_guillemets3)__
-    (“)[^”’“«]+?(’)(?!\w)  @@0,$
-    <<- not before(r"\w$") -1>> "‘"                                                                 # Guillemet ouvrant différent du guillemet fermant (’).
-    <<- -2>> ”                                                                                      # Guillemet fermant différent du guillemet ouvrant (“).
-__<s>/typo(typo_cohérence_guillemets4)__
-    (‘)[^’“«]+?(”)  @@0,$
-    <<- not before(r"\w$") -1>> "“"                                                                 # Guillemet ouvrant différent du guillemet fermant (”).
-    <<- not after(r"^\w") -2>> ’                                                                    # Guillemet fermant différent du guillemet ouvrant (‘).
 
-
-TEST: C’est {{«}}stupide{{”}}.
-TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
-TEST: Tu sais, {{‘}}ton ami{{”}} est venu.
-TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
-TEST: « Je suis là.
-TEST: — Oui, nous t’avons vu arriver. »
-TEST: « J’en suis “malade”. »
-
-
+#
+#
+# NOTE
 # Tout contrôle des espaces doit se faire avant ce point.
 # À partir d’ici, toute règle est susceptible de supprimer des caractères et les remplacer par des espaces ou des chaînes de longueur égale.
-
+#
+#
 
 
 !!!
@@ -565,11 +542,55 @@ __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumera
 
 !!
 !!
-!!!! Typographie, virgules, espaces insécables, unités de mesure…                                   
+!!!! Cohérence des guillemets                                                                        
 !!
 !!
 
-### Écritures épicènes (attention aux modifs: brainfuck d’intensité non négligeable)
+__<s>/typo(typo_cohérence_guillemets1)__
+    («)[^»“]+?(”)  @@0,$
+    <<- not before(r"\w$") -1>> “                                                                   # Guillemet ouvrant différent du guillemet fermant (”).
+    <<- not after(r"^\w") -2>> " »"                                                                 # Guillemet fermant différent du guillemet ouvrant («).
+__<s>/typo(typo_cohérence_guillemets2)__
+    (“)[^”«]+?(»)  @@0,$
+    <<- not before(r"\w$") -1>> "« "                                                                # Guillemet ouvrant différent du guillemet fermant (»).
+    <<- not after(r"^\w") -2>> ”                                                                    # Guillemet fermant différent du guillemet ouvrant (“).
+__<s>/typo(typo_cohérence_guillemets3)__
+    (“)[^”’“«]+?(’)(?!\w)  @@0,$
+    <<- not before(r"\w$") -1>> "‘"                                                                 # Guillemet ouvrant différent du guillemet fermant (’).
+    <<- -2>> ”                                                                                      # Guillemet fermant différent du guillemet ouvrant (“).
+__<s>/typo(typo_cohérence_guillemets4)__
+    (‘)[^’“«]+?(”)  @@0,$
+    <<- not before(r"\w$") -1>> "“"                                                                 # Guillemet ouvrant différent du guillemet fermant (”).
+    <<- not after(r"^\w") -2>> ’                                                                    # Guillemet fermant différent du guillemet ouvrant (‘).
+
+TEST: C’est {{«}}stupide{{”}}.
+TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
+TEST: Tu sais, {{‘}}ton ami{{”}} est venu.
+TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
+TEST: « Je suis là.
+TEST: — Oui, nous t’avons vu arriver. »
+TEST: « J’en suis “malade”. »
+
+
+__[i]/typo(typo_guillemets_ouvrants_non_fermés)__
+    (“)\w[^”"»]+$  @@0
+    <<- -1>> _                                                                                      # Guillemets fermants introuvables dans la suite du paragraphe.
+__[i]/typo(typo_guillemets_fermants_non_ouverts)__
+    ^[^“„«"]+\w(”)  @@$
+    <<- -1>> _                                                                                      # Guillemets ouvrants introuvables dans ce paragraphe.
+
+TEST: C’était mon affaire{{”}}.
+TEST: C’est {{“}}compliqué.
+
+
+
+!!
+!!
+!!!! Écritures épicènes dystypographiques                                                           
+!!
+!!
+
+# (attention aux modifs: brainfuck d’intensité non négligeable)
 # La désambiguïsation est faite lors de la deuxième passe
 
 __[i](typo_écriture_épicène_tous_toutes)__
@@ -661,6 +682,12 @@ TEST: je suis {{déconsidéré.e}} par ma hiérarchie.
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
 
 
+!!
+!!
+!!!! Majuscules manquantes                                                                          
+!!
+!!
+
 # Majuscules après un point
 __[s]/maj(majuscule_après_point)__
     ({w_2})[.] ([a-zéàèî]\w*)  @@0,$
@@ -678,6 +705,12 @@ __[s]/maj(majuscule_en_début_phrase)__
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 
 
+!!
+!!
+!!!! Typographie, virgules, espaces insécables, unités de mesure…                                   
+!!
+!!
+
 ## virgules manquantes
 __[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     # Avant « etc. », il faut mettre une virgule.
 __[i>/virg(virgule_manquante_avant_car)__
@@ -694,12 +727,11 @@ TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                 ->> 
 TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                   ->> , mais
 
 
-#__virg__  , ({w_1})
-#   <<- morphex(\1, ":[123][sp]", ":(?:N|E|A|W|G|M[12])") and not before(",")
-#   ->> =0[1:]    # Un verbe ne doit pas être séparé du sujet, sauf éventuellement par une incise. (Et ce verbe n’est pas non plus un impératif.) [Sac à bugs]
-__<s>/virg(virgule_point_fin_dialogue)__    ([.] » )[a-zéà]  @@0 <<- -1>> " », | » "
-    # Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
-__<s>/virg(virgule_fin_dialogue)__          (, »,? )[a-zéà]  @@0 <<- -1>> " », | » "                # Virgule mal placée ou superflue.
+
+__<s>/virg(virgule_point_fin_dialogue)__
+    ([.] » )[a-zéà]  @@0 <<- -1>> " », | » "             # Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
+__<s>/virg(virgule_fin_dialogue)__
+    (, »,? )[a-zéà]  @@0 <<- -1>> " », | » "                                            # Virgule mal placée ou superflue.
 
 TEST: « Ça suffit{{. » }}dit-elle.
 TEST: « J’en ai plus qu’assez{{, » }}dis-je.
@@ -1082,6 +1114,7 @@ __[i]/redon1(redondances_paragraphe)__
 
 TEST: __redon1__ Tu es son {{avenir}}. Et lui aussi est ton {{avenir}}.
 TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
+
 
 
 !!!
