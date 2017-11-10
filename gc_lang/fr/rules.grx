@@ -10713,7 +10713,7 @@ __[i](p_pro_per_obj34)__
 
 #### CONFUSION a / à
 __[i]/conf(conf_pronom_verbe_à)__
-    ^ *(?:je|tu|ils?|on|elles?) +>? *({w_2}) +(a)  @@w,$
+    ^ *(?:je|tu|ils?|on|elles?) +({w_2}) +(a)  @@w,$
     <<- morph(\1, ":V", False) and \2 != "A"
     -2>> à                                                           # Confusion probable : “a” est une conjugaison du verbe “avoir”. Utilisez la préposition :
 __[i]/conf(conf_j_verbe_à)__
@@ -10721,7 +10721,7 @@ __[i]/conf(conf_j_verbe_à)__
     <<- morph(\1, ":V", False) and \2 != "A"
     -2>> à                                                           # Confusion probable : “a” est une conjugaison du verbe “avoir”. Utilisez la préposition :
 __[i]/conf(conf_nous_vous_verbe_à)__
-    ^ *[nv]ous +>? *({w_2}) +(a)  @@w,$
+    ^ *[nv]ous +({w_2}) +(a)  @@w,$
     <<- morphex(\1, ":V", ":Y") and \2 != "A"
     -2>> à                                                           # Confusion probable : “a” est une conjugaison du verbe “avoir”. Utilisez la préposition :
 
@@ -11810,7 +11810,7 @@ TEST: quoi que nous autres hommes ayons pu faire
 
 # Bien que + subjonctif
 __[i]/vmode(vmode_bien_que_subjonctif)__
-    bien  ?que? ({w_2}) +>? *({w_2})  @@w,$
+    bien  ?que? ({w_2}) +({w_2})  @@w,$
     <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":V.*:I", ":([GSK]|If)|>(?:hériter|recevoir|donner|offrir) ") and isStart()
     and not ( morph(\2, ":V0a", False) and morph(word(1), ">(?:hériter|recevoir|donner|offrir) ", False) )
     -2>> =suggVerbMode(@, ":S", \1)                                                                 # Après « bien que », le verbe s’emploie au subjonctif.
@@ -11863,7 +11863,7 @@ TEST: Après qu’il {{soit}} parti, il plut.
 
 # Quand/lorsque + indicatif
 __[i]/vmode(vmode_quand_lorsque_indicatif)__
-    (?:quand|lorsque?) ({w_2}) +>? *({w_2})  @@w,$
+    (?:quand|lorsque?) ({w_2}) +({w_2})  @@w,$
     <<- morph(\1, ":(?:Os|M)", False) and (morphex(\2, ":V.*:S", ":[GI]") or morph(\2, ":V0e.*:S", False))
     -2>> =suggVerbMode(@, ":I", \1)
     # Après « quand » ou « lorsque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
