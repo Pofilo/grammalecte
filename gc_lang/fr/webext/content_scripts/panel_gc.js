@@ -455,7 +455,7 @@ class GrammalecteNodeControl {
         let i = 0;
         let iStart = 0;
         let iEnd = 0;
-        sText = sText.replace("\r\n", "\n").replace("\r", "\n").normalize("NFC");
+        sText = sText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").replace(/­/g, "").normalize("NFC");
         while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
             this.dParagraph.set(i, sText.slice(iStart, iEnd));
             i++;

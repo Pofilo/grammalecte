@@ -183,6 +183,7 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
 
 
 function parse (sText, sCountry, bDebug, bContext, dInfo={}) {
+    sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
         postMessage(createResponse("parse", aGrammErr, dInfo, false));
@@ -192,6 +193,7 @@ function parse (sText, sCountry, bDebug, bContext, dInfo={}) {
 
 function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     let i = 0;
+    sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
         let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
@@ -202,6 +204,7 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
 }
 
 function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) {
+    sParagraph = sParagraph.replace(/­/g, "").normalize("NFC");
     let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
     let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
     postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
@@ -247,6 +250,7 @@ function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
         postMessage(createResponse("textToTest", "# Grammar checker not loaded.", dInfo, true));
         return;
     }
+    sText = sText.replace(/­/g, "").normalize("NFC");
     let aGrammErr = gc_engine.parse(sText, sCountry, bDebug, bContext);
     let sMsg = "";
     for (let oErr of aGrammErr) {
@@ -296,6 +300,7 @@ function getSpellSuggestions (sWord, dInfo) {
 
 function getListOfTokens (sText, dInfo={}) {
     try {
+        sText = sText.replace(/­/g, "").normalize("NFC");
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
                 let aElem = [];
