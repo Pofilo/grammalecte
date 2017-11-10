@@ -19,6 +19,11 @@ def cleanWord (sWord):
     return sWord.lower().translate(_xTransChars).replace("eau", "o").replace("au", "o")
 
 
+aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")
+aConsonant = set("bcçdfghjklmnñpqrstvwxzBCÇDFGHJKLMNÑPQRSTVWXZ")
+aDouble = set("bcçdfjklmnprstzBCÇDFJKLMNPRSTZ")  # letters that may be used twice successively
+
+
 # Similar chars
 
 d1to1 = {
@@ -152,16 +157,14 @@ d1toX = {
     "B": ("BB",),
     "c": ("cc", "ss", "qu", "ch"),
     "C": ("CC", "SS", "QU", "CH"),
-    "ç": ("ss", "cc", "qh", "ch"),
-    "Ç": ("SS", "CC", "QH", "CH"),
     "d": ("dd",),
     "D": ("DD",),
+    "é": ("ai", "ei"),
+    "É": ("AI", "EI"),
     "f": ("ff", "ph"),
     "F": ("FF", "PH"),
     "g": ("gu", "ge", "gg", "gh"),
     "G": ("GU", "GE", "GG", "GH"),
-    "i": ("ii",),
-    "I": ("II",),
     "j": ("jj", "dj"),
     "J": ("JJ", "DJ"),
     "k": ("qu", "ck", "ch", "cu", "kk", "kh"),
@@ -191,6 +194,13 @@ d1toX = {
     "z": ("ss", "zh"),
     "Z": ("SS", "ZH"),
 }
+
+
+def get1toXReplacement (cPrev, cCur, cNext):
+    if cCur in aConsonant  and  (cPrev in aConsonant  or  cNext in aConsonant):
+        return ()
+    return d1toX.get(cCur, ())
+
 
 d2toX = {
     "an": ("en",),

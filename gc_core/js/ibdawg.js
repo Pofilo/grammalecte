@@ -308,7 +308,7 @@ class IBDAWG {
                     }
                 }
                 // Phonetic replacements
-                for (let sRepl of char_player.d1toX.gl_get(cCurrent, [])) {
+                for (let sRepl of char_player.get1toXReplacement(sNewWord.slice(-1), cCurrent, sRemain.slice(1,2))) {
                     this._suggest(oSuggResult, sRepl + sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
                 }
                 for (let sRepl of char_player.d2toX.gl_get(sRemain.slice(0, 2), [])) {

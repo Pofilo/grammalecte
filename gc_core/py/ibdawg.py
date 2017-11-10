@@ -290,7 +290,7 @@ class IBDAWG:
                     if nMaxDel:
                         self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, "-"+cCurrent, True)
                 # Phonetic replacements
-                for sRepl in cp.d1toX.get(cCurrent, ()):
+                for sRepl in cp.get1toXReplacement(sNewWord[-1:], cCurrent, sRemain[1:2]):
                     self._suggest(oSuggResult, sRepl + sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, cCurrent+">"+sRepl, True)
                 for sRepl in cp.d2toX.get(sRemain[0:2], ()):
                     self._suggest(oSuggResult, sRepl + sRemain[2:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, sRemain[0:2]+">"+sRepl, True)
