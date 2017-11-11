@@ -230,7 +230,10 @@ class Lexicographe {
         this.oTokenizer = oTokenizer;
         this.oLocGraph = JSON.parse(oLocGraph);
 
-        this._zInterroVerb = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$", "i");
+        this._zPartDemForm = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-(là|ci)$", "i");
+        this._aPartDemExceptList = new Set(["celui", "celle", "ceux", "celles", "de", "jusque", "par", "marie-couche-toi"]);
+        this._zInterroVerb = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-(t-(?:il|elle|on)|je|tu|ils?|elles?|on|[nv]ous)$", "i");
+        this._zImperatifVerb = new RegExp("([a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ]+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|y|en|[mts][’'](?:y|en)|les?|la|[mt]oi|leur|lui)$", "i");
         this._zTag = new RegExp("[:;/][a-zA-Z0-9ÑÂĴĈŔÔṼŴ!][^:;/]*", "g");
     }
 
@@ -290,38 +293,57 @@ class Lexicographe {
                             sValue: oToken.sValue,
                             aLabel: ["élément complexe indéterminé"]
                         };
-                    } else if (m = this._zInterroVerb.exec(oToken.sValue)) {
-                        // mots composés
-                        let lMorph = this.oDict.getMorph(m[1]);
-                        let aElem = [];
-                        for (let s of lMorph) {
-                            if (s.includes(":")) aElem.push(this._formatTags(s));
+                    } else if (m = this._zPartDemForm.exec(oToken.sValue)) {
+                        // mots avec particules démonstratives
+                        if (this._aPartDemExceptList.has(m[1].toLowerCase())) {
+                            return {
+                                sType: "WORD",
+                                sValue: oToken.sValue,
+                                aLabel: this._getMorph(oToken.sValue)
+                            };
                         }
+                        return {
+                            sType: oToken.sType,
+                            sValue: oToken.sValue,
+                            aLabel: ["mot avec particule démonstrative"],
+                            aSubElem: [
+                                { sType: oToken.sType, sValue: m[1],       aLabel: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                            ]
+                        };
+                    } else if (m = this._zImperatifVerb.exec(oToken.sValue)) {
+                        // formes interrogatives
+                        return {
+                            sType: oToken.sType,
+                            sValue: oToken.sValue,
+                            aLabel: ["forme verbale impérative"],
+                            aSubElem: [
+                                { sType: oToken.sType, sValue: m[1],       aLabel: this._getMorph(m[1]) },
+                                { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
+                            ]
+                        };
+                    } else if (m = this._zInterroVerb.exec(oToken.sValue)) {
+                        // formes interrogatives
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
                             aLabel: ["forme verbale interrogative"],
                             aSubElem: [
-                                { sType: oToken.sType, sValue: m[1],       aLabel: aElem },
+                                { sType: oToken.sType, sValue: m[1],       aLabel: this._getMorph(m[1]) },
                                 { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
                             ]
                         };
                     } else if (this.oDict.isValidToken(oToken.sValue)) {
-                        let lMorph = this.oDict.getMorph(oToken.sValue);
-                        let aElem = [];
-                        for (let s of lMorph) {
-                            if (s.includes(":")) aElem.push(this._formatTags(s));
-                        }
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
-                            aLabel: (aElem.length > 0) ? aElem : ["mot composé indéterminé"]
+                            aLabel: this._getMorph(oToken.sValue)
                         };
                     } else {
                         return {
                             sType: "UNKNOWN",
                             sValue: oToken.sValue,
-                            aLabel: ["inconnu du dictionnaire"]
+                            aLabel: ["mot inconnu du dictionnaire"]
                         };
                     }
                     break;
@@ -330,6 +352,17 @@ class Lexicographe {
             helpers.logerror(e);
         }
         return null;
+    }
+
+    _getMorph (sWord) {
+        let aElem = [];
+        for (let s of this.oDict.getMorph(sWord)) {
+            if (s.includes(":")) aElem.push(this._formatTags(s));
+        }
+        if (aElem.length == 0) {
+            aElem.push("mot inconnu du dictionnaire");
+        }
+        return aElem;
     }
 
     _formatTags (sTags) {
