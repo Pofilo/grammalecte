@@ -272,11 +272,11 @@ class Lexicographe {
                         aLabel: [_dElidedPrefix.gl_get(sTemp, "préfixe élidé inconnu")]
                     };
                     break;
-                case 'FOLDERLINUX':
+                case 'FOLDERUNIX':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
-                        aLabel: ["dossier Linux/Unix"]
+                        aLabel: ["dossier UNIX (et dérivés)"]
                     };
                     break;
                 case 'FOLDERWIN':
@@ -284,6 +284,13 @@ class Lexicographe {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
                         aLabel: ["dossier Windows"]
+                    };
+                    break;
+                case 'ACRONYM':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["Sigle ou acronyme"]
                     };
                     break;
                 case 'WORD':
