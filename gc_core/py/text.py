@@ -70,24 +70,37 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
         if sErrLine:
             sText += sErrLine + "\n"
         if nGrammErr:
-            for dErr in lGrammErrs[:nGrammErr]:
-                sMsg, *others = getReadableError(dErr).split("\n")
-                sText += "\n".join(textwrap.wrap(sMsg, nWidth, subsequent_indent="  ")) + "\n"
-                for arg in others:
-                    sText += "\n".join(textwrap.wrap(arg, nWidth, subsequent_indent="    ")) + "\n"
-            sText += "\n"
+            sText += getReadableErrors(lGrammErrs[:nGrammErr], nWidth)
             del lGrammErrs[0:nGrammErr]
         if nSpellErr:
+            sText += getReadableErrors(lSpellErrs[:nSpellErr], nWidth, True)
             del lSpellErrs[0:nSpellErr]
         nOffset += ln
     return sText
 
 
-def getReadableError (dErr):
+def getReadableErrors (lErrs, nWidth, bSpell=False):
+    "Returns lErrs errors as readable errors"
+    sErrors = ""
+    for dErr in lErrs:
+        if not bSpell or "aSuggestions" in dErr:
+            sMsg, *others = getReadableError(dErr, bSpell).split("\n")
+            sErrors += "\n".join(textwrap.wrap(sMsg, nWidth, subsequent_indent="  ")) + "\n"
+            for arg in others:
+                sErrors += "\n".join(textwrap.wrap(arg, nWidth, subsequent_indent="    ")) + "\n"
+    if sErrors != "":
+        sErrors += "\n"
+    return sErrors
+
+
+def getReadableError (dErr, bSpell=False):
     "Returns an error dErr as a readable error"
     try:
-        s = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
-        s += "  " + dErr.get("sMessage", "# error : message not found")
+        if bSpell:
+            s = u"* {nStart}:{nEnd}  # {sValue}:".format(**dErr)
+        else:
+            s = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
+            s += "  " + dErr.get("sMessage", "# error : message not found")
         if dErr.get("aSuggestions", None):
             s += "\n  > Suggestions : " + " | ".join(dErr.get("aSuggestions", "# error : suggestions not found"))
         if dErr.get("URL", None):
