@@ -44,27 +44,27 @@ def _getText (sInputText):
     return sText
 
 
-def _getErrors (sText, oTokenizer, oDict, bContext=False, bSpellSuggestions=False, bDebug=False):
+def _getErrors (sText, oTokenizer, oDict, bContext=False, bSpellSugg=False, bDebug=False):
     "returns a tuple: (grammar errors, spelling errors)"
     aGrammErrs = gce.parse(sText, "FR", bDebug=bDebug, bContext=bContext)
     aSpellErrs = []
     for dToken in oTokenizer.genTokens(sText):
         if dToken['sType'] == "WORD" and not oDict.isValidToken(dToken['sValue']):
-            if bSpellSuggestions:
+            if bSpellSugg:
                 dToken['aSuggestions'] = oDict.suggest(dToken['sValue'])
             aSpellErrs.append(dToken)
     return aGrammErrs, aSpellErrs
 
 
-def generateText (sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=False, bSpellSuggestions=False, nWidth=100):
-    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oDict, False, bSpellSuggestions, bDebug)
+def generateText (sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100):
+    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oDict, False, bSpellSugg, bDebug)
     if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
         return ""
     return txt.generateParagraph(sText, aGrammErrs, aSpellErrs, nWidth)
 
 
-def generateJSON (iIndex, sText, oTokenizer, oDict, bContext=False, bDebug=False, bEmptyIfNoErrors=False, bSpellSuggestions=False, lLineSet=None, bReturnText=False):
-    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oDict, bContext, bSpellSuggestions, bDebug)
+def generateJSON (iIndex, sText, oTokenizer, oDict, bContext=False, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, lLineSet=None, bReturnText=False):
+    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oDict, bContext, bSpellSugg, bDebug)
     aGrammErrs = list(aGrammErrs)
     if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
         return ""
@@ -116,11 +116,11 @@ def main ():
     xParser.add_argument("-tf", "--textformatter", help="auto-format text according to typographical rules (unavailable with option --concat_lines)", action="store_true")
     xParser.add_argument("-tfo", "--textformatteronly", help="auto-format text and disable grammar checking (only with option --file or --file_to_file)", action="store_true")
     xParser.add_argument("-ctx", "--context", help="return errors with context (only with option --json)", action="store_true")
-    xParser.add_argument("-as", "--add_suggestions", help="add suggestions for spelling errors (only with option --file or --file_to_file)", action="store_true")
+    xParser.add_argument("-wss", "--with_spell_sugg", help="add suggestions for spelling errors (only with option --file or --file_to_file)", action="store_true")
     xParser.add_argument("-w", "--width", help="width in characters (40 < width < 200; default: 100)", type=int, choices=range(40,201,10), default=100)
     xParser.add_argument("-lo", "--list_options", help="list options", action="store_true")
     xParser.add_argument("-lr", "--list_rules", nargs="?", help="list rules [regex pattern as filter]", const="*")
-    xParser.add_argument("-ls", "--list_suggestions", help="list suggestions", type=str)
+    xParser.add_argument("-sug", "--suggest", help="get suggestions list for given word", type=str)
     xParser.add_argument("-on", "--opt_on", nargs="+", help="activate options")
     xParser.add_argument("-off", "--opt_off", nargs="+", help="deactivate options")
     xParser.add_argument("-roff", "--rule_off", nargs="+", help="deactivate rules")
@@ -143,8 +143,8 @@ def main ():
             gce.displayRules(None  if xArgs.list_rules == "*"  else xArgs.list_rules)
         exit()
 
-    if xArgs.list_suggestions:
-        lSugg = oDict.suggest(xArgs.list_suggestions)
+    if xArgs.suggest:
+        lSugg = oDict.suggest(xArgs.suggest)
         if xArgs.json:
             sText = json.dumps({ "aSuggestions": lSugg }, ensure_ascii=False)
         else:
@@ -181,9 +181,9 @@ def main ():
                     output(sText, hDst)
                 else:
                     if xArgs.json:
-                        sText = generateJSON(i, sText, oTokenizer, oDict, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSuggestions=xArgs.add_suggestions, bReturnText=xArgs.textformatter)
+                        sText = generateJSON(i, sText, oTokenizer, oDict, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, bReturnText=xArgs.textformatter)
                     else:
-                        sText = generateText(sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSuggestions=xArgs.add_suggestions, nWidth=xArgs.width)
+                        sText = generateText(sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
                     if sText:
                         if xArgs.json and bComma:
                             output(",\n", hDst)
@@ -196,9 +196,9 @@ def main ():
             for i, lLine in enumerate(readfileAndConcatLines(sFile), 1):
                 sText, lLineSet = txt.createParagraphWithLines(lLine)
                 if xArgs.json:
-                    sText = generateJSON(i, sText, oTokenizer, oDict, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSuggestions=xArgs.add_suggestions, lLineSet=lLineSet)
+                    sText = generateJSON(i, sText, oTokenizer, oDict, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, lLineSet=lLineSet)
                 else:
-                    sText = generateText(sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSuggestions=xArgs.add_suggestions, nWidth=xArgs.width)
+                    sText = generateText(sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
                 if sText:
                     if xArgs.json and bComma:
                         output(",\n", hDst)
