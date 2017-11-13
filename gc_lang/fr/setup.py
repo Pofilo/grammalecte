@@ -26,7 +26,7 @@ setup(
     #long_description=long_description,
 
     # The project's main homepage.
-    url='https://grammalecte.net',
+    url='http://grammalecte.net',
 
     # Author details
     author='Olivier R.',
@@ -62,7 +62,7 @@ setup(
     keywords='French grammar checker correcteur grammatical français',
 
     # Scripts
-    script=['cli.py', 'server.py', 'bootle.py'],
+    scripts=['grammalecte-cli.py', 'grammalecte-server.py', 'bottle.py'],
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().
@@ -100,7 +100,7 @@ setup(
     # http://docs.python.org/3.4/distutils/setupscript.html#installing-additional-files # noqa
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
-    data_files=[('', ['cli.py', 'server.py', 'bottle.py', 'README.txt', 'LICENSE.txt', \
+    data_files=[('', ['grammalecte-cli.py', 'grammalecte-server.py', 'bottle.py', 'README.txt', 'LICENSE.txt', \
                       'server_options.fr.ini', 'server_options._global.ini'])],
 
     # To provide executable scripts, use entry points in preference to the

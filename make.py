@@ -1,4 +1,4 @@
-#!python3
+ #!/usr/bin/env python3
 # coding: UTF-8
 
 import sys
@@ -78,7 +78,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
 
     # Package and parser
     copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic", "pythonpath/")
-    hZip.write("cli.py", "pythonpath/cli.py")
+    hZip.write("grammalecte-cli.py", "pythonpath/grammalecte-cli.py")
 
     # Extension files
     hZip.writestr("META-INF/manifest.xml", helpers.fileFile("gc_core/py/oxt/manifest.xml", dVars))
@@ -140,7 +140,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
 
 
 def createServerOptions (sLang, dOptData):
-    with open("server_options."+sLang+".ini", "w", encoding="utf-8", newline="\n") as hDst:
+    with open("grammalecte-server-options."+sLang+".ini", "w", encoding="utf-8", newline="\n") as hDst:
         hDst.write("# Server options. Lang: " + sLang + "\n\n[gc_options]\n")
         for sSection, lOpt in dOptData["lStructOpt"]:
             hDst.write("\n########## " + dOptData["dOptLabel"][sLang].get(sSection, sSection + "[no label found]")[0] + " ##########\n")
@@ -151,12 +151,13 @@ def createServerOptions (sLang, dOptData):
         hDst.write("html = 1\n")
 
 
-def createServerZip (sLang, dVars, spLangPack):
+def createPackageZip (sLang, dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic")
-    for spf in ["cli.py", "server.py", "bottle.py", "server_options._global.ini", "server_options."+sLang+".ini", \
+    for spf in ["grammalecte-cli.py", "grammalecte-server.py", "bottle.py", \
+                "grammalecte-server-options._global.ini", "grammalecte-server-options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     hZip.writestr("setup.py", helpers.fileFile("gc_lang/fr/setup.py", dVars))
@@ -225,7 +226,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     createOXT(spLang, dVars, xConfig._sections['oxt'], spLangPack, bInstallOXT)
 
     createServerOptions(sLang, dVars)
-    createServerZip(sLang, dVars, spLangPack)
+    createPackageZip(sLang, dVars, spLangPack)
 
     #### JAVASCRIPT
     if bJavaScript:

@@ -1,4 +1,4 @@
-#!python3
+ #!/usr/bin/env python3
 
 import sys
 import os.path
@@ -98,10 +98,10 @@ I'm doomed, but you are not. You can get out of here.
 def getServerOptions ():
     xConfig = configparser.SafeConfigParser()
     try:
-        xConfig.read("server_options._global.ini")
+        xConfig.read("grammalecte-server-options._global.ini")
         dOpt = xConfig._sections['options']
     except:
-        echo("Options file [server_options._global.ini] not found or not readable")
+        echo("Options file [grammalecte-server-options._global.ini] not found or not readable")
         exit()
     return dOpt
 
@@ -109,14 +109,14 @@ def getServerOptions ():
 def getConfigOptions (sLang):
     xConfig = configparser.SafeConfigParser()
     try:
-        xConfig.read("server_options." + sLang + ".ini")
+        xConfig.read("grammalecte-server-options." + sLang + ".ini")
     except:
-        echo("Options file [server_options." + sLang + ".ini] not found or not readable")
+        echo("Options file [grammalecte-server-options." + sLang + ".ini] not found or not readable")
         exit()
     try:
         dGCOpt = { k: bool(int(v))  for k, v in xConfig._sections['gc_options'].items() }
     except:
-        echo("Error in options file [server_options." + sLang + ".ini]. Dropped.")
+        echo("Error in options file [grammalecte-server-options." + sLang + ".ini]. Dropped.")
         traceback.print_exc()
         exit()
     return dGCOpt
