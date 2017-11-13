@@ -203,12 +203,16 @@ def get1toXReplacement (cPrev, cCur, cNext):
 
 
 d2toX = {
-    "an": ("en",),
-    "AN": ("EN",),
+    "am": ("an", "en", "em"),
+    "AM": ("AN", "EN", "EM"),
+    "an": ("am", "en", "em"),
+    "AN": ("AM", "EN", "EM"),
     "au": ("eau", "o", "ô"),
     "AU": ("EAU", "O", "Ô"),
-    "en": ("an",),
-    "EN": ("AN",),
+    "em": ("an", "am", "en"),
+    "EM": ("AN", "AM", "EN"),
+    "en": ("an", "am", "em"),
+    "EN": ("AN", "AM", "EM"),
     "ai": ("ei", "é", "è", "ê", "ë"),
     "AI": ("EI", "É", "È", "Ê", "Ë"),
     "ei": ("ai", "é", "è", "ê", "ë"),
@@ -225,6 +229,8 @@ d2toX = {
     "QU": ("Q", "CQ", "CK", "C", "K"),
     "ss": ("c", "ç"),
     "SS": ("C", "Ç"),
+    "un": ("ein",),
+    "UN": ("EIN",),
 }
 
 
