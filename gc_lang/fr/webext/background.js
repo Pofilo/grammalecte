@@ -103,6 +103,17 @@ function init () {
 init();
 
 
+browser.runtime.onInstalled.addListener(function (oDetails) {
+    // launched at installation or update
+    // https://developer.mozilla.org/fr/Add-ons/WebExtensions/API/runtime/onInstalled
+    if (oDetails.reason == "update"  ||  oDetails.reason == "installed") {
+        // todo
+        //browser.tabs.create({url: "http://grammalecte.net"});
+    }
+});
+
+
+
 /*
     Ports from content-scripts
 */
