@@ -10679,7 +10679,7 @@ __[i](p_pro_per_obj20)__
     <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:[NAQ].*:[si]|G|M)") ~1>> *
     <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
 __[i](p_pro_per_obj21)__
-    (leur) ({w_2}) @@0,5
+    (leur) {1,3}({w_2}) @@0,5
     <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:[NAQ].*:[si]|G|M)") ~1>> *
     <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
 __[s](p_pro_per_obj22)__
@@ -10687,11 +10687,11 @@ __[s](p_pro_per_obj22)__
     <<- =>> select(\1, ":V")
     <<- ~>> "  a"
 __[i](p_pro_per_obj23)__
-    (nous) ({w_2}) @@0,5
+    (nous) {1,3}({w_2}) @@0,5
     <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:A|G|M|1p)") =>> select(\2, ":(?:[123][sp]|P|Y)")
     <<- __also__ ~1>> *
 __[i](p_pro_per_obj24)__
-    (vous) ({w_2}) @@0,5
+    (vous) {1,3}({w_2}) @@0,5
     <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:A|G|M|2p)") =>> select(\2, ":(?:[123][sp]|P|Y)")
     <<- __also__ ~1>> *
 __[i](p_pro_per_obj25)__
@@ -10711,7 +10711,7 @@ __[i](p_pro_per_obj28)__
     <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
     <<- __also__ ~1>> *
 __[i](p_pro_per_obj29)__
-    (t’(?:en|y)) ({w_2}) @@0,$
+    (t’(?:en|y)) {1,3}({w_2}) @@0,$
     <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
     <<- not morph(\2, ":2s", False) or before(r"(?i)\b(?:je|tu|on|ils?|elles?|nous) +$") ~1>> *
 __[i](p_pro_per_obj30)__
@@ -10719,7 +10719,7 @@ __[i](p_pro_per_obj30)__
     <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
     <<- not morph(\2, ":2s|>(ils?|elles?|on) ", False) or before(r"(?i)\b(?:je|tu|on|ils?|elles?|nous) +$") ~1>> *
 __[i>(p_pro_per_obj31)__
-    (ne [mtsl]’)({w_1})  @@0,$
+    (ne +[mtsl]’)({w_1})  @@0,$
     <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
     <<- ~1>> *
 __[i>(p_pro_per_obj32)__
@@ -11246,7 +11246,7 @@ TEST: tu n’acceptais jamais de danser avec quelqu’un si tu avais refusé à 
 ## 1pl
 __[i]/conj(conj_nous_pronom)__
     ^ *nous +({w1})  @@$
-    <<- morphex(\1, ":V", ":(?:1p|3[sp]|Y)") and not after("^ +(?:je|tu|ils?|elles?|on|[vn]ous)")
+    <<- morphex(\1, ":V", ":(?:1p|3[sp])") and not after("^ +(?:je|tu|ils?|elles?|on|[vn]ous)")
     -1>> =suggVerb(@, ":1p")                                 # Conjugaison erronée. Accord avec « nous ». Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 __[i]/conj(conj_nous_qui)__
     ^ *nous +qui +({w1})  @@$
@@ -11267,7 +11267,7 @@ TEST: nous prendre la tête, c’est son passe-temps favori.
 ## 2pl
 __[i]/conj(conj_vous_pronom)__
     ^ *vous +({w1})  @@$
-    <<- morphex(\1, ":V", ":(?:2p|3[sp]|Y)") and not after("^ +(?:je|ils?|elles?|on|[vn]ous)")
+    <<- morphex(\1, ":V", ":(?:2p|3[sp])") and not after("^ +(?:je|ils?|elles?|on|[vn]ous)")
     -1>> =suggVerb(@, ":2p")                                 # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
 __[i]/conj(conj_vous_qui)__
     ^ *vous +qui +({w1})  @@$
