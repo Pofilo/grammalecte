@@ -5234,6 +5234,9 @@ __[i](p_la_xxx_la_plus_adj)__
 __[i](p_les_xxx_les_plus_adj)__
     (?:[lmts]es|nos|vos|leurs) ({w_2}) (les plus) ({w_2})  @@w,w,$
     <<- morphex(\1, ":[NAQ].*:[pi]", ":[123][sp]") and morph(\3, ":A.*:[pi]", False) ~2>> * 
+__[i](p_le_plus_le_moins)__
+    (le (?:plus|moins)) ({w_2})
+    <<- morph(\2, ":A", ":([me]:[si]|G)") and morph(word(-1), ">(?:avoir|être) :V", False) ~1>> *
 __[i](p_bien_sûr)__
     bien sûr(?! de) <<- ~>> *
 __[i](p_bien_mal_fort_adj_adv)__
@@ -5494,7 +5497,7 @@ TEST: des dossiers secrets défense
 TEST: il y en a pour une demi-heure grand maximum aller et retour.
 TEST: nous avions tous les deux besoin d’un peu de réconfort.
 TEST: Une tierce connaissance qui est au pire triviale, mais non nulle.
-
+TEST: ces immeubles qui les ont le plus marqués
 
 
 #
