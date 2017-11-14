@@ -5016,6 +5016,10 @@ __[i](loc_tueur_à_gages)__
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](p_vecteur)__                      vecteurs? (accélérations?|positions?|rotations?|vitesses?) @@$ <<- ~1>> *
+__[i](loc_vente_à_domicile)__
+    ventes? (([àa]) domicile) @@$,w
+    <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~1>> *
 __[i](loc_vernis_à_ongles)__
     vernis (([àa]) ongles) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -5056,6 +5060,7 @@ TEST: passe-moi mon sac {{a}} dos.
 TEST: dans le silo {{a}} grain.
 TEST: sa chambre, c’est une vraie soue {{a}} cochons.
 TEST: Un tueur {{a}} gages ne s’y prendrait jamais comme ça.
+TEST: Ventes {{a}} domicile insatisfaisantes
 TEST: Ce n’est que du vernis {{a}} ongles.
 TEST: le vol {{a}} l’étalage est un fléau.
 TEST: Il nous faut une {{voix}} de recours.
@@ -5099,7 +5104,7 @@ __[i](p_au_sens_adj_du_terme)__     au sens (?:le (?:plus|moins) |)({w_2}) du te
 #__[i](p_aussi_xxx_que_ce_soit)__   aussi ({w_2}) que ce soit
 __[i](p_nombre_de)__                (nombre) des? @@0 <<- morph(word(-1), ":(?:R|C[sc])", False, True) ~1>> *
 __[i](p_à_xxx_reprises)__           à ({w_2}) reprises @@2 <<- morph(\1, ":B", False) or re.search("(?i)^(?:plusieurs|maintes)", \1) ~>> *
-__[i](p_bien_entendu)__             bien entendu <<- morph(word(1), ":[NAQR]", False, True) ~>> *
+__[i](p_bien_entendu)__             bien entendu <<- morph(word(1), ":[NAQR]|>que? ", False, True) ~>> *
 __[i](p_comme_pronom)__
     ({w_2}) (comme (?:eux|elles?|lui|ça|celui-(?:ci|là)|celles?-(?:ci|là)|ceux(?:ci|là)|l[ea] [nv]ôtre|le [mts]ien|la [mts]ienne|les (?:[nv]ôtres|sien(?:ne|)s))) @@0,$
     <<- morphex(\1, ":[NAQ]", ":V0") ~2>> *
@@ -5141,7 +5146,7 @@ __[i](p_plus_adv_les_uns_que_les_autres)__  plus ({w3}) (les une?s que les autre
 __[i](p_pour_autant_que_su)__
     (pour autant (?:que (?:je sache|tu saches|nous sachions|vous sachiez)|qu (?:il|elle)(?: sache|s sachent))) ({w_1})  @@0,$
     <<- not morph(\2, ":Y", False) ~1>> *
-#__[i](p_avec)__  avec ({w1}) <<- morph(\1, ":N") and not re.search("(?i)^(force|air)$", \1) and not morph(word(1), ":A", False) ~>> *
+__[i](p_tambour_battant)__          tambours? battants? <<- morph(word(-1), ":(?:V|N:f)", ":G") ~>> *
 __[i](p_tête_baissée)__             ({w_2}) +(tête baissée) @@0,$ <<- morphex(\1, ":[NV]", ":D") ~2>> *
 __[i](p_tant_que_ça)__              ((?:pas |)tant que ça) ({w1}) @@0,$ <<- not morph(\2, ":(?:3s|X)", False) ~1>> *
 __[i](p_putain_de)__                (?:le|un|ce|[mts]on) (putain d(?:e +|’))({w_2}) @@*,$ <<- morph(\2, ":[me]", False) ~1>> *
@@ -5235,7 +5240,7 @@ __[i](p_les_xxx_les_plus_adj)__
     (?:[lmts]es|nos|vos|leurs) ({w_2}) (les plus) ({w_2})  @@w,w,$
     <<- morphex(\1, ":[NAQ].*:[pi]", ":[123][sp]") and morph(\3, ":A.*:[pi]", False) ~2>> * 
 __[i](p_le_plus_le_moins)__
-    (le (?:plus|moins)) ({w_2})
+    (le (?:plus|moins)) ({w_2})  @@0,$
     <<- morph(\2, ":A", ":([me]:[si]|G)") and morph(word(-1), ">(?:avoir|être) :V", False) ~1>> *
 __[i](p_bien_sûr)__
     bien sûr(?! de) <<- ~>> *
