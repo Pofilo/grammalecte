@@ -2991,7 +2991,7 @@ TEST: Cette {{pèle}} est trop fragile.
 __[i]/conf(conf_sa_verbe)__
     (sa) ({w_2})  @@0,3
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":N.*:[fe]|:[AW]") and \2[0].islower() or \2 == "va"
-    -1>> ça                                                                                         # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
+    -1>> ça|se                                                                                      # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
     <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and hasSimil(\2)
     -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
 
