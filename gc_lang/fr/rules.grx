@@ -2990,19 +2990,16 @@ TEST: Cette {{pèle}} est trop fragile.
 
 __[i]/conf(conf_sa_verbe)__
     (sa) ({w_2})  @@0,3
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":N.*:[fe]|:[AW]") and \2[0].islower() or \2 == "va"
-    -1>> ça|se                                                                                      # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and hasSimil(\2)
-    -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
+    <<- \2[0].islower() and morphex(\2, ":V.*:(?:Y|[123][sp])", ":(?:N.*:[fe]|A|W)") >>>
+    <<- morph(\2, "V.....[pqx]", False) -1>> ça|se                                                   # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
+    <<- __else__ -1>> ça                                                                            # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
+    <<- hasSimil(\2) -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                   # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: {{sa}} devient difficile.
 TEST: il me tendit {{sa}} {{pèche}}.
-
-
-__[s]/conf(conf_sa_fin)__
-    (sa) *$  @@0  <<- -1>> ça                           # Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez :
-
-TEST: Je prends {{sa}}…
+TEST: {{sa}} prend du temps.                                                  ->> ça|se
+TEST: {{çà}} va                                                               ->> ça
+TEST: {{sa}} va                                                               ->> ça
 
 
 __[i]/conf(conf_du_cet_au_verbe)__
@@ -3476,12 +3473,11 @@ __[i]/conf(conf_sa_ça1)__
 __[i>/conf(conf_sa_ça2)__       (sa) +(?:[dnmtsjl]’|lorsqu |qu |puisqu )  @@0 <<- -1>> ça           # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 __[i]/conf(conf_çà_ça)__        çà(?! et là) <<- not before(r"\b(?:[oO]h|[aA]h) +$") ->> ça         # Confusion : « çà » ne s’emploie plus guère que dans l’expression « çà et là ».
 __[i]/conf(conf_çà_et_là)__     ça et là <<- not morph(word(-1), ":R") ->> çà et là                 # Confusion : « ça » équivaut à « cela ». Dans l’expression « çà et là », « çà » équivaut à « ici ».
+__[s]/conf(conf_sa_fin)__       (sa) *$  @@0  <<- -1>> ça                           # Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez :
 
+TEST: Je prends {{sa}}…
 TEST: {{ça}} patrie, il la détestait
 TEST: et {{sa}} par deux fois
-TEST: {{sa}} prend du temps.                                                  ->> ça
-TEST: {{çà}} va                                                               ->> ça
-TEST: {{sa}} va                                                               ->> ça
 TEST: Il trouva de la nourriture {{ça et là}}.                                ->> çà et là
 TEST: Elle parle comme {{ça}} mère.                                           ->> sa
 TEST: C’est comme {{sa}}.
@@ -7788,7 +7784,7 @@ __[i]/conf(conf_ne_me_te_se_la)!6__
 
 TEST: {{ceux la}} sont des idiots, rien à en tirer.
 TEST: {{celle la}} ne vaut pas mieux, laisse-la tomber.
-TEST: Apporte-{{là}} près du feu
+TEST: Apporte{{-là}} près du feu
 TEST: cette {{bête}}-{{la}}
 TEST: il ne {{là}} croit pas.
 
