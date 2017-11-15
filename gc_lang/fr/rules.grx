@@ -7780,7 +7780,7 @@ TEST: il accomplit le {{jeune}} rituel
 __[i]/conf(conf_celui_celle_là)__
     ce(?:lles?|lui|ux)[ -]la <<- ->> =\0[:-1].replace(" ", "-")+"à"             # Écrivez “là” et non “la”.
 __[i]/conf(conf_verbe_impératif_la)__
-    ({w2})-(là) @@0,$ <<- morphex(\1, ":V", ":[NAQ]") -2>> la                   # Confusion : pour un COD, utilisez “la”.
+    ({w2})(-là) @@0,$ <<- morphex(\1, ":V", ":[NAQ]") -2>> -la| là              # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 __[i]/conf(conf_mot_là)__
     ({w2})-(la) @@0,$ <<- morphex(\1, ":[NAQ]", ":[123][sp]") -2>> là           # Confusion : « \1 » n’est pas un verbe.
 __[i]/conf(conf_ne_me_te_se_la)!6__
