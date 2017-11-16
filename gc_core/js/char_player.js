@@ -19,16 +19,22 @@ var char_player = {
     cleanWord: function (sWord) {
         // word simplication before calculating distance between words
         sWord = sWord.toLowerCase();
-        let sRes = "";
+        let sNewWord = "";
+        let i = 1;
         for (let c of sWord) {
-            sRes += this._dTransChars.gl_get(c, c);
+            let cNew = this._dTransChars.gl_get(c, c);
+            let cNext = sWord.slice(i, i+1)
+            if (cNew != this._dTransChars.gl_get(cNext, cNext)) {
+                sNewWord += cNew;
+            }
+            i++;
         }
-        return sRes.replace("eau", "o").replace("au", "o");
+        return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e");
     },
 
     aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),
     aConsonant: new Set("bcçdfghjklmnñpqrstvwxzBCÇDFGHJKLMNÑPQRSTVWXZ"),
-    aDouble: new Set("bcçdfjklmnprstzBCÇDFJKLMNPRSTZ"),  // letters that may be used twice successively
+    aDouble: new Set("bcdfjklmnprstzBCDFJKLMNPRSTZ"),  // letters that may be used twice successively
 
 
     // Similar chars

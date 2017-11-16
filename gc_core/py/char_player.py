@@ -16,12 +16,17 @@ _xTransChars = str.maketrans({
 
 def cleanWord (sWord):
     "word simplication before calculating distance between words"
-    return sWord.lower().translate(_xTransChars).replace("eau", "o").replace("au", "o")
+    sWord = sWord.lower().translate(_xTransChars)
+    sNewWord = ""
+    for i, c in enumerate(sWord, 1):
+        if c != sWord[i:i+1]:
+            sNewWord += c
+    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e")
 
 
 aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")
 aConsonant = set("bcçdfghjklmnñpqrstvwxzBCÇDFGHJKLMNÑPQRSTVWXZ")
-aDouble = set("bcçdfjklmnprstzBCÇDFJKLMNPRSTZ")  # letters that may be used twice successively
+aDouble = set("bcdfjklmnprstzBCDFJKLMNPRSTZ")  # letters that may be used twice successively
 
 
 # Similar chars
