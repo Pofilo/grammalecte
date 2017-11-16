@@ -636,7 +636,7 @@ TEST: {{locaux·ales}}                                                   ->> loc
 
 
 __[u](typo_écriture_épicène_pluriel_er_ère)__
-    ({w_2})er[.(/·–—-]i?ère[.)/·–—-]?s  @@0
+    ({w_2})er[.(/·–—-]i?è?re[.)/·–—-]?s  @@0
     <<- option("typo") ->> \1ers et \1ères|\1ères et \1ers                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -653,7 +653,7 @@ TEST: {{offensif.ve.s}}                                                 ->> offe
 
 
 __[u](typo_écriture_épicène_pluriel_e)__
-    ({w_1}[éuitsrnl])[-·–—.(/]([ntl]?e)[-·–—.)/]?s  @@0,**
+    ({w_1}[éuitsrnldf])[-·–—.(/]([ntlf]?e)[-·–—.)/]?s  @@0,**
     <<- ~>> =normalizeInclusiveWriting(\0)
     <<- option("typo") and not \0.endswith("les") >>>
     <<- \1.endswith("s") and not \0.endswith("·e·s")
