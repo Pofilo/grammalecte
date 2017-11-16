@@ -198,9 +198,9 @@ browser.contextMenus.create({ id: "rightClickLxgEditableNode",  title: "Lexicogr
 browser.contextMenus.create({ id: "rightClickGCEditableNode",   title: "Correction grammaticale (zone de texte)",   contexts: ["editable"] });
 browser.contextMenus.create({ id: "separator_editable",         type: "separator",                                  contexts: ["editable"] });
 // Page
-browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["page"] });
-browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["page"] });
-browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["page"] });
+browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["all"] }); // on all parts, due to unwanted selection
+browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["all"] });
+browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["all"] });
 // Conjugueur
 browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
