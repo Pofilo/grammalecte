@@ -420,8 +420,10 @@ __<s>(p_sigle1)__
     ([A-Z][.][A-Z][.](?:[A-Z][.])*) +[A-ZÉÀÂÊÎÈÔ]  @@0  <<- ~1>> =\1.replace(".", "")+"."
 __[s>(p_sigle2)__
     [a-zA-Z][.][a-zA-Z][.](?:[a-zA-Z][.])*
-    <<- not re.search(r"(?i)^(?:i\.e\.|s\.[tv]\.p\.|e\.g\.|a\.k\.a\.|c\.q\.f\.d\.|b\.a\.|n\.b\.)$", \0) ->> =\0.replace(".", "").upper()
-    # Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
+    <<- not re.search(r"(?i)^(?:i\.e\.|s\.[tv]\.p\.|e\.g\.|a\.k\.a\.|c\.q\.f\.d\.|b\.a\.|n\.b\.)$", \0) >>>
+    <<- \0.__len__() == 4 ->> =\0.replace(".", "").upper() + "|" + \0[0:2] + " " + \0[2:4]
+    # Sigle. Il est recommandé d’ôter les points pour les sigles. (S’il s’agit d’un prénom et d’un nom, mettez un espace.)|https://fr.wikipedia.org/wiki/Sigle#Typographie
+    <<- __else__ ->> =\0.replace(".", "").upper()                                                   # Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
     <<- \0 != "b.a." ~>> =\0.replace(".", "_")
 __[s>(p_sigle3)__
     J[.]-[A-Z][.] <<- ~>> =\0.replace(".", "").replace("-","")
@@ -489,7 +491,7 @@ __[u](p_CAC40)__
     cac 40 <<- ~>> CAC40
 
 
-
+TEST: par {{O.R.}}                                          ->> OR|O. R.
 TEST: l’{{A.N.P.E.}} n’existe plus
 TEST: ce chien […] ne {{semblez}} pas perdu.
 TEST: ce chat {{(…)}} ne {{semblez}} pas perdu.
@@ -2676,11 +2678,12 @@ TEST: {{En}} Agen
 
 # avoir été
 __[i]/bs(bs_avoir_été_chez)__
-    ({avoir}) été chez  @@0
+    (?<!l’)({avoir}) été chez  @@0
     <<- not re.search("(?i)^avoir$", \1) and morph(\1, ">avoir ", False)
     ->> _                                                                                           # Tournure familière. Utilisez « être allé ».
 
 TEST: J’{{ai été chez}} le coiffeur.
+TEST: Chez les intellectuels, le mot utopie n’a jamais été synonyme de folie, mais il l’a été pour l’homme de la rue.
 
 
 # abyme / abîme
@@ -3702,7 +3705,7 @@ TEST: il a été vaincu, et bien vaincu.
 # faut / faux
 __[i]/conf(conf_faux)__
     faut
-    <<- not morph(word(-1), ">(?:il|ne|en|y|leur|lui|nous|vous|[mtsl]e|la|les) ", False, True) and morphex(word(1), ":",  ":(?:Y|Oo|X|M)", True)
+    <<- not morph(word(-1), ">(?:ils?|ne|en|y|leur|lui|nous|vous|[mtsl]e|la|les) ", False, True) and morphex(word(1), ":",  ":(?:Y|Oo|X|M)", True)
     ->> faux                                                # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez :
 
 TEST: un homme {{faut}}
@@ -11300,6 +11303,7 @@ __[i]/conj(conj_ils)__
 TEST: {{Ils}} {{vienne}} souvent.
 TEST: Ils ne m’{{attends}} pas.
 TEST: {{Ils}} vous le {{donne}}.
+TEST: {{Ils}} {{faut}} venir.
 
 
 __[i]/conj(conj_ceux_celles_qui)__
