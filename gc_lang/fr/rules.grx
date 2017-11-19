@@ -1530,9 +1530,6 @@ __[i]/tu(tu_celui_celle_là_ci)__    ce(?:lles?|lui|ux) (?:là|[cs]i) <<- ->> =\
 __[i]/tu(tu_centre_ville)__                 centres? villes? <<- ->> centre-ville|centres-villes    # Il manque un trait d’union.
 __[i]/tu(tu_ci_dessous_devant_contre)__     ci (desso?us|devant|contre) @@$ <<- ->> ci-\1           # Il manque un trait d’union.
 __[i]/tu(tu_de_ci_de_là)__                  de ci,? de là <<- ->> de-ci de-là|de-ci, de-là          # Il manque les traits d’union.
-__[i]/tu(tu_est_ce)__
-    (?<![cCdDlL][’'])est ce(?! +qui )
-    <<- morph(word(-1), ":Cs", False, True) ->> est-ce                                              # Il manque un trait d’union.
 __[i]/tu(tu_en_contre_bas_partie)__     en contre (bas|partie) @@$ <<- ->> en contre\1|en contre-\1 # Mettez un trait d’union ou soudez.
 __[i]/tu(tu_en_contrepoint)__           en (contre[- ]point) @@$ <<- -1>> contrepoint               # Soudez.
 __[i]/tu(tu_état_major)__               état major <<- ->> état-major                               # Il manque un trait d’union.
@@ -1582,8 +1579,6 @@ TEST: {{au delà}}                                                              
 TEST: {{ci devant}}.                                                            ->> ci-devant
 TEST: Il faisait froid cet {{hiver la}}.                                        ->> hiver-là
 TEST: {{Ceux la}} vont à la pêche.                                              ->> Ceux-là
-TEST: {{est ce}} que c’est grave ?                                              ->> est-ce
-TEST: qu’{{est ce}} que c’est ?                                                 ->> est-ce
 TEST: {{en contre bas}}
 TEST: mes deux {{grands pères}} sont décédés
 TEST: elles vont viennent {{de ci, de là}}.
@@ -1616,8 +1611,19 @@ TEST: un super {{week end}}                             ->> week-end
 TEST: ils sont partis {{outre mer}}
 TEST: elles sont allées au {{sud ouest}}
 TEST: {{nord est}}
-TEST: elles reviendront, {{n’est ce pas}} ?
 TEST: des {{stock options}}
+
+
+# est-ce … ?
+__[i]/tu(tu_est_ce)__
+    (?<![cCdDlL][’'])(est ce) ({w_2})  @@0,$
+    <<- morphex(\2, ":", ":N.*:[me]:[si]|>qui ") and morph(word(-1), ":Cs", False, True)
+    -1>> est-ce                                                                                     # S’il s’agit d’une interrogation, il manque un trait d’union.
+
+TEST: {{est ce}} que c’est grave ?                                              ->> est-ce
+TEST: qu’{{est ce}} que c’est ?                                                 ->> est-ce
+TEST: elles reviendront, {{n’est ce pas}} ?
+TEST: nous en sommes à l’étape où nous voulons définir ce qu’est ce projet
 
 
 ### Tri 2
