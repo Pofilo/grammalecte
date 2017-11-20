@@ -862,15 +862,9 @@ TEST: Je pense {{qu`}}elle se trompe
 TEST: Que {{t'}}arrive-t-il ?
 
 
-__[i>/typo(typo_apostrophe_plus_espace1)__
-    (([ldsncjmt])(?:[’'´‘`] | [’'´‘′`] ?))[aeéiouhœæyîèêôû]  @@0,0
-    <<- -1>> \2’                                                                                    # Pas d’espace avant ou après une apostrophe.
-__[i>/typo(typo_apostrophe_plus_espace2)__
-    ((lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr|ç)(?:[’'´‘′`] | [’'´‘′`] ?))[aeéiouhœæyîèêôû]  @@0,0
-    <<- -1>> \2’                                                                                    # Pas d’espace avant ou après une apostrophe.
-__[i>/typo(typo_apostrophe_double)__
-    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`][’'´‘′`]|”|“|"))[aeéiouhœæyîèêôû]  @@0,0
-    <<- -1>> \2’                                                                                    # Apostrophe surnuméraire.
+__[i>/typo(typo_apostrophe_incorrecte)__
+    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`][’'´‘′` ]|”|“|"| [’'´‘′`] ?))[aeéiouhœæyîèêôû]  @@0,0
+    <<- not (\2.__len__() == 1  and  \1.endswith("′ ")) -1>> \2’                                    # Apostrophe incorrecte.
 
 TEST: {{C’ }}est rageant.                                                 ->> C’
 TEST: {{Lorsqu’ }}il vient, on s’ennuie.
