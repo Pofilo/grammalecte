@@ -12,7 +12,7 @@ var char_player = {
         ['ä', 'a'],  ['ê', 'e'],  ['í', 'i'],  ['ó', 'o'],  ['ü', 'u'],  ['ý', 'i'],
         ['á', 'a'],  ['ë', 'e'],  ['ì', 'i'],  ['ò', 'o'],  ['ú', 'u'],  ['ỳ', 'i'],
         ['ā', 'a'],  ['ē', 'e'],  ['ī', 'i'],  ['ō', 'o'],  ['ū', 'u'],  ['ȳ', 'i'],
-        ['ñ', 'n'],
+        ['ñ', 'n'],  ['k', 'q'],  ['w', 'v'],
         ['œ', 'oe'], ['æ', 'ae'], 
     ]),
 
@@ -29,7 +29,7 @@ var char_player = {
             }
             i++;
         }
-        return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e");
+        return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e").replace("ph", "f");
     },
 
     aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),

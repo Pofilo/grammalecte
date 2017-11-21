@@ -10,7 +10,7 @@ _xTransChars = str.maketrans({
     'ä': 'a',  'ê': 'e',  'í': 'i',  'ó': 'o',  'ü': 'u',  'ý': 'i',
     'á': 'a',  'ë': 'e',  'ì': 'i',  'ò': 'o',  'ú': 'u',  'ỳ': 'i',
     'ā': 'a',  'ē': 'e',  'ī': 'i',  'ō': 'o',  'ū': 'u',  'ȳ': 'i',
-    'ñ': 'n',
+    'ñ': 'n',  'k': 'q',  'w': 'v',
     'œ': 'oe',  'æ': 'ae', 
 })
 
@@ -21,7 +21,7 @@ def cleanWord (sWord):
     for i, c in enumerate(sWord, 1):
         if c != sWord[i:i+1]:
             sNewWord += c
-    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e")
+    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e").replace("ph", "f")
 
 
 aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")
