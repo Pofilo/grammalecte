@@ -288,8 +288,13 @@ class IBDAWG {
             return;
         }
         let cCurrent = sRemain.slice(0, 1);
-        for (let [cChar, jAddr] of this._getSimilarCharArcs(cCurrent, iAddr)) {
-            this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar);
+        for (let [cChar, jAddr] of this._getCharArcs(iAddr)) {
+            if (char_player.d1to1.gl_get(cCurrent, [cCurrent]).includes(cChar)) {
+                this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar);
+            }
+            else if (!bAvoidLoop && nMaxHardRepl) {
+                this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, jAddr, sNewWord+cChar, true);
+            }
         }
         if (!bAvoidLoop) { // avoid infinite loop
             if (sRemain.length > 1) {
@@ -313,14 +318,6 @@ class IBDAWG {
                 }
                 for (let sRepl of char_player.d2toX.gl_get(sRemain.slice(0, 2), [])) {
                     this._suggest(oSuggResult, sRepl + sRemain.slice(2), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
-                }
-                // Hard replacements
-                if (nDeep > 3 && nMaxHardRepl && sRemain.length >= 2) {
-                    for (let [cChar, kAddr] of this._getCharArcs(iAddr)) {
-                        if (!char_player.d1to1.gl_get(cCurrent, "").includes(cChar)) {
-                            this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, true);
-                        }
-                    }
                 }
             }
             // end of word

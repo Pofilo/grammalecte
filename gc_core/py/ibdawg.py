@@ -275,8 +275,11 @@ class IBDAWG:
                 oSuggResult.addSugg(sNewWord+sTail, nDeep)
             return
         cCurrent = sRemain[0:1]
-        for cChar, jAddr in self._getSimilarCharArcs(cCurrent, iAddr):
-            self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar)
+        for cChar, jAddr in self._getCharArcs(iAddr):
+            if cChar in cp.d1to1.get(cCurrent, cCurrent):
+                self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar)
+            elif not bAvoidLoop and nMaxHardRepl:
+                self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, jAddr, sNewWord+cChar, True)
         if not bAvoidLoop: # avoid infinite loop
             if len(sRemain) > 1:
                 if cCurrent == sRemain[1:2]:
@@ -294,11 +297,6 @@ class IBDAWG:
                     self._suggest(oSuggResult, sRepl + sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True)
                 for sRepl in cp.d2toX.get(sRemain[0:2], ()):
                     self._suggest(oSuggResult, sRepl + sRemain[2:], nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, True)
-                # Hard replacements
-                if nDeep > 3 and nMaxHardRepl:
-                    for cChar, kAddr in self._getCharArcs(iAddr):
-                        if cChar not in cp.d1to1.get(cCurrent, ""):
-                            self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, kAddr, sNewWord+cChar, True)
             # end of word
             if len(sRemain) == 2:
                 for sRepl in cp.dFinal2.get(sRemain, ()):
