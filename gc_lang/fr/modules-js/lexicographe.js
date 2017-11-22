@@ -116,6 +116,7 @@ const _dLocTag = new Map([
     [':LV', "locution verbale"],
     [':LW', "locution adverbiale"],
     [':LR', "locution prépositive"],
+    [':LRv', "locution prépositive verbale"],
     [':LO', "locution pronominale"],
     [':LC', "locution conjonctive"],
     [':LJ', "locution interjective"],
@@ -127,7 +128,7 @@ const _dLocTag = new Map([
     [':s', " singulière"],
     [':p', " plurielle"],
     [':i', " invariable"],
-    ['/L', " {latin}"]
+    ['/L', " (latin)"]
 ]);
 
 const _dLocVerb = new Map([
