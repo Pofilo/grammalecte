@@ -357,7 +357,6 @@ def main ():
                     os.system('jpm run -b "' + spfFirefox + '"')
 
             if xArgs.web_ext or xArgs.firefox:
-                
                 with helpers.cd("_build/webext/"+sLang):
                     if xArgs.firefox:
                         # Firefox Developper edition

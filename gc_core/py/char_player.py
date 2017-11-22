@@ -14,7 +14,7 @@ _xTransChars = str.maketrans({
     'œ': 'oe',  'æ': 'ae', 
 })
 
-def cleanWord (sWord):
+def simplifyWord (sWord):
     "word simplication before calculating distance between words"
     sWord = sWord.lower().translate(_xTransChars)
     sNewWord = ""

@@ -32,17 +32,17 @@ class SuggResult:
 
     def __init__ (self, sWord, nDistLimit=-1):
         self.sWord = sWord
-        self.sCleanWord = cp.cleanWord(sWord)
+        self.sSimplifiedWord = cp.simplifyWord(sWord)
         self.nDistLimit = nDistLimit  if nDistLimit >= 0  else  (len(sWord) // 3) + 1
         self.nMinDist = 1000
         self.aSugg = set()
-        self.dSugg = { 0: [],  1: [] }
+        self.dSugg = { 0: [],  1: [],  2: [] }
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
         #logging.info((nDeep * "  ") + "__" + sSugg + "__")
         if sSugg not in self.aSugg:
-            nDist = st.distanceDamerauLevenshtein(self.sCleanWord, cp.cleanWord(sSugg))
+            nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg))
             if nDist <= self.nDistLimit:
                 if nDist not in self.dSugg:
                     self.dSugg[nDist] = []
@@ -247,7 +247,7 @@ class IBDAWG:
         return l
 
     #@timethis
-    def suggest (self, sWord, nMaxSugg=10):
+    def suggest (self, sWord, nSuggLimit=10):
         "returns a set of suggestions for <sWord>"
         sPfx, sWord, sSfx = cp.cut(sWord)
         nMaxSwitch = max(len(sWord) // 3, 1)
@@ -259,7 +259,7 @@ class IBDAWG:
             self._suggest(oSuggResult, sWord.lower(), nMaxSwitch=nMaxSwitch, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl)
         elif sWord.islower():
             self._suggest(oSuggResult, sWord.title(), nMaxSwitch=nMaxSwitch, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl)
-        aSugg = oSuggResult.getSuggestions()
+        aSugg = oSuggResult.getSuggestions(nSuggLimit)
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
@@ -322,7 +322,7 @@ class IBDAWG:
         # recursive function
         #logging.info((nDeep * "  ") + sNewWord)
         if nDeep >= oSuggResult.nDistLimit:
-            sCleanNewWord = cp.cleanWord(sNewWord)
+            sCleanNewWord = cp.simplifyWord(sNewWord)
             if st.distanceSift4(oSuggResult.sCleanWord[:len(sCleanNewWord)], sCleanNewWord) > oSuggResult.nDistLimit:
                 return
         if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:

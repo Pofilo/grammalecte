@@ -23,17 +23,17 @@ class SuggResult {
 
     constructor (sWord, nDistLimit=-1) {
         this.sWord = sWord;
-        this.sCleanWord = char_player.cleanWord(sWord);
+        this.sSimplifiedWord = char_player.simplifyWord(sWord);
         this.nDistLimit = (nDistLimit >= 0) ? nDistLimit :  Math.floor(sWord.length / 3) + 1;
         this.nMinDist = 1000;
         this.aSugg = new Set();
-        this.dSugg = new Map([ [0, []],  [1, []] ]);
+        this.dSugg = new Map([ [0, []],  [1, []],  [2, []] ]);
     }
 
     addSugg (sSugg, nDeep=0) {
         // add a suggestion
         if (!this.aSugg.has(sSugg)) {
-            let nDist = str_transform.distanceDamerauLevenshtein(this.sCleanWord, char_player.cleanWord(sSugg));
+            let nDist = str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, char_player.simplifyWord(sSugg));
             if (nDist <= this.nDistLimit) {
                 if (!this.dSugg.has(nDist)) {
                     this.dSugg.set(nDist, []);
@@ -251,7 +251,7 @@ class IBDAWG {
         return l;
     }
 
-    suggest (sWord, nMaxSugg=10) {
+    suggest (sWord, nSuggLimit=10) {
         // returns a array of suggestions for <sWord>
         let sPfx = "";
         let sSfx = "";
@@ -267,7 +267,7 @@ class IBDAWG {
         else if (sWord.gl_isLowerCase()) {
             this._suggest(oSuggResult, sWord.gl_toCapitalize(), nMaxSwitch, nMaxDel, nMaxHardRepl);
         }
-        let aSugg = oSuggResult.getSuggestions();
+        let aSugg = oSuggResult.getSuggestions(nSuggLimit);
         if (sSfx || sPfx) {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx } );
@@ -289,7 +289,7 @@ class IBDAWG {
         }
         let cCurrent = sRemain.slice(0, 1);
         for (let [cChar, jAddr] of this._getCharArcs(iAddr)) {
-            if (char_player.d1to1.gl_get(cCurrent, [cCurrent]).includes(cChar)) {
+            if (char_player.d1to1.gl_get(cCurrent, cCurrent).indexOf(cChar) != -1) {
                 this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar);
             }
             else if (!bAvoidLoop && nMaxHardRepl) {

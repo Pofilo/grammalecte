@@ -16,7 +16,7 @@ var char_player = {
         ['œ', 'oe'], ['æ', 'ae'], 
     ]),
 
-    cleanWord: function (sWord) {
+    simplifyWord: function (sWord) {
         // word simplication before calculating distance between words
         sWord = sWord.toLowerCase();
         let sNewWord = "";
@@ -29,7 +29,7 @@ var char_player = {
             }
             i++;
         }
-        return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e").replace("ph", "f");
+        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "e").replace(/ei/g, "e").replace(/ph/g, "f");
     },
 
     aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),

@@ -34,7 +34,6 @@ var str_transform = {
                     }
                 }
             }
-            //console.log(s2 + ": " + matrix[nLen1][nLen2]);
             return matrix[nLen1][nLen2];
         }
         catch (e) {
