@@ -7325,6 +7325,27 @@ __[i]/conf(conf_avions)__
 TEST: Je pense que nous {{avion}} tort.
 
 
+# banc / ban
+__[i]/conf(conf_mettre_au_ban)__
+    (m[eiî]\w+) au (banc)
+    <<- morph(\1, ">mettre ", False) and not after("^ +des accusés")
+    -2>> ban                                                            # Confusion : « mettre au ban » signifie « bannir ».|https://fr.wiktionary.org/wiki/mettre_au_ban
+__[i]/conf(conf_ban)__
+    au (banc) (de (?:l’(?:empire|église|état|entreprise|institution|université)|la (?:communauté|faculté|monarchie|principauté|république|société))|du royaume)  @@w
+    <<- -1>> banc                                                       # Confusion : « être au ban » signifie « être banni ».|https://fr.wiktionary.org/wiki/mettre_au_ban
+__[i]/conf(conf_sur_det_banc)__
+    sur (?:ces?|les?|[mts](?:on|es)|[vn]o(?:tre|s)|des) (bans?)  @@$
+    <<- -1>> banc|bancs                                                 # Confusion probable.||https://fr.wiktionary.org/wiki/banc
+__[i]/conf(conf_banc)__
+    (bans?) (?:de (?:roches?|sable|moules|harengs|thons|poissons|sardines|l’école)|d’(?:hu[îi]tres|essais?))  @@0
+    <<- -1>> banc|bancs                                                 # Confusion.|https://fr.wiktionary.org/wiki/banc
+
+TEST: Il a été mis au {{banc}}
+TEST: ces gens resteront à jamais au {{banc}} de l’empire
+TEST: sur les {{bans}} de l’école.
+TEST: Attention aux {{bans}} de sable
+
+
 # bât / bas
 __[i]/conf(conf_bât)__
     le (ba[st]) bless\w+ @@3 <<- -1>> bât                               # Confusion : là où le bât blesse.|http://fr.wiktionary.org/wiki/b%C3%A2t
