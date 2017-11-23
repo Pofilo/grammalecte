@@ -7326,24 +7326,44 @@ TEST: Je pense que nous {{avion}} tort.
 
 
 # banc / ban
+__[i]/conf(conf_arrière_ban)__
+    arrière[ -]bancs?
+    <<- ->> =\0.replace("c", "").replace("C", "")                       # Confusion. L’arrière-ban est une assemblée de nobles feudataires.|https://fr.wiktionary.org/wiki/arri%C3%A8re-ban
+__[i]/conf(conf_au_ban)__
+    au (banc) (?:de (?:l’(?:empire|église|état|entreprise|humanité|institution|université)|la (?:cité|communauté|faculté|monarchie|principauté|province|région|république|société|ville))|du royaume|des nations)  @@w
+    <<- -1>> banc                                                       # Confusion : « être au ban » signifie « être déchu ».|https://fr.wiktionary.org/wiki/mettre_au_ban
+__[i]/conf(conf_bans_de_mariage)__
+    (bancs?) d[ue] mariage  @@0
+    <<- -1>> ban|bans                                                   # Confusion : les bans de mariage sont des publications, pas du mobilier.|https://fr.wiktionary.org/wiki/ban
+__[i]/conf(conf_en_rupture_de_ban)__
+    en ruptures? de (bancs?)  @@$
+    <<- -1>> ban                                                        # Confusion. Locution “en rupture de ban”.|https://fr.wiktionary.org/wiki/en_rupture_de_ban
 __[i]/conf(conf_mettre_au_ban)__
-    (m[eiî]\w+) au (banc)
+    (m[eiî]\w+) au (banc)  @@0,$
     <<- morph(\1, ">mettre ", False) and not after("^ +des accusés")
-    -2>> ban                                                            # Confusion : « mettre au ban » signifie « bannir ».|https://fr.wiktionary.org/wiki/mettre_au_ban
-__[i]/conf(conf_ban)__
-    au (banc) (de (?:l’(?:empire|église|état|entreprise|institution|université)|la (?:communauté|faculté|monarchie|principauté|république|société))|du royaume)  @@w
-    <<- -1>> banc                                                       # Confusion : « être au ban » signifie « être banni ».|https://fr.wiktionary.org/wiki/mettre_au_ban
+    -2>> ban                                                            # Confusion : « mettre au ban » signifie « faire déchoir ».|https://fr.wiktionary.org/wiki/mettre_au_ban
+__[i]/conf(conf_publier_les_bans)__
+    (publi\w+) [dlcmts]es (bancs) @@0,$
+    <<- morph(\1, ">publi(?:er|cation) ", False) -2>> bans              # Confusion.|https://fr.wikipedia.org/wiki/Publication_des_bans
+
+TEST: Convoquons le ban et l’{{arrière-banc}}.
+TEST: il faut publier les {{bancs}} avant qu’il ne soit trop tard.
+TEST: Les {{bancs}} de mariage sont prêts.
+TEST: des hommes en rupture de {{banc}}
+TEST: Il a été mis au {{banc}}.
+TEST: ces gens resteront à jamais au {{banc}} de l’empire
+
+
 __[i]/conf(conf_sur_det_banc)__
     sur (?:ces?|les?|[mts](?:on|es)|[vn]o(?:tre|s)|des) (bans?)  @@$
     <<- -1>> banc|bancs                                                 # Confusion probable.||https://fr.wiktionary.org/wiki/banc
 __[i]/conf(conf_banc)__
-    (bans?) (?:de (?:roches?|sable|moules|harengs|thons|poissons|sardines|l’école)|d’(?:hu[îi]tres|essais?))  @@0
+    (bans?) (?:de (?:roches?|sable|neige|moules|baleines|dauphins|harengs|thons|poissons|piranhas|sardines|l’école|méduses|calibration|musculation|coupe|scie)|d’(?:anchois|hu[îi]tres|essais?|étalonnage))  @@0
     <<- -1>> banc|bancs                                                 # Confusion.|https://fr.wiktionary.org/wiki/banc
 
-TEST: Il a été mis au {{banc}}
-TEST: ces gens resteront à jamais au {{banc}} de l’empire
 TEST: sur les {{bans}} de l’école.
 TEST: Attention aux {{bans}} de sable
+TEST: sur les bancs de l’école.
 
 
 # bât / bas
