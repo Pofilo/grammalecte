@@ -11448,11 +11448,20 @@ TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même tromp�
 
 
 __[i]/conj(conj_certains_certaines)__
-    (certaine?) +({w_2})
-    <<- morphex(\2, ":V.*:[123]p", ":[GWM]") and isStart() -1>> \1s                                 # Mettez au pluriel “\1” si vous désignez plusieurs personnes.
+    (certaine?) +({w_2})  @@0,$
+    <<- isStart() >>>
+    <<- morphex(\2, ":V.*:[123]p", ":[GWM]") -1>> \1s                                               # Accord de conjugaison avec “\2”. Mettez au pluriel “\1” si vous désignez plusieurs personnes.
+    <<- \1.endswith("n") and morphex(\2, ":V.*:[123]s", ":(?:V0e.*:3s|N.*:[me]:[si])")
+    -2>> =suggVerb(@, ":3p")                                                                        # Conjuguez “\2” à la troisième personne du pluriel, si “\1” est un pronom censé désigner plusieurs personnes.
+    <<- __also__ -1>> \1s                                                                           # Mettez au pluriel “\1” si vous désignez plusieurs personnes.
+    <<- __else__ and \1.endswith("e") and morphex(\2, ":V.*:[123]s", ":(?:V0e.*:3s|N.*:[fe]:[si])")
+    -2>> =suggVerb(@, ":3p")                                                                        # Conjuguez “\2” à la troisième personne du pluriel, si “\1” est un pronom censé désigner plusieurs personnes.
+    <<- __also__ -1>> \1s                                                                           # Mettez au pluriel “\1” si vous désignez plusieurs personnes.
 
 TEST: {{certain}} deviennent idiots à cette seule pensée.
 TEST: mais c’est exact, {{certaine}} se perdent souvent dans les méandres de l’administration.
+TEST: {{certain}} {{donne}} beaucoup.
+TEST: certaine est la défaite.
 
 
 __[i]/conj(conj_det_plur_nom)__
