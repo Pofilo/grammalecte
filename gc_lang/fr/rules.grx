@@ -6987,6 +6987,15 @@ __[i]/sgpl(sgpl_en_bons_termes)__
 TEST: nous sommes à présent {{en bon terme}}
 
 
+# ensemble
+__[i]/sgpl(sgpl_ensemble)__
+    ({w_1}) +(ensembles)
+    <<- morphex(\1, ":V.*:[123]p|>(?:tou(?:te|)s|pas|rien|guère|jamais|toujours|souvent) ", ":[DRB]")
+    -2>> ensemble                                                                   # S’il s’agit bien de l’adverbe “ensemble”, il est invariable.|https://fr.wiktionary.org/wiki/ensemble
+
+TEST: Elles viendront {{ensembles}}.
+
+
 # eux-mêmes, elles-mêmes
 __[i]/sgpl(sgpl_eux_elles_mêmes)__
     (?:eux|elles)-(même) @@$ <<- -1>> mêmes                                         # Il manque un “s” à même.
