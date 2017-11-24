@@ -3735,6 +3735,41 @@ TEST: faut l’emmener chez le docteur.
 TEST: Faut Linux, sinon ça marchera jamais.
 
 
+# flan / flanc
+__[i]/conf(conf_flan)__
+    (flancs?) (?:aux? (?:caramel|café|citron|chocolat|four|lait|lard|noix|pomme|pruneaux?|œuf|raisin)s?|d’(?:or|argent)|de cuivre|pâtissier|à la (?:crème|coco|noix))  @@0
+    <<- -1>> =\0.replace("c", "").replace("C", "")                                                  # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez :|https://fr.wiktionary.org/wiki/flan
+__[i]/conf(conf_c_est_du_flan)__
+    c’(?:est|était) (?:que +|rien que +|tout +|)du (flanc) @@$
+    <<- -1>> flan                                                                                   # Confusion. Locution « c’est du flan ».|https://fr.wiktionary.org/wiki/flan
+__[i]/conf(conf_comme_deux_ronds_de_flan)__
+    comme deux ronds de (flancs?)  @@$
+    <<- -1>> flan                                                                                   # Confusion. Locution « comme deux ronds de flan ».|https://fr.wiktionary.org/wiki/comme_deux_ronds_de_flan
+
+TEST: encore un {{flanc}} au chocolat.
+TEST: ce type, c’est que du {{flanc}}.
+TEST: j’en étais comme deux ronds de {{flancs}}
+
+
+__[i]/conf(conf_flanc)__
+    (flans?) (?:des? (?:la |)(?:colline|montagne)s?|gauches?|droites?|nord|sud|ouest)  @@0
+    <<- -1>> =\0.replace("an", "anc").replace("AN", "ANC")                                          # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+__[i]/conf(conf_sur_le_flanc)__
+    ((?:attaqu|allong|bless|couch|étend|touch)\w+) +sur (?:les?|[mts](?:on|es)|[nv]o(?:tre|s)) (flans?)  @@0,$
+    <<- morph(\1, ">(?:attaquer|allonger|blesser|coucher|étendre|toucher) ", False)
+    -2>> =\0.replace("an", "anc").replace("AN", "ANC")                                              # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+__[i]/conf(conf_tirer_au_flanc)__
+    (tir\w*)[ -]+aux?[ -](flans?)  @@0,$
+    <<- morph(\1, ">tir(?:er|) ", False) -2>> =\0.replace("an", "anc").replace("AN", "ANC")         # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+TEST: attaqué sur son {{flan}} droit
+TEST: elle possède une maison à {{flan}} de colline.
+TEST: étendu sur son {{flan}}.
+TEST: Ce sale tir-au-{{flan}} le paiera cher.
+TEST: le flan est une pâtisserie.
+TEST: versez du caramel sur le flan.
+
+
 # golf / golfe
 __[i]/conf(conf_golf)__
     (champion(?:ne|nat|)s?|clubs?|joueu(?:r|se)s?|parcours|sacs?|balles?|terrains?|tournois?|compétitions?|passionnée?s?|écoles?|professeurs?|parties?|professionnel(?:le|)s?|amateure?s?|stages?|journées?|après-midi|matinées?|heures?|fédérations?|fans?) de (golfe)  @@0,$
