@@ -7635,18 +7635,18 @@ TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme
 
 # cour / cours / court
 __[i]/conf(conf_au_cours_de)__
-    au (court?) (?:des?|du?) @@3 <<- -1>> cours                                 # Confusion probable. Une cour… Un cours… Court(e) : adjectif.
+    au (court?) (?:des?|du?) @@3 <<- -1>> cours                                 # Confusion probable. Une cour… Un cours… Adjectif : court(e).
 __[i]/conf(conf_en_cours)__
-    en cour(?! martiale?| de justice) <<- ->> en cours                          # Confusion probable. Une cour… Un cours… Court(e) : adjectif.
+    en cour(?! martiale?| de justice) <<- ->> en cours                          # Confusion probable. Une cour… Un cours… Adjectif : court(e).
 __[i]/conf(conf_couper_court)__
-    (coup\w+) (cours?) @@0,$ <<- morph(\1, ">couper ") -2>> court               # « Couper court ». Écourter. Une cour… Un cours… Court(e) : adjectif.
+    (coup\w+) (cours?) @@0,$ <<- morph(\1, ">couper ") -2>> court               # « Couper court ». Écourter. Une cour… Un cours… Adjectif : court(e).
 __[i]/conf(conf_laisser_libre_cours)__
     ({w1}) +libre (court?) @@0,$
-    <<- morph(\1, ">(?:avoir|donner|laisser) ", False) -2>> cours               # Confusion probable. Une cour… Un cours… Court(e) : adjectif.
+    <<- morph(\1, ">(?:avoir|donner|laisser) ", False) -2>> cours               # Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
 __[i]/conf(conf_à_court_de)__
     à (cours?) de? @@2 <<- -1>> court                                           # Confusion probable : écrivez « à court de … » pour « manquer de … »
 __[i]/conf(conf_à_court_terme)__
-    à cour(?:s|ts|) termes? <<- ->> à court terme                               # Confusion. Une cour… Un cours… Court(e) : adjectif.
+    à cour(?:s|ts|) termes? <<- ->> à court terme                               # Confusion. Une cour… Un cours… Adjectif : court(e).
 
 TEST: au {{court}} de cette journée
 TEST: les exercices {{en cour}} se déroulent bien.
