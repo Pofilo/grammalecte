@@ -10921,9 +10921,8 @@ TEST: en train de {{mangez}}
 
 __[i]/infi(infi_verbe)__
     ((?:aim|all|v|ir|désir|esp[éè]r|p(?:[eou]|réf[éè]r))\w*) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">(?:aimer|aller|désirer|devoir|espérer|pouvoir|préférer|souhaiter|venir) ", False)
-    and not morph(\1, ":[GN]", False) and morphex(\2, ":V", ":M")
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+    <<- morphex(\1, ">(?:aimer|aller|désirer|devoir|espérer|pouvoir|préférer|souhaiter|venir) ", ":[GN]") and morphex(\2, ":V", ":M")
+    -2>> =suggVerbInfi(@)                                                                           # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: elle préférait {{mangée}} seule.
 TEST: Il venait, comme d’habitude, {{discuté}} avec son ami.
