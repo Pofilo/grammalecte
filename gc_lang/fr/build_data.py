@@ -7,11 +7,13 @@
 
 import json
 import os
+import itertools
 
 import grammalecte.ibdawg as ibdawg
 from grammalecte.echo import echo
 from grammalecte.str_transform import defineSuffixCode
 import grammalecte.fr.conj as conj
+import grammalecte.tokenizer as tkz
 
 
 class cd:
@@ -32,6 +34,8 @@ def readFile (spf):
         with open(spf, "r", encoding="utf-8") as hSrc:
             for sLine in hSrc:
                 sLine = sLine.strip()
+                if sLine == "__END__":
+                    break
                 if sLine and not sLine.startswith("#"):
                     yield sLine
     else:
@@ -183,7 +187,6 @@ def makeMfsp (sp, bJS=False):
     lTag = []
     lTagMasPl = []
     for n, sLine in enumerate(readFile(sp+"/data/dictDecl.txt")):
-        sLine = sLine.strip()
         nTab = sLine.count("\t")
         if nTab == 1:
             # new entry
@@ -316,25 +319,30 @@ def makeLocutions (sp, bJS=False):
     "compile list of locutions in JSON"
     print("> Locutions ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
-    dLocutions = {}
-    sVal = ":H"
-    for sLine in readFile(sp+"/data/locutions.txt"):
-        if sLine.startswith("[") and sLine.endswith("]"):
-            sLabel, sVal = sLine[1:-1].split("|", 1)
-            continue
-        lElem = sLine.split()
-        dCur = dLocutions
-        for sWord in lElem:
+    dLocGraph = {}
+    oTokenizer = tkz.Tokenizer("fr")
+    for sLine in itertools.chain(readFile(sp+"/data/locutions_adverbiales.txt"), \
+                                 readFile(sp+"/data/locutions_prépositives.txt"), \
+                                 readFile(sp+"/data/locutions_conjonctives.txt"), \
+                                 readFile(sp+"/data/locutions_pronominales.txt"), \
+                                 readFile(sp+"/data/locutions_adjectivales.txt"), \
+                                 readFile(sp+"/data/locutions_interjectives.txt"), \
+                                 readFile(sp+"/data/locutions_nominales.txt"), \
+                                 readFile(sp+"/data/locutions_verbales.txt")):
+        dCur = dLocGraph
+        sLoc, sTag = sLine.split("\t")
+        for oToken in oTokenizer.genTokens(sLoc.strip()):
+            sWord = oToken["sValue"]
             if sWord not in dCur:
                 dCur[sWord] = {}
             dCur = dCur[sWord]
-        dCur[":"] = sVal
+        dCur["_:_"] = sTag
 
     sCode = "# generated data (do not edit)\n\n" + \
-            "dLocutions = " + str(dLocutions) + "\n"
+            "dLocutions = " + str(dLocGraph) + "\n"
     open(sp+"/modules/locutions_data.py", "w", encoding="utf-8", newline="\n").write(sCode)
     if bJS:
-        open(sp+"/modules-js/locutions_data.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocutions, ensure_ascii=False))
+        open(sp+"/modules-js/locutions_data.json", "w", encoding="utf-8", newline="\n").write(json.dumps(dLocGraph, ensure_ascii=False))
 
 
 def before (spLaunch, dVars, bJS=False):
