@@ -11660,7 +11660,7 @@ TEST: l’amour dont {{parle}} les femmes
 
 
 __[i]/conj(conj_que_où_comment_verbe_sujet)__
-    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_1}[es])(?! je| tu) @@$
+    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_1}[es])(?! je| tu| vous) @@$
     <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
@@ -11717,7 +11717,7 @@ __[i]/inte(inte_union_nous)__
     <<- morphex(\1, ":V.*:1p", ":[GNW]") and not morph(word(-1), ":Os", False, False) and morphex(word(1), ":", ":(?:Y|1p)", True)
     ->> \1-nous                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_vous)__
-    ({w_2}ez) vous  @@0
+    ({w_2}e[zs]) vous  @@0
     <<- morphex(\1, ":V.*:2p", ":[GNW]|>vouloir .*:E:2p") and not morph(word(-1), ":Os", False, False) and morphex(word(1), ":", ":(?:Y|2p)", True)
     ->> \1-vous                                                                                     # Forme interrogative ? Mettez un trait d’union.
 __[i]/inte(inte_union_ils_elles)__
@@ -11734,6 +11734,7 @@ TEST: {{viennent elles}} souvent ?
 TEST: {{retrouverons nous}} enfin la tranquilité ?
 TEST: Mais {{soutiendrez vous}} cette proposition ?
 TEST: {{Viendront ils}} demain ?
+TEST: comment {{êtes vous}} arrivées là ?
 TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que personne ne parlait de celui qui avait fait ça.
 TEST: Veuillez vous instruire avant de contester ces mesures.
 TEST: C’était elle qui avait pris le contrôle.
