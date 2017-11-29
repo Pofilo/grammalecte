@@ -105,8 +105,8 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
 
 
 def showDistance (s1, s2):
-    print(f"Damerau-Levenshtein: {s1} / {s2} = {distanceDamerauLevenshtein(s1, s2)}")
-    print(f"Sift4: {s1} / {s2} = {distanceSift4(s1, s2)}")
+    print("Damerau-Levenshtein: " + s1 + "/" + s2 + " = " + distanceDamerauLevenshtein(s1, s2))
+    print("Sift4:" + s1 + "/" + s2 + " = " + distanceSift4(s1, s2))
 
 
 
