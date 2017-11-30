@@ -101,7 +101,7 @@ setup(
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],
     data_files=[('', ['grammalecte-cli.py', 'grammalecte-server.py', 'bottle.py', 'README.txt', 'LICENSE.txt', \
-                      'server_options.fr.ini', 'server_options._global.ini'])],
+                      'grammalecte-server-options.fr.ini', 'grammalecte-server-options._global.ini'])],
 
     # To provide executable scripts, use entry points in preference to the
     # "scripts" keyword. Entry points provide cross-platform support and allow
