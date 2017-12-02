@@ -2903,7 +2903,6 @@ TEST: {{ajouter en plus}}                           ->> ajouter
 TEST: la {{panacée universelle}}                    ->> panacée|remède universel
 TEST: ce sont leurs {{premiers balbutiements}}      ->> balbutiements
 TEST: la {{première priorité}}, c’est…              ->> priorité
-TEST: {{réserver d’avance}}                         ->> réserver
 TEST: Un {{futur projet}}                           ->> projet
 TEST: ce sont des {{projets futurs}}                ->> projets
 TEST: {{prototypes expérimentaux}}                  ->> prototypes
@@ -2929,6 +2928,7 @@ __[i]/pleo(pleo_verbe_à_l_avance)__
 
 TEST: {{prédire à l’avance}}                  ->> prédire
 TEST: {{pronostiquer d’avance}}               ->> pronostiquer
+TEST: {{réserver d’avance}}                         ->> réserver
 
 
 # plus tard / à une date ultérieure
@@ -3192,10 +3192,12 @@ TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 __[i]/conf(conf_très_verbe)__
     très +(?!envie)({w_2})  @@$
     <<- morphex(\1, ":(?:Y|[123][sp])", ":[AQW]") -1>> =suggSimil(\1, ":[AW]", True)                # Incohérence avec « très » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+    <<- morph(\1, ">jeûne ", False) -1>> =\1.replace("û", "u")                                      # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 
 TEST: Il est très {{cite}}.
 TEST: très {{suivit}} par ce détective
 TEST: il était très {{habille}}
+TEST: Très {{jeûne}}, elle a su qu’elle ne voulait pas d’une vie ordinaire.
 
 
 __[i]/conf(conf_trop_vconj)__
@@ -3603,6 +3605,60 @@ TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
+
+
+# compte / comte / conte
+__[i]/conf(conf_à_bon_compte)__
+    à bon (co[nm]te)  @@$
+    <<- -1>> compte                                                             # Confusion. Locution “à bon compte”.|https://fr.wiktionary.org/wiki/%C3%A0_bon_compte
+__[i]/conf(conf_à_ce_compte_là)__
+    à ce (co[nm]te)-là  @@*
+    <<- -1>> compte                                                             # Confusion probable. Locution “à ce compte-là”.|https://fr.wiktionary.org/wiki/%C3%A0_ce_compte-l%C3%A0
+__[i]/conf(conf_compte)__
+    (co[mn]tes?)[ -](à (?:rebours|découvert|terme)|bancaires?|des opérations|tenus?|rendus?|joints?|courants?|chèques?) @@0,$
+    <<- not \1.startswith("tenu") or isStart() -1>> compte|comptes              # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :
+__[i]/conf(conf_en_fin_de_compte)__
+    en (f(?:aim|in)s?|lignes?) de co[nm]tes?  @@w
+    <<- \1.startswith("f") ->> en fin de compte                                 # Confusion. Locution “en fin de compte”.|https://fr.wiktionary.org/wiki/en_fin_de_compte
+    <<- \1.startswith("l") ->> en ligne de compte                               # Confusion. Locution “en ligne de compte”.|https://fr.wiktionary.org/wiki/en_ligne_de_compte
+__[i]/conf(conf_la_cour_des_comptes)__
+    la cour des (co[nm]tes)  @@$
+    <<- -1>> comptes                                                            # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :
+__[i]/conf(conf_loin_du_compte)__
+    loin du (co[mn]te)  @@$
+    <<- -1>> compte                                                             # Confusion. Locution “loin du compte”.|https://fr.wiktionary.org/wiki/loin_du_compte
+__[i]/conf(règlement_de_comptes)__
+    r[éè]glements? de (co[mn]tes?)  @@$
+    <<- -1>> comptes                                                            # Confusion.|https://fr.wiktionary.org/wiki/r%C3%A8glement_de_comptes
+__[i]/conf(régler_son_compte)__
+    (r[éè]gl\w+) +(?:[mts]on|leurs?|[vn]otre) (co[mn]tes?)  @@0,$
+    <<- morph(\1, ">régler ", False) -2>> compte                                # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :|https://fr.wiktionary.org/wiki/r%C3%A9gler_son_compte
+__[i]/conf(conf_tout_compte_fait)__
+    tout (co[mn]te) fait  @@w
+    <<- -1>> compte                                                             # Confusion. Locution “tout compte fait”.|https://fr.wiktionary.org/wiki/tout_compte_fait
+
+TEST: il s’en est tiré à bon {{conte}}.
+TEST: à ce {{conte}}-là, il ne va pas faire long feu.
+TEST: mon {{comte}} bancaire est encore à sec.
+TEST: {{comte}} tenu du dysfonctionnement du moteur
+TEST: mais {{en fin de comte}}, ce n’était qu’une arnaque de plus.
+TEST: Rien de tout ceci n’entre {{en ligne de conte}}.
+TEST: la cour des {{contes}} publie un nouveau rapport.
+TEST: Ils sont encore tous deux loin du {{conte}}.
+TEST: Elle a l’impression d’être laissée pour {{comte}}.
+TEST: C’est un règlement de {{comte}} entre voyous.
+TEST: on va lui régler son {{conte}}, à cet enculé.
+TEST: tout {{conte}} fait, ça reste un salopard.
+
+
+__[i]/conf(conf_conte_de_fée)__
+    (comp?tes?) (?:de fées?|allégoriques?|fantastiques?|littéraires?|merveilleux|mora(?:l|ux)|ora(?:l|ux)|populaires?|satiriques?|traditionnels?|véhiculés?|et légendes?)  @@0
+    <<- -1>> conte|contes                                                       # Confusion probable. Si vous parlez d’un récit, écrivez :|https://fr.wiktionary.org/wiki/conte
+
+TEST: Encore un {{comte}} de fée, assez de ces fadaises !
+TEST: c’est un {{compte}} allégorique.
+TEST: {{Comptes}} et légendes des Terres du Milieu.
+TEST: Elle parla au comte d’amour, mais il fit mine de n’y rien entendre.
 
 
 # date / datte
@@ -5423,6 +5479,11 @@ __[i](p_faire_qqch)__
     (f[aiîeo]\w*) +(tous(?: deux| trois|) +|)(allusion|assaut|bande à part|bonne figure|chaud|confiance|compliqué|copain[- ]copain|de (?:[mts]on|leur|[nv]otre) mieux|débat|demi-tour|envie|fausse route|froid|front commun|gr(?:ise mine|and cas)|h(?:alte|onte)|illusion|ma(?:chine|rche) arrière|main basse|mouche|office|p(?:art(?:ie(?: intégrante|)|)|eur|laisir|rofil bas)|rage|salle comble|sens|signe|table rase|volte-face|ce que bon (?:me|te|lui|leur|nous|vous) semble) @@0,*,$
     <<- morph(\1, ">faire ", False) ~2>> *
     <<- __also__ ~3>> *
+__[i](loc_laisser_pour_compte)__
+    (laiss\w+) +(pour (co[mnp]tes?))  @@0,$,$
+    <<- morph(\1, ">laisser ", False) >>>
+    <<- \2 != "compte" -3>> compte              # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
+    <<- ~2>> *
 __[i](loc_mettre_à_qqch)__
     (m(?:et|[iî][mst])\w*) +(([àa]) (?:jour|niveau|plat|l’(?:écart|épreuve))) @@0,$,w
     <<- morph(\1, ">mettre ", False) >>>
@@ -5431,6 +5492,12 @@ __[i](loc_mettre_à_qqch)__
 __[i](p_mettre_qqch)__
     (m(?:et|[iî][mst])\w*) +(au p(?:oint|as)|en (?:avant|bouche|demeure|garde|œuvre|place|scène|terre)|à bas) @@0,$
     <<- morph(\1, ">mettre ", False) ~2>> *
+__[i](loc_mourir_qqch)__
+    (m[oe]\w+) +(jeûne)  @@0,$
+    <<- morph(\1, ">mourir ", False) -2>> =\2.replace("û", "u")                 # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
+__[i](p_paraitre_qqch)__
+    (par\w+) +(jeûnes?)  @@0,$
+    <<- morph(\1, ">para[îi]tre ", False) -2>> =\2.replace("û", "u")            # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 __[i](p_porter_qqch)__
     (port\w+) +(atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours)  @@0,$
     <<- morph(\1, ">porter ", False) ~2>> *
@@ -5442,9 +5509,18 @@ __[i](loc_prendre_à_la_légère)__
 __[i](p_prendre)__
     (pr[eiî]\w+) +(au (?:dépourvu|sérieux)|congé|conscience|contact|de court|en charge|ombrage|pour argent comptant|par surprise|racine|soin|vie) @@0,$
     <<- morph(\1, ">prendre ", False) ~2>> *
-__[i](p_rester_lettre_morte)__
-    (rest\w+) (lettre morte) @@0,$
-    <<- morph(\1, ">rester ", False) ~2>> *
+__[i](loc_rendre_compte)__
+    (rend\w+) +(co[mn]tes?)  @@0,$
+    <<- morph(\1, ">rendre ", False) -2>> compte                                # Confusion probable. Locution “rendre compte”.|https://fr.wiktionary.org/wiki/rendre_compte
+    <<- ~1>> *
+__[i](loc_rester_qqch)__
+    (rest\w+) +(lettre morte|jeûnes?) @@0,$
+    <<- morph(\1, ">rester ", False) >>>
+    <<- morph(\2, ">jeûne ", False) -2>> =\2.replace("û", "u")                  # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
+    <<- __else__ ~2>> *
+__[i](loc_semble_qqch)__
+    (sembl\w+) +(jeûnes?)  @@0,$
+    <<- morph(\1, ">sembler ", False) -2>> =\2.replace("û", "u")                # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 __[i](p_sembler_paraitre_être)__
     (sembl\w+|par[au]\w+) +(être|avoir été) +({w_2}) @@0,w,$
     <<- morph(\1, ">(?:sembler|para[îi]tre) ") and morphex(\3, ":A", ":G") ~2>> *
@@ -5454,14 +5530,14 @@ __[i](loc_suivre_de_près)__
     <<- \3 != "près" -3>> près                  # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
     <<- ~2>> *
 __[i](loc_tenir_à_distance)__
-    (t[eiî]\w+) +(([àa]) distance) d(?:es?|u) @@0,$,w
+    (t[eiî]\w+) +(([àa]) distance +(?:respectable +|))d(?:es?|u) @@0,$,w
     <<- morph(\1, ">tenir ", False) >>>
     <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
 __[i](loc_tenir_compte)__
-    (t[eiî]\w+) +(co(?:mp?|n)tes?|au courant) d(?:es?|u) @@0,w
+    (t[eiî]\w+) +(co(?:mp?|n)tes?|au courant) @@0,w
     <<- morph(\1, ">tenir ", False) >>>
-    <<- morph(\2, ">co[mn]te ", False) -2>> compte                  # Dans cette locution, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
+    <<- morph(\2, ">co[mn]te(?:sse|) ", False) -2>> compte        # Confusion. Dans la locution “tenir compte”, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
     <<- ~2>> *
 __[i](p_tirer_profit)__
     (tir\w+) +(profit) d(?:es?|u) @@0,w
@@ -5484,6 +5560,11 @@ TEST: prendre {{a}} la légère ce test serait une erreur.
 TEST: on va suivre ça de {{prêt}}.
 TEST: il faut se tenir {{a}} distance de ces gens-là.
 TEST: cette expérience ne va pas tarder à tourner {{cours}}.
+TEST: il faut rendre {{comte}} de la sitation désastreuse dans laquelle nous sommes tombés.
+TEST: il faut tenir {{comtes}} des aléas de la météo.
+TEST: Elle est restée {{jeûne}}.
+TEST: Mourir {{jeûne}} ne lui faisait pas peur.
+TEST: Elles semblent {{jeûnes}}.
 
 
 # Autres tests contre les faux positifs
@@ -7544,14 +7625,6 @@ __[i]/conf(conf_sensé)__
 TEST: Ce sont pourtant des gens si {{censés}}
 
 
-# compte / comte / conte
-__[i]/conf(conf_compte)__
-    (co[mn]tes?) (?:à rebours|bancaires?|des opérations) @@0
-    <<- -1>> compte|comptes                                                     # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :
-
-TEST: mon {{comte}} bancaire est encore à sec.
-
-
 # content / contant / comptant
 __[i]/conf(conf_content)__
     ({avoir}) +(?:tout |)(?:[mts]on|[nv]otre|leur) (co(?:mp|n)tant) @@0,$
@@ -7880,10 +7953,17 @@ TEST: nous vaincrons, {{bon grès mal grès}}
 
 # jeune / jeûne
 __[i]/conf(conf_jeûne)__
-    (jeune) (?:du (?:carême|ramadan)|alimentaire|eucharistique|rituel|sacramentel)  @@0
-    <<- -1>> jeûne                                          # Pour les privations alimentaires, écrivez “jeûne”.|https://fr.wiktionary.org/wiki/je%C3%BBne
+    (jeunes?) (?:du (?:carême|ramadan)|alimentaire|eucharistique|rituel|sacramentel)  @@0
+    <<- -1>> =\1.replace("u", "û")                                              # Confusion. Pour les privations alimentaires, écrivez “jeûne”.|https://fr.wiktionary.org/wiki/je%C3%BBne
 
 TEST: il accomplit le {{jeune}} rituel
+
+
+__[i]/conf(conf_jeune)__
+    (jeûnes?) (?:adolescente?|adulte|âge|épou(?:sé?e|x)|femme|fille|gar(?:çon|s)|gens|homme|marié?e?|enfant|bébé|chi(?:en|iot)|chat|célibataire|étudiante?|lycéen(?:ne|)|élève|écoli(?:er|ère)|dipl[oô]mée?|prodige|couple|papa|père|mère|con(?:ne|)|génération|médecin|travailleur)s?  @@0
+    <<- -1>> =\1.replace("û", "u")                                              # Confusion. Le jeûne est une privation alimentaire.|https://fr.wiktionary.org/wiki/jeune
+
+TEST: de {{jeûnes}} adultes
 
 
 # la / là
@@ -13116,8 +13196,6 @@ TEST: Une affaire en cours.
 TEST: Il fut traduit en cour martiale.
 TEST: Donner libre cours à l’imagination
 TEST: En fin de compte.
-TEST: En ligne de comte.
-TEST: Tout comte fait.
 TEST: Elle aime les contes de fées.
 TEST: Elle aime les contes d’horreur.
 TEST: Elle aime les contes fantastiques.
