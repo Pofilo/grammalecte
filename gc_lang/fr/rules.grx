@@ -959,6 +959,26 @@ TEST: {{Que }}ils soient heureux
 TEST: J’ai passé une journée de ouf.
 
 
+# presque : élision
+__[i>/typo(typo_presque)__
+    presqu[’'](?![îi]le)
+    <<- ->> "presque "                                                          # Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+
+TEST: {{Presqu’}}exclusivement bâtie en pierre.
+TEST: C’est une presqu’île.
+TEST: Cette presqu’ile est particulièrement venteuse.
+
+
+# quelque : élision
+__[i>/typo(typo_quelque)__
+    quelqu[’'](?!une?)
+    <<- ->> "quelque "                                                          # Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+
+TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
+TEST: quelqu’un vient.
+TEST: elle s’en est allée avec quelqu’une…
+
+
 # ce -> cet
 __[i]/typo(typo_euphonie_cet)__
     (ce) ([aâeéêiîoôu]\w+)  @@0,$
