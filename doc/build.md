@@ -25,7 +25,7 @@
 
 **First build**
 
-`make.py LANG -ba -js`
+`make.py LANG -js`
 
 > This command is required to generate all necessary files.
 
