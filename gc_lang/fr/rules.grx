@@ -8340,8 +8340,8 @@ TEST: elle fait de la pole dance.
 # diagnostic / diagnotique // pronostic / pronostique
 __[i]/conf(conf_diagnostic_pronostique)__
     (?:diagnostique|pronostique)s?
-    <<- ( \0.endswith("s") and before(r"(?i)\b(?:[mtscd]es|[nv]os|leurs|quels) $") )
-    or ( \0.endswith("e") and before(r"(?i)\b(?:mon|ce|quel|un|du) $") )
+    <<- ( \0.endswith("s") and before(r"(?i)\b(?:[mtscdl]es|[nv]os|leurs|quels) $") )
+    or ( \0.endswith("e") and before(r"(?i)\b(?:mon|ce|quel|un|du|[nv]otre) $") )
     ->> =\0.replace("que", "c")                                                           # Confusion. Le nom s’écrit avec un “c”.
 
 TEST: Ce {{diagnostique}} est absurde.
