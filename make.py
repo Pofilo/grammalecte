@@ -340,7 +340,8 @@ def main ():
                     tests = importlib.import_module("grammalecte."+sLang+".tests")
                     print(tests.__file__)
                 except ImportError:
-                    print("# Error. Couldn't import file {}_test.py in folder tests".format(sLang))
+                    print("# Error. Import failed:" + "grammalecte."+sLang+".tests")
+                    traceback.print_exc()
                 else:
                     if xArgs.tests:
                         xTestSuite = unittest.TestLoader().loadTestsFromModule(tests)
