@@ -669,11 +669,11 @@ TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 
 !!
 !!
-!!!! Typographie, virgules, espaces insécables, unités de mesure…                                   
+!!!! Virgules                                                                                       
 !!
 !!
 
-## virgules manquantes
+# virgules manquantes
 __[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     # Avant « etc. », il faut mettre une virgule.
 __[i>/virg(virgule_manquante_avant_car)__
     ({w_1})( car)(?= (?:j[e’]|tu|ils?|nous|vous|elles?|on|les?|la|ces?|des?|cette|[mts](?:on|a))\b)  @@0,$
@@ -689,7 +689,6 @@ TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                 ->> 
 TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                   ->> , mais
 
 
-
 __<s>/virg(virgule_point_fin_dialogue)__
     ([.] » )[a-zéà]  @@0 <<- -1>> " », | » "             # Ou il faut une virgule (exemple : « Je viens », dit-il). Ou le point est superflu. Ou il faut une majuscule sur le mot suivant.
 __<s>/virg(virgule_fin_dialogue)__
@@ -702,13 +701,30 @@ TEST: dès son premier rendez-vous au centre
 TEST: Depuis combien de temps fumez-vous ?
 
 
+__<s>/virg(virg_virgule_avant_points_suspension)__
+    , *… <<- ->> …                                                          # Typographie : pas de virgule avant les points de suspension.
+
+__<s>/virg(virg_virgule_après_point)__
+    ({w1})([.],)  @@0,$
+    <<- not re.search("^(?:etc|[A-Z]|fig|hab|litt|circ|coll|ref|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp?)$", \1)
+    -2>> ,|.                                                                # Pas de virgule après un point (sauf éventuellement après une abréviation).
+
+TEST: ceci, cela{{, …}}                                                   ->> …
+TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|.
+
+
 # Fin de paragraphe
 #__<i>/typo__  ({w_2}) *$   @@0
 #    <<- before("[a-zéàùèê][.] ") and not before(r"^(?:\d|\w[.])")
 #    -1>> \1.|\1…|\1 !|\1 ?|\1 :|\1 ;|\1,                                               # Il manque une ponctuation finale.
 
 
-# Espaces manquants
+!!
+!!
+!!!! Espaces manquants                                                                              
+!!
+!!
+
 __<s>/typo(typo_espace_manquant_après1)__
     ({w1})[,:]({w_1})  @@0,$  <<- not \1.isdigit() -2>> " \2"                                       # Il manque un espace.
 __<s>/typo(typo_espace_manquant_après2)__
@@ -730,6 +746,11 @@ TEST: espace{{!}}{{manquant}}
 TEST: espace.{{Manquant}}                                                   ->> " Manquant"
 TEST: qui ont refuse.{{de}} se sauver                                       ->> " de"
 
+!!
+!!
+!!!! Points                                                                                         
+!!
+!!
 
 # Points superflus
 __[i>/typo(typo_et_cetera)__             etc(?:[.]{3,5}|…) <<- ->> etc.                             # Un seul point après « etc. »
@@ -763,15 +784,12 @@ TEST: Ligne de points{{...........................}}
 TEST: Aujourd’hui, M. Camus va nous lire son texte.
 
 
-__<s>/typo(typo_virgule_avant_points_suspension)__       , *… <<- ->> …          # Typographie : pas de virgule avant les points de suspension.
-__<s>/typo(typo_virgule_après_point)__
-    ({w1})([.],)  @@0,$
-    <<- not re.search("^(?:etc|[A-Z]|fig|hab|litt|circ|coll|ref|étym|suppl|bibl|bibliogr|cit|vol|déc|nov|oct|janv|juil|avr|sept|pp?)$", \1)
-    -2>> ,|.                                                                # Pas de virgule après un point (sauf éventuellement après une abréviation).
 
-TEST: ceci, cela{{, …}}                                                   ->> …
-TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|.
-
+!!
+!!
+!!!! Tirets                                                                                         
+!!
+!!
 
 # Tirets, énumérations et dialogues
 __<s>/typo(typo_tiret_début_ligne)__    ^[-_][  ] <<- ->> "— |– "           # Dialogues et énumérations : un tiret cadratin ou demi-cadratin, suivi d’un espace insécable, est requis.
@@ -790,7 +808,11 @@ TEST: Cette phrase contient{{ - }}c’est certain – des tirets d’incise.    
 TEST: « {{- }}Viens ! On va en finir avec cette affaire, sale fils de pute. ->> "— |– "
 
 
-# Ponctuations redondantes
+!!
+!!
+!!!! Ponctuations redondantes
+!!
+!!
 __<s>/typo(typo_ponctuation_superflue1)__    , ?([.,;:!?]) @@$ <<- ->> =",|" + \1       # Une de ces ponctuations est superflue.
 __<s>/typo(typo_ponctuation_superflue2)__    ; ?([.,;:…!?]) @@$ <<- ->> =";|" + \1      # Une de ces ponctuations est superflue.
 __<s>/typo(typo_ponctuation_superflue3)__    :[.,;:…!?] <<- ->> =":|" + \0[1]           # Une de ces ponctuations est superflue.
@@ -825,7 +847,12 @@ TEST: C’est assez {{: }}parlez !                                           
 TEST: {{» }}C’est ce qu’on croit savoir.                                    ->> "» |« "
 
 
-# Signes typographiques.
+!!
+!!
+!!!! Signes typographiques                                                                          
+!!
+!!
+
 __<s>/typo(typo_signe_multiplication)__
     (\d+) ?[x*] ?(\d+)  @@0,$ <<- not \0.startswith("0x") ->> \1 × \2                               # Signe de multiplication typographique.
 
@@ -849,8 +876,11 @@ TEST: __liga__ un {{ﬂ}}ottement                                           ->> 
 TEST: __liga__ une belle {{ﬁ}}gure                                        ->> fi
 
 
+!!
+!!
 !!!! Apostrophes                                                                                    
-
+!!
+!!
 ## Apostrophe typographique
 __[i>/apos(apostrophe_typographique)__
     ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`](?=[\w"«]) @@0 <<- ->> \1’    # Apostrophe typographique.
@@ -900,7 +930,11 @@ TEST: Je {{m }}étais imaginé que je pourrais pas retrouver cet objet.         
 TEST: Je {{n }}ai pas retrouvé l’ambiance de mes années de lycée.               ->> n’
 
 
+!!
+!!
 !!!! Guillemets typographiques                                                                      
+!!
+!!
 
 __<s>/typo(typo_guillemets_typographiques_doubles_ouvrants)__
     "(?=\w)
@@ -938,9 +972,11 @@ TEST: Le ‘grand{{'}} homme.                                                 ->
 TEST: J’en ai '''marre''' (syntaxe wiki).
 
 
-
-
+!!
+!!
 !!!! Élisions                                                                                       
+!!
+!!
 
 __[i]/typo(typo_élision_déterminants)__
     (l[ea] |de )([aâeéêiîoôu]\w+)  @@0,$
@@ -988,7 +1024,11 @@ __[i]/typo(typo_euphonie_cet)__
 TEST: {{ce}} animal est dangereux
 
 
+!!
+!!
 !!!! Divers                                                                                         
+!!
+!!
 
 ## NF (memo: don’t use flag i)
 __[s]/nf(nf_norme_française)__
@@ -1007,8 +1047,11 @@ __[s]/chim(chim_molécules)__
 TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
 
 
-
+!!
+!!
 !!!! Cohérence des guillemets                                                                       
+!!
+!!
 
 __<s>/typo(typo_cohérence_guillemets_chevrons_ouvrants)__
     («)[^»“]+?(”)  @@0,$
@@ -1062,8 +1105,11 @@ TEST: — Oui, nous t’avons vu arriver. »
 TEST: « J’en suis “malade”. »
 
 
-
+!!
+!!
 !!!! Espaces insécables avant unités de mesure                                                      
+!!
+!!
 
 __[s]/unit(unit_nbsp_avant_unités1)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![’'])  @@0,0
@@ -1097,7 +1143,11 @@ TEST: il y en a 3,43 milliards.
 TEST: je veux 200 euros.
 
 
+!!
+!!
 !!!! Grands nombres                                                                                 
+!!
+!!
 
 __[s]/num(num_grand_nombre_soudé)__
     \d\d\d\d+
@@ -1142,9 +1192,11 @@ __[s](num_grand_nombre_avec_espaces)__
 TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 
 
-
+!!
+!!
 !!!! Dates                                                                                          
-
+!!
+!!
 __[i]/date(date_nombres)__
     (?<!\d[ /.-])(\d\d?)[ /.-](\d\d?)[ /.-](\d\d\d+)(?![ /.-]\d)  @@0,w,$
     <<- not checkDate(\1, \2, \3) and not before(r"(?i)\bversions? +$") ->> _                       # Cette date est invalide.
@@ -1157,8 +1209,11 @@ TEST: le {{81/01/2012}}
 TEST: 12-12-2012
 
 
+!!
+!!
 !!!! Redondances                                                                                    
-
+!!
+!!
 __[i]/redon1(redondances_paragraphe)__
     ({w_4})[  ,.;!?:].*[  ](\1)  @@0,$
     <<- not morph(\1, ":(?:G|V0)|>(?:t(?:antôt|emps|rès)|loin|souvent|parfois|quelquefois|côte|petit|même) ", False) and not \1[0].isupper()
@@ -1167,6 +1222,7 @@ __[i]/redon1(redondances_paragraphe)__
 
 TEST: __redon1__ Tu es son {{avenir}}. Et lui aussi est ton {{avenir}}.
 TEST: __redon1__ Car parfois il y en a. Mais parfois il n’y en a pas.
+
 
 
 
