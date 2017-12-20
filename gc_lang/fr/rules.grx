@@ -7862,9 +7862,24 @@ TEST: elle a {{dessellé}} une forte hostilité dans ses propos.
 
 # en train / entrain
 __[i]/conf(conf_en_train)__
-    entrain <<- morph(word(-1), ":V0e", False, False) ->> en train              # Confusion. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
+    entrain
+    <<- morph(word(-1), ">(?:être|voyager|surprendre|venir|arriver|partir|aller) ", False, False) or before("-(?:ils?|elles?|on|je|tu|nous|vous) +$")
+    ->> en train                                                                    # Confusion. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
 
 TEST: Vous êtes {{entrain}} de vaincre.
+TEST: Viennent-ils {{entrain}} ?
+TEST: ces idiots sont en train de tout foutre en l’air.
+
+
+__[i]/conf(conf_entrain)__
+    en train
+    <<- morph(word(-1), ">(?:avec|sans|quel(?:le|)|cet|votre|notre|mon|leur) ", False, False) or before(" [dlDL]’$")
+    ->> entrain                                                 # Confusion. Soudez les deux mots. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
+
+TEST: Avec quel {{en train}}, ils nous ont mené jusque là-haut.
+TEST: Son manque d’{{en train}} était contagieux.
+TEST: c’est l’{{en train}} de cette jeune femme qui force l’admiration de tout le monde.
+TEST: Elles travaillaient avec entrain, conscientes que la fin était proche.
 
 
 # envi / envie
