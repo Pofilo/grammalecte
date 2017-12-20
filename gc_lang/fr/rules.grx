@@ -1567,9 +1567,8 @@ TEST: J’ai été engagé pour un {{mi temps}}.
 
 __[i]/tu(tu_préfixe_quasi)__
     (?:l(?:es?|a|eurs?)|ce(?:tte|t|s|)|des?|m(?:a|on|es)|[ts](?:es|a)) (quasi ({w1}))  @@$,$ 
-    <<- morphex(\2, ":N", ":[AGW]")
-    -1>> quasi-\2                                                                                   # Il manque un trait d’union : « quasi » s’accroche au mot qui le suit s’il s’agit d’un nom.
-    ~1>> \2
+    <<- morphex(\2, ":N", ":[AGW]") -1>> quasi-\2                                                   # Il manque un trait d’union : « quasi » s’accroche au mot qui le suit s’il s’agit d’un nom.
+    <<- ~1>> \2
 
 TEST: leurs {{quasi indifférences}}
 
@@ -1594,7 +1593,7 @@ TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 __[i]/tu(tu_préfixe_pseudo)__
     pseudo ({w_2}) @@$
     <<- morph(\1, ":N") ->> pseudo-\1                                                               # Si vous voulez évoquer le simulacre de “\1”, mettez un trait d’union.
-    <<- morph(\1, ":N") ~>> \1
+    <<- __also__ ~>> \1
 __[i](p_pseudo_xxx)__
     (pseudo-){w_2} @@0 <<- ~1>> *
 
