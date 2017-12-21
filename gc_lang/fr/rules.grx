@@ -4239,7 +4239,7 @@ __[i]/conf(conf_son_qqch)__
     and not before(r"(?i)\bce que? |[mts]’en +$")
     -1>> son                        # Confusion : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 __[i]/conf(conf_qui_sont_les)__
-    qui +(son) @@$
+    (?:qu[ie]|comment|pourquoi) +(son) @@$
     <<- morph(word(1), ":[DR]", False, True) -1>> sont      # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
 TEST: ne leur {{son}} pas odieux.
