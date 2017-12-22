@@ -201,14 +201,16 @@ dTableRepl = {
                     ("^–[  ]",                          "— ",           True,   True),
                     ("^— ",                             "— ",           True,   True),
                     ("^«[  ][—–-][  ]",                 "« — ",         True,   True),
-                    ("^[-–—](?=[:alnum:])",             "— ",           True,   False)
+                    ("^[-–—](?=[:alnum:])",             "— ",           True,   False),
+                    ("^[-–—](?=[.…])",                  "— ",           True,   True)
     ],
     "typo4b": [     # demin-cadratin
                     ("^-[  ]",                          "– ",           True,   True),
                     ("^—[  ]",                          "– ",           True,   True),
                     ("^– ",                             "– ",           True,   True),
                     ("^«[  ][—–-][  ]",                 "« – ",         True,   True),
-                    ("^[-–—](?=[:alnum:])",             "– ",           True,   False)
+                    ("^[-–—](?=[:alnum:])",             "– ",           True,   False),
+                    ("^[-–—](?=[.…])",                  "– ",           True,   True)
     ],
     "typo5": [
                     ('"([:alpha:]+)"',                      "“$1”",         True,   False),
