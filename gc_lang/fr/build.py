@@ -39,7 +39,7 @@ def _createOptionsForWebExtension (dVars):
 
 
 def createFirefoxExtension (sLang, dVars):
-    "create extension for Firefox"
+    "create extension for Firefox (obsolete)"
     print("Building extension for Firefox")
     helpers.createCleanFolder("_build/xpi/"+sLang)
     dir_util.copy_tree("gc_lang/"+sLang+"/xpi/", "_build/xpi/"+sLang)
@@ -58,6 +58,7 @@ def createFirefoxExtension (sLang, dVars):
 
 
 def _createOptionsForFirefox (dVars):
+    # obsolete
     sHTML = ""
     for sSection, lOpt in dVars['lStructOpt']:
         sHTML += '\n<div id="subsection_' + sSection + '" class="opt_subsection">\n  <h2 data-l10n-id="option_'+sSection+'"></h2>\n'
@@ -114,7 +115,10 @@ def _copyGrammalecteJSPackageInZipFile (hZip, spLangPack, sDicName, sAddPath="")
     for sf in os.listdir("grammalecte-js"):
         if not os.path.isdir("grammalecte-js/"+sf):
             hZip.write("grammalecte-js/"+sf, sAddPath+"grammalecte-js/"+sf)
+    for sf in os.listdir("grammalecte-js/graphspell"):
+        if not os.path.isdir("grammalecte-js/graphspell/"+sf):
+            hZip.write("grammalecte-js/graphspell/"+sf, sAddPath+"grammalecte-js/graphspell/"+sf)
+    hZip.write("grammalecte-js/graphspell/_dictionaries/"+sDicName, sAddPath+"grammalecte-js/graphspell/_dictionaries/"+sDicName)
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
-    hZip.write("grammalecte-js/_dictionaries/"+sDicName, sAddPath+"grammalecte-js/_dictionaries/"+sDicName)
