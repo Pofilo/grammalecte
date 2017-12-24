@@ -167,10 +167,13 @@ def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sDicName, sAddPath=""):
     for sf in os.listdir("grammalecte"):
         if not os.path.isdir("grammalecte/"+sf):
             hZip.write("grammalecte/"+sf, sAddPath+"grammalecte/"+sf)
+    for sf in os.listdir("grammalecte/graphspell"):
+        if not os.path.isdir("grammalecte/graphspell/"+sf):
+            hZip.write("grammalecte/graphspell/"+sf, sAddPath+"grammalecte/graphspell/"+sf)
+    hZip.write("grammalecte/graphspell/_dictionaries/"+sDicName, sAddPath+"grammalecte/graphspell/_dictionaries/"+sDicName)
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
-    hZip.write("grammalecte/_dictionaries/"+sDicName, sAddPath+"grammalecte/_dictionaries/"+sDicName)
 
 
 def create (sLang, xConfig, bInstallOXT, bJavaScript):
