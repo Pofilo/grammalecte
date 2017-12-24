@@ -277,6 +277,25 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     return dVars['version']
 
 
+def copyGraphspellCore ():
+    helpers.createCleanFolder("grammalecte/graphspell")
+    helpers.createCleanFolder("grammalecte-js/graphspell")
+    dir_util.mkpath("grammalecte/graphspell/_dictionaries")
+    dir_util.mkpath("grammalecte-js/graphspell/_dictionaries")
+    for sf in os.listdir("graphspell"):
+        if not os.path.isdir("graphspell/"+sf):
+            file_util.copy_file("graphspell/"+sf, "grammalecte/graphspell")
+    for sf in os.listdir("graphspell-js"):
+        if not os.path.isdir("graphspell-js/"+sf):
+            file_util.copy_file("graphspell-js/"+sf, "grammalecte-js/graphspell")
+
+
+def copyGraphspellDictionary (sDicName):
+    file_util.copy_file("graphspell/_dictionaries/"+sDicName.strip()+".bdic", "grammalecte/graphspell/_dictionaries")
+    file_util.copy_file("graphspell/_dictionaries/"+sDicName.strip()+".info.txt", "grammalecte/graphspell/_dictionaries")
+    file_util.copy_file("graphspell-js/_dictionaries/"+sDicName.strip()+".json", "grammalecte-js/graphspell/_dictionaries")
+
+
 def main ():
     print("Python: " + sys.version)
     xParser = argparse.ArgumentParser()
@@ -303,6 +322,8 @@ def main ():
     dir_util.mkpath("grammalecte")
     dir_util.mkpath("grammalecte-js")
 
+    copyGraphspellCore()
+
     for sLang in xArgs.lang:
         if os.path.exists("gc_lang/"+sLang) and os.path.isdir("gc_lang/"+sLang):
             xConfig = getConfig(sLang)
@@ -324,11 +345,15 @@ def main ():
                     print("# Error. Couldn’t import file build_data.py in folder gc_lang/"+sLang)
             if build_data_module and xArgs.build_data_before:
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
-            if xArgs.dict or not os.path.exists("grammalecte/_dictionaries"):
+            if xArgs.dict:
                 import lex_build
                 lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], xArgs.javascript, dVars['stemming_method'], int(dVars['fsa_method']))
             if build_data_module and xArgs.build_data_after:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
+
+            # copy dictionaries from Graphspell
+            for sDicName in dVars['dic_name'].split(","):
+                copyGraphspellDictionary(sDicName)
 
             # make
             sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, )

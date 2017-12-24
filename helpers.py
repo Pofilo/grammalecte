@@ -2,6 +2,7 @@
 
 import os
 import shutil
+import errno
 import zipfile
 
 from string import Template
@@ -56,6 +57,16 @@ def createCleanFolder (sp):
         os.makedirs(sp, exist_ok=True)
     else:
         eraseFolder(sp)
+
+
+def copyFolderContent (spSrc, spDst):
+    try:
+        shutil.copytree(spSrc, spDst)
+    except OSError as e:
+        if e.errno == errno.ENOTDIR:
+            shutil.copy(spSrc, spDst)
+        else:
+            raise
 
 
 def fileFile (spf, dVars):
