@@ -84,7 +84,6 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
         hZip.write(spf)
     dVars = _createOptionsForThunderbird(dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/tb", "", dVars, True)
-    hZip.write("gc_lang/"+sLang+"/xpi/gce_worker.js", "worker/gce_worker.js")
     spDict = "gc_lang/"+sLang+"/xpi/data/dictionaries"
     for sp in os.listdir(spDict):
         if os.path.isdir(spDict+"/"+sp):
