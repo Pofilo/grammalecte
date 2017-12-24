@@ -14,8 +14,8 @@ import grammalecte.fr as gce
 import grammalecte.fr.lexicographe as lxg
 import grammalecte.fr.textformatter as tf
 import grammalecte.text as txt
-import grammalecte.tokenizer as tkz
-from grammalecte.echo import echo
+import grammalecte.graphspell.tokenizer as tkz
+from grammalecte.graphspell.echo import echo
 
 
 HOMEPAGE = """

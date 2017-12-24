@@ -322,7 +322,7 @@ var gc_engine = {
     load: function (sContext="JavaScript", sPath="") {
         try {
             if (typeof(require) !== 'undefined') {
-                var ibdawg = require("resource://grammalecte/ibdawg.js");
+                var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
                 _oDict = new ibdawg.IBDAWG("${dic_name}.json");
             } else {
                 _oDict = new IBDAWG("${dic_name}.json", sPath);

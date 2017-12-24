@@ -5,7 +5,7 @@ import os
 import sys
 import re
 
-import grammalecte.ibdawg as ibdawg
+import graphspell.ibdawg as ibdawg
 
 oDict = ibdawg.IBDAWG("French.bdic")
 

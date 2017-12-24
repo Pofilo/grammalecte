@@ -33,11 +33,11 @@
 //console.log(self);
 
 importScripts("grammalecte/helpers.js");
-importScripts("grammalecte/str_transform.js");
-importScripts("grammalecte/char_player.js");
-importScripts("grammalecte/ibdawg.js");
+importScripts("grammalecte/graphspell/str_transform.js");
+importScripts("grammalecte/graphspell/char_player.js");
+importScripts("grammalecte/graphspell/ibdawg.js");
 importScripts("grammalecte/text.js");
-importScripts("grammalecte/tokenizer.js");
+importScripts("grammalecte/graphspell/tokenizer.js");
 importScripts("grammalecte/fr/conj.js");
 importScripts("grammalecte/fr/mfsp.js");
 importScripts("grammalecte/fr/phonet.js");
