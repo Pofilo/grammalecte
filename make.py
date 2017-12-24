@@ -259,9 +259,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
         helpers.createCleanFolder(spLangPack)
 
         # create files
-        for sf in os.listdir("gc_core/js"):
-            if not os.path.isdir("gc_core/js/"+sf) and sf.startswith("jsex_"):
-                dVars[sf[5:-3]] = open("gc_core/js/"+sf, "r", encoding="utf-8").read()
+        for sf in os.listdir("js_extension"):
+            dVars[sf[:-3]] = open("js_extension/"+sf, "r", encoding="utf-8").read()
         for sf in os.listdir("gc_core/js"):
             if not os.path.isdir("gc_core/js/"+sf) and not sf.startswith("jsex_"):
                 helpers.copyAndFileTemplate("gc_core/js/"+sf, "grammalecte-js/"+sf, dVars)
@@ -295,9 +294,13 @@ def copyGraphspellCore (bJavaScript=False):
     if bJavaScript:
         helpers.createCleanFolder("grammalecte-js/graphspell")
         dir_util.mkpath("grammalecte-js/graphspell/_dictionaries")
+        dVars = {}
+        for sf in os.listdir("js_extension"):
+            dVars[sf[:-3]] = open("js_extension/"+sf, "r", encoding="utf-8").read()
         for sf in os.listdir("graphspell-js"):
             if not os.path.isdir("graphspell-js/"+sf):
                 file_util.copy_file("graphspell-js/"+sf, "grammalecte-js/graphspell")
+                helpers.copyAndFileTemplate("graphspell-js/"+sf, "grammalecte-js/graphspell/"+sf, dVars)
 
 
 def copyGraphspellDictionary (sDicName, bJavaScript=False):
