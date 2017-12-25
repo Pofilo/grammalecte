@@ -9,11 +9,11 @@ import json
 import os
 import itertools
 
-import grammalecte.ibdawg as ibdawg
-from grammalecte.echo import echo
-from grammalecte.str_transform import defineSuffixCode
+import graphspell.ibdawg as ibdawg
+from graphspell.echo import echo
+from graphspell.str_transform import defineSuffixCode
+import graphspell.tokenizer as tkz
 import grammalecte.fr.conj as conj
-import grammalecte.tokenizer as tkz
 
 
 class cd:

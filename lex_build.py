@@ -5,20 +5,20 @@
 import argparse
 from distutils import dir_util
 
-import grammalecte.dawg as fsa
-from grammalecte.ibdawg import IBDAWG
+import graphspell.dawg as fsa
+from graphspell.ibdawg import IBDAWG
 
 
 def build (spfSrc, sLangName, sDicName, bJSON=False, cStemmingMethod="S", nCompressMethod=1):
     "transform a text lexicon as a binary indexable dictionary"
     oDAWG = fsa.DAWG(spfSrc, sLangName, cStemmingMethod)
-    dir_util.mkpath("grammalecte/_dictionaries")
-    oDAWG.writeInfo("grammalecte/_dictionaries/" + sDicName + ".info.txt")
-    oDAWG.createBinary("grammalecte/_dictionaries/" + sDicName + ".bdic", int(nCompressMethod))
+    dir_util.mkpath("graphspell/_dictionaries")
+    oDAWG.writeInfo("graphspell/_dictionaries/" + sDicName + ".info.txt")
+    oDAWG.createBinary("graphspell/_dictionaries/" + sDicName + ".bdic", int(nCompressMethod))
     if bJSON:
-        dir_util.mkpath("grammalecte-js/_dictionaries")
+        dir_util.mkpath("graphspell-js/_dictionaries")
         oDic = IBDAWG(sDicName + ".bdic")
-        oDic.writeAsJSObject("grammalecte-js/_dictionaries/" + sDicName + ".json", bBinaryDictAsHexString=True)
+        oDic.writeAsJSObject("graphspell-js/_dictionaries/" + sDicName + ".json", bBinaryDictAsHexString=True)
 
 
 def main ():

@@ -8,8 +8,8 @@ import traceback
 #import unicodedata
 from itertools import chain
 
-from ..ibdawg import IBDAWG
-from ..echo import echo
+from ..graphspell.ibdawg import IBDAWG
+from ..graphspell.echo import echo
 from . import gc_options
 
 

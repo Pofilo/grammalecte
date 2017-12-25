@@ -7,12 +7,12 @@ import re
 import time
 
 
-from .. import ibdawg
+from ..graphspell.ibdawg import IBDAWG
+from ..graphspell.echo import echo
 from . import gc_engine as gce
 from . import conj
 from . import phonet
 from . import mfsp
-from ..echo import echo
 
 
 def _fuckBackslashUTF8 (s):
@@ -24,7 +24,7 @@ class TestDictionary (unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
-        cls.oDic = ibdawg.IBDAWG("French.bdic")
+        cls.oDic = IBDAWG("French.bdic")
 
     def test_lookup (self):
         for sWord in ["branche", "Émilie"]:

@@ -32,12 +32,12 @@
 //console.log("[Worker] GC Engine Worker [start]");
 //console.log(self);
 
-importScripts("grammalecte/helpers.js");
-importScripts("grammalecte/str_transform.js");
-importScripts("grammalecte/char_player.js");
-importScripts("grammalecte/ibdawg.js");
+importScripts("grammalecte/graphspell/helpers.js");
+importScripts("grammalecte/graphspell/str_transform.js");
+importScripts("grammalecte/graphspell/char_player.js");
+importScripts("grammalecte/graphspell/ibdawg.js");
 importScripts("grammalecte/text.js");
-importScripts("grammalecte/tokenizer.js");
+importScripts("grammalecte/graphspell/tokenizer.js");
 importScripts("grammalecte/fr/conj.js");
 importScripts("grammalecte/fr/mfsp.js");
 importScripts("grammalecte/fr/phonet.js");
@@ -53,7 +53,7 @@ importScripts("grammalecte/tests.js");
     for we need the path of the extension to load data stored in JSON files.
     This path is retrieved in background.js and passed with the event “init”.
 */
-
+console.log("[Worker] imports odne");
 
 function createResponse (sActionDone, result, dInfo, bEnd, bError=false) {
     return {
@@ -160,7 +160,7 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             phonet.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/phonet_data.json"));
             mfsp.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/mfsp_data.json"));
             //console.log("[Worker] Modules have been initialized…");
-            gc_engine.load(sContext, sExtensionPath+"grammalecte/_dictionaries");
+            gc_engine.load(sContext, sExtensionPath+"grammalecte/graphspell/_dictionaries");
             oDict = gc_engine.getDictionary();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
             oTokenizer = new Tokenizer("fr");

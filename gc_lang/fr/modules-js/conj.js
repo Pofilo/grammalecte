@@ -9,7 +9,7 @@ ${map}
 
 
 if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/helpers.js");
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
 var conj = {

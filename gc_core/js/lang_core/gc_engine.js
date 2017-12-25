@@ -10,7 +10,7 @@ ${map}
 
 
 if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/helpers.js");
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
@@ -322,7 +322,7 @@ var gc_engine = {
     load: function (sContext="JavaScript", sPath="") {
         try {
             if (typeof(require) !== 'undefined') {
-                var ibdawg = require("resource://grammalecte/ibdawg.js");
+                var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
                 _oDict = new ibdawg.IBDAWG("${dic_name}.json");
             } else {
                 _oDict = new IBDAWG("${dic_name}.json", sPath);

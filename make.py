@@ -167,10 +167,13 @@ def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sDicName, sAddPath=""):
     for sf in os.listdir("grammalecte"):
         if not os.path.isdir("grammalecte/"+sf):
             hZip.write("grammalecte/"+sf, sAddPath+"grammalecte/"+sf)
+    for sf in os.listdir("grammalecte/graphspell"):
+        if not os.path.isdir("grammalecte/graphspell/"+sf):
+            hZip.write("grammalecte/graphspell/"+sf, sAddPath+"grammalecte/graphspell/"+sf)
+    hZip.write("grammalecte/graphspell/_dictionaries/"+sDicName, sAddPath+"grammalecte/graphspell/_dictionaries/"+sDicName)
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
-    hZip.write("grammalecte/_dictionaries/"+sDicName, sAddPath+"grammalecte/_dictionaries/"+sDicName)
 
 
 def create (sLang, xConfig, bInstallOXT, bJavaScript):
@@ -204,6 +207,12 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
             print(sf, end=", ")
     print()
     dVars["plugins"] = sCodePlugins
+
+    ## COPY GC_CORE COMMON FILES
+    for sf in os.listdir("gc_core/py"):
+        if not os.path.isdir("gc_core/py/"+sf):
+            helpers.copyAndFileTemplate("gc_core/py/"+sf, "grammalecte/"+sf, dVars)
+    open("grammalecte/WARNING.txt", "w", encoding="utf-8", newline="\n").write(sWarningMessage)
 
     ## CREATE GRAMMAR CHECKER PACKAGE
     spLangPack = "grammalecte/"+sLang
@@ -250,9 +259,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
         helpers.createCleanFolder(spLangPack)
 
         # create files
-        for sf in os.listdir("gc_core/js"):
-            if not os.path.isdir("gc_core/js/"+sf) and sf.startswith("jsex_"):
-                dVars[sf[5:-3]] = open("gc_core/js/"+sf, "r", encoding="utf-8").read()
+        for sf in os.listdir("js_extension"):
+            dVars[sf[:-3]] = open("js_extension/"+sf, "r", encoding="utf-8").read()
         for sf in os.listdir("gc_core/js"):
             if not os.path.isdir("gc_core/js/"+sf) and not sf.startswith("jsex_"):
                 helpers.copyAndFileTemplate("gc_core/js/"+sf, "grammalecte-js/"+sf, dVars)
@@ -275,6 +283,31 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
             build_module.build(sLang, dVars, spLangPack)
 
     return dVars['version']
+
+
+def copyGraphspellCore (bJavaScript=False):
+    helpers.createCleanFolder("grammalecte/graphspell")
+    dir_util.mkpath("grammalecte/graphspell/_dictionaries")
+    for sf in os.listdir("graphspell"):
+        if not os.path.isdir("graphspell/"+sf):
+            file_util.copy_file("graphspell/"+sf, "grammalecte/graphspell")
+    if bJavaScript:
+        helpers.createCleanFolder("grammalecte-js/graphspell")
+        dir_util.mkpath("grammalecte-js/graphspell/_dictionaries")
+        dVars = {}
+        for sf in os.listdir("js_extension"):
+            dVars[sf[:-3]] = open("js_extension/"+sf, "r", encoding="utf-8").read()
+        for sf in os.listdir("graphspell-js"):
+            if not os.path.isdir("graphspell-js/"+sf):
+                file_util.copy_file("graphspell-js/"+sf, "grammalecte-js/graphspell")
+                helpers.copyAndFileTemplate("graphspell-js/"+sf, "grammalecte-js/graphspell/"+sf, dVars)
+
+
+def copyGraphspellDictionary (sDicName, bJavaScript=False):
+    file_util.copy_file("graphspell/_dictionaries/"+sDicName.strip()+".bdic", "grammalecte/graphspell/_dictionaries")
+    file_util.copy_file("graphspell/_dictionaries/"+sDicName.strip()+".info.txt", "grammalecte/graphspell/_dictionaries")
+    if bJavaScript:
+        file_util.copy_file("graphspell-js/_dictionaries/"+sDicName.strip()+".json", "grammalecte-js/graphspell/_dictionaries")
 
 
 def main ():
@@ -301,18 +334,15 @@ def main ():
 
     dir_util.mkpath("_build")
     dir_util.mkpath("grammalecte")
-    dir_util.mkpath("grammalecte-js")
+    if xArgs.javascript:
+        dir_util.mkpath("grammalecte-js")
+
+    copyGraphspellCore(xArgs.javascript)
 
     for sLang in xArgs.lang:
         if os.path.exists("gc_lang/"+sLang) and os.path.isdir("gc_lang/"+sLang):
             xConfig = getConfig(sLang)
             dVars = xConfig._sections['args']
-
-            # copy gc_core common file in Python now to be able to compile dictionary if required
-            for sf in os.listdir("gc_core/py"):
-                if not os.path.isdir("gc_core/py/"+sf):
-                    helpers.copyAndFileTemplate("gc_core/py/"+sf, "grammalecte/"+sf, dVars)
-            open("grammalecte/WARNING.txt", "w", encoding="utf-8", newline="\n").write(sWarningMessage)
 
             # build data
             build_data_module = None
@@ -324,11 +354,15 @@ def main ():
                     print("# Error. Couldn’t import file build_data.py in folder gc_lang/"+sLang)
             if build_data_module and xArgs.build_data_before:
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
-            if xArgs.dict or not os.path.exists("grammalecte/_dictionaries"):
+            if xArgs.dict:
                 import lex_build
                 lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], xArgs.javascript, dVars['stemming_method'], int(dVars['fsa_method']))
             if build_data_module and xArgs.build_data_after:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
+
+            # copy dictionaries from Graphspell
+            for sDicName in dVars['dic_name'].split(","):
+                copyGraphspellDictionary(sDicName, xArgs.javascript)
 
             # make
             sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, )

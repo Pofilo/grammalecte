@@ -6,9 +6,9 @@
 
 
 if (typeof(require) !== 'undefined') {
-    var str_transform = require("resource://grammalecte/str_transform.js");
-    var helpers = require("resource://grammalecte/helpers.js");
-    var char_player = require("resource://grammalecte/char_player.js");
+    var str_transform = require("resource://grammalecte/graphspell/str_transform.js");
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
+    var char_player = require("resource://grammalecte/graphspell/char_player.js");
 }
 
 
@@ -86,7 +86,7 @@ class IBDAWG {
 
     constructor (sDicName, sPath="") {
         try {
-            let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/_dictionaries/"+sDicName;
+            let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/graphspell/_dictionaries/"+sDicName;
             const dict = JSON.parse(helpers.loadFile(sURL));
             Object.assign(this, dict);
         }

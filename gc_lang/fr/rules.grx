@@ -5626,12 +5626,12 @@ __[i](loc_suivre_de_près)__
     <<- \3 != "près" -3>> près                  # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
     <<- ~2>> *
 __[i](loc_tenir_à_distance)__
-    (t[eiî]\w+) +(([àa]) distance +(?:respectable +|))d(?:es?|u) @@0,$,w
+    (t[eiî]\w+) +(([àa]) distance +(?:respectable +|))d(?:es?|u) @@0,*,w
     <<- morph(\1, ">tenir ", False) >>>
     <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~2>> *
 __[i](loc_tenir_compte)__
-    (t[eiî]\w+) +(co(?:mp?|n)tes?|au courant) @@0,w
+    (t[eiî]\w+) +(co(?:mp?|n)tes?|au courant) @@0,$
     <<- morph(\1, ">tenir ", False) >>>
     <<- morph(\2, ">co[mn]te(?:sse|) ", False) -2>> compte        # Confusion. Dans la locution “tenir compte”, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
     <<- ~2>> *
