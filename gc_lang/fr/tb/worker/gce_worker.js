@@ -61,12 +61,11 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
             helpers = require("resource://grammalecte/graphspell/helpers.js");
             text = require("resource://grammalecte/text.js");
             tkz = require("resource://grammalecte/graphspell/tokenizer.js");
-            lxg = require("resource://grammalecte/fr/lexicographe.js");
+            //lxg = require("resource://grammalecte/fr/lexicographe.js");
             oTokenizer = new tkz.Tokenizer("fr");
-            helpers.setLogOutput(worker.log);
+            //helpers.setLogOutput(worker.log);
             gce.load(sContext);
             oDict = gce.getDictionary();
-            oLxg = new lxg.Lexicographe(oDict);
             if (sGCOptions !== "") {
                 gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
             }
@@ -74,7 +73,7 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
             return gce.getOptions().gl_toString();
         }
         catch (e) {
-            worker.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
+            console.log("# Error: " + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
         }
     }
 }
@@ -125,29 +124,9 @@ function fullTests (sGCOptions="") {
     let oTest = new tests.TestGrammarChecking(gce);
     let sAllRes = "";
     for (let sRes of oTest.testParse()) {
-        dump(sRes+"\n");
+        console.log(sRes+"\n");
         sAllRes += sRes+"\n";
     }
     gce.setOptions(dMemoOptions);
     return sAllRes;
-}
-
-
-// Lexicographer
-
-function getListOfElements (sText) {
-    try {
-        let aElem = [];
-        let aRes = null;
-        for (let oToken of oTokenizer.genTokens(sText)) {
-            aRes = oLxg.getInfoForToken(oToken);
-            if (aRes) {
-                aElem.push(aRes);
-            }
-        }
-        return JSON.stringify(aElem);
-    }
-    catch (e) {
-        helpers.logerror(e);
-    }
 }

@@ -10,7 +10,7 @@ ${map}
 
 
 if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/helpers.js");
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
