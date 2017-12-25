@@ -12,10 +12,12 @@ let funcOutput = null;
 var helpers = {
 
     setLogOutput: function (func) {
+        // probably obsolete now, as console.log seems to work everywhere (at last!)
         funcOutput = func;
     },
 
     echo: function (obj) {
+        // probably obsolete now, as console.log seems to work everywhere (at last!)
         if (funcOutput !== null) {
             funcOutput(obj);
         } else {
