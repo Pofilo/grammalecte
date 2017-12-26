@@ -1,7 +1,6 @@
 #!python3
 
 import re
-from ..echo import echo
 
 
 dReplTable = {
@@ -249,7 +248,5 @@ class TextFormatter:
         for sOptName, bVal in lOptRepl:
             if bVal:
                 for zRgx, sRep in dReplTable[sOptName]:
-                    #echo("{}  -->  {}".format(zRgx.pattern, sRep))
                     sText = zRgx.sub(sRep, sText)
-                    #echo(sText)
         return sText
