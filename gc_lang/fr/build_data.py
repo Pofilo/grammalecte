@@ -13,7 +13,6 @@ import graphspell.ibdawg as ibdawg
 from graphspell.echo import echo
 from graphspell.str_transform import defineSuffixCode
 import graphspell.tokenizer as tkz
-import grammalecte.fr.conj as conj
 
 
 class cd:
@@ -269,6 +268,8 @@ def makePhonetTable (sp, bJS=False):
     print("> Correspondances phonétiques ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
     
+    import gc_lang.fr.modules.conj as conj
+
     try:
         oDict = ibdawg.IBDAWG("French.bdic")
     except:

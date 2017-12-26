@@ -222,7 +222,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
             helpers.copyAndFileTemplate("gc_core/py/lang_core/"+sf, spLangPack+"/"+sf, dVars)
     print("+ Modules: ", end="")
     for sf in os.listdir(spLang+"/modules"):
-        if not sf.startswith("gce_"):
+        if not sf.startswith(("gce_", "__pycache__")):
             file_util.copy_file(spLang+"/modules/"+sf, spLangPack)
             print(sf, end=", ")
     print()
