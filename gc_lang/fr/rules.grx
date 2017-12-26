@@ -11088,6 +11088,36 @@ TEST: Notre communauté vous est redevable.
 TEST: l’humour est affaire de culture
 
 
+#### CONFUSION veillez/veuillez                                                                     
+
+__[i]/conf(conf_veillez2)__
+    (veuillez) +à +(ne|{infi})  @@0,$
+    <<- isStart() and morph(\2, ":Y|>ne ", False) -1>> veillez          # Confusion probable : “veuillez” est une forme conjuguée du verbe “vouloir”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1939
+
+TEST: {{Veuillez}} à ne pas tomber dans ce piège.
+TEST: Et {{veuillez}} surtout à ouvrir grand les yeux.
+TEST: {{Veuillez}}, s’il vous plaît, à prendre vos médicaments.
+TEST: Veuillez à nouveau faire attention à ce problème.
+TEST: Veuillez excuser mon retard.
+TEST: Veillez à bien fermer les fenêtres.
+
+
+__[i]/conf(conf_veuillez)__
+    (veillez) +(ne|{infi})  @@0,$
+    <<- isStart() and morph(\2, ":Y|>ne ", False) -1>> veuillez
+    # Confusion probable : “veiller” signifie “prendre garde” ou “être vigilant”. Pour inviter à faire quelque chose, écrivez “veuillez”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1939
+
+TEST: {{Veillez}} excuser mon retard.
+TEST: {{Veillez}} me contacter.
+TEST: {{Veillez}} me le faire savoir.
+TEST: {{Veillez}} ne le dire à personne.
+TEST: {{Veillez}} ne pas en parler à longueur de journée.
+TEST: {{Veillez}} l’accompagner.
+TEST: {{Veillez}} toujours l’accompagner.
+TEST: Veillez à éviter de faire des fautes.
+TEST: Veillez votre mari qui est malade.
+
+
 
 !!
 !!
