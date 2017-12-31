@@ -10678,14 +10678,19 @@ TEST: Ne m’en rien laisser.
 
 # Confusions
 __[i]/imp(imp_confusion_2e_pers_pluriel)__
-    ({w_2}(?:er|ai[st]|ée?s?)) moi  @@0
-    <<- morph(\1, ":V", False) and isStart()
-    ->> =suggVerbTense(\1, ":E", ":2p") + "-moi"                                    # Confusion probable. Pour l’impératif, écrivez :
+    ({w_2}(?:er|ai[st]|ée?s?)) (moi|l(?:es?|a|eur|ui)|nous|vous)  @@0,$
+    <<- morph(\1, ":V", False) and isStart() >>>
+    <<- \2 == "moi" ->> =suggVerbTense(\1, ":E", ":2p") + "-moi"                                    # Confusion probable. Pour l’impératif, écrivez :
+    <<- __else__ and \2.startswith("l") and morph(word(1), ":[OR]", ":N", True)
+    ->> =suggVerbTense(\1, ":E", ":2p") + "-" + \2                                                  # Confusion probable. Pour l’impératif, écrivez :
+    <<- __else__ and isEnd() ->> =suggVerbTense(\1, ":E", ":2p") + "-" + \2                         # Confusion probable. Pour l’impératif, écrivez :
 
-TEST: {{Donner moi}} une chance
-TEST: je vous en prie, {{prenais moi}} avec vous.
-TEST: {{avançait moi}} de l’argent
-TEST: {{filé moi}} du fric, bon sang !
+TEST: {{Donner moi}} une chance                         ->> Donnez-moi
+TEST: je vous en prie, {{prenais moi}} avec vous.       ->> prenez-moi
+TEST: {{avançait moi}} de l’argent                      ->> avancez-moi
+TEST: {{filé moi}} du fric, bon sang !                  ->> filez-moi
+TEST: {{Données lui}} ça.                               ->> Donnez-lui
+TEST: {{Enseignait nous}}.                              ->> Enseignez-nous
 
 
 # verbes du 1er et du 3ᵉ groupe en -e
