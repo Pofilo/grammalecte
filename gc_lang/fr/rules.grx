@@ -5721,6 +5721,7 @@ TEST: comme le signe évident d’une politique volontaire
 TEST: c’était le signe évident d’une politique volontaire
 TEST: ce que c’est : le signe évident d’une politique volontaire
 TEST: On aura carte blanche.
+TEST: J’ai carte blanche.
 TEST: La seule façon de redonner sens à des notions…
 TEST: Les longues tresses que j’ai pris l’habitude de porter depuis quelque temps et qu’il faut cinq heures pour parfaire.
 TEST: Il est pieds nus.
@@ -9714,15 +9715,26 @@ TEST: Ç’avait été {{horribles}}
 
 
 __[i]/ppas(ppas_ça_verbe)__
-    (ça|ce(?:la|ci)|celui-(?:ci|là)|lequel) +(?:ne +|n’|)((?:es|étai|f[uû]|se[mr]|soi|par|dev|re(?:dev|st))\w+|a(?:it|vait|ura(?:it|)|) +été|e[uû]t +été) +({w_2})  @@0,w,$
+    (ça|ce(?:la|ci)|celui-(?:ci|là)) +(?:ne +|n’|)((?:es|étai|f[uû]|se[mr]|soi|par|dev|re(?:dev|st))\w+|a(?:it|vait|ura(?:it|)|) +été|e[uû]t +été) +({w_2})  @@0,w,$
     <<- (morph(\2, ">(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre) ", False) or \2.endswith(" été"))
     and ( morphex(\3, ":[NAQ].*:p", ":[GWYsi]") or ( morphex(\3, ":[AQ].*:f", ":[GWYme]") and not morph(word(1), ":N.*:f", False, False) ) )
-    and not morph(word(-1), ":R", False, False)
+    and not morph(word(-1), ":(?:R|V...t)", False, False)
     -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
 
 TEST: ça semble {{perdus}}
 TEST: cela paraît {{incroyables}}
 TEST: Je n’arrêtais pas de me répéter que tout cela était peut-être pure imagination
+TEST: La femme qui faisait ça est partie.
+
+
+__[i]/ppas(ppas_lequel_verbe)__
+    (lequel) +(?:ne +|n’|)((?:es|étai|f[uû]|se[mr]|soi|par|dev|re(?:dev|st))\w+|a(?:it|vait|ura(?:it|)|) +été|e[uû]t +été) +({w_2})  @@0,w,$
+    <<- (morph(\2, ">(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre) ", False) or \2.endswith(" été"))
+    and ( morphex(\3, ":[NAQ].*:p", ":[GWYsi]") or ( morphex(\3, ":[AQ].*:f", ":[GWYme]") and not morph(word(1), ":N.*:f", False, False) ) )
+    and not morph(word(-1), ":R", False, False)
+    -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
+
+TEST: elle avait accompagné cet homme, lequel était {{revenue}} de l’enfer.
 
 
 __[i]/ppas(ppas_elle_verbe)__
