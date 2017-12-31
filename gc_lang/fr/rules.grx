@@ -4707,6 +4707,14 @@ TEST: Mais gare à ne pas non plus trop surestimer la menace
 TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 
+__[i]/imp(imp_infinitif_erroné)__
+    n(?:e +|’)({w_2}er) +(?:pas|jamais) @@w
+    <<- morph(\1, ":V1.*:Y", False) and isStart() -1>> =suggVerbTense(\1, ":E", ":2p")              # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
+
+TEST: Non, ne {{manger}} pas ça.
+TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
+
+
 
 !!!
 !!!
