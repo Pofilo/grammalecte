@@ -30,53 +30,6 @@ def readFile (spf):
         raise OSError("# Error. File not found or not loadable: " + spf)
 
 
-def getElemsFromFile (spf):
-    "returns tuple of (flexion, stem, tags) from lexicon file"
-    nErr = 0
-    if not spf.endswith(".clex"):
-        for sLine in readFile(spf):
-            try:
-                sFlex, sStem, sTag = sLine.split("\t")
-                yield (sFlex, sStem, sTag)
-            except:
-                nErr += 1
-    else:
-        sTag = "_" # neutral tag
-        sTag2 = ""
-        for sLine in readFile(spf):
-            if sLine.startswith("[") and sLine.endswith("]"):
-                # tag line
-                if "-->" in sLine:
-                    try:
-                        sTag, sSfxCode, sTag2 = sLine[1:-1].split(" --> ")
-                    except:
-                        nErr += 1
-                        continue
-                    sTag = sTag.strip()
-                    sSfxCode = sSfxCode.strip()
-                    sTag2 = sTag2.strip()
-                else:
-                    sTag = sLine[1:-1]
-                    sTag2 = ""
-            else:
-                # entry line
-                if "\t" in sLine:
-                    if sLine.count("\t") > 1:
-                        nErr += 1
-                        continue
-                    sFlex, sStem = sLine.split("\t")
-                else:
-                    sFlex = sStem = sLine
-                #print(sFlex, sStem, sTag)
-                yield (sFlex, sStem, sTag)
-                if sTag2:
-                    sFlex2 = st.changeWordWithSuffixCode(sFlex, sSfxCode)
-                    #print(sFlex2, sStem, sTag2)
-                    yield (sFlex2, sStem, sTag2)
-    if nErr:
-        print(" # Lines ignored: {:>10}".format(nErr))
-
-
 
 class DAWG:
     """DIRECT ACYCLIC WORD GRAPH"""
@@ -105,7 +58,8 @@ class DAWG:
         nErr = 0
         
         # read lexicon
-        for sFlex, sStem, sTag in getElemsFromFile(spfSrc):
+        for sLine in readFile(spfSrc):
+            sFlex, sStem, sTag = sLine.split("\t")
             addWordToCharDict(sFlex)
             # chars
             for c in sFlex:
