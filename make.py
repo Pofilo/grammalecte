@@ -224,7 +224,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     print("+ Modules: ", end="")
     for sf in os.listdir(spLang+"/modules"):
         if not sf.startswith(("gce_", "__pycache__")):
-            file_util.copy_file(spLang+"/modules/"+sf, spLangPack)
+            helpers.copyAndFileTemplate(spLang+"/modules/"+sf, spLangPack+"/"+sf, dVars)
             print(sf, end=", ")
     print()
 
@@ -305,13 +305,14 @@ def copyGraphspellCore (bJavaScript=False):
 
 
 def copyGraphspellDictionary (dVars, bJavaScript=False):
-    spfDic = "graphspell/_dictionaries/"+dVars['dic_name']+".bdic"
-    if not os.path.isfile(spfDic):
+    spfPyDic = "graphspell/_dictionaries/"+dVars['dic_name']+".bdic"
+    spfJSDic = "graphspell-js/_dictionaries/"+dVars['dic_name']+".json"
+    if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
         buildDictionary(dVars, bJavaScript)
-    file_util.copy_file(spfDic, "grammalecte/graphspell/_dictionaries")
-    file_util.copy_file(spfDic[:-5]+".info.txt", "grammalecte/graphspell/_dictionaries")
+    file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
+    file_util.copy_file(spfPyDic[:-5]+".info.txt", "grammalecte/graphspell/_dictionaries")
     if bJavaScript:
-        file_util.copy_file(spfDic[:-5]+".json", "grammalecte-js/graphspell/_dictionaries")
+        file_util.copy_file(spfJSDic, "grammalecte-js/graphspell/_dictionaries")
 
 
 def buildDictionary (dVars, bJavaScript):
