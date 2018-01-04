@@ -2384,10 +2384,10 @@ TEST: __ocr__ perdu, cet homme {{Tétait}}
 
 # le les / lé / lés
 __[i]/ocr(ocr_le_les)__
-    l[éè]s?
-    <<- ->> =\0.replace("é", "e").replace("É", "E").replace("è", "e").replace("È", "E").replace("1", "l")   # Erreur de numérisation ?
+    lés?
+    <<- ->> =\0.replace("é", "e").replace("É", "E")                                                 # Erreur de numérisation ?
 
-TEST: __ocr__ {{lès}} camions de passage
+TEST: __ocr__ il s’agit de {{lés}} observer.
 
 
 __[i]/ocr(ocr_le_la)__
@@ -3984,6 +3984,29 @@ __[i]/conf(conf_tiret_la_là)__
     <<- -1>> là                                                                                     # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
 
 TEST: Ce {{fait}}-{{la}} ne peut être ignoré.
+
+
+# les / lés / lès
+__[i]/conf(conf_les1)__
+    (lés) +({w_2})  @@0,$
+    <<- morph(\2, ":N.*:m:[pi]") -1>> les                                                           # Confusion probable. Un lé est une bande de tissu ou de papier peint.|https://fr.wiktionary.org/wiki/l%C3%A9
+
+TEST: Entre les saules et {{lés}} ifs.
+TEST: Les asphaltes purs d’étanchéité sont des mastics bitumineux, de même que les masses d’enrobage des lés d’étanchéité.
+TEST: Pour avoir fait de neuf une grande cage de bois de grosses solives, membrures et sablières, contenant neuf pieds de long sur huit de lé. (Victor Hugo)
+TEST: Un lé de velours, de taffetas, de toile.
+TEST: Draps de lit de deux lés.
+
+
+__[i]/conf(conf_les2)__
+    lès
+    <<- isEnd() or morph(word(-1), ":D.*:p") ->> lés                                                # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse. Si vous parlez des bandes de tissu ou de papier peint, écrivez :|https://fr.wiktionary.org/wiki/l%C3%A8s
+    <<- __else__ ->> les                                                                            # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse ou Vandœuvre-lès-Nancy.|https://fr.wiktionary.org/wiki/l%C3%A8s
+
+TEST: Montrez-moi ces {{lès}} venus d’Italie.                           ->> lés
+TEST: avec {{lès}} hommes d’à côté, difficile de se concentrer.         ->> les
+TEST: Entre les saules et {{lès}} ifs                                   ->> les
+TEST: Elle habite Vandœuvre-lès-Nancy.
 
 
 # leurs / leur
