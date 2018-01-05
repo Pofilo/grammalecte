@@ -652,7 +652,7 @@ TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
 
 # Majuscules après un point
 __[s]/maj(majuscule_après_point)__
-    ({w_2})[.] ([a-zéàèî]\w*)  @@0,$
+    ({w_2})[.] ([a-zéàèîçô]\w*)  @@0,$
     <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
     and morph(\1, ":", False) and morph(\2, ":", False)
     -2>> =\2.capitalize()                                                                           # Après un point, une majuscule est généralement requise.
