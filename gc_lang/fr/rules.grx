@@ -9554,6 +9554,49 @@ __[i]/infi(infi_lui)__
 TEST: lui {{mangée}} beaucoup.
 
 
+
+!!
+!!
+!!!! Usage pronominal avec “avoir” au lieu d’“être”                                                 
+!!
+!!
+
+__[i]/conj(conj_se_conf_être_avoir)__
+    (s’)(?:en +|y+ |)({avoir})  @@0,$
+    <<- morph(\2, ">avoir ", False) >>>
+    <<- morph(\2, ":3p", False) -2>> sont|étaient|seront|seraient                                   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    <<- __else__ -2>> est|était|sera|serait                                                         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+
+TEST: s’en {{ait}} trop
+
+
+__[i]/conj(conj_je_me_conf_être_avoir)__
+    je m’(?:en +|y+ |)({avoir})  @@$
+    <<- morph(\1, ">avoir ", False) -1>> suis|étais|serai|serais                                    # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+
+__[i]/conj(conj_tu_te_conf_être_avoir)__
+    tu t’(?:en +|y+ |)({avoir})  @@$
+    <<- morph(\1, ">avoir ", False) and not morph(word(-1), ":V0", False, False)
+    -1>> es|étais|seras|serais                                                                      # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+
+__[i]/conj(conj_nous_nous_conf_être_avoir)__
+    (nous) nous (?:en +|y+ |)({avoir})  @@$
+    <<- morph(\2, ">avoir ", False) and isStart() -2>> sommes|étions|serons|serions                 # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    <<- __also__ -1>> nous,                                                                         # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
+
+__[i]/conj(conj_vous_vous_conf_être_avoir)__
+    (vous) vous (?:en +|y+ |)({avoir})  @@$
+    <<- morph(\2, ">avoir ", False) and isStart() -2>> êtes|étiez|serez|seriez                      # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    <<- __also__ -1>> vous,                                                                         # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
+
+TEST: je m’y {{avais}} habitué.
+TEST: tu t’{{avais}} donné du temps pour finir ton mémoire.
+TEST: Ce qu’il a tu t’a donné la nausée.
+TEST: {{nous}} nous {{avons}} donné le temps
+TEST: {{vous}} vous {{avez}} perdu toute notion de décence.
+
+
+
 !!
 !!
 !!!! Participes passés: se +être +verbe                                                             
