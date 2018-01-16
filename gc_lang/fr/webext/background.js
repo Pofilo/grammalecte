@@ -271,6 +271,9 @@ browser.commands.onCommand.addListener(function (sCommand) {
         case "conjugueur_window":
             openConjugueurWindow();
             break;
+        case "lex_editor":
+            openLexEditor();
+            break;
     }
 });
 
@@ -290,6 +293,19 @@ function storeGCOptions (dOptions) {
 function sendCommandToTab (sCommand, iTab) {
     let xTabPort = dConnx.get(iTab);
     xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
+}
+
+function openLexEditor () {
+    if (bChrome) {
+        browser.tabs.create({
+            url: browser.extension.getURL("panel/lex_editor.html")
+        });
+        return;
+    }
+    let xLexEditor = browser.tabs.create({
+        url: browser.extension.getURL("panel/lex_editor.html")
+    });
+    xLexEditor.then(onCreated, onError);
 }
 
 function openConjugueurTab () {

@@ -53,7 +53,7 @@ importScripts("grammalecte/tests.js");
     for we need the path of the extension to load data stored in JSON files.
     This path is retrieved in background.js and passed with the event “init”.
 */
-console.log("[Worker] imports odne");
+
 
 function createResponse (sActionDone, result, dInfo, bEnd, bError=false) {
     return {
