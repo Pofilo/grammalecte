@@ -14,14 +14,11 @@ function onSelectionClick (xEvent) {
         if (xElem.id) {
             if (xElem.id.startsWith("select_")) {
                 oPage.showSection("section_" + xElem.id.slice(7));
-                oFlex.getLemma();
                 oFlex.setMainTag(xElem.dataset.tag);
                 oFlex.update();
             } else if (xElem.id.startsWith("up_")) {
                 oFlex.update();
             }
-        } else {
-            
         }
     }
     catch (e) {
@@ -29,10 +26,27 @@ function onSelectionClick (xEvent) {
     }
 }
 
+function onWrite (xEvent) {
+    if (document.getElementById("word").value.trim() !== "") {
+        oPage.showEditor();
+    } else {
+        oPage.hideEditor();
+        oPage.hideActions();
+    }
+}
 
-document.getElementById("categories").addEventListener("click", onSelectionClick, false);
+function onWrite2 (xEvent) {
+    if (document.getElementById("word2").value.trim() !== "") {
+        oPage.showWord2();
+    } else {
+        oPage.hideWord2();
+    }
+}
+
+
 document.getElementById("editor").addEventListener("click", onSelectionClick, false);
-
+document.getElementById("word").addEventListener("keyup", onWrite, false);
+document.getElementById("word2").addEventListener("keyup", onWrite2, false);
 
 
 
@@ -42,8 +56,16 @@ document.getElementById("editor").addEventListener("click", onSelectionClick, fa
 
 const oPage = {
 
+    showEditor: function () {
+        document.getElementById("editor").style.display = "block";
+    },
+
+    hideEditor: function () {
+        document.getElementById("editor").style.display = "none";
+    },
+
     hideAllSections: function () {
-        for (let xElem of document.getElementById("editor").childNodes) {
+        for (let xElem of document.getElementById("sections").childNodes) {
             if (xElem.id) {
                 xElem.style.display = "none";
             }
@@ -94,6 +116,22 @@ const oPage = {
         catch (e) {
             showError(e);
         }
+    },
+
+    showWord2: function () {
+        document.getElementById("word_section2").style.display = "block";
+    },
+
+    hideWord2: function () {
+        document.getElementById("word_section2").style.display = "none";
+    },
+
+    showActions: function () {
+        document.getElementById("actions").style.display = "block";
+    },
+
+    hideActions: function () {
+        document.getElementById("actions").style.display = "none";
     }
 }
 
@@ -101,7 +139,6 @@ const oPage = {
 
 const oFlex = {
 
-    sWord: "",
     cMainTag: "",
 
     lFlexion: [],
@@ -109,10 +146,6 @@ const oFlex = {
     clear: function () {
         this.lFlexion = [];
         document.getElementById("actions").style.display = "none";
-    },
-
-    getLemma: function () {
-        this.sWord = document.getElementById("word").value.trim();
     },
 
     setMainTag: function (sValue) {
@@ -127,21 +160,22 @@ const oFlex = {
         try {
             this.clear();
             let sGenderTag = "";
-            if (this.sWord.length > 0) {
+            let sWord = document.getElementById("word").value.trim();
+            if (sWord.length > 0) {
                 switch (this.cMainTag) {
                     case "N":
                         let sTag = this.getRadioValue("POS") + this.getRadioValue("genre");
                         switch (this.getRadioValue("pluriel")) {
                             case "s":
-                                this.addFlexion(this.sWord, this.sWord, sTag+":s");
-                                this.addFlexion(this.sWord+"s", this.sWord, sTag+":p");
+                                this.addFlexion(sWord, sWord, sTag+":s");
+                                this.addFlexion(sWord+"s", sWord, sTag+":p");
                                 break;
                             case "x":
-                                this.addFlexion(this.sWord, this.sWord, sTag+":s");
-                                this.addFlexion(this.sWord+"x", this.sWord, sTag+":p");
+                                this.addFlexion(sWord, sWord, sTag+":s");
+                                this.addFlexion(sWord+"x", sWord, sTag+":p");
                                 break;
                             case "i":
-                                this.addFlexion(this.sWord, this.sWord, sTag+":i");
+                                this.addFlexion(sWord, sWord, sTag+":i");
                                 break;
                         }
                         let sWord2 = document.getElementById("word2").value.trim();
@@ -163,10 +197,10 @@ const oFlex = {
                         }
                         break;
                     case "V":
-                        if (!this.sWord.endsWith("er") && !this.sWord.endsWith("ir")) {
+                        if (!sWord.endsWith("er") && !sWord.endsWith("ir")) {
                             break;
                         }
-                        let c_g = (this.sWord.endsWith("er")) ? "1" : "2";
+                        let c_g = (sWord.endsWith("er")) ? "1" : "2";
                         let c_i = (document.getElementById("up_v_i").checked) ? "i" : "_";
                         let c_t = (document.getElementById("up_v_t").checked) ? "t" : "_";
                         let c_n = (document.getElementById("up_v_n").checked) ? "n" : "_";
@@ -176,28 +210,28 @@ const oFlex = {
                         let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
-                            this.addFlexion(this.sWord, this.sWord, ":V" + c_g + "_" + sVerbTag);
+                            this.addFlexion(sWord, sWord, ":V" + c_g + "_" + sVerbTag);
                         }
                         break;
                     case "W":
-                        this.addFlexion(this.sWord, this.sWord, ":W");
+                        this.addFlexion(sWord, sWord, ":W");
                         break;
                     case "M1":
                         sGenderTag = this.getRadioValue("genre_m1");
                         if (sGenderTag) {
-                            this.addFlexion(this.sWord, this.sWord, ":M1"+sGenderTag+":i");
+                            this.addFlexion(sWord, sWord, ":M1"+sGenderTag+":i");
                         }
                         break;
                     case "M2":
                         sGenderTag = this.getRadioValue("genre_m2");
                         if (sGenderTag) {
-                            this.addFlexion(this.sWord, this.sWord, ":M2"+sGenderTag+":i");
+                            this.addFlexion(sWord, sWord, ":M2"+sGenderTag+":i");
                         }
                         break;
                     case "MP":
                         sGenderTag = this.getRadioValue("genre_mp");
                         if (sGenderTag) {
-                            this.addFlexion(this.sWord, this.sWord, ":MP"+sGenderTag+":i");
+                            this.addFlexion(sWord, sWord, ":MP"+sGenderTag+":i");
                         }
                         break;
                 }
@@ -223,11 +257,10 @@ const oFlex = {
         }
         if (sText) {
             document.getElementById("results").innerHTML = sText;
-            document.getElementById("actions").style.display = "block";
+            oPage.showActions();
         } else {
-            document.getElementById("actions").style.display = "none";
+            oPage.hideActions();
         }
-        
     },
 
     addToDictionary: function () {
