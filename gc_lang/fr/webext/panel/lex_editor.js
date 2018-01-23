@@ -48,7 +48,9 @@ document.getElementById("editor").addEventListener("click", onSelectionClick, fa
 document.getElementById("word").addEventListener("keyup", onWrite, false);
 document.getElementById("word2").addEventListener("keyup", onWrite2, false);
 document.getElementById("lemma").addEventListener("keyup", () => { oFlex.update(); }, false);
-document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); } , false);
+document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); }, false);
+document.getElementById("add_to_lexicon").addEventListener("click", () => { oFlex.addToLexicon(); }, false);
+
 
 
 /*
@@ -271,7 +273,44 @@ const oFlex = {
         }
     },
 
-    addToDictionary: function () {
+    addToLexicon: function () {
+        try {
+            oLexicon.addFlexions(this.lFlexion);
+            oLexicon.save();
+        }
+        catch (e) {
+            showError(e);
+        }
+    }
+}
 
+
+
+const oLexicon = {
+
+    lFlexion: [],
+
+    addFlexions: function (lFlex) {
+        for (let aFlex of lFlex) {
+            this.lFlexion.push(aFlex);
+        }
+    },
+
+    load: function () {
+
+    },
+
+    save: function () {
+        console.log(this.lFlexion);
+    },
+
+    build: function () {
+        return null;
+    },
+
+    export: function () {
+        let xBlob = new Blob(['{ "app": "grammalecte", "data": ["énum", "test"] }'], {type: 'application/json'}); 
+        let sURL = URL.createObjectURL(xBlob);
+        browser.downloads.download({ filename: "grammalecte_personal_dictionary.json", url: sURL, saveAs: true });
     }
 }
