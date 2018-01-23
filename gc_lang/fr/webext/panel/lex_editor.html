@@ -13,7 +13,7 @@
             <h1>Éditeur lexical</h1>
 
             <h2>Nouveau mot</h2>
-            <input type="text" id="word" name="word" maxlength="60" value="" placeholder="votre mot" autofocus />
+            <input type="text" id="word" name="word" maxlength="60" value="" placeholder="votre mot" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" autofocus />
 
             <div id="editor">
 
@@ -63,7 +63,7 @@
                         </div>
 
                         <h2>[optionnel] Autre forme (masculine, féminine, variante, etc.)</h2>
-                        <input type="text" id="word2" name="word2" maxlength="60" value="" placeholder="votre mot" />
+                        <input type="text" id="word2" name="word2" maxlength="60" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="votre mot" />
                         <div id="word_section2">
                             <p class="typeline">
                                 <input type="radio" id="up_type_nom2" name="POS2" value=":N" /> <label class="widelabel" for="up_type_nom2">Nom</label>
@@ -125,7 +125,7 @@
                             <details>
                                 <div class="container">
                                     <div class="examples_true">Je me suis trompé.<br/>Tu t’es étonné toi-même.<br/>Elle s’est souvenu de ses études.<br/>Nous nous sommes égarés.<br/>Vous vous êtes retrouvées.<br/>Ils se sont rappelé leur enfance.</div>
-                                    <div class="examples_false">Je me suis venu.</div>
+                                    <div class="examples_false">Je me suis venu.<br/>tu t’es arrivé.<br/>elle s’est marché.<br/>nous nous sommes courus.<br/>vous vous êtes acculés.<br/>Elles se sont capitulées.</div>
                                 </div>
                             </details>
                         </div>
@@ -218,9 +218,9 @@
                         <h2>Autre</h2>
                         <p>Indiquez les étiquettes grammaticales que vous voulez appliquer au mot. À utiliser seulement si vous savez ce que vous faites. Dans le cas contraire, tant pis pour vous.</p>
                         <h3>Lemme</h3>
-                        <p><input type="text" id="up_lemma" name="lemma" maxlength="20" value="" placeholder="lemme" /></p>
+                        <p><input type="text" id="lemma" name="lemma" maxlength="20" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="lemme" /></p>
                         <h3>Étiquettes</h3>
-                        <p><input type="text" id="up_tags" name="tags" maxlength="20" value="" placeholder="étiquettes" /></p>
+                        <p><input type="text" id="tags" name="tags" maxlength="20" value="" pattern="^:[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ:._-]+$"placeholder="étiquettes" /></p>
                     </div>
                 </div>
             </div>

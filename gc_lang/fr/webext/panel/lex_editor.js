@@ -47,7 +47,8 @@ function onWrite2 (xEvent) {
 document.getElementById("editor").addEventListener("click", onSelectionClick, false);
 document.getElementById("word").addEventListener("keyup", onWrite, false);
 document.getElementById("word2").addEventListener("keyup", onWrite2, false);
-
+document.getElementById("lemma").addEventListener("keyup", () => { oFlex.update(); }, false);
+document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); } , false);
 
 
 /*
@@ -110,8 +111,8 @@ const oPage = {
             document.getElementById("up_v_ae").checked = false;
             document.getElementById("up_v_aa").checked = false;
             // autre
-            document.getElementById("up_lemma").value = "";
-            document.getElementById("up_tags").value = "";
+            document.getElementById("lemma").value = "";
+            document.getElementById("tags").value = "";
         }
         catch (e) {
             showError(e);
@@ -183,15 +184,15 @@ const oFlex = {
                             let sTag2 = this.getRadioValue("POS2") + this.getRadioValue("genre2");
                             switch (this.getRadioValue("pluriel2")) {
                                 case "s":
-                                    this.addFlexion(sWord2, sWord2, sTag2+":s");
-                                    this.addFlexion(sWord2+"s", sWord2, sTag2+":p");
+                                    this.addFlexion(sWord2, sWord, sTag2+":s");
+                                    this.addFlexion(sWord2+"s", sWord, sTag2+":p");
                                     break;
                                 case "x":
-                                    this.addFlexion(sWord2, sWord2, sTag2+":s");
-                                    this.addFlexion(sWord2+"x", sWord2, sTag2+":p");
+                                    this.addFlexion(sWord2, sWord, sTag2+":s");
+                                    this.addFlexion(sWord2+"x", sWord, sTag2+":p");
                                     break;
                                 case "i":
-                                    this.addFlexion(sWord2, sWord2, sTag2+":i");
+                                    this.addFlexion(sWord2, sWord, sTag2+":i");
                                     break;
                             }
                         }
@@ -232,6 +233,13 @@ const oFlex = {
                         sGenderTag = this.getRadioValue("genre_mp");
                         if (sGenderTag) {
                             this.addFlexion(sWord, sWord, ":MP"+sGenderTag+":i");
+                        }
+                        break;
+                    case "X":
+                        let sLemma = document.getElementById("lemma").value.trim();
+                        let sTags = document.getElementById("tags").value.trim();
+                        if (sLemma.length > 0 && sTags.startsWith(":")) {
+                            this.addFlexion(sWord, sLemma, sTags);
                         }
                         break;
                 }
