@@ -3,50 +3,30 @@
 "use strict";
 
 
-function showError (e) {
-    console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
-}
-
-
-function onSelectionClick (xEvent) {
+function createNode  (sType, oAttr, oDataset=null) {
     try {
-        let xElem = xEvent.target;
-        if (xElem.id) {
-            if (xElem.id.startsWith("select_")) {
-                oPage.showSection("section_" + xElem.id.slice(7));
-                oFlex.setMainTag(xElem.dataset.tag);
-                oFlex.update();
-            } else if (xElem.id.startsWith("up_")) {
-                oFlex.update();
-            }
+        let xNode = document.createElement(sType);
+        Object.assign(xNode, oAttr);
+        if (oDataset) {
+            Object.assign(xNode.dataset, oDataset);
         }
+        return xNode;
     }
     catch (e) {
         showError(e);
     }
 }
 
-function onWrite (xEvent) {
-    if (document.getElementById("word").value.trim() !== "") {
-        oPage.showEditor();
-    } else {
-        oPage.hideEditor();
-        oPage.hideActions();
-    }
-}
-
-function onWrite2 (xEvent) {
-    if (document.getElementById("word2").value.trim() !== "") {
-        oPage.showWord2();
-    } else {
-        oPage.hideWord2();
-    }
+function showError (e) {
+    console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
 
-document.getElementById("editor").addEventListener("click", onSelectionClick, false);
-document.getElementById("word").addEventListener("keyup", onWrite, false);
-document.getElementById("word2").addEventListener("keyup", onWrite2, false);
+document.getElementById("lexicon_button").addEventListener("click", () => { oPage.showPage("lex"); }, false);
+document.getElementById("add_word_button").addEventListener("click", () => { oPage.showPage("word"); }, false);
+document.getElementById("editor").addEventListener("click", (xEvent) => { oPage.onSelectionClick(xEvent); }, false);
+document.getElementById("word").addEventListener("keyup", () => { oPage.onWrite(); }, false);
+document.getElementById("word2").addEventListener("keyup", () => { oPage.onWrite2(); }, false);
 document.getElementById("lemma").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("add_to_lexicon").addEventListener("click", () => { oFlex.addToLexicon(); }, false);
@@ -58,6 +38,16 @@ document.getElementById("add_to_lexicon").addEventListener("click", () => { oFle
 */
 
 const oPage = {
+
+    showPage: function (sPage) {
+        if (document.getElementById("lexicon_page").style.display == "block") {
+            document.getElementById("lexicon_page").style.display = "none";
+            document.getElementById("add_word_page").style.display = "block";
+        } else {
+            document.getElementById("add_word_page").style.display = "none";
+            document.getElementById("lexicon_page").style.display = "block";
+        }
+    },
 
     showEditor: function () {
         document.getElementById("editor").style.display = "block";
@@ -118,6 +108,41 @@ const oPage = {
         }
         catch (e) {
             showError(e);
+        }
+    },
+
+    onSelectionClick: function (xEvent) {
+        try {
+            let xElem = xEvent.target;
+            if (xElem.id) {
+                if (xElem.id.startsWith("select_")) {
+                    this.showSection("section_" + xElem.id.slice(7));
+                    oFlex.setMainTag(xElem.dataset.tag);
+                    oFlex.update();
+                } else if (xElem.id.startsWith("up_")) {
+                    oFlex.update();
+                }
+            }
+        }
+        catch (e) {
+            showError(e);
+        }
+    },
+
+    onWrite: function () {
+        if (document.getElementById("word").value.trim() !== "") {
+            this.showEditor();
+        } else {
+            this.hideEditor();
+            this.hideActions();
+        }
+    },
+
+    onWrite2: function () {
+        if (document.getElementById("word2").value.trim() !== "") {
+            this.showWord2();
+        } else {
+            this.hideWord2();
         }
     },
 
@@ -203,6 +228,7 @@ const oFlex = {
                         if (!sWord.endsWith("er") && !sWord.endsWith("ir")) {
                             break;
                         }
+                        sWord = sWord.toLowerCase();
                         let c_g = (sWord.endsWith("er")) ? "1" : "2";
                         let c_i = (document.getElementById("up_v_i").checked) ? "i" : "_";
                         let c_t = (document.getElementById("up_v_t").checked) ? "t" : "_";
@@ -217,15 +243,18 @@ const oFlex = {
                         }
                         break;
                     case "W":
+                        sWord = sWord.toLowerCase();
                         this.addFlexion(sWord, sWord, ":W");
                         break;
                     case "M1":
+                        sWord = sWord.slice(0,1).toUpperCase() + sWord.slice(1);
                         sGenderTag = this.getRadioValue("genre_m1");
                         if (sGenderTag) {
                             this.addFlexion(sWord, sWord, ":M1"+sGenderTag+":i");
                         }
                         break;
                     case "M2":
+                        sWord = sWord.slice(0,1).toUpperCase() + sWord.slice(1);
                         sGenderTag = this.getRadioValue("genre_m2");
                         if (sGenderTag) {
                             this.addFlexion(sWord, sWord, ":M2"+sGenderTag+":i");
@@ -294,14 +323,52 @@ const oLexicon = {
         for (let aFlex of lFlex) {
             this.lFlexion.push(aFlex);
         }
+        this.display();
     },
 
     load: function () {
+        if (bChrome) {
+            browser.storage.local.get("lexicon_list", this._setList);
+            return;
+        }
+        let xPromise = browser.storage.local.get("lexicon_list");
+        xPromise.then(this._setList, showError);
+    },
 
+    _setList: function (dResult) {
+        console.log("LOAD");
+        if (dResult.hasOwnProperty("lexicon_list")) {
+            this.lFlexion = dResult.lexicon_list;
+        }
+    },
+
+    display: function () {
+        let xTable = document.getElementById("table");
+        let n = 0;
+        for (let [sFlexion, sLemma, sTags] of this.lFlexion) {
+            xTable.appendChild(this._createRowNode(n, sFlexion, sLemma, sTags));
+            n += 1;
+        }
+    },
+
+    _createRowNode: function (n, sFlexion, sLemma, sTags) {
+        let xRowNode = createNode("tr", { id: "row_"+n });
+        xRowNode.appendChild(createNode("td", { textContent: n }));
+        xRowNode.appendChild(createNode("td", { textContent: sFlexion }));
+        xRowNode.appendChild(createNode("td", { textContent: sLemma }));
+        xRowNode.appendChild(createNode("td", { textContent: sTags }));
+        return xRowNode;
+    },
+
+    clearTable: function () {
+        let xTable = document.getElementById("table");
+        while (xTable.firstChild) {
+            xTable.removeChild(xTable.firstChild);
+        }
     },
 
     save: function () {
-        console.log(this.lFlexion);
+        browser.storage.local.set({ "lexicon_list": this.lFlexion });
     },
 
     build: function () {
