@@ -2,6 +2,13 @@
 
 "use strict";
 
+// Chrome don’t follow the W3C specification:
+// https://browserext.github.io/browserext/
+let bChrome = false;
+if (typeof(browser) !== "object") {
+    var browser = chrome;
+    bChrome = true;
+}
 
 function createNode  (sType, oAttr, oDataset=null) {
     try {
@@ -22,7 +29,7 @@ function showError (e) {
 }
 
 
-document.getElementById("lexicon_button").addEventListener("click", () => { oPage.showPage("lex"); }, false);
+document.getElementById("lexicon_button").addEventListener("click", () => { oPage.showPage("lexicon"); }, false);
 document.getElementById("add_word_button").addEventListener("click", () => { oPage.showPage("word"); }, false);
 document.getElementById("editor").addEventListener("click", (xEvent) => { oPage.onSelectionClick(xEvent); }, false);
 document.getElementById("word").addEventListener("keyup", () => { oPage.onWrite(); }, false);
@@ -40,12 +47,16 @@ document.getElementById("add_to_lexicon").addEventListener("click", () => { oFle
 const oPage = {
 
     showPage: function (sPage) {
-        if (document.getElementById("lexicon_page").style.display == "block") {
-            document.getElementById("lexicon_page").style.display = "none";
-            document.getElementById("add_word_page").style.display = "block";
-        } else {
+        if (sPage == "lexicon") {
             document.getElementById("add_word_page").style.display = "none";
             document.getElementById("lexicon_page").style.display = "block";
+            document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 80%, 90%)";
+            document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 10%, 95%)";
+        } else {
+            document.getElementById("lexicon_page").style.display = "none";
+            document.getElementById("add_word_page").style.display = "block";
+            document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 10%, 95%)";
+            document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 80%, 90%)";
         }
     },
 
@@ -75,6 +86,8 @@ const oPage = {
 
     clear: function () {
         try {
+            document.getElementById("word2").value = "";
+            this.hideWord2();
             // nom, adjectif, noms propres
             for (let xElem of document.getElementsByName("POS")) {
                 xElem.checked = false;
@@ -133,6 +146,7 @@ const oPage = {
         if (document.getElementById("word").value.trim() !== "") {
             this.showEditor();
         } else {
+            this.showSection("section_vide");
             this.hideEditor();
             this.hideActions();
         }
@@ -192,6 +206,9 @@ const oFlex = {
             if (sWord.length > 0) {
                 switch (this.cMainTag) {
                     case "N":
+                        if (!this.getRadioValue("POS") || !this.getRadioValue("genre")) {
+                            break;
+                        }
                         let sTag = this.getRadioValue("POS") + this.getRadioValue("genre");
                         switch (this.getRadioValue("pluriel")) {
                             case "s":
@@ -207,7 +224,7 @@ const oFlex = {
                                 break;
                         }
                         let sWord2 = document.getElementById("word2").value.trim();
-                        if (sWord2.length > 0) {
+                        if (sWord2.length > 0  &&  this.getRadioValue("POS2")  &&  this.getRadioValue("genre2")) {
                             let sTag2 = this.getRadioValue("POS2") + this.getRadioValue("genre2");
                             switch (this.getRadioValue("pluriel2")) {
                                 case "s":
@@ -224,7 +241,7 @@ const oFlex = {
                             }
                         }
                         break;
-                    case "V":
+                    case "V": {
                         if (!sWord.endsWith("er") && !sWord.endsWith("ir")) {
                             break;
                         }
@@ -239,9 +256,16 @@ const oFlex = {
                         let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
-                            this.addFlexion(sWord, sWord, ":V" + c_g + "_" + sVerbTag);
+                            if (sWord.endsWith("ir")) {
+                                for (let [nCut, sAdd, sFlexTags] of oConj["V2"]) {
+                                    this.addFlexion(sWord.slice(0,-nCut)+sAdd, sWord, ":V" + c_g + "_" + sVerbTag+sFlexTags);
+                                }
+                            } else {
+                                this.addFlexion(sWord, sWord, ":V" + c_g + "_" + sVerbTag+":Y");
+                            }
                         }
                         break;
+                    }
                     case "W":
                         sWord = sWord.toLowerCase();
                         this.addFlexion(sWord, sWord, ":W");
@@ -306,6 +330,12 @@ const oFlex = {
         try {
             oLexicon.addFlexions(this.lFlexion);
             oLexicon.save();
+            document.getElementById("word").value = "";
+            oPage.showSection("section_vide");
+            oPage.hideEditor();
+            oPage.hideActions();
+            oPage.clear();
+            this.clear();
         }
         catch (e) {
             showError(e);
@@ -336,19 +366,33 @@ const oLexicon = {
     },
 
     _setList: function (dResult) {
-        console.log("LOAD");
         if (dResult.hasOwnProperty("lexicon_list")) {
             this.lFlexion = dResult.lexicon_list;
         }
     },
 
     display: function () {
+        this.clearTable();
         let xTable = document.getElementById("table");
         let n = 0;
-        for (let [sFlexion, sLemma, sTags] of this.lFlexion) {
-            xTable.appendChild(this._createRowNode(n, sFlexion, sLemma, sTags));
-            n += 1;
+        if (this.lFlexion.length > 0) {
+            xTable.appendChild(this._createTableHeader());
+            for (let [sFlexion, sLemma, sTags] of this.lFlexion) {
+                xTable.appendChild(this._createRowNode(n, sFlexion, sLemma, sTags));
+                n += 1;
+            }
+        } else {
+            xTable.appendChild(createNode("tr", { textContent: "Aucun élément." }));
         }
+    },
+
+    _createTableHeader: function () {
+        let xRowNode = createNode("tr");
+        xRowNode.appendChild(createNode("th", { textContent: "#" }));
+        xRowNode.appendChild(createNode("th", { textContent: "Forme fléchie" }));
+        xRowNode.appendChild(createNode("th", { textContent: "Lemme" }));
+        xRowNode.appendChild(createNode("th", { textContent: "Étiquettes" }));
+        return xRowNode;
     },
 
     _createRowNode: function (n, sFlexion, sLemma, sTags) {
@@ -376,8 +420,68 @@ const oLexicon = {
     },
 
     export: function () {
-        let xBlob = new Blob(['{ "app": "grammalecte", "data": ["énum", "test"] }'], {type: 'application/json'}); 
+        let xBlob = new Blob(['{ "app": "grammalecte", "data": ' + JSON.stringify(this.lFlexion) + ' }'], {type: 'application/json'}); 
         let sURL = URL.createObjectURL(xBlob);
-        browser.downloads.download({ filename: "grammalecte_personal_dictionary.json", url: sURL, saveAs: true });
+        browser.downloads.download({ filename: "grammalecte_dictionnaire_personnel.json", url: sURL, saveAs: true });
     }
 }
+
+
+oLexicon.load();
+oLexicon.display();
+
+
+/*
+    DATA
+*/
+
+const oConj = {
+    // deuxième groupe (le seul groupe régulier)
+    "V2": [
+        [2,     "ir",           ":Y/*"],
+        [2,     "issant",       ":P/*"],
+        [2,     "is",           ":Ip:Is:1s:2s/*"],
+        [2,     "it",           ":Ip:Is:3s/*"],
+        [2,     "issons",       ":Ip:1p/*"],
+        [2,     "issez",        ":Ip:2p/*"],
+        [2,     "issent",       ":Ip:Sp:Sq:3p/*"],
+        [2,     "issais",       ":Iq:1s:2s/*"],
+        [2,     "issait",       ":Iq:3s/*"],
+        [2,     "issions",      ":Iq:Sp:Sq:1p/*"],
+        [2,     "issiez",       ":Iq:Sp:Sq:2p/*"],
+        [2,     "issaient",     ":Iq:3p/*"],
+        [2,     "îmes",         ":Is:1p/*"],
+        [2,     "îtes",         ":Is:2p/*"],
+        [2,     "irent",        ":Is:3p!/*"],
+        [2,     "irai",         ":If:1s/*"],
+        [2,     "iras",         ":If:2s/*"],
+        [2,     "ira",          ":If:3s/*"],
+        [2,     "irons",        ":If:1p/*"],
+        [2,     "irez",         ":If:2p/*"],
+        [2,     "iront",        ":If:3p!/*"],
+        [2,     "irais",        ":K:1s:2s/*"],
+        [2,     "irait",        ":K:3s/*"],
+        [2,     "irions",       ":K:1p/*"],
+        [2,     "iriez",        ":K:2p/*"],
+        [2,     "iraient",      ":K:3p/*"],
+        [2,     "isse",         ":Sp:Sq:1s/*"],
+        [2,     "isses",        ":Sp:Sq:2s/*"],
+        [2,     "isse",         ":Sp:3s/*"],
+        [2,     "ît",           ":Sq:3s/*"],
+        [2,     "is",           ":E:2s/*"],
+        [2,     "issons",       ":E:1p/*"],
+        [2,     "issez",        ":E:2p/*"],
+    ],
+    
+
+
+    // premier groupe
+    "V1": {
+
+    },
+    "V1ger": {
+
+    }
+};
+
+
