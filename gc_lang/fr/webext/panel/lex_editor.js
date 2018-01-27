@@ -256,12 +256,8 @@ const oFlex = {
                         let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
-                            if (sWord.endsWith("ir")) {
-                                for (let [nCut, sAdd, sFlexTags] of oConj["V2"]) {
-                                    this.addFlexion(sWord.slice(0,-nCut)+sAdd, sWord, ":V" + c_g + "_" + sVerbTag+sFlexTags);
-                                }
-                            } else {
-                                this.addFlexion(sWord, sWord, ":V" + c_g + "_" + sVerbTag+":Y");
+                            for (let [nCut, sAdd, sFlexTags] of this._getConjRule(sWord)) {
+                                this.addFlexion(sWord.slice(0,-nCut)+sAdd, sWord, ":V" + c_g + "_" + sVerbTag+sFlexTags);
                             }
                         }
                         break;
@@ -303,6 +299,26 @@ const oFlex = {
         }
         catch (e) {
             showError(e);
+        }
+    },
+
+    _getConjRule: function (sVerb) {
+        if (sVerb.endsWith("ir")) {
+            return oConj["V2"];
+        } else {
+            if (sVerb.slice(-5) in oConj["V1"]) {
+                return oConj["V1"][sVerb.slice(-5)];
+            }
+            if (sVerb.slice(-4) in oConj["V1"]) {
+                if (sVerb.endsWith("eler") || sVerb.endsWith("eter")) {
+                    return oConj["V1"][sVerb.slice(-4)]["1"];
+                }
+                return oConj["V1"][sVerb.slice(-4)];
+            }
+            if (sVerb.slice(-3) in oConj["V1"]) {
+                return oConj["V1"][sVerb.slice(-3)];
+            }
+            return oConj["V1"]["er"];
         }
     },
 
@@ -429,59 +445,3 @@ const oLexicon = {
 
 oLexicon.load();
 oLexicon.display();
-
-
-/*
-    DATA
-*/
-
-const oConj = {
-    // deuxième groupe (le seul groupe régulier)
-    "V2": [
-        [2,     "ir",           ":Y/*"],
-        [2,     "issant",       ":P/*"],
-        [2,     "is",           ":Ip:Is:1s:2s/*"],
-        [2,     "it",           ":Ip:Is:3s/*"],
-        [2,     "issons",       ":Ip:1p/*"],
-        [2,     "issez",        ":Ip:2p/*"],
-        [2,     "issent",       ":Ip:Sp:Sq:3p/*"],
-        [2,     "issais",       ":Iq:1s:2s/*"],
-        [2,     "issait",       ":Iq:3s/*"],
-        [2,     "issions",      ":Iq:Sp:Sq:1p/*"],
-        [2,     "issiez",       ":Iq:Sp:Sq:2p/*"],
-        [2,     "issaient",     ":Iq:3p/*"],
-        [2,     "îmes",         ":Is:1p/*"],
-        [2,     "îtes",         ":Is:2p/*"],
-        [2,     "irent",        ":Is:3p!/*"],
-        [2,     "irai",         ":If:1s/*"],
-        [2,     "iras",         ":If:2s/*"],
-        [2,     "ira",          ":If:3s/*"],
-        [2,     "irons",        ":If:1p/*"],
-        [2,     "irez",         ":If:2p/*"],
-        [2,     "iront",        ":If:3p!/*"],
-        [2,     "irais",        ":K:1s:2s/*"],
-        [2,     "irait",        ":K:3s/*"],
-        [2,     "irions",       ":K:1p/*"],
-        [2,     "iriez",        ":K:2p/*"],
-        [2,     "iraient",      ":K:3p/*"],
-        [2,     "isse",         ":Sp:Sq:1s/*"],
-        [2,     "isses",        ":Sp:Sq:2s/*"],
-        [2,     "isse",         ":Sp:3s/*"],
-        [2,     "ît",           ":Sq:3s/*"],
-        [2,     "is",           ":E:2s/*"],
-        [2,     "issons",       ":E:1p/*"],
-        [2,     "issez",        ":E:2p/*"],
-    ],
-    
-
-
-    // premier groupe
-    "V1": {
-
-    },
-    "V1ger": {
-
-    }
-};
-
-
