@@ -18,8 +18,8 @@
             </div>
 
             <div id="add_word_page">
-                <h2>Nouveau mot</h2>
-                <input type="text" id="word" name="word" maxlength="60" value="" placeholder="votre mot" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" autofocus />
+                <h2>Nouveau mot (lemme)</h2>
+                <input type="text" id="lemma" name="lemma" maxlength="60" value="" placeholder="votre mot" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" autofocus />
 
                 <div id="editor">
 
@@ -69,7 +69,7 @@
                             </div>
 
                             <h2>[optionnel] Autre forme (masculine, féminine, variante, etc.)</h2>
-                            <input type="text" id="word2" name="word2" maxlength="60" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="votre mot" />
+                            <input type="text" id="lemma2" name="lemma2" maxlength="60" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="votre mot" />
                             <div id="word_section2">
                                 <p class="typeline">
                                     <input type="radio" id="up_type_nom2" name="POS2" value=":N" /> <label class="widelabel" for="up_type_nom2">Nom</label>
@@ -167,22 +167,22 @@
                             </div>
 
                             <div class="block">
-                                <h3>Verbe modèle</h3>
-                                <p>Indiquez ici le verbe qui doit servir de modèle pour la conjugaison.</p>
+                                <h3>Verbe modèle [optionnel]</h3>
+                                <p>Ce n’est pas nécessaire pour la très grande majorité des verbes du 1ᵉʳ groupe et du 2ᵉ groupe. Si les formes fléchies engendrées automatiquement ne vous satisfont pas, vous pouvez indiquer le verbe qui doit servir de modèle pour la conjugaison.</p>
                                 <input type="text" id="conj_rules_like" name="conj_rules_like" maxlength="60" value="" placeholder="verbe modèle" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ-]+$" />
                                 <details>
-                                    Il est fortement recommandé d’appliquer les règles d’un verbe du même groupe que celui que vous créez. Mais aucune restriction n’est imposée.<br/>
-                                    Classification des groupes :
+                                    <p>Il est fortement recommandé d’appliquer les règles d’un verbe du même groupe que celui que vous créez. Mais aucune restriction n’est imposée.</p>
+                                    <p>Classification des groupes :</p>
                                     <ul>
                                         <li>1ᵉʳ groupe : verbes finissant par -<i>er</i>. Attention : contrairement au préjugé commun, ce groupe est irrégulier. Beaucoup de verbes voient leur racine modifiée dans certaines formes conjuguées :
                                         <ul>
-                                            <li>ajout ou modification de diacritiques (verbes finissant par -<i>ecer</i>, -<i>emer</i>, -<i>ener</i>, -<i>eper</i>, -<i>erer</i>, -<i>eser</i>, -<i>ever</i>, -<i>evrer</i>, -<i>eler</i>, -<i>eter</i>, -<i>ébrer</i>, -<i>écer</i>, -<i>écher</i>, -<i>écrer</i>, -<i>éder</i>, -<i>éger</i>, -<i>égler</i>, -<i>égner</i>, -<i>égrer</i>, -<i>éguer</i>, -<i>éler</i>, -<i>émer</i>, -<i>éner</i>, -<i>éper</i>, -<i>équer</i>, -<i>érer</i>, -<i>éser</i>, -<i>éter</i>, -<i>étrer</i>, -<i>évrer</i>, -<i>éyer</i>),</li>
+                                            <li>ajout ou modification de diacritiques (verbes finissant par -<i>cer</i>, -<i>ecer</i>, -<i>emer</i>, -<i>ener</i>, -<i>eper</i>, -<i>erer</i>, -<i>eser</i>, -<i>ever</i>, -<i>evrer</i>, -<i>eler</i>, -<i>eter</i>, -<i>ébrer</i>, -<i>écer</i>, -<i>écher</i>, -<i>écrer</i>, -<i>éder</i>, -<i>éger</i>, -<i>égler</i>, -<i>égner</i>, -<i>égrer</i>, -<i>éguer</i>, -<i>éler</i>, -<i>émer</i>, -<i>éner</i>, -<i>éper</i>, -<i>équer</i>, -<i>érer</i>, -<i>éser</i>, -<i>éter</i>, -<i>étrer</i>, -<i>évrer</i>, -<i>éyer</i>),</li>
                                             <li>un ‹e› euphonique est ajouté sur la plupart des verbes finissant par -<i>ger</i>,</li>
                                             <li>certains verbes finissant par -<i>yer</i> remplacent éventuellement le ‹y› par un ‹i›,</li>
                                             <li>doublement irrégulier de certaines consonnes (<i>geler</i> ne se conjugue pas comme <i>appeler</i>, <i>acheter</i> ne se conjugue pas comme <i>jeter</i>)</li>
                                             <li>irrégularités diverses (<i>aller</i>, <i>envoyer</i>, <i>renvoyer</i>)…
                                         </ul></li>
-                                        <li>2ᵉ groupe : verbes finissant par -<i>ir</i>. Ce groupe est de loin le plus régulier. Mais de nombreux verbes finissant par -<i>ir</i> appartiennent au 3ᵉ groupe.</li>
+                                        <li>2ᵉ groupe : verbes finissant par -<i>ir</i>. Ce groupe est de loin le plus régulier. Mais de nombreux verbes finissant par -<i>ir</i> appartiennent au 3ᵉ groupe.</li>
                                         <li>3ᵉ groupe. Autres verbes irréguliers.</li>
                                         <li>Les verbes <i>être</i> et <i>avoir</i> n’appartiennent à aucun groupe. Il est recommandé de ne pas s’en servir comme modèle.</li>
                                     </ul>
@@ -245,9 +245,9 @@
 
                         <div id="section_autre" class="section">
                             <h2>Autre</h2>
-                            <p>Indiquez les étiquettes grammaticales que vous voulez appliquer au mot. À utiliser seulement si vous savez ce que vous faites. Dans le cas contraire, tant pis pour vous.</p>
-                            <h3>Lemme</h3>
-                            <p><input type="text" id="lemma" name="lemma" maxlength="20" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="lemme" /></p>
+                            <p>Indiquez les étiquettes grammaticales que vous voulez appliquer au mot. À utiliser seulement si vous savez ce que vous faites.</p>
+                            <h3>Flexion</h3>
+                            <p><input type="text" id="flexion" name="flexion" maxlength="20" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="flexion" /></p>
                             <h3>Étiquettes</h3>
                             <p><input type="text" id="tags" name="tags" maxlength="20" value="" pattern="^:[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ:._-]+$" placeholder="étiquettes" /></p>
                         </div>
@@ -277,6 +277,7 @@
 
 
         <script src="../grammalecte/graphspell/helpers.js"></script>
+        <script src="../grammalecte/fr/conj.js"></script>
         <script src="lex_conj_data.js"></script>
         <script src="lex_editor.js"></script>
     </body>

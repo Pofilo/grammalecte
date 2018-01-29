@@ -1,6 +1,6 @@
 //  JavaScript
 
-"use script";
+"use strict";
 
 // beta stage, unfinished, may be useless or the root for a new way to generate flexions…
 

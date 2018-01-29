@@ -180,29 +180,36 @@ var conj = {
 
 class Verb {
 
-    constructor (sVerb) {
+    constructor (sVerb, sVerbPattern="") {
+        // conjugate a unknown verb with rules from sVerbPattern
         if (typeof sVerb !== "string" || sVerb === "") {
             throw new TypeError ("The value should be a non-empty string");
         }
+        if (sVerbPattern.length == 0) {
+            sVerbPattern = sVerb;
+        }
         this.sVerb = sVerb;
         this.sVerbAux = "";
-        this._sRawInfo = conj.getVtyp(this.sVerb);
+        this._sRawInfo = conj.getVtyp(sVerbPattern);
         this.sInfo = this._readableInfo(this._sRawInfo);
-        this._tTags = conj._getTags(sVerb);
+        this._tTags = conj._getTags(sVerbPattern);
         this._tTagsAux = conj._getTags(this.sVerbAux);
         this.bProWithEn = (this._sRawInfo[5] === "e");
         this.dConj = new Map ([
             [":Y", new Map ([
                 ["label", "Infinitif"],
-                [":Y", sVerb]
+                [":", sVerb]
             ])],
-            [":PQ", new Map ([
-                ["label", "Participes passés et présent"],
+            [":P", new Map ([
+                ["label", "Participe présent"],
+                [":", conj._getConjWithTags(sVerb, this._tTags, ":PQ", ":P")]
+            ])],
+            [":Q", new Map ([
+                ["label", "Participes passés"],
                 [":Q1", conj._getConjWithTags(sVerb, this._tTags, ":PQ", ":Q1")],
                 [":Q2", conj._getConjWithTags(sVerb, this._tTags, ":PQ", ":Q2")],
                 [":Q3", conj._getConjWithTags(sVerb, this._tTags, ":PQ", ":Q3")],
                 [":Q4", conj._getConjWithTags(sVerb, this._tTags, ":PQ", ":Q4")],
-                [":P", conj._getConjWithTags(sVerb, this._tTags, ":PQ", ":P")]
             ])],
             [":Ip", new Map ([
                 ["label", "Présent"],
@@ -334,18 +341,18 @@ class Verb {
     }
 
     participePasse (sWho) {
-        return this.dConj.get(":PQ").get(sWho);
+        return this.dConj.get(":Q").get(sWho);
     }
 
     participePresent (bPro, bNeg, bTpsCo, bInt, bFem) {
-        if (!this.dConj.get(":PQ").get(":P")) {
+        if (!this.dConj.get(":P").get(":")) {
             return "";
         }
         let sPartPre;
         if (bTpsCo) {
             sPartPre = (!bPro) ? conj._getConjWithTags(this.sVerbAux, this._tTagsAux, ":PQ", ":P") : conj.getConj("être", ":PQ", ":P");
         } else {
-            sPartPre = this.dConj.get(":PQ").get(":P");
+            sPartPre = this.dConj.get(":P").get(":");
         }
         if (sPartPre === "") {
             return "";
@@ -469,15 +476,15 @@ class Verb {
 
     _seekPpas (bPro, bFem, bPlur) {
         if (!bPro && this.sVerbAux == "avoir") {
-            return this.dConj.get(":PQ").get(":Q1");
+            return this.dConj.get(":Q").get(":Q1");
         }
         if (!bFem) {
-            return (bPlur && this.dConj.get(":PQ").get(":Q2")) ? this.dConj.get(":PQ").get(":Q2") : this.dConj.get(":PQ").get(":Q1");
+            return (bPlur && this.dConj.get(":Q").get(":Q2")) ? this.dConj.get(":Q").get(":Q2") : this.dConj.get(":Q").get(":Q1");
         }
         if (!bPlur) {
-            return (this.dConj.get(":PQ").get(":Q3")) ? this.dConj.get(":PQ").get(":Q3") : this.dConj.get(":PQ").get(":Q1");
+            return (this.dConj.get(":Q").get(":Q3")) ? this.dConj.get(":Q").get(":Q3") : this.dConj.get(":Q").get(":Q1");
         }
-        return (this.dConj.get(":PQ").get(":Q4")) ? this.dConj.get(":PQ").get(":Q4") : this.dConj.get(":PQ").get(":Q1");
+        return (this.dConj.get(":Q").get(":Q4")) ? this.dConj.get(":Q").get(":Q4") : this.dConj.get(":Q").get(":Q1");
     }
 }
 

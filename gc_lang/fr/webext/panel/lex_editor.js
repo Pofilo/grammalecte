@@ -30,11 +30,11 @@ function showError (e) {
 
 
 document.getElementById("lexicon_button").addEventListener("click", () => { oPage.showPage("lexicon"); }, false);
-document.getElementById("add_word_button").addEventListener("click", () => { oPage.showPage("word"); }, false);
+document.getElementById("add_word_button").addEventListener("click", () => { oPage.showPage("lemma"); }, false);
 document.getElementById("editor").addEventListener("click", (xEvent) => { oPage.onSelectionClick(xEvent); }, false);
-document.getElementById("word").addEventListener("keyup", () => { oPage.onWrite(); }, false);
-document.getElementById("word2").addEventListener("keyup", () => { oPage.onWrite2(); }, false);
-document.getElementById("lemma").addEventListener("keyup", () => { oFlex.update(); }, false);
+document.getElementById("lemma").addEventListener("keyup", () => { oPage.onWrite(); }, false);
+document.getElementById("lemma2").addEventListener("keyup", () => { oPage.onWrite2(); }, false);
+document.getElementById("flexion").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("add_to_lexicon").addEventListener("click", () => { oFlex.addToLexicon(); }, false);
 
@@ -86,7 +86,7 @@ const oPage = {
 
     clear: function () {
         try {
-            document.getElementById("word2").value = "";
+            document.getElementById("lemma2").value = "";
             this.hideWord2();
             // nom, adjectif, noms propres
             for (let xElem of document.getElementsByName("POS")) {
@@ -116,7 +116,7 @@ const oPage = {
             document.getElementById("up_v_ae").checked = false;
             document.getElementById("up_v_aa").checked = false;
             // autre
-            document.getElementById("lemma").value = "";
+            document.getElementById("flexion").value = "";
             document.getElementById("tags").value = "";
         }
         catch (e) {
@@ -143,7 +143,7 @@ const oPage = {
     },
 
     onWrite: function () {
-        if (document.getElementById("word").value.trim() !== "") {
+        if (document.getElementById("lemma").value.trim() !== "") {
             this.showEditor();
         } else {
             this.showSection("section_vide");
@@ -153,7 +153,7 @@ const oPage = {
     },
 
     onWrite2: function () {
-        if (document.getElementById("word2").value.trim() !== "") {
+        if (document.getElementById("lemma2").value.trim() !== "") {
             this.showWord2();
         } else {
             this.hideWord2();
@@ -202,8 +202,8 @@ const oFlex = {
         try {
             this.clear();
             let sGenderTag = "";
-            let sWord = document.getElementById("word").value.trim();
-            if (sWord.length > 0) {
+            let sLemma = document.getElementById("lemma").value.trim();
+            if (sLemma.length > 0) {
                 switch (this.cMainTag) {
                     case "N":
                         if (!this.getRadioValue("POS") || !this.getRadioValue("genre")) {
@@ -212,41 +212,41 @@ const oFlex = {
                         let sTag = this.getRadioValue("POS") + this.getRadioValue("genre");
                         switch (this.getRadioValue("pluriel")) {
                             case "s":
-                                this.addFlexion(sWord, sWord, sTag+":s");
-                                this.addFlexion(sWord+"s", sWord, sTag+":p");
+                                this.addFlexion(sLemma, sLemma, sTag+":s");
+                                this.addFlexion(sLemma+"s", sLemma, sTag+":p");
                                 break;
                             case "x":
-                                this.addFlexion(sWord, sWord, sTag+":s");
-                                this.addFlexion(sWord+"x", sWord, sTag+":p");
+                                this.addFlexion(sLemma, sLemma, sTag+":s");
+                                this.addFlexion(sLemma+"x", sLemma, sTag+":p");
                                 break;
                             case "i":
-                                this.addFlexion(sWord, sWord, sTag+":i");
+                                this.addFlexion(sLemma, sLemma, sTag+":i");
                                 break;
                         }
-                        let sWord2 = document.getElementById("word2").value.trim();
-                        if (sWord2.length > 0  &&  this.getRadioValue("POS2")  &&  this.getRadioValue("genre2")) {
+                        let sLemma2 = document.getElementById("lemma2").value.trim();
+                        if (sLemma2.length > 0  &&  this.getRadioValue("POS2")  &&  this.getRadioValue("genre2")) {
                             let sTag2 = this.getRadioValue("POS2") + this.getRadioValue("genre2");
                             switch (this.getRadioValue("pluriel2")) {
                                 case "s":
-                                    this.addFlexion(sWord2, sWord, sTag2+":s");
-                                    this.addFlexion(sWord2+"s", sWord, sTag2+":p");
+                                    this.addFlexion(sLemma2, sLemma, sTag2+":s");
+                                    this.addFlexion(sLemma2+"s", sLemma, sTag2+":p");
                                     break;
                                 case "x":
-                                    this.addFlexion(sWord2, sWord, sTag2+":s");
-                                    this.addFlexion(sWord2+"x", sWord, sTag2+":p");
+                                    this.addFlexion(sLemma2, sLemma, sTag2+":s");
+                                    this.addFlexion(sLemma2+"x", sLemma, sTag2+":p");
                                     break;
                                 case "i":
-                                    this.addFlexion(sWord2, sWord, sTag2+":i");
+                                    this.addFlexion(sLemma2, sLemma, sTag2+":i");
                                     break;
                             }
                         }
                         break;
                     case "V": {
-                        if (!sWord.endsWith("er") && !sWord.endsWith("ir")) {
+                        if (!sLemma.endsWith("er") && !sLemma.endsWith("ir")) {
                             break;
                         }
-                        sWord = sWord.toLowerCase();
-                        let c_g = (sWord.endsWith("er")) ? "1" : "2";
+                        sLemma = sLemma.toLowerCase();
+                        let c_g = (sLemma.endsWith("er")) ? "1" : "2";
                         let c_i = (document.getElementById("up_v_i").checked) ? "i" : "_";
                         let c_t = (document.getElementById("up_v_t").checked) ? "t" : "_";
                         let c_n = (document.getElementById("up_v_n").checked) ? "n" : "_";
@@ -256,41 +256,59 @@ const oFlex = {
                         let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
-                            for (let [nCut, sAdd, sFlexTags] of this._getConjRule(sWord)) {
-                                this.addFlexion(sWord.slice(0,-nCut)+sAdd, sWord, ":V" + c_g + "_" + sVerbTag+sFlexTags);
+                            let sVerbPattern = document.getElementById("conj_rules_like").value.trim();
+                            if (sVerbPattern.length == 0) {
+                                // tables de conjugaison du 1er et du 2e groupe
+                                for (let [nCut, sAdd, sFlexTags, sPattern] of this._getConjRule(sLemma)) {
+                                    if (!sPattern || RegExp(sPattern).test(sLemma)) {
+                                        this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + c_g + "_" + sVerbTag + sFlexTags);
+                                    }
+                                }
+                            } else {
+                                // utilisation du conjugueur
+                                let oVerb = new Verb(sLemma, sVerbPattern);
+                                for (let [sTag1, dFlex] of oVerb.dConj.entries()) {
+                                    if (sTag1 !== ":Q") {
+                                        for (let [sTag2, sConj] of dFlex.entries()) {
+                                            if (sTag2.startsWith(":") && sConj !== "") {
+                                                this.addFlexion(sConj, sLemma, ":V" + c_g + "_" + sVerbTag + sTag1 + sTag2);
+                                            }
+                                        }
+                                    }
+                                }
                             }
                         }
                         break;
                     }
                     case "W":
-                        sWord = sWord.toLowerCase();
-                        this.addFlexion(sWord, sWord, ":W");
+                        sLemma = sLemma.toLowerCase();
+                        this.addFlexion(sLemma, sLemma, ":W");
                         break;
                     case "M1":
-                        sWord = sWord.slice(0,1).toUpperCase() + sWord.slice(1);
+                        sLemma = sLemma.slice(0,1).toUpperCase() + sLemma.slice(1);
                         sGenderTag = this.getRadioValue("genre_m1");
                         if (sGenderTag) {
-                            this.addFlexion(sWord, sWord, ":M1"+sGenderTag+":i");
+                            this.addFlexion(sLemma, sLemma, ":M1"+sGenderTag+":i");
                         }
                         break;
                     case "M2":
-                        sWord = sWord.slice(0,1).toUpperCase() + sWord.slice(1);
+                        sLemma = sLemma.slice(0,1).toUpperCase() + sLemma.slice(1);
                         sGenderTag = this.getRadioValue("genre_m2");
                         if (sGenderTag) {
-                            this.addFlexion(sWord, sWord, ":M2"+sGenderTag+":i");
+                            this.addFlexion(sLemma, sLemma, ":M2"+sGenderTag+":i");
                         }
                         break;
                     case "MP":
                         sGenderTag = this.getRadioValue("genre_mp");
                         if (sGenderTag) {
-                            this.addFlexion(sWord, sWord, ":MP"+sGenderTag+":i");
+                            this.addFlexion(sLemma, sLemma, ":MP"+sGenderTag+":i");
                         }
                         break;
                     case "X":
-                        let sLemma = document.getElementById("lemma").value.trim();
+                        let sFlexion = document.getElementById("flexion").value.trim();
                         let sTags = document.getElementById("tags").value.trim();
-                        if (sLemma.length > 0 && sTags.startsWith(":")) {
-                            this.addFlexion(sWord, sLemma, sTags);
+                        if (sFlexion.length > 0 && sTags.startsWith(":")) {
+                            this.addFlexion(sFlexion, sLemma, sTags);
                         }
                         break;
                 }
@@ -304,8 +322,10 @@ const oFlex = {
 
     _getConjRule: function (sVerb) {
         if (sVerb.endsWith("ir")) {
+            // deuxième groupe
             return oConj["V2"];
-        } else {
+        } else if (sVerb.endsWith("er")) {
+            // premier groupe
             if (sVerb.slice(-5) in oConj["V1"]) {
                 return oConj["V1"][sVerb.slice(-5)];
             }
@@ -319,6 +339,9 @@ const oFlex = {
                 return oConj["V1"][sVerb.slice(-3)];
             }
             return oConj["V1"]["er"];
+        } else {
+            // troisième groupe
+            return [ [0, "", ":Y/*", false] ];
         }
     },
 
@@ -346,7 +369,7 @@ const oFlex = {
         try {
             oLexicon.addFlexions(this.lFlexion);
             oLexicon.save();
-            document.getElementById("word").value = "";
+            document.getElementById("lemma").value = "";
             oPage.showSection("section_vide");
             oPage.hideEditor();
             oPage.hideActions();

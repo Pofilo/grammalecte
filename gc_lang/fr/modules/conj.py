@@ -147,32 +147,39 @@ def _modifyStringWithSuffixCode (sWord, sSfx):
 
 
 class Verb ():
-    def __init__ (self, sVerb):
+    def __init__ (self, sVerb, sVerbPattern=""):
+        # conjugate a unknown verb with rules from sVerbPattern
         if not isinstance(sVerb, str):
             raise TypeError
         if not sVerb:
             raise ValueError
 
+        if sVerbPattern == "":
+            sVerbPattern = sVerb
+
         self.sVerb = sVerb
         self.sVerbAux = ""
-        self._sRawInfo = getVtyp(self.sVerb)
+        self._sRawInfo = getVtyp(sVerbPattern)
         self.sInfo = self._readableInfo()
         self.bProWithEn = (self._sRawInfo[5] == "e")
-        self._tTags = _getTags(sVerb)
+        self._tTags = _getTags(sVerbPattern)
         self._tTagsAux = _getTags(self.sVerbAux)
 
         self.dConj = {
             ":Y": {
                 "label": "Infinitif",
-                ":Y": sVerb,
+                ":": sVerb,
             },
-            ":PQ": {
-                "label": "Participes passés et présent",
+            ":P": {
+                "label": "Participe présent",
+                ":": _getConjWithTags(sVerb, self._tTags, ":PQ", ":P"),
+            },
+            ":Q": {
+                "label": "Participes passés",
                 ":Q1": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q1"),
                 ":Q2": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q2"),
                 ":Q3": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q3"),
                 ":Q4": _getConjWithTags(sVerb, self._tTags, ":PQ", ":Q4"),
-                ":P": _getConjWithTags(sVerb, self._tTags, ":PQ", ":P"),
             },
             ":Ip": {
                 "label": "Présent",
@@ -304,19 +311,19 @@ class Verb ():
 
     def participePasse (self, sWho):
         try:
-            return self.dConj[":PQ"][sWho]
+            return self.dConj[":Q"][sWho]
         except:
             traceback.print_exc()
             return "# erreur"
 
     def participePresent (self, bPro, bNeg, bTpsCo, bInt, bFem):
         try:
-            if not self.dConj[":PQ"][":P"]:
+            if not self.dConj[":P"][":"]:
                 return ""
             if bTpsCo:
                 sPartPre = _getConjWithTags(self.sVerbAux, self._tTagsAux, ":PQ", ":P")  if not bPro  else  getConj("être", ":PQ", ":P")
             else:
-                sPartPre = self.dConj[":PQ"][":P"]
+                sPartPre = self.dConj[":P"][":"]
             if not sPartPre:
                 return ""
             bEli = True  if _zStartVoy.search(sPartPre)  else  False
@@ -427,12 +434,12 @@ class Verb ():
     def _seekPpas (self, bPro, bFem, bPlur):
         try:
             if not bPro and self.sVerbAux == "avoir":
-                return self.dConj[":PQ"][":Q1"]
+                return self.dConj[":Q"][":Q1"]
             if not bFem:
-                return self.dConj[":PQ"][":Q2"]  if bPlur and self.dConj[":PQ"][":Q2"]  else  self.dConj[":PQ"][":Q1"]
+                return self.dConj[":Q"][":Q2"]  if bPlur and self.dConj[":Q"][":Q2"]  else  self.dConj[":Q"][":Q1"]
             if not bPlur:
-                return self.dConj[":PQ"][":Q3"]  if self.dConj[":PQ"][":Q3"]  else  self.dConj[":PQ"][":Q1"]
-            return self.dConj[":PQ"][":Q4"]  if self.dConj[":PQ"][":Q4"]  else  self.dConj[":PQ"][":Q1"]
+                return self.dConj[":Q"][":Q3"]  if self.dConj[":Q"][":Q3"]  else  self.dConj[":Q"][":Q1"]
+            return self.dConj[":Q"][":Q4"]  if self.dConj[":Q"][":Q4"]  else  self.dConj[":Q"][":Q1"]
         except:
             traceback.print_exc()
             return "# erreur"
