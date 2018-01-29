@@ -164,7 +164,7 @@ class Verb ():
         self.bProWithEn = (self._sRawInfo[5] == "e")
         self._tTags = _getTags(sVerbPattern)
         self._tTagsAux = _getTags(self.sVerbAux)
-
+        self.cGroup = self._sRawInfo[0];
         self.dConj = {
             ":Y": {
                 "label": "Infinitif",

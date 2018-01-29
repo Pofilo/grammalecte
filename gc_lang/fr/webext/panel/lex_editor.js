@@ -34,6 +34,7 @@ document.getElementById("add_word_button").addEventListener("click", () => { oPa
 document.getElementById("editor").addEventListener("click", (xEvent) => { oPage.onSelectionClick(xEvent); }, false);
 document.getElementById("lemma").addEventListener("keyup", () => { oPage.onWrite(); }, false);
 document.getElementById("lemma2").addEventListener("keyup", () => { oPage.onWrite2(); }, false);
+document.getElementById("verb_pattern").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("flexion").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); }, false);
 document.getElementById("add_to_lexicon").addEventListener("click", () => { oFlex.addToLexicon(); }, false);
@@ -115,6 +116,7 @@ const oPage = {
             document.getElementById("up_v_m").checked = false;
             document.getElementById("up_v_ae").checked = false;
             document.getElementById("up_v_aa").checked = false;
+            document.getElementById("verb_pattern").value = "";
             // autre
             document.getElementById("flexion").value = "";
             document.getElementById("tags").value = "";
@@ -145,6 +147,7 @@ const oPage = {
     onWrite: function () {
         if (document.getElementById("lemma").value.trim() !== "") {
             this.showEditor();
+            oFlex.update();
         } else {
             this.showSection("section_vide");
             this.hideEditor();
@@ -155,6 +158,7 @@ const oPage = {
     onWrite2: function () {
         if (document.getElementById("lemma2").value.trim() !== "") {
             this.showWord2();
+            oFlex.update();
         } else {
             this.hideWord2();
         }
@@ -242,11 +246,11 @@ const oFlex = {
                         }
                         break;
                     case "V": {
-                        if (!sLemma.endsWith("er") && !sLemma.endsWith("ir")) {
+                        if (!sLemma.endsWith("er") && !sLemma.endsWith("ir") && !sLemma.endsWith("re")) {
                             break;
                         }
                         sLemma = sLemma.toLowerCase();
-                        let c_g = (sLemma.endsWith("er")) ? "1" : "2";
+                        let cGroup = "";
                         let c_i = (document.getElementById("up_v_i").checked) ? "i" : "_";
                         let c_t = (document.getElementById("up_v_t").checked) ? "t" : "_";
                         let c_n = (document.getElementById("up_v_n").checked) ? "n" : "_";
@@ -256,22 +260,50 @@ const oFlex = {
                         let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
-                            let sVerbPattern = document.getElementById("conj_rules_like").value.trim();
+                            let sVerbPattern = document.getElementById("verb_pattern").value.trim();
                             if (sVerbPattern.length == 0) {
+                                if (!sLemma.endsWith("er") && !sLemma.endsWith("ir")) {
+                                    break;
+                                }
                                 // tables de conjugaison du 1er et du 2e groupe
-                                for (let [nCut, sAdd, sFlexTags, sPattern] of this._getConjRule(sLemma)) {
+                                let cGroup = (sLemma.endsWith("er")) ? "1" : "2";
+                                for (let [nCut, sAdd, sFlexTags, sPattern] of this._getConjRules(sLemma)) {
                                     if (!sPattern || RegExp(sPattern).test(sLemma)) {
-                                        this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + c_g + "_" + sVerbTag + sFlexTags);
+                                        this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags);
+                                    }
+                                }
+                                // participes passés
+                                let bPpasVar = (document.getElementById("up_partpas").checked) ? "var" : "invar";
+                                let lPpasRules = (sLemma.endsWith("er")) ? oConj["V1_ppas"][bPpasVar] : oConj["V2_ppas"][bPpasVar];
+                                for (let [nCut, sAdd, sFlexTags, sPattern] of lPpasRules) {
+                                    if (!sPattern || RegExp(sPattern).test(sLemma)) {
+                                        this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags);
                                     }
                                 }
                             } else {
-                                // utilisation du conjugueur
-                                let oVerb = new Verb(sLemma, sVerbPattern);
-                                for (let [sTag1, dFlex] of oVerb.dConj.entries()) {
-                                    if (sTag1 !== ":Q") {
-                                        for (let [sTag2, sConj] of dFlex.entries()) {
-                                            if (sTag2.startsWith(":") && sConj !== "") {
-                                                this.addFlexion(sConj, sLemma, ":V" + c_g + "_" + sVerbTag + sTag1 + sTag2);
+                                // copie du motif d’un autre verbe : utilisation du conjugueur
+                                if (conj.isVerb(sVerbPattern)) {
+                                    let oVerb = new Verb(sLemma, sVerbPattern);
+                                    for (let [sTag1, dFlex] of oVerb.dConj.entries()) {
+                                        if (sTag1 !== ":Q") {
+                                            for (let [sTag2, sConj] of dFlex.entries()) {
+                                                if (sTag2.startsWith(":") && sConj !== "") {
+                                                    this.addFlexion(sConj, sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + sTag1 + sTag2);
+                                                }
+                                            }
+                                        } else {
+                                            // participes passés
+                                            if (dFlex.get(":Q3") !== "") {
+                                                if (dFlex.get(":Q2") !== "") {
+                                                    this.addFlexion(dFlex.get(":Q1"), sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:s/*");
+                                                    this.addFlexion(dFlex.get(":Q2"), sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:p/*");
+                                                } else {
+                                                    this.addFlexion(dFlex.get(":Q1"), sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:i/*");
+                                                }
+                                                this.addFlexion(dFlex.get(":Q3"), sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:s/*");
+                                                this.addFlexion(dFlex.get(":Q4"), sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:p/*");
+                                            } else {
+                                                this.addFlexion(dFlex.get(":Q1"), sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:e:i/*");
                                             }
                                         }
                                     }
@@ -320,7 +352,7 @@ const oFlex = {
         }
     },
 
-    _getConjRule: function (sVerb) {
+    _getConjRules: function (sVerb) {
         if (sVerb.endsWith("ir")) {
             // deuxième groupe
             return oConj["V2"];

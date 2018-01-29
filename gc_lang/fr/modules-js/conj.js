@@ -195,6 +195,7 @@ class Verb {
         this._tTags = conj._getTags(sVerbPattern);
         this._tTagsAux = conj._getTags(this.sVerbAux);
         this.bProWithEn = (this._sRawInfo[5] === "e");
+        this.cGroup = this._sRawInfo[0];
         this.dConj = new Map ([
             [":Y", new Map ([
                 ["label", "Infinitif"],

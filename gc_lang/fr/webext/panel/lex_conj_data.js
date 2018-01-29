@@ -9,6 +9,30 @@
 */
 
 const oConj = {
+    "V1_ppas": {
+        "var": [
+            [2,     "é",           ":Q:A:1ŝ:m:s/*",     false],
+            [2,     "és",          ":Q:A:m:p/*",        false],
+            [2,     "ée",          ":Q:A:f:s/*",        false],
+            [2,     "ées",         ":Q:A:f:p/*",        false],
+        ],
+        "invar": [
+            [2,     "é",           ":Q:e:i/*",          false],
+        ]
+    },
+
+    "V2_ppas": {
+        "var": [
+            [2,     "i",           ":Q:A:m:s/*",        false],
+            [2,     "is",          ":Q:A:m:p/*",        false],
+            [2,     "ie",          ":Q:A:f:s/*",        false],
+            [2,     "ies",         ":Q:A:f:p/*",        false],
+        ],
+        "invar": [
+            [2,     "i",           ":Q:e:i/*",          false],
+        ]
+    },
+
     // deuxième groupe (le seul groupe régulier)
     "V2": [
         [2,     "ir",           ":Y/*",             false],
