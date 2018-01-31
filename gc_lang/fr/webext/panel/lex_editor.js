@@ -29,19 +29,19 @@ function showError (e) {
 }
 
 
-document.getElementById("lexicon_button").addEventListener("click", () => { oPage.showPage("lexicon"); }, false);
-document.getElementById("add_word_button").addEventListener("click", () => { oPage.showPage("lemma"); }, false);
+document.getElementById("lexicon_button").addEventListener("click", () => { oWidgets.showPage("lexicon"); }, false);
+document.getElementById("add_word_button").addEventListener("click", () => { oWidgets.showPage("lemma"); }, false);
 
-document.getElementById("table").addEventListener("click", (xEvent) => { oPage.onTableClick(xEvent); }, false);
+document.getElementById("table").addEventListener("click", (xEvent) => { oWidgets.onTableClick(xEvent); }, false);
 document.getElementById("save_button").addEventListener("click", () => { oLexicon.save(); }, false);
 
-document.getElementById("editor").addEventListener("click", (xEvent) => { oPage.onSelectionClick(xEvent); }, false);
-document.getElementById("lemma").addEventListener("keyup", () => { oPage.onWrite(); }, false);
-document.getElementById("lemma2").addEventListener("keyup", () => { oPage.onWrite2(); }, false);
-document.getElementById("verb_pattern").addEventListener("keyup", () => { oFlex.update(); }, false);
-document.getElementById("flexion").addEventListener("keyup", () => { oFlex.update(); }, false);
-document.getElementById("tags").addEventListener("keyup", () => { oFlex.update(); }, false);
-document.getElementById("add_to_lexicon").addEventListener("click", () => { oFlex.addToLexicon(); }, false);
+document.getElementById("editor").addEventListener("click", (xEvent) => { oWidgets.onSelectionClick(xEvent); }, false);
+document.getElementById("lemma").addEventListener("keyup", () => { oWidgets.onWrite(); }, false);
+document.getElementById("lemma2").addEventListener("keyup", () => { oWidgets.onWrite2(); }, false);
+document.getElementById("verb_pattern").addEventListener("keyup", () => { oFlexGen.update(); }, false);
+document.getElementById("flexion").addEventListener("keyup", () => { oFlexGen.update(); }, false);
+document.getElementById("tags").addEventListener("keyup", () => { oFlexGen.update(); }, false);
+document.getElementById("add_to_lexicon").addEventListener("click", () => { oFlexGen.addToLexicon(); }, false);
 
 
 
@@ -49,28 +49,36 @@ document.getElementById("add_to_lexicon").addEventListener("click", () => { oFle
     ACTIONS
 */
 
-const oPage = {
+const oWidgets = {
 
     showPage: function (sPage) {
         if (sPage == "lexicon") {
-            document.getElementById("add_word_page").style.display = "none";
-            document.getElementById("lexicon_page").style.display = "block";
+            this.hideElement("add_word_page");
+            this.showElement("lexicon_page");
             document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 80%, 90%)";
             document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 10%, 95%)";
         } else {
-            document.getElementById("lexicon_page").style.display = "none";
-            document.getElementById("add_word_page").style.display = "block";
+            this.hideElement("lexicon_page");
+            this.showElement("add_word_page");
             document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 10%, 95%)";
             document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 80%, 90%)";
         }
     },
 
-    showEditor: function () {
-        document.getElementById("editor").style.display = "block";
+    showElement: function (sElemId) {
+        if (document.getElementById(sElemId)) {
+            document.getElementById(sElemId).style.display = "block";
+        } else {
+            console.log("HTML node named <" + sElemId + "> not found.")
+        }
     },
 
-    hideEditor: function () {
-        document.getElementById("editor").style.display = "none";
+    hideElement: function (sElemId) {
+        if (document.getElementById(sElemId)) {
+            document.getElementById(sElemId).style.display = "none";
+        } else {
+            console.log("HTML node named <" + sElemId + "> not found.")
+        }
     },
 
     hideAllSections: function () {
@@ -84,15 +92,13 @@ const oPage = {
     showSection: function (sName) {
         this.clear();
         this.hideAllSections();
-        if (document.getElementById(sName)) {
-            document.getElementById(sName).style.display = "block";
-        }
+        this.showElement(sName);
     },
 
     clear: function () {
         try {
             document.getElementById("lemma2").value = "";
-            this.hideWord2();
+            this.hideElement("word_section2");
             // nom, adjectif, noms propres
             for (let xElem of document.getElementsByName("POS")) {
                 xElem.checked = false;
@@ -136,10 +142,10 @@ const oPage = {
             if (xElem.id) {
                 if (xElem.id.startsWith("select_")) {
                     this.showSection("section_" + xElem.id.slice(7));
-                    oFlex.setMainTag(xElem.dataset.tag);
-                    oFlex.update();
+                    oFlexGen.setMainTag(xElem.dataset.tag);
+                    oFlexGen.update();
                 } else if (xElem.id.startsWith("up_")) {
-                    oFlex.update();
+                    oFlexGen.update();
                 }
             }
         }
@@ -150,46 +156,22 @@ const oPage = {
 
     onWrite: function () {
         if (document.getElementById("lemma").value.trim() !== "") {
-            this.showEditor();
-            oFlex.update();
+            this.showElement("editor");
+            oFlexGen.update();
         } else {
             this.showSection("section_vide");
-            this.hideEditor();
-            this.hideActions();
+            this.hideElement("editor");
+            this.hideElement("actions");
         }
     },
 
     onWrite2: function () {
         if (document.getElementById("lemma2").value.trim() !== "") {
-            this.showWord2();
-            oFlex.update();
+            this.showElement("word_section2");
+            oFlexGen.update();
         } else {
-            this.hideWord2();
+            this.hideElement("word_section2");
         }
-    },
-
-    showWord2: function () {
-        document.getElementById("word_section2").style.display = "block";
-    },
-
-    hideWord2: function () {
-        document.getElementById("word_section2").style.display = "none";
-    },
-
-    showActions: function () {
-        document.getElementById("actions").style.display = "block";
-    },
-
-    hideActions: function () {
-        document.getElementById("actions").style.display = "none";
-    },
-
-    showSaveButton: function () {
-        document.getElementById("save_button").style.display = "block";
-    },
-
-    hideSaveButton: function () {
-        document.getElementById("save_button").style.display = "none";
     },
 
     createTableHeader: function () {
@@ -212,6 +194,36 @@ const oPage = {
         return xRowNode;
     },
 
+    displayTable: function (lFlex) {
+        this.clearTable();
+        if (lFlex.length > 0) {
+            let xTable = document.getElementById("table");
+            let n = 0;
+            this.hideElement("no_elem_line");
+            xTable.appendChild(this.createTableHeader());
+            for (let [sFlexion, sLemma, sTags] of lFlex) {
+                xTable.appendChild(this.createRowNode(n, sFlexion, sLemma, sTags));
+                n += 1;
+            }
+        } else {
+            this.showElement("no_elem_line");
+        }
+    },
+
+    addEntriesToTable: function (n, lFlex) {
+        let xTable = document.getElementById("table");
+        if (lFlex.length > 0) {
+            if (document.getElementById("no_elem_line").style.display !== "none") {
+                this.hideElement("no_elem_line");
+                xTable.appendChild(this.createTableHeader());
+            }
+            for (let [sFlexion, sLemma, sTags] of lFlex) {
+                xTable.appendChild(this.createRowNode(n, sFlexion, sLemma, sTags));
+                n += 1;
+            }
+        }
+    },
+
     clearTable: function () {
         let xTable = document.getElementById("table");
         while (xTable.firstChild) {
@@ -226,8 +238,8 @@ const oPage = {
                 if (xElem.className == "delete_entry") {
                     let iEntry = xElem.dataset.id_entry
                     oLexicon.lFlexion[parseInt(iEntry)] = null;
-                    document.getElementById("row_"+iEntry).style.display = "none";
-                    this.showSaveButton();
+                    this.hideElement("row_"+iEntry);
+                    this.showElement("save_button");
                 }
             }
         }
@@ -239,7 +251,7 @@ const oPage = {
 
 
 
-const oFlex = {
+const oFlexGen = {
 
     cMainTag: "",
 
@@ -247,7 +259,7 @@ const oFlex = {
 
     clear: function () {
         this.lFlexion = [];
-        document.getElementById("actions").style.display = "none";
+        oWidgets.hideElement("actions");
     },
 
     setMainTag: function (sValue) {
@@ -272,15 +284,15 @@ const oFlex = {
                         let sTag = this.getRadioValue("POS") + this.getRadioValue("genre");
                         switch (this.getRadioValue("pluriel")) {
                             case "s":
-                                this.addFlexion(sLemma, sLemma, sTag+":s");
-                                this.addFlexion(sLemma+"s", sLemma, sTag+":p");
+                                this.addFlexion(sLemma, sLemma, sTag+":s/*");
+                                this.addFlexion(sLemma+"s", sLemma, sTag+":p/*");
                                 break;
                             case "x":
-                                this.addFlexion(sLemma, sLemma, sTag+":s");
-                                this.addFlexion(sLemma+"x", sLemma, sTag+":p");
+                                this.addFlexion(sLemma, sLemma, sTag+":s/*");
+                                this.addFlexion(sLemma+"x", sLemma, sTag+":p/*");
                                 break;
                             case "i":
-                                this.addFlexion(sLemma, sLemma, sTag+":i");
+                                this.addFlexion(sLemma, sLemma, sTag+":i/*");
                                 break;
                         }
                         let sLemma2 = document.getElementById("lemma2").value.trim();
@@ -288,15 +300,15 @@ const oFlex = {
                             let sTag2 = this.getRadioValue("POS2") + this.getRadioValue("genre2");
                             switch (this.getRadioValue("pluriel2")) {
                                 case "s":
-                                    this.addFlexion(sLemma2, sLemma, sTag2+":s");
-                                    this.addFlexion(sLemma2+"s", sLemma, sTag2+":p");
+                                    this.addFlexion(sLemma2, sLemma, sTag2+":s/*");
+                                    this.addFlexion(sLemma2+"s", sLemma, sTag2+":p/*");
                                     break;
                                 case "x":
-                                    this.addFlexion(sLemma2, sLemma, sTag2+":s");
-                                    this.addFlexion(sLemma2+"x", sLemma, sTag2+":p");
+                                    this.addFlexion(sLemma2, sLemma, sTag2+":s/*");
+                                    this.addFlexion(sLemma2+"x", sLemma, sTag2+":p/*");
                                     break;
                                 case "i":
-                                    this.addFlexion(sLemma2, sLemma, sTag2+":i");
+                                    this.addFlexion(sLemma2, sLemma, sTag2+":i/*");
                                     break;
                             }
                         }
@@ -370,26 +382,26 @@ const oFlex = {
                     }
                     case "W":
                         sLemma = sLemma.toLowerCase();
-                        this.addFlexion(sLemma, sLemma, ":W");
+                        this.addFlexion(sLemma, sLemma, ":W/*");
                         break;
                     case "M1":
                         sLemma = sLemma.slice(0,1).toUpperCase() + sLemma.slice(1);
                         sGenderTag = this.getRadioValue("genre_m1");
                         if (sGenderTag) {
-                            this.addFlexion(sLemma, sLemma, ":M1"+sGenderTag+":i");
+                            this.addFlexion(sLemma, sLemma, ":M1"+sGenderTag+":i/*");
                         }
                         break;
                     case "M2":
                         sLemma = sLemma.slice(0,1).toUpperCase() + sLemma.slice(1);
                         sGenderTag = this.getRadioValue("genre_m2");
                         if (sGenderTag) {
-                            this.addFlexion(sLemma, sLemma, ":M2"+sGenderTag+":i");
+                            this.addFlexion(sLemma, sLemma, ":M2"+sGenderTag+":i/*");
                         }
                         break;
                     case "MP":
                         sGenderTag = this.getRadioValue("genre_mp");
                         if (sGenderTag) {
-                            this.addFlexion(sLemma, sLemma, ":MP"+sGenderTag+":i");
+                            this.addFlexion(sLemma, sLemma, ":MP"+sGenderTag+":i/*");
                         }
                         break;
                     case "X":
@@ -443,13 +455,13 @@ const oFlex = {
     show: function () {
         let sText = "";
         for (let [sFlexion, sLemma, sTag] of this.lFlexion) {
-            sText += sFlexion + " (" + sLemma + ") " + sTag + "<br/>\n";
+            sText += sFlexion + " (" + sLemma + ") " + sTag + "\n";
         }
         if (sText) {
-            document.getElementById("results").innerHTML = sText;
-            oPage.showActions();
+            document.getElementById("results").textContent = sText;
+            oWidgets.showElement("actions");
         } else {
-            oPage.hideActions();
+            oWidgets.hideElement("actions");
         }
     },
 
@@ -457,12 +469,13 @@ const oFlex = {
         try {
             oLexicon.addFlexions(this.lFlexion);
             document.getElementById("lemma").value = "";
-            oPage.showSection("section_vide");
-            oPage.hideEditor();
-            oPage.hideActions();
-            oPage.clear();
-            oPage.showSaveButton();
+            oWidgets.showSection("section_vide");
+            oWidgets.hideElement("editor");
+            oWidgets.hideElement("actions");
+            oWidgets.clear();
+            oWidgets.showElement("save_button");
             this.clear();
+            this.cMainTag = "";
         }
         catch (e) {
             showError(e);
@@ -477,10 +490,11 @@ const oLexicon = {
     lFlexion: [],
 
     addFlexions: function (lFlex) {
+        let n = this.lFlexion.length;
         for (let aFlex of lFlex) {
             this.lFlexion.push(aFlex);
         }
-        this.display();
+        oWidgets.addEntriesToTable(n, lFlex);
     },
 
     load: function () {
@@ -489,33 +503,18 @@ const oLexicon = {
             return;
         }
         let xPromise = browser.storage.local.get("lexicon_list");
-        xPromise.then(this._setList, showError);
+        xPromise.then(this._setList.bind(this), showError);
     },
 
     _setList: function (dResult) {
         if (dResult.hasOwnProperty("lexicon_list")) {
             this.lFlexion = dResult.lexicon_list;
         }
-    },
-
-    display: function () {
-        oPage.clearTable();
-        let xTable = document.getElementById("table");
-        let n = 0;
-        if (this.lFlexion.length > 0) {
-            xTable.appendChild(oPage.createTableHeader());
-            for (let [sFlexion, sLemma, sTags] of this.lFlexion) {
-                xTable.appendChild(oPage.createRowNode(n, sFlexion, sLemma, sTags));
-                n += 1;
-            }
-        } else {
-            xTable.appendChild(createNode("tr", { textContent: "Aucun élément." }));
-        }
+        oWidgets.displayTable(this.lFlexion);
     },
 
     save: function () {
-        console.log("u");
-        oPage.hideSaveButton();
+        oWidgets.hideElement("save_button");
         let lResult = [];
         for (let e of this.lFlexion) {
             if (e !== null) {
@@ -524,7 +523,7 @@ const oLexicon = {
         }
         browser.storage.local.set({ "lexicon_list": lResult });
         this.lFlexion = lResult;
-        this.display();
+        oWidgets.displayTable(this.lFlexion);
     },
 
     build: function () {
@@ -540,4 +539,3 @@ const oLexicon = {
 
 
 oLexicon.load();
-oLexicon.display();
