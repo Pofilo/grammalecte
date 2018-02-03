@@ -9885,7 +9885,7 @@ __[i]/ppas(ppas_avoir_été)__
     (({avoir}) +été) +({w_2})  @@0,0,$
     <<- morph(\2, ":V0a", False) >>>
     <<- morphex(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(@)           # Après « avoir été », il faut un participe passé.
-    <<- not before("[çcCÇ]’$|[cC]e n’$|[çÇ]a (?:n’|)$") >>>
+    <<- not before("[çcCÇ]’$|[cC]e n’$|[çÇ]a (?:n’|)$") and not before("(?i)^ *ne pas ") and not morph(word(-1), ":Y", False) >>>
     <<- morph(\3, ":Y", False) -1>> _                                       # Tournure familière. Utilisez « être allé » plutôt que « avoir été ».
     <<- morph(\3, ":V1..t.*:Y", False) -3>> =suggVerbPpas(@)                # Incohérence. Après « avoir été », il faut un participe passé (à moins que « avoir été » signifie ici « être allé »).
     
@@ -9898,6 +9898,8 @@ TEST: J’{{ai été}} {{chercher}} du pain.
 TEST: Ç’eût été prendre des vessies pour des lanternes.
 TEST: C’eût été foncer tête baissée dans la gueule du loup.
 TEST: Leur passe-temps, ça a été faire n’importe quoi.
+TEST: Ne pas ressortir le livre le plus remarqué de la collaboration aurait été faire acte de censure.
+TEST: Partir aurait été assurer sa survie.
 
 
 !!
