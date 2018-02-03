@@ -34,6 +34,7 @@ document.getElementById("add_word_button").addEventListener("click", () => { oWi
 
 document.getElementById("table").addEventListener("click", (xEvent) => { oWidgets.onTableClick(xEvent); }, false);
 document.getElementById("save_button").addEventListener("click", () => { oLexicon.save(); }, false);
+document.getElementById("export_button").addEventListener("click", () => { oLexicon.export(); }, false);
 
 document.getElementById("editor").addEventListener("click", (xEvent) => { oWidgets.onSelectionClick(xEvent); }, false);
 document.getElementById("lemma").addEventListener("keyup", () => { oWidgets.onWrite(); }, false);
@@ -515,27 +516,35 @@ const oLexicon = {
 
     save: function () {
         oWidgets.hideElement("save_button");
-        let lResult = [];
+        let lEntry = [];
         for (let e of this.lFlexion) {
             if (e !== null) {
-                lResult.push(e);
+                lEntry.push(e);
             }
         }
-        browser.storage.local.set({ "lexicon_list": lResult });
-        this.lFlexion = lResult;
+        browser.storage.local.set({ "lexicon_list": lEntry });
+        this.lFlexion = lEntry;
         oWidgets.displayTable(this.lFlexion);
+        this.build();
     },
 
     build: function () {
-        return null;
+        oWidgets.showElement("build_progress");
+        let xProgressNode = document.getElementById("build_progress");
+        let oDAWG = new DAWG(this.lFlexion, "Français - dictionnaire personnel", "S", xProgressNode);
+        let lMorph = oDAWG.morph("finis");
+        console.log(lMorph);
     },
 
     export: function () {
         let xBlob = new Blob(['{ "app": "grammalecte", "data": ' + JSON.stringify(this.lFlexion) + ' }'], {type: 'application/json'}); 
         let sURL = URL.createObjectURL(xBlob);
         browser.downloads.download({ filename: "grammalecte_dictionnaire_personnel.json", url: sURL, saveAs: true });
+    },
+
+    import: function () {
+        // TO DO
     }
 }
-
 
 oLexicon.load();

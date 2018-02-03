@@ -29,7 +29,8 @@ class DAWG {
     */
 
     constructor (lEntrySrc, sLangName, cStemming, xProgressBarNode=null) {
-        console.log("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
+        console.log("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====");
+        let funcStemmingGen = null;
         switch (cStemming.toUpperCase()) {
             case "A":
                 funcStemmingGen = str_transform.defineAffixCode; break;
@@ -42,9 +43,9 @@ class DAWG {
         }
         
         let lEntry = [];
-        let lChar = [''],  Char = new Map(),  nChar = 1,  dCharOccur = new Map();
-        let lAff  = [],    Aff  = new Map(),  nAff  = 0,  dAffOccur = new Map();
-        let lTag  = [],    Tag  = new Map(),  nTag  = 0,  dTagOccur = new Map();
+        let lChar = [''],  dChar = new Map(),  nChar = 1,  dCharOccur = new Map();
+        let lAff  = [],    dAff  = new Map(),  nAff  = 0,  dAffOccur = new Map();
+        let lTag  = [],    dTag  = new Map(),  nTag  = 0,  dTagOccur = new Map();
         let nErr = 0;
         
         // read lexicon
@@ -60,7 +61,7 @@ class DAWG {
                 dCharOccur.set(c, dCharOccur.gl_get(c, 0) + 1);
             }
             // affixes to find stem from flexion
-            sAff = funcStemmingGen(sFlex, sStem)
+            sAff = funcStemmingGen(sFlex, sStem);
             if (!dAff.get(sAff)) {
                 dAff.set(sAff, nAff);
                 lAff.push(sAff);

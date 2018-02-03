@@ -92,6 +92,31 @@ var str_transform = {
         console.log(`Distance: ${s1} / ${s2} = ${this.distanceDamerauLevenshtein(s1, s2)})`);
     },
 
+    // Suffix only
+    defineSuffixCode: function (sFlex, sStem) {
+        /*
+            Returns a string defining how to get stem from flexion
+                "n(sfx)"
+            with n: a char with numeric meaning, "0" = 0, "1" = 1, ... ":" = 10, etc. (See ASCII table.) Says how many letters to strip from flexion.
+                 sfx [optional]: string to add on flexion
+            Examples:
+                "0": strips nothing, adds nothing
+                "1er": strips 1 letter, adds "er"
+                "2": strips 2 letters, adds nothing
+        */
+        if (sFlex == sStem) {
+            return "0";
+        }
+        let jSfx = 0;
+        for (let i = 0;  i < Math.min(sFlex.length, sStem.length);  i++) {
+            if (sFlex[i] !== sStem[i]) {
+                break;
+            }
+            jSfx += 1;
+        }
+        return String.fromCharCode(sFlex.length-jSfx+48) + sStem.slice(jSfx);
+    },
+
     getStemFromSuffixCode: function (sFlex, sSfxCode) {
         // Suffix only
         if (sSfxCode == "0") {
