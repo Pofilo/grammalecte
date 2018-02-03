@@ -7121,11 +7121,12 @@ TEST: C’est un putain de troupeau de {{mouton}} !
 #### X fois par jour/an/semaine/etc.
 
 __[i]/sgpl(sgpl_x_fois_par_période)__
-    fois par (ans|années|décennies|heures|jours|minutes|mois|secondes|semaines|semestres|trimestres) @@$
-    <<- -1>> \1                                                             # Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
+    fois par (ans|années|décennies|heures|jours|minutes|secondes|semaines|semestres|trimestres) @@$
+    <<- -1>> =suggSing(@)                                                   # Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
 
 TEST: vingt fois par {{ans}}, à peu près.
 TEST: 12 fois par {{jours}}, ça suffit.
+TEST: Deux fois par mois…
 
 
 #### Locutions
