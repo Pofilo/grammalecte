@@ -186,9 +186,7 @@ def defineAffixCode (sFlex, sStem):
         sSfx = sStem[iPos+len(sSubs):]
         n = sFlex.find(sSubs)
         m = len(sFlex) - (len(sSubs)+n)
-        sAff = "{}/".format(chr(n+48))  if not sPfx  else "{}{}/".format(chr(n+48), sPfx)
-        sAff += chr(m+48)  if not sSfx  else "{}{}".format(chr(m+48), sSfx)
-        return sAff
+        return chr(n+48) + sPfx + "/" + chr(m+48) + sSfx
     return sStem
 
 
@@ -196,7 +194,7 @@ def changeWordWithAffixCode (sWord, sAffCode):
     if sAffCode == "0":
         return sWord
     if '/' not in sAffCode:
-        return "# error #"
+        return sAffCode
     sPfxCode, sSfxCode = sAffCode.split('/')
     sWord = sPfxCode[1:] + sWord[(ord(sPfxCode[0])-48):] 
     return sWord[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sWord + sSfxCode[1:]

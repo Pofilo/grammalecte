@@ -61,7 +61,7 @@ class DAWG {
                 dCharOccur.set(c, dCharOccur.gl_get(c, 0) + 1);
             }
             // affixes to find stem from flexion
-            sAff = funcStemmingGen(sFlex, sStem);
+            let sAff = funcStemmingGen(sFlex, sStem);
             if (!dAff.get(sAff)) {
                 dAff.set(sAff, nAff);
                 lAff.push(sAff);
@@ -101,7 +101,7 @@ class DAWG {
         for (let c of dChar.keys()) { lKeyVal.push([dChar[c], dCharOccur[c]]); }
         for (let sAff of dAff.keys()) { lKeyVal.push([dAff[sAff]+nChar, dAffOccur[sAff]]); }
         for (let sTag in dTag.keys()) { lKeyVal.push([dTag[sTag]+nChar+nAff, dTagOccur[sTag]]); }
-        dValOccur = new Map(lKeyVal);
+        let dValOccur = new Map(lKeyVal);
         lKeyVal.length = 0; // clear the array
 
         //with open(spfSrc[:-8]+".valuesfreq.txt", 'w', encoding='utf-8') as hFreqDst:  # DEBUG
@@ -242,8 +242,8 @@ class DAWG {
         if (oNode.pos > 0) {
             return;
         }
-        oNode.setPos();
-        this.lSortedNodes.append(oNode);
+        //oNode.setPos();  // version 2
+        this.lSortedNodes.push(oNode);
         for (let oNextNode of oNode.arcs.values()) {
              this._parseNodes(oNextNode);
         }

@@ -1,9 +1,50 @@
 //// STRING TRANSFORMATION
 /*jslint esversion: 6*/
 
+"use strict";
+
+
 // Note: 48 is the ASCII code for "0"
 
 var str_transform = {
+
+    longestCommonSubstring: function (string1, string2) {
+        // https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring
+        // untested
+
+        // init max value
+        let longestCommonSubstring = 0;
+        // init 2D array with 0
+        let table = [],
+            len1 = string1.length,
+            len2 = string2.length,
+            row, col;
+        for (row = 0; row <= len1; row++) {
+            table[row] = [];
+            for (col = 0; col <= len2; col++) {
+                table[row][col] = 0;
+            }
+        }
+        // fill table
+        let i, j;
+        for (i = 0;  i < len1;  i++) {
+            for (j = 0;  j < len2;  j++) {
+                if (string1[i] === string2[j]) {
+                    if (table[i][j] === 0){
+                        table[i+1][j+1] = 1;
+                    } else {
+                        table[i+1][j+1] = table[i][j] + 1;
+                    }
+                    if (table[i+1][j+1] > longestCommonSubstring) {
+                        longestCommonSubstring = table[i+1][j+1];
+                    }
+                } else {
+                    table[i+1][j+1] = 0;
+                }
+            }
+        }
+        return longestCommonSubstring;
+    },
 
     distanceDamerauLevenshtein2: function (s1, s2) {
         // distance of Damerau-Levenshtein between <s1> and <s2>
@@ -117,25 +158,56 @@ var str_transform = {
         return String.fromCharCode(sFlex.length-jSfx+48) + sStem.slice(jSfx);
     },
 
-    getStemFromSuffixCode: function (sFlex, sSfxCode) {
-        // Suffix only
+    changeWordWithSuffixCode: function (sWord, sSfxCode) {
         if (sSfxCode == "0") {
-            return sFlex;
+            return sWord;
         }
-        return sSfxCode[0] == '0' ? sFlex + sSfxCode.slice(1) : sFlex.slice(0, -(sSfxCode.charCodeAt(0)-48)) + sSfxCode.slice(1);
+        return sSfxCode[0] == '0' ? sWord + sSfxCode.slice(1) : sWord.slice(0, -(sSfxCode.charCodeAt(0)-48)) + sSfxCode.slice(1);
     },
     
-    getStemFromAffixCode: function (sFlex, sAffCode) {
-        // Prefix and suffix
+    // Prefix and suffix
+    defineAffixCode: function (sFlex, sStem) {
+        /*
+            UNTESTED!
+            Returns a string defining how to get stem from flexion. Examples:
+                "0" if stem = flexion
+                "stem" if no common substring
+                "n(pfx)/m(sfx)"
+            with n and m: chars with numeric meaning, "0" = 0, "1" = 1, ... ":" = 10, etc. (See ASCII table.) Says how many letters to strip from flexion.
+                pfx [optional]: string to add before the flexion 
+                sfx [optional]: string to add after the flexion
+        */
+        if (sFlex == sStem) {
+            return "0";
+        }
+        // is stem a substring of flexion?
+        let n = sFlex.indexOf(sStem);
+        if (n >= 0) {
+            return String.fromCharCode(n+48) + "/" + String.fromCharCode(sFlex.length-(sStem.length+n)+48);
+        }
+        // no, so we are looking for common substring
+        let sSubs = this.longestCommonSubstring(sFlex, sStem);
+        if (sSubs.length > 1) {
+            let iPos = sStem.indexOf(sSubs);
+            let sPfx = sStem.slice(0, iPos);
+            let sSfx = sStem.slice(iPos+sSubs.length);
+            let n = sFlex.indexOf(sSubs);
+            let m = sFlex.length - (sSubs.length+n);
+            return String.fromCharCode(n+48) + sPfx + "/" + String.fromCharCode(m+48) + sSfx;
+        }
+        return sStem;
+    },
+
+    changeWordWithAffixCode: function (sWord, sAffCode) {
         if (sAffCode == "0") {
-            return sFlex;
+            return sWord;
         }
         if (!sAffCode.includes("/")) {
-            return "# error #";
+            return sAffCode;
         }
         let [sPfxCode, sSfxCode] = sAffCode.split('/');
-        sFlex = sPfxCode.slice(1) + sFlex.slice(sPfxCode.charCodeAt(0)-48);
-        return sSfxCode[0] == '0' ? sFlex + sSfxCode.slice(1) : sFlex.slice(0, -(sSfxCode.charCodeAt(0)-48)) + sSfxCode.slice(1);
+        sWord = sPfxCode.slice(1) + sWord.slice(sPfxCode.charCodeAt(0)-48);
+        return sSfxCode[0] == '0' ? sWord + sSfxCode.slice(1) : sWord.slice(0, -(sSfxCode.charCodeAt(0)-48)) + sSfxCode.slice(1);
     }
 };
 

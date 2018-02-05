@@ -124,9 +124,9 @@ class IBDAWG {
         //this.byDic = new Uint8Array(this.byDic);  // not quicker, even slower
 
         if (this.cStemming == "S") {
-            this.funcStemming = str_transform.getStemFromSuffixCode;
+            this.funcStemming = str_transform.changeWordWithSuffixCode;
         } else if (this.cStemming == "A") {
-            this.funcStemming = str_transform.getStemFromAffixCode;
+            this.funcStemming = str_transform.changeWordWithAffixCode;
         } else {
             this.funcStemming = str_transform.noStemming;
         }
