@@ -134,9 +134,8 @@ class DAWG {
             xProgressBarNode.value = 0;
             xProgressBarNode.max = lWord.length;
         }
-        let i = 0;
+        let i = 1;
         for (let aEntry of lWord) {
-            console.log(aEntry);
             this.insert(aEntry);
             if (xProgressBarNode) {
                 xProgressBarNode.value = i;
