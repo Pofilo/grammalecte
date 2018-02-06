@@ -98,17 +98,12 @@ class DAWG {
         
         // Dictionary of arc values occurrency, to sort arcs of each node
         let lKeyVal = [];
-        for (let c of dChar.keys()) { lKeyVal.push([dChar[c], dCharOccur[c]]); }
-        for (let sAff of dAff.keys()) { lKeyVal.push([dAff[sAff]+nChar, dAffOccur[sAff]]); }
-        for (let sTag in dTag.keys()) { lKeyVal.push([dTag[sTag]+nChar+nAff, dTagOccur[sTag]]); }
+        for (let c of dChar.keys()) { lKeyVal.push([dChar.get(c), dCharOccur.get(c)]); }
+        for (let sAff of dAff.keys()) { lKeyVal.push([dAff.get(sAff)+nChar, dAffOccur.get(sAff)]); }
+        for (let sTag of dTag.keys()) { lKeyVal.push([dTag.get(sTag)+nChar+nAff, dTagOccur.get(sTag)]); }
         let dValOccur = new Map(lKeyVal);
         lKeyVal.length = 0; // clear the array
 
-        //with open(spfSrc[:-8]+".valuesfreq.txt", 'w', encoding='utf-8') as hFreqDst:  # DEBUG
-        //    for iKey, nOcc in sorted(dValOccur.entries(), key=lambda t: t[1], reverse=True):
-        //        hFreqDst.write("{}: {}\n".format(lVal[iKey], nOcc))
-        //    hFreqDst.close()
-        
         this.sLang = sLangName;
         this.nEntry = lWord.length;
         this.aPreviousEntry = [];
@@ -116,11 +111,10 @@ class DAWG {
         this.oRoot = new DawgNode();
         this.lUncheckedNodes = [];          // list of nodes that have not been checked for duplication.
         this.dMinimizedNodes = new Map();   // list of unique nodes that have been checked for duplication.
-        this.lSortedNodes = [];             // version 2 and 3
         this.nNode = 0;
         this.nArc = 0;
         this.dChar = dChar;
-        this.nChar = dChar.length;
+        this.nChar = dChar.size;
         this.nAff = nAff;
         this.lArcVal = lVal;
         this.nArcVal = lVal.length;
@@ -142,6 +136,7 @@ class DAWG {
         }
         let i = 0;
         for (let aEntry of lWord) {
+            console.log(aEntry);
             this.insert(aEntry);
             if (xProgressBarNode) {
                 xProgressBarNode.value = i;
@@ -151,9 +146,10 @@ class DAWG {
         this.finish();
         this.countNodes();
         this.countArcs();
-        this.sortNodes();
         this.sortNodeArcs(dValOccur);
         this.displayInfo();
+        this.writeInfo();
+        //this.oRoot.display(0, this.lArcVal, true);
     }
 
     // BUILD DAWG
@@ -198,7 +194,7 @@ class DAWG {
 
     _minimize (nDownTo) {
         // proceed from the leaf up to a certain point
-        for (let i = this.lUncheckedNodes.length-1;  i < nDownTo-1;  i--) {
+        for (let i = this.lUncheckedNodes.length-1;  i > nDownTo-1;  i--) {
             let [oNode, char, oChildNode] = this.lUncheckedNodes[i];
             if (this.dMinimizedNodes.has(oChildNode.__hash__())) {
                 // replace the child with the previously encountered one
@@ -217,7 +213,7 @@ class DAWG {
 
     countArcs () {
         this.nArc = 0;
-        for (let oNode of this.dMinimizedNodes) {
+        for (let oNode of this.dMinimizedNodes.values()) {
             this.nArc += oNode.arcs.size;
         }
     }
@@ -225,30 +221,11 @@ class DAWG {
     sortNodeArcs (dValOccur) {
         console.log(" > Sort node arcs");
         this.oRoot.sortArcs(dValOccur);
-        for (let oNode of this.dMinimizedNodes) {
+        for (let oNode of this.dMinimizedNodes.values()) {
             oNode.sortArcs(dValOccur);
         }
     }
 
-    sortNodes () {
-        console.log(" > Sort nodes");
-        for (let oNode of this.oRoot.arcs.values()) {
-            this._parseNodes(oNode);
-        }
-    }
-    
-    _parseNodes (oNode) {
-        // Warning: recursive method
-        if (oNode.pos > 0) {
-            return;
-        }
-        //oNode.setPos();  // version 2
-        this.lSortedNodes.push(oNode);
-        for (let oNextNode of oNode.arcs.values()) {
-             this._parseNodes(oNextNode);
-        }
-    }
-        
     lookup (sWord) {
         let oNode = this.oRoot;
         for (let c of sWord) {
@@ -262,7 +239,7 @@ class DAWG {
 
     morph (sWord) {
         let oNode = this.oRoot;
-        for (let c in sWord) {
+        for (let c of sWord) {
             if (!oNode.arcs.has(this.dChar.get(c, ''))) {
                 return '';
             }
@@ -273,7 +250,7 @@ class DAWG {
             for (let arc of oNode.arcs.keys()) {
                 if (arc >= this.nChar) {
                     s += " [" + this.funcStemming(sWord, this.lArcVal[arc]);
-                    let oNode2 = oNode.arcs[arc]
+                    let oNode2 = oNode.arcs.get(arc);
                     for (let arc2 of oNode2.arcs.keys()) {
                         s += " / " + this.lArcVal[arc2];
                     }
@@ -315,6 +292,7 @@ class DAWG {
         let i = 0;
         for (let s of this.lArcVal) {
             console.log(i + ": " + s);
+            i++;
         }
     }
 
@@ -445,18 +423,12 @@ class DawgNode {
         this.final = false;
         this.arcs = new Map();  // key: arc value; value: a node
         this.addr = 0;          // address in the binary dictionary
-        this.pos = 0;           // position in the binary dictionary (version 2)
-        this.size = 0;          // size of node in bytes (version 3)
     }
 
     __str__ () {
         // Caution! this function is used for hashing and comparison!
-        let l = [];
-        if (this.final) {
-            l.push("1");
-        } else {
-            l.push("0");
-        }
+        let sFinalChar = (self.final) ? "1" : "0";
+        let l = [sFinalChar];
         for (let [key, node] of this.arcs.entries()) {
             l.push(key.toString());
             l.push(node.i.toString());
@@ -476,7 +448,7 @@ class DawgNode {
     }
 
     sortArcs (dValOccur) {
-        let lTemp = this.arcs.entries();
+        let lTemp = Array.from(this.arcs.entries());
         lTemp.sort(function (a, b) {
             if (dValOccur.get(a[0], 0) > dValOccur.get(b[0], 0))
                 return -1;
@@ -485,6 +457,19 @@ class DawgNode {
             return 0;
         });
         this.arcs = new Map(lTemp);
+    }
+
+    display (nTab, lArcVal, bRecur=false) {
+        let sResult = "    ".repeat(nTab) + "Node: " + this.i + " " + this.final + "\n";
+        for (let arc of this.arcs.keys()) {
+            sResult += "    ".repeat(nTab) + lArcVal[arc] + "\n";
+        }
+        console.log(sResult);
+        if (bRecur) {
+            for (let oNode of this.arcs.values()) {
+                oNode.display(nTab+1, lArcVal, bRecur);
+            }
+        }
     }
 
     // VERSION 1 =====================================================================================================
@@ -576,7 +561,7 @@ function getCharOrderAfterChar (cChar) {
 function displayCharOrder () {
     for (let [key, value] of _dCharOrder.entries()) {
         let s = "[" + key + "]: ";
-        let lTemp = value.entries();
+        let lTemp = Array.from(value.entries());
         lTemp.sort(function (a, b) {
             if (a[1] > b[1])
                 return -1;
