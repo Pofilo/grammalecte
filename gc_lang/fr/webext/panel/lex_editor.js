@@ -63,6 +63,7 @@ const oWidgets = {
             this.showElement("add_word_page");
             document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 10%, 95%)";
             document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 80%, 90%)";
+            document.getElementById("lemma").focus();
         }
     },
 
@@ -470,6 +471,7 @@ const oFlexGen = {
         try {
             oLexicon.addFlexions(this.lFlexion);
             document.getElementById("lemma").value = "";
+            document.getElementById("lemma").focus();
             oWidgets.showSection("section_vide");
             oWidgets.hideElement("editor");
             oWidgets.hideElement("actions");
