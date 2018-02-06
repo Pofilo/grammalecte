@@ -135,7 +135,7 @@ class DAWG:
         self.finish()
         self.countNodes()
         self.countArcs()
-        self.sortNodes()
+        self.sortNodes()         # version 2 and 3 
         self.sortNodeArcs(dValOccur)
         #self.sortNodeArcs2 (self.oRoot, "")
         self.displayInfo()
@@ -474,11 +474,8 @@ class DawgNode:
 
     def __str__ (self):
         # Caution! this function is used for hashing and comparison!
-        l = []
-        if self.final: 
-            l.append("1")
-        else:
-            l.append("0")
+        sFinalChar = "1"  if self.final  else "0";
+        l = [sFinalChar]
         for (key, node) in self.arcs.items():
             l.append(str(key))
             l.append(str(node.i))
