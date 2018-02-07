@@ -147,7 +147,7 @@ class DAWG {
         this.countArcs();
         this.sortNodeArcs(dValOccur);
         this.displayInfo();
-        this.writeInfo();
+        //this.writeInfo();
         //this.oRoot.display(0, this.lArcVal, true);
     }
 
@@ -296,10 +296,10 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    createBinary (sPathFile, nMethod) {
+    createBinary (nMethod) {
         console.log("Write DAWG as an indexable binary dictionary [method: "+nMethod+"]");
         if (nMethod == 1) {
-            this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length() + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
+            this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
             this._calcNumBytesNodeAddress()
             this._calcNodesAddress1()
         } else {
@@ -359,12 +359,6 @@ class DAWG {
                     * A list of nodes which are a list of arcs with an address of the next node.
                       See DawgNode.convToBytes() for details.
         */
-
-
-                        
-
-
-        // DAWG: nodes / arcs
         let sByDic = "";
         if (nMethod == 1) {
             sByDic = this.oRoot.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
@@ -372,14 +366,13 @@ class DAWG {
                 sByDic += oNode.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
             }
         }
-
         let oJSON = {
             "sName": this.sName,
             "nVersion": this.nMethod,
             "sHeader": this.sHeader,
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "byDic": oConv.toHexadecimalString(sByDic),
+            "byDic": sByDic,
             "sLang": this.sLang,
             "nChar": this.nChar,
             "nBytesArc": this.nBytesArc,
@@ -397,6 +390,7 @@ class DAWG {
             "_addrBitMask": this._addrBitMask,
             "nBytesOffset": this.nBytesOffset
         };
+        return oJSON;
     }
 }
 
@@ -497,36 +491,34 @@ class DawgNode {
         let nFinalNodeMask = 1 << ((nBytesArc*8)-1);
         let nFinalArcMask = 1 << ((nBytesArc*8)-2);
         if (this.arcs.size == 0) {
-            let val = nFinalNodeMask | nFinalArcMask;
-            let by = oConv.toHexString(val, nBytesArc);
-            by += oConv.toHexString(0, nBytesNodeAddress);
-            return by;
+            let nVal = nFinalNodeMask | nFinalArcMask;
+            let sBinary = this.convValueToHexString(nVal, nBytesArc);
+            sBinary += this.convValueToHexString(0, nBytesNodeAddress);
+            return sBinary;
         }
-        let by = [];
+        let sBinary = "";
         let i = 1;
         for (let arc of this.arcs.keys()) {
-            let val = arc;
+            let nVal = arc;
             if (i == 1 && this.final) {
-                val = val | nFinalNodeMask;
+                nVal = nVal | nFinalNodeMask;
             }
             if (i == nArc) {
-                val = val | nFinalArcMask;
+                nVal = nVal | nFinalArcMask;
             }
             i++;
-            by += oConv.toHexString(val, nBytesArc);
-            by += oConv.toHexString(this.arcs.get(arc).addr, nBytesNodeAddress);
+            sBinary += this.convValueToHexString(nVal, nBytesArc);
+            sBinary += this.convValueToHexString(this.arcs.get(arc).addr, nBytesNodeAddress);
         }
-        return by;
+        return sBinary;
     }
-}
 
-
-const oConv = {
-    toHexString: function (nVal, nByte) {
+    convValueToHexString (nVal, nByte) {
         // nVal: value to convert, nByte: number of bytes
         let sHexVal = nVal.toString(16); // conversion to hexadecimal string
+        //console.log(`value: ${nVal} in ${nByte} bytes`);
         if (sHexVal.length < (nByte*2)) {
-            sHexVal = "0".repeat((nByte*2) - sHexVal.length) + sHexVal;
+            return "0".repeat((nByte*2) - sHexVal.length) + sHexVal;
         } else if (sHexVal.length == (nByte*2)) {
             return sHexVal
         } else {
@@ -534,6 +526,7 @@ const oConv = {
         }
     }
 }
+
 
 
 // Another attempt to sort node arcs
