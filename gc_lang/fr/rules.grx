@@ -10503,7 +10503,7 @@ TEST: parce que t’as envie que je le fasse
 __[i]/ppas(ppas_det_plur_COD_que_avoir)__
     ([ldmtsc]es) +({w_2}) +que? +(?:j’|tu |ils? |[nv]ous |elles? |on ) *(?:ne +|n’|)({avoir}) +({w_2}[éiust]e?)(?! [mts]’)  @@0,w,w,$
     <<- morph(\3, ":V0a", False)
-    and not ((re.search("^(?:décidé|essayé|tenté)$", \4) and after(" +d(?:e |’)")) or (re.search("^réussi$", \4) and after(" +à")))
+    and not ((re.search("^(?:décidé|essayé|tenté|oublié)$", \4) and after(" +d(?:e |’)")) or (re.search("^réussi$", \4) and after(" +à")))
     and morph(\2, ":[NAQ]", False) and morphex(\4, ":V[0-3]..t.*:Q.*:s", ":[GWpi]")
     and not morph(word(1), ":(?:Y|Oo|D)", False)
     -4>> =suggPlur(@, \2)
@@ -10513,6 +10513,7 @@ TEST: Les documents qu’ils ont {{acheté}}.
 TEST: les flacons qu’ils ont réussi à acquérir
 TEST: ça faisait des années que j’avais délaissé ce lieu
 TEST: Les électeurs de Donald que l’on avait rencontrés jusque-là boivent l’eau d’une seule fontaine : Fox News et les sites et radios conservateurs.
+TEST: des choses que j’aurais oublié d’aborder.
 
 
 __[i]/ppas(ppas_det_mas_sing_COD_que_avoir)__
