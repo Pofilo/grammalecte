@@ -34,7 +34,7 @@ document.getElementById("add_word_button").addEventListener("click", () => { oWi
 
 document.getElementById("table").addEventListener("click", (xEvent) => { oWidgets.onTableClick(xEvent); }, false);
 document.getElementById("save_button").addEventListener("click", () => { oLexicon.save(); }, false);
-document.getElementById("export_button").addEventListener("click", () => { oLexicon.export(); }, false);
+document.getElementById("export_button").addEventListener("click", () => { oDict.export(); }, false);
 
 document.getElementById("editor").addEventListener("click", (xEvent) => { oWidgets.onSelectionClick(xEvent); }, false);
 document.getElementById("lemma").addEventListener("keyup", () => { oWidgets.onWrite(); }, false);
@@ -514,17 +514,17 @@ const oLexicon = {
 
     load: function () {
         if (bChrome) {
-            browser.storage.local.get("lexicon", this._load);
+            browser.storage.local.get("oLexicon", this._load);
             return;
         }
-        let xPromise = browser.storage.local.get("lexicon");
+        let xPromise = browser.storage.local.get("oLexicon");
         xPromise.then(this._load.bind(this), showError);
     },
 
-    _load: function (dResult) {
-        if (dResult.hasOwnProperty("lexicon")) {
-            this.lFlexion = dResult.lexicon.lEntry;
-            oWidgets.setDictData(this.lFlexion, dResult.lexicon.sDate);    
+    _load: function (oResult) {
+        if (oResult.hasOwnProperty("oLexicon")) {
+            this.lFlexion = oResult.oLexicon.lEntry;
+            oWidgets.setDictData(this.lFlexion, oResult.oLexicon.sDate);    
             oWidgets.displayTable(this.lFlexion);
         }
         if (this.lFlexion.length > 0) {
@@ -565,9 +565,9 @@ const oLexicon = {
             }
         }
         let sDate = this._getDate();
-        browser.storage.local.set({ "lexicon": {"lEntry": lEntry, "sDate": sDate} });
+        browser.storage.local.set({ "oLexicon": {"lEntry": lEntry, "sDate": sDate} });
         this.lFlexion = lEntry;
-        this.build();
+        oDict.build(lEntry);
         this.resetData();
         oWidgets.displayTable(this.lFlexion);
         oWidgets.updateData();
@@ -576,30 +576,64 @@ const oLexicon = {
 
     _getDate: function () {
         let oDate = new Date();
-        let sMonth = (oDate.getMonth() + 1).toString(); // Because JS always sucks somehow.
-        if (sMonth.length == 1) sMonth =  "0" + sMonth;
-        let sDay = (oDate.getDay() < 10) ? "0"+oDate.getDay() : oDate.getDay();
-        return `${oDate.getFullYear()}-${sMonth}-${sDay} (${oDate.getHours()}:${oDate.getMinutes()})`;
+        let sMonth = (oDate.getMonth() + 1).toString().padStart(2, "0"); // Month+1: Because JS always sucks somehow.
+        let sDay = (oDate.getDay()).toString().padStart(2, "0");
+        let sHours = (oDate.getHours()).toString().padStart(2, "0");
+        let sMinutes = (oDate.getMinutes()).toString().padStart(2, "0");
+        return `${oDate.getFullYear()}-${sMonth}-${sDay}, ${sHours}:${sMinutes}`;
+    }
+}
+
+
+const oDict = {
+
+    oJSON: null,
+
+    load: function () {
+        if (bChrome) {
+            browser.storage.local.get("oDictionary", this._load);
+            return;
+        }
+        let xPromise = browser.storage.local.get("oDictionary");
+        xPromise.then(this._load.bind(this), showError);
     },
 
-    build: function () {
+    _load: function (oResult) {
+        if (oResult.hasOwnProperty("oDictionary")) {
+            this.oJSON = oResult.oDictionary;
+            oWidgets.showElement("export_button");
+        } else {
+            oWidgets.hideElement("export_button");
+        }
+    },
+
+    build: function (lEntry) {
         oWidgets.showElement("build_progress");
         let xProgressNode = document.getElementById("build_progress");
-        let oDAWG = new DAWG(this.lFlexion, "Français - dictionnaire personnel", "S", xProgressNode);
+        let oDAWG = new DAWG(lEntry, "Français - dictionnaire personnel", "S", xProgressNode);
+        this.oJSON = oDAWG.createBinary(1);
+        this.save();
         oWidgets.hideElement("build_progress");
+        oWidgets.showElement("export_button");
+        // debug
         let lMorph = oDAWG.morph("finis");
         console.log(lMorph);
     },
 
-    export: function () {
-        let xBlob = new Blob(['{ "app": "grammalecte", "data": ' + JSON.stringify(this.lFlexion) + ' }'], {type: 'application/json'}); 
-        let sURL = URL.createObjectURL(xBlob);
-        browser.downloads.download({ filename: "grammalecte_dictionnaire_personnel.json", url: sURL, saveAs: true });
+    save: function () {
+        browser.storage.local.set({ "oDictionary": this.oJSON });
     },
 
     import: function () {
         // TO DO
+    },
+
+    export: function () {
+        let xBlob = new Blob([ JSON.stringify(this.oJSON) ], {type: 'application/json'}); 
+        let sURL = URL.createObjectURL(xBlob);
+        browser.downloads.download({ filename: "grammalecte_dictionnaire_personnel.json", url: sURL, saveAs: true });
     }
 }
+
 
 oLexicon.load();
