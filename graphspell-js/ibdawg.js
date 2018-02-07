@@ -383,7 +383,40 @@ class IBDAWG {
     //     is defined in constructor
     // }
     
+    * select (sPattern="") {
+        // generator: returns all entries which morphology fits <sPattern>
+        let zPattern = null;
+        if (sPattern !== "") {
+            try {
+                zPattern = new RegExp(sPattern);
+            }
+            catch (e) {
+                console.log("Error in regex pattern");
+                console.log(e.message);
+            }
+        }
+        yield* this._select1(zPattern, 0, "");
+    }
+
     // VERSION 1
+
+    _select1 (zPattern, iAddr, sWord) {
+        // recursive generator
+        for (let [nVal, jAddr] of self._getArcs1(iAddr)) {
+            if (nVal < this.nChar) {
+                // simple character
+                yield* self._select1(zPattern, jAddr, sWord + self.lArcVal[nVal])
+            } else {
+                let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
+                for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
+                    if (!zPattern || zPattern.search(this.lArcVal[nMorphVal])) {
+                        yield sEntry + "\t" + this.lArcVal[nMorphVal];
+                    }
+                }
+            }
+        }
+    }            
+
     _morph1 (sWord) {
         // returns morphologies of sWord
         let iAddr = 0;
