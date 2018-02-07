@@ -400,16 +400,16 @@ class IBDAWG {
 
     // VERSION 1
 
-    _select1 (zPattern, iAddr, sWord) {
+    * _select1 (zPattern, iAddr, sWord) {
         // recursive generator
-        for (let [nVal, jAddr] of self._getArcs1(iAddr)) {
+        for (let [nVal, jAddr] of this._getArcs1(iAddr)) {
             if (nVal < this.nChar) {
                 // simple character
-                yield* self._select1(zPattern, jAddr, sWord + self.lArcVal[nVal])
+                yield* this._select1(zPattern, jAddr, sWord + this.lArcVal[nVal]);
             } else {
                 let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
                 for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
-                    if (!zPattern || zPattern.search(this.lArcVal[nMorphVal])) {
+                    if (!zPattern || zPattern.test(this.lArcVal[nMorphVal])) {
                         yield sEntry + "\t" + this.lArcVal[nMorphVal];
                     }
                 }
