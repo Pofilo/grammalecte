@@ -384,11 +384,12 @@ class IBDAWG:
     def select (self, sPattern=""):
         "generator: returns all entries which morphology fits <sPattern>"
         zPattern = None
-        try:
-            zPattern = re.compile(sPattern)
-        except:
-            print("# Error in regex pattern")
-            traceback.print_exc()
+        if sPattern:
+            try:
+                zPattern = re.compile(sPattern)
+            except:
+                print("# Error in regex pattern")
+                traceback.print_exc()
         yield from self._select1(zPattern, 0, "")
 
     # def morph (self, sWord):
