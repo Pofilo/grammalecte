@@ -138,6 +138,11 @@ class IBDAWG {
             this.funcStemming = str_transform.noStemming;
         }
 
+        this._arcMask = (2 ** ((this.nBytesArc * 8) - 3)) - 1;
+        this._finalNodeMask = 1 << ((this.nBytesArc * 8) - 1);
+        this._lastArcMask = 1 << ((this.nBytesArc * 8) - 2);
+
+
         // Configuring DAWG functions according to nVersion
         switch (this.nVersion) {
             case 1:

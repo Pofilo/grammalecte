@@ -385,11 +385,7 @@ class DAWG {
             "cStemming": this.cStemming,
             "nTag": this.nTag,
             "dChar": helpers.mapToObject(this.dChar),
-            "_arcMask": this._arcMask,
-            "_finalNodeMask": this._finalNodeMask,
-            "_lastArcMask": this._lastArcMask,
-            "_addrBitMask": this._addrBitMask,
-            "nBytesOffset": this.nBytesOffset
+            "nBytesOffset": 1
         };
         return oJSON;
     }

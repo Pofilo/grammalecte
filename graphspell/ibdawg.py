@@ -186,10 +186,6 @@ class IBDAWG:
                             "cStemming": self.cStemming,
                             "nTag": self.nTag,
                             "dChar": self.dChar,
-                            "_arcMask": self._arcMask,
-                            "_finalNodeMask": self._finalNodeMask,
-                            "_lastArcMask": self._lastArcMask,
-                            "_addrBitMask": self._addrBitMask,
                             "nBytesOffset": self.nBytesOffset
                         }, ensure_ascii=False))
             if bInJSModule:
