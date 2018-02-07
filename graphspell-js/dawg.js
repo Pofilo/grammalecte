@@ -383,7 +383,7 @@ class DAWG {
             "nAff": this.nAff,
             "cStemming": this.cStemming,
             "nTag": this.nTag,
-            "dChar": this.dChar,
+            "dChar": helpers.mapToObject(this.dChar),
             "_arcMask": this._arcMask,
             "_finalNodeMask": this._finalNodeMask,
             "_lastArcMask": this._lastArcMask,
