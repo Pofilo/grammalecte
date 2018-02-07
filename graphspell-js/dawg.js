@@ -28,7 +28,7 @@ class DAWG {
         Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
     */
 
-    constructor (lEntrySrc, sLangName, cStemming, xProgressBarNode=null) {
+    constructor (lEntrySrc, sLang, cStemming, xProgressBarNode=null) {
         console.log("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====");
         let funcStemmingGen = null;
         switch (cStemming.toUpperCase()) {
@@ -104,7 +104,8 @@ class DAWG {
         let dValOccur = new Map(lKeyVal);
         lKeyVal.length = 0; // clear the array
 
-        this.sLang = sLangName;
+        this.sHeader = "/pyfsa/";
+        this.sLang = sLang;
         this.nEntry = lWord.length;
         this.aPreviousEntry = [];
         oNodeCounter.reset();
@@ -368,8 +369,8 @@ class DAWG {
         }
         let oJSON = {
             "sName": this.sName,
-            "nVersion": this.nMethod,
-            "sHeader": this.sHeader,
+            "nVersion": nMethod,
+            "sHeader": this.sHeader + nMethod + "/",
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
             "byDic": sByDic,
