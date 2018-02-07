@@ -84,11 +84,18 @@ class SuggResult {
 class IBDAWG {
     // INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 
-    constructor (sDicName, sPath="") {
+    constructor (param1, sPath="") {
+        // param1 can be a filename or a object with all the necessary data.
         try {
-            let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/graphspell/_dictionaries/"+sDicName;
-            const dict = JSON.parse(helpers.loadFile(sURL));
-            Object.assign(this, dict);
+            let oData = null;
+            if (typeof(param1) == "string") {
+                let sDicName = param1;
+                let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/graphspell/_dictionaries/"+sDicName;
+                oData = JSON.parse(helpers.loadFile(sURL));
+            } else {
+                oData = param1;
+            }
+            Object.assign(this, oData);
         }
         catch (e) {
             throw Error("# Error. File not found or not loadable.\n" + e.message + "\n");
