@@ -373,7 +373,7 @@ class DAWG {
             "sHeader": this.sHeader + nMethod + "/",
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "byDic": sByDic,
+            "byDic": sByDic,  // binary word graph
             "sLang": this.sLang,
             "nChar": this.nChar,
             "nBytesArc": this.nBytesArc,

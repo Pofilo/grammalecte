@@ -592,7 +592,7 @@ const oLexicon = {
 
 
 const oBinaryDict = {
-    // 
+    
     oJSON: null,
 
     load: function () {
@@ -625,8 +625,9 @@ const oBinaryDict = {
         // debug
         console.log(oDAWG.morph("finis"));
         let oIBDAWG = new IBDAWG(this.oJSON);
-        let lEntry2 = oIBDAWG.select();
-        console.log(lEntry2);
+        for (let e of oIBDAWG.select()) {
+            console.log(e);
+        }
     },
 
     save: function () {
