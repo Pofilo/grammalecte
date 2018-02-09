@@ -296,6 +296,38 @@ class DAWG {
         }
     }
 
+    * select (sPattern="") {
+        // generator: returns all entries which morphology fits <sPattern>
+        let zPattern = null;
+        if (sPattern !== "") {
+            try {
+                zPattern = new RegExp(sPattern);
+            }
+            catch (e) {
+                console.log("Error in regex pattern");
+                console.log(e.message);
+            }
+        }
+        yield* this._select1(zPattern, this.oRoot, "");
+    }
+
+    * _select1 (zPattern, oNode, sWord) {
+        // recursive generator
+        for (let [nVal, oNextNode] of oNode.arcs.entries()) {
+            if (nVal < this.nChar) {
+                // simple character
+                yield* this._select1(zPattern, oNextNode, sWord + this.lArcVal[nVal]);
+            } else {
+                let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
+                for (let [nMorphVal, _] of oNextNode.arcs.entries()) {
+                    if (!zPattern || zPattern.test(this.lArcVal[nMorphVal])) {
+                        yield sEntry + "\t" + this.lArcVal[nMorphVal];
+                    }
+                }
+            }
+        }
+    }
+
     // BINARY CONVERSION
     createBinary (nMethod) {
         console.log("Write DAWG as an indexable binary dictionary [method: "+nMethod+"]");
