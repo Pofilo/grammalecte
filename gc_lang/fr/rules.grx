@@ -9286,11 +9286,11 @@ __[i](p_préposition_nom)__
     ~>> *
 __[i](p_préposition_déterminant_nom)__
     (?:avec|à|s(?:ur|ous|elon)|c(?:ontre|hez)|dans|envers|p(?:ar|our)) +(?:les? |la |l’|de(?:s| la|) |ce[st]? |cette |[mts](?:es|on|a) |[nv]o(?:s|tre) |leurs? |certaine?s? |quelques ) *({w_2})  @@$
-    <<- morph(\1, ":[NAQ]", False) and isEndOfNG()
+    <<- morphex(\1, ":[NAQ]", ":G") and isEndOfNG()
     ~>> *
 __[i](p_lors_de_du_nom)__
     lors d(?:’|e(?:s| la|) |u ) *({w_2})  @@$
-    <<- morph(\1, ":[NAQ]", False) and isEndOfNG()
+    <<- morphex(\1, ":[NAQ]", ":G") and isEndOfNG()
     ~>> *
 
 ## doute que
@@ -9323,6 +9323,7 @@ TEST: tandis que d’autres perçoivent le bon goût de la soupe.
 TEST: Je me doute bien que vous avez trouvé la réponse.
 TEST: Nous nous doutons bien qu’il y a une entourloupe derrière cette affaire.
 TEST: Notre but n’était pas de devenir célèbres.
+TEST: sans qu’on ait à le lui ordonner
 
 
 
