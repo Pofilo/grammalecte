@@ -157,7 +157,7 @@ class DAWG {
         if (aEntry < this.aPreviousEntry) {
             throw "Error: Words must be inserted in alphabetical order.";
         }
-        console.log(aEntry);
+
         // find common prefix between word and previous word
         let nCommonPrefix = 0;
         for (let i = 0;  i < Math.min(aEntry.length, this.aPreviousEntry.length);  i++) {
@@ -308,15 +308,15 @@ class DAWG {
                 console.log(e.message);
             }
         }
-        yield* this._select1(zPattern, this.oRoot, "");
+        yield* this._select(zPattern, this.oRoot, "");
     }
 
-    * _select1 (zPattern, oNode, sWord) {
+    * _select (zPattern, oNode, sWord) {
         // recursive generator
         for (let [nVal, oNextNode] of oNode.arcs.entries()) {
-            if (nVal < this.nChar) {
+            if (nVal <= this.nChar) {
                 // simple character
-                yield* this._select1(zPattern, oNextNode, sWord + this.lArcVal[nVal]);
+                yield* this._select(zPattern, oNextNode, sWord + this.lArcVal[nVal]);
             } else {
                 let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
                 for (let [nMorphVal, _] of oNextNode.arcs.entries()) {
