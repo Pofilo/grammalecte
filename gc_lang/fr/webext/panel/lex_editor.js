@@ -623,7 +623,10 @@ const oBinaryDict = {
         oWidgets.hideElement("build_progress");
         oWidgets.showElement("export_button");
         // debug
-        console.log(oDAWG.morph("finis"));
+        for (let e of oDAWG.select()) {
+            console.log(e);
+        }
+        console.log("=======");
         let oIBDAWG = new IBDAWG(this.oJSON);
         for (let e of oIBDAWG.select()) {
             console.log(e);
