@@ -408,7 +408,7 @@ class IBDAWG {
     * _select1 (zPattern, iAddr, sWord) {
         // recursive generator
         for (let [nVal, jAddr] of this._getArcs1(iAddr)) {
-            if (nVal < this.nChar) {
+            if (nVal <= this.nChar) {
                 // simple character
                 yield* this._select1(zPattern, jAddr, sWord + this.lArcVal[nVal]);
             } else {
