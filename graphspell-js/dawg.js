@@ -148,7 +148,7 @@ class DAWG {
         this.countArcs();
         this.sortNodeArcs(dValOccur);
         this.displayInfo();
-        //this.writeInfo();
+        this.writeInfo();
         //this.oRoot.display(0, this.lArcVal, true);
     }
 
@@ -157,7 +157,7 @@ class DAWG {
         if (aEntry < this.aPreviousEntry) {
             throw "Error: Words must be inserted in alphabetical order.";
         }
-        
+        console.log(aEntry);
         // find common prefix between word and previous word
         let nCommonPrefix = 0;
         for (let i = 0;  i < Math.min(aEntry.length, this.aPreviousEntry.length);  i++) {
