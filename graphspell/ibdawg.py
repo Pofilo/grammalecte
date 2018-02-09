@@ -395,7 +395,7 @@ class IBDAWG:
     def _select1 (self, zPattern, iAddr, sWord):
         # recursive generator
         for nVal, jAddr in self._getArcs1(iAddr):
-            if nVal < self.nChar:
+            if nVal <= self.nChar:
                 # simple character
                 yield from self._select1(zPattern, jAddr, sWord + self.lArcVal[nVal])
             else:
