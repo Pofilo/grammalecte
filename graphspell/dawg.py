@@ -281,6 +281,30 @@ class DAWG:
                 hDst.write(" {:>6}. {}\n".format(i, s))
             hDst.close()
 
+    def select (self, sPattern=""):
+        "generator: returns all entries which morphology fits <sPattern>"
+        zPattern = None
+        if sPattern:
+            try:
+                zPattern = re.compile(sPattern)
+            except:
+                print("# Error in regex pattern")
+                traceback.print_exc()
+        yield from self._select(zPattern, self.oRoot, "")
+
+    def _select (self, zPattern, oNode, sWord):
+        # recursive generator
+        for nVal, oNextNode in oNode.arcs.items():
+            if nVal <= self.nChar:
+                # simple character
+                yield from self._select(zPattern, oNextNode, sWord + self.lArcVal[nVal])
+            else:
+                sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
+                for nMorphVal, _ in oNextNode.arcs.items():
+                    if not zPattern or zPattern.search(self.lArcVal[nMorphVal]):
+                        yield sEntry + "\t" + self.lArcVal[nMorphVal]
+
+
     # BINARY CONVERSION
     def createBinary (self, sPathFile, nMethod, bDebug=False):
         print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nMethod)
