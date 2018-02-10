@@ -591,13 +591,17 @@ const oBinaryDict = {
     },
 
     _load: function (oResult) {
-        if (oResult.hasOwnProperty("oDictionary")) {
+        if (!oResult.hasOwnProperty("oDictionary")) {
             oWidgets.hideElement("export_button");
             return;
         }
         this.oJSON = oResult.oDictionary;
         this.oIBDAWG = new IBDAWG(this.oJSON);
-        oLexicon.set([oIBDAWG.select()]);
+        let lEntry = [];
+        for (let s of this.oIBDAWG.select()) {
+            lEntry.push(s.split("\t"));
+        }        
+        oLexicon.set(lEntry);
         oWidgets.showElement("export_button");
     },
 
