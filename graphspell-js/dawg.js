@@ -333,8 +333,9 @@ class DAWG {
         console.log("Write DAWG as an indexable binary dictionary [method: "+nMethod+"]");
         if (nMethod == 1) {
             this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
-            this._calcNumBytesNodeAddress()
-            this._calcNodesAddress1()
+            this.nBytesOffset = 0;
+            this._calcNumBytesNodeAddress();
+            this._calcNodesAddress1();
         } else {
             console.log("Error: unknown compression method");
         }
@@ -418,7 +419,7 @@ class DAWG {
             "cStemming": this.cStemming,
             "nTag": this.nTag,
             "dChar": helpers.mapToObject(this.dChar),
-            "nBytesOffset": 1
+            "nBytesOffset": this.nBytesOffset
         };
         return oJSON;
     },

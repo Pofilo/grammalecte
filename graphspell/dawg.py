@@ -12,6 +12,8 @@
 import sys
 import os
 import collections
+import json
+import datetime
 
 from . import str_transform as st
 from .progressbar import ProgressBar
@@ -310,10 +312,12 @@ class DAWG:
         print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nMethod)
         if nMethod == 1:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 2) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes1()
+            self.nBytesOffset = 0
             self._calcNumBytesNodeAddress()
             self._calcNodesAddress1()
         elif nMethod == 2:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 3) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes2()
+            self.nBytesOffset = 0
             self._calcNumBytesNodeAddress()
             self._calcNodesAddress2()
         elif nMethod == 3:
@@ -329,6 +333,7 @@ class DAWG:
                                                                                                 self.nBytesArc+self.nBytesNodeAddress, self.nArc, \
                                                                                                 (self.nBytesArc+self.nBytesNodeAddress)*self.nArc ))
         self._writeBinary(sPathFile, nMethod)
+        self._writeAsJSObject(sPathFile, nMethod)
         if bDebug:
             self._writeNodes(sPathFile, nMethod)
 
@@ -381,6 +386,53 @@ class DAWG:
                 if self.lSortedNodes[i].size != nSize:
                     self.lSortedNodes[i].size = nSize
                     bEnd = False
+
+    def _writeAsJSObject (self, spfDst, nMethod, bInJSModule=False, bBinaryDictAsHexString=True):
+        if not spfDst.endswith(".json"):
+            spfDst += "."+str(nMethod)+".json"
+        byDic = b""
+        if nMethod == 1:
+            byDic = self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress)
+            for oNode in self.lMinimizedNodes:
+                byDic += oNode.convToBytes1(self.nBytesArc, self.nBytesNodeAddress)
+        elif nMethod == 2:
+            byDic = self.oRoot.convToBytes2(self.nBytesArc, self.nBytesNodeAddress)
+            for oNode in self.lSortedNodes:
+                byDic += oNode.convToBytes2(self.nBytesArc, self.nBytesNodeAddress)
+        elif nMethod == 3:
+            byDic = self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
+            for oNode in self.lSortedNodes:
+                byDic += oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
+
+        with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
+            if bInJSModule:
+                hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
+            hDst.write(json.dumps({
+                            "sName": "todo",
+                            "nVersion": nMethod,
+                            "sDate": str(datetime.datetime.now())[:-7],
+                            "sHeader": "/pyfsa/"+str(nMethod)+"/",
+                            "lArcVal": self.lArcVal,
+                            "nArcVal": self.nArcVal,
+                            # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
+                            # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
+                            # https://github.com/mozilla/addons-linter/issues/1361
+                            "byDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ],
+                            "sLang": self.sLang,
+                            "nChar": self.nChar,
+                            "nBytesArc": self.nBytesArc,
+                            "nBytesNodeAddress": self.nBytesNodeAddress,
+                            "nEntries": self.nEntry,
+                            "nNode": self.nNode,
+                            "nArc": self.nArc,
+                            "nAff": self.nAff,
+                            "cStemming": self.cStemming,
+                            "nTag": self.nTag,
+                            "dChar": self.dChar,
+                            "nBytesOffset": self.nBytesOffset
+                        }, ensure_ascii=False))
+            if bInJSModule:
+                hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
     def _writeBinary (self, sPathFile, nMethod):
         """

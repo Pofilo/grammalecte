@@ -103,7 +103,7 @@ class IBDAWG {
         /*
             Properties:
             sName, nVersion, sHeader, lArcVal, nArcVal, byDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
-            nEntries, nNode, nArc, nAff, cStemming, nTag, dChar, _arcMask, _finalNodeMask, _lastArcMask, _addrBitMask, nBytesOffset,
+            nEntries, nNode, nArc, nAff, cStemming, nTag, dChar, nBytesOffset,
         */
 
         /*
