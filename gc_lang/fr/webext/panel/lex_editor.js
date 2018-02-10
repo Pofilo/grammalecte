@@ -563,15 +563,6 @@ const oLexicon = {
         oWidgets.displayTable(this.lFlexion);
         oWidgets.updateData();
         oWidgets.setDictData(this.lFlexion.length, this._getDate());
-    },
-
-    _getDate: function () {
-        let oDate = new Date();
-        let sMonth = (oDate.getMonth() + 1).toString().padStart(2, "0"); // Month+1: Because JS always sucks somehow.
-        let sDay = (oDate.getDay()).toString().padStart(2, "0");
-        let sHours = (oDate.getHours()).toString().padStart(2, "0");
-        let sMinutes = (oDate.getMinutes()).toString().padStart(2, "0");
-        return `${oDate.getFullYear()}-${sMonth}-${sDay}, ${sHours}:${sMinutes}`;
     }
 }
 
@@ -602,6 +593,7 @@ const oBinaryDict = {
             lEntry.push(s.split("\t"));
         }        
         oLexicon.set(lEntry);
+        oWidgets.setDictData(lEntry.length, oJSON.sDate);
         oWidgets.showElement("export_button");
     },
 
