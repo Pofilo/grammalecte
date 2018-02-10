@@ -402,6 +402,7 @@ class DAWG {
         let oJSON = {
             "sName": this.sName,
             "nVersion": nMethod,
+            "sDate": this._getDate(),
             "sHeader": this.sHeader + nMethod + "/",
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
@@ -420,6 +421,15 @@ class DAWG {
             "nBytesOffset": 1
         };
         return oJSON;
+    },
+
+    _getDate () {
+        let oDate = new Date();
+        let sMonth = (oDate.getMonth() + 1).toString().padStart(2, "0"); // Month+1: Because JS always sucks somehow.
+        let sDay = (oDate.getDay()).toString().padStart(2, "0");
+        let sHours = (oDate.getHours()).toString().padStart(2, "0");
+        let sMinutes = (oDate.getMinutes()).toString().padStart(2, "0");
+        return `${oDate.getFullYear()}-${sMonth}-${sDay}, ${sHours}:${sMinutes}`;
     }
 }
 

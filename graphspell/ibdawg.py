@@ -5,6 +5,7 @@ import traceback
 import pkgutil
 import re
 from functools import wraps
+import datetime
 import time
 
 #import logging
@@ -168,6 +169,7 @@ class IBDAWG:
             hDst.write(json.dumps({
                             "sName": self.sName,
                             "nVersion": self.nVersion,
+                            "sDate": str(datetime.datetime.now())[:-7],
                             "sHeader": self.sHeader,
                             "lArcVal": self.lArcVal,
                             "nArcVal": self.nArcVal,
