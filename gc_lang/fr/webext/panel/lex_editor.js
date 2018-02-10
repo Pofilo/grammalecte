@@ -199,14 +199,21 @@ const oWidgets = {
     displayTable: function (lFlex) {
         this.clearTable();
         if (lFlex.length > 0) {
+            this.showElement("display_progress");
+            let xDisplayProgress = document.getElementById("display_progress");
             let xTable = document.getElementById("table");
             let n = 0;
+            xDisplayProgress.max = lFlex.length;
+            xDisplayProgress.value = 1;
             this.hideElement("no_elem_line");
             xTable.appendChild(this.createTableHeader());
             for (let [sFlexion, sLemma, sTags] of lFlex) {
                 xTable.appendChild(this.createRowNode(n, sFlexion, sLemma, sTags));
                 n += 1;
+                xDisplayProgress.value += 1;
             }
+            xDisplayProgress.value = xDisplayProgress.max;
+            this.hideElement("display_progress");
         } else {
             this.showElement("no_elem_line");
         }
@@ -444,16 +451,19 @@ const oFlexGen = {
             // deuxième groupe
             return oConj["V2"];
         } else if (sVerb.endsWith("er")) {
-            // premier groupe
+            // premier groupe, conjugaison en fonction de la terminaison du lemme
+            // 5 lettres
             if (sVerb.slice(-5) in oConj["V1"]) {
                 return oConj["V1"][sVerb.slice(-5)];
             }
+            // 4 lettres
             if (sVerb.slice(-4) in oConj["V1"]) {
                 if (sVerb.endsWith("eler") || sVerb.endsWith("eter")) {
                     return oConj["V1"][sVerb.slice(-4)]["1"];
                 }
                 return oConj["V1"][sVerb.slice(-4)];
             }
+            // 3 lettres
             if (sVerb.slice(-3) in oConj["V1"]) {
                 return oConj["V1"][sVerb.slice(-3)];
             }
@@ -512,32 +522,15 @@ const oLexicon = {
     nDeletedEntries: 0,
     nAddedEntries: 0,
 
-    load: function () {
-        if (bChrome) {
-            browser.storage.local.get("oLexicon", this._load);
-            return;
-        }
-        let xPromise = browser.storage.local.get("oLexicon");
-        xPromise.then(this._load.bind(this), showError);
-    },
-
-    _load: function (oResult) {
-        if (oResult.hasOwnProperty("oLexicon")) {
-            this.lFlexion = oResult.oLexicon.lEntry;
-            oWidgets.setDictData(this.lFlexion.length, oResult.oLexicon.sDate);
-            oWidgets.displayTable(this.lFlexion);
-        }
+    set: function (lFlexion) {
+        this.lFlexion = lFlexion;
+        this.resetModif();
+        oWidgets.displayTable(this.lFlexion);
         if (this.lFlexion.length > 0) {
             oWidgets.showElement("export_button");
         } else {
             oWidgets.hideElement("export_button");
         }
-    },
-
-    set: function (lFlexion) {
-        this.lFlexion = lFlexion; // clear the array
-        this.resetModif();
-        oWidgets.displayTable(this.lFlexion);
     },
 
     addFlexions: function (lFlex) {
@@ -564,20 +557,12 @@ const oLexicon = {
 
     save: function () {
         oWidgets.hideElement("save_button");
-        let lEntry = [];
-        for (let e of this.lFlexion) {
-            if (e !== null) {
-                lEntry.push(e);
-            }
-        }
-        let sDate = this._getDate();
-        browser.storage.local.set({ "oLexicon": {"lEntry": lEntry, "sDate": sDate} });
-        this.lFlexion = lEntry;
-        oBinaryDict.build(lEntry);
+        this.lFlexion = this.lFlexion.filter((e) => e !== null);
+        oBinaryDict.build(this.lFlexion);
         this.resetModif();
         oWidgets.displayTable(this.lFlexion);
         oWidgets.updateData();
-        oWidgets.setDictData(lEntry.length, sDate);
+        oWidgets.setDictData(this.lFlexion.length, this._getDate());
     },
 
     _getDate: function () {
@@ -594,6 +579,7 @@ const oLexicon = {
 const oBinaryDict = {
     
     oJSON: null,
+    oIBDAWG: null,
 
     load: function () {
         if (bChrome) {
@@ -606,12 +592,13 @@ const oBinaryDict = {
 
     _load: function (oResult) {
         if (oResult.hasOwnProperty("oDictionary")) {
-            this.oJSON = oResult.oDictionary;
-            oWidgets.showElement("export_button");
-        } else {
             oWidgets.hideElement("export_button");
+            return;
         }
-        //oLexicon.set();
+        this.oJSON = oResult.oDictionary;
+        this.oIBDAWG = new IBDAWG(this.oJSON);
+        oLexicon.set([oIBDAWG.select()]);
+        oWidgets.showElement("export_button");
     },
 
     build: function (lEntry) {
@@ -622,15 +609,6 @@ const oBinaryDict = {
         this.save();
         oWidgets.hideElement("build_progress");
         oWidgets.showElement("export_button");
-        // debug
-        for (let e of oDAWG.select()) {
-            console.log(e);
-        }
-        console.log("=======");
-        let oIBDAWG = new IBDAWG(this.oJSON);
-        for (let e of oIBDAWG.select()) {
-            console.log(e);
-        }
     },
 
     save: function () {
