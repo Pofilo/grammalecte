@@ -83,53 +83,27 @@ class IBDAWG:
         if not self.by:
             raise OSError("# Error. File not found or not loadable: "+sfDict)
 
-        if self.by[0:7] != b"/pyfsa/":
-            raise TypeError("# Error. Not a pyfsa binary dictionary. Header: {}".format(self.by[0:9]))
-        if not(self.by[7:8] == b"1" or self.by[7:8] == b"2" or self.by[7:8] == b"3"):
-            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[7:8]))
-        try:
-            header, info, values, bdic = self.by.split(b"\0\0\0\0", 3)
-        except Exception:
-            raise Exception
+        if sfDict.endswith(".bdic"):
+            self._initBinary()
+        elif sfDict.endswith(".json"):
+            self._initJSON()
+        else:
+            raise OSError("# Error. Unknown file type: "+sfDict)
 
         self.sFileName = sfDict
-        self.nCompressionMethod = int(self.by[7:8].decode("utf-8"))
-        self.sHeader = header.decode("utf-8")
-        self.lArcVal = values.decode("utf-8").split("\t")
-        self.nArcVal = len(self.lArcVal)
-        self.byDic = bdic
 
-        l = info.decode("utf-8").split("/")
-        self.sLangCode = "xx"
-        self.sLangName = l[0]
-        self.sDicName = ""
-        self.nChar = int(l[1])
-        self.nBytesArc = int(l[2])
-        self.nBytesNodeAddress = int(l[3])
-        self.nEntry = int(l[4])
-        self.nNode = int(l[5])
-        self.nArc = int(l[6])
-        self.nAff = int(l[7])
-        self.cStemming = l[8]
+        self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
+        self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
+        self._lastArcMask = 1 << ((self.nBytesArc * 8) - 2)
+        self._addrBitMask = 1 << ((self.nBytesArc * 8) - 3)  # version 2
+
+        # function to decode the affix/suffix code
         if self.cStemming == "S":
             self.funcStemming = st.changeWordWithSuffixCode
         elif self.cStemming == "A":
             self.funcStemming = st.changeWordWithAffixCode
         else:
             self.funcStemming = st.noStemming
-        self.nTag = self.nArcVal - self.nChar - self.nAff
-        # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
-        self.dChar = {}
-        for i in range(1, self.nChar):
-            self.dChar[self.lArcVal[i]] = i
-        self.dCharVal = { v: k  for k, v in self.dChar.items() }
-            
-        self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
-        self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
-        self._lastArcMask = 1 << ((self.nBytesArc * 8) - 2)
-        self._addrBitMask = 1 << ((self.nBytesArc * 8) - 3)  # version 2
-
-        self.nBytesOffset = 1 # version 3
 
         # Configuring DAWG functions according to nCompressionMethod
         if self.nCompressionMethod == 1:
@@ -155,6 +129,48 @@ class IBDAWG:
 
         self.bOptNumSigle = False
         self.bOptNumAtLast = False
+
+    def _initBinary (self):
+        "initialize with binary structure file"
+        if self.by[0:7] != b"/pyfsa/":
+            raise TypeError("# Error. Not a pyfsa binary dictionary. Header: {}".format(self.by[0:9]))
+        if not(self.by[7:8] == b"1" or self.by[7:8] == b"2" or self.by[7:8] == b"3"):
+            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[7:8]))
+        try:
+            header, info, values, bdic = self.by.split(b"\0\0\0\0", 3)
+        except Exception:
+            raise Exception
+        
+        self.nCompressionMethod = int(self.by[7:8].decode("utf-8"))
+        self.sHeader = header.decode("utf-8")
+        self.lArcVal = values.decode("utf-8").split("\t")
+        self.nArcVal = len(self.lArcVal)
+        self.byDic = bdic
+
+        l = info.decode("utf-8").split("/")
+        self.sLangCode = "xx"
+        self.sLangName = l[0]
+        self.sDicName = ""
+        self.nChar = int(l[1])
+        self.nBytesArc = int(l[2])
+        self.nBytesNodeAddress = int(l[3])
+        self.nEntry = int(l[4])
+        self.nNode = int(l[5])
+        self.nArc = int(l[6])
+        self.nAff = int(l[7])
+        self.cStemming = l[8]
+        self.nTag = self.nArcVal - self.nChar - self.nAff
+        # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
+        self.dChar = {}
+        for i in range(1, self.nChar):
+            self.dChar[self.lArcVal[i]] = i
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
+        self.nBytesOffset = 1 # version 3
+
+    def _initJSON (self):
+        "initialize with a JSON text file"
+        self.__dict__.update(json.loads(self.by.decode("utf-8")))
+        #self.__dict__.update(json.loads(self.by))                  # In Python 3.6, can read directly binary strings
 
     def getInfo (self):
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
@@ -197,10 +213,6 @@ class IBDAWG:
                         }, ensure_ascii=False))
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
-
-                            
-                            
-
 
     def isValidToken (self, sToken):
         "checks if <sToken> is valid (if there is hyphens in <sToken>, <sToken> is split, each part is checked)"
