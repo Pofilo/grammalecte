@@ -78,7 +78,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
 
     # Package and parser
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic", "pythonpath/")
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_filename']+".bdic", "pythonpath/")
     hZip.write("grammalecte-cli.py", "pythonpath/grammalecte-cli.py")
 
     # Extension files
@@ -156,7 +156,7 @@ def createPackageZip (sLang, dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_name']+".bdic")
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_filename']+".bdic")
     for spf in ["grammalecte-cli.py", "grammalecte-server.py", "bottle.py", \
                 "grammalecte-server-options._global.ini", "grammalecte-server-options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
@@ -164,14 +164,14 @@ def createPackageZip (sLang, dVars, spLangPack):
     hZip.writestr("setup.py", helpers.fileFile("gc_lang/fr/setup.py", dVars))
 
 
-def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sDicName, sAddPath=""):
+def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sfDict, sAddPath=""):
     for sf in os.listdir("grammalecte"):
         if not os.path.isdir("grammalecte/"+sf):
             hZip.write("grammalecte/"+sf, sAddPath+"grammalecte/"+sf)
     for sf in os.listdir("grammalecte/graphspell"):
         if not os.path.isdir("grammalecte/graphspell/"+sf):
             hZip.write("grammalecte/graphspell/"+sf, sAddPath+"grammalecte/graphspell/"+sf)
-    hZip.write("grammalecte/graphspell/_dictionaries/"+sDicName, sAddPath+"grammalecte/graphspell/_dictionaries/"+sDicName)
+    hZip.write("grammalecte/graphspell/_dictionaries/"+sfDict, sAddPath+"grammalecte/graphspell/_dictionaries/"+sfDict)
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
@@ -305,8 +305,8 @@ def copyGraphspellCore (bJavaScript=False):
 
 
 def copyGraphspellDictionary (dVars, bJavaScript=False):
-    spfPyDic = "graphspell/_dictionaries/"+dVars['dic_name']+".bdic"
-    spfJSDic = "graphspell-js/_dictionaries/"+dVars['dic_name']+".json"
+    spfPyDic = "graphspell/_dictionaries/"+dVars['dic_filename']+".bdic"
+    spfJSDic = "graphspell-js/_dictionaries/"+dVars['dic_filename']+".json"
     if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
         buildDictionary(dVars, bJavaScript)
     file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
@@ -316,7 +316,8 @@ def copyGraphspellDictionary (dVars, bJavaScript=False):
 
 
 def buildDictionary (dVars, bJavaScript):
-    lex_build.build(dVars['lexicon_src'], dVars['lang_name'], dVars['dic_name'], bJavaScript, dVars['stemming_method'], int(dVars['fsa_method']))
+    lex_build.build(dVars['lexicon_src'], dVars['lang'], dVars['lang_name'], dVars['dic_filename'], \
+                    bJavaScript, dVars['dic_name'], dVars['stemming_method'], int(dVars['fsa_method']))
 
 
 def main ():

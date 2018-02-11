@@ -323,9 +323,9 @@ var gc_engine = {
         try {
             if (typeof(require) !== 'undefined') {
                 var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
-                _oDict = new ibdawg.IBDAWG("${dic_name}.json");
+                _oDict = new ibdawg.IBDAWG("${dic_filename}.json");
             } else {
-                _oDict = new IBDAWG("${dic_name}.json", sPath);
+                _oDict = new IBDAWG("${dic_filename}.json", sPath);
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default

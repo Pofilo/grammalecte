@@ -24,7 +24,7 @@ class TestDictionary (unittest.TestCase):
 
     @classmethod
     def setUpClass (cls):
-        cls.oDic = IBDAWG("${dic_name}.bdic")
+        cls.oDic = IBDAWG("${dic_filename}.bdic")
 
     def test_lookup (self):
         for sWord in ["branche", "Émilie"]:

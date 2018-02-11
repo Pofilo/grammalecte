@@ -41,7 +41,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, spfSrc, sLangCode, sLangName, sDicName, cStemming):
+    def __init__ (self, spfSrc, cStemming, sLangCode, sLangName="", sDicName=""):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -416,7 +416,7 @@ class DAWG:
                             "sDicName": self.sDicName,
                             "sFileName": self.sFileName,
                             "sDate": str(datetime.datetime.now())[:-7],
-                            "nEntries": self.nEntry,
+                            "nEntry": self.nEntry,
                             "nChar": self.nChar,
                             "nAff": self.nAff,
                             "nTag": self.nTag,
@@ -429,11 +429,11 @@ class DAWG:
                             "nCompressionMethod": nCompressionMethod,
                             "nBytesArc": self.nBytesArc,
                             "nBytesNodeAddress": self.nBytesNodeAddress,
-                            "nBytesOffset": self.nBytesOffset
+                            "nBytesOffset": self.nBytesOffset,
                             # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
                             # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                             # https://github.com/mozilla/addons-linter/issues/1361
-                            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ],
+                            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
                         }, ensure_ascii=False))
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")

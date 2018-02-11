@@ -600,7 +600,7 @@ const oBinaryDict = {
     build: function (lEntry) {
         oWidgets.showElement("build_progress");
         let xProgressNode = document.getElementById("build_progress");
-        let oDAWG = new DAWG(lEntry, "Français - dictionnaire personnel", "S", xProgressNode);
+        let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
         this.oJSON = oDAWG.createBinary(1);
         this.save();
         oWidgets.hideElement("build_progress");

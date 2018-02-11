@@ -78,10 +78,10 @@ class SuggResult:
 class IBDAWG:
     """INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH"""
 
-    def __init__ (self, sDicName):
-        self.by = pkgutil.get_data(__package__, "_dictionaries/" + sDicName)
+    def __init__ (self, sfDict):
+        self.by = pkgutil.get_data(__package__, "_dictionaries/" + sfDict)
         if not self.by:
-            raise OSError("# Error. File not found or not loadable: "+sDicName)
+            raise OSError("# Error. File not found or not loadable: "+sfDict)
 
         if self.by[0:7] != b"/pyfsa/":
             raise TypeError("# Error. Not a pyfsa binary dictionary. Header: {}".format(self.by[0:9]))
@@ -92,7 +92,7 @@ class IBDAWG:
         except Exception:
             raise Exception
 
-        self.sName = sDicName
+        self.sFileName = sfDict
         self.nCompressionMethod = int(self.by[7:8].decode("utf-8"))
         self.sHeader = header.decode("utf-8")
         self.lArcVal = values.decode("utf-8").split("\t")
@@ -100,11 +100,13 @@ class IBDAWG:
         self.byDic = bdic
 
         l = info.decode("utf-8").split("/")
-        self.sLang = l[0]
+        self.sLangCode = "xx"
+        self.sLangName = l[0]
+        self.sDicName = ""
         self.nChar = int(l[1])
         self.nBytesArc = int(l[2])
         self.nBytesNodeAddress = int(l[3])
-        self.nEntries = int(l[4])
+        self.nEntry = int(l[4])
         self.nNode = int(l[5])
         self.nArc = int(l[6])
         self.nAff = int(l[7])
@@ -158,7 +160,7 @@ class IBDAWG:
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
                 "  Compression method: {0.nCompressionMethod:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
                 "  Arcs values:  {0.nArcVal:>10,} = {0.nChar:>5,} characters,  {0.nAff:>6,} affixes,  {0.nTag:>6,} tags\n" \
-                "  Dictionary: {0.nEntries:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
+                "  Dictionary: {0.nEntry:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)
 
     def writeAsJSObject (self, spfDest, bInJSModule=False, bBinaryDictAsHexString=False):
@@ -168,31 +170,37 @@ class IBDAWG:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
             hDst.write(json.dumps({
-                            "sName": self.sName,
-                            "nCompressionMethod": self.nCompressionMethod,
+                            "sHeader": "/pyfsa/",
+                            "sLangCode": self.sLangCode,
+                            "sLangName": self.sLangName,
+                            "sDicName": self.sDicName,
+                            "sFileName": self.sFileName,
                             "sDate": str(datetime.datetime.now())[:-7],
-                            "sHeader": self.sHeader,
-                            "lArcVal": self.lArcVal,
+                            "nEntry": self.nEntry,
+                            "nChar": self.nChar,
+                            "nAff": self.nAff,
+                            "nTag": self.nTag,
+                            "cStemming": self.cStemming,
+                            "dChar": self.dChar,
+                            "nNode": self.nNode,
+                            "nArc": self.nArc,
                             "nArcVal": self.nArcVal,
+                            "lArcVal": self.lArcVal,
+                            "nCompressionMethod": self.nCompressionMethod,
+                            "nBytesArc": self.nBytesArc,
+                            "nBytesNodeAddress": self.nBytesNodeAddress,
+                            "nBytesOffset": self.nBytesOffset,
                             # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
                             # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                             # https://github.com/mozilla/addons-linter/issues/1361
-                            "byDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ],
-                            "sLang": self.sLang,
-                            "nChar": self.nChar,
-                            "nBytesArc": self.nBytesArc,
-                            "nBytesNodeAddress": self.nBytesNodeAddress,
-                            "nEntries": self.nEntries,
-                            "nNode": self.nNode,
-                            "nArc": self.nArc,
-                            "nAff": self.nAff,
-                            "cStemming": self.cStemming,
-                            "nTag": self.nTag,
-                            "dChar": self.dChar,
-                            "nBytesOffset": self.nBytesOffset
+                            "sByDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ]
                         }, ensure_ascii=False))
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
+
+                            
+                            
+
 
     def isValidToken (self, sToken):
         "checks if <sToken> is valid (if there is hyphens in <sToken>, <sToken> is split, each part is checked)"

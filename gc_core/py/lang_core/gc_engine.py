@@ -292,7 +292,7 @@ def load (sContext="Python"):
     global _sAppContext
     global _dOptions
     try:
-        _oDict = IBDAWG("${dic_name}.bdic")
+        _oDict = IBDAWG("${dic_filename}.bdic")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
     except:
