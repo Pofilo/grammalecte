@@ -352,7 +352,7 @@ class IBDAWG {
     * _getCharArcs (iAddr) {
         // generator: yield all chars and addresses from node at address <iAddr>
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
-            if (nVal < this.nChar) {
+            if (nVal <= this.nChar) {
                 yield [this.dCharVal.get(nVal), jAddr];
             }
         }
@@ -374,7 +374,7 @@ class IBDAWG {
         // return a list of suffixes ending at a distance of <n> from <iAddr>
         let aTails = new Set();
         for (let [nVal, jAddr] of this._getArcs(iAddr)) {
-            if (nVal < this.nChar) {
+            if (nVal <= this.nChar) {
                 if (this._convBytesToInteger(this.byDic.slice(jAddr, jAddr+this.nBytesArc)) & this._finalNodeMask) {
                     aTails.add(sTail + this.dCharVal.get(nVal));
                 }
@@ -443,7 +443,7 @@ class IBDAWG {
                 let iEndArcAddr = iAddr + this.nBytesArc;
                 nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
                 let nArc = nRawArc & this._arcMask;
-                if (nArc >= this.nChar) {
+                if (nArc > this.nChar) {
                     // This value is not a char, this is a stemming code 
                     let sStem = ">" + this.funcStemming(sWord, this.lArcVal[nArc]);
                     // Now , we go to the next node and retrieve all following arcs values, all of them are tags
@@ -482,7 +482,7 @@ class IBDAWG {
                 let iEndArcAddr = iAddr + this.nBytesArc;
                 nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
                 let nArc = nRawArc & this._arcMask;
-                if (nArc >= this.nChar) {
+                if (nArc > this.nChar) {
                     // This value is not a char, this is a stemming code 
                     l.push(this.funcStemming(sWord, this.lArcVal[nArc]));
                 }

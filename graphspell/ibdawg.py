@@ -353,7 +353,7 @@ class IBDAWG:
     def _getCharArcs (self, iAddr):
         "generator: yield all chars and addresses from node at address <iAddr>"
         for nVal, jAddr in self._getArcs(iAddr):
-            if nVal < self.nChar:
+            if nVal <= self.nChar:
                 yield (self.dCharVal[nVal], jAddr)
 
     def _getSimilarCharArcs (self, cChar, iAddr):
@@ -375,7 +375,7 @@ class IBDAWG:
         "return a list of suffixes ending at a distance of <n> from <iAddr>"
         aTails = set()
         for nVal, jAddr in self._getArcs(iAddr):
-            if nVal < self.nChar:
+            if nVal <= self.nChar:
                 if int.from_bytes(self.byDic[jAddr:jAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
                     aTails.add(sTail + self.dCharVal[nVal])
                 if n and not aTails:
@@ -443,7 +443,7 @@ class IBDAWG:
                 iEndArcAddr = iAddr + self.nBytesArc
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
-                if nArc >= self.nChar:
+                if nArc > self.nChar:
                     # This value is not a char, this is a stemming code 
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
@@ -474,7 +474,7 @@ class IBDAWG:
                 iEndArcAddr = iAddr + self.nBytesArc
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
-                if nArc >= self.nChar:
+                if nArc > self.nChar:
                     # This value is not a char, this is a stemming code 
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
                 iAddr = iEndArcAddr+self.nBytesNodeAddress
@@ -541,7 +541,7 @@ class IBDAWG:
                 iEndArcAddr = iAddr + self.nBytesArc
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
-                if nArc >= self.nChar:
+                if nArc > self.nChar:
                     # This value is not a char, this is a stemming code 
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
@@ -579,7 +579,7 @@ class IBDAWG:
                 iEndArcAddr = iAddr + self.nBytesArc
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
-                if nArc >= self.nChar:
+                if nArc > self.nChar:
                     # This value is not a char, this is a stemming code 
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
                     # Now , we go to the next node
@@ -657,7 +657,7 @@ class IBDAWG:
                 iEndArcAddr = iAddr + self.nBytesArc
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
-                if nArc >= self.nChar:
+                if nArc > self.nChar:
                     # This value is not a char, this is a stemming code 
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
@@ -692,7 +692,7 @@ class IBDAWG:
                 iEndArcAddr = iAddr + self.nBytesArc
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
-                if nArc >= self.nChar:
+                if nArc > self.nChar:
                     # This value is not a char, this is a stemming code 
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
                 iAddr = iEndArcAddr+self.nBytesNodeAddress  if not (nRawArc & self._addrBitMask)  else iEndArcAddr+self.nBytesOffset
