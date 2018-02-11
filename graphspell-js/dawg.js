@@ -329,9 +329,9 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    createBinary (nMethod) {
-        console.log("Write DAWG as an indexable binary dictionary [method: "+nMethod+"]");
-        if (nMethod == 1) {
+    createBinary (nCompressionMethod) {
+        console.log("Write DAWG as an indexable binary dictionary [method: "+nCompressionMethod+"]");
+        if (nCompressionMethod == 1) {
             this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
             this.nBytesOffset = 0;
             this._calcNumBytesNodeAddress();
@@ -342,7 +342,7 @@ class DAWG {
         console.log("Arc values (chars, affixes and tags): " + this.nArcVal);
         console.log("Arc size: "+this.nBytesArc+" bytes, Address size: "+this.nBytesNodeAddress+" bytes");
         console.log("-> " + this.nBytesArc+this.nBytesNodeAddress + " * " + this.nArc + " = " + (this.nBytesArc+this.nBytesNodeAddress)*this.nArc + " bytes");
-        return this._createJSON(nMethod);
+        return this._createJSON(nCompressionMethod);
     }
 
     _calcNumBytesNodeAddress () {
@@ -362,9 +362,9 @@ class DAWG {
         }
     }
 
-    _createJSON (nMethod) {
+    _createJSON (nCompressionMethod) {
         let sByDic = "";
-        if (nMethod == 1) {
+        if (nCompressionMethod == 1) {
             sByDic = this.oRoot.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
             for (let oNode of this.dMinimizedNodes.values()) {
                 sByDic += oNode.convToBytes1(this.nBytesArc, this.nBytesNodeAddress);
@@ -372,9 +372,9 @@ class DAWG {
         }
         let oJSON = {
             "sName": this.sName,
-            "nVersion": nMethod,
+            "nCompressionMethod": nCompressionMethod,
             "sDate": this._getDate(),
-            "sHeader": this.sHeader + nMethod + "/",
+            "sHeader": this.sHeader + nCompressionMethod + "/",
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
             "byDic": sByDic,  // binary word graph

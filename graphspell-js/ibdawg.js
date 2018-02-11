@@ -102,7 +102,7 @@ class IBDAWG {
         }
         /*
             Properties:
-            sName, nVersion, sHeader, lArcVal, nArcVal, byDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
+            sName, nCompressionMethod, sHeader, lArcVal, nArcVal, byDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
             nEntries, nNode, nArc, nAff, cStemming, nTag, dChar, nBytesOffset,
         */
 
@@ -122,8 +122,8 @@ class IBDAWG {
         if (!this.sHeader.startsWith("/pyfsa/")) {
             throw TypeError("# Error. Not a pyfsa binary dictionary. Header: " + this.sHeader);
         }
-        if (!(this.nVersion == "1" || this.nVersion == "2" || this.nVersion == "3")) {
-            throw RangeError("# Error. Unknown dictionary version: " + this.nVersion);
+        if (!(this.nCompressionMethod == "1" || this.nCompressionMethod == "2" || this.nCompressionMethod == "3")) {
+            throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
         }
         // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         this.dChar = helpers.objectToMap(this.dChar);
@@ -143,8 +143,8 @@ class IBDAWG {
         this._lastArcMask = 1 << ((this.nBytesArc * 8) - 2);
 
 
-        // Configuring DAWG functions according to nVersion
-        switch (this.nVersion) {
+        // Configuring DAWG functions according to nCompressionMethod
+        switch (this.nCompressionMethod) {
             case 1:
                 this.morph = this._morph1;
                 this.stem = this._stem1;
@@ -167,7 +167,7 @@ class IBDAWG {
                 this._writeNodes = this._writeNodes3;
                 break;
             default:
-                throw ValueError("# Error: unknown code: " + this.nVersion);
+                throw ValueError("# Error: unknown code: " + this.nCompressionMethod);
         }
         //console.log(this.getInfo());
         this.bOptNumSigle = true;
@@ -175,7 +175,7 @@ class IBDAWG {
     }
 
     getInfo () {
-        return  `  Language: ${this.sLang}   Version: ${this.nVersion}   Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
+        return  `  Language: ${this.sLang}   Version: ${this.nCompressionMethod}   Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
                 `  Arcs values:  ${this.nArcVal} = ${this.nChar} characters,  ${this.nAff} affixes,  ${this.nTag} tags\n` +
                 `  Dictionary: ${this.nEntries} entries,    ${this.nNode} nodes,   ${this.nArc} arcs\n` +
                 `  Address size: ${this.nBytesNodeAddress} bytes,  Arc size: ${this.nBytesArc} bytes\n`;

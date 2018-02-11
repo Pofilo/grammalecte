@@ -93,7 +93,7 @@ class IBDAWG:
             raise Exception
 
         self.sName = sDicName
-        self.nVersion = int(self.by[7:8].decode("utf-8"))
+        self.nCompressionMethod = int(self.by[7:8].decode("utf-8"))
         self.sHeader = header.decode("utf-8")
         self.lArcVal = values.decode("utf-8").split("\t")
         self.nArcVal = len(self.lArcVal)
@@ -129,33 +129,33 @@ class IBDAWG:
 
         self.nBytesOffset = 1 # version 3
 
-        # Configuring DAWG functions according to nVersion
-        if self.nVersion == 1:
+        # Configuring DAWG functions according to nCompressionMethod
+        if self.nCompressionMethod == 1:
             self.morph = self._morph1
             self.stem = self._stem1
             self._lookupArcNode = self._lookupArcNode1
             self._getArcs = self._getArcs1
             self._writeNodes = self._writeNodes1
-        elif self.nVersion == 2:
+        elif self.nCompressionMethod == 2:
             self.morph = self._morph2
             self.stem = self._stem2
             self._lookupArcNode = self._lookupArcNode2
             self._getArcs = self._getArcs2
             self._writeNodes = self._writeNodes2
-        elif self.nVersion == 3:
+        elif self.nCompressionMethod == 3:
             self.morph = self._morph3
             self.stem = self._stem3
             self._lookupArcNode = self._lookupArcNode3
             self._getArcs = self._getArcs3
             self._writeNodes = self._writeNodes3
         else:
-            raise ValueError("  # Error: unknown code: {}".format(self.nVersion))
+            raise ValueError("  # Error: unknown code: {}".format(self.nCompressionMethod))
 
         self.bOptNumSigle = False
         self.bOptNumAtLast = False
 
     def getInfo (self):
-        return  "  Language: {0.sLang:>10}   Version: {0.nVersion:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
+        return  "  Language: {0.sLang:>10}   Version: {0.nCompressionMethod:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
                 "  Arcs values:  {0.nArcVal:>10,} = {0.nChar:>5,} characters,  {0.nAff:>6,} affixes,  {0.nTag:>6,} tags\n" \
                 "  Dictionary: {0.nEntries:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)
@@ -168,7 +168,7 @@ class IBDAWG:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
             hDst.write(json.dumps({
                             "sName": self.sName,
-                            "nVersion": self.nVersion,
+                            "nCompressionMethod": self.nCompressionMethod,
                             "sDate": str(datetime.datetime.now())[:-7],
                             "sHeader": self.sHeader,
                             "lArcVal": self.lArcVal,

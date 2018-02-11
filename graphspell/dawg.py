@@ -308,19 +308,19 @@ class DAWG:
 
 
     # BINARY CONVERSION
-    def createBinary (self, sPathFile, nMethod, bDebug=False):
-        print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nMethod)
-        if nMethod == 1:
+    def createBinary (self, sPathFile, nCompressionMethod, bDebug=False):
+        print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nCompressionMethod)
+        if nCompressionMethod == 1:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 2) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes1()
             self.nBytesOffset = 0
             self._calcNumBytesNodeAddress()
             self._calcNodesAddress1()
-        elif nMethod == 2:
+        elif nCompressionMethod == 2:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 3) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes2()
             self.nBytesOffset = 0
             self._calcNumBytesNodeAddress()
             self._calcNodesAddress2()
-        elif nMethod == 3:
+        elif nCompressionMethod == 3:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 3) // 8 ) + 1   # We add 3 bits. See DawgNode.convToBytes3()
             self.nBytesOffset = 1
             self.nMaxOffset = (2 ** (self.nBytesOffset * 8)) - 1
@@ -332,10 +332,10 @@ class DAWG:
         print("   Arc size: {} bytes, Address size: {} bytes   ->   {} * {} = {} bytes".format( self.nBytesArc, self.nBytesNodeAddress, \
                                                                                                 self.nBytesArc+self.nBytesNodeAddress, self.nArc, \
                                                                                                 (self.nBytesArc+self.nBytesNodeAddress)*self.nArc ))
-        self._writeBinary(sPathFile, nMethod)
-        self._writeAsJSObject(sPathFile, nMethod)
+        self._writeBinary(sPathFile, nCompressionMethod)
+        self._writeAsJSObject(sPathFile, nCompressionMethod)
         if bDebug:
-            self._writeNodes(sPathFile, nMethod)
+            self._writeNodes(sPathFile, nCompressionMethod)
 
     def _calcNumBytesNodeAddress (self):
         "how many bytes needed to store all nodes/arcs in the binary dictionary"
@@ -387,19 +387,19 @@ class DAWG:
                     self.lSortedNodes[i].size = nSize
                     bEnd = False
 
-    def _writeAsJSObject (self, spfDst, nMethod, bInJSModule=False, bBinaryDictAsHexString=True):
+    def _writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
         if not spfDst.endswith(".json"):
-            spfDst += "."+str(nMethod)+".json"
+            spfDst += "."+str(nCompressionMethod)+".json"
         byDic = b""
-        if nMethod == 1:
+        if nCompressionMethod == 1:
             byDic = self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress)
             for oNode in self.lMinimizedNodes:
                 byDic += oNode.convToBytes1(self.nBytesArc, self.nBytesNodeAddress)
-        elif nMethod == 2:
+        elif nCompressionMethod == 2:
             byDic = self.oRoot.convToBytes2(self.nBytesArc, self.nBytesNodeAddress)
             for oNode in self.lSortedNodes:
                 byDic += oNode.convToBytes2(self.nBytesArc, self.nBytesNodeAddress)
-        elif nMethod == 3:
+        elif nCompressionMethod == 3:
             byDic = self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
             for oNode in self.lSortedNodes:
                 byDic += oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
@@ -409,9 +409,9 @@ class DAWG:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
             hDst.write(json.dumps({
                             "sName": "todo",
-                            "nVersion": nMethod,
+                            "nCompressionMethod": nCompressionMethod,
                             "sDate": str(datetime.datetime.now())[:-7],
-                            "sHeader": "/pyfsa/"+str(nMethod)+"/",
+                            "sHeader": "/pyfsa/"+str(nCompressionMethod)+"/",
                             "lArcVal": self.lArcVal,
                             "nArcVal": self.nArcVal,
                             # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
@@ -434,14 +434,14 @@ class DAWG:
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
-    def _writeBinary (self, sPathFile, nMethod):
+    def _writeBinary (self, sPathFile, nCompressionMethod):
         """
         Format of the binary indexable dictionary:
         Each section is separated with 4 bytes of \0
         
         - Section Header:
-            /pyfsa/[version]
-                * version is an ASCII string
+            /pyfsa/[compression method]
+                * compression method is an ASCII string
         
         - Section Informations:
             /[tag_lang]
@@ -466,10 +466,10 @@ class DAWG:
                   See DawgNode.convToBytes() for details.
         """
         if not sPathFile.endswith(".bdic"):
-            sPathFile += "."+str(nMethod)+".bdic"
+            sPathFile += "."+str(nCompressionMethod)+".bdic"
         with open(sPathFile, 'wb') as hDst:
             # header
-            hDst.write("/pyfsa/{}/".format(nMethod).encode("utf-8"))
+            hDst.write("/pyfsa/{}/".format(nCompressionMethod).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # infos
             hDst.write("{}/{}/{}/{}/{}/{}/{}/{}/{}".format(self.sLang, self.nChar, self.nBytesArc, self.nBytesNodeAddress, \
@@ -479,34 +479,34 @@ class DAWG:
             hDst.write("\t".join(self.lArcVal).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # DAWG: nodes / arcs
-            if nMethod == 1:
+            if nCompressionMethod == 1:
                 hDst.write(self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress))
                 for oNode in self.lMinimizedNodes:
                     hDst.write(oNode.convToBytes1(self.nBytesArc, self.nBytesNodeAddress))
-            elif nMethod == 2:
+            elif nCompressionMethod == 2:
                 hDst.write(self.oRoot.convToBytes2(self.nBytesArc, self.nBytesNodeAddress))
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.convToBytes2(self.nBytesArc, self.nBytesNodeAddress))
-            elif nMethod == 3:
+            elif nCompressionMethod == 3:
                 hDst.write(self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
             hDst.close()
 
-    def _writeNodes (self, sPathFile, nMethod):
+    def _writeNodes (self, sPathFile, nCompressionMethod):
         "for debugging only"
         print(" > Write nodes")
-        with open(sPathFile+".nodes."+str(nMethod)+".txt", 'w', encoding='utf-8', newline="\n") as hDst:
-            if nMethod == 1:
+        with open(sPathFile+".nodes."+str(nCompressionMethod)+".txt", 'w', encoding='utf-8', newline="\n") as hDst:
+            if nCompressionMethod == 1:
                 hDst.write(self.oRoot.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
                 #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress) ] ).strip() )
                 for oNode in self.lMinimizedNodes:
                     hDst.write(oNode.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
-            if nMethod == 2:
+            if nCompressionMethod == 2:
                 hDst.write(self.oRoot.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
-            if nMethod == 3:
+            if nCompressionMethod == 3:
                 hDst.write(self.oRoot.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
                 #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset) ] ).strip() )
                 for oNode in self.lSortedNodes:
