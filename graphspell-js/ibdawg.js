@@ -102,7 +102,7 @@ class IBDAWG {
         }
         /*
             Properties:
-            sName, nCompressionMethod, sHeader, lArcVal, nArcVal, byDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
+            sName, nCompressionMethod, sHeader, lArcVal, nArcVal, sByDic, sLang, nChar, nBytesArc, nBytesNodeAddress,
             nEntries, nNode, nArc, nAff, cStemming, nTag, dChar, nBytesOffset,
         */
 
@@ -113,10 +113,12 @@ class IBDAWG {
             https://github.com/mozilla/addons-linter/issues/1361
         */
         let lTemp = [];
-        for (let i = 0;  i < this.byDic.length;  i+=2) {
-            lTemp.push(parseInt(this.byDic.slice(i, i+2), 16));
+        for (let i = 0;  i < this.sByDic.length;  i+=2) {
+            lTemp.push(parseInt(this.sByDic.slice(i, i+2), 16));
         }
+        this.sByDic = "";
         this.byDic = lTemp;
+        //this.byDic = new Uint8Array(lTemp);  // not quicker, even slower
         /* end of bug workaround */
 
         if (!this.sHeader.startsWith("/pyfsa/")) {
@@ -128,7 +130,6 @@ class IBDAWG {
         // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         this.dChar = helpers.objectToMap(this.dChar);
         this.dCharVal = this.dChar.gl_reverse();
-        //this.byDic = new Uint8Array(this.byDic);  // not quicker, even slower
 
         if (this.cStemming == "S") {
             this.funcStemming = str_transform.changeWordWithSuffixCode;
@@ -175,7 +176,8 @@ class IBDAWG {
     }
 
     getInfo () {
-        return  `  Language: ${this.sLang}   Version: ${this.nCompressionMethod}   Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
+        return  `  Language: ${this.sLangName}   Lang code: ${this.sLangCode}   Dictionary name: ${this.sDicName}\n` +
+                `  Compression method: ${this.nCompressionMethod}   Date: ${this.sDate}   Stemming: ${this.cStemming}FX\n` +
                 `  Arcs values:  ${this.nArcVal} = ${this.nChar} characters,  ${this.nAff} affixes,  ${this.nTag} tags\n` +
                 `  Dictionary: ${this.nEntries} entries,    ${this.nNode} nodes,   ${this.nArc} arcs\n` +
                 `  Address size: ${this.nBytesNodeAddress} bytes,  Arc size: ${this.nBytesArc} bytes\n`;

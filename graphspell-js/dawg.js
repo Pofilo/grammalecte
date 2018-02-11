@@ -28,7 +28,7 @@ class DAWG {
         Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
     */
 
-    constructor (lEntrySrc, sLang, cStemming, xProgressBarNode=null) {
+    constructor (lEntrySrc, sLangCode, sLangName, sDicName, cStemming, xProgressBarNode=null) {
         console.log("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====");
         let funcStemmingGen = null;
         switch (cStemming.toUpperCase()) {
@@ -104,8 +104,9 @@ class DAWG {
         let dValOccur = new Map(lKeyVal);
         lKeyVal.length = 0; // clear the array
 
-        this.sHeader = "/pyfsa/";
-        this.sLang = sLang;
+        this.sLangCode = sLangCode;
+        this.sLangName = sLangName;
+        this.sDicName = sDicName;
         this.nEntry = lWord.length;
         this.aPreviousEntry = [];
         oNodeCounter.reset();
@@ -371,25 +372,27 @@ class DAWG {
             }
         }
         let oJSON = {
-            "sName": this.sName,
-            "nCompressionMethod": nCompressionMethod,
+            "sHeader": "/pyfsa/",
+            "sLangCode": this.sLangCode,
+            "sLangName": this.sLangName,
+            "sDicName": this.sDicName,
+            "sFileName": "[none]",
             "sDate": this._getDate(),
-            "sHeader": this.sHeader + nCompressionMethod + "/",
-            "lArcVal": this.lArcVal,
-            "nArcVal": this.nArcVal,
-            "byDic": sByDic,  // binary word graph
-            "sLang": this.sLang,
-            "nChar": this.nChar,
-            "nBytesArc": this.nBytesArc,
-            "nBytesNodeAddress": this.nBytesNodeAddress,
             "nEntries": this.nEntry,
+            "nChar": this.nChar,
+            "nAff": this.nAff,
+            "nTag": this.nTag,
+            "cStemming": this.cStemming,
+            "dChar": helpers.mapToObject(this.dChar),
             "nNode": this.nNode,
             "nArc": this.nArc,
-            "nAff": this.nAff,
-            "cStemming": this.cStemming,
-            "nTag": this.nTag,
-            "dChar": helpers.mapToObject(this.dChar),
-            "nBytesOffset": this.nBytesOffset
+            "lArcVal": this.lArcVal,
+            "nArcVal": this.nArcVal,
+            "nCompressionMethod": nCompressionMethod,
+            "nBytesArc": this.nBytesArc,
+            "nBytesNodeAddress": this.nBytesNodeAddress,
+            "nBytesOffset": this.nBytesOffset,
+            "sByDic": sByDic    // binary word graph
         };
         return oJSON;
     },

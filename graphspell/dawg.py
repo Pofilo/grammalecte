@@ -41,7 +41,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, spfSrc, sLangName, cStemming):
+    def __init__ (self, spfSrc, sLangCode, sLangName, sDicName, cStemming):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -102,8 +102,10 @@ class DAWG:
         #        hFreqDst.write("{}: {}\n".format(lVal[iKey], nOcc))
         #    hFreqDst.close()
         
-        self.sFile = spfSrc
-        self.sLang = sLangName
+        self.sFileName = spfSrc
+        self.sLangCode = sLangCode
+        self.sLangName = sLangName
+        self.sDicName = sDicName
         self.nEntry = len(lWord)
         self.aPreviousEntry = []
         DawgNode.resetNextId()
@@ -408,28 +410,30 @@ class DAWG:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
             hDst.write(json.dumps({
-                            "sName": "todo",
-                            "nCompressionMethod": nCompressionMethod,
+                            "sHeader": "/pyfsa/",
+                            "sLangCode": self.sLangCode,
+                            "sLangName": self.sLangName,
+                            "sDicName": self.sDicName,
+                            "sFileName": self.sFileName,
                             "sDate": str(datetime.datetime.now())[:-7],
-                            "sHeader": "/pyfsa/"+str(nCompressionMethod)+"/",
-                            "lArcVal": self.lArcVal,
+                            "nEntries": self.nEntry,
+                            "nChar": self.nChar,
+                            "nAff": self.nAff,
+                            "nTag": self.nTag,
+                            "cStemming": self.cStemming,
+                            "dChar": self.dChar,
+                            "nNode": self.nNode,
+                            "nArc": self.nArc,
                             "nArcVal": self.nArcVal,
+                            "lArcVal": self.lArcVal,
+                            "nCompressionMethod": nCompressionMethod,
+                            "nBytesArc": self.nBytesArc,
+                            "nBytesNodeAddress": self.nBytesNodeAddress,
+                            "nBytesOffset": self.nBytesOffset
                             # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
                             # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                             # https://github.com/mozilla/addons-linter/issues/1361
-                            "byDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ],
-                            "sLang": self.sLang,
-                            "nChar": self.nChar,
-                            "nBytesArc": self.nBytesArc,
-                            "nBytesNodeAddress": self.nBytesNodeAddress,
-                            "nEntries": self.nEntry,
-                            "nNode": self.nNode,
-                            "nArc": self.nArc,
-                            "nAff": self.nAff,
-                            "cStemming": self.cStemming,
-                            "nTag": self.nTag,
-                            "dChar": self.dChar,
-                            "nBytesOffset": self.nBytesOffset
+                            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ],
                         }, ensure_ascii=False))
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
@@ -472,7 +476,7 @@ class DAWG:
             hDst.write("/pyfsa/{}/".format(nCompressionMethod).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # infos
-            hDst.write("{}/{}/{}/{}/{}/{}/{}/{}/{}".format(self.sLang, self.nChar, self.nBytesArc, self.nBytesNodeAddress, \
+            hDst.write("{}/{}/{}/{}/{}/{}/{}/{}/{}".format(self.sLangName, self.nChar, self.nBytesArc, self.nBytesNodeAddress, \
                                                            self.nEntry, self.nNode, self.nArc, self.nAff, self.cStemming).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # lArcVal
@@ -520,9 +524,9 @@ class DAWG:
             sFormat2 = "{:<12} {:>12,} {:>5,} {:>8,} {:>8} {:>6,} {:>8,} {:>9,} {:>9,} {:>15,} {:>12,} {:>12,}\n"
             if not bFileExits:
                 hDst.write(sFormat1.format("Lexicon", "Entries", "Chars", "Affixes", "Stemming", "Tags", "Values", "Nodes", "Arcs", "Lexicon (Kb)", "Dict (Kb)", "LT Dict (Kb)"))
-            hDst.write(sFormat2.format(self.sLang, self.nEntry, self.nChar, self.nAff, self.cStemming + "FX", self.nTag, self.nArcVal, \
-                                       self.nNode, self.nArc, os.path.getsize(self.sFile), os.path.getsize(sPathFile), \
-                                       os.path.getsize("cfsa/dict/{}.dict".format(self.sLang)) if os.path.isfile("cfsa/dict/{}.dict".format(self.sLang)) else 0))
+            hDst.write(sFormat2.format(self.sLangName, self.nEntry, self.nChar, self.nAff, self.cStemming + "FX", self.nTag, self.nArcVal, \
+                                       self.nNode, self.nArc, os.path.getsize(self.sFileName), os.path.getsize(sPathFile), \
+                                       os.path.getsize("cfsa/dict/{}.dict".format(self.sLangName)) if os.path.isfile("cfsa/dict/{}.dict".format(self.sLangName)) else 0))
             hDst.close()
 
 

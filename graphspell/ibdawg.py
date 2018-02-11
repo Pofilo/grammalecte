@@ -155,7 +155,8 @@ class IBDAWG:
         self.bOptNumAtLast = False
 
     def getInfo (self):
-        return  "  Language: {0.sLang:>10}   Version: {0.nCompressionMethod:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
+        return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
+                "  Compression method: {0.nCompressionMethod:>2}   Date: {0.sDate}   Stemming: {0.cStemming}FX\n" \
                 "  Arcs values:  {0.nArcVal:>10,} = {0.nChar:>5,} characters,  {0.nAff:>6,} affixes,  {0.nTag:>6,} tags\n" \
                 "  Dictionary: {0.nEntries:>12,} entries,    {0.nNode:>11,} nodes,   {0.nArc:>11,} arcs\n" \
                 "  Address size: {0.nBytesNodeAddress:>1} bytes,  Arc size: {0.nBytesArc:>1} bytes\n".format(self)
