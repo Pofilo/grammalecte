@@ -7,6 +7,7 @@ import re
 from functools import wraps
 import datetime
 import time
+import json
 
 #import logging
 #logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
@@ -181,7 +182,6 @@ class IBDAWG:
 
     def writeAsJSObject (self, spfDest, bInJSModule=False, bBinaryDictAsHexString=False):
         "write IBDAWG as a JavaScript object in a JavaScript module"
-        import json
         with open(spfDest, "w", encoding="utf-8", newline="\n") as hDst:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
