@@ -201,7 +201,7 @@ class IBDAWG {
             "nArc": this.nArc,
             "lArcVal": this.lArcVal,
             "nArcVal": this.nArcVal,
-            "nCompressionMethod": nCompressionMethod,
+            "nCompressionMethod": this.nCompressionMethod,
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,
