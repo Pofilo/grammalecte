@@ -116,7 +116,6 @@ class IBDAWG {
         for (let i = 0;  i < this.sByDic.length;  i+=2) {
             lTemp.push(parseInt(this.sByDic.slice(i, i+2), 16));
         }
-        this.sByDic = "";
         this.byDic = lTemp;
         //this.byDic = new Uint8Array(lTemp);  // not quicker, even slower
         /* end of bug workaround */
