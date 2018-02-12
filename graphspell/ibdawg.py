@@ -5,9 +5,9 @@ import traceback
 import pkgutil
 import re
 from functools import wraps
-import datetime
 import time
 import json
+import binascii
 
 #import logging
 #logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
@@ -148,18 +148,19 @@ class IBDAWG:
         self.nArcVal = len(self.lArcVal)
         self.byDic = bdic
 
-        l = info.decode("utf-8").split("/")
-        self.sLangCode = "xx"
-        self.sLangName = l[0]
-        self.sDicName = ""
-        self.nChar = int(l[1])
-        self.nBytesArc = int(l[2])
-        self.nBytesNodeAddress = int(l[3])
-        self.nEntry = int(l[4])
-        self.nNode = int(l[5])
-        self.nArc = int(l[6])
-        self.nAff = int(l[7])
-        self.cStemming = l[8]
+        l = info.decode("utf-8").split("//")
+        self.sLangCode = l.pop(0)
+        self.sLangName = l.pop(0)
+        self.sDicName = l.pop(0)
+        self.sDate = l.pop(0)
+        self.nChar = int(l.pop(0))
+        self.nBytesArc = int(l.pop(0))
+        self.nBytesNodeAddress = int(l.pop(0))
+        self.nEntry = int(l.pop(0))
+        self.nNode = int(l.pop(0))
+        self.nArc = int(l.pop(0))
+        self.nAff = int(l.pop(0))
+        self.cStemming = l.pop(0)
         self.nTag = self.nArcVal - self.nChar - self.nAff
         # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         self.dChar = {}
@@ -191,7 +192,7 @@ class IBDAWG:
                             "sLangName": self.sLangName,
                             "sDicName": self.sDicName,
                             "sFileName": self.sFileName,
-                            "sDate": str(datetime.datetime.now())[:-7],
+                            "sDate": time.strftime("%Y.%m.%d %H:%M"),
                             "nEntry": self.nEntry,
                             "nChar": self.nChar,
                             "nAff": self.nAff,
