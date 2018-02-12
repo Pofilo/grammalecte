@@ -173,6 +173,7 @@ class IBDAWG:
         "initialize with a JSON text file"
         self.__dict__.update(json.loads(self.by.decode("utf-8")))
         #self.__dict__.update(json.loads(self.by))                  # In Python 3.6, can read directly binary strings
+        self.byDic = binascii.unhexlify(self.sByDic)
 
     def getInfo (self):
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
