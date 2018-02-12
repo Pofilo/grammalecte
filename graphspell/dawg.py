@@ -504,7 +504,7 @@ class DAWG:
             hDst.close()
 
     def _getDate (self):
-        return time.strftime("%Y.%m.%d %H:%M")
+        return time.strftime("%Y.%m.%d, %H:%M")
 
     def _writeNodes (self, sPathFile, nCompressionMethod):
         "for debugging only"

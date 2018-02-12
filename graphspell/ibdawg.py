@@ -193,7 +193,7 @@ class IBDAWG:
                             "sLangName": self.sLangName,
                             "sDicName": self.sDicName,
                             "sFileName": self.sFileName,
-                            "sDate": time.strftime("%Y.%m.%d %H:%M"),
+                            "sDate": self.sDate,
                             "nEntry": self.nEntry,
                             "nChar": self.nChar,
                             "nAff": self.nAff,
