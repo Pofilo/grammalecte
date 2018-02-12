@@ -183,6 +183,33 @@ class IBDAWG {
                 `  Address size: ${this.nBytesNodeAddress} bytes,  Arc size: ${this.nBytesArc} bytes\n`;
     }
 
+    getJSON () {
+        let oJSON = {
+            "sHeader": "/pyfsa/",
+            "sLangCode": this.sLangCode,
+            "sLangName": this.sLangName,
+            "sDicName": this.sDicName,
+            "sFileName": this.sFileName,
+            "sDate": this.sDate,
+            "nEntry": this.nEntry,
+            "nChar": this.nChar,
+            "nAff": this.nAff,
+            "nTag": this.nTag,
+            "cStemming": this.cStemming,
+            "dChar": helpers.mapToObject(this.dChar),
+            "nNode": this.nNode,
+            "nArc": this.nArc,
+            "lArcVal": this.lArcVal,
+            "nArcVal": this.nArcVal,
+            "nCompressionMethod": nCompressionMethod,
+            "nBytesArc": this.nBytesArc,
+            "nBytesNodeAddress": this.nBytesNodeAddress,
+            "nBytesOffset": this.nBytesOffset,
+            "sByDic": this.sByDic    // binary word graph
+        };
+        return oJSON;
+    }
+
     isValidToken (sToken) {
         // checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)
         if (this.isValid(sToken)) {

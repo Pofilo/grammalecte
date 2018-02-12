@@ -562,14 +562,12 @@ const oLexicon = {
         this.resetModif();
         oWidgets.displayTable(this.lFlexion);
         oWidgets.updateData();
-        oWidgets.setDictData(this.lFlexion.length, this._getDate());
     }
 }
 
 
 const oBinaryDict = {
     
-    oJSON: null,
     oIBDAWG: null,
 
     load: function () {
@@ -586,14 +584,14 @@ const oBinaryDict = {
             oWidgets.hideElement("export_button");
             return;
         }
-        this.oJSON = oResult.oDictionary;
-        this.oIBDAWG = new IBDAWG(this.oJSON);
+        let oJSON = oResult.oDictionary;
+        this.oIBDAWG = new IBDAWG(oJSON);
         let lEntry = [];
         for (let s of this.oIBDAWG.select()) {
             lEntry.push(s.split("\t"));
         }        
         oLexicon.set(lEntry);
-        oWidgets.setDictData(lEntry.length, oJSON.sDate);
+        oWidgets.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
         oWidgets.showElement("export_button");
     },
 
@@ -601,14 +599,16 @@ const oBinaryDict = {
         oWidgets.showElement("build_progress");
         let xProgressNode = document.getElementById("build_progress");
         let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
-        this.oJSON = oDAWG.createBinary(1);
-        this.save();
+        let oJSON = oDAWG.createBinaryJSON(1);
+        this.save(oJSON);
+        this.oIBDAWG = new IBDAWG(oJSON);
+        oWidgets.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
         oWidgets.hideElement("build_progress");
         oWidgets.showElement("export_button");
     },
 
-    save: function () {
-        browser.storage.local.set({ "oDictionary": this.oJSON });
+    save: function (oJSON) {
+        browser.storage.local.set({ "oDictionary": oJSON });
     },
 
     import: function () {
@@ -616,7 +616,7 @@ const oBinaryDict = {
     },
 
     export: function () {
-        let xBlob = new Blob([ JSON.stringify(this.oJSON) ], {type: 'application/json'}); 
+        let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'}); 
         let sURL = URL.createObjectURL(xBlob);
         browser.downloads.download({ filename: "grammalecte_dictionnaire_personnel.json", url: sURL, saveAs: true });
     }

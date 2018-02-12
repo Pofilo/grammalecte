@@ -330,7 +330,7 @@ class DAWG {
     }
 
     // BINARY CONVERSION
-    createBinary (nCompressionMethod) {
+    createBinaryJSON (nCompressionMethod) {
         console.log("Write DAWG as an indexable binary dictionary [method: "+nCompressionMethod+"]");
         if (nCompressionMethod == 1) {
             this.nBytesArc = Math.floor( (this.nArcVal.toString(2).length + 2) / 8 ) + 1;     // We add 2 bits. See DawgNode.convToBytes1()
@@ -395,7 +395,7 @@ class DAWG {
             "sByDic": sByDic    // binary word graph
         };
         return oJSON;
-    },
+    }
 
     _getDate () {
         let oDate = new Date();
