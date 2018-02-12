@@ -241,7 +241,7 @@ const oWidgets = {
         }
     },
 
-    addEntriesToTable: function (n, lFlex) {
+    addEntriesToTable: function (iStart, lFlex) {
         let xTable = document.getElementById("table");
         if (lFlex.length > 0) {
             if (document.getElementById("no_elem_line").style.display !== "none") {
@@ -249,8 +249,8 @@ const oWidgets = {
                 xTable.appendChild(this.createTableHeader());
             }
             for (let [sFlexion, sLemma, sTags] of lFlex) {
-                xTable.appendChild(this.createRowNode(n, sFlexion, sLemma, sTags));
-                n += 1;
+                xTable.appendChild(this.createRowNode(iStart, sFlexion, sLemma, sTags));
+                iStart += 1;
             }
         }
         this.updateData();
@@ -533,14 +533,14 @@ const oLexicon = {
         }
     },
 
-    addFlexions: function (lFlex) {
-        let n = lFlex.length;
-        for (let aFlex of lFlex) {
+    addFlexions: function (lNewFlex) {
+        let iStart = this.lFlexion.length;
+        for (let aFlex of lNewFlex) {
             this.lFlexion.push(aFlex);
         }
-        this.nAddedEntries += n;
-        this.nEntries += n;
-        oWidgets.addEntriesToTable(n, lFlex);
+        this.nAddedEntries += lNewFlex.length;
+        this.nEntries += lNewFlex.length;
+        oWidgets.addEntriesToTable(iStart, lNewFlex);
     },
 
     deleteEntry: function (iEntry) {
