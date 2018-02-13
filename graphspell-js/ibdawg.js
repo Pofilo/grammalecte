@@ -89,8 +89,7 @@ class IBDAWG {
         try {
             let oData = null;
             if (typeof(param1) == "string") {
-                let sDicName = param1;
-                let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/graphspell/_dictionaries/"+sDicName;
+                let sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
                 oData = JSON.parse(helpers.loadFile(sURL));
             } else {
                 oData = param1;
