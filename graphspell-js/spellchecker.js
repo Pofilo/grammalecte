@@ -134,7 +134,7 @@ class SpellChecker {
     }
 
     * suggest (sWord, nSuggLimit=10) {
-        // generator: returns 1,2 or 3 lists of suggestions
+        // generator: returns 1, 2 or 3 lists of suggestions
         yield this.oMainDic.suggest(sWord, nSuggLimit);
         if (this.oExtendedDic) {
             yield this.oExtendedDic.suggest(sWord, nSuggLimit);

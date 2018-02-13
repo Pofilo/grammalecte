@@ -99,7 +99,7 @@ class SpellChecker ():
         return lResult
 
     def suggest (self, sWord, nSuggLimit=10):
-        "generator: returns 1,2 or 3 lists of suggestions"
+        "generator: returns 1, 2 or 3 lists of suggestions"
         yield self.oMainDic.suggest(sWord, nSuggLimit)
         if self.oExtendedDic:
             yield self.oExtendedDic.suggest(sWord, nSuggLimit)
