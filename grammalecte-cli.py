@@ -51,7 +51,9 @@ def _getErrors (sText, oTokenizer, oSpellChecker, bContext=False, bSpellSugg=Fal
     for dToken in oTokenizer.genTokens(sText):
         if dToken['sType'] == "WORD" and not oSpellChecker.isValidToken(dToken['sValue']):
             if bSpellSugg:
-                dToken['aSuggestions'] = oSpellChecker.suggest(dToken['sValue'])
+                dToken['aSuggestions'] = []
+                for lSugg in oSpellChecker.suggest(dToken['sValue']):
+                    dToken['aSuggestions'].extend(lSugg)
             aSpellErrs.append(dToken)
     return aGrammErrs, aSpellErrs
 
@@ -144,12 +146,12 @@ def main ():
         exit()
 
     if xArgs.suggest:
-        lSugg = oSpellChecker.suggest(xArgs.suggest)
-        if xArgs.json:
-            sText = json.dumps({ "aSuggestions": lSugg }, ensure_ascii=False)
-        else:
-            sText = "Suggestions : " + " | ".join(lSugg)
-        echo(sText)
+        for lSugg in oSpellChecker.suggest(xArgs.suggest):
+            if xArgs.json:
+                sText = json.dumps({ "aSuggestions": lSugg }, ensure_ascii=False)
+            else:
+                sText = "Suggestions : " + " | ".join(lSugg)
+            echo(sText)
         exit()
 
     if not xArgs.json:
@@ -222,8 +224,8 @@ def main ():
             elif sText.startswith("!"):
                 for sWord in sText[1:].strip().split():
                     if sWord:
-                        echo(" | ".join(oSpellChecker.suggest(sWord)))
-                        #echo(" | ".join(oSpellChecker.suggest2(sWord)))
+                        for lSugg in oSpellChecker.suggest(sWord):
+                            echo(" | ".join(lSugg))
             elif sText.startswith(">"):
                 oSpellChecker.drawPath(sText[1:].strip())
             elif sText.startswith("="):
