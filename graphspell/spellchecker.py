@@ -113,3 +113,12 @@ class SpellChecker ():
             yield from self.oExtendedDic.select(sPattern)
         if self.oPersonalDic:
             yield from self.oPersonalDic.select(sPattern)
+
+    def drawPath (self, sWord):
+        self.oMainDic.drawPath(sWord)
+        if self.oExtendedDic:
+            print("-----")
+            self.oExtendedDic.drawPath(sWord)
+        if self.oPersonalDic:
+            print("-----")
+            self.oPersonalDic.drawPath(sWord)
