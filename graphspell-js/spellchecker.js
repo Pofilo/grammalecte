@@ -20,55 +20,64 @@ ${map}
 
 
 const dDefaultDictionaries = new Map([
-    ["fr", "fr.bdic"],
-    ["en", "en.bdic"]
+    ["fr", "fr.json"],
+    ["en", "en.json"]
 ]);
 
 
 class Spellchecker {
 
-    constructor (sLangCode, sfMainDic="", sfExtendedDic="", sfPersonalDic="") {
+    constructor (sLangCode, mainDic=null, extentedDic=null, personalDic=null, sPath="") {
         // returns true if the main dictionary is loaded
         this.sLangCode = sLangCode;
-        if (sfMainDic === "") {
-            sfMainDic = dDefaultDictionaries.gl_get(sLangCode, "");
+        console.log(sLangCode);
+        console.log(mainDic);
+        if (mainDic === null) {
+            mainDic = dDefaultDictionaries.gl_get(sLangCode, "");
         }
-        this.oMainDic = this._loadDictionary(sfMainDic);
-        this.oExtendedDic = this._loadDictionary(sfExtendedDic);
-        this.oPersonalDic = this._loadDictionary(sfPersonalDic);
-        return bool(this.oMainDic);
+        this.oMainDic = this._loadDictionary(mainDic, sPath, true);
+        this.oExtendedDic = this._loadDictionary(extentedDic, sPath);
+        this.oPersonalDic = this._loadDictionary(personalDic, sPath);
     }
 
-    _loadDictionary (sfDictionary) {
+    _loadDictionary (dictionary, sPath, bNecessary=false) {
         // returns an IBDAWG object
-        if (sfDictionary === "") {
+        if (dictionary === null) {
             return null;
         }
         try {
-            return ibdawg.IBDAWG(sfDictionary);
+        	if (typeof(require) !== 'undefined') {
+        		console.log(">>>> <resource:>");
+                return new ibdawg.IBDAWG(dictionary);  // dictionary can be a filename or a JSON object
+            } else {
+            	console.log(">>>> no <resource:>");
+                return new IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
+            }
         }
         catch (e) {
-            console.log("Error: <" + sDicName + "> not loaded.");
+        	if (bNecessary) {
+        		throw e.message;
+        	}
             console.log(e.message);
             return null;
         }
     }
 
-    setMainDictionary (sfDictionary) {
+    setMainDictionary (dictionary) {
         // returns true if the dictionary is loaded
-        this.oMainDic = this._loadDictionary(sfDictionary);
+        this.oMainDic = this._loadDictionary(dictionary);
         return bool(this.oMainDic);
     }
 
-    setExtendedDictionary (sfDictionary) {
+    setExtendedDictionary (dictionary) {
         // returns true if the dictionary is loaded
-        this.oExtendedDic = this._loadDictionary(sfDictionary);
+        this.oExtendedDic = this._loadDictionary(dictionary);
         return bool(this.oExtendedDic);
     }
 
-    setPersonalDictionary (sfDictionary) {
+    setPersonalDictionary (dictionary) {
         // returns true if the dictionary is loaded
-        this.oPersonalDic = this._loadDictionary(sfDictionary);
+        this.oPersonalDic = this._loadDictionary(dictionary);
         return bool(this.oPersonalDic);
     }
 
@@ -149,4 +158,8 @@ class Spellchecker {
             yield* this.oPersonalDic.select(sPattern);
         }
     }
+}
+
+if (typeof(exports) !== 'undefined') {
+    exports.Spellchecker = Spellchecker;
 }
