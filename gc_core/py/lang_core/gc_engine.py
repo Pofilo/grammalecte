@@ -8,7 +8,7 @@ import traceback
 #import unicodedata
 from itertools import chain
 
-from ..graphspell.ibdawg import IBDAWG
+from ..graphspell.spellchecker import SpellChecker
 from ..graphspell.echo import echo
 from . import gc_options
 
@@ -34,7 +34,7 @@ _rules = None                               # module gc_rules
 _sAppContext = ""                           # what software is running
 _dOptions = None
 _aIgnoredRules = set()
-_oDict = None
+_oSpellChecker = None
 _dAnalyses = {}                             # cache for data from dictionary
 
 
@@ -288,11 +288,11 @@ except ImportError:
 
 
 def load (sContext="Python"):
-    global _oDict
+    global _oSpellChecker
     global _sAppContext
     global _dOptions
     try:
-        _oDict = IBDAWG("${dic_filename}.bdic")
+        _oSpellChecker = SpellChecker("${lang}", "${dic_filename}.bdic")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
     except:
@@ -334,7 +334,7 @@ def resetOptions ():
 
 
 def getDictionary ():
-    return _oDict
+    return _oSpellChecker
 
 
 def _getRules (bParagraph):
@@ -398,9 +398,9 @@ def displayInfo (dDA, tWord):
 
 
 def _storeMorphFromFSA (sWord):
-    "retrieves morphologies list from _oDict -> _dAnalyses"
+    "retrieves morphologies list from _oSpellChecker -> _dAnalyses"
     global _dAnalyses
-    _dAnalyses[sWord] = _oDict.getMorph(sWord)
+    _dAnalyses[sWord] = _oSpellChecker.getMorph(sWord)
     return True  if _dAnalyses[sWord]  else False
 
 

@@ -38,7 +38,6 @@ function capitalizeArray (aArray) {
 let _sAppContext = "";                                  // what software is running
 let _dOptions = null;
 let _aIgnoredRules = new Set();
-let _oDict = null;
 let _oSpellChecker = null;
 let _dAnalyses = new Map();                             // cache for data from dictionary
 
@@ -323,15 +322,10 @@ var gc_engine = {
     load: function (sContext="JavaScript", sPath="") {
         try {
             if (typeof(require) !== 'undefined') {
-                //var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
-                //_oDict = new ibdawg.IBDAWG("${dic_filename}.json");
-                console.log("<resource:>");
                 var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
-                _oSpellChecker = new spellchecker.Spellchecker("${lang}", "${dic_filename}.json");
+                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_filename}.json");
             } else {
-                //_oDict = new IBDAWG("${dic_filename}.json", sPath);
-                console.log("no <resource:>");
-                _oSpellChecker = new Spellchecker("${lang}", "${dic_filename}.json", sPath);
+                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_filename}.json");
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
