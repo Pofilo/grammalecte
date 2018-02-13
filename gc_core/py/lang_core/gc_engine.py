@@ -14,7 +14,7 @@ from . import gc_options
 
 
 __all__ = [ "lang", "locales", "pkg", "name", "version", "author", \
-            "load", "parse", "getDictionary", \
+            "load", "parse", "getSpellChecker", \
             "setOption", "setOptions", "getOptions", "getDefaultOptions", "getOptionsLabels", "resetOptions", "displayOptions", \
             "ignoreRule", "resetIgnoreRules", "reactivateRule", "listRules", "displayRules" ]
 
@@ -333,7 +333,7 @@ def resetOptions ():
     _dOptions = dict(gc_options.getOptions(_sAppContext))
 
 
-def getDictionary ():
+def getSpellChecker ():
     return _oSpellChecker
 
 

@@ -226,8 +226,8 @@ const _dSeparator = new Map([
 
 class Lexicographe {
 
-    constructor (oDict, oTokenizer, oLocGraph) {
-        this.oDict = oDict;
+    constructor (oSpellChecker, oTokenizer, oLocGraph) {
+        this.oSpellChecker = oSpellChecker;
         this.oTokenizer = oTokenizer;
         this.oLocGraph = JSON.parse(oLocGraph);
 
@@ -341,7 +341,7 @@ class Lexicographe {
                                 { sType: oToken.sType, sValue: "-" + m[2], aLabel: [this._formatSuffix(m[2].toLowerCase())] }
                             ]
                         };
-                    } else if (this.oDict.isValidToken(oToken.sValue)) {
+                    } else if (this.oSpellChecker.isValidToken(oToken.sValue)) {
                         return {
                             sType: oToken.sType,
                             sValue: oToken.sValue,
@@ -364,7 +364,7 @@ class Lexicographe {
 
     _getMorph (sWord) {
         let aElem = [];
-        for (let s of this.oDict.getMorph(sWord)) {
+        for (let s of this.oSpellChecker.getMorph(sWord)) {
             if (s.includes(":")) aElem.push(this._formatTags(s));
         }
         if (aElem.length == 0) {

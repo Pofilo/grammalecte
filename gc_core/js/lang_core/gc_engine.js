@@ -335,7 +335,7 @@ var gc_engine = {
         }
     },
 
-    getDictionary: function () {
+    getSpellChecker: function () {
         return _oSpellChecker;
     },
 
@@ -644,7 +644,7 @@ if (typeof(exports) !== 'undefined') {
     exports.listRules = gc_engine.listRules;
     exports._getRules = gc_engine._getRules;
     exports.load = gc_engine.load;
-    exports.getDictionary = gc_engine.getDictionary;
+    exports.getSpellChecker = gc_engine.getSpellChecker;
     exports.setOption = gc_engine.setOption;
     exports.setOptions = gc_engine.setOptions;
     exports.getOptions = gc_engine.getOptions;

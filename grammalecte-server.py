@@ -129,12 +129,12 @@ def genUserId ():
         i += 1
 
 
-def parseParagraph (iParagraph, sText, oTokenizer, oDict, dOptions, bDebug=False, bEmptyIfNoErrors=False):
+def parseParagraph (iParagraph, sText, oTokenizer, oSpellChecker, dOptions, bDebug=False, bEmptyIfNoErrors=False):
     aGrammErrs = gce.parse(sText, "FR", bDebug, dOptions)
     aGrammErrs = list(aGrammErrs)
     aSpellErrs = []
     for dToken in oTokenizer.genTokens(sText):
-        if dToken['sType'] == "WORD" and not oDict.isValidToken(dToken['sValue']):
+        if dToken['sType'] == "WORD" and not oSpellChecker.isValidToken(dToken['sValue']):
             aSpellErrs.append(dToken)
     if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
         return ""
@@ -151,7 +151,7 @@ if __name__ == '__main__':
         gce.setOptions(dGCOptions)
     dServerGCOptions = gce.getOptions()
     echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dServerGCOptions.items()) ]))
-    oDict = gce.getDictionary()
+    oSpellChecker = gce.getSpellChecker()
     oTokenizer = tkz.Tokenizer("fr")
     oTF = tf.TextFormatter()
     dUser = {}
@@ -199,7 +199,7 @@ if __name__ == '__main__':
         for i, sText in enumerate(txt.getParagraph(request.forms.text), 1):
             if bTF:
                 sText = oTF.formatText(sText)
-            sText = parseParagraph(i, sText, oTokenizer, oDict, dOptions, bEmptyIfNoErrors=True)
+            sText = parseParagraph(i, sText, oTokenizer, oSpellChecker, dOptions, bEmptyIfNoErrors=True)
             if sText:
                 if bComma:
                     sJSON += ",\n"

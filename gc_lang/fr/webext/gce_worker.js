@@ -137,7 +137,7 @@ onmessage = function (e) {
 
 let bInitDone = false;
 
-let oDict = null;
+let oSpellChecker = null;
 let oTokenizer = null;
 let oLxg = null;
 let oTest = null;
@@ -162,13 +162,13 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             mfsp.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/mfsp_data.json"));
             //console.log("[Worker] Modules have been initialized…");
             gc_engine.load(sContext, sExtensionPath+"grammalecte/graphspell/_dictionaries");
-            oDict = gc_engine.getDictionary();
+            oSpellChecker = gc_engine.getSpellChecker();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
             oTokenizer = new Tokenizer("fr");
 
             oLocution =  helpers.loadFile(sExtensionPath + "/grammalecte/fr/locutions_data.json");
 
-            oLxg = new Lexicographe(oDict, oTokenizer, oLocution);
+            oLxg = new Lexicographe(oSpellChecker, oTokenizer, oLocution);
             if (dOptions !== null) {
                 gc_engine.setOptions(dOptions);
             }
@@ -201,7 +201,7 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
-        let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
+        let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oSpellChecker);
         postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, iParaNum: i, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
         i += 1;
     }
@@ -211,7 +211,7 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
 function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) {
     sParagraph = sParagraph.replace(/­/g, "").normalize("NFC");
     let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
-    let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oDict);
+    let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oSpellChecker);
     postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
 }
 
@@ -292,12 +292,15 @@ function fullTests (dInfo={}) {
 // Spellchecker
 
 function getSpellSuggestions (sWord, dInfo) {
-    if (!oDict) {
+    if (!oSpellChecker) {
         postMessage(createResponse("getSpellSuggestions", "# Error. Dictionary not loaded.", dInfo, true));
         return;
     }
-    let aSugg = oDict.suggest(sWord);
-    postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg}, dInfo, true));
+    let i = 1;
+    for (let aSugg of oSpellChecker.suggest(sWord)) {
+        postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg, iSugg: i}, dInfo, true));
+        i += 1;
+    }
 }
 
 
