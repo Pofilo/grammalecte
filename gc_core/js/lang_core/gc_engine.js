@@ -39,6 +39,7 @@ let _sAppContext = "";                                  // what software is runn
 let _dOptions = null;
 let _aIgnoredRules = new Set();
 let _oDict = null;
+let _oSpellChecker = null;
 let _dAnalyses = new Map();                             // cache for data from dictionary
 
 
@@ -322,10 +323,15 @@ var gc_engine = {
     load: function (sContext="JavaScript", sPath="") {
         try {
             if (typeof(require) !== 'undefined') {
-                var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
-                _oDict = new ibdawg.IBDAWG("${dic_filename}.json");
+                //var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
+                //_oDict = new ibdawg.IBDAWG("${dic_filename}.json");
+                console.log("<resource:>");
+                var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
+                _oSpellChecker = new spellchecker.Spellchecker("${lang}", "${dic_filename}.json");
             } else {
-                _oDict = new IBDAWG("${dic_filename}.json", sPath);
+                //_oDict = new IBDAWG("${dic_filename}.json", sPath);
+                console.log("no <resource:>");
+                _oSpellChecker = new Spellchecker("${lang}", "${dic_filename}.json", sPath);
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
@@ -336,7 +342,7 @@ var gc_engine = {
     },
 
     getDictionary: function () {
-        return _oDict;
+        return _oSpellChecker;
     },
 
     //// Options
@@ -390,9 +396,9 @@ function displayInfo (dDA, aWord) {
 }
 
 function _storeMorphFromFSA (sWord) {
-    // retrieves morphologies list from _oDict -> _dAnalyses
-    //helpers.echo("register: "+sWord + " " + _oDict.getMorph(sWord).toString())
-    _dAnalyses.set(sWord, _oDict.getMorph(sWord));
+    // retrieves morphologies list from _oSpellChecker -> _dAnalyses
+    //helpers.echo("register: "+sWord + " " + _oSpellChecker.getMorph(sWord).toString())
+    _dAnalyses.set(sWord, _oSpellChecker.getMorph(sWord));
     return !!_dAnalyses.get(sWord);
 }
 
