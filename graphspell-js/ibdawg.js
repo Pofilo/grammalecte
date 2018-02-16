@@ -282,9 +282,9 @@ class IBDAWG {
         // retrieves morphologies list, different casing allowed
         let l = this.morph(sWord);
         if (sWord[0].gl_isUpperCase()) {
-            l = l.concat(this.morph(sWord.toLowerCase()));
+            l.push(...this.morph(sWord.toLowerCase()));
             if (sWord.gl_isUpperCase() && sWord.length > 1) {
-                l = l.concat(this.morph(sWord.gl_toCapitalize()));
+                l.push(...this.morph(sWord.gl_toCapitalize()));
             }
         }
         return l;
