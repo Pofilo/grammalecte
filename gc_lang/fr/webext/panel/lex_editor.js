@@ -572,19 +572,19 @@ const oBinaryDict = {
 
     load: function () {
         if (bChrome) {
-            browser.storage.local.get("oDictionary", this._load);
+            browser.storage.local.get("oPersonalDictionary", this._load);
             return;
         }
-        let xPromise = browser.storage.local.get("oDictionary");
+        let xPromise = browser.storage.local.get("oPersonalDictionary");
         xPromise.then(this._load.bind(this), showError);
     },
 
     _load: function (oResult) {
-        if (!oResult.hasOwnProperty("oDictionary")) {
+        if (!oResult.hasOwnProperty("oPersonalDictionary")) {
             oWidgets.hideElement("export_button");
             return;
         }
-        let oJSON = oResult.oDictionary;
+        let oJSON = oResult.oPersonalDictionary;
         this.oIBDAWG = new IBDAWG(oJSON);
         let lEntry = [];
         for (let s of this.oIBDAWG.select()) {
@@ -605,10 +605,11 @@ const oBinaryDict = {
         oWidgets.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
         oWidgets.hideElement("build_progress");
         oWidgets.showElement("export_button");
+        browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
     },
 
     save: function (oJSON) {
-        browser.storage.local.set({ "oDictionary": oJSON });
+        browser.storage.local.set({ "oPersonalDictionary": oJSON });
     },
 
     import: function () {

@@ -62,19 +62,19 @@ class SpellChecker {
     setMainDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oMainDic = this._loadDictionary(dictionary);
-        return bool(this.oMainDic);
+        return Boolean(this.oMainDic);
     }
 
     setExtendedDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oExtendedDic = this._loadDictionary(dictionary);
-        return bool(this.oExtendedDic);
+        return Boolean(this.oExtendedDic);
     }
 
     setPersonalDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oPersonalDic = this._loadDictionary(dictionary);
-        return bool(this.oPersonalDic);
+        return Boolean(this.oPersonalDic);
     }
 
     // IBDAWG functions
@@ -125,10 +125,10 @@ class SpellChecker {
         // retrieves morphologies list, different casing allowed
         let lResult = this.oMainDic.getMorph(sWord);
         if (this.oExtendedDic) {
-            lResult.extends(this.oExtendedDic.getMorph(sWord));
+            lResult.push(...this.oExtendedDic.getMorph(sWord));
         }
         if (this.oPersonalDic) {
-            lResult.extends(this.oPersonalDic.getMorph(sWord));
+            lResult.push(...this.oPersonalDic.getMorph(sWord));
         }
         return lResult;
     }

@@ -121,6 +121,9 @@ onmessage = function (e) {
         case "fullTests":
             fullTests(dInfo);
             break;
+        case "setDictionary":
+            setDictionary(dParam.sType, dParam.oDict, dInfo);
+            break;
         case "getSpellSuggestions":
             getSpellSuggestions(dParam.sWord, dInfo);
             break;
@@ -289,11 +292,34 @@ function fullTests (dInfo={}) {
 }
 
 
-// Spellchecker
+// SpellChecker
+
+function setDictionary (sType, oDict, dInfo) {
+    if (!oSpellChecker) {
+        postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
+        return;
+    }
+    switch (sType) {
+        case "main":
+            oSpellChecker.setMainDictionary(oDict);
+            postMessage(createResponse("setDictionary", true, dInfo, true));
+            break;
+        case "extended":
+            oSpellChecker.setExtendedDictionary(oDict);
+            postMessage(createResponse("setDictionary", true, dInfo, true));
+            break;
+        case "personal":
+            oSpellChecker.setPersonalDictionary(oDict);
+            postMessage(createResponse("setDictionary", true, dInfo, true));
+            break;
+        default:
+            console.log("[worker] setDictionary: Unknown command");
+    }
+}
 
 function getSpellSuggestions (sWord, dInfo) {
     if (!oSpellChecker) {
-        postMessage(createResponse("getSpellSuggestions", "# Error. Dictionary not loaded.", dInfo, true));
+        postMessage(createResponse("getSpellSuggestions", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
     let i = 1;

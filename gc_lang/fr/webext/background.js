@@ -62,6 +62,9 @@ xGCEWorker.onmessage = function (e) {
             case "setOption":
                 storeGCOptions(result);
                 break;
+            case "setDictionary":
+                console.log("[background] " + sActionDone + ": " + result);
+                break;
             default:
                 console.log("[background] Unknown command: " + sActionDone);
                 console.log(e.data);
@@ -90,14 +93,35 @@ function initGrammarChecker (dSavedOptions) {
     });
 }
 
+function setSpellingDictionary (dSavedDictionary) {
+    if (dSavedDictionary.hasOwnProperty("oExtendedDictionary")) {
+        xGCEWorker.postMessage({
+            sCommand: "setDictionary",
+            dParam: { sType: "extended", oDict: dSavedDictionary["oExtendedDictionary"] },
+            dInfo: {}
+        });
+    }
+    else if (dSavedDictionary.hasOwnProperty("oPersonalDictionary")) {
+        xGCEWorker.postMessage({
+            sCommand: "setDictionary",
+            dParam: { sType: "personal", oDict: dSavedDictionary["oPersonalDictionary"] },
+            dInfo: {}
+        });
+    }
+}
+
 function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
         browser.storage.local.get("ui_options", initUIOptions);
+        browser.storage.local.get("oExtendedDictionary", setSpellingDictionary);
+        browser.storage.local.get("oPersonalDictionary", setSpellingDictionary);
         return;
     }
     browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
     browser.storage.local.get("ui_options").then(initUIOptions, showError);
+    browser.storage.local.get("oExtendedDictionary").then(setSpellingDictionary, showError);
+    browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionary, showError);
 }
 
 init();
@@ -135,6 +159,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "resetOptions":
         case "textToTest":
         case "fullTests":
+        case "setDictionary":
             xGCEWorker.postMessage(oRequest);
             break;
         case "openURL":
