@@ -12,8 +12,8 @@ from com.sun.star.ui import XContextMenuInterceptor
 #from com.sun.star.ui.ContextMenuInterceptorAction import EXECUTE_MODIFIED
 
 import grammalecte.fr.lexicographe as lxg
-from grammalecte.ibdawg import IBDAWG
-from grammalecte.echo import echo
+from grammalecte.graphspell.ibdawg import IBDAWG
+from grammalecte.graphspell.echo import echo
 import helpers
 
 
@@ -127,11 +127,11 @@ class JobExecutor (XJob, unohelper.Base):
             if not oDict:
                 xCurCtx = uno.getComponentContext()
                 oGC = self.ctx.ServiceManager.createInstanceWithContext("org.openoffice.comp.pyuno.Lightproof.grammalecte", self.ctx)
-                if hasattr(oGC, "getDictionary"):
+                if hasattr(oGC, "getSpellChecker"):
                     # https://bugs.documentfoundation.org/show_bug.cgi?id=97790
-                    oDict = oGC.getDictionary()
+                    oDict = oGC.getSpellChecker()
                 else:
-                    oDict = IBDAWG("French.bdic")
+                    oDict = IBDAWG("${dic_filename}.bdic")
             if not oLexicographe:
                 oLexicographe = lxg.Lexicographe(oDict)
         except:
