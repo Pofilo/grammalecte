@@ -37,7 +37,7 @@ class SpellChecker ():
         try:
             return ibdawg.IBDAWG(sfDictionary)
         except:
-            print("Error: <" + sDicName + "> not loaded.")
+            print("Error: <" + sfDictionary + "> not loaded.")
             traceback.print_exc()
             return None
 
