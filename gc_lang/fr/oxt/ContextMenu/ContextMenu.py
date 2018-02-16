@@ -12,13 +12,13 @@ from com.sun.star.ui import XContextMenuInterceptor
 #from com.sun.star.ui.ContextMenuInterceptorAction import EXECUTE_MODIFIED
 
 import grammalecte.fr.lexicographe as lxg
-from grammalecte.graphspell.ibdawg import IBDAWG
+from grammalecte.graphspell.spellchecker import SpellChecker
 from grammalecte.graphspell.echo import echo
 import helpers
 
 
 xDesktop = None
-oDict = None
+oSpellChecker = None
 oLexicographe = None
 
 
@@ -119,21 +119,21 @@ class JobExecutor (XJob, unohelper.Base):
     def __init__ (self, ctx):
         self.ctx = ctx
         global xDesktop
-        global oDict
+        global oSpellChecker
         global oLexicographe
         try:
             if not xDesktop:
                 xDesktop = self.ctx.getServiceManager().createInstanceWithContext('com.sun.star.frame.Desktop', self.ctx)
-            if not oDict:
+            if not oSpellChecker:
                 xCurCtx = uno.getComponentContext()
                 oGC = self.ctx.ServiceManager.createInstanceWithContext("org.openoffice.comp.pyuno.Lightproof.grammalecte", self.ctx)
                 if hasattr(oGC, "getSpellChecker"):
                     # https://bugs.documentfoundation.org/show_bug.cgi?id=97790
-                    oDict = oGC.getSpellChecker()
+                    oSpellChecker = oGC.getSpellChecker()
                 else:
-                    oDict = IBDAWG("${dic_filename}.bdic")
+                    oSpellChecker = SpellChecker("${lang}", "${dic_filename}.bdic")
             if not oLexicographe:
-                oLexicographe = lxg.Lexicographe(oDict)
+                oLexicographe = lxg.Lexicographe(oSpellChecker)
         except:
             traceback.print_exc()
         
