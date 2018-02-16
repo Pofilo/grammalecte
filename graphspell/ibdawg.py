@@ -164,7 +164,7 @@ class IBDAWG:
         self.nTag = self.nArcVal - self.nChar - self.nAff
         # <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         self.dChar = {}
-        for i in range(1, self.nChar):
+        for i in range(1, self.nChar+1):
             self.dChar[self.lArcVal[i]] = i
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
         self.nBytesOffset = 1 # version 3

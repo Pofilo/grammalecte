@@ -210,17 +210,17 @@ function suggPlur (sFlex, sWordToAgree=null) {
     let aSugg = new Set();
     if (!sFlex.includes("-")) {
         if (sFlex.endsWith("l")) {
-            if (sFlex.endsWith("al") && sFlex.length > 2 && _oDict.isValid(sFlex.slice(0,-1)+"ux")) {
+            if (sFlex.endsWith("al") && sFlex.length > 2 && _oSpellChecker.isValid(sFlex.slice(0,-1)+"ux")) {
                 aSugg.add(sFlex.slice(0,-1)+"ux");
             }
-            if (sFlex.endsWith("ail") && sFlex.length > 3 && _oDict.isValid(sFlex.slice(0,-2)+"ux")) {
+            if (sFlex.endsWith("ail") && sFlex.length > 3 && _oSpellChecker.isValid(sFlex.slice(0,-2)+"ux")) {
                 aSugg.add(sFlex.slice(0,-2)+"ux");
             }
         }
-        if (_oDict.isValid(sFlex+"s")) {
+        if (_oSpellChecker.isValid(sFlex+"s")) {
             aSugg.add(sFlex+"s");
         }
-        if (_oDict.isValid(sFlex+"x")) {
+        if (_oSpellChecker.isValid(sFlex+"x")) {
             aSugg.add(sFlex+"x");
         }
     }
@@ -240,14 +240,14 @@ function suggSing (sFlex) {
     }
     let aSugg = new Set();
     if (sFlex.endsWith("ux")) {
-        if (_oDict.isValid(sFlex.slice(0,-2)+"l")) {
+        if (_oSpellChecker.isValid(sFlex.slice(0,-2)+"l")) {
             aSugg.add(sFlex.slice(0,-2)+"l");
         }
-        if (_oDict.isValid(sFlex.slice(0,-2)+"il")) {
+        if (_oSpellChecker.isValid(sFlex.slice(0,-2)+"il")) {
             aSugg.add(sFlex.slice(0,-2)+"il");
         }
     }
-    if (_oDict.isValid(sFlex.slice(0,-1))) {
+    if (_oSpellChecker.isValid(sFlex.slice(0,-1))) {
         aSugg.add(sFlex.slice(0,-1));
     }
     if (aSugg.size > 0) {

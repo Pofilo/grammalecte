@@ -157,8 +157,8 @@ _dAD = {
 
 class Lexicographe:
 
-    def __init__ (self, oDict):
-        self.oDict = oDict
+    def __init__ (self, oSpellChecker):
+        self.oSpellChecker = oSpellChecker
         self._zElidedPrefix = re.compile("(?i)^([dljmtsncç]|quoiqu|lorsqu|jusqu|puisqu|qu)['’](.+)")
         self._zCompoundWord = re.compile("(?i)(\\w+)-((?:les?|la)-(?:moi|toi|lui|[nv]ous|leur)|t-(?:il|elle|on)|y|en|[mts][’'](?:y|en)|les?|l[aà]|[mt]oi|leur|lui|je|tu|ils?|elles?|on|[nv]ous)$")
         self._zTag = re.compile("[:;/][\\w*][^:;/]*")
@@ -183,7 +183,7 @@ class Lexicographe:
             if m2:
                 sWord = m2.group(1)
             # Morphologies
-            lMorph = self.oDict.getMorph(sWord)
+            lMorph = self.oSpellChecker.getMorph(sWord)
             if len(lMorph) > 1:
                 # sublist
                 aMorph.append( (sWord, [ self.formatTags(s)  for s in lMorph  if ":" in s ]) )

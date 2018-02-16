@@ -159,13 +159,13 @@ def suggPlur (sFlex, sWordToAgree=None):
     aSugg = set()
     if "-" not in sFlex:
         if sFlex.endswith("l"):
-            if sFlex.endswith("al") and len(sFlex) > 2 and _oDict.isValid(sFlex[:-1]+"ux"):
+            if sFlex.endswith("al") and len(sFlex) > 2 and _oSpellChecker.isValid(sFlex[:-1]+"ux"):
                 aSugg.add(sFlex[:-1]+"ux")
-            if sFlex.endswith("ail") and len(sFlex) > 3 and _oDict.isValid(sFlex[:-2]+"ux"):
+            if sFlex.endswith("ail") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"ux"):
                 aSugg.add(sFlex[:-2]+"ux")
-        if _oDict.isValid(sFlex+"s"):
+        if _oSpellChecker.isValid(sFlex+"s"):
             aSugg.add(sFlex+"s")
-        if _oDict.isValid(sFlex+"x"):
+        if _oSpellChecker.isValid(sFlex+"x"):
             aSugg.add(sFlex+"x")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
@@ -180,11 +180,11 @@ def suggSing (sFlex):
         return ""
     aSugg = set()
     if sFlex.endswith("ux"):
-        if _oDict.isValid(sFlex[:-2]+"l"):
+        if _oSpellChecker.isValid(sFlex[:-2]+"l"):
             aSugg.add(sFlex[:-2]+"l")
-        if _oDict.isValid(sFlex[:-2]+"il"):
+        if _oSpellChecker.isValid(sFlex[:-2]+"il"):
             aSugg.add(sFlex[:-2]+"il")
-    if _oDict.isValid(sFlex[:-1]):
+    if _oSpellChecker.isValid(sFlex[:-1]):
         aSugg.add(sFlex[:-1])
     if aSugg:
         return "|".join(aSugg)

@@ -38,7 +38,7 @@ function capitalizeArray (aArray) {
 let _sAppContext = "";                                  // what software is running
 let _dOptions = null;
 let _aIgnoredRules = new Set();
-let _oDict = null;
+let _oSpellChecker = null;
 let _dAnalyses = new Map();                             // cache for data from dictionary
 
 
@@ -322,10 +322,10 @@ var gc_engine = {
     load: function (sContext="JavaScript", sPath="") {
         try {
             if (typeof(require) !== 'undefined') {
-                var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
-                _oDict = new ibdawg.IBDAWG("${dic_filename}.json");
+                var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
+                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_filename}.json");
             } else {
-                _oDict = new IBDAWG("${dic_filename}.json", sPath);
+                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_filename}.json");
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
@@ -335,8 +335,8 @@ var gc_engine = {
         }
     },
 
-    getDictionary: function () {
-        return _oDict;
+    getSpellChecker: function () {
+        return _oSpellChecker;
     },
 
     //// Options
@@ -390,9 +390,9 @@ function displayInfo (dDA, aWord) {
 }
 
 function _storeMorphFromFSA (sWord) {
-    // retrieves morphologies list from _oDict -> _dAnalyses
-    //helpers.echo("register: "+sWord + " " + _oDict.getMorph(sWord).toString())
-    _dAnalyses.set(sWord, _oDict.getMorph(sWord));
+    // retrieves morphologies list from _oSpellChecker -> _dAnalyses
+    //helpers.echo("register: "+sWord + " " + _oSpellChecker.getMorph(sWord).toString())
+    _dAnalyses.set(sWord, _oSpellChecker.getMorph(sWord));
     return !!_dAnalyses.get(sWord);
 }
 
@@ -644,7 +644,7 @@ if (typeof(exports) !== 'undefined') {
     exports.listRules = gc_engine.listRules;
     exports._getRules = gc_engine._getRules;
     exports.load = gc_engine.load;
-    exports.getDictionary = gc_engine.getDictionary;
+    exports.getSpellChecker = gc_engine.getSpellChecker;
     exports.setOption = gc_engine.setOption;
     exports.setOptions = gc_engine.setOptions;
     exports.getOptions = gc_engine.getOptions;

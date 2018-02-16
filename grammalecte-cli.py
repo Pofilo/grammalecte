@@ -44,27 +44,29 @@ def _getText (sInputText):
     return sText
 
 
-def _getErrors (sText, oTokenizer, oDict, bContext=False, bSpellSugg=False, bDebug=False):
+def _getErrors (sText, oTokenizer, oSpellChecker, bContext=False, bSpellSugg=False, bDebug=False):
     "returns a tuple: (grammar errors, spelling errors)"
     aGrammErrs = gce.parse(sText, "FR", bDebug=bDebug, bContext=bContext)
     aSpellErrs = []
     for dToken in oTokenizer.genTokens(sText):
-        if dToken['sType'] == "WORD" and not oDict.isValidToken(dToken['sValue']):
+        if dToken['sType'] == "WORD" and not oSpellChecker.isValidToken(dToken['sValue']):
             if bSpellSugg:
-                dToken['aSuggestions'] = oDict.suggest(dToken['sValue'])
+                dToken['aSuggestions'] = []
+                for lSugg in oSpellChecker.suggest(dToken['sValue']):
+                    dToken['aSuggestions'].extend(lSugg)
             aSpellErrs.append(dToken)
     return aGrammErrs, aSpellErrs
 
 
-def generateText (sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100):
-    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oDict, False, bSpellSugg, bDebug)
+def generateText (sText, oTokenizer, oSpellChecker, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100):
+    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oSpellChecker, False, bSpellSugg, bDebug)
     if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
         return ""
     return txt.generateParagraph(sText, aGrammErrs, aSpellErrs, nWidth)
 
 
-def generateJSON (iIndex, sText, oTokenizer, oDict, bContext=False, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, lLineSet=None, bReturnText=False):
-    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oDict, bContext, bSpellSugg, bDebug)
+def generateJSON (iIndex, sText, oTokenizer, oSpellChecker, bContext=False, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, lLineSet=None, bReturnText=False):
+    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oSpellChecker, bContext, bSpellSugg, bDebug)
     aGrammErrs = list(aGrammErrs)
     if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
         return ""
@@ -130,9 +132,9 @@ def main ():
     gce.load()
     if not xArgs.json:
         echo("Grammalecte v{}".format(gce.version))
-    oDict = gce.getDictionary()
+    oSpellChecker = gce.getSpellChecker()
     oTokenizer = tkz.Tokenizer("fr")
-    oLexGraphe = lxg.Lexicographe(oDict)
+    oLexGraphe = lxg.Lexicographe(oSpellChecker)
     if xArgs.textformatter or xArgs.textformatteronly:
         oTF = tf.TextFormatter()
 
@@ -144,12 +146,12 @@ def main ():
         exit()
 
     if xArgs.suggest:
-        lSugg = oDict.suggest(xArgs.suggest)
-        if xArgs.json:
-            sText = json.dumps({ "aSuggestions": lSugg }, ensure_ascii=False)
-        else:
-            sText = "Suggestions : " + " | ".join(lSugg)
-        echo(sText)
+        for lSugg in oSpellChecker.suggest(xArgs.suggest):
+            if xArgs.json:
+                sText = json.dumps({ "aSuggestions": lSugg }, ensure_ascii=False)
+            else:
+                sText = "Suggestions : " + " | ".join(lSugg)
+            echo(sText)
         exit()
 
     if not xArgs.json:
@@ -181,9 +183,9 @@ def main ():
                     output(sText, hDst)
                 else:
                     if xArgs.json:
-                        sText = generateJSON(i, sText, oTokenizer, oDict, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, bReturnText=xArgs.textformatter)
+                        sText = generateJSON(i, sText, oTokenizer, oSpellChecker, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, bReturnText=xArgs.textformatter)
                     else:
-                        sText = generateText(sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
+                        sText = generateText(sText, oTokenizer, oSpellChecker, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
                     if sText:
                         if xArgs.json and bComma:
                             output(",\n", hDst)
@@ -196,9 +198,9 @@ def main ():
             for i, lLine in enumerate(readfileAndConcatLines(sFile), 1):
                 sText, lLineSet = txt.createParagraphWithLines(lLine)
                 if xArgs.json:
-                    sText = generateJSON(i, sText, oTokenizer, oDict, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, lLineSet=lLineSet)
+                    sText = generateJSON(i, sText, oTokenizer, oSpellChecker, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, lLineSet=lLineSet)
                 else:
-                    sText = generateText(sText, oTokenizer, oDict, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
+                    sText = generateText(sText, oTokenizer, oSpellChecker, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
                 if sText:
                     if xArgs.json and bComma:
                         output(",\n", hDst)
@@ -217,17 +219,17 @@ def main ():
                 for sWord in sText[1:].strip().split():
                     if sWord:
                         echo("* " + sWord)
-                        for sMorph in oDict.getMorph(sWord):
+                        for sMorph in oSpellChecker.getMorph(sWord):
                             echo("  {:<32} {}".format(sMorph, oLexGraphe.formatTags(sMorph)))
             elif sText.startswith("!"):
                 for sWord in sText[1:].strip().split():
                     if sWord:
-                        echo(" | ".join(oDict.suggest(sWord)))
-                        #echo(" | ".join(oDict.suggest2(sWord)))
+                        for lSugg in oSpellChecker.suggest(sWord):
+                            echo(" | ".join(lSugg))
             elif sText.startswith(">"):
-                oDict.drawPath(sText[1:].strip())
+                oSpellChecker.drawPath(sText[1:].strip())
             elif sText.startswith("="):
-                for sRes in oDict.select(sText[1:].strip()):
+                for sRes in oSpellChecker.select(sText[1:].strip()):
                     echo(sRes)
             elif sText.startswith("/+ "):
                 gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
@@ -266,7 +268,7 @@ def main ():
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
                         sText = oTF.formatText(sText)
-                    sRes = generateText(sText, oTokenizer, oDict, bDebug=xArgs.debug, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width)
+                    sRes = generateText(sText, oTokenizer, oSpellChecker, bDebug=xArgs.debug, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width)
                     if sRes:
                         echo("\n" + sRes)
                     else:

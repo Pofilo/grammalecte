@@ -25,13 +25,11 @@ const dDefaultDictionaries = new Map([
 ]);
 
 
-class Spellchecker {
+class SpellChecker {
 
-    constructor (sLangCode, mainDic=null, extentedDic=null, personalDic=null, sPath="") {
+    constructor (sLangCode, sPath="", mainDic=null, extentedDic=null, personalDic=null) {
         // returns true if the main dictionary is loaded
         this.sLangCode = sLangCode;
-        console.log(sLangCode);
-        console.log(mainDic);
         if (mainDic === null) {
             mainDic = dDefaultDictionaries.gl_get(sLangCode, "");
         }
@@ -46,19 +44,17 @@ class Spellchecker {
             return null;
         }
         try {
-        	if (typeof(require) !== 'undefined') {
-        		console.log(">>>> <resource:>");
+            if (typeof(require) !== 'undefined') {
                 return new ibdawg.IBDAWG(dictionary);  // dictionary can be a filename or a JSON object
             } else {
-            	console.log(">>>> no <resource:>");
                 return new IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
             }
         }
         catch (e) {
-        	if (bNecessary) {
-        		throw e.message;
-        	}
             console.log(e.message);
+            if (bNecessary) {
+                throw e.message;
+            }
             return null;
         }
     }
@@ -66,19 +62,19 @@ class Spellchecker {
     setMainDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oMainDic = this._loadDictionary(dictionary);
-        return bool(this.oMainDic);
+        return Boolean(this.oMainDic);
     }
 
     setExtendedDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oExtendedDic = this._loadDictionary(dictionary);
-        return bool(this.oExtendedDic);
+        return Boolean(this.oExtendedDic);
     }
 
     setPersonalDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oPersonalDic = this._loadDictionary(dictionary);
-        return bool(this.oPersonalDic);
+        return Boolean(this.oPersonalDic);
     }
 
     // IBDAWG functions
@@ -99,13 +95,13 @@ class Spellchecker {
 
     isValid (sWord) {
         // checks if sWord is valid (different casing tested if the first letter is a capital)
-        if (this.oMainDic.isValid(sToken)) {
+        if (this.oMainDic.isValid(sWord)) {
             return true;
         }
-        if (this.oExtendedDic && this.oExtendedDic.isValid(sToken)) {
+        if (this.oExtendedDic && this.oExtendedDic.isValid(sWord)) {
             return true;
         }
-        if (this.oPersonalDic && this.oPersonalDic.isValid(sToken)) {
+        if (this.oPersonalDic && this.oPersonalDic.isValid(sWord)) {
             return true;
         }
         return false;
@@ -113,13 +109,13 @@ class Spellchecker {
 
     lookup (sWord) {
         // checks if sWord is in dictionary as is (strict verification)
-        if (this.oMainDic.lookup(sToken)) {
+        if (this.oMainDic.lookup(sWord)) {
             return true;
         }
-        if (this.oExtendedDic && this.oExtendedDic.lookup(sToken)) {
+        if (this.oExtendedDic && this.oExtendedDic.lookup(sWord)) {
             return true;
         }
-        if (this.oPersonalDic && this.oPersonalDic.lookup(sToken)) {
+        if (this.oPersonalDic && this.oPersonalDic.lookup(sWord)) {
             return true;
         }
         return false;
@@ -127,18 +123,18 @@ class Spellchecker {
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
-        let lResult = this.oMainDic.getMorph(sToken);
+        let lResult = this.oMainDic.getMorph(sWord);
         if (this.oExtendedDic) {
-            lResult.extends(this.oExtendedDic.getMorph(sToken));
+            lResult.push(...this.oExtendedDic.getMorph(sWord));
         }
         if (this.oPersonalDic) {
-            lResult.extends(this.oPersonalDic.getMorph(sToken));
+            lResult.push(...this.oPersonalDic.getMorph(sWord));
         }
         return lResult;
     }
 
     * suggest (sWord, nSuggLimit=10) {
-        // generator: returns 1,2 or 3 lists of suggestions
+        // generator: returns 1, 2 or 3 lists of suggestions
         yield this.oMainDic.suggest(sWord, nSuggLimit);
         if (this.oExtendedDic) {
             yield this.oExtendedDic.suggest(sWord, nSuggLimit);

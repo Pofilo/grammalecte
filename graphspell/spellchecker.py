@@ -19,7 +19,7 @@ dDefaultDictionaries = {
 }
 
 
-class Spellchecker ():
+class SpellChecker ():
 
     def __init__ (self, sLangCode, sfMainDic="", sfExtendedDic="", sfPersonalDic=""):
         "returns True if the main dictionary is loaded"
@@ -29,7 +29,6 @@ class Spellchecker ():
         self.oMainDic = self._loadDictionary(sfMainDic)
         self.oExtendedDic = self._loadDictionary(sfExtendedDic)
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
-        return bool(self.oMainDic)
 
     def _loadDictionary (self, sfDictionary):
         "returns an IBDAWG object"
@@ -72,35 +71,35 @@ class Spellchecker ():
 
     def isValid (self, sWord):
         "checks if sWord is valid (different casing tested if the first letter is a capital)"
-        if self.oMainDic.isValid(sToken):
+        if self.oMainDic.isValid(sWord):
             return True
-        if self.oExtendedDic and self.oExtendedDic.isValid(sToken):
+        if self.oExtendedDic and self.oExtendedDic.isValid(sWord):
             return True
-        if self.oPersonalDic and self.oPersonalDic.isValid(sToken):
+        if self.oPersonalDic and self.oPersonalDic.isValid(sWord):
             return True
         return False
 
     def lookup (self, sWord):
         "checks if sWord is in dictionary as is (strict verification)"
-        if self.oMainDic.lookup(sToken):
+        if self.oMainDic.lookup(sWord):
             return True
-        if self.oExtendedDic and self.oExtendedDic.lookup(sToken):
+        if self.oExtendedDic and self.oExtendedDic.lookup(sWord):
             return True
-        if self.oPersonalDic and self.oPersonalDic.lookup(sToken):
+        if self.oPersonalDic and self.oPersonalDic.lookup(sWord):
             return True
         return False
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
-        lResult = self.oMainDic.getMorph(sToken)
+        lResult = self.oMainDic.getMorph(sWord)
         if self.oExtendedDic:
-            lResult.extends(self.oExtendedDic.getMorph(sToken))
+            lResult.extends(self.oExtendedDic.getMorph(sWord))
         if self.oPersonalDic:
-            lResult.extends(self.oPersonalDic.getMorph(sToken))
+            lResult.extends(self.oPersonalDic.getMorph(sWord))
         return lResult
 
     def suggest (self, sWord, nSuggLimit=10):
-        "generator: returns 1,2 or 3 lists of suggestions"
+        "generator: returns 1, 2 or 3 lists of suggestions"
         yield self.oMainDic.suggest(sWord, nSuggLimit)
         if self.oExtendedDic:
             yield self.oExtendedDic.suggest(sWord, nSuggLimit)
@@ -114,3 +113,12 @@ class Spellchecker ():
             yield from self.oExtendedDic.select(sPattern)
         if self.oPersonalDic:
             yield from self.oPersonalDic.select(sPattern)
+
+    def drawPath (self, sWord):
+        self.oMainDic.drawPath(sWord)
+        if self.oExtendedDic:
+            print("-----")
+            self.oExtendedDic.drawPath(sWord)
+        if self.oPersonalDic:
+            print("-----")
+            self.oPersonalDic.drawPath(sWord)

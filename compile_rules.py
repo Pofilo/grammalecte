@@ -56,7 +56,7 @@ def prepareFunction (s):
     s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dDA, s[m.end():], m.end())', s)              # isEndOfNG(s)
     s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dDA, s[m.end():], m.end())', s)        # isNextNotCOD(s)
     s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dDA, s[m.end():], m.end())', s)            # isNextVerb(s)
-    s = re.sub(r"\bspell *[(]", '_oDict.isValid(', s)
+    s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'm.group(\\1)', s)
     return s
 

@@ -89,8 +89,7 @@ class IBDAWG {
         try {
             let oData = null;
             if (typeof(param1) == "string") {
-                let sDicName = param1;
-                let sURL = (sPath !== "") ? sPath + "/" + sDicName : "resource://grammalecte/graphspell/_dictionaries/"+sDicName;
+                let sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
                 oData = JSON.parse(helpers.loadFile(sURL));
             } else {
                 oData = param1;
@@ -283,9 +282,9 @@ class IBDAWG {
         // retrieves morphologies list, different casing allowed
         let l = this.morph(sWord);
         if (sWord[0].gl_isUpperCase()) {
-            l = l.concat(this.morph(sWord.toLowerCase()));
+            l.push(...this.morph(sWord.toLowerCase()));
             if (sWord.gl_isUpperCase() && sWord.length > 1) {
-                l = l.concat(this.morph(sWord.gl_toCapitalize()));
+                l.push(...this.morph(sWord.gl_toCapitalize()));
             }
         }
         return l;
