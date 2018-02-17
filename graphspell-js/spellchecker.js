@@ -51,6 +51,7 @@ class SpellChecker {
             }
         }
         catch (e) {
+            let sfDictionary = (typeof(dictionary) == "string") ? dictionary : dictionary.sLangName + "/" + dictionary.sFileName;
             if (bNecessary) {
                 throw "Error: <" + sfDictionary + "> not loaded. " + e.message;
             }
