@@ -325,7 +325,7 @@ var gc_engine = {
                 var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
                 _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_filename}.json");
             } else {
-                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_filename}.json");
+                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_personal_filename_js}");
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
