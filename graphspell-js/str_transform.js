@@ -213,6 +213,6 @@ var str_transform = {
 
 
 if (typeof(exports) !== 'undefined') {
-    exports.getStemFromSuffixCode = str_transform.getStemFromSuffixCode;
-    exports.getStemFromAffixCode = str_transform.getStemFromAffixCode;
+    exports.changeWordWithSuffixCode = str_transform.changeWordWithSuffixCode;
+    exports.changeWordWithAffixCode = str_transform.changeWordWithAffixCode;
 }
