@@ -93,9 +93,9 @@ class SpellChecker ():
         "retrieves morphologies list, different casing allowed"
         lResult = self.oMainDic.getMorph(sWord)
         if self.oExtendedDic:
-            lResult.extends(self.oExtendedDic.getMorph(sWord))
+            lResult.extend(self.oExtendedDic.getMorph(sWord))
         if self.oPersonalDic:
-            lResult.extends(self.oPersonalDic.getMorph(sWord))
+            lResult.extend(self.oPersonalDic.getMorph(sWord))
         return lResult
 
     def suggest (self, sWord, nSuggLimit=10):
