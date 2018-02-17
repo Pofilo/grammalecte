@@ -619,7 +619,7 @@ const oBinaryDict = {
     export: function () {
         let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'}); 
         let sURL = URL.createObjectURL(xBlob);
-        browser.downloads.download({ filename: "grammalecte_dictionnaire_personnel.json", url: sURL, saveAs: true });
+        browser.downloads.download({ filename: "fr.personal.json", url: sURL, saveAs: true });
     }
 }
 

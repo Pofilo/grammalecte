@@ -292,7 +292,7 @@ def load (sContext="Python"):
     global _sAppContext
     global _dOptions
     try:
-        _oSpellChecker = SpellChecker("${lang}", "${dic_filename}.bdic")
+        _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
     except:

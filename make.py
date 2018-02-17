@@ -78,7 +78,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
 
     # Package and parser
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_filename']+".bdic", "pythonpath/")
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack, "pythonpath/")
     hZip.write("grammalecte-cli.py", "pythonpath/grammalecte-cli.py")
 
     # Extension files
@@ -156,7 +156,7 @@ def createPackageZip (sLang, dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    copyGrammalectePyPackageInZipFile(hZip, spLangPack, dVars['dic_filename']+".bdic")
+    copyGrammalectePyPackageInZipFile(hZip, spLangPack)
     for spf in ["grammalecte-cli.py", "grammalecte-server.py", "bottle.py", \
                 "grammalecte-server-options._global.ini", "grammalecte-server-options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
@@ -164,14 +164,16 @@ def createPackageZip (sLang, dVars, spLangPack):
     hZip.writestr("setup.py", helpers.fileFile("gc_lang/fr/setup.py", dVars))
 
 
-def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sfDict, sAddPath=""):
+def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sAddPath=""):
     for sf in os.listdir("grammalecte"):
         if not os.path.isdir("grammalecte/"+sf):
             hZip.write("grammalecte/"+sf, sAddPath+"grammalecte/"+sf)
     for sf in os.listdir("grammalecte/graphspell"):
         if not os.path.isdir("grammalecte/graphspell/"+sf):
             hZip.write("grammalecte/graphspell/"+sf, sAddPath+"grammalecte/graphspell/"+sf)
-    hZip.write("grammalecte/graphspell/_dictionaries/"+sfDict, sAddPath+"grammalecte/graphspell/_dictionaries/"+sfDict)
+    for sf in os.listdir("grammalecte/graphspell/_dictionaries"):
+        if not os.path.isdir("grammalecte/graphspell/_dictionaries/"+sf):
+            hZip.write("grammalecte/graphspell/_dictionaries/"+sf, sAddPath+"grammalecte/graphspell/_dictionaries/"+sf)
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
@@ -304,20 +306,46 @@ def copyGraphspellCore (bJavaScript=False):
                 helpers.copyAndFileTemplate("graphspell-js/"+sf, "grammalecte-js/graphspell/"+sf, dVars)
 
 
-def copyGraphspellDictionary (dVars, bJavaScript=False):
-    spfPyDic = "graphspell/_dictionaries/"+dVars['dic_filename']+".bdic"
-    spfJSDic = "graphspell-js/_dictionaries/"+dVars['dic_filename']+".json"
-    if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
-        buildDictionary(dVars, bJavaScript)
-    file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
-    file_util.copy_file(spfPyDic[:-5]+".info.txt", "grammalecte/graphspell/_dictionaries")
-    if bJavaScript:
-        file_util.copy_file(spfJSDic, "grammalecte-js/graphspell/_dictionaries")
+def copyGraphspellDictionaries (dVars, bJavaScript=False, bExtendedDict=False, bPersonalDict=False):
+    dVars["dic_main_filename_py"] = ""
+    dVars["dic_main_filename_js"] = ""
+    dVars["dic_extended_filename_py"] = ""
+    dVars["dic_extended_filename_js"] = ""
+    dVars["dic_personal_filename_py"] = ""
+    dVars["dic_personal_filename_js"] = ""
+    lDict = [ ("main", dVars['dic_filename']) ]
+    if bExtendedDict:
+        lDict.append(("extended", dVars['dic_extended_filename']))
+    if bPersonalDict:
+        lDict.append(("personal", dVars['dic_personal_filename']))
+    for sType, sFileName in lDict:
+        spfPyDic = "graphspell/_dictionaries/" + sFileName + ".bdic"
+        spfJSDic = "graphspell-js/_dictionaries/" + sFileName + ".json"
+        if not os.path.isfile(spfPyDic) or (bJavaScript and not os.path.isfile(spfJSDic)):
+            buildDictionary(dVars, sType, bJavaScript)
+        print(spfPyDic)
+        file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
+        dVars['dic_'+sType+'_filename_py'] = sFileName + '.bdic'
+        if bJavaScript:
+            file_util.copy_file(spfJSDic, "grammalecte-js/graphspell/_dictionaries")
+            dVars['dic_'+sType+'_filename_js'] = sFileName + '.json'
 
 
-def buildDictionary (dVars, bJavaScript):
-    lex_build.build(dVars['lexicon_src'], dVars['lang'], dVars['lang_name'], dVars['dic_filename'], \
-                    bJavaScript, dVars['dic_name'], dVars['stemming_method'], int(dVars['fsa_method']))
+def buildDictionary (dVars, sType, bJavaScript=False):
+    if sType == "main":
+        spfLexSrc = dVars['lexicon_src']
+        sfDictDst = dVars['dic_filename']
+        sDicName = dVars['dic_name']
+    elif sType == "extended":
+        spfLexSrc = dVars['lexicon_extended_src']
+        sfDictDst = dVars['dic_extended_filename']
+        sDicName = dVars['dic_extended_name']
+    elif sType == "personal":
+        spfLexSrc = dVars['lexicon_personal_src']
+        sfDictDst = dVars['dic_personal_filename']
+        sDicName = dVars['dic_personal_name']
+    lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, dVars['stemming_method'], int(dVars['fsa_method']))
+
 
 
 def main ():
@@ -332,6 +360,8 @@ def main ():
     xParser.add_argument("-p", "--perf", help="run performance tests", action="store_true")
     xParser.add_argument("-pm", "--perf_memo", help="run performance tests and store results in perf_memo.txt", action="store_true")
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
+    xParser.add_argument("-aed", "--add_extended_dictionary", help="add extended dictionary to the build", action="store_true")
+    xParser.add_argument("-apd", "--add_personal_dictionary", help="add personal dictionary to the build", action="store_true")
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for WebExtension testing", action="store_true")
     xParser.add_argument("-we", "--web_ext", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
@@ -354,6 +384,11 @@ def main ():
             xConfig = getConfig(sLang)
             dVars = xConfig._sections['args']
 
+            if not dVars["lexicon_extended_src"]:
+                xArgs.add_extended_dictionary = False
+            if not dVars["lexicon_personal_src"]:
+                xArgs.add_personal_dictionary = False
+
             # build data
             build_data_module = None
             if xArgs.build_data_before or xArgs.build_data_after:
@@ -365,12 +400,16 @@ def main ():
             if build_data_module and xArgs.build_data_before:
                 build_data_module.before('gc_lang/'+sLang, dVars, xArgs.javascript)
             if xArgs.dict:
-                buildDictionary(dVars, xArgs.javascript)
+                buildDictionary(dVars, "main", xArgs.javascript)
+                if xArgs.add_extended_dictionary:
+                    buildDictionary(dVars, "extended", xArgs.javascript)
+                if xArgs.add_personal_dictionary:
+                    buildDictionary(dVars, "personal", xArgs.javascript)
             if build_data_module and xArgs.build_data_after:
                 build_data_module.after('gc_lang/'+sLang, dVars, xArgs.javascript)
 
             # copy dictionaries from Graphspell
-            copyGraphspellDictionary(dVars, xArgs.javascript)
+            copyGraphspellDictionaries(dVars, xArgs.javascript, xArgs.add_extended_dictionary, xArgs.add_personal_dictionary)
 
             # make
             sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, )

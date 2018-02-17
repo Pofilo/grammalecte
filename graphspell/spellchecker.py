@@ -26,18 +26,20 @@ class SpellChecker ():
         self.sLangCode = sLangCode
         if not sfMainDic:
             sfMainDic = dDefaultDictionaries.get(sLangCode, "")
-        self.oMainDic = self._loadDictionary(sfMainDic)
+        self.oMainDic = self._loadDictionary(sfMainDic, True)
         self.oExtendedDic = self._loadDictionary(sfExtendedDic)
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
 
-    def _loadDictionary (self, sfDictionary):
+    def _loadDictionary (self, sfDictionary, bNecessary=False):
         "returns an IBDAWG object"
         if not sfDictionary:
             return None
         try:
             return ibdawg.IBDAWG(sfDictionary)
-        except:
-            print("Error: <" + sDicName + "> not loaded.")
+        except Exception as e:
+            if bNecessary:
+                raise Exception(str(e), "Error: <" + sfDictionary + "> not loaded.")
+            print("Error: <" + sfDictionary + "> not loaded.")
             traceback.print_exc()
             return None
 
@@ -93,9 +95,9 @@ class SpellChecker ():
         "retrieves morphologies list, different casing allowed"
         lResult = self.oMainDic.getMorph(sWord)
         if self.oExtendedDic:
-            lResult.extends(self.oExtendedDic.getMorph(sWord))
+            lResult.extend(self.oExtendedDic.getMorph(sWord))
         if self.oPersonalDic:
-            lResult.extends(self.oPersonalDic.getMorph(sWord))
+            lResult.extend(self.oPersonalDic.getMorph(sWord))
         return lResult
 
     def suggest (self, sWord, nSuggLimit=10):

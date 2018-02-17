@@ -51,10 +51,12 @@ class SpellChecker {
             }
         }
         catch (e) {
-            console.log(e.message);
+            let sfDictionary = (typeof(dictionary) == "string") ? dictionary : dictionary.sLangName + "/" + dictionary.sFileName;
             if (bNecessary) {
-                throw e.message;
+                throw "Error: <" + sfDictionary + "> not loaded. " + e.message;
             }
+            console.log("Error: <" + sfDictionary + "> not loaded.")
+            console.log(e.message);
             return null;
         }
     }
