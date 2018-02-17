@@ -43,8 +43,8 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         self.nMaxRes = 1500
         self.lLastRes = deque(maxlen=self.nMaxRes)
         self.nRes = 0
-        oSpellChecker = gce.getSpellChecker();
-        oSpellChecker.setPersonalDictionary("fr.personal.json")
+        #oSpellChecker = gce.getSpellChecker();
+        #oSpellChecker.setPersonalDictionary("fr.personal.json")
 
     # XServiceName method implementations
     def getServiceName (self):
