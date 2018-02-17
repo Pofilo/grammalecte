@@ -51,10 +51,11 @@ class SpellChecker {
             }
         }
         catch (e) {
-            console.log(e.message);
             if (bNecessary) {
-                throw e.message;
+                throw "Error: <" + sfDictionary + "> not loaded. " + e.message;
             }
+            console.log("Error: <" + sfDictionary + "> not loaded.")
+            console.log(e.message);
             return null;
         }
     }
