@@ -51,7 +51,7 @@ let lxg = null; // module: lexicographer
 let helpers = null;
 
 let oTokenizer = null;
-let oDict = null;
+let oSpellChecker = null;
 let oLxg = null;
 
 function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
@@ -65,7 +65,7 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
             oTokenizer = new tkz.Tokenizer("fr");
             //helpers.setLogOutput(worker.log);
             gce.load(sContext);
-            oDict = gce.getDictionary();
+            oSpellChecker = gce.getSpellChecker();
             if (sGCOptions !== "") {
                 gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));
             }
@@ -85,7 +85,7 @@ function parse (sText, sCountry, bDebug, bContext) {
 
 function parseAndSpellcheck (sText, sCountry, bDebug, bContext) {
     let aGrammErr = gce.parse(sText, sCountry, bDebug, bContext);
-    let aSpellErr = oTokenizer.getSpellingErrors(sText, oDict);
+    let aSpellErr = oTokenizer.getSpellingErrors(sText, oSpellChecker);
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
 
@@ -113,7 +113,7 @@ function resetOptions () {
 }
 
 function fullTests (sGCOptions="") {
-    if (!gce || !oDict) {
+    if (!gce || !oSpellChecker) {
         return "# Error: grammar checker or dictionary not loaded."
     }
     let dMemoOptions = gce.getOptions();
