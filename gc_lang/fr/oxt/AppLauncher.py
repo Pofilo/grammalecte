@@ -42,6 +42,10 @@ class AppLauncher (unohelper.Base, XJobExecutor):
                 import TextFormatter
                 xDialog = TextFormatter.TextFormatter(self.ctx)
                 xDialog.run(self.sLang)
+            elif sCmd == "DI":
+                import DictOptions
+                xDialog = DictOptions.DictOptions(self.ctx)
+                xDialog.run(self.sLang)
             elif sCmd == "DS":
                 import DictionarySwitcher
                 xDialog = DictionarySwitcher.FrenchDictionarySwitcher(self.ctx)
