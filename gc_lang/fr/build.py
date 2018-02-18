@@ -79,7 +79,7 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
     sExtensionName = dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
     spfZip = "_build/" + sExtensionName
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack, dVars['dic_filename']+".json")
+    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack)
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     dVars = _createOptionsForThunderbird(dVars)
@@ -110,14 +110,16 @@ def _createOptionsForThunderbird (dVars):
     return dVars
 
 
-def _copyGrammalecteJSPackageInZipFile (hZip, spLangPack, sDicName, sAddPath=""):
+def _copyGrammalecteJSPackageInZipFile (hZip, spLangPack, sAddPath=""):
     for sf in os.listdir("grammalecte-js"):
         if not os.path.isdir("grammalecte-js/"+sf):
             hZip.write("grammalecte-js/"+sf, sAddPath+"grammalecte-js/"+sf)
     for sf in os.listdir("grammalecte-js/graphspell"):
         if not os.path.isdir("grammalecte-js/graphspell/"+sf):
             hZip.write("grammalecte-js/graphspell/"+sf, sAddPath+"grammalecte-js/graphspell/"+sf)
-    hZip.write("grammalecte-js/graphspell/_dictionaries/"+sDicName, sAddPath+"grammalecte-js/graphspell/_dictionaries/"+sDicName)
+    for sf in os.listdir("grammalecte-js/graphspell/_dictionaries"):
+        if not os.path.isdir("grammalecte-js/graphspell/_dictionaries/"+sf):
+            hZip.write("grammalecte-js/graphspell/_dictionaries/"+sf, sAddPath+"grammalecte-js/graphspell/_dictionaries/"+sf)
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)

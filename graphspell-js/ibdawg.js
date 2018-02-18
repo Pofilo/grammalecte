@@ -122,7 +122,7 @@ class IBDAWG {
         if (!this.sHeader.startsWith("/pyfsa/")) {
             throw TypeError("# Error. Not a pyfsa binary dictionary. Header: " + this.sHeader);
         }
-        if (!(this.nCompressionMethod == "1" || this.nCompressionMethod == "2" || this.nCompressionMethod == "3")) {
+        if (!(this.nCompressionMethod == 1 || this.nCompressionMethod == 2 || this.nCompressionMethod == 3)) {
             throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
         }
         // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value

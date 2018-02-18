@@ -27,10 +27,10 @@ const dDefaultDictionaries = new Map([
 
 class SpellChecker {
 
-    constructor (sLangCode, sPath="", mainDic=null, extentedDic=null, personalDic=null) {
+    constructor (sLangCode, sPath="", mainDic="", extentedDic="", personalDic="") {
         // returns true if the main dictionary is loaded
         this.sLangCode = sLangCode;
-        if (mainDic === null) {
+        if (!mainDic) {
             mainDic = dDefaultDictionaries.gl_get(sLangCode, "");
         }
         this.oMainDic = this._loadDictionary(mainDic, sPath, true);
@@ -40,7 +40,7 @@ class SpellChecker {
 
     _loadDictionary (dictionary, sPath, bNecessary=false) {
         // returns an IBDAWG object
-        if (dictionary === null) {
+        if (!dictionary) {
             return null;
         }
         try {
@@ -159,5 +159,5 @@ class SpellChecker {
 }
 
 if (typeof(exports) !== 'undefined') {
-    exports.Spellchecker = Spellchecker;
+    exports.SpellChecker = SpellChecker;
 }
