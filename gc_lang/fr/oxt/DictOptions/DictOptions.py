@@ -143,7 +143,6 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
             traceback.print_exc()
 
     def _loadOptions (self):
-        print("load options")
         try:
             xChild = self.xSettingNode.getByName("o_fr")
             self.xGraphspell.State = xChild.getPropertyValue("graphspell")
