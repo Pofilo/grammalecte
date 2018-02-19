@@ -86,6 +86,7 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
     hZip.writestr("description.xml", helpers.fileFile("gc_core/py/oxt/description.xml", dVars))
     hZip.writestr("Linguistic.xcu", helpers.fileFile("gc_core/py/oxt/Linguistic.xcu", dVars))
     hZip.writestr("Grammalecte.py", helpers.fileFile("gc_core/py/oxt/Grammalecte.py", dVars))
+    hZip.writestr("pythonpath/helpers.py", helpers.fileFile("gc_core/py/oxt/helpers.py", dVars))
 
     for sf in dVars["extras"].split(","):
         hZip.writestr(sf.strip(), helpers.fileFile(spLang + '/' + sf.strip(), dVars))
