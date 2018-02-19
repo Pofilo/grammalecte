@@ -385,14 +385,10 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                 dOpt[w.Name] = w.State
                 for w in lWidget:
                     dOpt[w.Name] = w.State
-            # get extension path
-            xDefaultContext = self.ctx.ServiceManager.DefaultContext
-            xPackageInfoProvider = xDefaultContext.getValueByName("/singletons/com.sun.star.deployment.PackageInformationProvider")
-            sExtPath = xPackageInfoProvider.getPackageLocation("French.linguistic.resources.from.Dicollecte.by.OlivierR")
-            sExtPath = sExtPath[8:] + "/pythonpath/tf_options.py"  # remove "file:///"
-            sExtPath = os.path.abspath(sExtPath)
             # write file
+            sExtPath = helpers.getAbsolutePathOf("/pythonpath/tf_options.py")
             if os.path.isfile(sExtPath):
+                print(sExtPath)
                 hOpt = open(sExtPath, "w")
                 hOpt.write("dDefaultOpt = " + str(tf_options.dDefaultOpt) + "\n")
                 hOpt.write("dOpt = " + str(dOpt))
