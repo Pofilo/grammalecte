@@ -44,7 +44,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 200
-        self.xDialog.Height = 290
+        self.xDialog.Height = 255
         self.xDialog.Title = dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
@@ -84,26 +84,29 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         self._addWidget("personal_section", 'FixedLine', nX, nY3, nWidth, nHeight, Label = dUI.get("personal_section", "#err"), FontDescriptor = xFDTitle)
         self.xActivatePersonnal = self._addWidget('activate_personal', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = dUI.get('activate_personal', "#err"), State = True)
         self._addWidget('activate_personnal_descr', 'FixedText', nX, nY3+25, nWidth, nHeight*3, Label = dUI.get('activate_personal_descr', "#err"), MultiLine = True)
-        self._addWidget('import_personal', 'FixedText', nX, nY3+55, nWidth, nHeight, Label = dUI.get('import_personal', "#err"), FontDescriptor = xFDSubTitle)
-
+        self._addWidget('import_personal', 'FixedText', nX, nY3+55, nWidth-60, nHeight, Label = dUI.get('import_personal', "#err"), FontDescriptor = xFDSubTitle)
+        self.xMsg = self._addWidget('msg', 'FixedText', nX, nY3+65, nWidth-50, nHeight, Label = "[néant]")
+        self._addWidget('import_button', 'Button', self.xDialog.Width-50, nY3+65, 40, 10, Label = dUI.get('import_button', "#err"), TextColor = 0x005500)
         self._addWidget('create_dictionary', 'FixedText', nX, nY3+75, nWidth, nHeight*2, Label = dUI.get('create_dictionary', "#err"), MultiLine = True)
 
         # Button
-        self._addWidget('apply_button', 'Button', self.xDialog.Width-120, self.xDialog.Height-25, 50, 14, Label = dUI.get('apply_button', "#err"), TextColor = 0x00AA00)
-        self._addWidget('cancel_button', 'Button', self.xDialog.Width-10, self.xDialog.Height-25, 50, 14, Label = dUI.get('cancel_button', "#err"), TextColor = 0xAA0000)
+        self._addWidget('apply_button', 'Button', self.xDialog.Width-120, self.xDialog.Height-25, 50, 14, Label = dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
+        self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = dUI.get('cancel_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
         self.xContainer.setModel(self.xDialog)
         self.xContainer.getControl('apply_button').addActionListener(self)
         self.xContainer.getControl('apply_button').setActionCommand('Apply')
+        self.xContainer.getControl('import_button').addActionListener(self)
+        self.xContainer.getControl('import_button').setActionCommand('Import')
         self.xContainer.getControl('cancel_button').addActionListener(self)
         self.xContainer.getControl('cancel_button').setActionCommand('Cancel')
         self.xContainer.setVisible(False)
         toolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(toolkit, None)
         self.xContainer.execute()
-    
+
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
@@ -117,6 +120,22 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
                     #xSettings.replaceByName("Locations", xLocations)  # doesn't work, see line below
                     uno.invoke(xSettings, "replaceByName", ("Locations", uno.Any("[]string", (v1, v2))))
                     xSettings.commitChanges()
+            elif xActionEvent.ActionCommand == "Import":
+                #xFilePicker = uno.createUnoService("com.sun.star.ui.dialogs.FilePicker")
+                xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
+                xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+                #xFilePicker.setDisplayDirectory("")
+                #xFilePicker.setMultiSelectionMode(True)
+                nResult = xFilePicker.execute()
+                print(nResult)
+                if nResult == 1:
+                    print("two")
+                    lFile = xFilePicker.getSelectedFiles()
+                    print("one")
+                    lFile = xFilePicker.getFiles()
+                    print(lFile)
+            else:
+                pass
             self.xContainer.endExecute()
         except:
             traceback.print_exc()

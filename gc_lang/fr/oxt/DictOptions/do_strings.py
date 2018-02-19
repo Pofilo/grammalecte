@@ -9,14 +9,14 @@ dStrings = {
         
         "spelling_section": "Correcteur orthographique",
         "activate_main": "Activer le correcteur orthographique de Grammalecte",
-        "activate_main_descr": "Supplante le correcteur orthographique inclus dans LibreOffice (Hunspell)",
+        "activate_main_descr": "Supplante le correcteur orthographique inclus dans LibreOffice (Hunspell).",
 
         "personal_section": "Dictionnaire personnel",
         "activate_personal": "Utiliser",
         "activate_personal_descr": "Le dictionnaire personnel est une commodité pour ajouter le vocabulaire qui vous est utile. Il ne supplante pas le dictionnaire commun ; il ne fait qu’ajouter de nouveaux mots.",
         "import_personal": "Importer un dictionnaire personnel",
-        "import": "Importer",
-        "create_dictionary": "Vous pouvez créer un dictionnaire personnel avec l’extension Grammalecte pour Firefox ou Chrome",
+        "import_button": "Importer",
+        "create_dictionary": "Vous pouvez créer un dictionnaire personnel avec l’extension Grammalecte pour Firefox ou Chrome.",
 
         "suggestion_section": "Moteur de suggestion orthographique",
         "activate_spell_sugg": "Activer le moteur de suggestion de Grammalecte",
@@ -36,8 +36,8 @@ dStrings = {
         "activate_personal": "Use",
         "activate_personal_descr": "The personal dictionary is a commodity to add the vocabulary you want. It doesn’t override the common dictionary ; it only adds new words.",
         "import_personal": "Import a personal dictionary",
-        "import": "Import",
-        "create_dictionary": "You can create a personal dictionary with the Grammalecte addon for Firefox or Chrome",
+        "import_button": "Import",
+        "create_dictionary": "You can create a personal dictionary with the Grammalecte addon for Firefox or Chrome.",
 
         "suggestion_section": "Spell suggestion engine",
         "activate_spell_sugg": "Activate the suggestion engine of Grammalecte",
