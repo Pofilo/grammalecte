@@ -1,14 +1,16 @@
-# -*- coding: utf8 -*-
+# Helpers for LibreOffice extension
 
-import uno
+import os
 import traceback
 
+import uno
+
 from com.sun.star.beans import PropertyValue
-
-
-# XRay - API explorer
 from com.sun.star.uno import RuntimeException as _rtex
+
+
 def xray (myObject):
+    "XRay - API explorer"
     try:
         sm = uno.getComponentContext().ServiceManager
         mspf = sm.createInstanceWithContext("com.sun.star.script.provider.MasterScriptProviderFactory", uno.getComponentContext())
@@ -20,13 +22,13 @@ def xray (myObject):
         raise _rtex("\nBasic library Xray is not installed", uno.getComponentContext())
 
 
-# MRI - API Explorer
 def mri (ctx, xTarget):
+    "MRI - API Explorer"
     try:
         xMri = ctx.ServiceManager.createInstanceWithContext("mytools.Mri", ctx)
         xMri.inspect(xTarget)
     except:
-        raise _rtex("\Python extension MRI is not installed", uno.getComponentContext())
+        raise _rtex("\nPython extension MRI is not installed", uno.getComponentContext())
 
 
 def getConfigSetting (sNodeConfig, bUpdate):
@@ -60,3 +62,13 @@ def getWindowSize ():
     xWindowSize.Width = xWindowSize.Width * 0.666
     xWindowSize.Height = xWindowSize.Height * 0.666
     return xWindowSize
+
+
+def getAbsolutePathOf (sPath=""):
+    xDefaultContext = uno.getComponentContext().ServiceManager.DefaultContext
+    xPackageInfoProvider = xDefaultContext.getValueByName("/singletons/com.sun.star.deployment.PackageInformationProvider")
+    sFullPath = xPackageInfoProvider.getPackageLocation("French.linguistic.resources.from.Dicollecte.by.OlivierR")
+    if sPath and not sPath.startswith("/"):
+        sPath = "/" + sPath
+    sFullPath = sFullPath[8:] + sPath
+    return os.path.abspath(sFullPath)
