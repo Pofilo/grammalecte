@@ -388,7 +388,6 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             # write file
             sExtPath = helpers.getAbsolutePathOf("/pythonpath/tf_options.py")
             if os.path.isfile(sExtPath):
-                print(sExtPath)
                 hOpt = open(sExtPath, "w")
                 hOpt.write("dDefaultOpt = " + str(tf_options.dDefaultOpt) + "\n")
                 hOpt.write("dOpt = " + str(dOpt))
