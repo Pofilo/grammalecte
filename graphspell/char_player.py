@@ -2,21 +2,31 @@
 # useful for suggestion mechanism
 
 import re
+import unicodedata
 
 
-_xTransChars = str.maketrans({
+_xTransCharsForSpelling = str.maketrans({
+    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st'
+})
+
+def spellingNormalization (sWord):
+    return unicodedata.normalize("NFC", sWord.translate(_xTransCharsForSpelling))
+
+
+_xTransCharsForSimplification = str.maketrans({
     'à': 'a',  'é': 'e',  'î': 'i',  'ô': 'o',  'û': 'u',  'ÿ': 'i',  "y": "i",
     'â': 'a',  'è': 'e',  'ï': 'i',  'ö': 'o',  'ù': 'u',  'ŷ': 'i',
     'ä': 'a',  'ê': 'e',  'í': 'i',  'ó': 'o',  'ü': 'u',  'ý': 'i',
     'á': 'a',  'ë': 'e',  'ì': 'i',  'ò': 'o',  'ú': 'u',  'ỳ': 'i',
     'ā': 'a',  'ē': 'e',  'ī': 'i',  'ō': 'o',  'ū': 'u',  'ȳ': 'i',
     'ñ': 'n',  'k': 'q',  'w': 'v',
-    'œ': 'oe',  'æ': 'ae', 
+    'œ': 'oe',  'æ': 'ae',
+    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st', 
 })
 
 def simplifyWord (sWord):
     "word simplication before calculating distance between words"
-    sWord = sWord.lower().translate(_xTransChars)
+    sWord = sWord.lower().translate(_xTransCharsForSimplification)
     sNewWord = ""
     for i, c in enumerate(sWord, 1):
         if c != sWord[i:i+1]:

@@ -210,6 +210,7 @@ class IBDAWG {
 
     isValidToken (sToken) {
         // checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)
+        sToken = char_player.spellingNormalization(sToken)
         if (this.isValid(sToken)) {
             return true;
         }
@@ -280,6 +281,7 @@ class IBDAWG {
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
+        sWord = char_player.spellingNormalization(sWord)
         let l = this.morph(sWord);
         if (sWord[0].gl_isUpperCase()) {
             l.push(...this.morph(sWord.toLowerCase()));
@@ -292,6 +294,7 @@ class IBDAWG {
 
     suggest (sWord, nSuggLimit=10) {
         // returns a array of suggestions for <sWord>
+        sWord = char_player.spellingNormalization(sWord)
         let sPfx = "";
         let sSfx = "";
         [sPfx, sWord, sSfx] = char_player.cut(sWord);
