@@ -271,7 +271,7 @@ def makePhonetTable (sp, bJS=False):
     import gc_lang.fr.modules.conj as conj
 
     try:
-        oDict = ibdawg.IBDAWG("French.bdic")
+        oDict = ibdawg.IBDAWG("fr.bdic")
     except:
         traceback.print_exc()
         return

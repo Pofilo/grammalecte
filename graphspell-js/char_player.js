@@ -6,7 +6,19 @@ ${map}
 
 var char_player = {
 
-    _dTransChars: new Map([
+    _xTransCharsForSpelling: new Map([
+        ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st']
+    ]),
+
+    spellingNormalization: function (sWord) {
+        let sNewWord = "";
+        for (let c of sWord) {
+            sNewWord += this._xTransCharsForSpelling.gl_get(c, c);
+        }
+        return sNewWord.normalize("NFC");
+    },
+
+    _xTransCharsForSimplification: new Map([
         ['à', 'a'],  ['é', 'e'],  ['î', 'i'],  ['ô', 'o'],  ['û', 'u'],  ['ÿ', 'i'],  ['y', 'i'],
         ['â', 'a'],  ['è', 'e'],  ['ï', 'i'],  ['ö', 'o'],  ['ù', 'u'],  ['ŷ', 'i'],
         ['ä', 'a'],  ['ê', 'e'],  ['í', 'i'],  ['ó', 'o'],  ['ü', 'u'],  ['ý', 'i'],
@@ -14,6 +26,7 @@ var char_player = {
         ['ā', 'a'],  ['ē', 'e'],  ['ī', 'i'],  ['ō', 'o'],  ['ū', 'u'],  ['ȳ', 'i'],
         ['ñ', 'n'],  ['k', 'q'],  ['w', 'v'],
         ['œ', 'oe'], ['æ', 'ae'], 
+        ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st']
     ]),
 
     simplifyWord: function (sWord) {
@@ -22,9 +35,9 @@ var char_player = {
         let sNewWord = "";
         let i = 1;
         for (let c of sWord) {
-            let cNew = this._dTransChars.gl_get(c, c);
+            let cNew = this._xTransCharsForSimplification.gl_get(c, c);
             let cNext = sWord.slice(i, i+1)
-            if (cNew != this._dTransChars.gl_get(cNext, cNext)) {
+            if (cNew != this._xTransCharsForSimplification.gl_get(cNext, cNext)) {
                 sNewWord += cNew;
             }
             i++;

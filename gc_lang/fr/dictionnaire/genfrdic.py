@@ -817,7 +817,7 @@ class Entree:
         sErr = ''
         if self.lemma == '':
             sErr += 'lemme vide'
-        if not re.match(r"[a-zA-ZéÉôÔàâÂîÎïèÈêÊÜœŒæÆçÇ0-9µåÅΩ&αβγδεζηθικλμνξοπρστυφχψωΔℓΩ_]", self.lemma):
+        if not re.match(r"[a-zA-ZéÉôÔàâáÂîÎïèÈêÊÜœŒæÆçÇ0-9µåÅΩ&αβγδεζηθικλμνξοπρστυφχψωΔℓΩ_]", self.lemma):
             sErr += 'premier caractère inconnu: ' + self.lemma[0]
         if re.search(r"\s$", self.lemma):
             sErr += 'espace en fin de lemme'
