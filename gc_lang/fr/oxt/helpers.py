@@ -31,7 +31,7 @@ def mri (ctx, xTarget):
         raise _rtex("\nPython extension MRI is not installed", uno.getComponentContext())
 
 
-def getConfigSetting (sNodeConfig, bUpdate):
+def getConfigSetting (sNodeConfig, bUpdate=False):
     "get a configuration node"
     # example: xNode = getConfigSetting("/org.openoffice.Office.Common/Path/Current", False)
     xSvMgr = uno.getComponentContext().ServiceManager

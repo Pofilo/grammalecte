@@ -16,11 +16,25 @@
             </info>
             ${xcs_options}
         </group>
+
+        <group oor:name="o_${lang}">
+            <info>
+                <desc>The data for one leaf.</desc>
+            </info>
+            <prop oor:name="graphspell" oor:type="xs:int"><value>1</value></prop>
+            <prop oor:name="graphspellsugg" oor:type="xs:int"><value>1</value></prop>
+            <prop oor:name="extended_dic" oor:type="xs:int"><value>0</value></prop>
+            <prop oor:name="personal_dic" oor:type="xs:int"><value>1</value></prop>
+        </group>
     </templates>
 
     <component>
         <group oor:name="Leaves">
             <node-ref oor:name="${lang}" oor:node-type="${lang}" />
+        </group>
+
+        <group oor:name="Other">
+            <node-ref oor:name="o_${lang}" oor:node-type="o_${lang}" />
         </group>
     </component>
 

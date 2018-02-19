@@ -5,6 +5,7 @@
 import unohelper
 import uno
 import traceback
+import time
 
 import helpers
 import do_strings
@@ -37,10 +38,8 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
     def run (self, sLang):
         dUI = do_strings.getUI(sLang)
 
-        # what is the current dictionary
-        xSettings = helpers.getConfigSetting("/org.openoffice.Office.Linguistic/ServiceManager/Dictionaries/HunSpellDic_fr", False)
-        xLocations = xSettings.getByName("Locations")
-        
+        self.xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", True)
+
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 200
@@ -72,17 +71,17 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
 
         # Spell checker section
         self._addWidget("spelling_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = dUI.get("spelling_section", "#err"), FontDescriptor = xFDTitle)
-        self.xActivateMain = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = dUI.get('activate_main', "#err"), State = True)
+        self.xGraphspell = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = dUI.get('activate_main', "#err"))
         self._addWidget('activate_main_descr', 'FixedText', nX, nY1+25, nWidth, nHeight*2, Label = dUI.get('activate_main_descr', "#err"), MultiLine = True)
 
         # Spell suggestion engine section
         self._addWidget("suggestion_section", 'FixedLine', nX, nY2, nWidth, nHeight, Label = dUI.get("suggestion_section", "#err"), FontDescriptor = xFDTitle)
-        self.xActivateSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = dUI.get('activate_spell_sugg', "#err"), State = True)
+        self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = dUI.get('activate_spell_sugg', "#err"))
         self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY2+25, nWidth, nHeight*4, Label = dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
 
         # Personal dictionary section
         self._addWidget("personal_section", 'FixedLine', nX, nY3, nWidth, nHeight, Label = dUI.get("personal_section", "#err"), FontDescriptor = xFDTitle)
-        self.xActivatePersonnal = self._addWidget('activate_personal', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = dUI.get('activate_personal', "#err"), State = True)
+        self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = dUI.get('activate_personal', "#err"))
         self._addWidget('activate_personnal_descr', 'FixedText', nX, nY3+25, nWidth, nHeight*3, Label = dUI.get('activate_personal_descr', "#err"), MultiLine = True)
         self._addWidget('import_personal', 'FixedText', nX, nY3+55, nWidth-60, nHeight, Label = dUI.get('import_personal', "#err"), FontDescriptor = xFDSubTitle)
         self.xMsg = self._addWidget('msg', 'FixedText', nX, nY3+65, nWidth-50, nHeight, Label = "[néant]")
@@ -92,6 +91,8 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         # Button
         self._addWidget('apply_button', 'Button', self.xDialog.Width-120, self.xDialog.Height-25, 50, 14, Label = dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
         self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = dUI.get('cancel_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+
+        self._loadOptions()
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -110,30 +111,23 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
+            xChild = self.xSettingNode.getByName("o_fr")
             if xActionEvent.ActionCommand == 'Apply':
-                if False:
-                    # Modify the registry
-                    xSettings = helpers.getConfigSetting("/org.openoffice.Office.Linguistic/ServiceManager/Dictionaries/HunSpellDic_fr", True)
-                    xLocations = xSettings.getByName("Locations")
-                    v1 = xLocations[0].replace(self.sCurrentDic, self.sSelectedDic)
-                    v2 = xLocations[1].replace(self.sCurrentDic, self.sSelectedDic)
-                    #xSettings.replaceByName("Locations", xLocations)  # doesn't work, see line below
-                    uno.invoke(xSettings, "replaceByName", ("Locations", uno.Any("[]string", (v1, v2))))
-                    xSettings.commitChanges()
+                xChild.setPropertyValue("graphspell", self.xGraphspell.State)
+                xChild.setPropertyValue("graphspellsugg", self.xGraphspellSugg.State)
+                #xChild.setPropertyValue("extended_dic", self.xExtendedDic.State)
+                xChild.setPropertyValue("personal_dic", self.xPersonalDic.State)
+                self.xSettingNode.commitChanges()
             elif xActionEvent.ActionCommand == "Import":
-                #xFilePicker = uno.createUnoService("com.sun.star.ui.dialogs.FilePicker")
                 xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
                 xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
                 #xFilePicker.setDisplayDirectory("")
                 #xFilePicker.setMultiSelectionMode(True)
                 nResult = xFilePicker.execute()
-                print(nResult)
                 if nResult == 1:
-                    print("two")
-                    lFile = xFilePicker.getSelectedFiles()
-                    print("one")
-                    lFile = xFilePicker.getFiles()
-                    print(lFile)
+                    pass
+                    #lFile = xFilePicker.getSelectedFiles()
+                    #lFile = xFilePicker.getFiles()
             else:
                 pass
             self.xContainer.endExecute()
@@ -145,6 +139,17 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         try:
             dialog = DictOptions(self.ctx)
             dialog.run()
+        except:
+            traceback.print_exc()
+
+    def _loadOptions (self):
+        print("load options")
+        try:
+            xChild = self.xSettingNode.getByName("o_fr")
+            self.xGraphspell.State = xChild.getPropertyValue("graphspell")
+            self.xGraphspellSugg.State = xChild.getPropertyValue("graphspellsugg")
+            #self.xExtendedDic.State = xChild.getPropertyValue("extended_dic")
+            self.xPersonalDic.State = xChild.getPropertyValue("personal_dic")
         except:
             traceback.print_exc()
 
