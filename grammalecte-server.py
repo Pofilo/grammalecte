@@ -10,11 +10,8 @@ import time
 
 from bottle import Bottle, run, request, response, template, static_file
 
-import grammalecte.fr as gce
-import grammalecte.fr.lexicographe as lxg
-import grammalecte.fr.textformatter as tf
+import grammalecte
 import grammalecte.text as txt
-import grammalecte.graphspell.tokenizer as tkz
 from grammalecte.graphspell.echo import echo
 
 
@@ -129,21 +126,15 @@ def genUserId ():
         i += 1
 
 
-def parseParagraph (iParagraph, sText, oTokenizer, oSpellChecker, dOptions, bDebug=False, bEmptyIfNoErrors=False):
-    aGrammErrs = gce.parse(sText, "FR", bDebug, dOptions)
-    aGrammErrs = list(aGrammErrs)
-    aSpellErrs = []
-    for dToken in oTokenizer.genTokens(sText):
-        if dToken['sType'] == "WORD" and not oSpellChecker.isValidToken(dToken['sValue']):
-            aSpellErrs.append(dToken)
-    if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
-        return ""
-    return "  " + json.dumps({ "iParagraph": iParagraph, "lGrammarErrors": aGrammErrs, "lSpellingErrors": aSpellErrs }, ensure_ascii=False)
-    
-
 if __name__ == '__main__':
 
-    gce.load("Server")
+    # initialisation
+    oGrammarChecker = grammalecte.GrammarChecker("fr", "Server")
+    oSpellChecker = oGrammarChecker.getSpellChecker()
+    oLexicographer = oGrammarChecker.getLexicographer()
+    oTextFormatter = oGrammarChecker.getTextFormatter()
+    gce = oGrammarChecker.getGCEngine()
+
     echo("Grammalecte v{}".format(gce.version))
     dServerOptions = getServerOptions()
     dGCOptions = getConfigOptions("fr")
@@ -151,9 +142,6 @@ if __name__ == '__main__':
         gce.setOptions(dGCOptions)
     dServerGCOptions = gce.getOptions()
     echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dServerGCOptions.items()) ]))
-    oSpellChecker = gce.getSpellChecker()
-    oTokenizer = tkz.Tokenizer("fr")
-    oTF = tf.TextFormatter()
     dUser = {}
     userGenerator = genUserId()
 
@@ -180,7 +168,6 @@ if __name__ == '__main__':
         #if len(lang) != 2 or lang != "fr":
         #    abort(404, "No grammar checker available for lang “" + str(lang) + "”")
         bComma = False
-        bTF = bool(request.forms.tf)
         dOptions = None
         sError = ""
         if request.cookies.user_id:
@@ -197,9 +184,9 @@ if __name__ == '__main__':
                 sError = "request options not used"
         sJSON = '{ "program": "grammalecte-fr", "version": "'+gce.version+'", "lang": "'+gce.lang+'", "error": "'+sError+'", "data" : [\n'
         for i, sText in enumerate(txt.getParagraph(request.forms.text), 1):
-            if bTF:
-                sText = oTF.formatText(sText)
-            sText = parseParagraph(i, sText, oTokenizer, oSpellChecker, dOptions, bEmptyIfNoErrors=True)
+            if bool(request.forms.tf):
+                sText = oTextFormatter.formatText(sText)
+            sText = oGrammarChecker.generateParagraphAsJSON(i, sText, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bool(request.forms.tf))
             if sText:
                 if bComma:
                     sJSON += ",\n"
@@ -231,7 +218,7 @@ if __name__ == '__main__':
 
     @app.route("/format_text/fr", method="POST")
     def formatText ():
-        return oTF.formatText(request.forms.text)
+        return oTextFormatter.formatText(request.forms.text)
 
     #@app.route('/static/<filepath:path>')
     #def server_static (filepath):
