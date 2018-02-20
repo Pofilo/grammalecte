@@ -42,9 +42,9 @@ class GrammarChecker:
     def displayGCOptions (self):
         self.gce.displayOptions()
 
-    def getParagraphErrors (self, sText, bContext=False, bSpellSugg=False, bDebug=False):
+    def getParagraphErrors (self, sText, dOptions=None, bContext=False, bSpellSugg=False, bDebug=False):
         "returns a tuple: (grammar errors, spelling errors)"
-        aGrammErrs = self.gce.parse(sText, "FR", bDebug=bDebug, bContext=bContext)
+        aGrammErrs = self.gce.parse(sText, "FR", bDebug=bDebug, dOptions=dOptions, bContext=bContext)
         aSpellErrs = self.oSpellChecker.parseParagraph(sText, bSpellSugg)
         return aGrammErrs, aSpellErrs
 
@@ -54,14 +54,14 @@ class GrammarChecker:
     def generateTextAsJSON (self, sText, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, bDebug=False):
         pass
 
-    def generateParagraph (self, sText, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
-        aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, False, bSpellSugg, bDebug)
+    def generateParagraph (self, sText, dOptions=None, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
+        aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, dOptions, False, bSpellSugg, bDebug)
         if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
             return ""
         return text.generateParagraph(sText, aGrammErrs, aSpellErrs, nWidth)
 
-    def generateParagraphAsJSON (self, iIndex, sText, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, lLineSet=None, bDebug=False):
-        aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, bContext, bSpellSugg, bDebug)
+    def generateParagraphAsJSON (self, iIndex, sText, dOptions=None, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, lLineSet=None, bDebug=False):
+        aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, dOptions, bContext, bSpellSugg, bDebug)
         aGrammErrs = list(aGrammErrs)
         if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
             return ""
