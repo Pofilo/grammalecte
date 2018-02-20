@@ -204,7 +204,7 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
-        let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oSpellChecker);
+        let aSpellErr = oSpellChecker.parseParagraph(sParagraph);
         postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, iParaNum: i, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
         i += 1;
     }
@@ -214,7 +214,7 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
 function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) {
     sParagraph = sParagraph.replace(/­/g, "").normalize("NFC");
     let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
-    let aSpellErr = oTokenizer.getSpellingErrors(sParagraph, oSpellChecker);
+    let aSpellErr = oSpellChecker.parseParagraph(sParagraph);
     postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
 }
 

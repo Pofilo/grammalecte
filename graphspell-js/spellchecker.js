@@ -13,6 +13,7 @@
 
 if (typeof(require) !== 'undefined') {
     var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
+    var tokenizer = require("resource://grammalecte/graphspell/tokenizer.js");
 }
 
 
@@ -36,6 +37,7 @@ class SpellChecker {
         this.oMainDic = this._loadDictionary(mainDic, sPath, true);
         this.oExtendedDic = this._loadDictionary(extentedDic, sPath);
         this.oPersonalDic = this._loadDictionary(personalDic, sPath);
+        this.oTokenizer = null;
     }
 
     _loadDictionary (dictionary, sPath, bNecessary=false) {
@@ -44,7 +46,7 @@ class SpellChecker {
             return null;
         }
         try {
-            if (typeof(require) !== 'undefined') {
+            if (typeof(ibdawg) !== 'undefined') {
                 return new ibdawg.IBDAWG(dictionary);  // dictionary can be a filename or a JSON object
             } else {
                 return new IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
@@ -58,6 +60,14 @@ class SpellChecker {
             console.log("Error: <" + sfDictionary + "> not loaded.")
             console.log(e.message);
             return null;
+        }
+    }
+
+    loadTokenizer () {
+        if (typeof(tokenizer) !== 'undefined') {
+            this.oTokenizer = new tokenizer.Tokenizer(this.sLangCode);
+        } else {
+            this.oTokenizer = new Tokenizer(this.sLangCode);
         }
     }
 
@@ -77,6 +87,21 @@ class SpellChecker {
         // returns true if the dictionary is loaded
         this.oPersonalDic = this._loadDictionary(dictionary);
         return Boolean(this.oPersonalDic);
+    }
+
+    // parse text functions
+
+    parseParagraph (sText) {
+        if (!this.oTokenizer) {
+            this.loadTokenizer();
+        }
+        let aSpellErr = [];
+        for (let oToken of this.oTokenizer.genTokens(sText)) {
+            if (oToken.sType === 'WORD' && !this.isValidToken(oToken.sValue)) {
+                aSpellErr.push(oToken);
+            }
+        }
+        return aSpellErr;
     }
 
     // IBDAWG functions

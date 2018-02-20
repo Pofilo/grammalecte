@@ -87,16 +87,6 @@ class Tokenizer {
             sText = sText.slice(nCut);
         }
     }
-
-    getSpellingErrors (sText, oSpellChecker) {
-        let aSpellErr = [];
-        for (let oToken of this.genTokens(sText)) {
-            if (oToken.sType === 'WORD' && !oSpellChecker.isValidToken(oToken.sValue)) {
-                aSpellErr.push(oToken);
-            }
-        }
-        return aSpellErr;
-    }
 }
 
 
