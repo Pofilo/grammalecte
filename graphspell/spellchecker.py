@@ -78,6 +78,22 @@ class SpellChecker ():
                 aSpellErrs.append(dToken)
         return aSpellErrs
 
+    def countWordsOccurrences (self, sText, bByLemma=False, bOnlyUnknownWords=False, dWord={}):
+        if not self.oTokenizer:
+            self.loadTokenizer()
+        for dToken in self.oTokenizer.genTokens(sText):
+            if dToken['sType'] == "WORD":
+                if bOnlyUnknownWords:
+                    if not self.isValidToken(dToken['sValue']):
+                        dWord[dToken['sValue']] = dWord.get(dToken['sValue'], 0) + 1
+                else:
+                    if not bByLemma:
+                        dWord[dToken['sValue']] = dWord.get(dToken['sValue'], 0) + 1
+                    else:
+                        for sLemma in self.getLemma(dToken['sValue']):
+                            dWord[sLemma] = dWord.get(sLemma, 0) + 1
+        return dWord
+
     # IBDAWG functions
 
     def isValidToken (self, sToken):
@@ -118,6 +134,9 @@ class SpellChecker ():
         if self.oPersonalDic:
             lResult.extend(self.oPersonalDic.getMorph(sWord))
         return lResult
+
+    def getLemma (self, sWord):
+        return set([ s[1:s.find(" ")]  for s in self.getMorph(sWord) ])
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
