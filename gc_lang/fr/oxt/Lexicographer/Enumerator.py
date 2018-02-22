@@ -5,7 +5,6 @@
 import unohelper
 import uno
 import traceback
-import time
 
 import helpers
 import enum_strings
@@ -58,13 +57,13 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         return xGridModel
 
     def run (self, sLang):
-        dUI = enum_strings.getUI(sLang)
+        self.dUI = enum_strings.getUI(sLang)
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 240
         self.xDialog.Height = 280
-        self.xDialog.Title = dUI.get('title', "#title#")
+        self.xDialog.Title = self.dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -82,33 +81,33 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
 
         # widget
         nX = 10
-        nY1 = 10
+        nY1 = 5
         nY2 = nY1 + 225
 
         nWidth = self.xDialog.Width - 20
         nHeight = 10
 
         # List
-        self._addWidget("list_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = dUI.get("list_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('count_button', 'Button', nX, nY1+12, 70, 10, Label = dUI.get('count_button', "#err"))
-        self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 10, Label = dUI.get('count2_button', "#err"))
-        self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 10, Label = dUI.get('unknown_button', "#err"))
+        self._addWidget("list_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = self.dUI.get("list_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget('count_button', 'Button', nX, nY1+12, 70, 10, Label = self.dUI.get('count_button', "#err"))
+        self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 10, Label = self.dUI.get('count2_button', "#err"))
+        self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 10, Label = self.dUI.get('unknown_button', "#err"))
         self.xGridModel = self._addGrid("list_grid", nX, nY1+25, nWidth, 180, [
-            {"Title": "Mot", "ColumnWidth": 180},
-            {"Title": "Occur.", "ColumnWidth": 40}
+            {"Title": self.dUI.get("words", "#err"), "ColumnWidth": 175},
+            {"Title": "Occurrences", "ColumnWidth": 45}
         ])
-        self._addWidget('num_of_words', 'FixedText', nX, nY1+210, 60, nHeight, Label = dUI.get('num_of_words', "#err"), Align = 2)
-        self.xNumWord = self._addWidget('num_of_words_res', 'FixedText', nX+65, nY1+210, 30, nHeight, Label = "—")
-        self._addWidget('tot_of_words', 'FixedText', nX+100, nY1+210, 60, nHeight, Label = dUI.get('tot_of_words', "#err"), Align = 2)
-        self.xTotWord = self._addWidget('total_words_res', 'FixedText', nX+165, nY1+210, 30, nHeight, Label = "—")
+        self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 60, nHeight, Label = self.dUI.get('num_of_entries', "#err"), Align = 2)
+        self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+65, nY1+210, 30, nHeight, Label = "—")
+        self._addWidget('tot_of_entries', 'FixedText', nX+100, nY1+210, 60, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
+        self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+165, nY1+210, 30, nHeight, Label = "—")
         
         # Tag
-        self._addWidget("tag_section", 'FixedLine', nX, nY2, nWidth, nHeight, Label = dUI.get("tag_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("tag_section", 'FixedLine', nX, nY2, nWidth, nHeight, Label = self.dUI.get("tag_section", "#err"), FontDescriptor = xFDTitle)
 
-        self._addWidget('tag_button', 'Button', nX, self.xDialog.Height-25, 50, 14, Label = dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x000000)
+        self._addWidget('tag_button', 'Button', nX, self.xDialog.Height-25, 50, 14, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x000000)
 
         # Close
-        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -133,10 +132,13 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == "Count":
+                self.setTitleOfFirstColumn(self.dUI.get("words", "#err"))
                 self.count()
             elif xActionEvent.ActionCommand == "CountByLemma":
+                self.setTitleOfFirstColumn(self.dUI.get("lemmas", "#err"))
                 self.count(bByLemma=True)
             elif xActionEvent.ActionCommand == "UnknownWords":
+                self.setTitleOfFirstColumn(self.dUI.get("unknown_words", "#err"))
                 self.count(bOnlyUnknownWords=True)
             elif xActionEvent.ActionCommand == "Tag":
                 pass
@@ -157,6 +159,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
     def getParagraphsOfText (self):
         "generator: returns full document text paragraph by paragraph"
         xCursor = self.xDocument.Text.createTextCursor()
+        #helpers.xray(xCursor)
         xCursor.gotoStart(False)
         xCursor.gotoEndOfParagraph(True)
         yield xCursor.getString()
@@ -187,13 +190,18 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             i += 1
             nTotOccur += w
         self.xNumWord.Label = str(i)
-        self.xTotWord.Label = str(nTotOccur)
+        self.xTotWord.Label = nTotOccur
         # end of processing
         xPointer.setType(uno.getConstantByName("com.sun.star.awt.SystemPointer.ARROW"))
         xWindowPeer.setPointer(xPointer)
         for x in xWindowPeer.Windows:
             x.setPointer(xPointer)
         self.xContainer.setVisible(True) # seems necessary to refresh the dialog box and text widgets (why?)
+
+    def setTitleOfFirstColumn (self, sTitle):
+        xColumnModel = self.xGridModel.ColumnModel
+        xColumn = xColumnModel.getColumn(0)
+        xColumn.Title = sTitle
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()

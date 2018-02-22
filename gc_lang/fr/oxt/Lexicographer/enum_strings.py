@@ -11,8 +11,12 @@ dStrings = {
         "count_button": "Compter tout",
         "count2_button": "Compter par lemme",
         "unknown_button": "Mots inconnus",
-        "num_of_words": "Nombre de mots :",
-        "tot_of_words": "Total des mots :",
+        "num_of_entries": "Nombre d’entrées :",
+        "tot_of_entries": "Total des entrées :",
+
+        "words": "Mots",
+        "lemmas": "Lemmes",
+        "unknown_words": "Mots inconnus",
 
         "tag_section": "Formatage",
         "tag": "Taguer",
@@ -26,8 +30,12 @@ dStrings = {
         "count_button": "Count all",
         "count2_button": "Count by lemma",
         "unknown_button": "Unknown words",
-        "num_of_words": "Number of words:",
-        "tot_of_words": "Total of words:",
+        "num_of_entries": "Number of entries:",
+        "tot_of_entries": "Total of words:",
+
+        "words": "Words",
+        "lemmas": "Lemmas",
+        "unknown_words": "Unknown words",
 
         "tag_section": "Format",
         "tag": "Tag",
