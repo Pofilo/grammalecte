@@ -296,7 +296,8 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                     elif sAction == "accentuation":
                         xCursor.CharStyleName = "Emphasis"
                     elif sAction == "noaccentuation":
-                        xCursor.CharStyleName = ""
+                        #xCursor.CharStyleName = "Default Style"     # doesn’t work
+                        xCursor.setPropertyToDefault("CharStyleName")
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
