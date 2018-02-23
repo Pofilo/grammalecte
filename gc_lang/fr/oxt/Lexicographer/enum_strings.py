@@ -18,8 +18,13 @@ dStrings = {
         "lemmas": "Lemmes",
         "unknown_words": "Mots inconnus",
 
-        "tag_section": "Formatage",
-        "tag": "Taguer",
+        "dformat_section": "Formatage direct",
+        "charstyle_section": "Style de caractères",
+        "underline": "Surligner",
+        "nounderline": "Effacer",
+        "accentuation": "Accentuation",
+        "noaccentuation": "Aucun",
+        "tag_button": "Taguer",
 
         "close_button": "Fermer",
     },
@@ -37,8 +42,13 @@ dStrings = {
         "lemmas": "Lemmas",
         "unknown_words": "Unknown words",
 
-        "tag_section": "Format",
-        "tag": "Tag",
+        "dformat_section": "Direct format",
+        "charstyle_section": "Character style",
+        "underline": "Underline",
+        "nounderline": "Erase",
+        "accentuation": "Accentuation",
+        "noaccentuation": "None",
+        "tag_button": "Tag",
 
         "close_button": "Close",
     },

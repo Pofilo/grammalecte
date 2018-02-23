@@ -15,6 +15,37 @@ from com.sun.star.awt import XActionListener
 from com.sun.star.beans import PropertyValue
 
 
+def hexToRBG (sHexa):
+    r = int(sHexa[:2], 16)
+    g = int(sHexa[2:4], 16)
+    b = int(sHexa[4:], 16)
+    return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
+
+
+def _waitPointer (funcDecorated):
+    def wrapper (*args, **kwargs):
+        # self is the first parameter if the decorator is applied on a object
+        self = args[0]
+        # before
+        xPointer = self.xSvMgr.createInstanceWithContext("com.sun.star.awt.Pointer", self.ctx)
+        xPointer.setType(uno.getConstantByName("com.sun.star.awt.SystemPointer.WAIT"))
+        xWindowPeer = self.xContainer.getPeer()
+        xWindowPeer.setPointer(xPointer)
+        for x in xWindowPeer.Windows:
+            x.setPointer(xPointer)
+        # processing
+        result = funcDecorated(*args, **kwargs)
+        # after
+        xPointer.setType(uno.getConstantByName("com.sun.star.awt.SystemPointer.ARROW"))
+        xWindowPeer.setPointer(xPointer)
+        for x in xWindowPeer.Windows:
+            x.setPointer(xPointer)
+        self.xContainer.setVisible(True) # seems necessary to refresh the dialog box and text widgets (why?)
+        # return
+        return result
+    return wrapper
+
+
 class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
 
     def __init__ (self, ctx):
@@ -25,7 +56,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer = None
         self.xDialog = None
         self.oSpellChecker = None
-        
+
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
         xWidget.Name = name
@@ -102,9 +133,20 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+165, nY1+210, 30, nHeight, Label = "—")
         
         # Tag
-        self._addWidget("tag_section", 'FixedLine', nX, nY2, nWidth, nHeight, Label = self.dUI.get("tag_section", "#err"), FontDescriptor = xFDTitle)
+        # Note: the only way to group RadioButtons is to create them successively
+        self._addWidget("dformat_section", 'FixedLine', nX, nY2, 90, nHeight, Label = self.dUI.get("dformat_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("charstyle_section", 'FixedLine', nX+100, nY2, 90, nHeight, Label = self.dUI.get("charstyle_section", "#err"), FontDescriptor = xFDTitle)
+        self.xUnderline = self._addWidget('underline', 'RadioButton', nX, nY2+12, 40, nHeight, Label = self.dUI.get('underline', "#err"))
+        self.xNoUnderline = self._addWidget('nounderline', 'RadioButton', nX+50, nY2+12, 40, nHeight, Label = self.dUI.get('nounderline', "#err"))
+        self.xAccent = self._addWidget('accentuation', 'RadioButton', nX+100, nY2+12, 50, nHeight, Label = self.dUI.get('accentuation', "#err"))
+        self.xNoAccent = self._addWidget('noaccentuation', 'RadioButton', nX+155, nY2+12, 40, nHeight, Label = self.dUI.get('noaccentuation', "#err"))
 
-        self._addWidget('tag_button', 'Button', nX, self.xDialog.Height-25, 50, 14, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x000000)
+        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
+        
+        # Progress bar
+        self.xProgressBar = self._addWidget('progress_bar', 'ProgressBar', nX, self.xDialog.Height-25, 160, 14)
+        self.xProgressBar.ProgressValueMin = 0
+        self.xProgressBar.ProgressValueMax = 1 # to calculate
 
         # Close
         self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
@@ -112,7 +154,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
         self.xContainer.setModel(self.xDialog)
-        
+        self.xGridControl = self.xContainer.getControl('list_grid')
         self.xContainer.getControl('count_button').addActionListener(self)
         self.xContainer.getControl('count_button').setActionCommand('Count')
         self.xContainer.getControl('count2_button').addActionListener(self)
@@ -124,24 +166,39 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
         self.xContainer.setVisible(False)
-        toolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
-        self.xContainer.createPeer(toolkit, None)
+        xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
+        self.xContainer.createPeer(xToolkit, None)
         self.xContainer.execute()
 
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == "Count":
-                self.setTitleOfFirstColumn(self.dUI.get("words", "#err"))
-                self.count()
+                self.count(self.dUI.get("words", "#err"))
+                self.xTag.Enabled = True
             elif xActionEvent.ActionCommand == "CountByLemma":
-                self.setTitleOfFirstColumn(self.dUI.get("lemmas", "#err"))
-                self.count(bByLemma=True)
+                self.count(self.dUI.get("lemmas", "#err"), bByLemma=True)
+                self.xTag.Enabled = False
             elif xActionEvent.ActionCommand == "UnknownWords":
-                self.setTitleOfFirstColumn(self.dUI.get("unknown_words", "#err"))
-                self.count(bOnlyUnknownWords=True)
+                self.count(self.dUI.get("unknown_words", "#err"), bOnlyUnknownWords=True)
+                self.xTag.Enabled = True
             elif xActionEvent.ActionCommand == "Tag":
-                pass
+                nRow = self.xGridControl.getCurrentRow()
+                if nRow == -1:
+                    return
+                sWord = self.xGridModel.GridDataModel.getCellData(0, nRow)
+                if not sWord:
+                    return
+                sAction = ""
+                if self.xUnderline.State:
+                    sAction = "underline"
+                elif self.xNoUnderline.State:
+                    sAction = "nounderline"
+                elif self.xAccent.State:
+                    sAction = "accentuation"
+                elif self.xNoAccent.State:
+                    sAction = "noaccentuation"
+                self.tagText(sWord, sAction)
             elif xActionEvent.ActionCommand == "Close":
                 self.xContainer.endExecute()
         except:
@@ -156,10 +213,14 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             traceback.print_exc()
 
     # Code
-    def getParagraphsOfText (self):
+    def _setTitleOfFirstColumn (self, sTitle):
+        xColumnModel = self.xGridModel.ColumnModel
+        xColumn = xColumnModel.getColumn(0)
+        xColumn.Title = sTitle
+
+    def _getParagraphsFromText (self):
         "generator: returns full document text paragraph by paragraph"
         xCursor = self.xDocument.Text.createTextCursor()
-        #helpers.xray(xCursor)
         xCursor.gotoStart(False)
         xCursor.gotoEndOfParagraph(True)
         yield xCursor.getString()
@@ -167,41 +228,75 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             xCursor.gotoEndOfParagraph(True)
             yield xCursor.getString()
 
-    def count (self, bByLemma=False, bOnlyUnknownWords=False):
-        # change pointer
-        xPointer = self.xSvMgr.createInstanceWithContext("com.sun.star.awt.Pointer", self.ctx)
-        xPointer.setType(uno.getConstantByName("com.sun.star.awt.SystemPointer.WAIT"))
-        xWindowPeer = self.xContainer.getPeer()
-        xWindowPeer.setPointer(xPointer)
-        for x in xWindowPeer.Windows:
-            x.setPointer(xPointer)
-        # processing
+    def _countParagraph (self):
+        i = 1
+        xCursor = self.xDocument.Text.createTextCursor()
+        xCursor.gotoStart(False)
+        while xCursor.gotoNextParagraph(False):
+            i += 1
+        return i
+
+    @_waitPointer
+    def count (self, sTitle, bByLemma=False, bOnlyUnknownWords=False):
         if not self.oSpellChecker:
             self.oSpellChecker = sc.SpellChecker("fr")
+        self._setTitleOfFirstColumn(sTitle)
+        self.xProgressBar.ProgressValueMax = self._countParagraph() * 2
+        self.xProgressBar.ProgressValue = 0
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.removeAllRows()
         dWord = {}
-        for sParagraph in self.getParagraphsOfText():
+        for sParagraph in self._getParagraphsFromText():
             dWord = self.oSpellChecker.countWordsOccurrences(sParagraph, bByLemma, bOnlyUnknownWords, dWord)
+            self.xProgressBar.ProgressValue += 1
+        self.xProgressBar.ProgressValueMax += len(dWord)
         i = 0
         nTotOccur = 0
         for k, w in sorted(dWord.items(), key=lambda t: t[1], reverse=True):
             xGridDataModel.addRow(i, (k, w))
+            self.xProgressBar.ProgressValue += 1
             i += 1
             nTotOccur += w
+        self.xProgressBar.ProgressValue = self.xProgressBar.ProgressValueMax
         self.xNumWord.Label = str(i)
         self.xTotWord.Label = nTotOccur
-        # end of processing
-        xPointer.setType(uno.getConstantByName("com.sun.star.awt.SystemPointer.ARROW"))
-        xWindowPeer.setPointer(xPointer)
-        for x in xWindowPeer.Windows:
-            x.setPointer(xPointer)
-        self.xContainer.setVisible(True) # seems necessary to refresh the dialog box and text widgets (why?)
 
-    def setTitleOfFirstColumn (self, sTitle):
-        xColumnModel = self.xGridModel.ColumnModel
-        xColumn = xColumnModel.getColumn(0)
-        xColumn.Title = sTitle
+    @_waitPointer
+    def tagText (self, sWord, sAction=""):
+        if not sAction:
+            return
+        self.xProgressBar.ProgressValueMax = self._countParagraph() * 2
+        self.xProgressBar.ProgressValue = 0
+        xCursor = self.xDocument.Text.createTextCursor()
+        #helpers.xray(xCursor)
+        xCursor.gotoStart(False)
+        xCursor.gotoEndOfParagraph(True)
+        sParagraph = xCursor.getString()
+        if sWord in sParagraph:
+            self._tagParagraph(sWord, xCursor, sAction)
+        self.xProgressBar.ProgressValue += 1
+        while xCursor.gotoNextParagraph(False):
+            xCursor.gotoEndOfParagraph(True)
+            sParagraph = xCursor.getString()
+            if sWord in sParagraph:
+                self._tagParagraph(sWord, xCursor, sAction)
+            self.xProgressBar.ProgressValue += 1
+        self.xProgressBar.ProgressValue = self.xProgressBar.ProgressValueMax
+
+    def _tagParagraph (self, sWord, xCursor, sAction):
+        xCursor.gotoStartOfParagraph(False)
+        while xCursor.gotoNextWord(False):
+            if xCursor.isStartOfWord():
+                xCursor.gotoEndOfWord(True)
+                if sWord == xCursor.getString():
+                    if sAction == "underline":
+                        xCursor.CharBackColor = hexToRBG("AA0000")
+                    elif sAction == "nounderline":
+                        xCursor.CharBackColor = hexToRBG("FFFFFF")
+                    elif sAction == "accentuation":
+                        xCursor.CharStyleName = "Emphasis"
+                    elif sAction == "noaccentuation":
+                        xCursor.CharStyleName = ""
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
