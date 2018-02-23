@@ -434,6 +434,7 @@ def make (lRules, sLang, bJavaScript):
     lTest = []
     lOpt = []
     zBookmark = re.compile("^!!+")
+    zGraphLink = re.compile(r"^@@@@GRAPHLINK>(\w+)@@@@")
 
     for i, sLine in enumerate(lRules, 1):
         if sLine.startswith('#END'):
@@ -441,6 +442,11 @@ def make (lRules, sLang, bJavaScript):
             break
         elif sLine.startswith("#"):
             pass
+        elif sLine.startswith("@@@@"):
+            m = re.match(r"^@@@@GRAPHLINK>(\w+)@@@@", sLine.strip())
+            if m:
+                #lRuleLine.append(["@GRAPHLINK", m.group(1)])
+                printBookmark(1, "@GRAPHLINK: " + m.group(1), i)
         elif sLine.startswith("DEF:"):
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
             if m:

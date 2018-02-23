@@ -11,6 +11,7 @@
 import traceback
 
 from . import ibdawg
+from . import tokenizer
 
 
 dDefaultDictionaries = {
@@ -29,6 +30,7 @@ class SpellChecker ():
         self.oMainDic = self._loadDictionary(sfMainDic, True)
         self.oExtendedDic = self._loadDictionary(sfExtendedDic)
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
+        self.oTokenizer = None
 
     def _loadDictionary (self, sfDictionary, bNecessary=False):
         "returns an IBDAWG object"
@@ -42,6 +44,9 @@ class SpellChecker ():
             print("Error: <" + sfDictionary + "> not loaded.")
             traceback.print_exc()
             return None
+
+    def loadTokenizer (self):
+        self.oTokenizer = tokenizer.Tokenizer(self.sLangCode)
 
     def setMainDictionary (self, sfDictionary):
         "returns True if the dictionary is loaded"
@@ -58,6 +63,36 @@ class SpellChecker ():
         self.oPersonalDic = self._loadDictionary(sfDictionary)
         return bool(self.oPersonalDic)
 
+    # parse text functions
+
+    def parseParagraph (self, sText, bSpellSugg=False):
+        if not self.oTokenizer:
+            self.loadTokenizer()
+        aSpellErrs = []
+        for dToken in self.oTokenizer.genTokens(sText):
+            if dToken['sType'] == "WORD" and not self.isValidToken(dToken['sValue']):
+                if bSpellSugg:
+                    dToken['aSuggestions'] = []
+                    for lSugg in self.suggest(dToken['sValue']):
+                        dToken['aSuggestions'].extend(lSugg)
+                aSpellErrs.append(dToken)
+        return aSpellErrs
+
+    def countWordsOccurrences (self, sText, bByLemma=False, bOnlyUnknownWords=False, dWord={}):
+        if not self.oTokenizer:
+            self.loadTokenizer()
+        for dToken in self.oTokenizer.genTokens(sText):
+            if dToken['sType'] == "WORD":
+                if bOnlyUnknownWords:
+                    if not self.isValidToken(dToken['sValue']):
+                        dWord[dToken['sValue']] = dWord.get(dToken['sValue'], 0) + 1
+                else:
+                    if not bByLemma:
+                        dWord[dToken['sValue']] = dWord.get(dToken['sValue'], 0) + 1
+                    else:
+                        for sLemma in self.getLemma(dToken['sValue']):
+                            dWord[sLemma] = dWord.get(sLemma, 0) + 1
+        return dWord
 
     # IBDAWG functions
 
@@ -99,6 +134,9 @@ class SpellChecker ():
         if self.oPersonalDic:
             lResult.extend(self.oPersonalDic.getMorph(sWord))
         return lResult
+
+    def getLemma (self, sWord):
+        return set([ s[1:s.find(" ")]  for s in self.getMorph(sWord) ])
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"

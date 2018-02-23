@@ -5,11 +5,8 @@ import os.path
 import argparse
 import json
 
-import grammalecte.fr as gce
-import grammalecte.fr.lexicographe as lxg
-import grammalecte.fr.textformatter as tf
+import grammalecte
 import grammalecte.text as txt
-import grammalecte.graphspell.tokenizer as tkz
 from grammalecte.graphspell.echo import echo
 
 
@@ -44,61 +41,35 @@ def _getText (sInputText):
     return sText
 
 
-def _getErrors (sText, oTokenizer, oSpellChecker, bContext=False, bSpellSugg=False, bDebug=False):
-    "returns a tuple: (grammar errors, spelling errors)"
-    aGrammErrs = gce.parse(sText, "FR", bDebug=bDebug, bContext=bContext)
-    aSpellErrs = []
-    for dToken in oTokenizer.genTokens(sText):
-        if dToken['sType'] == "WORD" and not oSpellChecker.isValidToken(dToken['sValue']):
-            if bSpellSugg:
-                dToken['aSuggestions'] = []
-                for lSugg in oSpellChecker.suggest(dToken['sValue']):
-                    dToken['aSuggestions'].extend(lSugg)
-            aSpellErrs.append(dToken)
-    return aGrammErrs, aSpellErrs
-
-
-def generateText (sText, oTokenizer, oSpellChecker, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100):
-    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oSpellChecker, False, bSpellSugg, bDebug)
-    if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
-        return ""
-    return txt.generateParagraph(sText, aGrammErrs, aSpellErrs, nWidth)
-
-
-def generateJSON (iIndex, sText, oTokenizer, oSpellChecker, bContext=False, bDebug=False, bEmptyIfNoErrors=False, bSpellSugg=False, lLineSet=None, bReturnText=False):
-    aGrammErrs, aSpellErrs = _getErrors(sText, oTokenizer, oSpellChecker, bContext, bSpellSugg, bDebug)
-    aGrammErrs = list(aGrammErrs)
-    if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
-        return ""
-    if lLineSet:
-        aGrammErrs, aSpellErrs = txt.convertToXY(aGrammErrs, aSpellErrs, lLineSet)
-        return json.dumps({ "lGrammarErrors": aGrammErrs, "lSpellingErrors": aSpellErrs }, ensure_ascii=False)
-    if bReturnText:
-        return json.dumps({ "iParagraph": iIndex, "sText": sText, "lGrammarErrors": aGrammErrs, "lSpellingErrors": aSpellErrs }, ensure_ascii=False)
-    return json.dumps({ "iParagraph": iIndex, "lGrammarErrors": aGrammErrs, "lSpellingErrors": aSpellErrs }, ensure_ascii=False)
-
-
-def readfile (spf):
+def readFile (spf):
     "generator: returns file line by line"
     if os.path.isfile(spf):
         with open(spf, "r", encoding="utf-8") as hSrc:
             for sLine in hSrc:
                 yield sLine
     else:
-        print("# Error: file not found.")
+        print("# Error: file <" + spf + ">not found.")
 
 
-def readfileAndConcatLines (spf):
-    "generator: returns text by list of lines not separated by an empty line"
-    lLine = []
-    for i, sLine in enumerate(readfile(spf), 1):
-        if sLine.strip():
-            lLine.append((i, sLine))
-        elif lLine:
-            yield lLine
-            lLine = []
-    if lLine:
-        yield lLine
+def generateParagraphFromFile (spf, bConcatLines=False):
+    "generator: returns text by tuple of (iParagraph, sParagraph, lLineSet)"
+    if not bConcatLines:
+        for iParagraph, sLine in enumerate(readFile(spf), 1):
+            yield iParagraph, sLine, None
+    else:
+        lLine = []
+        iParagraph = 1
+        for iLine, sLine in enumerate(readFile(spf), 1):
+            if sLine.strip():
+                lLine.append((iLine, sLine))
+            elif lLine:
+                sText, lLineSet = txt.createParagraphWithLines(lLine)
+                yield iParagraph, sText, lLineSet
+                lLine = []
+            iParagraph += 1
+        if lLine:
+            sText, lLineSet = txt.createParagraphWithLines(lLine)
+            yield iParagraph, sText, lLineSet
 
 
 def output (sText, hDst=None):
@@ -115,7 +86,7 @@ def main ():
     xParser.add_argument("-owe", "--only_when_errors", help="display results only when there are errors", action="store_true")
     xParser.add_argument("-j", "--json", help="generate list of errors in JSON (only with option --file or --file_to_file)", action="store_true")
     xParser.add_argument("-cl", "--concat_lines", help="concatenate lines not separated by an empty paragraph (only with option --file or --file_to_file)", action="store_true")
-    xParser.add_argument("-tf", "--textformatter", help="auto-format text according to typographical rules (unavailable with option --concat_lines)", action="store_true")
+    xParser.add_argument("-tf", "--textformatter", help="auto-format text according to typographical rules (not with option --concat_lines)", action="store_true")
     xParser.add_argument("-tfo", "--textformatteronly", help="auto-format text and disable grammar checking (only with option --file or --file_to_file)", action="store_true")
     xParser.add_argument("-ctx", "--context", help="return errors with context (only with option --json)", action="store_true")
     xParser.add_argument("-wss", "--with_spell_sugg", help="add suggestions for spelling errors (only with option --file or --file_to_file)", action="store_true")
@@ -129,22 +100,23 @@ def main ():
     xParser.add_argument("-d", "--debug", help="debugging mode (only in interactive mode)", action="store_true")
     xArgs = xParser.parse_args()
 
-    gce.load()
-    if not xArgs.json:
-        echo("Grammalecte v{}".format(gce.version))
-    oSpellChecker = gce.getSpellChecker()
-    oTokenizer = tkz.Tokenizer("fr")
-    oLexGraphe = lxg.Lexicographe(oSpellChecker)
-    if xArgs.textformatter or xArgs.textformatteronly:
-        oTF = tf.TextFormatter()
+    oGrammarChecker = grammalecte.GrammarChecker("fr")
+    oSpellChecker = oGrammarChecker.getSpellChecker()
+    oLexicographer = oGrammarChecker.getLexicographer()
+    oTextFormatter = oGrammarChecker.getTextFormatter()
 
+    if not xArgs.json:
+        echo("Grammalecte v{}".format(oGrammarChecker.gce.version))
+
+    # list options or rules
     if xArgs.list_options or xArgs.list_rules:
         if xArgs.list_options:
-            gce.displayOptions("fr")
+            oGrammarChecker.gce.displayOptions("fr")
         if xArgs.list_rules:
-            gce.displayRules(None  if xArgs.list_rules == "*"  else xArgs.list_rules)
+            oGrammarChecker.gce.displayRules(None  if xArgs.list_rules == "*"  else xArgs.list_rules)
         exit()
 
+    # spell suggestions
     if xArgs.suggest:
         for lSugg in oSpellChecker.suggest(xArgs.suggest):
             if xArgs.json:
@@ -154,18 +126,23 @@ def main ():
             echo(sText)
         exit()
 
+    # disable options
     if not xArgs.json:
         xArgs.context = False
+    if xArgs.concat_lines:
+        xArgs.textformatter = False
 
-    gce.setOptions({"html": True, "latex": True})
+    # grammar options
+    oGrammarChecker.gce.setOptions({"html": True, "latex": True})
     if xArgs.opt_on:
-        gce.setOptions({ opt:True  for opt in xArgs.opt_on  if opt in gce.getOptions() })
+        oGrammarChecker.gce.setOptions({ opt:True  for opt in xArgs.opt_on  if opt in oGrammarChecker.gce.getOptions() })
     if xArgs.opt_off:
-        gce.setOptions({ opt:False  for opt in xArgs.opt_off  if opt in gce.getOptions() })
+        oGrammarChecker.gce.setOptions({ opt:False  for opt in xArgs.opt_off  if opt in oGrammarChecker.gce.getOptions() })
 
+    # disable grammar rules
     if xArgs.rule_off:
         for sRule in xArgs.rule_off:
-            gce.ignoreRule(sRule)
+            oGrammarChecker.gce.ignoreRule(sRule)
 
     sFile = xArgs.file or xArgs.file_to_file
     if sFile:
@@ -173,41 +150,25 @@ def main ():
         hDst = open(sFile[:sFile.rfind(".")]+".res.txt", "w", encoding="utf-8", newline="\n")  if xArgs.file_to_file or sys.platform == "win32"  else None
         bComma = False
         if xArgs.json:
-            output('{ "grammalecte": "'+gce.version+'", "lang": "'+gce.lang+'", "data" : [\n', hDst)
-        if not xArgs.concat_lines:
-            # pas de concaténation des lignes
-            for i, sText in enumerate(readfile(sFile), 1):
-                if xArgs.textformatter or xArgs.textformatteronly:
-                    sText = oTF.formatText(sText)
-                if xArgs.textformatteronly:
-                    output(sText, hDst)
-                else:
-                    if xArgs.json:
-                        sText = generateJSON(i, sText, oTokenizer, oSpellChecker, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, bReturnText=xArgs.textformatter)
-                    else:
-                        sText = generateText(sText, oTokenizer, oSpellChecker, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
-                    if sText:
-                        if xArgs.json and bComma:
-                            output(",\n", hDst)
-                        output(sText, hDst)
-                        bComma = True
-                if hDst:
-                    echo("§ %d\r" % i, end="", flush=True)
-        else:
-            # concaténation des lignes non séparées par une ligne vide
-            for i, lLine in enumerate(readfileAndConcatLines(sFile), 1):
-                sText, lLineSet = txt.createParagraphWithLines(lLine)
-                if xArgs.json:
-                    sText = generateJSON(i, sText, oTokenizer, oSpellChecker, bContext=xArgs.context, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, lLineSet=lLineSet)
-                else:
-                    sText = generateText(sText, oTokenizer, oSpellChecker, bDebug=False, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
-                if sText:
-                    if xArgs.json and bComma:
-                        output(",\n", hDst)
-                    output(sText, hDst)
-                    bComma = True
-                if hDst:
-                    echo("§ %d\r" % i, end="", flush=True)
+            output('{ "grammalecte": "'+oGrammarChecker.gce.version+'", "lang": "'+oGrammarChecker.gce.lang+'", "data" : [\n', hDst)
+        for i, sText, lLineSet in generateParagraphFromFile(sFile, xArgs.concat_lines):
+            if xArgs.textformatter or xArgs.textformatteronly:
+                sText = oTextFormatter.formatText(sText)
+            if xArgs.textformatteronly:
+                output(sText, hDst)
+                continue
+            if xArgs.json:
+                sText = oGrammarChecker.generateParagraphAsJSON(i, sText, bContext=xArgs.context, bEmptyIfNoErrors=xArgs.only_when_errors, \
+                                                                bSpellSugg=xArgs.with_spell_sugg, bReturnText=xArgs.textformatter, lLineSet=lLineSet)
+            else:
+                sText = oGrammarChecker.generateParagraph(sText, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
+            if sText:
+                if xArgs.json and bComma:
+                    output(",\n", hDst)
+                output(sText, hDst)
+                bComma = True
+            if hDst:
+                echo("§ %d\r" % i, end="", flush=True)
         if xArgs.json:
             output("\n]}\n", hDst)
     else:
@@ -220,7 +181,7 @@ def main ():
                     if sWord:
                         echo("* " + sWord)
                         for sMorph in oSpellChecker.getMorph(sWord):
-                            echo("  {:<32} {}".format(sMorph, oLexGraphe.formatTags(sMorph)))
+                            echo("  {:<32} {}".format(sMorph, oLexicographer.formatTags(sMorph)))
             elif sText.startswith("!"):
                 for sWord in sText[1:].strip().split():
                     if sWord:
@@ -232,18 +193,18 @@ def main ():
                 for sRes in oSpellChecker.select(sText[1:].strip()):
                     echo(sRes)
             elif sText.startswith("/+ "):
-                gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
+                oGrammarChecker.gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")
             elif sText.startswith("/- "):
-                gce.setOptions({ opt:False  for opt in sText[3:].strip().split()  if opt in gce.getOptions() })
+                oGrammarChecker.gce.setOptions({ opt:False  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")
             elif sText.startswith("/-- "):
                 for sRule in sText[3:].strip().split():
-                    gce.ignoreRule(sRule)
+                    oGrammarChecker.gce.ignoreRule(sRule)
                 echo("done")
             elif sText.startswith("/++ "):
                 for sRule in sText[3:].strip().split():
-                    gce.reactivateRule(sRule)
+                    oGrammarChecker.gce.reactivateRule(sRule)
                 echo("done")
             elif sText == "/debug" or sText == "/d":
                 xArgs.debug = not(xArgs.debug)
@@ -254,11 +215,11 @@ def main ():
             elif sText == "/help" or sText == "/h":
                 echo(_HELP)
             elif sText == "/lopt" or sText == "/lo":
-                gce.displayOptions("fr")
+                oGrammarChecker.gce.displayOptions("fr")
             elif sText.startswith("/lr"):
                 sText = sText.strip()
                 sFilter = sText[sText.find(" "):].strip()  if sText != "/lr" and sText != "/rules"  else None
-                gce.displayRules(sFilter)
+                oGrammarChecker.gce.displayRules(sFilter)
             elif sText == "/quit" or sText == "/q":
                 break
             elif sText.startswith("/rl"):
@@ -267,8 +228,8 @@ def main ():
             else:
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
-                        sText = oTF.formatText(sText)
-                    sRes = generateText(sText, oTokenizer, oSpellChecker, bDebug=xArgs.debug, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width)
+                        sText = oTextFormatter.formatText(sText)
+                    sRes = oGrammarChecker.generateParagraph(sText, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width, bDebug=xArgs.debug)
                     if sRes:
                         echo("\n" + sRes)
                     else:
