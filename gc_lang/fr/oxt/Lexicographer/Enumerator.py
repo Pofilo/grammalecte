@@ -265,7 +265,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
     def tagText (self, sWord, sAction=""):
         if not sAction:
             return
-        self.xProgressBar.ProgressValueMax = self._countParagraph() * 2
+        self.xProgressBar.ProgressValueMax = self._countParagraph()
         self.xProgressBar.ProgressValue = 0
         xCursor = self.xDocument.Text.createTextCursor()
         #helpers.xray(xCursor)
