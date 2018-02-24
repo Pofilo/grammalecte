@@ -1,4 +1,4 @@
-# Dictionary Options
+# Enumerator of Words
 # by Olivier R.
 # License: MPL 2
 
