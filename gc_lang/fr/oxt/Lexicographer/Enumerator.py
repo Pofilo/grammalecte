@@ -56,6 +56,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer = None
         self.xDialog = None
         self.oSpellChecker = None
+        self.oTokenizer = None
 
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
@@ -267,37 +268,35 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             return
         self.xProgressBar.ProgressValueMax = self._countParagraph()
         self.xProgressBar.ProgressValue = 0
+        if not self.oTokenizer:
+            self.oTokenizer = self.oSpellChecker.getTokenizer()
         xCursor = self.xDocument.Text.createTextCursor()
-        #helpers.xray(xCursor)
         xCursor.gotoStart(False)
-        xCursor.gotoEndOfParagraph(True)
-        sParagraph = xCursor.getString()
-        if sWord in sParagraph:
-            self._tagParagraph(sWord, xCursor, sAction)
-        self.xProgressBar.ProgressValue += 1
+        self._tagParagraph(xCursor, sWord, sAction)
         while xCursor.gotoNextParagraph(False):
-            xCursor.gotoEndOfParagraph(True)
-            sParagraph = xCursor.getString()
-            if sWord in sParagraph:
-                self._tagParagraph(sWord, xCursor, sAction)
-            self.xProgressBar.ProgressValue += 1
+            self._tagParagraph(xCursor, sWord, sAction)
         self.xProgressBar.ProgressValue = self.xProgressBar.ProgressValueMax
 
-    def _tagParagraph (self, sWord, xCursor, sAction):
+    def _tagParagraph (self, xCursor, sWord, sAction):
+        xCursor.gotoEndOfParagraph(True)
+        sParagraph = xCursor.getString()
         xCursor.gotoStartOfParagraph(False)
-        while xCursor.gotoNextWord(False):
-            if xCursor.isStartOfWord():
-                xCursor.gotoEndOfWord(True)
-                if sWord == xCursor.getString():
-                    if sAction == "underline":
-                        xCursor.CharBackColor = hexToRBG("AA0000")
-                    elif sAction == "nounderline":
-                        xCursor.CharBackColor = hexToRBG("FFFFFF")
-                    elif sAction == "accentuation":
-                        xCursor.CharStyleName = "Emphasis"
-                    elif sAction == "noaccentuation":
-                        #xCursor.CharStyleName = "Default Style"     # doesn’t work
-                        xCursor.setPropertyToDefault("CharStyleName")
+        nPos = 0
+        for dToken in self.oTokenizer.genTokens(sParagraph):
+            if dToken["sValue"] == sWord:
+                xCursor.goRight(dToken["nStart"]-nPos, False) # start of token
+                nPos = dToken["nEnd"]
+                xCursor.goRight(nPos-dToken["nStart"], True) # end of token
+                if sAction == "underline":
+                    xCursor.CharBackColor = hexToRBG("AA0000")
+                elif sAction == "nounderline":
+                    xCursor.CharBackColor = hexToRBG("FFFFFF")
+                elif sAction == "accentuation":
+                    xCursor.CharStyleName = "Emphasis"
+                elif sAction == "noaccentuation":
+                    #xCursor.CharStyleName = "Default Style"     # doesn’t work
+                    xCursor.setPropertyToDefault("CharStyleName")
+        self.xProgressBar.ProgressValue += 1
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
