@@ -12,7 +12,6 @@ import grammalecte.graphspell as sc
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
-from com.sun.star.beans import PropertyValue
 
 
 def hexToRBG (sHexa):
@@ -124,10 +123,10 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self._addWidget('count_button', 'Button', nX, nY1+12, 70, 11, Label = self.dUI.get('count_button', "#err"))
         self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 11, Label = self.dUI.get('count2_button', "#err"))
         self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 11, Label = self.dUI.get('unknown_button', "#err"))
-        self.xGridModel = self._addGrid("list_grid", nX, nY1+25, nWidth, 181, [
-            {"Title": self.dUI.get("words", "#err"), "ColumnWidth": 175},
-            {"Title": "Occurrences", "ColumnWidth": 45}
-        ])
+        self.xGridModel = self._addGrid("list_grid", nX, nY1+25, nWidth, 181, \
+            [ {"Title": self.dUI.get("words", "#err"), "ColumnWidth": 175}, {"Title": "Occurrences", "ColumnWidth": 45} ], \
+            SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI") \
+        )
         self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 60, nHeight, Label = self.dUI.get('num_of_entries', "#err"), Align = 2)
         self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+65, nY1+210, 30, nHeight, Label = "—")
         self._addWidget('tot_of_entries', 'FixedText', nX+100, nY1+210, 60, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
@@ -184,12 +183,10 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                 self.count(self.dUI.get("unknown_words", "#err"), bOnlyUnknownWords=True)
                 self.xTag.Enabled = True
             elif xActionEvent.ActionCommand == "Tag":
-                nRow = self.xGridControl.getCurrentRow()
-                if nRow == -1:
+                if not self.xGridControl.hasSelectedRows():
                     return
-                sWord = self.xGridModel.GridDataModel.getCellData(0, nRow)
-                if not sWord:
-                    return
+                lRow = self.xGridControl.getSelectedRows()
+                aWord = set([ self.xGridModel.GridDataModel.getCellData(0, n)  for n in lRow ])
                 sAction = ""
                 if self.xUnderline.State:
                     sAction = "underline"
@@ -199,7 +196,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                     sAction = "accentuation"
                 elif self.xNoAccent.State:
                     sAction = "noaccentuation"
-                self.tagText(sWord, sAction)
+                self.tagText(aWord, sAction)
             elif xActionEvent.ActionCommand == "Close":
                 self.xContainer.endExecute()
         except:
@@ -263,7 +260,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xTotWord.Label = nTotOccur
 
     @_waitPointer
-    def tagText (self, sWord, sAction=""):
+    def tagText (self, aWord, sAction=""):
         if not sAction:
             return
         self.xProgressBar.ProgressValueMax = self._countParagraph()
@@ -272,18 +269,18 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             self.oTokenizer = self.oSpellChecker.getTokenizer()
         xCursor = self.xDocument.Text.createTextCursor()
         xCursor.gotoStart(False)
-        self._tagParagraph(xCursor, sWord, sAction)
+        self._tagParagraph(xCursor, aWord, sAction)
         while xCursor.gotoNextParagraph(False):
-            self._tagParagraph(xCursor, sWord, sAction)
+            self._tagParagraph(xCursor, aWord, sAction)
         self.xProgressBar.ProgressValue = self.xProgressBar.ProgressValueMax
 
-    def _tagParagraph (self, xCursor, sWord, sAction):
+    def _tagParagraph (self, xCursor, aWord, sAction):
         xCursor.gotoEndOfParagraph(True)
         sParagraph = xCursor.getString()
         xCursor.gotoStartOfParagraph(False)
         nPos = 0
         for dToken in self.oTokenizer.genTokens(sParagraph):
-            if dToken["sValue"] == sWord:
+            if dToken["sValue"] in aWord:
                 xCursor.goRight(dToken["nStart"]-nPos, False) # start of token
                 nPos = dToken["nEnd"]
                 xCursor.goRight(nPos-dToken["nStart"], True) # end of token
