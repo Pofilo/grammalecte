@@ -71,6 +71,13 @@ class SpellChecker {
         }
     }
 
+    getTokenizer () {
+        if (!this.oTokenizer) {
+            this.loadTokenizer();
+        }
+        return this.oTokenizer;
+    }
+
     setMainDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oMainDic = this._loadDictionary(dictionary);
