@@ -120,10 +120,10 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
 
         # List
         self._addWidget("list_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = self.dUI.get("list_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget('count_button', 'Button', nX, nY1+12, 70, 10, Label = self.dUI.get('count_button', "#err"))
-        self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 10, Label = self.dUI.get('count2_button', "#err"))
-        self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 10, Label = self.dUI.get('unknown_button', "#err"))
-        self.xGridModel = self._addGrid("list_grid", nX, nY1+25, nWidth, 180, [
+        self._addWidget('count_button', 'Button', nX, nY1+12, 70, 11, Label = self.dUI.get('count_button', "#err"))
+        self._addWidget('count2_button', 'Button', nX+75, nY1+12, 70, 11, Label = self.dUI.get('count2_button', "#err"))
+        self._addWidget('unknown_button', 'Button', nX+150, nY1+12, 70, 11, Label = self.dUI.get('unknown_button', "#err"))
+        self.xGridModel = self._addGrid("list_grid", nX, nY1+25, nWidth, 181, [
             {"Title": self.dUI.get("words", "#err"), "ColumnWidth": 175},
             {"Title": "Occurrences", "ColumnWidth": 45}
         ])
@@ -146,7 +146,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         # Progress bar
         self.xProgressBar = self._addWidget('progress_bar', 'ProgressBar', nX, self.xDialog.Height-25, 160, 14)
         self.xProgressBar.ProgressValueMin = 0
-        self.xProgressBar.ProgressValueMax = 1 # to calculate
+        self.xProgressBar.ProgressValueMax = 1 # to calculate later
 
         # Close
         self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
