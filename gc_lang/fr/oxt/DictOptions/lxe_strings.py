@@ -1,0 +1,78 @@
+def getUI (sLang):
+    if sLang in dStrings:
+        return dStrings[sLang]
+    return dStrings["fr"]
+
+dStrings = {
+    "fr": {
+        "title": "Grammalecte · Éditeur lexical",
+
+        # Ajout
+        "add_section": "Nouveau mot (lemme)",
+        "lemma": "Lemme",
+
+        # catégories
+        "common_name": "Nom commun",
+        "nom_adj": "Nom et adjectif",
+        "nom": "Nom",
+        "adj": "Adjectif",
+        "alt_lemma": "[optionnel] Autre forme (masculine, féminine, variante, etc.)",
+      
+      	"proper_name": "Nom propre",
+        "M1": "Prénom",
+        "M2": "Patronyme",
+        "MP": "Autre",
+
+        "gender": "Genre",
+        "epi": "épicène",
+        "mas": "masculin",
+        "fem": "féminin",
+        "plural": "Pluriel",
+        "-s": "pluriel en ·s",
+        "-x": "pluriel en ·x",
+        "inv": "invariable",
+
+        "verb": "Verbe",
+        "v_i": "intransitif",
+        "v_t": "transitif",
+        "v_n": "transitif indirect",
+        "v_p": "pronominal",
+        "v_m": "impersonnel",
+        "aux": "Auxiliaire au passé composé",
+        "v_ae": "être",
+        "v_aa": "avoir",
+        "v_pp": "Participes passés variables",
+        "v_pattern": "Verbe modèle [optionnel]",
+
+        "adverb": "Adverbe",
+
+        "other": "Autre",
+        "flexion": "Flexion",
+        "tags": "Étiquettes",
+
+        "add_button": "Ajouter",
+
+        # Lexicon
+        "new_section": "Mots générés",
+		"lexicon_section": "Votre lexique",
+		"lex_#": "#",
+		"lex_flex": "Flexions",
+		"lex_lemma": "Lemmes",
+		"lex_tags": "Étiquettes",
+		"delete_button": "Supprimer",
+
+		# Dictionnaire
+		"dictionary_section": "Dictionnaire enregistré",
+		"num_of_entries": "Nombre d’entrées",
+		"save_date": "Date d’enregistrement",
+
+        #
+        "close_button": "Fermer",
+    },
+    # Traduction délibérément limitée
+    "en": {
+        "title": "Grammalecte · Lexical editor",
+        
+        "close_button": "Close",
+    },
+}
