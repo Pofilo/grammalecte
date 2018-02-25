@@ -48,6 +48,11 @@ class SpellChecker ():
     def loadTokenizer (self):
         self.oTokenizer = tokenizer.Tokenizer(self.sLangCode)
 
+    def getTokenizer (self):
+        if not self.oTokenizer:
+            self.loadTokenizer()
+        return self.oTokenizer
+
     def setMainDictionary (self, sfDictionary):
         "returns True if the dictionary is loaded"
         self.oMainDic = self._loadDictionary(sfDictionary)

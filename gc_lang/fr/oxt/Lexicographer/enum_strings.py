@@ -7,7 +7,7 @@ dStrings = {
     "fr": {
         "title": "Grammalecte · Recenseur de mots",
         
-        "list_section": "Calcul des occurrences des mots",
+        "list_section": "Énumération des occurrences",
         "count_button": "Compter tout",
         "count2_button": "Compter par lemme",
         "unknown_button": "Mots inconnus",
@@ -29,9 +29,9 @@ dStrings = {
         "close_button": "Fermer",
     },
     "en": {
-        "title": "Grammalecte · Enumerator of Words",
+        "title": "Grammalecte · Enumerator of words",
 
-        "list_section": "Words",
+        "list_section": "Occurrences enumeration",
         "count_button": "Count all",
         "count2_button": "Count by lemma",
         "unknown_button": "Unknown words",
