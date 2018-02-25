@@ -18,7 +18,7 @@ dStrings = {
         "adj": "Adjectif",
         "alt_lemma": "[optionnel] Autre forme (masculine, féminine, variante, etc.)",
       
-      	"proper_name": "Nom propre",
+        "proper_name": "Nom propre",
         "M1": "Prénom",
         "M2": "Patronyme",
         "MP": "Autre",
@@ -50,21 +50,27 @@ dStrings = {
         "flexion": "Flexion",
         "tags": "Étiquettes",
 
-        "add_button": "Ajouter",
-
         # Lexicon
         "new_section": "Mots générés",
-		"lexicon_section": "Votre lexique",
-		"lex_#": "#",
-		"lex_flex": "Flexions",
-		"lex_lemma": "Lemmes",
-		"lex_tags": "Étiquettes",
-		"delete_button": "Supprimer",
+        "lexicon_section": "Votre lexique",
+        "lex_#": "#",
+        "lex_flex": "Flexions",
+        "lex_lemma": "Lemmes",
+        "lex_tags": "Étiquettes",
 
-		# Dictionnaire
-		"dictionary_section": "Dictionnaire enregistré",
-		"num_of_entries": "Nombre d’entrées",
-		"save_date": "Date d’enregistrement",
+        "add_button": "Ajouter au lexique",
+        "delete_button": "Supprimer la sélection",
+
+        # Informations
+        "lexicon_info_section": "Lexique",
+        "added_entries_label": "Nombre d’entrées ajoutées",
+        "deleted_entries_label": "Nombre d’entrées effacées",
+        "num_of_entries_label": "Nombre d’entrées",
+        "save_button": "Enregistrer",
+
+        "dictionary_section": "Dictionnaire enregistré",
+        "save_date_label": "Date d’enregistrement",
+        "export_button": "Exporter",
 
         #
         "close_button": "Fermer",

@@ -85,7 +85,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 620
-        self.xDialog.Height = 300
+        self.xDialog.Height = 292
         self.xDialog.Title = self.dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
@@ -110,8 +110,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         nY2 = nY1 + 25 # nom commun
         nY3 = nY2 + 95 # nom propre
         nY4 = nY3 + 45 # verbe
-        nY5 = nY4 + 70 # adverbe
-        nY6 = nY5 + 15 # autre
+        nY5 = nY4 + 68 # adverbe
+        nY6 = nY5 + 13 # autre
 
         nXB = nX1 + 195
         nXC = nXB + 205
@@ -121,8 +121,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 190, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
         #self._addWidget('main_lemma_label', 'FixedText', nX1, nY1+10, 30, nHeight, Label = self.dUI.get('lemma', "#err"))
-        self.xLemma = self._addWidget('main_lemma', 'Edit', nX1, nY1+10, 120, nHeight+2)
-        
+        self.xLemma = self._addWidget('main_lemma', 'Edit', nX1, nY1+10, 120, 14, FontDescriptor = xFDTitle)
+        self._addWidget('close_button', 'Button', nX1+130, nY1+10, 60, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+
         # Radio buttons: main POS tag
         # Note: the only way to group RadioButtons is to create them successively
         self.xNA = self._addWidget('nom_adj', 'RadioButton', nX1, nY2+12, 60, nHeight, Label = self.dUI.get("nom_adj", "#err"))
@@ -191,35 +192,46 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
 
         #### Generated words
         self._addWidget("gwords_section", 'FixedLine', nXB, nY1, 200, nHeight, Label = self.dUI.get("new_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGridModelNew = self._addGrid("list_grid_gwords", nXB, nY1+10, 200, 200, [
-            {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 80},
+        self.xGridModelNew = self._addGrid("list_grid_gwords", nXB, nY1+10, 200, 175, [
+            {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 65},
             {"Title": self.dUI.get("lex_lemma", "#err"), "ColumnWidth": 50},
-            {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 50}
+            {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 65}
         ])
-        self._addWidget("dictionary_section", 'FixedLine', nXB, nY1+210, 200, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget('add_button', 'Button', nXB, nY1+190, 95, 12, Label = self.dUI.get('add_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
+        self._addWidget('delete_button', 'Button', nXB+100, nY1+190, 100, 12, Label = self.dUI.get('delete_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+
+        nY2b = nY1 + 205
+        # lexicon info section
+        self._addWidget("lexicon_info_section", 'FixedLine', nXB, nY2b, 200, nHeight, Label = self.dUI.get("lexicon_info_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("added_entries_label", 'FixedText', nXB, nY2b+10, 90, nHeight, Label = self.dUI.get("added_entries_label", "#err"))
+        self._addWidget("deleted_entries_label", 'FixedText', nXB, nY2b+20, 90, nHeight, Label = self.dUI.get("deleted_entries_label", "#err"))
+        self._addWidget("num_of_entries_label1", 'FixedText', nXB, nY2b+30, 90, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"))
+        self._addWidget('save_button', 'Button', nXB+150, nY2b+10, 50, 12, Label = self.dUI.get('save_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        # dictionary section
+        self._addWidget("dictionary_section", 'FixedLine', nXB, nY2b+45, 200, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("save_date_label", 'FixedText', nXB, nY2b+55, 90, nHeight, Label = self.dUI.get("save_date_label", "#err"))
+        self._addWidget("num_of_entries_label2", 'FixedText', nXB, nY2b+65, 90, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"))
+        self._addWidget('export_button', 'Button', nXB+150, nY2b+55, 50, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
 
         #### Lexicon section
         self._addWidget("lexicon_section", 'FixedLine', nXC, nY1, 200, nHeight, Label = self.dUI.get("lexicon_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGridModelLex = self._addGrid("list_grid_lexicon", nXC, nY1+10, 200, 255, [
-            {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 80},
+        self.xGridModelLex = self._addGrid("list_grid_lexicon", nXC, nY1+10, 200, 270, [
+            {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 65},
             {"Title": self.dUI.get("lex_lemma", "#err"), "ColumnWidth": 50},
-            {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 50}
+            {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 65}
         ])
-        
-        # Close
-        self._addWidget('close_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         # container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
         self.xContainer.setModel(self.xDialog)
         self.xGridControlNew = self.xContainer.getControl('list_grid_gwords')
         self.xGridControlLex = self.xContainer.getControl('list_grid_lexicon')
-        #self.xContainer.getControl('add_button').addActionListener(self)
-        #self.xContainer.getControl('add_button').setActionCommand('Add')
-        #self.xContainer.getControl('delete_button').addActionListener(self)
-        #self.xContainer.getControl('delete_button').setActionCommand('Delete')
-        #self.xContainer.getControl('save_button').addActionListener(self)
-        #self.xContainer.getControl('save_button').setActionCommand('Save')
+        self.xContainer.getControl('add_button').addActionListener(self)
+        self.xContainer.getControl('add_button').setActionCommand('Add')
+        self.xContainer.getControl('delete_button').addActionListener(self)
+        self.xContainer.getControl('delete_button').setActionCommand('Delete')
+        self.xContainer.getControl('save_button').addActionListener(self)
+        self.xContainer.getControl('save_button').setActionCommand('Save')
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
         self.xContainer.setVisible(False)
