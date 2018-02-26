@@ -10364,7 +10364,7 @@ __[i](p_les_avoir_fait_vinfi)__
 
 __[i]/ppas(ppas_pronom_avoir)__
     (?:j’|je |tu |ils? |elles? |on |et )(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \2) and morph(word(-1), ">puisque? ", False, True)
+    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \2) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|)) ", False, True)
         and morph(\1, ":V0a", False) and not \2.isupper() and morphex(\2, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
     -2>> =suggMasSing(@)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -10374,12 +10374,13 @@ TEST: il a {{affronte}} une bande de voleurs de bétail
 TEST: J’ai {{mettrai}} du sel.                                                    ->> mis
 TEST: J’ai {{lut}} son journal.                                                   ->> lu
 TEST: Ils avaient barre sur lui.
+TEST: Si j’avais {{sut}}.
 
 
 __[i]/ppas(ppas_nous_vous_avoir)__
     ([nv]ous) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,$
     <<- morph(\1, ":Os", False)
-        and not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">puisque? ", False, True)
+        and not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|)) ", False, True)
         and morph(\2, ":V0a", False) and not \3.isupper() and morphex(\3, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
     -3>> =suggMasSing(@)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -10390,7 +10391,7 @@ TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 __[i]/ppas(ppas_det_nom_avoir)__
     (l(?:’|es? |a |eurs )|ce(?:s|tte|t|rtaine?s|) |des |quelques |[mts](?:es|on|a) |[nv]o(?:s|tre) ) *({w_2}) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \4) and morph(word(-1), ">puisque? ", False, True)
+    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \4) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|)) ", False, True)
         and not morph(\2, ":G", False) and morph(\3, ":V0a", False) and not \4.isupper() and morphex(\4, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         and not (\3 == "avions" and morph(\4, ":3[sp]", False))
     -4>> =suggMasSing(@)
@@ -10398,6 +10399,7 @@ __[i]/ppas(ppas_det_nom_avoir)__
 
 TEST: Les femmes lui avait {{conseillées}} de se taire.
 TEST: le mur avait {{était}} détruit
+TEST: Lorsque les femmes ont {{apprit}} la nouvelle…
 TEST: Certains les ont d’abord jugés trop lents.
 
 
