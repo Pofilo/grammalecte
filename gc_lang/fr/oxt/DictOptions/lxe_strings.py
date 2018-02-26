@@ -10,6 +10,7 @@ dStrings = {
         # Ajout
         "add_section": "Nouveau mot (lemme)",
         "lemma": "Lemme",
+        "generate_button": "Créer",
 
         # catégories
         "common_name": "Nom commun",
