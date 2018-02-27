@@ -11,10 +11,12 @@ import helpers
 import lxe_strings
 import lxe_conj_data
 import grammalecte.graphspell as sc
+import grammalecte.graphspell.dawg as dawg
 import grammalecte.fr.conj as conj
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
+from com.sun.star.awt import XKeyListener
 
 
 def _waitPointer (funcDecorated):
@@ -41,7 +43,7 @@ def _waitPointer (funcDecorated):
     return wrapper
 
 
-class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
+class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor):
 
     def __init__ (self, ctx):
         self.ctx = ctx
@@ -125,9 +127,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
 
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 190, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
-        #self._addWidget('main_lemma_label', 'FixedText', nX1, nY1+10, 30, nHeight, Label = self.dUI.get('lemma', "#err"))
-        self.xLemma = self._addWidget('main_lemma', 'Edit', nX1, nY1+10, 120, 14, FontDescriptor = xFDTitle)
-        self._addWidget('generate_button', 'Button', nX1+130, nY1+10, 60, 14, Label = self.dUI.get('generate_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
+        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 120, 14, FontDescriptor = xFDTitle)
+        self._addWidget('close_button', 'Button', nX1+130, nY1+10, 60, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         # Radio buttons: main POS tag
         # Note: the only way to group RadioButtons is to create them successively
@@ -137,9 +138,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         self.xM1 = self._addWidget('M1', 'RadioButton', nX1, nY3+12, 60, nHeight, Label = self.dUI.get("M1", "#err"), HelpText = ":M1")
         self.xM2 = self._addWidget('M2', 'RadioButton', nX1, nY3+22, 60, nHeight, Label = self.dUI.get("M2", "#err"), HelpText = ":M2")
         self.xMP = self._addWidget('MP', 'RadioButton', nX1, nY3+32, 60, nHeight, Label = self.dUI.get("MP", "#err"), HelpText = ":MP")
-        self.xV = self._addWidget('verb', 'RadioButton', nX1, nY4+2, 10, nHeight, HelpText = ":V")
-        self.xW = self._addWidget('adv', 'RadioButton', nX1, nY5+2, 10, nHeight, HelpText = ":W")
-        self.xX = self._addWidget('other', 'RadioButton', nX1, nY6+2, 10, nHeight, HelpText = ":X")
+        self.xV = self._addWidget('verb', 'RadioButton', nX1, nY4+2, 30, nHeight, Label = self.dUI.get("verb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":V")
+        self.xW = self._addWidget('adv', 'RadioButton', nX1, nY5+2, 30, nHeight, Label = self.dUI.get("adverb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":W")
+        self.xX = self._addWidget('other', 'RadioButton', nX1, nY6+2, 30, nHeight, Label = self.dUI.get("other", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":X")
         
         # Nom, adjectif
         self._addWidget("fl_nom_adj", 'FixedLine', nX1, nY2, 190, nHeight, Label = self.dUI.get("common_name", "#err"), FontDescriptor = xFDSubTitle)
@@ -147,8 +148,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         self.xSmas = self._addWidget('Smas', 'RadioButton', nX1+65, nY2+22, 50, nHeight, Label = self.dUI.get("mas", "#err"), HelpText = ":m")
         self.xSfem = self._addWidget('Sfem', 'RadioButton', nX1+65, nY2+32, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
         self._addWidget("fl_sep1", 'FixedLine', nX1, nY2, 1, nHeight)
-        self.xSs = self._addWidget('S-s', 'RadioButton', nX1+120, nY2+12, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
-        self.xSx = self._addWidget('S-x', 'RadioButton', nX1+120, nY2+22, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
+        self.xSs = self._addWidget('Ss', 'RadioButton', nX1+120, nY2+12, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
+        self.xSx = self._addWidget('Sx', 'RadioButton', nX1+120, nY2+22, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
         self.xSinv = self._addWidget('Sinv', 'RadioButton', nX1+120, nY2+32, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
 
         self._addWidget("alt_lemma_label", 'FixedLine', nX1+10, nY2+42, 180, nHeight, Label = self.dUI.get("alt_lemma", "#err"))
@@ -161,8 +162,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         self.xSmas2 = self._addWidget('Smas2', 'RadioButton', nX1+75, nY2+75, 50, nHeight, Label = self.dUI.get("mas", "#err"), HelpText = ":m")
         self.xSfem2 = self._addWidget('Sfem2', 'RadioButton', nX1+75, nY2+85, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
         self._addWidget("fl_sep3", 'FixedLine', nX1, nY2, 1, nHeight)
-        self.xSs2 = self._addWidget('S-s2', 'RadioButton', nX1+130, nY2+65, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
-        self.xSx2 = self._addWidget('S-x2', 'RadioButton', nX1+130, nY2+75, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
+        self.xSs2 = self._addWidget('Ss2', 'RadioButton', nX1+130, nY2+65, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
+        self.xSx2 = self._addWidget('Sx2', 'RadioButton', nX1+130, nY2+75, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
         self.xSinv2 = self._addWidget('Sinv2', 'RadioButton', nX1+130, nY2+85, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
 
         # Nom propre
@@ -172,7 +173,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         self.xMfem = self._addWidget('Mfem', 'RadioButton', nX1+65, nY3+32, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
 
         # Verbe
-        self._addWidget("fl_verb", 'FixedLine', nX2, nY4, 180, nHeight, Label = self.dUI.get("verb", "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_verb", 'FixedLine', nX2+30, nY4, 150, nHeight, FontDescriptor = xFDSubTitle)
         self.xV_i = self._addWidget('v_i', 'CheckBox', nX2, nY4+12, 60, nHeight, Label = self.dUI.get("v_i", "#err"))
         self.xV_t = self._addWidget('v_t', 'CheckBox', nX2, nY4+20, 60, nHeight, Label = self.dUI.get("v_t", "#err"))
         self.xV_n = self._addWidget('v_n', 'CheckBox', nX2, nY4+28, 60, nHeight, Label = self.dUI.get("v_n", "#err"))
@@ -189,10 +190,10 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         self.xVpattern = self._addWidget('v_pattern', 'Edit', nX2+85, nY4+56, 80, nHeight)
 
         # Adverbe
-        self._addWidget("fl_adv", 'FixedLine', nX2, nY5, 180, nHeight, Label = self.dUI.get("adverb", "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_adv", 'FixedLine', nX2+30, nY5, 150, nHeight, FontDescriptor = xFDSubTitle)
 
         # Autre
-        self._addWidget("fl_other", 'FixedLine', nX2, nY6, 180, nHeight, Label = self.dUI.get("other", "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_other", 'FixedLine', nX2+30, nY6, 150, nHeight, FontDescriptor = xFDSubTitle)
         self._addWidget('flexion_label', 'FixedText', nX2, nY6+10, 85, nHeight, Label = self.dUI.get('flexion', "#err"))
         self.xFlexion = self._addWidget('flexion', 'Edit', nX2, nY6+20, 85, nHeight)
         self._addWidget('tags_label', 'FixedText', nX2+90, nY6+10, 85, nHeight, Label = self.dUI.get('tags', "#err"))
@@ -234,28 +235,43 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.setModel(self.xDialog)
         self.xGridControlNew = self.xContainer.getControl('list_grid_gwords')
         self.xGridControlLex = self.xContainer.getControl('list_grid_lexicon')
+        #helpers.xray(self.xContainer.getControl('lemma'))
+        self._createKeyListeners(['lemma', 'alt_lemma', "v_pattern", 'flexion', 'tags'], "Update")
+        self._createActionListeners(['nom_adj', 'nom', 'adj', 'M1', 'M2', 'MP', 'verb', 'adv', 'other', \
+                                     'Sepi', 'Smas', 'Sfem', 'Ss', 'Sx', 'Sinv', 'nom_adj2', 'nom2', 'adj2', \
+                                     'Sepi2', 'Smas2', 'Sfem2', 'Ss2', 'Sx2', 'Sinv2', 'Mepi', 'Mmas', 'Mfem', \
+                                     'v_i', 'v_t', 'v_n', 'v_p', 'v_m', 'v_ae', 'v_aa', 'v_pp'], "Update")
         self.xContainer.getControl('add_button').addActionListener(self)
         self.xContainer.getControl('add_button').setActionCommand('Add')
         self.xContainer.getControl('delete_button').addActionListener(self)
         self.xContainer.getControl('delete_button').setActionCommand('Delete')
         self.xContainer.getControl('save_button').addActionListener(self)
         self.xContainer.getControl('save_button').setActionCommand('Save')
-        self.xContainer.getControl('generate_button').addActionListener(self)
-        self.xContainer.getControl('generate_button').setActionCommand('Update')
+        self.xContainer.getControl('close_button').addActionListener(self)
+        self.xContainer.getControl('close_button').setActionCommand('Close')
         self.xContainer.setVisible(False)
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
         self.xContainer.execute()
 
+    def _createKeyListeners (self, lNames, sAction):
+        for sName in lNames:
+            self.xContainer.getControl(sName).addKeyListener(self)
+
+    def _createActionListeners (self, lNames, sAction):
+        for sName in lNames:
+            self.xContainer.getControl(sName).addActionListener(self)
+            self.xContainer.getControl(sName).setActionCommand(sAction)
+
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == "Add":
-                pass
+                self.addToLexicon()
             elif xActionEvent.ActionCommand == "Delete":
                 pass
             elif xActionEvent.ActionCommand == "Save":
-                pass
+                self.saveLexicon()
             elif xActionEvent.ActionCommand == "Update":
                 self.updateGenWords()
             elif xActionEvent.ActionCommand == "Close":
@@ -263,6 +279,13 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
         except:
             traceback.print_exc()
     
+    # XKeyListener
+    def keyPressed (self, xKeyEvent):
+        pass
+
+    def keyReleased (self, xKeyEvent):
+        self.updateGenWords()
+
     # XJobExecutor
     def trigger (self, args):
         try:
@@ -272,20 +295,33 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
             traceback.print_exc()
 
     # Code
-    def getRadioValue (self, *args):
+    @_waitPointer
+    def loadLexicon (self):
+        pass
+
+    @_waitPointer
+    def saveLexicon (self):
+        xGridDataModel = self.xGridModelLex.GridDataModel
+        lEntry = []
+        for i in range(xGridDataModel.RowCount):
+            lEntry.append(xGridDataModel.getRowData(i))
+        oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel")
+
+    def _getRadioValue (self, *args):
         for x in args:
             if x.State:
                 return x.HelpText
         return None
 
+    @_waitPointer
     def updateGenWords (self):
         self.lGeneratedFlex = []
         sLemma = self.xLemma.Text.strip()
         if sLemma:
-            if self.getRadioValue(self.xNA, self.xN, self.xA):
+            if self._getRadioValue(self.xNA, self.xN, self.xA):
                 # Substantif
-                sPOS = self.getRadioValue(self.xNA, self.xN, self.xA)
-                sGenderTag = self.getRadioValue(self.xSepi, self.xSmas, self.xSfem)
+                sPOS = self._getRadioValue(self.xNA, self.xN, self.xA)
+                sGenderTag = self._getRadioValue(self.xSepi, self.xSmas, self.xSfem)
                 if sGenderTag:
                     if self.xSs.State:
                         self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":s/*"))
@@ -296,8 +332,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
                     elif self.xSinv.State:
                         self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":i/*"))
                     sLemma2 = self.xAltLemma.Text.strip()
-                    if sLemma2 and self.getRadioValue(self.xNA2, self.xN2, self.xA2) and self.getRadioValue(self.xSepi2, self.xSmas2, self.xSfem2):
-                        sTag2 = self.getRadioValue(self.xNA2, self.xN2, self.xA2) + self.getRadioValue(self.xSepi2, self.xSmas2, self.xSfem2)
+                    if sLemma2 and self._getRadioValue(self.xNA2, self.xN2, self.xA2) and self._getRadioValue(self.xSepi2, self.xSmas2, self.xSfem2):
+                        sTag2 = self._getRadioValue(self.xNA2, self.xN2, self.xA2) + self._getRadioValue(self.xSepi2, self.xSmas2, self.xSfem2)
                         if self.xSs2.State:
                             self.lGeneratedFlex.append((sLemma2, sLemma, sTag2+":s/*"))
                             self.lGeneratedFlex.append((sLemma2+"s", sLemma, sTag2+":p/*"))
@@ -306,11 +342,11 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
                             self.lGeneratedFlex.append((sLemma2+"x", sLemma, sTag2+":p/*"))
                         elif self.xSinv2.State:
                             self.lGeneratedFlex.append((sLemma2, sLemma, sTag2+":i/*"))
-            elif self.getRadioValue(self.xM1, self.xM2, self.xMP):
+            elif self._getRadioValue(self.xM1, self.xM2, self.xMP):
                 # Nom propre
-                sPOS = self.getRadioValue(self.xM1, self.xM2, self.xMP)
+                sPOS = self._getRadioValue(self.xM1, self.xM2, self.xMP)
                 sLemma = sLemma[0:1].upper() + sLemma[1:];
-                sGenderTag = self.getRadioValue(self.xMepi, self.xMmas, self.xMfem)
+                sGenderTag = self._getRadioValue(self.xMepi, self.xMmas, self.xMfem)
                 if sGenderTag:
                     self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":i/*"))
             elif self.xV.State:
@@ -371,7 +407,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
                 sTags = self.xTags.Text.strip()
                 if sFlexion and sTags.startswith(":"):
                     self.lGeneratedFlex.append((sFlexion, sLemma, sTags))
-        self.showGenWords()
+        self._showGenWords()
 
     def _getConjRules (self, sVerb):
         if sVerb.endswith("ir"):
@@ -395,7 +431,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
             # troisième groupe
             return [ [0, "", ":Y/*", false] ]
 
-    def showGenWords (self):
+    def _showGenWords (self):
         xGridDataModel = self.xGridModelNew.GridDataModel
         xGridDataModel.removeAllRows()
         if not self.lGeneratedFlex:
@@ -405,53 +441,66 @@ class LexiconEditor (unohelper.Base, XActionListener, XJobExecutor):
             xGridDataModel.addRow(i, (sFlexion, sLemma, sTag))
         self.xAdd.Enabled = True
 
-    @_waitPointer
-    def add (self):
-        pass
+    def _resetWidgets (self):
+        self.xLemma.Text = ""
+        self.xNA.State = False
+        self.xN.State = False
+        self.xA.State = False
+        self.xM1.State = False
+        self.xM2.State = False
+        self.xMP.State = False
+        self.xV.State = False
+        self.xW.State = False
+        self.xX.State = False
+        self.xSepi.State = False
+        self.xSmas.State = False
+        self.xSfem.State = False
+        self.xSs.State = False
+        self.xSx.State = False
+        self.xSinv.State = False
+        self.xAltLemma.Text = ""
+        self.xNA2.State = False
+        self.xN2.State = False
+        self.xA2.State = False
+        self.xSepi2.State = False
+        self.xSmas2.State = False
+        self.xSfem2.State = False
+        self.xSs2.State = False
+        self.xSx2.State = False
+        self.xSinv2.State = False
+        self.xMepi.State = False
+        self.xMmas.State = False
+        self.xMfem.State = False
+        self.xV_i.State = False
+        self.xV_t.State = False
+        self.xV_n.State = False
+        self.xV_p.State = False
+        self.xV_m.State = False
+        self.xV_ae.State = False
+        self.xV_aa.State = False
+        self.xV_pp.State = False
+        self.xVpattern.Text = ""
+        self.xFlexion.Text = ""
+        self.xTags.Text = ""
+        self.xGridModelNew.GridDataModel.removeAllRows()
 
     @_waitPointer
-    def delete (self):
-        pass
+    def addToLexicon (self):
+        self.xAdd.Enabled = False
+        xGridDataModelNew = self.xGridModelNew.GridDataModel
+        xGridDataModelLex = self.xGridModelLex.GridDataModel
+        nStart = xGridDataModelLex.RowCount
+        for i in range(xGridDataModelNew.RowCount):
+            sFlexion, sLemma, sTag = xGridDataModelNew.getRowData(i)
+            xGridDataModelLex.addRow(nStart + i, (sFlexion, sLemma, sTag))
+        self.xSave.Enabled = True
+        self._resetWidgets()
 
     @_waitPointer
-    def loadLexicon (self):
-        pass
+    def delete (self, xList):
+        xGridDataModel = xList.GridDataModel
 
-    @_waitPointer
-    def saveLexicon (self):
-        pass    
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
 #g_ImplementationHelper.addImplementation(LexiconEditor, 'net.grammalecte.LexiconEditor', ('com.sun.star.task.Job',))
-
-
-# const oFlexGen = {
-
-#     cMainTag: "",
-
-#     lFlexion: [],
-
-#     clear: function () {
-#         this.lFlexion = [];
-#         oWidgets.hideElement("actions");
-#     },
-
-#     addToLexicon: function () {
-#         try {
-#             oLexicon.addFlexions(this.lFlexion);
-#             document.getElementById("lemma").value = "";
-#             document.getElementById("lemma").focus();
-#             oWidgets.showSection("section_vide");
-#             oWidgets.hideElement("editor");
-#             oWidgets.hideElement("actions");
-#             oWidgets.clear();
-#             oWidgets.showElement("save_button");
-#             this.clear();
-#             this.cMainTag = "";
-#         }
-#         catch (e) {
-#             showError(e);
-#         }
-#     }
-# }

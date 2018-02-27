@@ -10,7 +10,6 @@ dStrings = {
         # Ajout
         "add_section": "Nouveau mot (lemme)",
         "lemma": "Lemme",
-        "generate_button": "Créer",
 
         # catégories
         "common_name": "Nom commun",
@@ -18,7 +17,7 @@ dStrings = {
         "nom": "Nom",
         "adj": "Adjectif",
         "alt_lemma": "[optionnel] Autre forme (masculine, féminine, variante, etc.)",
-      
+
         "proper_name": "Nom propre",
         "M1": "Prénom",
         "M2": "Patronyme",
