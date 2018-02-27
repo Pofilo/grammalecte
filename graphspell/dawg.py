@@ -27,7 +27,7 @@ def readFile (spf):
             for sLine in hSrc:
                 sLine = sLine.strip()
                 if sLine and not sLine.startswith("#"):
-                    yield sLine
+                    yield sLine.split("\t")
     else:
         raise OSError("# Error. File not found or not loadable: " + spf)
 
@@ -41,7 +41,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, spfSrc, cStemming, sLangCode, sLangName="", sDicName=""):
+    def __init__ (self, src, cStemming, sLangCode, sLangName="", sDicName=""):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -58,10 +58,13 @@ class DAWG:
         lAff  = [];   dAff  = {}; nAff  = 0; dAffOccur = {}
         lTag  = [];   dTag  = {}; nTag  = 0; dTagOccur = {}
         nErr = 0
-        
+
         # read lexicon
-        for sLine in readFile(spfSrc):
-            sFlex, sStem, sTag = sLine.split("\t")
+        if type(src) is str:
+            iterable = readFile(src)
+        else:
+            iterable = src
+        for sFlex, sStem, sTag in iterable:
             addWordToCharDict(sFlex)
             # chars
             for c in sFlex:
@@ -97,12 +100,8 @@ class DAWG:
         dValOccur = dict( [ (dChar[c], dCharOccur[c])  for c in dChar ] \
                         + [ (dAff[aff]+nChar, dAffOccur[aff]) for aff in dAff ] \
                         + [ (dTag[tag]+nChar+nAff, dTagOccur[tag]) for tag in dTag ] )
-        #with open(spfSrc[:-8]+".valuesfreq.txt", 'w', encoding='utf-8') as hFreqDst:  # DEBUG
-        #    for iKey, nOcc in sorted(dValOccur.items(), key=lambda t: t[1], reverse=True):
-        #        hFreqDst.write("{}: {}\n".format(lVal[iKey], nOcc))
-        #    hFreqDst.close()
         
-        self.sFileName = spfSrc
+        self.sFileName = src  if type(src) is str  else "[None]"
         self.sLangCode = sLangCode
         self.sLangName = sLangName
         self.sDicName = sDicName
