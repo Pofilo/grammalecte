@@ -309,7 +309,7 @@ class DAWG:
 
 
     # BINARY CONVERSION
-    def createBinary (self, sPathFile, nCompressionMethod, bDebug=False):
+    def _calculateBinary (self, nCompressionMethod):
         print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nCompressionMethod)
         if nCompressionMethod == 1:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 2) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes1()
@@ -333,10 +333,6 @@ class DAWG:
         print("   Arc size: {} bytes, Address size: {} bytes   ->   {} * {} = {} bytes".format( self.nBytesArc, self.nBytesNodeAddress, \
                                                                                                 self.nBytesArc+self.nBytesNodeAddress, self.nArc, \
                                                                                                 (self.nBytesArc+self.nBytesNodeAddress)*self.nArc ))
-        self._writeBinary(sPathFile, nCompressionMethod)
-        self._writeAsJSObject(sPathFile, nCompressionMethod)
-        if bDebug:
-            self._writeNodes(sPathFile, nCompressionMethod)
 
     def _calcNumBytesNodeAddress (self):
         "how many bytes needed to store all nodes/arcs in the binary dictionary"
@@ -388,9 +384,8 @@ class DAWG:
                     self.lSortedNodes[i].size = nSize
                     bEnd = False
 
-    def _writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
-        if not spfDst.endswith(".json"):
-            spfDst += "."+str(nCompressionMethod)+".json"
+    def getBinaryAsJSON (self, nCompressionMethod=1, bBinaryDictAsHexString=True):
+        self._calculateBinary(nCompressionMethod)
         byDic = b""
         if nCompressionMethod == 1:
             byDic = self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress)
@@ -404,12 +399,7 @@ class DAWG:
             byDic = self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
             for oNode in self.lSortedNodes:
                 byDic += oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
-
-        with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
-            if bInJSModule:
-                hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write(json.dumps({
-                            "sHeader": "/pyfsa/",
+        return json.dumps({ "sHeader": "/pyfsa/",
                             "sLangCode": self.sLangCode,
                             "sLangName": self.sLangName,
                             "sDicName": self.sDicName,
@@ -429,15 +419,24 @@ class DAWG:
                             "nBytesArc": self.nBytesArc,
                             "nBytesNodeAddress": self.nBytesNodeAddress,
                             "nBytesOffset": self.nBytesOffset,
-                            # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
+                            # Mozilla’s JS parser don’t like file bigger than 4 Mb!
                             # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                             # https://github.com/mozilla/addons-linter/issues/1361
                             "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
-                        }, ensure_ascii=False))
+                        }, ensure_ascii=False)
+
+
+    def writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
+        if not spfDst.endswith(".json"):
+            spfDst += "."+str(nCompressionMethod)+".json"
+        with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
+            if bInJSModule:
+                hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
+            hDst.write( self.getBinaryAsJSON(nCompressionMethod, bBinaryDictAsHexString) )
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
-    def _writeBinary (self, sPathFile, nCompressionMethod):
+    def writeBinary (self, sPathFile, nCompressionMethod, bDebug=False):
         """
         Format of the binary indexable dictionary:
         Each section is separated with 4 bytes of \0
@@ -472,6 +471,7 @@ class DAWG:
                 * A list of nodes which are a list of arcs with an address of the next node.
                   See DawgNode.convToBytes() for details.
         """
+        self._calculateBinary(nCompressionMethod)
         if not sPathFile.endswith(".bdic"):
             sPathFile += "."+str(nCompressionMethod)+".bdic"
         with open(sPathFile, 'wb') as hDst:
@@ -500,7 +500,8 @@ class DAWG:
                 hDst.write(self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
-            hDst.close()
+        if bDebug:
+            self._writeNodes(sPathFile, nCompressionMethod)
 
     def _getDate (self):
         return time.strftime("%Y.%m.%d, %H:%M")
@@ -523,19 +524,6 @@ class DAWG:
                 #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset) ] ).strip() )
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
-            hDst.close()
-    
-    def writeResults (self, sPathFile):
-        bFileExits = os.path.isfile("_lexicons.res.txt")
-        with open("_lexicons.res.txt", "a", encoding='utf-8', newline="\n") as hDst:
-            sFormat1 = "{:<12} {:>12} {:>5} {:>8} {:>8} {:>6} {:>8} {:>9} {:>9} {:>15} {:>12} {:>12}\n"
-            sFormat2 = "{:<12} {:>12,} {:>5,} {:>8,} {:>8} {:>6,} {:>8,} {:>9,} {:>9,} {:>15,} {:>12,} {:>12,}\n"
-            if not bFileExits:
-                hDst.write(sFormat1.format("Lexicon", "Entries", "Chars", "Affixes", "Stemming", "Tags", "Values", "Nodes", "Arcs", "Lexicon (Kb)", "Dict (Kb)", "LT Dict (Kb)"))
-            hDst.write(sFormat2.format(self.sLangName, self.nEntry, self.nChar, self.nAff, self.cStemming + "FX", self.nTag, self.nArcVal, \
-                                       self.nNode, self.nArc, os.path.getsize(self.sFileName), os.path.getsize(sPathFile), \
-                                       os.path.getsize("cfsa/dict/{}.dict".format(self.sLangName)) if os.path.isfile("cfsa/dict/{}.dict".format(self.sLangName)) else 0))
-            hDst.close()
 
 
 
