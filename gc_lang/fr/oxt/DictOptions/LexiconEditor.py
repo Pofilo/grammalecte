@@ -539,14 +539,17 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     def deleteSelectedEntries (self):
         # generated entries
         xGridDataModel = self.xGridModelNew.GridDataModel
+        #helpers.xray(xGridDataModel)
         for i in self.xGridControlNew.getSelectedRows():
-            xGridDataModel.removeRow(i)
+            if i < xGridDataModel.RowCount:
+                xGridDataModel.removeRow(i)
         self.xGridControlNew.deselectAllRows()
         # lexicon
         xGridDataModel = self.xGridModelLex.GridDataModel
         nSelectedEntries = len(self.xGridControlLex.getSelectedRows())
         for i in self.xGridControlLex.getSelectedRows():
-            xGridDataModel.removeRow(i)
+            if i < xGridDataModel.RowCount:
+                xGridDataModel.removeRow(i)
         self.xGridControlLex.deselectAllRows()
         self.xNumDeleted.Label = str(int(self.xNumDeleted.Label) + nSelectedEntries)
         self.xNumLex.Label = str(xGridDataModel.RowCount)
