@@ -286,6 +286,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 self.deleteSelectedEntries()
             elif xActionEvent.ActionCommand == "Save":
                 self.saveLexicon()
+            elif xActionEvent.ActionCommand == "Import":
+                self.importDictionary()
             elif xActionEvent.ActionCommand == "Export":
                 self.exportDictionary()
             elif xActionEvent.ActionCommand == "Close":
@@ -535,15 +537,35 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     @_waitPointer
     def deleteSelectedEntries (self):
+        # generated entries
         xGridDataModel = self.xGridModelNew.GridDataModel
         for i in self.xGridControlNew.getSelectedRows():
             xGridDataModel.removeRow(i)
+        self.xGridControlNew.deselectAllRows()
+        # lexicon
         xGridDataModel = self.xGridModelLex.GridDataModel
         nSelectedEntries = len(self.xGridControlLex.getSelectedRows())
         for i in self.xGridControlLex.getSelectedRows():
             xGridDataModel.removeRow(i)
+        self.xGridControlLex.deselectAllRows()
         self.xNumDeleted.Label = str(int(self.xNumDeleted.Label) + nSelectedEntries)
         self.xNumLex.Label = str(xGridDataModel.RowCount)
+
+    @_waitPointer
+    def importDictionary (self):
+        pass
+
+    @_waitPointer
+    def exportDictionary (self):
+        xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
+        xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+        #xFilePicker.setDisplayDirectory("")
+        #xFilePicker.setMultiSelectionMode(True)
+        nResult = xFilePicker.execute()
+        if nResult == 1:
+            pass
+            #lFile = xFilePicker.getSelectedFiles()
+            #lFile = xFilePicker.getFiles()
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
