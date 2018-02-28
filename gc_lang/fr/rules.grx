@@ -4226,6 +4226,32 @@ __[i]/conf(conf_quelle_nom_adj)__
 TEST: {{qu’elle}} emmerdeuse.
 
 
+__[i]/conf(conf_qu_elle_verbe)__
+    (quelles?) +({w_1})  @@0,$
+    <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y) ", ":[NA].*:[fe]") or \2 == "t" or \2 == "s") >>>
+    <<- \1.endswith("e") and not morph(\2, ":V0e", False) -1>> qu’elle                              # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
+    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False) -1>> qu’elles                # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
+    <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
+    <<- \1.endswith("e") -1>> qu’elle                                                               # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 3
+    <<- __else__ and \1.endswith("s") -1>> qu’elles                                                 # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 4
+
+TEST: Je sais {{quelle}} est partie.
+TEST: {{Quelle}} partit prendre son repas à la cantine, je n’en avais cure.
+TEST: Il se plaint {{quelle}} ne nous dit rien.
+TEST: {{Quelles}} sont intelligentes, ces filles-là.
+TEST: {{Quelle}} a du répondant, cette gamine !
+TEST: {{Quelle}} y vienne, on verra ce qu’elle vaut.
+TEST: Je veux {{quelles}} s’efforcent à y parvenir.
+TEST: {{Quelle}} l’apprenne un jour, on n’y peut rien.
+TEST: Je crois {{quelle}} n’en sait pas assez pour nous nuire.
+TEST: {{Quelles}} t’arrivent seulement à la cheville, voilà qui serait étonnant.
+TEST: {{Quelles}} m’engueulent encore une seule fois et elles vont le regretter.
+TEST: Je crois {{quelle}} est partie.
+TEST: il pense {{quelles}} sont devenues dangereuses.
+TEST: Quelle est sa passion ?
+TEST: Quelles sont leurs principales études ?
+
+
 # savoir / ignorer
 __[i]/conf(être_pas_sans_savoir)__
     ({etre}) pas sans (ignor(?:e[rz]|ée?s?|ai[st]))  @@0,$
@@ -10364,7 +10390,7 @@ __[i](p_les_avoir_fait_vinfi)__
 
 __[i]/ppas(ppas_pronom_avoir)__
     (?:j’|je |tu |ils? |elles? |on |et )(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \2) and morph(word(-1), ">puisque? ", False, True)
+    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \2) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|)) ", False, True)
         and morph(\1, ":V0a", False) and not \2.isupper() and morphex(\2, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
     -2>> =suggMasSing(@)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -10374,23 +10400,25 @@ TEST: il a {{affronte}} une bande de voleurs de bétail
 TEST: J’ai {{mettrai}} du sel.                                                    ->> mis
 TEST: J’ai {{lut}} son journal.                                                   ->> lu
 TEST: Ils avaient barre sur lui.
+TEST: Si j’avais {{sut}}.
 
 
 __[i]/ppas(ppas_nous_vous_avoir)__
     ([nv]ous) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,$
     <<- morph(\1, ":Os", False)
-        and not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">puisque? ", False, True)
+        and not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|)) ", False, True)
         and morph(\2, ":V0a", False) and not \3.isupper() and morphex(\3, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
     -3>> =suggMasSing(@)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Nous avons {{donne}} tout notre potentiel.
+TEST: mais nous avons {{était}} surpris par cette annonce.
 TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 
 __[i]/ppas(ppas_det_nom_avoir)__
     (l(?:’|es? |a |eurs )|ce(?:s|tte|t|rtaine?s|) |des |quelques |[mts](?:es|on|a) |[nv]o(?:s|tre) ) *({w_2}) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \4) and morph(word(-1), ">puisque? ", False, True)
+    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \4) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|)) ", False, True)
         and not morph(\2, ":G", False) and morph(\3, ":V0a", False) and not \4.isupper() and morphex(\4, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         and not (\3 == "avions" and morph(\4, ":3[sp]", False))
     -4>> =suggMasSing(@)
@@ -10398,6 +10426,7 @@ __[i]/ppas(ppas_det_nom_avoir)__
 
 TEST: Les femmes lui avait {{conseillées}} de se taire.
 TEST: le mur avait {{était}} détruit
+TEST: Lorsque les femmes ont {{apprit}} la nouvelle…
 TEST: Certains les ont d’abord jugés trop lents.
 
 
