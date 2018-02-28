@@ -79,19 +79,22 @@ class SuggResult:
 class IBDAWG:
     """INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH"""
 
-    def __init__ (self, sfDict):
-        self.by = pkgutil.get_data(__package__, "_dictionaries/" + sfDict)
-        if not self.by:
-            raise OSError("# Error. File not found or not loadable: "+sfDict)
+    def __init__ (self, source):
+        if type(source) is str:
+            self.by = pkgutil.get_data(__package__, "_dictionaries/" + source)
+            if not self.by:
+                raise OSError("# Error. File not found or not loadable: "+source)
 
-        if sfDict.endswith(".bdic"):
-            self._initBinary()
-        elif sfDict.endswith(".json"):
-            self._initJSON()
+            if source.endswith(".bdic"):
+                self._initBinary()
+            elif source.endswith(".json"):
+                self._initJSON(json.loads(self.by.decode("utf-8")))     #json.loads(self.by)    # In Python 3.6, can read directly binary strings
+            else:
+                raise OSError("# Error. Unknown file type: "+source)
         else:
-            raise OSError("# Error. Unknown file type: "+sfDict)
+            self._initJSON(source)
 
-        self.sFileName = sfDict
+        self.sFileName = source  if type(source) is str  else "[None]"
 
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
@@ -169,10 +172,9 @@ class IBDAWG:
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
         self.nBytesOffset = 1 # version 3
 
-    def _initJSON (self):
+    def _initJSON (self, oJSON):
         "initialize with a JSON text file"
-        self.__dict__.update(json.loads(self.by.decode("utf-8")))
-        #self.__dict__.update(json.loads(self.by))                  # In Python 3.6, can read directly binary strings
+        self.__dict__.update(oJSON)
         self.byDic = binascii.unhexlify(self.sByDic)
 
     def getInfo (self):
