@@ -111,12 +111,12 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
-            xChild = self.xSettingNode.getByName("o_fr")
             if xActionEvent.ActionCommand == 'Apply':
-                xChild.setPropertyValue("graphspell", self.xGraphspell.State)
-                xChild.setPropertyValue("graphspellsugg", self.xGraphspellSugg.State)
+                xChild = self.xSettingNode.getByName("o_fr")
+                xChild.setPropertyValue("use_graphspell", self.xGraphspell.State)
+                xChild.setPropertyValue("use_graphspell_sugg", self.xGraphspellSugg.State)
                 #xChild.setPropertyValue("extended_dic", self.xExtendedDic.State)
-                xChild.setPropertyValue("personal_dic", self.xPersonalDic.State)
+                xChild.setPropertyValue("use_personal_dic", self.xPersonalDic.State)
                 self.xSettingNode.commitChanges()
             elif xActionEvent.ActionCommand == "Import":
                 xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
@@ -145,10 +145,10 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
     def _loadOptions (self):
         try:
             xChild = self.xSettingNode.getByName("o_fr")
-            self.xGraphspell.State = xChild.getPropertyValue("graphspell")
-            self.xGraphspellSugg.State = xChild.getPropertyValue("graphspellsugg")
+            self.xGraphspell.State = xChild.getPropertyValue("use_graphspell")
+            self.xGraphspellSugg.State = xChild.getPropertyValue("use_graphspell_sugg")
             #self.xExtendedDic.State = xChild.getPropertyValue("extended_dic")
-            self.xPersonalDic.State = xChild.getPropertyValue("personal_dic")
+            self.xPersonalDic.State = xChild.getPropertyValue("use_personal_dic")
         except:
             traceback.print_exc()
 
