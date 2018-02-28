@@ -399,32 +399,32 @@ class DAWG:
             byDic = self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
             for oNode in self.lSortedNodes:
                 byDic += oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
-        return json.dumps({ "sHeader": "/pyfsa/",
-                            "sLangCode": self.sLangCode,
-                            "sLangName": self.sLangName,
-                            "sDicName": self.sDicName,
-                            "sFileName": self.sFileName,
-                            "sDate": self._getDate(),
-                            "nEntry": self.nEntry,
-                            "nChar": self.nChar,
-                            "nAff": self.nAff,
-                            "nTag": self.nTag,
-                            "cStemming": self.cStemming,
-                            "dChar": self.dChar,
-                            "nNode": self.nNode,
-                            "nArc": self.nArc,
-                            "nArcVal": self.nArcVal,
-                            "lArcVal": self.lArcVal,
-                            "nCompressionMethod": nCompressionMethod,
-                            "nBytesArc": self.nBytesArc,
-                            "nBytesNodeAddress": self.nBytesNodeAddress,
-                            "nBytesOffset": self.nBytesOffset,
-                            # Mozilla’s JS parser don’t like file bigger than 4 Mb!
-                            # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
-                            # https://github.com/mozilla/addons-linter/issues/1361
-                            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
-                        }, ensure_ascii=False)
-
+        return {
+            "sHeader": "/pyfsa/",
+            "sLangCode": self.sLangCode,
+            "sLangName": self.sLangName,
+            "sDicName": self.sDicName,
+            "sFileName": self.sFileName,
+            "sDate": self._getDate(),
+            "nEntry": self.nEntry,
+            "nChar": self.nChar,
+            "nAff": self.nAff,
+            "nTag": self.nTag,
+            "cStemming": self.cStemming,
+            "dChar": self.dChar,
+            "nNode": self.nNode,
+            "nArc": self.nArc,
+            "nArcVal": self.nArcVal,
+            "lArcVal": self.lArcVal,
+            "nCompressionMethod": nCompressionMethod,
+            "nBytesArc": self.nBytesArc,
+            "nBytesNodeAddress": self.nBytesNodeAddress,
+            "nBytesOffset": self.nBytesOffset,
+            # Mozilla’s JS parser don’t like file bigger than 4 Mb!
+            # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
+            # https://github.com/mozilla/addons-linter/issues/1361
+            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
+        }
 
     def writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
         if not spfDst.endswith(".json"):
@@ -432,7 +432,7 @@ class DAWG:
         with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write( self.getBinaryAsJSON(nCompressionMethod, bBinaryDictAsHexString) )
+            hDst.write( json.dumps(self.getBinaryAsJSON(nCompressionMethod, bBinaryDictAsHexString), ensure_ascii=False) )
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
