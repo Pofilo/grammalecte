@@ -4226,6 +4226,32 @@ __[i]/conf(conf_quelle_nom_adj)__
 TEST: {{qu’elle}} emmerdeuse.
 
 
+__[i]/conf(conf_qu_elle_verbe)__
+    (quelles?) +({w_1})  @@0,$
+    <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y) ", ":[NA].*:[fe]") or \2 == "t" or \2 == "s") >>>
+    <<- \1.endswith("e") and not morph(\2, ":V0e", False) -1>> qu’elle                              # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
+    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False) -1>> qu’elles                # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
+    <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
+    <<- \1.endswith("e") -1>> qu’elle                                                               # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 3
+    <<- __else__ and \1.endswith("s") -1>> qu’elles                                                 # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 4
+
+TEST: Je sais {{quelle}} est partie.
+TEST: {{Quelle}} partit prendre son repas à la cantine, je n’en avais cure.
+TEST: Il se plaint {{quelle}} ne nous dit rien.
+TEST: {{Quelles}} sont intelligentes, ces filles-là.
+TEST: {{Quelle}} a du répondant, cette gamine !
+TEST: {{Quelle}} y vienne, on verra ce qu’elle vaut.
+TEST: Je veux {{quelles}} s’efforcent à y parvenir.
+TEST: {{Quelle}} l’apprenne un jour, on n’y peut rien.
+TEST: Je crois {{quelle}} n’en sait pas assez pour nous nuire.
+TEST: {{Quelles}} t’arrivent seulement à la cheville, voilà qui serait étonnant.
+TEST: {{Quelles}} m’engueulent encore une seule fois et elles vont le regretter.
+TEST: Je crois {{quelle}} est partie.
+TEST: il pense {{quelles}} sont devenues dangereuses.
+TEST: Quelle est sa passion ?
+TEST: Quelles sont leurs principales études ?
+
+
 # savoir / ignorer
 __[i]/conf(être_pas_sans_savoir)__
     ({etre}) pas sans (ignor(?:e[rz]|ée?s?|ai[st]))  @@0,$
