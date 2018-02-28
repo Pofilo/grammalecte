@@ -32,16 +32,16 @@ class SpellChecker ():
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
         self.oTokenizer = None
 
-    def _loadDictionary (self, sfDictionary, bNecessary=False):
+    def _loadDictionary (self, source, bNecessary=False):
         "returns an IBDAWG object"
-        if not sfDictionary:
+        if not source:
             return None
         try:
-            return ibdawg.IBDAWG(sfDictionary)
+            return ibdawg.IBDAWG(source)
         except Exception as e:
             if bNecessary:
-                raise Exception(str(e), "Error: <" + sfDictionary + "> not loaded.")
-            print("Error: <" + sfDictionary + "> not loaded.")
+                raise Exception(str(e), "Error: <" + str(source) + "> not loaded.")
+            print("Error: <" + str(source) + "> not loaded.")
             traceback.print_exc()
             return None
 
@@ -53,19 +53,19 @@ class SpellChecker ():
             self.loadTokenizer()
         return self.oTokenizer
 
-    def setMainDictionary (self, sfDictionary):
+    def setMainDictionary (self, source):
         "returns True if the dictionary is loaded"
-        self.oMainDic = self._loadDictionary(sfDictionary)
+        self.oMainDic = self._loadDictionary(source)
         return bool(self.oMainDic)
             
-    def setExtendedDictionary (self, sfDictionary):
+    def setExtendedDictionary (self, source):
         "returns True if the dictionary is loaded"
-        self.oExtendedDic = self._loadDictionary(sfDictionary)
+        self.oExtendedDic = self._loadDictionary(source)
         return bool(self.oExtendedDic)
 
-    def setPersonalDictionary (self, sfDictionary):
+    def setPersonalDictionary (self, source):
         "returns True if the dictionary is loaded"
-        self.oPersonalDic = self._loadDictionary(sfDictionary)
+        self.oPersonalDic = self._loadDictionary(source)
         return bool(self.oPersonalDic)
 
     # parse text functions
