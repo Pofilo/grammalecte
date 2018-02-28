@@ -138,9 +138,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xM1 = self._addWidget('M1', 'RadioButton', nX1, nY3+12, 60, nHeight, Label = self.dUI.get("M1", "#err"), HelpText = ":M1")
         self.xM2 = self._addWidget('M2', 'RadioButton', nX1, nY3+22, 60, nHeight, Label = self.dUI.get("M2", "#err"), HelpText = ":M2")
         self.xMP = self._addWidget('MP', 'RadioButton', nX1, nY3+32, 60, nHeight, Label = self.dUI.get("MP", "#err"), HelpText = ":MP")
-        self.xV = self._addWidget('verb', 'RadioButton', nX1, nY4+2, 30, nHeight, Label = self.dUI.get("verb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":V")
-        self.xW = self._addWidget('adv', 'RadioButton', nX1, nY5+2, 30, nHeight, Label = self.dUI.get("adverb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":W")
-        self.xX = self._addWidget('other', 'RadioButton', nX1, nY6+2, 30, nHeight, Label = self.dUI.get("other", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":X")
+        self.xV = self._addWidget('verb', 'RadioButton', nX1, nY4+2, 35, nHeight, Label = self.dUI.get("verb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":V")
+        self.xW = self._addWidget('adv', 'RadioButton', nX1, nY5+2, 35, nHeight, Label = self.dUI.get("adverb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":W")
+        self.xX = self._addWidget('other', 'RadioButton', nX1, nY6+2, 35, nHeight, Label = self.dUI.get("other", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":X")
         
         # Nom, adjectif
         self._addWidget("fl_nom_adj", 'FixedLine', nX1, nY2, 190, nHeight, Label = self.dUI.get("common_name", "#err"), FontDescriptor = xFDSubTitle)
