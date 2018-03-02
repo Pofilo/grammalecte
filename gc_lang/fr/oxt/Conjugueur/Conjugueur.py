@@ -20,8 +20,9 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
         self.xDialog = None
-        self.lDropDown = ["être", "avoir", "aller", "vouloir", "pouvoir", "devoir", "faire", "envoyer", "prendre", "connaître", \
-                          "savoir", "partir", "répondre", "dire", "voir", "mettre", "tenir", "sentir", "manger", "commencer", "finir", "haïr"]
+        self.lDropDown = ["être", "avoir", "aller", "vouloir", "pouvoir", "devoir", "acquérir", "connaître", "dire", "faire", \
+                          "mettre", "partir", "prendre", "répondre", "savoir", "sentir", "tenir", "vaincre", "venir", "voir", \
+                          "appeler", "envoyer", "commencer", "manger", "trouver", "accomplir", "agir", "finir", "haïr", "réussir"]
         self.sWarning = "Verbe non vérifié.\nOptions “pronominal” et “temps composés” désactivées."
 
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
@@ -82,18 +83,18 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         nY0 = 5; nY1 = nY0+17; nY2 = nY1+2; nY3 = nY2+30; nY4 = nY3+46; nY5 = nY4+55; nY6 = nY5+55; nY7 = nY6+55; nY6b = nY6+13; nY7b = nY6b+55
 
         # input field + button
-        self.input = self._addWidget('input', 'ComboBox', nX1, nY0, 80, 14, \
-                                     FontDescriptor = xFDinput, TextColor = 0x666666, Dropdown = True, LineCount = 22)
+        self.input = self._addWidget('input', 'ComboBox', nX1, nY0, 85, 14, \
+                                     FontDescriptor = xFDinput, TextColor = 0x666666, Dropdown = True, LineCount = 30)
         for n, s in enumerate(self.lDropDown):
             self.input.insertItemText(n, s)
         # button
-        self.cbutton = self._addWidget('cbutton', 'Button', nX1+85, nY0, 50, 14, Label = "Conjuguer", FontDescriptor = xFDinput)
+        self.cbutton = self._addWidget('cbutton', 'Button', nX1+90, nY0, 50, 14, Label = "Conjuguer", FontDescriptor = xFDinput)
         # options
-        self.oneg = self._addWidget('oneg', 'CheckBox', nX1+140, nY0, 40, nHeight, Label = "négation")
-        self.opro = self._addWidget('opro', 'CheckBox', nX1+185, nY0, 55, nHeight, Label = "pronominal")
-        self.ofem = self._addWidget('ofem', 'CheckBox', nX1+240, nY0, 50, nHeight, Label = "féminin")
-        self.oint = self._addWidget('oint', 'CheckBox', nX1+140, nY0+8, 60, nHeight, Label = "interrogatif")
-        self.otco = self._addWidget('otco', 'CheckBox', nX1+215, nY0+8, 60, nHeight, Label = "temps composés")
+        self.oneg = self._addWidget('oneg', 'CheckBox', nX2, nY0, 40, nHeight, Label = "négation")
+        self.opro = self._addWidget('opro', 'CheckBox', nX2+45, nY0, 55, nHeight, Label = "pronominal")
+        self.ofem = self._addWidget('ofem', 'CheckBox', nX2+100, nY0, 50, nHeight, Label = "féminin")
+        self.oint = self._addWidget('oint', 'CheckBox', nX2, nY0+8, 60, nHeight, Label = "interrogatif")
+        self.otco = self._addWidget('otco', 'CheckBox', nX2+75, nY0+8, 60, nHeight, Label = "temps composés")
 
         # group box // indicatif
         gb_infi = self._addWidget('groupbox_infi', 'FixedLine', nX1, nY2, nWidth, 10, Label = "Infinitif", \
