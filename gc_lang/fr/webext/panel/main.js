@@ -59,6 +59,9 @@ window.addEventListener(
             else if (xElem.id.startsWith("link_")) {
                 browser.tabs.create({url: xElem.dataset.url});
             }
+            else if (xElem.id == "conj_button") {
+                openConjugueurTab();
+            }
         } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
         }/* else if (xElem.tagName === "A") {
@@ -138,6 +141,19 @@ function showPage (sPageName) {
 
 function showTestResult (sText) {
     document.getElementById("tests_result").textContent = sText;
+}
+
+function openConjugueurTab () {
+    if (bChrome) {
+        browser.tabs.create({
+            url: browser.extension.getURL("panel/conjugueur.html")
+        });
+        return;
+    }
+    let xConjTab = browser.tabs.create({
+        url: browser.extension.getURL("panel/conjugueur.html")
+    });
+    xConjTab.then(onCreated, onError);
 }
 
 
