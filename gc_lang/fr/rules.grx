@@ -2012,6 +2012,7 @@ __[s](d_nom_propre_verbe)__
     ([A-ZÉÈ]{w_1}) +({w_1})  @@0,$
     <<- morph(\1, ":M") and \2.islower() and morphex(\2, ":[123][sg]", ":Q") and morph(\2, ":N", False) and morph(word(-1), ":Cs", False, True)
     =>> select(\2, ":[123][sp]")
+    <<- morph(\1, ":M", False) and morphex(\2, ":[123]s|>(?:[nmts]e|nous|vous) ", ":A") and isStart() =>> =select(\1, ":M")
 __[i](d_que_combien_pourquoi_en_y_verbe)__
     (?:que?|combien|pourquoi) +(?:en +|y +|)({w_3}) @@$
     <<- =>> exclude(\1, ":E")
@@ -10101,6 +10102,7 @@ TEST: Martine est {{marié}}.
 TEST: Martine n’est pas {{marié}}.
 TEST: Martine est très {{intelligent}}.
 TEST: Martine n’est pas très {{intelligent}}.
+TEST: Pierre est {{dominée}} par son adversaire.
 
 
 
