@@ -246,7 +246,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         }
 
         # progress bar
-        self.pbar = self._addWidget('pbar', 'ProgressBar', 22, self.xDialog.Height-16, 215, 10)
+        self.pbar = self._addWidget('pbar', 'ProgressBar', 22, self.xDialog.Height-16, 210, 10)
         self.pbar.ProgressValueMin = 0
         self.pbar.ProgressValueMax = 31
         # time counter
