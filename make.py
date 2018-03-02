@@ -455,6 +455,9 @@ def main ():
         else:
             print("Folder not found: gc_lang/"+sLang)
 
+    oNow = datetime.datetime.now()
+    print("============== MAKE GRAMMALECTE [finished] at {0.hour:>2} h {0.minute:>2} min {0.second:>2} s ==============".format(oNow))
+
 
 if __name__ == '__main__':
     main()

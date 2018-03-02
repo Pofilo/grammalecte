@@ -2012,6 +2012,7 @@ __[s](d_nom_propre_verbe)__
     ([A-ZÉÈ]{w_1}) +({w_1})  @@0,$
     <<- morph(\1, ":M") and \2.islower() and morphex(\2, ":[123][sg]", ":Q") and morph(\2, ":N", False) and morph(word(-1), ":Cs", False, True)
     =>> select(\2, ":[123][sp]")
+    <<- morph(\1, ":M", False) and morphex(\2, ":[123]s|>(?:[nmts]e|nous|vous) ", ":A") and isStart() =>> =select(\1, ":M")
 __[i](d_que_combien_pourquoi_en_y_verbe)__
     (?:que?|combien|pourquoi) +(?:en +|y +|)({w_3}) @@$
     <<- =>> exclude(\1, ":E")
@@ -4917,7 +4918,7 @@ __[i](p_en_nombre_années)__     en \d\d+(?: ans| années|) <<- ~>> *
 __[i](p_en_cours)__             en cours(?! d[e’]) <<- ~>> *
 __[i](p_en_pronom)__            en (?:[mt]oi|eux|elles?) <<- ~>> *
 __[i](p_en_qqch1)__             en (?:aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse) <<- ~>> *
-__[i](p_en_qqch2)__             en (?:aucun(?: cas|e (?:circonstance|façon|manière))|bon(?: état|ne (?:compagnie|et due forme|posture|santé(?: physique| mentale|)|voie))|bout de course|cas d(?:e (?:besoin|doute)|’urgence)|chacune? d(?:e [nv]ous|’(?:eux|elles))|chair et en os|chute libre|comparution immédiate|connaissance de cause|coupe réglée|cours de route|d’autres (?:circonstances|termes|temps)|de telles circonstances|début d(?:e (?:journée|matinée|soirée)|’après-midi)|définitive|dehors de (?:tout|)(?:ça|cela|ceci)|dents de scie|dernier (?:lieu|recours|ressort)|désespoir de cause|détention provisoire|direction d(?:u (?:nord|sud)(?:-est|-ouest|)|e l’(?:est|ouest))|état (?:de (?:choc(?: circulatoire|)|marche)|d’ébriété(?: avancée|))|excellent état|file indienne|fin d(?:e (?:compte|journée|matinée|soirée)|’après-midi)|forte (?:baisse|hausse)|gage de bonne foi|garde à vue(?: prolongée|)|grand(?: nombre|e (?:difficulté|majorité|partie|pompe))|haut lieu|l’occurrence|lieu sûr|ligne de (?:compte|mire)|mains propres|mauvais(?: état|e (?:posture|santé))|même temps|milieu d(?:e (?:journée|matinée|soirée)|’après-midi)|nombre (?:plus que |)suffisant|partant de zéro|plein(?: air| cœur| jour|e (?:gueule|figure|forme|poire|nuit|tronche))|perte de vitesse|peu de temps|piteux état|point de mire|position de (?:force|faiblesse)|premi(?:er lieu|ère (?:instance|ligne))|pure perte|quantité (?:plus que |)suffisante|quelque sorte|queue de peloton|rangs serrés|rase campagne|règle générale|roue libre|sens inverse|si peu de temps|sous-main|tête à tête|temps (?:et en heure|normal|opportun|ordinaire|utile|voulu)|termes choisis|toile de fond|tous (?:les cas|sens)|tout (?:bien tout honneur|cas|genre|lieu|et pour tout|état de cause|premier lieu|sens|temps)|toute(?: (?:bonne foi|circonstance|connaissance de cause|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité)|s circonstances)|un (?:clin d’œil|rien de temps)|une autre occasion|vase clos|voie de développement|y réfléchissant bien) <<- ~>> *
+__[i](p_en_qqch2)__             en (?:aucun(?: cas|e (?:circonstance|façon|manière))|bon(?: état|ne (?:compagnie|et due forme|posture|santé(?: physique| mentale|)|voie))|bout de course|cas d(?:e (?:besoin|doute)|’urgence)|chacune? d(?:e [nv]ous|’(?:eux|elles))|chair et en os|chute libre|comparution immédiate|connaissance de cause|coupe réglée|cours de route|d’autres (?:circonstances|termes|temps)|de telles circonstances|début d(?:e (?:journée|matinée|soirée)|’après-midi)|définitive|dehors de (?:tout|)(?:ça|cela|ceci)|dents de scie|dernier (?:lieu|recours|ressort)|désespoir de cause|détention provisoire|direction d(?:u (?:nord|sud)(?:-est|-ouest|)|e l’(?:est|ouest))|état (?:de (?:choc(?: circulatoire|)|marche)|d’ébriété(?: avancée|))|excellent état|file indienne|fin d(?:e (?:compte|journée|matinée|soirée)|’après-midi)|forte (?:baisse|hausse)|gage de bonne foi|garde à vue(?: prolongée|)|grand(?: nombre|e (?:difficulté|majorité|partie|pompe))|haut lieu|l’occurrence|lieu sûr|ligne de (?:compte|mire)|mains propres|mauvais(?: état|e (?:posture|santé))|même temps|milieu d(?:e (?:journée|matinée|soirée)|’après-midi)|nombre (?:plus que |)suffisant|partant de zéro|plein(?: air| cœur| jour|e (?:gueule|figure|forme|poire|nuit|tronche))|perte de vitesse|peu de temps|piteux état|point d(?:e mire|’orgue)|position de (?:force|faiblesse)|premi(?:er lieu|ère (?:instance|ligne))|pure perte|quantité (?:plus que |)suffisante|quelque sorte|queue de peloton|rangs serrés|rase campagne|règle générale|roue libre|sens inverse|si peu de temps|sous-main|tête à tête|temps (?:et en heure|normal|opportun|ordinaire|utile|voulu)|termes choisis|toile de fond|tous (?:les cas|sens)|tout (?:bien tout honneur|cas|genre|lieu|et pour tout|état de cause|premier lieu|sens|temps)|toute(?: (?:bonne foi|circonstance|connaissance de cause|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité)|s circonstances)|un (?:clin d’œil|rien de temps)|une autre occasion|vase clos|voie de développement|y réfléchissant bien) <<- ~>> *
 __[i](p_en_mois_dernier)__      en (?:janvier|février|mars|avril|mai|jui(?:n|llet)|ao[ûu]t|septembre|octobre|novembre|décembre) dernier <<- ~>> *
 __[i](p_en_dat_mas_qqch)__      en (?:[mts]on|leur|[nv]otre) (?:âme et conscience|for intérieur|nom propre) <<- ~>> *
 __[i](p_en_ce_qqch)__           en ce(?: (?:moment|temps-là|qui (?:[mt]e|l(?:es?|a)|[nv]ous) concern(?:e|ait))|t instant) <<- ~>> *
@@ -5891,7 +5892,7 @@ __[i]/gn(gn_ledit_accord)__
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 __[i]/gn(gn_un_accord)__
     (un) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s)") -1>> une                                    # Accord de genre erroné : « \2 » est féminin.
+    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s|Y)") -1>> une                                    # Accord de genre erroné : « \2 » est féminin.
     <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") and not morph(word(-2), ":B", False) -2>> =suggMasSing(@) # Accord de nombre erroné : « \2 » devrait être au singulier.
 __[i]/gn(gn_un_des_accord)__
@@ -5941,6 +5942,7 @@ TEST: cet {{oliviers}}
 TEST: ce {{claviers}}
 TEST: cette bouffe, c’est du {{chiens}}
 TEST: le ton monte.
+TEST: Ces enfants n’ont jamais vu quelqu’un lire.
 
 
 __<i]/gn(gn_la_accord1)__
@@ -10101,6 +10103,7 @@ TEST: Martine est {{marié}}.
 TEST: Martine n’est pas {{marié}}.
 TEST: Martine est très {{intelligent}}.
 TEST: Martine n’est pas très {{intelligent}}.
+TEST: Pierre est {{dominée}} par son adversaire.
 
 
 
