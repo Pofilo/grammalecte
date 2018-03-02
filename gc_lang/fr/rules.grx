@@ -5892,7 +5892,7 @@ __[i]/gn(gn_ledit_accord)__
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 __[i]/gn(gn_un_accord)__
     (un) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s)") -1>> une                                    # Accord de genre erroné : « \2 » est féminin.
+    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s|Y)") -1>> une                                    # Accord de genre erroné : « \2 » est féminin.
     <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
     <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") and not morph(word(-2), ":B", False) -2>> =suggMasSing(@) # Accord de nombre erroné : « \2 » devrait être au singulier.
 __[i]/gn(gn_un_des_accord)__
@@ -5942,6 +5942,7 @@ TEST: cet {{oliviers}}
 TEST: ce {{claviers}}
 TEST: cette bouffe, c’est du {{chiens}}
 TEST: le ton monte.
+TEST: Ces enfants n’ont jamais vu quelqu’un lire.
 
 
 __<i]/gn(gn_la_accord1)__
