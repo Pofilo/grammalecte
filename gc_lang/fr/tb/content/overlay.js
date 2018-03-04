@@ -502,6 +502,9 @@ var oGrammarChecker = {
     onOpenConjugueur: function (e) {
         this.openDialog("chrome://grammarchecker/content/conjugueur.xul", "", "chrome, resizable=no");
     },
+    onOpenLexiconEditor: function (e) {
+        this.openDialog("chrome://grammarchecker/content/lex_editor.xul", "", "chrome, resizable=no");
+    },
     onAbout: function (e) {
         this.openDialog("chrome://grammarchecker/content/about.xul", "", "chrome, dialog, modal, resizable=no");
     }

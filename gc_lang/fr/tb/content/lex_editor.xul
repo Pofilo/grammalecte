@@ -1,0 +1,181 @@
+<?xml version="1.0"?>
+<?xml-stylesheet href="chrome://global/skin/" type="text/css"?>
+<?xml-stylesheet href="chrome://grammarchecker/content/lex_editor.css" type="text/css"?>
+
+<!DOCTYPE dialog SYSTEM "chrome://grammarchecker/locale/lex_editor.dtd">
+
+<dialog
+  id="grammalecte-gcoptions-window"
+  title="&window.title;"
+  orient="vertical"
+  buttons="accept, cancel, extra1"
+  ondialogaccept="oOptControl.save();"
+  ondialogcancel="return;"
+  buttonlabelextra1="&button.export.label;"
+  ondialogextra1="oOptControl.reset();"
+  defaultButton="accept"
+  width="500"
+  onload="document.getElementById('grammalecte-gcoptions-window').centerWindowOnScreen();"
+  xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
+
+  <!-- Other elements go here -->
+  
+  <tabbox id="tabs" selectedIndex="0">
+    <tabs>
+      <tab label="&tab.editor.label;"/>
+      <tab label="&tab.lexicon.label;"/>
+    </tabs>
+
+    <tabpanels>
+
+      <tabpanel orient="vertical">
+        <dialogheader id="newword-title" title="&dialogheader.newword.label;" description="" />
+        <hbox>
+          
+          <vbox>
+            <label class="section" value="Nouveau mot (lemme)" />
+            <textbox id="flexion" value="" />
+            <radiogroup orient="horizontal">
+              <radio id="o_pos_nom_adj" class="option" label="Nom, adjectif" />
+              <radio id="o_pos_nom_propre" class="option" label="Nom propre" />
+              <radio id="o_pos_verbe" class="option" label="Verbe" />
+              <radio id="o_pos_adverbe" class="option" label="Adverbe" />
+              <radio id="o_pos_autre" class="option" label="Autre" />
+            </radiogroup>
+
+            <label class="section" value="Nom et adjectif" />
+            <hbox>
+              <radiogroup orient="vertical">
+                <radio id="o_pos_nom_adj" class="option" label="Nom et adjectif" />
+                <radio id="o_pos_nom" class="option" label="Nom" />
+                <radio id="o_pos_adj" class="option" label="Adjectif" />
+              </radiogroup>
+              <radiogroup orient="vertical">
+                <radio id="o_pos_epi" class="option" label="épicène" />
+                <radio id="o_pos_mas" class="option" label="masculin" />
+                <radio id="o_pos_fem" class="option" label="féminin" />
+              </radiogroup>
+              <radiogroup orient="vertical">
+                <radio id="o_pos_s" class="option" label="pluriel en ·s" />
+                <radio id="o_pos_x" class="option" label="pluriel en ·x" />
+                <radio id="o_pos_inv" class="option" label="invariable" />
+              </radiogroup>
+            </hbox>
+
+            <label class="section" value="Nom propre" />
+            <hbox>
+              <radiogroup orient="vertical">
+                <radio id="o_pos_M1" class="option" label="Prénom" />
+                <radio id="o_pos_M2" class="option" label="Patronyme" />
+                <radio id="o_pos_MP" class="option" label="Autre" />
+              </radiogroup>
+              <radiogroup orient="vertical">
+                <radio id="o_pos_epi" class="option" label="épicène" />
+                <radio id="o_pos_mas" class="option" label="masculin" />
+                <radio id="o_pos_fem" class="option" label="féminin" />
+              </radiogroup>
+            </hbox>              
+
+            <label class="section" value="Verbe" />
+            <checkbox id="option_tu" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <checkbox id="option_maj" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <checkbox id="option_num" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <checkbox id="option_virg" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <label class="section" value="Adverbe" />
+            <label class="section" value="Autre" />
+            <hbox>
+              <vbox>
+                <label class="section" value="Flexion" />
+                <textbox id="flexion" value="" />
+              </vbox>
+              <vbox>
+                <label class="section" value="Étiquettes" />
+                <textbox id="tags" value="" />
+              </vbox>
+            </hbox>
+          </vbox>
+
+          <vbox>
+            <label class="section" value="Mots générés" />
+            <listbox>
+              <listhead>
+                <listheader label="Flexions"/>
+                <listheader label="Tags"/>
+              </listhead>
+
+              <listcols>
+                <listcol flex="4"/>
+                <listcol flex="4"/>
+              </listcols>
+
+              <listitem>
+                <listcell label="George"/>
+                <listcell label="House"/>
+              </listitem>
+              <listitem>
+                <listcell label="Mary Ellen"/>
+                <listcell label="House"/>
+              </listitem>
+              <listitem>
+                <listcell label="Roger"/>
+                <listcell label="House"/>
+              </listitem>
+            </listbox>
+          </vbox>
+        </hbox>
+      </tabpanel>
+
+      <tabpanel orient="vertical">
+        <dialogheader id="lexicon-title" title="&dialogheader.lexicon.label;" description="" />
+        <hbox>
+          <vbox>
+            <label class="section" value="Nouveau mot (lemme)" />
+            <checkbox id="chim" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <checkbox id="ocr" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <label class="section" value="Nom et adjectif" />
+            <checkbox id="typo" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <checkbox id="apos" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <checkbox id="esp" class="option" label="vvv aaaa bbbbb zzzzzz" />
+          </vbox>
+          <vbox>
+            <label class="section" value="Mots générés" />
+            <listbox>
+              <listhead>
+                <listheader label="Flexions"/>
+                <listheader label="Lemme"/>
+                <listheader label="Tags"/>
+              </listhead>
+
+              <listcols>
+                <listcol flex="4"/>
+                <listcol flex="3"/>
+                <listcol flex="4"/>
+              </listcols>
+
+              <listitem>
+                <listcell label="George"/>
+                <listcell label="House Painter"/>
+                <listcell label="House"/>
+              </listitem>
+              <listitem>
+                <listcell label="Mary Ellen"/>
+                <listcell label="Candle Maker"/>
+                <listcell label="House"/>
+              </listitem>
+              <listitem>
+                <listcell label="Roger"/>
+                <listcell label="Swashbuckler"/>
+                <listcell label="House"/>
+              </listitem>
+            </listbox>
+          </vbox>
+        </hbox>
+      </tabpanel>
+
+    </tabpanels>
+
+  </tabbox>
+
+  <script type="application/x-javascript" src="lex_editor.js" />
+
+</dialog>
