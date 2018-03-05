@@ -5,7 +5,7 @@
 <!DOCTYPE dialog SYSTEM "chrome://grammarchecker/locale/lex_editor.dtd">
 
 <dialog
-  id="grammalecte-gcoptions-window"
+  id="grammalecte-lexicon-editor-window"
   title="&window.title;"
   orient="vertical"
   buttons="accept, cancel, extra1"
@@ -15,7 +15,7 @@
   ondialogextra1="oOptControl.reset();"
   defaultButton="accept"
   width="500"
-  onload="document.getElementById('grammalecte-gcoptions-window').centerWindowOnScreen();"
+  onload="document.getElementById('grammalecte-lexicon-editor-window').centerWindowOnScreen();"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <!-- Other elements go here -->
@@ -28,23 +28,17 @@
 
     <tabpanels>
 
+      <!-- NEW WORD -->
       <tabpanel orient="vertical">
-        <dialogheader id="newword-title" title="&dialogheader.newword.label;" description="" />
+        
         <hbox>
           
           <vbox>
-            <label class="section" value="Nouveau mot (lemme)" />
-            <textbox id="flexion" value="" />
-            <radiogroup orient="horizontal">
-              <radio id="o_pos_nom_adj" class="option" label="Nom, adjectif" />
-              <radio id="o_pos_nom_propre" class="option" label="Nom propre" />
-              <radio id="o_pos_verbe" class="option" label="Verbe" />
-              <radio id="o_pos_adverbe" class="option" label="Adverbe" />
-              <radio id="o_pos_autre" class="option" label="Autre" />
-            </radiogroup>
+            <dialogheader title="Nouveau mot (lemme)" description="Générateur" />
+            <textbox id="lemma" value="" />
 
-            <label class="section" value="Nom et adjectif" />
-            <hbox>
+            <checkbox class="subsection" label="Nom et adjectif" />
+            <hbox class="m_left">
               <radiogroup orient="vertical">
                 <radio id="o_pos_nom_adj" class="option" label="Nom et adjectif" />
                 <radio id="o_pos_nom" class="option" label="Nom" />
@@ -60,10 +54,32 @@
                 <radio id="o_pos_x" class="option" label="pluriel en ·x" />
                 <radio id="o_pos_inv" class="option" label="invariable" />
               </radiogroup>
-            </hbox>
 
-            <label class="section" value="Nom propre" />
-            <hbox>
+            </hbox>
+            <vbox class="m_left2">
+              <label class="subsection" value="[optionnel] Autre forme (masculine, féminine, variante…)" />
+              <textbox id="lemma2" value="" />
+              <hbox>
+                <radiogroup orient="vertical">
+                  <radio id="o_pos_nom_adj2" class="option" label="Nom et adjectif" />
+                  <radio id="o_pos_nom2" class="option" label="Nom" />
+                  <radio id="o_pos_adj2" class="option" label="Adjectif" />
+                </radiogroup>
+                <radiogroup orient="vertical">
+                  <radio id="o_pos_epi2" class="option" label="épicène" />
+                  <radio id="o_pos_mas2" class="option" label="masculin" />
+                  <radio id="o_pos_fem2" class="option" label="féminin" />
+                </radiogroup>
+                <radiogroup orient="vertical">
+                  <radio id="o_pos_s2" class="option" label="pluriel en ·s" />
+                  <radio id="o_pos_x2" class="option" label="pluriel en ·x" />
+                  <radio id="o_pos_inv2" class="option" label="invariable" />
+                </radiogroup>
+              </hbox>
+            </vbox>
+
+            <checkbox class="subsection" label="Nom propre" />
+            <hbox class="m_left">
               <radiogroup orient="vertical">
                 <radio id="o_pos_M1" class="option" label="Prénom" />
                 <radio id="o_pos_M2" class="option" label="Patronyme" />
@@ -76,28 +92,46 @@
               </radiogroup>
             </hbox>              
 
-            <label class="section" value="Verbe" />
-            <checkbox id="option_tu" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <checkbox id="option_maj" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <checkbox id="option_num" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <checkbox id="option_virg" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <label class="section" value="Adverbe" />
-            <label class="section" value="Autre" />
-            <hbox>
+            <checkbox class="subsection" label="Verbe" />
+            <hbox class="m_left">
               <vbox>
-                <label class="section" value="Flexion" />
+                <checkbox id="o_v_i" class="option" label="intransitif" />
+                <checkbox id="o_v_t" class="option" label="transitif" />
+                <checkbox id="o_v_n" class="option" label="transitif indirect" />
+                <checkbox id="o_v_p" class="option" label="pronominal" />
+                <checkbox id="o_v_m" class="option" label="impersonnel" />
+              </vbox>
+              <vbox>
+                <label value="Auxilaire avec le passé composé" />
+                <checkbox id="o_v_ae" class="option" label="être" />
+                <checkbox id="o_v_aa" class="option" label="avoir" />
+                <label value="" />
+                <checkbox id="o_ppas" class="option" label="Participes passés variables" />
+              </vbox>
+            </hbox>
+            <hbox class="m_left">
+              <label class="subsection" value="Verbe modèle [Optionnel]" />
+              <textbox id="v_pattern" value="" />
+            </hbox>
+
+            <checkbox class="subsection" label="Adverbe" />
+
+            <checkbox class="subsection" label="Autre" />
+            <hbox class="m_left">
+              <vbox>
+                <label value="Flexion" />
                 <textbox id="flexion" value="" />
               </vbox>
               <vbox>
-                <label class="section" value="Étiquettes" />
+                <label value="Étiquettes" />
                 <textbox id="tags" value="" />
               </vbox>
             </hbox>
           </vbox>
 
           <vbox>
-            <label class="section" value="Mots générés" />
-            <listbox>
+            <dialogheader title="Mots générés" description="" />
+            <listbox id="generated_words">
               <listhead>
                 <listheader label="Flexions"/>
                 <listheader label="Tags"/>
@@ -121,29 +155,52 @@
                 <listcell label="House"/>
               </listitem>
             </listbox>
+            <hbox>
+              <button id="add_to_lexicon" label="Ajouter au lexique" />
+              <button id="delete_selection" label="Effacer la sélection" />
+            </hbox>
           </vbox>
         </hbox>
       </tabpanel>
 
+      <!-- LEXICON -->
       <tabpanel orient="vertical">
         <dialogheader id="lexicon-title" title="&dialogheader.lexicon.label;" description="" />
         <hbox>
           <vbox>
-            <label class="section" value="Nouveau mot (lemme)" />
-            <checkbox id="chim" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <checkbox id="ocr" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <label class="section" value="Nom et adjectif" />
-            <checkbox id="typo" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <checkbox id="apos" class="option" label="vvv aaaa bbbbb zzzzzz" />
-            <checkbox id="esp" class="option" label="vvv aaaa bbbbb zzzzzz" />
+            <label class="section" value="Lexique" />
+            <hbox>
+              <label value="Nombre d’entrées ajoutées" />
+              <label value="0" />
+            </hbox>
+            <hbox>
+              <label value="Nombre d’entrées supprimées" />
+              <label value="0" />
+            </hbox>
+            <hbox>
+              <label value="Nombre d’entrées" />
+              <label value="0" />
+            </hbox>
+            <button id="save" label="Enregistrer" />
+
+            <label class="section" value="Dictionnaire enregistré" />
+            <hbox>
+              <label value="Date d’enregistrement" />
+              <label value="·" />
+            </hbox>
+            <hbox>
+              <label value="Nombre d’entrées" />
+              <label value="0" />
+            </hbox>
+            <button id="save" label="Exporter" />
           </vbox>
-          <vbox>
-            <label class="section" value="Mots générés" />
+
+          <vbox id="lexicon">
             <listbox>
               <listhead>
                 <listheader label="Flexions"/>
                 <listheader label="Lemme"/>
-                <listheader label="Tags"/>
+                <listheader label="Étiquettes"/>
               </listhead>
 
               <listcols>
