@@ -20,10 +20,10 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
         self.xDialog = None
-        self.lDropDown = ["être", "avoir", "aller", "vouloir", "pouvoir", "devoir", "faire", "envoyer", "prendre", "connaître", \
-                          "savoir", "partir", "répondre", "dire", "voir", "mettre", "tenir", "sentir", "finir", "manger"]
-        self.sWarning = "Ce verbe n’a pas encore été vérifié. " \
-                        "C’est pourquoi les options “pronominal” et “temps composés” sont désactivées."
+        self.lDropDown = ["être", "avoir", "aller", "vouloir", "pouvoir", "devoir", "acquérir", "connaître", "dire", "faire", \
+                          "mettre", "partir", "prendre", "répondre", "savoir", "sentir", "tenir", "vaincre", "venir", "voir", \
+                          "appeler", "envoyer", "commencer", "manger", "trouver", "accomplir", "agir", "finir", "haïr", "réussir"]
+        self.sWarning = "Verbe non vérifié.\nOptions “pronominal” et “temps composés” désactivées."
 
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
@@ -40,7 +40,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
     def run (self, sArgs=""):
         ## dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
-        self.xDialog.Width = 250
+        self.xDialog.Width = 300
         self.xDialog.Title = "Grammalecte · Conjugueur"
 
         xFDinput = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
@@ -49,64 +49,66 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         xFDinput.Name = "Verdana"
 
         xFDmode = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
-        xFDmode.Height = 12
-        xFDmode.Name = "Constantia"
+        xFDmode.Height = 10
+        xFDmode.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
+        xFDmode.Name = "Verdana"
 
         xFDtemps = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDtemps.Height = 9
         xFDtemps.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
-        xFDtemps.Name = "Constantia"
+        xFDtemps.Name = "Verdana"
 
         xFDbold = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
-        xFDbold.Height = 10
+        xFDbold.Height = 9
         xFDbold.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDbold.Name = "Verdana"
 
         xFDinfo = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
-        xFDinfo.Height = 7
+        xFDinfo.Height = 8
         xFDinfo.Name = "Verdana"
 
         xFDsmall = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
-        xFDsmall.Height = 6
+        xFDsmall.Height = 7
         xFDsmall.Name = "Verdana"
 
         ## widgets
-        nGroupBoxWith = (self.xDialog.Width - 16) // 2
-        nWidth = nGroupBoxWith-10
+        nWidth = (self.xDialog.Width-30) // 2
         nHeight = 10
         nHeightCj = 8
-        nColorHead = 0xAA2200
-        nColorHead2 = 0x0022AA
+        nTitleColor = 0x660000
+        nSubTitleColor = 0x000033
 
         # grid
-        nX1 = 10; nX2 = nX1+123;
-        nY0 = 2; nY1 = nY0+26; nY2 = nY1-4; nY3 = nY1+17; nY4 = nY3+50; nY5 = nY4+55; nY6 = nY5+55; nY7 = nY6+55; nY6b = nY6+17; nY7b = nY6b+55
-
-        # group box // indicatif
-        gb_infi = self._addWidget('groupbox_infi', 'GroupBox', nX1-5, nY0, nGroupBoxWith, 23, Label = "Infinitif", \
-                                  FontDescriptor = xFDmode, FontRelief = 1, TextColor = nColorHead)
-        self.infi = self._addWidget('infi', 'FixedText', nX1, nY0+10, nWidth, nHeight, Label = "", FontDescriptor = xFDbold)
+        nX1 = 10; nX2 = nX1+145;
+        nY0 = 5; nY1 = nY0+17; nY2 = nY1+2; nY3 = nY2+30; nY4 = nY3+46; nY5 = nY4+55; nY6 = nY5+55; nY7 = nY6+55; nY6b = nY6+13; nY7b = nY6b+55
 
         # input field + button
-        self.input = self._addWidget('input', 'ComboBox', nX2-5, nY0+5, 68, 14, \
-                                     FontDescriptor = xFDinput, TextColor = 0x666666, Dropdown = True, LineCount = 20)
+        self.input = self._addWidget('input', 'ComboBox', nX1, nY0, 85, 14, \
+                                     FontDescriptor = xFDinput, TextColor = 0x666666, Dropdown = True, LineCount = 30)
         for n, s in enumerate(self.lDropDown):
             self.input.insertItemText(n, s)
-        self.cbutton = self._addWidget('cbutton', 'Button', nX2+66, nY0+5, 46, 14, Label = "Conjuguer", FontDescriptor = xFDinput)
+        # button
+        self.cbutton = self._addWidget('cbutton', 'Button', nX1+90, nY0, 50, 14, Label = "Conjuguer", FontDescriptor = xFDinput)
+        # options
+        self.oneg = self._addWidget('oneg', 'CheckBox', nX2, nY0, 40, nHeight, Label = "négation")
+        self.opro = self._addWidget('opro', 'CheckBox', nX2+45, nY0, 55, nHeight, Label = "pronominal")
+        self.ofem = self._addWidget('ofem', 'CheckBox', nX2+100, nY0, 50, nHeight, Label = "féminin")
+        self.oint = self._addWidget('oint', 'CheckBox', nX2, nY0+8, 60, nHeight, Label = "interrogatif")
+        self.otco = self._addWidget('otco', 'CheckBox', nX2+75, nY0+8, 60, nHeight, Label = "temps composés")
+
+        # group box // indicatif
+        gb_infi = self._addWidget('groupbox_infi', 'FixedLine', nX1, nY2, nWidth, 10, Label = "Infinitif", \
+                                  FontDescriptor = xFDmode, FontRelief = 0, TextColor = nTitleColor)
+        self.infi = self._addWidget('infi', 'FixedText', nX1, nY2+10, nWidth, nHeight, Label = "", FontDescriptor = xFDbold)
 
         # informations
-        self.info = self._addWidget('info', 'FixedText', nX1, nY1, nWidth, nHeight, FontDescriptor = xFDinfo)
-
-        # options
-        self.oneg = self._addWidget('oneg', 'CheckBox', nX2-5, nY2, 35, nHeight, Label = "négation")
-        self.opro = self._addWidget('opro', 'CheckBox', nX2+33, nY2, 50, nHeight, Label = "pronominal")
-        self.ofem = self._addWidget('ofem', 'CheckBox', nX2+80, nY2, 45, nHeight, Label = "féminin")
-        self.oint = self._addWidget('oint', 'CheckBox', nX2-5, nY2+9, 55, nHeight, Label = "interrogatif")
-        self.otco = self._addWidget('otco', 'CheckBox', nX2+55, nY2+9, 60, nHeight, Label = "temps composés")
+        self.info = self._addWidget('info', 'FixedText', nX2, nY2+5, nWidth, nHeight, FontDescriptor = xFDinfo)
+        self.option_msg = self._addWidget('option_msg', 'FixedText', nX2, nY2+15, nWidth, 15, FontDescriptor = xFDsmall, \
+                                          MultiLine = True, TextColor = 0x333333, Label = self.sWarning)
 
         # group box // participe passé
-        gb_ppas = self._addWidget('groupbox_ppas', 'GroupBox', nX1-5, nY3-7, nGroupBoxWith, 55, Label = "Participes présent et passés", \
-                                  FontDescriptor = xFDmode, FontRelief = 1, TextColor = nColorHead)
+        gb_ppas = self._addWidget('groupbox_ppas', 'FixedLine', nX1, nY3-7, nWidth, 10, Label = "Participes présent et passés", \
+                                  FontDescriptor = xFDmode, FontRelief = 0, TextColor = nTitleColor)
         self.ppre = self._addWidget('ppre', 'FixedText', nX1, nY3+5, nWidth, nHeightCj, Label = "")
         self.ppas1 = self._addWidget('ppas1', 'FixedText', nX1, nY3+14, nWidth, nHeightCj, Label = "")
         self.ppas2 = self._addWidget('ppas2', 'FixedText', nX1, nY3+21, nWidth, nHeightCj, Label = "")
@@ -114,19 +116,19 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.ppas4 = self._addWidget('ppas4', 'FixedText', nX1, nY3+35, nWidth, nHeightCj, Label = "")
 
         # group box // impératif
-        gb_impe = self._addWidget('groupbox_impe', 'GroupBox', nX2-5, nY3, nGroupBoxWith, 48, Label = "Impératif", \
-                                  FontDescriptor = xFDmode, FontRelief = 1, TextColor = nColorHead)
+        gb_impe = self._addWidget('groupbox_impe', 'FixedLine', nX2, nY3, nWidth, 10, Label = "Impératif", \
+                                  FontDescriptor = xFDmode, FontRelief = 0, TextColor = nTitleColor)
         self.impe = self._addWidget('impe', 'FixedText', nX2, nY3+12, nWidth, nHeight, Label = "Présent", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.impe1 = self._addWidget('impe1', 'FixedText', nX2, nY3+21, nWidth, nHeightCj, Label = "")
         self.impe2 = self._addWidget('impe2', 'FixedText', nX2, nY3+28, nWidth, nHeightCj, Label = "")
         self.impe3 = self._addWidget('impe3', 'FixedText', nX2, nY3+35, nWidth, nHeightCj, Label = "")
 
         # group box // indicatif
-        gb_ind = self._addWidget('groupbox_ind', 'GroupBox', nX1-5, nY4, nGroupBoxWith, 234, Label = "Indicatif", \
-                                 FontDescriptor = xFDmode, FontRelief = 1, TextColor = nColorHead)
+        gb_ind = self._addWidget('groupbox_ind', 'FixedLine', nX1, nY4, nWidth, 10, Label = "Indicatif", \
+                                 FontDescriptor = xFDmode, FontRelief = 0, TextColor = nTitleColor)
         self.ipre = self._addWidget('ipre', 'FixedText', nX1, nY4+12, nWidth, nHeight, Label = "Présent", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.ipre1 = self._addWidget('ipre1', 'FixedText', nX1, nY4+21, nWidth, nHeightCj, Label = "")
         self.ipre2 = self._addWidget('ipre2', 'FixedText', nX1, nY4+28, nWidth, nHeightCj, Label = "")
         self.ipre3 = self._addWidget('ipre3', 'FixedText', nX1, nY4+35, nWidth, nHeightCj, Label = "")
@@ -135,7 +137,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.ipre6 = self._addWidget('ipre6', 'FixedText', nX1, nY4+56, nWidth, nHeightCj, Label = "")
 
         self.iimp = self._addWidget('iimp', 'FixedText', nX1, nY5+12, nWidth, nHeight, Label = "Imparfait", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.iimp1 = self._addWidget('iimp1', 'FixedText', nX1, nY5+21, nWidth, nHeightCj, Label = "")
         self.iimp2 = self._addWidget('iimp2', 'FixedText', nX1, nY5+28, nWidth, nHeightCj, Label = "")
         self.iimp3 = self._addWidget('iimp3', 'FixedText', nX1, nY5+35, nWidth, nHeightCj, Label = "")
@@ -144,7 +146,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.iimp6 = self._addWidget('iimp6', 'FixedText', nX1, nY5+56, nWidth, nHeightCj, Label = "")
 
         self.ipsi = self._addWidget('ipsi', 'FixedText', nX1, nY6+12, nWidth, nHeight, Label = "Passé Simple", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.ipsi1 = self._addWidget('ipsi1', 'FixedText', nX1, nY6+21, nWidth, nHeightCj, Label = "")
         self.ipsi2 = self._addWidget('ipsi2', 'FixedText', nX1, nY6+28, nWidth, nHeightCj, Label = "")
         self.ipsi3 = self._addWidget('ipsi3', 'FixedText', nX1, nY6+35, nWidth, nHeightCj, Label = "")
@@ -153,7 +155,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.ipsi6 = self._addWidget('ipsi6', 'FixedText', nX1, nY6+56, nWidth, nHeightCj, Label = "")
 
         self.ifut = self._addWidget('ifut', 'FixedText', nX1, nY7+12, nWidth, nHeight, Label = "Futur", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.ifut1 = self._addWidget('ifut1', 'FixedText', nX1, nY7+21, nWidth, nHeightCj, Label = "")
         self.ifut2 = self._addWidget('ifut2', 'FixedText', nX1, nY7+28, nWidth, nHeightCj, Label = "")
         self.ifut3 = self._addWidget('ifut3', 'FixedText', nX1, nY7+35, nWidth, nHeightCj, Label = "")
@@ -161,14 +163,11 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.ifut5 = self._addWidget('ifut5', 'FixedText', nX1, nY7+49, nWidth, nHeightCj, Label = "")
         self.ifut6 = self._addWidget('ifut6', 'FixedText', nX1, nY7+56, nWidth, nHeightCj, Label = "")
 
-        self.infomsg = self._addWidget('infomsg', 'FixedText', nX1-5, nY7+73, 120, 20, FontDescriptor = xFDinfo, \
-                                       MultiLine = True, TextColor = 0x333333, Label = self.sWarning)
-
         # group box // subjonctif
-        gb_sub = self._addWidget('groupbox_sub', 'GroupBox', nX2-5, nY4, nGroupBoxWith, 123, Label = "Subjonctif", \
-                                 FontDescriptor = xFDmode, FontRelief = 1, TextColor = nColorHead)
+        gb_sub = self._addWidget('groupbox_sub', 'FixedLine', nX2, nY4, nWidth, 10, Label = "Subjonctif", \
+                                 FontDescriptor = xFDmode, FontRelief = 0, TextColor = nTitleColor)
         self.spre = self._addWidget('spre', 'FixedText', nX2, nY4+12, nWidth, nHeight, Label = "Présent", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.spre1 = self._addWidget('spre1', 'FixedText', nX2, nY4+21, nWidth, nHeightCj, Label = "")
         self.spre2 = self._addWidget('spre2', 'FixedText', nX2, nY4+28, nWidth, nHeightCj, Label = "")
         self.spre3 = self._addWidget('spre3', 'FixedText', nX2, nY4+35, nWidth, nHeightCj, Label = "")
@@ -177,7 +176,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.spre6 = self._addWidget('spre6', 'FixedText', nX2, nY4+56, nWidth, nHeightCj, Label = "")
 
         self.simp = self._addWidget('simp', 'FixedText', nX2, nY5+12, nWidth, nHeight, Label = "Imparfait", \
-                                    FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                    FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.simp1 = self._addWidget('simp1', 'FixedText', nX2, nY5+21, nWidth, nHeightCj, Label = "")
         self.simp2 = self._addWidget('simp2', 'FixedText', nX2, nY5+28, nWidth, nHeightCj, Label = "")
         self.simp3 = self._addWidget('simp3', 'FixedText', nX2, nY5+35, nWidth, nHeightCj, Label = "")
@@ -186,10 +185,10 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.simp6 = self._addWidget('simp6', 'FixedText', nX2, nY5+56, nWidth, nHeightCj, Label = "")
 
         # group box // conditionnel
-        gb_cond = self._addWidget('groupbox_cond', 'GroupBox', nX2-5, nY6b, nGroupBoxWith, 123, Label = "Conditionnel", \
-                                  FontDescriptor = xFDmode, FontRelief = 1, TextColor = nColorHead)
+        gb_cond = self._addWidget('groupbox_cond', 'FixedLine', nX2, nY6b, nWidth, 10, Label = "Conditionnel", \
+                                  FontDescriptor = xFDmode, FontRelief = 0, TextColor = nTitleColor)
         self.conda = self._addWidget('conda', 'FixedText', nX2, nY6b+12, nWidth, nHeight, Label = "Présent", \
-                                     FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                     FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.conda1 = self._addWidget('conda1', 'FixedText', nX2, nY6b+21, nWidth, nHeightCj, Label = "")
         self.conda2 = self._addWidget('conda2', 'FixedText', nX2, nY6b+28, nWidth, nHeightCj, Label = "")
         self.conda3 = self._addWidget('conda3', 'FixedText', nX2, nY6b+35, nWidth, nHeightCj, Label = "")
@@ -198,7 +197,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.conda6 = self._addWidget('conda6', 'FixedText', nX2, nY6b+56, nWidth, nHeightCj, Label = "")
 
         self.condb = self._addWidget('condb', 'FixedText', nX2, nY7b+12, nWidth, nHeight, Label = "", \
-                                     FontDescriptor = xFDtemps, FontRelief = 1, TextColor = nColorHead2)
+                                     FontDescriptor = xFDtemps, FontRelief = 0, TextColor = nSubTitleColor)
         self.condb1 = self._addWidget('condb1', 'FixedText', nX2, nY7b+21, nWidth, nHeightCj, Label = "")
         self.condb2 = self._addWidget('condb2', 'FixedText', nX2, nY7b+28, nWidth, nHeightCj, Label = "")
         self.condb3 = self._addWidget('condb3', 'FixedText', nX2, nY7b+35, nWidth, nHeightCj, Label = "")
@@ -297,9 +296,9 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
                     self.opro.Enabled = False
                     self.otco.State = False
                     self.otco.Enabled = False
-                    self.infomsg.Label = self.sWarning
+                    self.option_msg.Label = self.sWarning
                 else:
-                    self.infomsg.Label = ""
+                    self.option_msg.Label = ""
                     if sRawInfo[5] == "_":
                         self.opro.State = False
                         self.opro.Enabled = False

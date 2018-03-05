@@ -47,11 +47,13 @@ window.addEventListener(
                 });
             }
             else if (xElem.id.startsWith("option_")) {
-                browser.runtime.sendMessage({
-                    sCommand: "setOption",
-                    dParam: {sOptName: xElem.dataset.option, bValue: xElem.checked},
-                    dInfo: {}
-                });
+                if (xElem.dataset.option) {
+                    browser.runtime.sendMessage({
+                        sCommand: "setOption",
+                        dParam: {sOptName: xElem.dataset.option, bValue: xElem.checked},
+                        dInfo: {}
+                    });
+                }
             }
             else if (xElem.id.startsWith("ui_option_")) {
                 storeUIOptions();
@@ -156,6 +158,19 @@ function openConjugueurTab () {
     xConjTab.then(onCreated, onError);
 }
 
+function openConjugueurTab () {
+    if (bChrome) {
+        browser.tabs.create({
+            url: browser.extension.getURL("panel/conjugueur.html")
+        });
+        return;
+    }
+    let xConjTab = browser.tabs.create({
+        url: browser.extension.getURL("panel/conjugueur.html")
+    });
+    xConjTab.then(onCreated, onError);
+}
+
 
 /*
     UI options
@@ -210,18 +225,20 @@ function _setGCOptions (dSavedOptions) {
 }
 
 function setGCOptions (dOptions) {
-    // dOptions is supposed to be a Map
-    if (bChrome) {
-        // JS crap again. Chrome can’t store/send Map object.
-        let m = new Map();
-        for (let param in dOptions) {
-            m.set(param, dOptions[param]);
+    try {
+        // dOptions is supposed to be a Map
+        if (bChrome) {
+            // JS crap again. Chrome can’t store/send Map object.
+            dOptions = helpers.objectToMap(dOptions);
         }
-        dOptions = m;
+        for (let [sOpt, bVal] of dOptions) {
+            if (document.getElementById("option_"+sOpt)) {
+                document.getElementById("option_"+sOpt).checked = bVal;
+            }
+        }
     }
-    for (let [sOpt, bVal] of dOptions) {
-        if (document.getElementById("option_"+sOpt)) {
-            document.getElementById("option_"+sOpt).checked = bVal;
-        }
+    catch (e) {
+        console.log(dOptions);
+        showError(e);
     }
 }

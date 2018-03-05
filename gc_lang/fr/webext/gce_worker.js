@@ -90,7 +90,7 @@ onmessage = function (e) {
     let {sCommand, dParam, dInfo} = e.data;
     switch (sCommand) {
         case "init":
-            init(dParam.sExtensionPath, dParam.sOptions, dParam.sContext, dInfo);
+            init(dParam.sExtensionPath, dParam.dOptions, dParam.sContext, dInfo);
             break;
         case "parse":
             parse(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
@@ -173,6 +173,7 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
 
             oLxg = new Lexicographe(oSpellChecker, oTokenizer, oLocution);
             if (dOptions !== null) {
+                console.log(dOptions);
                 gc_engine.setOptions(dOptions);
             }
             //tests();
@@ -233,8 +234,10 @@ function setOptions (dOptions, dInfo={}) {
 
 function setOption (sOptName, bValue, dInfo={}) {
     console.log(sOptName+": "+bValue);
-    gc_engine.setOptions(new Map([ [sOptName, bValue] ]));
-    postMessage(createResponse("setOption", gc_engine.getOptions(), dInfo, true));
+    if (sOptName) {
+        gc_engine.setOption(sOptName, bValue);
+        postMessage(createResponse("setOption", gc_engine.getOptions(), dInfo, true));
+    }
 }
 
 function resetOptions (dInfo={}) {

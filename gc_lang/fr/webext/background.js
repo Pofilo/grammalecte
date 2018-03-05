@@ -24,7 +24,12 @@ let xGCEWorker = new Worker("gce_worker.js");
 xGCEWorker.onmessage = function (e) {
     // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
     try {
-        let {sActionDone, result, dInfo} = e.data;
+        let {sActionDone, result, dInfo, bEnd, bError} = e.data;
+        if (bError) {
+            console.log(result);
+            console.log(dInfo);
+            return;
+        }
         switch (sActionDone) {
             case "init":
                 storeGCOptions(result);
@@ -86,6 +91,10 @@ function initUIOptions (dSavedOptions) {
 
 function initGrammarChecker (dSavedOptions) {
     let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
+    if (bChrome) {
+        // JS crap again. Chrome can’t store Map object.
+        dOptions = helpers.objectToMap(dOptions);
+    }
     xGCEWorker.postMessage({
         sCommand: "init",
         dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
@@ -101,7 +110,7 @@ function setSpellingDictionary (dSavedDictionary) {
             dInfo: {}
         });
     }
-    else if (dSavedDictionary.hasOwnProperty("oPersonalDictionary")) {
+    if (dSavedDictionary.hasOwnProperty("oPersonalDictionary")) {
         xGCEWorker.postMessage({
             sCommand: "setDictionary",
             dParam: { sType: "personal", oDict: dSavedDictionary["oPersonalDictionary"] },

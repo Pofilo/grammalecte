@@ -345,3 +345,24 @@ var char_player = {
     }
 
 }
+
+
+if (typeof(exports) !== 'undefined') {
+    exports._xTransCharsForSpelling = char_player._xTransCharsForSpelling;
+    exports.spellingNormalization = char_player.spellingNormalization;
+    exports._xTransCharsForSimplification = char_player._xTransCharsForSimplification;
+    exports.simplifyWord = char_player.simplifyWord;
+    exports.aVowel = char_player.aVowel;
+    exports.aConsonant = char_player.aConsonant;
+    exports.aDouble = char_player.aDouble;
+    exports.d1to1 = char_player.d1to1;
+    exports.d1toX = char_player.d1toX;
+    exports.get1toXReplacement = char_player.get1toXReplacement;
+    exports.d2toX = char_player.d2toX;
+    exports.dFinal1 = char_player.dFinal1;
+    exports.dFinal2 = char_player.dFinal2;
+    exports.aPfx1 = char_player.aPfx1;
+    exports.aPfx2 = char_player.aPfx2;
+    exports.cut = char_player.cut;
+    exports.filterSugg = char_player.filterSugg;
+}
