@@ -368,7 +368,7 @@ const oFlexGen = {
                                 }
                                 // participes passés
                                 let bPpasVar = (document.getElementById("up_partpas").checked) ? "var" : "invar";
-                                let lPpasRules = (sLemma.endsWith("er")) ? oConj["V1_ppas"][bPpasVar] : oConj["V2_ppas"][bPpasVar];
+                                let lPpasRules = (sLemma.endsWith("er")) ? conj_generator["V1_ppas"][bPpasVar] : conj_generator["V2_ppas"][bPpasVar];
                                 for (let [nCut, sAdd, sFlexTags, sPattern] of lPpasRules) {
                                     if (!sPattern || RegExp(sPattern).test(sLemma)) {
                                         this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags);
@@ -449,25 +449,25 @@ const oFlexGen = {
     _getConjRules: function (sVerb) {
         if (sVerb.endsWith("ir")) {
             // deuxième groupe
-            return oConj["V2"];
+            return conj_generator["V2"];
         } else if (sVerb.endsWith("er")) {
             // premier groupe, conjugaison en fonction de la terminaison du lemme
             // 5 lettres
-            if (sVerb.slice(-5) in oConj["V1"]) {
-                return oConj["V1"][sVerb.slice(-5)];
+            if (sVerb.slice(-5) in conj_generator["V1"]) {
+                return conj_generator["V1"][sVerb.slice(-5)];
             }
             // 4 lettres
-            if (sVerb.slice(-4) in oConj["V1"]) {
+            if (sVerb.slice(-4) in conj_generator["V1"]) {
                 if (sVerb.endsWith("eler") || sVerb.endsWith("eter")) {
-                    return oConj["V1"][sVerb.slice(-4)]["1"];
+                    return conj_generator["V1"][sVerb.slice(-4)]["1"];
                 }
-                return oConj["V1"][sVerb.slice(-4)];
+                return conj_generator["V1"][sVerb.slice(-4)];
             }
             // 3 lettres
-            if (sVerb.slice(-3) in oConj["V1"]) {
-                return oConj["V1"][sVerb.slice(-3)];
+            if (sVerb.slice(-3) in conj_generator["V1"]) {
+                return conj_generator["V1"][sVerb.slice(-3)];
             }
-            return oConj["V1"]["er"];
+            return conj_generator["V1"]["er"];
         } else {
             // troisième groupe
             return [ [0, "", ":Y/*", false] ];

@@ -10,11 +10,11 @@ import traceback
 
 import helpers
 import lxe_strings
-import lxe_conj_data
 import grammalecte.graphspell as sc
 import grammalecte.graphspell.dawg as dawg
 import grammalecte.graphspell.ibdawg as ibdawg
 import grammalecte.fr.conj as conj
+import grammalecte.fr.conj_generator as conjgen
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
@@ -409,7 +409,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                                         self.lGeneratedFlex.append((sLemma[0:-nCut]+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
                                 # participes passés
                                 bPpasVar = "var"  if self.xV_pp.State  else "invar"
-                                lPpasRules = lxe_conj_data.oConj["V1_ppas"][bPpasVar]  if sLemma.endswith("er")  else lxe_conj_data.oConj["V2_ppas"][bPpasVar]
+                                lPpasRules = conjgen.oConj["V1_ppas"][bPpasVar]  if sLemma.endswith("er")  else conjgen.oConj["V2_ppas"][bPpasVar]
                                 for nCut, sAdd, sFlexTags, sPattern in lPpasRules:
                                     if not sPattern or re.search(sPattern, sLemma):
                                         self.lGeneratedFlex.append((sLemma[0:-nCut]+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
@@ -449,21 +449,21 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     def _getConjRules (self, sVerb):
         if sVerb.endswith("ir"):
             # deuxième groupe
-            return lxe_conj_data.oConj["V2"]
+            return conjgen.oConj["V2"]
         elif sVerb.endswith("er"):
             # premier groupe, conjugaison en fonction de la terminaison du lemme
             # 5 lettres
-            if sVerb[-5:] in lxe_conj_data.oConj["V1"]:
-                return lxe_conj_data.oConj["V1"][sVerb[-5:]]
+            if sVerb[-5:] in conjgen.oConj["V1"]:
+                return conjgen.oConj["V1"][sVerb[-5:]]
             # 4 lettres
-            if sVerb[-4:] in lxe_conj_data.oConj["V1"]:
+            if sVerb[-4:] in conjgen.oConj["V1"]:
                 if sVerb.endswith(("eler", "eter")):
-                    return lxe_conj_data.oConj["V1"][sVerb[-4:]]["1"]
-                return lxe_conj_data.oConj["V1"][sVerb[-4:]]
+                    return conjgen.oConj["V1"][sVerb[-4:]]["1"]
+                return conjgen.oConj["V1"][sVerb[-4:]]
             # 3 lettres
-            if sVerb[-3:] in lxe_conj_data.oConj["V1"]:
-                return lxe_conj_data.oConj["V1"][sVerb[-3:]]
-            return lxe_conj_data.oConj["V1"]["er"]
+            if sVerb[-3:] in conjgen.oConj["V1"]:
+                return conjgen.oConj["V1"][sVerb[-3:]]
+            return conjgen.oConj["V1"]["er"]
         else:
             # troisième groupe
             return [ [0, "", ":Y/*", false] ]

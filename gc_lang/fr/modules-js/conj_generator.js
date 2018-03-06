@@ -8,7 +8,7 @@
     Règles de conjugaison
 */
 
-const oConj = {
+const conj_generator = {
     "V1_ppas": {
         "var": [
             [2,     "é",           ":Q:A:1ŝ:m:s/*",     false],
