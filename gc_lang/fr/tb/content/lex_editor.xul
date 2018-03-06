@@ -95,38 +95,38 @@
             <checkbox class="subsection" label="Verbe" />
             <hbox class="m_left">
               <vbox>
-                <checkbox id="o_v_i" class="option" label="intransitif" />
-                <checkbox id="o_v_t" class="option" label="transitif" />
-                <checkbox id="o_v_n" class="option" label="transitif indirect" />
-                <checkbox id="o_v_p" class="option" label="pronominal" />
-                <checkbox id="o_v_m" class="option" label="impersonnel" />
+                <checkbox id="o_v_i" class="v_usage" label="intransitif" />
+                <checkbox id="o_v_t" class="v_usage" label="transitif" />
+                <checkbox id="o_v_n" class="v_usage" label="transitif indirect" />
+                <checkbox id="o_v_p" class="v_usage" label="pronominal" />
+                <checkbox id="o_v_m" class="v_usage" label="impersonnel" />
               </vbox>
               <vbox>
                 <label value="Auxilaire avec le passé composé" />
-                <checkbox id="o_v_ae" class="option" label="être" />
-                <checkbox id="o_v_aa" class="option" label="avoir" />
+                <checkbox id="o_v_ae" class="v_usage" label="être" />
+                <checkbox id="o_v_aa" class="v_usage" label="avoir" />
                 <label value="" />
-                <checkbox id="o_ppas" class="option" label="Participes passés variables" />
+                <checkbox id="o_ppas" class="v_usage" label="Participes passés variables" />
               </vbox>
             </hbox>
             <hbox class="m_left">
-              <label class="subsection" value="Verbe modèle [Optionnel]" />
-              <textbox id="v_pattern" value="" />
+              <label class="subsection" value="Verbe modèle [optionnel]" />
+              <textbox id="v_pattern" class="v_textbox" value="" />
             </hbox>
 
             <checkbox class="subsection" label="Adverbe" />
 
             <checkbox class="subsection" label="Autre" />
-            <hbox class="m_left">
-              <vbox>
-                <label value="Flexion" />
-                <textbox id="flexion" value="" />
-              </vbox>
-              <vbox>
-                <label value="Étiquettes" />
-                <textbox id="tags" value="" />
-              </vbox>
-            </hbox>
+            <vbox class="m_left">
+              <hbox>
+                <label class="subsection other_label" value="Flexion" />
+                <textbox id="flexion" class="other_textbox" value="" />
+              </hbox>
+              <hbox>
+                <label class="subsection other_label" value="Étiquettes" />
+                <textbox id="tags" class="other_textbox" value="" />
+              </hbox>
+            </vbox>
           </vbox>
 
           <vbox>
@@ -134,26 +134,19 @@
             <listbox id="generated_words">
               <listhead>
                 <listheader label="Flexions"/>
-                <listheader label="Tags"/>
+                <listheader label="Étiquettes"/>
               </listhead>
 
               <listcols>
-                <listcol flex="4"/>
-                <listcol flex="4"/>
+                <listcol flex="1"/>
+                <listcol flex="1"/>
               </listcols>
 
-              <listitem>
+              <!--<listitem>
                 <listcell label="George"/>
                 <listcell label="House"/>
-              </listitem>
-              <listitem>
-                <listcell label="Mary Ellen"/>
-                <listcell label="House"/>
-              </listitem>
-              <listitem>
-                <listcell label="Roger"/>
-                <listcell label="House"/>
-              </listitem>
+              </listitem>-->
+              
             </listbox>
             <hbox>
               <button id="add_to_lexicon" label="Ajouter au lexique" />
@@ -165,41 +158,43 @@
 
       <!-- LEXICON -->
       <tabpanel orient="vertical">
-        <dialogheader id="lexicon-title" title="&dialogheader.lexicon.label;" description="" />
+        <dialogheader title="&dialogheader.lexicon.label;" description="" />
         <hbox>
           <vbox>
             <label class="section" value="Lexique" />
             <hbox>
-              <label value="Nombre d’entrées ajoutées" />
-              <label value="0" />
+              <label class="info_label" value="Entrées ajoutées" />
+              <label class="data" value="0" />
             </hbox>
             <hbox>
-              <label value="Nombre d’entrées supprimées" />
-              <label value="0" />
+              <label class="info_label" value="Entrées supprimées" />
+              <label class="data" value="0" />
             </hbox>
             <hbox>
-              <label value="Nombre d’entrées" />
-              <label value="0" />
+              <label class="info_label" value="Nombre d’entrées" />
+              <label class="data" value="0" />
             </hbox>
             <button id="save" label="Enregistrer" />
 
+            <label class="" value="" />
+
             <label class="section" value="Dictionnaire enregistré" />
             <hbox>
-              <label value="Date d’enregistrement" />
-              <label value="·" />
+              <label class="info_label" value="Date d’enregistrement" />
+              <label class="data" value="·" />
             </hbox>
             <hbox>
-              <label value="Nombre d’entrées" />
-              <label value="0" />
+              <label class="info_label" value="Nombre d’entrées" />
+              <label class="data" value="0" />
             </hbox>
             <button id="save" label="Exporter" />
           </vbox>
 
-          <vbox id="lexicon">
-            <listbox>
+          <vbox>
+            <listbox id="lexicon">
               <listhead>
                 <listheader label="Flexions"/>
-                <listheader label="Lemme"/>
+                <listheader label="Lemmes"/>
                 <listheader label="Étiquettes"/>
               </listhead>
 
@@ -209,21 +204,12 @@
                 <listcol flex="4"/>
               </listcols>
 
-              <listitem>
+              <!--<listitem>
                 <listcell label="George"/>
                 <listcell label="House Painter"/>
                 <listcell label="House"/>
-              </listitem>
-              <listitem>
-                <listcell label="Mary Ellen"/>
-                <listcell label="Candle Maker"/>
-                <listcell label="House"/>
-              </listitem>
-              <listitem>
-                <listcell label="Roger"/>
-                <listcell label="Swashbuckler"/>
-                <listcell label="House"/>
-              </listitem>
+              </listitem>-->
+
             </listbox>
           </vbox>
         </hbox>
