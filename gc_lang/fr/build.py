@@ -1,6 +1,7 @@
 # Builder for French language
 
 import os
+import platform
 import zipfile
 from distutils import dir_util, file_util
 
@@ -90,7 +91,8 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
             hZip.write(spDict+"/"+sp+"/"+sp+".dic", "content/dictionaries/"+sp+"/"+sp+".dic")
             hZip.write(spDict+"/"+sp+"/"+sp+".aff", "content/dictionaries/"+sp+"/"+sp+".aff")
     hZip.close()
-    helpers.unzip(spfZip, dVars['tb_debug_extension_path'])
+    spfDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
+    helpers.unzip(spfZip, spfDebugProfile)
 
 
 def _createOptionsForThunderbird (dVars):
