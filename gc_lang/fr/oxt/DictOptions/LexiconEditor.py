@@ -401,18 +401,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                     if not sVerbTag.endswith("__") and not sVerbTag.startswith("____"):
                         sVerbPattern = self.xVpattern.Text.strip()
                         if not sVerbPattern:
-                            if sLemma.endswith("er") or sLemma.endswith("ir"):
-                                # tables de conjugaison du 1er et du 2e groupe
-                                cGroup = "1"  if sLemma.endswith("er")  else "2"
-                                for nCut, sAdd, sFlexTags, sPattern in self._getConjRules(sLemma):
-                                    if not sPattern or re.search(sPattern, sLemma):
-                                        self.lGeneratedFlex.append((sLemma[0:-nCut]+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
-                                # participes passés
-                                bPpasVar = "var"  if self.xV_pp.State  else "invar"
-                                lPpasRules = conjgen.oConj["V1_ppas"][bPpasVar]  if sLemma.endswith("er")  else conjgen.oConj["V2_ppas"][bPpasVar]
-                                for nCut, sAdd, sFlexTags, sPattern in lPpasRules:
-                                    if not sPattern or re.search(sPattern, sLemma):
-                                        self.lGeneratedFlex.append((sLemma[0:-nCut]+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
+                            # Utilisation du générateur de conjugaison
+                            for sFlexion, sFlexTags in conjgen.conjugate(sLemma, sVerbTag, bool(self.xV_pp.State)):
+                                self.lGeneratedFlex.append((sFlexion, sLemma, sFlexTags))
                         else:
                             # copie du motif d’un autre verbe : utilisation du conjugueur
                             if conj.isVerb(sVerbPattern):
@@ -445,28 +436,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 if sFlexion and sTags.startswith(":"):
                     self.lGeneratedFlex.append((sFlexion, sLemma, sTags))
         self._showGenWords()
-
-    def _getConjRules (self, sVerb):
-        if sVerb.endswith("ir"):
-            # deuxième groupe
-            return conjgen.oConj["V2"]
-        elif sVerb.endswith("er"):
-            # premier groupe, conjugaison en fonction de la terminaison du lemme
-            # 5 lettres
-            if sVerb[-5:] in conjgen.oConj["V1"]:
-                return conjgen.oConj["V1"][sVerb[-5:]]
-            # 4 lettres
-            if sVerb[-4:] in conjgen.oConj["V1"]:
-                if sVerb.endswith(("eler", "eter")):
-                    return conjgen.oConj["V1"][sVerb[-4:]]["1"]
-                return conjgen.oConj["V1"][sVerb[-4:]]
-            # 3 lettres
-            if sVerb[-3:] in conjgen.oConj["V1"]:
-                return conjgen.oConj["V1"][sVerb[-3:]]
-            return conjgen.oConj["V1"]["er"]
-        else:
-            # troisième groupe
-            return [ [0, "", ":Y/*", false] ]
 
     def _showGenWords (self):
         xGridDataModel = self.xGridModelNew.GridDataModel

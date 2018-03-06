@@ -1,30 +1,79 @@
-# Conjugation data
+# Conjugation generator
+# beta stage, unfinished, the root for a new way to generate flexions…
 
-# beta stage, unfinished, may be useless or the root for a new way to generate flexions…
+import re
 
-# Règles de conjugaison
+
+def conjugate (sVerb, sVerbTag="i_____a", bVarPpas=True):
+    lConj = []
+    cGroup = getVerbGroupChar(sVerb)
+    for nCut, sAdd, sFlexTags, sPattern in getConjRules(sVerb):
+        if not sPattern or re.search(sPattern, sVerb):
+            lConj.append((sVerb[0:-nCut]+sAdd, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
+    return lConj
+
+
+def getVerbGroupChar (sVerb, ):
+    sVerb = sVerb.lower()
+    if sVerb.endswith("er"):
+        return "1"
+    if sVerb.endswith("ir"):
+        return "2"
+    if sVerb == "être" or sVerb == "avoir":
+        return "0"
+    if sVerb.endswith("re"):
+        return "3"
+    return "4"
+
+
+def getConjRules (sVerb, bVarPpas=True, nGroup=2):
+    if sVerb.endswith("er"):
+        # premier groupe, conjugaison en fonction de la terminaison du lemme
+        # 5 lettres
+        if sVerb[-5:] in oConj["V1"]:
+            lConj = oConj["V1"][sVerb[-5:]]
+        # 4 lettres
+        elif sVerb[-4:] in oConj["V1"]:
+            if sVerb.endswith(("eler", "eter")):
+                lConj = oConj["V1"][sVerb[-4:]]["1"]
+            lConj = oConj["V1"][sVerb[-4:]]
+        # 3 lettres
+        elif sVerb[-3:] in oConj["V1"]:
+            lConj = oConj["V1"][sVerb[-3:]]
+        else:
+            lConj = oConj["V1"]["er"]
+        lConj.extend(oConj["V1_ppas"][bVarPpas])
+    elif sVerb.endswith("ir") and nGroup <= 2:
+        # deuxième groupe
+        lConj = oConj["V2"]
+        lConj.extend(oConj["V2_ppas"][bVarPpas])
+    else:
+        # TODO: troisième groupe
+        lConj = [ [0, "", ":Y/*", false] ]
+    return lConj
+
 
 oConj = {
     "V1_ppas": {
-        "var": [
+        True: [
             [2,     "é",           ":Q:A:1ŝ:m:s/*",     False],
             [2,     "és",          ":Q:A:m:p/*",        False],
             [2,     "ée",          ":Q:A:f:s/*",        False],
             [2,     "ées",         ":Q:A:f:p/*",        False],
         ],
-        "invar": [
+        False: [
             [2,     "é",           ":Q:e:i/*",          False],
         ]
     },
 
     "V2_ppas": {
-        "var": [
+        True: [
             [2,     "i",           ":Q:A:m:s/*",        False],
             [2,     "is",          ":Q:A:m:p/*",        False],
             [2,     "ie",          ":Q:A:f:s/*",        False],
             [2,     "ies",         ":Q:A:f:p/*",        False],
         ],
-        "invar": [
+        False: [
             [2,     "i",           ":Q:e:i/*",          False],
         ]
     },
