@@ -63,8 +63,8 @@ dStrings = {
 
         # Informations
         "lexicon_info_section": "Lexique",
-        "added_entries_label": "Nombre d’entrées ajoutées",
-        "deleted_entries_label": "Nombre d’entrées effacées",
+        "added_entries_label": "Entrées ajoutées",
+        "deleted_entries_label": "Entrées effacées",
         "num_of_entries_label": "Nombre d’entrées",
         "save_button": "Enregistrer",
 
