@@ -356,23 +356,10 @@ const oFlexGen = {
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
                             let sVerbPattern = document.getElementById("verb_pattern").value.trim();
                             if (sVerbPattern.length == 0) {
-                                if (!sLemma.endsWith("er") && !sLemma.endsWith("ir")) {
-                                    break;
-                                }
-                                // tables de conjugaison du 1er et du 2e groupe
-                                let cGroup = (sLemma.endsWith("er")) ? "1" : "2";
-                                for (let [nCut, sAdd, sFlexTags, sPattern] of this._getConjRules(sLemma)) {
-                                    if (!sPattern || RegExp(sPattern).test(sLemma)) {
-                                        this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags);
-                                    }
-                                }
-                                // participes passés
-                                let bPpasVar = (document.getElementById("up_partpas").checked) ? "var" : "invar";
-                                let lPpasRules = (sLemma.endsWith("er")) ? conj_generator["V1_ppas"][bPpasVar] : conj_generator["V2_ppas"][bPpasVar];
-                                for (let [nCut, sAdd, sFlexTags, sPattern] of lPpasRules) {
-                                    if (!sPattern || RegExp(sPattern).test(sLemma)) {
-                                        this.addFlexion(sLemma.slice(0,-nCut)+sAdd, sLemma, ":V" + cGroup + "_" + sVerbTag + sFlexTags);
-                                    }
+                                // utilisation du générateur de conjugaison
+                                let bVarPpas = document.getElementById("up_partpas").checked;
+                                for (let [sFlexion, sFlexTags] of conj_generator.conjugate(sLemma, sVerbTag, bVarPpas)) {
+                                    this.addFlexion(sFlexion, sLemma, sFlexTags);
                                 }
                             } else {
                                 // copie du motif d’un autre verbe : utilisation du conjugueur
@@ -443,34 +430,6 @@ const oFlexGen = {
         }
         catch (e) {
             showError(e);
-        }
-    },
-
-    _getConjRules: function (sVerb) {
-        if (sVerb.endsWith("ir")) {
-            // deuxième groupe
-            return conj_generator["V2"];
-        } else if (sVerb.endsWith("er")) {
-            // premier groupe, conjugaison en fonction de la terminaison du lemme
-            // 5 lettres
-            if (sVerb.slice(-5) in conj_generator["V1"]) {
-                return conj_generator["V1"][sVerb.slice(-5)];
-            }
-            // 4 lettres
-            if (sVerb.slice(-4) in conj_generator["V1"]) {
-                if (sVerb.endsWith("eler") || sVerb.endsWith("eter")) {
-                    return conj_generator["V1"][sVerb.slice(-4)]["1"];
-                }
-                return conj_generator["V1"][sVerb.slice(-4)];
-            }
-            // 3 lettres
-            if (sVerb.slice(-3) in conj_generator["V1"]) {
-                return conj_generator["V1"][sVerb.slice(-3)];
-            }
-            return conj_generator["V1"]["er"];
-        } else {
-            // troisième groupe
-            return [ [0, "", ":Y/*", false] ];
         }
     },
 
