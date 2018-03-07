@@ -105,7 +105,7 @@ function handleMessage (oMessage, xSender, sendResponse) {
             showTestResult(result);
             break;
         case "resetOptions":
-            setGCOptions(result);
+            displayGCOptions(result);
             break;
         default:
             console.log("GRAMMALECTE. Unknown command: " + sActionDone);
@@ -129,10 +129,10 @@ function showPage (sPageName) {
         // show the selected one
         document.getElementById(sPageName).style.display = "block";
         if (sPageName == "gc_options_page") {
-            setGCOptionsFromStorage();
+            displayGCOptionsLoadedFromStorage();
         }
         else if (sPageName == "ui_options_page") {
-            setUIOptionsFromStorage();
+            displayUIOptionsLoadedFromStorage();
         }
     }
     catch (e) {
@@ -176,16 +176,16 @@ function openConjugueurTab () {
     UI options
 */
 
-function setUIOptionsFromStorage () {
+function displayUIOptionsLoadedFromStorage () {
     if (bChrome) {
-        browser.storage.local.get("ui_options", setUIOptions);
+        browser.storage.local.get("ui_options", displayUIOptions);
         return;
     }
     let xPromise = browser.storage.local.get("ui_options");
-    xPromise.then(setUIOptions, showError);
+    xPromise.then(displayUIOptions, showError);
 }
 
-function setUIOptions (dOptions) {
+function displayUIOptions (dOptions) {
     if (!dOptions.hasOwnProperty("ui_options")) {
         console.log("no ui options found");
         return;
@@ -209,36 +209,31 @@ function storeUIOptions () {
 /*
     GC options
 */
-function setGCOptionsFromStorage () {
+function displayGCOptionsLoadedFromStorage () {
     if (bChrome) {
-        browser.storage.local.get("gc_options", _setGCOptions);
+        browser.storage.local.get("gc_options", _displayGCOptions);
         return;
     }
     let xPromise = browser.storage.local.get("gc_options");
-    xPromise.then(_setGCOptions, showError);
+    xPromise.then(_displayGCOptions, showError);
 }
 
-function _setGCOptions (dSavedOptions) {
+function _displayGCOptions (dSavedOptions) {
     if (dSavedOptions.hasOwnProperty("gc_options")) {
-        setGCOptions(dSavedOptions.gc_options);
+        displayGCOptions(dSavedOptions.gc_options);
     }
 }
 
-function setGCOptions (dOptions) {
+function displayGCOptions (oOptions) {
     try {
-        // dOptions is supposed to be a Map
-        if (bChrome) {
-            // JS crap again. Chrome can’t store/send Map object.
-            dOptions = helpers.objectToMap(dOptions);
-        }
-        for (let [sOpt, bVal] of dOptions) {
-            if (document.getElementById("option_"+sOpt)) {
-                document.getElementById("option_"+sOpt).checked = bVal;
+        for (let sParam in oOptions) {
+            if (document.getElementById("option_"+sParam)) {
+                document.getElementById("option_"+sParam).checked = oOptions[sParam];
             }
         }
     }
     catch (e) {
-        console.log(dOptions);
         showError(e);
+        console.log(oOptions);
     }
 }

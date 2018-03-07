@@ -58,9 +58,6 @@ xGCEWorker.onmessage = function (e) {
             case "resetOptions":
                 // send result to panel
                 storeGCOptions(result);
-                if (bChrome) {
-                    e.data.result = helpers.mapToObject(e.data.result);
-                }
                 browser.runtime.sendMessage(e.data);
                 break;
             case "setOptions":
@@ -75,8 +72,9 @@ xGCEWorker.onmessage = function (e) {
                 console.log(e.data);
         }
     }
-    catch (e) {
-        showError(e);
+    catch (error) {
+        showError(error);
+        console.log(e.data);
     }
 };
 
@@ -90,16 +88,22 @@ function initUIOptions (dSavedOptions) {
 }
 
 function initGrammarChecker (dSavedOptions) {
-    let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
-    if (bChrome) {
-        // JS crap again. Chrome can’t store Map object.
-        dOptions = helpers.objectToMap(dOptions);
+    try {
+        let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
+        if (dOptions !== null && Object.getOwnPropertyNames(dOptions).length == 0) {
+            console.log("# Error: the saved options was an empty object.");
+            dOptions = null;
+        }
+        xGCEWorker.postMessage({
+            sCommand: "init",
+            dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+            dInfo: {}
+        });
     }
-    xGCEWorker.postMessage({
-        sCommand: "init",
-        dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
-        dInfo: {}
-    });
+    catch (e) {
+        console.log("initGrammarChecker failed");
+        showError(e);
+    }
 }
 
 function setSpellingDictionary (dSavedDictionary) {
@@ -317,8 +321,7 @@ browser.commands.onCommand.addListener(function (sCommand) {
 */
 
 function storeGCOptions (dOptions) {
-    if (bChrome) {
-        // JS crap again. Chrome can’t store Map object.
+    if (dOptions instanceof Map) {
         dOptions = helpers.mapToObject(dOptions);
     }
     browser.storage.local.set({"gc_options": dOptions});

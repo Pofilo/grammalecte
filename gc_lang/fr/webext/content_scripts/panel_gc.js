@@ -394,15 +394,22 @@ class GrammalecteTooltip {
         return xNodeSugg;
     }
 
-    setSpellSuggestionsFor (sWord, aSugg, sErrorId) {
+    setSpellSuggestionsFor (sWord, aSugg, iSuggBlock, sErrorId) {
         // spell checking suggestions
         try {
             if (sErrorId === this.sErrorId) {
                 let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
-                xSuggBlock.textContent = "";
+                if (iSuggBlock == 0) {
+                    xSuggBlock.textContent = "";
+                }
                 if (!aSugg || aSugg.length == 0) {
-                    xSuggBlock.appendChild(document.createTextNode("Aucune."));
+                    if (iSuggBlock == 0) {
+                        xSuggBlock.appendChild(document.createTextNode("Aucune."));
+                    }
                 } else {
+                    if (iSuggBlock > 0) {
+                        xSuggBlock.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_tooltip_other_sugg_title", textContent: "AUTRES SUGGESTIONS :"}));
+                    }
                     let iSugg = 0;
                     for (let sSugg of aSugg) {
                         xSuggBlock.appendChild(this._createSuggestion(sErrorId, iSugg, sSugg));
@@ -413,6 +420,7 @@ class GrammalecteTooltip {
             }
         }
         catch (e) {
+            let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
             xSuggBlock.appendChild(document.createTextNode("# Oups. Le mécanisme de suggestion orthographique a rencontré un bug… (Ce module est encore en phase β.)"));
             showError(e);
         }

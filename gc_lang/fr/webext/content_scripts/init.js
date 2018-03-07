@@ -240,7 +240,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             }
             break;
         case "getSpellSuggestions":
-            oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, dInfo.sErrorId);
+            oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
             break;
         /*
             Commands received from the context menu
