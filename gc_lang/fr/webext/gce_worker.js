@@ -325,9 +325,9 @@ function getSpellSuggestions (sWord, dInfo) {
         postMessage(createResponse("getSpellSuggestions", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
-    let i = 1;
+    let i = 0;
     for (let aSugg of oSpellChecker.suggest(sWord)) {
-        postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg, iSugg: i}, dInfo, true));
+        postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg, iSuggBlock: i}, dInfo, true));
         i += 1;
     }
 }
