@@ -74,6 +74,9 @@ var helpers = {
 
     // conversions
     objectToMap: function (obj) {
+        if (obj == null) {
+            return null;
+        }
         let m = new Map();
         for (let param in obj) {
             m.set(param, obj[param]);
@@ -82,6 +85,9 @@ var helpers = {
     },
 
     mapToObject: function (m) {
+        if (m == null) {
+            return null;
+        }
         let obj = {};
         for (let [k, v] of m) {
             obj[k] = v;
