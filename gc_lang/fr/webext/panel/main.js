@@ -211,21 +211,16 @@ function _displayGCOptions (dSavedOptions) {
     }
 }
 
-function displayGCOptions (dOptions) {
+function displayGCOptions (oOptions) {
     try {
-        // dOptions is supposed to be a Map
-        if (bChrome) {
-            // JS crap again. Chrome can’t store/send Map object.
-            dOptions = helpers.objectToMap(dOptions);
-        }
-        for (let [sOpt, bVal] of dOptions) {
-            if (document.getElementById("option_"+sOpt)) {
-                document.getElementById("option_"+sOpt).checked = bVal;
+        for (let sParam in oOptions) {
+            if (document.getElementById("option_"+sParam)) {
+                document.getElementById("option_"+sParam).checked = oOptions[sParam];
             }
         }
     }
     catch (e) {
         showError(e);
-        console.log(dOptions);
+        console.log(oOptions);
     }
 }

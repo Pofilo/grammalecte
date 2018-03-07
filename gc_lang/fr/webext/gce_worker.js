@@ -171,6 +171,9 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             oLocution =  helpers.loadFile(sExtensionPath + "/grammalecte/fr/locutions_data.json");
             oLxg = new Lexicographe(oSpellChecker, oTokenizer, oLocution);
             if (dOptions !== null) {
+                if (!(dOptions instanceof Map)) {
+                    dOptions = helpers.objectToMap(dOptions);
+                }
                 gc_engine.setOptions(dOptions);
             }
             //tests();
@@ -179,7 +182,8 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             console.log("[Worker] Already initialized…")
         }
         // we always retrieve options from the gc_engine, for setOptions filters obsolete options
-        postMessage(createResponse("init", gc_engine.getOptions(), dInfo, true));
+        dOptions = helpers.mapToObject(gc_engine.getOptions());
+        postMessage(createResponse("init", dOptions, dInfo, true));
     }
     catch (e) {
         helpers.logerror(e);
@@ -217,29 +221,37 @@ function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) 
 }
 
 function getOptions (dInfo={}) {
-    postMessage(createResponse("getOptions", gc_engine.getOptions(), dInfo, true));
+    let dOptions = helpers.mapToObject(gc_engine.getOptions());
+    postMessage(createResponse("getOptions", dOptions, dInfo, true));
 }
 
 function getDefaultOptions (dInfo={}) {
-    postMessage(createResponse("getDefaultOptions", gc_engine.getDefaultOptions(), dInfo, true));
+    let dOptions = helpers.mapToObject(gc_engine.getDefaultOptions());
+    postMessage(createResponse("getDefaultOptions", dOptions, dInfo, true));
 }
 
 function setOptions (dOptions, dInfo={}) {
+    if (!(dOptions instanceof Map)) {
+        dOptions = helpers.objectToMap(dOptions);
+    }
     gc_engine.setOptions(dOptions);
-    postMessage(createResponse("setOptions", gc_engine.getOptions(), dInfo, true));
+    dOptions = helpers.mapToObject(gc_engine.getOptions());
+    postMessage(createResponse("setOptions", dOptions, dInfo, true));
 }
 
 function setOption (sOptName, bValue, dInfo={}) {
     console.log(sOptName+": "+bValue);
     if (sOptName) {
         gc_engine.setOption(sOptName, bValue);
-        postMessage(createResponse("setOption", gc_engine.getOptions(), dInfo, true));
+        let dOptions = helpers.mapToObject(gc_engine.getOptions());
+        postMessage(createResponse("setOption", dOptions, dInfo, true));
     }
 }
 
 function resetOptions (dInfo={}) {
     gc_engine.resetOptions();
-    postMessage(createResponse("resetOptions", gc_engine.getOptions(), dInfo, true));
+    let dOptions = helpers.mapToObject(gc_engine.getOptions());
+    postMessage(createResponse("resetOptions", dOptions, dInfo, true));
 }
 
 function tests () {
