@@ -168,12 +168,9 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             oSpellChecker = gc_engine.getSpellChecker();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
             oTokenizer = new Tokenizer("fr");
-
             oLocution =  helpers.loadFile(sExtensionPath + "/grammalecte/fr/locutions_data.json");
-
             oLxg = new Lexicographe(oSpellChecker, oTokenizer, oLocution);
             if (dOptions !== null) {
-                console.log(dOptions);
                 gc_engine.setOptions(dOptions);
             }
             //tests();
