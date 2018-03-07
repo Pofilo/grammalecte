@@ -842,6 +842,10 @@ class Entree:
             sErr += 'le drapeau derait finir avec *'
         if not self.flags and self.iz.endswith(("mas", "fem", "epi")):
             sErr += '[is] incomplet'
+        if self.flags.startswith(("a", "b", "c", "d")) and not self.lemma.endswith("er"):
+            sErr += "drapeau pour verbe du 1ᵉʳ groupe sur un lemme non conforme"
+        if self.flags.startswith("f") and not self.lemma.endswith("ir"):
+            sErr += "drapeau pour verbe du 2ᵉ groupe sur un lemme non conforme"
         if sErr:
             echo('   error -  id: ' + self.iD, end = "")
             echo('  ' + sErr + '  in  ' + self.__str__())
