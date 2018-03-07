@@ -90,16 +90,26 @@ function initUIOptions (dSavedOptions) {
 }
 
 function initGrammarChecker (dSavedOptions) {
-    let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
-    if (bChrome) {
-        // JS crap again. Chrome can’t store Map object.
-        dOptions = helpers.objectToMap(dOptions);
+    try {
+        let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
+        if (dOptions !== null && Object.getOwnPropertyNames(dOptions).length == 0) {
+            console.log("# Error: the saved options was an empty object");
+            dOptions = null;
+        }
+        if (bChrome) {
+            // JS crap again. Chrome can’t store Map object.
+            dOptions = helpers.objectToMap(dOptions);
+        }
+        xGCEWorker.postMessage({
+            sCommand: "init",
+            dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+            dInfo: {}
+        });
     }
-    xGCEWorker.postMessage({
-        sCommand: "init",
-        dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
-        dInfo: {}
-    });
+    catch (e) {
+        console.log("initGrammarChecker failed");
+        showError(e);
+    }
 }
 
 function setSpellingDictionary (dSavedDictionary) {
