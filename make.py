@@ -365,6 +365,7 @@ def main ():
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for WebExtension testing", action="store_true")
     xParser.add_argument("-we", "--web_ext", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
+    xParser.add_argument("-tbb", "--thunderbird_beta", help="Launch Thunderbird Beta", action="store_true")
     xParser.add_argument("-i", "--install", help="install the extension in Writer (path of unopkg must be set in config.ini)", action="store_true")
     xArgs = xParser.parse_args()
 
@@ -450,7 +451,13 @@ def main ():
 
             # Thunderbird
             if xArgs.thunderbird:
-                os.system("thunderbird -jsconsole -P debug")
+                spfThunderbird = '"'+dVars['win_tb_path']+'"'  if platform.system() == "Windows"  else dVars['linux_tb_path']
+                print(spfThunderbird)
+                os.system(spfThunderbird + ' -jsconsole -P debug')
+            if xArgs.thunderbird_beta:
+                spfThunderbird = '"'+dVars['win_tb_beta_path']+'"'  if platform.system() == "Windows"  else dVars['linux_tb_beta_path']
+                print(spfThunderbird)
+                os.system(spfThunderbird + ' -jsconsole -P beta')
         else:
             print("Folder not found: gc_lang/"+sLang)
 
