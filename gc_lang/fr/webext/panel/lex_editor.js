@@ -90,8 +90,8 @@ class Table {
 
     _createHeader () {
         let xRowNode = createNode("tr");
-        xRowNode.appendChild(createNode("th", { textContent: "·" }));
-        xRowNode.appendChild(createNode("th", { textContent: "#" }));
+        xRowNode.appendChild(createNode("th", { textContent: "·", width: "12px" }));
+        //xRowNode.appendChild(createNode("th", { textContent: "#" }));
         for (let sColumn of this.lColumn) {
             xRowNode.appendChild(createNode("th", { textContent: sColumn }));
         }
@@ -117,6 +117,7 @@ class Table {
             }
             this.xProgressBar.value = this.xProgressBar.max;
         }
+        this.lEntry = lFlex;
         this.nEntry = lFlex.length;
         this.showEntryNumber();
     }
@@ -132,14 +133,14 @@ class Table {
 
     showEntryNumber () {
         if (this.xNumEntry) {
-            this.xNumEntry.textContent = "Entrées : " + this.nEntry;
+            this.xNumEntry.textContent = this.nEntry;
         }
     }
 
     _addRow (lData) {
         let xRowNode = createNode("tr", { id: this.sNodeId + "_row_" + this.iEntryIndex });
         xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: this.iEntryIndex }));
-        xRowNode.appendChild(createNode("td", { textContent: this.iEntryIndex }));
+        //xRowNode.appendChild(createNode("td", { textContent: this.iEntryIndex }));
         for (let data of lData) {
             xRowNode.appendChild(createNode("td", { textContent: data }));
         }
@@ -196,18 +197,23 @@ const oGenerator = {
         document.getElementById("add_to_lexicon").addEventListener("click", () => { this.addToLexicon(); }, false);
     },
 
-    lSection: ["section_nom", "section_verbe", "section_adverbe", "section_prenom", "section_patronyme", "section_nom_propre", "section_autre"],
+    lSection: ["nom", "verbe", "adverbe", "prenom", "patronyme", "nom_propre", "autre"],
 
     hideAllSections: function () {
         for (let sSection of this.lSection) {
-            hideElement(sSection);
+            hideElement("section_" + sSection);
+            document.getElementById("select_" + sSection).style.backgroundColor = "";
         }
     },
 
     showSection: function (sName) {
         this.clear();
         this.hideAllSections();
-        showElement(sName);
+        if (document.getElementById(sName).style.display == "none") {
+            showElement(sName);
+        } else {
+            hideElement(sName);
+        }
     },
 
     clear: function () {
@@ -257,6 +263,7 @@ const oGenerator = {
             if (xElem.id) {
                 if (xElem.id.startsWith("select_")) {
                     this.showSection("section_" + xElem.id.slice(7));
+                    xElem.style.backgroundColor = "hsl(210, 50%, 90%)";
                     this.cMainTag = xElem.dataset.tag;
                     this.update();
                 } else if (xElem.id.startsWith("up_")) {
@@ -434,7 +441,7 @@ const oGenerator = {
     createFlexLemmaTagArray: function () {
         let sLemma = document.getElementById("lemma").value.trim();
         let lEntry = [];
-        for (let [sFlex, sTags] of this.lFlexion) {
+        for (let [sFlex, sTags] of oGenWordsTable.getEntries()) {
             lEntry.push([sFlex, sLemma, sTags]);
         }
         return lEntry;
@@ -446,8 +453,8 @@ const oGenerator = {
             oGenWordsTable.clear();
             document.getElementById("lemma").value = "";
             document.getElementById("lemma").focus();
+            this.hideAllSections();
             hideElement("editor");
-            oGenerator.clear();
             showElement("save_button");
             this.clear();
             this.cMainTag = "";
