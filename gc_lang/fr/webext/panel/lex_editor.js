@@ -161,9 +161,7 @@ const oWidgets = {
             this.showElement("editor");
             oFlexGen.update();
         } else {
-            this.showSection("section_vide");
             this.hideElement("editor");
-            this.hideElement("actions");
         }
     },
 
@@ -176,7 +174,7 @@ const oWidgets = {
         }
     },
 
-    createTableHeader: function () {
+    createLexiconHeader: function () {
         let xRowNode = createNode("tr");
         xRowNode.appendChild(createNode("th", { textContent: "·" }));
         xRowNode.appendChild(createNode("th", { textContent: "#" }));
@@ -186,7 +184,7 @@ const oWidgets = {
         return xRowNode;
     },
 
-    createRowNode: function (n, sFlexion, sLemma, sTags) {
+    createLexiconRow: function (n, sFlexion, sLemma, sTags) {
         let xRowNode = createNode("tr", { id: "row_" + n });
         xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: n }));
         xRowNode.appendChild(createNode("td", { textContent: n }));
@@ -196,8 +194,8 @@ const oWidgets = {
         return xRowNode;
     },
 
-    displayTable: function (lFlex) {
-        this.clearTable();
+    fillLexiconTable: function (lFlex) {
+        this.clearTable("table");
         if (lFlex.length > 0) {
             this.showElement("display_progress");
             let xDisplayProgress = document.getElementById("display_progress");
@@ -206,9 +204,9 @@ const oWidgets = {
             xDisplayProgress.max = lFlex.length;
             xDisplayProgress.value = 1;
             this.hideElement("no_elem_line");
-            xTable.appendChild(this.createTableHeader());
+            xTable.appendChild(this.createLexiconHeader());
             for (let [sFlexion, sLemma, sTags] of lFlex) {
-                xTable.appendChild(this.createRowNode(n, sFlexion, sLemma, sTags));
+                xTable.appendChild(this.createLexiconRow(n, sFlexion, sLemma, sTags));
                 n += 1;
                 xDisplayProgress.value += 1;
             }
@@ -220,8 +218,8 @@ const oWidgets = {
         this.updateData();
     },
 
-    clearTable: function () {
-        let xTable = document.getElementById("table");
+    clearTable: function (sNodeId) {
+        let xTable = document.getElementById(sNodeId);
         while (xTable.firstChild) {
             xTable.removeChild(xTable.firstChild);
         }
@@ -246,10 +244,10 @@ const oWidgets = {
         if (lFlex.length > 0) {
             if (document.getElementById("no_elem_line").style.display !== "none") {
                 this.hideElement("no_elem_line");
-                xTable.appendChild(this.createTableHeader());
+                xTable.appendChild(this.createLexiconHeader());
             }
             for (let [sFlexion, sLemma, sTags] of lFlex) {
-                xTable.appendChild(this.createRowNode(iStart, sFlexion, sLemma, sTags));
+                xTable.appendChild(this.createLexiconRow(iStart, sFlexion, sLemma, sTags));
                 iStart += 1;
             }
         }
@@ -285,7 +283,6 @@ const oFlexGen = {
 
     clear: function () {
         this.lFlexion = [];
-        oWidgets.hideElement("actions");
     },
 
     setMainTag: function (sValue) {
@@ -443,14 +440,9 @@ const oFlexGen = {
     show: function () {
         let sText = "";
         for (let [sFlexion, sLemma, sTag] of this.lFlexion) {
-            sText += sFlexion + " (" + sLemma + ") " + sTag + "\n";
+            sText += sFlexion + "\t" + sTag + "\n";
         }
-        if (sText) {
-            document.getElementById("results").textContent = sText;
-            oWidgets.showElement("actions");
-        } else {
-            oWidgets.hideElement("actions");
-        }
+        document.getElementById("results").textContent = sText;
     },
 
     addToLexicon: function () {
@@ -458,9 +450,7 @@ const oFlexGen = {
             oLexicon.addFlexions(this.lFlexion);
             document.getElementById("lemma").value = "";
             document.getElementById("lemma").focus();
-            oWidgets.showSection("section_vide");
             oWidgets.hideElement("editor");
-            oWidgets.hideElement("actions");
             oWidgets.clear();
             oWidgets.showElement("save_button");
             this.clear();
@@ -484,7 +474,7 @@ const oLexicon = {
     set: function (lFlexion) {
         this.lFlexion = lFlexion;
         this.resetModif();
-        oWidgets.displayTable(this.lFlexion);
+        oWidgets.fillLexiconTable(this.lFlexion);
         if (this.lFlexion.length > 0) {
             oWidgets.showElement("export_button");
         } else {
@@ -519,7 +509,7 @@ const oLexicon = {
         this.lFlexion = this.lFlexion.filter((e) => e !== null);
         oBinaryDict.build(this.lFlexion);
         this.resetModif();
-        oWidgets.displayTable(this.lFlexion);
+        oWidgets.fillLexiconTable(this.lFlexion);
         oWidgets.updateData();
     }
 }
