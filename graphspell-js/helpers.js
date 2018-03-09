@@ -53,14 +53,7 @@ var helpers = {
         // if not in workers, use sdk/data.load() instead
         try {
             let xRequest;
-            if (typeof XMLHttpRequest !== "undefined") {
-                xRequest = new XMLHttpRequest();
-            } else {
-                // JS sucks again… necessary for Thunderbird
-                let { Cc, Ci } = require("chrome");
-                xRequest = Cc["@mozilla.org/xmlextras/xmlhttprequest;1"].createInstance();
-                xRequest.QueryInterface(Ci.nsIXMLHttpRequest);
-            }
+            xRequest = new XMLHttpRequest();
             xRequest.open('GET', spf, false); // 3rd arg is false for synchronous, sync is acceptable in workers
             xRequest.overrideMimeType('text/json');
             xRequest.send();
