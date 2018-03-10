@@ -49,7 +49,7 @@ def getConjRules (sVerb, bVarPpas=True, nGroup=2):
         lConj.extend(oConj["V2_ppas"][bVarPpas])
     else:
         # TODO: troisième groupe
-        lConj = [ [0, "", ":Y/*", false] ]
+        lConj = [ [0, "", ":Y/*", False] ]
     return lConj
 
 
