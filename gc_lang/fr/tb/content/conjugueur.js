@@ -80,7 +80,7 @@ let oConj = {
                     document.getElementById('verb_title').textContent = sVerb;
                     document.getElementById('verb').style = "color: #999999;";
                     document.getElementById('verb').value = "";
-                    this.oVerb = new conj.Verb(sVerb);
+                    this.oVerb = new Verb(sVerb);
                     let sRawInfo = this.oVerb._sRawInfo;
                     document.getElementById('info').textContent = this.oVerb.sInfo;
                     document.getElementById('opro').textContent = "pronominal";
@@ -268,5 +268,5 @@ let oConj = {
     }
 };
 
+conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 oConj.init();
-
