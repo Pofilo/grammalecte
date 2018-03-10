@@ -60,16 +60,12 @@ dStrings = {
 
         "add_button": "Ajouter au lexique",
         "delete_button": "Supprimer la sélection",
-
-        # Informations
-        "lexicon_info_section": "Lexique",
-        "added_entries_label": "Entrées ajoutées",
-        "deleted_entries_label": "Entrées effacées",
-        "num_of_entries_label": "Nombre d’entrées",
         "save_button": "Enregistrer",
 
-        "dictionary_section": "Dictionnaire enregistré",
-        "save_date_label": "Date d’enregistrement",
+        # Dictionary
+        "dictionary_section": "Dictionnaire personnel",
+        "save_date_label": "Date d’enregistrement :",
+        "num_of_entries_label": "Nombre d’entrées :",
         "export_button": "Exporter",
 
         #

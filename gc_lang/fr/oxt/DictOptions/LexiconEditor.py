@@ -97,7 +97,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 570
-        self.xDialog.Height = 292
+        self.xDialog.Height = 305
         self.xDialog.Title = self.dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
@@ -118,7 +118,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         nX1 = 10
         nX2 = 20
 
-        nY1 = 5
+        nY0 = 5
+        nY1 = nY0 + 13
         nY2 = nY1 + 25 # nom commun
         nY3 = nY2 + 95 # nom propre
         nY4 = nY3 + 45 # verbe
@@ -130,10 +131,17 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
         nHeight = 10
 
+        #### Dictionary section
+        self._addWidget("dictionary_section", 'FixedLine', nX1, nY0, 180, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle, TextColor = 0x000088)
+        self._addWidget("save_date_label", 'FixedText', nXB, nY0+2, 80, nHeight, Label = self.dUI.get("save_date_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = "-", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self.xExport = self._addWidget('export_button', 'Button', nXC+150, nY0, 50, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 180, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
         self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 120, 14, FontDescriptor = xFDTitle)
-        self._addWidget('close_button', 'Button', nX1+130, nY1+10, 50, 14, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
 
         # Radio buttons: main POS tag
         # Note: the only way to group RadioButtons is to create them successively
@@ -206,38 +214,24 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
         #### Generated words
         self._addWidget("gwords_section", 'FixedLine', nXB, nY1, 160, nHeight, Label = self.dUI.get("new_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGridModelNew = self._addGrid("list_grid_gwords", nXB, nY1+10, 160, 175, [
+        self.xGridModelNew = self._addGrid("list_grid_gwords", nXB, nY1+10, 160, 255, [
             {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 80},
             {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 80}
         ], SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI"))
-        self.xAdd = self._addWidget('add_button', 'Button', nXB, nY1+190, 75, 12, Label = self.dUI.get('add_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500, Enabled = False)
-        self.xDelete = self._addWidget('delete_button', 'Button', nXB+80, nY1+190, 80, 12, Label = self.dUI.get('delete_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
-
-        nY2b = nY1 + 205
-        # lexicon info section
-        self._addWidget("lexicon_info_section", 'FixedLine', nXB, nY2b, 160, nHeight, Label = self.dUI.get("lexicon_info_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget("added_entries_label", 'FixedText', nXB, nY2b+10, 65, nHeight, Label = self.dUI.get("added_entries_label", "#err"))
-        self._addWidget("deleted_entries_label", 'FixedText', nXB, nY2b+20, 65, nHeight, Label = self.dUI.get("deleted_entries_label", "#err"))
-        self._addWidget("num_of_entries_label1", 'FixedText', nXB, nY2b+30, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"))
-        self.xNumAdded = self._addWidget("added_entries", 'FixedText', nXB+70, nY2b+10, 45, nHeight, Label = "0")
-        self.xNumDeleted = self._addWidget("deleted_entries", 'FixedText', nXB+70, nY2b+20, 45, nHeight, Label = "0")
-        self.xNumLex = self._addWidget("num_of_entries1", 'FixedText', nXB+70, nY2b+30, 45, nHeight, Label = "0")
-        self.xSave = self._addWidget('save_button', 'Button', nXC-50, nY2b+30, 45, 12, Label = self.dUI.get('save_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
-        # dictionary section
-        self._addWidget("dictionary_section", 'FixedLine', nXB, nY2b+45, 160, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget("save_date_label", 'FixedText', nXB, nY2b+55, 65, nHeight, Label = self.dUI.get("save_date_label", "#err"))
-        self._addWidget("num_of_entries_label2", 'FixedText', nXB, nY2b+65, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"))
-        self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+70, nY2b+55, 90, nHeight, Label = "-")
-        self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXB+70, nY2b+65, 45, nHeight, Label = "0")
-        self.xExport = self._addWidget('export_button', 'Button', nXC-50, nY2b+65, 45, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self.xAdd = self._addWidget('add_button', 'Button', nXB, nY1+270, 75, 12, Label = self.dUI.get('add_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500, Enabled = False)
+        self.xDelete = self._addWidget('delete_button', 'Button', nXB+80, nY1+270, 80, 12, Label = self.dUI.get('delete_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
 
         #### Lexicon section
         self._addWidget("lexicon_section", 'FixedLine', nXC, nY1, 200, nHeight, Label = self.dUI.get("lexicon_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGridModelLex = self._addGrid("list_grid_lexicon", nXC, nY1+10, 200, 270, [
+        self.xGridModelLex = self._addGrid("list_grid_lexicon", nXC, nY1+10, 200, 255, [
             {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 65},
             {"Title": self.dUI.get("lex_lemma", "#err"), "ColumnWidth": 50},
             {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 65}
         ], SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI"))
+        self._addWidget("num_of_entries_label1", 'FixedText', nXC, nY1+272, 60, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle)
+        self.xNumLex = self._addWidget("num_of_entries1", 'FixedText', nXC+65, nY1+272, 40, nHeight, Label = "0", FontDescriptor = xFDSubTitle)
+        self.xSave = self._addWidget('save_button', 'Button', nXC+110, nY1+270, 45, 12, Label = self.dUI.get('save_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('close_button', 'Button', nXC+160, nY1+270, 40, 12, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
 
         self.loadLexicon()
 
@@ -320,8 +314,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             for i, sLine in enumerate(oIBDAWG.select()):
                 sFlexion, sLemma, sTag = sLine.split("\t")
                 xGridDataModel.addRow(i, (sFlexion, sLemma, sTag))
-            self.xNumAdded.Label = "0"
-            self.xNumDeleted.Label = "0"
             self.xNumLex.Label = str(i)
             self.xNumDic.Label = str(i)
             self.xDateDic.Label = oIBDAWG.sDate
@@ -337,8 +329,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         xChild = self.xSettingNode.getByName("o_fr")
         xChild.setPropertyValue("personal_dic", json.dumps(oJSON, ensure_ascii=False))
         self.xSettingNode.commitChanges()
-        self.xNumAdded.Label = "0"
-        self.xNumDeleted.Label = "0"
         self.xNumLex.Label = str(oJSON["nEntry"])
         self.xNumDic.Label = str(oJSON["nEntry"])
         self.xDateDic.Label = oJSON["sDate"]
@@ -499,7 +489,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             sFlexion, sLemma, sTag = xGridDataModelNew.getRowData(i)
             xGridDataModelLex.addRow(nStart + i, (sFlexion, sLemma, sTag))
         self.xSave.Enabled = True
-        self.xNumAdded.Label = str(int(self.xNumAdded.Label) + xGridDataModelNew.RowCount)
         self.xNumLex.Label = str(int(self.xNumLex.Label) + xGridDataModelNew.RowCount)
         self._resetWidgets()
 
@@ -519,7 +508,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             if i < xGridDataModel.RowCount:
                 xGridDataModel.removeRow(i)
         self.xGridControlLex.deselectAllRows()
-        self.xNumDeleted.Label = str(int(self.xNumDeleted.Label) + nSelectedEntries)
         self.xNumLex.Label = str(xGridDataModel.RowCount)
 
     @_waitPointer
