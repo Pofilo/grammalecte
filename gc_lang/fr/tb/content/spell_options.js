@@ -7,12 +7,6 @@ const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
-const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
-
-
-function echo (...args) {
-	Services.console.logStringMessage(args.join(" -- ") + "\n");
-}
 
 
 var oDialogControl = {

@@ -3,11 +3,6 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
-//const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
-
-function echo (...args) {
-    Services.console.logStringMessage(args.join(" -- ") + "\n");
-}
 
 
 function openInBrowserURL (sURL) {

@@ -21,11 +21,9 @@ class Editor {
         // recursive function
         try {
             for (let xNode of xRootNode.childNodes) {
-                //echo("tag: " + xNode.tagName);
                 if (xNode.className !== "moz-cite-prefix" && xNode.tagName !== "BLOCKQUOTE"
                     && (xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")))
                     && xNode.textContent !== "") {
-                    //echo("<"+xNode.tagName+">["+xNode.textContent+"]");
                     if (xNode.tagName === undefined) {
                         if (!prefs.getBoolPref("bCheckSignature") && xNode.textContent.startsWith("-- ")) {
                             break;

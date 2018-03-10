@@ -32,7 +32,7 @@ const parser = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
 const persodict = Cc["@mozilla.org/spellchecker/personaldictionary;1"].getService(Ci.mozIPersonalDictionary);
 */
 
-const system = require("sdk/system");
+//const system = require("sdk/system");
 
 
 var oSpellControl = {
@@ -133,12 +133,13 @@ var oSpellControl = {
 			let sPath = "/content/dictionaries/" + sDictName;
 			AddonManager.getAddonByID("French-GC-TB@grammalecte.net", function (addon) {
 				let xURI = addon.getResourceURI(sPath);
-				//console.log("> " + xURI.path);
+				console.log("> " + xURI.path);
 				let sFolder = xURI.path;
-				if (system.platform === "winnt") {
+				//if (system.platform === "winnt") {
+				if (sFolder) {
 					sFolder = sFolder.slice(1).replace(/\//g, "\\\\");
 				}
-				//console.log("> " + sFolder);
+				console.log("> " + sFolder);
 				if (bActivate) {
 					that.addDirectory(sFolder);
 				} else {
