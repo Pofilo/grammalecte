@@ -13,7 +13,7 @@ var conj_generator = {
     conjugate: function (sVerb, sVerbTag="i_____a", bVarPpas=true) {
         let lConj = [];
         let cGroup = this.getVerbGroupChar(sVerb);
-        for (let [nCut, sAdd, sFlexTags, sPattern] of this.getConjRules(sVerb)) {
+        for (let [nCut, sAdd, sFlexTags, sPattern] of this.getConjRules(sVerb, bVarPpas)) {
             if (!sPattern || RegExp(sPattern).test(sVerb)) {
                 lConj.push( [sVerb.slice(0, -nCut) + sAdd, ":V" + cGroup + "_" + sVerbTag + sFlexTags] );
             }
