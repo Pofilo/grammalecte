@@ -183,6 +183,8 @@ class Table {
 
 const oGenerator = {
 
+    sLemma: "",
+
     cMainTag: "",
 
     lFlexion: [],
@@ -298,8 +300,8 @@ const oGenerator = {
         try {
             this.lFlexion = [];
             let sGenderTag = "";
-            let sLemma = document.getElementById("lemma").value.trim();
-            if (sLemma.length > 0) {
+            this.sLemma = document.getElementById("lemma").value.trim();
+            if (this.sLemma.length > 0) {
                 switch (this.cMainTag) {
                     case "N":
                         if (!this.getRadioValue("POS") || !this.getRadioValue("genre")) {
@@ -308,15 +310,15 @@ const oGenerator = {
                         let sTag = this.getRadioValue("POS") + this.getRadioValue("genre");
                         switch (this.getRadioValue("pluriel")) {
                             case "s":
-                                this.lFlexion.push([sLemma, sTag+":s/*"]);
-                                this.lFlexion.push([sLemma+"s", sTag+":p/*"]);
+                                this.lFlexion.push([this.sLemma, sTag+":s/*"]);
+                                this.lFlexion.push([this.sLemma+"s", sTag+":p/*"]);
                                 break;
                             case "x":
-                                this.lFlexion.push([sLemma, sTag+":s/*"]);
-                                this.lFlexion.push([sLemma+"x", sTag+":p/*"]);
+                                this.lFlexion.push([this.sLemma, sTag+":s/*"]);
+                                this.lFlexion.push([this.sLemma+"x", sTag+":p/*"]);
                                 break;
                             case "i":
-                                this.lFlexion.push([sLemma, sTag+":i/*"]);
+                                this.lFlexion.push([this.sLemma, sTag+":i/*"]);
                                 break;
                         }
                         let sLemma2 = document.getElementById("lemma2").value.trim();
@@ -338,10 +340,10 @@ const oGenerator = {
                         }
                         break;
                     case "V": {
-                        if (!sLemma.endsWith("er") && !sLemma.endsWith("ir") && !sLemma.endsWith("re")) {
+                        if (!this.sLemma.endsWith("er") && !this.sLemma.endsWith("ir") && !this.sLemma.endsWith("re")) {
                             break;
                         }
-                        sLemma = sLemma.toLowerCase();
+                        this.sLemma = this.sLemma.toLowerCase();
                         let cGroup = "";
                         let c_i = (document.getElementById("up_v_i").checked) ? "i" : "_";
                         let c_t = (document.getElementById("up_v_t").checked) ? "t" : "_";
@@ -356,13 +358,13 @@ const oGenerator = {
                             if (sVerbPattern.length == 0) {
                                 // utilisation du générateur de conjugaison
                                 let bVarPpas = document.getElementById("up_partpas").checked;
-                                for (let [sFlexion, sFlexTags] of conj_generator.conjugate(sLemma, sVerbTag, bVarPpas)) {
+                                for (let [sFlexion, sFlexTags] of conj_generator.conjugate(this.sLemma, sVerbTag, bVarPpas)) {
                                     this.lFlexion.push([sFlexion, sFlexTags]);
                                 }
                             } else {
                                 // copie du motif d’un autre verbe : utilisation du conjugueur
                                 if (conj.isVerb(sVerbPattern)) {
-                                    let oVerb = new Verb(sLemma, sVerbPattern);
+                                    let oVerb = new Verb(this.sLemma, sVerbPattern);
                                     for (let [sTag1, dFlex] of oVerb.dConj.entries()) {
                                         if (sTag1 !== ":Q") {
                                             for (let [sTag2, sConj] of dFlex.entries()) {
@@ -392,27 +394,27 @@ const oGenerator = {
                         break;
                     }
                     case "W":
-                        sLemma = sLemma.toLowerCase();
-                        this.lFlexion.push([sLemma, ":W/*"]);
+                        this.sLemma = this.sLemma.toLowerCase();
+                        this.lFlexion.push([this.sLemma, ":W/*"]);
                         break;
                     case "M1":
-                        sLemma = sLemma.slice(0,1).toUpperCase() + sLemma.slice(1);
+                        this.sLemma = this.sLemma.slice(0,1).toUpperCase() + this.sLemma.slice(1);
                         sGenderTag = this.getRadioValue("genre_m1");
                         if (sGenderTag) {
-                            this.lFlexion.push([sLemma, ":M1"+sGenderTag+":i/*"]);
+                            this.lFlexion.push([this.sLemma, ":M1"+sGenderTag+":i/*"]);
                         }
                         break;
                     case "M2":
-                        sLemma = sLemma.slice(0,1).toUpperCase() + sLemma.slice(1);
+                        this.sLemma = this.sLemma.slice(0,1).toUpperCase() + this.sLemma.slice(1);
                         sGenderTag = this.getRadioValue("genre_m2");
                         if (sGenderTag) {
-                            this.lFlexion.push([sLemma, ":M2"+sGenderTag+":i/*"]);
+                            this.lFlexion.push([this.sLemma, ":M2"+sGenderTag+":i/*"]);
                         }
                         break;
                     case "MP":
                         sGenderTag = this.getRadioValue("genre_mp");
                         if (sGenderTag) {
-                            this.lFlexion.push([sLemma, ":MP"+sGenderTag+":i/*"]);
+                            this.lFlexion.push([this.sLemma, ":MP"+sGenderTag+":i/*"]);
                         }
                         break;
                     case "X":
@@ -439,10 +441,9 @@ const oGenerator = {
     },
 
     createFlexLemmaTagArray: function () {
-        let sLemma = document.getElementById("lemma").value.trim();
         let lEntry = [];
         for (let [sFlex, sTags] of oGenWordsTable.getEntries()) {
-            lEntry.push([sFlex, sLemma, sTags]);
+            lEntry.push([sFlex, this.sLemma, sTags]);
         }
         return lEntry;
     },
