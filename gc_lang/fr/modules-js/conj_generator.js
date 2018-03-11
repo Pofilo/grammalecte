@@ -11,14 +11,14 @@
 var conj_generator = {
 
     conjugate: function (sVerb, sVerbTag="i_____a", bVarPpas=true) {
-        let lConj = [];
+        let lEntry = [];
         let cGroup = this.getVerbGroupChar(sVerb);
         for (let [nCut, sAdd, sFlexTags, sPattern] of this.getConjRules(sVerb, bVarPpas)) {
             if (!sPattern || RegExp(sPattern).test(sVerb)) {
-                lConj.push( [sVerb.slice(0, -nCut) + sAdd, ":V" + cGroup + "_" + sVerbTag + sFlexTags] );
+                lEntry.push( [sVerb.slice(0, -nCut) + sAdd, ":V" + cGroup + "_" + sVerbTag + sFlexTags] );
             }
         }
-        return lConj;
+        return lEntry;
     },
 
     getVerbGroupChar: function (sVerb) {
@@ -51,16 +51,20 @@ var conj_generator = {
             else if (sVerb.slice(-4) in this.oConj["V1"]) {
                 if (sVerb.endsWith("eler") || sVerb.endsWith("eter")) {
                     lConj = this.oConj["V1"][sVerb.slice(-4)]["1"];
+                } else {
+                    lConj = this.oConj["V1"][sVerb.slice(-4)];
                 }
-                lConj = this.oConj["V1"][sVerb.slice(-4)];
             }
             // 3 lettres
             else if (sVerb.slice(-3) in this.oConj["V1"]) {
                 lConj = this.oConj["V1"][sVerb.slice(-3)];
             }
+            // 2 lettres
             else {
                 lConj = this.oConj["V1"]["er"];
             }
+            console.log(lConj);
+            console.log(this.oConj["V1_ppas"][sVarPpas]);
             lConj.push(...this.oConj["V1_ppas"][sVarPpas]);
         } else if (sVerb.endsWith("ir") && nGroup <= 2) {
             // deuxième groupe
