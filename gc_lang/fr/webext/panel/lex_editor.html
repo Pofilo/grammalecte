@@ -12,20 +12,20 @@
 
       <h1>Éditeur lexical</h1>
 
-      <div id="buttons" class="container">
-        <div id="lexicon_button" class="main_button">Lexique</div>
-        <div id="add_word_button" class="main_button">Ajout</div>
-      </div>
-
       <div class="big_block">
         <div class="dic_container">
-          <div><h3>Dictionnaire personnel.</h3></div>
-          <div>Enregistré le : <span id="dic_save_date">néant</span>.</div>
-          <div><span id="dic_num_entries">0</span> entrées.</div>
+          <div><h3>Dictionnaire personnel</h3></div>
+          <div>Enregistré le : <span id="dic_save_date">—</span></div>
+          <div><span id="dic_num_entries">0</span> entrées</div>
           <div id="export_button" class="fright">Exporter</div>
           <div id="import_button" class="fright">Importer</div>
         </div>
         <progress id="wait_progress" value="0"></progress>
+      </div>
+
+      <div id="buttons" class="container">
+        <div id="lexicon_button" class="main_button">Lexique</div>
+        <div id="add_word_button" class="main_button">Ajout</div>
       </div>
 
       <div id="add_word_page">
@@ -37,7 +37,7 @@
             <div id="editor">
 
               <div id="sections">
-                <h3 class="category" id="select_nom" data-tag="N">Nom, adjectif</h3>
+                <h3 class="category" id="select_nom" data-tag="N">Nom commun</h3>
                 <div id="section_nom" class="section">
                   <p class="typeline">
                     <input type="radio" id="up_type_nom" name="POS" value=":N" /> <label class="widelabel" for="up_type_nom">Nom</label>
@@ -92,7 +92,7 @@
                     <details>
                       <div class="container">
                         <div class="examples_true">Je dors.<br/>Tu pars.<br/>Elle pense.<br/>Nous écrivons.<br/>Vous manifestez.<br/>Ils viennent.</div>
-                        <div class="examples_false">J’appartiens à ce groupe…</div>
+                        <div class="examples_false">J’appartiens à ce groupe…<br/>J’accède au niveau supérieur.</div>
                       </div>
                     </details>
                   </div>
@@ -102,7 +102,7 @@
                     <details>
                       <div class="container">
                         <div class="examples_true">Je mange <i>une pomme</i>.<br/>Tu donnes <i>une bonne impression</i>.<br/>Elle écrit <i>un livre</i>.<br/>Nous fabriquons <i>une œuvre</i>.</div>
-                        <div class="examples_false">Je pars.<br/>J’appartiens à…</div>
+                        <div class="examples_false">Je pars ce matin.<br/>J’appartiens à…</div>
                       </div>
                     </details>
                   </div>
@@ -112,7 +112,7 @@
                     <details>
                       <div class="container">
                         <div class="examples_true">Je donne un cadeau <i>à sa femme</i>.<br/>Elle appartient <i>à ce groupe</i>.</div>
-                        <div class="examples_false"></div>
+                        <div class="examples_false">Elle danse à l’opéra.</div>
                       </div>
                     </details>
                   </div>
@@ -131,24 +131,21 @@
                     <div class="description">Ce verbe ne peut s’utiliser à la première personne, mais uniquement à la troisième personne du singulier ou du pluriel.</div>
                     <details>
                       <div class="container">
-                        <div class="examples_true">Il pleut.</div>
-                        <div class="examples_false">Je pleus.</div>
+                        <div class="examples_true">Il pleut.<br/>Il faut.</div>
+                        <div class="examples_false">Je pleus.<br/>Nous fallons.</div>
                       </div>
                     </details>
                   </div>
                   <div class="block">
-                    <h3><input type="checkbox" id="up_v_ae" value="e" /><label for="up_v_ae"> passé composé avec l’auxiliaire “être”</label></h3>
-                    <div class="description">Ce verbe s’emploie au passé composé avec l’auxiliaire “être”.</div>
+                    <h3>Auxiliaire pour le passé composé</label></h3>
+                    <div><input type="checkbox" id="up_v_ae" value="e" /><label for="up_v_ae"> être</label></div>
                     <details>
                       <div class="container">
                         <div class="examples_true">Je suis venu.<br/>Je suis parti.</div>
                         <div class="examples_false">J’ai venu.<br/>J’ai parti.</div>
                       </div>
                     </details>
-                  </div>
-                  <div class="block">
-                    <h3><input type="checkbox" id="up_v_aa" value="a" /><label for="up_v_aa"> passé composé avec l’auxiliaire “avoir”</label></h3>
-                    <div class="description">Ce verbe s’emploie au passé composé avec l’auxiliaire “avoir”.</div>
+                    <div><input type="checkbox" id="up_v_aa" value="a" /><label for="up_v_aa"> avoir</label></div>
                     <details>
                       <div class="container">
                         <div class="examples_true">J’ai mangé.<br/>J’ai prié.</div>
@@ -159,12 +156,12 @@
 
                   <div class="block">
                     <h3><input type="checkbox" id="up_partpas" checked /><label for="up_partpas"> participes passés variables</label></h3>
-                    <p>Cette option est ignorée si vous utilisez un verbe modèle.</p>
+                    <p class="description">Cette option est ignorée si vous utilisez un verbe modèle.</p>
                   </div>
 
                   <div class="block">
                     <h3>Verbe modèle [optionnel]</h3>
-                    <p>Indiquer un verbe qui doit servir de modèle n’est pas nécessaire pour la très grande majorité des verbes du 1ᵉʳ groupe et du 2ᵉ groupe. Failes-le seulement si les formes fléchies engendrées automatiquement ne vous satisfont pas.</p>
+                    <p class="description">Indiquer un verbe qui doit servir de modèle n’est pas nécessaire pour la très grande majorité des verbes du 1ᵉʳ groupe et du 2ᵉ groupe. Faites-le seulement si les formes fléchies engendrées automatiquement ne vous satisfont pas.</p>
                     <input type="text" id="verb_pattern" name="verb_pattern" maxlength="60" value="" placeholder="verbe modèle" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ-]+$" />
                     <details>
                       <p>Il est fortement recommandé d’appliquer les règles d’un verbe du même groupe que celui que vous créez. Mais aucune restriction n’est imposée.</p>
@@ -193,42 +190,23 @@
                   <p>Les adverbes sont invariables en genre et en nombre.</p>
                 </div>
 
-                <h3 class="category" id="select_prenom" data-tag="M1">Prénom</h3>
-                <div id="section_prenom" class="section">
-                  <div class="container">
-                    <div class="block">
-                      <h3>Genre</h3>
-                      <p><input type="radio" id="up_prenom_genre_e" name="genre_m1" value=":e" /><label for="up_prenom_genre_e"> épicène</label></p>
-                      <p><input type="radio" id="up_prenom_genre_m" name="genre_m1" value=":m" /><label for="up_prenom_genre_m"> masculin</label></p>
-                      <p><input type="radio" id="up_prenom_genre_f" name="genre_m1" value=":f" /><label for="up_prenom_genre_f"> féminin</label></p>
-                    </div>
-                  </div>
-                </div>
-
-                <h3 class="category" id="select_patronyme" data-tag="M2">Patronyme</h3>
-                <div id="section_patronyme" class="section">
-                  <div class="container">
-                    <div class="block">
-                      <h3>Genre</h3>
-                      <p><input type="radio" id="up_patronyme_genre_e" name="genre_m2" value=":e" /><label for="up_patronyme_genre_e"> épicène</label></p>
-                      <p><input type="radio" id="up_patronyme_genre_m" name="genre_m2" value=":m" /><label for="up_patronyme_genre_m"> masculin</label></p>
-                      <p><input type="radio" id="up_patronyme_genre_f" name="genre_m2" value=":f" /><label for="up_patronyme_genre_f"> féminin</label></p>
-                    </div>
-                  </div>
-                </div>
-
-                <h3 class="category" id="select_nom_propre" data-tag="MP">Nom propre</h3>
+                <h3 class="category" id="select_nom_propre" data-tag="M">Nom propre</h3>
                 <div id="section_nom_propre" class="section">
                   <div class="container">
                     <div class="block">
                       <h3>Genre</h3>
-                      <p><input type="radio" id="up_nom_propre_genre_e" name="genre_mp" value=":e" /><label for="up_nom_propre_genre_e"> épicène</label></p>
-                      <p><input type="radio" id="up_nom_propre_genre_m" name="genre_mp" value=":m" /><label for="up_nom_propre_genre_m"> masculin</label></p>
-                      <p><input type="radio" id="up_nom_propre_genre_f" name="genre_mp" value=":f" /><label for="up_nom_propre_genre_f"> féminin</label></p>
+                      <p><input type="radio" id="up_nom_propre_M1" name="pos_nom_propre" value=":M1" /><label for="up_nom_propre_M1"> Prénom</label></p>
+                      <p><input type="radio" id="up_nom_propre_M2" name="pos_nom_propre" value=":M2" /><label for="up_nom_propre_M2"> Patronyme</label></p>
+                      <p><input type="radio" id="up_nom_propre_MP" name="pos_nom_propre" value=":MP" /><label for="up_nom_propre_MP"> Autre</label></p>
+                    </div>
+                    <div class="block">
+                      <h3>Genre</h3>
+                      <p><input type="radio" id="up_nom_propre_genre_e" name="genre_m" value=":e" /><label for="up_nom_propre_genre_e"> épicène</label></p>
+                      <p><input type="radio" id="up_nom_propre_genre_m" name="genre_m" value=":m" /><label for="up_nom_propre_genre_m"> masculin</label></p>
+                      <p><input type="radio" id="up_nom_propre_genre_f" name="genre_m" value=":f" /><label for="up_nom_propre_genre_f"> féminin</label></p>
                     </div>
                   </div>
                 </div>
-
                 <h3 class="category" id="select_autre" data-tag="X">Autre</h3>
                 <div id="section_autre" class="section">
                   <p>Indiquez les étiquettes grammaticales que vous voulez appliquer au mot. À utiliser seulement si vous savez ce que vous faites.</p>

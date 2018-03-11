@@ -199,7 +199,7 @@ const oGenerator = {
         document.getElementById("add_to_lexicon").addEventListener("click", () => { this.addToLexicon(); }, false);
     },
 
-    lSection: ["nom", "verbe", "adverbe", "prenom", "patronyme", "nom_propre", "autre"],
+    lSection: ["nom", "verbe", "adverbe", "nom_propre", "autre"],
 
     hideAllSections: function () {
         for (let sSection of this.lSection) {
@@ -299,7 +299,6 @@ const oGenerator = {
     update: function () {
         try {
             this.lFlexion = [];
-            let sGenderTag = "";
             this.sLemma = document.getElementById("lemma").value.trim();
             if (this.sLemma.length > 0) {
                 switch (this.cMainTag) {
@@ -397,24 +396,12 @@ const oGenerator = {
                         this.sLemma = this.sLemma.toLowerCase();
                         this.lFlexion.push([this.sLemma, ":W/*"]);
                         break;
-                    case "M1":
+                    case "M":
                         this.sLemma = this.sLemma.slice(0,1).toUpperCase() + this.sLemma.slice(1);
-                        sGenderTag = this.getRadioValue("genre_m1");
+                        let sPOSTag = this.getRadioValue("pos_nom_propre")
+                        let sGenderTag = this.getRadioValue("genre_m");
                         if (sGenderTag) {
-                            this.lFlexion.push([this.sLemma, ":M1"+sGenderTag+":i/*"]);
-                        }
-                        break;
-                    case "M2":
-                        this.sLemma = this.sLemma.slice(0,1).toUpperCase() + this.sLemma.slice(1);
-                        sGenderTag = this.getRadioValue("genre_m2");
-                        if (sGenderTag) {
-                            this.lFlexion.push([this.sLemma, ":M2"+sGenderTag+":i/*"]);
-                        }
-                        break;
-                    case "MP":
-                        sGenderTag = this.getRadioValue("genre_mp");
-                        if (sGenderTag) {
-                            this.lFlexion.push([this.sLemma, ":MP"+sGenderTag+":i/*"]);
+                            this.lFlexion.push([this.sLemma, sPOSTag+sGenderTag+":i/*"]);
                         }
                         break;
                     case "X":
@@ -501,7 +488,7 @@ const oBinaryDict = {
         document.getElementById("dic_save_date").textContent = sDate;
     },
 
-    listen () {
+    listen: function () {
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_button").addEventListener("click", () => { this.import(); }, false);
     },

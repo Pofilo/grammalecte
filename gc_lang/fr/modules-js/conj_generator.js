@@ -63,8 +63,8 @@ var conj_generator = {
             else {
                 lConj = this.oConj["V1"]["er"];
             }
-            console.log(lConj);
-            console.log(this.oConj["V1_ppas"][sVarPpas]);
+            //console.log(lConj);
+            //console.log(this.oConj["V1_ppas"][sVarPpas]);
             lConj.push(...this.oConj["V1_ppas"][sVarPpas]);
         } else if (sVerb.endsWith("ir") && nGroup <= 2) {
             // deuxième groupe
