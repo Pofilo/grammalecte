@@ -56,6 +56,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xDialog = None
         self.oSpellChecker = None
         # data
+        self.sLemma = ""
         self.lGeneratedFlex = []
         # options node
         self.xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", True)
@@ -342,43 +343,43 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     @_waitPointer
     def updateGenWords (self):
         self.lGeneratedFlex = []
-        sLemma = self.xLemma.Text.strip()
-        if sLemma:
+        self.sLemma = self.xLemma.Text.strip()
+        if self.sLemma:
             if self._getRadioValue(self.xNA, self.xN, self.xA):
                 # Substantif
                 sPOS = self._getRadioValue(self.xNA, self.xN, self.xA)
                 sGenderTag = self._getRadioValue(self.xSepi, self.xSmas, self.xSfem)
                 if sGenderTag:
                     if self.xSs.State:
-                        self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":s/*"))
-                        self.lGeneratedFlex.append((sLemma+"s", sLemma, sPOS+sGenderTag+":p/*"))
+                        self.lGeneratedFlex.append((self.sLemma, sPOS+sGenderTag+":s/*"))
+                        self.lGeneratedFlex.append((self.sLemma+"s", sPOS+sGenderTag+":p/*"))
                     elif self.xSx.State:
-                        self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":s/*"))
-                        self.lGeneratedFlex.append((sLemma+"x", sLemma, sPOS+sGenderTag+":p/*"))
+                        self.lGeneratedFlex.append((self.sLemma, sPOS+sGenderTag+":s/*"))
+                        self.lGeneratedFlex.append((self.sLemma+"x", sPOS+sGenderTag+":p/*"))
                     elif self.xSinv.State:
-                        self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":i/*"))
+                        self.lGeneratedFlex.append((self.sLemma, sPOS+sGenderTag+":i/*"))
                     sLemma2 = self.xAltLemma.Text.strip()
                     if sLemma2 and self._getRadioValue(self.xNA2, self.xN2, self.xA2) and self._getRadioValue(self.xSepi2, self.xSmas2, self.xSfem2):
                         sTag2 = self._getRadioValue(self.xNA2, self.xN2, self.xA2) + self._getRadioValue(self.xSepi2, self.xSmas2, self.xSfem2)
                         if self.xSs2.State:
-                            self.lGeneratedFlex.append((sLemma2, sLemma, sTag2+":s/*"))
-                            self.lGeneratedFlex.append((sLemma2+"s", sLemma, sTag2+":p/*"))
+                            self.lGeneratedFlex.append((sLemma2, sTag2+":s/*"))
+                            self.lGeneratedFlex.append((sLemma2+"s", sTag2+":p/*"))
                         elif self.xSx2.State:
-                            self.lGeneratedFlex.append((sLemma2, sLemma, sTag2+":s/*"))
-                            self.lGeneratedFlex.append((sLemma2+"x", sLemma, sTag2+":p/*"))
+                            self.lGeneratedFlex.append((sLemma2, sTag2+":s/*"))
+                            self.lGeneratedFlex.append((sLemma2+"x", sTag2+":p/*"))
                         elif self.xSinv2.State:
-                            self.lGeneratedFlex.append((sLemma2, sLemma, sTag2+":i/*"))
+                            self.lGeneratedFlex.append((sLemma2, sTag2+":i/*"))
             elif self._getRadioValue(self.xM1, self.xM2, self.xMP):
                 # Nom propre
                 sPOS = self._getRadioValue(self.xM1, self.xM2, self.xMP)
-                sLemma = sLemma[0:1].upper() + sLemma[1:];
+                self.sLemma = self.sLemma[0:1].upper() + self.sLemma[1:];
                 sGenderTag = self._getRadioValue(self.xMepi, self.xMmas, self.xMfem)
                 if sGenderTag:
-                    self.lGeneratedFlex.append((sLemma, sLemma, sPOS+sGenderTag+":i/*"))
+                    self.lGeneratedFlex.append((self.sLemma, sPOS+sGenderTag+":i/*"))
             elif self.xV.State:
                 # Verbe
-                if sLemma.endswith(("er", "ir", "re")):
-                    sLemma = sLemma.lower()
+                if self.sLemma.endswith(("er", "ir", "re")):
+                    self.sLemma = self.sLemma.lower()
                     c_i = "i"  if self.xV_i.State  else "_"
                     c_t = "t"  if self.xV_t.State  else "_"
                     c_n = "n"  if self.xV_n.State  else "_"
@@ -391,39 +392,39 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                         sVerbPattern = self.xVpattern.Text.strip()
                         if not sVerbPattern:
                             # Utilisation du générateur de conjugaison
-                            for sFlexion, sFlexTags in conjgen.conjugate(sLemma, sVerbTag, bool(self.xV_pp.State)):
-                                self.lGeneratedFlex.append((sFlexion, sLemma, sFlexTags))
+                            for sFlexion, sFlexTags in conjgen.conjugate(self.sLemma, sVerbTag, bool(self.xV_pp.State)):
+                                self.lGeneratedFlex.append((sFlexion, sFlexTags))
                         else:
                             # copie du motif d’un autre verbe : utilisation du conjugueur
                             if conj.isVerb(sVerbPattern):
-                                oVerb = conj.Verb(sLemma, sVerbPattern)
+                                oVerb = conj.Verb(self.sLemma, sVerbPattern)
                                 for sTag1, dFlex in oVerb.dConj.items():
                                     if sTag1 != ":Q":
                                         for sTag2, sConj in dFlex.items():
                                             if sTag2.startswith(":") and sConj:
-                                                self.lGeneratedFlex.append((sConj, sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + sTag1 + sTag2))
+                                                self.lGeneratedFlex.append((sConj, ":V" + oVerb.cGroup + "_" + sVerbTag + sTag1 + sTag2))
                                     else:
                                         # participes passés
                                         if dFlex[":Q3"]:
                                             if dFlex[":Q2"]:
-                                                self.lGeneratedFlex.append((dFlex[":Q1"], sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:s/*"))
-                                                self.lGeneratedFlex.append((dFlex[":Q2"], sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:p/*"))
+                                                self.lGeneratedFlex.append((dFlex[":Q1"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:s/*"))
+                                                self.lGeneratedFlex.append((dFlex[":Q2"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:p/*"))
                                             else:
-                                                self.lGeneratedFlex.append((dFlex[":Q1"], sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:i/*"))
-                                            self.lGeneratedFlex.append((dFlex[":Q3"], sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:s/*"))
-                                            self.lGeneratedFlex.append((dFlex[":Q4"], sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:p/*"))
+                                                self.lGeneratedFlex.append((dFlex[":Q1"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:m:i/*"))
+                                            self.lGeneratedFlex.append((dFlex[":Q3"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:s/*"))
+                                            self.lGeneratedFlex.append((dFlex[":Q4"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:A:f:p/*"))
                                         else:
-                                            self.lGeneratedFlex.append((dFlex[":Q1"], sLemma, ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:e:i/*"))
+                                            self.lGeneratedFlex.append((dFlex[":Q1"], ":V" + oVerb.cGroup + "_" + sVerbTag + ":Q:e:i/*"))
             elif self.xW.State:
                 # Adverbe
-                sLemma = sLemma.lower();
-                self.lGeneratedFlex.append((sLemma, sLemma, ":W/*"))
+                self.sLemma = self.sLemma.lower();
+                self.lGeneratedFlex.append((self.sLemma, ":W/*"))
             elif self.xX.State:
                 # Autre
                 sFlexion = self.xFlexion.Text.strip()
                 sTags = self.xTags.Text.strip()
                 if sFlexion and sTags.startswith(":"):
-                    self.lGeneratedFlex.append((sFlexion, sLemma, sTags))
+                    self.lGeneratedFlex.append((sFlexion, sTags))
         self._showGenWords()
 
     def _showGenWords (self):
@@ -432,8 +433,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         if not self.lGeneratedFlex:
             self.xAdd.Enabled = False
             return
-        for i, (sFlexion, sLemma, sTag) in enumerate(self.lGeneratedFlex):
-            xGridDataModel.addRow(i, (sFlexion, sLemma, sTag))
+        for i, (sFlexion, sTag) in enumerate(self.lGeneratedFlex):
+            xGridDataModel.addRow(i, (sFlexion, sTag))
         self.xAdd.Enabled = True
 
     def _resetWidgets (self):
@@ -486,8 +487,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         xGridDataModelLex = self.xGridModelLex.GridDataModel
         nStart = xGridDataModelLex.RowCount
         for i in range(xGridDataModelNew.RowCount):
-            sFlexion, sLemma, sTag = xGridDataModelNew.getRowData(i)
-            xGridDataModelLex.addRow(nStart + i, (sFlexion, sLemma, sTag))
+            sFlexion, sTag = xGridDataModelNew.getRowData(i)
+            xGridDataModelLex.addRow(nStart + i, (sFlexion, self.sLemma, sTag))
         self.xSave.Enabled = True
         self.xNumLex.Label = str(int(self.xNumLex.Label) + xGridDataModelNew.RowCount)
         self._resetWidgets()
