@@ -39,36 +39,35 @@ var conj_generator = {
     },
 
     getConjRules: function (sVerb, bVarPpas=true, nGroup=2) {
-        // .slice(0): clone an Array
         let lConj = null;
         let sVarPpas = (bVarPpas) ? "true" : "false";
         if (sVerb.endsWith("er")) {
             // premier groupe, conjugaison en fonction de la terminaison du lemme
             // 5 lettres
             if (sVerb.slice(-5) in this.oConj["V1"]) {
-                lConj = this.oConj["V1"][sVerb.slice(-5)].slice(0);
+                lConj = Array.from(this.oConj["V1"][sVerb.slice(-5)]);
             }
             // 4 lettres
             else if (sVerb.slice(-4) in this.oConj["V1"]) {
                 if (sVerb.endsWith("eler") || sVerb.endsWith("eter")) {
-                    lConj = this.oConj["V1"][sVerb.slice(-4)]["1"].slice(0);
+                    lConj = Array.from(this.oConj["V1"][sVerb.slice(-4)]["1"]);
                 } else {
-                    lConj = this.oConj["V1"][sVerb.slice(-4)].slice(0);
+                    lConj = Array.from(this.oConj["V1"][sVerb.slice(-4)]);
                 }
             }
             // 3 lettres
             else if (sVerb.slice(-3) in this.oConj["V1"]) {
-                lConj = this.oConj["V1"][sVerb.slice(-3)].slice(0);
+                lConj = Array.from(this.oConj["V1"][sVerb.slice(-3)]);
             }
             // 2 lettres
             else {
-                lConj = this.oConj["V1"]["er"].slice(0);
+                lConj = Array.from(this.oConj["V1"]["er"]);
             }
             lConj.push(...this.oConj["V1_ppas"][sVarPpas]);
         }
         else if (sVerb.endsWith("ir") && nGroup <= 2) {
             // deuxième groupe
-            lConj = this.oConj["V2"].slice(0);
+            lConj = Array.from(this.oConj["V2"]);
             lConj.push(...this.oConj["V2_ppas"][sVarPpas]);
         }
         else {
