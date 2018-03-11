@@ -31,23 +31,23 @@ def getConjRules (sVerb, bVarPpas=True, nGroup=2):
         # premier groupe, conjugaison en fonction de la terminaison du lemme
         # 5 lettres
         if sVerb[-5:] in oConj["V1"]:
-            lConj = oConj["V1"][sVerb[-5:]]
+            lConj = list(oConj["V1"][sVerb[-5:]])
         # 4 lettres
         elif sVerb[-4:] in oConj["V1"]:
             if sVerb.endswith(("eler", "eter")):
-                lConj = oConj["V1"][sVerb[-4:]]["1"]
+                lConj = list(oConj["V1"][sVerb[-4:]]["1"])
             else:
-                lConj = oConj["V1"][sVerb[-4:]]
+                lConj = list(oConj["V1"][sVerb[-4:]])
         # 3 lettres
         elif sVerb[-3:] in oConj["V1"]:
-            lConj = oConj["V1"][sVerb[-3:]]
+            lConj = list(oConj["V1"][sVerb[-3:]])
         # 2 lettres
         else:
-            lConj = oConj["V1"]["er"]
+            lConj = list(oConj["V1"]["er"])
         lConj.extend(oConj["V1_ppas"][bVarPpas])
     elif sVerb.endswith("ir") and nGroup <= 2:
         # deuxième groupe
-        lConj = oConj["V2"]
+        lConj = list(oConj["V2"])
         lConj.extend(oConj["V2_ppas"][bVarPpas])
     else:
         # TODO: troisième groupe
