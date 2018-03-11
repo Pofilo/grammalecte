@@ -36,10 +36,12 @@ def getConjRules (sVerb, bVarPpas=True, nGroup=2):
         elif sVerb[-4:] in oConj["V1"]:
             if sVerb.endswith(("eler", "eter")):
                 lConj = oConj["V1"][sVerb[-4:]]["1"]
-            lConj = oConj["V1"][sVerb[-4:]]
+            else:
+                lConj = oConj["V1"][sVerb[-4:]]
         # 3 lettres
         elif sVerb[-3:] in oConj["V1"]:
             lConj = oConj["V1"][sVerb[-3:]]
+        # 2 lettres
         else:
             lConj = oConj["V1"]["er"]
         lConj.extend(oConj["V1_ppas"][bVarPpas])
