@@ -8,18 +8,24 @@
   id="grammalecte-lexicon-editor-window"
   title="&window.title;"
   orient="vertical"
-  buttons="accept, cancel, extra1"
+  buttons="accept, cancel"
   ondialogaccept="oOptControl.save();"
   ondialogcancel="return;"
-  buttonlabelextra1="&button.export.label;"
-  ondialogextra1="oOptControl.reset();"
   defaultButton="accept"
   width="500"
   onload="document.getElementById('grammalecte-lexicon-editor-window').centerWindowOnScreen();"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
   <!-- Other elements go here -->
-  
+  <hbox>
+    <label class="dictionary" value="Dictionnaire personnel" />
+    <label class="dic_text dic_saved_date_label" value="Enregistré le :" />
+    <label class="dic_text dic_saved_date" value="·" />
+    <label class="dic_text dic_num_entries" value="0" />
+    <label class="dic_text dic_num_entries_label" value="entrées" />
+    <button id="export" label="Exporter" />
+  </hbox>
+
   <tabbox id="tabs" selectedIndex="0">
     <tabs>
       <tab label="&tab.editor.label;"/>
@@ -161,33 +167,11 @@
         <dialogheader title="&dialogheader.lexicon.label;" description="" />
         <hbox>
           <vbox>
-            <label class="section" value="Lexique" />
             <hbox>
-              <label class="info_label" value="Entrées ajoutées" />
+              <label class="info_label" value="Nombre d’entrées : " />
               <label class="data" value="0" />
             </hbox>
-            <hbox>
-              <label class="info_label" value="Entrées supprimées" />
-              <label class="data" value="0" />
-            </hbox>
-            <hbox>
-              <label class="info_label" value="Nombre d’entrées" />
-              <label class="data" value="0" />
-            </hbox>
-            <button id="save" label="Enregistrer" />
-
-            <label class="" value="" />
-
-            <label class="section" value="Dictionnaire enregistré" />
-            <hbox>
-              <label class="info_label" value="Date d’enregistrement" />
-              <label class="data" value="·" />
-            </hbox>
-            <hbox>
-              <label class="info_label" value="Nombre d’entrées" />
-              <label class="data" value="0" />
-            </hbox>
-            <button id="save" label="Exporter" />
+            <button id="save" label="Enregistrer" />            
           </vbox>
 
           <vbox>
