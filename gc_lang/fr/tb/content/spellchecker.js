@@ -17,6 +17,7 @@
 "use strict";
 
 /*
+// Loaded in another file
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
@@ -27,13 +28,6 @@ const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.j
 const FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
 const AddonManager = Cu.import("resource://gre/modules/AddonManager.jsm").AddonManager;
 
-/*
-const parser = Cc["@mozilla.org/parserutils;1"].getService(Ci.nsIParserUtils);
-const persodict = Cc["@mozilla.org/spellchecker/personaldictionary;1"].getService(Ci.mozIPersonalDictionary);
-*/
-
-//const system = require("sdk/system");
-
 
 var oSpellControl = {
 	xSCEngine: null,
@@ -42,15 +36,15 @@ var oSpellControl = {
 			try {
 				let sSpellchecker = "@mozilla.org/spellchecker/myspell;1";
 				if ("@mozilla.org/spellchecker/hunspell;1" in Cc) {
-				    sSpellchecker = "@mozilla.org/spellchecker/hunspell;1";
+					sSpellchecker = "@mozilla.org/spellchecker/hunspell;1";
 				}
 				if ("@mozilla.org/spellchecker/engine;1" in Cc) {
-				    sSpellchecker = "@mozilla.org/spellchecker/engine;1";
+					sSpellchecker = "@mozilla.org/spellchecker/engine;1";
 				}
 				this.xSCEngine = Cc[sSpellchecker].getService(Ci.mozISpellCheckingEngine);
 			}
 			catch (e) {
-				echo("Can’t initiate the spellchecker.");
+				console.log("Can’t initiate the spellchecker.");
 				Cu.reportError(e);
 			}
 		}
@@ -79,8 +73,8 @@ var oSpellControl = {
 				return false;
 			}
 		} else {
-			echo("Warning. No dictionary for locale: " + sLocale);
-			echo("Existing dictionaries: " + this.getDictionariesList().join(" | "));
+			console.log("Warning. No dictionary for locale: " + sLocale);
+			console.log("Existing dictionaries: " + this.getDictionariesList().join(" | "));
 		}
 		return false;
 	},
@@ -99,7 +93,7 @@ var oSpellControl = {
 			let lSugg = {};
 			this.xSCEngine.suggest(sWord, lSugg, {});
 			return lSugg.value;
-		   	// lSugg.value is a JavaScript Array of strings
+			// lSugg.value is a JavaScript Array of strings
 		}
 		catch (e) {
 			Cu.reportError(e);
@@ -112,7 +106,7 @@ var oSpellControl = {
 			this.xSCEngine.addDirectory(xNsiFolder);
 		}
 		catch (e) {
-			echo("Unable to add directory: " + sFolder);
+			console.log("Unable to add directory: " + sFolder);
 			Cu.reportError(e);
 		}
 	},
@@ -123,7 +117,7 @@ var oSpellControl = {
 			this.xSCEngine.removeDirectory(xNsiFolder);
 		}
 		catch (e) {
-			echo("Unable to remove directory: " + sFolder);
+			console.log("Unable to remove directory: " + sFolder);
 			Cu.reportError(e);
 		}
 	},
@@ -133,22 +127,24 @@ var oSpellControl = {
 			let sPath = "/content/dictionaries/" + sDictName;
 			AddonManager.getAddonByID("French-GC-TB@grammalecte.net", function (addon) {
 				let xURI = addon.getResourceURI(sPath);
-				console.log("> " + xURI.path);
-				let sFolder = xURI.path;
-				//if (system.platform === "winnt") {
-				if (sFolder) {
-					sFolder = sFolder.slice(1).replace(/\//g, "\\\\");
-				}
-				console.log("> " + sFolder);
-				if (bActivate) {
-					that.addDirectory(sFolder);
-				} else {
-					that.removeDirectory(sFolder);
+				//console.log(xURI);
+				let sFolder = xURI.filePath;
+				if (sFolder !== undefined) {
+					if (/^\/[A-Z]:\//.test(sFolder)) {
+						// Windows path
+						sFolder = sFolder.slice(1).replace(/\//g, "\\\\");
+					}
+					console.log("folder: " + sFolder);
+					if (bActivate) {
+						that.addDirectory(sFolder);
+					} else {
+						that.removeDirectory(sFolder);
+					}
 				}
 			});
 		}
 		catch (e) {
-			echo("Unable to add extension folder");
+			console.log("Unable to add extension folder");
 			Cu.reportError(e);
 		}
 	}
