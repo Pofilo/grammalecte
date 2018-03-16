@@ -8,10 +8,10 @@
   id="grammalecte-lexicon-editor-window"
   title="&window.title;"
   orient="vertical"
-  buttons="accept, cancel"
-  ondialogaccept="oOptControl.save();"
+  buttons="cancel"
+  buttonlabelcancel="&button.cancel.label;"
   ondialogcancel="return;"
-  defaultButton="accept"
+  defaultButton="cancel"
   width="500"
   onload="document.getElementById('grammalecte-lexicon-editor-window').centerWindowOnScreen();"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -23,7 +23,7 @@
     <label class="dic_text dic_saved_date" value="·" />
     <label class="dic_text dic_num_entries" value="0" />
     <label class="dic_text dic_num_entries_label" value="entrées" />
-    <button id="export" label="Exporter" />
+    <button id="export_button" label="Exporter" />
   </hbox>
 
   <tabbox id="tabs" selectedIndex="0">
@@ -43,86 +43,85 @@
             <dialogheader title="Nouveau mot (lemme)" description="Générateur" />
             <textbox id="lemma" value="" />
 
-            <checkbox class="subsection" label="Nom et adjectif" />
+            <checkbox id="tag_N" class="subsection" label="Nom et adjectif" />
             <hbox class="m_left">
-              <radiogroup orient="vertical">
-                <radio id="o_pos_nom_adj" class="option" label="Nom et adjectif" />
-                <radio id="o_pos_nom" class="option" label="Nom" />
-                <radio id="o_pos_adj" class="option" label="Adjectif" />
+              <radiogroup id="pos_nom_commun" orient="vertical">
+                <radio id="nom_adj" class="option" label="Nom et adjectif" value=":N:A" />
+                <radio id="nom" class="option" label="Nom" value=":N" />
+                <radio id="adj" class="option" label="Adjectif" value=":A" />
               </radiogroup>
-              <radiogroup orient="vertical">
-                <radio id="o_pos_epi" class="option" label="épicène" />
-                <radio id="o_pos_mas" class="option" label="masculin" />
-                <radio id="o_pos_fem" class="option" label="féminin" />
+              <radiogroup id="genre_nom_commun" orient="vertical">
+                <radio id="N_epi" class="option" label="épicène" value=":e" />
+                <radio id="N_mas" class="option" label="masculin" value=":m" />
+                <radio id="N_fem" class="option" label="féminin" value=":f" />
               </radiogroup>
-              <radiogroup orient="vertical">
-                <radio id="o_pos_s" class="option" label="pluriel en ·s" />
-                <radio id="o_pos_x" class="option" label="pluriel en ·x" />
-                <radio id="o_pos_inv" class="option" label="invariable" />
+              <radiogroup id="pluriel_nom_commun" orient="vertical">
+                <radio id="N_s" class="option" label="pluriel en ·s" value="s" />
+                <radio id="N_x" class="option" label="pluriel en ·x" value="x" />
+                <radio id="N_inv" class="option" label="invariable" value="inv" />
               </radiogroup>
-
             </hbox>
             <vbox class="m_left2">
               <label class="subsection" value="[optionnel] Autre forme (masculine, féminine, variante…)" />
               <textbox id="lemma2" value="" />
               <hbox>
-                <radiogroup orient="vertical">
-                  <radio id="o_pos_nom_adj2" class="option" label="Nom et adjectif" />
-                  <radio id="o_pos_nom2" class="option" label="Nom" />
-                  <radio id="o_pos_adj2" class="option" label="Adjectif" />
+                <radiogroup id="pos_nom_commun2" orient="vertical">
+                  <radio id="nom_adj2" class="option" label="Nom et adjectif" value=":N:A" />
+                  <radio id="nom2" class="option" label="Nom" value=":N" />
+                  <radio id="adj2" class="option" label="Adjectif" value=":A" />
                 </radiogroup>
-                <radiogroup orient="vertical">
-                  <radio id="o_pos_epi2" class="option" label="épicène" />
-                  <radio id="o_pos_mas2" class="option" label="masculin" />
-                  <radio id="o_pos_fem2" class="option" label="féminin" />
+                <radiogroup id="genre_nom_commun2" orient="vertical">
+                  <radio id="N_epi2" class="option" label="épicène" value=":e" />
+                  <radio id="N_mas2" class="option" label="masculin" value=":m" />
+                  <radio id="N_fem2" class="option" label="féminin" value=":f" />
                 </radiogroup>
-                <radiogroup orient="vertical">
-                  <radio id="o_pos_s2" class="option" label="pluriel en ·s" />
-                  <radio id="o_pos_x2" class="option" label="pluriel en ·x" />
-                  <radio id="o_pos_inv2" class="option" label="invariable" />
+                <radiogroup id="pluriel_nom_commun2" orient="vertical">
+                  <radio id="N_s2" class="option" label="pluriel en ·s" value="s" />
+                  <radio id="N_x2" class="option" label="pluriel en ·x" value="x" />
+                  <radio id="N_inv2" class="option" label="invariable" value="inv" />
                 </radiogroup>
               </hbox>
             </vbox>
 
-            <checkbox class="subsection" label="Nom propre" />
+            <checkbox id="tag_M" class="subsection" label="Nom propre" />
             <hbox class="m_left">
-              <radiogroup orient="vertical">
-                <radio id="o_pos_M1" class="option" label="Prénom" />
-                <radio id="o_pos_M2" class="option" label="Patronyme" />
-                <radio id="o_pos_MP" class="option" label="Autre" />
+              <radiogroup id="pos_nom_propre" orient="vertical">
+                <radio id="M1" class="option" label="Prénom" value=":M1" />
+                <radio id="M2" class="option" label="Patronyme" value=":M2" />
+                <radio id="MP" class="option" label="Autre" value=":MP" />
               </radiogroup>
-              <radiogroup orient="vertical">
-                <radio id="o_pos_epi" class="option" label="épicène" />
-                <radio id="o_pos_mas" class="option" label="masculin" />
-                <radio id="o_pos_fem" class="option" label="féminin" />
+              <radiogroup id="genre_nom_propre" orient="vertical">
+                <radio id="M_epi" class="option" label="épicène" value=":e" />
+                <radio id="M_mas" class="option" label="masculin" value=":m" />
+                <radio id="M_fem" class="option" label="féminin" value=":f" />
               </radiogroup>
             </hbox>              
 
-            <checkbox class="subsection" label="Verbe" />
+            <checkbox id="tag_V" class="subsection" label="Verbe" />
             <hbox class="m_left">
               <vbox>
-                <checkbox id="o_v_i" class="v_usage" label="intransitif" />
-                <checkbox id="o_v_t" class="v_usage" label="transitif" />
-                <checkbox id="o_v_n" class="v_usage" label="transitif indirect" />
-                <checkbox id="o_v_p" class="v_usage" label="pronominal" />
-                <checkbox id="o_v_m" class="v_usage" label="impersonnel" />
+                <checkbox id="v_i" class="v_usage" label="intransitif" />
+                <checkbox id="v_t" class="v_usage" label="transitif" />
+                <checkbox id="v_n" class="v_usage" label="transitif indirect" />
+                <checkbox id="v_p" class="v_usage" label="pronominal" />
+                <checkbox id="v_m" class="v_usage" label="impersonnel" />
               </vbox>
               <vbox>
                 <label value="Auxilaire avec le passé composé" />
-                <checkbox id="o_v_ae" class="v_usage" label="être" />
-                <checkbox id="o_v_aa" class="v_usage" label="avoir" />
+                <checkbox id="v_ae" class="v_usage" label="être" />
+                <checkbox id="v_aa" class="v_usage" label="avoir" />
                 <label value="" />
-                <checkbox id="o_ppas" class="v_usage" label="Participes passés variables" />
+                <checkbox id="v_ppas" class="v_usage" label="Participes passés variables" />
               </vbox>
             </hbox>
             <hbox class="m_left">
               <label class="subsection" value="Verbe modèle [optionnel]" />
-              <textbox id="v_pattern" class="v_textbox" value="" />
+              <textbox id="verbe_modele" class="v_textbox" value="" />
             </hbox>
 
-            <checkbox class="subsection" label="Adverbe" />
+            <checkbox id="tag_W" class="subsection" label="Adverbe" />
 
-            <checkbox class="subsection" label="Autre" />
+            <checkbox id="tag_X" class="subsection" label="Autre" />
             <vbox class="m_left">
               <hbox>
                 <label class="subsection other_label" value="Flexion" />
@@ -137,7 +136,8 @@
 
           <vbox>
             <dialogheader title="Mots générés" description="" />
-            <listbox id="generated_words">
+            <listbox id="generated_words_table">
+              <!--
               <listhead>
                 <listheader label="Flexions"/>
                 <listheader label="Étiquettes"/>
@@ -148,12 +148,13 @@
                 <listcol flex="1"/>
               </listcols>
 
-              <!--<listitem>
+              <listitem>
                 <listcell label="George"/>
                 <listcell label="House"/>
-              </listitem>-->
-              
+              </listitem>
+              -->
             </listbox>
+            <progressmeter id="progress_new_words" value="0"/>
             <hbox>
               <button id="add_to_lexicon" label="Ajouter au lexique" />
               <button id="delete_selection" label="Effacer la sélection" />
@@ -171,11 +172,13 @@
               <label class="info_label" value="Nombre d’entrées : " />
               <label class="data" value="0" />
             </hbox>
-            <button id="save" label="Enregistrer" />            
+            <progressmeter id="progress_lexicon" value="0"/>
+            <button id="save_button" label="Enregistrer" />        
           </vbox>
 
           <vbox>
-            <listbox id="lexicon">
+            <listbox id="lexicon_table">
+              <!--
               <listhead>
                 <listheader label="Flexions"/>
                 <listheader label="Lemmes"/>
@@ -188,12 +191,12 @@
                 <listcol flex="4"/>
               </listcols>
 
-              <!--<listitem>
+              <listitem>
                 <listcell label="George"/>
                 <listcell label="House Painter"/>
                 <listcell label="House"/>
-              </listitem>-->
-
+              </listitem>
+              -->
             </listbox>
           </vbox>
         </hbox>
@@ -203,6 +206,8 @@
 
   </tabbox>
 
+  <script type="application/x-javascript" src="resource://grammalecte/content/fr/conj.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/content/fr/conj_generator.js" />
   <script type="application/x-javascript" src="lex_editor.js" />
 
 </dialog>
