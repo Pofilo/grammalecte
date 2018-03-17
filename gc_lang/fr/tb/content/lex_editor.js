@@ -8,9 +8,7 @@ const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
 var FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils
-
-
-
+var NetUtil = Cu.import("resource://gre/modules/NetUtil.jsm").NetUtil;
 
 
 /*
@@ -488,16 +486,45 @@ const oBinaryDict = {
         console.log("import");
     },
 
-    export: function () {
+    export2: function () {
         let sJSON = JSON.stringify(this.oIBDAWG.getJSON());
         let xFile = new FileUtils.File("D:\\fr.personal.json");
-        xFile.createUnique(FileUtils.NORMAL_FILE_TYPE, 555);
-        console.log(xFile);
-        let xFile2 = new File([ sJSON ], "D:\\fr.test.personal.json", {type: 'text/plain'}); 
-        let sURL = URL.createObjectURL(xFile2);
-        console.log(xFile2);
+        xFile.createUnique(FileUtils.NORMAL_FILE_TYPE, 644);
+        xFileHandler = FileUtils.openSafeFileOutputStream(xFile, FileUtils.MODE_CREATE);
+        console.log(xFileHandler);
+    },
+
+    export: function () {
+        let sJSON = JSON.stringify(this.oIBDAWG.getJSON());
+        let xFilePicker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+        xFilePicker.init(window, "Enregistrer sous", Ci.nsIFilePicker.modeSave);
+        xFilePicker.appendFilters(Ci.nsIFilePicker.filterAll | Ci.nsIFilePicker.filterText);
+        xFilePicker.open(function (nReturnValue) {
+            if (nReturnValue == Ci.nsIFilePicker.returnOK || nReturnValue == Ci.nsIFilePicker.returnReplace) {
+                // write file 
+                // OS.File.writeAtomic(xFilePicker.file.path, sJSON, {tmpPath: "file.txt.tmp"}); 
+
+                // You can also optionally pass a flags parameter here. It defaults to
+                // FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE;
+                console.log(xFilePicker);
+                let xOutStream = FileUtils.openSafeFileOutputStream(xFilePicker.file);
+                let xConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
+                xConverter.charset = "UTF-8";
+                let xInStream = xConverter.convertToInputStream(sJSON);
+                // The last argument (the callback) is optional.
+                NetUtil.asyncCopy(xInStream, xOutStream, function (status) {
+                    if (!Components.isSuccessCode(status)) {
+                        console.log(status);
+                        return;
+                    }
+                });
+             }
+        });
     }
 }
+
+
+
 
 
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10],"progress_lexicon", "num_entries");
