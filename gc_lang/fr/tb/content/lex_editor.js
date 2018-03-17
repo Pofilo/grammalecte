@@ -486,14 +486,6 @@ const oBinaryDict = {
         console.log("import");
     },
 
-    export2: function () {
-        let sJSON = JSON.stringify(this.oIBDAWG.getJSON());
-        let xFile = new FileUtils.File("D:\\fr.personal.json");
-        xFile.createUnique(FileUtils.NORMAL_FILE_TYPE, 644);
-        xFileHandler = FileUtils.openSafeFileOutputStream(xFile, FileUtils.MODE_CREATE);
-        console.log(xFileHandler);
-    },
-
     export: function () {
         let sJSON = JSON.stringify(this.oIBDAWG.getJSON());
         let xFilePicker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
@@ -522,8 +514,6 @@ const oBinaryDict = {
         });
     }
 }
-
-
 
 
 
