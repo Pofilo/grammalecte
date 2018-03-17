@@ -501,12 +501,11 @@ const oBinaryDict = {
         xFilePicker.appendFilters(Ci.nsIFilePicker.filterAll | Ci.nsIFilePicker.filterText);
         xFilePicker.open(function (nReturnValue) {
             if (nReturnValue == Ci.nsIFilePicker.returnOK || nReturnValue == Ci.nsIFilePicker.returnReplace) {
-                // write file 
-                // OS.File.writeAtomic(xFilePicker.file.path, sJSON, {tmpPath: "file.txt.tmp"}); 
-
+                // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/OSFile.jsm
+                OS.File.writeAtomic(xFilePicker.file.path, sJSON, {tmpPath: "file.txt.tmp"}); 
+                /*
                 // You can also optionally pass a flags parameter here. It defaults to
                 // FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE;
-                console.log(xFilePicker);
                 let xOutStream = FileUtils.openSafeFileOutputStream(xFilePicker.file);
                 let xConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
                 xConverter.charset = "UTF-8";
@@ -518,6 +517,7 @@ const oBinaryDict = {
                         return;
                     }
                 });
+                */
              }
         });
     }
