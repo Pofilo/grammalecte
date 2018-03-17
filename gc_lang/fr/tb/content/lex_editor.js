@@ -7,6 +7,11 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
+var FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils
+
+
+
+
 
 /*
     Common functions
@@ -45,10 +50,6 @@ function disableElement (sElemId) {
         console.log("HTML node named <" + sElemId + "> not found.")
     }
 }
-
-
-
-document.getElementById("save_button").addEventListener("click", () => { oBinaryDict.build(); }, false);
 
 
 
@@ -343,7 +344,9 @@ const oGenerator = {
                                 }
                             } else {
                                 // copie du motif d’un autre verbe : utilisation du conjugueur
+                                console.log("pattern: " + sVerbPattern);
                                 if (conj.isVerb(sVerbPattern)) {
+                                    console.log("yes");
                                     let oVerb = new Verb(this.sLemma, sVerbPattern);
                                     for (let [sTag1, dFlex] of oVerb.dConj.entries()) {
                                         if (sTag1 !== ":Q") {
@@ -457,11 +460,12 @@ const oBinaryDict = {
     },
 
     setDictData: function (nEntries, sDate) {
-        document.getElementById("dic_num_entries").textContent = nEntries;
-        document.getElementById("dic_save_date").textContent = sDate;
+        document.getElementById("dic_num_entries").value = nEntries;
+        document.getElementById("dic_save_date").value = sDate;
     },
 
     listen: function () {
+        document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         //document.getElementById("import_button").addEventListener("click", () => { this.import(); }, false);
     },
@@ -475,7 +479,7 @@ const oBinaryDict = {
             prefs.setCharPref("oPersonalDictionary", JSON.stringify(oJSON));
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
+            //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
         }
         enableElement("export_button");
     },
@@ -485,9 +489,13 @@ const oBinaryDict = {
     },
 
     export: function () {
-        let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'}); 
-        let sURL = URL.createObjectURL(xBlob);
-        browser.downloads.download({ filename: "fr.personal.json", url: sURL, saveAs: true });
+        let sJSON = JSON.stringify(this.oIBDAWG.getJSON());
+        let xFile = new FileUtils.File("D:\\fr.personal.json");
+        xFile.createUnique(FileUtils.NORMAL_FILE_TYPE, 555);
+        console.log(xFile);
+        let xFile2 = new File([ sJSON ], "D:\\fr.test.personal.json", {type: 'text/plain'}); 
+        let sURL = URL.createObjectURL(xFile2);
+        console.log(xFile2);
     }
 }
 

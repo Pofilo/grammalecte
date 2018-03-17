@@ -11,7 +11,6 @@
   buttons="cancel"
   buttonlabelcancel="&button.cancel.label;"
   ondialogcancel="return;"
-  defaultButton="cancel"
   width="500"
   onload="document.getElementById('grammalecte-lexicon-editor-window').centerWindowOnScreen();"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
@@ -20,8 +19,8 @@
   <hbox>
     <label class="dictionary" value="Dictionnaire personnel" />
     <label class="dic_text dic_saved_date_label" value="Enregistré le :" />
-    <label class="dic_text dic_saved_date" value="·" />
-    <label class="dic_text dic_num_entries" value="0" />
+    <label id="dic_save_date" class="dic_text dic_saved_date" value="·" />
+    <label id="dic_num_entries" class="dic_text dic_num_entries" value="0" />
     <label class="dic_text dic_num_entries_label" value="entrées" />
     <button id="export_button" label="Exporter" />
   </hbox>
@@ -170,7 +169,7 @@
           <vbox>
             <hbox>
               <label class="info_label" value="Nombre d’entrées : " />
-              <label class="data" value="0" />
+              <label id="num_entries" class="data" value="0" />
             </hbox>
             <progressmeter id="progress_lexicon" value="0"/>
             <button id="save_button" label="Enregistrer" />        
@@ -206,8 +205,12 @@
 
   </tabbox>
 
-  <script type="application/x-javascript" src="resource://grammalecte/content/fr/conj.js" />
-  <script type="application/x-javascript" src="resource://grammalecte/content/fr/conj_generator.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/graphspell/helpers.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/graphspell/str_transform.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/graphspell/dawg.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/graphspell/ibdawg.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/fr/conj.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/fr/conj_generator.js" />
   <script type="application/x-javascript" src="lex_editor.js" />
 
 </dialog>
