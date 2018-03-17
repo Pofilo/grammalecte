@@ -20,7 +20,9 @@ function showError (e) {
 function createNode  (sType, oAttr) {
     try {
         let xNode = document.createElement(sType);
-        Object.assign(xNode, oAttr);
+        for (let sParam in oAttr) {
+            xNode.setAttribute(sParam, oAttr[sParam]);
+        }
         return xNode;
     }
     catch (e) {
@@ -70,12 +72,12 @@ class Table {
     _createHeader () {
         let xListheadNode = createNode("listhead");
         xListheadNode.appendChild(createNode("listheader", { label: "·", width: "12px" }));
-        //xListheadNode.appendChild(createNode("listheader", { label: "#" }));
         for (let sColumn of this.lColumn) {
             xListheadNode.appendChild(createNode("listheader", { label: sColumn }));
         }
         this.xTable.appendChild(xListheadNode);
         let xListcolsNode = createNode("listcols");
+        xListcolsNode.appendChild(createNode("listcol", { flex: 1 }));
         for (let cColumn of this.lColumnWidth) {
             xListcolsNode.appendChild(createNode("listcol", { flex: cColumn }));
         }
@@ -267,7 +269,7 @@ const oGenerator = {
         this.cMainTag = cTag;
         for (let c of this.lTag) {
             if (c !== cTag) {
-                document.getElementById("tag_"+cTag).checked = false;
+                document.getElementById("tag_"+c).checked = false;
             }
         }
     },
@@ -323,19 +325,19 @@ const oGenerator = {
                         }
                         this.sLemma = this.sLemma.toLowerCase();
                         let cGroup = "";
-                        let c_i = (document.getElementById("up_v_i").checked) ? "i" : "_";
-                        let c_t = (document.getElementById("up_v_t").checked) ? "t" : "_";
-                        let c_n = (document.getElementById("up_v_n").checked) ? "n" : "_";
-                        let c_p = (document.getElementById("up_v_p").checked) ? "p" : "_";
-                        let c_m = (document.getElementById("up_v_m").checked) ? "m" : "_";
-                        let c_ae = (document.getElementById("up_v_ae").checked) ? "e" : "_";
-                        let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
+                        let c_i = (document.getElementById("v_i").checked) ? "i" : "_";
+                        let c_t = (document.getElementById("v_t").checked) ? "t" : "_";
+                        let c_n = (document.getElementById("v_n").checked) ? "n" : "_";
+                        let c_p = (document.getElementById("v_p").checked) ? "p" : "_";
+                        let c_m = (document.getElementById("v_m").checked) ? "m" : "_";
+                        let c_ae = (document.getElementById("v_ae").checked) ? "e" : "_";
+                        let c_aa = (document.getElementById("v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
-                            let sVerbPattern = document.getElementById("verb_pattern").value.trim();
+                            let sVerbPattern = document.getElementById("verbe_modele").value.trim();
                             if (sVerbPattern.length == 0) {
                                 // utilisation du générateur de conjugaison
-                                let bVarPpas = document.getElementById("up_partpas").checked;
+                                let bVarPpas = document.getElementById("v_ppas").checked;
                                 for (let [sFlexion, sFlexTags] of conj_generator.conjugate(this.sLemma, sVerbTag, bVarPpas)) {
                                     this.lFlexion.push([sFlexion, sFlexTags]);
                                 }
@@ -377,7 +379,7 @@ const oGenerator = {
                         break;
                     case "M":
                         this.sLemma = this.sLemma.slice(0,1).toUpperCase() + this.sLemma.slice(1);
-                        let sPOSTag = this.getRadioValue("pos_nom_propre")
+                        let sPOSTag = this.getRadioValue("pos_nom_propre");
                         let sGenderTag = this.getRadioValue("genre_nom_propre");
                         if (sGenderTag) {
                             this.lFlexion.push([this.sLemma, sPOSTag+sGenderTag+":i/*"]);
@@ -490,8 +492,8 @@ const oBinaryDict = {
 }
 
 
-const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [4, 3, 4],"progress_lexicon", "num_entries");
-const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
+const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10],"progress_lexicon", "num_entries");
+const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [10, 10], "progress_new_words");
 
 oBinaryDict.load();
 oBinaryDict.listen();
