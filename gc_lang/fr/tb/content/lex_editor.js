@@ -7,9 +7,6 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
-var FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils
-var NetUtil = Cu.import("resource://gre/modules/NetUtil.jsm").NetUtil;
-
 
 /*
     Common functions
@@ -496,6 +493,8 @@ const oBinaryDict = {
                 // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/OSFile.jsm
                 OS.File.writeAtomic(xFilePicker.file.path, sJSON, {tmpPath: "file.txt.tmp"}); 
                 /*
+                var FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils
+                var NetUtil = Cu.import("resource://gre/modules/NetUtil.jsm").NetUtil;
                 // You can also optionally pass a flags parameter here. It defaults to
                 // FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE;
                 let xOutStream = FileUtils.openSafeFileOutputStream(xFilePicker.file);
