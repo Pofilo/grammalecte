@@ -67,13 +67,11 @@ class Table {
 
     _createHeader () {
         let xListheadNode = createNode("listhead");
-        xListheadNode.appendChild(createNode("listheader", { label: "·", width: "12px" }));
         for (let sColumn of this.lColumn) {
             xListheadNode.appendChild(createNode("listheader", { label: sColumn }));
         }
         this.xTable.appendChild(xListheadNode);
         let xListcolsNode = createNode("listcols");
-        xListcolsNode.appendChild(createNode("listcol", { flex: 1 }));
         for (let cColumn of this.lColumnWidth) {
             xListcolsNode.appendChild(createNode("listcol", { flex: cColumn }));
         }
@@ -115,14 +113,12 @@ class Table {
 
     showEntryNumber () {
         if (this.xNumEntry) {
-            this.xNumEntry.textContent = this.nEntry;
+            this.xNumEntry.value = this.nEntry;
         }
     }
 
     _addRow (lData) {
-        let xRowNode = createNode("listitem", { id: this.sNodeId + "_row_" + this.iEntryIndex });
-        xRowNode.appendChild(createNode("listcell", { label: "×", className: "delete_entry", title: "Effacer cette entrée", value: this.iEntryIndex }));
-        //xRowNode.appendChild(createNode("listcell", { label: this.iEntryIndex }));
+        let xRowNode = createNode("listitem", { id: this.sNodeId + "_item_" + this.iEntryIndex, value: this.iEntryIndex });
         for (let data of lData) {
             xRowNode.appendChild(createNode("listcell", { label: data }));
         }
@@ -137,8 +133,10 @@ class Table {
     onTableClick (xEvent) {
         try {
             let xElem = xEvent.target;
+            console.log(xElem);
             if (xElem.className) {
-                if (xElem.className == "delete_entry") {
+                if (xElem.className.startsWith(this.sNodeId+"_item_")) {
+                    console.log("!");
                     this.deleteRow(xElem.value);
                 }
             }
@@ -451,6 +449,8 @@ const oBinaryDict = {
             oLexiconTable.fill(lEntry);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
             enableElement("export_button");
+        } else {
+            disableElement("export_button");
         }
     },
 
@@ -475,8 +475,12 @@ const oBinaryDict = {
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
             //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
+            enableElement("export_button");
+        } else {
+            prefs.setCharPref("oPersonalDictionary", "");
+            this.setDictData(0, "[néant]");
+            disableElement("export_button");
         }
-        enableElement("export_button");
     },
 
     import: function () {
@@ -516,8 +520,8 @@ const oBinaryDict = {
 
 
 
-const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10],"progress_lexicon", "num_entries");
-const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [10, 10], "progress_new_words");
+const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
+const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
 
 oBinaryDict.load();
 oBinaryDict.listen();
