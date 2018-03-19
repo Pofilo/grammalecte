@@ -319,9 +319,7 @@ const oGenerator = {
                                 }
                             } else {
                                 // copie du motif d’un autre verbe : utilisation du conjugueur
-                                console.log("pattern: " + sVerbPattern);
                                 if (conj.isVerb(sVerbPattern)) {
-                                    console.log("yes");
                                     let oVerb = new Verb(this.sLemma, sVerbPattern);
                                     for (let [sTag1, dFlex] of oVerb.dConj.entries()) {
                                         if (sTag1 !== ":Q") {
@@ -554,6 +552,7 @@ const oFileHandler = {
 const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
 
+conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 
 oBinaryDict.load();
 oBinaryDict.listen();
