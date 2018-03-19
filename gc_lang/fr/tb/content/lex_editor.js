@@ -64,7 +64,6 @@ class Table {
         this.lEntry = [];
         this.nEntry = 0
         this._createHeader();
-        this.listen();
     }
 
     _createHeader () {
@@ -128,32 +127,12 @@ class Table {
         this.iEntryIndex += 1;
     }
 
-    listen () {
-        this.xTable.addEventListener("click", (xEvent) => { this.onTableClick(xEvent); }, false);
-    }
-
-    onTableClick (xEvent) {
-        try {
-            let xElem = xEvent.target;
-            console.log(xElem);
-            if (xElem.className) {
-                if (xElem.className.startsWith(this.sNodeId+"_item_")) {
-                    console.log("!");
-                    this.deleteRow(xElem.value);
-                }
-            }
+    deleteSelection () {
+        for (let xItem of this.xTable.selectedItems) {
+            this.lEntry[parseInt(xItem.value)] = null;
+            xItem.style.display = "none";
+            this.nEntry -= 1;
         }
-        catch (e) {
-            showError(e);
-        }
-    }
-
-    deleteRow (iEntry) {
-        this.lEntry[parseInt(iEntry)] = null;
-        if (document.getElementById(this.sNodeId + "_row_" + iEntry)) {
-            document.getElementById(this.sNodeId + "_row_" + iEntry).style.display = "none";
-        }
-        this.nEntry -= 1;
         this.showEntryNumber();
     }
 
@@ -212,6 +191,7 @@ const oGenerator = {
         document.getElementById("tags").addEventListener("keyup", () => { this.update(); }, false);
         // ajout
         document.getElementById("add_to_lexicon").addEventListener("click", () => { this.addToLexicon(); }, false);
+        document.getElementById("delete_selection").addEventListener("click", () => { oGenWordsTable.deleteSelection(); }, false);
     },
 
     clear: function () {
@@ -463,6 +443,7 @@ const oBinaryDict = {
     },
 
     listen: function () {
+        document.getElementById("delete_button").addEventListener("click", () => { oLexiconTable.deleteSelection(); }, false);
         document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         //document.getElementById("import_button").addEventListener("click", () => { this.import(); }, false);
@@ -570,8 +551,9 @@ const oFileHandler = {
 }
 
 
-const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
 const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
+const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
+
 
 oBinaryDict.load();
 oBinaryDict.listen();
