@@ -385,9 +385,9 @@ class GrammalecteTooltip {
         this.xTooltip.style.display = "none";
     }
 
-    _createSuggestion (sErrorId, iSugg, sSugg) {
+    _createSuggestion (sErrorId, iSuggBlock, iSugg, sSugg) {
         let xNodeSugg = document.createElement("div");
-        xNodeSugg.id = "grammalecte_sugg" + sErrorId + "--" + iSugg.toString();
+        xNodeSugg.id = "grammalecte_sugg" + sErrorId + "-" + iSuggBlock.toString() + "-" + iSugg.toString();
         xNodeSugg.className = "grammalecte_tooltip_sugg";
         xNodeSugg.dataset.error_id = sErrorId;
         xNodeSugg.textContent = sSugg;
@@ -412,7 +412,7 @@ class GrammalecteTooltip {
                     }
                     let iSugg = 0;
                     for (let sSugg of aSugg) {
-                        xSuggBlock.appendChild(this._createSuggestion(sErrorId, iSugg, sSugg));
+                        xSuggBlock.appendChild(this._createSuggestion(sErrorId, iSuggBlock, iSugg, sSugg));
                         xSuggBlock.appendChild(document.createTextNode(" "));
                         iSugg += 1;
                     }
