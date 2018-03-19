@@ -7,6 +7,8 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
+const {TextDecoder, TextEncoder, OS} = Cu.import("resource://gre/modules/osfile.jsm", {});
+
 
 /*
     Common functions
@@ -437,8 +439,8 @@ const oBinaryDict = {
     
     oIBDAWG: null,
 
-    load: function () {
-        let sJSON = prefs.getCharPref("oPersonalDictionary");
+    load: async function () {
+        let sJSON = await oFileHandler.loadFile("fr.personal.json");
         if (sJSON != "") {
             let oJSON = JSON.parse(sJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
@@ -450,6 +452,7 @@ const oBinaryDict = {
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
             enableElement("export_button");
         } else {
+            this.setDictData(0, "[néant]");
             disableElement("export_button");
         }
     },
@@ -471,13 +474,14 @@ const oBinaryDict = {
         if (lEntry.length > 0) {
             let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
-            prefs.setCharPref("oPersonalDictionary", JSON.stringify(oJSON));
+            oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
             //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
             enableElement("export_button");
         } else {
             prefs.setCharPref("oPersonalDictionary", "");
+            oFileHandler.deleteFile("fr.personal.json");
             this.setDictData(0, "[néant]");
             disableElement("export_button");
         }
@@ -489,35 +493,81 @@ const oBinaryDict = {
 
     export: function () {
         let sJSON = JSON.stringify(this.oIBDAWG.getJSON());
+        oFileHandler.saveAs(sJSON);
+    }
+}
+
+
+const oFileHandler = {
+    // https://developer.mozilla.org/fr/docs/Mozilla/JavaScript_code_modules/OSFile.jsm/OS.File_for_the_main_thread
+
+    xDataFolder: null,
+
+    createDataFolder: function () {
+        let xDirectoryService = Cc["@mozilla.org/file/directory_service;1"].getService(Ci.nsIProperties);
+        // this is a reference to the profile dir (ProfD) now.
+        let xExtFolder = xDirectoryService.get("ProfD", Ci.nsIFile);
+        xExtFolder.append("grammalecte-data");
+        if (!xExtFolder.exists() || !xExtFolder.isDirectory()) {
+            // read and write permissions to owner and group, read-only for others.
+            xExtFolder.create(Ci.nsIFile.DIRECTORY_TYPE, 774);
+        }
+        this.xDataFolder = xExtFolder;
+    },
+
+    createPathFileName: function (sFilename) {
+        let spfDest = this.xDataFolder.path;
+        spfDest += (/^[A-Z]:/.test(this.xDataFolder.path)) ? "\\" + sFilename : "/" + sFilename;
+        return spfDest;
+    },
+
+    loadFile: async function (sFilename) {
+        if (!this.xDataFolder) {
+            this.createDataFolder();
+        }
+        try {
+            let xDecoder = new TextDecoder();
+            let array = await OS.File.read(this.createPathFileName(sFilename));
+            return xDecoder.decode(array);
+        }
+        catch (e) {
+            console.error(e);
+            return "";
+        }
+    },
+
+    saveFile: function (sFilename, sData) {
+        if (!this.xDataFolder) {
+            this.createDataFolder();
+        }
+        let xEncoder = new TextEncoder();
+        let xEncodedRes = xEncoder.encode(sData);
+        console.log("save dictionary: " + this.createPathFileName(sFilename));
+        OS.File.writeAtomic(this.createPathFileName(sFilename), xEncodedRes);
+        //OS.File.writeAtomic(this.createPathFileName(sFilename), xEncodedRes, {tmpPath: "file.txt.tmp"}); // error with a temporary file (can’t move it)
+    },
+
+    deleteFile: function (sFilename) {
+        if (!this.xDataFolder) {
+            this.createDataFolder();
+        }
+        OS.File.remove(this.createPathFileName(sFilename), {ignoreAbsent: true});
+    },
+
+    saveAs: function (sData) {
+        // save anywhere with file picker
         let xFilePicker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
         xFilePicker.init(window, "Enregistrer sous", Ci.nsIFilePicker.modeSave);
         xFilePicker.appendFilters(Ci.nsIFilePicker.filterAll | Ci.nsIFilePicker.filterText);
         xFilePicker.open(function (nReturnValue) {
             if (nReturnValue == Ci.nsIFilePicker.returnOK || nReturnValue == Ci.nsIFilePicker.returnReplace) {
-                // https://developer.mozilla.org/en-US/docs/Mozilla/JavaScript_code_modules/OSFile.jsm
-                OS.File.writeAtomic(xFilePicker.file.path, sJSON, {tmpPath: "file.txt.tmp"}); 
-                /*
-                var FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils
-                var NetUtil = Cu.import("resource://gre/modules/NetUtil.jsm").NetUtil;
-                // You can also optionally pass a flags parameter here. It defaults to
-                // FileUtils.MODE_WRONLY | FileUtils.MODE_CREATE | FileUtils.MODE_TRUNCATE;
-                let xOutStream = FileUtils.openSafeFileOutputStream(xFilePicker.file);
-                let xConverter = Cc["@mozilla.org/intl/scriptableunicodeconverter"].createInstance(Ci.nsIScriptableUnicodeConverter);
-                xConverter.charset = "UTF-8";
-                let xInStream = xConverter.convertToInputStream(sJSON);
-                // The last argument (the callback) is optional.
-                NetUtil.asyncCopy(xInStream, xOutStream, function (status) {
-                    if (!Components.isSuccessCode(status)) {
-                        console.log(status);
-                        return;
-                    }
-                });
-                */
+                let xEncoder = new TextEncoder();
+                let xEncodedRes = xEncoder.encode(sData);
+                OS.File.writeAtomic(xFilePicker.file.path, xEncodedRes, {tmpPath: "file.txt.tmp"});
              }
         });
     }
 }
-
 
 
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
