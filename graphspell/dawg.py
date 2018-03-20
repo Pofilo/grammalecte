@@ -74,19 +74,19 @@ class DAWG:
                     nChar += 1
                 dCharOccur[c] = dCharOccur.get(c, 0) + 1
             # affixes to find stem from flexion
-            aff = funcStemmingGen(sFlex, sStem)
-            if aff not in dAff:
-                dAff[aff] = nAff
-                lAff.append(aff)
+            sAff = funcStemmingGen(sFlex, sStem)
+            if sAff not in dAff:
+                dAff[sAff] = nAff
+                lAff.append(sAff)
                 nAff += 1
-            dAffOccur[aff] = dCharOccur.get(aff, 0) + 1
+            dAffOccur[sAff] = dCharOccur.get(sAff, 0) + 1
             # tags
             if sTag not in dTag:
                 dTag[sTag] = nTag
                 lTag.append(sTag)
                 nTag += 1
             dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
-            lEntry.append((sFlex, dAff[aff], dTag[sTag]))
+            lEntry.append((sFlex, dAff[sAff], dTag[sTag]))
         if not lEntry:
             raise ValueError("# Error. Empty lexicon")
         
