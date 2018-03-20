@@ -323,9 +323,9 @@ var gc_engine = {
         try {
             if (typeof(require) !== 'undefined') {
                 var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
-                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_personal_filename_js}");
+                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
             } else {
-                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_personal_filename_js}");
+                _oSpellChecker = new SpellChecker("${lang}", sPath, "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default

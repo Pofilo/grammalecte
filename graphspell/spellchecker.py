@@ -22,13 +22,14 @@ dDefaultDictionaries = {
 
 class SpellChecker ():
 
-    def __init__ (self, sLangCode, sfMainDic="", sfExtendedDic="", sfPersonalDic=""):
+    def __init__ (self, sLangCode, sfMainDic="", sfExtendedDic="", sfCommunityDic="", sfPersonalDic=""):
         "returns True if the main dictionary is loaded"
         self.sLangCode = sLangCode
         if not sfMainDic:
             sfMainDic = dDefaultDictionaries.get(sLangCode, "")
         self.oMainDic = self._loadDictionary(sfMainDic, True)
         self.oExtendedDic = self._loadDictionary(sfExtendedDic)
+        self.oCommunityDic = self._loadDictionary(sfCommunityDic)
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
         self.oTokenizer = None
 
@@ -62,6 +63,11 @@ class SpellChecker ():
         "returns True if the dictionary is loaded"
         self.oExtendedDic = self._loadDictionary(source)
         return bool(self.oExtendedDic)
+
+    def setCommunityDictionary (self, source):
+        "returns True if the dictionary is loaded"
+        self.oCommunityDic = self._loadDictionary(source)
+        return bool(self.oPersonalDic)
 
     def setPersonalDictionary (self, source):
         "returns True if the dictionary is loaded"
@@ -107,6 +113,8 @@ class SpellChecker ():
             return True
         if self.oExtendedDic and self.oExtendedDic.isValidToken(sToken):
             return True
+        if self.oCommunityDic and self.oCommunityDic.isValidToken(sToken):
+            return True
         if self.oPersonalDic and self.oPersonalDic.isValidToken(sToken):
             return True
         return False
@@ -116,6 +124,8 @@ class SpellChecker ():
         if self.oMainDic.isValid(sWord):
             return True
         if self.oExtendedDic and self.oExtendedDic.isValid(sWord):
+            return True
+        if self.oCommunityDic and self.oCommunityDic.isValid(sToken):
             return True
         if self.oPersonalDic and self.oPersonalDic.isValid(sWord):
             return True
@@ -127,6 +137,8 @@ class SpellChecker ():
             return True
         if self.oExtendedDic and self.oExtendedDic.lookup(sWord):
             return True
+        if self.oCommunityDic and self.oCommunityDic.lookup(sToken):
+            return True
         if self.oPersonalDic and self.oPersonalDic.lookup(sWord):
             return True
         return False
@@ -136,6 +148,8 @@ class SpellChecker ():
         lResult = self.oMainDic.getMorph(sWord)
         if self.oExtendedDic:
             lResult.extend(self.oExtendedDic.getMorph(sWord))
+        if self.oCommunityDic:
+            lResult.extend(self.oCommunityDic.getMorph(sWord))
         if self.oPersonalDic:
             lResult.extend(self.oPersonalDic.getMorph(sWord))
         return lResult
@@ -148,6 +162,8 @@ class SpellChecker ():
         yield self.oMainDic.suggest(sWord, nSuggLimit)
         if self.oExtendedDic:
             yield self.oExtendedDic.suggest(sWord, nSuggLimit)
+        if self.oCommunityDic:
+            yield self.oCommunityDic.suggest(sWord, nSuggLimit)
         if self.oPersonalDic:
             yield self.oPersonalDic.suggest(sWord, nSuggLimit)
 
@@ -156,6 +172,8 @@ class SpellChecker ():
         yield from self.oMainDic.select(sPattern)
         if self.oExtendedDic:
             yield from self.oExtendedDic.select(sPattern)
+        if self.oCommunityDic:
+            yield from self.oCommunityDic.select(sPattern)
         if self.oPersonalDic:
             yield from self.oPersonalDic.select(sPattern)
 
@@ -164,6 +182,9 @@ class SpellChecker ():
         if self.oExtendedDic:
             print("-----")
             self.oExtendedDic.drawPath(sWord)
+        if self.oCommunityDic:
+            print("-----")
+            self.oCommunityDic.drawPath(sWord)
         if self.oPersonalDic:
             print("-----")
             self.oPersonalDic.drawPath(sWord)

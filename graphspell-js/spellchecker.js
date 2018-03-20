@@ -28,7 +28,7 @@ const dDefaultDictionaries = new Map([
 
 class SpellChecker {
 
-    constructor (sLangCode, sPath="", mainDic="", extentedDic="", personalDic="") {
+    constructor (sLangCode, sPath="", mainDic="", extentedDic="", communityDic="", personalDic="") {
         // returns true if the main dictionary is loaded
         this.sLangCode = sLangCode;
         if (!mainDic) {
@@ -36,6 +36,7 @@ class SpellChecker {
         }
         this.oMainDic = this._loadDictionary(mainDic, sPath, true);
         this.oExtendedDic = this._loadDictionary(extentedDic, sPath);
+        this.oCommunityDic = this._loadDictionary(communityDic, sPath);
         this.oPersonalDic = this._loadDictionary(personalDic, sPath);
         this.oTokenizer = null;
     }
@@ -90,6 +91,12 @@ class SpellChecker {
         return Boolean(this.oExtendedDic);
     }
 
+    setCommunityDictionary (dictionary) {
+        // returns true if the dictionary is loaded
+        this.oCommunityDic = this._loadDictionary(dictionary);
+        return Boolean(this.oCommunityDic);
+    }
+
     setPersonalDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oPersonalDic = this._loadDictionary(dictionary);
@@ -121,6 +128,9 @@ class SpellChecker {
         if (this.oExtendedDic && this.oExtendedDic.isValidToken(sToken)) {
             return true;
         }
+        if (this.oCommunityDic && this.oCommunityDic.isValidToken(sToken)) {
+            return true;
+        }
         if (this.oPersonalDic && this.oPersonalDic.isValidToken(sToken)) {
             return true;
         }
@@ -133,6 +143,9 @@ class SpellChecker {
             return true;
         }
         if (this.oExtendedDic && this.oExtendedDic.isValid(sWord)) {
+            return true;
+        }
+        if (this.oCommunityDic && this.oCommunityDic.isValid(sToken)) {
             return true;
         }
         if (this.oPersonalDic && this.oPersonalDic.isValid(sWord)) {
@@ -149,6 +162,9 @@ class SpellChecker {
         if (this.oExtendedDic && this.oExtendedDic.lookup(sWord)) {
             return true;
         }
+        if (this.oCommunityDic && this.oCommunityDic.lookup(sToken)) {
+            return true;
+        }
         if (this.oPersonalDic && this.oPersonalDic.lookup(sWord)) {
             return true;
         }
@@ -160,6 +176,9 @@ class SpellChecker {
         let lResult = this.oMainDic.getMorph(sWord);
         if (this.oExtendedDic) {
             lResult.push(...this.oExtendedDic.getMorph(sWord));
+        }
+        if (this.oCommunityDic) {
+            lResult.push(...this.oCommunityDic.getMorph(sWord));
         }
         if (this.oPersonalDic) {
             lResult.push(...this.oPersonalDic.getMorph(sWord));
@@ -173,6 +192,9 @@ class SpellChecker {
         if (this.oExtendedDic) {
             yield this.oExtendedDic.suggest(sWord, nSuggLimit);
         }
+        if (this.oCommunityDic) {
+            yield this.oCommunityDic.suggest(sWord, nSuggLimit);
+        }
         if (this.oPersonalDic) {
             yield this.oPersonalDic.suggest(sWord, nSuggLimit);
         }
@@ -183,6 +205,9 @@ class SpellChecker {
         yield* this.oMainDic.select(sPattern)
         if (this.oExtendedDic) {
             yield* this.oExtendedDic.select(sPattern);
+        }
+        if (this.oCommunityDic) {
+            yield* this.oCommunityDic.select(sPattern);
         }
         if (this.oPersonalDic) {
             yield* this.oPersonalDic.select(sPattern);
