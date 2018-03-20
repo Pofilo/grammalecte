@@ -4,7 +4,8 @@
 
 # To avoid iterating over a pile of dictionaries, it is assumed that 3 are enough:
 # - the main dictionary, bundled with the package
-# - the extended dictionary, added by an organization
+# - the extended dictionary
+# - the community dictionary, added by an organization
 # - the personal dictionary, created by the user for its own convenience
 
 
