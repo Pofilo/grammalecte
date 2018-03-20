@@ -91,7 +91,7 @@ function setDictionary (sTypeDic, sDicJSON) {
                 oSpellChecker.setPersonalDictionary(oJSON);
                 break;
             default:
-                console.log("[GCE worker] unknow dictionary type");
+                console.log("[GCE worker] unknown dictionary type");
         }
     }
     catch (e) {
