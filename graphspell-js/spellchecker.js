@@ -39,6 +39,9 @@ class SpellChecker {
         this.oExtendedDic = this._loadDictionary(extentedDic, sPath);
         this.oCommunityDic = this._loadDictionary(communityDic, sPath);
         this.oPersonalDic = this._loadDictionary(personalDic, sPath);
+        this.bExtendedDic = Boolean(this.oExtendedDic);
+        this.bCommunityDic = Boolean(this.oCommunityDic);
+        this.bPersonalDic = Boolean(this.oPersonalDic);
         this.oTokenizer = null;
     }
 
@@ -89,20 +92,54 @@ class SpellChecker {
     setExtendedDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oExtendedDic = this._loadDictionary(dictionary);
-        return Boolean(this.oExtendedDic);
+        this.bExtendedDic = Boolean(this.oExtendedDic);
+        return this.bExtendedDic;
     }
 
     setCommunityDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oCommunityDic = this._loadDictionary(dictionary);
-        return Boolean(this.oCommunityDic);
+        this.bCommunityDic = Boolean(this.oCommunityDic);
+        return this.bCommunityDic;
     }
 
     setPersonalDictionary (dictionary) {
         // returns true if the dictionary is loaded
         this.oPersonalDic = this._loadDictionary(dictionary);
-        return Boolean(this.oPersonalDic);
+        this.bPersonalDic = Boolean(this.oPersonalDic);
+        return this.bPersonalDic;
     }
+
+    activateExtendedDictionary () {
+        if (this.oExtendedDic) {
+            this.bExtendedDic = true;
+        }
+    }
+
+    activateCommunityDictionary () {
+        if (this.oCommunityDic) {
+            this.bCommunityDic = true;
+        }
+    }
+
+    activatePersonalDictionary () {
+        if (this.oPersonalDic) {
+            this.bPersonalDic = true;
+        }
+    }
+
+    deactivateExtendedDictionary () {
+        this.bExtendedDic = false;
+    }
+
+    deactivateCommunityDictionary () {
+        this.bCommunityDic = false;
+    }
+
+    deactivatePersonalDictionary () {
+        this.bPersonalDic = false;
+    }
+
 
     // parse text functions
 
@@ -126,13 +163,13 @@ class SpellChecker {
         if (this.oMainDic.isValidToken(sToken)) {
             return true;
         }
-        if (this.oExtendedDic && this.oExtendedDic.isValidToken(sToken)) {
+        if (this.bExtendedDic && this.oExtendedDic.isValidToken(sToken)) {
             return true;
         }
-        if (this.oCommunityDic && this.oCommunityDic.isValidToken(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.isValidToken(sToken)) {
             return true;
         }
-        if (this.oPersonalDic && this.oPersonalDic.isValidToken(sToken)) {
+        if (this.bPersonalDic && this.oPersonalDic.isValidToken(sToken)) {
             return true;
         }
         return false;
@@ -143,13 +180,13 @@ class SpellChecker {
         if (this.oMainDic.isValid(sWord)) {
             return true;
         }
-        if (this.oExtendedDic && this.oExtendedDic.isValid(sWord)) {
+        if (this.bExtendedDic && this.oExtendedDic.isValid(sWord)) {
             return true;
         }
-        if (this.oCommunityDic && this.oCommunityDic.isValid(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.isValid(sToken)) {
             return true;
         }
-        if (this.oPersonalDic && this.oPersonalDic.isValid(sWord)) {
+        if (this.bPersonalDic && this.oPersonalDic.isValid(sWord)) {
             return true;
         }
         return false;
@@ -160,13 +197,13 @@ class SpellChecker {
         if (this.oMainDic.lookup(sWord)) {
             return true;
         }
-        if (this.oExtendedDic && this.oExtendedDic.lookup(sWord)) {
+        if (this.bExtendedDic && this.oExtendedDic.lookup(sWord)) {
             return true;
         }
-        if (this.oCommunityDic && this.oCommunityDic.lookup(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.lookup(sToken)) {
             return true;
         }
-        if (this.oPersonalDic && this.oPersonalDic.lookup(sWord)) {
+        if (this.bPersonalDic && this.oPersonalDic.lookup(sWord)) {
             return true;
         }
         return false;
@@ -175,13 +212,13 @@ class SpellChecker {
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
         let lResult = this.oMainDic.getMorph(sWord);
-        if (this.oExtendedDic) {
+        if (this.bExtendedDic) {
             lResult.push(...this.oExtendedDic.getMorph(sWord));
         }
-        if (this.oCommunityDic) {
+        if (this.bCommunityDic) {
             lResult.push(...this.oCommunityDic.getMorph(sWord));
         }
-        if (this.oPersonalDic) {
+        if (this.bPersonalDic) {
             lResult.push(...this.oPersonalDic.getMorph(sWord));
         }
         return lResult;
@@ -190,13 +227,13 @@ class SpellChecker {
     * suggest (sWord, nSuggLimit=10) {
         // generator: returns 1, 2 or 3 lists of suggestions
         yield this.oMainDic.suggest(sWord, nSuggLimit);
-        if (this.oExtendedDic) {
+        if (this.bExtendedDic) {
             yield this.oExtendedDic.suggest(sWord, nSuggLimit);
         }
-        if (this.oCommunityDic) {
+        if (this.bCommunityDic) {
             yield this.oCommunityDic.suggest(sWord, nSuggLimit);
         }
-        if (this.oPersonalDic) {
+        if (this.bPersonalDic) {
             yield this.oPersonalDic.suggest(sWord, nSuggLimit);
         }
     }
@@ -204,13 +241,13 @@ class SpellChecker {
     * select (sPattern="") {
         // generator: returns all entries which morphology fits <sPattern>
         yield* this.oMainDic.select(sPattern)
-        if (this.oExtendedDic) {
+        if (this.bExtendedDic) {
             yield* this.oExtendedDic.select(sPattern);
         }
-        if (this.oCommunityDic) {
+        if (this.bCommunityDic) {
             yield* this.oCommunityDic.select(sPattern);
         }
-        if (this.oPersonalDic) {
+        if (this.bPersonalDic) {
             yield* this.oPersonalDic.select(sPattern);
         }
     }

@@ -32,6 +32,9 @@ class SpellChecker ():
         self.oExtendedDic = self._loadDictionary(sfExtendedDic)
         self.oCommunityDic = self._loadDictionary(sfCommunityDic)
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
+        self.bExtendedDic = bool(self.oExtendedDic)
+        self.bCommunityDic = bool(self.oCommunityDic)
+        self.bPersonalDic = bool(self.oPersonalDic)
         self.oTokenizer = None
 
     def _loadDictionary (self, source, bNecessary=False):
@@ -63,17 +66,42 @@ class SpellChecker ():
     def setExtendedDictionary (self, source):
         "returns True if the dictionary is loaded"
         self.oExtendedDic = self._loadDictionary(source)
-        return bool(self.oExtendedDic)
+        self.bExtendedDic = bool(self.oExtendedDic)
+        return self.bExtendedDic
 
     def setCommunityDictionary (self, source):
         "returns True if the dictionary is loaded"
         self.oCommunityDic = self._loadDictionary(source)
-        return bool(self.oPersonalDic)
+        self.bCommunityDic = bool(self.oCommunityDic)
+        return self.bCommunityDic
 
     def setPersonalDictionary (self, source):
         "returns True if the dictionary is loaded"
         self.oPersonalDic = self._loadDictionary(source)
-        return bool(self.oPersonalDic)
+        self.bPersonalDic = bool(self.oPersonalDic)
+        return self.bPersonalDic
+
+    def activateExtendedDictionary (self):
+        if self.oExtendedDic:
+            self.bExtendedDic = True
+
+    def activateCommunityDictionary (self):
+        if self.oCommunityDic:
+            self.bCommunityDic = True
+
+    def activatePersonalDictionary (self):
+        if self.oPersonalDic:
+            self.bPersonalDic = True
+
+    def deactivateExtendedDictionary (self):
+        self.bExtendedDic = False
+
+    def deactivateCommunityDictionary (self):
+        self.bCommunityDic = False
+
+    def deactivatePersonalDictionary (self):
+        self.bPersonalDic = False
+
 
     # parse text functions
 
@@ -112,11 +140,11 @@ class SpellChecker ():
         "checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)"
         if self.oMainDic.isValidToken(sToken):
             return True
-        if self.oExtendedDic and self.oExtendedDic.isValidToken(sToken):
+        if self.bExtendedDic and self.oExtendedDic.isValidToken(sToken):
             return True
-        if self.oCommunityDic and self.oCommunityDic.isValidToken(sToken):
+        if self.bCommunityDic and self.oCommunityDic.isValidToken(sToken):
             return True
-        if self.oPersonalDic and self.oPersonalDic.isValidToken(sToken):
+        if self.bPersonalDic and self.oPersonalDic.isValidToken(sToken):
             return True
         return False
 
@@ -124,11 +152,11 @@ class SpellChecker ():
         "checks if sWord is valid (different casing tested if the first letter is a capital)"
         if self.oMainDic.isValid(sWord):
             return True
-        if self.oExtendedDic and self.oExtendedDic.isValid(sWord):
+        if self.bExtendedDic and self.oExtendedDic.isValid(sWord):
             return True
-        if self.oCommunityDic and self.oCommunityDic.isValid(sToken):
+        if self.bCommunityDic and self.oCommunityDic.isValid(sToken):
             return True
-        if self.oPersonalDic and self.oPersonalDic.isValid(sWord):
+        if self.bPersonalDic and self.oPersonalDic.isValid(sWord):
             return True
         return False
 
@@ -136,22 +164,22 @@ class SpellChecker ():
         "checks if sWord is in dictionary as is (strict verification)"
         if self.oMainDic.lookup(sWord):
             return True
-        if self.oExtendedDic and self.oExtendedDic.lookup(sWord):
+        if self.bExtendedDic and self.oExtendedDic.lookup(sWord):
             return True
-        if self.oCommunityDic and self.oCommunityDic.lookup(sToken):
+        if self.bCommunityDic and self.oCommunityDic.lookup(sToken):
             return True
-        if self.oPersonalDic and self.oPersonalDic.lookup(sWord):
+        if self.bPersonalDic and self.oPersonalDic.lookup(sWord):
             return True
         return False
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
         lResult = self.oMainDic.getMorph(sWord)
-        if self.oExtendedDic:
+        if self.bExtendedDic:
             lResult.extend(self.oExtendedDic.getMorph(sWord))
-        if self.oCommunityDic:
+        if self.bCommunityDic:
             lResult.extend(self.oCommunityDic.getMorph(sWord))
-        if self.oPersonalDic:
+        if self.bPersonalDic:
             lResult.extend(self.oPersonalDic.getMorph(sWord))
         return lResult
 
@@ -161,31 +189,31 @@ class SpellChecker ():
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
         yield self.oMainDic.suggest(sWord, nSuggLimit)
-        if self.oExtendedDic:
+        if self.bExtendedDic:
             yield self.oExtendedDic.suggest(sWord, nSuggLimit)
-        if self.oCommunityDic:
+        if self.bCommunityDic:
             yield self.oCommunityDic.suggest(sWord, nSuggLimit)
-        if self.oPersonalDic:
+        if self.bPersonalDic:
             yield self.oPersonalDic.suggest(sWord, nSuggLimit)
 
     def select (self, sPattern=""):
         "generator: returns all entries which morphology fits <sPattern>"
         yield from self.oMainDic.select(sPattern)
-        if self.oExtendedDic:
+        if self.bExtendedDic:
             yield from self.oExtendedDic.select(sPattern)
-        if self.oCommunityDic:
+        if self.bCommunityDic:
             yield from self.oCommunityDic.select(sPattern)
-        if self.oPersonalDic:
+        if self.bPersonalDic:
             yield from self.oPersonalDic.select(sPattern)
 
     def drawPath (self, sWord):
         self.oMainDic.drawPath(sWord)
-        if self.oExtendedDic:
+        if self.bExtendedDic:
             print("-----")
             self.oExtendedDic.drawPath(sWord)
-        if self.oCommunityDic:
+        if self.bCommunityDic:
             print("-----")
             self.oCommunityDic.drawPath(sWord)
-        if self.oPersonalDic:
+        if self.bPersonalDic:
             print("-----")
             self.oPersonalDic.drawPath(sWord)
