@@ -49,16 +49,24 @@ var oGrammarChecker = {
             // Grammar checker
             echo('Loading Grammalecte');
             this.xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
+            let that = this;
             let xPromise = this.xGCEWorker.post('loadGrammarChecker', [prefs.getCharPref("sGCOptions"), "Thunderbird"]);
             xPromise.then(
                 function (aVal) {
                     echo(aVal);
                     prefs.setCharPref("sGCOptions", aVal);
+                    if (prefs.getBoolPref("bPersonalDictionary")) {
+                        let sDicJSON = oFileHandler.loadFile("fr.personal.json");
+                        if (sDicJSON) {
+                            that.xGCEWorker.post('setDictionary', ["personal", sDicJSON]);
+                        }
+                    }
                 },
                 function (aReason) { echo('Promise rejected - ', aReason); }
             ).catch(
                 function (aCaught) { echo('Promise Error - ', aCaught); }
             );
+
         }
     },
     fullTests: function () {

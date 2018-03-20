@@ -78,6 +78,27 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
     }
 }
 
+function setDictionary (sTypeDic, sDicJSON) {
+    try {
+        console.log("set dictionary: " + sTypeDic);
+        let oJSON = JSON.parse(sDicJSON);
+        switch (sTypeDic) {
+            case "extended":
+                break;
+            case "community":
+                break;
+            case "personal":
+                oSpellChecker.setPersonalDictionary(oJSON);
+                break;
+            default:
+                console.log("[GCE worker] unknow dictionary type");
+        }
+    }
+    catch (e) {
+        console.error(e);
+    }
+}
+
 function parse (sText, sCountry, bDebug, bContext) {
     let aGrammErr = gce.parse(sText, sCountry, bDebug, bContext);
     return JSON.stringify(aGrammErr);
