@@ -53,7 +53,7 @@ class DAWG:
         else:
             raise ValueError("# Error. Unknown stemming code: {}".format(cStemming))
 
-        lEntry = []
+        aEntry = set()
         lChar = ['']; dChar = {}; nChar = 1; dCharOccur = {}
         lAff  = [];   dAff  = {}; nAff  = 0; dAffOccur = {}
         lTag  = [];   dTag  = {}; nTag  = 0; dTagOccur = {}
@@ -86,15 +86,15 @@ class DAWG:
                 lTag.append(sTag)
                 nTag += 1
             dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
-            lEntry.append((sFlex, dAff[sAff], dTag[sTag]))
-        if not lEntry:
+            aEntry.add((sFlex, dAff[sAff], dTag[sTag]))
+        if not aEntry:
             raise ValueError("# Error. Empty lexicon")
         
         # Preparing DAWG
         print(" > Preparing list of words")
         lVal = lChar + lAff + lTag
-        lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in lEntry ]
-        lEntry = None
+        lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in aEntry ]
+        aEntry = None
         
         # Dictionary of arc values occurrency, to sort arcs of each node
         dValOccur = dict( [ (dChar[c], dCharOccur[c])  for c in dChar ] \
