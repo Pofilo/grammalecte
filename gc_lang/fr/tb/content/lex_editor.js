@@ -97,6 +97,7 @@ class Table {
                 this.xProgressBar.value += 1;
             }
             this.xProgressBar.value = this.xProgressBar.max;
+            window.setTimeout(() => { this.xProgressBar.value = 0; }, 2000);
         }
         this.lEntry = lFlex;
         this.nEntry = lFlex.length;
@@ -459,7 +460,6 @@ const oBinaryDict = {
             //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
             enableElement("export_button");
         } else {
-            prefs.setCharPref("oPersonalDictionary", "");
             oFileHandler.deleteFile("fr.personal.json");
             this.setDictData(0, "[néant]");
             disableElement("export_button");
