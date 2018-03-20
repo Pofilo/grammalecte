@@ -82,16 +82,13 @@ class SpellChecker ():
         return self.bPersonalDic
 
     def activateExtendedDictionary (self):
-        if self.oExtendedDic:
-            self.bExtendedDic = True
+        self.bExtendedDic = bool(self.oExtendedDic)
 
     def activateCommunityDictionary (self):
-        if self.oCommunityDic:
-            self.bCommunityDic = True
+        self.bCommunityDic = bool(self.oCommunityDic)
 
     def activatePersonalDictionary (self):
-        if self.oPersonalDic:
-            self.bPersonalDic = True
+        self.bPersonalDic = bool(self.oPersonalDic)
 
     def deactivateExtendedDictionary (self):
         self.bExtendedDic = False

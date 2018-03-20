@@ -111,21 +111,15 @@ class SpellChecker {
     }
 
     activateExtendedDictionary () {
-        if (this.oExtendedDic) {
-            this.bExtendedDic = true;
-        }
+        this.bExtendedDic = Boolean(this.oExtendedDic);
     }
 
     activateCommunityDictionary () {
-        if (this.oCommunityDic) {
-            this.bCommunityDic = true;
-        }
+        this.bCommunityDic = Boolean(this.oCommunityDic);
     }
 
     activatePersonalDictionary () {
-        if (this.oPersonalDic) {
-            this.bPersonalDic = true;
-        }
+        this.bPersonalDic = Boolean(this.oPersonalDic);
     }
 
     deactivateExtendedDictionary () {
