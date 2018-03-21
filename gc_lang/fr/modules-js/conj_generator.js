@@ -15,7 +15,8 @@ var conj_generator = {
         let cGroup = this.getVerbGroupChar(sVerb);
         for (let [nCut, sAdd, sFlexTags, sPattern] of this.getConjRules(sVerb, bVarPpas)) {
             if (!sPattern || RegExp(sPattern).test(sVerb)) {
-                lEntry.push( [sVerb.slice(0, -nCut) + sAdd, ":V" + cGroup + "_" + sVerbTag + sFlexTags] );
+                let sFlexion = (nCut > 0) ? sVerb.slice(0, -nCut) + sAdd : sVerb + sAdd;
+                lEntry.push( [sFlexion, ":V" + cGroup + "_" + sVerbTag + sFlexTags] );
             }
         }
         return lEntry;

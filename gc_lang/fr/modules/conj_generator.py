@@ -9,7 +9,8 @@ def conjugate (sVerb, sVerbTag="i_____a", bVarPpas=True):
     cGroup = getVerbGroupChar(sVerb)
     for nCut, sAdd, sFlexTags, sPattern in getConjRules(sVerb, bVarPpas):
         if not sPattern or re.search(sPattern, sVerb):
-            lConj.append((sVerb[0:-nCut]+sAdd, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
+            sFlexion = sVerb[0:-nCut] + sAdd  if nCut  else sVerb + sAdd
+            lConj.append((sFlexion, ":V" + cGroup + "_" + sVerbTag + sFlexTags))
     return lConj
 
 
