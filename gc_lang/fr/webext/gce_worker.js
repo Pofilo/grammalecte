@@ -320,6 +320,10 @@ function setDictionary (sType, oDict, dInfo) {
             oSpellChecker.setExtendedDictionary(oDict);
             postMessage(createResponse("setDictionary", true, dInfo, true));
             break;
+        case "community":
+            oSpellChecker.setCommunityDictionary(oDict);
+            postMessage(createResponse("setDictionary", true, dInfo, true));
+            break;
         case "personal":
             oSpellChecker.setPersonalDictionary(oDict);
             postMessage(createResponse("setDictionary", true, dInfo, true));
