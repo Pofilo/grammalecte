@@ -475,11 +475,45 @@ const oBinaryDict = {
 }
 
 
+const oSearch = {
+
+    listen: function () {
+        document.getElementById("search_similar_button").addEventListener("click", () => { this.searchSimilar(); }, false);
+        document.getElementById("search_regex_button").addEventListener("click", () => { this.searchRegex() }, false);
+    },
+
+    searchSimilar: function () {
+        let sSimilar = document.getElementById("search_similar").value;
+    },
+
+    searchRegex: function () {
+        let sFlexPattern = document.getElementById("search_flexion_pattern").value;
+        let sTagsPattern = document.getElementById("search_tags_pattern").value;
+    }
+}
+
+
+const oTagsInfo = {
+    load: function () {
+        let lEntry = [];
+        for (let [sTag, sLabel] of _dTag) {
+            lEntry.push([sTag, sLabel.trim()]);
+        }
+        oTagsTable.fill(lEntry);
+    }
+}
+
+
 const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
+const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], [10, 7, 10], "progress_search");
+const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], [1, 10], "progress_lexicon");
 
 conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 
+
+oTagsInfo.load();
 oBinaryDict.load();
 oBinaryDict.listen();
 oGenerator.listen();
+oSearch.listen();
