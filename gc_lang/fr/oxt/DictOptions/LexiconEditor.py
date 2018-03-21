@@ -136,7 +136,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self._addWidget("dictionary_section", 'FixedLine', nX1, nY0, 180, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle, TextColor = 0x000088)
         self._addWidget("save_date_label", 'FixedText', nXB, nY0+2, 80, nHeight, Label = self.dUI.get("save_date_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = "-", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = self.dUI.get("void", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xExport = self._addWidget('export_button', 'Button', nXC+150, nY0, 50, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
 
@@ -325,14 +325,19 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         lEntry = []
         for i in range(xGridDataModel.RowCount):
             lEntry.append(xGridDataModel.getRowData(i))
-        oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel")
-        oJSON = oDAWG.getBinaryAsJSON()
         xChild = self.xSettingNode.getByName("o_fr")
-        xChild.setPropertyValue("personal_dic", json.dumps(oJSON, ensure_ascii=False))
-        self.xSettingNode.commitChanges()
-        self.xNumLex.Label = str(oJSON["nEntry"])
-        self.xNumDic.Label = str(oJSON["nEntry"])
-        self.xDateDic.Label = oJSON["sDate"]
+        if lEntry:
+            oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel")
+            oJSON = oDAWG.getBinaryAsJSON()
+            xChild.setPropertyValue("personal_dic", json.dumps(oJSON, ensure_ascii=False))
+            self.xSettingNode.commitChanges()
+            self.xNumDic.Label = str(oJSON["nEntry"])
+            self.xDateDic.Label = oJSON["sDate"]
+        else:
+            xChild.setPropertyValue("personal_dic", "")
+            self.xSettingNode.commitChanges()
+            self.xNumDic.Label = "0"
+            self.xDateDic.Label = self.dUI.get("void", "#err")
 
     def _getRadioValue (self, *args):
         for x in args:

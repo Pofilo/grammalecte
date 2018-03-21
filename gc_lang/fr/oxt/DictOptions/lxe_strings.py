@@ -67,13 +67,14 @@ dStrings = {
         "save_date_label": "Date d’enregistrement :",
         "num_of_entries_label": "Nombre d’entrées :",
         "export_button": "Exporter",
+        "void": "[néant]",
 
         #
         "close_button": "Fermer",
     },
     # Traduction délibérément limitée
     "en": {
-        "title": "Grammalecte · Lexical editor",
+        "title": "Grammalecte · Lexicon editor",
         
         "close_button": "Close",
     },
