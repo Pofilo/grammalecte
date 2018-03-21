@@ -413,6 +413,11 @@ const oGenerator = {
                         break;
                 }
             }
+            if (this.lFlexion.length > 0) {
+                showElement("add_to_lexicon");
+            } else {
+                hideElement("add_to_lexicon");
+            }
             oGenWordsTable.fill(this.lFlexion);
         }
         catch (e) {
