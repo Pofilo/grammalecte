@@ -193,15 +193,15 @@ class SpellChecker ():
         if self.bPersonalDic:
             yield self.oPersonalDic.suggest(sWord, nSuggLimit)
 
-    def select (self, sPattern=""):
-        "generator: returns all entries which morphology fits <sPattern>"
-        yield from self.oMainDic.select(sPattern)
+    def select (self, sFlexPattern="", sTagsPattern=""):
+        "generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>"
+        yield from self.oMainDic.select(sFlexPattern, sTagsPattern)
         if self.bExtendedDic:
-            yield from self.oExtendedDic.select(sPattern)
+            yield from self.oExtendedDic.select(sFlexPattern, sTagsPattern)
         if self.bCommunityDic:
-            yield from self.oCommunityDic.select(sPattern)
+            yield from self.oCommunityDic.select(sFlexPattern, sTagsPattern)
         if self.bPersonalDic:
-            yield from self.oPersonalDic.select(sPattern)
+            yield from self.oPersonalDic.select(sFlexPattern, sTagsPattern)
 
     def drawPath (self, sWord):
         self.oMainDic.drawPath(sWord)

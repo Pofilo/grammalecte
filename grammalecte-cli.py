@@ -190,7 +190,15 @@ def main ():
             elif sText.startswith(">"):
                 oSpellChecker.drawPath(sText[1:].strip())
             elif sText.startswith("="):
-                for sRes in oSpellChecker.select(sText[1:].strip()):
+                sSearch = sText[1:].strip()
+                if "=" in sSearch:
+                    nCut = sSearch.find("=")
+                    sFlexPattern = sSearch[0:nCut]
+                    sTagsPattern = sSearch[nCut+1:]
+                else:
+                    sFlexPattern = sSearch
+                    sTagsPattern = ""
+                for sRes in oSpellChecker.select(sFlexPattern, sTagsPattern):
                     echo(sRes)
             elif sText.startswith("/+ "):
                 oGrammarChecker.gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })

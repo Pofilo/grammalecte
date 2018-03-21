@@ -409,32 +409,36 @@ class IBDAWG:
             print("\n   "+ " " * iPos + "|")
             self.drawPath(sWord[1:], iNextNodeAddr)
 
-    def select (self, sPattern=""):
-        "generator: returns all entries which morphology fits <sPattern>"
-        zPattern = None
-        if sPattern:
-            try:
-                zPattern = re.compile(sPattern)
-            except:
-                print("# Error in regex pattern")
-                traceback.print_exc()
-        yield from self._select1(zPattern, 0, "")
+    def select (self, sFlexPattern="", sTagsPattern=""):
+        "generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>"
+        zFlexPattern = None
+        zTagsPattern = None
+        try:
+            if sFlexPattern:
+                zFlexPattern = re.compile(sFlexPattern)
+            if sTagsPattern:
+                zTagsPattern = re.compile(sTagsPattern)
+        except:
+            print("# Error in regex pattern")
+            traceback.print_exc()
+        yield from self._select1(zFlexPattern, zTagsPattern, 0, "")
 
     # def morph (self, sWord):
     #     is defined in __init__
 
     # VERSION 1
-    def _select1 (self, zPattern, iAddr, sWord):
+    def _select1 (self, zFlexPattern, zTagsPattern, iAddr, sWord):
         # recursive generator
         for nVal, jAddr in self._getArcs1(iAddr):
             if nVal <= self.nChar:
                 # simple character
-                yield from self._select1(zPattern, jAddr, sWord + self.lArcVal[nVal])
+                yield from self._select1(zFlexPattern, zTagsPattern, jAddr, sWord + self.lArcVal[nVal])
             else:
-                sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
-                for nMorphVal, _ in self._getArcs1(jAddr):
-                    if not zPattern or zPattern.search(self.lArcVal[nMorphVal]):
-                        yield sEntry + "\t" + self.lArcVal[nMorphVal]
+                if not zFlexPattern or zFlexPattern.search(sWord):
+                    sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
+                    for nMorphVal, _ in self._getArcs1(jAddr):
+                        if not zTagsPattern or zTagsPattern.search(self.lArcVal[nMorphVal]):
+                            yield sEntry + "\t" + self.lArcVal[nMorphVal]
 
     def _morph1 (self, sWord):
         "returns morphologies of <sWord>"

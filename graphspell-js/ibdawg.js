@@ -418,34 +418,36 @@ class IBDAWG {
     //     is defined in constructor
     // }
     
-    * select (sPattern="") {
-        // generator: returns all entries which morphology fits <sPattern>
-        let zPattern = null;
-        if (sPattern !== "") {
-            try {
-                zPattern = new RegExp(sPattern);
-            }
-            catch (e) {
-                console.log("Error in regex pattern");
-                console.log(e.message);
-            }
+    * select (sFlexPattern="", sTagsPattern="") {
+        // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
+        let zFlexPattern = null;
+        let zTagsPattern = null;
+        try {
+            zFlexPattern = (sFlexPattern !== "") ? new RegExp(sFlexPattern) : null;
+            zTagsPattern = (sTagsPattern !== "") ? new RegExp(sTagsPattern) : null;
         }
-        yield* this._select1(zPattern, 0, "");
+        catch (e) {
+            console.log("Error in regex pattern");
+            console.log(e.message);
+        }
+        yield* this._select1(zFlexPattern, zTagsPattern, 0, "");
     }
 
     // VERSION 1
 
-    * _select1 (zPattern, iAddr, sWord) {
+    * _select1 (zFlexPattern, zTagsPattern, iAddr, sWord) {
         // recursive generator
         for (let [nVal, jAddr] of this._getArcs1(iAddr)) {
             if (nVal <= this.nChar) {
                 // simple character
-                yield* this._select1(zPattern, jAddr, sWord + this.lArcVal[nVal]);
+                yield* this._select1(zFlexPattern, zTagsPattern, jAddr, sWord + this.lArcVal[nVal]);
             } else {
-                let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
-                for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
-                    if (!zPattern || zPattern.test(this.lArcVal[nMorphVal])) {
-                        yield sEntry + "\t" + this.lArcVal[nMorphVal];
+                if (!zFlexPattern || zFlexPattern.test(sWord)) {
+                    let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
+                    for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
+                        if (!zTagsPattern || zTagsPattern.test(this.lArcVal[nMorphVal])) {
+                            yield sEntry + "\t" + this.lArcVal[nMorphVal];
+                        }
                     }
                 }
             }

@@ -232,17 +232,17 @@ class SpellChecker {
         }
     }
 
-    * select (sPattern="") {
-        // generator: returns all entries which morphology fits <sPattern>
-        yield* this.oMainDic.select(sPattern)
+    * select (sFlexPattern="", sTagsPattern="") {
+        // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
+        yield* this.oMainDic.select(sFlexPattern, sTagsPattern)
         if (this.bExtendedDic) {
-            yield* this.oExtendedDic.select(sPattern);
+            yield* this.oExtendedDic.select(sFlexPattern, sTagsPattern);
         }
         if (this.bCommunityDic) {
-            yield* this.oCommunityDic.select(sPattern);
+            yield* this.oCommunityDic.select(sFlexPattern, sTagsPattern);
         }
         if (this.bPersonalDic) {
-            yield* this.oPersonalDic.select(sPattern);
+            yield* this.oPersonalDic.select(sFlexPattern, sTagsPattern);
         }
     }
 }
