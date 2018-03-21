@@ -95,7 +95,7 @@ class Table {
                 this.xProgressBar.value += 1;
             }
             this.xProgressBar.value = this.xProgressBar.max;
-            window.setTimeout(() => { this.xProgressBar.value = 0; }, 2000);
+            window.setTimeout(() => { this.xProgressBar.value = 0; }, 3000);
         }
         this.lEntry = lFlex;
         this.nEntry = lFlex.length;
@@ -477,18 +477,49 @@ const oBinaryDict = {
 
 const oSearch = {
 
+    oSpellChecker: null,
+
+    load: function () {
+        this.oSpellChecker = new SpellChecker("fr", "", "fr.json");
+    },
+
     listen: function () {
         document.getElementById("search_similar_button").addEventListener("click", () => { this.searchSimilar(); }, false);
         document.getElementById("search_regex_button").addEventListener("click", () => { this.searchRegex() }, false);
     },
 
     searchSimilar: function () {
-        let sSimilar = document.getElementById("search_similar").value;
+        oSearchTable.clear();
+        let sWord = document.getElementById("search_similar").value;
+        if (sWord !== "") {
+            let lSimilarWords = [];
+            for (let l of this.oSpellChecker.suggest(sWord, 20)) {
+                lSimilarWords.push(...l);
+            }
+            let lResult = [];
+            for (let sSimilar of lSimilarWords) {
+                for (let sMorph of this.oSpellChecker.getMorph(sSimilar)) {
+                    let nCut = sMorph.indexOf(" ");
+                    lResult.push( [sSimilar, sMorph.slice(1, nCut), sMorph.slice(nCut+1)] );
+                }
+            }
+            oSearchTable.fill(lResult);
+        }
     },
 
     searchRegex: function () {
-        let sFlexPattern = document.getElementById("search_flexion_pattern").value;
-        let sTagsPattern = document.getElementById("search_tags_pattern").value;
+        let sFlexPattern = document.getElementById("search_flexion_pattern").value.trim();
+        let sTagsPattern = document.getElementById("search_tags_pattern").value.trim();
+        let lEntry = [];
+        let i = 0;
+        for (let s of this.oSpellChecker.select(sFlexPattern, sTagsPattern)) {
+            lEntry.push(s.split("\t"));
+            i++;
+            if (i >= 2000) {
+                break;
+            }
+        }
+        oSearchTable.fill(lEntry);
     }
 }
 
@@ -506,13 +537,14 @@ const oTagsInfo = {
 
 const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
-const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], [10, 7, 10], "progress_search");
+const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_search", "search_num_entries");
 const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], [1, 10], "progress_lexicon");
 
 conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 
 
 oTagsInfo.load();
+oSearch.load();
 oBinaryDict.load();
 oBinaryDict.listen();
 oGenerator.listen();

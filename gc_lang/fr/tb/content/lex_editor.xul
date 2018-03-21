@@ -219,7 +219,9 @@
               <textbox id="search_similar" value="" />
               <button id="search_similar_button" label="Chercher" />
             </hbox>
+
             <spacer flex="1" />
+
             <dialogheader title="&dialogheader.search.regex.label;" description="" />
             <hbox>
               <label value="Flexion" />
@@ -233,7 +235,16 @@
             </hbox>
             <button id="search_regex_button" label="Chercher" />
             <label value="" />
-            <description>La recherche par expressions régulières peut générer un nombre gigantesque de résultats. Si vous n’entrez aucune condition, tout est affiché. Le dictionnaire de base contient environ 500 000 entrées.</description>
+            <description>La recherche par expressions régulières peut générer un nombre gigantesque de résultats. Seules les 2000 premières occurrences trouvées seront affichées. La recherche peut être longue, parce tout le graphe de mots, qui contient 500 000 mots, sera parcouru si besoin.</description>
+
+            <spacer flex="1" />
+            
+            <progressmeter id="progress_search" value="0"/>
+            <hbox>
+              <spacer flex="1" />
+              <label id="search_num_entries" class="align_right" value="0" />
+              <label value="entrées" />
+            </hbox>
           </vbox>
           <vbox>
             <dialogheader title="Résultat" description="" />
@@ -303,8 +314,10 @@
 
   <script type="application/x-javascript" src="resource://grammalecte/graphspell/helpers.js" />
   <script type="application/x-javascript" src="resource://grammalecte/graphspell/str_transform.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/graphspell/char_player.js" />
   <script type="application/x-javascript" src="resource://grammalecte/graphspell/dawg.js" />
   <script type="application/x-javascript" src="resource://grammalecte/graphspell/ibdawg.js" />
+  <script type="application/x-javascript" src="resource://grammalecte/graphspell/spellchecker.js" />
   <script type="application/x-javascript" src="resource://grammalecte/fr/conj.js" />
   <script type="application/x-javascript" src="resource://grammalecte/fr/conj_generator.js" />
   <script type="application/x-javascript" src="resource://grammalecte/fr/lexicographe.js" />
