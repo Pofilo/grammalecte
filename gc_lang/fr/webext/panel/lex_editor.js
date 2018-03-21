@@ -49,27 +49,50 @@ function hideElement (sElemId) {
     }
 }
 
-function showPage (sPage) {
-    if (sPage == "lexicon") {
-        hideElement("add_word_page");
-        showElement("lexicon_page");
-        document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 80%, 90%)";
-        document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 10%, 95%)";
-    } else {
-        hideElement("lexicon_page");
-        showElement("add_word_page");
-        document.getElementById("lexicon_button").style.backgroundColor = "hsl(210, 10%, 95%)";
-        document.getElementById("add_word_button").style.backgroundColor = "hsl(210, 80%, 90%)";
-        document.getElementById("lemma").focus();
+
+const oTabulations = {
+
+    lPage: ["lexicon_page", "add_page", "search_page", "info_page"],
+
+    showPage: function (sRequestedPage) {
+        for (let sPage of this.lPage) {
+            if (sPage !== sRequestedPage) {
+                hideElement(sPage);
+                this.downlightButton(sPage.slice(0,-5) + "_button");
+            }
+        }
+        showElement(sRequestedPage);
+        this.highlightButton(sRequestedPage.slice(0,-5) + "_button");
+        if (sRequestedPage == "add_page") {
+            document.getElementById("lemma").focus();
+        }
+    },
+
+    highlightButton: function (sButton) {
+        if (document.getElementById(sButton)) {
+            let xButton = document.getElementById(sButton);
+            xButton.style.backgroundColor = "hsl(210, 80%, 90%)";
+            xButton.style.color = "hsl(210, 80%, 30%)";
+            xButton.style.fontWeight = "bold";
+        }
+    },
+
+    downlightButton: function (sButton) {
+        if (document.getElementById(sButton)) {
+            let xButton = document.getElementById(sButton);
+            xButton.style.backgroundColor = "hsl(210, 10%, 95%)";
+            xButton.style.color = "hsl(210, 10%, 50%)";
+            xButton.style.fontWeight = "normal";
+        }
+    },
+
+    listen: function () {
+        document.getElementById("lexicon_button").addEventListener("click", () => { this.showPage("lexicon_page"); }, false);
+        document.getElementById("add_button").addEventListener("click", () => { this.showPage("add_page"); }, false);
+        document.getElementById("search_button").addEventListener("click", () => { this.showPage("search_page"); }, false);
+        document.getElementById("info_button").addEventListener("click", () => { this.showPage("info_page"); }, false);
     }
 }
-
-
-document.getElementById("lexicon_button").addEventListener("click", () => { showPage("lexicon"); }, false);
-document.getElementById("add_word_button").addEventListener("click", () => { showPage("lemma"); }, false);
-
-document.getElementById("save_button").addEventListener("click", () => { oBinaryDict.build(); }, false);
-
 
 
 class Table {
@@ -494,6 +517,7 @@ const oBinaryDict = {
     },
 
     listen: function () {
+        document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_button").addEventListener("click", () => { this.import(); }, false);
     },
@@ -534,3 +558,4 @@ const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquet
 oBinaryDict.load();
 oBinaryDict.listen();
 oGenerator.listen();
+oTabulations.listen();
