@@ -97,7 +97,7 @@ const oTabulations = {
 
 class Table {
 
-    constructor (sNodeId, lColumn, sProgressBarId, sResultId="") {
+    constructor (sNodeId, lColumn, sProgressBarId, sResultId="", bDeleteButtons=true) {
         this.sNodeId = sNodeId;
         this.xTable = document.getElementById(sNodeId);
         this.nColumn = lColumn.length;
@@ -106,15 +106,17 @@ class Table {
         this.xNumEntry = document.getElementById(sResultId);
         this.iEntryIndex = 0;
         this.lEntry = [];
-        this.nEntry = 0
+        this.nEntry = 0;
+        this.bDeleteButtons = bDeleteButtons;
         this._createHeader();
         this.listen();
     }
 
     _createHeader () {
         let xRowNode = createNode("tr");
-        xRowNode.appendChild(createNode("th", { textContent: "·", width: "12px" }));
-        //xRowNode.appendChild(createNode("th", { textContent: "#" }));
+        if (this.bDeleteButtons) {
+            xRowNode.appendChild(createNode("th", { textContent: "·", width: "12px" }));
+        }
         for (let sColumn of this.lColumn) {
             xRowNode.appendChild(createNode("th", { textContent: sColumn }));
         }
@@ -162,8 +164,9 @@ class Table {
 
     _addRow (lData) {
         let xRowNode = createNode("tr", { id: this.sNodeId + "_row_" + this.iEntryIndex });
-        xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: this.iEntryIndex }));
-        //xRowNode.appendChild(createNode("td", { textContent: this.iEntryIndex }));
+        if (this.bDeleteButtons) {
+            xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: this.iEntryIndex }));
+        }
         for (let data of lData) {
             xRowNode.appendChild(createNode("td", { textContent: data }));
         }
@@ -172,7 +175,9 @@ class Table {
     }
 
     listen () {
-        this.xTable.addEventListener("click", (xEvent) => { this.onTableClick(xEvent); }, false);
+        if (this.bDeleteButtons) {
+            this.xTable.addEventListener("click", (xEvent) => { this.onTableClick(xEvent); }, false);
+        }
     }
 
     onTableClick (xEvent) {
@@ -552,10 +557,76 @@ const oBinaryDict = {
 }
 
 
-const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "num_entries");
-const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], "wait_progress");
+const oSearch = {
 
+    oSpellChecker: null,
+
+    load: function () {
+        this.oSpellChecker = new SpellChecker("fr", "", "fr.json");
+    },
+
+    listen: function () {
+        document.getElementById("search_similar_button").addEventListener("click", () => { this.searchSimilar(); }, false);
+        document.getElementById("search_regex_button").addEventListener("click", () => { this.searchRegex() }, false);
+    },
+
+    searchSimilar: function () {
+        oSearchTable.clear();
+        let sWord = document.getElementById("search_similar").value;
+        if (sWord !== "") {
+            let lSimilarWords = [];
+            for (let l of this.oSpellChecker.suggest(sWord, 20)) {
+                lSimilarWords.push(...l);
+            }
+            let lResult = [];
+            for (let sSimilar of lSimilarWords) {
+                for (let sMorph of this.oSpellChecker.getMorph(sSimilar)) {
+                    let nCut = sMorph.indexOf(" ");
+                    lResult.push( [sSimilar, sMorph.slice(1, nCut), sMorph.slice(nCut+1)] );
+                }
+            }
+            oSearchTable.fill(lResult);
+        }
+    },
+
+    searchRegex: function () {
+        let sFlexPattern = document.getElementById("search_flexion_pattern").value.trim();
+        let sTagsPattern = document.getElementById("search_tags_pattern").value.trim();
+        let lEntry = [];
+        let i = 0;
+        for (let s of this.oSpellChecker.select(sFlexPattern, sTagsPattern)) {
+            lEntry.push(s.split("\t"));
+            i++;
+            if (i >= 2000) {
+                break;
+            }
+        }
+        oSearchTable.fill(lEntry);
+    }
+}
+
+
+const oTagsInfo = {
+    load: function () {
+        let lEntry = [];
+        for (let [sTag, sLabel] of _dTag) {
+            lEntry.push([sTag, sLabel.trim()]);
+        }
+        oTagsTable.fill(lEntry);
+    }
+}
+
+
+const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], "wait_progress");
+const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "num_entries");
+//const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "search_num_entries");
+const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], "wait_progress", "", false);
+
+
+oTagsInfo.load();
+//oSearch.load();
 oBinaryDict.load();
 oBinaryDict.listen();
 oGenerator.listen();
 oTabulations.listen();
+//oSearch.listen();
