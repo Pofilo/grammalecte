@@ -417,7 +417,21 @@ class IBDAWG {
     // morph (sWord) {
     //     is defined in constructor
     // }
-    
+    getSimilarEntries (sWord, nSuggLimit=10) {
+        // return a list of tuples (similar word, stem, morphology)
+        if (sWord == "") {
+            return [];
+        }
+        let lResult = [];
+        for (let sSimilar of this.suggest(sWord, nSuggLimit)) {
+            for (let sMorph of this.getMorph(sSimilar)) {
+                let nCut = sMorph.indexOf(" ");
+                lResult.push( [sSimilar, sMorph.slice(1, nCut), sMorph.slice(nCut+1)] );
+            }
+        }
+        return lResult;
+    }
+
     * select (sFlexPattern="", sTagsPattern="") {
         // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
         let zFlexPattern = null;
@@ -443,10 +457,10 @@ class IBDAWG {
                 yield* this._select1(zFlexPattern, zTagsPattern, jAddr, sWord + this.lArcVal[nVal]);
             } else {
                 if (!zFlexPattern || zFlexPattern.test(sWord)) {
-                    let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
+                    let sStem = this.funcStemming(sWord, this.lArcVal[nVal]);
                     for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
                         if (!zTagsPattern || zTagsPattern.test(this.lArcVal[nMorphVal])) {
-                            yield sEntry + "\t" + this.lArcVal[nMorphVal];
+                            yield [sWord, sStem, this.lArcVal[nMorphVal]];
                         }
                     }
                 }

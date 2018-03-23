@@ -245,6 +245,21 @@ class SpellChecker {
             yield* this.oPersonalDic.select(sFlexPattern, sTagsPattern);
         }
     }
+
+    getSimilarEntries (sWord, nSuggLimit=10) {
+        // return a list of tuples (similar word, stem, morphology)
+        let lResult = this.oMainDic.getSimilarEntries(sWord);
+        if (this.bExtendedDic) {
+            lResult.push(...this.oExtendedDic.getSimilarEntries(sWord));
+        }
+        if (this.bCommunityDic) {
+            lResult.push(...this.oCommunityDic.getSimilarEntries(sWord));
+        }
+        if (this.bPersonalDic) {
+            lResult.push(...this.oPersonalDic.getSimilarEntries(sWord));
+        }
+        return lResult;
+    }
 }
 
 if (typeof(exports) !== 'undefined') {

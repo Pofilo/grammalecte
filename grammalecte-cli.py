@@ -198,8 +198,8 @@ def main ():
                 else:
                     sFlexPattern = sSearch
                     sTagsPattern = ""
-                for sRes in oSpellChecker.select(sFlexPattern, sTagsPattern):
-                    echo(sRes)
+                for aRes in oSpellChecker.select(sFlexPattern, sTagsPattern):
+                    echo("\t".join(aRes))
             elif sText.startswith("/+ "):
                 oGrammarChecker.gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")

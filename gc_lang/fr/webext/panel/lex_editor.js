@@ -508,8 +508,8 @@ const oBinaryDict = {
         let oJSON = oResult.oPersonalDictionary;
         this.oIBDAWG = new IBDAWG(oJSON);
         let lEntry = [];
-        for (let s of this.oIBDAWG.select()) {
-            lEntry.push(s.split("\t"));
+        for (let aRes of this.oIBDAWG.select()) {
+            lEntry.push(aRes);
         }        
         oLexiconTable.fill(lEntry);
         this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
@@ -574,17 +574,7 @@ const oSearch = {
         oSearchTable.clear();
         let sWord = document.getElementById("search_similar").value;
         if (sWord !== "") {
-            let lSimilarWords = [];
-            for (let l of this.oSpellChecker.suggest(sWord, 20)) {
-                lSimilarWords.push(...l);
-            }
-            let lResult = [];
-            for (let sSimilar of lSimilarWords) {
-                for (let sMorph of this.oSpellChecker.getMorph(sSimilar)) {
-                    let nCut = sMorph.indexOf(" ");
-                    lResult.push( [sSimilar, sMorph.slice(1, nCut), sMorph.slice(nCut+1)] );
-                }
-            }
+            let lResult = this.oSpellChecker.getSimilarEntries(sWord, 20);
             oSearchTable.fill(lResult);
         }
     },
@@ -594,8 +584,8 @@ const oSearch = {
         let sTagsPattern = document.getElementById("search_tags_pattern").value.trim();
         let lEntry = [];
         let i = 0;
-        for (let s of this.oSpellChecker.select(sFlexPattern, sTagsPattern)) {
-            lEntry.push(s.split("\t"));
+        for (let aRes of this.oSpellChecker.select(sFlexPattern, sTagsPattern)) {
+            lEntry.push(aRes);
             i++;
             if (i >= 2000) {
                 break;

@@ -409,6 +409,17 @@ class IBDAWG:
             print("\n   "+ " " * iPos + "|")
             self.drawPath(sWord[1:], iNextNodeAddr)
 
+    def getSimilarEntries (self, sWord, nSuggLimit=10):
+        "return a list of tuples (similar word, stem, morphology)"
+        if not sWord:
+            return []
+        lResult = []
+        for sSimilar in self.suggest(sWord, nSuggLimit):
+            for sMorph in self.getMorph(sSimilar):
+                nCut = sMorph.find(" ")
+                lResult.append( (sSimilar, sMorph[1:nCut], sMorph[nCut+1:]) )
+        return lResult
+
     def select (self, sFlexPattern="", sTagsPattern=""):
         "generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>"
         zFlexPattern = None
@@ -435,10 +446,10 @@ class IBDAWG:
                 yield from self._select1(zFlexPattern, zTagsPattern, jAddr, sWord + self.lArcVal[nVal])
             else:
                 if not zFlexPattern or zFlexPattern.search(sWord):
-                    sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
+                    sStem = self.funcStemming(sWord, self.lArcVal[nVal])
                     for nMorphVal, _ in self._getArcs1(jAddr):
                         if not zTagsPattern or zTagsPattern.search(self.lArcVal[nMorphVal]):
-                            yield sEntry + "\t" + self.lArcVal[nMorphVal]
+                            yield [sWord, sStem, self.lArcVal[nMorphVal]]
 
     def _morph1 (self, sWord):
         "returns morphologies of <sWord>"
