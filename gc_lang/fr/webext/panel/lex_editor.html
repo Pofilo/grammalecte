@@ -34,7 +34,7 @@
         <div class="columns">
           <div id="word_generator">
             <h2>Nouveau mot (lemme)</h2>
-            <input type="text" id="lemma" name="lemma" maxlength="60" value="" placeholder="votre mot" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" autofocus />
+            <input type="text" id="lemma" class="large" name="lemma" maxlength="60" value="" placeholder="votre mot" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" autofocus />
 
             <div id="editor">
 
@@ -62,7 +62,7 @@
                   </div>
 
                   <h3>[optionnel] Autre forme (masculine, féminine, variante, etc.)</h3>
-                  <input type="text" id="lemma2" name="lemma2" maxlength="60" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="votre mot" />
+                  <input type="text" id="lemma2" class="large" name="lemma2" maxlength="60" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="votre mot" />
                   <div id="word_section2">
                     <p class="typeline">
                       <input type="radio" id="up_type_nom2" name="POS2" value=":N" /> <label class="widelabel" for="up_type_nom2">Nom</label>
@@ -164,7 +164,7 @@
                   <div class="block">
                     <h3>Verbe modèle [optionnel]</h3>
                     <p class="description">Indiquer un verbe qui doit servir de modèle n’est pas nécessaire pour la très grande majorité des verbes du 1ᵉʳ groupe et du 2ᵉ groupe. Faites-le seulement si les formes fléchies engendrées automatiquement ne vous satisfont pas.</p>
-                    <input type="text" id="verb_pattern" name="verb_pattern" maxlength="60" value="" placeholder="verbe modèle" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ-]+$" />
+                    <input type="text" id="verb_pattern" class="large" name="verb_pattern" maxlength="60" value="" placeholder="verbe modèle" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ-]+$" />
                     <details>
                       <p>Il est fortement recommandé d’appliquer les règles d’un verbe du même groupe que celui que vous créez. Mais aucune restriction n’est imposée.</p>
                       <p><b>Classification des groupes :</b></p>
@@ -213,9 +213,9 @@
                 <div id="section_autre" class="section">
                   <p>Indiquez les étiquettes grammaticales que vous voulez appliquer au mot. À utiliser seulement si vous savez ce que vous faites.</p>
                   <h3>Flexion</h3>
-                  <p><input type="text" id="flexion" name="flexion" maxlength="20" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="flexion" /></p>
+                  <p><input type="text" id="flexion" name="flexion" class="large" maxlength="20" value="" pattern="^[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ._-]+$" placeholder="flexion" /></p>
                   <h3>Étiquettes</h3>
-                  <p><input type="text" id="tags" name="tags" maxlength="20" value="" pattern="^:[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ:._-]+$" placeholder="étiquettes" /></p>
+                  <p><input type="text" id="tags" name="tags" class="large" maxlength="20" value="" pattern="^:[a-zA-Zà-ö0-9À-Öø-ÿØ-ßĀ-ʯ:._-]+$" placeholder="étiquettes" /></p>
                 </div>
               </div>
             </div>
@@ -251,13 +251,22 @@
 
       <div id="search_page">
         <div class="columns">
-          <div>
+          <div style="margin-right: 20px;">
             <h2>Recherche</h2>
 
-            <h3>Graphies similaires</h3>
+            <h3 style="margin-top: 20px;">Graphies similaires</h3>
+            <p><input id="search_similar" class="medium" type="text" /></p>
+            <p><div id="search_similar_button" class="button_search">Chercher</div></p>
 
-            <h3>Expressions régulières</h3>
+            <h3 style="margin-top: 20px;">Expressions régulières</h3>
+            <p><b>Flexion</b></p>
+            <p> <input id="search_flexion_pattern" class="medium" type="text" /></p>
 
+            <p><b>Étiquettes</b></p>
+            <p><input id="search_tags_pattern" class="medium" type="text" /></p>
+            <p><div id="search_regex_button" class="button_search">Chercher</div></p>
+
+            <p style="margin-top: 50px;">La recherche par expressions régulières peut générer un nombre gigantesque de résultats. Seules les 2000 premières occurrences trouvées seront affichées. La recherche peut être longue, parce tout le graphe de mots, qui contient 500 000 mots, sera parcouru si besoin.</p>
           </div>
 
           <div>
@@ -303,9 +312,11 @@
 
 
     <script src="../grammalecte/graphspell/helpers.js"></script>
+    <script src="../grammalecte/graphspell/char_player.js"></script>
     <script src="../grammalecte/graphspell/str_transform.js"></script>
     <script src="../grammalecte/graphspell/dawg.js"></script>
     <script src="../grammalecte/graphspell/ibdawg.js"></script>
+    <script src="../grammalecte/graphspell/spellchecker.js"></script>
     <script src="../grammalecte/fr/conj.js"></script>
     <script src="../grammalecte/fr/conj_generator.js"></script>
     <script src="../grammalecte/fr/lexicographe.js"></script>

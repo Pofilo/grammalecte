@@ -562,7 +562,11 @@ const oSearch = {
     oSpellChecker: null,
 
     load: function () {
-        this.oSpellChecker = new SpellChecker("fr", "", "fr.json");
+        this.oSpellChecker = new SpellChecker("fr", browser.extension.getURL("")+"grammalecte/graphspell/_dictionaries", "fr.json");
+    },
+
+    loadOtherDictionaries: function () {
+        //TODO
     },
 
     listen: function () {
@@ -609,14 +613,14 @@ const oTagsInfo = {
 
 const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], "wait_progress");
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "num_entries");
-//const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "search_num_entries");
+const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "search_num_entries", false);
 const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], "wait_progress", "", false);
 
 
 oTagsInfo.load();
-//oSearch.load();
+oSearch.load();
 oBinaryDict.load();
 oBinaryDict.listen();
 oGenerator.listen();
 oTabulations.listen();
-//oSearch.listen();
+oSearch.listen();
