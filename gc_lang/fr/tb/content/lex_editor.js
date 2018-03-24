@@ -517,7 +517,7 @@ const oSearch = {
 const oTagsInfo = {
     load: function () {
         let lEntry = [];
-        for (let [sTag, sLabel] of _dTag) {
+        for (let [sTag, [_, sLabel]] of _dTag) {
             lEntry.push([sTag, sLabel.trim()]);
         }
         oTagsTable.fill(lEntry);
