@@ -4550,12 +4550,12 @@ TEST: ces gens qui vont par monts et par vaux.
 __[i]/conj(conj_xxxons_sans_sujet)!3__
     \w+(?:ons|[âîûn]mes)(?! nous)
     <<- morphex(\0, ":V.*:1p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
-        and not before0(r"\b(?:[nN]ous(?:-mêmes?|)|[eE]t moi(?:-même|)|[nN]i (?:moi|nous)),? ")
+        and not before0(r"\b(?:[nN]ous(?:-mêmes?|)|(?:[eE]t|[oO]u) moi(?:-même|)|[nN]i (?:moi|nous)),? ")
     ->> =suggVerb(@, ":3p")                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
 __[i]/conj(conj_xxxez_sans_sujet)!3__
     \w+(?:ez|[âîûn]tes)(?! vous)
     <<- morphex(\0, ":V.*:2p", ":[EGMNAJ]") and not (\0[0:1].isupper() and before(r"\w"))
-        and not before0(r"\b(?:[vV]ous(?:-mêmes?|)|[eE]t toi(?:-même|)|[tT]oi(?:-même|) et|[nN]i (?:vous|toi)),? ")
+        and not before0(r"\b(?:[vV]ous(?:-mêmes?|)|(?:[eE]t|[oO]u) toi(?:-même|)|[tT]oi(?:-même|) et|[nN]i (?:vous|toi)),? ")
     ->> _                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
 
 TEST: les hommes et les femmes, qui sans un bruit, sans une parole amère, {{continuerons}} leur tâche n’en seront pas plus récompensés.
@@ -4566,6 +4566,7 @@ TEST: ce sont des terroristes et ça ne nous arrivera pas à nous, qui n’avons
 TEST: mes supérieurs et moi-même avons pris la décision de ne pas vendre
 TEST: Ni lui ni moi n’avions mangé
 TEST: Mon épouse et moi-même avons toujours dit
+TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du tout le même sens
 
 
 
