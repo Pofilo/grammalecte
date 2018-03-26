@@ -339,7 +339,7 @@ class GrammalecteTooltip {
                 this.clearSuggestionBlock();
                 if (xNodeErr.dataset.suggestions.length > 0) {
                     for (let sSugg of xNodeErr.dataset.suggestions.split("|")) {
-                        this.xTooltipSuggBlock.appendChild(this._createSuggestion(xNodeErr.dataset.error_id, iSugg, sSugg));
+                        this.xTooltipSuggBlock.appendChild(this._createSuggestion(xNodeErr.dataset.error_id, 0, iSugg, sSugg));
                         this.xTooltipSuggBlock.appendChild(document.createTextNode(" "));
                         iSugg += 1;
                     }
