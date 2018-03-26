@@ -1,6 +1,6 @@
 # Lexicon Editor
 # by Olivier R.
-# License: GPL 3
+# License: MPL 2
 
 import unohelper
 import uno
@@ -15,6 +15,9 @@ import grammalecte.graphspell.dawg as dawg
 import grammalecte.graphspell.ibdawg as ibdawg
 import grammalecte.fr.conj as conj
 import grammalecte.fr.conj_generator as conjgen
+
+import SearchWords
+import TagsInfo
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
@@ -93,6 +96,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     def run (self, sLang):
         # ui lang
+        self.sLang = sLang
         self.dUI = lxe_strings.getUI(sLang)
 
         # dialog
@@ -138,11 +142,13 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = self.dUI.get("void", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self.xExport = self._addWidget('export_button', 'Button', nXC+150, nY0, 50, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self.xExport = self._addWidget('export_button', 'Button', nXC+150, nY0, 50, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
 
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 180, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
-        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 120, 14, FontDescriptor = xFDTitle)
+        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 110, 14, FontDescriptor = xFDTitle)
+        self._addWidget('search_button', 'Button', nX1+115, nY1+11, 45, 12, Label = self.dUI.get('search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
+        self._addWidget('information_button', 'Button', nX1+165, nY1+11, 15, 12, Label = self.dUI.get('information_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
 
         # Radio buttons: main POS tag
         # Note: the only way to group RadioButtons is to create them successively
@@ -167,7 +173,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xSinv = self._addWidget('Sinv', 'RadioButton', nX1+120, nY2+32, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
 
         self._addWidget("alt_lemma_label", 'FixedLine', nX1+10, nY2+42, 170, nHeight, Label = self.dUI.get("alt_lemma", "#err"))
-        self.xAltLemma = self._addWidget('alt_lemma', 'Edit', nX1+10, nY2+52, 120, nHeight)
+        self.xAltLemma = self._addWidget('alt_lemma', 'Edit', nX1+10, nY2+52, 110, nHeight)
         self.xNA2 = self._addWidget('nom_adj2', 'RadioButton', nX1+10, nY2+65, 60, nHeight, Label = self.dUI.get("nom_adj", "#err"), HelpText = ":N:A")
         self.xN2 = self._addWidget('nom2', 'RadioButton', nX1+10, nY2+75, 60, nHeight, Label = self.dUI.get("nom", "#err"), HelpText = ":N")
         self.xA2 = self._addWidget('adj2', 'RadioButton', nX1+10, nY2+85, 60, nHeight, Label = self.dUI.get("adj", "#err"), HelpText = ":A")
@@ -247,6 +253,10 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                                      'Sepi', 'Smas', 'Sfem', 'Ss', 'Sx', 'Sinv', 'nom_adj2', 'nom2', 'adj2', \
                                      'Sepi2', 'Smas2', 'Sfem2', 'Ss2', 'Sx2', 'Sinv2', 'Mepi', 'Mmas', 'Mfem', \
                                      'v_i', 'v_t', 'v_n', 'v_p', 'v_m', 'v_ae', 'v_aa', 'v_pp'], "Update")
+        self.xContainer.getControl('search_button').addActionListener(self)
+        self.xContainer.getControl('search_button').setActionCommand('SearchWords')
+        self.xContainer.getControl('information_button').addActionListener(self)
+        self.xContainer.getControl('information_button').setActionCommand('TagsInfo')
         self.xContainer.getControl('add_button').addActionListener(self)
         self.xContainer.getControl('add_button').setActionCommand('Add')
         self.xContainer.getControl('delete_button').addActionListener(self)
@@ -274,6 +284,10 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         try:
             if xActionEvent.ActionCommand == "Update":
                 self.updateGenWords()
+            elif xActionEvent.ActionCommand == "SearchWords":
+                self.launchSearchWords()
+            elif xActionEvent.ActionCommand == "TagsInfo":
+                self.launchTagsInfo()
             elif xActionEvent.ActionCommand == "Add":
                 self.addToLexicon()
             elif xActionEvent.ActionCommand == "Delete":
@@ -305,6 +319,14 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             traceback.print_exc()
 
     # Code
+    def launchSearchWords (self):
+        xDialog = SearchWords.SearchWords(self.ctx)
+        xDialog.run(self.sLang)
+
+    def launchTagsInfo (self):
+        xDialog = TagsInfo.TagsInfo(self.ctx)
+        xDialog.run(self.sLang)
+
     #@_waitPointer (don’t: strange behavior)
     def loadLexicon (self):
         xChild = self.xSettingNode.getByName("o_fr")
@@ -312,9 +334,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         if sJSON != "":
             oIBDAWG = ibdawg.IBDAWG(json.loads(sJSON))
             xGridDataModel = self.xGridModelLex.GridDataModel
-            for i, sLine in enumerate(oIBDAWG.select()):
-                sFlexion, sLemma, sTag = sLine.split("\t")
-                xGridDataModel.addRow(i, (sFlexion, sLemma, sTag))
+            for i, aEntry in enumerate(oIBDAWG.select()):
+                xGridDataModel.addRow(i, aEntry)
             self.xNumLex.Label = str(i)
             self.xNumDic.Label = str(i)
             self.xDateDic.Label = oIBDAWG.sDate
