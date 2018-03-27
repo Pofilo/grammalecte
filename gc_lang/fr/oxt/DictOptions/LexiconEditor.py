@@ -462,6 +462,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                     c_ae = "e"  if self.xV_ae.State  else "_"
                     c_aa = "a"  if self.xV_aa.State  else "_"
                     sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa
+                    if "p" in sVerbTag and not sVerbTag.startswith("___p_"):
+                        sVerbTag = sVerbTag.replace("p", "q")
                     if not sVerbTag.endswith("__") and not sVerbTag.startswith("____"):
                         sVerbPattern = self.xVpattern.Text.strip()
                         if not sVerbPattern:

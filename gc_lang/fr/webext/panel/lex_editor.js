@@ -380,6 +380,9 @@ const oGenerator = {
                         let c_ae = (document.getElementById("up_v_ae").checked) ? "e" : "_";
                         let c_aa = (document.getElementById("up_v_aa").checked) ? "a" : "_";
                         let sVerbTag = c_i + c_t + c_n + c_p + c_m + c_ae + c_aa;
+                        if (sVerbTag.includes("p") && !sVerbTag.startsWith("___p_")) {
+                            sVerbTag = sVerbTag.replace("p", "q");
+                        }
                         if (!sVerbTag.endsWith("__") && !sVerbTag.startsWith("____")) {
                             let sVerbPattern = document.getElementById("verb_pattern").value.trim();
                             if (sVerbPattern.length == 0) {
