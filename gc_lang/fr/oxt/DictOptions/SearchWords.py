@@ -113,13 +113,12 @@ class SearchWords (unohelper.Base, XActionListener):
         nY0 = 5
         nY1 = nY0 + 20
         nY2 = nY1 + 60
-        nY3 = nY2 + 95
 
         nHeight = 10
 
         #### Search
         self._addWidget("search_section", 'FixedLine', nX1, nY0, 120, nHeight, Label = self.dUI.get("search_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget("similar_search_section", 'FixedLine', nX1, nY1, 120, nHeight, Label = self.dUI.get("similar_search_section", "#err"), FontDescriptor = xFDTitle)
+        self._addWidget("similar_search_section", 'FixedLine', nX1, nY1, 120, nHeight, Label = self.dUI.get("similar_search_section", "#err"), FontDescriptor = xFDSubTitle)
         self.xWord = self._addWidget('word', 'Edit', nX1, nY1+10, 100, nHeight)
         self._addWidget('similar_search_button', 'Button', nX1, nY1+22, 55, 12, Label = self.dUI.get('similar_search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
 
@@ -130,6 +129,7 @@ class SearchWords (unohelper.Base, XActionListener):
         self._addWidget('tags_label', 'FixedText', nX1, nY2+22, 30, nHeight, Label = self.dUI.get('tags', "#err"))
         self.xTags = self._addWidget('tags', 'Edit', nX1+35, nY2+22, 85, nHeight)
         self._addWidget('regex_search_button', 'Button', nX1, nY2+34, 55, 12, Label = self.dUI.get('regex_search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('result_warning', 'FixedText', nX1, nY2+50, 120, nHeight*7, Label = self.dUI.get('result_warning', '#err'), MultiLine = True)
 
         #### Results
         self._addWidget("result_section", 'FixedLine', nX2, nY0, 200, nHeight, Label = self.dUI.get("result_section", "#err"), FontDescriptor = xFDTitle)
@@ -169,8 +169,28 @@ class SearchWords (unohelper.Base, XActionListener):
         except:
             traceback.print_exc()
 
+    def initSpellChecker (self):
+        if not self.oSpellChecker:
+            self.oSpellChecker = sc.SpellChecker("fr", "fr.bdic", "", "", "")
+
     def searchSimilar (self):
-        pass
+        self.initSpellChecker()
+        sWord = self.xWord.Text.strip()
+        if sWord:
+            xGridDataModel = self.xGridModel.GridDataModel
+            xGridDataModel.removeAllRows()
+            lResult = self.oSpellChecker.getSimilarEntries(sWord, 20);
+            for i, aEntry in enumerate(lResult):
+                xGridDataModel.addRow(i, aEntry)
 
     def searchRegex (self):
-        pass
+        self.initSpellChecker()
+        sFlexPattern = self.xFlexion.Text.strip()
+        sTagsPattern = self.xTags.Text.strip()
+        xGridDataModel = self.xGridModel.GridDataModel
+        xGridDataModel.removeAllRows()
+        for i, aEntry in enumerate(self.oSpellChecker.select(sFlexPattern, sTagsPattern)):
+            xGridDataModel.addRow(i, aEntry)
+            i += 1
+            if i >= 2000:
+                break

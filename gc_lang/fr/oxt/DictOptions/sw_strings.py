@@ -16,6 +16,7 @@ dStrings = {
         "flexion": "Flexion",
         "tags": "Étiquettes",
         "regex_search_button": "Chercher",
+        "result_warning": "La recherche par expressions régulières peut générer un nombre gigantesque de résultats. Seules les 2000 premières occurrences trouvées seront affichées. La recherche peut être longue, parce tout le graphe de mots, qui contient 500 000 flexions, sera parcouru si besoin.",
 
         "result_section": "Résultats",
         "res_flexion": "Flexions",
