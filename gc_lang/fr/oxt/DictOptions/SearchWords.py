@@ -82,9 +82,10 @@ class SearchWords (unohelper.Base, XActionListener):
         self.xDialog.insertByName(name, xGridModel)
         return xGridModel
 
-    def run (self, sLang):
+    def run (self, sLang, oPersonalDicJSON):
         # ui lang
         self.dUI = sw_strings.getUI(sLang)
+        self.oPersonalDicJSON = oPersonalDicJSON
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
@@ -171,7 +172,7 @@ class SearchWords (unohelper.Base, XActionListener):
 
     def initSpellChecker (self):
         if not self.oSpellChecker:
-            self.oSpellChecker = sc.SpellChecker("fr", "fr.bdic", "", "", "")
+            self.oSpellChecker = sc.SpellChecker("fr", "fr.bdic", "", "", self.oPersonalDicJSON)
 
     @_waitPointer
     def searchSimilar (self):

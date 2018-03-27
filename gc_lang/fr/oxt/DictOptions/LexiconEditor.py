@@ -70,7 +70,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xDocument = self.xDesktop.getCurrentComponent()
         self.xContainer = None
         self.xDialog = None
-        self.oSpellChecker = None
+        self.oPersonalDicJSON = None
         # data
         self.sLemma = ""
         self.lGeneratedFlex = []
@@ -338,7 +338,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     # Code
     def launchSearchWords (self):
         xDialog = SearchWords.SearchWords(self.ctx)
-        xDialog.run(self.sLang)
+        xDialog.run(self.sLang, self.oPersonalDicJSON)
 
     def launchTagsInfo (self):
         xDialog = TagsInfo.TagsInfo(self.ctx)
@@ -349,7 +349,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         xChild = self.xSettingNode.getByName("o_fr")
         sJSON = xChild.getPropertyValue("personal_dic")
         if sJSON != "":
-            oIBDAWG = ibdawg.IBDAWG(json.loads(sJSON))
+            self.oPersonalDicJSON = json.loads(sJSON)
+            oIBDAWG = ibdawg.IBDAWG(self.oPersonalDicJSON)
             xGridDataModel = self.xGridModelLex.GridDataModel
             for i, aEntry in enumerate(oIBDAWG.select()):
                 xGridDataModel.addRow(i, aEntry)
@@ -366,16 +367,46 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         xChild = self.xSettingNode.getByName("o_fr")
         if lEntry:
             oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel")
-            oJSON = oDAWG.getBinaryAsJSON()
-            xChild.setPropertyValue("personal_dic", json.dumps(oJSON, ensure_ascii=False))
+            self.oPersonalDicJSON = oDAWG.getBinaryAsJSON()
+            xChild.setPropertyValue("personal_dic", json.dumps(self.oPersonalDicJSON, ensure_ascii=False))
             self.xSettingNode.commitChanges()
-            self.xNumDic.Label = str(oJSON["nEntry"])
-            self.xDateDic.Label = oJSON["sDate"]
+            self.xNumDic.Label = str(self.oPersonalDicJSON["nEntry"])
+            self.xDateDic.Label = self.oPersonalDicJSON["sDate"]
         else:
             xChild.setPropertyValue("personal_dic", "")
             self.xSettingNode.commitChanges()
             self.xNumDic.Label = "0"
             self.xDateDic.Label = self.dUI.get("void", "#err")
+
+    def exportDictionary (self):
+        try:
+            spfExported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
+            xChild = self.xSettingNode.getByName("o_fr")
+            sJSON = xChild.getPropertyValue("personal_dic")
+            if sJSON:
+                with open(spfExported, "w", encoding="utf-8") as hDst:
+                    hDst.write(sJSON)
+                sMessage = self.dUI.get('export_message', "#err_msg: %s") % spfExported
+            else:
+                sMessage = self.dUI.get('empty_dictionary', "#err")
+        except:
+            sMessage = traceback.format_exc()
+        MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
+
+        # FilePicker doesn’t work at all…
+        #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
+        #xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+        #xFilePicker.setDisplayDirectory("")
+        #xFilePicker.setMultiSelectionMode(True)
+        #nResult = xFilePicker.execute()
+        #if nResult == 1:
+            #pass
+            #lFile = xFilePicker.getSelectedFiles()
+            #lFile = xFilePicker.getFiles()
+
+    @_waitPointer
+    def importDictionary (self):
+        pass
 
     def _getRadioValue (self, *args):
         for x in args:
@@ -553,36 +584,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 xGridDataModel.removeRow(i)
         self.xGridControlLex.deselectAllRows()
         self.xNumLex.Label = str(xGridDataModel.RowCount)
-
-    @_waitPointer
-    def importDictionary (self):
-        pass
-
-    def exportDictionary (self):
-        try:
-            spfExported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
-            xChild = self.xSettingNode.getByName("o_fr")
-            sJSON = xChild.getPropertyValue("personal_dic")
-            if sJSON:
-                with open(spfExported, "w", encoding="utf-8") as hDst:
-                    hDst.write(sJSON)
-                sMessage = self.dUI.get('export_message', "#err_msg: %s") % spfExported
-            else:
-                sMessage = self.dUI.get('empty_dictionary', "#err")
-        except:
-            sMessage = traceback.format_exc()
-        MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
-
-        # FilePicker doesn’t work at all…
-        #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
-        #xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
-        #xFilePicker.setDisplayDirectory("")
-        #xFilePicker.setMultiSelectionMode(True)
-        #nResult = xFilePicker.execute()
-        #if nResult == 1:
-            #pass
-            #lFile = xFilePicker.getSelectedFiles()
-            #lFile = xFilePicker.getFiles()
 
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
