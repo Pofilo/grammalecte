@@ -6,6 +6,7 @@ import unohelper
 import uno
 import json
 import re
+import os
 import traceback
 
 import helpers
@@ -22,6 +23,18 @@ import TagsInfo
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
 from com.sun.star.awt import XKeyListener
+
+from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
+# BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
+# DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
+from com.sun.star.awt.MessageBoxType import INFOBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+
+def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
+    xParentWin = xDocument.CurrentController.Frame.ContainerWindow
+    ctx = uno.getComponentContext()
+    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx) 
+    xMsgBox = xToolkit.createMessageBox(xParentWin, nBoxType, nBoxButtons, sTitle, sMsg)
+    return xMsgBox.execute()
 
 
 def _waitPointer (funcDecorated):
@@ -263,6 +276,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xContainer.getControl('delete_button').setActionCommand('Delete')
         self.xContainer.getControl('save_button').addActionListener(self)
         self.xContainer.getControl('save_button').setActionCommand('Save')
+        self.xContainer.getControl('export_button').addActionListener(self)
+        self.xContainer.getControl('export_button').setActionCommand('Export')
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
         self.xContainer.setVisible(False)
@@ -298,6 +313,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 self.importDictionary()
             elif xActionEvent.ActionCommand == "Export":
                 self.exportDictionary()
+            elif xActionEvent.ActionCommand == 'Info':
+                pass
             elif xActionEvent.ActionCommand == "Close":
                 self.xContainer.endExecute()
         except:
@@ -541,15 +558,29 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     def importDictionary (self):
         pass
 
-    @_waitPointer
     def exportDictionary (self):
-        xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
-        xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+        try:
+            spfExported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
+            xChild = self.xSettingNode.getByName("o_fr")
+            sJSON = xChild.getPropertyValue("personal_dic")
+            if sJSON:
+                with open(spfExported, "w", encoding="utf-8") as hDst:
+                    hDst.write(sJSON)
+                sMessage = self.dUI.get('export_message', "#err_msg: %s") % spfExported
+            else:
+                sMessage = self.dUI.get('empty_dictionary', "#err")
+        except:
+            sMessage = traceback.format_exc()
+        MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
+
+        # FilePicker doesn’t work at all…
+        #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
+        #xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
         #xFilePicker.setDisplayDirectory("")
         #xFilePicker.setMultiSelectionMode(True)
-        nResult = xFilePicker.execute()
-        if nResult == 1:
-            pass
+        #nResult = xFilePicker.execute()
+        #if nResult == 1:
+            #pass
             #lFile = xFilePicker.getSelectedFiles()
             #lFile = xFilePicker.getFiles()
 

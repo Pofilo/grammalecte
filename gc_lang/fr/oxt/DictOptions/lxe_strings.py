@@ -69,6 +69,9 @@ dStrings = {
         "save_date_label": "Date d’enregistrement :",
         "num_of_entries_label": "Nombre d’entrées :",
         "export_button": "Exporter",
+        "export_title": "Exportation du dictionnaire",
+        "export_message": "Fichier exporté : ‹%s>",
+        "empty_dictionary": "Le dictionnaire est vide. Aucun fichier créé.",
         "void": "[néant]",
 
         #
