@@ -215,13 +215,13 @@ class SpellChecker ():
             print("-----")
             self.oPersonalDic.drawPath(sWord)
 
-    def getSimilarEntries (self, sWord):
+    def getSimilarEntries (self, sWord, nSuggLimit=10):
         "return a list of tuples (similar word, stem, morphology)"
-        lResult = self.oMainDic.getSimilarEntries(sWord)
+        lResult = self.oMainDic.getSimilarEntries(sWord, nSuggLimit)
         if self.bExtendedDic:
-            lResult.extend(self.oExtendedDic.getSimilarEntries(sWord))
+            lResult.extend(self.oExtendedDic.getSimilarEntries(sWord, nSuggLimit))
         if self.bCommunityDic:
-            lResult.extend(self.oCommunityDic.getSimilarEntries(sWord))
+            lResult.extend(self.oCommunityDic.getSimilarEntries(sWord, nSuggLimit))
         if self.bPersonalDic:
-            lResult.extend(self.oPersonalDic.getSimilarEntries(sWord))
+            lResult.extend(self.oPersonalDic.getSimilarEntries(sWord, nSuggLimit))
         return lResult
