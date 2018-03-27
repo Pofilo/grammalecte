@@ -176,6 +176,7 @@ class IBDAWG:
         "initialize with a JSON text file"
         self.__dict__.update(oJSON)
         self.byDic = binascii.unhexlify(self.sByDic)
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
 
     def getInfo (self):
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
