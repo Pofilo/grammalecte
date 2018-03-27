@@ -248,15 +248,15 @@ class SpellChecker {
 
     getSimilarEntries (sWord, nSuggLimit=10) {
         // return a list of tuples (similar word, stem, morphology)
-        let lResult = this.oMainDic.getSimilarEntries(sWord);
+        let lResult = this.oMainDic.getSimilarEntries(sWord, nSuggLimit);
         if (this.bExtendedDic) {
-            lResult.push(...this.oExtendedDic.getSimilarEntries(sWord));
+            lResult.push(...this.oExtendedDic.getSimilarEntries(sWord, nSuggLimit));
         }
         if (this.bCommunityDic) {
-            lResult.push(...this.oCommunityDic.getSimilarEntries(sWord));
+            lResult.push(...this.oCommunityDic.getSimilarEntries(sWord, nSuggLimit));
         }
         if (this.bPersonalDic) {
-            lResult.push(...this.oPersonalDic.getSimilarEntries(sWord));
+            lResult.push(...this.oPersonalDic.getSimilarEntries(sWord, nSuggLimit));
         }
         return lResult;
     }
