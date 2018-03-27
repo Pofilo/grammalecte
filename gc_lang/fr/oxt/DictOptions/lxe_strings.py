@@ -43,7 +43,7 @@ dStrings = {
         "aux": "Auxiliaire au passé composé",
         "v_ae": "être",
         "v_aa": "avoir",
-        "v_pp": "Participes passés variables",
+        "v_pp": "Participe passé invariable",
         "v_pattern": "Verbe modèle [optionnel]",
 
         "adverb": "Adverbe",

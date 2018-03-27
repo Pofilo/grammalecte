@@ -435,7 +435,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                         sVerbPattern = self.xVpattern.Text.strip()
                         if not sVerbPattern:
                             # Utilisation du générateur de conjugaison
-                            for sFlexion, sFlexTags in conjgen.conjugate(self.sLemma, sVerbTag, bool(self.xV_pp.State)):
+                            for sFlexion, sFlexTags in conjgen.conjugate(self.sLemma, sVerbTag, not bool(self.xV_pp.State)):
                                 self.lGeneratedFlex.append((sFlexion, sFlexTags))
                         else:
                             # copie du motif d’un autre verbe : utilisation du conjugueur

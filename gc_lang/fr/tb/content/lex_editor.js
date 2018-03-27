@@ -224,7 +224,7 @@ const oGenerator = {
             document.getElementById("v_m").checked = false;
             document.getElementById("v_ae").checked = false;
             document.getElementById("v_aa").checked = false;
-            document.getElementById("v_ppas").checked = true;
+            document.getElementById("v_ppas").checked = false;
             document.getElementById("verbe_modele").value = "";
             // adverbe
             document.getElementById("tag_W").checked = false;
@@ -312,7 +312,7 @@ const oGenerator = {
                             let sVerbPattern = document.getElementById("verbe_modele").value.trim();
                             if (sVerbPattern.length == 0) {
                                 // utilisation du générateur de conjugaison
-                                let bVarPpas = document.getElementById("v_ppas").checked;
+                                let bVarPpas = !document.getElementById("v_ppas").checked;
                                 for (let [sFlexion, sFlexTags] of conj_generator.conjugate(this.sLemma, sVerbTag, bVarPpas)) {
                                     this.lFlexion.push([sFlexion, sFlexTags]);
                                 }

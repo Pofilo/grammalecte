@@ -384,7 +384,7 @@ const oGenerator = {
                             let sVerbPattern = document.getElementById("verb_pattern").value.trim();
                             if (sVerbPattern.length == 0) {
                                 // utilisation du générateur de conjugaison
-                                let bVarPpas = document.getElementById("up_partpas").checked;
+                                let bVarPpas = !document.getElementById("up_v_ppas").checked;
                                 for (let [sFlexion, sFlexTags] of conj_generator.conjugate(this.sLemma, sVerbTag, bVarPpas)) {
                                     this.lFlexion.push([sFlexion, sFlexTags]);
                                 }
