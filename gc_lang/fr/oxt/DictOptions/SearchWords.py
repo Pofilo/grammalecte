@@ -1,4 +1,4 @@
-# Search and informations about tags
+# Search
 # by Olivier R.
 # License: MPL 2
 
@@ -173,6 +173,7 @@ class SearchWords (unohelper.Base, XActionListener):
         if not self.oSpellChecker:
             self.oSpellChecker = sc.SpellChecker("fr", "fr.bdic", "", "", "")
 
+    @_waitPointer
     def searchSimilar (self):
         self.initSpellChecker()
         sWord = self.xWord.Text.strip()
@@ -183,6 +184,7 @@ class SearchWords (unohelper.Base, XActionListener):
             for i, aEntry in enumerate(lResult):
                 xGridDataModel.addRow(i, aEntry)
 
+    @_waitPointer
     def searchRegex (self):
         self.initSpellChecker()
         sFlexPattern = self.xFlexion.Text.strip()
