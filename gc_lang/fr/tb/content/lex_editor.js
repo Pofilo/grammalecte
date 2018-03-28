@@ -421,9 +421,23 @@ const oBinaryDict = {
 
     load: async function () {
         let sJSON = await oFileHandler.loadFile("fr.personal.json");
+        this._load(sJSON);
+    },
+
+    _load: function (sJSON, bSave=false) {
         if (sJSON) {
-            let oJSON = JSON.parse(sJSON);
-            this.oIBDAWG = new IBDAWG(oJSON);
+            try {
+                let oJSON = JSON.parse(sJSON);
+                this.oIBDAWG = new IBDAWG(oJSON);    
+            }
+            catch (e) {
+                this.setDictData(0, "#Erreur. Voir la console.");
+                console.error(e);
+                return;
+            }
+            if (bSave) {
+                oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
+            }
             let lEntry = [];
             for (let aRes of this.oIBDAWG.select()) {
                 lEntry.push(aRes);
@@ -442,16 +456,7 @@ const oBinaryDict = {
     },
 
     _import: function (sJSON) {
-        if (sJSON) {
-            let oJSON = JSON.parse(sJSON);
-            this.oIBDAWG = new IBDAWG(oJSON);
-            oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
-            let lEntry = [];
-            for (let aRes of this.oIBDAWG.select()) {
-                lEntry.push(aRes);
-            }        
-            oLexiconTable.fill(lEntry);
-        }
+        this._load(sJSON, true);
     },
 
     setDictData: function (nEntries, sDate) {
