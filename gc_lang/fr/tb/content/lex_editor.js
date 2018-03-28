@@ -421,7 +421,7 @@ const oBinaryDict = {
 
     load: async function () {
         let sJSON = await oFileHandler.loadFile("fr.personal.json");
-        if (sJSON != "") {
+        if (sJSON) {
             let oJSON = JSON.parse(sJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
             let lEntry = [];
@@ -437,6 +437,23 @@ const oBinaryDict = {
         }
     },
 
+    import: function () {
+        oFileHandler.loadAs(this._import.bind(this));
+    },
+
+    _import: function (sJSON) {
+        if (sJSON) {
+            let oJSON = JSON.parse(sJSON);
+            this.oIBDAWG = new IBDAWG(oJSON);
+            oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
+            let lEntry = [];
+            for (let aRes of this.oIBDAWG.select()) {
+                lEntry.push(aRes);
+            }        
+            oLexiconTable.fill(lEntry);
+        }
+    },
+
     setDictData: function (nEntries, sDate) {
         document.getElementById("dic_num_entries").value = nEntries;
         document.getElementById("dic_save_date").value = sDate;
@@ -446,7 +463,7 @@ const oBinaryDict = {
         document.getElementById("delete_button").addEventListener("click", () => { oLexiconTable.deleteSelection(); }, false);
         document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
-        //document.getElementById("import_button").addEventListener("click", () => { this.import(); }, false);
+        document.getElementById("import_button").addEventListener("click", () => { this.import(); }, false);
     },
 
     build: function () {
@@ -465,10 +482,6 @@ const oBinaryDict = {
             this.setDictData(0, "[néant]");
             disableElement("export_button");
         }
-    },
-
-    import: function () {
-        console.log("import");
     },
 
     export: function () {

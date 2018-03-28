@@ -45,6 +45,26 @@ const oFileHandler = {
         }
     },
 
+    loadAs: function (callback) {
+        let xFilePicker = Cc["@mozilla.org/filepicker;1"].createInstance(Ci.nsIFilePicker);
+        xFilePicker.init(window, "Charger fichier", Ci.nsIFilePicker.modeOpen);
+        xFilePicker.appendFilters(Ci.nsIFilePicker.filterAll | Ci.nsIFilePicker.filterText);
+        xFilePicker.open(async function (nReturnValue) {
+            if (nReturnValue == Ci.nsIFilePicker.returnOK || nReturnValue == Ci.nsIFilePicker.returnReplace) {
+                console.log(xFilePicker.file.path);
+                try {
+                    let xDecoder = new TextDecoder();
+                    let array = await OS.File.read(xFilePicker.file.path);
+                    callback(xDecoder.decode(array));
+                }
+                catch (e) {
+                    console.error(e);
+                    callback(null);
+                }
+            }
+        });
+    },
+
     saveFile: function (sFilename, sData) {
         if (!this.xDataFolder) {
             this.prepareDataFolder();
@@ -73,7 +93,7 @@ const oFileHandler = {
                 let xEncoder = new TextEncoder();
                 let xEncodedRes = xEncoder.encode(sData);
                 OS.File.writeAtomic(xFilePicker.file.path, xEncodedRes, {tmpPath: "file.txt.tmp"});
-             }
+            }
         });
     }
 }
