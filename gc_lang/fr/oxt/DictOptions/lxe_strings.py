@@ -70,12 +70,15 @@ dStrings = {
         "num_of_entries_label": "Nombre d’entrées :",
         "export_button": "Exporter",
         "export_title": "Exportation du dictionnaire",
-        "export_message": "Fichier exporté : ‹%s>",
+        "export_message": "Fichier exporté : ‹%s›",
         "empty_dictionary": "Le dictionnaire est vide. Aucun fichier créé.",
         "void": "[néant]",
 
-        #
+        # Close button
         "close_button": "Fermer",
+
+        ##
+        "verb_information": ""
     },
     # Traduction délibérément limitée
     "en": {
