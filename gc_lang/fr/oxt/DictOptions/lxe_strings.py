@@ -68,10 +68,16 @@ dStrings = {
         "dictionary_section": "Dictionnaire personnel",
         "save_date_label": "Date d’enregistrement :",
         "num_of_entries_label": "Nombre d’entrées :",
+        "import_button": "Importer",
+        "import_title": "Importation du dictionnaire",
         "export_button": "Exporter",
         "export_title": "Exportation du dictionnaire",
         "export_message": "Fichier exporté : ‹%s›",
         "empty_dictionary": "Le dictionnaire est vide. Aucun fichier créé.",
+        "file_not_found": "Le fichier ‹%s› ne semble pas exister.",
+        "wrong_json": "Le fichier ‹%s› n’est pas un fichier JSON valide.",
+        "load_title": "Chargement du dictionnaire.",
+        "not_loaded": "Le fichier n’a pas pu être chargé.\n",
         "void": "[néant]",
 
         # Close button

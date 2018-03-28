@@ -27,7 +27,7 @@ from com.sun.star.awt import XKeyListener
 from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
 # BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
 # DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
-from com.sun.star.awt.MessageBoxType import INFOBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
 
 def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
     xParentWin = xDocument.CurrentController.Frame.ContainerWindow
@@ -155,7 +155,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = self.dUI.get("void", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self.xExport = self._addWidget('export_button', 'Button', nXC+150, nY0, 50, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
+        self.xImport = self._addWidget('import_button', 'Button', self.xDialog.Width-90, nY0, 40, 12, Label = self.dUI.get('import_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
+        self.xExport = self._addWidget('export_button', 'Button', self.xDialog.Width-50, nY0, 40, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
 
         #### Add word
         self._addWidget("add_section", 'FixedLine', nX1, nY1, 180, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
@@ -276,6 +277,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xContainer.getControl('delete_button').setActionCommand('Delete')
         self.xContainer.getControl('save_button').addActionListener(self)
         self.xContainer.getControl('save_button').setActionCommand('Save')
+        self.xContainer.getControl('import_button').addActionListener(self)
+        self.xContainer.getControl('import_button').setActionCommand('Import')
         self.xContainer.getControl('export_button').addActionListener(self)
         self.xContainer.getControl('export_button').setActionCommand('Export')
         self.xContainer.getControl('close_button').addActionListener(self)
@@ -344,19 +347,48 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         xDialog = TagsInfo.TagsInfo(self.ctx)
         xDialog.run(self.sLang)
 
-    #@_waitPointer (don’t: strange behavior)
+    #@_waitPointer (don’t: strange behavior when dialog is not finished)
     def loadLexicon (self):
+        xGridDataModel = self.xGridModelLex.GridDataModel
+        xGridDataModel.removeAllRows()
         xChild = self.xSettingNode.getByName("o_fr")
-        sJSON = xChild.getPropertyValue("personal_dic")
-        if sJSON != "":
-            self.oPersonalDicJSON = json.loads(sJSON)
-            oIBDAWG = ibdawg.IBDAWG(self.oPersonalDicJSON)
-            xGridDataModel = self.xGridModelLex.GridDataModel
-            for i, aEntry in enumerate(oIBDAWG.select()):
-                xGridDataModel.addRow(i, aEntry)
-            self.xNumLex.Label = str(i)
-            self.xNumDic.Label = str(i)
-            self.xDateDic.Label = oIBDAWG.sDate
+        sJSON = xChild.getPropertyValue("personal_dic")        
+        if sJSON:
+            try:
+                self.oPersonalDicJSON = json.loads(sJSON)
+                oIBDAWG = ibdawg.IBDAWG(self.oPersonalDicJSON)
+                for i, aEntry in enumerate(oIBDAWG.select()):
+                    xGridDataModel.addRow(i, aEntry)
+                self.xNumLex.Label = str(i)
+                self.xNumDic.Label = str(i)
+                self.xDateDic.Label = oIBDAWG.sDate
+            except:
+                sMessage = self.dUI.get('not_loaded', "#err")
+                sMessage += traceback.format_exc()
+                MessageBox(self.xDocument, sMessage, self.dUI.get('load_title', "#err"), ERRORBOX)
+        else:
+            self.xNumLex.Label = 0
+            self.xNumDic.Label = 0
+            self.xDateDic.Label = self.dUI.get("void", "#err")
+
+    @_waitPointer
+    def importDictionary (self):
+        spfImported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
+        if os.path.isfile(spfImported):
+            with open(spfImported, "r", encoding="utf-8") as hDst:
+                sJSON = hDst.read()
+                try:
+                    sTest = json.loads(sJSON)
+                except:
+                    sMessage = self.dUI.get('wrong_json', "#err_msg: %s") % spfImported
+                    MessageBox(self.xDocument, sMessage, self.dUI.get('import_title', "#err"), ERRORBOX)
+                else:
+                    xChild = self.xSettingNode.getByName("o_fr")
+                    xChild.setPropertyValue("personal_dic", sJSON)
+                    self.loadLexicon()
+        else:
+            sMessage = self.dUI.get('file_not_found', "#err_msg: %s") % spfImported
+            MessageBox(self.xDocument, sMessage, self.dUI.get('import_title', "#err"), ERRORBOX)
 
     @_waitPointer
     def saveLexicon (self):
@@ -389,9 +421,10 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 sMessage = self.dUI.get('export_message', "#err_msg: %s") % spfExported
             else:
                 sMessage = self.dUI.get('empty_dictionary', "#err")
+            MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
         except:
             sMessage = traceback.format_exc()
-        MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
+            MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"), ERRORBOX)
 
         # FilePicker doesn’t work at all…
         #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
@@ -403,10 +436,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             #pass
             #lFile = xFilePicker.getSelectedFiles()
             #lFile = xFilePicker.getFiles()
-
-    @_waitPointer
-    def importDictionary (self):
-        pass
 
     def _getRadioValue (self, *args):
         for x in args:
