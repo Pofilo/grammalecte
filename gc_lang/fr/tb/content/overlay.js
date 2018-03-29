@@ -346,7 +346,6 @@ var oGrammarChecker = {
             let xPromise = this.xGCEWorker.post('suggest', [dErr['sValue'], 10]);
             xPromise.then(
                 function (sVal) {
-                    console.log(sVal);
                     if (sVal != "") {
                         let lSugg = sVal.split("|");
                         let n = 0;
