@@ -110,6 +110,14 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext) {
     return JSON.stringify({ aGrammErr: aGrammErr, aSpellErr: aSpellErr });
 }
 
+function suggest (sWord, nSuggLimit=10) {
+    let lSugg = []
+    for (let aSugg of oSpellChecker.suggest(sWord, nSuggLimit)) {
+        lSugg.push(...aSugg);
+    }
+    return lSugg.join("|");
+}
+
 function getOptions () {
     return gce.getOptions().gl_toString();
 }

@@ -213,6 +213,12 @@ var str_transform = {
 
 
 if (typeof(exports) !== 'undefined') {
+    exports.longestCommonSubstring = str_transform.longestCommonSubstring;
+    exports.distanceDamerauLevenshtein = str_transform.distanceDamerauLevenshtein;
+    exports.distanceDamerauLevenshtein2 = str_transform.distanceDamerauLevenshtein2;
+    exports.showDistance = str_transform.showDistance;
     exports.changeWordWithSuffixCode = str_transform.changeWordWithSuffixCode;
     exports.changeWordWithAffixCode = str_transform.changeWordWithAffixCode;
+    exports.defineAffixCode = str_transform.defineAffixCode;
+    exports.defineSuffixCode = str_transform.defineSuffixCode;
 }

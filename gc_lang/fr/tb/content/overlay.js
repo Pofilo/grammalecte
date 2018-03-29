@@ -342,8 +342,39 @@ var oGrammarChecker = {
         let xNodeSuggButton = document.createElement("span");
         xNodeSuggButton.setAttribute("class", "suggestions_button");
         xNodeSuggButton.textContent = "Suggestions : ";
-        xNodeSuggButton.addEventListener("click", function (e) {
-            if (this.bDictActive === null) {
+        xNodeSuggButton.addEventListener("click", (e) => {
+            let xPromise = this.xGCEWorker.post('suggest', [dErr['sValue'], 10]);
+            xPromise.then(
+                function (sVal) {
+                    console.log(sVal);
+                    if (sVal != "") {
+                        let lSugg = sVal.split("|");
+                        let n = 0;
+                        for (let sSugg of lSugg) {
+                            if (true || n > 0) {
+                                xNodeSuggLine.appendChild(document.createTextNode(" "));
+                            }
+                            let xNodeSugg = document.createElement("span");
+                            xNodeSugg.setAttribute("class", "sugg");
+                            xNodeSugg.textContent = sSugg;
+                            xNodeSugg.addEventListener("click", function (e) {
+                                xEditor.changeParagraph(iParagraph, xNodeSugg.textContent, dErr["nStart"], dErr["nEnd"]);
+                                xNodeDiv.textContent = "";
+                                that.reparseParagraph(xEditor, iParagraph);
+                            });
+                            xNodeSuggLine.appendChild(xNodeSugg);
+                            n += 1;
+                        }
+                    } else {
+                        xNodeSuggLine.appendChild(document.createTextNode("Aucune suggestion."));
+                    }
+                    
+                },
+                function (aReason) { console.error('Promise rejected - ', aReason); }
+            ).catch(
+                function (aCaught) { console.error('Promise Error - ', aCaught); }
+            );
+            /*if (this.bDictActive === null) {
                 this.bDictActive = oSpellControl.setDictionary("fr");
             }
             try {
@@ -372,7 +403,7 @@ var oGrammarChecker = {
             catch (e) {
                 xNodeSuggLine.appendChild(document.createTextNode("# Erreur : dictionnaire orthographique introuvable."));
                 Cu.reportError(e);
-            }
+            }*/
         });
         xNodeSuggLine.appendChild(xNodeSuggButton);
         xNodeDiv.appendChild(xNodeSuggLine);
