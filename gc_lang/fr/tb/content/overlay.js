@@ -43,7 +43,6 @@ const oConverterToExponent = {
 var oGrammarChecker = {
     // you must use var to be able to call this object from elsewhere
     xGCEWorker: null,
-    bDictActive: null,
     loadGC: function () {
         if (this.xGCEWorker === null) {
             // Grammar checker
@@ -350,9 +349,7 @@ var oGrammarChecker = {
                         let lSugg = sVal.split("|");
                         let n = 0;
                         for (let sSugg of lSugg) {
-                            if (true || n > 0) {
-                                xNodeSuggLine.appendChild(document.createTextNode(" "));
-                            }
+                            xNodeSuggLine.appendChild(document.createTextNode(" "));
                             let xNodeSugg = document.createElement("span");
                             xNodeSugg.setAttribute("class", "sugg");
                             xNodeSugg.textContent = sSugg;
@@ -373,36 +370,6 @@ var oGrammarChecker = {
             ).catch(
                 function (aCaught) { console.error('Promise Error - ', aCaught); }
             );
-            /*if (this.bDictActive === null) {
-                this.bDictActive = oSpellControl.setDictionary("fr");
-            }
-            try {
-                let aSugg = oSpellControl.suggest(dErr['sValue']);
-                if (aSugg) {
-                    let n = 0;
-                    for (let sSugg of aSugg) {
-                        if (true || n > 0) {
-                            xNodeSuggLine.appendChild(document.createTextNode(" "));
-                        }
-                        let xNodeSugg = document.createElement("span");
-                        xNodeSugg.setAttribute("class", "sugg");
-                        xNodeSugg.textContent = sSugg;
-                        xNodeSugg.addEventListener("click", function (e) {
-                            xEditor.changeParagraph(iParagraph, xNodeSugg.textContent, dErr["nStart"], dErr["nEnd"]);
-                            xNodeDiv.textContent = "";
-                            that.reparseParagraph(xEditor, iParagraph);
-                        });
-                        xNodeSuggLine.appendChild(xNodeSugg);
-                        n += 1;
-                    }
-                } else {
-                    xNodeSuggLine.appendChild(document.createTextNode("Aucune suggestion."));
-                }
-            }
-            catch (e) {
-                xNodeSuggLine.appendChild(document.createTextNode("# Erreur : dictionnaire orthographique introuvable."));
-                Cu.reportError(e);
-            }*/
         });
         xNodeSuggLine.appendChild(xNodeSuggButton);
         xNodeDiv.appendChild(xNodeSuggLine);
