@@ -4237,7 +4237,8 @@ TEST: {{qu’elle}} emmerdeuse.
 
 __[i]/conf(conf_qu_elle_verbe)__
     (quelles?) +({w_1})  @@0,$
-    <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y) ", ":[NA].*:[fe]") or \2 == "t" or \2 == "s") >>>
+    <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y) ", ":[NA].*:[fe]") or \2 == "t" or \2 == "s")
+        and not (\2 == "en" and morph(word(1), ":V0e", False)) >>>
     <<- \1.endswith("e") and not morph(\2, ":V0e", False) -1>> qu’elle                              # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
     <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False) -1>> qu’elles                # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
     <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
@@ -4259,6 +4260,7 @@ TEST: Je crois {{quelle}} est partie.
 TEST: il pense {{quelles}} sont devenues dangereuses.
 TEST: Quelle est sa passion ?
 TEST: Quelles sont leurs principales études ?
+TEST: Quelles en sont les conséquences ?
 
 
 # savoir / ignorer
