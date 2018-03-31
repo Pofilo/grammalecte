@@ -55,6 +55,16 @@ window.addEventListener(
                     });
                 }
             }
+            else if (xElem.id.endsWith("_dic")) {
+                if (xElem.dataset.dictionary) {
+                    storeSCOptions();
+                    browser.runtime.sendMessage({
+                        sCommand: "setDictionaryOnOff",
+                        dParam: {sDictionary: xElem.dataset.dictionary, bActivate: xElem.checked},
+                        dInfo: {}
+                    });
+                }
+            }
             else if (xElem.id.startsWith("ui_option_")) {
                 storeUIOptions();
             }
@@ -134,6 +144,9 @@ function showPage (sPageName) {
         else if (sPageName == "ui_options_page") {
             displayUIOptionsLoadedFromStorage();
         }
+        else if (sPageName == "sc_options_page") {
+            displaySCOptionsLoadedFromStorage();
+        }
     }
     catch (e) {
         showError(e);
@@ -175,7 +188,6 @@ function openConjugueurTab () {
 /*
     UI options
 */
-
 function displayUIOptionsLoadedFromStorage () {
     if (bChrome) {
         browser.storage.local.get("ui_options", displayUIOptions);
@@ -200,8 +212,40 @@ function displayUIOptions (dOptions) {
 
 function storeUIOptions () {
     browser.storage.local.set({"ui_options": {
-        textarea: ui_option_textarea.checked,
-        editablenode: ui_option_editablenode.checked
+        textarea: document.getElementById("ui_option_textarea").checked,
+        editablenode: document.getElementById("ui_option_editablenode").checked
+    }});
+}
+
+
+/*
+    SC Options
+*/
+function displaySCOptionsLoadedFromStorage () {
+    if (bChrome) {
+        browser.storage.local.get("sc_options", displaySCOptions);
+        return;
+    }
+    let xPromise = browser.storage.local.get("sc_options");
+    xPromise.then(displaySCOptions, showError);
+}
+
+function displaySCOptions (dOptions) {
+    if (!dOptions.hasOwnProperty("sc_options")) {
+        console.log("no sc options found");
+        return;
+    }
+    dOptions = dOptions.sc_options;
+    //document.getElementById("extended_dic").checked = dOptions.extended_dic;
+    //document.getElementById("community_dic").checked = dOptions.community_dic;
+    document.getElementById("personal_dic").checked = dOptions.personal;
+}
+
+function storeSCOptions () {
+    browser.storage.local.set({"sc_options": {
+        extended: false,
+        community: false,
+        personal: document.getElementById("personal_dic").checked
     }});
 }
 

@@ -106,20 +106,49 @@ function initGrammarChecker (dSavedOptions) {
     }
 }
 
+function setDictionaryOnOff (sDictionary, bActivate) {
+    xGCEWorker.postMessage({
+        sCommand: "setDictionary",
+        dParam: { sDictionary: sDictionary, bActivate: bActivate },
+        dInfo: {}
+    });
+}
+
+function initSCOptions (dSavedOptions) {
+    if (!dSavedOptions.hasOwnProperty("sc_options")) {
+        browser.storage.local.set({"sc_options": {
+            extended: true,
+            community: true,
+            personal: true
+        }});
+        setDictionaryOnOff("extended", true);
+        setDictionaryOnOff("community", true);
+        setDictionaryOnOff("personal", true);
+    } else {
+        let dOptions = dSavedOptions.sc_options;
+        setDictionaryOnOff("extended", dOptions["extended"]);
+        setDictionaryOnOff("community", dOptions["community"]);
+        setDictionaryOnOff("personal", dOptions["personal"]);
+    }
+}
+
+function setDictionary (sDictionary, oDictionary) {
+    xGCEWorker.postMessage({
+        sCommand: "setDictionary",
+        dParam: { sDictionary: sDictionary, oDict: oDictionary },
+        dInfo: {}
+    });
+}
+
 function setSpellingDictionary (dSavedDictionary) {
     if (dSavedDictionary.hasOwnProperty("oExtendedDictionary")) {
-        xGCEWorker.postMessage({
-            sCommand: "setDictionary",
-            dParam: { sType: "extended", oDict: dSavedDictionary["oExtendedDictionary"] },
-            dInfo: {}
-        });
+        setDictionary("extended", dSavedDictionary["oExtendedDictionary"]);
+    }
+    if (dSavedDictionary.hasOwnProperty("oCommunityDictionary")) {
+        setDictionary("community", dSavedDictionary["oCommunityDictionary"]);
     }
     if (dSavedDictionary.hasOwnProperty("oPersonalDictionary")) {
-        xGCEWorker.postMessage({
-            sCommand: "setDictionary",
-            dParam: { sType: "personal", oDict: dSavedDictionary["oPersonalDictionary"] },
-            dInfo: {}
-        });
+        setDictionary("personal", dSavedDictionary["oPersonalDictionary"]);
     }
 }
 
@@ -128,13 +157,17 @@ function init () {
         browser.storage.local.get("gc_options", initGrammarChecker);
         browser.storage.local.get("ui_options", initUIOptions);
         browser.storage.local.get("oExtendedDictionary", setSpellingDictionary);
+        browser.storage.local.get("oCommunityDictionary", setSpellingDictionary);
         browser.storage.local.get("oPersonalDictionary", setSpellingDictionary);
+        browser.storage.local.get("sc_options", initSCOptions);
         return;
     }
     browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
     browser.storage.local.get("ui_options").then(initUIOptions, showError);
     browser.storage.local.get("oExtendedDictionary").then(setSpellingDictionary, showError);
+    browser.storage.local.get("oCommunityDictionary").then(setSpellingDictionary, showError);
     browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionary, showError);
+    browser.storage.local.get("sc_options").then(initSCOptions, showError);
 }
 
 init();
@@ -173,6 +206,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "textToTest":
         case "fullTests":
         case "setDictionary":
+        case "setDictionaryOnOff":
             xGCEWorker.postMessage(oRequest);
             break;
         case "openURL":
