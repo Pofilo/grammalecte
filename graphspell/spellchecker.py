@@ -60,25 +60,25 @@ class SpellChecker ():
 
     def setMainDictionary (self, source):
         "returns True if the dictionary is loaded"
-        self.oMainDic = self._loadDictionary(source)
+        self.oMainDic = self._loadDictionary(source, True)
         return bool(self.oMainDic)
             
-    def setExtendedDictionary (self, source):
+    def setExtendedDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oExtendedDic = self._loadDictionary(source)
-        self.bExtendedDic = bool(self.oExtendedDic)
+        self.bExtendedDic = False  if not bActivate  else bool(self.oExtendedDic)
         return self.bExtendedDic
 
-    def setCommunityDictionary (self, source):
+    def setCommunityDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oCommunityDic = self._loadDictionary(source)
-        self.bCommunityDic = bool(self.oCommunityDic)
+        self.bCommunityDic = False  if not bActivate  else bool(self.oCommunityDic)
         return self.bCommunityDic
 
-    def setPersonalDictionary (self, source):
+    def setPersonalDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oPersonalDic = self._loadDictionary(source)
-        self.bPersonalDic = bool(self.oPersonalDic)
+        self.bPersonalDic = False  if not bActivate  else bool(self.oPersonalDic)
         return self.bPersonalDic
 
     def activateExtendedDictionary (self):
