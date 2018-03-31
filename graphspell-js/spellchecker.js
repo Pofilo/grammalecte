@@ -93,21 +93,21 @@ class SpellChecker {
         // returns true if the dictionary is loaded
         this.oExtendedDic = this._loadDictionary(dictionary, sPath);
         this.bExtendedDic = (bActivate) ? Boolean(this.oExtendedDic) : false;
-        return this.bExtendedDic;
+        return Boolean(this.oExtendedDic);
     }
 
     setCommunityDictionary (dictionary, sPath="", bActivate=true) {
         // returns true if the dictionary is loaded
         this.oCommunityDic = this._loadDictionary(dictionary, sPath);
         this.bCommunityDic = (bActivate) ? Boolean(this.oCommunityDic) : false;
-        return this.bCommunityDic;
+        return Boolean(this.oCommunityDic);
     }
 
     setPersonalDictionary (dictionary, sPath="", bActivate=true) {
         // returns true if the dictionary is loaded
         this.oPersonalDic = this._loadDictionary(dictionary, sPath);
         this.bPersonalDic = (bActivate) ? Boolean(this.oPersonalDic) : false;
-        return this.bPersonalDic;
+        return Boolean(this.oPersonalDic);
     }
 
     activateExtendedDictionary () {
