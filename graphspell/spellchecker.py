@@ -67,19 +67,19 @@ class SpellChecker ():
         "returns True if the dictionary is loaded"
         self.oExtendedDic = self._loadDictionary(source)
         self.bExtendedDic = False  if not bActivate  else bool(self.oExtendedDic)
-        return self.bExtendedDic
+        return bool(self.oExtendedDic)
 
     def setCommunityDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oCommunityDic = self._loadDictionary(source)
         self.bCommunityDic = False  if not bActivate  else bool(self.oCommunityDic)
-        return self.bCommunityDic
+        return bool(self.oCommunityDic)
 
     def setPersonalDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oPersonalDic = self._loadDictionary(source)
         self.bPersonalDic = False  if not bActivate  else bool(self.oPersonalDic)
-        return self.bPersonalDic
+        return bool(self.oPersonalDic)
 
     def activateExtendedDictionary (self):
         self.bExtendedDic = bool(self.oExtendedDic)
