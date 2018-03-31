@@ -28,10 +28,14 @@
               <p class="select" data-page="gc_options_page"><i class="select select_icon fa fa-cog" data-page="gc_options_page"></i></p>
               <p class="select select_label" data-page="gc_options_page">Grammaire</p>
             </div>
-            <!--<div class="select select_block" data-page="sc_options_page">
+            <div class="select select_block" data-page="sc_options_page">
               <p class="select" data-page="sc_options_page"><i class="select select_icon fa fa-book" data-page="sc_options_page"></i></p>
               <p class="select select_label" data-page="sc_options_page">Dictionnaires</p>
-            </div>-->
+            </div>
+            <div class="select select_block" data-page="info_page">
+              <p class="select" data-page="info_page"><i class="select select_icon fa fa-info-circle" data-page="info_page"></i></p>
+              <p class="select select_label" data-page="info_page">Informations</p>
+            </div>
             <div class="select select_block" data-page="test_page">
               <p class="select" data-page="test_page"><i class="select select_icon fa fa-flask" data-page="test_page"></i></p>
               <p class="select select_label" data-page="test_page">Zone de test</p>
@@ -51,13 +55,12 @@
             </p>
             <p id="link_website" class="link center" data-url="http://grammalecte.net/?from=grammalecte-fx">Site web</p>
             <div class="notice center">
-              <!--Grammalecte est un correcteur grammatical open&nbsp;source sous <span id="link_gpl" class="link" data-url="https://www.gnu.org/licenses/gpl.html">licence GPL 3</span>-->
               <div id="conj_button">Conjugueur</div>
             </div>
           </div>
           
           <div id="thanks">
-            <p class="center" data-l10n-id="thanks1">Grammalecte remercie</p>
+            <p class="center">Grammalecte remercie</p>
             <p class="center"><img id="link_sponsor1" class="link border" src="../img/LaMouette.png" alt="La Mouette" data-url="http://www.lamouette.org/?from=grammalecte-fx" /></p>
             <p class="center"><img id="link_sponsor2" class="link border" src="../img/Algoo_logo.png" alt="Algoo" data-url="https://www.algoo.fr/?from=grammalecte-fx" /></p>
             <p id="link_othersponsors" class="link center" data-url="http://grammalecte.net/?thanks">
@@ -99,10 +102,20 @@
           <div id="default_options_button" class="button blue center">Options par défaut</div>
         </section> <!-- #gc_options_page -->
 
-        <section id="sc_options_page" class="page" style="opacity: .25">
+        <section id="sc_options_page" class="page">
           <h1>OPTIONS ORTHOGRAPHIQUES</h1>
-          <div id="spelling_options">
-            <p id="dictionaries_info" data-l10n-id="dictionaries_info">Section inactive. Le système d’extension <i>WebExtension</i> ne propose pas encore d’interface de programmation pour le correcteur orthographique.</p>
+          <div id="hunspell_options">
+            <h2>DICTIONNAIRES DE GRAMMALECTE</h2>
+            <p class="dictionaries_info">Les dictionnaires de Grammalecte ne sont utilisées que lors de l’analyse grammaticale.</p>
+            <div class="option_section" id="personal_dic_box">
+                <p><input type="checkbox" id="personal_dic" data-dictionary="personal" /> <label for="personal_dic">Utiliser le dictionnaire personnel</label></p>
+                <p class="option_description">Ce dictionnaire est créé et édité via l’éditeur lexical.</p>
+            </div>
+          </div>
+
+          <div id="hunspell_options" style="opacity: .25">
+            <h2>DICTIONNAIRES HUNSPELL (FIREFOX)</h2>
+            <p class="dictionaries_info">Les dictionnaires Hunspell ne sont utilisées que pour la correction orthographique proposée par Firefox (soulignement rouge).<br/><br/>Section inactive.<br/>Le système d’extension <i>WebExtension</i> ne propose pas encore d’interface de programmation pour le correcteur orthographique.</p>
             <div class="option_section" id="fr-FR-modern_box">
                 <p><input type="checkbox" id="fr-FR-modern" /> <label for="fr-FR-modern">“Moderne”</label></p>
                 <p class="option_description">Ce dictionnaire propose l’orthographe telle qu’elle est écrite aujourd’hui le plus couramment. C’est le dictionnaire recommandé si le français n’est pas votre langue maternelle ou si vous ne désirez qu’une seule graphie correcte par mot.</p>
@@ -132,6 +145,23 @@
           </div>
           <pre id="tests_result"></pre>
         </section> <!-- #test_page -->
+
+        <section id="info_page" class="page">
+          <h1>INFORMATIONS</h1>
+
+          <h2>Licence d’utilisation</h2>
+          <p>Grammalecte est un correcteur grammatical <i>open&nbsp;source</i> sous <span id="link_gpl" class="link" data-url="https://www.gnu.org/licenses/gpl.html">licence GPL 3</span>.</p>
+
+          <h2>Droits demandés sur Firefox</h2>
+          <p>Grammalecte ne modifie aucune option de vos réglages de Firefox, ne vous espionne pas et ne communique aucune information de quelque sorte à quiconque, pas même à l’auteur du logiciel.</p>
+
+          <h3>“Accéder à vos données pour tous les sites web”</h3>
+          <p>Il est nécessaire de pouvoir lire ce que contient une page web pour proposer la correction grammaticale de celle-ci. Ceci ne se fait qu’à la demande de l’utilisateur.</p>
+
+          <h3>“Télécharger des fichiers et consulter et modifier l’historique des téléchargements du navigateur”</h3>
+          <p>Grammalecte requiert les droits de l’interface “downloads” pour pouvoir exporter votre dictionnaire personnel sur le disque dur (par une astuce de programmation).</p>
+          <p>Mais l’extension ne télécharge rien et ne consulte ni ne modifie votre historique de téléchargement.</p>
+        </section> <!-- #info_page -->
 
       </div> <!-- #page -->
 
