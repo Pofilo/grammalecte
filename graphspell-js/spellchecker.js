@@ -45,7 +45,7 @@ class SpellChecker {
         this.oTokenizer = null;
     }
 
-    _loadDictionary (dictionary, sPath, bNecessary=false) {
+    _loadDictionary (dictionary, sPath="", bNecessary=false) {
         // returns an IBDAWG object
         if (!dictionary) {
             return null;
@@ -83,30 +83,30 @@ class SpellChecker {
         return this.oTokenizer;
     }
 
-    setMainDictionary (dictionary) {
+    setMainDictionary (dictionary, sPath="") {
         // returns true if the dictionary is loaded
-        this.oMainDic = this._loadDictionary(dictionary);
+        this.oMainDic = this._loadDictionary(dictionary, sPath, true);
         return Boolean(this.oMainDic);
     }
 
-    setExtendedDictionary (dictionary) {
+    setExtendedDictionary (dictionary, sPath="", bActivate=true) {
         // returns true if the dictionary is loaded
-        this.oExtendedDic = this._loadDictionary(dictionary);
-        this.bExtendedDic = Boolean(this.oExtendedDic);
+        this.oExtendedDic = this._loadDictionary(dictionary, sPath);
+        this.bExtendedDic = (bActivate) ? Boolean(this.oExtendedDic) : false;
         return this.bExtendedDic;
     }
 
-    setCommunityDictionary (dictionary) {
+    setCommunityDictionary (dictionary, sPath="", bActivate=true) {
         // returns true if the dictionary is loaded
-        this.oCommunityDic = this._loadDictionary(dictionary);
-        this.bCommunityDic = Boolean(this.oCommunityDic);
+        this.oCommunityDic = this._loadDictionary(dictionary, sPath);
+        this.bCommunityDic = (bActivate) ? Boolean(this.oCommunityDic) : false;
         return this.bCommunityDic;
     }
 
-    setPersonalDictionary (dictionary) {
+    setPersonalDictionary (dictionary, sPath="", bActivate=true) {
         // returns true if the dictionary is loaded
-        this.oPersonalDic = this._loadDictionary(dictionary);
-        this.bPersonalDic = Boolean(this.oPersonalDic);
+        this.oPersonalDic = this._loadDictionary(dictionary, sPath);
+        this.bPersonalDic = (bActivate) ? Boolean(this.oPersonalDic) : false;
         return this.bPersonalDic;
     }
 
