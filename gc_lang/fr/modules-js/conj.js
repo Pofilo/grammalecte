@@ -88,43 +88,45 @@ var conj = {
             return new Set();
         }
         let sInfi = sMorph.slice(1, sMorph.indexOf(" "));
-        let tTags = this._getTags(sInfi);
         let aSugg = new Set();
-        if (!bSubst) {
-            // we suggest conjugated forms
-            if (sMorph.includes(":V1")) {
-                aSugg.add(sInfi);
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":2p"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":1s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":3s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":3p"));
-            } else if (sMorph.includes(":V2")) {
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":1s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
-            } else if (sMorph.includes(":V3")) {
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":1s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":1s"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":3s"));
-            } else if (sMorph.includes(":V0a")) {
-                aSugg.add("eus");
-                aSugg.add("eut");
+        let tTags = this._getTags(sInfi);
+        if (tTags) {
+            if (!bSubst) {
+                // we suggest conjugated forms
+                if (sMorph.includes(":V1")) {
+                    aSugg.add(sInfi);
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":2p"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":1s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":3s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Iq", ":3p"));
+                } else if (sMorph.includes(":V2")) {
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":1s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
+                } else if (sMorph.includes(":V3")) {
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":1s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Ip", ":3s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":1s"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":Is", ":3s"));
+                } else if (sMorph.includes(":V0a")) {
+                    aSugg.add("eus");
+                    aSugg.add("eut");
+                } else {
+                    aSugg.add("étais");
+                    aSugg.add("était");
+                }
+                aSugg.delete("");
             } else {
-                aSugg.add("étais");
-                aSugg.add("était");
-            }
-            aSugg.delete("");
-        } else {
-            // we suggest past participles
-            aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q1"));
-            aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q2"));
-            aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q3"));
-            aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q4"));
-            aSugg.delete("");
-            // if there is only one past participle (epi inv), unreliable.
-            if (aSugg.size === 1) {
-                aSugg.clear();
+                // we suggest past participles
+                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q1"));
+                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q2"));
+                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q3"));
+                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q4"));
+                aSugg.delete("");
+                // if there is only one past participle (epi inv), unreliable.
+                if (aSugg.size === 1) {
+                    aSugg.clear();
+                }
             }
         }
         return aSugg;
@@ -183,7 +185,7 @@ class Verb {
     constructor (sVerb, sVerbPattern="") {
         // conjugate a unknown verb with rules from sVerbPattern
         if (typeof sVerb !== "string" || sVerb === "") {
-            throw new TypeError ("The value should be a non-empty string");
+            throw new TypeError ("The value should be a non-empty string.");
         }
         if (sVerbPattern.length == 0) {
             sVerbPattern = sVerb;
@@ -193,6 +195,9 @@ class Verb {
         this._sRawInfo = conj.getVtyp(sVerbPattern);
         this.sInfo = this._readableInfo(this._sRawInfo);
         this._tTags = conj._getTags(sVerbPattern);
+        if (!this._tTags) {
+            throw new RangeError ("Unknown verb.");
+        }
         this._tTagsAux = conj._getTags(this.sVerbAux);
         this.bProWithEn = (this._sRawInfo[5] === "e");
         this.cGroup = this._sRawInfo[0];
