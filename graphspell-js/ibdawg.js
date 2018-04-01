@@ -119,8 +119,8 @@ class IBDAWG {
         //this.byDic = new Uint8Array(lTemp);  // not quicker, even slower
         /* end of bug workaround */
 
-        if (!this.sHeader.startsWith("/pyfsa/")) {
-            throw TypeError("# Error. Not a pyfsa binary dictionary. Header: " + this.sHeader);
+        if (!this.sHeader.startsWith("/grammalecte-fsa/")) {
+            throw TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: " + this.sHeader);
         }
         if (!(this.nCompressionMethod == 1 || this.nCompressionMethod == 2 || this.nCompressionMethod == 3)) {
             throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
@@ -183,7 +183,7 @@ class IBDAWG {
 
     getJSON () {
         let oJSON = {
-            "sHeader": "/pyfsa/",
+            "sHeader": "/grammalecte-fsa/",
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,

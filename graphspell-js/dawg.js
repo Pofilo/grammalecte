@@ -376,7 +376,7 @@ class DAWG {
             }
         }
         let oJSON = {
-            "sHeader": "/pyfsa/",
+            "sHeader": "/grammalecte-fsa/",
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,

@@ -136,16 +136,16 @@ class IBDAWG:
 
     def _initBinary (self):
         "initialize with binary structure file"
-        if self.by[0:7] != b"/pyfsa/":
-            raise TypeError("# Error. Not a pyfsa binary dictionary. Header: {}".format(self.by[0:9]))
-        if not(self.by[7:8] == b"1" or self.by[7:8] == b"2" or self.by[7:8] == b"3"):
-            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[7:8]))
+        if self.by[0:17] != b"/grammalecte-fsa/":
+            raise TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: {}".format(self.by[0:9]))
+        if not(self.by[17:18] == b"1" or self.by[17:18] == b"2" or self.by[17:18] == b"3"):
+            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[17:18]))
         try:
             header, info, values, bdic = self.by.split(b"\0\0\0\0", 3)
         except Exception:
             raise Exception
         
-        self.nCompressionMethod = int(self.by[7:8].decode("utf-8"))
+        self.nCompressionMethod = int(self.by[17:18].decode("utf-8"))
         self.sHeader = header.decode("utf-8")
         self.lArcVal = values.decode("utf-8").split("\t")
         self.nArcVal = len(self.lArcVal)
@@ -191,7 +191,7 @@ class IBDAWG:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
             hDst.write(json.dumps({
-                            "sHeader": "/pyfsa/",
+                            "sHeader": "/grammalecte-fsa/",
                             "sLangCode": self.sLangCode,
                             "sLangName": self.sLangName,
                             "sDicName": self.sDicName,

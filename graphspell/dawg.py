@@ -400,7 +400,7 @@ class DAWG:
             for oNode in self.lSortedNodes:
                 byDic += oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
         return {
-            "sHeader": "/pyfsa/",
+            "sHeader": "/grammalecte-fsa/",
             "sLangCode": self.sLangCode,
             "sLangName": self.sLangName,
             "sDicName": self.sDicName,
@@ -442,7 +442,7 @@ class DAWG:
         Each section is separated with 4 bytes of \0
         
         - Section Header:
-            /pyfsa/[compression method]
+            /grammalecte-fsa/[compression method]
                 * compression method is an ASCII string
         
         - Section Informations:
@@ -476,7 +476,7 @@ class DAWG:
             sPathFile += "."+str(nCompressionMethod)+".bdic"
         with open(sPathFile, 'wb') as hDst:
             # header
-            hDst.write("/pyfsa/{}/".format(nCompressionMethod).encode("utf-8"))
+            hDst.write("/grammalecte-fsa/{}/".format(nCompressionMethod).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # infos
             sInfo = "{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//".format(self.sLangCode, self.sLangName, self.sDicName, self._getDate(), \
