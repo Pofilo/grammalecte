@@ -314,6 +314,7 @@ function setDictionary (sDictionary, oDict, dInfo) {
         postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
+    console.log("setDictionary", sDictionary);
     switch (sDictionary) {
         case "main":
             oSpellChecker.setMainDictionary(oDict);
@@ -328,7 +329,7 @@ function setDictionary (sDictionary, oDict, dInfo) {
             oSpellChecker.setPersonalDictionary(oDict);
             break;
         default:
-            console.log("[worker] setDictionary: Unknown dictionary");
+            console.log("[worker] setDictionary: Unknown dictionary <"+sDictionary+">");
     }
     postMessage(createResponse("setDictionary", true, dInfo, true));
 }
@@ -338,7 +339,7 @@ function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
         postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
-    console.log(sDictionary, bActivate);
+    console.log("setDictionaryOnOff", sDictionary, bActivate);
     switch (sDictionary) {
         case "extended":
             if (bActivate) {
@@ -362,7 +363,7 @@ function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
             }
             break;
         default:
-            console.log("[worker] setDictionaryOnOff: Unknown dictionary");
+            console.log("[worker] setDictionaryOnOff: Unknown dictionary <"+sDictionary+">");
     }
     postMessage(createResponse("setDictionary", true, dInfo, true));
 }

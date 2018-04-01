@@ -581,11 +581,11 @@ const oBinaryDict = {
             browser.storage.local.set({ "oPersonalDictionary": oJSON });
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
+            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
         } else {
             this.setDictData(0, "[néant]");
             browser.storage.local.set({ "oPersonalDictionary": "" });
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: null}, dInfo: {} });
+            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: null}, dInfo: {} });
         }
     },
 
