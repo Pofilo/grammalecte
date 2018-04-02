@@ -11,6 +11,7 @@ par Olivier R.
 * conjugueur
 * formateur de texte
 * lexicographe
+* éditeur lexical
 
 ## Site web ##
 
