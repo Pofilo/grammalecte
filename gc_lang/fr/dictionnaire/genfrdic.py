@@ -844,7 +844,7 @@ class Entree:
             sErr += '[is] incomplet'
         if self.flags.startswith(("a", "b", "c", "d")) and not self.lemma.endswith("er"):
             sErr += "drapeau pour verbe du 1ᵉʳ groupe sur un lemme non conforme"
-        if self.flags.startswith("f") and not self.lemma.endswith("ir"):
+        if self.flags.startswith("f") and not self.lemma.endswith(("ir", "ïr")):
             sErr += "drapeau pour verbe du 2ᵉ groupe sur un lemme non conforme"
         if sErr:
             echo('   error -  id: ' + self.iD, end = "")
