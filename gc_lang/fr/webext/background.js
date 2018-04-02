@@ -65,7 +65,8 @@ xGCEWorker.onmessage = function (e) {
                 storeGCOptions(result);
                 break;
             case "setDictionary":
-                console.log("[background] " + sActionDone + ": " + result);
+            case "setDictionaryOnOff":
+                //console.log("[background] " + sActionDone + ": " + result);
                 break;
             default:
                 console.log("[background] Unknown command: " + sActionDone);

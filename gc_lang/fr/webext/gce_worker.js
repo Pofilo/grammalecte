@@ -365,7 +365,7 @@ function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
         default:
             console.log("[worker] setDictionaryOnOff: Unknown dictionary <"+sDictionary+">");
     }
-    postMessage(createResponse("setDictionary", true, dInfo, true));
+    postMessage(createResponse("setDictionaryOnOff", true, dInfo, true));
 }
 
 function getSpellSuggestions (sWord, dInfo) {
