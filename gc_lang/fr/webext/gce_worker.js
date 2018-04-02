@@ -314,7 +314,7 @@ function setDictionary (sDictionary, oDict, dInfo) {
         postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
-    console.log("setDictionary", sDictionary);
+    //console.log("setDictionary", sDictionary);
     switch (sDictionary) {
         case "main":
             oSpellChecker.setMainDictionary(oDict);
@@ -339,7 +339,7 @@ function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
         postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
-    console.log("setDictionaryOnOff", sDictionary, bActivate);
+    //console.log("setDictionaryOnOff", sDictionary, bActivate);
     switch (sDictionary) {
         case "extended":
             if (bActivate) {
