@@ -11,8 +11,8 @@
   buttons="accept,cancel"
   ondialogaccept="oDialogControl.setDictionaries();"
   ondialogcancel="return;"
-  width="400"
-  height="660"
+  width="800"
+  height="680"
   onload="oDialogControl.load();"
   xmlns="http://www.mozilla.org/keymaster/gatekeeper/there.is.only.xul">
 
@@ -20,19 +20,29 @@
   
   <dialogheader id="grammalecte-title" title="&dialogheader.label;" description=""/>
 
-  <groupbox id="dictchoice">
-    <caption id="grouptitle" label="&grouptitle;" />
-    <description id="warning">&warning;</description>
-    
-    <checkbox id="fr-FR-modern" class="option" label="&option.modern.label;" />
-    <description class="dicdescr">&option.modern.descr;</description>
-    <checkbox id="fr-FR-classic" class="option" label="&option.classic.label;" />
-    <description class="dicdescr">&option.classic.descr;</description>
-    <checkbox id="fr-FR-reform" class="option" label="&option.reform.label;" />
-    <description class="dicdescr">&option.reform.descr;</description>
-    <checkbox id="fr-FR-classic-reform" class="option" label="&option.allvar.label;" />
-    <description class="dicdescr">&option.allvar.descr;</description>
-  </groupbox>
+  <hbox>
+    <groupbox with="380">
+      <caption id="grouptitle" label="&grouptitle_hunspell;" />
+      <description id="warning">&warning_hunspell;</description>
+      
+      <checkbox id="fr-FR-modern" class="option" label="&option.modern.label;" />
+      <description class="dicdescr">&option.modern.descr;</description>
+      <checkbox id="fr-FR-classic" class="option" label="&option.classic.label;" />
+      <description class="dicdescr">&option.classic.descr;</description>
+      <checkbox id="fr-FR-reform" class="option" label="&option.reform.label;" />
+      <description class="dicdescr">&option.reform.descr;</description>
+      <checkbox id="fr-FR-classic-reform" class="option" label="&option.allvar.label;" />
+      <description class="dicdescr">&option.allvar.descr;</description>
+    </groupbox>
+
+    <groupbox with="380">
+      <caption id="grouptitle" label="&grouptitle_graphspell;" />
+      <description id="warning">&warning_graphspell;</description>
+
+      <checkbox id="personal_dic" class="option" label="&option.personal_dic.label;" />
+      <description class="dicdescr">&option.personal_dic.descr;</description>
+    </groupbox>
+  </hbox>
 
   <script type="application/x-javascript" src="spell_options.js"/>
   <script type="application/x-javascript" src="spellchecker.js"/>

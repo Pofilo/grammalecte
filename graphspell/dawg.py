@@ -27,7 +27,7 @@ def readFile (spf):
             for sLine in hSrc:
                 sLine = sLine.strip()
                 if sLine and not sLine.startswith("#"):
-                    yield sLine
+                    yield sLine.split("\t")
     else:
         raise OSError("# Error. File not found or not loadable: " + spf)
 
@@ -41,7 +41,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, spfSrc, cStemming, sLangCode, sLangName="", sDicName=""):
+    def __init__ (self, src, cStemming, sLangCode, sLangName="", sDicName=""):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -53,15 +53,18 @@ class DAWG:
         else:
             raise ValueError("# Error. Unknown stemming code: {}".format(cStemming))
 
-        lEntry = []
+        aEntry = set()
         lChar = ['']; dChar = {}; nChar = 1; dCharOccur = {}
         lAff  = [];   dAff  = {}; nAff  = 0; dAffOccur = {}
         lTag  = [];   dTag  = {}; nTag  = 0; dTagOccur = {}
         nErr = 0
-        
+
         # read lexicon
-        for sLine in readFile(spfSrc):
-            sFlex, sStem, sTag = sLine.split("\t")
+        if type(src) is str:
+            iterable = readFile(src)
+        else:
+            iterable = src
+        for sFlex, sStem, sTag in iterable:
             addWordToCharDict(sFlex)
             # chars
             for c in sFlex:
@@ -71,38 +74,34 @@ class DAWG:
                     nChar += 1
                 dCharOccur[c] = dCharOccur.get(c, 0) + 1
             # affixes to find stem from flexion
-            aff = funcStemmingGen(sFlex, sStem)
-            if aff not in dAff:
-                dAff[aff] = nAff
-                lAff.append(aff)
+            sAff = funcStemmingGen(sFlex, sStem)
+            if sAff not in dAff:
+                dAff[sAff] = nAff
+                lAff.append(sAff)
                 nAff += 1
-            dAffOccur[aff] = dCharOccur.get(aff, 0) + 1
+            dAffOccur[sAff] = dCharOccur.get(sAff, 0) + 1
             # tags
             if sTag not in dTag:
                 dTag[sTag] = nTag
                 lTag.append(sTag)
                 nTag += 1
             dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
-            lEntry.append((sFlex, dAff[aff], dTag[sTag]))
-        if not lEntry:
+            aEntry.add((sFlex, dAff[sAff], dTag[sTag]))
+        if not aEntry:
             raise ValueError("# Error. Empty lexicon")
         
         # Preparing DAWG
         print(" > Preparing list of words")
         lVal = lChar + lAff + lTag
-        lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in lEntry ]
-        lEntry = None
+        lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in aEntry ]
+        aEntry = None
         
         # Dictionary of arc values occurrency, to sort arcs of each node
         dValOccur = dict( [ (dChar[c], dCharOccur[c])  for c in dChar ] \
                         + [ (dAff[aff]+nChar, dAffOccur[aff]) for aff in dAff ] \
                         + [ (dTag[tag]+nChar+nAff, dTagOccur[tag]) for tag in dTag ] )
-        #with open(spfSrc[:-8]+".valuesfreq.txt", 'w', encoding='utf-8') as hFreqDst:  # DEBUG
-        #    for iKey, nOcc in sorted(dValOccur.items(), key=lambda t: t[1], reverse=True):
-        #        hFreqDst.write("{}: {}\n".format(lVal[iKey], nOcc))
-        #    hFreqDst.close()
         
-        self.sFileName = spfSrc
+        self.sFileName = src  if type(src) is str  else "[None]"
         self.sLangCode = sLangCode
         self.sLangName = sLangName
         self.sDicName = sDicName
@@ -310,7 +309,7 @@ class DAWG:
 
 
     # BINARY CONVERSION
-    def createBinary (self, sPathFile, nCompressionMethod, bDebug=False):
+    def _calculateBinary (self, nCompressionMethod):
         print(" > Write DAWG as an indexable binary dictionary [method: %d]" % nCompressionMethod)
         if nCompressionMethod == 1:
             self.nBytesArc = ( (self.nArcVal.bit_length() + 2) // 8 ) + 1   # We add 2 bits. See DawgNode.convToBytes1()
@@ -334,10 +333,6 @@ class DAWG:
         print("   Arc size: {} bytes, Address size: {} bytes   ->   {} * {} = {} bytes".format( self.nBytesArc, self.nBytesNodeAddress, \
                                                                                                 self.nBytesArc+self.nBytesNodeAddress, self.nArc, \
                                                                                                 (self.nBytesArc+self.nBytesNodeAddress)*self.nArc ))
-        self._writeBinary(sPathFile, nCompressionMethod)
-        self._writeAsJSObject(sPathFile, nCompressionMethod)
-        if bDebug:
-            self._writeNodes(sPathFile, nCompressionMethod)
 
     def _calcNumBytesNodeAddress (self):
         "how many bytes needed to store all nodes/arcs in the binary dictionary"
@@ -389,9 +384,8 @@ class DAWG:
                     self.lSortedNodes[i].size = nSize
                     bEnd = False
 
-    def _writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
-        if not spfDst.endswith(".json"):
-            spfDst += "."+str(nCompressionMethod)+".json"
+    def getBinaryAsJSON (self, nCompressionMethod=1, bBinaryDictAsHexString=True):
+        self._calculateBinary(nCompressionMethod)
         byDic = b""
         if nCompressionMethod == 1:
             byDic = self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress)
@@ -405,46 +399,50 @@ class DAWG:
             byDic = self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
             for oNode in self.lSortedNodes:
                 byDic += oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset)
+        return {
+            "sHeader": "/grammalecte-fsa/",
+            "sLangCode": self.sLangCode,
+            "sLangName": self.sLangName,
+            "sDicName": self.sDicName,
+            "sFileName": self.sFileName,
+            "sDate": self._getDate(),
+            "nEntry": self.nEntry,
+            "nChar": self.nChar,
+            "nAff": self.nAff,
+            "nTag": self.nTag,
+            "cStemming": self.cStemming,
+            "dChar": self.dChar,
+            "nNode": self.nNode,
+            "nArc": self.nArc,
+            "nArcVal": self.nArcVal,
+            "lArcVal": self.lArcVal,
+            "nCompressionMethod": nCompressionMethod,
+            "nBytesArc": self.nBytesArc,
+            "nBytesNodeAddress": self.nBytesNodeAddress,
+            "nBytesOffset": self.nBytesOffset,
+            # Mozilla’s JS parser don’t like file bigger than 4 Mb!
+            # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
+            # https://github.com/mozilla/addons-linter/issues/1361
+            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
+        }
 
+    def writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
+        if not spfDst.endswith(".json"):
+            spfDst += "."+str(nCompressionMethod)+".json"
         with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
-            hDst.write(json.dumps({
-                            "sHeader": "/pyfsa/",
-                            "sLangCode": self.sLangCode,
-                            "sLangName": self.sLangName,
-                            "sDicName": self.sDicName,
-                            "sFileName": self.sFileName,
-                            "sDate": self._getDate(),
-                            "nEntry": self.nEntry,
-                            "nChar": self.nChar,
-                            "nAff": self.nAff,
-                            "nTag": self.nTag,
-                            "cStemming": self.cStemming,
-                            "dChar": self.dChar,
-                            "nNode": self.nNode,
-                            "nArc": self.nArc,
-                            "nArcVal": self.nArcVal,
-                            "lArcVal": self.lArcVal,
-                            "nCompressionMethod": nCompressionMethod,
-                            "nBytesArc": self.nBytesArc,
-                            "nBytesNodeAddress": self.nBytesNodeAddress,
-                            "nBytesOffset": self.nBytesOffset,
-                            # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
-                            # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
-                            # https://github.com/mozilla/addons-linter/issues/1361
-                            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
-                        }, ensure_ascii=False))
+            hDst.write( json.dumps(self.getBinaryAsJSON(nCompressionMethod, bBinaryDictAsHexString), ensure_ascii=False) )
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
 
-    def _writeBinary (self, sPathFile, nCompressionMethod):
+    def writeBinary (self, sPathFile, nCompressionMethod, bDebug=False):
         """
         Format of the binary indexable dictionary:
         Each section is separated with 4 bytes of \0
         
         - Section Header:
-            /pyfsa/[compression method]
+            /grammalecte-fsa/[compression method]
                 * compression method is an ASCII string
         
         - Section Informations:
@@ -473,11 +471,12 @@ class DAWG:
                 * A list of nodes which are a list of arcs with an address of the next node.
                   See DawgNode.convToBytes() for details.
         """
+        self._calculateBinary(nCompressionMethod)
         if not sPathFile.endswith(".bdic"):
             sPathFile += "."+str(nCompressionMethod)+".bdic"
         with open(sPathFile, 'wb') as hDst:
             # header
-            hDst.write("/pyfsa/{}/".format(nCompressionMethod).encode("utf-8"))
+            hDst.write("/grammalecte-fsa/{}/".format(nCompressionMethod).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # infos
             sInfo = "{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//".format(self.sLangCode, self.sLangName, self.sDicName, self._getDate(), \
@@ -501,7 +500,8 @@ class DAWG:
                 hDst.write(self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset))
-            hDst.close()
+        if bDebug:
+            self._writeNodes(sPathFile, nCompressionMethod)
 
     def _getDate (self):
         return time.strftime("%Y.%m.%d, %H:%M")
@@ -524,19 +524,6 @@ class DAWG:
                 #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset) ] ).strip() )
                 for oNode in self.lSortedNodes:
                     hDst.write(oNode.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
-            hDst.close()
-    
-    def writeResults (self, sPathFile):
-        bFileExits = os.path.isfile("_lexicons.res.txt")
-        with open("_lexicons.res.txt", "a", encoding='utf-8', newline="\n") as hDst:
-            sFormat1 = "{:<12} {:>12} {:>5} {:>8} {:>8} {:>6} {:>8} {:>9} {:>9} {:>15} {:>12} {:>12}\n"
-            sFormat2 = "{:<12} {:>12,} {:>5,} {:>8,} {:>8} {:>6,} {:>8,} {:>9,} {:>9,} {:>15,} {:>12,} {:>12,}\n"
-            if not bFileExits:
-                hDst.write(sFormat1.format("Lexicon", "Entries", "Chars", "Affixes", "Stemming", "Tags", "Values", "Nodes", "Arcs", "Lexicon (Kb)", "Dict (Kb)", "LT Dict (Kb)"))
-            hDst.write(sFormat2.format(self.sLangName, self.nEntry, self.nChar, self.nAff, self.cStemming + "FX", self.nTag, self.nArcVal, \
-                                       self.nNode, self.nArc, os.path.getsize(self.sFileName), os.path.getsize(sPathFile), \
-                                       os.path.getsize("cfsa/dict/{}.dict".format(self.sLangName)) if os.path.isfile("cfsa/dict/{}.dict".format(self.sLangName)) else 0))
-            hDst.close()
 
 
 

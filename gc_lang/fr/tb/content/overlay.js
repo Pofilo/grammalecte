@@ -43,22 +43,29 @@ const oConverterToExponent = {
 var oGrammarChecker = {
     // you must use var to be able to call this object from elsewhere
     xGCEWorker: null,
-    bDictActive: null,
     loadGC: function () {
         if (this.xGCEWorker === null) {
             // Grammar checker
             echo('Loading Grammalecte');
             this.xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
+            let that = this;
             let xPromise = this.xGCEWorker.post('loadGrammarChecker', [prefs.getCharPref("sGCOptions"), "Thunderbird"]);
             xPromise.then(
                 function (aVal) {
                     echo(aVal);
                     prefs.setCharPref("sGCOptions", aVal);
+                    if (prefs.getBoolPref("bPersonalDictionary")) {
+                        let sDicJSON = oFileHandler.loadFile("fr.personal.json");
+                        if (sDicJSON) {
+                            that.xGCEWorker.post('setDictionary', ["personal", sDicJSON]);
+                        }
+                    }
                 },
                 function (aReason) { echo('Promise rejected - ', aReason); }
             ).catch(
                 function (aCaught) { echo('Promise Error - ', aCaught); }
             );
+
         }
     },
     fullTests: function () {
@@ -334,37 +341,35 @@ var oGrammarChecker = {
         let xNodeSuggButton = document.createElement("span");
         xNodeSuggButton.setAttribute("class", "suggestions_button");
         xNodeSuggButton.textContent = "Suggestions : ";
-        xNodeSuggButton.addEventListener("click", function (e) {
-            if (this.bDictActive === null) {
-                this.bDictActive = oSpellControl.setDictionary("fr");
-            }
-            try {
-                let aSugg = oSpellControl.suggest(dErr['sValue']);
-                if (aSugg) {
-                    let n = 0;
-                    for (let sSugg of aSugg) {
-                        if (true || n > 0) {
+        xNodeSuggButton.addEventListener("click", (e) => {
+            let xPromise = this.xGCEWorker.post('suggest', [dErr['sValue'], 10]);
+            xPromise.then(
+                function (sVal) {
+                    if (sVal != "") {
+                        let lSugg = sVal.split("|");
+                        let n = 0;
+                        for (let sSugg of lSugg) {
                             xNodeSuggLine.appendChild(document.createTextNode(" "));
+                            let xNodeSugg = document.createElement("span");
+                            xNodeSugg.setAttribute("class", "sugg");
+                            xNodeSugg.textContent = sSugg;
+                            xNodeSugg.addEventListener("click", function (e) {
+                                xEditor.changeParagraph(iParagraph, xNodeSugg.textContent, dErr["nStart"], dErr["nEnd"]);
+                                xNodeDiv.textContent = "";
+                                that.reparseParagraph(xEditor, iParagraph);
+                            });
+                            xNodeSuggLine.appendChild(xNodeSugg);
+                            n += 1;
                         }
-                        let xNodeSugg = document.createElement("span");
-                        xNodeSugg.setAttribute("class", "sugg");
-                        xNodeSugg.textContent = sSugg;
-                        xNodeSugg.addEventListener("click", function (e) {
-                            xEditor.changeParagraph(iParagraph, xNodeSugg.textContent, dErr["nStart"], dErr["nEnd"]);
-                            xNodeDiv.textContent = "";
-                            that.reparseParagraph(xEditor, iParagraph);
-                        });
-                        xNodeSuggLine.appendChild(xNodeSugg);
-                        n += 1;
+                    } else {
+                        xNodeSuggLine.appendChild(document.createTextNode("Aucune suggestion."));
                     }
-                } else {
-                    xNodeSuggLine.appendChild(document.createTextNode("Aucune suggestion."));
-                }
-            }
-            catch (e) {
-                xNodeSuggLine.appendChild(document.createTextNode("# Erreur : dictionnaire orthographique introuvable."));
-                Cu.reportError(e);
-            }
+                    
+                },
+                function (aReason) { console.error('Promise rejected - ', aReason); }
+            ).catch(
+                function (aCaught) { console.error('Promise Error - ', aCaught); }
+            );
         });
         xNodeSuggLine.appendChild(xNodeSuggButton);
         xNodeDiv.appendChild(xNodeSuggLine);
@@ -501,6 +506,9 @@ var oGrammarChecker = {
     },
     onOpenConjugueur: function (e) {
         this.openDialog("chrome://grammarchecker/content/conjugueur.xul", "", "chrome, resizable=no");
+    },
+    onOpenLexiconEditor: function (e) {
+        this.openDialog("chrome://grammarchecker/content/lex_editor.xul", "", "chrome, resizable=no");
     },
     onAbout: function (e) {
         this.openDialog("chrome://grammarchecker/content/about.xul", "", "chrome, dialog, modal, resizable=no");

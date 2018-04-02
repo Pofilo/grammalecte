@@ -119,8 +119,8 @@ class IBDAWG {
         //this.byDic = new Uint8Array(lTemp);  // not quicker, even slower
         /* end of bug workaround */
 
-        if (!this.sHeader.startsWith("/pyfsa/")) {
-            throw TypeError("# Error. Not a pyfsa binary dictionary. Header: " + this.sHeader);
+        if (!(this.sHeader.startsWith("/grammalecte-fsa/") || this.sHeader.startsWith("/pyfsa/"))) {
+            throw TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: " + this.sHeader);
         }
         if (!(this.nCompressionMethod == 1 || this.nCompressionMethod == 2 || this.nCompressionMethod == 3)) {
             throw RangeError("# Error. Unknown dictionary compression method: " + this.nCompressionMethod);
@@ -183,7 +183,7 @@ class IBDAWG {
 
     getJSON () {
         let oJSON = {
-            "sHeader": "/pyfsa/",
+            "sHeader": "/grammalecte-fsa/",
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,
@@ -417,35 +417,51 @@ class IBDAWG {
     // morph (sWord) {
     //     is defined in constructor
     // }
-    
-    * select (sPattern="") {
-        // generator: returns all entries which morphology fits <sPattern>
-        let zPattern = null;
-        if (sPattern !== "") {
-            try {
-                zPattern = new RegExp(sPattern);
-            }
-            catch (e) {
-                console.log("Error in regex pattern");
-                console.log(e.message);
+    getSimilarEntries (sWord, nSuggLimit=10) {
+        // return a list of tuples (similar word, stem, morphology)
+        if (sWord == "") {
+            return [];
+        }
+        let lResult = [];
+        for (let sSimilar of this.suggest(sWord, nSuggLimit)) {
+            for (let sMorph of this.getMorph(sSimilar)) {
+                let nCut = sMorph.indexOf(" ");
+                lResult.push( [sSimilar, sMorph.slice(1, nCut), sMorph.slice(nCut+1)] );
             }
         }
-        yield* this._select1(zPattern, 0, "");
+        return lResult;
+    }
+
+    * select (sFlexPattern="", sTagsPattern="") {
+        // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
+        let zFlexPattern = null;
+        let zTagsPattern = null;
+        try {
+            zFlexPattern = (sFlexPattern !== "") ? new RegExp(sFlexPattern) : null;
+            zTagsPattern = (sTagsPattern !== "") ? new RegExp(sTagsPattern) : null;
+        }
+        catch (e) {
+            console.log("Error in regex pattern");
+            console.log(e.message);
+        }
+        yield* this._select1(zFlexPattern, zTagsPattern, 0, "");
     }
 
     // VERSION 1
 
-    * _select1 (zPattern, iAddr, sWord) {
+    * _select1 (zFlexPattern, zTagsPattern, iAddr, sWord) {
         // recursive generator
         for (let [nVal, jAddr] of this._getArcs1(iAddr)) {
             if (nVal <= this.nChar) {
                 // simple character
-                yield* this._select1(zPattern, jAddr, sWord + this.lArcVal[nVal]);
+                yield* this._select1(zFlexPattern, zTagsPattern, jAddr, sWord + this.lArcVal[nVal]);
             } else {
-                let sEntry = sWord + "\t" + this.funcStemming(sWord, this.lArcVal[nVal]);
-                for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
-                    if (!zPattern || zPattern.test(this.lArcVal[nMorphVal])) {
-                        yield sEntry + "\t" + this.lArcVal[nMorphVal];
+                if (!zFlexPattern || zFlexPattern.test(sWord)) {
+                    let sStem = this.funcStemming(sWord, this.lArcVal[nVal]);
+                    for (let [nMorphVal, _] of this._getArcs1(jAddr)) {
+                        if (!zTagsPattern || zTagsPattern.test(this.lArcVal[nMorphVal])) {
+                            yield [sWord, sStem, this.lArcVal[nMorphVal]];
+                        }
                     }
                 }
             }

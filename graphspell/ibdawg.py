@@ -79,19 +79,22 @@ class SuggResult:
 class IBDAWG:
     """INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH"""
 
-    def __init__ (self, sfDict):
-        self.by = pkgutil.get_data(__package__, "_dictionaries/" + sfDict)
-        if not self.by:
-            raise OSError("# Error. File not found or not loadable: "+sfDict)
+    def __init__ (self, source):
+        if type(source) is str:
+            self.by = pkgutil.get_data(__package__, "_dictionaries/" + source)
+            if not self.by:
+                raise OSError("# Error. File not found or not loadable: "+source)
 
-        if sfDict.endswith(".bdic"):
-            self._initBinary()
-        elif sfDict.endswith(".json"):
-            self._initJSON()
+            if source.endswith(".bdic"):
+                self._initBinary()
+            elif source.endswith(".json"):
+                self._initJSON(json.loads(self.by.decode("utf-8")))     #json.loads(self.by)    # In Python 3.6, can read directly binary strings
+            else:
+                raise OSError("# Error. Unknown file type: "+source)
         else:
-            raise OSError("# Error. Unknown file type: "+sfDict)
+            self._initJSON(source)
 
-        self.sFileName = sfDict
+        self.sFileName = source  if type(source) is str  else "[None]"
 
         self._arcMask = (2 ** ((self.nBytesArc * 8) - 3)) - 1
         self._finalNodeMask = 1 << ((self.nBytesArc * 8) - 1)
@@ -133,16 +136,16 @@ class IBDAWG:
 
     def _initBinary (self):
         "initialize with binary structure file"
-        if self.by[0:7] != b"/pyfsa/":
-            raise TypeError("# Error. Not a pyfsa binary dictionary. Header: {}".format(self.by[0:9]))
-        if not(self.by[7:8] == b"1" or self.by[7:8] == b"2" or self.by[7:8] == b"3"):
-            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[7:8]))
+        if self.by[0:17] != b"/grammalecte-fsa/":
+            raise TypeError("# Error. Not a grammalecte-fsa binary dictionary. Header: {}".format(self.by[0:9]))
+        if not(self.by[17:18] == b"1" or self.by[17:18] == b"2" or self.by[17:18] == b"3"):
+            raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[17:18]))
         try:
             header, info, values, bdic = self.by.split(b"\0\0\0\0", 3)
         except Exception:
             raise Exception
         
-        self.nCompressionMethod = int(self.by[7:8].decode("utf-8"))
+        self.nCompressionMethod = int(self.by[17:18].decode("utf-8"))
         self.sHeader = header.decode("utf-8")
         self.lArcVal = values.decode("utf-8").split("\t")
         self.nArcVal = len(self.lArcVal)
@@ -169,11 +172,11 @@ class IBDAWG:
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
         self.nBytesOffset = 1 # version 3
 
-    def _initJSON (self):
+    def _initJSON (self, oJSON):
         "initialize with a JSON text file"
-        self.__dict__.update(json.loads(self.by.decode("utf-8")))
-        #self.__dict__.update(json.loads(self.by))                  # In Python 3.6, can read directly binary strings
+        self.__dict__.update(oJSON)
         self.byDic = binascii.unhexlify(self.sByDic)
+        self.dCharVal = { v: k  for k, v in self.dChar.items() }
 
     def getInfo (self):
         return  "  Language: {0.sLangName}   Lang code: {0.sLangCode}   Dictionary name: {0.sDicName}" \
@@ -188,7 +191,7 @@ class IBDAWG:
             if bInJSModule:
                 hDst.write('// JavaScript\n// Generated data (do not edit)\n\n"use strict";\n\nconst dictionary = ')
             hDst.write(json.dumps({
-                            "sHeader": "/pyfsa/",
+                            "sHeader": "/grammalecte-fsa/",
                             "sLangCode": self.sLangCode,
                             "sLangName": self.sLangName,
                             "sDicName": self.sDicName,
@@ -407,32 +410,47 @@ class IBDAWG:
             print("\n   "+ " " * iPos + "|")
             self.drawPath(sWord[1:], iNextNodeAddr)
 
-    def select (self, sPattern=""):
-        "generator: returns all entries which morphology fits <sPattern>"
-        zPattern = None
-        if sPattern:
-            try:
-                zPattern = re.compile(sPattern)
-            except:
-                print("# Error in regex pattern")
-                traceback.print_exc()
-        yield from self._select1(zPattern, 0, "")
+    def getSimilarEntries (self, sWord, nSuggLimit=10):
+        "return a list of tuples (similar word, stem, morphology)"
+        if not sWord:
+            return []
+        lResult = []
+        for sSimilar in self.suggest(sWord, nSuggLimit):
+            for sMorph in self.getMorph(sSimilar):
+                nCut = sMorph.find(" ")
+                lResult.append( (sSimilar, sMorph[1:nCut], sMorph[nCut+1:]) )
+        return lResult
+
+    def select (self, sFlexPattern="", sTagsPattern=""):
+        "generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>"
+        zFlexPattern = None
+        zTagsPattern = None
+        try:
+            if sFlexPattern:
+                zFlexPattern = re.compile(sFlexPattern)
+            if sTagsPattern:
+                zTagsPattern = re.compile(sTagsPattern)
+        except:
+            print("# Error in regex pattern")
+            traceback.print_exc()
+        yield from self._select1(zFlexPattern, zTagsPattern, 0, "")
 
     # def morph (self, sWord):
     #     is defined in __init__
 
     # VERSION 1
-    def _select1 (self, zPattern, iAddr, sWord):
+    def _select1 (self, zFlexPattern, zTagsPattern, iAddr, sWord):
         # recursive generator
         for nVal, jAddr in self._getArcs1(iAddr):
             if nVal <= self.nChar:
                 # simple character
-                yield from self._select1(zPattern, jAddr, sWord + self.lArcVal[nVal])
+                yield from self._select1(zFlexPattern, zTagsPattern, jAddr, sWord + self.lArcVal[nVal])
             else:
-                sEntry = sWord + "\t" + self.funcStemming(sWord, self.lArcVal[nVal])
-                for nMorphVal, _ in self._getArcs1(jAddr):
-                    if not zPattern or zPattern.search(self.lArcVal[nMorphVal]):
-                        yield sEntry + "\t" + self.lArcVal[nMorphVal]
+                if not zFlexPattern or zFlexPattern.search(sWord):
+                    sStem = self.funcStemming(sWord, self.lArcVal[nVal])
+                    for nMorphVal, _ in self._getArcs1(jAddr):
+                        if not zTagsPattern or zTagsPattern.search(self.lArcVal[nMorphVal]):
+                            yield [sWord, sStem, self.lArcVal[nMorphVal]]
 
     def _morph1 (self, sWord):
         "returns morphologies of <sWord>"
