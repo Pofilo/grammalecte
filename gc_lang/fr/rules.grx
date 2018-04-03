@@ -813,6 +813,15 @@ TEST: « {{- }}Viens ! On va en finir avec cette affaire, sale fils de pute. -
 !!!! Ponctuations redondantes                                                                       
 !!
 !!
+
+# virgules et points
+__<s>/typo(typo_virgules_points)__ 
+    ,[.,]{2,}
+    <<- ->> =\0.replace(",", ".").replace("...", "…")                                               # Erreur de numérisation ? Virgules au lieu de points ?
+
+TEST: Ah !{{,.,}} et en quoi consistait le festin ?
+
+
 __<s>/typo(typo_ponctuation_superflue1)__    , ?([.,;:!?]) @@$ <<- ->> =",|" + \1       # Une de ces ponctuations est superflue.
 __<s>/typo(typo_ponctuation_superflue2)__    ; ?([.,;:…!?]) @@$ <<- ->> =";|" + \1      # Une de ces ponctuations est superflue.
 __<s>/typo(typo_ponctuation_superflue3)__    :[.,;:…!?] <<- ->> =":|" + \0[1]           # Une de ces ponctuations est superflue.
