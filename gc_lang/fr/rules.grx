@@ -1568,6 +1568,18 @@ TEST: Son {{ex ami}} est un vrai cauchemar.
 TEST: Ton ex donne du fil à retordre.
 
 
+__[i]/tu(tu_préfixe_in)__
+    (in) ({w_2})  @@0,$
+    <<- not before(r"(?i)\b(?:drive|plug|sit) +$") >>>
+    <<- re.search("^(?:dix-huit|douze|seize|folio|octavo|quarto|plano)$", \2)
+    ->> =\0.replace(" ", "-")                                                                       # Il manque un trait d’union.
+    <<- __else__ and morph(\2, ":N:m") -1>> un                                                      # Confusion possible : pour le déterminant désignant quelque chose, écrivez “un”.
+
+TEST: Cet {{in folio}} est incroyable.
+TEST: c’est {{in}} stage de réinsertion.
+TEST: Dans ce drive in douze hommes mangent.
+
+
 __[i]/tu(tu_préfixe_mi)__
     mi ({w2}) @@$  <<- morph(\1, ":[NAQ]", False) ->> mi-\1                                         # S’il s’agit d’un seul mot, il manque un trait d’union.    
 
