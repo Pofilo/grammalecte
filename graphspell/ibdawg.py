@@ -238,6 +238,8 @@ class IBDAWG:
             sWord = sWord.replace("’", "'")
         if self.lookup(sWord):
             return True
+        if sWord.isdigit():
+            return True
         if sWord[0:1].isupper():
             if len(sWord) > 1:
                 if sWord.istitle():

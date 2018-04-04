@@ -234,6 +234,9 @@ class IBDAWG {
         if (this.lookup(sWord)) {
             return true;
         }
+        if (sWord.gl_isDigit()) {
+            return true;
+        }
         if (sWord.charAt(0).gl_isUpperCase()) {
             if (sWord.length > 1) {
                 if (sWord.gl_isTitle()) {
