@@ -18,7 +18,7 @@ from com.sun.star.lang import Locale
 lLocale = {
     # List of locales in LibreOffice
     # https://cgit.freedesktop.org/libreoffice/core/tree/i18nlangtag/source/isolang/isolang.cxx
-    ('la', 'VA', ''),  # Latin (for testing purpose)
+    #('la', 'VA', ''),  # Latin (for testing purpose)
     ('fr', 'FR', ''),  # France
     ('fr', 'BE', ''),  # Belgique
     ('fr', 'CA', ''),  # Canada
@@ -53,15 +53,14 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             self.xSvMgr = ctx.ServiceManager
             self.locales = tuple([ Locale(t[0], t[1], t[2])  for t in lLocale ])
             self.oGraphspell = SpellChecker("fr", "fr.bdic")
-            self.bHunspell
-            self.xHunspell = None
+            #self.xHunspell = self.xSvMgr.createInstance("com.sun.star.linguistic2.SpellChecker")
             self.xHunspellLocale = Locale('fr', 'MC', '')
             #self.xHunspellLocale = uno.createUnoStruct('com.sun.star.lang.Locale')
             #self.xHunspellLocale.Language = 'fr'
             #self.xHunspellLocale.Country = 'FR'
-            print("init done")
+            print("Graphspell: init done")
         except:
-            print("Graphspell: init")
+            print("Graphspell: init failed")
             traceback.print_exc()
     
     # XServiceName
@@ -99,16 +98,21 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
         except:
             traceback.print_exc()
         return False
+        try:
+            if self.xHunspell:
+                return self.xHunspell.isValid(aWord, self.xHunspellLocale, aProperties)
+        except:
+            traceback.print_exc()
+        return False
 
     def spell (self, aWord, aLocale, aProperties):
         "returns an object SpellAlternatives"
+        self.listSpellChecker()
         lSugg = []
         for l in self.oGraphspell.suggest(aWord):
             lSugg.extend(l)
         return SpellAlternatives(aWord, tuple(lSugg))
         try:
-            if not self.xHunspell:
-                self.xHunspell = self.xSvMgr.createInstance("com.sun.star.linguistic2.SpellChecker")
             if self.xHunspell:
                 return self.xHunspell.spell(aWord, self.xHunspellLocale, aProperties)
         except:
@@ -119,6 +123,20 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
     def getServiceDisplayName(self, aLocale):
         return "Graphspell (fr)"
 
+    # Other
+    def listSpellChecker (self):
+        xLinguServiceManager = self.xSvMgr.createInstance("com.sun.star.linguistic2.LinguServiceManager")
+        #print ("STTTSpeller: lingu service manager = %s" % repr(xLinguServiceManager))
+        lService = xLinguServiceManager.getAvailableServices('com.sun.star.linguistic2.SpellChecker', Locale("fr", "MC", ""))
+        #print ("STTTSpeller: spell services: %s" % repr(lService))
+        for speller in lService:
+            print(repr(speller))
+            #if speller == self.ImplementationName:
+            #    continue
+            #self.fallback_sc = self.xSvMgr.createInstance (speller)
+            #if self.fallback_sc:
+            #    #print ("STTTSpeller: found other spell checker: %s" % speller)
+            #    break
 
 class SpellAlternatives (unohelper.Base, XSpellAlternatives):
     
