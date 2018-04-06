@@ -425,6 +425,7 @@ const oBinaryDict = {
     },
 
     _load: function (sJSON, bSave=false) {
+        //console.log("_load");
         if (sJSON) {
             try {
                 let oJSON = JSON.parse(sJSON);
@@ -436,7 +437,7 @@ const oBinaryDict = {
                 return;
             }
             if (bSave) {
-                oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
+                oFileHandler.saveFile("fr.personal.json", sJSON);
             }
             let lEntry = [];
             for (let aRes of this.oIBDAWG.select()) {
@@ -452,10 +453,12 @@ const oBinaryDict = {
     },
 
     import: function () {
+        //console.log("import");
         oFileHandler.loadAs(this._import.bind(this));
     },
 
     _import: function (sJSON) {
+        //console.log("_import");
         this._load(sJSON, true);
     },
 
