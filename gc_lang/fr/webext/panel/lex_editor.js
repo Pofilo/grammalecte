@@ -201,6 +201,9 @@ class Table {
         }
         this.nEntry -= 1;
         this.showEntryNumber();
+        if (this.sNodeId == "lexicon_table") {
+            showElement("save_button");
+        }
     }
 
     getEntries () {
@@ -534,6 +537,11 @@ const oBinaryDict = {
         this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
     },
 
+    save: function (oJSON) {
+        browser.storage.local.set({ "oPersonalDictionary": oJSON });
+        browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
+    },
+
     import: function () {
         let xInput = document.getElementById("import_input"); 
         let xFile = xInput.files[0];
@@ -542,8 +550,8 @@ const oBinaryDict = {
         if (sJSON) {
             try {
                 let oJSON = JSON.parse(sJSON);
-                browser.storage.local.set({ "oPersonalDictionary": oJSON });
                 this.__load(oJSON);
+                this.save(oJSON);
             }
             catch (e) {
                 console.error(e);
@@ -552,7 +560,7 @@ const oBinaryDict = {
             }
         } else {
             this.setDictData(0, "[néant]");
-            browser.storage.local.set({ "oPersonalDictionary": "" });
+            this.save(null);
         }
     },
 
@@ -578,15 +586,14 @@ const oBinaryDict = {
         if (lEntry.length > 0) {
             let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
-            browser.storage.local.set({ "oPersonalDictionary": oJSON });
+            this.save(oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
         } else {
             this.setDictData(0, "[néant]");
-            browser.storage.local.set({ "oPersonalDictionary": "" });
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: null}, dInfo: {} });
+            this.save(null);
         }
+        hideElement("save_button");
     },
 
     export: function () {
