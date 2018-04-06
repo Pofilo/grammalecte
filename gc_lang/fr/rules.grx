@@ -3817,10 +3817,12 @@ __[i]/conf(conf_être_davantage_ppas)__
     <<- morph(\1, ":V0e", False) and morphex(\3, ":[NAQ]", ":G") -2>> davantage     # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 __[i]/conf(conf_davantage1)__
     ({w1}) (d’avantages?) @@0,$
-    <<- morphex(\1, ":V", ":Q") -2>> davantage                                      # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+    <<- morphex(\1, ":V", ":Q|>(?:profiter|bénéficier) ") and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire))s? ", False, False)
+    -2>> davantage                                                                  # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 __[i]/conf(conf_davantage2)__
     ({w_1})-(?:je|tu|ils?|elles?|[nv]ous|on) +(d’avantages?) @@0,$
-    <<- not morph(\1, ">(?:profiter|bénéficier) ", False) -2>> davantage            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+    <<- not morph(\1, ">(?:profiter|bénéficier) ", False) and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire))s? ", False, False)
+    -2>> davantage                                                                  # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 __[i>/conf(conf_davantage3)__
     (d’avantages?) d(?:e +|’) @@0
     <<- -1>> davantage                                                              # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
@@ -3831,6 +3833,7 @@ TEST: {{d’avantage}} de monde de jour en jour
 TEST: Viens-tu {{d’avantage}} à la maison
 TEST: {{d’avantage}} de monde viendra
 TEST: ils sont {{d’avantages}} perdus que les autres.
+TEST: tout ce qu’il apporte d’avantages pécuniaires.
 
 
 # différend / différent
