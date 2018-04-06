@@ -374,6 +374,7 @@ def main ():
     xParser.add_argument("-apd", "--add_personal_dictionary", help="add personal dictionary to the build", action="store_true")
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for WebExtension testing", action="store_true")
     xParser.add_argument("-we", "--web_ext", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
+    xParser.add_argument("-l", "--lint_web_ext", help="web-ext lint on the WebExtension", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
     xParser.add_argument("-i", "--install", help="install the extension in Writer (path of unopkg must be set in config.ini)", action="store_true")
     xArgs = xParser.parse_args()
@@ -454,13 +455,15 @@ def main ():
 
             if xArgs.web_ext or xArgs.firefox:
                 with helpers.cd("_build/webext/"+sLang):
+                    if xArgs.lint_web_ext:
+                        os.system(r'web-ext lint -o text')
                     if xArgs.firefox:
                         # Firefox Developper edition
                         spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
                     else:
                         # Firefox Nightly edition
                         spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
-                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console --firefox-profile=debug')            
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console --firefox-profile=debug')
 
             # Thunderbird
             if xArgs.thunderbird:
