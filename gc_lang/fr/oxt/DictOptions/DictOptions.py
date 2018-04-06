@@ -56,33 +56,40 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         xFDTitle.Name = "Verdana"
         
         xFDSubTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
-        xFDSubTitle.Height = 8
+        xFDSubTitle.Height = 10
         xFDSubTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDSubTitle.Name = "Verdana"
 
         # widget
         nX = 10
         nY1 = 10
-        nY2 = nY1 + 50
-        nY3 = nY2 + 70
+        nY2 = nY1 + 40
+        nY3 = nY2 + 40
+        nY4 = nY3 + 40
 
         nWidth = self.xDialog.Width - 20
         nHeight = 10
 
         # Spell checker section
-        self._addWidget("spelling_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = dUI.get("spelling_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGraphspell = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = dUI.get('activate_main', "#err"))
-        self._addWidget('activate_main_descr', 'FixedText', nX, nY1+25, nWidth, nHeight*2, Label = dUI.get('activate_main_descr', "#err"), MultiLine = True)
+        #self._addWidget("spelling_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = dUI.get("spelling_section", "#err"), FontDescriptor = xFDTitle)
+        #self.xGraphspell = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = dUI.get('activate_main', "#err"))
+        #self._addWidget('activate_main_descr', 'FixedText', nX, nY1+25, nWidth, nHeight*2, Label = dUI.get('activate_main_descr', "#err"), MultiLine = True)
 
         # Spell suggestion engine section
-        self._addWidget("suggestion_section", 'FixedLine', nX, nY2, nWidth, nHeight, Label = dUI.get("suggestion_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = dUI.get('activate_spell_sugg', "#err"))
-        self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY2+25, nWidth, nHeight*4, Label = dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
+        #self._addWidget("suggestion_section", 'FixedLine', nX, nY2, nWidth, nHeight, Label = dUI.get("suggestion_section", "#err"), FontDescriptor = xFDTitle)
+        #self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = dUI.get('activate_spell_sugg', "#err"))
+        #self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY2+25, nWidth, nHeight*4, Label = dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
 
-        # Personal dictionary section
-        self._addWidget("personal_section", 'FixedLine', nX, nY3, nWidth, nHeight, Label = dUI.get("personal_section", "#err"), FontDescriptor = xFDTitle)
-        self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = dUI.get('activate_personal', "#err"))
-        self._addWidget('activate_personnal_descr', 'FixedText', nX, nY3+25, nWidth, nHeight*3, Label = dUI.get('activate_personal_descr', "#err"), MultiLine = True)
+        # Main dictionary section
+        self._addWidget("graphspell_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = dUI.get("graphspell_section", "#err"), FontDescriptor = xFDTitle)
+        self.xMainDic = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = dUI.get('activate_main', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, State = True)
+        self._addWidget('activate_main_descr', 'FixedText', nX+10, nY1+25, nWidth-10, nHeight*2, Label = dUI.get('activate_main_descr', "#err"), MultiLine = True)
+        self.xExtendedDic = self._addWidget('activate_extended', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = dUI.get('activate_extended', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, Enabled = False)
+        self._addWidget('activate_extended_descr', 'FixedText', nX+10, nY2+25, nWidth-10, nHeight*2, Label = dUI.get('activate_extended_descr', "#err"), MultiLine = True)
+        self.xCommunityDic = self._addWidget('activate_community', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = dUI.get('activate_community', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, Enabled = False)
+        self._addWidget('activate_community_descr', 'FixedText', nX+10, nY3+25, nWidth-10, nHeight*2, Label = dUI.get('activate_community_descr', "#err"), MultiLine = True)
+        self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY4+15, nWidth, nHeight, Label = dUI.get('activate_personal', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
+        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY4+25, nWidth-10, nHeight*2, Label = dUI.get('activate_personal_descr', "#err"), MultiLine = True)
         
         # Button
         self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-25, 50, 14, Label = dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
@@ -107,9 +114,10 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         try:
             if xActionEvent.ActionCommand == 'Apply':
                 xChild = self.xSettingNode.getByName("o_fr")
-                xChild.setPropertyValue("use_graphspell", self.xGraphspell.State)
-                xChild.setPropertyValue("use_graphspell_sugg", self.xGraphspellSugg.State)
-                #xChild.setPropertyValue("extended_dic", self.xExtendedDic.State)
+                #xChild.setPropertyValue("use_graphspell", self.xGraphspell.State)
+                #xChild.setPropertyValue("use_graphspell_sugg", self.xGraphspellSugg.State)
+                #xChild.setPropertyValue("use_extended_dic", self.xExtendedDic.State)
+                #xChild.setPropertyValue("use_community_dic", self.xCommunityDic.State)
                 xChild.setPropertyValue("use_personal_dic", self.xPersonalDic.State)
                 self.xSettingNode.commitChanges()
             else:
@@ -129,9 +137,10 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
     def _loadOptions (self):
         try:
             xChild = self.xSettingNode.getByName("o_fr")
-            self.xGraphspell.State = xChild.getPropertyValue("use_graphspell")
-            self.xGraphspellSugg.State = xChild.getPropertyValue("use_graphspell_sugg")
-            #self.xExtendedDic.State = xChild.getPropertyValue("extended_dic")
+            #self.xGraphspell.State = xChild.getPropertyValue("use_graphspell")
+            #self.xGraphspellSugg.State = xChild.getPropertyValue("use_graphspell_sugg")
+            #self.xExtendedDic.State = xChild.getPropertyValue("use_extended_dic")
+            #self.xCommunityDic.State = xChild.getPropertyValue("use_community_dic")
             self.xPersonalDic.State = xChild.getPropertyValue("use_personal_dic")
         except:
             traceback.print_exc()

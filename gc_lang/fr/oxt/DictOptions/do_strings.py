@@ -5,7 +5,7 @@ def getUI (sLang):
 
 dStrings = {
     "fr": {
-        "title": "Grammalecte · Options des dictionnaires",
+        "title": "Grammalecte · Options orthographiques",
         
         "spelling_section": "Correcteur orthographique",
         "activate_main": "Activer le correcteur orthographique de Grammalecte",
@@ -15,15 +15,21 @@ dStrings = {
         "activate_spell_sugg": "Activer le moteur de suggestion de Grammalecte",
         "activate_spell_sugg_descr": "Désactivée, cette option remplace la suggestion orthographique de Grammalecte par celle fournie par LibreOffice (Hunspell). Les mots inclus dans le dictionnaire personnalisé ne seront plus inclus aux suggestions.",
 
-        "personal_section": "Dictionnaire personnel",
-        "activate_personal": "Utiliser",
-        "activate_personal_descr": "Le dictionnaire personnel est une commodité pour ajouter le vocabulaire qui vous est utile. Il ne supplante pas le dictionnaire commun ; il ne fait qu’ajouter de nouveaux mots.",
+        "graphspell_section": "Dictionnaires de Grammalecte (Graphspell)",
+        "activate_main": "Dictionnaire principal",
+        "activate_main_descr": "Environ 83 000 entrées, 500 000 flexions.\nNi éditable, ni désactivable.",
+        "activate_extended": "Dictionnaire étendu",
+        "activate_extended_descr": "Fonctionnalité à venir",
+        "activate_community": "Dictionnaire communautaire",
+        "activate_community_descr": "Fonctionnalité à venir",
+        "activate_personal": "Dictionnaire personnel",
+        "activate_personal_descr": "Le dictionnaire personnel est créé et édité via l’éditeur lexical.",
 
         "apply_button": "Appliquer",
         "cancel_button": "Annuler",
     },
     "en": {
-        "title": "Grammalecte · Options for dictionaries",
+        "title": "Grammalecte · Spelling options",
         
         "spelling_section": "Spell checker",
         "activate_main": "Activate the spell checker from Grammalecte",
@@ -33,9 +39,15 @@ dStrings = {
         "activate_spell_sugg": "Activate the suggestion engine of Grammalecte",
         "activate_spell_sugg_descr": "Disactivated, this option replace the spell suggestion engine of Grammalecte by the one of LibreOffice (Hunspell). Words included in the personal dictionary won’t be included among suggestions.",
 
-        "personal_section": "Personal dictionary",
-        "activate_personal": "Use",
-        "activate_personal_descr": "The personal dictionary is a commodity to add the vocabulary you want. It doesn’t override the common dictionary ; it only adds new words.",
+        "graphspell_section": "Grammalecte Dictionaries (Graphspell)",
+        "activate_main": "Main dictionary",
+        "activate_main_descr": "About 83 000 entries, 500 000 flexions.\nNot editable, not deactivable.",
+        "activate_extended": "Extended dictionary",
+        "activate_extended_descr": "Feature to come.",
+        "activate_community": "Community dictionary",
+        "activate_community_descr": "Feature to come.",
+        "activate_personal": "Personal dictionary",
+        "activate_personal_descr": "The personal dictionary is created and edited via the lexicon editor.",
 
         "apply_button": "Apply",
         "cancel_button": "Cancel",
