@@ -109,7 +109,7 @@ function initGrammarChecker (dSavedOptions) {
 
 function setDictionaryOnOff (sDictionary, bActivate) {
     xGCEWorker.postMessage({
-        sCommand: "setDictionary",
+        sCommand: "setDictionaryOnOff",
         dParam: { sDictionary: sDictionary, bActivate: bActivate },
         dInfo: {}
     });
