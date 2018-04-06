@@ -25,7 +25,7 @@ dStrings = {
         "activate_personal": "Dictionnaire personnel",
         "activate_personal_descr": "Le dictionnaire personnel est créé et édité via l’éditeur lexical.",
 
-        "restart": "Le changement ne sera effectif qu’après le redémarrage du logiciel.",
+        "restart": "Le changement ne prendra effet qu’après le redémarrage du logiciel.",
 
         "apply_button": "Appliquer",
         "cancel_button": "Annuler",

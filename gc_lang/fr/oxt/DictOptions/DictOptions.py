@@ -66,7 +66,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         nY2 = nY1 + 40
         nY3 = nY2 + 40
         nY4 = nY3 + 40
-        nY5 = nY4 + 40
+        nY5 = nY4 + 50
 
         nWidth = self.xDialog.Width - 20
         nHeight = 10
@@ -93,7 +93,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY4+25, nWidth-10, nHeight*2, Label = dUI.get('activate_personal_descr', "#err"), MultiLine = True)
         
         # Restart message
-        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY5, nWidth-10, nHeight*2, Label = dUI.get('restart', "#err"), MultiLine = True)
+        self._addWidget('restart', 'FixedText', nX, nY5, nWidth, nHeight*2, Label = dUI.get('restart', "#err"), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
 
         # Button
         self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-25, 50, 14, Label = dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
