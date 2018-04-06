@@ -57,7 +57,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             self.xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
             xChild = self.xSettingNode.getByName("o_fr")
             personal_dic = ""
-            if (xChild.getPropertyValue("use_graphspell")):
+            if (xChild.getPropertyValue("use_personal_dic")):
                 sPersonalDicJSON = xChild.getPropertyValue("personal_dic")
                 if sPersonalDicJSON:
                     try:
