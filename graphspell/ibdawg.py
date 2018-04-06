@@ -39,10 +39,14 @@ class SuggResult:
         self.nMinDist = 1000
         self.aSugg = set()
         self.dSugg = { 0: [],  1: [],  2: [] }
+        self.aAllSugg = set()       # all found words even those refused
 
     def addSugg (self, sSugg, nDeep=0):
         "add a suggestion"
         #logging.info((nDeep * "  ") + "__" + sSugg + "__")
+        if sSugg in self.aAllSugg:
+            return
+        self.aAllSugg.add(sSugg)
         if sSugg not in self.aSugg:
             nDist = st.distanceDamerauLevenshtein(self.sSimplifiedWord, cp.simplifyWord(sSugg))
             if nDist <= self.nDistLimit:

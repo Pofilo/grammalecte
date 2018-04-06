@@ -28,10 +28,15 @@ class SuggResult {
         this.nMinDist = 1000;
         this.aSugg = new Set();
         this.dSugg = new Map([ [0, []],  [1, []],  [2, []] ]);
+        this.aAllSugg = new Set();      // all found words even those refused
     }
 
     addSugg (sSugg, nDeep=0) {
         // add a suggestion
+        if (this.aAllSugg.has(sSugg)) {
+            return;
+        }
+        this.aAllSugg.add(sSugg);
         if (!this.aSugg.has(sSugg)) {
             let nDist = str_transform.distanceDamerauLevenshtein(this.sSimplifiedWord, char_player.simplifyWord(sSugg));
             if (nDist <= this.nDistLimit) {
