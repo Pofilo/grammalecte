@@ -43,7 +43,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 200
-        self.xDialog.Height = 210
+        self.xDialog.Height = 230
         self.xDialog.Title = dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
@@ -66,6 +66,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         nY2 = nY1 + 40
         nY3 = nY2 + 40
         nY4 = nY3 + 40
+        nY5 = nY4 + 40
 
         nWidth = self.xDialog.Width - 20
         nHeight = 10
@@ -80,7 +81,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         #self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = dUI.get('activate_spell_sugg', "#err"))
         #self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY2+25, nWidth, nHeight*4, Label = dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
 
-        # Main dictionary section
+        # Graphspell dictionary section
         self._addWidget("graphspell_section", 'FixedLine', nX, nY1, nWidth, nHeight, Label = dUI.get("graphspell_section", "#err"), FontDescriptor = xFDTitle)
         self.xMainDic = self._addWidget('activate_main', 'CheckBox', nX, nY1+15, nWidth, nHeight, Label = dUI.get('activate_main', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, State = True)
         self._addWidget('activate_main_descr', 'FixedText', nX+10, nY1+25, nWidth-10, nHeight*2, Label = dUI.get('activate_main_descr', "#err"), MultiLine = True)
@@ -91,6 +92,9 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY4+15, nWidth, nHeight, Label = dUI.get('activate_personal', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY4+25, nWidth-10, nHeight*2, Label = dUI.get('activate_personal_descr', "#err"), MultiLine = True)
         
+        # Restart message
+        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY5, nWidth-10, nHeight*2, Label = dUI.get('restart', "#err"), MultiLine = True)
+
         # Button
         self._addWidget('apply_button', 'Button', self.xDialog.Width-115, self.xDialog.Height-25, 50, 14, Label = dUI.get('apply_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
         self._addWidget('cancel_button', 'Button', self.xDialog.Width-60, self.xDialog.Height-25, 50, 14, Label = dUI.get('cancel_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x550000)
