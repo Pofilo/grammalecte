@@ -176,6 +176,8 @@ class IBDAWG {
         //console.log(this.getInfo());
         this.bOptNumSigle = true;
         this.bOptNumAtLast = false;
+
+        this.aSuggState = new Set();
     }
 
     getInfo () {
@@ -318,6 +320,7 @@ class IBDAWG {
             this._suggest(oSuggResult, sWord.gl_toCapitalize(), nMaxSwitch, nMaxDel, nMaxHardRepl);
         }
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
+        this.aSuggState.clear();
         if (sSfx || sPfx) {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx } );
@@ -337,6 +340,14 @@ class IBDAWG {
             }
             return;
         }
+        else if (sRemain.length < 4) {
+            let sState = sNewWord + ":" + sRemain;
+            if (this.aSuggState.has(sState)) {
+                return;
+            }
+            this.aSuggState.add(sState);
+        }
+
         let cCurrent = sRemain.slice(0, 1);
         for (let [cChar, jAddr] of this._getCharArcs(iAddr)) {
             if (char_player.d1to1.gl_get(cCurrent, cCurrent).indexOf(cChar) != -1) {
