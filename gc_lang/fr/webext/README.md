@@ -15,7 +15,7 @@ par Olivier R.
 
 ## Site web ##
 
-https://grammalecte.net
+http://grammalecte.net
 
 ## Licence ##
 
