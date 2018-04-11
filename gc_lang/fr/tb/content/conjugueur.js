@@ -1,6 +1,6 @@
 // JavaScript
 
-const Cu = Components.utils;
+//const Cu = Components.utils;
 //const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 //const conj = require("resource://grammalecte/fr/conj.js");
 
@@ -35,7 +35,8 @@ let oConj = {
             });
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
         this.conjugate("être");
     },
@@ -124,7 +125,8 @@ let oConj = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
 
@@ -234,7 +236,8 @@ let oConj = {
             document.getElementById('verb').Text = "";
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
 
@@ -263,7 +266,8 @@ let oConj = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     }
 };

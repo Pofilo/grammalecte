@@ -24,9 +24,8 @@ const Cu = Components.utils;
 const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 */
 
-
-const FileUtils = Cu.import("resource://gre/modules/FileUtils.jsm").FileUtils;
-const AddonManager = Cu.import("resource://gre/modules/AddonManager.jsm").AddonManager;
+const FileUtils = ChromeUtils.import("resource://gre/modules/FileUtils.jsm").FileUtils;
+const AddonManager = ChromeUtils.import("resource://gre/modules/AddonManager.jsm").AddonManager;
 
 
 var oSpellControl = {
@@ -45,7 +44,8 @@ var oSpellControl = {
             }
             catch (e) {
                 console.log("Can’t initiate the spellchecker.");
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
             }
         }
     },
@@ -58,7 +58,8 @@ var oSpellControl = {
             return l.value;
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
             return [];
         }
     },
@@ -69,7 +70,8 @@ var oSpellControl = {
                 return true;
             }
             catch (e) {
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
                 return false;
             }
         } else {
@@ -84,7 +86,8 @@ var oSpellControl = {
             return this.xSCEngine.check(sWord);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
             return false;
         }
     },
@@ -96,7 +99,8 @@ var oSpellControl = {
             // lSugg.value is a JavaScript Array of strings
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
             return ['#Erreur.'];
         }
     },
@@ -107,7 +111,8 @@ var oSpellControl = {
         }
         catch (e) {
             console.log("Unable to add directory: " + sFolder);
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     removeDirectory: function (sFolder) {
@@ -118,7 +123,8 @@ var oSpellControl = {
         }
         catch (e) {
             console.log("Unable to remove directory: " + sFolder);
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     setExtensionDictFolder: function (sDictName, bActivate) {
@@ -145,7 +151,8 @@ var oSpellControl = {
         }
         catch (e) {
             console.log("Unable to add extension folder");
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     }
 };

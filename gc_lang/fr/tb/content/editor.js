@@ -37,7 +37,8 @@ class Editor {
                 }
             }
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -50,7 +51,8 @@ class Editor {
                 i += 1;
             }
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -65,7 +67,8 @@ class Editor {
             }
             return sContent;
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -73,7 +76,8 @@ class Editor {
         try {
             return this._getTextFromNode(this.lNode[iPara]);
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -86,7 +90,8 @@ class Editor {
                 xNode.textContent = sText;
             }
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -101,7 +106,8 @@ class Editor {
             let sLang = gSpellChecker.spellChecker.GetCurrentDictionary();
             return sLang.slice(0, 2);
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 }

@@ -8,8 +8,8 @@ const Ci = Components.interfaces;
 const Cu = Components.utils;
 //const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 
-const { BasePromiseWorker } = Cu.import('resource://gre/modules/PromiseWorker.jsm', {});
-const Task = Cu.import("resource://gre/modules/Task.jsm").Task;
+const { BasePromiseWorker } = ChromeUtils.import('resource://gre/modules/PromiseWorker.jsm', {});
+const Task = ChromeUtils.import("resource://gre/modules/Task.jsm").Task;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
 //const text = require("resource://grammalecte/text.js");
@@ -162,7 +162,8 @@ var oGrammarChecker = {
             that.setInfo("Nombre de paragraphes analysés : " + res);
         }, function (e) {
             that.setInfo("Erreur : " + e.message);
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         });
     },
     createResultNode: function (xEditor, sParagraph, iParagraph, aGrammErr, aSpellErr) {
@@ -190,7 +191,8 @@ var oGrammarChecker = {
             });
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     fillResultNode: function (xResultNode, xEditor, sParagraph, iParagraph, aGrammErr, aSpellErr) {
@@ -240,7 +242,8 @@ var oGrammarChecker = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
             xResultNode.textContent = "# Error: " + e.message;
         }
     },
@@ -354,7 +357,8 @@ var oGrammarChecker = {
             }
             catch (e) {
                 xNodeSuggLine.appendChild(document.createTextNode("# Erreur : dictionnaire orthographique introuvable."));
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
             }
         });
         xNodeSuggLine.appendChild(xNodeSuggButton);
@@ -391,7 +395,8 @@ var oGrammarChecker = {
                 BrowserToolboxCustomizeDone(true);
             }
             catch (e) {
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
             }
         }
     },
@@ -407,7 +412,8 @@ var oGrammarChecker = {
                 xEditor.addOverrideStyleSheet("chrome://grammarchecker/content/overlay.css");
             }
             catch (e) {
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
             }
         }
         this.setInfo("[vide]");
@@ -427,7 +433,8 @@ var oGrammarChecker = {
             window.openDialog(sWhat, sName, sOptions);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     openInTabURL: function (sURL) {
@@ -442,7 +449,8 @@ var oGrammarChecker = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     openInBrowserURL: function (sURL) {
@@ -451,7 +459,8 @@ var oGrammarChecker = {
             openURL(sURL);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     onParseText: function (e) {
@@ -515,7 +524,8 @@ var oDictIgniter = {
             oSpellControl.setExtensionDictFolder(sDicName, prefs.getBoolPref(sOptName));
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     }
 }
@@ -534,7 +544,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     apply: function () {
@@ -551,7 +562,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     saveOptions: function () {
@@ -594,7 +606,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     resetProgressBar: function () {
@@ -866,7 +879,8 @@ var oTextFormatter = {
             document.getElementById('time_res').textContent = this.getTimeRes((t1-t0)/1000);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
         return sText;
     },
@@ -883,7 +897,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
         return [sText, nCount];
     }

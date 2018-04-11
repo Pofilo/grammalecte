@@ -5,7 +5,7 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
+// const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
 
@@ -19,7 +19,8 @@ var oDialogControl = {
 			document.getElementById('grammalecte-spelloptions-window').centerWindowOnScreen();
 		}
 		catch (e) {
-			Cu.reportError(e);
+			console.error(e);
+			// Cu.reportError(e);
 		}
 	},
 	setDictionaries: function () {
@@ -36,7 +37,8 @@ var oDialogControl = {
 			prefs.setBoolPref(sOptName, bActivate);
 		}
 		catch (e) {
-			Cu.reportError(e);
+			console.error(e);
+			// Cu.reportError(e);
 		}
 	}
 };

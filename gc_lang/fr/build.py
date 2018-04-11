@@ -91,10 +91,11 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
             hZip.write(spDict+"/"+sp+"/"+sp+".dic", "content/dictionaries/"+sp+"/"+sp+".dic")
             hZip.write(spDict+"/"+sp+"/"+sp+".aff", "content/dictionaries/"+sp+"/"+sp+".aff")
     hZip.close()
-    spfDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
-    helpers.unzip(spfZip, spfDebugProfile)
-    spfBetaProfile = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
-    helpers.unzip(spfZip, spfBetaProfile)
+    spDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
+    helpers.unzip(spfZip, spDebugProfile)
+    spfBetaExtension = dVars['win_tb_beta_extension_filepath']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_filepath']
+    #helpers.unzip(spfZip, spBetaProfile)
+    file_util.copy_file(spfZip, spfBetaExtension)
 
 
 def _createOptionsForThunderbird (dVars):

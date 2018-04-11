@@ -5,7 +5,7 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
+// const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
 
@@ -16,7 +16,8 @@ var oOptControl = {
             document.getElementById('check_signature').checked = prefs.getBoolPref('bCheckSignature');
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
 
@@ -25,7 +26,8 @@ var oOptControl = {
             prefs.setBoolPref('bCheckSignature', document.getElementById('check_signature').checked);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     }
 }

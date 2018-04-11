@@ -2,7 +2,7 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
+// const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
 
@@ -22,7 +22,8 @@ var oOptControl = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     save: function () {
@@ -33,7 +34,8 @@ var oOptControl = {
             prefs.setCharPref("sGCOptions", JSON.stringify(this.oOptions));
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     reset: function () {
