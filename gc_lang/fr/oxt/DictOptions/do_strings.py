@@ -12,7 +12,7 @@ dStrings = {
         "activate_main_descr": "Supplante le correcteur orthographique inclus dans LibreOffice (Hunspell).",
 
         "suggestion_section": "Moteur de suggestion orthographique",
-        "activate_spell_sugg": "Activer le moteur de suggestion de Grammalecte",
+        "activate_spell_sugg": "Moteur de suggestion de Grammalecte",
         "activate_spell_sugg_descr": "Désactivée, cette option remplace la suggestion orthographique de Grammalecte par celle fournie par LibreOffice (Hunspell). Les mots inclus dans le dictionnaire personnalisé ne seront plus inclus aux suggestions.",
 
         "graphspell_section": "Dictionnaires de Grammalecte (Graphspell)",
@@ -38,7 +38,7 @@ dStrings = {
         "activate_main_descr": "Overrides the spell checker included in LibreOffice (Hunspell)",
 
         "suggestion_section": "Spell suggestion engine",
-        "activate_spell_sugg": "Activate the suggestion engine of Grammalecte",
+        "activate_spell_sugg": "Suggestion engine of Grammalecte",
         "activate_spell_sugg_descr": "Disactivated, this option replace the spell suggestion engine of Grammalecte by the one of LibreOffice (Hunspell). Words included in the personal dictionary won’t be included among suggestions.",
 
         "graphspell_section": "Grammalecte Dictionaries (Graphspell)",
