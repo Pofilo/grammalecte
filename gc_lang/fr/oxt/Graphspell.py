@@ -55,10 +55,10 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             self.xSvMgr = ctx.ServiceManager
             self.locales = tuple([ Locale(t[0], t[1], t[2])  for t in lLocale ])
             self.xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
-            xChild = self.xSettingNode.getByName("o_fr")
+            self.xOptionNode = self.xSettingNode.getByName("o_fr")
             personal_dic = ""
-            if (xChild.getPropertyValue("use_personal_dic")):
-                sPersonalDicJSON = xChild.getPropertyValue("personal_dic")
+            if (self.xOptionNode.getPropertyValue("use_personal_dic")):
+                sPersonalDicJSON = self.xOptionNode.getPropertyValue("personal_dic")
                 if sPersonalDicJSON:
                     try:
                         personal_dic = json.loads(sPersonalDicJSON)
@@ -66,16 +66,25 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
                         print("Graphspell: wrong personal_dic")
                         traceback.print_exc()
             self.oGraphspell = SpellChecker("fr", "fr.bdic", "", "", personal_dic)
-            # self.xHunspell = self.xSvMgr.createInstance("com.sun.star.linguistic2.SpellChecker")
-            # self.xHunspellLocale = Locale('fr', 'MC', '')
-            # self.xHunspellLocale = uno.createUnoStruct('com.sun.star.lang.Locale')
-            # self.xHunspellLocale.Language = 'fr'
-            # self.xHunspellLocale.Country = 'FR'
+            self.loadHunspell()
             # print("Graphspell: init done")
         except:
             print("Graphspell: init failed")
             traceback.print_exc()
     
+    def loadHunspell (self):
+        # Hunspell is a fallback spellchecker
+        try:
+            self.xHunspell = self.xSvMgr.createInstance("org.openoffice.lingu.MySpellSpellChecker")
+        except:
+            print("Hunspell: init failed")
+            traceback.print_exc()
+            self.xHunspell = False
+            self.bHunspell = False
+        else:
+            self.xHunspellLocale = Locale('fr', 'MC', '')
+            self.bHunspell = not bool(self.xOptionNode.getPropertyValue("use_graphspell_sugg"))
+
     # XServiceName
     def getServiceName (self):
         return self.sImplementationName     #self.sServiceName
@@ -108,29 +117,25 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
         try:
             aWord = zElidedWords.sub("", aWord.rstrip("."), count=1)
             return self.oGraphspell.isValidToken(aWord)
+            # return self.xHunspell.isValid(aWord, self.xHunspellLocale, aProperties)
         except:
             traceback.print_exc()
         return False
-        # try:
-        #     if self.xHunspell:
-        #         return self.xHunspell.isValid(aWord, self.xHunspellLocale, aProperties)
-        # except:
-        #     traceback.print_exc()
-        # return False
 
     def spell (self, aWord, aLocale, aProperties):
         "returns an object SpellAlternatives"
-        self.listSpellChecker()
-        lSugg = []
-        for l in self.oGraphspell.suggest(aWord):
-            lSugg.extend(l)
-        return SpellAlternatives(aWord, tuple(lSugg))
-        # try:
-        #     if self.xHunspell:
-        #         return self.xHunspell.spell(aWord, self.xHunspellLocale, aProperties)
-        # except:
-        #     traceback.print_exc()
-        # return None
+        try:
+            if not self.bHunspell:
+                lSugg = []
+                for l in self.oGraphspell.suggest(aWord):
+                    lSugg.extend(l)
+                return SpellAlternatives(aWord, tuple(lSugg))
+            else:
+                # fallback dictionary suggestions (Hunspell)
+                return self.xHunspell.spell(aWord, self.xHunspellLocale, aProperties)
+        except:
+            traceback.print_exc()
+        return None
 
     # XServiceDisplayName
     def getServiceDisplayName(self, aLocale):
@@ -139,17 +144,16 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
     # Other
     def listSpellChecker (self):
         xLinguServiceManager = self.xSvMgr.createInstance("com.sun.star.linguistic2.LinguServiceManager")
-        #print ("STTTSpeller: lingu service manager = %s" % repr(xLinguServiceManager))
         lService = xLinguServiceManager.getAvailableServices('com.sun.star.linguistic2.SpellChecker', Locale("fr", "MC", ""))
-        #print ("STTTSpeller: spell services: %s" % repr(lService))
-        for speller in lService:
-            print(repr(speller))
-            #if speller == self.ImplementationName:
+        for sSpellchecker in lService:
+            print(repr(sSpellchecker))
+            #if sSpellchecker == self.ImplementationName:
             #    continue
-            #self.fallback_sc = self.xSvMgr.createInstance (speller)
-            #if self.fallback_sc:
-            #    #print ("STTTSpeller: found other spell checker: %s" % speller)
+            #self.xFallbackSpellChecker = self.xSvMgr.createInstance(sSpellchecker)
+            #if self.xFallbackSpellChecker:
+            #    print("Spell checker: %s" % xSpellChecker)
             #    break
+
 
 class SpellAlternatives (unohelper.Base, XSpellAlternatives):
     
