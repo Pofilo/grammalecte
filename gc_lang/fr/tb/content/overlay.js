@@ -916,7 +916,7 @@ window.addEventListener("click", function (xEvent) {
 }, false);
 
 window.addEventListener("load", function (xEvent) {
-    oDictIgniter.init();
+    // oDictIgniter.init();
     oGrammarChecker.loadGC();
     //oGrammarChecker.fullTests();
 }, false);
