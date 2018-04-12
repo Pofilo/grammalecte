@@ -138,8 +138,6 @@ class IBDAWG:
         self.bOptNumSigle = False
         self.bOptNumAtLast = False
 
-        self.aSuggState = set()
-
     def _initBinary (self):
         "initialize with binary structure file"
         if self.by[0:17] != b"/grammalecte-fsa/":
@@ -295,7 +293,6 @@ class IBDAWG:
         elif sWord.islower():
             self._suggest(oSuggResult, sWord.title(), nMaxSwitch=nMaxSwitch, nMaxDel=nMaxDel, nMaxHardRepl=nMaxHardRepl)
         aSugg = oSuggResult.getSuggestions(nSuggLimit)
-        self.aSuggState.clear()
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
@@ -310,11 +307,6 @@ class IBDAWG:
             for sTail in self._getTails(iAddr):
                 oSuggResult.addSugg(sNewWord+sTail, nDeep)
             return
-        elif len(sRemain) < 4:
-            sState = sNewWord + ":" + sRemain
-            if sState in self.aSuggState:
-                return
-            self.aSuggState.add(sState)
         cCurrent = sRemain[0:1]
         for cChar, jAddr in self._getCharArcs(iAddr):
             if cChar in cp.d1to1.get(cCurrent, cCurrent):
