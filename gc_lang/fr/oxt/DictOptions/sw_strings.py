@@ -24,6 +24,10 @@ dStrings = {
         "res_tags": "Étiquettes",
         
         "close_button": "Fermer",
+
+        "error": "Erreur",
+        "regex_error_flexion": "L’expression régulière du champ ‹Flexion› est erronée.",
+        "regex_error_tags": "L’expression régulière du champ ‹Étiquettes› est erronée."
     },
 
     "en": {

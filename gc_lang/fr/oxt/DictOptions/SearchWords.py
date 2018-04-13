@@ -5,6 +5,7 @@
 import unohelper
 import uno
 import traceback
+import re
 
 import helpers
 import sw_strings
@@ -13,6 +14,19 @@ import grammalecte.graphspell.ibdawg as ibdawg
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
+
+
+from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
+# BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
+# DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
+from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+
+def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
+    xParentWin = xDocument.CurrentController.Frame.ContainerWindow
+    ctx = uno.getComponentContext()
+    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx) 
+    xMsgBox = xToolkit.createMessageBox(xParentWin, nBoxType, nBoxButtons, sTitle, sMsg)
+    return xMsgBox.execute()
 
 
 def _waitPointer (funcDecorated):
@@ -190,6 +204,16 @@ class SearchWords (unohelper.Base, XActionListener):
         self.initSpellChecker()
         sFlexPattern = self.xFlexion.Text.strip()
         sTagsPattern = self.xTags.Text.strip()
+        try:
+            if sFlexPattern:
+                re.compile(sFlexPattern)
+        except:
+            MessageBox(self.xDocument, self.dUI.get("regex_error_flexion", "#err"), self.dUI.get("error", "#err"), nBoxType=ERRORBOX)
+        try:
+            if sTagsPattern:
+                re.compile(sTagsPattern)
+        except:
+            MessageBox(self.xDocument, self.dUI.get("regex_error_tags", "#err"), self.dUI.get("error", "#err"), nBoxType=ERRORBOX)
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.removeAllRows()
         for i, aEntry in enumerate(self.oSpellChecker.select(sFlexPattern, sTagsPattern)):
