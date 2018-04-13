@@ -221,7 +221,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
         self.xV_pp = self._addWidget('v_pp', 'CheckBox', nX2+75, nY4+44, 90, nHeight, Label = self.dUI.get("v_pp", "#err"))
 
-        self._addWidget('v_pattern_label', 'FixedText', nX2+10, nY4+56, 70, nHeight, Label = self.dUI.get('v_pattern', "#err"), Align = 2)
+        self._addWidget('v_pattern_label', 'FixedText', nX2, nY4+56, 80, nHeight, Label = self.dUI.get('v_pattern', "#err"), Align = 2)
         self.xVpattern = self._addWidget('v_pattern', 'Edit', nX2+85, nY4+56, 80, nHeight)
 
         # Adverbe
