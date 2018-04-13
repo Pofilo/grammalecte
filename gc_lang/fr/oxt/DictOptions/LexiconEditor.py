@@ -76,6 +76,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.lGeneratedFlex = []
         # options node
         self.xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", True)
+        self.xOptionNode = self.xSettingNode.getByName("o_fr")
 
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
@@ -351,8 +352,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     def loadLexicon (self):
         xGridDataModel = self.xGridModelLex.GridDataModel
         xGridDataModel.removeAllRows()
-        xChild = self.xSettingNode.getByName("o_fr")
-        sJSON = xChild.getPropertyValue("personal_dic")        
+        sJSON = self.xOptionNode.getPropertyValue("personal_dic")        
         if sJSON:
             try:
                 self.oPersonalDicJSON = json.loads(sJSON)
@@ -382,9 +382,9 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 except:
                     sMessage = self.dUI.get('wrong_json', "#err_msg: %s") % spfImported
                     MessageBox(self.xDocument, sMessage, self.dUI.get('import_title', "#err"), ERRORBOX)
-                else:
-                    xChild = self.xSettingNode.getByName("o_fr")
-                    xChild.setPropertyValue("personal_dic", sJSON)
+                else:            
+                    self.xOptionNode.setPropertyValue("personal_dic", sJSON)
+                    self.xSettingNode.commitChanges()
                     self.loadLexicon()
         else:
             sMessage = self.dUI.get('file_not_found', "#err_msg: %s") % spfImported
@@ -396,25 +396,23 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         lEntry = []
         for i in range(xGridDataModel.RowCount):
             lEntry.append(xGridDataModel.getRowData(i))
-        xChild = self.xSettingNode.getByName("o_fr")
         if lEntry:
             oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel")
             self.oPersonalDicJSON = oDAWG.getBinaryAsJSON()
-            xChild.setPropertyValue("personal_dic", json.dumps(self.oPersonalDicJSON, ensure_ascii=False))
+            self.xOptionNode.setPropertyValue("personal_dic", json.dumps(self.oPersonalDicJSON, ensure_ascii=False))
             self.xSettingNode.commitChanges()
             self.xNumDic.Label = str(self.oPersonalDicJSON["nEntry"])
             self.xDateDic.Label = self.oPersonalDicJSON["sDate"]
         else:
-            xChild.setPropertyValue("personal_dic", "")
+            self.xOptionNode.setPropertyValue("personal_dic", "")
             self.xSettingNode.commitChanges()
             self.xNumDic.Label = "0"
             self.xDateDic.Label = self.dUI.get("void", "#err")
 
     def exportDictionary (self):
         try:
-            spfExported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
-            xChild = self.xSettingNode.getByName("o_fr")
-            sJSON = xChild.getPropertyValue("personal_dic")
+            spfExported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")    
+            sJSON = self.xOptionNode.getPropertyValue("personal_dic")
             if sJSON:
                 with open(spfExported, "w", encoding="utf-8") as hDst:
                     hDst.write(sJSON)
