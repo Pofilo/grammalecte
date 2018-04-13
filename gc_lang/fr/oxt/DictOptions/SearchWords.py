@@ -209,11 +209,13 @@ class SearchWords (unohelper.Base, XActionListener):
                 re.compile(sFlexPattern)
         except:
             MessageBox(self.xDocument, self.dUI.get("regex_error_flexion", "#err"), self.dUI.get("error", "#err"), nBoxType=ERRORBOX)
+            sFlexPattern = ""
         try:
             if sTagsPattern:
                 re.compile(sTagsPattern)
         except:
             MessageBox(self.xDocument, self.dUI.get("regex_error_tags", "#err"), self.dUI.get("error", "#err"), nBoxType=ERRORBOX)
+            sTagsPattern = ""
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.removeAllRows()
         for i, aEntry in enumerate(self.oSpellChecker.select(sFlexPattern, sTagsPattern)):
