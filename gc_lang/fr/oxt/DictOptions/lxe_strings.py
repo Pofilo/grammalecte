@@ -74,7 +74,7 @@ dStrings = {
         "export_title": "Exportation du dictionnaire",
         "export_message": "Fichier exporté : ‹%s›",
         "empty_dictionary": "Le dictionnaire est vide. Aucun fichier créé.",
-        "file_not_found": "Le fichier ‹%s› ne semble pas exister.",
+        "file_not_found": "Importation du fichier ‹%s›.\nCe fichier ne semble pas exister.",
         "wrong_json": "Le fichier ‹%s› n’est pas un fichier JSON valide.",
         "load_title": "Chargement du dictionnaire.",
         "not_loaded": "Le fichier n’a pas pu être chargé.\n",
