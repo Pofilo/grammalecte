@@ -373,6 +373,19 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     @_waitPointer
     def importDictionary (self):
+        # FilePicker doesn’t work at all…
+        #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
+        #xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE")]) # seems useless
+        #xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+        #xFilePicker.setDefaultName("fr.personal.json") # useless, doesn’t work
+        #xFilePicker.setDisplayDirectory("")
+        #xFilePicker.setMultiSelectionMode(False)
+        #nResult = xFilePicker.execute()
+        #if nResult == 1:
+        #    lFile = xFilePicker.getSelectedFiles()
+        #    lFile = xFilePicker.getFiles()
+        #    print(lFile)
+        # workaround
         spfImported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
         if os.path.isfile(spfImported):
             with open(spfImported, "r", encoding="utf-8") as hDst:
@@ -423,17 +436,6 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         except:
             sMessage = traceback.format_exc()
             MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"), ERRORBOX)
-
-        # FilePicker doesn’t work at all…
-        #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.SystemFilePicker', self.ctx)
-        #xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
-        #xFilePicker.setDisplayDirectory("")
-        #xFilePicker.setMultiSelectionMode(True)
-        #nResult = xFilePicker.execute()
-        #if nResult == 1:
-            #pass
-            #lFile = xFilePicker.getSelectedFiles()
-            #lFile = xFilePicker.getFiles()
 
     def _getRadioValue (self, *args):
         for x in args:
