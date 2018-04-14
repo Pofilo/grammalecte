@@ -386,7 +386,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         #    lFile = xFilePicker.getFiles()
         #    print(lFile)
         # workaround
-        spfImported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")
+        spfImported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
         if os.path.isfile(spfImported):
             with open(spfImported, "r", encoding="utf-8") as hDst:
                 sJSON = hDst.read()
@@ -424,7 +424,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     def exportDictionary (self):
         try:
-            spfExported = os.path.join(os.environ['USERPROFILE'], "fr.personal.json")    
+            spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")    
             sJSON = self.xOptionNode.getPropertyValue("personal_dic")
             if sJSON:
                 with open(spfExported, "w", encoding="utf-8") as hDst:
