@@ -385,6 +385,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         #    lFile = xFilePicker.getSelectedFiles()
         #    lFile = xFilePicker.getFiles()
         #    print(lFile)
+        #    MessageBox(self.xDocument, "File(s): " + str(lFile), "DEBUG", INFOBOX)
         # workaround
         spfImported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
         if os.path.isfile(spfImported):

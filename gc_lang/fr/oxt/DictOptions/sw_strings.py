@@ -33,6 +33,28 @@ dStrings = {
     "en": {
         "title": "Grammalecte · Search and informations",
         
+        "search_section": "Search",
+
+        "similar_search_section": "Similar words",
+        "similar_search_button": "Search",
+
+        "regex_search_section": "Regular expressions",
+        "flexion": "Flexion",
+        "tags": "Tags",
+        "regex_search_button": "Search",
+        "result_warning": "Search via regular expressions can generate a huge amount of results. Only the first 2000 occurrences found will be displayed. Search may be long as the full word graph, which contains 500,000 flexions, will be parsed if required.",
+
+        "result_section": "Results",
+        "res_flexion": "Flexions",
+        "res_lemma": "Lemmas",
+        "res_tags": "Tags",
+        
+        "close_button": "Close",
+
+        "error": "Error",
+        "regex_error_flexion": "The regular expression in field ‹Flexion› is wrong.",
+        "regex_error_tags": "The regular expression in field ‹Tags› is wrong."
+
         "close_button": "Close",
     },
 }
