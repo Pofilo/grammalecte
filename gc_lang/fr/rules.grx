@@ -676,17 +676,23 @@ TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 # virgules manquantes
 __[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     # Avant « etc. », il faut mettre une virgule.
 __[i>/virg(virgule_manquante_avant_car)__
-    ({w_1})( car)(?= (?:j[e’]|tu|ils?|nous|vous|elles?|on|les?|la|ces?|des?|cette|[mts](?:on|a))\b)  @@0,$
+    ({w_1})( car)(?= (?:j[e’]|tu|ils?|nous|vous|elles?|on|les?|l[a’]|ces?|des?|cette|[mts](?:on|a|es))\b)  @@0,$
     <<- not morph(\1, ":[DR]", False) -2>> , car
     # Si « car » est la conjonction de coordination, une virgule est peut-être souhaitable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3447
 __[i>/virg(virgule_manquante_avant_mais)__
-    {w_1}( mais)(?= (?:j[e’]|tu|ils?|elles?|on|ces?|des?|cette|[mts](?:on|a))\b)  @@$
-    <<- -1>> , mais
+    ({w_1})( mais)(?= (?:j[e’]|tu|ils?|nous|vous|elles?|on)\b)  @@0,$
+    <<- not morph(\1, ">(?:[mtscl]es|[nv]os|quels) ", False) -2>> , mais
     # Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
+__[i>/virg(virgule_manquante_avant_donc)__
+    ({w_1})( donc)(?= (?:j[e’]|tu|ils?|elles?|on)\b)  @@0,$
+    <<- not morph(\1, ":V", False) -2>> , donc
+    # Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
 
-TEST: Un chien, un chat{{ etc.}}                                          ->> , etc.
-TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                 ->> , car
-TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                   ->> , mais
+TEST: Un chien, un chat{{ etc.}}                                            ->> , etc.
+TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                   ->> , car
+TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                     ->> , mais
+TEST: il l’a vu de ses propres yeux{{ donc}} il faut y croire.              ->> , donc
+TEST: il s’est donc tu
 
 
 __<s>/virg(virgule_point_fin_dialogue)__
