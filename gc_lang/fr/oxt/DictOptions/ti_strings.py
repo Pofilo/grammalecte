@@ -25,7 +25,7 @@ dStrings = {
         "tags": "Étiquettes",
         "meaning": "Signification",
 
-        "close_button": "Fermer",
+        "close_button": "Fermer"
     },
 
     "en": {
@@ -49,6 +49,6 @@ dStrings = {
         "tags": "Tags",
         "meaning": "Meaning",
 
-        "close_button": "Close",
+        "close_button": "Close"
     },
 }

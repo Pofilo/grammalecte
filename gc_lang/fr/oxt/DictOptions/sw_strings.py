@@ -54,7 +54,5 @@ dStrings = {
         "error": "Error",
         "regex_error_flexion": "The regular expression in field ‹Flexion› is wrong.",
         "regex_error_tags": "The regular expression in field ‹Tags› is wrong."
-
-        "close_button": "Close",
     },
 }
