@@ -25,9 +25,8 @@ body {
     color: #505050;
 }
 
-
 .inbox {
-    width: 600px;
+    width: 800px;
     margin: 20px auto 10px auto;
     padding: 10px 30px 30px 30px;
     background: hsl(0, 0%, 100%);
@@ -36,7 +35,7 @@ body {
 }
 
 h1 {
-    margin: 5px 0 20px 0;
+    margin: 5px 0 5px 0;
     color: hsl(210, 50%, 50%);
     font: bold 30px "Trebuchet MS", "Fira Sans", "Liberation Sans", sans-serif;
     text-align: center;
@@ -52,60 +51,89 @@ h3 {
     font: bold 16px "Trebuchet MS", "Fira Sans", "Liberation Sans", sans-serif;
 }
 
-#buttons {
-    padding: 10px;
-    justify-content: center;
+details {
+    font-size: 11px;
+    font-variant: small-caps;
+    color: hsl(210, 50%, 50%);
+    cursor: pointer;
 }
-#lexicon_button {
-    background-color: hsl(210, 80%, 90%);
+details > * {
+    font-size: 12px;
+    font-variant: normal;
+    color: hsl(210, 0%, 0%);
+    cursor: auto;
+}
+details.inline {
+    padding: 3px;
+    width: 260px;
+}
+
+
+/*
+    Main buttons
+*/
+#buttons {
+    padding: 10px 0;
+    justify-content: center;
 }
 .main_button {
     margin: 0 5px;
-    padding: 10px 30px;
+    width: 100px;
+    padding: 10px 20px;
     background-color: hsl(210, 10%, 95%);
     border-radius: 5px;
+    text-align: center;
     cursor: pointer;
+}
+#lexicon_button {
+    background-color: hsl(210, 80%, 90%);
+    color: hsl(210, 80%, 30%);
+    font-weight: bold;
 }
 
 
-#add_word_page {
+.big_block {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: hsl(210, 20%, 96%);
+    border-radius: 5px;
+}
+
+#add_page {
     display: none;
+}
+
+.columns {
+    display: flex;
+}
+
+#word_generator {
+    width: 400px;
+}
+#generated_words {
+    width: 400px;
 }
 
 #editor {
     display: none;
 }
 
-#categories {
-    display: flex;
-    padding: 10px 0;
-}
 
 #word_section2 {
     display: none;
 }
 
 .category {
+    margin-right: 5px;
     padding: 10px;
     border-radius: 3px;
+    background-color: hsl(210, 20%, 96%);
     cursor: pointer;
 }
 .category:hover {
-    background-color: hsl(0, 0%, 90%);
+    background-color: hsl(210, 20%, 90%);
 }
 
-.separator {
-    border-left: 1px solid hsl(210, 0%, 90%);
-}
-
-#section_vide {
-    padding: 50px;
-    font-size: 24px;
-    text-align: center;
-    background-color: hsl(0, 20%, 90%);
-    color: hsl(0, 20%, 50%);
-    border-radius: 5px;
-}
 .section {
     display: none;
     padding: 10px;
@@ -113,6 +141,11 @@ h3 {
 
 .container {
     display: flex;
+}
+.dic_container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 }
 
 .block {
@@ -123,6 +156,10 @@ h3 {
     border-radius: 3px;
 }
 
+.space_container {
+    display: flex;
+    justify-content: space-between;
+}
 
 .typeline {
     padding: 5px 10px;
@@ -132,13 +169,17 @@ h3 {
     min-width: 80px;
 }
 
+.description {
+    font-size: 12px;
+}
+
 .examples_true {
     flex-grow: 1;
     margin: 2px;
     padding: 10px;
     background-color: hsl(120, 10%, 90%);
     color: hsl(120, 10%, 50%);
-    font-size: 14px;
+    font-size: 12px;
     border-radius: 3px;
 }
 .examples_false {
@@ -147,7 +188,7 @@ h3 {
     padding: 10px;
     background-color: hsl(0, 10%, 90%);
     color: hsl(0, 10%, 50%);
-    font-size: 14px;
+    font-size: 12px;
     border-radius: 3px;
 }
 
@@ -155,10 +196,9 @@ ul {
     margin-left: 30px;
 }
 
-input[type=text] {
+input[type=text].large {
     display: inline-block;
     width: 250px;
-    margin-left: 5px;
     padding: 5px 10px;
     border: 2px solid hsl(0, 0%, 80%);
     border-radius: 3px;
@@ -167,44 +207,44 @@ input[type=text] {
     font: normal 20px Tahoma, "Ubuntu Condensed";
     color: hsl(0, 0%, 20%);
 }
+
+input[type=text].medium {
+    display: inline-block;
+    width: 175px;
+    padding: 2px 5px;
+    border: 2px solid hsl(0, 0%, 80%);
+    border-radius: 3px;
+    height: 20px;
+    background: transparent;
+    font: normal 18px Tahoma, "Ubuntu Condensed";
+    color: hsl(0, 0%, 20%);
+}
+
 input[placeholder] {
     color: hsl(0, 0%, 50%);
 }
 
 
-#actions {
-    display: none;
-    padding: 10px;
-}
-
-#results {
-    padding: 10px;
-    background-color: hsl(210, 10%, 90%);
-    border-radius: 3px;
-    margin: 5px 0;
-    font-family: "Courier New", Courier, "Lucida Sans Typewriter", "Lucida Typewriter", monospace;
-}
-
 #buttonline {
+    margin-top: 5px;
     text-align: right;
 }
 
 #add_to_lexicon {
-    display: inline-block;
-    padding: 7px 10px;
-    font-size: 20px;
-    background-color: hsl(0, 30%, 30%);
-    color: hsl(0, 30%, 60%);
+    display: none;
+    width: 200px;
+    padding: 5px 10px;
+    font-size: 16px;
+    background-color: hsl(150, 50%, 50%);
+    color: hsl(150, 50%, 96%);
     border-radius: 3px;
-    text-transform: uppercase;
     text-align: center;
-    text-decoration: none;
     cursor: pointer;
 }
 #add_to_lexicon:hover {
-    background-color: hsl(0, 60%, 40%);
-    color: hsl(0, 60%, 70%);
-    box-shadow: 0 0 2px hsl(0, 60%, 50%);
+    background-color: hsl(150, 60%, 40%);
+    color: hsl(150, 60%, 90%);
+    box-shadow: 0 0 2px hsl(150, 60%, 50%);
 }
 
 
@@ -212,16 +252,50 @@ input[placeholder] {
     
 }
 
-#no_elem_line {
+
+/*
+    Search page
+*/
+#search_page {
     display: none;
 }
 
-.button_block {
-    margin: 5px 0px;
-    background-color: hsl(210, 10%, 90%);
-    border-radius: 5px;
-    padding: 15px;
+.button_search {
+    margin: 5px 0;
+    width: 100px;
+    padding: 5px 10px;
+    font-size: 16px;
+    background-color: hsl(150, 50%, 50%);
+    color: hsl(150, 50%, 96%);
+    border-radius: 3px;
+    text-align: center;
+    cursor: pointer;
 }
+.button_search:hover {
+    background-color: hsl(150, 60%, 40%);
+    color: hsl(150, 60%, 90%);
+    box-shadow: 0 0 2px hsl(150, 60%, 50%);
+}
+
+#search_table {
+    width: 600px;
+}
+
+/*
+    Information page
+*/
+#info_page {
+    display: none;
+}
+
+#tags_table {
+    width: 500px;
+}
+
+
+/*
+    Dictionary
+*/
 #save_button, #export_button, #import_button {
     display: none;
     float: right;
@@ -237,20 +311,19 @@ input[placeholder] {
     background-color: hsl(210, 50%, 50%);
     color: hsl(210, 0%, 100%);
 }
-#import_button {
-    display: none;
+#wait_progress {
+    width: 100%;
+    height: 4px;
 }
 
-#build_progress {
-    display: none;
+
+/*
+    Table
+*/
+table {
+    border: 1px solid hsl(210, 10%, 50%);
     width: 100%;
 }
-
-#display_progress {
-    display: none;
-    width: 100%;
-}
-
 th {
     padding: 5px 10px;
     border-left: 1px solid hsl(210, 10%, 90%);
@@ -258,10 +331,13 @@ th {
 }
 td {
     padding: 0 10px;
+    vertical-align: top;
 }
-
 .delete_entry {
     cursor: pointer;
     font-weight: bold;
     color: hsl(0, 100%, 50%);
 }
+
+
+

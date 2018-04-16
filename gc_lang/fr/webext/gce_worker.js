@@ -122,7 +122,10 @@ onmessage = function (e) {
             fullTests(dInfo);
             break;
         case "setDictionary":
-            setDictionary(dParam.sType, dParam.oDict, dInfo);
+            setDictionary(dParam.sDictionary, dParam.oDict, dInfo);
+            break;
+        case "setDictionaryOnOff":
+            setDictionaryOnOff(dParam.sDictionary, dParam.bActivate, dInfo);
             break;
         case "getSpellSuggestions":
             getSpellSuggestions(dParam.sWord, dInfo);
@@ -306,27 +309,63 @@ function fullTests (dInfo={}) {
 
 // SpellChecker
 
-function setDictionary (sType, oDict, dInfo) {
+function setDictionary (sDictionary, oDict, dInfo) {
     if (!oSpellChecker) {
         postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
         return;
     }
-    switch (sType) {
+    //console.log("setDictionary", sDictionary);
+    switch (sDictionary) {
         case "main":
             oSpellChecker.setMainDictionary(oDict);
-            postMessage(createResponse("setDictionary", true, dInfo, true));
             break;
         case "extended":
             oSpellChecker.setExtendedDictionary(oDict);
-            postMessage(createResponse("setDictionary", true, dInfo, true));
+            break;
+        case "community":
+            oSpellChecker.setCommunityDictionary(oDict);
             break;
         case "personal":
             oSpellChecker.setPersonalDictionary(oDict);
-            postMessage(createResponse("setDictionary", true, dInfo, true));
             break;
         default:
-            console.log("[worker] setDictionary: Unknown command");
+            console.log("[worker] setDictionary: Unknown dictionary <"+sDictionary+">");
     }
+    postMessage(createResponse("setDictionary", true, dInfo, true));
+}
+
+function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
+    if (!oSpellChecker) {
+        postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
+        return;
+    }
+    //console.log("setDictionaryOnOff", sDictionary, bActivate);
+    switch (sDictionary) {
+        case "extended":
+            if (bActivate) {
+                oSpellChecker.activateExtendedDictionary();
+            } else {
+                oSpellChecker.deactivateExtendedDictionary();
+            }
+            break;
+        case "community":
+            if (bActivate) {
+                oSpellChecker.activateCommunityDictionary();
+            } else {
+                oSpellChecker.deactivateCommunityDictionary();
+            }
+            break;
+        case "personal":
+            if (bActivate) {
+                oSpellChecker.activatePersonalDictionary();
+            } else {
+                oSpellChecker.deactivatePersonalDictionary();
+            }
+            break;
+        default:
+            console.log("[worker] setDictionaryOnOff: Unknown dictionary <"+sDictionary+">");
+    }
+    postMessage(createResponse("setDictionaryOnOff", true, dInfo, true));
 }
 
 function getSpellSuggestions (sWord, dInfo) {

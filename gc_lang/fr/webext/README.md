@@ -11,10 +11,11 @@ par Olivier R.
 * conjugueur
 * formateur de texte
 * lexicographe
+* éditeur lexical
 
 ## Site web ##
 
-https://grammalecte.net
+http://grammalecte.net
 
 ## Licence ##
 

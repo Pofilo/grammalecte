@@ -1,7 +1,3 @@
-pref("extensions.grammarchecker.urlpref1", "http://localhost:8081");
-pref("extensions.grammarchecker.urlpref2", "https://languagetool.org:8081/");
-pref("extensions.grammarchecker.langpref", "en");
-pref("extensions.grammarchecker.mothertongue", "");
 pref("extensions.grammarchecker.sGCOptions", "");
 pref("extensions.grammarchecker.sTFOptions", "");
 pref("extensions.grammarchecker.bDictModern", false);
@@ -9,3 +5,6 @@ pref("extensions.grammarchecker.bDictClassic", true);
 pref("extensions.grammarchecker.bDictReform", false);
 pref("extensions.grammarchecker.bDictClassicReform", false);
 pref("extensions.grammarchecker.bCheckSignature", true);
+pref("extensions.grammarchecker.bExtendedDictionary", false);
+pref("extensions.grammarchecker.bCommunityDictionary", false);
+pref("extensions.grammarchecker.bPersonalDictionary", true);

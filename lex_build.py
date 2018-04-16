@@ -14,7 +14,7 @@ def build (spfSrc, sLangCode, sLangName, sfDict, bJSON=False, sDicName="", cStem
     oDAWG = fsa.DAWG(spfSrc, cStemmingMethod, sLangCode, sLangName, sDicName)
     dir_util.mkpath("graphspell/_dictionaries")
     oDAWG.writeInfo("graphspell/_dictionaries/" + sfDict + ".info.txt")
-    oDAWG.createBinary("graphspell/_dictionaries/" + sfDict + ".bdic", int(nCompressMethod))
+    oDAWG.writeBinary("graphspell/_dictionaries/" + sfDict + ".bdic", int(nCompressMethod))
     if bJSON:
         dir_util.mkpath("graphspell-js/_dictionaries")
         oDic = IBDAWG(sfDict + ".bdic")

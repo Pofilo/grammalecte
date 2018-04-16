@@ -91,7 +91,7 @@ def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
             if bRecursive:
                 addFolderToZipAndFileFile(hZip, spfSrc, spfDst, dVars, bRecursive)
         else:
-            if spfSrc.endswith((".css", ".js", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
+            if spfSrc.endswith((".py", ".js", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
                 #print(spfSrc + " > " + spfDst)
                 hZip.writestr(spfDst, fileFile(spfSrc, dVars))
             else:

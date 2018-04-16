@@ -80,6 +80,10 @@ class DAWG {
         if (lEntry.length == 0) {
             throw "Error. Empty lexicon";
         }
+
+        lEntry = [...new Set(lEntry.map(e => JSON.stringify(e)))].map(s => JSON.parse(s));
+        // Set can’t distinguish similar lists, so we transform list item in string given to the Set
+        // then we transform items in list a new.
         
         // Preparing DAWG
         console.log(" > Preparing list of words");
@@ -372,7 +376,7 @@ class DAWG {
             }
         }
         let oJSON = {
-            "sHeader": "/pyfsa/",
+            "sHeader": "/grammalecte-fsa/",
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,

@@ -7,9 +7,13 @@ import json
 
 def py2js (sCode):
     "convert Python code to JavaScript code"
-    # Python 2.x unicode strings
-    sCode = re.sub('\\b[ur]"', '"', sCode)
-    sCode = re.sub("\\b[ur]'", "'", sCode)
+    # Python strings
+    sCode = sCode.replace('(r"', '("')
+    sCode = sCode.replace("(r'", "('")
+    sCode = sCode.replace(' r"', ' "')
+    sCode = sCode.replace(" r'", " '")
+    sCode = sCode.replace(',r"', ',"')
+    sCode = sCode.replace(",r'", ",'")
     # operators
     sCode = sCode.replace(" and ", " && ")
     sCode = sCode.replace(" or ", " || ")
@@ -34,11 +38,11 @@ def py2js (sCode):
     sCode = sCode.replace(".strip", ".gl_trim")
     sCode = sCode.replace(".lstrip", ".gl_trimLeft")
     sCode = sCode.replace(".rstrip", ".gl_trimRight")
-    sCode = sCode.replace('.replace("."', ".replace(/\./g")
-    sCode = sCode.replace('.replace("..."', ".replace(/\.\.\./g")
-    sCode = re.sub('.replace\("([^"]+)" ?,', ".replace(/\\1/g,", sCode)
+    sCode = sCode.replace('.replace("."', r".replace(/\./g")
+    sCode = sCode.replace('.replace("..."', r".replace(/\.\.\./g")
+    sCode = re.sub(r'.replace\("([^"]+)" ?,', ".replace(/\\1/g,", sCode)
     # regex
-    sCode = re.sub('re.search\("([^"]+)", *(m.group\(\\d\))\)', "(\\2.search(/\\1/) >= 0)", sCode)
+    sCode = re.sub('re.search\\("([^"]+)", *(m.group\\(\\d\\))\\)', "(\\2.search(/\\1/) >= 0)", sCode)
     sCode = re.sub(".search\\(/\\(\\?i\\)([^/]+)/\\) >= 0\\)", ".search(/\\1/i) >= 0)", sCode)
     sCode = re.sub('(look\\(sx?[][.a-z:()]*), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
     sCode = re.sub('(look\\(sx?[][.a-z:()]*), "([^"]+)"', "\\1, /\\2/", sCode)
@@ -60,9 +64,9 @@ def py2js (sCode):
     sCode = re.sub("\\.start\\((\\d+)\\)", ".start[\\1]", sCode)
     sCode = re.sub("m\\.group\\((\\d+)\\)", "m[\\1]", sCode)
     # tuples -> lists
-    sCode = re.sub("\((m\.start\[\\d+\], m\[\\d+\])\)", "[\\1]", sCode)
+    sCode = re.sub("\\((m\\.start\\[\\d+\\], m\\[\\d+\\])\\)", "[\\1]", sCode)
     # regex
-    sCode = sCode.replace("\w[\w-]+", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+")
+    sCode = sCode.replace(r"\w[\w-]+", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+")
     sCode = sCode.replace(r"/\w/", "/[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]/")
     sCode = sCode.replace(r"[\w-]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]")
     sCode = sCode.replace(r"[\w,]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ,]")

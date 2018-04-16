@@ -1,10 +1,10 @@
-# -*- encoding: UTF-8 -*-
 # Grammalecte for Writer
 # License: MPL 2
 # A derivative work of Lightproof from László Németh (http://cgit.freedesktop.org/libreoffice/lightproof/)
 
 import uno
 import unohelper
+import json
 import sys
 import traceback
 from collections import deque
@@ -14,6 +14,7 @@ from com.sun.star.linguistic2 import ProofreadingResult
 from com.sun.star.lang import XServiceInfo, XServiceName, XServiceDisplayName
 from com.sun.star.lang import Locale
 
+import helpers
 import grammalecte.${lang} as gce
 #import lightproof_handler_${implname} as opt_handler
 import Options
@@ -38,13 +39,14 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         # opt_handler.load(xCurCtx)
         dOpt = Options.load(xCurCtx)
         gce.setOptions(dOpt)
+        # dictionaries options
+        self.loadUserDictionaries()
         # store for results of big paragraphs
         self.dResult = {}
         self.nMaxRes = 1500
         self.lLastRes = deque(maxlen=self.nMaxRes)
         self.nRes = 0
-        #oSpellChecker = gce.getSpellChecker();
-        #oSpellChecker.setPersonalDictionary("fr.personal.json")
+
 
     # XServiceName method implementations
     def getServiceName (self):
@@ -136,6 +138,18 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
     # Grammalecte
     def getSpellChecker (self):
         return gce.getSpellChecker()
+
+    def loadUserDictionaries (self):
+        try:
+            xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
+            xChild = xSettingNode.getByName("o_${lang}")
+            if xChild.getPropertyValue("use_personal_dic"):
+                sJSON = xChild.getPropertyValue("personal_dic")
+                if sJSON:
+                    oSpellChecker = gce.getSpellChecker();
+                    oSpellChecker.setPersonalDictionary(json.loads(sJSON))
+        except:
+            traceback.print_exc()
 
 
 g_ImplementationHelper = unohelper.ImplementationHelper()
