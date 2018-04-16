@@ -59,11 +59,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.oTooltip.hide();
         this.clear();
         if (xNode) {
-            if (xNode.tagName == "TEXTAREA") {
-                this.oNodeControl.setNode(xNode);
-            } else {
-                this.oNodeControl.clear();
-                this.addMessage("Cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Les modifications ne seront pas répercutées automatiquement. Une fois votre texte corrigé, vous pouvez utiliser le bouton ‹∑› pour copier le texte dans le presse-papiers.");
+            this.oNodeControl.setNode(xNode);
+            if (xNode.tagName != "TEXTAREA") {
+                this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable.");
             }
         }
     }
@@ -434,7 +432,6 @@ class GrammalecteNodeControl {
         this.xNode = null;
         this.dParagraph = new Map();
         this.bTextArea = null;
-        this.bWriteEN = false;  // write editable node
     }
 
     setNode (xNode) {
@@ -476,16 +473,18 @@ class GrammalecteNodeControl {
     }
 
     write () {
-        if (this.xNode !== null && (this.bTextArea || this.bWriteEN)) {
+        if (this.xNode !== null) {
             let sText = "";
-            this.dParagraph.forEach(function (val, key) {
-                sText += val + "\n";
-            });
-            sText = sText.slice(0,-1).normalize("NFC");
             if (this.bTextArea) {
-                this.xNode.value = sText;
+                this.dParagraph.forEach(function (val, key) {
+                    sText += val + "\n";
+                });
+                this.xNode.value = sText.slice(0,-1).normalize("NFC");
             } else {
-                this.xNode.textContent = sText;
+                this.dParagraph.forEach(function (val, key) {
+                    sText += val + "<br/>";
+                });
+                this.xNode.innerHTML = sText.normalize("NFC");
             }
         }
     }
