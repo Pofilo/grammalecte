@@ -61,7 +61,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         if (xNode) {
             this.oNodeControl.setNode(xNode);
             if (xNode.tagName != "TEXTAREA") {
-                this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable.");
+                this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Une telle zone de texte est susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             }
         }
     }
