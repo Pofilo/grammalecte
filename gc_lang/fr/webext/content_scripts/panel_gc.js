@@ -472,6 +472,12 @@ class GrammalecteNodeControl {
         //console.log("Paragraphs number: " + (i+1));
     }
 
+    eraseContent () {
+        while (this.xNode.firstChild) {
+            this.xNode.removeChild(this.xNode.firstChild);
+        }
+    }
+
     write () {
         if (this.xNode !== null) {
             let sText = "";
@@ -481,10 +487,17 @@ class GrammalecteNodeControl {
                 });
                 this.xNode.value = sText.slice(0,-1).normalize("NFC");
             } else {
+                this.eraseContent();
+                this.dParagraph.forEach((val, key) => {
+                    this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
+                    this.xNode.appendChild(document.createElement("br"));
+                });
+                /*
                 this.dParagraph.forEach(function (val, key) {
                     sText += val + "<br/>";
                 });
                 this.xNode.innerHTML = sText.normalize("NFC");
+                */
             }
         }
     }
