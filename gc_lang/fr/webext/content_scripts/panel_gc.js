@@ -195,11 +195,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     blockParagraph (xParagraph) {
         xParagraph.contentEditable = "false";
         document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Analyse…";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 100%, 50%, .2)";
     }
 
     freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
         document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Réanalyser";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(120, 30%, 50%)";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "none";
     }
 
     applySuggestion (sNodeSuggId) { // sugg
