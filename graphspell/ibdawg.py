@@ -278,7 +278,7 @@ class IBDAWG:
                 l.extend(self.morph(sWord.capitalize()))
         return l
 
-    @timethis
+    #@timethis
     def suggest (self, sWord, nSuggLimit=10):
         "returns a set of suggestions for <sWord>"
         sWord = cp.spellingNormalization(sWord)
