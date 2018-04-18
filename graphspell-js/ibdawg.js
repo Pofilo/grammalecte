@@ -312,12 +312,6 @@ class IBDAWG {
         let nMaxJump = Math.max(Math.floor(sWord.length / 4), 1);
         let oSuggResult = new SuggResult(sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
-        if (sWord.gl_isTitle()) {
-            this._suggest(oSuggResult, sWord.toLowerCase(), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
-        }
-        else if (sWord.gl_isLowerCase()) {
-            this._suggest(oSuggResult, sWord.gl_toCapitalize(), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
-        }
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
         if (sSfx || sPfx) {
             // we add what we removed

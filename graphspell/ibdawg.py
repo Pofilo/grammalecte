@@ -278,7 +278,7 @@ class IBDAWG:
                 l.extend(self.morph(sWord.capitalize()))
         return l
 
-    #@timethis
+    @timethis
     def suggest (self, sWord, nSuggLimit=10):
         "returns a set of suggestions for <sWord>"
         sWord = cp.spellingNormalization(sWord)
@@ -289,10 +289,6 @@ class IBDAWG:
         nMaxJump = max(len(sWord) // 4, 1)
         oSuggResult = SuggResult(sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
-        if sWord.istitle():
-            self._suggest(oSuggResult, sWord.lower(), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
-        elif sWord.islower():
-            self._suggest(oSuggResult, sWord.title(), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
         aSugg = oSuggResult.getSuggestions(nSuggLimit)
         if sSfx or sPfx:
             # we add what we removed
