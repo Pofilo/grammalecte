@@ -70,12 +70,13 @@ class SuggResult {
             }
         }
         lRes = char_player.filterSugg(lRes);
-        if (this.sWord.gl_isTitle()) {
-            lRes = lRes.map((sSugg) => { return sSugg.gl_toCapitalize(); });
-        }
-        else if (this.sWord.gl_isUpperCase()) {
+        if (this.sWord.gl_isUpperCase()) {
             lRes = lRes.map((sSugg) => { return sSugg.toUpperCase(); });
         }
+        else if (this.sWord.slice(0,1).gl_isUpperCase()) {
+            lRes = lRes.map((sSugg) => { return sSugg.slice(0, 1).toUpperCase() + sSugg.slice(1); });
+        }
+        
         return lRes.slice(0, nSuggLimit);
     }
 

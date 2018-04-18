@@ -69,10 +69,10 @@ class SuggResult:
             if len(lRes) > nSuggLimit:
                 break
         lRes = list(cp.filterSugg(lRes))
-        if self.sWord.istitle():
-            lRes = list(map(lambda sSugg: sSugg.title(), lRes))
-        elif self.sWord.isupper():
+        if self.sWord.isupper():
             lRes = list(map(lambda sSugg: sSugg.upper(), lRes))
+        elif self.sWord[0:1].isupper():
+            lRes = list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))  # dont’ use <.istitle>
         return lRes[:nSuggLimit]
 
     def reset (self):
