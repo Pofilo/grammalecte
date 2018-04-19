@@ -2474,10 +2474,10 @@ TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
 TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
 
 
-# mot / mol
+# mot / mol / moi
 __[i]/ocr(ocr_mot)__
     mols?
-    <<- ->> =\0.replace("l", "t").replace("L", "T")                                                 # Erreur de numérisation ?
+    <<- ->> =\0.replace("l", "t").replace("L", "T")+"|"+\0.replace("l", "i").replace("L", "I")      # Erreur de numérisation ?
 
 TEST: __ocr__ c’est un {{mol}} très dur.
 
