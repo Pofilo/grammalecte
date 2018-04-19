@@ -1655,7 +1655,10 @@ __[i]/tu(tu_avant_hier)__                   avant hier <<- ->> avant-hier       
 __[i]/tu(tu_bouche_à_oreille_bouche)__      bouche à (?:bouche|oreilles?) <<- morph(word(-1), ":D", False) ->> =\0.replace(" ", "-") # Il manque les traits d’union.
 __[i]/tu(tu_c_est_à_dire)__                 c’est [àa] dire <<- ->> c’est-à-dire                    # Il manque les traits d’union.
 __[i]/tu(tu_chef_d_œuvre_lieu)__            chef (lieu|d’œuvre) @@$ <<- ->> chef-\1                 # Il manque un trait d’union.
-__[i]/tu(tu_celui_celle_là_ci)__    ce(?:lles?|lui|ux) (?:là|[cs]i) <<- ->> =\0.replace(" ", "-").replace("si", "ci")     # Il manque un trait d’union.
+__[i]/tu(tu_celui_celle_là_ci)__
+	ce(?:lles?|lui|ux) (?:là|[cs]i)
+	<<- not (\0.endswith("si") and morph(word(1), ":[AW]", False))
+	->> =\0.replace(" ", "-").replace("si", "ci")     												# Il manque un trait d’union.
 __[i]/tu(tu_centre_ville)__                 centres? villes? <<- ->> centre-ville|centres-villes    # Il manque un trait d’union.
 __[i]/tu(tu_ci_dessous_devant_contre)__     ci (desso?us|devant|contre) @@$ <<- ->> ci-\1           # Il manque un trait d’union.
 __[i]/tu(tu_de_ci_de_là)__                  de ci,? de là <<- ->> de-ci de-là|de-ci, de-là          # Il manque les traits d’union.
@@ -1741,6 +1744,7 @@ TEST: ils sont partis {{outre mer}}
 TEST: elles sont allées au {{sud ouest}}
 TEST: {{nord est}}
 TEST: des {{stock options}}
+TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
 
 
 # est-ce … ?
