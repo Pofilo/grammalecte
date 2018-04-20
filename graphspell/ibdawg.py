@@ -232,6 +232,8 @@ class IBDAWG:
             if sToken.count("-") > 4:
                 return True
             return all(self.isValid(sWord)  for sWord in sToken.split("-"))
+        if "·" in sWord:
+            return True
         return False
 
     def isValid (self, sWord):
@@ -241,8 +243,6 @@ class IBDAWG:
         if "’" in sWord: # ugly hack
             sWord = sWord.replace("’", "'")
         if self.lookup(sWord):
-            return True
-        if sWord.isdigit():
             return True
         if sWord[0:1].isupper():
             if len(sWord) > 1:
@@ -255,6 +255,8 @@ class IBDAWG:
                 return self.lookup(sWord[:1].lower() + sWord[1:])
             else:
                 return self.lookup(sWord.lower())
+        if sWord[0:1].isdigit():
+            return True
         return False
 
     def lookup (self, sWord):

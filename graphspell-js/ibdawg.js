@@ -225,6 +225,9 @@ class IBDAWG {
             }
             return sToken.split("-").every(sWord  =>  this.isValid(sWord)); 
         }
+        if (sToken.includes("·")) {
+            return true;
+        }
         return false;
     }
 
@@ -237,9 +240,6 @@ class IBDAWG {
             sWord = sWord.replace("’", "'");
         }
         if (this.lookup(sWord)) {
-            return true;
-        }
-        if (sWord.gl_isDigit()) {
             return true;
         }
         if (sWord.charAt(0).gl_isUpperCase()) {
@@ -257,6 +257,9 @@ class IBDAWG {
             } else {
                 return !!this.lookup(sWord.toLowerCase());
             }
+        }
+        if (sWord.slice(0,1).gl_isDigit()) {
+            return true;
         }
         return false;
     }
