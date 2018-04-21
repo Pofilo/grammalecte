@@ -232,7 +232,7 @@ class IBDAWG:
             if sToken.count("-") > 4:
                 return True
             return all(self.isValid(sWord)  for sWord in sToken.split("-"))
-        if "·" in sToken:
+        if "." in sToken or "·" in sToken:
             return True
         return False
 

@@ -225,7 +225,7 @@ class IBDAWG {
             }
             return sToken.split("-").every(sWord  =>  this.isValid(sWord)); 
         }
-        if (sToken.includes("·")) {
+        if (sToken.includes(".") || sToken.includes("·")) {
             return true;
         }
         return false;
