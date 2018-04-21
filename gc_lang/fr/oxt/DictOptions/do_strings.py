@@ -13,7 +13,7 @@ dStrings = {
 
         "suggestion_section": "Moteur de suggestion orthographique",
         "activate_spell_sugg": "Moteur de suggestion de Grammalecte",
-        "activate_spell_sugg_descr": "Désactivée, cette option remplace la suggestion orthographique de Grammalecte par celle fournie par LibreOffice (Hunspell). Les mots inclus dans le dictionnaire personnalisé ne seront plus inclus aux suggestions.",
+        "activate_spell_sugg_descr": "Les suggestions orthographiques des mots non reconnus par le correcteur sont fournies par Grammalecte. Si ces suggestions ne vous satisfont pas (ou si c’est trop lent), vous pouvez désactiver cette option : les suggestions orthographiques seront alors fournies par le correcteur de LibreOffice. Mais, dans ce cas, les mots que vous avez ajoutés au dictionnaire personnel de Grammalecte ne pourront pas être inclus aux suggestions.",
 
         "graphspell_section": "Dictionnaires de Grammalecte (Graphspell)",
         "activate_main": "Dictionnaire principal",
@@ -39,7 +39,7 @@ dStrings = {
 
         "suggestion_section": "Spell suggestion engine",
         "activate_spell_sugg": "Suggestion engine of Grammalecte",
-        "activate_spell_sugg_descr": "Disactivated, this option replace the spell suggestion engine of Grammalecte by the one of LibreOffice (Hunspell). Words included in the personal dictionary won’t be included among suggestions.",
+        "activate_spell_sugg_descr": "Spelling suggestions for words unrecognized by the spellchecker are provided by Grammalecte. If you aren’t satisfied by these suggestions (or if it’s too slow), you can disable this option: spelling suggestions will then be provided by the LibreOffice proofreader. In this case, words you have added in your Grammalecte’s custom dictionary won’t be included in suggestions.",
 
         "graphspell_section": "Grammalecte Dictionaries (Graphspell)",
         "activate_main": "Main dictionary",

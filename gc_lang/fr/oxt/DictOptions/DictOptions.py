@@ -43,7 +43,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
         self.xDialog.Width = 200
-        self.xDialog.Height = 280
+        self.xDialog.Height = 300
         self.xDialog.Title = dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
@@ -67,7 +67,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         nY3 = nY2 + 35
         nY4 = nY3 + 35
         nY5 = nY4 + 45
-        nY6 = nY5 + 70
+        nY6 = nY5 + 95
 
         nWidth = self.xDialog.Width - 20
         nHeight = 10
@@ -91,7 +91,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         # Spell suggestion engine section
         self._addWidget("suggestion_section", 'FixedLine', nX, nY5, nWidth, nHeight, Label = dUI.get("suggestion_section", "#err"), FontDescriptor = xFDTitle)
         self.xGraphspellSugg = self._addWidget('activate_spell_sugg', 'CheckBox', nX, nY5+15, nWidth, nHeight, Label = dUI.get('activate_spell_sugg', "#err"))
-        self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY5+25, nWidth, nHeight*4, Label = dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
+        self._addWidget('activate_spell_sugg_descr', 'FixedText', nX, nY5+25, nWidth, nHeight*6, Label = dUI.get('activate_spell_sugg_descr', "#err"), MultiLine = True)
 
         # Restart message
         self._addWidget('restart', 'FixedText', nX, nY6, nWidth, nHeight*2, Label = dUI.get('restart', "#err"), FontDescriptor = xFDTitle, MultiLine = True, TextColor = 0x880000)
