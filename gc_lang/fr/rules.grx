@@ -6891,7 +6891,7 @@ __[i]/gn(gn_2m_les)__
         and ((morphex(\2, ":[NAQ].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NAQ].*:f")) or (morphex(\2, ":[NAQ].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NAQ].*:m")))
         and not apposition(\2, \3) and not before(r"\b(?:et|ou|de) +$")
     -3>> =switchGender(@, True)                                                                     # Accord de genre erroné entre « \2 » et « \3 ».
-    <<- __also__ and hasFemForm(\2) -1>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
+    <<- __also__ and hasFemForm(\2) -2>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
     <<- \2 != "fois" and not \3.startswith("seul")
         and morph(\2, ":[NAQ].*:[pi]", False) and morph(\3, ":[NAQ].*:s")
         and not apposition(\2, \3) and not (after_chk1(r"^ +et +(\w[\w-]+)", ":A") or after_chk1(r"^ *, +(\w[\w-]+)", ":A.*:[si]"))
@@ -6905,7 +6905,7 @@ __[i]/gn(gn_2m_les_après_et_ou_de)__
         and not apposition(\2, \3)
         and not morph(word(-1), ":[NAQ]|>(?:et|ou) ", False, False)
     -3>> =switchGender(@, True)                                                                     # Accord de genre erroné entre « \2 » et « \3 ».
-    <<- __also__ and hasFemForm(\2) -1>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
+    <<- __also__ and hasFemForm(\2) -2>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
     <<- \2 != "fois" and not \3.startswith("seul")
         and morph(\2, ":[NAQ].*:[pi]", False) and morph(\3, ":[NAQ].*:s")
         and not apposition(\2, \3) and not (after_chk1(r"^ +et +(\w[\w-]+)", ":A") or after_chk1(r"^ *, +(\w[\w-]+)", ":A.*:[si]"))
