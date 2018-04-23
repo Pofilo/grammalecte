@@ -422,6 +422,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             self.xSettingNode.commitChanges()
             self.xNumDic.Label = "0"
             self.xDateDic.Label = self.dUI.get("void", "#err")
+        MessageBox(self.xDocument, self.dUI.get('save_message', "#err"), self.dUI.get('save_title', "#err"))
 
     def exportDictionary (self):
         try:
