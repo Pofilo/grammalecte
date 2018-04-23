@@ -426,7 +426,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     def exportDictionary (self):
         try:
-            spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")    
+            spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
             sJSON = self.xOptionNode.getPropertyValue("personal_dic")
             if sJSON:
                 with open(spfExported, "w", encoding="utf-8") as hDst:
