@@ -135,8 +135,8 @@ class IBDAWG:
         else:
             raise ValueError("  # Error: unknown code: {}".format(self.nCompressionMethod))
 
-        self.bOptNumSigle = False
-        self.bOptNumAtLast = False
+        self.bAcronymValid = True
+        self.bNumAtLastValid = False
 
     def _initBinary (self):
         "initialize with binary structure file"
@@ -249,7 +249,7 @@ class IBDAWG:
                 if sWord.istitle():
                     return self.lookup(sWord.lower())
                 if sWord.isupper():
-                    if self.bOptNumSigle:
+                    if self.bAcronymValid:
                         return True
                     return self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
                 return self.lookup(sWord[:1].lower() + sWord[1:])
