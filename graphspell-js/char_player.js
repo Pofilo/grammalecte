@@ -363,7 +363,7 @@ var char_player = {
 
     cut: function (sWord) {
         // returns an arry of strings (prefix, trimed_word, suffix)
-        let m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)(-(?:t-|)(?:ils?|elles|on|je|tu|nous|vous)$)/.exec(sWord);
+        let m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce)$)/.exec(sWord);
         if (m) {
             return ["", m[1], m[2]];
         }

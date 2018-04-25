@@ -352,7 +352,7 @@ aPfx2 = frozenset([
 ])
 
 
-_zMotAvecPronom = re.compile("^(?i)(\\w+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous))$")
+_zMotAvecPronom = re.compile("^(?i)(\\w+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce))$")
 
 def cut (sWord):
     "returns a tuple of strings (prefix, trimed_word, suffix)"
