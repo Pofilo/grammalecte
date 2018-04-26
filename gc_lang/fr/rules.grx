@@ -12070,7 +12070,7 @@ TEST: Samantha et Eva leur {{décrive}} une leçon.
 !!
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_sing)__
-    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
+    (?:que?|où|comment|combien|dont|quand|pourquoi) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
     <<- morphex(\1, ":(?:[12]s|3p)", ":(?:3s|G|W|3p!)") and not after("^ +(?:et|ou) (?:l(?:es? |a |’|eurs? )|[mts](?:a|on|es) |ce(?:tte|ts|) |[nv]o(?:s|tre) |d(?:u|es) )")
     -1>> =suggVerb(@, ":3s")                                                        # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -12085,15 +12085,32 @@ TEST: à l’époque de Mansur que grandissent la place et le rôle de…
 TEST: où vivent la majorité des immigrés et des enfants d’immigrés
 
 
+__[i]/conj(conj_lxquel_verbe_sujet_sing)__
+    (?:l[ea]s?quel(?:le|)s?) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
+    <<- morphex(\1, ":(?:[12]s|3p)", ":(?:3s|G|W|3p!)") and not after("^ +(?:et|ou) (?:l(?:es? |a |’|eurs? )|[mts](?:a|on|es) |ce(?:tte|ts|) |[nv]o(?:s|tre) |d(?:u|es) )")
+        and morph(word(-1), ":R", False, False)
+    -1>> =suggVerb(@, ":3s")                                                        # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du singulier.
+
+TEST: une muraille contre laquelle {{venaient}} la masse armée et vociférante.
+
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_pluriel)__
-    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
+    (?:que?|où|comment|combien|dont|quand|pourquoi) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
     <<- morphex(\1, ":[123]s", ":(?:3p|G|W)") -1>> =suggVerb(@, ":3p")              # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: D’où {{vienne}} les hommes ?
 TEST: Comment {{danse}} les femmes ?
 TEST: les idioties qu’{{aime}} les hommes, j’en ai marre.
 TEST: l’amour dont {{parle}} les femmes
+
+
+__[i]/conj(conj_lxquel_verbe_sujet_pluriel)__
+    (?:l[ea]s?quel(?:le|)s?) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
+    <<- morphex(\1, ":[123]s", ":(?:3p|G|W)") and morph(word(-1), ":R", False, False)
+    -1>> =suggVerb(@, ":3p")              # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+TEST: les amusements pour lesquels {{vienne}} les invités.
+TEST: financé par le Qatar, lequel dépense des millions de dollars pour soutenir le mouvement
 
 
 __[i]/conj(conj_que_où_comment_verbe_sujet)__
