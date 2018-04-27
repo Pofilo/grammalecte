@@ -478,7 +478,7 @@ __[s](p_mot_entre_crochets)__
     \[({w_1})\] @@1
     <<- \1.isdigit() ~>> *
     <<- __else__ and morph(\1, ":G", False) ~>> =" " + \1 + " "
-    <<- __else__ ~>> _
+    <<- __else__ and \1.isalpha() ~>> _
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
     <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
@@ -514,6 +514,7 @@ TEST: Marion Maréchal-Le Pen. Afin que Maréchal ne soit pas analysé comme un 
 TEST: Car [je] deviendrai plus insaisissable que jamais.
 TEST: C’est dans le dossier D:\Data
 TEST: Dossier C:\Program Files (x86)\LibreOffice
+TEST: [1] Dossier à revoir.
 
 
 
