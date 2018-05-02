@@ -39,7 +39,10 @@ dReplTable = {
                                     ("[  ]+»", " »")],
     "nnbsp_within_numbers":        [("(\\d)[  ](\\d)", "\\1 \\2")],
     # common
-    "nbsp_titles":                 [("M(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M\\.) ", "M\\1 ")],
+    "nbsp_titles":                 [("\\bM(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M\\.) ", "M\\1 "),
+                                    ("\\bP(re?s?|ʳᵉ?ˢ?) ", "P\\1 "),
+                                    ("\\bD(re?s?|ʳᵉ?ˢ?) ", "D\\1 "),
+                                    ("\\bV(ves?|ᵛᵉˢ?) ", "V\\1 ")],
     "nbsp_before_symbol":          [("(\\d) ?([%‰€$£¥˚Ω℃])", "\\1 \\2")],
     "nbsp_before_units":           [("(?<=[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\\b", " \\1")],
     "nbsp_repair":                 [("(?<=[[(])[   ]([!?:;])", "\\1"),

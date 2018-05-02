@@ -57,7 +57,10 @@ const oReplTable = {
                                     [/[  ]+»/g, " »"] ],
     "nnbsp_within_numbers":       [ [/(\d)[  ](\d)/g, "$1 $2"] ],
     // common
-    "nbsp_titles":                [ [/\bM(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M[.]) /g, "M$1 "] ],
+    "nbsp_titles":                [ [/\bM(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M[.]) /g, "M$1 "],
+                                    [/\bP(re?s?|ʳᵉ?ˢ?) /g, "P$1 "],
+                                    [/\bD(re?s?|ʳᵉ?ˢ?) /g, "D$1 "],
+                                    [/\bV(ves?|ᵛᵉˢ?) /g, "V$1 "] ],
     "nbsp_before_symbol":         [ [/(\d) ?([%‰€$£¥˚Ω℃])/g, "$1 $2"] ],
     "nbsp_before_units":          [ [/([0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\b/g, "$1 $2"] ],
     "nbsp_repair":                [ [/([\[(])[   ]([!?:;])/g, "$1$2"],
