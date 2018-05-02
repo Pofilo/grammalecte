@@ -363,11 +363,19 @@ var char_player = {
 
     cut: function (sWord) {
         // returns an arry of strings (prefix, trimed_word, suffix)
-        let m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce)$)/.exec(sWord);
+        let sPrefix = "";
+        let sSuffix = "";
+        let m = /^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`]([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)/i.exec(sWord);
         if (m) {
-            return ["", m[1], m[2]];
+            sPrefix = m[1] + "’";
+            sWord = m[2];
         }
-        return ["", sWord, ""];
+        m = /^([a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce)$)/i.exec(sWord);
+        if (m) {
+            sWord = m[1];
+            sSuffix = m[2];
+        }
+        return [sPrefix, sWord, sSuffix];
     },
 
     // Other functions

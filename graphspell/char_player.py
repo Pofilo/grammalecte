@@ -352,14 +352,22 @@ aPfx2 = frozenset([
 ])
 
 
-_zMotAvecPronom = re.compile("^(?i)(\\w+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce))$")
+_zWordPrefixes = re.compile("(?i)^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`]([\\w-]+)")
+_zWordSuffixes = re.compile("(?i)^(\\w+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce))$")
 
 def cut (sWord):
     "returns a tuple of strings (prefix, trimed_word, suffix)"
-    m = _zMotAvecPronom.search(sWord)
+    sPrefix = ""
+    sSuffix = ""
+    m = _zWordPrefixes.search(sWord)
     if m:
-        return ("", m.group(1), m.group(2))
-    return ("", sWord, "")
+        sPrefix = m.group(1) + "’"
+        sWord = m.group(2)
+    m = _zWordSuffixes.search(sWord)
+    if m:
+        sWord = m.group(1)
+        sSuffix = m.group(2)
+    return (sPrefix, sWord, sSuffix)
 
 
 # Other functions
