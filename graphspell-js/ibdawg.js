@@ -63,8 +63,11 @@ class SuggResult {
             lRes = lRes.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); });
             dDistTemp.clear();
         }
-        for (let lSugg of this.dSugg.values()) {
-            for (let sSugg of lSugg) { lRes.push(sSugg); }
+        for (let [nDist, lSugg] of this.dSugg.entries()) {
+            if (nDist > this.nDistLimit) {
+                break;
+            }
+            lRes.push(...lSugg);
             if (lRes.length > nSuggLimit) {
                 break;
             }
