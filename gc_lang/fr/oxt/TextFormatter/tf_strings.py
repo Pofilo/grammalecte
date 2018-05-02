@@ -28,6 +28,7 @@ dStrings = {
         "nbsp3": "Avant % ‰ € $ £ ¥ ˚C",
         "nbsp4": "À l’intérieur des nombres",
         "nbsp5": "Avant les unités de mesure",
+        "nbsp6": "Après les titres de civilité",
         "nnbsp": "fins",
         "nnbsp_help": "sauf avec “:”",
 
@@ -110,6 +111,7 @@ dStrings = {
         "nbsp3": "Before % ‰ € $ £ ¥ ˚C",
         "nbsp4": "Within numbers",
         "nbsp5": "Before units of measurement",
+        "nbsp6": "After titles",
         "nnbsp": "narrow",
         "nnbsp_help": "except with “:”",
 

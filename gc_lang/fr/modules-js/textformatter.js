@@ -57,6 +57,7 @@ const oReplTable = {
                                     [/[  ]+»/g, " »"] ],
     "nnbsp_within_numbers":       [ [/(\d)[  ](\d)/g, "$1 $2"] ],
     // common
+    "nbsp_titles":                [ [/\bM(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M[.]) /g, "M$1 "] ],
     "nbsp_before_symbol":         [ [/(\d) ?([%‰€$£¥˚Ω℃])/g, "$1 $2"] ],
     "nbsp_before_units":          [ [/([0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\b/g, "$1 $2"] ],
     "nbsp_repair":                [ [/([\[(])[   ]([!?:;])/g, "$1$2"],
@@ -215,6 +216,7 @@ const dTFDefaultOptions = new Map ([
     ["nnbsp_before_punctuation", false],
     ["nnbsp_within_quotation_marks", false],
     ["nnbsp_within_numbers", false],
+    ["nbsp_titles", false],
     ["nbsp_before_symbol", true],
     ["nbsp_before_units", true],
     ["nbsp_repair", true],

@@ -121,7 +121,7 @@ dTableRepl = {
                     ("(?<=[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµnd]?(?:[slgJKΩΩℓ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\\b", " $1", True, True)
     ],
     "nbsp6": [
-                    ("\\b(MM?\\.|Mlle|Mgr) ",           "$1 ",          True,   True)
+                    ("\\bM(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M\\.) ", "M$1 ", True, True)
     ],
 
     # espaces manquants

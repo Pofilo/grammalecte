@@ -126,7 +126,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         
         # group box // non-breaking spaces
         x = 10; y = 145
-        gbm3 = self._addWidget('groupbox3', 'GroupBox', x-5, y, nGroupBoxWith, 70, Label = "  " * len(self.dUI.get('nbsp', "#err")), FontDescriptor = xFD1)
+        gbm3 = self._addWidget('groupbox3', 'GroupBox', x-5, y, nGroupBoxWith, 80, Label = "  " * len(self.dUI.get('nbsp', "#err")), FontDescriptor = xFD1)
         self.nbsp = self._addWidget('nbsp', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('nbsp', "#err"), FontDescriptor = xFD1, \
                                     FontRelief = 1, TextColor = nColor, State = True)
         self.nbsp1 = self._addWidget('nbsp1', 'CheckBox', x, y+15, 85, nHeight, Label = self.dUI.get('nbsp1', "#err"), State = True)
@@ -134,6 +134,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.nbsp3 = self._addWidget('nbsp3', 'CheckBox', x, y+35, nWidth, nHeight, Label = self.dUI.get('nbsp3', "#err"), State = True)
         self.nbsp4 = self._addWidget('nbsp4', 'CheckBox', x, y+45, 85, nHeight, Label = self.dUI.get('nbsp4', "#err"), State = True)
         self.nbsp5 = self._addWidget('nbsp5', 'CheckBox', x, y+55, 85, nHeight, Label = self.dUI.get('nbsp5', "#err"), State = True)
+        self.nbsp6 = self._addWidget('nbsp6', 'CheckBox', x, y+65, 85, nHeight, Label = self.dUI.get('nbsp6', "#err"), State = True)
         self.nnbsp1 = self._addWidget('nnbsp1', 'CheckBox', x+85, y+15, 30, nHeight, Label = self.dUI.get('nnbsp', "#err"), HelpText = self.dUI.get('nnbsp_help', "#err"), State = False)
         self.nnbsp2 = self._addWidget('nnbsp2', 'CheckBox', x+85, y+25, 30, nHeight, Label = self.dUI.get('nnbsp', "#err"), State = False)
         self.nnbsp4 = self._addWidget('nnbsp4', 'CheckBox', x+85, y+45, 30, nHeight, Label = self.dUI.get('nnbsp', "#err"), State = False)
@@ -142,9 +143,10 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.nbsp3_res = self._addWidget('nbsp3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
         self.nbsp4_res = self._addWidget('nbsp4_res', 'FixedText', nPosRes, y+45, 20, nHeight, Label = "", Align = 2)
         self.nbsp5_res = self._addWidget('nbsp5_res', 'FixedText', nPosRes, y+55, 20, nHeight, Label = "", Align = 2)
+        self.nbsp6_res = self._addWidget('nbsp6_res', 'FixedText', nPosRes, y+65, 20, nHeight, Label = "", Align = 2)
         
         # group box // deletion
-        x = 10; y = 220
+        x = 10; y = 230
         gbm7 = self._addWidget('groupbox7', 'GroupBox', x-5, y, nGroupBoxWith, 50, Label = "  " * len(self.dUI.get('delete', "#err")), FontDescriptor = xFD1)
         self.delete = self._addWidget('delete', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('delete', "#err"), FontDescriptor = xFD1, \
                                       FontRelief = 1, TextColor = nColor, State = True)
@@ -227,7 +229,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.struct3_res = self._addWidget('struct3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
         
         # dialog height
-        self.xDialog.Height = 292
+        self.xDialog.Height = 302
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -236,7 +238,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.dCheckboxWidgets = {
             "ssp":      [self.ssp1, self.ssp2, self.ssp3, self.ssp4, self.ssp5, self.ssp6, self.ssp7],
             "space":    [self.space1, self.space2],
-            "nbsp":     [self.nbsp1, self.nbsp2, self.nbsp3, self.nbsp4, self.nbsp5, self.nnbsp1, self.nnbsp2, self.nnbsp4],
+            "nbsp":     [self.nbsp1, self.nbsp2, self.nbsp3, self.nbsp4, self.nbsp5, self.nbsp6, self.nnbsp1, self.nnbsp2, self.nnbsp4],
             "delete":   [self.delete1, self.delete2, self.delete2a, self.delete2b, self.delete2c],
             "typo":     [self.typo1, self.typo2, self.typo3, self.typo3a, self.typo3b, self.typo4, self.typo4a, self.typo4b, self.typo5, self.typo6, \
                          self.typo7, self.typo8, self.typo8a, self.typo8b, self.typo_ff, self.typo_fi, self.typo_ffi, self.typo_fl, self.typo_ffl, \
@@ -248,7 +250,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # progress bar
         self.pbar = self._addWidget('pbar', 'ProgressBar', 22, self.xDialog.Height-16, 210, 10)
         self.pbar.ProgressValueMin = 0
-        self.pbar.ProgressValueMax = 31
+        self.pbar.ProgressValueMax = 32
         # time counter
         self.time_res = self._addWidget('time_res', 'FixedText', self.xDialog.Width-80, self.xDialog.Height-15, 20, nHeight, Label = "", Align = 2)
 
@@ -516,13 +518,13 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     n = self._replaceList(xElem, "nbsp5")
                     self.nbsp5_res.Label = str(n)
                     self.pbar.ProgressValue += 1
-                if False:
+                if self.nbsp6.State:
                     n = self._replaceList(xElem, "nbsp6")
-                    self.nbsp3_res.Label = str(n)
+                    self.nbsp6_res.Label = str(n)
                     self.pbar.ProgressValue += 1
                 self.nbsp.State = False
                 self._switchCheckBox(self.nbsp)
-            self.pbar.ProgressValue = 15
+            self.pbar.ProgressValue = 16
             # points médians
             if self.typo.State:
                 if self.typo6.State:
@@ -543,7 +545,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     self.pbar.ProgressValue += 1
                 self.space.State = False
                 self._switchCheckBox(self.space)
-            self.pbar.ProgressValue = 17
+            self.pbar.ProgressValue = 18
             # Suppression
             if self.delete.State:
                 if self.delete1.State:
@@ -556,7 +558,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     self.pbar.ProgressValue += 1
                 self.delete.State = False
                 self._switchCheckBox(self.delete)
-            self.pbar.ProgressValue = 20
+            self.pbar.ProgressValue = 21
             # signes typographiques
             if self.typo.State:
                 if self.typo1.State:
@@ -630,7 +632,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     self.pbar.ProgressValue += 1
                 self.typo.State = False
                 self._switchCheckBox(self.typo)
-            self.pbar.ProgressValue = 28
+            self.pbar.ProgressValue = 29
             # divers
             if self.misc.State:
                 if self.misc1.State:
