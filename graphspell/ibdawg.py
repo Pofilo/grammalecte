@@ -65,7 +65,7 @@ class SuggResult:
             self.dSugg[0].sort(key=lambda sSugg: st.distanceDamerauLevenshtein(self.sWord, sSugg))
         lRes = self.dSugg.pop(0)
         for nDist, lSugg in self.dSugg.items():
-            if nDist >= self.nDistLimit:
+            if nDist <= self.nDistLimit:
                 lRes.extend(lSugg)
                 if len(lRes) > nSuggLimit:
                     break
