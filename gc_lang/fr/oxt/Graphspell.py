@@ -56,6 +56,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             self.locales = tuple([ Locale(t[0], t[1], t[2])  for t in lLocale ])
             self.xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
             self.xOptionNode = self.xSettingNode.getByName("o_fr")
+            sMainDicName = self.xOptionNode.getPropertyValue("main_dic_name")
             personal_dic = ""
             if (self.xOptionNode.getPropertyValue("use_personal_dic")):
                 sPersonalDicJSON = self.xOptionNode.getPropertyValue("personal_dic")
@@ -65,7 +66,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
                     except:
                         print("Graphspell: wrong personal_dic")
                         traceback.print_exc()
-            self.oGraphspell = SpellChecker("fr", "fr-allvars.bdic", "", "", personal_dic)
+            self.oGraphspell = SpellChecker("fr", "fr-"+sMainDicName+".bdic", "", "", personal_dic)
             self.loadHunspell()
             # print("Graphspell: init done")
         except:
