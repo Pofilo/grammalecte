@@ -284,6 +284,7 @@ class IBDAWG:
     #@timethis
     def suggest (self, sWord, nSuggLimit=10):
         "returns a set of suggestions for <sWord>"
+        sWord = sWord.rstrip(".")   # useful for LibreOffice
         sWord = cp.spellingNormalization(sWord)
         sPfx, sWord, sSfx = cp.cut(sWord)
         nMaxSwitch = max(len(sWord) // 3, 1)
