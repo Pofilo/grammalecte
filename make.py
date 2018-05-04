@@ -316,7 +316,7 @@ def copyGraphspellDictionaries (dVars, bJavaScript=False, bExtendedDict=False, b
     dVars["dic_community_filename_js"] = ""
     dVars["dic_personal_filename_py"] = ""
     dVars["dic_personal_filename_js"] = ""
-    lDict = [ ("main", dVars['dic_filename']) ]
+    lDict = [ ("main", s)  for s in dVars['dic_filenames'].split(",") ]
     if bExtendedDict:
         lDict.append(("extended", dVars['dic_extended_filename']))
     if bCommunityDict:
@@ -332,28 +332,35 @@ def copyGraphspellDictionaries (dVars, bJavaScript=False, bExtendedDict=False, b
         file_util.copy_file(spfPyDic, "grammalecte/graphspell/_dictionaries")
         dVars['dic_'+sType+'_filename_py'] = sFileName + '.bdic'
         if bJavaScript:
+            print(spfJSDic)
             file_util.copy_file(spfJSDic, "grammalecte-js/graphspell/_dictionaries")
             dVars['dic_'+sType+'_filename_js'] = sFileName + '.json'
+    dVars['dic_main_filename_py'] = dVars['dic_default_filename_py'] + ".bdic"
+    dVars['dic_main_filename_js'] = dVars['dic_default_filename_js'] + ".json"
 
 
 def buildDictionary (dVars, sType, bJavaScript=False):
     if sType == "main":
         spfLexSrc = dVars['lexicon_src']
-        sfDictDst = dVars['dic_filename']
-        sDicName = dVars['dic_name']
-    elif sType == "extended":
-        spfLexSrc = dVars['lexicon_extended_src']
-        sfDictDst = dVars['dic_extended_filename']
-        sDicName = dVars['dic_extended_name']
-    elif sType == "community":
-        spfLexSrc = dVars['lexicon_community_src']
-        sfDictDst = dVars['dic_community_filename']
-        sDicName = dVars['dic_community_name']
-    elif sType == "personal":
-        spfLexSrc = dVars['lexicon_personal_src']
-        sfDictDst = dVars['dic_personal_filename']
-        sDicName = dVars['dic_personal_name']
-    lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, dVars['stemming_method'], int(dVars['fsa_method']))
+        l_sfDictDst = dVars['dic_filenames'].split(",")
+        l_sDicName = dVars['dic_name'].split(",")
+        l_sFilter = dVars['dic_filter'].split(",")
+        for sfDictDst, sDicName, sFilter in zip(l_sfDictDst, l_sDicName, l_sFilter):
+            lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, sFilter, dVars['stemming_method'], int(dVars['fsa_method']))
+    else:
+        if sType == "extended":
+            spfLexSrc = dVars['lexicon_extended_src']
+            sfDictDst = dVars['dic_extended_filename']
+            sDicName = dVars['dic_extended_name']
+        elif sType == "community":
+            spfLexSrc = dVars['lexicon_community_src']
+            sfDictDst = dVars['dic_community_filename']
+            sDicName = dVars['dic_community_name']
+        elif sType == "personal":
+            spfLexSrc = dVars['lexicon_personal_src']
+            sfDictDst = dVars['dic_personal_filename']
+            sDicName = dVars['dic_personal_name']
+        lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, "", dVars['stemming_method'], int(dVars['fsa_method']))
 
 
 

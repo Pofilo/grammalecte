@@ -131,7 +131,7 @@ class JobExecutor (XJob, unohelper.Base):
                     # https://bugs.documentfoundation.org/show_bug.cgi?id=97790
                     oSpellChecker = oGC.getSpellChecker()
                 else:
-                    oSpellChecker = SpellChecker("${lang}", "${dic_filename}.bdic")
+                    oSpellChecker = SpellChecker("${lang}", "fr-allvars.bdic")
             if not oLexicographe:
                 oLexicographe = lxg.Lexicographe(oSpellChecker)
         except:

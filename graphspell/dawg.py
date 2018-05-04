@@ -14,6 +14,8 @@ import os
 import collections
 import json
 import time
+import re
+import traceback
 
 from . import str_transform as st
 from .progressbar import ProgressBar
@@ -63,6 +65,7 @@ class DAWG:
             zFilter = re.compile(sSelectFilterRegex)  if sSelectFilterRegex  else None
         except:
             print(" # Error. Wrong filter regex. Filter ignored.")
+            traceback.print_exc()
             zFilter = None
 
         # read lexicon
@@ -99,6 +102,7 @@ class DAWG:
         
         # Preparing DAWG
         print(" > Preparing list of words")
+        print(" Filter: " + (sSelectFilterRegex or "[None]"))
         lVal = lChar + lAff + lTag
         lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in aEntry ]
         aEntry = None

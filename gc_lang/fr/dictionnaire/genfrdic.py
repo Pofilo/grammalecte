@@ -63,14 +63,6 @@ dCLASSIQUE = { 'name': 'DICTIONNAIRE ORTHOGRAPHIQUE FRANÇAIS “CLASSIQUE”',
                'mozId': 'fr-dicollecte-classique',
                'description': "Dictionnaire français “Classique”" }
 
-dCLASSIQUEX = { 'name': 'DICTIONNAIRE ORTHOGRAPHIQUE FRANÇAIS “CLASSIQUE ÉTENDU”',
-                'shortname': '“Classique étendu”',
-                'asciiName': 'fr-classique-ext',
-                'mozAsciiName': 'fr-FR-classic-ext',
-                'subDicts': '*MCX',
-                'mozId': 'fr-dicollecte-classique-ext',
-                'description': "Dictionnaire français “Classique étendu”" }
-
 dREFORME1990 = { 'name': 'DICTIONNAIRE ORTHOGRAPHIQUE FRANÇAIS “RÉFORME 1990”',
                  'shortname': '“Réforme 1990”',
                  'asciiName': 'fr-reforme1990',
