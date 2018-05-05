@@ -28,7 +28,7 @@ dStrings = {
         "activate_community": "Dictionnaire communautaire",
         "activate_community_descr": "Fonctionnalité à venir",
         "activate_personal": "Dictionnaire personnel",
-        "activate_personal_descr": "Le dictionnaire personnel est créé et édité via l’éditeur lexical.",
+        "activate_personal_descr": "Créable et éditable via l’éditeur lexical.",
 
         "restart": "Le changement ne prendra effet qu’après le redémarrage du logiciel.",
 
@@ -59,7 +59,7 @@ dStrings = {
         "activate_community": "Community dictionary",
         "activate_community_descr": "Feature to come.",
         "activate_personal": "Personal dictionary",
-        "activate_personal_descr": "The personal dictionary is created and edited via the lexicon editor.",
+        "activate_personal_descr": "Creatible and editable via the lexicon editor.",
 
         "restart": "The modification will be effective only after restarting the software.",
 

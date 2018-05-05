@@ -77,9 +77,9 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         # widget
         nX = 10
         nY1 = 10
-        nY2 = nY1 + 55
-        nY3 = nY2 + 30
-        nY4 = nY3 + 30
+        nY2 = nY1 + 60
+        nY3 = nY2 + 25
+        nY4 = nY3 + 25
         nY5 = nY4 + 45
         nY6 = nY5 + 95
 
@@ -96,11 +96,11 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
         self.xSelReform = self._addWidget('reform', 'RadioButton', nX+65, nY1+55, 55, nHeight, Label = self.dUI.get('reform', "#err"))
         self.xSelAllvars = self._addWidget('allvars', 'RadioButton', nX+120, nY1+55, 60, nHeight, Label = self.dUI.get('allvars', "#err"))
         self.xExtendedDic = self._addWidget('activate_extended', 'CheckBox', nX, nY2+15, nWidth, nHeight, Label = self.dUI.get('activate_extended', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, Enabled = False)
-        self._addWidget('activate_extended_descr', 'FixedText', nX+10, nY2+25, nWidth-10, nHeight*2, Label = self.dUI.get('activate_extended_descr', "#err"), MultiLine = True)
+        self._addWidget('activate_extended_descr', 'FixedText', nX+10, nY2+25, nWidth-10, nHeight*1, Label = self.dUI.get('activate_extended_descr', "#err"), MultiLine = True)
         self.xCommunityDic = self._addWidget('activate_community', 'CheckBox', nX, nY3+15, nWidth, nHeight, Label = self.dUI.get('activate_community', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088, Enabled = False)
-        self._addWidget('activate_community_descr', 'FixedText', nX+10, nY3+25, nWidth-10, nHeight*2, Label = self.dUI.get('activate_community_descr', "#err"), MultiLine = True)
+        self._addWidget('activate_community_descr', 'FixedText', nX+10, nY3+25, nWidth-10, nHeight*1, Label = self.dUI.get('activate_community_descr', "#err"), MultiLine = True)
         self.xPersonalDic = self._addWidget('activate_personal', 'CheckBox', nX, nY4+15, nWidth, nHeight, Label = self.dUI.get('activate_personal', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
-        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY4+25, nWidth-10, nHeight*2, Label = self.dUI.get('activate_personal_descr', "#err"), MultiLine = True)
+        self._addWidget('activate_personal_descr', 'FixedText', nX+10, nY4+25, nWidth-10, nHeight*1, Label = self.dUI.get('activate_personal_descr', "#err"), MultiLine = True)
         
         # Spell suggestion engine section
         self._addWidget("suggestion_section", 'FixedLine', nX, nY5, nWidth, nHeight, Label = self.dUI.get("suggestion_section", "#err"), FontDescriptor = xFDTitle)
