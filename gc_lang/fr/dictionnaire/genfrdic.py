@@ -1248,7 +1248,10 @@ class Flexion:
         # IFQ
         #s += "=" + self.cFq
         # DIC
-        s += "/" + self.cDic
+        if self.oEntry.di == "*" and self.cDic != "*":
+            s += "/" + self.cDic
+        else:
+            s += "/" + self.oEntry.di
         return s
 
     def keyTriNat (self):

@@ -8,6 +8,7 @@
 import json
 import os
 import itertools
+import traceback
 
 import graphspell.ibdawg as ibdawg
 from graphspell.echo import echo
@@ -271,7 +272,7 @@ def makePhonetTable (sp, bJS=False):
     import gc_lang.fr.modules.conj as conj
 
     try:
-        oDict = ibdawg.IBDAWG("fr.bdic")
+        oDict = ibdawg.IBDAWG("fr-allvars.bdic")
     except:
         traceback.print_exc()
         return
