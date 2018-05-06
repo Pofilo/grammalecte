@@ -22,7 +22,7 @@ ${map}
 
 
 const dDefaultDictionaries = new Map([
-    ["fr", "fr.json"],
+    ["fr", "fr-allvars.json"],
     ["en", "en.json"]
 ]);
 

@@ -609,7 +609,7 @@ const oSearch = {
     oSpellChecker: null,
 
     load: function () {
-        this.oSpellChecker = new SpellChecker("fr", browser.extension.getURL("")+"grammalecte/graphspell/_dictionaries", "fr.json");
+        this.oSpellChecker = new SpellChecker("fr", browser.extension.getURL("")+"grammalecte/graphspell/_dictionaries", "fr-allvars.json");
     },
 
     loadOtherDictionaries: function () {
