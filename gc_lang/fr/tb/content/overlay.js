@@ -696,7 +696,7 @@ var oTextFormatter = {
             }
             document.getElementById('progressbar').value = 1;
 
-            // espaces typographiques
+            // espaces insécables
             if (document.getElementById("o_group_nbsp").checked) {
                 if (document.getElementById("o_nbsp_before_punctuation").checked) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_punctuation");
@@ -718,6 +718,10 @@ var oTextFormatter = {
                 if (document.getElementById("o_nbsp_before_units").checked) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_units");
                     document.getElementById('res_o_nbsp_before_units').textContent = n1;
+                }
+                if (document.getElementById("o_nbsp_titles").checked) {
+                    [sText, n1] = this.formatText(sText, "nbsp_titles");
+                    document.getElementById('res_o_nbsp_titles').textContent = n1;
                 }
                 document.getElementById("o_group_nbsp").checked = false;
                 this.switchGroup("o_group_nbsp");

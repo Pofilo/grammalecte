@@ -34,6 +34,7 @@ def py2js (sCode):
     sCode = sCode.replace(".isupper", ".gl_isUpperCase")
     sCode = sCode.replace(".islower", ".gl_isLowerCase")
     sCode = sCode.replace(".istitle", ".gl_isTitle")
+    sCode = sCode.replace(".isalpha", ".gl_isAlpha")
     sCode = sCode.replace(".capitalize", ".gl_toCapitalize")
     sCode = sCode.replace(".strip", ".gl_trim")
     sCode = sCode.replace(".lstrip", ".gl_trimLeft")

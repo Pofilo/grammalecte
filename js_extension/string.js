@@ -20,6 +20,9 @@ if (String.prototype.grammalecte === undefined) {
     String.prototype.gl_isDigit = function () {
         return (this.search(/^[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]+$/) !== -1);
     };
+    String.prototype.gl_isAlpha = function () {
+        return (this.search(/^[a-zA-Zà-öÀ-Öø-ÿØ-ßĀ-ʯ]+$/) !== -1);
+    };
     String.prototype.gl_isLowerCase = function () {
         return (this.search(/^[a-zà-öø-ÿ0-9-]+$/) !== -1);
     };

@@ -14,6 +14,8 @@ import os
 import collections
 import json
 import time
+import re
+import traceback
 
 from . import str_transform as st
 from .progressbar import ProgressBar
@@ -41,7 +43,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, src, cStemming, sLangCode, sLangName="", sDicName=""):
+    def __init__ (self, src, cStemming, sLangCode, sLangName="", sDicName="", sSelectFilterRegex=""):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -59,39 +61,48 @@ class DAWG:
         lTag  = [];   dTag  = {}; nTag  = 0; dTagOccur = {}
         nErr = 0
 
+        try:
+            zFilter = re.compile(sSelectFilterRegex)  if sSelectFilterRegex  else None
+        except:
+            print(" # Error. Wrong filter regex. Filter ignored.")
+            traceback.print_exc()
+            zFilter = None
+
         # read lexicon
         if type(src) is str:
             iterable = readFile(src)
         else:
             iterable = src
         for sFlex, sStem, sTag in iterable:
-            addWordToCharDict(sFlex)
-            # chars
-            for c in sFlex:
-                if c not in dChar:
-                    dChar[c] = nChar
-                    lChar.append(c)
-                    nChar += 1
-                dCharOccur[c] = dCharOccur.get(c, 0) + 1
-            # affixes to find stem from flexion
-            sAff = funcStemmingGen(sFlex, sStem)
-            if sAff not in dAff:
-                dAff[sAff] = nAff
-                lAff.append(sAff)
-                nAff += 1
-            dAffOccur[sAff] = dCharOccur.get(sAff, 0) + 1
-            # tags
-            if sTag not in dTag:
-                dTag[sTag] = nTag
-                lTag.append(sTag)
-                nTag += 1
-            dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
-            aEntry.add((sFlex, dAff[sAff], dTag[sTag]))
+            if not zFilter or zFilter.search(sTag):
+                addWordToCharDict(sFlex)
+                # chars
+                for c in sFlex:
+                    if c not in dChar:
+                        dChar[c] = nChar
+                        lChar.append(c)
+                        nChar += 1
+                    dCharOccur[c] = dCharOccur.get(c, 0) + 1
+                # affixes to find stem from flexion
+                sAff = funcStemmingGen(sFlex, sStem)
+                if sAff not in dAff:
+                    dAff[sAff] = nAff
+                    lAff.append(sAff)
+                    nAff += 1
+                dAffOccur[sAff] = dCharOccur.get(sAff, 0) + 1
+                # tags
+                if sTag not in dTag:
+                    dTag[sTag] = nTag
+                    lTag.append(sTag)
+                    nTag += 1
+                dTagOccur[sTag] = dTagOccur.get(sTag, 0) + 1
+                aEntry.add((sFlex, dAff[sAff], dTag[sTag]))
         if not aEntry:
             raise ValueError("# Error. Empty lexicon")
         
         # Preparing DAWG
         print(" > Preparing list of words")
+        print(" Filter: " + (sSelectFilterRegex or "[None]"))
         lVal = lChar + lAff + lTag
         lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in aEntry ]
         aEntry = None

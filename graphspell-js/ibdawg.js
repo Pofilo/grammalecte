@@ -63,18 +63,21 @@ class SuggResult {
             lRes = lRes.sort((sA, sB) => { return dDistTemp.get(sA) - dDistTemp.get(sB); });
             dDistTemp.clear();
         }
-        for (let lSugg of this.dSugg.values()) {
-            for (let sSugg of lSugg) { lRes.push(sSugg); }
+        for (let [nDist, lSugg] of this.dSugg.entries()) {
+            if (nDist > this.nDistLimit) {
+                break;
+            }
+            lRes.push(...lSugg);
             if (lRes.length > nSuggLimit) {
                 break;
             }
         }
         lRes = char_player.filterSugg(lRes);
-        if (this.sWord.gl_isTitle()) {
-            lRes = lRes.map((sSugg) => { return sSugg.gl_toCapitalize(); });
-        }
-        else if (this.sWord.gl_isUpperCase()) {
+        if (this.sWord.gl_isUpperCase()) {
             lRes = lRes.map((sSugg) => { return sSugg.toUpperCase(); });
+        }
+        else if (this.sWord.slice(0,1).gl_isUpperCase()) {
+            lRes = lRes.map((sSugg) => { return sSugg.slice(0,1).toUpperCase() + sSugg.slice(1); });
         }
         return lRes.slice(0, nSuggLimit);
     }
@@ -174,8 +177,8 @@ class IBDAWG {
                 throw ValueError("# Error: unknown code: " + this.nCompressionMethod);
         }
         //console.log(this.getInfo());
-        this.bOptNumSigle = true;
-        this.bOptNumAtLast = false;
+        this.bAcronymValid = true;
+        this.bNumAtLastValid = false;
     }
 
     getInfo () {
@@ -225,6 +228,9 @@ class IBDAWG {
             }
             return sToken.split("-").every(sWord  =>  this.isValid(sWord)); 
         }
+        if (sToken.includes(".") || sToken.includes("·")) {
+            return true;
+        }
         return false;
     }
 
@@ -239,16 +245,13 @@ class IBDAWG {
         if (this.lookup(sWord)) {
             return true;
         }
-        if (sWord.gl_isDigit()) {
-            return true;
-        }
         if (sWord.charAt(0).gl_isUpperCase()) {
             if (sWord.length > 1) {
                 if (sWord.gl_isTitle()) {
                     return !!this.lookup(sWord.toLowerCase());
                 }
                 if (sWord.gl_isUpperCase()) {
-                    if (this.bOptNumSigle) {
+                    if (this.bAcronymValid) {
                         return true;
                     }
                     return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord.gl_toCapitalize()));
@@ -257,6 +260,9 @@ class IBDAWG {
             } else {
                 return !!this.lookup(sWord.toLowerCase());
             }
+        }
+        if (sWord.slice(0,1).gl_isDigit()) {
+            return true;
         }
         return false;
     }
@@ -309,14 +315,9 @@ class IBDAWG {
         let nMaxSwitch = Math.max(Math.floor(sWord.length / 3), 1);
         let nMaxDel = Math.floor(sWord.length / 5);
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
+        let nMaxJump = Math.max(Math.floor(sWord.length / 4), 1);
         let oSuggResult = new SuggResult(sWord);
-        this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl);
-        if (sWord.gl_isTitle()) {
-            this._suggest(oSuggResult, sWord.toLowerCase(), nMaxSwitch, nMaxDel, nMaxHardRepl);
-        }
-        else if (sWord.gl_isLowerCase()) {
-            this._suggest(oSuggResult, sWord.gl_toCapitalize(), nMaxSwitch, nMaxDel, nMaxHardRepl);
-        }
+        this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
         if (sSfx || sPfx) {
             // we add what we removed
@@ -325,7 +326,7 @@ class IBDAWG {
         return aSugg;
     }
 
-    _suggest (oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
+    _suggest (oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         // returns a set of suggestions
         // recursive function
         if (sRemain == "") {
@@ -337,50 +338,58 @@ class IBDAWG {
             }
             return;
         }
+        if (nDist > oSuggResult.nDistLimit) {
+            return;
+        }
 
         let cCurrent = sRemain.slice(0, 1);
         for (let [cChar, jAddr] of this._getCharArcs(iAddr)) {
             if (char_player.d1to1.gl_get(cCurrent, cCurrent).indexOf(cChar) != -1) {
-                this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, jAddr, sNewWord+cChar);
+                this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, jAddr, sNewWord+cChar);
             }
-            else if (!bAvoidLoop && nMaxHardRepl) {
-                this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nDeep+1, jAddr, sNewWord+cChar, true);
+            else if (!bAvoidLoop) {
+                if (nMaxHardRepl) {
+                    this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true);
+                }
+                if (nMaxJump) {
+                    this._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true);
+                }
             }
         }
         if (!bAvoidLoop) { // avoid infinite loop
             if (sRemain.length > 1) {
                 if (cCurrent == sRemain.slice(1, 2)) {
                     // same char, we remove 1 char without adding 1 to <sNewWord>
-                    this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord);
+                    this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord);
                 }
                 else {
                     // switching chars
                     if (nMaxSwitch > 0) {
-                        this._suggest(oSuggResult, sRemain.slice(1, 2)+sRemain.slice(0, 1)+sRemain.slice(2), nMaxSwitch-1, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
+                        this._suggest(oSuggResult, sRemain.slice(1, 2)+sRemain.slice(0, 1)+sRemain.slice(2), nMaxSwitch-1, nMaxDel, nMaxHardRepl, nMaxJump, nDist+1, nDeep+1, iAddr, sNewWord, true);
                     }
                     // delete char
                     if (nMaxDel > 0) {
-                        this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel-1, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
+                        this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel-1, nMaxHardRepl, nMaxJump, nDist+1, nDeep+1, iAddr, sNewWord, true);
                     }
                 }
                 // Phonetic replacements
                 for (let sRepl of char_player.get1toXReplacement(sNewWord.slice(-1), cCurrent, sRemain.slice(1,2))) {
-                    this._suggest(oSuggResult, sRepl + sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
+                    this._suggest(oSuggResult, sRepl + sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, true);
                 }
                 for (let sRepl of char_player.d2toX.gl_get(sRemain.slice(0, 2), [])) {
-                    this._suggest(oSuggResult, sRepl + sRemain.slice(2), nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
+                    this._suggest(oSuggResult, sRepl + sRemain.slice(2), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, true);
                 }
             }
             // end of word
             if (sRemain.length == 2) {
                 for (let sRepl of char_player.dFinal2.gl_get(sRemain, [])) {
-                    this._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
+                    this._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, true);
                 }
             }
             else if (sRemain.length == 1) {
-                this._suggest(oSuggResult, "", nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true); // remove last char and go on
+                this._suggest(oSuggResult, "", nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, true); // remove last char and go on
                 for (let sRepl of char_player.dFinal1.gl_get(sRemain, [])) {
-                    this._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nDeep+1, iAddr, sNewWord, true);
+                    this._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, true);
                 }
             }
         }

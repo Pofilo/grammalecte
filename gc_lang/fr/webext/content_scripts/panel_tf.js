@@ -36,6 +36,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             xNBSP.appendChild(this._createBlockOption("o_nbsp_before_symbol", true, "Avant % ‰ € $ £ ¥ ˚C"));
             xNBSP.appendChild(this._createBlockOption("o_nbsp_within_numbers", true, "À l’intérieur des nombres"));
             xNBSP.appendChild(this._createBlockOption("o_nbsp_before_units", true, "Avant les unités de mesure"));
+            xNBSP.appendChild(this._createBlockOption("o_nbsp_titles", true, "Après les titres de civilité"));
             let xDelete = this._createFieldset("group_delete", true, "Suppressions");
             xDelete.appendChild(this._createBlockOption("o_erase_non_breaking_hyphens", true, "Tirets conditionnels"));
             let xColumn2 = oGrammalecte.createNode("div", {className: "grammalecte_tf_column"});
@@ -310,7 +311,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             }
             document.getElementById('grammalecte_tf_progressbar').value = 2;
 
-            // espaces typographiques
+            // espaces insécables
             if (this.isSelected("o_group_nbsp")) {
                 if (this.isSelected("o_nbsp_before_punctuation")) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_punctuation");
@@ -332,6 +333,10 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                 if (this.isSelected("o_nbsp_before_units")) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_units");
                     document.getElementById('res_o_nbsp_before_units').textContent = n1;
+                }
+                if (this.isSelected("o_nbsp_titles")) {
+                    [sText, n1] = this.formatText(sText, "nbsp_titles");
+                    document.getElementById('res_o_nbsp_titles').textContent = n1;
                 }
                 this.setOption("o_group_nbsp", false);
                 this.switchGroup("o_group_nbsp");

@@ -59,11 +59,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.oTooltip.hide();
         this.clear();
         if (xNode) {
-            if (xNode.tagName == "TEXTAREA") {
-                this.oNodeControl.setNode(xNode);
-            } else {
-                this.oNodeControl.clear();
-                this.addMessage("Cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Les modifications ne seront pas répercutées automatiquement. Une fois votre texte corrigé, vous pouvez utiliser le bouton ‹∑› pour copier le texte dans le presse-papiers.");
+            this.oNodeControl.setNode(xNode);
+            if (xNode.tagName != "TEXTAREA") {
+                this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Une telle zone de texte est susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             }
         }
     }
@@ -197,11 +195,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     blockParagraph (xParagraph) {
         xParagraph.contentEditable = "false";
         document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Analyse…";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 100%, 50%, .2)";
     }
 
     freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
         document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Réanalyser";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(120, 30%, 50%)";
+        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "none";
     }
 
     applySuggestion (sNodeSuggId) { // sugg
@@ -434,7 +436,6 @@ class GrammalecteNodeControl {
         this.xNode = null;
         this.dParagraph = new Map();
         this.bTextArea = null;
-        this.bWriteEN = false;  // write editable node
     }
 
     setNode (xNode) {
@@ -475,17 +476,32 @@ class GrammalecteNodeControl {
         //console.log("Paragraphs number: " + (i+1));
     }
 
+    eraseContent () {
+        while (this.xNode.firstChild) {
+            this.xNode.removeChild(this.xNode.firstChild);
+        }
+    }
+
     write () {
-        if (this.xNode !== null && (this.bTextArea || this.bWriteEN)) {
+        if (this.xNode !== null) {
             let sText = "";
-            this.dParagraph.forEach(function (val, key) {
-                sText += val + "\n";
-            });
-            sText = sText.slice(0,-1).normalize("NFC");
             if (this.bTextArea) {
-                this.xNode.value = sText;
+                this.dParagraph.forEach(function (val, key) {
+                    sText += val + "\n";
+                });
+                this.xNode.value = sText.slice(0,-1).normalize("NFC");
             } else {
-                this.xNode.textContent = sText;
+                this.eraseContent();
+                this.dParagraph.forEach((val, key) => {
+                    this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
+                    this.xNode.appendChild(document.createElement("br"));
+                });
+                /*
+                this.dParagraph.forEach(function (val, key) {
+                    sText += val + "<br/>";
+                });
+                this.xNode.innerHTML = sText.normalize("NFC");
+                */
             }
         }
     }

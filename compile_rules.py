@@ -1,9 +1,7 @@
 
 import re
-import sys
 import traceback
 import json
-from distutils import file_util
 
 import compile_rules_js_convert as jsconv
 

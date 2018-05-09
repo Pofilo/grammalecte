@@ -478,7 +478,7 @@ __[s](p_mot_entre_crochets)__
     \[({w_1})\] @@1
     <<- \1.isdigit() ~>> *
     <<- __else__ and morph(\1, ":G", False) ~>> =" " + \1 + " "
-    <<- __else__ ~>> _
+    <<- __else__ and \1.isalpha() ~>> _
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
     <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
@@ -514,6 +514,7 @@ TEST: Marion Maréchal-Le Pen. Afin que Maréchal ne soit pas analysé comme un 
 TEST: Car [je] deviendrai plus insaisissable que jamais.
 TEST: C’est dans le dossier D:\Data
 TEST: Dossier C:\Program Files (x86)\LibreOffice
+TEST: [1] Dossier à revoir.
 
 
 
@@ -1655,7 +1656,10 @@ __[i]/tu(tu_avant_hier)__                   avant hier <<- ->> avant-hier       
 __[i]/tu(tu_bouche_à_oreille_bouche)__      bouche à (?:bouche|oreilles?) <<- morph(word(-1), ":D", False) ->> =\0.replace(" ", "-") # Il manque les traits d’union.
 __[i]/tu(tu_c_est_à_dire)__                 c’est [àa] dire <<- ->> c’est-à-dire                    # Il manque les traits d’union.
 __[i]/tu(tu_chef_d_œuvre_lieu)__            chef (lieu|d’œuvre) @@$ <<- ->> chef-\1                 # Il manque un trait d’union.
-__[i]/tu(tu_celui_celle_là_ci)__    ce(?:lles?|lui|ux) (?:là|[cs]i) <<- ->> =\0.replace(" ", "-").replace("si", "ci")     # Il manque un trait d’union.
+__[i]/tu(tu_celui_celle_là_ci)__
+    ce(?:lles?|lui|ux) (?:là|[cs]i)
+    <<- not (\0.endswith("si") and morph(word(1), ":[AW]", False))
+    ->> =\0.replace(" ", "-").replace("si", "ci")                                                   # Il manque un trait d’union.
 __[i]/tu(tu_centre_ville)__                 centres? villes? <<- ->> centre-ville|centres-villes    # Il manque un trait d’union.
 __[i]/tu(tu_ci_dessous_devant_contre)__     ci (desso?us|devant|contre) @@$ <<- ->> ci-\1           # Il manque un trait d’union.
 __[i]/tu(tu_de_ci_de_là)__                  de ci,? de là <<- ->> de-ci de-là|de-ci, de-là          # Il manque les traits d’union.
@@ -1741,6 +1745,7 @@ TEST: ils sont partis {{outre mer}}
 TEST: elles sont allées au {{sud ouest}}
 TEST: {{nord est}}
 TEST: des {{stock options}}
+TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
 
 
 # est-ce … ?
@@ -1971,10 +1976,10 @@ TEST: A devient notre meilleure chance d’y parvenir.
 
 !!!! Accentuation des majuscules                                                                    
 
-__[i]/maj(maj_accents)__
-    E(?:tat|glise|co(?:le|nomie)|quipe|té)s? @@1
-    <<- ->> ="É"+\0[0:1]                                                                            # Accentuez les majuscules.
-    <<- ~>> ="É"+\0[0:1]
+__[u]/maj(maj_accents)__
+    E(?:tat|glise|co(?:le|nomie)|quipe|lectri(?:cité|que)|gal(?:ité|ement)|té)s? @@1
+    <<- ->> ="É"+\0[1:]                                                                            # Accentuez les majuscules.
+    <<- ~>> ="É"+\0[1:]
 
 TEST: Le budget de l’{{Etat}}.
 
@@ -2474,10 +2479,10 @@ TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
 TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
 
 
-# mot / mol
+# mot / mol / moi
 __[i]/ocr(ocr_mot)__
     mols?
-    <<- ->> =\0.replace("l", "t").replace("L", "T")                                                 # Erreur de numérisation ?
+    <<- ->> =\0.replace("l", "t").replace("L", "T")+"|"+\0.replace("l", "i").replace("L", "I")      # Erreur de numérisation ?
 
 TEST: __ocr__ c’est un {{mol}} très dur.
 
@@ -4277,7 +4282,7 @@ TEST: {{qu’elle}} emmerdeuse.
 __[i]/conf(conf_qu_elle_verbe)__
     (quelles?) +({w_1})  @@0,$
     <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y) ", ":[NA].*:[fe]|>(?:plus|moins)") or \2 == "t" or \2 == "s")
-        and not (\2 == "en" and morph(word(1), ":V0e", False)) >>>
+        and not (morph(\2, ">(?:pouvoir|devoir|en)", False) and morph(word(1), ":V0e", False)) >>>
     <<- \1.endswith("e") and not morph(\2, ":V0e", False) -1>> qu’elle                              # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
     <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False) -1>> qu’elles                # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
     <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
@@ -4301,6 +4306,8 @@ TEST: Quelle est sa passion ?
 TEST: Quelles sont leurs principales études ?
 TEST: Quelles en sont les conséquences ?
 TEST: Quelle plus belle complicité que…
+TEST: Quelle peut être la date de clôture d’un exercice ?
+TEST: Quelle doit être la date du mariage ?
 
 
 # savoir / ignorer
@@ -5068,7 +5075,7 @@ __[i](p_qui_plus_est)__         qui plus est <<- ~>> *
 __[i](p_qui_loc_tps)__          qui (ce (?:jour|matin|après-midi|soir)-là|cette (?:nuit|matinée|soirée)-là) @@4 <<- ~1>> *
 __[i](p_quoi_qu_il_qqch)__      quoi qu il (?:(?:arriv|en co[ûu]t)(?:e|ât)|adv(?:ienne|înt)) <<- ~>> *
 __[i](p_sans_difficulté)__      sans (?:grande|grosse) difficulté(?: apparente| aucune| financière| majeure| particulière|) <<- ~>> *
-__[i](p_sans_qqch)__            sans (?:ambages|arrêt|au(?:cun doute|tre forme de procès)|cesse|commune mesure|conteste|coup férir|crier gare|difficulté(?: apparente| aucune| financière| majeure| particulière|)|dire mot|doute|encombres?|états d’âme|fin|foi,? ni loi|l’ombre d’un doute|le (?:faire exprès|vouloir)|mot dire|nul doute|queue ni tête|raison apparente|relâche|répit|(?:grand |)succès|trêve|(?:pour autant |)y (?:prendre g(?:arde|o[ûu]t)|faire attention|parvenir|réussir|réfléchir|songer|penser)|faire de vagues|s’en (?:rendre compte|apercevoir)|l’aide de personne) <<- ~>> *
+__[i](p_sans_qqch)__            sans (?:ambages|arrêt|au(?:cun doute|tre forme de procès)|cesse|commune mesure|conteste|coup férir|crier gare|difficulté(?: apparente| aucune| financière| majeure| particulière|)|dire mot|doute|encombres?|états d’âme|fin|foi,? ni loi|l’ombre d’un doute|le (?:faire exprès|vouloir)|mot dire|nul doute|queue ni tête|raison apparente|relâche|répit|(?:grand |)succès|trêve|vergogne|(?:pour autant |)y (?:prendre g(?:arde|o[ûu]t)|faire attention|parvenir|réussir|réfléchir|songer|penser)|faire de vagues|s’en (?:rendre compte|apercevoir)|l’aide de personne) <<- ~>> *
 __[i](p_séance_tenante)__       séance tenante <<- ~>> *
 __[i](p_selon_qqch)__           selon (?:toute vraisemblance|(?:[mt]oi|lui|elles?|eux|nous|vous)(?! qui)) <<- ~>> *
 __[i](p_semble_t_il)__          sembl(?:e-t-il|ait-il) <<- ~>> *
@@ -6888,7 +6895,7 @@ __[i]/gn(gn_2m_les)__
         and ((morphex(\2, ":[NAQ].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NAQ].*:f")) or (morphex(\2, ":[NAQ].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NAQ].*:m")))
         and not apposition(\2, \3) and not before(r"\b(?:et|ou|de) +$")
     -3>> =switchGender(@, True)                                                                     # Accord de genre erroné entre « \2 » et « \3 ».
-    <<- __also__ and hasFemForm(\2) -1>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
+    <<- __also__ and hasFemForm(\2) -2>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
     <<- \2 != "fois" and not \3.startswith("seul")
         and morph(\2, ":[NAQ].*:[pi]", False) and morph(\3, ":[NAQ].*:s")
         and not apposition(\2, \3) and not (after_chk1(r"^ +et +(\w[\w-]+)", ":A") or after_chk1(r"^ *, +(\w[\w-]+)", ":A.*:[si]"))
@@ -6902,7 +6909,7 @@ __[i]/gn(gn_2m_les_après_et_ou_de)__
         and not apposition(\2, \3)
         and not morph(word(-1), ":[NAQ]|>(?:et|ou) ", False, False)
     -3>> =switchGender(@, True)                                                                     # Accord de genre erroné entre « \2 » et « \3 ».
-    <<- __also__ and hasFemForm(\2) -1>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
+    <<- __also__ and hasFemForm(\2) -2>> =switchGender(@, True)                                     # Accord de genre erroné avec « \3 ».
     <<- \2 != "fois" and not \3.startswith("seul")
         and morph(\2, ":[NAQ].*:[pi]", False) and morph(\3, ":[NAQ].*:s")
         and not apposition(\2, \3) and not (after_chk1(r"^ +et +(\w[\w-]+)", ":A") or after_chk1(r"^ *, +(\w[\w-]+)", ":A.*:[si]"))
@@ -9890,13 +9897,14 @@ __[i]/ppas(ppas_ça_verbe)__
     (ça|ce(?:la|ci)|celui-(?:ci|là)) +(?:ne +|n’|)((?:es|étai|f[uû]|se[mr]|soi|par|dev|re(?:dev|st))\w+|a(?:it|vait|ura(?:it|)|) +été|e[uû]t +été) +({w_2})  @@0,w,$
     <<- (morph(\2, ">(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre) ", False) or \2.endswith(" été"))
         and ( morphex(\3, ":[NAQ].*:p", ":[GWYsi]") or ( morphex(\3, ":[AQ].*:f", ":[GWYme]") and not morph(word(1), ":N.*:f", False, False) ) )
-        and not morph(word(-1), ":(?:R|V...t)", False, False)
+        and not morph(word(-1), ":(?:R|V...t)|>de ", False, False)
     -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
 
 TEST: ça semble {{perdus}}
 TEST: cela paraît {{incroyables}}
 TEST: Je n’arrêtais pas de me répéter que tout cela était peut-être pure imagination
 TEST: La femme qui faisait ça est partie.
+TEST: De cela a toujours été faite notre vie
 
 
 __[i]/ppas(ppas_lequel_verbe)__
@@ -11283,15 +11291,17 @@ TEST: j’ai peur qu’il ne leur {{face}} quelque chose de mal
 
 #### CONFUSION ÊTRE / AVOIR
 __[i]/conf(conf_ait_confiance_été_faim_tort)__
-    (?<!’)(est?) +(con(?:fiance|science)|envie|été|p(?:eine|eur)|faim|h(?:âte|onte)|recours|soif|tort)  @@0,$
+    (?<!’)(est?) +(con(?:fiance|science)|envie|été|p(?:eine [àa]|eur)|faim|h(?:âte|onte)|recours|soif|tort)  @@0,$
     <<- not before(r"(?i)\b(?:ce que?|tout) ")
     -1>> ait|aie                                                      # Confusion probable dans l’expression « avoir \2 ». Vous utilisez ici le verbe « être ».
 
 TEST: il est posssible qu’il {{est}} confiance en toi
+TEST: Je crains qu’il {{est}} peine à trouver le bonheur.
 TEST: La révolution est crainte.
 TEST: Je n’en ai cure.
 TEST: Notre communauté vous est redevable.
 TEST: l’humour est affaire de culture
+TEST: Aller chercher l’air pur à la campagne est peine perdue.
 
 
 #### CONFUSION veillez/veuillez                                                                     
@@ -11488,7 +11498,7 @@ TEST: Tu ne {{ment}} jamais.
 TEST: Tu {{a}} mal ?
 TEST: Tu ne le lui {{prend}} pas.
 TEST: Tu ne m’{{attendra}} pas.
-TEST: toi qui n’y {{connait}} rien, ne nous ennuie pas avec tes théories.
+TEST: toi qui n’y {{connaît}} rien, ne nous ennuie pas avec tes théories.
 
 
 ## 3sg
@@ -12028,7 +12038,7 @@ TEST: {{Quelle}} que soient nos problèmes, on en parle toujours trop.
 # 3sg
 __[s]/conj(conj_nom_propre)__
     ([A-ZÉÈ][\w-]+) +({w_1})  @@0,$
-    <<- not before(r"\b(?:et |ou |[dD][eu] |ni |[dD]e l’) *$") and morph(\1, ":M", False) and morphex(\2, ":[123][sp]", ":(?:G|3s|3p!|P|M|[AQ].*:[si])")
+    <<- not before(r"\b(?:et |ou |[dD][eu] |ni |[dD]e l’) *$") and morph(\1, ":M", False) and morphex(\2, ":[123][sp]", ":(?:G|3s|3p!|P|M|[AQ].*:[si]|N.*:m:s)")
         and not morph(word(-1), ":[VRD]", False, False) and not before(r"([A-ZÉÈ][\w-]+), +([A-ZÉÈ][\w-]+), +$")
         and not (morph(\2, ":3p", False) and word(-1))
     -2>> =suggVerb(@, ":3s")
@@ -12041,6 +12051,7 @@ TEST: Arthur D. parvient à…
 TEST: Les fondateurs pionniers de l’Internet n’avaient pas prévu
 TEST: les compteurs Geiger ne détectent pas le polonium
 TEST: Des femmes de l’administration Obama y racontent qu’elles ont constaté qu’il leur arrivait régulièrement de ne pas être invitées
+TEST: Macron président, c’est…
 
 
 # 3pl
@@ -12063,7 +12074,7 @@ TEST: Samantha et Eva leur {{décrive}} une leçon.
 !!
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_sing)__
-    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
+    (?:que?|où|comment|combien|dont|quand|pourquoi) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
     <<- morphex(\1, ":(?:[12]s|3p)", ":(?:3s|G|W|3p!)") and not after("^ +(?:et|ou) (?:l(?:es? |a |’|eurs? )|[mts](?:a|on|es) |ce(?:tte|ts|) |[nv]o(?:s|tre) |d(?:u|es) )")
     -1>> =suggVerb(@, ":3s")                                                        # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -12078,9 +12089,17 @@ TEST: à l’époque de Mansur que grandissent la place et le rôle de…
 TEST: où vivent la majorité des immigrés et des enfants d’immigrés
 
 
+__[i]/conj(conj_lxquel_verbe_sujet_sing)__
+    (?:l[ea]s?quel(?:le|)s?) +({w1}) (l(?:e(?:ur | )|a |’)|[mts](?:on|a) |ce(?:t|tte|) |[nv]otre |du ) *(?!plupart|majorité)({w1})  @@w,w,$
+    <<- morphex(\1, ":(?:[12]s|3p)", ":(?:3s|G|W|3p!)") and not after("^ +(?:et|ou) (?:l(?:es? |a |’|eurs? )|[mts](?:a|on|es) |ce(?:tte|ts|) |[nv]o(?:s|tre) |d(?:u|es) )")
+        and morph(word(-1), ":R", False, False)
+    -1>> =suggVerb(@, ":3s")                                                        # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du singulier.
+
+TEST: une muraille contre laquelle {{venaient}} la masse armée et vociférante.
+
 
 __[i]/conj(conj_que_où_comment_verbe_sujet_pluriel)__
-    (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
+    (?:que?|où|comment|combien|dont|quand|pourquoi) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
     <<- morphex(\1, ":[123]s", ":(?:3p|G|W)") -1>> =suggVerb(@, ":3p")              # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: D’où {{vienne}} les hommes ?
@@ -12089,13 +12108,23 @@ TEST: les idioties qu’{{aime}} les hommes, j’en ai marre.
 TEST: l’amour dont {{parle}} les femmes
 
 
+__[i]/conj(conj_lxquel_verbe_sujet_pluriel)__
+    (?:l[ea]s?quel(?:le|)s?) +({w_3}) ([ldcmts]es|quelques|certaine?s|plusieurs|[nv]os|leurs) ({w1})  @@w,w,$
+    <<- morphex(\1, ":[123]s", ":(?:3p|G|W)") and morph(word(-1), ":R", False, False)
+    -1>> =suggVerb(@, ":3p")              # Conjugaison erronée. Accord avec « \2 \3… ». Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+TEST: les amusements pour lesquels {{vienne}} les invités.
+TEST: financé par le Qatar, lequel dépense des millions de dollars pour soutenir le mouvement
+
+
 __[i]/conj(conj_que_où_comment_verbe_sujet)__
     (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_1}[es])(?! je| tu| vous) @@$
-    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N|M)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N|A|M)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
 TEST: Le ministre de l’Intérieur a estimé que Calais avait vécu “un degré de violence jamais connu”.
+TEST: à des règles aussi absurdes que précises
 
 
 #__[i]/conj(conj_que_où_verbe_sujet_3sg)__
