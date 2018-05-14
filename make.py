@@ -193,13 +193,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     dVars['loc'] = str(dict([ [s, [s[0:2], s[3:5], ""]] for s in dVars["locales"].split(" ") ]))
 
     ## COMPILE RULES
-    print("> read rules file...")
-    try:
-        lRules = open(spLang + "/rules.grx", 'r', encoding="utf-8").readlines()
-    except:
-        print("Rules file in project [" + sLang + "] not found")
-        return
-    dVars.update(compile_rules.make(lRules, dVars['lang'], bJavaScript))
+    dResult = compile_rules.make(spLang, dVars['lang'], bJavaScript)
+    dVars.update(dResult)
 
     ## READ GRAMMAR CHECKER PLUGINS
     print("PYTHON:")

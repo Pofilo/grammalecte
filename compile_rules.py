@@ -420,9 +420,16 @@ def printBookmark (nLevel, sComment, nLine):
     print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
 
 
-def make (lRules, sLang, bJavaScript):
+def make (spLang, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
+
+    print("> read rules file...")
+    try:
+        lRules = open(spLang + "/rules_g.grx", 'r', encoding="utf-8").readlines()
+    except:
+        print("Error. Rules file in project [" + sLang + "] not found.")
+        exit()
 
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
