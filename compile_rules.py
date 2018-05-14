@@ -426,7 +426,7 @@ def make (spLang, sLang, bJavaScript):
 
     print("> read rules file...")
     try:
-        lRules = open(spLang + "/rules_g.grx", 'r', encoding="utf-8").readlines()
+        lRules = open(spLang + "/rules.grx", 'r', encoding="utf-8").readlines()
     except:
         print("Error. Rules file in project [" + sLang + "] not found.")
         exit()
