@@ -9565,10 +9565,11 @@ TEST: Ce sont des biens de peu de valeur.
 !!
 
 __[i]/infi(infi_d_en_y)__
-    d’(?:en|y) +({w_2}(?:ée?s?|ai(?:en|)[st]?|ez))  @@$
-    <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
+    d’(?:en|y) +({w_2})  @@$
+    <<- morphex(\1, ":V", ":Y") -1>> =suggVerbInfi(@)                                               # Le verbe devrait être à l’infinitif.
 
 TEST: arrête d’y {{consacré}} autant de temps.
+TEST: je suis certain d’en {{choque}} plusieurs.
 
 
 __[i]/infi(infi_de_pronom)__
