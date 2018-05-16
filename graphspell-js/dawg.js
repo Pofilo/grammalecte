@@ -67,7 +67,7 @@ class DAWG {
                 lAff.push(sAff);
                 nAff += 1;
             }
-            dAffOccur.set(sAff, dCharOccur.gl_get(sAff, 0) + 1);
+            dAffOccur.set(sAff, dAffOccur.gl_get(sAff, 0) + 1);
             // tags
             if (!dTag.get(sTag)) {
                 dTag.set(sTag, nTag);
