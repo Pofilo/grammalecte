@@ -1,0 +1,60 @@
+#
+#   RÈGLES DE GRAMMAIRE FRANÇAISE POUR GRAMMALECTE
+#   par Olivier R.
+#
+#   Copyright © 2011-2017.
+#
+#   This file is part of Grammalecte.
+#
+#   Grammalecte is free software: you can redistribute it and/or modify
+#   it under the terms of the GNU General Public License as published by
+#   the Free Software Foundation, either version 3 of the License, or
+#   (at your option) any later version.
+#
+#   Grammalecte is distributed in the hope that it will be useful,
+#   but WITHOUT ANY WARRANTY; without even the implied warranty of
+#   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#   GNU General Public License for more details.
+#
+#   You should have received a copy of the GNU General Public License
+#   along with Grammalecte.  If not, see <http://www.gnu.org/licenses/>
+#
+
+# RÈGLES POUR LE  GRAPHE DE TOKENS
+
+# DOCUMENTATION
+# Expressions régulières en Python : http://docs.python.org/library/re.html
+
+# [++] : séparateur des règles pour le paragraphe et des règles pour la phrase.
+
+# Types d’action:
+#   ->> erreur
+#   ~>> préprocesseur de texte
+#   =>> désambiguïsateur
+
+
+# Fin d’interprétation du fichier avec une ligne commençant par #END
+
+# ERREURS COURANTES
+# http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
+
+
+__rule1__
+    les  :N:m:s
+    des  :N:m:s
+    ces  :N:m:s
+        <<-  -1>> acquit                        # Message0|http://test.grammalecte.net
+
+__rule2__
+    ci important que soi
+    ci vraiment il y a
+    ci pour ça
+        <<- morph(\2, ":[WAR]", False) -1>> si   # Message1|http://test.grammalecte.net
+
+__rule3__
+    contre nature
+    contre pétrie
+    contre action
+        <<- morph(\1, "xxxx") -1:2>> =$area.replace(" ", "")     # Message2|http://test.grammalecte.org
+        <<-  ~>> =$area.replace(" ", "")
+

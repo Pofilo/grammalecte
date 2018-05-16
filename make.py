@@ -19,6 +19,7 @@ from distutils import dir_util, file_util
 
 import dialog_bundled
 import compile_rules
+import compile_rules_graph
 import helpers
 import lex_build
 
@@ -193,8 +194,10 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     dVars['loc'] = str(dict([ [s, [s[0:2], s[3:5], ""]] for s in dVars["locales"].split(" ") ]))
 
     ## COMPILE RULES
-    dResult = compile_rules.make(spLang, dVars['lang'], bJavaScript)
-    dVars.update(dResult)
+    dResultRegex = compile_rules.make(spLang, dVars['lang'], bJavaScript)
+    dVars.update(dResultRegex)
+
+    dResultGraph = compile_rules_graph.make(spLang, dVars['lang'], bJavaScript)
 
     ## READ GRAMMAR CHECKER PLUGINS
     print("PYTHON:")
