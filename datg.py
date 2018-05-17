@@ -177,7 +177,7 @@ class Node:
         if dRegex:
             dNode["<regex>"] = dRegex
         if self.bFinal:
-            dNode["<final>"] = ""
+            dNode["<final>"] = 1
         if self.bInfo:
-            dNode["<info>"] = ""
+            dNode["<info>"] = 1
         return dNode
