@@ -167,9 +167,15 @@ class Node:
 
     def getNodeAsDict (self):
         "returns the node as a dictionary structure"
-        dNode = { }
+        dNode = {}
+        dRegex = {}
         for arc, oNode in self.dArcs.items():
-            dNode[arc] = oNode.__hash__()
+            if type(arc) == str and arc.startswith("~"):
+                dRegex[arc[1:]] = oNode.__hash__()
+            else:
+                dNode[arc] = oNode.__hash__()
+        if dRegex:
+            dNode["<regex>"] = dRegex
         if self.bFinal:
             dNode["<final>"] = ""
         if self.bInfo:
