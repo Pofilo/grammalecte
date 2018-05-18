@@ -7,7 +7,7 @@ _PATTERNS = {
         (
             r'(?P<FOLDERUNIX>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()-]+)*)',
             r'(?P<FOLDERWIN>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()-]+)*)',
-            r'(?P<PUNC>[.,?!:;…«»“”"()/·]+)',
+            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}/·–—])',
             r'(?P<ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w\w+[@.])\w[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
@@ -21,7 +21,7 @@ _PATTERNS = {
         (
             r'(?P<FOLDERUNIX>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()-]+)*)',
             r'(?P<FOLDERWIN>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()-]+)*)',
-            r'(?P<PUNC>[.,?!:;…«»“”"()/·]+)',
+            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}/·–—])',
             r'(?P<ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w\w+[@.])\w[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
@@ -45,5 +45,5 @@ class Tokenizer:
         self.zToken = re.compile( "(?i)" + '|'.join(sRegex for sRegex in _PATTERNS[sLang]) )
 
     def genTokens (self, sText):
-        for m in self.zToken.finditer(sText):
-            yield { "sType": m.lastgroup, "sValue": m.group(), "nStart": m.start(), "nEnd": m.end() }
+        for i, m in enumerate(self.zToken.finditer(sText), 1):
+            yield { "i": i, "sType": m.lastgroup, "sValue": m.group(), "nStart": m.start(), "nEnd": m.end() }

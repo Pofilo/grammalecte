@@ -18,7 +18,7 @@ const aTkzPatterns = {
             [/^[   \t]+/, 'SPACE'],
             [/^\/(?:~|bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERUNIX'],
             [/^[a-zA-Z]:\\(?:Program Files(?: \(x86\)|)|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ.()]+)(?:\\[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERWIN'],
-            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]+/, 'SEPARATOR'],
+            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]/, 'SEPARATOR'],
             [/^[A-Z][.][A-Z][.](?:[A-Z][.])*/, 'ACRONYM'],
             [/^(?:https?:\/\/|www[.]|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+[@.][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]{2,}[@.])[a-zA-Z0-9][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.\/?&!%=+*"'@$#-]+/, 'LINK'],
             [/^[#@][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+/, 'TAG'],
@@ -34,7 +34,7 @@ const aTkzPatterns = {
             [/^[   \t]+/, 'SPACE'],
             [/^\/(?:~|bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERUNIX'],
             [/^[a-zA-Z]:\\(?:Program Files(?: \(x86\)|)|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ.()]+)(?:\\[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERWIN'],
-            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]+/, 'SEPARATOR'],
+            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]/, 'SEPARATOR'],
             [/^[A-Z][.][A-Z][.](?:[A-Z][.])*/, 'ACRONYM'],
             [/^(?:https?:\/\/|www[.]|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+[@.][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]{2,}[@.])[a-zA-Z0-9][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.\/?&!%=+*"'@$#-]+/, 'LINK'],
             [/^[#@][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+/, 'TAG'],
@@ -62,20 +62,16 @@ class Tokenizer {
 
     * genTokens (sText) {
         let m;
-        let i = 0;
+        let iNext = 0;
         while (sText) {
-            let nCut = 1;
+            let iCut = 1;
+            let iToken = 0;
             for (let [zRegex, sType] of this.aRules) {
                 try {
                     if ((m = zRegex.exec(sText)) !== null) {
-                        if (sType == 'SEPARATOR') {
-                            for (let c of m[0]) {
-                                yield { "sType": sType, "sValue": c, "nStart": i, "nEnd": i + m[0].length }
-                            }
-                        } else {
-                            yield { "sType": sType, "sValue": m[0], "nStart": i, "nEnd": i + m[0].length }
-                        }
-                        nCut = m[0].length;
+                        iToken += 1;
+                        yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length }
+                        iCut = m[0].length;
                         break;
                     }
                 }
@@ -83,8 +79,8 @@ class Tokenizer {
                     helpers.logerror(e);
                 }
             }
-            i += nCut;
-            sText = sText.slice(nCut);
+            iNext += iCut;
+            sText = sText.slice(iCut);
         }
     }
 }
