@@ -64,11 +64,11 @@ def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
     for nAction, sAction in enumerate(sActions.split(" <<- ")):
         if sAction.strip():
             sActionId = sRuleName + "_a" + str(nAction)
-            sCondition, tAction = createAction(sActionId, sAction, nGroup, nPriority, dPos)
-            if tAction:
-                dACTIONS[sActionId] = tAction
+            aAction = createAction(sActionId, sAction, nGroup, nPriority, dPos)
+            if aAction:
+                dACTIONS[sActionId] = aAction
                 lResult = list(lToken)
-                lResult.extend(["##"+str(iLine), sRuleName, sCondition, sActionId])
+                lResult.extend(["##"+str(iLine), sActionId])
                 yield lResult
 
 
@@ -77,7 +77,7 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
     if not m:
         print(" # Error. No action found at: ", sIdAction)
         print("   ==", sAction, "==")
-        return None, None
+        return None
     # Condition
     sCondition = sAction[:m.start()].strip()
     if sCondition:
@@ -151,7 +151,7 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
             sAction = sAction[1:-1]
         if not sMsg:
             print("# Error in action at line " + sIdAction + ":  The message is empty.")
-        return [sCondition, (cAction, sAction, iStartAction, iEndAction, nPriority, sMsg, sURL)]
+        return [sCondition, cAction, sAction, iStartAction, iEndAction, nPriority, sMsg, sURL]
     elif cAction == "~":
         ## text processor
         if not sAction:
@@ -161,7 +161,7 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
             sAction = "=gp_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
-        return [sCondition, (cAction, sAction, iStartAction, iEndAction)]
+        return [sCondition, cAction, sAction, iStartAction, iEndAction]
     elif cAction == "=":
         ## disambiguator
         if sAction[0:1] == "=":
@@ -170,10 +170,10 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         lFUNCTIONS.append(("gd_"+sIdAction, sAction))
         sAction = "gd_"+sIdAction
-        return [sCondition, (cAction, sAction)]
+        return [sCondition, cAction, sAction]
     elif cAction == ">":
         ## no action, break loop if condition is False
-        return [sCondition, (cAction, "")]
+        return [sCondition, cAction, ""]
     else:
         print("# Unknown action at line " + sIdAction)
         return None

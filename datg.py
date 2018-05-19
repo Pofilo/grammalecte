@@ -72,7 +72,7 @@ class DATG:
             oNextNode = Node()
             oNode.dArcs[token] = oNextNode
             self.lUncheckedNodes.append((oNode, token, oNextNode))
-            if iToken == (len(aRule) - 4): 
+            if iToken == (len(aRule) - 2): 
                 oNode.bFinal = True
             iToken += 1
             oNode = oNextNode
