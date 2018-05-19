@@ -68,7 +68,7 @@ def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
             if tAction:
                 dACTIONS[sActionId] = tAction
                 lResult = list(lToken)
-                lResult.extend([iLine, sRuleName, sCondition, sActionId])
+                lResult.extend(["##"+str(iLine), sRuleName, sCondition, sActionId])
                 yield lResult
 
 

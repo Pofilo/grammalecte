@@ -74,7 +74,6 @@ class DATG:
             self.lUncheckedNodes.append((oNode, token, oNextNode))
             if iToken == (len(aRule) - 4): 
                 oNode.bFinal = True
-                oNextNode.bInfo = True
             iToken += 1
             oNode = oNextNode
         oNode.bFinal = True
@@ -139,7 +138,6 @@ class Node:
         self.i = Node.NextId
         Node.NextId += 1
         self.bFinal = False
-        self.bInfo = False
         self.dArcs = {}          # key: arc value; value: a node
 
     @classmethod
@@ -149,8 +147,7 @@ class Node:
     def __str__ (self):
         # Caution! this function is used for hashing and comparison!
         cFinal = "1"  if self.bFinal  else "0"
-        cInfo = "1"  if self.bInfo  else "0"
-        l = [cFinal, cInfo]
+        l = [cFinal]
         for (key, oNode) in self.dArcs.items():
             l.append(str(key))
             l.append(str(oNode.i))
@@ -169,15 +166,18 @@ class Node:
         "returns the node as a dictionary structure"
         dNode = {}
         dRegex = {}
+        dRules = {}
         for arc, oNode in self.dArcs.items():
             if type(arc) == str and arc.startswith("~"):
                 dRegex[arc[1:]] = oNode.__hash__()
+            elif arc.startswith("##"):
+                dRules[arc[1:]] = oNode.__hash__()
             else:
                 dNode[arc] = oNode.__hash__()
         if dRegex:
             dNode["<regex>"] = dRegex
-        if self.bFinal:
-            dNode["<final>"] = 1
-        if self.bInfo:
-            dNode["<info>"] = 1
+        if dRules:
+            dNode["<rules>"] = dRules
+        #if self.bFinal:
+        #    dNode["<final>"] = 1
         return dNode
