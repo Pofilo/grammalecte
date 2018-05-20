@@ -198,6 +198,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     dVars.update(dResultRegex)
 
     dResultGraph = compile_rules_graph.make(spLang, dVars['lang'], bJavaScript)
+    dVars.update(dResultGraph)
 
     ## READ GRAMMAR CHECKER PLUGINS
     print("PYTHON:")

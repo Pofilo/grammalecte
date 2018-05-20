@@ -3,7 +3,7 @@
 import re
 import traceback
 import json
-import datg
+import darg
 
 
 dDEF = {}
@@ -83,8 +83,8 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
     if sCondition:
         sCondition = prepareFunction(sCondition)
         sCondition = changeReferenceToken(sCondition, dPos)    
-        lFUNCTIONS.append(("gc_"+sIdAction, sCondition))
-        sCondition = "gc_"+sIdAction
+        lFUNCTIONS.append(("g_c_"+sIdAction, sCondition))
+        sCondition = "g_c_"+sIdAction
     else:
         sCondition = ""
     # Action
@@ -114,11 +114,11 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
                 sMsg = sMsg[:mURL.start(0)].strip()
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:])
-                lFUNCTIONS.append(("gm_"+sIdAction, sMsg))
+                lFUNCTIONS.append(("g_m_"+sIdAction, sMsg))
                 for x in re.finditer("group[(](\d+)[)]", sMsg):
                     if int(x.group(1)) > nGroup:
                         print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-                sMsg = "=m_"+sIdAction
+                sMsg = "=g_m_"+sIdAction
             else:
                 for x in re.finditer(r"\\(\d+)", sMsg):
                     if int(x.group(1)) > nGroup:
@@ -145,8 +145,8 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("gs_"+sIdAction, sAction[1:]))
-            sAction = "=gs_"+sIdAction
+            lFUNCTIONS.append(("g_s_"+sIdAction, sAction[1:]))
+            sAction = "=g_s_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
@@ -157,8 +157,8 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("gp_"+sIdAction, sAction[1:]))
-            sAction = "=gp_"+sIdAction
+            lFUNCTIONS.append(("g_p_"+sIdAction, sAction[1:]))
+            sAction = "=g_p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sCondition, cAction, sAction, iStartAction, iEndAction]
@@ -168,8 +168,8 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
             sAction = sAction[1:]
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
-        lFUNCTIONS.append(("gd_"+sIdAction, sAction))
-        sAction = "gd_"+sIdAction
+        lFUNCTIONS.append(("g_d_"+sIdAction, sAction))
+        sAction = "g_d_"+sIdAction
         return [sCondition, cAction, sAction]
     elif cAction == ">":
         ## no action, break loop if condition is False
@@ -266,14 +266,15 @@ def make (spLang, sLang, bJavaScript):
     for e in lPreparedRule:
         print(e)
 
-    oDATG = datg.DATG(lPreparedRule, sLang)
-    oRuleGraph = oDATG.createGraph()
+    oDARG = darg.DARG(lPreparedRule, sLang)
+    oRuleGraph = oDARG.createGraph()
 
     # Result
     d = {
-        "g_callables": None,
-        "g_gctests": None,
-        "graph_rules": None,
+        "graph_callables": None,
+        "graph_gctests": None,
+        "rules_graph": oRuleGraph,
+        "rules_actions": dACTIONS
     }
 
     return d

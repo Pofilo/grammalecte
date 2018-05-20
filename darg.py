@@ -14,14 +14,14 @@ from graphspell.progressbar import ProgressBar
 
 
 
-class DATG:
-    """DIRECT ACYCLIC TOKEN GRAPH"""
+class DARG:
+    """DIRECT ACYCLIC RULE GRAPH"""
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
 
     def __init__ (self, lRule, sLangCode):
         print("===== Direct Acyclic Token Graph - Minimal Acyclic Finite State Automaton =====")
 
-        # Preparing DATG
+        # Preparing DARG
         print(" > Preparing list of tokens")
         self.sLangCode = sLangCode
         self.nRule = len(lRule)
@@ -45,7 +45,7 @@ class DATG:
         self.countArcs()
         self.displayInfo()
 
-    # BUILD DATG
+    # BUILD DARG
     def insert (self, aRule):
         if aRule < self.aPreviousRule:
             sys.exit("# Error: tokens must be inserted in order.")
