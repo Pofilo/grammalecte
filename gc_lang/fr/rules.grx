@@ -4286,8 +4286,10 @@ __[i]/conf(conf_qu_elle_verbe)__
     (quelles?) +({w_1})  @@0,$
     <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y) ", ":[NA].*:[fe]|>(?:plus|moins)") or \2 == "t" or \2 == "s")
         and not (morph(\2, ">(?:pouvoir|devoir|en)", False) and morph(word(1), ":V0e", False)) >>>
-    <<- \1.endswith("e") and not morph(\2, ":V0e", False) -1>> qu’elle                              # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
-    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False) -1>> qu’elles                # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
+    <<- \1.endswith("e") and not morph(\2, ":V0e", False) and not (morph(\2, ":V0a", False) and after("^ +été "))
+    -1>> qu’elle                                                                                    # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
+    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False)  and not (morph(\2, ":V0a", False) and after("^ +été "))
+    -1>> qu’elles                                                                                   # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
     <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
     <<- \1.endswith("e") -1>> qu’elle                                                               # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 3
     <<- __else__ and \1.endswith("s") -1>> qu’elles                                                 # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 4
@@ -4311,6 +4313,7 @@ TEST: Quelles en sont les conséquences ?
 TEST: Quelle plus belle complicité que…
 TEST: Quelle peut être la date de clôture d’un exercice ?
 TEST: Quelle doit être la date du mariage ?
+TEST: Quelles ont été les annonces faites ?
 
 
 # savoir / ignorer
