@@ -19,7 +19,7 @@ class DARG:
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
 
     def __init__ (self, lRule, sLangCode):
-        print("===== Direct Acyclic Token Graph - Minimal Acyclic Finite State Automaton =====")
+        print("===== Direct Acyclic Rule Graph - Minimal Acyclic Finite State Automaton =====")
 
         # Preparing DARG
         print(" > Preparing list of tokens")
@@ -68,10 +68,10 @@ class DARG:
             oNode = self.lUncheckedNodes[-1][2]
 
         iToken = nCommonPrefix
-        for token in aRule[nCommonPrefix:]:
+        for sToken in aRule[nCommonPrefix:]:
             oNextNode = Node()
-            oNode.dArcs[token] = oNextNode
-            self.lUncheckedNodes.append((oNode, token, oNextNode))
+            oNode.dArcs[sToken] = oNextNode
+            self.lUncheckedNodes.append((oNode, sToken, oNextNode))
             if iToken == (len(aRule) - 2): 
                 oNode.bFinal = True
             iToken += 1
@@ -86,10 +86,10 @@ class DARG:
     def _minimize (self, downTo):
         # proceed from the leaf up to a certain point
         for i in range( len(self.lUncheckedNodes)-1, downTo-1, -1 ):
-            oNode, token, oChildNode = self.lUncheckedNodes[i]
+            oNode, sToken, oChildNode = self.lUncheckedNodes[i]
             if oChildNode in self.lMinimizedNodes:
                 # replace the child with the previously encountered one
-                oNode.dArcs[token] = self.lMinimizedNodes[oChildNode]
+                oNode.dArcs[sToken] = self.lMinimizedNodes[oChildNode]
             else:
                 # add the state to the minimized nodes.
                 self.lMinimizedNodes[oChildNode] = oChildNode
@@ -102,14 +102,6 @@ class DARG:
         self.nArc = 0
         for oNode in self.lMinimizedNodes:
             self.nArc += len(oNode.dArcs)
-        
-    def lookup (self, sWord):
-        oNode = self.oRoot
-        for c in sWord:
-            if c not in oNode.dArcs:
-                return False
-            oNode = oNode.dArcs[c]
-        return oNode.bFinal
 
     def displayInfo (self):
         print(" * {:<12} {:>16,}".format("Rules:", self.nRule))

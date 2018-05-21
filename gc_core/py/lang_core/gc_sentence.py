@@ -22,7 +22,7 @@ class Sentence:
             for i, dPointer in enumerate(lPointer):
                 bValid = False
                 for dNode in self._getNextMatchingNodes(dToken, dPointer["dNode"]):
-                    dPointer["nOffset"] += 1
+                    dPointer["nOffset"] = dToken["i"]
                     dPointer["dNode"] = dNode
                     bValid = True
                 if not bValid:
@@ -54,22 +54,26 @@ class Sentence:
                 sFuncCond, cActionType, sWhat, *eAct = dRule[sArc]
                 # action in lActions: [ condition, action type, replacement/suggestion/action[, iGroupStart, iGroupEnd[, message, URL]] ]
                 try:
-                    bCondMemo = not sFuncCond or globals()[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo)
+                    bCondMemo = not sFuncCond or globals()[sFuncCond](self, dDA, sCountry, bCondMemo)
                     if bCondMemo:
                         if cActionType == "-":
                             # grammar error
-                            nErrorStart = nOffset + m.start(eAct[0])
-                            nErrorEnd = nOffset + m.start(eAct[1])
+                            nErrorStart = nSentenceOffset + m.start(eAct[0])
+                            nErrorEnd = nSentenceOffset + m.start(eAct[1])
                             if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
-                                dErrs[nErrorStart] = _createError(self.lToken, self.sSentence0, sWhat, nOffset, m, nErrorStart, nErrorEnd, sLineId, bUppercase, eAct[2], eAct[3], bIdRule, sOption, bContext)
+                                dErrs[nErrorStart] = _createError(self, sWhat, nErrorStart, nErrorEnd, sLineId, bUppercase, eAct[2], eAct[3], bIdRule, sOption, bContext)
                                 dPriority[nErrorStart] = nPriority
                         elif cActionType == "~":
                             # text processor
-                            self.lToken = _rewrite(self.lToken, sWhat, bUppercase)
+                            self.lToken = _rewrite(self, sWhat, nErrorStart, nErrorEnd, bUppercase)
+                            bChange = True
+                        elif cActionType == "@":
+                            # text processor
+                            self.lToken = _rewrite(self, sWhat, nErrorStart, nErrorEnd, bUppercase)
                             bChange = True
                         elif cActionType == "=":
                             # disambiguation
-                            globals()[sWhat](self.lToken, dDA)
+                            globals()[sWhat](self, dDA)
                         elif cActionType == ">":
                             # we do nothing, this test is just a condition to apply all following actions
                             pass
@@ -87,3 +91,51 @@ class Sentence:
     def _createDictError (self):
         d = {}
         return d
+
+
+#### Common functions
+
+def option ():
+    pass
+
+
+#### Analyse tokens
+
+def morph ():
+    pass
+
+def morphex ():
+    pass
+
+def analyse ():
+    pass
+
+def analysex ():
+    pass
+
+
+#### Go outside scope
+
+def nextToken ():
+    pass
+
+def prevToken ():
+    pass
+
+def look ():
+    pass
+
+def lookAndCheck ():
+    pass
+
+
+#### Disambiguator
+
+def select ():
+    pass
+
+def exclude ():
+    pass
+
+def define ():
+    pass
