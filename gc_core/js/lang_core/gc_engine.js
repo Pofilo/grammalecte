@@ -39,7 +39,6 @@ let _sAppContext = "";                                  // what software is runn
 let _dOptions = null;
 let _aIgnoredRules = new Set();
 let _oSpellChecker = null;
-let _dAnalyses = new Map();                             // cache for data from dictionary
 
 
 var gc_engine = {
@@ -329,6 +328,7 @@ var gc_engine = {
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
+            _oSpellChecker.activateStorage();
         }
         catch (e) {
             helpers.logerror(e);
@@ -378,22 +378,16 @@ function displayInfo (dDA, aWord) {
         helpers.echo("> nothing to find");
         return true;
     }
-    if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
-        helpers.echo("> not in FSA");
+    let lMorph = _oSpellChecker.getMorph(aWord[1]);
+    if (lMorph.length === 0) {
+        helpers.echo("> not in dictionary");
         return true;
     }
     if (dDA.has(aWord[0])) {
         helpers.echo("DA: " + dDA.get(aWord[0]));
     }
-    helpers.echo("FSA: " + _dAnalyses.get(aWord[1]));
+    helpers.echo("FSA: " + lMorph);
     return true;
-}
-
-function _storeMorphFromFSA (sWord) {
-    // retrieves morphologies list from _oSpellChecker -> _dAnalyses
-    //helpers.echo("register: "+sWord + " " + _oSpellChecker.getMorph(sWord).toString())
-    _dAnalyses.set(sWord, _oSpellChecker.getMorph(sWord));
-    return !!_dAnalyses.get(sWord);
 }
 
 function morph (dDA, aWord, sPattern, bStrict=true, bNoWord=false) {
@@ -403,10 +397,7 @@ function morph (dDA, aWord, sPattern, bStrict=true, bNoWord=false) {
         return bNoWord;
     }
     //helpers.echo("aWord: "+aWord.toString());
-    if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
-        return false;
-    }
-    let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _dAnalyses.get(aWord[1]);
+    let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _oSpellChecker.getMorph(aWord[1]);
     //helpers.echo("lMorph: "+lMorph.toString());
     if (lMorph.length === 0) {
         return false;
@@ -425,10 +416,7 @@ function morphex (dDA, aWord, sPattern, sNegPattern, bNoWord=false) {
         return bNoWord;
     }
     //helpers.echo("aWord: "+aWord.toString());
-    if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
-        return false;
-    }
-    let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _dAnalyses.get(aWord[1]);
+    let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _oSpellChecker.getMorph(aWord[1]);
     //helpers.echo("lMorph: "+lMorph.toString());
     if (lMorph.length === 0) {
         return false;
@@ -444,37 +432,28 @@ function morphex (dDA, aWord, sPattern, sNegPattern, bNoWord=false) {
 
 function analyse (sWord, sPattern, bStrict=true) {
     // analyse a word, return true if sPattern in morphologies (disambiguation off)
-    if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
+    let lMorph = _oSpellChecker.getMorph(sWord);
+    if (lMorph.length === 0) {
         return false;
     }
     if (bStrict) {
-        return _dAnalyses.get(sWord).every(s  =>  (s.search(sPattern) !== -1));
+        return lMorph.every(s  =>  (s.search(sPattern) !== -1));
     }
-    return _dAnalyses.get(sWord).some(s  =>  (s.search(sPattern) !== -1));
+    return lMorph.some(s  =>  (s.search(sPattern) !== -1));
 }
 
 function analysex (sWord, sPattern, sNegPattern) {
     // analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)
-    if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
+    let lMorph = _oSpellChecker.getMorph(sWord);
+    if (lMorph.length === 0) {
         return false;
     }
     // check negative condition
-    if (_dAnalyses.get(sWord).some(s  =>  (s.search(sNegPattern) !== -1))) {
+    if (lMorph.some(s  =>  (s.search(sNegPattern) !== -1))) {
         return false;
     }
     // search sPattern
-    return _dAnalyses.get(sWord).some(s  =>  (s.search(sPattern) !== -1));
-}
-
-function stem (sWord) {
-    // returns a list of sWord's stems
-    if (!sWord) {
-        return [];
-    }
-    if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
-        return [];
-    }
-    return _dAnalyses.get(sWord).map( s => s.slice(1, s.indexOf(" ")) );
+    return lMorph.some(s  =>  (s.search(sPattern) !== -1));
 }
 
 
@@ -567,15 +546,13 @@ function select (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (dDA.has(nPos)) {
         return true;
     }
-    if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
-        return true;
+    let lMorph = _oSpellChecker.getMorph(sWord);
+    if (lMorph.length === 0  ||  lMorph.length === 1) {
+        return false;
     }
-    if (_dAnalyses.get(sWord).length === 1) {
-        return true;
-    }
-    let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) !== -1 );
+    let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
     if (lSelect.length > 0) {
-        if (lSelect.length != _dAnalyses.get(sWord).length) {
+        if (lSelect.length != lMorph.length) {
             dDA.set(nPos, lSelect);
         }
     } else if (lDefault) {
@@ -591,15 +568,13 @@ function exclude (dDA, nPos, sWord, sPattern, lDefault=null) {
     if (dDA.has(nPos)) {
         return true;
     }
-    if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
-        return true;
+    let lMorph = _oSpellChecker.getMorph(sWord);
+    if (lMorph.length === 0  ||  lMorph.length === 1) {
+        return false;
     }
-    if (_dAnalyses.get(sWord).length === 1) {
-        return true;
-    }
-    let lSelect = _dAnalyses.get(sWord).filter( sMorph => sMorph.search(sPattern) === -1 );
+    let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0) {
-        if (lSelect.length != _dAnalyses.get(sWord).length) {
+        if (lSelect.length != lMorph.length) {
             dDA.set(nPos, lSelect);
         }
     } else if (lDefault) {

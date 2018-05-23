@@ -22,8 +22,7 @@ function rewriteSubject (s1, s2) {
         return "ils";
     }
     if (s2 == "elle" || s2 == "elles") {
-        // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-        if (cregex.mbNprMasNotFem(_dAnalyses.gl_get(s1, ""))) {
+        if (cregex.mbNprMasNotFem(_oSpellChecker.getMorph(s1))) {
             return "ils";
         }
         // si épicène, indéterminable, mais OSEF, le féminin l’emporte
@@ -34,19 +33,19 @@ function rewriteSubject (s1, s2) {
 
 function apposition (sWord1, sWord2) {
     // returns true if nom + nom (no agreement required)
-    // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    return cregex.mbNomNotAdj(_dAnalyses.gl_get(sWord2, "")) && cregex.mbPpasNomNotAdj(_dAnalyses.gl_get(sWord1, ""));
+    return cregex.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1));
 }
 
 function isAmbiguousNAV (sWord) {
     // words which are nom|adj and verb are ambiguous (except être and avoir)
-    if (!_dAnalyses.has(sWord) && !_storeMorphFromFSA(sWord)) {
+    let lMorph = _oSpellChecker.getMorph(sWord);
+    if (lMorph.length === 0) {
         return false;
     }
-    if (!cregex.mbNomAdj(_dAnalyses.gl_get(sWord, "")) || sWord == "est") {
+    if (!cregex.mbNomAdj(lMorph) || sWord == "est") {
         return false;
     }
-    if (cregex.mbVconj(_dAnalyses.gl_get(sWord, "")) && !cregex.mbMG(_dAnalyses.gl_get(sWord, ""))) {
+    if (cregex.mbVconj(lMorph) && !cregex.mbMG(lMorph)) {
         return true;
     }
     return false;
@@ -54,17 +53,16 @@ function isAmbiguousNAV (sWord) {
 
 function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
     //// use it if sWord1 won’t be a verb; word2 is assumed to be true via isAmbiguousNAV
-    // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null);
-    if (!a2 || a2.length === 0) {
+    let a2 = _oSpellChecker.getMorph(sWord2);
+    if (a2.length === 0) {
         return false;
     }
     if (cregex.checkConjVerb(a2, sReqMorphConj)) {
         // verb word2 is ok
         return false;
     }
-    let a1 = _dAnalyses.gl_get(sWord1, null);
-    if (!a1 || a1.length === 0) {
+    let a1 = _oSpellChecker.getMorph(sWord1);
+    if (a1.length === 0) {
         return false;
     }
     if (cregex.checkAgreement(a1, a2) && (cregex.mbAdj(a2) || cregex.mbAdj(a1))) {
@@ -75,17 +73,16 @@ function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
 
 function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond) {
     //// use it if sWord1 can be also a verb; word2 is assumed to be true via isAmbiguousNAV
-    // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null);
-    if (!a2 || a2.length === 0) {
+    let a2 = _oSpellChecker.getMorph(sWord2);
+    if (a2.length === 0) {
         return false;
     }
     if (cregex.checkConjVerb(a2, sReqMorphConj)) {
         // verb word2 is ok
         return false;
     }
-    let a1 = _dAnalyses.gl_get(sWord1, null);
-    if (!a1 || a1.length === 0) {
+    let a1 = _oSpellChecker.getMorph(sWord1);
+    if (a1.length === 0) {
         return false;
     }
     if (cregex.checkAgreement(a1, a2) && (cregex.mbAdj(a2) || cregex.mbAdjNb(a1))) {
@@ -103,13 +100,12 @@ function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bL
 }
 
 function checkAgreement (sWord1, sWord2) {
-    // We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    let a2 = _dAnalyses.gl_get(sWord2, null);
-    if (!a2 || a2.length === 0) {
+    let a2 = _oSpellChecker.getMorph(sWord2);
+    if (a2.length === 0) {
         return true;
     }
-    let a1 = _dAnalyses.gl_get(sWord1, null);
-    if (!a1 || a1.length === 0) {
+    let a1 = _oSpellChecker.getMorph(sWord1);
+    if (a1.length === 0) {
         return true;
     }
     return cregex.checkAgreement(a1, a2);
