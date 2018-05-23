@@ -24,7 +24,7 @@ def prepareFunction (s):
     s = re.sub(r"isRealEnd0 *\(\)", 'after0(["<END>"])', s)
     s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(lToken[\\2]', s)
     s = re.sub(r"define[(][\\](\d+)", 'define(lToken[\\1]', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(][\\](\d+)", '\\1(lToken[\\2])', s)
+    s = re.sub(r"(morph|morphex|displayInfo)[(]\\(\d+)", '\\1(lToken[\\2]', s)
     s = re.sub(r"token\(\s*(\d)", 'nextToken(\\1', s)                                       # token(n)
     s = re.sub(r"token\(\s*-(\d)", 'prevToken(\\1', s)                                      # token(-n)
     s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
@@ -115,7 +115,7 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:])
                 lFUNCTIONS.append(("g_m_"+sIdAction, sMsg))
-                for x in re.finditer("group[(](\d+)[)]", sMsg):
+                for x in re.finditer("group[(](\\d+)[)]", sMsg):
                     if int(x.group(1)) > nGroup:
                         print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
                 sMsg = "=g_m_"+sIdAction
@@ -130,7 +130,7 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         sAction = prepareFunction(sAction)
-        for x in re.finditer("group[(](\d+)[)]", sAction):
+        for x in re.finditer("group[(](\\d+)[)]", sAction):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
     else:
@@ -269,9 +269,34 @@ def make (spLang, sLang, bJavaScript):
     oDARG = darg.DARG(lPreparedRule, sLang)
     oRuleGraph = oDARG.createGraph()
 
+    # creating file with all functions callable by rules
+    print("  creating callables...")
+    sPyCallables = "# generated code, do not edit\n"
+    #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
+    for sFuncName, sReturn in lFUNCTIONS:
+        if sFuncName.startswith("g_c_"): # condition
+            sParams = "lToken, sCountry, bCondMemo"
+        elif sFuncName.startswith("g_m_"): # message
+            sParams = "lToken"
+        elif sFuncName.startswith("g_s_"): # suggestion
+            sParams = "lToken"
+        elif sFuncName.startswith("g_p_"): # preprocessor
+            sParams = "lToken"
+        elif sFuncName.startswith("g_d_"): # disambiguator
+            sParams = "lToken"
+        else:
+            print("# Unknown function type in [" + sFuncName + "]")
+            continue
+        sPyCallables += "def {} ({}):\n".format(sFuncName, sParams)
+        sPyCallables += "    return " + sReturn + "\n"
+        #sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
+        #sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
+        #sJSCallables += "    },\n"
+    #sJSCallables += "}\n"
+
     # Result
     d = {
-        "graph_callables": None,
+        "graph_callables": sPyCallables,
         "graph_gctests": None,
         "rules_graph": oRuleGraph,
         "rules_actions": dACTIONS
