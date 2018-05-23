@@ -548,7 +548,7 @@ function select (dDA, nPos, sWord, sPattern, lDefault=null) {
     }
     let lMorph = _oSpellChecker.getMorph(sWord);
     if (lMorph.length === 0  ||  lMorph.length === 1) {
-        return false;
+        return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
     if (lSelect.length > 0) {
@@ -570,7 +570,7 @@ function exclude (dDA, nPos, sWord, sPattern, lDefault=null) {
     }
     let lMorph = _oSpellChecker.getMorph(sWord);
     if (lMorph.length === 0  ||  lMorph.length === 1) {
-        return false;
+        return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0) {
