@@ -17,9 +17,8 @@ def rewriteSubject (s1, s2):
         return "vous"
     if s2 == "eux":
         return "ils"
-    if s2 == "elle" or s2 == "elles":
-        # We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-        if cr.mbNprMasNotFem(_dAnalyses.get(s1, False)):
+    if s2 == "elle" or s2 == "elles":    
+        if cr.mbNprMasNotFem(_oSpellChecker.getMorph(s1)):
             return "ils"
         # si épicène, indéterminable, mais OSEF, le féminin l’emporte
         return "elles"
@@ -28,31 +27,28 @@ def rewriteSubject (s1, s2):
 
 def apposition (sWord1, sWord2):
     "returns True if nom + nom (no agreement required)"
-    # We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    return cr.mbNomNotAdj(_dAnalyses.get(sWord2, False)) and cr.mbPpasNomNotAdj(_dAnalyses.get(sWord1, False))
+    return cr.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) and cr.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1))
 
 
 def isAmbiguousNAV (sWord):
     "words which are nom|adj and verb are ambiguous (except être and avoir)"
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not cr.mbNomAdj(lMorph) or sWord == "est":
         return False
-    if not cr.mbNomAdj(_dAnalyses[sWord]) or sWord == "est":
-        return False
-    if cr.mbVconj(_dAnalyses[sWord]) and not cr.mbMG(_dAnalyses[sWord]):
+    if cr.mbVconj(lMorph) and not cr.mbMG(lMorph):
         return True
     return False
 
 
 def isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj):
     "use it if sWord1 won’t be a verb; word2 is assumed to be True via isAmbiguousNAV"
-    # We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    a2 = _dAnalyses.get(sWord2, None)
+    a2 = _oSpellChecker.getMorph(sWord2)
     if not a2:
         return False
     if cr.checkConjVerb(a2, sReqMorphConj):
         # verb word2 is ok
         return False
-    a1 = _dAnalyses.get(sWord1, None)
+    a1 = _oSpellChecker.getMorph(sWord1)
     if not a1:
         return False
     if cr.checkAgreement(a1, a2) and (cr.mbAdj(a2) or cr.mbAdj(a1)):
@@ -62,14 +58,13 @@ def isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj):
 
 def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond):
     "use it if sWord1 can be also a verb; word2 is assumed to be True via isAmbiguousNAV"
-    # We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    a2 = _dAnalyses.get(sWord2, None)
+    a2 = _oSpellChecker.getMorph(sWord2)
     if not a2:
         return False
     if cr.checkConjVerb(a2, sReqMorphConj):
         # verb word2 is ok
         return False
-    a1 = _dAnalyses.get(sWord1, None)
+    a1 = _oSpellChecker.getMorph(sWord1)
     if not a1:
         return False
     if cr.checkAgreement(a1, a2) and (cr.mbAdj(a2) or cr.mbAdjNb(a1)):
@@ -84,11 +79,10 @@ def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHo
 
 
 def checkAgreement (sWord1, sWord2):
-    # We don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    a2 = _dAnalyses.get(sWord2, None)
+    a2 = _oSpellChecker.getMorph(sWord2)
     if not a2:
         return True
-    a1 = _dAnalyses.get(sWord1, None)
+    a1 = _oSpellChecker.getMorph(sWord1)
     if not a1:
         return True
     return cr.checkAgreement(a1, a2)

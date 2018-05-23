@@ -9,12 +9,12 @@ from . import phonet
 
 def suggVerb (sFlex, sWho, funcSugg2=None):
     aSugg = set()
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
         if tTags:
             # we get the tense
             aTense = set()
-            for sMorph in _dAnalyses.get(sFlex, []): # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
+            for sMorph in _oSpellChecker.getMorph(sFlex):
                 for m in re.finditer(">"+sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K|P))", sMorph):
                     # stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if m:
@@ -42,7 +42,7 @@ def suggVerb (sFlex, sWho, funcSugg2=None):
 
 def suggVerbPpas (sFlex, sWhat=None):
     aSugg = set()
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
         if tTags:
             if not sWhat:
@@ -85,7 +85,7 @@ def suggVerbPpas (sFlex, sWhat=None):
 
 def suggVerbTense (sFlex, sTense, sWho):
     aSugg = set()
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         if conj.hasConj(sStem, sTense, sWho):
             aSugg.add(conj.getConj(sStem, sTense, sWho))
     if aSugg:
@@ -95,7 +95,7 @@ def suggVerbTense (sFlex, sTense, sWho):
 
 def suggVerbImpe (sFlex):
     aSugg = set()
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
         if tTags:
             if conj._hasConjWithTags(tTags, ":E", ":2s"):
@@ -110,7 +110,7 @@ def suggVerbImpe (sFlex):
 
 
 def suggVerbInfi (sFlex):
-    return "|".join([ sStem  for sStem in stem(sFlex)  if conj.isVerb(sStem) ])
+    return "|".join([ sStem  for sStem in _oSpellChecker.getLemma(sFlex)  if conj.isVerb(sStem) ])
 
 
 _dQuiEst = { "je": ":1s", "j’": ":1s", "j’en": ":1s", "j’y": ":1s", \
@@ -133,7 +133,7 @@ def suggVerbMode (sFlex, cMode, sSuj):
             return ""
         sWho = ":3s"
     aSugg = set()
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
         if tTags:
             for sTense in lMode:
@@ -149,9 +149,10 @@ def suggVerbMode (sFlex, cMode, sSuj):
 def suggPlur (sFlex, sWordToAgree=None):
     "returns plural forms assuming sFlex is singular"
     if sWordToAgree:
-        if sWordToAgree not in _dAnalyses and not _storeMorphFromFSA(sWordToAgree):
+        lMorph = _oSpellChecker.getMorph(sFlex)
+        if not lMorph:
             return ""
-        sGender = cr.getGender(_dAnalyses.get(sWordToAgree, []))
+        sGender = cr.getGender(lMorph)
         if sGender == ":m":
             return suggMasPlur(sFlex)
         elif sGender == ":f":
@@ -193,9 +194,8 @@ def suggSing (sFlex):
 
 def suggMasSing (sFlex, bSuggSimil=False):
     "returns masculine singular forms"
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = set()
-    for sMorph in _dAnalyses.get(sFlex, []):
+    for sMorph in _oSpellChecker.getMorph(sFlex):
         if not ":V" in sMorph:
             # not a verb
             if ":m" in sMorph or ":e" in sMorph:
@@ -221,9 +221,8 @@ def suggMasSing (sFlex, bSuggSimil=False):
 
 def suggMasPlur (sFlex, bSuggSimil=False):
     "returns masculine plural forms"
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = set()
-    for sMorph in _dAnalyses.get(sFlex, []):
+    for sMorph in _oSpellChecker.getMorph(sFlex):
         if not ":V" in sMorph:
             # not a verb
             if ":m" in sMorph or ":e" in sMorph:
@@ -252,9 +251,8 @@ def suggMasPlur (sFlex, bSuggSimil=False):
 
 def suggFemSing (sFlex, bSuggSimil=False):
     "returns feminine singular forms"
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = set()
-    for sMorph in _dAnalyses.get(sFlex, []):
+    for sMorph in _oSpellChecker.getMorph(sFlex):
         if not ":V" in sMorph:
             # not a verb
             if ":f" in sMorph or ":e" in sMorph:
@@ -278,9 +276,8 @@ def suggFemSing (sFlex, bSuggSimil=False):
 
 def suggFemPlur (sFlex, bSuggSimil=False):
     "returns feminine plural forms"
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = set()
-    for sMorph in _dAnalyses.get(sFlex, []):
+    for sMorph in _oSpellChecker.getMorph(sFlex):
         if not ":V" in sMorph:
             # not a verb
             if ":f" in sMorph or ":e" in sMorph:
@@ -303,7 +300,7 @@ def suggFemPlur (sFlex, bSuggSimil=False):
 
 
 def hasFemForm (sFlex):
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         if mfsp.isFemForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q3"):
             return True
     if phonet.hasSimil(sFlex, ":f"):
@@ -312,7 +309,7 @@ def hasFemForm (sFlex):
 
 
 def hasMasForm (sFlex):
-    for sStem in stem(sFlex):
+    for sStem in _oSpellChecker.getLemma(sFlex):
         if mfsp.isFemForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q1"):
             # what has a feminine form also has a masculine form
             return True
@@ -322,10 +319,9 @@ def hasMasForm (sFlex):
 
 
 def switchGender (sFlex, bPlur=None):
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = set()
     if bPlur == None:
-        for sMorph in _dAnalyses.get(sFlex, []):
+        for sMorph in _oSpellChecker.getMorph(sFlex):
             if ":f" in sMorph:
                 if ":s" in sMorph:
                     aSugg.add(suggMasSing(sFlex))
@@ -340,13 +336,13 @@ def switchGender (sFlex, bPlur=None):
                     aSugg.add(suggFemSing(sFlex))
                     aSugg.add(suggFemPlur(sFlex))
     elif bPlur:
-        for sMorph in _dAnalyses.get(sFlex, []):
+        for sMorph in _oSpellChecker.getMorph(sFlex):
             if ":f" in sMorph:
                 aSugg.add(suggMasPlur(sFlex))
             elif ":m" in sMorph:
                 aSugg.add(suggFemPlur(sFlex))
     else:
-        for sMorph in _dAnalyses.get(sFlex, []):
+        for sMorph in _oSpellChecker.getMorph(sFlex):
             if ":f" in sMorph:
                 aSugg.add(suggMasSing(sFlex))
             elif ":m" in sMorph:
@@ -357,9 +353,8 @@ def switchGender (sFlex, bPlur=None):
 
 
 def switchPlural (sFlex):
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = set()
-    for sMorph in _dAnalyses.get(sFlex, []):
+    for sMorph in _oSpellChecker.getMorph(sFlex):
         if ":s" in sMorph:
             aSugg.add(suggPlur(sFlex))
         elif ":p" in sMorph:
@@ -375,9 +370,8 @@ def hasSimil (sWord, sPattern=None):
 
 def suggSimil (sWord, sPattern=None, bSubst=False):
     "return list of words phonetically similar to sWord and whom POS is matching sPattern"
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     aSugg = phonet.selectSimil(sWord, sPattern)
-    for sMorph in _dAnalyses.get(sWord, []):
+    for sMorph in _oSpellChecker.getMorph(sWord):
         aSugg.update(conj.getSimil(sWord, sMorph, bSubst))
         break
     if aSugg:
@@ -394,8 +388,7 @@ def suggCeOrCet (sWord):
 
 
 def suggLesLa (sWord):
-    # we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    if any( ":p" in sMorph  for sMorph in _dAnalyses.get(sWord, []) ):
+    if any( ":p" in sMorph  for sMorph in _oSpellChecker.getMorph(sWord) ):
         return "les|la"
     return "la"
 
