@@ -36,6 +36,10 @@ class SpellChecker ():
         self.bCommunityDic = bool(self.oCommunityDic)
         self.bPersonalDic = bool(self.oPersonalDic)
         self.oTokenizer = None
+        # storage
+        self.bStorage = False
+        self._dMorphologies = {}        # key: flexion, value: list of morphologies
+        self._dLemmas = {}              # key: flexion, value: list of lemmas
 
     def _loadDictionary (self, source, bNecessary=False):
         "returns an IBDAWG object"
@@ -98,6 +102,19 @@ class SpellChecker ():
 
     def deactivatePersonalDictionary (self):
         self.bPersonalDic = False
+
+
+    # Storage
+
+    def activateStorage (self):
+        self.bStorage = True
+
+    def deactivateStorage (self):
+        self.bStorage = False
+
+    def clearStorage (self):
+        self._dLemmas.clear()
+        self._dMorphologies.clear()
 
 
     # parse text functions
@@ -171,16 +188,26 @@ class SpellChecker ():
 
     def getMorph (self, sWord):
         "retrieves morphologies list, different casing allowed"
-        lResult = self.oMainDic.getMorph(sWord)
+        if self.bStorage and sWord in self._dMorphologies:
+            return self._dMorphologies[sWord]
+        lMorph = self.oMainDic.getMorph(sWord)
         if self.bExtendedDic:
-            lResult.extend(self.oExtendedDic.getMorph(sWord))
+            lMorph.extend(self.oExtendedDic.getMorph(sWord))
         if self.bCommunityDic:
-            lResult.extend(self.oCommunityDic.getMorph(sWord))
+            lMorph.extend(self.oCommunityDic.getMorph(sWord))
         if self.bPersonalDic:
-            lResult.extend(self.oPersonalDic.getMorph(sWord))
-        return lResult
+            lMorph.extend(self.oPersonalDic.getMorph(sWord))
+        if self.bStorage:
+            self._dMorphologies[sWord] = lMorph
+            self._dLemmas[sWord] = set([ s[1:s.find(" ")]  for s in lMorph ])
+        return lMorph
 
     def getLemma (self, sWord):
+        "retrieves lemmas (Warning: if <self.bStorage> then lemmas are returned with the preceding sign “>”)"
+        if self.bStorage:
+            if sWord not in self._dLemmas:
+                self.getMorph(sWord)
+            return self._dLemmas[sWord]
         return set([ s[1:s.find(" ")]  for s in self.getMorph(sWord) ])
 
     def suggest (self, sWord, nSuggLimit=10):
