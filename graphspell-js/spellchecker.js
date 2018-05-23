@@ -240,7 +240,7 @@ class SpellChecker {
         }
         if (this.bStorage) {
             this._dMorphologies.set(sWord, lMorph);
-            this._dLemmas.set(sWord, new Set(this.getMorph(sWord).map((sMorph) => { return sMorph.slice(0, sMorph.indexOf(" ")); })));
+            this._dLemmas.set(sWord, Array.from(new Set(this.getMorph(sWord).map((sMorph) => { return sMorph.slice(0, sMorph.indexOf(" ")); }))));
         }
         return lMorph;
     }
@@ -253,7 +253,7 @@ class SpellChecker {
             }
             return this._dLemmas.get(sWord);
         }
-        return new Set(this.getMorph(sWord).map((sMorph) => { return sMorph.slice(0, sMorph.indexOf(" ")); }));
+        return Array.from(new Set(this.getMorph(sWord).map((sMorph) => { return sMorph.slice(0, sMorph.indexOf(" ")); })));
     }
 
     * suggest (sWord, nSuggLimit=10) {
