@@ -43,6 +43,10 @@ class SpellChecker {
         this.bCommunityDic = Boolean(this.oCommunityDic);
         this.bPersonalDic = Boolean(this.oPersonalDic);
         this.oTokenizer = null;
+        // storage
+        this.bStorage = false;
+        this._dMorphologies = new Map();            // key: flexion, value: list of morphologies
+        this._dLemmas = new Map();                  // key: flexion, value: list of lemmas
     }
 
     _loadDictionary (dictionary, sPath="", bNecessary=false) {
@@ -135,6 +139,22 @@ class SpellChecker {
     }
 
 
+    // Storage
+
+    activateStorage () {
+        this.bStorage = true;
+    }
+
+    deactivateStorage () {
+        this.bStorage = false;
+    }
+
+    clearStorage () {
+        this._dLemmas.clear();
+        this._dMorphologies.clear();
+    }
+
+
     // parse text functions
 
     parseParagraph (sText) {
@@ -205,17 +225,35 @@ class SpellChecker {
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
-        let lResult = this.oMainDic.getMorph(sWord);
+        if (this.bStorage && this._dMorphologies.has(sWord)) {
+            return this._dMorphologies.get(sWord);
+        }
+        let lMorph = this.oMainDic.getMorph(sWord);
         if (this.bExtendedDic) {
-            lResult.push(...this.oExtendedDic.getMorph(sWord));
+            lMorph.push(...this.oExtendedDic.getMorph(sWord));
         }
         if (this.bCommunityDic) {
-            lResult.push(...this.oCommunityDic.getMorph(sWord));
+            lMorph.push(...this.oCommunityDic.getMorph(sWord));
         }
         if (this.bPersonalDic) {
-            lResult.push(...this.oPersonalDic.getMorph(sWord));
+            lMorph.push(...this.oPersonalDic.getMorph(sWord));
         }
-        return lResult;
+        if (this.bStorage) {
+            this._dMorphologies.set(sWord, lMorph);
+            this._dLemmas.set(sWord, new Set(this.getMorph(sWord).map((sMorph) => { return sMorph.slice(0, sMorph.indexOf(" ")); })));
+        }
+        return lMorph;
+    }
+
+    getLemma (sWord) {
+        // retrieves lemmas
+        if (this.bStorage) {
+            if (!this._dLemmas.has(sWord)) {
+                this.getMorph(sWord);
+            }
+            return this._dLemmas.get(sWord);
+        }
+        return new Set(this.getMorph(sWord).map((sMorph) => { return sMorph.slice(0, sMorph.indexOf(" ")); }));
     }
 
     * suggest (sWord, nSuggLimit=10) {
