@@ -159,15 +159,20 @@ class Node:
         dNode = {}
         dRegex = {}
         dRules = {}
-        for arc, oNode in self.dArcs.items():
-            if type(arc) == str and arc.startswith("~"):
-                dRegex[arc[1:]] = oNode.__hash__()
-            elif arc.startswith("##"):
-                dRules[arc[1:]] = oNode.__hash__()
+        dLemmas = {}
+        for sArc, oNode in self.dArcs.items():
+            if sArc.startswith("~") and len(sArc) > 1:
+                dRegex[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith(">") and len(sArc) > 1:
+                dLemmas[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith("##"):
+                dRules[sArc[1:]] = oNode.__hash__()
             else:
-                dNode[arc] = oNode.__hash__()
+                dNode[sArc] = oNode.__hash__()
         if dRegex:
             dNode["<regex>"] = dRegex
+        if dLemmas:
+            dNode["<lemmas>"] = dLemmas
         if dRules:
             dNode["<rules>"] = dRules
         #if self.bFinal:

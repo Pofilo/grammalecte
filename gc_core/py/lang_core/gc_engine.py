@@ -609,18 +609,19 @@ class TokenSentence:
         if dToken["sValue"] in dNode:
             yield dGraph[dNode[dToken["sValue"]]]
         # token lemmas
-        for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
-            if sLemma in dNode:
-                yield dGraph[dNode[sLemma]]
+        if "<lemmas>" in dNode:
+            for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
+                if sLemma in dNode["<lemmas>"]:
+                    yield dGraph[dNode["<lemmas>"][sLemma]]
         # universal arc
         if "*" in dNode:
             yield dGraph[dNode["*"]]
         # regex arcs
-        if "~" in dNode:
+        if "<regex>" in dNode:
             for sRegex in dNode["~"]:
                 for sMorph in _oSpellChecker.getMorph(dToken["sValue"]):
                     if re.search(sRegex, sMorph):
-                        yield dGraph[dNode["~"][sRegex]]
+                        yield dGraph[dNode["regex"][sRegex]]
 
     def _executeActions (self, dNode, nOffset):
         for sLineId, nextNodeKey in dNode.items():
