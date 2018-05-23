@@ -203,7 +203,7 @@ class SpellChecker ():
         return lMorph
 
     def getLemma (self, sWord):
-        "retrieves lemmas (Warning: if <self.bStorage> then lemmas are returned with the preceding sign “>”)"
+        "retrieves lemmas"
         if self.bStorage:
             if sWord not in self._dLemmas:
                 self.getMorph(sWord)
