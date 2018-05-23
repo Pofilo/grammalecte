@@ -12,6 +12,9 @@ from ..graphspell.spellchecker import SpellChecker
 from ..graphspell.echo import echo
 from . import gc_options
 
+from ..graphspell.tokenizer import Tokenizer
+from .gc_rules_graph import dGraph
+
 
 __all__ = [ "lang", "locales", "pkg", "name", "version", "author", \
             "load", "parse", "getSpellChecker", \
@@ -35,8 +38,7 @@ _sAppContext = ""                           # what software is running
 _dOptions = None
 _aIgnoredRules = set()
 _oSpellChecker = None
-_dAnalyses = {}                             # cache for data from dictionary
-
+_oTokenizer = None
 
 
 #### Parsing
@@ -45,14 +47,14 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
     "analyses the paragraph sText and returns list of errors"
     #sText = unicodedata.normalize("NFC", sText)
     aErrors = None
-    sAlt = sText
+    sRealText = sText
     dDA = {}        # Disambiguisator. Key = position; value = list of morphologies
     dPriority = {}  # Key = position; value = priority
     dOpt = _dOptions  if not dOptions  else dOptions
 
     # parse paragraph
     try:
-        sNew, aErrors = _proofread(sText, sAlt, 0, True, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
+        sNew, aErrors = _proofread(sText, sRealText, 0, True, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
         if sNew:
             sText = sNew
     except:
@@ -73,7 +75,8 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
         if 4 < (iEnd - iStart) < 2000:
             dDA.clear()
             try:
-                _, errs = _proofread(sText[iStart:iEnd], sAlt[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
+                # regex parser
+                _, errs = _proofread(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
                 aErrors.update(errs)
             except:
                 raise
@@ -291,10 +294,13 @@ def load (sContext="Python"):
     global _oSpellChecker
     global _sAppContext
     global _dOptions
+    global _oTokenizer
     try:
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
+        _oTokenizer = _oSpellChecker.getTokenizer()
+        _oSpellChecker.activateStorage()
     except:
         traceback.print_exc()
 
@@ -371,11 +377,11 @@ def _getPath ():
 #### common functions
 
 # common regexes
-_zEndOfSentence = re.compile('([.?!:;…][ .?!… »”")]*|.$)')
-_zBeginOfParagraph = re.compile("^\W*")
-_zEndOfParagraph = re.compile("\W*$")
-_zNextWord = re.compile(" +(\w[\w-]*)")
-_zPrevWord = re.compile("(\w[\w-]*) +$")
+_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
+_zBeginOfParagraph = re.compile(r"^\W*")
+_zEndOfParagraph = re.compile(r"\W*$")
+_zNextWord = re.compile(r" +(\w[\w-]*)")
+_zPrevWord = re.compile(r"(\w[\w-]*) +$")
 
 
 def option (sOpt):
@@ -388,29 +394,21 @@ def displayInfo (dDA, tWord):
     if not tWord:
         echo("> nothing to find")
         return True
-    if tWord[1] not in _dAnalyses and not _storeMorphFromFSA(tWord[1]):
-        echo("> not in FSA")
+    lMorph = _oSpellChecker.getMorph(tWord[1])
+    if not lMorph:
+        echo("> not in dictionary")
         return True
     if tWord[0] in dDA:
         echo("DA: " + str(dDA[tWord[0]]))
-    echo("FSA: " + str(_dAnalyses[tWord[1]]))
+    echo("FSA: " + str(lMorph))
     return True
-
-
-def _storeMorphFromFSA (sWord):
-    "retrieves morphologies list from _oSpellChecker -> _dAnalyses"
-    global _dAnalyses
-    _dAnalyses[sWord] = _oSpellChecker.getMorph(sWord)
-    return True  if _dAnalyses[sWord]  else False
 
 
 def morph (dDA, tWord, sPattern, bStrict=True, bNoWord=False):
     "analyse a tuple (position, word), return True if sPattern in morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
-    if tWord[1] not in _dAnalyses and not _storeMorphFromFSA(tWord[1]):
-        return False
-    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _dAnalyses[tWord[1]]
+    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _oSpellChecker.getMorph(tWord[1])
     if not lMorph:
         return False
     p = re.compile(sPattern)
@@ -423,9 +421,9 @@ def morphex (dDA, tWord, sPattern, sNegPattern, bNoWord=False):
     "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
-    if tWord[1] not in _dAnalyses and not _storeMorphFromFSA(tWord[1]):
+    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _oSpellChecker.getMorph(tWord[1])
+    if not lMorph:
         return False
-    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _dAnalyses[tWord[1]]
     # check negative condition
     np = re.compile(sNegPattern)
     if any(np.search(s)  for s in lMorph):
@@ -437,36 +435,28 @@ def morphex (dDA, tWord, sPattern, sNegPattern, bNoWord=False):
 
 def analyse (sWord, sPattern, bStrict=True):
     "analyse a word, return True if sPattern in morphologies (disambiguation off)"
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
-        return False
-    if not _dAnalyses[sWord]:
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph:
         return False
     p = re.compile(sPattern)
     if bStrict:
-        return all(p.search(s)  for s in _dAnalyses[sWord])
-    return any(p.search(s)  for s in _dAnalyses[sWord])
+        return all(p.search(s)  for s in lMorph)
+    return any(p.search(s)  for s in lMorph)
 
 
 def analysex (sWord, sPattern, sNegPattern):
     "analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)"
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph:
         return False
     # check negative condition
     np = re.compile(sNegPattern)
-    if any(np.search(s)  for s in _dAnalyses[sWord]):
+    if any(np.search(s)  for s in lMorph):
         return False
     # search sPattern
     p = re.compile(sPattern)
-    return any(p.search(s)  for s in _dAnalyses[sWord])
+    return any(p.search(s)  for s in lMorph)
 
-
-def stem (sWord):
-    "returns a list of sWord's stems"
-    if not sWord:
-        return []
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
-        return []
-    return [ s[1:s.find(" ")]  for s in _dAnalyses[sWord] ]
 
 
 ## functions to get text outside pattern scope
@@ -536,18 +526,15 @@ def select (dDA, nPos, sWord, sPattern, lDefault=None):
         return True
     if nPos in dDA:
         return True
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph or len(lMorph) == 1:
         return True
-    if len(_dAnalyses[sWord]) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in _dAnalyses[sWord]  if re.search(sPattern, sMorph) ]
+    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
     if lSelect:
-        if len(lSelect) != len(_dAnalyses[sWord]):
+        if len(lSelect) != len(lMorph):
             dDA[nPos] = lSelect
-            #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
     elif lDefault:
         dDA[nPos] = lDefault
-        #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
     return True
 
 
@@ -556,24 +543,20 @@ def exclude (dDA, nPos, sWord, sPattern, lDefault=None):
         return True
     if nPos in dDA:
         return True
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph or len(lMorph) == 1:
         return True
-    if len(_dAnalyses[sWord]) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in _dAnalyses[sWord]  if not re.search(sPattern, sMorph) ]
+    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect:
-        if len(lSelect) != len(_dAnalyses[sWord]):
+        if len(lSelect) != len(lMorph):
             dDA[nPos] = lSelect
-            #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
     elif lDefault:
         dDA[nPos] = lDefault
-        #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
     return True
 
 
 def define (dDA, nPos, lMorph):
     dDA[nPos] = lMorph
-    #echo("= "+str(nPos)+" "+str(dDA[nPos]))
     return True
 
 
@@ -581,5 +564,7 @@ def define (dDA, nPos, lMorph):
 
 ${plugins}
 
+
+#### CALLABLES (generated code)
 
 ${callables}
