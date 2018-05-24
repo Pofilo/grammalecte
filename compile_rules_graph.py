@@ -47,29 +47,61 @@ def changeReferenceToken (s, dPos):
     return s
 
 
+def genTokenRules (sTokenLine):
+    lToken = sTokenLine.split()
+    lTokenRules = None
+    for i, sToken in enumerate(lToken):
+        if sToken.startswith("{") and sToken.endswith("}") and sToken in dDEF:
+            lToken[i] = dDEF[sToken]
+        if sToken.startswith("[") and sToken.endswith("]"):
+            # multiple token
+            if not lTokenRules:
+                lTokenRules = [ sToken[1:-1].split("|") ]
+            else:
+                lNewTemp = []
+                for aRule in lTokenRules:
+                    lElem = sToken[1:-1].split("|")
+                    sElem1 = lElem.pop(0)
+                    for sElem in lElem:
+                        aNew = list(aRule)
+                        aNew.append(sElem)
+                        lNewTemp.append(aNew)
+                    aRule.append(sElem1)
+                lTokenRules.extend(lNewTemp)
+        else:
+            # simple token
+            if not lTokenRules:
+                lTokenRules = [[sToken]]
+            else:
+                for aRule in lTokenRules:
+                    aRule.append(sToken)
+    for aRule in lTokenRules:
+        print("Rule\n", aRule)
+        yield aRule
+
+
 def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
-    lToken = sTokenLine.split()
+    for lToken in genTokenRules(sTokenLine):
+        # Calculate positions
+        dPos = {}
+        nGroup = 0
+        for i, sToken in enumerate(lToken):
+            if sToken.startswith("(") and sToken.endswith(")"):
+                lToken[i] = sToken[1:-1]
+                nGroup += 1
+                dPos[nGroup] = i
 
-    # Calculate positions
-    dPos = {}
-    nGroup = 0
-    for i, sToken in enumerate(lToken):
-        if sToken.startswith("(") and sToken.endswith(")"):
-            lToken[i] = sToken[1:-1]
-            nGroup += 1
-            dPos[nGroup] = i
-
-    # Parse actions
-    for nAction, sAction in enumerate(sActions.split(" <<- ")):
-        if sAction.strip():
-            sActionId = sRuleName + "_a" + str(nAction)
-            aAction = createAction(sActionId, sAction, nGroup, nPriority, dPos)
-            if aAction:
-                dACTIONS[sActionId] = aAction
-                lResult = list(lToken)
-                lResult.extend(["##"+str(iLine), sActionId])
-                yield lResult
+        # Parse actions
+        for nAction, sAction in enumerate(sActions.split(" <<- ")):
+            if sAction.strip():
+                sActionId = sRuleName + "_a" + str(nAction)
+                aAction = createAction(sActionId, sAction, nGroup, nPriority, dPos)
+                if aAction:
+                    dACTIONS[sActionId] = aAction
+                    lResult = list(lToken)
+                    lResult.extend(["##"+str(iLine), sActionId])
+                    yield lResult
 
 
 def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
