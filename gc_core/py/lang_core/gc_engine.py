@@ -616,12 +616,17 @@ class TokenSentence:
         # universal arc
         if "*" in dNode:
             yield dGraph[dNode["*"]]
-        # regex arcs
-        if "<regex>" in dNode:
-            for sRegex in dNode["~"]:
+        # regex value arcs
+        if "<re_value>" in dNode:
+            for sRegex in dNode["<re_value>"]:
+                if re.search(sRegex, dToken["sValue"]):
+                    yield dGraph[dNode["<re_value>"][sRegex]]
+        # regex morph arcs
+        if "<re_morph>" in dNode:
+            for sRegex in dNode["<re_morph>"]:
                 for sMorph in _oSpellChecker.getMorph(dToken["sValue"]):
                     if re.search(sRegex, sMorph):
-                        yield dGraph[dNode["regex"][sRegex]]
+                        yield dGraph[dNode["<re_morph>"][sRegex]]
 
     def _executeActions (self, dNode, nOffset):
         for sLineId, nextNodeKey in dNode.items():

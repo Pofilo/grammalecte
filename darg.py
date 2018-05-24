@@ -157,20 +157,25 @@ class Node:
     def getNodeAsDict (self):
         "returns the node as a dictionary structure"
         dNode = {}
-        dRegex = {}
+        dReValue = {}
+        dReMorph = {}
         dRules = {}
         dLemmas = {}
         for sArc, oNode in self.dArcs.items():
-            if sArc.startswith("~") and len(sArc) > 1:
-                dRegex[sArc[1:]] = oNode.__hash__()
+            if sArc.startswith("~~") and len(sArc) > 2:
+                dReMorph[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith("~") and len(sArc) > 1:
+                dReValue[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith(">") and len(sArc) > 1:
                 dLemmas[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("##"):
                 dRules[sArc[1:]] = oNode.__hash__()
             else:
                 dNode[sArc] = oNode.__hash__()
-        if dRegex:
-            dNode["<regex>"] = dRegex
+        if dReValue:
+            dNode["<re_value>"] = dReValue
+        il dReMorph:
+            dNode["<re_morph>"] = dReMorph
         if dLemmas:
             dNode["<lemmas>"] = dLemmas
         if dRules:
