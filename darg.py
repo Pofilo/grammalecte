@@ -174,7 +174,7 @@ class Node:
                 dNode[sArc] = oNode.__hash__()
         if dReValue:
             dNode["<re_value>"] = dReValue
-        il dReMorph:
+        if dReMorph:
             dNode["<re_morph>"] = dReMorph
         if dLemmas:
             dNode["<lemmas>"] = dLemmas
