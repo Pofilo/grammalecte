@@ -13,7 +13,7 @@ from ..graphspell.echo import echo
 from . import gc_options
 
 from ..graphspell.tokenizer import Tokenizer
-from .gc_rules_graph import dGraph
+from .gc_rules_graph import dGraph, dRule
 
 
 __all__ = [ "lang", "locales", "pkg", "name", "version", "author", \
@@ -588,47 +588,64 @@ class TokenSentence:
         dErr = {}
         lPointer = []
         for dToken in self.lToken:
+            # check arcs for each existing pointer
+            lNewPointer = []
             for i, dPointer in enumerate(lPointer):
                 bValid = False
+                bFirst = True
                 for dNode in self._getNextMatchingNodes(dToken, dPointer["dNode"]):
-                    dPointer["nOffset"] = dToken["i"]
-                    dPointer["dNode"] = dNode
+                    if bFirst:
+                        dPointer["nOffset"] = dToken["i"]
+                        dPointer["dNode"] = dNode
+                    else:
+                        lNewPointer.append({"nOffset": dPointer["nOffset"], "dNode": dNode})
+                    bFirst = False
                     bValid = True
                 if not bValid:
                     del lPointer[i]
-            for dNode in self._getNextMatchingNodes(dToken, dGraph):
+            lPointer.extend(lNewPointer)
+            # check arcs of first nodes
+            for dNode in self._getNextMatchingNodes(dToken, dGraph[0]):
                 lPointer.append({"nOffset": 0, "dNode": dNode})
+            # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    for dNode in dGraph[dPointer["dNode"]["<rules>"]]:
-                        dErr = self._executeActions(dNode, nOffset)
+                    dErr = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"])
+        if dErr:
+            print(dErr)
         return dErr
 
     def _getNextMatchingNodes (self, dToken, dNode):
         # token value
         if dToken["sValue"] in dNode:
+            print("value found: ", dToken["sValue"])
             yield dGraph[dNode[dToken["sValue"]]]
         # token lemmas
         if "<lemmas>" in dNode:
             for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
                 if sLemma in dNode["<lemmas>"]:
+                    print("lemma found: ", sLemma)
                     yield dGraph[dNode["<lemmas>"][sLemma]]
         # universal arc
         if "*" in dNode:
+            print("generic arc")
             yield dGraph[dNode["*"]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
                 if re.search(sRegex, dToken["sValue"]):
+                    print("value regex matching: ", sRegex)
                     yield dGraph[dNode["<re_value>"][sRegex]]
         # regex morph arcs
         if "<re_morph>" in dNode:
             for sRegex in dNode["<re_morph>"]:
                 for sMorph in _oSpellChecker.getMorph(dToken["sValue"]):
                     if re.search(sRegex, sMorph):
+                        print("morph regex matching: ", sRegex)
                         yield dGraph[dNode["<re_morph>"][sRegex]]
 
     def _executeActions (self, dNode, nOffset):
+        dErrs = {}
         for sLineId, nextNodeKey in dNode.items():
             for sArc in dGraph[nextNodeKey]:
                 print(sArc)
@@ -641,8 +658,8 @@ class TokenSentence:
                         if cActionType == "-":
                             # grammar error
                             print("-")
-                            nErrorStart = nSentenceOffset + m.start(eAct[0])
-                            nErrorEnd = nSentenceOffset + m.start(eAct[1])
+                            nErrorStart = self.iStart + self.lToken[eAct[0]]["nStart"]
+                            nErrorEnd = self.iStart + self.lToken[eAct[1]]["nEnd"]
                             if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
                                 dErrs[nErrorStart] = _createError(self, sWhat, nErrorStart, nErrorEnd, sLineId, bUppercase, eAct[2], eAct[3], bIdRule, sOption, bContext)
                                 dPriority[nErrorStart] = nPriority
@@ -667,15 +684,8 @@ class TokenSentence:
                     elif cActionType == ">":
                         break
                 except Exception as e:
-                    raise Exception(str(e), "# " + sLineId + " # " + sRuleId)
-
-    def _createWriterError (self):
-        d = {}
-        return d
-
-    def _createDictError (self):
-        d = {}
-        return d
+                    raise Exception(str(e), sLineId)
+        return dErrs
 
     def _rewrite (self, sWhat, nErrorStart, nErrorEnd):
         "text processor: rewrite tokens between <nErrorStart> and <nErrorEnd> position"

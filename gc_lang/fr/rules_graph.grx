@@ -39,20 +39,24 @@
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
 
 
-__rule1__
-    les  ~:N:.:s
-    des  ~:N:.:s
-    ces  ~:N:.:s
-        <<-  -1>> acquit                        # Message0|http://test.grammalecte.net
+__avoir_confiance_en__
+    >avoir confiance (dans) [moi|toi|soi|lui|elle|nous|vous|eux|elles]
+        <<-  -1>> en                                                                                # Avoir confiance en quelqu’un ou quelque chose.|http://grammalecte.net
 
-__rule2__
-    ci important que soi
-    ci vraiment il y a
-    ci pour ça
-        <<- morph(\2, ":[WAR]", False) -1>> si   # Message1|http://test.grammalecte.net
+TEST: Elle avait confiance {{dans}} lui.
 
-__rule3__
-    contre ([nature|pétrie|action]) par ([ennui|sélection])
-        <<- morph(\1, "xxxx") -1:2>> =\1+\2     # Message2|http://test.grammalecte.org
-        <<-  ~1>> hyper|fonction
 
+__code_legacy__
+    legacy code
+    code legacy
+        <<- -1:2>> code hérité|code reliquat                                                        # Anglicisme superflu.
+
+TEST: c’est du {{legacy code}}.
+TEST: ce {{code legacy}} est un cauchemar
+
+
+__être_en_xxxx__
+    [>être|>rester|>demeurer] an [désaccord|accord]
+        <<- -2>> en                                                                                 # Confusion. Un an = une année.
+
+TEST: Je suis {{an}} désaccord avec lui.
