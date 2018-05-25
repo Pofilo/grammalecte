@@ -43,7 +43,7 @@ def prepareFunction (s):
 
 def changeReferenceToken (s, dPos):
     for i in range(len(dPos), 0, -1):
-        s = s.replace("\\"+str(i), "\\"+dPos[i])
+        s = s.replace("\\"+str(i), "\\"+str(dPos[i]))
     return s
 
 
@@ -53,16 +53,21 @@ def genTokenRules (sTokenLine):
     for i, sToken in enumerate(lToken):
         if sToken.startswith("{") and sToken.endswith("}") and sToken in dDEF:
             lToken[i] = dDEF[sToken]
-        if sToken.startswith("[") and sToken.endswith("]"):
+        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
+            bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
             # multiple token
             if not lTokenRules:
                 lTokenRules = [ sToken[1:-1].split("|") ]
             else:
                 lNewTemp = []
                 for aRule in lTokenRules:
-                    lElem = sToken[1:-1].split("|")
+                    lElem = sToken[1:-1].split("|")  if not bSelectedGroup  else sToken[2:-2].split("|")
                     sElem1 = lElem.pop(0)
+                    if bSelectedGroup:
+                        sElem1 = "(" + sElem1 + ")"
                     for sElem in lElem:
+                        if bSelectedGroup:
+                            sElem = "(" + sElem + ")"
                         aNew = list(aRule)
                         aNew.append(sElem)
                         lNewTemp.append(aNew)
@@ -126,8 +131,11 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
     iStartAction = int(m.group(2))  if m.group(2)  else 0
     iEndAction = int(m.group(3)[1:])  if m.group(3)  else iStartAction
     if nGroup:
-        iStartAction = dPos[iStartAction]
-        iEndAction = dPos[iEndAction]
+        try:
+            iStartAction = dPos[iStartAction]
+            iEndAction = dPos[iEndAction]
+        except:
+            print("# Error. Wrong groups in: " + sIdAction)
 
     if cAction == "-":
         ## error
