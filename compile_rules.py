@@ -460,7 +460,7 @@ def make (spLang, sLang, bJavaScript):
                 print("Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
-            lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
+            lTest.append("r{:<7}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
             pass
         elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
@@ -544,8 +544,8 @@ def make (spLang, sLang, bJavaScript):
 
     d = { "callables": sPyCallables,
           "callablesJS": sJSCallables,
-          "gctests": sGCTests,
-          "gctestsJS": sGCTestsJS,
+          "regex_gctests": sGCTests,
+          "regex_gctestsJS": sGCTestsJS,
           "paragraph_rules": mergeRulesByOption(lParagraphRules),
           "sentence_rules": mergeRulesByOption(lSentenceRules),
           "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),

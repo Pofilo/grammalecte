@@ -233,7 +233,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     # TEST FILES
     with open("grammalecte/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy:
         hDstPy.write("# TESTS FOR LANG [" + sLang + "]\n\n")
-        hDstPy.write(dVars['gctests'])
+        hDstPy.write(dVars['regex_gctests'])
+        hDstPy.write(dVars['graph_gctests'])
 
     createOXT(spLang, dVars, xConfig._sections['oxt'], spLangPack, bInstallOXT)
 

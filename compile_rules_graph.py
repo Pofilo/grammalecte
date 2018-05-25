@@ -259,7 +259,7 @@ def make (spLang, sLang, bJavaScript):
                 print("Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
-            lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
+            lTest.append("g{:<7}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
             pass
         elif sLine.startswith("!!"):
@@ -337,7 +337,7 @@ def make (spLang, sLang, bJavaScript):
     # Result
     d = {
         "graph_callables": sPyCallables,
-        "graph_gctests": None,
+        "graph_gctests": sGCTests,
         "rules_graph": oRuleGraph,
         "rules_actions": dACTIONS
     }
