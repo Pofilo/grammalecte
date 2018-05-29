@@ -79,8 +79,8 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
                 _, errs = _proofread(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
                 aErrors.update(errs)
                 # token parser
-                oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, dPriority, sCountry, dOpt, bDebug, bContext)
-                oSentence.parse()
+                oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
+                oSentence.parse(dPriority, sCountry, dOpt, bDebug, bContext)
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
@@ -113,7 +113,7 @@ def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, 
                                         # grammar error
                                         nErrorStart = nOffset + m.start(eAct[0])
                                         if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
-                                            dErrs[nErrorStart] = _createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext)
+                                            dErrs[nErrorStart] = _createRegexError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext)
                                             dPriority[nErrorStart] = nPriority
                                     elif cActionType == "~":
                                         # text processor
@@ -140,7 +140,7 @@ def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, 
     return (False, dErrs)
 
 
-def _createWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
     "error for Writer (LO/OO)"
     xErr = SingleProofreadingError()
     #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
@@ -185,7 +185,7 @@ def _createWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUpp
     return xErr
 
 
-def _createDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+def _createRegexDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
     "error as a dictionary"
     dErr = {}
     dErr["nStart"] = nOffset + m.start(iGroup)
@@ -202,9 +202,9 @@ def _createDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUpper
             else:
                 dErr["aSuggestions"] = sugg.split("|")
         else:
-            dErr["aSuggestions"] = ()
+            dErr["aSuggestions"] = []
     elif sRepl == "_":
-        dErr["aSuggestions"] = ()
+        dErr["aSuggestions"] = []
     else:
         if bUppercase and m.group(iGroup)[0:1].isupper():
             dErr["aSuggestions"] = list(map(str.capitalize, m.expand(sRepl).split("|")))
@@ -225,6 +225,95 @@ def _createDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUpper
         dErr['sUnderlined'] = sx[m.start(iGroup):m.end(iGroup)]
         dErr['sBefore'] = sx[max(0,m.start(iGroup)-80):m.start(iGroup)]
         dErr['sAfter'] = sx[m.end(iGroup):m.end(iGroup)+80]
+    return dErr
+
+
+def _createTokenWriterError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+    "error for Writer (LO/OO)"
+    xErr = SingleProofreadingError()
+    #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
+    xErr.nErrorStart = nStart
+    xErr.nErrorLength = nEnd - nStart
+    xErr.nErrorType = PROOFREADING
+    xErr.aRuleIdentifier = sRuleId
+    # suggestions
+    if sRepl[0:1] == "=":
+        sSugg = globals()[sRepl[1:]](lToken)
+        if sSugg:
+            if bUppercase and lToken[iFirstToken]["sValue"][0:1].isupper():
+                xErr.aSuggestions = tuple(map(str.capitalize, sSugg.split("|")))
+            else:
+                xErr.aSuggestions = tuple(sSugg.split("|"))
+        else:
+            xErr.aSuggestions = ()
+    elif sRepl == "_":
+        xErr.aSuggestions = ()
+    else:
+        if bUppercase and lToken[iFirstToken]["sValue"][0:1].isupper():
+            xErr.aSuggestions = tuple(map(str.capitalize, sRepl.split("|")))
+        else:
+            xErr.aSuggestions = tuple(sRepl.split("|"))
+    # Message
+    if sMsg[0:1] == "=":
+        sMessage = globals()[sMsg[1:]](lToken)
+    else:
+        sMessage = sMsg
+    xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
+    xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
+    if bIdRule:
+        xErr.aShortComment += "  " + sLineId + " # " + sRuleId
+    # URL
+    if sURL:
+        p = PropertyValue()
+        p.Name = "FullCommentURL"
+        p.Value = sURL
+        xErr.aProperties = (p,)
+    else:
+        xErr.aProperties = ()
+    return xErr
+
+                                                         
+def _createTokenDictError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+    "error as a dictionary"
+    print(locals())
+    dErr = {}
+    dErr["nStart"] = nStart
+    dErr["nEnd"] = nEnd
+    dErr["sLineId"] = sLineId
+    dErr["sRuleId"] = sRuleId
+    dErr["sType"] = sOption  if sOption  else "notype"
+    # suggestions
+    if sRepl[0:1] == "=":
+        sugg = globals()[sRepl[1:]](lToken)
+        if sugg:
+            if bUppercase and lToken[iFirstToken]["sValue"][0:1].isupper():
+                dErr["aSuggestions"] = list(map(str.capitalize, sugg.split("|")))
+            else:
+                dErr["aSuggestions"] = sugg.split("|")
+        else:
+            dErr["aSuggestions"] = []
+    elif sRepl == "_":
+        dErr["aSuggestions"] = []
+    else:
+        if bUppercase and lToken[iFirstToken]["sValue"][0:1].isupper():
+            dErr["aSuggestions"] = list(map(str.capitalize, sRepl.split("|")))
+        else:
+            dErr["aSuggestions"] = sRepl.split("|")
+    # Message
+    if sMsg[0:1] == "=":
+        sMessage = globals()[sMsg[1:]](lToken)
+    else:
+        sMessage = sMsg
+    dErr["sMessage"] = sMessage
+    if bIdRule:
+        dErr["sMessage"] += "  " + sLineId + " # " + sRuleId
+    # URL
+    dErr["URL"] = sURL  if sURL  else ""
+    # Context
+    if bContext:
+        dErr['sUnderlined'] = sSentence0[dErr["nStart"]:dErr["nEnd"]]
+        dErr['sBefore'] = sSentence0[max(0,dErr["nStart"]-80):dErr["nStart"]]
+        dErr['sAfter'] = sSentence0[dErr["nEnd"]:dErr["nEnd"]+80]
     return dErr
 
 
@@ -288,9 +377,11 @@ try:
     from com.sun.star.text.TextMarkupType import PROOFREADING
     from com.sun.star.beans import PropertyValue
     #import lightproof_handler_${implname} as opt
-    _createError = _createWriterError
+    _createRegexError = _createRegexWriterError
+    _createTokenError = _createTokenWriterError
 except ImportError:
-    _createError = _createDictError
+    _createRegexError = _createRegexDictError
+    _createTokenError = _createTokenDictError
 
 
 def load (sContext="Python"):
@@ -578,15 +669,18 @@ ${callables}
 
 class TokenSentence:
 
-    def __init__ (self, sSentence, sSentence0, iStart, dPriority, sCountry, dOpt, bDebug, bContext):
+    def __init__ (self, sSentence, sSentence0, iStart):
         self.sSentence = sSentence
         self.sSentence0 = sSentence0
         self.iStart = iStart
         self.lToken = list(_oTokenizer.genTokens(sSentence))
 
-    def parse (self):
+    def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bDebug=False, bContext=False):
         dErr = {}
+        dPriority = {}  # Key = position; value = priority
+        dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
+        bIdRule = option('idrule')
         for dToken in self.lToken:
             # check arcs for each existing pointer
             lNewPointer = []
@@ -610,7 +704,7 @@ class TokenSentence:
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    dErr = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"])
+                    dErr = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"], dPriority, dOpt, bIdRule, bContext)
         if dErr:
             print(dErr)
         return dErr
@@ -618,40 +712,40 @@ class TokenSentence:
     def _getNextMatchingNodes (self, dToken, dNode):
         # token value
         if dToken["sValue"] in dNode:
-            print("value found: ", dToken["sValue"])
+            #print("value found: ", dToken["sValue"])
             yield dGraph[dNode[dToken["sValue"]]]
         # token lemmas
         if "<lemmas>" in dNode:
             for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
                 if sLemma in dNode["<lemmas>"]:
-                    print("lemma found: ", sLemma)
+                    #print("lemma found: ", sLemma)
                     yield dGraph[dNode["<lemmas>"][sLemma]]
         # universal arc
         if "*" in dNode:
-            print("generic arc")
+            #print("generic arc")
             yield dGraph[dNode["*"]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
                 if re.search(sRegex, dToken["sValue"]):
-                    print("value regex matching: ", sRegex)
+                    #print("value regex matching: ", sRegex)
                     yield dGraph[dNode["<re_value>"][sRegex]]
         # regex morph arcs
         if "<re_morph>" in dNode:
             for sRegex in dNode["<re_morph>"]:
                 for sMorph in _oSpellChecker.getMorph(dToken["sValue"]):
                     if re.search(sRegex, sMorph):
-                        print("morph regex matching: ", sRegex)
+                        #print("morph regex matching: ", sRegex)
                         yield dGraph[dNode["<re_morph>"][sRegex]]
 
-    def _executeActions (self, dNode, nOffset):
+    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, bIdRule, bContext):
         dErrs = {}
         for sLineId, nextNodeKey in dNode.items():
-            for sArc in dGraph[nextNodeKey]:
-                print(sArc)
+            for sRuleId in dGraph[nextNodeKey]:
+                print(sRuleId)
                 bCondMemo = None
-                sFuncCond, cActionType, sWhat, *eAct = dRule[sArc]
-                # action in lActions: [ condition, action type, replacement/suggestion/action[, iGroupStart, iGroupEnd[, message, URL]] ]
+                sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
+                # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
                 try:
                     bCondMemo = not sFuncCond or globals()[sFuncCond](self, sCountry, bCondMemo)
                     if bCondMemo:
@@ -660,9 +754,9 @@ class TokenSentence:
                             print("-")
                             nErrorStart = self.iStart + self.lToken[eAct[0]]["nStart"]
                             nErrorEnd = self.iStart + self.lToken[eAct[1]]["nEnd"]
-                            if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
-                                dErrs[nErrorStart] = _createError(self, sWhat, nErrorStart, nErrorEnd, sLineId, bUppercase, eAct[2], eAct[3], bIdRule, sOption, bContext)
-                                dPriority[nErrorStart] = nPriority
+                            if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
+                                dErrs[nErrorStart] = _createTokenError(self.lToken, self.sSentence, self.sSentence0, sWhat, eAct[0], nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bIdRule, "notype", bContext)
+                                dPriority[nErrorStart] = eAct[2]
                         elif cActionType == "~":
                             # text processor
                             print("~")
