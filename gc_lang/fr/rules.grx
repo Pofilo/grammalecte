@@ -5711,9 +5711,9 @@ __[i](p_faire_qqch)__
     <<- morph(\1, ">faire ", False) ~2>> *
     <<- __also__ ~3>> *
 __[i](loc_laisser_pour_compte)__
-    (laiss\w+) +(pour (co[mnp]tes?))  @@0,$,$
+    (laiss\w+) +(pour (co[mn]p?tes?))  @@0,$,$
     <<- morph(\1, ">laisser ", False) >>>
-    <<- \2 != "compte" -3>> compte              # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
+    <<- \3 != "compte" -3>> compte              # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
     <<- ~2>> *
 __[i](loc_mettre_à_qqch)__
     (m(?:et|[iî][mst])\w*) +(([àa]) (?:bas|jour|niveau|plat|l’(?:écart|épreuve)|terre)) @@0,$,w
@@ -5869,6 +5869,7 @@ TEST: quel potentiel électoral réel pour les souverainistes pur sucre ?
 TEST: Cette scène que décrit ici Yannick est représentative.
 TEST: attentifs aux spécificités socioculturelles de chaque peuple, constituées dans la longue durée autour d’une langue et de traditions
 TEST: Il était à l’époque chargé de maintenir en état ces machines.
+TEST: Les laissés pour compte ignorés de tous.
 
 
 
