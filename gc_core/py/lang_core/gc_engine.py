@@ -80,7 +80,8 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
                 aErrors.update(errs)
                 # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                oSentence.parse(dPriority, sCountry, dOpt, bDebug, bContext)
+                _, errs = oSentence.parse(dPriority, sCountry, dOpt, bDebug, bContext)
+                aErrors.update(errs)
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
@@ -675,41 +676,8 @@ class TokenSentence:
         self.iStart = iStart
         self.lToken = list(_oTokenizer.genTokens(sSentence))
 
-    def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bDebug=False, bContext=False):
-        dErr = {}
-        dPriority = {}  # Key = position; value = priority
-        dOpt = _dOptions  if not dOptions  else dOptions
-        lPointer = []
-        bIdRule = option('idrule')
-        for dToken in self.lToken:
-            # check arcs for each existing pointer
-            lNewPointer = []
-            for i, dPointer in enumerate(lPointer):
-                bValid = False
-                bFirst = True
-                for dNode in self._getNextMatchingNodes(dToken, dPointer["dNode"]):
-                    if bFirst:
-                        dPointer["nOffset"] = dToken["i"]
-                        dPointer["dNode"] = dNode
-                    else:
-                        lNewPointer.append({"nOffset": dPointer["nOffset"], "dNode": dNode})
-                    bFirst = False
-                    bValid = True
-                if not bValid:
-                    del lPointer[i]
-            lPointer.extend(lNewPointer)
-            # check arcs of first nodes
-            for dNode in self._getNextMatchingNodes(dToken, dGraph[0]):
-                lPointer.append({"nOffset": 0, "dNode": dNode})
-            # check if there is rules to check for each pointer
-            for dPointer in lPointer:
-                if "<rules>" in dPointer["dNode"]:
-                    dErr = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"], dPriority, dOpt, bIdRule, bContext)
-        if dErr:
-            print(dErr)
-        return dErr
-
     def _getNextMatchingNodes (self, dToken, dNode):
+        "generator: return nodes where <dToken> “values” match <dNode> arcs"
         # token value
         if dToken["sValue"] in dNode:
             #print("value found: ", dToken["sValue"])
@@ -738,8 +706,47 @@ class TokenSentence:
                         #print("morph regex matching: ", sRegex)
                         yield dGraph[dNode["<re_morph>"][sRegex]]
 
+    def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bDebug=False, bContext=False):
+        dErr = {}
+        dPriority = {}  # Key = position; value = priority
+        dOpt = _dOptions  if not dOptions  else dOptions
+        lPointer = []
+        bIdRule = option('idrule')
+        bChange = False
+        for dToken in self.lToken:
+            # check arcs for each existing pointer
+            lNewPointer = []
+            for i, dPointer in enumerate(lPointer):
+                bValid = False
+                bFirst = True
+                for dNode in self._getNextMatchingNodes(dToken, dPointer["dNode"]):
+                    if bFirst:
+                        dPointer["dNode"] = dNode
+                    else:
+                        lNewPointer.append({"nOffset": dPointer["nOffset"], "dNode": dNode})
+                    bFirst = False
+                    bValid = True
+                if not bValid:
+                    del lPointer[i]
+            lPointer.extend(lNewPointer)
+            # check arcs of first nodes
+            for dNode in self._getNextMatchingNodes(dToken, dGraph[0]):
+                lPointer.append({"nOffset": 0, "dNode": dNode})
+            # check if there is rules to check for each pointer
+            for dPointer in lPointer:
+                if "<rules>" in dPointer["dNode"]:
+                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"], dPriority, dOpt, bIdRule, bContext)
+                    dErr.update(errs)
+                    if bHasChanged:
+                        bChange = True
+        if dErr:
+            print(dErr)
+        return (bChange, dErr)
+
     def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, bIdRule, bContext):
+        print(locals())
         dErrs = {}
+        bChange = False
         for sLineId, nextNodeKey in dNode.items():
             for sRuleId in dGraph[nextNodeKey]:
                 print(sRuleId)
@@ -779,7 +786,7 @@ class TokenSentence:
                         break
                 except Exception as e:
                     raise Exception(str(e), sLineId)
-        return dErrs
+        return bChange, dErrs
 
     def _rewrite (self, sWhat, nErrorStart, nErrorEnd):
         "text processor: rewrite tokens between <nErrorStart> and <nErrorEnd> position"
