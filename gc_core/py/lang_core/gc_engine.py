@@ -51,10 +51,11 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
     dDA = {}        # Disambiguisator. Key = position; value = list of morphologies
     dPriority = {}  # Key = position; value = priority
     dOpt = _dOptions  if not dOptions  else dOptions
+    bShowRuleId = option('idrule')
 
     # parse paragraph
     try:
-        sNew, aErrors = _proofread(sText, sRealText, 0, True, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
+        sNew, aErrors = _proofread(sText, sRealText, 0, True, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         if sNew:
             sText = sNew
     except:
@@ -76,11 +77,11 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
             dDA.clear()
             try:
                 # regex parser
-                _, errs = _proofread(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
+                _, errs = _proofread(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
                 # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                _, errs = oSentence.parse(dPriority, sCountry, dOpt, bDebug, bContext)
+                _, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
             except:
                 raise
@@ -94,11 +95,9 @@ def _getSentenceBoundaries (sText):
         iStart = m.end()
 
 
-def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bDebug, bContext):
+def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
     dErrs = {}
     bChange = False
-    bIdRule = option('idrule')
-
     for sOption, lRuleGroup in _getRules(bParagraph):
         if not sOption or dOptions.get(sOption, False):
             for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
@@ -114,7 +113,7 @@ def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, 
                                         # grammar error
                                         nErrorStart = nOffset + m.start(eAct[0])
                                         if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
-                                            dErrs[nErrorStart] = _createRegexError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext)
+                                            dErrs[nErrorStart] = _createRegexError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
                                             dPriority[nErrorStart] = nPriority
                                     elif cActionType == "~":
                                         # text processor
@@ -141,7 +140,7 @@ def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, 
     return (False, dErrs)
 
 
-def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
     "error for Writer (LO/OO)"
     xErr = SingleProofreadingError()
     #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
@@ -173,7 +172,7 @@ def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId,
         sMessage = m.expand(sMsg)
     xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
     xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
-    if bIdRule:
+    if bShowRuleId:
         xErr.aShortComment += "  # " + sLineId + " # " + sRuleId
     # URL
     if sURL:
@@ -186,7 +185,7 @@ def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId,
     return xErr
 
 
-def _createRegexDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+def _createRegexDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
     "error as a dictionary"
     dErr = {}
     dErr["nStart"] = nOffset + m.start(iGroup)
@@ -217,7 +216,7 @@ def _createRegexDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, b
     else:
         sMessage = m.expand(sMsg)
     dErr["sMessage"] = sMessage
-    if bIdRule:
+    if bShowRuleId:
         dErr["sMessage"] += "  # " + sLineId + " # " + sRuleId
     # URL
     dErr["URL"] = sURL  if sURL  else ""
@@ -229,7 +228,7 @@ def _createRegexDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, b
     return dErr
 
 
-def _createTokenWriterError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+def _createTokenWriterError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
     "error for Writer (LO/OO)"
     xErr = SingleProofreadingError()
     #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
@@ -261,7 +260,7 @@ def _createTokenWriterError (lToken, sSentence, sSentence0, sRepl, iFirstToken, 
         sMessage = sMsg
     xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
     xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
-    if bIdRule:
+    if bShowRuleId:
         xErr.aShortComment += "  " + sLineId + " # " + sRuleId
     # URL
     if sURL:
@@ -274,7 +273,7 @@ def _createTokenWriterError (lToken, sSentence, sSentence0, sRepl, iFirstToken, 
     return xErr
 
                                                          
-def _createTokenDictError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
+def _createTokenDictError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
     "error as a dictionary"
     dErr = {}
     dErr["nStart"] = nStart
@@ -305,7 +304,7 @@ def _createTokenDictError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nS
     else:
         sMessage = sMsg
     dErr["sMessage"] = sMessage
-    if bIdRule:
+    if bShowRuleId:
         dErr["sMessage"] += "  " + sLineId + " # " + sRuleId
     # URL
     dErr["URL"] = sURL  if sURL  else ""
@@ -705,12 +704,11 @@ class TokenSentence:
                         #print("morph regex matching: ", sRegex)
                         yield dGraph[dNode["<re_morph>"][sRegex]]
 
-    def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bDebug=False, bContext=False):
+    def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         dErr = {}
         dPriority = {}  # Key = position; value = priority
         dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
-        bIdRule = option('idrule')
         bChange = False
         for dToken in self.lToken:
             # check arcs for each existing pointer
@@ -734,7 +732,7 @@ class TokenSentence:
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"], dPriority, dOpt, bIdRule, bContext)
+                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"], dPriority, dOpt, bShowRuleId, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
@@ -742,7 +740,7 @@ class TokenSentence:
             print(dErr)
         return (bChange, dErr)
 
-    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, bIdRule, bContext):
+    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, bShowRuleId, bContext):
         #print(locals())
         dErrs = {}
         bChange = False
@@ -763,7 +761,7 @@ class TokenSentence:
                             nErrorStart = self.iStart + self.lToken[nTokenErrorStart]["nStart"]
                             nErrorEnd = self.iStart + self.lToken[nTokenErrorEnd]["nEnd"]
                             if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
-                                dErrs[nErrorStart] = _createTokenError(self.lToken, self.sSentence, self.sSentence0, sWhat, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bIdRule, "notype", bContext)
+                                dErrs[nErrorStart] = _createTokenError(self.lToken, self.sSentence, self.sSentence0, sWhat, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                 dPriority[nErrorStart] = eAct[2]
                         elif cActionType == "~":
                             # text processor
