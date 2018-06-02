@@ -276,7 +276,6 @@ def _createTokenWriterError (lToken, sSentence, sSentence0, sRepl, iFirstToken, 
                                                          
 def _createTokenDictError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
     "error as a dictionary"
-    print(locals())
     dErr = {}
     dErr["nStart"] = nStart
     dErr["nEnd"] = nEnd
@@ -674,7 +673,7 @@ class TokenSentence:
         self.sSentence = sSentence
         self.sSentence0 = sSentence0
         self.iStart = iStart
-        self.lToken = list(_oTokenizer.genTokens(sSentence))
+        self.lToken = list(_oTokenizer.genTokens(sSentence, True))
 
     def _getNextMatchingNodes (self, dToken, dNode):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
@@ -731,7 +730,7 @@ class TokenSentence:
             lPointer.extend(lNewPointer)
             # check arcs of first nodes
             for dNode in self._getNextMatchingNodes(dToken, dGraph[0]):
-                lPointer.append({"nOffset": 0, "dNode": dNode})
+                lPointer.append({"nOffset": dToken["i"], "dNode": dNode})
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
@@ -744,7 +743,7 @@ class TokenSentence:
         return (bChange, dErr)
 
     def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, bIdRule, bContext):
-        print(locals())
+        #print(locals())
         dErrs = {}
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
@@ -759,10 +758,12 @@ class TokenSentence:
                         if cActionType == "-":
                             # grammar error
                             print("-")
-                            nErrorStart = self.iStart + self.lToken[eAct[0]]["nStart"]
-                            nErrorEnd = self.iStart + self.lToken[eAct[1]]["nEnd"]
+                            nTokenErrorStart = nTokenOffset + eAct[0]
+                            nTokenErrorEnd = nTokenOffset + eAct[1]
+                            nErrorStart = self.iStart + self.lToken[nTokenErrorStart]["nStart"]
+                            nErrorEnd = self.iStart + self.lToken[nTokenErrorEnd]["nEnd"]
                             if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
-                                dErrs[nErrorStart] = _createTokenError(self.lToken, self.sSentence, self.sSentence0, sWhat, eAct[0], nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bIdRule, "notype", bContext)
+                                dErrs[nErrorStart] = _createTokenError(self.lToken, self.sSentence, self.sSentence0, sWhat, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bIdRule, "notype", bContext)
                                 dPriority[nErrorStart] = eAct[2]
                         elif cActionType == "~":
                             # text processor
