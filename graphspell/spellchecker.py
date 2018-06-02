@@ -8,7 +8,7 @@
 # - the community dictionary, added by an organization
 # - the personal dictionary, created by the user for its own convenience
 
-
+import importlib
 import traceback
 
 from . import ibdawg
@@ -36,6 +36,9 @@ class SpellChecker ():
         self.bCommunityDic = bool(self.oCommunityDic)
         self.bPersonalDic = bool(self.oPersonalDic)
         self.oTokenizer = None
+        # Default suggestions
+        self.dDefaultSugg = None
+        self.loadSuggestions(sLangCode)
         # storage
         self.bStorage = False
         self._dMorphologies = {}        # key: flexion, value: list of morphologies
@@ -102,6 +105,17 @@ class SpellChecker ():
 
     def deactivatePersonalDictionary (self):
         self.bPersonalDic = False
+
+
+    # Default suggestions
+
+    def loadSuggestions (self, sLangCode):
+        try:
+            suggest_module = importlib.import_module("."+sLangCode, "graphspell")
+        except:
+            print("No suggestion module for language <"+sLangCode+">")
+            return
+        self.dDefaultSugg = suggest_module.dSugg
 
 
     # Storage
@@ -212,7 +226,10 @@ class SpellChecker ():
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
-        yield self.oMainDic.suggest(sWord, nSuggLimit)
+        if self.dDefaultSugg and sWord in self.dDefaultSugg:
+            yield self.dDefaultSugg[sWord].split("|")
+        else:
+            yield self.oMainDic.suggest(sWord, nSuggLimit)
         if self.bExtendedDic:
             yield self.oExtendedDic.suggest(sWord, nSuggLimit)
         if self.bCommunityDic:
