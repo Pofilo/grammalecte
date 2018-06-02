@@ -55,13 +55,15 @@ def genTokenRules (sTokenLine):
             lToken[i] = dDEF[sToken]
         if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
             bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
+            if bSelectedGroup:
+                sToken = sToken[1:-1]
             # multiple token
             if not lTokenRules:
-                lTokenRules = [ sToken[1:-1].split("|") ]
+                lTokenRules = [ [s]  for s  in sToken[1:-1].split("|") ]
             else:
                 lNewTemp = []
                 for aRule in lTokenRules:
-                    lElem = sToken[1:-1].split("|")  if not bSelectedGroup  else sToken[2:-2].split("|")
+                    lElem = sToken[1:-1].split("|")
                     sElem1 = lElem.pop(0)
                     if bSelectedGroup:
                         sElem1 = "(" + sElem1 + ")"
@@ -81,7 +83,6 @@ def genTokenRules (sTokenLine):
                 for aRule in lTokenRules:
                     aRule.append(sToken)
     for aRule in lTokenRules:
-        print("Rule\n", aRule)
         yield aRule
 
 
