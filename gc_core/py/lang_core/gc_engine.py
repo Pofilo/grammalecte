@@ -316,24 +316,22 @@ def _createTokenDictError (lToken, sSentence, sSentence0, sRepl, iFirstToken, nS
     return dErr
 
 
-def _rewrite (s, sRepl, iGroup, m, bUppercase):
-    "text processor: write sRepl in s at iGroup position"
+def _rewrite (sSentence, sRepl, iGroup, m, bUppercase):
+    "text processor: write <sRepl> in <sSentence> at <iGroup> position"
     nLen = m.end(iGroup) - m.start(iGroup)
     if sRepl == "*":
         sNew = " " * nLen
-    elif sRepl == ">" or sRepl == "_" or sRepl == "~":
+    elif sRepl == "_":
         sNew = sRepl + " " * (nLen-1)
-    elif sRepl == "@":
-        sNew = "@" * nLen
     elif sRepl[0:1] == "=":
-        sNew = globals()[sRepl[1:]](s, m)
+        sNew = globals()[sRepl[1:]](sSentence, m)
         sNew = sNew + " " * (nLen-len(sNew))
         if bUppercase and m.group(iGroup)[0:1].isupper():
             sNew = sNew.capitalize()
     else:
         sNew = m.expand(sRepl)
         sNew = sNew + " " * (nLen-len(sNew))
-    return s[0:m.start(iGroup)] + sNew + s[m.end(iGroup):]
+    return sSentence[0:m.start(iGroup)] + sNew + sSentence[m.end(iGroup):]
 
 
 def ignoreRule (sRuleId):
