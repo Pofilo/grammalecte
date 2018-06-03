@@ -41,15 +41,10 @@ def prepareFunction (s):
     return s
 
 
-def changeReferenceToken (s, dPos):
-    for i in range(len(dPos), 0, -1):
-        s = s.replace("\\"+str(i), "\\"+str(dPos[i]))
-    return s
-
-
-def genTokenRules (sTokenLine):
+def genTokenLines (sTokenLine):
+    "tokenize a string and return a list of lines of tokens"
     lToken = sTokenLine.split()
-    lTokenRules = None
+    lTokenLines = None
     for i, sToken in enumerate(lToken):
         if sToken.startswith("{") and sToken.endswith("}") and sToken in dDEF:
             lToken[i] = dDEF[sToken]
@@ -58,11 +53,11 @@ def genTokenRules (sTokenLine):
             if bSelectedGroup:
                 sToken = sToken[1:-1]
             # multiple token
-            if not lTokenRules:
-                lTokenRules = [ [s]  for s  in sToken[1:-1].split("|") ]
+            if not lTokenLines:
+                lTokenLines = [ [s]  for s  in sToken[1:-1].split("|") ]
             else:
                 lNewTemp = []
-                for aRule in lTokenRules:
+                for aRule in lTokenLines:
                     lElem = sToken[1:-1].split("|")
                     sElem1 = lElem.pop(0)
                     if bSelectedGroup:
@@ -74,35 +69,35 @@ def genTokenRules (sTokenLine):
                         aNew.append(sElem)
                         lNewTemp.append(aNew)
                     aRule.append(sElem1)
-                lTokenRules.extend(lNewTemp)
+                lTokenLines.extend(lNewTemp)
         else:
             # simple token
-            if not lTokenRules:
-                lTokenRules = [[sToken]]
+            if not lTokenLines:
+                lTokenLines = [[sToken]]
             else:
-                for aRule in lTokenRules:
+                for aRule in lTokenLines:
                     aRule.append(sToken)
-    for aRule in lTokenRules:
+    for aRule in lTokenLines:
         yield aRule
 
 
 def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
-    for lToken in genTokenRules(sTokenLine):
+    for lToken in genTokenLines(sTokenLine):
         # Calculate positions
-        dPos = {}
-        nGroup = 0
+        dPos = {}   # key: iGroup, value: iToken
+        iGroup = 0
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
                 lToken[i] = sToken[1:-1]
-                nGroup += 1
-                dPos[nGroup] = i
+                iGroup += 1
+                dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
         # Parse actions
         for nAction, sAction in enumerate(sActions.split(" <<- ")):
             if sAction.strip():
                 sActionId = sRuleName + "_a" + str(nAction)
-                aAction = createAction(sActionId, sAction, nGroup, nPriority, dPos)
+                aAction = createAction(sActionId, sAction, nPriority, len(lToken), dPos)
                 if aAction:
                     dACTIONS[sActionId] = aAction
                     lResult = list(lToken)
@@ -110,7 +105,13 @@ def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
                     yield lResult
 
 
-def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
+def changeReferenceToken (s, dPos):
+    for i in range(len(dPos), 0, -1):
+        s = s.replace("\\"+str(i), "\\"+str(dPos[i]))
+    return s
+
+
+def createAction (sIdAction, sAction, nPriority, nToken, dPos):
     m = re.search("([-~=])(\\d+|)(:\\d+|)>> ", sAction)
     if not m:
         print(" # Error. No action found at: ", sIdAction)
@@ -131,7 +132,7 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
     sAction = changeReferenceToken(sAction, dPos)
     iStartAction = int(m.group(2))  if m.group(2)  else 0
     iEndAction = int(m.group(3)[1:])  if m.group(3)  else iStartAction
-    if nGroup:
+    if dPos:
         try:
             iStartAction = dPos[iStartAction]
             iEndAction = dPos[iEndAction]
@@ -157,13 +158,13 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
                 sMsg = prepareFunction(sMsg[1:])
                 lFUNCTIONS.append(("g_m_"+sIdAction, sMsg))
                 for x in re.finditer("group[(](\\d+)[)]", sMsg):
-                    if int(x.group(1)) > nGroup:
-                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                    if int(x.group(1)) > nToken:
+                        print("# Error in token index in message at line " + sIdAction + " ("+str(nToken)+" tokens only)")
                 sMsg = "=g_m_"+sIdAction
             else:
                 for x in re.finditer(r"\\(\d+)", sMsg):
-                    if int(x.group(1)) > nGroup:
-                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+                    if int(x.group(1)) > nToken:
+                        print("# Error in token index in message at line " + sIdAction + " ("+str(nToken)+" tokens only)")
                 if re.search("[.]\\w+[(]", sMsg):
                     print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
             
@@ -172,12 +173,12 @@ def createAction (sIdAction, sAction, nGroup, nPriority, dPos):
             print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         sAction = prepareFunction(sAction)
         for x in re.finditer("group[(](\\d+)[)]", sAction):
-            if int(x.group(1)) > nGroup:
-                print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+            if int(x.group(1)) > nToken:
+                print("# Error in token index in replacement at line " + sIdAction + " ("+str(nToken)+" tokens only)")
     else:
         for x in re.finditer(r"\\(\d+)", sAction):
-            if int(x.group(1)) > nGroup:
-                print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+            if int(x.group(1)) > nToken:
+                print("# Error in token index in replacement at line " + sIdAction + " ("+str(nToken)+" tokens only)")
         if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
             print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
 
@@ -334,6 +335,9 @@ def make (spLang, sLang, bJavaScript):
         #sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         #sJSCallables += "    },\n"
     #sJSCallables += "}\n"
+
+    for sActionName, aAction in dACTIONS.items():
+        print(sActionName, aAction)
 
     # Result
     d = {

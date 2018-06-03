@@ -732,7 +732,7 @@ class TokenSentence:
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"], dPriority, dOpt, bShowRuleId, bContext)
+                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"]-1, dPriority, dOpt, bShowRuleId, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
