@@ -226,8 +226,14 @@ class SpellChecker ():
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"
-        if self.dDefaultSugg and sWord in self.dDefaultSugg:
-            yield self.dDefaultSugg[sWord].split("|")
+        if self.dDefaultSugg:
+            if sWord in self.dDefaultSugg:
+                yield self.dDefaultSugg[sWord].split("|")
+            elif sWord.istitle() and sWord.lower() in self.dDefaultSugg:
+                lRes = self.dDefaultSugg[sWord.lower()].split("|")
+                yield list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))
+            else:
+                yield self.oMainDic.suggest(sWord, nSuggLimit)
         else:
             yield self.oMainDic.suggest(sWord, nSuggLimit)
         if self.bExtendedDic:
