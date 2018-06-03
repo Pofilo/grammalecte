@@ -32,4 +32,5 @@ dSugg = {
     "ttes": "toutes",
     "tq": "tant que|tandis que",
     "tdq": "tandis que",
+    "y’a": "y a"
 }
