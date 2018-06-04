@@ -389,7 +389,11 @@ __<i>(p_email)__
 __<i>(p_URL)__
     https?://[\w./?&!%=+*"'@$#-]+ <<- ~>> *
 __<i](p_URL2)__
-    ({w_2})[.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl) @@0 <<- ~>> =\1.capitalize()
+    ((?:{w_1}[.])*)({w_2})([.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl|xyz)) @@0,**,$
+    <<- ~1>> *
+    <<- ~2>> =\2.capitalize()
+    <<- =>> define(\2, [":MP:e:i"])
+    <<- ~3>> *
 
 # Numéro de chapitre
 __<i>(p_chapitre)__
@@ -737,15 +741,15 @@ TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|
 __<s>/typo(typo_espace_manquant_après1)__
     ({w1})[,:]({w_1})  @@0,$  <<- not \1.isdigit() -2>> " \2"                                       # Il manque un espace.
 __<s>/typo(typo_espace_manquant_après2)__
-    [?!;%‰‱˚»}]({w_1})  @@$  <<- -1>> " \1"                                                         # Il manque un espace.
+    [?!;%‰‱˚»}]({w_1})  @@$  <<- -1>> " \1"                                                       # Il manque un espace.
 __<s]/typo(typo_espace_manquant_après3)__
     {w_1}[.]({w_1})  @@$
-    <<- (\1.__len__() > 1 and not \1.isdigit() and spell(\1)) or after("^’") -1>> " \1"             # Il manque un espace.
+    <<- (\1.__len__() > 1 and not \1.isdigit() and spell(\1)) or after("^’") -1>> " \1"          # Il manque un espace.
 
 TEST: J’en ai marre,{{ça}} suffit.
 TEST: elle est délirante.{{Devine}} ce qu’elle a dit.
 TEST: Voilà,{{il}} manque un espace.                                        ->> " il"
-TEST: Dernier essai.{{Voilà}}.                                              ->> " Voilà"
+TEST: Dernier essai.{{Voilà}}, c’est ça.                                    ->> " Voilà"
 TEST: muni de lunettes protectrices et.{{d}}’un casque.
 TEST: espace:{{manquant}}                                                   ->> " manquant"
 TEST: espace{{;}}{{manquant}}
@@ -754,6 +758,8 @@ TEST: espace{{?}}{{manquant}}
 TEST: espace{{!}}{{manquant}}
 TEST: espace.{{Manquant}}                                                   ->> " Manquant"
 TEST: qui ont refuse.{{de}} se sauver                                       ->> " de"
+TEST: pic.twitter.com/PICNAME
+
 
 !!
 !!
