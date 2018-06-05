@@ -6,7 +6,7 @@ dSugg = {
     "cad": "c’est-à-dire",
     "cb": "combien|CB",
     "cdlt": "cordialement",
-    "construirent": "construire|construisirent|construisent|construiront"
+    "construirent": "construire|construisirent|construisent|construiront",
     "càd": "c’est-à-dire",
     "dc": "de|donc",
     "email": "courriel|e-mail|émail",
