@@ -22,9 +22,8 @@ def prepareFunction (s):
     s = re.sub(r"isRealEnd *\(\)", 'after(["<END>"])', s)
     s = re.sub(r"isEnd0 *\(\)", 'after0(["<END>", ","])', s)
     s = re.sub(r"isRealEnd0 *\(\)", 'after0(["<END>"])', s)
-    s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(lToken[\\2]', s)
-    s = re.sub(r"define[(][\\](\d+)", 'define(lToken[\\1]', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(]\\(\d+)", '\\1(lToken[\\2]', s)
+    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(morph|morphex|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"token\(\s*(\d)", 'nextToken(\\1', s)                                       # token(n)
     s = re.sub(r"token\(\s*-(\d)", 'prevToken(\\1', s)                                      # token(-n)
     s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
@@ -33,9 +32,9 @@ def prepareFunction (s):
     s = re.sub(r"before_chk1\(\s*", 'look_chk1(dDA, s[:m.start()], 0, ', s)                 # before_chk1(s)
     s = re.sub(r"after_chk1\(\s*", 'look_chk1(dDA, s[m.end():], m.end(), ', s)              # after_chk1(s)
     s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dDA, s, 0, ', s)                           # textarea_chk1(s)
-    s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dDA, s[m.end():], m.end())', s)              # isEndOfNG(s)
-    s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dDA, s[m.end():], m.end())', s)        # isNextNotCOD(s)
-    s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dDA, s[m.end():], m.end())', s)            # isNextVerb(s)
+    #s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dDA, s[m.end():], m.end())', s)              # isEndOfNG(s)
+    #s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dDA, s[m.end():], m.end())', s)        # isNextNotCOD(s)
+    #s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dDA, s[m.end():], m.end())', s)            # isNextVerb(s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'lToken[\\1]', s)
     return s
@@ -317,7 +316,7 @@ def make (spLang, sLang, bJavaScript):
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in lFUNCTIONS:
         if sFuncName.startswith("g_c_"): # condition
-            sParams = "lToken, sCountry, bCondMemo"
+            sParams = "lToken, nTokenOffset, sCountry, bCondMemo"
         elif sFuncName.startswith("g_m_"): # message
             sParams = "lToken"
         elif sFuncName.startswith("g_s_"): # suggestion

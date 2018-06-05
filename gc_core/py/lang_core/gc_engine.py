@@ -730,7 +730,7 @@ class TokenSentence:
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"]-1, dPriority, dOpt, bShowRuleId, bContext)
+                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"]-1, dPriority, dOpt, sCountry, bShowRuleId, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
@@ -738,7 +738,7 @@ class TokenSentence:
             print(dErr)
         return (bChange, dErr)
 
-    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, bShowRuleId, bContext):
+    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bContext):
         #print(locals())
         dErrs = {}
         bChange = False
@@ -749,7 +749,7 @@ class TokenSentence:
                 sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                 # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
                 try:
-                    bCondMemo = not sFuncCond or globals()[sFuncCond](self, sCountry, bCondMemo)
+                    bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, sCountry, bCondMemo)
                     if bCondMemo:
                         if cActionType == "-":
                             # grammar error
@@ -859,20 +859,6 @@ def g_analysex (dToken, sPattern, sNegPattern):
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
-
-#### Go outside the rule scope
-
-def g_nextToken (i):
-    pass
-
-def g_prevToken (i):
-    pass
-
-def g_look ():
-    pass
-
-def g_lookAndCheck ():
-    pass
 
 
 #### Disambiguator
