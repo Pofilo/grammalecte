@@ -162,8 +162,8 @@ class Node:
         dRules = {}
         dLemmas = {}
         for sArc, oNode in self.dArcs.items():
-            if sArc.startswith("~~") and len(sArc) > 2:
-                dReMorph[sArc[2:]] = oNode.__hash__()
+            if sArc.startswith("@") and len(sArc) > 1:
+                dReMorph[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("~") and len(sArc) > 1:
                 dReValue[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith(">") and len(sArc) > 1:
