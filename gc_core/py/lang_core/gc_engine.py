@@ -697,10 +697,23 @@ class TokenSentence:
         # regex morph arcs
         if "<re_morph>" in dNode:
             for sRegex in dNode["<re_morph>"]:
-                for sMorph in _oSpellChecker.getMorph(dToken["sValue"]):
-                    if re.search(sRegex, sMorph):
-                        #print("morph regex matching: ", sRegex)
+                if "¬" not in sRegex:
+                    # no anti-pattern
+                    if any(re.search(sRegex, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                         yield dGraph[dNode["<re_morph>"][sRegex]]
+                else:
+                    # there is an anti-pattern
+                    sPattern, sNegPattern = sRegex.split("¬", 1)
+                    if sNegPattern == "*":
+                        # all morphologies must match with <sPattern>
+                        if all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                            yield dGraph[dNode["<re_morph>"][sRegex]]
+                    else:
+                        if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                            continue
+                        if any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                            yield dGraph[dNode["<re_morph>"][sRegex]]
+
 
     def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         dErr = {}
