@@ -81,8 +81,10 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
                 aErrors.update(errs)
                 # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                _, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                bChange, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
+                if bChange:
+                    oSentence.rewrite()
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
@@ -666,10 +668,10 @@ ${callables}
 
 class TokenSentence:
 
-    def __init__ (self, sSentence, sSentence0, iStart):
+    def __init__ (self, sSentence, sSentence0, nOffset):
         self.sSentence = sSentence
         self.sSentence0 = sSentence0
-        self.iStart = iStart
+        self.nOffset = nOffset
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
 
     def _getNextMatchingNodes (self, dToken, dNode):
@@ -752,7 +754,7 @@ class TokenSentence:
         return (bChange, dErr)
 
     def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bContext):
-        #print(locals())
+        "execute actions found in the DARG"
         dErrs = {}
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
@@ -769,19 +771,16 @@ class TokenSentence:
                             print("-")
                             nTokenErrorStart = nTokenOffset + eAct[0]
                             nTokenErrorEnd = nTokenOffset + eAct[1]
-                            nErrorStart = self.iStart + self.lToken[nTokenErrorStart]["nStart"]
-                            nErrorEnd = self.iStart + self.lToken[nTokenErrorEnd]["nEnd"]
+                            nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
+                            nErrorEnd = self.nOffset + self.lToken[nTokenErrorEnd]["nEnd"]
                             if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
                                 dErrs[nErrorStart] = _createTokenError(self.lToken, self.sSentence, self.sSentence0, sWhat, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                 dPriority[nErrorStart] = eAct[2]
                         elif cActionType == "~":
                             # text processor
                             print("~")
-                            self._rewrite(sWhat, nErrorStart, nErrorEnd)
-                        elif cActionType == "@":
-                            # jump
-                            print("@")
-                            self._jump(sWhat)
+                            self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1])
+                            bChange = True
                         elif cActionType == "=":
                             # disambiguation
                             print("=")
@@ -798,23 +797,56 @@ class TokenSentence:
                     raise Exception(str(e), sLineId)
         return bChange, dErrs
 
-    def _rewrite (self, sWhat, nErrorStart, nErrorEnd):
-        "text processor: rewrite tokens between <nErrorStart> and <nErrorEnd> position"
-        lTokenValue = sWhat.split("|")
-        if len(lTokenValue) != (nErrorEnd - nErrorStart + 1):
-            print("Error. Text processor: number of replacements != number of tokens.")
-            return
-        for i, sValue in zip(range(nErrorStart, nErrorEnd+1), lTokenValue):
-            self.lToken[i]["sValue"] = sValue
+    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, bUppercase=True):
+        "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
+        if sWhat == "*":
+            # purge text
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                self.lToken[nTokenRewriteStart]["bToRemove"] = True
+            else:
+                for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
+                    self.lToken[i]["bToRemove"] = True
+        else:
+            if sWhat.startswith("="):
+                sWhat = globals()[sWhat[1:]](self.lToken)
+            bUppercase = bUppercase and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                sWhat = sWhat + " " * (len(self.lToken[nTokenRewriteStart]["sValue"])-len(sWhat))
+                if bUppercase:
+                    sWhat = sWhat[0:1].upper() + sWhat[1:]
+                self.lToken[nTokenRewriteStart]["sNewValue"] = sWhat
+            else:
+                lTokenValue = sWhat.split("|")
+                if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
+                    print("Error. Text processor: number of replacements != number of tokens.")
+                    return
+                for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
+                    if bUppercase:
+                        sValue = sValue[0:1].upper() + sValue[1:]
+                    self.lToken[i]["sNewValue"] = sValue
 
-    def _jump (self, sWhat):
-        try:
-            nFrom, nTo = sWhat.split(">")
-            self.lToken[int(nFrom)]["iJump"] = int(nTo)
-        except:
-            print("# Error. Jump failed: ", sWhat)
-            traceback.print_exc()
-            return
+    def rewrite (self):
+        "rewrite the sentence, modify tokens, purge the token list"
+        lNewToken = []
+        for i, dToken in enumerate(self.lToken):
+            if "bToRemove" in dToken:
+                # remove useless token
+                self.sSentence = self.sSentence[:self.nOffset+dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[self.nOffset+dToken["nEnd"]:]
+                #print("removed:", dToken["sValue"])
+            else:
+                lNewToken.append(dToken)
+                if "sNewValue" in dToken:
+                    # rewrite token and sentence
+                    print(dToken["sValue"], "->", dToken["sNewValue"])
+                    dToken["sRealValue"] = dToken["sValue"]
+                    dToken["sValue"] = dToken["sNewValue"]
+                    nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"])
+                    sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
+                    self.sSentence = self.sSentence[:self.nOffset+dToken["nStart"]] + sNewRepl + self.sSentence[self.nOffset+dToken["nEnd"]:]
+                    del dToken["sNewValue"]
+        print(self.sSentence)
+        self.lToken.clear()
+        self.lToken = lNewToken
 
 
 #### Analyse tokens
