@@ -111,7 +111,7 @@ def changeReferenceToken (s, dPos):
 
 
 def createAction (sIdAction, sAction, nPriority, nToken, dPos):
-    m = re.search("([-~=])(\\d+|)(:\\d+|)>> ", sAction)
+    m = re.search("(?P<action>[-~=])(?P<start>\\d+|)(?P<end>:\\d+|)>> ", sAction)
     if not m:
         print(" # Error. No action found at: ", sIdAction)
         print("   ==", sAction, "==")
@@ -126,11 +126,15 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
     else:
         sCondition = ""
     # Action
-    cAction = m.group(1)
+    cAction = m.group("action")
     sAction = sAction[m.end():].strip()
     sAction = changeReferenceToken(sAction, dPos)
-    iStartAction = int(m.group(2))  if m.group(2)  else 0
-    iEndAction = int(m.group(3)[1:])  if m.group(3)  else iStartAction
+    if not m.group("start"):
+        iStartAction = 1
+        iEndAction = nToken
+    else:
+        iStartAction = int(m.group("start"))
+        iEndAction = int(m.group("end")[1:])  if m.group("end")  else iStartAction
     if dPos:
         try:
             iStartAction = dPos[iStartAction]
