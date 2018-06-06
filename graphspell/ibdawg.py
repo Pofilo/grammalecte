@@ -489,7 +489,7 @@ class IBDAWG:
                     while not (nRawArc2 & self._lastArcMask):
                         iEndArcAddr2 = iAddr2 + self.nBytesArc
                         nRawArc2 = int.from_bytes(self.byDic[iAddr2:iEndArcAddr2], byteorder='big')
-                        l.append(sStem + " " + self.lArcVal[nRawArc2 & self._arcMask])
+                        l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
                         iAddr2 = iEndArcAddr2+self.nBytesNodeAddress
                 iAddr = iEndArcAddr+self.nBytesNodeAddress
             return l
@@ -594,7 +594,7 @@ class IBDAWG:
                     while not (nRawArc2 & self._lastArcMask):
                         iEndArcAddr2 = iAddr2 + self.nBytesArc
                         nRawArc2 = int.from_bytes(self.byDic[iAddr2:iEndArcAddr2], byteorder='big')
-                        l.append(sStem + " " + self.lArcVal[nRawArc2 & self._arcMask])
+                        l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
                         iAddr2 = iEndArcAddr2+self.nBytesNodeAddress  if not (nRawArc2 & self._addrBitMask) else iEndArcAddr2
                 iAddr = iEndArcAddr+self.nBytesNodeAddress  if not (nRawArc & self._addrBitMask)  else iEndArcAddr
             return l
@@ -706,7 +706,7 @@ class IBDAWG:
                     while not (nRawArc2 & self._lastArcMask):
                         iEndArcAddr2 = iAddr2 + self.nBytesArc
                         nRawArc2 = int.from_bytes(self.byDic[iAddr2:iEndArcAddr2], byteorder='big')
-                        l.append(sStem + " " + self.lArcVal[nRawArc2 & self._arcMask])
+                        l.append(sStem + "/" + self.lArcVal[nRawArc2 & self._arcMask])
                         iAddr2 = iEndArcAddr2+self.nBytesNodeAddress  if not (nRawArc2 & self._addrBitMask) else iEndArcAddr2+self.nBytesOffset
                 iAddr = iEndArcAddr+self.nBytesNodeAddress  if not (nRawArc & self._addrBitMask)  else iEndArcAddr+self.nBytesOffset
             return l

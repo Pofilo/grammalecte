@@ -514,7 +514,7 @@ class IBDAWG {
                     while (!(nRawArc2 & this._lastArcMask)) {
                         let iEndArcAddr2 = iAddr2 + this.nBytesArc;
                         nRawArc2 = this._convBytesToInteger(this.byDic.slice(iAddr2, iEndArcAddr2));
-                        l.push(sStem + " " + this.lArcVal[nRawArc2 & this._arcMask]);
+                        l.push(sStem + "/" + this.lArcVal[nRawArc2 & this._arcMask]);
                         iAddr2 = iEndArcAddr2+this.nBytesNodeAddress;
                     }
                 }
