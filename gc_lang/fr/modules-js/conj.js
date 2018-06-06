@@ -87,7 +87,7 @@ var conj = {
         if (!sMorph.includes(":V")) {
             return new Set();
         }
-        let sInfi = sMorph.slice(1, sMorph.indexOf(" "));
+        let sInfi = sMorph.slice(1, sMorph.indexOf("/"));
         let aSugg = new Set();
         let tTags = this._getTags(sInfi);
         if (tTags) {

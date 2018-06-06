@@ -58,7 +58,7 @@ def getVtyp (sVerb):
 def getSimil (sWord, sMorph, bSubst=False):
     if ":V" not in sMorph:
         return set()
-    sInfi = sMorph[1:sMorph.find(" ")]
+    sInfi = sMorph[1:sMorph.find("/")]
     aSugg = set()
     tTags = _getTags(sInfi)
     if tTags:

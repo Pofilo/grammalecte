@@ -20,7 +20,7 @@ function suggVerb (sFlex, sWho, funcSugg2=null) {
             let aTense = new Set();
             for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
                 let m;
-                let zVerb = new RegExp (">"+sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
+                let zVerb = new RegExp (">"+sStem+"/.*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
                 while ((m = zVerb.exec(sMorph)) !== null) {
                     // stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if (m) {
