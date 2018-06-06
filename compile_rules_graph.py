@@ -23,7 +23,7 @@ def prepareFunction (s):
     s = re.sub(r"isEnd0 *\(\)", 'after0(["<END>", ","])', s)
     s = re.sub(r"isRealEnd0 *\(\)", 'after0(["<END>"])', s)
     s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(morph|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"token\(\s*(\d)", 'nextToken(\\1', s)                                       # token(n)
     s = re.sub(r"token\(\s*-(\d)", 'prevToken(\\1', s)                                      # token(-n)
     s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)

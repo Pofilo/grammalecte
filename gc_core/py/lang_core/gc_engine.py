@@ -819,20 +819,7 @@ class TokenSentence:
 
 #### Analyse tokens
 
-def g_morph (dToken, sPattern, bStrict=True):
-    "analyse a token, return True if <sPattern> in morphologies"
-    if "lMorph" in dToken:
-        lMorph = dToken["lMorph"]
-    else:
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"])
-        if not lMorph:
-            return False
-    zPattern = re.compile(sPattern)
-    if bStrict:
-        return all(zPattern.search(sMorph)  for sMorph in lMorph)
-    return any(zPattern.search(sMorph)  for sMorph in lMorph)
-
-def g_morphex (dToken, sPattern, sNegPattern):
+def g_morph (dToken, sPattern, sNegPattern=""):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
     if "lMorph" in dToken:
         lMorph = dToken["lMorph"]
@@ -841,33 +828,34 @@ def g_morphex (dToken, sPattern, sNegPattern):
         if not lMorph:
             return False
     # check negative condition
-    zNegPattern = re.compile(sNegPattern)
-    if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-        return False
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
-def g_analyse (dToken, sPattern, bStrict=True):
-    "analyse a token, return True if <sPattern> in morphologies (disambiguation off)"
-    lMorph = _oSpellChecker.getMorph(dToken["sValue"])
-    if not lMorph:
-        return False
-    zPattern = re.compile(sPattern)
-    if bStrict:
-        return all(zPattern.search(sMorph)  for sMorph in lMorph)
-    return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
-
-def g_analysex (dToken, sPattern, sNegPattern):
+def g_analyse (dToken, sPattern, sNegPattern=""):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
     lMorph = _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph:
         return False
     # check negative condition
-    zNegPattern = re.compile(sNegPattern)
-    if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-        return False
+    if sNegPattern:
+        if sNegPattern == "*":
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
