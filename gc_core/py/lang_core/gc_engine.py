@@ -900,6 +900,8 @@ def g_select (dToken, sPattern, lDefault=None):
     "select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
+        if lDefault:
+            dToken["lMorph"] = lDefault
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
     if lSelect:
@@ -914,6 +916,8 @@ def g_exclude (dToken, sPattern, lDefault=None):
     "select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
+        if lDefault:
+            dToken["lMorph"] = lDefault
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect:
