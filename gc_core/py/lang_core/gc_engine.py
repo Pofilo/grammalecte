@@ -634,27 +634,18 @@ class TokenSentence:
         bChange = False
         for dToken in self.lToken:
             # check arcs for each existing pointer
-            lNewPointer = []
-            for i, dPointer in enumerate(lPointer):
-                bValid = False
-                bFirst = True
+            lNextPointer = []
+            for dPointer in lPointer:
                 for dNode in self._getNextMatchingNodes(dToken, dPointer["dNode"]):
-                    if bFirst:
-                        dPointer["dNode"] = dNode
-                    else:
-                        lNewPointer.append({"nOffset": dPointer["nOffset"], "dNode": dNode})
-                    bFirst = False
-                    bValid = True
-                if not bValid:
-                    del lPointer[i]
-            lPointer.extend(lNewPointer)
+                    lNextPointer.append({"iToken": dPointer["iToken"], "dNode": dNode})
+            lPointer = lNextPointer
             # check arcs of first nodes
             for dNode in self._getNextMatchingNodes(dToken, dGraph[0]):
-                lPointer.append({"nOffset": dToken["i"], "dNode": dNode})
+                lPointer.append({"iToken": dToken["i"], "dNode": dNode})
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["nOffset"]-1, dPriority, dOpt, sCountry, bShowRuleId, bContext)
+                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
