@@ -328,7 +328,7 @@ def make (spLang, sLang, bJavaScript):
         elif sFuncName.startswith("g_p_"): # preprocessor
             sParams = "lToken"
         elif sFuncName.startswith("g_d_"): # disambiguator
-            sParams = "lToken"
+            sParams = "lToken, nTokenOffset"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue

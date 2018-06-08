@@ -684,7 +684,7 @@ class TokenSentence:
                         elif cActionType == "=":
                             # disambiguation
                             print("=")
-                            globals()[sWhat](self.lToken)
+                            globals()[sWhat](self.lToken, nTokenOffset)
                         elif cActionType == ">":
                             # we do nothing, this test is just a condition to apply all following actions
                             print(">")
@@ -882,6 +882,7 @@ def g_select (dToken, sPattern, lDefault=None):
     if not lMorph or len(lMorph) == 1:
         if lDefault:
             dToken["lMorph"] = lDefault
+            #print("DA:", dToken["sValue"], dToken["lMorph"])
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
     if lSelect:
@@ -889,6 +890,7 @@ def g_select (dToken, sPattern, lDefault=None):
             dToken["lMorph"] = lSelect
     elif lDefault:
         dToken["lMorph"] = lDefault
+    #print("DA:", dToken["sValue"], dToken["lMorph"])
     return True
 
 
@@ -898,6 +900,7 @@ def g_exclude (dToken, sPattern, lDefault=None):
     if not lMorph or len(lMorph) == 1:
         if lDefault:
             dToken["lMorph"] = lDefault
+            #print("DA:", dToken["sValue"], dToken["lMorph"])
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect:
@@ -905,12 +908,14 @@ def g_exclude (dToken, sPattern, lDefault=None):
             dToken["lMorph"] = lSelect
     elif lDefault:
         dToken["lMorph"] = lDefault
+    #print("DA:", dToken["sValue"], dToken["lMorph"])
     return True
 
 
 def g_define (dToken, lMorph):
     "set morphologies of <dToken>, always return True"
     dToken["lMorph"] = lMorph
+    #print("DA:", dToken["sValue"], lMorph)
     return True
 
 

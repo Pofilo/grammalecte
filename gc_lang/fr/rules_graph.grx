@@ -39,6 +39,27 @@
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
 
 
+__da1__
+    ne >donner
+        <<- =>> select(\2, ":V")
+
+TEST: je ne donne rien.
+
+
+__da2__
+    je >pousser
+        <<- =>> exclude(\2, ":N")
+
+TEST: je pousse
+
+
+__da3__
+    il >venir
+        <<- =>> define(\2, [":VVV"])
+
+TEST: il vient
+
+
 __pp__
     >avoir  marre  [d’|des|du|de]
         <<- ~>> *
