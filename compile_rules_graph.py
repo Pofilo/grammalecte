@@ -322,9 +322,9 @@ def make (spLang, sLang, bJavaScript):
         if sFuncName.startswith("g_c_"): # condition
             sParams = "lToken, nTokenOffset, sCountry, bCondMemo"
         elif sFuncName.startswith("g_m_"): # message
-            sParams = "lToken"
+            sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("g_s_"): # suggestion
-            sParams = "lToken"
+            sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("g_p_"): # preprocessor
             sParams = "lToken"
         elif sFuncName.startswith("g_d_"): # disambiguator

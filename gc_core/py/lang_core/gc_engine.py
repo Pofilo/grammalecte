@@ -625,7 +625,6 @@ class TokenSentence:
                         if any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             yield dGraph[dNode["<re_morph>"][sRegex]]
 
-
     def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         dErr = {}
         dPriority = {}  # Key = position; value = priority
@@ -674,7 +673,7 @@ class TokenSentence:
                             nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
                             nErrorEnd = self.nOffset + self.lToken[nTokenErrorEnd]["nEnd"]
                             if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
-                                dErrs[nErrorStart] = self.createError(sWhat, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
+                                dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                 dPriority[nErrorStart] = eAct[2]
                         elif cActionType == "~":
                             # text processor
@@ -697,7 +696,7 @@ class TokenSentence:
                     raise Exception(str(e), sLineId)
         return bChange, dErrs
 
-    def _createWriterError (self, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
+    def _createWriterError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         "error for Writer (LO/OO)"
         xErr = SingleProofreadingError()
         #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
@@ -706,8 +705,8 @@ class TokenSentence:
         xErr.nErrorType = PROOFREADING
         xErr.aRuleIdentifier = sRuleId
         # suggestions
-        if sRepl[0:1] == "=":
-            sSugg = globals()[sRepl[1:]](self.lToken)
+        if sSugg[0:1] == "=":
+            sSugg = globals()[sSugg[1:]](self.lToken)
             if sSugg:
                 if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
                     xErr.aSuggestions = tuple(map(str.capitalize, sSugg.split("|")))
@@ -715,15 +714,15 @@ class TokenSentence:
                     xErr.aSuggestions = tuple(sSugg.split("|"))
             else:
                 xErr.aSuggestions = ()
-        elif sRepl == "_":
+        elif sSugg == "_":
             xErr.aSuggestions = ()
         else:
             if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                xErr.aSuggestions = tuple(map(str.capitalize, sRepl.split("|")))
+                xErr.aSuggestions = tuple(map(str.capitalize, self._expand(sSugg, nTokenOffset).split("|")))
             else:
-                xErr.aSuggestions = tuple(sRepl.split("|"))
+                xErr.aSuggestions = tuple(self._expand(sSugg, nTokenOffset).split("|"))
         # Message
-        sMessage = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else sMsg
+        sMessage = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
         xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
         xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
         if bShowRuleId:
@@ -738,7 +737,7 @@ class TokenSentence:
             xErr.aProperties = ()
         return xErr
                                                              
-    def _createDictError (self, sRepl, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
+    def _createDictError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         "error as a dictionary"
         dErr = {}
         dErr["nStart"] = nStart
@@ -747,24 +746,24 @@ class TokenSentence:
         dErr["sRuleId"] = sRuleId
         dErr["sType"] = sOption  if sOption  else "notype"
         # suggestions
-        if sRepl[0:1] == "=":
-            sugg = globals()[sRepl[1:]](self.lToken)
-            if sugg:
+        if sSugg[0:1] == "=":
+            sSugg = globals()[sSugg[1:]](self.lToken)
+            if sSugg:
                 if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                    dErr["aSuggestions"] = list(map(str.capitalize, sugg.split("|")))
+                    dErr["aSuggestions"] = list(map(str.capitalize, sSugg.split("|")))
                 else:
-                    dErr["aSuggestions"] = sugg.split("|")
+                    dErr["aSuggestions"] = sSugg.split("|")
             else:
                 dErr["aSuggestions"] = []
-        elif sRepl == "_":
+        elif sSugg == "_":
             dErr["aSuggestions"] = []
         else:
             if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                dErr["aSuggestions"] = list(map(str.capitalize, sRepl.split("|")))
+                dErr["aSuggestions"] = list(map(str.capitalize, self._expand(sSugg, nTokenOffset).split("|")))
             else:
-                dErr["aSuggestions"] = sRepl.split("|")
+                dErr["aSuggestions"] = self._expand(sSugg, nTokenOffset).split("|")
         # Message
-        dErr["sMessage"] = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else sMsg
+        dErr["sMessage"] = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
         if bShowRuleId:
             dErr["sMessage"] += "  " + sLineId + " # " + sRuleId
         # URL
@@ -775,6 +774,13 @@ class TokenSentence:
             dErr['sBefore'] = self.sSentence0[max(0,dErr["nStart"]-80):dErr["nStart"]]
             dErr['sAfter'] = self.sSentence0[dErr["nEnd"]:dErr["nEnd"]+80]
         return dErr
+
+    def _expand (self, sMsg, nTokenOffset):
+        print(sMsg)
+        for m in re.finditer(r"\\([0-9]+)", sMsg):
+            sMsg = sMsg.replace(m.group(0), self.lToken[int(m.group(1))+nTokenOffset]["sValue"])
+        print(sMsg)
+        return sMsg
 
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, bUppercase=True):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
