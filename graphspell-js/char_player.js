@@ -32,11 +32,11 @@ var char_player = {
     simplifyWord: function (sWord) {
         // word simplication before calculating distance between words
         sWord = sWord.toLowerCase();
-        sWord = ([...sWord].map(c => this._xTransCharsForSimplification.gl_get(c, c))).join('')
+        sWord = [...sWord].map(c => this._xTransCharsForSimplification.gl_get(c, c)).join('');
         let sNewWord = "";
         let i = 1;
         for (let c of sWord) {
-            if (c != sWord.slice(i, i+1)) {
+            if (c == 'e' || c != sWord.slice(i, i+1)) {  // exception for <e> to avoid confusion between crée / créai
                 sNewWord += c;
             }
             i++;
