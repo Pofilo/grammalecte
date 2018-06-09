@@ -140,10 +140,12 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
                 aErrors.update(errs)
                 # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                bChange, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                bChange, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, True, bContext)
                 aErrors.update(errs)
                 if bChange:
                     oSentence.rewrite()
+                    if True:
+                        print("~", oSentence.sSentence)
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
@@ -644,21 +646,18 @@ class TokenSentence:
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bContext)
+                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
-        if dErr:
-            print(dErr)
         return (bChange, dErr)
 
-    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bContext):
+    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext):
         "execute actions found in the DARG"
         dErrs = {}
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
             for sRuleId in dGraph[nextNodeKey]:
-                print(sRuleId)
                 bCondMemo = None
                 sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                 # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
@@ -667,7 +666,6 @@ class TokenSentence:
                     if bCondMemo:
                         if cActionType == "-":
                             # grammar error
-                            print("-")
                             nTokenErrorStart = nTokenOffset + eAct[0]
                             nTokenErrorEnd = nTokenOffset + eAct[1]
                             nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
@@ -675,22 +673,29 @@ class TokenSentence:
                             if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
                                 dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                 dPriority[nErrorStart] = eAct[2]
+                                if bDebug:
+                                    print("-", sRuleId, dErrs[nErrorStart])
                         elif cActionType == "~":
                             # text processor
-                            print("~")
                             self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1])
+                            if bDebug:
+                                print("~", sRuleId)
                             bChange = True
                         elif cActionType == "=":
                             # disambiguation
-                            print("=")
                             globals()[sWhat](self.lToken, nTokenOffset)
+                            if bDebug:
+                                print("=", sRuleId)
                         elif cActionType == ">":
                             # we do nothing, this test is just a condition to apply all following actions
-                            print(">")
+                            if bDebug:
+                                print(">", sRuleId)
                             pass
                         else:
                             print("# error: unknown action at " + sLineId)
                     elif cActionType == ">":
+                        if bDebug:
+                            print(">!", sRuleId)
                         break
                 except Exception as e:
                     raise Exception(str(e), sLineId)
@@ -736,7 +741,7 @@ class TokenSentence:
         else:
             xErr.aProperties = ()
         return xErr
-                                                             
+
     def _createDictError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         "error as a dictionary"
         dErr = {}
@@ -776,10 +781,10 @@ class TokenSentence:
         return dErr
 
     def _expand (self, sMsg, nTokenOffset):
-        print(sMsg)
+        #print("*", sMsg)
         for m in re.finditer(r"\\([0-9]+)", sMsg):
             sMsg = sMsg.replace(m.group(0), self.lToken[int(m.group(1))+nTokenOffset]["sValue"])
-        print(sMsg)
+        #print(">", sMsg)
         return sMsg
 
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, bUppercase=True):
@@ -822,14 +827,13 @@ class TokenSentence:
                 lNewToken.append(dToken)
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
-                    print(dToken["sValue"], "->", dToken["sNewValue"])
+                    #print(dToken["sValue"], "->", dToken["sNewValue"])
                     dToken["sRealValue"] = dToken["sValue"]
                     dToken["sValue"] = dToken["sNewValue"]
                     nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"])
                     sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
                     self.sSentence = self.sSentence[:self.nOffset+dToken["nStart"]] + sNewRepl + self.sSentence[self.nOffset+dToken["nEnd"]:]
                     del dToken["sNewValue"]
-        print(self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
 
