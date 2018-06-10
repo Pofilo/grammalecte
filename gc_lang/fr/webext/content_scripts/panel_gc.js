@@ -18,7 +18,7 @@ function onGrammalecteGCPanelClick (xEvent) {
                        && xElem.className !== "grammalecte_error_corrected"
                        && xElem.className !== "grammalecte_error_ignored") {
                 oGrammalecte.oGCPanel.oTooltip.show(xElem.id);
-            } else if (xElem.id === "grammalecte_tooltip_url") {
+            } else if (xElem.id === "grammalecte_tooltip_url"  || xElem.id === "grammalecte_tooltip_db_search") {
                 oGrammalecte.oGCPanel.openURL(xElem.dataset.url);
             } else {
                 oGrammalecte.oGCPanel.oTooltip.hide();
@@ -286,6 +286,7 @@ class GrammalecteTooltip {
 
     constructor (xContentNode) {
         this.sErrorId = null;
+        this.bDebug = false;
         this.xTooltip = oGrammalecte.createNode("div", {id: "grammalecte_tooltip"});
         this.xTooltipArrow = oGrammalecte.createNode("img", {
             id: "grammalecte_tooltip_arrow",
@@ -305,6 +306,7 @@ class GrammalecteTooltip {
         let xActions = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"});
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
+        xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_db_search", textContent: " ››› base de données"}, {url: ""}));
         this.xTooltip.appendChild(xActions);
         // add tooltip to the page
         xContentNode.appendChild(this.xTooltip);
@@ -324,14 +326,16 @@ class GrammalecteTooltip {
             this.xTooltip.style.left = (xNodeErr.offsetLeft > nTooltipLeftLimit) ? nTooltipLeftLimit + "px" : xNodeErr.offsetLeft + "px";
             if (xNodeErr.dataset.error_type === "grammar") {
                 // grammar error
-                document.getElementById("grammalecte_tooltip_add_word").style.display = "none";
+                document.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 if (xNodeErr.dataset.gc_message.includes(" ##")) {
+                    this.bDebug = true;
                     // display rule id
                     let n = xNodeErr.dataset.gc_message.indexOf(" ##");
                     document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
                     document.getElementById("grammalecte_tooltip_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
                     document.getElementById("grammalecte_tooltip_rule_id").style.display = "block";
                 } else {
+                    this.bDebug = false;
                     document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message;
                     document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 }
@@ -362,11 +366,11 @@ class GrammalecteTooltip {
                 document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 document.getElementById("grammalecte_tooltip_url").dataset.url = "";
                 document.getElementById("grammalecte_tooltip_url").style.display = "none";
-                if (xNodeErr.dataset.gc_message.includes(" ##")) {
-                    // display rule id
-                    document.getElementById("grammalecte_tooltip_add_word").style.display = "block";
+                if (this.bDebug) {
+                    document.getElementById("grammalecte_tooltip_db_search").style.display = "inline";
+                    document.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://www.dicollecte.org/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
                 } else {
-                    document.getElementById("grammalecte_tooltip_add_word").style.display = "none";
+                    document.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 }
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
