@@ -292,17 +292,21 @@ class GrammalecteTooltip {
             src: " data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAOwAAADsABataJCQAAABl0RVh0U29mdHdhcmUAcGFpbnQubmV0IDQuMC4xNzNun2MAAAAnSURBVChTY/j//z8cq/kW/wdhZDEMSXRFWCVhGKwAmwQyHngFxf8B5fOGYfeFpYoAAAAASUVORK5CYII=",
             alt: "^",
         });
-        this.xTooltipSuggBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_block"});
+        // message
         let xMessageBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_message_block"});
         xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_rule_id"}));
         xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_message", textContent: "Erreur."}));
-        let xActions = xMessageBlock.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"}));
+        this.xTooltip.appendChild(xMessageBlock);
+        // suggestions
+        this.xTooltip.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_title", textContent: "SUGGESTIONS :"}));
+        this.xTooltipSuggBlock = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_block"});
+        this.xTooltip.appendChild(this.xTooltipSuggBlock);
+        // actions
+        let xActions = oGrammalecte.createNode("div", {id: "grammalecte_tooltip_actions"});
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_ignore", textContent: "Ignorer"}));
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_url", textContent: "Voulez-vous en savoir plus ?…"}, {url: ""}));
-        xMessageBlock.appendChild(xActions);
-        this.xTooltip.appendChild(xMessageBlock);
-        this.xTooltip.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_sugg_title", textContent: "SUGGESTIONS :"}));
-        this.xTooltip.appendChild(this.xTooltipSuggBlock);
+        this.xTooltip.appendChild(xActions);
+        // add tooltip to the page
         xContentNode.appendChild(this.xTooltip);
         xContentNode.appendChild(this.xTooltipArrow);
     }
