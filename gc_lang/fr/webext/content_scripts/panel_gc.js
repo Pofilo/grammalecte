@@ -324,7 +324,9 @@ class GrammalecteTooltip {
             this.xTooltip.style.left = (xNodeErr.offsetLeft > nTooltipLeftLimit) ? nTooltipLeftLimit + "px" : xNodeErr.offsetLeft + "px";
             if (xNodeErr.dataset.error_type === "grammar") {
                 // grammar error
+                document.getElementById("grammalecte_tooltip_add_word").style.display = "none";
                 if (xNodeErr.dataset.gc_message.includes(" ##")) {
+                    // display rule id
                     let n = xNodeErr.dataset.gc_message.indexOf(" ##");
                     document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
                     document.getElementById("grammalecte_tooltip_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
@@ -357,9 +359,15 @@ class GrammalecteTooltip {
                 // spelling mistake
                 document.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
                 document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 document.getElementById("grammalecte_tooltip_url").dataset.url = "";
                 document.getElementById("grammalecte_tooltip_url").style.display = "none";
-                document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
+                if (xNodeErr.dataset.gc_message.includes(" ##")) {
+                    // display rule id
+                    document.getElementById("grammalecte_tooltip_add_word").style.display = "block";
+                } else {
+                    document.getElementById("grammalecte_tooltip_add_word").style.display = "none";
+                }
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
                 xGrammalectePort.postMessage({

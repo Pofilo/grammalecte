@@ -5339,15 +5339,21 @@ __[i](loc_soue_à_cochons)__
     <<- ~1>> *
 __[u](p_système)__                      systèmes? (d’exploitation|D) @@$ <<- ~1>> *
 __[i](p_taille)__                       taille (\d+) @@$ <<- ~1>> *
+__[i](p_talons_aiguilles)__             talons? (aiguilles?) @@$ <<- ~1>> *
 __[i](p_taux_de_qqch)__                 taux (d’(?:abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure)|de (?:change|cholest[ée]rol|glycémie|fécondité|participation|testostérone|TVA)) @@$ <<- ~1>> *
 __[i](p_tête_de_déterré)__              têtes? (de déterrée?s?) @@$ <<- ~1>> *
 __[i](p_tout_un_chacun)__               (tout un) chacun @@0 <<- ~1>> *
 __[i](p_tour_de_passe_passe)__          tours? (de passe-passe) @@$ <<- ~1>> *
-__[i](p_trou_à_rat)__           trous? (([àa]) rats?) @@$,w
+__[i](p_trou_à_rat)__
+    trous? (([àa]) rats?) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](loc_tueur_à_gages)__
     tueu(?:r|se)s? (([àa]) gages) @@$,w
+    <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~1>> *
+__[i](loc_vache_à_lait)__
+    vaches? (([àa]) lait) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](p_vecteur)__                      vecteurs? (accélérations?|positions?|rotations?|vitesses?) @@$ <<- ~1>> *
@@ -5400,10 +5406,13 @@ TEST: Ce n’est que du vernis {{a}} ongles.
 TEST: le vol {{a}} l’étalage est un fléau.
 TEST: Il nous faut une {{voix}} de recours.
 TEST: c’est une putain d’usine {{a}} gaz.
+TEST: ce produit est notre vache {{a}} lait
 TEST: un champ de canne à sucre
 TEST: La batterie se recharge automatiquement grâce au moteur essence.
 TEST: c’est un moteur diésel.
 TEST: cette descente aux enfers interminable.
+TEST: c’est une vache à lait
+TEST: Ses talons aiguille étaient à la denière mode.
 
 
 # simplification des nombres
