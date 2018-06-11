@@ -140,16 +140,20 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
                 aErrors.update(errs)
                 # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                bChange, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, True, bContext)
+                bChange, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
                 if bChange:
                     oSentence.rewrite()
-                    if True:
+                    if bDebug:
                         print("~", oSentence.sSentence)
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
 
+
+_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
+_zBeginOfParagraph = re.compile(r"^\W*")
+_zEndOfParagraph = re.compile(r"\W*$")
 
 def _getSentenceBoundaries (sText):
     iStart = _zBeginOfParagraph.match(sText).end()
@@ -379,14 +383,6 @@ def _getPath ():
 
 #### common functions
 
-# common regexes
-_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
-_zBeginOfParagraph = re.compile(r"^\W*")
-_zEndOfParagraph = re.compile(r"\W*$")
-_zNextWord = re.compile(r" +(\w[\w-]*)")
-_zPrevWord = re.compile(r"(\w[\w-]*) +$")
-
-
 def option (sOpt):
     "return True if option sOpt is active"
     return _dOptions.get(sOpt, False)
@@ -465,6 +461,9 @@ def analysex (sWord, sPattern, sNegPattern):
 ## functions to get text outside pattern scope
 
 # warning: check compile_rules.py to understand how it works
+
+_zNextWord = re.compile(r" +(\w[\w-]*)")
+_zPrevWord = re.compile(r"(\w[\w-]*) +$")
 
 def nextword (s, iStart, n):
     "get the nth word of the input string or empty string"
@@ -566,11 +565,6 @@ def define (dDA, nPos, lMorph):
 #### GRAMMAR CHECKER PLUGINS
 
 ${plugins}
-
-
-#### CALLABLES (generated code)
-
-${callables}
 
 
 
@@ -929,6 +923,11 @@ def g_define (dToken, lMorph):
     return True
 
 
-#### CALLABLES (generated code)
+#### CALLABLES FOR REGEX RULES (generated code)
+
+${callables}
+
+
+#### CALLABLES FOR GRAPH RULES (generated code)
 
 ${graph_callables}
