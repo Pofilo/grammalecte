@@ -13,7 +13,7 @@ from ..graphspell.echo import echo
 from . import gc_options
 
 from ..graphspell.tokenizer import Tokenizer
-from .gc_rules_graph import dGraph, dRule
+from .gc_rules_graph import dAllGraph, dRule
 
 try:
     # LibreOffice / OpenOffice
@@ -140,7 +140,7 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
                 aErrors.update(errs)
                 # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                bChange, errs = oSentence.parse(dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                bChange, errs = oSentence.parse(dAllGraph["test_graph"], dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
                 if bChange:
                     oSentence.rewrite()
@@ -579,7 +579,7 @@ class TokenSentence:
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
-    def _getNextMatchingNodes (self, dToken, dNode):
+    def _getNextMatchingNodes (self, dToken, dGraph, dNode):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
         # token value
         if dToken["sValue"] in dNode:
@@ -621,7 +621,7 @@ class TokenSentence:
                         if any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             yield dGraph[dNode["<re_morph>"][sRegex]]
 
-    def parse (self, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
+    def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         dErr = {}
         dPriority = {}  # Key = position; value = priority
         dOpt = _dOptions  if not dOptions  else dOptions
@@ -631,22 +631,22 @@ class TokenSentence:
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
-                for dNode in self._getNextMatchingNodes(dToken, dPointer["dNode"]):
+                for dNode in self._getNextMatchingNodes(dToken, dGraph, dPointer["dNode"]):
                     lNextPointer.append({"iToken": dPointer["iToken"], "dNode": dNode})
             lPointer = lNextPointer
             # check arcs of first nodes
-            for dNode in self._getNextMatchingNodes(dToken, dGraph[0]):
+            for dNode in self._getNextMatchingNodes(dToken, dGraph, dGraph[0]):
                 lPointer.append({"iToken": dToken["i"], "dNode": dNode})
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
+                    bHasChanged, errs = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
         return (bChange, dErr)
 
-    def _executeActions (self, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext):
+    def _executeActions (self, dGraph, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext):
         "execute actions found in the DARG"
         dErrs = {}
         bChange = False

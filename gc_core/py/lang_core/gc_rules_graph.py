@@ -1,5 +1,5 @@
 # generated code, do not edit
 
-dGraph = ${rules_graph}
+dAllGraph = ${rules_graphs}
 
 dRule = ${rules_actions}

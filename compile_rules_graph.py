@@ -14,14 +14,6 @@ lFUNCTIONS = []
 def prepareFunction (s):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
-    s = re.sub(r"isStart *\(\)", 'before(["<START>", ","])', s)
-    s = re.sub(r"isRealStart *\(\)", 'before(["<START>"])', s)
-    s = re.sub(r"isStart0 *\(\)", 'before0(["<START>", ","])', s)
-    s = re.sub(r"isRealStart0 *\(\)", 'before0(["<START>"])', s)
-    s = re.sub(r"isEnd *\(\)", 'after(["<END>", ","])', s)
-    s = re.sub(r"isRealEnd *\(\)", 'after(["<END>"])', s)
-    s = re.sub(r"isEnd0 *\(\)", 'after0(["<END>", ","])', s)
-    s = re.sub(r"isRealEnd0 *\(\)", 'after0(["<END>"])', s)
     s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(morph|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"token\(\s*(\d)", 'nextToken(\\1', s)                                       # token(n)
@@ -32,9 +24,6 @@ def prepareFunction (s):
     s = re.sub(r"before_chk1\(\s*", 'look_chk1(dDA, s[:m.start()], 0, ', s)                 # before_chk1(s)
     s = re.sub(r"after_chk1\(\s*", 'look_chk1(dDA, s[m.end():], m.end(), ', s)              # after_chk1(s)
     s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dDA, s, 0, ', s)                           # textarea_chk1(s)
-    #s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dDA, s[m.end():], m.end())', s)              # isEndOfNG(s)
-    #s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dDA, s[m.end():], m.end())', s)        # isNextNotCOD(s)
-    #s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dDA, s[m.end():], m.end())', s)            # isNextVerb(s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'lToken[\\1]', s)
     return s
@@ -238,25 +227,40 @@ def make (spLang, sLang, bJavaScript):
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
     global dDEF
-    lLine = []
-    lRuleLine = []
     lTest = []
-    lOpt = []
     lTokenLine = []
     sActions = ""
     nPriority = 4
+    dAllGraph = {}
+    sGraphName = ""
 
     for i, sLine in enumerate(lRules, 1):
         sLine = sLine.rstrip()
         if "\t" in sLine:
+            # tabulation not allowed
             print("Error. Tabulation at line: ", i)
-            break
+            exit()
         if sLine.startswith('#END'):
+            # arbitrary end
             printBookmark(0, "BREAK BY #END", i)
             break
         elif sLine.startswith("#"):
+            # comments
             pass
+        elif sLine.startswith("GRAPH_NAME: "):
+            # Graph name
+            m = re.match("GRAPH_NAME: +([a-zA-Z_][a-zA-Z_0-9]*)+", sLine.strip())
+            if m:
+                sGraphName = m.group(1)
+                if sGraphName in dAllGraph:
+                    print("Error. Group name " + sGraphName + " already exists.")
+                    exit()
+                dAllGraph[sGraphName] = []
+            else:
+                print("Error. Graph name not found in", sLine.strip())
+                exit()
         elif sLine.startswith("DEF:"):
+            # definition
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
             if m:
                 dDEF["{"+m.group(1)+"}"] = m.group(2)
@@ -264,10 +268,13 @@ def make (spLang, sLang, bJavaScript):
                 print("Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
+            # test
             lTest.append("g{:<7}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
+            # todo
             pass
         elif sLine.startswith("!!"):
+            # bookmarks
             m = re.search("^!!+", sLine)
             nExMk = len(m.group(0))
             if sLine[nExMk:].strip():
@@ -283,9 +290,17 @@ def make (spLang, sLang, bJavaScript):
                 break
         elif re.match("[  ]*$", sLine):
             # empty line to end merging
-            for i, sTokenLine in lTokenLine:
-                lRuleLine.append((i, sRuleName, sTokenLine, sActions, nPriority))
-            lTokenLine = []
+            if not lTokenLine:
+                continue
+            if not sActions:
+                print("Error. No action found at line:", i)
+                exit()
+            if not sGraphName:
+                print("Error. All rules must belong to a named graph. Line: ", i)
+                exit()
+            for j, sTokenLine in lTokenLine:
+                dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, sActions, nPriority))
+            lTokenLine.clear()
             sActions = ""
             sRuleName = ""
             nPriority = 4
@@ -302,17 +317,17 @@ def make (spLang, sLang, bJavaScript):
 
     # processing rules
     print("  preparing rules...")
-    lPreparedRule = []
-    for i, sRuleGroup, sTokenLine, sActions, nPriority in lRuleLine:
-        for lRule in createRule(i, sRuleGroup, sTokenLine, sActions, nPriority):
-            lPreparedRule.append(lRule)
-
-    # Graph creation
-    for e in lPreparedRule:
-        print(e)
-
-    oDARG = darg.DARG(lPreparedRule, sLang)
-    oRuleGraph = oDARG.createGraph()
+    for sGraphName, lRuleLine in dAllGraph.items():
+        lPreparedRule = []
+        for i, sRuleGroup, sTokenLine, sActions, nPriority in lRuleLine:
+            for lRule in createRule(i, sRuleGroup, sTokenLine, sActions, nPriority):
+                lPreparedRule.append(lRule)
+        # Show rules
+        for e in lPreparedRule:
+            print(e)
+        # Graph creation
+        oDARG = darg.DARG(lPreparedRule, sLang)
+        dAllGraph[sGraphName] = oDARG.createGraph()
 
     # creating file with all functions callable by rules
     print("  creating callables...")
@@ -346,7 +361,7 @@ def make (spLang, sLang, bJavaScript):
     d = {
         "graph_callables": sPyCallables,
         "graph_gctests": sGCTests,
-        "rules_graph": oRuleGraph,
+        "rules_graphs": dAllGraph,
         "rules_actions": dACTIONS
     }
 
