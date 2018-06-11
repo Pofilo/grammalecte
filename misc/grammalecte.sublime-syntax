@@ -26,6 +26,10 @@ contexts:
     - match: '^!!.*|^\[\+\+\].*'
       scope: bookmark
 
+    # Bookmarks
+    - match: '^GRAPH_NAME:.*'
+      scope: bookmark
+
     # Keywords are if, else.
     # Note that blackslashes don't need to be escaped within single quoted
     # strings in YAML. When using single quoted strings, only single quotes
@@ -37,7 +41,7 @@ contexts:
     - match: '\b(?:True|False|None)\b'
       scope: constant.language
     
-    - match: '\b(?:spell|morph|morphex|stem|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|select|exclude|analysex?|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
+    - match: '\b(?:spell|morph|morphex|g_morph|stem|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|select|exclude|g_define|g_select|g_exclude|analysex?|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
       scope: entity.name.function
 
     - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:upper|lower|digit|title))\b'
@@ -49,7 +53,7 @@ contexts:
     - match: '\bre\b'
       scope: support.class
 
-    # Rule options
+    # Regex rule option
     - match: '^__[\[<]([isu])[\]>](/\w+|)(\(\w+\)|)(![0-9]|)__|</?js>'
       scope: rule.options
       captures:
@@ -57,6 +61,14 @@ contexts:
         2: rule.optionname
         3: rule.rulename
         4: rule.priority
+
+    # Graph rules option
+    - match: '^__(\w+)(![0-9]|)__'
+      scope: rule.options
+      captures:
+        1: rule.rulename2
+        2: rule.priority
+
 
     # Definitions and options
     - match: '^OPT(?:GROUP|LANG|PRIORITY)/|^OPTSOFTWARE:'
@@ -86,16 +98,27 @@ contexts:
       scope: keyword.condition.green
     - match: '__else__'
       scope: keyword.condition.red
-    - match: '-(\d*)>>'
+    - match: '-(\d*(?::\d+|))>>'
       scope: keyword.error
       captures:
         1: keyword.error.group
-    - match: '~(\d*)>>'
+    - match: '~(\d*(?::\d+|))>>'
       scope: keyword.textprocessor
       captures:
         1: keyword.textprocessor.group
     - match: '=>>'
       scope: keyword.disambiguator
+
+    # Tokens
+    - match: '>\w+'
+      scope: string.lemma
+
+    - match: '~(?!(?:\d+(?::\d+|)|)>>)[^\s]+'
+      scope: string.regex
+
+    - match: '@[^@][^\s]+'
+      scope: string.morph
+
 
     # Escaped chars
     - match: '\\(?:\d+|w|d|b|n|s|t)'
@@ -110,7 +133,7 @@ contexts:
       scope: message.error
 
     # special chars
-    - match: '[@=*^?!:+<>]'
+    - match: '[@=*^?!:+<>~]'
       scope: keyword.other
 
     - match: '\(\?(?:[:=!]|<!)|[(|)]'
