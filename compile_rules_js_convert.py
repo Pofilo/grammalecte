@@ -119,6 +119,9 @@ def regex2js (sRegex, sWORDLIMITLEFT):
 
 def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
     lRuleJS = copy.deepcopy(lRule)
+    # graph rules
+    if lRuleJS[0] == "@@@@":
+        return lRuleJS
     del lRule[-1] # tGroups positioning codes are useless for Python
     # error messages
     for aAction in lRuleJS[6]:
@@ -134,17 +137,23 @@ def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
 def writeRulesToJSArray (lRules):
     sArray = "[\n"
     for sOption, aRuleGroup in lRules:
-        sArray += '  ["' + sOption + '", [\n'  if sOption  else  "  [false, [\n"
-        for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
-            sArray += '    [' + sRegex + ", "
-            sArray += "true, " if bCaseInsensitive  else "false, "
-            sArray += '"' + sLineId + '", '
-            sArray += '"' + sRuleId + '", '
-            sArray += str(nPriority) + ", "
-            sArray += json.dumps(lActions, ensure_ascii=False) + ", "
-            sArray += json.dumps(aGroups, ensure_ascii=False) + ", "
-            sArray += json.dumps(aNegLookBehindRegex, ensure_ascii=False) + "],\n"
-        sArray += "  ]],\n"
+        if sOption != "@@@@":
+            sArray += '  ["' + sOption + '", [\n'  if sOption  else  "  [false, [\n"
+            for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
+                sArray += '    [' + sRegex + ", "
+                sArray += "true, " if bCaseInsensitive  else "false, "
+                sArray += '"' + sLineId + '", '
+                sArray += '"' + sRuleId + '", '
+                sArray += str(nPriority) + ", "
+                sArray += json.dumps(lActions, ensure_ascii=False) + ", "
+                sArray += json.dumps(aGroups, ensure_ascii=False) + ", "
+                sArray += json.dumps(aNegLookBehindRegex, ensure_ascii=False) + "],\n"
+            sArray += "  ]],\n"
+        else:
+            sArray += '  ["' + sOption + '", [\n'
+            for sGraphName, sLineId in aRuleGroup:
+                sArray += '    ["' + sGraphName + '", "' + sLineId + '"],\n"'
+            sArray += "  ]],\n"
     sArray += "]"
     return sArray
 

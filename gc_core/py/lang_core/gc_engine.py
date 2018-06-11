@@ -91,13 +91,14 @@ def _loadRules ():
     global _rules
     _rules = gc_rules
     # compile rules regex
-    for lRuleGroup in chain(_rules.lParagraphRules, _rules.lSentenceRules):
-        for rule in lRuleGroup[1]:
-            try:
-                rule[0] = re.compile(rule[0])
-            except:
-                echo("Bad regular expression in # " + str(rule[2]))
-                rule[0] = "(?i)<Grammalecte>"
+    for sOption, lRuleGroup in chain(_rules.lParagraphRules, _rules.lSentenceRules):
+        if sOption != "@@@@":
+            for aRule in lRuleGroup:
+                try:
+                    aRule[0] = re.compile(aRule[0])
+                except:
+                    echo("Bad regular expression in # " + str(aRule[2]))
+                    aRule[0] = "(?i)<Grammalecte>"
 
 
 #### Parsing
@@ -114,7 +115,7 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
 
     # parse paragraph
     try:
-        sNew, aErrors = _proofread(sText, sRealText, 0, True, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+        sNew, aErrors = _proofread(None, sText, sRealText, 0, True, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         if sNew:
             sText = sNew
     except:
@@ -135,17 +136,9 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
         if 4 < (iEnd - iStart) < 2000:
             dDA.clear()
             try:
-                # regex parser
-                _, errs = _proofread(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
-                aErrors.update(errs)
-                # token parser
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                bChange, errs = oSentence.parse(dAllGraph["test_graph"], dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                _, errs = _proofread(oSentence, sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
-                if bChange:
-                    oSentence.rewrite()
-                    if bDebug:
-                        print("~", oSentence.sSentence)
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
@@ -162,11 +155,23 @@ def _getSentenceBoundaries (sText):
         iStart = m.end()
 
 
-def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
+def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
     dErrs = {}
     bChange = False
     for sOption, lRuleGroup in _getRules(bParagraph):
-        if not sOption or dOptions.get(sOption, False):
+        if sOption == "@@@@":
+            # graph rules
+            for sGraphName, sLineId in lRuleGroup:
+                if bDebug:
+                    print(sGraphName, sLineId)
+                bChange, errs = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
+                dErrs.update(errs)
+                if bChange:
+                    oSentence.rewrite()
+                    if bDebug:
+                        print("~", oSentence.sSentence)
+        elif not sOption or dOptions.get(sOption, False):
+            # regex rules
             for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
                 if sRuleId not in _aIgnoredRules:
                     for m in zRegex.finditer(s):
@@ -327,9 +332,10 @@ def listRules (sFilter=None):
             echo("# Error. List rules: wrong regex.")
             sFilter = None
     for sOption, lRuleGroup in chain(_getRules(True), _getRules(False)):
-        for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
-            if not sFilter or zFilter.search(sRuleId):
-                yield (sOption, sLineId, sRuleId)
+        if sOption != "@@@@":
+            for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
+                if not sFilter or zFilter.search(sRuleId):
+                    yield (sOption, sLineId, sRuleId)
 
 
 def displayRules (sFilter=None):

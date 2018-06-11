@@ -112,9 +112,17 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     global dJSREGEXES
     global nRULEWITHOUTNAME
 
-    #### OPTIONS
     sLineId = str(nIdLine) + ("p" if bParagraph else "s")
     sRuleId = sLineId
+
+    #### GRAPH CALL
+    if s.startswith("@@@@"):
+        if bParagraph:
+            print("Error. Graph call can’t be made only after the first pass (sentence by sentence)")
+            exit()
+        return ["@@@@", s[4:], sLineId]
+
+    #### OPTIONS
     sOption = False         # False or [a-z0-9]+ name
     nPriority = 4           # Default is 4, value must be between 0 and 9
     tGroups = None          # code for groups positioning (only useful for JavaScript)
@@ -345,8 +353,9 @@ def createAction (sIdAction, sAction, nGroup):
 def _calcRulesStats (lRules):
     d = {'=':0, '~': 0, '-': 0, '>': 0}
     for aRule in lRules:
-        for aAction in aRule[6]:
-            d[aAction[1]] = d[aAction[1]] + 1
+        if aRule[0] != "@@@@":
+            for aAction in aRule[6]:
+                d[aAction[1]] = d[aAction[1]] + 1
     return (d, len(lRules))
 
 
@@ -438,21 +447,24 @@ def make (spLang, sLang, bJavaScript):
     lRuleLine = []
     lTest = []
     lOpt = []
-    zBookmark = re.compile("^!!+")
-    zGraphLink = re.compile(r"^@@@@GRAPHLINK>(\w+)@@@@")
 
     for i, sLine in enumerate(lRules, 1):
         if sLine.startswith('#END'):
+            # arbitrary end
             printBookmark(0, "BREAK BY #END", i)
             break
         elif sLine.startswith("#"):
+            # comment
             pass
         elif sLine.startswith("@@@@"):
-            m = re.match(r"^@@@@GRAPHLINK>(\w+)@@@@", sLine.strip())
+            # rules graph call
+            m = re.match(r"@@@@GRAPH: *(\w+)@@@@", sLine.strip())
             if m:
                 #lRuleLine.append(["@GRAPHLINK", m.group(1)])
-                printBookmark(1, "@GRAPHLINK: " + m.group(1), i)
+                printBookmark(1, "@GRAPH: " + m.group(1), i)
+                lRuleLine.append([i, "@@@@"+m.group(1)])
         elif sLine.startswith("DEF:"):
+            # definition
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
             if m:
                 dDEF["{"+m.group(1)+"}"] = m.group(2)
@@ -460,21 +472,28 @@ def make (spLang, sLang, bJavaScript):
                 print("Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
+            # test
             lTest.append("r{:<7}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
+            # todo
             pass
         elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
+            # options
             lOpt.append(sLine)
         elif re.match("[  \t]*$", sLine):
+            # empty line
             pass
         elif sLine.startswith("!!"):
-            m = zBookmark.search(sLine)
+            # bookmark
+            m = re.match("!!+", sLine)
             nExMk = len(m.group(0))
             if sLine[nExMk:].strip():
                 printBookmark(nExMk-2, sLine[nExMk:].strip(), i)
         elif sLine.startswith(("    ", "\t")):
-            lRuleLine[len(lRuleLine)-1][1] += " " + sLine.strip()
+            # rule (continuation)
+            lRuleLine[-1][1] += " " + sLine.strip()
         else:
+            # new rule
             lRuleLine.append([i, sLine.strip()])
 
     # generating options files
