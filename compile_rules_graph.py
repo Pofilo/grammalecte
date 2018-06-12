@@ -221,6 +221,10 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         return None
 
 
+def printBookmark (nLevel, sComment, nLine):
+    print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
+
+
 def make (spLang, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
@@ -312,11 +316,14 @@ def make (spLang, sLang, bJavaScript):
             sActions = ""
             sRuleName = ""
             nPriority = 4
-        elif sLine.startswith(("        ")):
+        elif sLine.startswith(("        <<-", "    <<-")):
             # actions
             sActions += " " + sLine.strip()
-        else:
+        elif sLine.startswith(("    ")):
             lTokenLine.append([i, sLine.strip()])
+        else:
+            print("Unknown line:")
+            print(sLine)
 
     # tests
     print("  list tests...")
