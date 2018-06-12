@@ -122,3 +122,15 @@ __vmode_si_sujet__
 TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
 TEST: s’ils ne {{mangeraient}} pas tous les jours, ils seraient moins gros.
 TEST: Si j’{{irais}} le faire
+
+
+# Dès que + indicatif
+
+__vmode_dès_que__
+    [dès|Dès]  [que|qu’|qu]  @:(?:Os|M)  @:S¬:[IG]
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                                                     # Ce verbe ne devrait pas être au subjonctif.
+#        <<- morph(\1, ":(?:Os|M)", False) and morph(\2, ":K", False)        -2>> =suggVerbMode(@, ":If", \1)    # Ce verbe ne devrait pas être au conditionnel.
+
+#TEST: dès que je le {{verrais}}
+TEST: dès qu’il le {{voie}}
+TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’il en aurait l’occasion
