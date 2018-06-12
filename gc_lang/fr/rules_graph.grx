@@ -39,48 +39,8 @@
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
 
 
-GRAPH_NAME: test_graph                                                                              
 
-__da1__
-    ne >donner
-        <<- =>> select(\2, ":V")
-
-TEST: je ne donne rien.
-
-
-__da2__
-    je >pousser
-        <<- =>> exclude(\2, ":N")
-
-TEST: je pousse
-
-
-__da3__
-    il >venir
-        <<- =>> define(\2, [":VVV"])
-
-TEST: il vient
-
-
-__pp__
-    >avoir  marre  [d’|des|du|de]
-        <<- ~>> *
-
-TEST: J’en ai marre de ces gens-là.
-
-
-__pp2__
-    il ne pense qu’ à sa gueule
-        <<- ~4:7>> que|Z|a|perdu
-
-TEST: il ne pense qu’à sa gueule.
-
-
-__avoir_confiance_en__
-    >avoir option dent [moi|toi|soi|lui|elle|nous|vous|eux|elles]
-        <<- /gn/ -3>> en                                                                                # Avoir confiance en quelqu’un ou quelque chose.\3 \1 \2 \3|http://grammalecte.net
-
-TEST: Elle avait option {{dent}} lui.
+GRAPH_NAME: test                                                                              
 
 
 __code_legacy__
@@ -112,3 +72,53 @@ __test__
         <<- morph(\4, ":Os|:M", ":X") -5>> \1|\5                                                    # SUBJONCTIF.
 
 TEST: je conpute que Isabelle {{est}} partie.
+
+
+GRAPH_NAME: last_graph                                                                              
+
+
+!!
+!!
+!!!! Modes verbaux                                                                                  
+!!
+!!
+
+# conditionnel / futur
+
+__vmode_j_aimerais_vinfi__
+    [<start>|,]  [je|j’|Je|J’]  [aimerai|préférerai|préfèrerai|apprécierai|voudrai|souhaiterai|désirerai|adorerai]  @:[YX]|>(?:y|ne|que?)/¬:R
+        <<- /vmode/ -3>> \1s                                                                        # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
+
+TEST: J’{{aimerai}} savoir ce dont il retourne.
+TEST: dans tous les cas j’{{aimerai}} ne rien savoir
+TEST: Je {{voudrai}} qu’il soit déjà là.
+TEST: J’aimerai ces cours-là autant que les autres.
+TEST: J’aimerai la danse et la musique, puisque vous l’exigez.
+TEST: Je sais que j’aimerai ça, tout comme lui.
+
+
+__vmode_j_aurais_aimé_que_vinfi__
+    [j’|J’]  aurai  [aimé|souhaité|préféré|voulu|apprécié|désiré|adoré]  [que|qu’|qu|ne|n’|@:Y]
+        <<- /vmode/ -2>> aurais|eusse                                                               # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
+
+TEST: J’{{aurai}} aimé nous offrir ce magnifique cadeau.
+TEST: j’{{aurai}} voulu être un artiste.
+TEST: j’{{aurai}} préféré ne pas avoir à l’entendre.
+TEST: j’{{aurai}} préféré l’entendre un autre jour.
+TEST: j’{{aurai}} aimé que vous m’en parliez.
+TEST: Quand j’en aurai fini avec eux, vous aurez du mal à les reconnaître.
+TEST: Quand j’aurai fini ce boulot, je ne sais pas ce que je ferai.
+TEST: Quand j’aurai soif et faim, je m’arrêterai.
+
+
+# Si suivi du conditionnel ou du subjonctif
+
+__vmode_si_sujet__
+    [<start>|,]  >si      [j’|J’|t’|T’]  @:[SK]¬:(?:G|V0|I)
+    [<start>|,]  >si      @:(?:Os|M)     @:[SK]¬:(?:G|V0|I)
+    [<start>|,]  [s’|S’]  [il|ils]       @:[SK]¬:(?:G|V0|I)
+        <<- /vmode/ -4>> _                                                                          # Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
+
+TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
+TEST: s’ils ne {{mangeraient}} pas tous les jours, ils seraient moins gros.
+TEST: Si j’{{irais}} le faire

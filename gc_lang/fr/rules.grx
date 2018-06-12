@@ -12305,48 +12305,6 @@ TEST: il {{avait}} parti.
 !!
 !!
 
-# conditionnel / futur
-
-__[i]/vmode(vmode_j_aimerais_vinfi)__
-    j(?:e +|’)(aimerai|préf[éè]rerai|apprécierai|voudrai|souhaiterai|désirerai|adorerai) +({w_1})  @@w,$
-    <<- morphex(\2, ":[YX]|>(?:y|ne|que?)/", ":R") and isStart() -1>> \1s                           # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
-
-TEST: J’{{aimerai}} savoir ce dont il retourne.
-TEST: dans tous les cas j’{{aimerai}} ne rien savoir
-TEST: Je {{voudrai}} qu’il soit déjà là.
-TEST: J’aimerai ces cours-là autant que les autres.
-TEST: J’aimerai la danse et la musique, puisque vous l’exigez.
-TEST: Je sais que j’aimerai ça, tout comme lui.
-
-
-__[i]/vmode(vmode_j_aurais_aimé_que_avoir_être)__
-    j’(aurai) +(?:aimé|souhaité|préféré|voulu|apprécié|désiré|adoré) +(que?|ne|{infi})  @@2,$
-    <<- morph(\2, ":Y|>(?:ne|que?)/", False)
-    -1>> aurais|eusse                               # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
-
-TEST: J’{{aurai}} aimé nous offrir ce magnifique cadeau.
-TEST: j’{{aurai}} voulu être un artiste.
-TEST: j’{{aurai}} préféré ne pas avoir à l’entendre.
-TEST: j’{{aurai}} préféré l’entendre un autre jour.
-TEST: j’{{aurai}} aimé que vous m’en parliez.
-TEST: Quand j’en aurai fini avec eux, vous aurez du mal à les reconnaître.
-TEST: Quand j’aurai fini ce boulot, je ne sais pas ce que je ferai.
-TEST: Quand j’aurai soif et faim, je m’arrêterai.
-
-
-# Si suivi du conditionnel ou du subjonctif
-__[i]/vmode(vmode_si_sujet1)__
-    si +({w1}) +({w_2})  @@w,$
-    <<- morph(\1, ":(?:Os|M)", False) and morphex(\2, ":[SK]", ":(?:G|V0|I)") and isStart()
-    -2>> _                                                                          # Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
-__[i]/vmode(vmode_si_sujet2)__
-    (?:si [jt]’|s’ils? +)({w_2})  @@$
-    <<- morphex(\1, ":[SK]", ":(?:G|V0|I)") and isStart()
-    -1>> _                                                                          # Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
-
-TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
-TEST: s’ils ne {{mangeraient}} pas tous les jours, ils seraient moins gros.
-
 
 # Dès que + indicatif
 __[i]/vmode(vmode_dès_que)__
@@ -12446,7 +12404,8 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 
 
 
-@@@@GRAPH: test_graph@@@@                                                                           
+@@@@GRAPH: last_graph@@@@                                                                           
+@@@@GRAPH: test@@@@                                                                           
 
 
 
