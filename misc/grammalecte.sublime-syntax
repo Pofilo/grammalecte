@@ -30,6 +30,12 @@ contexts:
     - match: '^GRAPH_NAME:.*'
       scope: bookmark
 
+      # Bookmarks
+    - match: '^@@@@GRAPH: *(\w+)@@@@ *'
+      scope: bookmark
+      captures:
+        1: string.graphname
+
     # Keywords are if, else.
     # Note that blackslashes don't need to be escaped within single quoted
     # strings in YAML. When using single quoted strings, only single quotes
