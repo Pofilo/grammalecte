@@ -110,15 +110,27 @@ contexts:
       scope: keyword.disambiguator
 
     # Tokens
-    - match: '>\w+'
+    - match: '(>)\w+'
       scope: string.lemma
+      captures:
+        1: keyword.valid
 
-    - match: '~(?!(?:\d+(?::\d+|)|)>>)[^\s]+'
+    - match: '(~)(?!(?:\d+(?::\d+|)|)>>)[^\s]+'
       scope: string.regex
+      captures:
+        1: keyword.valid
 
-    - match: '@[^@][^\s]+'
+    - match: '(@)([^@][^\s¬]+)'
       scope: string.morph
+      captures:
+        1: keyword.valid
+        2: string.morph.pattern
 
+    - match: '(¬)(\S+)'
+      scope: string.morph
+      captures:
+        1: keyword.invalid
+        2: string.morph.antipattern  
 
     # Escaped chars
     - match: '\\(?:\d+|w|d|b|n|s|t)'
