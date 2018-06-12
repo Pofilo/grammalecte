@@ -39,8 +39,7 @@
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
 
 
-
-GRAPH_NAME: test                                                                              
+GRAPH_NAME: test                                                                                    
 
 
 __code_legacy__
@@ -134,3 +133,21 @@ __vmode_dès_que__
 #TEST: dès que je le {{verrais}}
 TEST: dès qu’il le {{voie}}
 TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’il en aurait l’occasion
+
+
+# verbe que + subjonctif
+__vmode_qqch_que_subjonctif1__
+    [>afin|>avant|>pour|>quoi|>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
+    >douter                                                                                                [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
+        <<- -4>> =suggVerbMode(\4, ":S", \3)                                                         # Après « \1 que », ce verbe devrait être au subjonctif.
+
+TEST: Il suffit qu’il {{court}} plus
+TEST: Je veux qu’il {{finit}} son repas.
+TEST: quoi qu’il en {{conclut}}
+TEST: Je ne veux pas que tu {{es}} des ennuis
+TEST: Avant que tu {{pars}}, je voudrais qu’on discute.
+TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
+TEST: Je ne doute pas qu’ils réussiront leur mission.
+TEST: Je me doutais bien qu’Apple pourrait marcher
+TEST: il ne fait aucun doute qu’Amazon le sait.
+TEST: quoi que nous autres hommes ayons pu faire
