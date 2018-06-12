@@ -652,7 +652,7 @@ class TokenSentence:
                         bChange = True
         return (bChange, dErr)
 
-    def _executeActions (self, dGraph, dNode, nTokenOffset, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext):
+    def _executeActions (self, dGraph, dNode, nTokenOffset, dPriority, dOptions, sCountry, bShowRuleId, bDebug, bContext):
         "execute actions found in the DARG"
         dErrs = {}
         bChange = False
