@@ -157,17 +157,21 @@ def _getSentenceBoundaries (sText):
 
 def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
     dErrs = {}
-    bChange = False
+    bParagraphChange = False
+    bSentenceChange = False
     for sOption, lRuleGroup in _getRules(bParagraph):
         if sOption == "@@@@":
             # graph rules
+            if not bParagraph and bSentenceChange:
+                oSentence.update(s)
+                bSentenceChange = False
             for sGraphName, sLineId in lRuleGroup:
                 if bDebug:
                     print(sGraphName, sLineId)
-                bChange, errs = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
+                bParagraphChange, errs = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
                 dErrs.update(errs)
-                if bChange:
-                    oSentence.rewrite()
+                if bParagraphChange:
+                    s = oSentence.rewrite()
                     if bDebug:
                         print("~", oSentence.sSentence)
         elif not sOption or dOptions.get(sOption, False):
@@ -190,7 +194,8 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry,
                                     elif cActionType == "~":
                                         # text processor
                                         s = _rewrite(s, sWhat, eAct[0], m, bUppercase)
-                                        bChange = True
+                                        bParagraphChange = True
+                                        bSentenceChange = True
                                         if bDebug:
                                             echo("~ " + s + "  -- " + m.group(eAct[0]) + "  # " + sLineId)
                                     elif cActionType == "=":
@@ -207,7 +212,7 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry,
                                     break
                             except Exception as e:
                                 raise Exception(str(e), "# " + sLineId + " # " + sRuleId)
-    if bChange:
+    if bParagraphChange:
         return (s, dErrs)
     return (False, dErrs)
 
@@ -585,6 +590,10 @@ class TokenSentence:
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
+    def update (self, sSentence):
+        self.sSentence = sSentence
+        self.lToken = list(_oTokenizer.genTokens(sSentence, True))
+
     def _getNextMatchingNodes (self, dToken, dGraph, dNode):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
         # token value
@@ -837,6 +846,7 @@ class TokenSentence:
                     del dToken["sNewValue"]
         self.lToken.clear()
         self.lToken = lNewToken
+        return self.sSentence
 
 
 

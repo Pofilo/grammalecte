@@ -45,6 +45,7 @@ class Tokenizer:
         self.zToken = re.compile( "(?i)" + '|'.join(sRegex for sRegex in _PATTERNS[sLang]) )
 
     def genTokens (self, sText, bStartEndToken=False):
+        i = 0
         if bStartEndToken:
             yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0 }
         for i, m in enumerate(self.zToken.finditer(sText), 1):
