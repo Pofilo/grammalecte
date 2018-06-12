@@ -8,10 +8,10 @@ import darg
 
 dDEF = {}
 dACTIONS = {}
-lFUNCTIONS = []
+dFUNCTIONS = {}
 
 
-def prepareFunction (s):
+def prepareFunction (s, bTokenValue=False):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
@@ -25,7 +25,12 @@ def prepareFunction (s):
     s = re.sub(r"after_chk1\(\s*", 'look_chk1(dDA, s[m.end():], m.end(), ', s)              # after_chk1(s)
     s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dDA, s, 0, ', s)                           # textarea_chk1(s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
-    s = re.sub(r"[\\](\d+)", 'lToken[\\1]', s)
+    if bTokenValue:
+        # token values are used as parameter
+        s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
+    else:
+        # tokens used as parameter
+        s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]', s)
     return s
 
 
@@ -118,7 +123,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
     if sCondition:
         sCondition = prepareFunction(sCondition)
         sCondition = changeReferenceToken(sCondition, dPos)    
-        lFUNCTIONS.append(("g_c_"+sIdAction, sCondition))
+        dFUNCTIONS["g_c_"+sIdAction] = sCondition
         sCondition = "g_c_"+sIdAction
     else:
         sCondition = ""
@@ -155,9 +160,9 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
                 sURL = mURL.group(1).strip()
                 sMsg = sMsg[:mURL.start(0)].strip()
             if sMsg[0:1] == "=":
-                sMsg = prepareFunction(sMsg[1:])
-                lFUNCTIONS.append(("g_m_"+sIdAction, sMsg))
-                for x in re.finditer("group[(](\\d+)[)]", sMsg):
+                sMsg = prepareFunction(sMsg[1:], True)
+                dFUNCTIONS["g_m_"+sIdAction] = sMsg
+                for x in re.finditer("lToken\\[(\\d+)\\]", sMsg):
                     if int(x.group(1)) > nToken:
                         print("# Error in token index in message at line " + sIdAction + " ("+str(nToken)+" tokens only)")
                 sMsg = "=g_m_"+sIdAction
@@ -168,17 +173,16 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
                 if re.search("[.]\\w+[(]", sMsg):
                     print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
             
-    if sAction[0:1] == "=" or cAction == "=":
+    
+
+    if cAction == "=" or sAction[0:1] == "=":
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
-        sAction = prepareFunction(sAction)
-        for x in re.finditer("group[(](\\d+)[)]", sAction):
-            if int(x.group(1)) > nToken:
-                print("# Error in token index in replacement at line " + sIdAction + " ("+str(nToken)+" tokens only)")
-    else:
         for x in re.finditer(r"\\(\d+)", sAction):
             if int(x.group(1)) > nToken:
                 print("# Error in token index in replacement at line " + sIdAction + " ("+str(nToken)+" tokens only)")
+
+    if sAction[0:1] != "=":
         if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
             print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
 
@@ -187,7 +191,8 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("g_s_"+sIdAction, sAction[1:]))
+            sAction = prepareFunction(sAction, True)
+            dFUNCTIONS["g_s_"+sIdAction] = sAction[1:]
             sAction = "=g_s_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
@@ -199,7 +204,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("g_p_"+sIdAction, sAction[1:]))
+            dFUNCTIONS["g_p_"+sIdAction] = sAction[1:]
             sAction = "=g_p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
@@ -210,7 +215,8 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
             sAction = sAction[1:]
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
-        lFUNCTIONS.append(("g_d_"+sIdAction, sAction))
+        sAction = prepareFunction(sAction)
+        dFUNCTIONS["g_d_"+sIdAction] = sAction
         sAction = "g_d_"+sIdAction
         return [sOption, sCondition, cAction, sAction]
     elif cAction == ">":
@@ -348,7 +354,7 @@ def make (spLang, sLang, bJavaScript):
     print("  creating callables...")
     sPyCallables = "# generated code, do not edit\n"
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
-    for sFuncName, sReturn in lFUNCTIONS:
+    for sFuncName, sReturn in dFUNCTIONS.items():
         if sFuncName.startswith("g_c_"): # condition
             sParams = "lToken, nTokenOffset, sCountry, bCondMemo"
         elif sFuncName.startswith("g_m_"): # message
@@ -368,6 +374,7 @@ def make (spLang, sLang, bJavaScript):
         #sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         #sJSCallables += "    },\n"
     #sJSCallables += "}\n"
+    print(sPyCallables)
 
     for sActionName, aAction in dACTIONS.items():
         print(sActionName, aAction)
