@@ -83,7 +83,8 @@ def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
 
         # Parse actions
         for nAction, sAction in enumerate(sActions.split(" <<- ")):
-            if sAction.strip():
+            sAction = sAction.strip()
+            if sAction:
                 sActionId = sRuleName + "_a" + str(nAction)
                 aAction = createAction(sActionId, sAction, nPriority, len(lToken), dPos)
                 if aAction:
@@ -100,6 +101,13 @@ def changeReferenceToken (s, dPos):
 
 
 def createAction (sIdAction, sAction, nPriority, nToken, dPos):
+    # Option
+    sOption = False
+    m = re.match("/(\\w+)/", sAction) 
+    if m:
+        sOption = m.group(1)
+        sAction = sAction[m.end():].strip()
+    # valid action?
     m = re.search("(?P<action>[-~=])(?P<start>\\d+|)(?P<end>:\\d+|)>> ", sAction)
     if not m:
         print(" # Error. No action found at: ", sIdAction)
@@ -185,7 +193,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
             sAction = sAction[1:-1]
         if not sMsg:
             print("# Error in action at line " + sIdAction + ":  The message is empty.")
-        return [sCondition, cAction, sAction, iStartAction, iEndAction, nPriority, sMsg, sURL]
+        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, nPriority, sMsg, sURL]
     elif cAction == "~":
         ## text processor
         if not sAction:
@@ -195,7 +203,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
             sAction = "=g_p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
-        return [sCondition, cAction, sAction, iStartAction, iEndAction]
+        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
     elif cAction == "=":
         ## disambiguator
         if sAction[0:1] == "=":
@@ -204,10 +212,10 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         lFUNCTIONS.append(("g_d_"+sIdAction, sAction))
         sAction = "g_d_"+sIdAction
-        return [sCondition, cAction, sAction]
+        return [sOption, sCondition, cAction, sAction]
     elif cAction == ">":
         ## no action, break loop if condition is False
-        return [sCondition, cAction, ""]
+        return [sOption, sCondition, cAction, ""]
     else:
         print("# Unknown action at line " + sIdAction)
         return None

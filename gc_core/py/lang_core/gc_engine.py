@@ -658,45 +658,46 @@ class TokenSentence:
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
             for sRuleId in dGraph[nextNodeKey]:
-                bCondMemo = None
-                sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
-                # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
                 try:
-                    bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, sCountry, bCondMemo)
-                    if bCondMemo:
-                        if cActionType == "-":
-                            # grammar error
-                            nTokenErrorStart = nTokenOffset + eAct[0]
-                            nTokenErrorEnd = nTokenOffset + eAct[1]
-                            nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
-                            nErrorEnd = self.nOffset + self.lToken[nTokenErrorEnd]["nEnd"]
-                            if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
-                                dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
-                                dPriority[nErrorStart] = eAct[2]
+                    bCondMemo = None
+                    sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
+                    # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
+                    if not sOption or dOptions.get(sOption, False):
+                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, sCountry, bCondMemo)
+                        if bCondMemo:
+                            if cActionType == "-":
+                                # grammar error
+                                nTokenErrorStart = nTokenOffset + eAct[0]
+                                nTokenErrorEnd = nTokenOffset + eAct[1]
+                                nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
+                                nErrorEnd = self.nOffset + self.lToken[nTokenErrorEnd]["nEnd"]
+                                if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
+                                    dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
+                                    dPriority[nErrorStart] = eAct[2]
+                                    if bDebug:
+                                        print("-", sRuleId, dErrs[nErrorStart])
+                            elif cActionType == "~":
+                                # text processor
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1])
                                 if bDebug:
-                                    print("-", sRuleId, dErrs[nErrorStart])
-                        elif cActionType == "~":
-                            # text processor
-                            self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1])
-                            if bDebug:
-                                print("~", sRuleId)
-                            bChange = True
-                        elif cActionType == "=":
-                            # disambiguation
-                            globals()[sWhat](self.lToken, nTokenOffset)
-                            if bDebug:
-                                print("=", sRuleId)
+                                    print("~", sRuleId)
+                                bChange = True
+                            elif cActionType == "=":
+                                # disambiguation
+                                globals()[sWhat](self.lToken, nTokenOffset)
+                                if bDebug:
+                                    print("=", sRuleId)
+                            elif cActionType == ">":
+                                # we do nothing, this test is just a condition to apply all following actions
+                                if bDebug:
+                                    print(">", sRuleId)
+                                pass
+                            else:
+                                print("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
-                            # we do nothing, this test is just a condition to apply all following actions
                             if bDebug:
-                                print(">", sRuleId)
-                            pass
-                        else:
-                            print("# error: unknown action at " + sLineId)
-                    elif cActionType == ">":
-                        if bDebug:
-                            print(">!", sRuleId)
-                        break
+                                print(">!", sRuleId)
+                            break
                 except Exception as e:
                     raise Exception(str(e), sLineId)
         return bChange, dErrs
