@@ -721,7 +721,7 @@ class TokenSentence:
         xErr.aRuleIdentifier = sRuleId
         # suggestions
         if sSugg[0:1] == "=":
-            sSugg = globals()[sSugg[1:]](self.lToken)
+            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset)
             if sSugg:
                 if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
                     xErr.aSuggestions = tuple(map(str.capitalize, sSugg.split("|")))
@@ -762,7 +762,7 @@ class TokenSentence:
         dErr["sType"] = sOption  if sOption  else "notype"
         # suggestions
         if sSugg[0:1] == "=":
-            sSugg = globals()[sSugg[1:]](self.lToken)
+            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset)
             if sSugg:
                 if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
                     dErr["aSuggestions"] = list(map(str.capitalize, sSugg.split("|")))
