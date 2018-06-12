@@ -173,15 +173,13 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
                 if re.search("[.]\\w+[(]", sMsg):
                     print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
             
-    
-
+    # checking consistancy
     if cAction == "=" or sAction[0:1] == "=":
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         for x in re.finditer(r"\\(\d+)", sAction):
             if int(x.group(1)) > nToken:
                 print("# Error in token index in replacement at line " + sIdAction + " ("+str(nToken)+" tokens only)")
-
     if sAction[0:1] != "=":
         if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
             print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
