@@ -79,7 +79,7 @@ const oGrammalecte = {
             dOptions = dOptions.ui_options;
             if (dOptions.textarea) {
                 for (let xNode of document.getElementsByTagName("textarea")) {
-                    if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
+                    if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
                         this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
                         this.nMenu += 1;
                     }

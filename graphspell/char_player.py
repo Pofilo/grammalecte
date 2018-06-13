@@ -29,7 +29,7 @@ def simplifyWord (sWord):
     sWord = sWord.lower().translate(_xTransCharsForSimplification)
     sNewWord = ""
     for i, c in enumerate(sWord, 1):
-        if c != sWord[i:i+1]:
+        if c == 'e' or c != sWord[i:i+1]:  # exception for <e> to avoid confusion between crée / créai
             sNewWord += c
     return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "e").replace("ei", "e").replace("ph", "f")
 

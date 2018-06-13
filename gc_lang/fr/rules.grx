@@ -389,7 +389,11 @@ __<i>(p_email)__
 __<i>(p_URL)__
     https?://[\w./?&!%=+*"'@$#-]+ <<- ~>> *
 __<i](p_URL2)__
-    ({w_2})[.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl) @@0 <<- ~>> =\1.capitalize()
+    ((?:{w_1}[.])*)({w_2})([.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl|xyz)) @@0,**,$
+    <<- ~1>> *
+    <<- ~2>> =\2.capitalize()
+    <<- =>> define(\2, [":MP:e:i"])
+    <<- ~3>> *
 
 # Numéro de chapitre
 __<i>(p_chapitre)__
@@ -737,15 +741,15 @@ TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|
 __<s>/typo(typo_espace_manquant_après1)__
     ({w1})[,:]({w_1})  @@0,$  <<- not \1.isdigit() -2>> " \2"                                       # Il manque un espace.
 __<s>/typo(typo_espace_manquant_après2)__
-    [?!;%‰‱˚»}]({w_1})  @@$  <<- -1>> " \1"                                                         # Il manque un espace.
+    [?!;%‰‱˚»}]({w_1})  @@$  <<- -1>> " \1"                                                       # Il manque un espace.
 __<s]/typo(typo_espace_manquant_après3)__
     {w_1}[.]({w_1})  @@$
-    <<- (\1.__len__() > 1 and not \1.isdigit() and spell(\1)) or after("^’") -1>> " \1"             # Il manque un espace.
+    <<- (\1.__len__() > 1 and not \1.isdigit() and spell(\1)) or after("^’") -1>> " \1"          # Il manque un espace.
 
 TEST: J’en ai marre,{{ça}} suffit.
 TEST: elle est délirante.{{Devine}} ce qu’elle a dit.
 TEST: Voilà,{{il}} manque un espace.                                        ->> " il"
-TEST: Dernier essai.{{Voilà}}.                                              ->> " Voilà"
+TEST: Dernier essai.{{Voilà}}, c’est ça.                                    ->> " Voilà"
 TEST: muni de lunettes protectrices et.{{d}}’un casque.
 TEST: espace:{{manquant}}                                                   ->> " manquant"
 TEST: espace{{;}}{{manquant}}
@@ -754,6 +758,8 @@ TEST: espace{{?}}{{manquant}}
 TEST: espace{{!}}{{manquant}}
 TEST: espace.{{Manquant}}                                                   ->> " Manquant"
 TEST: qui ont refuse.{{de}} se sauver                                       ->> " de"
+TEST: pic.twitter.com/PICNAME
+
 
 !!
 !!
@@ -1650,6 +1656,7 @@ TEST: ce sont des {{lève tard}}.
 
 ### Tri 1
 __[i]/tu(tu_à_tout_va)__                    [àa] tout vas? <<- ->> à tout-va                        # Il manque un trait d’union.
+__[i]/tu(à_la_va_vite)__                    [àa] la vas? vite <<- ->> à la va-vite                  # Il manque un trait d’union.
 __[i]/tu(tu_aller_retour)__                 allers? retours? <<- ->> =\0.replace(" ", "-")          # Il manque un trait d’union.
 __[i]/tu(tu_arc_en_ciel)__                  arcs? en ciel <<- ->> =\0.replace(" ", "-")             # Il manque les traits d’union.
 __[i]/tu(tu_après_demain)__                 après demain <<- ->> après-demain                       # Il manque un trait d’union.
@@ -1700,6 +1707,7 @@ __[i]/tu(tu_vis_à_vis)__               vis [àa] vis <<- ->> vis-à-vis        
 __[i]/tu(tu_week_end)__                week (ends?) @@$ <<- ->> week-\1                             # Il manque un trait d’union.
 
 TEST: Ils font des tests {{à tout va}}
+TEST: on a fait {{à la va vite}}…
 TEST: marre de faire des {{allers retours}}
 TEST: {{le}} {{bouche à oreille}}
 TEST: à ce {{moment là}}                                                        ->> moment-là
@@ -3115,10 +3123,11 @@ TEST: Les écrits de d’Alembert.
 
 __[i]/conf(conf_à_le_la_les_leur)__
     à l(?:es? +|eurs? +|a +|’)({w_3})  @@$
-    <<- morphex(\1, ":", ":[GNAWMBY]") -1>> =suggSimil(\1, ":[NA]", True)                           # Incohérence : après “à”, on devrait trouver un groupe nominal.
+    <<- morphex(\1, ":", ":[GNAWMBYŴ]") -1>> =suggSimil(\1, ":[NA]", True)                           # Incohérence : après “à”, on devrait trouver un groupe nominal.
 
 TEST: à leur {{profile}}
 TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
+TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
 
 
 __[s]/conf(conf_en_mts_verbe)__
@@ -3478,7 +3487,7 @@ __[i]/conf(conf_a_à_locutions1)__
     (a) (?:nouveau|présent|(?:bonne distance|bord|cause|contre-courant|côté|court|défaut|droite|gauche|l’(?:arrière|autre bout|écart|égard|extérieur|aune|avant|encontre|ins(?:u|tar)|intérieur|opposé)|la (?:portée|suite)|partir|portée|propos|rebours) d(?:es?|u))  @@0
     <<- -1>> à                                                                                      # Confusion. Utilisez la préposition “à”.
 __[s]/conf(conf_a_à_locutions2)__
-    (a) (?:califourchon|contre(?:cœur|temps)|côté d(?:e|’\w[\w-]+)|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|l’(?:heure (?:actuelle|qu il est)|accoutumée|amiable|avance|aven(?:ir|ant)|air libre|aveuglette|emporte-pièce|évidence|exclusion de toute autre chose|improviste|inverse|ordre du jour|œil nu|en croire|un(?:animité| (?:d’entre eux|des leurs)|e (?:d’entre elles|des leurs)))|la (?:bonne franquette|con|dér(?:ive|obée)|diable|fois|limite du supportable|lumière de tout ce(?:ci|la)|mords-moi-le-nœud|papa|petite semaine|pointe du progrès|queue leu leu|rescousse|sauvette|surprise générale|virgule près|volée)|partir (?:de (?:demain|là|maintenant|rien)|d’(?:aujourd’hui|hier|ici))|au(?:cun prix|trui|tre chose)|bas co[ûu]t|bâ(?:bord|tons rompus)|beaucoup près|belles dents|bien (?:des égards|y (?:penser|réfléchir|songer))|bon (?:compte|escient|droit)|bout (?:de (?:bras|souffle|forces?)|portant|touchant)|bras (?:ouverts|le corps)|brève échéance|but non lucratif|cause d(?:e (?:ça|[mt]oi|lui|[nv]ous)|’e(?:lles?|ux))|ce (?:compte-là|moment-là|titre)|cet (?:égard|instant(?: précis|))|cette (?:époque(?: de l’année|)|heure de la (?:journée|nuit))|chaque (?:fois|instant)|chaudes larmes|cœur (?:joie|ouvert|perdu)|ciel ouvert|contre-cœur|corps perdu|cou(?:p sûr|per le souffle|rt terme|rte (?:échéance|portée))|couilles rabattues|de nombreuses reprises|des kilomètres à la ronde|dose homéopathique|double (?:titre|tranchant)|durée limitée|en (?:juger par (?:[mts]on|[nv]otre|leur) expérience|perdre (?:haleine|la tête))|faible (?:allure|revenu)|feu et à sang|flanc de (?:colline|montagne)|fleur de peau|géométrie variable|grand(?:-peine|e échelle)|haut risque|hue et à dia|huis clos|intervalles (?:ir|)réguliers|juste (?:raison|titre)|long terme|longue(?: échéance| portée|ur (?:de (?:temps|journée))|d’année)|loyer modéré|main (?:armée|droite|gauche|levée)|maint(?:s égards|es reprises)|marche forcée|merveille|mi-(?:course|distance|temps)|mi(?:di|nuit)(?: pile|)|moindres frais|moyen(?: terme|ne échéance)|mots couverts|ne (?:jamais|pas|rien|guère)|n’en (?:pas douter|point douter|plus finir)|outrance|parler franc|part (?:entière|ça|ce(?:la|ci))|partir de là|part(?:ir de rien|s égales)|pas de (?:géant|loup|tortue|velours)|personne en danger|perte de vue|petit(?: feu|e (?:dose|échelle))|peu (?:de choses? |)près|pieds joints|pile ou face|plat(?: ventre|e couture)|plein(?: (?:régime|temps|nez)|s poumons)|plus (?:forte raison|d’un titre)|point nommé|portée de main|première vue|prix (?:cassé|modique)s?|proprement parler|qui (?:mieux mieux|que ce soit|de droit)|quelque distance|quelques exceptions près|ras bords?|rude épreuve|tel point|temps (?:plein|partiel|complet)|tête reposée|tire[ -]d’aile|titre (?:conservatoire|d’exemple|indicatif|informatif|grâcieux|personnel|posthume)|tombeau ouvert|tort (?:ou à raison|et à travers)|tour de (?:bras|rôle)|tous (?:crins|points de vue)|tout(?: (?:âge|bout de champ|crin|instant|jamais|le (?:moins|monde)|moment|point de vue|prix|un chacun)|e (?:allure|bride|épreuve|force|heure|vitesse|volée))|toutes (?:fins utiles|jambes)|tribord|tu et à toi|un moment donné|usage interne|visage découvert|vive allure|voix (?:haute|basse)|vol d’oiseau|vrai dire|vue d’œil|y (?:regarder de plus près|réfléchir))  @@0
+    (a) (?:califourchon|contre(?:cœur|temps)|côté d(?:e|’\w[\w-]+)|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|l’(?:heure (?:actuelle|qu il est)|accoutumée|amiable|avance|aven(?:ir|ant)|air libre|aveuglette|emporte-pièce|évidence|exclusion de toute autre chose|improviste|inverse|ordre du jour|œil nu|en croire|un(?:animité| (?:d’entre eux|des leurs)|e (?:d’entre elles|des leurs)))|la (?:bonne franquette|con|dér(?:ive|obée)|diable|fois|limite du supportable|lumière de tout ce(?:ci|la)|mords-moi-le-nœud|papa|petite semaine|pointe du progrès|queue leu leu|rescousse|sauvette|surprise générale|va[ -]vite|virgule près|volée)|partir (?:de (?:demain|là|maintenant|rien)|d’(?:aujourd’hui|hier|ici))|au(?:cun prix|trui|tre chose)|bas co[ûu]t|bâ(?:bord|tons rompus)|beaucoup près|belles dents|bien (?:des égards|y (?:penser|réfléchir|songer))|bon (?:compte|escient|droit)|bout (?:de (?:bras|souffle|forces?)|portant|touchant)|bras (?:ouverts|le corps)|brève échéance|but non lucratif|cause d(?:e (?:ça|[mt]oi|lui|[nv]ous)|’e(?:lles?|ux))|ce (?:compte-là|moment-là|titre)|cet (?:égard|instant(?: précis|))|cette (?:époque(?: de l’année|)|heure de la (?:journée|nuit))|chaque (?:fois|instant)|chaudes larmes|cœur (?:joie|ouvert|perdu)|ciel ouvert|contre-cœur|corps perdu|cou(?:p sûr|per le souffle|rt terme|rte (?:échéance|portée))|couilles rabattues|de nombreuses reprises|des kilomètres à la ronde|dose homéopathique|double (?:titre|tranchant)|durée limitée|en (?:juger par (?:[mts]on|[nv]otre|leur) expérience|perdre (?:haleine|la tête))|faible (?:allure|revenu)|feu et à sang|flanc de (?:colline|montagne)|fleur de peau|géométrie variable|grand(?:-peine|e échelle)|haut risque|hue et à dia|huis clos|intervalles (?:ir|)réguliers|juste (?:raison|titre)|long terme|longue(?: échéance| portée|ur (?:de (?:temps|journée))|d’année)|loyer modéré|main (?:armée|droite|gauche|levée)|maint(?:s égards|es reprises)|marche forcée|merveille|mi-(?:course|distance|temps)|mi(?:di|nuit)(?: pile|)|moindres frais|moyen(?: terme|ne échéance)|mots couverts|ne (?:jamais|pas|rien|guère)|n’en (?:pas douter|point douter|plus finir)|outrance|parler franc|part (?:entière|ça|ce(?:la|ci))|partir de là|part(?:ir de rien|s égales)|pas de (?:géant|loup|tortue|velours)|personne en danger|perte de vue|petit(?: feu|e (?:dose|échelle))|peu (?:de choses? |)près|pieds joints|pile ou face|plat(?: ventre|e couture)|plein(?: (?:régime|temps|nez)|s poumons)|plus (?:forte raison|d’un titre)|point nommé|portée de main|première vue|prix (?:cassé|modique)s?|proprement parler|qui (?:mieux mieux|que ce soit|de droit)|quelque distance|quelques exceptions près|ras bords?|rude épreuve|tel point|temps (?:plein|partiel|complet)|tête reposée|tire[ -]d’aile|titre (?:conservatoire|d’exemple|indicatif|informatif|grâcieux|personnel|posthume)|tombeau ouvert|tort (?:ou à raison|et à travers)|tour de (?:bras|rôle)|tous (?:crins|points de vue)|tout(?: (?:âge|bout de champ|crin|instant|jamais|le (?:moins|monde)|moment|point de vue|prix|un chacun)|e (?:allure|bride|épreuve|force|heure|vitesse|volée))|toutes (?:fins utiles|jambes)|tribord|tu et à toi|un moment donné|usage interne|visage découvert|vive allure|voix (?:haute|basse)|vol d’oiseau|vrai dire|vue d’œil|y (?:regarder de plus près|réfléchir))  @@0
     <<- not before(r"(?i)[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$")
     -1>> à                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 __[s]/conf(conf_a_à_locutions3)__
@@ -3554,6 +3563,7 @@ TEST: par rapport {{a}} eux, je me sens parfois dépassé
 TEST: par rapport {{a}} ces hommes-là, nous manquons d’expérience
 TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
 TEST: ce que cette personne, dans son esprit trouble et vindicatif, {{à}} aux hommes à dire, nul ne le sait.
+TEST: on fait ça {{a}} la va-vite.
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
@@ -3839,11 +3849,11 @@ __[i]/conf(conf_être_davantage_ppas)__
     <<- morph(\1, ":V0e", False) and morphex(\3, ":[NAQ]", ":G") -2>> davantage     # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 __[i]/conf(conf_davantage1)__
     ({w1}) (d’avantages?) @@0,$
-    <<- morphex(\1, ":V", ":Q|>(?:profiter|bénéficier)/") and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire))s?/", False, False)
+    <<- morphex(\1, ":V", ":Q|>(?:profiter|bénéficier|nombre)/") and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/", False, False)
     -2>> davantage                                                                  # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 __[i]/conf(conf_davantage2)__
     ({w_1})-(?:je|tu|ils?|elles?|[nv]ous|on) +(d’avantages?) @@0,$
-    <<- not morph(\1, ">(?:profiter|bénéficier)/", False) and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire))s?/", False, False)
+    <<- not morph(\1, ">(?:profiter|bénéficier)/", False) and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/", False, False)
     -2>> davantage                                                                  # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 __[i>/conf(conf_davantage3)__
     (d’avantages?) d(?:e +|’) @@0
@@ -3856,6 +3866,7 @@ TEST: Viens-tu {{d’avantage}} à la maison
 TEST: {{d’avantage}} de monde viendra
 TEST: ils sont {{d’avantages}} perdus que les autres.
 TEST: tout ce qu’il apporte d’avantages pécuniaires.
+TEST: un certain nombre d’avantages sociaux.
 
 
 # différend / différent
@@ -4285,8 +4296,10 @@ __[i]/conf(conf_qu_elle_verbe)__
     (quelles?) +({w_1})  @@0,$
     <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y)/", ":[NA].*:[fe]|>(?:plus|moins)") or \2 == "t" or \2 == "s")
         and not (morph(\2, ">(?:pouvoir|devoir|en)/", False) and morph(word(1), ":V0e", False)) >>>
-    <<- \1.endswith("e") and not morph(\2, ":V0e", False) -1>> qu’elle                              # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
-    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False) -1>> qu’elles                # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
+    <<- \1.endswith("e") and not morph(\2, ":V0e", False) and not (morph(\2, ":V0a", False) and after("^ +été "))
+    -1>> qu’elle                                                                                    # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
+    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False)  and not (morph(\2, ":V0a", False) and after("^ +été "))
+    -1>> qu’elles                                                                                   # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
     <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
     <<- \1.endswith("e") -1>> qu’elle                                                               # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 3
     <<- __else__ and \1.endswith("s") -1>> qu’elles                                                 # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 4
@@ -4310,6 +4323,7 @@ TEST: Quelles en sont les conséquences ?
 TEST: Quelle plus belle complicité que…
 TEST: Quelle peut être la date de clôture d’un exercice ?
 TEST: Quelle doit être la date du mariage ?
+TEST: Quelles ont été les annonces faites ?
 
 
 # savoir / ignorer
@@ -4976,7 +4990,7 @@ __[i](p_du_qqch)__              du (?:[xXvViI]+[eᵉ] siècle|bout des lèvres|d
 __[i](p_demain)__               (?:après-|avant |)demain(?: matin| soir| après-midi|) <<- ~>> *
 __[i](p_don_Juan)__             (don) Juan @@0 <<- ~1>> *
 __[i](p_du_même_ordre_coup)__   du même (?:ordre|coup) <<- ~>> *
-__[i](p_en_nombre_années)__     en \d\d+(?: ans| années|) <<- ~>> *
+__[i](p_en_nombre_années)__     en \d\d+(?: ans| années| mois| semaines| jours| heures| minutes| secondes|) <<- ~>> *
 __[i](p_en_cours)__             en cours(?! d[e’]) <<- ~>> *
 __[i](p_en_pronom)__            en (?:[mt]oi|eux|elles?) <<- ~>> *
 __[i](p_en_qqch1)__             en (?:aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse) <<- ~>> *
@@ -5113,6 +5127,7 @@ __[i](p_v_divers)__             v(?:aille que vaille|entre à terre|ers nulle pa
 
 TEST: ils vont et viennent, toujours {{cotes a cotes}}…
 TEST: Nous irons {{tours à tours}} chercher du bois.
+TEST: Ma thèse en 180 secondes.
 
 
 # je / tu / il / elles / nous / vous / ils / elles 
@@ -5212,6 +5227,7 @@ __[i](loc_cuillère)__
     <<- ~1>> *
 __[i](p_délai_de)__                     délais? (d’attente|de (?:carence|connexion|prescription|préavis|rétraction|rigueur)) @@$ <<- ~1>> *
 __[i](p_demande_d_asile)__              demandes? (d’asile) @@$ <<- ~1>> *
+__[i](p_descente_aux)__                 descentes? (aux (?:enfers|flambeaux)) @@$ <<- ~1>> *
 __[i](p_diner_aux_chandelles)__         d[îi]ners? (aux chandelles) @@$ <<- ~1>> *
 __[i](p_digne_de)__                     dignes? (de (?:confiance|foi|ce nom)) @@$ <<- ~1>> *
 __[i](p_droit)__                        (droit) (?:au but|dans les yeux) @@0 <<- ~1>> *
@@ -5324,15 +5340,21 @@ __[i](loc_soue_à_cochons)__
     <<- ~1>> *
 __[u](p_système)__                      systèmes? (d’exploitation|D) @@$ <<- ~1>> *
 __[i](p_taille)__                       taille (\d+) @@$ <<- ~1>> *
+__[i](p_talons_aiguilles)__             talons? (aiguilles?) @@$ <<- ~1>> *
 __[i](p_taux_de_qqch)__                 taux (d’(?:abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure)|de (?:change|cholest[ée]rol|glycémie|fécondité|participation|testostérone|TVA)) @@$ <<- ~1>> *
 __[i](p_tête_de_déterré)__              têtes? (de déterrée?s?) @@$ <<- ~1>> *
 __[i](p_tout_un_chacun)__               (tout un) chacun @@0 <<- ~1>> *
 __[i](p_tour_de_passe_passe)__          tours? (de passe-passe) @@$ <<- ~1>> *
-__[i](p_trou_à_rat)__           trous? (([àa]) rats?) @@$,w
+__[i](p_trou_à_rat)__
+    trous? (([àa]) rats?) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](loc_tueur_à_gages)__
     tueu(?:r|se)s? (([àa]) gages) @@$,w
+    <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    <<- ~1>> *
+__[i](loc_vache_à_lait)__
+    vaches? (([àa]) lait) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
 __[i](p_vecteur)__                      vecteurs? (accélérations?|positions?|rotations?|vitesses?) @@$ <<- ~1>> *
@@ -5385,9 +5407,13 @@ TEST: Ce n’est que du vernis {{a}} ongles.
 TEST: le vol {{a}} l’étalage est un fléau.
 TEST: Il nous faut une {{voix}} de recours.
 TEST: c’est une putain d’usine {{a}} gaz.
+TEST: ce produit est notre vache {{a}} lait
 TEST: un champ de canne à sucre
 TEST: La batterie se recharge automatiquement grâce au moteur essence.
 TEST: c’est un moteur diésel.
+TEST: cette descente aux enfers interminable.
+TEST: c’est une vache à lait
+TEST: Ses talons aiguille étaient à la denière mode.
 
 
 # simplification des nombres
@@ -5508,10 +5534,10 @@ __[s](p_nom_propre_et_pronom)__
 
 # après être, après avoir
 __[i](p_être_qqch)__
-    ({etre}) +(à jamais|un jour|sous peu|du moins|avant tout|de passage|frère et sœur|mari et femme|père et mère|papa et maman|monnaie courante|pieds (?:et poings liés|nus)|partie (?:intégrante|prenante))  @@0,$
+    ({etre}) +(à jamais|un jour|sous peu|du moins|avant tout|de passage|frère et sœur|mari et femme|père et mère|papa et maman|mission impossible|monnaie courante|pieds (?:et poings liés|nus)|partie (?:intégrante|prenante))  @@0,$
     <<- morph(\1, ":V0e", False) ~2>> *
 __[i](p_être_pronom_qqch)__
-    ([ésf]\w+)-(?:ils|[nv]ous|elles) +(frère et sœur|mari et femme|père et mère|papa et maman|bon marché|meilleur marché)  @@0,$
+    ([ésf]\w+)-(?:ils|[nv]ous|elles) +(frère et sœur|mari et femme|père et mère|papa et maman|bon marché|meilleur marché|mission impossible)  @@0,$
     <<- morph(\1, ":V0e", False) ~2>> *
 __[i](p_qqch_on_ne_peut_plus_que)__
     ({w1}) +(on ne peut (?:pas |)(?:plus|moins)|plus que) +({w2})  @@0,w,$
@@ -5705,9 +5731,9 @@ __[i](p_faire_qqch)__
     <<- morph(\1, ">faire/", False) ~2>> *
     <<- __also__ ~3>> *
 __[i](loc_laisser_pour_compte)__
-    (laiss\w+) +(pour (co[mnp]tes?))  @@0,$,$
+    (laiss\w+) +(pour (co[mn]p?tes?))  @@0,$,$
     <<- morph(\1, ">laisser/", False) >>>
-    <<- \2 != "compte" -3>> compte              # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
+    <<- \3 != "compte" -3>> compte              # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
     <<- ~2>> *
 __[i](loc_mettre_à_qqch)__
     (m(?:et|[iî][mst])\w*) +(([àa]) (?:bas|jour|niveau|plat|l’(?:écart|épreuve)|terre)) @@0,$,w
@@ -5863,6 +5889,8 @@ TEST: quel potentiel électoral réel pour les souverainistes pur sucre ?
 TEST: Cette scène que décrit ici Yannick est représentative.
 TEST: attentifs aux spécificités socioculturelles de chaque peuple, constituées dans la longue durée autour d’une langue et de traditions
 TEST: Il était à l’époque chargé de maintenir en état ces machines.
+TEST: Les laissés pour compte ignorés de tous.
+TEST: Ces épreuves sont mission impossible.
 
 
 
@@ -7765,10 +7793,11 @@ TEST: Et moi toujours en {{but}} à de nouveaux dangers
 # c’est / s’est
 __[i]/conf(conf_c_est_était)__
     (s’)(est|était) +({w_3}) @@0,2,$
-    <<- morphex(\3, ":[AM]", ":[QG]") -1>> c’                           # Confusion probable. Si vous voulez dire, « ceci \2 », utilisez « c’ ».
+    <<- morphex(\3, ":[AM]", ":[QGW]") -1>> c’                           # Confusion probable. Si vous voulez dire, « ceci \2 », utilisez « c’ ».
 
 TEST: {{s’}}est vraiment merdique.
 TEST: s’est par exemple illustré au combat.
+TEST: il ne s’est pas juste montré
 
 
 # cane / canne (from LanguageTool)
