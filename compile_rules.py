@@ -494,6 +494,8 @@ def make (spLang, sLang, bJavaScript):
         elif sLine.startswith("@@@@END_GRAPH"):
             lGraphRule.append([i, sLine])
             bGraph = False
+        elif re.match("@@@@ *$", sLine):
+            pass
         elif bGraph:
             lGraphRule.append([i, sLine])
         # Regex rules
