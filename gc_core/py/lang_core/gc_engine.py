@@ -588,6 +588,7 @@ class TokenSentence:
         self.sSentence0 = sSentence0
         self.nOffset = nOffset
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
+        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken }
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
     def update (self, sSentence):
