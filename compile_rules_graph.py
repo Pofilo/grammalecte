@@ -278,7 +278,6 @@ def make (lRule, sLang, bJavaScript):
                 dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, sActions, nPriority))
             lTokenLine.clear()
             sActions = ""
-            sRuleName = ""
             nPriority = 4
         elif re.search("    +<<- ", sLine):
             # actions
