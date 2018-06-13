@@ -108,14 +108,13 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
     #sText = unicodedata.normalize("NFC", sText)
     aErrors = None
     sRealText = sText
-    dDA = {}        # Disambiguisator. Key = position; value = list of morphologies
     dPriority = {}  # Key = position; value = priority
     dOpt = _dOptions  if not dOptions  else dOptions
     bShowRuleId = option('idrule')
 
     # parse paragraph
     try:
-        sNew, aErrors = _proofread(None, sText, sRealText, 0, True, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+        sNew, aErrors = _proofread(None, sText, sRealText, 0, True, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         if sNew:
             sText = sNew
     except:
@@ -134,10 +133,9 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
     # parse sentences
     for iStart, iEnd in _getSentenceBoundaries(sText):
         if 4 < (iEnd - iStart) < 2000:
-            dDA.clear()
             try:
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                _, errs = _proofread(oSentence, sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                _, errs = _proofread(oSentence, sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                 aErrors.update(errs)
             except:
                 raise
@@ -155,10 +153,11 @@ def _getSentenceBoundaries (sText):
         iStart = m.end()
 
 
-def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
+def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
     dErrs = {}
     bParagraphChange = False
     bSentenceChange = False
+    dTokenPos = oSentence.dTokenPos if oSentence else {}
     for sOption, lRuleGroup in _getRules(bParagraph):
         if sOption == "@@@@":
             # graph rules
@@ -183,7 +182,7 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry,
                         for sFuncCond, cActionType, sWhat, *eAct in lActions:
                             # action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                             try:
-                                bCondMemo = not sFuncCond or globals()[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo)
+                                bCondMemo = not sFuncCond or globals()[sFuncCond](s, sx, m, dTokenPos, sCountry, bCondMemo)
                                 if bCondMemo:
                                     if cActionType == "-":
                                         # grammar error
@@ -200,9 +199,10 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dDA, dPriority, sCountry,
                                             echo("~ " + s + "  -- " + m.group(eAct[0]) + "  # " + sLineId)
                                     elif cActionType == "=":
                                         # disambiguation
-                                        globals()[sWhat](s, m, dDA)
-                                        if bDebug:
-                                            echo("= " + m.group(0) + "  # " + sLineId + "\nDA: " + str(dDA))
+                                        if not bParagraph:
+                                            globals()[sWhat](s, m, dTokenPos)
+                                            if bDebug:
+                                                echo("= " + m.group(0) + "  # " + sLineId)
                                     elif cActionType == ">":
                                         # we do nothing, this test is just a condition to apply all following actions
                                         pass
@@ -399,7 +399,7 @@ def option (sOpt):
     return _dOptions.get(sOpt, False)
 
 
-def displayInfo (dDA, tWord):
+def displayInfo (dTokenPos, tWord):
     "for debugging: retrieve info of word"
     if not tWord:
         echo("> nothing to find")
@@ -408,17 +408,17 @@ def displayInfo (dDA, tWord):
     if not lMorph:
         echo("> not in dictionary")
         return True
-    if tWord[0] in dDA:
-        echo("DA: " + str(dDA[tWord[0]]))
+    if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]:
+        echo("DA: " + str(dTokenPos[tWord[0]]["lMorph"]))
     echo("FSA: " + str(lMorph))
     return True
 
 
-def morph (dDA, tWord, sPattern, bStrict=True, bNoWord=False):
+def morph (dTokenPos, tWord, sPattern, bStrict=True, bNoWord=False):
     "analyse a tuple (position, word), return True if sPattern in morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
-    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _oSpellChecker.getMorph(tWord[1])
+    lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
     if not lMorph:
         return False
     p = re.compile(sPattern)
@@ -427,11 +427,11 @@ def morph (dDA, tWord, sPattern, bStrict=True, bNoWord=False):
     return any(p.search(s)  for s in lMorph)
 
 
-def morphex (dDA, tWord, sPattern, sNegPattern, bNoWord=False):
+def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
     "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
-    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _oSpellChecker.getMorph(tWord[1])
+    lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
     if not lMorph:
         return False
     # check negative condition
@@ -517,7 +517,7 @@ def look (s, sPattern, sNegPattern=None):
     return False
 
 
-def look_chk1 (dDA, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=None):
+def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=None):
     "returns True if s has pattern sPattern and m.group(1) has pattern sPatternGroup1"
     m = re.search(sPattern, s)
     if not m:
@@ -528,16 +528,17 @@ def look_chk1 (dDA, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=None
     except:
         return False
     if sNegPatternGroup1:
-        return morphex(dDA, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
-    return morph(dDA, (nPos, sWord), sPatternGroup1, False)
+        return morphex(dTokenPos, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
+    return morph(dTokenPos, (nPos, sWord), sPatternGroup1, False)
 
 
 #### Disambiguator
 
-def select (dDA, nPos, sWord, sPattern, lDefault=None):
+def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     if not sWord:
         return True
-    if nPos in dDA:
+    if nPos not in dTokenPos:
+        print("Error. There should be a token at this position: ", nPos)
         return True
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph or len(lMorph) == 1:
@@ -545,16 +546,17 @@ def select (dDA, nPos, sWord, sPattern, lDefault=None):
     lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
     if lSelect:
         if len(lSelect) != len(lMorph):
-            dDA[nPos] = lSelect
+            dTokenPos[nPos]["lMorph"] = lSelect
     elif lDefault:
-        dDA[nPos] = lDefault
+        dTokenPos[nPos]["lMorph"] = lDefault
     return True
 
 
-def exclude (dDA, nPos, sWord, sPattern, lDefault=None):
+def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     if not sWord:
         return True
-    if nPos in dDA:
+    if nPos not in dTokenPos:
+        print("Error. There should be a token at this position: ", nPos)
         return True
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph or len(lMorph) == 1:
@@ -562,14 +564,17 @@ def exclude (dDA, nPos, sWord, sPattern, lDefault=None):
     lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect:
         if len(lSelect) != len(lMorph):
-            dDA[nPos] = lSelect
+            dTokenPos[nPos]["lMorph"] = lSelect
     elif lDefault:
-        dDA[nPos] = lDefault
+        dTokenPos[nPos]["lMorph"] = lDefault
     return True
 
 
-def define (dDA, nPos, lMorph):
-    dDA[nPos] = lMorph
+def define (dTokenPos, nPos, lMorph):
+    if nPos not in dTokenPos:
+        print("Error. There should be a token at this position: ", nPos)
+        return True
+    dTokenPos[nPos]["lMorph"] = lMorph
     return True
 
 

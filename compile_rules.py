@@ -30,10 +30,10 @@ def prepareFunction (s):
     s = re.sub(r"isRealEnd *\(\)", 'after("^ *$")', s)
     s = re.sub(r"isEnd0 *\(\)", 'after0("^ *$|^,")', s)
     s = re.sub(r"isRealEnd0 *\(\)", 'after0("^ *$")', s)
-    s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(dDA, m.start(\\2), m.group(\\2)', s)
-    s = re.sub(r"define[(][\\](\d+)", 'define(dDA, m.start(\\1)', s)
+    s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(dTokenPos, m.start(\\2), m.group(\\2)', s)
+    s = re.sub(r"define[(][\\](\d+)", 'define(dTokenPos, m.start(\\1)', s)
     s = re.sub(r"(morph|morphex|displayInfo)[(][\\](\d+)", '\\1((m.start(\\2), m.group(\\2))', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(]", '\\1(dDA, ', s)
+    s = re.sub(r"(morph|morphex|displayInfo)[(]", '\\1(dTokenPos, ', s)
     s = re.sub(r"(sugg\w+|switch\w+)\(@", '\\1(m.group(i[4])', s)
     s = re.sub(r"word\(\s*1\b", 'nextword1(s, m.end()', s)                                  # word(1)
     s = re.sub(r"word\(\s*-1\b", 'prevword1(s, m.start()', s)                               # word(-1)
@@ -42,19 +42,19 @@ def prepareFunction (s):
     s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
     s = re.sub(r"after\(\s*", 'look(s[m.end():], ', s)                                      # after(s)
     s = re.sub(r"textarea\(\s*", 'look(s, ', s)                                             # textarea(s)
-    s = re.sub(r"before_chk1\(\s*", 'look_chk1(dDA, s[:m.start()], 0, ', s)                 # before_chk1(s)
-    s = re.sub(r"after_chk1\(\s*", 'look_chk1(dDA, s[m.end():], m.end(), ', s)              # after_chk1(s)
-    s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dDA, s, 0, ', s)                           # textarea_chk1(s)
+    s = re.sub(r"before_chk1\(\s*", 'look_chk1(dTokenPos, s[:m.start()], 0, ', s)           # before_chk1(s)
+    s = re.sub(r"after_chk1\(\s*", 'look_chk1(dTokenPos, s[m.end():], m.end(), ', s)        # after_chk1(s)
+    s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dTokenPos, s, 0, ', s)                     # textarea_chk1(s)
     s = re.sub(r"/0", 'sx[m.start():m.end()]', s)                                           # /0
     s = re.sub(r"before0\(\s*", 'look(sx[:m.start()], ', s)                                 # before0(s)
     s = re.sub(r"after0\(\s*", 'look(sx[m.end():], ', s)                                    # after0(s)
     s = re.sub(r"textarea0\(\s*", 'look(sx, ', s)                                           # textarea0(s)
-    s = re.sub(r"before0_chk1\(\s*", 'look_chk1(dDA, sx[:m.start()], 0, ', s)               # before0_chk1(s)
-    s = re.sub(r"after0_chk1\(\s*", 'look_chk1(dDA, sx[m.end():], m.end(), ', s)            # after0_chk1(s)
-    s = re.sub(r"textarea0_chk1\(\s*", 'look_chk1(dDA, sx, 0, ', s)                         # textarea0_chk1(s)
-    s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dDA, s[m.end():], m.end())', s)              # isEndOfNG(s)
-    s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dDA, s[m.end():], m.end())', s)        # isNextNotCOD(s)
-    s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dDA, s[m.end():], m.end())', s)            # isNextVerb(s)
+    s = re.sub(r"before0_chk1\(\s*", 'look_chk1(dTokenPos, sx[:m.start()], 0, ', s)         # before0_chk1(s)
+    s = re.sub(r"after0_chk1\(\s*", 'look_chk1(dTokenPos, sx[m.end():], m.end(), ', s)      # after0_chk1(s)
+    s = re.sub(r"textarea0_chk1\(\s*", 'look_chk1(dTokenPos, sx, 0, ', s)                   # textarea0_chk1(s)
+    s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dTokenPos, s[m.end():], m.end())', s)        # isEndOfNG(s)
+    s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dTokenPos, s[m.end():], m.end())', s)  # isNextNotCOD(s)
+    s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dTokenPos, s[m.end():], m.end())', s)      # isNextVerb(s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'm.group(\\1)', s)
     return s
@@ -551,7 +551,7 @@ def make (spLang, sLang, bJavaScript):
     for sFuncName, sReturn in lFUNCTIONS:
         cType = sFuncName[0:1]
         if cType == "c": # condition
-            sParams = "s, sx, m, dDA, sCountry, bCondMemo"
+            sParams = "s, sx, m, dTokenPos, sCountry, bCondMemo"
         elif cType == "m": # message
             sParams = "s, m"
         elif cType == "s": # suggestion
@@ -559,7 +559,7 @@ def make (spLang, sLang, bJavaScript):
         elif cType == "p": # preprocessor
             sParams = "s, m"
         elif cType == "d": # disambiguator
-            sParams = "s, m, dDA"
+            sParams = "s, m, dTokenPos"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue

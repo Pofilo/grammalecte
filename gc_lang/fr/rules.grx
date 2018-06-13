@@ -392,7 +392,6 @@ __<i](p_URL2)__
     ((?:{w_1}[.])*)({w_2})([.](?:com|net|org|info|fr|ca|be|ch|i[ot]|co[.]uk|tk|es|jp|zh|ru|us|nl|xyz)) @@0,**,$
     <<- ~1>> *
     <<- ~2>> =\2.capitalize()
-    <<- =>> define(\2, [":MP:e:i"])
     <<- ~3>> *
 
 # Numéro de chapitre
@@ -12400,8 +12399,10 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 # verbe que + subjonctif
 __vmode_qqch_que_subjonctif1__
     [>afin|>avant|>pour|>quoi|>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
-    >douter                                                                                                [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
-        <<- -4>> =suggVerbMode(\4, ":S", \3)                                                         # Après « \1 que », ce verbe devrait être au subjonctif.
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après « \1 que », ce verbe devrait être au subjonctif.
+
+    >douter  [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
+        <<- /vmode/ morph(\1, ":V", ":N") -4>> =suggVerbMode(\4, ":S", \3)                          # Après « \1 que », ce verbe devrait être au subjonctif.
 
 TEST: Il suffit qu’il {{court}} plus
 TEST: Je veux qu’il {{finit}} son repas.
