@@ -30,11 +30,14 @@ contexts:
     - match: '^GRAPH_NAME:.*'
       scope: bookmark
 
-      # Bookmarks
-    - match: '^@@@@GRAPH: *(\w+)@@@@ *'
-      scope: bookmark
+    # Graph
+    - match: '^@@@@GRAPH: *(\w+) *'
+      scope: graphline
       captures:
         1: string.graphname
+
+    - match: '^@@@@(?:END_GRAPH *| *)'
+      scope: graphline
 
     # Keywords are if, else.
     # Note that blackslashes don't need to be escaped within single quoted
