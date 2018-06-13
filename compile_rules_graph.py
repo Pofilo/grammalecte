@@ -3,10 +3,10 @@
 import re
 import traceback
 import json
+
 import darg
 
 
-dDEF = {}
 dACTIONS = {}
 dFUNCTIONS = {}
 
@@ -225,47 +225,27 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         return None
 
 
-def printBookmark (nLevel, sComment, nLine):
-    print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
-
-
-def make (spLang, sLang, bJavaScript):
+def make (lRule, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
-    print("> read graph rules file...")
-    try:
-        lRules = open(spLang + "/rules_graph.grx", 'r', encoding="utf-8").readlines()
-    except:
-        print("Error. Rules file in project [" + sLang + "] not found.")
-        exit()
-
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
-    global dDEF
-    lTest = []
     lTokenLine = []
     sActions = ""
     nPriority = 4
     dAllGraph = {}
     sGraphName = ""
 
-    for i, sLine in enumerate(lRules, 1):
+    for i, sLine in lRule:
         sLine = sLine.rstrip()
         if "\t" in sLine:
             # tabulation not allowed
             print("Error. Tabulation at line: ", i)
             exit()
-        if sLine.startswith('#END'):
-            # arbitrary end
-            printBookmark(0, "BREAK BY #END", i)
-            break
-        elif sLine.startswith("#"):
-            # comments
-            pass
-        elif sLine.startswith("GRAPH_NAME: "):
-            # Graph name
-            m = re.match("GRAPH_NAME: +([a-zA-Z_][a-zA-Z_0-9]*)+", sLine.strip())
+        elif sLine.startswith("@@@@GRAPH: "):
+            # rules graph call
+            m = re.match(r"@@@@GRAPH: *(\w+)", sLine.strip())
             if m:
                 sGraphName = m.group(1)
                 if sGraphName in dAllGraph:
@@ -273,28 +253,8 @@ def make (spLang, sLang, bJavaScript):
                     exit()
                 dAllGraph[sGraphName] = []
             else:
-                print("Error. Graph name not found in", sLine.strip())
+                print("Error. Graph name not found at line", i)
                 exit()
-        elif sLine.startswith("DEF:"):
-            # definition
-            m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
-            if m:
-                dDEF["{"+m.group(1)+"}"] = m.group(2)
-            else:
-                print("Error in definition: ", end="")
-                print(sLine.strip())
-        elif sLine.startswith("TEST:"):
-            # test
-            lTest.append("g{:<7}".format(i) + "  " + sLine[5:].strip())
-        elif sLine.startswith("TODO:"):
-            # todo
-            pass
-        elif sLine.startswith("!!"):
-            # bookmarks
-            m = re.search("^!!+", sLine)
-            nExMk = len(m.group(0))
-            if sLine[nExMk:].strip():
-                printBookmark(nExMk-2, sLine[nExMk:].strip(), i)
         elif sLine.startswith("__") and sLine.endswith("__"):
             # new rule group
             m = re.match("__(\\w+)(!\\d|)__", sLine)
@@ -320,7 +280,7 @@ def make (spLang, sLang, bJavaScript):
             sActions = ""
             sRuleName = ""
             nPriority = 4
-        elif sLine.startswith(("        <<-", "    <<-")):
+        elif re.search("    +<<- ", sLine):
             # actions
             sActions += " " + sLine.strip()
         elif sLine.startswith(("    ")):
@@ -328,11 +288,6 @@ def make (spLang, sLang, bJavaScript):
         else:
             print("Unknown line:")
             print(sLine)
-
-    # tests
-    print("  list tests...")
-    sGCTests = "\n".join(lTest)
-    sGCTestsJS = '{ "aData2": ' + json.dumps(lTest, ensure_ascii=False) + " }\n"
 
     # processing rules
     print("  preparing rules...")
@@ -380,11 +335,7 @@ def make (spLang, sLang, bJavaScript):
     # Result
     d = {
         "graph_callables": sPyCallables,
-        "graph_gctests": sGCTests,
         "rules_graphs": dAllGraph,
         "rules_actions": dACTIONS
     }
-
     return d
-
-

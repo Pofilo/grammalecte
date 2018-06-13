@@ -19,7 +19,6 @@ from distutils import dir_util, file_util
 
 import dialog_bundled
 import compile_rules
-import compile_rules_graph
 import helpers
 import lex_build
 
@@ -194,11 +193,8 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     dVars['loc'] = str(dict([ [s, [s[0:2], s[3:5], ""]] for s in dVars["locales"].split(" ") ]))
 
     ## COMPILE RULES
-    dResultRegex = compile_rules.make(spLang, dVars['lang'], bJavaScript)
-    dVars.update(dResultRegex)
-
-    dResultGraph = compile_rules_graph.make(spLang, dVars['lang'], bJavaScript)
-    dVars.update(dResultGraph)
+    dResult = compile_rules.make(spLang, dVars['lang'], bJavaScript)
+    dVars.update(dResult)
 
     ## READ GRAMMAR CHECKER PLUGINS
     print("PYTHON:")
@@ -233,10 +229,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     # TEST FILES
     with open("grammalecte/"+sLang+"/gc_test.txt", "w", encoding="utf-8", newline="\n") as hDstPy:
         hDstPy.write("# TESTS FOR LANG [" + sLang + "]\n\n")
-        hDstPy.write("# REGEX RULES\n\n")
-        hDstPy.write(dVars['regex_gctests'])
-        hDstPy.write("\n\n\n# GRAPH RULES\n\n")
-        hDstPy.write(dVars['graph_gctests'])
+        hDstPy.write(dVars['gctests'])
         hDstPy.write("\n")
 
     createOXT(spLang, dVars, xConfig._sections['oxt'], spLangPack, bInstallOXT)

@@ -4,6 +4,7 @@ import traceback
 import json
 
 import compile_rules_js_convert as jsconv
+import compile_rules_graph as crg
 
 
 dDEF = {}
@@ -443,10 +444,11 @@ def make (spLang, sLang, bJavaScript):
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
     global dDEF
-    lLine = []
     lRuleLine = []
     lTest = []
     lOpt = []
+    bGraph = False
+    lGraphRule = []
 
     for i, sLine in enumerate(lRules, 1):
         if sLine.startswith('#END'):
@@ -456,13 +458,6 @@ def make (spLang, sLang, bJavaScript):
         elif sLine.startswith("#"):
             # comment
             pass
-        elif sLine.startswith("@@@@"):
-            # rules graph call
-            m = re.match(r"@@@@GRAPH: *(\w+)@@@@", sLine.strip())
-            if m:
-                #lRuleLine.append(["@GRAPHLINK", m.group(1)])
-                printBookmark(1, "@GRAPH: " + m.group(1), i)
-                lRuleLine.append([i, "@@@@"+m.group(1)])
         elif sLine.startswith("DEF:"):
             # definition
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
@@ -473,22 +468,38 @@ def make (spLang, sLang, bJavaScript):
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
             # test
-            lTest.append("r{:<7}".format(i) + "  " + sLine[5:].strip())
+            lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
             # todo
             pass
         elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
             # options
             lOpt.append(sLine)
-        elif re.match("[  \t]*$", sLine):
-            # empty line
-            pass
         elif sLine.startswith("!!"):
             # bookmark
             m = re.match("!!+", sLine)
             nExMk = len(m.group(0))
             if sLine[nExMk:].strip():
                 printBookmark(nExMk-2, sLine[nExMk:].strip(), i)
+        # Graph rules
+        elif sLine.startswith("@@@@GRAPH:"):
+            # rules graph call
+            m = re.match(r"@@@@GRAPH: *(\w+)", sLine.strip())
+            if m:
+                printBookmark(1, "@GRAPH: " + m.group(1), i)
+                lRuleLine.append([i, "@@@@"+m.group(1)])
+                bGraph = True
+            lGraphRule.append([i, sLine])
+            bGraph = True
+        elif sLine.startswith("@@@@END_GRAPH"):
+            lGraphRule.append([i, sLine])
+            bGraph = False
+        elif bGraph:
+            lGraphRule.append([i, sLine])
+        # Regex rules
+        elif re.match("[  \t]*$", sLine):
+            # empty line
+            pass
         elif sLine.startswith(("    ", "\t")):
             # rule (continuation)
             lRuleLine[-1][1] += " " + sLine.strip()
@@ -563,12 +574,16 @@ def make (spLang, sLang, bJavaScript):
 
     d = { "callables": sPyCallables,
           "callablesJS": sJSCallables,
-          "regex_gctests": sGCTests,
-          "regex_gctestsJS": sGCTestsJS,
+          "gctests": sGCTests,
+          "gctestsJS": sGCTestsJS,
           "paragraph_rules": mergeRulesByOption(lParagraphRules),
           "sentence_rules": mergeRulesByOption(lSentenceRules),
           "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
           "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
     d.update(dOptions)
+
+    # compile graph rules
+    d2 = crg.make(lGraphRule, sLang, bJavaScript)
+    d.update(d2)
 
     return d
