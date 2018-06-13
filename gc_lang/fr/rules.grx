@@ -9625,21 +9625,31 @@ __[i]/infi(infi_de_pronom_le_les_la)__
 TEST: de me le {{facturez}}
 
 
-__[i]/infi(infi_faire_vouloir)__
-    ((?:fai|f[iî]|fer|fon|v[oe]u)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">(?:faire|vouloir) ", False) and not before(r"(?i)\b(?:en|[mtsld]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
-        and not (re.search("(?i)^(?:fait|vouloir)$", \1) and \2.endswith("é"))
-        and not (re.search("(?i)^(?:fait|vouloir)s$", \1) and \2.endswith("és"))
+__[i]/infi(infi_faire)__
+    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
+    <<- morph(\1, ">faire ", False) and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
+        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
+        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
     -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
 
+TEST: elle fit peu {{mangé}} les enfants
+TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: Tu fais {{décoloré}} tes cheveux ?
+
+
+__[i]/infi(infi_vouloir)__
+    (v[oe]u\w+) +({w_2}(?:ée?s?|ez))  @@0,$
+    <<- morph(\1, ">vouloir ", False) and not before(r"(?i)\b(?:[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
+        and not (re.search("(?i)^vouloir$", \1) and \2.endswith("é"))
+        and not (re.search("(?i)^vouloirs$", \1) and \2.endswith("és"))
+    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+
 TEST: je veux {{changé}}
 TEST: je ne veux pas {{mangé}}
 TEST: je sais {{mangé}}
 TEST: je ne voulais pas {{marché}}
 TEST: Elles ont voulu {{mangé}} de la viande.
-TEST: elle fit peu {{mangé}} les enfants
-TEST: fait pourtant avéré et corroboré par le même sondage.
+TEST: en voulant {{changé}}
 
 
 __[i]/infi(infi_me_te_se_faire)__
