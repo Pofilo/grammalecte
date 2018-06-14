@@ -605,25 +605,26 @@ class TokenSentence:
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
-                print("value found: ", dToken["sValue"])
+                print("MATCH:", dToken["sValue"])
             yield dGraph[dNode[dToken["sValue"]]]
         # token lemmas
         if "<lemmas>" in dNode:
             for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
                 if sLemma in dNode["<lemmas>"]:
-                    #print("lemma found: ", sLemma)
+                    if bDebug:
+                        print("MATCH: >" + sLemma)
                     yield dGraph[dNode["<lemmas>"][sLemma]]
         # universal arc
         if "*" in dNode:
             if bDebug:
-                print("generic arc")
+                print("MATCH: *")
             yield dGraph[dNode["*"]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
                 if re.search(sRegex, dToken["sValue"]):
                     if bDebug:
-                        print("value regex matching: ", sRegex)
+                        print("MATCH: ~" + sRegex)
                     yield dGraph[dNode["<re_value>"][sRegex]]
         # regex morph arcs
         if "<re_morph>" in dNode:
@@ -632,7 +633,7 @@ class TokenSentence:
                     # no anti-pattern
                     if any(re.search(sRegex, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                         if bDebug:
-                            print("morph regex matching: ", sRegex)
+                            print("MATCH: @" + sRegex)
                         yield dGraph[dNode["<re_morph>"][sRegex]]
                 else:
                     # there is an anti-pattern
@@ -641,14 +642,14 @@ class TokenSentence:
                         # all morphologies must match with <sPattern>
                         if all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
-                                print("morph regex matching: ", sRegex)
+                                print("MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
                     else:
                         if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             continue
                         if any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
-                                print("morph regex matching: ", sRegex)
+                                print("MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
@@ -659,7 +660,7 @@ class TokenSentence:
         bChange = False
         for dToken in self.lToken:
             if bDebug:
-                print("=", dToken["sValue"])
+                print("TOKEN:", dToken["sValue"])
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
@@ -671,8 +672,8 @@ class TokenSentence:
                 lPointer.append({"iToken": dToken["i"], "dNode": dNode})
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
-                if bDebug:
-                    print("+", dPointer)
+                #if bDebug:
+                #    print("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
                     bHasChanged, errs = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     dErr.update(errs)
@@ -687,6 +688,9 @@ class TokenSentence:
         for sLineId, nextNodeKey in dNode.items():
             for sRuleId in dGraph[nextNodeKey]:
                 try:
+                    if bDebug:
+                        print("ACTION:", sRuleId)
+                        print(dRule[sRuleId])
                     bCondMemo = None
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                     # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
