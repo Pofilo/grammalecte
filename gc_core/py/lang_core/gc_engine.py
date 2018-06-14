@@ -686,12 +686,12 @@ class TokenSentence:
         dErrs = {}
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
+            bCondMemo = None
             for sRuleId in dGraph[nextNodeKey]:
                 try:
                     if bDebug:
                         print("ACTION:", sRuleId)
                         print(dRule[sRuleId])
-                    bCondMemo = None
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                     # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
                     if not sOption or dOptions.get(sOption, False):
