@@ -74,7 +74,7 @@ def genTokenLines (sTokenLine):
         yield aRule
 
 
-def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
+def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority):
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
     for lToken in genTokenLines(sTokenLine):
         # Calculate positions
@@ -87,10 +87,10 @@ def createRule (iLine, sRuleName, sTokenLine, sActions, nPriority):
                 dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
         # Parse actions
-        for nAction, sAction in enumerate(sActions.split(" <<- ")):
+        for iAction, sAction in enumerate(sActions.split(" <<- "), 1):
             sAction = sAction.strip()
             if sAction:
-                sActionId = sRuleName + "_a" + str(nAction)
+                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
                 aAction = createAction(sActionId, sAction, nPriority, len(lToken), dPos)
                 if aAction:
                     dACTIONS[sActionId] = aAction
@@ -236,6 +236,7 @@ def make (lRule, sLang, bJavaScript):
     nPriority = 4
     dAllGraph = {}
     sGraphName = ""
+    iActionBlock = 0
 
     for i, sLine in lRule:
         sLine = sLine.rstrip()
@@ -260,6 +261,7 @@ def make (lRule, sLang, bJavaScript):
             m = re.match("__(\\w+)(!\\d|)__", sLine)
             if m:
                 sRuleName = m.group(1)
+                iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else 4
             else:
                 print("Error at rule group: ", sLine, " -- line:", i)
@@ -275,9 +277,10 @@ def make (lRule, sLang, bJavaScript):
                 print("Error. All rules must belong to a named graph. Line: ", i)
                 exit()
             for j, sTokenLine in lTokenLine:
-                dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, sActions, nPriority))
+                dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, iActionBlock, sActions, nPriority))
             lTokenLine.clear()
             sActions = ""
+            iActionBlock += 1
         elif re.search("    +<<- ", sLine):
             # actions
             sActions += " " + sLine.strip()
@@ -292,8 +295,8 @@ def make (lRule, sLang, bJavaScript):
     print("  preparing rules...")
     for sGraphName, lRuleLine in dAllGraph.items():
         lPreparedRule = []
-        for i, sRuleGroup, sTokenLine, sActions, nPriority in lRuleLine:
-            for lRule in createRule(i, sRuleGroup, sTokenLine, sActions, nPriority):
+        for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
+            for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority):
                 lPreparedRule.append(lRule)
         # Show rules
         for e in lPreparedRule:
