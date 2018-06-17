@@ -675,13 +675,13 @@ class TokenSentence:
                 #if bDebug:
                 #    print("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
+                    bHasChanged, errs = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dToken["i"], dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     dErr.update(errs)
                     if bHasChanged:
                         bChange = True
         return (bChange, dErr)
 
-    def _executeActions (self, dGraph, dNode, nTokenOffset, dPriority, dOptions, sCountry, bShowRuleId, bDebug, bContext):
+    def _executeActions (self, dGraph, dNode, nTokenOffset, nLastToken, dPriority, dOptions, sCountry, bShowRuleId, bDebug, bContext):
         "execute actions found in the DARG"
         dErrs = {}
         bChange = False
@@ -700,7 +700,7 @@ class TokenSentence:
                             if cActionType == "-":
                                 # grammar error
                                 nTokenErrorStart = nTokenOffset + eAct[0]
-                                nTokenErrorEnd = nTokenOffset + eAct[1]
+                                nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
                                 nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
                                 nErrorEnd = self.nOffset + self.lToken[nTokenErrorEnd]["nEnd"]
                                 if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
@@ -710,7 +710,8 @@ class TokenSentence:
                                         print("-", sRuleId, dErrs[nErrorStart])
                             elif cActionType == "~":
                                 # text processor
-                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1], bDebug)
+                                nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, bDebug)
                                 if bDebug:
                                     print("~", sRuleId)
                                 bChange = True

@@ -133,7 +133,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
     sAction = changeReferenceToken(sAction, dPos)
     if not m.group("start"):
         iStartAction = 1
-        iEndAction = nToken
+        iEndAction = 0
     else:
         iStartAction = int(m.group("start"))
         iEndAction = int(m.group("end")[1:])  if m.group("end")  else iStartAction
