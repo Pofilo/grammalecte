@@ -43,7 +43,7 @@ const aTkzPatterns = {
             [/^&\w+;(?:\w+;|)/, 'HTMLENTITY'],
             [/^(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`]/i, 'ELPFX'],
             [/^\d\d?[hm]\d\d\b/, 'HOUR'],
-            [/^\d+(?:er|nd|e|de|ième|ème|eme)s?\b/, 'ORDINAL'],
+            [/^\d+(?:ers?|nds?|es?|des?|ièmes?|èmes?|emes?|ᵉʳˢ?|ⁿᵈˢ?|ᵉˢ?|ᵈᵉˢ?)\b/, 'ORDINAL'],
             [/^-?\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)*/, 'WORD']
         ]
