@@ -4863,59 +4863,26 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 # Dates
 __dates__
     >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}
-        <<- ~>> *
-
     >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-        <<- ~>> *
-
     [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}
-        <<- ~>> *
-
     [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-        <<- ~>> *
-
     [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}
-        <<- ~>> *
-
     [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-        <<- ~>> *
-
-    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}
-        <<- ~>> *
-
     >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-        <<- ~>> *
-
     >en  l’  an  ~\d{2,5}
-        <<- ~>> *
-
     >en  l’  an  de  grâce  ~\d{2,5}
-        <<- ~>> *
-
     >en  {mois}  ~\d{2,5}
-        <<- ~>> *
-
     [>de|d’|D’]  {mois}  ~\d{2,5}
-        <<- ~>> *
-
     >en  ~\d{2,5}  [,|<end>]
     >en  ~\d{2,5}  @:¬:[AN].*:[pi]
-        <<- ~>> *
-
     de   ~\d{2,5}  @:A.*:s
-        <<- ~>> *
-
     >à  la  {mi_mois}
-        <<- ~>> *
-
     >à  la  {mi_mois}    ~\d{2,5}
         <<- ~>> *
 
 
 __saisons__
     >à  l’  [été|automne|hiver]  ~\d{2,4}
-        <<- ~>> *
-
     >au  printemps  ~\d{2,4}
         <<- ~>> *
 
@@ -4952,39 +4919,18 @@ __personne_d_autre_que__
 ## Avant
 
 __purge_avant__
-    
     >dès  [maintenant|lors|aujourd’hui]
-        <<- ~>> *
-
     >dès  à     présent
     >dès  que   possible
-        <<- ~>> *
-
     >dès  [demain|hier]
-        <<- ~>> *
-
     >dès  [demain|hier]     [soir|matin|après-midi]
-        <<- ~>> *
-
     >et  ainsi de suite
-        <<- ~>> *
-
     >et  tutti quanti
-        <<- ~>> *
-
     >et  /  >ou
-        <<- ~2:3>> *
-
+    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
+    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] , ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
     >quant à présent
         <<- ~>> *
-
-    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
-        <<- ~>> *
-
-    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] , ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
-        <<- ~>> *
-
-
 
 
 @@@@END_GRAPH
