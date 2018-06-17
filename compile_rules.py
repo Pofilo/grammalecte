@@ -585,7 +585,7 @@ def make (spLang, sLang, bJavaScript):
     d.update(dOptions)
 
     # compile graph rules
-    d2 = crg.make(lGraphRule, sLang, bJavaScript)
+    d2 = crg.make(lGraphRule, dDEF, sLang, bJavaScript)
     d.update(d2)
 
     return d

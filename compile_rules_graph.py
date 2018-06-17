@@ -34,13 +34,13 @@ def prepareFunction (s, bTokenValue=False):
     return s
 
 
-def genTokenLines (sTokenLine):
+def genTokenLines (sTokenLine, dDef):
     "tokenize a string and return a list of lines of tokens"
     lToken = sTokenLine.split()
     lTokenLines = None
     for i, sToken in enumerate(lToken):
-        if sToken.startswith("{") and sToken.endswith("}") and sToken in dDEF:
-            lToken[i] = dDEF[sToken]
+        if sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
+            sToken = dDef[sToken]
         if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
             bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
             if bSelectedGroup:
@@ -74,9 +74,9 @@ def genTokenLines (sTokenLine):
         yield aRule
 
 
-def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority):
+def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dDef):
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
-    for lToken in genTokenLines(sTokenLine):
+    for lToken in genTokenLines(sTokenLine, dDef):
         # Calculate positions
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
@@ -225,7 +225,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         return None
 
 
-def make (lRule, sLang, bJavaScript):
+def make (lRule, dDef, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
@@ -296,7 +296,7 @@ def make (lRule, sLang, bJavaScript):
     for sGraphName, lRuleLine in dAllGraph.items():
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
-            for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority):
+            for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dDef):
                 lPreparedRule.append(lRule)
         # Show rules
         for e in lPreparedRule:

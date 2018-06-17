@@ -710,7 +710,7 @@ class TokenSentence:
                                         print("-", sRuleId, dErrs[nErrorStart])
                             elif cActionType == "~":
                                 # text processor
-                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1])
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nTokenOffset + eAct[1], bDebug)
                                 if bDebug:
                                     print("~", sRuleId)
                                 bChange = True
@@ -731,7 +731,7 @@ class TokenSentence:
                                 print(">!", sRuleId)
                             break
                 except Exception as e:
-                    raise Exception(str(e), sLineId)
+                    raise Exception(str(e), sLineId, sRuleId, self.sSentence)
         return bChange, dErrs
 
     def _createWriterError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
@@ -820,8 +820,10 @@ class TokenSentence:
         #print(">", sMsg)
         return sMsg
 
-    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, bUppercase=True):
+    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, bUppercase=True, bDebug=False):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
+        if bDebug:
+            print("REWRITING:", nTokenRewriteStart, nTokenRewriteEnd)
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
