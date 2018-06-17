@@ -4850,9 +4850,15 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 !!!
 !!!
 
-
+@@@@
+@@@@
+@@@@
+@@@@
 @@@@GRAPH: purge                                                                                    
-
+@@@@
+@@@@
+@@@@
+@@@@
 
 # Dates
 __dates__
@@ -4909,7 +4915,7 @@ __dates__
 __saisons__
     >à  l’  [été|automne|hiver]  ~\d{2,4}
         <<- ~>> *
-    
+
     >au  printemps  ~\d{2,4}
         <<- ~>> *
 
@@ -4918,34 +4924,71 @@ TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consa
 TEST: c’est donc la cinquième en 50 ans
 
 
-@@@@END_GRAPH
-
 # nombres
-__[i](p_un_nombre)__
-    un (\d+) ({w_2}) @@w,$ <<- morph(\2, ":A.*:s")  ~1>> *
+__un_nombre__
+    >un  ~\d+  @:A.*:s¬:G
+        <<-  ~2>> *
 
 TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
 
 
 ## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
-__[i](p_moi_toi_seul)__     [mt]oi (seule?) @@4 <<- ~1>> *
-__[i](p_lui_seul)__         lui (seul) @@4 <<- ~1>> *
-__[i](p_elle_seule)__       elle (seule) @@5 <<- ~1>> *
-__[i](p_nous_seuls)__       [nv]ous (seule?s) @@5 <<- ~1>> *
-__[i](p_eux_seuls)__        eux (seuls) @@4 <<- ~1>> *
-__[i](p_elles_seules)__     elles (seules) @@6 <<- ~1>> *
+__moi_toi_lui_elle_nous_vous_eux_elles_seul__
+    [>moi|>toi]     [seul|seule]
+    >lui            seul
+    >elle           seule
+    [>nous|>vous]   [seuls|seules]
+    >eux            seuls
+    >elles          seules
+        <<- ~1>> *
+
 
 ## personne d’autre que…
-__[i](p_personne_d_autre_que)__
-    personne (d’autre qu(?:e |’)(?:lui|elles?|[nv]ous|eux)) @@$ <<- ~1>> *
+__personne_d_autre_que__
+    >personne  d’ autre [que|qu’|qu]  [lui|elle|elles|nous|vous|eux]
+        <<- ~2:5>> *
+
 
 ## Avant
-__[i](p_dès_qqch)__         dès (?:à présent|aujourd’hui|maintenant|lors|que possible|(?:demain|hier)(?: (?:soir|matin|après-midi)|)) <<- ~>> *
-__[i](p_et_qqch)__          et (?:ainsi de suite|tutti quanti) <<- ~>> *
-__[i](p_et_ou)__            et(/ou) @@2 <<- ~1>> *
-__[i](p_quant_à_présent)__  quant à présent <<- ~>> *
-__[i](p_ni_qqch_ni_qqch)__
-    ni (?:à|avec|contre|pour|chez|sur|sous|devant|derrière) *(?:[tm]oi|lui|elles?|eux|[nv]ous|),? ni (?:à|avec|contre|pour|chez|sur|sous|devant|derrière) (?:[mt]oi|lui|elles?|eux|[nv]ous) <<- ~>> *
+
+__purge_avant__
+    
+    >dès  [maintenant|lors|aujourd’hui]
+        <<- ~>> *
+
+    >dès  à     présent
+    >dès  que   possible
+        <<- ~>> *
+
+    >dès  [demain|hier]
+        <<- ~>> *
+
+    >dès  [demain|hier]     [soir|matin|après-midi]
+        <<- ~>> *
+
+    >et  ainsi de suite
+        <<- ~>> *
+
+    >et  tutti quanti
+        <<- ~>> *
+
+    >et  /  >ou
+        <<- ~2:3>> *
+
+    >quant à présent
+        <<- ~>> *
+
+    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
+        <<- ~>> *
+
+    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] , ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
+        <<- ~>> *
+
+
+
+
+@@@@END_GRAPH
+
 
 
 ## Inconditionnel
