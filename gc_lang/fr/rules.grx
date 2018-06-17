@@ -12447,21 +12447,16 @@ TEST: si bien que je me suis toujours demandée si cela ne m’avait pas un peu 
 # --> pas de règle de contrôle sur ce point.
 
 
-
-@@@@
-@@@@END_GRAPH                                                                                       
-@@@@
-
-
-
 # indicatif nécessaire
-__[i]/vmode(vmode_sujet_indicatif)__
-    ^ *(je|j’(?:en|y)|tu|ils?|elles?|on|nous|vous) +({w_2})  @@*,$
-    <<- morphex(\2, ":S", ":[GIK]") and not re.search("^e(?:usse|û[mt]es|ût)", \2) 
-    -2>> =suggVerbMode(@, ":I", \1)                                                                 # Ce verbe ne devrait pas être au subjonctif.
-__[i]/vmode(vmode_j_indicatif)__
-    ^ *j’({w_2})  @@$
-    <<- morphex(\1, ":S", ":[GIK]") and \1 != "eusse" -1>> =suggVerbMode(@, ":I", "je")             # Ce verbe ne devrait pas être au subjonctif.
+__vmode_sujet_indicatif__
+    <start>  [>je|>tu|>il|>ils|>elle|>elles|>on|>nous|>vous]  @:S¬:[GIK]|V0a.*:Sq
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                # Ce verbe ne devrait pas être au subjonctif.
+
+    <start>  [j’|J’]  @:S¬:[GIK]|V0a.*:Sq:1s
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", "je")                                              # Ce verbe ne devrait pas être au subjonctif.
+
+    <start>  [j’|J’]  [en|y]  @:S¬:[GIK]|V0a.*:Sq
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", "je")                                              # Ce verbe ne devrait pas être au subjonctif.
 
 TEST: Il {{ait}} parti.
 TEST: Il en {{conclue}} qu’il a eu raison.
@@ -12470,11 +12465,10 @@ TEST: j’{{aie}} faim
 
 
 # Après que + indicatif
-__[i]/vmode(vmode_après_que_indicatif)__
-    après que? ({w_2}) +({w_2})  @@w,$
-    <<- morph(\1, ":(?:Os|M)", False) and (morphex(\2, ":V.*:S", ":[GI]") or morph(\2, ":V0e.*:S", False))
-    -2>> =suggVerbMode(@, ":I", \1)
-    # Après « après que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
+__vmode_après_que_indicatif__
+    >après  [que|qu’|qu]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    >après  [que|qu’|qu]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « après que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
 
 TEST: Après qu’il {{ait}} allé
 TEST: Après que Paul {{ait}} mangé son repas.
@@ -12482,14 +12476,19 @@ TEST: Après qu’il {{soit}} parti, il plut.
 
 
 # Quand/lorsque + indicatif
-__[i]/vmode(vmode_quand_lorsque_indicatif)__
-    (?:quand|lorsque?) ({w_2}) +({w_2})  @@w,$
-    <<- morph(\1, ":(?:Os|M)", False) and (morphex(\2, ":V.*:S", ":[GI]") or morph(\2, ":V0e.*:S", False))
-    -2>> =suggVerbMode(@, ":I", \1)
-    # Après « quand » ou « lorsque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
+__vmode_quand_lorsque_indicatif__
+    [>quand|>lorsque|lorsqu’|lorsqu]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [>quand|>lorsque|lorsqu’|lorsqu]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                # Après « quand » ou « lorsque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: quand elle {{rencontrât}} son créateur
 TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
+
+
+@@@@
+@@@@END_GRAPH                                                                                       
+@@@@
+
 
 
 @@@@
@@ -12527,7 +12526,7 @@ TEST: Ça me fait {{plaisirs}}.
 
 
 __test__
-    je  ~co[mn]putes?  [que|qu’]  @(?::Os|:M)¬:X  @:I
+    >je  ~co[mn]putes?  [que|qu’]  @(?::Os|:M)¬:X  @:I
         <<- morph(\4, ":Os|:M", ":X") -5>> \1|\5                                                    # SUBJONCTIF.
 
 TEST: je conpute que Isabelle {{est}} partie.
