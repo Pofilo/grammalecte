@@ -204,6 +204,7 @@ OPTLABEL/idrule:    Display control rule identifier [!]|Display control rule ide
 !!
 !!
 
+# REGEX
 DEF: avoir          [aeo]\w*
 DEF: etre           [êeésf]\w+
 DEF: avoir_etre     [aeêésfo]\w*
@@ -219,7 +220,9 @@ DEF: w2             \w\w+
 DEF: w3             \w\w\w+
 DEF: w4             \w\w\w\w+
 
-
+# GRAPH
+DEF: mois           [>janvier|>février|>mars|>avril|>mai|>juin|>juillet|>août|>aout|>septembre|>octobre|>novembre|>décembre|>vendémiaire|>brumaire|>frimaire|>nivôse|>pluviôse|>ventôse|>germinal|>floréal|>prairial|>messidor|>thermidor|>fructidor]
+DEF: mi_mois        [>mi-janvier|>mi-février|>mi-mars|>mi-avril|>mi-mai|>mi-juin|>mi-juillet|>mi-août|>mi-aout|>mi-septembre|>mi-octobre|>mi-novembre|>mi-décembre|mi-vendémiaire|mi-brumaire|mi-frimaire|mi-nivôse|mi-pluviôse|mi-ventôse|mi-germinal|mi-floréal|mi-prairial|mi-messidor|mi-thermidor|mi-fructidor]
 
 
 !!
@@ -4847,28 +4850,75 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 !!!
 !!!
 
+
+@@@@GRAPH: purge                                                                                    
+
+
 # Dates
-__[s](p_date)__
-    (?:[dD]epuis le|[lL]e|[dD]u|[aA]u|[jJ]usqu au|[àÀ] compter du) (?:1(?:er|ᵉʳ)|\d\d?) (?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)(?: \d+| dernier| prochain|) <<- ~>> *
-__[i](p_en_l_an_de_grâce_année)__
-    en l’an (?:de grâce |)\d+ <<- ~>> *
-__[s](p_en_de_mois_année)__
-    (?:[eE]n +|[dD](?:e +|’))(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor) +\d{2,4} <<- ~>> *
-__[i](p_en_année)__
-    en \d\d+ <<- not morph(word(1), ":[AN].*:[pi]", False, False) ~>> *
-__[i](p_de_année)__
-    (de \d\d+) ({w_2}) @@0,$ <<- morph(\2, ":A.*:s", False) ~1>> *
-__[s](p_à_la_mi_mois)__
-    [àÀ] la mi-(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)(?:\d{2,4}|) <<- ~>> *
-__[i](p_à_l_été_automne_hiver)__
-    à l’(?:été|automne|hiver) \d{2,4}  <<- ~>> *
-__[i](p_au_printemps)__
-    au printemps \d{2,4}  <<- ~>> *
+__dates__
+    >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}
+        <<- ~>> *
+
+    >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
+        <<- ~>> *
+
+    [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}
+        <<- ~>> *
+
+    [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
+        <<- ~>> *
+
+    [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}
+        <<- ~>> *
+
+    [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
+        <<- ~>> *
+
+    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}
+        <<- ~>> *
+
+    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
+        <<- ~>> *
+
+    >en  l’  an  ~\d{2,5}
+        <<- ~>> *
+
+    >en  l’  an  de  grâce  ~\d{2,5}
+        <<- ~>> *
+
+    >en  {mois}  ~\d{2,5}
+        <<- ~>> *
+
+    [>de|d’|D’]  {mois}  ~\d{2,5}
+        <<- ~>> *
+
+    >en  ~\d{2,5}  [,|<end>]
+    >en  ~\d{2,5}  @:¬:[AN].*:[pi]
+        <<- ~>> *
+
+    de   ~\d{2,5}  @:A.*:s
+        <<- ~>> *
+
+    >à  la  {mi_mois}
+        <<- ~>> *
+
+    >à  la  {mi_mois}    ~\d{2,5}
+        <<- ~>> *
+
+
+__saisons__
+    >à  l’  [été|automne|hiver]  ~\d{2,4}
+        <<- ~>> *
+    
+    >au  printemps  ~\d{2,4}
+        <<- ~>> *
 
 TEST: Une étude de 2005 publiée dans le Journal
 TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consacrée à Silicon Valley.
 TEST: c’est donc la cinquième en 50 ans
 
+
+@@@@END_GRAPH
 
 # nombres
 __[i](p_un_nombre)__
@@ -12330,11 +12380,7 @@ TEST: il {{avait}} parti.
 
 
 
-!!
-!!
-!!!! Modes verbaux                                                                                  
-!!
-!!
+
 
 @@@@
 @@@@
@@ -12345,6 +12391,13 @@ TEST: il {{avait}} parti.
 @@@@
 @@@@
 @@@@
+
+
+!!
+!!
+!!!! Modes verbaux                                                                                  
+!!
+!!
 
 # conditionnel / futur
 
