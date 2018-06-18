@@ -7,7 +7,7 @@ _PATTERNS = {
         (
             r'(?P<FOLDERUNIX>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()-]+)*)',
             r'(?P<FOLDERWIN>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()-]+)*)',
-            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}/·–—])',
+            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}·–—])',
             r'(?P<ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w\w+[@.])\w[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
@@ -15,13 +15,14 @@ _PATTERNS = {
             r'(?P<PSEUDOHTML>\[/?\w+\])',
             r'(?P<HOUR>\d\d?h\d\d\b)',
             r'(?P<NUM>-?\d+(?:[.,]\d+))',
+            r'(?P<SIGN>[%‰+=*/<>⩾⩽-])',
             r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
         ),
     "fr":
         (
             r'(?P<FOLDERUNIX>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()-]+)*)',
             r'(?P<FOLDERWIN>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()-]+)*)',
-            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}/·–—])',
+            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}·–—])',
             r'(?P<ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w\w+[@.])\w[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
@@ -31,6 +32,7 @@ _PATTERNS = {
             r'(?P<ORDINAL>\d+(?:ers?|nds?|es?|des?|ièmes?|èmes?|emes?|ᵉʳˢ?|ⁿᵈˢ?|ᵉˢ?|ᵈᵉˢ?)\b)',
             r'(?P<HOUR>\d\d?h\d\d\b)',
             r'(?P<NUM>-?\d+(?:[.,]\d+|))',
+            r'(?P<SIGN>[%‰+=*/<>⩾⩽-])',
             r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
         )
 }
