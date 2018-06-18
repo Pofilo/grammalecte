@@ -589,7 +589,7 @@ class TokenSentence:
     def __init__ (self, sSentence, sSentence0, nOffset):
         self.sSentence = sSentence
         self.sSentence0 = sSentence0
-        self.nOffset = nOffset
+        self.nOffsetWithinParagraph = nOffset
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken }
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
@@ -699,8 +699,8 @@ class TokenSentence:
                                 # grammar error
                                 nTokenErrorStart = nTokenOffset + eAct[0]
                                 nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                nErrorStart = self.nOffset + self.lToken[nTokenErrorStart]["nStart"]
-                                nErrorEnd = self.nOffset + self.lToken[nTokenErrorEnd]["nEnd"]
+                                nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
+                                nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
                                 if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
                                     dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                     dPriority[nErrorStart] = eAct[2]
