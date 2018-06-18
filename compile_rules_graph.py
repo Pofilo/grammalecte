@@ -39,39 +39,57 @@ def genTokenLines (sTokenLine, dDef):
     lToken = sTokenLine.split()
     lTokenLines = None
     for i, sToken in enumerate(lToken):
+        # optional token?
+        bNullPossible = sToken.startswith("?") and sToken.endswith("?")
+        if bNullPossible:
+            sToken = sToken[1:-1]
+        # token with definition?
         if sToken.startswith("({") and sToken.endswith("})") and sToken[1:-1] in dDef:
             sToken = "(" + dDef[sToken[1:-1]] + ")"
-        if sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
+        elif sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
             sToken = dDef[sToken]
-        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
+        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) or (sToken.startswith("?[") and sToken.endswith("]?")) ):
+            # multiple token
             bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
             if bSelectedGroup:
                 sToken = sToken[1:-1]
-            # multiple token
+            lNewToken = sToken[1:-1].split("|")
             if not lTokenLines:
-                lTokenLines = [ [s]  for s  in sToken[1:-1].split("|") ]
+                lTokenLines = [ [s]  for s  in lNewToken ]
+                if bNullPossible:
+                    lTokenLines.extend([ []  for i  in range(len(lNewToken)+1) ])
             else:
                 lNewTemp = []
-                for aRule in lTokenLines:
-                    lElem = sToken[1:-1].split("|")
-                    sElem1 = lElem.pop(0)
-                    if bSelectedGroup:
-                        sElem1 = "(" + sElem1 + ")"
-                    for sElem in lElem:
-                        if bSelectedGroup:
-                            sElem = "(" + sElem + ")"
-                        aNew = list(aRule)
-                        aNew.append(sElem)
-                        lNewTemp.append(aNew)
-                    aRule.append(sElem1)
+                if bNullPossible:
+                    for aRule in lTokenLines:
+                        for sElem in lNewToken:
+                            aNewRule = list(aRule)
+                            aNewRule.append(sElem)
+                            lNewTemp.append(aNewRule)
+                else:
+                    sElem1 = lNewToken.pop(0)
+                    for aRule in lTokenLines:
+                        for sElem in lNewToken:
+                            aNewRule = list(aRule)
+                            aNewRule.append("(" + sElem + ")"  if bSelectedGroup  else sElem)
+                            lNewTemp.append(aNewRule)
+                        aRule.append("(" + sElem1 + ")"  if bSelectedGroup  else sElem1)
                 lTokenLines.extend(lNewTemp)
         else:
             # simple token
             if not lTokenLines:
-                lTokenLines = [[sToken]]
+                lTokenLines = [[sToken], []]  if bNullPossible  else [[sToken]]
             else:
-                for aRule in lTokenLines:
-                    aRule.append(sToken)
+                if bNullPossible:
+                    lNewTemp = []
+                    for aRule in lTokenLines:
+                        lNew = list(aRule)
+                        lNew.append(sToken)
+                        lNewTemp.append(lNew)
+                    lTokenLines.extend(lNewTemp)
+                else:
+                    for aRule in lTokenLines:
+                        aRule.append(sToken)
     for aRule in lTokenLines:
         yield aRule
 
