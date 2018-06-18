@@ -7468,7 +7468,7 @@ __[i]/gn(gn_devinette2)__
     -2>> =suggMasSing(@, True)                                                              # Accord erroné : « \2 » devrait être au masculin singulier.
 
 __[i]/gn(gn_devinette3)__
-    (?:le|un|cet?) +{w_2} +de [mts]on +({w_2}) +({w_2})  @@w,$
+    (?:le|un|cet?) +{w_2} +de [mts]on +(?!ex-)({w_2}) +({w_2})  @@w,$
     <<- not morph(\1, ":[NAQ].*:f|>[aéeiou].*:e", False) and morphex(\2, ":[NAQ].*:(?:f|m:p)", ":(?:G|P|m:[is]|V0|3[sp])") and not apposition(\1, \2)
     -2>> =suggMasSing(@, True)                                                              # Accord erroné : « \2 » devrait être au masculin singulier.
 
@@ -7501,6 +7501,7 @@ TEST: mon amour du chocolat {{immodérée}}                       ->> immodéré
 TEST: ton amour de son verbe {{enthousiasmante}}                ->> enthousiasmant
 TEST: Cet homme de mon groupe {{oubliés}}                       ->> oublié
 TEST: Lutter contre le chômage de masse avec les armes des travailleurs reste pour nous une priorité.
+TEST: le meurtre de son ex-petite amie
 
 
 ## divers
@@ -10011,21 +10012,31 @@ __[i]/infi(infi_de_pronom_le_les_la)__
 TEST: de me le {{facturez}}
 
 
-__[i]/infi(infi_faire_vouloir)__
-    ((?:fai|f[iî]|fer|fon|v[oe]u)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">(?:faire|vouloir)/", False) and not before(r"(?i)\b(?:en|[mtsld]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
-        and not (re.search("(?i)^(?:fait|vouloir)$", \1) and \2.endswith("é"))
-        and not (re.search("(?i)^(?:fait|vouloir)s$", \1) and \2.endswith("és"))
+__[i]/infi(infi_faire)__
+    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
+    <<- morph(\1, ">faire/", False) and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
+        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
+        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
     -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
 
+TEST: elle fit peu {{mangé}} les enfants
+TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: Tu fais {{décoloré}} tes cheveux ?
+
+
+__[i]/infi(infi_vouloir)__
+    (v[oe]u\w+) +({w_2}(?:ée?s?|ez))  @@0,$
+    <<- morph(\1, ">vouloir/", False) and not before(r"(?i)\b(?:[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
+        and not (re.search("(?i)^vouloir$", \1) and \2.endswith("é"))
+        and not (re.search("(?i)^vouloirs$", \1) and \2.endswith("és"))
+    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+
 TEST: je veux {{changé}}
 TEST: je ne veux pas {{mangé}}
 TEST: je sais {{mangé}}
 TEST: je ne voulais pas {{marché}}
 TEST: Elles ont voulu {{mangé}} de la viande.
-TEST: elle fit peu {{mangé}} les enfants
-TEST: fait pourtant avéré et corroboré par le même sondage.
+TEST: en voulant {{changé}}
 
 
 __[i]/infi(infi_me_te_se_faire)__
@@ -11461,7 +11472,7 @@ TEST: deux fois par an, souligne le Dr Assouline
 
 __[i]/imp(imp_laisser_le_la_les_infi)__
     ((laiss\w+) l(?:es|a)) +({w_2})  @@0,0,$
-    <<- morph(\2, ">laisser/", False) and morphex(\3, ":(?:Y|X|Oo)", ":[NAB]")
+    <<- morph(\2, ">laisser/.*:E", False) and morphex(\3, ":(?:Y|X|Oo)", ":[NAB]")
     -1>> =\1.replace(" ", "-")
     # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -11469,6 +11480,7 @@ TEST: {{Laisse les}} entrer…
 TEST: {{Laissez la}} venir…
 TEST: Laisse les chiens tranquilles
 TEST: Laissez la peste leur pourrir la vie encore quelque temps.
+TEST: le coût humain de la guerre qu’il a laissé les submerger.
 
 
 __<i]/imp(imp_apostrophe_m_t_en)__
