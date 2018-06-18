@@ -40,7 +40,7 @@ def genTokenLines (sTokenLine, dDef):
     lTokenLines = None
     for i, sToken in enumerate(lToken):
         # optional token?
-        bNullPossible = sToken.startswith("?") and sToken.endswith("?")
+        bNullPossible = sToken.startswith("?") and sToken.endswith("¿")
         if bNullPossible:
             sToken = sToken[1:-1]
         # token with definition?
@@ -48,7 +48,7 @@ def genTokenLines (sTokenLine, dDef):
             sToken = "(" + dDef[sToken[1:-1]] + ")"
         elif sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
             sToken = dDef[sToken]
-        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) or (sToken.startswith("?[") and sToken.endswith("]?")) ):
+        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
             # multiple token
             bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
             if bSelectedGroup:

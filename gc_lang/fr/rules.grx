@@ -4862,14 +4862,10 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 
 # Dates
 __dates__
-    >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}
-    >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-    [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}
-    [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-    [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}
-    [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
-    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}
-    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}    [dernier|prochain|~\d{2,5}]
+    >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
     >en  l’  an  ~\d{2,5}
     >en  l’  an  de  grâce  ~\d{2,5}
     >en  {mois}  ~\d{2,5}
@@ -4877,9 +4873,11 @@ __dates__
     >en  ~\d{2,5}  [,|<end>]
     >en  ~\d{2,5}  @:¬:[AN].*:[pi]
     de   ~\d{2,5}  @:A.*:s
-    >à  la  {mi_mois}
-    >à  la  {mi_mois}    ~\d{2,5}
+    >à  la  {mi_mois}    ?~\d{2,5}¿
         <<- ~>> *
+
+TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
+TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
 
 
 __saisons__
@@ -4923,13 +4921,11 @@ __purge_avant__
     >dès  [maintenant|lors|aujourd’hui]
     >dès  à     présent
     >dès  que   possible
-    >dès  [demain|hier]
-    >dès  [demain|hier]     [soir|matin|après-midi]
+    >dès  [demain|hier]     ?[soir|matin|après-midi]¿
     >et  ainsi de suite
     >et  tutti quanti
     >et  /  >ou
-    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
-    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] , ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
+    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
     >quant à présent
         <<- ~>> *
 
@@ -4938,14 +4934,13 @@ __horaires__
     24  [heures|h]  [sur|/]  24
     7   [jours|j]   [sur|/]  7
     >sept [jours|j]  [sur|/]  sept
-    >vingt-quatre  heures  sur vingt-quatre
+    >vingt-quatre  heures  [sur|/] vingt-quatre
         <<- ~>> *
 
 
 __loc_de_début_phrase__
     <start>  >car
-    <start>  >et
-    <start>  >et  puis
+    <start>  >et  ?puis¿
     <start>  >mais    
     <start>  >or  donc
     <start>  >puis
@@ -4953,19 +4948,17 @@ __loc_de_début_phrase__
         <<- ~>> *
 
 
-__à_horaires__
-    >à  ~\d\d?  h
-    >à  ~\d\d?  h  ~\d\d?
-    >à  ~\d\d?  h           [du|ce]  [matin|soir]
-    >à  ~\d\d?  h  ~\d\d?   [du|ce]  [matin|soir]
-    >à  ~\d\d?  h           de  l’ après-midi
-    >à  ~\d\d?  h  ~\d\d?   de  l’ après-midi
-    >à  ~\d\d?  h           cet  après-midi
-    >à  ~\d\d?  h  ~\d\d?   cet  après-midi
-    >à  ~\d\d?  h           demain  [matin|soir|après-midi]
-    >à  ~\d\d?  h  ~\d\d?   demain  [matin|soir|après-midi]
+__horaires__
+    [>à|>de]  ~\d\d?  h  ?~\d\d?¿
+    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   [du|ce]  [matin|soir]
+    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   de  l’ après-midi
+    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   cet  après-midi
+    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   demain  [matin|soir|après-midi]
         <<- ~>> *
-    
+
+TEST: Le train de 2 h 47 {{arriveraient}} en retard.
+TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
+
 
 __loc_à__
     >à  ~\d+(?:,\d+|)  %
@@ -4985,13 +4978,11 @@ __loc_à__
     >à  bras ouverts
     >à  bras le corps
     >à  brève échéance
-    >à  but lucratif
-    >à  but non lucratif
+    >à  but ?non¿ lucratif
     >à  cause [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
     >à  ce [compte-là|moment-là|titre]
     >à  cet égard
-    >à  cet instant
-    >à  cet instant précis
+    >à  cet instant ?[exact|précis]¿
     >à  cette [date|occasion]
     >à  cette époque
     >à  cette époque de l’année
@@ -5075,8 +5066,7 @@ __loc_à__
     >à  maintes reprises
     >à  marche forcée
     >à  merveille
-    >à  [midi|minuit]
-    >à  [midi|minuit]  pile
+    >à  [midi|minuit]  ?pile¿
     >à  [mi-course|mi-distance|mi-temps]
     >à  moindres frais
     >à  mots couverts
@@ -5097,8 +5087,7 @@ __loc_à__
     >à  part [entière|ça|cela|ceci]
     >à  parts égales
     >à  partir [de|d’]  [aujourd’hui|ici|là|maintenant|rien]
-    >à  partir [de|d’]  [demain|hier]
-    >à  partir [de|d’]  [demain|hier]  [matin|midi|soir]
+    >à  partir [de|d’]  [demain|hier]  ?[matin|midi|soir]¿
     >à  pas de [géant|loup|tortue|velours]
     >à  personne en danger
     >à  perte de vue
@@ -5135,8 +5124,7 @@ __loc_à__
     >à  temps  [plein|partiel|complet]
     >à  tête reposée
     >à  tire d’ [aile|ailes]
-    >à  tire-d’aile
-    >à  tire-d’ailes
+    >à  [tire-d’aile|tire-d’ailes]
     >à  titre  [conservatoire|expérimental|indicatif|informatif|grâcieux|personnel|posthume]
     >à  titre  d’ exemple
     >à  tombeau ouvert
