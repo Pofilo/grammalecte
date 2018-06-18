@@ -286,6 +286,9 @@ def make (lRule, dDef, sLang, bJavaScript):
             else:
                 print("Error at rule group: ", sLine, " -- line:", i)
                 break
+        elif re.search("    +<<- ", sLine):
+            # actions
+            sActions += " " + sLine.strip()
         elif re.match("[  ]*$", sLine):
             # empty line to end merging
             if not lTokenLine:
@@ -301,9 +304,6 @@ def make (lRule, dDef, sLang, bJavaScript):
             lTokenLine.clear()
             sActions = ""
             iActionBlock += 1
-        elif re.search("    +<<- ", sLine):
-            # actions
-            sActions += " " + sLine.strip()
         elif sLine.startswith(("    ")):
             # tokens
             lTokenLine.append([i, sLine.strip()])
