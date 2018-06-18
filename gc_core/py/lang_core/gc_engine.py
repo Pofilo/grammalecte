@@ -858,7 +858,6 @@ class TokenSentence:
                 self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
                 if bDebug:
                     print("removed:", dToken["sValue"])
-                    print(self.sSentence)
             else:
                 lNewToken.append(dToken)
                 if "sNewValue" in dToken:
@@ -871,6 +870,8 @@ class TokenSentence:
                     sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
                     self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
                     del dToken["sNewValue"]
+        if bDebug:
+            print(self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
         return self.sSentence
