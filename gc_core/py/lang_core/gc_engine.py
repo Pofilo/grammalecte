@@ -170,9 +170,7 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                 bParagraphChange, errs = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
                 dErrs.update(errs)
                 if bParagraphChange:
-                    s = oSentence.rewrite()
-                    if bDebug:
-                        print("~", oSentence.sSentence)
+                    s = oSentence.rewrite(bDebug)
         elif not sOption or dOptions.get(sOption, False):
             # regex rules
             for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
@@ -851,24 +849,27 @@ class TokenSentence:
                         sValue = sValue[0:1].upper() + sValue[1:]
                     self.lToken[i]["sNewValue"] = sValue
 
-    def rewrite (self):
+    def rewrite (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
         lNewToken = []
         for i, dToken in enumerate(self.lToken):
             if "bToRemove" in dToken:
                 # remove useless token
-                self.sSentence = self.sSentence[:self.nOffset+dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[self.nOffset+dToken["nEnd"]:]
-                #print("removed:", dToken["sValue"])
+                self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
+                if bDebug:
+                    print("removed:", dToken["sValue"])
+                    print(self.sSentence)
             else:
                 lNewToken.append(dToken)
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
-                    #print(dToken["sValue"], "->", dToken["sNewValue"])
+                    if bDebug:
+                        print(dToken["sValue"], "->", dToken["sNewValue"])
                     dToken["sRealValue"] = dToken["sValue"]
                     dToken["sValue"] = dToken["sNewValue"]
                     nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"])
                     sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
-                    self.sSentence = self.sSentence[:self.nOffset+dToken["nStart"]] + sNewRepl + self.sSentence[self.nOffset+dToken["nEnd"]:]
+                    self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
                     del dToken["sNewValue"]
         self.lToken.clear()
         self.lToken = lNewToken
