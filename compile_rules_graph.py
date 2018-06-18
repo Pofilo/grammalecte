@@ -39,6 +39,8 @@ def genTokenLines (sTokenLine, dDef):
     lToken = sTokenLine.split()
     lTokenLines = None
     for i, sToken in enumerate(lToken):
+        if sToken.startswith("({") and sToken.endswith("})") and sToken[1:-1] in dDef:
+            sToken = "(" + dDef[sToken[1:-1]] + ")"
         if sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
             sToken = dDef[sToken]
         if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
