@@ -319,8 +319,8 @@ def make (lRule, dDef, sLang, bJavaScript):
             for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dDef):
                 lPreparedRule.append(lRule)
         # Show rules
-        for e in lPreparedRule:
-            print(e)
+        #for e in lPreparedRule:
+        #    print(e)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)
         dAllGraph[sGraphName] = oDARG.createGraph()
