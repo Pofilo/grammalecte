@@ -492,7 +492,7 @@ def make (spLang, sLang, bJavaScript):
             lGraphRule.append([i, sLine])
             bGraph = True
         elif sLine.startswith("@@@@END_GRAPH"):
-            lGraphRule.append([i, sLine])
+            #lGraphRule.append([i, sLine])
             bGraph = False
         elif re.match("@@@@ *$", sLine):
             pass
