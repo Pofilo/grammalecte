@@ -4398,6 +4398,34 @@ __[i]/conf(conf_sûr_de_nom_propre)__
 
 TEST: Je suis {{sur}} de Patrick.
 
+__[i]/conf(conf_sûr_que)__
+    (sure?s?) que?  @@0
+    <<- -1>> =\1.replace("sur", "sûr")
+    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+__[i]/conf(conf_sûre_surs_de)__
+    (sur(?:es?|s)) de?  @@0
+    <<- -1>> =\1.replace("sur", "sûr")
+    # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+__[i]/conf(conf_sûr_de)__
+    (sur) d(?:e (?:m(?:oi|es?|on|a)|t(?:oi|es?|on|a)|vous|nous|l(?:ui|es?)|s(?:oi|es?|on|a)|ce(?:ci|la|s|tte|t|)|ça)|’(?:elles?|eux))  @@0
+    <<- -1>> sûr
+    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+__[i]/conf(conf_sûr_de_vinfi)__
+    (sur) de (?:l(?:a |’|es? |ui |eur )|)({infi})  @@0,$
+    <<- morph(\2, ":Y", False)
+    -1>> =\1.replace("sur", "sûr")
+    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+__[i]/conf(conf_en_lieu_sûr)__
+    en lieu (sur)  @@8
+    <<- -1>> sûr
+    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
+TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.
+TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.
+TEST: Il est tellement {{sur}} de la trouver.
+TEST: ils sont en lieu {{sur}} et introuvables.
+
 
 # tant / temps (1re partie)
 __[i]/conf(conf_en_temps_de)__
@@ -4861,7 +4889,7 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 @@@@
 @@@@
 
-# Dates
+
 __dates__
     >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
     [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
@@ -4891,7 +4919,6 @@ TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consa
 TEST: c’est donc la cinquième en 50 ans
 
 
-# nombres
 __un_nombre__
     >un  ~\d+  @:A.*:s¬:G
         <<-  ~2>> *
@@ -4919,13 +4946,9 @@ __personne_d_autre_que__
 ## Avant
 
 __purge_avant__
-    >dès  [maintenant|lors|aujourd’hui]
-    >dès  à     présent
-    >dès  que   possible
-    >dès  [demain|hier]     ?[soir|matin|après-midi]¿
-    >et  ainsi de suite
-    >et  tutti quanti
-    >ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
+    
+    
+    >ni   [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
     >quant à présent
         <<- ~>> *
 
@@ -4935,12 +4958,14 @@ __purge_avant__
 
 __loc_de_début_phrase__
     <start>  >car
+    <start>  >de plus
     <start>  >et  ?puis¿
-    <start>  >mais    
+    <start>  >mais
+    <start>  [m’|M’]  est   avis  [que|qu’|qu]
     <start>  >or  donc
     <start>  >puis
-    <start>  [m’|M’]  est   avis  [que|qu’|qu]
-        <<- ~>> *
+    [<start>|,] grand bien lui fasse
+        <<- ~1:0>> *
 
 
 __horaires_et_durée__
@@ -4977,29 +5002,43 @@ TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
 
 
 __loc_latines__
-    [a|A|>à]   [priori|postériori|posteriori|contrario|cappella|minima]
-    ab      [absurdo|initio]
-    ad      [hoc|vitam æternam|hominem|infinitum|nauseam|valorem|patres]
+    [>a|>à] [priori|postériori|posteriori|contrario|cappella|minima]
+    >ab     [absurdo|initio]
+    >ad     [hoc|hominem|infinitum|nauseam|valorem|patres]
+    >ad     vitam æternam
+    >ex     [nihilo|cathedra|absurdo|abrupto]
         <<- ~>> *
 
+
 __prépositions_qqn__
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez] on ne sait [qui|quoi]             [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>en] les uns et les autres               [<end>|,|@:[VXG]¬>qui]
+        <<- ~1:6>> *
+
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|d’|D’] on ne sait [qui|quoi]             [<end>|,|@:[VXG]¬>qui]
         <<- ~1:5>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez] tout un chacun                    [<end>|,|@:[VXG]¬>qui]
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez] tout le monde                     [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en] tout un chacun                  [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en] tout le monde                   [<end>|,|@:[VXG]¬>qui]
         <<- ~1:4>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez] tout ça                           [<end>|,|@:[VXG]¬>qui]
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez] [vous|nous] autres                [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en] tout ça                         [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en] [vous|nous] autres              [<end>|,|@:[VXG]¬>qui]
         <<- ~1:3>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez] [autrui|quelqu’un|quelqu’une]     [<end>|,|@:[VXG]¬>qui]
-    [>après|>avant|>avec|>envers|>chez]                     {pronom_obj}                      [<end>|,|@:[VXG]¬>qui]
-    [>contre|>pour|>sans]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]                      [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|d’|D’|>en]   [autrui|quelqu’un|quelqu’une]     [<end>|,|@:[VXG]¬>qui]
+    [>après|>avant|>avec|>envers|>chez]                                     {pronom_obj}                      [<end>|,|@:[VXG]¬>qui]
+    [>contre|>pour|>sans|>de|>en]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
         <<- ~1:2>> *
 
-    
+    >en   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]
+        <<- ~>> *
+
+    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
+        <<- ~>> *
+
+    >entre [moi|toi|lui|elle|elles|nous|vous|eux] et [moi|toi|lui|elle|elles|nous|vous|eux]
+    >entre [nous|vous|eux|elles] [deux|trois|quatre|cinq|six|sept|huit|neuf|dix]
+        <<- ~>> *
 
 TODO: comme
 
@@ -5202,6 +5241,7 @@ __ordre_alphabétique__
     >à  ?bien¿ y regarder de plus près
     >à  ?bien¿ y [penser|réfléchir|songer|repenser]
     [advienne|Advienne] que pourra
+    >ah
     >après cette date ?fatidique¿
     >après [moi|toi|soi|lui|eux]
     >après mûre réflexion
@@ -5469,11 +5509,204 @@ __ordre_alphabétique__
     >de toute [éternité|évidence|façon|urgence]
     >de toutes [parts|pièces|sortes]
     >de toutes [mes|tes|ses|nos|vos|leurs] forces
+    >de [mon|ton|son|notre|votre|leur] mieux
+    >de [mon|ton|son|notre|votre|leur] plein gré
+    >de [mon|ton|son|notre|votre|leur] point de vue
+    >de [mon|ton|son|notre|votre|leur] propre [cru|chef]
+    >de [mon|ton|son|notre|votre|leur] vivant
+    >de [ma|ta|sa|notre|votre|leur] part
+    >de moins en moins
+    >de plus en plus
+    >de mieux en mieux
+    >de pire en pire
+    >de jour en jour
+    >de minute en minute
+    >de semaine en semaine
+    >de mois en mois
+    >de trimestre en trimestre
+    >de semestre en semestre
+    >de siècle en siècle
+    >de millénaire en millénaire
+    >de décennie en décennie
+    [>après-demain|>demain] ?[matin|soir|après-midi]¿
+    >avant demain ?[matin|soir|après-midi]¿
+    >depuis @:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    >depuis ~\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    >depuis assez longtemps
+    >depuis belle lurette
+    >depuis bien longtemps
+    >depuis de ?très¿ longues années
+    >depuis des lustres
+    >depuis les années ~\d\d+
+    >depuis longtemps
+    >depuis lors
+    >depuis peu de temps
+    >depuis quelque temps
+    >depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
+    >depuis si longtemps
+    >depuis toujours
+    >depuis tout ce temps
+    >depuis très longtemps
+    >des fois
+    >des pieds à la tête
+    >des uns et des autres
+    >des [années|mois|siècles|millénaires|décennies|semaines] plus [tôt|tard]
+    >dès  [maintenant|lors|aujourd’hui]
+    >dès  à     présent
+    >dès  que   possible
+    >dès  [demain|hier]     ?[soir|matin|après-midi]¿
+    >Dieu [m’|t’] en [garde|préserve]
+    >Dieu [m’|t’] en soit témoin
+    >Dieu [nous|vous] en [garde|préserve]
+    >Dieu [nous|vous] en soit témoin
+    >Dieu [les|l’] en [garde|préserve]
+    >Dieu [leur|lui] en soit témoin
+    >du ~[xXvViI]+[eᵉ] siècle
+    >du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
+    >du bout des lèvres
+    >du début à la fin
+    >du fond du cœur
+    >du jour au lendemain
+    >du haut en bas
+    >du même [acabit|coup|ordre|tonneau]
+    >du moins ?,¿ pas
+    >du [nord|sud] au [nord|sud]
+    >du tout au tout
+    >eh bien
+    >en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
+        <<- ~>> *
+
+    >en cours @¬>de
+        <<- ~1:2>> *
+
+    >en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse]
+    >en aucun cas
+    >en aucune [circonstance|façon|manière]
+    >en bon état
+    >en bonne [compagnie|posture|voie]
+    >en bonne et due forme|
+    >en bonne santé ?[physique|mentale|psychique]¿
+    >en bout de course
+    >en cas [de|d’] [besoin|doute|urgence]
+    >en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
+    >en chair et en os
+    >en chute libre
+    >en comparution immédiate
+    >en connaissance de cause
+    >en coupe réglée
+    >en cours de route
+    >en d’autres [circonstances|termes|temps]
+    >en de telles circonstances
+    >en début [de|d’] [journée|matinée|soirée|après-midi]
+    >en définitive
+    >en dehors de ?tout¿ [ça|cela|ceci]
+    >en dents de scie
+    >en dernier [lieu|recours|ressort]
+    >en désespoir de cause
+    >en détention provisoire
+    >en direction de l’ [est|ouest]
+    >en direction du [nord|nord-est|nord-ouest|sud|sud-est|sud-ouest]
+    >en état de choc ?circulatoire¿
+    >en état de marche
+    >en état d’ ébriété ?avancée¿
+    >en excellent état
+    >en file indienne
+    >en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
+    >en forte [baisse|hausse]
+    >en gage de bonne foi
+    >en garde à vue ?prolongée¿
+    >en grand nombre
+    >en grende [difficulté|majorité|partie|pompe]
+    >en haut lieu
+    >en l’occurrence
+    >en lieu sûr
+    >en ligne de [compte|mire]
+    >en mains propres
+    >en mauvais état
+    >en mauvaise [posture|santé]
+    >en même temps
+    >en milieu [de|d’] [journée|matinée|soirée|après-midi]
+    >en nombre suffisant
+    >en nombre plus que suffisant
+    >en partant de zéro
+    >en plein [air|cœur|jour]
+    >en pleine [gueule|figure|forme|poire|nuit|tronche]
+    >en perte de vitesse
+    >en peu de temps
+    >en piteux état
+    >en point [de|d’] [mire|orgue]
+    >en position de [force|faiblesse]
+    >en premier lieu
+    >en première [instance|ligne]
+    >en pure perte
+    >en quantité suffisante
+    >en quantité plus que suffisante
+    >en quelque sorte
+    >en queue de peloton
+    >en rangs serrés
+    >en rase campagne
+    >en règle générale
+    >en roue libre
+    >en sens inverse
+    >en si peu de temps
+    >en sous-main
+    >en tête à tête
+    >en temps et en heure
+    >en temps [normal|opportun|ordinaire|utile|voulu]
+    >en termes choisis
+    >en toile de fond
+    >en tous les cas
+    >en tous les sens
+    >en tout bien tout honneur
+    >en tout [cas|genre|lieu|sens|temps]
+    >en tout et pour tout
+    >en tout état de cause
+    >en tout premier lieu
+    >en toute bonne foi
+    >en toute connaissance de cause
+    >en toute [circonstance|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité]
+    >en toutes circonstances
+    >en un clin d’œil
+    >en un rien de temps
+    >en une autre occasion
+    >en vase clos
+    >en voie de développement
+    >en y réfléchissant bien
+    >en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
+    >en [mon|ton|son|leur|notre|votre] âme et conscience
+    >en [mon|ton|son|leur|notre|votre] for intérieur
+    >en [mon|ton|son|leur|notre|votre] nom propre
+    >en ce [moment|temps-là]
+    >en ce qui [me|te|le|la|les|nous|vous] [concerne|concernait]
+    >en cet instant
+    >encore une fois
+    >encore et [encore|toujours]
+    >entre {mois} ?~\d{2,5}¿ et {mois} ?~\d{2,5}¿
+    >entre chien et loup
+    >entre de [bonnes|mauvaises] mains
+    >entre l’ [un|une] et l’ autre
+    >entre les uns et les autres
+    >entre [quatre|quatr’|quat’] [zyeux|yeux]
+    >entre [quatre-zyeux|quatr’zyeux|quat’zyeux|quatre-yeux|quatr’yeux|quat’yeux]
+    >envers et contre tout
+    >épaule contre épaule
+    >et   ainsi de suite
+    >et   tutti quanti
+    >été comme hiver
+    >euh
+    >face à face
+    @:B fois de suite
+    >grosso modo
+    [>hier|>avant-hier] ?[matin|soir|après-midi]¿
+    >hors [de|d’] [contrôle|portée|atteinte]
+    >hors d’ état de nuire
+    >hors du commun
         <<- ~>> *
 
 
-@@@@END_GRAPH
-
+@@@@
+@@@@END_GRAPH                                                                                       
+@@@@
 
 __[i](loc_côte_à_côte)__
     c[ôo]tt?es? [àaá] c[ôo]tt?es?
@@ -5481,42 +5714,8 @@ __[i](loc_côte_à_côte)__
     <<- ~>> *
     
 
-__[i](p_de_ceux_celles)__       de ce(?:ux|lles)-(?:ci|là)(?! qui) <<- ~>> *
-__[i](p_de_det_mas_qqch)__      de (?:[mts]on|[nv]otre|leur) (?:mieux|plein gré|point de vue|propre (?:cru|chef)|vivant) <<- ~>> *
-__[i](p_de_det_fem_qqch)__      de (?:[mts]a|[nv]otre|leur) part <<- ~>> *
-__[i](p_de_qqch_en_identique)__ de (moins|plus|mieux|pire|jour|minute|semaine|mois|trimestre|semestre|siècle|millénaire|décennie) en \1 @@3 <<- ~>> *
-__<i](p_de_plus)__              ^ *de plus <<- ~>> *
-__[i](p_des_qqch)__             des (?:fois|pieds à la tête|uns et des autres|(?:années|mois|siècles|millénaires|décennies|semaines) plus t(?:ôt|ard)) <<- ~>> *
-__[i](p_depuis_qqch)__          depuis (?:assez longtemps|belle lurette|bien longtemps|de (?:très |)longues années|des lustres|longtemps|lors|peu de temps|quelque temps|quelques (?:secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires)|si longtemps|toujours|tout ce temps|très longtemps) <<- ~>> *
-__[i](p_depuis_tps)__           depuis (\d+ (?:ans|années|mois|semaines|jours|heures|minutes|secondes|)|les années \d\d+) @@$ <<- ~>> *
-__[i](p_Dieu_en_garde_témoin)__ Dieu (?:[mt]’en (?:garde|soit témoin)|[nv]ous en (?:garde|soit témoin)|l(?:es |’)en garde|l(?:eur|ui) en soit témoin) <<- ~>> *
-__[i](p_du_moins)__             du moins <<- ~>> _
-__[i](p_du_qqch)__              du (?:[xXvViI]+[eᵉ] siècle|bout des lèvres|début à la fin|fond du cœur|jour au lendemain|haut en bas|même (?:acabit|tonneau)|moins,? pas|(?:nord|sud) au (?:nord|sud)|tout au tout) <<- ~>> *
-__[i](p_demain)__               (?:après-|avant |)demain(?: matin| soir| après-midi|) <<- ~>> *
-__[i](p_don_Juan)__             (don) Juan @@0 <<- ~1>> *
-__[i](p_du_même_ordre_coup)__   du même (?:ordre|coup) <<- ~>> *
-__[i](p_en_nombre_années)__     en \d\d+(?: ans| années| mois| semaines| jours| heures| minutes| secondes|) <<- ~>> *
-__[i](p_en_cours)__             en cours(?! d[e’]) <<- ~>> *
-__[i](p_en_pronom)__            en (?:[mt]oi|eux|elles?) <<- ~>> *
-__[i](p_en_qqch1)__             en (?:aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse) <<- ~>> *
-__[i](p_en_qqch2)__             en (?:aucun(?: cas|e (?:circonstance|façon|manière))|bon(?: état|ne (?:compagnie|et due forme|posture|santé(?: physique| mentale|)|voie))|bout de course|cas d(?:e (?:besoin|doute)|’urgence)|chacune? d(?:e [nv]ous|’(?:eux|elles))|chair et en os|chute libre|comparution immédiate|connaissance de cause|coupe réglée|cours de route|d’autres (?:circonstances|termes|temps)|de telles circonstances|début d(?:e (?:journée|matinée|soirée)|’après-midi)|définitive|dehors de (?:tout|)(?:ça|cela|ceci)|dents de scie|dernier (?:lieu|recours|ressort)|désespoir de cause|détention provisoire|direction d(?:u (?:nord|sud)(?:-est|-ouest|)|e l’(?:est|ouest))|état (?:de (?:choc(?: circulatoire|)|marche)|d’ébriété(?: avancée|))|excellent état|file indienne|fin d(?:e (?:compte|journée|matinée|soirée)|’après-midi)|forte (?:baisse|hausse)|gage de bonne foi|garde à vue(?: prolongée|)|grand(?: nombre|e (?:difficulté|majorité|partie|pompe))|haut lieu|l’occurrence|lieu sûr|ligne de (?:compte|mire)|mains propres|mauvais(?: état|e (?:posture|santé))|même temps|milieu d(?:e (?:journée|matinée|soirée)|’après-midi)|nombre (?:plus que |)suffisant|partant de zéro|plein(?: air| cœur| jour|e (?:gueule|figure|forme|poire|nuit|tronche))|perte de vitesse|peu de temps|piteux état|point d(?:e mire|’orgue)|position de (?:force|faiblesse)|premi(?:er lieu|ère (?:instance|ligne))|pure perte|quantité (?:plus que |)suffisante|quelque sorte|queue de peloton|rangs serrés|rase campagne|règle générale|roue libre|sens inverse|si peu de temps|sous-main|tête à tête|temps (?:et en heure|normal|opportun|ordinaire|utile|voulu)|termes choisis|toile de fond|tous (?:les cas|sens)|tout (?:bien tout honneur|cas|genre|lieu|et pour tout|état de cause|premier lieu|sens|temps)|toute(?: (?:bonne foi|circonstance|connaissance de cause|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité)|s circonstances)|un (?:clin d’œil|rien de temps)|une autre occasion|vase clos|voie de développement|y réfléchissant bien) <<- ~>> *
-__[i](p_en_mois_dernier)__      en (?:janvier|février|mars|avril|mai|jui(?:n|llet)|ao[ûu]t|septembre|octobre|novembre|décembre) dernier <<- ~>> *
-__[i](p_en_dat_mas_qqch)__      en (?:[mts]on|leur|[nv]otre) (?:âme et conscience|for intérieur|nom propre) <<- ~>> *
-__[i](p_en_ce_qqch)__           en ce(?: (?:moment|temps-là|qui (?:[mt]e|l(?:es?|a)|[nv]ous) concern(?:e|ait))|t instant) <<- ~>> *
-__[i](p_encore_qqch)__          encore (?:une fois|et (?:encore|toujours)) <<- ~>> *
-__[i](p_envers_qqch)__          envers (?:autrui|et contre tout|les uns et les autres|tout le monde) <<- ~>> *
-__[i](p_entre_qqch)__           entre (?:(?:[mt]oi|lui|elles?|[nv]ous|eux) et (?:[mt]oi|lui|elles?|[nv]ous|eux)|chien et loup|de (?:bonnes|mauvaises) mains|l’une? et l’autre|les uns et les autres|quat(?:re[- ]z-?yeux|’ z-?yeux)) <<- ~>> *
-__[i](p_entre_date)__           entre (?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre) (?:\d\d{1,3} |)et (?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre)(?: \d\d{1,3}|) <<- ~>> *
-__[i](p_épaule_contre_épaule)__ épaule contre épaule <<- ~>> *
-__[i](p_été_comme_hiver)__      été comme hiver <<- ~>> *
-__[i](p_oh_ah_euh_eh_bien)__    (?:oh|ah|euh|eh bien) <<- ~>> *
-__[i](p_ex_loc_latine)__        ex (?:nihilo|cathedra|absurdo|abrupto) <<- ~>> *
-__[i](p_face_à_face)__          face à face <<- ~>> *
-__[i](p_nombre_fois_de_suite)__ (?:deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante|cent) fois de suite <<- ~>> *
-__[i](p_grosso_modo)__          grosso modo <<- ~>> *
-__[i](p_grand_bien_lui_fasse)__ grand bien lui fasse <<- isStart() ~>> *
-__[i](p_hier)__                 (?:avant-|)hier(?: matin| soir| après-midi|) <<- ~>> *
-__[i](p_hors_de_qqch)__         hors (?:de (?:contrôle|portée)|d’(?:atteinte|état de nuire)|du commun) <<- ~>> *
+
+
 __[i](p_ici_qqch)__             ici(?: comme ailleurs| ou ailleurs| et (?:là|maintenant)| même|-bas) <<- ~>> *
 __[i](p_id_est)__               id est <<- ~>> *
 __[i](p_il_y_a_qqch)__          il y a (?:longtemps|peu de temps|très (?:longtemps|peu de temps)|(?:quelques|moins de \d+|\d+) (?:secondes|minutes|heures|jours|semaines|mois|an(?:née|)s|siècles|millénaires)|quelque temps) <<- ~>> *
@@ -5552,6 +5751,7 @@ __[i](p_ni_qqch)__              ni (?:de près,? ni de loin|plus ni moins|vu,? n
 __[i](p_non_qqch)__             non (?:plus|sans raison|seulement) <<- ~>> *
 __[i](p_nulle_part)__           nulle part <<- ~>> *
 __[i](p_ô_combien)__            ô combien <<- ~>> *
+__[i](p_oh_ah_euh_eh_bien)__    oh <<- ~>> *
 __[i](p_ou_bien)__              ou (bien) @@3 <<- ~1>> *
 __[i](p_ou_qqch_d_approchant)__ ou quelque chose d’approchant <<- ~>> *
 __[i](p_où_bon_nous_semble)__   où bon (?:me|te|lui|nous|vous|leur) semble <<- ~>> *
@@ -5674,6 +5874,9 @@ __[i](p_dét_plur_nombre_nom)__
     (?:[dmts]es|nos|vos|le(?:ur|)s) (\d+(?: ou \d+|)) ({w_2})  @@w,$
     <<- morphex(\2, ":[NA].*:[pi]", ":(?:V0|3p)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)")
     ~1>> *
+
+__[i](p_du_moins)__             du moins <<- ~>> _
+__[i](p_don_Juan)__             (don) Juan @@0 <<- ~1>> *
 
 ## Simplifications des substantifs
 __[i](loc_arc_à_poulies)__
@@ -9326,36 +9529,6 @@ __[i]/conf(conf_soit2)__
 
 TEST: {{soi}} je vais au cinéma, {{soi}} je m’abstiens.
 TEST: {{soie}} j’arrive avant tout le monde.
-
-
-# sur / sûr
-__[i]/conf(conf_sûr_que)__
-    (sure?s?) que?  @@0
-    <<- -1>> =\1.replace("sur", "sûr")
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_sûre_surs_de)__
-    (sur(?:es?|s)) de?  @@0
-    <<- -1>> =\1.replace("sur", "sûr")
-    # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_sûr_de)__
-    (sur) d(?:e (?:m(?:oi|es?|on|a)|t(?:oi|es?|on|a)|vous|nous|l(?:ui|es?)|s(?:oi|es?|on|a)|ce(?:ci|la|s|tte|t|)|ça)|’(?:elles?|eux))  @@0
-    <<- -1>> sûr
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_sûr_de_vinfi)__
-    (sur) de (?:l(?:a |’|es? |ui |eur )|)({infi})  @@0,$
-    <<- morph(\2, ":Y", False)
-    -1>> =\1.replace("sur", "sûr")
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_en_lieu_sûr)__
-    en lieu (sur)  @@8
-    <<- -1>> sûr
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-
-TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
-TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.
-TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.
-TEST: Il est tellement {{sur}} de la trouver.
-TEST: ils sont en lieu {{sur}} et introuvables.
 
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
