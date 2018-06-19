@@ -318,12 +318,15 @@ def make (lRule, dDef, sLang, bJavaScript):
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
             for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dDef):
                 lPreparedRule.append(lRule)
-        # Show rules
-        #for e in lPreparedRule:
-        #    print(e)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)
         dAllGraph[sGraphName] = oDARG.createGraph()
+        # Debugging
+        #print("\nGRAPH:", sGraphName)
+        #for e in lPreparedRule:
+        #    print(e)
+        #for k, v in dAllGraph[sGraphName].items():
+        #    print(k, "\t", v)
 
     # creating file with all functions callable by rules
     print("  creating callables...")

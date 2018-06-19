@@ -110,12 +110,10 @@ class DARG:
 
     def createGraph (self):
         dGraph = { 0: self.oRoot.getNodeAsDict() }
-        print(0, "\t", self.oRoot.getNodeAsDict())
         for oNode in self.lMinimizedNodes:
             sHashId = oNode.__hash__() 
             if sHashId not in dGraph:
                 dGraph[sHashId] = oNode.getNodeAsDict()
-                print(sHashId, "\t", dGraph[sHashId])
             else:
                 print("Error. Double node… same id: ", sHashId)
                 print(str(oNode.getNodeAsDict()))
