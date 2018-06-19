@@ -352,10 +352,13 @@ def make (lRule, dDef, sLang, bJavaScript):
         #sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         #sJSCallables += "    },\n"
     #sJSCallables += "}\n"
-    print(sPyCallables)
 
+    # Debugging
+    print("\nActions:")
     for sActionName, aAction in dACTIONS.items():
         print(sActionName, aAction)
+    print("\nFunctions:")
+    print(sPyCallables)
 
     # Result
     d = {
