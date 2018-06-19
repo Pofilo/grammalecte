@@ -4937,25 +4937,6 @@ __moi_toi_lui_elle_nous_vous_eux_elles_seul__
         <<- ~1>> *
 
 
-## personne d’autre que…
-__personne_d_autre_que__
-    >personne  d’ autre [que|qu’|qu]  [lui|elle|elles|nous|vous|eux]
-        <<- ~2:0>> *
-
-
-## Avant
-
-__purge_avant__
-    
-    
-    >ni   [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
-    >quant à présent
-        <<- ~>> *
-
-    >et  /  >ou
-        <<- ~2:3>> *
-
-
 __loc_de_début_phrase__
     <start>  >car
     <start>  >de plus
@@ -5001,15 +4982,6 @@ TEST: Le train de 2 h 47 {{arriveraient}} en retard.
 TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
 
 
-__loc_latines__
-    [>a|>à] [priori|postériori|posteriori|contrario|cappella|minima]
-    >ab     [absurdo|initio]
-    >ad     [hoc|hominem|infinitum|nauseam|valorem|patres]
-    >ad     vitam æternam
-    >ex     [nihilo|cathedra|absurdo|abrupto]
-        <<- ~>> *
-
-
 __prépositions_qqn__
     [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>en] les uns et les autres               [<end>|,|@:[VXG]¬>qui]
         <<- ~1:6>> *
@@ -5041,6 +5013,32 @@ __prépositions_qqn__
         <<- ~>> *
 
 TODO: comme
+
+
+__simplifications_partielles__
+    >comme tant d’ autres  @:R
+        <<- ~1:4>> *
+
+    >en cours @¬>de
+        <<- ~1:2>> *
+
+    >et  /  >ou
+        <<- ~2:3>> *
+
+    >personne  d’ autre [que|qu’|qu]  [lui|elle|elles|nous|vous|eux]
+        <<- ~2:0>> *
+
+
+__locutions_latines__
+    [>a|>à] [priori|postériori|posteriori|contrario|cappella|minima]
+    >ab     [absurdo|initio]
+    >ad     [hoc|hominem|infinitum|nauseam|valorem|patres]
+    >ad     vitam æternam
+    >ex     [nihilo|cathedra|absurdo|abrupto]
+    >id     est
+    >in     [abstracto|extenso|extremis|fine|petto|situ|utero|vitro|vivo]
+    >ipso   facto
+        <<- ~>> *
 
 
 __ordre_alphabétique__
@@ -5349,11 +5347,6 @@ __ordre_alphabétique__
     >comme promis
     >comme qui dirait
     >comme si de rien n’ était
-        <<- ~>> *
-    
-    >comme tant d’ autres  @:R
-        <<- ~1:4>> *
-
     >contrairement aux apparences
     >contre mauvaise fortune,? bon cœur
     >contre nature
@@ -5574,11 +5567,6 @@ __ordre_alphabétique__
     >du tout au tout
     >eh bien
     >en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-        <<- ~>> *
-
-    >en cours @¬>de
-        <<- ~1:2>> *
-
     >en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse]
     >en aucun cas
     >en aucune [circonstance|façon|manière]
@@ -5701,31 +5689,36 @@ __ordre_alphabétique__
     >hors [de|d’] [contrôle|portée|atteinte]
     >hors d’ état de nuire
     >hors du commun
+    >ici [comme|ou] ailleurs
+    >ici et [là|maintenant]
+    >ici même
+    >ici-bas
+    >il y a ?très¿ longtemps
+    >il y a ?très¿ peu de temps
+    >il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    >il y a moins de ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    >il y a ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    >il y a quelque temps
+    >il n’y a pas ?si¿ longtemps
+    >illico presto
+    [j’|J’] en passe et des [meilleurs|meilleures]
+    >jour pour jour
+    >jusque-là
+    >ni   [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [à|avec|contre|pour|chez|sur|sous|devant|derrière] [moi|toi|lui|elle|elles|eux|nous|vous]
+    >quant à présent
         <<- ~>> *
+
+
+
 
 
 @@@@
 @@@@END_GRAPH                                                                                       
 @@@@
 
-__[i](loc_côte_à_côte)__
-    c[ôo]tt?es? [àaá] c[ôo]tt?es?
-    <<- not re.search("(?i)^côte à côte$", \0) ->> côte à côte      # Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
-    <<- ~>> *
+
     
 
-
-
-__[i](p_ici_qqch)__             ici(?: comme ailleurs| ou ailleurs| et (?:là|maintenant)| même|-bas) <<- ~>> *
-__[i](p_id_est)__               id est <<- ~>> *
-__[i](p_il_y_a_qqch)__          il y a (?:longtemps|peu de temps|très (?:longtemps|peu de temps)|(?:quelques|moins de \d+|\d+) (?:secondes|minutes|heures|jours|semaines|mois|an(?:née|)s|siècles|millénaires)|quelque temps) <<- ~>> *
-__[i](p_il_n_y_a_pas_qqch)__    il n’y a pas (?:si |)longtemps <<- ~>> *
-__[i](p_illico_presto)__        illico presto <<- ~>> *
-__[i](p_in_loc_latine)__        in (?:abstracto|extenso|extremis|fine|petto|situ|utero|vitro|vivo) <<- ~>> *
-__[i](p_ipso_facto)__           ipso facto <<- ~>> *
-__[i](p_j_en_passe)__           j’en passe et des meilleure?s <<- ~>> *
-__[i](p_jour_pour_jour)__       jour pour jour <<- ~>> *
-__[i](p_jusque_là)__            jusque-là <<- ~>> *
 __[i](p_jusque_qqch)__          jusqu (?:alors|ici|aujourd’hui|au bout des ongles) <<- ~>> *
 __[i](p_jusque_à_qqch)__        jusqu à (?:aujourd’hui|bac|présent|maintenant|récemment|(?:demain|hier)(?: matin| soir| après-midi|)|nouvel ordre|plus (?:ample informé|soif)|preuve du contraire|la (?:fin de(?: (?:[mts]es|[nv]os|leurs) jours|s temps)|tombée de la nuit)|(?:[mts]on|leur|[nv]otre) dernier souffle(?: de vie|)|ce que (?:mort s’ensuive|(?:j’en sache|tu en saches|(?:il|elle|on) en sache|nous en sachions|vous en sachiez|(?:ils|elles) en sachent) plus)|Noël|Pâques) <<- ~>> *
 __[i](p_la_qqch)__              la (?:plupart du temps|main dans la main|mort dans l’âme) <<- ~>> *
@@ -8644,12 +8637,17 @@ __[i]/conf(conf_cotte)__
 __[i]/conf(conf_avoir_la_cote)__
     ({avoir}) +la (côte)  @@0,$
     <<- morph(\1, ":V0a", False) -2>> cote                      # Confusion probable : utilisez « cote » (cotation).|http://fr.wiktionary.org/wiki/cote
+__[i](conf_côte_à_côte)__
+    c[ôo]tt?es? [àaá] c[ôo]tt?es?
+    <<- not re.search("(?i)^côte à côte$", \0) ->> côte à côte      # Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
+    <<- ~>> *
 
 TEST: Rien ne vaut une bonne {{cote}} de bœuf.
 TEST: Elles ont passé une radiographie des {{cottes}}.
 TEST: Quelle est sa {{côte}} de popularité
 TEST: il a réussi à percer sa {{cote}} de mailles.
 TEST: Il a la {{côte}} auprès de ses collègues
+TEST: ils sont {{cotte à cotte}}
 TEST: on a atteint la cote d’alerte.
 
 
