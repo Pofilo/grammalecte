@@ -4828,32 +4828,77 @@ TEST: __neg__ Il {{y}} a jamais d’eau.
 
 
 
+
+
+
+
+
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                    
+@@@@
+@@@@
+@@@@
+@@@@
+
+
 !!
 !!
 !!!! Infinitif                                                                                      
 !!
 !!
 
-__[i](p_ne_plus_pas_jamais_beaucoup_trop_rien)__
-    ne (?:pas|plus|jamais) +(beaucoup|trop|rien)  @@$ <<- ~1>> *
 
-__[i]/infi(infi_ne)__
-    ne (?:pas|rien|jamais(?: rien| plus|)|plus(?: jamais| rien| guère|)|guère|point) (?:non plus |)(?:l(?:e(?:ur|s|)|a|ui) |nous |vous |[mtsl]’(?:en |y |)|[mts]e |en |y |)({w_1})
-    @@$
-    <<- not morph(\1, ":(?:Y|W|O[ow])|>que?/", False) and spell(\1)
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__purge_ne_plus_pas_jamais_beaucoup_trop_rien__
+    ne [pas|plus|jamais|guère] [beaucoup|trop|rien]
+        <<- ~3>> *
 
-TEST: ne jamais {{cédé}}
+
+__infi_ne_xxx__
+    ne [pas|rien|guère|point]               ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point] non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿                 ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿ non plus        ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿           ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿ non plus  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point]               [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point] non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿                 [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿ non plus        [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿           [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿ non plus  [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point]               [me|te|nous|vous] [le|la|les]                           (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point] non plus      [me|te|nous|vous] [le|la|les]                           (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿                 [me|te|nous|vous] [le|la|les]                           (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿ non plus        [me|te|nous|vous] [le|la|les]                           (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿           [me|te|nous|vous] [le|la|les]                           (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿ non plus  [me|te|nous|vous] [le|la|les]                           (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point]               [le|la|les] [lui|leur]                                  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne [pas|rien|guère|point] non plus      [le|la|les] [lui|leur]                                  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿                 [le|la|les] [lui|leur]                                  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne jamais ?[rien|plus]¿ non plus        [le|la|les] [lui|leur]                                  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿           [le|la|les] [lui|leur]                                  (@:¬:(?:Y|W|O[ow])|>que?/")
+    ne plus ?[jamais|rien|guère]¿ non plus  [le|la|les] [lui|leur]                                  (@:¬:(?:Y|W|O[ow])|>que?/")
+        <<- -1>> =suggVerbInfi(\1)                                                                  # Le verbe devrait être à l’infinitif.
+
+TEST: ne jamais les {{cédé}}
+TEST: ne point nous {{donné}}
 TEST: ne rien {{finit}}
 TEST: ne jamais plus s’y {{frottait}}
 TEST: ne plus guère y {{pensée}}
 TEST: ne pas les {{contrariés}}
 TEST: Ne rien m’en {{dit}}
 TEST: Ne jamais lui {{donnait}} sa chance.
+TEST: Ne jamais les leur {{montré}}
 TEST: Il a décidé de ne plus {{mangés}} avec nous.
 TEST: ne plus {{mangez}} fait maigrir
 TEST: ne plus {{mangées}} fait maigrir
 TEST: ne pas {{allé}}
+TEST: ne jamais plus me les {{montrés}}
 TEST: Ne jamais {{mangez}} de viande !
 TEST: J’espère ne pas te déranger
 TEST: Ne pas te le donner, ce serait une insulte.
@@ -4864,11 +4909,11 @@ TEST: Mais gare à ne pas non plus trop surestimer la menace
 TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 
-__[i]/imp(imp_infinitif_erroné)__
-    n(?:e +|’)({w_2}er) +(?:pas|jamais) @@w
-    <<- morph(\1, ":V1.*:Y", False) and isStart() -1>> =suggVerbTense(\1, ":E", ":2p")              # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
+__imp_infinitif_erroné__
+    [<start>|,]  [ne|n’]  @:V1.*:Y  [pas|plus|jamais]
+        <<- -3>> =suggVerbTense(\3, ":E", ":2p")                                                    # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
 
-TEST: Non, ne {{manger}} pas ça.
+TEST: Non, ne {{manger}} pas ça.                                    ->> mangez
 TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 
 
@@ -4879,18 +4924,7 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 !!!
 !!!
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: purge                                                                                    
-@@@@
-@@@@
-@@@@
-@@@@
-
-
-__dates__
+__purge_dates__
     depuis le                           [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
     [le|du|au]                          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
     [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
@@ -4909,7 +4943,7 @@ TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
 TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
 
 
-__saisons__
+__purge_saisons__
     à  l’  [été|automne|hiver]  ~\d{2,4}
     au  printemps  ~\d{2,4}
         <<- ~>> *
@@ -4919,7 +4953,7 @@ TEST: Les cinq variantes de la couverture du magazine Wired d’avril 2016 consa
 TEST: c’est donc la cinquième en 50 ans
 
 
-__un_nombre__
+__purge_un_nombre__
     un  ~\d+  @:A.*:s¬:G
         <<-  ~2>> *
 
@@ -4927,7 +4961,7 @@ TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d�
 
 
 ## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
-__moi_toi_lui_elle_nous_vous_eux_elles_seul__
+__purge_pronom_seul__
     [moi|toi]       [seul|seule]
     lui             seul
     elle            seule
@@ -4937,7 +4971,7 @@ __moi_toi_lui_elle_nous_vous_eux_elles_seul__
         <<- ~1>> *
 
 
-__loc_de_début_phrase__
+__purge_début_phrase__
     <start>  car
     <start>  de plus
     <start>  et  ?puis¿
@@ -4949,7 +4983,7 @@ __loc_de_début_phrase__
         <<- ~1:0>> *
 
 
-__horaires_et_durée__
+__purge_horaires_et_durée__
     24  [heures|h]  [sur|/]  24
     7   [jours|j]   [sur|/]  7
     sept [jours|j]  [sur|/]  sept
@@ -4982,7 +5016,7 @@ TEST: Le train de 2 h 47 {{arriveraient}} en retard.
 TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
 
 
-__prépositions_qqn__
+__purge_prépositions_qqn__
     [après|avant|avec|pour|contre|sans|envers|chez|en|malgré|selon] les uns et les autres           [<end>|,|@:[VXG]¬>qui]
         <<- ~1:6>> *
 
@@ -5045,7 +5079,7 @@ __simplifications_partielles__
         <<- ~2:0>> *
 
 
-__locutions_latines__
+__purge_locutions_latines__
     [a|à]       [priori|postériori|posteriori|contrario|cappella|minima]
     ab          [absurdo|initio]
     ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
@@ -5058,7 +5092,7 @@ __locutions_latines__
         <<- ~>> *
 
 
-__ordre_alphabétique__
+__purge_locutions__
     à ~\d+(?:,\d+|)  %
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
     à aucun prix
@@ -13422,7 +13456,7 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 __code_legacy__
     legacy code
     code legacy
-        <<- -1:2>> code hérité|code reliquat|\1-\2|\2-\1                                            # \1 \2. Anglicisme superflu.
+        <<- -1:2>> code hérité|code reliquat                                                        # \1 \2. Anglicisme superflu.
 
 TEST: c’est du {{legacy code}}.
 TEST: ce {{code legacy}} est un cauchemar
@@ -13430,7 +13464,7 @@ TEST: ce {{code legacy}} est un cauchemar
 
 __être_en_xxxx__
     [>être|>rester|>demeurer] an [désaccord|accord]
-        <<- -2>> en                                                                                 # Confusion. Un an = une année.
+        <<- -2>> en                                                                                 # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
 
 TEST: Je suis {{an}} désaccord avec lui.
 
@@ -13443,11 +13477,6 @@ __faire_plaisir__
 TEST: Ça me fait {{plaisirs}}.
 
 
-__test__
-    je  ~co[mn]putes?  [que|qu’]  @(?::Os|:M)¬:X  @:I
-        <<- morph(\4, ":Os|:M", ":X") -5>> \1|\5                                                    # SUBJONCTIF.
-
-TEST: je conpute que Isabelle {{est}} partie.
 
 @@@@
 @@@@END_GRAPH                                                                                       
