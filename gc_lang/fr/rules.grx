@@ -4794,37 +4794,6 @@ TEST: comment les inégalités sociales impactent la santé des tout petits
 
 
 
-!!
-!!
-!!!! Adverbes de négation                                                                           
-!!
-!!
-
-__[i]/neg(ne_manquant1)__
-    (?:je|tu|ils?|on|elles?) ([bcdfgjklmnpqrstvwxz][\w-]*) (pas|rien|jamais|guère)  @@w,$
-    <<- morph(\1, ":[123][sp]", False) and not (re.search("(?i)^(?:jamais|rien)$", \2) and before(r"\b(?:que?|plus|moins) "))
-    -1>> ne \1                                                                                      # Ne … \2 : il manque l’adverbe de négation.
-
-__[i]/neg(ne_manquant2)__
-    (?:je|tu|ils?|on|elles?) ([aeéiouœ][\w-]*) (pas|rien|jamais|guère)    @@w,$
-    <<- morph(\1, ":[123][sp]", False) and not (re.search("(?i)^(?:jamais|rien)$", \2) and before(r"\b(?:que?|plus|moins) "))
-    -1>> n’\1                                                                                       # Ne … \2 : il manque l’adverbe de négation.
-
-__[i]/neg(ne_manquant3)__
-    (?:je|tu|ils?|on|elles?) ([mts](?:e +|’(?:en|y) +|’)|[vn]ous +|l(?:e +|a +|eur +|ui +|l’))({w_1}) (pas|rien|jamais|guère)  @@*,w,$
-    <<- morph(\2, ":[123][sp]", False) and not (re.search("(?i)^(?:jamais|rien)$", \3) and before(r"\b(?:que?|plus|moins) "))
-    -1>> ne \1                                                                                      # Ne … \3 : il manque l’adverbe de négation.
-
-__[i]/neg(ne_manquant4)__
-    (?:je|tu|ils?|on|elles?) (y|en) ({w_1}) (pas|rien|jamais|guère)  @@w,w,$
-    <<- morph(\2, ":[123][sp]", False) and not (re.search("(?i)^(?:jamais|rien)$", \3) and before(r"\b(?:que?|plus|moins) "))
-    -1>> n’\1                                                                                       # Ne … \3 : il manque l’adverbe de négation.
-
-TEST: __neg__ On {{a}} pas compris.
-TEST: __neg__ Il {{part}} pas encore.
-TEST: __neg__ On {{vous }}a pas compris.
-TEST: __neg__ On {{en}} a pas.
-TEST: __neg__ Il {{y}} a jamais d’eau.
 
 
 
@@ -4837,6 +4806,74 @@ TEST: __neg__ Il {{y}} a jamais d’eau.
 @@@@
 @@@@
 @@@@
+
+
+!!
+!!
+!!!! Adverbes de négation                                                                           
+!!
+!!
+
+__ne_manquant__
+    [<start>|,]  je             @>[bcdfgjklmnpqrstvwxz].*:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             @>[bcdfgjklmnpqrstvwxz].*:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   @>[bcdfgjklmnpqrstvwxz].*:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           @>[bcdfgjklmnpqrstvwxz].*:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           @>[bcdfgjklmnpqrstvwxz].*:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    @>[bcdfgjklmnpqrstvwxz].*:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+        <<- /neg/ -3>> ne \3                                                                        # Ne … \4 : il manque l’adverbe de négation.
+
+    [<start>|,]  je             [le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’]     @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             [le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’]     @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   [le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’]     @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           [le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’]     @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           [le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’]     @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    [le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’]     @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+        <<- /neg/ -3>> ne \3                                                                        # Ne … \5 : il manque l’adverbe de négation.
+
+    [<start>|,]  je             [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  je             [me|te|nous|vous] [le|la|les]                           @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             [me|te|nous|vous] [le|la|les]                           @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   [me|te|nous|vous] [le|la|les]                           @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           [me|te|nous|vous] [le|la|les]                           @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           [me|te|nous|vous] [le|la|les]                           @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    [me|te|nous|vous] [le|la|les]                           @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  je             [le|la|les] [lui|leur]                                  @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             [le|la|les] [lui|leur]                                  @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   [le|la|les] [lui|leur]                                  @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           [le|la|les] [lui|leur]                                  @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           [le|la|les] [lui|leur]                                  @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    [le|la|les] [lui|leur]                                  @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+        <<- /neg/ -3>> ne \3                                                                        # Ne … \6 : il manque l’adverbe de négation.
+
+    [<start>|,]  [je|j’]        @>[aeéiouœ].*:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             @>[aeéiouœ].*:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   @>[aeéiouœ].*:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           @>[aeéiouœ].*:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           @>[aeéiouœ].*:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    @>[aeéiouœ].*:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+        <<- /neg/ -3>> n’\3                                                                         # Ne … \4 : il manque l’adverbe de négation.
+
+    [<start>|,]  [je|j’]        [en|y]  @:1s¬:(?:Oo|X)      [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             [en|y]  @:2s¬:(?:Oo|X)      [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   [en|y]  @:3s¬:(?:Oo|X)      [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           [en|y]  @:1p¬:(?:Oo|X)      [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           [en|y]  @:2p¬:(?:Oo|X)      [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    [en|y]  @:3p¬:(?:Oo|X)      [pas|rien|jamais|guère|point]
+        <<- /neg/ -3>> n’\3                                                                         # Ne … \5 : il manque l’adverbe de négation.
+
+TEST: __neg__ On {{a}} pas compris.
+TEST: __neg__ Il {{part}} pas encore.
+TEST: __neg__ On {{vous}} a pas compris.
+TEST: __neg__ On {{en}} a pas.
+TEST: __neg__ Il {{y}} a jamais d’eau.
+TEST: __neg__ je {{deviendrai}} pas hargneux.
+TEST: __neg__ il {{le}} lui donne pas souvent.
 
 
 !!
@@ -4875,7 +4912,7 @@ __infi_ne_xxx__
     ne jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
     ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
     ne plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-        <<- /infi/ -1>> =suggVerbInfi(\1)                                                                  # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
+        <<- /infi/ -1>> =suggVerbInfi(\1)                                                           # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
     ne [pas|jamais|plus|rien|guère|point] [beaucoup|trop]
         <<- ~3>> *
@@ -4906,7 +4943,7 @@ TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 __imp_infinitif_erroné__
     [<start>|,]  [ne|n’]  @:V1.*:Y  [pas|plus|jamais]
-        <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                                    # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
+        <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                              # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
 
 TEST: Non, ne {{manger}} pas ça.                                    ->> mangez
 TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
