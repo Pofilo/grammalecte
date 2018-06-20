@@ -708,7 +708,7 @@ class TokenSentence:
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                     # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
                     if not sOption or dOptions.get(sOption, False):
-                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, sCountry, bCondMemo)
+                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo)
                         if bCondMemo:
                             if cActionType == "-":
                                 # grammar error

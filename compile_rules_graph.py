@@ -15,10 +15,10 @@ def prepareFunction (s, bTokenValue=False):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
-    s = re.sub(r"(morph|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
-    s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
-    s = re.sub(r"token\(\s*(\d)", 'nextToken(\\1', s)                                       # token(n)
-    s = re.sub(r"token\(\s*-(\d)", 'prevToken(\\1', s)                                      # token(-n)
+    s = re.sub(r"(morph|analyse|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
+    s = re.sub(r"(morph|analyse)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                     # next token
+    s = re.sub(r"(morph|analyse)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                     # previous token
     s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
     s = re.sub(r"after\(\s*", 'look(s[m.end():], ', s)                                      # after(s)
     s = re.sub(r"textarea\(\s*", 'look(s, ', s)                                             # textarea(s)
@@ -335,7 +335,7 @@ def make (lRule, dDef, sLang, bJavaScript):
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in dFUNCTIONS.items():
         if sFuncName.startswith("g_c_"): # condition
-            sParams = "lToken, nTokenOffset, sCountry, bCondMemo"
+            sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo"
         elif sFuncName.startswith("g_m_"): # message
             sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("g_s_"): # suggestion
