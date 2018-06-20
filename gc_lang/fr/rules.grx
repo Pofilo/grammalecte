@@ -4736,54 +4736,82 @@ TEST: Donne à manger à {{tout}} ceux qui sont là.
 TEST: Revenus de tout ceux qui sont partis ont perdu la foi.
 
 
-__[i]/gn(gn_toutes_déterminant_fem_plur)__  toute(?= (?:celles|[clmtsd]es)\b)   <<- ->> toutes      # Erreur d’accord probable.
-__[i]/gn(gn_tout_ce)__                      toute(?= cet?\b)                    <<- ->> tout        # Erreur d’accord probable.
-__[i]/gn(gn_tout_mon)__                     toute(?= mon [bcdfgjklmnpqrstvwxz]) <<- ->> tout        # Erreur d’accord probable.
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                  
+@@@@
+@@@@
+@@@@
+@@@@
+
+
+__toute_det__
+    toute [celles|les|des|mes|tes|ses|ces]
+        <<- -1>> toutes                                                                             # Erreur d’accord probable avec “\2”.
+
+    toute [ce|cet]
+        <<- -1>> tout                                                                               # Erreur d’accord probable avec “\2”.
+
+    toute mon ~^[bcdfgjklmnpqrstvwxz]
+        <<- -1>> tout                                                                               # Erreur d’accord probable avec “\2”.
 
 TEST: {{Toute}} celles qui viendront…
 TEST: et {{toute}} ce barouf ne nous a apporté que des ennuis.
 TEST: car {{toute}} mon savoir vient d’elle
 
 
-__[i]/gn(gn_toutes_déterminant_nom_fem_plur)__
-    (tous) +(?:[lcmtsd]es) +({w_2})  @@0,$
-    <<- morphex(\2, ":f", ":(?:[123][sp]|[me])") and morphex(word(-1), ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/", True)
-    -1>> toutes                                                                                     # Erreur d’accord probable. « \2 » est féminin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggMasPlur(@, True)                                      # Erreur d’accord probable. « \1 » est masculin.
-__[i]/gn(gn_tous_déterminant_nom_mas_plur)__
-    (toutes) +(?:[lcmtsd]es) +({w_2})  @@0,$
-    <<- morphex(\2, ":m", ":(?:[123][sp]|[fe])") and morphex(word(-1), ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/", True)
-    -1>> tous                                                                                       # Erreur d’accord probable. « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemPlur(@, True)                                      # Erreur d’accord probable. « \1 » est féminin.
+__tous_p_det_nom__
+    [<start>|,]                                 tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
+    [<start>|,]                                 tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
+    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
+    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
+        <<- /gn/ -2>> toutes                                                                        # Erreur d’accord probable : « \4 » est féminin.
+        <<- /gn/ __also__ and hasFemForm(\4) -4>> =suggMasPlur(\4, True)                            # Erreur d’accord probable : « \2 » est masculin.
 
 TEST: {{tous}} ces {{idiotes}}
+
+__toutes_p_det_nom__
+    [<start>|,]                                 toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
+    [<start>|,]                                 toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
+    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
+    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
+        <<- /gn/ -2>> tous                                                                          # Erreur d’accord probable : « \4 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\4) -4>> =suggFemPlur(\4, True)                            # Erreur d’accord probable : « \2 » est féminin.
+
 TEST: {{toutes}} mes {{bars}}
 
 
-__[i]/gn(gn_tout_nom_mas_sing)__
-    tout ({w3})  @@5
-    <<- morphex(\1, ":N.*:[fp]", ":(?:A|W|G|M[12P]|Y|[me]:i|3s)") and morph(word(-1), ":R|>de/", False, True)
-    -1>> =suggMasSing(@, True)                                                                      # “\1” devrait être au masculin singulier.
+__tout_p_nom__
+    [<start>|,] tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
+    de          tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
+    @:R         tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
+        <<- /gn/ -3>> =suggMasSing(\3, True)                                                        # Accord avec “tout” : “\3” devrait être au masculin singulier.
 
-__[i]/gn(gn_toute_nom_fem_sing)__
-    toute ({w3})  @@6
-    <<- morph(\1, ":[NAQ].*:[mp]") and morph(word(-1), ":R|>de/", False, True)
-    -1>> =suggFemSing(@, True)                                                                      # “\1” devrait être au féminin singulier.
+__toute_p_nom__
+    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|G|M|[fe]:[is])
+    de          toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+    @:R         toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+        <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulier.
 
-__[i]/gn(gn_tous_nom_mas_plur)__
-    tous ({w3})  @@5
-    <<- morph(\1, ":[NAQ].*:[fs]") and morph(word(-1), ":R|>de/", False, True)
-    -1>> =suggMasPlur(@, True)                                                                      # “\1” devrait être au masculin pluriel.
+__tous_p_nom__
+    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|G|M|[me]:[ip])
+    de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
+    @:R         tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
+        <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        # Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
-__[i]/gn(gn_toutes_nom_fem_plur)__
-    toutes ({w3})  @@7
-    <<- morph(\1, ":[NAQ].*:[ms]") and morph(word(-1), ":R|>de/", False, True)
-    -1>> =suggFemPlur(@, True)                                                                      # “\1” devrait être au féminin pluriel.
+__toutes_p_nom__
+    [<start>|,] toutes  @:[NA].*:[ms]¬:(?:W|G|M|[fe]:[ip])
+    de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
+    @:R         toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
+        <<- /gn/ -3>> =suggFemPlur(\3, True)                                                        # Accord avec “toutes” : “\3” devrait être au féminin pluriel.
 
 TEST: Tout {{hommes}}
 TEST: De tous {{âge}} !
-TEST: avec toutes {{femme}}                                   ->> femmes
-TEST: sur toutes {{armure}}                                   ->> armures
+TEST: avec toutes {{femme}}                                     ->> femmes
+TEST: sur toutes {{armure}}                                     ->> armures
 TEST: Toute {{époux}} doit faire preuve de bienveillance
 TEST: Il se souvient de toute mon histoire.
 TEST: Tout les sépare.
@@ -4792,20 +4820,6 @@ TEST: vos tout débuts furent difficiles
 TEST: aux tout débuts, il y eut bien des erreurs
 TEST: comment les inégalités sociales impactent la santé des tout petits
 
-
-
-
-
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                    
-@@@@
-@@@@
-@@@@
-@@@@
 
 
 !!
@@ -4882,36 +4896,35 @@ TEST: __neg__ il {{le}} lui donne pas souvent.
 !!
 !!
 
-
 __infi_ne_xxx__
-    ne [pas|rien|guère|point]                   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] [trop|beaucoup]   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point]                   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] [trop|beaucoup]   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point]                   [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] [trop|beaucoup]   [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point]                   [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] [trop|beaucoup]   [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
-    ne plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/")
+    ne [pas|rien|guère|point]                   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] [trop|beaucoup]   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point]                   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] [trop|beaucoup]   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point]                   [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] [trop|beaucoup]   [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point]                   [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] [trop|beaucoup]   [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
         <<- /infi/ -1>> =suggVerbInfi(\1)                                                           # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
     ne [pas|jamais|plus|rien|guère|point] [beaucoup|trop]
@@ -4957,10 +4970,10 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 !!!
 
 __purge_dates__
-    depuis le                           [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    [le|du|au]                          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    à  compter  du                      [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    depuis le           [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    [le|du|au]          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    [jusqu’|jusqu]  au  [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    à  compter  du      [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
     en  l’  an  ~\d{2,5}
     en  l’  an  de  grâce  ~\d{2,5}
     en  {mois}  ~\d{2,5}
