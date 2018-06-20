@@ -4766,22 +4766,30 @@ TEST: car {{toute}} mon savoir vient d’elle
 __tous_p_det_nom__
     [<start>|,]                                 tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
     [<start>|,]                                 tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
-    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
-    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
         <<- /gn/ -2>> toutes                                                                        # Erreur d’accord probable : « \4 » est féminin.
         <<- /gn/ __also__ and hasFemForm(\4) -4>> =suggMasPlur(\4, True)                            # Erreur d’accord probable : « \2 » est masculin.
 
+    tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
+    tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
+        <<- /gn/ morph(<1, ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/") -1>> toutes                 # Erreur d’accord probable : « \3 » est féminin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggMasPlur(\3, True)                            # Erreur d’accord probable : « \1 » est masculin.
+
 TEST: {{tous}} ces {{idiotes}}
+TEST: indubitablement {{tous}} des {{privilégiées}}
 
 __toutes_p_det_nom__
     [<start>|,]                                 toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
     [<start>|,]                                 toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
-    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
-    @:¬:(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/     toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
         <<- /gn/ -2>> tous                                                                          # Erreur d’accord probable : « \4 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\4) -4>> =suggFemPlur(\4, True)                            # Erreur d’accord probable : « \2 » est féminin.
 
+    toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
+    toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
+        <<- /gn/ morph(<1, ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/") -1>> tous                   # Erreur d’accord probable : « \3 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                            # Erreur d’accord probable : « \1 » est féminin.
+
 TEST: {{toutes}} mes {{bars}}
+TEST: vraiment {{toutes}} des {{costauds}}
 
 
 __tout_p_nom__
