@@ -605,6 +605,23 @@ class TokenSentence:
             if bDebug:
                 print("MATCH:", dToken["sValue"])
             yield dGraph[dNode[dToken["sValue"]]]
+        if dToken["sValue"].istitle():
+            sValue = dToken["sValue"].lower()
+            if sValue in dNode:
+                if bDebug:
+                    print("MATCH:", sValue)
+                yield dGraph[dNode[sValue]]
+        elif dToken["sValue"].isupper():
+            sValue = dToken["sValue"].lower()
+            if sValue in dNode:
+                if bDebug:
+                    print("MATCH:", sValue)
+                yield dGraph[dNode[sValue]]
+            sValue = dToken["sValue"].capitalize()
+            if sValue in dNode:
+                if bDebug:
+                    print("MATCH:", sValue)
+                yield dGraph[dNode[sValue]]
         # token lemmas
         if "<lemmas>" in dNode:
             for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
