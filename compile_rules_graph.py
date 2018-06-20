@@ -110,7 +110,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         for iAction, sAction in enumerate(sActions.split(" <<- "), 1):
             sAction = sAction.strip()
             if sAction:
-                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
+                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction) + "_" + str(len(lToken))
                 aAction = createAction(sActionId, sAction, nPriority, len(lToken), dPos)
                 if aAction:
                     dACTIONS[sActionId] = aAction
