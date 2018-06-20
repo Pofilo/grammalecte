@@ -103,6 +103,17 @@ def _loadRules ():
 
 #### Parsing
 
+_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
+_zBeginOfParagraph = re.compile(r"^\W*")
+_zEndOfParagraph = re.compile(r"\W*$")
+
+def _getSentenceBoundaries (sText):
+    iStart = _zBeginOfParagraph.match(sText).end()
+    for m in _zEndOfSentence.finditer(sText):
+        yield (iStart, m.end())
+        iStart = m.end()
+
+
 def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
     "analyses the paragraph sText and returns list of errors"
     #sText = unicodedata.normalize("NFC", sText)
@@ -140,17 +151,6 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
             except:
                 raise
     return aErrors.values() # this is a view (iterable)
-
-
-_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
-_zBeginOfParagraph = re.compile(r"^\W*")
-_zEndOfParagraph = re.compile(r"\W*$")
-
-def _getSentenceBoundaries (sText):
-    iStart = _zBeginOfParagraph.match(sText).end()
-    for m in _zEndOfSentence.finditer(sText):
-        yield (iStart, m.end())
-        iStart = m.end()
 
 
 def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
