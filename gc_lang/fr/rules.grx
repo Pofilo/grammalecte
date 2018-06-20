@@ -4891,18 +4891,18 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 
 
 __dates__
-    >depuis le                          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    [>le|>du|>au]                       [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    depuis le                           [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    [le|du|au]                          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
     [jusqu’|Jusqu’|jusqu|Jusqu]  au     [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    >à  compter  du                     [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    >en  l’  an  ~\d{2,5}
-    >en  l’  an  de  grâce  ~\d{2,5}
-    >en  {mois}  ~\d{2,5}
-    [>de|d’|D’]  {mois}  ~\d{2,5}
-    >en  ~\d{2,5}  [,|<end>]
-    >en  ~\d{2,5}  @:¬:[AN].*:[pi]
-    >de  ~\d{2,5}  @:A.*:s
-    >à  la  {mi_mois}    ?~\d{2,5}¿
+    à  compter  du                      [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
+    en  l’  an  ~\d{2,5}
+    en  l’  an  de  grâce  ~\d{2,5}
+    en  {mois}  ~\d{2,5}
+    [de|d’|D’]  {mois}  ~\d{2,5}
+    en  ~\d{2,5}  [,|<end>]
+    en  ~\d{2,5}  @:¬:[AN].*:[pi]
+    de  ~\d{2,5}  @:A.*:s
+    à  la  {mi_mois}    ?~\d{2,5}¿
         <<- ~>> *
 
 TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
@@ -4910,8 +4910,8 @@ TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
 
 
 __saisons__
-    >à  l’  [été|automne|hiver]  ~\d{2,4}
-    >au  printemps  ~\d{2,4}
+    à  l’  [été|automne|hiver]  ~\d{2,4}
+    au  printemps  ~\d{2,4}
         <<- ~>> *
 
 TEST: Une étude de 2005 publiée dans le Journal
@@ -4920,7 +4920,7 @@ TEST: c’est donc la cinquième en 50 ans
 
 
 __un_nombre__
-    >un  ~\d+  @:A.*:s¬:G
+    un  ~\d+  @:A.*:s¬:G
         <<-  ~2>> *
 
 TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
@@ -4928,23 +4928,23 @@ TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d�
 
 ## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
 __moi_toi_lui_elle_nous_vous_eux_elles_seul__
-    [>moi|>toi]     [seul|seule]
-    >lui            seul
-    >elle           seule
-    [>nous|>vous]   [seuls|seules]
-    >eux            seuls
-    >elles          seules
+    [moi|toi]       [seul|seule]
+    lui             seul
+    elle            seule
+    [nous|vous]     [seuls|seules]
+    eux             seuls
+    elles           seules
         <<- ~1>> *
 
 
 __loc_de_début_phrase__
-    <start>  >car
-    <start>  >de plus
-    <start>  >et  ?puis¿
-    <start>  >mais
-    <start>  [m’|M’]  est   avis  [que|qu’|qu]
-    <start>  >or  donc
-    <start>  >puis
+    <start>  car
+    <start>  de plus
+    <start>  et  ?puis¿
+    <start>  mais
+    <start>  m’  est   avis  [que|qu’|qu]
+    <start>  or  donc
+    <start>  puis
     [<start>|,] grand bien lui fasse
         <<- ~1:0>> *
 
@@ -4952,30 +4952,30 @@ __loc_de_début_phrase__
 __horaires_et_durée__
     24  [heures|h]  [sur|/]  24
     7   [jours|j]   [sur|/]  7
-    >sept [jours|j]  [sur|/]  sept
-    >vingt-quatre  heures  [sur|/] vingt-quatre
+    sept [jours|j]  [sur|/]  sept
+    vingt-quatre  heures  [sur|/] vingt-quatre
         <<- ~>> *
 
-    >heure       après   >heure
-    >minute      après   >minute
-    >seconde     après   >seconde
-    >jour        après   >jour
-    >nuit        après   >nuit
-    >semaine     après   >semaine
-    >trimestre   après   >trimestre
-    >semestre    après   >semestre
-    >mois        après   >mois
-    >décennie    après   >décennie
-    >année       après   >année
-    >siècle      après   >siècle
-    >génération  après   >génération
+    heure       après   heure
+    minute      après   minute
+    seconde     après   seconde
+    jour        après   jour
+    nuit        après   nuit
+    semaine     après   semaine
+    trimestre   après   trimestre
+    semestre    après   semestre
+    mois        après   mois
+    décennie    après   décennie
+    année       après   année
+    siècle      après   siècle
+    génération  après   génération
         <<- ~>> *
 
-    [>à|>de]  ~\d\d?  h  ?~\d\d?¿
-    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   [du|ce]  [matin|soir]
-    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   de  l’ après-midi
-    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   cet  après-midi
-    [>à|>de]  ~\d\d?  h  ?~\d\d?¿   demain  [matin|soir|après-midi]
+    [à|de]  ~\d\d?  h  ?~\d\d?¿
+    [à|de]  ~\d\d?  h  ?~\d\d?¿   [du|ce]  [matin|soir]
+    [à|de]  ~\d\d?  h  ?~\d\d?¿   de  l’ après-midi
+    [à|de]  ~\d\d?  h  ?~\d\d?¿   cet  après-midi
+    [à|de]  ~\d\d?  h  ?~\d\d?¿   demain  [matin|soir|après-midi]
         <<- ~>> *
 
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
@@ -4983,833 +4983,833 @@ TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
 
 
 __prépositions_qqn__
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>en|>malgré] les uns et les autres       [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|en|malgré|selon] les uns et les autres           [<end>|,|@:[VXG]¬>qui]
         <<- ~1:6>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|d’|D’|>malgré] on ne sait [qui|quoi]     [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|d’|D’|malgré|selon] on ne sait [qui|quoi]        [<end>|,|@:[VXG]¬>qui]
         <<- ~1:5>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en|>malgré] tout un chacun          [<end>|,|@:[VXG]¬>qui]
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en|>malgré] tout le monde           [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] tout un chacun               [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] tout le monde                [<end>|,|@:[VXG]¬>qui]
         <<- ~1:4>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en|>malgré] tout ça                 [<end>|,|@:[VXG]¬>qui]
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en|>malgré] [vous|nous] autres      [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré] tout ça                            [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] [vous|nous] autres           [<end>|,|@:[VXG]¬>qui]
         <<- ~1:3>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|d’|D’|>en|>malgré]   [autrui|quelqu’un|quelqu’une]     [<end>|,|@:[VXG]¬>qui]
-    [>après|>avant|>avec|>envers|>chez|>malgré]                                     {pronom_obj}                      [<end>|,|@:[VXG]¬>qui]
-    [>contre|>pour|>sans|>de|>en]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|D’|en|malgré|selon]  [autrui|quelqu’un|quelqu’une]     [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|envers|chez|malgré|selon]                               {pronom_obj}                      [<end>|,|@:[VXG]¬>qui]
+    [contre|pour|sans|de|en]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
         <<- ~1:2>> *
 
-    >par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
+    par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
         <<- ~1:4>> *
 
-    >en   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]
+    en   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]
         <<- ~>> *
 
-    [>après|>avant|>avec|>pour|>contre|>sans|>envers|>chez|>de|>en|>malgré] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
         <<- ~>> *
 
-    >entre [moi|toi|lui|elle|elles|nous|vous|eux] et [moi|toi|lui|elle|elles|nous|vous|eux]
-    >entre [nous|vous|eux|elles] [deux|trois|quatre|cinq|six|sept|huit|neuf|dix]
+    entre [moi|toi|lui|elle|elles|nous|vous|eux] et [moi|toi|lui|elle|elles|nous|vous|eux]
+    entre [nous|vous|eux|elles] [deux|trois|quatre|cinq|six|sept|huit|neuf|dix]
         <<- ~>> *
 
-    >ni   [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|eux|nous|vous]
+    ni   [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|eux|nous|vous] ?,¿ ni [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|eux|nous|vous]
         <<- ~>> *
 
-    >parmi [nous|vous] ?autres¿
-    >parmi [eux|elles]
+    parmi [nous|vous] ?autres¿
+    parmi [eux|elles]
         <<- ~>> *
 
-    >par-devers [moi|toi|lui|elle|elles|lui|eux|nous|vous]
+    par-devers [moi|toi|lui|elle|elles|lui|eux|nous|vous]
         <<- ~>> *
 
-    >quant à [moi|toi|lui|elle|elles|lui|eux|nous|vous]  [<end>|,|@:[VXG]¬>qui]
+    quant à [moi|toi|lui|elle|elles|lui|eux|nous|vous]  [<end>|,|@:[VXG]¬>qui]
         <<- ~1:3>> *
 
 TODO: comme
 
 
 __simplifications_partielles__
-    >comme tant d’ autres  @:R
+    comme tant d’ autres  @:R
         <<- ~1:4>> *
 
-    >en cours @¬>de
+    en cours @¬>de
         <<- ~1:2>> *
 
-    >et  /  >ou
+    et  /  ou
         <<- ~2:3>> *
 
-    >personne  d’ autre [que|qu’|qu]  [moi|toi|lui|elle|elles|nous|vous|eux]
+    personne  d’ autre [que|qu’|qu]  [moi|toi|lui|elle|elles|nous|vous|eux]
         <<- ~2:0>> *
 
 
 __locutions_latines__
-    [>a|>à]     [priori|postériori|posteriori|contrario|cappella|minima]
-    >ab         [absurdo|initio]
-    >ad         [hoc|hominem|infinitum|nauseam|valorem|patres]
-    >ad         vitam æternam
-    >ex         [nihilo|cathedra|absurdo|abrupto]
-    >id         est
-    >in         [abstracto|extenso|extremis|fine|petto|situ|utero|vitro|vivo]
-    >ipso       facto
-    >mutatis    mutandis
+    [a|à]       [priori|postériori|posteriori|contrario|cappella|minima]
+    ab          [absurdo|initio]
+    ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
+    ad          vitam æternam
+    ex          [nihilo|cathedra|absurdo|abrupto]
+    id          est
+    in          [abstracto|extenso|extremis|fine|petto|situ|utero|vitro|vivo]
+    ipso        facto
+    mutatis     mutandis
         <<- ~>> *
 
 
 __ordre_alphabétique__
-    >à  ~\d+(?:,\d+|)  %
-    >à  [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
-    >à  aucun prix
-    >à  autre chose
-    >à  bas [cout|coût|prix]
-    >à  bâtons rompus
-    >à  beaucoup près
-    >à  belles dents
-    >à  bien des égards
-    >à  bien pire
-    >à  bon [compte|escient|droit]
-    >à  bout  de [bras|souffle|force|forces|nerf|nerfs]
-    >à  bout  [portant|touchant]
-    >à  bras ouverts
-    >à  bras le corps
-    >à  brève échéance
-    >à  but ?non¿ lucratif
-    >à  cause [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
-    >à  ce [compte-là|moment-là|titre]
-    >à  cet égard
-    >à  cet instant ?[exact|précis]¿
-    >à  cette [date|occasion]
-    >à  cette époque
-    >à  cette époque de l’année
-    >à  cette heure
-    >à  cette heure du jour
-    >à  cette heure de la [journée|nuit]
-    >à  cette heure [tardive|matinale]
-    >à  ciel ouvert
-    >à  chaque [fois|instant]
-    >à  chaudes larmes
-    >à  cœur [joie|ouvert|perdu]
-    >à  corps perdu
-    >à  côté  [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
-    >à  couilles rabattues
-    >à  coup sûr
-    >à  couper le souffle
-    >à  court terme
-    >à  courte [échéance|portée]
-    >à  des kilomètres à la ronde
-    >à  défaut d’autre chose
-    >à  dose homéopathique
-    >à  durée limitée
-    >à  de  [nombreuses|multiples]  reprises
-    >à  double [titre|tranchant]
-    >à  en juger par [mon|ton|son|notre|votre|leur] expérience
-    >à  en perdre haleine
-    >à  en perdre la tête
-    >à  faible  [allure|revenu]
-    >à  feu et à sang
-    >à  flanc de [colline|montagne]
-    >à  fleur de peau
-    >à  franchement parler
-    >à  géométrie variable
-    >à  grande échelle
-    >à  haut risque
-    >à  hue et à dia
-    >à  huis clos
-    >à  intervalles [irréguliers|réguliers]
-    >à  juste [raison|titre]
-    >à  l’ heure actuelle
-    >à  l’ heure [qu’|qu] il est
-    >à  l’ accoutumée
-    >à  l’ amiable
-    >à  l’ avance
-    >à  l’ avenir
-    >à  l’ avenir incertain
-    >à  l’ avenant
-    >à  l’ air libre
-    >à  l’ aveuglette
-    >à  l’ emporte-pièce
-    >à  l’ échelle [nationale|mondiale|régionale|départementale|cantonale|locale|galactique|universelle]
-    >à  l’ évidence
-    >à  l’ exclusion de toute autre chose
-    >à  l’ improviste
-    >à  l’ inverse
-    >à  l’ occasion
-    >à  l’ ordre du jour
-    >à  l’ œil nu
-    >à  l’ en croire
-    >à  l’ unanimité
-    >à  l’ un d’ entre eux
-    >à  l’ une d’ entre elles
-    >à  l’ [un|une] des leurs
-    >à  la  [bourre|con|dérive|dérobée|diable|fois|leur|longue|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
-    >à  la  bonne franquette
-    >à  la  limite du supportable
-    >à  la  lumière de tout [ceci|cela|ça]
-    >à  la  petite semaine
-    >à  la  pointe du progrès
-    >à  la  première occasion
-    >à  la  queue leu leu
-    >à  la  surprise générale
-    >à  la  virgule près
-    >à  long terme
-    >à  longue [échéance|portée]
-    >à  longueur [de|d’] [temps|journée|année]
-    >à  loyer modéré
-    >à  main [armée|droite|gauche|levée]
-    >à  mains nues
-    >à  maints égards
-    >à  maintes reprises
-    >à  marche forcée
-    >à  merveille
-    >à  [midi|minuit]  ?pile¿
-    >à  [mi-course|mi-distance|mi-temps]
-    >à  moindres frais
-    >à  mots couverts
-    >à  moyen terme
-    >à  moyenne échéance
-    >à  [mes|tes|ses|nos|vos|leurs] [côtés|dépens|trousses]
-    >à  [mes|tes|ses|nos|vos|leurs] risques et périls
-    >à  [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
-    >à  [ma|ta|sa|notre|votre|leur] grande [surprise|tristesse]
-    >à  [ma|ta|sa|notre|votre|leur] juste mesure
-    >à  [mon|ton|son|notre|votre|leur] [avis|détriment|encontre|égard|insu|sujet|tour]
-    >à  [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
-    >à  [mon|ton|son|notre|votre|leur] grand [désarroi|soulagement]
-    >à  n’ en pas douter
-    >à  n’ en plus finir
-    >à  n’ en point douter
-    >à  parler franc
-    >à  part [entière|ça|cela|ceci]
-    >à  parts égales
-    >à  partir [de|d’]  [aujourd’hui|ici|là|maintenant|rien]
-    >à  partir [de|d’]  [demain|hier]  ?[matin|midi|soir]¿
-    >à  pas de [géant|loup|tortue|velours]
-    >à  personne en danger
-    >à  perte de vue
-    >à  petit feu
-    >à  petite [dose|échelle]
-    >à  peu de choses près
-    >à  peu de [distance|frais]
-    >à  peu près
-    >à  pieds joints
-    >à  pile ou face
-    >à  plat ventre
-    >à  plate couture
-    >à  plein [régime|temps|nez]
-    >à  pleins poumons
-    >à  plus forte raison
-    >à  plus d’un titre
-    >à  point nommé
-    >à  portée de [main|tir]
-    >à  première vue
-    >à  prix [cassé|modique|cassés|modiques]
-    >à  proprement parler
-    >à  qui de droit
-    >à  qui mieux mieux
-    >à  qui que ce soit
-    >à  quelque distance
-    >à  quelques [exceptions|nuances] près
-    >à  quelques-uns d’ entre [nous|vous|eux]
-    >à  quelques-unes d’ entre [nous|vous|elles]
-    >à  ras [bord|bords]
-    >à  rude épreuve
-    >à  s’ y méprendre
-    >à  somme nulle
-    >à  tel point
-    >à  temps  [plein|partiel|complet]
-    >à  tête reposée
-    >à  tire d’ [aile|ailes]
-    >à  [tire-d’aile|tire-d’ailes]
-    >à  titre  [conservatoire|expérimental|indicatif|informatif|grâcieux|personnel|posthume]
-    >à  titre  d’ exemple
-    >à  tombeau ouvert
-    >à  tort ou à raison
-    >à  tort et à travers
-    >à  tour de  [bras|rôle]
-    >à  tout [âge|crin|instant|jamais|moment|prix]
-    >à  tout bout de champ
-    >à  tout le [moins|monde]
-    >à  tout point de vue
-    >à  tout un chacun
-    >à  toute [allure|bride|épreuve|force|vitesse|volée]
-    >à  toute heure
-    >à  toute heure du jour
-    >à  toute heure du jour et de la nuit
-    >à  toute heure de la nuit
-    >à  toute heure de la nuit et du jour
-    >à  tous crins
-    >à  tous points de vue
-    >à  toutes fins utiles
-    >à  toutes jambes
-    >à  tu et à toi
-    >à  un moment donné
-    >à  usage interne
-    >à  visage découvert
-    >à  visage humain
-    >à  vive allure
-    >à  voix [haute|basse]
-    >à  vol d’ oiseau
-    >à  vrai dire
-    >à  vue d’ œil
-    >à  ?bien¿ y regarder de plus près
-    >à  ?bien¿ y [penser|réfléchir|songer|repenser]
-    [advienne|Advienne] que pourra
-    >ah
-    >après cette date ?fatidique¿
-    >après [moi|toi|soi|lui|eux]
-    >après mûre réflexion
-    >après tout ,
-    >après un certain temps
-    >après un bon bout de temps
-    >au-dessus [de|d’] {pronom_obj}
-    >au-delà du descriptible
-    >au [dernier|même|bon|mauvais] [moment|instant]
-    >au bas mot
-    >au beau fixe
-    >au bon moment
-    >au bout du [compte|rouleau]
-    >au bout d’ un moment
-    >au cas par cas
-    >au commencement
-    >au contraire
-    >au coude à coude
-    >au coup par coup
-    >au cours des @:B [dernières|derniers|prochaines|prochains] [années|mois|siècles] <<- ~>> *
-    >au demeurant
-    >au doigt mouillé
-    >au débotté
-    >au début
-    >au fil des ans
-    >au fil du temps
-    >au grand [complet|jamais]
-    >au hasard
-    >au jour et à l’ heure dits
-    >au jugé
-    >au le jour
-    >au leur
-    >au lieu de [cela|ceci|ça|quoi]
-    >au loin
-    >au milieu de nulle part
-    >au moment opportun
-    >au même titre que n’ importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
-    >au pas de [charge|course]
-    >au plus [près|pressé|vite|tôt|tard]
-    >au plus haut point
-    >au premier abord
-    >au propre comme au figuré
-    >au préalable
-    >au quotidien
-    >au ras des pâquerettes
-    >au saut du lit
-    >au sens [figuré|large|propre]
-    >au surplus
-    >au ~[xXvViI]+[eᵉ] siècle
-    ?>tout¿ >au fond [de|d’] {pronom_obj}
-    >aux [abois|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
-    >autant que [nécessaire|possible|prévu]
-    >autant que faire se peut
-    >autour [de|d’] {pronom_obj}
-    >autrement dit
-    >av. J.-C.
-    >avant longtemps
-    >avant terme
-    >avant tout le monde
-    >avant toute chose
-    >avant toutes choses
-    >avant d’ aller plus loin
-    >avant J.-C.
-    >avant Jésus-Christ
-    >avant d’ en arriver là
-    >avant de faire quoi que ce soit
-    >avant de faire quoi que ce soit [de|d’] ?@:W¿ [stupide|crétin|con|idiot]
-    >avant [qu’|qu] il ne soit trop tard
-    >avant un bon bout de temps
-    >avec [brio|joie|légèreté|insistance|peine]
-    >avec autre chose
-    >avec le plus grand soin
-    >avec pertes et fracas
-    >avec un peu de chance
-    >avec tout le respect que je [vous|te|leur|lui] dois
-    >avec tout le respect que nous [vous|te|leur|lui] devons
-    >avec tout un chacun
-    >avec un peu de chance
-    >beaucoup [plus|moins]
+    à ~\d+(?:,\d+|)  %
+    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
+    à aucun prix
+    à autre chose
+    à bas [cout|coût|prix]
+    à bâtons rompus
+    à beaucoup près
+    à belles dents
+    à bien des égards
+    à bien pire
+    à bon [compte|escient|droit]
+    à bout  de [bras|souffle|force|forces|nerf|nerfs]
+    à bout  [portant|touchant]
+    à bras ouverts
+    à bras le corps
+    à brève échéance
+    à but ?non¿ lucratif
+    à cause [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
+    à ce [compte-là|moment-là|titre]
+    à cet égard
+    à cet instant ?[exact|précis]¿
+    à cette [date|occasion]
+    à cette époque
+    à cette époque de l’année
+    à cette heure
+    à cette heure du jour
+    à cette heure de la [journée|nuit]
+    à cette heure [tardive|matinale]
+    à ciel ouvert
+    à chaque [fois|instant]
+    à chaudes larmes
+    à cœur [joie|ouvert|perdu]
+    à corps perdu
+    à côté  [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
+    à couilles rabattues
+    à coup sûr
+    à couper le souffle
+    à court terme
+    à courte [échéance|portée]
+    à des kilomètres à la ronde
+    à défaut d’autre chose
+    à dose homéopathique
+    à durée limitée
+    à de  [nombreuses|multiples]  reprises
+    à double [titre|tranchant]
+    à en juger par [mon|ton|son|notre|votre|leur] expérience
+    à en perdre haleine
+    à en perdre la tête
+    à faible  [allure|revenu]
+    à feu et à sang
+    à flanc de [colline|montagne]
+    à fleur de peau
+    à franchement parler
+    à géométrie variable
+    à grande échelle
+    à haut risque
+    à hue et à dia
+    à huis clos
+    à intervalles [irréguliers|réguliers]
+    à juste [raison|titre]
+    à l’ heure actuelle
+    à l’ heure [qu’|qu] il est
+    à l’ accoutumée
+    à l’ amiable
+    à l’ avance
+    à l’ avenir
+    à l’ avenir incertain
+    à l’ avenant
+    à l’ air libre
+    à l’ aveuglette
+    à l’ emporte-pièce
+    à l’ échelle [nationale|mondiale|régionale|départementale|cantonale|locale|galactique|universelle]
+    à l’ évidence
+    à l’ exclusion de toute autre chose
+    à l’ improviste
+    à l’ inverse
+    à l’ occasion
+    à l’ ordre du jour
+    à l’ œil nu
+    à l’ en croire
+    à l’ unanimité
+    à l’ un d’ entre eux
+    à l’ une d’ entre elles
+    à l’ [un|une] des leurs
+    à la  [bourre|con|dérive|dérobée|diable|fois|leur|longue|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
+    à la  bonne franquette
+    à la  limite du supportable
+    à la  lumière de tout [ceci|cela|ça]
+    à la  petite semaine
+    à la  pointe du progrès
+    à la  première occasion
+    à la  queue leu leu
+    à la  surprise générale
+    à la  virgule près
+    à long terme
+    à longue [échéance|portée]
+    à longueur [de|d’] [temps|journée|année]
+    à loyer modéré
+    à main [armée|droite|gauche|levée]
+    à mains nues
+    à maints égards
+    à maintes reprises
+    à marche forcée
+    à merveille
+    à [midi|minuit]  ?pile¿
+    à [mi-course|mi-distance|mi-temps]
+    à moindres frais
+    à mots couverts
+    à moyen terme
+    à moyenne échéance
+    à [mes|tes|ses|nos|vos|leurs] [côtés|dépens|trousses]
+    à [mes|tes|ses|nos|vos|leurs] risques et périls
+    à [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
+    à [ma|ta|sa|notre|votre|leur] grande [surprise|tristesse]
+    à [ma|ta|sa|notre|votre|leur] juste mesure
+    à [mon|ton|son|notre|votre|leur] [avis|détriment|encontre|égard|insu|sujet|tour]
+    à [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
+    à [mon|ton|son|notre|votre|leur] grand [désarroi|soulagement]
+    à n’ en pas douter
+    à n’ en plus finir
+    à n’ en point douter
+    à parler franc
+    à part [entière|ça|cela|ceci]
+    à parts égales
+    à partir [de|d’]  [aujourd’hui|ici|là|maintenant|rien]
+    à partir [de|d’]  [demain|hier]  ?[matin|midi|soir]¿
+    à pas de [géant|loup|tortue|velours]
+    à personne en danger
+    à perte de vue
+    à petit feu
+    à petite [dose|échelle]
+    à peu de choses près
+    à peu de [distance|frais]
+    à peu près
+    à pieds joints
+    à pile ou face
+    à plat ventre
+    à plate couture
+    à plein [régime|temps|nez]
+    à pleins poumons
+    à plus forte raison
+    à plus d’un titre
+    à point nommé
+    à portée de [main|tir]
+    à première vue
+    à prix [cassé|modique|cassés|modiques]
+    à proprement parler
+    à qui de droit
+    à qui mieux mieux
+    à qui que ce soit
+    à quelque distance
+    à quelques [exceptions|nuances] près
+    à quelques-uns d’ entre [nous|vous|eux]
+    à quelques-unes d’ entre [nous|vous|elles]
+    à ras [bord|bords]
+    à rude épreuve
+    à s’ y méprendre
+    à somme nulle
+    à tel point
+    à temps  [plein|partiel|complet]
+    à tête reposée
+    à tire d’ [aile|ailes]
+    à [tire-d’aile|tire-d’ailes]
+    à titre  [conservatoire|expérimental|indicatif|informatif|grâcieux|personnel|posthume]
+    à titre  d’ exemple
+    à tombeau ouvert
+    à tort ou à raison
+    à tort et à travers
+    à tour de  [bras|rôle]
+    à tout [âge|crin|instant|jamais|moment|prix]
+    à tout bout de champ
+    à tout le [moins|monde]
+    à tout point de vue
+    à tout un chacun
+    à toute [allure|bride|épreuve|force|vitesse|volée]
+    à toute heure
+    à toute heure du jour
+    à toute heure du jour et de la nuit
+    à toute heure de la nuit
+    à toute heure de la nuit et du jour
+    à tous crins
+    à tous points de vue
+    à toutes fins utiles
+    à toutes jambes
+    à tu et à toi
+    à un moment donné
+    à usage interne
+    à visage découvert
+    à visage humain
+    à vive allure
+    à voix [haute|basse]
+    à vol d’ oiseau
+    à vrai dire
+    à vue d’ œil
+    à ?bien¿ y regarder de plus près
+    à ?bien¿ y [penser|réfléchir|songer|repenser]
+    advienne que pourra
+    ah
+    après cette date ?fatidique¿
+    après [moi|toi|soi|lui|eux]
+    après mûre réflexion
+    après tout ,
+    après un certain temps
+    après un bon bout de temps
+    au-dessus [de|d’] {pronom_obj}
+    au-delà du descriptible
+    au [dernier|même|bon|mauvais] [moment|instant]
+    au bas mot
+    au beau fixe
+    au bon moment
+    au bout du [compte|rouleau]
+    au bout d’ un moment
+    au cas par cas
+    au commencement
+    au contraire
+    au coude à coude
+    au coup par coup
+    au cours des @:B [dernières|derniers|prochaines|prochains] [années|mois|siècles] <<- ~>> *
+    au demeurant
+    au doigt mouillé
+    au débotté
+    au début
+    au fil des ans
+    au fil du temps
+    au grand [complet|jamais]
+    au hasard
+    au jour et à l’ heure dits
+    au jugé
+    au le jour
+    au leur
+    au lieu de [cela|ceci|ça|quoi]
+    au loin
+    au milieu de nulle part
+    au moment opportun
+    au même titre que n’ importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
+    au pas de [charge|course]
+    au plus [près|pressé|vite|tôt|tard]
+    au plus haut point
+    au premier abord
+    au propre comme au figuré
+    au préalable
+    au quotidien
+    au ras des pâquerettes
+    au saut du lit
+    au sens [figuré|large|propre]
+    au surplus
+    au ~[xXvViI]+[eᵉ] siècle
+    ?tout¿ au fond [de|d’] {pronom_obj}
+    aux [abois|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
+    autant que [nécessaire|possible|prévu]
+    autant que faire se peut
+    autour [de|d’] {pronom_obj}
+    autrement dit
+    av. J.-C.
+    avant longtemps
+    avant terme
+    avant tout le monde
+    avant toute chose
+    avant toutes choses
+    avant d’ aller plus loin
+    avant J.-C.
+    avant Jésus-Christ
+    avant d’ en arriver là
+    avant de faire quoi que ce soit
+    avant de faire quoi que ce soit [de|d’] ?@:W¿ [stupide|crétin|con|idiot]
+    avant [qu’|qu] il ne soit trop tard
+    avant un bon bout de temps
+    avec [brio|joie|légèreté|insistance|peine]
+    avec autre chose
+    avec le plus grand soin
+    avec pertes et fracas
+    avec un peu de chance
+    avec tout le respect que je [vous|te|leur|lui] dois
+    avec tout le respect que nous [vous|te|leur|lui] devons
+    avec tout un chacun
+    avec un peu de chance
+    beaucoup [plus|moins]
     bel et bien
-    >bien assez tôt
-    >bien des fois
-    >bien souvent
-    >bon gré ?,¿ mal gré
-    >bras dessus ?,¿ bras dessous
-    >çà et là
-    >ce faisant
-    [>cela|>ça|>ceci] mis à part 
-    [>cela|>ça|>ceci] va sans dire
-    >ces derniers temps
-    >cette [fois-là|fois-ci]
-    >chaque fois
-    >comme avant
-    >comme autrefois
-    >comme d’ habitude
-    >comme toujours
-    >comme de juste
-    >comme bon [me|te|lui|leur|nous|vous] semble
-    >comme au bon vieux temps
-    >comme cul et chemise
-    >comme [frappé|frappée|frappés|frappées] par la foudre
-    >comme n’ importe où ?ailleurs¿
-    >comme par [enchantement|magie]
-    >comme par un fait exprès
-    >comme promis
-    >comme qui dirait
-    >comme si de rien n’ était
-    >contrairement aux apparences
-    >contre mauvaise fortune,? bon cœur
-    >contre nature
-    >contre toute [attente|vraisemblance]
-    >contre vents et marées
-    >contre [mon|ton|son|notre|votre|leur] gré
-    >côte à côte
-    [coute|coûte|Coute|Coûte] que [coute|coûte]
-    [croyez-le|crois-le|Croyez-le|Crois-le] ou [non|pas]
-    >cul par-dessus tête
-    >dans [ce|ces] [cas-là|cas-ci]
-    >dans ce cas [précis|particulier]
-    >dans ces cas [précis|particuliers]
-    >dans l’ [idéal|immédiat]
-    >dans la mesure du possible
-    >dans les années ~\d\d+
-    >dans peu de temps
-    >dans tout [cela|ça|ceci]
-    >dans très peu de temps
-    >dans un cas comme dans l’autre
-    >dans une [certaine|large|moindre] mesure
-    >début {mois} ~\d\d{2,5}
-    >au >début {mois} ~\d\d{2,5}
-    >en ce début {mois} ~\d\d{2,5}
-    [d’|D’] abord
-    [d’|D’] affilée
-    [d’|D’] ailleurs
-    [d’|D’] année en année
-    [d’|D’] aujourd’hui
-    [d’|D’] antan
-    [d’|D’] autant [plus|moins]
-    [d’|D’] [autrefois|part]
-    [d’|D’] autres fois
-    [d’|D’] [arrache-pied|arrachepied]
-    [d’|D’] arrière en avant
-    [d’|D’] avant en arrière
-    [d’|D’] à côté
-    [d’|D’] âge mûr
-    [d’|D’] emblée
-    [d’|D’] empoigne
-    [d’|D’] en face
-    [d’|D’] entre [nous|vous|eux|elles]
-    [d’|D’] entrée de jeu
-    [d’|D’] est en ouest
-    [d’|D’] extrême [droite|gauche]
-    [d’|D’] [extrême-droite|extrême-gauche]
-    [d’|D’] [égal|égale] à [égal|égale]
-    [d’|D’] habitude
-    [d’|D’] heure en heure
-    [d’|D’] hier ?[matin|soir|après-midi]¿
-    [d’|D’] ici ?[là|peu]¿
-    [d’|D’] ici peu de temps
-    [d’|D’] ordinaire
-    [d’|D’] origine [inconnue|douteuse|plébéienne|aristocratique]
-    [d’|D’] ordre général
-    [d’|D’] où [qu’|qu] [il|elle|on] vienne
-    [d’|D’] où [qu’|qu] [ils|elles] viennent
-    [d’|D’] ouest en est
-    [d’|D’] [ors|ores] et déjà
-    [d’|D’] un autre côté
-    [d’|D’] un [bout|jour] à l’ autre
-    [d’|D’] un côté comme de l’ autre
-    [d’|D’] un commun accord
-    [d’|D’] une autre trempe
-    [d’|D’] une [façon|manière] ou d’une autre
-    [d’|D’] une certaine [façon|manière]
-    [d’|D’] une tout autre ampleur
-    [d’|D’] une [minute|seconde] à l’autre
-    >de-ci ?,¿ de-là
-    >de ~\d+(?:,\d+|) %
-    >de [cesse|conserve|facto|fait|guingois|luxe|nouveau|permanence|partout|préférence|profundis|rechange|routine|surcroît|surcroit|visu]
-    >de A à Z
-    >de bas (?:en haut|étage)
-    >de basse [condition|extraction]
-    >de bon [aloi|cœur|gré|matin|sens|ton]
-    >de bonne [facture|famille|foi|heure|humeur|grâce|qualité|compagnie]
-    >de bric et de broc
-    >de but en blanc
-    >de ce fait ?[incontestable|irréfutable|même]¿
-    >de ce seul fait
-    >de ce point de vue
-    >de cette sorte
-    >de cet acabit
-    >de courte [durée|vue]
-    >de dernière minute
-    >de demain [matin|soir|après-midi]
-    >de droite à gauche
-    >de droite comme de gauche
-    >de fâcheuse mémoise
-    >de fil en aiguille
-    >de fond en comble
-    >de fort [loin|près]
-    >de [fraîche|fraiche] date
-    >de [gaieté|gaîté|gaité] de cœur
-    >de gauche à droite
-    >de gauche comme de droite
-    >de grande [taille|envergure]
-    >de gré ou de force
-    >de guerre lasse
-    >de haut en bas
-    >de haut [rang|vol]
-    >de haute [lutte|stature|volée]
-    >de jour comme de nuit
-    >de là-bas
-    >de la meilleure [manière|façon] possible
-    >de la même [façon|manière]
-    >de la sorte
-    >de la tête aux pieds
-    >de la veille
-    >de loin
-    >de loin en loin
-    >de longue [date|durée|haleine]
-    >de main de [maître|maitre]
-    >de mauvais [aloi|goût|gout|gré]
-    >de mauvaise [foi|grâce|humeur]
-    >de mieux en mieux
-    >de nature [étrangère|inconnue|indéterminée|insolite]
-    >de nombreuses années plus [tôt|tard]
-    >de nombreuses fois
-    >de nos jours
-    >de notoriété publique
-    >de nulle part
-    >de pire en pire
-    >de près
-    >de près ou de loin
-    >de par le monde ?entier¿
-    >de part et d’autre
-    >de petite taille
-    >de pied ferme
-    >de plein [droit|fouet]
-    >de plus [belle|près]
-    >de premier [ordre|plan]
-    >de première [catégorie|main|nécessité]
-    >de prime abord
-    >de proche en proche
-    >de pure forme
-    >de sang-froid
-    >de seconde [catégorie|zone|importance|main]
-    >de si bon matin
-    >de si bonne heure
-    >de source sûre
-    >de taille moyenne
-    >de telle sorte
-    >de temps à autre
-    >de temps en temps
-    >de [très|trop] [loin|près]
-    >de vive voix
-    >de [nous|vous] tous
-    >de tous [côtés|bords]
-    >de tout [poil|temps]
-    >de tout à l’ heure
-    >de tout premier [ordre|plan]
-    >de toute [éternité|évidence|façon|urgence]
-    >de toutes [parts|pièces|sortes]
-    >de toutes [mes|tes|ses|nos|vos|leurs] forces
-    >de [mon|ton|son|notre|votre|leur] mieux
-    >de [mon|ton|son|notre|votre|leur] plein gré
-    >de [mon|ton|son|notre|votre|leur] point de vue
-    >de [mon|ton|son|notre|votre|leur] propre [cru|chef]
-    >de [mon|ton|son|notre|votre|leur] vivant
-    >de [ma|ta|sa|notre|votre|leur] part
-    >de moins en moins
-    >de plus en plus
-    >de mieux en mieux
-    >de pire en pire
-    >de jour en jour
-    >de minute en minute
-    >de semaine en semaine
-    >de mois en mois
-    >de trimestre en trimestre
-    >de semestre en semestre
-    >de siècle en siècle
-    >de millénaire en millénaire
-    >de décennie en décennie
-    [>après-demain|>demain] ?[matin|soir|après-midi]¿
-    >avant demain ?[matin|soir|après-midi]¿
-    >depuis @:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    >depuis ~\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    >depuis assez longtemps
-    >depuis belle lurette
-    >depuis bien longtemps
-    >depuis de ?très¿ longues années
-    >depuis des lustres
-    >depuis les années ~\d\d+
-    >depuis longtemps
-    >depuis lors
-    >depuis peu de temps
-    >depuis quelque temps
-    >depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
-    >depuis si longtemps
-    >depuis toujours
-    >depuis tout ce temps
-    >depuis très longtemps
-    >des fois
-    >des pieds à la tête
-    >des uns et des autres
-    >des [années|mois|siècles|millénaires|décennies|semaines] plus [tôt|tard]
-    >dès  [maintenant|lors|aujourd’hui]
-    >dès  à     présent
-    >dès  que   possible
-    >dès  [demain|hier]     ?[soir|matin|après-midi]¿
-    >Dieu [m’|t’] en [garde|préserve]
-    >Dieu [m’|t’] en soit témoin
-    >Dieu [nous|vous] en [garde|préserve]
-    >Dieu [nous|vous] en soit témoin
-    >Dieu [les|l’] en [garde|préserve]
-    >Dieu [leur|lui] en soit témoin
-    >du ~[xXvViI]+[eᵉ] siècle
-    >du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
-    >du bout des lèvres
-    >du début à la fin
-    >du fond du cœur
-    >du jour au lendemain
-    >du haut en bas
-    >du même [acabit|coup|ordre|tonneau]
-    >du moins ?,¿ pas
-    >du [nord|sud] au [nord|sud]
-    >du tout au tout
-    >eh bien
-    >en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    >en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse]
-    >en aucun cas
-    >en aucune [circonstance|façon|manière]
-    >en bon état
-    >en bonne [compagnie|posture|voie]
-    >en bonne et due forme|
-    >en bonne santé ?[physique|mentale|psychique]¿
-    >en bout de course
-    >en cas [de|d’] [besoin|doute|urgence]
-    >en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
-    >en chair et en os
-    >en chute libre
-    >en comparution immédiate
-    >en connaissance de cause
-    >en coupe réglée
-    >en cours de route
-    >en d’autres [circonstances|termes|temps]
-    >en de telles circonstances
-    >en début [de|d’] [journée|matinée|soirée|après-midi]
-    >en définitive
-    >en dehors de ?tout¿ [ça|cela|ceci]
-    >en dents de scie
-    >en dernier [lieu|recours|ressort]
-    >en désespoir de cause
-    >en détention provisoire
-    >en direction de l’ [est|ouest]
-    >en direction du [nord|nord-est|nord-ouest|sud|sud-est|sud-ouest]
-    >en état de choc ?circulatoire¿
-    >en état de marche
-    >en état d’ ébriété ?avancée¿
-    >en excellent état
-    >en file indienne
-    >en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
-    >en forte [baisse|hausse]
-    >en gage de bonne foi
-    >en garde à vue ?prolongée¿
-    >en grand nombre
-    >en grende [difficulté|majorité|partie|pompe]
-    >en haut lieu
-    >en l’occurrence
-    >en lieu sûr
-    >en ligne de [compte|mire]
-    >en mains propres
-    >en mauvais état
-    >en mauvaise [posture|santé]
-    >en même temps
-    >en milieu [de|d’] [journée|matinée|soirée|après-midi]
-    >en nombre suffisant
-    >en nombre plus que suffisant
-    >en partant de zéro
-    >en plein [air|cœur|jour]
-    >en pleine [gueule|figure|forme|poire|nuit|tronche]
-    >en perte de vitesse
-    >en peu de temps
-    >en piteux état
-    >en point [de|d’] [mire|orgue]
-    >en position de [force|faiblesse]
-    >en premier lieu
-    >en première [instance|ligne]
-    >en pure perte
-    >en quantité suffisante
-    >en quantité plus que suffisante
-    >en quelque sorte
-    >en queue de peloton
-    >en rangs serrés
-    >en rase campagne
-    >en règle générale
-    >en roue libre
-    >en sens inverse
-    >en si peu de temps
-    >en sous-main
-    >en tête à tête
-    >en temps et en heure
-    >en temps [normal|opportun|ordinaire|utile|voulu]
-    >en termes choisis
-    >en toile de fond
-    >en tous les cas
-    >en tous les sens
-    >en tout bien tout honneur
-    >en tout [cas|genre|lieu|sens|temps]
-    >en tout et pour tout
-    >en tout état de cause
-    >en tout premier lieu
-    >en toute bonne foi
-    >en toute connaissance de cause
-    >en toute [circonstance|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité]
-    >en toutes circonstances
-    >en un clin d’œil
-    >en un rien de temps
-    >en une autre occasion
-    >en vase clos
-    >en voie de développement
-    >en y réfléchissant bien
-    >en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
-    >en [mon|ton|son|leur|notre|votre] âme et conscience
-    >en [mon|ton|son|leur|notre|votre] for intérieur
-    >en [mon|ton|son|leur|notre|votre] nom propre
-    >en ce [moment|temps-là]
-    >en ce qui [me|te|le|la|les|nous|vous] [concerne|concernait]
-    >en cet instant
-    >encore une fois
-    >encore et [encore|toujours]
-    >entre {mois} ?~\d{2,5}¿ et {mois} ?~\d{2,5}¿
-    >entre chien et loup
-    >entre de [bonnes|mauvaises] mains
-    >entre l’ [un|une] et l’ autre
-    >entre les uns et les autres
-    >entre [quatre|quatr’|quat’] [zyeux|yeux]
-    >entre [quatre-zyeux|quatr’zyeux|quat’zyeux|quatre-yeux|quatr’yeux|quat’yeux]
-    >envers et contre tout
-    >épaule contre épaule
-    >et   ainsi de suite
-    >et   tutti quanti
-    >été comme hiver
-    >euh
-    >face à face
+    bien assez tôt
+    bien des fois
+    bien souvent
+    bon gré ?,¿ mal gré
+    bras dessus ?,¿ bras dessous
+    çà et là
+    ce faisant
+    [cela|ça|ceci] mis à part 
+    [cela|ça|ceci] va sans dire
+    ces derniers temps
+    cette [fois-là|fois-ci]
+    chaque fois
+    comme avant
+    comme autrefois
+    comme d’ habitude
+    comme toujours
+    comme de juste
+    comme bon [me|te|lui|leur|nous|vous] semble
+    comme au bon vieux temps
+    comme cul et chemise
+    comme [frappé|frappée|frappés|frappées] par la foudre
+    comme n’ importe où ?ailleurs¿
+    comme par [enchantement|magie]
+    comme par un fait exprès
+    comme promis
+    comme qui dirait
+    comme si de rien n’ était
+    contrairement aux apparences
+    contre mauvaise fortune,? bon cœur
+    contre nature
+    contre toute [attente|vraisemblance]
+    contre vents et marées
+    contre [mon|ton|son|notre|votre|leur] gré
+    côte à côte
+    [coute|coûte] que [coute|coûte]
+    [croyez-le|crois-le] ou [non|pas]
+    cul par-dessus tête
+    dans [ce|ces] [cas-là|cas-ci]
+    dans ce cas [précis|particulier]
+    dans ces cas [précis|particuliers]
+    dans l’ [idéal|immédiat]
+    dans la mesure du possible
+    dans les années ~\d\d+
+    dans peu de temps
+    dans tout [cela|ça|ceci]
+    dans très peu de temps
+    dans un cas comme dans l’autre
+    dans une [certaine|large|moindre] mesure
+    début {mois} ~\d\d{2,5}
+    au début {mois} ~\d\d{2,5}
+    en ce début {mois} ~\d\d{2,5}
+    d’ abord
+    d’ affilée
+    d’ ailleurs
+    d’ année en année
+    d’ aujourd’hui
+    d’ antan
+    d’ autant [plus|moins]
+    d’ [autrefois|part]
+    d’ autres fois
+    d’ [arrache-pied|arrachepied]
+    d’ arrière en avant
+    d’ avant en arrière
+    d’ à côté
+    d’ âge mûr
+    d’ emblée
+    d’ empoigne
+    d’ en face
+    d’ entre [nous|vous|eux|elles]
+    d’ entrée de jeu
+    d’ est en ouest
+    d’ extrême [droite|gauche]
+    d’ [extrême-droite|extrême-gauche]
+    d’ [égal|égale] à [égal|égale]
+    d’ habitude
+    d’ heure en heure
+    d’ hier ?[matin|soir|après-midi]¿
+    d’ ici ?[là|peu]¿
+    d’ ici peu de temps
+    d’ ordinaire
+    d’ origine [inconnue|douteuse|plébéienne|aristocratique]
+    d’ ordre général
+    d’ où [qu’|qu] [il|elle|on] vienne
+    d’ où [qu’|qu] [ils|elles] viennent
+    d’ ouest en est
+    d’ [ors|ores] et déjà
+    d’ un autre côté
+    d’ un [bout|jour] à l’ autre
+    d’ un côté comme de l’ autre
+    d’ un commun accord
+    d’ une autre trempe
+    d’ une [façon|manière] ou d’une autre
+    d’ une certaine [façon|manière]
+    d’ une tout autre ampleur
+    d’ une [minute|seconde] à l’autre
+    de-ci ?,¿ de-là
+    de ~\d+(?:,\d+|) %
+    de [cesse|conserve|facto|fait|guingois|luxe|nouveau|permanence|partout|préférence|profundis|rechange|routine|surcroît|surcroit|visu]
+    de A à Z
+    de bas (?:en haut|étage)
+    de basse [condition|extraction]
+    de bon [aloi|cœur|gré|matin|sens|ton]
+    de bonne [facture|famille|foi|heure|humeur|grâce|qualité|compagnie]
+    de bric et de broc
+    de but en blanc
+    de ce fait ?[incontestable|irréfutable|même]¿
+    de ce seul fait
+    de ce point de vue
+    de cette sorte
+    de cet acabit
+    de courte [durée|vue]
+    de dernière minute
+    de demain [matin|soir|après-midi]
+    de droite à gauche
+    de droite comme de gauche
+    de fâcheuse mémoise
+    de fil en aiguille
+    de fond en comble
+    de fort [loin|près]
+    de [fraîche|fraiche] date
+    de [gaieté|gaîté|gaité] de cœur
+    de gauche à droite
+    de gauche comme de droite
+    de grande [taille|envergure]
+    de gré ou de force
+    de guerre lasse
+    de haut en bas
+    de haut [rang|vol]
+    de haute [lutte|stature|volée]
+    de jour comme de nuit
+    de là-bas
+    de la meilleure [manière|façon] possible
+    de la même [façon|manière]
+    de la sorte
+    de la tête aux pieds
+    de la veille
+    de loin
+    de loin en loin
+    de longue [date|durée|haleine]
+    de main de [maître|maitre]
+    de mauvais [aloi|goût|gout|gré]
+    de mauvaise [foi|grâce|humeur]
+    de mieux en mieux
+    de nature [étrangère|inconnue|indéterminée|insolite]
+    de nombreuses années plus [tôt|tard]
+    de nombreuses fois
+    de nos jours
+    de notoriété publique
+    de nulle part
+    de pire en pire
+    de près
+    de près ou de loin
+    de par le monde ?entier¿
+    de part et d’autre
+    de petite taille
+    de pied ferme
+    de plein [droit|fouet]
+    de plus [belle|près]
+    de premier [ordre|plan]
+    de première [catégorie|main|nécessité]
+    de prime abord
+    de proche en proche
+    de pure forme
+    de sang-froid
+    de seconde [catégorie|zone|importance|main]
+    de si bon matin
+    de si bonne heure
+    de source sûre
+    de taille moyenne
+    de telle sorte
+    de temps à autre
+    de temps en temps
+    de [très|trop] [loin|près]
+    de vive voix
+    de [nous|vous] tous
+    de tous [côtés|bords]
+    de tout [poil|temps]
+    de tout à l’ heure
+    de tout premier [ordre|plan]
+    de toute [éternité|évidence|façon|urgence]
+    de toutes [parts|pièces|sortes]
+    de toutes [mes|tes|ses|nos|vos|leurs] forces
+    de [mon|ton|son|notre|votre|leur] mieux
+    de [mon|ton|son|notre|votre|leur] plein gré
+    de [mon|ton|son|notre|votre|leur] point de vue
+    de [mon|ton|son|notre|votre|leur] propre [cru|chef]
+    de [mon|ton|son|notre|votre|leur] vivant
+    de [ma|ta|sa|notre|votre|leur] part
+    de moins en moins
+    de plus en plus
+    de mieux en mieux
+    de pire en pire
+    de jour en jour
+    de minute en minute
+    de semaine en semaine
+    de mois en mois
+    de trimestre en trimestre
+    de semestre en semestre
+    de siècle en siècle
+    de millénaire en millénaire
+    de décennie en décennie
+    [après-demain|demain] ?[matin|soir|après-midi]¿
+    avant demain ?[matin|soir|après-midi]¿
+    depuis @:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    depuis ~\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    depuis assez longtemps
+    depuis belle lurette
+    depuis bien longtemps
+    depuis de ?très¿ longues années
+    depuis des lustres
+    depuis les années ~\d\d+
+    depuis longtemps
+    depuis lors
+    depuis peu de temps
+    depuis quelque temps
+    depuis quelques [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires]
+    depuis si longtemps
+    depuis toujours
+    depuis tout ce temps
+    depuis très longtemps
+    des fois
+    des pieds à la tête
+    des uns et des autres
+    des [années|mois|siècles|millénaires|décennies|semaines] plus [tôt|tard]
+    dès [maintenant|lors|aujourd’hui]
+    dès à présent
+    dès que possible
+    dès [demain|hier] ?[soir|matin|après-midi]¿
+    Dieu [m’|t’] en [garde|préserve]
+    Dieu [m’|t’] en soit témoin
+    Dieu [nous|vous] en [garde|préserve]
+    Dieu [nous|vous] en soit témoin
+    Dieu [les|l’] en [garde|préserve]
+    Dieu [leur|lui] en soit témoin
+    du ~[xXvViI]+[eᵉ] siècle
+    du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
+    du bout des lèvres
+    du début à la fin
+    du fond du cœur
+    du jour au lendemain
+    du haut en bas
+    du même [acabit|coup|ordre|tonneau]
+    du moins ?,¿ pas
+    du [nord|sud] au [nord|sud]
+    du tout au tout
+    eh bien
+    en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse]
+    en aucun cas
+    en aucune [circonstance|façon|manière]
+    en bon état
+    en bonne [compagnie|posture|voie]
+    en bonne et due forme|
+    en bonne santé ?[physique|mentale|psychique]¿
+    en bout de course
+    en cas [de|d’] [besoin|doute|urgence]
+    en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
+    en chair et en os
+    en chute libre
+    en comparution immédiate
+    en connaissance de cause
+    en coupe réglée
+    en cours de route
+    en d’autres [circonstances|termes|temps]
+    en de telles circonstances
+    en début [de|d’] [journée|matinée|soirée|après-midi]
+    en définitive
+    en dehors de ?tout¿ [ça|cela|ceci]
+    en dents de scie
+    en dernier [lieu|recours|ressort]
+    en désespoir de cause
+    en détention provisoire
+    en direction de l’ [est|ouest]
+    en direction du [nord|nord-est|nord-ouest|sud|sud-est|sud-ouest]
+    en état de choc ?circulatoire¿
+    en état de marche
+    en état d’ ébriété ?avancée¿
+    en excellent état
+    en file indienne
+    en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
+    en forte [baisse|hausse]
+    en gage de bonne foi
+    en garde à vue ?prolongée¿
+    en grand nombre
+    en grende [difficulté|majorité|partie|pompe]
+    en haut lieu
+    en l’occurrence
+    en lieu sûr
+    en ligne de [compte|mire]
+    en mains propres
+    en mauvais état
+    en mauvaise [posture|santé]
+    en même temps
+    en milieu [de|d’] [journée|matinée|soirée|après-midi]
+    en nombre suffisant
+    en nombre plus que suffisant
+    en partant de zéro
+    en plein [air|cœur|jour]
+    en pleine [gueule|figure|forme|poire|nuit|tronche]
+    en perte de vitesse
+    en peu de temps
+    en piteux état
+    en point [de|d’] [mire|orgue]
+    en position de [force|faiblesse]
+    en premier lieu
+    en première [instance|ligne]
+    en pure perte
+    en quantité suffisante
+    en quantité plus que suffisante
+    en quelque sorte
+    en queue de peloton
+    en rangs serrés
+    en rase campagne
+    en règle générale
+    en roue libre
+    en sens inverse
+    en si peu de temps
+    en sous-main
+    en tête à tête
+    en temps et en heure
+    en temps [normal|opportun|ordinaire|utile|voulu]
+    en termes choisis
+    en toile de fond
+    en tous les cas
+    en tous les sens
+    en tout bien tout honneur
+    en tout [cas|genre|lieu|sens|temps]
+    en tout et pour tout
+    en tout état de cause
+    en tout premier lieu
+    en toute bonne foi
+    en toute connaissance de cause
+    en toute [circonstance|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité]
+    en toutes circonstances
+    en un clin d’œil
+    en un rien de temps
+    en une autre occasion
+    en vase clos
+    en voie de développement
+    en y réfléchissant bien
+    en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
+    en [mon|ton|son|leur|notre|votre] âme et conscience
+    en [mon|ton|son|leur|notre|votre] for intérieur
+    en [mon|ton|son|leur|notre|votre] nom propre
+    en ce [moment|temps-là]
+    en ce qui [me|te|le|la|les|nous|vous] [concerne|concernait]
+    en cet instant
+    encore une fois
+    encore et [encore|toujours]
+    entre {mois} ?~\d{2,5}¿ et {mois} ?~\d{2,5}¿
+    entre chien et loup
+    entre de [bonnes|mauvaises] mains
+    entre l’ [un|une] et l’ autre
+    entre les uns et les autres
+    entre [quatre|quatr’|quat’] [zyeux|yeux]
+    entre [quatre-zyeux|quatr’zyeux|quat’zyeux|quatre-yeux|quatr’yeux|quat’yeux]
+    envers et contre tout
+    épaule contre épaule
+    et   ainsi de suite
+    et   tutti quanti
+    été comme hiver
+    euh
+    face à face
     @:B fois de suite
-    >grosso modo
-    [>hier|>avant-hier] ?[matin|soir|après-midi]¿
-    >hors [de|d’] [contrôle|portée|atteinte]
-    >hors d’ état de nuire
-    >hors du commun
-    >ici [comme|ou] ailleurs
-    >ici et [là|maintenant]
-    >ici même
-    >ici-bas
-    >il y a ?très¿ longtemps
-    >il y a ?très¿ peu de temps
-    >il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    >il y a moins de ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    >il y a ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    >il y a quelque temps
-    >il n’y a pas ?si¿ longtemps
-    >illico presto
-    [j’|J’] en passe et des [meilleurs|meilleures]
-    >jour pour jour
-    [jusqu’|Jusqu’|jusqu|Jusqu] [alors|ici|aujourd’hui|Noël|Pâques]
-    [jusqu’|Jusqu’|jusqu|Jusqu] au bout des ongles
-    [jusqu’|Jusqu’|jusqu|Jusqu] au [nouvel|Nouvel] [an|An]
-    [jusqu’|Jusqu’|jusqu|Jusqu] à aujourd’hui
-    [jusqu’|Jusqu’|jusqu|Jusqu] à bac
-    [jusqu’|Jusqu’|jusqu|Jusqu] à présent
-    [jusqu’|Jusqu’|jusqu|Jusqu] à maintenant
-    [jusqu’|Jusqu’|jusqu|Jusqu] à récemment
-    [jusqu’|Jusqu’|jusqu|Jusqu] à [demain|hier] ?[matin|soir|après-midi]¿
-    [jusqu’|Jusqu’|jusqu|Jusqu] à nouvel ordre
-    [jusqu’|Jusqu’|jusqu|Jusqu] à plus ample informé
-    [jusqu’|Jusqu’|jusqu|Jusqu] à plus soif
-    [jusqu’|Jusqu’|jusqu|Jusqu] à preuve du contraire
-    [jusqu’|Jusqu’|jusqu|Jusqu] à la fin de [mes|tes|ses|nos|vos|leurs] jours
-    [jusqu’|Jusqu’|jusqu|Jusqu] à la fin des temps
-    [jusqu’|Jusqu’|jusqu|Jusqu] à la tombée de la nuit
-    [jusqu’|Jusqu’|jusqu|Jusqu] à [mon|ton|son|notre|votre|leur] dernier souffle
-    [jusqu’|Jusqu’|jusqu|Jusqu] à [mon|ton|son|notre|votre|leur] dernier souffle de vie
-    [jusqu’|Jusqu’|jusqu|Jusqu] à ce que mort s’ensuive
-    [jusqu’|Jusqu’|jusqu|Jusqu] à ce que [j’|il|elle|on] en sache plus
-    [jusqu’|Jusqu’|jusqu|Jusqu] à ce que tu en saches plus
-    [jusqu’|Jusqu’|jusqu|Jusqu] à ce que nous en sachions plus
-    [jusqu’|Jusqu’|jusqu|Jusqu] à ce que vous en sachiez plus
-    [jusqu’|Jusqu’|jusqu|Jusqu] à ce que [ils|elles] en sachent plus
-    >jusque-là
-    >la plupart du temps
-    >la main dans la main
-    >là-bas
-    >là-haut
-    >là-dedans
-    >là-dehors
-    >là-derrière
-    >là-dessous
-    >là-dessus
-    >là-devant
-    >là non plus
-    >la mort dans l’ âme
-    >le cas échéant
-    >le moins du monde
-    >le [moins|plus] [tôt|tard|souvent]
-    >le [moins|plus] de [temps|monde] possible
-    >le moment venu
-    >les [uns|unes] des autres
-    >les [uns|unes] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] les autres
-    [l’|L’] [un|une] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
-    [l’|L’] [un|une] près de l’autre
-    >loin [de|d’] là
-    >loin [de|d’] tout [ça|cela|ceci]
-    >loin d’ [être|ici]
-    >loin s’ en [faut|fallait]
-    [maintes|Maintes] fois
-    >malgré [ça|cela|ceci|tout]
-    >manu militari
-    >mieux [vaut|valait] tard que jamais
-    >moins que [nécessaire|prévu]
-    >moitié * ?,¿ moitié *
-    >mot pour mot
-    >ne [lui|leur|m’|t’|nous|vous] en déplaise
-    >nez à nez
-    >non loin [de|d’] [ici|là]
-    [nulle|Nulle] part
-    >ô combien
-    >oh
-    >ou quelque chose d’ approchant
-    >où bon [me|te|lui|nous|vous|leur] semble
-    >oui [ou|et] non
-    >outre mesure
-    >ni de près ?,¿ ni de loin
-    >ni plus ?,¿ ni moins
-    >ni vu ?,¿ ni connu
-    >non [plus|seulement]
-    >non sans raison
-    >quant à présent
-    >par [à-coups|ailleurs|avance|chance|conséquent|curiosité|contre|défaut|définition|endroits|essence|excellence|exemple|hasard|ici|inadvertance|là|moments|nature|principe|terre]
-    >par acquit de conscience
-    >par beau temps
-    >par bien des [aspects|côtés]
-    >par bonté de cœur
-    >par ce biais
-    >par certains [aspects|côtés]
-    >par la même occasion
-    >par la suite
-    >par le passé
-    >par les temps qui courent
-    >par monts et par vaux
-    >par temps de pluie
-    >par tout le monde
-    >par voie de [conséquence|mer|terre]
-    >par voie d’exception
-    >par @:B fois
+    grosso modo
+    [hier|avant-hier] ?[matin|soir|après-midi]¿
+    hors [de|d’] [contrôle|portée|atteinte]
+    hors d’ état de nuire
+    hors du commun
+    ici [comme|ou] ailleurs
+    ici et [là|maintenant]
+    ici même
+    ici-bas
+    il y a ?très¿ longtemps
+    il y a ?très¿ peu de temps
+    il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a moins de ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a quelque temps
+    il n’y a pas ?si¿ longtemps
+    illico presto
+    j’ en passe et des [meilleurs|meilleures]
+    jour pour jour
+    [jusqu’|jusqu] [alors|ici|aujourd’hui|Noël|Pâques]
+    [jusqu’|jusqu] au bout des ongles
+    [jusqu’|jusqu] au [nouvel|Nouvel] [an|An]
+    [jusqu’|jusqu] à aujourd’hui
+    [jusqu’|jusqu] à bac
+    [jusqu’|jusqu] à présent
+    [jusqu’|jusqu] à maintenant
+    [jusqu’|jusqu] à récemment
+    [jusqu’|jusqu] à [demain|hier] ?[matin|soir|après-midi]¿
+    [jusqu’|jusqu] à nouvel ordre
+    [jusqu’|jusqu] à plus ample informé
+    [jusqu’|jusqu] à plus soif
+    [jusqu’|jusqu] à preuve du contraire
+    [jusqu’|jusqu] à la fin de [mes|tes|ses|nos|vos|leurs] jours
+    [jusqu’|jusqu] à la fin des temps
+    [jusqu’|jusqu] à la tombée de la nuit
+    [jusqu’|jusqu] à [mon|ton|son|notre|votre|leur] dernier souffle
+    [jusqu’|jusqu] à [mon|ton|son|notre|votre|leur] dernier souffle de vie
+    [jusqu’|jusqu] à ce que mort s’ensuive
+    [jusqu’|jusqu] à ce que [j’|il|elle|on] en sache plus
+    [jusqu’|jusqu] à ce que tu en saches plus
+    [jusqu’|jusqu] à ce que nous en sachions plus
+    [jusqu’|jusqu] à ce que vous en sachiez plus
+    [jusqu’|jusqu] à ce que [ils|elles] en sachent plus
+    jusque-là
+    la plupart du temps
+    la main dans la main
+    là-bas
+    là-haut
+    là-dedans
+    là-dehors
+    là-derrière
+    là-dessous
+    là-dessus
+    là-devant
+    là non plus
+    la mort dans l’ âme
+    le cas échéant
+    le moins du monde
+    le [moins|plus] [tôt|tard|souvent]
+    le [moins|plus] de [temps|monde] possible
+    le moment venu
+    les [uns|unes] des autres
+    les [uns|unes] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] les autres
+    l’ [un|une] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
+    l’ [un|une] près de l’autre
+    loin [de|d’] là
+    loin [de|d’] tout [ça|cela|ceci]
+    loin d’ [être|ici]
+    loin s’ en [faut|fallait]
+    maintes fois
+    malgré [ça|cela|ceci|tout]
+    manu militari
+    mieux [vaut|valait] tard que jamais
+    moins que [nécessaire|prévu]
+    moitié * ?,¿ moitié *
+    mot pour mot
+    ne [lui|leur|m’|t’|nous|vous] en déplaise
+    nez à nez
+    non loin [de|d’] [ici|là]
+    nulle part
+    ô combien
+    oh
+    ou quelque chose d’ approchant
+    où bon [me|te|lui|nous|vous|leur] semble
+    oui [ou|et] non
+    outre mesure
+    ni de près ?,¿ ni de loin
+    ni plus ?,¿ ni moins
+    ni vu ?,¿ ni connu
+    non [plus|seulement]
+    non sans raison
+    quant à présent
+    par [à-coups|ailleurs|avance|chance|conséquent|curiosité|contre|défaut|définition|endroits|essence|excellence|exemple|hasard|ici|inadvertance|là|moments|nature|principe|terre]
+    par acquit de conscience
+    par beau temps
+    par bien des [aspects|côtés]
+    par bonté de cœur
+    par ce biais
+    par certains [aspects|côtés]
+    par la même occasion
+    par la suite
+    par le passé
+    par les temps qui courent
+    par monts et par vaux
+    par temps de pluie
+    par tout le monde
+    par voie de [conséquence|mer|terre]
+    par voie d’exception
+    par @:B fois
     un par un
     une par une
     deux par deux
@@ -5841,184 +5841,184 @@ __ordre_alphabétique__
     morceau par morceau
     niveau par niveau
     pièce par pièce
-    >par-ci ?,¿ par-là
-    >par-devant
-    >par-derrière
-    >par-dessus le marché
-    >par-dessus tout
-    >partant de là
-    >pas du tout
-    >pas à pas
-    >pas le moins du monde
-    >pendant ce temps-là
-    >pendant ?[bien|si|assez|très]¿ longtemps
-    >pendant plusieurs [heures|minutes|secondes|mois|semaines|jours|années|siècles|millénaires|décennies]
-    >pendant quelque temps
-    [petit|Petit] à petit
-    >peu à peu
-    >peu de temps auparavant
-    >peu ou prou
-    >pile poil
-    [plein|Plein] [nord|sud|ouest]
-    [plein|Plein] de fois
-    >plus bas que terre
-    >plus d’ une fois
-    >plus du tout
-    >plus jamais
-    >plus que [nécessaire|prévu|jamais]
-    >plus que tout au monde
-    >plus que toute autre chose
-    >plus [tôt|tard] que [prévu|nécessaire]
-    >plusieurs fois
-    >plusieurs fois de suite
-    >pour ainsi dire
-    >pour ce faire
-    >pour ce que [j’|tu] en [sais|savais]
-    >pour couronner le tout
-    >pour de bon
-    >pour faire bonne mesure
-    >pour faire simple
-    >pour la [première|seconde|dernière|~ième$] fois
-    >pour la [première|seconde|dernière|~ième$] fois de ma vie
-    >pour la [première|seconde|dernière|~ième$] fois de suite
-    >pour la suite
-    >pour le [moment|moins]
-    >pour le meilleur et pour le pire
-    >pour l’ [essentiel|instant|heure]
-    >pour quelque [part|temps]
-    >pour rien au monde
-    >pour tout dire
-    >pour un oui ou pour un non
-    >pour une fois
-    >pour y parvenir
-    >pour ça [vaut|valait]
-    >pour [ma|ta|sa|notre|votre|leur] [gouverne|part]
-    >pour [mon|ton|son|notre|votre|leur] propre [compte|bien]
-    >pour [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
-    >pour [celui|celle|ceux|celles] et [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
-    >pour [m’|t’|s’|nous|vous] en rendre compte
-    >quand bien même
-    >quand bon [me|te|lui|nous|vous|leur] [semble|semblera|semblait]
-    >quant à [ça|cela|ceci]
-    >que [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
-    >que je le veuille ou non
-    >que tu le veuilles ou non
-    [qu’|qu|Qu’|Qu] [il|elle|on] le veuille ou non
-    >que vous le vouliez ou non
-    >que nous le voulions ou non
-    [qu’|qu|Qu’|Qu] [ils|elles] le veuillent ou non
-    [qu’|qu|Qu’|Qu] à cela ne tienne
-    [quel|Quel] [qu’|qu] en soit le [moyen|prix|danger]
-    [quel|Quel] [qu’|qu] en soit le risque ?financier¿
-    [quelle|Quelle] [qu’|qu] en soit la [cause|raison]
-    [quelque|Quelque] [part|temps]
-    [quelques|Quelques] fois
-    [quelques|Quelques] [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] auparavant
-    [quelques|Quelques] [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] plus [tard|tôt]
-    >qui plus est
-    >quoi [qu’|qu] il [arrive|arrivât|advienne|advînt]
-    >quoi [qu’|qu] il en [coûte|coûtât|coute|coutât]
-    >sans [grande|grosse] difficulté ?[apparente|aucune|financière|majeure|particulière]¿
-    >sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|fin|relâche|répit|trêve|vergogne]
-    >sans aucun doute
-    >sans autre forme de procès
-    >sans commune mesure
-    >sans coup férir
-    >sans crier gare
-    >sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
-    >sans dire mot
-    >sans états d’ âme
-    >sans foi ?,¿ ni loi
-    >sans l’ ombre d’ un doute
-    >sans le faire exprès
-    >sans le vouloir
-    >sans mot dire
-    >sans nul doute
-    >sans queue ni tête
-    >sans raison apparente
-    >sans ?grand¿ succès
-    >sans faire de vagues
-    >sans s’ en rendre compte
-    >sans s’ en apercevoir
-    >sans l’ aide de personne
-    >sans y faire attention
-    >sans y prendre [garde|goût|gout]
-    >sans y [parvenir|réussir|réfléchir|songer|penser]
-    >sans pour autant y faire attention
-    >sans pour autant y prendre [garde|goût|gout]
-    >sans pour autant y [parvenir|réussir|réfléchir|songer|penser]
-    >séance tenante
-    >selon toute vraisemblance|(?:[mt]oi|lui|elles?|eux|nous|vous)(?! qui)
+    par-ci ?,¿ par-là
+    par-devant
+    par-derrière
+    par-dessus le marché
+    par-dessus tout
+    partant de là
+    pas du tout
+    pas à pas
+    pas le moins du monde
+    pendant ce temps-là
+    pendant ?[bien|si|assez|très]¿ longtemps
+    pendant plusieurs [heures|minutes|secondes|mois|semaines|jours|années|siècles|millénaires|décennies]
+    pendant quelque temps
+    petit à petit
+    peu à peu
+    peu de temps auparavant
+    peu ou prou
+    pile poil
+    plein [nord|sud|ouest]
+    plein de fois
+    plus bas que terre
+    plus d’ une fois
+    plus du tout
+    plus jamais
+    plus que [nécessaire|prévu|jamais]
+    plus que tout au monde
+    plus que toute autre chose
+    plus [tôt|tard] que [prévu|nécessaire]
+    plusieurs fois
+    plusieurs fois de suite
+    pour ainsi dire
+    pour ce faire
+    pour ce que [j’|tu] en [sais|savais]
+    pour couronner le tout
+    pour de bon
+    pour faire bonne mesure
+    pour faire simple
+    pour la [première|seconde|dernière|~ième$] fois
+    pour la [première|seconde|dernière|~ième$] fois de ma vie
+    pour la [première|seconde|dernière|~ième$] fois de suite
+    pour la suite
+    pour le [moment|moins]
+    pour le meilleur et pour le pire
+    pour l’ [essentiel|instant|heure]
+    pour quelque [part|temps]
+    pour rien au monde
+    pour tout dire
+    pour un oui ou pour un non
+    pour une fois
+    pour y parvenir
+    pour ça [vaut|valait]
+    pour [ma|ta|sa|notre|votre|leur] [gouverne|part]
+    pour [mon|ton|son|notre|votre|leur] propre [compte|bien]
+    pour [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
+    pour [celui|celle|ceux|celles] et [celui|celle|ceux|celles] que [ça|cela|ceci] intéresse
+    pour [m’|t’|s’|nous|vous] en rendre compte
+    quand bien même
+    quand bon [me|te|lui|nous|vous|leur] [semble|semblera|semblait]
+    quant à [ça|cela|ceci]
+    que [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
+    que je le veuille ou non
+    que tu le veuilles ou non
+    [qu’|qu] [il|elle|on] le veuille ou non
+    que vous le vouliez ou non
+    que nous le voulions ou non
+    [qu’|qu] [ils|elles] le veuillent ou non
+    [qu’|qu] à cela ne tienne
+    quel [qu’|qu] en soit le [moyen|prix|danger]
+    quel [qu’|qu] en soit le risque ?financier¿
+    quelle [qu’|qu] en soit la [cause|raison]
+    quelque [part|temps]
+    quelques fois
+    quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] auparavant
+    quelques [instants|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires|trimestres|semestres] plus [tard|tôt]
+    qui plus est
+    quoi [qu’|qu] il [arrive|arrivât|advienne|advînt]
+    quoi [qu’|qu] il en [coûte|coûtât|coute|coutât]
+    sans [grande|grosse] difficulté ?[apparente|aucune|financière|majeure|particulière]¿
+    sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|fin|relâche|répit|trêve|vergogne]
+    sans aucun doute
+    sans autre forme de procès
+    sans commune mesure
+    sans coup férir
+    sans crier gare
+    sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
+    sans dire mot
+    sans états d’ âme
+    sans foi ?,¿ ni loi
+    sans l’ ombre d’ un doute
+    sans le faire exprès
+    sans le vouloir
+    sans mot dire
+    sans nul doute
+    sans queue ni tête
+    sans raison apparente
+    sans ?grand¿ succès
+    sans faire de vagues
+    sans s’ en rendre compte
+    sans s’ en apercevoir
+    sans l’ aide de personne
+    sans y faire attention
+    sans y prendre [garde|goût|gout]
+    sans y [parvenir|réussir|réfléchir|songer|penser]
+    sans pour autant y faire attention
+    sans pour autant y prendre [garde|goût|gout]
+    sans pour autant y [parvenir|réussir|réfléchir|songer|penser]
+    séance tenante
+    selon toute vraisemblance
     semble-t-il
     semblait-il
-    >sens dessus dessous
-    [>seule|>seul] à [>seule|>seul]
-    [s’|S’] il [te|vous] [plaît|plait]
-    >si besoin est
-    >si [bas|haut|longtemps|nécessaire|possible|soudain]
-    >si [cela|ça|ceci] ne tenait [qu’|qu] à [moi|toi|lui|eux|elle|elles|nous|vous]
-    >six pieds sous terre
-    >sine die
-    >sine qua non
-    >soit dit en passant
-    >soi-disant
-    >sous aucun prétexte
-    >sous bonne [escorte|garde]
-    >sous coupe réglée
-    >sous haute surveillance
-    >stricto sensu
-    >sur ce ,
-    >sur ce plan-là
-    >sur le [long|moyen|court] terme
-    >sur le qui-vive
-    >sur la forme comme sur le fond
-    >sur la même longueur d’ onde
-    >sur [mon|ton|son|notre|votre|leur] [trente-et-un|31]
-    >sur [mon|ton|son|notre|votre|leur] trente et un
-    >tant bien que mal
-    >tant s’ en faut
-    >tôt ou tard
-    >tous comptes faits
-    >tous frais payés
-    >tout à [fait|coup]
-    >tout à l’ heure
-    >tout au plus
-    >tout aussi bien
-    >tout bien [considéré|réfléchi]
-    >tout compte fait
-    >tout de [même|suite|go]
-    >tout du long
-    >tout [bonnement|simplement]
-    >tout feu ?,¿ tout [flamme|flammes]
-    >tout le temps
-    >toutes affaires cessantes
-    >toutes choses égales par ailleurs
-    >toutes griffes dehors
-    >toutes proportions gardées
-    >trait pour trait
-    >très [bas|haut|bien|mal]
-    >un à un
-    >une à une
-    >un jour ou l’autre
-    >un instant plus [tôt|tard]
-    >un [millier|million|milliard] de fois
-    >un moment plus [tôt|tard]
-    >un peu mieux
-    >un peu moins bien
-    >un peu partout
-    >un peu plus [tôt|tard] que prévu
-    >un tant soit peu
-    >une à une
-    >une autre fois
-    >une bonne fois pour toutes
-    >une dernière fois
-    >une fois de plus
-    >une fois n’ est pas coutume
-    >une fois pour toutes
-    >urbi et orbi
-    [vaille|Vaille] que vaille
-    >ventre à terre
-    [vers|Vers] nulle part
+    sens dessus dessous
+    [seule|seul] à [seule|seul]
+    s’ il [te|vous] [plaît|plait]
+    si besoin est
+    si [bas|haut|longtemps|nécessaire|possible|soudain]
+    si [cela|ça|ceci] ne tenait [qu’|qu] à [moi|toi|lui|eux|elle|elles|nous|vous]
+    six pieds sous terre
+    sine die
+    sine qua non
+    soit dit en passant
+    soi-disant
+    sous aucun prétexte
+    sous bonne [escorte|garde]
+    sous coupe réglée
+    sous haute surveillance
+    stricto sensu
+    sur ce ,
+    sur ce plan-là
+    sur le [long|moyen|court] terme
+    sur le qui-vive
+    sur la forme comme sur le fond
+    sur la même longueur d’ onde
+    sur [mon|ton|son|notre|votre|leur] [trente-et-un|31]
+    sur [mon|ton|son|notre|votre|leur] trente et un
+    tant bien que mal
+    tant s’ en faut
+    tôt ou tard
+    tous comptes faits
+    tous frais payés
+    tout à [fait|coup]
+    tout à l’ heure
+    tout au plus
+    tout aussi bien
+    tout bien [considéré|réfléchi]
+    tout compte fait
+    tout de [même|suite|go]
+    tout du long
+    tout [bonnement|simplement]
+    tout feu ?,¿ tout [flamme|flammes]
+    tout le temps
+    toutes affaires cessantes
+    toutes choses égales par ailleurs
+    toutes griffes dehors
+    toutes proportions gardées
+    trait pour trait
+    très [bas|haut|bien|mal]
+    un à un
+    une à une
+    un jour ou l’autre
+    un instant plus [tôt|tard]
+    un [millier|million|milliard] de fois
+    un moment plus [tôt|tard]
+    un peu mieux
+    un peu moins bien
+    un peu partout
+    un peu plus [tôt|tard] que prévu
+    un tant soit peu
+    une à une
+    une autre fois
+    une bonne fois pour toutes
+    une dernière fois
+    une fois de plus
+    une fois n’ est pas coutume
+    une fois pour toutes
+    urbi et orbi
+    vaille que vaille
+    ventre à terre
+    vers nulle part
         <<- ~>> *
 
 
@@ -13267,7 +13267,7 @@ TEST: il {{avait}} parti.
 # conditionnel / futur
 
 __vmode_j_aimerais_vinfi__
-    [<start>|,]  [je|j’|Je|J’]  [aimerai|préférerai|préfèrerai|apprécierai|voudrai|souhaiterai|désirerai|adorerai]  @:[YX]|>(?:y|ne|que?)/¬:R
+    [<start>|,]  [je|j’]  [aimerai|préférerai|préfèrerai|apprécierai|voudrai|souhaiterai|désirerai|adorerai]  @:[YX]|>(?:y|ne|que?)/¬:R
         <<- /vmode/ -3>> \1s                                                                        # Si vous exprimez un souhait, utilisez le conditionnel et non le futur.
 
 TEST: J’{{aimerai}} savoir ce dont il retourne.
@@ -13279,7 +13279,7 @@ TEST: Je sais que j’aimerai ça, tout comme lui.
 
 
 __vmode_j_aurais_aimé_que_vinfi__
-    [j’|J’]  aurai  [aimé|souhaité|préféré|voulu|apprécié|désiré|adoré]  [que|qu’|qu|ne|n’|@:Y]
+    j’  aurai  [aimé|souhaité|préféré|voulu|apprécié|désiré|adoré]  [que|qu’|qu|ne|n’|@:Y]
         <<- /vmode/ -2>> aurais|eusse                                                               # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
 
 TEST: J’{{aurai}} aimé nous offrir ce magnifique cadeau.
@@ -13294,9 +13294,9 @@ TEST: Quand j’aurai soif et faim, je m’arrêterai.
 
 # Si suivi du conditionnel ou du subjonctif
 __vmode_si_sujet__
-    [<start>|,]  >si      [j’|J’|t’|T’]  @:[SK]¬:(?:G|V0|I)
-    [<start>|,]  >si      @:(?:Os|M)     @:[SK]¬:(?:G|V0|I)
-    [<start>|,]  [s’|S’]  [il|ils]       @:[SK]¬:(?:G|V0|I)
+    [<start>|,]  si     [j’|J’|t’|T’]  @:[SK]¬:(?:G|V0|I)
+    [<start>|,]  si     @:(?:Os|M)     @:[SK]¬:(?:G|V0|I)
+    [<start>|,]  s’     [il|ils]       @:[SK]¬:(?:G|V0|I)
         <<- /vmode/ -4>> _                                                                          # Ce verbe ne devrait être ni au conditionnel, ni au subjonctif.
 
 TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
@@ -13306,7 +13306,7 @@ TEST: Si j’{{irais}} le faire
 
 # Dès que + indicatif
 __vmode_dès_que__
-    [dès|Dès]  [que|qu’|qu]  @:(?:Os|M)  @:S¬:[IG]
+    dès  [que|qu’|qu]  @:(?:Os|M)  @:S¬:[IG]
         <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                                                     # Ce verbe ne devrait pas être au subjonctif.
 #        <<- morph(\1, ":(?:Os|M)", False) and morph(\2, ":K", False)        -2>> =suggVerbMode(@, ":If", \1)    # Ce verbe ne devrait pas être au conditionnel.
 
@@ -13317,7 +13317,7 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 
 # verbe que + subjonctif
 __vmode_qqch_que_subjonctif1__
-    [>afin|>avant|>pour|>quoi|>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
+    [afin|avant|pour|quoi|>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après « \1 que », ce verbe devrait être au subjonctif.
 
     >douter  [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
@@ -13336,9 +13336,9 @@ TEST: quoi que nous autres hommes ayons pu faire
 
 
 __vmode_qqch_que_subjonctif2__
-    >à      condition   [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
-    >pour   peu         [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
-    >il     peut        [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
+    à       condition   [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
+    pour    peu         [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
+    il      peut        [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                    # Ce verbe devrait être au subjonctif.
 
 TEST: à condition qu’il {{finit}} son boulot.
@@ -13348,10 +13348,10 @@ TEST: il se peut que nous {{avons}} tort.
 
 # Bien que + subjonctif
 __vmode_bien_que_subjonctif__
-    [<start>|,]  [bien|Bien]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0a)|>(?:hériter|recevoir|donner|offrir)/
+    [<start>|,]  bien  [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0a)|>(?:hériter|recevoir|donner|offrir)/
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \1)                                                # Après « bien que », le verbe s’emploie au subjonctif.
 
-    [<start>|,]  [bien|Bien]  [que|qu’|qu]  @:(?:Os|M)  >avoir  @:[QYG]¬>(?:hériter|recevoir|donner|offrir)/
+    [<start>|,]  bien  [que|qu’|qu]  @:(?:Os|M)  >avoir  @:[QYG]¬>(?:hériter|recevoir|donner|offrir)/
         <<- /vmode/ morph(\5, ":I", ":S") -5>> =suggVerbMode(\5, ":S", \1)                          # Après « bien que », le verbe s’emploie au subjonctif.
 
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
@@ -13367,13 +13367,13 @@ TEST: si bien que je me suis toujours demandée si cela ne m’avait pas un peu 
 
 # indicatif nécessaire
 __vmode_sujet_indicatif__
-    <start>  [>je|>tu|>il|>ils|>elle|>elles|>on|>nous|>vous]  @:S¬:[GIK]|V0a.*:Sq
+    <start>  [je|tu|il|ils|elle|elles|on|nous|vous]  @:S¬:[GIK]|V0a.*:Sq
         <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                # Ce verbe ne devrait pas être au subjonctif.
 
-    <start>  [j’|J’]  @:S¬:[GIK]|V0a.*:Sq:1s
+    <start>  j’  @:S¬:[GIK]|V0a.*:Sq:1s
         <<- /vmode/ -3>> =suggVerbMode(\3, ":I", "je")                                              # Ce verbe ne devrait pas être au subjonctif.
 
-    <start>  [j’|J’]  [en|y]  @:S¬:[GIK]|V0a.*:Sq
+    <start>  j’  [en|y]  @:S¬:[GIK]|V0a.*:Sq
         <<- /vmode/ -4>> =suggVerbMode(\4, ":I", "je")                                              # Ce verbe ne devrait pas être au subjonctif.
 
 TEST: Il {{ait}} parti.
@@ -13384,8 +13384,8 @@ TEST: j’{{aie}} faim
 
 # Après que + indicatif
 __vmode_après_que_indicatif__
-    >après  [que|qu’|qu]  @:(?:Os|M)  @:V.*:S¬:[GI]
-    >après  [que|qu’|qu]  @:(?:Os|M)  @:V0e.*:S
+    après  [que|qu’|qu]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    après  [que|qu’|qu]  @:(?:Os|M)  @:V0e.*:S
         <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « après que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
 
 TEST: Après qu’il {{ait}} allé
@@ -13395,8 +13395,8 @@ TEST: Après qu’il {{soit}} parti, il plut.
 
 # Quand/lorsque + indicatif
 __vmode_quand_lorsque_indicatif__
-    [>quand|>lorsque|lorsqu’|lorsqu]  @:(?:Os|M)  @:V.*:S¬:[GI]
-    [>quand|>lorsque|lorsqu’|lorsqu]  @:(?:Os|M)  @:V0e.*:S
+    [quand|lorsque|lorsqu’|lorsqu]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [quand|lorsque|lorsqu’|lorsqu]  @:(?:Os|M)  @:V0e.*:S
         <<- /vmode/ -3>> =suggVerbMode(\3, ":I", \2)                                                # Après « quand » ou « lorsque », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: quand elle {{rencontrât}} son créateur
@@ -13444,7 +13444,7 @@ TEST: Ça me fait {{plaisirs}}.
 
 
 __test__
-    >je  ~co[mn]putes?  [que|qu’]  @(?::Os|:M)¬:X  @:I
+    je  ~co[mn]putes?  [que|qu’]  @(?::Os|:M)¬:X  @:I
         <<- morph(\4, ":Os|:M", ":X") -5>> \1|\5                                                    # SUBJONCTIF.
 
 TEST: je conpute que Isabelle {{est}} partie.
