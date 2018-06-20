@@ -185,7 +185,7 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                                     if cActionType == "-":
                                         # grammar error
                                         nErrorStart = nOffset + m.start(eAct[0])
-                                        if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
+                                        if nErrorStart not in dErrs or nPriority > dPriority.get(nErrorStart, -1):
                                             dErrs[nErrorStart] = _createRegexError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
                                             dPriority[nErrorStart] = nPriority
                                     elif cActionType == "~":
@@ -716,7 +716,7 @@ class TokenSentence:
                                 nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
                                 nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
                                 nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
-                                if nErrorStart not in dErrs or eAct[2] > dPriority[nErrorStart]:
+                                if nErrorStart not in dErrs or eAct[2] > dPriority.get(nErrorStart, -1):
                                     dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                     dPriority[nErrorStart] = eAct[2]
                                     if bDebug:
