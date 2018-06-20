@@ -576,9 +576,7 @@ def define (dTokenPos, nPos, lMorph):
     return True
 
 
-#### GRAMMAR CHECKER PLUGINS
 
-${plugins}
 
 
 
@@ -983,6 +981,12 @@ def g_define (dToken, lMorph):
     dToken["lMorph"] = lMorph
     #print("DA:", dToken["sValue"], lMorph)
     return True
+
+
+
+#### GRAMMAR CHECKER PLUGINS
+
+${plugins}
 
 
 #### CALLABLES FOR REGEX RULES (generated code)
