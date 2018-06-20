@@ -16,6 +16,7 @@ def prepareFunction (s, bTokenValue=False):
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(morph|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"token\(\s*(\d)", 'nextToken(\\1', s)                                       # token(n)
     s = re.sub(r"token\(\s*-(\d)", 'prevToken(\\1', s)                                      # token(-n)
     s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
