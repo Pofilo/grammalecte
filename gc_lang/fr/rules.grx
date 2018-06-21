@@ -4691,52 +4691,6 @@ TEST: comme {{convenus}}                                      ->> convenu
 
 
 
-!!
-!!
-!!!! Tout, tous, toute, toutes                                                                      
-!!
-!!
-
-__[i](p_fais_les_tous)__
-    fai(?:tes|sons|s)-(?:les|[nv]ous) (tou(?:te|)s) @@$ <<- ~1>> *
-__[i](p_tout_débuts_petits)__
-    (tout) (?:débuts|petits) @@0 <<- before(r"\b(aux|[ldmtsc]es|[nv]os|leurs) +$") ~1>> *
-__[i](p_les_tout_xxx)__
-    (?:[ldmtsc]es|[nv]os|leurs|aux) (tout) ({w_2})  @@w,$
-    <<- morph(\2, ":[AQ].*:[pi]", False) ~1>> *
-
-
-__[i]/gn(gn_tous_deux)__
-    (tout) deux  @@0 <<- isStart() -1>> tous                                                        # Locution pronominale : « tous deux ».|https://fr.wiktionary.org/wiki/tous_deux
-
-TEST: {{Tout}} deux sont partis les premiers.
-
-
-__[i]/gn(gn_tous_déterminant_pluriel)__
-    tout(?= [cmts]es\b)
-    <<- not before(r"(?i)\b(?:d[eu]|avant|après|sur|malgré) +$") ->> tous                           # Erreur d’accord probable.
-
-TEST: {{Tout}} mes hommes sont venus.
-TEST: Malgré tout ces hommes sont quand même revenus.
-
-
-__[i]/gn(gn_tous_les)__
-    (tout) les ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(?:d[eu]|avant|après|sur|malgré) +$") and not morph(\2, ":(?:3s|Oo)", False)
-    -1>> tous                                                                                       # Erreur d’accord probable avec « les \2 ».
-
-TEST: {{Tout}} les hommes sont dingues.
-
-
-__[i]/gn(gn_tous_ceux)__
-    tout(?= ceux\b)
-    <<- not before(r"(?i)\b(?:d[eu]|avant|après|sur|malgré) +$") ->> tous                           # Erreur d’accord probable avec « ceux ».
-
-TEST: Donne à manger à {{tout}} ceux qui sont là.
-TEST: Revenus de tout ceux qui sont partis ont perdu la foi.
-
-
-
 @@@@
 @@@@
 @@@@
@@ -4748,22 +4702,66 @@ TEST: Revenus de tout ceux qui sont partis ont perdu la foi.
 @@@@
 
 
+!!
+!!
+!!!! Tout, tous, toute, toutes                                                                      
+!!
+!!
+
+__purge_tout_tous_toutes__
+    [fais-les|fais-nous]                        [tous|toutes]
+    [faisons-les|faisons-nous|faisons-vous]     [tous|toutes]
+    [faites-les|faites-nous|faites-vous]        [tous|toutes]
+        <<- ~2>> *
+
+    [laisse-les|laisse-nous]                    [tous|toutes]
+    [laissons-les|laissons-nous|laissons-vous]  [tous|toutes]
+    [laissez-les|laissez-nous|laissez-vous]     [tous|toutes]
+        <<- ~2>> *
+
+    [les|des|mes|tes|ses|ces|nos|vos|leurs|aux]  tout  [débuts|petits]
+    [les|des|mes|tes|ses|ces|nos|vos|leurs|aux]  tout  @:A.*:[pi]
+        <<- ~2>> *
+
+
+__tout_det__
+    [<start>|,]  tout [deux|trois]
+        <<- -2>> tous                                                                               # Locution pronominale : « tous deux ».|https://fr.wiktionary.org/wiki/tous_deux
+
+    tout [mes|tes|ses|ces|nos|vos|leurs|ceux|celles]
+        <<- not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                               # Erreur d’accord probable avec « \2 ».
+
+    tout les @:¬:(?:3s|Oo)
+        <<- not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                               # Erreur d’accord probable avec « les \3 ».
+
+TEST: {{Tout}} deux sont partis les premiers.
+TEST: {{Tout}} mes hommes sont venus.
+TEST: {{Tout}} les hommes sont dingues.
+TEST: Donne à manger à {{tout}} ceux qui sont là.
+TEST: Revenus de tout ceux qui sont partis ont perdu la foi.
+TEST: car malgré tout ceux qui persistent obtiennent parfois justice.
+TEST: je ne connais pas du tout ceux dont tu parles.
+TEST: Malgré tout ces hommes sont quand même revenus.
+TEST: Les tout premiers hommes.
+TEST: Les tout petits ne sont pas des légumes.
+
+
 __toute_det__
     toute [celles|les|des|mes|tes|ses|ces]
-        <<- -1>> toutes                                                                             # Erreur d’accord probable avec “\2”.
+        <<- /gn/ -1>> toutes                                                                        # Erreur d’accord probable avec “\2”.
 
     toute [ce|cet]
-        <<- -1>> tout                                                                               # Erreur d’accord probable avec “\2”.
+        <<- /gn/ -1>> tout                                                                          # Erreur d’accord probable avec “\2”.
 
     toute mon ~^[bcdfgjklmnpqrstvwxz]
-        <<- -1>> tout                                                                               # Erreur d’accord probable avec “\2”.
+        <<- /gn/ -1>> tout                                                                          # Erreur d’accord probable avec “\2”.
 
 TEST: {{Toute}} celles qui viendront…
 TEST: et {{toute}} ce barouf ne nous a apporté que des ennuis.
 TEST: car {{toute}} mon savoir vient d’elle
 
 
-__tous_p_det_nom__
+__tous_det_nom__
     [<start>|,]     tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
     [<start>|,]     tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
         <<- /gn/ -2>> toutes                                                                        # Erreur d’accord probable : « \4 » est féminin.
@@ -4777,7 +4775,8 @@ __tous_p_det_nom__
 TEST: {{tous}} ces {{idiotes}}
 TEST: indubitablement {{tous}} des {{privilégiées}}
 
-__toutes_p_det_nom__
+
+__toutes_det_nom__
     [<start>|,]     toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
     [<start>|,]     toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
         <<- /gn/ -2>> tous                                                                          # Erreur d’accord probable : « \4 » est masculin.
@@ -4792,29 +4791,37 @@ TEST: {{toutes}} mes {{bars}}
 TEST: vraiment {{toutes}} des {{costauds}}
 
 
-__tout_p_nom__
+__tout_nom__
     [<start>|,] tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
     de          tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
-    @:R         tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
         <<- /gn/ -3>> =suggMasSing(\3, True)                                                        # Accord avec “tout” : “\3” devrait être au masculin singulier.
 
-__toute_p_nom__
+    tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
+        <<- /gn/ morph(<1, ":R", ":D.*:p") -2>> =suggMasSing(\2, True)                              # Accord avec “tout” : “\2” devrait être au masculin singulier.
+
+__toute_nom__
     [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|G|M|[fe]:[is])
     de          toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
-    @:R         toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
-        <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulier.
+        <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulie
 
-__tous_p_nom__
+    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+        <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
+
+__tous_nom__
     [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|G|M|[me]:[ip])
     de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
-    @:R         tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
         <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        # Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
-__toutes_p_nom__
+    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
+        <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        # Accord avec “tous” : “\2” devrait être au masculin pluriel.
+
+__toutes_nom__
     [<start>|,] toutes  @:[NA].*:[ms]¬:(?:W|G|M|[fe]:[ip])
     de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
-    @:R         toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
         <<- /gn/ -3>> =suggFemPlur(\3, True)                                                        # Accord avec “toutes” : “\3” devrait être au féminin pluriel.
+
+    toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
+        <<- /gn/ morph(<1, ":R") -2>> =suggFemPlur(\2, True)                                        # Accord avec “toutes” : “\2” devrait être au féminin pluriel.
 
 TEST: Tout {{hommes}}
 TEST: De tous {{âge}} !
@@ -4904,7 +4911,7 @@ TEST: __neg__ il {{le}} lui donne pas souvent.
 !!
 !!
 
-__infi_ne_xxx__
+__infi_ne_pas_jamais_etc__
     ne [pas|rien|guère|point]                   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
     ne [pas|rien|guère|point] [trop|beaucoup]   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
     ne [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
@@ -4962,7 +4969,7 @@ TEST: Mais gare à ne pas non plus trop surestimer la menace
 TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 
-__imp_infinitif_erroné__
+__imp_ne_infinitif_negadv__
     [<start>|,]  [ne|n’]  @:V1.*:Y  [pas|plus|jamais]
         <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                              # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
 
