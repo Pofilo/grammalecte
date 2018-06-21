@@ -601,43 +601,43 @@ class TokenSentence:
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
-                print("MATCH:", dToken["sValue"])
+                print("  MATCH:", dToken["sValue"])
             yield dGraph[dNode[dToken["sValue"]]]
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
-                    print("MATCH:", sValue)
+                    print("  MATCH:", sValue)
                 yield dGraph[dNode[sValue]]
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
-                    print("MATCH:", sValue)
+                    print("  MATCH:", sValue)
                 yield dGraph[dNode[sValue]]
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
                 if bDebug:
-                    print("MATCH:", sValue)
+                    print("  MATCH:", sValue)
                 yield dGraph[dNode[sValue]]
         # token lemmas
         if "<lemmas>" in dNode:
             for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
                 if sLemma in dNode["<lemmas>"]:
                     if bDebug:
-                        print("MATCH: >" + sLemma)
+                        print("  MATCH: >" + sLemma)
                     yield dGraph[dNode["<lemmas>"][sLemma]]
         # universal arc
         if "*" in dNode:
             if bDebug:
-                print("MATCH: *")
+                print("  MATCH: *")
             yield dGraph[dNode["*"]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
                 if re.search(sRegex, dToken["sValue"]):
                     if bDebug:
-                        print("MATCH: ~" + sRegex)
+                        print("  MATCH: ~" + sRegex)
                     yield dGraph[dNode["<re_value>"][sRegex]]
         # regex morph arcs
         if "<re_morph>" in dNode:
@@ -646,7 +646,7 @@ class TokenSentence:
                     # no anti-pattern
                     if any(re.search(sRegex, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                         if bDebug:
-                            print("MATCH: @" + sRegex)
+                            print("  MATCH: @" + sRegex)
                         yield dGraph[dNode["<re_morph>"][sRegex]]
                 else:
                     # there is an anti-pattern
@@ -655,14 +655,14 @@ class TokenSentence:
                         # all morphologies must match with <sPattern>
                         if all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
-                                print("MATCH: @" + sRegex)
+                                print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
                     else:
                         if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             continue
                         if any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
-                                print("MATCH: @" + sRegex)
+                                print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
