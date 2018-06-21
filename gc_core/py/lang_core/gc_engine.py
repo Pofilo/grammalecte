@@ -603,7 +603,7 @@ class TokenSentence:
             if bDebug:
                 print("MATCH:", dToken["sValue"])
             yield dGraph[dNode[dToken["sValue"]]]
-        if dToken["sValue"].istitle():
+        if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
