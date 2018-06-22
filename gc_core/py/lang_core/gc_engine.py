@@ -631,16 +631,28 @@ class TokenSentence:
                     yield dGraph[dNode["<lemmas>"][sLemma]]
         # universal arc
         if "*" in dNode:
-            if bDebug:
-                print("  MATCH: *")
-            yield dGraph[dNode["*"]]
+            if dToken["sType"] != "PUNC":
+                if bDebug:
+                    print("  MATCH: *")
+                yield dGraph[dNode["*"]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
-                if re.search(sRegex, dToken["sValue"]):
-                    if bDebug:
-                        print("  MATCH: ~" + sRegex)
-                    yield dGraph[dNode["<re_value>"][sRegex]]
+                if "¬" not in sRegex:
+                    # no anti-pattern
+                    if re.search(sRegex, dToken["sValue"]):
+                        if bDebug:
+                            print("  MATCH: ~" + sRegex)
+                        yield dGraph[dNode["<re_value>"][sRegex]]
+                else:
+                    # there is an anti-pattern
+                    sPattern, sNegPattern = sRegex.split("¬", 1)
+                    if sNegPattern and re.search(sNegPattern, dToken["sValue"]):
+                        continue
+                    if re.search(sPattern, dToken["sValue"]):
+                        if bDebug:
+                            print("  MATCH: ~" + sRegex)
+                        yield dGraph[dNode["<re_value>"][sRegex]]
         # regex morph arcs
         if "<re_morph>" in dNode:
             for sRegex in dNode["<re_morph>"]:
@@ -655,7 +667,7 @@ class TokenSentence:
                     sPattern, sNegPattern = sRegex.split("¬", 1)
                     if sNegPattern == "*":
                         # all morphologies must match with <sPattern>
-                        if all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                        if sPattern and all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
@@ -952,7 +964,7 @@ def g_analyse (dToken, sPattern, sNegPattern=""):
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
-def g_tag_before (dToken, sTag, dTags):
+def g_tag_before (dToken, dTags, sTag):
     if sTag not in dTags:
         return False
     if dToken["nStart"] > dTags[sTag][0]:
@@ -960,7 +972,7 @@ def g_tag_before (dToken, sTag, dTags):
     return False
 
 
-def g_tag_after (dToken, sTag, dTags):
+def g_tag_after (dToken, dTags, sTag):
     if sTag not in dTags:
         return False
     if dToken["nStart"] < dTags[sTag][1]:
