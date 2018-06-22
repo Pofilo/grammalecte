@@ -4659,13 +4659,13 @@ TEST: pour ne justement pas donner l’impression de s’être trompé.
 
 __tag_sujets__
     [je|j’]
-    moi qui
-    moi [seul|seule]
+    [moi|moi-même] qui
+    [moi|moi-même] [seul|seule]
         <<- />> 1s
 
     tu
-    toi ?,¿ qui
-    toi [seul|seule]
+    [toi|toi-même] ?,¿ qui
+    [toi|toi-même] [seul|seule]
         <<- />> 2s
 
     nous
@@ -4673,9 +4673,9 @@ __tag_sujets__
     nous-même
     nous-mêmes
     nous [seul|seuls|seules]
-    et moi
-    ni moi
-    moi et
+    [et|ou] [moi|moi-même]
+    ni [moi|moi-même]
+    [moi|moi-même] et
         <<- />> 1p
 
     vous
@@ -4683,9 +4683,9 @@ __tag_sujets__
     vous-même
     vous-mêmes
     vous [seul|seule|seuls|seules]
-    et toi
-    ni toi
-    toi et
+    [et|ou] [toi|toi-même]
+    ni [toi|toi-même]
+    [toi|toi-même] et
         <<- />> 2p
 
 
@@ -4696,7 +4696,7 @@ __conj_xxxons_sans_sujet!3__
 
 __conj_xxxez_sans_sujet!3__
     @:2p¬:[EGMNAJ]
-        <<- /conj/ not (\1.istitle() and before(r"\w")) and not tag_before(\2, "1p") ->> =suggVerb(\1, ":3p")   # Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
+        <<- /conj/ not (\1.istitle() and before(r"\w")) and not tag_before(\2, "2p") ->> =suggVerb(\1, ":3p")   # Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
 
 ## Incohérences avec formes verbales 2pl sans sujet
 
