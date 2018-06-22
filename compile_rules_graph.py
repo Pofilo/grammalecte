@@ -20,12 +20,7 @@ def prepareFunction (s, bTokenValue=False):
     s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"(morph|analyse)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                     # next token
     s = re.sub(r"(morph|analyse)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                     # previous token
-    s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
-    s = re.sub(r"after\(\s*", 'look(s[m.end():], ', s)                                      # after(s)
-    s = re.sub(r"textarea\(\s*", 'look(s, ', s)                                             # textarea(s)
-    s = re.sub(r"before_chk1\(\s*", 'look_chk1(dDA, s[:m.start()], 0, ', s)                 # before_chk1(s)
-    s = re.sub(r"after_chk1\(\s*", 'look_chk1(dDA, s[m.end():], m.end(), ', s)              # after_chk1(s)
-    s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dDA, s, 0, ', s)                           # textarea_chk1(s)
+    s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is(\\2)()', s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     if bTokenValue:
         # token values are used as parameter
