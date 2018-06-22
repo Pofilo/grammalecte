@@ -120,13 +120,26 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                     yield lResult
 
 
-def changeReferenceToken (s, dPos):
+def changeReferenceToken (sText, dPos):
     for i in range(len(dPos), 0, -1):
-        s = s.replace("\\"+str(i), "\\"+str(dPos[i]))
-    return s
+        sText = sText.replace("\\"+str(i), "\\"+str(dPos[i]))
+    return sText
 
 
-def createAction (sIdAction, sAction, nPriority, nToken, dPos):
+def checkTokenNumbers (sText, sActionId, nToken):
+    for x in re.finditer(r"\\(\d+)", sText):
+        if int(x.group(1)) > nToken:
+            print("# Error in token index at line " + sActionId + " ("+str(nToken)+" tokens only)")
+            print(sText)
+
+
+def checkIfThereIsCode (sText, sActionId):
+    if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
+        print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
+        print(sText)
+
+
+def createAction (sActionId, sAction, nPriority, nToken, dPos):
     # Option
     sOption = False
     m = re.match("/(\\w+)/", sAction) 
@@ -136,7 +149,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
     # valid action?
     m = re.search("(?P<action>[-~=])(?P<start>\\d+|)(?P<end>:\\d+|)>> ", sAction)
     if not m:
-        print(" # Error. No action found at: ", sIdAction)
+        print(" # Error. No action found at: ", sActionId)
         print("   ==", sAction, "==")
         return None
     # Condition
@@ -144,8 +157,8 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
     if sCondition:
         sCondition = prepareFunction(sCondition)
         sCondition = changeReferenceToken(sCondition, dPos)    
-        dFUNCTIONS["g_c_"+sIdAction] = sCondition
-        sCondition = "g_c_"+sIdAction
+        dFUNCTIONS["g_c_"+sActionId] = sCondition
+        sCondition = "g_c_"+sActionId
     else:
         sCondition = ""
     # Action
@@ -163,7 +176,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
             iStartAction = dPos[iStartAction]
             iEndAction = dPos[iEndAction]
         except:
-            print("# Error. Wrong groups in: " + sIdAction)
+            print("# Error. Wrong groups in: " + sActionId)
 
     if cAction == "-":
         ## error
@@ -171,7 +184,7 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         if iMsg == -1:
             sMsg = "# Error. Error message not found."
             sURL = ""
-            print(sMsg + " Action id: " + sIdAction)
+            print(sMsg + " Action id: " + sActionId)
         else:
             sMsg = sAction[iMsg+3:].strip()
             sAction = sAction[:iMsg].strip()
@@ -180,51 +193,43 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
             if mURL:
                 sURL = mURL.group(1).strip()
                 sMsg = sMsg[:mURL.start(0)].strip()
+            checkTokenNumbers(sMsg, sActionId, nToken)
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:], True)
-                dFUNCTIONS["g_m_"+sIdAction] = sMsg
-                for x in re.finditer("lToken\\[(\\d+)\\]", sMsg):
-                    if int(x.group(1)) > nToken:
-                        print("# Error in token index in message at line " + sIdAction + " ("+str(nToken)+" tokens only)")
-                sMsg = "=g_m_"+sIdAction
+                dFUNCTIONS["g_m_"+sActionId] = sMsg
+                sMsg = "=g_m_"+sActionId
             else:
-                for x in re.finditer(r"\\(\d+)", sMsg):
-                    if int(x.group(1)) > nToken:
-                        print("# Error in token index in message at line " + sIdAction + " ("+str(nToken)+" tokens only)")
-                if re.search("[.]\\w+[(]", sMsg):
-                    print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
+                checkIfThereIsCode(sMsg, sActionId)
             
     # checking consistancy
-    if cAction == "=" or sAction[0:1] == "=":
-        if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
-            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
-        for x in re.finditer(r"\\(\d+)", sAction):
-            if int(x.group(1)) > nToken:
-                print("# Error in token index in replacement at line " + sIdAction + " ("+str(nToken)+" tokens only)")
+    checkTokenNumbers(sAction, sActionId, nToken)
+
+    if cAction == ">":
+        ## no action, break loop if condition is False
+        return [sOption, sCondition, cAction, ""]
+
+    if not sAction:
+        print("# Error in action at line " + sActionId + ":  This action is empty.")
+
     if sAction[0:1] != "=":
-        if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
-            print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
+        checkIfThereIsCode(sAction, sActionId)
 
     if cAction == "-":
         ## error detected --> suggestion
-        if not sAction:
-            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
             sAction = prepareFunction(sAction, True)
-            dFUNCTIONS["g_s_"+sIdAction] = sAction[1:]
-            sAction = "=g_s_"+sIdAction
+            dFUNCTIONS["g_s_"+sActionId] = sAction[1:]
+            sAction = "=g_s_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
-            print("# Error in action at line " + sIdAction + ":  The message is empty.")
+            print("# Error in action at line " + sActionId + ":  The message is empty.")
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, nPriority, sMsg, sURL]
     elif cAction == "~":
         ## text processor
-        if not sAction:
-            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            dFUNCTIONS["g_p_"+sIdAction] = sAction[1:]
-            sAction = "=g_p_"+sIdAction
+            dFUNCTIONS["g_p_"+sActionId] = sAction[1:]
+            sAction = "=g_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
@@ -232,17 +237,14 @@ def createAction (sIdAction, sAction, nPriority, nToken, dPos):
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
-        if not sAction:
-            print("# Error in action at line " + sIdAction + ":  This action is empty.")
+        if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
+            print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
         sAction = prepareFunction(sAction)
-        dFUNCTIONS["g_d_"+sIdAction] = sAction
-        sAction = "g_d_"+sIdAction
+        dFUNCTIONS["g_d_"+sActionId] = sAction
+        sAction = "g_d_"+sActionId
         return [sOption, sCondition, cAction, sAction]
-    elif cAction == ">":
-        ## no action, break loop if condition is False
-        return [sOption, sCondition, cAction, ""]
     else:
-        print("# Unknown action at line " + sIdAction)
+        print("# Unknown action at line " + sActionId)
         return None
 
 
