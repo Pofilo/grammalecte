@@ -649,7 +649,7 @@ class TokenSentence:
                     sPattern, sNegPattern = sRegex.split("¬", 1)
                     if sNegPattern and re.search(sNegPattern, dToken["sValue"]):
                         continue
-                    if re.search(sPattern, dToken["sValue"]):
+                    if not sPattern or re.search(sPattern, dToken["sValue"]):
                         if bDebug:
                             print("  MATCH: ~" + sRegex)
                         yield dGraph[dNode["<re_value>"][sRegex]]
@@ -674,7 +674,7 @@ class TokenSentence:
                     else:
                         if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             continue
-                        if any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                        if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
