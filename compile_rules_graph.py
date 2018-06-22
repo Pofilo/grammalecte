@@ -22,10 +22,10 @@ def prepareFunction (s, bTokenValue=False):
     s = re.sub(r"(morph|analyse)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                     # previous token
     s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is(\\2)()', s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
-    s = re.sub(r"before\(\s*", 'look(sSentence[:m.start()], ', s)                                   # before(s)
-    s = re.sub(r"after\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                                      # after(s)
-    s = re.sub(r"before0\(\s*", 'look(sSentence0[:m.start()], ', s)                                 # before0(s)
-    s = re.sub(r"after0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                                    # after0(s)
+    s = re.sub(r"before\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)            # before(s)
+    s = re.sub(r"after\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                   # after(s)
+    s = re.sub(r"before0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before0(s)
+    s = re.sub(r"after0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                  # after0(s)
     if bTokenValue:
         # token values are used as parameter
         s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
