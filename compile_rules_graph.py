@@ -15,17 +15,17 @@ def prepareFunction (s, bTokenValue=False):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"(morph|analyse|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
-    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
-    s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
+    s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
     s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"(morph|analyse)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                     # next token
     s = re.sub(r"(morph|analyse)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                     # previous token
-    s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is(\\2)()', s)
+    s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is\\2()', s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
-    s = re.sub(r"before\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)            # before(s)
-    s = re.sub(r"after\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                   # after(s)
-    s = re.sub(r"before0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before0(s)
-    s = re.sub(r"after0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                  # after0(s)
+    s = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before(s)
+    s = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                 # after(s)
+    s = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)        # before0(s)
+    s = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                # after0(s)
     if bTokenValue:
         # token values are used as parameter
         s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
