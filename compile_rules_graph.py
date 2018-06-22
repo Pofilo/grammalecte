@@ -14,8 +14,9 @@ dFUNCTIONS = {}
 def prepareFunction (s, bTokenValue=False):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
-    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(morph|analyse|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"(morph|analyse)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                     # next token
     s = re.sub(r"(morph|analyse)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                     # previous token
@@ -147,7 +148,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         sOption = m.group(1)
         sAction = sAction[m.end():].strip()
     # valid action?
-    m = re.search("(?P<action>[-~=])(?P<start>\\d+|)(?P<end>:\\d+|)>> ", sAction)
+    m = re.search("(?P<action>[-~=/])(?P<start>\\d+|)(?P<end>:\\d+|)>> ", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         print("   ==", sAction, "==")
@@ -232,6 +233,9 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
             sAction = "=g_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
+        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
+    elif cAction == "/":
+        ## tags
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
     elif cAction == "=":
         ## disambiguator
@@ -337,7 +341,7 @@ def make (lRule, dDef, sLang, bJavaScript):
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in dFUNCTIONS.items():
         if sFuncName.startswith("g_c_"): # condition
-            sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo"
+            sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags"
         elif sFuncName.startswith("g_m_"): # message
             sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("g_s_"): # suggestion

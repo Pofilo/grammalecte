@@ -590,7 +590,9 @@ class TokenSentence:
         self.nOffsetWithinParagraph = nOffset
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken }
+        self.dTags = {}
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
+
 
     def update (self, sSentence):
         self.sSentence = sSentence
@@ -706,9 +708,13 @@ class TokenSentence:
                         print("ACTION:", sRuleId)
                         print(dRule[sRuleId])
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
-                    # action in lActions: [ condition, action type, replacement/suggestion/action[, iTokenStart, iTokenEnd[, nPriority, message, URL]] ]
+                    # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, nPriority, message, URL ]
+                    # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd ]
+                    # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
+                    # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
+                    # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
-                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo)
+                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags)
                         if bCondMemo:
                             if cActionType == "-":
                                 # grammar error
@@ -738,6 +744,15 @@ class TokenSentence:
                                 if bDebug:
                                     print(">", sRuleId)
                                 pass
+                            elif cActionType == "/":
+                                # tags
+                                nTokenTag = nTokenOffset + eAct[0]
+                                if sWhat not in self.dTags:
+                                    self.dTags[sWhat] = (nTokenTag, nTokenTag)
+                                elif nTokenTag > self.dTags[sWhat][1]:
+                                    self.dTags[sWhat] = (self.dTags[sWhat][0], nTokenTag)
+                                if bDebug:
+                                    print("/", sRuleId)
                             else:
                                 print("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
@@ -936,6 +951,21 @@ def g_analyse (dToken, sPattern, sNegPattern=""):
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
+
+def g_tag_before (dToken, sTag, dTags):
+    if sTag not in dTags:
+        return False
+    if dToken["nStart"] > dTags[sTag][0]:
+        return True
+    return False
+
+
+def g_tag_after (dToken, sTag, dTags):
+    if sTag not in dTags:
+        return False
+    if dToken["nStart"] < dTags[sTag][1]:
+        return True
+    return False
 
 
 #### Disambiguator
