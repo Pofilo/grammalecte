@@ -967,7 +967,7 @@ def g_analyse (dToken, sPattern, sNegPattern=""):
 def g_tag_before (dToken, dTags, sTag):
     if sTag not in dTags:
         return False
-    if dToken["nStart"] > dTags[sTag][0]:
+    if dToken["i"] > dTags[sTag][0]:
         return True
     return False
 
@@ -975,7 +975,7 @@ def g_tag_before (dToken, dTags, sTag):
 def g_tag_after (dToken, dTags, sTag):
     if sTag not in dTags:
         return False
-    if dToken["nStart"] < dTags[sTag][1]:
+    if dToken["i"] < dTags[sTag][1]:
         return True
     return False
 
