@@ -4666,6 +4666,15 @@ TEST: Mon épouse et moi-même avons toujours dit
 TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du tout le même sens
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                  
+@@@@
+@@@@
+@@@@
+@@@@
 
 !!
 !!
@@ -4673,11 +4682,25 @@ TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du
 !!
 !!
 
-## plus que prévu / mois que prévu
-__[i]/sgpl(sgpl_que_prévu1)__   (plus|moins|autant) +que (prévu(?:es?|s)) @@0,$ <<- -2>> prévu                          # Invariable. Implicitement, \1 que ce qui était prévu.
-__[i]/sgpl(sgpl_que_prévu2)__   (plus|moins|aussi) +({w_2}) +que (prévu(?:es?|s)) @@0,w,$ <<- -3>> prévu                # Invariable. Implicitement, \1 \2 que ce qui était prévu.
-__[i]/sgpl(sgpl_que_prévu3)__   (plus|moins|autant) +d(?:e |’)({w_2}) +que (prévu(?:es?|s)) @@0,w,$ <<- -3>> prévu      # Invariable. Implicitement, \1 \2 que ce qui était prévu.
-__[i]/sgpl(sgpl_comme_adj)__    comme ((annoncé|convenu|prévu)(?:es?|s)) @@6,6 <<- -1>> \2                              # Invariable. Implicitement, comme ce qui était \2.
+__locutions_invariables__
+    [plus|moins|autant]  que  [prévue|prévus|prévues]
+        <<- -3>> prévu                                                                              # Invariable. Implicitement, \1 que ce qui était prévu.
+
+    [plus|moins|aussi]  *  que  [prévue|prévus|prévues]
+        <<- -4>> prévu                                                                              # Invariable. Implicitement, \1 \2 que ce qui était prévu.
+
+    [plus|moins|autant]  [de|d’]  *  que  [prévue|prévus|prévues]
+        <<- -5>> prévu                                                                              # Invariable. Implicitement, \1 \2 \3 que ce qui était prévu.
+
+    comme [annoncés|annoncée|annoncées]
+        <<- -2>> annoncé                                                                            # Invariable. Implicitement, comme ce qui était annoncé.
+
+    comme [convenus|convenue|convenues]
+        <<- -2>> convenu                                                                            # Invariable. Implicitement, comme ce qui était convenu.
+
+    comme [prévue|prévus|prévues]
+        <<- -2>> prévu                                                                              # Invariable. Implicitement, comme ce qui était prévu.
+
 
 TEST: il y en a autant que {{prévus}}.
 TEST: elles sont plus nombreuses plus que {{prévues}}
@@ -4689,17 +4712,6 @@ TEST: autant d’hommes que {{prévus}}                          ->> prévu
 TEST: il y en a moins que {{prévues}}                         ->> prévu
 TEST: comme {{convenus}}                                      ->> convenu
 
-
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                  
-@@@@
-@@@@
-@@@@
-@@@@
 
 
 !!
