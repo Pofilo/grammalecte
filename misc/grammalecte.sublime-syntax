@@ -50,7 +50,7 @@ contexts:
     - match: '\b(?:True|False|None)\b'
       scope: constant.language
     
-    - match: '\b(?:spell|morph|morphex|g_morph|stem|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|select|exclude|g_define|g_select|g_exclude|analysex?|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
+    - match: '\b(?:spell|morph|morphex|stem|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|select|exclude|analysex?|tag_|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
       scope: entity.name.function
 
     - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:upper|lower|digit|title))\b'
@@ -121,6 +121,11 @@ contexts:
         1: keyword.textprocessor.group
     - match: '=>>'
       scope: keyword.disambiguator
+    - match: '/(\d*)>>'
+      scope: keyword.tag
+      captures:
+        1: keyword.tag.group
+
 
     # Tokens
     - match: '(>)\w+'
@@ -158,7 +163,7 @@ contexts:
       scope: message.error
 
     # special chars
-    - match: '[@=*^?!:+<>~]'
+    - match: '[@=*^?¿!:+<>~]'
       scope: keyword.other
 
     - match: '\(\?(?:[:=!]|<!)|[(|)]'
