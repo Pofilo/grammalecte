@@ -22,6 +22,10 @@ def prepareFunction (s, bTokenValue=False):
     s = re.sub(r"(morph|analyse)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                     # previous token
     s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is(\\2)()', s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
+    s = re.sub(r"before\(\s*", 'look(sSentence[:m.start()], ', s)                                   # before(s)
+    s = re.sub(r"after\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                                      # after(s)
+    s = re.sub(r"before0\(\s*", 'look(sSentence0[:m.start()], ', s)                                 # before0(s)
+    s = re.sub(r"after0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                                    # after0(s)
     if bTokenValue:
         # token values are used as parameter
         s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
@@ -336,7 +340,7 @@ def make (lRule, dDef, sLang, bJavaScript):
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in dFUNCTIONS.items():
         if sFuncName.startswith("g_c_"): # condition
-            sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags"
+            sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags, sSentence, sSentence0"
         elif sFuncName.startswith("g_m_"): # message
             sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("g_s_"): # suggestion
