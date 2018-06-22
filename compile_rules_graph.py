@@ -292,7 +292,8 @@ def make (lRule, dDef, sLang, bJavaScript):
             else:
                 print("Error at rule group: ", sLine, " -- line:", i)
                 break
-        elif re.search("    +<<- ", sLine):
+        elif re.search("^    +<<- ", sLine) or sLine.startswith("        ") \
+                or re.search("^    +#", sLine) or re.search(r"^    [-~=>/](?:\d(?::\d+|)|)>> ", sLine) :
             # actions
             sActions += " " + sLine.strip()
         elif re.match("[  ]*$", sLine):
