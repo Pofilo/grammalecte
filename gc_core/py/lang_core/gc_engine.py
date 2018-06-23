@@ -593,7 +593,6 @@ class TokenSentence:
         self.dTags = {}
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
-
     def update (self, sSentence):
         self.sSentence = sSentence
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
@@ -675,6 +674,7 @@ class TokenSentence:
         # meta arc (for token type)
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
+                # not regex here, we just search if <dNode["sType"]> exists within <sMeta>
                 if sMeta == "*":
                     if bDebug:
                         print("  MATCH: *" + sMeta)
@@ -734,7 +734,7 @@ class TokenSentence:
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, nPriority, message, URL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
-                    # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
+                    # Sentence Tag  [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
                         bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
