@@ -883,6 +883,9 @@ class TokenSentence:
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
                     self.lToken[i]["bToRemove"] = True
+        elif sWhat == "_":
+            # merge tokens
+            self.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
         elif sWhat == "!":
             # immunity
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -912,17 +915,36 @@ class TokenSentence:
     def rewrite (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
         lNewToken = []
-        for i, dToken in enumerate(self.lToken):
+        nMergeUntil = -1
+        dTokenMerger = None
+        for dToken in self.lToken:
+            bKeepToken = True
             if "bImmune" in dToken:
                 nErrorStart = self.nOffsetWithinParagraph + dToken["nStart"]
                 if nErrorStart in self.dError:
+                    if bDebug:
+                        print("immunity -> error removed:", self.dError[nErrorStart])
                     del self.dError[nErrorStart]
-            if "bToRemove" in dToken:
+            if dToken["i"] <= nMergeUntil:
+                dTokenMerger["sValue"] += " " * (dToken["i"]["nStart"] - dTokenMerger["nEnd"]) + dToken["i"]["sValue"]
+                dTokenMerger["nEnd"] = dToken["i"]["nEnd"]
+                if bDebug:
+                    print("Merged token:", dTokenMerger["sValue"])
+                bKeepToken = False
+            if "nMergeUntil" in dToken:
+                if not nMergeUntil: # this token should alerady been merged with a previous token
+                    dTokenMerger = dToken
+                if dToken["nMergeUntil"] > nMergeUntil:
+                    nMergeUntil = dToken["nMergeUntil"]  
+                del dToken["nMergeUntil"]
+            elif "bToRemove" in dToken:
                 # remove useless token
                 self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
                 if bDebug:
                     print("removed:", dToken["sValue"])
-            else:
+                bKeepToken = False
+            #
+            if bKeepToken:
                 lNewToken.append(dToken)
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
