@@ -4588,35 +4588,7 @@ TEST: la tentation pour certains médias de ne tout simplement pas rémunérer n
 TEST: Ne parfois pas être celui qui sabote l’ambiance.
 
 
-!!
-!!
-!!!! Formes verbales sans sujet                                                                     
-!!
-!!
-
-## Incohérences avec formes verbales 1sg et 2sg sans sujet
 __[i](p_notre_père_qui_es_au_cieux)__   notre père (qui est? aux cieux) @@11 <<- ~1>> *
-
-__[i]/conj(conj_xxxai_sans_sujet)!3__
-    \w*ai(?! je)
-    <<- ( morph(\0, ":1s") or ( before("> +$") and morph(\0, ":1s", False) ) ) and not (\0[0:1].isupper() and before0(r"\w"))
-        and not before(r"(?i)\b(?:j(?:e |[’'])|moi(?:,? qui| seul) )")
-    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
-__[i]/conj(conj_xxxes_sans_sujet)!3__
-    \w*es(?! tu)
-    <<- morphex(\0, ":2s", ":(?:E|G|W|M|J|[13][sp]|2p)") and not \0[0:1].isupper() and not isRealStart()
-        and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
-        and not before(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
-    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
-__[i]/conj(conj_xxxas_sans_sujet)!3__
-    \w+as(?! tu)
-    <<- morphex(\0, ":2s", ":(?:G|W|M|J|[13][sp]|2p)") and not (\0[0:1].isupper() and before0(r"\w"))
-        and ( not morph(\0, ":[NAQ]", False) or before("> +$") )
-        and not before(r"(?i)\bt(?:u |[’']|oi,? qui |oi seul )")
-    ->> =suggVerb(@, ":3s")                                     # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
-
-
-
 
 
 @@@@
@@ -4629,6 +4601,12 @@ __[i]/conj(conj_xxxas_sans_sujet)!3__
 @@@@
 @@@@
 
+!!
+!!
+!!!! Formes verbales sans sujet                                                                     
+!!
+!!
+
 __tag_sujets__
     [je|j’]
     [moi|moi-même] qui
@@ -4636,6 +4614,7 @@ __tag_sujets__
         <<- />> 1s
 
     tu
+    t’  @:2s
     [toi|toi-même] ?,¿ qui
     [toi|toi-même] [seul|seule]
         <<- />> 2s
@@ -4661,22 +4640,48 @@ __tag_sujets__
         <<- />> 2p
 
 
-__conj_xxxxs_sans_sujet!3__
-    étais  ~¬(?:[tT]u|[jJ]e)
-        <<- not (\1.istitle() and before0(r"\w")) and not morph(<1, ":[DA].*:p")
+## Incohérences avec formes verbales 1sg et 2sg sans sujet
+
+__conj_xxxai__sans_sujet!3__
+    [se|s’]  ?[en|y]¿  (~ai$)
+        <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp])")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+
+    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~ai$)  ~¬[jJ]e
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+
+    ~ai$  ~¬[jJ]e
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+
+
+__conj_xxxas_xxxes__sans_sujet!3__
+    [se|s’]  ?[en|y]¿  (~[ae]s$)
+        <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp])")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+
+    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~[ae]s$)  ~¬[tT]u
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+
+    ~[ae]s$  ~¬[tT]u
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+
+
+__conj_xxxxxs_sans_sujet!3__
+    [se|s’]  ?[en|y]¿  (~[iudnrtpcï]s$)
+        <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    se  ~[iudnrtpcï]s$
-        <<- not \1.isupper() and morph(\2, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-        -2>> =suggVerb(\2, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
-
-    s’  ~[iudnrtpcï]s$
-        <<- morph(\2, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-        -2>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
-
-    [ne|n’] ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  ~[iudnrtpcï]s$  ~¬(?:[tT]u|[jJ]e)
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e)")
+    étais  ~¬(?:[tT]u|[jJ]e)
+        <<- not (\1.istitle() and before0(r"\w")) and not morph(<1, ":[DA].*:p")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
@@ -4686,20 +4691,23 @@ __conj_xxxxs_sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
 
-__conj_peux_veux_sans_sujet!3__
-    [peux|veux]  ~¬(?:[tT]u|[jJ]e)
-        <<- /conj/ not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+__conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
+    [se|s’]  ?[en|y]¿  ([peux|veux|vaux|équivaux|prévaux])
+        <<- /conj/ -1>> =suggVerb(\1, ":3s")                                                        # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
+        <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-__conj_vaux_équivaux_prévaux_sans_sujet!3__
     vaux  ~¬(?:[tT]u|[jJ]e)
         <<- /conj/ not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
             and not morph(<1, ":(?:R|D.*:p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [équivaux|prévaux]  ~¬(?:[tT]u|[jJ]e)
+    [peux|veux|équivaux|prévaux]  ~¬(?:[tT]u|[jJ]e)
         <<- /conj/ not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+
 
 TEST: Caroline, quand l’heure viendra, {{décideras}} de la conduite à tenir.
 TEST: ceux-là, dans tous les cas de figure et dans tous les coups ratés, {{comprenais}} mal pourquoi on leur en voulait.
