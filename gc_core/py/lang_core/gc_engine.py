@@ -167,10 +167,8 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
             for sGraphName, sLineId in lRuleGroup:
                 if bDebug:
                     print("\n>>>> GRAPH:", sGraphName, sLineId)
-                bParagraphChange, errs = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
-                dErrs.update(errs)
-                if bParagraphChange:
-                    s = oSentence.rewrite(bDebug)
+                bParagraphChange, s = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
+                dErrs.update(oSentence.dError)
         elif not sOption or dOptions.get(sOption, False):
             # regex rules
             for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
@@ -578,8 +576,6 @@ def define (dTokenPos, nPos, lMorph):
 
 
 
-
-
 #### TOKEN SENTENCE CHECKER
 
 class TokenSentence:
@@ -591,6 +587,7 @@ class TokenSentence:
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken }
         self.dTags = {}
+        self.dError = {}
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
     def update (self, sSentence):
@@ -691,11 +688,11 @@ class TokenSentence:
 
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
-        dErr = {}
+        self.dError = {}
         dPriority = {}  # Key = position; value = priority
         dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
-        bChange = False
+        bTagAndRewrite = False
         for dToken in self.lToken:
             if bDebug:
                 print("TOKEN:", dToken["sValue"])
@@ -713,15 +710,17 @@ class TokenSentence:
                 #if bDebug:
                 #    print("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
-                    bHasChanged, errs = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dToken["i"], dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
-                    dErr.update(errs)
-                    if bHasChanged:
-                        bChange = True
-        return (bChange, dErr)
+                    bChange, dErr = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dToken["i"], dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
+                    self.dError.update(dErr)
+                    if bChange:
+                        bTagAndRewrite = True
+        if bTagAndRewrite:
+            self.rewrite(bDebug)
+        return (bTagAndRewrite, self.sSentence)
 
     def _executeActions (self, dGraph, dNode, nTokenOffset, nLastToken, dPriority, dOptions, sCountry, bShowRuleId, bDebug, bContext):
         "execute actions found in the DARG"
-        dErrs = {}
+        dError = {}
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
             bCondMemo = None
@@ -742,14 +741,15 @@ class TokenSentence:
                             if cActionType == "-":
                                 # grammar error
                                 nTokenErrorStart = nTokenOffset + eAct[0]
-                                nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
-                                nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
-                                if nErrorStart not in dErrs or eAct[2] > dPriority.get(nErrorStart, -1):
-                                    dErrs[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
-                                    dPriority[nErrorStart] = eAct[2]
-                                    if bDebug:
-                                        print("-", sRuleId, dErrs[nErrorStart])
+                                if "bImmune" not in self.lToken[nTokenErrorStart]:
+                                    nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
+                                    nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
+                                    nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
+                                    if nErrorStart not in dError or eAct[2] > dPriority.get(nErrorStart, -1):
+                                        dError[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
+                                        dPriority[nErrorStart] = eAct[2]
+                                        if bDebug:
+                                            print("-", sRuleId, dError[nErrorStart])
                             elif cActionType == "~":
                                 # text processor
                                 nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
@@ -784,7 +784,7 @@ class TokenSentence:
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
-        return bChange, dErrs
+        return bChange, dError
 
     def _createWriterError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         "error for Writer (LO/OO)"
@@ -883,6 +883,13 @@ class TokenSentence:
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
                     self.lToken[i]["bToRemove"] = True
+        elif sWhat == "!":
+            # immunity
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                self.lToken[nTokenRewriteStart]["bImmune"] = True
+            else:
+                for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
+                    self.lToken[i]["bImmune"] = True
         else:
             if sWhat.startswith("="):
                 sWhat = globals()[sWhat[1:]](self.lToken)
@@ -906,6 +913,10 @@ class TokenSentence:
         "rewrite the sentence, modify tokens, purge the token list"
         lNewToken = []
         for i, dToken in enumerate(self.lToken):
+            if "bImmune" in dToken:
+                nErrorStart = self.nOffsetWithinParagraph + dToken["nStart"]
+                if nErrorStart in self.dError:
+                    del self.dError[nErrorStart]
             if "bToRemove" in dToken:
                 # remove useless token
                 self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
@@ -927,7 +938,6 @@ class TokenSentence:
             print(self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
-        return self.sSentence
 
 
 
