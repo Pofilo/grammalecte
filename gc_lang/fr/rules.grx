@@ -4643,11 +4643,15 @@ __tag_sujets__
 ## Incohérences avec formes verbales 1sg et 2sg sans sujet
 
 __conj_xxxai__sans_sujet!3__
-    [se|s’]  ?[en|y]¿  (~ai$)
+    [se|s’]  ?[en|y|le|la|l’|les]¿  (~ai$)
         <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~ai$)  ~¬[jJ]e
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+
+    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  (~ai$)  ~¬[jJ]e
         <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
@@ -4657,11 +4661,15 @@ __conj_xxxai__sans_sujet!3__
 
 
 __conj_xxxas_xxxes__sans_sujet!3__
-    [se|s’]  ?[en|y]¿  (~[ae]s$)
+    [se|s’]  ?[en|y|le|la|l’|les]¿  (~[ae]s$)
         <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~[ae]s$)  ~¬[tT]u
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+
+    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  (~[ae]s$)  ~¬[tT]u
         <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
@@ -4671,11 +4679,16 @@ __conj_xxxas_xxxes__sans_sujet!3__
 
 
 __conj_xxxxxs_sans_sujet!3__
-    [se|s’]  ?[en|y]¿  (~[iudnrtpcï]s$)
+    [se|s’]  ?[en|y|le|la|l’|les]¿  (~[iudnrtpcï]s$)
         <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
+        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+            and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
         <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
@@ -4692,10 +4705,14 @@ __conj_xxxxxs_sans_sujet!3__
 
 
 __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
-    [se|s’]  ?[en|y]¿  ([peux|veux|vaux|équivaux|prévaux])
+    [se|s’]  ?[en|y|le|la|l’|les]¿  ([peux|veux|vaux|équivaux|prévaux])
         <<- /conj/ -1>> =suggVerb(\1, ":3s")                                                        # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
+        <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
         <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
@@ -4944,12 +4961,12 @@ __ne_manquant__
     [<start>|,]  nous           [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
     [<start>|,]  vous           [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
     [<start>|,]  [ils|elles]    [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
-    [<start>|,]  je             [me|te|nous|vous] [le|la|les]                           @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
-    [<start>|,]  tu             [me|te|nous|vous] [le|la|les]                           @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
-    [<start>|,]  [il|elle|on]   [me|te|nous|vous] [le|la|les]                           @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
-    [<start>|,]  nous           [me|te|nous|vous] [le|la|les]                           @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
-    [<start>|,]  vous           [me|te|nous|vous] [le|la|les]                           @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
-    [<start>|,]  [ils|elles]    [me|te|nous|vous] [le|la|les]                           @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  je             [me|te|se|nous|vous] [le|la|les]                        @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             [me|te|se|nous|vous] [le|la|les]                        @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   [me|te|se|nous|vous] [le|la|les]                        @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           [me|te|se|nous|vous] [le|la|les]                        @:1p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           [me|te|se|nous|vous] [le|la|les]                        @:2p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    [me|te|se|nous|vous] [le|la|les]                        @:3p¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
     [<start>|,]  je             [le|la|les] [lui|leur]                                  @:1s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
     [<start>|,]  tu             [le|la|les] [lui|leur]                                  @:2s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
     [<start>|,]  [il|elle|on]   [le|la|les] [lui|leur]                                  @:3s¬:(?:Oo|X)  [pas|rien|jamais|guère|point]
