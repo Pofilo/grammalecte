@@ -629,12 +629,6 @@ class TokenSentence:
                     if bDebug:
                         print("  MATCH: >" + sLemma)
                     yield dGraph[dNode["<lemmas>"][sLemma]]
-        # universal arc
-        if "*" in dNode:
-            if dToken["sType"] != "PUNC":
-                if bDebug:
-                    print("  MATCH: *")
-                yield dGraph[dNode["*"]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
@@ -678,6 +672,23 @@ class TokenSentence:
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
+        # meta arc (for token type)
+        if "<meta>" in dNode:
+            for sMeta in dNode["<meta>"]:
+                if sMeta == "*":
+                    if bDebug:
+                        print("  MATCH: *" + sMeta)
+                    yield dGraph[dNode["<meta>"]["*"]]
+                elif "¬" in sMeta:
+                    if dNode["sType"] not in sMeta:
+                        if bDebug:
+                            print("  MATCH: *" + sMeta)
+                        yield dGraph[dNode["<meta>"][sMeta]]
+                elif dNode["sType"] in sMeta:
+                    if bDebug:
+                        print("  MATCH: *" + sMeta)
+                    yield dGraph[dNode["<meta>"][sMeta]]
+
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         dErr = {}

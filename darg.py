@@ -157,27 +157,32 @@ class Node:
         dNode = {}
         dReValue = {}
         dReMorph = {}
-        dRules = {}
-        dLemmas = {}
+        dRule = {}
+        dLemma = {}
+        dMeta = {}
         for sArc, oNode in self.dArcs.items():
             if sArc.startswith("@") and len(sArc) > 1:
                 dReMorph[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("~") and len(sArc) > 1:
                 dReValue[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith(">") and len(sArc) > 1:
-                dLemmas[sArc[1:]] = oNode.__hash__()
+                dLemma[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith("*") and len(sArc) > 1:
+                dMeta[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("##"):
-                dRules[sArc[1:]] = oNode.__hash__()
+                dRule[sArc[1:]] = oNode.__hash__()
             else:
                 dNode[sArc] = oNode.__hash__()
         if dReValue:
             dNode["<re_value>"] = dReValue
         if dReMorph:
             dNode["<re_morph>"] = dReMorph
-        if dLemmas:
-            dNode["<lemmas>"] = dLemmas
-        if dRules:
-            dNode["<rules>"] = dRules
+        if dLemma:
+            dNode["<lemmas>"] = dLemma
+        if dMeta:
+            dNode["<meta>"] = dMeta
+        if dRule:
+            dNode["<rules>"] = dRule
         #if self.bFinal:
         #    dNode["<final>"] = 1
         return dNode
