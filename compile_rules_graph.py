@@ -361,11 +361,12 @@ def make (lRule, dDef, sLang, bJavaScript):
     #sJSCallables += "}\n"
 
     # Debugging
-    print("\nActions:")
-    for sActionName, aAction in dACTIONS.items():
-        print(sActionName, aAction)
-    print("\nFunctions:")
-    print(sPyCallables)
+    if False:
+        print("\nActions:")
+        for sActionName, aAction in dACTIONS.items():
+            print(sActionName, aAction)
+        print("\nFunctions:")
+        print(sPyCallables)
 
     # Result
     d = {
