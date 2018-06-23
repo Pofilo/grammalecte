@@ -4644,37 +4644,41 @@ __tag_sujets__
 
 __conj_xxxai__sans_sujet!3__
     [se|s’]  ?[en|y|le|la|l’|les]¿  (~ai$)
-        <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp])")
+        <<- morph(\1, ":1s", ":(?:G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~ai$)  ~¬[jJ]e
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~ai$)  ~¬[jJ]e
+        <<- morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
-    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  (~ai$)  ~¬[jJ]e
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~ai$)  ~¬[jJ]e
+    [le|la|l’|les]              [lui|leur|en|y]         (~ai$)  ~¬[jJ]e
+    [lui|leur]                  en                      (~ai$)  ~¬[jJ]e
+        <<- morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     ~ai$  ~¬[jJ]e
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s")
+        <<- morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
 
 __conj_xxxas_xxxes__sans_sujet!3__
     [se|s’]  ?[en|y|le|la|l’|les]¿  (~[ae]s$)
-        <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp])")
+        <<- morph(\1, ":2s", ":(?:G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~[ae]s$)  ~¬[tT]u
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[ae]s$)  ~¬[tT]u
+        <<- morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
-    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  (~[ae]s$)  ~¬[tT]u
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[ae]s$)  ~¬[tT]u
+    [le|la|l’|les]              [lui|leur|en|y]         (~[ae]s$)  ~¬[tT]u
+    [lui|leur]                  en                      (~[ae]s$)  ~¬[tT]u
+        <<- morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~[ae]s$  ~¬[tT]u
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
+        <<- morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
 
@@ -4683,12 +4687,14 @@ __conj_xxxxxs_sans_sujet!3__
         <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
         <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
+    [le|la|l’|les]              [lui|leur|en|y]         (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
+    [lui|leur]                  en                      (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
         <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
@@ -4708,11 +4714,13 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
     [se|s’]  ?[en|y|le|la|l’|les]¿  ([peux|veux|vaux|équivaux|prévaux])
         <<- /conj/ -1>> =suggVerb(\1, ":3s")                                                        # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|en|y]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
         <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [me|m’|te|t’]  ?[en|y|le|la|l’|les]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
+    [le|la|l’|les]              [lui|leur|en|y]         ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
+    [lui|leur]                  en                      ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
         <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
