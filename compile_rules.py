@@ -1,3 +1,6 @@
+"""
+Grammalecte: compile rules
+"""
 
 import re
 import traceback
@@ -20,6 +23,7 @@ sWORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
 
 
 def prepareFunction (s):
+    "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"isStart *\(\)", 'before("^ *$|, *$")', s)
@@ -100,6 +104,7 @@ def uppercase (s, sLang):
 
 
 def countGroupInRegex (sRegex):
+    "returns the number of groups in <sRegex>"
     try:
         return re.compile(sRegex).groups
     except:
@@ -119,7 +124,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     #### GRAPH CALL
     if s.startswith("@@@@"):
         if bParagraph:
-            print("Error. Graph call can’t be made only after the first pass (sentence by sentence)")
+            print("Error. Graph call can be made only after the first pass (sentence by sentence)")
             exit()
         return ["@@@@", s[4:], sLineId]
 
@@ -213,14 +218,14 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
 
     ## check regex
     try:
-        z = re.compile(sRegex)
+        re.compile(sRegex)
     except:
         print("# Regex error at line ", nIdLine)
         print(sRegex)
         traceback.print_exc()
         return None
     ## groups in non grouping parenthesis
-    for x in re.finditer("\(\?:[^)]*\([[\w -]", sRegex):
+    for x in re.finditer(r"\(\?:[^)]*\([[\w -]", sRegex):
         print("# Warning: groups inside non grouping parenthesis in regex at line " + sLineId)
 
     #### PARSE ACTIONS
@@ -239,8 +244,6 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
 
 def createAction (sIdAction, sAction, nGroup):
     "returns an action to perform as a tuple (condition, action type, action[, iGroup [, message, URL ]])"
-    global lFUNCTIONS
-
     m = re.search(r"([-~=>])(\d*|)>>", sAction)
     if not m:
         print("# No action at line " + sIdAction)
@@ -251,7 +254,7 @@ def createAction (sIdAction, sAction, nGroup):
     if sCondition:
         sCondition = prepareFunction(sCondition)
         lFUNCTIONS.append(("_c_"+sIdAction, sCondition))
-        for x in re.finditer("[.](?:group|start|end)[(](\d+)[)]", sCondition):
+        for x in re.finditer(r"[.](?:group|start|end)[(](\d+)[)]", sCondition):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in condition at line " + sIdAction + " ("+str(nGroup)+" groups only)")
         if ".match" in sCondition:
@@ -286,7 +289,7 @@ def createAction (sIdAction, sAction, nGroup):
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:])
                 lFUNCTIONS.append(("_m_"+sIdAction, sMsg))
-                for x in re.finditer("group[(](\d+)[)]", sMsg):
+                for x in re.finditer(r"group[(](\d+)[)]", sMsg):
                     if int(x.group(1)) > nGroup:
                         print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
                 sMsg = "=_m_"+sIdAction
@@ -302,7 +305,7 @@ def createAction (sIdAction, sAction, nGroup):
             print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         sAction = prepareFunction(sAction)
         sAction = sAction.replace("m.group(i[4])", "m.group("+str(iGroup)+")")
-        for x in re.finditer("group[(](\d+)[)]", sAction):
+        for x in re.finditer(r"group[(](\d+)[)]", sAction):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
     else:
@@ -352,6 +355,7 @@ def createAction (sIdAction, sAction, nGroup):
 
 
 def _calcRulesStats (lRules):
+    "count rules and actions"
     d = {'=':0, '~': 0, '-': 0, '>': 0}
     for aRule in lRules:
         if aRule[0] != "@@@@":
@@ -361,6 +365,7 @@ def _calcRulesStats (lRules):
 
 
 def displayStats (lParagraphRules, lSentenceRules):
+    "display rules numbers"
     print("  {:>18} {:>18} {:>18} {:>18}".format("DISAMBIGUATOR", "TEXT PROCESSOR", "GRAMMAR CHECKING", "REGEX"))
     d, nRule = _calcRulesStats(lParagraphRules)
     print("§ {:>10} actions {:>10} actions {:>10} actions  in {:>8} rules".format(d['='], d['~'], d['-'], nRule))
@@ -403,7 +408,7 @@ def prepareOptions (lOptionLines):
         elif sLine.startswith("OPT/"):
             m = re.match("OPT/([a-z0-9]+):(.+)$", sLine)
             for i, sOpt in enumerate(m.group(2).split()):
-                lOpt[i][1][m.group(1)] =  eval(sOpt)
+                lOpt[i][1][m.group(1)] = eval(sOpt)
         elif sLine.startswith("OPTPRIORITY/"):
             m = re.match("OPTPRIORITY/([a-z0-9]+): *([0-9])$", sLine)
             dOptPriority[m.group(1)] = int(m.group(2))
@@ -427,6 +432,7 @@ def prepareOptions (lOptionLines):
 
 
 def printBookmark (nLevel, sComment, nLine):
+    "print bookmark within the rules file"
     print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
 
 
@@ -573,18 +579,18 @@ def make (spLang, sLang, bJavaScript):
 
     print("Unnamed rules: " + str(nRULEWITHOUTNAME))
 
-    d = { "callables": sPyCallables,
-          "callablesJS": sJSCallables,
-          "gctests": sGCTests,
-          "gctestsJS": sGCTestsJS,
-          "paragraph_rules": mergeRulesByOption(lParagraphRules),
-          "sentence_rules": mergeRulesByOption(lSentenceRules),
-          "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
-          "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
-    d.update(dOptions)
+    dVars = {   "callables": sPyCallables,
+                "callablesJS": sJSCallables,
+                "gctests": sGCTests,
+                "gctestsJS": sGCTestsJS,
+                "paragraph_rules": mergeRulesByOption(lParagraphRules),
+                "sentence_rules": mergeRulesByOption(lSentenceRules),
+                "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
+                "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
+    dVars.update(dOptions)
 
     # compile graph rules
-    d2 = crg.make(lGraphRule, dDEF, sLang, bJavaScript)
-    d.update(d2)
+    dVars2 = crg.make(lGraphRule, dDEF, sLang, bJavaScript)
+    dVars.update(dVars2)
 
-    return d
+    return dVars

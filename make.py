@@ -34,7 +34,7 @@ def getConfig (sLang):
     xConfig = configparser.SafeConfigParser()
     xConfig.optionxform = str
     try:
-        xConfig.read_file(open("gc_lang/" + sLang + "/config.ii", "r", encoding="utf-8"))
+        xConfig.read_file(open("gc_lang/" + sLang + "/config.ini", "r", encoding="utf-8"))
     except FileNotFoundError:
         print("# Error. Can’t read config file [" + sLang + "]")
         exit()

@@ -1,4 +1,6 @@
-# Convert Python code to JavaScript code
+"""
+Convert Python code and regexes to JavaScript code
+"""
 
 import copy
 import re
@@ -118,6 +120,7 @@ def regex2js (sRegex, sWORDLIMITLEFT):
 
 
 def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
+    "modify Python rules -> JS rules"
     lRuleJS = copy.deepcopy(lRule)
     # graph rules
     if lRuleJS[0] == "@@@@":
@@ -135,6 +138,7 @@ def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
 
 
 def writeRulesToJSArray (lRules):
+    "create rules as a string of arrays (to be bundled in a JSON string)"
     sArray = "[\n"
     for sOption, aRuleGroup in lRules:
         if sOption != "@@@@":
@@ -159,6 +163,7 @@ def writeRulesToJSArray (lRules):
 
 
 def groupsPositioningCodeToList (sGroupsPositioningCode):
+    "convert <sGroupsPositioningCode> to a list of codes (numbers or strings)"
     if not sGroupsPositioningCode:
         return None
     return [ int(sCode)  if sCode.isdigit() or (sCode[0:1] == "-" and sCode[1:].isdigit())  else sCode \

@@ -1,4 +1,7 @@
-# Create a Direct Acyclic Rule Graph (DARG)
+"""
+Grammalecte: compile rules
+Create a Direct Acyclic Rule Graphs (DARGs)
+"""
 
 import re
 import traceback
@@ -12,6 +15,7 @@ dFUNCTIONS = {}
 
 
 def prepareFunction (s, bTokenValue=False):
+    "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"(morph|analyse|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
@@ -39,7 +43,7 @@ def genTokenLines (sTokenLine, dDef):
     "tokenize a string and return a list of lines of tokens"
     lToken = sTokenLine.split()
     lTokenLines = None
-    for i, sToken in enumerate(lToken):
+    for sToken in lToken:
         # optional token?
         bNullPossible = sToken.startswith("?") and sToken.endswith("¿")
         if bNullPossible:
@@ -96,6 +100,7 @@ def genTokenLines (sTokenLine, dDef):
 
 
 def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dDef):
+    "generator: create rule as list"
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
     for lToken in genTokenLines(sTokenLine, dDef):
         # Calculate positions
@@ -121,12 +126,14 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
 
 
 def changeReferenceToken (sText, dPos):
+    "change group reference in <sText> with values in <dPos>"
     for i in range(len(dPos), 0, -1):
         sText = sText.replace("\\"+str(i), "\\"+str(dPos[i]))
     return sText
 
 
 def checkTokenNumbers (sText, sActionId, nToken):
+    "check if token references in <sText> greater than <nToken> (debugging)"
     for x in re.finditer(r"\\(\d+)", sText):
         if int(x.group(1)) > nToken:
             print("# Error in token index at line " + sActionId + " ("+str(nToken)+" tokens only)")
@@ -134,12 +141,14 @@ def checkTokenNumbers (sText, sActionId, nToken):
 
 
 def checkIfThereIsCode (sText, sActionId):
+    "check if there is code in <sText> (debugging)"
     if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
         print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
         print(sText)
 
 
 def createAction (sActionId, sAction, nPriority, nToken, dPos):
+    "create action rule as a list"
     # Option
     sOption = False
     m = re.match("/(\\w+)/", sAction)
@@ -369,9 +378,8 @@ def make (lRule, dDef, sLang, bJavaScript):
         print(sPyCallables)
 
     # Result
-    d = {
+    return {
         "graph_callables": sPyCallables,
         "rules_graphs": dAllGraph,
         "rules_actions": dACTIONS
     }
-    return d
