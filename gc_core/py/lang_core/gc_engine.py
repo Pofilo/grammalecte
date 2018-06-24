@@ -915,7 +915,7 @@ class TokenSentence:
     def rewrite (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
         lNewToken = []
-        nMergeUntil = -1
+        nMergeUntil = 0
         dTokenMerger = None
         for dToken in self.lToken:
             bKeepToken = True
@@ -925,14 +925,14 @@ class TokenSentence:
                     if bDebug:
                         print("immunity -> error removed:", self.dError[nErrorStart])
                     del self.dError[nErrorStart]
-            if dToken["i"] <= nMergeUntil:
-                dTokenMerger["sValue"] += " " * (dToken["i"]["nStart"] - dTokenMerger["nEnd"]) + dToken["i"]["sValue"]
-                dTokenMerger["nEnd"] = dToken["i"]["nEnd"]
+            if nMergeUntil and dToken["i"] <= nMergeUntil:
+                dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
+                dTokenMerger["nEnd"] = dToken["nEnd"]
                 if bDebug:
                     print("Merged token:", dTokenMerger["sValue"])
                 bKeepToken = False
             if "nMergeUntil" in dToken:
-                if not nMergeUntil: # this token should alerady been merged with a previous token
+                if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
                     dTokenMerger = dToken
                 if dToken["nMergeUntil"] > nMergeUntil:
                     nMergeUntil = dToken["nMergeUntil"]  
