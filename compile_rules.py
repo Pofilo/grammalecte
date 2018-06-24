@@ -158,7 +158,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         return None
     sRegex = s[:i].strip()
     s = s[i+4:]
-    
+
     # JS groups positioning codes
     m = re.search("@@\\S+", sRegex)
     if m:
@@ -250,13 +250,13 @@ def createAction (sIdAction, sAction, nGroup):
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = prepareFunction(sCondition)
-        lFUNCTIONS.append(("c_"+sIdAction, sCondition))
+        lFUNCTIONS.append(("_c_"+sIdAction, sCondition))
         for x in re.finditer("[.](?:group|start|end)[(](\d+)[)]", sCondition):
             if int(x.group(1)) > nGroup:
                 print("# Error in groups in condition at line " + sIdAction + " ("+str(nGroup)+" groups only)")
         if ".match" in sCondition:
             print("# Error. JS compatibility. Don't use .match() in condition, use .search()")
-        sCondition = "c_"+sIdAction
+        sCondition = "_c_"+sIdAction
     else:
         sCondition = None
 
@@ -264,7 +264,7 @@ def createAction (sIdAction, sAction, nGroup):
     iGroup = int(m.group(2)) if m.group(2) else 0
     if iGroup > nGroup:
         print("# Selected group > group number in regex at line " + sIdAction)
-    
+
     #### ACTION
     sAction = sAction[m.end():].strip()
     cAction = m.group(1)
@@ -285,18 +285,18 @@ def createAction (sIdAction, sAction, nGroup):
                 sMsg = sMsg[:mURL.start(0)].strip()
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:])
-                lFUNCTIONS.append(("m_"+sIdAction, sMsg))
+                lFUNCTIONS.append(("_m_"+sIdAction, sMsg))
                 for x in re.finditer("group[(](\d+)[)]", sMsg):
                     if int(x.group(1)) > nGroup:
                         print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-                sMsg = "=m_"+sIdAction
+                sMsg = "=_m_"+sIdAction
             else:
                 for x in re.finditer(r"\\(\d+)", sMsg):
                     if int(x.group(1)) > nGroup:
                         print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
                 if re.search("[.]\\w+[(]", sMsg):
                     print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
-            
+
     if sAction[0:1] == "=" or cAction == "=":
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
@@ -317,8 +317,8 @@ def createAction (sIdAction, sAction, nGroup):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("s_"+sIdAction, sAction[1:]))
-            sAction = "=s_"+sIdAction
+            lFUNCTIONS.append(("_s_"+sIdAction, sAction[1:]))
+            sAction = "=_s_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
@@ -329,8 +329,8 @@ def createAction (sIdAction, sAction, nGroup):
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("p_"+sIdAction, sAction[1:]))
-            sAction = "=p_"+sIdAction
+            lFUNCTIONS.append(("_p_"+sIdAction, sAction[1:]))
+            sAction = "=_p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sCondition, cAction, sAction, iGroup]
@@ -340,8 +340,8 @@ def createAction (sIdAction, sAction, nGroup):
             sAction = sAction[1:]
         if not sAction:
             print("# Error in action at line " + sIdAction + ":  This action is empty.")
-        lFUNCTIONS.append(("d_"+sIdAction, sAction))
-        sAction = "d_"+sIdAction
+        lFUNCTIONS.append(("_d_"+sIdAction, sAction))
+        sAction = "_d_"+sIdAction
         return [sCondition, cAction, sAction]
     elif cAction == ">":
         ## no action, break loop if condition is False
@@ -549,16 +549,15 @@ def make (spLang, sLang, bJavaScript):
     sPyCallables = "# generated code, do not edit\n"
     sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in lFUNCTIONS:
-        cType = sFuncName[0:1]
-        if cType == "c": # condition
+        if sFuncName.startswith("_c_"): # condition
             sParams = "s, sx, m, dTokenPos, sCountry, bCondMemo"
-        elif cType == "m": # message
+        elif sFuncName.startswith("_m_"): # message
             sParams = "s, m"
-        elif cType == "s": # suggestion
+        elif sFuncName.startswith("_s_"): # suggestion
             sParams = "s, m"
-        elif cType == "p": # preprocessor
+        elif sFuncName.startswith("_p_"): # preprocessor
             sParams = "s, m"
-        elif cType == "d": # disambiguator
+        elif sFuncName.startswith("_d_"): # disambiguator
             sParams = "s, m, dTokenPos"
         else:
             print("# Unknown function type in [" + sFuncName + "]")

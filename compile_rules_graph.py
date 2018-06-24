@@ -142,7 +142,7 @@ def checkIfThereIsCode (sText, sActionId):
 def createAction (sActionId, sAction, nPriority, nToken, dPos):
     # Option
     sOption = False
-    m = re.match("/(\\w+)/", sAction) 
+    m = re.match("/(\\w+)/", sAction)
     if m:
         sOption = m.group(1)
         sAction = sAction[m.end():].strip()
@@ -156,9 +156,9 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = prepareFunction(sCondition)
-        sCondition = changeReferenceToken(sCondition, dPos)    
-        dFUNCTIONS["g_c_"+sActionId] = sCondition
-        sCondition = "g_c_"+sActionId
+        sCondition = changeReferenceToken(sCondition, dPos)
+        dFUNCTIONS["_g_c_"+sActionId] = sCondition
+        sCondition = "_g_c_"+sActionId
     else:
         sCondition = ""
     # Action
@@ -200,7 +200,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
                 sMsg = "=g_m_"+sActionId
             else:
                 checkIfThereIsCode(sMsg, sActionId)
-            
+
     # checking consistancy
     checkTokenNumbers(sAction, sActionId, nToken)
 
@@ -218,8 +218,8 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         ## error detected --> suggestion
         if sAction[0:1] == "=":
             sAction = prepareFunction(sAction, True)
-            dFUNCTIONS["g_s_"+sActionId] = sAction[1:]
-            sAction = "=g_s_"+sActionId
+            dFUNCTIONS["_g_s_"+sActionId] = sAction[1:]
+            sAction = "=_g_s_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
@@ -228,8 +228,8 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
     elif cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
-            dFUNCTIONS["g_p_"+sActionId] = sAction[1:]
-            sAction = "=g_p_"+sActionId
+            dFUNCTIONS["_g_p_"+sActionId] = sAction[1:]
+            sAction = "=_g_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
@@ -243,8 +243,8 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
         sAction = prepareFunction(sAction)
-        dFUNCTIONS["g_d_"+sActionId] = sAction
-        sAction = "g_d_"+sActionId
+        dFUNCTIONS["_g_d_"+sActionId] = sAction
+        sAction = "_g_d_"+sActionId
         return [sOption, sCondition, cAction, sAction]
     else:
         print("# Unknown action at line " + sActionId)
@@ -340,15 +340,15 @@ def make (lRule, dDef, sLang, bJavaScript):
     sPyCallables = "# generated code, do not edit\n"
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in dFUNCTIONS.items():
-        if sFuncName.startswith("g_c_"): # condition
+        if sFuncName.startswith("_g_c_"): # condition
             sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags, sSentence, sSentence0"
         elif sFuncName.startswith("g_m_"): # message
             sParams = "lToken, nTokenOffset"
-        elif sFuncName.startswith("g_s_"): # suggestion
+        elif sFuncName.startswith("_g_s_"): # suggestion
             sParams = "lToken, nTokenOffset"
-        elif sFuncName.startswith("g_p_"): # preprocessor
+        elif sFuncName.startswith("_g_p_"): # preprocessor
             sParams = "lToken"
-        elif sFuncName.startswith("g_d_"): # disambiguator
+        elif sFuncName.startswith("_g_d_"): # disambiguator
             sParams = "lToken, nTokenOffset"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
