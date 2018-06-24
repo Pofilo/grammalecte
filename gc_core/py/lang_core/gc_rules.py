@@ -1,3 +1,7 @@
+"""
+Grammar checker regex rules
+"""
+
 # generated code, do not edit
 
 lParagraphRules = ${paragraph_rules}

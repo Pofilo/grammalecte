@@ -1,5 +1,9 @@
 #!python3
 
+"""
+Text tools
+"""
+
 import textwrap
 from itertools import chain
 

@@ -1,5 +1,8 @@
 #! python3
-# coding: UTF-8
+
+"""
+Grammar checker tests for French language
+"""
 
 import unittest
 import os
