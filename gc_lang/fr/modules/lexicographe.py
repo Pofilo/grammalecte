@@ -158,6 +158,7 @@ _dAD = {
 
 
 class Lexicographe:
+    "Lexicographer - word analyzer"
 
     def __init__ (self, oSpellChecker):
         self.oSpellChecker = oSpellChecker
@@ -166,6 +167,7 @@ class Lexicographe:
         self._zTag = re.compile("[:;/][\\w*][^:;/]*")
 
     def analyzeWord (self, sWord):
+        "returns a tuple (a list of morphologies, a set of verb at infinitive form)"
         try:
             if not sWord:
                 return (None, None)
@@ -197,13 +199,14 @@ class Lexicographe:
             if m2:
                 aMorph.append( "-{} : {}".format(m2.group(2), self._formatSuffix(m2.group(2).lower())) )
             # Verbes
-            aVerb = set([ s[1:s.find(" ")]  for s in lMorph  if ":V" in s ])
+            aVerb = set([ s[1:s.find("/")]  for s in lMorph  if ":V" in s ])
             return (aMorph, aVerb)
         except:
             traceback.print_exc()
             return (["#erreur"], None)
 
     def formatTags (self, sTags):
+        "returns string: readable tags"
         sRes = ""
         sTags = re.sub("(?<=V[1-3])[itpqnmr_eaxz]+", "", sTags)
         sTags = re.sub("(?<=V0[ea])[itpqnmr_eaxz]+", "", sTags)

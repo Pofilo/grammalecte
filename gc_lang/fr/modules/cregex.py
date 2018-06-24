@@ -103,6 +103,7 @@ def checkAgreement (l1, l2):
     return True
 
 def checkConjVerb (lMorph, sReqConj):
+    "returns True if <sReqConj> in <lMorph>"
     return any(sReqConj in s  for s in lMorph)
 
 def getGender (lMorph):
@@ -199,13 +200,13 @@ def mbNomAdj (lMorph):
 
 def mbNomNotAdj (lMorph):
     "returns True if one morphology is “nom”, but not “adjectif”"
-    b = False
+    bResult = False
     for s in lMorph:
         if ":A" in s:
             return False
         if ":N" in s:
-            b = True
-    return b
+            bResult = True
+    return bResult
 
 def mbPpasNomNotAdj (lMorph):
     "returns True if one morphology is “nom” or “participe passé”, but not “adjectif”"

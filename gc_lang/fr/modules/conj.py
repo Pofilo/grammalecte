@@ -175,7 +175,7 @@ class Verb ():
         if not self._tTags:
             raise ValueError("Unknown verb.")
         self._tTagsAux = _getTags(self.sVerbAux)
-        self.cGroup = self._sRawInfo[0];
+        self.cGroup = self._sRawInfo[0]
         self.dConj = {
             ":Y": {
                 "label": "Infinitif",
