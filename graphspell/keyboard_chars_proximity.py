@@ -1,11 +1,16 @@
-# Keyboard chars proximity
+
+"""
+Keyboard chars proximity
+"""
 
 
 def getKeyboardMap (sKeyboard):
+    "return keyboard map as a dictionary of chars"
     return _dKeyboardMap.get(sKeyboard.lower(), {})
 
 
 def getKeyboardList ():
+    "return list of keyboards available"
     return _dKeyboardMap.keys()
 
 

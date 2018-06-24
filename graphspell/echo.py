@@ -1,7 +1,11 @@
 #!python3
 
-# The most boring yet indispensable function: print!
+"""
+The most boring yet indispensable function: print!
+Because you can print on Windows console without being sure the script won’t crash…
 
+Windows console don’t accept many characters.
+"""
 
 import sys
 
@@ -24,6 +28,6 @@ def echo (obj, sep=' ', end='\n', file=sys.stdout, flush=False):
         return True
     try:
         print(str(obj).translate(_CHARMAP), sep=sep, end=end, file=file, flush=flush)
-    except:
+    except Exception:
         print(str(obj).encode('ascii', 'replace').decode('ascii', 'replace'), sep=sep, end=end, file=file, flush=flush)
     return True

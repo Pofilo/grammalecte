@@ -1,23 +1,30 @@
 #!python3
 
+"""
+Operations on strings:
+- calculate distance between two strings
+- transform strings with transformation codes
+"""
+
 
 #### DISTANCE CALCULATIONS
 
 def longestCommonSubstring (s1, s2):
+    "longest common substring"
     # http://en.wikipedia.org/wiki/Longest_common_substring_problem
     # http://en.wikibooks.org/wiki/Algorithm_implementation/Strings/Longest_common_substring
-    M = [ [0]*(1+len(s2)) for i in range(1+len(s1)) ]
-    longest, x_longest = 0, 0
+    lMatrix = [ [0]*(1+len(s2)) for i in range(1+len(s1)) ]
+    nLongest, nLongestX = 0, 0
     for x in range(1, 1+len(s1)):
         for y in range(1, 1+len(s2)):
             if s1[x-1] == s2[y-1]:
-                M[x][y] = M[x-1][y-1] + 1
-                if M[x][y] > longest:
-                    longest = M[x][y]
-                    x_longest = x
+                lMatrix[x][y] = lMatrix[x-1][y-1] + 1
+                if lMatrix[x][y] > nLongest:
+                    nLongest = lMatrix[x][y]
+                    nLongestX = x
             else:
-                M[x][y] = 0
-    return s1[x_longest-longest : x_longest]
+                lMatrix[x][y] = 0
+    return s1[nLongestX-nLongest : nLongestX]
 
 
 def distanceDamerauLevenshtein (s1, s2):
@@ -56,7 +63,7 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
     nLocalCS = 0    # Local common substring
     nTrans = 0      # Number of transpositions ('ab' vs 'ba')
     lOffset = []    # Offset pair array, for computing the transpositions
- 
+
     while i1 < nLen1 and i2 < nLen2:
         if s1[i1] == s2[i2]:
             nLocalCS += 1
@@ -105,6 +112,7 @@ def distanceSift4 (s1, s2, nMaxOffset=5):
 
 
 def showDistance (s1, s2):
+    "display Damerau-Levenshtein distance and Sift4 distance between <s1> and <s2>"
     print("Damerau-Levenshtein: " + s1 + "/" + s2 + " = " + distanceDamerauLevenshtein(s1, s2))
     print("Sift4:" + s1 + "/" + s2 + " = " + distanceSift4(s1, s2))
 
@@ -116,19 +124,23 @@ def showDistance (s1, s2):
 ## No stemming
 
 def noStemming (sFlex, sStem):
+    "return <sStem>"
     return sStem
 
-def rebuildWord (sFlex, cmd1, cmd2):
-    if cmd1 == "_":
+def rebuildWord (sFlex, sCode1, sCode2):
+    """ Change <sFlex> with codes (each inserts a char at a defined possition).
+        <I forgot what purpose it has…>
+    """
+    if sCode1 == "_":
         return sFlex
-    n, c = cmd1.split(":")
-    s = s[:n] + c + s[n:]
-    if cmd2 == "_":
-        return s
-    n, c = cmd2.split(":")
-    return s[:n] + c + s[n:]
+    n, c = sCode1.split(":")
+    sFlex = sFlex[:n] + c + sFlex[n:]
+    if sCode2 == "_":
+        return sFlex
+    n, c = sCode2.split(":")
+    return sFlex[:n] + c + sFlex[n:]
 
-    
+
 ## Define affixes for stemming
 
 # Note: 48 is the ASCII code for "0"
@@ -152,10 +164,11 @@ def defineSuffixCode (sFlex, sStem):
         if sFlex[i] != sStem[i]:
             break
         jSfx += 1
-    return chr(len(sFlex)-jSfx+48) + sStem[jSfx:]  
+    return chr(len(sFlex)-jSfx+48) + sStem[jSfx:]
 
 
 def changeWordWithSuffixCode (sWord, sSfxCode):
+    "apply transformation code <sSfxCode> on <sWord> and return the result string"
     if sSfxCode == "0":
         return sWord
     return sWord[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sWord + sSfxCode[1:]
@@ -169,7 +182,7 @@ def defineAffixCode (sFlex, sStem):
             "stem" if no common substring
             "n(pfx)/m(sfx)"
         with n and m: chars with numeric meaning, "0" = 0, "1" = 1, ... ":" = 10, etc. (See ASCII table.) Says how many letters to strip from flexion.
-            pfx [optional]: string to add before the flexion 
+            pfx [optional]: string to add before the flexion
             sfx [optional]: string to add after the flexion
     """
     if sFlex == sStem:
@@ -191,11 +204,11 @@ def defineAffixCode (sFlex, sStem):
 
 
 def changeWordWithAffixCode (sWord, sAffCode):
+    "apply transformation code <sAffCode> on <sWord> and return the result string"
     if sAffCode == "0":
         return sWord
     if '/' not in sAffCode:
         return sAffCode
     sPfxCode, sSfxCode = sAffCode.split('/')
-    sWord = sPfxCode[1:] + sWord[(ord(sPfxCode[0])-48):] 
+    sWord = sPfxCode[1:] + sWord[(ord(sPfxCode[0])-48):]
     return sWord[:-(ord(sSfxCode[0])-48)] + sSfxCode[1:]  if sSfxCode[0] != '0'  else sWord + sSfxCode[1:]
-

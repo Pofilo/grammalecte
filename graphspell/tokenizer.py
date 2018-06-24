@@ -1,4 +1,7 @@
-# Very simple tokenizer
+"""
+Very simple tokenizer
+using regular expressions
+"""
 
 import re
 
@@ -39,6 +42,7 @@ _PATTERNS = {
 
 
 class Tokenizer:
+    "Tokenizer: transforms a text in a list of tokens"
 
     def __init__ (self, sLang):
         self.sLang = sLang
@@ -47,6 +51,7 @@ class Tokenizer:
         self.zToken = re.compile( "(?i)" + '|'.join(sRegex for sRegex in _PATTERNS[sLang]) )
 
     def genTokens (self, sText, bStartEndToken=False):
+        "generator: tokenize <sText>"
         i = 0
         if bStartEndToken:
             yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0 }

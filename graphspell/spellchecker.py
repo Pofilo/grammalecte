@@ -1,12 +1,13 @@
-# Spellchecker
-# Wrapper for the IBDAWG class.
-# Useful to check several dictionaries at once.
+"""
+Spellchecker.
+Useful to check several dictionaries at once.
 
-# To avoid iterating over a pile of dictionaries, it is assumed that 3 are enough:
-# - the main dictionary, bundled with the package
-# - the extended dictionary
-# - the community dictionary, added by an organization
-# - the personal dictionary, created by the user for its own convenience
+To avoid iterating over a pile of dictionaries, it is assumed that 3 are enough:
+- the main dictionary, bundled with the package
+- the extended dictionary
+- the community dictionary, added by an organization
+- the personal dictionary, created by the user for its own convenience
+"""
 
 import importlib
 import traceback
@@ -22,6 +23,7 @@ dDefaultDictionaries = {
 
 
 class SpellChecker ():
+    "SpellChecker: wrapper for the IBDAWG class"
 
     def __init__ (self, sLangCode, sfMainDic="", sfExtendedDic="", sfCommunityDic="", sfPersonalDic=""):
         "returns True if the main dictionary is loaded"
@@ -57,19 +59,20 @@ class SpellChecker ():
             traceback.print_exc()
             return None
 
-    def loadTokenizer (self):
+    def _loadTokenizer (self):
         self.oTokenizer = tokenizer.Tokenizer(self.sLangCode)
 
     def getTokenizer (self):
+        "load and return the tokenizer object"
         if not self.oTokenizer:
-            self.loadTokenizer()
+            self._loadTokenizer()
         return self.oTokenizer
 
     def setMainDictionary (self, source):
         "returns True if the dictionary is loaded"
         self.oMainDic = self._loadDictionary(source, True)
         return bool(self.oMainDic)
-            
+
     def setExtendedDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oExtendedDic = self._loadDictionary(source)
@@ -89,44 +92,54 @@ class SpellChecker ():
         return bool(self.oPersonalDic)
 
     def activateExtendedDictionary (self):
+        "activate extended dictionary (if available)"
         self.bExtendedDic = bool(self.oExtendedDic)
 
     def activateCommunityDictionary (self):
+        "activate community dictionary (if available)"
         self.bCommunityDic = bool(self.oCommunityDic)
 
     def activatePersonalDictionary (self):
+        "activate personal dictionary (if available)"
         self.bPersonalDic = bool(self.oPersonalDic)
 
     def deactivateExtendedDictionary (self):
+        "deactivate extended dictionary"
         self.bExtendedDic = False
 
     def deactivateCommunityDictionary (self):
+        "deactivate community dictionary"
         self.bCommunityDic = False
 
     def deactivatePersonalDictionary (self):
+        "deactivate personal dictionary"
         self.bPersonalDic = False
 
 
     # Default suggestions
 
     def loadSuggestions (self, sLangCode):
+        "load default suggestion module for <sLangCode>"
         try:
-            suggest_module = importlib.import_module("."+sLangCode, "graphspell")
-        except:
+            suggest = importlib.import_module("."+sLangCode, "graphspell")
+        except ImportError:
             print("No suggestion module for language <"+sLangCode+">")
             return
-        self.dDefaultSugg = suggest_module.dSugg
+        self.dDefaultSugg = suggest.dSugg
 
 
     # Storage
 
     def activateStorage (self):
+        "store all lemmas and morphologies retrieved from the word graph"
         self.bStorage = True
 
     def deactivateStorage (self):
+        "stop storing all lemmas and morphologies retrieved from the word graph"
         self.bStorage = False
 
     def clearStorage (self):
+        "clear all stored data"
         self._dLemmas.clear()
         self._dMorphologies.clear()
 
@@ -134,8 +147,9 @@ class SpellChecker ():
     # parse text functions
 
     def parseParagraph (self, sText, bSpellSugg=False):
+        "return a list of tokens where token value doesn’t exist in the word graph"
         if not self.oTokenizer:
-            self.loadTokenizer()
+            self._loadTokenizer()
         aSpellErrs = []
         for dToken in self.oTokenizer.genTokens(sText):
             if dToken['sType'] == "WORD" and not self.isValidToken(dToken['sValue']):
@@ -147,8 +161,10 @@ class SpellChecker ():
         return aSpellErrs
 
     def countWordsOccurrences (self, sText, bByLemma=False, bOnlyUnknownWords=False, dWord={}):
+        """count word occurrences.
+           <dWord> can be used to cumulate count from several texts."""
         if not self.oTokenizer:
-            self.loadTokenizer()
+            self._loadTokenizer()
         for dToken in self.oTokenizer.genTokens(sText):
             if dToken['sType'] == "WORD":
                 if bOnlyUnknownWords:
@@ -182,7 +198,7 @@ class SpellChecker ():
             return True
         if self.bExtendedDic and self.oExtendedDic.isValid(sWord):
             return True
-        if self.bCommunityDic and self.oCommunityDic.isValid(sToken):
+        if self.bCommunityDic and self.oCommunityDic.isValid(sWord):
             return True
         if self.bPersonalDic and self.oPersonalDic.isValid(sWord):
             return True
@@ -194,7 +210,7 @@ class SpellChecker ():
             return True
         if self.bExtendedDic and self.oExtendedDic.lookup(sWord):
             return True
-        if self.bCommunityDic and self.oCommunityDic.lookup(sToken):
+        if self.bCommunityDic and self.oCommunityDic.lookup(sWord):
             return True
         if self.bPersonalDic and self.oPersonalDic.lookup(sWord):
             return True
@@ -254,6 +270,7 @@ class SpellChecker ():
             yield from self.oPersonalDic.select(sFlexPattern, sTagsPattern)
 
     def drawPath (self, sWord):
+        "draw the path taken by <sWord> within the word graph: display matching nodes and their arcs"
         self.oMainDic.drawPath(sWord)
         if self.bExtendedDic:
             print("-----")

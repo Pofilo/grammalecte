@@ -1,4 +1,6 @@
-# French language
+"""
+Default suggestion for French language
+"""
 
 dSugg = {
     "bcp": "beaucoup",
