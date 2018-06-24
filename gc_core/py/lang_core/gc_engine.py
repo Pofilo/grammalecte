@@ -1,5 +1,7 @@
-# Grammalecte
-# Grammar checker engine
+"""
+Grammalecte
+Grammar checker engine
+"""
 
 import re
 import sys
@@ -57,12 +59,12 @@ _createRegexError = None
 #### Initialization
 
 def load (sContext="Python"):
+    "initialization of the grammar checker"
     global _oSpellChecker
     global _sAppContext
     global _dOptions
     global _oTokenizer
     global _createRegexError
-    global _createTokenError
     try:
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
@@ -246,10 +248,10 @@ def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId,
         xErr.aShortComment += "  # " + sLineId + " # " + sRuleId
     # URL
     if sURL:
-        p = PropertyValue()
-        p.Name = "FullCommentURL"
-        p.Value = sURL
-        xErr.aProperties = (p,)
+        xProperty = PropertyValue()
+        xProperty.Name = "FullCommentURL"
+        xProperty.Value = sURL
+        xErr.aProperties = (xProperty,)
     else:
         xErr.aProperties = ()
     return xErr
@@ -313,14 +315,17 @@ def _rewrite (sSentence, sRepl, iGroup, m, bUppercase):
 
 
 def ignoreRule (sRuleId):
+    "disable rule <sRuleId>"
     _aIgnoredRules.add(sRuleId)
 
 
 def resetIgnoreRules ():
+    "clear all ignored rules"
     _aIgnoredRules.clear()
 
 
 def reactivateRule (sRuleId):
+    "(re)activate rule <sRuleId>"
     _aIgnoredRules.discard(sRuleId)
 
 
@@ -340,46 +345,55 @@ def listRules (sFilter=None):
 
 
 def displayRules (sFilter=None):
+    "display the name of rules, with the filter <sFilter>"
     echo("List of rules. Filter: << " + str(sFilter) + " >>")
     for sOption, sLineId, sRuleId in listRules(sFilter):
         echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
 
 
 def setOption (sOpt, bVal):
+    "set option <sOpt> with <bVal> if it exists"
     if sOpt in _dOptions:
         _dOptions[sOpt] = bVal
 
 
 def setOptions (dOpt):
+    "update the dictionary of options with <dOpt>"
     for sKey, bVal in dOpt.items():
         if sKey in _dOptions:
             _dOptions[sKey] = bVal
 
 
 def getOptions ():
+    "return the dictionary of current options"
     return _dOptions
 
 
 def getDefaultOptions ():
+    "return the dictionary of default options"
     return dict(gc_options.getOptions(_sAppContext))
 
 
 def getOptionsLabels (sLang):
+    "return options labels"
     return gc_options.getUI(sLang)
 
 
 def displayOptions (sLang):
+    "display the list of grammar checking options"
     echo("List of options")
     echo("\n".join( [ k+":\t"+str(v)+"\t"+gc_options.getUI(sLang).get(k, ("?", ""))[0]  for k, v  in sorted(_dOptions.items()) ] ))
     echo("")
 
 
 def resetOptions ():
+    "set options to default values"
     global _dOptions
     _dOptions = dict(gc_options.getOptions(_sAppContext))
 
 
 def getSpellChecker ():
+    "return the spellchecker object"
     return _oSpellChecker
 
 
@@ -391,7 +405,7 @@ def _getPath ():
 #### common functions
 
 def option (sOpt):
-    "return True if option sOpt is active"
+    "return True if option <sOpt> is active"
     return _dOptions.get(sOpt, False)
 
 
@@ -417,10 +431,10 @@ def morph (dTokenPos, tWord, sPattern, bStrict=True, bNoWord=False):
     lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
     if not lMorph:
         return False
-    p = re.compile(sPattern)
+    zPattern = re.compile(sPattern)
     if bStrict:
-        return all(p.search(s)  for s in lMorph)
-    return any(p.search(s)  for s in lMorph)
+        return all(zPattern.search(s)  for s in lMorph)
+    return any(zPattern.search(s)  for s in lMorph)
 
 
 def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
@@ -431,12 +445,12 @@ def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
     if not lMorph:
         return False
     # check negative condition
-    np = re.compile(sNegPattern)
-    if any(np.search(s)  for s in lMorph):
+    zNegPattern = re.compile(sNegPattern)
+    if any(zNegPattern.search(s)  for s in lMorph):
         return False
     # search sPattern
-    p = re.compile(sPattern)
-    return any(p.search(s)  for s in lMorph)
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(s)  for s in lMorph)
 
 
 def analyse (sWord, sPattern, bStrict=True):
@@ -444,10 +458,10 @@ def analyse (sWord, sPattern, bStrict=True):
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph:
         return False
-    p = re.compile(sPattern)
+    zPattern = re.compile(sPattern)
     if bStrict:
-        return all(p.search(s)  for s in lMorph)
-    return any(p.search(s)  for s in lMorph)
+        return all(zPattern.search(s)  for s in lMorph)
+    return any(zPattern.search(s)  for s in lMorph)
 
 
 def analysex (sWord, sPattern, sNegPattern):
@@ -456,12 +470,12 @@ def analysex (sWord, sPattern, sNegPattern):
     if not lMorph:
         return False
     # check negative condition
-    np = re.compile(sNegPattern)
-    if any(np.search(s)  for s in lMorph):
+    zNegPattern = re.compile(sNegPattern)
+    if any(zNegPattern.search(s)  for s in lMorph):
         return False
     # search sPattern
-    p = re.compile(sPattern)
-    return any(p.search(s)  for s in lMorph)
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(s)  for s in lMorph)
 
 
 
@@ -531,6 +545,7 @@ def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup
 #### Disambiguator
 
 def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
+    "Disambiguation: select morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
     if nPos not in dTokenPos:
@@ -549,6 +564,7 @@ def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
 
 
 def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
+    "Disambiguation: exclude morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
     if nPos not in dTokenPos:
@@ -567,6 +583,7 @@ def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
 
 
 def define (dTokenPos, nPos, lMorph):
+    "Disambiguation: set morphologies of token at <nPos> with <lMorph>"
     if nPos not in dTokenPos:
         print("Error. There should be a token at this position: ", nPos)
         return True
@@ -579,6 +596,7 @@ def define (dTokenPos, nPos, lMorph):
 #### TOKEN SENTENCE CHECKER
 
 class TokenSentence:
+    "Text parser"
 
     def __init__ (self, sSentence, sSentence0, nOffset):
         self.sSentence = sSentence
@@ -591,6 +609,7 @@ class TokenSentence:
         self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
     def update (self, sSentence):
+        "update <sSentence> and retokenize"
         self.sSentence = sSentence
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
 
@@ -688,6 +707,7 @@ class TokenSentence:
 
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
+        "parse tokens from the text and execute actions encountered"
         self.dError = {}
         dPriority = {}  # Key = position; value = priority
         dOpt = _dOptions  if not dOptions  else dOptions
@@ -819,10 +839,10 @@ class TokenSentence:
             xErr.aShortComment += "  " + sLineId + " # " + sRuleId
         # URL
         if sURL:
-            p = PropertyValue()
-            p.Name = "FullCommentURL"
-            p.Value = sURL
-            xErr.aProperties = (p,)
+            xProperty = PropertyValue()
+            xProperty.Name = "FullCommentURL"
+            xProperty.Value = sURL
+            xErr.aProperties = (xProperty,)
         else:
             xErr.aProperties = ()
         return xErr
@@ -935,7 +955,7 @@ class TokenSentence:
                 if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
                     dTokenMerger = dToken
                 if dToken["nMergeUntil"] > nMergeUntil:
-                    nMergeUntil = dToken["nMergeUntil"]  
+                    nMergeUntil = dToken["nMergeUntil"]
                 del dToken["nMergeUntil"]
             elif "bToRemove" in dToken:
                 # remove useless token

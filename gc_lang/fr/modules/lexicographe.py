@@ -1,4 +1,7 @@
-# Grammalecte - Lexicographe
+"""
+Grammalecte - Lexicographe
+"""
+
 # License: MPL 2
 
 
@@ -6,7 +9,7 @@ import re
 import traceback
 
 
-_dTAGS = {  
+_dTAGS = {
     ':N': (" nom,", "Nom"),
     ':A': (" adjectif,", "Adjectif"),
     ':M1': (" prénom,", "Prénom"),
@@ -80,7 +83,7 @@ _dTAGS = {
     ':Cc': (" conjonction de coordination,", "Conjonction de coordination"),
     ':Cs': (" conjonction de subordination,", "Conjonction de subordination"),
     ':Ĉs': (" conjonction de subordination (él.),", "Conjonction de subordination (élément)"),
-    
+
     ':Ñ': (" locution nominale (él.),", "Locution nominale (élément)"),
     ':Â': (" locution adjectivale (él.),", "Locution adjectivale (élément)"),
     ':Ṽ': (" locution verbale (él.),", "Locution verbale (élément)"),
@@ -127,14 +130,14 @@ _dAD = {
     'vous': " pronom personnel sujet/objet, 2ᵉ pers. plur.",
     'ils': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
     'elles': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
-    
+
     "là": " particule démonstrative",
     "ci": " particule démonstrative",
-    
+
     'le': " COD, masc. sing.",
     'la': " COD, fém. sing.",
     'les': " COD, plur.",
-        
+
     'moi': " COI (à moi), sing.",
     'toi': " COI (à toi), sing.",
     'lui': " COI (à lui ou à elle), sing.",

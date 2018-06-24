@@ -1,10 +1,13 @@
-# Conjugation generator
-# beta stage, unfinished, the root for a new way to generate flexions…
+"""
+Conjugation generator
+beta stage, unfinished, the root for a new way to generate flexions…
+"""
 
 import re
 
 
 def conjugate (sVerb, sVerbTag="i_____a", bVarPpas=True):
+    "conjugate <sVerb> and returns a list of tuples (conjugation form, tags)"
     lConj = []
     cGroup = getVerbGroupChar(sVerb)
     for nCut, sAdd, sFlexTags, sPattern in getConjRules(sVerb, bVarPpas):
@@ -14,7 +17,8 @@ def conjugate (sVerb, sVerbTag="i_____a", bVarPpas=True):
     return lConj
 
 
-def getVerbGroupChar (sVerb, ):
+def getVerbGroupChar (sVerb):
+    "returns the group number of <sVerb> guessing on its ending"
     sVerb = sVerb.lower()
     if sVerb.endswith("er"):
         return "1"
@@ -28,6 +32,7 @@ def getVerbGroupChar (sVerb, ):
 
 
 def getConjRules (sVerb, bVarPpas=True, nGroup=2):
+    "returns a list of lists to conjugate a verb, guessing on its ending"
     if sVerb.endswith("er"):
         # premier groupe, conjugaison en fonction de la terminaison du lemme
         # 5 lettres
@@ -117,7 +122,7 @@ oConj = {
         [2,     "issons",       ":E:1p/*",          False],
         [2,     "issez",        ":E:2p/*",          False]
     ],
-    
+
     # premier groupe (bien plus irrégulier que prétendu)
     "V1": {
         # a

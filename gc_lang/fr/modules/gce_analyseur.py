@@ -4,7 +4,7 @@ from . import cregex as cr
 
 
 def rewriteSubject (s1, s2):
-    # s1 is supposed to be prn/patr/npr (M[12P])
+    "rewrite complex subject: <s1> a prn/patr/npr (M[12P]) followed by “et” and <s2>"
     if s2 == "lui":
         return "ils"
     if s2 == "moi":
@@ -17,7 +17,7 @@ def rewriteSubject (s1, s2):
         return "vous"
     if s2 == "eux":
         return "ils"
-    if s2 == "elle" or s2 == "elles":    
+    if s2 == "elle" or s2 == "elles":
         if cr.mbNprMasNotFem(_oSpellChecker.getMorph(s1)):
             return "ils"
         # si épicène, indéterminable, mais OSEF, le féminin l’emporte
@@ -41,7 +41,7 @@ def isAmbiguousNAV (sWord):
 
 
 def isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj):
-    "use it if sWord1 won’t be a verb; word2 is assumed to be True via isAmbiguousNAV"
+    "use it if <sWord1> won’t be a verb; <sWord2> is assumed to be True via isAmbiguousNAV"
     a2 = _oSpellChecker.getMorph(sWord2)
     if not a2:
         return False
@@ -57,7 +57,7 @@ def isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj):
 
 
 def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond):
-    "use it if sWord1 can be also a verb; word2 is assumed to be True via isAmbiguousNAV"
+    "use it if <sWord1> can be also a verb; <sWord2> is assumed to be True via isAmbiguousNAV"
     a2 = _oSpellChecker.getMorph(sWord2)
     if not a2:
         return False
@@ -79,6 +79,7 @@ def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHo
 
 
 def checkAgreement (sWord1, sWord2):
+    "check agreement between <sWord1> and <sWord1>"
     a2 = _oSpellChecker.getMorph(sWord2)
     if not a2:
         return True
@@ -92,6 +93,7 @@ _zUnitSpecial = re.compile("[µ/⁰¹²³⁴⁵⁶⁷⁸⁹Ωℓ·]")
 _zUnitNumbers = re.compile("[0-9]")
 
 def mbUnit (s):
+    "returns True it can be a measurement unit"
     if _zUnitSpecial.search(s):
         return True
     if 1 < len(s) < 16 and s[0:1].islower() and (not s[1:].islower() or _zUnitNumbers.search(s)):
@@ -106,6 +108,7 @@ _zEndOfNG2 = re.compile(r" +(\w[\w-]+)")
 _zEndOfNG3 = re.compile(r" *, +(\w[\w-]+)")
 
 def isEndOfNG (dDA, s, iOffset):
+    "returns True if next word doesn’t belong to a noun group"
     if _zEndOfNG1.match(s):
         return True
     m = _zEndOfNG2.match(s)
@@ -122,6 +125,7 @@ _zNextIsNotCOD2 = re.compile(" +(?:[mtsnj](e +|’)|[nv]ous |tu |ils? |elles? )"
 _zNextIsNotCOD3 = re.compile(r" +([a-zéèî][\w-]+)")
 
 def isNextNotCOD (dDA, s, iOffset):
+    "returns True if next word is not a COD"
     if _zNextIsNotCOD1.match(s) or _zNextIsNotCOD2.match(s):
         return True
     m = _zNextIsNotCOD3.match(s)
@@ -134,6 +138,7 @@ _zNextIsVerb1 = re.compile(" +[nmts](?:e |’)")
 _zNextIsVerb2 = re.compile(r" +(\w[\w-]+)")
 
 def isNextVerb (dDA, s, iOffset):
+    "returns True if next word is a verb"
     if _zNextIsVerb1.match(s):
         return True
     m = _zNextIsVerb2.match(s)
@@ -147,4 +152,4 @@ def isNextVerb (dDA, s, iOffset):
 aREGULARPLURAL = frozenset(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café", \
                             "carotte", "cerise", "chataigne", "corail", "citron", "crème", "grave", "groseille", \
                             "jonquille", "marron", "olive", "pervenche", "prune", "sable"])
-aSHOULDBEVERB = frozenset(["aller", "manger"]) 
+aSHOULDBEVERB = frozenset(["aller", "manger"])

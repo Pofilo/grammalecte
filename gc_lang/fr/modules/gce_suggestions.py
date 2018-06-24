@@ -8,6 +8,7 @@ from . import phonet
 ## Verbs
 
 def suggVerb (sFlex, sWho, funcSugg2=None):
+    "change <sFlex> conjugation according to <sWho>"
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
@@ -40,39 +41,40 @@ def suggVerb (sFlex, sWho, funcSugg2=None):
     return ""
 
 
-def suggVerbPpas (sFlex, sWhat=None):
+def suggVerbPpas (sFlex, sPattern=None):
+    "suggest past participles for <sFlex>"
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
         if tTags:
-            if not sWhat:
+            if not sPattern:
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"))
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2"))
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3"))
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4"))
                 aSugg.discard("")
-            elif sWhat == ":m:s":
+            elif sPattern == ":m:s":
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"))
-            elif sWhat == ":m:p":
+            elif sPattern == ":m:p":
                 if conj._hasConjWithTags(tTags, ":PQ", ":Q2"):
                     aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2"))
                 else:
                     aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"))
-            elif sWhat == ":f:s":
+            elif sPattern == ":f:s":
                 if conj._hasConjWithTags(tTags, ":PQ", ":Q3"):
                     aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3"))
                 else:
                     aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"))
-            elif sWhat == ":f:p":
+            elif sPattern == ":f:p":
                 if conj._hasConjWithTags(tTags, ":PQ", ":Q4"):
                     aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4"))
                 else:
                     aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"))
-            elif sWhat == ":s":
+            elif sPattern == ":s":
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q1"))
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q3"))
                 aSugg.discard("")
-            elif sWhat == ":p":
+            elif sPattern == ":p":
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q2"))
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":PQ", ":Q4"))
                 aSugg.discard("")
@@ -84,6 +86,7 @@ def suggVerbPpas (sFlex, sWhat=None):
 
 
 def suggVerbTense (sFlex, sTense, sWho):
+    "change <sFlex> to a verb according to <sTense> and <sWho>"
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         if conj.hasConj(sStem, sTense, sWho):
@@ -94,6 +97,7 @@ def suggVerbTense (sFlex, sTense, sWho):
 
 
 def suggVerbImpe (sFlex):
+    "change <sFlex> to a verb at imperative form"
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
@@ -110,6 +114,7 @@ def suggVerbImpe (sFlex):
 
 
 def suggVerbInfi (sFlex):
+    "returns infinitive forms of <sFlex>"
     return "|".join([ sStem  for sStem in _oSpellChecker.getLemma(sFlex)  if conj.isVerb(sStem) ])
 
 
@@ -119,6 +124,7 @@ _lIndicatif = [":Ip", ":Iq", ":Is", ":If"]
 _lSubjonctif = [":Sp", ":Sq"]
 
 def suggVerbMode (sFlex, cMode, sSuj):
+    "returns other conjugations of <sFlex> acconding to <cMode> and <sSuj>"
     if cMode == ":I":
         lMode = _lIndicatif
     elif cMode == ":S":
@@ -300,6 +306,7 @@ def suggFemPlur (sFlex, bSuggSimil=False):
 
 
 def hasFemForm (sFlex):
+    "return True if there is a feminine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):
         if mfsp.isFemForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q3"):
             return True
@@ -309,6 +316,7 @@ def hasFemForm (sFlex):
 
 
 def hasMasForm (sFlex):
+    "return True if there is a masculine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):
         if mfsp.isFemForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q1"):
             # what has a feminine form also has a masculine form
@@ -319,6 +327,7 @@ def hasMasForm (sFlex):
 
 
 def switchGender (sFlex, bPlur=None):
+    "return feminine or masculine form(s) of <sFlex>"
     aSugg = set()
     if bPlur == None:
         for sMorph in _oSpellChecker.getMorph(sFlex):
@@ -353,6 +362,7 @@ def switchGender (sFlex, bPlur=None):
 
 
 def switchPlural (sFlex):
+    "return plural or singular form(s) of <sFlex>"
     aSugg = set()
     for sMorph in _oSpellChecker.getMorph(sFlex):
         if ":s" in sMorph:
@@ -365,6 +375,7 @@ def switchPlural (sFlex):
 
 
 def hasSimil (sWord, sPattern=None):
+    "return True if there is words phonetically similar to <sWord> (according to <sPattern> if required)"
     return phonet.hasSimil(sWord, sPattern)
 
 
@@ -380,6 +391,7 @@ def suggSimil (sWord, sPattern=None, bSubst=False):
 
 
 def suggCeOrCet (sWord):
+    "suggest “ce” or “cet” or both according to the first letter of <sWord>"
     if re.match("(?i)[aeéèêiouyâîï]", sWord):
         return "cet"
     if sWord[0:1] == "h" or sWord[0:1] == "H":
@@ -388,6 +400,7 @@ def suggCeOrCet (sWord):
 
 
 def suggLesLa (sWord):
+    "suggest “les” or “la” according to <sWord>"
     if any( ":p" in sMorph  for sMorph in _oSpellChecker.getMorph(sWord) ):
         return "les|la"
     return "la"
@@ -396,6 +409,7 @@ def suggLesLa (sWord):
 _zBinary = re.compile("^[01]+$")
 
 def formatNumber (s):
+    "add spaces or hyphens to big numbers"
     nLen = len(s)
     if nLen < 4:
         return s
@@ -430,6 +444,7 @@ def formatNumber (s):
 
 
 def formatNF (s):
+    "typography: format NF reference (norme française)"
     try:
         m = re.match("NF[  -]?(C|E|P|Q|S|X|Z|EN(?:[  -]ISO|))[  -]?([0-9]+(?:[/‑-][0-9]+|))", s)
         if not m:
@@ -441,6 +456,7 @@ def formatNF (s):
 
 
 def undoLigature (c):
+    "typography: split ligature character <c> in several chars"
     if c == "ﬁ":
         return "fi"
     elif c == "ﬂ":
@@ -465,8 +481,9 @@ _xNormalizedCharsForInclusiveWriting = str.maketrans({
     '.': '_',  '·': '_',
     '–': '_',  '—': '_',
     '/': '_'
- })
+})
 
 
 def normalizeInclusiveWriting (sToken):
+    "typography: replace word separators used in inclusive writing by underscore (_)"
     return sToken.translate(_xNormalizedCharsForInclusiveWriting)

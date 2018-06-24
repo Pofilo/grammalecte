@@ -1,4 +1,7 @@
-# Grammalecte - Conjugueur
+"""
+Grammalecte - Conjugueur
+"""
+
 # License: GPL 3
 
 import re
@@ -29,6 +32,7 @@ _dTenseIdx = { ":PQ": 0, ":Ip": 1, ":Iq": 2, ":Is": 3, ":If": 4, ":K": 5, ":Sp":
 
 
 def isVerb (sVerb):
+    "return True if it’s a existing verb"
     return sVerb in _dVerb
 
 
@@ -56,6 +60,7 @@ def getVtyp (sVerb):
 
 
 def getSimil (sWord, sMorph, bSubst=False):
+    "returns a set of verbal forms similar to <sWord>, according to <sMorph>"
     if ":V" not in sMorph:
         return set()
     sInfi = sMorph[1:sMorph.find("/")]
@@ -100,6 +105,7 @@ def getSimil (sWord, sMorph, bSubst=False):
 
 
 def getConjSimilInfiV1 (sInfi):
+    "returns verbal forms phonetically similar to infinitive form (for verb in group 1)"
     if sInfi not in _dVerb:
         return set()
     aSugg = set()
@@ -142,12 +148,14 @@ def _modifyStringWithSuffixCode (sWord, sSfx):
         return sWord
     try:
         return sWord[:-(ord(sSfx[0])-48)] + sSfx[1:]  if sSfx[0] != '0'  else  sWord + sSfx[1:]  # 48 is the ASCII code for "0"
-    except:
+    except (IndexError, TypeError):
         return "## erreur, code : " + str(sSfx) + " ##"
-        
+
 
 
 class Verb ():
+    "Verb and its conjugation"
+
     def __init__ (self, sVerb, sVerbPattern=""):
         # conjugate a unknown verb with rules from sVerbPattern
         if not isinstance(sVerb, str):

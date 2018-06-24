@@ -1,4 +1,6 @@
-# Masculins, féminins, singuliers et pluriels
+"""
+Masculins, féminins, singuliers et pluriels
+"""
 
 from .mfsp_data import lTagMiscPlur as _lTagMiscPlur
 from .mfsp_data import lTagMasForm as _lTagMasForm
