@@ -250,6 +250,13 @@ def checkReferenceNumbers (sText, sActionId, nToken):
             print(sText)
 
 
+def checkIfThereIsCode (sText, sActionId):
+    "check if there is code in <sText> (debugging)"
+    if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
+        print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
+        print(sText)
+
+
 def createAction (sIdAction, sAction, nGroup):
     "returns an action to perform as a tuple (condition, action type, action[, iGroup [, message, URL ]])"
     m = re.search(r"([-~=>])(\d*|)>>", sAction)
@@ -298,18 +305,14 @@ def createAction (sIdAction, sAction, nGroup):
                 lFUNCTIONS.append(("_m_"+sIdAction, sMsg))
                 sMsg = "=_m_"+sIdAction
             else:
-                if re.search("[.]\\w+[(]", sMsg):
-                    print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
+                checkIfThereIsCode(sMsg, sIdAction)
 
     checkReferenceNumbers(sAction, sIdAction, nGroup)
     if sAction[0:1] == "=" or cAction == "=":
-        if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
-            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         sAction = prepareFunction(sAction)
         sAction = sAction.replace("m.group(i[4])", "m.group("+str(iGroup)+")")
     else:
-        if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
-            print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
+        checkIfThereIsCode(sAction, sIdAction)
 
     if cAction == ">":
         ## no action, break loop if condition is False
@@ -341,6 +344,9 @@ def createAction (sIdAction, sAction, nGroup):
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
+        if "define" in sAction and not re.search(r"define\(dTokenPos, *m\.start.*, \[.*\] *\)", sAction):
+            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
+            print(sAction)
         lFUNCTIONS.append(("_d_"+sIdAction, sAction))
         sAction = "_d_"+sIdAction
         return [sCondition, cAction, sAction]
