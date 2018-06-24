@@ -1,8 +1,9 @@
  #!/usr/bin/env python3
 
-import sys
-import os.path
-import argparse
+"""
+GRAMMALECTE SERVER
+"""
+
 import json
 import traceback
 import configparser
@@ -21,7 +22,7 @@ HOMEPAGE = """
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     </head>
-    
+
     <body class="panel">
         <h1>Grammalecte · Serveur</h1>
 
@@ -51,7 +52,7 @@ HOMEPAGE = """
         <p>[adresse_serveur]:8080/reset_options/fr (POST)</p>
 
         <h2>TEST</h2>
-        
+
         <h3>Analyse</h3>
         <form method="post" action="/gc_text/fr" accept-charset="UTF-8">
             <p>Texte à analyser :</p>
@@ -93,6 +94,7 @@ I'm doomed, but you are not. You can get out of here.
 
 
 def getServerOptions ():
+    "load server options in <grammalecte-server-options._global.ini>, returns server options as dictionary"
     xConfig = configparser.SafeConfigParser()
     try:
         xConfig.read("grammalecte-server-options._global.ini")
@@ -103,7 +105,8 @@ def getServerOptions ():
     return dOpt
 
 
-def getConfigOptions (sLang):
+def getLangConfigOptions (sLang):
+    "load options for language <sLang>, returns grammar checker options as dictionary"
     xConfig = configparser.SafeConfigParser()
     try:
         xConfig.read("grammalecte-server-options." + sLang + ".ini")
@@ -120,6 +123,7 @@ def getConfigOptions (sLang):
 
 
 def genUserId ():
+    "generator: create a user id"
     i = 0
     while True:
         yield str(i)
@@ -137,7 +141,7 @@ if __name__ == '__main__':
 
     echo("Grammalecte v{}".format(gce.version))
     dServerOptions = getServerOptions()
-    dGCOptions = getConfigOptions("fr")
+    dGCOptions = getLangConfigOptions("fr")
     if dGCOptions:
         gce.setOptions(dGCOptions)
     dServerGCOptions = gce.getOptions()
@@ -150,6 +154,7 @@ if __name__ == '__main__':
     # GET
     @app.route("/")
     def mainPage ():
+        "show main page"
         if dServerOptions.get("testpage", False) == "True":
             return HOMEPAGE
             #return template("main", {})
@@ -157,6 +162,7 @@ if __name__ == '__main__':
 
     @app.route("/get_options/fr")
     def listOptions ():
+        "show language options as JSON string"
         sUserId = request.cookies.user_id
         dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dServerGCOptions
         return '{ "values": ' + json.dumps(dOptions) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
@@ -165,6 +171,7 @@ if __name__ == '__main__':
     # POST
     @app.route("/gc_text/fr", method="POST")
     def gcText ():
+        "parse text sent via POST, show result as a JSON string"
         #if len(lang) != 2 or lang != "fr":
         #    abort(404, "No grammar checker available for lang “" + str(lang) + "”")
         bComma = False
@@ -197,6 +204,7 @@ if __name__ == '__main__':
 
     @app.route("/set_options/fr", method="POST")
     def setOptions ():
+        "change options for user_id, returns options as a JSON string"
         if request.forms.options:
             sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
             dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dServerGCOptions)
@@ -212,12 +220,14 @@ if __name__ == '__main__':
 
     @app.route("/reset_options/fr", method="POST")
     def resetOptions ():
+        "erase options stored for user_id"
         if request.cookies.user_id and request.cookies.user_id in dUser:
             del dUser[request.cookies.user_id]
         return "done"
 
     @app.route("/format_text/fr", method="POST")
     def formatText ():
+        "returns text modified via the text formatter"
         return oTextFormatter.formatText(request.forms.text)
 
     #@app.route('/static/<filepath:path>')
@@ -236,8 +246,7 @@ if __name__ == '__main__':
                     if dValue["time"] < nNowMinusNHours:
                         del dUser[nUserId]
                 return "done"
-            else:
-                return "no"
+            return "no"
         except:
             traceback.print_exc()
             return "error"
@@ -245,6 +254,7 @@ if __name__ == '__main__':
     # ERROR
     @app.error(404)
     def error404 (error):
+        "show error when error 404"
         return 'Error 404.<br/>' + str(error)
 
     run(app, \
