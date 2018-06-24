@@ -1,17 +1,14 @@
 #!python3
 
-# RULE GRAPH BUILDER
-#
+"""
+RULE GRAPH BUILDER
+"""
+
 # by Olivier R.
 # License: MPL 2
 
 
-import json
-import time
-import traceback
-
 from graphspell.progressbar import ProgressBar
-
 
 
 class DARG:
@@ -32,7 +29,7 @@ class DARG:
         self.lMinimizedNodes = {}  # list of unique nodes that have been checked for duplication.
         self.nNode = 0
         self.nArc = 0
-        
+
         # build
         lRule.sort()
         oProgBar = ProgressBar(0, len(lRule))
@@ -47,9 +44,10 @@ class DARG:
 
     # BUILD DARG
     def insert (self, aRule):
+        "insert a new rule (tokens must be inserted in order)"
         if aRule < self.aPreviousRule:
-            sys.exit("# Error: tokens must be inserted in order.")
-    
+            exit("# Error: tokens must be inserted in order.")
+
         # find common prefix between word and previous word
         nCommonPrefix = 0
         for i in range(min(len(aRule), len(self.aPreviousRule))):
@@ -72,7 +70,7 @@ class DARG:
             oNextNode = Node()
             oNode.dArcs[sToken] = oNextNode
             self.lUncheckedNodes.append((oNode, sToken, oNextNode))
-            if iToken == (len(aRule) - 2): 
+            if iToken == (len(aRule) - 2):
                 oNode.bFinal = True
             iToken += 1
             oNode = oNextNode
@@ -96,22 +94,26 @@ class DARG:
             self.lUncheckedNodes.pop()
 
     def countNodes (self):
+        "count nodes within the whole graph"
         self.nNode = len(self.lMinimizedNodes)
 
     def countArcs (self):
+        "count arcs within the whole graph"
         self.nArc = 0
         for oNode in self.lMinimizedNodes:
             self.nArc += len(oNode.dArcs)
 
     def displayInfo (self):
+        "display informations about the rule graph"
         print(" * {:<12} {:>16,}".format("Rules:", self.nRule))
         print(" * {:<12} {:>16,}".format("Nodes:", self.nNode))
         print(" * {:<12} {:>16,}".format("Arcs:", self.nArc))
 
     def createGraph (self):
+        "create the graph as a dictionary"
         dGraph = { 0: self.oRoot.getNodeAsDict() }
         for oNode in self.lMinimizedNodes:
-            sHashId = oNode.__hash__() 
+            sHashId = oNode.__hash__()
             if sHashId not in dGraph:
                 dGraph[sHashId] = oNode.getNodeAsDict()
             else:
@@ -122,8 +124,10 @@ class DARG:
 
 
 class Node:
+    """Node of the rule graph"""
+
     NextId = 0
-    
+
     def __init__ (self):
         self.i = Node.NextId
         Node.NextId += 1
@@ -132,6 +136,7 @@ class Node:
 
     @classmethod
     def resetNextId (cls):
+        "reset to 0 the node counter"
         cls.NextId = 0
 
     def __str__ (self):
@@ -150,7 +155,7 @@ class Node:
     def __eq__ (self, other):
         # Used as a key in a python dictionary.
         # Nodes are equivalent if they have identical arcs, and each identical arc leads to identical states.
-        return self.__str__() == other.__str__()        
+        return self.__str__() == other.__str__()
 
     def getNodeAsDict (self):
         "returns the node as a dictionary structure"
