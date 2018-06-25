@@ -4253,17 +4253,40 @@ TEST: Il est {{près}} à les aider
 TEST: Elle va regarder ça de plus {{prêt}}.
 
 
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
 # quand / quant / qu’en
-__[i]/conf(conf_quant_à)__
-    (?<![dD]e )(quand) (?:à|aux?)  @@0
-    <<- not morph(word(-1), ">(?:arriver|venir|à|revenir|partir|aller)/")
-        and not(\0.endswith("à") and after("^ +[mts]on tour[, ]")) -1>> quant                           # Confusion probable. Quand = à quel moment. Quant à = à propos de.
-__[i]/conf(conf_quand1)__   quant(?! à| aux?| est[ -]il d(?:es?|u) ) <<- ->> quand                  # Confusion. Quand = à quel moment. Quant à = à propos de.
-__[i]/conf(conf_qu_en1)__   (quan[dt]) est[ -]il d(?:es?|u) @@0 <<- -1>> qu’en                      # Confusion. Ce qu’il en est de… → Qu’en est-il de… ?
-__[i]/conf(conf_qu_en2)__   (quan[dt]) ({w_2}ant) @@0,$ <<- morph(\2, ":P", False) -1>> qu’en       # Confusion probable.
-__[i]/conf(conf_quand2)__
-    (qu en) (?:je|tu|ils?) @@0
-    <<- not after("^ +ne s(?:ai[st]|u[st]|urent|avai(?:[ts]|ent)) ") -1>> quand                     # Confusion probable. Pour évoquer un moment, écrivez :
+__conf_quand_quant_qu_en__
+    quand à
+        <<- /conf/ not morph(<1, ">(?:arriver|venir|à|revenir|partir|repartir|aller|de)/") and not after("^ +[mts]on tour[, ]")
+        -1>> quant                                                          # Confusion probable. Quand = à quel moment. Quant à = à propos de.|https://fr.wiktionary.org/wiki/quant_%C3%A0
+
+    quand [au|aux]
+        <<- /conf/ not morph(<1, ">(?:arriver|venir|à|revenir|partir|repartir|aller|de)/")
+        -1>> quant                                                          # Confusion probable. Quand = à quel moment. Quant à = à propos de.|https://fr.wiktionary.org/wiki/quant_%C3%A0
+
+    [quand|quant]   @:P
+        <<- -1>> qu’en                                                      # Confusion probable.
+
+    [quand|quant] [est|était] il [de|des|du]
+    [quand|quant] [est-il|était-il] [de|des|du]
+        <<- -1>> qu’en                                                      # Confusion probable. Ce qu’il en est de… → Qu’en est-il de… ?
+
+    quant  ~¬à|aux
+        <<- -1>> quand                                                      # Confusion. Quand = à quel moment. Quant à = à propos de.
+
+    [qu’|qu] en [je|tu|il|ils]
+        <<- not after("^ ne s(?:ai[st]|u[ts]|avai(?:s|t|ent)|urent) ")
+        -1:2>> quand                                                       # Confusion probable. Pour évoquer un moment, écrivez “quand”.|https://fr.wiktionary.org/wiki/quand
 
 TEST: {{Quant}} est-il du chien ?
 TEST: {{Quand}} à ma santé, elle est défaillante.
@@ -4278,35 +4301,47 @@ TEST: il comprit trop tard qu’en elle naquit alors le doute qui l’éloigna d
 TEST: Quand à mon tour je réalise l’imposture, c’est trop tard.
 
 
-# quand bien même
-__[i]/conf(conf_quand_bien_même)__
-    combien même <<- not after("^ si ") ->> quand bien même                                         # Locution conjonctive.|https://fr.wiktionary.org/wiki/quand_bien_m%C3%AAme
+__conf_quand_bien_même__
+    tant bien même
+        <<- /conf/ ->> quand bien même      # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
 
+    combien même ~¬si
+        <<- /conf/ -1:2>> quand bien même   # Locution conjonctive.|https://fr.wiktionary.org/wiki/quand_bien_m%C3%AAme
+
+TEST: il sera condamné {{tant bien même}} il prouverait que c’était un accident.
 TEST: J’irai, {{combien même}} vous seriez tous contre moi.
 TEST: Il partirait en guerre quand bien même devrait-il être tout seul.
 TEST: Elle veut savoir combien même si ça ne lui est d’aucune utilité immédiate.
 
 
-# qu’elle / quelle
-__[i]/conf(conf_quelle_nom_adj)__
-    (qu elles?) +(?!seule?s?)({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ]", ":(?:G|[123][sp]|W)") -1>> =\1.replace(" ", "")                       # Confusion probable. Ex : Quelle femme ! Je crois qu’elle réussira.
+__conf_qu_elle_quelle__
+    [que|qu’|qu]  elle   @:[NAQ]¬:(?:G|[123][sp]|W|Oo|X)|>seule?/
+        <<- /conf/ -1:2>> quelle                                                                    # Confusion probable. Ex : Quelle femme ! Je crois qu’elle réussira.
+
+    [que|qu’|qu]  elles  @:[NAQ]¬:(?:G|[123][sp]|W|Oo|X)|>seule?/
+        <<- /conf/ -1:2>> quelles                                                                   # Confusion probable. Ex : Quelle femme ! Je crois qu’elle réussira.
+
+    quelle  [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
+        <<- /conf/ not (morph(\2, ">en/") and morph(>1, ":V0e")) -1>> qu’elle                       # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
+
+    quelle  @:V¬:[NA].*:[fe]|>(?:être|plus)
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
+        -1>> qu’elle                                                                                # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
+
+    quelles [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
+        <<- /conf/ not (morph(\2, ">en/") and morph(>1, ":V0e")) -1>> qu’elles                      # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
+
+    quelles @:V¬:[NA].*:[fe]|>(?:être|plus)
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
+        -1>> qu’elles                                                                               # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
+
+    quelle  >être   @:[QA]¬:G
+        <<- /conf/ morph(\2, ":[123][sp]") -1>> qu’elle                                             # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
+
+    quelles >être   @:[QA]¬:G
+        <<- /conf/ morph(\2, ":[123][sp]") -1>> qu’elles                                            # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
 TEST: {{qu’elle}} emmerdeuse.
-
-
-__[i]/conf(conf_qu_elle_verbe)__
-    (quelles?) +({w_1})  @@0,$
-    <<- \2.islower() and (morphex(\2, ":V|>(?:ne?|me?|te?|se?|[nv]ous|l(?:e|a|es|ui|leur|)|en|y)/", ":[NA].*:[fe]|>(?:plus|moins)") or \2 == "t" or \2 == "s")
-        and not (morph(\2, ">(?:pouvoir|devoir|en)/", False) and morph(word(1), ":V0e", False)) >>>
-    <<- \1.endswith("e") and not morph(\2, ":V0e", False) and not (morph(\2, ":V0a", False) and after("^ +été "))
-    -1>> qu’elle                                                                                    # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 1
-    <<- __else__ and \1.endswith("s") and not morph(\2, ":V0e", False)  and not (morph(\2, ":V0a", False) and after("^ +été "))
-    -1>> qu’elles                                                                                   # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 2
-    <<- __else__ and morph(\2, ":V0e", False) and morphex(word(1), ":[QA]", ":G", False) >>>
-    <<- \1.endswith("e") -1>> qu’elle                                                               # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”. 3
-    <<- __else__ and \1.endswith("s") -1>> qu’elles                                                 # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”. 4
-
 TEST: Je sais {{quelle}} est partie.
 TEST: {{Quelle}} partit prendre son repas à la cantine, je n’en avais cure.
 TEST: Il se plaint {{quelle}} ne nous dit rien.
@@ -4320,6 +4355,7 @@ TEST: {{Quelles}} t’arrivent seulement à la cheville, voilà qui serait éton
 TEST: {{Quelles}} m’engueulent encore une seule fois et elles vont le regretter.
 TEST: Je crois {{quelle}} est partie.
 TEST: il pense {{quelles}} sont devenues dangereuses.
+TEST: je crois qu’elle seule peut y parvenir
 TEST: Quelle est sa passion ?
 TEST: Quelles sont leurs principales études ?
 TEST: Quelles en sont les conséquences ?
@@ -4327,41 +4363,42 @@ TEST: Quelle plus belle complicité que…
 TEST: Quelle peut être la date de clôture d’un exercice ?
 TEST: Quelle doit être la date du mariage ?
 TEST: Quelles ont été les annonces faites ?
+TEST: Elle cache qu’elle a été en prison.
+TEST: Elle avait été accueillie avec joie.
 
 
-# savoir / ignorer
-__[i]/conf(être_pas_sans_savoir)__
-    ({etre}) pas sans (ignor(?:e[rz]|ée?s?|ai[st]))  @@0,$
-    <<- morph(\1, ":V0e", False)
-    -2>> savoir     # Confusion : vous écrivez l’inverse de ce que vous voulez dire.|http://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
+__ne_pas_être_sans_savoir__
+    >être [pas|plus|jamais|guère] sans >ignorer
+        <<- /conf/ -4>> savoir          # Confusion : vous écrivez l’inverse de ce que vous voulez dire.|http://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
+
+    ne [pas|plus|jamais|guère] être sans >ignorer
+        <<- /conf/ -5>> savoir          # Confusion probable : vous écrivez l’inverse de ce que vous voulez dire.|http://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
 
 TEST: Vous n’êtes pas sans {{ignorer}} que…
+TEST: ne pas être sans {{ignorer}} la cause de ces phénomènes.
 
 
-## s’en / sens / sans / cent / cens
-__[i]/conf(conf_il_on_s_en)__  (?:ils?|on) (san[sg]|cen[st]|c’en) ({w_2})  @@w,$
-    <<- isStart() and morph(\2, ":V", False)
-    -1>> s’en                                                                                       # Confusion probable.
-__[i]/conf(conf_elle_s_en)__  elles? (san[sg]|cen[st]|c’en) ({w_2})  @@w,$
-    <<- isStart() and morph(\2, ":V", False) and not ( \1 == "sans" and morph(\2, ":[NY]", False) )
-    -1>> s’en                                                                                       # Confusion probable.
+__conf_s_en_sens_sans_cent_cens__
+    [<start>|,]  [il|ils|on]    [c’|ç’]  en                     @:V
+    [<start>|,]  [elle|elles]   [c’|ç’]  en                     @:V¬:V0e
+        <<- /conf/ -3:4>> s’en                                                                      # Confusion probable.
+
+    [<start>|,]  [il|ils|on]    [sans|sang|sangs|cens|cent]     @:V
+    [<start>|,]  [elle|elles]   [sang|sangs|cens|cent]          @:V
+    [<start>|,]  [elle|elles]   sans                            @:V¬:(?:[NYDA]|Oo)|>(?:y|en)
+        <<- /conf/ -3>> s’en                                                                        # Confusion probable.
 
 TEST: il {{c’en}} est vite lassé.
 TEST: {{S’en}} était vraiment trop !
 TEST: Car {{s’en}} était vraiment fini !
 TEST: elle {{sang}} était voulu
+TEST: elle sans y penser
+TEST: elle sans vergogne
+TEST: elle sans la condamner
+TEST: elles sans un sou en poche
+TEST: elles sans grandes convictions
+TEST: elle c’en était trop (TODO : proposer une virgule)
 
-
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                 _
-@@@@
-@@@@
-@@@@
-@@@@
 
 __conf_son_sont__
     [ne|me|te|se] son
@@ -4473,13 +4510,6 @@ TEST: il travaille à {{tant}} partiel
 TEST: {{en même tant}}, on s’en moque, de toutes ces histoires ennuyeuses.
 TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranéen
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
-
-
-__conf_quand_bien_même__
-    tant bien même
-        <<- /conf/ ->> quand bien même      # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
-
-TEST: il sera condamné {{tant bien même}} il prouverait que c’était un accident.
 
 
 __conf_voie_voix_vois_voit__
