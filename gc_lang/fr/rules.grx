@@ -4352,81 +4352,6 @@ TEST: Car {{s’en}} était vraiment fini !
 TEST: elle {{sang}} était voulu
 
 
-## son / sont
-__[i]/conf(conf_ne_sont)__
-    ne (?:l(?:e|eur|ui) |[nv]ous |)(son)  @@$
-    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
-__[i]/conf(conf_me_te_se_son)!6__
-    [mts]e (son)  @@3
-    <<- -1>> sont                   # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
-__[i]/conf(conf_son_qqch)__
-    (sont) ({w_2})  @@0,$
-    <<- morphex(\2, ":[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s", ":[GW]")
-        and morphex(word(-1), ":V|>(?:à|avec|chez|dès|contre|devant|derrière|en|par|pour|sans|sur)/", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[nmts]e)/", True)
-        and not before(r"(?i)\bce que? |[mts]’en +$")
-    -1>> son                        # Confusion : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
-__[i]/conf(conf_qui_sont_les)__
-    (?:qu[ie]|comment|pourquoi) +(son) @@$
-    <<- morph(word(1), ":[DR]", False, True) -1>> sont      # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
-
-TEST: ne leur {{son}} pas odieux.
-TEST: Ces chiens me {{son}} odieux.
-TEST: {{sont}} {{pain}}
-TEST: en {{sont}} {{absence}}
-TEST: qui {{son}} ces gens ?
-TEST: ces gens qui {{son}}, dans le meilleur des cas, des imbéciles ne peuvent nous aider.
-TEST: elles s’en sont mal portées
-TEST: ils en sont reconnaissants
-TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
-
-
-# statu / statut
-__[i]/conf(conf_statu_quo)__
-    statu[tse] quo <<- ->> statu quo                                                      # Confusion.|https://fr.wiktionary.org/wiki/statu_quo
-__[i]/conf(conf_statue_statut)__
-    statu(?! quo) <<- ->> statut|statue                                                   # Confusion : “statu” ne s’emploie que dans l’expression “statu quo”.
-
-TEST: Ça n’en finit pas, c’est le {{statut quo}}.
-TEST: Quelle splendide {{statu}}.
-
-
-# sur / sûr
-__[i]/conf(conf_sûr_de_nom_propre)__
-    (sur) d(?:e |’)([A-ZÉÈ][\w-]+)  @@0,$
-    <<- morph(\2, ":M[12]", False) -1>> sûr
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-
-TEST: Je suis {{sur}} de Patrick.
-
-__[i]/conf(conf_sûr_que)__
-    (sure?s?) que?  @@0
-    <<- -1>> =\1.replace("sur", "sûr")
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_sûre_surs_de)__
-    (sur(?:es?|s)) de?  @@0
-    <<- -1>> =\1.replace("sur", "sûr")
-    # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_sûr_de)__
-    (sur) d(?:e (?:m(?:oi|es?|on|a)|t(?:oi|es?|on|a)|vous|nous|l(?:ui|es?)|s(?:oi|es?|on|a)|ce(?:ci|la|s|tte|t|)|ça)|’(?:elles?|eux))  @@0
-    <<- -1>> sûr
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_sûr_de_vinfi)__
-    (sur) de (?:l(?:a |’|es? |ui |eur )|)({infi})  @@0,$
-    <<- morph(\2, ":Y", False)
-    -1>> =\1.replace("sur", "sûr")
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-__[i]/conf(conf_en_lieu_sûr)__
-    en lieu (sur)  @@8
-    <<- -1>> sûr
-    # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-
-TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
-TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.
-TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.
-TEST: Il est tellement {{sur}} de la trouver.
-TEST: ils sont en lieu {{sur}} et introuvables.
-
-
 
 @@@@
 @@@@
@@ -4437,6 +4362,85 @@ TEST: ils sont en lieu {{sur}} et introuvables.
 @@@@
 @@@@
 @@@@
+
+__conf_son_sont__
+    [ne|me|te|se] son
+        <<- /conf/ -2>> sont    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+
+    ne [le|leur|leurs|lui|nous|vous] son
+        <<- /conf/ -3>> sont    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+
+    [qui|que|comment|pourquoi|lorsque|quand] son [,|@:[DR]]
+        <<- /conf/ -2>> sont    # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+
+    [<start>|,] sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
+        <<- /conf/ -2>> son     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+
+    sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
+        <<- /conf/ morph(<1, ":V", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[nmts]e)/") and not before(r"(?i)\bce que? |[mts]’en +$")
+        -1>> son                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+
+    [à|chez|dès|par] sont
+    [avec|contre|devant|derrière|pour|sans|sur] sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
+        <<- /conf/ -2>> son     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+
+    en sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
+        <<- /conf/ not before(r"(?i)\b(?:ce que? |ils|elles|leur|lui|nous|vous|[mtsl]’)$")
+        -2>> son                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+
+TEST: ne leur {{son}} pas odieux.
+TEST: Ces chiens me {{son}} odieux.
+TEST: {{sont}} {{pain}}
+TEST: en {{sont}} {{absence}}
+TEST: qui {{son}} ces gens ?
+TEST: ces gens qui {{son}}, dans le meilleur des cas, des imbéciles ne peuvent nous aider.
+TEST: elles s’en sont mal portées
+TEST: ils en sont reconnaissants
+TEST: sont loin, ces gens…
+TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
+
+
+__conf_statu_statue_statut__
+    [statut|statue|status] quo
+        <<- /conf/ ->> statu quo                # Confusion. Écrivez “statu quo”.|https://fr.wiktionary.org/wiki/statu_quo
+
+    statu ~¬[qQ][uU][oO]
+        <<- /conf/ -1>> statut|statue           # Confusion : “statu” ne s’emploie que dans l’expression “statu quo”.
+
+TEST: Ça n’en finit pas, c’est le {{statut quo}}.
+TEST: Quelle splendide {{statu}}.
+
+
+__conf_sûr_sur__
+    sur [que|qu’|qu]
+    sur [de|d’] {pronom_obj}
+    sur [de|d’] @:M
+    sur [de|d’] [ne|n’|me|m’|te|t’|se|s’]
+    sur [de|d’] [le|les|mon|ton|son|ma|ta|sa|mes|tes|ses|ce|cet|cette|ces|cela|ceci|ça]
+    sur [de|d’] la @:Y
+        <<- /conf/ -1>> sûr
+        # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+    sur [de|d’] @:Y
+        <<- /conf/ -1>> sûr
+        # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+    en lieu sur
+        <<- /conf/ -3>> sûr
+        # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+    [sure|surs|sures] [de|d’|que|qu’|qu]
+        <<- /conf/ -1>> =\1.replace("sur", "sûr")
+        # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+TEST: Je suis {{sur}} de Patrick.
+TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
+TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.
+TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.
+TEST: Il est tellement {{sur}} de la trouver.
+TEST: ils sont en lieu {{sur}} et introuvables.
+TEST: il s’étendit sur de la mousse à mémoire de forme
+
 
 __conf_tant_temps_tan_1__
     en [tant] [de|d’] [guerre|paix|crise|doute|pluie]
@@ -4551,15 +4555,15 @@ TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux
 
 #__verbes_composés_interrogatifs__
 #    ~-(?:je|tu|ils?|elles?)$
-#        <<- ->> define(\1, [":VCi"])
+#        <<- =>> define(\1, [":VCi"])
 #
 #__verbes_composés_impératifs__
 #    ~-(?:moi|toi|leur|en|y)$
-#        <<- ->> define(\1, [":VCe"])
+#        <<- =>> define(\1, [":VCe"])
 #
 #__verbes_composés_interrogatifs_et_impératifs__
 #    ~-[nv]ous$
-#        <<- ->> define(\1, [":VCi", ":VCe"])
+#        <<- =>> define(\1, [":VCi", ":VCe"])
 
 
 __rendez_vous__
