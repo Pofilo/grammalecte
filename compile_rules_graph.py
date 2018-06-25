@@ -19,7 +19,7 @@ def prepareFunction (s, bTokenValue=False):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"(morph|analyse|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
-    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
+    s = re.sub(r"(select|exclude|define)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
     s = re.sub(r"(switchGender|has(?:Mas|Fem)Form)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"(morph|analyse)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                     # next token
@@ -180,12 +180,15 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
     else:
         iStartAction = int(m.group("start"))
         iEndAction = int(m.group("end")[1:])  if m.group("end")  else iStartAction
-    if dPos:
+    if dPos and m.group("start"):
         try:
             iStartAction = dPos[iStartAction]
-            iEndAction = dPos[iEndAction]
+            if iEndAction:
+                iEndAction = dPos[iEndAction]
         except:
             print("# Error. Wrong groups in: " + sActionId)
+            print("  iStartAction:", iStartAction, "iEndAction:", iEndAction)
+            print(" ", dPos)
 
     if cAction == "-":
         ## error
