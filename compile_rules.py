@@ -486,13 +486,13 @@ def make (spLang, sLang, bJavaScript):
             m = re.match("!!+", sLine)
             nExMk = len(m.group(0))
             if sLine[nExMk:].strip():
-                printBookmark(nExMk-2, sLine[nExMk:].strip(), i)
+                printBookmark(nExMk-2, sLine[nExMk:-3].strip(), i)
         # Graph rules
         elif sLine.startswith("@@@@GRAPH:"):
             # rules graph call
             m = re.match(r"@@@@GRAPH: *(\w+)", sLine.strip())
             if m:
-                printBookmark(1, "@GRAPH: " + m.group(1), i)
+                printBookmark(1, "____ GRAPH: " + m.group(1) + " ____", i)
                 lRuleLine.append([i, "@@@@"+m.group(1)])
                 bGraph = True
             lGraphRule.append([i, sLine])
