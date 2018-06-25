@@ -263,6 +263,29 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         return None
 
 
+def rewriteKeysOfDARGs (dAllGraph):
+    "keys of DARGs are long numbers (hash): this function replace these hashes with smaller numbers (to reduce storing)"
+    dAllNewGraph = {}
+    for sGraphName, dGraph in dAllGraph.items():
+        # create translation dictionary
+        dKeyTrans = {}
+        for i, nKey in enumerate(dGraph):
+            dKeyTrans[nKey] = i
+        # replace keys
+        dNewGraph = {}
+        for nKey, dVal in dGraph.items():
+            dNewGraph[dKeyTrans[nKey]] = dVal
+        for nKey, dVal in dGraph.items():
+            for sArc, val in dVal.items():
+                if type(val) is int:
+                    dVal[sArc] = dKeyTrans[val]
+                else:
+                    for sArc, nKey in val.items():
+                        val[sArc] = dKeyTrans[nKey]
+        dAllNewGraph[sGraphName] = dNewGraph
+    return dAllNewGraph
+
+
 def make (lRule, dDef, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
@@ -383,6 +406,6 @@ def make (lRule, dDef, sLang, bJavaScript):
     # Result
     return {
         "graph_callables": sPyCallables,
-        "rules_graphs": dAllGraph,
+        "rules_graphs": rewriteKeysOfDARGs(dAllGraph),
         "rules_actions": dACTIONS
     }
