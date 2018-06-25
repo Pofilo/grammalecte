@@ -3709,7 +3709,7 @@ TEST: {{Se}} sont de grands enfants.
 TEST: {{Se}} sera une fille.
 TEST: {{ceux}} seraient des jours heureux
 TEST: Pour {{se}} faire, ils sont prêts à tout.
-TEST: {{se}} {{ne}} peut être ainsi.
+TEST: {{se}} ne peut être ainsi.
 TEST: C’est tout {{se}} qu’il y a
 TEST: Tout {{se}} que je fais
 TEST: tout {{se}} qu’il entend
@@ -4516,50 +4516,99 @@ TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux
 
 
 
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
+
+
+!!
+!!
+!!!! Verbes composés                                                                              !!
+!!
+!!
+
+#__verbes_composés_interrogatifs__
+#    ~-je$
+#    ~-tu$
+#    ~-ils?$
+#    ~-elles?$
+#        <<- ->> define(\1, [":Vi"])
+#
+#__verbes_composés_impératifs__
+#    ~-moi$
+#    ~-toi$
+#    ~-leur$
+#    ~-en$
+#    ~-y$
+#        <<- ->> define(\1, [":Ve"])
+#
+#__verbes_composés_interrogatifs_et_impératifs__
+#    ~-nous$
+#    ~-vous$
+#        <<- ->> define(\1, [":Vi", ":Ve"])
+
+
+__rendez_vous__
+    ne [le|la|les] [lui|leur]   (rendez-vous)
+    ne me [le|la|les]           (rendez-vous)
+    ne [lui|leur] en            (rendez-vous)
+    ne [le|la|les|lui|leur]     (rendez-vous)
+    [me|ne|nous|vous|lui]       (rendez-vous)
+        <<- =>> define(\1, [":Vi1:2p"])
+        <<- ~1>> !
+
+#   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
+#   rendez-vous seulement défini comme :N:m:i
+
+
+
+
 !!
 !!
 !!!! Pronoms + incohérences                                                                       !!
 !!
 !!
-__[i](p_m_enfin)__      m’enfin <<- ~>> *
 
-__[i]/conf(conf_j_y_en_qqch)__
-    (j’(?:en +|y +|))({w_1})  @@0,$
-    <<- morphex(\2, ":", ":(?:[123][sp]|O[onw])")
-    -2>> =suggSimil(\2, ":1s", False)                                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-__[i]/conf(conf_ne_qqch)__
-    (n(?:e +|’))({w_1})  @@0,$
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|O[onw]|X)|>(?:[lmtsn]|surtout|guère|presque|même|tout|parfois|vraiment|réellement|justement)/") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)", False)                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
-__[i]/conf(conf_n_y_en_qqch)__
-    (n’(?:en|y)) ({w_1})  @@0,$
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|O[onw]|X)") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-__[i]/conf(conf_ne_pronom_qqch)__
-    (ne (?:l(?:es? +|eur +|a +|’)|[nv]ous))({w_1})  @@0,$
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|O[onw]|X)") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-__[i]/conf(conf_me_te_se_qqch)__
-    ([mts]e +(?:les? |la |l’|))(?!voi(?:là|ci))({w_1})  @@0,$
-    <<- not re.search("(?i)^se que?", \0)
-        and morphex(\2, ":", ":(?:[123][sp]|Y|P|Oo)|>[lmts]/") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Oo|Y)", False)                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe ou un pronom personnel objet.
-__[i]/conf(conf_m_t_s_y_en_qqch)__
-    ([mts]’(?:en|y)) (?!voilà)({w_1})  @@0,$
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P|X|Oo)|>rien/") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-__[i]/conf(conf_m_s_qqch)__
-    ([ms]’)({w_1})  @@0,2
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P)|>(?:en|y|ils?)/") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-__[i]/conf(conf_t_qqch)__
-    (t’)({w_1})  @@0,2
-    <<- morphex(\2, ":", ":(?:[123][sp]|Y|P)|>(?:en|y|ils?|elles?)/") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|ce)$", \2)
-    -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                                  # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-__[i]/conf(conf_c_ç_qqch)__
-    ([cç]’)({w_1})  @@0,2
-    <<- morphex(\2, ":", ":[123][sp]|>(?:en|y|que?)/") and not re.search("(?i)-(?:ils?|elles?|[nv]ous|je|tu|on|dire)$", \2)
-    -2>> =suggSimil(\2, ":3s", False)                                                               # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+__m_enfin__
+    m’ enfin
+        <<- ~2>> !
+        <<- ~>> *
+
+
+__non_verbe_après_préverbes__
+    [ne|n’]     [le|la|l’|les]      [lui|leur|en|y]         @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
+    [ne|n’]     [lui|leur]          en                      @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
+        <<- -4>> =suggSimil(\4, ":(?:[123][sp]|Y)", False)                                          # Incohérence avec « \1 \2 \3 » : « \4 » devrait être un verbe.
+
+    [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    n’          [en|y]                                      @:[NAQ]¬:(?:[123][sp]|Y|W|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’|se|s’]   [le|la|l’|les|en|y]               @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+        <<- -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                          # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
+
+    [nous|vous]           [le|la|l’|les|en|y]               @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+        <<- not morph(<1, ":R|>de/") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                 # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
+
+    [ne|n’]                                                 @:[NAQ]¬:(?:[123][sp]|Y|W|P|Oo|X)|>(?:[mtsl]|même|pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’|se]                                        @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus)/
+    [s’]                                                    @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>ils?/
+        <<- -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                          # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+
+    [c’|ç’]                                                 @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>que?/
+        <<- -2>> =suggSimil(\2, ":3s", False)                                                       # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+
+    j’          [en|y]                                      @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
+        <<- -3>> =suggSimil(\3, ":1s", False)                                                       # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
+
+    j’                                                      @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
+        <<- -2>> =suggSimil(\2, ":1s", False)                                                       # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne l’{{oubli}} pas
 TEST: elle ne la {{croix}} pas
@@ -4586,20 +4635,15 @@ TEST: j’ai l’impression de ne même pas savoir ce qu’est un « juif fran�
 TEST: C’que j’comprends, c’est qu’il y a des limites à ce qu’on peut supporter.
 TEST: la tentation pour certains médias de ne tout simplement pas rémunérer notre travail si celui-ci n’est finalement pas publié.
 TEST: Ne parfois pas être celui qui sabote l’ambiance.
+TEST: il s’en va.
+TEST: C’en est trop !
+TEST: T’y viendras, comme tout le monde.
+TEST: Nous y voilà enfin.
+TEST: T’y voilà propulsé.
+TEST: t’en voilà débarrassée.
+TEST: N’oublient-ils pas ce qu’ils étaient autrefois…
+TEST: Ne presque jamais réussir un plat aussi simple, c’est de l’incompétence pure et simple.
 
-
-#__[i](p_notre_père_qui_es_au_cieux)__   notre père (qui est? aux cieux) @@11 <<- ~1>> *
-
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1
-@@@@
-@@@@
-@@@@
-@@@@
 
 __p_notre_père_qui_es_au_cieux__
     notre père qui [es|est] aux cieux
@@ -4621,6 +4665,7 @@ __tag_sujets__
 
     tu
     t’  @:2s
+    t’  [en|y]  @:2s
     [toi|toi-même] ?,¿ qui
     [toi|toi-même] [seul|seule]
         <<- />> 2s
@@ -5021,34 +5066,64 @@ TEST: __neg__ il {{le}} lui donne pas souvent.
 !!
 
 __infi_ne_pas_jamais_etc__
-    ne [pas|rien|guère|point]                   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] [trop|beaucoup]   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point]                   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] [trop|beaucoup]   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]            (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point]                   [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] [trop|beaucoup]   [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                           (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point]                   [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] [trop|beaucoup]   [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
-    ne plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point]                   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] non plus          ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus]¿ non plus            ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point]                   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] non plus          [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus]¿ non plus            [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [m’|t’|s’|nous|vous|les|lui|leur|l’]  [en|y]                (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point]                   [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] non plus          [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus]¿ non plus            [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [me|te|nous|vous] [le|la|les]                               (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point]                   [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] [trop|beaucoup]   [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ [pas|rien|guère|point] non plus          [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿       [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ jamais ?[rien|plus]¿ non plus            [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿ [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+    ne ?presque¿ plus ?[jamais|rien|guère]¿ non plus      [le|la|les] [lui|leur]                                      (@:[VNA]¬:(?:Y|W|X|O[ow])|>que?/)
+        <<- /infi/ -1>> =suggVerbInfi(\1)                                                           # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
+
+    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point]                        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] [trop|beaucoup]        (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ [pas|rien|guère|point] non plus               (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus|trop|beaucoup]¿            (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ jamais ?[rien|plus]¿ non plus                 (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère|trop|beaucoup]¿      (@:[VNA]¬:(?:Y|W|X))
+    n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           (@:[VNA]¬:(?:Y|W|X))
         <<- /infi/ -1>> =suggVerbInfi(\1)                                                           # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
     ne [pas|jamais|plus|rien|guère|point] [beaucoup|trop]
