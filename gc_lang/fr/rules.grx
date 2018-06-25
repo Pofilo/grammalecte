@@ -4427,54 +4427,78 @@ TEST: Il est tellement {{sur}} de la trouver.
 TEST: ils sont en lieu {{sur}} et introuvables.
 
 
-# tant / temps (1re partie)
-__[i]/conf(conf_en_temps_de)__
-    en (tant?) de?  @@3
-    <<- not after("^[ ’](?:lieux|endroits|places|mondes|villes|pays|régions|cités)") -1>> temps     # Confusion. Écrivez « en temps de » si vous évoquez une période de temps.
-__[i]/conf(conf_de_temps_en_temps)__    de tant? en tant?                   <<- ->> de temps en temps   # Confusion. Écrivez « de temps en temps ».
-__[i]/conf(conf_un_temps_soit_peu)__    un (temps|tan) soi[tes]? peu  @@3   <<- -1>> tant           # Confusion. Écrivez « un tant soit peu ».
-__[i]/conf(conf_tant_de)__              a(?:près|vec) (temps|tan) de?  @@w  <<- -1>> tant           # Confusion.|http://fr.wiktionary.org/wiki/tant
-__[i]/conf(conf_à_temps_partiel)__      [àa] (tant?) (?:partiel|plein)s? @@2 <<- -1>> temps         # Confusion.
-__[i]/conf(conf_en_même_temps)__        en mêmes? (tant?)  @@$              <<- -1>> temps          # Confusion.
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
+__conf_tant_temps_tan_1__
+    en [tant] [de|d’] [guerre|paix|crise|doute|pluie]
+        <<- /conf/ -2>> temps                               # Confusion. Écrivez « en temps de » si vous évoquez une période de temps.
+
+    de [tant|tan|tans] en [tant|tan|tans]
+        <<- /conf/ ->> de temps en temps                    # Confusion. Écrivez « de temps en temps ».
+
+    un [temps|tan|tans] [soi|sois|soie|soies|soit] peu
+        <<- /conf/ -2>> tant                                # Confusion. Écrivez « un tant soit peu ».
+
+    un [temps|tan|tans|tant] [soi|sois|soie|soies] peu
+        <<- /conf/ -3>> soit                                # Confusion. Écrivez « un tant soit peu ».
+
+    [après|avec] [temps|tan|tans] [de|d’]
+        <<- /conf/ -2>> tant                                # Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|http://fr.wiktionary.org/wiki/tant
+
+    [à|a] [tan|tans|tant] [partiel|partiels|plein|pleins]
+        <<- /conf/ -2>> temps                               # Confusion. Pour ce qui est temporel, écrivez “temps”.
+
+    en [même|mêmes] [tant|tan|tans]
+        <<- /conf/ ->> en même temps                        # Confusion. Pour ce qui est temporel, écrivez “temps”.
+
 
 TEST: en {{tant}} de guerre, il faut savoir faire face et ne pas faiblir face à l’adversité.
 TEST: ils vont {{de tan en tan}} au restaurant
 TEST: un {{temps}} soit peu perdu dans cette affaire.
 TEST: après {{temps}} de souffrance, il faut savoir lâcher prise.
 TEST: il travaille à {{tant}} partiel
-TEST: en même {{tant}}, on s’en moque, de toutes ces histoires ennuyeuses.
+TEST: {{en même tant}}, on s’en moque, de toutes ces histoires ennuyeuses.
 TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranéen
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
 
-# tant bien même
-__[i]/conf(conf_tant_bien_même)__
-    tant bien même <<- ->> quand bien même                                  # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
+__conf_quand_bien_même__
+    tant bien même
+        <<- /conf/ ->> quand bien même      # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
 
 TEST: il sera condamné {{tant bien même}} il prouverait que c’était un accident.
 
 
-# voie / vois / voix
-# ->> voix
-__[i]/conf(conf_à_haute_voix)__     à haute (voi[tes])   @@8            <<- -1>> voix               # Confusion.|http://fr.wiktionary.org/wiki/voix
-__[i]/conf(conf_à_voix)__           à (voi[tes]) (?:basse|haute) @@2    <<- -1>> voix               # Confusion.|http://fr.wiktionary.org/wiki/voix
-__[i]/conf(conf_de_vive_voix)__     de vives? (voi[est])  @@$           <<- -1>> voix               # Confusion.|http://fr.wiktionary.org/wiki/voix
+__conf_voie_voix_vois_voit__
+    à haute [voie|vois|voit]
+    de vive [voie|vois|voit]
+        <<- /conf/ -3>> voix        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
-TEST: à haute {{voie}}
-TEST: à {{voie}} haute
-TEST: de vive {{voie}}
+    à [voie|vois|voit] [basse|haute]
+        <<- /conf/ -2>> voix        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
-# ->> voie
-__[i]/conf(conf_sur_la_bonne_voie)__        sur la bonne (voix) @@$     <<- -1>> voie               # Confusion.|http://fr.wiktionary.org/wiki/voix
-__[i]/conf(conf_en_voie_de)__
-    en (voix) d(?:e (?:développement|disparition|guérison|résorption)|’(?:acquisition|achèvement|extinction|obtention))  @@3
-    <<- -1>> voie                                                                                   # Confusion.|http://fr.wiktionary.org/wiki/voie
-__[i]/conf(conf_ouvrir_la_voix)__
-    (ouv\w+) +la (voix) (?:à|aux?)  @@0,w <<- morph(\1, ">ouvrir/", False) -2>> voie                # Confusion.|http://fr.wiktionary.org/wiki/voie
-__[i]/conf(conf_par_voie_de_conséquence)__  par (voix) de conséquence   @@4 <<- -1>> voie           # Confusion.|http://fr.wiktionary.org/wiki/voie
-__[i]/conf(conf_voie_adj)__
-    (voix) (?:abdominale|anale|biliaire|carrossable|communale|express|interdite|intramusculaire|intraveineuse|piétonne|principale|prioritaire|privée|publique|déserte|romaine|appienne|flaminienne|ferrée|ferroviaire|lactée|lacrymale|aérienne|maritime|fluviale|terrestre|navigable|détournée|déviée|buccale|digestive|urinaire|respiratoire|parallèle|administrative|diplomatique|gouvernementale|législative|hiérarchique|rectiligne|sinueuse|souterraine|urbaine)s? @@0
-    <<- -1>> voie                                                                                   # Confusion.|http://fr.wiktionary.org/wiki/voie
+    sur la bonne voix
+        <<- /conf/ -4>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+
+    >ouvrir la voix [à|au|aux]
+        <<- /conf/ -3>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+
+    en voix [de|d’] [développement|disparition|guérison|résorption|acquisition|achèvement|extinction|obtention]
+    par voix de >conséquence
+        <<- /conf/ -2>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+
+    voix [abdominale|anale|biliaire|carrossable|communale|express|interdite|intramusculaire|intraveineuse|piétonne|principale|prioritaire|privée|publique|déserte|romaine|appienne|flaminienne|ferrée|ferroviaire|lactée|lacrymale|aérienne|maritime|fluviale|terrestre|navigable|détournée|déviée|buccale|digestive|urinaire|respiratoire|parallèle|administrative|diplomatique|gouvernementale|législative|hiérarchique|rectiligne|sinueuse|souterraine|urbaine]
+    voix [abdominales|anales|biliaires|carrossables|communales|expresss|interdites|intramusculaires|intraveineuses|piétonnes|principales|prioritaires|privées|publiques|désertes|romaines|appiennes|flaminiennes|ferrées|ferroviaires|lactées|lacrymales|aériennes|maritimes|fluviales|terrestres|navigables|détournées|déviées|buccales|digestives|urinaires|respiratoires|parallèles|administratives|diplomatiques|gouvernementales|législatives|hiérarchiques|rectilignes|sinueuses|souterraines|urbaines]
+        <<- /conf/ -1>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
 TEST: sur la bonne {{voix}}
 TEST: ces patients sont en {{voix}} de guérison.
@@ -4483,21 +4507,24 @@ TEST: Je propse que, par {{voix}} de conséquence, nous partions immédiatement.
 TEST: C’est une {{voix}} interdite.
 
 
-# voire / voir
-__[i]/conf(conf_voir_voire)__
-    (voir) ({w_2}) @@0,$
-    <<- not re.search("^(?:grand|petit|rouge)$", \2) and morphex(\2, ":A", ":[NGM]") and not \2.istitle()
-        and not before(r"(?i)\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$") and not morph(word(-1), ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de)/", False)
-    -1>> voire
-    # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez :|https://fr.wiktionary.org/wiki/voire
+__conf_voir_voire__
+    voir [grand|petit|rouge]
+        <<- ~2>> !
 
-__[i]/conf(conf_voire_voir)__
-    voire
-    <<- morph(word(-1), ":Cs|>(?:ni|et|sans|pour|falloir|[pv]ouvoir|aller)/", True, False) ->> voir
-    # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
+    voir  @:A¬:[NGM]
+        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de)/")
+            and not before(r"(?i)\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
+        -1>> voir                       # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez :|https://fr.wiktionary.org/wiki/voire
+
+    [comme|lorque|puisque|quand|que|quoique|si]     (voire)
+    [ni|et|par|pour|sans]                           (voire)
+    [>aller|>falloir|>pouvoir|>vouloir]  ?[guère|jamais|pas|plus|point|rien]¿  (voire)
+        <<- /conf/ -1>> voir            # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
 
 TEST: Elles sont fatiguées, {{voir}} épuisées.
 TEST: Ce serait pour aider, ainsi que {{voire}} l’avancement du projet.
+TEST: il faut penser juste et {{voire}} vrai.
+TEST: Je ne vais jamais {{voire}} ces gens-là.
 TEST: Elles vont voir rouge en apprenant cet échec.
 TEST: Voir les enfants jouer ne me rend pas nostalgique.
 TEST: Il faut voir grand.
@@ -4516,19 +4543,6 @@ TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux
 
 
 
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                 _
-@@@@
-@@@@
-@@@@
-@@@@
-
-
-
 !!
 !!
 !!!! Verbes composés                                                                              !!
@@ -4536,24 +4550,16 @@ TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux
 !!
 
 #__verbes_composés_interrogatifs__
-#    ~-je$
-#    ~-tu$
-#    ~-ils?$
-#    ~-elles?$
-#        <<- ->> define(\1, [":Vi"])
+#    ~-(?:je|tu|ils?|elles?)$
+#        <<- ->> define(\1, [":VCi"])
 #
 #__verbes_composés_impératifs__
-#    ~-moi$
-#    ~-toi$
-#    ~-leur$
-#    ~-en$
-#    ~-y$
-#        <<- ->> define(\1, [":Ve"])
+#    ~-(?:moi|toi|leur|en|y)$
+#        <<- ->> define(\1, [":VCe"])
 #
 #__verbes_composés_interrogatifs_et_impératifs__
-#    ~-nous$
-#    ~-vous$
-#        <<- ->> define(\1, [":Vi", ":Ve"])
+#    ~-[nv]ous$
+#        <<- ->> define(\1, [":VCi", ":VCe"])
 
 
 __rendez_vous__
@@ -4562,7 +4568,7 @@ __rendez_vous__
     ne [lui|leur] en            (rendez-vous)
     ne [le|la|les|lui|leur]     (rendez-vous)
     [me|ne|nous|vous|lui]       (rendez-vous)
-        <<- =>> define(\1, [":Vi1:2p"])
+        <<- =>> define(\1, [":VCi1:2p"])
         <<- ~1>> !
 
 #   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
@@ -4586,29 +4592,29 @@ __m_enfin__
 __non_verbe_après_préverbes__
     [ne|n’]     [le|la|l’|les]      [lui|leur|en|y]         @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
     [ne|n’]     [lui|leur]          en                      @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
-        <<- -4>> =suggSimil(\4, ":(?:[123][sp]|Y)", False)                                          # Incohérence avec « \1 \2 \3 » : « \4 » devrait être un verbe.
+        <<- /conf/ -4>> =suggSimil(\4, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 \3 » : « \4 » devrait être un verbe.
 
     [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     n’          [en|y]                                      @:[NAQ]¬:(?:[123][sp]|Y|W|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’|se|s’]   [le|la|l’|les|en|y]               @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-        <<- -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                          # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
+        <<- /conf/ -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     [nous|vous]           [le|la|l’|les|en|y]               @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-        <<- not morph(<1, ":R|>de/") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                 # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
+        <<- /conf/ not morph(<1, ":R|>de/") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)          # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     [ne|n’]                                                 @:[NAQ]¬:(?:[123][sp]|Y|W|P|Oo|X)|>(?:[mtsl]|même|pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’|se]                                        @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus)/
     [s’]                                                    @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>ils?/
-        <<- -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                          # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+        <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
     [c’|ç’]                                                 @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)|>que?/
-        <<- -2>> =suggSimil(\2, ":3s", False)                                                       # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+        <<- /conf/ -2>> =suggSimil(\2, ":3s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
     j’          [en|y]                                      @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
-        <<- -3>> =suggSimil(\3, ":1s", False)                                                       # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
+        <<- /conf/ -3>> =suggSimil(\3, ":1s", False)                                                # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     j’                                                      @:[NAQ]¬:(?:[123][sp]|Y|P|Oo|X)
-        <<- -2>> =suggSimil(\2, ":1s", False)                                                       # Incohérence avec « \1 » : « \2 » devrait être un verbe.
+        <<- /conf/ -2>> =suggSimil(\2, ":1s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne l’{{oubli}} pas
 TEST: elle ne la {{croix}} pas
@@ -4695,17 +4701,17 @@ __tag_sujets__
 
 __conj_xxxai__sans_sujet!3__
     [se|s’]  ?[en|y|le|la|l’|les]¿  (~ai$)
-        <<- morph(\1, ":1s", ":(?:G|W|M|J|3[sp])")
+        <<- /conj/ morph(\1, ":1s", ":(?:G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~ai$)  ~¬[jJ]e
-        <<- morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+        <<- /conj/ morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~ai$)  ~¬[jJ]e
     [le|la|l’|les]              [lui|leur|en|y]         (~ai$)  ~¬[jJ]e
     [lui|leur]                  en                      (~ai$)  ~¬[jJ]e
-        <<- morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+        <<- /conj/ morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     ~ai$  ~¬[jJ]e
@@ -4715,48 +4721,48 @@ __conj_xxxai__sans_sujet!3__
 
 __conj_xxxas_xxxes__sans_sujet!3__
     [se|s’]  ?[en|y|le|la|l’|les]¿  (~[ae]s$)
-        <<- morph(\1, ":2s", ":(?:G|W|M|J|3[sp])")
+        <<- /conj/ morph(\1, ":2s", ":(?:G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[ae]s$)  ~¬[tT]u
-        <<- morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[ae]s$)  ~¬[tT]u
     [le|la|l’|les]              [lui|leur|en|y]         (~[ae]s$)  ~¬[tT]u
     [lui|leur]                  en                      (~[ae]s$)  ~¬[tT]u
-        <<- morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~[ae]s$  ~¬[tT]u
-        <<- morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
+        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
 
 __conj_xxxxxs_sans_sujet!3__
     [se|s’]  ?[en|y|le|la|l’|les]¿  (~[iudnrtpcï]s$)
-        <<- morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
     [le|la|l’|les]              [lui|leur|en|y]         (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
     [lui|leur]                  en                      (~[iudnrtpcï]s$)  ~¬(?:[tT]u|[jJ]e)
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     étais  ~¬(?:[tT]u|[jJ]e)
-        <<- not (\1.istitle() and before0(r"\w")) and not morph(<1, ":[DA].*:p")
+        <<- /conj/ not (\1.istitle() and before0(r"\w")) and not morph(<1, ":[DA].*:p")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     ~[iudnrtpcï]s$  ~¬(?:[tT]u|[jJ]e)
-        <<- morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0(r"\w"))
+        <<- /conj/ morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0(r"\w"))
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
@@ -4766,13 +4772,13 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
         <<- /conj/ -1>> =suggVerb(\1, ":3s")                                                        # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
-        <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
     [le|la|l’|les]              [lui|leur|en|y]         ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
     [lui|leur]                  en                      ([peux|veux|vaux|équivaux|prévaux])  ~¬(?:[tT]u|[jJ]e)
-        <<- not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     vaux  ~¬(?:[tT]u|[jJ]e)
@@ -4826,22 +4832,22 @@ TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du
 
 __locutions_invariables__
     [plus|moins|autant]  que  [prévue|prévus|prévues]
-        <<- -3>> prévu                                                                              # Invariable. Implicitement, \1 que ce qui était prévu.
+        <<- /sgpl/ -3>> prévu                                                                       # Invariable. Implicitement, \1 que ce qui était prévu.
 
     [plus|moins|aussi]  **  que  [prévue|prévus|prévues]
-        <<- -4>> prévu                                                                              # Invariable. Implicitement, \1 \2 que ce qui était prévu.
+        <<- /sgpl/ -4>> prévu                                                                       # Invariable. Implicitement, \1 \2 que ce qui était prévu.
 
     [plus|moins|autant]  [de|d’]  **  que  [prévue|prévus|prévues]
-        <<- -5>> prévu                                                                              # Invariable. Implicitement, \1 \2 \3 que ce qui était prévu.
+        <<- /sgpl/ -5>> prévu                                                                       # Invariable. Implicitement, \1 \2 \3 que ce qui était prévu.
 
     comme [annoncés|annoncée|annoncées]
-        <<- -2>> annoncé                                                                            # Invariable. Implicitement, comme ce qui était annoncé.
+        <<- /sgpl/ -2>> annoncé                                                                     # Invariable. Implicitement, comme ce qui était annoncé.
 
     comme [convenus|convenue|convenues]
-        <<- -2>> convenu                                                                            # Invariable. Implicitement, comme ce qui était convenu.
+        <<- /sgpl/ -2>> convenu                                                                     # Invariable. Implicitement, comme ce qui était convenu.
 
     comme [prévue|prévus|prévues]
-        <<- -2>> prévu                                                                              # Invariable. Implicitement, comme ce qui était prévu.
+        <<- /sgpl/ -2>> prévu                                                                       # Invariable. Implicitement, comme ce qui était prévu.
 
 
 TEST: il y en a autant que {{prévus}}.
@@ -4880,13 +4886,13 @@ __purge_tout_tous_toutes__
 
 __tout_det__
     [<start>|,]  tout [deux|trois]
-        <<- -2>> tous                                                                               # Locution pronominale : « tous deux ».|https://fr.wiktionary.org/wiki/tous_deux
+        <<- /gn/ -2>> tous                                                                          # Locution pronominale : « tous deux ».|https://fr.wiktionary.org/wiki/tous_deux
 
     tout [mes|tes|ses|ces|nos|vos|leurs|ceux|celles]
-        <<- not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                               # Erreur d’accord probable avec « \2 ».
+        <<- /gn/ not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                          # Erreur d’accord probable avec « \2 ».
 
     tout les @:¬:(?:3s|Oo)
-        <<- not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                               # Erreur d’accord probable avec « les \3 ».
+        <<- /gn/ not morph(<1, ">(?:d[eu]|avant|après|malgré)/") -1>> tous                          # Erreur d’accord probable avec « les \3 ».
 
 TEST: {{Tout}} deux sont partis les premiers.
 TEST: {{Tout}} mes hommes sont venus.
@@ -6301,7 +6307,7 @@ __purge_locutions__
 
 
 @@@@
-@@@@END_GRAPH
+@@@@END_GRAPH                                                                                      _
 @@@@
 
 
