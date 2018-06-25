@@ -769,23 +769,23 @@ class TokenSentence:
                                         dError[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = eAct[2]
                                         if bDebug:
-                                            print("-", sRuleId, dError[nErrorStart])
+                                            print("ERROR:", sRuleId, dError[nErrorStart])
                             elif cActionType == "~":
                                 # text processor
                                 nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
                                 self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, bDebug)
                                 if bDebug:
-                                    print("~", sRuleId)
+                                    print("RW:", sRuleId)
                                 bChange = True
                             elif cActionType == "=":
                                 # disambiguation
                                 globals()[sWhat](self.lToken, nTokenOffset)
                                 if bDebug:
-                                    print("=", sRuleId)
+                                    print("DA:", sRuleId)
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    print(">", sRuleId)
+                                    print(">>>", sRuleId)
                                 pass
                             elif cActionType == "/":
                                 # tags
