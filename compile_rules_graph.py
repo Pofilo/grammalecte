@@ -240,6 +240,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
     elif cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
+            sAction = prepareFunction(sAction, True)
             dFUNCTIONS["_g_p_"+sActionId] = sAction[1:]
             sAction = "=_g_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
