@@ -6459,12 +6459,22 @@ __gestion_mots_grammaticaux__
     la une [de|des|du]
         <<- ~2>> _
 
+    l’ impression que
+        <<- ~1>> _
+
+    l’ étrange impression que
+    la [nette|bizarre] impression que
+        <<- ~2:3>> _
+
     le long [de|des|du]
         <<- ~2>> _
 
     le pour et le contre
         <<- ~>> ␣
         <<- =>> define(\1, [":N:m:p"])
+
+    le [pressentiment|sentiment] [que|qu’|qu]
+        <<- ~1>> _
 
     ou bien
         <<- ~2>> *
@@ -6496,6 +6506,9 @@ __gestion_mots_grammaticaux__
         <<- not morph(<1, ":R") ~1>> *
         <<- ~3>> *
 
+    tout un chacun
+        <<- ~1:2>> *
+
     une fois
         <<- ~>> _
 
@@ -6515,6 +6528,149 @@ __p_dét_plur_nombre_nom__
     [les|des|mes|tes|ses|nos|vos|leurs]  ~\d+  ou  ~\d+  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2:4>> *
 
+    [les|des]   >numéro  [un|~\d+|@:B]  et  [~\d+|@:B]
+        <<- ~3:0>> *
+
+    la  >numéro  un
+    la  >numéro  @:B
+    la  >numéro  ~\d+
+        <<- =>> define(\2, [">numéro/:N:f:s"])
+        <<- ~3>> *
+
+    le  numéro  un  @:¬:N:[em]:[is]
+        <<- ~3>> *
+
+    >numéro  @:B
+    >numéro  ~\d+
+        <<- ~2>> *
+
+
+__simplication_substantifs__
+    >armée de l’air
+    >armée terre
+    >armer jusqu aux dents
+    >arme de [poing|guerre]
+    >arme de destruction massive
+    >attestation sur l’ honneur
+    >attendre de pied ferme
+    ayants droit
+    >billet de ~\d+ [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    [>bisphénol|>bisphenol] A
+    >blanche comme neige
+    >blanche comme de la craie
+    [>boîte|>boite] aux lettres
+    [>boîte|>boite] à gants
+    >chambre [de|d’] [agriculture|hôte|hôtes|commerce|compensation|décompression|dégrisement]
+    >chemin de [traverse|fer]
+    >chili con carne
+    >claire comme de l’ eau de [boudin|roche|source]
+    >claire comme du cristal
+    >claire comme jus de [boudin|chaussette|chaussettes|chique]
+    >commise d’ office
+    >convention [récepteur|générateur]
+    >conne comme la lune
+    >conne comme un balai
+    >conne comme une valise sans >poignée
+    >coup [de|d’] [balai|bol|cœur|foudre|fil|grâce|jarnac|théâtre|coude|genou|main|patte|pied|poing|poker|pouce|tête|avance|éclat|État|œil|épaule]
+    >coup du sort
+    >course contre la montre
+    [cousu|cousue|cousus|cousues] [main]
+    [>coût|>cout] de revient
+    >déclaration sur l’ honneur
+    >délai [de|d’] [attente|carence|connexion|prescription|préavis|rétraction|rigueur]
+    >demande d’ asile
+    >descente aux [enfers|flambeaux]
+    [>dîner|>diner] aux chandelles
+    >digne de [confiance|foi]
+    >digne de ce nom
+    >droite comme un i
+    >eau de [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
+    >eau de noix de coco
+    >espérance de vie
+    >état [de|d’] [âme|esprit|urgence|conservation|fait]
+    >état d’ extrême urgence
+    >état de l’ art
+    >expérience [utilisateur|utilisateurs]
+    >femme [de|d’] [chambre|lettres|loi|ménage|affaires|exception|État|Église|honneur]
+    >femme d’ âge mûr
+    >fille à >soldat
+    >fille au pair
+    >haute comme [trois|3] pommes
+    >homme [de|d’] [lettres|loi|main|paille|affaires|armes|exception|État|Église|honneur]
+    >homme d’ âge mûr
+    >hôtel de ville
+    >garde à vue
+    >garde du corps
+    >infirmière de garde
+    >invitée d’ honneur
+    >invitée surprise
+    >journal de bord
+    >liste d’ attente
+    >main d’ œuvre
+    >maison de [passe|retraite]
+    >mal de [tête|ventre|mer]
+    >marché aux puces
+    >maréchale des [logis|logis-chef]
+    >marge de >manœuvre
+    >médecin de garde
+    >mère au foyer
+    >metteuse en scène
+    >mineure de moins de ~\d+ ans
+    >mineure de moins de @:B ans
+    >miroir aux alouettes
+    >monnaie [de|d’] [échange|réserve]
+    >mode de [paiement|scrutin|vie]
+    >mot de passe
+    >motrice [>essence|>diésel|>diesel]
+    >motion de [blâme|censure|défiance]
+    noix de [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
+    >nue comme un ver
+    >nue comme des vers
+    >oiseau de [malheur|nuit|proie]
+    >oiseau de mauvais augure
+    >onde de choc
+    orge [perlé|mondé|carré]
+    >noire comme la nuit
+    >noire comme une nuit sans lune
+    >partie de jambes en l’ air
+    >pièce de [théâtre|monnaie]
+    >pièce de ~\d+ [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
+    >porte de [service|garage]
+    >poudre aux yeux
+    preuve suffisante du contraire
+    preuves suffisantes du contraire
+    prix de revient
+    quelqu’un d’ autre
+    [réglé|réglée|réglés|réglées] (comme du papier à musique)
+    >requête en nullité
+    >requête en non [conciliation|inscription|lieu]
+    >requête en non révocation de sursis
+    >roue [avant|arrière]
+    >roulement à billes
+    >sac de [couchage|sport|voyage]
+    >salle à manger
+    >salle [de|d’] [attente|bain|bains|conférence]
+    >saine [de|d’] [corps|esprit]
+    >saine [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
+    >sclérose en plaques
+    >secret défense
+    >système d’ exploitation
+    >système D
+    >taille ~\d+
+    >talon >aiguille
+    taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
+    >tête de [déterré|déterrée|déterrés|déterrées]
+    >tour de passe-passe
+    >vectrice [>accélération|>position|>rotation|>vitesse]
+        <<- ~2:0>> *
+
+    don Juan
+        <<- ~1>> *
+
+    droit au but
+    droit dans les yeux
+        <<- ~>> *
 
 @@@@
 @@@@END_GRAPH                                                                                      _
@@ -6525,24 +6681,16 @@ __p_dét_plur_nombre_nom__
 __[i](p_qqch_tiret_là)__        ({w1})(-là) @@0,$ <<- morphex(\1, ":[NAQ]", ":G") ~2>> *
 
 
+
 ## Simplifications des substantifs
 __[i](loc_arc_à_poulies)__
     arcs? (([àa]) poulies) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_armée_de)__                     armées? (de (?:l’air|terre)) @@$ <<- ~1>> *
-__[i](p_armé_jusqu_aux_dents_)__        armée?s? (jusqu aux dents) @@$ <<- ~1>> *
 __[i](loc_armes_à_feu)__
     armes? (([àa]) feu) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_armes_de_qqch)__                armes? (de (?:poing|guerre|destruction massive)) @@$ <<- ~1>> *
-__[i](p_attestation_sur_l_honneur)__    (?:attestation|déclaration)s? (sur l’honneur) @@$ <<- ~1>> *
-__[i](p_attendre_de_pied_ferme)__       attend\w* (de pied ferme) @@$ <<- ~1>> *
-__[i](p_ayants_droit)__                 ayants (droit) @@$ <<- ~1>> *
-__[i](p_boite_aux_lettres)__            bo[îi]tes? (aux lettres|à gants) @@$ <<- ~1>> *
-__[u](p_bisphenol_A)__                  bisph[ée]nols? (A) @@$ <<- ~1>> *
-__[i](p_blanc_comme)__                  blanc(?:he|)s? (comme neige|comme de la craie) @@$ <<- ~1>> *
 __[i](loc_bombe)__
     bombes? (([àa]) (?:eau|fragmentation|retardement)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -6560,20 +6708,6 @@ __[i](loc_chair_à)__
     chairs? (([àa]) (?:pâté|canons?)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_chambre_de)__                   chambres? (d’(?:agriculture|hôtes?)|de (?:commerce|compensation|décompression|dégrisement)) @@$ <<- ~1>> *
-__[i](p_chemin_de_traverse)__           chemins? (de (?:traverse|fer)) @@$ <<- ~1>> *
-__[i](p_chili_con_carne)__              chilis? (con carne) @@$ <<- ~1>> *
-__[i](p_chef_d_œuvre)__                 chefs?(-d’œuvre) @@$ <<- ~1>> *
-__[i](p_clair_comme)__                  claire?s? (comme (?:de l’eau de (?:boudin|roche|source)|du (?:cristal|jus de (?:boudin|chaussettes?|chique)))) @@$ <<- ~1>> *
-__[i](p_commis_d_office)__              commise?s? (d’office) @@$ <<- ~1>> *
-__[i](p_convention)__                   conventions? (récepteur|générateur) @@$ <<- ~1>> *
-__[i](p_con_comme)__                    con(?:ne|)s? (comme (?:un balai|une valise sans poignées?|la lune)) @@$ <<- ~1>> *
-__[i](p_coup_de)__
-    coups? (de (?:balai|bol|cœur|foudre|fil|grâce|jarnac|théâtre|coude|genou|main|p(?:atte|ied|oing|oker|ouce)|tête)|d’(?:avance|éclat|État|œil|épaule)|du sort) @@$
-    <<- ~1>> *
-__[i](p_course_contre_la_montre)__      courses? (contre la montre) @@$ <<- ~1>> *
-__[i](p_cousu_main)__                   cousue?s? +(main) @@$ <<- ~1>> *
-__[i](p_cout_de_revient)__              (?:co[uû]t|prix) (de revient) @@$ <<- ~1>> *
 __[i](loc_crayon_à_qqch)__
     crayons? (([àa]) (?:lèvres|sourcils)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -6582,88 +6716,30 @@ __[i](loc_cuillère)__
     cuillères? +(([àa]) (?:café|soupe)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_délai_de)__                     délais? (d’attente|de (?:carence|connexion|prescription|préavis|rétraction|rigueur)) @@$ <<- ~1>> *
-__[i](p_demande_d_asile)__              demandes? (d’asile) @@$ <<- ~1>> *
-__[i](p_descente_aux)__                 descentes? (aux (?:enfers|flambeaux)) @@$ <<- ~1>> *
-__[i](p_diner_aux_chandelles)__         d[îi]ners? (aux chandelles) @@$ <<- ~1>> *
-__[i](p_digne_de)__                     dignes? (de (?:confiance|foi|ce nom)) @@$ <<- ~1>> *
-__[i](p_don_Juan)__                     (don) Juan @@0 <<- ~1>> *
-__[i](p_droit)__                        (droit) (?:au but|dans les yeux) @@0 <<- ~1>> *
-__[i](p_droit_comme_un_i)__             droite?s? (comme un i) @@$ <<- ~1>> *
-__[i](p_eau_de)__                       eaux? (de (?:bouleau|bleuet|chaux|coco|javel|jouvence|mer|noix de coco|parfum|pluie|seltz|source|vie)) @@$ <<- ~1>> *
-__[i](p_espérance_de_vie)__             espérances? (de vie) @@$ <<- ~1>> *
-__[i](p_état_de)__                      états? (d’(?:âme|e(?:sprit|xtrême urgence)|urgence)|de (?:conservation|fait|l’art)) @@$ <<- ~1>> *
-__[i](p_expérience_utilisateur)__       expériences? +(utilisateurs?) @@$ <<- ~1>> *
 __[i](loc_fard_à_paupières)__
     fards? (([àa]) paupières) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_fille_au_pair)__                filles? (au pair|à soldats?) @@$ <<- ~1>> *
 __[i](loc_fils_fille_à)__
     fil(?:les?|s) (([àa]) (?:papa|maman)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[s](p_femme_de)__                     [fF]emmes? (de (?:chambre|lettres|loi|ménage)|d’(?:âge mûr|affaires|exception|É(?:tat|glise)|honneur)) @@$ <<- ~1>> *
-__[s](p_homme_de)__                     [hH]ommes? (de (?:lettres|loi|main|paille)|d’(?:âge mûr|affaires|armes|exception|É(?:tat|glise)|honneur)) @@$ <<- ~1>> *
-__[i](p_haut_comme_3_pommes)__          haute?s? (comme (?:trois|3) pommes) @@$  <<- ~1>> *
-__[i](p_hôtel_de_ville)__               hôtels? (de ville) @@$ <<- ~1>> *
 __[i](loc_gaz_à_effet_de_serre)__
     gaz (([àa]) effet de serre)  @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_garde)__                        gardes? (à vue|du corps) @@$ <<- ~1>> *
-__[i](p_infirmier_de_garde)__           (?:infirmières?|médecins?) (de garde) @@$ <<- ~1>> *
-__[i](p_impression_que)__               (l(?:a (?:nette|bizarre) +|’étrange +|’)impression) +que? @@0 <<- ~1>> *
-__[i](p_pressentiment_que)__            (le (?:pres|)sentiment) +que? @@0 <<- ~1>> *
-__[i](p_invité)__                       invitée?s? (d’honneur|surprise) @@$ <<- ~1>> *
-__[i](p_journal_de_bord)__              journa(?:l|ux) (de bord) @@$ <<- ~1>> *
 __[i](loc_lime_à_ongles)__
     limes? (([àa]) ongles?) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_liste_d_attente)__              listes? (d’attente) @@$ <<- ~1>> *
 __[i](loc_machine_à_qqch)__
     machines? (([àa]) (?:café|coudre|laver|remonter le temps)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_main_d_œuvre)__                 mains? (d’œuvre) @@$ <<- ~1>> *
-__[i](p_maison_de)__                    maisons? (de (?:passe|retraite)) @@$ <<- ~1>> *
-__[i](p_mal_de)__                       ma(?:l|ux) (de (?:tête|ventre|mer)) @@$ <<- ~1>> *
-__[i](p_marché_aux_puces)__             marchés? (aux puces) @@$ <<- ~1>> *
-__[i](p_maréchal_des_logis)__           maréchale?s? (des logis(?:[ -]chef|)) @@$ <<- ~1>> *
-__[i](p_marge_de_manœuvre)__            marges? (de manœuvres?) @@$ <<- ~1>> *
-__[i](p_mère_au_foyer)__                mères? (au foyer) @@$ <<- ~1>> *
-__[i](p_metteur_en_scène)__             metteu(?:r|se)s? (en scène) @@$ <<- ~1>> *
-__[i](p_mineur_de_moins_de_x_ans)__     mineure?s? (de moins de ({w1}) ans) @@$,>1:w <<- \2.isdigit() or morph(\2, ":B", False) ~1>> *
-__[i](p_miroir_aux_alouettes)__         miroirs? (aux alouettes) @@$ <<- ~1>> *
-__[i](p_monnaie)__                      monnaies? (d’échange|de réserve) @@$  <<- ~1>> *
-__[i](p_mode_de)__                      modes? (de (?:paiement|scrutin|vie)) @@$ <<- ~1>> *
 __[i](loc_moule_à_qqch)__
     moules? (([àa]) (?:gaufres?|gâteaux?|brioche|manqué|savarin|charlotte)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_mot_de_passe)__                 mots? (de passe) @@$ <<- ~1>> *
-__[i](p_moteur_essence_diesel)__        moteurs? (essence|di[eé]sel)s? @@$ <<- ~1>> *
-__[i](p_motion_de)__                    motions? (de (?:blâme|censure|défiance)) @@$ <<- ~1>> *
-__[i](p_noix_de)__                      noix (de (?:cajou|p[ée]can|coco|lavage|muscade|veau|macadamia)) @@$ <<- ~1>> *
-__[i](p_nu_comme_un_ver)__              nue?s? (comme (?:un ver|des vers)) @@$ <<- ~1>> *
-__[i](p_numéro)__
-    numéro (un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix(?:-sept|-huit|-neuf|)|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante(?:-dix|)|quatre-vingt(?:-dix|)|cent|mille|\d+) @@$
-    <<- before(r"\b[lL]a +$") =>> define(\0, [">numéro/:N:f:s"])
-    <<- ~1>> *
-__[i](p_oiseau_de)__                    oiseaux? (de (?:malheur|nuit|proie|mauvais augure)) @@$ <<- ~1>> *
-__[i](p_onde_de_choc)__                 ondes? (de choc) @@$ <<- ~1>> *
-__[i](p_orge)__                         orge (perlé|mondé|carré) @@$ <<- ~1>> *
-__[i](p_noire_comme)__                  noire?s? (comme (?:la nuit|une nuit sans lune)) @@$ <<- ~1>> *
-__[i](p_partie_de_jambe_en_l_air)__     parties? (de jambes en l’air) @@$ <<- ~1>> *
-
-__[i](p_pièce_de)__                     pièces? (de (?:théâtre|monnaie|\d+ (?:euros?|centimes?|cents?|livres? sterling|shillings?))) @@$ <<- ~1>> *
-__[i](p_pomme_de)__                     pommes? (de (?:discorde|terre|reinette|pin)|d’(?:Adam|api|amour|ambre|eau|or))  @@$  <<- ~1>> *
-__[i](p_porte_de)__                     portes? (de (?:service|garage)) @@$ <<- ~1>> *
-__[i](p_poudre_aux_yeux)__              poudres? (aux yeux) @@$ <<- ~1>> *
-__[i](p_preuve_du_contraire)__          preuves? +(?:suffisantes? +|)(du contraire) @@$ <<- ~1>> *
-__[i](p_quelqu_un_d_autre)__            quelqu un (d’autre) @@$ <<- ~1>> *
-__[i](p_réglé_comme)__                  réglée?s? (comme du papier à musique) @@$  <<- ~1>> *
 __[i](p_papier_à)__
     papiers? (([àa]) (?:lettres?|musique)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -6672,9 +6748,6 @@ __[i](loc_remire_à_plat)__
     remise?s? (([àa]) plat) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_requête)__                      requêtes? (en (?:nullité|non (?:conciliation|inscription|lieu|révocation de sursis))) @@$ <<- ~1>> *
-__[i](p_roues_avant_arrière)__          roues? (avant|arrière) @@$ <<- ~1>> *
-__[i](p_roulement_à_billes)__           roulements? (à billes) @@$ <<- ~1>> *
 __[i](loc_rouge_à_lèvres)__
     rouges? (([àa]) lèvres) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -6683,11 +6756,6 @@ __[i](loc_sac_à_qqch)__
     sacs? (([àa]) (?:dos|main|langer|merde|foutre)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_sac_de_qqch)__                  sacs? (de (?:couchage|sport|voyage)) @@$ <<- ~1>> *
-__[i](p_salle)__                        salles? (à manger|d’attente|de (?:bains?|conférence)) @@$ <<- ~1>> *
-__[i](p_sain_de_corps)__                saine?s? (d(?:e corps et d|)’esprit) @@$ <<- ~1>> *
-__[i](p_sclérose_en_plaques)__          scléroses? (en plaques) @@$  <<- ~1>> *
-__[i](p_secret_défense)__ 				secrets? (défense) @@$ <<- ~1>> *
 __[i](loc_silo)__
     silos? (([àa]) (?:grains?|blé)) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -6696,13 +6764,6 @@ __[i](loc_soue_à_cochons)__
     soues? (([àa]) cochons?) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[u](p_système)__                      systèmes? (d’exploitation|D) @@$ <<- ~1>> *
-__[i](p_taille)__                       taille (\d+) @@$ <<- ~1>> *
-__[i](p_talons_aiguilles)__             talons? (aiguilles?) @@$ <<- ~1>> *
-__[i](p_taux_de_qqch)__                 taux (d’(?:abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure)|de (?:change|cholest[ée]rol|glycémie|fécondité|participation|testostérone|TVA)) @@$ <<- ~1>> *
-__[i](p_tête_de_déterré)__              têtes? (de déterrée?s?) @@$ <<- ~1>> *
-__[i](p_tout_un_chacun)__               (tout un) chacun @@0 <<- ~1>> *
-__[i](p_tour_de_passe_passe)__          tours? (de passe-passe) @@$ <<- ~1>> *
 __[i](p_trou_à_rat)__
     trous? (([àa]) rats?) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -6715,7 +6776,6 @@ __[i](loc_vache_à_lait)__
     vaches? (([àa]) lait) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
     <<- ~1>> *
-__[i](p_vecteur)__                      vecteurs? (accélérations?|positions?|rotations?|vitesses?) @@$ <<- ~1>> *
 __[i](loc_vente_à_domicile)__
     ventes? (([àa]) domicile) @@$,w
     <<- \2 == "a" -2>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
