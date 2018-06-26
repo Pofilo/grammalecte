@@ -903,7 +903,7 @@ class TokenSentence:
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
                     self.lToken[i]["bToRemove"] = True
-        elif sWhat == "=":
+        elif sWhat == "␣":
             # merge tokens
             self.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
         elif sWhat == "!":
