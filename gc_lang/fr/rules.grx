@@ -6365,7 +6365,7 @@ __purge_locutions__
         <<- ~>> *
 
 
-__simplifications_partielles__
+__gestion_mots_grammaticaux__
     à [bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|partir|portée|proximité|propos|rebours] [de|des|du]
         <<- ~2>> *
 
@@ -6422,6 +6422,9 @@ __simplifications_partielles__
     compte tenu [de|des|du]
         <<- ~1:2>> avec
 
+    du moins
+        <<- ~>> _
+
     en cours ~¬^(?:de|d’)$
         <<- ~1:2>> *
 
@@ -6459,6 +6462,10 @@ __simplifications_partielles__
     le long [de|des|du]
         <<- ~2>> _
 
+    le pour et le contre
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:m:p"])
+
     ou bien
         <<- ~2>> *
 
@@ -6489,9 +6496,24 @@ __simplifications_partielles__
         <<- not morph(<1, ":R") ~1>> *
         <<- ~3>> *
 
+    une fois
+        <<- ~>> _
+
     [vent debout] contre
         <<- ~1:2>> *
 
+    je      [t’|vous]   en  [prie|supplie]
+    nous    [t’|vous]   en  [prions|supplions]
+        <<- ~>> *
+
+
+# Déterminant + nombre
+__p_dét_plur_nombre_nom__
+    [les|des|mes|tes|ses|nos|vos|leurs]  ~\d+  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
+        <<- ~2>> *
+
+    [les|des|mes|tes|ses|nos|vos|leurs]  ~\d+  ou  ~\d+  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
+        <<- ~2:4>> *
 
 
 @@@@
@@ -6499,26 +6521,8 @@ __simplifications_partielles__
 @@@@
 
 
-
-# je / tu / il / elles / nous / vous / ils / elles
-__[i](p_je_vous_en_prie)__      je (?:t’en|vous en) (?:prie|supplie) <<- ~>> *
-__[i](p_nous_vous_en_prions)__  nous (?:t’en|vous en) (?:prions|supplions) <<- ~>> *
-
 # mot-là
 __[i](p_qqch_tiret_là)__        ({w1})(-là) @@0,$ <<- morphex(\1, ":[NAQ]", ":G") ~2>> *
-
-
-# Déterminant + nombre
-__[i](p_dét_plur_nombre_nom)__
-    (?:[dmts]es|nos|vos|le(?:ur|)s) (\d+(?: ou \d+|)) ({w_2})  @@w,$
-    <<- morphex(\2, ":[NA].*:[pi]", ":(?:V0|3p)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)")
-    ~1>> *
-
-
-__[i](p_du_moins)__             du moins <<- ~>> _
-
-__[i](p_le_pour_et_le_contre)__ le pour et le contre <<- ~>> =\0.replace(" ", "_")
-__[i](p_une_fois)__             une fois <<- ~>> _
 
 
 ## Simplifications des substantifs
@@ -12413,7 +12417,7 @@ TEST: Prenez les 5 ou 6 revues
 
 __[i]/imp(imp_union_le_la_leur)__
     (?<!’)({w_2}) (l(?:e(?:ur|)|a))(?! plus| moins| mieux| peu| plupart| trop| très| une?)  @@0,$
-    <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:N|A|Q|Y|MP|H|T)", True) and morph(word(-1), ":Cc", False, True)
+    <<- morphex(\1, ":E", ":[GM]") and morphex(word(1), ":", ":(?:N|A|Q|Y|MP|H|T)|>pour/", True) and morph(word(-1), ":Cc", False, True)
     ->> \1-\2
     # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
