@@ -119,8 +119,27 @@ class DARG:
             else:
                 print("Error. Double node… same id: ", sHashId)
                 print(str(oNode.getNodeAsDict()))
+        dGraph = self._rewriteKeysOfDARG(dGraph)
         return dGraph
 
+    def _rewriteKeysOfDARG (self, dGraph):
+        "keys of DARG are long numbers (hashes): this function replace these hashes with smaller numbers (to reduce storing size)"
+        # create translation dictionary
+        dKeyTrans = {}
+        for i, nKey in enumerate(dGraph):
+            dKeyTrans[nKey] = i
+        # replace keys
+        dNewGraph = {}
+        for nKey, dVal in dGraph.items():
+            dNewGraph[dKeyTrans[nKey]] = dVal
+        for nKey, dVal in dGraph.items():
+            for sArc, val in dVal.items():
+                if type(val) is int:
+                    dVal[sArc] = dKeyTrans[val]
+                else:
+                    for sArc, nKey in val.items():
+                        val[sArc] = dKeyTrans[nKey]
+        return dNewGraph
 
 
 class Node:
