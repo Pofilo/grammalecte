@@ -4241,7 +4241,7 @@ TEST: la {{plu-part}}
 
 
 # par-dessus / pardessus
-__[i]/conf(conf_par_dessus)__
+__conf_par_dessus__
     pardessus  [bord|@:D]
         <<- /conf/ not morph(<1, ":D.*:[me]|>(?:grande|petite)/")
         -1>> par-dessus                                                     # Confusion probable. Un pardessus est un vêtement. Pour la préposition, écrivez “par-dessus”.
@@ -4271,15 +4271,19 @@ __conf_pré_près_prêt__
     près à @:Y|>(?:tout|les?|la)/
         <<- /conf/ not before(r"(?i)\b(?:peu|de|au plus) $") -1>> prêt|p    # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    prêts [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
+    [prêt|prêts] [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
         <<- /conf/ not before(r"(?i)\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    prêts [de|d’] [le|la|l’|les|me|m’|te|t’|se|s’|ne|n’|en|y|@:Y]
+    [prêt|prêts] [de|d’] la [lui|leur|@:Y]
+        <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+
+    [prêt|prêts] [de|d’] [le|l’|les|me|m’|te|t’|se|s’|ne|n’|en|y|@:Y]
         <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
 TEST: depuis {{prêt}} de 15 ans
 TEST: ils se sont approchés très {{prêts}}.
 TEST: Je suis si {{prêt}} d’y arriver.
+TEST: Elle est si {{prêt}} de la trouver.
 TEST: Il est {{près}} à les aider
 TEST: Elle va regarder ça de plus {{prêt}}.
 TEST: Il a obtenu un prêt de Patrick
