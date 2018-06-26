@@ -4723,7 +4723,7 @@ TEST: Ne presque jamais réussir un plat aussi simple, c’est de l’incompéte
 __p_notre_père_qui_es_au_cieux__
     notre père qui [es|est] aux cieux
         <<- ~4>> !
-        <<- ~3:0>> _
+        <<- ~3:0>> *
 
 
 !!
@@ -5382,20 +5382,6 @@ __purge_prépositions_qqn__
         <<- ~1:3>> *
 
 TODO: comme
-
-
-__simplifications_partielles__
-    comme tant d’ autres  @:R
-        <<- ~1:4>> *
-
-    en cours @¬>de
-        <<- ~1:2>> *
-
-    et  /  ou
-        <<- ~2:3>> *
-
-    personne  d’ autre [que|qu’|qu]  [moi|toi|lui|elle|elles|nous|vous|eux]
-        <<- ~2:0>> *
 
 
 __purge_locutions_latines__
@@ -6123,6 +6109,7 @@ __purge_locutions__
     loin [de|d’] tout [ça|cela|ceci]
     loin d’ [être|ici]
     loin s’ en [faut|fallait]
+    [bien|si|assez] longtemps
     maintes fois
     malgré [ça|cela|ceci|tout]
     manu militari
@@ -6214,14 +6201,17 @@ __purge_locutions__
     pile poil
     plein [nord|sud|ouest]
     plein de fois
+    plus [près|loin|tôt|tard]
+    plus [près|loin|tôt|tard] que [prévu|nécessaire]
     plus bas que terre
-    plus d’ une fois
     plus du tout
+    plus d’ une fois
+    plus d’une fois
     plus jamais
+    plus ou moins
     plus que [nécessaire|prévu|jamais]
     plus que tout au monde
     plus que toute autre chose
-    plus [tôt|tard] que [prévu|nécessaire]
     plusieurs fois
     plusieurs fois de suite
     pour ainsi dire
@@ -6375,23 +6365,139 @@ __purge_locutions__
         <<- ~>> *
 
 
+__simplifications_partielles__
+    à [bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|partir|portée|proximité|propos|rebours] [de|des|du]
+        <<- ~2>> *
+
+    à bonne distance [de|des|du]
+    à l’ [affût|affut|arrière|autre bout|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche] [de|des|du]
+    à la [hauteur|portée|suite] [de|des|du]
+        <<- ~2:3>> *
+
+    à l’ autre bout [de|des|du]
+        <<- ~2:4>> *
+
+    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures] [de|des|du]
+        <<- ~2:3>> *
+
+    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres] [de|des|du]
+        <<- ~2:5>> *
+
+    à [base|force|raison] [de|d’]
+        <<- ~2>> *
+
+    à grand renfort     [de|d’]
+    à grands coups      [de|d’]
+        <<- ~2:3>> *
+
+    au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu] [de|des|du]
+        <<- ~2>> *
+
+    au beau milieu      [de|des|du]
+    au fin fond         [de|des|du]
+    au grand dam        [de|des|du]
+    au plus profond     [de|des|du]
+        <<- ~2:3>> *
+
+    au fur et à mesure  [de|des|du]
+    au vu et au su      [de|des|du]
+        <<- ~2:5>> *
+
+    au nez et à la barbe [de|des|du]
+        <<- ~2:6>> *
+
+    aux [abords|dépens] [de|des|du]
+        <<- ~2>> _
+
+    [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles]
+    [chacun|chacune]            d’ entre [nous|vous|eux|elles]
+        <<- ~2:0>> *
+
+    ceux et [celle|celles] qui
+        <<- ~2:3>> *
+
+    comme tant d’ autres  @:R
+        <<- ~1:4>> *
+
+    compte tenu [de|des|du]
+        <<- ~1:2>> avec
+
+    en cours ~¬^(?:de|d’)$
+        <<- ~1:2>> *
+
+    de [mes|tes|ses|nos|vos|leurs] yeux [vu|vue|vus|vues]
+        <<- ~1:3>> *
+
+    en lieu et place [de|des|du]
+        <<- ~2:4>> *
+
+    en l’ [absence|honneur] [de|des|du]
+    en plein milieu [de|des|du]
+        <<- ~2:3>> *
+
+    en [arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|présence|raison|sus|termes|vertu] [de|des|du]
+        <<- ~2>> *
+
+    en flagrant délit [de|d’]
+        <<- ~2:3>> *
+
+    en matière [de|d’]
+        <<- ~2>> *
+
+    en proie à
+        <<- ~1:2>> *
+
+    eu égard [à|au|aux]
+        <<- ~1:2>> *
+
+    et  /  ou
+        <<- ~2:3>> *
+
+    la une [de|des|du]
+        <<- ~2>> _
+
+    le long [de|des|du]
+        <<- ~2>> _
+
+    ou bien
+        <<- ~2>> *
+
+    par le biais [de|des|du]
+    par l’ entremise [de|des|du]
+        <<- ~2:3>> *
+
+    personne  d’ autre [que|qu’|qu]  [moi|toi|lui|elle|elles|nous|vous|eux]
+        <<- ~2:0>> *
+
+    pour ou contre
+        <<- ~2:0>> *
+
+    qui ce      [jour-là|matin-là|après-midi-là|soir-là]
+    qui cette   [nuit-là|matinée-là|soirée-là]
+        <<- ~2:0>> *
+
+    plus avant ~¬(?:de|d’|que|qu’|qu)
+        <<- ~1:2>> *
+
+    rien comparé à
+        <<- ~2>> *
+
+    suite [à|au|aux]
+        <<- not morph(<1, ">(?:une|la|cette|[mts]a|[nv]otre|de|quelque)/") ~1>> *
+
+    tout au long [de|des|du]
+        <<- not morph(<1, ":R") ~1>> *
+        <<- ~3>> *
+
+    [vent debout] contre
+        <<- ~1:2>> *
+
+
+
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
-
-__[i](p_plus_avant)__           plus avant(?! de | que?) <<- ~>> *
-
-
-__[i](p_qui_loc_tps)__          qui (ce (?:jour|matin|après-midi|soir)-là|cette (?:nuit|matinée|soirée)-là) @@4 <<- ~1>> *
-
-
-
-
-
-TEST: ils vont et viennent, toujours {{cotes a cotes}}…
-TEST: Nous irons {{tours à tours}} chercher du bois.
-TEST: Ma thèse en 180 secondes.
 
 
 # je / tu / il / elles / nous / vous / ils / elles
@@ -6401,32 +6507,6 @@ __[i](p_nous_vous_en_prions)__  nous (?:t’en|vous en) (?:prions|supplions) <<-
 # mot-là
 __[i](p_qqch_tiret_là)__        ({w1})(-là) @@0,$ <<- morphex(\1, ":[NAQ]", ":G") ~2>> *
 
-# Après
-__[i](p_adv_longtemps)__        (?:bien|si|assez) longtemps <<- ~>> *
-__[i](p_plus_loc_adv)__         plus (?:près|loin|tôt|tard|ou moins|que (?:nécessaire|jamais)|d’une fois) <<- ~>> *
-
-## Simplification partielle
-__[i](p_ceux_d_entre_pronom)__  ce(?:lui|lles?|ux) (d’entre (?:[nv]ous|eux|elles)) @@$ <<- ~1>> *
-__[i](p_chacun_d_entre_nous)__  chacune? (d’entre (?:[nv]ous|eux|elles)) @@$ <<- ~1>> *
-__[i](p_tout_au_long_de)__      (tout au long) d(?:es?|u) @@0 <<- not morph(word(-1), ":R", False, False) ~1>> au
-__[i](p_à_loc_de1)__            à (bonne distance|bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|l’(?:aff[ûu]t|arrière|autre bout|aune|avant|écart|égard|extérieur|encontre|ins(?:u|tar)|intérieur|opposé|orée|approche)|la (?:hauteur|portée|suite)|partir|portée|pro(?:ximité|pos)|quelques (?:mètres|kilomètres|lieues|pas|centaines de mètres|minutes|heures)|rebours) d(?:es?|u) @@2 <<- ~1>> *
-__[i](p_à_loc_de2)__            à (base|force|grand(?: renfort|s coups)|raison) de? @@2 <<- ~1>> *
-__[i](p_au_loc_de)__            au (bout|beau milieu|courant|cours|détriment|fin fond|grand dam|fur et à mesure|gré|l(?:ieu|ong|arge)|milieu|nez et à la barbe|plus profond|profit|s(?:ein|ortir|ujet)|vu(?: et au su|)) d(?:es?|u) @@3 <<- ~1>> *
-__[i](p_aux_loc_de)__           aux (abords|dépens) d(?:es?|u) @@4 <<- ~1>> *
-__[i](p_ceux_et_celles_qui)__   ceux (et celles?) +qui @@5 <<- ~1>> *
-__[i](p_compte_tenu_de)__       (compte tenu) d(?:es?|u) @@0 <<- ~1>> avec
-__[i](p_de_mes_yeux_vu)__       (de (?:[mts]es|[nv]os|leurs) yeux) vue?s? @@0 <<-  ~1>> *
-__[i](p_en_loc_de1)__           en (arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|l’(?:absence|honneur)|lieu et place|plein milieu|présence|raison|sus|termes|vertu) d(?:es?|u) @@3 <<- ~1>> *
-__[i](p_en_loc_de2)__           en (flagrant délit|matière) de? @@3 <<- ~1>> *
-__[i](p_en_proie_à)__           (en proie) à @@0 <<- ~1>> *
-__[i](p_eu_égard_à)__           (eu égard) (?:à|aux?) @@0 <<- ~1>> *
-__[i](p_la_une_de)__            la (une) d(?:es?|u) @@3 <<- ~1>> _
-__[i](p_le_long_de)__           le (long) d(?:es?|u) @@3 <<- ~1>> _
-__[i](p_par_le_biais_de)__      par (le biais|l’entremise) d(?:es?|u) @@4 <<- ~1>> *
-__[i](p_pour_ou_contre)__       pour (ou contre) @@5 <<- ~1>> *
-__[i](p_rien_comparé_à)__       rien +(comparé) +à @@w <<- ~1>> *
-__[i](p_suite_à)__              (suite) (?:à|aux?) @@0 <<- not before(r"(?i)\b(?:une|la|cette|[mts]a|[nv]otre|de) +") ~1>> *
-__[i](p_vent_debout_contre)__   (vent debout) contre @@0 <<- ~1>> *
 
 # Déterminant + nombre
 __[i](p_dét_plur_nombre_nom)__
@@ -6436,9 +6516,8 @@ __[i](p_dét_plur_nombre_nom)__
 
 
 __[i](p_du_moins)__             du moins <<- ~>> _
-__[i](p_don_Juan)__             (don) Juan @@0 <<- ~1>> *
+
 __[i](p_le_pour_et_le_contre)__ le pour et le contre <<- ~>> =\0.replace(" ", "_")
-__[i](p_ou_bien)__              ou (bien) @@3 <<- ~1>> *
 __[i](p_une_fois)__             une fois <<- ~>> _
 
 
@@ -6504,6 +6583,7 @@ __[i](p_demande_d_asile)__              demandes? (d’asile) @@$ <<- ~1>> *
 __[i](p_descente_aux)__                 descentes? (aux (?:enfers|flambeaux)) @@$ <<- ~1>> *
 __[i](p_diner_aux_chandelles)__         d[îi]ners? (aux chandelles) @@$ <<- ~1>> *
 __[i](p_digne_de)__                     dignes? (de (?:confiance|foi|ce nom)) @@$ <<- ~1>> *
+__[i](p_don_Juan)__                     (don) Juan @@0 <<- ~1>> *
 __[i](p_droit)__                        (droit) (?:au but|dans les yeux) @@0 <<- ~1>> *
 __[i](p_droit_comme_un_i)__             droite?s? (comme un i) @@$ <<- ~1>> *
 __[i](p_eau_de)__                       eaux? (de (?:bouleau|bleuet|chaux|coco|javel|jouvence|mer|noix de coco|parfum|pluie|seltz|source|vie)) @@$ <<- ~1>> *
@@ -6682,6 +6762,9 @@ TEST: le vol {{a}} l’étalage est un fléau.
 TEST: Il nous faut une {{voix}} de recours.
 TEST: c’est une putain d’usine {{a}} gaz.
 TEST: ce produit est notre vache {{a}} lait
+TEST: ils vont et viennent, toujours {{cotes a cotes}}…
+TEST: Nous irons {{tours à tours}} chercher du bois.
+TEST: Ma thèse en 180 secondes.
 TEST: un champ de canne à sucre
 TEST: La batterie se recharge automatiquement grâce au moteur essence.
 TEST: c’est un moteur diésel.
