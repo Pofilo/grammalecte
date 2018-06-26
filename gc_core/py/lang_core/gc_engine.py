@@ -903,7 +903,7 @@ class TokenSentence:
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
                     self.lToken[i]["bToRemove"] = True
-        elif sWhat == "_":
+        elif sWhat == "=":
             # merge tokens
             self.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
         elif sWhat == "!":
@@ -913,6 +913,13 @@ class TokenSentence:
             else:
                 for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
                     self.lToken[i]["bImmune"] = True
+        elif sWhat == "_":
+            # neutralized token
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                self.lToken[nTokenRewriteStart]["sNewValue"] = "_"
+            else:
+                for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
+                    self.lToken[i]["sNewValue"] = "_"
         else:
             if sWhat.startswith("="):
                 sWhat = globals()[sWhat[1:]](self.lToken)
