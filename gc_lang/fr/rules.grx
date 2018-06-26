@@ -4212,46 +4212,6 @@ TEST: tu ne {{peu}} en savoir plus
 TEST: {{peut}} {{embarrassés}} par leurs déboires, ils poursuivirent comme si de rien n’était.
 
 
-# la plupart
-__[i]/conf(conf_la_plupart)__   la (plu[st][ -]part) @@3 <<- -1>> plupart                           # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
-
-TEST: la {{plus part}}
-
-
-# par-dessus / pardessus
-__[i]/conf(conf_par_dessus)__
-    (pardessus) +({w1})  @@0,$
-    <<- morph(\2, ":D|>bord/", False) and not morph(word(-1), ":D.*:[me]|>(?:grande|petite)/", False, False)
-    -1>> par-dessus                                                                                 # Confusion probable. Un pardessus est un vêtement. Pour la préposition, écrivez :
-
-TEST: {{Pardessus}} les montagnes.
-TEST: Il passa {{pardessus}} les collines.
-TEST: Mets ton pardessus ce matin.
-
-
-# pot aux roses / poteau rose
-__[i]/conf(conf_pot_aux_roses)__
-    poteau rose <<- ->> pot aux roses
-    # Confusion probable. On dit : « découvrir le pot aux roses ».|http://fr.wiktionary.org/wiki/d%C3%A9couvrir_le_pot_aux_roses
-
-TEST: Ils ont découvert le {{poteau rose}}.
-
-
-# prêt / près / pré
-__[i]/conf(conf_prêt_à)__
-    (près) à ({w_2})  @@0,$
-    <<- not before("(?i)(?:peu|de|au plus) $") and morph(\2, ":Y|>(?:tout|les?|la)/") -1>> prêt|prêts       # Confusion. Être près de (faire) quelque chose. Prêt à faire quelque chose.
-__[i]/conf(conf_près_de)__
-    (prêts?) d(?:e +|’)({w_1}) @@0,$
-    <<- morph(\2, ":(?:Y|M[12P])|>(?:en|y|les?)/", False) -1>> près                                 # Confusion. Être près de (faire) quelque chose. Prêt à faire quelque chose.
-__[i]/conf(conf_près)__         de(?: plus|puis) (prêts?)  @@$ <<- -1>> près                        # Confusion. Être prêt(e) à faire quelque chose. Être près de quelque chose.
-__[i]/conf(conf_très_près)__    très (pr(?:êt|é)s?) @@$ <<- -1>> près                               # Confusion probable. Pour évoquer la proximité, utilisez :
-
-TEST: ils se sont approchés très {{prêts}}.
-TEST: Je suis si {{prêt}} d’y arriver.
-TEST: Il est {{près}} à les aider
-TEST: Elle va regarder ça de plus {{prêt}}.
-
 
 
 @@@@
@@ -4263,6 +4223,68 @@ TEST: Elle va regarder ça de plus {{prêt}}.
 @@@@
 @@@@
 @@@@
+
+# la plupart
+__conf_la_plupart__
+    la [plus|plue|plues|plut|plût|plu] [part|parts|par|pare|pares]
+        <<- -2:3>> plupart                                                  # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
+
+    la [plus-part|plus-parts|plus-par|plus-pare|plus-pares]
+    la [plues-part|plues-parts|plues-par|plues-pare|plues-pares]
+    la [plut-part|plut-parts|plut-par|plut-pare|plut-pares]
+    la [plût-part|plût-parts|plût-par|plût-pare|plût-pares]
+    la [plu-part|plu-parts|plu-par|plu-pare|plu-pares]
+        <<- -2>> plupart                                                    # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
+
+TEST: la {{plus part}}
+TEST: la {{plu-part}}
+
+
+# par-dessus / pardessus
+__[i]/conf(conf_par_dessus)__
+    pardessus  [bord|@:D]
+        <<- /conf/ not morph(<1, ":D.*:[me]|>(?:grande|petite)/")
+        -1>> par-dessus                                                     # Confusion probable. Un pardessus est un vêtement. Pour la préposition, écrivez “par-dessus”.
+
+TEST: {{Pardessus}} les montagnes.
+TEST: Il passa {{pardessus}} les collines.
+TEST: Mets ton pardessus ce matin.
+
+
+# pot aux roses / poteau rose
+__conf_pot_aux_roses__
+    poteau rose
+        <<- /conf/ ->> pot aux roses                                        # Confusion probable. On dit : « découvrir le pot aux roses ».|http://fr.wiktionary.org/wiki/d%C3%A9couvrir_le_pot_aux_roses
+
+TEST: Ils ont découvert le {{poteau rose}}.
+
+
+# prêt / près / pré
+__conf_pré_près_prêt__
+    de plus ([prêt|prêts|pré|prés])
+    depuis ([prêt|prêts|pré|prés])
+        <<- /conf/ -1>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
+
+    très [prêt|prêts|pré|prés]
+        <<- /conf/ -2>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
+
+    près à @:Y|>(?:tout|les?|la)/
+        <<- /conf/ not before(r"(?i)\b(?:peu|de|au plus) $") -1>> prêt|p    # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+
+    prêts [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
+        <<- /conf/ not before(r"(?i)\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+
+    prêts [de|d’] [le|la|l’|les|me|m’|te|t’|se|s’|ne|n’|en|y|@:Y]
+        <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+
+TEST: depuis {{prêt}} de 15 ans
+TEST: ils se sont approchés très {{prêts}}.
+TEST: Je suis si {{prêt}} d’y arriver.
+TEST: Il est {{près}} à les aider
+TEST: Elle va regarder ça de plus {{prêt}}.
+TEST: Il a obtenu un prêt de Patrick
+TEST: Il a obtenu un prêt de Le Drian
+
 
 # quand / quant / qu’en
 __conf_quand_quant_qu_en__
@@ -4301,6 +4323,7 @@ TEST: il comprit trop tard qu’en elle naquit alors le doute qui l’éloigna d
 TEST: Quand à mon tour je réalise l’imposture, c’est trop tard.
 
 
+# quand bien même
 __conf_quand_bien_même__
     tant bien même
         <<- /conf/ ->> quand bien même      # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
@@ -4314,6 +4337,7 @@ TEST: Il partirait en guerre quand bien même devrait-il être tout seul.
 TEST: Elle veut savoir combien même si ça ne lui est d’aucune utilité immédiate.
 
 
+# quelle / qu’elle
 __conf_qu_elle_quelle__
     [que|qu’|qu]  elle   @:[NAQ]¬:(?:G|[123][sp]|W|Oo|X)|>seule?/
         <<- /conf/ -1:2>> quelle                                                                    # Confusion probable. Ex : Quelle femme ! Je crois qu’elle réussira.
@@ -4367,6 +4391,7 @@ TEST: Elle cache qu’elle a été en prison.
 TEST: Elle avait été accueillie avec joie.
 
 
+# ne pas être sans savoir
 __ne_pas_être_sans_savoir__
     >être [pas|plus|jamais|guère] sans >ignorer
         <<- /conf/ -4>> savoir          # Confusion : vous écrivez l’inverse de ce que vous voulez dire.|http://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
@@ -4378,6 +4403,7 @@ TEST: Vous n’êtes pas sans {{ignorer}} que…
 TEST: ne pas être sans {{ignorer}} la cause de ces phénomènes.
 
 
+# s’en / sens / cens / cent / sans / sang
 __conf_s_en_sens_sans_cent_cens__
     [<start>|,]  [il|ils|on]    [c’|ç’]  en                     @:V
     [<start>|,]  [elle|elles]   [c’|ç’]  en                     @:V¬:V0e
@@ -4400,6 +4426,7 @@ TEST: elles sans grandes convictions
 TEST: elle c’en était trop (TODO : proposer une virgule)
 
 
+# son / sont
 __conf_son_sont__
     [ne|me|te|se] son
         <<- /conf/ -2>> sont    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
@@ -4437,6 +4464,7 @@ TEST: sont loin, ces gens…
 TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
 
 
+# statue / statut / statu
 __conf_statu_statue_statut__
     [statut|statue|status] quo
         <<- /conf/ ->> statu quo                # Confusion. Écrivez “statu quo”.|https://fr.wiktionary.org/wiki/statu_quo
@@ -4448,6 +4476,7 @@ TEST: Ça n’en finit pas, c’est le {{statut quo}}.
 TEST: Quelle splendide {{statu}}.
 
 
+# sur / sûr
 __conf_sûr_sur__
     sur [que|qu’|qu]
     sur [de|d’] {pronom_obj}
@@ -4479,6 +4508,7 @@ TEST: ils sont en lieu {{sur}} et introuvables.
 TEST: il s’étendit sur de la mousse à mémoire de forme
 
 
+# temps / tant / tan
 __conf_tant_temps_tan_1__
     en [tant] [de|d’] [guerre|paix|crise|doute|pluie]
         <<- /conf/ -2>> temps                               # Confusion. Écrivez « en temps de » si vous évoquez une période de temps.
@@ -4511,6 +4541,7 @@ TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranée
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
 
+# voix / voie / vois / voit
 __conf_voie_voix_vois_voit__
     à haute [voie|vois|voit]
     de vive [voie|vois|voit]
@@ -4540,6 +4571,7 @@ TEST: Je propse que, par {{voix}} de conséquence, nous partions immédiatement.
 TEST: C’est une {{voix}} interdite.
 
 
+# voir / voire
 __conf_voir_voire__
     voir [grand|petit|rouge]
         <<- ~2>> !
