@@ -264,48 +264,6 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         return None
 
 
-def checkRegexes (dAllGraph):
-    "check validity of regexes"
-    print("  checking regexes...")
-    aRegex = set()
-    for sGraphName, dGraph in dAllGraph.items():
-        for nKey, dVal in dGraph.items():
-            if "<re_value>" in dVal:
-                for sRegex in dVal["<re_value>"]:
-                    if sRegex not in aRegex:
-                        _checkRegex(sRegex)
-                        aRegex.add(sRegex)
-            if "<re_morph>" in dVal:
-                for sRegex in dVal["<re_morph>"]:
-                    if sRegex not in aRegex:
-                        _checkRegex(sRegex)
-                        aRegex.add(sRegex)
-    aRegex.clear()
-
-def _checkRegex (sRegex):
-    #print(sRegex)
-    if "¬" in sRegex:
-        sPattern, sNegPattern = sRegex.split("¬")
-        try:
-            if not sNegPattern:
-                print("# Warning! Empty negpattern:", sRegex)
-            re.compile(sPattern)
-            re.compile(sNegPattern)
-        except:
-            print("# Error. Wrong regex:", sRegex)
-            traceback.print_exc()
-            exit()
-    else:
-        try:
-            if not sRegex:
-                print("# Warning! Empty pattern:", sRegex)
-            re.compile(sRegex)
-        except:
-            print("# Error. Wrong regex:", sRegex)
-            traceback.print_exc()
-            exit()
-
-
 def make (lRule, dDef, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here

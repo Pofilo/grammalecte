@@ -120,6 +120,7 @@ class DARG:
                 print("Error. Double node… same id: ", sHashId)
                 print(str(oNode.getNodeAsDict()))
         dGraph = self._rewriteKeysOfDARG(dGraph)
+        self._checkRegexes(dGraph)
         return dGraph
 
     def _rewriteKeysOfDARG (self, dGraph):
@@ -140,6 +141,45 @@ class DARG:
                     for sArc, nKey in val.items():
                         val[sArc] = dKeyTrans[nKey]
         return dNewGraph
+
+    def _checkRegexes (dGraph):
+        "check validity of regexes"
+        aRegex = set()
+        for nKey, dVal in dGraph.items():
+            if "<re_value>" in dVal:
+                for sRegex in dVal["<re_value>"]:
+                    if sRegex not in aRegex:
+                        _checkRegex(sRegex)
+                        aRegex.add(sRegex)
+            if "<re_morph>" in dVal:
+                for sRegex in dVal["<re_morph>"]:
+                    if sRegex not in aRegex:
+                        _checkRegex(sRegex)
+                        aRegex.add(sRegex)
+        aRegex.clear()
+
+    def _checkRegex (sRegex):
+        #print(sRegex)
+        if "¬" in sRegex:
+            sPattern, sNegPattern = sRegex.split("¬")
+            try:
+                if not sNegPattern:
+                    print("# Warning! Empty negpattern:", sRegex)
+                re.compile(sPattern)
+                re.compile(sNegPattern)
+            except:
+                print("# Error. Wrong regex:", sRegex)
+                traceback.print_exc()
+                exit()
+        else:
+            try:
+                if not sRegex:
+                    print("# Warning! Empty pattern:", sRegex)
+                re.compile(sRegex)
+            except:
+                print("# Error. Wrong regex:", sRegex)
+                traceback.print_exc()
+                exit()
 
 
 class Node:
