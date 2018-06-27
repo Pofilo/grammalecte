@@ -52,8 +52,6 @@ _oSpellChecker = None
 _oTokenizer = None
 _aIgnoredRules = set()
 
-# functions
-_createRegexError = None
 
 
 #### Initialization
@@ -64,14 +62,12 @@ def load (sContext="Python"):
     global _sAppContext
     global _dOptions
     global _oTokenizer
-    global _createRegexError
     try:
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
         _oTokenizer = _oSpellChecker.getTokenizer()
         _oSpellChecker.activateStorage()
-        _createRegexError = _createRegexWriterError  if _bWriterError  else _createRegexDictError
     except:
         traceback.print_exc()
 
@@ -186,7 +182,7 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                                         # grammar error
                                         nErrorStart = nOffset + m.start(eAct[0])
                                         if nErrorStart not in dErrs or nPriority > dPriority.get(nErrorStart, -1):
-                                            dErrs[nErrorStart] = _createRegexError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
+                                            dErrs[nErrorStart] = _createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
                                             dPriority[nErrorStart] = nPriority
                                     elif cActionType == "~":
                                         # text processor
@@ -215,85 +211,65 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
     return (False, dErrs)
 
 
-def _createRegexWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
-    "error for Writer (LO/OO)"
-    xErr = SingleProofreadingError()
-    #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
-    xErr.nErrorStart = nOffset + m.start(iGroup)
-    xErr.nErrorLength = m.end(iGroup) - m.start(iGroup)
-    xErr.nErrorType = PROOFREADING
-    xErr.aRuleIdentifier = sRuleId
+def _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
+    nStart = nOffset + m.start(iGroup)
+    nEnd = nOffset + m.end(iGroup)
     # suggestions
     if sRepl[0:1] == "=":
         sugg = globals()[sRepl[1:]](s, m)
         if sugg:
             if bUppercase and m.group(iGroup)[0:1].isupper():
-                xErr.aSuggestions = tuple(map(str.capitalize, sugg.split("|")))
+                lSugg = list(map(str.capitalize, sugg.split("|")))
             else:
-                xErr.aSuggestions = tuple(sugg.split("|"))
+                lSugg = sugg.split("|")
         else:
-            xErr.aSuggestions = ()
+            lSugg = []
     elif sRepl == "_":
-        xErr.aSuggestions = ()
+        lSugg = []
     else:
         if bUppercase and m.group(iGroup)[0:1].isupper():
-            xErr.aSuggestions = tuple(map(str.capitalize, m.expand(sRepl).split("|")))
+            lSugg = list(map(str.capitalize, m.expand(sRepl).split("|")))
         else:
-            xErr.aSuggestions = tuple(m.expand(sRepl).split("|"))
+            lSugg = m.expand(sRepl).split("|")
     # Message
     sMessage = globals()[sMsg[1:]](s, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
-    xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
-    xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
     if bShowRuleId:
-        xErr.aShortComment += "  # " + sLineId + " # " + sRuleId
-    # URL
-    if sURL:
-        xProperty = PropertyValue()
-        xProperty.Name = "FullCommentURL"
-        xProperty.Value = sURL
-        xErr.aProperties = (xProperty,)
-    else:
-        xErr.aProperties = ()
-    return xErr
-
-
-def _createRegexDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
-    "error as a dictionary"
-    dErr = {}
-    dErr["nStart"] = nOffset + m.start(iGroup)
-    dErr["nEnd"] = nOffset + m.end(iGroup)
-    dErr["sLineId"] = sLineId
-    dErr["sRuleId"] = sRuleId
-    dErr["sType"] = sOption  if sOption  else "notype"
-    # suggestions
-    if sRepl[0:1] == "=":
-        sugg = globals()[sRepl[1:]](s, m)
-        if sugg:
-            if bUppercase and m.group(iGroup)[0:1].isupper():
-                dErr["aSuggestions"] = list(map(str.capitalize, sugg.split("|")))
-            else:
-                dErr["aSuggestions"] = sugg.split("|")
+        sMessage += "  # " + sLineId + " # " + sRuleId
+    #
+    if _bWriterError:
+        xErr = SingleProofreadingError()    # uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
+        xErr.nErrorStart = nStart
+        xErr.nErrorLength = nEnd - nStart
+        xErr.nErrorType = PROOFREADING
+        xErr.aRuleIdentifier = sRuleId
+        xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
+        xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
+        if bShowRuleId:
+            xErr.aShortComment += "  " + sLineId + " # " + sRuleId
+        xErr.aSuggestions = tuple(lSugg)
+        if sURL:
+            xProperty = PropertyValue()
+            xProperty.Name = "FullCommentURL"
+            xProperty.Value = sURL
+            xErr.aProperties = (xProperty,)
         else:
-            dErr["aSuggestions"] = []
-    elif sRepl == "_":
-        dErr["aSuggestions"] = []
+            xErr.aProperties = ()
+        return xErr
     else:
-        if bUppercase and m.group(iGroup)[0:1].isupper():
-            dErr["aSuggestions"] = list(map(str.capitalize, m.expand(sRepl).split("|")))
-        else:
-            dErr["aSuggestions"] = m.expand(sRepl).split("|")
-    # Message
-    dErr["sMessage"] = globals()[sMsg[1:]](s, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
-    if bShowRuleId:
-        dErr["sMessage"] += "  # " + sLineId + " # " + sRuleId
-    # URL
-    dErr["URL"] = sURL  if sURL  else ""
-    # Context
-    if bContext:
-        dErr['sUnderlined'] = sx[m.start(iGroup):m.end(iGroup)]
-        dErr['sBefore'] = sx[max(0,m.start(iGroup)-80):m.start(iGroup)]
-        dErr['sAfter'] = sx[m.end(iGroup):m.end(iGroup)+80]
-    return dErr
+        dErr = {}
+        dErr["nStart"] = nStart
+        dErr["nEnd"] = nEnd
+        dErr["sLineId"] = sLineId
+        dErr["sRuleId"] = sRuleId
+        dErr["sType"] = sOption  if sOption  else "notype"
+        dErr["sMessage"] = sMessage
+        dErr["aSuggestions"] = lSugg
+        dErr["URL"] = sURL  if sURL  else ""
+        if bContext:
+            dErr['sUnderlined'] = self.sSentence0[nStart:nEnd]
+            dErr['sBefore'] = self.sSentence0[max(0,nStart-80):nStart]
+            dErr['sAfter'] = self.sSentence0[nEnd:nEnd+80]
+        return dErr
 
 
 def _rewrite (sSentence, sRepl, iGroup, m, bUppercase):
@@ -606,7 +582,6 @@ class TokenSentence:
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken }
         self.dTags = {}
         self.dError = {}
-        self.createError = self._createWriterError  if _bWriterError  else self._createDictError
 
     def update (self, sSentence):
         "update <sSentence> and retokenize"
@@ -765,7 +740,7 @@ class TokenSentence:
                                     nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
                                     nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
                                     if nErrorStart not in dError or eAct[2] > dPriority.get(nErrorStart, -1):
-                                        dError[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
+                                        dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = eAct[2]
                                         if bDebug:
                                             print("  NEW_ERROR:", dError[nErrorStart], "\n  ", dRule[sRuleId])
@@ -805,84 +780,63 @@ class TokenSentence:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
         return bChange, dError
 
-    def _createWriterError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
-        "error for Writer (LO/OO)"
-        xErr = SingleProofreadingError()
-        #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
-        xErr.nErrorStart = nStart
-        xErr.nErrorLength = nEnd - nStart
-        xErr.nErrorType = PROOFREADING
-        xErr.aRuleIdentifier = sRuleId
+    def _createError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         # suggestions
         if sSugg[0:1] == "=":
             sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset)
             if sSugg:
                 if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                    xErr.aSuggestions = tuple(map(str.capitalize, sSugg.split("|")))
+                    lSugg = list(map(str.capitalize, sSugg.split("|")))
                 else:
-                    xErr.aSuggestions = tuple(sSugg.split("|"))
+                    lSugg = sSugg.split("|")
             else:
-                xErr.aSuggestions = ()
+                lSugg = []
         elif sSugg == "_":
-            xErr.aSuggestions = ()
+            lSugg = []
         else:
             if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                xErr.aSuggestions = tuple(map(str.capitalize, self._expand(sSugg, nTokenOffset).split("|")))
+                lSugg = list(map(str.capitalize, self._expand(sSugg, nTokenOffset).split("|")))
             else:
-                xErr.aSuggestions = tuple(self._expand(sSugg, nTokenOffset).split("|"))
+                lSugg = self._expand(sSugg, nTokenOffset).split("|")
         # Message
         sMessage = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
-        xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
-        xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
         if bShowRuleId:
-            xErr.aShortComment += "  " + sLineId + " # " + sRuleId
-        # URL
-        if sURL:
-            xProperty = PropertyValue()
-            xProperty.Name = "FullCommentURL"
-            xProperty.Value = sURL
-            xErr.aProperties = (xProperty,)
-        else:
-            xErr.aProperties = ()
-        return xErr
-
-    def _createDictError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
-        "error as a dictionary"
-        dErr = {}
-        dErr["nStart"] = nStart
-        dErr["nEnd"] = nEnd
-        dErr["sLineId"] = sLineId
-        dErr["sRuleId"] = sRuleId
-        dErr["sType"] = sOption  if sOption  else "notype"
-        # suggestions
-        if sSugg[0:1] == "=":
-            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset)
-            if sSugg:
-                if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                    dErr["aSuggestions"] = list(map(str.capitalize, sSugg.split("|")))
-                else:
-                    dErr["aSuggestions"] = sSugg.split("|")
+            sMessage += "  " + sLineId + " # " + sRuleId
+        #
+        if _bWriterError:
+            xErr = SingleProofreadingError()    # uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
+            xErr.nErrorStart = nStart
+            xErr.nErrorLength = nEnd - nStart
+            xErr.nErrorType = PROOFREADING
+            xErr.aRuleIdentifier = sRuleId
+            xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
+            xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
+            if bShowRuleId:
+                xErr.aShortComment += "  " + sLineId + " # " + sRuleId
+            xErr.aSuggestions = tuple(lSugg)
+            if sURL:
+                xProperty = PropertyValue()
+                xProperty.Name = "FullCommentURL"
+                xProperty.Value = sURL
+                xErr.aProperties = (xProperty,)
             else:
-                dErr["aSuggestions"] = []
-        elif sSugg == "_":
-            dErr["aSuggestions"] = []
+                xErr.aProperties = ()
+            return xErr
         else:
-            if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                dErr["aSuggestions"] = list(map(str.capitalize, self._expand(sSugg, nTokenOffset).split("|")))
-            else:
-                dErr["aSuggestions"] = self._expand(sSugg, nTokenOffset).split("|")
-        # Message
-        dErr["sMessage"] = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
-        if bShowRuleId:
-            dErr["sMessage"] += "  " + sLineId + " # " + sRuleId
-        # URL
-        dErr["URL"] = sURL  if sURL  else ""
-        # Context
-        if bContext:
-            dErr['sUnderlined'] = self.sSentence0[dErr["nStart"]:dErr["nEnd"]]
-            dErr['sBefore'] = self.sSentence0[max(0,dErr["nStart"]-80):dErr["nStart"]]
-            dErr['sAfter'] = self.sSentence0[dErr["nEnd"]:dErr["nEnd"]+80]
-        return dErr
+            dErr = {}
+            dErr["nStart"] = nStart
+            dErr["nEnd"] = nEnd
+            dErr["sLineId"] = sLineId
+            dErr["sRuleId"] = sRuleId
+            dErr["sType"] = sOption  if sOption  else "notype"
+            dErr["sMessage"] = sMessage
+            dErr["aSuggestions"] = lSugg
+            dErr["URL"] = sURL  if sURL  else ""
+            if bContext:
+                dErr['sUnderlined'] = self.sSentence0[nStart:nEnd]
+                dErr['sBefore'] = self.sSentence0[max(0,nStart-80):nStart]
+                dErr['sAfter'] = self.sSentence0[nEnd:nEnd+80]
+            return dErr
 
     def _expand (self, sText, nTokenOffset):
         #print("*", sText)
