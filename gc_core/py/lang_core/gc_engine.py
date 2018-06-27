@@ -885,12 +885,12 @@ class TokenSentence:
             dErr['sAfter'] = self.sSentence0[dErr["nEnd"]:dErr["nEnd"]+80]
         return dErr
 
-    def _expand (self, sMsg, nTokenOffset):
-        #print("*", sMsg)
-        for m in re.finditer(r"\\([0-9]+)", sMsg):
-            sMsg = sMsg.replace(m.group(0), self.lToken[int(m.group(1))+nTokenOffset]["sValue"])
-        #print(">", sMsg)
-        return sMsg
+    def _expand (self, sText, nTokenOffset):
+        #print("*", sText)
+        for m in re.finditer(r"\\([0-9]+)", sText):
+            sText = sText.replace(m.group(0), self.lToken[int(m.group(1))+nTokenOffset]["sValue"])
+        #print(">", sText)
+        return sText
 
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, bUppercase=True, bDebug=False):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
@@ -923,6 +923,8 @@ class TokenSentence:
         else:
             if sWhat.startswith("="):
                 sWhat = globals()[sWhat[1:]](self.lToken, nTokenOffset)
+            else:
+                sWhat = self._expand(sWhat, nTokenOffset)
             bUppercase = bUppercase and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
                 # one token
