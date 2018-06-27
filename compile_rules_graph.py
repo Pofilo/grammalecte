@@ -267,14 +267,20 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
 def checkRegexes (dAllGraph):
     "check validity of regexes"
     print("  checking regexes...")
+    aRegex = set()
     for sGraphName, dGraph in dAllGraph.items():
         for nKey, dVal in dGraph.items():
             if "<re_value>" in dVal:
                 for sRegex in dVal["<re_value>"]:
-                    _checkRegex(sRegex)
+                    if sRegex not in aRegex:
+                        _checkRegex(sRegex)
+                        aRegex.add(sRegex)
             if "<re_morph>" in dVal:
                 for sRegex in dVal["<re_morph>"]:
-                    _checkRegex(sRegex)
+                    if sRegex not in aRegex:
+                        _checkRegex(sRegex)
+                        aRegex.add(sRegex)
+    aRegex.clear()
 
 def _checkRegex (sRegex):
     #print(sRegex)
