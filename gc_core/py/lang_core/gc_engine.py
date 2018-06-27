@@ -992,12 +992,17 @@ class TokenSentence:
 
 #### Analyse tokens
 
-def g_morph (dToken, sPattern, sNegPattern=""):
+def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
     if "lMorph" in dToken:
         lMorph = dToken["lMorph"]
     else:
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"])
+        if nLeft is not None:
+            lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
+            if bMemorizeMorph:
+                dToken["lMorph"] = lMorph
+        else:
+            lMorph = _oSpellChecker.getMorph(dToken["sValue"])
         if not lMorph:
             return False
     # check negative condition
@@ -1015,9 +1020,10 @@ def g_morph (dToken, sPattern, sNegPattern=""):
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
-def g_analyse (dToken, sPattern, sNegPattern=""):
+def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
-    lMorph = _oSpellChecker.getMorph(dToken["sValue"])
+    sValue = dToken["sValue"]  if nLeft is not None  else dToken["sValue"][slice(nLeft, nRight)]
+    lMorph = _oSpellChecker.getMorph(sValue)
     if not lMorph:
         return False
     # check negative condition
