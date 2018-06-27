@@ -696,11 +696,11 @@ class TokenSentence:
                         print("  MATCH: *" + sMeta)
                     yield dGraph[dNode["<meta>"]["*"]]
                 elif "¬" in sMeta:
-                    if dNode["sType"] not in sMeta:
+                    if dToken["sType"] not in sMeta:
                         if bDebug:
                             print("  MATCH: *" + sMeta)
                         yield dGraph[dNode["<meta>"][sMeta]]
-                elif dNode["sType"] in sMeta:
+                elif dToken["sType"] in sMeta:
                     if bDebug:
                         print("  MATCH: *" + sMeta)
                     yield dGraph[dNode["<meta>"][sMeta]]
