@@ -5560,6 +5560,9 @@ __purge_locutions__
     à défaut d’autre chose
     à dose homéopathique
     à durée limitée
+    à ~\d+ reprises
+    à @:B reprises
+    à [plusieurs|quelques|maintes] reprises
     à de  [nombreuses|multiples]  reprises
     à double [titre|tranchant]
     à en juger par [mon|ton|son|notre|votre|leur] expérience
@@ -5618,7 +5621,6 @@ __purge_locutions__
     à main [armée|droite|gauche|levée]
     à mains nues
     à maints égards
-    à maintes reprises
     à marche forcée
     à merveille
     à [midi|minuit]  ?pile¿
@@ -6577,6 +6579,9 @@ __gestion_mots_grammaticaux__
     et  /  ou
         <<- ~2:3>> *
 
+    [>aller|>croire|>devoir|>estimer|>imaginer|>penser] [lui|leur|nous|vous] être
+        <<- ~2>> *
+
     la une [de|des|du]
         <<- ~2>> _
 
@@ -6592,7 +6597,7 @@ __gestion_mots_grammaticaux__
 
     le pour et le contre
         <<- ~>> ␣
-        <<- =>> define(\1, [":N:m:p"])
+        <<- =>> define(\1, [":LN:m:p"])
 
     le [pressentiment|sentiment] [que|qu’|qu]
         <<- ~1>> _
@@ -6819,10 +6824,6 @@ __simplication_substantifs__
     don Juan
         <<- ~1>> *
 
-    droit au but
-    droit dans les yeux
-        <<- ~>> *
-
 
 __mot_composé_avec_là__
     ~-[lL][àÀ]$
@@ -6858,66 +6859,152 @@ __purge_des_nombres__
         <<- ~>> *
 
 
+__purge_conditionnelle__
+    au  moins  @¬:[AQ].*:[me]:[si]
+        <<- ~1:2>> *
+
+    au hasard  @:¬:[AQ].*:[me]:[si]
+        <<- ~1:2>> *
+
+    aussi @:W que [nécessaire|possible]
+        <<- ~>> *
+
+    aussi @:W que ce soit [<end>|,]
+        <<- ~1:5>> *
+
+    au sens le [plus|moins] @:A.*:[me]:[si] du terme
+    au sens @:A.*:[me]:[si] du terme
+        <<- ~>> *
+
+    <start> bien entendu
+        <<- ~>> *
+
+    bien entendu
+        <<- morph(<1, ":[NAQR]|>que?/") ~>> *
+
+    comme [moi|toi|lui|elle|nous|vous|eux|elles|ça|cela]
+    comme [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
+    comme le [mien|tien|sien|nôtre|vôtre|leur]
+    comme la [mienne|tienne|sienne|nôtre|vôtre|leur]
+    comme les [miens|tiens|siens|miennes|tiennes|siennes|nôtres|vôtres|leurs]
+        <<- morph(<1, ":[NA]", ":V0") ~>> *
+
+    dans la grande majorité des cas     @¬:A:[me]:[pi]
+        <<- ~1:6>> *
+
+    dans la majorité des cas            @¬:A:[me]:[pi]
+    dans de [très|trop] nombreux cas    @¬:A:[me]:[pi]
+    dans la plupart des cas             @¬:A:[me]:[pi]
+        <<- ~1:5>> *
+
+    dans maints cas                     @¬:A:[me]:[pi]
+        <<- ~1:3>> *
+
+    droit au but
+    droit dans les yeux
+        <<- not morph(<1, ":D.*:[me]:[si]") ~>> *
+
+    droit devant
+        <<- not morph(<1, ":D.*:[me]:[si]") ~1>> *
+
+    du coup @¬:A
+        <<- ~1:2>> *
+
+    en partie @:(?:R|D|[123]s|X)
+        <<- ~1:2>> *
+
+    en plus
+        <<- morph(>1, ":A") ~1>> *
+        <<- __else__ ~>> *
+
+    en quelques [années|décennies|semaines|heures|minutes]              @¬:A:[fe]:[pi]
+        <<- ~1:3>> *
+
+    en quelques [jours|mois|trimestres|semestres|siècles|millénaires]   @¬:A:[me]:[pi]
+        <<- ~1:3>> *
+
+    entre (?:eux|elles|nous|vous)
+        <<- not morph(<1, ":Oo|>(?:il|on|n’|ne)") ~>> *
+
+    entre [moi|toi|lui|elle|nous|vous|eux|elles] et [moi|toi|lui|elle|nous|vous|eux|elles]
+        <<- ~>> *
+
+    haut et fort
+        <<- not morph(<1, ":D") ~>> *
+
+    hélas
+        <<- not morph(<1, ":(?:X|Oo)") and not before(r"(?i)\bt(?:u|oi qui)[ ,]") ~>> *
+
+    nécessité fait loi
+        <<- not morph(<1, ":D.*:f:[si]") ~>> *
+
+    nombre [de|des]
+        <<- morph(<1, ":(?:R|C[sc])") ~1>> *
+
+    non @:A
+        <<- not morph(<1, ":D.*:m:[si]") ~1>> *
+
+    par trop @:A
+        <<- ~1:2>> *
+
+    pêle-mêle
+        <<- not morph(<1, ":D.*:[me]") ~>> *
+
+    plein est
+        <<- not morph(<1, ":D.*:m:[si]") ~>> *
+
+    [plus|moins|aussi] @:W que prévu
+        <<- ~>> *
+
+    [plus|moins|aussi]  @:[AW]¬:G   que [les|nous|vous] autres
+    [plus|moins|aussi]  @:[AW]¬:G   que l’ autre
+    [plus|aussi]        @:[AW]      les [uns|unes] que les autres
+        <<- ~3:0>> *
+
+    pour  autant  [que|qu’|qu]  [je|il|elle|on]  le  sache
+    pour  autant  [que|qu’|qu]  tu               le  saches
+    pour  autant  [que|qu’|qu]  nous             le  sachions
+    pour  autant  [que|qu’|qu]  vous             le  sachiez
+    pour  autant  [que|qu’|qu]  [ils|elles]      le  sachent
+        <<- ~>> *
+
+    pour  autant  [que|qu’|qu]  [je|il|elle|on]  sache      @¬:Y
+    pour  autant  [que|qu’|qu]  tu               saches     @¬:Y
+    pour  autant  [que|qu’|qu]  nous             sachions   @¬:Y
+    pour  autant  [que|qu’|qu]  vous             sachiez    @¬:Y
+    pour  autant  [que|qu’|qu]  [ils|elles]      sachent    @¬:Y
+        <<- ~1:5>> *
+
+    [le|un|ce|mon|ton|son]  putain  [de|d’]  @:[NA].*:[me]
+        <<- ~2:3>> *
+
+    tambour battant
+    tambours battants
+        <<- morph(<1, ":(?:V|N:f)", ":G") ~>> *
+
+    tête baissée
+        <<- morph(<1, ":[NV]", ":D.*:[fe]:[si]") ~>> *
+
+    tant  que  ça  @¬:(?:3s|X|Oo)
+        <<- ~1:3>> *
+
+    pas  tant  que  ça  @¬:(?:3s|X|Oo)
+        <<- ~1:4>> *
+
+
+# END OF NG
+#<end>
+#@:[VR]¬[NAP]
+#, @¬:[NA]
+#[ne|n’|me|m’|te|t’|se|s’|le|la|l’|les|leur|leur|mon|ma|ta|sa|notre|votre|mes|tes|ses|ce|cet|cette|ces|je|j’|tu|il|on|nous|vous|ils|ça|ceci|cela|c’|ç’|chaque]
+
+
+
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
 
-## Conditionnel
-
-__[i](p_au_moins)__                 (au moins) +({w_1}) @@0,$ <<- not morph(\2, ":[AQ].*:[me]:[si]", False) ~1>> *
-__[i](p_au_hasard)__                au hasard <<- isEndOfNG() ~>> *
-__[i](p_aussi_adv_que_possible)__   aussi ({w_2}) que (?:nécessaire|possible) @@6 <<- morph(\1, ":W", False) ~>> *
-__[i](p_au_sens_adj_du_terme)__     au sens (?:le (?:plus|moins) |)({w_2}) du terme @@w <<- morph(\1, ":A.*:m:s", False) ~>> *
-#__[i](p_aussi_xxx_que_ce_soit)__   aussi ({w_2}) que ce soit
-__[i](p_nombre_de)__                (nombre) des? @@0 <<- morph(word(-1), ":(?:R|C[sc])", False, True) ~1>> *
-__[i](p_à_xxx_reprises)__           à ({w_2}) reprises @@2 <<- morph(\1, ":B", False) or re.search("(?i)^(?:plusieurs|maintes)", \1) ~>> *
-__[i](p_bien_entendu)__             bien entendu <<- morph(word(1), ":[NAQR]|>que?/", False, True) ~>> *
-__[i](p_comme_pronom)__
-    ({w_2}) (comme (?:eux|elles?|lui|ça|celui-(?:ci|là)|celles?-(?:ci|là)|ceux(?:ci|là)|l[ea] [nv]ôtre|le [mts]ien|la [mts]ienne|les (?:[nv]ôtres|sien(?:ne|)s))) @@0,$
-    <<- morphex(\1, ":[NAQ]", ":V0") ~2>> *
-__[i](p_pêle_mêle)__                ({w_2}) (pêle-mêle) @@0,$ <<- not morph(\1, ":D", False) ~2>> *
-__[i](p_droit_devant)__             ({w_2}) (droit) devant @@0,w <<- not morph(\1, ":D.*:[me]:[si]", False) ~2>> *
-__[i](p_dans_xxx_cas)__
-    dans (?:la (?:(?:grande |)majorité|plupart) des|de (?:tr[èo][sp] |)nombreux|maints) cas
-    <<- not morph(word(1), ":([AQ].*:[me]:[pi])", False, False) ~>> *
-__[i](p_du_coup)__
-    (du coup) ({w_1}) @@0,$
-    <<- not morph(\2, ":A", False) ~1>> *
-__[i](p_verbe_pronom_être)__
-    (d[eouû]\w+|cr[ouû]\w+|pens\w+|imagin\w+|estim\w+) (l(?:eur|ui)|nous|vous) être @@0,w
-    <<- morph(\1, ">(?:croire|devoir|estimer|imaginer|penser)/") ~2>> *
-__[i](p_en_partie)__
-    (en partie) ({w_2}) @@0,$
-    <<- morph(\1, ":(?:R|D|[123]s|X)", False) ~1>> *
-__[i](p_en_plus)__
-    en plus
-    <<- morph(word(1), ":A", False, True) ~>> en
-    <<- __else__ ~>> *
-__[i](p_en_quelques_tps1)__
-    (en quelques (?:années|décennies|semaines|heures|minutes)) +({w_2}) @@0,$
-    <<- not morph(\2, ":[AQ]:[ef]:[si]", False) ~1>> *
-__[i](p_en_quelques_tps2)__
-    (en quelques (?:jours|mois|trimestres|semestres|siècles|millénaires)) +({w_2}) @@0,$
-    <<- not morph(\2, ":[AQ]:[em]:[si]", False) ~1>> *
-__[i](p_entre_pronom_et_pronom)__
-    entre (?:eux|elles|nous|vous)(?: et (?:moi|toi|nous|vous|elles|eux)|)
-    <<- not before(r"(?i)\b(?:il +|n’)$") ~>> *
-__[i](p_haut_et_fort)__             haut et fort <<- not morph(word(-1), ":D", False, False) ~>> *
-__[i](p_hélas)__                    hélas <<- not before(r"(?i)\bt(?:u|oi qui)[ ,]") ~>> *
-__[i](p_nécessité_fait_loi)__       nécessité fait loi <<- not morph(word(-1), ":D", False, False) ~>> *
-__[i](p_non_par_trop)__             (non|par trop) ({w_2}) @@0,$ <<- morph(\2, ":A", False) ~1>> *
-__[i](p_plein_est)__                plein est <<- not morph(word(-1), ":D", False, False) ~>> *
-__[i](p_plus_adv_que_prévu)__       (?:plus|moins|aussi) ({w3}) que prévu @@w <<- morph(\1, ":W", False) ~>> *
-__[i](p_plus_adv_que_les_autres)__  (?:plus|moins|aussi) ({w3}) (que (?:les autres|l’autre)) @@w,$ <<- morphex(\1, ":[AW]", ":G") ~2>> *
-__[i](p_plus_adv_les_uns_que_les_autres)__  plus ({w3}) (les une?s que les autres) @@5,$ <<- morph(\1, ":[AW]", False) ~2>> *
-__[i](p_pour_autant_que_su)__
-    (pour autant (?:que (?:je sache|tu saches|nous sachions|vous sachiez)|qu (?:il|elle)(?: sache|s sachent))) ({w_1})  @@0,$
-    <<- not morph(\2, ":Y", False) ~1>> *
-__[i](p_tambour_battant)__          tambours? battants? <<- morph(word(-1), ":(?:V|N:f)", ":G") ~>> *
-__[i](p_tête_baissée)__             ({w_2}) +(tête baissée) @@0,$ <<- morphex(\1, ":[NV]", ":D") ~2>> *
-__[i](p_tant_que_ça)__              ((?:pas |)tant que ça) ({w1}) @@0,$ <<- not morph(\2, ":(?:3s|X)", False) ~1>> *
-__[i](p_putain_de)__                (?:le|un|ce|[mts]on) (putain d(?:e +|’))({w_2}) @@*,$ <<- morph(\2, ":[me]", False) ~1>> *
 
 # Noms propres
 __[i](p_cocktail_Molotov)__     cocktails? (Molotov) @@$ <<- ~1>> *
