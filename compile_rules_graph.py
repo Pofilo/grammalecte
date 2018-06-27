@@ -264,6 +264,42 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         return None
 
 
+def checkRegexes (dAllGraph):
+    "check validity of regexes"
+    print("  checking regexes...")
+    for sGraphName, dGraph in dAllGraph.items():
+        for nKey, dVal in dGraph.items():
+            if "<re_value>" in dVal:
+                for sRegex in dVal["<re_value>"]:
+                    _checkRegex(sRegex)
+            if "<re_morph>" in dVal:
+                for sRegex in dVal["<re_morph>"]:
+                    _checkRegex(sRegex)
+
+def _checkRegex (sRegex):
+    #print(sRegex)
+    if "¬" in sRegex:
+        sPattern, sNegPattern = sRegex.split("¬")
+        try:
+            if not sNegPattern:
+                print("# Warning! Empty negpattern:", sRegex)
+            re.compile(sPattern)
+            re.compile(sNegPattern)
+        except:
+            print("# Error. Wrong regex:", sRegex)
+            traceback.print_exc()
+            exit()
+    else:
+        try:
+            if not sRegex:
+                print("# Warning! Empty pattern:", sRegex)
+            re.compile(sRegex)
+        except:
+            print("# Error. Wrong regex:", sRegex)
+            traceback.print_exc()
+            exit()
+
+
 def make (lRule, dDef, sLang, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
@@ -380,6 +416,8 @@ def make (lRule, dDef, sLang, bJavaScript):
             print(sActionName, aAction)
         print("\nFunctions:")
         print(sPyCallables)
+
+    checkRegexes(dAllGraph)
 
     # Result
     return {
