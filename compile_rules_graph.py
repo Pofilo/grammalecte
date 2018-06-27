@@ -381,8 +381,6 @@ def make (lRule, dDef, sLang, bJavaScript):
         print("\nFunctions:")
         print(sPyCallables)
 
-    checkRegexes(dAllGraph)
-
     # Result
     return {
         "graph_callables": sPyCallables,

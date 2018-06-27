@@ -7,6 +7,9 @@ RULE GRAPH BUILDER
 # by Olivier R.
 # License: MPL 2
 
+import re
+import traceback
+
 
 from graphspell.progressbar import ProgressBar
 
@@ -142,23 +145,23 @@ class DARG:
                         val[sArc] = dKeyTrans[nKey]
         return dNewGraph
 
-    def _checkRegexes (dGraph):
+    def _checkRegexes (self, dGraph):
         "check validity of regexes"
         aRegex = set()
         for nKey, dVal in dGraph.items():
             if "<re_value>" in dVal:
                 for sRegex in dVal["<re_value>"]:
                     if sRegex not in aRegex:
-                        _checkRegex(sRegex)
+                        self._checkRegex(sRegex)
                         aRegex.add(sRegex)
             if "<re_morph>" in dVal:
                 for sRegex in dVal["<re_morph>"]:
                     if sRegex not in aRegex:
-                        _checkRegex(sRegex)
+                        self._checkRegex(sRegex)
                         aRegex.add(sRegex)
         aRegex.clear()
 
-    def _checkRegex (sRegex):
+    def _checkRegex (self, sRegex):
         #print(sRegex)
         if "¬" in sRegex:
             sPattern, sNegPattern = sRegex.split("¬")
