@@ -5703,6 +5703,8 @@ __purge_locutions__
     à toutes jambes
     à tu et à toi
     à un moment donné
+    à une   heure  [décente|tardive]
+    à cette heure matinale
     à usage interne
     à visage découvert
     à visage humain
@@ -6829,45 +6831,40 @@ __mot_composé_avec_là__
 TEST: cette femme-là {{étaient}} partout.
 
 
+__simplification_des_nombres__
+    [vingt|trente|quarante|cinquante|soixante|soixante-dix|septante|quatre-vingt|octante|huitante|quatre-vingt-dix|nonante] et [un|une|onze]
+        <<- ~>> \1-et-\3||
+        <<- ~2:3>> *
+
+    [deux|trois|quatre|cinq|six|sept|huit|neuf|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]  cents  @:[NAQ].*:[pi]¬:(?:G|3p)
+        <<- ~1:2>> ␣
+
+    [deux|trois|quatre|cinq|six|sept|huit|neuf] ?cent¿ mille
+    cent mille
+        <<- ~>> ␣
+
+
+__purge_des_nombres__
+    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  @:B   @:[NA].*:[pi]¬:(?:G|3p)
+    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  ~\d+  @:[NA].*:[pi]¬:(?:G|3p)
+        <<- ~2:3>> *
+
+    [à|de|d’]  @:B  pour  cent
+        <<- ~>> *
+
+
+    [à|de|d’]  une  heure  ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-et-une|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-et-une|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-et-une|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf]¿
+    [à|de|d’]  [deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre]  heures  ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-et-une|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-et-une|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-et-une|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf]¿
+        <<- ~>> *
+
 
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
 
-# mot-là
-#__[i](p_qqch_tiret_là)__        ({w1})(-là) @@0,$ <<- morphex(\1, ":[NAQ]", ":G") ~2>> *
-
-
-# simplification des nombres
-__<i](p_10_qqch)__
-    dix-(?:sept|huit|neuf) <<- ~>> dix
-__[i](p_20_30_40_50_qqch)__
-    (?:vingt|trente|quarante|cinquante)(-(?:deux|trois|quatre|cinq|six|sept|huit|neuf|et-un)| et un) @@$ <<- ~1>> *
-__[i](p_60_qqch)__
-    soixante-(?:d(?:eux|ix|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|six|sept|huit|neuf|quinze|seize| et (?:un|onze)|-et-(?:un|onze))
-    <<- ~>> soixante
-__[i](p_80_qqch)__
-    quatre-vingt-(?:un|d(?:eux|ix|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|six|sept|huit|neuf|onze|quinze|seize)
-    <<- ~>> quatre-vingts
-__[i](p_qqch_100)__
-    ((?:d(?:eux|ouze)|tr(?:ois|eize)|quat(?:re|orze)|cinq|s(?:ix|seize)|sept|huit|neuf|onze|quinze) cents) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:[pi]", ":(?:G|3p)") ~1>> cent
-__[i](p_qqch_1000)__
-    (?:deux|trois|quatre|cinq|six|sept|huit|neuf|cent) (?:cent |)mille
-    <<- ~>> mille
-
-__[i](p_det_plur_nombre_nom)__
-    (?:le(?:ur|)s|des|ses|ces|mes|tes|nos|vos) +((?:quelque +|)(?:d(?:eux|ix|ouze)|tr(?:ois|eize|ente)|qua(?:t(?:re(?:-vingts|)|orze)|rante)|cinq(?:uante|)|s(?:ix|eize|oixante)|sept|huit|neuf|onze|quinze|vingt|cent|mille|\d+)) +({w_2})  @@w,$
-    <<- morphex(\2, ":[NAQ].*:[pi]", ":(?:G|3p)") ~1>> *
-
-__[i](p_une_heure)__
-    (?:à |d(?:e +|’))une +heure(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt|décente|(?:très |)tardive)|) <<- ~>> *
-__[i](p_nombre_heure)__
-    (?:à|de) (?:d(?:eu|i)x|tr(?:ois|eize)|qu(?:at(?:re|orze)|inze)|cinq|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt) +heures(?: (?:d(?:eu|i)x|tr(?:ois|eize|ente)|qu(?:a(?:t(?:re|orze)|rante)|inze)|cinq(?:uante|)|s(?:ix|ept|eize)|huit|neuf|onze|douze|vingt)|) <<- ~>> *
-
 ## Conditionnel
-__[i](p_à_xxx_pour_cent)__          à ({w_2}) pour cent @@2 <<- morph(\1, ":B", False) ~>> *
+
 __[i](p_au_moins)__                 (au moins) +({w_1}) @@0,$ <<- not morph(\2, ":[AQ].*:[me]:[si]", False) ~1>> *
 __[i](p_au_hasard)__                au hasard <<- isEndOfNG() ~>> *
 __[i](p_aussi_adv_que_possible)__   aussi ({w_2}) que (?:nécessaire|possible) @@6 <<- morph(\1, ":W", False) ~>> *
