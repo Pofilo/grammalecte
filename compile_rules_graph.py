@@ -360,7 +360,7 @@ def make (lRule, dDef, sLang, bJavaScript):
         elif sFuncName.startswith("_g_s_"): # suggestion
             sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("_g_p_"): # preprocessor
-            sParams = "lToken"
+            sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("_g_d_"): # disambiguator
             sParams = "lToken, nTokenOffset"
         else:

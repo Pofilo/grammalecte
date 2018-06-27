@@ -773,7 +773,7 @@ class TokenSentence:
                             elif cActionType == "~":
                                 # text processor
                                 nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, bDebug)
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, nTokenOffset, bDebug)
                                 if bDebug:
                                     print("RW:", sRuleId)
                                 bChange = True
@@ -788,7 +788,7 @@ class TokenSentence:
                                     print(">>>", sRuleId)
                                 pass
                             elif cActionType == "/":
-                                # tags
+                                # sentence tags
                                 nTokenTag = nTokenOffset + eAct[0]
                                 if sWhat not in self.dTags:
                                     self.dTags[sWhat] = (nTokenTag, nTokenTag)
@@ -892,7 +892,7 @@ class TokenSentence:
         #print(">", sMsg)
         return sMsg
 
-    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, bUppercase=True, bDebug=False):
+    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, bUppercase=True, bDebug=False):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
         if bDebug:
             print("REWRITING:", nTokenRewriteStart, nTokenRewriteEnd)
@@ -922,14 +922,16 @@ class TokenSentence:
                     self.lToken[i]["sNewValue"] = "_"
         else:
             if sWhat.startswith("="):
-                sWhat = globals()[sWhat[1:]](self.lToken)
+                sWhat = globals()[sWhat[1:]](self.lToken, nTokenOffset)
             bUppercase = bUppercase and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                # one token
                 sWhat = sWhat + " " * (len(self.lToken[nTokenRewriteStart]["sValue"])-len(sWhat))
                 if bUppercase:
                     sWhat = sWhat[0:1].upper() + sWhat[1:]
                 self.lToken[nTokenRewriteStart]["sNewValue"] = sWhat
             else:
+                # several tokens
                 lTokenValue = sWhat.split("|")
                 if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
                     print("Error. Text processor: number of replacements != number of tokens.")
