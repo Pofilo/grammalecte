@@ -6995,6 +6995,23 @@ __simplication_substantifs__
     >vol à la [sauvette|tire]
         <<- ~2:0>> *
 
+__purge_couleurs__
+    [beige|blanc|bleu|brun|châtain|cyan|gris|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sombre|tendre|vif]
+        <<- morph(<1, ":[NAQ]") ~>> *
+
+    bleu    [ciel|indigo|marine|roi|saphir|turquoise]
+    blond   platine
+    gris    [acier|anthracite|perle|souris]
+    jaune   sable
+    noir    [de|d’] [encre|jais]
+    noir    et blanc
+    rose    [bonbon|chair|corail]
+    rouge   [brique|carmin|écarlate|rubis|sang]
+    vert    [émeraude|olive|pomme]
+        <<- morph(<1, ":[NA]", ":D") ~>> *
+        <<- __else__ and morph(<1, ":D|>(?:être|rester|sembler|demeurer)") ~>> ␣
+        <<- __also__ =>> define(\1, [":A:e:i"])
+
 
 __simplification_noms_propres__
     don Juan
@@ -7137,14 +7154,10 @@ __[i](p_complètement)__
 __[i](p_adverbe_xxxment)__
     (\w+ment)(?: parlant| pas|) @@0 <<- morph(\1, ":W\\b") ~>> *
 
-# couleurs invariables
-__[i](p_couleurs_invariables)__
-    ({w_2}) +((?:beige|blanc|bleu|brun|châtain|cyan|gris|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet) (?:brillant|mat|clair|fluo|foncé|irisé|pâle|pastel|sombre|vif|tendre)) @@0,$
-    <<- morph(\1, ":[NAQ]", False) ~2>> *
 
-# locutions adjectivales, nominales & couleurs
+# locutions adjectivales
 __[i](p_locutions_adj_nom_et_couleurs)__
-    ({w_2}) +(bas(?: de gamme|se consommation)|bon (?:enfant|marché|teint|chic,? bon genre)|cl(?:é|ef) en mains?|dernier cri|fleur bleue|grand (?:public|luxe|maximum)|grandeur nature|haut(?: de gamme|e (?:résolution|fidélité|tension))|longue (?:distance|portée|durée)|meilleur marché|numéro (?:un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix(?:-sept|-huit|-neuf)|onze|douze|treize|quatorze|quinze|seize|vingt)|plein cadre|top secret|vieux jeu|open source|Créative Commons|pair à pair|pur (?:sucre|jus)|terre à terre|bleu (?:ciel|marine|roi|saphir|turquoise)|vert (?:émeraude|olive|pomme)|rouge (?:brique|carmin|écarlate|rubis|sang)|rose (?:bonbon|chair|corail)|jaune sable|blond platine|gris (?:acier|anthracite|perle|souris)|noir (?:d(?:’encre|e jais)|et blanc))
+    ({w_2}) +(bas(?: de gamme|se consommation)|bon (?:enfant|marché|teint|chic,? bon genre)|cl(?:é|ef) en mains?|dernier cri|fleur bleue|grand (?:public|luxe|maximum)|grandeur nature|haut(?: de gamme|e (?:résolution|fidélité|tension))|longue (?:distance|portée|durée)|meilleur marché|numéro (?:un|deux|trois|quatre|cinq|six|sept|huit|neuf|dix(?:-sept|-huit|-neuf)|onze|douze|treize|quatorze|quinze|seize|vingt)|plein cadre|top secret|vieux jeu|open source|Créative Commons|pair à pair|pur (?:sucre|jus)|terre à terre)
     @@0,$
     <<- morphex(\1, ":(?:N|A|Q|V0e)", ":D") ~2>> *
 
