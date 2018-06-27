@@ -7035,9 +7035,9 @@ __simplification_noms_propres__
     [Mr|Mlle|Mme|Mgr|miss]  ~^[A-ZÉÈÊ]
         <<- ~2>> *
 
-    ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
-        <<- morph(\1, ":M") and morph(<1, ":Cs") and not before(r"\b(?:plus|moins|aussi) .* que +$")
-        ~>> =rewriteSubject(\1,\3) + "||"
+    @:Cs  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
+        <<- morph(\2, ":M") and not before(r"\b(?:plus|moins|aussi) .* que +$")
+        ~2:4>> =rewriteSubject(\2,\4) + "||"
 
     <start>  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
         <<- morph(\2, ":M")
