@@ -939,9 +939,12 @@ class TokenSentence:
                     print("Error. Text processor: number of replacements != number of tokens.")
                     return
                 for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
-                    if bUppercase:
-                        sValue = sValue[0:1].upper() + sValue[1:]
-                    self.lToken[i]["sNewValue"] = sValue
+                    if not sValue or sValue == "*":
+                        self.lToken[i]["bToRemove"] = True
+                    else:
+                        if bUppercase:
+                            sValue = sValue[0:1].upper() + sValue[1:]
+                        self.lToken[i]["sNewValue"] = sValue
 
     def rewrite (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
