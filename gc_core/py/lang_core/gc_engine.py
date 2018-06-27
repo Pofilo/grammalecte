@@ -216,21 +216,14 @@ def _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase
     nEnd = nOffset + m.end(iGroup)
     # suggestions
     if sRepl[0:1] == "=":
-        sugg = globals()[sRepl[1:]](s, m)
-        if sugg:
-            if bUppercase and m.group(iGroup)[0:1].isupper():
-                lSugg = list(map(str.capitalize, sugg.split("|")))
-            else:
-                lSugg = sugg.split("|")
-        else:
-            lSugg = []
+        sSugg = globals()[sRepl[1:]](s, m)
+        lSugg = sSugg.split("|")  if sSugg  else []
     elif sRepl == "_":
         lSugg = []
     else:
-        if bUppercase and m.group(iGroup)[0:1].isupper():
-            lSugg = list(map(str.capitalize, m.expand(sRepl).split("|")))
-        else:
-            lSugg = m.expand(sRepl).split("|")
+        lSugg = m.expand(sRepl).split("|")
+    if bUppercase and lSugg and m.group(iGroup)[0:1].isupper():
+        lSugg = list(map(str.capitalize, lSugg))
     # Message
     sMessage = globals()[sMsg[1:]](s, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
     if bShowRuleId:
@@ -784,20 +777,13 @@ class TokenSentence:
         # suggestions
         if sSugg[0:1] == "=":
             sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset)
-            if sSugg:
-                if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                    lSugg = list(map(str.capitalize, sSugg.split("|")))
-                else:
-                    lSugg = sSugg.split("|")
-            else:
-                lSugg = []
+            lSugg = sSugg.split("|")  if sSugg  else []
         elif sSugg == "_":
             lSugg = []
         else:
-            if bUppercase and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-                lSugg = list(map(str.capitalize, self._expand(sSugg, nTokenOffset).split("|")))
-            else:
-                lSugg = self._expand(sSugg, nTokenOffset).split("|")
+            lSugg = self._expand(sSugg, nTokenOffset).split("|")
+        if bUppercase and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
+            lSugg = list(map(str.capitalize, lSugg))
         # Message
         sMessage = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
         if bShowRuleId:
