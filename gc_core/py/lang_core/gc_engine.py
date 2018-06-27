@@ -953,7 +953,7 @@ class TokenSentence:
         nMergeUntil = 0
         dTokenMerger = None
         for dToken in self.lToken:
-            bKeepToken = True
+            bRemoveToken = False
             if "bImmune" in dToken:
                 nErrorStart = self.nOffsetWithinParagraph + dToken["nStart"]
                 if nErrorStart in self.dError:
@@ -965,21 +965,19 @@ class TokenSentence:
                 dTokenMerger["nEnd"] = dToken["nEnd"]
                 if bDebug:
                     print("  MERGED TOKEN:", dTokenMerger["sValue"])
-                bKeepToken = False
+                bRemoveToken = True
             if "nMergeUntil" in dToken:
                 if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
                     dTokenMerger = dToken
                 if dToken["nMergeUntil"] > nMergeUntil:
                     nMergeUntil = dToken["nMergeUntil"]
                 del dToken["nMergeUntil"]
-            elif "bToRemove" in dToken:
-                # remove useless token
-                self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
+            #
+            if bRemoveToken or "bToRemove" in dToken:
                 if bDebug:
                     print("  REMOVED:", dToken["sValue"])
-                bKeepToken = False
-            #
-            if bKeepToken:
+                self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
+            else:
                 lNewToken.append(dToken)
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
