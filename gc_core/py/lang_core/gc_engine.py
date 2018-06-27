@@ -747,8 +747,7 @@ class TokenSentence:
             for sRuleId in dGraph[nextNodeKey]:
                 try:
                     if bDebug:
-                        print("ACTION:", sRuleId)
-                        print(dRule[sRuleId])
+                        print("  TRY:", sRuleId)
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, nPriority, message, URL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd ]
@@ -769,38 +768,38 @@ class TokenSentence:
                                         dError[nErrorStart] = self.createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = eAct[2]
                                         if bDebug:
-                                            print("ERROR:", sRuleId, dError[nErrorStart])
+                                            print("  NEW_ERROR:", dError[nErrorStart], "\n  ", dRule[sRuleId])
                             elif cActionType == "~":
                                 # text processor
-                                nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, nTokenOffset, bDebug)
                                 if bDebug:
-                                    print("RW:", sRuleId)
+                                    print("  TAG_PREPARE:\n  ", dRule[sRuleId])
+                                nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, nTokenOffset, True, bDebug)
                                 bChange = True
                             elif cActionType == "=":
                                 # disambiguation
-                                globals()[sWhat](self.lToken, nTokenOffset)
                                 if bDebug:
-                                    print("DA:", sRuleId)
+                                    print("  DISAMBIGUATOR:\n  ", dRule[sRuleId])
+                                globals()[sWhat](self.lToken, nTokenOffset)
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    print(">>>", sRuleId)
+                                    print("  COND_OK")
                                 pass
                             elif cActionType == "/":
                                 # sentence tags
+                                if bDebug:
+                                    print("  SENTENCE_TAG:\n  ", dRule[sRuleId])
                                 nTokenTag = nTokenOffset + eAct[0]
                                 if sWhat not in self.dTags:
                                     self.dTags[sWhat] = (nTokenTag, nTokenTag)
                                 elif nTokenTag > self.dTags[sWhat][1]:
                                     self.dTags[sWhat] = (self.dTags[sWhat][0], nTokenTag)
-                                if bDebug:
-                                    print("/", sRuleId)
                             else:
                                 print("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
                             if bDebug:
-                                print(">!", sRuleId)
+                                print("  COND_BREAK")
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
@@ -895,7 +894,7 @@ class TokenSentence:
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, bUppercase=True, bDebug=False):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
         if bDebug:
-            print("REWRITING:", nTokenRewriteStart, nTokenRewriteEnd)
+            print("  REWRITING:", nTokenRewriteStart, nTokenRewriteEnd)
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -948,6 +947,8 @@ class TokenSentence:
 
     def rewrite (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
+        if bDebug:
+            print("REWRITE")
         lNewToken = []
         nMergeUntil = 0
         dTokenMerger = None
@@ -963,7 +964,7 @@ class TokenSentence:
                 dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
                 dTokenMerger["nEnd"] = dToken["nEnd"]
                 if bDebug:
-                    print("Merged token:", dTokenMerger["sValue"])
+                    print("  MERGED TOKEN:", dTokenMerger["sValue"])
                 bKeepToken = False
             if "nMergeUntil" in dToken:
                 if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
@@ -975,7 +976,7 @@ class TokenSentence:
                 # remove useless token
                 self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
                 if bDebug:
-                    print("removed:", dToken["sValue"])
+                    print("  REMOVED:", dToken["sValue"])
                 bKeepToken = False
             #
             if bKeepToken:
@@ -991,7 +992,7 @@ class TokenSentence:
                     self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
                     del dToken["sNewValue"]
         if bDebug:
-            print(self.sSentence)
+            print("  REWRITED:", self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
 
