@@ -673,7 +673,6 @@ class TokenSentence:
                         print("  MATCH: *" + sMeta)
                     yield dGraph[dNode["<meta>"][sMeta]]
 
-
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         "parse tokens from the text and execute actions encountered"
         self.dError = {}
@@ -785,7 +784,7 @@ class TokenSentence:
         if bUppercase and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
             lSugg = list(map(str.capitalize, lSugg))
         # Message
-        sMessage = globals()[sMsg[1:]](self.lToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
+        sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
         if bShowRuleId:
             sMessage += "  " + sLineId + " # " + sRuleId
         #
