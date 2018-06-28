@@ -605,13 +605,6 @@ class TokenSentence:
                 if bDebug:
                     print("  MATCH:", sValue)
                 yield dGraph[dNode[sValue]]
-        # token lemmas
-        if "<lemmas>" in dNode:
-            for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
-                if sLemma in dNode["<lemmas>"]:
-                    if bDebug:
-                        print("  MATCH: >" + sLemma)
-                    yield dGraph[dNode["<lemmas>"][sLemma]]
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
@@ -630,31 +623,40 @@ class TokenSentence:
                         if bDebug:
                             print("  MATCH: ~" + sRegex)
                         yield dGraph[dNode["<re_value>"][sRegex]]
-        # regex morph arcs
-        if "<re_morph>" in dNode:
-            for sRegex in dNode["<re_morph>"]:
-                if "¬" not in sRegex:
-                    # no anti-pattern
-                    if any(re.search(sRegex, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+        # analysable tokens
+        if dToken["sType"][0:4] == "WORD":
+            # token lemmas
+            if "<lemmas>" in dNode:
+                for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
+                    if sLemma in dNode["<lemmas>"]:
                         if bDebug:
-                            print("  MATCH: @" + sRegex)
-                        yield dGraph[dNode["<re_morph>"][sRegex]]
-                else:
-                    # there is an anti-pattern
-                    sPattern, sNegPattern = sRegex.split("¬", 1)
-                    if sNegPattern == "*":
-                        # all morphologies must match with <sPattern>
-                        if sPattern and all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                            print("  MATCH: >" + sLemma)
+                        yield dGraph[dNode["<lemmas>"][sLemma]]
+            # regex morph arcs
+            if "<re_morph>" in dNode:
+                for sRegex in dNode["<re_morph>"]:
+                    if "¬" not in sRegex:
+                        # no anti-pattern
+                        if any(re.search(sRegex, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
                     else:
-                        if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
-                            continue
-                        if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
-                            if bDebug:
-                                print("  MATCH: @" + sRegex)
-                            yield dGraph[dNode["<re_morph>"][sRegex]]
+                        # there is an anti-pattern
+                        sPattern, sNegPattern = sRegex.split("¬", 1)
+                        if sNegPattern == "*":
+                            # all morphologies must match with <sPattern>
+                            if sPattern and all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                                if bDebug:
+                                    print("  MATCH: @" + sRegex)
+                                yield dGraph[dNode["<re_morph>"][sRegex]]
+                        else:
+                            if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                                continue
+                            if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                                if bDebug:
+                                    print("  MATCH: @" + sRegex)
+                                yield dGraph[dNode["<re_morph>"][sRegex]]
         # meta arc (for token type)
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
