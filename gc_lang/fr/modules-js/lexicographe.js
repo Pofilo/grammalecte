@@ -300,7 +300,7 @@ class Lexicographe {
                         aLabel: ["dossier Windows"]
                     };
                     break;
-                case 'ACRONYM':
+                case 'WORD_ACRONYM':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
