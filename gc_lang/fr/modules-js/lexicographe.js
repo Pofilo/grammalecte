@@ -87,7 +87,7 @@ const _dTag = new Map([
     [':Cc', [" conjonction de coordination,", "Conjonction de coordination"]],
     [':Cs', [" conjonction de subordination,", "Conjonction de subordination"]],
     [':Ĉs', [" conjonction de subordination (él.),", "Conjonction de subordination (élément)"]],
-    
+
     [':Ñ', [" locution nominale (él.),", "Locution nominale (élément)"]],
     [':Â', [" locution adjectivale (él.),", "Locution adjectivale (élément)"]],
     [':Ṽ', [" locution verbale (él.),", "Locution verbale (élément)"]],
@@ -265,7 +265,7 @@ class Lexicographe {
                         aLabel: ["hyperlien"]
                     };
                     break;
-                case 'ELPFX':
+                case 'WORD_ELIDED':
                     let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
                     return {
                         sType: oToken.sType,
@@ -456,7 +456,7 @@ class Lexicographe {
             let oToken = aTokenList[iKey];
             let sMorphLoc = '';
             let aTokenTempList = [oToken];
-            if (oToken.sType == "WORD" || oToken.sType == "ELPFX"){
+            if (oToken.sType == "WORD" || oToken.sType == "WORD_ELIDED"){
                 let iKeyTree = iKey + 1;
                 let oLocNode = this.oLocGraph[oToken.sValue.toLowerCase()];
                 while (oLocNode) {
