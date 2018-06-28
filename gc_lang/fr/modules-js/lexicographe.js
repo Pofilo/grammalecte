@@ -191,7 +191,7 @@ const _dPronoms = new Map([
     ["s'en", " (se) pronom personnel objet + (en) pronom adverbial"]
 ]);
 
-const _dSeparator = new Map([
+const _dChar = new Map([
     ['.', "point"],
     ['·', "point médian"],
     ['…', "points de suspension"],
@@ -215,12 +215,17 @@ const _dSeparator = new Map([
     ['”', "guillemet fermant double"],
     ['‘', "guillemet ouvrant"],
     ['’', "guillemet fermant"],
+    ['"', "guillemets droits (déconseillé en typographie)"],
     ['/', "signe de la division"],
     ['+', "signe de l’addition"],
     ['*', "signe de la multiplication"],
     ['=', "signe de l’égalité"],
     ['<', "inférieur à"],
     ['>', "supérieur à"],
+    ['⩽', "inférieur ou égal à"],
+    ['⩾', "supérieur ou égal à"],
+    ['%', "signe de pourcentage"],
+    ['‰', "signe pour mille"],
 ]);
 
 
@@ -245,10 +250,11 @@ class Lexicographe {
         try {
             switch (oToken.sType) {
                 case 'SEPARATOR':
+                case 'SIGN':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [_dSeparator.gl_get(oToken.sValue, "caractère indéterminé")]
+                        aLabel: [_dChar.gl_get(oToken.sValue, "caractère indéterminé")]
                     };
                     break;
                 case 'NUM':
@@ -271,6 +277,13 @@ class Lexicographe {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
                         aLabel: [_dElidedPrefix.gl_get(sTemp, "préfixe élidé inconnu")]
+                    };
+                    break;
+                case 'WORD_ORDINAL':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["nombre ordinal"]
                     };
                     break;
                 case 'FOLDERUNIX':
