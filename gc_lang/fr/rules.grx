@@ -4151,86 +4151,6 @@ TEST: Hors nous, personne ne sait ce qui s’est passé là-bas.
 TEST: Le peuple se sent hors jeu.
 
 
-# la / là
-__[s]/conf(conf_la_là)__
-    ([lL]a) (?:a(?:fin|lors|près|uprès|ux?|vant|vec)|au(?:-de(?:dans|hors|là|sso?us|vant)|x|)|c(?:e(?:t|te|s|)|ar|hez|omme)|ça|d(?:ans|evant|es?|ès|onc|urant|’{w_1})|e(?:lles?|n|t)|ils?|je?|l(?:es?|a|orsque?|’{w_1})|m(?:algré|es|on|a|e)|n(?:e|ous)|o[uùn]|par(?:ce|fois|mi|)|p(?:arce|endant|our|uisque)|qu(?:e?|and)|s(?:on|a|es?|ouvent|ur)|t(?:andis|on|a|es?|u)|un|vous)
-    @@0
-    <<- not morph(word(-1), ":E|>le/", False, False)
-    -1>> là                                                                                         # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
-
-TEST: nous serions encore {{la}} l’année prochaine
-TEST: en reprenant le chandail de John {{la}} où elle l’avait abandonné.
-TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
-
-
-__[i]/conf(conf_tiret_la_là)__
-    ce(?:te|s|) +{w_2}-(la) @@$
-    <<- -1>> là                                                                                     # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
-
-TEST: Ce {{fait}}-{{la}} ne peut être ignoré.
-
-
-# les / lés / lès
-__[i]/conf(conf_les1)__
-    (lés) +({w_2})  @@0,$
-    <<- morph(\2, ":N.*:m:[pi]") -1>> les                                                           # Confusion probable. Un lé est une bande de tissu ou de papier peint.|https://fr.wiktionary.org/wiki/l%C3%A9
-
-TEST: Entre les saules et {{lés}} ifs.
-TEST: Les asphaltes purs d’étanchéité sont des mastics bitumineux, de même que les masses d’enrobage des lés d’étanchéité.
-TEST: Pour avoir fait de neuf une grande cage de bois de grosses solives, membrures et sablières, contenant neuf pieds de long sur huit de lé. (Victor Hugo)
-TEST: Un lé de velours, de taffetas, de toile.
-TEST: Draps de lit de deux lés.
-
-
-__[i]/conf(conf_les2)__
-    lès
-    <<- isEnd() or morph(word(-1), ":D.*:p") ->> lés                                                # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse. Si vous parlez des bandes de tissu ou de papier peint, écrivez :|https://fr.wiktionary.org/wiki/l%C3%A8s
-    <<- __else__ ->> les                                                                            # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse ou Vandœuvre-lès-Nancy.|https://fr.wiktionary.org/wiki/l%C3%A8s
-
-TEST: Montrez-moi ces {{lès}} venus d’Italie.                           ->> lés
-TEST: avec {{lès}} hommes d’à côté, difficile de se concentrer.         ->> les
-TEST: Entre les saules et {{lès}} ifs                                   ->> les
-TEST: Elle habite Vandœuvre-lès-Nancy.
-
-
-# leurs / leur
-__[i]/conf(conf_leurs_verbe)__
-    (leurs) ({w_2})  @@0,6
-    <<- morphex(\2, ":(?:[123][sp]|Y)", ":(?:G|N|A|M[12P])") and not before(r"(?i)\b[ld]es +$")
-    -1>> leur                                                                                       # Incohérence : “leurs” est un déterminant pluriel censé précéder un substantif pluriel. Pour le pronom personnel devant un verbe, écrivez :
-
-TEST: je vais {{leurs}} reprendre
-TEST: je {{leurs}} apprends la programmation
-TEST: après qu’un des leurs ait été gravement blessé par un tir de grenade
-
-
-# loin s’en faut
-__[i]/conf(conf_loin_s_en_faut)__
-    loins? +(?:[sc]ens|san[gs]?s?|s[’ ]en) +fau[xt]
-    <<- not re.search("(?i)loin s’en faut", \0) and morph(word(-1), ":N", ">(?:aller|venir|partir)/", True)
-    ->> loin s’en faut                                                                              # Confusion probable. Cette locution s’écrit :|https://fr.wiktionary.org/wiki/loin_s%E2%80%99en_faut
-
-TEST: Ils n’étaient guère prêts à ça, {{loins sans faux}}.
-TEST: Et les intellectuels ? En France comme ailleurs, tous n’ont pas, loin s’en faut, une pleine lucidité sur cette précarité galopante.
-
-
-# mai / mais
-__[i]/conf(mais)__
-    (mai) +({w_1}) @@0,$
-    <<- morphex(\2, ":O", ":3s") and isStart() -1>> mais            # Confusion probable : “mai” est le 5ᵉ mois de l’année. Pour la conjonction de coordination, écrivez “mais”.|https://fr.wiktionary.org/wiki/mais
-
-TEST: {{mai}} il y a encore tant à faire.
-TEST: Je viendrai, {{mai}} il faudra avoir tout prévu.
-TEST: Mai pluvieux.
-
-
-# min / mins
-__[u]/conf(conf_symbole_min)__  \d+ (mins) @@$ <<- -1>> min                                         # Les unités de mesure abrégées ne prennent pas la marque du pluriel.
-
-TEST: 120 {{Mins}} de bonheur
-
-
-
 
 @@@@
 @@@@
@@ -4242,21 +4162,19 @@ TEST: 120 {{Mins}} de bonheur
 @@@@
 @@@@
 
+!!
+!!
+!!!! Tournures de langage                                                                         !!
+!!
+!!
 
 __code_legacy__
     legacy code
     code legacy
-        <<- -1:2>> code hérité|code reliquat                                                        # \1 \2. Anglicisme superflu.
+        <<- ->> code hérité|code reliquat                                                           # \1 \2. Anglicisme superflu.
 
 TEST: c’est du {{legacy code}}.
 TEST: ce {{code legacy}} est un cauchemar
-
-
-__être_en_xxxx__
-    [>être|>rester|>demeurer] an [désaccord|accord]
-        <<- /conf/ -2>> en                                                                          # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
-
-TEST: Je suis {{an}} désaccord avec lui.
 
 
 __faire_plaisir__
@@ -4265,6 +4183,39 @@ __faire_plaisir__
         <<- ~2>> *
 
 TEST: Ça me fait {{plaisirs}}.
+
+
+!!
+!!
+!!!! Tournures de langage                                                                         !!
+!!
+!!
+
+
+# en / an
+__être_en_xxxx__
+    [>être|>rester|>demeurer] an [désaccord|accord]
+        <<- /conf/ -2>> en                                                                          # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
+
+TEST: Je suis {{an}} désaccord avec lui.
+
+
+# la / là
+__conf_la_là!7__
+    la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
+    la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart)
+        <<- /conf/ \1 != "LA" and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là             # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
+
+    [ce|cet|cette|ces]  ~-(la)
+        <<- /conf/ -2>> =\2.replace("-la", "-là")                                                   # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
+
+TEST: nous serions encore {{la}} l’année prochaine
+TEST: en reprenant le chandail de John {{la}} où elle l’avait abandonné.
+TEST: Ce {{fait}}-{{la}} ne peut être ignoré.
+TEST: la peu efficace sensibilité
+TEST: c’est toujours la même histoire
+TEST: c’est la moins habile de toutes
+TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
 
 
 # la plupart
@@ -4281,6 +4232,71 @@ __conf_la_plupart__
 
 TEST: la {{plus part}}
 TEST: la {{plu-part}}
+
+
+__conf_les_lés_lès__
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques]  lès
+        <<- /conf/ -2>> lés                                     # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse. Si vous parlez des bandes de tissu ou de papier peint, écrivez “lés”.|https://fr.wiktionary.org/wiki/l%C3%A8s
+
+    lès  [<end>|,]
+        <<- /conf/ -1>> lés                                     # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse. Si vous parlez des bandes de tissu ou de papier peint, écrivez “lés”.|https://fr.wiktionary.org/wiki/l%C3%A8s
+
+    lès  *WORD
+        <<- /conf/ not morph(<1, ":D.*:p") -1>> les             # Confusion probable : “lès” signifie “à côté de” et ne s’emploie plus guère que dans des noms de ville, comme Garges-lès-Gonesse ou Vandœuvre-lès-Nancy.|https://fr.wiktionary.org/wiki/l%C3%A8s
+
+    lés  @:N.*:[pi]¬:(?:[MGAW]|3p)
+        <<- /conf/ -1>> les                                     # Confusion probable. Un lé est une bande de tissu ou de papier peint.|https://fr.wiktionary.org/wiki/l%C3%A9
+
+TEST: Entre les saules et {{lés}} ifs.
+TEST: Montrez-moi ces {{lès}} venus d’Italie.                           ->> lés
+TEST: avec {{lès}} hommes d’à côté, difficile de se concentrer.         ->> les
+TEST: Entre les saules et {{lès}} ifs                                   ->> les
+TEST: Les asphaltes purs d’étanchéité sont des mastics bitumineux, de même que les masses d’enrobage des lés d’étanchéité.
+TEST: Pour avoir fait de neuf une grande cage de bois de grosses solives, membrures et sablières, contenant neuf pieds de long sur huit de lé. (Victor Hugo)
+TEST: Un lé de velours, de taffetas, de toile.
+TEST: Draps de lit de deux lés.
+TEST: Elle habite Vandœuvre-lès-Nancy.
+
+
+# leurs / leur
+__conf_leurs_verbe__
+    leurs  @:(?:[123][sp]|Y)¬:[GNAM]
+    <<- /conf/ not morph(<1, ">[ld]es/")
+    -1>> leur                                       # Incohérence : “leurs” est un déterminant pluriel censé précéder un substantif pluriel. Pour le pronom personnel devant un verbe, écrivez “leur”.
+
+TEST: je vais {{leurs}} reprendre
+TEST: je {{leurs}} apprends la programmation
+TEST: après qu’un des leurs ait été gravement blessé par un tir de grenade
+
+
+# loin s’en faut
+__conf_loin_s_en_faut__
+    [loin|loins] [sens|cens|sans|>sang] [faux|faut]
+    [loin|loins] c’ en [faux|faut]
+    [loin|loins] s’ en [faux]
+    loins s’ en faut
+        <<- /conf/ ->> loin s’en faut               # Confusion probable. Cette locution s’écrit “loin s’en faut”.|https://fr.wiktionary.org/wiki/loin_s%E2%80%99en_faut
+
+TEST: Ils n’étaient guère prêts à ça, {{loins sans faux}}.
+TEST: Et les intellectuels ? En France comme ailleurs, tous n’ont pas, loin s’en faut, une pleine lucidité sur cette précarité galopante.
+
+
+# mai / mais
+__conf_mai_mais__
+    [<start>|,]  mai  @:Os¬:3s
+    <<- /conf/ -2>> mais                            # Confusion probable : “mai” est le 5ᵉ mois de l’année. Pour la conjonction de coordination, écrivez “mais”.|https://fr.wiktionary.org/wiki/mais
+
+TEST: {{mai}} il y a encore tant à faire.
+TEST: Je viendrai, {{mai}} il faudra avoir tout prévu.
+TEST: Mai pluvieux.
+
+
+# min / mins
+__conf_symbole_min__
+    ~\d+  mins
+        <<- /conf/ -2>> min                         # Les unités de mesure abrégées ne prennent pas la marque du pluriel.
+
+TEST: 120 {{Mins}} de bonheur
 
 
 # on / ont
@@ -5372,6 +5388,7 @@ TEST: ne jamais les {{cédé}}
 TEST: ne point nous {{donné}}
 TEST: ne rien {{finit}}
 TEST: ne jamais plus s’y {{frottait}}
+TEST: ne presque jamais plus s’y {{frottaient}}
 TEST: ne plus guère y {{pensée}}
 TEST: ne pas les {{contrariés}}
 TEST: Ne rien m’en {{dit}}
