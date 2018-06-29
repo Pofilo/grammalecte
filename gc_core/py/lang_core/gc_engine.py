@@ -387,6 +387,7 @@ def displayInfo (dTokenPos, tWord):
     if not lMorph:
         echo("> not in dictionary")
         return True
+    print("TOKENS:", dTokenPos)
     if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]:
         echo("DA: " + str(dTokenPos[tWord[0]]["lMorph"]))
     echo("FSA: " + str(lMorph))
@@ -410,9 +411,14 @@ def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
     "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
+
     lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
     if not lMorph:
         return False
+    if (tWord[1].startswith("noir")):
+        print(tWord)
+        print(dTokenPos)
+        print(lMorph)
     # check negative condition
     zNegPattern = re.compile(sNegPattern)
     if any(zNegPattern.search(s)  for s in lMorph):
@@ -576,6 +582,18 @@ class TokenSentence:
         self.dTags = {}
         self.dError = {}
 
+    def __str__ (self):
+        s = "sentence: " + self.sSentence0 + "\n"
+        s += "now:      " + self.sSentence  + "\n"
+        for dToken in self.lToken:
+            s += f'{dToken["nStart"]}\t{dToken["nEnd"]}\t{dToken["sValue"]}'
+            if "lMorph" in dToken:
+                s += "\t" + str(dToken["lMorph"])
+            s += "\n"
+        for nPos, dToken in self.dTokenPos.items():
+            s += f"{nPos}\t{dToken}\n"
+        return s
+
     def update (self, sSentence):
         "update <sSentence> and retokenize"
         self.sSentence = sSentence
@@ -705,6 +723,8 @@ class TokenSentence:
                         bTagAndRewrite = True
         if bTagAndRewrite:
             self.rewrite(bDebug)
+        if bDebug:
+            print(self)
         return (bTagAndRewrite, self.sSentence)
 
     def _executeActions (self, dGraph, dNode, nTokenOffset, nLastToken, dPriority, dOptions, sCountry, bShowRuleId, bDebug, bContext):
@@ -835,7 +855,7 @@ class TokenSentence:
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, bUppercase=True, bDebug=False):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
         if bDebug:
-            print("  REWRITING:", nTokenRewriteStart, nTokenRewriteEnd)
+            print("   START:", nTokenRewriteStart, "END:", nTokenRewriteEnd)
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -931,6 +951,8 @@ class TokenSentence:
                     sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
                     self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
                     del dToken["sNewValue"]
+            else:
+                del self.dTokenPos[dToken["nStart"]]
         if bDebug:
             print("  REWRITED:", self.sSentence)
         self.lToken.clear()
