@@ -160,13 +160,14 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
         if sOption == "@@@@":
             # graph rules
             if not bParagraph and bSentenceChange:
-                oSentence.update(s)
+                oSentence.update(s, bDebug)
                 bSentenceChange = False
             for sGraphName, sLineId in lRuleGroup:
                 if bDebug:
                     print("\n>>>> GRAPH:", sGraphName, sLineId)
                 bParagraphChange, s = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
                 dErrs.update(oSentence.dError)
+                dTokenPos = oSentence.dTokenPos
         elif not sOption or dOptions.get(sOption, False):
             # regex rules
             for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
@@ -178,6 +179,8 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                             try:
                                 bCondMemo = not sFuncCond or globals()[sFuncCond](s, sx, m, dTokenPos, sCountry, bCondMemo)
                                 if bCondMemo:
+                                    if bDebug:
+                                        print("RULE:", sLineId)
                                     if cActionType == "-":
                                         # grammar error
                                         nErrorStart = nOffset + m.start(eAct[0])
@@ -411,14 +414,9 @@ def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
     "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
-
     lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
     if not lMorph:
         return False
-    if (tWord[1].startswith("noir")):
-        print(tWord)
-        print(dTokenPos)
-        print(lMorph)
     # check negative condition
     zNegPattern = re.compile(sNegPattern)
     if any(zNegPattern.search(s)  for s in lMorph):
@@ -578,7 +576,7 @@ class TokenSentence:
         self.sSentence0 = sSentence0
         self.nOffsetWithinParagraph = nOffset
         self.lToken = list(_oTokenizer.genTokens(sSentence, True))
-        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken }
+        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
         self.dTags = {}
         self.dError = {}
 
@@ -594,10 +592,18 @@ class TokenSentence:
             s += f"{nPos}\t{dToken}\n"
         return s
 
-    def update (self, sSentence):
+    def update (self, sSentence, bDebug=False):
         "update <sSentence> and retokenize"
         self.sSentence = sSentence
-        self.lToken = list(_oTokenizer.genTokens(sSentence, True))
+        lNewToken = list(_oTokenizer.genTokens(sSentence, True))
+        for dToken in lNewToken:
+            if "lMorph" in self.dTokenPos.get(dToken["nStart"], {}):
+                dToken["lMorph"] = self.dTokenPos[dToken["nStart"]]["lMorph"]
+        self.lToken = lNewToken
+        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+        if bDebug:
+            print("UPDATE:")
+            print(self)
 
     def _getNextMatchingNodes (self, dToken, dGraph, dNode, bDebug=False):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
@@ -915,29 +921,30 @@ class TokenSentence:
         dTokenMerger = None
         for dToken in self.lToken:
             bKeepToken = True
-            if "bImmune" in dToken:
-                nErrorStart = self.nOffsetWithinParagraph + dToken["nStart"]
-                if nErrorStart in self.dError:
+            if dToken["sType"] != "INFO":
+                if "bImmune" in dToken:
+                    nErrorStart = self.nOffsetWithinParagraph + dToken["nStart"]
+                    if nErrorStart in self.dError:
+                        if bDebug:
+                            print("immunity -> error removed:", self.dError[nErrorStart])
+                        del self.dError[nErrorStart]
+                if nMergeUntil and dToken["i"] <= nMergeUntil:
+                    dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
+                    dTokenMerger["nEnd"] = dToken["nEnd"]
                     if bDebug:
-                        print("immunity -> error removed:", self.dError[nErrorStart])
-                    del self.dError[nErrorStart]
-            if nMergeUntil and dToken["i"] <= nMergeUntil:
-                dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
-                dTokenMerger["nEnd"] = dToken["nEnd"]
-                if bDebug:
-                    print("  MERGED TOKEN:", dTokenMerger["sValue"])
-                bKeepToken = False
-            if "nMergeUntil" in dToken:
-                if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
-                    dTokenMerger = dToken
-                if dToken["nMergeUntil"] > nMergeUntil:
-                    nMergeUntil = dToken["nMergeUntil"]
-                del dToken["nMergeUntil"]
-            elif "bToRemove" in dToken:
-                if bDebug:
-                    print("  REMOVED:", dToken["sValue"])
-                self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
-                bKeepToken = False
+                        print("  MERGED TOKEN:", dTokenMerger["sValue"])
+                    bKeepToken = False
+                if "nMergeUntil" in dToken:
+                    if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
+                        dTokenMerger = dToken
+                    if dToken["nMergeUntil"] > nMergeUntil:
+                        nMergeUntil = dToken["nMergeUntil"]
+                    del dToken["nMergeUntil"]
+                elif "bToRemove" in dToken:
+                    if bDebug:
+                        print("  REMOVED:", dToken["sValue"])
+                    self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
+                    bKeepToken = False
             #
             if bKeepToken:
                 lNewToken.append(dToken)
@@ -952,7 +959,12 @@ class TokenSentence:
                     self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
                     del dToken["sNewValue"]
             else:
-                del self.dTokenPos[dToken["nStart"]]
+                try:
+                    del self.dTokenPos[dToken["nStart"]]
+                except:
+                    print(self)
+                    print(dToken)
+                    exit()
         if bDebug:
             print("  REWRITED:", self.sSentence)
         self.lToken.clear()
