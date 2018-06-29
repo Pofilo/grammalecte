@@ -54,9 +54,9 @@ class Tokenizer:
         "generator: tokenize <sText>"
         i = 0
         if bStartEndToken:
-            yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0 }
+            yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0, "lMorph": ["<start>"] }
         for i, m in enumerate(self.zToken.finditer(sText), 1):
             yield { "i": i, "sType": m.lastgroup, "sValue": m.group(), "nStart": m.start(), "nEnd": m.end() }
         if bStartEndToken:
             iEnd = len(sText)
-            yield { "i": i+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd }
+            yield { "i": i+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, , "lMorph": ["<end>"] }
