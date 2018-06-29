@@ -487,7 +487,7 @@ __[s](p_mot_entre_crochets)__
     \[({w_1})\] @@1
     <<- \1.isdigit() ~>> *
     <<- __else__ and morph(\1, ":G", False) ~>> =" " + \1 + " "
-    <<- __else__ and \1.isalpha() ~>> _
+    <<- __else__ and \1.isalpha() ~>> " _"
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
     <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
@@ -4952,7 +4952,7 @@ __conj_xxxas_xxxes__sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~[ae]s$  ~¬[tT]u
-        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
+        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
 
@@ -5400,11 +5400,13 @@ __purge_dates__
     en  l’  an  de  grâce  ~\d{2,5}
     en  {mois}  ~\d{2,5}
     [de|d’|D’]  {mois}  ~\d{2,5}
+    à  la  {mi_mois}    ?~\d{2,5}¿
+        <<- ~>> *
+
     en  ~\d{2,5}  [,|<end>]
     en  ~\d{2,5}  @:¬:[AN].*:[pi]
     de  ~\d{2,5}  @:A.*:s
-    à  la  {mi_mois}    ?~\d{2,5}¿
-        <<- ~>> *
+        <<- ~1:2>> *
 
 TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
 TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
@@ -5447,7 +5449,7 @@ __purge_début_phrase__
     <start>  or  donc
     <start>  puis
     [<start>|,] grand bien lui fasse
-        <<- ~1:0>> *
+        <<- ~2:0>> *
 
 
 __purge_horaires_et_durée__
@@ -6752,7 +6754,7 @@ __purge_conditionnelle__
         <<- ~>> *
 
     <start> bien entendu
-        <<- ~>> *
+        <<- ~2:0>> *
 
     bien entendu
         <<- morph(<1, ":[NAQR]|>que?/") ~>> *
