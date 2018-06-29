@@ -113,7 +113,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                 dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
         # Parse actions
-        for iAction, sAction in enumerate(sActions.split(" <<- "), 1):
+        for iAction, sAction in enumerate(sActions.split(" <<- ")):
             sAction = sAction.strip()
             if sAction:
                 sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction) + "_" + str(len(lToken))
@@ -344,6 +344,8 @@ def make (lRule, dDef, sLang, bJavaScript):
         # Debugging
         #print("\nGRAPH:", sGraphName)
         #for e in lPreparedRule:
+        #    if e[-2] == "##4239":
+        #        print(e)
         #    print(e)
         #for k, v in dAllGraph[sGraphName].items():
         #    print(k, "\t", v)
