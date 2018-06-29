@@ -4230,67 +4230,6 @@ __[u]/conf(conf_symbole_min)__  \d+ (mins) @@$ <<- -1>> min                     
 TEST: 120 {{Mins}} de bonheur
 
 
-# on / ont
-__[i]/conf(conf_on_ont_adverbe)__
-    (?<!’)(on) ({w_2})  @@0,3
-    <<- morphex(\2, ":W", ":3s") and not morph(word(-1), ":V.*:3s", False, False) -1>> ont          # Confusion probable : “avoir” à la 3ᵉ personne du pluriel du présent s’écrit “ont”.
-
-TEST: ces gens {{on}} {{souvent}} tort.
-TEST: Je voulais qu’on soit ensemble.
-
-
-# peu / peux / peut / peut-être
-__[i]/conf(conf_peut_adv)__
-    (?<![dDuUnN][eEnN] )(peu) (?:pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement) @@0
-    <<- not before("très +$") -1>> peut                                     # Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez :
-__[i]/conf(conf_il_ce_peut_être)!6__
-    ^ *(?:il|ce) (peut-être) @@$
-    <<- -1>> peut être                                                      # Confusion probable : « peut-être » signifie « possiblement ».
-__[i]/conf(conf_cela_peut_être_adj)__
-    ^ *(?:cela|ceci) (peut-être) ({w_2})  @@w,$
-    <<- morph(\2, ":[AQ]", False) -1>> peut être                            # Confusion probable : « peut-être » signifie « possiblement ».
-__[i]/conf(conf_peu_à_peu)__
-    peu[xt]? a peu[xt]?
-    <<- ->> peu à peu                                                       # Confusion : « peu à peu » ou « petit à petit ».
-__[i]/conf(conf_peu_importe)__
-    (peu[tx]) importe(?:nt|) @@w
-    <<- morph(word(-1), ":C", False, True) -1>> peu                         # Confusion : « \1 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
-__[i]/conf(conf_adv_de_peu)!6__
-    (?:très|trop|de|quelque|pour|à) (peu[tx]) @@$
-    <<- -1>> peu                                                            # Confusion : « \1 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
-__[i]/conf(conf_un_peu)!6__
-    un (peu[xt]) @@3
-    <<- not before("(?i)(?:quelqu|l|d)’") -1>> peu                          # Confusion : « \1 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
-__[i]/conf(conf_il_on_ne_peut)!6__
-    (?:il|on) (?:ne |)(peu) @@$
-    <<- -1>> peut                                                           # Confusion : « peu » signifie « pas beaucoup ».
-__[i]/conf(conf_je_tu_peux)!6__
-    (?:je|tu) (?:ne |)(peu)
-    @@$ <<- -1>> peux                                                       # Confusion : « peu » signifie « pas beaucoup ».
-__[i]/conf(conf_ne_se_peut)!6__
-    [ns]e (peu) @@3
-    <<- -1>> peut                                                           # Confusion. Exemples : Il est peu habile, mais il peut y arriver.
-__[i]/conf(conf_peu_adj)__
-    (peu[tx]) ({w_2})  @@0,$
-    <<- morph(\2, ":A") and not re.search("(?i)^seule?s?$", \2) and not before(r"(?i)\b(?:il|on|ne|je|tu) +$")
-    -1>> peu                                                                # Confusion probable : « \1 » est une conjugaison de « pouvoir », utilisez « peu ».
-
-TEST: {{peu}} rarement y arriver.
-TEST: Il est un {{peut}} comme une forêt
-TEST: Il {{peut-être}} mortel.
-TEST: Cela {{peut-être}} mortel.
-TEST: cela ne se {{peu}}.
-TEST: des bâtisses {{peu a peu}} abandonnées.
-TEST: aucun pays – ou très peu alors – n’a réussi à faire ça de façon durable
-TEST: Mais {{peut}} importe le rang.
-TEST: homme de {{peut}} de foi, écoute le vent.
-TEST: Il en vient un {{peut}} tous les jours.
-TEST: {{peut}} sympathique, cet individu.
-TEST: il {{peu}} y parvenir
-TEST: tu ne {{peu}} en savoir plus
-TEST: {{peut}} {{embarrassés}} par leurs déboires, ils poursuivirent comme si de rien n’était.
-
-
 
 
 @@@@
@@ -4315,7 +4254,7 @@ TEST: ce {{code legacy}} est un cauchemar
 
 __être_en_xxxx__
     [>être|>rester|>demeurer] an [désaccord|accord]
-        <<- -2>> en                                                                                 # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
+        <<- /conf/ -2>> en                                                                          # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
 
 TEST: Je suis {{an}} désaccord avec lui.
 
@@ -4331,45 +4270,55 @@ TEST: Ça me fait {{plaisirs}}.
 # la plupart
 __conf_la_plupart__
     la [plus|plue|plues|plut|plût|plu] [part|parts|par|pare|pares]
-        <<- -2:3>> plupart                                                  # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
+        <<- /conf/ -2:3>> plupart                                               # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
 
     la [plus-part|plus-parts|plus-par|plus-pare|plus-pares]
     la [plues-part|plues-parts|plues-par|plues-pare|plues-pares]
     la [plut-part|plut-parts|plut-par|plut-pare|plut-pares]
     la [plût-part|plût-parts|plût-par|plût-pare|plût-pares]
     la [plu-part|plu-parts|plu-par|plu-pare|plu-pares]
-        <<- -2>> plupart                                                    # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
+        <<- /conf/ -2>> plupart                                                 # Confusion. Écrivez « la plupart » pour évoquer la majeure partie de quelque chose.
 
 TEST: la {{plus part}}
 TEST: la {{plu-part}}
 
 
+# on / ont
+__conf_on_ont__
+    on  @:W¬:3s
+        <<- /conf/ not morph(<1, ":V.*:3s") and not before0("’$")
+        -1>> ont                                            # Confusion probable : “avoir” à la 3ᵉ personne du pluriel du présent s’écrit “ont”.
+
+TEST: ces gens {{on}} {{souvent}} tort.
+TEST: Je voulais qu’on soit ensemble.
+
+
 # ou / où
 __conf_où_ou__
     <start>  Ou  @:3[sp]¬:Y
-        <<- -2>> Où                                     # Confusion probable. La conjonction “ou” signale une alternative. Utilisez “où” pour “en quel lieu”.
+        <<- /conf/ -2>> Où                                  # Confusion probable. La conjonction “ou” signale une alternative. Utilisez “où” pour “en quel lieu”.
 
     au moment (ou)
     [jusqu’|jusqu] (ou)
     par (ou)
     d’ (ou)
-        <<- -1>> où                                     # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+        <<- /conf/ -1>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     vers ou
-        <<- not morph(<1, ":D") -2>> où                 # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+        <<- /conf/ not morph(<1, ":D") -2>> où              # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     [au|le|des] cas ou
-        <<- -3>> où                                     # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+        <<- /conf/ -3>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     à partir du [lieu|moment|jour|mois]     (ou)
     à partir de l’ [instant|année|heure]    (ou)
     à partir de la [minute|semaine|seconde] (ou)
-        <<- -1>> où                                     # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+        <<- /conf/ -1>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     depuis le [jour|millénaire|moment|mois|siècle] ou
     depuis la [minute|semaine|seconde] ou
     depuis l’ [année|heure|instant] ou
-        <<- -4>> où                                     # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+        <<- /conf/ -4>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
 TEST: {{Ou}} sont tes affaires ?
 TEST: au moment {{ou}} elle allait enfin réussir
@@ -4385,11 +4334,11 @@ TEST: depuis le jour {{ou}} il a été blessé.
 # pale / pâle
 __conf_pâle_pale__
     [bien|très|trop|si|vraiment|tellement] >pale
-        <<- -2>> =\2.replace("pal", "pâl")
+        <<- /conf/ -2>> =\2.replace("pal", "pâl")
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
     >pale [>imitation|>imitatrice|>rayon]
-        <<- -1>> =\1.replace("pal", "pâl")
+        <<- /conf/ -1>> =\1.replace("pal", "pâl")
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
 TEST: elles sont si {{pales}}.
@@ -4405,6 +4354,62 @@ __conf_par_dessus__
 TEST: {{Pardessus}} les montagnes.
 TEST: Il passa {{pardessus}} les collines.
 TEST: Mets ton pardessus ce matin.
+
+
+# peu / peux / peut / peut-être
+__conf_peu_peut_peux_peut_être!6__
+    peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
+        <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)") -1>> peut         # Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez :
+
+    [peu-être|peux-être]
+        <<- /conf/ ->> peut-être                                            # Confusion. Écrivez « peut-être », qui signifie « possiblement ».
+
+    <start>  [il|ce|ne]  peut-être
+        <<- /conf/ -3>> peut être                                           # Confusion probable : « peut-être » signifie « possiblement ».
+
+    <start>  [cela|ceci|ça]  peut-être  @:[AQ]
+        <<- /conf/ -3>> peut être                                           # Confusion probable : « peut-être » signifie « possiblement ».
+
+    [peux|peut|peu] a [peux|peut|peu]
+    [peux|peut|peu] à [peux|peut]
+        <<- /conf/ ->> peu à peu                                            # Confusion : « peu à peu » ou « petit à petit ».
+
+    [peux|peut] [importent|importe]
+        <<- /conf/ morph(<1, ":C|<start>") -1>> peu                         # Confusion : « \1 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
+
+    [très|trop|de|quelque|pour|à] [peux|peut]
+        <<- /conf/ -2>> peu                                                 # Confusion : « \2 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
+
+    un  [peux|peut]
+        <<- /conf/ not before("(?i)(?:(?:quelqu|l|d)’|sauf +)") -2>> peu    # Confusion : « \2 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
+
+    [il|on] ?[ne|n’]¿ (peu)
+        <<- /conf/ -1>> peut                                                # Confusion : « peu » signifie « pas beaucoup ».
+
+    [je|tu] ?[ne|n’]¿ (peu)
+        <<- /conf/ -1>> peux                                                # Confusion : « peu » signifie « pas beaucoup ».
+
+    [ne|se|n’|s’] peu
+        <<- /conf/ -2>> peut                                                # Confusion. Exemples : Il est peu habile, mais il peut y arriver.
+
+    [peut|peux]  @:A¬:(?:[MGWYX]|3[sp])
+        <<- /conf/ not morph(\2, ">seule") and not morph(<1, ">(?:je|tu|il|on|ne)")
+        -1>> peu                                                            # Confusion probable : « \1 » est une conjugaison de « pouvoir », utilisez « peu ».
+
+TEST: {{peu}} rarement y arriver.
+TEST: Il est un {{peut}} comme une forêt
+TEST: Il {{peut-être}} mortel.
+TEST: Cela {{peut-être}} mortel.
+TEST: cela ne se {{peu}}.
+TEST: des bâtisses {{peu a peu}} abandonnées.
+TEST: aucun pays – ou très peu alors – n’a réussi à faire ça de façon durable
+TEST: Mais {{peut}} importe le rang.
+TEST: homme de {{peut}} de foi, écoute le vent.
+TEST: Il en vient un {{peut}} tous les jours.
+TEST: {{peut}} sympathique, cet individu.
+TEST: il {{peu}} y parvenir
+TEST: tu ne {{peu}} en savoir plus
+TEST: {{peut}} {{embarrassés}} par leurs déboires, ils poursuivirent comme si de rien n’était.
 
 
 # pot aux roses / poteau rose
