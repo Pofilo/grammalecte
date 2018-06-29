@@ -910,9 +910,9 @@ TEST: __liga__ une belle {{ﬁ}}gure                                        ->> 
 !!
 ## Apostrophe typographique
 __[i>/apos(apostrophe_typographique)__
-    ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`](?=[\w"«]) @@0 <<- ->> \1’    # Apostrophe typographique.
+    ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`ʼ](?=[\w"«]) @@0 <<- ->> \1’    # Apostrophe typographique.
 __[i>/apos(apostrophe_typographique_après_t)__
-    t['´‘′`](?!ils?|elles?|on)(?=[\w"«]) <<- ->> t’                                                         # Apostrophe typographique.
+    t['´‘′`ʼ](?!ils?|elles?|on)(?=[\w"«]) <<- ->> t’                                                         # Apostrophe typographique.
 
 TEST: {{C'}}est l’apostrophe typographique qui manque.                    ->> C’
 TEST: C’est {{l'}}apostrophe typographique qui manque.                    ->> l’
@@ -922,7 +922,7 @@ TEST: Que {{t'}}arrive-t-il ?
 
 
 __[i>/typo(typo_apostrophe_incorrecte)__
-    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`][’'´‘′` ]|”|“|"| [’'´‘′`] ?))[aeéiouhœæyîèêôû]  @@0,0
+    (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`ʼ][’'´‘′`ʼ ]|”|“|"| [’'´‘′`ʼ] ?))[aeéiouhœæyîèêôû]  @@0,0
     <<- not (\2.__len__() == 1  and  \1.endswith("′ ")) -1>> \2’                                    # Apostrophe incorrecte.
 
 TEST: {{C’ }}est rageant.                                                 ->> C’
@@ -2087,6 +2087,9 @@ __[i](d_par_non_verbe)__
 __[i](d_très_non_verbe)__
     très +({w_2}) @@$
     <<- =>> exclude(\1, ":[123][sp]")
+__[i](d_en_tant_que)__
+    en tant que +({w_2}) @@$
+    <<- =>> exclude(\1, ":[123][sp]")
 
 # divers
 __[i](p_bac_plus_nombre)__
@@ -2098,6 +2101,7 @@ __[i](p_bac_plus_nombre)__
 TEST: il s’agit d’{{un}} {{anagramme}}
 TEST: nul ne sait qui arriva à ce pauvre Paul surpris par la pluie.
 TEST: elle finit par être très fière de son fils.
+TEST: en tant que président du conseil
 
 
 
