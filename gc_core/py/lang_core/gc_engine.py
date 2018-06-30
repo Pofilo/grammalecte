@@ -974,6 +974,12 @@ class TokenSentence:
 
 #### Analyse tokens
 
+def g_value (dToken, sValues, nLeft=None, nRight=None):
+    "test if <dToken['sValue']> is in sValues (each value should be separated with |)"
+    sValue = "|"+dToken["sValue"]+"|"  if nLeft is None  else "|"+dToken["sValue"][slice(nLeft, nRight)]+"|"
+    return sValue in sValues
+
+
 def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
     "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
     if "lMorph" in dToken:
