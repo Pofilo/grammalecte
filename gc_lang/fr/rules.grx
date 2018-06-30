@@ -3882,176 +3882,10 @@ TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
 
 
-# compte / comte / conte
-__[i]/conf(conf_à_bon_compte)__
-    à bon (co[nm]te)  @@$
-    <<- -1>> compte                                                             # Confusion. Locution “à bon compte”.|https://fr.wiktionary.org/wiki/%C3%A0_bon_compte
-__[i]/conf(conf_à_ce_compte_là)__
-    à ce (co[nm]te)-là  @@*
-    <<- -1>> compte                                                             # Confusion probable. Locution “à ce compte-là”.|https://fr.wiktionary.org/wiki/%C3%A0_ce_compte-l%C3%A0
-__[i]/conf(conf_compte)__
-    (co[mn]tes?)[ -](à (?:rebours|découvert|terme)|bancaires?|des opérations|tenus?|rendus?|joints?|courants?|chèques?) @@0,$
-    <<- not \1.startswith("tenu") or isStart() -1>> compte|comptes              # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :
-__[i]/conf(conf_en_fin_de_compte)__
-    en (f(?:aim|in)s?|lignes?) de co[nm]tes?  @@w
-    <<- \1.startswith("f") ->> en fin de compte                                 # Confusion. Locution “en fin de compte”.|https://fr.wiktionary.org/wiki/en_fin_de_compte
-    <<- \1.startswith("l") ->> en ligne de compte                               # Confusion. Locution “en ligne de compte”.|https://fr.wiktionary.org/wiki/en_ligne_de_compte
-__[i]/conf(conf_la_cour_des_comptes)__
-    la cour des (co[nm]tes)  @@$
-    <<- -1>> comptes                                                            # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :
-__[i]/conf(conf_loin_du_compte)__
-    loin du (co[mn]te)  @@$
-    <<- -1>> compte                                                             # Confusion. Locution “loin du compte”.|https://fr.wiktionary.org/wiki/loin_du_compte
-__[i]/conf(règlement_de_comptes)__
-    r[éè]glements? de (co[mn]tes?)  @@$
-    <<- -1>> comptes                                                            # Confusion.|https://fr.wiktionary.org/wiki/r%C3%A8glement_de_comptes
-__[i]/conf(régler_son_compte)__
-    (r[éè]gl\w+) +(?:[mts]on|leurs?|[vn]otre) (co[mn]tes?)  @@0,$
-    <<- morph(\1, ">régler/", False) -2>> compte                                # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez :|https://fr.wiktionary.org/wiki/r%C3%A9gler_son_compte
-__[i]/conf(conf_tout_compte_fait)__
-    tout (co[mn]te) fait  @@w
-    <<- -1>> compte                                                             # Confusion. Locution “tout compte fait”.|https://fr.wiktionary.org/wiki/tout_compte_fait
-
-TEST: il s’en est tiré à bon {{conte}}.
-TEST: à ce {{conte}}-là, il ne va pas faire long feu.
-TEST: mon {{comte}} bancaire est encore à sec.
-TEST: {{comte}} tenu du dysfonctionnement du moteur
-TEST: mais {{en fin de comte}}, ce n’était qu’une arnaque de plus.
-TEST: Rien de tout ceci n’entre {{en ligne de conte}}.
-TEST: la cour des {{contes}} publie un nouveau rapport.
-TEST: Ils sont encore tous deux loin du {{conte}}.
-TEST: Elle a l’impression d’être laissée pour {{comte}}.
-TEST: C’est un règlement de {{comte}} entre voyous.
-TEST: on va lui régler son {{conte}}, à cet enculé.
-TEST: tout {{conte}} fait, ça reste un salopard.
 
 
-__[i]/conf(conf_conte_de_fée)__
-    (comp?tes?) (?:de (?:bonnes? femmes?|fées?)|allégoriques?|fantastiques?|littéraires?|merveilleux|mora(?:l|ux)|ora(?:l|ux)|populaires?|satiriques?|traditionnels?|véhiculés?|et légendes?)  @@0
-    <<- -1>> conte|contes                                                       # Confusion probable. Si vous parlez d’un récit, écrivez :|https://fr.wiktionary.org/wiki/conte
-
-TEST: Encore un {{comte}} de fée, assez de ces fadaises !
-TEST: c’est un {{compte}} allégorique.
-TEST: {{Comptes}} et légendes des Terres du Milieu.
-TEST: ce sont des {{comptes}} de bonnes femmes
-TEST: Elle parla au comte d’amour, mais il fit mine de n’y rien entendre.
 
 
-# date / datte
-__[i]/conf(conf_date1)__
-    dates
-    <<- after("(?i)^ +(?:fra[iî]ches|dénoyautées|fourrées|sèches|séchées|cultivées|produites|muscade|medjool|Hamraya|deglet[ -]nour|kenta|allig|khouat)")
-        or before(r"(?i)\b(?:confiture|crème|gâteau|mélasse|noyau|pâte|recette|sirop)[sx]? de +$|\b(?:moelleux|gateau|fondant|cake)[sx]? aux +$")
-    ->> dattes                                                                              # Confusion probable : le fruit s’écrit avec deux “t”.
-
-TEST: il va faire un cake aux {{dates}}.
-TEST: elle a fait de la confiture de {{dates}}
-TEST: Elles étaient à cette date cultivées à l’air libre.
-TEST: De fraîche date…
-
-
-# d’en / dans
-__[i]/conf(conf_dans1)__
-    (d’en|dan) (?:l(?:es?|a)|une?|d(?:es?|u)|[mts](?:on|a|es)|[nv]o(?:tre|s)|ce(?:tte|t|s|))  @@0
-    <<- \1.endswith("en") or isRealStart() -1>> dans                                # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
-__[i]/conf(conf_dans2)__
-    ^ *(dents?) (?:l(?:es?|a)|une?|[mts](?:on|a|es)|[nv]o(?:tre|s)|ce(?:tte|t|s|))  @@*
-    <<- -1>> dans                                                                   # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
-
-TEST: {{dan}} la voiture
-TEST: ils sont partis {{d’en}} une direction différente
-TEST: {{dents}} les montagnes au loin.
-
-
-# davantage / d’avantage
-__[i]/conf(conf_d_avantages)__
-    (?:peu|plein|beaucoup|trop|plus|moins|assez|suffisamment|tellement|obtentions?|régimes?) (davantage)  @@$
-    <<- -1>> d’avantages                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
-__[i]/conf(conf_être_davantage_ppas)__
-    ({etre}) (d’avantages?) ({w_2}) @@0,w,$
-    <<- morph(\1, ":V0e", False) and morphex(\3, ":[NAQ]", ":G") -2>> davantage     # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
-__[i]/conf(conf_davantage1)__
-    ({w1}) (d’avantages?) @@0,$
-    <<- morphex(\1, ":V", ":Q|>(?:profiter|bénéficier|nombre)/") and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/", False, False)
-    -2>> davantage                                                                  # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
-__[i]/conf(conf_davantage2)__
-    ({w_1})-(?:je|tu|ils?|elles?|[nv]ous|on) +(d’avantages?) @@0,$
-    <<- not morph(\1, ">(?:profiter|bénéficier)/", False) and not morph(word(1), ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/", False, False)
-    -2>> davantage                                                                  # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
-__[i>/conf(conf_davantage3)__
-    (d’avantages?) d(?:e +|’) @@0
-    <<- -1>> davantage                                                              # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
-
-TEST: ils ont peu {{davantage}} à vivre ici.
-TEST: Ils s’exerceront {{d’avantages}}.
-TEST: {{d’avantage}} de monde de jour en jour
-TEST: Viens-tu {{d’avantage}} à la maison
-TEST: {{d’avantage}} de monde viendra
-TEST: ils sont {{d’avantages}} perdus que les autres.
-TEST: tout ce qu’il apporte d’avantages pécuniaires.
-TEST: un certain nombre d’avantages sociaux.
-
-
-# différend / différent
-__[i]/conf(conf_différent)__
-    différends?
-    <<- morph(word(-1), ":W", False, False) ->> =\0.replace("end", "ent")           # Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez :
-__[i]/conf(conf_différend1)__
-    (?:mon|[vn]otre|leur) +(différent) @@$
-    <<- morphex(word(1), ":[GVX]", ":[NAQ]", True)
-    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_différend2)__
-    [ts]on +(différent) @@$
-    <<- morphex(word(1), ":[GVX]", ":[NAQ]", True) and not morph(word(-1), ":D", False, False)
-    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_un_différend)__
-    un (différent)  @@3
-    <<- morphex(word(1), ":[GV]", ":[NAQ]", False)
-    -1>> différend                                          # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_différends)__
-    (?:leurs|[mts]es|[nv]os) (différents) @@$
-    <<- morphex(word(1), ":[GV]", ":[NAQ]", True)
-    -1>> différends                                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_les_différends)__
-    (?:[ld]es) (différents) @@$
-    <<- morphex(word(1), ":G", ":[NAQ]", False)
-    -1>> différends                                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-__[i]/conf(conf_être_différent)__
-    ({etre}) +(?:pas +|)(?:si +|)(différends?)  @@0,$
-    <<- morph(\1, ":V0e", False)
-    -2>> =\2.replace("nd", "nt")                            # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
-
-TEST: Très {{différends}} de nous, ces gens-là !
-TEST: Régler votre {{différent}}.
-TEST: Notre {{différent}} avec eux perdure.
-TEST: Un {{différent}} peut toujours se résoudre.
-TEST: J’en ai marre de leurs {{différents}}.
-TEST: Il y a des {{différents}} que nul ne saurait résoudre.
-TEST: ce qui l’occupe, c’est son {{différent}} avec eux.
-TEST: Ils sont pas {{différends}} de nous.
-TEST: Cette fois, il parla avec un ton différent.
-TEST: J’en veux un différent.
-TEST: dans ses différents ouvrages
-TEST: dans ses différents postes gouvernementaux
-
-
-# eh bien, hé bien / et bien
-__[i]/conf(conf_eh_bien)__
-    et bien(?! que?| sûr| d’autres| entendu| avant| souvent| longtemps| des| moins| plus| au-delà)
-    <<- isStart() and not morph(word(1), ":[WAY]", False, False)
-    ->> eh bien|hé bien                                     # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=h%C3%A9&T3.x=0&T3.y=0
-__[i]/conf(conf_eh_ben)__
-    et (ben)  @@3
-    <<- not \1.startswith("B")
-    ->> eh ben|hé ben                                       # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=h%C3%A9&T3.x=0&T3.y=0
-
-TEST: {{et bien}} il y aura des pertes
-TEST: {{et ben}} on n’en sait rien.
-TEST: nous y songions, et bien au-delà des considérations habituelles.
-TEST: une image bien plus colorée, et bien plus intense, de la vie.
-TEST: Toutes ces questions, et bien d’autres, sont vues aujourd’hui dans le paradigme quantitatif de la monnaie, des taux de change flottants et de la monnaie administrée.
-TEST: et bien manger, c’est important.
-TEST: il a été vaincu, et bien vaincu.
 
 
 
@@ -4082,7 +3916,7 @@ TEST: ce {{code legacy}} est un cauchemar
 
 __faire_plaisir__
     >faire plaisirs
-        <<- -2>> plaisir                                                                            # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
+        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
         <<- ~2>> *
 
 TEST: Ça me fait {{plaisirs}}.
@@ -4093,6 +3927,206 @@ TEST: Ça me fait {{plaisirs}}.
 !!!! Confusions                                                                                   !!
 !!
 !!
+
+
+# compte / comte / conte
+__conf_compte__
+    à bon [>conte|comte|comtes]
+        <<- /conf/ -3>> compte                                  # Confusion. Locution “à bon compte”.|https://fr.wiktionary.org/wiki/%C3%A0_bon_compte
+
+    à ce [conte-là|comte-là]
+        <<- /conf/ -3>> compte-là                               # Confusion probable. Locution “à ce compte-là”.|https://fr.wiktionary.org/wiki/%C3%A0_ce_compte-l%C3%A0
+
+    [comte|comtes|>conte] à [rebours|découvert|terme]
+    [comte|comtes|>conte] [>bancaire|rendu|rendus|joint|joints|courant|courants|>chèques]
+    [comte|comtes|>conte] des opérations
+        <<- /conf/ -1>> compte|comptes                          # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
+
+    [<start>|,] comte tenu
+        <<- /conf/ -2>> compte                                  # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
+
+    en [>fin|>faim] de [comte|comtes|>conte]
+        <<- /conf/ ->> en fin de compte                         # Confusion. Locution “en fin de compte”.|https://fr.wiktionary.org/wiki/en_fin_de_compte
+
+    en >ligne de [comte|comtes|>conte]
+        <<- /conf/ ->> en ligne de compte                       # Confusion. Locution “en ligne de compte”.|https://fr.wiktionary.org/wiki/en_ligne_de_compte
+
+    la cour des [contes|comtes]
+        <<- /conf/ -4>> comptes                                 # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
+
+    loin du comte ~¬[A-ZÉÈ]
+    loin du conte
+        <<- /conf/ -3>> compte                                  # Confusion. Locution “loin du compte”.|https://fr.wiktionary.org/wiki/loin_du_compte
+
+    [>réglement|>règlement] de [>conte|comte|comtes]
+        <<- /conf/ -3>> comptes                                 # Confusion.|https://fr.wiktionary.org/wiki/r%C3%A8glement_de_comptes
+
+    >régler  [mon|ton|son|notre|votre|leur|leurs]  [comte|comtes|>conte]
+        <<- /conf/ -3>> compte      # Confusion. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.|https://fr.wiktionary.org/wiki/r%C3%A9gler_son_compte
+
+    tout [comte|conte] fait
+        <<- /conf/ -2>> compte                                  # Confusion. Locution “tout compte fait”.|https://fr.wiktionary.org/wiki/tout_compte_fait
+
+TEST: il s’en est tiré à bon {{conte}}.
+TEST: à ce {{conte-là}}, il ne va pas faire long feu.
+TEST: mon {{comte}} bancaire est encore à sec.
+TEST: {{comte}} tenu du dysfonctionnement du moteur
+TEST: mais {{en fin de comte}}, ce n’était qu’une arnaque de plus.
+TEST: Rien de tout ceci n’entre {{en ligne de conte}}.
+TEST: la cour des {{contes}} publie un nouveau rapport.
+TEST: Ils sont encore tous deux loin du {{conte}}.
+TEST: Elle a l’impression d’être laissée pour {{comte}}.
+TEST: C’est un règlement de {{comte}} entre voyous.
+TEST: on va lui régler son {{conte}}, à cet enculé.
+TEST: tout {{conte}} fait, ça reste un salopard.
+
+
+__conf_conte_de_fée__
+    [comte|comtes|>compte] de bonnes femmes
+    [comte|comtes|>compte] de >fée
+    [comte|comtes|>compte] [>allégorique|>fantastique|>littéraire|merveilleux|moral|moraux|oral|oraux|>populaire|>satirique|>traditionnelle]
+    [comte|comtes|>compte] et >légende
+        <<- /conf/ -1>> conte|contes                                                # Confusion probable. Si vous parlez d’un récit, écrivez :|https://fr.wiktionary.org/wiki/conte
+
+TEST: Encore un {{comte}} de fée, assez de ces fadaises !
+TEST: c’est un {{compte}} allégorique.
+TEST: {{Comptes}} et légendes des Terres du Milieu.
+TEST: ce sont des {{comptes}} de bonnes femmes
+TEST: Elle parla au comte d’amour, mais il fit mine de n’y rien entendre.
+
+
+# dans / d’en
+__conf_dans_dan_d_en__
+    d’ en [le|la|l’|les|de|d’|des|du|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces]
+        <<- /conf/ -1:2>> dans                                                      # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
+
+    <start>  [>dent|dan]  [le|la|l’|les|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces]
+        <<- /conf/ -2>> dans                                                        # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
+
+TEST: {{dan}} la voiture
+TEST: ils sont partis {{d’en}} une direction différente
+TEST: {{dents}} les montagnes au loin.
+TEST: Dents de la mer.
+
+
+# date / datte
+__conf_date_datte__
+    [>confiture|>crème|>gâteau|>mélasse|>noyau|>pâte|>recette|>sirop]  de >date
+    [moelleux|>gâteau|>fondant|>cake] [au|aux]  >date
+        <<- /conf/ -3>> dattes                                                      # Confusion probable : le fruit s’écrit avec deux “t”.
+
+    >date [>fraîche|>fraiche|>dénoyautée|>fourrée|>sèche|>séchée|>cultivée|produite|produites|>muscade|medjool|hamraya|deglet-nour|kenta|allig|khouat]
+        <<- /conf/ -1>> =\1.replace("ate", "atte").replace("ATE", "ATTE")           # Confusion probable : le fruit s’écrit avec deux “t”.
+
+TEST: il va faire un cake aux {{dates}}.
+TEST: elle a fait de la confiture de {{dates}}
+TEST: Elles étaient à cette date cultivées à l’air libre.
+TEST: De fraîche date…
+
+
+# davantage / d’avantage
+__conf_davantage_d_avantages__
+    [peu|plein|beaucoup|trop|plus|moins|assez|suffisamment|tellement|>obtention|>régime]  davantage
+        <<- /conf/ -2>> d’avantages                                                 # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    >être  d’  >avantage  @:[NAQ]¬:G
+        <<- /conf/ -2:3>> davantage                                                 # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    @:V  d’ >avantage
+        <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    ~-(?:je|tu|il|on)  d’  >avantage
+        <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -3) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    ~-ils  d’ >avantage
+        <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -4) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    ~-(?:elle|nous|nous)  d’  >avantage
+        <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -5) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    ~-elles  d’  >avantage
+        <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -6) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+    d’ >avantage [de|d’]
+        <<- /conf/ -1:2>> davantage                                                 # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
+
+TEST: ils ont peu {{davantage}} à vivre ici.
+TEST: Ils s’exerceront {{d’avantages}}.
+TEST: {{d’avantage}} de monde de jour en jour
+TEST: Viendras-tu {{d’avantage}} à la maison
+TEST: {{d’avantage}} de monde viendra
+TEST: ils sont {{d’avantages}} perdus que les autres.
+TEST: il en faut {{d’avantages}}.
+TEST: tout ce qu’il apporte d’avantages pécuniaires.
+TEST: un certain nombre d’avantages sociaux.
+TEST: ils ont tant d’avantages.
+
+
+# différend / différent
+__conf_différent_différend__
+    >différend
+        <<- /conf/ morph(<1, ":W") ->> =\1.replace("end", "ent")        # Confusion probable : “un différend” est un désaccord. Pour l’adjectif qualifiant une différence, écrivez “différent”.
+
+    [mon|notre|votre|leur]  différent  @:[GVX]¬:[NAQ]
+    [mon|notre|votre|leur]  différent  <end>
+        <<- /conf/ -2>> différend                                       # Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+
+    [ton|son]  différent  @:[GVX]¬:[NAQ]
+    [ton|son]  différent  <end>
+        <<- /conf/ not morph(<1, ":D") -2>> différend                   # Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+
+    un  différent  @:[GV]¬:[NAQ]
+        <<- /conf/ -2>> différend                                       # Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+
+    [mes|tes|ses|nos|vos|leurs]  différents  @:[GV]¬:[NAQ]
+    [mes|tes|ses|nos|vos|leurs]  différents  <end>
+        <<- /conf/ -2>> différends                                      # Confusion probable : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+
+    [les|des]  différents  @:G¬:[NAQ]
+    les  différents  <end>
+        <<- /conf/ -2>> différends                                      # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+
+    >être  ?[pas|si]¿   (>différends)
+    >être  pas  si      (>différends)
+        <<- /conf/ -1>> =\1.replace("nd", "nt")                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+
+TEST: Très {{différends}} de nous, ces gens-là !
+TEST: Régler votre {{différent}}.
+TEST: Notre {{différent}} avec eux perdure.
+TEST: Un {{différent}} peut toujours se résoudre.
+TEST: J’en ai marre de leurs {{différents}}.
+TEST: Il y a des {{différents}} que nul ne saurait résoudre.
+TEST: ce qui l’occupe, c’est son {{différent}} avec eux.
+TEST: Ils sont pas si {{différends}} de nous.
+TEST: Cette fois, il parla avec un ton différent.
+TEST: J’en veux un différent.
+TEST: Il en veut des différents.
+TEST: dans ses différents ouvrages
+TEST: dans ses différents postes gouvernementaux
+
+
+# eh bien, hé bien / et bien
+__conf_eh_bien__
+    [<start>|,]  et  bien
+        <<- /conf/ not value(>1, "|que|qu’|qu|sûr|davantage|entendu|d’|avant|souvent|longtemps|des|moins|plus|trop|loin|au-delà|") and not morph(>1, ":[YA]")
+        -2:3>> eh bien|hé bien                                              # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=h%C3%A9&T3.x=0&T3.y=0
+
+    et ben
+        <<- /conf/ \2.islower() ->> eh ben|hé ben                           # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?T1=h%C3%A9&T3.x=0&T3.y=0
+
+TEST: {{et bien}} il y aura des pertes
+TEST: {{et ben}} on n’en sait rien.
+TEST: nous y songions, et bien au-delà des considérations habituelles.
+TEST: une image bien plus colorée, et bien plus intense, de la vie.
+TEST: Toutes ces questions, et bien d’autres, sont vues aujourd’hui dans le paradigme quantitatif de la monnaie, des taux de change flottants et de la monnaie administrée.
+TEST: et bien manger, c’est important.
+TEST: il a été vaincu, et bien vaincu.
+TEST: et Ben est parti.
 
 
 # en / an
@@ -4107,7 +4141,7 @@ TEST: Je suis {{an}} désaccord avec lui.
 __conf_faux_faut__
     faut  @:¬(?:Y|Oo|X|M)
     faut  <end>
-        <<- not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|les|<start>|")
+        <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|<start>|")
         -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez :
 
 TEST: un homme {{faut}}
@@ -4127,14 +4161,14 @@ __conf_flanc_flan__
     >flanc [au|aux] [>caramel|>café|>citron|>chocolat|>four|>lait|>lard|noix|>pomme|>pruneau|>œuf|>raisin]
     >flanc [de|d’] [or|argent|cuivre]
     >flanc à la [crème|coco|noix]
-        <<- -1>> =\1.replace("c", "").replace("C", "")                      # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez :|https://fr.wiktionary.org/wiki/flan
+        <<- /conf/ -1>> =\1.replace("c", "").replace("C", "")               # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez :|https://fr.wiktionary.org/wiki/flan
 
     c’ [est|était] ?[que|tout]¿ du (flanc)
     c’ [est|était] rien que du (flanc)
-        <<- -1>> flan                                                       # Confusion. Locution « c’est du flan ».|https://fr.wiktionary.org/wiki/flan
+        <<- /conf/ -1>> flan                                                # Confusion. Locution « c’est du flan ».|https://fr.wiktionary.org/wiki/flan
 
     comme deux ronds de >flanc
-        <<- -5>> flan                                                       # Confusion. Locution « comme deux ronds de flan ».|https://fr.wiktionary.org/wiki/comme_deux_ronds_de_flan
+        <<- /conf/ -5>> flan                                                # Confusion. Locution « comme deux ronds de flan ».|https://fr.wiktionary.org/wiki/comme_deux_ronds_de_flan
 
     >flan de la [>colline|>montagne]
     >flan [de|des] [>colline|>montagne]
@@ -4217,11 +4251,11 @@ TEST: Mon frère, {{ce}} {{héro}} !
 # hors / or
 __conf_hors_or__
     <start>  hors  ,
-        <<- -2>> or
+        <<- /conf/ -2>> or
         # Confusion. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
     hors [je|j’|tu|il|ils|on|parce|quel|quels|quelle|quelles|pourquoi|qui|que]
-        <<- -1>> or,
+        <<- /conf/ -1>> or,
         # Confusion probable. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
 
 TEST: {{hors}}, nous y coryons malgré tout ce qu’on peut en dire.
@@ -4511,18 +4545,18 @@ __conf_quand_quant_qu_en__
         -1>> quant                                                          # Confusion probable. Quand = à quel moment. Quant à = à propos de.|https://fr.wiktionary.org/wiki/quant_%C3%A0
 
     [quand|quant]   @:P
-        <<- -1>> qu’en                                                      # Confusion probable.
+        <<- /conf/ -1>> qu’en                                               # Confusion probable.
 
     [quand|quant] [est|était] il [de|des|du]
     [quand|quant] [est-il|était-il] [de|des|du]
-        <<- -1>> qu’en                                                      # Confusion probable. Ce qu’il en est de… → Qu’en est-il de… ?
+        <<- /conf/ -1>> qu’en                                               # Confusion probable. Ce qu’il en est de… → Qu’en est-il de… ?
 
     quant  ~¬à|aux
-        <<- -1>> quand                                                      # Confusion. Quand = à quel moment. Quant à = à propos de.
+        <<- /conf/ -1>> quand                                               # Confusion. Quand = à quel moment. Quant à = à propos de.
 
     [qu’|qu] en [je|tu|il|ils]
-        <<- not after("^ ne s(?:ai[st]|u[ts]|avai(?:s|t|ent)|urent) ")
-        -1:2>> quand                                                       # Confusion probable. Pour évoquer un moment, écrivez “quand”.|https://fr.wiktionary.org/wiki/quand
+        <<- /conf/ not after("^ ne s(?:ai[st]|u[ts]|avai(?:s|t|ent)|urent) ")
+        -1:2>> quand                                                        # Confusion probable. Pour évoquer un moment, écrivez “quand”.|https://fr.wiktionary.org/wiki/quand
 
 TEST: {{Quant}} est-il du chien ?
 TEST: {{Quand}} à ma santé, elle est défaillante.
@@ -4933,7 +4967,7 @@ TEST: N’oublient-ils pas ce qu’ils étaient autrefois…
 TEST: Ne presque jamais réussir un plat aussi simple, c’est de l’incompétence pure et simple.
 
 
-__p_notre_père_qui_es_au_cieux__
+__loc_notre_père_qui_es_au_cieux__
     notre père qui [es|est] aux cieux
         <<- ~4>> !
         <<- ~3:0>> *
