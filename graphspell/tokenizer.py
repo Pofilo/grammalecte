@@ -59,4 +59,4 @@ class Tokenizer:
             yield { "i": i, "sType": m.lastgroup, "sValue": m.group(), "nStart": m.start(), "nEnd": m.end() }
         if bStartEndToken:
             iEnd = len(sText)
-            yield { "i": i+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, , "lMorph": ["<end>"] }
+            yield { "i": i+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, "lMorph": ["<end>"] }
