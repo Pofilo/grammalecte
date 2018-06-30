@@ -3413,15 +3413,13 @@ TEST: avec quel zèle ils remplissent leurs devoirs de citoyens (de plus en plus
 TEST: il faut de plus en plus aider ces gens.
 
 
-# a / à
-__[i]/conf(conf_a_à_tout_à_fait)__  tout (a) fait @@5                                               <<- -1>> à          # Confusion.
-__[i]/conf(conf_a_à_jusqu_à)__      jusqu (a) @@6                                                   <<- -1>> à          # Confusion.
+
+
+
 __[i]/conf(conf_a_à_grâce_à)__      grâce (a) @@6             <<- morph(word(-1), ":[VN]", False, True) -1>> à          # Confusion probable.
-__[i]/conf(conf_a_à_moins_que)__    (a) moins que? @@0                                    <<- isStart() -1>> à          # Confusion probable : « à moins que » pour dire « sauf si ».
 __[i]/conf(conf_a_à_tout_à_coup)__  tout h?ah? co[uû][pt]?                                          <<- ->> tout à coup # Confusion.
 __[i]/conf(conf_a_à_coup_sûr)__     a coup s[uû]r                                                   <<- ->> à coup sûr  # Confusion.
 __[i]/conf(conf_a_à_face_à)__       face (a) @@5    <<- not before(r"(?i)\b(?:[lmts]a|leur|une|en) +$") -1>> à          # Confusion.
-__[i]/conf(conf_a_à_pas_à_pas)__    pas (a) pas @@4                                                 <<- -1>> à          # Confusion.
 __[i]/conf(conf_a_à_par_rapport)__  par rapport (a) ({w_2}) @@12,$  <<- morph(\2, ":(?:D|Oo|M)", False) -1>> à          # Confusion.
 __[i]/conf(conf_a_à_être_à)__
     ({etre}) (a)(?! priori| posteriori| fortiori)  @@0,$
@@ -3490,21 +3488,7 @@ __[i]/conf(conf_a_participe_passé_ou_vconj)__
     <<- morph(\2, ":V2.*:Ip:3s") -2>> =suggVerbPpas(@, ":m:s")                                      # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
     <<- __also__ -1>> a                                                                             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
     <<- __else__ -2>> _                                                                             # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
-__[i]/conf(conf_a_à_locutions1)__
-    (a) (?:nouveau|présent|(?:bonne distance|bord|cause|contre-courant|côté|court|défaut|droite|gauche|l’(?:arrière|autre bout|écart|égard|extérieur|aune|avant|encontre|ins(?:u|tar)|intérieur|opposé)|la (?:portée|suite)|partir|portée|propos|rebours) d(?:es?|u))  @@0
-    <<- -1>> à                                                                                      # Confusion. Utilisez la préposition “à”.
-__[s]/conf(conf_a_à_locutions2)__
-    (a) (?:califourchon|contre(?:cœur|temps)|côté d(?:e|’\w[\w-]+)|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|l’(?:heure (?:actuelle|qu il est)|accoutumée|amiable|avance|aven(?:ir|ant)|air libre|aveuglette|emporte-pièce|évidence|exclusion de toute autre chose|improviste|inverse|ordre du jour|œil nu|en croire|un(?:animité| (?:d’entre eux|des leurs)|e (?:d’entre elles|des leurs)))|la (?:bonne franquette|con|dér(?:ive|obée)|diable|fois|limite du supportable|lumière de tout ce(?:ci|la)|mords-moi-le-nœud|papa|petite semaine|pointe du progrès|queue leu leu|rescousse|sauvette|surprise générale|va[ -]vite|virgule près|volée)|partir (?:de (?:demain|là|maintenant|rien)|d’(?:aujourd’hui|hier|ici))|au(?:cun prix|trui|tre chose)|bas co[ûu]t|bâ(?:bord|tons rompus)|beaucoup près|belles dents|bien (?:des égards|y (?:penser|réfléchir|songer))|bon (?:compte|escient|droit)|bout (?:de (?:bras|souffle|forces?)|portant|touchant)|bras (?:ouverts|le corps)|brève échéance|but non lucratif|cause d(?:e (?:ça|[mt]oi|lui|[nv]ous)|’e(?:lles?|ux))|ce (?:compte-là|moment-là|titre)|cet (?:égard|instant(?: précis|))|cette (?:époque(?: de l’année|)|heure de la (?:journée|nuit))|chaque (?:fois|instant)|chaudes larmes|cœur (?:joie|ouvert|perdu)|ciel ouvert|contre-cœur|corps perdu|cou(?:p sûr|per le souffle|rt terme|rte (?:échéance|portée))|couilles rabattues|de nombreuses reprises|des kilomètres à la ronde|dose homéopathique|double (?:titre|tranchant)|durée limitée|en (?:juger par (?:[mts]on|[nv]otre|leur) expérience|perdre (?:haleine|la tête))|faible (?:allure|revenu)|feu et à sang|flanc de (?:colline|montagne)|fleur de peau|géométrie variable|grand(?:-peine|e échelle)|haut risque|hue et à dia|huis clos|intervalles (?:ir|)réguliers|juste (?:raison|titre)|long terme|longue(?: échéance| portée|ur (?:de (?:temps|journée))|d’année)|loyer modéré|main (?:armée|droite|gauche|levée)|maint(?:s égards|es reprises)|marche forcée|merveille|mi-(?:course|distance|temps)|mi(?:di|nuit)(?: pile|)|moindres frais|moyen(?: terme|ne échéance)|mots couverts|ne (?:jamais|pas|rien|guère)|n’en (?:pas douter|point douter|plus finir)|outrance|parler franc|part (?:entière|ça|ce(?:la|ci))|partir de là|part(?:ir de rien|s égales)|pas de (?:géant|loup|tortue|velours)|personne en danger|perte de vue|petit(?: feu|e (?:dose|échelle))|peu (?:de choses? |)près|pieds joints|pile ou face|plat(?: ventre|e couture)|plein(?: (?:régime|temps|nez)|s poumons)|plus (?:forte raison|d’un titre)|point nommé|portée de main|première vue|prix (?:cassé|modique)s?|proprement parler|qui (?:mieux mieux|que ce soit|de droit)|quelque distance|quelques exceptions près|ras bords?|rude épreuve|tel point|temps (?:plein|partiel|complet)|tête reposée|tire[ -]d’aile|titre (?:conservatoire|d’exemple|indicatif|informatif|grâcieux|personnel|posthume)|tombeau ouvert|tort (?:ou à raison|et à travers)|tour de (?:bras|rôle)|tous (?:crins|points de vue)|tout(?: (?:âge|bout de champ|crin|instant|jamais|le (?:moins|monde)|moment|point de vue|prix|un chacun)|e (?:allure|bride|épreuve|force|heure|vitesse|volée))|toutes (?:fins utiles|jambes)|tribord|tu et à toi|un moment donné|usage interne|visage découvert|vive allure|voix (?:haute|basse)|vol d’oiseau|vrai dire|vue d’œil|y (?:regarder de plus près|réfléchir))  @@0
-    <<- not before(r"(?i)[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$")
-    -1>> à                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-__[s]/conf(conf_a_à_locutions3)__
-    (a) (?:confesse|mi(?:di|nuit)|r(?:allonge|eculons|enverse|isque)|tâtons|vélo|la (?:manque|ramasse|re(?:dresse|nverse)))  @@0
-    <<- not before(r"(?i)(?:\bque? |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
-    -1>> à                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-__[s]/conf(conf_a_à_locutions4)__
-    (a) (?:[mts](?:es|on|a)|[nv]o(?:s|tre)|leurs?) (?:avis|c(?:onnaissance|ôtés)|c(?:œur|orps) défendant|dé(?:pens|triment)|disposition|encontre|égard|grand(?: désarroi|e (?:surprise|tristesse))|guise|insu|portée|risques et périls|sujet|tour)  @@0
-    <<- not before(r"(?i)(?:\bque? |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
-    -1>> à                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
 __[s]/conf(conf_a_à_infi)__
     (?<![mtn]’)(a) (?:[mts](?:’(?:en +|y +|)|e +)|[nv]ous|)({w_2}(?:er|re|ir))  @@0,2
     <<- morph(\2, ":Y", False) and not before(r"(?i)\bque? |(?:il|elle|on|n’(?:en|y)) +$")
@@ -3513,6 +3497,246 @@ __[s]/conf(conf_a_à_après_interrogative)__
     \w+-(?:je|ils?|elles?|je|tu|on|vous|nous) (a)(?! priori| posteriori| fortiori)  @@$
     <<- -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
+!!
+!!
+!!!! Tournures de langage                                                                         !!
+!!
+!!
+
+__code_legacy__
+    legacy code
+    code legacy
+        <<- ->> code hérité|code reliquat                                                           # \1 \2. Anglicisme superflu.
+
+TEST: c’est du {{legacy code}}.
+TEST: ce {{code legacy}} est un cauchemar
+
+
+__faire_plaisir__
+    >faire plaisirs
+        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
+        <<- ~2>> *
+
+TEST: Ça me fait {{plaisirs}}.
+
+
+
+!!
+!!
+!!!! Confusions                                                                                   !!
+!!
+!!
+
+# a / à
+__conf_à_a__
+    tout a fait
+    [jusqu’|jusqu] a
+    pas a pas
+        <<- -2>> à                                                                                  # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+    [<start>|,] a moins [que|qu’|qu]
+        <<- -2>> à                                                                                  # Confusion probable : « à moins que » pour dire « sauf si ».
+
+__conf_à_a_locutions_de_des_du__
+    a bonne distance                                                                            [de|des|du]
+    a [bord|cause|contre-courant|côté|court|défaut|droite|gauche|partir|portée|propos|rebours]  [de|des|du]
+    a l’ [arrière|écart|égard|extérieur|aune|avant|encontre|insu|instar|intérieur|opposé]       [de|des|du]
+    a l’ autre bout                                                                             [de|des|du]
+    a la [portée|suite]                                                                         [de|des|du]
+        <<- -1>> à                                                                                  # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+__conf_à_a_locutions_de_des_du__
+    a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
+    a côté [de|d’]
+    a l’ heure actuelle
+    a l’ heure [qu’|qu] il est
+    a l’ [accoutumée|amiable|avance|avenir|avenant|aveuglette|emporte-pièce|évidence|improviste|inverse]
+    a l’ air libre
+    a l’ exclusion de toute autre chose
+    a l’ ordre du jour
+    a l’ œil nu
+    a l’ en croire
+    a l’ unanimité
+    a l’ un d’ entre eux
+    a l’ un des leurs
+    a l’ une d’ entre elles
+    a l’ une des leurs
+    a la [con|dérive|dérobée|diable|fois|mords-moi-le-nœud|papa|rescousse|sauvette|va-vite|volée]
+    a la bonne franquette
+    a la limite du supportable
+    a la lumière de tout [ceci|cela|ça]
+    a la petite semaine
+    a la pointe du progrès
+    a la queue leu leu
+    a la surprise générale
+    a la va vite
+    a la virgule près
+    a partir [de|d’] [demain|là|maintenant|rien|aujourd’hui|hier|ici]
+    a aucun prix
+    a autrui
+    a autre chose
+    a bas [>coût|>cout]
+    a bâbord
+    a bâtons rompus
+    a beaucoup près
+    a belles dents
+    a bien des égards
+    a bien y [penser|réfléchir|songer]
+    a bon [compte|escient|droit]
+    a bout de [bras|souffle|>force]
+    a bout [portant|touchant]
+    a bras le corps
+    a bras ouverts
+    a brève échéance
+    a but non lucratif
+    a cause [de|d’] {pronom_obj}
+    a ce [compte-là|moment-là|titre]
+    a cet égard
+    a cet instant précis
+    a cette époque
+    a cette époque de l’année
+    a cette heure de la [journée|nuit]
+    a chaque [fois|instant]
+    a chaudes larmes
+    a cœur [joie|ouvert|perdu]
+    a ciel ouvert
+    a corps perdu
+    a coup sûr
+    a couper le souffle
+    a court terme
+    a courte [échéance|portée]
+    a couilles rabattues
+    a de nombreuses reprises
+    a des kilomètres à la ronde
+    a dose homéopathique
+    a double [titre|tranchant]
+    a durée limitée
+    a en juger par [mon|ton|son|notre|votre|leur] expérience
+    a en juger par [mon|ton|son|notre|votre|leur] expérience
+    a en perdre haleine
+    a en perdre la tête
+    a faible [allure|revenu]
+    a feu et à sang
+    a flanc de [colline|montagne]
+    a fleur de peau
+    a géométrie variable
+    a grand-peine
+    a grande échelle
+    a haut risque
+    a hue et à dia
+    a huis clos
+    a intervalles [réguliers|irréguliers]
+    a juste [raison|titre]
+    a la [manque|ramasse|redresse|renverse]
+    a long terme
+    a longue [échéance|portée]
+    a longueur [de|d’] [temps|journée|année]
+    a loyer modéré
+    a main [armée|droite|gauche|levée]
+    a maints égards
+    a maintes reprises
+    a marche forcée
+    a merveille
+    a [mi-course|mi-distance|mi-temps]
+    a [midi|minuit] ?pile¿
+    a moindres frais
+    a moyen terme
+    a moyenne échéance
+    a mots couverts
+    a ne [jamais|pas|rien|guère|point]
+    a n’ en pas douter
+    a n’ en plus finir
+    a n’ en point douter
+    a outrance
+    a parler franc
+    a part [entière|ça|cela|ceci]
+    a partir de là
+    a partir de rien
+    a parts égales
+    a pas de [géant|loup|tortue|velours]
+    a personne en danger
+    a perte de vue
+    a petit feu
+    a petite [dose|échelle]
+    a peu de >chose près
+    a peu près
+    a pieds joints
+    a pile ou face
+    a plat ventre
+    a plate couture
+    a plein [régime|temps|nez]
+    a pleins poumons
+    a plus forte raison
+    a plus d’un titre
+    a point nommé
+    a portée de main
+    a première vue
+    a prix [cassé|cassés|>modique]
+    a proprement parler
+    a qui de droit
+    a qui mieux mieux
+    a qui que ce soit
+    a quelque distance
+    a quelques exceptions près
+    a ras >bord
+    a rude épreuve
+    a tel point
+    a temps [plein|partiel|complet]
+    a tête reposée
+    a [tire-d’aile|tire-d’ailes]
+    a tire d’ >aile
+    a titre [conservatoire|d’exemple|indicatif|informatif|grâcieux|personnel|posthume]
+    a titre d’ exemple
+    a tombeau ouvert
+    a tort et à travers
+    a tort ou à raison
+    a tour de [bras|rôle]
+    a tous crins
+    a tous points de vue
+    a tout [âge|crin|instant|jamais|moment|prix]
+    a tout bout de champ
+    a tout le [moins|monde]
+    a tout point de vue
+    a tout un chacun
+    a toute [allure|bride|épreuve|force|heure|vitesse|volée]
+    a toutes jambes
+    a toutes fins utiles
+    a tribord
+    a tu et à toi
+    a un moment donné
+    a usage interne
+    a visage découvert
+    a vive allure
+    a voix [haute|basse]
+    a vol d’ oiseau
+    a vrai dire
+    a vue d’ œil
+    a y [réfléchir|songer|penser]
+    a y regarder de plus près
+        <<- /conf/ not before(r"(?i)[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$")
+        -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+    a [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
+    a [mon|ton|son|notre|votre|leur] grand désarroi
+    a [mon|ton|son|notre|votre|leur] [avis|côté|détriment|encontre|égard|insu|sujet|tour]
+    a [ma|ta|sa|notre|votre|leur] grande [surprise|tristesse]
+    a [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
+    a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
+    a [mes|tes|ses|nos|vos|leurs] risques et périls
+        <<- not before(r"(?i)(?:\bque? |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
+        -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Cette femme {{à}} été confondue avec une autre.
 TEST: L’homme {{à}} ouvert la boîte.
@@ -3526,7 +3750,7 @@ TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
 TEST: elles sont tout {{a}} fait compétentes
 TEST: c’est grâce {{a}} nous que vous y êtes parvenus
 TEST: elles se défendront jusqu’{{a}} la mort.
-TEST: ce qu’elles feront alors {{a coup sûr}}, difficile de le devenir.
+TEST: ce qu’elles feront alors {{a}} coup sûr, difficile de le devenir.
 TEST: elles progressent pas {{a}} pas
 TEST: elle n’y {{à}} pas droit.
 TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.
@@ -3578,58 +3802,6 @@ TEST: elle à qui nous avons donné notre cœur et pour laquelle nous avons tout
 TEST: jusqu’à parfois se mettre en danger
 TEST: les méthodes de l’à peu près ne suffisent pas.
 
-
-__[i]/conf(conf_mener_à_bien)__
-    (m[eèé]n\w+) (a) bien  @@0,w
-    <<- morph(\1, ">mener/", False) and ( not before(r"\bque? ") or morph(word(-1), ">(?:falloir|aller|pouvoir)/", False, True) )
-    -2>> à                  # Confusion probable. Dans cette locution, utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mener_%C3%A0_bien
-    <<- __also__ ~>> \1
-
-TEST: Mener {{a}} bien cette guerre sera plus difficile qu’on le pense.
-TEST: Je peux mener {{a}} bien cette opération.
-TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
-
-
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                 _
-@@@@
-@@@@
-@@@@
-@@@@
-
-!!
-!!
-!!!! Tournures de langage                                                                         !!
-!!
-!!
-
-__code_legacy__
-    legacy code
-    code legacy
-        <<- ->> code hérité|code reliquat                                                           # \1 \2. Anglicisme superflu.
-
-TEST: c’est du {{legacy code}}.
-TEST: ce {{code legacy}} est un cauchemar
-
-
-__faire_plaisir__
-    >faire plaisirs
-        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
-        <<- ~2>> *
-
-TEST: Ça me fait {{plaisirs}}.
-
-
-
-!!
-!!
-!!!! Confusions                                                                                   !!
-!!
-!!
 
 ## substantifs
 __conf_à_substantifs__
@@ -3708,6 +3880,20 @@ TEST: remettre ceci {{a}} profit
 TEST: mettre tout {{a}} plat
 TEST: Il a mis son talent {{a}} profit.
 TEST: Remettre ses compétences {{a}} profit.
+
+
+    >mener a bien
+        <<- /conf/ morph(<1, ">(?:falloir|aller|pouvoir)/", ">que?/")
+        -2>> à                              # Confusion probable. Dans cette locution, utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mener_%C3%A0_bien
+
+    >mener a bien cette [tâche|entreprise|action|étude|construction|recherche|guerre|conquête]
+    >mener a bien ce [projet|travail]
+    >mener a bien ces [travaux|projets|tâches|entreprises|actions|études|constructions|recherches|guerres|conquêtes]
+        <<- /conf/ -2>> à                   # Confusion probable. Dans cette locution, utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mener_%C3%A0_bien
+
+TEST: Mener {{a}} bien cette guerre sera plus difficile qu’on le pense.
+TEST: Je peux mener {{a}} bien cette opération.
+TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 
 
 __conf_celui_celle_à_qui__
