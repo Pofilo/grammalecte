@@ -977,7 +977,18 @@ class TokenSentence:
 def g_value (dToken, sValues, nLeft=None, nRight=None):
     "test if <dToken['sValue']> is in sValues (each value should be separated with |)"
     sValue = "|"+dToken["sValue"]+"|"  if nLeft is None  else "|"+dToken["sValue"][slice(nLeft, nRight)]+"|"
-    return sValue in sValues
+    if sValue in sValues:
+        return True
+    if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+        if sValue.lower() in sValues:
+            return True
+    elif dToken["sValue"].isupper():
+        #if sValue.lower() in sValues:
+        #    return True
+        sValue = "|"+sValue[1:].capitalize()
+        if sValue.capitalize() in sValues:
+            return True
+    return False
 
 
 def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
