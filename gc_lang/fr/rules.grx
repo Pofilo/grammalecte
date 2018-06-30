@@ -4106,49 +4106,7 @@ TEST: le flan est une pâtisserie.
 TEST: versez du caramel sur le flan.
 
 
-# golf / golfe
-__[i]/conf(conf_golf)__
-    (champion(?:ne|nat|)s?|clubs?|joueu(?:r|se)s?|parcours|sacs?|balles?|terrains?|tournois?|compétitions?|passionnée?s?|écoles?|professeurs?|parties?|professionnel(?:le|)s?|amateure?s?|stages?|journées?|après-midi|matinées?|heures?|fédérations?|fans?) de (golfe)  @@0,$
-    <<- -2>> golf                                                           # Confusion. Le golfe est une zone de mer ou d’un lac avancée dans les terres. Ex : Le golfe Persique.
-__[i]/conf(conf_golfe)__
-    (golf) (persique|d[ue] (?:Bengale|Botnie|Gascogne|Gabès|Guinée|Lion|Morbihan|Mexique|Porto|Saint-Laurent|Thaïlande|Tonkin|Tunis|Winam)|d’(?:Aden|Ajaccio|Alaska|Hammamet))  @@0,$
-    <<- -1>> golfe                                                          # Confusion. Le golf est un sport.
-__[i]/conf(conf_Golfe)__
-    (?:guerre|émir|monarchie)s? du (golf) @@$ <<- -1>> Golfe                # Confusion. Le golf est un sport.
 
-TEST: Il a réalisé un documentaire sur la guerre du {{Golf}}.
-TEST: C’est un bon joueur de {{golfe}}.
-TEST: Le {{golf}} Persique est presque une mer fermée.
-TEST: J’ai fait de la voile dans le {{golf}} du Morbihan.
-TEST: Le {{golf}} d’Aden.
-
-
-# haut delà / au-delà
-__[i]/conf(conf_au_delà)__      haut[- ]del[àa] <<- ->> au-delà             # Confusion.
-
-TEST: il va dans l’{{haut delà}}
-
-
-# héro / héros
-__[i]/conf(conf_héros)__
-    (?:le|quel|cet?|un|du|au) (héro) @@$
-    <<- -1>> héros                                          # Confusion. L’héro est l’abréviation de “héroïne” (la drogue). L’homme héroïque s’écrit “héros”.
-
-TEST: Mon frère, {{ce}} {{héro}} !
-
-
-# hors / or
-__[i>/conf(conf_hors_or1)__
-    ^ *(hors),  @@* <<- -1>> or
-    # Confusion. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
-__[i]/conf(conf_hors_or2)__
-    (hors) (?:j(?:e|’[\w-]+)|tu|ils?|on|parce|quel(?:le|)s?|pourquoi|qu[ie])  @@0 <<- -1>> or,
-    # Confusion probable. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
-
-TEST: {{hors}}, nous y coryons malgré tout ce qu’on peut en dire.
-TEST: {{Hors}} il y a tant à faire depuis que nous sommes arrivés en ces lieux.
-TEST: Hors nous, personne ne sait ce qui s’est passé là-bas.
-TEST: Le peuple se sent hors jeu.
 
 
 
@@ -4194,10 +4152,62 @@ TEST: Ça me fait {{plaisirs}}.
 
 # en / an
 __être_en_xxxx__
-    [>être|>rester|>demeurer] an [désaccord|accord]
+    [>être|>rester|>demeurer] an [contradiction|désaccord|accord]
         <<- /conf/ -2>> en                                                                          # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
 
 TEST: Je suis {{an}} désaccord avec lui.
+
+
+# golf / golfe
+__conf_golf_golfe__
+    [>championne|>championnat|>club|>joueuse|parcours|>sac|>balle|>terrain|>tournoi|>compétition|>passionnée|>école|>professeure|>partie|>professionnelle|>amateure|>stage|>journée|après-midi|>matinée|>heure|>fédération|>fan] de golfe
+        <<- /conf/ -3>> golf                                                # Confusion. Le golfe est une zone de mer ou d’un lac avancée dans les terres. Ex : Le golfe Persique.
+
+    golf persique
+    golf [de|du|d’] [Bengale|Botnie|Gascogne|Gabès|Guinée|Lion|Morbihan|Mexique|Porto|Saint-Laurent|Thaïlande|Tonkin|Tunis|Winam|Aden|Ajaccio|Alaska|Hammamet]
+        <<- /conf/ -1>> golfe                                               # Confusion. Le golf est un sport.
+
+    [>guerre|>émir|>monarchie] du golf
+        <<- /conf/ -3>> Golfe                                               # Confusion. Le golf est un sport.
+
+TEST: Il a réalisé un documentaire sur la guerre du {{Golf}}.
+TEST: C’est un bon joueur de {{golfe}}.
+TEST: Le {{golf}} Persique est presque une mer fermée.
+TEST: J’ai fait de la voile dans le {{golf}} du Morbihan.
+TEST: Le {{golf}} d’Aden.
+
+
+# haut delà / au-delà
+__conf_au_delà__
+    haut [dela|delà]
+    [haut-dela|haut-delà]
+        <<- /conf/ ->> au-delà                              # Confusion.
+
+TEST: il va dans l’{{haut delà}}
+
+
+# héro / héros
+__conf_héros__
+    [le|quel|ce|cet|un|du|au]  héro
+        <<- /conf/ -1>> héros                               # Confusion. L’héro est l’abréviation de “héroïne” (la drogue). L’homme héroïque s’écrit “héros”.
+
+TEST: Mon frère, {{ce}} {{héro}} !
+
+
+# hors / or
+__conf_hors_or__
+    <start>  hors  ,
+        <<- -2>> or
+        # Confusion. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
+
+    hors [je|j’|tu|il|ils|on|parce|quel|quels|quelle|quelles|pourquoi|qui|que]
+        <<- -1>> or,
+        # Confusion probable. Écrivez “or” pour dire “néanmoins”. La préposition “hors” sert à dire “en dehors de” ou “excepté”.|https://fr.wiktionary.org/wiki/hors
+
+TEST: {{hors}}, nous y coryons malgré tout ce qu’on peut en dire.
+TEST: {{Hors}} il y a tant à faire depuis que nous sommes arrivés en ces lieux.
+TEST: Hors nous, personne ne sait ce qui s’est passé là-bas.
+TEST: Le peuple se sent hors jeu.
 
 
 # la / là
@@ -4438,24 +4448,27 @@ TEST: Ils ont découvert le {{poteau rose}}.
 
 # prêt / près / pré
 __conf_pré_près_prêt__
-    de plus ([prêt|prêts|pré|prés])
-    depuis ([prêt|prêts|pré|prés])
+    de plus ([>prêt|>pré])
+    depuis ([>prêt|>pré])
         <<- /conf/ -1>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
 
-    très [prêt|prêts|pré|prés]
+    très [>prêt|>pré]
         <<- /conf/ -2>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
 
     près à @:Y|>(?:tout|les?|la)/
         <<- /conf/ not before(r"(?i)\b(?:peu|de|au plus) $") -1>> prêt|p    # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    [prêt|prêts] [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
+    >prêt [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
         <<- /conf/ not before(r"(?i)\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    [prêt|prêts] [de|d’] la [lui|leur|@:Y]
+    >prêt [de|d’] la [lui|leur|@:Y]
         <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    [prêt|prêts] [de|d’] [le|l’|les|me|m’|te|t’|se|s’|ne|n’|en|y|@:Y]
+    >prêt [de|d’] [le|l’|les|me|m’|te|t’|se|s’|ne|n’|en|y|@:Y]
         <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+
+    si [>prêt|>pré] du but
+        <<- /conf/ ~2>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
 TEST: depuis {{prêt}} de 15 ans
 TEST: ils se sont approchés très {{prêts}}.
