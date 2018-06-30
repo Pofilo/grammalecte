@@ -4054,61 +4054,6 @@ TEST: et bien manger, c’est important.
 TEST: il a été vaincu, et bien vaincu.
 
 
-# faut / faux
-__[i]/conf(conf_faux)__
-    faut
-    <<- not morph(word(-1), ">(?:ils?|ne|en|y|leur|lui|nous|vous|[mtsl]e|la|les)/", False, True) and morphex(word(1), ":",  ":(?:Y|Oo|X|M)", True)
-    ->> faux                                                # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez :
-
-TEST: un homme {{faut}}
-TEST: c’est {{faut}}
-TEST: il m’en faut plus.
-TEST: il faut réussir.
-TEST: bien sûr, faut y arriver.
-TEST: il ne faut pas se leurrer.
-TEST: y faut pas qu’elle l’entende.
-TEST: faut l’emmener chez le docteur.
-TEST: Faut Linux, sinon ça marchera jamais.
-
-
-# flan / flanc
-__[i]/conf(conf_flan)__
-    (flancs?) (?:aux? (?:caramel|café|citron|chocolat|four|lait|lard|noix|pomme|pruneaux?|œuf|raisin)s?|d’(?:or|argent)|de cuivre|pâtissier|à la (?:crème|coco|noix))  @@0
-    <<- -1>> =\1.replace("c", "").replace("C", "")                                                  # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez :|https://fr.wiktionary.org/wiki/flan
-__[i]/conf(conf_c_est_du_flan)__
-    c’(?:est|était) (?:que +|rien que +|tout +|)du (flanc) @@$
-    <<- -1>> flan                                                                                   # Confusion. Locution « c’est du flan ».|https://fr.wiktionary.org/wiki/flan
-__[i]/conf(conf_comme_deux_ronds_de_flan)__
-    comme deux ronds de (flancs?)  @@$
-    <<- -1>> flan                                                                                   # Confusion. Locution « comme deux ronds de flan ».|https://fr.wiktionary.org/wiki/comme_deux_ronds_de_flan
-
-TEST: encore un {{flanc}} au chocolat.
-TEST: ce type, c’est que du {{flanc}}.
-TEST: j’en étais comme deux ronds de {{flancs}}
-
-
-__[i]/conf(conf_flanc)__
-    (flans?) (?:des? (?:la |)(?:colline|montagne)s?|gauches?|droites?|nord|sud|ouest)  @@0
-    <<- -1>> =\0.replace("an", "anc").replace("AN", "ANC")                                          # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
-__[i]/conf(conf_sur_le_flanc)__
-    ((?:attaqu|allong|bless|couch|étend|touch)\w+) +sur (?:les?|[mts](?:on|es)|[nv]o(?:tre|s)) (flans?)  @@0,$
-    <<- morph(\1, ">(?:attaquer|allonger|blesser|coucher|étendre|toucher)/", False)
-    -2>> =\0.replace("an", "anc").replace("AN", "ANC")                                              # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
-__[i]/conf(conf_tirer_au_flanc)__
-    (tir\w*)[ -]+aux?[ -](flans?)  @@0,$
-    <<- morph(\1, ">tir(?:er|)/", False) -2>> =\0.replace("an", "anc").replace("AN", "ANC")         # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
-
-TEST: attaqué sur son {{flan}} droit
-TEST: elle possède une maison à {{flan}} de colline.
-TEST: étendu sur son {{flan}}.
-TEST: Ce sale tir-au-{{flan}} le paiera cher.
-TEST: le flan est une pâtisserie.
-TEST: versez du caramel sur le flan.
-
-
-
-
-
 
 @@@@
 @@@@
@@ -4145,7 +4090,7 @@ TEST: Ça me fait {{plaisirs}}.
 
 !!
 !!
-!!!! Tournures de langage                                                                         !!
+!!!! Confusions                                                                                   !!
 !!
 !!
 
@@ -4156,6 +4101,81 @@ __être_en_xxxx__
         <<- /conf/ -2>> en                                                                          # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
 
 TEST: Je suis {{an}} désaccord avec lui.
+
+
+# faut / faux
+__conf_faux_faut__
+    faut  @:¬(?:Y|Oo|X|M)
+    faut  <end>
+        <<- not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|les|<start>|")
+        -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez :
+
+TEST: un homme {{faut}}
+TEST: c’est {{faut}}
+TEST: il m’en faut plus.
+TEST: il faut réussir.
+TEST: bien sûr, faut y arriver.
+TEST: il ne faut pas se leurrer.
+TEST: y faut pas qu’elle l’entende.
+TEST: faut l’emmener chez le docteur.
+TEST: Faut Linux, sinon ça marchera jamais.
+
+
+# flan / flanc
+__conf_flanc_flan__
+    >flanc [pâtissier|pâtissiers]
+    >flanc [au|aux] [>caramel|>café|>citron|>chocolat|>four|>lait|>lard|noix|>pomme|>pruneau|>œuf|>raisin]
+    >flanc [de|d’] [or|argent|cuivre]
+    >flanc à la [crème|coco|noix]
+        <<- -1>> =\1.replace("c", "").replace("C", "")                      # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez :|https://fr.wiktionary.org/wiki/flan
+
+    c’ [est|était] ?[que|tout]¿ du (flanc)
+    c’ [est|était] rien que du (flanc)
+        <<- -1>> flan                                                       # Confusion. Locution « c’est du flan ».|https://fr.wiktionary.org/wiki/flan
+
+    comme deux ronds de >flanc
+        <<- -5>> flan                                                       # Confusion. Locution « comme deux ronds de flan ».|https://fr.wiktionary.org/wiki/comme_deux_ronds_de_flan
+
+    >flan de la [>colline|>montagne]
+    >flan [de|des] [>colline|>montagne]
+    >flan [>gauche|droit|droits|nord|sud|ouest]
+        <<- /conf/ -1>> =\1.replace("an", "anc").replace("AN", "ANC")       # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+    [>attaquer|>allonger|>blesser|>coucher|>étendre|>toucher]  sur  [le|mon|ton|son|notre|votre|leur]   flan
+        <<- /conf/ -4>> flanc                                               # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+    [>attaquer|>allonger|>blesser|>coucher|>étendre|>toucher]  sur  [les|mes|tes|ses|nos|vos|leurs]     flans
+        <<- /conf/ -4>> flancs                                              # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+
+    [>tirer|>tir]  au  flan
+        <<- /conf/ -3>> flanc                                               # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+    [>tirer|>tir]  aux flans
+        <<- /conf/ -3>> flancs                                              # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+    tir-aux-flan
+    tir-aux-flans
+    tir-au-flans
+    tir-au-flan
+        <<- /conf/ ->> tir-au-flanc                                         # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+    tirs-aux-flan
+    tirs-aux-flans
+    tirs-au-flans
+    tirs-au-flan
+        <<- /conf/ ->> tirs-au-flanc                                        # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
+
+TEST: encore un {{flanc}} au chocolat.
+TEST: ce type, c’est que du {{flanc}}.
+TEST: ce type, c’est rien que du {{flanc}}.
+TEST: j’en étais comme deux ronds de {{flancs}}
+TEST: attaqué sur son {{flan}} droit
+TEST: elle possède une maison à {{flan}} de colline.
+TEST: étendu sur son {{flan}}.
+TEST: Ce sale {{tir-au-flan}} le paiera cher.
+TEST: le flan est une pâtisserie.
+TEST: versez du caramel sur le flan.
 
 
 # golf / golfe
