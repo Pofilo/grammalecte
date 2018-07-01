@@ -156,7 +156,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         sOption = m.group(1)
         sAction = sAction[m.end():].strip()
     # valid action?
-    m = re.search("(?P<action>[-~=/])(?P<start>\\d+|)(?P<end>:\\d+|)>> ", sAction)
+    m = re.search(r"(?P<action>[-~=/>])(?P<start>\d+|)(?P<end>:\d+|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         print("   ==", sAction, "==")
