@@ -169,10 +169,10 @@ class DARG:
                 if not sNegPattern:
                     print("# Warning! Empty negpattern:", sRegex)
                 re.compile(sPattern)
-                re.compile(sNegPattern)
+                if sNegPattern != "*":
+                    re.compile(sNegPattern)
             except:
                 print("# Error. Wrong regex:", sRegex)
-                traceback.print_exc()
                 exit()
         else:
             try:
@@ -181,7 +181,6 @@ class DARG:
                 re.compile(sRegex)
             except:
                 print("# Error. Wrong regex:", sRegex)
-                traceback.print_exc()
                 exit()
 
 
