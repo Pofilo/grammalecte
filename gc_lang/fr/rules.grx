@@ -98,7 +98,7 @@ OPT/html:           False       False       False       True        True        
 OPT/latex:          False       False       False       False       False       False
 
 # Priority: from 0 to 9. Default priority is 4.
-OPTPRIORITY/tu:     6
+OPTPRIORITY/tu:     7
 OPTPRIORITY/conf:   5
 OPTPRIORITY/ocr:    3
 
@@ -1760,6 +1760,13 @@ TEST: {{nord est}}
 TEST: des {{stock options}}
 TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
 
+# l’ à
+__[i]/tu(tu_l_à)__
+    l’(à (?:côté|coup|peu[ -]près|à[ -]pic|plat[ -]ventrisme|propos|valoir))
+    <<- -1>> =\1.replace(" ", "-")                                                                  # Mettez des traits d’union pour ces noms communs.
+
+TEST: l’{{à propos}} n’est pat si facile à acquérir.
+
 
 # est-ce … ?
 __[i]/tu(tu_est_ce)__
@@ -3208,7 +3215,7 @@ __[i]/conf(conf_ton_son_verbe)__
     <<- morph(\1, ":V.*:(?:Y|[123][sp])") and \1[0].islower() and isStart()
     -1>> =suggSimil(\1, ":[NA]:[me]:[si]", True)                                                    # Incohérence : « \1 » est un verbe.
 
-TEST: ton {{recèle}} a été dévoilé
+TEST: ton {{recèle}} avait été dévoilé
 
 
 __[i]/conf(conf_det_plur_verbe)__
@@ -3415,46 +3422,6 @@ TEST: il faut de plus en plus aider ces gens.
 
 
 
-
-__[i]/conf(conf_a_à_grâce_à)__      grâce (a) @@6             <<- morph(word(-1), ":[VN]", False, True) -1>> à          # Confusion probable.
-__[i]/conf(conf_a_à_tout_à_coup)__  tout h?ah? co[uû][pt]?                                          <<- ->> tout à coup # Confusion.
-__[i]/conf(conf_a_à_coup_sûr)__     a coup s[uû]r                                                   <<- ->> à coup sûr  # Confusion.
-__[i]/conf(conf_a_à_face_à)__       face (a) @@5    <<- not before(r"(?i)\b(?:[lmts]a|leur|une|en) +$") -1>> à          # Confusion.
-__[i]/conf(conf_a_à_par_rapport)__  par rapport (a) ({w_2}) @@12,$  <<- morph(\2, ":(?:D|Oo|M)", False) -1>> à          # Confusion.
-__[i]/conf(conf_a_à_être_à)__
-    ({etre}) (a)(?! priori| posteriori| fortiori)  @@0,$
-    <<- morph(\1, ">être/:V") and not before(r"(?i)\bce que? ") -2>> à                                # Confusion. Utilisez la préposition « à ».
-__[i]/conf(conf_a_à_peu_près)__
-    (?:a peu[tx]? (?:près|prés?|prêts?)|à peu[tx] (?:près|prés?|prêts?)|à peu (?:prés?|prêts?))
-    <<- ->> à peu près                                                                              # Confusion.
-    <<- ~>> *
-__[i]/conf(conf_a_à_pronoms1)__     ne +l(?:es?|a) +(?:l(?:eur|ui) +|)(à)  @@$  <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_pronoms2)__     ne +[nv]ous +(?:les +|l’|)(à)  @@$          <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_pronoms3)!6__   [mtsn]e l(?:es +|’)(à)  @@$                 <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_pronoms4)__     [mtsnl]’(?:en|y) +(à)  @@$                  <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_pronoms5)__     les (?:en|y) +(à)  @@$                      <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_pronoms6)__     [nv]ous +(?:en +|y +|les +|l’)(à)  @@$      <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_pronoms7)!6__   [mt]’(à) @@2                                <<- -1>> a          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_été)__
-    (à) +été  @@0
-    <<- -1>> a                                                                                      # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_l_à)__
-    l’(à) ({w_2})  @@2,4
-    <<- not re.search("(?i)^(?:côtés?|coups?|peu(?:-près|)|pics?|propos|valoir|plat-ventrismes?)", \2)
-    -1>> a                                                                                          # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-    <<- re.search("(?i)^(?:côtés?|coups?|peu-près|pics?|propos|valoir|plat-ventrismes?)", \2)
-    ->> l’à-\2                                                                                      # Il faut un trait d’union.
-__[i]/conf(conf_a_à_il_on_à)__
-    (?:il|on) +(?:l(?:es +|’)|en +|y +(?:en +|)|[vn]ous +|)(à)  @@$
-    <<- not morph(word(-1), ":3s", False, False) -1>> a                                             # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_elle_à)__
-    elle +(?:l(?:es +|’)|en +|y +(?:en |)|[vn]ous +|)(à)  @@$
-    <<- not morph(word(-1), ":(?:3s|R)", False, False) and not morph(word(1), ":Oo|>qui/", False, False)
-    -1>> a                                                                                          # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_qui_pronom_à)__
-    qui (?:l(?:ui|eur)(?: en|)|nous|vous|en|y) +(à)  @@$ <<- -1>> a                                 # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_qui_a)__
-    qui (à) +({w_2})  @@4,$  <<- morphex(\2, ":Q", ":M[12P]") -1>> a                                # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
 __[i]/conf(conf_a_à_le)__
     (à le) ({w_2})  @@0,5
     <<- morphex(\2, ":[NAQ].*:[me]", ":(?:Y|Oo)") -1>> a le|au
@@ -3464,20 +3431,7 @@ __[i]/conf(conf_a_à_le)__
 __[i]/conf(conf_a_à_les)__
     (à les) ({w_2})  @@0,6  <<- morphex(\2, ":[NAQ]", ":(?:Y|Oo)") -1>> a les|aux
     # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “aux”. Exemple : Elle _a_ donné du travail _aux_ employés _à_ profusion.
-__[i]/conf(conf_a_à_au_aux)__
-    (à) aux?(?! (?:moins|plus)) @@0 <<- -1>> a                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_base_cause)__
-    (a) (?:base|cause) d(?:es?|u|) @@0 <<- not before(r"(?i)\bce que?\b") -1>> à                    # Confusion. Utilisez la préposition « à ».
-__[i]/conf(conf_a_à_faim_peur_honte_soif)__
-    (à) +(?:faim|peur|honte|soif) @@0 <<- -1>> a                                                    # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_part)__
-    (a) part ({w1}) @@0,7 <<- morph(\2, ":(?:M[12]|D|Oo)") -1>> à                                   # Confusion probable.
-__[i]/conf(conf_a_à_les_à)__
-    les (à)(?! côtés| peu près| prioris?| post[eé]rioris?| valoirs?| pics?| propos) @@4 <<- -1>> a
-    # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-__[i]/conf(conf_a_à_avant_conj_prep)__
-    (à) +(?:a(?:fin|lors|près|uprès|ux?(?! moins| plus| mieux)|vant|vec)|au-de(?:dans|hors|là|sso?us|vant)|chez|d(?:ans|evant|ès|déjà|onc|urant)|lorsque?|malgré|par(?:ce|mi|)|p(?:endant|our|uisque)|que?|sur|tandis)  @@0
-    <<- -1>> a                                                                                      # Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
+
 __[i]/conf(conf_a_participe_passé_ou_vconj)__
     (à) +({w_2})  @@0,$
     <<- \2.islower() and \2 != "coté" >>>
@@ -3493,9 +3447,7 @@ __[s]/conf(conf_a_à_infi)__
     (?<![mtn]’)(a) (?:[mts](?:’(?:en +|y +|)|e +)|[nv]ous|)({w_2}(?:er|re|ir))  @@0,2
     <<- morph(\2, ":Y", False) and not before(r"(?i)\bque? |(?:il|elle|on|n’(?:en|y)) +$")
     -1>> à                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-__[s]/conf(conf_a_à_après_interrogative)__
-    \w+-(?:je|ils?|elles?|je|tu|on|vous|nous) (a)(?! priori| posteriori| fortiori)  @@$
-    <<- -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
 
 
 
@@ -3540,14 +3492,100 @@ TEST: Ça me fait {{plaisirs}}.
 !!
 
 # a / à
+
+__conf_a_à_incohérences__
+    à [afin|alors|après|auprès|avant|avec|au-dedans|au-dehors|au-delà|au-dessous|au-dessus|au-devant|chez|dans|devant|dès|déjà|donc|durant|lorsque|lorsqu’|lorsqu|malgré|parce|parmi|pendant|pour|puisque|puisqu’|puisqu|quoique|quoiqu’|que|qu’|que|sur|tandis]
+        <<- -1>> a                                                  # Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
+
+    à [au|aux]
+        <<- not value(>1, "|moins|plus|mieux|") -1>> a              # Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
+
+
+__conf_a_à_verbe!6__
+    [n’|m’|t’|s’]   ?[en|y]¿    (à)
+    [l’|les]        [en|y]      (à)
+    [ne|me|te|se]   [les|l’]    (à)
+    [nous|vous] [en|y|les|l’]   (à)
+    ne [le|la|les] [leur|lui]   (à)
+    ne [le|la|les] [leur|lui]   (à)
+    y en                        (à)
+        <<- -1>> a                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    y à
+        <<- -2>> a                                                  # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    [l’|les|en] à
+        <<- not \1.isupper() and not value(>1, "|côté|coup|pic|peu|plat|propos|valoir|")
+        -2>> a                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    [il|on]  [nous|vous]  à
+        <<- -3>> a                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    elle  [nous|vous]  à
+        <<- not morph(<1, ":(?:3s|R)") and not morph(>1, ":Oo|>quo?i/")
+        -1>> 3                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    à été
+        <<- -1>> à                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    qui  à  @:Q¬:M
+        <<- \3.islower() -2>> a                                     # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    qui  [lui|leur|nous|vous|y]  à
+        <<- -3>> a                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+TEST: elle n’{{à}} rien raté.
+TEST: il en a.
+TEST: elle en a.
+TEST: celle qui à contrario nous a foutu dans la merde.
+TEST: ceux qui à Somewhere se sont si mal illustrés.
+
+
+__conf_à_peu_près__
+    a [peu|peux|peut] [près|>pré|>prête]
+    à [peux|peut] [près|>pré|>prête]
+    à peu [>pré|>prête]
+        <<- ->> à peu près                                          # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
+        <<- ~>> *
+
+TEST: C’est {{à peu prêt}} la même chose.
+TEST: elle est {{a peut près}} au point.
+TEST: C’est à peu près ça.
+
+
 __conf_à_a__
+    [<start>|,] a moins [que|qu’|qu]
+        <<- -2>> à                                                  # Confusion probable : « à moins que » pour dire « sauf si ».
+
+    a [>coup|>cout|>coût|>cou] [sur|sûr]
+        <<- ->> à coup sûr                                          # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
+
+    a part @:(?:M[12]|D|Oo)
+        <<- -1>> à                                                  # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+    face a
+        <<- not morph(<1, ":(D.*:f:s|A.*:[fe]:[si])|>en/") -2>> à   # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+    par rapport  a  @:(?:D|Oo|M)
+        <<- -3>> à                                                  # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+    grâce a
+        <<- morph(<1, ":[VN]|<start>", "*") -2>> à                  # Confusion probable.|https://fr.wiktionary.org/wiki/gr%C3%A2ce_%C3%A0
+
     tout a fait
     [jusqu’|jusqu] a
     pas a pas
-        <<- -2>> à                                                                                  # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- -2>> à                                                  # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
-    [<start>|,] a moins [que|qu’|qu]
-        <<- -2>> à                                                                                  # Confusion probable : « à moins que » pour dire « sauf si ».
+TEST: ce qu’elles feront alors {{a coup sûr}}, difficile de le devenir.
+TEST: Face {{a}} ces gens, il ne pensait pas pouvoir réussir
+TEST: c’est grâce {{a}} nous que vous y êtes parvenus
+TEST: par rapport {{a}} eux, je me sens parfois dépassé
+TEST: par rapport {{a}} ces hommes-là, nous manquons d’expérience
+TEST: elles sont tout {{a}} fait compétentes
+TEST: elles se défendront jusqu’{{a}} la mort.
+TEST: elles progressent pas {{a}} pas
+
 
 __conf_à_a_locutions_de_des_du__
     a bonne distance                                                                            [de|des|du]
@@ -3555,9 +3593,12 @@ __conf_à_a_locutions_de_des_du__
     a l’ [arrière|écart|égard|extérieur|aune|avant|encontre|insu|instar|intérieur|opposé]       [de|des|du]
     a l’ autre bout                                                                             [de|des|du]
     a la [portée|suite]                                                                         [de|des|du]
-        <<- -1>> à                                                                                  # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- -1>> à                                                  # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
-__conf_à_a_locutions_de_des_du__
+    a [base|cause] [de|des|du]
+        <<- not tag_before(\1, "ce_que") -1>> à                     # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+__conf_à_a_locutions__
     a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
     a côté [de|d’]
     a l’ heure actuelle
@@ -3735,7 +3776,7 @@ __conf_à_a_locutions_de_des_du__
     a [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
     a [mes|tes|ses|nos|vos|leurs] risques et périls
-        <<- not before(r"(?i)(?:\bque? |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
+        <<- /conf/ not before(r"(?i)(?:\bque? |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
         -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Cette femme {{à}} été confondue avec une autre.
@@ -3747,11 +3788,6 @@ TEST: cette femme, dans son délire, {{à}} {{jetez}} son argent à la poubelle.
 TEST: Ce fâcheux, comme à son habitude, les {{à}} ennuyés à mourir.
 TEST: Lui l’{{à}} pris par surprise.
 TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
-TEST: elles sont tout {{a}} fait compétentes
-TEST: c’est grâce {{a}} nous que vous y êtes parvenus
-TEST: elles se défendront jusqu’{{a}} la mort.
-TEST: ce qu’elles feront alors {{a}} coup sûr, difficile de le devenir.
-TEST: elles progressent pas {{a}} pas
 TEST: elle n’y {{à}} pas droit.
 TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.
 TEST: {{tout a coup}}, il n’y eut plus aucune lumière
@@ -3781,17 +3817,13 @@ TEST: un élève qui leur {{à}} fait bien des misères.
 TEST: cet homme {{à}} faim
 TEST: Je sais qu’ils sont {{a}} toi.
 TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
-TEST: Face {{a}} ces gens, il ne pensait pas pouvoir réussir
 TEST: On s’y fait, d’une manière ou d’une autre, {{a}} notre corps défendant.
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
 TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
 TEST: Sébastien {{a}} {{demander}} des conseils.
 TEST: Personne {{a}} part Tom ne connaît son adresse
 TEST: Attention {{a}} ne pas la réveiller.
-TEST: C’est {{à peu prêt}} la même chose.
 TEST: ils viennent nous attaquer {{a}} tout bout de champ
-TEST: par rapport {{a}} eux, je me sens parfois dépassé
-TEST: par rapport {{a}} ces hommes-là, nous manquons d’expérience
 TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
 TEST: ce que cette personne, dans son esprit trouble et vindicatif, {{à}} aux hommes à dire, nul ne le sait.
 TEST: on fait ça {{a}} la va-vite.
@@ -3800,7 +3832,7 @@ TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
 TEST: elle à qui nous avons donné notre cœur et pour laquelle nous avons tout tenté pour la faire aimer de nos concitoyens.
 TEST: jusqu’à parfois se mettre en danger
-TEST: les méthodes de l’à peu près ne suffisent pas.
+TEST: les méthodes de l’à-peu-près ne suffisent pas.
 
 
 ## substantifs
@@ -3821,6 +3853,7 @@ __conf_à_substantifs__
     >machine a >remonter le temps
     >moule a [>gaufre|>gâteau|brioche|manqué|savarin|charlotte]
     >papier a [>lettre|musique]
+    >punk a >chienne
     >rouge a >lèvre
     >sac a [dos|main|langer|merde|foutre]
     >silo a [>grain|blé]
@@ -3867,7 +3900,7 @@ TEST: ils vont et viennent, toujours {{cotes a cotes}}…
 TEST: Nous irons {{tours à tours}} chercher du bois.
 
 
-__conf_à_après_verbes__
+__conf_mettre_a_profit_plat__
     [>mettre|>remettre] ?[ceci|cela|ça|tout]¿ (a) [plat|profit]
     [>mettre|>remettre] tout [ceci|cela|ça] (a) [plat|profit]
     [>mettre|>remettre] [mon|ton|son|notre|votre|leur] talent (a) [plat|profit]
@@ -3882,6 +3915,7 @@ TEST: Il a mis son talent {{a}} profit.
 TEST: Remettre ses compétences {{a}} profit.
 
 
+__conf_mener_a_bien__
     >mener a bien
         <<- /conf/ morph(<1, ">(?:falloir|aller|pouvoir)/", ">que?/")
         -2>> à                              # Confusion probable. Dans cette locution, utilisez la préposition « à ».|https://fr.wiktionary.org/wiki/mener_%C3%A0_bien
@@ -3894,6 +3928,18 @@ TEST: Remettre ses compétences {{a}} profit.
 TEST: Mener {{a}} bien cette guerre sera plus difficile qu’on le pense.
 TEST: Je peux mener {{a}} bien cette opération.
 TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
+
+
+__conf_à_a_après_verbes__
+    @:V¬:[YGNAWM]  a
+        <<- not tag_before(\1, "ce_que")
+        -2>> à                                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+    ~\w-(?:je|tu|ils?|elles?|on|vous|nous)$  a
+        <<- -2>> à                              # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: Vient-on {{a}} la maison demain ?
+TEST: Arrivait-elle {{a}} le manger ?
 
 
 __conf_celui_celle_à_qui__
@@ -4974,6 +5020,19 @@ TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranée
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
 
+# tout à coup
+__conf_tout_à_coup__
+    tout [a|ah|ha] [>cou|>coût|>cout|>coup]
+    [tout|toute|toutes] à [>cou|>coût|>cout]
+    [tout|toute|toutes] [a|ah|ha] [>cou|>coût|>cout|>coup]
+    [tout|toute|toutes] [a|ah|ha] coup
+        <<- ->> tout à coup                                         # Confusion.|https://fr.wiktionary.org/wiki/tout_%C3%A0_coup
+
+TEST: ils sont {{tout à cous}} figés
+TEST: Mais {{toute a cou}}, plus rien ne fonctionnait.
+TEST: Tout à coup, rien n’alla plus comme avant.
+
+
 # voix / voie / vois / voit
 __conf_voie_voix_vois_voit__
     à haute [voie|vois|voit]
@@ -4994,8 +5053,10 @@ __conf_voie_voix_vois_voit__
         <<- /conf/ -2>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
     voix [abdominale|anale|biliaire|carrossable|communale|express|interdite|intramusculaire|intraveineuse|piétonne|principale|prioritaire|privée|publique|déserte|romaine|appienne|flaminienne|ferrée|ferroviaire|lactée|lacrymale|aérienne|maritime|fluviale|terrestre|navigable|détournée|déviée|buccale|digestive|urinaire|respiratoire|parallèle|administrative|diplomatique|gouvernementale|législative|hiérarchique|rectiligne|sinueuse|souterraine|urbaine]
-    voix [abdominales|anales|biliaires|carrossables|communales|expresss|interdites|intramusculaires|intraveineuses|piétonnes|principales|prioritaires|privées|publiques|désertes|romaines|appiennes|flaminiennes|ferrées|ferroviaires|lactées|lacrymales|aériennes|maritimes|fluviales|terrestres|navigables|détournées|déviées|buccales|digestives|urinaires|respiratoires|parallèles|administratives|diplomatiques|gouvernementales|législatives|hiérarchiques|rectilignes|sinueuses|souterraines|urbaines]
         <<- /conf/ -1>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+
+    voix [abdominales|anales|biliaires|carrossables|communales|expresss|interdites|intramusculaires|intraveineuses|piétonnes|principales|prioritaires|privées|publiques|désertes|romaines|appiennes|flaminiennes|ferrées|ferroviaires|lactées|lacrymales|aériennes|maritimes|fluviales|terrestres|navigables|détournées|déviées|buccales|digestives|urinaires|respiratoires|parallèles|administratives|diplomatiques|gouvernementales|législatives|hiérarchiques|rectilignes|sinueuses|souterraines|urbaines]
+        <<- /conf/ -1>> voies       # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
     >voix de [recours|perdition]
         <<- -1>> voie|voies         # Confusion probable.|https://fr.wiktionary.org/wiki/voie
@@ -5196,6 +5257,11 @@ __tag_sujets__
     ni [toi|toi-même]
     [toi|toi-même] et
         <<- />> 2p
+
+
+__tag_prop_sub__
+    ce [que|qu’|qu]
+        <<- />> ce_que
 
 
 ## Incohérences avec formes verbales 1sg et 2sg sans sujet
@@ -5821,6 +5887,9 @@ TODO: comme
 
 __purge_locutions_latines__
     [a|à]       [priori|postériori|posteriori|contrario|cappella|minima]
+        <<- ~>> *
+        <<- ~1>> !
+
     ab          [absurdo|initio]
     ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
     ad          vitam æternam
@@ -9753,6 +9822,11 @@ __[i]/conf(conf_avions)__
     nous (avion) @@5 <<- -1>> avions                                    # Confusion probable : l’avion est un appareil volant.
 
 TEST: Je pense que nous {{avion}} tort.
+
+
+# avoir faim / soif
+__[i]/conf(conf_a_à_faim_peur_honte_soif)__
+    (à) +(faim|peur|honte|soif) @@0,$ <<- -1>> a                        # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
 
 
 # banc / ban
