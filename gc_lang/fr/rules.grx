@@ -1762,7 +1762,7 @@ TEST: Un autre chantier important, celui si sensible de la préservation des don
 
 # l’ à
 __[i]/tu(tu_l_à)__
-    l’(à (?:côté|coup|peu[ -]près|à[ -]pic|plat[ -]ventrisme|propos|valoir))
+    l’(à (?:côté|coup|peu[ -]près|à[ -]pic|plat[ -]ventrisme|propos|valoir))  @@2
     <<- -1>> =\1.replace(" ", "-")                                                                  # Mettez des traits d’union pour ces noms communs.
 
 TEST: l’{{à propos}} n’est pat si facile à acquérir.
@@ -3422,35 +3422,6 @@ TEST: il faut de plus en plus aider ces gens.
 
 
 
-__[i]/conf(conf_a_à_le)__
-    (à le) ({w_2})  @@0,5
-    <<- morphex(\2, ":[NAQ].*:[me]", ":(?:Y|Oo)") -1>> a le|au
-    # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “au”. Exemple : _à_ midi, il _a_ pris son déjeuner _au_ restaurant.
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:Y|Oo)") -1>> à la
-    # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “au”. Exemple : _à_ midi, il _a_ pris son déjeuner _au_ restaurant.
-__[i]/conf(conf_a_à_les)__
-    (à les) ({w_2})  @@0,6  <<- morphex(\2, ":[NAQ]", ":(?:Y|Oo)") -1>> a les|aux
-    # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “aux”. Exemple : Elle _a_ donné du travail _aux_ employés _à_ profusion.
-
-__[i]/conf(conf_a_participe_passé_ou_vconj)__
-    (à) +({w_2})  @@0,$
-    <<- \2.islower() and \2 != "coté" >>>
-    <<- morphex(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a                      # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
-    <<- __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", False) and not before(r"(?i)\b(?:il +|elle +|on +|l(?:es|ui|leur) +|[nv]ous +|y +|en +|[nmtsld]’)$")
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
-    <<- __else__ and morph(\2, ":[123][sp]") and not \2.startswith("tord") >>>
-    <<- morph(\2, ":V2.*:Ip:3s") -2>> =suggVerbPpas(@, ":m:s")                                      # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
-    <<- __also__ -1>> a                                                                             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
-    <<- __else__ -2>> _                                                                             # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
-
-__[s]/conf(conf_a_à_infi)__
-    (?<![mtn]’)(a) (?:[mts](?:’(?:en +|y +|)|e +)|[nv]ous|)({w_2}(?:er|re|ir))  @@0,2
-    <<- morph(\2, ":Y", False) and not before(r"(?i)\bque? |(?:il|elle|on|n’(?:en|y)) +$")
-    -1>> à                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-
-
-
-
 @@@@
 @@@@
 @@@@
@@ -3495,57 +3466,125 @@ TEST: Ça me fait {{plaisirs}}.
 
 __conf_a_à_incohérences__
     à [afin|alors|après|auprès|avant|avec|au-dedans|au-dehors|au-delà|au-dessous|au-dessus|au-devant|chez|dans|devant|dès|déjà|donc|durant|lorsque|lorsqu’|lorsqu|malgré|parce|parmi|pendant|pour|puisque|puisqu’|puisqu|quoique|quoiqu’|que|qu’|que|sur|tandis]
-        <<- -1>> a                                                  # Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
+        <<- /conf/ -1>> a                                           # Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
 
     à [au|aux]
-        <<- not value(>1, "|moins|plus|mieux|") -1>> a              # Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
+        <<- /conf/ not value(>1, "|moins|plus|mieux|") -1>> a       # Incohérence avec “\2”. Confusion probable : “à” est une préposition. Écrivez “a” pour la conjugaison de “avoir”.
+
+TEST: ce que cet homme, dans son garage, {{à}} alors une importance.
+TEST: ce que cette personne, dans son esprit trouble et vindicatif, {{à}} aux hommes à dire, nul ne le sait.
 
 
 __conf_a_à_verbe!6__
-    [n’|m’|t’|s’]   ?[en|y]¿    (à)
-    [l’|les]        [en|y]      (à)
-    [ne|me|te|se]   [les|l’]    (à)
-    [nous|vous] [en|y|les|l’]   (à)
-    ne [le|la|les] [leur|lui]   (à)
-    ne [le|la|les] [leur|lui]   (à)
-    y en                        (à)
-        <<- -1>> a                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+    [n’|m’|t’|s’]   ?[en|y]¿        (à)
+    [l’|les]        [en|y]          (à)
+    [ne|me|te|se]   [les|l’]        (à)
+    [nous|vous]     [en|y|les|l’]   (à)
+    ne [le|la|les]  [leur|lui]      (à)
+    ne [le|la|les]  [leur|lui]      (à)
+    y en                            (à)
+        <<- /conf/ -1>> a                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     y à
-        <<- -2>> a                                                  # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ -2>> a                                           # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     [l’|les|en] à
-        <<- not \1.isupper() and not value(>1, "|côté|coup|pic|peu|plat|propos|valoir|")
+        <<- /conf/ not \1.isupper() and not value(>1, "|côté|coup|pic|peu|plat|propos|valoir|")
         -2>> a                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     [il|on]  [nous|vous]  à
-        <<- -3>> a                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ -3>> a                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     elle  [nous|vous]  à
-        <<- not morph(<1, ":(?:3s|R)") and not morph(>1, ":Oo|>quo?i/")
+        <<- /conf/ not morph(<1, ":(?:3s|R)") and not morph(>1, ":Oo|>quo?i/")
         -1>> 3                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     à été
-        <<- -1>> à                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ -1>> à                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     qui  à  @:Q¬:M
-        <<- \3.islower() -2>> a                                     # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ \3.islower() -2>> a                              # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     qui  [lui|leur|nous|vous|y]  à
-        <<- -3>> a                                                  # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ -3>> a                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
+
+    à  le  @:[NAQ].*:[me]¬:(?:Y|Oo)
+        <<- /conf/ -1:2>> a le|au
+        # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “au”. Exemple : _à_ midi, il _a_ pris son déjeuner _au_ restaurant.
+
+    à  le  @:[NAQ].*:f¬:(?:Y|Oo)
+        <<- /conf/ -1:2>> à la|a la
+        # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “a la”. Exemple : _à_ midi, elle _a_ pris son déjeuner _a_ la cantine.
+
+    à  les  @:[NAQ]¬:(?:Y|Oo)
+        <<- /conf/ -1:2>> a les|aux
+        # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “aux”. Exemple : Elle _a_ donné du travail _aux_ employés _à_ profusion.
+
+    à  *WORD
+        <<- /conf/ \2.islower() and not value(\2, "|coté|") >>>
+        <<- morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a                    # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
+        <<- __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
+        -2>> =suggVerbInfi(\2)                                                                       # Le verbe devrait être à l’infinitif.
+        <<- __else__ and morph(\2, ":[123][sp]", "*") and not value(\2, "|tord|tords|") >>>
+        <<- morph(\2, ":V2.*:Ip:3s", "*") -2>> =suggVerbPpas(\2, ":m:s")                            # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
+        <<- __also__ -1>> a                                                                         # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
+        <<- __else__ -2>> _                                                                         # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
+
+TEST: Ce fâcheux, comme à son habitude, les {{à}} ennuyés à mourir.
+TEST: Lui l’{{à}} pris par surprise.
+TEST: elle n’y {{à}} pas droit.
+TEST: il y {{à}} des pertes.
+TEST: ce qui {{à}} pris tant de valeur, c’est…
+TEST: Cette femme {{à}} été confondue avec une autre.
+TEST: Il ne les leur {{à}} pas imposés.
+TEST: l’homme, jamais, ne la lui {{à}} imposés.
+TEST: l’homme, jamais, ne nous l’{{à}} prise.
+TEST: il me les {{à}} donnés
+TEST: il me l’{{à}} donné
+TEST: qui en {{à}} ?
+TEST: un élève qui leur {{à}} fait bien des misères.
+TEST: Il ne m’{{à}} jamais vu.
+TEST: Que fait-il {{a}} cette conférence ?
+TEST: Il m’en {{à}} donné.
+TEST: Il y en {{à}}.
+TEST: Il les y {{à}}.
+TEST: Elle en {{à}} pris.
+TEST: Elle l’en {{à}} averti.
 TEST: elle n’{{à}} rien raté.
+TEST: lui, avec ceux-là, nous en {{à}} donnés trois.
+TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
+TEST: Ce chien, croyons-nous savoir, {{à le}} maître le plus violent qui soit.
+TEST: L’homme {{à}} ouvert la boîte.
+TEST: Il ne nous reste plus qu’{{à}} {{vérifié}} si votre maquette.
+TEST: Je veux {{à}} {{mangé}}.
+TEST: Ne pas hésiter {{à}} {{demandé}} des conseils.
+TEST: cette femme, dans son délire, {{à}} {{jetez}} son argent à la poubelle.
+TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
 TEST: il en a.
 TEST: elle en a.
 TEST: celle qui à contrario nous a foutu dans la merde.
 TEST: ceux qui à Somewhere se sont si mal illustrés.
 
 
+__conf_à_a_infinitif__
+    a  @:Y¬:G
+    a  [ne|n’|me|m’|te|t’|se|s’|en|y|lui|nous|vous]  @:Y
+    a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] @:Y
+    a  [le|la|l’|les|leur]  @:Y¬:N
+        <<- /conf/ not value(<1, "|il|elle|on|n’|m’|t’|") and not before(r"(?i)\bque? |n’(?:en|y) +$")
+        -1>> à                                                      # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: scrupuleux {{a}} n’en toucher qu’une part infime.
+TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
+TEST: Sébastien {{a}} {{demander}} des conseils.
+
+
 __conf_à_peu_près__
     a [peu|peux|peut] [près|>pré|>prête]
     à [peux|peut] [près|>pré|>prête]
     à peu [>pré|>prête]
-        <<- ->> à peu près                                          # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
+        <<- /conf/ ->> à peu près                                   # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
         <<- ~>> *
 
 TEST: C’est {{à peu prêt}} la même chose.
@@ -3555,28 +3594,30 @@ TEST: C’est à peu près ça.
 
 __conf_à_a__
     [<start>|,] a moins [que|qu’|qu]
-        <<- -2>> à                                                  # Confusion probable : « à moins que » pour dire « sauf si ».
+        <<- /conf/ -2>> à                                           # Confusion probable : « à moins que » pour dire « sauf si ».
 
     a [>coup|>cout|>coût|>cou] [sur|sûr]
-        <<- ->> à coup sûr                                          # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
+        <<- /conf/ ->> à coup sûr                                   # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
 
     a part @:(?:M[12]|D|Oo)
-        <<- -1>> à                                                  # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -1>> à                                           # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     face a
-        <<- not morph(<1, ":(D.*:f:s|A.*:[fe]:[si])|>en/") -2>> à   # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ not morph(<1, ":(D.*:f:s|A.*:[fe]:[si])|>en/")
+        -2>> à                                                      # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     par rapport  a  @:(?:D|Oo|M)
-        <<- -3>> à                                                  # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -3>> à                                           # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     grâce a
-        <<- morph(<1, ":[VN]|<start>", "*") -2>> à                  # Confusion probable.|https://fr.wiktionary.org/wiki/gr%C3%A2ce_%C3%A0
+        <<- /conf/ morph(<1, ":[VN]|<start>", "*") -2>> à           # Confusion probable.|https://fr.wiktionary.org/wiki/gr%C3%A2ce_%C3%A0
 
     tout a fait
     [jusqu’|jusqu] a
     pas a pas
-        <<- -2>> à                                                  # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -2>> à                                           # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
+TEST: Personne {{a}} part Tom ne connaît son adresse
 TEST: ce qu’elles feront alors {{a coup sûr}}, difficile de le devenir.
 TEST: Face {{a}} ces gens, il ne pensait pas pouvoir réussir
 TEST: c’est grâce {{a}} nous que vous y êtes parvenus
@@ -3593,10 +3634,14 @@ __conf_à_a_locutions_de_des_du__
     a l’ [arrière|écart|égard|extérieur|aune|avant|encontre|insu|instar|intérieur|opposé]       [de|des|du]
     a l’ autre bout                                                                             [de|des|du]
     a la [portée|suite]                                                                         [de|des|du]
-        <<- -1>> à                                                  # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -1>> à                                           # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     a [base|cause] [de|des|du]
-        <<- not tag_before(\1, "ce_que") -1>> à                     # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ not tag_before(\1, "ce_que") -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: travailler {{a}} bonne distance des fourneaux.
+TEST: Il l’a fait {{a}} cause de toi.
+
 
 __conf_à_a_locutions__
     a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
@@ -3779,54 +3824,25 @@ __conf_à_a_locutions__
         <<- /conf/ not before(r"(?i)(?:\bque? |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
         -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
-TEST: Cette femme {{à}} été confondue avec une autre.
-TEST: L’homme {{à}} ouvert la boîte.
-TEST: Il ne nous reste plus qu’{{à}} {{vérifié}} si votre maquette.
-TEST: Je veux {{à}} {{mangé}}.
-TEST: Ne pas hésiter {{à}} {{demandé}} des conseils.
-TEST: cette femme, dans son délire, {{à}} {{jetez}} son argent à la poubelle.
-TEST: Ce fâcheux, comme à son habitude, les {{à}} ennuyés à mourir.
-TEST: Lui l’{{à}} pris par surprise.
+TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
 TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
-TEST: elle n’y {{à}} pas droit.
+TEST: ils viennent nous attaquer {{a}} tout bout de champ
+TEST: On s’y fait, d’une manière ou d’une autre, {{a}} notre corps défendant.
+TEST: on fait ça {{a}} la va-vite.
+
+
+
+
 TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.
 TEST: {{tout a coup}}, il n’y eut plus aucune lumière
-TEST: il y {{à}} des pertes.
-TEST: ce qui {{à}} pris tant de valeur, c’est…
-TEST: Ce chien, croyons-nous savoir, {{à le}} maître le plus violent qui soit.
-TEST: Il ne les leur {{à}} pas imposés.
-TEST: l’homme, jamais, ne la lui {{à}} imposés.
-TEST: l’homme, jamais, ne nous l’{{à}} prise.
-TEST: il me les {{à}} donnés
-TEST: il me l’{{à}} donné
-TEST: qui en {{à}} ?
-TEST: Il l’a fait {{a}} cause de toi.
-TEST: Il ne m’{{à}} jamais vu.
-TEST: Que fait-il {{a}} cette conférence ?
-TEST: Il m’en {{à}} donné.
-TEST: Il y en {{à}}.
 TEST: un machin ennuyeux {{a}} s’en tirer une balle dans la tête.
-TEST: ce que cet homme, dans son garage, {{à}} alors une importance.
-TEST: Il les y {{à}}.
 TEST: On {{à}} faim.
-TEST: Elle en {{à}} pris.
 TEST: Elle {{à}} froid.
-TEST: Elle l’en {{à}} averti.
-TEST: lui, avec ceux-là, nous en {{à}} donnés trois.
-TEST: un élève qui leur {{à}} fait bien des misères.
 TEST: cet homme {{à}} faim
 TEST: Je sais qu’ils sont {{a}} toi.
-TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
-TEST: On s’y fait, d’une manière ou d’une autre, {{a}} notre corps défendant.
-TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
-TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
-TEST: Sébastien {{a}} {{demander}} des conseils.
-TEST: Personne {{a}} part Tom ne connaît son adresse
 TEST: Attention {{a}} ne pas la réveiller.
-TEST: ils viennent nous attaquer {{a}} tout bout de champ
-TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
-TEST: ce que cette personne, dans son esprit trouble et vindicatif, {{à}} aux hommes à dire, nul ne le sait.
-TEST: on fait ça {{a}} la va-vite.
+
+
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
