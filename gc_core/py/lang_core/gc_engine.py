@@ -406,7 +406,7 @@ def morph (dTokenPos, tWord, sPattern, bStrict=True, bNoWord=False):
         return False
     zPattern = re.compile(sPattern)
     if bStrict:
-        return all(zPattern.search(s)  for s in lMorph)
+        return bool(lMorph) and all(zPattern.search(s)  for s in lMorph)
     return any(zPattern.search(s)  for s in lMorph)
 
 
@@ -433,7 +433,7 @@ def analyse (sWord, sPattern, bStrict=True):
         return False
     zPattern = re.compile(sPattern)
     if bStrict:
-        return all(zPattern.search(s)  for s in lMorph)
+        return bool(lMorph) and all(zPattern.search(s)  for s in lMorph)
     return any(zPattern.search(s)  for s in lMorph)
 
 
@@ -670,10 +670,12 @@ class TokenSentence:
                         sPattern, sNegPattern = sRegex.split("¬", 1)
                         if sNegPattern == "*":
                             # all morphologies must match with <sPattern>
-                            if sPattern and all(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
-                                if bDebug:
-                                    print("  MATCH: @" + sRegex)
-                                yield dGraph[dNode["<re_morph>"][sRegex]]
+                            if sPattern:
+                                lMorph = _oSpellChecker.getMorph(dToken["sValue"])
+                                if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                    if bDebug:
+                                        print("  MATCH: @" + sRegex)
+                                    yield dGraph[dNode["<re_morph>"][sRegex]]
                         else:
                             if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
                                 continue
@@ -1008,6 +1010,8 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemoriz
     if sNegPattern:
         if sNegPattern == "*":
             # all morph must match sPattern
+            if not lMorph:
+                return False
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
         else:
@@ -1032,6 +1036,9 @@ def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemor
     # check negative condition
     if sNegPattern:
         if sNegPattern == "*":
+            # all morph must match sPattern
+            if not lMorph:
+                return False
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
         else:
