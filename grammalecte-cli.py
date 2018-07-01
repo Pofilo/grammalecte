@@ -48,7 +48,7 @@ def readFile (spf):
             for sLine in hSrc:
                 yield sLine
     else:
-        print("# Error: file <" + spf + ">not found.")
+        print("# Error: file <" + spf + "> not found.")
 
 
 def generateParagraphFromFile (spf, bConcatLines=False):
@@ -79,6 +79,20 @@ def output (sText, hDst=None):
         hDst.write(sText)
 
 
+def loadDictionary (spf):
+    if os.path.isfile(spf):
+        sJSON = open(spf, "r", encoding="utf-8").read()
+        try:
+            oJSON = json.loads(sJSON)
+        except:
+            print("# Error. File <" + spf + " is not a valid JSON file.")
+            return None
+        return oJSON
+    else:
+        print("# Error: file <" + spf + "> not found.")
+        return None
+
+
 def main ():
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-f", "--file", help="parse file (UTF-8 required!) [on Windows, -f is similar to -ff]", type=str)
@@ -90,6 +104,7 @@ def main ():
     xParser.add_argument("-tfo", "--textformatteronly", help="auto-format text and disable grammar checking (only with option --file or --file_to_file)", action="store_true")
     xParser.add_argument("-ctx", "--context", help="return errors with context (only with option --json)", action="store_true")
     xParser.add_argument("-wss", "--with_spell_sugg", help="add suggestions for spelling errors (only with option --file or --file_to_file)", action="store_true")
+    xParser.add_argument("-pdi", "--personal_dict", help="load personnal dictionary (JSON file)", type=str)
     xParser.add_argument("-w", "--width", help="width in characters (40 < width < 200; default: 100)", type=int, choices=range(40,201,10), default=100)
     xParser.add_argument("-lo", "--list_options", help="list options", action="store_true")
     xParser.add_argument("-lr", "--list_rules", nargs="?", help="list rules [regex pattern as filter]", const="*")
@@ -104,6 +119,10 @@ def main ():
     oSpellChecker = oGrammarChecker.getSpellChecker()
     oLexicographer = oGrammarChecker.getLexicographer()
     oTextFormatter = oGrammarChecker.getTextFormatter()
+    if xArgs.personal_dict:
+        oJSON = loadDictionary(xArgs.personal_dict)
+        if oJSON:
+            oSpellChecker.setPersonalDictionary(oJSON)
 
     if not xArgs.json:
         echo("Grammalecte v{}".format(oGrammarChecker.gce.version))

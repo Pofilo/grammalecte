@@ -89,7 +89,7 @@ class DAWG:
                     dAff[sAff] = nAff
                     lAff.append(sAff)
                     nAff += 1
-                dAffOccur[sAff] = dCharOccur.get(sAff, 0) + 1
+                dAffOccur[sAff] = dAffOccur.get(sAff, 0) + 1
                 # tags
                 if sTag not in dTag:
                     dTag[sTag] = nTag
