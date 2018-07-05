@@ -149,7 +149,7 @@ class IBDAWG:
             header, info, values, bdic = self.by.split(b"\0\0\0\0", 3)
         except Exception:
             raise Exception
-        
+
         self.nCompressionMethod = int(self.by[17:18].decode("utf-8"))
         self.sHeader = header.decode("utf-8")
         self.lArcVal = values.decode("utf-8").split("\t")
@@ -481,7 +481,7 @@ class IBDAWG:
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code 
+                    # This value is not a char, this is a stemming code
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
                     iAddr2 = int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
@@ -512,7 +512,7 @@ class IBDAWG:
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code 
+                    # This value is not a char, this is a stemming code
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
                 iAddr = iEndArcAddr+self.nBytesNodeAddress
             return l
@@ -524,7 +524,7 @@ class IBDAWG:
             iEndArcAddr = iAddr+self.nBytesArc
             nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
             if nVal == (nRawArc & self._arcMask):
-                # the value we are looking for 
+                # the value we are looking for
                 # we return the address of the next node
                 return int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
             else:
@@ -579,7 +579,7 @@ class IBDAWG:
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code 
+                    # This value is not a char, this is a stemming code
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
                     if not (nRawArc & self._addrBitMask):
@@ -617,7 +617,7 @@ class IBDAWG:
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code 
+                    # This value is not a char, this is a stemming code
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
                     # Now , we go to the next node
                     if not (nRawArc & self._addrBitMask):
@@ -638,7 +638,7 @@ class IBDAWG:
             iEndArcAddr = iAddr+self.nBytesArc
             nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
             if nVal == (nRawArc & self._arcMask):
-                # the value we are looking for 
+                # the value we are looking for
                 if not (nRawArc & self._addrBitMask):
                     # we return the address of the next node
                     return int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
@@ -695,7 +695,7 @@ class IBDAWG:
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code 
+                    # This value is not a char, this is a stemming code
                     sStem = ">" + self.funcStemming(sWord, self.lArcVal[nArc])
                     # Now , we go to the next node and retrieve all following arcs values, all of them are tags
                     if not (nRawArc & self._addrBitMask):
@@ -730,7 +730,7 @@ class IBDAWG:
                 nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
                 nArc = nRawArc & self._arcMask
                 if nArc > self.nChar:
-                    # This value is not a char, this is a stemming code 
+                    # This value is not a char, this is a stemming code
                     l.append(self.funcStemming(sWord, self.lArcVal[nArc]))
                 iAddr = iEndArcAddr+self.nBytesNodeAddress  if not (nRawArc & self._addrBitMask)  else iEndArcAddr+self.nBytesOffset
             return l
@@ -743,7 +743,7 @@ class IBDAWG:
             iEndArcAddr = iAddr+self.nBytesArc
             nRawArc = int.from_bytes(self.byDic[iAddr:iEndArcAddr], byteorder='big')
             if nVal == (nRawArc & self._arcMask):
-                # the value we are looking for 
+                # the value we are looking for
                 if not (nRawArc & self._addrBitMask):
                     return int.from_bytes(self.byDic[iEndArcAddr:iEndArcAddr+self.nBytesNodeAddress], byteorder='big')
                 else:
