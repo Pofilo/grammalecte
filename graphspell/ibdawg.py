@@ -136,7 +136,7 @@ class IBDAWG:
         else:
             raise ValueError("  # Error: unknown code: {}".format(self.nCompressionMethod))
 
-        self.bAcronymValid = True
+        self.bAcronymValid = False
         self.bNumAtLastValid = False
 
     def _initBinary (self):
