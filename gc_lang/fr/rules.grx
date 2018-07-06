@@ -3344,82 +3344,6 @@ TEST: une tension lui {{provocant}} un ulcère
 TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 
 
-# incohérences
-
-# Trop de faux positifs
-#__[i]/conf__
-#    très +(bien|\w+ent) +({w2})  @@w,$
-#    <<- morph(\1, ":W", False) and morphex(\2, ":[123][sp]", ":[GAQW]") -2>> _
-#    # Incohérence avec « très » : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
-
-
-__[i]/conf(conf_très_verbe)__
-    très +(?!envie)({w_2})  @@$
-    <<- morphex(\1, ":(?:Y|[123][sp])", ":[AQW]") -1>> =suggSimil(\1, ":[AW]", True)                # Incohérence avec « très » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
-    <<- morph(\1, ">jeûne/", False) -1>> =\1.replace("û", "u")                                      # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
-
-TEST: Il est très {{cite}}.
-TEST: très {{suivit}} par ce détective
-TEST: il était très {{habille}}
-TEST: Très {{jeûne}}, elle a su qu’elle ne voulait pas d’une vie ordinaire.
-
-
-__[i]/conf(conf_trop_vconj)__
-    trop +({w_2})  @@$
-    <<- morphex(\1, ":[123][sp]", ":(?:[GNAQWM]|3p)") and not before(r"(?i)\bce que? ") -1>> _      # Incohérence probable avec « trop » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
-
-TEST: J’ai trop {{mangeais}}.
-TEST: Ce que nous réussissons presque sera considéré comme un échec.
-
-
-__[i]/conf(conf_presque_trop_vconj)__
-    presque +({w2})  @@$
-    <<- morphex(\1, ":[123][sp]", ":[GNAQWM]") and not before(r"(?i)\bce que? |ou $") -1>> _        # Incohérence probable avec « presque » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
-
-TEST: presque {{délaissait}} par tout le monde.
-TEST: Tout le monde ou presque déteste ces gens-là.
-
-
-# élimination de presque
-__[i](p_presque)__
-    presque <<- ~>> *
-
-__[i]/conf(conf_chez_vconj)__
-    chez +({w2})  @@$
-    <<- not \1[0].isupper() and morphex(\1, ":[123][sp]", ":[GNAQM]") -1>> _                        # Incohérence avec « chez ».
-
-TEST: Tout ce qu’on fera chez {{sera}} enregistré.
-
-
-__[i]/conf(conf_sur_vconj)__
-    sur +({w2})  @@$
-    <<- not \1[0].isupper() and morphex(\1, ":[123][sp]", ":[GNAQM]") and not morph(word(-1), ":[NA]:[me]:si", False)
-    -1>> _                                                                                          # Incohérence avec « sur ».
-
-TEST: Toutes les blagues qu’on fera sur {{entreront}} dans l’histoire !
-
-
-__[i]/conf(conf_si_vconj)__
-    si +({w2})  @@$
-    <<- morphex(\1, ":[123][sp]", ":[GNAQWMT]") and morphex(word(1), ":", ":D", True)
-    -1>> =suggSimil(\1, ":[AWGT]", True)                                                            # Incohérence avec « si » : « \1 » ne devrait pas être une forme verbale conjuguée.
-
-TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
-TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
-
-
-__[i]/conf(conf_de_plus_en_plus_verbe)__
-    de plus en plus +({w_2})  @@$
-    <<- morphex(\1, ":(?:[123][sp]|Y)", ":(?:[GAQW]|3p)") and not morph(word(-1), ":V[123].*:[123][sp]|>(?:pouvoir|vouloir|falloir)/", False, False)
-    -1>> =suggVerbPpas(@)
-    # Incohérence avec « de plus en plus » : « \1 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
-
-TEST: de plus en plus {{gagnait}} par la folie.
-TEST: de plus en plus {{concerner}} par ce problème
-TEST: avec quel zèle ils remplissent leurs devoirs de citoyens (de plus en plus deviennent enseignant·e·s, infirmier·e·s ou s’engagent dans l’armée, etc.).
-TEST: il faut de plus en plus aider ces gens.
-
-
 
 
 @@@@
@@ -3458,7 +3382,78 @@ TEST: Ça me fait {{plaisirs}}.
 
 !!
 !!
-!!!! Confusions                                                                                   !!
+!!!! Confusions générales                                                                         !!
+!!
+!!
+
+
+__conf_chez_vconj__
+    chez  @:(?:[123][sp]|P)¬:[GNAQM]
+        <<- /conf/ not \2.istitle() -2>> _                                                          # Incohérence avec “chez” : “\2” est une forme verbale conjuguée.
+
+TEST: Tout ce qu’on fera chez {{sera}} enregistré.
+
+
+__conf_de_plus_en_plus_verbe__
+    de plus en plus  @:(?:[123][sp]|Y)¬:(?:[GAQW]|3p)
+        <<- /conf/ not morph(<1, ":V[123].*:[123][sp]|>(?:pouvoir|vouloir|falloir)/")
+        -5>> =suggVerbPpas(\5)
+        # Incohérence probable avec « de plus en plus » : « \5 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+
+TEST: de plus en plus {{gagnait}} par la folie.
+TEST: de plus en plus {{concerner}} par ce problème
+TEST: avec quel zèle ils remplissent leurs devoirs de citoyens (de plus en plus deviennent enseignant·e·s, infirmier·e·s ou s’engagent dans l’armée, etc.).
+TEST: il faut de plus en plus aider ces gens.
+
+
+__conf_presque_trop_vconj__
+    presque  @:[123][sp]¬:[GNAQWM]
+        <<- /conf/ not tag_before(\1, "ce_que") and not value(<1, "|ou|") -2>> _                    # Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+
+TEST: presque {{délaissait}} par tout le monde.
+TEST: Tout le monde ou presque déteste ces gens-là.
+
+
+__conf_sur_vconj__
+    sur  @:(?:[123][sp]|P)¬:[GNAQM]
+        <<- /conf/ not \2.istitle() and not morph(<1, ":[NA]:[me]:si") -2>> _                       # Incohérence avec “sur” : “\2” est une forme verbale conjuguée.
+
+TEST: Toutes les blagues qu’on fera sur {{entreront}} dans l’histoire !
+TEST: Elles se querellent sans cesse sur presque tout.
+
+
+__conf_si_vconj__
+    si  @:[123][sp]¬:[GNAQWMT]  <end>
+    si  @:[123][sp]¬:[GNAQWMT]  @:¬:D
+        <<- /conf/ -2>> =suggSimil(\2, ":[AWGT]", True)                                             # Incohérence probable avec “si” : “\2” ne devrait pas être une forme verbale conjuguée.
+
+TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
+TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
+
+
+__conf_trop_vconj__
+    trop  @:[123][sp]¬:(?:[GNAQWM]|3p)
+        <<- /conf/ not tag_before(\1, "ce_que") -2>> _                                              # Incohérence probable avec “trop” : “\2” n’est ni un adjectif, ni un participe passé, ni un adverbe.
+
+TEST: J’ai trop {{mangeais}}.
+TEST: Ce que nous réussissons presque sera considéré comme un échec.
+
+
+__conf_très_verbe__
+    très  @:(?:Y|[123][sp])¬:[AQW]
+        <<- /conf/ not value(\2, "|envie|") -2>> =suggSimil(\2, ":[AW]", True)                      # Incohérence avec “très” : “\2” n’est ni un adjectif, ni un participe passé, ni un adverbe.
+
+TEST: Il est très {{cite}}.
+TEST: très {{suivit}} par ce détective
+TEST: il était très {{habille}}
+
+
+
+
+
+!!
+!!
+!!!! Confusions spécifiques                                                                       !!
 !!
 !!
 
@@ -4025,7 +4020,7 @@ __conf_ça_çà_sa__
     ça  @:[NAQ].*:f¬:(?:G|P|[123][sp])|>seule?s?/
         <<- /conf/ -1>> sa                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
-    sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute)/|:[NAQ].*:f
+    sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque)/|:[NAQ].*:f
         <<- /conf/ -1>> ça                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa [n’|m’|t’|s’|j’|l’|d’|qu’|lorsqu’|puisqu’|quoiqu’]
@@ -4497,6 +4492,14 @@ TEST: {{hors}}, nous y coryons malgré tout ce qu’on peut en dire.
 TEST: {{Hors}} il y a tant à faire depuis que nous sommes arrivés en ces lieux.
 TEST: Hors nous, personne ne sait ce qui s’est passé là-bas.
 TEST: Le peuple se sent hors jeu.
+
+
+# jeune / jeûne
+__conf_jeune__
+    très  >jeûne
+        <<- /conf/ -2>> =\1.replace("û", "u")                                                       # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
+
+TEST: Très {{jeûne}}, elle a su qu’elle ne voulait pas d’une vie ordinaire.
 
 
 # la / là
