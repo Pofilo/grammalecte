@@ -154,9 +154,9 @@ def main ():
     # grammar options
     oGrammarChecker.gce.setOptions({"html": True, "latex": True})
     if xArgs.opt_on:
-        oGrammarChecker.gce.setOptions({ opt:True  for opt in xArgs.opt_on  if opt in oGrammarChecker.gce.getOptions() })
+        oGrammarChecker.gce.setOptions({ opt:True  for opt in xArgs.opt_on })
     if xArgs.opt_off:
-        oGrammarChecker.gce.setOptions({ opt:False  for opt in xArgs.opt_off  if opt in oGrammarChecker.gce.getOptions() })
+        oGrammarChecker.gce.setOptions({ opt:False  for opt in xArgs.opt_off })
 
     # disable grammar rules
     if xArgs.rule_off:

@@ -108,7 +108,7 @@ def mainPage ():
 @app.route("/get_options/fr")
 def listOptions ():
     sUserId = request.cookies.user_id
-    dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dServerGCOptions
+    dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dGCOptions
     return '{ "values": ' + json.dumps(dOptions) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
 
 
@@ -128,7 +128,7 @@ def gcText ():
             response.delete_cookie("user_id", path="/")
     if request.forms.options:
         try:
-            dOptions = dict(dServerGCOptions)  if not dOptions  else dict(dOptions)
+            dOptions = dict(dGCOptions)  if not dOptions  else dict(dOptions)
             dOptions.update(json.loads(request.forms.options))
         except:
             sError = "request options not used"
@@ -149,7 +149,7 @@ def gcText ():
 def setOptions ():
     if request.forms.options:
         sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
-        dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dServerGCOptions)
+        dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dGCOptions)
         try:
             dOptions.update(json.loads(request.forms.options))
             dUser[sUserId] = { "time": int(time.time()), "gc_options": dOptions }
@@ -201,20 +201,27 @@ oLexicographer = oGrammarChecker.getLexicographer()
 oTextFormatter = oGrammarChecker.getTextFormatter()
 gce = oGrammarChecker.getGCEngine()
 
-echo("Grammalecte v{}".format(gce.version))
-dServerGCOptions = gce.getOptions()
-echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dServerGCOptions.items()) ]))
+dGCOptions = gce.getOptions()
 dUser = {}
 userGenerator = genUserId()
 
 
-def main (sHost="localhost", nPort=8080, bTestPage=False):
+def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
     # start server
-    print("Python: " + sys.version)
+    global dGCOptions
+    global TESTPAGE
+
     if bTestPage:
-        global TESTPAGE
         TESTPAGE = True
+    if dOptions:
+        oGrammarChecker.gce.setOptions(dOptions)
+        dGCOptions = gce.getOptions()
+
+    print("Python: " + sys.version)
+    echo("Grammalecte v{}".format(gce.version))
+    echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dGCOptions.items()) ]))
     run(app, host=sHost, port=nPort)
+
 
 
 if __name__ == '__main__':
@@ -223,12 +230,18 @@ if __name__ == '__main__':
     xParser.add_argument("-ht", "--host", help="host (default: localhost)", type=str)
     xParser.add_argument("-p", "--port", help="port (default: 8080)", type=int)
     xParser.add_argument("-t", "--test_page", help="page to test the server on /", action="store_true")
-    #xParser.add_argument("-on", "--opt_on", nargs="+", help="activate options")
-    #xParser.add_argument("-off", "--opt_off", nargs="+", help="deactivate options")
-    #xParser.add_argument("-roff", "--rule_off", nargs="+", help="deactivate rules")
+    xParser.add_argument("-on", "--opt_on", nargs="+", help="activate options")
+    xParser.add_argument("-off", "--opt_off", nargs="+", help="deactivate options")
     xArgs = xParser.parse_args()
+
+    dOpt = None
+    if xArgs.opt_on  or  xArgs.opt_off:
+        dOpt = {}
+        if xArgs.opt_on:
+            dOpt = { opt:True  for opt in xArgs.opt_on }
+        if xArgs.opt_off:
+            dOpt.update({ opt:False  for opt in xArgs.opt_off })
 
     sHost = xArgs.host  or  "localhost"
     nPort = xArgs.port  or  8080
-    main(sHost, nPort, xArgs.test_page)
-
+    main(sHost, nPort, dOpt, xArgs.test_page)
