@@ -92,15 +92,7 @@ I'm doomed, but you are not. You can get out of here.
 """
 
 
-def getServerOptions ():
-    xConfig = configparser.SafeConfigParser()
-    try:
-        xConfig.read("grammalecte-server-options._global.ini")
-        dOpt = xConfig._sections['options']
-    except:
-        echo("Options file [grammalecte-server-options._global.ini] not found or not readable")
-        exit()
-    return dOpt
+TESTPAGE = False
 
 
 def getConfigOptions (sLang):
@@ -126,127 +118,145 @@ def genUserId ():
         i += 1
 
 
-if __name__ == '__main__':
+app = Bottle()
 
-    # initialisation
-    oGrammarChecker = grammalecte.GrammarChecker("fr", "Server")
-    oSpellChecker = oGrammarChecker.getSpellChecker()
-    oLexicographer = oGrammarChecker.getLexicographer()
-    oTextFormatter = oGrammarChecker.getTextFormatter()
-    gce = oGrammarChecker.getGCEngine()
+# GET
+@app.route("/")
+def mainPage ():
+    if TESTPAGE:
+        return HOMEPAGE
+        #return template("main", {})
+    return SADLIFEOFAMACHINE
 
-    echo("Grammalecte v{}".format(gce.version))
-    dServerOptions = getServerOptions()
-    dGCOptions = getConfigOptions("fr")
-    if dGCOptions:
-        gce.setOptions(dGCOptions)
-    dServerGCOptions = gce.getOptions()
-    echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dServerGCOptions.items()) ]))
-    dUser = {}
-    userGenerator = genUserId()
-
-    app = Bottle()
-
-    # GET
-    @app.route("/")
-    def mainPage ():
-        if dServerOptions.get("testpage", False) == "True":
-            return HOMEPAGE
-            #return template("main", {})
-        return SADLIFEOFAMACHINE
-
-    @app.route("/get_options/fr")
-    def listOptions ():
-        sUserId = request.cookies.user_id
-        dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dServerGCOptions
-        return '{ "values": ' + json.dumps(dOptions) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
+@app.route("/get_options/fr")
+def listOptions ():
+    sUserId = request.cookies.user_id
+    dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dServerGCOptions
+    return '{ "values": ' + json.dumps(dOptions) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
 
 
-    # POST
-    @app.route("/gc_text/fr", method="POST")
-    def gcText ():
-        #if len(lang) != 2 or lang != "fr":
-        #    abort(404, "No grammar checker available for lang “" + str(lang) + "”")
-        bComma = False
-        dOptions = None
-        sError = ""
-        if request.cookies.user_id:
-            if request.cookies.user_id in dUser:
-                dOptions = dUser[request.cookies.user_id].get("gc_options", None)
-                response.set_cookie("user_id", request.cookies.user_id, path="/", max_age=86400) # we renew cookie for 24h
-            else:
-                response.delete_cookie("user_id", path="/")
-        if request.forms.options:
-            try:
-                dOptions = dict(dServerGCOptions)  if not dOptions  else dict(dOptions)
-                dOptions.update(json.loads(request.forms.options))
-            except:
-                sError = "request options not used"
-        sJSON = '{ "program": "grammalecte-fr", "version": "'+gce.version+'", "lang": "'+gce.lang+'", "error": "'+sError+'", "data" : [\n'
-        for i, sText in enumerate(txt.getParagraph(request.forms.text), 1):
-            if bool(request.forms.tf):
-                sText = oTextFormatter.formatText(sText)
-            sText = oGrammarChecker.generateParagraphAsJSON(i, sText, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bool(request.forms.tf))
-            if sText:
-                if bComma:
-                    sJSON += ",\n"
-                sJSON += sText
-                bComma = True
-        sJSON += "\n]}\n"
-        return sJSON
-
-    @app.route("/set_options/fr", method="POST")
-    def setOptions ():
-        if request.forms.options:
-            sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
-            dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dServerGCOptions)
-            try:
-                dOptions.update(json.loads(request.forms.options))
-                dUser[sUserId] = { "time": int(time.time()), "gc_options": dOptions }
-                response.set_cookie("user_id", sUserId, path="/", max_age=86400) # 24h
-                return json.dumps(dUser[sUserId]["gc_options"])
-            except:
-                traceback.print_exc()
-                return '{"error": "options not registered"}'
-        return '{"error": "no options received"}'
-
-    @app.route("/reset_options/fr", method="POST")
-    def resetOptions ():
-        if request.cookies.user_id and request.cookies.user_id in dUser:
-            del dUser[request.cookies.user_id]
-        return "done"
-
-    @app.route("/format_text/fr", method="POST")
-    def formatText ():
-        return oTextFormatter.formatText(request.forms.text)
-
-    #@app.route('/static/<filepath:path>')
-    #def server_static (filepath):
-    #    return static_file(filepath, root='./views/static')
-
-    @app.route("/purge_users", method="POST")
-    def purgeUsers ():
-        "delete user options older than n hours"
-        if not request.forms.password or "password" not in dServerOptions or not request.forms.hours:
-            return "what?"
+# POST
+@app.route("/gc_text/fr", method="POST")
+def gcText ():
+    #if len(lang) != 2 or lang != "fr":
+    #    abort(404, "No grammar checker available for lang “" + str(lang) + "”")
+    bComma = False
+    dOptions = None
+    sError = ""
+    if request.cookies.user_id:
+        if request.cookies.user_id in dUser:
+            dOptions = dUser[request.cookies.user_id].get("gc_options", None)
+            response.set_cookie("user_id", request.cookies.user_id, path="/", max_age=86400) # we renew cookie for 24h
+        else:
+            response.delete_cookie("user_id", path="/")
+    if request.forms.options:
         try:
-            if request.forms.password == dServerOptions["password"]:
-                nNowMinusNHours = int(time.time()) - (int(request.forms.hours) * 60 * 60)
-                for nUserId, dValue in dUser.items():
-                    if dValue["time"] < nNowMinusNHours:
-                        del dUser[nUserId]
-                return "done"
-            else:
-                return "no"
+            dOptions = dict(dServerGCOptions)  if not dOptions  else dict(dOptions)
+            dOptions.update(json.loads(request.forms.options))
+        except:
+            sError = "request options not used"
+    sJSON = '{ "program": "grammalecte-fr", "version": "'+gce.version+'", "lang": "'+gce.lang+'", "error": "'+sError+'", "data" : [\n'
+    for i, sText in enumerate(txt.getParagraph(request.forms.text), 1):
+        if bool(request.forms.tf):
+            sText = oTextFormatter.formatText(sText)
+        sText = oGrammarChecker.generateParagraphAsJSON(i, sText, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bool(request.forms.tf))
+        if sText:
+            if bComma:
+                sJSON += ",\n"
+            sJSON += sText
+            bComma = True
+    sJSON += "\n]}\n"
+    return sJSON
+
+@app.route("/set_options/fr", method="POST")
+def setOptions ():
+    if request.forms.options:
+        sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
+        dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dServerGCOptions)
+        try:
+            dOptions.update(json.loads(request.forms.options))
+            dUser[sUserId] = { "time": int(time.time()), "gc_options": dOptions }
+            response.set_cookie("user_id", sUserId, path="/", max_age=86400) # 24h
+            return json.dumps(dUser[sUserId]["gc_options"])
         except:
             traceback.print_exc()
-            return "error"
+            return '{"error": "options not registered"}'
+    return '{"error": "no options received"}'
 
-    # ERROR
-    @app.error(404)
-    def error404 (error):
-        return 'Error 404.<br/>' + str(error)
+@app.route("/reset_options/fr", method="POST")
+def resetOptions ():
+    if request.cookies.user_id and request.cookies.user_id in dUser:
+        del dUser[request.cookies.user_id]
+    return "done"
 
-    run(app, \
-        host=dServerOptions.get('host', 'localhost'), \
-        port=int(dServerOptions.get('port', 8080)))
+@app.route("/format_text/fr", method="POST")
+def formatText ():
+    return oTextFormatter.formatText(request.forms.text)
+
+#@app.route('/static/<filepath:path>')
+#def server_static (filepath):
+#    return static_file(filepath, root='./views/static')
+
+
+def purgeUsers ():
+    "delete user options older than n hours"
+    try:
+        nNowMinusNHours = int(time.time()) - (int(request.forms.hours) * 60 * 60)
+        for nUserId, dValue in dUser.items():
+            if dValue["time"] < nNowMinusNHours:
+                del dUser[nUserId]
+        return True
+    except:
+        traceback.print_exc()
+        return False
+
+
+# ERROR
+@app.error(404)
+def error404 (error):
+    return 'Error 404.<br/>' + str(error)
+
+
+# initialisation
+oGrammarChecker = grammalecte.GrammarChecker("fr", "Server")
+oSpellChecker = oGrammarChecker.getSpellChecker()
+oLexicographer = oGrammarChecker.getLexicographer()
+oTextFormatter = oGrammarChecker.getTextFormatter()
+gce = oGrammarChecker.getGCEngine()
+
+echo("Grammalecte v{}".format(gce.version))
+dGCOptions = getConfigOptions("fr")
+if dGCOptions:
+    gce.setOptions(dGCOptions)
+dServerGCOptions = gce.getOptions()
+echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dServerGCOptions.items()) ]))
+dUser = {}
+userGenerator = genUserId()
+
+
+def main (sHost="localhost", nPort=8080, bTestPage=False):
+    # start server
+    print("Python: " + sys.version)
+    if bTestPage:
+        global TESTPAGE
+        TESTPAGE = True
+    run(app, host=sHost, port=nPort)
+
+
+if __name__ == '__main__':
+    xParser = argparse.ArgumentParser()
+    #xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
+    xParser.add_argument("-ht", "--host", help="host (default: localhost)", type=str)
+    xParser.add_argument("-p", "--port", help="port (default: 8080)", type=int)
+    xParser.add_argument("-t", "--test_page", help="page to test the server on /", action="store_true")
+    #xParser.add_argument("-on", "--opt_on", nargs="+", help="activate options")
+    #xParser.add_argument("-off", "--opt_off", nargs="+", help="deactivate options")
+    #xParser.add_argument("-roff", "--rule_off", nargs="+", help="deactivate rules")
+    xArgs = xParser.parse_args()
+
+    print(xArgs)
+
+    sHost = "localhost"  if not xArgs.host  else xArgs.host
+    nPort = 8080  if not xArgs.host  else xArgs.port
+    main(sHost, nPort, xArgs.test_page)
+
