@@ -3334,16 +3334,6 @@ TEST: elle seule peut y arriver
 TEST: elle seules les femmes la font craquer
 
 
-#### Participes présents
-
-__[i]/conf(conf_adj_part_présent1)__    [nmts]e (\w+ant) @@3 <<- morphex(\1, ":", ":P") -1>> _      # Incohérence : « \1 » n’est pas un participe présent.
-__[i]/conf(conf_adj_part_présent2)__    (?:[nv]ous|lui) (\w+ant) @@$ <<- morph(\1, ":[NAQ]") -1>> _ # Incohérence : « \1 » n’est pas un participe présent.
-
-TEST: ne {{convaincant}} que les convaincus.
-TEST: une tension lui {{provocant}} un ulcère
-TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
-
-
 
 
 @@@@
@@ -3404,6 +3394,19 @@ TEST: de plus en plus {{gagnait}} par la folie.
 TEST: de plus en plus {{concerner}} par ce problème
 TEST: avec quel zèle ils remplissent leurs devoirs de citoyens (de plus en plus deviennent enseignant·e·s, infirmier·e·s ou s’engagent dans l’armée, etc.).
 TEST: il faut de plus en plus aider ces gens.
+
+
+#### Participes présents
+__conf_participes_présents__
+    [ne|n’|me|m’|te|t’|se|s’]  ~\want$
+        <<- morph(\2, ":", ":P") -2>> _                                                             # Incohérence : « \2 » n’est pas un participe présent.
+
+    [nous|vous|lui]  ~\want$
+        <<- morph(\2, ":[NAQ]", ":[PG]") -2>> _                                                     # Incohérence : « \2 » n’est pas un participe présent.
+
+TEST: ne {{convaincant}} que les convaincus.
+TEST: une tension lui {{provocant}} un ulcère
+TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 
 
 __conf_presque_trop_vconj__
