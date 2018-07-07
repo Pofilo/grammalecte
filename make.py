@@ -141,24 +141,12 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
             print("# Error: path and filename of unopkg not set in config.ini")
 
 
-def createServerOptions (sLang, dOptData):
-    with open("grammalecte-server-options."+sLang+".ini", "w", encoding="utf-8", newline="\n") as hDst:
-        hDst.write("# Server options. Lang: " + sLang + "\n\n[gc_options]\n")
-        for sSection, lOpt in dOptData["lStructOpt"]:
-            hDst.write("\n########## " + dOptData["dOptLabel"][sLang].get(sSection, sSection + "[no label found]")[0] + " ##########\n")
-            for lLineOpt in lOpt:
-                for sOpt in lLineOpt:
-                    hDst.write("# " + dOptData["dOptLabel"][sLang].get(sOpt, "[no label found]")[0] + "\n")
-                    hDst.write(sOpt + " = " + ("1" if dOptData["dOptServer"].get(sOpt, None) else "0") + "\n")
-        hDst.write("html = 1\n")
-
-
 def createPackageZip (sLang, dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     copyGrammalectePyPackageInZipFile(hZip, spLangPack)
-    for spf in ["grammalecte-cli.py", "grammalecte-server.py", "grammalecte-server-options."+sLang+".ini", \
+    for spf in ["grammalecte-cli.py", "grammalecte-server.py", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     hZip.writestr("setup.py", helpers.fileFile("gc_lang/fr/setup.py", dVars))
@@ -233,7 +221,6 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
 
     createOXT(spLang, dVars, xConfig._sections['oxt'], spLangPack, bInstallOXT)
 
-    createServerOptions(sLang, dVars)
     createPackageZip(sLang, dVars, spLangPack)
 
     #### JAVASCRIPT

@@ -73,13 +73,6 @@ HOMEPAGE = """
             <p><input type="submit" class="button" value="Envoyer" /></p>
         </form>
 
-        <h3>Purge des utilisateurs</h3>
-        <form method="post" action="/purge_users" accept-charset="UTF-8">
-            <p><label for="hours">Utilisateurs pas connectés depuis</label> <input id="hours" type="number" name="hours" value="24" /> heures.</p>
-            <p><label for="password">Mot de passe</label> <input id="password" type="password" name="password" style="width: 200px" /></p>
-            <p><input type="submit" class="button" value="Envoyer" /></p>
-        </form>
-
     </body>
 </html>
 """
@@ -93,22 +86,6 @@ I'm doomed, but you are not. You can get out of here.
 
 
 TESTPAGE = False
-
-
-def getConfigOptions (sLang):
-    xConfig = configparser.SafeConfigParser()
-    try:
-        xConfig.read("grammalecte-server-options." + sLang + ".ini")
-    except:
-        echo("Options file [grammalecte-server-options." + sLang + ".ini] not found or not readable")
-        exit()
-    try:
-        dGCOpt = { k: bool(int(v))  for k, v in xConfig._sections['gc_options'].items() }
-    except:
-        echo("Error in options file [grammalecte-server-options." + sLang + ".ini]. Dropped.")
-        traceback.print_exc()
-        exit()
-    return dGCOpt
 
 
 def genUserId ():
@@ -225,9 +202,6 @@ oTextFormatter = oGrammarChecker.getTextFormatter()
 gce = oGrammarChecker.getGCEngine()
 
 echo("Grammalecte v{}".format(gce.version))
-dGCOptions = getConfigOptions("fr")
-if dGCOptions:
-    gce.setOptions(dGCOptions)
 dServerGCOptions = gce.getOptions()
 echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dServerGCOptions.items()) ]))
 dUser = {}
@@ -254,9 +228,7 @@ if __name__ == '__main__':
     #xParser.add_argument("-roff", "--rule_off", nargs="+", help="deactivate rules")
     xArgs = xParser.parse_args()
 
-    print(xArgs)
-
-    sHost = "localhost"  if not xArgs.host  else xArgs.host
-    nPort = 8080  if not xArgs.host  else xArgs.port
+    sHost = xArgs.host  or  "localhost"
+    nPort = xArgs.port  or  8080
     main(sHost, nPort, xArgs.test_page)
 
