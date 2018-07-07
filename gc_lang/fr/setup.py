@@ -62,7 +62,7 @@ setup(
     keywords='French grammar checker correcteur grammatical français',
 
     # Scripts
-    scripts=['grammalecte-cli.py', 'grammalecte-server.py', 'bottle.py', 'grammalecte-server-options.fr.ini', 'grammalecte-server-options._global.ini'],
+    scripts=['grammalecte-cli.py', 'grammalecte-server.py', 'grammalecte-server-options.fr.ini', 'grammalecte-server-options._global.ini'],
 
     # You can just specify the packages manually here if your project is
     # simple. Or you can use find_packages().

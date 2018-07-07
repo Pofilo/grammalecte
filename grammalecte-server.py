@@ -8,7 +8,7 @@ import traceback
 import configparser
 import time
 
-from bottle import Bottle, run, request, response, template, static_file
+from grammalecte.bottle import Bottle, run, request, response, template, static_file
 
 import grammalecte
 import grammalecte.text as txt
@@ -21,7 +21,7 @@ HOMEPAGE = """
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     </head>
-    
+
     <body class="panel">
         <h1>Grammalecte · Serveur</h1>
 
@@ -51,7 +51,7 @@ HOMEPAGE = """
         <p>[adresse_serveur]:8080/reset_options/fr (POST)</p>
 
         <h2>TEST</h2>
-        
+
         <h3>Analyse</h3>
         <form method="post" action="/gc_text/fr" accept-charset="UTF-8">
             <p>Texte à analyser :</p>

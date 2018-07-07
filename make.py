@@ -158,7 +158,7 @@ def createPackageZip (sLang, dVars, spLangPack):
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     copyGrammalectePyPackageInZipFile(hZip, spLangPack)
-    for spf in ["grammalecte-cli.py", "grammalecte-server.py", "bottle.py", \
+    for spf in ["grammalecte-cli.py", "grammalecte-server.py", \
                 "grammalecte-server-options._global.ini", "grammalecte-server-options."+sLang+".ini", \
                 "README.txt", "LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
@@ -211,6 +211,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     for sf in os.listdir("gc_core/py"):
         if not os.path.isdir("gc_core/py/"+sf):
             helpers.copyAndFileTemplate("gc_core/py/"+sf, "grammalecte/"+sf, dVars)
+    file_util.copy_file("3rd/bottle.py", "grammalecte/bottle.py")
     open("grammalecte/WARNING.txt", "w", encoding="utf-8", newline="\n").write(sWarningMessage)
 
     ## CREATE GRAMMAR CHECKER PACKAGE
@@ -252,7 +253,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
         dVars["dOptJavaScript"] = json.dumps(list(dVars["dOptJavaScript"].items()))
         dVars["dOptFirefox"] = json.dumps(list(dVars["dOptFirefox"].items()))
         dVars["dOptThunderbird"] = json.dumps(list(dVars["dOptThunderbird"].items()))
-        
+
         # create folder
         spLangPack = "grammalecte-js/"+sLang
         helpers.createCleanFolder(spLangPack)
