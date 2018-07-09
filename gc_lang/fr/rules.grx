@@ -3115,24 +3115,6 @@ TEST: {{ma}} obligée                                          ->> mon
 TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
 
 
-!!
-!!
-!!!! Confusions                                                                                   !!
-!!
-!!
-
-__[s>/conf(conf_ne_n)__     [nN]e n’                        <<- ->> ne m’|n’                        # Incohérence. Double négation.
-__[s>/conf(conf_pronoms1)__ [mtMT]e ([nmst](?:’|e )) @@$    <<- ->> \1                              # Incohérence.
-__[s>/conf(conf_pronoms2)__ [sS]e ([mst](?:’|e )) @@$       <<- ->> \1                              # Incohérence.
-__[s>/conf(conf_de_d)__     [dD][eu] d’(?![A-ZÉÂÔÈ])        <<- ->> d’                              # Incohérence.
-
-TEST: Il {{ne n’}}arrive jamais à l’heure.
-TEST: Ça {{me te }}prend la tête, toutes ces complications vaines.
-TEST: il {{se m’}}est difficile d’y parvenir.
-TEST: Ça t’arrive {{de d’}}arriver à l’heure ?
-TEST: Les écrits de d’Alembert.
-
-
 
 @@@@
 @@@@
@@ -3345,6 +3327,26 @@ TEST: Ils {{étai}} partie au {{restaurent}}
 TEST: ils leur {{étai}} indifférent
 
 
+__conf_préverbes__
+    ne n’
+        <<- /conf/ not \1.isupper() ->> ne m’|n’                        # Incohérence. Double négation.
+
+    [me|te] [ne|n’|me|m’|te|t’|se|s’]
+        <<- /conf/ not \1.isupper() ->> \1                              # Incohérence.
+
+    se [me|m’|te|t’|se|s’]
+        <<- /conf/ not \1.isupper() ->> \1                              # Incohérence.
+
+    [de|du] d’ *WORD
+        <<- /conf/ not \1.isupper() and \3.islower() -1:2>> d’          # Incohérence.
+
+TEST: Il {{ne n’}}arrive jamais à l’heure.
+TEST: Ça {{me te}} prend la tête, toutes ces complications vaines.
+TEST: il {{se m’}}est difficile d’y parvenir.
+TEST: Ça t’arrive {{de d’}}arriver à l’heure ?
+TEST: Les écrits de d’Alembert.
+
+
 __conf_chez_vconj__
     chez  @:(?:[123][sp]|P)¬:[GNAQM]
         <<- /conf/ not \2.istitle() -2>> _                                                          # Incohérence avec “chez” : “\2” est une forme verbale conjuguée.
@@ -3381,7 +3383,7 @@ __conf_en_participes_présents__
     en   [ne|me|m’|te|t’|t’]  @:[123][sp]¬:[PY]
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
         <<- /conf/ value(\2, "|m’|t’|s’|") -1:2>> "\2en "                                           # Incohérence : vouliez-vous écrire « \2’en » ?
-        <<- /conf/ __else__ -1:2>> =\1[0:1] + "’en"                                                 # Incohérence : vouliez-vous écrire « \2’en » ?
+        <<- /conf/ __else__ -1:2>> =\2[0:1] + "’en"                                                 # Incohérence : vouliez-vous écrire « \2’en » ?
 
     en   se  @:[123][sp]¬:[PY]
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
