@@ -3163,88 +3163,6 @@ TEST: malgré l’{{arrête}} qui interdisait le port
 TEST: malgré les deux précédentes erreurs
 
 
-__[i]/conf(conf_ma_ta_cette_verbe)__
-    ([mt]a|cette) +({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: Cette {{pèle}} est trop fragile.
-
-
-__[i]/conf(conf_sa_verbe)__
-    (sa) ({w_2})  @@0,3
-    <<- \2[0].islower() and morphex(\2, ":V.*:(?:Y|[123][sp])", ":(?:N.*:[fe]|A|W)") >>>
-    <<- morph(\2, "V.....[pqx]", False) -1>> ça|se                                                   # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
-    <<- __else__ -1>> ça                                                                            # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
-    <<- hasSimil(\2) -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                   # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: {{sa}} devient difficile.
-TEST: il me tendit {{sa}} {{pèche}}.
-TEST: {{sa}} prend du temps.                                                  ->> ça|se
-TEST: {{çà}} va                                                               ->> ça
-TEST: {{sa}} va                                                               ->> ça
-
-
-__[i]/conf(conf_du_cet_au_verbe)__
-    (du|cet|au) +({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and not (\2 == "sortir" and re.search(r"(?i)au", \1))
-    -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: cet {{plaît}} est infectée.
-
-
-__[i]/conf(conf_ce_verbe)__
-    (ce) +(?!faire|peut)({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]:.:[si]|:V0e.*:3[sp]|>devoir") and \2[0].islower() and hasSimil(\2)
-    -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: {{ce}} {{rappelle}} n’en finit pas.
-
-
-__[i]/conf(conf_mon_verbe)__
-    (mon) +({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:.:[si]", True)                                                       # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: mon {{rackette}} n’a pas porté les fruits espérés.
-TEST: Belle qui tient mon vit captif entre tes doigts.
-
-
-__[i]/conf(conf_ton_son_verbe)__
-    [st]on ({w_2})  @@4
-    <<- morph(\1, ":V.*:(?:Y|[123][sp])") and \1[0].islower() and isStart()
-    -1>> =suggSimil(\1, ":[NA]:[me]:[si]", True)                                                    # Incohérence : « \1 » est un verbe.
-
-TEST: ton {{recèle}} avait été dévoilé
-
-
-__[i]/conf(conf_det_plur_verbe)__
-    ([dcmts]es|quelques|aux|[nv]os) +({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower() and not re.search(r"(?i)^quelques? soi(?:ent|t|s)\b", \0)
-    -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                       # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: la crainte des {{attentas}} fait feu de tout bois.
-
-
-__[i]/conf(conf_auxdits_verbe)__
-    (auxdits) +({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:[me]:[pi]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: elle se rendit auxdits {{jardinais}}
-
-
-__[i]/conf(conf_auxdites_verbe)__
-    (auxdites) +({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:Y|[123][sp])", ":[NAQ]") and \2[0].islower()
-    -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                    # Incohérence avec « \1 » : « \2 » est un verbe.
-
-TEST: auxdites {{scelles}}, il ne prêta pas attention.
-
-
-
-
-
 
 
 
@@ -3292,7 +3210,72 @@ TEST: Ça me fait {{plaisirs}}.
 !!
 !!
 
-__conf_un_verbe__
+__conf_déterminant_verbe__
+    [ma|ta|cette|ladite]  @:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                        # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    sa  @:(?:Y|[123][sp])¬:(?:N.*:[fe]|A|W)
+        <<- /conf/ \2.islower() >>>
+        <<- morph(\2, "V.....[pqx]") -1>> ça|se                                                     # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
+        <<- __else__ -1>> ça                                                                        # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
+        <<- hasSimil(\2) -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                               # Incohérence avec « \1 » : « \2 » est un verbe.
+
+TEST: Cette {{pèle}} est trop fragile.
+TEST: {{sa}} devient difficile.
+TEST: il me tendit {{sa}} {{pèche}}.
+TEST: {{sa}} prend du temps.                                                  ->> ça|se
+TEST: {{çà}} va                                                               ->> ça
+TEST: {{sa}} va                                                               ->> ça
+
+
+    [du|cet|ledit|dudit]  @:(?:Y|[123][sp])¬:[NAQ]
+        <<- /conf/ \2.islower()
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    au  @:(?:Y|[123][sp])¬:[NAQ]
+        <<- /conf/ \2.islower() and not value(\2, "|sortir|")
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    ce  @:V.*:(?:Y|[123][sp])¬:[NAQ]:.:[si]
+        <<- /conf/ \2.islower() and not value(\2, "|faire|fut|fût|serait|sera|peut|pouvait|put|pût|pourrait|pourra|doit|dut|dût|devait|devrait|devra|") and hasSimil(\2)
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    mon  @:(?:Y|[123][sp])¬:[NAQ]
+        <<- /conf/ \2.islower()
+        -2>> =suggSimil(\2, ":[NA]:.:[si]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    [<start>|,]  [ton|son|audit]  @:(?:Y|[123][sp])¬:[NAQ]
+        <<- /conf/ \3.islower()
+        -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \2 » : « \3 » est un verbe.
+
+TEST: cet {{plaît}} est infectée.
+TEST: {{ce}} {{rappelle}} n’en finit pas.
+TEST: mon {{rackette}} n’a pas porté les fruits espérés.
+TEST: ton {{recèle}} avait été dévoilé
+TEST: Belle qui tient mon vit captif entre tes doigts.
+
+
+    [des|ces|mes|tes|ses|aux|nos|vos]  @:V.*:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower()
+        -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    quelques  @:V.*:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower() and not value(\2, "|soient|soit|sois|")
+        -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    [auxdits|lesdits|desdits]  @:V.*:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower()
+        -2>> =suggSimil(\2, ":[NA]:[me]:[pi]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    [auxdites|lesdites|desdites]  @:V.*:(?:Y|[123][sp])¬:[NA]
+        <<- /conf/ \2.islower()
+        -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
+TEST: la crainte des {{attentas}} fait feu de tout bois.
+TEST: elle se rendit auxdits {{jardinais}}
+TEST: auxdites {{scelles}}, il ne prêta pas attention.
+
+
     un  @:(?:Y|[123][sp])¬:[GNA]
         <<- /conf/ not value(<1, "|dont|l’|d’|sauf|") and not before(r"(?i)\bun à +$")
         -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
