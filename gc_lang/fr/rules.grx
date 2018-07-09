@@ -3133,42 +3133,6 @@ TEST: Ça t’arrive {{de d’}}arriver à l’heure ?
 TEST: Les écrits de d’Alembert.
 
 
-#### Articles et prépositions + verbes
-
-__[i]/conf(conf_à_le_la_les_leur)__
-    à l(?:es? +|eurs? +|a +|’)({w_3})  @@$
-    <<- morphex(\1, ":", ":[GNAWMBYŴ]") -1>> =suggSimil(\1, ":[NA]", True)                           # Incohérence : après “à”, on devrait trouver un groupe nominal.
-
-TEST: à leur {{profile}}
-TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
-TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
-
-
-__[s]/conf(conf_en_mts_verbe)__
-    ([eE]n ([mtsn])(?:e |’))({w_1}) @@0,*,$
-    <<- morphex(\3, ":[123][sp]", ":[PY]") and not \0.endswith("n’importe") >>>
-    <<- morph(\3, ":3p", False) -3>> =suggVerb(\2, ":P")                                            # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
-    <<- not (\1.endswith("se ") and morph(\3, ":[NA]", False)) -1>> "\2’en "                        # Incohérence : vouliez-vous écrire « \2’en » ?
-
-TEST: {{en t’}}ait donné tant.                          ->> "t’en "
-TEST: {{en n’}}{{envoient}} que peu.
-TEST: toute chose pourrait finalement advenir indifféremment en n’importe quel point du globe
-
-
-__[i]/conf(conf_malgré_le_la_les_leur)__
-    malgré l(?:es? +|eurs? +|a +|’)({w_3})  @@$
-    <<- morphex(\1, ":", ":[GNAWMB]") -1>> =suggSimil(\1, ":[NA]", True)                             # Incohérence : après “malgré”, on devrait trouver un groupe nominal.
-
-TEST: malgré l’{{arrête}} qui interdisait le port
-TEST: malgré les deux précédentes erreurs
-
-
-
-
-
-
-
-
 
 @@@@
 @@@@
@@ -3210,7 +3174,7 @@ TEST: Ça me fait {{plaisirs}}.
 !!
 !!
 
-__conf_déterminant_verbe__
+__conf_déterminant_fem_sing_verbe__
     [ma|ta|cette|ladite]  @:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                        # Incohérence avec « \1 » : « \2 » est un verbe.
 
@@ -3228,6 +3192,7 @@ TEST: {{çà}} va                                                               
 TEST: {{sa}} va                                                               ->> ça
 
 
+__conf_déterminant_mas_sing_verbe__
     [du|cet|ledit|dudit]  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower()
         -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
@@ -3248,6 +3213,12 @@ TEST: {{sa}} va                                                               ->
         <<- /conf/ \3.islower()
         -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \2 » : « \3 » est un verbe.
 
+    un  @:(?:Y|[123][sp])¬:[GNA]
+        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|") and not before(r"(?i)\bun à +$")
+        -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
+
+TEST: un {{maintient}} difficile.
+TEST: quelqu’un arrive.
 TEST: cet {{plaît}} est infectée.
 TEST: {{ce}} {{rappelle}} n’en finit pas.
 TEST: mon {{rackette}} n’a pas porté les fruits espérés.
@@ -3255,6 +3226,7 @@ TEST: ton {{recèle}} avait été dévoilé
 TEST: Belle qui tient mon vit captif entre tes doigts.
 
 
+__conf_déterminant_plur_verbe__
     [des|ces|mes|tes|ses|aux|nos|vos]  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower()
         -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
@@ -3274,14 +3246,6 @@ TEST: Belle qui tient mon vit captif entre tes doigts.
 TEST: la crainte des {{attentas}} fait feu de tout bois.
 TEST: elle se rendit auxdits {{jardinais}}
 TEST: auxdites {{scelles}}, il ne prêta pas attention.
-
-
-    un  @:(?:Y|[123][sp])¬:[GNA]
-        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|") and not before(r"(?i)\bun à +$")
-        -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
-
-TEST: un {{maintient}} difficile.
-TEST: quelqu’un arrive.
 
 
 __conf_de_dès_par_vconj__
@@ -3315,6 +3279,22 @@ TEST: plus d’un ont été traumatisés
 TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 TEST: pour les insulter au sortir du seul troquet dispensateur d’oubli liquide du coin
 TEST: ce peut être un matériau à part entière pour alimenter discussions et délibérations.
+
+
+__conf_préposition_le_la_les_leur__
+    à  [le|la|l’|les|leur|leurs]  @:¬:[GNAWMBYŴ]
+        <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                           # Incohérence : après “à”, on devrait trouver un groupe nominal (ou un verbe à l’infinitif).
+
+TEST: à leur {{profile}}
+TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
+TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
+
+
+    [malgré|dès] [le|la|l’|les|leur|leurs]  @:¬:[GNAWMB]
+        <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                           # Incohérence : après “\1”, on devrait trouver un groupe nominal.
+
+TEST: malgré l’{{arrête}} qui interdisait le port
+TEST: malgré les deux précédentes erreurs
 
 
 __conf_je_non_verbe__
@@ -3397,7 +3377,30 @@ TEST: une tension lui {{provocant}} un ulcère
 TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 
 
-__conf_presque_trop_vconj__
+__conf_en_participes_présents__
+    en   [ne|me|m’|te|t’|t’]  @:[123][sp]¬:[PY]
+        <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- /conf/ value(\2, "|m’|t’|s’|") -1:2>> "\2en "                                           # Incohérence : vouliez-vous écrire « \2’en » ?
+        <<- /conf/ __else__ -1:2>> =\1[0:1] + "’en"                                                 # Incohérence : vouliez-vous écrire « \2’en » ?
+
+    en   se  @:[123][sp]¬:[PY]
+        <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en "                                            # Incohérence : vouliez-vous écrire « \2’en » ?
+
+    en   n’  @:[123][sp]¬:[PY]
+        <<- /conf/ not value(\3, "|importe|") >>>
+        <<- morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                               # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- -1:2>> "n’en "                                                                          # Incohérence : vouliez-vous écrire « \2’en » ?
+
+TEST: {{en t’}}ait donné tant.                          ->> "t’en "
+TEST: {{en n’}}{{envoient}} que peu.
+TEST: il {{en me}} donne beaucoup.                      ->> m’en
+TEST: {{en n’}}{{abordent}} la côte, nous vîmes le désastre.
+TEST: toute chose pourrait finalement advenir indifféremment en n’importe quel point du globe
+
+
+
+__conf_presque_vconj__
     presque  @:[123][sp]¬:[GNAQWM]
         <<- /conf/ not tag_before(\1, "ce_que") and not value(<1, "|ou|") -2>> _                    # Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
@@ -4779,7 +4782,7 @@ __conf_quand_quant_qu_en__
     [quand|quant] [est-il|était-il] [de|des|du]
         <<- /conf/ -1>> qu’en                                               # Confusion probable. Ce qu’il en est de… → Qu’en est-il de… ?
 
-    quant  ~¬à|aux
+    quant  ~¬à|aux?
         <<- /conf/ -1>> quand                                               # Confusion. Quand = à quel moment. Quant à = à propos de.
 
     [qu’|qu] en [je|tu|il|ils]
@@ -4797,6 +4800,7 @@ TEST: il est exact qu’en je ne sais combien de temps il parvint à un résulta
 TEST: être rassuré quant à l’avenir du continent européen
 TEST: il comprit trop tard qu’en elle naquit alors le doute qui l’éloigna de lui à jamais.
 TEST: Quand à mon tour je réalise l’imposture, c’est trop tard.
+TEST: Quant au chat, on verra plus tard.
 
 
 # quand bien même
