@@ -932,16 +932,16 @@ TEST: Je pense {{qu ` }}elle ne viendra pas.
 
 
 ## Apostrophes manquantes
-__[i>/typo(typo_apostrophe_manquante)__
+__[i>/typo(typo_apostrophe_manquante)!6__
     "(lorsqu|puisqu|presqu|quoiqu|jusqu|qu|aujourd|entr) "  @@0  <<- ->> \1’                        # Il manque vraisemblablement une apostrophe.
 # Solution prudente :
-__[i>/typo(typo_apostrophe_manquante_prudence1)__
+__[i>/typo(typo_apostrophe_manquante_prudence1)!6__
     ne ([mtsl] )([aeéiouhyîèêôû][\w-]*)  @@3,$  <<- -1>> =\1[:-1]+"’"                               # Il manque une apostrophe.
-__[i>/typo(typo_apostrophe_manquante_prudence2)__
+__[i>/typo(typo_apostrophe_manquante_prudence2)!6__
     (?:je|tu|ils?|nous|vous|on|ça|elles?) ([nmtsl] )([aeéiouhyîèêôû][\w-]*)  @@*,$
     <<- not option("mapos") and morph(\2, ":V", False) -1>> =\1[:-1]+"’"                            # Il manque probablement une apostrophe.
 # Solution audacieuse :
-__[s>/typo(typo_apostrophe_manquante_audace1)__
+__[s>/typo(typo_apostrophe_manquante_audace1)!6__
     ([ldsncjmtç] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@0
     <<- option("mapos") and not before("(?i)(?:lettre|caractère|glyphe|dimension|variable|fonction|point) *$")
     -1>> =\1[:-1]+"’"                                                                               # Il manque peut-être une apostrophe.
@@ -3296,42 +3296,7 @@ TEST: plus d’un ont été traumatisés
 TEST: plus d’une sont parties aussi vite qu’elles étaient venues
 
 
-__[i]/conf(conf_il_on_pas_verbe)__
-    (?<!t’)(?:il|on) (?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
-    <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)|>ou/") and morphex(word(-1), ":", ":3s", True)
-    -1>> =suggSimil(\1, ":(?:3s|Oo)", False)                                                        # Incohérence : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
-TEST: il {{et}} parti.
-
-
-__[i]/conf(conf_ils_pas_verbe)__
-    (?<!t’)ils (?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
-    <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)|>ou/") and morphex(word(-1), ":", ":3p", True)
-    -1>> =suggSimil(\1, ":(?:3p|Oo)", False)                                                        # Incohérence avec « ils » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: ils {{son}} du même bois.
-TEST: Ils {{étai}} partie au {{restaurent}}
-
-
-__[i]/conf(conf_je_pas_verbe)__
-    je (?!soussigné)(?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
-    <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)") and morphex(word(-1), ":", ":1s", True)
-    -1>> =suggSimil(\1, ":(?:1s|Oo)", False)                                                        # Incohérence avec « je » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: Je {{travail}}.
-
-
-__[i]/conf(conf_tu_pas_verbe)__
-    tu (?:l’|l(?:es?|a|eur|ui) +|[nv]ous +|)({w_2}) @@$
-    <<- morphex(\1, ":", ":(?:[123][sp]|O[onw]|X)") and morphex(word(-1), ":", ":(?:2s|V0e|R)", True)
-    -1>> =suggSimil(\1, ":(?:2s|Oo)", False)                                                        # Incohérence avec « tu » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
-TEST: Elles sont à tu et à toi.
-
-TEST: elles seules peuvent s’en sortir.
-TEST: elle seule peut y arriver
-TEST: elle seules les femmes la font craquer
 
 
 
@@ -3377,6 +3342,54 @@ TEST: Ça me fait {{plaisirs}}.
 !!
 
 
+__conf_je_non_verbe__
+    je  @:¬:(?:[123][sp]|O[onw]|X)
+        <<- /conf/ not value(\2, "|soussigné|soussignée|") and not morph(<1, ":1s")
+        -2>> =suggSimil(\2, ":(?:1s|Oo)", False)                                                    # Incohérence avec « je » : « \2 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    je  [le|la|l’|les|leur|lui|nous|vous]  @:¬:(?:[123][sp]|O[onw]|X)
+        <<- /conf/ not morph(<1, ":1s") -3>> =suggSimil(\3, ":(?:1s|Oo)", False)                    # Incohérence avec « je » : « \3 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: Je {{travail}}.
+TEST: Je soussigné, M. X., déclare que…
+
+
+__conf_tu_non_verbe__
+    tu  ?[le|la|l’|les|leur|lui|nous|vous]¿  (@:¬:(?:[123][sp]|O[onw]|X))
+        <<- /conf/ not morph(<1, ":(?:2s|V0|R)") -1>> =suggSimil(\1, ":(?:2s|Oo)", False)           # Incohérence avec « tu » : « \1 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
+TEST: tu la {{croix}} idiote ?
+TEST: Elles sont à tu et à toi.
+
+
+__conf_ils_non_verbe__
+    [il|on]  @:¬:(?:[123][sp]|O[onw]|X)|>ou/
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
+        -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec « \1 » : « \2 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    [il|on]  [le|la|l’|les|leur|lui|nous|vous]  @:¬:(?:[123][sp]|O[onw]|X)
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
+        -3>> =suggSimil(\3, ":(?:3s|Oo)", False)                                                    # Incohérence avec « \1 » : « \3 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: il {{et}} parti.
+TEST: il nous {{et}} indispensable.
+
+
+__conf_ils_non_verbe__
+    ils  @:¬:(?:[123][sp]|O[onw]|X)|>ou/
+        <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
+        -2>> =suggSimil(\2, ":(?:3p|Oo)", False)                                                    # Incohérence avec « ils » : « \2 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    ils  [le|la|l’|les|leur|lui|nous|vous]  @:¬:(?:[123][sp]|O[onw]|X)
+        <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
+        -3>> =suggSimil(\3, ":(?:3p|Oo)", False)                                                    # Incohérence avec « ils » : « \3 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: ils {{son}} du même bois.
+TEST: Ils {{étai}} partie au {{restaurent}}
+TEST: ils leur {{étai}} indifférent
+
+
 __conf_chez_vconj__
     chez  @:(?:[123][sp]|P)¬:[GNAQM]
         <<- /conf/ not \2.istitle() -2>> _                                                          # Incohérence avec “chez” : “\2” est une forme verbale conjuguée.
@@ -3399,10 +3412,10 @@ TEST: il faut de plus en plus aider ces gens.
 #### Participes présents
 __conf_participes_présents__
     [ne|n’|me|m’|te|t’|se|s’]  ~\want$
-        <<- morph(\2, ":", ":P") -2>> _                                                             # Incohérence : « \2 » n’est pas un participe présent.
+        <<- /conf/ morph(\2, ":", ":P") -2>> _                                                      # Incohérence : « \2 » n’est pas un participe présent.
 
     [nous|vous|lui]  ~\want$
-        <<- morph(\2, ":[NAQ]", ":[PG]") -2>> _                                                     # Incohérence : « \2 » n’est pas un participe présent.
+        <<- /conf/ morph(\2, ":[NAQ]", ":[PG]") -2>> _                                              # Incohérence : « \2 » n’est pas un participe présent.
 
 TEST: ne {{convaincant}} que les convaincus.
 TEST: une tension lui {{provocant}} un ulcère
@@ -8023,6 +8036,9 @@ TEST: c’est un moteur diésel.
 TEST: cette descente aux enfers interminable.
 TEST: c’est une vache à lait
 TEST: Ses talons aiguille étaient à la denière mode.
+TEST: elles seules peuvent s’en sortir.
+TEST: elle seule peut y arriver
+TEST: elle seules les femmes la font craquer
 
 
 
