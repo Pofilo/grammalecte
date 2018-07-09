@@ -115,7 +115,7 @@ def _getSentenceBoundaries (sText):
 def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
     "analyses the paragraph sText and returns list of errors"
     #sText = unicodedata.normalize("NFC", sText)
-    aErrors = None
+    dErrors = {}
     sRealText = sText
     dPriority = {}  # Key = position; value = priority
     dOpt = _dOptions  if not dOptions  else dOptions
@@ -123,7 +123,7 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
 
     # parse paragraph
     try:
-        sNew, aErrors = _proofread(None, sText, sRealText, 0, True, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+        sNew, dErrors = _proofread(None, sText, sRealText, 0, True, dErrors, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         if sNew:
             sText = sNew
     except:
@@ -144,21 +144,20 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
         if 4 < (iEnd - iStart) < 2000:
             try:
                 oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
-                _, errs = _proofread(oSentence, sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
-                aErrors.update(errs)
+                _, dErrors = _proofread(oSentence, sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dErrors, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
             except:
                 raise
-    return aErrors.values() # this is a view (iterable)
+    return dErrors.values() # this is a view (iterable)
 
 
-def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
-    dErrs = {}
+def _proofread (oSentence, s, sx, nOffset, bParagraph, dErrors, dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext):
     bParagraphChange = False
     bSentenceChange = False
     dTokenPos = oSentence.dTokenPos if oSentence else {}
     for sOption, lRuleGroup in _getRules(bParagraph):
         if sOption == "@@@@":
             # graph rules
+            oSentence.dError = dErrors
             if not bParagraph and bSentenceChange:
                 oSentence.update(s, bDebug)
                 bSentenceChange = False
@@ -166,7 +165,7 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                 if bDebug:
                     print("\n>>>> GRAPH:", sGraphName, sLineId)
                 bParagraphChange, s = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
-                dErrs.update(oSentence.dError)
+                dErrors.update(oSentence.dError)
                 dTokenPos = oSentence.dTokenPos
         elif not sOption or dOptions.get(sOption, False):
             # regex rules
@@ -184,8 +183,8 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                                     if cActionType == "-":
                                         # grammar error
                                         nErrorStart = nOffset + m.start(eAct[0])
-                                        if nErrorStart not in dErrs or nPriority > dPriority.get(nErrorStart, -1):
-                                            dErrs[nErrorStart] = _createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
+                                        if nErrorStart not in dErrors or nPriority > dPriority.get(nErrorStart, -1):
+                                            dErrors[nErrorStart] = _createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
                                             dPriority[nErrorStart] = nPriority
                                     elif cActionType == "~":
                                         # text processor
@@ -210,8 +209,8 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dPriority, sCountry, dOpt
                             except Exception as e:
                                 raise Exception(str(e), "# " + sLineId + " # " + sRuleId)
     if bParagraphChange:
-        return (s, dErrs)
-    return (False, dErrs)
+        return (s, dErrors)
+    return (False, dErrors)
 
 
 def _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
@@ -703,8 +702,6 @@ class TokenSentence:
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         "parse tokens from the text and execute actions encountered"
-        self.dError = {}
-        dPriority = {}  # Key = position; value = priority
         dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
         bTagAndRewrite = False
@@ -725,8 +722,7 @@ class TokenSentence:
                 #if bDebug:
                 #    print("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
-                    bChange, dErr = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dToken["i"], dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
-                    self.dError.update(dErr)
+                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dToken["i"], dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
                         bTagAndRewrite = True
         if bTagAndRewrite:
@@ -737,7 +733,6 @@ class TokenSentence:
 
     def _executeActions (self, dGraph, dNode, nTokenOffset, nLastToken, dPriority, dOptions, sCountry, bShowRuleId, bDebug, bContext):
         "execute actions found in the DARG"
-        dError = {}
         bChange = False
         for sLineId, nextNodeKey in dNode.items():
             bCondMemo = None
@@ -761,11 +756,11 @@ class TokenSentence:
                                     nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
                                     nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
                                     nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
-                                    if nErrorStart not in dError or eAct[2] > dPriority.get(nErrorStart, -1):
-                                        dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
+                                    if nErrorStart not in self.dError or eAct[2] > dPriority.get(nErrorStart, -1):
+                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = eAct[2]
                                         if bDebug:
-                                            print("  NEW_ERROR:", dError[nErrorStart], "\n  ", dRule[sRuleId])
+                                            print("  NEW_ERROR:", self.dError[nErrorStart], "\n  ", dRule[sRuleId])
                             elif cActionType == "~":
                                 # text processor
                                 if bDebug:
@@ -800,7 +795,7 @@ class TokenSentence:
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
-        return bChange, dError
+        return bChange
 
     def _createError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         # suggestions
