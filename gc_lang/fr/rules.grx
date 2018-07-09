@@ -932,16 +932,16 @@ TEST: Je pense {{qu ` }}elle ne viendra pas.
 
 
 ## Apostrophes manquantes
-__[i>/typo(typo_apostrophe_manquante)!6__
+__[i>/typo(typo_apostrophe_manquante)__
     "(lorsqu|puisqu|presqu|quoiqu|jusqu|qu|aujourd|entr) "  @@0  <<- ->> \1’                        # Il manque vraisemblablement une apostrophe.
 # Solution prudente :
-__[i>/typo(typo_apostrophe_manquante_prudence1)!6__
+__[i>/typo(typo_apostrophe_manquante_prudence1)__
     ne ([mtsl] )([aeéiouhyîèêôû][\w-]*)  @@3,$  <<- -1>> =\1[:-1]+"’"                               # Il manque une apostrophe.
-__[i>/typo(typo_apostrophe_manquante_prudence2)!6__
+__[i>/typo(typo_apostrophe_manquante_prudence2)__
     (?:je|tu|ils?|nous|vous|on|ça|elles?) ([nmtsl] )([aeéiouhyîèêôû][\w-]*)  @@*,$
     <<- not option("mapos") and morph(\2, ":V", False) -1>> =\1[:-1]+"’"                            # Il manque probablement une apostrophe.
 # Solution audacieuse :
-__[s>/typo(typo_apostrophe_manquante_audace1)!6__
+__[s>/typo(typo_apostrophe_manquante_audace1)__
     ([ldsncjmtç] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@0
     <<- option("mapos") and not before("(?i)(?:lettre|caractère|glyphe|dimension|variable|fonction|point) *$")
     -1>> =\1[:-1]+"’"                                                                               # Il manque peut-être une apostrophe.
@@ -3363,7 +3363,7 @@ TEST: tu la {{croix}} idiote ?
 TEST: Elles sont à tu et à toi.
 
 
-__conf_ils_non_verbe__
+__conf_il_on_non_verbe__
     [il|on]  @:¬:(?:[123][sp]|O[onw]|X)|>ou/
         <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
         -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec « \1 » : « \2 » devrait être un verbe, un pronom objet, un adverbe de négation, etc.
@@ -3710,7 +3710,6 @@ __conf_à_a_locutions__
     a cœur [joie|ouvert|perdu]
     a ciel ouvert
     a corps perdu
-    a coup sûr
     a couper le souffle
     a court terme
     a courte [échéance|portée]
