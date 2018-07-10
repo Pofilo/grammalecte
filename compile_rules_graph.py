@@ -224,7 +224,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
     if not sAction:
         print("# Error in action at line " + sActionId + ":  This action is empty.")
 
-    if sAction[0:1] != "=":
+    if sAction[0:1] != "=" and cAction != "=":
         checkIfThereIsCode(sAction, sActionId)
 
     if cAction == "-":
