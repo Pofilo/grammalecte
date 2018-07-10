@@ -2694,76 +2694,6 @@ __[i](d_ne_me_te_te_le_la_leur)__
     [nmts]e (l(?:e(?:ur|s|)|a)) @@$             <<- =>> =select(\1, ":Oo")
 
 
-# verbe
-__[i](d_ne_verbe)__
-    ne +(?:l(?:es? |eurs? |ui |a |’)|[nv]ous |)({w_1}) @@$
-    <<- not morph(\1, ":(?:O[sp]|X)", False) =>> select(\1, ":V")
-__[i](d_n_m_t_s_verbe)__
-    [nmts]’(?:en +|y +|)({w_1}) @@$
-    <<- not morph(\1, ":X", False) =>> select(\1, ":V")
-__[i](d_me_te_se_verbe)__
-    [mts]e +(?:l(?:es? +|a +|’)|)({w_2})  @@$
-    <<- =>> select(\1, ":V")
-__[i](d_je_verbe)__
-    j’(?:en +|y +|)({w_1}) @@$
-    <<- =>> select(\1, ":[123][sp]")
-__[i](d_je_il_ils_on_verbe)__
-    (?:je|ils?|on) +(?:l(?:es? +|la +|’)|[nv]ous +|)({w_1}) @@$
-    <<- not morph(\1, ":(?:Oo|X)", False) =>> select(\1, ":[123][sp]")
-__[i](d_tu_verbe)__
-    tu +(?:l(?:es? +|la +|’)|[nv]ous +|)({w_1}) @@$
-    <<- morph(word(-1), ":Cs", False, True) and not morph(\1, ":(?:Oo|X)", False) =>> select(\1, ":[123][sp]")
-__[s](d_nom_propre_verbe)__
-    ([A-ZÉÈ]{w_1}) +({w_1})  @@0,$
-    <<- morph(\1, ":M") and \2.islower() and morphex(\2, ":[123][sg]", ":Q") and morph(\2, ":N", False) and morph(word(-1), ":Cs", False, True)
-    =>> select(\2, ":[123][sp]")
-    <<- morph(\1, ":M", False) and morphex(\2, ":[123]s|>(?:[nmts]e|nous|vous)/", ":A") and isStart() =>> =select(\1, ":M")
-__[i](d_que_combien_pourquoi_en_y_verbe)__
-    (?:que?|combien|pourquoi) +(?:en +|y +|)({w_3}) @@$
-    <<- =>> exclude(\1, ":E")
-
-# groupe nominal
-__[i](d_aucun_non_verbe)__
-    aucun +({w_4}) @@$
-    <<- morph(\1, ":[NA].*:[me]", False) =>> exclude(\1, ":V")
-__[i](d_de_non_verbe)__
-    d(?:e +|’)({w_1}) @@$
-    <<- not morph(\1, ":[YD]", False) =>> exclude(\1, ":V")
-__[i](d_d_un_une_non_verbe)__
-    d’une? ({w_1}) @@$
-    <<- =>> exclude(\1, ":V")
-__[i](d_déterminant_non_verbe)__
-    (?:des|chaque|quelques?|cet(?:te|)|m(?:on|a)|[ts]a|aux?) +({w_1}) @@$
-    <<- =>> exclude(\1, ":V")
-__[i](d_de_la_non_verbe)__
-    de l(?:a |’)({w_2}) @@6
-    <<- not morph(\1, ":Y", False) =>> exclude(\1, ":V")
-__[i](d_de_pronom_non_verbe)__
-    de (?:tel(?:le|)s?|ce(?:tte|t|s)|[ts](?:a|es)|m(?:on|a|es)|[nv]o(?:tre|s)|plein) +({w_2})  @@$
-    <<- =>> exclude(\1, ":V")
-__[i](d_par_non_verbe)__
-    par +({w_3}) @@$
-    <<- =>> exclude(\1, ":V[123]")
-__[i](d_très_non_verbe)__
-    très +({w_2}) @@$
-    <<- =>> exclude(\1, ":[123][sp]")
-__[i](d_en_tant_que)__
-    en tant que +({w_2}) @@$
-    <<- =>> exclude(\1, ":[123][sp]")
-
-# divers
-__[i](p_bac_plus_nombre)__
-    bac ?([+] ?\d\d?) @@$
-    <<- ~1>> *
-    <<- =>> define(\0, [":N:e:i"])
-
-
-TEST: il s’agit d’{{un}} {{anagramme}}
-TEST: nul ne sait qui arriva à ce pauvre Paul surpris par la pluie.
-TEST: elle finit par être très fière de son fils.
-TEST: en tant que président du conseil
-
-
 
 
 @@@@
@@ -2775,6 +2705,78 @@ TEST: en tant que président du conseil
 @@@@
 @@@@
 @@@@
+
+
+# verbe
+__da_préverbes_verbes__
+    ne ?[le|la|l’|les|lui|leur|nous|vous]¿  (@:¬:[OX])
+        <<- =>> select(\1, ":V")
+
+    [n’|m’|t’|s’]  ?[en|y]¿  (@:¬:[OX])
+        <<- =>> select(\1, ":V")
+
+    [me|te|se]  ?[le|la|l’|les]¿  (*WORD)
+        <<- =>> select(\1, ":V")
+
+    j’ ?[en|y]¿  (*WORD)
+        <<- =>> select(\1, ":[123][sp]")
+
+    [je|il|ils|on]  ?[le|la|l’|les|lui|leur|nous|vous]¿  (@:¬:[OX])
+        <<- =>> select(\1, ":[123][sp]")
+
+    tu  ?[le|la|l’|les|lui|leur|nous|vous]¿  (@:¬:[OX])
+        <<- morph(<1, ":Cs|<start>") =>> select(\1, ":[123][sp]")
+
+    @:M  @:[123]s¬:Q
+        <<- \2.islower() and morph(<1, ":Cs|<start>") =>> select(\2, ":[123][sp]")
+
+    <start> @:M  @:(?:[123]s|Oo)|>ne/¬:A
+        <<- =>> =select(\2, ":M")
+
+    [que|qu’|qu|combien|pourquoi]  ¿[en|y]¿  (*WORD)
+        <<- =>> exclude(\1, ":E")
+
+
+__da_groupe_nominal__
+    aucun  @:[NA].*:[me]
+        <<- =>> exclude(\2, ":V")
+
+    [de|d’]  @:¬:[YD]
+        <<- =>> exclude(\2, ":V")
+
+    d’ [un|une]  *WORD
+        <<- =>> exclude(\3, ":V")
+
+    [des|chaque|quelque|quelques|cet|cette|mon|ma|ta|sa|mes|au|aux|nos|vos]  *WORD
+        <<- =>> exclude(\2, ":V")
+
+    de  [la|l’]  @:¬:Y
+        <<- =>> exclude(\3, ":V")
+
+    de [>telle|ce|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|plein|pleine]  *WORD
+        <<- =>> exclude(\3, ":V")
+
+    par  *WORD
+        <<- =>> exclude(\2, ":V[123]")
+
+    très  *WORD
+        <<- =>> exclude(\2, ":[123][sp]")
+
+    en tant que  *WORD
+        <<- =>> exclude(\4, ":[123][sp]")
+
+    bac + ~^\d\d?$
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:e:i"])
+
+
+TEST: il s’agit d’{{un}} {{anagramme}}
+TEST: nul ne sait qui arriva à ce pauvre Paul surpris par la pluie.
+TEST: elle finit par être très fière de son fils.
+TEST: en tant que président du conseil
+TEST: les bac +2 sont trop nombreux.
+TEST: c’est à n’y plus rien comprendre.
+
 
 !!
 !!
