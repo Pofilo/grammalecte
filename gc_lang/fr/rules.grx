@@ -2766,6 +2766,20 @@ TEST: __ocr__ elle s’{{avance*}} sur le seuil
 TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
 
 
+
+
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
 !!
 !!
 !!!! Incohérences de base                                                                         !!
@@ -2773,58 +2787,62 @@ TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
 !!
 
 ### double négation
-__[i](double_négation)__
-    pas (personne|aucune?|jamais)  @@4
-    <<- not morph(word(-1), ":D:[me]" ,False, False) ->> \1|pas, \1
-    # Double négation : les mots « pas \1 » ne devraient pas se succéder. Si ces mots appartiennent à des propositions distinctes, une virgule est peut-être préférable.
+__double_négation__
+    pas [personne|aucun|aucune|jamais]
+        <<- not morph(<1, ":D.*:[me]") ->> \1|pas, \1
+        # Double négation : les mots « pas \1 » ne devraient pas se succéder. Si ces mots appartiennent à des propositions distinctes, une virgule est peut-être préférable.
 
 TEST: Ce que tu ne fais {{pas jamais}}.
 
 
 ### incohérences globales (attention à la casse du 2e mot, car beaucoup de sigles peuvent tromper)
-__[s](incohérences_globales1)__
-    ([clmtsCLMTS]es|[nvNV]os) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
-    <<- -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
-__[s](incohérences_globales2)__
-    ([cC]e(?:tte|t|)|[mtsMTS]a|[mM]on) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
-    <<- -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+__incohérences_globales__
+    [ce|cet|cette|ma|ta|sa|mon] [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on]
+        <<- /conf/ not \1.isupper() and not \2.isupper()
+        -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    [quel|quelle] [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on]
+        <<- /conf/ not \1.isupper() and not \2.isupper() and not value(<1, "|tel|telle|")
+        -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    [ces|les|mes|tes|ces|nos|vos] [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on]
+        <<- /conf/ not \1.isupper() and not \2.isupper()
+        -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    [quels|quelles] [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on]
+        <<- /conf/ not \1.isupper() and not \2.isupper() and not value(<1, "|tels|telles|")
+        -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on]
+        <<- /conf/ not \1.isupper() -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                       # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+        <<- /conf/ __also__ -1>> de                                                                 # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
 TEST: {{Ces}} {{cette}} canaille qui nous a donné tant de fil à retordre.
 TEST: Mon {{il}} est une merveille.
+TEST: je ne sais {{des}} {{ses}} choses.
 
 
-__[s](incohérence_globale_au_qqch)__
-    ([aA]u) ({w2})  @@0,$
-    <<- not \2.isupper() >>>
-    <<- morph(\2, ">(?:[cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on|parce)/", False)
-    -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                       # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
-    <<- __else__ and morph(\2, ">quelle/", False) ->> auquel|auxquels|auxquelles                    # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
-    <<- __else__ and \2 == "combien" and morph(word(1), ":[AY]", False) -1>> ô                      # Incohérence probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
+__incohérence_au_qqch__
+    au  [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on|parce]
+        <<- /conf/ not \1.isupper() and not \2.isupper()
+        -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    aux [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on|parce]
+        <<- /conf/ not \1.isupper() and not \2.isupper()
+        -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+
+    [au|aux] [quel|quels|quelle|quelles]
+        <<- /conf/ ->> auquel|auxquels|auxquelles                                                   # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
+
+    [au|aux] combien  @:[AY]
+        <<- /conf/ -1:2>> ô combien                                                                 # Confusion probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
 
 TEST: au {{nos}} enfants.
 TEST: {{Au quel}} faut-il s’adresser ?
-TEST: Au MES, rien de nouveau.
-
-
-__[s](incohérence_globale_aux_qqch)__
-    ([aA]ux) ({w2})  @@0,$
-    <<- not \2.isupper() >>>
-    <<- morph(\2, ">(?:[cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on|parce)/", False)
-    -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                       # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
-    <<- __else__ and morph(\2, ">quelle/", False) ->> auxquels|auxquelles                           # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
-    <<- __else__ and \2 == "combien" and morph(word(1), ":[AY]", False) -1>> ô                      # Incohérence probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
-
 TEST: ils jouent aux {{des}}.
 TEST: {{Aux quels}} a-t-il adressé sa requête. ?
-TEST: Des individus {{aux}} combien sensibles aux usages.
-
-
-__[s](incohérences_globales3)__
-    ([dD]es) ([cdlmst]es|[nv]os|cettes?|[mts]a|mon|je|tu|ils?|elle?|[vn]ous|on)  @@0,$
-    <<- -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
-    <<- -1>> de                                                                                     # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
-
-TEST: je ne sais {{des}} {{ses}} choses.
+TEST: Des individus {{aux combien}} sensibles aux usages.
+TEST: Au MES, rien de nouveau.
 
 
 
@@ -2834,40 +2852,41 @@ TEST: je ne sais {{des}} {{ses}} choses.
 !!
 !!
 
-#__bs__  Mr <<- ->> M.                          # M. est l’usage courant pour “Monsieur”. « Mr » est l’abréviation ancienne, française.
-
 # à / en
-__[i]/bs(bs_en_à_ville)__
-    (en) A(?:gen|miens|ngers|jjacio|rles|vignon)  @@0
-    <<- -1>> à       # On utilise la préposition “à” avant les villes (à Avignon, à Arles…), la préposition “en” avant les régions (en Amérique, en Afrique…).
+__bs_en_à_ville__
+    en [Agen|Amiens|Angers|Ajjacio|Arles|Avignon]
+        <<- /bs/ -1>> à                             # On utilise la préposition “à” avant les villes (à Avignon, à Arles…), la préposition “en” avant les régions (en Amérique, en Afrique…).
 
 TEST: {{En}} Avignon
 TEST: {{En}} Agen
 
 
 # avoir été
-__[i]/bs(bs_avoir_été_chez)__
-    (?<!l’)({avoir}) été chez  @@0
-    <<- not re.search("(?i)^avoir$", \1) and morph(\1, ">avoir/", False)
-    ->> _                                                                                           # Tournure familière. Utilisez « être allé ».
+__bs_avoir_été_chez__
+    >avoir été chez
+        <<- /bs/ not value(<1, "|l’|") ->> _                                                        # Tournure familière. Utilisez « être allé ».
 
 TEST: J’{{ai été chez}} le coiffeur.
 TEST: Chez les intellectuels, le mot utopie n’a jamais été synonyme de folie, mais il l’a été pour l’homme de la rue.
+TEST: Saoul, je l’ai été chez mon ami, mais après ça allait mieux.
 
 
 # abyme / abîme
-__[i]/bs(bs_mise_en_abyme)__
-    mis\w+ en (ab[îi]mes?) @@$ <<- -1>> abyme
-    # Classiquement, on écrit plutôt « abyme » dans cette expression.|https://fr.wiktionary.org/wiki/mise_en_abyme
+__bs_mettre_en_abyme__
+    >mettre en [>abîme|>abime]
+        <<- /bs/ -3>> abyme
+        # Classiquement, on écrit plutôt “abyme” dans cette expression.|https://fr.wiktionary.org/wiki/mise_en_abyme
 
 TEST: La mise en {{abîme}}.
 
 
 # à date / jusqu’à date
-__[i]/bs(bs_à_date)__
-    ({etre}|m\w+) ([aà] date)  @@0,$  <<- morph(\1, ">(?:être|mettre)/", False) -2>> à jour         # Anglicisme incompris hors du Québec.
-__[i]/bs(bs_jusquà_date)__
-    jusqu [àa] date <<- ->> jusqu’ici|jusqu’à maintenant|jusqu’à ce jour|à ce jour                  # Anglicisme incompris hors du Québec.
+__bs_à_date__
+    [>être|>mettre] [a|à] >date
+        <<- /bs/ -2:3>> à jour                                                                      # Anglicisme incompris hors du Québec.
+
+    [jusqu’|jusqu] [à|a] >date
+        <<- /bs/ ->> jusqu’ici|jusqu’à maintenant|jusqu’à ce jour|à ce jour                         # Anglicisme incompris hors du Québec.
 
 TEST: être {{à date}}
 TEST: mettre {{a date}}
@@ -2875,18 +2894,25 @@ TEST: {{jusqu’à date}}
 
 
 # incessamment sous peu
-__[i]/bs(bs_incessamment_sous_peu)__
-    incessamment +sous (peu[tx]?)  @@$
-    <<- not \1.endswith("u") -1>> peu                                                               # Confusion.|https://fr.wiktionary.org/wiki/sous_peu
-    <<- __else__ ->> sous peu|bientôt|dans peu de temps|d’un moment à l’autre                       # Expression impropre.|https://fr.wiktionary.org/wiki/incessamment_sous_peu
+__bs_incessamment_sous_peu__
+    incessamment >sou [peu|peux|peut]
+        <<- /bs/ not \3.endswith("u") -3>> peu                                                      # Confusion.|https://fr.wiktionary.org/wiki/sous_peu
+        <<- /bs/ not \2.endswith("s") -2>> sous                                                     # Confusion.|https://fr.wiktionary.org/wiki/sous_peu
+        <<- /bs/ __else__ ->> sous peu|bientôt|dans peu de temps|d’un moment à l’autre              # Expression impropre.|https://fr.wiktionary.org/wiki/incessamment_sous_peu
 
 TEST: ils arrivent {{incessamment sous peu}}.
 
 
 # pire
-__[i]/bs(bs_pire)__          (?:moins|aussi|plus) (pires?) @@$ <<- -1>> mauvais|mauvaise|mauvaises  # Tournure erronée. Utilisez « mauvais ».|http://www.academie-francaise.fr/plus-pire-moins-pire
-__[i]/bs(bs_de_mal_en_pis)__ de mal en pires? <<- ->> de mal en pis                                 # Tournure erronée. Utilisez « de mal en pis ».
-__[i]/bs(bs_au_pis_aller)__  au pire aller <<- ->> au pis aller                                     # Tournure erronée. Utilisez « au pis aller ».
+__bs_pire__
+    [moins|aussi|plus] [>pire]
+        <<- /bs/ -2>> mauvais|mauvaise|mauvaises                    # Tournure erronée. Utilisez « mauvais ».|http://www.academie-francaise.fr/plus-pire-moins-pire
+
+    de mal en >pire
+        <<- /bs/ ->> de mal en pis                                  # Tournure erronée. Utilisez « de mal en pis ».
+
+    au pire aller
+        <<- /bs/ ->> au pis aller                                   # Tournure erronée. Utilisez « au pis aller ».
 
 TEST: c’est plus {{pire}} que tout.
 TEST: il est moins {{pire}} que l’autre.
@@ -2896,41 +2922,45 @@ TEST: {{Au pire aller}}, on s’en passera.
 
 
 # pour ne pas que
-__[i]/bs(bs_pour_ne_pas_que)__
-    pour ne pas que?  <<- ->> _
-    # Tournure familière. Écrivez “pour qu’il ne vienne pas” plutôt que “pour ne pas qu’il vienne.”|http://www.academie-francaise.fr/pour-pas-que-au-lieu-de-pour-que-ne-pas
+__bs_pour_ne_pas_que__
+    pour ne pas [que|qu’|qu]
+        <<- /bs/ ->> _
+        # Tournure familière. Écrivez “pour qu’il ne vienne pas” plutôt que “pour ne pas qu’il vienne.”|http://www.academie-francaise.fr/pour-pas-que-au-lieu-de-pour-que-ne-pas
 
 TEST: Nous y sommes allés {{pour ne pas qu}}’elle se sente seule.
 
 
 # très / trop
-__[i]/bs(bs_très_trop_superflu)__
-    tr(ès|op) (beaucoup|assez|mieux|pire|meilleur|délicieux|plus|moins) @@2,$ <<- ->> \2            # « tr\1 » est superflu.
+__bs_très_trop_superflu__
+    [très|trop] [beaucoup|assez|mieux|pire|meilleur|délicieux|plus|moins]
+        <<- /bs/ ->> \2                                                                             # Avec “\2”, “\1” est superflu.
 
 TEST: Je l’aime {{très beaucoup}}.
 
 
 # novlangue
-__[i]/bs(bs_vidéoprotection)__
-    vidéo-?protection(s|)  @@$
-    <<- ->> vidéosurveillance\1|télésurveillance\1|surveillance\1 des populations
-    # Novlangue. Double pensée. Utilisez un terme plus approprié.|http://fr.wikipedia.org/wiki/Doublepens%C3%A9e
+__bs_vidéoprotection__
+    >vidéoprotection
+    >vidéo-protection
+        <<- /bs/ ->> vidéosurveillance|télésurveillance|surveillance des populations
+        # Novlangue. Double pensée. Utilisez un terme plus approprié.|http://fr.wikipedia.org/wiki/Doublepens%C3%A9e
 
-TEST: {{vidéo-protection}}
+TEST: les méfaits de la {{vidéoprotection}}
 
 
 #__[i]/bs__  (tomb\w+) dans les pommes <<- ->> \1 dans les pâmes                                    # « Tomber dans les pâmes » est l’ancienne tournure.
 
-# malgré que
-__[i]/bs(bs_malgré_que)__
-    malgré (que?)  @@7
-    <<- not after_chk1(r" \w[\w-]+ en ([aeo][a-zû]*)", ":V0a")
-    ->> bien \1                                                                                     # Tournure populaire. Utilisez « bien que ».
+__bs_malgré_que__
+    malgré que
+        <<- /bs/ not after(r" en (?:a|aie|aies|ait|eut|eût|aura|aurait|avait)\b")
+        ->> bien que|quoique                                                                        # “Malgré que” est une tournure populaire. Utilisez “bien que” ou “quoique”.
+
+    malgré [qu’|qu]
+        <<- /bs/ not after(r" en (?:a|aie|aies|ait|eut|eût|aura|aurait|avait)\b")
+        ->> bien qu’|quoiqu’                                                                        # “Malgré que” est une tournure populaire. Utilisez “bien que” ou “quoique”.
 
 TEST: {{Malgré que}} je sois fou.
 
-
-######### Expressions impropres
 
 #([mts]e|[nv]ous) (rappel\w+) (de) <<- word(1) != "ne" and not morph(word(1), ":V")
 #   -3>> _                                                     # Expression impropre. « Se rappeler quelque chose » ou « Se souvenir de quelque chose ».
@@ -2939,74 +2969,211 @@ TEST: {{Malgré que}} je sois fou.
 #enjoindre à qqn de faire qqch
 
 
+__code_legacy__
+    legacy code
+    code legacy
+        <<- ->> code hérité|code reliquat                                                           # \1 \2. Anglicisme superflu.
+
+TEST: c’est du {{legacy code}}.
+TEST: ce {{code legacy}} est un cauchemar
+
+
+
 !!
 !!
 !!!! Pléonasmes                                                                                   !!
 !!
 !!
 
-__[i]/pleo(pleo_abolir)__               (abol\w+) (?:absolument|entièrement|compl[èé]tement|totalement) @@0 <<- morph(\1, ">abolir/", False) ->> \1         # Pléonasme.
-__[i]/pleo(pleo_acculer)__              (accul\w+) aux? pieds? du mur @@0 <<- morph(\1, ">acculer/", False) ->> \1                                          # Pléonasme.
-__[i]/pleo(pleo_achever)__              (ach[eè]v\w+) (?:absolument|entièrement|compl[èé]tement|totalement) @@0 <<- morph(\1, ">achever/", False) ->> \1    # Pléonasme.
-__[i]/pleo(pleo_en_cours)__             actuellement en cours <<- not after(r" +de?\b") ->> en cours                                            # Pléonasme.
-__[i]/pleo(pleo_en_train_de)__          (actuellement en train) d(?:e(?! nuit)|’{w_2}) @@0 <<- -1>> en train                                    # Pléonasme.
-__[i]/pleo(pleo_ajouter)__              (ajout\w+) en plus @@0 <<- ->> \1                                                                       # Pléonasme.
-__[i]/pleo(pleo_apanage)__              (apanages?) exclusifs? @@0 <<- ->> \1                                                                   # Pléonasme.
-__[i]/pleo(pleo_applaudir)__            (applaudi\w+) des deux mains @@0 <<- ->> \1                                                             # Pléonasme.
-__[i]/pleo(pleo_aujourd_hui)__          au jour d’aujourd’hui <<- ->> aujourd’hui                                                               # Pléonasme.
-__[i]/pleo(pleo_avancer)__              (avan[cç]\w+) en avant @@0 <<- morph(\1, ">avancer/", False) ->> \1                                     # Pléonasme.
-__[i]/pleo(pleo_s_avérer)__             s’av([éè]r\w+) vrai(e?s?) @@4,$ <<- ->> s’av\1 exact\2                                                  # Pléonasme.
-__[i]/pleo(pleo_avéré)__                (avérée?s?) vraie?s? @@0 <<- ->> \1                                                                     # Pléonasme.
-__[i]/pleo(pleo_avenir)__               avenir devant (?:lui|[mts]oi|eux|[nv]ous) <<- morph(word(-1), ":A|>un", False) ->> avenir               # Pléonasme.
-__[i]/pleo(pleo_bourrasque)__           (bourrasques?) de vent @@0 <<- ->> \1                                                                   # Pléonasme.
-__[i]/pleo(pleo_car_en_effet)__         car en effet <<- ->> car|en effet                                                                       # Pléonasme.
-__[i]/pleo(pleo_cirrhose)__             (cirrhoses?) du foie @@0 <<- ->> \1                                                                     # Pléonasme.
-__[i]/pleo(pleo_collaborer)__           (collabor\w+) ensemble @@0 <<- morph(\1, ">collaborer/", False) ->> \1                                  # Pléonasme.
-__[i]/pleo(pleo_comme_par_exemple)__    comme par exemple <<- ->> comme|par exemple                                                             # Pléonasme.
-__[i]/pleo(pleo_comparer)__             (compar\w+) entre (?:eux|elles) @@0 <<- morph(\1, ">comparer/", False) ->> \1                           # Pléonasme.
-__[i]/pleo(pleo_contraindre)__          (contrai\w+) malgré (?:soi|eux|lui|moi|elle|toi) @@0 <<- morph(\1, ">contraindre/", False) ->> \1       # Pléonasme.
-__[i]/pleo(pleo_descendre)__            (descend\w+) en bas(?! de) @@0 <<- ->> \1                                                               # Pléonasme.
-__[i]/pleo(pleo_dessiner)__             (dessin\w+) un dessin @@0 <<- ->> \1                                                                    # Pléonasme.
-__[i]/pleo(pleo_dorénavant)__           à (?:partir|compter) de dorénavant <<- ->> dorénavant|à partir de maintenant                            # Pléonasme.
-__[i]/pleo(pleo_donc_par_conséquent)__  donc par conséquent <<- ->> donc|par conséquent|c’est pourquoi                                          # Pléonasme.
-__[i]/pleo(pleo_enchevêtrer)__          (enchevêtr\w+) les uns dans les autres @@0 <<- morph(\1, ">enchevêtrer/", False) ->> \1                 # Pléonasme.
-__[i]/pleo(pleo_entraider)__            (entraid\w+) (?:mutuellement|les uns les autres) @@0 <<- morph(\1, ">entraider/", False) ->> \1         # Pléonasme.
-__[i]/pleo(pleo_entraide)__             (entraides?) mutuelles? @@0 <<- ->> \1                                                                  # Pléonasme.
-__[i]/pleo(pleo_erreur)__               (erreurs?) involontaires? @@0 <<- ->> \1                                                                # Pléonasme.
-__[i]/pleo(pleo_étape)__                (étapes?) intermédiaires? @@0 <<- ->> \1                                                                # Pléonasme.
-__[i]/pleo(pleo_hasard)__               (hasards?) imprévus? @@0 <<- ->> \1                                                                     # Pléonasme.
-__[i]/pleo(pleo_hémorragie)__           (hémorragies?) de sang @@0 <<- ->> \1                                                                   # Pléonasme.
-__[i]/pleo(pleo_joindre)__              (join\w+) ensemble @@0 <<- morph(\1, ">joindre/") ->> \1|mettre ensemble                                # Pléonasme.
-__[i]/pleo(pleo_lever)__                lever debout <<- ->> lever                                                                              # Pléonasme.
-__[i]/pleo(pleo_mais_qqch)__            mais (cependant|pourtant|toutefois) @@5 <<- ->> mais|cependant|pourtant|toutefois                       # Pléonasme.
-__[i]/pleo(pleo_marche)__               (marches?) à pieds? @@0 <<- ->> \1                                                                      # Pléonasme.
-__[i]/pleo(pleo_méandre)__              (méandres?) sinueux @@0 <<- ->> \1                                                                      # Pléonasme.
-__[i]/pleo(pleo_media)__                (m[eé]dias?) d’informations? @@0 <<- ->> \1                                                             # Pléonasme.
-__[i]/pleo(pleo_monopole)__             (monopoles?) exclusifs? @@0 <<- ->> \1                                                                  # Pléonasme.
-__[i]/pleo(pleo_monter)__               (mont\w+) en haut(?! d[eu’]) @@0 <<- morph(\1, ">monter/", False) ->> \1                                # Pléonasme.
-__[i]/pleo(pleo_opportunité)__          (opportunités?) à saisir @@0 <<- ->> \1                                                                 # Pléonasme.
-__[i]/pleo(pleo_orage)__                (orages?) électriques? @@0 <<- ->> \1                                                                   # Pléonasme.
-__[i]/pleo(pleo_jumelles)__             paires? de jumelles? <<- ->> jumelles                                                                   # Pléonasme.
-__[i]/pleo(pleo_panacée)__              (panacées?) universelles? @@0 <<- ->> \1|remède universel                                               # Pléonasme.
-__[i]/pleo(pleo_perspective)__          (perspectives?) d’avenir @@0 <<- ->> \1                                                                 # Pléonasme.
-__[i]/pleo(pleo_balbutiement)__         premiers? (balbutiements?) @@$ <<- ->> \1                                                               # Pléonasme.
-__[i]/pleo(pleo_priorité)__             premières? (priorités?) @@$ <<- ->> \1                                                                  # Pléonasme.
-__[i]/pleo(pleo_projet1)__              (projets?) futurs? @@0 <<- ->> \1                                                                       # Pléonasme.
-__[i]/pleo(pleo_projet2)__              futurs? (projets?) @@$ <<- ->> \1                                                                       # Pléonasme.
-__[i]/pleo(pleo_prototype)__            (prototypes?) expérimenta(?:l|ux) @@0 <<- ->> \1                                                        # Pléonasme.
-__[i]/pleo(pleo_rénover)__              (rénov\w+) à neuf @@0 <<- morph(\1, ">rénov(?:er|ation)/", False) ->> \1                                # Pléonasme.
-__[i]/pleo(pleo_puis_qqch)__            puis (?:après|ensuite|alors) <<- ->> puis|après|ensuite|alors                                           # Pléonasme.
-__[i]/pleo(pleo_réunir)__               (réuni\w*) ensemble @@0 <<- morph(\1, ">réunir/", False) ->> \1                                         # Pléonasme.
-__[i]/pleo(pleo_reculer)__              (recul\w*) en arrière @@0 <<- morph(\1, ">recul(?:er|)/", False) ->> \1                                 # Pléonasme.
-__[i]/pleo(pleo_risque)__               (risques?) (?:potentiels?|de menaces?) @@0 <<- ->> \1                                                   # Pléonasme.
-__[i]/pleo(pleo_secousse)__             (secousses?) sé?ismiques? @@0 <<- ->> secousse tellurique|secousses telluriques|tremblement de terre    # Pléonasme.
-__[i]/pleo(pleo_solidaire)__            (solidaires?) les uns des autres @@0 <<- ->> \1                                                         # Pléonasme.
-__[i]/pleo(pleo_suffire)__              (suffi\w+) simplement @@0 <<- morph(\1, ">suffire/", False) ->> \1                                      # Pléonasme.
-__[i]/pleo(pleo_talonner)__             (talonn\w+) de près @@0 <<- morph(\1, ">talonner/", False) ->> \1                                       # Pléonasme.
-__[i]/pleo(pleo_taux_alcoolémie)__      taux d’alcoolémies? @@7 <<- ->> taux d’alcool|alcoolémie                                                # Pléonasme. L’alcoolémie est le taux d’alcool dans le sang.
-__[i]/pleo(pleo_tunnel)__               (tunnels?) souterrains? @@0 <<- ->> \1                                                                  # Pléonasme.
-__[i]/pleo(pleo_hardes)__               vieilles hardes <<- ->> hardes                                                                          # Pléonasme.
-__[i]/pleo(pleo_voire_même)__           voire même <<- ->> voire|même                                                                           # Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
+__pleo_pléonasmes_divers__
+    >abolir [absolument|entièrement|complétement|complètement|totalement]
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >acculer [au|aux] >pied du mur
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >achever [absolument|entièrement|complétement|complètement|totalement]
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    actuellement en cours
+        <<- /conf/ not value(>1, "|de|d’|") ->> en cours                                    # Pléonasme.
+
+    actuellement en train [de|d’]
+        <<- /conf/ not value(>1, "|nuit|") -1:3>> en train                                  # Pléonasme.
+
+    >ajouter en plus
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >apanage >exclusive
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    [>applaudir|>applaudissement] des deux mains
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    au jour d’ aujourd’hui
+        <<- /conf/ ->> aujourd’hui                                                          # Pléonasme.
+
+    >avancer en avant
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >avérer >vraie
+        <<- /conf/ -2>> =\2.replace("vrai", "exact")                                        # Pléonasme.
+
+    [avéré|avérée|avérés|avérées] >vraie
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    avenir devant [moi|toi|soi|lui|elle|nous|vous|eux|elles]
+        <<- /conf/ morph(<1, ":A|>un") ->> avenir                                           # Pléonasme.
+
+    >bourrasque de vent
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    car en effet
+        <<- /conf/ ->> car|en effet                                                         # Pléonasme.
+
+    >cirrhose du foie
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >collaborer ensemble
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    comme par exemple
+        <<- /conf/ ->> comme|par exemple                                                    # Pléonasme.
+
+    >comparer entre [eux|elles]
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >contraindre malgré [moi|toi|soi|lui|elle|nous|vous|eux|elles]
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >descendre en bas
+        <<- /conf/ not value(>1, "|de|des|du|d’|") ->> \1                                   # Pléonasme.
+
+    >dessiner un dessin
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    à [partir|compter] de dorénavant
+        <<- /conf/ ->> dorénavant|à partir de maintenant                                    # Pléonasme.
+
+    donc par conséquent
+        <<- /conf/ ->> donc|par conséquent|c’est pourquoi                                   # Pléonasme.
+
+    >enchevêtrer les uns dans les autres
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >entraider mutuellement
+    >entraider les uns les autres
+        <<- /conf/  ->> \1                                                                  # Pléonasme.
+
+    >entraide >mutuelle
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >erreur >involontaire
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >étape >intermédiaire
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >hasard >imprévue
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >hémorragie de sang
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >joindre ensemble
+        <<- /conf/ ->> \1|mettre ensemble                                                   # Pléonasme.
+
+    >lever debout
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    mais [cependant|pourtant|toutefois]
+        <<- /conf/ ->> mais|cependant|pourtant|toutefois                                    # Pléonasme.
+
+    >marche à >pied
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >méandre sinueux
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    [>média|media] d’ >information
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >monopole >exclusive
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >monter en haut
+        <<- /conf/ not value(>1, "|de|des|du|d’|") ->> \1                                   # Pléonasme.
+
+    >opportunité à saisir
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >orage >électrique
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >paire de >jumelle
+        <<- /conf/ ->> jumelles                                                             # Pléonasme.
+
+    >panacée >universelle
+        <<- /conf/ ->> \1|remède universel                                                  # Pléonasme.
+
+    >perspective d’ avenir
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    [premier|premiers] >balbutiement
+        <<- /conf/ ->> \2                                                                   # Pléonasme.
+
+    [première|premières] >priorité
+        <<- /conf/ ->> \2                                                                   # Pléonasme.
+
+    >projet >future
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >future >projet
+        <<- /conf/ ->> \2                                                                   # Pléonasme.
+
+    >prototype >expérimentale
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    [>rénover|>rénovation] à neuf
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    puis [après|ensuite|alors]
+        <<- /conf/ ->> puis|après|ensuite|alors                                             # Pléonasme.
+
+    >réunir ensemble
+        <<- /conf/  ->> \1                                                                  # Pléonasme.
+
+    [>reculer|>recul] en arrière
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >risque >potentielle
+    >risque de >menace
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >secousse [>séismique|>sismique]
+        <<- /conf/ ->> secousse tellurique|secousses telluriques|tremblement de terre       # Pléonasme.
+
+    >solidaire les uns des autres
+    >solidaire les uns avec les autres
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >suffire simplement
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    >talonner de près
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    taux d’ >alcoolémie
+        <<- /conf/ ->> taux d’alcool|alcoolémie                                             # Pléonasme. L’alcoolémie est le taux d’alcool dans le sang.
+
+    >tunnel >souterraine
+        <<- /conf/ ->> \1                                                                   # Pléonasme.
+
+    vieilles hardes
+        <<- /conf/ ->> hardes                                                               # Pléonasme.
+
+    voire même
+        <<- /conf/ ->> voire|même                                                           # Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
 
 TEST: il faut {{abolir totalement}} ces pratiques   ->> abolir
 TEST: il faut {{achever complètement}} ce projet    ->> achever
@@ -3030,8 +3197,8 @@ TEST: {{comme par exemple}}                         ->> comme|par exemple
 TEST: {{médias d’informations}}                     ->> médias
 TEST: {{lever debout}}                              ->> lever
 TEST: {{cirrhose du foie}}                          ->> cirrhose
-TEST: {{s’avérer vrai}}                             ->> s’avérer exact
-TEST: {{avérées vraies}}                            ->> avérées
+TEST: s’avérer {{vrai}}                             ->> exact
+TEST: {{avérées vraies}}                            ->> avérées|||exactes
 TEST: {{bourrasques de vent}}                       ->> bourrasques
 TEST: {{contraint malgré lui}}                      ->> contraint
 TEST: {{contraindre malgré eux}}                    ->> contraindre
@@ -3075,56 +3242,29 @@ TEST: {{voire même}}                                ->> voire|même
 
 
 # d’avance / à l’avance
-__[i]/pleo(pleo_verbe_à_l_avance)__
-    ((?:pré[pvds]|pressen|pronostiqu|réserv|dev(?:an[cç]|in)|avert)\w+) (?:d’avance|à l’avance)  @@0
-    <<- morph(\1, ">(?:prévenir|prévoir|prédire|présager|préparer|pressentir|pronostiquer|avertir|devancer|deviner|réserver)/", False)
-    ->> \1                                                                                                              # Pléonasme.
+__pleo_verbe_à_l_avance__
+    [>prévenir|>prévoir|>prédire|>présager|>préparer|>pressentir|>pronostiquer|>avertir|>devancer|>deviner|>réserver] à l’ avance
+    [>prévenir|>prévoir|>prédire|>présager|>préparer|>pressentir|>pronostiquer|>avertir|>devancer|>deviner|>réserver] d’ avance
+        <<- /conf/ ->> \1                                                                           # Pléonasme.
 
-TEST: {{prédire à l’avance}}                  ->> prédire
-TEST: {{pronostiquer d’avance}}               ->> pronostiquer
-TEST: {{réserver d’avance}}                         ->> réserver
+TEST: {{prédire à l’avance}}                    ->> prédire
+TEST: {{pronostiquer d’avance}}                 ->> pronostiquer
+TEST: {{réserver d’avance}}                     ->> réserver
 
 
 # plus tard / à une date ultérieure
-__[i]/pleo(pleo_différer_ajourner_reporter)__
-    ((?:diff|ajourn|report)\w+) à (?:plus tard|date ultérieure|une date ultérieure)  @@0
-    <<- morph(\1, ">(?:ajourner|différer|reporter)/", False)
-    ->> \1                                                                                                              # Pléonasme.
+__pleo_différer_ajourner_reporter__
+    [>ajourner|>différer|>reporter] à plus tard
+    [>ajourner|>différer|>reporter] à date ultérieure
+    [>ajourner|>différer|>reporter] à une date ultérieure
+        <<- /conf/ ->> \1                                                                           # Pléonasme.
 
-TEST: {{Ajourner à une date ultérieure}}      ->> Ajourner
-TEST: {{différer à une date ultérieure}}      ->> différer
-TEST: {{reporter à plus tard}}                ->> reporter
-
-
-
-# ayants droit
-__[i]/sgpl(sgpl_ayants_droit)__
-    [ldcs]es (ayant[- ]droits?) @@4 <<- -1>> ayants droit                 # Au singulier : « un ayant droit ». Au pluriel : « des ayants droit ».
-
-TEST: Comment lutter contre la cupidité des {{ayant droits}}
-# Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
-
-
-# Mon, ton, son : euphonie
-__[i]/gn(gn_mon_ton_son_euphonie)__
-    ([mts]a) +({w_2})  @@0,$
-    <<- morphex(\2, ">[aâeéèêiîoôuûyœæ].+:[NAQ].*:f", ":[eGW]") -1>> =\1.replace("a", "on")         # Même si « \2 » est féminin, on utilise « mon/ton/son » pour faire la liaison.|http://fr.wikipedia.org/wiki/Euphonie
-
-TEST: {{ta}} aimée                                            ->> ton
-TEST: {{ma}} obligée                                          ->> mon
-TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
+TEST: {{Ajourner à une date ultérieure}}        ->> Ajourner
+TEST: {{différer à une date ultérieure}}        ->> différer
+TEST: {{reporter à plus tard}}                  ->> reporter
 
 
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                 _
-@@@@
-@@@@
-@@@@
-@@@@
 
 !!
 !!
@@ -3132,21 +3272,31 @@ TEST: Ce couple va donner à la France sa très importante collection qui rejoin
 !!
 !!
 
-__code_legacy__
-    legacy code
-    code legacy
-        <<- ->> code hérité|code reliquat                                                           # \1 \2. Anglicisme superflu.
-
-TEST: c’est du {{legacy code}}.
-TEST: ce {{code legacy}} est un cauchemar
-
-
 __faire_plaisir__
     >faire plaisirs
         <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
         <<- ~2>> *
 
 TEST: Ça me fait {{plaisirs}}.
+
+
+# ayants droit
+__sgpl_ayants_droit__
+    [les|des|ces|ses|nos|vos|leurs] ayant [droit|droits]
+        <<- /gn/ -2:3>> ayants droit                                        # Au singulier : « un ayant droit ». Au pluriel : « des ayants droit ».
+
+TEST: Comment lutter contre la cupidité des {{ayant droits}}
+# Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
+
+
+# Mon, ton, son : euphonie
+__gn_mon_ton_son_euphonie__
+    [ma|ta|sa]  @>[aâeéèêiîoôuûyœæ].+:[NAQ].*:f¬:[eGW]
+        <<- /gn/ -1>> =\1.replace("a", "on")                                # Même si « \2 » est féminin, on utilise « mon/ton/son » pour faire la liaison.|http://fr.wikipedia.org/wiki/Euphonie
+
+TEST: {{ta}} aimée                                            ->> ton
+TEST: {{ma}} obligée                                          ->> mon
+TEST: Ce couple va donner à la France sa très importante collection qui rejoindra le musée d’Orsay
 
 
 
@@ -6241,7 +6391,7 @@ __purge_locutions__
     comme qui dirait
     comme si de rien n’ était
     contrairement aux apparences
-    contre mauvaise fortune,? bon cœur
+    contre mauvaise fortune ?,¿ bon cœur
     contre nature
     contre toute [attente|vraisemblance]
     contre vents et marées
@@ -6447,12 +6597,8 @@ __purge_locutions__
     dès à présent
     dès que possible
     dès [demain|hier] ?[soir|matin|après-midi]¿
-    Dieu [m’|t’] en [garde|préserve]
-    Dieu [m’|t’] en soit témoin
-    Dieu [nous|vous] en [garde|préserve]
-    Dieu [nous|vous] en soit témoin
-    Dieu [les|l’] en [garde|préserve]
-    Dieu [leur|lui] en soit témoin
+    Dieu [m’|t’|l’|nous|vous|les] en [garde|préserve]
+    Dieu [m’|t’|lui|nous|vous|leur] en soit témoin
     du ~[xXvViI]+[eᵉ] siècle
     du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
     du bout des lèvres
@@ -7430,7 +7576,7 @@ __simplication_substantifs__
     preuves suffisantes du contraire
     prix de revient
     quelqu’un d’ autre
-    [réglé|réglée|réglés|réglées] (comme du papier à musique)
+    [réglé|réglée|réglés|réglées] comme du papier à musique
     [remis|remise|remises] à plat
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
