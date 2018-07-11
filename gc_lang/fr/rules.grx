@@ -2615,83 +2615,8 @@ TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimai
 
 
 
-!!!! Apostrophe manquante (2)                                                                     !!
-
-__<s>/typo(typo_apostrophe_manquante_audace2)__
-    ^ *([LDSNCJMTÇ] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@*
-    <<- option("mapos") -1>> =\1[:-1]+"’"                                                           # Il manque peut-être une apostrophe.
-
-TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 
 
-
-!!!! A / À: accentuation la préposition en début de phrase                                        !!
-
-__<s]/typo(typo_À_début_phrase1)__
-    ^ *(A) (?!t[’-](?:ils?|elles?|on))({w_2})  @@*,$
-    <<- morphex(\2, ":[GNAY]", ":(?:Q|3s)|>(?:priori|post[eé]riori|contrario|capella|fortiori)/")
-        or (\2 == "bientôt" and isEnd())
-    -1>> À                                                                                          # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
-__<s>/typo(typo_À_début_phrase2)__
-    ^ *(A) [ldnms]’  @@*  <<- -1>> À                                                                # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
-__<s>/typo(typo_À_début_phrase3)__
-    ^ *(A) t’(?!il |elle |ont? )  @@*  <<- -1>> À                                                   # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
-
-TEST: {{A}} vaincre sans péril, on triomphe sans gloire.
-TEST: « {{A}} partir de maintenant, ce ne sera plus comme avant.
-TEST: — {{A}} n’en plus pouvoir
-TEST: — {{A}} t’emmener loin de tout ceci.
-TEST: {{A}} bientôt, mon ami.
-TEST: A bientôt fini son devoir.
-TEST: A priori, nul ne peut y parvenir sans une aide extérieure.
-TEST: A devient notre meilleure chance d’y parvenir.
-
-
-!!!! Accentuation des majuscules                                                                  !!
-
-__[u]/maj(maj_accents)__
-    E(?:tat|glise|co(?:le|nomie)|quipe|lectri(?:cité|que)|gal(?:ité|ement)|té)s? @@1
-    <<- ->> ="É"+\0[1:]                                                                            # Accentuez les majuscules.
-    <<- ~>> ="É"+\0[1:]
-
-TEST: Le budget de l’{{Etat}}.
-
-
-
-!!!
-!!!
-!!! Désambiguïsation                                                                              !!
-!!!
-!!!
-
-# mots grammaticaux
-__[i](d_dans)__
-    dans
-    <<- not morph(word(-1), ":D.*:p|>[a-z]+ièmes/", False, False) =>> select(\0, ":R")
-
-__[i](d_ton_son)__
-    (\w+) ([ts]on)  @@0,$
-    <<- morph(\1, ">(?:le|ce[st]?|ton|mon|son|quel(?:que|)s?|[nv]otre|un|leur|ledit|dudit)/") =>> exclude(\2, ":D")
-
-# Pronoms le/la/les
-__[i](d_je_le_la_les)__
-    je (l(?:e(?:ur|s|)|a)) @@$                  <<- not morph(word(-1), ":1s", False, False) =>> select(\1, ":Oo")
-__[i](d_tu_le_la_les)__
-    tu (l(?:e(?:ur|s|)|a)) @@$                  <<- not morph(word(-1), ":2s", False, False) =>> select(\1, ":Oo")
-__[i](d_il_elle_on_le_la_les)__
-    (?:il|elle|on) (l(?:e(?:ur|s|)|a)) @@$      <<- not morph(word(-1), ":3s", False, False) =>> select(\1, ":Oo")
-__[i](d_nous_le_la_les)__
-    nous (l(?:e(?:ur|s|)|a)) @@$                <<- not morph(word(-1), ":1p", False, False) =>> select(\1, ":Oo")
-__[i](d_vous_le_la_les)__
-    vous (l(?:e(?:ur|s|)|a)) @@$                <<- not morph(word(-1), ":2p", False, False) =>> select(\1, ":Oo")
-__[i](d_nous)__
-    (nous) ({avoir_etre}) @@0,$                 <<- not morph(\2, ":1p", False) =>> exclude(\1, ":Os")
-__[i](d_vous)__
-    (vous) ({avoir_etre}) @@0,$                 <<- not morph(\2, ":2p", False) =>> exclude(\1, ":Os")
-__[i](d_ils_elles_le_la_les)__
-    (?:ils|elles) (l(?:e(?:ur|s|)|a)) @@$       <<- not morph(word(-1), ":3p", False, False) =>> select(\1, ":Oo")
-__[i](d_ne_me_te_te_le_la_leur)__
-    [nmts]e (l(?:e(?:ur|s|)|a)) @@$             <<- =>> =select(\1, ":Oo")
 
 
 
@@ -2707,9 +2632,96 @@ __[i](d_ne_me_te_te_le_la_leur)__
 @@@@
 
 
-# verbe
+!!!! Apostrophe manquante (2)                                                                     !!
+
+__typo_apostrophe_manquante_audace__
+    <start>  [L|D|S|N|C|J|M|T|Ç]  ~^[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]
+        <<- option("mapos") -2>> =\1+"’"                                                            # Il manque peut-être une apostrophe.
+
+TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
+
+
+
+!!!! A / À: accentuation la préposition en début de phrase                                        !!
+
+__typo_À_début_phrase__
+    <start> A  @:[GNAY]¬:(?:Q|3s)|>(?:priori|post[eé]riori|contrario|capella|fortiori)/
+    <start> A bientôt [<end>|,]
+    <start> A [l’|d’|n’|m’|s’]
+        <<- /typo/ -2>> À                                                                           # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
+
+    <start> A t’ *WORD
+        <<- /typo/ not value(\3, "|il|ils|elle|elles|on|ont|") -2>> À                               # S’il s’agit de la préposition « à », il faut accentuer la majuscule.
+
+TEST: {{A}} vaincre sans péril, on triomphe sans gloire.
+TEST: « {{A}} partir de maintenant, ce ne sera plus comme avant.
+TEST: — {{A}} n’en plus pouvoir
+TEST: — {{A}} t’emmener loin de tout ceci.
+TEST: {{A}} bientôt, mon ami.
+TEST: A bientôt fini son devoir.
+TEST: A priori, nul ne peut y parvenir sans une aide extérieure.
+TEST: A devient notre meilleure chance d’y parvenir.
+
+
+!!!! Accentuation des majuscules                                                                  !!
+
+__maj_accents__
+    [Etat|Etats|Eglise|Eglises|Ecole|Ecoles|Economie|Equipe|Equipes|Electricité|Electrique|Egalité|Element|Eté|Epouse|Epouses]
+        <<- ->> ="É"+\1[1:]                                                                         # Accentuez les majuscules.
+        <<- ~>> ="É"+\1[1:]
+
+TEST: Le budget de l’{{Etat}}.
+
+
+
+!!!
+!!!
+!!! Désambiguïsation                                                                              !!
+!!!
+!!!
+
+__da_le_la_les_leur__
+    je [le|la|les|leur]
+        <<- not morph(<1, ":1s") =>> select(\2, ":Oo")
+
+    tu [le|la|les|leur]
+        <<- not morph(<1, ":(?:2s|V0)") =>> select(\2, ":Oo")
+
+    [il|on] [le|la|les|leur]
+        <<- not morph(<1, ":3s") =>> select(\2, ":Oo")
+
+    elle [le|la|les|leur]
+        <<- not morph(<1, ":(?:3s|R)") =>> select(\2, ":Oo")
+
+    nous [le|la|les|leur]
+        <<- not morph(<1, ":(?:1p|R)") =>> select(\2, ":Oo")
+
+    vous [le|la|les|leur]
+        <<- not morph(<1, ":(?:2p|R)") =>> select(\2, ":Oo")
+
+    ils [le|la|les|leur]
+        <<- not morph(<1, ":3p") =>> select(\2, ":Oo")
+
+    elles [le|la|les|leur]
+        <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Oo")
+
+    [ne|n’|me|m’|te|t’|se|s’] [le|la|les|leur]
+        <<- =>> =select(\2, ":Oo")
+
+
+__da_nous_vous__
+    nous [>avoir|>être]
+        <<- not morph(\2, ":1p") =>> exclude(\1, ":Os")
+
+    vous [>avoir|>être]
+        <<- not morph(\2, ":2p") =>> exclude(\1, ":Os")
+
+
 __da_préverbes_verbes__
-    ne ?[le|la|l’|les|lui|leur|nous|vous]¿  (@:¬:[OX])
+    ne  ?[le|la|l’|les|nous|vous|lui|leur]¿  (@:¬:[OX])
+    ne  [nous|vous]     [le|la|l’|les|en|y]  (@:¬:[OX])
+    ne  [le|la|l’|les]  [lui|leur|en|y]      (@:¬:[OX])
+    ne  [lui|leur]      en                   (@:¬:[OX])
         <<- =>> select(\1, ":V")
 
     [n’|m’|t’|s’]  ?[en|y]¿  (@:¬:[OX])
@@ -2718,13 +2730,16 @@ __da_préverbes_verbes__
     [me|te|se]  ?[le|la|l’|les]¿  (*WORD)
         <<- =>> select(\1, ":V")
 
-    j’ ?[en|y]¿  (*WORD)
+    [je|j’|il|ils|on]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  (@:¬:[OX])
+    [je|j’|il|ils|on]  [nous|vous]     [le|la|l’|les|en|y]       (@:¬:[OX])
+    [je|j’|il|ils|on]  [le|la|l’|les]  [lui|leur|en|y]           (@:¬:[OX])
+    [je|j’|il|ils|on]  [lui|leur]      en                        (@:¬:[OX])
         <<- =>> select(\1, ":[123][sp]")
 
-    [je|il|ils|on]  ?[le|la|l’|les|lui|leur|nous|vous]¿  (@:¬:[OX])
-        <<- =>> select(\1, ":[123][sp]")
-
-    tu  ?[le|la|l’|les|lui|leur|nous|vous]¿  (@:¬:[OX])
+    tu  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  (@:¬:[OX])
+    tu  [nous|vous]   [le|la|l’|les|en|y]         (@:¬:[OX])
+    tu  [le|la|l’|les]  [lui|leur|en|y]           (@:¬:[OX])
+    tu  [lui|leur]      en                        (@:¬:[OX])
         <<- morph(<1, ":Cs|<start>") =>> select(\1, ":[123][sp]")
 
     @:M  @:[123]s¬:Q
@@ -2735,6 +2750,16 @@ __da_préverbes_verbes__
 
     [que|qu’|qu|combien|pourquoi]  ¿[en|y]¿  (*WORD)
         <<- =>> exclude(\1, ":E")
+
+
+__da_dans__
+    dans
+        <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
+
+
+__da_son_ton__
+    [le|ce|cet|ces|mon|ton|son|quel|quelque|quelques|notre|votre|un|leur|ledit|dudit]  [son|ton]
+        <<- =>> exclude(\2, ":D")
 
 
 __da_groupe_nominal__
@@ -2818,6 +2843,36 @@ __incohérences_globales__
 TEST: {{Ces}} {{cette}} canaille qui nous a donné tant de fil à retordre.
 TEST: Mon {{il}} est une merveille.
 TEST: je ne sais {{des}} {{ses}} choses.
+
+
+__fusion_le_la_les_quels__
+    le quel
+        <<- /conf/ ->> lequel                                                                       # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/lesquels
+
+    le quels
+        <<- /conf/ ->> lequel|lesquels                                                              # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/lesquels
+
+    le quelle
+        <<- /conf/ ->> lequel|laquelle                                                              # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/lesquels
+
+    le quelles
+        <<- /conf/ ->> lequel|laquelle|lesquelles                                                   # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/lesquels
+
+    les [quel|quels]
+        <<- /conf/ ->> lesquels                                                                     # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/lesquels
+
+    les [quelle|quelles]
+        <<- /conf/ ->> lesquelles                                                                   # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/lesquelles
+
+    la [quelle|quelles|quel|quels]
+        <<- /conf/ ->> laquelle|là \2                                                               # Confusion. Soudez les deux mots ou écrivez “là” si vous voulez dire “ici”.
+
+TEST: {{les quels}} sont partis
+TEST: avec {{les quelles}} viennent-elles
+TEST: {{la quelle}} trouveron-nous
+TEST: {{la quels}} sont vos intentions
+TEST: et {{la quel}} ordinateur fonctionne encore ?
+TEST: {{la quelles}} sont nos options ?
 
 
 __incohérence_au_qqch__
@@ -4648,8 +4703,8 @@ TEST: Très {{jeûne}}, elle a su qu’elle ne voulait pas d’une vie ordinaire
 # la / là
 __conf_la_là!7__
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
-    la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart)
-        <<- /conf/ \1 != "LA" and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là             # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
+    la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?)/
+        <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
 
     [ce|cet|cette|ces]  ~-(la)
         <<- /conf/ -2>> =\2.replace("-la", "-là")                                                   # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
@@ -13953,8 +14008,8 @@ TEST: avec toi qui ne sais rien de rien, mieux {{vaux}} ne rien dire.
 TEST: Mais là-bas mieux {{valais}} ouvrir sa gueule que se taire.
 
 
-__[i]/conj(conj_personne_aucun_rien_nul)__
-    (personne|aucun|rien|nul(?:le|)) +(?:qui +|)({w_1})  @@0,$
+__[i]/conj(conj_personne_aucun_rien)__
+    (personne|aucun|rien) +(?:qui +|)({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:3s|P|G)") and morphex(word(-1), ":C", ":(?:Y|P|Q|[123][sp]|R)", True)
         and not( \1.endswith("ien") and before("> +$") and morph(\2, ":Y", False) )
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1… ». Le verbe devrait être à la 3ᵉ personne du singulier.
@@ -13966,10 +14021,19 @@ TEST: Rien, en ce qui le concernait, ne {{pouvais}} le ramener à la raison.
 TEST: personne n’en {{parlent}}
 TEST: aucun d’entre nous n’{{as}} donné
 TEST: aucun ne {{vas}} là-bas
+
+
+__[i]/conj(conj_nul_nulle)__
+    (nul(?:le|)) +(?:qui +|)({w_1})  @@0,$
+    <<- morphex(\2, ":V", ":(?:3s|P|G|N.*:[si])") and morphex(word(-1), ":C", ":(?:Y|P|Q|[123][sp]|R)", True)
+        and not( \1.endswith("ien") and before("> +$") and morph(\2, ":Y", False) )
+    -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1… ». Le verbe devrait être à la 3ᵉ personne du singulier.
+
 TEST: nul ne {{sais}} que faire
 TEST: nulle n’{{iras}} là-bas
 TEST: nulle femme ne {{saurais}} le faire
 TEST: nul homme ne {{sauras}} s’y prendre
+TEST: nulle partie du corps ne peut être considérée comme le siège de l’âme.
 
 
 __[i]/conj(conj_un_une_des)__
