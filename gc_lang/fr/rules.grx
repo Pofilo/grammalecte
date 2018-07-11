@@ -2539,79 +2539,8 @@ TEST: Mais {{vingt trois}}, c’est assez
 TEST: La poïesis, en grec, est ce qui permet de faire passer n’importe quoi du non-être à l’être
 
 
-### Pas de trait d’union
-__[i]/tu(tu_deux_tiers)__           deux-tiers <<- ->> deux tiers                                               # Pas de trait d’union.
-__[i]/tu(tu_en_bas_haut)__          en-(bas|haut|de(?:ssous|hors|çà)) @@$ <<- ->> en \1                         # Pas de trait d’union.
-__[i]/tu(tu_peu_à_peu)__            peu-[aà]-peu <<- ->> peu à peu                                              # Pas de trait d’union.
-__[i]/tu(tu_s_il_te_plaît)__        s’il-(?:[tm]e|[vn]ous)-pla[îi]t <<- ->> =\0.replace("-", " ")               # Pas de traits d’union.
-__[i]/tu(tu_tout_à_fait)__          tout-à-fait <<- ->> tout à fait                                             # Pas de trait d’union.
-__[i]/tu(tu_trois_quarts)__         trois-quarts? <<- not morph(word(-1), ":D", False, False) ->> trois quarts  # Pas de trait d’union.
-__[i]/tu(tu_parce_que)__            parce-que? <<- ->> =\0.replace("-", " ")                                    # Pas de trait d’union.
-__<i]/tu(tu_qqch_ça_aussi_donc)__   \b-(?:ç[aà]|aussi|donc) <<- ->> =\0.replace("-", " ")                       # Pas de trait d’union.
-__[i]/tu(tu_d_entre_pronom)__       d’entre-(?:nous|vous|eux|elles) <<- ->> =\0.replace("-", " ")               # Pas de trait d’union.
-
-TEST: J’en ai déjà fait les {{deux-tiers}}.
-TEST: {{en-haut}} de la montagne.
-TEST: On va finir par s’y faire, {{peu-à-peu}}.
-TEST: Venez vite, {{s’il-vous-plait}}.
-TEST: Elles sont {{tout-à-fait}} ravies.
-TEST: {{Trois-quarts}} des participantes y sont parvenues.
-TEST: {{Parce-qu}}’ils y croient plus que tout.
-TEST: Oui, ça{{-aussi}}.
-TEST: Peu {{d’entre-nous}} savent ce dont il s’agit.
 
 
-__[i]/tu(tu_y_attaché)__
-    (y[’-])({avoir_etre})(?:-(?:t-|)(?:ils?|elles?|je|tu|on|nous|vous)|) @@0,2
-    <<- morph(\2, ":V0|>en/", False) -1>> "y "                                                      # Ici, ni apostrophe, ni trait d’union.
-
-TEST: {{Y’}}a trop de malheureux sur Terre.
-TEST: {{Y’}}en a marre, de ces conneries.
-TEST: {{y-}}a-t-il des beignets ?                     ->> "y "
-
-
-__[i]/tu(tu_lorsque)__
-    lors que?
-    <<- not before(r"(?i)\bd[eè]s +$") ->> =\0.replace(" ", "")                                     # Attachez les deux mots.|https://fr.wiktionary.org/wiki/lorsque
-
-TEST: Elle y arriva {{lors qu}}’elle trouva l’astuce permettant l’ouverture de la porte.
-TEST: Dès lors qu’on sait comment s’y prendre, aucune raison de faillir.
-
-
-!!!! Virgules                                                                                     !!
-
-# Dialogues
-__[u]/virg(virgule_dialogue_après_nom_propre)__
-    ([A-ZÉÈ][\w-]+) (\w+-(?:moi|toi|l(?:ui|a|e(?:ur|s|))|nous|vous|je|tu|ils|elles))  @@0,$
-    <<- morphex(\1, ":M", ":G") and not morph(\2, ":N", False) and isStart()
-    -1>> \1,                                                                        # Dialogue ? Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
-
-TEST: {{Maria}} donnez-vous du temps ?
-TEST: {{Marion}} passe-moi le sel.
-TEST: {{Paul}} prends-lui la main.
-TEST: Alexandre tient-il ses généraux ?
-TEST: Alexandra vient-elle ?
-
-
-__[u]/virg(virgule_dialogue_avant_nom_propre)__
-    ({w1})(-l(?:es?|a)(?:-(?:[mt]oi|[nv]ous|lui|leur)|)) ([A-ZÉÈ][\w-]+)   @@0,*,$
-    <<- morph(\1, ":E", False) and morph(\3, ":M", False)
-    -2>> \2,                                                                        # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
-
-TEST: viens et donne{{-le}} Paul.
-TEST: donne{{-le-moi}} Camille.
-TEST: donne-moi Alice.
-TEST: Tape-toi Patrick.
-
-
-__[u]/virg(virgule_après_verbe_COD)__
-    l(?:es?|a) ({w_2}(?:[ei]r|re)) ([A-ZÉÂÔÈ][\w-]+)  @@w,$
-    <<- morph(\1, ":Y", False) and morph(\2, ":M", False) and not morph(word(-1), ">à/", False, False)
-    -1>> \1,                                                                                        # Une virgule est probablement souhaitable.
-
-TEST: Tu vas les {{donner}} Rachel.
-TEST: Il va la {{tuer}} Paul.
-TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
 
 
 
@@ -2631,12 +2560,143 @@ TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimai
 @@@@
 @@@@
 
+__tu_pas_de_trait_d_union__
+    deux-tiers
+        <<- /tu/ ->> deux tiers                                                 # Pas de trait d’union.
+
+    en-bas
+    en-haut
+    en-dehors
+    en-dessous
+    en-deçà
+        <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
+
+    peu-a-peu
+    peu-à-peu
+    peux-à-peux
+    peut-à-peut
+    peux-a-peux
+    peut-a-peut
+        <<- /tu/ ->> peu à peu                                                  # Pas de trait d’union.
+
+    s’ il-me-plaît
+    s’ il-te-plaît
+    s’ il-nous-plaît
+    s’ il-vous-plaît
+    s’ il-me-plait
+    s’ il-te-plait
+    s’ il-nous-plait
+    s’ il-vous-plait
+        <<- /tu/ -2>> =\2.replace("-", " ")                                     # Pas de traits d’union.
+
+    tout-à-fait
+    tout-a-fait
+    tous-à-fait
+    tous-a-fait
+        <<- /tu/ ->> tout à fait                                                # Pas de trait d’union.
+
+    [les|des] trois-quart
+    [les|des] trois-quarts
+        <<- /tu/ -2>> trois quarts                                              # Pas de trait d’union.
+
+    parce-que
+    parce-qu’
+    parce-qu
+        <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
+
+    ~\w-(?:ç[aà]|aussi|donc)$
+        <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
+
+    d’ entre-nous
+    d’ entre-vous
+    d’ entre-eux
+    d’ entre-elles
+        <<- /tu/ -2>> =\2.replace("-", " ")                                     # Pas de trait d’union.
+
+TEST: J’en ai déjà fait les {{deux-tiers}}.
+TEST: {{en-haut}} de la montagne.
+TEST: On va finir par s’y faire, {{peu-à-peu}}.
+TEST: Venez vite, {{s’il-vous-plait}}.
+TEST: Elles sont {{tout-à-fait}} ravies.
+TEST: {{Trois-quarts}} des participantes y sont parvenues.
+TEST: {{Parce-qu}}’ils y croient plus que tout.
+TEST: Oui, ça{{-aussi}}.
+TEST: Peu d’{{entre-nous}} savent ce dont il s’agit.
+
+
+__tu_y_attaché__
+    ~^y[’-]\w+
+        <<- /tu/ morph(\1, ":V0") -1>> ="y " + \1[2:]                           # Ni apostrophe ni trait d’union après “y”.
+
+    ~^y[’-][\w-]+-(?:ils?|elles?|je|tu|on|nous|vous)
+    y’en
+    y-en
+        <<- /tu/ -1>> ="y " + \1[2:]                                            # Ni apostrophe ni trait d’union après “y”.
+
+TEST: {{Y’}}a trop de malheureux sur Terre.             ->> "Y "
+TEST: {{Y’}}en a marre, de ces conneries.               ->> "Y "
+TEST: {{y-}}a-t-il des beignets ?                       ->> "y "
+
+
+__tu_lorsque__
+    lors-que
+    lors-qu’
+    lors-qu
+        <<- /tu/ ->> =\1.replace(" ", "-")                                      # Attachez les deux mots.|https://fr.wiktionary.org/wiki/lorsque
+
+    lors [que|qu’|qu]
+        <<- /tu/ not value(<1, "|dès|des|") ->> \1\2                            # Attachez les deux mots.|https://fr.wiktionary.org/wiki/lorsque
+
+TEST: Elle y arriva {{lors qu}}’elle trouva l’astuce permettant l’ouverture de la porte.
+TEST: Dès lors qu’on sait comment s’y prendre, aucune raison de faillir.
+
+
+
+!!!! Virgules                                                                                     !!
+
+__virg_dialogue_après_nom_propre__
+    [<start>|,]  @:M¬:G  ~-(?:moi|toi|l(?:ui|a|es?|eur)|nous|vous|je|tu|ils|elles|on)$
+        <<- /virg/ -2>> \2,                                                                         # Dialogue ? Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
+
+TEST: {{Maria}} donnez-vous du temps ?
+TEST: {{Marion}} passe-moi le sel.
+TEST: {{Paul}} prends-lui la main.
+TEST: Alexandre tient-il ses généraux ?
+TEST: Alexandra vient-elle ?
+
+
+__virg_dialogue_avant_nom_propre__
+    ~-les$  @:M
+        <<- /virg/ morph(\1, ":E", "", 0, -4) -1>> \1,                                              # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
+
+    ~-l[ea]$  @:M
+        <<- /virg/ morph(\1, ":E", "", 0, -3) -1>> \1,                                              # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
+
+    ~-l(?:es?|a)-(?:[mt]oi|[nv]ous|lui|leur)$  @:M
+        <<- /virg/ -1>> \1,                                                                         # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
+
+TEST: {{Oublie-les}} Clara.
+TEST: viens et {{donne-le}} Paul.
+TEST: {{donne-le-moi}} Camille.
+TEST: donne-moi Alice.
+TEST: Tape-toi Patrick.
+
+
+__virg_après_verbe_COD__
+    [le|la|l’|les]  @:Y  @:M
+        <<- /virg/ not value(<1, "|à|") -2>> \2,                                                    # Une virgule est probablement souhaitable.
+
+TEST: Tu vas les {{donner}} Rachel.
+TEST: Il va la {{tuer}} Paul.
+TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
+
+
 
 !!!! Apostrophe manquante (2)                                                                     !!
 
 __typo_apostrophe_manquante_audace__
     <start>  [L|D|S|N|C|J|M|T|Ç]  ~^[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]
-        <<- option("mapos") and space_after(\2, 1, 1) -2>> =\2+"’"                                  # Il manque peut-être une apostrophe.
+        <<- /mapos/ space_after(\2, 1, 1) -2>> =\2+"’"                                              # Il manque peut-être une apostrophe.
 
 TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 
@@ -2661,6 +2721,7 @@ TEST: {{A}} bientôt, mon ami.
 TEST: A bientôt fini son devoir.
 TEST: A priori, nul ne peut y parvenir sans une aide extérieure.
 TEST: A devient notre meilleure chance d’y parvenir.
+
 
 
 !!!! Accentuation des majuscules                                                                  !!
