@@ -2636,7 +2636,7 @@ TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimai
 
 __typo_apostrophe_manquante_audace__
     <start>  [L|D|S|N|C|J|M|T|Ç]  ~^[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]
-        <<- option("mapos") -2>> =\1+"’"                                                            # Il manque peut-être une apostrophe.
+        <<- option("mapos") and space_after(\2, 1, 1) -2>> =\2+"’"                                  # Il manque peut-être une apostrophe.
 
 TEST: __mapos__ {{L }}opinion des gens, elle s’en moquait.
 
