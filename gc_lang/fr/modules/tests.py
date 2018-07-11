@@ -157,7 +157,7 @@ class TestGrammarChecking (unittest.TestCase):
                           "\n  expected: " + sExpectedErrors + \
                           "\n  found:    " + sFoundErrors + \
                           "\n  errors:   \n" + sListErr)
-                if sExceptedSuggs:
+                elif sExceptedSuggs:
                     if sExceptedSuggs != sFoundSuggs:
                         print("\n# Line num: " + sLineNum + \
                               "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
