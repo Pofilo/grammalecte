@@ -1061,6 +1061,15 @@ def g_tag_after (dToken, dTags, sTag):
     return False
 
 
+def g_space_between_token (dToken1, dToken2, nMin, nMax=None):
+    nSpace = dToken2["nStart"] - dToken1["nEnd"]
+    if nSpace < nMin:
+        return False
+    if nMax is not None and nSpace > nMax:
+        return False
+    return True
+
+
 #### Disambiguator
 
 def g_select (dToken, sPattern, lDefault=None):
