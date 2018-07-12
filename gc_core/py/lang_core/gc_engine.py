@@ -751,11 +751,11 @@ class TokenSentence:
                         if bCondMemo:
                             if cActionType == "-":
                                 # grammar error
-                                nTokenErrorStart = nTokenOffset + eAct[0]
+                                nTokenErrorStart = nTokenOffset + abs(eAct[0])
                                 if "bImmune" not in self.lToken[nTokenErrorStart]:
-                                    nTokenErrorEnd = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                    nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenErrorStart]["nStart"]
-                                    nErrorEnd = self.nOffsetWithinParagraph + self.lToken[nTokenErrorEnd]["nEnd"]
+                                    nTokenErrorEnd = (nTokenOffset + abs(eAct[1]))  if eAct[1]  else nLastToken
+                                    nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if eAct[0] >= 0  else self.lToken[nTokenErrorStart]["nStart"])
+                                    nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if eAct[1] >= 0  else self.lToken[nTokenErrorEnd]["nStart"])
                                     if nErrorStart not in self.dError or eAct[2] > dPriority.get(nErrorStart, -1):
                                         self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = eAct[2]

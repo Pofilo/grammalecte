@@ -125,6 +125,8 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                     lResult = list(lToken)
                     lResult.extend(["##"+str(iLine), sActionId])
                     yield lResult
+                else:
+                    print(" # Error on action at line:", iLine)
 
 
 def changeReferenceToken (sText, dPos):
@@ -158,10 +160,9 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         sOption = m.group(1)
         sAction = sAction[m.end():].strip()
     # valid action?
-    m = re.search(r"(?P<action>[-~=/>])(?P<start>\d+|)(?P<end>:\d+|)>>", sAction)
+    m = re.search(r"(?P<action>[-~=/>])(?P<start>\d+\.?|)(?P<end>:\.?\d+|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
-        print("   ==", sAction, "==")
         return None
     # Condition
     sCondition = sAction[:m.start()].strip()
@@ -180,8 +181,14 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         iStartAction = 1
         iEndAction = 0
     else:
-        iStartAction = int(m.group("start"))
-        iEndAction = int(m.group("end")[1:])  if m.group("end")  else iStartAction
+        if cAction != "-" and (m.group("start").endswith(".") or m.group("end").startswith(":.")):
+            print(" # Error. Wrong selection on tokens.", sActionId)
+            return None
+        iStartAction = int(m.group("start"))  if not m.group("start").endswith(".")  else int("-"+m.group("start")[:-1])
+        if not m.group("end"):
+            iEndAction = iStartAction
+        else:
+            iEndAction = int(m.group("end")[1:])  if not m.group("end").startswith(":.")  else int("-" + m.group("end")[2:])
     if dPos and m.group("start"):
         try:
             iStartAction = dPos[iStartAction]
@@ -262,7 +269,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         sAction = "_g_d_"+sActionId
         return [sOption, sCondition, cAction, sAction]
     else:
-        print("# Unknown action at line " + sActionId)
+        print(" # Unknown action.", sActionId)
         return None
 
 
