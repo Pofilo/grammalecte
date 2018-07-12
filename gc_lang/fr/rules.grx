@@ -2447,37 +2447,88 @@ TEST: {{eux mêmes}}.                                  ->> eux-mêmes
 TEST: un {{va et vient}} incessant me casse la tête
 
 
-### Noms propres
-__[u]/tu(tu_Royaume_Uni)__      Royaume Uni <<- ->> Royaume-Uni             # Il manque un trait d’union (s’il s’agit de l’État englobant la Grande-Bretagne et l’Irlande du Nord).
-__[u]/tu(tu_Grande_Bretagne)__  Grande Bretagne <<- ->> Grande-Bretagne     # Il manque un trait d’union (s’il s’agit de l’État englobant l’Angleterre, l’Écosse et le pays de Galles).
-__[u]/tu(tu_Pays_Bas)__                 (?:[ld]es|aux) (Pays Bas) @@$ <<- -1>> Pays-Bas                         # Il manque un trait d’union.
-__[u]/tu(tu_Aix_en_Provence)__          Aix en Provence <<- ->> Aix-en-Provence                                 # Il manque un trait d’union.
-__[u]/tu(tu_Bosnie_Herzégovine)__       Bosnie Herzégovine <<- ->> Bosnie-Herzégovine                           # Il manque un trait d’union.
-__[u]/tu(tu_Charente_Maritime)__        Charente Maritime <<- ->> Charente-Maritime                             # Il manque un trait d’union.
-__[u]/tu(tu_Clermont_Ferrand)__         Clermont Ferr?an[dt] <<- ->> Clermont-Ferrand                           # Il manque un trait d’union.
-__[u]/tu(tu_Colombie_Britannique)__     Colombie Britannique <<- ->> Colombie-Britannique                       # Il manque un trait d’union.
-__[u]/tu(tu_États_Unis)__               États Unis <<- ->> États-Unis                                           # S’il s’agit des USA, il manque un trait d’union.
-__[u]/tu(tu_Franche_Comté)__            Franche Comté <<- ->> Franche-Comté                                     # Il manque un trait d’union.
-__[u]/tu(tu_Haute_Département)__        Haute (Garonne|Loire|Marne|Normandie|Corse|Vienne) @@$ <<- ->> Haute-\1 # Il manque un trait d’union.
-__[u]/tu(tu_Île_de_France)__            [ÎI]le [dD]e France <<- ->> Île-de-France                               # Il manque les traits d’union.
-__[u]/tu(tu_Maison_Blanche)__           Maison Blanche <<- ->> Maison-Blanche                           # Il manque un trait d’union.
-__[u]/tu(tu_Moyen_Orient)__             Moyen Orient <<- ->> Moyen-Orient                               # Il manque un trait d’union.
-__[u]/tu(tu_Nouveau_Brunswick)__        Nouveau Brunswick <<- ->> Nouveau-Brunswick                     # Il manque un trait d’union.
-__[u]/tu(tu_Nouvelle_Qqch)__            Nouvelle (Zélande|Calédonie|Orléans) @@$ <<- ->> Nouvelle-\1    # Il manque un trait d’union.
-__[u]/tu(tu_Pas_de_Calais)__            Pas de Calais <<- ->> Pas-de-Calais                             # Il manque les traits d’union.
-__[u]/tu(tu_Rhône_Alpes)__              Rhône Alpes <<- ->> Rhône-Alpes                                 # Il manque les traits d’union.
-__[u]/tu(tu_Saône_et_Loire)__           Saône et Loire <<- ->> Saône-et-Loire                           # Il manque un trait d’union.
-__[u]/tu(tu_Jésus_Christ)__             Jésus Christ <<- ->> Jésus-Christ                               # Il manque un trait d’union.
-__[u]/tu(tu_Jean_prénom)__
-    Jean (Baptiste|Claude|François|Jacques|Louis|Luc|Marc|Marie|Michel|Paul|Philippe|Pierre)  @@$
-    <<- ->> Jean-\1                                                                                 # Il manque un trait d’union.
-__[u]/tu(tu_Marie_Prénom)__
-    Marie (Ange|Agnès|Anne|Antoinette|Cécile|Chantal|Charlotte|Christine|Claire|Claude|Dominique|France|Françoise|Hélène|Jeanne|José|Josèphe|Line|Louise|Madeleine|Noëlle|Odile|Paule|Pierre|Rose|Thérèse)  @@$
-    <<- ->> Marie-\1                                                                                # Il manque un trait d’union.
-__[s]/tu(tu_St_Ste_Bidule)__
-    ((Ste?) )[A-ZÉÈÎ]\w+ @@0,0
-    <<- -1>> \2-
-    # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté… S’il s’agit d’une personne, écrivez « saint(e) » sans majuscule, sans trait d’union.
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
+__tu_noms_propres__
+    Royaume Uni
+        <<- /tu/ ->> Royaume-Uni                                                                    # Il manque un trait d’union (s’il s’agit de l’État englobant la Grande-Bretagne et l’Irlande du Nord).
+
+    Grande Bretagne
+        <<- /tu/ ->> Grande-Bretagne                                                                # Il manque un trait d’union (s’il s’agit de l’État englobant l’Angleterre, l’Écosse et le pays de Galles).
+
+    [les|des|aux] Pays Bas
+        <<- /tu/ -2:3>> Pays-Bas                                                                    # Il manque un trait d’union.
+
+    Aix en Provence
+        <<- /tu/ ->> Aix-en-Provence                                                                # Il manque un trait d’union.
+
+    Bosnie Herzégovine
+        <<- /tu/ ->> Bosnie-Herzégovine                                                             # Il manque un trait d’union.
+
+    Charente Maritime
+        <<- /tu/ ->> Charente-Maritime                                                              # Il manque un trait d’union.
+
+    Clermont [Ferrant|Ferrand]
+        <<- /tu/ ->> Clermont-Ferrand                                                               # Il manque un trait d’union.
+
+    Colombie Britannique
+        <<- /tu/ ->> Colombie-Britannique                                                           # Il manque un trait d’union.
+
+    États Unis
+        <<- /tu/ ->> États-Unis                                                                     # S’il s’agit des USA, il manque un trait d’union.
+
+    Franche Comté
+        <<- /tu/ ->> Franche-Comté                                                                  # Il manque un trait d’union.
+
+    Haute [Garonne|Loire|Marne|Normandie|Corse|Vienne]
+        <<- /tu/ ->> Haute-\1                                                                       # Il manque un trait d’union.
+
+    [Île|Ile] de France
+        <<- /tu/ ->> Île-de-France                                                                  # Il manque les traits d’union.
+
+    Jean [Baptiste|Claude|François|Jacques|Louis|Luc|Marc|Marie|Michel|Paul|Philippe|Pierre]
+        <<- /tu/ ->> Jean-\2                                                                        # Il manque un trait d’union.
+
+    Jésus Christ
+        <<- /tu/ ->> Jésus-Christ                                                                   # Il manque un trait d’union.
+
+    Maison Blanche
+        <<- /tu/ ->> Maison-Blanche                                                                 # Il manque un trait d’union.
+
+    Marie [Ange|Agnès|Anne|Antoinette|Cécile|Chantal|Charlotte|Christine|Claire|Claude|Dominique|France|Françoise|Hélène|Jeanne|José|Josèphe|Line|Louise|Madeleine|Noëlle|Odile|Paule|Pierre|Rose|Thérèse]
+        <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
+
+    Moyen Orient
+        <<- /tu/ ->> Moyen-Orient                                                                   # Il manque un trait d’union.
+
+    Nouveau Brunswick
+        <<- /tu/ ->> Nouveau-Brunswick                                                              # Il manque un trait d’union.
+
+    Nouvelle [Zélande|Calédonie|Orléans]
+        <<- /tu/ ->> Nouvelle-\1                                                                    # Il manque un trait d’union.
+
+    Pas de Calais
+        <<- /tu/ ->> Pas-de-Calais                                                                  # Il manque les traits d’union.
+
+    Rhône Alpes
+        <<- /tu/ ->> Rhône-Alpes                                                                    # Il manque les traits d’union.
+
+    Saône et Loire
+        <<- /tu/ ->> Saône-et-Loire                                                                 # Il manque un trait d’union.
+
+    [St|Ste]  ~^[A-ZÉÈÎ]
+        <<- /tu/ ->> \1-\2
+        # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté… S’il s’agit d’une personne, écrivez « saint(e) » sans majuscule, sans trait d’union.
 
 TEST: Émigrer au {{Royaume Uni}}
 TEST: Étudier en {{Grande Bretagne}}
@@ -2501,23 +2552,33 @@ TEST: Elle déménage en {{Saône et Loire}}
 TEST: {{Jésus Christ}}, dernier héros de l’Antiquité
 TEST: Elle a quitté {{Jean Paul}}.
 TEST: {{Marie Hélène}} s’est perdue dans le dédale
-TEST: Elle va prier à {{Ste }}Catherine.
+TEST: Elle va prier à {{Ste Catherine}}.
 
 
-### nombres
-__[i]/tu(tu_nombres)__
-    (?:dix|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante) (?:deux|trois|six|sept|huit|quatre?|cinqu?|neu[fv])(?:ièmes?|)
-    <<- ->> =\0.replace(" ", "-")                                                                   # Il manque un trait d’union.
-__[i]/tu(tu_nombres_vingt)__
-    vingts? (?:deux|trois|six|sept|huit|quatre?|cinqu?|neu[fv])(?:ièmes?|)
-    <<- not before("(?i)quatre $") ->> =\0.replace(" ", "-").replace("vingts", "vingt")             # Il manque un trait d’union.
-__[i]/tu(tu_nombres_soixante)__
-    soixante (?:douze?|treize?|quatorze?|quinze?|seize?|dix(?:[- ]sept|[- ]huit|[- ]neu[fv]|))(?:ièmes?|)
-    <<- ->> =\0.replace(" ", "-")                                                                   # Trait(s) d’union manquant(s).
-__[i]/tu(tu_nombres_octante)__
-    quatre[- ]vingts? (?:une?|deux|trois|six|sept|huit|quatre?|onze?|douze?|treize?|quatorze?|quinze?|seize?|cinqu?|neu[fv]|dix(?:[- ]sept|[- ]huit|[- ]neu[fv]|))(?:ièmes?|)
-    <<- ->> =\0.replace(" ", "-").replace("vingts", "vingt")                                        # Trait(s) d’union manquant(s).
-#__[i]tu(tu_nombre et un)__
+__tu_nombres__
+    [dix|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante] [deux|trois|quatre|cinq|six|sept|huit|neuf]
+    [dix|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante] [>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième]
+        <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
+
+    [vingt|vingts] [deux|trois|quatre|cinq|six|sept|huit|neuf]
+    [vingt|vingts] [>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième]
+        <<- /tu/ not value(<1, "|quatre|") ->> vingt-\2                                             # Il manque un trait d’union.
+
+    soixante [douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]
+    soixante [>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
+        <<- /tu/ ->> \1-\2                                                                          # Trait(s) d’union manquant(s).
+
+    quatre [vingt|vingts]
+        <<- /tu/ not morph(>1, ":B") ->> \1-\2                                                      # Il manque un trait d’union.
+
+    quatre [vingt|vingts] [un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]
+    quatre [vingt|vingts] [>unième|>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième|>dixième|>onzième|>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
+        <<- /tu/ ->> quatre-vingt-\3                                                                # Trait(s) d’union manquant(s).
+
+    [quatre-vingt|quatre-vingts] [un|une|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]
+    [quatre-vingt|quatre-vingts] [>unième|>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième|>dixième|>onzième|>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
+        <<- /tu/ ->> quatre-vingt-\2                                                                # Trait(s) d’union manquant(s).
+
 #    (vingt|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante)[- ](une?|unièmes?)
 #   ->> \1 et \2|\1-et-\2                                      # Il manque « et ». (Si vous suivez la réforme orthographique, utilisez des traits d’union.)
 
@@ -2538,27 +2599,6 @@ TEST: {{soixante quatorze}}, c’est trop
 TEST: Mais {{vingt trois}}, c’est assez
 TEST: La poïesis, en grec, est ce qui permet de faire passer n’importe quoi du non-être à l’être
 
-
-
-
-
-
-
-
-
-
-
-
-
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                 _
-@@@@
-@@@@
-@@@@
-@@@@
 
 __tu_pas_de_trait_d_union__
     deux-tiers
@@ -2600,8 +2640,7 @@ __tu_pas_de_trait_d_union__
         <<- /tu/ -2>> trois quarts                                              # Pas de trait d’union.
 
     parce-que
-    parce-qu’
-    parce-qu
+    ~^[pP]arce-qu’
         <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
 
     ~\w-(?:ç[aà]|aussi|donc)$
@@ -2619,23 +2658,23 @@ TEST: On va finir par s’y faire, {{peu-à-peu}}.
 TEST: Venez vite, s’{{il-vous-plait}}.
 TEST: Elles sont {{tout-à-fait}} ravies.
 TEST: {{Trois-quarts}} des participantes y sont parvenues.
-TEST: {{Parce-qu}}’ils y croient plus que tout.
+TEST: {{Parce-qu’ils}} y croient plus que tout.
 TEST: Oui, {{ça-aussi}}.
 TEST: Peu d’{{entre-nous}} savent ce dont il s’agit.
 
 
 __tu_y_attaché__
-    ~^y[’-]\w+
-        <<- /tu/ morph(\1, ":V0") -1>> ="y " + \1[2:]                           # Ni apostrophe ni trait d’union après “y”.
+    ~^[yY][’-]\w+
+        <<- /tu/ morph(\1, ":V0", "", 2) -1>> ="y " + \1[2:]                    # Ni apostrophe ni trait d’union après “y”.
 
-    ~^y[’-][\w-]+-(?:ils?|elles?|je|tu|on|nous|vous)
+    ~^[yY][’-][\w-]+-(?:ils?|elles?|je|tu|on|nous|vous)
     y’en
     y-en
         <<- /tu/ -1>> ="y " + \1[2:]                                            # Ni apostrophe ni trait d’union après “y”.
 
-TEST: {{Y’}}a trop de malheureux sur Terre.             ->> "Y "
-TEST: {{Y’}}en a marre, de ces conneries.               ->> "Y "
-TEST: {{y-}}a-t-il des beignets ?                       ->> "y "
+TEST: {{Y’a}} trop de malheureux sur Terre.             ->> "Y a"
+TEST: {{Y’en}} a marre, de ces conneries.               ->> "Y en"
+TEST: {{y-a-t-il}} des beignets ?                       ->> "y a-t-il"
 
 
 __tu_lorsque__
@@ -4090,9 +4129,6 @@ TEST: on fait ça {{a}} la va-vite.
 TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.
 TEST: {{tout a coup}}, il n’y eut plus aucune lumière
 TEST: un machin ennuyeux {{a}} s’en tirer une balle dans la tête.
-TEST: On {{à}} faim.
-TEST: Elle {{à}} froid.
-TEST: cet homme {{à}} faim
 TEST: Je sais qu’ils sont {{a}} toi.
 TEST: Attention {{a}} ne pas la réveiller.
 
@@ -10105,6 +10141,14 @@ TEST: Je pense que nous {{avion}} tort.
 # avoir faim / soif
 __[i]/conf(conf_a_à_faim_peur_honte_soif)__
     (à) +(faim|peur|honte|soif) @@0,$ <<- -1>> a                        # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
+
+__[i]/conf(conf_a_à_chaud_froid)__
+    ^ *elle +(à) +(?:chaud|froid) @@w <<- -1>> a                        # Avoir “\1”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
+
+TEST: Elle {{à}} chaud.
+TEST: Elle {{à}} froid.
+TEST: cet homme {{à}} faim
+TEST: Votre réaction à froid ?
 
 
 # banc / ban
@@ -17658,7 +17702,6 @@ TEST: Je l’ai vu ici même hier.
 TEST: Des impressions recto verso.
 TEST: La bouteille est aux deux tiers pleine.
 TEST: Un trois-quarts de rugby.
-TEST: Les trois-quarts de l’équipe de rugby.
 TEST: La bouteille est aux trois quarts pleine.
 TEST: Un trois-quarts de rugby.
 TEST: S’il te plaît, dessine-moi un mouton.
