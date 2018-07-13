@@ -2310,57 +2310,176 @@ __[i]/tu(tu_mots_composés)__
 TEST: ce sont des {{lève tard}}.
 
 
-### Tri 1
-__[i]/tu(tu_à_tout_va)__                    [àa] tout vas? <<- ->> à tout-va                        # Il manque un trait d’union.
-__[i]/tu(à_la_va_vite)__                    [àa] la vas? vite <<- ->> à la va-vite                  # Il manque un trait d’union.
-__[i]/tu(tu_aller_retour)__                 allers? retours? <<- ->> =\0.replace(" ", "-")          # Il manque un trait d’union.
-__[i]/tu(tu_arc_en_ciel)__                  arcs? en ciel <<- ->> =\0.replace(" ", "-")             # Il manque les traits d’union.
-__[i]/tu(tu_après_demain)__                 après demain <<- ->> après-demain                       # Il manque un trait d’union.
-__[i]/tu(tu_au_préposition)__               au (delà|dehors|desso?us|devant) @@$ <<- ->> au-\1      # Il manque un trait d’union.
-__[i]/tu(tu_avant_hier)__                   avant hier <<- ->> avant-hier                           # Il manque un trait d’union.
-__[i]/tu(tu_bouche_à_oreille_bouche)__      bouche à (?:bouche|oreilles?) <<- morph(word(-1), ":D", False) ->> =\0.replace(" ", "-") # Il manque les traits d’union.
-__[i]/tu(tu_c_est_à_dire)__                 c’est [àa] dire <<- ->> c’est-à-dire                    # Il manque les traits d’union.
-__[i]/tu(tu_chef_d_œuvre_lieu)__            chef (lieu|d’œuvre) @@$ <<- ->> chef-\1                 # Il manque un trait d’union.
-__[i]/tu(tu_celui_celle_là_ci)__
-    ce(?:lles?|lui|ux) (?:là|[cs]i)
-    <<- not (\0.endswith("si") and morph(word(1), ":[AW]", False))
-    ->> =\0.replace(" ", "-").replace("si", "ci")                                                   # Il manque un trait d’union.
-__[i]/tu(tu_centre_ville)__                 centres? villes? <<- ->> centre-ville|centres-villes    # Il manque un trait d’union.
-__[i]/tu(tu_ci_dessous_devant_contre)__     ci (desso?us|devant|contre) @@$ <<- ->> ci-\1           # Il manque un trait d’union.
-__[i]/tu(tu_de_ci_de_là)__                  de ci,? de là <<- ->> de-ci de-là|de-ci, de-là          # Il manque les traits d’union.
-__[i]/tu(tu_en_contre_bas_partie)__     en contre (bas|partie) @@$ <<- ->> en contre\1|en contre-\1 # Mettez un trait d’union ou soudez.
-__[i]/tu(tu_en_contrepoint)__           en (contre[- ]point) @@$ <<- -1>> contrepoint               # Soudez.
-__[i]/tu(tu_état_major)__               état major <<- ->> état-major                               # Il manque un trait d’union.
-__[i]/tu(tu_grand_chose)__              grand chose <<- ->> grand-chose                             # Il manque un trait d’union.
-__[i]/tu(tu_grand_père_mère)__          grands? (?:père|mère)s? <<- ->> =\0.replace(" ", "-")       # Il manque un trait d’union.
-__[i]/tu(tu_ici_bas)__                  ici bas <<- ->> ici-bas                                     # Il manque un trait d’union.
-__[i]/tu(tu_jusque_là)__                jusque là <<- ->> jusque-là                                 # Il manque un trait d’union.
-__[i]/tu(tu_là_adverbe)__       là (bas|haut|desso?us|dedans|devant|derrière) @@3 <<- ->> là-\1     # Il manque un trait d’union.
-__[i]/tu(tu_n_est_ce_pas)__             n’est(?: ce[ -]pas|-ce-pas) <<- ->> n’est-ce pas            # Un trait d’union.
-__[i]/tu(tu_nord_sud_ouest)__           (nord|sud) ouest @@0 <<- ->> \1-ouest                       # Il manque un trait d’union.
-__[i]/tu(tu_nord_sud_est)__             (nord|sud) est @@0 <<- isEnd() ->> \1-est                   # Il manque un trait d’union.
-__[i]/tu(tu_outre_mer)__                outre mer <<- ->> outre-mer                                 # Il manque un trait d’union.
-__[i]/tu(tu_ouï_dire)__                 ou[iï] dire <<- morph(word(-1), ":G") ->> ouï-dire          # Il manque un trait d’union.
-__[i]/tu(tu_par_préposition)__
-    par (desso?us|devant|delà|derrière|dehors|dedans|devers)  @@$
-    <<- ->> par-\1                                                                                  # Il manque un trait d’union.
-__[i]/tu(tu_par_ci_par_là)__            par ci,? par là <<- ->> par-ci par-là|par-ci, par-là        # Trait(s) d’union manquant(s).
-__[i]/tu(tu_prêt_à_porter)__
-    (prêts?) à porter  @@0
-    <<- before(r"(?i)\b(?:les?|du|des|un|ces?|[mts]on) +") ->> \1-à-porter                          # Il manque les traits d’union.
-__[i]/tu(tu_plate_forme)__  plates? formes? <<- ->> plate-forme|plates-formes|plateforme|plateformes    # Il manque un trait d’union. Vous pouvez aussi souder les deux mots.
-__[i]/tu(tu_quelques_uns_unes)__       quelques (une?s) @@$ <<- ->> quelques-\1                     # Il manque un trait d’union.
-__[i]/tu(tu_plus_moins_values)__       (plus|moins) (values?)  @@0,$  <<- ->> \1-\2                 # Il manque un trait d’union.
-__[i]/tu(tu_rez_de_chaussée)__         rez de chaussées? <<- ->> rez-de-chaussée                    # Il manque un trait d’union.
-__[i]/tu(tu_science_fiction)__         science fiction <<- ->> science-fiction                      # Il manque un trait d’union.
-__[i]/tu(tu_stock_option)__            stock options? <<- ->> =\0.replace(" ", "-")                 # Il manque un trait d’union.
-__[i]/tu(tu_soi_disant)__              soi disant
-    <<- not ( morph(word(-1), ":R", False) and after("^ +qu[e’]") ) ->> soi-disant                  # Il manque un trait d’union.
-__[i]/tu(tu_sous_jacent)__             sous (jacente?s?) @@$ <<- ->> sous-\1                        # Il manque un trait d’union.
-# sur-mesures
-__[i]/tu(tu_vice_président_roi)__      vice (présidente?s?|rois?) @@$ <<- ->> vice-\1               # Il manque un trait d’union.
-__[i]/tu(tu_vis_à_vis)__               vis [àa] vis <<- ->> vis-à-vis                               # Il manque les traits d’union.
-__[i]/tu(tu_week_end)__                week (ends?) @@$ <<- ->> week-\1                             # Il manque un trait d’union.
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
+
+__tu_substantifs__
+    [à|a] tout [va|vas]
+        <<- /tu/ ->> à tout-va                                  # Il manque un trait d’union.
+
+    [à|a] [la|là] [va|vas] vite
+        <<- /tu/ ->> à la va-vite                               # Il manque un trait d’union.
+
+    l’ à [côté|coup|peu-près|pic|plat-ventrisme|propos|valoir]
+        <<- /tu/ -2:0>> \2-\3                                   # Mettez des traits d’union pour ces noms communs.
+
+    l’ à peu près
+    l’ à plat ventrisme
+        <<- /tu/ -2:0>> \2-\3-\4                                # Mettez des traits d’union pour ces noms communs.
+
+    >aller >retour
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
+
+    >arc en ciel
+        <<- /tu/ ->> \1-\2-\3                                   # Il manque les traits d’union.
+
+    après demain
+        <<- /tu/ ->> après-demain                               # Il manque un trait d’union.
+
+    au [delà|dehors|dessous|dessus|devant]
+        <<- /tu/ \2.islower() ->> au-\2                         # Il manque un trait d’union.
+
+    avant hier
+        <<- /tu/ ->> avant-hier                                 # Il manque un trait d’union.
+
+    [basket|volley] ball
+        <<- /tu/ ->> \1-ball                                    # Il manque un trait d’union.
+
+    [les|des|aux] beaux arts
+        <<- /tu/ -2:3>> beaux-arts                              # Il manque un trait d’union.
+
+    bouche à [bouche|>oreille]
+        <<- /tu/ morph(<1, ":D") ->> \1-\2-\3                   # Il manque les traits d’union.
+
+    c’ est [à|a] dire
+        <<- /tu/ ->> c’est-à-dire                               # Il manque les traits d’union.
+
+    >chef lieu
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
+
+    >chef d’ œuvre
+        <<- /tu/ ->> \1-\2\3                                    # Il manque un trait d’union.
+
+    [celle|celles|celui|ceux] [là|ci]
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
+
+    [celle|celles|celui|ceux] si
+        <<- /tu/ not morph(>1, ":[WA]") ->> \1-ci               # Il manque un trait d’union.
+
+    >centre >ville
+        <<- /tu/ ->> centre-ville|centres-villes                # Il manque un trait d’union.
+
+    ci [dessous|dessus|devant|contre]
+        <<- /tu/ ->> ci-\2                                      # Il manque un trait d’union.
+
+    de ci ?,¿ de là
+        <<- /tu/ ->> de-ci de-là|de-ci, de-là                   # Il manque les traits d’union.
+
+    en contre [bas|partie]
+        <<- /tu/ ->> en contre\3|en contre-\3                   # Mettez un trait d’union ou soudez.
+
+    en contre point
+    en contre-point
+        <<- /tu/ ->> en contrepoint                             # Soudez.
+
+    état major
+        <<- /tu/ ->> état-major                                 # Il manque un trait d’union.
+
+    grand chose
+        <<- /tu/ ->> grand-chose                                # Il manque un trait d’union.
+
+    [grand|grands] [>père|>mère]
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
+
+    ici bas
+        <<- /tu/ ->> ici-bas                                    # Il manque un trait d’union.
+
+    jusque là
+        <<- /tu/ ->> jusque-là                                  # Il manque un trait d’union.
+
+    là [bas|haut|dessous|dessus|dedans|devant|derrière]
+        <<- /tu/ ->> là-\2                                      # Il manque un trait d’union.
+
+    [moi|toi|soi|lui|elle|vous] même
+        <<- /tu/ not value(>1, "|si|s’|") ->> \1-même           # Il manque un trait d’union si “même” se rapporte à “\1”.|https://fr.wiktionary.org/wiki/moi-m%C3%AAme
+
+    [nous|vous|eux|elles] mêmes
+        <<- /tu/ ->> \1-mêmes                                   # Il manque un trait d’union.
+
+    n’ est ce pas
+    n’ est ce-pas
+    n’ est-ce-pas
+        <<- /tu/ ->> n’est-ce pas                               # Un trait d’union.
+
+    [nord|sud] ouest
+        <<- /tu/ ->> \1-ouest                                   # Il manque un trait d’union.
+
+    [nord|sud] est [<end>|,]
+        <<- /tu/ ->> \1-est                                     # Il manque un trait d’union.
+
+    outre mer
+        <<- /tu/ ->> outre-mer                                  # Il manque un trait d’union.
+
+    [oui|ouï] dire
+        <<- /tu/ morph(<1, ":G") ->> ouï-dire                   # Il manque probablement un trait d’union.
+
+    par [dessous|dessus|devant|delà|derrière|dehors|dedans|devers]
+        <<- /tu/ ->> par-\2                                     # Il manque un trait d’union.
+
+    par ci ?,¿ par là
+        <<- /tu/ ->> par-ci par-là|par-ci, par-là               # Trait(s) d’union manquant(s).
+
+    [le|les|du|des|un|ce|ces|mon|ton|son] [prêt|prêts] [à|a] porter
+        <<- /tu/ -2:0>> \2-à-porter                             # Il manque les traits d’union.
+
+    [plate|plates] >forme
+        <<- /tu/ ->> plate-forme|plates-formes|plateforme|plateformes       # Il manque un trait d’union. Vous pouvez aussi souder les deux mots.
+
+    quelques [un|uns|une|unes]
+        <<- /tu/ ->> quelques-\2                                # Il manque un trait d’union.
+
+    [plus|moins] [value|values]
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
+
+    rez de >chaussée
+        <<- /tu/ ->> rez-de-chaussée                            # Il manque un trait d’union.
+
+    science fiction
+        <<- /tu/ ->> science-fiction                            # Il manque un trait d’union.
+
+    stock >option
+        <<- /tu/ ->>  \1-\2                                     # Il manque un trait d’union.
+
+    soi disant
+        <<- /tu/ not ( morph(<1, ":R") and value(>1, "|que|qu’|") )
+        ->> soi-disant                                          # Il manque un trait d’union.
+
+    sous [jacent|jacente|jacents|jacentes]
+        <<- /tu/ ->> sous-\2                                    # Il manque un trait d’union.
+
+    du sur mesures
+    du sur mesure
+        <<- -2:0>> sur-mesures                                  # Il manque un trait d’union.
+
+    [le|de|ce|les|des|ces|un|mon|leur|leurs|nos|vos|notre|votre|quel|quels] [va|vas] et [vient|viens]
+        <<- /tu/ -2:0>> va-et-vient                             # Il manque les traits d’union.
+
+    vice [>présidente|>roi|>reine|>chancelière]
+        <<- /tu/ ->> vice-\1                                    # Il manque un trait d’union.
+
+    vis [à|a] vis
+        <<- /tu/ ->> vis-à-vis                                  # Il manque les traits d’union.
+
+    week [end|ends]
+        <<- /tu/ ->> week-\2                                    # Il manque un trait d’union.
 
 TEST: Ils font des tests {{à tout va}}
 TEST: on a fait {{à la va vite}}…
@@ -2393,7 +2512,7 @@ TEST: {{jusque là}}, tout va bien
 TEST: regarde l’{{arc en ciel}}
 TEST: ils sont allés au {{centre ville}}.
 TEST: Il ne connaît pas {{grand chose}} à tout ça.
-TEST: en {{contre point}},
+TEST: {{en contre point}},
 TEST: {{Quelques unes}} sont très habiles.
 TEST: Tout ce que nous faisons {{par ci, par là}}.
 TEST: La papesse du {{prêt à porter}} viendra demain.
@@ -2411,53 +2530,26 @@ TEST: ils sont partis {{outre mer}}
 TEST: elles sont allées au {{sud ouest}}
 TEST: {{nord est}}
 TEST: des {{stock options}}
-TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
-
-# l’ à
-__[i]/tu(tu_l_à)__
-    l’(à (?:côté|coup|peu[ -]près|à[ -]pic|plat[ -]ventrisme|propos|valoir))  @@2
-    <<- -1>> =\1.replace(" ", "-")                                                                  # Mettez des traits d’union pour ces noms communs.
-
 TEST: l’{{à propos}} n’est pat si facile à acquérir.
-
-
-# est-ce … ?
-__[i]/tu(tu_est_ce)__
-    (?<![cCdDlL][’'])(est ce) ({w_2})  @@0,$
-    <<- morphex(\2, ":", ":N.*:[me]:[si]|>qui/") and morph(word(-1), ":Cs", False, True)
-    -1>> est-ce                                                                                     # S’il s’agit d’une interrogation, il manque un trait d’union.
-
-TEST: {{est ce}} que c’est grave ?                                              ->> est-ce
-TEST: qu’{{est ce}} que c’est ?                                                 ->> est-ce
-TEST: elles reviendront, {{n’est ce pas}} ?
-TEST: nous en sommes à l’étape où nous voulons définir ce qu’est ce projet
-
-
-### Tri 2
-__[i]/tu(tu_beaux_arts)__       (?:[ld]es|aux) (beaux arts) @@$ <<- -1>> beaux-arts                 # Il manque un trait d’union.
-__[i]/tu(tu_basket_volley)__    (basket|volley) ball @@0 <<- ->> \1-ball                            # Il manque un trait d’union.
-__[i]/tu(tu_pronom_même)__      (lui|elle|[mts]oi|vous) même @@0 <<- not after("^ +s(?:i |’)") ->> \1-même  # Il manque un trait d’union si “même” se rapporte à “\1”.|https://fr.wiktionary.org/wiki/moi-m%C3%AAme
-__[i]/tu(tu_pronom_mêmes)__     (nous|vous|eux|elles) mêmes @@0 <<- ->> \1-mêmes                                        # Il manque un trait d’union.
-__[i]/tu(tu_va_et_vient)__      (?:[lcd]es?|un|[mts]on|leurs?|[nv]os|quels?) (vas? et vien[ts]) @@$ <<- -1>> va-et-vient  # Il manque les traits d’union.
-
 TEST: les {{beaux arts}}
 TEST: je déteste le {{basket ball}}
 TEST: {{Lui même}}                                    ->> Lui-même
 TEST: {{eux mêmes}}.                                  ->> eux-mêmes
 TEST: un {{va et vient}} incessant me casse la tête
+TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
 
 
+# est-ce … ?
+__tu_est_ce__
+    est ce  @:¬:N.*:[me]:[si]|>qui/
+    <<- morph(<1, ":Cs|<start>") and space_after(\1, 1, 1) -1:2>> est-ce                            # S’il s’agit d’une interrogation, il manque un trait d’union.
 
+TEST: {{est ce}} que c’est grave ?                                              ->> est-ce
+TEST: qu’{{est ce}} que c’est ?                                                 ->> est-ce
+TEST: elles reviendront, {{n’est ce pas}} ?
+TEST: nous en sommes à l’étape où nous voulons définir ce qu’est ce projet
+TEST: c’est ce que nous pensions.
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: graphe1                                                                                 _
-@@@@
-@@@@
-@@@@
-@@@@
 
 __tu_noms_propres__
     Royaume Uni
