@@ -1045,6 +1045,34 @@ def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemor
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
+def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=True):
+    "merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
+    lMorph = _oSpellChecker.getMorph(dToken1["sValue"] + cMerger + dToken2["sValue"])
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            if not lMorph:
+                return False
+            zPattern = re.compile(sPattern)
+            bResult = all(zPattern.search(sMorph)  for sMorph in lMorph)
+            if bResult and bSetMorph:
+                dToken1["lMorph"] = lMorph
+            return bResult
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    bResult = any(zPattern.search(sMorph)  for sMorph in lMorph)
+    if bResult and bSetMorph:
+        dToken1["lMorph"] = lMorph
+    return bResult
+
+
 def g_tag_before (dToken, dTags, sTag):
     if sTag not in dTags:
         return False
