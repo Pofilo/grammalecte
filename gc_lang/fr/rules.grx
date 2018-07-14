@@ -2292,16 +2292,6 @@ __[i](p_pseudo_xxx)__
 TEST: il n’avait contracté qu’un {{pseudo mariage}}.
 
 
-__[i]/tu(tu_préfixe_divers)__
-    (anti|auto|arrière|avant|demi|extra|intra|multi|non|post|sans|sous) ({w1})  @@0,$
-    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False) and morph(word(-1), ":D", False, not bool(re.search("(?i)^(?:s(?:ans|ous)|non)$", \1)))
-    ->> \1-\2                                                                                       # Il manque probablement un trait d’union.
-
-TEST: il a pris une balle dans l’{{arrière train}}.
-TEST: Ce {{sans gêne}} mérite une bonne leçon
-
-
-
 
 
 @@@@
@@ -2314,10 +2304,24 @@ TEST: Ce {{sans gêne}} mérite une bonne leçon
 @@@@
 @@@@
 
+__tu_préfixe_divers__
+    [anti|auto|arrière|avant|demi|extra|intra|multi|post]  *WORD
+        <<- /tu/ analyse_with_next(\1, "-", ":") and morph(<1, ":D|<start>")
+        ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
+
+    [non|sans|sous]  *WORD
+        <<- /tu/ analyse_with_next(\1, "-", ":") and morph(<1, ":D")
+        ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
+
+TEST: il a pris une balle dans l’{{arrière train}}.
+TEST: Ce {{sans gêne}} mérite une bonne leçon
+TEST: Sans gêne, il avança parmi nous.
+
+
 __tu_mots_composés_verbe_nom__
     [attrape|garde|porte|brise|cache|casse|chauffe|contre|coupe|cure|croque|entre|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
-    <<- /tu/ not (morph(\1, ":G") and morph(\2, ":[GYB]")) and morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
-    ->> \1-\2                                                                                       # Il manque probablement un trait d’union.
+        <<- /tu/ not (morph(\1, ":G") and morph(\2, ":[GYB]")) and morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
+        ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
 TEST: ce sont des {{lève tard}}.
 TEST: un {{brise glace}}

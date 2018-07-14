@@ -102,7 +102,7 @@ def genTokenLines (sTokenLine, dDef):
         yield aRule
 
 
-def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dDef):
+def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
     "generator: create rule as list"
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
     for lToken in genTokenLines(sTokenLine, dDef):
@@ -120,7 +120,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
             sAction = sAction.strip()
             if sAction:
                 sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction) + "_" + str(len(lToken))
-                aAction = createAction(sActionId, sAction, nPriority, len(lToken), dPos)
+                aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
                 if aAction:
                     dACTIONS[sActionId] = aAction
                     lResult = list(lToken)
@@ -152,7 +152,7 @@ def checkIfThereIsCode (sText, sActionId):
         print(sText)
 
 
-def createAction (sActionId, sAction, nPriority, nToken, dPos):
+def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     "create action rule as a list"
     # Option
     sOption = False
@@ -160,6 +160,8 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
     if m:
         sOption = m.group(1)
         sAction = sAction[m.end():].strip()
+    if nPriority == -1:
+        nPriority = dOptPriority.get(sOption, 4)
     # valid action?
     m = re.search(r"(?P<action>[-~=/>])(?P<start>\d+\.?|)(?P<end>:\.?\d+|)>>", sAction)
     if not m:
@@ -274,7 +276,7 @@ def createAction (sActionId, sAction, nPriority, nToken, dPos):
         return None
 
 
-def make (lRule, dDef, sLang, bJavaScript):
+def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
@@ -282,7 +284,7 @@ def make (lRule, dDef, sLang, bJavaScript):
     print("  parsing rules...")
     lTokenLine = []
     sActions = ""
-    nPriority = 4
+    nPriority = -1
     dAllGraph = {}
     sGraphName = ""
     iActionBlock = 0
@@ -311,7 +313,7 @@ def make (lRule, dDef, sLang, bJavaScript):
             if m:
                 sRuleName = m.group(1)
                 iActionBlock = 1
-                nPriority = int(m.group(2)[1:]) if m.group(2)  else 4
+                nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
                 print("Error at rule group: ", sLine, " -- line:", i)
                 break
@@ -346,7 +348,7 @@ def make (lRule, dDef, sLang, bJavaScript):
     for sGraphName, lRuleLine in dAllGraph.items():
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
-            for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dDef):
+            for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
                 lPreparedRule.append(lRule)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)
