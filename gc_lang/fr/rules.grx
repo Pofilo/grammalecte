@@ -2219,68 +2219,6 @@ __[i]/tu(tu_trait_union_douteux)__
 TEST: Nous préparons une {{contre–attaque}}.
 
 
-### ce / cet / cette / ces + nom + là
-__[i]/tu(tu_ce_cette_ces_nom_là1)__
-    c(?:e[st]?|ette) (({w_2}) là)(?! où)  @@$,w <<- morph(\2, ":[NB]", False) -1>> \2-là            # Il manque probablement un trait d’union.
-__[i]/tu(tu_ce_cette_ces_nom_là2)__
-    c(?:e[st]?|ette) (({w_2}) la)  @@$,w <<- morph(\2, ":[NB]", False) and isEnd() -1>> \2-là       # Il manque probablement un trait d’union.
-
-TEST: Ces {{trois là}} sont incollables.
-TEST: Je connais bien cette {{sensation là}}.
-TEST: Laisse ce chiot là où il est !
-
-
-### Préfixes
-__[i]/tu(tu_préfixe_ex)__
-    ex ({w2}) @@$  <<- morph(\1, ":N") and not re.search("(?i)^(?:aequo|nihilo|cathedra|absurdo|abrupto)", \1)
-    ->> ex-\1                                                                                       # S’il s’agit d’un seul mot, il manque un trait d’union.
-
-TEST: Son {{ex ami}} est un vrai cauchemar.
-TEST: Ton ex donne du fil à retordre.
-
-
-__[i]/tu(tu_préfixe_in)__
-    (in) ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(?:drive|plug|sit) +$") >>>
-    <<- re.search("^(?:dix-huit|douze|seize|folio|octavo|quarto|plano)$", \2)
-    ->> =\0.replace(" ", "-")                                                                       # Il manque un trait d’union.
-    <<- __else__ and morph(\2, ":N:m") -1>> un                                                      # Confusion possible : pour le déterminant désignant quelque chose, écrivez “un”.
-
-TEST: Cet {{in folio}} est incroyable.
-TEST: c’est {{in}} stage de réinsertion.
-TEST: Dans ce drive in douze hommes mangent.
-
-
-__[i]/tu(tu_préfixe_mi)__
-    mi ({w2}) @@$  <<- morph(\1, ":[NAQ]", False) ->> mi-\1                                         # S’il s’agit d’un seul mot, il manque un trait d’union.
-
-TEST: J’ai été engagé pour un {{mi temps}}.
-
-
-__[i]/tu(tu_préfixe_quasi)__
-    (?:l(?:es?|a|eurs?)|ce(?:tte|t|s|)|des?|m(?:a|on|es)|[ts](?:es|a)) (quasi ({w1}))  @@$,$
-    <<- morphex(\2, ":N", ":[AGW]") -1>> quasi-\2                                                   # Il manque un trait d’union : « quasi » s’accroche au mot qui le suit s’il s’agit d’un nom.
-    <<- ~1>> \2
-
-TEST: leurs {{quasi indifférences}}
-
-
-__[i]/tu(tu_préfixe_semi)__
-    semi ({w2})  @@$ <<- morphex(\1, ":[NAQ]", ":G") ->> semi-\1                                   # S’il s’agit d’un seul mot, il manque un trait d’union.
-
-TEST: en {{semi liberté}}
-
-
-__[i]/tu(tu_préfixe_xxxo)__
-    (franco|américano|anglo|belgo|électro|ferro|hydro|labio|macro|magnéto|médico|micro|nano|néo|neuro|paléo|physico|politico|rétro|rhino|sino|socio|stéréo) ({w1})  @@0,$
-    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False)
-    ->> \1-\2                                                                                       # S’il s’agit d’un seul mot, il manque un trait d’union.
-
-TEST: des {{franco américains}}
-TEST: {{franco américaine}}                             ->> franco-américaine
-TEST: {{ferro électrique}}                              ->> ferro-électrique
-TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
-
 
 
 @@@@
@@ -2292,6 +2230,78 @@ TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 @@@@
 @@@@
 @@@@
+
+
+### ce / cet / cette / ces + nom + là
+__tu_ce_cette_ces_nom_là__
+    [ce|cet|cette|ces] *WORD là
+        <<- /tu/ morph(\2, ":[NB]") and not value(>1, "|où|") -2:3>> \2-là      # Il manque probablement un trait d’union.
+
+    [ce|cet|cette|ces] *WORD la [<end>|,]
+        <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-là                                # Il manque probablement un trait d’union.
+
+TEST: Ces {{trois là}} sont incollables.
+TEST: Je connais bien cette {{sensation là}}.
+TEST: Laisse ce chiot là où il est !
+
+
+### Préfixes
+__tu_préfixe_ex__
+    ex  @:N¬*
+        <<- /tu/ not value(\2, "|aequo|nihilo|cathedra|absurdo|abrupto|")
+        ->> ex-\2                                                           # S’il s’agit d’un seul mot, il manque un trait d’union.
+
+TEST: Son {{ex ami}} est un vrai cauchemar.
+TEST: Ton ex donne du fil à retordre.
+
+
+__tu_préfixe_in__
+    in [dix-huit|douze|seize|folio|octavo|quarto|plano]
+        <<- /tu/ not value(<1, "|drive|plug|sit|") ->> \1-\2                # Il manque un trait d’union.
+
+    in @:N:m¬*
+        <<- /tu/ not value(<1, "|drive|plug|sit|") -1>> un                  # Confusion possible : pour le déterminant désignant quelque chose, écrivez “un”.
+
+
+TEST: Cet {{in folio}} est incroyable.
+TEST: c’est {{in}} stage de réinsertion.
+TEST: Dans ce drive in douze hommes mangent.
+
+
+__tu_préfixe_mi__
+    mi  @:[NAQ]
+        <<- /tu/ ->> mi-\2                                      # S’il s’agit d’un seul mot, il manque un trait d’union.
+
+TEST: J’ai été engagé pour un {{mi temps}}.
+
+
+__tu_préfixe_quasi__
+    quasi  @:N¬:[AGW]
+        <<- /tu/ morph(<1, ":D") ->> quasi-\2                   # Il manque un trait d’union : « quasi » s’accroche au mot qui le suit s’il s’agit d’un nom.
+
+    quasi
+        <<- ~>> *
+
+TEST: leurs {{quasi indifférences}}
+
+
+__tu_préfixe_semi__
+    semi @:[NAQ]¬:(?:G|3[sp])
+        <<- /tu/ ->> semi-\2                                    # S’il s’agit d’un seul mot, il manque un trait d’union.
+
+TEST: en {{semi liberté}}
+
+
+__tu_préfixe_xxxo__
+    [franco|américano|anglo|belgo|électro|ferro|hydro|labio|macro|magnéto|médico|micro|nano|néo|neuro|paléo|physico|politico|rétro|rhino|sino|socio|stéréo]  *WORD
+        <<- /tu/ analyse_with_next(\1, "-", ":")
+        ->> \1-\2                                               # S’il s’agit d’un seul mot, il manque un trait d’union.
+
+TEST: des {{franco américains}}
+TEST: {{franco américaine}}                             ->> franco-américaine
+TEST: {{ferro électrique}}                              ->> ferro-électrique
+TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
+
 
 __tu_préfixe_divers__
     [anti|auto|arrière|avant|demi|extra|intra|multi|post]  *WORD
