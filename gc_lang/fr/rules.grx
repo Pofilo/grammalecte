@@ -909,9 +909,9 @@ TEST: __liga__ une belle {{ﬁ}}gure                                        ->> 
 !!
 !!
 ## Apostrophe typographique
-__[i>/apos(apostrophe_typographique)__
+__[i>/apos(apostrophe_typographique)!8__
     ([ldsncjmç]|jusqu|lorsqu|aujourd|presqu|quelqu|puisqu|qu|prud|entr)['´‘′`ʼ](?=[\w"«]) @@0 <<- ->> \1’    # Apostrophe typographique.
-__[i>/apos(apostrophe_typographique_après_t)__
+__[i>/apos(apostrophe_typographique_après_t)!8__
     t['´‘′`ʼ](?!ils?|elles?|on)(?=[\w"«]) <<- ->> t’                                                         # Apostrophe typographique.
 
 TEST: {{C'}}est l’apostrophe typographique qui manque.                    ->> C’
@@ -921,7 +921,7 @@ TEST: Je pense {{qu`}}elle se trompe
 TEST: Que {{t'}}arrive-t-il ?
 
 
-__[i>/typo(typo_apostrophe_incorrecte)__
+__[i>/typo(typo_apostrophe_incorrecte)!8__
     (([ldsncjmtç]|lorsqu|puisqu|presqu|quoiqu|quelqu|jusqu|qu|aujourd|entr)(?:[’'´‘′`ʼ][’'´‘′`ʼ ]|”|“|"| [’'´‘′`ʼ] ?))[aeéiouhœæyîèêôû]  @@0,0
     <<- not (\2.__len__() == 1  and  \1.endswith("′ ")) -1>> \2’                                    # Apostrophe incorrecte.
 
@@ -932,16 +932,16 @@ TEST: Je pense {{qu ` }}elle ne viendra pas.
 
 
 ## Apostrophes manquantes
-__[i>/typo(typo_apostrophe_manquante)__
+__[i>/typo(typo_apostrophe_manquante)!8__
     "(lorsqu|puisqu|presqu|quoiqu|jusqu|qu|aujourd|entr) "  @@0  <<- ->> \1’                        # Il manque vraisemblablement une apostrophe.
 # Solution prudente :
-__[i>/typo(typo_apostrophe_manquante_prudence1)__
+__[i>/typo(typo_apostrophe_manquante_prudence1)!8__
     ne ([mtsl] )([aeéiouhyîèêôû][\w-]*)  @@3,$  <<- -1>> =\1[:-1]+"’"                               # Il manque une apostrophe.
-__[i>/typo(typo_apostrophe_manquante_prudence2)__
+__[i>/typo(typo_apostrophe_manquante_prudence2)!8__
     (?:je|tu|ils?|nous|vous|on|ça|elles?) ([nmtsl] )([aeéiouhyîèêôû][\w-]*)  @@*,$
     <<- not option("mapos") and morph(\2, ":V", False) -1>> =\1[:-1]+"’"                            # Il manque probablement une apostrophe.
 # Solution audacieuse :
-__[s>/typo(typo_apostrophe_manquante_audace1)__
+__[s>/typo(typo_apostrophe_manquante_audace1)!8__
     ([ldsncjmtç] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@0
     <<- option("mapos") and not before("(?i)(?:lettre|caractère|glyphe|dimension|variable|fonction|point) *$")
     -1>> =\1[:-1]+"’"                                                                               # Il manque peut-être une apostrophe.
@@ -2282,17 +2282,6 @@ TEST: {{ferro électrique}}                              ->> ferro-électrique
 TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 
 
-__[i]/tu(tu_préfixe_pseudo)__
-    pseudo ({w_2}) @@$
-    <<- morph(\1, ":N") ->> pseudo-\1                                                               # Si vous voulez évoquer le simulacre de “\1”, mettez un trait d’union.
-    <<- __also__ ~>> \1
-__[i](p_pseudo_xxx)__
-    (pseudo-){w_2} @@0 <<- ~1>> *
-
-TEST: il n’avait contracté qu’un {{pseudo mariage}}.
-
-
-
 
 @@@@
 @@@@
@@ -2306,7 +2295,7 @@ TEST: il n’avait contracté qu’un {{pseudo mariage}}.
 
 __tu_préfixe_divers__
     [anti|auto|arrière|avant|demi|extra|intra|multi|post]  *WORD
-        <<- /tu/ analyse_with_next(\1, "-", ":") and morph(<1, ":D|<start>")
+        <<- /tu/ analyse_with_next(\1, "-", ":") and (morph(<1, ":D|<start>") or value(<1, "|l’|d’|"))
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
     [non|sans|sous]  *WORD
@@ -2316,6 +2305,17 @@ __tu_préfixe_divers__
 TEST: il a pris une balle dans l’{{arrière train}}.
 TEST: Ce {{sans gêne}} mérite une bonne leçon
 TEST: Sans gêne, il avança parmi nous.
+
+
+    pseudo  @:N¬*
+        <<- ->> pseudo-\2                                                                           # Si vous voulez évoquer le simulacre de “\2”, mettez un trait d’union.
+        <<- ~1>> *
+
+    ~^[pP]seudo-\w+
+        <<- =>> define_from(\1, 7)
+
+TEST: il n’avait contracté qu’un {{pseudo mariage}}.
+TEST: elle connaissait de cet {{pseudo-prêtresse}} uniquement de nom.
 
 
 __tu_mots_composés_verbe_nom__
