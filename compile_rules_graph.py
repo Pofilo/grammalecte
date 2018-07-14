@@ -265,7 +265,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
-        if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
+        if "define(" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
         sAction = prepareFunction(sAction)
         dFUNCTIONS["_g_d_"+sActionId] = sAction
