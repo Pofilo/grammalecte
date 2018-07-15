@@ -23,11 +23,8 @@ def prepareFunction (s):
     s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
     s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
     s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
-    #s = re.sub(r"(switchGender|has(?:(?:Mas|Fem)Form)|Simil)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"(morph|analyse|value)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                       # next token
     s = re.sub(r"(morph|analyse|value)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                       # previous token
-    #s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is\\2()', s)
-    #s = re.sub(r"[\\](\d+)\.(startswith|endswith)\(", 'lToken[\\1+nTokenOffset]["sValue"].\\2(', s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before(s)
     s = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                 # after(s)
@@ -58,7 +55,7 @@ def genTokenLines (sTokenLine, dDef):
                 sToken = sToken[1:-1]
             lNewToken = sToken[1:-1].split("|")
             if not lTokenLines:
-                lTokenLines = [ [s]  for s  in lNewToken ]
+                lTokenLines = [ ["("+s+")"]  for s  in lNewToken ]  if bSelectedGroup  else [ [s]  for s  in lNewToken ]
                 if bNullPossible:
                     lTokenLines.extend([ []  for i  in range(len(lNewToken)+1) ])
             else:
@@ -104,6 +101,8 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         # Calculate positions
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
+        if iLine == 2211:
+            print(lToken)
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
                 lToken[i] = sToken[1:-1]
@@ -313,7 +312,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
                 print("Error at rule group: ", sLine, " -- line:", i)
                 break
         elif re.search("^    +<<- ", sLine) or sLine.startswith("        ") \
-                or re.search("^    +#", sLine) or re.search(r"^    [-~=>/](?:\d(?::\d+|)|)>> ", sLine) :
+                or re.search("^    +#", sLine) or re.search(r"^    [-~=>/](?:\d\.?(?::\.?\d+|)|)>> ", sLine) :
             # actions
             sActions += " " + sLine.strip()
         elif re.match("[  ]*$", sLine):
@@ -349,13 +348,15 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
         oDARG = darg.DARG(lPreparedRule, sLang)
         dAllGraph[sGraphName] = oDARG.createGraph()
         # Debugging
-        #print("\nGRAPH:", sGraphName)
-        #for e in lPreparedRule:
-        #    if e[-2] == "##4239":
-        #        print(e)
-        #    print(e)
-        #for k, v in dAllGraph[sGraphName].items():
-        #    print(k, "\t", v)
+        if False:
+            print("\nRULES:")
+            for e in lPreparedRule:
+                if e[-2] == "##2211":
+                    print(e)
+        if False:
+            print("\nGRAPH:", sGraphName)
+            for k, v in dAllGraph[sGraphName].items():
+                print(k, "\t", v)
 
     # creating file with all functions callable by rules
     print("  creating callables...")
