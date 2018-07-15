@@ -14,7 +14,7 @@ dACTIONS = {}
 dFUNCTIONS = {}
 
 
-def prepareFunction (s, bTokenValue=False):
+def prepareFunction (s):
     "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
@@ -23,22 +23,17 @@ def prepareFunction (s, bTokenValue=False):
     s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
     s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
     s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
-    s = re.sub(r"(switchGender|has(?:(?:Mas|Fem)Form)|Simil)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
+    #s = re.sub(r"(switchGender|has(?:(?:Mas|Fem)Form)|Simil)[(]\\(\d+)", '\\1(lToken[\\2+nTokenOffset]["sValue"]', s)
     s = re.sub(r"(morph|analyse|value)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                       # next token
     s = re.sub(r"(morph|analyse|value)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                       # previous token
-    s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is\\2()', s)
-    s = re.sub(r"[\\](\d+)\.(startswith|endswith)\(", 'lToken[\\1+nTokenOffset]["sValue"].\\2(', s)
+    #s = re.sub(r"[\\](\d+)\.is(upper|lower|title)\(\)", 'lToken[\\1+nTokenOffset]["sValue"].is\\2()', s)
+    #s = re.sub(r"[\\](\d+)\.(startswith|endswith)\(", 'lToken[\\1+nTokenOffset]["sValue"].\\2(', s)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before(s)
     s = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                 # after(s)
     s = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)        # before0(s)
     s = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                # after0(s)
-    if bTokenValue:
-        # token values are used as parameter
-        s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
-    else:
-        # tokens used as parameter
-        s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]', s)
+    s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
     return s
 
 
@@ -219,7 +214,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
                 sMsg = sMsg[:mURL.start(0)].strip()
             checkTokenNumbers(sMsg, sActionId, nToken)
             if sMsg[0:1] == "=":
-                sMsg = prepareFunction(sMsg[1:], True)
+                sMsg = prepareFunction(sMsg[1:])
                 dFUNCTIONS["g_m_"+sActionId] = sMsg
                 sMsg = "=g_m_"+sActionId
             else:
@@ -241,7 +236,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if cAction == "-":
         ## error detected --> suggestion
         if sAction[0:1] == "=":
-            sAction = prepareFunction(sAction, True)
+            sAction = prepareFunction(sAction)
             dFUNCTIONS["_g_s_"+sActionId] = sAction[1:]
             sAction = "=_g_s_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
@@ -252,7 +247,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     elif cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
-            sAction = prepareFunction(sAction, True)
+            sAction = prepareFunction(sAction)
             dFUNCTIONS["_g_p_"+sActionId] = sAction[1:]
             sAction = "=_g_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
