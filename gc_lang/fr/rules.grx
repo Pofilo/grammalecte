@@ -2208,7 +2208,7 @@ __date_journée_jour_mois_année__
         <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
         -1>> =getDayWithString(\2, \3, \4)                                                          # Le jour de la date suivante est incorrect.
 
-TEST: {{mercredi}}, le 10-06-2014                                         ->> mardi
+TEST: {{samedi}}, le 10-06-2014                                           ->> mardi
 TEST: {{mercredi}}, le 10 juin 2014                                       ->> mardi
 TEST: {{lundi}}, 18 août 1912                                             ->> dimanche
 TEST: {{jeudi}} 17 aout 1912                                              ->> samedi
@@ -5742,13 +5742,13 @@ __conj_xxxas_xxxes__sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[ae]s$)  ~¬[tT]u
-        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[ae]s$)  ~¬[tT]u
     [le|la|l’|les]              [lui|leur|en|y]         (~[ae]s$)  ~¬[tT]u
     [lui|leur]                  en                      (~[ae]s$)  ~¬[tT]u
-        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "2s")
+        <<- /conj/ morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~[ae]s$  ~¬[tT]u
