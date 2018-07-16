@@ -1970,6 +1970,12 @@ TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 
 [++]
 
+### Traits d’union douteux
+__[i]/tu(tu_trait_union_douteux)__
+    ({w1})(?:--|—|–)({w1})  @@0,$
+    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False) ->> \1-\2                               # Trait d’union : un tiret simple suffit.
+
+TEST: Nous préparons une {{contre–attaque}}.
 
 
 !!!! Doublons (casse identique)                                                                   !!
@@ -2045,46 +2051,6 @@ __[i](d_typo_écriture_épicène_pluriel)__
 __[i](d_typo_écriture_épicène_singulier)__
     ({w_2}[éuitsrn])_e  @@0
     <<- morph(\1, ":[NAQ]", False) =>> define(\1, [":N:A:Q:e:s"])
-
-
-!!!! Dates                                                                                        !!
-
-__[i]/date(date_jour_mois_année)__
-    (\d\d?) (janvier|février|ma(?:rs|i)|a(?:vril|o[ûu]t)|jui(?:n|llet)|septembre|octobre|novembre|décembre) (\d\d\d+)  @@0,w,$
-    <<- not checkDateWithString(\1, \2, \3) ->> _                                                   # Cette date est invalide.
-
-TEST: {{29 février 2011}}
-
-
-__[i]/date(date_journée_jour_mois_année1)__
-    (lundi|m(?:ardi|ercredi)|jeudi|vendredi|samedi|dimanche),? (?:le |)(\d\d?)-(\d\d?)-(\d\d+)  @@0,w,w,$
-    <<- not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
-    -1>> =getDay(\2, \3, \4)                                                                        # Le jour de la date suivante est incorrect.
-
-TEST: {{mercredi}}, le 10-06-2014                                         ->> mardi
-
-
-__[i]/date(date_journée_jour_mois_année2)__
-    (lundi|m(?:ardi|ercredi)|jeudi|vendredi|samedi|dimanche),? (?:le |)(\d\d?) (janvier|février|ma(?:rs|i)|a(?:vril|o[ûu]t)|jui(?:n|llet)|septembre|octobre|novembre|décembre) (\d\d+)  @@0,w,w,$
-    <<- not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
-    -1>> =getDayWithString(\2, \3, \4)                                                              # Le jour de la date suivante est incorrect.
-
-TEST: {{mercredi}}, le 10 juin 2014                                       ->> mardi
-TEST: {{lundi}}, 18 août 1912                                             ->> dimanche
-TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
-
-
-__[i]/date(date_mois_31)__ 31 (avril|juin|septembre|novembre)  @@3
-    <<- ->> 30 \1                                                                                   # Cette date est invalide. Il n’y a que 30 jours en \1.
-
-TEST: le {{31 avril}}
-
-
-__[i]/date(date_février)__ 3[01] février
-    <<- ->> 28 février|29 février                                                                   # Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
-
-TEST: le {{30 février}}
-
 
 
 !!!
@@ -2203,22 +2169,6 @@ TEST: arrive-t-elle ce matin ?
 TEST: y aura-t-il du poulet au dîner ?
 
 
-__[i]/tu(tu_va_t_en)__              va[ -]t[ -]en(?! guerre) <<- ->> va-t’en                        # Une apostrophe est nécessaire (s’en aller).
-__[i]/tu(tu_va_t_en_guerre)__       va[ -]t[’' -]en guerres? <<- ->> va-t-en-guerre                 # Va-t-en-guerre (invariable) : des traits d’union sont nécessaires.
-
-TEST: {{Va-t-en}}, c’en est assez.
-TEST: Un {{va-t’en guerre}}, on ne peut pas lui faire confiance.
-TEST: Les {{va-t-en guerre}} sont de sortie.
-
-
-### Traits d’union douteux
-__[i]/tu(tu_trait_union_douteux)__
-    ({w1})(?:--|—|–)({w1})  @@0,$
-    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False) ->> \1-\2                               # Trait d’union : un tiret simple suffit.
-
-TEST: Nous préparons une {{contre–attaque}}.
-
-
 
 
 @@@@
@@ -2231,6 +2181,45 @@ TEST: Nous préparons une {{contre–attaque}}.
 @@@@
 @@@@
 
+
+!!!! Dates                                                                                        !!
+
+__date_jour_mois_année__
+    31 [avril|juin|septembre|novembre]
+        <<- /date/ space_after(\1, 1, 1) ->> 30 \2                                                  # Cette date est invalide. Il n’y a que 30 jours en \2.
+
+    [30|31] février
+        <<- /date/ space_after(\1, 1, 1) ->> 28 février|29 février                                  # Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
+
+    ~^\d\d?  [janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre]  ~\d{2,5}$
+        <<- /date/ not checkDateWithString(\1, \2, \3) ->> _                                        # Cette date est invalide.
+
+TEST: le {{31 avril}}
+TEST: le {{30 février}}
+TEST: {{29 février 2011}}
+
+
+__date_journée_jour_mois_année__
+    ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?-\d\d?-\d{2,5}$)
+        <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2)
+        -1>> =getDay(\2)                                                                            # Le jour de la date suivante est incorrect.
+
+    ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$)  ([janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre])  (~\d{2,5}$)
+        <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
+        -1>> =getDayWithString(\2, \3, \4)                                                          # Le jour de la date suivante est incorrect.
+
+TEST: {{mercredi}}, le 10-06-2014                                         ->> mardi
+TEST: {{mercredi}}, le 10 juin 2014                                       ->> mardi
+TEST: {{lundi}}, 18 août 1912                                             ->> dimanche
+TEST: {{jeudi}} 17 aout 1912                                              ->> samedi
+TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
+
+
+!!
+!!
+!!!! Traits d’union                                                                               !!
+!!
+!!
 
 ### ce / cet / cette / ces + nom + là
 __tu_ce_cette_ces_nom_là__
@@ -2554,6 +2543,31 @@ TEST: {{Lui même}}                                    ->> Lui-même
 TEST: {{eux mêmes}}.                                  ->> eux-mêmes
 TEST: un {{va et vient}} incessant me casse la tête
 TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
+
+
+__tu_va_t_en__
+    va t en
+    va t en
+    va t-en
+    va-t en
+    va-t-en
+    vat-en
+        <<- /tu/ not value(>1, "|guerre|guerres|") ->> va-t’en                                      # Une apostrophe est nécessaire (s’en aller).
+
+    va t en >guerre
+    va-t’en >guerre
+    va t’en >guerre
+    va-t en >guerre
+    va t-en >guerre
+    vat’en >guerre
+    vat-en >guerre
+    va-t-en >guerre
+        <<- /tu/ ->> va-t-en-guerre                                                                 # Va-t-en-guerre (invariable) : des traits d’union sont nécessaires.
+
+TEST: {{Va-t-en}}, c’en est assez.
+TEST: Un {{va-t’en guerre}}, on ne peut pas lui faire confiance.
+TEST: Les {{va-t-en guerre}} sont de sortie.
+TEST: Elle va t’en donner, des devoirs.
 
 
 # est-ce … ?
