@@ -101,8 +101,8 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         # Calculate positions
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
-        if iLine == 2211:
-            print(lToken)
+        #if iLine == 2211: # debug
+        #    print(lToken)
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
                 lToken[i] = sToken[1:-1]
@@ -164,8 +164,8 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     # Condition
     sCondition = sAction[:m.start()].strip()
     if sCondition:
-        sCondition = prepareFunction(sCondition)
         sCondition = changeReferenceToken(sCondition, dPos)
+        sCondition = prepareFunction(sCondition)
         dFUNCTIONS["_g_c_"+sActionId] = sCondition
         sCondition = "_g_c_"+sActionId
     else:
