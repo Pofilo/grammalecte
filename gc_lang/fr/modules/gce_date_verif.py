@@ -8,46 +8,50 @@ _dMonth = { "janvier":1, "février":2, "mars":3, "avril":4, "mai":5, "juin":6, "
 import datetime
 
 
-def checkDate (day, month, year):
-    "to use if month is a number"
+def checkDate (sDay, sMonth, sYear):
+    "to use if <sMonth> is a number"
     try:
-        return datetime.date(int(year), int(month), int(day))
+        return datetime.date(int(sYear), int(sMonth), int(sDay))
     except ValueError:
         return False
     except:
         return True
 
 
-def checkDateWithString (day, month, year):
-    "to use if month is a noun"
+def checkDateWithString (sDay, sMonth, sYear):
+    "to use if <sMonth> is a noun"
     try:
-        return datetime.date(int(year), _dMonth.get(month.lower(), ""), int(day))
+        return datetime.date(int(sYear), _dMonth.get(sMonth.lower(), ""), int(sDay))
     except ValueError:
         return False
     except:
         return True
 
 
-def checkDay (weekday, day, month, year):
-    "to use if month is a number"
-    oDate = checkDate(day, month, year)
-    if oDate and _lDay[oDate.weekday()] != weekday.lower():
-        return False
-    return True
-
-def checkDayWithString (weekday, day, month, year):
-    "to use if month is a noun"
-    oDate = checkDate(day, _dMonth.get(month, ""), year)
-    if oDate and _lDay[oDate.weekday()] != weekday.lower():
+def checkDay (sWeekday, sDate):
+    "to use if <sMonth> is a number"
+    print(sWeekday, sDay)
+    sDay, sMonth, sYear = sDate.split("-")
+    oDate = checkDate(sDay, sMonth, sYear)
+    if oDate and _lDay[oDate.weekday()] != sWeekday.lower():
         return False
     return True
 
 
-def getDay (day, month, year):
-    "to use if month is a number"
-    return _lDay[datetime.date(int(year), int(month), int(day)).weekday()]
+def checkDayWithString (sWeekday, sDay, sMonth, sYear):
+    "to use if <sMonth> is a noun"
+    oDate = checkDate(sDay, _dMonth.get(sMonth, ""), sYear)
+    if oDate and _lDay[oDate.weekday()] != sWeekday.lower():
+        return False
+    return True
 
 
-def getDayWithString (day, month, year):
-    "to use if month is a noun"
-    return _lDay[datetime.date(int(year), _dMonth.get(month.lower(), ""), int(day)).weekday()]
+def getDay (sDate):
+    "to use if <sMonth> is a number"
+    sDay, sMonth, sYear = sDate.split("-")
+    return _lDay[datetime.date(int(sYear), int(sMonth), int(sDay)).weekday()]
+
+
+def getDayWithString (sDay, sMonth, sYear):
+    "to use if <sMonth> is a noun"
+    return _lDay[datetime.date(int(sYear), _dMonth.get(sMonth.lower(), ""), int(sDay)).weekday()]
