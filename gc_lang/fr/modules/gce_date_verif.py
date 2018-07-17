@@ -28,10 +28,8 @@ def checkDateWithString (sDay, sMonth, sYear):
         return True
 
 
-def checkDay (sWeekday, sDate):
+def checkDay (sWeekday, sDay, sMonth, sYear):
     "to use if <sMonth> is a number"
-    print(sWeekday, sDay)
-    sDay, sMonth, sYear = sDate.split("-")
     oDate = checkDate(sDay, sMonth, sYear)
     if oDate and _lDay[oDate.weekday()] != sWeekday.lower():
         return False
@@ -46,9 +44,8 @@ def checkDayWithString (sWeekday, sDay, sMonth, sYear):
     return True
 
 
-def getDay (sDate):
+def getDay (sDay, sMonth, sYear):
     "to use if <sMonth> is a number"
-    sDay, sMonth, sYear = sDate.split("-")
     return _lDay[datetime.date(int(sYear), int(sMonth), int(sDay)).weekday()]
 
 
