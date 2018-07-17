@@ -5266,14 +5266,14 @@ __conf_qu_elle_quelle__
         <<- /conf/ not (morph(\2, ">en/") and morph(>1, ":V0e")) -1>> qu’elle                       # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
     quelle  @:V¬:[NA].*:[fe]|>(?:être|plus)
-        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
         -1>> qu’elle                                                                                # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
     quelles [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
         <<- /conf/ not (morph(\2, ">en/") and morph(>1, ":V0e")) -1>> qu’elles                      # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
     quelles @:V¬:[NA].*:[fe]|>(?:être|plus)
-        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
         -1>> qu’elles                                                                               # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
     quelle  >être   @:[QA]¬:G
@@ -5306,6 +5306,7 @@ TEST: Quelle doit être la date du mariage ?
 TEST: Quelles ont été les annonces faites ?
 TEST: Elle cache qu’elle a été en prison.
 TEST: Elle avait été accueillie avec joie.
+TEST: Quelle va être l’attitude de Geoffroy ?
 
 
 # quoi que / quoique
