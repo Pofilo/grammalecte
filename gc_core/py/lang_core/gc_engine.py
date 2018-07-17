@@ -807,7 +807,7 @@ class TokenSentence:
         else:
             lSugg = self._expand(sSugg, nTokenOffset).split("|")
         if bUppercase and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
-            lSugg = list(map(str.capitalize, lSugg))
+            lSugg = list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
         sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
         if bShowRuleId:
