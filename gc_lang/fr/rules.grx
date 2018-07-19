@@ -314,8 +314,8 @@ TEST: « Je suis partie.{{  }}»
 
 
 # Espaces et crochets et parenthèses
-__<s>/typo(typo_espace_après_signe_ouvrant)__    "([[(]) "  @@0 <<- ->> \1                          # Pas d’espace après ce signe.
-__<s>/typo(typo_espace_avant_signe_fermant)__    " ([])])"  <js> ([\]\)])</js>  @@1  <<- ->> \1     # Pas d’espace avant ce signe.
+__<s>/typo(typo_espace_après_signe_ouvrant)__    "([\[(]) "  @@0 <<- ->> \1                         # Pas d’espace après ce signe.
+__<s>/typo(typo_espace_avant_signe_fermant)__    " ([\])])"  <js> ([\]\)])</js>  @@1  <<- ->> \1    # Pas d’espace avant ce signe.
 
 TEST: c’est pas trop tôt {{( }}on a failli attendre).
 TEST: blabla … {{[ }}crochets]                                            ->> [
@@ -2030,7 +2030,7 @@ __<s>(p_début_de_phrase)__      ^ *[-–—] <<- ~>> *
 __<s>(p_guillemets_exposants)__ [«»“”"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
 
 # Chapitres et références
-__<s>(p_chapitre_référence)__   [[({][\dIVXLCDM]+, \d+[])}]   <js>[\[\(\{][\dIVXLCDM]+, \d+[\]\)\}]</js>   <<- ~>> *
+__<s>(p_chapitre_référence)__   [\[({][\dIVXLCDM]+, \d+[\])}]   <js>[\[\(\{][\dIVXLCDM]+, \d+[\]\)\}]</js>   <<- ~>> *
 
 # simplification des mots grammaticaux élidés
 __[i>(p_qu_apostrophe)__        (lorsqu|puisqu|quoiqu|jusqu|qu)’ @@0 <<- ~>> \1
@@ -2058,7 +2058,7 @@ __[i](p_au_revoir)__            au revoir <<- ~>> au_revoir
 # singletons entre parenthèses / crochets / accolades
 __<s>(p_singleton_parenthèses)__    [(]\w+[)] <js>\([a-zA-Z]+\)</js> <<- ~>> *
 __<s>(p_singleton_accolades)__      [{]\w+[}] <js>\{[a-zA-Z]+\}</js> <<- ~>> *
-__<s>(p_singleton_crochets)__       [[]\w+[]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
+__<s>(p_singleton_crochets)__       [\[]\w+[\]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
 
 # Avocats
 __[s](p_Me_nom_propre)__        (Me) [A-ZÉÂÔÈ][\w-]+ @@0 <<- ~1>> *
