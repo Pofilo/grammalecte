@@ -687,7 +687,7 @@ class TokenSentence:
             for sTag in dNode["<tags>"]:
                 if sTag in dToken["tags"]:
                     if bDebug:
-                        print("  MATCH: $" + sTag)
+                        print("  MATCH: /" + sTag)
                     yield dGraph[dNode["<tags>"][sTag]]
         # meta arc (for token type)
         if "<meta>" in dNode:
