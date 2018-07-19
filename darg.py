@@ -226,6 +226,7 @@ class Node:
         dRule = {}
         dLemma = {}
         dMeta = {}
+        dTag = {}
         for sArc, oNode in self.dArcs.items():
             if sArc.startswith("@") and len(sArc) > 1:
                 dReMorph[sArc[1:]] = oNode.__hash__()
@@ -235,6 +236,8 @@ class Node:
                 dLemma[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("*") and len(sArc) > 1:
                 dMeta[sArc[1:]] = oNode.__hash__()
+            elif sArc.startswith("/") and len(sArc) > 1:
+                dTag[sArc[1:]] = oNode.__hash__()
             elif sArc.startswith("##"):
                 dRule[sArc[1:]] = oNode.__hash__()
             else:
@@ -245,6 +248,8 @@ class Node:
             dNode["<re_morph>"] = dReMorph
         if dLemma:
             dNode["<lemmas>"] = dLemma
+        if dTag:
+            dNode["<tags>"] = dTag
         if dMeta:
             dNode["<meta>"] = dMeta
         if dRule:
