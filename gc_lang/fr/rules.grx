@@ -2143,6 +2143,39 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 
 
+!!!! Étiquetage                                                                                   !!
+
+__tag_verbes_composés_interrogatifs__
+    ~\w-[jJ]e$
+        <<- />> -je|VCint
+
+    ~\w-[tT]u$
+        <<- />> -tu|VCint
+
+    ~\w-[iI]ls?$
+        <<- \1.endswith("l") />> -il|VCint
+        <<- __else__ />> -ils|VCint
+
+    ~\w-[eE]lles?$
+        <<- \1.endswith("e") />> -elle|VCint
+        <<- __else__ />> -elles|VCint
+
+    ~\w-[oO]n$
+        <<- />> -on|VCint
+
+    ~\w-[nN]ous$
+        <<- />> -nous|VCint
+
+    ~\w-[vV]ous$
+        <<- />> -vous|VCint
+
+
+__tag_verbes_composés_impératif__
+    ~\w-l(?:es?|a)-(?:[mt]oi|nous|leur)$
+        <<- />> -COD-COI|VCimp
+
+
+
 !!!! Doublons (casse identique)                                                                   !!
 
 
@@ -4464,11 +4497,11 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 
 __conf_à_a_après_verbes__
     @:V¬:[YGNAWM]  a
-        <<- not tag_before(\1, "ce_que")
+        <<- /conf/ not tag_before(\1, "ce_que")
         -2>> à                                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     ~\w-(?:je|tu|ils?|elles?|on|vous|nous)$  a
-        <<- -2>> à                              # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Vient-on {{a}} la maison demain ?
 TEST: Arrivait-elle {{a}} le manger ?
@@ -4583,7 +4616,7 @@ __conf_ce_ceux_se!6__
         <<- /conf/ not \1.isupper() and \2.islower() and not value(\2, "|faire|")
         -1>> se                                         # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
-    ce  ~\w-(?:ils?|elles?|on)$
+    ce  [/il|/ils|/elle|/elles|/on]
         <<- /conf/ not \1.isupper() and \2.islower()
         -1>> se                                         # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
@@ -4620,6 +4653,7 @@ __conf_ce_ceux_se!6__
 
 TEST: il ne {{ce}} compte pas parmi eux
 TEST: il ne {{ç’}}avançait jamais sans avoir pesé toutes les conséquences
+TEST: {{Ce}} serait-elle compromise ?
 TEST: {{Se}} seraient des histoires.
 TEST: {{se}} seraient des jours heureux.
 TEST: {{Se}} sont de grands enfants.
