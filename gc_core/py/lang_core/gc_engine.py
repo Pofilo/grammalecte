@@ -682,6 +682,13 @@ class TokenSentence:
                                 if bDebug:
                                     print("  MATCH: @" + sRegex)
                                 yield dGraph[dNode["<re_morph>"][sRegex]]
+        # token tags
+        if "tags" in dToken and "<tags>" in dNode:
+            for sTag in dNode["<tags>"]:
+                if sTag in dToken["tags"]:
+                    if bDebug:
+                        print("  MATCH: $" + sTag)
+                    yield dGraph[dNode["<tags>"][sTag]]
         # meta arc (for token type)
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
