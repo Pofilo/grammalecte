@@ -790,7 +790,7 @@ class TokenSentence:
                                     print("  SEMANTIC_TAG:\n  ", dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]
-                                for i in range(nTokenStart, nTokenEnd+1)
+                                for i in range(nTokenStart, nTokenEnd+1):
                                     if "tags" in self.lToken[i]:
                                         self.lToken[i]["tags"].update(sWhat.split("|"))
                                     else:

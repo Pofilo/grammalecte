@@ -157,7 +157,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if nPriority == -1:
         nPriority = dOptPriority.get(sOption, 4)
     # valid action?
-    m = re.search(r"(?P<action>[-~=/>])(?P<start>\d+\.?|)(?P<end>:\.?\d+|)>>", sAction)
+    m = re.search(r"(?P<action>[-~=/%>])(?P<start>\d+\.?|)(?P<end>:\.?\d+|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         return None
@@ -252,7 +252,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
-    elif cAction == "/":
+    elif cAction == "%" or cAction == "/":
         ## tags
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
     elif cAction == "=":
