@@ -1970,16 +1970,7 @@ TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 
 [++]
 
-### Traits d’union douteux
-__[i]/tu(tu_trait_union_douteux)__
-    ({w1})(?:--|—|–)({w1})  @@0,$
-    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False) ->> \1-\2                               # Trait d’union : un tiret simple suffit.
-
-TEST: Nous préparons une {{contre–attaque}}.
-
-
-!!!! Doublons (casse identique)                                                                   !!
-
+#FASTER THAN TOKEN RULE
 __[s](doublon)__
     ({w1}) {1,3}\1  @@0
     <<- not re.search("(?i)^([nv]ous|faire|en|la|lui|donnant|œuvre|h[éoa]|hou|olé|joli|Bora|couvent|dément|sapiens|très|vroum|[0-9]+)$", \1)
@@ -1988,6 +1979,15 @@ __[s](doublon)__
     ->> \1   # Doublon.
 
 TEST: Il y a un {{doublon doublon}}.
+
+
+
+### Traits d’union douteux
+__[i]/tu(tu_trait_union_douteux)__
+    ({w1})(?:--|—|–)({w1})  @@0,$
+    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False) ->> \1-\2                               # Trait d’union : un tiret simple suffit.
+
+TEST: Nous préparons une {{contre–attaque}}.
 
 
 !!!! Nombres: typographie                                                                         !!
@@ -2141,6 +2141,23 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 @@@@
 @@@@
+
+
+!!!! Doublons (casse identique)                                                                   !!
+
+
+# SLOWER THAN REGEX RULE
+#__doublon__
+#    *WORD  *WORD
+#    <<- \1 == \2
+#        and not value(\2, "|nous|vous|faire|en|la|lui|donnant|œuvre|ah|oh|eh|hé|ho|ha|hou|olé|joli|Bora|couvent|dément|sapiens|très|vroum|")
+#        and not (value(\1, "|est|une|") and value(<1, "|l’|d’|"))
+#        and not (\2 == "mieux" and value(<1, "|qui|"))
+#    ->> \1                                                                                          # Doublon.
+#
+#TEST: Il y a un {{doublon doublon}}.
+
+
 
 
 !!!! Nombres ordinaux                                                                             !!
@@ -8222,28 +8239,46 @@ __purge_après_être__
         <<- morph(<1, ":(?:V0e|N)") and morph(>1, ":[AQ]") ~>> *
 
 
+__purge_après_avoir__
+    >avoir  [pas|jamais|plus|guère|point]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  en partie
+    >avoir  ?[pas|jamais|plus|guère|point]¿  tous [deux|trois]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  somme toute
+        <<- ~2:0>> *
+
+    >avoir  ?[pas|jamais|plus|guère|point]¿  beaucoup
+    >avoir  ?[pas|jamais|plus|guère|point]¿  bien entendu
+    >avoir  ?[pas|jamais|plus|guère|point]¿  dans [leur|l’|son] ensemble
+    >avoir  ?[pas|jamais|plus|guère|point]¿  à cet [instant|endroit] ?précis¿
+    >avoir  ?[pas|jamais|plus|guère|point]¿  à ce moment ?précis¿
+    >avoir  ?[pas|jamais|plus|guère|point]¿  sans peine
+    >avoir  ?[pas|jamais|plus|guère|point]¿  un [moment|instant]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  un minimum
+    >avoir  ?[pas|jamais|plus|guère|point]¿  un peu
+    >avoir  ?[pas|jamais|plus|guère|point]¿  un petit peu
+    >avoir  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
+        <<- morph(>1, ":[QY]") ~2:0>> *
+
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [besoin|confiance|conscience|crainte|faim|honte|peur|soif]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  bon dos
+    >avoir  ?[pas|jamais|plus|guère|point]¿  bon pied ?,¿ bon œil
+    >avoir  ?[pas|jamais|plus|guère|point]¿  carte blanche
+    >avoir  ?[pas|jamais|plus|guère|point]¿  forme humaine
+    >avoir  ?[pas|jamais|plus|guère|point]¿  partie [gagnée|liée]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  voix au chapitre
+        <<- ~2:0>> *
+
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|conscience|crainte|faim|honte|peur|soif]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
+        <<- ~2:4>> *
+
+
+
 
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
-
-# après avoir
-__[i](p_avoir_être_loc_adv1)__
-    ({avoir}) +(pas|jamais|plus|en partie|point|tous (?:deux|trois)|somme toute)  @@0,$
-    <<- morph(\1, ":V0", False) ~2>> *
-__[i](p_avoir_être_loc_adv2)__
-    ({avoir}) +(beaucoup|bien entendu|dans (?:leur |son |l’)ensemble|à ce(?:t (?:instant|endroit)| moment)|sans peine|un (?:moment|peu|minimum|petit peu|tout petit peu)) +({w_2})  @@0,w,$
-    <<- morph(\1, ":V0", False) and morph(\3, ":[QY]", False) ~2>> *
-__[i](p_avoir_loc_adv)__
-    ({avoir}) +(besoin|bon (?:dos|pied,? bon œil)|carte blanche|confiance|conscience|crainte|faim|forme humaine|honte|partie (?:gagnée|liée)|peur|soif|voix au chapitre)  @@0,$
-    <<- morph(\1, ":V0a", False) and not (\2 == "crainte" and before(r"\w")) ~2>> *
-__[i](p_avoir_pronom_loc_adv)__
-    ({avoir})-(?:je|tu|ils?|elles?|nous|vous|on) +(besoin|bon (?:dos|pied,? bon œil)|carte blanche|confiance|conscience|crainte|faim|forme humaine|honte|partie (?:gagnée|liée)|peur|soif|voix au chapitre)  @@0,$
-    <<- morph(\1, ":V0a", False) ~2>> *
-__[i](p_avoir_tous_toutes_les)__
-    ({avoir}) +(tou(?:te|)s les ({w_2})) +({w_2})  @@0,w,>3:$,$
-    <<- morph(\1, ":V0a", False) and morph(\3, ":B", False) and morph(\4, ">besoin/|:(?:Q|V1.*:Y)", False) ~2>> *
 
 
 # après verbe
