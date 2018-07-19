@@ -135,7 +135,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     cCaseMode = 'i'         # i: case insensitive,  s: case sensitive,  u: uppercasing allowed
     cWordLimitLeft = '['    # [: word limit, <: no specific limit
     cWordLimitRight = ']'   # ]: word limit, >: no specific limit
-    m = re.match("^__(?P<borders_and_case>[[<]\\w[]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\)|)(?P<priority>![0-9]|)__ *", s)
+    m = re.match("^__(?P<borders_and_case>[\\[<]\\w[\\]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\)|)(?P<priority>![0-9]|)__ *", s)
     if m:
         cWordLimitLeft = m.group('borders_and_case')[0]
         cCaseMode = m.group('borders_and_case')[1]
@@ -225,7 +225,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         traceback.print_exc()
         return None
     ## groups in non grouping parenthesis
-    for x in re.finditer(r"\(\?:[^)]*\([[\w -]", sRegex):
+    for x in re.finditer(r"\(\?:[^)]*\([\[\w -]", sRegex):
         print("# Warning: groups inside non grouping parenthesis in regex at line " + sLineId)
 
     #### PARSE ACTIONS
