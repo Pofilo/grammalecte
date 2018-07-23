@@ -3,6 +3,13 @@
 from . import cregex as cr
 
 
+def g_morphVC (dToken, sPattern, sNegPattern=""):
+    nEnd = dToken["sValue"].rfind("-")
+    if "-t-" in dToken["sValue"]:
+        nEnd = nEnd - 2
+    return g_morph(dToken, sPattern, sNegPattern, 0, nEnd, False)
+
+
 def rewriteSubject (s1, s2):
     "rewrite complex subject: <s1> a prn/patr/npr (M[12P]) followed by “et” and <s2>"
     if s2 == "lui":
