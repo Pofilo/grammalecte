@@ -2136,7 +2136,7 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: graphe1                                                                                 _
+@@@@GRAPH: graphe0                                                                                 _
 @@@@
 @@@@
 @@@@
@@ -2175,6 +2175,15 @@ __tag_verbes_composés_impératif__
         <<- />> -COD-COI|VCimp
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: graphe1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
 
 !!!! Doublons (casse identique)                                                                   !!
 
@@ -4616,7 +4625,7 @@ __conf_ce_ceux_se!6__
         <<- /conf/ not \1.isupper() and \2.islower() and not value(\2, "|faire|")
         -1>> se                                         # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
-    ce  [/il|/ils|/elle|/elles|/on]
+    ce  [/-il|/-ils|/-elle|/-elles|/-on]
         <<- /conf/ not \1.isupper() and \2.islower()
         -1>> se                                         # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
@@ -5068,7 +5077,7 @@ __conf_la_là!7__
 
 TEST: nous serions encore {{la}} l’année prochaine
 TEST: en reprenant le chandail de John {{la}} où elle l’avait abandonné.
-TEST: Ce {{fait}}-{{la}} ne peut être ignoré.
+TEST: Ce {{fait-la}} ne peut être ignoré.
 TEST: la peu efficace sensibilité
 TEST: c’est toujours la même histoire
 TEST: c’est la moins habile de toutes
@@ -7466,7 +7475,8 @@ __purge_locutions__
     tout aussi bien
     tout bien [considéré|réfléchi]
     tout compte fait
-    tout de [même|suite|go]
+    tout de [suite|go]
+    tout de même ?[pas|jamais]¿
     tout du long
     tout feu ?,¿ tout [flamme|flammes]
     tout le temps
@@ -8131,141 +8141,73 @@ __simplification_noms_propres__
 
 
 __purge_après_être__
-    >être [bon|meilleur] marché
-    >être avant tout
-    >être cousin et cousine
-    >être de passage
-    >être du moins
-    >être en partie
-    >être frère et sœur
-    >être mari et femme
-    >être mission impossible
-    >être monnaie courante
-    >être papa et maman
-    >être partie [intégrante|prenante]
-    >être pieds et poings liés
-    >être pieds nus
-    >être père et mère
-    >être somme toute
-    >être sous peu
-    >être tous [deux|trois]
-    >être un jour
-    >être à jamais
-    >être [pas|jamais|plus|point]
+    [>être|>devenir|>rester] [bon|meilleur] marché
+    [>être|>devenir|>rester] avant tout
+    [>être|>devenir|>rester] cousin et cousine
+    [>être|>devenir|>rester] de passage
+    [>être|>devenir|>rester] du moins
+    [>être|>devenir|>rester] en partie
+    [>être|>devenir|>rester] frère et sœur
+    [>être|>devenir|>rester] mari et femme
+    [>être|>devenir|>rester] mission impossible
+    [>être|>devenir|>rester] monnaie courante
+    [>être|>devenir|>rester] papa et maman
+    [>être|>devenir|>rester] partie [intégrante|prenante]
+    [>être|>devenir|>rester] pieds et poings liés
+    [>être|>devenir|>rester] pieds nus
+    [>être|>devenir|>rester] père et mère
+    [>être|>devenir|>rester] somme toute
+    [>être|>devenir|>rester] sous peu
+    [>être|>devenir|>rester] tous [deux|trois]
+    [>être|>devenir|>rester] un jour
+    [>être|>devenir|>rester] à jamais
+    [>être|>devenir|>rester] [pas|jamais|plus|point]
         <<- ~2:0>> *
 
-    ~-ils$ [bon|meilleur] marché
-    ~-ils$ avant tout
-    ~-ils$ cousin et cousine
-    ~-ils$ de passage
-    ~-ils$ du moins
-    ~-ils$ en partie
-    ~-ils$ frère et sœur
-    ~-ils$ mari et femme
-    ~-ils$ mission impossible
-    ~-ils$ monnaie courante
-    ~-ils$ papa et maman
-    ~-ils$ partie [intégrante|prenante]
-    ~-ils$ pieds et poings liés
-    ~-ils$ pieds nus
-    ~-ils$ père et mère
-    ~-ils$ somme toute
-    ~-ils$ sous peu
-    ~-ils$ tous [deux|trois]
-    ~-ils$ un jour
-    ~-ils$ à jamais
-    ~-ils$ [pas|jamais|plus|point]
-        <<- morph(\1, ">V0e", 0, -4) ~2:0>> *
+    /VCint [bon|meilleur] marché
+    /VCint avant tout
+    /VCint cousin et cousine
+    /VCint de passage
+    /VCint du moins
+    /VCint en partie
+    /VCint frère et sœur
+    /VCint mari et femme
+    /VCint mission impossible
+    /VCint monnaie courante
+    /VCint papa et maman
+    /VCint partie [intégrante|prenante]
+    /VCint pieds et poings liés
+    /VCint pieds nus
+    /VCint père et mère
+    /VCint somme toute
+    /VCint sous peu
+    /VCint tous [deux|trois]
+    /VCint un jour
+    /VCint à jamais
+    /VCint [pas|jamais|plus|point]
+        <<- morphVC(\1, ">(?:être|devenir|rester)") ~2:0>> *
 
-    ~-[nv]ous$ [bon|meilleur] marché
-    ~-[nv]ous$ avant tout
-    ~-[nv]ous$ cousin et cousine
-    ~-[nv]ous$ de passage
-    ~-[nv]ous$ du moins
-    ~-[nv]ous$ en partie
-    ~-[nv]ous$ frère et sœur
-    ~-[nv]ous$ mari et femme
-    ~-[nv]ous$ mission impossible
-    ~-[nv]ous$ monnaie courante
-    ~-[nv]ous$ papa et maman
-    ~-[nv]ous$ partie [intégrante|prenante]
-    ~-[nv]ous$ pieds et poings liés
-    ~-[nv]ous$ pieds nus
-    ~-[nv]ous$ père et mère
-    ~-[nv]ous$ somme toute
-    ~-[nv]ous$ sous peu
-    ~-[nv]ous$ tous [deux|trois]
-    ~-[nv]ous$ un jour
-    ~-[nv]ous$ à jamais
-    ~-[nv]ous$ [pas|jamais|plus|point]
-        <<- morph(\1, ">V0e", 0, -5) ~2:0>> *
-
-    ~-elles$ [bon|meilleur] marché
-    ~-elles$ avant tout
-    ~-elles$ cousin et cousine
-    ~-elles$ de passage
-    ~-elles$ du moins
-    ~-elles$ en partie
-    ~-elles$ frère et sœur
-    ~-elles$ mari et femme
-    ~-elles$ mission impossible
-    ~-elles$ monnaie courante
-    ~-elles$ papa et maman
-    ~-elles$ partie [intégrante|prenante]
-    ~-elles$ pieds et poings liés
-    ~-elles$ pieds nus
-    ~-elles$ père et mère
-    ~-elles$ somme toute
-    ~-elles$ sous peu
-    ~-elles$ tous [deux|trois]
-    ~-elles$ un jour
-    ~-elles$ à jamais
-    ~-elles$ [pas|jamais|plus|point]
-        <<- morph(\1, ">V0e", 0, -6) ~2:0>> *
-
-    >être beaucoup
-    >être bien entendu
-    >être dans [l’|leur|son] ensemble
-    >être [à|en] ce moment  ?précis¿
-    >être [à|en] cet instant ?précis¿
-    >être sans peine
-    >être un [moment|peu|minimum]
-    >être un petit peu
-    >être un tout petit peu
+    [>être|>devenir|>rester] beaucoup
+    [>être|>devenir|>rester] bien entendu
+    [>être|>devenir|>rester] dans [l’|leur|son] ensemble
+    [>être|>devenir|>rester] [à|en] ce moment  ?précis¿
+    [>être|>devenir|>rester] [à|en] cet instant ?précis¿
+    [>être|>devenir|>rester] sans peine
+    [>être|>devenir|>rester] un [moment|peu|minimum]
+    [>être|>devenir|>rester] un petit peu
+    [>être|>devenir|>rester] un tout petit peu
         <<- morph(>1, ":[QY]") ~2:0>> *
 
-    ~-ils$ beaucoup
-    ~-ils$ bien entendu
-    ~-ils$ dans [l’|leur|son] ensemble
-    ~-ils$ [à|en] ce moment  ?précis¿
-    ~-ils$ [à|en] cet instant ?précis¿
-    ~-ils$ sans peine
-    ~-ils$ un [moment|peu|minimum]
-    ~-ils$ un petit peu
-    ~-ils$ un tout petit peu
-        <<- morph(\1, ">V0e", 0, -4) and morph(>1, ":[QY]") ~2:0>> *
-
-    ~-[nv]ous$ beaucoup
-    ~-[nv]ous$ bien entendu
-    ~-[nv]ous$ dans [l’|leur|son] ensemble
-    ~-[nv]ous$ [à|en] ce moment  ?précis¿
-    ~-[nv]ous$ [à|en] cet instant ?précis¿
-    ~-[nv]ous$ sans peine
-    ~-[nv]ous$ un [moment|peu|minimum]
-    ~-[nv]ous$ un petit peu
-    ~-[nv]ous$ un tout petit peu
-        <<- morph(\1, ">V0e", 0, -5) and morph(>1, ":[QY]") ~2:0>> *
-
-    ~-elles$ beaucoup
-    ~-elles$ bien entendu
-    ~-elles$ dans [l’|leur|son] ensemble
-    ~-elles$ [à|en] ce moment  ?précis¿
-    ~-elles$ [à|en] cet instant ?précis¿
-    ~-elles$ sans peine
-    ~-elles$ un [moment|peu|minimum]
-    ~-elles$ un petit peu
-    ~-elles$ un tout petit peu
-        <<- morph(\1, ">V0e", 0, -6) and morph(>1, ":[QY]") ~2:0>> *
+    /VCint beaucoup
+    /VCint bien entendu
+    /VCint dans [l’|leur|son] ensemble
+    /VCint [à|en] ce moment  ?précis¿
+    /VCint [à|en] cet instant ?précis¿
+    /VCint sans peine
+    /VCint un [moment|peu|minimum]
+    /VCint un petit peu
+    /VCint un tout petit peu
+        <<- morphVC(\1, ">(?:être|devenir|rester)", 0, -4) and morph(>1, ":[QY]") ~2:0>> *
 
     on ne peut [plus|moins]
     on ne peut pas [plus|moins]
@@ -8306,7 +8248,37 @@ __purge_après_avoir__
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
         <<- ~2:4>> *
 
+    /VCint  [pas|jamais|plus|guère|point]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  en partie
+    /VCint  ?[pas|jamais|plus|guère|point]¿  tous [deux|trois]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  somme toute
+        <<- morphVC(\1, ":V0a") ~2:0>> *
 
+    /VCint  ?[pas|jamais|plus|guère|point]¿  beaucoup
+    /VCint  ?[pas|jamais|plus|guère|point]¿  bien entendu
+    /VCint  ?[pas|jamais|plus|guère|point]¿  dans [leur|l’|son] ensemble
+    /VCint  ?[pas|jamais|plus|guère|point]¿  à cet [instant|endroit] ?précis¿
+    /VCint  ?[pas|jamais|plus|guère|point]¿  à ce moment ?précis¿
+    /VCint  ?[pas|jamais|plus|guère|point]¿  sans peine
+    /VCint  ?[pas|jamais|plus|guère|point]¿  un [moment|instant]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  un minimum
+    /VCint  ?[pas|jamais|plus|guère|point]¿  un peu
+    /VCint  ?[pas|jamais|plus|guère|point]¿  un petit peu
+    /VCint  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
+        <<- morphVC(\1, ":V0a") and morph(>1, ":[QY]") ~2:0>> *
+
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [besoin|confiance|conscience|crainte|faim|honte|peur|soif]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  bon dos
+    /VCint  ?[pas|jamais|plus|guère|point]¿  bon pied ?,¿ bon œil
+    /VCint  ?[pas|jamais|plus|guère|point]¿  carte blanche
+    /VCint  ?[pas|jamais|plus|guère|point]¿  forme humaine
+    /VCint  ?[pas|jamais|plus|guère|point]¿  partie [gagnée|liée]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  voix au chapitre
+        <<- morphVC(\1, ":V0a") ~2:0>> *
+
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|conscience|crainte|faim|honte|peur|soif]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
+        <<- morphVC(\1, ":V0a") ~2:4>> *
 
 
 @@@@
@@ -10191,7 +10163,7 @@ TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu
 
 # termes
 __[i]/sgpl(sgpl_en_termes_de)__
-    en (terme) (?:de|d) @@3 <<- -1>> termes                                         # Locution « en termes de ». Mettez “terme” au pluriel.
+    en (terme) (?:de|d) @@3 <<- -1>> termes                                         # Dans la locution “en termes de”, mettez “terme” au pluriel.
 
 TEST: en {{terme}} de communication, c’est une véritable catastrophe
 
@@ -10990,7 +10962,7 @@ __[i]/conf(conf_ne_me_te_se_la)!6__
 TEST: {{ceux la}} sont des idiots, rien à en tirer.
 TEST: {{celle la}} ne vaut pas mieux, laisse-la tomber.
 TEST: Apporte{{-là}} près du feu
-TEST: cette {{bête}}-{{la}}
+TEST: cette {{bête-la}}
 TEST: il ne {{là}} croit pas.
 
 
@@ -14884,7 +14856,7 @@ TEST: financé par le Qatar, lequel dépense des millions de dollars pour souten
 
 __[i]/conj(conj_que_où_comment_verbe_sujet)__
     (?:que?|où|comment|combien|dont|quand|pourquoi|l[ea]s?quel(?:le|)s?) +({w_1}[es])(?! je| tu| vous) @@$
-    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N|A|M)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+    <<- morphex(\1, ":[12][sp]", ":(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)") -1>> =suggVerb(@, ":3s")     # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
