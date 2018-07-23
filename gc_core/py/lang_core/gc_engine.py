@@ -143,7 +143,7 @@ def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bC
     for iStart, iEnd in _getSentenceBoundaries(sText):
         if 4 < (iEnd - iStart) < 2000:
             try:
-                oSentence = TokenSentence(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
+                oSentence = TextParser(sText[iStart:iEnd], sRealText[iStart:iEnd], iStart)
                 _, dErrors = _proofread(oSentence, sText[iStart:iEnd], sRealText[iStart:iEnd], iStart, False, dErrors, dPriority, sCountry, dOpt, bShowRuleId, bDebug, bContext)
             except:
                 raise
@@ -565,9 +565,9 @@ def define (dTokenPos, nPos, lMorph):
 
 
 
-#### TOKEN SENTENCE CHECKER
+#### TEXT PARSER
 
-class TokenSentence:
+class TextParser:
     "Text parser"
 
     def __init__ (self, sSentence, sSentence0, nOffset):
@@ -580,7 +580,8 @@ class TokenSentence:
         self.dError = {}
 
     def __str__ (self):
-        s = "sentence: " + self.sSentence0 + "\n"
+        s = "TEXT ==========\n"
+        s += "sentence: " + self.sSentence0 + "\n"
         s += "now:      " + self.sSentence  + "\n"
         for dToken in self.lToken:
             s += f'{dToken["nStart"]}\t{dToken["nEnd"]}\t{dToken["sValue"]}'
@@ -684,8 +685,8 @@ class TokenSentence:
                                 yield dGraph[dNode["<re_morph>"][sRegex]]
         # token tags
         if "tags" in dToken and "<tags>" in dNode:
-            for sTag in dNode["<tags>"]:
-                if sTag in dToken["tags"]:
+            for sTag in dToken["tags"]:
+                if sTag in dNode["<tags>"]:
                     if bDebug:
                         print("  MATCH: /" + sTag)
                     yield dGraph[dNode["<tags>"][sTag]]
@@ -789,7 +790,7 @@ class TokenSentence:
                                 if bDebug:
                                     print("  SEMANTIC_TAG:\n  ", dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]
-                                nTokenEnd = nTokenOffset + eAct[1]
+                                nTokenEnd = nTokenOffset + (eAct[1]  if eAct[1]  else eAct[0])
                                 for i in range(nTokenStart, nTokenEnd+1):
                                     if "tags" in self.lToken[i]:
                                         self.lToken[i]["tags"].update(sWhat.split("|"))
