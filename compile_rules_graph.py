@@ -18,7 +18,7 @@ def prepareFunction (s):
     "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
-    s = re.sub(r"(morph|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
     s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
