@@ -5112,7 +5112,7 @@ TEST: versez du caramel sur le flan.
 
 # en son for intérieur / fort
 __conf_for_intérieur__
-    [en|dans] [mon|ton|son|leur|notre|votre] [fort|forts|fore|fores] [>intérieure]
+    [en|dans] [mon|ton|son|leur|notre|votre] [fort|forts|fore|fores|fors] [>intérieure]
         <<- /conf/ -3:4>> for intérieur                                     # Confusion : “for” vient du latin “forum” et le “for intérieur” évoque la conscience individuelle.
 
 TEST: En mon {{fort intérieur}}, je le crois.
@@ -8517,6 +8517,39 @@ __purge_adverbes__
         <<- morph(\1, ":W", ":(?:3p|N)") ~>> *
 
 
+# tous / tout / toute / toutes
+__purge_tout_tout_tous_toutes__
+    tout            [le|ce|cet|mon|ton|son]
+    toute           [la|cette|ma|ta|sa]
+    [tous|toutes]   [les|des|mes|tes|ses|ces|nos|vos|leurs]
+        <<- ~1>> *
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: purge_avant_gn                                                                                  _
+@@@@
+@@@@
+@@@@
+@@@@
+
+__purge_ponctuations__
+    ,   ,
+    (   )
+    [   ]
+    <   >
+    [-|–|—]  [-|–|—]
+        <<- ~>> *
+
+    <start>  ,
+        <<- ~2>> *
+
+    ,  <end>
+        <<- ~1>> *
+
+
 
 @@@@
 @@@@END_GRAPH                                                                                      _
@@ -8524,19 +8557,6 @@ __purge_adverbes__
 
 
 
-# tous / tout / toute / toutes
-__[i](p_tout_déterminant_masculin)__        (tout) (?:le|cet?|[mts]on) @@0              <<- ~1>> *
-__[i](p_toute_déterminant_féminin)__        (toute) (?:la|cette|[mts]a) @@0             <<- ~1>> *
-__[i](p_tous_toutes_déterminant_pluriel)__  (tou(?:te|)s) (?:[ldscsmt]es|[nv]os) @@0    <<- ~1>> *
-
-
-# après
-__<s>(p_virgule_virgule)__              , +,                                        <<- ~>> *
-__<s>(p_première_virgule)__             ^ *,                                        <<- ~>> *
-__<s>(p_dernière_virgule)__             , *$                                        <<- ~>> *
-__<s>(p_tiret_tiret)__                  [—–-] +[—–-]                                <<- ~>> *
-__<s>(p_parenthèses_vides)__            [(] +[)]                                    <<- ~>> *
-__<s>(p_balise_vide)__                  [<] +[>]                                    <<- ~>> *
 
 
 ## Seconde passe (il faut réorganiser tout le cycle de simplification)
