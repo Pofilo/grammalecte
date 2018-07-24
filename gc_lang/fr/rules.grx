@@ -2142,8 +2142,7 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 @@@@
 
-
-!!!! Étiquetage                                                                                   !!
+!!!! Verbes composés                                                                                   !!
 
 __tag_verbes_composés_interrogatifs__
     ~\w-[jJ]e$
@@ -2163,6 +2162,8 @@ __tag_verbes_composés_interrogatifs__
     ~\w-[oO]n$
         <<- />> -on|VCint
 
+
+__tag_verbes_composés_interrogatifs_impératifs__
     ~\w-[nN]ous$
         <<- />> -nous|VCint
 
@@ -2170,9 +2171,31 @@ __tag_verbes_composés_interrogatifs__
         <<- />> -vous|VCint
 
 
-__tag_verbes_composés_impératif__
+__tag_verbes_composés_impératifs__
     ~\w-l(?:es?|a)-(?:[mt]oi|nous|leur)$
         <<- />> -COD-COI|VCimp
+
+    ~\w-le$
+        <<- />> -le|-COD|VCimp
+
+    ~\w-les$
+        <<- />> -les|-COD|VCimp
+
+    ~\w-la$
+        <<- />> -la|-COD|VCimp
+
+    ~\w-moi$
+        <<- />> -moi|-COI|VCimp
+
+    ~\w-toi$
+        <<- />> -toi|-COI|VCimp
+
+    ~\w-lui$
+        <<- />> -lui|-COI|VCimp
+
+    ~\w-leur$
+        <<- />> -leur|-COI|VCimp
+
 
 
 @@@@
@@ -2204,20 +2227,55 @@ __tag_verbes_composés_impératif__
 
 !!!! Nombres ordinaux                                                                             !!
 
-__typo_ordinaux_chiffres__
-    1 ier
+__typo_ordinaux_chiffres_exposants__
+    1er
+        <<- /typo/ sContext != "Writer" ->> 1ᵉʳ     # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    1ers
+        <<- /typo/ sContext != "Writer" ->> 1ᵉʳˢ    # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    1re
+        <<- /typo/ sContext != "Writer" ->> 1ʳᵉ     # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    1res
+        <<- /typo/ sContext != "Writer" ->> 1ʳᵉˢ    # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    2d
+        <<- /typo/ sContext != "Writer" ->> 2ᵈ      # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    2ds
+        <<- /typo/ sContext != "Writer" ->> 2ᵈˢ     # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    2de
+        <<- /typo/ sContext != "Writer" ->> 2ᵈᵉ     # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    2des
+        <<- /typo/ sContext != "Writer" ->> 2ᵈᵉˢ    # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    ~^\d+e$
+        <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    ~^\d+es$
+        <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+TEST: le {{1er}} qui m’emmerde, je le fusille       ->> 1ᵉʳ
+TEST: c’est le {{2e}}                               ->> 2ᵉ
+
+
+__typo_ordinaux_chiffres_incorrects__
+    1 [ier|er]
     1ier
         <<- /typo/ ->> 1ᵉʳ          # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    1 iers
+    1 [iers|ers]
     1iers
         <<- /typo/ ->> 1ᵉʳˢ         # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    1 ière
+    1 [ière|ère|re]
     1ière
         <<- /typo/ ->> 1ʳᵉ          # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    1 ières
+    1 [ières|ères|res]
     1ières
         <<- /typo/ ->> 1ʳᵉˢ         # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
@@ -2237,18 +2295,10 @@ __typo_ordinaux_chiffres__
     2ndes
         <<- /typo/ ->> 2ᵈᵉˢ         # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^\d+$  è
-    ~^\d+$  ième
-    ~^\d+$  ieme
-    ~^\d+$  ème
-    ~^\d+$  eme
+    ~^\d+$  [e|è|ième|ieme|ème|eme]
         <<- /typo/ ->> \1ᵉ          # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^\d+$  ès
-    ~^\d+$  ièmes
-    ~^\d+$  iemes
-    ~^\d+$  èmes
-    ~^\d+$  emes
+    ~^\d+$  [es|ès|ièmes|iemes|èmes|emes]
         <<- /typo/ ->> \1ᵉˢ         # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     ~^\d+(?:è|i?[èe]me)s?$
@@ -2265,7 +2315,42 @@ TEST: C’est la {{3ème}} fois…                   ->> 3ᵉ
 TEST: Non, la {{2è}} fois.                      ->> 2ᵉ
 
 
-__typo_ordinaux_chiffres_romains__
+__typo_ordinaux_chiffres_romains_exposants__
+    Ier
+        <<- /typo/ sContext != "Writer" ->> Iᵉʳ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    Iers
+        <<- /typo/ sContext != "Writer" ->> Iᵉʳˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    Ire
+        <<- /typo/ sContext != "Writer" ->> Iʳᵉ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    Ires
+        <<- /typo/ sContext != "Writer" ->> Iʳᵉˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    IId
+        <<- /typo/ sContext != "Writer" ->> IIᵈ     # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    IIds
+        <<- /typo/ sContext != "Writer" ->> IIᵈˢ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    IIde
+        <<- /typo/ sContext != "Writer" ->> IIᵈᵉ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    IIdes
+        <<- /typo/ sContext != "Writer" ->> IIᵈᵉˢ   # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    ~^[IVXLCM]{2,10}e$
+        <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    ~^[IVXLCM]{2,10}es$
+        <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+TEST: François {{Ier}}                          ->> Iᵉʳ
+TEST: c’est le {{IIe}} siècle                   ->> IIᵉ
+
+
+__typo_ordinaux_chiffres_romains_incorrects__
     I ier
     Iier
         <<- /typo/ ->> Iᵉʳ          # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
@@ -2298,18 +2383,10 @@ __typo_ordinaux_chiffres_romains__
     IIndes
         <<- /typo/ ->> IIᵈᵉˢ        # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{1,10}$  è
-    ~^[IVXLCM]{1,10}$  ième
-    ~^[IVXLCM]{1,10}$  ieme
-    ~^[IVXLCM]{1,10}$  ème
-    ~^[IVXLCM]{1,10}$  eme
+    ~^[IVXLCM]{1,10}$  [e|è|ième|ieme|ème|eme]
         <<- /typo/ ->> \1ᵉ          # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{1,10}$  ès
-    ~^[IVXLCM]{1,10}$  ièmes
-    ~^[IVXLCM]{1,10}$  iemes
-    ~^[IVXLCM]{1,10}$  èmes
-    ~^[IVXLCM]{1,10}$  emes
+    ~^[IVXLCM]{1,10}$  [es|ès|ièmes|iemes|èmes|emes]
         <<- /typo/ ->> \1ᵉˢ         # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     ~^[IVXLCM]{1,10}(?:è|i?[èe]me)s?$
@@ -2718,7 +2795,7 @@ TEST: Elle va t’en donner, des devoirs.
 # est-ce … ?
 __tu_est_ce__
     est ce  @:¬:N.*:[me]:[si]|>qui/
-    <<- morph(<1, ":Cs|<start>") and space_after(\1, 1, 1) -1:2>> est-ce                            # S’il s’agit d’une interrogation, il manque un trait d’union.
+        <<- /tu/ morph(<1, ":Cs|<start>") and space_after(\1, 1, 1) -1:2>> est-ce                   # S’il s’agit d’une interrogation, il manque un trait d’union.
 
 TEST: {{est ce}} que c’est grave ?                                              ->> est-ce
 TEST: qu’{{est ce}} que c’est ?                                                 ->> est-ce
@@ -2966,7 +3043,7 @@ TEST: Dès lors qu’on sait comment s’y prendre, aucune raison de faillir.
 !!!! Virgules                                                                                     !!
 
 __virg_dialogue_après_nom_propre__
-    [<start>|,]  @:M¬:G  ~-(?:moi|toi|l(?:ui|a|es?|eur)|nous|vous|je|tu|ils|elles|on)$
+    [<start>|,]  @:M¬:G  [/-je|/-tu|/-on|/-nous|/-vous|/-ils|/-elles|/VCimp]
         <<- /virg/ -2>> \2,                                                                         # Dialogue ? Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
 TEST: {{Maria}} donnez-vous du temps ?
@@ -2977,13 +3054,13 @@ TEST: Alexandra vient-elle ?
 
 
 __virg_dialogue_avant_nom_propre__
-    ~-les$  @:M
+    /-les  @:M
         <<- /virg/ morph(\1, ":E", "", 0, -4) -1>> \1,                                              # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
-    ~-l[ea]$  @:M
+    [/-le|/-la]  @:M
         <<- /virg/ morph(\1, ":E", "", 0, -3) -1>> \1,                                              # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
-    ~-l(?:es?|a)-(?:[mt]oi|[nv]ous|lui|leur)$  @:M
+    /-COD-COI  @:M
         <<- /virg/ -1>> \1,                                                                         # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
 TEST: {{Oublie-les}} Clara.
@@ -3730,6 +3807,25 @@ TEST: Ce couple va donner à la France sa très importante collection qui rejoin
 !!!! Confusions générales                                                                         !!
 !!
 !!
+
+__conf_usage_impropre__
+    au  le  @:[NA]
+        <<- /conf/ not \1.isupper() and \2.islower() -1:2>> au              # Usage impropre. Après “au”, l’article “le” est inapproprié. (Ex : Je vais à la gare, je vais au stade.)
+
+    au  les  @:[NA]
+        <<- /conf/ not \1.isupper() and \2.islower() -1:2>> aux             # Usage impropre. Après “au”, l’article “les” n’est pas nécessaire.
+
+    au  la  @:[NAQ].*:[fe]
+        <<- /conf/ not \1.isupper() and \2.islower() -1>> à                 # Usage impropre. Avec un nom féminin, utilisez la préposition “à”. (Ex : Je vais à la gare, je vais au stade.)
+
+    au  l’
+        <<- /conf/ \2 == "l’" -1>> à                                        # Usage impropre. Ex : Elle va à l’opéra. Elle va au bal.
+
+TEST: {{au le}} chien
+TEST: {{au les}} armoires
+TEST: qui sont {{au}} l’usage
+TEST: {{au}} la passion
+
 
 __conf_déterminant_fem_sing_verbe__
     [ma|ta|cette|ladite]  @:(?:Y|[123][sp])¬:[NA]
@@ -4513,11 +4609,15 @@ __conf_à_a_après_verbes__
         <<- /conf/ not tag_before(\1, "ce_que")
         -2>> à                                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
-    ~\w-(?:je|tu|ils?|elles?|on|vous|nous)$  a
+    [/VCint|/VCimp]  a
         <<- /conf/ -2>> à                       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Vient-on {{a}} la maison demain ?
 TEST: Arrivait-elle {{a}} le manger ?
+TEST: Dis-moi {{a}} quelle heure on mange.
+TEST: elle croit que dans tous les cas de figure il pense {{a}} sa fille.
+TEST: Ce que je mange a un goût de surgelé.
+
 
 
 __conf_celui_celle_à_qui__
@@ -4834,19 +4934,19 @@ __conf_davantage_d_avantages__
         <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
-    ~-(?:je|tu|il|on)  d’  >avantage
+    [/-je|/-tu|/-il|/-on]  d’  >avantage
         <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -3) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
-    ~-ils  d’ >avantage
+    /-ils  d’ >avantage
         <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -4) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
-    ~-(?:elle|nous|nous)  d’  >avantage
+    [/-elle|/-nous|/-vous]  d’  >avantage
         <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -5) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
-    ~-elles  d’  >avantage
+    /-elles  d’  >avantage
         <<- /conf/ not morph(\1, ">(?:profiter|bénéficier)/", 0, -6) and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
@@ -5010,6 +5110,15 @@ TEST: le flan est une pâtisserie.
 TEST: versez du caramel sur le flan.
 
 
+# en son for intérieur / fort
+__conf_for_intérieur__
+    [en|dans] [mon|ton|son|leur|notre|votre] [fort|forts|fore|fores] [>intérieure]
+        <<- /conf/ -3:4>> for intérieur                                     # Confusion : “for” vient du latin “forum” et le “for intérieur” évoque la conscience individuelle.
+
+TEST: En mon {{fort intérieur}}, je le crois.
+TEST: Dans son {{fort intérieur}}, je le crois.
+
+
 # golf / golfe
 __conf_golf_golfe__
     [>championne|>championnat|>club|>joueuse|parcours|>sac|>balle|>terrain|>tournoi|>compétition|>passionnée|>école|>professeure|>partie|>professionnelle|>amateure|>stage|>journée|après-midi|>matinée|>heure|>fédération|>fan] de golfe
@@ -5076,8 +5185,8 @@ __conf_la_là!7__
     la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?)/
         <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
 
-    [ce|cet|cette|ces]  ~-(la)
-        <<- /conf/ -2>> =\2.replace("-la", "-là")                                                   # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
+    [ce|cet|cette|ces]  /-la
+        <<- /conf/ -2>> =\2[:-2]+"là"                                                               # Confusion. Écrivez “là” soudé au nom pour désigner un objet précis.
 
 TEST: nous serions encore {{la}} l’année prochaine
 TEST: en reprenant le chandail de John {{la}} où elle l’avait abandonné.
@@ -5504,6 +5613,59 @@ TEST: elle sans la condamner
 TEST: elles sans un sou en poche
 TEST: elles sans grandes convictions
 TEST: elle c’en était trop (TODO : proposer une virgule)
+
+
+# soi / soit
+__conf_soi_disant__
+    [soi|soie|soit|sois] [disants|disante|disantes]
+    [soie|soit|sois] disant
+    [soi-disants|soi-disante|soi-disantes]
+    [sois-disant|sois-disants|sois-disante|sois-disantes]
+    [soie-disant|soie-disants|soie-disante|soie-disantes]
+    [soies-disant|soies-disants|soies-disante|soies-disantes]
+    [soit-disant|soit-disants|soit-disante|soit-disantes]
+        <<- /conf/ ->> soi-disant                                                                   # Confusion : “soi-disant” est un adjectif invariable.|http://fr.wiktionary.org/wiki/soi-disant
+
+TEST: Méfiez-vous de cette {{soi-disante}} sorcière.
+TEST: Méfiez-vous de cette {{soit-disant}} sorcière.
+TEST: Méfiez-vous de cette {{soi disant}} sorcière.
+
+
+__conf_soi_soit_soie__
+    [chez|sur|avec|pour] (soit)
+    don de (soit)
+        <<- /conf/ not after(" soit ") -1>> soi                                                     # Confusion probable.
+
+    en soit
+        <<- /conf/ morph(>1, ":[GY]|<end>") and not before("(?i)quel(?:s|les?|) qu $|on $|il $") and not after(" soit ")
+        -2>> soi                                                                                    # Confusion probable.
+
+    [soi|sois|soit|>soie]  >même
+        <<- /conf/ morph(<1, ":[YQ]|>(?:avec|contre|par|pour|sur)/|<start>") ->> soi-même           # Confusion probable : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
+
+    [sois-même|soit-même|soie-même|soies-même|soi-mêmes|sois-mêmes|soit-mêmes|soie-mêmes|soies-mêmes]
+        <<- /conf/ ->> soi-même                                                                     # Confusion : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
+
+TEST: chez {{soit}}, c’est presque toujours mieux.
+TEST: ce n’est pas la philosophie en {{soit}} qui est problématique
+TEST: quel que {{soie}} sa pensée, je refuse d’y accorder de l’attention.
+TEST: Penser par {{soit même}}…
+TEST: S’aimer {{soit-même}}, c’est le début d’une grande histoire d’amour. (Oscar Wilde)
+TEST: Je regrette que l’on en soit encore à des considérations que je croyais dépassées
+TEST: Quoi qu’il en soit
+
+
+__conf_soit_soi_soie__
+    [<start>|,]  [soi|sois|>soie]  @:[OC]¬:R
+    [<start>|,]  [soi|sois|>soie]  [j’|t’|c’|ç’]
+        <<- /conf/ -2>> soit                                    # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
+
+    [quel|quels|quelle|quelles] que [soi|>soie|sois]
+        <<- /conf/ -3>> soit|soient                             # Confusion probable.
+
+TEST: {{soi}} je vais au cinéma, {{soi}} je m’abstiens.
+TEST: {{soie}} t’arrives avant tout le monde.
+TEST: Quels que {{soi}} les problèmes, on peut les surmonter.
 
 
 # son / sont
@@ -6763,6 +6925,8 @@ __purge_locutions__
     au-dessus [de|d’] {pronom_obj}
     aujourd’hui
     auparavant
+    ?tout¿ aussi
+    aussitôt
     ?tout¿ au fond [de|d’] {pronom_obj}
     aux [abois|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
     autant que [nécessaire|possible|prévu]
@@ -8145,72 +8309,72 @@ __simplification_noms_propres__
 
 
 __purge_après_être__
-    [>être|>devenir|>rester] [bon|meilleur] marché
-    [>être|>devenir|>rester] avant tout
-    [>être|>devenir|>rester] cousin et cousine
-    [>être|>devenir|>rester] de passage
-    [>être|>devenir|>rester] du moins
-    [>être|>devenir|>rester] en partie
-    [>être|>devenir|>rester] frère et sœur
-    [>être|>devenir|>rester] mari et femme
-    [>être|>devenir|>rester] mission impossible
-    [>être|>devenir|>rester] monnaie courante
-    [>être|>devenir|>rester] papa et maman
-    [>être|>devenir|>rester] partie [intégrante|prenante]
-    [>être|>devenir|>rester] pieds et poings liés
-    [>être|>devenir|>rester] pieds nus
-    [>être|>devenir|>rester] père et mère
-    [>être|>devenir|>rester] somme toute
-    [>être|>devenir|>rester] sous peu
-    [>être|>devenir|>rester] tous [deux|trois]
-    [>être|>devenir|>rester] un jour
-    [>être|>devenir|>rester] à jamais
-    [>être|>devenir|>rester] [pas|jamais|plus|point]
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ [bon|meilleur] marché
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ avant tout
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ cousin et cousine
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ de passage
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ du moins
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ en partie
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ frère et sœur
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ mari et femme
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ mission impossible
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ monnaie courante
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ papa et maman
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ partie [intégrante|prenante]
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ pieds et poings liés
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ pieds nus
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ père et mère
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ somme toute
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ sous peu
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ tous [deux|trois]
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ un jour
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ à jamais
+    [>être|>devenir|>rester] [pas|jamais|plus|guère|point]
         <<- ~2:0>> *
 
-    /VCint [bon|meilleur] marché
-    /VCint avant tout
-    /VCint cousin et cousine
-    /VCint de passage
-    /VCint du moins
-    /VCint en partie
-    /VCint frère et sœur
-    /VCint mari et femme
-    /VCint mission impossible
-    /VCint monnaie courante
-    /VCint papa et maman
-    /VCint partie [intégrante|prenante]
-    /VCint pieds et poings liés
-    /VCint pieds nus
-    /VCint père et mère
-    /VCint somme toute
-    /VCint sous peu
-    /VCint tous [deux|trois]
-    /VCint un jour
-    /VCint à jamais
-    /VCint [pas|jamais|plus|point]
+    /VCint ?[pas|jamais|plus|guère|point]¿ [bon|meilleur] marché
+    /VCint ?[pas|jamais|plus|guère|point]¿ avant tout
+    /VCint ?[pas|jamais|plus|guère|point]¿ cousin et cousine
+    /VCint ?[pas|jamais|plus|guère|point]¿ de passage
+    /VCint ?[pas|jamais|plus|guère|point]¿ du moins
+    /VCint ?[pas|jamais|plus|guère|point]¿ en partie
+    /VCint ?[pas|jamais|plus|guère|point]¿ frère et sœur
+    /VCint ?[pas|jamais|plus|guère|point]¿ mari et femme
+    /VCint ?[pas|jamais|plus|guère|point]¿ mission impossible
+    /VCint ?[pas|jamais|plus|guère|point]¿ monnaie courante
+    /VCint ?[pas|jamais|plus|guère|point]¿ papa et maman
+    /VCint ?[pas|jamais|plus|guère|point]¿ partie [intégrante|prenante]
+    /VCint ?[pas|jamais|plus|guère|point]¿ pieds et poings liés
+    /VCint ?[pas|jamais|plus|guère|point]¿ pieds nus
+    /VCint ?[pas|jamais|plus|guère|point]¿ père et mère
+    /VCint ?[pas|jamais|plus|guère|point]¿ somme toute
+    /VCint ?[pas|jamais|plus|guère|point]¿ sous peu
+    /VCint ?[pas|jamais|plus|guère|point]¿ tous [deux|trois]
+    /VCint ?[pas|jamais|plus|guère|point]¿ un jour
+    /VCint ?[pas|jamais|plus|guère|point]¿ à jamais
+    /VCint [pas|jamais|plus|guère|point]
         <<- morphVC(\1, ">(?:être|devenir|rester)") ~2:0>> *
 
-    [>être|>devenir|>rester] beaucoup
-    [>être|>devenir|>rester] bien entendu
-    [>être|>devenir|>rester] dans [l’|leur|son] ensemble
-    [>être|>devenir|>rester] [à|en] ce moment  ?précis¿
-    [>être|>devenir|>rester] [à|en] cet instant ?précis¿
-    [>être|>devenir|>rester] sans peine
-    [>être|>devenir|>rester] un [moment|peu|minimum]
-    [>être|>devenir|>rester] un petit peu
-    [>être|>devenir|>rester] un tout petit peu
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ beaucoup
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ bien [entendu|sûr]
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ dans [l’|leur|son] ensemble
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ [à|en] ce moment  ?précis¿
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ [à|en] cet instant ?précis¿
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ sans peine
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ un [moment|peu|minimum]
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ un petit peu
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ un tout petit peu
         <<- morph(>1, ":[QY]") ~2:0>> *
 
-    /VCint beaucoup
-    /VCint bien entendu
-    /VCint dans [l’|leur|son] ensemble
-    /VCint [à|en] ce moment  ?précis¿
-    /VCint [à|en] cet instant ?précis¿
-    /VCint sans peine
-    /VCint un [moment|peu|minimum]
-    /VCint un petit peu
-    /VCint un tout petit peu
+    /VCint ?[pas|jamais|plus|guère|point]¿ beaucoup
+    /VCint ?[pas|jamais|plus|guère|point]¿ bien [entendu|sûr]
+    /VCint ?[pas|jamais|plus|guère|point]¿ dans [l’|leur|son] ensemble
+    /VCint ?[pas|jamais|plus|guère|point]¿ [à|en] ce moment  ?précis¿
+    /VCint ?[pas|jamais|plus|guère|point]¿ [à|en] cet instant ?précis¿
+    /VCint ?[pas|jamais|plus|guère|point]¿ sans peine
+    /VCint ?[pas|jamais|plus|guère|point]¿ un [moment|peu|minimum]
+    /VCint ?[pas|jamais|plus|guère|point]¿ un petit peu
+    /VCint ?[pas|jamais|plus|guère|point]¿ un tout petit peu
         <<- morphVC(\1, ">(?:être|devenir|rester)", 0, -4) and morph(>1, ":[QY]") ~2:0>> *
 
     on ne peut [plus|moins]
@@ -8227,7 +8391,7 @@ __purge_après_avoir__
         <<- ~2:0>> *
 
     >avoir  ?[pas|jamais|plus|guère|point]¿  beaucoup
-    >avoir  ?[pas|jamais|plus|guère|point]¿  bien entendu
+    >avoir  ?[pas|jamais|plus|guère|point]¿  bien [entendu|sûr]
     >avoir  ?[pas|jamais|plus|guère|point]¿  dans [leur|l’|son] ensemble
     >avoir  ?[pas|jamais|plus|guère|point]¿  à cet [instant|endroit] ?précis¿
     >avoir  ?[pas|jamais|plus|guère|point]¿  à ce moment ?précis¿
@@ -8259,7 +8423,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~2:0>> *
 
     /VCint  ?[pas|jamais|plus|guère|point]¿  beaucoup
-    /VCint  ?[pas|jamais|plus|guère|point]¿  bien entendu
+    /VCint  ?[pas|jamais|plus|guère|point]¿  bien [entendu|sûr]
     /VCint  ?[pas|jamais|plus|guère|point]¿  dans [leur|l’|son] ensemble
     /VCint  ?[pas|jamais|plus|guère|point]¿  à cet [instant|endroit] ?précis¿
     /VCint  ?[pas|jamais|plus|guère|point]¿  à ce moment ?précis¿
@@ -8285,63 +8449,80 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~2:4>> *
 
 
+__purge_après_verbe__
+    @:V  ?pas¿  jour et nuit
+    @:V  quand même pas
+    @:V  [moi|toi|lui|elle|nous|vous|eux|elles]  aussi
+    @:V  même
+    @:[123]  bien [entendu|sûr]
+    @:[123]  ?pas¿  juste
+    @:[123]  ?pas¿  ensemble
+    @:[123]  ?pas¿  ?[fort|très|super]¿  [bien|mal]
+        <<- ~2:0>> *
+
+
+__purge_avant_adjectifs_adverbes__
+    le  @:[NAQ].*:[me]¬:G  le  plus  @:A.*:[me]
+        <<- ~3:4>> *
+
+    la  @:[NAQ].*:[fe]¬:G  la  plus  @:A.*:[fe]
+        <<- ~3:4>> *
+
+    [les|mes|tes|ses|nos|vos|leurs]  @:[NA].*:[pi]¬:[123][sp]  les  plus  @:A.*:[pi]
+        <<- ~3:4>> *
+
+    [>être|>avoir]  le  [plus|moins]  @:A¬:([me]:[si]|G)
+        <<- morph(\1, ":V") ~2:3>> *
+
+    bien sûr
+        <<- not morph(>1, "|de|d’|") ~>> *
+
+    à peu près   @:[AW]
+        <<- ~1:3>> *
+
+    à [demi|peine]              @:[AW]
+    [super|fort] [bien|mal]     @:[AW]
+    depuis peu                  @:[AW]
+    quelque peu                 @:[AW]
+    pas très                    @:[AW]
+        <<- ~1:2>> *
+
+    un ?petit¿  peu ?[plus|moins]¿
+        <<- morph(>1, ":[AW]") ~>> *
+
+    [bien|mal|fort|plus|moins] @:[AW]
+        <<- ~1>> *
+
+    si  @:[AW]
+        <<- not (\2 == "bien" and value(>1, "|que|")) ~1>> *
+
+    un [brin|chouia|chouïa|rien|minimum|soupçon|tantinet]  ?trop¿
+        <<- morph(>1, ":A", ":G") ~>> *
+
+    [assez|trop]  @:[AW]¬:[123][sp]
+        <<- ~1>> *
+
+
+__purge_adverbes__
+    [assez|trop]  ~ment$
+        <<- morph(\2, ":W", ":3p") ~>> *
+
+    @:[NAQ]  [le|la]  [plus|moins]  ~.ment$  @:A
+        <<- morph(\4, ":W", ":A") ~2:4>> *
+
+    complètement
+        <<- not morph(<1, ":D.*:m") ~>> *
+
+    ~.ment$  ?[parlant|pas]¿
+        <<- morph(\1, ":W", ":(?:3p|N)") ~>> *
+
+
+
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
 
-
-# après verbe
-__[i](p_verbe_loc_adv1)__       ({w1}) (?:pas |)(jour et nuit|quand même(?: pas|)) @@0,$ <<- morph(\1, ":V", False) ~2>> *
-__[i](p_verbe_loc_adv2)__       ({w_2}) (bien entendu|juste|ensemble) @@0,$ <<- morph(\1, ":V[123]") ~2>> *
-__[i](p_verbe_loc_adv3)__       ({w_2}) ((?:fort|très|super) (?:bien|mal)|bien|mal) @@0,$ <<- morph(\1, ":V[123]", False) ~2>> *
-__[i](p_verbe_pronom_aussi)__   ({w_1}) ((?:[mt]oi|[nv]ous|elles?|lui|eux) aussi) @@0,$ <<- morph(\1, ":V", False) ~2>> *
-__[i](p_tout_aussi)__           (?:tout |)aussi <<- ~>> *
-__[i](p_aussi_aussitôt)__       aussi(?:tôt|) <<- ~>> *
-__[i](p_verbe_même)__           ({w_1}) (même) @@0,$ <<- morphex(\1, ":V", ":G") ~2>> *
-
-# avant adjectifs, avant adverbes
-__[i](p_le_xxx_le_plus_adj)__
-    le ({w_2}) (le plus) ({w_2})  @@3,w,$
-    <<- morphex(\1, ":[NAQ].*:[me]", ":G") and morph(\3, ":[AQ].*:[me]", False) ~2>> *
-__[i](p_la_xxx_la_plus_adj)__
-    la ({w_2}) (la plus) ({w_2})  @@3,w,$
-    <<- morphex(\1, ":[NAQ].*:[fe]", ":G") and morph(\3, ":[AQ].*:[fe]", False) ~2>> *
-__[i](p_les_xxx_les_plus_adj)__
-    (?:[lmts]es|nos|vos|leurs) ({w_2}) (les plus) ({w_2})  @@w,w,$
-    <<- morphex(\1, ":[NAQ].*:[pi]", ":[123][sp]") and morph(\3, ":A.*:[pi]", False) ~2>> *
-__[i](p_le_plus_le_moins)__
-    (le (?:plus|moins)) ({w_2})  @@0,$
-    <<- morphex(\2, ":A", ":([me]:[si]|G)") and morph(word(-1), ">(?:avoir|être)/:V", False) ~1>> *
-__[i](p_bien_sûr)__
-    bien sûr(?! de) <<- ~>> *
-__[i](p_bien_mal_fort_adj_adv)__
-    (bien|mal|(?:fort|super) (?:bien|mal)|fort) +({w_2})  @@0,$
-    <<- morph(\2, ":[AW]") ~1>> *
-__[i](p_loc_adj_adv)__
-    (à (?:demi|peine|peu près)|depuis peu|quelque peu|pas très|un (?:petit |)peu(?: plus| moins|)|peu|plus|moins) +({w_2})  @@0,$
-    <<- morph(\2, ":[AW]", False) ~1>> *
-__[i](p_si_adj_adv)__
-    (si) +({w_2})  @@0,$
-    <<- morph(\2, ":[AW]", False) and not (\2 == "bien" and after("^ +que? ")) ~1>> *
-__[i](p_un_brin_chouïa_rien_tantinet_soupçon)__
-    (un (?:brin|chou[iï]a|rien|minimum|soupçon|tantinet)(?: trop|)) ({w_2}) @@0,$
-    <<- morphex(\2, ":A", ":G") ~1>> *
-__[i](p_assez_trop_adv_xxxment)__
-    (?:assez|trop) +(\w+ment)  @@$
-    <<- morphex(\1, ":W", ":3p") ~>> *
-__[i](p_assez_trop_adj_adv)__
-    (assez|trop) +({w_2})  @@0,$
-    <<- morphex(\2, ":[AW]", ":[123][sp]") ~1>> *
-
-# adverbes en -ment
-__[i](p_le_la_plus_moins_adv_xxxment)__
-    ({w_2}) (l[ea] (?:plus|moins) (\w+ment)) ({w_2})  @@0,w,>2:$,$
-    <<- morph(\1, ":[NAQ]", False) and morph(\3, ":W", False) and morph(\4, ":[AQ]", False) ~2>> *
-__[i](p_complètement)__
-    complètement <<- not morph(word(-1), ":D", False, True) ~>> *
-__[i](p_adverbe_xxxment)__
-    (\w+ment)(?: parlant| pas|) @@0 <<- morph(\1, ":W\\b") ~>> *
 
 # tous / tout / toute / toutes
 __[i](p_tout_déterminant_masculin)__        (tout) (?:le|cet?|[mts]on) @@0              <<- ~1>> *
@@ -8613,24 +8794,8 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 
 #### 1 mot
 
-## Usage impropre
-
-__[s](au_le_nom)__
-    ([aA]u le) ({w_2})  @@0,6   <<- morph(\2, ":[NAQ]", False) -1>> au          # Usage impropre. Après “au”, l’article “le” est inapproprié. (Ex : Je vais à la gare, je vais au stade.)
-__[s](au_les_nom)__
-    ([aA]u les) ({w_2})  @@0,7  <<- morph(\2, ":[NAQ]", False) -1>> aux         # Usage impropre. Après “au”, l’article “les” n’est pas nécessaire.
-__[s](au_la)__
-    ([aA]u) la ({w_2})  @@0,6   <<- morph(\2, ":[NAQ].*:[fe]", False) -1>> à    # Usage impropre. Avec un nom féminin, utilisez la préposition “à”. (Ex : Je vais à la gare, je vais au stade.)
-__[i>(au_l)__
-    ([aA]u) l’  @@0             <<- -1>> à                                      # Usage impropre. Ex : Elle va à l’opéra. Elle va au bal.
-
-TEST: {{au le}} chien
-TEST: {{au les}} armoires
-TEST: qui sont {{au}} l’usage
-TEST: {{au}} la passion
-
-
-__[i]/gn(gn_l_accord)__ l’({w_2})  @@$
+__[i]/gn(gn_l_accord)__
+    l’({w_2})  @@$
     <<- morphex(\1, ":[NAQ].*:p", ":[123][sp]|:[si]")
     -1>> =suggSing(@)                                                                               # Accord de nombre erroné :  « \1 » devrait être au singulier.
 
@@ -10877,15 +11042,6 @@ TEST: Autrefois, il y eut plusieurs ères {{glacières}}.
 TEST: dans la {{glaciaire}}
 
 
-# en son for intérieur / fort
-__[i]/conf(conf_for_intérieur)__
-    (?:en|dans) (?:[mts]on|leur|[nv]otre) (forts? intérieurs?) @@$ <<- -1>> for intérieur
-    # Confusion : “for” vient du latin “forum” et le “for intérieur” évoque la conscience individuelle.
-
-TEST: En mon {{fort intérieur}}, je le crois.
-TEST: Dans son {{fort intérieur}}, je le crois.
-
-
 # gène / gêne
 __[i]/conf(conf_sans_gêne)__
     sans[- ]gènes? <<- ->> sans-gêne                                      # Confusion. Les gènes sont des éléments des chromosomes. Pour le synonyme d’embarras, écrivez “gêne”.
@@ -11483,48 +11639,6 @@ __[i]/conf(conf_s_ensuivre)__
 TEST: {{S’en suivit}} une guerre de tous les instants.
 TEST: {{S’en suivre}}.
 
-
-# soi / soit
-__[i]/conf(conf_soi_disant)__
-    soi[tse]?[ -]disante?s? <<- not re.search("(?i)^soi-disant$", \0) ->> soi-disant      # Confusion : “soi-disant” est un adjectif invariable.|http://fr.wiktionary.org/wiki/soi-disant
-
-TEST: Méfiez-vous de cette {{soi-disante}} sorcière.
-TEST: Méfiez-vous de cette {{soit-disant}} sorcière.
-TEST: Méfiez-vous de cette {{soi disant}} sorcière.
-
-
-__[i]/conf(conf_prep_soi)__
-    (?:chez|don de|sur|avec|pour) (soit) @@$ <<- not after(" soit ") -1>> soi                       # Confusion probable.
-__[i]/conf(conf_en_soi)__
-    (?<!’)en (soit)  @@3
-    <<- morph(word(1), ":[GY]", True, True) and not before("(?i)quel(?:s|les?|) qu $|on $|il $") and not after(" soit ")
-    -1>> soi                                                                                        # Confusion probable.
-__[i]/conf(conf_quel_que_soit2)__
-    quel(?:le|)s? que (soi(?:es?|)) @@$ <<- -1>> soit|soient                                        # Confusion probable.
-__[i]/conf(conf_soi_même1)__
-    (soi[tes]s? mêmes?) @@$
-    <<- morph(word(-1), ":[YQ]|>(?:avec|contre|par|pour|sur)/", False, True) -1>> soi-même          # Confusion probable : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
-__[i]/conf(conf_soi_même2)__
-    soi[tes]s?-mêmes? <<- ->> soi-même                                                              # Confusion : moi-même, toi-même, lui-même, elle-même, soi-même, elles-mêmes, eux-mêmes.
-
-TEST: chez {{soit}}, c’est presque toujours mieux.
-TEST: ce n’est pas la philosophie en {{soit}} qui est problématique
-TEST: quel que {{soie}} sa pensée, je refuse d’y accorder de l’attention.
-TEST: Penser par {{soit même}}…
-TEST: S’aimer {{soit-même}}, c’est le début d’une grande histoire d’amour. (Oscar Wilde)
-TEST: Je regrette que l’on en soit encore à des considérations que je croyais dépassées
-TEST: Quoi qu’il en soit
-
-
-__[i]/conf(conf_soit1)__
-    (soie?s?) ({w_2})  @@0,$
-    <<- isStart() and morphex(\2, ":[OC]", ":R") -1>> soit                                          # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
-__[i]/conf(conf_soit2)__
-    (soie?s?) [jtcç]’ @@0
-    <<- isStart() -1>> soit                                                                         # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
-
-TEST: {{soi}} je vais au cinéma, {{soi}} je m’abstiens.
-TEST: {{soie}} j’arrive avant tout le monde.
 
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
@@ -12915,10 +13029,11 @@ TEST: {{Découragés}}, je suis parti.
 
 __[i]/ppas(ppas_adj_accord_il)__
     ^ *({w_2}[es]),? il  @@*
-    <<- morphex(\1, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])")
+    <<- morphex(\1, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])") and not after("^ y a")
     -1>> =suggMasSing(@)                                                    # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
 
 TEST: — {{Déçue}}, il s’en est allé.
+TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
 
 
 __[i]/ppas(ppas_adj_accord_elle)__
