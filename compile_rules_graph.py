@@ -18,6 +18,7 @@ def prepareFunction (s):
     "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
+    s = s.replace("sContext", "_sAppContext")
     s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
     s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
