@@ -713,7 +713,7 @@ class TextParser:
         dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
         bTagAndRewrite = False
-        for dToken in self.lToken:
+        for i, dToken in enumerate(self.lToken):
             if bDebug:
                 print("TOKEN:", dToken["sValue"])
             # check arcs for each existing pointer
@@ -724,13 +724,13 @@ class TextParser:
             lPointer = lNextPointer
             # check arcs of first nodes
             for dNode in self._getNextMatchingNodes(dToken, dGraph, dGraph[0], bDebug):
-                lPointer.append({"iToken": dToken["i"], "dNode": dNode})
+                lPointer.append({"iToken": i, "dNode": dNode})
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:
                 #    print("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
-                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, dToken["i"], dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
+                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, i, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
                         bTagAndRewrite = True
         if bTagAndRewrite:
@@ -934,7 +934,7 @@ class TextParser:
         lNewToken = []
         nMergeUntil = 0
         dTokenMerger = None
-        for dToken in self.lToken:
+        for iToken, dToken in enumerate(self.lToken):
             bKeepToken = True
             if dToken["sType"] != "INFO":
                 if "bImmune" in dToken:
@@ -943,14 +943,14 @@ class TextParser:
                         if bDebug:
                             print("immunity -> error removed:", self.dError[nErrorStart])
                         del self.dError[nErrorStart]
-                if nMergeUntil and dToken["i"] <= nMergeUntil:
+                if nMergeUntil and iToken <= nMergeUntil:
                     dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
                     dTokenMerger["nEnd"] = dToken["nEnd"]
                     if bDebug:
                         print("  MERGED TOKEN:", dTokenMerger["sValue"])
                     bKeepToken = False
                 if "nMergeUntil" in dToken:
-                    if dToken["i"] > nMergeUntil: # this token is not already merged with a previous token
+                    if iToken > nMergeUntil: # this token is not already merged with a previous token
                         dTokenMerger = dToken
                     if dToken["nMergeUntil"] > nMergeUntil:
                         nMergeUntil = dToken["nMergeUntil"]
@@ -981,7 +981,7 @@ class TextParser:
                     print(dToken)
                     exit()
         if bDebug:
-            print("  REWRITED:", self.sSentence)
+            print("  TEXT REWRITED:", self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
 
