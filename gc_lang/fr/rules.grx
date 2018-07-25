@@ -7898,7 +7898,7 @@ TEST: cette femme-là {{étaient}} partout.
 
 
 __simplification_des_nombres__
-    [vingt|trente|quarante|cinquante|soixante|soixante-dix|septante|quatre-vingt|octante|huitante|quatre-vingt-dix|nonante] et [un|une|onze]
+    [vingt|trente|quarante|cinquante|soixante|soixante-dix|septante|quatre-vingt|octante|huitante|quatre-vingt-dix|nonante|mille] et [un|une|onze]
         <<- ~>> \1-et-\3||
         <<- ~2:3>> *
 
@@ -8490,7 +8490,7 @@ __purge_avant_adjectifs_adverbes__
     un ?petit¿  peu ?[plus|moins]¿
         <<- morph(>1, ":[AW]") ~>> *
 
-    [bien|mal|fort|plus|moins] @:[AW]
+    [bien|mal|fort|plus|moins|peu] @:[AW]
         <<- ~1>> *
 
     si  @:[AW]
@@ -8529,11 +8529,13 @@ __purge_tout_tout_tous_toutes__
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: purge_avant_gn                                                                                  _
+@@@@GRAPH: purge_passe2                                                                            _
 @@@@
 @@@@
 @@@@
 @@@@
+
+## Seconde passe (il faut réorganiser tout le cycle de simplification)
 
 __purge_ponctuations__
     ,   ,
@@ -8550,142 +8552,175 @@ __purge_ponctuations__
         <<- ~1>> *
 
 
+__purge_locutions_potentielles__
+    à [mes|tes|ses|nos|vos|leurs] yeux  @¬:A.*:[me]:[pi]
+        <<- ~1:3>> *
+
+    à la dernière [minute|seconde]  @¬:A.*:[fe]:[si]
+        <<- ~1:4>> *
+
+    à l’ époque  @¬:A.*:[fe]:[si]
+        <<- ~1:3>> *
+
+    au pire  @:A¬:N:[me]:[si]
+        <<- ~1:2>> *
+
+    [<start>|,] ben voyons
+        <<- ~2:3>> *
+
+    chaque [année|semaine|journée|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
+        <<- ~1:2>> *
+
+    chaque [an|jour|mois]  @¬:(?:A.*:[me]:[si]|Oo|[123][sp])
+        <<- ~1:2>> *
+
+    d’ évidence  @¬:A.*:[fe]:[si]
+        <<- ~1:2>> *
+
+    dans l’ ensemble  @¬:A.*:[me]:[si]
+        <<- ~1:3>> *
+
+    de ce fait  @¬:A.*:[me]:[si]
+        <<- ~1:3>> *
+
+    de ce seul fait  @¬:A.*:[me]:[si]
+        <<- ~1:4>> *
+
+    dès le départ  @¬:A.*:[me]:[si]
+        <<- ~1:3>> *
+
+    dès les premiers [jours|mois|ans|siècles|trimestres|semestres]  @¬:A.*:[me]:[pi]
+        <<- ~1:4>> *
+
+    dès les premières [années|semaines|minutes|secondes|heures|décennies]  @¬:A.*:[fe]:[pi]
+        <<- ~1:4>> *
+
+    en [certaines|quelques|plusieurs] occasions  @¬:A.*:[fe]:[pi]
+        <<- ~1:3>> *
+
+    en de multiples occasions  @¬:A.*:[fe]:[pi]
+        <<- ~1:4>> *
+
+    entre autres choses  @¬:A.*:[fe]:[pi]
+        <<- ~1:3>> *
+
+    [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
+        <<- ~1:2>> *
+
+    de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
+        <<- ~1:3>> *
+
+    [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
+        <<- ~1:2>> *
+
+    de nombreux [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
+        <<- ~1:3>> *
+
+    un [instant|moment|jour]  @¬:A.*:[me]:[si]
+        <<- ~1:2>> *
+
+
+__purge_tous_deux_trois__
+    >faire tous [deux|trois]
+        <<- ~2:0>> *
+
+    >faire tous
+        <<- morph(\1, ":[123]p") or (\1 == "fait" and before(r"(?i)\bon ")) ~2>> *
 
 @@@@
-@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: purge_passe3                                                                            _
+@@@@
+@@@@
+@@@@
 @@@@
 
+__purge_locutions_verbales__
+    >arriver à échéance
+    >arriver à point nommé
+    [>donner|>redonner] sens
+    >faire [allusion|assaut|chaud|confiance|compliqué|copain-copain|débat|défaut|demi-tour|envie|figure|froid|halte|honte|illusion|mouche|office|part|peur|plaisir|rage|scandale|sens|signe|volte-face]
+    >faire amende honorable
+    >faire bande à part
+    >faire bonne figure
+    >faire copain copain
+    >faire de [mon|ton|son|notre|votre|leur] mieux
+    >faire long feu
+    >faire [machine|marche] arrière
+    >faire main basse
+    >faire partie ?intégrante¿
+    >faire fausse route
+    >faire front commun
+    >faire grise mine
+    >faire grand [bruit|cas]
+    >faire profil bas
+    >faire salle comble
+    >faire table rase
+    >faire ce que bon [me|te|lui|nous|vous|leur] semble
+    >laisser pour compte
+    >mettre à [bas|jour|niveau|plat|terre]
+    >mettre l’ [écart|épreuve]
+    >mettre au [point|pas]
+    >mettre en [avant|bouche|demeure|garde|jeu|lumière|œuvre|place|scène|terre]
+    >mourir jeune
+    [>paraître|>paraitre] jeune
+    >porte [atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
+    >prendre ?[ça|cela|ceci]¿ à la légère
+    >prendre [congé|conscience|contact|ombrage|racine|soin|vie]
+    >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
+    >prendre de court
+    >prendre ?[ça|cela|ceci]¿ en charge
+    >prendre ?[ça|cela|ceci]¿ pour argent comptant
+    >prendre par surprise
+    >prêter main-forte
+    >rester lettre morte
+    >rester lettres mortes
+    >suivre ?[ça|cela|ceci]¿ de près
+    >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
+    >tenir compte
+    >tenir au courant
+    >trier sur le volet
+    >tirer [avantage|profit]
+    >tourner court
+    >venir je ne sais ?pas¿ ?trop¿ d’ où
+    >venir on ne sait ?pas¿ ?trop¿ d’ où
+        <<- ~2:0>> *
+
+    [>sembler|>paraître|>paraitre] être @:A¬:G
+        <<- ~2>> *
+
+    [>sembler|>paraître|>paraitre] avoir été @:A¬:G
+        <<- ~2:3>> *
 
 
+__conf_locutions_verbales__
+    >arriver a échéance
+    >arriver a point nommé
+    >mettre a [bas|jour|niveau|plat|terre]
+    >mettre a l’ [écart|épreuve]
+    >prendre a la légère
+    >tenir a distance
+        <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
+    >laisser pour [comte|comtes|>conte]
+        <<- /conf/ -3>> compte          # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
-## Seconde passe (il faut réorganiser tout le cycle de simplification)
+    [>mourir|>paraître|>paraitre|>rester|>sembler] >jeûne
+        <<- /conf/ -2>> jeune           # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 
-__[i](p_à_nos_yeux)__
-    (à (?:[mts]es|[nv]os|leurs) yeux) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[pi]", False) ~1>> *
-__[i](p_à_la_dernière)__
-    (à la dernière (?:minute|seconde)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[fe]:[si]", False) ~1>> *
-__[i](p_à_l_époque)__
-    (à l’époque) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[fe]:[si]", False) ~1>> *
-__[i](p_au_pire)__
-    (au pire) +({w_1}) @@0,$ <<- morph(\2, ":A", ":N:[me]:[si]") ~1>> *
-__[i](p_ben_voyons)__
-    ben voyons <<- isStart() ~>> *
-__[i](p_chaque_année_semaine_journée_décennie)__
-    (chaque (?:année|semaine|journée|décennie)) +({w_1}) @@0,$ <<- not morph(\2, ":(?:A.*:[fe]:[si]|Oo|[123][sp])", False) ~1>> *
-__[i](p_chaque_an_jour_mois)__
-    (chaque (?:an|jour|mois)) +({w_1}) @@0,$ <<- not morph(\2, ":(?:A.*:[me]:[si]|Oo|[123][sp])", False) ~1>> *
-__[i](p_d_évidence)__
-    (d’évidence) +({w_1})  @@0,$ <<- not morph(\2, ":A.*:[fe]:[si]", False) ~1>> *
-__[i](p_dans_l_ensemble)__
-    (dans l’ensemble) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
-__[i](p_de_ce_seul_fait)__
-    (de ce (?:seul |)fait) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
-__[i](p_dès_le_départ)__
-    (dès le départ) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]") ~1>> *
-__[i](p_dès_les_premiers_jours_mois_ans)__
-    (dès les premiers (?:jours|mois|ans|siècles|trimestres|semestres)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[pi]", False) ~1>> *
-__[i](p_dès_les_premières_années_heures_minutes)__
-    (dès les premières (?:années|semaines|minutes|secondes|heures|décennies)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[fe]:[pi]", False) ~1>> *
-__[i](p_en_certaines_plusieurs_occasions)__
-    (en (?:certaines|quelques|plusieurs|de multiples) occasions) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[fe]:[pi]", False) ~1>> *
-__[i](p_entre_autres_choses)__
-    (entre autres choses) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[fe]:[pi]", False) ~1>> *
-__[i](p_quelques_minutes_heures_années_plus_tard)__
-    ((?:quelques|plusieurs|de +nombreuses) (?:secondes|minutes|heures|journées|semaines|années|décennies)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[fe]:[pi]", False) ~1>> *
-__[i](p_quelques_instants_jours_siècles)__
-    ((?:quelques|plusieurs|de +nombreux) (?:instants|moments|jours|mois|ans|siècles)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[pi]", False) ~1>> *
-__[i](p_un_moment_instant)__
-    (un (?:instant|moment|jour)) +({w_1}) @@0,$ <<- not morph(\2, ":A.*:[me]:[si]", False) ~1>> *
+    >rendre ?bon¿ ([comte|comtes|>conte|comptes])
+        <<- /conf/ -1>> compte          # Confusion. Locution “rendre compte”.|https://fr.wiktionary.org/wiki/rendre_compte
 
+    >suivre ?[ça|cela|ceci]¿ de ([>prêt|>pré])
+        <<- /conf/ -1>> près            # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-## Simplication des locutions verbales
-__[i](loc_arriver)__
-	(arriv\w+) (([aà]) (?:échéance|point nommé)) @@0,$,w
-	<<- morph(\1, ">arriver/", False) >>>
-	<<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-	<<- ~2>> *
-__[i](p_donner_sens)__
-    ((?:re|)donn\w+) +(sens) @@0,$
-    <<- morph(\1, ">(?:re|)donner/", False) ~2>> *
-__[i](p_faire_qqch)__
-    (f[aiîeo]\w*) +(tous(?: deux| trois|) +|)(allusion|amende honorable|assaut|bande à part|bonne figure|chaud|confiance|compliqué|copain[- ]copain|de (?:[mts]on|leur|[nv]otre) mieux|dé(?:bat|faut)|demi-tour|envie|fausse route|figure|froid|front commun|gr(?:ise mine|and (?:bruit|cas))|h(?:alte|onte)|illusion|long feu|ma(?:chine|rche) arrière|main basse|mouche|office|p(?:art(?:ie(?: intégrante|)|)|eur|laisir|rofil bas)|rage|salle comble|scandale|sens|signe|table rase|volte-face|ce que bon (?:me|te|lui|leur|nous|vous) semble) @@0,*,$
-    <<- morph(\1, ">faire/", False) ~2>> *
-    <<- __also__ ~3>> *
-__[i](loc_laisser_pour_compte)__
-    (laiss\w+) +(pour (co[mn]p?tes?))  @@0,$,$
-    <<- morph(\1, ">laisser/", False) >>>
-    <<- \3 != "compte" -3>> compte              # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
-    <<- ~2>> *
-__[i](loc_mettre_à_qqch)__
-    (m(?:et|[iî][mst])\w*) +(([àa]) (?:bas|jour|niveau|plat|l’(?:écart|épreuve)|terre)) @@0,$,w
-    <<- morph(\1, ">mettre/", False) >>>
-    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~2>> *
-__[i](p_mettre_qqch)__
-    (m(?:et|[iî][mst])\w*) +(au p(?:oint|as)|en (?:avant|bouche|demeure|garde|jeu|lumière|œuvre|place|scène|terre)) @@0,$
-    <<- morph(\1, ">mettre/", False) ~2>> *
-__[i](loc_mourir_qqch)__
-    (m[oe]\w+) +(jeûne)  @@0,$
-    <<- morph(\1, ">mourir/", False) -2>> =\2.replace("û", "u")                 # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
-__[i](p_paraitre_qqch)__
-    (par\w+) +(jeûnes?)  @@0,$
-    <<- morph(\1, ">para[îi]tre/", False) -2>> =\2.replace("û", "u")            # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
-__[i](p_porter_qqch)__
-    (port\w+) +(atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours)  @@0,$
-    <<- morph(\1, ">porter/", False) ~2>> *
-__[i](loc_prendre_à_la_légère)__
-    (pr[eiî]\w+) +(([àa]) la légère) @@0,$,w
-    <<- morph(\1, ">prendre/", False) >>>
-    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~2>> *
-__[i](p_prendre)__
-    (pr[eiî]\w+) +(au (?:dépourvu|sérieux)|congé|conscience|contact|de court|en charge|ombrage|pour argent comptant|par surprise|racine|soin|vie) @@0,$
-    <<- morph(\1, ">prendre/", False) ~2>> *
-__[i](loc_rendre_compte)__
-    (rend\w+) +(co[mn]tes?)  @@0,$
-    <<- morph(\1, ">rendre/", False) -2>> compte                                # Confusion probable. Locution “rendre compte”.|https://fr.wiktionary.org/wiki/rendre_compte
-    <<- ~1>> *
-__[i](loc_rester_qqch)__
-    (rest\w+) +(lettre morte|jeûnes?) @@0,$
-    <<- morph(\1, ">rester/", False) >>>
-    <<- morph(\2, ">jeûne/", False) -2>> =\2.replace("û", "u")                  # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
-    <<- __else__ ~2>> *
-__[i](loc_semble_qqch)__
-    (sembl\w+) +(jeûnes?)  @@0,$
-    <<- morph(\1, ">sembler/", False) -2>> =\2.replace("û", "u")                # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
-__[i](p_sembler_paraitre_être)__
-    (sembl\w+|par[au]\w+) +(être|avoir été) +({w_2}) @@0,w,$
-    <<- morph(\1, ">(?:sembler|para[îi]tre)/") and morphex(\3, ":A", ":G") ~2>> *
-__[i](loc_suivre_de_près)__
-    (suiv\w+) +((?:ça +|ce(?:ci|la) +|)de (pr[èé]s?|prêts?)) @@0,$,$
-    <<- morph(\1, ">suivre/", False) >>>
-    <<- \3 != "près" -3>> près                  # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
-    <<- ~2>> *
-__[i](loc_tenir_à_distance)__
-    (t[eiî]\w+) +(([àa]) distance +(?:respectable +|))d(?:es?|u) @@0,*,w
-    <<- morph(\1, ">tenir/", False) >>>
-    <<- \3 == "a" -3>> à                        # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
-    <<- ~2>> *
-__[i](loc_tenir_compte)__
-    (t[eiî]\w+) +(co(?:mp?|n)tes?|au courant) @@0,$
-    <<- morph(\1, ">tenir/", False) >>>
-    <<- morph(\2, ">co[mn]te(?:sse|)/", False) -2>> compte        # Confusion. Dans la locution “tenir compte”, écrivez “compte” au singulier.|https://fr.wiktionary.org/wiki/tenir_compte
-    <<- ~2>> *
-__[i](p_tirer_profit)__
-    (tir\w+) +(avantage|profit) d(?:es?|u) @@0,w
-    <<- morph(\1, ">tirer/", False) ~2>> *
-__[i](loc_tourner_court)__
-    (tourn\w+) +(cour(?:re|t|s|))  @@0,$
-    <<- morph(\1, ">tourner/", False) >>>
-    <<- \2 != "court" -2>> court                # Locution : tourner court.|https://fr.wiktionary.org/wiki/tourner_court
-    <<- ~2>> *
-__[i](p_trier_sur_le_volet)__
-    (tri\w+) (sur le volet) @@0,$
-    <<- morph(\1, ">trier/", False) ~2>> *
-__[i](p_venir)__
-    (v[eiî]\w+) ((?:on ne sait|je ne sais) (?:pas |)(?:trop |)d’où) @@0,$
-    <<- morph(\1, ">venir/", False) ~2>> *
+    >tenir [comte|comtes|>conte|comptes]
+        <<- /conf/ -2>> compte          # Confusion. Locution “tenir compte”.|https://fr.wiktionary.org/wiki/tenir_compte
+
+    >tourner [coure|courre|cour|cours]
+        <<- /conf/ -2>> court           # Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
 
 TEST: ce contrat arrive {{a}} échéance.
 TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
@@ -8785,6 +8820,11 @@ TEST: elle seule peut y arriver
 TEST: elle seules les femmes la font craquer
 
 
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
+
 
 #
 # //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
@@ -8805,6 +8845,15 @@ TEST: __redon2__ De loin en loin, elle passe.
 TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (répétition)
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: après_purge_locutions                                                                   _
+@@@@
+@@@@
+@@@@
+@@@@
 
 !!
 !!
@@ -8814,39 +8863,38 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 
 #### 1 mot
 
-__[i]/gn(gn_l_accord)__
-    l’({w_2})  @@$
-    <<- morphex(\1, ":[NAQ].*:p", ":[123][sp]|:[si]")
-    -1>> =suggSing(@)                                                                               # Accord de nombre erroné :  « \1 » devrait être au singulier.
+## Singulier masculin
+
+__gn_l_accord__
+    l’  @:[NAQ].*:p¬:[123][sp]|:[si]
+        <<- /gn/ -2>> =suggSing(\2)                                                                 # Accord de nombre erroné :  « \1 » devrait être au singulier.
 
 TEST: toute l’importance de l’{{accords}} musical.
 
 
-## Accords
+__gn_le_accord__
+    ,  le  *WORD
+        <<- /gn/ morph(\3, "@:[NAQ].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -2>> =suggLesLa(\2)         # Accord de genre erroné : « \3 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            # Accord de genre erroné : « \2 » est un déterminant masculin.
+        <<- /gn/ __else__ and morph(\3, ":[NAQ].*:p") -3>> =suggMasSing(\3)                         # Accord de nombre erroné : « \3 » devrait être au singulier.
+        <<- /gn/ __also__ -2>> les                                                                  # Accord de nombre erroné : « \3 » est au pluriel.
 
-__<i]/gn(gn_le_accord1)__
-    , +(le) +({w_2})  @@w,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -1>> =suggLesLa(\2)                 # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- __else__ and morph(\2, ":[NAQ].*:p") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-    <<- __also__ -1>> les                                                                           # Accord de nombre erroné : « \2 » est au pluriel.
-__[i]/gn(gn_le_accord2)__
-    ({w_1}) +(le) +({w_2})  @@0,w,$
-    <<- morph(\2, ":D", False) >>>
-    <<- morphex(\3, ":[NAQ].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)")
-        or ( morphex(\3, ":[NAQ].*:f", ":[me]") and morphex(\1, ":R", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv", False) and morph(\3, ":Y", False)) )
-    -2>> =suggLesLa(\3)                                                                             # Accord de genre erroné : « \3 » est féminin.
-    <<- __also__ and hasMasForm(\3) -3>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \2 » est un déterminant masculin.
-    <<- __else__ and morph(\3, ":[NAQ].*:p")
-        or ( morphex(\3, ":[NAQ].*:p", ":[si]") and morphex(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv", False) and morph(\3, ":Y", False)) )
-    -3>> =suggMasSing(@)                                                                            # Accord de nombre erroné : « \3 » devrait être au singulier.
-    <<- __also__ -2>> les                                                                           # Accord de nombre erroné : « \3 » est au pluriel.
-__[i]/gn(gn_le_accord3)__
-    ^ *(le) +({w_2}) @@*,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|P|G|W|Y)") -1>> =suggLesLa(\2)                           # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- __else__ and morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                      # Accord de nombre erroné : « \2 » devrait être au singulier.
-    <<- __also__ -1>> les                                                                           # Accord de nombre erroné : « \2 » est au pluriel.
+    *WORD  le  *WORD
+        <<- /gn/ morph(\2, ":D") >>>
+        <<- morph(\3, ":[NAQ].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)")
+            or ( morph(\3, ":[NAQ].*:f", ":[me]") and morph(\1, ":R", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+        -2>> =suggLesLa(\2)                                                                         # Accord de genre erroné : « \3 » est féminin.
+        <<- __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                                 # Accord de genre erroné : « \2 » est un déterminant masculin.
+        <<- __else__ and morph(\3, ":[NAQ].*:p", "*")
+            or ( morph(\3, ":[NAQ].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+        -3>> =suggMasSing(\3)                                                                       # Accord de nombre erroné : « \3 » devrait être au singulier.
+        <<- __also__ -2>> les                                                                       # Accord de nombre erroné : « \3 » est au pluriel.
+
+    <start>  le  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:f", ":(?:e|m|P|G|W|Y)") -2>> =suggLesLa(\2)                    # Accord de genre erroné : « \3 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            # Accord de genre erroné : « \2 » est un déterminant masculin.
+        <<- /gn/ __else__ and morph(\3, ":[NAQ].*:p", ":[siGW]") -3>> =suggMasSing(\3)              # Accord de nombre erroné : « \3 » devrait être au singulier.
+        <<- /gn/ __also__ -2>> les                                                                  # Accord de nombre erroné : « \3 » est au pluriel.
 
 TEST: c’est une catastrophe, {{le}} {{profits}} a baissé ces deux derniers trimestres
 TEST: {{Le}} démoralisation.                                  ->> La
@@ -8856,49 +8904,56 @@ TEST: {{le}} {{publique}}
 TEST: {{Le}} {{pendue}}
 
 
-__[i]/gn(gn_ledit_accord)__
-    (ledit) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":[GWme]") -1>> ladite                                            # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_un_accord)__
-    (un) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s|Y)") -1>> une                                    # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") and not morph(word(-2), ":B", False) -2>> =suggMasSing(@) # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_un_des_accord)__
-    (un) +des +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s)") -1>> une                                    # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasPlur(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-__[i]/gn(gn_du_accord)__
-    (du) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":[GWme]") -1>> de la                                             # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_cet_accord)__
-    (cet) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":[GWme]") -1>> cette                                             # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ">[bcçdfgjklmnpqrstvwxz].+:[NAQ].*:m", ":[efGW]") -1>> ce                       # Accord de genre correct, mais euphonie non respectée.|http://fr.wikipedia.org/wiki/Euphonie
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_ce_accord)__
-    (ce) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":(?:3s|[GWme])") -1>> cette                                      # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ":[NAQ].*:f", ":[GWme]") and morph(\2, ":3s", False) -1>> cette|se              # Accord de genre erroné : « \2 » est féminin. Ou bien vous confondez le déterminant “ce” avec le pronom “se”.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_mon_ton_son_accord)__
-    ([mts]on) +({w_2})  @@0,$
-    <<- morph(\1, ":D", False) >>>
-    <<- morphex(\2, ">[bcdfgjklmnpqrstvwxz].*:[NAQ].*:f", ":[GWme]") -1>> =\1.replace("on", "a")    # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_au_accord)__
-    (au) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f:s", ":[GWme]") -1>> à la                                            # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-    <<- __also__ -1>> aux                                                                           # Accord de nombre erroné : « \2 » est au pluriel.
+__gn_ledit_accord__
+    ledit  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":[GWme]") -1>> ladite                             # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_un_accord__
+    un  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s|Y)") -1>> une                   # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_un_des_accord__
+    un  des  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:f", ":(?:e|m|G|W|V0|3s)") -1>> une                     # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasPlur(\3, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+
+__gn_du_accord__
+    du  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":[GWme]") -1>> de la                              # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_cet_accord__
+    cet  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":[GWme]") -1>> cette                              # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ">[bcçdfgjklmnpqrstvwxz].+:[NAQ].*:m", ":[efGW]") -1>> ce        # Accord de genre correct, mais euphonie non respectée.|http://fr.wikipedia.org/wiki/Euphonie
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_ce_accord__
+    ce  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":(?:3s|[GWme])") -1>> cette                       # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":[GWme]") and morph(\2, ":3s") -1>> cette|se      # Accord de genre erroné : « \2 » est féminin. Ou bien vous confondez le déterminant “ce” avec le pronom “se”.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_mon_ton_son_accord__
+    [mon|ton|son]  *WORD
+        <<- /gn/ morph(\1, ":D") >>>
+        <<- /gn/ morph(\2, ">[bcdfgjklmnpqrstvwxz].*:[NAQ].*:f", ":[GWme]") -1>> =\1.replace("on", "a")     # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_au_accord__
+    au  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f:s", ":[GWme]") -1>> à la                             # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggMasSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+        <<- /gn/ __also__ -1>> aux                                                          # Accord de nombre erroné : « \2 » est au pluriel.
 
 TEST: ledit {{accords}} ne vaut rien.
 TEST: {{au}} {{États-Unis}}
@@ -8914,28 +8969,31 @@ TEST: ce {{claviers}}
 TEST: cette bouffe, c’est du {{chiens}}
 TEST: le ton monte.
 TEST: Ces enfants n’ont jamais vu quelqu’un lire.
+TEST: Trente et un hommes sur le pont.
 
 
-__<i]/gn(gn_la_accord1)__
-    , +(la) +({w_2})  @@w,$
-    <<- morphex(\2, ":[NAQ].*:m", ":(?:e|f|P|G|W|[1-3][sp]|Y)") -1>> le                             # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- __else__ and morph(\2, ":[NAQ].*:p") -2>> =suggFemSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_la_accord2)__
-    ({w_1}) +(la) +({w_2})  @@0,w,$
-    <<- morph(\2, ":D", False) >>>
-    <<- morphex(\3, ":[NAQ].*:m", ":(?:e|f|P|G|W|[1-3][sp]|Y)")
-        or ( morphex(\3, ":[NAQ].*:m", ":[fe]") and morphex(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)", False) and morph(\3, ":Y", False)) )
-    -2>> le                                                                                         # Accord de genre erroné : « \3 » est masculin.
-    <<- __also__ and hasFemForm(\3) -3>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \2 » est un déterminant féminin.
-    <<- __else__ and morph(\3, ":[NAQ].*:p")
-        or ( morphex(\3, ":[NAQ].*:p", ":[si]") and morphex(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv", False) and morph(\3, ":Y", False)) )
-    -3>> =suggFemSing(@)                                                                            # Accord de nombre erroné : « \3 » devrait être au singulier.
-__[i]/gn(gn_la_accord3)__
-    ^ *(la) +({w_2})  @@*,$
-    <<- morphex(\2, ":[NAQ].*:m", ":[efPGWY]") -1>> le                                              # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- __else__ and morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(@)                      # Accord de nombre erroné : « \2 » devrait être au singulier.
+## Singulier féminin
+
+__gn_la_accord__
+    ,  la  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:m", ":(?:e|f|P|G|W|[1-3][sp]|Y)") -2>> le              # Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
+        <<- /gn/ __else__ and morph(\3, ":[NAQ].*:p") -3>> =suggFemSing(\3)                 # Accord de nombre erroné : « \3 » devrait être au singulier.
+
+    *WORD  la  *WORD
+        <<- /gn/ morph(\2, ":D") >>>
+        <<- morph(\3, ":[NAQ].*:m", ":(?:e|f|P|G|W|[1-3][sp]|Y)")
+            or ( morph(\3, ":[NAQ].*:m", ":[fe]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
+        -2>> le                                                                             # Accord de genre erroné : « \3 » est masculin.
+        <<- __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                         # Accord de genre erroné : « \2 » est un déterminant féminin.
+        <<- __else__ and morph(\3, ":[NAQ].*:p")
+            or ( morph(\3, ":[NAQ].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+        -3>> =suggFemSing(\3)                                                               # Accord de nombre erroné : « \3 » devrait être au singulier.
+
+    <start>  la  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:m", ":[efPGWY]") -2>> le                               # Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
+        <<- /gn/ __else__ and morph(\3, ":[NAQ].*:p", ":[siGW]") -3>> =suggFemSing(\3)      # Accord de nombre erroné : « \3 » devrait être au singulier.
 
 TEST: c’est ennuyeux, la {{parties}} deux est ratée.
 TEST: {{La}} Cameroun                                         ->> Le
@@ -8948,43 +9006,47 @@ TEST: {{La}} {{pris}}
 TEST: la force de la {{formes}} parfaite
 
 
-__[i]/gn(gn_ladite_accord)__
-    (ladite) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":[efGW]") -1>> ledit                                             # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+__gn_ladite_accord__
+    ladite  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m", ":[efGW]") -1>> ledit                              # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: ladite {{passions}} l’avait conduit à sa perte.
 
 
-__[i]/gn(gn_une_accord)__
-    (une) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":(?:e|f|G|W|V0|3s|P)") and not ( \2 == "demi" and morph(word(1), ":N.*:f") )
-    -1>> un                                                                                         # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") and not morph(word(-2), ":B", False) -2>> =suggFemSing(@) # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_une_des_accord)__
-    (une) +des +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":(?:e|f|G|W|V0|3s)") -1>> un                                     # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemPlur(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
+__gn_une_accord__
+    une  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m", ":(?:e|f|G|W|V0|3s|P)") and not ( \2 == "demi" and morph(>1, ":N.*:f", "*") )
+        -1>> un                                                                             # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_une_des_accord__
+    une  des  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:m", ":(?:e|f|G|W|V0|3s)") -1>> un                      # Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
 
 TEST: un {{slashs}}                                           ->> slash
 TEST: un {{fromages}}.                                        ->> fromage
 TEST: Un {{ballons}}                                          ->> ballon
 TEST: Une {{cinglées}}                                        ->> cinglée
+TEST: {{une}} des {{joueurs}}
+TEST: mille et une merveilles
 
 
-__[i]/gn(gn_cette_accord)__
-    (cette) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":[efGW]") -1>> =suggCeOrCet(\2)                                  # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemSing(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_ma_ta_sa_accord)__
-    ([mts]a) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":[efGW]") -1>> =\1.replace("a", "on")                            # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and not re.search("(?i)^[aâeéèêiîoôuûyœæ]", \2) and hasFemForm(\2)
-    -2>> =suggFemSing(@, True)                                                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(@)                                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+__gn_cette_accord__
+    cette  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m", ":[efGW]") -1>> =suggCeOrCet(\2)                   # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+__gn_ma_ta_sa_accord__
+    [ma|ta|sa]  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m", ":[efGW]") -1>> =\1[:-1]+"on"                      # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and not re.search("(?i)^[aâeéèêiîoôuûyœæ]", \2) and hasFemForm(\2)
+        -2>> =suggFemSing(\2, True)                                                         # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggFemSing(\2)                   # Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: {{une}} des {{chats}}
 TEST: {{ma}} {{parti}}
@@ -8993,31 +9055,74 @@ TEST: {{une}} kyste                                           ->> un
 TEST: {{Cette}} {{animal}} mort.
 
 
-__[i]/gn(gn_certains_accord)__
-    (certains) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":[emGWP]") -1>> certaines                                        # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasPlur(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
-    <<- (morphex(\2, ":[NAQ].*:s", ":(?:[ipGWP]|V0)")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)))
-        or \1 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \2 » devrait être au pluriel.
-__[i]/gn(gn_certains_des_accord)__
-    (certains) +des +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f", ":[emGW]") -1>> certaines                                         # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasMasForm(\2) -2>> =suggMasPlur(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant masculin.
+## Singuliers épicènes
 
-__[i]/gn(gn_certaines_accord)__
-    (certaines) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":[efGWP]") -1>> certains                                         # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemPlur(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
-    <<- (morphex(\2, ":[NAQ].*:s", ":[ipGWP]")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)))
-        or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \2 » devrait être au pluriel.
-__[i]/gn(gn_certaines_des_accord)__
-    (certaines) +des ({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m", ":[efGW]") -1>> certains                                          # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2) -2>> =suggFemPlur(@, True)                                      # Accord de genre erroné : « \1 » est un déterminant féminin.
+__gn_leur_accord__
+    ,  leur  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:p", "*") -2>> leurs                                    # Accord de nombre erroné avec « \3 ».
+        <<- /gn/ __also__ -3>> =suggSing(\3)                                                # Accord de nombre erroné : « \3 » devrait être au singulier.
+
+    *WORD  leur  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:p", "*")
+            or ( morph(\3, ":[NAQ].*:p", ":[si]") and morph(\1, ":[RC]|>de/", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+        -2>> leurs                                                                          # Accord de nombre erroné avec « \3 ».
+        <<- /gn/ __also__ -3>> =suggSing(\3)                                                # Accord de nombre erroné : « \3 » devrait être au singulier.
+
+    <start>  leur  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:p", ":[siGW]") -2>> leurs                              # Accord de nombre erroné avec « \3 ».
+        <<- /gn/ __also__ -3>> =suggSing(\3)                                                # Accord de nombre erroné : « \3 » devrait être au singulier.
+
+TEST: Tu sais, {{leur}} {{impatiences}} est notoire.
+TEST: J’en ai assez de {{leur}} {{délires}}
+TEST: {{Leur}} {{perceptions}} des choses m’exaspère.
+TEST: dans {{leur}} {{usines}}
+
+
+__gn_notre_votre_chaque_accord__
+    [notre|votre|chaque]  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siGW]") -2>> =suggSing(\2)                      # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: Chaque {{chiens}}.                                      ->> chien
+
+
+__gn_quelque_accord__
+    quelque  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:p", ":[siG]") and not value(>1, "|que|qu’|qu|")
+        -1>> quelques                                                                       # Il manque un “s” à « quelque » ou « \2 » doit être au singulier.
+
+TEST: {{Quelque}} amis
+
+
+## Pluriels épicènes
+
+
+## Autres pluriels
+
+__gn_certains_accord__
+    certains  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f", ":[emGWP]") -1>> certaines                         # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasPlur(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ ( morph(\2, ":[NAQ].*:s", ":(?:[ipGWP]|V0)") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")) )
+            or \1 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
+
+__gn_certains_des_accord__
+    certains  des  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:f", ":[emGW]") -1>> certaines                          # Accord de genre erroné : « \3 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasPlur(\3, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+
+__gn_certaines_accord__
+    certaines  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m", ":[efGWP]") -1>> certains                          # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemPlur(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ ( morph(\2, ":[NAQ].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")) )
+            or \2 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
+
+__gn_certaines_des_accord__
+    certaines  des  *WORD
+        <<- /gn/ morph(\3, ":[NAQ].*:m", ":[efGW]") -1>> certains                           # Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
 
 TEST: Certaines {{danse}}
 TEST: Certains {{chien}}
@@ -9026,41 +9131,13 @@ TEST: {{certaines}} des hommes
 TEST: Un problème rapporté par certains est l’incapacité à trouver un partenaire
 
 
-## Singuliers épicènes
-
-__<i]/gn(gn_leur_accord1)__
-    , +(leur) +({w_2})  @@w,$
-    <<- morph(\2, ":[NAQ].*:p") -1>> leurs                                                          # Accord de nombre erroné avec « \2 ».
-    <<- __also__ -2>> =suggSing(@)                                                                  # Accord de nombre erroné : « \2 » devrait être au singulier.
-__[i]/gn(gn_leur_accord2)__
-    ({w_1}) +(leur) +({w_2})  @@0,w,$
-    <<- morph(\3, ":[NAQ].*:p")
-        or ( morphex(\3, ":[NAQ].*:p", ":[si]") and morphex(\1, ":[RC]|>de/", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv", False) and morph(\3, ":Y", False)) )
-    -2>> leurs                                                                                      # Accord de nombre erroné avec « \3 ».
-    <<- __also__ -3>> =suggSing(@)                                                                  # Accord de nombre erroné : « \3 » devrait être au singulier.
-__<i]/gn(gn_leur_accord3)__
-    ^ *(leur) +({w_2})  @@*,$
-    <<- morphex(\2, ":[NAQ].*:p", ":[siGW]") -1>> leurs                                             # Accord de nombre erroné avec « \1 ».
-    <<- __also__ -2>> =suggSing(@)                                                                  # Accord de nombre erroné : « \2 » devrait être au singulier.
-
-TEST: Tu sais, {{leur}} {{impatiences}} est notoire.
-TEST: J’en ai assez de {{leur}} {{délires}}
-TEST: {{Leur}} {{perceptions}} des choses m’exaspère.
-TEST: dans {{leur}} {{usines}}
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
 
 
-__[i]/gn(gn_notre_votre_chaque_accord)__
-    (?:[nv]otre|chaque) +({w_2})  @@$
-    <<- morphex(\1, ":[NAQ].*:p", ":[siGW]") -1>> =suggSing(@)                                      # Accord de nombre erroné : « \1 » devrait être au singulier.
-
-TEST: Chaque {{chiens}}.                                      ->> chien
 
 
-__[i]/gn(gn_quelque_accord)__
-    (quelque) +({w_2})(?! que?)  @@0,$
-    <<- morphex(\2, ":[NAQ].*:p", ":[siG]") -1>> quelques                                           # Il manque un “s” à « quelque » ou « \2 » doit être au singulier.
-
-TEST: {{Quelque}} amis
 
 
 ## Pluriels épicènes
@@ -12155,7 +12232,7 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 !!!
 
 ### @ : we remove @ we introduced after le/la/les in some cases
-__<s>(p_arobase)__      @ <<- ~>> *
+#__<s>(p_arobase)__      @ <<- ~>> *
 
 ### Avant les verbes (ôter seulement les COI!)
 __[i](p_ne_leur_lui)__  ne (leur|lui)(?! en) @@3 <<- ~1>> *
@@ -12173,10 +12250,6 @@ __[i](p_que_semble_le_penser)__
     que +(sembl\w+) +(l(?:e (?:penser|croire|présumer|supposer)|’(?:envisager|imaginer))) @@w,$
     <<- morph(\1, ">sembler/", False) ~2>> *
 
-### tous / tout / toute / toutes
-__[i](p_tout_det_mas)__     (tout) (?:le|ce|[mts]on|leur) @@0 <<- ~1>> *
-__[i](p_toute_det_fem)__    (toute) (?:la|cette|[mts](?:a|on)|leur) @@0 <<- ~1>> *
-__[i](p_tous_det_plur)__    (tou(?:te|)s) (?:[csmlt]es|[vn]os|leurs) @@0 <<- ~1>> *
 
 ### Simplification des groupes nominaux
 
