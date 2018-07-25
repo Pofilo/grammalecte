@@ -26,6 +26,8 @@ def prepareFunction (s):
     s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
     s = re.sub(r"(morph|analyse|value)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                       # next token
     s = re.sub(r"(morph|analyse|value)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                       # previous token
+    s = re.sub(r"(morph|analyse|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', s)          # next token
+    s = re.sub(r"(morph|analyse|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', s)      # previous token
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before(s)
     s = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                 # after(s)
@@ -296,7 +298,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
             if m:
                 sGraphName = m.group(1)
                 if sGraphName in dAllGraph:
-                    print("Error. Group name " + sGraphName + " already exists.")
+                    print("Error. Graph name " + sGraphName + " already exists.")
                     exit()
                 dAllGraph[sGraphName] = []
             else:
