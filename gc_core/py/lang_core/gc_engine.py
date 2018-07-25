@@ -1116,6 +1116,15 @@ def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
     return True
 
 
+def g_token (lToken, i):
+    if i < 0:
+        return lToken[0]
+    if i >= len(lToken):
+        return lToken[-1]
+    return lToken[i]
+
+
+
 #### Disambiguator
 
 def g_select (dToken, sPattern, lDefault=None):
