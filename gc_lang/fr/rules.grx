@@ -7901,13 +7901,16 @@ __simplification_des_nombres__
     [vingt|trente|quarante|cinquante|soixante|soixante-dix|septante|quatre-vingt|octante|huitante|quatre-vingt-dix|nonante|mille] et [un|une|onze]
         <<- ~>> \1-et-\3||
         <<- ~2:3>> *
+        <<- =>> define(\1, [":B:e:p"])
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]  cents  @:[NAQ].*:[pi]¬:(?:G|3p)
         <<- ~1:2>> ␣
+        <<- =>> define(\1, [":B:e:p"])
 
     [deux|trois|quatre|cinq|six|sept|huit|neuf] ?cent¿ mille
     cent mille
         <<- ~>> ␣
+        <<- =>> define(\1, [":B:e:p"])
 
 
 __purge_des_nombres__
@@ -7917,7 +7920,6 @@ __purge_des_nombres__
 
     [à|de|d’]  @:B  pour  cent
         <<- ~>> *
-
 
     [à|de|d’]  une  heure  ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-et-une|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-et-une|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-et-une|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf]¿
     [à|de|d’]  [deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre]  heures  ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-et-une|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-et-une|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-et-une|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf]¿
@@ -8849,7 +8851,7 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: après_purge_locutions                                                                   _
+@@@@GRAPH: groupes_nominaux                                                                        _
 @@@@
 @@@@
 @@@@
@@ -9095,6 +9097,77 @@ TEST: {{Quelque}} amis
 
 ## Pluriels épicènes
 
+__gn_les_accord__
+    ,  les  *WORD
+        <<- /gn/ ( morph(\3, ":[NAQ].*:s", "*") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")) )
+            or \3 in aREGULARPLURAL
+        -3>> =suggPlur(\3)                                                                  # Accord de nombre erroné : « \3 » devrait être au pluriel.
+
+    *WORD  les  *WORD
+        <<- /gn/ morph(\2, ":D")
+            and ( morph(\3, ":[NAQ].*:s", "*") or (morph(\3, ":[NAQ].*:s", ":[pi]|>avoir") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y"))) )
+            and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]"))
+        -3>> =suggPlur(\3)                                                                  # Accord de nombre erroné : « \3 » devrait être au pluriel.
+
+    <start>  les  *WORD
+        <<- /gn/ ( morph(\3, ":[NAQ].*:s", ":[ipYPGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")) )
+            or \3 in aREGULARPLURAL
+        -3>> =suggPlur(\3)                                                                  # Accord de nombre erroné : « \3 » devrait être au pluriel.
+
+TEST: ils viennent, les {{petit}}
+TEST: Les {{tiret}}                                           ->> tirets
+TEST: Les plus {{grand}} hommes.                              ->> grands
+TEST: les {{véhicule}}                                        ->> véhicules
+TEST: Les {{démoralisation}}.                                 ->> démoralisations
+TEST: dans les {{usine}}                                      ->> usines
+
+
+__gn_leurs_accord__
+    leurs  *WORD
+        <<- /gn/ (morph(\2, ":[NAQ].*:s", ":(?:[ipGW]|[123][sp])") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")))
+            or \2 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+        <<- /gn/ __also__ -1>> leur                                                         # Accord de nombre erroné avec « \2 ».
+
+TEST: {{leurs}} {{action}}
+TEST: {{leur}} {{données}}
+
+
+__gn_det_pluriel_accord__
+    [des|mes|tes|ses|nos|vos|quelques|lesdits|moult]  *WORD
+        <<- (morph(\2, ":[NAQ].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")))
+            or \2 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
+
+TEST: des {{pain}}                                            ->> pains
+TEST: Quelques {{homme}}.                                     ->> hommes
+TEST: plusieurs {{femme}} sont venues.
+TEST: une personne ou plusieurs ayant décidé de façon déterminée et coordonnée de faire cuire la grenouille
+
+
+__gn_ces_aux_pluriel_accord__
+    [ces|aux]  *WORD
+        <<- (morph(\2, ":[NAQ].*:s", ":[ipGW]") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")))
+            or \2 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
+        <<- __also__ and morph(\2, ">[bcdfglklmnpqrstvwxz].*:m", ":f") >>>
+        <<- \1.endswith("x") or \1.endswith("X") -1>> au                                    # Accord de nombre erroné : « \2 » est au pluriel.
+        <<- __else__ -1>> ce                                                                # Accord de nombre erroné : « \2 » est au pluriel.
+
+TEST: {{ces}} {{détournement}} de fonds et ces vols
+TEST: ces {{étudiant}} sont légion.
+TEST: je vais {{aux}} {{cinéma}}
+TEST: il l’a donné aux {{étudiant}}
+
+
+__gn_plusieurs_accord__
+    plusieurs  *WORD
+        <<- (morph(\2, ":[NAQ].*:s", ":[ipGWP]") and not (value(>1, "|et|ou|") and morph(>2, ":[NAQ]")))
+            or \2 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
+
+TEST: plusieurs {{foi}} par jour.
+
 
 ## Autres pluriels
 
@@ -9131,97 +9204,11 @@ TEST: {{certaines}} des hommes
 TEST: Un problème rapporté par certains est l’incapacité à trouver un partenaire
 
 
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-
-
-
-## Pluriels épicènes
-
-__<i]/gn(gn_les_accord1)__
-    , (les) +({w_2})  @@w,$
-    <<- ( morph(\2, ":[NAQ].*:s") and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)) )
-        or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \2 » devrait être au pluriel.
-__[i]/gn(gn_les_accord2)__
-    ({w_1}) +(les) +({w_2})  @@0,w,$
-    <<- morph(\2, ":D", False) >>>
-    <<- ( morph(\3, ":[NAQ].*:s")
-        or (morphex(\3, ":[NAQ].*:s", ":[pi]|>avoir") and morphex(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv", False) and morph(\3, ":Y", False))) )
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False))
-    -3>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \3 » devrait être au pluriel.
-__[i]/gn(gn_les_accord3)__
-    ^ *(les) +({w_2})  @@w,$
-    <<- (morphex(\2, ":[NAQ].*:s", ":[ipYPGW]")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)))
-        or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \2 » devrait être au pluriel.
-
-TEST: ils viennent, les {{petit}}
-TEST: Les {{tiret}}                                           ->> tirets
-TEST: Les plus {{grand}} hommes.                              ->> grands
-TEST: les {{véhicule}}                                        ->> véhicules
-TEST: Les {{démoralisation}}.                                 ->> démoralisations
-TEST: dans les {{usine}}                                      ->> usines
-
-
-__[i]/gn(gn_leurs_accord)__
-    (leurs) +({w_2})  @@0,$
-    <<- (morphex(\2, ":[NAQ].*:s", ":(?:[ipGW]|[123][sp])")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)))
-        or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
-    <<- __also__ -1>> leur                                                                          # Accord de nombre erroné avec « \2 ».
-
-TEST: {{leurs}} {{action}}
-TEST: {{leur}} {{données}}
-
-
-__[i]/gn(gn_det_pluriel_accord)__
-    (?:[dmts]es|[nv]os|quelques|lesdits|moult) +({w_2})  @@$
-    <<- (morphex(\1, ":[NAQ].*:s", ":[ipGW]")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False))) or \1 in aREGULARPLURAL
-    -1>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au pluriel.
-
-TEST: des {{pain}}                                            ->> pains
-TEST: Quelques {{homme}}.                                     ->> hommes
-TEST: plusieurs {{femme}} sont venues.
-TEST: une personne ou plusieurs ayant décidé de façon déterminée et coordonnée de faire cuire la grenouille
-
-
-__[i]/gn(gn_ces_aux_pluriel_accord)__
-    (ces|aux) +({w_2})  @@0,$
-    <<- (morphex(\2, ":[NAQ].*:s", ":[ipGW]")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False))) or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au pluriel.
-    <<- __also__ and morphex(\2, ">[bcdfglklmnpqrstvwxz].*:m", ":f") >>>
-    <<- \1.endswith("x") or \1.endswith("X") -1>> au                                                # Accord de nombre erroné : « \2 » est au pluriel.
-    <<- __else__ -1>> ce                                                                            # Accord de nombre erroné : « \2 » est au pluriel.
-
-TEST: {{ces}} {{détournement}} de fonds et ces vols
-TEST: ces {{étudiant}} sont légion.
-TEST: je vais {{aux}} {{cinéma}}
-TEST: il l’a donné aux {{étudiant}}
-
-
-__[i]/gn(gn_plusieurs_accord)__
-    plusieurs +({w_2})  @@$
-    <<- (morphex(\1, ":[NAQ].*:s", ":[ipGWP]")
-        and not (after("^ +(?:et|ou) ") and morph(word(2), ":[NAQ]", True, False)))
-        or \1 in aREGULARPLURAL
-    -1>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au pluriel.
-
-TEST: plusieurs {{foi}} par jour.
-
-
 ## Cas particuliers
 
-__[i]/gn(gn_det_plur_cas_particuliers)__
-    (?:[cdmts]es|[nv]os|leurs) (même|point|son|ton) @@$ <<- -1>> \1s                                # Accord de nombre erroné : mettez au pluriel.
+__gn_det_plur_cas_particuliers__
+    [ces|des|mes|tes|ses|nos|vos|leurs|quelques] [même|point|son|ton]
+        <<- /gn/ -2>> \1s                                                                   # Accord de nombre erroné : mettez au pluriel.
 
 TEST: des {{son}} que nous entendons jour et nuit.
 TEST: j’entends ces {{même}} âneries tous les jours
@@ -9229,38 +9216,32 @@ TEST: j’entends ces {{même}} âneries tous les jours
 
 ## Pluriel des groupes
 
-__[i]/gn(gn_nombre_de_accord)__
-    nombre d(?:e +|’)({w_2})  @@$
-    <<- (morphex(\1, ":[NAQ].*:s", ":[ip]|>o(?:nde|xydation|or)\\b") and morphex(word(-1), ":(?:G|[123][sp])", ":[AD]", True))
-        or \1 in aREGULARPLURAL
-    -1>> =suggPlur(@)                                                                               # Ici, « nombre de » devrait probablement être suivi d’un pluriel.
+__gn_nombre_de_accord__
+    nombre  [de|d’]  *WORD
+        <<- /gn/ (morph(\3, ":[NAQ].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>", ":[AD]"))
+            or \3 in aREGULARPLURAL
+        -3>> =suggPlur(\3)                                                                  # Ici, « nombre de » devrait probablement être suivi d’un pluriel.
 
 TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 
 
-__[i]/gn(gn_det_plur_groupe_de_accord)__
-    (?:[ldcsmt]es|leurs|nos|vos|quelques) (?:centaine|milli(?:er|ion|iard)|d(?:ix|ouz)aine|multitude|horde)s? +d(?:e +|’)({w_2})  @@$
-    <<- morphex(\1, ":[NAQ].*:s", ":[ip]") or \1 in aREGULARPLURAL
-    -1>> =suggPlur(@)                                                                               # Mettre au pluriel.
+__gn_det_groupe_de_accord__
+    [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques]  [>centaine|>millier|>million|>milliard|>dixaine|>douzaine|>multitude|>horde]  [de|d’]  *WORD
+        <<- /gn/ morph(\4, ":[NAQ].*:s", ":[ip]") or \4 in aREGULARPLURAL
+        -4>> =suggPlur(\4)                                                                  # Avec des « \2 \3 \4 », mettre au pluriel.
 
-TEST: des centaines de {{bête}} à cornes passèrent devant nous.
-
-
-__[i]/gn(gn_det_sing_groupe_de_accord)__
-    (?:une?|l[ea]|ce(?:tte|)|s(?:on|a)|m(?:on|a)|t(?:on|a)) (?:centaine|milli(?:er|ion|iard)|d(?:ix|ouz)aine|multitude|horde) d(?:e +|’)({w_2}) @@$
-    <<- morphex(\1, ":[NAQ].*:s", ":[ip]") or \1 in aREGULARPLURAL
-    -1>> =suggPlur(@)                                                                               # Mettre au pluriel.
-
-TEST: une multitude d’{{homme}}                               ->> hommes
+TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
+TEST: une multitude d’{{homme}}                                     ->> hommes
 
 
 ## quelque adverbe
 
-__[i]/gn(gn_quelque_adverbe1)__
-    quelques(?= \d+) <<- ->> quelque                                                                # Devant un nombre, « quelque » est un adverbe, donc invariable.
-__[i]/gn(gn_quelque_adverbe2)__
-    (quelques) +({w1}) @@0,$
-    <<- morph(\2, ":B.*:p", False) and \2 != "cents" -1>> quelque                                   # Devant un nombre, « quelque » est un adverbe, donc invariable.
+__gn_quelque_adverbe__
+    quelques  ~^\d+$
+        <<- /gn/ -1>> quelque                                                               # Devant un nombre, « quelque » est un adverbe, donc invariable.
+
+    quelques  @:B
+        <<- /gn/ \2 != "cents" -1>> quelque                                                 # Devant un nombre, « quelque » est un adverbe, donc invariable.
 
 TEST: Elle a eu {{quelques}} 300 réponses à sa petite-annonce.
 TEST: Il commande {{quelques}} trois cents hommes.
@@ -9268,6 +9249,13 @@ TEST: {{Quelques}} 120 hommes                                 ->> Quelque
 TEST: {{Quelques}} deux cents hommes.                         ->> Quelque
 TEST: les quelque 2,5 millions d’habitants
 TEST: les quelque 12 000 stations-service
+
+
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
 
 
 ## Nombres
@@ -15249,11 +15237,12 @@ TEST: il {{avait}} parti.
 @@@@
 @@@@
 @@@@
-@@@@GRAPH: last_graph
+@@@@GRAPH: last_graph                                                                              _
 @@@@
 @@@@
 @@@@
 @@@@
+
 
 
 !!
