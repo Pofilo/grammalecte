@@ -6506,20 +6506,20 @@ TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 !!!
 
 __purge_dates__
-    depuis le           [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    [le|du|au]          [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    [jusqu’|jusqu]  au  [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    à  compter  du      [1er|1ᵉʳ|~\d\d?]  {mois}    ?[dernier|prochain|~\d{2,5}]¿
-    en  l’  an  ~\d{2,5}
-    en  l’  an  de  grâce  ~\d{2,5}
-    en  {mois}  ~\d{2,5}
-    [de|d’|D’]  {mois}  ~\d{2,5}
-    à  la  {mi_mois}    ?~\d{2,5}¿
+    depuis le           [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    [le|du|au]          [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    [jusqu’|jusqu]  au  [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    à  compter  du      [1er|1ᵉʳ|~^\d\d?$]  {mois}    ?[dernier|prochain|~^\d{2,5}$]¿
+    en  l’  an  ~^\d{2,5}$
+    en  l’  an  de  grâce  ~^\d{2,5}$
+    en  {mois}  ~^\d{2,5}$
+    [de|d’|D’]  {mois}  ~^\d{2,5}$
+    à  la  {mi_mois}    ?~^\d{2,5}$¿
         <<- ~>> *
 
-    en  ~\d{2,5}  [,|<end>]
-    en  ~\d{2,5}  @:¬:[AN].*:[pi]
-    de  ~\d{2,5}  @:A.*:s
+    en  ~^\d{2,5}$  [,|<end>]
+    en  ~^\d{2,5}$  @:¬:[AN].*:[pi]
+    de  ~^\d{2,5}$  @:A.*:s
         <<- ~1:2>> *
 
 TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
@@ -6527,8 +6527,8 @@ TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
 
 
 __purge_saisons__
-    à  l’  [été|automne|hiver]  ~\d{2,4}
-    au  printemps  ~\d{2,4}
+    à  l’  [été|automne|hiver]  ~^\d{2,4}$
+    au  printemps  ~^\d{2,4}$
         <<- ~>> *
 
 TEST: Une étude de 2005 publiée dans le Journal
@@ -6588,11 +6588,11 @@ __purge_horaires_et_durée__
     génération  après   génération
         <<- ~>> *
 
-    [à|de]  ~\d\d?  h  ?~\d\d?¿
-    [à|de]  ~\d\d?  h  ?~\d\d?¿   [du|ce]  [matin|soir]
-    [à|de]  ~\d\d?  h  ?~\d\d?¿   de  l’ après-midi
-    [à|de]  ~\d\d?  h  ?~\d\d?¿   cet  après-midi
-    [à|de]  ~\d\d?  h  ?~\d\d?¿   demain  [matin|soir|après-midi]
+    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿
+    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   [du|ce]  [matin|soir]
+    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   de  l’ après-midi
+    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   cet  après-midi
+    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   demain  [matin|soir|après-midi]
         <<- ~>> *
 
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
@@ -6667,7 +6667,7 @@ __purge_locutions_latines__
 __purge_locutions__
     , [oui|non] ,
     , entre autres ?choses¿ ,
-    à ~\d+(?:,\d+|)  %
+    à ~^\d+(?:,\d+|)$  %
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
     à aucun prix
     à autre chose
@@ -6710,7 +6710,7 @@ __purge_locutions__
     à défaut d’autre chose
     à dose homéopathique
     à durée limitée
-    à ~\d+ reprises
+    à ~^\d+$ reprises
     à @:B reprises
     à [plusieurs|quelques|maintes] reprises
     à de  [nombreuses|multiples]  reprises
@@ -6920,7 +6920,7 @@ __purge_locutions__
     au saut du lit
     au sens [figuré|large|propre]
     au surplus
-    au ~[xXvViI]+[eᵉ] siècle
+    au ~^[xXvViI]+[eᵉ]$ siècle
     au-delà du descriptible
     au-dessus [de|d’] {pronom_obj}
     aujourd’hui
@@ -7005,15 +7005,15 @@ __purge_locutions__
     dans ces cas [précis|particuliers]
     dans l’ [idéal|immédiat]
     dans la mesure du possible
-    dans les années ~\d\d+
+    dans les années ~^\d{2,5}$
     dans peu de temps
     dans tout [cela|ça|ceci]
     dans très peu de temps
     dans un cas comme dans l’autre
     dans une [certaine|large|moindre] mesure
-    début {mois} ~\d\d{2,5}
-    au début {mois} ~\d\d{2,5}
-    en ce début {mois} ~\d\d{2,5}
+    début {mois} ~^\d{2,5}$
+    au début {mois} ~^\d{2,5}$
+    en ce début {mois} ~^\d{2,5}$
     d’ abord
     d’ affilée
     d’ ailleurs
@@ -7059,7 +7059,7 @@ __purge_locutions__
     d’ une tout autre ampleur
     d’ une [minute|seconde] à l’ autre
     de-ci ?,¿ de-là
-    de ~\d+(?:,\d+|) %
+    de ~^\d+(?:,\d+|)$ %
     de [cesse|conserve|facto|fait|guingois|luxe|nouveau|permanence|partout|préférence|profundis|rechange|routine|surcroît|surcroit|visu]
     de A à Z
     de bas (?:en haut|étage)
@@ -7173,13 +7173,13 @@ __purge_locutions__
     déjà
     désormais
     depuis @:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    depuis ~\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    depuis ~^\d+$ [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis assez longtemps
     depuis belle lurette
     depuis bien longtemps
     depuis de ?très¿ longues années
     depuis des lustres
-    depuis les années ~\d\d+
+    depuis les années ~^\d\d+$
     depuis longtemps
     depuis lors
     depuis peu de temps
@@ -7199,7 +7199,7 @@ __purge_locutions__
     dès [demain|hier] ?[soir|matin|après-midi]¿
     Dieu [m’|t’|l’|nous|vous|les] en [garde|préserve]
     Dieu [m’|t’|lui|nous|vous|leur] en soit témoin
-    du ~[xXvViI]+[eᵉ] siècle
+    du ~^[xXvViI]+[eᵉ]$ siècle
     du [Ier|Iᵉʳ|1er|1ᵉʳ] siècle
     du bout des lèvres
     du début à la fin
@@ -7316,7 +7316,7 @@ __purge_locutions__
     encore une fois
     encore et [encore|toujours]
     enfin
-    entre {mois} ?~\d{2,5}¿ et {mois} ?~\d{2,5}¿
+    entre {mois} ?~^\d{2,5}¿ et {mois} ?~^\d{2,5}¿
     entre chien et loup
     entre de [bonnes|mauvaises] mains
     entre l’ [un|une] et l’ autre
@@ -7346,8 +7346,8 @@ __purge_locutions__
     il y a ?très¿ longtemps
     il y a ?très¿ peu de temps
     il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a moins de ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a ~\d+ [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a moins de [~\d+$|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a [~\d+$|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     il y a quelque temps
     il n’y a pas ?si¿ longtemps
     illico ?presto¿
@@ -7867,18 +7867,18 @@ __gestion_mots_grammaticaux__
 
 # Déterminant + nombre
 __p_dét_plur_nombre_nom__
-    [les|des|mes|tes|ses|nos|vos|leurs]  ~\d+  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
+    [les|des|mes|tes|ses|nos|vos|leurs]  ~^\d+$  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2>> *
 
-    [les|des|mes|tes|ses|nos|vos|leurs]  ~\d+  ou  ~\d+  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
+    [les|des|mes|tes|ses|nos|vos|leurs]  ~^\d+$  ou  ~^\d+$  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2:4>> *
 
-    [les|des]   >numéro  [un|~\d+|@:B]  et  [~\d+|@:B]
+    [les|des]   >numéro  [un|~^\d+$|@:B]  et  [~^\d+$|@:B]
         <<- ~3:0>> *
 
     la  >numéro  un
     la  >numéro  @:B
-    la  >numéro  ~\d+
+    la  >numéro  ~^\d+$
         <<- =>> define(\2, [">numéro/:N:f:s"])
         <<- ~3>> *
 
@@ -7886,7 +7886,8 @@ __p_dét_plur_nombre_nom__
         <<- ~3>> *
 
     >numéro  @:B
-    >numéro  ~\d+
+    >numéro  ~^\d+$
+    [n°|no]  ~^\d+$
         <<- ~2>> *
 
 
@@ -9171,6 +9172,7 @@ TEST: plusieurs {{foi}} par jour.
 
 ## Autres pluriels
 
+## certains / certaines
 __gn_certains_accord__
     certains  *WORD
         <<- /gn/ morph(\2, ":[NAQ].*:f", ":[emGWP]") -1>> certaines                         # Accord de genre erroné : « \2 » est féminin.
@@ -9204,8 +9206,52 @@ TEST: {{certaines}} des hommes
 TEST: Un problème rapporté par certains est l’incapacité à trouver un partenaire
 
 
-## Cas particuliers
+## quel / quels / quelle / quelles
+__gn_quel_accord__
+    quel  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f:p", ":(?:V0|Oo|[NAQ].*:[me]:[si])")      -1>> quelles                    # Accord de genre et de nombre erroné : « \2 » est féminin et au pluriel.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggMasSing(\2, True)     # Accord de genre et de nombre erroné : « \1 » est masculin et au singulier.
+        <<- /gn/ morph(\2, ":[NAQ].*:m:p", ":(?:V0|Oo|[NAQ].*:[me]:[si])")      -1>> quels                      # Accord de nombre erroné : « \2 » est au pluriel.
+        <<- /gn/ __also__                                                       -2>> =suggSing(\2)              # Accord de nombre erroné : « \1 » est au singulier.
+        <<- /gn/ morph(\2, ":[NAQ].*:f:[si]", ":(?:V0|Oo|[NAQ].*:[me]:[si])")   -1>> quelle                     # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggMasSing(\2, True)     # Accord de genre erroné : « \1 » est masculin.
 
+__gn_quels_accord__
+    quels  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:f:s", ":(?:V0|Oo|[NAQ].*:[me]:[pi])")      -1>> quelle                     # Accord de genre et de nombre erroné : « \2 » est féminin et au singulier.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggMasPlur(\2, True)     # Accord de genre et de nombre erroné : « \1 » est masculin et au pluriel.
+        <<- /gn/ morph(\2, ":[NAQ].*:m:s", ":(?:V0|Oo|[NAQ].*:[me]:[pi])")      -1>> quel                       # Accord de nombre erroné : « \2 » est au singulier.
+        <<- /gn/ __also__                                                       -2>> =suggPlur(\2)              # Accord de nombre erroné : « \1 » est au pluriel.
+        <<- /gn/ morph(\2, ":[NAQ].*:f:[pi]", ":(?:V0|Oo|[NAQ].*:[me]:[pi])")   -1>> quelles                    # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggMasPlur(\2, True)     # Accord de genre erroné : « \1 » est masculin.
+
+__gn_quelle_accord__
+    quelle  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m:p", ":(?:V0|Oo|[NAQ].*:[fe]:[si])")      -1>> quels                      # Accord de genre et de nombre erroné : « \2 » est masculin et au pluriel.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggFemSing(\2, True)     # Accord de genre et de nombre erroné : « \1 » est féminin et au singulier.
+        <<- /gn/ morph(\2, ":[NAQ].*:f:p", ":(?:V0|Oo|[NAQ].*:[fe]:[si])")      -1>> quelles                    # Accord de nombre erroné : « \2 » est au pluriel.
+        <<- /gn/ __also__                                                       -2>> =suggSing(\2)              # Accord de nombre erroné : « \1 » est au singulier.
+        <<- /gn/ morph(\2, ":[NAQ].*:m:[si]", ":(?:V0|Oo|[NAQ].*:[fe]:[si])")   -1>> quel                       # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggFemSing(\2, True)     # Accord de genre erroné : « \1 » est féminin.
+
+__gn_quelles_accord__
+    quelles  *WORD
+        <<- /gn/ morph(\2, ":[NAQ].*:m:s", ":(?:V0|Oo|[NAQ].*:[fe]:[pi])")      -1>> quel                       # Accord de genre et de nombre erroné. « \2 » est masculin et au singulier.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggFemPlur(\2, True)     # Accord de genre et de nombre erroné : « \1 » est féminin et au pluriel.
+        <<- /gn/ morph(\2, ":[NAQ].*:f:s", ":(?:V0|Oo|[NAQ].*:[fe]:[pi])")      -1>> quelle                     # Accord de nombre erroné : « \2 » est au singulier.
+        <<- /gn/ __also__                                                       -2>> =suggPlur(\2)              # Accord de nombre erroné : « \1 » est au pluriel.
+        <<- /gn/ morph(\2, ":[NAQ].*:m:[pi]", ":(?:V0|Oo|[NAQ].*:[fe]:[pi])")   -1>> quels                      # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2)                                    -2>> =suggFemPlur(\2, True)     # Accord de genre erroné : « \1 » est féminin.
+
+TEST: {{Quelle}} homme.                                       ->> Quel
+TEST: {{Quel}} femme.                                         ->> Quelle
+TEST: {{Quels}} chanson.                                      ->> Quelle
+TEST: {{Quelles}} {{tarés}}.
+TEST: Quelle sale journée…
+TEST: Quelles drôles de prunes
+
+
+## Cas particuliers
 __gn_det_plur_cas_particuliers__
     [ces|des|mes|tes|ses|nos|vos|leurs|quelques] [même|point|son|ton]
         <<- /gn/ -2>> \1s                                                                   # Accord de nombre erroné : mettez au pluriel.
@@ -9215,7 +9261,6 @@ TEST: j’entends ces {{même}} âneries tous les jours
 
 
 ## Pluriel des groupes
-
 __gn_nombre_de_accord__
     nombre  [de|d’]  *WORD
         <<- /gn/ (morph(\3, ":[NAQ].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>", ":[AD]"))
@@ -9235,7 +9280,6 @@ TEST: une multitude d’{{homme}}                                     ->> hommes
 
 
 ## quelque adverbe
-
 __gn_quelque_adverbe__
     quelques  ~^\d+$
         <<- /gn/ -1>> quelque                                                               # Devant un nombre, « quelque » est un adverbe, donc invariable.
@@ -9251,104 +9295,50 @@ TEST: les quelque 2,5 millions d’habitants
 TEST: les quelque 12 000 stations-service
 
 
-
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
 ## Nombres
 
-__[i]/gn(gn_nombre_lettres_accord)__
-    (d(?:eux|ix|ouze)|tr(?:ois|eize)|qua(?:tre(?:-vingt(?:s|-dix)|)|torze|rante)|cinq(?:uante|)|six|sept(?:ante|)|huit(?:ante|)|onze|quinze|seize|vingt|trente|soixante(?:-dix|)|cents?|octante|nonante) +({w_2})  @@0,$
-    <<- (morph(\2, ":[NAQ].*:s")
-        and not re.search("(?i)^(janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)$", \2))
-        or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+__gn_nombre_lettres_accord__
+    @:B:e:p  *WORD
+        <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NAQ].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
+            or \2 in aREGULARPLURAL)
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+
+    neuf  *WORD
+        <<- /gn/ ( morph(\2, ":[NAQ].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
+            or \2 in aREGULARPLURAL
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
+
+    mille  *WORD
+        <<- /gn/ (morph(\2, ":[NAQ].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.
-
-
-__[i]/gn(gn_neuf_accord)__
-    (neuf) +({w_2})  @@0,$
-    <<- (morph(\2, ":[NAQ].*:s") and not morph(word(-1), ":N", False)
-        and not re.search("(?i)^(janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)$", \2))
-        or \2 in aREGULARPLURAL
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
-
 TEST: Il a abandonné neuf {{enfant}}.
-
-
-__[i]/gn(gn_mille_accord)__
-    mille +({w_2})  @@$
-    <<- (morph(\1, ":[NAQ].*:s") or \1 in aREGULARPLURAL) and not before(r"(?i)\b(?:le|un|ce|du) +$")
-    -1>> =suggPlur(@)                                                                               # Accord de nombre erroné avec « mille » : « \1 » devrait être au pluriel.
-
 TEST: On peut trouver mille {{travailleur}} d’un claquement de doigts.
+TEST: un logement neuf bâti par des professionnels.
+TEST: un mille marin.
 
 
-__[i]/gn(gn_01_accord)__
-    [01] ({w_2})  @@$
-    <<- morph(\1, ":[NAQ].*:p")
-        and not re.search("(?i)^(janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|Rois|Corinthiens|Thessaloniciens)$", \1)
-    -1>> =suggSing(@)                                                                               # Accord de nombre erroné : « \1 » devrait être au singulier.
+__gn_nombre_chiffres_accord__
+    [0|1|01]  @:[NAQ].*:p¬*
+        <<- /gn/ not value(\2, "|Rois|Corinthiens|Thessaloniciens|") -2>> =suggSing(\2)     # Accord de nombre erroné : « \1 » devrait être au singulier.
+
+    ~^\d+$  *WORD
+        <<- not value(<1, "|/|") and not re.search("^0*[01]$", \1)
+            and ( (morph(\2, ":[NAQ].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
+            or \1 in aREGULARPLURAL )
+        -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
 
 TEST: 00 heure, 01 heure
 TEST: il a adopté 1 {{chiens}}.
-
-
-__[i]/gn(gn_nombre_chiffres_accord)__
-    (?<!/)(\d+) ({w_2})  @@0,$
-    <<- not re.search("^0*[01]$", \1)
-        and ((morph(\2, ":[NAQ].*:s") and not re.search("(?i)^(janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)$", \2))
-        or \1 in aREGULARPLURAL)
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné : « \2 » devrait être au pluriel.
-
 TEST: 22 {{heure}}
 TEST: 3 {{heure}}
 
 
-## quel / quels / quelle / quelles
-__[i]/gn(gn_quel_accord)__
-    (quel) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f:p", ":(?:V0e|[NAQ].*:[me]:[si])")       -1>> quelles                # Accord de genre et de nombre erroné : « \2 » est féminin et au pluriel.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggMasSing(@, True)  # Accord de genre et de nombre erroné : « \1 » est masculin et au singulier.
-    <<- morphex(\2, ":[NAQ].*:m:p", ":(?:V0e|[NAQ].*:[me]:[si])")       -1>> quels                  # Accord de nombre erroné : « \2 » est au pluriel.
-    <<- __also__                                                        -2>> =suggSing(@)           # Accord de nombre erroné : « \1 » est au singulier.
-    <<- morphex(\2, ":[NAQ].*:f:[si]", ":(?:V0e|[NAQ].*:[me]:[si])")    -1>> quelle                 # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggMasSing(@, True)  # Accord de genre erroné : « \1 » est masculin.
-__[i]/gn(gn_quels_accord)__
-    (quels) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:f:s", ":(?:V0e|[NAQ].*:[me]:[pi])")       -1>> quelle                 # Accord de genre et de nombre erroné : « \2 » est féminin et au singulier.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggMasPlur(@, True)  # Accord de genre et de nombre erroné : « \1 » est masculin et au pluriel.
-    <<- morphex(\2, ":[NAQ].*:m:s", ":(?:V0e|[NAQ].*:[me]:[pi])")       -1>> quel                   # Accord de nombre erroné : « \2 » est au singulier.
-    <<- __also__                                                        -2>> =suggPlur(@)           # Accord de nombre erroné : « \1 » est au pluriel.
-    <<- morphex(\2, ":[NAQ].*:f:[pi]", ":(?:V0e|[NAQ].*:[me]:[pi])")    -1>> quelles                # Accord de genre erroné : « \2 » est féminin.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggMasPlur(@, True)  # Accord de genre erroné : « \1 » est masculin.
-__[i]/gn(gn_quelle_accord)__
-    (quelle) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m:p", ":(?:V0e|[NAQ].*:[fe]:[si])")       -1>> quels                  # Accord de genre et de nombre erroné : « \2 » est masculin et au pluriel.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggFemSing(@, True)  # Accord de genre et de nombre erroné : « \1 » est féminin et au singulier.
-    <<- morphex(\2, ":[NAQ].*:f:p", ":(?:V0e|[NAQ].*:[fe]:[si])")       -1>> quelles                # Accord de nombre erroné : « \2 » est au pluriel.
-    <<- __also__                                                        -2>> =suggSing(@)           # Accord de nombre erroné : « \1 » est au singulier.
-    <<- morphex(\2, ":[NAQ].*:m:[si]", ":(?:V0e|[NAQ].*:[fe]:[si])")    -1>> quel                   # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggFemSing(@, True)  # Accord de genre erroné : « \1 » est féminin.
-__[i]/gn(gn_quelles_accord)__
-    (quelles) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:m:s", ":(?:V0e|[NAQ].*:[fe]:[pi])")       -1>> quel                   # Accord de genre et de nombre erroné. « \2 » est masculin et au singulier.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggFemPlur(@, True)  # Accord de genre et de nombre erroné : « \1 » est féminin et au pluriel.
-    <<- morphex(\2, ":[NAQ].*:f:s", ":(?:V0e|[NAQ].*:[fe]:[pi])")       -1>> quelle                 # Accord de nombre erroné : « \2 » est au singulier.
-    <<- __also__                                                        -2>> =suggPlur(@)           # Accord de nombre erroné : « \1 » est au pluriel.
-    <<- morphex(\2, ":[NAQ].*:m:[pi]", ":(?:V0e|[NAQ].*:[fe]:[pi])")    -1>> quels                  # Accord de genre erroné : « \2 » est masculin.
-    <<- __also__ and hasFemForm(\2)                                     -2>> =suggFemPlur(@, True)  # Accord de genre erroné : « \1 » est féminin.
 
-TEST: {{Quelle}} homme.                                       ->> Quel
-TEST: {{Quel}} femme.                                         ->> Quelle
-TEST: {{Quels}} chanson.                                      ->> Quelle
-TEST: {{Quelles}} {{tarés}}.
-TEST: Quelle sale journée…
-TEST: Quelles drôles de prunes
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
 
 
 __[i]/gn(gn_quel_quel_accord_être)__
@@ -15304,7 +15294,8 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 
 # verbe que + subjonctif
 __vmode_qqch_que_subjonctif1__
-    [afin|avant|pour|quoi|>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
+    [>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
+    [afin|avant|pour|quoi|sans]  [que|qu’|qu]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après « \1 que », ce verbe devrait être au subjonctif.
 
     >douter  [que|qu’|qu]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
@@ -15315,6 +15306,7 @@ TEST: Je veux qu’il {{finit}} son repas.
 TEST: quoi qu’il en {{conclut}}
 TEST: Je ne veux pas que tu {{es}} des ennuis
 TEST: Avant que tu {{pars}}, je voudrais qu’on discute.
+TEST: Sans qu’elle {{prend}} le temps d’analyser le problème.
 TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
@@ -15326,7 +15318,7 @@ __vmode_qqch_que_subjonctif2__
     à       condition   [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
     pour    peu         [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
     il      peut        [que|qu’|qu]    @:(?:Os|M)      @:I¬:[GYS]
-        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                    # Ce verbe devrait être au subjonctif.
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Ce verbe devrait être au subjonctif.
 
 TEST: à condition qu’il {{finit}} son boulot.
 TEST: pour peu qu’il {{prend}} son devoir sérieux…
