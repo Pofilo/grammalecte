@@ -1170,8 +1170,11 @@ def g_define (dToken, lMorph):
     return True
 
 
-def g_define_from (dToken, nLeft, nRight=None):
-    dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
+def g_define_from (dToken, nLeft=None, nRight=None):
+    if nLeft is not None:
+        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
+    else:
+        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
     return True
 
 
