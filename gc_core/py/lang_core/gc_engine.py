@@ -661,7 +661,8 @@ class TextParser:
                 for sRegex in dNode["<re_morph>"]:
                     if "¬" not in sRegex:
                         # no anti-pattern
-                        if any(re.search(sRegex, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                        lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
+                        if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
                             yield dGraph[dNode["<re_morph>"][sRegex]]
@@ -671,15 +672,16 @@ class TextParser:
                         if sNegPattern == "*":
                             # all morphologies must match with <sPattern>
                             if sPattern:
-                                lMorph = _oSpellChecker.getMorph(dToken["sValue"])
+                                lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                                 if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                     if bDebug:
                                         print("  MATCH: @" + sRegex)
                                     yield dGraph[dNode["<re_morph>"][sRegex]]
                         else:
-                            if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                            lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
+                            if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
                                 continue
-                            if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in _oSpellChecker.getMorph(dToken["sValue"])):
+                            if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                 if bDebug:
                                     print("  MATCH: @" + sRegex)
                                 yield dGraph[dNode["<re_morph>"][sRegex]]
@@ -1017,8 +1019,8 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemoriz
                 dToken["lMorph"] = lMorph
         else:
             lMorph = _oSpellChecker.getMorph(dToken["sValue"])
-        if not lMorph:
-            return False
+    if not lMorph:
+        return False
     # check negative condition
     if sNegPattern:
         if sNegPattern == "*":
