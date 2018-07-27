@@ -9432,57 +9432,50 @@ TEST: ils trouvent ça de plus en plus {{idiots}}              ->> idiot
 !!
 
 ## Sans article
-
-__[i]/gn(gn_2m_accord)__
+__gn_2m_accord__
     <start>  @:[NA]¬*  @:[NA]¬*
         <<- /gn/ ((morph(\2, ":m", "*") and morph(\3, ":f", "*")) or (morph(\2, ":f", "*") and morph(\3, ":m", "*"))) and not apposition(\2, \3)
         -3>> =switchGender(\3)                                                                      # Accord de genre erroné avec « \2 ».
-        <<- __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                      # Accord de genre erroné avec « \3 ».
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
         <<- /gn/ ((morph(\2, ":s", "*") and morph(\3, ":p", "*")) or (morph(\2, ":p", "*") and morph(\3, ":s", "*"))) and not apposition(\2, \3)
         -3>> =switchPlural(\3)                                                                      # Accord de nombre erroné avec « \2 ».
-        <<- __also__ -2>> =switchPlural(\2)                                                         # Accord de nombre erroné avec « \3 ».
+        <<- /gn/ __also__ -2>> =switchPlural(\2)                                                    # Accord de nombre erroné avec « \3 ».
 
 TEST: {{Femmes}} {{intelligente}}.
 TEST: {{Homme}} {{impatients}}.
+
+
+## Prépositions
+__gn_2m_pfx_en__
+    en  @:[NA]¬*  @:[NA]¬*
+        <<- /gn/ ( (morph(\2, ":m", "*") and morph(\3, ":f", "*")) or (morph(\2, ":f", "*") and morph(\3, ":m", "*")) ) and not apposition(\2, \3)
+        -3>> =switchGender(\3)                                                                      # Accord de genre erroné avec « \2 ».
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
+        <<- /gn/ ( (morph(\2, ":p", "*") and morph(\3, ":s", "*")) or (morph(\2, ":s", "*") and morph(\3, ":p", "*")) ) and not apposition(\2, \3)
+        -3>> =switchPlural(\3)                                                                      # Accord de nombre erroné avec « \2 ».
+        <<- /gn/ __also__ -2>> =switchPlural(\2)                                                    # Accord de nombre erroné avec « \3 ».
+
+TEST: en homme {{courtoise}}
+TEST: en {{femme}} {{cultivées}}
+
+__gn_2m_pfx_à_par_pour_sans__
+    [à|par|pour|sans]  @:[NA]¬:Y  @:[NA]
+        <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) ) and not apposition(\2, \3)
+        -3>> =switchGender(\3)                                                                      # Accord de genre erroné avec « \2 ».
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
+        <<- /gn/ ( (morph(\2, ":p", ":[si]") and morph(\3, ":s", "*")) or (morph(\2, ":s", ":[pi]") and morph(\3, ":p", "*")) ) and not apposition(\2, \3)
+        -3>> =switchPlural(\3)                                                                      # Accord de nombre erroné avec « \2 ».
+        <<- /gn/ __also__ -2>> =switchPlural(\2)                                                    # Accord de nombre erroné avec « \3 ».
+
+TEST: à {{grande}} {{enjambées}}
+TEST: pour {{belle}} {{appartement}}
+TEST: une femme sans a priori
 
 
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
-
-
-
-## Prépositions
-
-__[i]/gn(gn_2m_pfx_en)__
-    en +({w_2}) +({w_2})  @@w,$
-    <<- ( (morph(\1, ":[NAQ].*:m") and morph(\2, ":[NAQ].*:f")) or (morph(\1, ":[NAQ].*:f") and morph(\2, ":[NAQ].*:m")) )
-        and not apposition(\1, \2) and morph(word(-1), ":[VRX]", True, True)
-    -2>> =switchGender(@)                                                                           # Accord de genre erroné avec « \1 ».
-    <<- __also__ and hasFemForm(\1) -1>> =switchGender(@)                                           # Accord de genre erroné avec « \2 ».
-    <<- ( (morph(\1, ":[NAQ].*:p") and morph(\2, ":[NAQ].*:s")) or (morph(\1, ":[NAQ].*:s") and morph(\2, ":[NAQ].*:p")) )
-        and not apposition(\1, \2) and morph(word(-1), ":[VRX]", True, True)
-    -2>> =switchPlural(@)                                                                           # Accord de nombre erroné avec « \1 ».
-    <<- __also__ -1>> =switchPlural(@)                                                              # Accord de nombre erroné avec « \2 ».
-
-TEST: en homme {{courtoise}}
-TEST: en {{femme}} {{cultivées}}
-
-
-__[i]/gn(gn_2m_pfx_à_par_pour_sans)__
-    (?:à|par|pour|sans) +({w_2}) +({w_2})  @@w,$
-    <<- ( (morphex(\1, ":[NAQ].*:m", ":[GYfe]") and morph(\2, ":[NAQ].*:f")) or (morphex(\1, ":[NAQ].*:f", ":[GYme]") and morph(\2, ":[NAQ].*:m")) )
-        and not apposition(\1, \2) and morph(word(-1), ":[VRX]", True, True)
-    -2>> =switchGender(@)                                                                           # Accord de genre erroné avec « \1 ».
-    <<- __also__ and hasFemForm(\1) -1>> =switchGender(@)                                           # Accord de genre erroné avec « \2 ».
-    <<- ( (morphex(\1, ":[NAQ].*:p", ":[GYsi]") and morph(\2, ":[NAQ].*:s")) or (morphex(\1, ":[NAQ].*:s", ":[GYpi]") and morph(\2, ":[NAQ].*:p")) )
-        and not apposition(\1, \2) and morph(word(-1), ":[VRX]", True, True)
-    -2>> =switchPlural(@)                                                                           # Accord de nombre erroné avec « \1 ».
-    <<- __also__ -1>> =switchPlural(@)                                                              # Accord de nombre erroné avec « \2 ».
-
-TEST: à {{grande}} {{enjambées}}
-TEST: pour {{belle}} {{appartement}}
 
 
 __[i]/gn(gn_2m_pfx_de_sur_avec_après)__
