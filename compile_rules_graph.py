@@ -312,8 +312,8 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
                 iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
-                print("Error at rule group: ", sLine, " -- line:", i)
-                break
+                print("Syntax error in rule group: ", sLine, " -- line:", i)
+                exit()
         elif re.search("^    +<<- ", sLine) or sLine.startswith("        ") \
                 or re.search("^    +#", sLine) or re.search(r"^    [-~=>/](?:\d\.?(?::\.?\d+|)|)>> ", sLine) :
             # actions
