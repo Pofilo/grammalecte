@@ -33,7 +33,7 @@ function rewriteSubject (s1, s2) {
 
 function apposition (sWord1, sWord2) {
     // returns true if nom + nom (no agreement required)
-    return cregex.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1));
+    return sWord2.length < 2 && cregex.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) && cregex.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1));
 }
 
 function isAmbiguousNAV (sWord) {

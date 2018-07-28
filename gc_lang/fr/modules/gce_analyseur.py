@@ -34,7 +34,7 @@ def rewriteSubject (s1, s2):
 
 def apposition (sWord1, sWord2):
     "returns True if nom + nom (no agreement required)"
-    return cr.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) and cr.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1))
+    return len(sWord2) < 2 and cr.mbNomNotAdj(_oSpellChecker.getMorph(sWord2)) and cr.mbPpasNomNotAdj(_oSpellChecker.getMorph(sWord1))
 
 
 def isAmbiguousNAV (sWord):
