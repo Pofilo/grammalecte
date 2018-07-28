@@ -8589,6 +8589,9 @@ __purge_locutions_potentielles__
     de ce seul fait  @¬:A.*:[me]:[si]
         <<- ~1:4>> *
 
+    des fois  @¬:A.*:[fe]:[pi]
+        <<- ~1:2>> *
+
     dès le départ  @¬:A.*:[me]:[si]
         <<- ~1:3>> *
 
@@ -9481,6 +9484,29 @@ TEST: {{Quel}} que soit cette femme                           ->> Quelle
 TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
 TEST: {{Quels}} que soient ces idiotes                        ->> Quelles
 
+## des
+__gn_des_2m__
+    des  *WORD  *WORD
+        <<- /gn/ (morph(<1, ":[VRBX]|:Cs|>comme/|<start>") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
+        <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
+        -3>> =switchGender(\3, True)                                                                # Accord de genre erroné avec « \2 ».
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
+        <<- checkAgreement(\2, \3) =>> =exclude(\3, ":V")
+
+TEST: faire table rase des passions {{inutile}}               ->> inutiles
+TEST: à bonne distance des {{chiens}} {{méchante}}
+TEST: des hommes {{attaquée}}
+TEST: des femmes {{agressé}}
+TEST: des hommes très mal {{renseigné}}                       ->> renseignés
+TEST: des dépenses non {{nécessaire}}                         ->> nécessaires
+TEST: Des règles pas du tout {{claire}}.                      ->> claires
+TEST: Des peines à peine {{croyable}}.                        ->> croyables
+TEST: Des {{chambres}} plus ou moins fortement {{éclairé}}.
+TEST: Les couleurs rouge, jaune et verte ne doivent pas être utilisées
+TEST: des passeports américain, canadien, néerlandais, allemand et britannique.
+
 
 
 ## Pluriel des groupes
@@ -9890,35 +9916,6 @@ __[i]/gn(gn_2m_det_epi_plur_après_et_ou_de)__
 TEST: ces {{beaux}} {{institutions}}
 TEST: de vos défauts {{terrible}}, je connais presque tout.
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
-
-
-## des
-
-__[i]/gn(gn_2m_des)__
-    des +({w_2}) +({w_2})  @@w,$
-    <<- \1 != "fois" and not \2.startswith("seul")
-        and ( (morphex(\1, ":[NAQ].*:m", ":[fe]") and morph(\2, ":[NAQ].*:f")) or (morphex(\1, ":[NAQ].*:f", ":[me]") and morph(\2, ":[NAQ].*:m")) )
-        and not apposition(\1, \2) and not (after_chk1(r"^ +et +(\w[\w-]+)", ":A") or after_chk1(r"^ *, +(\w[\w-]+)", ":A.*:[si]"))
-        and morph(word(-1), ":[VRBX]|>comme/", True, True)
-    -2>> =switchGender(@, True)                                                                     # Accord de genre erroné avec « \1 ».
-    <<- __also__ and hasFemForm(\1) -1>> =switchGender(@)                                           # Accord de genre erroné avec « \2 ».
-    <<- morph(\1, ":[NAQ].*:[pi]", False) and morph(\2, ":[NAQ].*:s")
-        and not apposition(\1, \2) and not (after_chk1(r"^ +et +(\w[\w-]+)", ":A") or after_chk1(r"^ *, +(\w[\w-]+)", ":A.*:[si]"))
-        and (morphex(\2, ":N", ":[AQ]") or morph(word(-1), ":[VRBX]|>comme/", True, True))
-    -2>> =suggPlur(@)                                                                               # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
-    <<- checkAgreement(\1, \2) =>> =exclude(\2, ":V")
-
-TEST: faire table rase des passions {{inutile}}               ->> inutiles
-TEST: à bonne distance des {{chiens}} {{méchante}}
-TEST: des hommes {{attaquée}}
-TEST: des femmes {{agressé}}
-TEST: des hommes très mal {{renseigné}}                       ->> renseignés
-TEST: des dépenses non {{nécessaire}}                         ->> nécessaires
-TEST: Des règles pas du tout {{claire}}.                      ->> claires
-TEST: Des peines à peine {{croyable}}.                        ->> croyables
-TEST: Des {{chambres}} plus ou moins fortement {{éclairé}}.
-TEST: Les couleurs rouge, jaune et verte ne doivent pas être utilisées
-TEST: des passeports américain, canadien, néerlandais, allemand et britannique.
 
 
 
