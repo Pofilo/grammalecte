@@ -9487,7 +9487,7 @@ TEST: {{Quels}} que soient ces idiotes                        ->> Quelles
 ## des
 __gn_des_2m__
     des  *WORD  *WORD
-        <<- /gn/ (morph(<1, ":[VRBX]|:Cs|>comme/|<start>") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
+        <<- /gn/ (morph(<1, ":[VRBX]|:Cs|>comme/|<start>", "*") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
         <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                # Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
