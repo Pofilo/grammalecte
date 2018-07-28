@@ -11,18 +11,15 @@ import re
 import traceback
 
 
-from graphspell.progressbar import ProgressBar
-
 
 class DARG:
     """DIRECT ACYCLIC RULE GRAPH"""
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
 
     def __init__ (self, lRule, sLangCode):
-        print("===== Direct Acyclic Rule Graph - Minimal Acyclic Finite State Automaton =====")
+        print(" > Direct Acyclic Rule Graph (DARG)", end=" ")
 
         # Preparing DARG
-        print(" > Preparing list of tokens")
         self.sLangCode = sLangCode
         self.nRule = len(lRule)
         self.aPreviousRule = []
@@ -35,11 +32,8 @@ class DARG:
 
         # build
         lRule.sort()
-        oProgBar = ProgressBar(0, len(lRule))
         for aRule in lRule:
             self.insert(aRule)
-            oProgBar.increment(1)
-        oProgBar.done()
         self.finish()
         self.countNodes()
         self.countArcs()
@@ -108,9 +102,7 @@ class DARG:
 
     def displayInfo (self):
         "display informations about the rule graph"
-        print(" * {:<12} {:>16,}".format("Rules:", self.nRule))
-        print(" * {:<12} {:>16,}".format("Nodes:", self.nNode))
-        print(" * {:<12} {:>16,}".format("Arcs:", self.nArc))
+        print(": {:>10,} rules,  {:>10,} nodes,  {:>10,} arcs".format(self.nRule, self.nNode, self.nArc))
 
     def createGraph (self):
         "create the graph as a dictionary"
