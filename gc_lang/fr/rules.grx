@@ -9211,12 +9211,57 @@ __gn_au_1m__
 TEST: {{au}} {{États-Unis}}
 
 
+__gn_det_mas_sing_2m__
+    [ce|cet|quel|au|ledit|dudit|audit]  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|de|d’|") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\2, ":[NA].*:[me]", ":(?:B|G|V0)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
+        -3>> =suggMasSing(\3, True)                                                         # Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
+        <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
+        -3>> =suggMasSing(\3)                                                               # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
+
+    [et|ou|de]  [ce|cet|quel|au|ledit|dudit|audit]  *WORD  *WORD
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
+        -4>> =suggMasSing(\4, True)                                                         # Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
+        -4>> =suggMasSing(\4)                                                               # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+
+TEST: cet outil {{terribles}} qu’il a dans les mains
+TEST: J’aimerais connaître de quel parti {{gauchistes}} on parle.
+
+
 __gn_mon_ton_son_1m__
     [mon|ton|son]  *WORD
         <<- /gn/ morph(\1, ":D") >>>
         <<- /gn/ morph(\2, ">[bcdfgjklmnpqrstvwxz].*:[NA].*:f", ":[GWme]") -1>> =\1.replace("on", "a")     # Accord de genre erroné : « \2 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+
+__gn_mon_ton_son_2m__
+    [mon|ton|son]  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|de|") and not \3.startswith("seul") >>>
+        <<- /gn/ morph(\2, ":[NA].*:m", ":(?:B|G|e|V0|f)") and morph(\3, ":[NA].*:f", "*") and not apposition(\2, \3)
+        -3>> =suggMasSing(\3, True)                                                         # Accord de genre erroné : « \2 » est masculin, « \3 » est féminin.
+        <<- /gn/ morph(\2, ">[aeéèêhiîouy].*:[NA].*:f", ":(?:B|G|e|V0|m)") and morph(\3, ":[NA].*:m", "*") and not apposition(\2, \3)
+        -3>> =suggFemSing(\3, True)                                                         # Accord de genre erroné : « \2 » est féminin, « \3 » est masculin.
+        <<- /gn/ morph(\2, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\2, \3)
+        -3>> =suggMasSing(\3)                                                               # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au singulier.
+
+    [et|ou|de]  [mon|ton|son]  *WORD  *WORD
+        <<- /gn/ not morph(<1, ":[NA]|>(?:et|ou)/") and not \4.startswith("seul") >>>
+        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:B|G|e|V0|f)") and morph(\4, ":[NA].*:f", "*") and not apposition(\3, \4)
+        -4>> =suggMasSing(\4, True)                                                         # Accord de genre erroné : « \3 » est masculin, « \4 » est féminin.
+        <<- /gn/ morph(\3, ">[aeéèêhiîouy].*:[NA].*:f", ":(?:B|G|e|V0|m)") and morph(\4, ":[NA].*:m", "*") and not apposition(\3, \4)
+        -4>> =suggFemSing(\4, True)                                                         # Accord de genre erroné : « \3 » est féminin, « \4 » est masculin.
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
+        -4>> =suggMasSing(\4)                                                               # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+
+TEST: il brandissait avec fougue son drapeau {{déchirés}}
+TEST: comment osez-vous médire de mon héritage {{glorieuse}}
+TEST: on parlait de son escapade {{éperdu}} au milieu de la nuit.
+TEST: ton étonnante {{secret}} ne sera pas au programme.
+
 
 __gn_ma_ta_sa_1m__
     [ma|ta|sa]  *WORD
@@ -9831,61 +9876,6 @@ TEST: elle s’y prit avec cet individu de façon {{charmant}}.
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
-
-
-## articles divers
-
-
-__[i]/gn(gn_2m_det_mas_sing)__
-    (?<!et |ou |de )(?:cet?|quel|au|ledit|dudit|audit) +({w_2}) +({w_2})  @@w,$
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:[me]", ":(?:B|G|V0)") and morph(\2, ":[NAQ].*:f")
-        and not apposition(\1, \2) and not before(r"\b(?:et|ou|de) +$")
-    -2>> =suggMasSing(@, True)                                                                      # Accord de genre erroné : « \1 » est masculin, « \2 » est féminin.
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:[si]", ":G") and morphex(\2, ":[NAQ].*:p", ":[GWsi]")
-        and not apposition(\1, \2) and not before(r"\b(?:et|ou|de) +$")
-    -2>> =suggMasSing(@)                                                                            # Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
-__[i]/gn(gn_2m_det_mas_sing_après_et_ou_de)__
-    (?:et|ou|de) +(?:cet?|quel|au|ledit|dudit|audit) +({w_2}) +({w_2})  @@w,$
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:[me]", ":(?:B|G|V0|f)") and morph(\2, ":[NAQ].*:f")
-        and not apposition(\1, \2) and not morph(word(-1), ":[NAQ]|>(?:et|ou)/", False, False)
-    -2>> =suggMasSing(@, True)                                                                      # Accord de genre erroné : « \1 » est masculin, « \2 » est féminin.
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:[si]", ":G") and morphex(\2, ":[NAQ].*:p", ":[GWsi]")
-        and not apposition(\1, \2) and not morph(word(-1), ":[NAQ]|>(?:et|ou)/", False, False)
-    -2>> =suggMasSing(@)                                                                            # Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
-
-TEST: cet outil {{terribles}} qu’il a dans les mains
-TEST: J’aimerais connaître de quel parti {{gauchistes}} on parle.
-
-
-__[i]/gn(gn_2m_mon_ton_son)__
-    (?<!et |ou |de )[mts]on +({w_2}) +({w_2})  @@w,$
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:m", ":(?:B|G|e|V0|f)") and morph(\2, ":[NAQ].*:f")
-        and not apposition(\1, \2) and not before(r"\b(?:et|ou|de) +$")
-    -2>> =suggMasSing(@, True)                                                                      # Accord de genre erroné : « \1 » est masculin, « \2 » est féminin.
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:[si]", ":G") and morphex(\2, ":[NAQ].*:p", ":[GWsi]")
-        and not apposition(\1, \2) and not before(r"\b(?:et|ou|de) +$")
-    -2>> =suggMasSing(@)                                                                            # Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
-__[i]/gn(gn_2m_mon_ton_son_après_et_ou_de)__
-    (?:et|ou|de) +[mts]on +({w_2}) +({w_2})  @@w,$
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:m", ":(?:B|G|e|V0|f)") and morph(\2, ":[NAQ].*:f")
-        and not apposition(\1, \2) and not morph(word(-1), ":[NAQ]|>(?:et|ou)/", False, False)
-    -2>> =suggMasSing(@, True)                                                                      # Accord de genre erroné : « \1 » est masculin, « \2 » est féminin.
-    <<- not \2.startswith("seul")
-        and morphex(\1, ":[NAQ].*:[si]", ":G") and morphex(\2, ":[NAQ].*:p", ":[GWsi]")
-        and not apposition(\1, \2)
-        and not morph(word(-1), ":[NAQ]|>(?:et|ou)/", False, False)
-    -2>> =suggMasSing(@)                                                                            # Accord de nombre erroné avec « \1 » : « \2 » devrait être au singulier.
-
-TEST: il brandissait avec fougue son drapeau {{déchirés}}
-TEST: comment osez-vous médire de mon héritage {{glorieuse}}
-
 
 
 !!
