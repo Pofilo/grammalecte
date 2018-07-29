@@ -4309,6 +4309,26 @@ TEST: travailler {{a}} bonne distance des fourneaux.
 TEST: Il l’a fait {{a}} cause de toi.
 
 
+__conf_à_moindres_frais__
+    a >moindre [>frai|>frêt]
+    [à|a] moindre [>frai|>frêt]
+    [à|a] >moindre [frai|>frêt]
+        <<- /conf/ ->> à moindres frais                                     # Pour évoquer des dépenses, écrivez “frais” (pluriel).
+
+TEST: {{a moindre frais}}
+TEST: S’en sortir à moindres frais, pas si simple.
+
+
+__conf_à_parts_égales__
+    a [part|parts|par|pare|pares] >égale
+    [à|a] [part|par|pare|pares] >égale
+    [à|a] [part|parts|par|pare|pares] [égal|égals|égale]
+        <<- /conf/ ->> à parts égales                                       # Locution “à parts égales” (toujours au pluriel).
+
+TEST: {{à part égale}}
+TEST: un partage à parts égales
+
+
 __conf_à_a_locutions__
     a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
     a côté [de|d’]
@@ -4829,6 +4849,16 @@ TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
+
+
+# collet monté
+__conf_collet_monté__
+    ~^[cC]oll(?:e[rt]s?|ée?s?)-mont(?:er|ée?s?)$
+    [collé|collés|>collée|coller|collets] [>montée|monté|montés|monter]
+    collet [>montée|montés|monter]
+        <<- /conf/ ->> collet monté                # « Être collet monté » : dans cette locution, « collet monté » est invariable.
+
+TEST: Elles sont tellement {{collets montées}} !
 
 
 # compte / comte / conte
@@ -8673,7 +8703,7 @@ __purge_locutions_verbales__
     >faire table rase
     >faire ce que bon [me|te|lui|nous|vous|leur] semble
     >laisser pour compte
-    >mettre à [bas|jour|niveau|plat|terre]
+    >mettre à [bas|jour|niveau|nu|plat|terre]
     >mettre l’ [écart|épreuve]
     >mettre au [point|pas]
     >mettre en [avant|bouche|demeure|garde|jeu|lumière|œuvre|place|scène|terre]
@@ -8711,7 +8741,7 @@ __purge_locutions_verbales__
 __conf_locutions_verbales__
     >arriver a échéance
     >arriver a point nommé
-    >mettre a [bas|jour|niveau|plat|terre]
+    >mettre a [bas|>jour|>niveau|>nu|>nue|>plat|>terre]
     >mettre a l’ [écart|épreuve]
     >prendre a la légère
     >tenir a distance
@@ -8870,7 +8900,7 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 
 !!
 !!
-!!!! Groupe nominal (1)                                                                           !!
+!!!! Groupe nominal (avec déterminants)                                                           !!
 !!
 !!
 
@@ -9920,51 +9950,44 @@ TEST: il fit cela tans de fois et avec brio de manière {{élégant}}.
 TEST: elle s’y prit avec cet individu de façon {{charmant}}.
 
 
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
 !!
 !!
 !!!! Groupe nominal: Accords avec de / des / du                                                   !!
 !!
 !!
 
-__[i]/gn(gn_devinette1)__
-    (?:[lmts]a|une|cette) +{w_2} +d(?:e (?:[lmts]a|cette)|’une) +(?!des )({w_2}) +({w_2})  @@w,$
-    <<- morphex(\2, ":[NAQ].*:(?:m|f:p)", ":(?:G|P|[fe]:[is]|V0|3[sp])") and not apposition(\1, \2)
-    -2>> =suggFemSing(@, True)                                                              # Accord erroné : « \2 » devrait être au féminin singulier.
+__gn_devinette__
+    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [la|ma|ta|sa|cette|une]  *WORD  *WORD
+        <<- /gn/ morph(\6, ":[NA].*:(?:m|f:p)", ":(?:G|P|[fe]:[is]|V0|3[sp])") and not apposition(\5, \6)
+        -6>> =suggFemSing(\6, True)                                                         # Accord erroné : « \6 » devrait être au féminin singulier.
 
-__[i]/gn(gn_devinette2)__
-    (?:le|un|cet?) +{w_2} +d(?:e cet?|u|’un) +(?!des )({w_2}) +({w_2})  @@w,$
-    <<- morphex(\2, ":[NAQ].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\1, \2)
-    -2>> =suggMasSing(@, True)                                                              # Accord erroné : « \2 » devrait être au masculin singulier.
+    [le|un|ce|cet]  *WORD  de  [ce|cet|un]  (*WORD)  (*WORD)
+    [le|un|ce|cet]  *WORD  du  (*WORD)  (*WORD)
+        <<- /gn/ morph(\2, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\1, \2)
+        -2>> =suggMasSing(\2, True)                                                         # Accord erroné : « \2 » devrait être au masculin singulier.
 
-__[i]/gn(gn_devinette3)__
-    (?:le|un|cet?) +{w_2} +de [mts]on +(?!ex-)({w_2}) +({w_2})  @@w,$
-    <<- not morph(\1, ":[NAQ].*:f|>[aéeiou].*:e", False) and morphex(\2, ":[NAQ].*:(?:f|m:p)", ":(?:G|P|m:[is]|V0|3[sp])") and not apposition(\1, \2)
-    -2>> =suggMasSing(@, True)                                                              # Accord erroné : « \2 » devrait être au masculin singulier.
+    [le|un|ce|cet]  *WORD  de  [mon|ton|son]  *WORD  *WORD
+        <<- /gn/ morph(\5, ":", ":[NA].*:f|>[aéeiou].*:e") and morph(\6, ":[NA].*:(?:f|m:p)", ":(?:G|P|m:[is]|V0|3[sp])") and not apposition(\5, \6)
+        -6>> =suggMasSing(\6, True)                                                         # Accord erroné : « \6 » devrait être au masculin singulier.
 
-__[i]/gn(gn_devinette4)__
-    [mts]on +({w_2}) +d(?:e cet?|u|’un) +(?!des )({w_2}) +({w_2})  @@w,w,$
-    <<- morphex(\1, ":[NAQ].*:m", ":G|>[aéeiou].*:[ef]")
-        and morphex(\3, ":[NAQ].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\2, \3)
-    -3>> =suggMasSing(@, True)                                                              # Accord erroné : « \3 » devrait être au masculin singulier.
+    [mon|ton|son]  (*WORD)  [de|d’]  [ce|cet|un]  (*WORD)  (*WORD)
+    [mon|ton|son]  (*WORD)  du  (*WORD)  (*WORD)
+        <<- /gn/ morph(\1, ":[NA].*:m", ":G|>[aéeiou].*:[ef]")
+            and morph(\3, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\2, \3)
+        -3>> =suggMasSing(\3, True)                                                         # Accord erroné : « \3 » devrait être au masculin singulier.
 
-__[i]/gn(gn_devinette5)__
-    [mts]on +({w_2}) +de [mts]on +({w_2}) +({w_2})  @@w,w,$
-    <<- morphex(\1, ":[NAQ].*:m", ":G|>[aéeiou].*:[ef]")
-        and not morph(\2, ":[NAQ].*:f|>[aéeiou].*:e", False) and morphex(\3, ":[NAQ].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\2, \3)
-    -3>> =suggMasSing(@, True)                                                              # Accord erroné : « \3 » devrait être au masculin singulier.
+    [mon|ton|son]  (*WORD)  de [mon|ton|son]  (*WORD)  (*WORD)
+        <<- /gn/ morph(\1, ":[NA].*:m", ":G|>[aéeiou].*:[ef]")
+            and not morph(\2, ":[NA].*:f|>[aéeiou].*:e") and morph(\3, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\2, \3)
+        -3>> =suggMasSing(\3, True)                                                         # Accord erroné : « \3 » devrait être au masculin singulier.
 
-__[i]/gn(gn_devinette6)__
-    (?:[lmtsc]es|[nv]os|leurs|quelques) +{w_2} +de(?: (?:[mtsc]es|[nv]os|leurs)|s) +({w_2}) +({w_2})  @@w,$
-    <<- morphex(\2, ":[NAQ].*:s", ":(?:G|P|[me]:[ip]|V0|3[sp])") and not apposition(\1, \2)
-    -2>> =suggPlur(@)                                                                       # Accord erroné : « \2 » devrait être au pluriel.
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  de [ces|mes|tes|ses|nos|vos|leurs]  (*WORD)  (*WORD)
+    [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  des  (*WORD)  (*WORD)
+        <<- /gn/ morph(\2, ":[NA].*:s", ":(?:G|P|[me]:[ip]|V0|3[sp])") and not apposition(\1, \2)
+        -2>> =suggPlur(\2)                                                                  # Accord erroné : « \2 » devrait être au pluriel.
 
-#__[i]/gn__  (?:l[ea]|une?|ce(?:tte|t|)|[mts](?:on|a)|[nv]otre|leur) +{w_2} +d(?:e(?: (?:la|ce(?:tte|t|)|[mts](?:on|a)|[nv]otre|leur) +|’une? +|)|u +)({w_2}) +({w_2})  @@w,$
-#    <<- morphex(\2, ":[NAQ].*:p", ":(?:G|P|[is]|V0|3[sp])") and not apposition(\1, \2)
+#__[i]/gn__  (?:l[ea]|une?|ce(?:tte|t|)|[mts](?:on|a)|[nv]otre|leur) +{w_2} +d(?:e(?: (?:la|ce(?:tte|t|)|[mts](?:on|a)|[nv]otre|leur) +|’une? +|)|u +)({w_2}) +({w_2})
+#    <<- morph(\2, ":[NA].*:p", ":(?:G|P|[is]|V0|3[sp])") and not apposition(\1, \2)
 #    -2>> =suggSing(@)                                                                       # Accord erroné : « \2 » devrait être au pluriel.
 
 TEST: La fille de cette belle {{inconnu}}                       ->> inconnue
@@ -9979,12 +10002,13 @@ TEST: le meurtre de son ex-petite amie
 
 
 ## divers
-__[i]/gn(gn_de_telle_sorte)__
-    de tel(?:s? sorte(?:s|nt|)|les sorte(?:s|nt|)|le sorte(?:s|nt))
-    <<- ->> de telle sorte                                                                          # Accord erroné.
+__gn_de_telle_sorte__
+    de [tel|tels|telles] [sorte|sortes|sortent]
+    de telle [sortes|sortent]
+        <<- /gn/ ->> de telle sorte                                                                 # Accord erroné.
 
 TEST: {{de telles sorte}}
-
+TEST: tu vas faire {{de telles sortes}} qu’on ne nous retrouve jamais.
 
 
 !!
@@ -9998,68 +10022,106 @@ TEST: {{de telles sorte}}
 # Similaires à prépositions : http://www.synapse-fr.com/manuels/PP_ATTENDU.htm
 # attendu, compris, non-compris, y compris, entendu, excepté, ôté, ouï, passé, supposé, vu
 # ! problème avec l’ouïe, ouï retiré de la liste
-__<i]/sgpl(sgpl_prep_compris_det)__
-    ^ *((Compris|Non[- ]compris)es?) +(?:l(?:e(?:ur|)s?|a)|ce(?:t(?:te|)|s|)|[mts](?:on|a|es)|[nv]o(?:tre|s))  @@*,*
-    <<- -1>> \2                                                                                     # Considéré comme préposition, invariable.
-__<i]/sgpl(sgpl_prep_entendu_det)__
-    ^ *((Entendu|Excepté|Ôté|Supposé|Passé)(?:es?|s)) +(?:l(?:e(?:ur|)s?|a)|ce(?:t(?:te|)|s|)|[mts](?:on|a|es)|[nv]o(?:tre|s))  @@*,*
-    <<- -1>> \2                                                                                     # Considéré comme préposition, invariable.
-__[i]/sgpl(sgpl_prep_attendu_que)__
-    (attendu(?:es?|s)) que? @@0                         <<- isStart() -1>> attendu                  # Considéré comme préposition, invariable.
-__[i]/sgpl(sgpl_prep_étant_donné)__
-    étant donné(?:es?|s)                                <<- isStart() ->> étant donné               # Considéré comme préposition, invariable.
-__[i]/sgpl(sgpl_prep_vu_det)__
-    (vu(?:es?|s)) (?:l(?:e(?:ur|)s?|a)|ce(?:t(?:te|)|s|)|[mts](?:on|a|es)|[nv]o(?:tre|s)|que?) @@0
-    <<- isStart() -1>> vu                                                                           # Considéré comme préposition, invariable.
+__sgpl_prépositions__
+    <start> [comprise|comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
+        <<- /sgpl/ -2>> compris                                                             # Considéré comme préposition, invariable.
+
+    <start> [non-comprise|non-comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
+        <<- /sgpl/ -2>> non compris                                                         # Considéré comme préposition, invariable.
+
+    <start> non [comprise|comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
+        <<- /sgpl/ -3>> compris                                                             # Considéré comme préposition, invariable.
+
+    <start> [entendus|exceptés|ôtés|supposés|passés|entendue|exceptée|ôtée|supposée|passée|entendues|exceptées|ôtées|supposées|passées]  [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
+        <<- /sgpl/ -2>> =suggMasSing(\2)                                                    # Considéré comme préposition, invariable.
+
+    [<start>|,]  [attendus|attendue|attendues]  [que|qu’|qu]
+        <<- /sgpl/ -2>> attendu                                                             # “Attendu que” : considéré comme préposition, invariable.
+
+    [<start>|,]  étant [donnés|donnée|données]
+        <<- /sgpl/ -3>> donné                                                               # “Étant donné” : considéré comme préposition, invariable.
+
+    [<start>|,]  [vu|vue|vues]  [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
+    [<start>|,]  [vu|vue|vues]  [que|qu’|qu]
+        <<- /sgpl/ -2>> vu                                                                  # Considéré comme préposition, invariable.
 
 TEST: {{comprises}} mes prestations sur place
 TEST: {{Exceptés}} les petits, tous sont tombes malades.
 TEST: {{Attendues}} qu’on n’en sait rien, impossible de tirer des conclusions définitives.
-TEST: Il viendra, {{étant donnée}} son addiction…
+TEST: Il viendra, étant {{donnée}} son addiction…
 TEST: {{Vues}} les idioties qu’on entend, normal qu’on perde la tête.
 TEST: {{Passées}} les premières heures du jour…
+
 
 
 #### Nombres cardinaux
 
 # vingt
-__[i]/sgpl(sgpl_vingt)__
-    vingts <<- not before(r"(?i)\bquatre $") ->> vingt                                              # “Vingt” ne prend la marque du pluriel que dans “quatre-vingts”.
-__[i]/sgpl(sgpl_quatre_vingt)__
-    quatre[- ]vingt
-    <<- not morph(word(1), ":B", False) and not before(r"(?i)\b(?:numéro|page|chapitre|référence|année|test|série)s? +$")
-    ->> quatre-vingts                                                                               # Mettre « vingt » au pluriel, excepté s’il s’agit d’une référence (page, chapitre, année…).
-__[i]/sgpl(sgpl_quatre_vingt_x)__
-    quatre-(vingts)-(?:deux|trois|quatre|cinq|six|sept|huit|neufs?|dix|onze|douze|treize|quatorze|quinze|seize)  @@7
-    <<- -1>> vingt                                                                                  # Mettez « vingt » au singulier.
+__sgpl_vingt__
+    vingts
+        <<- /sgpl/ not value(<1, "|quatre|") ->> vingt                                      # “Vingt” ne prend la marque du pluriel que dans “quatre-vingts”.
+
+    quatre-vingt
+    quatre vingt
+        <<- /sgpl/ not morph(>1, ":B") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
+        ->> quatre-vingts                                                                   # Mettre « vingt » au pluriel, excepté s’il s’agit d’une référence (page, chapitre, année…).
+
+    quatre-vingts-un
+    quatre-vingts-deux
+    quatre-vingts-trois
+    quatre-vingts-quatre
+    quatre-vingts-cinq
+    quatre-vingts-six
+    quatre-vingts-sept
+    quatre-vingts-huit
+    [quatre-vingts-neuf|quatre-vingts-neufs]
+    quatre-vingts-dix
+    quatre-vingts-onze
+    quatre-vingts-douze
+    quatre-vingts-treize
+    quatre-vingts-quatorze
+    quatre-vingts-quinze
+    quatre-vingts-seize
+    quatre-vingts-dix-sept
+    quatre-vingts-dix-huit
+    [quatre-vingts-dix-neuf|quatre-vingts-dix-neufs]
+        <<- /sgpl/ -1>> =\1.replace("vingts", "vingt").replace("VINGTS", "VINGT")           # Mettez « vingt » au singulier.
 
 TEST: Il y a {{vingts}} personnes dans le salon.
 TEST: {{Quatre-vingt}} femmes sont passées.
-TEST: On en a reçu quatre-{{vingts}}-dix.
+TEST: On en a reçu {{quatre-vingts-dix}}.
 TEST: Le gagnant est le numéro quatre-vingt.
 
 
 # neuf
-__[i]/sgpl(sgpl_xxx_neuf)__
-    (?:dix|vingt|trente|quarante|cinquante|soixante(?:-dix|)|quatre-vingt(?:-dix|))-neufs
-    <<- ->> =\0[:-1]                                                                                # Pas de “s”.
+__sgpl_nombre_neuf__
+    dix-neufs
+    vingt-neufs
+    trente-neufs
+    quarante-neufs
+    cinquante-neufs
+    soixante-neufs
+    soixante-dix-neufs
+    quatre-vingt-neufs
+    quatre-vingt-dix-neufs
+        <<- /sgpl/ ->> =\1[:-1]                                                             # Pas de “s” sur “neuf” lorsqu’il s’agit d’un nombre.
 
 TEST: par {{trente-neufs}} degrés.
 
 
 # cent
-__[i]/sgpl(sgpl_xxx_cents)__
-    (?:deux|trois|quatre|cinq|six|sept|huit|neuf) (cent)  @@$
-    <<- not morph(word(1), ":B|>une?", False, True) and not before(r"(?i)\b(?:numéro|page|chapitre|référence|année|test|série)s? +$")
-    -1>> cents                      # Mettre « cent » au pluriel (centaines entières), excepté s’il s’agit d’une référence (page, chapitre, année…).|http://fr.wiktionary.org/wiki/cent
-__[i]/sgpl(sgpl_xxx_cent)__
-    (?:deux|trois|quatre|cinq|six|sept|huit|neuf|mille) (cents)  @@$
-    <<- morph(word(1), ":B|>une?", False, False)
-    -1>> cent                       # Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
-__[i]/sgpl(sgpl_cents_nom)__
-    (cents) ({w_2})  @@0,6
-    <<- morphex(\2, ":[NAQ].*:[pi]", ":G") and morphex(word(-1), ":[VR]", ":B", True)
-    -1>> cent                       # Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
+__sgpl_nombre_cents__
+    [deux|trois|quatre|cinq|six|sept|huit|neuf]  cent
+        <<- /sgpl/ not morph(>1, ":B|>une?") and not morph(<1, ">(?:numéro|page|chapitre|référence|année|test|série)/")
+        -2>> cents                          # Mettre “cent” au pluriel (centaines entières), excepté s’il s’agit d’une référence (page, chapitre, année…).|http://fr.wiktionary.org/wiki/cent
+
+    [deux|trois|quatre|cinq|six|sept|huit|neuf|mille]  cents
+        <<- /sgpl/ morph(>1, ":B|>une?")
+        -2>> cent                           # Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
+
+    cents  @:[NA].*:[pi]¬:G
+        <<- /sgpl/ morph(<1, ":[VR]|<start>", ":B")
+        -1>> cent                           # Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
 
 TEST: trois {{cent}} marches à gravir.
 TEST: deux {{cents}} quatre tests lancés à chaque itération du processus nouveau
@@ -10067,35 +10129,43 @@ TEST: par {{cents}} idées différentes.
 
 
 # mille
-__[i]/sgpl(sgpl_mille)__
+__sgpl_mille__
     milles
-    <<- morphex(word(1), ":B|:N.*:p", ":[QA]", False) or (morph(word(-1), ":B") and morph(word(1), ":[NAQ]", False))
-    ->> mille                       # « Mille » est invariable s’il s’agit d’un nombre (et non de l’unité de mesure maritime).
+        <<- /sgpl/ morph(>1, ":B|:N.*:p", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
+        ->> mille                           # “Mille” est invariable s’il s’agit d’un nombre (et non de l’unité de mesure maritime).
 
 TEST: Plus de {{milles}} personnes sont venues.
 TEST: plus de deux cent quatre-vingt mille personnes
 
 
 #### Groupes, regroupements, collections, etc.
+__sgpl_carnet_de__
+    >carnet de [chèque|note|timbre|ticket|vacance]
+        <<- /sgpl/ -3>> \3s                                             # Il manque un “s”. Il y en a plusieurs dans un carnet.
 
-__[i]/sgpl(sgpl_carnet_de)__
-    carnets? de (chèque|note|timbre|ticket|vacance) @@$ <<- -1>> \1s                      # Il manque un “s”. Il y en a plusieurs dans un carnet.
-__[i]/sgpl(sgpl_collectif_de)__
-    collectifs? d(?:e |’)(artiste|architecte|association|citoyen(?:ne|)|con(?:ne|)|consommat(?:eur|rice)|enfant|entreprise|femme|fille|garçon|homme|infirmière|jeune|médecin|motarde?|passionnée?|prostituée?|touriste|travailleu(?:r|se)|vieill(?:e|ard)) @@$
-    <<- morph(word(-1), ":D.*:[si]", False, True) -1>> \1s                                          # Il manque un “s”. Il y en a plusieurs dans un collectif.
-__[i]/sgpl(sgpl_collection_de)__
-    collections? d(?:e |’)(autocollant|boîte|blason|bouton|carte|chaussure|écusson|étiquette|film|fossile|gravure|jeu|insecte|livre|médaille|moto|papillon|pièce|pierre|pipe|tableau|timbre|voiture) @@$
-    <<- -1>> \1s                                                                                    # Il manque un “s”. Il y en a plusieurs dans une collection.
-__[i]/sgpl(sgpl_concours_de_circonstances)__
-    concours de (circonstance)  @@$ <<- -1>> circonstances                                # Un concours de circonstances signifie qu’il y a plusieurs circonstances.
-__[i]/sgpl(sgpl_confluence_de)__
-    confluences? de (rivière|fleuve|ruisseau)  @@$ <<- -1>> =suggPlur(@)                  # Confluence de plusieurs cours d’eau : mettez au pluriel.
-__[i]/sgpl(sgpl_groupe_de)__
-    (?:association|groupe|rassemblement|regroupement|réunion|troupe)s? d(?:e |’)(artiste|agricult(?:eur|rice)|architecte|automobiliste|citoyen(?:ne|)|con(?:ne|)|consommat(?:eur|rice)|enfant|entreprise|femme|fille|garçon|homme|infirmière|jeune|médecin|motarde?|passionnée?|prostituée?|touriste|travailleu(?:r|se)|vieill(?:e|arde?)) @@$
-    <<- -1>> \1s                                                                                    # Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, un regroupement, etc.
-__[i]/sgpl(sgpl_troupeau_de)__
-    troupeaux? d(?:e |’)(âne|animal|bœuf|buffle|bovin|bison|con(?:ne|)|cheval|chèvre|génisse|mouton|mulet?|porc|taureau|touriste|vache|veau) @@$
-    <<- -1>> =suggPlur(@)                                                                           # Il manque un “s”. Il y en a plusieurs dans un troupeau.
+__sgpl_collectif_de__
+    >collective [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
+        <<- /sgpl/ morph(<1, ":D|<start>") -3>> \1s                     # Il manque un “s”. Il y en a plusieurs dans un collectif.
+
+__sgpl_collection_de__
+    >collection [de|d’] [autocollant|boîte|blason|bouton|carte|chaussure|écusson|étiquette|film|fossile|gravure|jeu|insecte|livre|médaille|moto|papillon|pièce|pierre|pipe|tableau|timbre|voiture]
+        <<- /sgpl/ -3>> =suggPlur(\3)                                   # Il manque un “s”. Il y en a plusieurs dans une collection.
+
+__sgpl_concours_de_circonstances__
+    concours de circonstance
+        <<- /sgpl/ -3>> circonstances                                   # Un concours de circonstances signifie qu’il y a plusieurs circonstances.
+
+__sgpl_confluence_de__
+    >confluence de [rivière|fleuve|ruisseau]
+        <<- /sgpl/ -3>> =suggPlur(\3)                                   # Confluence de plusieurs cours d’eau : mettez au pluriel.
+
+__sgpl_groupe_de__
+    [>association|>assemblée|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
+        <<- /sgpl/ -3>> \3s                                             # Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
+
+__sgpl_troupeau_de__
+    >troupeau [de|d’] [âne|animal|bœuf|buffle|bovin|bison|con|conne|cheval|chèvre|génisse|mouton|mule|mulet|porc|taureau|touriste|vache|veau]
+        <<- /sgpl/ -3>> =suggPlur(\3)                                   # Il manque un “s”. Il y en a plusieurs dans un troupeau.
 
 TEST: d’un air compassé, il sortit son carnet de {{chèque}}.
 TEST: Ce collectif d’{{artiste}} est très inventif.
@@ -10107,10 +10177,9 @@ TEST: C’est un putain de troupeau de {{mouton}} !
 
 
 #### X fois par jour/an/semaine/etc.
-
-__[i]/sgpl(sgpl_x_fois_par_période)__
-    fois par (ans|années|décennies|heures|jours|minutes|secondes|semaines|semestres|trimestres) @@$
-    <<- -1>> =suggSing(@)                                                   # Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
+__sgpl_x_fois_par_période__
+    fois par [nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|semestres|trimestres|ans|années|décennies|siècles|millénaires]
+        <<- /sgpl/ -3>> =suggSing(\3)                                   # Mettez au singulier : x fois par période de temps, donc pour chaque période de temps.
 
 TEST: vingt fois par {{ans}}, à peu près.
 TEST: 12 fois par {{jours}}, ça suffit.
@@ -10120,33 +10189,28 @@ TEST: Deux fois par mois…
 #### Locutions
 
 # à
-__[i]/sgpl(sgpl_à_nu)__
-    (m[eiî]\w+) +([aà] nu(?:es?|s))  @@0,$
-    <<- morph(\1, ">(?:mettre|mise)/", False) -2>> à nu                     # « nu » est invariable dans cette locution.
+__sgpl_mettre_à_nu__
+    >mettre à [nus|nue|nues]
+        <<- /sgpl/ -3>> à nu                                            # Dans la locution “mettre à nu”, “nu” est invariable.
 
-TEST: Mettre {{à nus}} les hommes.
-
-__[i]/sgpl(sgpl_à_part_égales)__
-    à part? égale? <<- ->> à parts égales                                   # Il y a plusieurs parts.
-
-TEST: {{à part égale}}
-
-__[i]/sgpl(sgpl_à_moindres_frais)__
-    [àa] moindre frais? <<- ->> à moindres frais                            # Lorsqu’on parle des dépenses, “frais” est un pluriel.
-
-TEST: {{a moindre frais}}
+TEST: Mettre à {{nus}} les hommes.
+TEST: Elle s’est mise à {{nue}} devant ses sœurs.
+TEST: Une mise à nu douloureuse.
 
 
 # affaires
-__[i]/sgpl(sgpl_chiffre_d_affaires)__
-    chiffres? d’(affaire) @@$ <<- -1>> affaires                             # Le chiffre d’affaires. Toujours un “s” final.
-__[i]/sgpl(sgpl_faire_affaire_avec)__
-    (f[aieî]\w+) (affaires) avec  @@0,w
-    <<- morph(\1, ">faire/", False) -2>> affaire                            # « Faire affaire avec ». Pas de “s”.
-__[u]/sgpl(sgpl_faire_affaire_à_en)__
-    (f[aieî]\w+) (affaire) (?:à|en) ([A-ZÉÈÂ][\w-]+)  @@0,w,$
-    <<- morph(\1, ">faire/", False) and morph(\3, ":(?:N|MP)")
-    -2>> affaires                                                           # Ajoutez un “s” à « affaire ».
+__affaires__
+    [>chiffre|>homme|>femme|>centre|>chargée]  d’ affaire
+        <<- /sgpl/ -3>> affaires                                            # Dans “\1 d’affaires”, toujours mettre “affaires” au pluriel.
+
+    >faire affaires avec
+        <<- /sgpl/ -2>> affaire                                             # Dans la locution “Faire affaire avec”, “affaire” est au singulier.
+
+    >faire affaire [à|en] ~^[A-ZÉÈÂ]
+        <<- /sgpl/ morph(\4, ":(?:N|MP)") -2>> affaires                     # Ajoutez un “s” à « affaire ».
+
+    >avoir affaires à
+        <<- /sgpl/ -2>> affaire                                             # Dans la locution “avoir affaire à”, “affaire” est au singulier.|https://fr.wiktionary.org/wiki/avoir_affaire_%C3%A0
 
 TEST: Quel est son chiffre d’{{affaire}} ?
 TEST: Allez-vous faire {{affaires}} avec ces connards ?
@@ -10154,123 +10218,161 @@ TEST: Faire {{affaire}} à Paris.
 
 
 # boisson
-__[i]/sgpl(sgpl_débit_de_boissons)__
-    débits? de (boisson) @@$ <<- -1>> boissons                            # Il manque un “s” à « boisson ».
+__sgpl_débit_de_boissons__
+    >débit de boisson
+        <<- /sgpl/ -3>> boissons                                            # Dans la locution “débit de boissons”, “boissons” est au pluriel.
 
 TEST: ils ont ouvert un débit de {{boisson}} à Paris.
 
 
 # demi-heure, heure et demie
-__[i]/sgpl(sgpl_demi_heure)__
-    demi(?:e[- ]| )heure(s|) @@$ <<- ->> demi-heure\1                     # « Une demi-heure ».
-__[i]/sgpl(sgpl_heure_et_demie)__
-    heures? et (demi(?:s|es|)) @@$ <<- -1>> demie                         # « Une heure et demie », « deux heures et demie », etc.
+__sgpl_demi_heure__
+    demie-heure
+    demie heure
+    demi heure
+        <<- /sgpl/ ->> demi-heure                       # La moitié d’une heure s’écrit “demi-heure”.
+
+    demie-heures
+    demie heures
+    demies-heures
+    demies >heure
+    demi heures
+    demis >heure
+    demis-heures
+        <<- /sgpl/ ->> demi-heures                      # La moitié d’une heure s’écrit “demi-heure” (“demi-heures” au pluriel).
+
+__sgpl_heure_et_demie__
+    >heure et [demi|demis|demies]
+        <<- /sgpl/ -3>> demie                           # « Une heure et demie », « deux heures et demie », etc.
 
 TEST: L’entretien dure environ une {{demie heure}}.
 TEST: nous avons rendez-vous dans une heure et {{demi}}
 
 
 # dévolu
-__[i]/sgpl(sgpl_leur_dévolu)__
-    jet\w+ +(leurs dévolus) @@$ <<- -1>> leur dévolu                      # « Jeter son dévolu » : au singulier.
+__sgpl_leur_dévolu__
+    >jeter leurs dévolus
+        <<- /sgpl/ -2:3>> leur dévolu                   # Jeter son dévolu, leur dévolu : au singulier.
 
 TEST: Ces gens qui jettent {{leurs dévolus}} sur n’importe qui, c’est d’une indécence.
 
 
+
 # escalier
-__[i]/sgpl(sgpl_cage_d_escalier)__
-    cages? d’(escaliers) @@$ <<- -1>> escalier                            # Pas de “s” à escalier.
+__sgpl_cage_d_escalier__
+    >cage d’ escaliers
+        <<- /sgpl/ -3>> escalier                                # Usuellement, pas de “s” à escalier.
 
 TEST: Elle est passée par la cage d’{{escaliers}}
 
 
-# à l’extérieur/intérieur
-__[i]/sgpl(sgpl_à_l_intérieur_extérieur)__
-    (?:l’|d’|[cdls]es +|[mts]on +|leurs? +|[nv]otre +|en +|cet(?:te|) +)((?:ex|in)térieures?) @@$
-    <<- -1>> =\1.rstrip("e")                                                        # Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
+# extérieur/intérieur
+__sgpl_intérieur_extérieur__
+    [l’|d’|mon|ton|son|leur|notre|votre|cet|en] [intérieure|extérieure]
+        <<- /sgpl/ -2>> =\1[:-1]                                # Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
+
+    [d’|ces|des|les|mes|tes|ses|leurs|nos|vos|en] [intérieures|extérieures]
+        <<- /sgpl/ -2>> =\1[:-2]+"s"                            # Ceci est un adjectif féminin. Pas de “e” pour le nom masculin.
 
 TEST: que pensez-vous de notre {{intérieure}} ?
-
-
-# collet monté
-__[i]/sgpl(sgpl_collet_monté)__
-    ({w1}) +(collets[- ]montée?s) @@0,$
-    <<- morph(\1, ":(?:V0e|W)|>très", False) -2>> collet monté
-    # « Être collet monté » : dans cette locution, « collet monté » est invariable.
-
-TEST: Elles sont tellement {{collets montées}} !
-
-
-# coûter cher
-__[i]/sgpl(sgpl_coûter_cher)__
-    ((?:co[uû]t|pa)\w+) +(chers|chères?|chaire?s?)  @@0,$
-    <<- morph(\1, ">(?:co[ûu]ter|payer)/", False)
-    -2>> cher                                                                       # Ici, « cher » est un adverbe, invariable.
-
-TEST: ces saloperies coûtent vraiment {{chères}} !
-
-
-# donner lieu
-__[i]/sgpl(sgpl_donner_lieu)__
-    (donn\w+) +(lieux) @@0,$
-    <<- morph(\1, ">donner/", False)
-    -2>> lieu                                                                       # « Donner lieu » : “lieu” est invariable dans cette locution verbale.
-
-TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
+TEST: à l’{{intérieure}} rien de notable.
+TEST: un homme de l’{{intérieure}}.
+TEST: des {{intérieures}} remarquables.
 
 
 # en bons termes
-__[i]/sgpl(sgpl_en_bons_termes)__
-    en bon terme @@$ <<- ->> en bons termes                                         # En bons termes : cette locution est toujours au pluriel.
+__sgpl_en_bons_termes__
+    en bon terme
+        <<- /sgpl/ ->> en bons termes                               # En bons termes : cette locution est toujours au pluriel.
 
 TEST: nous sommes à présent {{en bon terme}}
 
 
 # ensemble
-__[i]/sgpl(sgpl_ensemble)__
-    ({w_1}) +(ensembles)  @@0,$
-    <<- morphex(\1, ":V.*:[123]p|>(?:tou(?:te|)s|pas|rien|guère|jamais|toujours|souvent)/", ":[DRB]")
-    -2>> ensemble                                                                   # S’il s’agit bien de l’adverbe “ensemble”, il est invariable.|https://fr.wiktionary.org/wiki/ensemble
+__ensemble__
+    ensembles
+        <<- /sgpl/ morph(<1, ":V.*:[123]|>(?:tou(?:te|)s|pas|rien|guère|jamais|toujours|souvent)/", ":[DRB]")
+        ->> ensemble                                                 # S’il s’agit bien de l’adverbe “ensemble”, il est invariable.|https://fr.wiktionary.org/wiki/ensemble
 
 TEST: Elles viendront {{ensembles}}.
 
 
 # eux-mêmes, elles-mêmes
-__[i]/sgpl(sgpl_eux_elles_mêmes)__
-    (?:eux|elles)-(même) @@$ <<- -1>> mêmes                                         # Il manque un “s” à même.
+__sgpl_eux_elles_mêmes__
+    eux-même
+        <<- /sgpl/ ->> eux-mêmes                                    # Il manque un “s” à même.
 
-TEST: Elles ne sont plus elles-{{même}}.
-TEST: Ils ne peuvent s’en prendre qu’à eux-{{même}}.
+    elles-même
+        <<- /sgpl/ ->> elles-mêmes                                  # Il manque un “s” à même.
+
+TEST: Elles ne sont plus {{elles-même}}.
+TEST: Ils ne peuvent s’en prendre qu’à {{eux-même}}.
 
 
 # par intermittence
-__[i]/sgpl(sgpl_par_intermittence)__
-    par (intermittences) @@$ <<- -1>> intermittence                                 # Locution : « par intermittence ».
+__sgpl_par_intermittence__
+    par intermittences
+        <<- /sgpl/ -2>> intermittence                               # Locution : « par intermittence ».
 
-TEST: Elles ne viennent que par {{intermittences}}
+TEST: Elles ne viennent que par {{intermittences}}.
 
 
 # par intervalles
-__[i]/sgpl(sgpl_par_intervalles)__
-    par (intervalle) @@$ <<- -1>> intervalles                                       # Locution : « par intervalles ».
+__sgpl_par_intervalles__
+    par intervalle
+        <<- /sgpl/ -2>> intervalles                                 # Locution : « par intervalles ».
 
 TEST: On va procéder par {{intervalle}}
 
 
 # pied
-__[i]/sgpl(sgpl_avoir_pied)__
-    ([aeop]\w*) +(?:pas |)(pieds)  @@0,$
-    <<- morph(\1, ">(?:avoir|perdre)/", False) -2>> pied                            # Pas de “s” final.
-__[i]/sgpl(sgpl_à_pied)__
-    à (pieds)  @@2
-    <<- not before(r"(?i)\b(?:lit|fauteuil|armoire|commode|guéridon|tabouret|chaise)s?\b")
-    -1>> pied                                                                       # Pas de “s” final.
-__[i]/sgpl(sgpl_au_pied_levé)__
-    (?:à|aux) pieds? levée?s? <<- ->> au pied levé                                  # Locution adverbiale invariable.
+__sgpl_pied__
+    [>avoir|>perdre]  pieds
+        <<- /sgpl/ -2>> pied                                        # Locution “\1 pied” : écrivez “pied” au singulier.
+
+    à pieds
+        <<- /sgpl/ not before(r"(?i)\b(?:lit|fauteuil|armoire|commode|guéridon|tabouret|chaise)s?\b") and not morph(>1, ">sculpter/")
+        -2>> pied                                                   # Location “à pied” : écrivez “pied” au singulier.|https://fr.wiktionary.org/wiki/%C3%A0_pied
+
+    [à|aux] >pied >levée
+        <<- /sgpl/ ->> au pied levé                                 # Locution adverbiale invariable.
 
 TEST: ils ont tout simplement perdu {{pieds}}
 TEST: ils y sont allés à {{pieds}}.
 TEST: Elles ont accompli l’impossible, et de surcroît {{aux pieds levés}}
+
+
+
+
+
+
+# coûter cher
+__conf_coûter_cher__
+    [>coûter|>payer] chers
+        <<- /conf/ -2>> cher                                        # Ici, « cher » est un adverbe, invariable.
+
+    [>coûter|>payer] [chère|chères|>chair|>chaire]
+        <<- /conf/ -2>> cher                                        # Confusion. Pour parler de la cherté, écrivez “cher”.
+
+TEST: ces saloperies coûtent vraiment {{chères}} !
+
+
+# avoir/donner lieu
+__conf_avoir_donner_lieu__
+    [>avoir|>donner]  lieux
+        <<- /conf/ -2>> lieu                                        # « Donner lieu » : “lieu” est invariable dans cette locution verbale.
+
+    [>avoir|>donner]  [>lieue|lieus]
+        <<- /conf/ -2>> lieu                                        # Confusion. La lieue est une unité de distance. Les lieus sont des poissons.
+
+TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
+TEST: Tout ce qui a {{lieue}} hors de ce pays est ignoré.
+
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
 
 
 # plein
@@ -10285,14 +10387,16 @@ TEST: Les avocats sont pleins de nutriments.
 
 # pleines dents
 __[i]/sgpl(sgpl_à_pleines_dents)__
-    [àa] pl[ea]ine(?: dents?|s? dent) <<- ->> à pleines dents                       # Toujours au pluriel.
+    [àa] pl[ea]ine(?: dents?|s? dent)
+    <<- ->> à pleines dents                       # Toujours au pluriel.
 
 TEST: Elle mord la vie {{à plaine dent}}.
 
 
 # possible
 __[i]/sgpl(sgpl_autant_que_possible)__
-    autant (?:d(?:e |’){w_2} |)que (possibles) @@$ <<- -1>> possible                # Invariable. Implicitement, autant que ce qui est possible.
+    autant (?:d(?:e |’){w_2} |)que (possibles) @@$
+    <<- -1>> possible                # Invariable. Implicitement, autant que ce qui est possible.
 
 TEST: nous ferons des tests autant que {{possibles}}.
 TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.
@@ -10300,9 +10404,11 @@ TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.
 
 # quelque
 __[i]/sgpl(sgpl_quelque_temps)__
-    (quelques) temps @@0 <<- -1>> quelque                                           # Quelque temps : un temps indéterminé, pas de “s”.|https://fr.wiktionary.org/wiki/quelque_temps
+    (quelques) temps @@0
+    <<- -1>> quelque                                           # Quelque temps : un temps indéterminé, pas de “s”.|https://fr.wiktionary.org/wiki/quelque_temps
 __[i]/sgpl(sgpl_en_quelque_sorte)__
-    en (quelques sortes) @@$ <<- -1>> quelque sorte                                 # En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
+    en (quelques sortes) @@$
+    <<- -1>> quelque sorte                                 # En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
 
 TEST: Il y a {{quelques}} temps que nous nous connaissons.
 TEST: Je suis en vacances, en {{quelques sortes}}.
@@ -10310,33 +10416,23 @@ TEST: Je suis en vacances, en {{quelques sortes}}.
 
 # rafales
 __[i]/sgpl(sgpl_par_en_rafales)__
-    (?:par|en) (rafale) @@$ <<- -1>> rafales                                        # En général, il y a plusieurs rafales. Par rafales, en rafales.
+    (?:par|en) (rafale) @@$
+    <<- -1>> rafales                                        # En général, il y a plusieurs rafales. Par rafales, en rafales.
 
 TEST: Je lance des tests en {{rafale}}.
 
 
-#sans (crainte|défense)s <<- ->> sans \1                                            # En général, pas de pluriel.
-
 # par souci de
 __[i]/sgpl(sgpl_par_souci_de)__
-    par (soucis) (?:de|d) @@4 <<- -1>> souci                                        # Invariable dans cette locution.
+    par (soucis) (?:de|d) @@4
+    <<- -1>> souci                                        # Invariable dans cette locution.
 
 TEST: par {{soucis}} d’équité, chacun aura droit à une part.
 
-
-# ce / se
-__[i]/conf(conf_ce_être)__
-    (se) (?:sera(?:i(?:en|)t|)|sont|f[uû](?:ren|)t)  @@0
-    <<- (after("^ (?:[ldmtsc]es|leurs|nos|vos) ") and not before(r"(?i)\b(?:ils?|elles?|ne) +")) or
-    ( morph(word(-1), ":Cs", False, True) and not before(", +$") and not after(r"(?i)^ +(?:ils?|elles?)\b") and not morph(word(1), ":Q", False, False) )
-    -1>> ce                                                                 # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
-TEST: des pans entiers de l’univers — pour reprendre l’expression d’Orwell — se sont d’ores et déjà volatilisés
-TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu progressivement leurs corps se rapprocher.
-
-
 # termes
 __[i]/sgpl(sgpl_en_termes_de)__
-    en (terme) (?:de|d) @@3 <<- -1>> termes                                         # Dans la locution “en termes de”, mettez “terme” au pluriel.
+    en (terme) (?:de|d) @@3
+    <<- -1>> termes                                         # Dans la locution “en termes de”, mettez “terme” au pluriel.
 
 TEST: en {{terme}} de communication, c’est une véritable catastrophe
 
@@ -10345,7 +10441,8 @@ TEST: en {{terme}} de communication, c’est une véritable catastrophe
 __[i]/sgpl(sgpl_tous_azimuts)__
     tout azimuts? <<- ->> tous azimuts                                              # « Tous azimuts » signifie « dans toutes les directions ».
 __[i]/sgpl(sgpl_une_bonne_fois_pour_toutes)__
-    une (?:bonne |)fois pour (toute) @@$ <<- -1>> toutes                            # Il manque un “s”. Sous-entendu : une fois pour toutes les autres fois.
+    une (?:bonne |)fois pour (toute) @@$
+    <<- -1>> toutes                            # Il manque un “s”. Sous-entendu : une fois pour toutes les autres fois.
 
 TEST: ils lancent des attaques {{tout azimut}}.
 TEST: une bonne fois pour {{toute}}
@@ -10353,7 +10450,8 @@ TEST: une bonne fois pour {{toute}}
 
 # vacances
 __[i]/sgpl(sgpl_bonnes_vacances)__
-    bonne vacance <<- not morph(word(-1), ":D.*:f:s", False, False) ->> bonnes vacances             # Au pluriel.
+    bonne vacance
+    <<- not morph(word(-1), ":D.*:f:s", False, False) ->> bonnes vacances             # Au pluriel.
 __[i]/sgpl(sgpl_en_vacances)__
     ({w1}) +en (vacance)  @@0,$
     <<- morph(\1, ">(?:aller|partir)/", False) -2>> vacances                                        # Si vous parlez des congés, « vacance » doit être au pluriel.
@@ -10377,7 +10475,8 @@ TEST: elles sont vites.
 
 # vu / vue
 __[i]/sgpl(sgpl_point_de_vue)__
-    points? de (vu(?:s|es|)) @@$ <<- -1>> vue                                                       # Dans un “point de vue”, “vue” est toujours au féminin singulier.
+    points? de (vu(?:s|es|)) @@$
+    <<- -1>> vue                                                       # Dans un “point de vue”, “vue” est toujours au féminin singulier.
 
 TEST: c’est son point de {{vu}} qui prime.
 TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
@@ -10710,6 +10809,16 @@ TEST: appuyé sur sa {{cane}}
 TEST: bec-de-{{cannes}}
 TEST: aéroport de {{cannes}}
 TEST: restaurant à {{cane}}
+
+
+# ce / se
+__[i]/conf(conf_ce_être)__
+    (se) (?:sera(?:i(?:en|)t|)|sont|f[uû](?:ren|)t)  @@0
+    <<- (after("^ (?:[ldmtsc]es|leurs|nos|vos) ") and not before(r"(?i)\b(?:ils?|elles?|ne) +")) or
+    ( morph(word(-1), ":Cs", False, True) and not before(", +$") and not after(r"(?i)^ +(?:ils?|elles?)\b") and not morph(word(1), ":Q", False, False) )
+    -1>> ce                                                                 # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
+TEST: des pans entiers de l’univers — pour reprendre l’expression d’Orwell — se sont d’ores et déjà volatilisés
+TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu progressivement leurs corps se rapprocher.
 
 
 # chair / chère
