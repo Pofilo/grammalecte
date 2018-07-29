@@ -4329,6 +4329,15 @@ TEST: {{à part égale}}
 TEST: un partage à parts égales
 
 
+__conf_à_pleines_dents__
+    a   [>plaine|>pleine] [>dent|>dan]
+    à   [>plaine|pleine] [>dent|>dan]
+    à   [>plaine|>pleine] [dent|>dan]
+        <<- /conf/ ->> à pleines dents                              # Locution “à pleines dents” (toujours au pluriel).
+
+TEST: Elle mord la vie {{à plaine dent}}.
+
+
 __conf_à_a_locutions__
     a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
     a côté [de|d’]
@@ -10342,6 +10351,119 @@ TEST: ils y sont allés à {{pieds}}.
 TEST: Elles ont accompli l’impossible, et de surcroît {{aux pieds levés}}
 
 
+# plein
+__sgpl_plein_de__
+    pleins [de|d’]
+        <<- /sgpl/ morph(<1, ":(?:V|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
+        -1>> plein                                                  # S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
+
+TEST: Je connais {{pleins}} de gens
+TEST: Les avocats sont pleins de nutriments.
+
+
+# possible
+__sgpl_autant_que_possible__
+    autant  que  possibles
+        <<- /sgpl/ -3>> possible                                    # Invariable. Implicitement, autant que ce qui est possible.
+
+    autant  [de|d’]  *WORD  que  possibles
+        <<- /sgpl/ -5>> possible                                    # Invariable. Implicitement, autant \2 \3 que ce qui est possible.
+
+    autant  [de|d’]  *WORD  *WORD  que  possibles
+        <<- /sgpl/ -6>> possible                                    # Invariable. Implicitement, autant \2 \3 \4 que ce qui est possible.
+
+TEST: nous ferons des tests autant que {{possibles}}.
+TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.
+TEST: rabaissons autant de connards prétentieux que {{possibles}}…
+
+
+# quelque
+__sgpl_quelque_temps__
+    quelques temps
+        <<- /sgpl/ ->> quelque temps                                # Quelque temps : un temps indéterminé. Ici, “quelque” est un adverbe (donc invariable).|https://fr.wiktionary.org/wiki/quelque_temps
+
+__sgpl_en_quelque_sorte__
+    en quelques sortes
+        <<- /sgpl/ ->> en quelque sorte                             # En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
+
+TEST: Il y a {{quelques temps}} que nous nous connaissons.
+TEST: Je suis en vacances, {{en quelques sortes}}.
+
+
+# rafales
+__sgpl_par_en_rafales__
+    [par|en]  rafale
+        <<- /sgpl/ -2>> rafales                                     # Il y a plusieurs rafales. Mettez au pluriel.
+
+TEST: Je lance des tests en {{rafale}}.
+
+
+# par souci de
+__sgpl_par_souci_de__
+    par soucis [de|d’]
+        <<- /sgpl/ -2>> souci                                       # Locution “par souci de”. Mettez “souci” au singulier.
+
+TEST: par {{soucis}} d’équité, chacun aura droit à une part.
+
+
+# termes
+__sgpl_en_termes_de__
+    en terme [de|d’]
+        <<- /sgpl/ -2>> termes                                      # Dans la locution “en termes de”, mettez “terme” au pluriel.
+
+TEST: en {{terme}} de communication, c’est une véritable catastrophe
+
+
+# tous / tout / toutes
+__sgpl_tous_azimuts__
+    tout [azimut|azimuts]
+        <<- /sgpl/ ->> tous azimuts                                 # « Tous azimuts » signifie « dans toutes les directions ».
+
+__sgpl_une_bonne_fois_pour_toutes__
+    une fois pour (toute)
+    une bonne fois pour (toute)
+        <<- /sgpl/ -1>> toutes                                      # Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
+
+TEST: ils lancent des attaques {{tout azimut}}.
+TEST: une bonne fois pour {{toute}}
+
+
+# vacances
+__sgpl_bonnes_vacances__
+    bonne vacance
+        <<- /sgpl/ not morph(<1, ":D.*:f:s") ->> bonnes vacances    # Les vacances. Au pluriel.
+
+__sgpl_en_vacances__
+    [>aller|>partir]  en  vacance
+        <<- /sgpl/ -3>> vacances                                    # Si vous parlez des congés, “vacance” doit être au pluriel.
+
+TEST: Je pars en {{vacance}}.
+TEST: {{Bonne vacance}} !
+TEST: Il nous reste un poste en vacance.
+TEST: Cette place est en vacance.
+
+
+# vites
+__sgpl_vite__
+    vites
+        <<- /sgpl/ not morph(<1, ":V0e.*:3p", False, False) or morph(>1, ":[AQ]")
+        ->> vite                                                    # Adverbe “vite” invariable. (La forme adjective est désuète.)
+
+TEST: ils mangent {{vites}}.
+TEST: elles sont {{vites}} parties.
+TEST: elles sont vites.
+
+
+# vu / vue
+__sgpl_point_de_vue__
+    >point de [vu|vus|vues]
+        <<- /sgpl/ -3>> vue                                         # Dans un “point de vue”, “vue” est toujours au féminin singulier.
+
+TEST: c’est son point de {{vu}} qui prime.
+TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
+TEST: de mon point de {{vues}}
+
+
 
 
 
@@ -10369,118 +10491,12 @@ TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
 TEST: Tout ce qui a {{lieue}} hors de ce pays est ignoré.
 
 
+
+
 @@@@
 @@@@END_GRAPH                                                                                      _
 @@@@
 
-
-
-# plein
-__[i]/sgpl(sgpl_plein_de)__
-    (pleins) de?  @@0
-    <<- morphex(word(-1), ":(?:V|[NAQ].*:s)", ":(?:[NA]:.:[pi]|V0e.*:[123]p)", True)
-    -1>> plein                                                                      # Au singulier.
-
-TEST: Je connais {{pleins}} de gens
-TEST: Les avocats sont pleins de nutriments.
-
-
-# pleines dents
-__[i]/sgpl(sgpl_à_pleines_dents)__
-    [àa] pl[ea]ine(?: dents?|s? dent)
-    <<- ->> à pleines dents                       # Toujours au pluriel.
-
-TEST: Elle mord la vie {{à plaine dent}}.
-
-
-# possible
-__[i]/sgpl(sgpl_autant_que_possible)__
-    autant (?:d(?:e |’){w_2} |)que (possibles) @@$
-    <<- -1>> possible                # Invariable. Implicitement, autant que ce qui est possible.
-
-TEST: nous ferons des tests autant que {{possibles}}.
-TEST: nous ferons autant de tests que {{possibles}}, c’est une nécessité.
-
-
-# quelque
-__[i]/sgpl(sgpl_quelque_temps)__
-    (quelques) temps @@0
-    <<- -1>> quelque                                           # Quelque temps : un temps indéterminé, pas de “s”.|https://fr.wiktionary.org/wiki/quelque_temps
-__[i]/sgpl(sgpl_en_quelque_sorte)__
-    en (quelques sortes) @@$
-    <<- -1>> quelque sorte                                 # En quelque sorte : locution invariable.|https://fr.wiktionary.org/wiki/en_quelque_sorte
-
-TEST: Il y a {{quelques}} temps que nous nous connaissons.
-TEST: Je suis en vacances, en {{quelques sortes}}.
-
-
-# rafales
-__[i]/sgpl(sgpl_par_en_rafales)__
-    (?:par|en) (rafale) @@$
-    <<- -1>> rafales                                        # En général, il y a plusieurs rafales. Par rafales, en rafales.
-
-TEST: Je lance des tests en {{rafale}}.
-
-
-# par souci de
-__[i]/sgpl(sgpl_par_souci_de)__
-    par (soucis) (?:de|d) @@4
-    <<- -1>> souci                                        # Invariable dans cette locution.
-
-TEST: par {{soucis}} d’équité, chacun aura droit à une part.
-
-# termes
-__[i]/sgpl(sgpl_en_termes_de)__
-    en (terme) (?:de|d) @@3
-    <<- -1>> termes                                         # Dans la locution “en termes de”, mettez “terme” au pluriel.
-
-TEST: en {{terme}} de communication, c’est une véritable catastrophe
-
-
-# tous / tout / toutes
-__[i]/sgpl(sgpl_tous_azimuts)__
-    tout azimuts? <<- ->> tous azimuts                                              # « Tous azimuts » signifie « dans toutes les directions ».
-__[i]/sgpl(sgpl_une_bonne_fois_pour_toutes)__
-    une (?:bonne |)fois pour (toute) @@$
-    <<- -1>> toutes                            # Il manque un “s”. Sous-entendu : une fois pour toutes les autres fois.
-
-TEST: ils lancent des attaques {{tout azimut}}.
-TEST: une bonne fois pour {{toute}}
-
-
-# vacances
-__[i]/sgpl(sgpl_bonnes_vacances)__
-    bonne vacance
-    <<- not morph(word(-1), ":D.*:f:s", False, False) ->> bonnes vacances             # Au pluriel.
-__[i]/sgpl(sgpl_en_vacances)__
-    ({w1}) +en (vacance)  @@0,$
-    <<- morph(\1, ">(?:aller|partir)/", False) -2>> vacances                                        # Si vous parlez des congés, « vacance » doit être au pluriel.
-
-TEST: Je pars en {{vacance}}.
-TEST: {{Bonne vacance}} !
-TEST: Il nous reste un poste en vacance.
-TEST: Cette place est en vacance.
-
-
-# vites
-__[i]/sgpl(sgpl_vite)__
-    vites
-    <<- not morph(word(-1), ":V0e.*:3p", False, False) or morph(word(1), ":Q", False, False)
-    ->> vite                                                                                        # Adverbe “vite” invariable. (La forme adjective est désuète.)
-
-TEST: ils mangent {{vites}}.
-TEST: elles sont {{vites}} parties.
-TEST: elles sont vites.
-
-
-# vu / vue
-__[i]/sgpl(sgpl_point_de_vue)__
-    points? de (vu(?:s|es|)) @@$
-    <<- -1>> vue                                                       # Dans un “point de vue”, “vue” est toujours au féminin singulier.
-
-TEST: c’est son point de {{vu}} qui prime.
-TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
-TEST: de mon point de {{vues}}
 
 
 
@@ -12220,6 +12236,7 @@ TEST: ce tableau {{voler}} coûte très cher.
 TEST: la difficulté {{passer}} t’aidera par la suite
 TEST: leur compte {{épurer}} servira encore.
 TEST: Le vieux cocher avait mission
+TEST: le verbe aller est irrégulier.
 
 
 __[i]/infi(infi_adjectifs_pluriels)__
