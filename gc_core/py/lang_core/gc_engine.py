@@ -605,30 +605,35 @@ class TextParser:
             print("UPDATE:")
             print(self)
 
-    def _getNextMatchingNodes (self, dToken, dGraph, iNode1, dNode, bDebug=False):
+    def _getNextPointers (self, dToken, dGraph, iNode1, dNode, bKeep=False, bDebug=False):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
+        bTokenFound = False
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
                 print("  MATCH:", dToken["sValue"])
             yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] }
+            bTokenFound = True
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
                     print("  MATCH:", sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                bTokenFound = True
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
                     print("  MATCH:", sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                bTokenFound = True
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
                 if bDebug:
                     print("  MATCH:", sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                bTokenFound = True
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
@@ -638,6 +643,7 @@ class TextParser:
                         if bDebug:
                             print("  MATCH: ~" + sRegex)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                        bTokenFound = True
                 else:
                     # there is an anti-pattern
                     sPattern, sNegPattern = sRegex.split("¬", 1)
@@ -647,6 +653,7 @@ class TextParser:
                         if bDebug:
                             print("  MATCH: ~" + sRegex)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                        bTokenFound = True
         # analysable tokens
         if dToken["sType"][0:4] == "WORD":
             # token lemmas
@@ -656,6 +663,7 @@ class TextParser:
                         if bDebug:
                             print("  MATCH: >" + sLemma)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<lemmas>"][sLemma]] }
+                        bTokenFound = True
             # regex morph arcs
             if "<re_morph>" in dNode:
                 for sRegex in dNode["<re_morph>"]:
@@ -666,6 +674,7 @@ class TextParser:
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
                             yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                            bTokenFound = True
                     else:
                         # there is an anti-pattern
                         sPattern, sNegPattern = sRegex.split("¬", 1)
@@ -677,6 +686,7 @@ class TextParser:
                                     if bDebug:
                                         print("  MATCH: @" + sRegex)
                                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                                    bTokenFound = True
                         else:
                             lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                             if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
@@ -685,6 +695,7 @@ class TextParser:
                                 if bDebug:
                                     print("  MATCH: @" + sRegex)
                                 yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                                bTokenFound = True
         # token tags
         if "tags" in dToken and "<tags>" in dNode:
             for sTag in dToken["tags"]:
@@ -692,6 +703,7 @@ class TextParser:
                     if bDebug:
                         print("  MATCH: /" + sTag)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<tags>"][sTag]] }
+                    bTokenFound = True
         # meta arc (for token type)
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
@@ -700,15 +712,25 @@ class TextParser:
                     if bDebug:
                         print("  MATCH: *" + sMeta)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"]["*"]] }
+                    bTokenFound = True
                 elif "¬" in sMeta:
                     if dToken["sType"] not in sMeta:
                         if bDebug:
                             print("  MATCH: *" + sMeta)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
+                        bTokenFound = True
                 elif dToken["sType"] in sMeta:
                     if bDebug:
                         print("  MATCH: *" + sMeta)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
+                    bTokenFound = True
+        if bKeep and not bTokenFound:
+            yield { "iNode1": iNode1, "dNode": dNode, "bKeep": True }
+        # JUMP
+        # Warning! Recurssion!
+        if "<>" in dNode:
+            yield from self._getNextPointers(self, dToken, dGraph, iNode1, dGraph[dNode["<>"]], True, bDebug)
+
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         "parse tokens from the text and execute actions encountered"
@@ -721,10 +743,10 @@ class TextParser:
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
-                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer["iNode1"], dPointer["dNode"], bDebug))
+                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer["iNode1"], dPointer["dNode"], dPointer.get("bKeep", False), bDebug))
             lPointer = lNextPointer
             # check arcs of first nodes
-            lPointer.extend(self._getNextPointers(dToken, dGraph, iToken, dGraph[0], bDebug))
+            lPointer.extend(self._getNextPointers(dToken, dGraph, iToken, dGraph[0], False, bDebug))
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:
