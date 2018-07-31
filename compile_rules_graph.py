@@ -19,13 +19,16 @@ def prepareFunction (s):
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = s.replace("sContext", "_sAppContext")
-    s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', s)
     s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', s)
-    s = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', s)
     s = re.sub(r"(select|exclude|define|define_from)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', s)
-    s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
-    s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
-    s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
+    s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', s)
+    s = re.sub(r"(tag_before|tag_after)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1], dTags', s)
+    s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', s)
+    s = re.sub(r"space_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', s)
+    s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', s)
+    s = re.sub(r"analyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', s)
     s = re.sub(r"(morph|analyse|value)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                       # next token
     s = re.sub(r"(morph|analyse|value)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                       # previous token
     s = re.sub(r"(morph|analyse|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', s)          # next token
@@ -35,7 +38,7 @@ def prepareFunction (s):
     s = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                 # after(s)
     s = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)        # before0(s)
     s = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                # after0(s)
-    s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
+    s = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', s)
     s = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', s)
     return s
 
