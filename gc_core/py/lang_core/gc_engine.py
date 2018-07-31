@@ -800,7 +800,7 @@ class TextParser:
                                 if bDebug:
                                     print("  TAG_PREPARE:\n  ", dRule[sRuleId])
                                 nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, nTokenOffset, True, bDebug)
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, nTokenOffset, nLastToken, True, bDebug)
                                 bChange = True
                             elif cActionType == "=":
                                 # disambiguation
@@ -849,11 +849,11 @@ class TextParser:
         elif sSugg == "_":
             lSugg = []
         else:
-            lSugg = self._expand(sSugg, nTokenOffset).split("|")
+            lSugg = self._expand(sSugg, nTokenOffset, nLastToken).split("|")
         if bUppercase and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
             lSugg = list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
-        sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset)
+        sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
         if bShowRuleId:
             sMessage += "  " + sLineId + " # " + sRuleId
         #
@@ -892,14 +892,17 @@ class TextParser:
                 dErr['sAfter'] = self.sSentence0[nEnd:nEnd+80]
             return dErr
 
-    def _expand (self, sText, nTokenOffset):
+    def _expand (self, sText, nTokenOffset, nLastToken):
         #print("*", sText)
-        for m in re.finditer(r"\\([0-9]+)", sText):
-            sText = sText.replace(m.group(0), self.lToken[int(m.group(1))+nTokenOffset]["sValue"])
+        for m in re.finditer(r"\\(-?[0-9]+)", sText):
+            if m.group(1)[0:1] == "-":
+                sText = sText.replace(m.group(0), self.lToken[nLastToken+int(m.group(1))+1]["sValue"])
+            else:
+                sText = sText.replace(m.group(0), self.lToken[nTokenOffset+int(m.group(1))]["sValue"])
         #print(">", sText)
         return sText
 
-    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, bUppercase=True, bDebug=False):
+    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bUppercase=True, bDebug=False):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
         if bDebug:
             print("   START:", nTokenRewriteStart, "END:", nTokenRewriteEnd)
@@ -931,7 +934,7 @@ class TextParser:
             if sWhat.startswith("="):
                 sWhat = globals()[sWhat[1:]](self.lToken, nTokenOffset)
             else:
-                sWhat = self._expand(sWhat, nTokenOffset)
+                sWhat = self._expand(sWhat, nTokenOffset, nLastToken)
             bUppercase = bUppercase and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
                 # one token
