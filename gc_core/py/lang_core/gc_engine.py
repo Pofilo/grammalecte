@@ -774,7 +774,7 @@ class TextParser:
                     if bDebug:
                         print("  TRY:", sRuleId)
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
-                    # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, nPriority, message, URL ]
+                    # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     # Sentence Tag  [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
@@ -784,14 +784,15 @@ class TextParser:
                         if bCondMemo:
                             if cActionType == "-":
                                 # grammar error
-                                nTokenErrorStart = nTokenOffset + abs(eAct[0])
+                                iTokenStart, iTokenEnd, cStartLimit, cEndLimit, nPriority, sMessage, sURL = eAct
+                                nTokenErrorStart = nTokenOffset + iTokenStart  if iTokenStart > 0  else nLastToken + iTokenStart
                                 if "bImmune" not in self.lToken[nTokenErrorStart]:
-                                    nTokenErrorEnd = (nTokenOffset + abs(eAct[1]))  if eAct[1]  else nLastToken
-                                    nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if eAct[0] >= 0  else self.lToken[nTokenErrorStart]["nStart"])
-                                    nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if eAct[1] >= 0  else self.lToken[nTokenErrorEnd]["nStart"])
-                                    if nErrorStart not in self.dError or eAct[2] > dPriority.get(nErrorStart, -1):
-                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, eAct[3], eAct[4], bShowRuleId, "notype", bContext)
-                                        dPriority[nErrorStart] = eAct[2]
+                                    nTokenErrorEnd = nTokenOffset + iTokenEnd  if iTokenEnd > 0  else nLastToken + iTokenEnd
+                                    nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lToken[nTokenErrorStart]["nEnd"])
+                                    nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lToken[nTokenErrorEnd]["nStart"])
+                                    if nErrorStart not in self.dError or nPriority > dPriority.get(nErrorStart, -1):
+                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, sMessage, sURL, bShowRuleId, "notype", bContext)
+                                        dPriority[nErrorStart] = nPriority
                                         if bDebug:
                                             print("  NEW_ERROR:", self.dError[nErrorStart], "\n  ", dRule[sRuleId])
                             elif cActionType == "~":

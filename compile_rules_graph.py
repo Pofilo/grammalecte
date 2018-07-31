@@ -104,7 +104,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         # Calculate positions
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
-        #if iLine == 2211: # debug
+        #if iLine == 3971: # debug
         #    print(lToken)
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
@@ -177,6 +177,9 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     cAction = m.group("action")
     sAction = sAction[m.end():].strip()
     sAction = changeReferenceToken(sAction, dPos)
+    # target
+    cStartLimit = "<"
+    cEndLimit = ">"
     if not m.group("start"):
         iStartAction = 1
         iEndAction = 0
@@ -184,20 +187,28 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         if cAction != "-" and (m.group("start").endswith(".") or m.group("end").startswith(":.")):
             print(" # Error. Wrong selection on tokens.", sActionId)
             return None
-        iStartAction = int(m.group("start"))  if not m.group("start").endswith(".")  else int("-"+m.group("start")[:-1])
+        if m.group("start").endswith("."):
+            cStartLimit = ">"
+        iStartAction = int(m.group("start").rstrip("."))
         if not m.group("end"):
             iEndAction = iStartAction
         else:
-            iEndAction = int(m.group("end")[1:])  if not m.group("end").startswith(":.")  else int("-" + m.group("end")[2:])
+            if m.group("end").startswith(":."):
+                cEndLimit = "<"
+            iEndAction = int(m.group("end").lstrip(":."))
     if dPos and m.group("start"):
         try:
-            iStartAction = dPos[iStartAction]
+            iStartAction = dPos.get(iStartAction, iStartAction)
             if iEndAction:
-                iEndAction = dPos[iEndAction]
+                iEndAction = dPos.get(iEndAction, iEndAction)
         except:
             print("# Error. Wrong groups in: " + sActionId)
             print("  iStartAction:", iStartAction, "iEndAction:", iEndAction)
             print(" ", dPos)
+    if iStartAction < 0:
+        iStartAction += 1
+    if iEndAction < 0:
+        iEndAction += 1
 
     if cAction == "-":
         ## error
@@ -245,7 +256,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
             sAction = sAction[1:-1]
         if not sMsg:
             print("# Error in action at line " + sActionId + ":  The message is empty.")
-        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, nPriority, sMsg, sURL]
+        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, nPriority, sMsg, sURL]
     elif cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
