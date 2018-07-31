@@ -8721,43 +8721,6 @@ __purge_tous_deux_trois__
         <<- morph(\1, ":[123]p") or (\1 == "fait" and before(r"(?i)\bon ")) ~2>> *
 
 
-__sentence_tags__
-    >erreur
-        <<- %>> erreur
-
-    >faute
-        <<- %>> faute
-
-    >incohérence
-        <<- %>> incohérence
-
-    >problème
-        <<- %>> problème
-
-    >bug
-        <<- %>> bug
-
-    >bogue
-        <<- %>> bogue
-
-    >faille
-        <<- %>> faille
-
-    >maladie
-        <<- %>> maladie
-
-    >défaut
-        <<- %>> défaut
-
-    >défaillance
-        <<- %>> défaillance
-
-    >perturbation
-        <<- %>> perturbation
-
-    >irrégularité
-        <<- %>> irrégularité
-
 
 @@@@
 @@@@
@@ -11110,8 +11073,8 @@ TEST: {{des}} {{les}} premiers symptômes, appelez-moi
 
 # desceller / déceler / desseller
 __erreur_déceler_desseller_desceller__
-    [>desseller|>desceller]
-        <<- /conf/ tag_before(\1, "erreur") or tag_before(\1, "faute") or tag_before(\1, "incohérence") or tag_before(\1, "problème") or tag_before(\1, "bug") or tag_before(\1, "bogue") or tag_before(\1, "faille") or tag_before(\1, "maladie") or tag_before(\1, "défaut") or tag_before(\1, "défaillance") or tag_before(\1, "perturbation") or tag_before(\1, "irrégularité")
+    [>erreur|>faute|>incohérence|>problème|>bug|>bogue|>faille|>maladie|>défaut|>défaillance|>perturbation|>irrégularité] <> [>desseller|>desceller]
+        <<- /conf/
         -1>> =\1.replace("escell", "écel").replace("essell", "écel")
         # Confusion probable. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle. Si vous voulez dire “remarquer”, “dévoiler”, “découvrir”, écrivez “déceler”.|http://fr.wiktionary.org/wiki/déceler
 
