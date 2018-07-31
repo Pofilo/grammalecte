@@ -20,7 +20,9 @@ def prepareFunction (s):
     s = s.replace("__else__", "not bCondMemo")
     s = s.replace("sContext", "_sAppContext")
     s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', s)
     s = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset]', s)
+    s = re.sub(r"(select|exclude|define|define_from)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', s)
     s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[\\2+nTokenOffset], dTags', s)
     s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
     s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[\\1+nTokenOffset], lToken[\\1+nTokenOffset+1]', s)
@@ -34,6 +36,7 @@ def prepareFunction (s):
     s = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)        # before0(s)
     s = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                # after0(s)
     s = re.sub(r"[\\](\d+)", 'lToken[\\1+nTokenOffset]["sValue"]', s)
+    s = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', s)
     return s
 
 
@@ -160,7 +163,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if nPriority == -1:
         nPriority = dOptPriority.get(sOption, 4)
     # valid action?
-    m = re.search(r"(?P<action>[-~=/%>])(?P<start>\d+\.?|)(?P<end>:\.?\d+|)>>", sAction)
+    m = re.search(r"(?P<action>[-~=/%>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         return None
@@ -382,7 +385,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
         elif sFuncName.startswith("g_m_"): # message
             sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("_g_s_"): # suggestion
-            sParams = "lToken, nTokenOffset"
+            sParams = "lToken, nTokenOffset, nLastToken"
         elif sFuncName.startswith("_g_p_"): # preprocessor
             sParams = "lToken, nTokenOffset"
         elif sFuncName.startswith("_g_d_"): # disambiguator

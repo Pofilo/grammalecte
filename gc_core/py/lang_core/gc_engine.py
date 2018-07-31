@@ -791,7 +791,7 @@ class TextParser:
                                     nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lToken[nTokenErrorStart]["nEnd"])
                                     nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lToken[nTokenErrorEnd]["nStart"])
                                     if nErrorStart not in self.dError or nPriority > dPriority.get(nErrorStart, -1):
-                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, sMessage, sURL, bShowRuleId, "notype", bContext)
+                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, True, sMessage, sURL, bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = nPriority
                                         if bDebug:
                                             print("  NEW_ERROR:", self.dError[nErrorStart], "\n  ", dRule[sRuleId])
@@ -841,10 +841,10 @@ class TextParser:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
         return bChange
 
-    def _createError (self, sSugg, nTokenOffset, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
+    def _createError (self, sSugg, nTokenOffset, nLastToken, iFirstToken, nStart, nEnd, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
         # suggestions
         if sSugg[0:1] == "=":
-            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset)
+            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset, nLastToken)
             lSugg = sSugg.split("|")  if sSugg  else []
         elif sSugg == "_":
             lSugg = []
