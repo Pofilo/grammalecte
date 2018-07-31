@@ -605,30 +605,30 @@ class TextParser:
             print("UPDATE:")
             print(self)
 
-    def _getNextMatchingNodes (self, dToken, dGraph, dNode, bDebug=False):
+    def _getNextMatchingNodes (self, dToken, dGraph, iNode1, dNode, bDebug=False):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
                 print("  MATCH:", dToken["sValue"])
-            yield dGraph[dNode[dToken["sValue"]]]
+            yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] }
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
                     print("  MATCH:", sValue)
-                yield dGraph[dNode[sValue]]
+                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
                     print("  MATCH:", sValue)
-                yield dGraph[dNode[sValue]]
+                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
                 if bDebug:
                     print("  MATCH:", sValue)
-                yield dGraph[dNode[sValue]]
+                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
         # regex value arcs
         if "<re_value>" in dNode:
             for sRegex in dNode["<re_value>"]:
@@ -637,7 +637,7 @@ class TextParser:
                     if re.search(sRegex, dToken["sValue"]):
                         if bDebug:
                             print("  MATCH: ~" + sRegex)
-                        yield dGraph[dNode["<re_value>"][sRegex]]
+                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
                 else:
                     # there is an anti-pattern
                     sPattern, sNegPattern = sRegex.split("¬", 1)
@@ -646,7 +646,7 @@ class TextParser:
                     if not sPattern or re.search(sPattern, dToken["sValue"]):
                         if bDebug:
                             print("  MATCH: ~" + sRegex)
-                        yield dGraph[dNode["<re_value>"][sRegex]]
+                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
         # analysable tokens
         if dToken["sType"][0:4] == "WORD":
             # token lemmas
@@ -655,7 +655,7 @@ class TextParser:
                     if sLemma in dNode["<lemmas>"]:
                         if bDebug:
                             print("  MATCH: >" + sLemma)
-                        yield dGraph[dNode["<lemmas>"][sLemma]]
+                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<lemmas>"][sLemma]] }
             # regex morph arcs
             if "<re_morph>" in dNode:
                 for sRegex in dNode["<re_morph>"]:
@@ -665,7 +665,7 @@ class TextParser:
                         if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
                             if bDebug:
                                 print("  MATCH: @" + sRegex)
-                            yield dGraph[dNode["<re_morph>"][sRegex]]
+                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                     else:
                         # there is an anti-pattern
                         sPattern, sNegPattern = sRegex.split("¬", 1)
@@ -676,7 +676,7 @@ class TextParser:
                                 if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                     if bDebug:
                                         print("  MATCH: @" + sRegex)
-                                    yield dGraph[dNode["<re_morph>"][sRegex]]
+                                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                         else:
                             lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                             if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
@@ -684,55 +684,53 @@ class TextParser:
                             if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                 if bDebug:
                                     print("  MATCH: @" + sRegex)
-                                yield dGraph[dNode["<re_morph>"][sRegex]]
+                                yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
         # token tags
         if "tags" in dToken and "<tags>" in dNode:
             for sTag in dToken["tags"]:
                 if sTag in dNode["<tags>"]:
                     if bDebug:
                         print("  MATCH: /" + sTag)
-                    yield dGraph[dNode["<tags>"][sTag]]
+                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<tags>"][sTag]] }
         # meta arc (for token type)
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
-                # not regex here, we just search if <dNode["sType"]> exists within <sMeta>
+                # no regex here, we just search if <dNode["sType"]> exists within <sMeta>
                 if sMeta == "*":
                     if bDebug:
                         print("  MATCH: *" + sMeta)
-                    yield dGraph[dNode["<meta>"]["*"]]
+                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"]["*"]] }
                 elif "¬" in sMeta:
                     if dToken["sType"] not in sMeta:
                         if bDebug:
                             print("  MATCH: *" + sMeta)
-                        yield dGraph[dNode["<meta>"][sMeta]]
+                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                 elif dToken["sType"] in sMeta:
                     if bDebug:
                         print("  MATCH: *" + sMeta)
-                    yield dGraph[dNode["<meta>"][sMeta]]
+                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         "parse tokens from the text and execute actions encountered"
         dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
         bTagAndRewrite = False
-        for i, dToken in enumerate(self.lToken):
+        for iToken, dToken in enumerate(self.lToken):
             if bDebug:
                 print("TOKEN:", dToken["sValue"])
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
-                for dNode in self._getNextMatchingNodes(dToken, dGraph, dPointer["dNode"], bDebug):
-                    lNextPointer.append({"iToken": dPointer["iToken"], "dNode": dNode})
+                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer["iNode1"], dPointer["dNode"], bDebug))
             lPointer = lNextPointer
             # check arcs of first nodes
-            for dNode in self._getNextMatchingNodes(dToken, dGraph, dGraph[0], bDebug):
-                lPointer.append({"iToken": i, "dNode": dNode})
+            lPointer.extend(self._getNextPointers(dToken, dGraph, iToken, dGraph[0], bDebug))
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:
                 #    print("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
-                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iToken"]-1, i, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
+                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dPriority, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
                         bTagAndRewrite = True
         if bTagAndRewrite:
