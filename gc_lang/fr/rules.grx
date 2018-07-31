@@ -2198,6 +2198,7 @@ __tag_verbes_composés_impératifs__
 
 
 
+
 @@@@
 @@@@
 @@@@
@@ -2413,7 +2414,7 @@ __date_jour_mois_année__
     [30|31] février
         <<- /date/ space_after(\1, 1, 1) ->> 28 février|29 février                                  # Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
 
-    ~^\d\d?$  [janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre]  ~\d{2,5}$
+    ~^\d\d?$  [janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre]  ~^\d{2,5}$
         <<- /date/ not checkDateWithString(\1, \2, \3) ->> _                                        # Cette date est invalide.
 
 TEST: le {{31 avril}}
@@ -2426,7 +2427,7 @@ __date_journée_jour_mois_année__
         <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
         -1>> =getDay(\2, \3, \4)                                                                            # Le jour de la date suivante est incorrect.
 
-    ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$)  ([janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre])  (~\d{2,5}$)
+    ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$)  ([janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre])  (~^\d{2,5}$)
         <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
         -1>> =getDayWithString(\2, \3, \4)                                                          # Le jour de la date suivante est incorrect.
 
@@ -4246,18 +4247,6 @@ TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
 TEST: Sébastien {{a}} {{demander}} des conseils.
 
 
-__conf_à_peu_près__
-    a [peu|peux|peut] [près|>pré|>prête]
-    à [peux|peut] [près|>pré|>prête]
-    à peu [>pré|>prête]
-        <<- /conf/ ->> à peu près                                   # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
-        <<- ~>> *
-
-TEST: C’est {{à peu prêt}} la même chose.
-TEST: elle est {{a peut près}} au point.
-TEST: C’est à peu près ça.
-
-
 __conf_à_a__
     [<start>|,] a moins [que|qu’|qu]
         <<- /conf/ -2>> à                                           # Confusion probable : « à moins que » pour dire « sauf si ».
@@ -4283,6 +4272,12 @@ __conf_à_a__
     pas a pas
         <<- /conf/ -2>> à                                           # Confusion : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
+    a [moi|toi|eux|elles]
+    a [lui|elle|nous|vous]  <end>
+        <<- not morph(<1, ":Oo|>(?:il|elle)") and not value(<1, "|n’|m’|t’|")
+        -1>> à                                                      # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: Je le donne {{a}} toi.
 TEST: Personne {{a}} part Tom ne connaît son adresse
 TEST: ce qu’elles feront alors {{a coup sûr}}, difficile de le devenir.
 TEST: Face {{a}} ces gens, il ne pensait pas pouvoir réussir
@@ -4292,6 +4287,18 @@ TEST: par rapport {{a}} ces hommes-là, nous manquons d’expérience
 TEST: elles sont tout {{a}} fait compétentes
 TEST: elles se défendront jusqu’{{a}} la mort.
 TEST: elles progressent pas {{a}} pas
+TEST: Elle a eux pour lui donner des conseils.
+TEST: Elle a elle réussi… (Formulation douteuse.)
+TEST: Il a toi pour l’aider.
+TEST: Il t’a toi.
+
+
+__conf_suite_à__
+    [<start>|,] suite a [le|la|l’|les|ce|ces|de|d’|des|mon|ton|son|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|quelques|certains|certaines|plusieurs]
+        <<- /conf/ -3>> à                                           # Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
+TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
 
 
 __conf_à_a_locutions_de_des_du__
@@ -4309,10 +4316,22 @@ TEST: travailler {{a}} bonne distance des fourneaux.
 TEST: Il l’a fait {{a}} cause de toi.
 
 
+__conf_à_cor_et_à_cri__
+    a [corps|>cor] [et|est] [à|a] [>cri|crie|cries|crit]
+    à [corps|cors] [et|est] [à|a] [>cri|crie|cries|crit]
+    à cor est [à|a] [>cri|crie|cries|crit]
+    à cor et a [>cri|crie|cries|crit]
+    à cor et à [cris|crie|cries|crit]
+        <<- /conf/ ->> à cor et à cri                   # Locution adverbiale invariable. (Le cor est un instrument à vent utilisé pour la chasse.)|https://fr.wiktionary.org/wiki/%C3%A0_cor_et_%C3%A0_cri
+
+TEST: Elles hurlèrent {{à corps et à cris}}.
+TEST: manifester sa colère à cor et à cri.
+
+
 __conf_à_moindres_frais__
     a >moindre [>frai|>frêt]
-    [à|a] moindre [>frai|>frêt]
-    [à|a] >moindre [frai|>frêt]
+    à moindre [>frai|>frêt]
+    à moindres [frai|>frêt]
         <<- /conf/ ->> à moindres frais                                     # Pour évoquer des dépenses, écrivez “frais” (pluriel).
 
 TEST: {{a moindre frais}}
@@ -4321,18 +4340,30 @@ TEST: S’en sortir à moindres frais, pas si simple.
 
 __conf_à_parts_égales__
     a [part|parts|par|pare|pares] >égale
-    [à|a] [part|par|pare|pares] >égale
-    [à|a] [part|parts|par|pare|pares] [égal|égals|égale]
+    à [part|par|pare|pares] >égale
+    à parts [égal|égals|égale]
         <<- /conf/ ->> à parts égales                                       # Locution “à parts égales” (toujours au pluriel).
 
 TEST: {{à part égale}}
 TEST: un partage à parts égales
 
 
+__conf_à_peu_près__
+    a [peu|peux|peut] [près|>pré|>prête]
+    à [peux|peut] [près|>pré|>prête]
+    à peu [>pré|>prête]
+        <<- /conf/ ->> à peu près                                   # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
+        <<- ~>> *
+
+TEST: C’est {{à peu prêt}} la même chose.
+TEST: elle est {{a peut près}} au point.
+TEST: C’est à peu près ça.
+
+
 __conf_à_pleines_dents__
-    a   [>plaine|>pleine] [>dent|>dan]
-    à   [>plaine|pleine] [>dent|>dan]
-    à   [>plaine|>pleine] [dent|>dan]
+    a [>plaine|>pleine] [>dent|>dan]
+    à [>plaine|pleine] [>dent|>dan]
+    à pleines [dent|>dan]
         <<- /conf/ ->> à pleines dents                              # Locution “à pleines dents” (toujours au pluriel).
 
 TEST: Elle mord la vie {{à plaine dent}}.
@@ -4680,6 +4711,13 @@ __conf_après_avoir__
 
 TEST: {{a pré a voire}} monté les marches
 TEST: après avoir réussi son examen
+
+
+# par acquit de conscience
+__conf_acquit_acquis__
+    par acquis de conscience
+        <<- /conf/ -2>> acquit                          # Confusion. On écrit « par acquit de conscience ».
+        <<- ~>> *
 
 
 # aux dépens
@@ -5315,7 +5353,7 @@ TEST: Mai pluvieux.
 
 # min / mins
 __conf_symbole_min__
-    ~\d+  mins
+    *NUM  mins
         <<- /conf/ -2>> min                         # Les unités de mesure abrégées ne prennent pas la marque du pluriel.
 
 TEST: 120 {{Mins}} de bonheur
@@ -6583,7 +6621,7 @@ TEST: c’est donc la cinquième en 50 ans
 
 
 __purge_un_nombre__
-    un  ~\d+  @:A.*:s¬:G
+    un  *NUM  @:A.*:s¬:G
         <<-  ~2>> *
 
 TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
@@ -6713,7 +6751,7 @@ __purge_locutions_latines__
 __purge_locutions__
     , [oui|non] ,
     , entre autres ?choses¿ ,
-    à ~^\d+(?:,\d+|)$  %
+    à *NUM  %
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
     à aucun prix
     à autre chose
@@ -6756,7 +6794,7 @@ __purge_locutions__
     à défaut d’autre chose
     à dose homéopathique
     à durée limitée
-    à ~^\d+$ reprises
+    à *NUM reprises
     à @:B reprises
     à [plusieurs|quelques|maintes] reprises
     à de  [nombreuses|multiples]  reprises
@@ -7105,7 +7143,7 @@ __purge_locutions__
     d’ une tout autre ampleur
     d’ une [minute|seconde] à l’ autre
     de-ci ?,¿ de-là
-    de ~^\d+(?:,\d+|)$ %
+    de *NUM %
     de [cesse|conserve|facto|fait|guingois|luxe|nouveau|permanence|partout|préférence|profundis|rechange|routine|surcroît|surcroit|visu]
     de A à Z
     de bas (?:en haut|étage)
@@ -7219,13 +7257,13 @@ __purge_locutions__
     déjà
     désormais
     depuis @:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    depuis ~^\d+$ [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    depuis *NUM [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis assez longtemps
     depuis belle lurette
     depuis bien longtemps
     depuis de ?très¿ longues années
     depuis des lustres
-    depuis les années ~^\d\d+$
+    depuis les années ~^\d{2,5}$
     depuis longtemps
     depuis lors
     depuis peu de temps
@@ -7263,7 +7301,7 @@ __purge_locutions__
     en aucune [circonstance|façon|manière]
     en bon état
     en bonne [compagnie|posture|voie]
-    en bonne et due forme|
+    en bonne et due forme
     en bonne santé ?[physique|mentale|psychique]¿
     en bout de course
     en cas [de|d’] [besoin|doute|urgence]
@@ -7362,7 +7400,7 @@ __purge_locutions__
     encore une fois
     encore et [encore|toujours]
     enfin
-    entre {mois} ?~^\d{2,5}¿ et {mois} ?~^\d{2,5}¿
+    entre {mois} ?~^\d{2,5}$¿ et {mois} ?~^\d{2,5}$¿
     entre chien et loup
     entre de [bonnes|mauvaises] mains
     entre l’ [un|une] et l’ autre
@@ -7392,8 +7430,8 @@ __purge_locutions__
     il y a ?très¿ longtemps
     il y a ?très¿ peu de temps
     il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a moins de [~\d+$|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a [~\d+$|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a moins de [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    il y a [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     il y a quelque temps
     il n’y a pas ?si¿ longtemps
     illico ?presto¿
@@ -7919,12 +7957,12 @@ __p_dét_plur_nombre_nom__
     [les|des|mes|tes|ses|nos|vos|leurs]  ~^\d+$  ou  ~^\d+$  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2:4>> *
 
-    [les|des]   >numéro  [un|~^\d+$|@:B]  et  [~^\d+$|@:B]
+    [les|des]   >numéro  [un|*NUM|@:B]  et  [*NUM|@:B]
         <<- ~3:0>> *
 
     la  >numéro  un
     la  >numéro  @:B
-    la  >numéro  ~^\d+$
+    la  >numéro  *NUM
         <<- =>> define(\2, [">numéro/:N:f:s"])
         <<- ~3>> *
 
@@ -7932,8 +7970,8 @@ __p_dét_plur_nombre_nom__
         <<- ~3>> *
 
     >numéro  @:B
-    >numéro  ~^\d+$
-    [n°|no]  ~^\d+$
+    >numéro  *NUM
+    [n°|no]  *NUM
         <<- ~2>> *
 
 
@@ -7962,7 +8000,7 @@ __simplification_des_nombres__
 
 __purge_des_nombres__
     [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  @:B   @:[NA].*:[pi]¬:(?:G|3p)
-    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  ~\d+  @:[NA].*:[pi]¬:(?:G|3p)
+    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  *NUM  @:[NA].*:[pi]¬:(?:G|3p)
         <<- ~2:3>> *
 
     [à|de|d’]  @:B  pour  cent
@@ -8089,6 +8127,9 @@ __purge_conditionnelle__
     pour  autant  [que|qu’|qu]  [ils|elles]      sachent    @¬:Y
         <<- ~1:5>> *
 
+    pour cette raison [que|qu’|qu]
+        <<- ~1:3>> *
+
     [le|un|ce|mon|ton|son]  putain  [de|d’]  @:[NA].*:[me]
         <<- ~2:3>> *
 
@@ -8124,7 +8165,7 @@ __simplication_substantifs__
     >attestation sur l’ honneur
     >attendre de pied ferme
     ayants droit
-    >billet de ~\d+ [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >billet de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     [>bisphénol|>bisphenol] A
     >blanche comme neige
     >blanche comme de la craie
@@ -8197,7 +8238,7 @@ __simplication_substantifs__
     >médecin de garde
     >mère au foyer
     >metteuse en scène
-    >mineure de moins de ~\d+ ans
+    >mineure de moins de *NUM ans
     >mineure de moins de @:B ans
     >miroir aux alouettes
     >monnaie [de|d’] [échange|réserve]
@@ -8218,7 +8259,7 @@ __simplication_substantifs__
     >papier à [>lettre|musique]
     >partie de jambes en l’ air
     >pièce de [théâtre|monnaie]
-    >pièce de ~\d+ [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >pièce de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
     >porte de [service|garage]
     >poudre aux yeux
@@ -8246,7 +8287,7 @@ __simplication_substantifs__
     >soue à >cochonne
     >système d’ exploitation
     >système D
-    >taille ~\d+
+    >taille *NUM
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >tête de [déterré|déterrée|déterrés|déterrées]
@@ -8678,6 +8719,45 @@ __purge_tous_deux_trois__
 
     >faire tous
         <<- morph(\1, ":[123]p") or (\1 == "fait" and before(r"(?i)\bon ")) ~2>> *
+
+
+__sentence_tags__
+    >erreur
+        <<- %>> erreur
+
+    >faute
+        <<- %>> faute
+
+    >incohérence
+        <<- %>> incohérence
+
+    >problème
+        <<- %>> problème
+
+    >bug
+        <<- %>> bug
+
+    >bogue
+        <<- %>> bogue
+
+    >faille
+        <<- %>> faille
+
+    >maladie
+        <<- %>> maladie
+
+    >défaut
+        <<- %>> défaut
+
+    >défaillance
+        <<- %>> défaillance
+
+    >perturbation
+        <<- %>> perturbation
+
+    >irrégularité
+        <<- %>> irrégularité
+
 
 @@@@
 @@@@
@@ -9792,7 +9872,7 @@ TEST: une multitude d’{{homme}}                                     ->> hommes
 
 ## quelque adverbe
 __gn_quelque_adverbe__
-    quelques  ~^\d+$
+    quelques  *NUM
         <<- /gn/ -1>> quelque                                                               # Devant un nombre, « quelque » est un adverbe, donc invariable.
 
     quelques  @:B
@@ -9833,8 +9913,8 @@ __gn_nombre_chiffres_1m__
     [0|1|01]  @:[NAQ].*:p¬*
         <<- /gn/ not value(\2, "|Rois|Corinthiens|Thessaloniciens|") -2>> =suggSing(\2)     # Accord de nombre erroné : « \1 » devrait être au singulier.
 
-    ~^\d+$  *WORD
-        <<- /gn/ not value(<1, "|/|") and not re.search("^0*[01]$", \1)
+    *NUM  *WORD
+        <<- /gn/ not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1)
             and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
             or \1 in aREGULARPLURAL )
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
@@ -10491,34 +10571,17 @@ TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
 TEST: Tout ce qui a {{lieue}} hors de ce pays est ignoré.
 
 
-
-
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-
 !!
 !!
 !!!! Confusions                                                                                   !!
 !!
 !!
 
-# à / a
-__[i]/conf(conf_suite_à)__
-    suite (a) ({w1}) @@w,$
-    <<- morph(\2, ":D|>[ld]/", False) and isStart() -1>> à          # Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
 
-TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
-TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
-
-
-__[i]/conf(conf_pronom_à_l_air)__
-    (?:tout|ça|ce(?:ci|la)) (à) l’air +({w_2})  @@w,$
-    <<- morphex(\2, ":[AR]", ">libre/") and morph(word(-1), ":Cs", False, True)
-    -1>> a                                                          # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
+# a / à
+__conf_pronom_à_l_air__
+    [tout|ça|ceci|cela]  à  l’  air  @:[AR]|>libre/
+        <<- /conf/ morph(<1, ":Cs|<start>") -2>> a                  # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
 
 TEST: lorsque tout {{à}} l’air fini, c’est trompeur.
 TEST: Tout {{à}} l’air complètement foutu…
@@ -10526,54 +10589,57 @@ TEST: Ça {{à}} l’air génial.
 TEST: Tout à la benne.
 
 
-__[i]/conf(conf_à)__
-    (a) (?:[mt]oi|eux|elles?)  @@0
-    <<- not before(r"(?i)\b(?:il |elle |n’) *$") -1>> à             # Confusion : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
+__conf_a_à_faim_peur_honte_soif_chaud_froid__
+    à [faim|peur|honte|soif]
+        <<- /conf/ -1>> a                       # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
 
-TEST: Je le donne {{a}} toi.
-TEST: Elle a eux pour lui donner des conseils.
-TEST: Elle a elle réussi… (Formulation douteuse.)
-TEST: Il a toi pour l’aider.
+    <start> elle à [chaud|froid]
+         <<- /conf/ -3>> a                      # Avoir “\1”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
+
+TEST: Elle {{à}} chaud.
+TEST: Elle {{à}} froid.
+TEST: cet homme {{à}} faim
+TEST: Votre réaction à froid ?
 
 
 # abuser / abusé / abusif
-__[i]/conf(conf_abusif)__
-    c’est +(abusé)  @@$
-    <<- -1>> abusif|abuser                                         # Confusion. Il y a les pratiques abusives. Ce sont les personnes ou les choses dont on peut abuser.
+__conf_abusif__
+    [c’|cela|ceci]  est  abusé
+        <<- /conf/ -3>> abusif|abuser           # Confusion. Il y a les pratiques abusives. On peut abuser de quelque chose. Mais “ça” ne peut pas être “abusé”.|https://fr.wiktionary.org/wiki/abuser
 
 TEST: C’est {{abusé}} !
 TEST: Vendre ça aussi cher, c’est abuser de la crédulité des touristes.
 
 
 # acre / âcre
-__[i]/conf(conf_acre)__
-    \d+ (âcres?)  @@$
-    <<- -1>> =\1.replace("â", "a").replace("Â", "A")
-    # Confusion probable : “âcre” est un adjectif signifiant “irritant”. Pour l’unité de surface agraire, écrivez :|https://fr.wiktionary.org/wiki/%C3%A2cre
+__conf_acre_âcre__
+    *NUM  >âcre
+        <<- /conf/ -2>> =\2.replace("â", "a").replace("Â", "A")
+        # Confusion probable : “âcre” est un adjectif signifiant “irritant”. Pour l’unité de surface agraire, écrivez “acre”.|https://fr.wiktionary.org/wiki/%C3%A2cre
+
+    [>alcool|>être|>goût|>gout|>humeur|>odeur|>parole|>parfum|>remarque|>reproche|>réponse|>saveur|>senteur|>sensation|>vin]  >acre
+        <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")
+        # Confusion probable : “acre” est une unité de surface agraire. Pour l’adjectif signifiant “irritant”, écrivez “âcre”.|https://fr.wiktionary.org/wiki/%C3%A2cre
 
 TEST: un terrain de 3 {{âcres}}.
-
-
-__[i]/conf(conf_âcre)__
-    acres?
-    <<- morph(word(-1), ">(?:être|go[ûu]t|humeur|odeur|parole|parfum|remarque|reproche|réponse|saveur|senteur|sensation|vin)/", False, False)
-    ->> =\0.replace("a", "â").replace("A", "Â")
-    # Confusion probable : “acre” est une unité de surface agraire. Pour l’adjectif signifiant “irritant”, écrivez :|https://fr.wiktionary.org/wiki/%C3%A2cre
-
 TEST: Il avait ce goût {{acre}} dans la bouche qui ne passait pas.
 
 
 # accro / accroc
-__[i]/conf(conf_être_accro)__
-    ({etre}|dev\w+|sembl\w+|par\w+|rend\w+) +(accrocs?)  @@0,$
-    <<- morph(\1, ">(?:être|devenir|para[îi]tre|rendre|sembler)/", False)
-    -2>> =\2.replace("oc", "o")
-    # Confusion : “accroc” signifie “déchirure”, “incident”, etc. tandis que “accro” est un terme familier qui signifie “dépendant”.
-__[i]/conf(conf_accro_à)__
-    (accrocs?) (?:[àa] (?:la (?:bouffe|cocaïne|cod[ée]ine|course|drogue|coke|meth|méthamphétamine|morphine|nicotine|nourriture|télé(?:vision|)|clope|cigarette|came|poudre|baise|musique)|cette (?:came|émission|merde|poudre|femme|meuf|gonzesse|conne|salope|garce)|ce (?:mec|keum|type|con(?:nard|)|fils de pute)|cet (?:homme|enculé|imbécile|enfoiré)|l’(?:alcool|amour|argent|ecstasy|herbe|héro(?:ïne|)|opium|ordi(?:nateur|))|Facebook|Internet|Twitter|lui|elle)|[ad]u (?:chocolat|cul|jeu|poker|sexe|shopping|smartphone|sport|sucre|tabac|téléphone|travail|LSD|crack)|aux (?:anti-?dépresseurs|bonbons|hommes|mecs|femmes|gonzesses|méd(?:icaments|ocs)|jeux|séries|sucreries))
-    @@0
-    <<- -1>> =\1.replace("oc", "o")
-    # Confusion : “accroc” signifie “déchirure”, “incident”, etc. tandis que “accro” est un terme familier qui signifie “dépendant”.
+__conf_être_accro__
+    [>être|>devenir|>paraître|>paraitre|>rendre|>sembler]  >accroc
+        <<- /conf/ -2>> =\2.replace("oc", "o")      # Confusion : “accroc” signifie “déchirure”, “incident”, etc. tandis que “accro” est un terme familier qui signifie “dépendant”.
+
+    >accroc [à|a] la [bouffe|cocaïne|codéine|codeine|course|drogue|coke|meth|méthamphétamine|morphine|nicotine|nourriture|télé|télévision|clope|cigarette|came|poudre|baise|musique]
+    >accroc [à|a] cette [came|émission|merde|poudre|femme|meuf|gonzesse|conne|salope|garce|pute]
+    >accroc [à|a] ce [mec|keum|type|con|connard]
+    >accroc [à|a] ce fils de pute
+    >accroc [à|a] cet [homme|enculé|imbécile|enfoiré]
+    >accroc [à|a] l’ [alcool|amour|argent|ecstasy|herbe|héro|héroïne|opium|ordi|ordinateur]
+    >accroc [à|a] [Facebook|Internet|Twitter|lui|elle|eux|elles]
+    >accroc [au|du] [chocolat|cul|jeu|PC|poker|sexe|shopping|smartphone|sport|sucre|tabac|téléphone|travail|LSD|crack]
+    >accroc aux [antidépresseurs|anti-dépresseurs|bonbons|hommes|mecs|femmes|gonzesses|médicaments|médocs|jeux|séries|sucreries]
+        <<- /conf/ -1>> =\1.replace("oc", "o")      # Confusion : “accroc” signifie “déchirure”, “incident”, etc. tandis que “accro” est un terme familier qui signifie “dépendant”.
 
 TEST: ils y sont {{accrocs}} depuis toujours
 TEST: au poker, il semble {{accroc}}
@@ -10585,87 +10651,93 @@ TEST: {{Accroc}} à cette merde depuis toujours.
 
 
 # acquis / acquit
-__[i]/conf(conf_par_acquit_de_conscience)__
-    par (acquis) de conscience  @@4
-    <<- -1>> acquit                                                                                 # Confusion. On écrit « par acquit de conscience ».
-    <<- ~>> *
-__[i]/conf(conf_tenir_pour_acquit)__
-    (t\w+) +pour (acquits?) @@0,$ <<- morph(\1, ">tenir/") -2>> acquis                              # Confusion. On écrit « tenir pour acquis ».
+__conf_tenir_pour_acquit__
+    >tenir pour >acquit
+        <<- -3>> acquis                                 # Confusion. On écrit « tenir pour acquis ».
 
 TEST: Je le tenais pour {{acquit}}.
 TEST: Par {{acquis}} de conscience.
 
 
 # affilée / affilé
-__[i]/conf(conf_d_affilée)__
-    d’(affilés?) @@2 <<- -1>> affilée                                                               # Locution.
+__conf_d_affilée__
+    d’ [affilé|affilés|affilées]
+        <<- /conf/ -2>> affilée                         # Locution “d’affilée”.|https://fr.wiktionary.org/wiki/d%E2%80%99affil%C3%A9e
 
 TEST: C’est arrivé trois jours d’{{affilé}}
 
 
 # allée / allé
-__[i]/conf(conf_allée)__
-    l’(allé) @@2 <<- -1>> allée                                                                     # Confusion. Une allée.
+__conf_allée__
+    l’ allé
+        <<- /conf/ -2>> allée                           # Confusion. Une allée.
 
 TEST: il descendait l’{{allé}}
 
 
 # amende / amande
-__[i]/conf(conf_yeux_en_amande)__
-    yeux en (amendes?) @@$ <<- -1>> amande                                                          # Confusion. Une amende est une peine.|http://www.cnrtl.fr/lexicographie/amende
-__[i]/conf(conf_à_l_amende)__
-    (m\w+) à (l’amande) @@0,$ <<- morph(\1, ">mettre/", False) -2>> l’amende                        # Confusion. L’amande est un fruit.
-__[i]/conf(conf_faire_amende_honorable)__
-    (f\w+)(?:-(?:je|tu|ils?|[nv]ous|elles?)|) +(amandes? honorables?) @@0,$
-    <<- morph(\1, ">faire/", False) -2>> amende honorable                                           # Confusion. L’amande est un fruit.
+__conf_amande_amende__
+    yeux en [>amende]
+        <<- /conf/ -3>> amande                          # Confusion. Une amende est une peine.|https://fr.wiktionary.org/wiki/amende
+
+    >mettre à l’ amande
+        <<- /conf/ -4>> amende                          # Confusion. L’amande est un fruit.
+
+    >faire >amande >honorable
+        <<- /conf/ -2:3>> amende honorable              # Confusion. L’amande est un fruit.
+
+    [/-je|/-tu|/-il|/-elle|/-nous|/-vous|/-ils|/-elles] >amande >honorable
+        <<- /conf/ morphVC(\1, ">faire") -2:3>> amende honorable        # Confusion. L’amande est un fruit.
 
 TEST: Avec ses beaux yeux en {{amendes}} nul ne peut lui résister.
-TEST: Nous avons déconné, nous avons été mis à {{l’amande}}.
+TEST: Nous avons déconné, nous avons été mis à l’{{amande}}.
 TEST: Ces gens-là ne feront jamais {{amande honorable}}.
 
 
 # annales / anal-e-s
-__[i]/conf(conf_annales1)__
-    (anale?s?) (?:littéraires?|politiques?|ecclésiastiques?|du (?:bac(?:calauréat|)|brevet)|de (?:physique|chimie|mathématiques|biologie|géographie)|d’histoire)  @@0
-    <<- -1>> annales                                                 # Confusion : “\1” est l’adjectif relatif à l’anus.|http://fr.wiktionary.org/wiki/annales
-__[i]/conf(conf_annales2)__
-    [lcdmts]es (anale?s?)  @@4
-    <<- -1>> annales                                                 # Confusion : “\1” est l’adjectif relatif à l’anus.|http://fr.wiktionary.org/wiki/annales
+__conf_annales_anales__
+    >anale [>littéraire|>politique|>ecclésiastique]
+    >anale du [baccalauréat|bac|brevet]
+    >anale de [>physique|>chimie|>mathématique|>biologie|>géographie|>philosophie]
+    >anale d’ [>histoire|>économie]
+        <<- /conf/ -1>> annales                         # Confusion : “\1” est l’adjectif relatif à l’anus.|http://fr.wiktionary.org/wiki/annales
+
+    [les|ces|des|mes|tes|ses|nos|vos|leurs|plusieurs] >anale
+        <<- /conf/ -2>> annales                         # Confusion : “\2” est l’adjectif relatif à l’anus.|http://fr.wiktionary.org/wiki/annales
 
 TEST: des {{anales}} littéraires
 TEST: il a bachoté les {{anales}}.
 
 
 # air / aire / ère
-__[i]/conf(conf_ère)__
-    (aire?) (?:baroque|digitale?|numérique|industrielle|glacière|glaciaire|géologique|Meiji|cénozoïque|moderne|paléozoïque|pliocène|primaire|secondaire|tertiaire|quaternaire|du (?:big data|cénozoïque|digital|numérique|paléozoïque|pliocène|pétrole|primaire|secondaire|tertiaire|quaternaire))
-    @@0
-    <<- -1>> ère                 # Confusion : l’aire est une surface.
-__[i]/conf(conf_air)__
-    (aire|ère) du temps  @@0
-    <<- -1>> air                 # Confusion.
+__conf_air_aire_ère__
+    [>air|>aire] [>digitale|>numérique|>industrielle|>glacière|>glaciaire|>géologique|Meiji|>cénozoïque|>moderne|>paléozoïque|>pliocène|>primaire|>secondaire|>tertiaire|>quaternaire]
+    [>air|>aire] du [cénozoïque|digital|numérique|paléozoïque|pliocène|pétrole|primaire|secondaire|tertiaire|quaternaire]
+    [>air|>aire] du big data
+        <<- /conf/ -1>> ère         # Confusion. L’aire est une surface. L’air est un gaz, une apparence ou une musique. Pour évoquen une époque, écrivez “ère”.
+
+    l’ [aire|ère] du temps
+        <<- /conf/ -2>> air         # Confusion probable. Locution “l’air du temps”.|https://fr.wiktionary.org/wiki/%C3%AAtre_dans_l%E2%80%99air_du_temps
 
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
 TEST: Ce sera un jour dans l’{{ère}} du temps
 
 
 # auspice / hospice
-__[i]/conf(conf_sous_les_auspices1)__
-    sous [ldc]es (hospices) @@$ <<- -1>> auspices
-    # Confusion probable. L’hospice est un centre de soins.|https://fr.wiktionary.org/wiki/auspice
-__[i]/conf(conf_sous_les_auspices2)__
-    sous (?:les \w+|d’\w+|des? \w+) +(hospices) @@$ <<- -1>> auspices
-    # Confusion probable. L’hospice est un centre de soins.|https://fr.wiktionary.org/wiki/auspice
-__[i]/conf(conf_hospice1)__
-    ({etre}|{aller}) +(?:à|dans) l’(auspice) @@0,$ <<- morph(\1, ">(?:être|aller)/", False) -2>> hospice
-    # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
-__[i]/conf(conf_hospice2)__
-    dans (?:un|cet|[ldc]es) +(auspices?) @@$ <<- -1>> =\1.replace("auspice", "hospice")
-    # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
-__[i]/conf(conf_hospice3)__
-    (auspices?) pour (?:vieill(?:ard|e)|vieux|s[eé]nior|personne|enfant|orphelin|femme|aliéné|incurable|indigent|pauvre)s?  @@0
-    <<- -1>> =\1.replace("auspice", "hospice").replace("Auspice", "Hospice")
-    # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
+__conf_auspices_hospices__
+    sous [les|de|des|ces] ?*WORD¿ (hospices)
+        <<- /conf/ -1>> auspices        # Confusion probable. L’hospice est un centre de soins.|https://fr.wiktionary.org/wiki/auspice
+
+    [>être|>aller|>rester|>demeurer|>partir]  [à|dans|de]  l’ auspice
+        <<- /conf/ -4>> hospice         # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
+
+    dans [un|cet|les|des|ces|quel|quels] >auspice
+        <<- /conf/ -3>> =\3.replace("auspice", "hospice")
+        # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
+
+    >auspice pour [>vieillarde|vieux|>sénior|>senior|>personne|>enfant|>orpheline|>femme|>aliénée|>incurable|>indigente|>malade|>pauvre]
+        <<- /conf/ -1>> =\1.replace("auspice", "hospice").replace("Auspice", "Hospice")
+        # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
 
 TEST: sous les {{hospices}} du conseil général de la nation.
 TEST: sous de terribles {{hospices}}
@@ -10675,53 +10747,47 @@ TEST: On va l’envoyer dans un grand {{auspice}} pour personnes âgées.
 
 
 # autel / hôtel
-__[i]/conf(conf_autel)__
-    sacrifi\w+ +sur l’(hôtel) @@$ <<- -1>> autel
-    # Confusion. L’hôtel est un établissement offrant un service d’hébergement. L’autel est une table ou un monument destiné aux sacrifices ou à la messe.|https://fr.wiktionary.org/wiki/autel
+__conf_autel_hôtel__
+    [>sacrifier|>sacrifice]  sur  l’  hôtel
+        <<- /conf/ -4>> autel
+        # Confusion. L’hôtel est un établissement offrant un service d’hébergement. L’autel est une table ou un monument destiné aux sacrifices ou à la messe.|https://fr.wiktionary.org/wiki/autel
 
 TEST: ils sont sacrifiés sur l’{{hôtel}} de la rentabilité
 
 
 # avion / avions
-__[i]/conf(conf_avions)__
-    nous (avion) @@5 <<- -1>> avions                                    # Confusion probable : l’avion est un appareil volant.
+__conf_avions_avion__
+    nous avion
+        <<- /conf/ -2>> avions                              # Confusion probable : l’avion est un appareil volant.
 
 TEST: Je pense que nous {{avion}} tort.
 
 
-# avoir faim / soif
-__[i]/conf(conf_a_à_faim_peur_honte_soif)__
-    (à) +(faim|peur|honte|soif) @@0,$ <<- -1>> a                        # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-
-__[i]/conf(conf_a_à_chaud_froid)__
-    ^ *elle +(à) +(?:chaud|froid) @@w <<- -1>> a                        # Avoir “\1”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
-
-TEST: Elle {{à}} chaud.
-TEST: Elle {{à}} froid.
-TEST: cet homme {{à}} faim
-TEST: Votre réaction à froid ?
-
-
 # banc / ban
-__[i]/conf(conf_arrière_ban)__
-    arrière[ -]bancs?
-    <<- ->> =\0.replace("c", "").replace("C", "")                       # Confusion. L’arrière-ban est une assemblée de nobles feudataires.|https://fr.wiktionary.org/wiki/arri%C3%A8re-ban
-__[i]/conf(conf_au_ban)__
-    au (banc) (?:de (?:l’(?:empire|église|état|entreprise|humanité|institution|université)|la (?:cité|communauté|faculté|monarchie|principauté|province|région|république|société|ville))|du royaume|des nations)  @@w
-    <<- -1>> banc                                                       # Confusion : « être au ban » signifie « être déchu ».|https://fr.wiktionary.org/wiki/mettre_au_ban
-__[i]/conf(conf_bans_de_mariage)__
-    (bancs?) d[ue] mariage  @@0
-    <<- -1>> ban|bans                                                   # Confusion : les bans de mariage sont des publications, pas du mobilier.|https://fr.wiktionary.org/wiki/ban
-__[i]/conf(conf_en_rupture_de_ban)__
-    en ruptures? de (bancs?)  @@$
-    <<- -1>> ban                                                        # Confusion. Locution “en rupture de ban”.|https://fr.wiktionary.org/wiki/en_rupture_de_ban
-__[i]/conf(conf_mettre_au_ban)__
-    (m[eiî]\w+) au (banc)  @@0,$
-    <<- morph(\1, ">mettre/", False) and not after("^ +des accusés")
-    -2>> ban                                                            # Confusion : « mettre au ban » signifie « faire déchoir ».|https://fr.wiktionary.org/wiki/mettre_au_ban
-__[i]/conf(conf_publier_les_bans)__
-    (publi\w+) [dlcmts]es (bancs) @@0,$
-    <<- morph(\1, ">publi(?:er|cation)/", False) -2>> bans              # Confusion.|https://fr.wikipedia.org/wiki/Publication_des_bans
+__conf_ban_banc__
+    arrière >banc
+        <<- /conf/ -2>> =\2.replace("c", "").replace("C", "")           # Confusion. L’arrière-ban est une assemblée de nobles feudataires.|https://fr.wiktionary.org/wiki/arri%C3%A8re-ban
+
+    [arrière-banc|arrière-bancs]
+        <<- /conf/ ->> =\1.replace("c", "").replace("C", "")            # Confusion. L’arrière-ban est une assemblée de nobles feudataires.|https://fr.wiktionary.org/wiki/arri%C3%A8re-ban
+
+    au banc de l’ [empire|église|état|entreprise|humanité|institution|université]
+    au banc de [la|l’] [cité|communauté|faculté|monarchie|principauté|province|région|république|société|ville]
+    au banc du royaume
+    au banc des nations
+        <<- /conf/ -2>> ban                                             # Confusion. Pour dire “être banni ou déchu”, on écrit “être au ban”.|https://fr.wiktionary.org/wiki/mettre_au_ban
+
+    >banc [du|de] >mariage
+        <<- /conf/ -1>> =\1.replace("c", "").replace("C", "")           # Confusion : les bans de mariage sont des publications, pas du mobilier.|https://fr.wiktionary.org/wiki/ban
+
+    en >rupture de >banc
+        <<- /conf/ -4>> ban                                             # Confusion. Locution “en rupture de ban”.|https://fr.wiktionary.org/wiki/en_rupture_de_ban
+
+    >mettre au banc
+        <<- /conf/ not after("^ +des accusés") -3>> ban                 # Confusion : “mettre au ban” signifie “faire déchoir”.|https://fr.wiktionary.org/wiki/mettre_au_ban
+
+    [>publier|>publication] [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] bancs
+        <<- /conf/ -3>> bans                                            # Confusion. Publication des bans.|https://fr.wikipedia.org/wiki/Publication_des_bans
 
 TEST: Convoquons le ban et l’{{arrière-banc}}.
 TEST: il faut publier les {{bancs}} avant qu’il ne soit trop tard.
@@ -10731,12 +10797,12 @@ TEST: Il a été mis au {{banc}}.
 TEST: ces gens resteront à jamais au {{banc}} de l’empire
 
 
-__[i]/conf(conf_sur_det_banc)__
-    sur (?:ces?|les?|[mts](?:on|es)|[vn]o(?:tre|s)|des) (bans?)  @@$
-    <<- -1>> banc|bancs                                                 # Confusion probable.||https://fr.wiktionary.org/wiki/banc
-__[i]/conf(conf_banc)__
-    (bans?) (?:de (?:roches?|sable|neige|moules|baleines|dauphins|harengs|thons|poissons|piranhas|sardines|l’école|méduses|calibration|musculation|coupe|scie)|d’(?:anchois|hu[îi]tres|essais?|étalonnage))  @@0
-    <<- -1>> banc|bancs                                                 # Confusion.|https://fr.wiktionary.org/wiki/banc
+    sur [le|les|ce|ces|mon|ton|son|mes|tes|ses|notre|votre|nos|vos|leur|leurs|plusieurs|quelques|quel|quels] >ban
+        <<- /conf/ -3>> =\3.replace("an", "anc").replace("AN", "ANC")   # Confusion probable.|https://fr.wiktionary.org/wiki/banc
+
+    >ban [de|d’] [>roche|>sable|>neige|>moule|>baleine|>dauphin|>hareng|>thon|>poisson|>piranha|>sardine|>méduse|>calibration|>musculation|>coupe|>scie|anchois|>huître|>huitre|>essai|>étalonnage]
+    >ban [de|d’] l’ école
+        <<- /conf/ -1>> =\1.replace("an", "anc").replace("AN", "ANC")   # Confusion.|https://fr.wiktionary.org/wiki/banc
 
 TEST: sur les {{bans}} de l’école.
 TEST: Attention aux {{bans}} de sable
@@ -10744,195 +10810,213 @@ TEST: sur les bancs de l’école.
 
 
 # bât / bas
-__[i]/conf(conf_bât)__
-    le (ba[st]) bless\w+ @@3 <<- -1>> bât                               # Confusion : là où le bât blesse.|http://fr.wiktionary.org/wiki/b%C3%A2t
+__conf_bât_bas_bat__
+    le [bas|bat] >blesser
+        <<- /conf/ -2>> bât                                             # Confusion : là où le bât blesse.|http://fr.wiktionary.org/wiki/b%C3%A2t
 
 TEST: C’est là que le {{bas}} blesse.
 
+
 # bel et bien
-__[i]/conf(conf_bel_et_bien)__
-    (belle) et bien (?!que?|sûr) @@0
-    <<- not morph(word(1), ":[AQ]") -1>> bel                            # Confusion. « Bel et bien » est équivalent à « vraiment ».
+__conf_bel_et_bien__
+    belle et bien
+        <<- /conf/ (morph(>1, ":[AQR]") or morph(<1, ":V", ">être")) and not value(>1, "|que|qu’|qu|sûr|")
+        -1>> bel                                                        # Confusion probable. « Bel et bien » est équivalent à « vraiment ».
 
 TEST: ils vont {{belle}} et bien par monts et par vaux.
 
 
 # bite / bitte
-__[i]/conf(conf_bitte)__
-    (bites?) (?:d’amarrage|du quai|sur le quai) @@0 <<- -1>> =\0.replace("ite", "itte")             # Bitte d’amarrage.
+__conf_bitte__
+    >bite du quai
+    >bite sur le quai
+    >bite d’ amarrage
+        <<- /conf/ -1>> =\1.replace("ite", "itte")                      # Bitte d’amarrage.
 
 TEST: les mouettes sur les {{bites}} d’amarrage.
 
 
 # bonne et due forme / bonnet difforme / bon uniforme
-__[i]/conf(conf_en_bonne_et_due_forme)__
-    en (bons? uniformes?|bonnets? difformes?|bonn?e?s? et due?s? formes?)  @@3
-    <<- \1 != "bonne et due forme" -1>> bonne et due forme              # En bonne et due forme : locution invariable.|https://fr.wiktionary.org/wiki/en_bonne_et_due_forme
+__conf_en_bonne_et_due_forme__
+    en >bonne >uniforme
+    en >bonnet >difforme
+    en >bonne et [du|due|dus|dues] >forme
+        <<- ->> en bonne et due forme                                   # Locution “en bonne et due forme” (invariable).|https://fr.wiktionary.org/wiki/en_bonne_et_due_forme
 
-TEST: une raclée en {{bonnes et dues formes}}
+TEST: une raclée {{en bonnes et dues formes}}
+TEST: remplir son formulaire en bonne et due forme, c’est le minimum pour espérer un retour positif.
 
 
 # en butte à / but / bute
-__[i]/conf(conf_en_butte_à_au)__
-    en (bute?s?) +(?:à|aux?) @@3 <<- -1>> butte                         # Confusion. Écrivez « en butte \1 ».
+__conf_en_butte_à_au__
+    en [>but|>bute]  [à|au|aux]
+         <<- /conf/ -2>> butte                                          # Confusion. Écrivez « en butte \3 ».
 
 TEST: Et moi toujours en {{but}} à de nouveaux dangers
 
 
-# c’est / s’est
-__[i]/conf(conf_c_est_était)__
-    (s’)(est|était) +({w_3}) @@0,2,$
-    <<- morphex(\3, ":[AM]", ":[QGW]") -1>> c’                           # Confusion probable. Si vous voulez dire, « ceci \2 », utilisez « c’ ».
-
-TEST: {{s’}}est vraiment merdique.
-TEST: s’est par exemple illustré au combat.
-TEST: il ne s’est pas juste montré
-
-
 # cane / canne (from LanguageTool)
-__[i]/conf(conf_canne_à_de)__
-    (canes?) (?:à (?:sucre|pêche|selfie)|de (?:bambou|bois|combat|compagnon|compagnonnage|défense|golf|marche|Noël|ramonage)|d’aveugles?)  @@0
-    <<- -1>> =\1.replace("cane", "canne")
-    # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
-__[i]/conf(conf_nom_de_canne)__
-    (?:alcool|coup|sucre|sirop)s? de (canes?) @@$ <<- -1>> canne
-    # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
-__[i]/conf(conf_nom_de_cane)__
-    (?:œuf|filet)s? de (cannes?) @@$ <<- -1>> cane
-    # Confusion. La canne est un bâton ou un roseau. Pour la femelle du canard, écrivez|https://fr.wiktionary.org/wiki/canne
-__[i]/conf(conf_verbe_canne)__
-    ((?:appu|batt|frapp|l[eè]v|march)\w+) (?:avec|sur) (?:[dl]es|[mts](?:a|es)|une) (canes?)  @@0,$
-    <<- morph(\1, ">(?:appuyer|battre|frapper|lever|marcher)/", False)
-    -2>> =\2.replace("cane", "canne")
-    # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
-__[i]/conf(conf_bec_de_cane)__
-    becs?-de-(cannes?) @@$ <<- -1>> cane
-    # Confusion. Le bec-de-cane se somme ainsi à cause de la ressemblance avec le bec de l’animal.|https://fr.wiktionary.org/wiki/bec-de-cane
-__[i]/conf(conf_ville_de_Cannes1)__
-    (?:aéroport|acteur|actrice|baie|port|festival|gare|mairi?e|tourisme|ville|vieux-port)s? de (cann?es?)  @@$
-    <<- not re.search("^C(?:annes|ANNES)", \1) -1>> Cannes
-    # Confusion. La ville portuaire de la Côte d’Azur s’écrit “Cannes”.
-__[i]/conf(conf_ville_de_Cannes2)__
-    (?:bienvenue?|restaurant|activité|h[ôo]tel|séjour|dormir|habiter|situer|vivre)s? à (cann?es?)  @@$
-    <<- not re.search("^C(?:annes|ANNES)", \1) -1>> Cannes
-    # Confusion. La ville portuaire de la Côte d’Azur s’écrit “Cannes”.
+__conf_canne_à_de__
+    >cane à [sucre|pêche|selfie]
+    >cane [de|d’] [bambou|bois|combat|compagnon|compagnonnage|défense|golf|marche|Noël|ramonage)|>aveugle]
+        <<- /conf/ -1>> =\1.replace("ane", "anne")                      # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
+
+    [>alcool|>coup|>sucre|>sirop] de >cane
+        <<- /conf/ -3>> canne                                           # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
+
+    [>œuf|>filet] de >canne
+        <<- /conf/ -3>> cane                                            # Confusion. La canne est un bâton ou un roseau. Pour la femelle du canard, écrivez “cane”.|https://fr.wiktionary.org/wiki/canne
+
+    [>appuyer|>battre|>frapper|>lever|>marcher] [avec|sur] [les|des|ma|ta|sa|mes|tes|ses|cette|une] >cane
+        <<- /conf/ -4>> =\4.replace("ane", "anne")                      # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
+
+
+    >bec de >canne
+    bec-de-canne
+    becs-de-cannes
+    bec-de-cannes
+    becs-de-canne
+        <<- /conf/ ->> bec-de-cane|becs-de-cane         # Confusion. Le bec-de-cane se somme ainsi à cause de la ressemblance avec le bec de l’animal.|https://fr.wiktionary.org/wiki/bec-de-cane
+
+    [>aéroport|>actrice|>baie|>port|>festival|>gare|>mairie|>maire|>tourisme|>ville|vieux-port] de [>cane|>canne]
+        <<- /conf/ not value(\3, "|Cannes|CANNES|") -3>> Cannes                         # Confusion. La ville portuaire de la Côte d’Azur s’écrit “Cannes”.
+
+    [>aller|>dormir|>habiter|>partir|>situer|>vivre] [à|a] [>cane|>canne]
+    [>bienvenue|>restaurant|>activité|>hôtel|>séjour|>camping] [à|a] [>cane|>canne]
+        <<- /conf/ not value(\3, "|Cannes|CANNES|") -3>> Cannes                         # Confusion. La ville portuaire de la Côte d’Azur s’écrit “Cannes”.
 
 TEST: œufs de {{cannes}}
 TEST: {{canes}} à pêche
 TEST: {{cane}} de défense
 TEST: alcool de {{cane}}
 TEST: appuyé sur sa {{cane}}
-TEST: bec-de-{{cannes}}
+TEST: {{bec-de-cannes}}
 TEST: aéroport de {{cannes}}
 TEST: restaurant à {{cane}}
 
 
+# c’est / s’est
+__conf_c_est_était__
+    s’  [est|était]  @:[AM]¬:[QGW]
+        <<- /conf/ -1>> c’                              # Confusion probable. Si vous voulez dire, « ceci \2 », utilisez « c’ ».
+
+TEST: {{s’}}est vraiment merdique.
+TEST: s’est par exemple illustré au combat.
+TEST: il ne s’est pas juste montré
+TEST: il s’était des journées entières consacré à son jeu favori.
+
+
 # ce / se
-__[i]/conf(conf_ce_être)__
-    (se) (?:sera(?:i(?:en|)t|)|sont|f[uû](?:ren|)t)  @@0
-    <<- (after("^ (?:[ldmtsc]es|leurs|nos|vos) ") and not before(r"(?i)\b(?:ils?|elles?|ne) +")) or
-    ( morph(word(-1), ":Cs", False, True) and not before(", +$") and not after(r"(?i)^ +(?:ils?|elles?)\b") and not morph(word(1), ":Q", False, False) )
-    -1>> ce                                                                 # Confusion probable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
+__conf_ce_se_verbe__
+    [<start>|,] se [ne|n’] [>être|>devoir|>pouvoir]
+        <<- /conf/ -2>> ce                              # Confusion probable. Si vous voulez dire, “ceci”, “cela” ou “ça”, écrivez “c’”.||http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
+
+    [<start>|,] se [sera|serait|seraient|sont|seront|fut|fût|furent|fussent] @:D
+    [<start>|,] se >devoir être
+    [<start>|,] se >pouvoir être
+        <<- /conf/ -2>> ce                              # Confusion probable. Si vous voulez dire, “ceci”, “cela” ou “ça”, écrivez “c’”.||http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
+
+TEST: {{se}} n’est pas pour cette raison que j’ai abandonné mes études.
+TEST: grâce à quoi, {{se}} put être fait dans les règles.
+TEST: {{se}} serait les pires vacances de sa vie
 TEST: des pans entiers de l’univers — pour reprendre l’expression d’Orwell — se sont d’ores et déjà volatilisés
 TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu progressivement leurs corps se rapprocher.
 
 
 # chair / chère
-__[i]/conf(conf_faire_bonne_chère)__
-    (f[aioîe]\w+) +(bonnes? ch(?:ai|e)re?) @@0,$
-    <<- morph(\1, ">faire/", False)
-    -2>> bonne chère                                                    # Confusion. « Faire bonne chère » signifie bien manger, ripailler.
+__conf_faire_bonne_chère__
+    >faire  >bonne  [cher|chers|chères|>chair|>chaire]
+        <<- /conf/ -2:3>> bonne chère                   # Confusion. « Faire bonne chère » signifie bien manger, ripailler.
 
 TEST: ils ont fait {{bonne chaire}}.
 
 
 # chant / champ
-__[i]/conf(conf_Chandeleur)__
-    la (cha(?:nt|mp)s? de l’heure?) @@3 <<- -1>> Chandeleur
-    # Confusion : la Chandeleur est une fête.|http://fr.wikipedia.org/wiki/Chandeleur
-__[i]/conf(conf_champ_de)__
-    (chants?) de (?:blé|betteraves?|fleurs|maïs|tournesols?|tulipes|force|lavande)  @@0
-    <<- -1>> =\1.replace("nt", "mp")
-    # Confusion probable. Un chant est ce qui se chante.|http://fr.wiktionary.org/wiki/champ
+__conf_Chandeleur__
+    la [>chant|>chan|>champ] de l’ [heur|heure|eurent]
+        <<- -2:0>> Chandeleur                           # Confusion : la Chandeleur est une fête.|http://fr.wikipedia.org/wiki/Chandeleur
+
+__conf_champ_chant__
+    >chant de [>blé|>betterave|>fleur|maïs|mais|>tournesol|>tulipe|>force|>lavande]
+        <<- /conf/ -1>> =\1.replace("nt", "mp")         # Confusion probable. Un chant est ce qui se chante.|http://fr.wiktionary.org/wiki/champ
 
 TEST: C’est {{la}} {{champ de l’heur}}.
 TEST: Il traversa le {{chant}} de betteraves.
 
 
 # colon / côlon
-__[i]/conf(conf_côlon)__
-    cancer du (colon) @@10 <<- -1>> côlon                                       # Confusion : le côlon est un segment du gros intestin, le colon colonise.
+__conf_côlon_colon__
+    cancer du colon
+        <<- /conf/ -3>> côlon                           # Confusion : le côlon est un segment du gros intestin, le colon colonise.
 
 TEST: Il a le cancer du {{colon}}.
 
 
 # censé / sensé
-__[i]/conf(conf_être_censé)__
-    ({etre}) +(sensée?s?) +(?:y |en |leur |[nv]ous |[mtsn](?:en? |’y |’)|l(?:es?|a) |)({w_2})  @@0,w,$
-    <<- morph(\1, ":V0e", False) and morph(\3, ":(?:Y|Oo)", False)
-    -2>> =\2.replace("sens", "cens")                                            # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez :
+__conf_censé_sensé__
+    >être >sensée [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]        @:Y
+    >être >sensée ?[ne|n’]¿ [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:Y
+    >être >sensée ?[ne|n’]¿ [me|m’|te|t’|se|s’|nous|vous] [le|la|l’|les|en|y]           @:Y
+    >être >sensée ?[ne|n’]¿ [le|la|l’|les]                [lui|leur|en|y]               @:Y
+    >être >sensée ?[ne|n’]¿ [lui|leur]                    en                            @:Y
+    >être >sensée @:Y
+    >être >sensée ne [pas|plus|jamais|rien|guère|point]
+        <<- /conf/ not value(<1, "|l’|un|les|des|ces|")
+        -2>> =\2.replace("sens", "cens")                    # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez “censé”.
 
 TEST: Ils sont {{sensés}} y parvenir.
 TEST: Elles étaient {{sensés}} m’y conduire
 TEST: il est {{sensé}} prendre l’avion demain
+TEST: Un être sensé ne ferait jamais ça.
 
-
-__[i]/conf(conf_sensé)__
-    (censée?s?) *$  @@0
-    <<- -1>> =\1.replace("c", "s").replace("C", "S")                            # Confusion probable : il y a ce qui est “sensé”, c’est-à-dire de “bon sens”, et il y a ce que chacun est “censé” accomplir.
+    >censée  <end>
+        <<- /conf/ -1>> =\1.replace("cen", "sen").replace("Cen", "Sen").replace("CEN", "SEN")  # Confusion probable. Ce qui est “sensé” (de “bon sens”) et ce que chacun est “censé” accomplir.
 
 TEST: Ce sont pourtant des gens si {{censés}}
 
 
 # content / contant / comptant
-__[i]/conf(conf_content)__
-    ({avoir}) +(?:tout |)(?:[mts]on|[nv]otre|leur) (co(?:mp|n)tant) @@0,$
-    <<- morph(\1, ":V0a", False) -2>> content                                           # Confusion. Avoir (tout) son content…|http://www.larousse.fr/dictionnaires/francais/content/18572
-__[i]/conf(conf_argent_comptant)__
-    argent (cont[ea]nt)  @@7
-    <<- morph(word(-1), ":[VR]", False) -1>> comptant                                   # Confusion probable.|https://fr.wiktionary.org/wiki/argent_comptant
+__conf_content_comptant__
+    >avoir ?tout¿ [mon|ton|son|notre|votre|leur] ([comptant|contant])
+        <<- /conf/ -1>> content                             # Confusion. Avoir (tout) son content…|https://fr.wiktionary.org/wiki/content#Nom_commun
+
+    argent [content|contant]
+        <<- morph(<1, ":[VR]") -2>> comptant                # Confusion probable.|https://fr.wiktionary.org/wiki/argent_comptant
 
 TEST: Elle a déjà eu tout son {{comptant}} de problèmes.
 TEST: On paye toujours argent {{content}}.
 
 
-# cor / corps
-__[i]/conf(conf_à_cor_et_à_cri)__
-    [àa] corp?s? es?t [àa] cris?
-    <<- not re.search("(?i)^à cor et à cri$", \0) ->> à cor et à cri
-    # Locution adverbiale invariable. (Le cor est un instrument à vent utilisé pour la chasse.)|https://fr.wiktionary.org/wiki/%C3%A0_cor_et_%C3%A0_cri
-
-TEST: Elles hurlèrent {{à corps et à cris}}.
-
-
 # côté / coté
-__[i]/conf(conf_côté)__
-    (?:à|au|autres?|bon|mauvais|les?|de|ce|du|[mts](?:on|es)|[nv]otre|chaque|un|leurs?) (cotés?)  @@$
-    <<- -1>> =\1.replace("o", "ô")                                             # Confusion : « coté » est le participe passé du verbe « coter ».
+__conf_côté_coté__
+    [à|au|aux|>autre|bon|bons|mauvais|le|les|de|ce|ces|du|mon|ton|son|mes|tes|ses|notre|votre|chaque|un|leur|leurs|quel|quels|quelques|plusieurs] [coté|cotés|cotée|cotées]
+        <<- /conf/ -2>> côté|côtés                          # Confusion : “coté” est le participe passé du verbe “coter”.
 
 TEST: Je reste à ses {{cotés}}.
 
 
 # cote / côte / cotte
-__[i]/conf(conf_côte)__
-    (cott?es?) (?:d(?:e (?:bœuf|porc|veau|Bretagne)[sx]?|’(?:agneaux?|Albâtre|Armor|Azur|Ivoire|Or|Opale|Émeraude))|(?:brisée|cassée|fêlée|fracturée|surnuméraire|rocheuse|adriatique|américaine|californienne|atlantiques?|basque|bretonne|landaise|normande|française|belge|espagnole|italienne|portugaise|africaine|méditerranéenne|pacifique|raide|occidentale|fractale)s?|nord|sud|ouest)  @@0
-    <<- -1>> =\1.replace("o", "ô").replace("tt", "t")           # Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
-__[i]/conf(conf_côtes)__
-    (?:fracture|radiographie)s? des (cott?es)  @@$
-    <<- -1>> côtes                                              # Confusion : écrivez “côtes” pour les os du thorax.|https://fr.wiktionary.org/wiki/c%C3%B4te
-__[i]/conf(conf_cote)__
-    (c(?:ôt|ott)es?) (?:mobilières?|foncières?|de (?:niveau|popularité|confiance)|d’(?:alerte|altitude|amour))  @@0
-    <<- -1>> =\1.replace("ô", "o").replace("tt", "t")           # Confusion : utilisez « cote » pour chiffrer (cotation).|http://fr.wiktionary.org/wiki/cote
-__[i]/conf(conf_cotte)__
-    (c[ôo]tes?) de mailles?  @@0
-    <<- -1>> =\1.replace("ô", "o").replace("t", "tt")           # Confusion : écrivez « cotte » pour la cotte de mailles.|https://fr.wiktionary.org/wiki/cotte_de_mailles
-__[i]/conf(conf_avoir_la_cote)__
-    ({avoir}) +la (côte)  @@0,$
-    <<- morph(\1, ":V0a", False) -2>> cote                      # Confusion probable : utilisez « cote » (cotation).|http://fr.wiktionary.org/wiki/cote
-__[i](conf_côte_à_côte)__
-    c[ôo]tt?es? [àaá] c[ôo]tt?es?
-    <<- not re.search("(?i)^côte à côte$", \0) ->> côte à côte      # Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
-    <<- ~>> *
+__conf_côte_cote_cotte__
+    [>cote|>cotte] [de|d’] [>bœuf|>porc|>veau|Bretagne|>agneau|>albâtre|>Armor|>azur|>ivoire|>or|>opale|>émeraude]
+    [>cote|>cotte] [>brisée|>cassée|>fêlée|>fracturées|>surnuméraire|>rocheuse|>adriatique|>américaine|>californienne|>atlantique|>basque|>bretonne|>landaise|>normande|>française|>belge|>espagnole|>italienne|>portugaise|>africaine|>méditerranéenne|>pacifique|>raide|>occidentale|>fractale|nord|sud|ouest]
+    <<- /conf/ -1>> =\1.replace("o", "ô").replace("tt", "t")        # Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
+
+    [>fracture|>radiographie] des [>cote|>cotte]
+        <<- /conf/ -3>> côtes                                       # Confusion : écrivez “côtes” pour les os du thorax.|https://fr.wiktionary.org/wiki/c%C3%B4te
+
+    [>côte|>cotte] [>mobilière|>foncière]
+    [>côte|>cotte] [de|d’] [niveau|popularité|confiance|alerte|altitude|amour]
+        <<- /conf/ -1>> =\1.replace("ô", "o").replace("tt", "t")    # Confusion : utilisez « cote » pour chiffrer (cotation).|http://fr.wiktionary.org/wiki/cote
+
+    [>cote|>côte] de >maille
+        <<- /conf/ -1>> =\1.replace("ô", "o").replace("t", "tt")    # Confusion : écrivez « cotte » pour la cotte de mailles.|https://fr.wiktionary.org/wiki/cotte_de_mailles
+
+    >avoir la côte
+        <<- /conf/ -3>> cote                                        # Confusion probable : utilisez “cote” (cotation).|http://fr.wiktionary.org/wiki/cote
+
+    [>côte|>cotte|>cote]  [à|a|á]  [>côte|>cotte|>cote]
+        <<- /conf/ ->> côte à côte                                  # Locution adverbiale invariable. Écrivez “côte à côte”.|https://fr.wiktionary.org/wiki/c%C3%B4te_%C3%A0_c%C3%B4te
+        <<- ~>> *
 
 TEST: Rien ne vaut une bonne {{cote}} de bœuf.
 TEST: Elles ont passé une radiographie des {{cottes}}.
@@ -10941,53 +11025,63 @@ TEST: il a réussi à percer sa {{cote}} de mailles.
 TEST: Il a la {{côte}} auprès de ses collègues
 TEST: ils sont {{cotte à cotte}}
 TEST: on a atteint la cote d’alerte.
+TEST: Elles avançaient côte à côte.
 
 
 # cou / coup / coût
-__[i]/conf(conf_coup_de)__
-    (co[uû]t?s?) d(?:e (?:baguette|bâton|barre|bec|bélier|blues|botte|boule|boutoir|bol|bite|cœur|chaud|coude|dé|dent|déprime|froid|fil|foudre|genou|gueule|grâce|griffe|grisou|hache|hanche|Jarnac|jus|jeune|klaxon|main|ma[îi]tre|massue|neuf|nostalgie|pied|poing|poignard|pouce|pute|rein|rabot|savate|sang|sabot|sifflet|soleil|surin|tête|théâtre|torchon|vent|vieux)|’(?:éclat|épée|état|épaule|œil|estoc)|ur)s? @@0
-    <<- -1>> coup
-    # Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez :
-__[i]/conf(conf_coût_de)__
-    (coup?s?) de (?:base|revien[ts]|distribution|développement|production|la vie|maintenance|construction|fonctionnement|fabrication|financement|formation|renonciation|stockage|trans(?:action|fert|port|formation)|viabilisation)s? @@0
-    <<- -1>> coût
-    # Confusion probable. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, on écrit “coup”. Pour ce que ça coûte, écrivez :
-__[i]/conf(conf_cou)__
-    (co[uû][pt]s?) +(?:long|graci(?:eux|le))s?  @@0
-    <<- -1>> cou
-    # Confusion probable. Le coût est le prix d’une chose. Le coup désigne un acte ou une force qui frappe. Pour la partie séparant le tronc de la tête, écrivez :
+__conf_coup_cout_cou__
+    [>cou|>coût|>cout] [de|d’] [>baguette|>bâton|>barre|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>gueule|>grâce|>griffe|>grisou|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>rein|>rabot|>savate|>sang|>sabot|>sifflet|>soleil|>surin|>tête|>théâtre|>torchon|>vent|vieux]
+    [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
+    [>cou|>coût|>cout] [dur|durs]
+        <<- /conf/ -1>> coup|coups      # Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
+
+    [>cou|>coup] de [>base|revient|reviens|>distribution|>développement|>production|>maintenance|>construction|>fonctionnement|>fabrication|>financement|>formation|>renonciation|>stockage|>transaction|>transfert|>transport|>transformation|>viabilisation]
+    [>cou|>coup] de la vie
+        <<- /conf/ -1>> coût|coûts      # Confusion probable. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, on écrit “coup”. Pour ce que ça coûte, écrivez “coût”.
+
+    [>coup|>coût|>cout] [long|longs|>gracile|grâcieux]
+        <<- /conf/ -1>> cou             # Confusion probable. Le coût est le prix d’une chose. Le coup désigne un acte ou une force qui frappe. Pour la partie séparant le tronc de la tête, écrivez “cou”.
 
 TEST: J’ai pris un {{cou}} de bâton.
+TEST: Encore un {{cou}} dur.
 TEST: Merci de calculer le {{coup}} de production avant d’établir une facture.
 TEST: Elle a un {{coût}} si gracile.
 
 
-__[i]/conf(conf_tordre_le_cou)__
-    (tord\w*) +le (co[uû][pt]s?) @@0,$ <<- morph(\1, ">tordre/", False) -2>> cou
-    # Confusion. Le coût indique ce que ça coûte. Un coup, c’est quelque chose qui frappe. La partie séparant la tête du corps s’écrit “cou”.
-__[i]/conf(conf_rendre_coup_pour_coup)__
-    (rend\w*) +(co[uû]t?s? pour co[uû]t?s?)  @@0,$
-    <<- morph(\1, ">rendre/", False) -2>> coup pour coup
-    # Confusion. Le coût indique ce que ça coûte. Un cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
+    >tordre le [coup|coût|cout]
+        <<- /conf/ -3>> cou                 # Confusion. Le coût indique ce que ça coûte. Un coup, c’est quelque chose qui frappe. La partie séparant la tête du corps s’écrit “cou”.
+
+    >rendre [>cou|>coût|>cout] pour [>cou|>coût|>cout]
+        <<- /conf/ -2:0>> coup pour coup    # Confusion. Le coût indique ce que ça coûte. Un cou est la partie séparant la tête du corps. Pour ce qui frappe, écrivez “coup”.
 
 TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.
 TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.
 
 
 # cour / cours / court
-__[i]/conf(conf_au_cours_de)__
-    au (court?) (?:des?|du?) @@3 <<- -1>> cours                                 # Confusion probable. Une cour… Un cours… Adjectif : court(e).
-__[i]/conf(conf_en_cours)__
-    en cour(?! martiale?| de (?:cassation|justice)| d’assises) <<- ->> en cours                          # Confusion probable. Une cour… Un cours… Adjectif : court(e).
-__[i]/conf(conf_couper_court)__
-    (coup\w+) (cours?) @@0,$ <<- morph(\1, ">couper/") -2>> court               # « Couper court ». Écourter. Une cour… Un cours… Adjectif : court(e).
-__[i]/conf(conf_laisser_libre_cours)__
-    ({w1}) +libre (court?) @@0,$
-    <<- morph(\1, ">(?:avoir|donner|laisser)/", False) -2>> cours               # Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
-__[i]/conf(conf_à_court_de)__
-    à (cours?) de? @@2 <<- -1>> court                                           # Confusion probable : écrivez « à court de … » pour « manquer de … »
-__[i]/conf(conf_à_court_terme)__
-    à cour(?:s|ts|) termes? <<- ->> à court terme                               # Confusion. Une cour… Un cours… Adjectif : court(e).
+__conf_cour_cours_court_courre__
+    au [cour|court|courre|courres|courts] [de|d’|des|du]
+        <<- /conf/ -2>> cours                               # Confusion. Locution “au cours de”. Une cour… Un cours… Adjectif : court(e).
+
+    en cour martiale
+    en cour [de|d’] [cassation|justice]
+    en cour d’ [>assise]
+        <<- ~1:2>> !
+
+    en cour
+        <<- /conf/ ->> en cours                             # Confusion probable. Une cour… Un cours… Adjectif : court(e).
+
+    >couper [cour|cours|courre|courres|courts]
+        <<- /conf/ -2>> court                               # “Couper court” qui signifie écourter. Une cour… Un cours… Adjectif : court(e).
+
+    [>avoir|>donner|>laisser] libre [cour|court|courts|courre|courres]
+        <<- /conf/ -3>> cours                               # Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
+
+    à [cour|cours|courre|courres|courts]  [de|d’]
+        <<- /conf/ -2>> court                               # Confusion probable : écrivez “à court de” pour “manquer de”.
+
+    [à|a] [cour|cours|courre|courres|courts] >terme
+        <<- /conf/ ->> à court terme                        # Confusion. Une cour… Un cours… Adjectif : court(e).
 
 TEST: au {{court}} de cette journée
 TEST: les exercices {{en cour}} se déroulent bien.
@@ -10998,36 +11092,48 @@ TEST: le rendement {{à cours terme}} est excellent.
 TEST: porter l’affaire en Cour de justice
 TEST: jusqu’en cour de cassation
 TEST: le jugement en cour d’assises
+TEST: ils vont passer prochainement en cour martiale.
 
 
 # dés / dès
-__[i]/conf(conf_dès_que_lors1)__
-    (dés) (?:les?|la|que?|lors|avant|demain) @@0
-    <<- not before(r"(?i)\b(?:[lmtsc]es|des?|[nv]os|leurs|quels) +$") -1>> dès
-    # Confusion probable. Les dés sont des polyèdres ou des protège-doigts pour la couture. Pour signifier “à partir de/du/des”, écrivez :|https://fr.wiktionary.org/wiki/d%C3%A9
-__[i]/conf(conf_dès_que_lors2)__
-    (des) (?:les?|la|que?|lors|demain) @@0
-    <<- -1>> dès
-    # Confusion probable : “des” est un déterminant pluriel. Pour signifier “à partir de/du/des”, écrivez :|https://fr.wiktionary.org/wiki/d%C3%A9
+__conf_dès_des__
+    dés [le|la|l’|les|que|qu’|qu|lors|avant|demain]
+        <<- /conf/ not value(<1, "|les|des|de|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs|")
+        -1>> dès                # Confusion probable. Les dés sont des polyèdres ou des protège-doigts pour la couture. Pour signifier “à partir de/du/des”, écrivez :|https://fr.wiktionary.org/wiki/d%C3%A9
+
+    des [le|la|l’|les|que|qu’|qu|lors|demain]
+        <<- /conf/ -1>> dès     # Confusion probable : “des” est un déterminant pluriel. Pour signifier “à partir de/du/des”, écrivez :|https://fr.wiktionary.org/wiki/d%C3%A9
 
 TEST: {{dés}} que nous sommes partis, il a piqué une crise
 TEST: {{des}} {{les}} premiers symptômes, appelez-moi
 
 
 # desceller / déceler / desseller
-__[i]/conf(conf_erreur_problème_decelé)__
-    (erreur|faute|incohérence|problème|bug|bogue|faille|maladie|défaut|défaillance|perturbation|irrégularité)s? .*(des[cs]ell\w+)  @@0,$
-    <<- morph(\2, ">(?:desceller|desseller)/", False)
-    -2>> =\2.replace("escell", "écel").replace("essell", "écel")
-    # Confusion probable si ce mot se rapporte à « \1 ». Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle. Si vous voulez dire “remarquer”, “dévoiler”, “découvrir”, écrivez :|http://fr.wiktionary.org/wiki/déceler
-__[i]/conf(conf_deceler_qqch)__
-    (des[cs]ell\w+) +(?:(?:une?|l[ae]|des?|ce(?:tte|t|s|)|[mts](?:on|a|es)|[nv]os|leurs?|plusieurs|quelques|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze) +|l’)(?:(?:petite?|grande?|énorme|dangeureu(?:x|se)|formidable|forte?|lég(?:er|ère)|merveilleu(?:x|se)|nouv(?:el|elle|eaux?)|vraie?|réel(?:le|)|sévère|véritable)s? +|)(acidité|activité|allergie|anévrisme|anomalie|arnaque|appendicite|atrophie|baisse|bébé|blessure|bug|bogue|carie|cancer|cause|changement|complot|comète|concentration|corrélation|croissance|défaut|défaillance|demande|dépression|diabète|différence|diminution|effluve|épilepsie|erreur|essai|existence|grossesse|grosseur|faille|faute|fuite|fraude|grippe|handicap|hausse|hémorragie|hostilité|hypertrophie|incompatibilité|incohérence|infection|infraction|indice|infidélité|insuffisance|intrigue|irrégularité|leucémie|lésion|lueur|lumière|maladie|malformation|manœuvre|manipulation|molécule|mensonge|mutation|once|perturbation|personnalité|piste|perte|planète|exoplanète|présence|qualité|odeur|opportunité|otite|problème|surdité|talent|tendance|tentative|tumeur|utilisation|hoax|variation|vie|virus)s?  @@0,$
-    <<- morph(\1, ">(?:desceller|desseller)/", False)
-    -1>> =\1.replace("escell", "écel").replace("essell", "écel")
-    # Confusion probable si ce mot se rapporte à « \2 ». Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|http://fr.wiktionary.org/wiki/déceler
+__erreur_déceler_desseller_desceller__
+    [>desseller|>desceller]
+        <<- /conf/ tag_before(\1, "erreur") or tag_before(\1, "faute") or tag_before(\1, "incohérence") or tag_before(\1, "problème") or tag_before(\1, "bug") or tag_before(\1, "bogue") or tag_before(\1, "faille") or tag_before(\1, "maladie") or tag_before(\1, "défaut") or tag_before(\1, "défaillance") or tag_before(\1, "perturbation") or tag_before(\1, "irrégularité")
+        -1>> =\1.replace("escell", "écel").replace("essell", "écel")
+        # Confusion probable. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle. Si vous voulez dire “remarquer”, “dévoiler”, “découvrir”, écrivez “déceler”.|http://fr.wiktionary.org/wiki/déceler
+
+    [>desseller|>desceller] [l’|@:[BD]] [>petite|>grande|>énorme|>dangeureuse|>formidable|>forte|>légère|>merveilleuse|>nouvelle|>vrai|>réelle|>sévère|>véritable] [>acidité|>activité|>allergie|>anévrisme|>anomalie|>arnaque|>appendicite|>atrophie|>baisse|>bébé|>blessure|>bug|>bogue|>carie|>cancer|>cause|>changement|>complot|>comète|>concentration|>corrélation|>croissance|>défaut|>défaillance|>demande|>dépression|>diabète|>différence|>diminution|>effluve|>épilepsie|>erreur|>essai|>existence|>grossesse|>grosseur|>faille|>faute|>fuite|>fraude|>grippe|>handicap|>hausse|>hémorragie|>hostilité|>hypertrophie|>incompatibilité|>incohérence|>infection|>infraction|>indice|>infidélité|>insuffisance|>intrigue|>irrégularité|>leucémie|>lésion|>lueur|>lumière|>maladie|>malformation|>manœuvre|>manipulation|>molécule|>mensonge|>mutation|>once|>perturbation|>personnalité|>piste|>perte|>planète|>exoplanète|>présence|>qualité|>odeur|>opportunité|>otite|>problème|>surdité|>talent|>tendance|>tentative|>tumeur|>utilisation|hoax|>variation|>vie|virus]
+        <<- /conf/ -1>> =\1.replace("escell", "écel").replace("essell", "écel")
+        # Confusion probable si ce mot se rapporte à “\3 \4”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|http://fr.wiktionary.org/wiki/déceler
+
+    [>desseller|>desceller] [l’|@:[BD]] [>acidité|>activité|>allergie|>anévrisme|>anomalie|>arnaque|>appendicite|>atrophie|>baisse|>bébé|>blessure|>bug|>bogue|>carie|>cancer|>cause|>changement|>complot|>comète|>concentration|>corrélation|>croissance|>défaut|>défaillance|>demande|>dépression|>diabète|>différence|>diminution|>effluve|>épilepsie|>erreur|>essai|>existence|>grossesse|>grosseur|>faille|>faute|>fuite|>fraude|>grippe|>handicap|>hausse|>hémorragie|>hostilité|>hypertrophie|>incompatibilité|>incohérence|>infection|>infraction|>indice|>infidélité|>insuffisance|>intrigue|>irrégularité|>leucémie|>lésion|>lueur|>lumière|>maladie|>malformation|>manœuvre|>manipulation|>molécule|>mensonge|>mutation|>once|>perturbation|>personnalité|>piste|>perte|>planète|>exoplanète|>présence|>qualité|>odeur|>opportunité|>otite|>problème|>surdité|>talent|>tendance|>tentative|>tumeur|>utilisation|hoax|>variation|>vie|virus]
+        <<- /conf/ -1>> =\1.replace("escell", "écel").replace("essell", "écel")
+        # Confusion probable si ce mot se rapporte à “\3”. Desceller signifie briser un sceau, un cachet… Desseller signifie ôter une selle.|http://fr.wiktionary.org/wiki/déceler
 
 TEST: il y a une erreur qu’on peut {{desceller}} dans ses analyses.
 TEST: elle a {{dessellé}} une forte hostilité dans ses propos.
+TEST: elle a {{dessellé}} deux problèmes.
+
+
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
+
 
 
 # en train / entrain
