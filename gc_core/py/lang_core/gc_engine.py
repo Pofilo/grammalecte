@@ -605,8 +605,10 @@ class TextParser:
             print("UPDATE:")
             print(self)
 
-    def _getNextPointers (self, dToken, dGraph, iNode1, dNode, bKeep=False, bDebug=False):
+    def _getNextPointers (self, dToken, dGraph, dPointer, bDebug=False):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
+        dNode = dPointer["dNode"]
+        iNode1 = dPointer["iNode1"]
         bTokenFound = False
         # token value
         if dToken["sValue"] in dNode:
@@ -724,12 +726,13 @@ class TextParser:
                         print("  MATCH: *" + sMeta)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                     bTokenFound = True
-        if bKeep and not bTokenFound:
-            yield { "iNode1": iNode1, "dNode": dNode, "bKeep": True }
+        if "bKeep" in dPointer and not bTokenFound:
+            yield dPointer
         # JUMP
         # Warning! Recurssion!
         if "<>" in dNode:
-            yield from self._getNextPointers(self, dToken, dGraph, iNode1, dGraph[dNode["<>"]], True, bDebug)
+            dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": True }
+            yield from self._getNextPointers(dToken, dGraph, dPointer2, bDebug)
 
 
     def parse (self, dGraph, dPriority, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
@@ -743,10 +746,10 @@ class TextParser:
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
-                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer["iNode1"], dPointer["dNode"], dPointer.get("bKeep", False), bDebug))
+                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer, bDebug))
             lPointer = lNextPointer
             # check arcs of first nodes
-            lPointer.extend(self._getNextPointers(dToken, dGraph, iToken, dGraph[0], False, bDebug))
+            lPointer.extend(self._getNextPointers(dToken, dGraph, { "iNode1": iToken, "dNode": dGraph[0] }, bDebug))
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:
