@@ -31,12 +31,12 @@ contexts:
       scope: bookmark
 
     # Graph
-    - match: '^@@@@GRAPH: *(\w+) *'
+    - match: '^@@@@GRAPH: *(\w+) .*$'
       scope: graphline
       captures:
         1: string.graphname
 
-    - match: '^@@@@(?:END_GRAPH *| *)'
+    - match: '^@@@@(?:END_GRAPH .*$| *)'
       scope: graphline
 
     # Keywords are if, else.
@@ -49,8 +49,8 @@ contexts:
 
     - match: '\b(?:True|False|None)\b'
       scope: constant.language
-    
-    - match: '\b(?:spell|morph|morphex|stem|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|select|exclude|analysex?|tag_|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
+
+    - match: '\b(?:spell|morph|morphex|morphVC|stem|value|space_after|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|define_from|select|exclude|analyse\w+|tag_\w+|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
       scope: entity.name.function
 
     - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:upper|lower|digit|title))\b'
@@ -79,7 +79,7 @@ contexts:
         2: rule.priority
 
     - match: '/(\w+)/'
-      scope: rule.options
+      scope: rule.actionoption
       captures:
         1: rule.optionname
 
@@ -111,7 +111,7 @@ contexts:
       scope: keyword.condition.green
     - match: '__else__'
       scope: keyword.condition.red
-    - match: '-(\d*(?::\d+|))>>'
+    - match: '-(\d*\.?(?::\.?\d+|))>>'
       scope: keyword.error
       captures:
         1: keyword.error.group
@@ -121,11 +121,14 @@ contexts:
         1: keyword.textprocessor.group
     - match: '=>>'
       scope: keyword.disambiguator
-    - match: '/(\d*)>>'
+    - match: '/(\d*(?::\d+|))>>'
       scope: keyword.tag
       captures:
         1: keyword.tag.group
-
+    - match: '%(\d*)>>'
+      scope: keyword.tag
+      captures:
+        1: keyword.tag.group
 
     # Tokens
     - match: '(>)\w+'
@@ -133,22 +136,39 @@ contexts:
       captures:
         1: keyword.valid
 
-    - match: '(~)(?!(?:\d+(?::\d+|)|)>>)[^\s]+'
+    - match: '(~)(?!(?:\d+(?::\d+|)|)>>)[^\s¬]*'
       scope: string.regex
       captures:
         1: keyword.valid
 
-    - match: '(@)([^@][^\s¬]+)'
+    - match: '(@)([^@\s¬]*)'
       scope: string.morph
       captures:
         1: keyword.valid
         2: string.morph.pattern
 
+    - match: '(/)[\w-]+'
+      scope: string.tag
+      captures:
+        1: keyword.valid
+
+    - match: '(?<=[\[ |])([*])([^\s¬]+)'
+      scope: string.morph
+      captures:
+        1: keyword.valid
+        2: string.meta
+
     - match: '(¬)(\S+)'
       scope: string.morph
       captures:
         1: keyword.invalid
-        2: string.morph.antipattern  
+        2: string.morph.antipattern
+
+    - match: '<(?:start|end)>'
+      scope: string.token
+
+    - match: '<>'
+      scope: string.jumptoken
 
     # Escaped chars
     - match: '\\(?:\d+|w|d|b|n|s|t)'
