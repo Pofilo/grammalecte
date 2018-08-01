@@ -2142,7 +2142,7 @@ TEST: y aura-t-il du poulet au dîner ?
 @@@@
 @@@@
 
-!!!! Verbes composés                                                                                   !!
+!!!! Mots composés                                                                                !!
 
 __tag_verbes_composés_interrogatifs__
     ~\w-[jJ]e$
@@ -2196,6 +2196,10 @@ __tag_verbes_composés_impératifs__
     ~\w-leur$
         <<- />> -leur|-COI|VCimp
 
+
+__tag_noms__
+    ~\w-là$
+        <<- />> -là
 
 
 
@@ -4692,6 +4696,13 @@ TEST: Ceux {{a}} qui nous avons notifié le problème sont partis.
 TEST: Il y a qui au dîner ce soir ?
 
 
+__conf_pâte_à_a__
+    >pâte a [>pain|>crêpe|>gaufre|>pizza|>tarte|>modeler|>tartiner]
+        <<- -2>> à                          # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: Marre de cette pâte {{a}} pain.
+
+
 # m’a tuer
 __conf_m_a_tuer__
     m’ a tuer
@@ -5116,6 +5127,14 @@ __être_en_xxxx__
 TEST: Je suis {{an}} désaccord avec lui.
 
 
+# en général
+__conf_en_général__
+    en générale
+        <<- /conf/ ->> en général                               # Dans cette locution, “général” est toujours au masculin singulier.|https://fr.wiktionary.org/wiki/en_g%C3%A9n%C3%A9ral
+
+TEST: On en sait {{en générale}} pas assez.
+
+
 # faut / faux
 __conf_faux_faut__
     faut  @:¬(?:Y|Oo|X|M)
@@ -5260,6 +5279,61 @@ __conf_jeune__
 TEST: Très {{jeûne}}, elle a su qu’elle ne voulait pas d’une vie ordinaire.
 
 
+# la / l’a
+__conf_il_elle_on_la_l_a_vconj__
+    [il|elle|on]  l’  a  ~^[bcdfghjklmnpqrstvwxz]
+        <<- /conf/ morph(\4, ":[123][sp]", ":[GQ]") -2:3>> la                   # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
+
+    [il|elle|on]  [nous|vous]  l’  a  ~^[bcdfghjklmnpqrstvwxz]
+        <<- /conf/ morph(\5, ":[123][sp]", ":[GQ]") -3:4>> la                   # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
+
+    [ne|me|te|se]  l’ a  ~^[bcdfghjklmnpqrstvwxz]
+        <<- /conf/ morph(\4, ":[123][sp]", ":[GQ]") -2:3>> la                   # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
+
+    ne  [nous|vous]  l’ a  ~^[bcdfghjklmnpqrstvwxz]
+        <<- /conf/ morph(\5, ":[123][sp]", ":[GQ]") -3:4>> la                   # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
+
+    ne l’ a [lui|leur]
+        <<- /conf/ -2:3>> la                                                    # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
+
+TEST: on {{l’a}} {{prit}} pour une idiote.
+TEST: il ne {{l’a}} {{connaît}} pas.
+TEST: elle ne {{l’a}} leur donne pas sans condition.
+TEST: elle se {{l’a}} {{réserve}} pour elle-même.
+
+
+    [il|elle|on]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+        <<- /conf/ -2>> l’a                                                     # Confusion probable : “\3” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+    [il|elle|on]  [nous|vous]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+        <<- /conf/ -3>> l’a                                                     # Confusion probable : “\4” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+    [ne|me|te]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+        <<- /conf/ -2>> l’a                                                     # Confusion probable : “\3” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+    ne  [nous|vous]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+        <<- /conf/ -3>> l’a                                                     # Confusion probable : “\4” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+TEST: il {{la}} {{donnée}}.
+TEST: ne {{la}} {{donné}} que contraint et forcé…
+TEST: celle-là, il me {{la}} {{commandée}} ?
+
+
+# laissez-passer / laissez-faire
+__conf_laisser_passer_aller__
+    laisser-passer
+        <<- /conf/ ->> laissez-passer                                           # Confusion.
+
+    laissez-faire
+        <<- /conf/ ->> laisser-faire                                            # Confusion.
+
+    laissez-aller
+        <<- /conf/ ->> laisser-aller                                            # Confusion.
+
+TEST: ils ont oublié leur {{laisser-passer}}.
+TEST: il faut en finir avec le {{laissez-aller}}.
+
+
 # la / là
 __conf_la_là!7__
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
@@ -5276,6 +5350,30 @@ TEST: la peu efficace sensibilité
 TEST: c’est toujours la même histoire
 TEST: c’est la moins habile de toutes
 TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
+
+
+    [celle-la|celles-la|celui-la|ceux-la]
+        <<- /conf/ ->> =\1[:-2]+"là"                                # Écrivez “là” et non “la”.
+
+    [celle|celles|celui|ceux] la
+        <<- /conf/ ->> \1-là                                        # Écrivez “là” et non “la”.
+
+    /-là
+        <<- /conf/ morph(\1, ":V", ":[NA]", 0, -3)
+        -1>> \1-la|\1 là                                            # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
+
+    /-la
+        <<- /conf/ morph(\1, ":[NA]", ":[123][sp]", 0, -3)
+        -1>> =\1[:-2]+"là"                                          # Confusion : “\1” n’est pas un verbe.
+
+    [ne|me|te|se] là
+        <<- /conf/ -2>> la                                          # Confusion : “là” signifie “ici”.|http://fr.wiktionary.org/wiki/l%C3%A0
+
+TEST: {{ceux la}} sont des idiots, rien à en tirer.
+TEST: {{celle la}} ne vaut pas mieux, laisse-la tomber.
+TEST: {{Apporte-là}} près du feu
+TEST: cette {{bête-la}}
+TEST: il ne {{là}} croit pas.
 
 
 # la plupart
@@ -5321,8 +5419,8 @@ TEST: Elle habite Vandœuvre-lès-Nancy.
 # leurs / leur
 __conf_leurs_verbe__
     leurs  @:(?:[123][sp]|Y)¬:[GNAM]
-    <<- /conf/ not morph(<1, ">[ld]es/")
-    -1>> leur                                       # Incohérence : “leurs” est un déterminant pluriel censé précéder un substantif pluriel. Pour le pronom personnel devant un verbe, écrivez “leur”.
+        <<- /conf/ not morph(<1, ">[ld]es/")
+        -1>> leur                                   # Incohérence : “leurs” est un déterminant pluriel censé précéder un substantif pluriel. Pour le pronom personnel devant un verbe, écrivez “leur”.
 
 TEST: je vais {{leurs}} reprendre
 TEST: je {{leurs}} apprends la programmation
@@ -5359,14 +5457,109 @@ __conf_symbole_min__
 TEST: 120 {{Mins}} de bonheur
 
 
+# n’est-ce pas - ai / es / est
+__conf_n_est_ce_pas__
+    n’ [es|ai|aie|aies|et|ait|aient|hé|eh|e|é] [ce|se] pas
+    n’ [es-ce|ai-ce|aie-ce|aies-ce|et-ce|ait-ce|aient-ce|hé-ce|eh-ce|e-ce|é-ce] pas
+        <<- /conf/ ->> n’est-ce pas                         # Confusion. N’est-ce pas.|https://fr.wiktionary.org/wiki/n%E2%80%99est-ce_pas
+
+    n’ est-ce-pas
+    n’ est ce pas
+    n’ est ce-pas
+        <<- /conf/ ->> n’est-ce pas                         # Un seul trait d’union.|https://fr.wiktionary.org/wiki/n%E2%80%99est-ce_pas
+
+TEST: on en a plus qu’assez, {{n’ait-ce pas}} ?
+
+
+# notre / nôtre -- votre / vôtre
+# Hunspell corrige déjà les formes au pluriel (les nôtres).
+__conf_nôtre_notre__
+    [le|la|les|du|des|au|aux] notre
+        <<- /conf/ not value(>1, "|père|") -2>> nôtre                       # Confusion : « notre possession », « la nôtre ».
+
+    [le|la|les|du|des|au|aux] votre
+        <<- /conf/ -2>> vôtre                                               # Confusion : « votre possession », « la vôtre ».
+
+    >nôtre  @:[NA]¬:D
+        <<- /conf/ not value(<1, "|le|la|les|du|des|au|aux|") -1>> notre    # Confusion : « notre possession », « la nôtre ».
+
+    >vôtre  @:[NA]¬:D
+        <<- /conf/ not value(<1, "|le|la|les|du|des|au|aux|") -1>> votre    # Confusion : « notre possession », « la nôtre ».
+
+TEST: C’est la {{votre}} ?
+TEST: {{nôtre}} père est si âgé.
+TEST: nous vous proposons de faire vôtre une autre volonté
+TEST: Elle récitait sans cesse des Notre Père.
+
+
+# nulle part
+__conf_nulle_part__
+    nul part
+        <<- not morph(<1, ":D.*:m") ->> nulle part                             # Confusion : pour dire “en aucun lieu”, écrivez “nulle part”.
+
+TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration
+
+
 # on / ont
 __conf_on_ont__
     on  @:W¬:3s
         <<- /conf/ not morph(<1, ":V.*:3s") and not before0("’$")
-        -1>> ont                                            # Confusion probable : “avoir” à la 3ᵉ personne du pluriel du présent s’écrit “ont”.
+        -1>> ont                                                    # Confusion probable : “avoir” à la 3ᵉ personne du pluriel du présent s’écrit “ont”.
 
 TEST: ces gens {{on}} {{souvent}} tort.
 TEST: Je voulais qu’on soit ensemble.
+
+
+__conf_ont_on__
+    [<start>|,] ont [ne|n’|me|m’|te|se|s’]
+    [<start>|,] ont [lui|nous|vous] @:[123][sp]¬:G
+    [<start>|,] ont leur @:[123][sp]¬:(?:G|[NA].*:[si])
+        <<- /conf/ -2>> on                                          # Confusion probable : “ont” est une conjugaison du verbe avoir.
+
+    [<start>|,] ont t’
+        <<- /conf/ not value(>1, "|il|ils|elle|elles|") -2>> on     # Confusion probable : “ont” est une conjugaison du verbe avoir.
+
+    [n’|m’|t’|s’|l’] [y|en] on
+        <<- /conf/ -3>> ont                                         # Confusion. Exemples : « on y va », « ils ont faim ».
+
+    [ne|me|te|se] l’ on
+        <<- /conf/ -3>> ont                                         # Confusion. Exemples : « on y va », « ils ont faim ».
+
+    ont *WORD
+        <<- /conf/ morph(<1, ":Cs|<start>")
+            and ( value(\2, "|ne|n’|me|m’|te|se|s’|") or morph(\2, ":[123][sp]", ":[QG]|>(?:confiance|envie|peine|prise|crainte|affaire|hâte|force|recours|somme)/") )
+        -1>> on                                                     # Confusion probable : “ont” est une conjugaison du verbe avoir.
+
+    qui on
+        <<- /conf/ not morph(<1, ":[VR]|<start>") and not morph(>1, ":(?:3s|Oo|X)")
+        -2>> ont                                                    # Confusion probable. Exemples : « on y va », « ils ont faim ».
+
+    ~-ont$
+        <<- /conf/ ->> =\1[:-1]                                     # Incohérence : “ont” est une forme conjuguée du verbe “avoir” (par exemple: “ils ont”). Pour le pronom personnel, écrivez “on”.
+
+    [<start>|,]  *WORD  ont
+        <<- /conf/ space_after(\2, 1, 1) and morph(\2, ":3s") -2:3>> \2-on
+        # Confusion probable : “ont” est une forme conjuguée du verbe “avoir”. Pour le pronom personnel, écrivez “on” et mettez un trait d’union puisqu’il s’agit d’une question.
+
+TEST: {{ont}} m’assure qu’il n’y en a pas.
+TEST: {{Ont}} n’arrive pas à s’en sortir.
+TEST: {{Ont}} ne sait jamais quoi faire
+TEST: si {{ont}} donne à ces gens, ça n’en finit plus.
+TEST: {{Ont}} viens !
+TEST: {{Ont}} ne sait pas comment faire.
+TEST: n’y {{on}} jamais lieu de telles abominations !
+TEST: ces chiens te l’{{on}} {{donné}}
+TEST: {{Ont}} lui avait donné du temps
+TEST: {{Ont}} leur prendra tout
+TEST: Qu’importe, {{ont}} leur prend tout
+TEST: Qui {{on}} {{tant}} de malheurs !
+TEST: {{peut-ont}} y arriver avec si peu de moyens ?
+TEST: {{peut ont}} y arriver ?
+TEST: les politiques de l’offre ont échoué.
+TEST: qui on blâme, ce soir ?
+TEST: qui n’ont somme toute que le désir de vivre paisiblement
+TEST: ces textes, quoi qu’on en pense, ont force de loi.
+TEST: s’ils n’ont ne serait-ce qu’un peu de jugeotte, on ne les reverra plus.
 
 
 # ou / où
@@ -5417,7 +5610,7 @@ __conf_pâle_pale__
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
     >pale [>imitation|>imitatrice|>rayon]
-        <<- /conf/ -1>> =\1.replace("pal", "pâl")
+        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
 TEST: elles sont si {{pales}}.
@@ -10508,32 +10701,6 @@ TEST: de mon point de {{vues}}
 
 
 
-
-
-
-# coûter cher
-__conf_coûter_cher__
-    [>coûter|>payer] chers
-        <<- /conf/ -2>> cher                                        # Ici, « cher » est un adverbe, invariable.
-
-    [>coûter|>payer] [chère|chères|>chair|>chaire]
-        <<- /conf/ -2>> cher                                        # Confusion. Pour parler de la cherté, écrivez “cher”.
-
-TEST: ces saloperies coûtent vraiment {{chères}} !
-
-
-# avoir/donner lieu
-__conf_avoir_donner_lieu__
-    [>avoir|>donner]  lieux
-        <<- /conf/ -2>> lieu                                        # « Donner lieu » : “lieu” est invariable dans cette locution verbale.
-
-    [>avoir|>donner]  [>lieue|lieus]
-        <<- /conf/ -2>> lieu                                        # Confusion. La lieue est une unité de distance. Les lieus sont des poissons.
-
-TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
-TEST: Tout ce qui a {{lieue}} hors de ce pays est ignoré.
-
-
 !!
 !!
 !!!! Confusions                                                                                   !!
@@ -10646,6 +10813,9 @@ __conf_amande_amende__
     >mettre à l’ amande
         <<- /conf/ -4>> amende                          # Confusion. L’amande est un fruit.
 
+    >pâte d’ >amende
+        <<- /conf/ -3>> amandes                         # Confusion. Une amende est une peine. Le fruit s’écrit “amande”.
+
     >faire >amande >honorable
         <<- /conf/ -2:3>> amende honorable              # Confusion. L’amande est un fruit.
 
@@ -10655,6 +10825,7 @@ __conf_amande_amende__
 TEST: Avec ses beaux yeux en {{amendes}} nul ne peut lui résister.
 TEST: Nous avons déconné, nous avons été mis à l’{{amande}}.
 TEST: Ces gens-là ne feront jamais {{amande honorable}}.
+TEST: achète de la pâte d’{{amende}}
 
 
 # annales / anal-e-s
@@ -10886,6 +11057,17 @@ TEST: des pans entiers de l’univers — pour reprendre l’expression d’Orwe
 TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu progressivement leurs corps se rapprocher.
 
 
+# coûter cher
+__conf_coûter_cher__
+    [>coûter|>payer] chers
+        <<- /conf/ -2>> cher                                        # Ici, « cher » est un adverbe, invariable.
+
+    [>coûter|>payer] [chère|chères|>chair|>chaire]
+        <<- /conf/ -2>> cher                                        # Confusion. Pour parler de la cherté, écrivez “cher”.
+
+TEST: ces saloperies coûtent vraiment {{chères}} !
+
+
 # chair / chère
 __conf_faire_bonne_chère__
     >faire  >bonne  [cher|chers|chères|>chair|>chaire]
@@ -11091,29 +11273,19 @@ TEST: elle a {{dessellé}} une forte hostilité dans ses propos.
 TEST: elle a {{dessellé}} deux problèmes.
 
 
-
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-
 # en train / entrain
-__[i]/conf(conf_en_train)__
+__conf_en_train_entrain__
     entrain
-    <<- morph(word(-1), ">(?:être|voyager|surprendre|venir|arriver|partir|aller)/", False, False) or before("-(?:ils?|elles?|on|je|tu|nous|vous) +$")
-    ->> en train                                                                    # Confusion. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
+        <<- /conf/ morph(<1, ">(?:être|voyager|surprendre|venir|arriver|partir|aller)/") or before("-(?:ils?|elles?|on|je|tu|nous|vous) +$")
+        ->> en train                                        # Confusion. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
 
 TEST: Vous êtes {{entrain}} de vaincre.
 TEST: Viennent-ils {{entrain}} ?
 TEST: ces idiots sont en train de tout foutre en l’air.
 
-
-__[i]/conf(conf_entrain)__
     en train
-    <<- morph(word(-1), ">(?:avec|sans|quel(?:le|)|cet|votre|notre|mon|leur)/", False, False) or before(" [dlDL]’$")
-    ->> entrain                                                 # Confusion. Soudez les deux mots. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
+        <<- /conf/ value(<1, "|avec|sans|quel|quelle|quels|quelles|cet|votre|notre|mon|leur|l’|d’|")
+        ->> entrain                                         # Confusion. Soudez les deux mots. L’entrain est une fougue, une ardeur à accomplir quelque chose.|https://fr.wiktionary.org/wiki/entrain
 
 TEST: Avec quel {{en train}}, ils nous ont mené jusque là-haut.
 TEST: Son manque d’{{en train}} était contagieux.
@@ -11122,10 +11294,10 @@ TEST: Elles travaillaient avec entrain, conscientes que la fin était proche.
 
 
 # envi / envie
-__[i]/conf(conf_à_l_envi)__
-    à l’(envie)  @@4
-    <<- not morph(word(-1), ">(?:abandonner|céder|résister)/", False) and not after("^ d(?:e |’)")
-    -1>> envi                                                                                       # Locution adverbiale « à l’envi », signifiant « autant que possible ».
+__conf_à_l_envi__
+    à l’ envie
+        <<- /conf/ not morph(<1, ">(?:abandonner|céder|résister)/") and not value(>1, "|de|d’|")
+        -3>> envi                                           # Locution adverbiale « à l’envi », signifiant « autant que possible ».
 
 TEST: Ils s’amusèrent à l’{{envie}} et oublièrent tous leurs soucis.
 TEST: Je résiste à l’envie de manger du chocolat.
@@ -11133,14 +11305,18 @@ TEST: On ne s’intéresse pas à l’école ni à l’âge, mais aux compétenc
 
 
 # et / est
-__[i]/conf(conf_est)__
-    (et) +({w_4}) *$ @@0,$
-    <<- morphex(\2, ":[QA]", ":M") and \2.islower() >>>
-    <<- before_chk1(r"(?i)^ *(?:l[ea]|ce(?:tte|t|)|mon|[nv]otre) +(\w[\w-]+\w) +$", ":[NA].*:[is]", ":G")
-    -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
-    <<- before_chk1(r"(?i)^ *(?:ton) +(\w[\w-]+\w) +$", ":N.*:[is]", ":[GA]")
-    -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
-    <<- before_chk1(r"^ *([A-ZÉÈ][\w-]+\w) +$", ":M", ":G") -1>> est                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
+__conf_est_et__
+    <start>  [le|la|l’|ce|cet|cette|mon|ma|ta|sa|notre|votre|leur|quel|quel]  *WORD  et  *WORD  <end>
+        <<- /conf/ morph(\3, ":[NA].*:[is]", ":G") and morph(\5, ":[QA]", ":M") and \5.islower()
+        -4>> est                                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
+
+    <start>  [son|ton]  *WORD  et  *WORD  <end>
+        <<- /conf/ morph(\3, ":N.*:[is]", ":[GA]") and morph(\5, ":[QA]", ":M") and \5.islower()
+        -4>> est                                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
+
+    <start>  *WORD  et  *WORD  <end>
+        <<- /conf/ morph(\2, ":M", ":G") and morph(\4, ":[QA]", ":M") and \4.islower()
+        -3>> est                                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
 TEST: ce chien {{et}} malade.
 TEST: ton chat {{et}} cinglé.
@@ -11152,10 +11328,13 @@ TEST: Les gouvernements espagnol et mexicain ont signé le traité.
 TEST: Béatrice Dalle et Claude
 
 
-__[i]/conf(conf_où_est)__
-    où (et) +({w_1}) @@w,$
-    <<- morphex(\2, ":D", ":R|>(?:quand|pourquoi)") or (\2 == "l" and after("^’"))
-    -1>> est                                                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez :
+__conf_où_est__
+    où  et  l’
+        <<- /conf/ -2>> est                             # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
+
+    où  et
+        <<- /conf/ not value(>1, "|quand|pourquoi|comment|quel|quels|quelle|quelles|de|") and morph(>1, ":D", ":R")
+        -2>> est                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
 TEST: où {{et}} cet ennemi ?
 TEST: où {{et}} l’homme qui est passé ce matin ?
@@ -11164,76 +11343,89 @@ TEST: où et avec qui ?
 
 
 # faite / faîte / fait
-__[i]/conf(conf_faites)__
-    vous +(?:ne |leur |lui |nous |vous |)(faîtes?) @@$ <<- -1>> faites                              # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
-__[i]/conf(conf_faites_vous)__
-    (faîtes?)[- ]vous  @@0 <<- not morph(word(-1), ":D.*:[me]:[sp]", False) -1>> faites             # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
-__[i]/conf(conf_avoir_être_faite)__
-    ({avoir_etre}) +(faîtes?)  @@0,$
-    <<- morph(\1, ":V0", False) -2>> =\2.replace("î", "i")                                          # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
+__conf_faites_faîte_fait__
+    vous [ne|me|leur|lui|nous|vous] (>faîte)
+    vous (>faîte)
+        <<- /conf/ -1>> faites                                              # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
+
+    faîtes vous
+        <<- /conf/ not morph(<1, ":D.*:[me]:[sp]") ->> faites-vous          # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
+
+    [>avoir|>être]  >faîte
+        <<- /conf/ -2>> =\2.replace("î", "i")                               # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
 
 TEST: Vous nous {{faîtes}} mal.
-TEST: Comment {{faîtes}} vous ça ?
+TEST: Comment {{faîtes vous}} ça ?
 TEST: Elles sont {{faîtes}} comme ça.
 TEST: Elle est souvent {{faîte}} de cette manière-là.
+TEST: Vous {{faîtes}} mal !
 
 
-__[i]/conf(conf_en_fait)__
-    en fa[iî]tes?
-    <<- not before(r"(?i)\b(?:[vn]ous|lui|leur|et toi) +$|[nm]’$") ->> en fait                      # Confusion probable : « en fait » = « en réalité ».
+    en [faite|>faîte]
+        <<- /conf/ not tag_before(\1, "2p") ->> en fait                     # Confusion probable : « en fait » = « en réalité ».
 
 TEST: {{en faite}}, on en voit partout, ça grouille.
-TEST: Que {{faîtes}}-vous ? Vous {{faîtes}} mal !
+TEST: ils sont {{en faîtes}} partis à la montagne.
 TEST: Aujourd’hui, n’en faites pas trop.
 
 
 # flamant rose
-__[i]/conf(conf_flamant_rose)__
-    (flamands?) +roses? @@0 <<- -1>> =\1.replace("and", "ant")                                   # Confusion. Flamand = habitant des Flandres. Flamant = oiseau.
+__conf_flamant_rose__
+    >flamande >rose
+        <<- /conf/ -1>> =\1.replace("and", "ant")                           # Confusion. Flamand = habitant des Flandres. Flamant = oiseau.
 
 TEST: j’ai vu un {{flamand}} rose.
 
 
 # foi / fois
-__[i]/conf(conf_bonne_mauvaise_foi)__
-    (mauvaise|bonne) (fois)  @@0,$
-    <<- not ( \1 == "bonne" and before(r"(?i)\bune +$") and after("(?i)^ +pour toute") )
-    -2>> foi                                                                                        # Confusion probable.|http://fr.wiktionary.org/wiki/foi
-__[i]/conf(conf_faire_perdre_donner_foi)__
-    ((?:f[aieî]|perd|donn|[ae])\w*) (fois) @@0,$
-    <<- morph(\1, ">(?:faire|perdre|donner|avoir)/", False) -2>> foi                                      # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+__conf_foi_fois__
+    mauvaise fois
+        <<- /conf/ -2>> foi                                                 # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+
+    bonne fois
+        <<- /conf/ not (value(<1, "|une|") and after("(?i)^ +pour toute") )
+        -2>> foi                                                            # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+
+    [>faire|>perdre|>donner|>avoir]  (fois)
+    >avoir  la  (fois)
+        <<- /conf/ -1>> foi                                                 # Confusion probable.|http://fr.wiktionary.org/wiki/foi
 
 TEST: C’est une personne de bonne {{fois}}.
 TEST: Mais il a perdu {{fois}} en l’avenir.
 
 
-# fond / fonds
-__[i]/conf(conf_de_fonds)__
-    (?:collecte|levée|extorsion|détournement)s? de (fon(?:d|ts)) @@$ <<- -1>> fonds
-    # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
-__[i]/conf(conf_à_fonds_perdus)__
-    à (fon(?:d|ts)) perdus? @@2 <<- -1>> fonds
-    # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
-__[i]/conf(conf_fonds_qqch)__
-    (fon(?:d|ts)) (?:monétaires?|spéculatifs?|international|de (?:commerce|garantie|roulement|pension|placement|retraite|roulement|solidarité)|d’(?:aide|investissement|indemnisation))  @@0
-    <<- -1>> fonds
-    # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
-__[i]/conf(conf_fonts_baptismaux)__
-    (fonds) baptismaux @@0 <<- -1>> fonts
-    # Confusion. Écrivez “fonts”, qui vient du latin “fons” et signifie « fontaine, source ».
+# fond / fonds / fonts
+__conf_fond_fonds_fonts__
+    [>collecte|>levée|>extorsion|>détournement] de [fond|fonts]
+    >collecter des fonts
+        <<- /conf/ -3>> fonds                   # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
+
+    à [fond|fonts] [perdu|perdus|perdue|perdues]
+        <<- /conf/ ->> à fonds perdus           # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
+
+    [fond|fonts] [>monétaire|spéculatif|spéculatifs|>internationale]
+    [fond|fonts] [de|d’] [commerce|garantie|roulement|pension|placement|retraite|roulement|solidarité]
+    [fond|fonts] d’ [aide|investissement|indemnisation]
+        <<- /conf/ -1>> fonds                   # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
+
+    fonds baptismaux
+        <<- /conf/ -1>> fonts                   # Confusion. Écrivez “fonts”, qui vient du latin “fons” et signifie « fontaine, source ».
 
 TEST: faire une levée de {{fond}}.
-TEST: à {{fond}} perdu
+TEST: jouer {{à fond perdu}}
 TEST: elle a vendu son {{fond}} de commerce
 TEST: il a reçu de l’argent d’un {{fond}} d’investissement
 TEST: les {{fonds}} baptismaux.
 
 
 # glaciaire / glacière
-__[i]/conf(conf_glacière)__
-    ({w1}) (glaciaires?) @@0,$ <<- morph(\1, ":D", False) -2>> glacière         # Confusion : « glaciaire » est un adjectif.
-__[i]/conf(conf_glaciaire)__
-    ères? (glacières?) @@$ <<- -1>> glaciaire                                   # Confusion : une glacière est un contenant préservant le froid.
+__conf_glacière_glaciaire__
+    >glaciaire
+        <<- /conf/ morph(<1, ":D.*:(?:f|e:p)")
+        ->> =\1.replace("iai", "iè")                # Confusion : “glaciaire” est un adjectif. Le contenant préservant le froid s’écrit “glacière”.
+
+    >ère >glacière
+        <<- /conf/ -2>> =\1.replace("iè", "iai")    # Confusion : une glacière est un contenant préservant le froid. L’adjectif s’écrit “glaciaire”.
 
 TEST: Passe-moi la glacière, s’il te plaît.
 TEST: Autrefois, il y eut plusieurs ères {{glacières}}.
@@ -11241,45 +11433,59 @@ TEST: dans la {{glaciaire}}
 
 
 # gène / gêne
-__[i]/conf(conf_sans_gêne)__
-    sans[- ]gènes? <<- ->> sans-gêne                                      # Confusion. Les gènes sont des éléments des chromosomes. Pour le synonyme d’embarras, écrivez “gêne”.
-__[i]/conf(conf_gènes)__
-    (?:[dmtsc]es|[nv]os|leurs) (gênes) @@$ <<- -1>> gènes                 # Confusion probable. Les gènes sont des éléments des chromosomes. Pour le synonyme d’embarras, écrivez “gêne”.
+__conf_sans_gêne__
+    sans >gène
+    sans-gènes
+    sans-gène
+        <<- /conf/ ->> sans-gêne                    # Confusion. Les gènes sont des éléments des chromosomes. Pour le synonyme d’embarras, écrivez “gêne”.
+
+    [ces|des|mes|tes|ses|nos|vos|leurs] gênes
+         <<- /conf/ -2>> gènes                      # Confusion probable. La gêne est un embarras. Pour parles des éléments des chromosomes, écrivez “gènes”.
 
 TEST: Quel {{sans gène}}, celui-là !
 TEST: Il croit que ses {{gênes}} décident de sa santé…
 
 
 # gent [nf] / gent(e)(s) [adj]
-__[i]/conf(conf_gent)__
-    la (gente) (?:féminine|masculine) @@3 <<- -1>> gent
-    # Confusion. « Gente » est un adjectif vieilli. Utiliser « gent » pour désigner un groupe de personnes.
+__conf_gent__
+    la gente [féminine|masculine]
+        <<- /conf/ -2>> gent                        # Confusion. « Gente » est un adjectif vieilli. Utiliser « gent » pour désigner un groupe de personnes.
 
 TEST: la {{gente}} masculine est grossière et l’a toujours été.
 
 
 # goutte / goûte
-__[i]/conf(conf_goutte)__
-    (go[ûu]tes?) d(?:e +(?:lait|liquide|sang|sueur|sperme|salive|javel|bière|miel|mercure|peinture|pluie|rosée|vin|vinaigre|whisky|rhum|folie)|’(?:alcool|acide|amour|eau|huile|urine)) @@0
-    <<- -1>> =\1.replace("û", "u").replace("t", "tt")           # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.
+__conf_goutte__
+    [goûte|goûtes|goute|goutes] [de|l’] [lait|liquide|sang|sueur|sperme|semence|salive|javel|bière|miel|mercure|peinture|pluie|rosée|vin|vinaigre|whisky|rhum|folie|alcool|acide|amour|eau|huile|urine]
+        <<- /conf/ -1>> =\1.replace("û", "u").replace("t", "tt")            # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.
 
 TEST: Une {{goûte}} de pluie
 TEST: tu sais, les {{goutes}} de pluie, ça mouille.
 
 
 # gré / grès
-__[i]/conf(conf_à_leur_gré)__
-    à (?:[mts]on|[nv]otre|leur) (grès) @@$ <<- -1>> gré                                   # Confusion probable. Le grès est une roche détritique.
-__[i]/conf(conf_bon_gré_mal_gré)__
-    bon grès,? mal grès <<- ->> bon gré, mal gré|bon gré mal gré                          # Confusion. Le grès est une roche détritique.
-__[i]/conf(conf_au_gré_de)__
-    au (grès) d(?:es?|u) @@3 <<- -1>> gré                                                 # Confusion probable. Le grès est une roche détritique.
-__[i]/conf(conf_de_gré_ou_de_force)__
-    de (grès) ou de force @@3 <<- -1>> gré                                                # Confusion. Le grès est une roche détritique.
-__[i]/conf(conf_de_bon_gré)__
-    de (?:bon|mauvais|(?:[mts]on|[nv]otre|leur) plein) (grès) @@$ <<- -1>> gré            # Confusion. Le grès est une roche détritique.
-__[i]/conf(conf_contre_leur_gré)__
-    contre (?:[mts]on|[nv]otre|leur) (grès) @@$ <<- -1>> gré                              # Confusion probable. Le grès est une roche détritique.
+__conf_à_leur_gré_grès__
+    à [mon|ton|son|notre|votre|leur] grès
+        <<- /conf/ -3>> gré                                     # Confusion probable. Le grès est une roche détritique.
+
+    bon grès ?,¿ mal grès
+        <<- /conf/ ->> bon gré, mal gré|bon gré mal gré         # Confusion. Le grès est une roche détritique.
+
+    au grès [de|des|du]
+        <<- /conf/ -2>> gré                                     # Confusion probable. Le grès est une roche détritique.
+
+    de grès ou de force
+        <<- /conf/ -2>> gré                                     # Confusion. Le grès est une roche détritique.
+
+    de [bon|mauvais] grès
+        <<- /conf/ -3>> gré                                     # Confusion. Le grès est une roche détritique.
+
+    de [mon|ton|son|notre|votre|leur] plein grès
+        <<- /conf/ -4>> gré                                     # Confusion. Le grès est une roche détritique.
+
+    contre [mon|ton|son|notre|votre|leur] grès
+        <<- /conf/ -3>> gré                                     # Confusion probable. Le grès est une roche détritique.
+
 #savoir gré à quelqu’un « lui être reconnaissant »
 #au gré de quelqu’un, « selon son goût, son désir »
 
@@ -11293,155 +11499,98 @@ TEST: nous vaincrons, {{bon grès mal grès}}
 
 
 # jeune / jeûne
-__[i]/conf(conf_jeûne)__
-    (jeunes?) (?:du (?:carême|ramadan)|alimentaire|eucharistique|rituel|sacramentel)  @@0
-    <<- -1>> =\1.replace("u", "û")                                              # Confusion. Pour les privations alimentaires, écrivez “jeûne”.|https://fr.wiktionary.org/wiki/je%C3%BBne
+__conf_jeûne_jeune__
+    >jeune du [carême|ramadan]
+    >jeune [alimentaire|eucharistique|rituel|sacramentel]
+        <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")         # Confusion. Pour les privations alimentaires, écrivez “jeûne”.|https://fr.wiktionary.org/wiki/je%C3%BBne
+
+    >jeûne [>adolescente|>adulte|>âge|>épousée|>épouse|>femme|>fille|gars|>garçon|gens|>homme|>mariée|>mari|>enfant|>bébé|>chienne|>chiot|>chat|>célibataire|>étudiante|>lycéenne|>élève|>écolière|>diplômée|>prodige|>couple|>papa|>maman|>père|>mère|>conne|>génération|>médecin|>travailleuse]
+        <<- /conf/ -1>> =\1.replace("û", "u").replace("Û", "U")                                              # Confusion. Le jeûne est une privation alimentaire.|https://fr.wiktionary.org/wiki/jeune
 
 TEST: il accomplit le {{jeune}} rituel
-
-
-__[i]/conf(conf_jeune)__
-    (jeûnes?) (?:adolescente?|adulte|âge|épou(?:sé?e|x)|femme|fille|gar(?:çon|s)|gens|homme|marié?e?|enfant|bébé|chi(?:en|iot)|chat|célibataire|étudiante?|lycéen(?:ne|)|élève|écoli(?:er|ère)|dipl[oô]mée?|prodige|couple|papa|père|mère|con(?:ne|)|génération|médecin|travailleur)s?  @@0
-    <<- -1>> =\1.replace("û", "u")                                              # Confusion. Le jeûne est une privation alimentaire.|https://fr.wiktionary.org/wiki/jeune
-
 TEST: de {{jeûnes}} adultes
-
-
-# la / là
-__[i]/conf(conf_celui_celle_là)__
-    ce(?:lles?|lui|ux)[ -]la <<- ->> =\0[:-1].replace(" ", "-")+"à"             # Écrivez “là” et non “la”.
-__[i]/conf(conf_verbe_impératif_la)__
-    ({w2})(-là) @@0,$ <<- morphex(\1, ":V", ":[NAQ]") -2>> -la| là              # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
-__[i]/conf(conf_mot_là)__
-    ({w2})-(la) @@0,$ <<- morphex(\1, ":[NAQ]", ":[123][sp]") -2>> là           # Confusion : « \1 » n’est pas un verbe.
-__[i]/conf(conf_ne_me_te_se_la)!6__
-    [nmts]e (là) @@3 <<- -1>> la                                                # Confusion : “là” signifie “ici”.|http://fr.wiktionary.org/wiki/l%C3%A0
-
-TEST: {{ceux la}} sont des idiots, rien à en tirer.
-TEST: {{celle la}} ne vaut pas mieux, laisse-la tomber.
-TEST: Apporte{{-là}} près du feu
-TEST: cette {{bête-la}}
-TEST: il ne {{là}} croit pas.
-
-
-# la / l’a
-__[i]/conf(conf_il_elle_on_la_vconj)__
-    (?:il|elle|on) (?:nous |vous |)(l’a) +([bcdfghjklmnpqrstvwxz][\w-]+)  @@w,$
-    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
-__[i]/conf(conf_ne_la_vconj)__
-    ne (?:nous |vous |)(l’a) +([bcdfghjklmnpqrstvwxz][\w-]+) @@w,$
-    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
-__[i]/conf(conf_ne_la_lui_leur)__
-    ne (l’a) l(?:ui|eur)  @@3
-    <<- -1>> la                                                                                     # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
-__[i]/conf(conf_me_se_se_la_vconj)__
-    [mts]e (l’a) +([bcdfghjklmnpqrstvwxz][\w-]+)  @@3,$
-    <<- morphex(\2, ":[123][sp]", ":[GQ]") -1>> la                                                  # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
-
-TEST: on {{l’a}} {{prit}} pour une idiote.
-TEST: il ne {{l’a}} {{connaît}} pas.
-TEST: elle ne {{l’a}} leur donne pas sans condition.
-TEST: elle se {{l’a}} {{réserve}} pour elle-même.
-
-
-__[i]/conf(conf_il_elle_on_l_a)__
-    (?:il|elle|on) (?:vous |nous |)(la)[ @]+({w_2}) @@*,$
-    <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui/") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
-__[i]/conf(conf_ne_l_a)__
-    ne (?:vous |nous |)(la)[ @]+({w_2}) @@*,$
-    <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui/") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
-__[i]/conf(conf_me_te_l_a)__
-    [mt]e (la)[ @]+({w_2})  @@*,$
-    <<- morphex(\2, ":Q", ":(?:[123][sp]|V[123]......e)|>lui/") -1>> l’a                            # Confusion probable : “\2” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
-
-TEST: il {{la}} {{donnée}}.
-TEST: ne {{la}} {{donné}} que contraint et forcé…
-TEST: celle-là, il me {{la}} {{commandée}} ?
-
-
-# laissez-passer / laissez-faire
-__[i]/conf(conf_laisser_passer)__
-    laisser-passer <<- ->> laissez-passer                                                 # Confusion.
-__[i]/conf(conf_laisser_aller)__
-    laissez-(aller|faire) @@8 <<- ->> laisser-\1                                          # Confusion.
-
-TEST: ils ont oublié leur {{laisser-passer}}.
-TEST: il faut en finir avec le {{laissez-aller}}.
+TEST: les {{jeûnes}} travailleurs du nouveau centre commercial
 
 
 # levée / lever
-__[i]/conf(conf_lever_de_rideau_soleil)__
-    levée?s?(?= d(?:e (?:rideau|soleil))|u soleil) <<- ->> =\0.replace("ée", "er")                  # Confusion. Exemple : une levée de fonds, un lever de soleil.
+__conf_lever_levée__
+    [lever|levers|levé|levés] de >fond
+        <<- /conf/ ->> levée de fonds|levées de fonds           # Confusion. Exemple : une levée de fonds, un lever de soleil.
+
+    >levée [de|du] [rideau|soleil]
+        <<- /conf/ -1>> lever|levers                            # Confusion. Exemple : une levée de fonds, un lever de soleil.
 
 TEST: {{levée}} de soleil
+TEST: Faisons des {{levers de fond}}
 
 
 # lever un lièvre / soulever
-__[i]/conf(conf_lever_un_lièvre)__
-    (soul\w+) +(?:un|le) lièvre  @@0
-    <<- morph(\1, ">soulever/", False) -1>> =\1[3:]
-    # Expression impropre. On écrit « lever un lièvre ».|http://fr.wiktionary.org/wiki/lever_le_li%C3%A8vre
+__conf_lever_un_lièvre__
+    >soulever [un|le] lièvre
+        <<- /conf/ -1>> =\1[3:]                                 # Expression impropre. On écrit « lever un lièvre ».|http://fr.wiktionary.org/wiki/lever_le_li%C3%A8vre
 
 TEST: j’ai {{soulevé}} un lièvre, là !
 
 
 # lieux / lieues / lieus
-__[i]/conf(conf_des_lieux)__
-    (?:assurances?|états?|visites?|ma[îi]tres?|seigneurs?|magie|chefs?|responsables?|respect|entretien|propreté|propriétaires?|tranquillité|dans|vers|plans?) des (lieue?s)  @@$
-    <<- -1>> lieux
-    # Confusion probable. Pour désigner un endroit, utilisez “lieux”.|http://fr.wiktionary.org/wiki/lieu
-__[i]/conf(conf_lieux_qqch)__
-    (lieue?s) (?:aménagée?s|abandonnée?s|accueillante?s|insolites|accessibles|inaccessibles|inexplorée?s|éloignée?s|lointains|louches|réservée?s|proches|touristiques|saints|sacrée?s|connue?s|inconnue?s|méconnue?s|privilégiée?s|mythiques|publics|privée?s|prestigieux|romantiques|stratégiques|historiques|où|humides|secs|de (?:communication|contemplation|culte|chasse|détente|détention|départ|méditation|mémoire|pouvoir|prière|prostitution|sépulture|repos|refuge|stockage|travail|vacances?|spectacles?|conférences?|rassemblements?|stationnement|rencontres?|villégiature))
-    @@0
-    <<- -1>> lieux
-    # Confusion probable. Pour désigner un endroit, utilisez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
-__[i]/conf(conf_être_à_xxx_lieues)__
-    ((?:[eêsf]|demeur|habit|trouv|situ|rest)\w+) à (?:quelques|dix|douze|quinze|seize|vingt|cent|mille|des|\d+) (lieu[sx])  @@0,$
-    <<- morph(\1, ">(?:être|habiter|trouver|situer|rester|demeurer?)/", False)
-    -2>> lieues
-    # Confusion probable. Pour désigner une distance, utilisez “lieues”.|http://fr.wiktionary.org/wiki/lieue
-__[i]/conf(conf_avoir_eu_lieu)__
-    ({avoir}) +(?:eue?s? +|)(lieu(?:es?|x))  @@0,$
-    <<- morph(\1, ">avoir/", False) -2>> lieu                                                       # Confusion. Dans l’expression « avoir lieu », “lieu” est invariable.
+__conf_lieux_lieues_lieus__
+    [>assurance|>état|>visite|>maîtresse|>maitresse|>seigneur|>magie|>chef|>cheffe|>responsable|respect|entretien|propreté|>propriétaire|tranquillité|dans|vers|>plan] des [lieues|lieus]
+        <<- /conf/ -3>> lieux                                   # Confusion probable. Pour désigner un endroit, écrivez “lieux”.|http://fr.wiktionary.org/wiki/lieu
+
+    [>lieue|lieus] [>aménagé|>abandonné|>accueillant|>insolite|>accessible|>inaccessible|>inexploré|>éloignée|>lointaine|>louche|>réservé|>proche|>touristique|saint|saints|>sacrée|>connu|>inconnue|>méconnue|>privilégié|>mythique|>publique|>privée|prestigieux|>romantique|>stratégique|>historique|où|>humide|sec|secs]
+    [>lieue|lieus] de [>communication|>contemplation|>culte|>chasse|>détente|>détention|>départ|>méditation|>mémoire|>pouvoir|>prière|>prostitution|>sépulture|>repos|>refuge|>stockage|>travail|>vacance|>spectacle|>conférence|>rassemblement|>stationnement|>rencontre|>villégiature]
+        <<- /conf/ -1>> lieu|lieux                              # Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
+
+    [>être|>habiter|>trouver|>situer|>rester|>demeurer|>demeure]  à  [quelques|des|*NUM|@:B]  [lieux|lieus]
+        <<- /conf/ -4>> lieues                                  # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
+
+    >avoir ?[eu|eus|eue|eues]¿ ([>lieue|lieux|lieus])
+        <<- /conf/ -1>> lieu                                    # Confusion. Dans l’expression « avoir lieu », “lieu” est invariable.
 
 TEST: qui est le responsable des {{lieues}} ?
-TEST: ce sont des {{lieus}} mythiques
+TEST: ce sont des {{lieus}} mythiques.
+TEST: co sont des {{lieues}} de rencontre pour les jeunes.
 TEST: elle habitait à quelques {{lieux}} d’ici
 TEST: Cette réunion ayant eu {{lieue}} loin d’ici
 
 
-# en général
-__[i]/conf(conf_en_général)__
-    en (générale) @@3 <<- -1>> général                                  # Dans cette locution, “général” est toujours au masculin singulier.|https://fr.wiktionary.org/wiki/en_g%C3%A9n%C3%A9ral
+# avoir/donner lieu
+__conf_avoir_donner_lieu__
+    [>avoir|>donner]  lieux
+        <<- /conf/ -2>> lieu                                        # « Donner lieu » : “lieu” est invariable dans cette locution verbale.
 
-TEST: On en sait en {{générale}} pas assez.
+    [>avoir|>donner]  [>lieue|lieus]
+        <<- /conf/ -2>> lieu                                        # Confusion. La lieue est une unité de distance. Les lieus sont des poissons.
+
+TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
+TEST: Tout ce qui a {{lieue}} hors de ce pays est ignoré.
 
 
 # mare / marre
-__[i]/conf(conf_marre)__
-    (marre) @@$ <<- before(r"(?i)(?:la|une|cette|quelle|cette|[mts]a) +$") -1>> mare
-    # Confusion. Pour parler d’une petite étendue d’eau, écrivez “mare”. En “avoir marre de” = “en avoir assez de”.
+__conf_marre_mare__
+    [la|une|cette|quelle|cette|ma|ta|sa] ?petite¿ (marre)
+        <<- /conf/ -1>> mare                                    # Confusion. Pour parler d’une petite étendue d’eau, écrivez “mare”. En “avoir marre de” = “en avoir assez de”.
+
+
+    en >avoir mare
+        <<- /conf/ -3>> marre                                   # Confusion. Une mare est une petite étendue d’eau.
 
 TEST: cette {{marre}} est presque sèche.
-
-
-__[i]/conf(conf_avoir_marre)__
-    ({avoir}) +(mare) @@0,$ <<- morph(\1, ":V0a", False) -2>> marre
-    # Confusion. Une mare est une petite étendue d’eau.
-
 TEST: j’en ai {{mare}} de tout ça.
 TEST: en avoir vraiment {{mare}} de ces conneries.
 
 
 # mi / mis / mie
-__[i]/conf(conf_avoir_mis)__
-    ({avoir}) +(mie?) @@0,$ <<- morph(\1, ":V0a", False) -2>> mis                                   # Confusion. Pour le participe passé de mettre, écrivez :
-__[i]/conf(conf_mis_en_qqch)__
-    (mie?) en (?:abyme|bouteilles?|cause|demeure|évidence|examen|f[ûu]ts?|images?|liquidation|mémoire|musique|œuvres?|paiement|place|pièces?|quarantaine|scène|tonneaux?|service|valeur)  @@0
-    <<- -1>> mis                                                                                    # Confusion. Pour le participe passé de mettre, écrivez :
-__[i]/conf(conf_mis_à_qqch)__
-    (mie?) à (?:jours?|pieds?|dispositions?|part|mal|nue?|contribution|rude|mort)  @@0
-    <<- -1>> mis                                                                                    # Confusion. Pour le participe passé de mettre, écrivez :
+__conf_mis_mi_mie__
+    >avoir [mi|>mie]
+        <<- /conf/ -2>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez “mis”.
+
+    [mi|>mie] en [>abyme|>bouteille|>cause|>demeure|>évidence|>examen|>fut|>fût|>image|>liquidation|>mémoire|>musique|>œuvre|>paiement|>place|>pièce|>quarantaine|>scène|>tonneau|>service|>valeur]
+        <<- /conf/ -1>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez :
+
+    [mi|>mie] à [>jour|>pied|>disposition|>part|mal|>nu|>nue|>contribution|mort]
+    [mi|>mie] à rude épreuve
+        <<- /conf/ -1>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez :
 
 TEST: Elle a {{mie}} son plus bel ensemble.
 TEST: Les éléments {{mi}} en évidence suffisent à le désigner comme coupable.
@@ -11450,130 +11599,32 @@ TEST: elles ont dansé, {{mie}} à jour leur carnet et sont parties.
 TEST: après avoir {{mi}} ses souliers tenir
 
 
-# n’est-ce pas - ai / es / est
-__[i]/conf(conf_n_est_ce_pas)__
-    n’(?:es|ai[ets]?s?)[- ]ce[- ]pas <<- ->> n’est-ce pas                                           # Erreur de conjugaison.
-
-TEST: on en a plus qu’assez, {{n’ait-ce pas}} ?
-
-
-# notre / nôtre -- votre / vôtre
-# Hunspell corrige déjà les formes au pluriel (les nôtres).
-__[i]/conf(conf_les_nôtres)__
-    (?:les?|la|du|des|aux?) ([nv]otres?)  @@$
-    <<- not (\1 == "Notre" and after("Père")) -1>> =\1.replace("otre", "ôtre")                      # Confusion : « notre possession », « la nôtre ».
-__[i]/conf(conf_notre_votre_qqch)__
-    ([nv]ôtres?) ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(les?|la|du|des|aux?) +") and morphex(\2, ":[NAQ]", ":D")
-    -1>> =\1.replace("ôtre", "otre").rstrip("s")                                                    # Confusion : « notre possession », « la nôtre ».
-
-TEST: C’est la {{votre}} ?
-TEST: {{nôtre}} père est si âgé.
-TEST: nous vous proposons de faire vôtre une autre volonté
-
-
-# nulle part
-__[i]/conf(conf_nulle_part)__
-    nul part <<- not morph(word(-1), ":D", False, False) ->> nulle part                             # Confusion : pour dire « en aucun lieu », écrivez :
-
-TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration
-
-
 # numérique / digital
-__[i]/conf(conf_qqch_numérique)__
-    (?:stratégie|appareil|trans(?:ition|formation)|caméra|télévision|banque|connexion|prise|présence|entreprise|com(?:pagnie|munication)|agence|expérience|solution|identité|économie|ère|service)s? (digital(?:es?|aux|))  @@$
-    <<- -1>> numérique|numériques
-    # Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Utilisez :
-__[i]/conf(conf_le_numérique)__
-    (?:le|du|au) (digital)  @@$
-    <<- -1>> numérique
-    # Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Utilisez :
+__numérique_digital__
+    [>stratégie|>appareil|>transition|>transformation|>caméra|>télévision|>banque|>connexion|>prise|>présence|>entreprise|>compagnie|>communication|>agence|>expérience|>solution|>identité|>économie|>ère|>service] >digitale
+        <<- /conf/ -2>> numérique|numériques
+        # Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Écrivez “numérique”.
+
+    [le|du|au] digital
+        <<- /conf/ -2>> numérique
+        # Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Écrivez “numérique”.
 
 TEST: une économie {{digitale}} ou rien
 TEST: Dans l’ère du {{digital}}, tout va plus vite.
 
 
-## on / ont
-__[i>/conf(conf_on1)__
-    (ont) [nmts]’(?!(?:ils?|elles?))  @@0
-    <<- isStart() -1>> on                                                                           # Confusion probable : “ont” est une conjugaison du verbe avoir.
-
-TEST: {{ont}} m’assure qu’il n’y en a pas.
-TEST: {{Ont}} n’arrive pas à s’en sortir.
-
-
-__[i]/conf(conf_on2)__
-    (?<![nmts]’)(ont) ({w_1})  @@0,$
-    <<- ( re.search("^[nmts]e$", \2) or
-        (not re.search("(?i)^(?:confiance|envie|peine|prise|crainte|affaire|hâte|force|recours|somme)$", \2) and morphex(\2, ":[0123][sp]", ":[QG]")) )
-        and morph(word(-1), ":Cs", False, True)
-    -1>> on                                                                                         # Confusion probable : “ont” est une conjugaison du verbe avoir.
-
-TEST: {{Ont}} ne sait jamais quoi faire
-TEST: si {{ont}} donne à ces gens, ça n’en finit plus.
-TEST: {{Ont}} viens !
-TEST: {{Ont}} ne sait pas comment faire.
-TEST: qui n’ont somme toute que le désir de vivre paisiblement
-
-
-__[i]/conf(conf_on3)__
-    (ont) (?:l(?:ui|eur)|[nv]ous) ({w_2})  @@0,$
-    <<- morphex(\2, ":V.*:(?:[1-3][sp])", ":(?:G|1p)")
-        and not ( \0.find(" leur ") and morph(\2, ":[NA].*:[si]", False) ) and isStart()
-    -1>> on                                                                                         # Confusion probable : “ont” est une conjugaison du verbe avoir.
-
-TEST: {{Ont}} lui avait donné du temps
-TEST: {{Ont}} leur prendra tout
-TEST: Qu’importe, {{ont}} leur prend tout
-
-
-__[i]/conf(conf_on4)!6__
-    [nmtsl]’(?:y|en) (on) @@$ <<- -1>> ont                                                          # Confusion. Exemples : « on y va », « ils ont faim ».
-
-TEST: n’y {{on}} jamais lieu de telles abominations !
-
-
-__[i]/conf(conf_on5)!6__
-    [nmts]e l’(on) @@5 <<- -1>> ont                                                                 # Confusion. Exemples : « on y va », « ils ont faim ».
-
-TEST: ces chiens te l’{{on}} {{donné}}
-
-
-__[i]/conf(conf_on6)!6__
-    qui +(on) @@$
-    <<- not morph(word(-1), ":[VR]", False, False) and not morph(word(1), ":(?:3s|Oo|X)", False)
-    -1>> ont                                                                                        # Confusion probable. Exemples : « on y va », « ils ont faim ».
-
-TEST: Qui {{on}} {{tant}} de malheurs !
-TEST: qui on blâme, ce soir ?
-
-
-__[i]/conf(conf_xxx_on1)__
-    {w_2}-(ont) @@$ <<- -1>> on       # Incohérence : “ont” est une forme conjuguée du verbe “avoir” (par exemple: “ils ont”). Pour le pronom personnel, écrivez :
-
-TEST: peut-{{ont}} y arriver avec si peu de moyens ?
-
-
-__[i]/conf(conf_xxx_on2)__
-    ({w_2})( ont)  @@w,$
-    <<- morph(\1, ":3s", False) and before("^ *$|, $") -2>> -on
-    # Confusion probable : “ont” est une forme conjuguée du verbe “avoir”. Pour le pronom personnel, écrivez “on” et mettez un trait d’union puisqu’il s’agit d’une question.
-
-TEST: peut{{ ont}} y arriver ?
-TEST: les politiques de l’offre ont échoué.
-
-
 # pain / pin
-__[i]/conf(conf_pain_qqch)__
-    (pins?) (?:d’épices?|perdus?|sans glutens?) @@0 <<- -1>> =\1.replace("pin", "pain")
-    # Confusion. Le pin est un arbre résineux à aiguilles persistantes. Pour parler la pâte de farine et d’eau cuite au four, écrivez :
-__[i]/conf(conf_manger_pain)__
-    ((?:mang|dévor|aval|englout)\w+) +(?:les?|d(?:u|es)|un|[mts](?:on|es)|leurs?|[nv]o(?:s|tre)) +(pins?)  @@0,$
-    <<- morph(\1, ">(?:manger|dévorer|avaler|engloutir)/") -2>> =\2.replace("pin", "pain")
-    # Confusion probable. Le pin est un arbre résineux à aiguilles persistantes. Pour parler la pâte de farine et d’eau cuite au four, écrivez :
-__[i]/conf(conf_pomme_de_pin)__
-    pommes? de (pains?) @@$ <<- -1>> pin
-    # Le pain est une pâte de farine et d’eau cuite au four. La pomme de pin est le fruit du pin.|https://fr.wiktionary.org/wiki/pomme_de_pin
+__conf_pain_pin__
+    >pin d’ >épice
+    >pin >perdue
+    >pin sans >gluten
+        <<- /conf/ -1>> pain|pains      # Confusion. Le pin est un arbre résineux à aiguilles persistantes. Pour parler la pâte de farine et d’eau cuite au four, écrivez “pain”.
+
+    [>manger|>dévorer|>avaler|>engloutir] [le|les|du|des|un|ce|ces|mon|ton|son|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  >pin
+        <<- /conf/ -3>> pain|pains      # Confusion. Le pin est un arbre résineux à aiguilles persistantes. Pour parler la pâte de farine et d’eau cuite au four, écrivez “pain”.
+
+    >pomme de >pain
+        <<- /conf/ -3>> pin             # Le pain est une pâte de farine et d’eau cuite au four. La pomme de pin est le fruit du pin.|https://fr.wiktionary.org/wiki/pomme_de_pin
 
 TEST: Je ne mange que du {{pin}} sans gluten.
 TEST: Il avala son {{pin}} avec gloutonnerie.
@@ -11581,38 +11632,48 @@ TEST: Là, ce sont des pommes de {{pain}}.
 
 
 # pair / paire
-__[i]/conf(conf_aller_de_pair)__
-    ((?:all|v|ir)\w+) de (pair(?:es?|s)|perd?s?)  @@0,$
-    <<- morph(\1, ">aller/", False) -2>> pair                                                       # Confusion. On écrit « aller de pair ».
+__conf_aller_de_pair__
+    >aller de [pairs|paire|paires|pers|perd|perds|>père]
+        <<- /conf/ -3>> pair                                    # Confusion. On écrit « aller de pair ».
 
 TEST: Ils vont de {{paires}}.
 
 
 # pâle / pale
-__[i]/conf(conf_être_pâle)!6__
-    ({etre}) +(pales?)  @@0,$
-    <<- morph(\1, ":V0e", False) -2>> =\2.replace("pal", "pâl")
-    # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
-__[i]/conf(conf_qqch_pâle)__
-    (?:airs?|lu(?:mière|eur)s?|teinte?s?|co(?:loris|uleurs?)|peaux?|visages?|bleus?|rouges?|jaunes?|verts?|gris|oranges?|violets?|pourpres?) +(pales?) @@$
-    <<- -1>> =\1.replace("pal", "pâl")
-    # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
+__conf_pâle_pale2!6__
+    [>être|>rester|>demeurer|>devenir]  >pale
+        <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")
+        # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
+
+    [>air|>lumière|>lueur|>teinte|coloris|>couleur|>peau|>visage|>bleue|>rouge|>jaune|>verte|gris|>orange|>violette|>pourpre]  >pale
+        <<- /conf/ -2>> =\2.replace("pal", "pâl")
+        # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
 TEST: Elle est très {{pale}} !
 TEST: Sous une lumière {{pale}},
 
 
 # parti / partie
-__[i]/conf(conf_prendre_parti)__
-    (pr\w+) +(parti(?:s|es?)) @@0,$ <<- morph(\1, ">prendre/", False) -2>> parti                    # Confusion. On écrit « prendre parti ».
-__[i]/conf(conf_tirer_parti)__
-    (tir\w+) +(parti(?:s|es?)) @@0,$ <<- morph(\1, ">tirer/", False) -2>> parti                     # Confusion. On écrit « tirer parti ».
-__[i]/conf(conf_faire_partie)__
-    (f[aieoî]\w+) +(parti(?:s|es|)) @@0,$ <<- morph(\1, ">faire/", False) -2>> partie               # Confusion. On écrit « faire partie ».
-__[i]/conf(conf_juge_et_partie)__
-    juges? et partis? <<- ->> juge et partie|juges et parties                                       # Confusion. On écrit « être juge et partie ».
-__[i]/conf(conf_prendre_à_partie)__
-    (pr\w+) +(?:{w_2} +|)([àa] partis?) @@0,$ <<- morph(\1, ">prendre/", False) -2>> à partie       # Confusion. On écrit « prendre à partie ».
+__prendre_parti_partie__
+    >prendre [>partie|partis]
+        <<- /conf/ -2>> parti                                   # Confusion. On écrit « prendre parti ».
+
+    >tirer [>partie|partis]
+        <<- /conf/ -2>> parti                                   # Confusion. On écrit « tirer parti ».
+
+    >faire [parties|>parti]
+        <<- /conf/ -2>> partie                                  # Confusion. On écrit « faire partie ».
+
+    >juge et >parti
+        <<- /conf/ ->> juge et partie|juges et parties          # Confusion. On écrit « être juge et partie ».
+
+    >prendre a [>partie|>parti]
+    >prendre à [parties|>parti]
+        <<- /conf/ -2:3>> à partie                              # Confusion. On écrit « prendre à partie ».
+
+    >prendre *WORD a [>partie|>parti]
+    >prendre *WORD à [parties|>parti]
+        <<- /conf/ -3:4>> à partie                              # Confusion. On écrit « prendre à partie ».
 
 TEST: Elle prend toujours {{partie}} aux réunions.
 TEST: Il faut savoir tirer {{partis}} de ces atouts-là.
@@ -11622,24 +11683,31 @@ TEST: Prendre Damien {{à parti}}.
 
 
 # pâte / patte
-__[i]/conf(conf_pâtes)__
-    (p[aâ]t?tes?) +(alimentaires?|alsaciennes?|chinoises?|feuilletées?|italiennes?|thermiques?|au (?:basilic|beurre|saumon|pesto|poulet|thon)|[àa] (?:crêpes?|gaufres?|pizzas?|tartes?|modeler|tartiner)|d’am[ea]ndes?|de fruits?) @@0,$
-    <<- re.search("(?i)^pattes?", \1) -1>> =\1.replace("att", "ât")                                 # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
-    <<- \2.startswith("d’amende") -2>> d’amande                                                     # Confusion. L’amende est une peine. Pour le fruit de l’amandier, écrivez “amande”.
-    <<- \2.startswith("a ") -2>> =\2.replace("a ", "à ")                                            # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+__conf_pâte_patte_pat__
+    [>patte|pat] [>alimentaire|>alsacienne|>chinoise|>feuilletée|>italienne|>thermique]
+    [>patte|pat] au [basilic|beurre|saumon|pesto|poulet|thon]
+    [>patte|pat] [à|a] [>pain|>crêpe|>gaufre|>pizza|>tarte|>modeler|>tartiner]
+    [>patte|pat] [d’|de] [>amande|>amende|>fruit]
+        <<- /conf/ -1>> pâte|pâtes                              # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
 TEST: Prépare la {{patte}} à tarte.
 TEST: Ils mangent souvent des {{pattes}} au thon.
 TEST: Des {{pattes}} alimentaires.
 TEST: Elles ont acheté de la {{patte}} à tartiner.
-TEST: La pâte {{a pizza}} est plus épaisse que la pâte à crêpes.
-TEST: Elle adore la pâte {{d’amende}}.
+TEST: La {{patte}} à pizza est plus épaisse que la pâte à crêpes.
+TEST: Elle adore la {{patte}} d’amande.
 
 
-__[i]/conf(conf_coq_en_pâte)__
-    (?:coqs?) en (pattes?) @@$ <<- -1>> pâte                                                        # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
+    >coqs en [>patte|pat]
+        <<- /conf/ -3>> pâte                                    # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
 TEST: Il est comme un coq en {{pattes}} là.
+
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
 
 
 # peu / peut / peux
@@ -11776,16 +11844,20 @@ TEST: Elles ont préparé un {{riz}} de veau.
 
 # saint / sain / sein / seing
 __[i]/conf(conf_saint)__
-    (s[ae]in) ([A-ZÉÊÈ]\w+) @@0,$ <<- morph(\2, ":M1", False) and morph(word(-1), ":(?:R|[123][sp])", False, True) -1>> saint
+    (s[ae]in) ([A-ZÉÊÈ]\w+) @@0,$
+    <<- morph(\2, ":M1", False) and morph(word(-1), ":(?:R|[123][sp])", False, True) -1>> saint
     # Confusion : “sain” signifie “en bonne santé”, le sein est un organe thoracique féminin. Pour évoquer ce qui est “sanctifié”, écrivez :|https://fr.wiktionary.org/wiki/saint
 __[i]/conf(conf_sein)__
-    (?:en|dans|sur) [mts]on (saint?) @@$ <<- -1>> sein
+    (?:en|dans|sur) [mts]on (saint?) @@$
+    <<- -1>> sein
     # Confusion : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez :|https://fr.wiktionary.org/wiki/sein
 __[i]/conf(conf_au_sein_de)__
-    au (sain) d(?:es?|u) @@3 <<- -1>> sein
+    au (sain) d(?:es?|u) @@3
+    <<- -1>> sein
     # Confusion : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez :|https://fr.wiktionary.org/wiki/sein
 __[i]/conf(conf_blanc_seing)__
-    blanc-(?:s[ae]int?)(s|) @@$ <<- ->> blanc-seing\1                                     # Confusion.|http://fr.wiktionary.org/wiki/blanc-seing
+    blanc-(?:s[ae]int?)(s|) @@$
+    <<- ->> blanc-seing\1                                     # Confusion.|http://fr.wiktionary.org/wiki/blanc-seing
 
 TEST: il priait {{sain}} Anselme de le secourir.
 TEST: Au {{sain}} de l’obscurité, elle se sentait en sécurité.
@@ -11912,7 +11984,7 @@ TEST: je ne peux pas lui donner {{tord}}.
 
 
 __[i]/conf(conf_tour_à_tour)__
-    tours? [àa] tours?
+    tourd?s? [àa] tourd?s?
     <<- not re.search("(?i)^tour à tour$", \0) ->> tour à tour      # Locution adverbiale invariable. Écrivez “tour à tour”.|https://fr.wiktionary.org/wiki/tour_%C3%A0_tour
     <<- ~>> *
 
