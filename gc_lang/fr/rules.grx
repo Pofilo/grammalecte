@@ -5057,6 +5057,24 @@ TEST: un certain nombre d’avantages sociaux.
 TEST: ils ont tant d’avantages.
 
 
+# diagnostic / diagnotique // pronostic / pronostique
+__conf_diagnostic_pronostique__
+    [ce|un|du|mon|notre|votre|quel] diagnostique
+        <<- /conf/ -2>> diagnostic                                                  # Confusion. Le nom s’écrit avec un “c”.
+
+    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs]  diagnostiques
+        <<- /conf/ -2>> diagnostics                                                 # Confusion. Le nom s’écrit avec un “c”.
+
+    [ce|un|du|mon|notre|votre|quel] pronostique
+        <<- /conf/ -2>> pronostic                                                   # Confusion. Le nom s’écrit avec un “c”.
+
+    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs]  pronostiques
+        <<- /conf/ -2>> pronostics                                                  # Confusion. Le nom s’écrit avec un “c”.
+
+TEST: Ce {{diagnostique}} est absurde.
+TEST: C’est la valse des {{pronostiques}} contradictoires aujourd’hui.
+
+
 # différend / différent
 __conf_différent_différend__
     >différend
@@ -5628,31 +5646,10 @@ TEST: Il passa {{pardessus}} les collines.
 TEST: Mets ton pardessus ce matin.
 
 
-# Toutes choses égales par ailleurs
-__conf_toutes_choses_égales_par_ailleurs__
-    [toute|toutes] [>chose|chosent] [>égale|égalent] >part ailleurs
-    toute [>chose|chosent] [>égale|égalent] [par|>part] ailleurs
-    [toute|toutes] [chose|chosent] [>égale|égalent] [par|>part] ailleurs
-    [toute|toutes] [>chose|chosent] [égale|égalent] [par|>part] ailleurs
-        <<- /conf/ ->> toutes choses égales par ailleurs                    # Confusion.|https://fr.wiktionary.org/wiki/toutes_choses_%C3%A9gales_par_ailleurs
-
-TEST: {{Toutes choses égales part ailleurs}}.
-TEST: ce serait, toutes choses égales par ailleurs, la meilleure solution possible.
-
-
-# peu / peux / peut / peut-être
-__conf_peu_peut_peux_peut_être!6__
+# peu / peux / peut
+__conf_peu_peut_peux!6__
     peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
         <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)") -1>> peut         # Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez :
-
-    [peu-être|peux-être]
-        <<- /conf/ ->> peut-être                                            # Confusion. Écrivez « peut-être », qui signifie « possiblement ».
-
-    <start>  [il|ce|ne]  peut-être
-        <<- /conf/ -3>> peut être                                           # Confusion probable : « peut-être » signifie « possiblement ».
-
-    <start>  [cela|ceci|ça]  peut-être  @:[AQ]
-        <<- /conf/ -3>> peut être                                           # Confusion probable : « peut-être » signifie « possiblement ».
 
     [peux|peut|peu] a [peux|peut|peu]
     [peux|peut|peu] à [peux|peut]
@@ -5682,8 +5679,6 @@ __conf_peu_peut_peux_peut_être!6__
 
 TEST: {{peu}} rarement y arriver.
 TEST: Il est un {{peut}} comme une forêt
-TEST: Il {{peut-être}} mortel.
-TEST: Cela {{peut-être}} mortel.
 TEST: cela ne se {{peu}}.
 TEST: des bâtisses {{peu a peu}} abandonnées.
 TEST: aucun pays – ou très peu alors – n’a réussi à faire ça de façon durable
@@ -5694,6 +5689,44 @@ TEST: {{peut}} sympathique, cet individu.
 TEST: il {{peu}} y parvenir
 TEST: tu ne {{peu}} en savoir plus
 TEST: {{peut}} {{embarrassés}} par leurs déboires, ils poursuivirent comme si de rien n’était.
+TEST: Et {{peut}} de gens peuvent en dire autant.
+TEST: Il est guéri et peut de nouveau travailler.
+
+
+__conf_peut_être__
+    [peu-être|peux-être]
+        <<- /conf/ ->> peut-être                                            # Confusion. Écrivez « peut-être », qui signifie « possiblement ».
+
+    <start>  [il|ce|ne|on]  peut-être
+        <<- /conf/ -3>> peut être                                           # Confusion probable : « peut-être » signifie « possiblement ».
+
+    <start>  [cela|ceci|ça]  peut-être  @:[AQ]
+        <<- /conf/ -3>> peut être                                           # Confusion probable : « peut-être » signifie « possiblement ».
+
+TEST: Il {{peut-être}} mortel.
+TEST: Cela {{peut-être}} mortel.
+TEST: cela arrivera {{peux-être}}.
+
+
+# plain / pied
+__conf_de_plain_pied__
+    [de|au] [>pleine|>plain] >pied
+    [de|au] [plein-pied|pleins-pieds|plains-pieds]
+        <<- /conf/ -2:0>> plain-pied                                        # Confusion. Écrivez “plain-pied”. “Plain” est un vieux terme qui signifie plat, uni.
+
+TEST: C’est une maison de {{plein pied}}.
+TEST: de {{plein-pied}}
+
+
+# pôle / pole
+__conf_pôle_pole__
+    >pole
+        <<- /conf/ not value(<1, "|la|en|une|") and not value(>1, "|position|dance|")
+        ->> pôle|pôles                                                      # Confusion probable. Le terme “pole” ne s’utilise que pour la “pole position” ou la “pole dance”.
+
+TEST: il y a {{un}} {{pole}} d’activités pas loin d’ici.
+TEST: il est parti en pole position.
+TEST: elle fait de la pole dance.
 
 
 # pot aux roses / poteau rose
@@ -5779,15 +5812,63 @@ TEST: Quant au chat, on verra plus tard.
 # quand bien même
 __conf_quand_bien_même__
     tant bien même
-        <<- /conf/ ->> quand bien même      # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
+        <<- /conf/ ->> quand bien même                                      # Confusion. Écrivez « quand bien même ».|http://www.academie-francaise.fr/tant-bien-meme
 
     combien même ~¬si
-        <<- /conf/ -1:2>> quand bien même   # Locution conjonctive.|https://fr.wiktionary.org/wiki/quand_bien_m%C3%AAme
+        <<- /conf/ -1:2>> quand bien même                                   # Locution conjonctive.|https://fr.wiktionary.org/wiki/quand_bien_m%C3%AAme
 
 TEST: il sera condamné {{tant bien même}} il prouverait que c’était un accident.
 TEST: J’irai, {{combien même}} vous seriez tous contre moi.
 TEST: Il partirait en guerre quand bien même devrait-il être tout seul.
 TEST: Elle veut savoir combien même si ça ne lui est d’aucune utilité immédiate.
+
+
+# quel que soit
+__conf_quel_que_soit__
+    >quelque [soi|sois|soit|soient]
+    >quelque >soie @:D
+        <<- /conf/ -1:2>> quel que soit|quelle que soit|quels que soient|quelles que soient         # Confusion.|https://fr.wiktionary.org/wiki/quel_que_soit
+
+TEST: {{quelques soient}} les avantages d’un correcteur…
+
+
+# quelque part
+__conf_quelque_part__
+    [quel|quels|quelle|quelles] que [par|pars|>part]
+    [quelque|quelques] [pare|pares|par|pars]
+        <<- /conf/ ->> quelque part                                         # Confusion probable.|https://fr.wiktionary.org/wiki/quelque_part
+
+TEST: Il faut bien aller {{quelle que part}}.
+TEST: Je les ai oubliés {{quelque pars}}.
+
+
+# quelques fois / quelquefois
+__conf_quelquefois_quelques_fois__
+    [qu’|qu] [elle|elles] que [>foi|>foie]
+    [quel|quels|quelle|quelles] que [>foi|>foie]
+    quelque fois
+        <<- /conf/ ->> quelquefois|quelques fois
+        # Confusion. Utilisez “quelquefois” si vous voulez dire “parfois”. Utilisez “quelques fois” pour évoquer ce qui est advenu ou adviendra plusieurs fois.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4334
+
+TEST: {{Quelles que fois}}, on y comprend plus rien.
+TEST: {{Qu’elle que fois}}, on y comprend plus rien.
+TEST: Il y va {{quelque fois}} par an.
+
+
+# quoique / quoi que
+__conf_de_quoi_que__
+    de quoique
+        <<- /conf/ -2>> quoi que                                            # Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1571
+
+TEST: de {{quoique}} ce soit, je ne veux pas en entendre parler.
+
+
+# quoiqu’il en coûte
+__conf_quoi_qu_il_en_coûte__
+    [quoiqu’|quoiqu] il ?[m’|t’|lui|nous|vous|leur]¿ en [coûte|coute]  [<end>|,]
+        <<- /conf/ -1:2>> quoi qu’il                                        # Confusion probable.
+
+TEST: Elle y parviendra, {{quoiqu’il}} en coûte.
 
 
 # quelle / qu’elle
@@ -5855,6 +5936,15 @@ __conf_quoique_quoi_que__
 TEST: mais {{quoique}} tu en penses, c’est comme ça que ça fonctionne.
 TEST: {{Quoiqu}}’il se soit passé réellement passé, je vais lui faire la peau.
 TEST: {{quoique}} vous ayez pu faire, ça a donné les résultats escomptés.
+
+
+# raisonner / résonner
+__conf_raisonner_résonner__
+    [la|le|les|me|te|se|nous|vous] >résonner
+        <<- /conf/ -2>> =\2.replace("réso", "raiso")            # Confusion probable. Vous utilisez la raison, mais vous ne “sonnez” pas.
+
+TEST: Vous {{résonnez}} comme un sot.
+TEST: Nous allons le {{résonner}}.
 
 
 # ne pas être sans savoir
@@ -6071,6 +6161,18 @@ __conf_tout_à_coup__
 TEST: ils sont {{tout à cous}} figés
 TEST: Mais {{toute a cou}}, plus rien ne fonctionnait.
 TEST: Tout à coup, rien n’alla plus comme avant.
+
+
+# Toutes choses égales par ailleurs
+__conf_toutes_choses_égales_par_ailleurs__
+    [toute|toutes] [>chose|chosent] [>égale|égalent] >part ailleurs
+    toute [>chose|chosent] [>égale|égalent] [par|>part] ailleurs
+    [toute|toutes] [chose|chosent] [>égale|égalent] [par|>part] ailleurs
+    [toute|toutes] [>chose|chosent] [égale|égalent] [par|>part] ailleurs
+        <<- /conf/ ->> toutes choses égales par ailleurs                    # Confusion.|https://fr.wiktionary.org/wiki/toutes_choses_%C3%A9gales_par_ailleurs
+
+TEST: {{Toutes choses égales part ailleurs}}.
+TEST: ce serait, toutes choses égales par ailleurs, la meilleure solution possible.
 
 
 # voix / voie / vois / voit
@@ -11698,68 +11800,37 @@ TEST: La {{patte}} à pizza est plus épaisse que la pâte à crêpes.
 TEST: Elle adore la {{patte}} d’amande.
 
 
-    >coqs en [>patte|pat]
+    >coq en [>patte|pat]
         <<- /conf/ -3>> pâte                                    # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
 TEST: Il est comme un coq en {{pattes}} là.
 
 
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-# peu / peut / peux
-__[i]/conf(conf_peu_de_qqch)__
-    (peu[xt]) d(?:e |’)({w_2}) @@0,$
-    <<- morph(\2, ":[NAQ]") -1>> peu                                        # Confusion probable : « \1 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
-
-TEST: Et {{peut}} de gens peuvent en dire autant.
-TEST: Il est guéri et peut de nouveau travailler.
+# peu / peux / peut
+__conf_peut_peux_peu2__
+    [peux|peut]  [de|d’]  @:[NA]¬*
+        <<- /conf/ space_after(\1, 1, 3) -1>> peu               # Confusion probable : “\1” est une forme conjuguée de “pouvoir”, écrivez “peu” pour dire “pas beaucoup”.
 
 
 # peut-être / peut être
-__[i]/conf(conf_peut_être_adverbe1)__
-    ({w1}) (peut être) @@0,$ <<- morphex(\1, ":V", ":(?:N|A|Q|G|MP)") -2>> peut-être      # Confusion probable. Pour dire “possiblement”, écrivez :
-__[i]/conf(conf_peut_être_adverbe2)__
-    ^ *(peut être) @@$ <<- -1>> peut-être                                                 # Confusion probable. Pour dire “possiblement”, écrivez :
+__conf_peut_être2__
+    *WORD peut être
+        <<- /conf/ space_after(\2, 1, 1) and morph(\1, ":V", ":[NAQGM]") -2:3>> peut-être           # Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
+
+    <start> peut être
+        <<- /conf/ space_after(\2, 1, 1) ->> peut-être                                              # Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
 
 TEST: {{Peut être}} qu’on en saura plus demain.
 TEST: Ils vont {{peut être}} enfin faire quelque chose de leur misérable existence.
 TEST: L’un peut être réglé immédiatement
-
-
-# plain / pied
-__[i]/conf(conf_de_plain_pied)__
-    (?:de|au) (pleins?[- ]pieds?) @@3 <<- -1>> plain-pied                                 # Écrivez « plain-pied ». Plain (vieux) : qui est plat, uni.
-
-TEST: C’est une maison de {{plein pied}}.
-
-
-# pôle / pole
-__[i]/conf(conf_pôle)__
-    pole(?! position| dance) <<- ->> pôle                                                 # « pole », uniquement pour la « pole position » ou la « pole dance ».
-
-TEST: il y a {{un}} {{pole}} d’activités pas loin d’ici.
-TEST: il est parti en pole position.
-TEST: elle fait de la pole dance.
-
-
-# diagnostic / diagnotique // pronostic / pronostique
-__[i]/conf(conf_diagnostic_pronostique)__
-    (?:diagnostique|pronostique)s?
-    <<- ( \0.endswith("s") and before(r"(?i)\b(?:[mtscd]es|[nv]os|leurs|quels) $") )
-        or ( \0.endswith("e") and before(r"(?i)\b(?:mon|ce|quel|un|du|[nv]otre) $") )
-    ->> =\0.replace("que", "c")                                                           # Confusion. Le nom s’écrit avec un “c”.
-
-TEST: Ce {{diagnostique}} est absurde.
-TEST: C’est la valse des {{pronostiques}} contradictoires aujourd’hui.
+TEST: Réussir peut parfois être la pire chose possible.
+TEST: Peut vraiment être violent en cas d’humiliation.
 
 
 # pu / pus
-__[i]/conf(conf_pu)__
-    ({avoir}) +(pu(?:es?|s)) @@0,$ <<- morph(\1, ":V0a", False) -2>> pu                   # Confusion. Pour le participe passé de pouvoir, écrivez :
+__conf_pu_pus__
+    >avoir  [pus|pue|pues]
+        <<- /conf/ -2>> pu                                      # Confusion. Pour le participe passé de pouvoir, écrivez “pu”.
 
 TEST: Ils étaient partis au restaurant après avoir {{pue}} dire un mot.           ->> pu
 TEST: avoir {{pus}} réussir
@@ -11768,71 +11839,33 @@ TEST: il a {{pues}} partir
 
 
 # quand même / comme même
-__[i]/conf(conf_)__
-    comme même <<- morph(word(1), ":(?:Os|C)", False, True) ->> quand même                # Confusion probable.|http://fr.wiktionary.org/wiki/quand_m%C3%AAme
+__conf_quand_même__
+    comme même [<end>|,]
+    comme même @:(?:Os|C)
+        <<- /conf/ space_after(\1, 1, 1) -1:2>> quand même      # Confusion probable.|http://fr.wiktionary.org/wiki/quand_m%C3%AAme
 
 TEST: {{comme même}} il y va fort, le saligaud !
 TEST: La météo disait qu’il ferait beau temps, mais il pleut {{comme même}}…
 
 
-# quel que soit / quoi qu’il en soit
-__[i]/conf(conf_quel_que_soit1)__
-    quelques? soi(?:ent|t|s|)
-    <<- ->> quel que soit|quelle que soit|quels que soient|quelles que soient             # Confusion.|https://fr.wiktionary.org/wiki/quel_que_soit
-__[i]/conf(conf_quoi_qu_il_en_soit)__
-    quoiqu il en soit <<- not morph(word(1), ":[AQ]", False) ->> quoi qu’il en soit       # Confusion.|https://fr.wiktionary.org/wiki/quoi_qu%E2%80%99il_en_soit
+# quoi qu’il en soit
+__conf_quoi_qu_il_en_soit__
+    [quoiqu’|quoiqu] il en soit @:¬:[AQ]
+    [quoiqu’|quoiqu] il en soit [<end>|,]
+        <<- /conf/ -1:4>> quoi qu’il en soit                    # Confusion.|https://fr.wiktionary.org/wiki/quoi_qu%E2%80%99il_en_soit
 
-TEST: {{quelques soient}} les avantages d’un correcteur…
 TEST: {{quoiqu’il en soit}}, nous ne nous laisserons pas faire, vous pouvez compter sur nous.
 
 
-# quelque part
-__[i]/conf(conf_quelque_part)__
-    quel(?:(?:le|)s? que par[ts]?|ques? par[se]?s?) <<- ->> quelque part                  # Confusion probable.|https://fr.wiktionary.org/wiki/quelque_part
 
-TEST: Il faut bien aller {{quelle que part}}.
-TEST: Je les ai oubliés {{quelque pars}}.
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
 
 
-# quelquefois / quelques fois
-# Note : quelquefois ne peut être vérifié ici, puisque le mot est supprimé par le préprocesseur.
-#__[i]/conf(conf_)__
-#    quelques? fois(?! au cours| par)
-#    <<- not morph(word(-1), ":D", False, False)
-#    ->> quelquefois
-#    # Confusion probable : « quelquefois » est un adverbe qui signifie « parfois » ; ne pas confondre avec les quelques fois qu’il est advenu ou qu’il adviendra quelque chose.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4334
 
 
-__[i]/conf(conf_quelquefois_quelques_fois)__
-    qu(?: elles? que fois?|elles? que fois?|elque fois) <<- ->> quelquefois|quelques fois
-    # Confusion. Utilisez « quelquefois » si vous voulez dire « parfois ». Utilisez « quelques fois » pour évoquer ce qui est advenu ou adviendra plusieurs fois.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4334
 
-TEST: {{Quelles que fois}}, on y comprend plus rien.
-TEST: {{Qu’elle que fois}}, on y comprend plus rien.
-TEST: Il y va {{quelque fois}} par an.
-
-
-# quoique / quoi que
-__[i]/conf(conf_de_quoi_que)__
-    de (quoique) @@3 <<- -1>> quoi que                                                    # Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1571
-
-TEST: de {{quoique}} ce soit, je ne veux pas en entendre parler.
-
-
-# quoiqu’il en coûte
-__[i]/conf(conf_quoi_qu_il_en_coûte)__
-    (quoiqu il) en (?:co[uû]te) @@0 <<- isEnd() -1>> quoi qu’il                           # Confusion probable.
-
-TEST: Elle y parviendra, {{quoiqu’il}} en coûte.
-
-
-# raisonner / résonner
-__[i]/conf(conf_raisonner)__
-    (?:la|les?|[mts]e|[nv]ous) (résonn\w+)  @@$
-    <<- morph(\1, ">résonner/", False) -1>> =\1.replace("réso", "raiso")                  # Confusion probable. Vous utilisez la raison, mais vous ne « sonnez » pas.
-
-TEST: Vous {{résonnez}} comme un sot.
-TEST: Nous allons le {{résonner}}.
 
 
 # ris / riz
