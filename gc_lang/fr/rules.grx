@@ -5510,6 +5510,19 @@ TEST: nous vous proposons de faire vôtre une autre volonté
 TEST: Elle récitait sans cesse des Notre Père.
 
 
+# nouvel / nouveaux
+__conf_nouvel_nouveau_euphonie__
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  homme
+        <<- /conf/ -2>> nouvel                                  # Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  ~^[aeéiîou]
+        <<- /conf/ morph(\3, ":[NA].*:[me]:s") -2>> nouvel      # Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+TEST: ce {{nouveau}} homme
+TEST: il se sentait de nouveau homme
+TEST: il se sentait à nouveau homme
+
+
 # nulle part
 __conf_nulle_part__
     nul part
@@ -5947,6 +5960,40 @@ TEST: Vous {{résonnez}} comme un sot.
 TEST: Nous allons le {{résonner}}.
 
 
+# ris / riz
+__conf_ris_de_veau_agneau__
+    [ri|riz] [de|d’] [>veau|>agneau]
+        <<- /conf/ -1>> ris                                     # Confusion.|http://fr.wiktionary.org/wiki/ris
+
+TEST: Elles ont préparé un {{riz}} de veau.
+
+
+# saint / sain / sein / seing
+__conf_saint_sain_sein_seing__
+    [sain|sains|>sein]  @:M1
+        <<- /conf/ morph(<1, ":(?:R|[123][sp])|<start>") -1>> saint
+        # Confusion : “sain” signifie “en bonne santé”, le sein est un organe thoracique féminin. Pour évoquer ce qui est “sanctifié”, écrivez “saint”.|https://fr.wiktionary.org/wiki/saint
+
+    [en|dans|sur] [mon|ton|son] [sain|saint]
+        <<- /conf/ -3>> sein
+        # Confusion : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez “sein”.|https://fr.wiktionary.org/wiki/sein
+
+    au [sain|saint|seing] [de|des|du|d’]
+        <<- /conf/ -2>> sein
+        # Confusion probable : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez “sein”.|https://fr.wiktionary.org/wiki/sein
+
+    [blanc-sein|blanc-seins|blancs-sein|blancs-seins]
+    [blanc-sain|blanc-sains|blancs-sain|blancs-sains]
+    [blanc-saint|blanc-saints|blancs-saint|blancs-saints]
+        <<- /conf/ ->> blanc-seing|blancs-seings                # Confusion.|http://fr.wiktionary.org/wiki/blanc-seing
+
+TEST: il priait {{sain}} Anselme de le secourir.
+TEST: Au {{sain}} de l’obscurité, elle se sentait en sécurité.
+TEST: Sur son {{sain}}
+TEST: en son {{saint}}.
+TEST: {{blanc-sein}}
+
+
 # ne pas être sans savoir
 __ne_pas_être_sans_savoir__
     >être [pas|plus|jamais|guère] sans >ignorer
@@ -5980,6 +6027,15 @@ TEST: elle sans la condamner
 TEST: elles sans un sou en poche
 TEST: elles sans grandes convictions
 TEST: elle c’en était trop (TODO : proposer une virgule)
+
+
+# s’ensuivre
+__conf_s_ensuivre__
+    s’ en >suivre
+        <<- /conf/ ->> s’en\3                                                                       # Verbe “s’ensuivre”.
+
+TEST: {{S’en suivit}} une guerre de tous les instants.
+TEST: {{S’en suivre}}.
 
 
 # soi / soit
@@ -6150,6 +6206,27 @@ TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranée
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
 
+# teint / tain / thym
+__conf_tain_teint_thym__
+    [>glace|>miroir|>verre] sans [tains|>teinte|>thym]
+        <<- /conf/ -3>> tain                                        # Confusion.|http://fr.wiktionary.org/wiki/glace_sans_tain
+
+    >fond de [>tain|teints|>thym]
+        <<- /conf/ -3>> teint                                       # Confusion.|https://fr.wiktionary.org/wiki/fond_de_teint
+
+TEST: Elle l’a observé par un miroir sans {{teint}}.
+TEST: Elle a acheté un nouveau fond de {{tain}}.
+
+
+# tour à tour
+__conf_tour_à_tour__
+    >tourd  [à|a]   >tourd
+    tours   [à|a]   tours
+    tour    a       tour
+        <<- /conf/ ->> tour à tour                                  # Locution adverbiale invariable. Écrivez “tour à tour”.|https://fr.wiktionary.org/wiki/tour_%C3%A0_tour
+        <<- ~>> *
+
+
 # tout à coup
 __conf_tout_à_coup__
     tout [a|ah|ha] [>cou|>coût|>cout|>coup]
@@ -6169,10 +6246,34 @@ __conf_toutes_choses_égales_par_ailleurs__
     toute [>chose|chosent] [>égale|égalent] [par|>part] ailleurs
     [toute|toutes] [chose|chosent] [>égale|égalent] [par|>part] ailleurs
     [toute|toutes] [>chose|chosent] [égale|égalent] [par|>part] ailleurs
-        <<- /conf/ ->> toutes choses égales par ailleurs                    # Confusion.|https://fr.wiktionary.org/wiki/toutes_choses_%C3%A9gales_par_ailleurs
+        <<- /conf/ ->> toutes choses égales par ailleurs            # Confusion.|https://fr.wiktionary.org/wiki/toutes_choses_%C3%A9gales_par_ailleurs
 
 TEST: {{Toutes choses égales part ailleurs}}.
 TEST: ce serait, toutes choses égales par ailleurs, la meilleure solution possible.
+
+
+# verre / vers / vert / ver
+__conf_ver_vers_verre_vert__
+    ce [ver|>verre|>verte] quoi
+        <<- /conf/ -2>> vers                                        # Confusion. Dans la locution “ce vers quoi”, écrivez “vers” (qui signifie “en direction de”).
+
+    [le|ce|du|un] [>verre|vert|verts|vers] ?qui¿ [ai|ait|es|est|>étai|était|étais|serais|serai|serait|fut|fût|fus] dans le fruit
+    [le|ce|du|un] [>verre|vert|verts|vers] dans le fruit
+        <<- /conf/ -2>> ver
+        # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
+
+    [>verre|vert|verts] de terre
+        <<- /conf/ -1>> verre|verres
+        # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
+
+    [>ver|vert|verts] [de|d’] [>bière|>cidre|>contact|>champagne|>chianti|>dégustation|jus|>lait|>limonade|>rosé|>rhum|>sécurité|>thé|>vin|>whisky|>alcool|>absinthe|>eau|>urine]
+        <<- /conf/ -1>> verre|verres
+        # Confusion probable. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
+
+TEST: en finir avec le {{vert}} qui était dans le fruit.
+TEST: un immonde {{vert}} de terre
+TEST: Un {{ver}} de bière fraîche.
+TEST: ce {{vert}} quoi nous allons, c’est une catastrophe à l’échelle planétaire.
 
 
 # voix / voie / vois / voit
@@ -6244,6 +6345,197 @@ TEST: elles sont pas mal ainsi, voire élégantes pourrait-on dire.
 TEST: il y en a peu, voire très peu.
 TEST: car elles pénètrent dans les poumons voire le système sanguin.
 TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux clowns un peu flippants.
+
+
+# vieil / vieux
+__conf_vieil_vieux_euphonie__
+    vieux  homme
+        <<- /conf/ -1>> vieil                                   # Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+    vieux  ~^[aeéiîou]
+        <<- /conf/ morph(\2, ":[NA].*:[me]:s") -1>> vieil       # Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+
+TEST: ce {{vieux}} homme
+TEST: c’est un {{vieux}} imbécile.
+TEST: Le {{vieux}} homme était parti.                         ->> vieil
+
+
+
+!!
+!!
+!!!! Casse: majuscules et minuscules                                                              !!
+!!
+!!
+
+# Les jours
+__maj_jours_semaine__
+    [*WORD|*NUM]    [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
+    ,               [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
+        <<- /maj/ -2>> =\2.lower()
+        # Pas de majuscule sur les jours de la semaine.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
+
+TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
+
+
+# Les mois
+__maj_mois__
+    monarchie de Juillet
+    révolution d’ Octobre
+        <<- ~3>> !
+
+    *WORD [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
+        <<- /maj/ not morph(\1, ":M1") -2>> =\2.lower()
+        # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
+
+    [*NUM|*WORD_ELIDED] [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
+    ,    [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
+        <<- /maj/ -2>> =\2.lower()
+        # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
+
+    [1|2|3|4|5|6|7|8|9|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31] Mars
+    en Mars
+        <<- /maj/ -2>> mars
+        # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
+
+TEST: 15 {{Septembre}}                                                  ->> septembre
+TEST: 23 {{Messidor}}                                                   ->> messidor
+TEST: ils viendront en {{Mars}}.                                        ->> mars
+TEST: le comité d’éthique qui statuera dans les meilleurs délais sur la situation de Véronique Avril
+
+
+# Les États
+__maj_État__
+    en fonction de l’ état
+        <<- ~5>> !
+
+    état [français|belge|suisse|canadien|palestinien|souverain|américain|russe|anglais|allemand|espagnol|italien|mexicain|japonais|chinois|australien|polonais|membre|africain|européen|asiatique|voyou|démocratique|totalitaire|fédéral|fédéré|capitaliste|communiste|providence|nation]
+        <<- /maj/ \1 == "état" -1>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
+
+    états [français|>belge|>suisse|canadien|canadiens|palestinien|palestiniens|souverain|souverains|>membre|américain|américains|africain|africains|européen|européens|>asiatique|>voyou|>démocratique|>totalitaire|>fédérale|>fédérée|>capitaliste|>communiste|>providence|>nation]
+        <<- /maj/ \1 == "états" -1>> États                          # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
+
+
+    [>affaire|>agent|>administration|>chancellerie|>chef|>cheffe|>conseil|>coup|>diplôme|>doctorat|>emprunt|>lycée|>propriété|>secret|>homme|>femme|>police|>religion|>ministre|>ministère|>subvention|>secrétaire|>secrétariat|>raison|>ressortissante|>université] d’ état
+        <<- /maj/ \3 == "état" -3>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
+
+    [>défense|>sûreté|>sureté|>agent|>budget|>caisse|>capitale|>constitution|>charge|>chef|>dirigeante|>denier|>finance|>fonction|>fonctionnement|>frontière|>institution|>propriété|>monopole|>pouvoir|>rouage|>ressource|>service|>subvention|>suprême] de l’ état
+        <<- /maj/ \4 == "état" -4>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
+
+    état-nation
+    état-providence
+    états-nation
+    états-nations
+    états-providence
+    états-providences
+        <<- /maj/ \1[0:1] == "é" -1>> =\1.replace("é", "É")         # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
+
+TEST: Nous n’avons reçu aucune décision de l’{{état}} fédéral.
+TEST: Les {{états}} démocratiques ne sont gouvernés que par des hypocrites et des opportunistes.
+TEST: C’est une affaire d’{{état}}.
+TEST: la défense de l’{{état}}.                                         ->> État
+TEST: C’est une prérogative de l’{{état-nation}}                        ->> État-nation
+
+
+# gentilés / ethnonymes
+__maj_gentilés__
+    océan Indien
+    [îles|iles] Britanniques
+        <<- ~2>> !
+
+    *WORD [>afghane|>albanaise|>algérienne|>allemande|>américaine|>andorrane|>anglais|>angolaise|>arabe|>argentine|>arménienne|>australienne|>autrichienne|>asiatique|>azerbaïdjanaise|>bahamienne|>bangladaise|>bengladeshie|>barbadienne|>basque|>belge|>bélizienne|>béninoise|>bretonne|>bhoutanaise|>biélorusse|>birmane|>bolivienne|>bosnienne|>botswanaiso|>brésilienne|>britannique|>brunéiene|>bulgare|>burkinabé|>burundaise|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>congolaise|>nord-coréenne|>corse|>costaricienne|>croate|>cubaine|>danoise|>djiboutienne|>dominicaine|>égyptienne|>émiratie|>équatorienne|>érythréenne|>estonienne|>espagnole|>étatsunienne|>états-unienne|>étasunienne|>éthiopienne|>fidjienne|>finlandaise|>formosane|>française|>gabonaise|>gambienne|>géorgienne|>ghanéenne|>grecque|>grenadienne|>guadeloupéenne|>guatémaltèque|>guinéenne|>équato-guinéenne|>guyanienne|>haïtienne|>honduriene|>hollandaise|>hongroise|>indienne|>indochinoise|>indonésienne|>irakienne|>italienne|>iranienne|>irlandaise|>islandaise|>israélienne|>ivoirienne|>jamaïcaine|>japonaise|>jordanienne|>kazakhe|>kényane|>kosovare|>koweïtienne|>laotienne|>lapone|>lettone|>libanaise|>libérienne|>libyenne|>liechtensteinoise|>lituanienne|>luxembourgeois|>macédonienne|>maghrébine|>malgache|>malaisienne|>malawite|>maldivienne|>malienne|>maltaise|>maorie|>marocaine|>martienne|>mauricienne|>mauritanienne|>mexicaine|>micronésienne|>moldave|>monégasque|>monténégrine|>mongole|>mozambicaine|>namibiene|>népalaise|>nicaraguayenne|>nigérienne|>nigériane|>néerlandaise|>norvégienne|>néo-zélandaise|>ougandaise|>ouzbèke|>pakistanaise|>palestinienne|>panaméenne|>paraguayenne|>perse|>péruvienne|>philippine|>polonaise|>polynésienne|>portugaise|>québécoise|>qatarie|>roumaine|>russe|>rwandaise|>saoudienne|>scandinave|>salvadorienne|>sénégalaise|>serbe|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>srilankaise|>suédoise|>suisse|>surinamaise|>syrienne|>sud-africaine|>sud-coréenne|>américaine|>tadjike|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tahitienne|>tunisiene|>turkmène|>turque|>taïwanaise|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
+        <<- /maj/ \2.istitle() and morph(\1, ":N", ":(?:A|V0e|D|R|B)") -2>> =\2.lower()             # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
+        <<- /maj/ \2.islower() and not \2.startswith("canadienne") and
+            ( value(\1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|") or
+            ( value(\1, "|un|") and not value(<1, "|dans|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
+        -2>> =\2.capitalize()                                                                       # S’il s’agit d’un gentilé, mettez une majuscule.
+
+    [un|une|certains|certaines|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européenne|>parisienne|>lyonnaise|>marseillaise|>lilloise|>toulousaine|>nantaise|>strasbourgeoise|>montpelliéraine|>bordelaise|>bruxelloise|>montréalaise|>londonienne|>genévoise|>zurichoise|>bâloise|>berlinoise|>romaine]
+        <<- /maj/ \2.islower() -2>> =\2.capitalize()                                                # S’il s’agit d’un gentilé, mettez une majuscule.
+
+TEST: des {{français}} sont arrivés                                     ->> Français
+TEST: c’est de conception {{Allemande}}                                 ->> allemande
+TEST: une référence aux {{israéliens}}
+TEST: une {{érythréenne}}
+TEST: et des {{soudanaises}}.
+TEST: des {{parisiens}} en vacances
+TEST: les Îles Britanniques.
+TEST: Allemands contre Grecs, Grecs contre Allemands
+TEST: sept Français sur dix
+TEST: l’océan Indien
+TEST: Je leur explique dans un anglais que la fatigue m’empêche de bien prononcer.
+
+
+# les langues
+__maj_langues__
+    [>parler|cours|>leçon|>apprendre|>étudier|>traduire|>enseigner|>professeure|>enseignante|>dictionnaire|>méthode] [le|de|du|l’|d’|que|qu’|qu] [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Corse|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
+        <<- /maj/ -3>> =\3.lower()                                                                  # Si vous parlez de la langue, pas de majuscule.
+
+    en [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
+        <<- /maj/ -2>> =\1.lower()                                                                  # Si vous parlez de la langue, pas de majuscule.
+
+TEST: il ne parle qu’{{Allemand}}.
+TEST: ta traduction en {{Russe}} est superbe.
+
+
+# Moyen Âge
+__maj_Moyen_Âge__
+    [Moyen-Age|Moyen-Âge]
+    [moyen-âge|moyen-age]
+    moyen age
+        <<- /maj/ ->> Moyen Âge                                     # Le “Moyen Âge”, l’époque médiévale.
+
+    moyen âge
+        <<- /maj/ \1.islower() and \2.islower() ->> Moyen Âge       # Le “Moyen Âge”, l’époque médiévale.
+
+TEST: C’est le {{moyen age}}, chez ces ploucs.
+
+
+# Église
+__maj_Église__
+    l’ église [adventiste|anglicane|copte|catholique|calviniste|épiscopalienne|jacobite|luthérienne|lutherienne|méthodiste|mormone|néo-apostolique|néoapostolique|orthodoxe|pentecôtiste|presbytérienne|protestante|réformée]
+        <<- /maj/ \2.islower() -2>> Église                          # Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
+
+    >homme d’ église
+        <<- /maj/ \3.islower() -3>> Église                          # Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
+
+    [>chef|>rite|>sacrement] de l’ église
+        <<- /maj/ \3.islower() -4>> Église                          # Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
+
+    [*WORD|*WORD_ELIDED] [Église|Églises] [>baroque|>gothique|>romane|~^Saint-[A-ZÉÊ]]
+    ,                    [Église|Églises] [>baroque|>gothique|>romane|~^Saint-[A-ZÉÊ]]
+        <<- /maj/ -2>> église                                       # Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
+
+TEST: L’{{église}} orthodoxe.                                           ->> Église
+TEST: un homme d’{{église}}                                             ->> Église
+TEST: les sacrements de l’{{église}}                                    ->> Église
+TEST: Une {{Église}} baroque.                                           ->> église
+TEST: L’{{Église}} Saint-Paul.                                          ->> église
+TEST: Un homme d’{{église}}.                                            ->> Église
+
+
+# Points cardinaux
+__maj_Nord_Sud_Est_Ouest__
+    [Afrique|Amérique|Asie|Corée|Galles|Europe|Irlande|Soudan|Rhodésie|Territoire] du [nord|sud]
+        <<- /maj/ \3.islower() -3>> =\3.capitalize()                # Majuscule manquante.
+
+    [Afrique|Allemagne|ex-Allemagne|Asie|Europe|Pays] de l’ [ouest|est]
+        <<- /maj/ \4.islower() -4>> =\4.capitalize()                # Majuscule manquante.
+
+TEST: Ça se passe en Europe du {{nord}}.
+TEST: J’ai visité toute l’Afrique du {{sud}}.
+TEST: Dans l’Europe de l’{{ouest}}.
+
+
+# Unités de mesure
+__maj_unités__
+    *NUM  [Mètre|Watt|Gramme|Seconde|Ampère|Kelvin|Mole|Candela|Candéla|Hertz|Henry|Newton|Pascal|Joule|Coulomb|Volt|Ohm|Farad|Tesla|Weber|Wéber|Radian|Stéradian|Lumen|Lux|Becquerel|Gray|Sievert|Siemens|Katal|Mètres|Watts|Grammes|Secondes|Ampères|Kelvins|Moles|Candelas|Candélas|Hertz|Henrys|Newtons|Pascals|Joules|Coulombs|Volts|Ohms|Farads|Teslas|Webers|Wébers|Radians|Stéradians|Lumens|Becquerels|Grays|Sieverts|Katals]
+    @:B   [Mètre|Watt|Gramme|Seconde|Ampère|Kelvin|Mole|Candela|Candéla|Hertz|Henry|Newton|Pascal|Joule|Coulomb|Volt|Ohm|Farad|Tesla|Weber|Wéber|Radian|Stéradian|Lumen|Lux|Becquerel|Gray|Sievert|Siemens|Katal|Mètres|Watts|Grammes|Secondes|Ampères|Kelvins|Moles|Candelas|Candélas|Hertz|Henrys|Newtons|Pascals|Joules|Coulombs|Volts|Ohms|Farads|Teslas|Webers|Wébers|Radians|Stéradians|Lumens|Becquerels|Grays|Sieverts|Katals]
+    *NUM  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
+    @:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
+        <<- /maj/ -2>> =\2.lower()                                  # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
+
+TEST: J’en veux 3 {{Mètres}}.
+TEST: Elle en prendra vingt {{Grammes}}.
 
 
 
@@ -11792,17 +12084,15 @@ __conf_pâte_patte_pat__
     [>patte|pat] [d’|de] [>amande|>amende|>fruit]
         <<- /conf/ -1>> pâte|pâtes                              # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
+    >coq en [>patte|pat]
+        <<- /conf/ -3>> pâte                                    # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
+
 TEST: Prépare la {{patte}} à tarte.
 TEST: Ils mangent souvent des {{pattes}} au thon.
 TEST: Des {{pattes}} alimentaires.
 TEST: Elles ont acheté de la {{patte}} à tartiner.
 TEST: La {{patte}} à pizza est plus épaisse que la pâte à crêpes.
 TEST: Elle adore la {{patte}} d’amande.
-
-
-    >coq en [>patte|pat]
-        <<- /conf/ -3>> pâte                                    # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
-
 TEST: Il est comme un coq en {{pattes}} là.
 
 
@@ -11857,57 +12147,15 @@ __conf_quoi_qu_il_en_soit__
 TEST: {{quoiqu’il en soit}}, nous ne nous laisserons pas faire, vous pouvez compter sur nous.
 
 
-
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-
-
-
-
-# ris / riz
-__[i]/conf(conf_ris_de_veau_agneau)__
-    (riz?) (?:de veaux?|d’agneaux?) @@0 <<- -1>> ris                                      # Confusion.|http://fr.wiktionary.org/wiki/ris
-
-TEST: Elles ont préparé un {{riz}} de veau.
-
-
-# saint / sain / sein / seing
-__[i]/conf(conf_saint)__
-    (s[ae]in) ([A-ZÉÊÈ]\w+) @@0,$
-    <<- morph(\2, ":M1", False) and morph(word(-1), ":(?:R|[123][sp])", False, True) -1>> saint
-    # Confusion : “sain” signifie “en bonne santé”, le sein est un organe thoracique féminin. Pour évoquer ce qui est “sanctifié”, écrivez :|https://fr.wiktionary.org/wiki/saint
-__[i]/conf(conf_sein)__
-    (?:en|dans|sur) [mts]on (saint?) @@$
-    <<- -1>> sein
-    # Confusion : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez :|https://fr.wiktionary.org/wiki/sein
-__[i]/conf(conf_au_sein_de)__
-    au (sain) d(?:es?|u) @@3
-    <<- -1>> sein
-    # Confusion : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez :|https://fr.wiktionary.org/wiki/sein
-__[i]/conf(conf_blanc_seing)__
-    blanc-(?:s[ae]int?)(s|) @@$
-    <<- ->> blanc-seing\1                                     # Confusion.|http://fr.wiktionary.org/wiki/blanc-seing
-
-TEST: il priait {{sain}} Anselme de le secourir.
-TEST: Au {{sain}} de l’obscurité, elle se sentait en sécurité.
-TEST: Sur son {{sain}}
-TEST: en son {{saint}}.
-TEST: {{blanc-sein}}
-
-
 # sale / salle
-__[i]/conf(conf_salle_qqch)__
-    (sales?) (?:d’(?:accouchement|arcade|attente|audience|eau|escalade|échographie|embarquement|exposition|hospitalisation|observation|opération|urgence)s?|d(?:es?|u) (?:bain|bal|banquet|billard|bloc|cinéma|classe|colle|commandement|concert|conférence|conseil|consultation|cours|culture|danse|départ|fête|formation|garde|gym|gymnastique|infirmier|lecture|machine|malade|mammographie|marché|mariage|musculation|musique|ordinateur|presse|prière|prof(?:esseur|)|projection|radio|radiographie|réanimation|réception|rédaction|rééducation|restaurant|réunion|réveil|séjour|shoot|soin|spectacle|sport|stockage|théâtre|tir|toilette|torture|trading|travail|vente|fitness|infirmier|jeu|repos|urgence)s?|à manger) @@0
-    <<- -1>> =\1.replace("sale", "salle")
-    # Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez :
-__[i]/conf(conf_être_sale)__
-    ({etre}) +(salles?)  @@0,$
-    <<- morph(\1, ":V0e", False) -2>> =\2.replace("salle", "sale")
-    # Confusion. Une salle est une pièce. Pour la malpropreté, écrivez :
+__conf_salle_qqch__
+    >sale d’ [>accouchement|>arcade|>attente|>audience|>eau|>escalade|>échographie|>embarquement|>exposition|>hospitalisation|>observation|>opération|>urgence]
+    >sale [de|des|du] [>bain|>bal|>banquet|>billard|>bloc|>cinéma|>classe|>colle|>commandement|>concert|>conférence|>conseil|>consultation|cours|>culture|>danse|>départ|>fête|>formation|>garde|>gym|>gymnastique|>infirmière|>lecture|>machine|>malade|>mammographie|>marché|>mariage|>musculation|>musique|>ordinateur|>presse|>prière|>prof|>professeure|>projection|>radio|>radiographie|>réanimation|>réception|>rédaction|>rééducation|>restaurant|>réunion|>réveil|>séjour|>shoot|>soin|>spectacle|>sport|>stockage|>théâtre|>tir|>toilette|>torture|>trading|>travail|>vente|fitness|>jeu|>repos|>urgence]
+    >sale à manger
+        <<- /conf/ -1>> =\1.replace("sale", "salle")                # Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez :
+
+    >être  >salle
+        <<- /conf/ -2>> =\2.replace("salle", "sale")                # Confusion. Une salle est une pièce. Pour la malpropreté, écrivez “sale”.
 
 TEST: dans la {{sale}} des professeurs
 TEST: une {{sale}} d’arcade
@@ -11916,64 +12164,61 @@ TEST: pour le service en salle
 
 
 # sans / sens
-__[i]/conf(conf_sens_dessus_dessous)__
-    sans[ -]dessus[ -]dessous <<- ->> sens dessus dessous       # Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/sens_dessus_dessous
+__conf_sens_dessus_dessous__
+    sans dessus dessous
+    sans-dessus-dessous
+        <<- /conf/ ->> sens dessus dessous                          # Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/sens_dessus_dessous
 
 TEST: Tout est {{sans dessus dessous}}.
 
 
 # sceptique / septique
-__[i]/conf(conf_qqch_septique)__
-    (?:fosse|installation|choc|chirurgie|maladie|plaie|blessure|embolie|arthrite|isolement|pneumo-entérite)s? (sceptiques?)  @@$
-    <<- -1>> =\1.replace("scep","sep")                          # Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.
-__[i]/conf(conf_être_sceptique)__
-    ({etre}|demeur\w+) +(septiques?)  @@0,$
-    <<- morph(\1, ">(?:être|demeurer)/", False) -2>> =\2.replace("sep", "scep")
-    # Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.
+__conf_sceptique_septique__
+    [>fosse|>installation|>choc|>chirurgie|>maladie|>plaie|>blessure|>embolie|>arthrite|>isolement|>pneumoentérite|>pneumo-entérite] >sceptique
+        <<- -2>> =\2.replace("scep","sep")                          # Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.
+
+    [>être|>demeurer|>rester|>devenir]  >septique
+        <<- /conf/ -2>> =\2.replace("sep", "scep")                  # Confusion possible. Septique = corrompu, infecté. Sceptique = ayant des doutes.
 
 TEST: cette fosse {{sceptique}} est pleine.
 TEST: Je suis {{septique}} !
 
 
-# s’ensuivre
-__[i]/conf(conf_s_ensuivre)__
-    s’en (sui\w+) @@$ <<- morph(\1, ">suivre/", False) ->> s’en\1                         # Verbe « s’ensuivre ».
-
-TEST: {{S’en suivit}} une guerre de tous les instants.
-TEST: {{S’en suivre}}.
-
-
-
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
-__[i]/conf(conf_tache_de_qqch)__
-    (tâches?) d(?:e +|’)({w_2})  @@0,$
-    <<- morphex(\2, ":N", ":[GMY]|>(?:fonds?|grande (?:envergure|ampleur|importance)|envergure|ampleur|importance|départ|surveillance)/") and not before("accompl|dél[éè]gu")
-    -1>> =\1.replace("â", "a")
-    # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
-__[i]/conf(conf_tache_adjectif)__
-    (tâches?) +(?:indélébile|rouge|verte|noire|bleue|jaune|grise|blanche|brune|pourpre|chocolat|mauve|fushia|violette|rose|claire|sombre)s?  @@0
-    <<- -1>> =\1.replace("â", "a")
-    # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+__conf_tache_tâche__
+    >tâche  [de|d’]  @:N¬:[GMY]|>(?:fonds?|envergure|ampleur|importance|départ|surveillance)/
+        <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
+        # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+
+    >tâche  [>indélébile|>rouge|>verte|>noire|>bleue|>jaune|>grise|>blanche|>brune|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre]
+        <<- /conf/ -1>> =\1.replace("â", "a")
+        # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
 TEST: une {{tâche}} de chocolat                                             ->> tache
 TEST: une {{tâche}} vraiment indélébile
+TEST: une {{tâche}}
 TEST: en tâche de fond
 TEST: la tâche de la justice
+TEST: c’est une tâche de grande envergure
 TEST: déléguer des tâches de sécurité publique à des machines autonomes
 TEST: tirer bénéfice de nouvelles données en fonction de la tâche de départ qui leur a été assignée
-TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’autres tâches de surveillances, notamment au sein de la nouvelle brigade anti-insécurité.
+TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’autres tâches de surveillance, notamment au sein de la nouvelle brigade anti-insécurité.
 
 
 # taule / tôle
-__[i]/conf(conf_aller_en_taule)__
-    ({aller}) +en (t[ôo]les?)  @@0,$
-    <<- morph(\1, ">aller/", False) -2>> taule                            # Confusion. La tôle est une plaque de métal laminé. Pour la prison, écrivez :
-__[i]/conf(conf_faire_de_la_taule)__
-    (f[aiî]\w+) +de la (t[ôo]les?)  @@0,$
-    <<- morph(\1, ">faire/", False) -2>> taule                            # Confusion. La tôle est une plaque de métal laminé. Pour la prison, écrivez :
-__[i]/conf(conf_tôle_qqch)__
-    (taules?) (?:(?:boulonné|cintré|émaillé|embouti|galvanisé|gaufré|nervuré|ondulé|perforé|soudé|translucide)e?s?|(?:d(?:e |’)|en )(?:acier|alu|aluminium|bardage|cuivre|étanchéité|fer|festonnage|inox|laiton|métal|trapèze|zinc|éverite|fibro-?ciment|plastique|polycarbonate|PVC)s?)  @@0
-    <<- -1>> =\1.replace("au", "ô")                                         # Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
+__conf_taule_tôle__
+    >aller en [>tôle|>tole]
+    >quitter cette [tôle|tole]
+        <<- /conf/ -3>> taule                                       # Confusion. La tôle est une plaque de métal laminé. Pour la prison, écrivez “taule”.
+
+    >faire de la [tôle|tole]
+        <<- /conf/ -4>> taule                                       # Confusion. La tôle est une plaque de métal laminé. Pour la prison, écrivez “taule”.
+
+    [>taule] [>boulonner|>cintrer|>émailler|>emboutir|>galvaniser|>gaufrer|>nervurer|>onduler|>perforer|>souder|>translucide]
+        <<- /conf/ -1>> =\1.replace("au", "ô")                      # Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
+
+    [>taule] [de|d’|en] [>acier|>alu|>aluminium|>bardage|>cuivre|>étanchéité|>fer|>festonnage|inox|>laiton|>métal|>trapèze|>zinc|>éverite|>fibrociment|>fibro-ciment|>plastique|>polycarbonate|PVC]
+        <<- /conf/ -1>> =\1.replace("au", "ô")                      # Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
 
 TEST: Demain, il va aller en {{tôle}}.
 TEST: Tu as fait de la {{tôle}} ?
@@ -11981,33 +12226,40 @@ TEST: C’est la {{taule}} galvanisée.
 
 
 # tant / temps (2e partie)
-__[i]/conf(conf_en_tant_que)__
-    en (temps|tan) que? @@3 <<- -1>> tant                         # Confusion. Écrivez « en tant que ».|http://fr.wiktionary.org/wiki/en_tant_que
-__[i]/conf(conf_il_être_tant_de)__
-    il ({etre}) +(tant?) d(?:e |’)({infi}|ne|en|y)  @@3,w,$
-    <<- morph(\1, ":V0e", False) and morph(\3, ":Y|>(?:ne|en|y)/", False)
-    -2>> temps                                                              # Confusion.
+__conf_tant_temps_tan__
+    en [temps|>tan] [que|qu’|qu]
+        <<- /conf/ -2>> tant                                        # Confusion. Écrivez « en tant que ».|http://fr.wiktionary.org/wiki/en_tant_que
+
+    il >être [tant|>tan] [de|d’] [ne|me|m’|te|t’|se|s’|en|y]
+    il >être [tant|>tan] [de|d’] [la|le|les] [lui|leur]
+    il >être [tant|>tan] [de|d’] [nous|vous] [la|le|les|l’]
+    il >être [tant|>tan] [de|d’] [la|le|les|lui|nous|vous|leur|l’] @:Y
+    il >être [tant|>tan] [de|d’] @:Y
+        <<- /conf/ -3>> temps                                       # Confusion. Si vous voulez dire “c’est le moment de”, écrivez “temps”.|https://fr.wiktionary.org/wiki/il_est_temps
 
 TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.
 TEST: il est bien évidemment {{tant}} d’en finir avec ça.
 
 
-# teint / tain / thym
-__[i]/conf(conf_sans_tain)__
-    (?:glace|miroir|verre)s? sans (tains|teints?|thyms?) @@$ <<- -1>> tain                # Confusion.|http://fr.wiktionary.org/wiki/glace_sans_tain
-__[i]/conf(conf_fond_de_teint)__
-    fonds? de (tains?|teints|thyms?) @@$ <<- -1>> teint                                   # Confusion.|https://fr.wiktionary.org/wiki/fond_de_teint
+# tort / tord / tore / torr / tors
+__conf_tort_tord_tore__
+    à [tord|tords]
+        <<- /conf/ -2>> tort                                            # Confusion : “tord” est une conjugaison du verbe tordre.
 
-TEST: Elle l’a observé par un miroir sans {{teint}}.
-TEST: Elle a acheté un nouveau fond de {{tain}}.
+    à >tore
+        <<- /conf/ -2>> tort                                            # Confusion : un tore est une forme géométrique annulaire.
 
+    à [tors|torr]
+        <<- /conf/ -2>> tort                                            # Confusion.
 
-# tort / tord
-__[i]/conf(conf_à_tort)__
-    à (tor[de]?s?) @@2 <<- -1>> tort                                # Confusion : “tord” est une conjugaison du verbe tordre.
-__[i]/conf(conf_avoir_tort)__
-    ({avoir}|donn\w+) +(tor[ed]?s?) @@0,$
-    <<- morph(\1, ">(?:avoir|donner)/", False) -2>> tort            # Confusion : “tord” est une conjugaison du verbe tordre.
+    [>avoir|>donner|>redonner|>faire] [tord|tords]
+        <<- /conf/ -2>> tort                                            # Confusion : “tord” est une conjugaison du verbe tordre.
+
+    [>avoir|>donner|>redonner|>faire] [>tore]
+        <<- /conf/ -2>> tort                                            # Confusion : un tore est une forme géométrique annulaire.
+
+    [>avoir|>donner|>redonner|>faire] [tors|torr]
+        <<- /conf/ -2>> tort                                            # Confusion.
 
 TEST: elles seront à {{tord}} accusées.
 TEST: ils ont {{tords}}…
@@ -12016,61 +12268,23 @@ TEST: ils n’ont pas {{tord}}.
 TEST: je ne peux pas lui donner {{tord}}.
 
 
-__[i]/conf(conf_tour_à_tour)__
-    tourd?s? [àa] tourd?s?
-    <<- not re.search("(?i)^tour à tour$", \0) ->> tour à tour      # Locution adverbiale invariable. Écrivez “tour à tour”.|https://fr.wiktionary.org/wiki/tour_%C3%A0_tour
-    <<- ~>> *
-
-
 # venimeux / vénéneux
-__[i]/conf(conf_qqch_venimeux)__
-    (?:serpent|araignée|scorpion|vipère|cobra|crapaud|grenouille|dendrobate|poulpe|guêpe|abeille|méduse|morsure|piqûre|dard|dent|croc|crochet)s? +(vénéneu(?:x|ses?))  @@$
-    <<- -1>> =\1.replace("énén", "enim")                                    # Confusion : “vénéneux” se dit des plantes, employez “venimeux”.
-__[i]/conf(conf_qqch_vénéneux)__
-    (?:(?:plante|champignon|lépiote|fruit|herbe|fleur|chair|moule|humus|substance)s?|végéta(?:l|ux)) +(venimeu(?:x|ses?))  @@$
-    <<- -1>> =\1.replace("enim", "énén")                                    # Confusion : pas de venin ici.
+__conf_venimeux_vénéreux__
+    [>serpent|>araignée|>scorpion|>vipère|>cobra|>crapaud|>grenouille|>dendrobate|>poulpe|>guêpe|>abeille|>frelon|>méduse|>morsure|>piqûre|>dard|>dent|>croc|>crochet]  >vénéneuse
+        <<- /conf/ -2>> =\1.replace("énén", "enim")                                    # Confusion : “vénéneux” se dit des plantes, employez “venimeux”.
+
+    [>plante|>champignon|>lépiote|>baie|>fruit|>herbe|>fleur|>chair|>moule|humus|>substance|>végétal]  >venimeuse
+        <<- /conf/ -2>> =\1.replace("enim", "énén")                                    # Confusion : pas de venin ici.
 
 TEST: ces araignées {{vénéneuses}}.
 TEST: ce champignon {{venimeux}}.
 
 
-# verre / vers / vert / ver
-__[i]/conf(conf_ce_vers_quoi)__
-    ce (ver(?:ts?|re|)) quoi  @@w
-    <<- -1>> vers
-    # Confusion. Dans la locution “ce vers quoi”, écrivez “vers” (qui signifie “en direction de”).
-__[i]/conf(conf_ver)__
-    (?:[lc]e|du|un) (ver(?:re|t)s?) +(?:qui +|)(?:est +|étai[ts] +|serai?[st]? +|f[uû][ts] +|)dans le fruit  @@3
-    <<- -1>> ver
-    # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
-__[i]/conf(conf_ver_de_terre)__
-    (ver(?:re|t)s?) de terre @@0
-    <<- -1>> =\1.replace("re", "").replace("t", "")
-    # Confusion. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »). L’animal s’écrit “ver”.
-__[i]/conf(conf_verre)__
-    (vert?s?) d(?:e (?:bière|cidre|contact|champagne|chianti|dégustation|jus|lait|limonade|rosé|rhum|sécurité|thé|vin|whisky)s?|’(?:alcool|absinthe|eau|urine)) @@0
-    <<- -1>> verre|verres
-    # Confusion probable. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
 
-TEST: en finir avec le {{vert}} qui était dans le fruit.
-TEST: un immonde {{vert}} de terre
-TEST: Un {{ver}} de bière fraîche.
-TEST: ce {{vert}} quoi nous allons, c’est une catastrophe à l’échelle planétaire.
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
 
-
-# vieil / vieux
-__[i]/conf(conf_vieil_euphonie)__
-    (vieux) ([aeioué]\w+|homme)  @@0,$
-    <<- morph(\2, ":[NAQ].*:[me]:s") -1>> vieil
-    # Euphonie. Utilisez « vieil » pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
-
-TEST: ce {{vieux}} homme
-TEST: c’est un {{vieux}} imbécile.
-TEST: Le {{vieux}} homme était parti.                         ->> vieil
-
-
-# nouveau / nouvel
-# TODO
 
 
 
@@ -12078,176 +12292,15 @@ TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 __[i]/mc(mc_mot_composé)__
     ({w2})-({w2})  @@0,$
-    <<- not \1.isdigit() and not \2.isdigit()
-        and not morph(\0, ":", False) and not morph(\2, ":G", False) and spell(\1+\2)
-    ->> \1\2                                                                                        # Vous pouvez ôter le trait d’union.
-    <<- \2 != "là" and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
-        and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G", False)
-        and not morph(\0, ":", False) and not spell(\1+\2)
-    ->> _                                                                                           # Mot inconnu du dictionnaire.|http://www.dicollecte.org/dictionary.php?prj=fr&unknownword=on
+        <<- not \1.isdigit() and not \2.isdigit()
+            and not morph(\0, ":", False) and not morph(\2, ":G", False) and spell(\1+\2)
+        ->> \1\2                                                                                    # Vous pouvez ôter le trait d’union.
+        <<- \2 != "là" and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
+            and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G", False)
+            and not morph(\0, ":", False) and not spell(\1+\2)
+        ->> _                                                                                       # Mot inconnu du dictionnaire.|http://www.dicollecte.org/dictionary.php?prj=fr&unknownword=on
 
 TEST: __mc__ des {{portes-avions}}.
-
-
-
-!!
-!!
-!!!! Casse: majuscules et minuscules                                                              !!
-!!
-!!
-
-# Les jours
-__[s]/maj(maj_jours_semaine)__
-    (?:Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche)
-    <<- before(r"[\w,] +$") ->> =\0.lower()
-    # Pas de majuscule sur les jours de la semaine.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
-
-TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
-
-
-# Les mois
-__[s]/maj(maj_mois)__
-    (?:Janvier|Février|Avril|Mai|Juin|Juillet|Ao[ûu]t|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor)
-    <<- before(r"[\w,] +$") and not( ( \0=="Juillet" and before("(?i)monarchie +de +$") ) or ( \0=="Octobre" and before("(?i)révolution +d’$") ) )
-    ->> =\0.lower()
-    # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
-__[s]/maj(maj_mois_mars)__
-    (?:[eE]n|[0-3]?[0-9]) (Mars)  @@$
-    <<- -1>> mars
-    # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
-
-TEST: 15 {{Septembre}}                                                  ->> septembre
-TEST: 23 {{Messidor}}                                                   ->> messidor
-TEST: ils viendront en {{Mars}}.                                        ->> mars
-TEST: le comité d’éthique qui statuera dans les meilleurs délais sur la situation de Véronique Avril
-
-
-# Les États
-__[s]/maj(maj_État_qqch)__
-    (état) (?:français|belge|suisse|canadien|palestinien|souverain|américain|russe|anglais|allemand|espagnol|italien|mexicain|japonais|chinois|australien|polonais|membre|africain|européen|asiatique|voyou|démocratique|totalitaire|fédéral|fédéré|capitaliste|communiste|providence|nation)  @@0
-    <<- -1>> État                                       # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
-__[s]/maj(maj_États_qqch)__
-    (états) (?:français|belge|suisse|canadien|palestinien|souverain|membre|américain|africain|européen|asiatique|voyou|démocratique|totalitaire|fédéra(?:l|ux)|fédéré|capitaliste|communiste|providence|nation)s?  @@0
-    <<- -1>> États                                      # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
-
-__[s]/maj(maj_qqch_d_État)__
-    (?:affaire|agent|administration|chancellerie|chefs|conseil|coup|diplôme|doctorat|emprunt|lycée|propriété|secret|homme|femme|police|religion|ministre|ministère|subvention|secrétaire|secrétariat|raison|ressortissant|université)s? d’(état)  @@$
-    <<- -1>> État                                       # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
-__[s]/maj(maj_qqch_de_l_État)__
-    (?:défense|s[ûu]reté|agent|budget|caisse|capitale|constitution|charge|chef|dirigeant|denier|finance|fonction|fonctionnement|frontière|institution|propriété|monopole|pouvoir|rouage|ressource|service|subvention|suprême)s? de l’(état)  @@$
-    <<- not re.search("(?i)^fonctions? ", \0) or not before(r"(?i)\ben $")
-    -1>> État                                           # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
-
-__[s]/maj(maj_État_nation_providence)__
-    (états?)-(?:[nN]ation|[pP]rovidence)s?  @@0
-    <<- -1>> =\1.replace("é", "É")                      # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
-
-TEST: Nous n’avons reçu aucune décision de l’{{état}} fédéral.
-TEST: Les {{états}} démocratiques ne sont gouvernés que par des hypocrites et des opportunistes.
-TEST: C’est une affaire d’{{état}}.
-TEST: la défense de l’{{état}}.                                           ->> État
-TEST: C’est une prérogative de l’{{état}}-nation
-
-
-# gentilés / ethnonymes
-__[s]/maj(maj_gentilés)__
-    ({w_2}) ((?:[aA]fghan|[aA]lbanais|[aA]lgérien|[aA]llemand|[aA]méricain|[aA]ndorran|[aA]ngo?lais|[aA]rabe|[aA]rgentin|[aA]rménien|[aA]ustralien|[aA]utrichien|[aA]siatique|[aA]zerbaïdjanais|[bB]ahamien|[bB]angladais|[bB]engladeshi|[bB]arbadien|[bB]asque|[bB]elge|[bB]élizien|[bB]éninois|[bB]reton|[bB]houtanais|[bB]iélorusse|[bB]irman|[bB]olivien|[bB]osnien|[bB]otswanais|[bB]résilien|[bB]ritannique|[bB]runéien|[bB]ulgare|[bB]urkinabé|[bB]urundais|[cC]ambodgien|[cC]amerounais|[cC]anadien|[cC]apverdien|[cC]entrafricain|[cC]hilien|[cC]hinois|[cC]hypriote|[cC]olombien|[cC]omorien|[cC]ongolais|nord-coréen|[cC]orse|[cC]ostaricien|[cC]roate|[cC]ubain|[dD]anois|[dD]jiboutien|[dD]ominicain|[éÉ]gyptien|[éÉ]mirati|[éÉ]quatorien|[éÉ]rythréen|[eE]stonien|[eE]spagnol|[éÉ]tats-?unien|[éÉ]tasunien|[éÉ]thiopien|[fF]idjien|[fF]inlandais|[fF]ormosan|[fF]rançais|[gG]abonais|[gG]ambien|[gG]éorgien|[gG]hanéen|[gG]rec|[gG]renadien|[gG]uadeloupéen|[gG]uatémaltèque|[gG]uinéen|[éÉ]quato-guinéen|[gG]uyanien|[hH]aïtien|[hH]ondurien|[hH]ollandais|[hH]ongrois|[iI]ndien|[iI]ndochinois|[iI]ndonésien|[iI]rakien|[iI]talien|[iI]ranien|[iI]rlandais|[iI]slandais|[iI]sraélien|[iI]voirien|[jJ]amaïcain|[jJ]aponais|[jJ]ordanien|[kK]azakh|[kK]ényan|[kK]osovar|[kK]oweïtien|[lL]aotien|[lL]apon|[lL]etton|[lL]ibanais|[lL]ibérien|[lL]ibyen|[lL]iechtensteinois|[lL]ituanien|[lL]uxembourgeois|[mM]acédonien|[mM]aghrébin|[mM]algache|[mM]alaisien|[mM]alawite|[mM]aldivien|[mM]alien|[mM]altais|[mM]aori|[mM]arocain|[mM]artien|[mM]auricien|[mM]auritanien|[mM]exicain|[mM]icronésien|[mM]oldave|[mM]onégasque|[mM]onténégrin|[mM]ongol|[mM]ozambicain|[nN]amibien|[nN]épalais|[nN]icaraguayen|[nN]igérien|[nN]igérian|[nN]éerlandais|[nN]orvégien|[nN]éo-zélandais|[oO]ugandais|[oO]uzbek|[pP]akistanais|[pP]alestinien|[pP]anaméen|[pP]araguayen|[pP]erse|[pP]éruvien|[pP]hilippin|[pP]olonais|[pP]olynésien|[pP]ortugais|[qQ]uébécois|[qQ]atari|[rR]oumain|[rR]usse|[rR]wandais|[s]aoudien|[s]candinave|[sS]alvadorien|[sS]énégalais|[sS]erbe|[sS]ingapourien|[sS]lovaque|[sS]lovène|[sS]omalien|[sS]oudanais|[sS]oviétique|[sS]rilankais|[sS]uédois|[sS]uisse|[sS]urinamais|[sS]yrien|[sS]ud-(?:africain|coréen|américain)|[tT]adjik|[tT]anzanien|[tT]chadien|[tT]chèque|[tT]haïlandais|[tT]ogolais|[tT]ahitien|[tT]unisien|[tT]urkmène|[tT]urc|[tT]aïwanais|[uU]krainien|[uU]ruguayen|[vV]énézuélien|[vV]ietnamien|[yY]éménite|[yY]ougoslave|[zZ]aïrois|[zZ]ambien|[zZ]imbabwéen)n?e?s?)
-    @@0,$
-    <<- \2.istitle() and morphex(\1, ":N", ":(?:A|V0e|D|R|B)") and not re.search("^([oO]céan Indien|[îÎiI]les Britanniques)", \0)
-    -2>> =\2.lower()                                                                                # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
-    <<- \2.islower() and not \2.startswith("canadienne") and
-    ( re.search("(?i)^(?:certaine?s?|cette|ce[ts]?|[dl]es|[nv]os|quelques|plusieurs|chaque|une|aux)$", \1) or
-    ( re.search("(?i)^un$", \1) and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") and not before(r"(?i)\bdans +")) )
-    -2>> =\2.capitalize()                                                                           # S’il s’agit d’un gentilé, mettez une majuscule.
-
-TEST: des {{français}} sont arrivés                                     ->> Français
-TEST: c’est de conception {{Allemande}}                                 ->> allemande
-TEST: une référence aux {{israéliens}}
-TEST: une {{érythréenne}}
-TEST: et des {{soudanaises}}.
-TEST: les Îles Britanniques.
-TEST: Allemands contre Grecs, Grecs contre Allemands
-TEST: sept Français sur dix
-TEST: l’océan Indien
-TEST: Je leur explique dans un anglais que la fatigue m’empêche de bien prononcer.
-
-
-__[s]/maj(maj_gentilés2)__
-    (?:une? |certaine?s? |cet? |[cdl]es |cette |l[ea] |quelques |plusieurs |chaque )((?:européen|parisien|lyonnais|marseillais|lillois|toulousain|nantais|strasbourgeois|montpelliérain|bordelais|bruxellois|montréalais|londonien|genévois|zurichois|bâlois|berlinois)n?e?s?)  @@$
-    <<- -1>> =\1.capitalize()                                                                       # S’il s’agit d’un gentilé, mettez une majuscule.
-
-TEST: des {{parisiens}} en vacances
-
-
-# les langues
-__[s]/maj(maj_langues)__
-    ((?:parl|cours|leçon|appr|étud|tradu|enseign|professeur|enseignant|dictionnaire|méthode)\w*) (?:le |d[eu] |l’|d’|qu |)(Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Corse|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wo?u|Yiddish|Xhosa|Xiang|Zoulou)  @@0,$
-    <<- morph(\1, ">(?:parler|cours|leçon|apprendre|étudier|traduire|enseigner|professeur|enseignant|dictionnaire|méthode)/", False)
-    -2>> =\2.lower()                                                                                # Si vous parlez de la langue, pas de majuscule.
-
-__[s]/maj(maj_en_langue)__
-    (?:[Ee]n )(Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wo?u|Yiddish|Xhosa|Xiang|Zoulou)  @@3
-    <<- -1>> =\1.lower()                                                                            # Si vous parlez de la langue, pas de majuscule.
-
-TEST: il ne parle qu’{{Allemand}}.
-TEST: ta traduction en {{Russe}} est superbe.
-
-
-# Moyen Âge
-__[s]/maj(maj_Moyen_Âge)__
-    [Mm]oyen[- ][Aâa]ge <<- ->> Moyen Âge                                                  # Le « Moyen Âge ».
-
-TEST: C’est le {{moyen age}}, chez ces ploucs.
-
-
-# Église
-__[s]/maj(maj_Église)__
-    [lL]’(église) (?:adventiste|anglicane|copte|catholique|calviniste|épiscopalienne|jacobite|luth[eé]rienne|méthodiste|mormone|néo-?apostolique|orthodoxe|pentecôtiste|presbytérienne|protestante|réformée) @@2
-    <<- -1>> Église
-    # Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
-__[s]/maj(maj_homme_d_Église)__
-    [hH]ommes? d’(église) @@$
-    <<- -1>> Église
-    # Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
-__[s]/maj(maj_qqch_de_l_Église)__
-    (?:[cC]hef|[rR]ite|[sS]acrement)s? de l’(église) @@$
-    <<- -1>> Église
-    # Lorsqu’on parle de l’institution, une majuscule est requise. Pour un bâtiment, pas de majuscule.
-__[s]/maj(maj_église_qqch)__
-    (Église)s? +(?:baroques?|gothiques?|romanes?|Saint-[A-ZÉÊ]{w_2})  @@0
-    <<- before(r"\w") -1>> église
-    # Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
-
-TEST: L’{{église}} orthodoxe.                                           ->> Église
-TEST: un homme d’{{église}}                                             ->> Église
-TEST: les sacrements de l’{{église}}                                    ->> Église
-TEST: Une {{Église}} baroque.                                           ->> église
-TEST: L’{{Église}} Saint-Paul.                                          ->> église
-TEST: Un homme d’{{église}}.                                            ->> Église
-
-
-# Points cardinaux
-__[s]/maj(maj_qqch_du_Nord_Sud)__
-    (?:Afrique|Amérique|Asie|Corée|Galles|Europe|Irlande|Soudan|Rhodésie|Territoire) du (nord|sud)  @@$
-    <<- -1>> =\1.capitalize()                                                                       # Majuscule manquante.
-__[s]/maj(maj_qqch_de_l_Ouest_Est)__
-    (?:Afrique|(?:ex-|)Allemagne|Asie|Europe|Pays) de l’(ouest|est) @@$
-    <<- -1>> =\1.capitalize()                                                                       # Majuscule manquante.
-
-TEST: Ça se passe en Europe du {{nord}}.
-TEST: J’ai visité toute l’Afrique du {{sud}}.
-TEST: Dans l’Europe de l’{{ouest}}.
-
-
-# Unités de mesure
-__[s]/maj(maj_unités)__
-    (\d+|une?|deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|vingt|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante|cents?|mille) ([A-Z]\w+)  @@0,$
-    <<- re.search("^(?:Mètre|Watt|Gramme|Seconde|Ampère|Kelvin|Mole|Cand[eé]la|Hertz|Henry|Newton|Pascal|Joule|Coulomb|Volt|Ohm|Farad|Tesla|W[eé]ber|Radian|Stéradian|Lumen|Lux|Becquerel|Gray|Sievert|Siemens|Katal)s?|(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Mi(?:lli|cro)|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?", \2)
-    -2>> =\2.lower()
-    # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
-
-TEST: J’en veux 3 {{Mètres}}.
-TEST: Elle en prendra vingt {{Grammes}}.
 
 
 
