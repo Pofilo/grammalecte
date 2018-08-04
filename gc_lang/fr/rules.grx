@@ -6446,7 +6446,7 @@ __maj_gentilés__
         <<- /maj/ \2.istitle() and morph(\1, ":N", ":(?:A|V0e|D|R|B)") -2>> =\2.lower()             # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
         <<- /maj/ \2.islower() and not \2.startswith("canadienne") and
             ( value(\1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|") or
-            ( value(\1, "|un|") and not value(<1, "|dans|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
+            ( value(\1, "|un|") and not value(<1, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
         -2>> =\2.capitalize()                                                                       # S’il s’agit d’un gentilé, mettez une majuscule.
 
     [un|une|certains|certaines|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européenne|>parisienne|>lyonnaise|>marseillaise|>lilloise|>toulousaine|>nantaise|>strasbourgeoise|>montpelliéraine|>bordelaise|>bruxelloise|>montréalaise|>londonienne|>genévoise|>zurichoise|>bâloise|>berlinoise|>romaine]
@@ -9527,6 +9527,21 @@ TEST: __redon2__ De loin en loin, elle passe.
 TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (répétition)
 
 
+!!!! Mots composés                                                                                !!
+
+__[i]/mc(mc_mot_composé)__
+    ({w2})-({w2})  @@0,$
+        <<- not \1.isdigit() and not \2.isdigit()
+            and not morph(\0, ":", False) and not morph(\2, ":G", False) and spell(\1+\2)
+        ->> \1\2                                                                                    # Vous pouvez ôter le trait d’union.
+        <<- \2 != "là" and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
+            and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G", False)
+            and not morph(\0, ":", False) and not spell(\1+\2)
+        ->> _                                                                                       # Mot inconnu du dictionnaire.|http://www.dicollecte.org/dictionary.php?prj=fr&unknownword=on
+
+TEST: __mc__ des {{portes-avions}}.
+
+
 @@@@
 @@@@
 @@@@
@@ -12280,31 +12295,6 @@ TEST: ces araignées {{vénéneuses}}.
 TEST: ce champignon {{venimeux}}.
 
 
-
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-
-!!!! Mots composés                                                                                !!
-
-__[i]/mc(mc_mot_composé)__
-    ({w2})-({w2})  @@0,$
-        <<- not \1.isdigit() and not \2.isdigit()
-            and not morph(\0, ":", False) and not morph(\2, ":G", False) and spell(\1+\2)
-        ->> \1\2                                                                                    # Vous pouvez ôter le trait d’union.
-        <<- \2 != "là" and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
-            and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G", False)
-            and not morph(\0, ":", False) and not spell(\1+\2)
-        ->> _                                                                                       # Mot inconnu du dictionnaire.|http://www.dicollecte.org/dictionary.php?prj=fr&unknownword=on
-
-TEST: __mc__ des {{portes-avions}}.
-
-
-
-
 !!
 !!
 !!
@@ -12334,17 +12324,37 @@ TEST: __mc__ des {{portes-avions}}.
 !!
 !!
 
-__[i]/infi(infi_à_en)__
-    à en ({w_2}) @@5
-    <<- morphex(\1, ":V", ":Y") -1>> =suggVerbInfi(@)                                               # Le verbe devrait être à l’infinitif.
+
+__infi_à_verbe__
+    à  [le|la|l’|leur|les]           (@:V¬:[YNAM]|>lui/)
+    [<start>|,]  à  [nous|vous|lui]  (@V:¬[YE]|>lui/)
+        <<- /infi/ \1.islower() -1>> =suggVerbInfi(\1)                                  # Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
+
+    à  [ne|n’|en|me|m’|te|t’|se|s’|y]                                       (@:V¬:Y|>lui/)
+    à  [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    (@:V¬:Y|>lui/)
+    à  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        (@:V¬:Y)
+    à  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            (@:V¬:Y)
+    à  ?[ne|n’]¿  [lui|leur]                     en                         (@:V¬:Y)
+        <<- /infi/ -1>> =suggVerbInfi(\1)                                               # Après le pronom “à”, le verbe devrait être à l’infinitif.
 
 TEST: à en {{parlé}} sans cesse
+TEST: cela suffit {{à les}} {{aimés}}
+TEST: à ne leur en {{avancé}} que le nécessaire.
+TEST: à l’y {{poussé}}
+TEST: elle s’engage à ne les lui donner qu’en dernier recours.
+TEST: l’idée consiste à la lui donner sans contrepartie et voir ce qu’il en fera.
+
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
 
 
 __[i]/infi(infi_de)__
     de ({w_2}(?:é|ez))  @@3
     <<- morph(\1, ":V1") and not \1[0:1].isupper()
-        and (\1.endswith("z") or not before(r"(?i)\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se)[ @]trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)"))
+        and (\1.endswith("z") or not before(r"(?i)\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)"))
     -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
 
 TEST: Il tentait de {{raisonné}} en homme libre
@@ -15487,23 +15497,6 @@ TEST: {{prendrons}}-elles un verre avec moi ?
 
 
 
-!!!! Verbe auxiliaire                                                                             !!
-
-__[i]/conf(conf_avoir_sujet_participe_passé)__
-    ({avoir})-(?:je|tu|ils?|elles?|on) +({ppas})  @@0,$
-    <<- analyse(\1, ">avoir/", False) and analyse(\2, ":V.......e_.*:Q", False) -1>> _  # Incohérence. La forme verbale “\2” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
-__[i]/conf(conf_sujet_avoir_participe_passé)__
-    (?:j’|je |tu |ils? |elles? |on ) *({avoir}) +({ppas})  @@*,$
-    <<- morph(\1, ">avoir/", False) and morph(\2, ":V.......e_.*:Q", False) -1>> _  # Incohérence. La forme verbale “\2” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
-
-TEST: {{Ait}}-il arrivé à ses fins ?
-TEST: je n’{{avais}} pas parti avec eux.
-TEST: Avais-je partie liée avec lui ?
-TEST: il {{avait}} parti.
-
-
-
-
 
 @@@@
 @@@@
@@ -15515,6 +15508,29 @@ TEST: il {{avait}} parti.
 @@@@
 @@@@
 
+
+!!!! Verbe auxiliaire                                                                             !!
+
+__conf_auxiliaire_avoir_être__
+    [/-je|/-tu|/-il|/-on]  @:V.......e_.*:Q
+        <<- /conf/ analyse(\1, ">avoir/", "", 0, -3) -1>> _                       # Incohérence. La forme verbale “\2” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
+
+    /-ils  @:V.......e_.*:Q
+        <<- /conf/ analyse(\1, ">avoir/", "", 0, -4) -1>> _                       # Incohérence. La forme verbale “\2” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
+
+    [/-elle|/-nous|/-vous]  @:V.......e_.*:Q
+        <<- /conf/ analyse(\1, ">avoir/", "", 0, -5) -1>> _                       # Incohérence. La forme verbale “\2” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
+
+    /-elles  @:V.......e_.*:Q
+        <<- /conf/ analyse(\1, ">avoir/", "", 0, -6) -1>> _                       # Incohérence. La forme verbale “\2” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
+
+    [je|j’|tu|il|elle|on|ils|nous|vous|elle|elles]  >avoir  @:V.......e_.*:Q
+        <<- /conf/ -2>> _                                                       # Incohérence. La forme verbale “\3” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
+
+TEST: {{Ait-il}} arrivé à ses fins ?
+TEST: je n’{{avais}} pas parti avec eux.
+TEST: il {{avait}} parti.
+TEST: Avais-je partie liée avec lui ?
 
 
 !!
