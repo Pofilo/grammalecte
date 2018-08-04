@@ -8059,14 +8059,14 @@ __purge_locutions__
     jusque-là
     la plupart du temps
     la main dans la main
-    là-bas
-    là-haut
-    là-dedans
-    là-dehors
-    là-derrière
-    là-dessous
-    là-dessus
-    là-devant
+    ?de¿ là-bas
+    ?de¿ là-haut
+    ?de¿ là-dedans
+    ?de¿ là-dehors
+    ?de¿ là-derrière
+    ?de¿ là-dessous
+    ?de¿ là-dessus
+    ?de¿ là-devant
     là non plus
     la mort dans l’ âme
     le cas échéant
@@ -12218,7 +12218,7 @@ __conf_tache_tâche__
 
 TEST: une {{tâche}} de chocolat                                             ->> tache
 TEST: une {{tâche}} vraiment indélébile
-TEST: une {{tâche}}
+TEST: une {{tâche}} rouge.
 TEST: en tâche de fond
 TEST: la tâche de la justice
 TEST: c’est une tâche de grande envergure
@@ -12333,108 +12333,125 @@ TEST: ce champignon {{venimeux}}.
 
 
 __infi_à_verbe__
-    à  [le|la|l’|leur|les]           (@:V¬:[YNAM]|>lui/)
-    [<start>|,]  à  [nous|vous|lui]  (@V:¬[YE]|>lui/)
+    à  [le|la|l’|leur|les]           (@:V¬:[YNAM]|>(?:lui|plus)/)
+    [<start>|,]  à  [nous|vous|lui]  (@:V¬[YE]|>(?:lui|plus)/)
         <<- /infi/ \1.islower() -1>> =suggVerbInfi(\1)                                  # Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
 
-    à  [ne|n’|en|me|m’|te|t’|se|s’|y]                                       (@:V¬:Y|>lui/)
-    à  [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    (@:V¬:Y|>lui/)
+    à  [ne|n’|en|me|m’|te|t’|se|s’|y]                                       (@:V¬:Y|>(?:lui|plus)/)
+    à  [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    (@:V¬:Y|>(?:lui|plus)/)
     à  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        (@:V¬:Y)
     à  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            (@:V¬:Y)
     à  ?[ne|n’]¿  [lui|leur]                     en                         (@:V¬:Y)
         <<- /infi/ -1>> =suggVerbInfi(\1)                                               # Après le pronom “à”, le verbe devrait être à l’infinitif.
 
 TEST: à en {{parlé}} sans cesse
-TEST: cela suffit {{à les}} {{aimés}}
+TEST: cela suffit à les {{aimait}}
 TEST: à ne leur en {{avancé}} que le nécessaire.
 TEST: à l’y {{poussé}}
 TEST: elle s’engage à ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste à la lui donner sans contrepartie et voir ce qu’il en fera.
+TEST: à leur plus grand fils, ils ont offert une voiture.
 
 
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
+__infi_de_verbe__
+    [de|d’] [le|la|l’|leur|les]           (@:V¬:[YNAM]|>(?:lui|plus)/)
+    [<start>|,]  [de|d’] [nous|vous|lui]  (@:V¬[YE]|>(?:lui|plus)/)
+        <<- /infi/ \1.islower() -1>> =suggVerbInfi(\1)                                  # Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
+
+    [de|d’] [ne|n’|en|me|m’|te|t’|se|s’|y]                                       (@:V¬:Y|>(?:lui|plus)/)
+    [de|d’] [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    (@:V¬:Y|>(?:lui|plus)/)
+    [de|d’] ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        (@:V¬:Y)
+    [de|d’] ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            (@:V¬:Y)
+    [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         (@:V¬:Y)
+        <<- /infi/ -1>> =suggVerbInfi(\1)                                               # Après “de”, le verbe devrait être à l’infinitif.
+
+TEST: d’en {{parlé}} sans cesse
+TEST: cela suffit de les {{aimait}}
+TEST: de ne leur en {{avancé}} que le nécessaire.
+TEST: de l’y {{poussé}}
+TEST: elle s’engage de ne les lui donner qu’en dernier recours.
+TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
+TEST: de leur plus grand fils, ils attendent beaucoup.
 
 
-
-__[i]/infi(infi_de)__
-    de ({w_2}(?:é|ez))  @@3
-    <<- morph(\1, ":V1") and not \1[0:1].isupper()
-        and (\1.endswith("z") or not before(r"(?i)\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)"))
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+    [de|d’]  @:V1.*:Q¬:N
+        <<- /infi/ not \2[0:1].isupper()
+            and not before(r"(?i)\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
+        -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: Il tentait de {{raisonné}} en homme libre
 TEST: sa façon de {{nettoyez}} était inefficace.
 
 
-__[i]/infi(infi_de_nous_vous_lui)__
-    de +(?:[nv]ous|lui) ({w_2}(?:ée?s?|ez))  @@$
-    <<- morphex(\1, ":V1", ":M[12P]") -1>> =suggVerbInfi(@)                                         # Le verbe devrait être à l’infinitif.
-
-TEST: de nous {{libérez}} de lui
-
-
-__[i]/infi(infi_de_le_les)__
-    de les? ({w_2}(?:ée?s?|ez|ai[st])) @@$
-    <<- morph(\1, ":V1", False) -1>> =suggVerbInfi(@)                                               # Le verbe devrait être à l’infinitif.
-
-TEST: de les {{changeait}}
-
-
-__[i]/infi(infi_y)__
-    (?<!d’)y +({w_2}ée?s?)  @@$
-    <<- morphex(\1, ":V", ":[123][sp]") -1>> _                                                      # Le verbe ne devrait pas être un participe passé.
+__infi_y_verbe!3__
+    y ~ée?s?$
+        <<- /infi/ morph(\2, ":V", ":[123][sp]") -2>> _                                 # Le verbe ne devrait pas être un participe passé.
 
 TEST: y {{mangée}} était un supplice
+TEST: j’y crée une nouvelle maison.
 
 
-__[i]/infi(infi_pour)__
-    pour ({w_2}(?:ée?s?|ez))  @@5
-    <<- morphex(\1, ":V1", ":[NM]") and not morph(word(-1), ">(?:tenir|passer)/", False)
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_pour_verbe__
+    pour ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\2, ":V", ":[NM]") and not morph(<1, ">(?:tenir|passer)/")
+        -2>> =suggVerbInfi(\2)                                                          # Après “pour”, le verbe devrait être à l’infinitif.
+
+    pour  [nous|vous|lui]  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                        # Après “pour”, le verbe devrait être à l’infinitif.
 
 TEST: pour {{mangé}} à sa faim, il faudra chasser.
 TEST: C’est pour {{attaqué}} la journée.
-
-
-__[i]/infi(infi_pour_nous_vous_lui)__
-    pour +(?:[nv]ous|lui) ({w_2}(?:ée?s?|ez))  @@$
-    <<- morph(\1, ":V1", False) -1>> =suggVerbInfi(@)                                               # Le verbe devrait être à l’infinitif.
-
 TEST: pour nous {{chassez}} de chez lui
 
 
-__[i]/infi(infi_sans)__
-    sans ({w_2}(?:ée?s?|ez))  @@$
-    <<- morphex(\1, ":V1", ":[NM]") -1>> =suggVerbInfi(@)                                           # Le verbe devrait être à l’infinitif.
+__infi_sans_verbe__
+    sans ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\2, ":V1", ":[NM]")
+        -2>> =suggVerbInfi(\2)                                                          # Après “sans”, le verbe devrait être à l’infinitif.
 
+    sans  [nous|vous|lui]  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                        # Après “sans”, le verbe devrait être à l’infinitif.
+
+TEST: sans {{mangé}} à sa faim, il faudra chasser.
+TEST: C’est sans {{attaqué}} la journée.
+TEST: sans nous {{chassez}} de chez lui
 TEST: sans {{dérogez}} aux règles en vigueur dans cet établissement
 
 
-__[i]/infi(infi_nous_vous)__
-    (?:nous|vous) ({w_2}ée?s?)  @@$
-    <<- morph(\1, ":Q", False) and not morph(word(-1), "V0.*[12]p", False) -1>> _                   # Le verbe ne devrait pas être un participe passé.
+__infi_nous_vous_verbe__
+    [nous|vous]  ~ée?s?$
+        <<- /infi/ morph(\2, ":Q") and not morph(<1, "V0.*[12]p") -2>> _                 # Après “\1”, le verbe ne devrait pas être un participe passé.
 
 TEST: Nous {{intéressé}} à la question ne suffit pas à faire de nous des experts.
 TEST: nous {{ridiculisé}}
 TEST: vous {{mangé}}
+TEST: Sommes nous désespérés à ce point ?
 
 
-__[i]/infi(infi_devoir_savoir_pouvoir_interrogatif)__
-    (d[eouû]\w+|s[auû]\w+|p[eouû]\w+|v[eo]u\w+)-(?:ils?|elles?|on|je|tu|nous|vous) +(?:pas +|)(?:[mts](?:e +|’)|lui +|[nv]ous +|)({w_2})  @@0,$
-    <<- morph(\1, ">(?:devoir|savoir|pouvoir|vouloir)/", False) and morphex(\2, ":(?:Q|A|[123][sp])", ":[GYW]")
-    -2>> =suggVerbInfi(@)                                                                           # Après « \1 » , le verbe devrait être à l’infinitif.
+__infi_devoir_savoir_pouvoir_interrogatif__
+    /VCint  ?[pas|jamais]¿  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD
+        <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
+
+    /VCint  ?[pas|jamais]¿  [le|la|l’|les]  *WORD
+        <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYWN]")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
+
+    /VCint  ?[pas|jamais]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]    *WORD
+    /VCint  ?[pas|jamais]¿  [le|la|l’|les]                  [lui|leur|en|y]        *WORD
+    /VCint  ?[pas|jamais]¿  [lui|leur]                      en                     *WORD
+        <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
 
 TEST: Peuvent-elles s’{{installaient}} ici ?
 TEST: Peut-il {{chassé}} ces intrus ?
 TEST: Ne veux-tu pas {{gardé}} ton boulot ?
 
 
-__[i]/infi(infi_est_ce_que)__
-    est-ce que +({w_2})  @@$
-    <<- morphex(\1, ":(?:V1.*:Q|[13]s|2[sp])", ":[GYWM]") and not before(r"(?i)\bque? +$")
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_est_ce_que_verbe__
+    est-ce  que  *WORD
+        <<- /infi/ morph(\3, ":(?:V1.*:Q|[13]s|2[sp])", ":[GYWMN]") and not value(<1, "|que|qu’|qu|")
+        -3>> =suggVerbInfi(\3)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: est-ce que {{rapporté}} ces données nous aidera ?
 TEST: est-ce que {{priait}} est la solution ?
@@ -12442,39 +12459,48 @@ TEST: Est-ce que Pierre Xazzz va bien ?
 TEST: Qu’est-ce que rapporte réellement Dassault & Co au budget
 
 
-__[i]/infi(infi_commencer_finir_par)__  ((?:commen[cç]|fin[iî])\w+) +par ({w_2}(?:ée?s?|ai[st]))  @@0,$
-    <<- morph(\1, ">(?:commencer|finir)/", False) and morphex(\2, ":V", ":[NGM]") and not \2[0:1].isupper()
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_commencer_finir_par__
+    [>commencer|>finir]  par  *WORD
+        <<- /infi/ morph(\3, ":V", ":[NGMY]") and not \3[0:1].isupper()
+        -3>> =suggVerbInfi(\3)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: commence par {{mangé}} le poulet.
 TEST: enfin la petite finit par {{pleuré}} à chaudes larmes.
 TEST: sa tournée, elle la finit par Rodez.
 
 
-__[i]/infi(infi_verbe_de)__
-    ((?:cess|dé[cf]|sugg[éè]r|command|essa|tent|chois|perm[eiî]t|interd)\w*) +(?:pas |plus |point |guère |jamais |peu |rien |) *(?:de +|d’)({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">(?:cesser|décider|défendre|suggérer|commander|essayer|tenter|choisir|permettre|interdire)/", False) and analysex(\2, ":(?:Q|2p)", ":M")
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_verbe_de_verbe__
+    [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  (*WORD)
+        <<- /infi/ analyse(\1, ":(?:V1.*:(?:Q|2p)|[123][sp])", ":(?:M|Oo)")
+        -1>> =suggVerbInfi(\1)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: cessez d’{{anesthésié}} ces gens !
 
 
+#       [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]
+#       ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]
+#       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]
+#       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]
+#       ?[ne|n’]¿   [lui|leur]                      en
+
+
 ## INFINITIFS ERRONÉS
 
-__[i]/infi(infi_adjectifs_masculins_singuliers)__
-    ^ *(?:le|un|cet?|[mts]on|quel) (?!verbe)({w_2}) +({w_2}er)  @@w,$
-    <<- morphex(\1, ":N.*:m:[si]", ":G") and morphex(\2, ":Y", ">aller/|:(?:M|N.*:m:s)") and isNextVerb()
-    -2>> =suggVerbPpas(\2, ":m:s")                                                  # Confusion probable : “\2” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
+__infi_infinitifs_erronés__
+    <start>  [le|un|ce|cet|mon|ton|son|quel]  *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
+    <start>  [le|un|ce|cet|mon|ton|son|quel]  *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
+        <<- /infi/ morph(\3, ":N.*:m:[si]", ":G|>verbe/")
+        -4>> =suggVerbPpas(\4, ":m:s")                                                  # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
 
-__[i]/infi(infi_adjectifs_féminins_singuliers)__
-    ^ *(?:la|une|cette|[mts]a|quelle) ({w_2}) +({w_2}er)  @@w,$
-    <<- morphex(\1, ":N.*:f:[si]", ":G") and morphex(\2, ":Y", ">aller/|:M") and isNextVerb()
-    -2>> =suggVerbPpas(\2, ":f:s")                                                  # Confusion probable : “\2” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
+    <start>  [la|une|cette|ma|ta|sa|quelle]  *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
+    <start>  [la|une|cette|ma|ta|sa|quelle]  *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
+        <<- /infi/ morph(\3, ":N.*:f:[si]", ":G")
+        -4>> =suggVerbPpas(\4, ":f:s")                                                  # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
 
-__[i]/infi(infi_adjectifs_singuliers)__
-    ^ *(?:leur|[nv]otre) ({w_2}) +({w_2}er)  @@w,$
-    <<- morphex(\1, ":N.*:[si]", ":G") and morphex(\2, ":Y", ">aller/|:M") and isNextVerb()
-    -2>> =suggVerbPpas(\2, ":s")                                                    # Confusion probable : “\2” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
+    <start>  [leur|notre|votre]  *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
+    <start>  [leur|notre|votre]  *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
+        <<- /infi/ morph(\3, ":N.*:[si]", ":G")
+        -4>> =suggVerbPpas(\4, ":s")                                                    # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
 
 TEST: ce tableau {{voler}} coûte très cher.
 TEST: la difficulté {{passer}} t’aidera par la suite
@@ -12483,22 +12509,31 @@ TEST: Le vieux cocher avait mission
 TEST: le verbe aller est irrégulier.
 
 
-__[i]/infi(infi_adjectifs_pluriels)__
-    ^ *(?:[lmtsc]es|[nv]os|leurs|quel(?:le|)s) ({w_1}[sxz]) +({w_2}er)  @@w,$
-    <<- morphex(\1, ":N.*:[pi]", ":G") and morphex(\2, ":Y", ">aller/|:M") and isNextVerb()
-    -2>> =suggVerbPpas(\2, ":p")                                                    # Confusion probable : “\2” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles] *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles] *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
+        <<- /infi/ morph(\3, ":N.*:[pi]", ":G")
+        -4>> =suggVerbPpas(\4, ":p")                                                    # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
 
-TEST: les documents {{scanner}} ne sont pas lisibles.
+TEST: les documents {{photocopier}} ne sont pas lisibles.
 TEST: tes doutes {{remâcher}} deviennent difficiles à vivre.
 
 
 
 !!!! Participes présents                                                                          !!
 
-__[i]/conj(conj_participe_présent)__  (?:ne|lui|me|te|se|nous|vous) ({w_2}ants)  @@$
-    <<- morph(\1, ":A", False) -1>> =\1[:-1]                                                        # Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
+__conj_participe_présent__
+    [ne|lui|me|te|se|nous|vous]  ~ants$
+        <<- /infi/ morph(\2, ":A") -2>> =\2[:-1]                                        # Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
 
 TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
+
+
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
+
 
 
 
@@ -20555,7 +20590,7 @@ TEST: La pâle est aux jasmins en blancheur comparable ;
 TEST: La noire à faire peur, une brune adorable ;
 TEST: La maigre a de la taille et de la liberté ;
 TEST: La grasse est, dans son port, pleine de majesté ;
-TEST: La malpropre sur soi, de peu d’attraits chargée,
+TODO: La malpropre sur soi, de peu d’attraits {{chargée}},
 TEST: Est mise sous le nom de beauté négligée ;
 TEST: La géante paraît une déesse aux yeux ;
 TEST: La naine un abrégé des merveilles des cieux ;
