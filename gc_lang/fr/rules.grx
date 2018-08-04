@@ -6371,7 +6371,7 @@ TEST: Le {{vieux}} homme était parti.                         ->> vieil
 __maj_jours_semaine__
     [*WORD|*NUM]    [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
     ,               [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
-        <<- /maj/ -2>> =\2.lower()
+        <<- /maj/ -2:>> =\2.lower()
         # Pas de majuscule sur les jours de la semaine.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
 
 TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
@@ -6384,17 +6384,17 @@ __maj_mois__
         <<- ~3>> !
 
     *WORD [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
-        <<- /maj/ not morph(\1, ":M1") -2>> =\2.lower()
+        <<- /maj/ not morph(\1, ":M1") -2:>> =\2.lower()
         # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
 
     [*NUM|*WORD_ELIDED] [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
     ,    [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
-        <<- /maj/ -2>> =\2.lower()
+        <<- /maj/ -2:>> =\2.lower()
         # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
 
     [1|2|3|4|5|6|7|8|9|01|02|03|04|05|06|07|08|09|10|11|12|13|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31] Mars
     en Mars
-        <<- /maj/ -2>> mars
+        <<- /maj/ -2:>> mars
         # Pas de majuscule sur les mois.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
 
 TEST: 15 {{Septembre}}                                                  ->> septembre
@@ -6443,7 +6443,7 @@ __maj_gentilés__
         <<- ~2>> !
 
     *WORD [>afghane|>albanaise|>algérienne|>allemande|>américaine|>andorrane|>anglais|>angolaise|>arabe|>argentine|>arménienne|>australienne|>autrichienne|>asiatique|>azerbaïdjanaise|>bahamienne|>bangladaise|>bengladeshie|>barbadienne|>basque|>belge|>bélizienne|>béninoise|>bretonne|>bhoutanaise|>biélorusse|>birmane|>bolivienne|>bosnienne|>botswanaiso|>brésilienne|>britannique|>brunéiene|>bulgare|>burkinabé|>burundaise|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>congolaise|>nord-coréenne|>corse|>costaricienne|>croate|>cubaine|>danoise|>djiboutienne|>dominicaine|>égyptienne|>émiratie|>équatorienne|>érythréenne|>estonienne|>espagnole|>étatsunienne|>états-unienne|>étasunienne|>éthiopienne|>fidjienne|>finlandaise|>formosane|>française|>gabonaise|>gambienne|>géorgienne|>ghanéenne|>grecque|>grenadienne|>guadeloupéenne|>guatémaltèque|>guinéenne|>équato-guinéenne|>guyanienne|>haïtienne|>honduriene|>hollandaise|>hongroise|>indienne|>indochinoise|>indonésienne|>irakienne|>italienne|>iranienne|>irlandaise|>islandaise|>israélienne|>ivoirienne|>jamaïcaine|>japonaise|>jordanienne|>kazakhe|>kényane|>kosovare|>koweïtienne|>laotienne|>lapone|>lettone|>libanaise|>libérienne|>libyenne|>liechtensteinoise|>lituanienne|>luxembourgeois|>macédonienne|>maghrébine|>malgache|>malaisienne|>malawite|>maldivienne|>malienne|>maltaise|>maorie|>marocaine|>martienne|>mauricienne|>mauritanienne|>mexicaine|>micronésienne|>moldave|>monégasque|>monténégrine|>mongole|>mozambicaine|>namibiene|>népalaise|>nicaraguayenne|>nigérienne|>nigériane|>néerlandaise|>norvégienne|>néo-zélandaise|>ougandaise|>ouzbèke|>pakistanaise|>palestinienne|>panaméenne|>paraguayenne|>perse|>péruvienne|>philippine|>polonaise|>polynésienne|>portugaise|>québécoise|>qatarie|>roumaine|>russe|>rwandaise|>saoudienne|>scandinave|>salvadorienne|>sénégalaise|>serbe|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>srilankaise|>suédoise|>suisse|>surinamaise|>syrienne|>sud-africaine|>sud-coréenne|>américaine|>tadjike|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tahitienne|>tunisiene|>turkmène|>turque|>taïwanaise|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
-        <<- /maj/ \2.istitle() and morph(\1, ":N", ":(?:A|V0e|D|R|B)") -2>> =\2.lower()             # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
+        <<- /maj/ \2.istitle() and morph(\1, ":N", ":(?:A|V0e|D|R|B)") -2:>> =\2.lower()            # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
         <<- /maj/ \2.islower() and not \2.startswith("canadienne") and
             ( value(\1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|") or
             ( value(\1, "|un|") and not value(<1, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
@@ -6468,10 +6468,10 @@ TEST: Je leur explique dans un anglais que la fatigue m’empêche de bien prono
 # les langues
 __maj_langues__
     [>parler|cours|>leçon|>apprendre|>étudier|>traduire|>enseigner|>professeure|>enseignante|>dictionnaire|>méthode] [le|de|du|l’|d’|que|qu’|qu] [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Corse|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
-        <<- /maj/ -3>> =\3.lower()                                                                  # Si vous parlez de la langue, pas de majuscule.
+        <<- /maj/ -3:>> =\3.lower()                                                                 # Si vous parlez de la langue, pas de majuscule.
 
     en [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
-        <<- /maj/ -2>> =\1.lower()                                                                  # Si vous parlez de la langue, pas de majuscule.
+        <<- /maj/ -2:>> =\2.lower()                                                                  # Si vous parlez de la langue, pas de majuscule.
 
 TEST: il ne parle qu’{{Allemand}}.
 TEST: ta traduction en {{Russe}} est superbe.
@@ -6487,7 +6487,7 @@ __maj_Moyen_Âge__
     moyen âge
         <<- /maj/ \1.islower() and \2.islower() ->> Moyen Âge       # Le “Moyen Âge”, l’époque médiévale.
 
-TEST: C’est le {{moyen age}}, chez ces ploucs.
+TEST: C’est le {{moyen age}}, chez ces ploucs.          ->> Moyen Âge
 
 
 # Église
@@ -6503,7 +6503,7 @@ __maj_Église__
 
     [*WORD|*WORD_ELIDED] [Église|Églises] [>baroque|>gothique|>romane|~^Saint-[A-ZÉÊ]]
     ,                    [Église|Églises] [>baroque|>gothique|>romane|~^Saint-[A-ZÉÊ]]
-        <<- /maj/ -2>> église                                       # Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
+        <<- /maj/ -2:>> église                                      # Pour un bâtiment, une minuscule est requise. La majuscule est pour l’institution.
 
 TEST: L’{{église}} orthodoxe.                                           ->> Église
 TEST: un homme d’{{église}}                                             ->> Église
@@ -6532,7 +6532,7 @@ __maj_unités__
     @:B   [Mètre|Watt|Gramme|Seconde|Ampère|Kelvin|Mole|Candela|Candéla|Hertz|Henry|Newton|Pascal|Joule|Coulomb|Volt|Ohm|Farad|Tesla|Weber|Wéber|Radian|Stéradian|Lumen|Lux|Becquerel|Gray|Sievert|Siemens|Katal|Mètres|Watts|Grammes|Secondes|Ampères|Kelvins|Moles|Candelas|Candélas|Hertz|Henrys|Newtons|Pascals|Joules|Coulombs|Volts|Ohms|Farads|Teslas|Webers|Wébers|Radians|Stéradians|Lumens|Becquerels|Grays|Sieverts|Katals]
     *NUM  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
     @:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
-        <<- /maj/ -2>> =\2.lower()                                  # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
+        <<- /maj/ not \2.isupper() -2:>> =\2.lower()                # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
 
 TEST: J’en veux 3 {{Mètres}}.
 TEST: Elle en prendra vingt {{Grammes}}.

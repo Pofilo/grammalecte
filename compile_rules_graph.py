@@ -166,7 +166,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if nPriority == -1:
         nPriority = dOptPriority.get(sOption, 4)
     # valid action?
-    m = re.search(r"(?P<action>[-~=/%>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)>>", sAction)
+    m = re.search(r"(?P<action>[-~=/%>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         return None
@@ -179,6 +179,8 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         sCondition = "_g_c_"+sActionId
     else:
         sCondition = ""
+    # Case sensitivity
+    bCaseSensitivity = False if m.group("casing") == ":" else True
     # Action
     cAction = m.group("action")
     sAction = sAction[m.end():].strip()
@@ -262,7 +264,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
             sAction = sAction[1:-1]
         if not sMsg:
             print("# Error in action at line " + sActionId + ":  The message is empty.")
-        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, nPriority, sMsg, sURL]
+        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, bCaseSensitivity, nPriority, sMsg, sURL]
     elif cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
@@ -271,7 +273,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
             sAction = "=_g_p_"+sActionId
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
-        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
+        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
     elif cAction == "%" or cAction == "/":
         ## tags
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
