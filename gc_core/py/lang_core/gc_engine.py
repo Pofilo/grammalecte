@@ -721,7 +721,7 @@ class TextParser:
                             print("  MATCH: *" + sMeta)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                         bTokenFound = True
-                elif dToken["sType"] in sMeta:
+                elif dToken["sType"] == sMeta:
                     if bDebug:
                         print("  MATCH: *" + sMeta)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
