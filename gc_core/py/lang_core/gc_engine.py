@@ -799,8 +799,9 @@ class TextParser:
                                 # text processor
                                 if bDebug:
                                     print("  TAG_PREPARE:\n  ", dRule[sRuleId])
-                                nEndToken = (nTokenOffset + eAct[1])  if eAct[1]  else nLastToken
-                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenOffset + eAct[0], nEndToken, nTokenOffset, nLastToken, eAct[2], bDebug)
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
                                 bChange = True
                             elif cActionType == "=":
                                 # disambiguation
