@@ -1,46 +1,42 @@
 // JavaScript
 
-const Cu = Components.utils;
-const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
-const conj = require("resource://grammalecte/fr/conj.js");
-
-
-function echo (...args) {
-    Services.console.logStringMessage(args.join(" -- ") + "\n");
-}
+//const Cu = Components.utils;
+//const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
+//const conj = require("resource://grammalecte/fr/conj.js");
 
 
 let oConj = {
     init: function () {
-        let that = this;
+        console.log("Init conjugueur");
         try {
             // button
-            document.getElementById('conjugate').addEventListener("click", function (event) {
-                that.getVerbAndConjugate();
+            document.getElementById('conjugate').addEventListener("click", (xEvent) => {
+                this.getVerbAndConjugate();
             });
             // text field
-            document.getElementById('verb').addEventListener("change", function (event) {
-                that.getVerbAndConjugate();
+            document.getElementById('verb').addEventListener("change", (xEvent) => {
+                this.getVerbAndConjugate();
             });
             // options
-            document.getElementById('oneg').addEventListener("click", function (event) {
-                that._displayResults();
+            document.getElementById('oneg').addEventListener("click", (xEvent) => {
+                this._displayResults();
             });
-            document.getElementById('opro').addEventListener("click", function (event) {
-                that._displayResults();
+            document.getElementById('opro').addEventListener("click", (xEvent) => {
+                this._displayResults();
             });
-            document.getElementById('oint').addEventListener("click", function (event) {
-                that._displayResults();
+            document.getElementById('oint').addEventListener("click", (xEvent) => {
+                this._displayResults();
             });
-            document.getElementById('ofem').addEventListener("click", function (event) {
-                that._displayResults();
+            document.getElementById('ofem').addEventListener("click", (xEvent) => {
+                this._displayResults();
             });
-            document.getElementById('otco').addEventListener("click", function (event) {
-                that._displayResults();
+            document.getElementById('otco').addEventListener("click", (xEvent) => {
+                this._displayResults();
             });
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
         this.conjugate("être");
     },
@@ -85,7 +81,7 @@ let oConj = {
                     document.getElementById('verb_title').textContent = sVerb;
                     document.getElementById('verb').style = "color: #999999;";
                     document.getElementById('verb').value = "";
-                    this.oVerb = new conj.Verb(sVerb);
+                    this.oVerb = new Verb(sVerb);
                     let sRawInfo = this.oVerb._sRawInfo;
                     document.getElementById('info').textContent = this.oVerb.sInfo;
                     document.getElementById('opro').textContent = "pronominal";
@@ -129,7 +125,8 @@ let oConj = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
 
@@ -239,7 +236,8 @@ let oConj = {
             document.getElementById('verb').Text = "";
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
 
@@ -268,10 +266,11 @@ let oConj = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     }
 };
 
+conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 oConj.init();
-

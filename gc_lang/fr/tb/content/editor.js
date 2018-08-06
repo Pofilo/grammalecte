@@ -21,11 +21,9 @@ class Editor {
         // recursive function
         try {
             for (let xNode of xRootNode.childNodes) {
-                //echo("tag: " + xNode.tagName);
                 if (xNode.className !== "moz-cite-prefix" && xNode.tagName !== "BLOCKQUOTE"
                     && (xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")))
                     && xNode.textContent !== "") {
-                    //echo("<"+xNode.tagName+">["+xNode.textContent+"]");
                     if (xNode.tagName === undefined) {
                         if (!prefs.getBoolPref("bCheckSignature") && xNode.textContent.startsWith("-- ")) {
                             break;
@@ -39,7 +37,8 @@ class Editor {
                 }
             }
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -52,7 +51,8 @@ class Editor {
                 i += 1;
             }
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -67,7 +67,8 @@ class Editor {
             }
             return sContent;
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -75,7 +76,8 @@ class Editor {
         try {
             return this._getTextFromNode(this.lNode[iPara]);
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -88,7 +90,8 @@ class Editor {
                 xNode.textContent = sText;
             }
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 
@@ -103,7 +106,8 @@ class Editor {
             let sLang = gSpellChecker.spellChecker.GetCurrentDictionary();
             return sLang.slice(0, 2);
         } catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     };
 }

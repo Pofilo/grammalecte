@@ -5,19 +5,14 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
+// const Cu = Components.utils;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
-const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
-
-
-function echo (...args) {
-	Services.console.logStringMessage(args.join(" -- ") + "\n");
-}
 
 
 var oDialogControl = {
 	load: function () {
 		try {
+			document.getElementById('grammalecte-spelloptions-window').centerWindowOnScreen();
 			// Graphspell dictionaries
 			document.getElementById('personal_dic').checked = prefs.getBoolPref('bPersonalDictionary');
 			// Hunspell dictionaries
@@ -29,7 +24,8 @@ var oDialogControl = {
 			document.getElementById('grammalecte-spelloptions-window').centerWindowOnScreen();
 		}
 		catch (e) {
-			Cu.reportError(e);
+			console.error(e);
+			// Cu.reportError(e);
 		}
 	},
 	setDictionaries: function () {
@@ -47,7 +43,8 @@ var oDialogControl = {
 			prefs.setBoolPref(sOptName, bActivate);
 		}
 		catch (e) {
-			Cu.reportError(e);
+			console.error(e);
+			// Cu.reportError(e);
 		}
 	},
 	_setGraphspellDictionaries: function () {

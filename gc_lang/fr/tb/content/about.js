@@ -2,12 +2,7 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
-//const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
-
-function echo (...args) {
-    Services.console.logStringMessage(args.join(" -- ") + "\n");
-}
+//const Cu = Components.utils;
 
 
 function openInBrowserURL (sURL) {
@@ -17,7 +12,8 @@ function openInBrowserURL (sURL) {
         // Works in overlay.js, but not here… Seems there is no documentation available about this feature on Mozilla.org
     }
     catch (e) {
-        Cu.reportError(e);
+        console.error(e);
+        //Cu.reportError(e);
     }
 }
 
@@ -33,6 +29,7 @@ function openInTabURL (sURL) {
         }
     }
     catch (e) {
-        Cu.reportError(e);
+        console.error(e);
+        //Cu.reportError(e);
     }
 }

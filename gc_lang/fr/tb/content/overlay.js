@@ -6,23 +6,14 @@
 const Cc = Components.classes;
 const Ci = Components.interfaces;
 const Cu = Components.utils;
-const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
+//const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 
-const { BasePromiseWorker } = Cu.import('resource://gre/modules/PromiseWorker.jsm', {});
-const Task = Cu.import("resource://gre/modules/Task.jsm").Task;
+const { BasePromiseWorker } = ChromeUtils.import('resource://gre/modules/PromiseWorker.jsm', {});
+const Task = ChromeUtils.import("resource://gre/modules/Task.jsm").Task;
 const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
-//Cu.import("resource://gre/modules/Console.jsm"); // doesn’t work
-//const xConsole = Cc["@mozilla.org/consoleservice;1"].getService(Ci.nsIConsoleService);
-//xConsole.logStringMessage("Grammalecte: " + args.join(" · ")); // useless now. Use: Services.console.logStringMessage("***");
 
-const text = require("resource://grammalecte/text.js");
-const tf = require("resource://grammalecte/fr/textformatter.js");
-
-
-function echo (...args) {
-    dump(args.join(" -- ") + "\n");  // obsolete since TB 52?
-    Services.console.logStringMessage("Grammalecte: " + args.join(" · "));
-}
+//const text = require("resource://grammalecte/text.js");
+//const tf = require("resource://grammalecte/fr/textformatter.js");
 
 
 const oConverterToExponent = {
@@ -46,13 +37,13 @@ var oGrammarChecker = {
     loadGC: function () {
         if (this.xGCEWorker === null) {
             // Grammar checker
-            echo('Loading Grammalecte');
+            console.log('Loading Grammalecte');
             this.xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
             let that = this;
             let xPromise = this.xGCEWorker.post('loadGrammarChecker', [prefs.getCharPref("sGCOptions"), "Thunderbird"]);
             xPromise.then(
                 function (aVal) {
-                    echo(aVal);
+                    console.log(aVal);
                     prefs.setCharPref("sGCOptions", aVal);
                     if (prefs.getBoolPref("bPersonalDictionary")) {
                         let sDicJSON = oFileHandler.loadFile("fr.personal.json");
@@ -61,68 +52,68 @@ var oGrammarChecker = {
                         }
                     }
                 },
-                function (aReason) { echo('Promise rejected - ', aReason); }
+                function (aReason) { console.log('Promise rejected - ', aReason); }
             ).catch(
-                function (aCaught) { echo('Promise Error - ', aCaught); }
+                function (aCaught) { console.log('Promise Error - ', aCaught); }
             );
 
         }
     },
     fullTests: function () {
-        echo('Performing tests... Wait...');
+        console.log('Performing tests... Wait...');
         let xPromise = this.xGCEWorker.post('fullTests', ['{"nbsp":true, "esp":true, "unit":true, "num":true}']);
         xPromise.then(
             function (aVal) {
-                echo('Done.');
-                echo(aVal);
+                console.log('Done.');
+                console.log(aVal);
             },
-            function (aReason) { echo('Promise rejected', aReason); }
+            function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
-            function (aCaught) { echo('Promise Error', aCaught); }
+            function (aCaught) { console.log('Promise Error', aCaught); }
         );
     },
     test: function (sText) {
-        echo("Test...");
+        console.log("Test...");
         let xPromise = this.xGCEWorker.post('parse', [sText, "FR", true]);
         xPromise.then(
             function (aVal) {
                 let lErr = JSON.parse(aVal);
                 if (lErr.length > 0) {
                     for (let dErr of lErr) {
-                        echo(text.getReadableError(dErr));
+                        console.log(text.getReadableError(dErr));
                     }
                 } else {
-                    echo("no error found");
+                    console.log("no error found");
                 }
             },
-            function (aReason) { echo('Promise rejected', aReason); }
+            function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
-            function (aCaught) { echo('Promise Error', aCaught); }
+            function (aCaught) { console.log('Promise Error', aCaught); }
         );
     },
     setOptions: function () {
-        echo('Set options');
+        console.log('Set options');
         let xPromise = this.xGCEWorker.post('setOptions', [prefs.getCharPref("sGCOptions")]);
         xPromise.then(
             function (aVal) {
-                echo(aVal);
+                console.log(aVal);
                 prefs.setCharPref("sGCOptions", aVal);
             },
-            function (aReason) { echo('Promise rejected', aReason); }
+            function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
-            function (aCaught) { echo('Promise Error', aCaught); }
+            function (aCaught) { console.log('Promise Error', aCaught); }
         );
     },
     resetOptions: function () {
         let xPromise = this.xGCEWorker.post('resetOptions');
         xPromise.then(
             function (aVal) {
-                echo(aVal);
+                console.log(aVal);
                 prefs.setCharPref("sGCOptions", aVal);
             },
-            function (aReason) { echo('Promise rejected', aReason); }
+            function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
-            function (aCaught) { echo('Promise Error', aCaught); }
+            function (aCaught) { console.log('Promise Error', aCaught); }
         );
     },
     _getGCResultPromise: function (sParagraph, sLang, bDebug, bContext) {
@@ -178,7 +169,8 @@ var oGrammarChecker = {
             that.setInfo("Nombre de paragraphes analysés : " + res);
         }, function (e) {
             that.setInfo("Erreur : " + e.message);
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         });
     },
     createResultNode: function (xEditor, sParagraph, iParagraph, aGrammErr, aSpellErr) {
@@ -195,7 +187,7 @@ var oGrammarChecker = {
             let sParagraph = xEditor.getParagraph(iParagraph);
             let xPromise = this._getGCResultPromise(sParagraph, "FR", false, false);
             xPromise.then(function (res) {
-                //echo("res: " + res);
+                //console.log("res: " + res);
                 xResultNode.textContent = "";
                 let oRes = JSON.parse(res);
                 if (oRes.aGrammErr.length > 0 || oRes.aSpellErr.length > 0) {
@@ -206,7 +198,8 @@ var oGrammarChecker = {
             });
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     fillResultNode: function (xResultNode, xEditor, sParagraph, iParagraph, aGrammErr, aSpellErr) {
@@ -256,7 +249,8 @@ var oGrammarChecker = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
             xResultNode.textContent = "# Error: " + e.message;
         }
     },
@@ -364,7 +358,6 @@ var oGrammarChecker = {
                     } else {
                         xNodeSuggLine.appendChild(document.createTextNode("Aucune suggestion."));
                     }
-                    
                 },
                 function (aReason) { console.error('Promise rejected - ', aReason); }
             ).catch(
@@ -376,7 +369,7 @@ var oGrammarChecker = {
         return xNodeDiv;
     },
     loadUI: function() {
-        echo("loadUI");
+        console.log("loadUI");
         this._strings = document.getElementById("grammarchecker-strings");
         let that = this;
         let nsGrammarCommand = {
@@ -405,7 +398,8 @@ var oGrammarChecker = {
                 BrowserToolboxCustomizeDone(true);
             }
             catch (e) {
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
             }
         }
     },
@@ -421,7 +415,8 @@ var oGrammarChecker = {
                 xEditor.addOverrideStyleSheet("chrome://grammarchecker/content/overlay.css");
             }
             catch (e) {
-                Cu.reportError(e);
+                console.error(e);
+                // Cu.reportError(e);
             }
         }
         this.setInfo("[vide]");
@@ -441,7 +436,8 @@ var oGrammarChecker = {
             window.openDialog(sWhat, sName, sOptions);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     openInTabURL: function (sURL) {
@@ -456,7 +452,8 @@ var oGrammarChecker = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     openInBrowserURL: function (sURL) {
@@ -465,7 +462,8 @@ var oGrammarChecker = {
             openURL(sURL);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     onParseText: function (e) {
@@ -479,20 +477,20 @@ var oGrammarChecker = {
         let xPromise = this.xGCEWorker.post('getDefaultOptions');
         xPromise.then(
             function (aVal) {
-                echo(aVal);
+                console.log(aVal);
                 prefs.setCharPref("sGCDefaultOptions", aVal);
             },
-            function (aReason) { echo('Promise rejected', aReason); }
+            function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
-            function (aCaught) { echo('Promise Error', aCaught); }
+            function (aCaught) { console.log('Promise Error', aCaught); }
         ).then(
             function () {
                 that.openDialog("chrome://grammarchecker/content/gc_options.xul", "", "chrome, dialog, modal, resizable=no");
                 that.setOptions();
             },
-            function (aReason) { echo('Error options dialog', aReason); }
+            function (aReason) { console.log('Error options dialog', aReason); }
         ).catch(
-            function (aCaught) { echo('Error', aCaught); }
+            function (aCaught) { console.log('Error', aCaught); }
         );
     },
     onOpenSpellOptions: function (e) {
@@ -532,7 +530,8 @@ var oDictIgniter = {
             oSpellControl.setExtensionDictFolder(sDicName, prefs.getBoolPref(sOptName));
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     }
 }
@@ -551,7 +550,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     apply: function () {
@@ -568,7 +568,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     saveOptions: function () {
@@ -576,7 +577,7 @@ var oTextFormatter = {
         for (let xNode of document.getElementsByClassName("option")) {
             oOptions[xNode.id] = xNode.checked;
         }
-        //echo("save options: " + JSON.stringify(oOptions));
+        //console.log("save options: " + JSON.stringify(oOptions));
         prefs.setCharPref("sTFOptions", JSON.stringify(oOptions));
     },
     setOptionsInPanel: function (oOptions) {
@@ -611,7 +612,8 @@ var oTextFormatter = {
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
     },
     resetProgressBar: function () {
@@ -887,24 +889,26 @@ var oTextFormatter = {
             document.getElementById('time_res').textContent = this.getTimeRes((t1-t0)/1000);
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
         return sText;
     },
     formatText: function (sText, sOptName) {
         let nCount = 0;
         try {
-            if (!tf.oReplTable.hasOwnProperty(sOptName)) {
-                echo("# Error. TF: there is no option “" + sOptName+ "”.");
+            if (!oReplTable.hasOwnProperty(sOptName)) {
+                console.log("# Error. TF: there is no option “" + sOptName+ "”.");
                 return [sText, nCount];
             }
-            for (let [zRgx, sRep] of tf.oReplTable[sOptName]) {
+            for (let [zRgx, sRep] of oReplTable[sOptName]) {
                 nCount += (sText.match(zRgx) || []).length;
                 sText = sText.replace(zRgx, sRep);
             }
         }
         catch (e) {
-            Cu.reportError(e);
+            console.error(e);
+            // Cu.reportError(e);
         }
         return [sText, nCount];
     }
@@ -922,7 +926,7 @@ window.addEventListener("click", function (xEvent) {
 }, false);
 
 window.addEventListener("load", function (xEvent) {
-    oDictIgniter.init();
+    // oDictIgniter.init();
     oGrammarChecker.loadGC();
     //oGrammarChecker.fullTests();
 }, false);
