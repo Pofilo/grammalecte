@@ -12,6 +12,7 @@ const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefServ
 var oDialogControl = {
 	load: function () {
 		try {
+			document.getElementById('grammalecte-spelloptions-window').centerWindowOnScreen();
 			// Graphspell dictionaries
 			document.getElementById('personal_dic').checked = prefs.getBoolPref('bPersonalDictionary');
 			// Hunspell dictionaries
