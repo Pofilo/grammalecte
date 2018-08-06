@@ -1137,6 +1137,10 @@ def g_tag_after (dToken, dTags, sTag):
     return False
 
 
+def g_tag (dToken, sTag):
+    return "tags" in dToken and sTag in dTags["tags"]
+
+
 def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
     nSpace = dToken2["nStart"] - dToken1["nEnd"]
     if nSpace < nMin:
