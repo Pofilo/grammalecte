@@ -3127,8 +3127,8 @@ TEST: A devient notre meilleure chance d’y parvenir.
 !!!! Accentuation des majuscules                                                                  !!
 
 __maj_accents__
-    [Etat|Etats|Eglise|Eglises|Ecole|Ecoles|Economie|Equipe|Equipes|Electricité|Electrique|Egalité|Element|Eté|Epouse|Epouses]
-        <<- ->> ="É"+\1[1:]                                                                         # Accentuez les majuscules.
+    [Etat|Etats|Eglise|Eglises|Ecole|Ecoles|Economie|Equipe|Equipes|Electricité|Electrique|Egalité|Element|Element|Eté|Epoux|Epouse|Epouses|Ethiopie|Erythrée|Egypte|Equateur|Elysée]
+        <<- /maj/ ->> ="É"+\1[1:]                                                                   # Accentuez les majuscules.
         <<- ~>> ="É"+\1[1:]
 
 TEST: Le budget de l’{{Etat}}.
@@ -7168,6 +7168,25 @@ TEST: Mais gare à ne pas non plus trop surestimer la menace
 TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 
+## guerre / guère
+__conf_préverbes_guère_guerre!5__
+    [ne|n’]   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  *WORD ?plus¿ (guerre)
+    [ne|n’]   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       *WORD ?plus¿ (guerre)
+    [ne|n’]   [le|la|l’|les]                  [lui|leur|en|y]           *WORD ?plus¿ (guerre)
+    [ne|n’]   [lui|leur]                      en                        *WORD ?plus¿ (guerre)
+    ne ?presque¿ ?plus¿ (guerre)
+        <<- /infi/ -1>> guère                                                                       # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
+
+TEST: tout ceci ne me rapporte {{guerre}}
+TEST: je ne m’en soucie {{guerre}}
+TEST: Il n’y prête {{guerre}} d’attention.
+TEST: Elle n’en accorde plus {{guerre}}.
+TEST: ne plus {{guerre}} s’en soucier
+TEST: elle ne leur donne plus {{guerre}} que des remontrances.
+TEST: ne {{guerre}} s’en soucier.
+TEST: ne plus {{guerre}} croire en rien.
+
+
 __imp_ne_infinitif_negadv__
     [<start>|,]  [ne|n’]  @:V1.*:Y  [pas|plus|jamais]
         <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                              # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
@@ -9237,6 +9256,9 @@ __purge_ponctuations__
 
 
 __purge_locutions_potentielles__
+    à ce jour @¬:A.*:[me]:[si]
+        <<- ~1:3>> *
+
     à [mes|tes|ses|nos|vos|leurs] yeux  @¬:A.*:[me]:[pi]
         <<- ~1:3>> *
 
@@ -9524,8 +9546,8 @@ TEST: elle seules les femmes la font craquer
 
 __[i]/redon2(redondances_phrase)__
     ({w_4})[ ,].* (\1)  @@0,$
-    <<- not morph(\1, ":(?:G|V0)|>même/", False) -2>> _             # Dans cette phrase, répétition de « \1 » (à gauche).
-    <<- __also__ -1>> _                                             # Dans cette phrase, répétition de « \1 » (à droite).
+        <<- not morph(\1, ":(?:G|V0)|>même/", False) -2>> _             # Dans cette phrase, répétition de « \1 » (à gauche).
+        <<- __also__ -1>> _                                             # Dans cette phrase, répétition de « \1 » (à droite).
 
 TEST: __redon2__ Quelle {{imposture}}, c’est d’un ennui, c’est une {{imposture}}.
 TEST: __redon2__ ils sont là côte à côte.
@@ -11235,7 +11257,7 @@ __conf_amande_amende__
     >faire >amande >honorable
         <<- /conf/ -2:3>> amende honorable              # Confusion. L’amande est un fruit.
 
-    [/-je|/-tu|/-il|/-elle|/-nous|/-vous|/-ils|/-elles] >amande >honorable
+    [/-je|/-tu|/-il|/-on|/-elle|/-nous|/-vous|/-ils|/-elles] >amande >honorable
         <<- /conf/ morphVC(\1, ">faire") -2:3>> amende honorable        # Confusion. L’amande est un fruit.
 
 TEST: Avec ses beaux yeux en {{amendes}} nul ne peut lui résister.
@@ -12331,7 +12353,6 @@ TEST: ce champignon {{venimeux}}.
 !!
 !!
 
-
 __infi_à_verbe__
     à  [le|la|l’|leur|les]           (@:V¬:[YNAM]|>(?:lui|plus)/)
     [<start>|,]  à  [nous|vous|lui]  (@:V¬[YE]|>(?:lui|plus)/)
@@ -12365,22 +12386,27 @@ __infi_de_verbe__
     [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         (@:V¬:Y)
         <<- /infi/ -1>> =suggVerbInfi(\1)                                               # Après “de”, le verbe devrait être à l’infinitif.
 
-TEST: d’en {{parlé}} sans cesse
-TEST: cela suffit de les {{aimait}}
-TEST: de ne leur en {{avancé}} que le nécessaire.
-TEST: de l’y {{poussé}}
-TEST: elle s’engage de ne les lui donner qu’en dernier recours.
-TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
-TEST: de leur plus grand fils, ils attendent beaucoup.
-
-
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper()
             and not before(r"(?i)\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
+TEST: d’en {{parlé}} sans cesse
+TEST: cela suffit de les {{aimait}}
+TEST: de ne leur en {{avancé}} que le nécessaire.
+TEST: de l’y {{poussé}}
+TEST: arrête d’y {{consacré}} autant de temps.
+TEST: je suis certain d’en {{choque}} plusieurs.
+TEST: elle était capable de la {{trouvait}} où qu’elle soit.
+TEST: de me le {{facturez}}
+TEST: Il s’agit de me {{donnait}} tout ça.
+TEST: j’étais incapable de m’{{orientait}} dans la bonne direction.
+TEST: ils étaient susceptibles de m’y {{trouvaient}}
 TEST: Il tentait de {{raisonné}} en homme libre
 TEST: sa façon de {{nettoyez}} était inefficace.
+TEST: elle s’engage de ne les lui donner qu’en dernier recours.
+TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
+TEST: de leur plus grand fils, ils attendent beaucoup.
 
 
 __infi_y_verbe!3__
@@ -12477,12 +12503,6 @@ __infi_verbe_de_verbe__
 TEST: cessez d’{{anesthésié}} ces gens !
 
 
-#       [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]
-#       ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]
-#       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]
-#       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]
-#       ?[ne|n’]¿   [lui|leur]                      en
-
 
 ## INFINITIFS ERRONÉS
 
@@ -12529,13 +12549,6 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 
 
 
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-
-
-
 
 !!!
 !!!
@@ -12543,93 +12556,172 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 !!!
 !!!
 
-### @ : we remove @ we introduced after le/la/les in some cases
-#__<s>(p_arobase)__      @ <<- ~>> *
+### Mots grammaticaux autour des verbes
+__purge_syntagme_verbal__
+    ne [lui|leur]
+        <<- not value(>1, "|en|") ~2>> *
 
-### Avant les verbes (ôter seulement les COI!)
-__[i](p_ne_leur_lui)__  ne (leur|lui)(?! en) @@3 <<- ~1>> *
+    jamais
+        <<- ~>> *
 
-### Après les verbes
-__[i](p_jamais2)__      jamais <<- ~>> *
-#__[i](p_guère)__        guère <<- ~>> *
-__[i](p_pas_point_rien_bien_ensemble1)__
-    ({w1}) (pas|point|rien|bien|ensemble) @@0,$ <<- morph(\1, ":V", False) ~2>> *
-__[i](p_pas_point_rien_bien_ensemble2)__
-    \w+-(?:je|tu|ils?|elles?|on|[nv]ous) (pas|point|rien|bien|ensemble) @@$ <<- ~1>> *
+    guère
+        <<- ~>> *
 
-# sembler le croire/penser/présumer/supposer/envisager/imaginer
-__[i](p_que_semble_le_penser)__
-    que +(sembl\w+) +(l(?:e (?:penser|croire|présumer|supposer)|’(?:envisager|imaginer))) @@w,$
-    <<- morph(\1, ">sembler/", False) ~2>> *
+    [pas|point|rien|bien|ensemble]
+        <<- morph(<1, ":V") ~>> *
+
+    /VCint  [pas|point|rien|bien|ensemble]
+        <<- ~2>> *
+
+    que >sembler [le|l’] [penser|croire|présumer|supposer|envisager|imaginer]
+        <<- ~3:4>> *
+
+    que l’ on
+        <<- ~2>> *
 
 
 ### Simplification des groupes nominaux
+__purge_syntagmes_nominaux__
+    [aucun|aucune] [de|d’] ?entre¿ [nous|vous|eux|elles]
+        <<- ~2:0>> *
 
-# désambiguïsation - pour contrer le faux positif qui veut accorder fois avec le participe passé de la proposition suivante
-__[s](p_fois_que)__         (fois )que? @@0 <<- ~1>> fois=
-__[i](p_que_l_on)__         que (l’)on  @@4 <<- ~1>> *
+    [aucun|aucune] des *WORD [ne|n’]
+        <<- ~2:3>> *
+
+    [aucun|aucune] des *WORD *WORD [ne|n’]
+        <<- ~2:4>> *
+
+    beaucoup de [monde|temps]
+        <<- ~2:3>> _
+
+    [chacun|chacune] [de|d’] ?entre¿ [nous|vous|eux|elles]
+        <<- ~2:0>> *
 
 
-__[i](p_beaucoup_de_monde_temps)__  beaucoup (de (?:monde|temps)) @@9 <<- ~1>> _
-__[i](p_en_plein_xxx)__             en pleine? ({w_2}) @@$ <<- morph(\1, ":[NAQ]", False) and isEndOfNG() ~>> *
-__[i](p_en_tant_que_tel)__          en tant que tel(?:s|lles?|) <<- ~>> *
+    [le|la|l’|les|leur|ton|son|certains|certaines] *WORD *WORD
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
+    [des|ce|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|au|aux] *WORD *WORD
+        <<- morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
+    [de|d’]  [façon|manière]  ?non¿  @:A  et  ?non¿  @:A¬:[GM]
+    [de|d’]  [façon|manière]  ?non¿  @:A
+        <<- ~>> *
+
+    [de|d’]  @:[NA].*:s¬:Y  <end>
+    [de|d’]  @:[NA].*:s¬:Y  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [de|d’]  @:[NA].*:s¬:Y  @:[VR]¬:[NAP]
+    [de|d’]  @:[NA].*:s¬:Y  , @¬:[NA]
+        <<- ~1:2>> *
+
+    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   <end>
+    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   @:[VR]¬:[NAP]
+    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   , @¬:[NA]
+        <<- ~1:3>> *
+
+    en tant que >telle
+        <<- ~>> *
+
+    en [plein|pleine] @:[NA]  <end>
+    en [plein|pleine] @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    en [plein|pleine] @:[NA]  @:[VR]¬:[NAP]
+    en [plein|pleine] @:[NA]  , @¬:[NA]
+        <<- ~1:3>> *
+
+    fois que
+        <<- ~1>> _
+
+    la plupart des *WORD <end>
+    la plupart des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart des *WORD @:[VR]¬:[NAP]
+    la plupart des *WORD , @¬:[NA]
+        <<- ~3:4>> *
+
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) <end>
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
+    la plupart des *WORD @:[NA].*:[pi]¬:(?:G|[123][sp]|O) , @¬:[NA]
+        <<- ~3:5>> *
+
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD <end>
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[VR]¬:[NAP]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD , @¬:[NA]
+        <<- ~3:5>> *
+
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) <end>
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) @:[VR]¬:[NAP]
+    la plupart de [ces|mes|tes|ses|nos|vos|leurs] *WORD @:[NA].*:s¬:(?:G|[123][sp]|O) , @¬:[NA]
+        <<- ~3:6>> *
+
+    nous    [tous|toutes]   qui
+    vous    [tous|toutes]   qui
+    eux     tous            qui
+    elles   toutes          qui
+        <<- ~2>> *
+
+    [un|une] de [nous|vous]
+    [un|une] d’ [eux|elles]
+    [un|une] d’ entre [nous|vous|eux|elles]
+    [un|une] des [nôtres|vôtres]
+        <<- ~2:0>> *
+
+
+__purge_après_prépositions__
+    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nor|vos|quelques|certains|certaines]  *WORD  <end>
+    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nor|vos|quelques|certains|certaines]  *WORD  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nor|vos|quelques|certains|certaines]  *WORD  @:[VR]¬:[NAP]
+    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nor|vos|quelques|certains|certaines]  *WORD  ,  @¬:[NA]
+        <<- ~1:4>> *
+
+    [à|au|aux|avec|en|lors]  [des|du]  *WORD  <end>
+    [à|au|aux|avec|en|lors]  [des|du]  *WORD  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|au|aux|avec|en|lors]  [des|du]  *WORD  @:[VR]¬:[NAP]
+    [à|au|aux|avec|en|lors]  [des|du]  *WORD  , @¬:[NA]
+        <<- ~1:3>> *
+
+
+    [avec|à|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  <end>
+    [avec|à|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [avec|à|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  @:[VR]¬:[NAP]
+    [avec|à|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  , @¬:[NA]
+        <<- ~1:2>> *
+
+__purge_autre__
+    [<start>|,] nul doute [que|qu’|qu]
+        <<- ~2:0>> *
+
+    y compris
+        <<- not value(<1, "|j’|n’|tu|") ~>> *
+
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+
+# isEndOfNG:
+# <end>
+# @:[VR]¬:[NAP]
+# , @¬:[NA]
+# ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+
 
 # de +
 __[i](p_de_vinfi)__
     d(?:e |’)({infi}) @@$
     <<- morphex(\1, ":V[123]_i", ">(?:devenir|rester|demeurer)/") and isNextNotCOD() ~>> *
-__[i](p_de_manière_façon_xxx_et_xxx)__
-    de (?:manière|façon) +(?:non +|)({w_2}) +et +(?:non +|)({w_2})  @@w,$
-    <<- morph(\1, ":A", False) and morphex(\2, ":A", ":[GM]") ~>> *
-__[i](p_de_manière_façon)__
-    de (?:manière|façon) +(?:non +|)({w_2})  @@$
-    <<- morph(\1, ":A", False) ~>> *
-__[i](p_de_nom_adj)__
-    d(?:e +|’)({w_2}) +({w_2})  @@w,$
-    <<- morph(\1, ":[NAQ].*:s", False) and morphex(\2, ":[NAQ].*:s", ":[GV]") and isEndOfNG() ~>> *
-
-__[i](p_det_nom_adj_nom_adj)__
-    (?:les? |la |l’|des |ce(?:s|tte|t|) |[mts](?:es|on|a) |[nv]o(?:s|tre) |leurs? |certaine?s? |quelques |aux? ) *({w2}) +({w2})  @@w,$
-    <<- morphex(\1, ":[NAQ]", ":V0") and morphex(\2, ":[NAQ]", ":(?:G|[123][sp]|P)")
-    ~2>> *
-
-__[i](p_aucun_de_pronom)__      aucune? (de [nv]ous|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
-__[i](p_aucun_des_xxx_ne)__     aucune? +(des +{w_2}) +ne? @@w <<- ~1>> *
-__[i](p_chacun_de_pronom)__     chacune? (de [nv]ous|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
-__[i](p_l_un_de_pronom)__       l’une? (de [nv]ous|des [nv]ôtres|d’e(?:ux|lles|ntre (?:[nv]ous|e(?:ux|lles)))) @@$ <<- ~1>> *
-__[i](p_la_plupart_des_xxx)__   la plupart (des {w_2}) @@11 <<- ~1>> *
-
-# groupe déjà partiellement simplifié (selon les règles de la passe 3)
-__[i](p_groupes_déjà_simplifiés)__
-    (?:a(?:ux?|vec)|à|en)   +d(?:e +(?:la |l’|leurs? |ce(?:s|tte|t|) |[nv]o(?:s|tre) |[mts](?:a|on) |quelques? |certaine?s? )|es? |u ) *({w2})  @@$
-    <<- morph(\1, ":[NAQ]", False) and isEndOfNG() ~>> *
-
-## y compris (pas terrible, mais cas difficile)
-__[i](p_y_compris)__
-    y compris <<- not before(r"(?i)\b(?:[jn]’|tu )$") ~>> *
-
-## eux/nous/vous tous -- elles toutes
-__[i](p_nous_vous_tous_toutes_qui)__    [nv]ous (tou(?:te|)s) qui @@5 <<- ~1>> *
-__[i](p_eux_tous_qui)__                 eux (tous) qui @@4 <<- ~1>> *
-__[i](p_elles_toutes_qui)__             elles (toutes) qui @@6 <<- ~1>> *
 
 ## groupe avec préposition
-__[i](p_préposition_nom)__
-    (?:avec|à|s(?:ur|ous|elon)|c(?:ontre|hez)|dans|envers|p(?:ar|our)|aux?) +({w_2})  @@$
-    <<- morphex(\1, ":[NAQ]", ":[GY]") and isEndOfNG()
-    ~>> *
 __[i](p_préposition_déterminant_nom)__
     (?:avec|à|s(?:ur|ous|elon)|c(?:ontre|hez)|dans|envers|p(?:ar|our)) +(?:les? |la |l’|de(?:s| la|) |ce[st]? |cette |[mts](?:es|on|a) |[nv]o(?:s|tre) |leurs? |certaine?s? |quelques ) *({w_2})  @@$
-    <<- morphex(\1, ":[NAQ]", ":G") and isEndOfNG()
-    ~>> *
-__[i](p_lors_de_du_nom)__
-    lors d(?:’|e(?:s| la|) |u ) *({w_2})  @@$
-    <<- morphex(\1, ":[NAQ]", ":G") and isEndOfNG()
+    <<- morphex(\1, ":[NA]", ":G") and isEndOfNG()
     ~>> *
 
-## doute que
-__[i](p_nul_doute_que)__
-    nul doute qu  <<- isStart() ~>> *
 __[i](p_douter_que)__
     (dout\w+)( ) *que?  @@0,*  <<- morph(\1, ">douter/", False) and before(r"(?i)\b(?:[mts]e|[nv]ous) +$") ~2>> ,
 
@@ -12639,10 +12731,10 @@ __[i](p_de_nom)__
     <<- morphex(\1, ":N", ":[GY]") and isEndOfNG() ~>> *
 __[i](p_de_pronom_nom)__
     de (?:ce(?:t|tte|s|)|[mts](?:on|a|es)|[nv](?:otre|os)|leurs) +({w_2})  @@$
-    <<- morph(\1, ":[NAQ]", False) and isEndOfNG() ~>> *
+    <<- morph(\1, ":[NA]", False) and isEndOfNG() ~>> *
 __[i](p_de_la_leur_nom)__
     de l(?:a|eur) +({w_2})  @@$
-    <<- morphex(\1, ":[NAQ]", ":Y") and isEndOfNG() ~>> *
+    <<- morphex(\1, ":[NA]", ":Y") and isEndOfNG() ~>> *
 
 __[s](p_virgule_virgule2)__     , +, <<- ~>> *
 __[s](p_première_virgule2)__    ^ *, <<- ~>> *
@@ -12653,11 +12745,14 @@ __[s](p_balise_vide2)__         [<] +[>] <<- ~>> *
 
 
 
+TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.
+TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs espérances
 TEST: tandis que d’autres perçoivent le bon goût de la soupe.
 TEST: Je me doute bien que vous avez trouvé la réponse.
 TEST: Nous nous doutons bien qu’il y a une entourloupe derrière cette affaire.
 TEST: Notre but n’était pas de devenir célèbres.
 TEST: sans qu’on ait à le lui ordonner
+
 
 
 
@@ -12700,35 +12795,6 @@ TEST: __ocr__ la longueur de la circonférence étant égale à…
 
 
 !!!! Confusions                                                                                   !!
-
-## guerre / guère
-__[i]/conf(conf_ne_pronom_pronom_verbe_guère)__
-    ne (?:[mts]e|la|les?|[nv]ous|lui|leur) (?:la |les? |lui |leur |l’|)\w{w_2} (?:plus |)(guerre)  @@$
-    <<- -1>> guère                                                                                  # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez :
-
-TEST: tout ceci ne me rapporte {{guerre}}
-
-
-__[i]/conf(conf_ne_en_y_verbe_guère)__
-    ne (?:[lmts]’(?:en |y |)|)\w{w_2} (?:plus |)(guerre)  @@$
-    <<- -1>> guère                                                                                  # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez :
-
-TEST: je ne m’en soucie {{guerre}}
-
-
-__[i]/conf(conf_n_en_y_verbe_guère)__
-    n’(?:en |y |)\w{w_2} (?:plus |)(guerre)  @@$
-    <<- -1>> guère                                                                                  # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez :
-
-TEST: Il n’y prête {{guerre}} d’attention.
-TEST: Elle n’en accorde plus {{guerre}}.
-
-
-__[i]/conf(conf_ne_guère)!6__
-    ne (?:plus |)(guerre)  @@$
-    <<- -1>> guère                                                                                  # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez :
-
-TEST: ne plus {{guerre}} s’en soucier
 
 
 ## s’en / c’en
@@ -12797,37 +12863,6 @@ TEST: Ce sont des biens de peu de valeur.
 !!!! Infinitif                                                                                    !!
 !!
 !!
-
-__[i]/infi(infi_d_en_y)__
-    d’(?:en|y) +({w_2})  @@$
-    <<- morphex(\1, ":V", ":Y") -1>> =suggVerbInfi(@)                                               # Le verbe devrait être à l’infinitif.
-
-TEST: arrête d’y {{consacré}} autant de temps.
-TEST: je suis certain d’en {{choque}} plusieurs.
-
-
-__[i]/infi(infi_de_pronom)__
-    de (?:[mtsn](?:e +|’(?:en +|y +|))|les? +)({w_2}(?:ée?s?|ai(?:en|)[st]?|ez))  @@$
-    <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
-
-TEST: Il s’agit de me {{donnait}} tout ça.
-TEST: j’étais incapable de m’{{orientait}} dans la bonne direction.
-TEST: ils étaient susceptibles de m’y {{trouvaient}}
-
-
-#__[i]/infi(infi_de_la)__
-#    de la +({w_2}(?:ai(?:en|)[st]?|ez))  @@$
-#    <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
-#
-#TEST: elle était capable de la {{trouvait}} où qu’elle soit.
-
-
-__[i]/infi(infi_de_pronom_le_les_la)__
-    de [mtsn]e l(?:es?|a) +({w_2}(?:ée?s?|ai(?:en|)[st]?|ez))  @@$
-    <<- morph(\1, ":V", False) -1>> =suggVerbInfi(@)                                                # Le verbe devrait être à l’infinitif.
-    <<- ~>> *
-
-TEST: de me le {{facturez}}
 
 
 __[i]/infi(infi_faire)__
