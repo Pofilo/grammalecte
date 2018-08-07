@@ -14,7 +14,7 @@ var helpers = {
             sMsg += "\n" + sParam + ": " + o.sParam;
         }
         sMsg += "\n" + JSON.stringify(o) + "\n__end__";
-        this.echo(sMsg);
+        console.log(sMsg);
     },
 
     loadFile: function (spf) {
@@ -30,7 +30,7 @@ var helpers = {
             return xRequest.responseText;
         }
         catch (e) {
-            this.logerror(e);
+            console.error(e);
             return null;
         }
     },
