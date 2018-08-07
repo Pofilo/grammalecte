@@ -6,11 +6,6 @@
 "use strict";
 
 
-if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
-}
-
-
 const aTkzPatterns = {
     // All regexps must start with ^.
     "default":
@@ -80,7 +75,7 @@ class Tokenizer {
                     }
                 }
                 catch (e) {
-                    helpers.logerror(e);
+                    console.error(e);
                 }
             }
             i += nCut;

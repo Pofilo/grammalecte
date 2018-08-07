@@ -10,19 +10,13 @@ ${map}
 
 
 if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
+    //var helpers = require("resource://grammalecte/graphspell/helpers.js");
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
     var text = require("resource://grammalecte/text.js");
-    var echo = helpers.echo;
 }
-else if (typeof(console) !== "undefined") {
-    var echo = function (o) { console.log(o); return true; };
-}
-else {
-    var echo = function () { return true; }
-}
+
 
 function capitalizeArray (aArray) {
     // can’t map on user defined function??
@@ -72,7 +66,7 @@ var gc_engine = {
             }
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
 
         // cleanup
@@ -93,13 +87,12 @@ var gc_engine = {
         for (let [iStart, iEnd] of this._getSentenceBoundaries(sText)) {
             if (4 < (iEnd - iStart) < 2000) {
                 dDA.clear();
-                //helpers.echo(sText.slice(iStart, iEnd));
                 try {
                     [, errs] = this._proofread(sText.slice(iStart, iEnd), sAlt.slice(iStart, iEnd), iStart, false, dDA, dPriority, sCountry, bDebug, bContext);
                     dErrors.gl_update(errs);
                 }
                 catch (e) {
-                    helpers.logerror(e);
+                    console.error(e);
                 }
             }
         }
@@ -135,18 +128,18 @@ var gc_engine = {
                         while ((m = zRegex.gl_exec2(s, lGroups, lNegLookBefore)) !== null) {
                             bCondMemo = null;
                             /*if (bDebug) {
-                                helpers.echo(">>>> Rule # " + sLineId + " - Text: " + s + " opt: "+ sOption);
+                                console.log(">>>> Rule # " + sLineId + " - Text: " + s + " opt: "+ sOption);
                             }*/
                             for (let [sFuncCond, cActionType, sWhat, ...eAct] of lActions) {
                             // action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try {
-                                    //helpers.echo(oEvalFunc[sFuncCond]);
+                                    //console.log(oEvalFunc[sFuncCond]);
                                     bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo));
                                     if (bCondMemo) {
                                         switch (cActionType) {
                                             case "-":
                                                 // grammar error
-                                                //helpers.echo("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
+                                                //console.log("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
                                                 nErrorStart = nOffset + m.start[eAct[0]];
                                                 if (!dErrs.has(nErrorStart) || nPriority > dPriority.get(nErrorStart)) {
                                                     dErrs.set(nErrorStart, this._createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext));
@@ -155,26 +148,26 @@ var gc_engine = {
                                                 break;
                                             case "~":
                                                 // text processor
-                                                //helpers.echo("-> text processor by " + sLineId + "\nzRegex: " + zRegex.source);
+                                                //console.log("-> text processor by " + sLineId + "\nzRegex: " + zRegex.source);
                                                 s = this._rewrite(s, sWhat, eAct[0], m, bUppercase);
                                                 bChange = true;
                                                 if (bDebug) {
-                                                    helpers.echo("~ " + s + "  -- " + m[eAct[0]] + "  # " + sLineId);
+                                                    console.log("~ " + s + "  -- " + m[eAct[0]] + "  # " + sLineId);
                                                 }
                                                 break;
                                             case "=":
                                                 // disambiguation
-                                                //helpers.echo("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
+                                                //console.log("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
                                                 oEvalFunc[sWhat](s, m, dDA);
                                                 if (bDebug) {
-                                                    helpers.echo("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
+                                                    console.log("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
                                                 }
                                                 break;
                                             case ">":
                                                 // we do nothing, this test is just a condition to apply all following actions
                                                 break;
                                             default:
-                                                helpers.echo("# error: unknown action at " + sLineId);
+                                                console.log("# error: unknown action at " + sLineId);
                                         }
                                     } else {
                                         if (cActionType == ">") {
@@ -183,9 +176,9 @@ var gc_engine = {
                                     }
                                 }
                                 catch (e) {
-                                    helpers.echo(s);
-                                    helpers.echo("# line id: " + sLineId + "\n# rule id: " + sRuleId);
-                                    helpers.logerror(e);
+                                    console.log(s);
+                                    console.log("# line id: " + sLineId + "\n# rule id: " + sRuleId);
+                                    console.error(e);
                                 }
                             }
                         }
@@ -269,7 +262,7 @@ var gc_engine = {
             sNew = sRepl.gl_expand(m);
             sNew = sNew + " ".repeat(ln-sNew.length);
         }
-        //helpers.echo("\n"+s+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup])
+        //console.log("\n"+s+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup])
         return s.slice(0, m.start[iGroup]) + sNew + s.slice(m.end[iGroup]);
     },
 
@@ -306,7 +299,7 @@ var gc_engine = {
             }
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
     },
 
@@ -331,7 +324,7 @@ var gc_engine = {
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
     },
 
@@ -375,23 +368,23 @@ function option (sOpt) {
 function displayInfo (dDA, aWord) {
     // for debugging: info of word
     if (!aWord) {
-        helpers.echo("> nothing to find");
+        console.log("> nothing to find");
         return true;
     }
     if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
-        helpers.echo("> not in FSA");
+        console.log("> not in FSA");
         return true;
     }
     if (dDA.has(aWord[0])) {
-        helpers.echo("DA: " + dDA.get(aWord[0]));
+        console.log("DA: " + dDA.get(aWord[0]));
     }
-    helpers.echo("FSA: " + _dAnalyses.get(aWord[1]));
+    console.log("FSA: " + _dAnalyses.get(aWord[1]));
     return true;
 }
 
 function _storeMorphFromFSA (sWord) {
     // retrieves morphologies list from _oSpellChecker -> _dAnalyses
-    //helpers.echo("register: "+sWord + " " + _oSpellChecker.getMorph(sWord).toString())
+    //console.log("register: "+sWord + " " + _oSpellChecker.getMorph(sWord).toString())
     _dAnalyses.set(sWord, _oSpellChecker.getMorph(sWord));
     return !!_dAnalyses.get(sWord);
 }
@@ -399,19 +392,19 @@ function _storeMorphFromFSA (sWord) {
 function morph (dDA, aWord, sPattern, bStrict=true, bNoWord=false) {
     // analyse a tuple (position, word), return true if sPattern in morphologies (disambiguation on)
     if (!aWord) {
-        //helpers.echo("morph: noword, returns " + bNoWord);
+        //console.log("morph: noword, returns " + bNoWord);
         return bNoWord;
     }
-    //helpers.echo("aWord: "+aWord.toString());
+    //console.log("aWord: "+aWord.toString());
     if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
         return false;
     }
     let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _dAnalyses.get(aWord[1]);
-    //helpers.echo("lMorph: "+lMorph.toString());
+    //console.log("lMorph: "+lMorph.toString());
     if (lMorph.length === 0) {
         return false;
     }
-    //helpers.echo("***");
+    //console.log("***");
     if (bStrict) {
         return lMorph.every(s  =>  (s.search(sPattern) !== -1));
     }
@@ -421,19 +414,19 @@ function morph (dDA, aWord, sPattern, bStrict=true, bNoWord=false) {
 function morphex (dDA, aWord, sPattern, sNegPattern, bNoWord=false) {
     // analyse a tuple (position, word), returns true if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)
     if (!aWord) {
-        //helpers.echo("morph: noword, returns " + bNoWord);
+        //console.log("morph: noword, returns " + bNoWord);
         return bNoWord;
     }
-    //helpers.echo("aWord: "+aWord.toString());
+    //console.log("aWord: "+aWord.toString());
     if (!_dAnalyses.has(aWord[1]) && !_storeMorphFromFSA(aWord[1])) {
         return false;
     }
     let lMorph = dDA.has(aWord[0]) ? dDA.get(aWord[0]) : _dAnalyses.get(aWord[1]);
-    //helpers.echo("lMorph: "+lMorph.toString());
+    //console.log("lMorph: "+lMorph.toString());
     if (lMorph.length === 0) {
         return false;
     }
-    //helpers.echo("***");
+    //console.log("***");
     // check negative condition
     if (lMorph.some(s  =>  (s.search(sNegPattern) !== -1))) {
         return false;
@@ -532,7 +525,7 @@ function look (s, zPattern, zNegPattern=null) {
         return zPattern.test(s);
     }
     catch (e) {
-        helpers.logerror(e);
+        console.error(e);
     }
     return false;
 }
@@ -548,11 +541,11 @@ function look_chk1 (dDA, s, nOffset, zPattern, sPatternGroup1, sNegPatternGroup1
         let nPos = m.start[1] + nOffset;
         if (sNegPatternGroup1) {
             return morphex(dDA, [nPos, sWord], sPatternGroup1, sNegPatternGroup1);
-        } 
+        }
         return morph(dDA, [nPos, sWord], sPatternGroup1, false);
     }
     catch (e) {
-        helpers.logerror(e);
+        console.error(e);
         return false;
     }
 }

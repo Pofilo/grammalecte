@@ -572,7 +572,7 @@ function formatNF (s) {
         return "NF " + m[1].toUpperCase().replace(/ /g, " ").replace(/-/g, " ") + " " + m[2].replace(/\//g, "‑").replace(/-/g, "‑");
     }
     catch (e) {
-        helpers.logerror(e);
+        console.error(e);
         return "# erreur #";
     }
 }

@@ -78,7 +78,7 @@ var str_transform = {
             return matrix[nLen1][nLen2];
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
     },
 
@@ -125,7 +125,7 @@ var str_transform = {
             return matrix[nLen1+1][nLen2+1];
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
     },
 
@@ -164,7 +164,7 @@ var str_transform = {
         }
         return sSfxCode[0] == '0' ? sWord + sSfxCode.slice(1) : sWord.slice(0, -(sSfxCode.charCodeAt(0)-48)) + sSfxCode.slice(1);
     },
-    
+
     // Prefix and suffix
     defineAffixCode: function (sFlex, sStem) {
         /*
@@ -174,7 +174,7 @@ var str_transform = {
                 "stem" if no common substring
                 "n(pfx)/m(sfx)"
             with n and m: chars with numeric meaning, "0" = 0, "1" = 1, ... ":" = 10, etc. (See ASCII table.) Says how many letters to strip from flexion.
-                pfx [optional]: string to add before the flexion 
+                pfx [optional]: string to add before the flexion
                 sfx [optional]: string to add after the flexion
         */
         if (sFlex == sStem) {

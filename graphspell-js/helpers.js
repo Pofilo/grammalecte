@@ -5,38 +5,8 @@
 
 "use strict";
 
-// In Firefox, there is no console.log in PromiseWorker, but there is worker.log.
-// In Thunderbird, you can’t access to console directly. So it’s required to pass a log function.
-let funcOutput = null;
 
 var helpers = {
-
-    setLogOutput: function (func) {
-        // probably obsolete now, as console.log seems to work everywhere (at last!)
-        funcOutput = func;
-    },
-
-    echo: function (obj) {
-        // probably obsolete now, as console.log seems to work everywhere (at last!)
-        if (funcOutput !== null) {
-            funcOutput(obj);
-        } else {
-            console.log(obj);
-        }
-        return true;
-    },
-
-    logerror: function (e, bStack=false) {
-        let sMsg = "\n" + e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message;
-        if (bStack) {
-            sMsg += "\n--- Stack ---\n" + e.stack;
-        }
-        if (funcOutput !== null) {
-            funcOutput(sMsg);
-        } else {
-            console.error(sMsg);
-        }
-    },
 
     inspect: function (o) {
         let sMsg = "__inspect__: " + typeof o;
@@ -91,9 +61,6 @@ var helpers = {
 
 
 if (typeof(exports) !== 'undefined') {
-    exports.setLogOutput = helpers.setLogOutput;
-    exports.echo = helpers.echo;
-    exports.logerror = helpers.logerror;
     exports.inspect = helpers.inspect;
     exports.loadFile = helpers.loadFile;
     exports.objectToMap = helpers.objectToMap;

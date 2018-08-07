@@ -9,10 +9,6 @@ ${string}
 ${map}
 
 
-if (typeof (require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
-}
-
 const _dTag = new Map([
     [':N', [" nom,", "Nom"]],
     [':A', [" adjectif,", "Adjectif"]],
@@ -87,7 +83,7 @@ const _dTag = new Map([
     [':Cc', [" conjonction de coordination,", "Conjonction de coordination"]],
     [':Cs', [" conjonction de subordination,", "Conjonction de subordination"]],
     [':Ĉs', [" conjonction de subordination (él.),", "Conjonction de subordination (élément)"]],
-    
+
     [':Ñ', [" locution nominale (él.),", "Locution nominale (élément)"]],
     [':Â', [" locution adjectivale (él.),", "Locution adjectivale (élément)"]],
     [':Ṽ', [" locution verbale (él.),", "Locution verbale (élément)"]],
@@ -357,7 +353,7 @@ class Lexicographe {
                     break;
             }
         } catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
         return null;
     }

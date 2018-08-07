@@ -78,7 +78,7 @@ class TestGrammarChecking {
             bShowUntested = true;
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
 
         if (bShowUntested) {
@@ -120,7 +120,7 @@ class TestGrammarChecking {
             return sRes;
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
         return " ".repeat(sLine.length);
     }
@@ -145,7 +145,7 @@ class TestGrammarChecking {
             return [sRes, sListErr];
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
         }
         return [" ".repeat(sLine.length), ""];
     }

@@ -189,7 +189,7 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
         postMessage(createResponse("init", dOptions, dInfo, true));
     }
     catch (e) {
-        helpers.logerror(e);
+        console.error(e);
         postMessage(createResponse("init", createErrorResult(e, "init failed"), dInfo, true, true));
     }
 }
@@ -394,7 +394,7 @@ function getListOfTokens (sText, dInfo={}) {
         postMessage(createResponse("getListOfTokens", null, dInfo, true));
     }
     catch (e) {
-        helpers.logerror(e);
+        console.error(e);
         postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true, true));
     }
 }

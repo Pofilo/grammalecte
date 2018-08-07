@@ -77,11 +77,7 @@ if (RegExp.prototype.grammalecte === undefined) {
             }
         }
         catch (e) {
-            if (typeof(helpers) !== "undefined") {
-                helpers.logerror(e);
-            } else {
-                console.error(e);
-            }
+            console.error(e);
         }
         return m;
     };

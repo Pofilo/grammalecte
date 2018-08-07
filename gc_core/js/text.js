@@ -5,11 +5,6 @@
 "use strict";
 
 
-if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
-}
-
-
 var text = {
     getParagraph: function* (sText, sSepParagraph = "\n") {
         // generator: returns paragraphs of text
@@ -57,7 +52,7 @@ var text = {
             return sResult;
         }
         catch (e) {
-            helpers.logerror(e);
+            console.error(e);
             return "\n# Error. Data: " + oErr.toString();
         }
     }
