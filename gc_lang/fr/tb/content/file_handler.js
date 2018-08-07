@@ -4,8 +4,9 @@
 
 // Assuming that Cc, Ci and Cu are already loaded
 
-const {TextDecoder, TextEncoder, OS} = Components.utils.import("resource://gre/modules/osfile.jsm", {});
+//const {OS} = ChromeUtils.import("resource://gre/modules/osfile.jsm", {});
 
+ChromeUtils.import("resource://gre/modules/osfile.jsm")
 
 const oFileHandler = {
     // https://developer.mozilla.org/fr/docs/Mozilla/JavaScript_code_modules/OSFile.jsm/OS.File_for_the_main_thread
@@ -35,8 +36,8 @@ const oFileHandler = {
             this.prepareDataFolder();
         }
         try {
-            let xDecoder = new TextDecoder();
             let array = await OS.File.read(this.createPathFileName(sFilename));
+            let xDecoder = new TextDecoder();
             return xDecoder.decode(array);
         }
         catch (e) {
@@ -53,8 +54,8 @@ const oFileHandler = {
             if (nReturnValue == Ci.nsIFilePicker.returnOK || nReturnValue == Ci.nsIFilePicker.returnReplace) {
                 console.log(xFilePicker.file.path);
                 try {
-                    let xDecoder = new TextDecoder();
                     let array = await OS.File.read(xFilePicker.file.path);
+                    let xDecoder = new TextDecoder();
                     callback(xDecoder.decode(array));
                 }
                 catch (e) {

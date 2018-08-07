@@ -56,7 +56,6 @@ var oGrammarChecker = {
             ).catch(
                 function (aCaught) { console.log('Promise Error - ', aCaught); }
             );
-
         }
     },
     fullTests: function () {
@@ -587,7 +586,7 @@ var oTextFormatter = {
                 document.getElementById(sOptName).checked = oOptions[sOptName];
                 if (sOptName.startsWith("o_group_")) {
                     this.switchGroup(sOptName);
-                } 
+                }
                 if (document.getElementById("res_"+sOptName) !== null) {
                     document.getElementById("res_"+sOptName).textContent = "";
                 }
@@ -660,7 +659,7 @@ var oTextFormatter = {
             document.getElementById('progressbar').value = 0;
             document.getElementById('progressbar').max = 6;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
-            
+
             // espaces surnuméraires
             if (document.getElementById("o_group_ssp").checked) {
                 if (document.getElementById("o_end_of_paragraph").checked) {
