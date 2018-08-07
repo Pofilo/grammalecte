@@ -504,7 +504,7 @@ const oSearch = {
     oSpellChecker: null,
 
     load: function () {
-        this.oSpellChecker = new SpellChecker("fr", "", "fr.json");
+        this.oSpellChecker = new SpellChecker("fr", "", "fr-allvars.json");
     },
 
     listen: function () {
