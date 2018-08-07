@@ -12,16 +12,15 @@ const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefServ
 var oDialogControl = {
 	load: function () {
 		try {
+			// center window
 			document.getElementById('grammalecte-spelloptions-window').centerWindowOnScreen();
 			// Graphspell dictionaries
 			document.getElementById('personal_dic').checked = prefs.getBoolPref('bPersonalDictionary');
 			// Hunspell dictionaries
-			document.getElementById('fr-FR-modern').checked = prefs.getBoolPref('bDictModern');
-			document.getElementById('fr-FR-classic').checked = prefs.getBoolPref('bDictClassic');
-			document.getElementById('fr-FR-reform').checked = prefs.getBoolPref('bDictReform');
-			document.getElementById('fr-FR-classic-reform').checked = prefs.getBoolPref('bDictClassicReform');
-			// center window
-			document.getElementById('grammalecte-spelloptions-window').centerWindowOnScreen();
+			//document.getElementById('fr-FR-modern').checked = prefs.getBoolPref('bDictModern');
+			//document.getElementById('fr-FR-classic').checked = prefs.getBoolPref('bDictClassic');
+			//document.getElementById('fr-FR-reform').checked = prefs.getBoolPref('bDictReform');
+			//document.getElementById('fr-FR-classic-reform').checked = prefs.getBoolPref('bDictClassicReform');
 		}
 		catch (e) {
 			console.error(e);
