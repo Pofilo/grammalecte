@@ -105,6 +105,9 @@ class IBDAWG {
             Object.assign(this, oData);
         }
         catch (e) {
+            console.error(e);
+            console.log("path: " + sPath);
+            console.log("dic:" + param1.slice(0, 1000));
             throw Error("# Error. File not found or not loadable.\n" + e.message + "\n");
         }
         /*

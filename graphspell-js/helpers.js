@@ -22,6 +22,7 @@ var helpers = {
         // for more options have a look here: https://gist.github.com/Noitidart/ec1e6b9a593ec7e3efed
         // if not in workers, use sdk/data.load() instead
         try {
+            console.log("loadFile: " + spf);
             let xRequest;
             xRequest = new XMLHttpRequest();
             xRequest.open('GET', spf, false); // 3rd arg is false for synchronous, sync is acceptable in workers
