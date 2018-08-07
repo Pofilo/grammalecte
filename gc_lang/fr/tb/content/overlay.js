@@ -5,7 +5,7 @@
 
 const Cc = Components.classes;
 const Ci = Components.interfaces;
-const Cu = Components.utils;
+//const Cu = Components.utils;
 //const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 
 const { BasePromiseWorker } = ChromeUtils.import('resource://gre/modules/PromiseWorker.jsm', {});
@@ -169,7 +169,6 @@ var oGrammarChecker = {
         }, function (e) {
             that.setInfo("Erreur : " + e.message);
             console.error(e);
-            // Cu.reportError(e);
         });
     },
     createResultNode: function (xEditor, sParagraph, iParagraph, aGrammErr, aSpellErr) {
@@ -198,7 +197,6 @@ var oGrammarChecker = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     fillResultNode: function (xResultNode, xEditor, sParagraph, iParagraph, aGrammErr, aSpellErr) {
@@ -249,7 +247,6 @@ var oGrammarChecker = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
             xResultNode.textContent = "# Error: " + e.message;
         }
     },
@@ -398,7 +395,6 @@ var oGrammarChecker = {
             }
             catch (e) {
                 console.error(e);
-                // Cu.reportError(e);
             }
         }
     },
@@ -415,7 +411,6 @@ var oGrammarChecker = {
             }
             catch (e) {
                 console.error(e);
-                // Cu.reportError(e);
             }
         }
         this.setInfo("[vide]");
@@ -436,7 +431,6 @@ var oGrammarChecker = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     openInTabURL: function (sURL) {
@@ -452,7 +446,6 @@ var oGrammarChecker = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     openInBrowserURL: function (sURL) {
@@ -462,7 +455,6 @@ var oGrammarChecker = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     onParseText: function (e) {
@@ -530,7 +522,6 @@ var oDictIgniter = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     }
 }
@@ -550,7 +541,6 @@ var oTextFormatter = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     apply: function () {
@@ -568,7 +558,6 @@ var oTextFormatter = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     saveOptions: function () {
@@ -612,7 +601,6 @@ var oTextFormatter = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     resetProgressBar: function () {
@@ -889,7 +877,6 @@ var oTextFormatter = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
         return sText;
     },
@@ -907,7 +894,6 @@ var oTextFormatter = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
         return [sText, nCount];
     }
