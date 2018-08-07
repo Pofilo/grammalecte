@@ -52,7 +52,7 @@ class SpellChecker {
         }
         try {
             if (typeof(ibdawg) !== 'undefined') {
-                return new ibdawg.IBDAWG(dictionary);  // dictionary can be a filename or a JSON object
+                return new ibdawg.IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
             } else {
                 return new IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
             }

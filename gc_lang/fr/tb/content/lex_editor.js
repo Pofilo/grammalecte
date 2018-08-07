@@ -57,7 +57,7 @@ class Table {
         this.lColumn = lColumn;
         this.lColumnWidth = lColumnWidth;
         this.xProgressBar = document.getElementById(sProgressBarId);
-        this.xNumEntry = document.getElementById(sResultId);
+        this.xNumEntry = sResultId ? document.getElementById(sResultId) : null;
         this.iEntryIndex = 0;
         this.lEntry = [];
         this.nEntry = 0
@@ -416,7 +416,7 @@ const oGenerator = {
 
 
 const oBinaryDict = {
-    
+
     oIBDAWG: null,
 
     load: async function () {
@@ -429,7 +429,7 @@ const oBinaryDict = {
         if (sJSON) {
             try {
                 let oJSON = JSON.parse(sJSON);
-                this.oIBDAWG = new IBDAWG(oJSON);    
+                this.oIBDAWG = new IBDAWG(oJSON);
             }
             catch (e) {
                 this.setDictData(0, "#Erreur. Voir la console.");
@@ -442,7 +442,7 @@ const oBinaryDict = {
             let lEntry = [];
             for (let aRes of this.oIBDAWG.select()) {
                 lEntry.push(aRes);
-            }        
+            }
             oLexiconTable.fill(lEntry);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
             enableElement("export_button");
