@@ -12698,6 +12698,12 @@ __purge_après_prépositions__
     [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour] [le|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
         <<- ~1:3>> *
 
+    [de|d’]  @:N¬:[GY]  <end>
+    [de|d’]  @:N¬:[GY]  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [de|d’]  @:N¬:[GY]  @:[VR]¬:[NAP]
+    [de|d’]  @:N¬:[GY]  , @¬:[NA]
+        <<- not value(\2, "|autres|") ~1:2>> *
+
 
 __purge_autre__
     [<start>|,] nul doute [que|qu’|qu]
@@ -12705,6 +12711,8 @@ __purge_autre__
 
     y compris
         <<- not value(<1, "|j’|n’|tu|") ~>> *
+
+
 
 @@@@
 @@@@END_GRAPH                                                                                      _
@@ -12726,9 +12734,6 @@ __[i](p_douter_que)__
     (dout\w+)( ) *que?  @@0,*  <<- morph(\1, ">douter/", False) and before(r"(?i)\b(?:[mts]e|[nv]ous) +$") ~2>> ,
 
 ## de +
-__[i](p_de_nom)__
-    d(?:e +|’)(?!autres)({w_2}) @@$
-    <<- morphex(\1, ":N", ":[GY]") and isEndOfNG() ~>> *
 __[i](p_de_pronom_nom)__
     de (?:ce(?:t|tte|s|)|[mts](?:on|a|es)|[nv](?:otre|os)|leurs) +({w_2})  @@$
     <<- morph(\1, ":[NA]", False) and isEndOfNG() ~>> *
