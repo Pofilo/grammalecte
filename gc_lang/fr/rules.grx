@@ -3237,7 +3237,7 @@ __da_groupe_nominal__
     d’ [un|une]  *WORD
         <<- =>> exclude(\3, ":V")
 
-    [des|chaque|quelque|quelques|cet|cette|mon|ma|ta|sa|mes|au|aux|nos|vos]  *WORD
+    [des|chaque|quelque|quelques|cet|cette|mon|ma|ta|sa|mes|au|aux|nos|vos|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
 
     de  [la|l’]  @:¬:Y
@@ -4737,6 +4737,33 @@ __conf_acquit_acquis__
         <<- /conf/ -2>> acquit                          # Confusion. On écrit « par acquit de conscience ».
         <<- ~>> *
 
+TEST: par {{acquis}} de conscience
+TEST: tout ce qu’on fait par acquit de conscience
+
+
+# âge / age
+__conf_âge_age__
+    en bas age
+        <<- /conf/ -3>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
+
+    quel age /VCint
+        <<- /conf/ morphVC(\3, ">avoir") -2>> âge       # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
+
+    quel [es|est|étais|était|seras|sera|serais|serait] [mon|ton|son] age
+        <<- /conf/ -4>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
+
+    age [tendre|moyen|avancé]
+        <<- /conf/ -1>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
+
+    [bel|grand] age
+        <<- /conf/ -2>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
+
+TEST: des enfants morts en bas {{age}}.
+TEST: Quel {{age}} aura-t-il
+TEST: quel était ton {{age}} ?
+TEST: il est d’un {{age}} avancé.
+TEST: c’est le bel {{age}}.
+
 
 # aux dépens
 __conf_aux_dépens__
@@ -4885,6 +4912,7 @@ TEST: à qui ce texte doit tant, à qui ce texte est dédié
 __conf_ce_à_quoi_qui__
     se [à|a] [quoi|koi]
     ce a [quoi|koi]
+    ce à koi
         <<- /conf/ ->> ce à quoi                                # Confusion.|https://fr.wiktionary.org/wiki/ce_%C3%A0_quoi
 
 TEST: c’est {{se a quoi}} il pensait qui le minait.
@@ -7912,6 +7940,7 @@ __purge_locutions__
     en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse]
     en aucun cas
     en aucune [circonstance|façon|manière]
+    en bas âge
     en bon état
     en bonne [compagnie|posture|voie]
     en bonne et due forme
@@ -8775,6 +8804,7 @@ __simplication_substantifs__
     >armer jusqu aux dents
     >arme de [poing|guerre]
     >arme de destruction massive
+    >appel au secours
     >attestation sur l’ honneur
     >attendre de pied ferme
     ayants droit
@@ -9244,6 +9274,7 @@ __purge_ponctuations__
     ,   ,
     (   )
     [   ]
+    {   }
     <   >
     [-|–|—]  [-|–|—]
         <<- ~>> *
@@ -9792,6 +9823,23 @@ __gn_ladite_1m__
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: ladite {{passions}} l’avait conduit à sa perte.
+
+
+__gn_aucun_1m__
+    aucun  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") -1>> aucune                              # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: aucun {{accords}} n’y changera rien.
+
+__gn_aucune_1m__
+    aucune  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:m", ":[efGW]") -1>> aucun                               # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: aucune {{passions}} n’est digne qu’on meurt pour elle.
 
 
 __gn_un_1m__
@@ -11419,6 +11467,26 @@ TEST: une raclée {{en bonnes et dues formes}}
 TEST: remplir son formulaire en bonne et due forme, c’est le minimum pour espérer un retour positif.
 
 
+## s’en / c’en
+__conf_c_en_être__
+    s’ en  [es|est|sera|seras|étais|était] [fini|finie|finis|finit|terminé|terminés|terminée|terminées]
+        <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
+        -1:2>> c’en                                         # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+
+    s’ en  [es|est|sera|seras|étais|était] [assez|trop] [<end>|,|de|d’]
+        <<- /conf/ -1:2>> c’en                              # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+
+    s’ en  [es|est|sera|seras|étais|était] @:A¬:[GVW]
+        <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
+        -1:2>> c’en                                         # Confusion probable : “\2” est un adjectif. « C’en est… » équivaut à « ça, c’est… ».3|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
+
+TEST: c’en est fini d’eux, ils sont comme morts
+TEST: c’en est assez, ça suffit
+TEST: tout ça, {{s’en}} est fini.
+TEST: {{s’en}} est assez de ces foutaises.
+TEST: c’est tellement idiot, {{s’en}} est dérisoire…
+
+
 # en butte à / but / bute
 __conf_en_butte_à_au__
     en [>but|>bute]  [à|au|aux]
@@ -11428,7 +11496,7 @@ TEST: Et moi toujours en {{but}} à de nouveaux dangers
 
 
 # cane / canne (from LanguageTool)
-__conf_canne_à_de__
+__conf_canne_cane__
     >cane à [sucre|pêche|selfie]
     >cane [de|d’] [bambou|bois|combat|compagnon|compagnonnage|défense|golf|marche|Noël|ramonage)|>aveugle]
         <<- /conf/ -1>> =\1.replace("ane", "anne")                      # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
@@ -11441,7 +11509,6 @@ __conf_canne_à_de__
 
     [>appuyer|>battre|>frapper|>lever|>marcher] [avec|sur] [les|des|ma|ta|sa|mes|tes|ses|cette|une] >cane
         <<- /conf/ -4>> =\4.replace("ane", "anne")                      # Confusion. La cane est la femelle du canard.|https://fr.wiktionary.org/wiki/cane
-
 
     >bec de >canne
     bec-de-canne
@@ -12581,7 +12648,7 @@ __purge_syntagme_verbal__
 
 
 ### Simplification des groupes nominaux
-__purge_syntagmes_nominaux__
+__purge_pronoms__
     [aucun|aucune] [de|d’] ?entre¿ [nous|vous|eux|elles]
         <<- ~2:0>> *
 
@@ -12596,45 +12663,6 @@ __purge_syntagmes_nominaux__
 
     [chacun|chacune] [de|d’] ?entre¿ [nous|vous|eux|elles]
         <<- ~2:0>> *
-
-
-    [le|la|l’|les|leur|ton|son|certains|certaines] *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
-        <<- __else__ ~3>> *
-
-    [des|ce|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|au|aux] *WORD *WORD
-        <<- morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
-        <<- __else__ ~3>> *
-
-    [de|d’]  [façon|manière]  ?non¿  @:A  et  ?non¿  @:A¬:[GM]
-    [de|d’]  [façon|manière]  ?non¿  @:A
-        <<- ~>> *
-
-    [de|d’]  @:[NA].*:s¬:Y  <end>
-    [de|d’]  @:[NA].*:s¬:Y  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [de|d’]  @:[NA].*:s¬:Y  @:[VR]¬:[NAP]
-    [de|d’]  @:[NA].*:s¬:Y  , @¬:[NA]
-        <<- ~1:2>> *
-
-    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   <end>
-    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   @:[VR]¬:[NAP]
-    [de|d’]  @:[NA].*:s¬:Y  @:[NA].*:s¬:(?:G|[123][sp]|O)   , @¬:[NA]
-        <<- ~1:3>> *
-
-    en tant que >telle
-        <<- ~>> *
-
-    en [plein|pleine] @:[NA]  <end>
-    en [plein|pleine] @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    en [plein|pleine] @:[NA]  @:[VR]¬:[NAP]
-    en [plein|pleine] @:[NA]  , @¬:[NA]
-        <<- ~1:3>> *
-
-    fois que
-        <<- ~1>> _
 
     la plupart des *WORD <end>
     la plupart des *WORD ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
@@ -12673,11 +12701,11 @@ __purge_syntagmes_nominaux__
         <<- ~2:0>> *
 
 
-__purge_après_prépositions__
-    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  <end>
-    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  @:[VR]¬:[NAP]
-    [à|au|aux|avec|en|lors]  [de|d’]  [la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  ,  @¬:[NA]
+__purge_syntagmes_nominaux__
+    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  <end>
+    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  @:[VR]¬:[NAP]
+    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  ,  @¬:[NA]
         <<- ~1:4>> *
 
     [à|au|aux|avec|en|lors]  [des|du]  *WORD  <end>
@@ -12686,68 +12714,115 @@ __purge_après_prépositions__
     [à|au|aux|avec|en|lors]  [des|du]  *WORD  , @¬:[NA]
         <<- ~1:3>> *
 
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  <end>
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  @:[VR]¬:[NAP]
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour|au|aux]  @:[NAM]¬:[GY]  , @¬:[NA]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  <end>
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  @:[VR]¬:[NAP]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  , @¬:[NA]
         <<- ~1:2>> *
 
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour] [le|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  <end>
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour] [le|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour] [le|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  @:[VR]¬:[NAP]
-    [à|avec|sur|sous|selon|contre|chez|dans|envers|par|pour] [le|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  <end>
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  @:[VR]¬:[NAP]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
         <<- ~1:3>> *
 
-    [de|d’]  @:N¬:[GY]  <end>
-    [de|d’]  @:N¬:[GY]  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [de|d’]  @:N¬:[GY]  @:[VR]¬:[NAP]
-    [de|d’]  @:N¬:[GY]  , @¬:[NA]
+    [le|la|l’|les|leur|ton|son|certains|certaines] *WORD *WORD
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
+    [des|ce|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|au|aux] *WORD *WORD
+        <<- morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
+    [de|d’]  [façon|manière]  ?non¿  @:A  et  ?non¿  @:A¬:[GM]
+    [de|d’]  [façon|manière]  ?non¿  @:A
+        <<- ~>> *
+
+    [de|d’]  @:[NA].*:s¬:[YG]  <end>
+    [de|d’]  @:[NA].*:s¬:[YG]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[VR]¬:[NAP]
+    [de|d’]  @:[NA].*:s¬:[YG]  , @¬:[NA]
         <<- not value(\2, "|autres|") ~1:2>> *
 
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   <end>
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   @:[VR]¬:[NAP]
+    [de|d’]  @:[NA].*:s¬:[YG]  @:[NA].*:s¬:(?:G|[123][sp]|O)   , @¬:[NA]
+        <<- ~1:3>> *
 
-__purge_autre__
-    [<start>|,] nul doute [que|qu’|qu]
-        <<- ~2:0>> *
+    [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
+    [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
+    [de|d’]  [un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
+        <<- ~1:3>> *
 
-    y compris
-        <<- not value(<1, "|j’|n’|tu|") ~>> *
+    de  [la|leur]  @:[NA]¬:Y  <end>
+    de  [la|leur]  @:[NA]¬:Y  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    de  [la|leur]  @:[NA]¬:Y  @:[VR]¬:[NAP]
+    de  [la|leur]  @:[NA]¬:Y  , @¬:[NA]
+        <<- ~1:3>> *
 
+    en [plein|pleine] @:[NA]  <end>
+    en [plein|pleine] @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    en [plein|pleine] @:[NA]  @:[VR]¬:[NAP]
+    en [plein|pleine] @:[NA]  , @¬:[NA]
+        <<- ~1:3>> *
 
-
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-
-# isEndOfNG:
+#### isEndOfNG ####
 # <end>
 # @:[VR]¬:[NAP]
 # , @¬:[NA]
 # ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
 
 
-# de +
-__[i](p_de_vinfi)__
-    d(?:e |’)({infi}) @@$
-    <<- morphex(\1, ":V[123]_i", ">(?:devenir|rester|demeurer)/") and isNextNotCOD() ~>> *
+__purge_autre__
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  ,
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [je|j’|tu|il|elle|on|ç’|c’|nous|vous|ils|elles|ne|n’|me|m’|te|t’|se|s’]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  @:[123][sp]¬:[DM]
+        <<- ~1:2>> *
 
-__[i](p_douter_que)__
-    (dout\w+)( ) *que?  @@0,*  <<- morph(\1, ">douter/", False) and before(r"(?i)\b(?:[mts]e|[nv]ous) +$") ~2>> ,
+    en tant que >telle
+        <<- ~>> *
 
-## de +
-__[i](p_de_pronom_nom)__
-    de (?:ce(?:t|tte|s|)|[mts](?:on|a|es)|[nv](?:otre|os)|leurs) +({w_2})  @@$
-    <<- morph(\1, ":[NA]", False) and isEndOfNG() ~>> *
-__[i](p_de_la_leur_nom)__
-    de l(?:a|eur) +({w_2})  @@$
-    <<- morphex(\1, ":[NA]", ":Y") and isEndOfNG() ~>> *
+    fois que
+        <<- ~1>> _
 
-__[s](p_virgule_virgule2)__     , +, <<- ~>> *
-__[s](p_première_virgule2)__    ^ *, <<- ~>> *
-__[s](p_dernière_virgule2)__    , *$ <<- ~>> *
-__[s](p_tiret_tiret2)__         [—–-] +[—–-] <<- ~>> *
-__[s](p_parenthèses_vides2)__   [(] +[)] <<- ~>> *
-__[s](p_balise_vide2)__         [<] +[>] <<- ~>> *
+    [<start>|,] nul doute [que|qu’|qu]
+        <<- ~2:0>> *
 
+    y compris
+        <<- not value(<1, "|j’|n’|tu|il|on|") ~>> *
+
+    [me|te|se|nous|vous]  >douter  [que|qu’|qu]
+        <<- /3>> no_subj
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: purge_ponctuations2                                                                     _
+@@@@
+@@@@
+@@@@
+@@@@
+
+__purge_ponctuations2__
+    ,   ,
+    (   )
+    [   ]
+    {   }
+    <   >
+    [-|–|—]  [-|–|—]
+        <<- ~>> *
+
+    <start>  ,
+        <<- ~2>> *
+
+    ,  <end>
+        <<- ~1>> *
 
 
 TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.
@@ -12759,26 +12834,35 @@ TEST: Notre but n’était pas de devenir célèbres.
 TEST: sans qu’on ait à le lui ordonner
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: verbes1                                                                                 _
+@@@@
+@@@@
+@@@@
+@@@@
 
 
 !!!! OCR                                                                                          !!
 
 # Participes passés
-__[i]/ocr(ocr_être_participes_passés)__
-    ({etre}) +({w_2}es?) @@0,$
-    <<- morph(\1, ":V0e", False) >>>
-    <<- \2.endswith("e") and morphex(\2, ":V1.*:Ip.*:[13]s", ":(?:[GM]|A)") and not before(r"(?i)\belle +(?:ne +|n’|)$")
-    -2>> =suggVerbPpas(\2, ":m:s")                                                                  # Erreur de numérisation ?
-    <<- __else__ and \2.endswith("s") and morphex(\2, ":V1.*:Ip.*:2s", ":(?:[GM]|A)") and not before(r"(?i)\belles +(?:ne +|n’|)$")
-    -2>> =suggVerbPpas(\2, ":m:p")                                                                  # Erreur de numérisation ?
+__ocr_être_participe_passé__
+    >être  ~es?$
+        <<- /ocr/ not value(\1, "|êtres|") >>>
+        <<- /ocr/ \2.endswith("e") and morph(\2, ":V1.*:Ip.*:[13]s", ":[GMA]") and not before(r"(?i)\belle +(?:ne +|n’|)$")
+        -2>> =suggVerbPpas(\2, ":m:s")                                                              # Erreur de numérisation ?
+        <<- /ocr/ __else__ and \2.endswith("s") and morph(\2, ":V1.*:Ip.*:2s", ":[GMA]") and not before(r"(?i)\belles +(?:ne +|n’|)$")
+        -2>> =suggVerbPpas(\2, ":m:p")                                                              # Erreur de numérisation ?
 
-__[i]/ocr(ocr_avoir_participes_passés)__
-    ({avoir}) +({w_2}es?) @@0,$
-    <<- morph(\1, ":V0a", False) >>>
-    <<- \2.endswith("e") and morphex(\2, ":V1.*:Ip.*:[13]s", ":[GM]|>envie/")
-    -2>> =suggVerbPpas(\2, ":m:s")                                                                  # Erreur de numérisation ?
-    <<- __else__ and \2.endswith("s") and morphex(\2, ":V1.*:Ip.*:2s", ":[GM]")
-    -2>> =suggVerbPpas(\2, ":m:p")                                                                  # Erreur de numérisation ?
+__ocr_avoir_participe_passé__
+    >avoir  ~es?$
+        <<- /ocr/ not value(\1, "|avoirs|") >>>
+        <<- /ocr/ \2.endswith("e") and morph(\2, ":V1.*:Ip.*:[13]s", ":[GM]|>envie/")
+        -2>> =suggVerbPpas(\2, ":m:s")                                                              # Erreur de numérisation ?
+        <<- /ocr/ __else__ and \2.endswith("s") and morph(\2, ":V1.*:Ip.*:2s", ":[GM]")
+        -2>> =suggVerbPpas(\2, ":m:p")                                                              # Erreur de numérisation ?
 
 TEST: __ocr__ vous serez {{couche}} en terre.
 TEST: __ocr__ nous serons {{presses}} de monter à bord de ce train-ci.
@@ -12801,31 +12885,13 @@ TEST: __ocr__ la longueur de la circonférence étant égale à…
 
 !!!! Confusions                                                                                   !!
 
-
-## s’en / c’en
-__[i]/conf(conf_c_en_être)__
-    (s’en) (?:n’|)(?:est|seras?|étai[ts]) +({w_2})  @@0,$
-    <<- re.search("(?i)^(?:fini|terminé)s?", \2) and morph(word(-1), ":C", False, True)
-    -1>> c’en
-    # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-    <<- re.search("(?i)^(?:assez|trop)$", \2) and (after("^ +d(?:e |’)") or isEnd())
-    -1>> c’en
-    # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-    <<- morphex(\2, ":A", ":[GVW]") and morph(word(-1), ":C", False, True)
-    -1>> c’en
-    # Confusion probable : “\2” est un adjectif. « C’en est… » équivaut à « ça, c’est… ».3|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
-
-TEST: c’en est fini d’eux, ils sont comme morts
-TEST: c’en est assez, ça suffit
-TEST: tout ça, {{s’en}} est fini.
-TEST: {{s’en}} est assez de ces foutaises.
-TEST: c’est tellement idiot, {{s’en}} est dérisoire…
-
-
 ## soit / soie / soi
-__[i]/conf(conf_aller_de_soi)__
-    ({aller}) +de (soi[tes])  @@0,$
-    <<- morph(\1, ">aller/", False) and not after(" soit ") -2>> soi                                # Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
+__conf_aller_de_soi__
+    >aller de [sois|>soie]
+        <<- /conf/ -3>> soi                                 # Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
+
+    >aller de soit
+        <<- /conf/ not after(" soit ") -3>> soi             # Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
 
 TEST: cela ne va pas de {{soit}}.
 
@@ -12834,11 +12900,11 @@ TEST: cela ne va pas de {{soit}}.
 !!!! Adverbes après verbe                                                                         !!
 
 # fort
-__[i]/sgpl(sgpl_verbe_fort)__
-    ({w_2}) +(forts)  @@0,$
-    <<- morphex(\1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q)|>(?:affirmer|trouver|croire|désirer|estime|préférer|penser|imaginer|voir|vouloir|aimer|adorer|souhaiter)/")
-        and not morph(word(1), ":A.*:[me]:[pi]", False)
-    -2>> fort                                               # Confusion probable. S’il s’agit ici de l’adverbe “fort” (équivalent de “fortement”), écrivez-le au singulier.
+__sgpl_verbe_fort__
+    forts
+        <<- morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q)|>(?:affirmer|trouver|croire|désirer|estime|préférer|penser|imaginer|voir|vouloir|aimer|adorer|souhaiter)/")
+            and not morph(>1, ":A.*:[me]:[pi]")
+        ->> fort                                                # Confusion probable. S’il s’agit ici de l’adverbe “fort” (équivalent de “fortement”), écrivez-le au singulier.
 
 TEST: ces emmerdeurs crient bien trop {{forts}}
 TEST: ces animaux paraissent forts, mais ils sont faibles.
@@ -12851,9 +12917,9 @@ TEST: Avec le même nombre de bulletins, les xénophobes apparaîtront plus fort
 
 
 # bien
-__[i]/sgpl(sgpl_bien)__
+__sgpl_verbe_bien__
     biens
-    <<- morphex(word(-1), ":V", ":D.*:p|:A.*:p", False) ->> bien                                    # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
+        <<- morph(<1, ":V", ":D.*:p|:A.*:p") ->> bien           # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
 
 TEST: Ils vont {{biens}}.
 TEST: Elles travaillaient vraiment {{biens}}.
@@ -12869,17 +12935,41 @@ TEST: Ce sont des biens de peu de valeur.
 !!
 !!
 
+#### devoir / faire / falloir / pouvoir / savoir / vouloir
 
-__[i]/infi(infi_faire)__
-    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">faire/", False) and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
-        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
-        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_faire_verbe__
+    >faire  ~(?:ée?s?|ez)$
+        <<- not value(<1, "|en|") and morph(\1, ":V") and morph(\2, ":V", ":[MG]")
+        -2>> =suggVerbInfi(\2)                                  # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
 
 TEST: elle fit peu {{mangé}} les enfants
-TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: Tu fais {{décoloré}} tes cheveux ?
+TEST: quelqu’un fait {{passé}} ces gens en secret.
+TEST: il le fait {{pensé}} à son avenir.
+TEST: ce sont des faits constestés.
+TEST: c’est un fait reconnu.
+TEST: fait pourtant avéré et corroboré par le même sondage.
+TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
+
+
+#__[i]/infi(infi_faire)__
+#    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
+#    <<- morph(\1, ">faire/", False) and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
+#        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
+#        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
+#    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@
 
 
 __[i]/infi(infi_vouloir)__

@@ -110,37 +110,6 @@ def mbUnit (s):
 
 #### Syntagmes
 
-_zEndOfNG1 = re.compile(" *$| +(?:, +|)(?:n(?:’|e |o(?:u?s|tre) )|l(?:’|e(?:urs?|s|) |a )|j(?:’|e )|m(?:’|es? |a |on )|t(?:’|es? |a |u )|s(?:’|es? |a )|c(?:’|e(?:t|tte|s|) )|ç(?:a |’)|ils? |vo(?:u?s|tre) )")
-_zEndOfNG2 = re.compile(r" +(\w[\w-]+)")
-_zEndOfNG3 = re.compile(r" *, +(\w[\w-]+)")
-
-def isEndOfNG (dDA, s, iOffset):
-    "returns True if next word doesn’t belong to a noun group"
-    if _zEndOfNG1.match(s):
-        return True
-    m = _zEndOfNG2.match(s)
-    if m and morphex(dDA, (iOffset+m.start(1), m.group(1)), ":[VR]", ":[NAQP]"):
-        return True
-    m = _zEndOfNG3.match(s)
-    if m and not morph(dDA, (iOffset+m.start(1), m.group(1)), ":[NA]", False):
-        return True
-    return False
-
-
-_zNextIsNotCOD1 = re.compile(" *,")
-_zNextIsNotCOD2 = re.compile(" +(?:[mtsnj](e +|’)|[nv]ous |tu |ils? |elles? )")
-_zNextIsNotCOD3 = re.compile(r" +([a-zéèî][\w-]+)")
-
-def isNextNotCOD (dDA, s, iOffset):
-    "returns True if next word is not a COD"
-    if _zNextIsNotCOD1.match(s) or _zNextIsNotCOD2.match(s):
-        return True
-    m = _zNextIsNotCOD3.match(s)
-    if m and morphex(dDA, (iOffset+m.start(1), m.group(1)), ":[123][sp]", ":[DM]"):
-        return True
-    return False
-
-
 _zNextIsVerb1 = re.compile(" +[nmts](?:e |’)")
 _zNextIsVerb2 = re.compile(r" +(\w[\w-]+)")
 
