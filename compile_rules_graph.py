@@ -131,6 +131,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                     yield lResult
                 else:
                     print(" # Error on action at line:", iLine)
+                    print(sTokenLine, "\n", sActions)
 
 
 def changeReferenceToken (sText, dPos):
@@ -333,8 +334,8 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
             else:
                 print("Syntax error in rule group: ", sLine, " -- line:", i)
                 exit()
-        elif re.search("^    +<<- ", sLine) or sLine.startswith("        ") \
-                or re.search("^    +#", sLine) or re.search(r"^    [-~=>/](?:\d\.?(?::\.?\d+|)|)>> ", sLine) :
+        elif re.search("^    +<<- ", sLine) or (sLine.startswith("        ") and not sLine.startswith("        ||")) \
+                or re.search("^    +#", sLine) or re.search(r"[-~=>/%](?:-?\d\.?(?::\.?-?\d+|)|)>> ", sLine) :
             # actions
             sActions += " " + sLine.strip()
         elif re.match("[  ]*$", sLine):
@@ -352,9 +353,14 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
             lTokenLine.clear()
             sActions = ""
             iActionBlock += 1
-        elif sLine.startswith(("    ")):
+        elif sLine.startswith("    "):
             # tokens
-            lTokenLine.append([i, sLine.strip()])
+            sLine = sLine.strip()
+            if sLine.startswith("||"):
+                iPrevLine, sPrevLine = lTokenLine[-1]
+                lTokenLine[-1] = [iPrevLine, sPrevLine + " " + sLine[2:]]
+            else:
+                lTokenLine.append([i, sLine])
         else:
             print("Unknown line:")
             print(sLine)
