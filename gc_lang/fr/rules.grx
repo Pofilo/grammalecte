@@ -13160,6 +13160,37 @@ TEST: Si t’es pas contente, t’achètes pas.
 TEST: t’étais vraiment cinglé à cette époque.
 
 
+!!
+!!
+!!!! Participes passés: se +laisser +adjectif                                                     !!
+!!
+!!
+
+__ppas_pronom_laisser_adj__
+    [me|te|le|la]  >laisser  @:A.*:p¬:(?:[YG]|[AQ].*:[is])
+        <<- /ppas/ -3>> =suggSing(\3)                                       # Accord avec “\1” : “\3” devrait être au singulier.
+
+TEST: Elle te laisse {{épuisés}} par la tâche.
+TEST: Ils la laissèrent {{malades}}.
+TEST: Ils la laissent prendre le train.
+TEST: Elle te laisse finir le travail.
+TEST: Je me laisse de quoi finir.
+TEST: Il te laisse trois jours de délai.
+
+    les  >laisser  @:[AQ].*:s¬:(?:[YG]|[AQ].*:[ip])
+        <<- /ppas/ -3>> =suggPlur(\3)                                       # Accord avec “\1” : “\3” devrait être au singulier.
+
+    nous  >laisser  @:[AQ].*:s¬:(?:[YG]|[AQ].*:[ip])
+        <<- /ppas/ not \2.endswith("ons") -3>> =suggPlur(\3)                # Accord avec “\1” : “\3” devrait être au singulier.
+
+TEST: je les laisse {{indifférent}}.
+TEST: elle nous laissera {{perdu}} dans nos délires.
+TEST: je les laisse indifférents.
+TEST: tu nous laisses indifférentes.
+TEST: ils nous laisseront étourdis.
+TEST: nous laisserons étourdi cet homme.
+
+
 
 @@@@
 @@@@
@@ -13172,37 +13203,7 @@ TEST: t’étais vraiment cinglé à cette époque.
 @@@@
 
 
-!!
-!!
-!!!! Participes passés: se +laisser +adjectif                                                     !!
-!!
-!!
 
-__[i]/ppas(ppas_me_te_laisser_adj)__
-    ([mt]e|l[ae]) +(laiss\w*) +({w_3})  @@0,w,$
-    <<- morph(\2, ">laisser/", False) and  morphex(\3, ":[AQ].*:p", ":(?:[YG]|[AQ].*:[is])")
-    -3>> =suggSing(@)                                                                               # Accord avec « \1 » : « \3 » devrait être au singulier.
-
-TEST: Elle te laisse {{épuisés}} par la tâche.
-TEST: Ils la laissèrent {{malades}}.
-TEST: Ils la laissent prendre le train.
-TEST: Elle te laisse finir le travail.
-TEST: Je me laisse de quoi finir.
-TEST: Il te laisse trois jours de délai.
-
-
-__[i]/ppas(ppas_nous_les_laisser_adj)__
-    (nous|les) +(laiss\w*) +({w_3})  @@0,w,$
-    <<- morph(\2, ">laisser/", False) and morphex(\3, ":[AQ].*:s", ":(?:[YG]|[AQ].*:[ip])")
-        and (\1.endswith("es") or ( \1.endswith("us") and not \2.endswith("ons") ))
-    -3>> =suggPlur(@)                                                                               # Accord avec « \1 » : « \3 » devrait être au pluriel.
-
-TEST: je les laisse {{indifférent}}.
-TEST: elle nous laissera {{perdu}} dans nos délires.
-TEST: je les laisse indifférents.
-TEST: tu nous laisses indifférentes.
-TEST: ils nous laisseront étourdis.
-TEST: nous laisserons étourdi cet homme.
 
 
 !!
