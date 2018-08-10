@@ -811,27 +811,39 @@ class TextParser:
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    print("  COND_OK")
+                                    print("  COND_OK: ", sRuleId)
                                 pass
                             elif cActionType == "/":
+                                # Tag
                                 if bDebug:
-                                    print("  SEMANTIC_TAG:\n  ", dRule[sRuleId])
-                                nTokenStart = nTokenOffset + eAct[0]
-                                nTokenEnd = nTokenOffset + (eAct[1]  if eAct[1]  else eAct[0])
+                                    print("  TAG:\n  ", dRule[sRuleId])
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 for i in range(nTokenStart, nTokenEnd+1):
                                     if "tags" in self.lToken[i]:
                                         self.lToken[i]["tags"].update(sWhat.split("|"))
                                     else:
                                         self.lToken[i]["tags"] = set(sWhat.split("|"))
-                            elif cActionType == "%":
-                                # sentence tags
-                                if bDebug:
-                                    print("  SENTENCE_TAG:\n  ", dRule[sRuleId])
-                                nTokenTag = nTokenOffset + eAct[0]
                                 if sWhat not in self.dTags:
-                                    self.dTags[sWhat] = (nTokenTag, nTokenTag)
-                                elif nTokenTag > self.dTags[sWhat][1]:
-                                    self.dTags[sWhat] = (self.dTags[sWhat][0], nTokenTag)
+                                    self.dTags[sWhat] = [nTokenStart, nTokenStart]
+                                else:
+                                    self.dTags[sWhat][0] = min(nTokenStart, self.dTags[sWhat][0])
+                                    self.dTags[sWhat][1] = max(nTokenEnd, self.dTags[sWhat][1])
+                            elif cActionType == "%":
+                                # immunity
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                if nTokenEnd - nTokenStart == 0:
+                                    self.lToken[nTokenStart]["bImmune"] = True
+                                    nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenStart]["nStart"]
+                                    if nErrorStart in self.dError:
+                                        del self.dError[nErrorStart]
+                                else:
+                                    for i in range(nTokenStart, nTokenEnd+1):
+                                        self.lToken[i]["bImmune"] = True
+                                        nErrorStart = self.nOffsetWithinParagraph + self.lToken[i]["nStart"]
+                                        if nErrorStart in self.dError:
+                                            del self.dError[nErrorStart]
                             else:
                                 print("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
@@ -917,13 +929,6 @@ class TextParser:
         elif sWhat == "␣":
             # merge tokens
             self.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
-        elif sWhat == "!":
-            # immunity
-            if nTokenRewriteEnd - nTokenRewriteStart == 0:
-                self.lToken[nTokenRewriteStart]["bImmune"] = True
-            else:
-                for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
-                    self.lToken[i]["bImmune"] = True
         elif sWhat == "_":
             # neutralized token
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -967,12 +972,6 @@ class TextParser:
         for iToken, dToken in enumerate(self.lToken):
             bKeepToken = True
             if dToken["sType"] != "INFO":
-                if "bImmune" in dToken:
-                    nErrorStart = self.nOffsetWithinParagraph + dToken["nStart"]
-                    if nErrorStart in self.dError:
-                        if bDebug:
-                            print("immunity -> error removed:", self.dError[nErrorStart])
-                        del self.dError[nErrorStart]
                 if nMergeUntil and iToken <= nMergeUntil:
                     dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
                     dTokenMerger["nEnd"] = dToken["nEnd"]

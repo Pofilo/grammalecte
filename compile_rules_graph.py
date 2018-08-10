@@ -248,7 +248,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         ## no action, break loop if condition is False
         return [sOption, sCondition, cAction, ""]
 
-    if not sAction:
+    if not sAction and cAction != "%":
         print("# Error in action at line " + sActionId + ":  This action is empty.")
 
     if sAction[0:1] != "=" and cAction != "=":

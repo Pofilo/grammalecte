@@ -2206,7 +2206,7 @@ __tag_noms__
 
 __n_importe_qui_quoi__
     n’ importe [qui|quoi]
-        <<- ~2>> !
+        <<- %2>>
 
 
 
@@ -6349,7 +6349,7 @@ TEST: C’est une {{voix}} interdite.
 # voir / voire
 __conf_voir_voire__
     voir [grand|petit|rouge]
-        <<- ~2>> !
+        <<- %2>>
 
     voir  @:A¬:[NGM]
         <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de)/")
@@ -6416,7 +6416,7 @@ TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
 __maj_mois__
     monarchie de Juillet
     révolution d’ Octobre
-        <<- ~3>> !
+        <<- %3>>
 
     *WORD [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
         <<- /maj/ not morph(\1, ":M1") -2:>> =\2.lower()
@@ -6441,7 +6441,7 @@ TEST: le comité d’éthique qui statuera dans les meilleurs délais sur la sit
 # Les États
 __maj_État__
     en fonction de l’ état
-        <<- ~5>> !
+        <<- %5>>
 
     état [français|belge|suisse|canadien|palestinien|souverain|américain|russe|anglais|allemand|espagnol|italien|mexicain|japonais|chinois|australien|polonais|membre|africain|européen|asiatique|voyou|démocratique|totalitaire|fédéral|fédéré|capitaliste|communiste|providence|nation]
         <<- /maj/ \1 == "état" -1>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
@@ -6475,7 +6475,7 @@ TEST: C’est une prérogative de l’{{état-nation}}                        ->
 __maj_gentilés__
     océan Indien
     [îles|iles] Britanniques
-        <<- ~2>> !
+        <<- %2>>
 
     *WORD [>afghane|>albanaise|>algérienne|>allemande|>américaine|>andorrane|>anglais|>angolaise|>arabe|>argentine|>arménienne|>australienne|>autrichienne|>asiatique|>azerbaïdjanaise|>bahamienne|>bangladaise|>bengladeshie|>barbadienne|>basque|>belge|>bélizienne|>béninoise|>bretonne|>bhoutanaise|>biélorusse|>birmane|>bolivienne|>bosnienne|>botswanaiso|>brésilienne|>britannique|>brunéiene|>bulgare|>burkinabé|>burundaise|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>congolaise|>nord-coréenne|>corse|>costaricienne|>croate|>cubaine|>danoise|>djiboutienne|>dominicaine|>égyptienne|>émiratie|>équatorienne|>érythréenne|>estonienne|>espagnole|>étatsunienne|>états-unienne|>étasunienne|>éthiopienne|>fidjienne|>finlandaise|>formosane|>française|>gabonaise|>gambienne|>géorgienne|>ghanéenne|>grecque|>grenadienne|>guadeloupéenne|>guatémaltèque|>guinéenne|>équato-guinéenne|>guyanienne|>haïtienne|>honduriene|>hollandaise|>hongroise|>indienne|>indochinoise|>indonésienne|>irakienne|>italienne|>iranienne|>irlandaise|>islandaise|>israélienne|>ivoirienne|>jamaïcaine|>japonaise|>jordanienne|>kazakhe|>kényane|>kosovare|>koweïtienne|>laotienne|>lapone|>lettone|>libanaise|>libérienne|>libyenne|>liechtensteinoise|>lituanienne|>luxembourgeois|>macédonienne|>maghrébine|>malgache|>malaisienne|>malawite|>maldivienne|>malienne|>maltaise|>maorie|>marocaine|>martienne|>mauricienne|>mauritanienne|>mexicaine|>micronésienne|>moldave|>monégasque|>monténégrine|>mongole|>mozambicaine|>namibiene|>népalaise|>nicaraguayenne|>nigérienne|>nigériane|>néerlandaise|>norvégienne|>néo-zélandaise|>ougandaise|>ouzbèke|>pakistanaise|>palestinienne|>panaméenne|>paraguayenne|>perse|>péruvienne|>philippine|>polonaise|>polynésienne|>portugaise|>québécoise|>qatarie|>roumaine|>russe|>rwandaise|>saoudienne|>scandinave|>salvadorienne|>sénégalaise|>serbe|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>srilankaise|>suédoise|>suisse|>surinamaise|>syrienne|>sud-africaine|>sud-coréenne|>américaine|>tadjike|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tahitienne|>tunisiene|>turkmène|>turque|>taïwanaise|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
         <<- /maj/ \2.istitle() and morph(\1, ":N", ":(?:A|V0e|D|R|B)") -2:>> =\2.lower()            # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
@@ -6600,7 +6600,7 @@ __rendez_vous__
     ne [le|la|les|lui|leur]     (rendez-vous)
     [me|ne|nous|vous|lui]       (rendez-vous)
         <<- =>> define(\1, [":VCi1:2p"])
-        <<- ~1>> !
+        <<- %1>>
 
 #   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
 #   rendez-vous seulement défini comme :N:m:i
@@ -6616,7 +6616,7 @@ __rendez_vous__
 
 __m_enfin__
     m’ enfin
-        <<- ~2>> !
+        <<- %2>>
         <<- ~>> *
 
 
@@ -6684,7 +6684,7 @@ TEST: Ne presque jamais réussir un plat aussi simple, c’est de l’incompéte
 
 __loc_notre_père_qui_es_au_cieux__
     notre père qui [es|est] aux cieux
-        <<- ~4>> !
+        <<- %4>>
         <<- ~3:0>> *
 
 
@@ -6698,14 +6698,14 @@ __tag_sujets__
     [je|j’]
     [moi|moi-même] qui
     [moi|moi-même] [seul|seule]
-        <<- %>> 1s
+        <<- />> 1s
 
     tu
     t’  @:2s
     t’  [en|y]  @:2s
     [toi|toi-même] ?,¿ qui
     [toi|toi-même] [seul|seule]
-        <<- %>> 2s
+        <<- />> 2s
 
     nous
     nous ?,¿ qui
@@ -6715,7 +6715,7 @@ __tag_sujets__
     [et|ou] [moi|moi-même]
     ni [moi|moi-même]
     [moi|moi-même] et
-        <<- %>> 1p
+        <<- />> 1p
 
     vous
     vous ?,¿ qui
@@ -6725,12 +6725,12 @@ __tag_sujets__
     [et|ou] [toi|toi-même]
     ni [toi|toi-même]
     [toi|toi-même] et
-        <<- %>> 2p
+        <<- />> 2p
 
 
 __tag_prop_sub__
     ce [que|qu’|qu]
-        <<- %>> ce_que
+        <<- />> ce_que
 
 
 ## Incohérences avec formes verbales 1sg et 2sg sans sujet
@@ -7376,7 +7376,7 @@ TODO: comme
 __purge_locutions_latines__
     [a|à]       [priori|postériori|posteriori|contrario|cappella|minima]
         <<- ~>> *
-        <<- ~1>> !
+        <<- %1>>
 
     ab          [absurdo|initio]
     ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
@@ -11716,7 +11716,7 @@ __conf_cour_cours_court_courre__
     en cour martiale
     en cour [de|d’] [cassation|justice]
     en cour d’ [>assise]
-        <<- ~1:2>> !
+        <<- %1:2>>
 
     en cour
         <<- /conf/ ->> en cours                             # Confusion probable. Une cour… Un cours… Adjectif : court(e).
