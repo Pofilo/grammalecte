@@ -12939,7 +12939,7 @@ TEST: Ce sont des biens de peu de valeur.
 
 __infi_faire_verbe__
     >faire  ~(?:ée?s?|ez)$
-        <<- not value(<1, "|en|") and morph(\1, ":V") and morph(\2, ":V", ":[MG]")
+        <<- /infi/ not value(<1, "|en|de|") and morph(\1, ":V") and morph(\2, ":V", ":[MG]")
         -2>> =suggVerbInfi(\2)                                  # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
 
 TEST: elle fit peu {{mangé}} les enfants
@@ -12951,7 +12951,6 @@ TEST: c’est un fait reconnu.
 TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
 
-
 #__[i]/infi(infi_faire)__
 #    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
 #    <<- morph(\1, ">faire/", False) and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
@@ -12960,24 +12959,18 @@ TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas c
 #    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
 
 
+__infi_me_te_se_faire__
+    [me|te|se]  >faire  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\3, ":V", ":M")
+        -3>> =suggVerbInfi(\3)                                  # Après le verbe “faire”, le verbe devrait être à l’infinitif.
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-@@@@
-@@@@
-@@@@
+TEST: me faire constamment {{laminé}} au jeu, ça finit par me fâcher.
 
 
-__[i]/infi(infi_vouloir)__
-    (v[oe]u\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">vouloir/", False) and not before(r"(?i)\b(?:[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
-        and not (re.search("(?i)^vouloir$", \1) and \2.endswith("é"))
-        and not (re.search("(?i)^vouloirs$", \1) and \2.endswith("és"))
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_vouloir_verbe__
+    >vouloir  ~(?:ée?s?|ez)$
+        <<- /infi/ not value(<1, "|un|de|des|ces|mes|tes|ses|nos|vos|leurs|me|te|se|nous|vous|les|") and morph(\2, ":V", ":M")
+        -2>> =suggVerbInfi(\2)                                  # Après le verbe “vouloir”, ce verbe devrait être à l’infinitif.
 
 TEST: je veux {{changé}}
 TEST: je ne veux pas {{mangé}}
@@ -12987,49 +12980,48 @@ TEST: Elles ont voulu {{mangé}} de la viande.
 TEST: en voulant {{changé}}
 
 
-__[i]/infi(infi_me_te_se_faire)__
-    [mts]e (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">faire/", False) and morphex(\2, ":V", ":M")
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
-
-TEST: me faire constamment {{laminé}} au jeu, ça finit par me fâcher.
-
-
-__[i]/infi(infi_de_vouloir_faire)__
-    de (?:vouloir|faire) +({w_2}(?:ée?s?|ez))  @@$
-    <<- morphex(\1, ":V", ":M")
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_de_vouloir_faire_verbe__
+    de  [vouloir|faire]  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\3, ":V", ":M")
+        -3>> =suggVerbInfi(\3)                                  # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
 
 TEST: Je suis fatigué de vouloir {{essayé}} d’y remédier.
 
 
-__[i]/infi(infi_savoir)__
-    (s[auû]\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-    <<- morph(\1, ">savoir/:V", False) and morph(\2, ":V", False) and not before(r"(?i)\b(?:[mts]e|[vn]ous|les?|la|un) +$")
-    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+__infi_savoir_verbe__
+    >savoir  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\1, ">savoir/:V") and morph(\2, ":V") and not value(<1, "|me|te|se|nous|vous|le|la|les|un|")
+        -2>> =suggVerbInfi(\2)                                  # Après le verbe “savoir”, ce verbe devrait être à l’infinitif.
 
 TEST: Il faut savoir {{arrêté}} les frais.
 TEST: un certain nombre de savoirs spécialisés
+TEST: je le savais désiré par de nombreuses personnes.
+TEST: il les savait commandités par ses ennemis.
 
-__[i]/infi(infi_il_faut)__
-    il (?:ne |)fa(?:ut|udrait|udra|llut) +(?:lui (?:en|)|[mts](?:e |’(?:y |en |))|[nv]ous (?:en |y |)|en |y |)({w_2}(?:ée?s?|ez))  @@$
-    <<- morph(\1, ":(?:Q|2p)", False)
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+
+__infi_il_faut_verbe__
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  (~(?:ée?s?|ez)$)
+        <<- /infi/ morph(\1, ":(?:Q|2p)", ":M")
+        -1>> =suggVerbInfi(\1)                                      # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
+
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  [le|la|leur|les|l’]  (~(?:ée?s?|ez)$)
+        <<- /infi/ morph(\1, ":V", ":N") -1>> =suggVerbInfi(\1)     # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
+
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  [ne|n’|en|me|m’|te|t’|se|s’|nous|vous|lui|y]                           (~(?:ée?s?|ez)$)
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]   (~(?:ée?s?|ez)$)
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        (~(?:ée?s?|ez)$)
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]            (~(?:ée?s?|ez)$)
+    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [lui|leur]                      en                         (~(?:ée?s?|ez)$)
+        <<- /infi/ morph(\1, ":V") -1>> =suggVerbInfi(\1)           # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
 
 TEST: il faut sans cesse {{persévéré}}
-
-
-__[i]/infi(infi_il_faut_le_les_la)__
-    il (?:ne |)fa(?:ut|udrait|udra|llut) +l(?:es? |a |’)({w_2}(?:ée?s?|ez))  @@$
-    <<- morphex(\1, ":(?:Q|2p)", ":N")
-    -1>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
-
 TEST: Il faudrait l’{{essayé}}.
+TEST: Il faudra ne {{touché}} qu’aux extrémités.
 
 
-__[i]/infi(infi_lui)__
-    lui ({w_2}ée?s?)  @@$
-    <<- morph(\1, ":Q", False) -1>> =suggVerbInfi(@)                                                # Le verbe ne devrait pas être un participe passé.
+__infi_lui_verbe__
+    lui  ~ée?s?$
+        <<- /infi/ morph(\2, ":Q") -2>> =suggVerbInfi(\2)           # Le verbe ne devrait probablement pas être un participe passé.
 
 TEST: lui {{mangée}} beaucoup.
 
@@ -13041,33 +13033,28 @@ TEST: lui {{mangée}} beaucoup.
 !!
 !!
 
-__[i]/conj(conj_se_conf_être_avoir)__
-    (s’)(?:en +|y+ |)({avoir})  @@0,$
-    <<- morph(\2, ">avoir/", False) >>>
-    <<- morph(\2, ":3p", False) -2>> sont|étaient|seront|seraient                                   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-    <<- __else__ -2>> est|était|sera|serait                                                         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+__conj_se_conf_être_avoir__
+    s’  ?[en|y]¿  (>avoir)
+        <<- /conj/ morph(\1, ":3p") -1>> sont|étaient|seront|seraient   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ __else__ -1>> est|était|sera|serait                  # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
 TEST: s’en {{ait}} trop
 
 
-__[i]/conj(conj_je_me_conf_être_avoir)__
-    je m’(?:en +|y+ |)({avoir})  @@$
-    <<- morph(\1, ">avoir/", False) -1>> suis|étais|serai|serais                                    # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    je  m’  ?[en|y]¿  (>avoir)
+        <<- /conj/ -1>> suis|étais|serai|serais                         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
-__[i]/conj(conj_tu_te_conf_être_avoir)__
-    tu t’(?:en +|y+ |)({avoir})  @@$
-    <<- morph(\1, ">avoir/", False) and not morph(word(-1), ":V0", False, False)
-    -1>> es|étais|seras|serais                                                                      # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    tu  t’  ?[en|y]¿  (>avoir)
+        <<- /conj/ not morph(<1, ":V0")
+        -1>> es|étais|seras|serais                                      # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
-__[i]/conj(conj_nous_nous_conf_être_avoir)__
-    (nous) nous (?:en +|y+ |)({avoir})  @@0,$
-    <<- morph(\2, ">avoir/", False) and isStart() -2>> sommes|étions|serons|serions                 # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-    <<- __also__ -1>> nous,                                                                         # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
+    [<start>|,]  nous  nous  ?[en|y]¿  >avoir
+        <<- /conj/ --1>> sommes|étions|serons|serions                   # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ -2>> nous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
 
-__[i]/conj(conj_vous_vous_conf_être_avoir)__
-    (vous) vous (?:en +|y+ |)({avoir})  @@0,$
-    <<- morph(\2, ">avoir/", False) and isStart() -2>> êtes|étiez|serez|seriez                      # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-    <<- __also__ -1>> vous,                                                                         # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
+    [<start>|,]  vous  vous  ?[en|y]¿  >avoir
+        <<- /conj/ --1>> êtes|étiez|serez|seriez                        # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ -2>> vous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
 
 TEST: je m’y {{avais}} habitué.
 TEST: tu t’{{avais}} donné du temps pour finir ton mémoire.
@@ -13076,84 +13063,87 @@ TEST: {{nous}} nous {{avons}} donné le temps
 TEST: {{vous}} vous {{avez}} perdu toute notion de décence.
 
 
-
 !!
 !!
 !!!! Participes passés: se +être +verbe                                                           !!
 !!
 !!
 
-__[i]/ppas(ppas_je_me_être_verbe)__
-    je +(?:ne +|)m(?:e +|’(?:y +|))(?:s[uo]i[st]|étai[st]|fu(?:sses?|s|t)|serai[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:p", ":(?:G|Q.*:[si])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
-    -1>> =suggVerbPpas(\1, ":m:s")                                                                  # Si ce participe passé se rapporte bien à “je”, il devrait être au singulier.
+__ppas_je_me_être_verbe__
+    je  ?ne¿  [me|m’]  ?y¿  [suis|sois|soit|suit|étais|était|fusse|fusses|fus|fut|fût|serai|serais|serait]  (@:Q.*:p¬:(?:G|Q.*:[si])|>dire/)
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|qu|"))
+        -1>> =suggVerbPpas(\1, ":m:s")                                                              # Si ce participe passé se rapporte bien à “je”, il devrait être au singulier.
 
 TEST: je ne me suis jamais {{perdus}}
 TEST: c’est de ce château que je me suis {{enfuis}}.
 TEST: je me suis donné du temps.
 
 
-__[i]/ppas(ppas_tu_te_être_verbe)__
-    tu +(?:ne +|)t(?:e +|’(?:y +|))(?:est?|soi[st]|étai[st]|fu(?:sses?|s|t)|serai[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:p", ":(?:G|Q.*:[si])") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
-    -1>> =suggVerbPpas(\1, ":m:s")                                                                  # Si ce participe passé se rapporte bien à “tu”, il devrait être au singulier.
+__ppas_tu_te_être_verbe__
+    tu  ?ne¿  [te|t’]  ?y¿  [es|est|sois|soit|étais|était|fusse|fusses|fus|fut|fût|sera|seras|serai|serais|serait]  (@:Q.*:p¬:(?:G|Q.*:[si])|>dire/)
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|qu|"))
+        -1>> =suggVerbPpas(\1, ":m:s")                                                              # Si ce participe passé se rapporte bien à “tu”, il devrait être au singulier.
 
 TEST: tu t’es finalement {{retrouvés}} en mauvaise posture.
 TEST: tu ne t’étais pas laissé le temps d’y réfléchir.
 
 
-
-__[i]/ppas(ppas_il_se_être_verbe)__
-    il +(?:ne +|)s(?:e +|’(?:y +|))(?:est?|soi[st]|étai[st]|fu(?:sses?|s|t)|serai?[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:f|m:p)", ":(?:G|Q.*:m:[si])|>dire/") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
-    -1>> =suggVerbPpas(\1, ":m:s")                                                                  # Si ce participe passé se rapporte bien à “il”, il devrait être au masculin singulier.
+__ppas_il_se_être_verbe__
+    il  ?ne¿  [se|s’]  ?y¿  [es|est|sois|soit|étais|était|fusse|fusses|fus|fut|fût|sera|seras|serai|serais|serait]  (@:Q.*:(?:f|m:p)¬:(?:G|Q.*:m:[si]))
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|qu|"))
+        -1>> =suggVerbPpas(\1, ":m:s")                                                              # Si ce participe passé se rapporte bien à “il”, il devrait être au masculin singulier.
 
 TEST: le dédale dans lequel il se serait {{perdue}}
 TEST: il s’était perdu dans la forêt.
+TEST: il s’était dit qu’il avait eu tort de s’irriter si vivement pour une telle peccadille.
 
 
-__[i]/ppas(ppas_elle_se_être_verbe)__
-    elle +(?:ne +|)s(?:e +|’(?:y +|))(?:est?|soi[st]|étai[st]|fu(?:sses?|s|t)|serai?[st]?) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:m|f:p)", ":(?:G|Q.*:f:[si])|>dire/") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not morph(word(-1), ":R|>que/", False, False)) )
-    -1>> =suggVerbPpas(\1, ":f:s")                                                                  # Si ce participe passé se rapporte bien à “elle”, il devrait être au féminin singulier.
+__ppas_elle_se_être_verbe__
+    elle  ?ne¿  [se|s’]  ?y¿  [es|est|sois|soit|étais|était|fusse|fusses|fus|fut|fût|sera|seras|serai|serais|serait]  (@:Q.*:(?:m|f:p)¬:(?:G|Q.*:f:[si])|>dire/)
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que?/"))
+        -1>> =suggVerbPpas(\1, ":f:s")                                                              # Si ce participe passé se rapporte bien à “elle”, il devrait être au féminin singulier.
 
 TEST: elle s’y était {{préparé}}.
 TEST: elle s’était trouvé un mari.
 
 
-__[i]/ppas(ppas_nous_nous_être_verbe)__
-    nous +(?:ne +|)nous +(?:y +|)(?:sommes|étions|fûmes|fussions|seri?ons) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:s", ":(?:G|Q.*:[pi])|>dire/") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not morph(word(-1), ":R|>que/", False, False)) )
-    -1>> =suggVerbPpas(\1, ":p")                                                                    # Si ce participe passé se rapporte bien à “nous”, il devrait être au pluriel.
+__ppas_nous_nous_être_verbe__
+    nous  ?ne¿  nous  ?y¿  [sommes|étions|fûmes|fussions|serons|serions]  (@:Q.*:s¬:(?:G|Q.*:[pi])|>dire/)
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que/"))
+        -1>> =suggVerbPpas(\1, ":p")                                                                # Si ce participe passé se rapporte bien à “nous”, il devrait être au pluriel.
 
 TEST: Nous nous étions {{cru}} au paradis.
 
 
-__[i]/ppas(ppas_ils_se_être_verbe)__
-    ils +(?:ne +|)s(?:e +|’(?:y +|))(?:so(?:ie|)nt|étaient|fu(?:r|ss)ent|ser(?:aie|o)nt) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:f|m:s)", ":(?:G|Q.*:m:[pi])|>dire/") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not before(r"\b[qQ]ue? +$")) )
-    -1>> =suggVerbPpas(\1, ":m:p")                                                                  # Si ce participe passé se rapporte bien à “ils”, il devrait être au masculin pluriel.
+__ppas_ils_se_être_verbe__
+    ils  ?ne¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|serons|seraient]  (@:Q.*:(?:f|m:s)¬:(?:G|Q.*:m:[pi])|>dire/)
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not value(<1, "|que|qu’|qu|"))
+        -1>> =suggVerbPpas(\1, ":m:p")                                                              # Si ce participe passé se rapporte bien à “ils”, il devrait être au masculin pluriel.
 
 TEST: ils s’y étaient {{abandonné}} avec ferveur
 
 
-__[i]/ppas(ppas_elles_se_être_verbe)__
-    elles +(?:ne +|)s(?:e +|’(?:y +|))(?:so(?:ie|)nt|étaient|fu(?:r|ss)ent|ser(?:aie|o)nt) +({w_3}) @@$
-    <<- morphex(\1, ":Q.*:(?:m|f:s)", ":(?:G|Q.*:f:[pi])|>dire/") and ( morph(\1, ":V[123]_.__p_e_") or (isRealEnd() and not morph(word(-1), ":R|>que/", False, False)) )
-    -1>> =suggVerbPpas(\1, ":f:p")                                                                  # Si ce participe passé se rapporte bien à “elles”, il devrait être au féminin pluriel.
+__ppas_elles_se_être_verbe__
+    elles  ?ne¿  [se|s’]  ?y¿  [sont|soient|étaient|furent|fussent|seront|seraient]  (@:Q.*:(?:m|f:s)¬:(?:G|Q.*:f:[pi])|>dire/)
+        <<- /ppas/ morph(\1, ":V[123]_.__p_e_", "*") or (value(>1, "|<end>|") and not morph(<1, ":R|>que/"))
+        -1>> =suggVerbPpas(\1, ":f:p")                                                              # Si ce participe passé se rapporte bien à “elles”, il devrait être au féminin pluriel.
 
 TEST: elles ne s’y étaient pas {{donnée}}.
 TEST: sans fin elles se sont succédé
 
 
-__[i]/ppas(ppas_se_être)__
-    [mts](?:e +|’(?:y +|en +|))({etre}) +({w_2})  @@w,$
-    <<- morph(\1, ">être/", False) >>>
-    <<- morphex(\2, ":(?:Y|[123][sp])", ":Q") and not re.search(r"(?i)^t’(?:es|étais)", \0)
-    -2>> =suggVerbPpas(@)                                                                           # Incohérence. Après « s’être », le verbe doit être un participe passé.
-    <<- __else__ and morph(\1, ":[123]s", False) and morph(\2, ":Q.*:p", False) and not before(r"(?i)\bque?[, ]|\bon (?:ne |)$")
-        and not re.search(r"(?i)^t’(?:es|étais)", \0)
-    -2>> =suggSing(@)                                                                               # Le participe passé devrait être au singulier.
+__ppas_se_être__
+    [me|m’|te|se|s’]  ?[y|en]¿  (>être)  (*WORD)
+    t’  [y|en]  (>être)  (*WORD)
+        <<- /ppas/ morph(\2, ":(?:Y|[123][sp])", ":Q") -2>> =suggVerbPpas(\2)                       # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ __else__ and morph(\1, ":[123]s") and morph(\2, ":Q.*:p") and not before(r"(?i)\bque?[, ]|\bon (?:ne |)$")
+        -2>> =suggSing(\2)                                                                          # Le participe passé devrait être au singulier.
+
+    t’  (>être)  (*WORD)
+        <<- /ppas/ not value(\1, "|es|étais|") >>>
+        <<- /ppas/ morph(\2, ":(?:Y|[123][sp])", ":Q") -2>> =suggVerbPpas(\2)                       # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ __else__ and morph(\1, ":[123]s") and morph(\2, ":Q.*:p") and not before(r"(?i)\bque?[, ]|\bon (?:ne |)$")
+        -2>> =suggSing(\2)                                                                          # Le participe passé devrait être au singulier.
 
 TEST: s’être {{donner}} le mot.
 TEST: je me suis {{donnés}} à fond
@@ -13167,7 +13157,19 @@ TEST: elles se sont dit : « Allons-y ».
 TEST: On s’est rencontrées lorsqu’on travaillait là-bas.
 TEST: des soins que je m’étais donnés.
 TEST: Si t’es pas contente, t’achètes pas.
+TEST: t’étais vraiment cinglé à cette époque.
 
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@
 
 
 !!
@@ -13251,6 +13253,7 @@ TEST: Il est {{laisser}} à lui-même
 TEST: celui qui ne semble pas {{étonnés}}
 TEST: c’est ça qui paraît {{stupides}}
 TEST: celui-là semble {{perdus}} dans ses pensées.
+
 
 __[i]/ppas(ppas_c_être)__
     c’(?:est|était|e[uû]t +été) +({w_2})  @@$
