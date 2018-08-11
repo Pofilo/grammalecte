@@ -12,10 +12,25 @@ import darg
 
 dACTIONS = {}
 dFUNCTIONS = {}
+dFUNCNAME = {}
+
+
+def createFunction (sType, sActionId, sCode, bStartWithEqual=False):
+    "create a function (stored in dFUNCTIONS) and return function name"
+    sCode = prepareFunction(sCode)
+    if sActionId not in dFUNCNAME:
+        dFUNCNAME[sActionId] = {}
+    if sCode not in dFUNCNAME[sActionId]:
+        dFUNCNAME[sActionId][sCode] = len(dFUNCNAME[sActionId])+1
+    sFuncName = "_g_" + sType + "_" + sActionId + "_" + str(dFUNCNAME[sActionId][sCode])
+    dFUNCTIONS[sFuncName] = sCode
+    return sFuncName  if not bStartWithEqual  else "="+sFuncName
 
 
 def prepareFunction (s):
     "convert simple rule syntax to a string of Python code"
+    if s[0:1] == "=":
+        s = s[1:]
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = s.replace("sContext", "_sAppContext")
@@ -166,22 +181,24 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         sAction = sAction[m.end():].strip()
     if nPriority == -1:
         nPriority = dOptPriority.get(sOption, 4)
+
     # valid action?
     m = re.search(r"(?P<action>[-~=/%>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         return None
+
     # Condition
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = changeReferenceToken(sCondition, dPos)
-        sCondition = prepareFunction(sCondition)
-        dFUNCTIONS["_g_c_"+sActionId] = sCondition
-        sCondition = "_g_c_"+sActionId
+        sCondition = createFunction("cond", sActionId, sCondition)
     else:
         sCondition = ""
+
     # Case sensitivity
     bCaseSensitivity = False if m.group("casing") == ":" else True
+
     # Action
     cAction = m.group("action")
     sAction = sAction[m.end():].strip()
@@ -236,9 +253,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
                 sMsg = sMsg[:mURL.start(0)].strip()
             checkTokenNumbers(sMsg, sActionId, nToken)
             if sMsg[0:1] == "=":
-                sMsg = prepareFunction(sMsg[1:])
-                dFUNCTIONS["g_m_"+sActionId] = sMsg
-                sMsg = "=g_m_"+sActionId
+                sMsg = createFunction("msg", sActionId, sMsg, True)
             else:
                 checkIfThereIsCode(sMsg, sActionId)
 
@@ -258,9 +273,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if cAction == "-":
         ## error detected --> suggestion
         if sAction[0:1] == "=":
-            sAction = prepareFunction(sAction)
-            dFUNCTIONS["_g_s_"+sActionId] = sAction[1:]
-            sAction = "=_g_s_"+sActionId
+            sAction = createFunction("sugg", sActionId, sAction, True)
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
@@ -269,9 +282,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     elif cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
-            sAction = prepareFunction(sAction)
-            dFUNCTIONS["_g_p_"+sActionId] = sAction[1:]
-            sAction = "=_g_p_"+sActionId
+            sAction = createFunction("tp", sActionId, sAction, True)
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
@@ -280,13 +291,9 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
     elif cAction == "=":
         ## disambiguator
-        if sAction[0:1] == "=":
-            sAction = sAction[1:]
         if "define(" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
-        sAction = prepareFunction(sAction)
-        dFUNCTIONS["_g_d_"+sActionId] = sAction
-        sAction = "_g_d_"+sActionId
+        sAction = createFunction("da", sActionId, sAction)
         return [sOption, sCondition, cAction, sAction]
     else:
         print(" # Unknown action.", sActionId)
@@ -391,15 +398,15 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     sPyCallables = "# generated code, do not edit\n"
     #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
     for sFuncName, sReturn in dFUNCTIONS.items():
-        if sFuncName.startswith("_g_c_"): # condition
+        if sFuncName.startswith("_g_cond_"): # condition
             sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags, sSentence, sSentence0"
-        elif sFuncName.startswith("g_m_"): # message
+        elif sFuncName.startswith("g_msg_"): # message
             sParams = "lToken, nTokenOffset"
-        elif sFuncName.startswith("_g_s_"): # suggestion
+        elif sFuncName.startswith("_g_sugg_"): # suggestion
             sParams = "lToken, nTokenOffset, nLastToken"
-        elif sFuncName.startswith("_g_p_"): # preprocessor
+        elif sFuncName.startswith("_g_tp_"): # text preprocessor
             sParams = "lToken, nTokenOffset"
-        elif sFuncName.startswith("_g_d_"): # disambiguator
+        elif sFuncName.startswith("_g_da_"): # disambiguator
             sParams = "lToken, nTokenOffset"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
