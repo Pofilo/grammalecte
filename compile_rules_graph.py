@@ -143,9 +143,9 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                     dACTIONS[sActionId] = aAction
                     lResult = list(lToken)
                     lResult.extend(["##"+str(iLine), sActionId])
-                    if iLine == 13341:
-                        print("  ".join(lToken))
-                        print(sActionId, aAction)
+                    #if iLine == 13341:
+                    #    print("  ".join(lToken))
+                    #    print(sActionId, aAction)
                     yield lResult
                 else:
                     print(" # Error on action at line:", iLine)
@@ -404,13 +404,13 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
         if sFuncName.startswith("_g_cond_"): # condition
             sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags, sSentence, sSentence0"
         elif sFuncName.startswith("g_msg_"): # message
-            sParams = "lToken, nTokenOffset"
+            sParams = "lToken, nTokenOffset, nLastToken"
         elif sFuncName.startswith("_g_sugg_"): # suggestion
             sParams = "lToken, nTokenOffset, nLastToken"
         elif sFuncName.startswith("_g_tp_"): # text preprocessor
-            sParams = "lToken, nTokenOffset"
+            sParams = "lToken, nTokenOffset, nLastToken"
         elif sFuncName.startswith("_g_da_"): # disambiguator
-            sParams = "lToken, nTokenOffset"
+            sParams = "lToken, nTokenOffset, nLastToken"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue
