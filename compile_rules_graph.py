@@ -18,44 +18,44 @@ dFUNCNAME = {}
 def createFunction (sType, sActionId, sCode, bStartWithEqual=False):
     "create a function (stored in dFUNCTIONS) and return function name"
     sCode = prepareFunction(sCode)
-    if sActionId not in dFUNCNAME:
-        dFUNCNAME[sActionId] = {}
-    if sCode not in dFUNCNAME[sActionId]:
-        dFUNCNAME[sActionId][sCode] = len(dFUNCNAME[sActionId])+1
-    sFuncName = "_g_" + sType + "_" + sActionId + "_" + str(dFUNCNAME[sActionId][sCode])
+    if sType not in dFUNCNAME:
+        dFUNCNAME[sType] = {}
+    if sCode not in dFUNCNAME[sType]:
+        dFUNCNAME[sType][sCode] = len(dFUNCNAME[sType])+1
+    sFuncName = "_g_" + sType + "_" + str(dFUNCNAME[sType][sCode])
     dFUNCTIONS[sFuncName] = sCode
     return sFuncName  if not bStartWithEqual  else "="+sFuncName
 
 
-def prepareFunction (s):
+def prepareFunction (sCode):
     "convert simple rule syntax to a string of Python code"
-    if s[0:1] == "=":
-        s = s[1:]
-    s = s.replace("__also__", "bCondMemo")
-    s = s.replace("__else__", "not bCondMemo")
-    s = s.replace("sContext", "_sAppContext")
-    s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', s)
-    s = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', s)
-    s = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', s)
-    s = re.sub(r"(select|exclude|define|define_from)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', s)
-    s = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', s)
-    s = re.sub(r"(tag_before|tag_after)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1], dTags', s)
-    s = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', s)
-    s = re.sub(r"space_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', s)
-    s = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', s)
-    s = re.sub(r"analyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', s)
-    s = re.sub(r"(morph|analyse|value)\(>1", 'g_\\1(lToken[nLastToken+1]', s)                       # next token
-    s = re.sub(r"(morph|analyse|value)\(<1", 'g_\\1(lToken[nTokenOffset]', s)                       # previous token
-    s = re.sub(r"(morph|analyse|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', s)          # next token
-    s = re.sub(r"(morph|analyse|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', s)      # previous token
-    s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
-    s = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', s)          # before(s)
-    s = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                 # after(s)
-    s = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', s)        # before0(s)
-    s = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', s)                # after0(s)
-    s = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', s)
-    s = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', s)
-    return s
+    if sCode[0:1] == "=":
+        sCode = sCode[1:]
+    sCode = sCode.replace("__also__", "bCondMemo")
+    sCode = sCode.replace("__else__", "not bCondMemo")
+    sCode = sCode.replace("sContext", "_sAppContext")
+    sCode = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
+    sCode = re.sub(r"(morph|morphVC|analyse|value|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
+    sCode = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
+    sCode = re.sub(r"(select|exclude|define|define_from)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
+    sCode = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', sCode)
+    sCode = re.sub(r"(tag_before|tag_after)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1], dTags', sCode)
+    sCode = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
+    sCode = re.sub(r"space_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
+    sCode = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
+    sCode = re.sub(r"analyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
+    sCode = re.sub(r"(morph|analyse|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                       # next token
+    sCode = re.sub(r"(morph|analyse|value)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                       # previous token
+    sCode = re.sub(r"(morph|analyse|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)        # next token
+    sCode = re.sub(r"(morph|analyse|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)    # previous token
+    sCode = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', sCode)
+    sCode = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', sCode)          # before(sCode)
+    sCode = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                 # after(sCode)
+    sCode = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', sCode)        # before0(sCode)
+    sCode = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                # after0(sCode)
+    sCode = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', sCode)
+    sCode = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', sCode)
+    return sCode
 
 
 def genTokenLines (sTokenLine, dDef):
@@ -126,7 +126,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
         #if iLine == 3971: # debug
-        #    print(lToken)
+        #    print(lToken.join(" "))
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
                 lToken[i] = sToken[1:-1]
@@ -137,12 +137,15 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         for iAction, sAction in enumerate(sActions.split(" <<- ")):
             sAction = sAction.strip()
             if sAction:
-                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction) + "_" + str(len(lToken))
+                sActionId = sRuleName + "__b" + str(iActionBlock) + "_l" + str(iLine) + "_a" + str(iAction) + "_" + str(len(lToken))
                 aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
                 if aAction:
                     dACTIONS[sActionId] = aAction
                     lResult = list(lToken)
                     lResult.extend(["##"+str(iLine), sActionId])
+                    if iLine == 13341:
+                        print("  ".join(lToken))
+                        print(sActionId, aAction)
                     yield lResult
                 else:
                     print(" # Error on action at line:", iLine)
