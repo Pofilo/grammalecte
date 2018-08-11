@@ -13034,14 +13034,7 @@ TEST: lui {{mangée}} beaucoup.
 !!
 !!
 
-__conj_se_conf_être_avoir__
-    s’  ?[en|y]¿  (>avoir)
-        <<- /conj/ morph(\1, ":3p") -1>> sont|étaient|seront|seraient   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-        <<- /conj/ __else__ -1>> est|était|sera|serait                  # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-
-TEST: s’en {{ait}} trop
-
-
+__conj_conf_se_être_avoir__
     je  m’  ?[en|y]¿  (>avoir)
         <<- /conj/ -1>> suis|étais|serai|serais                         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
@@ -13057,11 +13050,16 @@ TEST: s’en {{ait}} trop
         <<- /conj/ --1>> êtes|étiez|serez|seriez                        # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
         <<- /conj/ -2>> vous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
 
+    s’  ?[en|y]¿  (>avoir)
+        <<- /conj/ morph(\1, ":3p") -1>> sont|étaient|seront|seraient   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ __else__ -1>> est|était|sera|serait                  # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+
 TEST: je m’y {{avais}} habitué.
 TEST: tu t’{{avais}} donné du temps pour finir ton mémoire.
-TEST: Ce qu’il a tu t’a donné la nausée.
+TEST: s’en {{ait}} trop
 TEST: {{nous}} nous {{avons}} donné le temps
 TEST: {{vous}} vous {{avez}} perdu toute notion de décence.
+TEST: Ce qu’il a tu t’a donné la nausée.
 
 
 !!
@@ -13333,6 +13331,7 @@ TEST: Elle est de plus en plus {{belles}}.                                      
 TEST: celle-ci ne semble pas être devenue {{aigries}}
 TEST: celle qui paraît {{dingues}} de toi
 TEST: celle-là qui imagine être devenue si {{distingué}}                          ->> distinguée
+TEST: Celle-ci peut avoir été {{endommagé}}.
 
 
 __ppas_1pl_verbe_état__
