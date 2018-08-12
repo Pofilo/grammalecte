@@ -126,7 +126,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
         #if iLine == 3971: # debug
-        #    print(lToken.join(" "))
+        #    print(" ".join(lToken))
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
                 lToken[i] = sToken[1:-1]
@@ -315,6 +315,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     dAllGraph = {}
     sGraphName = ""
     iActionBlock = 0
+    aRuleName = set()
 
     for i, sLine in lRule:
         sLine = sLine.rstrip()
@@ -328,7 +329,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
             if m:
                 sGraphName = m.group(1)
                 if sGraphName in dAllGraph:
-                    print("Error. Graph name " + sGraphName + " already exists.")
+                    print("Error at line " + i + ". Graph name <" + sGraphName + "> already exists.")
                     exit()
                 dAllGraph[sGraphName] = []
             else:
@@ -339,6 +340,9 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
             m = re.match("__(\\w+)(!\\d|)__", sLine)
             if m:
                 sRuleName = m.group(1)
+                if sRuleName in aRuleName:
+                    print("Error at line " + i + ". Rule name <" + sRuleName + "> already exists.")
+                    exit()
                 iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
