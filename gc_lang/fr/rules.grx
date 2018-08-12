@@ -4639,7 +4639,7 @@ TEST: on a besoin d’une remise {{a}} plat.
 TEST: passe-moi mon sac {{a}} dos.
 TEST: dans le silo {{a}} grain.
 TEST: sa chambre, c’est une vraie soue {{a}} cochons.
-TEST: Un tueur {{a}} gages ne s’y prendrait jamais comme ça.
+TEST: Un tueur {{a}} {{gages}} ne s’y prendrait jamais comme ça.
 TEST: Ventes {{a}} domicile insatisfaisantes
 TEST: Ce n’est que du vernis {{a}} ongles.
 TEST: le vol {{a}} l’étalage est un fléau.
@@ -4842,7 +4842,7 @@ TEST: Voici ma {{cane}} à pêche.
 
 # ce / se / ceux
 __conf_ce_ceux_se!6__
-    ce  @:V[123].*:(?:Y|[123][sp])¬:[NAGM]|>(?:devoir|pouvoir|sembler)/
+    ce  @:V[123].*:(?:Y|[123][sp])¬:[NAGM]|>(?:devoir|pouvoir|sembler|vouloir)/
         <<- /conf/ not \1.isupper() and \2.islower() and not value(\2, "|faire|")
         -1>> se                                         # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
@@ -4894,7 +4894,7 @@ TEST: {{se}} ne peut être ainsi.
 TEST: C’est tout {{se}} qu’il y a
 TEST: Tout {{se}} que je fais
 TEST: tout {{se}} qu’il entend
-TEST: {{Ce}} {{promener}} est relaxant.
+TEST: {{Ce}} promener est relaxant.
 TEST: Il {{ce}} {{sent}} seul
 TEST: {{se}} {{train}} est en retard
 TEST: {{ceux}} train arrive trop vite.
@@ -12900,6 +12900,17 @@ __conf_aller_de_soi__
 TEST: cela ne va pas de {{soit}}.
 
 
+## Accord et incohérences
+__ppas_sont_adj__
+    sont  *WORD
+        <<- /ppas/ morph(\2, ":[NA]", ":[QWGBMpi]|>(?:légion|nombre|cause)/") and not tag_before(\1, "ce_que")
+        -2>> =suggPlur(\2)                                  # Incohérence : “\2” est au singulier. Ou vous confondez « sont » et « son », ou l’accord en nombre est incorrect.
+        <<- /ppas/ __else__ and morph(\2, ":V", ":(?:N|A|Q|W|G|3p)") and not tag_before(\1, "ce_que")
+        -2>> =suggVerbPpas(\2, ":m:p")                      # Incohérence : “\2” n’est pas un participe passé.
+
+TEST: après avoir mis à jour sont {{profile}}.
+
+
 
 !!!! Adverbes après verbe                                                                         !!
 
@@ -13837,149 +13848,134 @@ TEST: Est-il question de ceci ou de cela ?
 TEST: Est-ce former de futurs travailleurs ou bien des citoyens
 
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-@@@@
-@@@@
-@@@@
-
-## Accord et incohérences
-__[i]/ppas(ppas_sont)__
-    sont ({w_2})  @@5
-    <<- morphex(\1, ":[NAQ]", ":[QWGBMpi]") and not re.search("(?i)^(?:légion|nombre|cause)$", \1) and not before(r"(?i)\bce que?\b")
-    -1>> =suggPlur(@)               # Incohérence : « \1 » est au singulier. Ou vous confondez « sont » et « son », ou l’accord en nombre est incorrect.
-    <<- __else__ and morphex(\1, ":V", ":(?:N|A|Q|W|G|3p)") and not before(r"(?i)\bce que?\b")
-    -1>> =suggVerbPpas(\1, ":m:p")  # Incohérence : « \1 » n’est pas un participe passé.
-
-TEST: après avoir mis à jour sont {{profile}}.
-
-
-
 !!
 !!
 !!!! Se croire/considérer/montrer/penser/révéler/savoir/sentir/voir/vouloir + participe passé/adj !!
 !!
 !!
 
-__[i]/ppas(ppas_je_me_verbe)__
-    je +(?:ne +|)me +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@w,$
-    <<- morph(\1, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False) and morphex(\2, ":[NAQ].*:p", ":[GWYsi]")
-    -2>> =suggSing(@)                                                        # Accord avec le sujet « je » : « \2 » devrait être au singulier.
+__ppas_je_me_verbe__
+    [je|j’]  ?[ne|n’]¿  [me|m’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:p¬:(?:[GWYsi]|V0)
+        <<- /ppas/ --1>> =suggSing(\-1)                                 # Accord avec le sujet “\1” : “\-1” devrait être au singulier.
 
 TEST: je me savais {{implacables}} avec eux
 
 
-__[i]/ppas(ppas_tu_te_verbe)__
-    tu +(?:ne +|)te +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@w,$
-    <<- morph(\1, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False) and morphex(\2, ":[NAQ].*:p", ":[GWYsi]")
-    -2>> =suggSing(@)                                                        # Accord avec le sujet « je » : « \2 » devrait être au singulier.
+__ppas_tu_te_verbe__
+    tu  ?[ne|n’]¿  [te|t’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:p¬:(?:[GWYsi]|V0)
+        <<- /ppas/ --1>> =suggSing(\-1)                                 # Accord avec le sujet “tu” : “\-1” devrait être au singulier.
 
 TEST: quand tu te montres {{infaillibles}}
 
 
-__[i]/ppas(ppas_il_se_verbe)__
-    (il|ce|ce qui|celui +qui|ça +qui|lui +qui|celui-(?:ci|là)|quiconque|lequel) +(?:ne +|)se +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False)
-        and (morphex(\3, ":[NAQ].*:p", ":[GWsi]") or morphex(\3, ":[NAQ].*:f", ":[GWYme]"))
-        and (not re.search("^(?:celui-(?:ci|là)|lequel)$", \1) or not morph(word(-1), ":R", False, False))
-    -3>> =suggMasSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin singulier.
+__ppas_3sg_mas_se_verbe__
+    [il|quiconque]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+        <<- /ppas/ --1>> =suggMasSing(\-1)                              # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
+    [lui|ça|ceci|cela|celui-ci|celui-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggMasSing(\-1)  # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+        <<- /ppas/ morph(\2, ":[123]s") --1>> =suggMasSing(\-1)         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    lequel  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+        <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+TEST: il se révéla totalement {{incapables}} d’y parvenir.
+TEST: ceci se veut {{différents}} des autres.
+TEST: celui-là qui ne se montre jamais {{reconnaissants}}
 TEST: lequel se veut {{imbattables}} ?
 
 
-__[i]/ppas(ppas_elle_se_verbe)__
-    (elle|celle-(?:ci|là)|laquelle) +(?:ne +|)se +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False)
-        and (morphex(\3, ":[NAQ].*:p", ":[GWsi]") or morphex(\3, ":[NAQ].*:m", ":[GWYfe]"))
-        and not morph(word(-1), ":R", False, False)
-    -3>> =suggFemSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au féminin singulier.
+__ppas_3sg_fem_se_verbe__
+    [elle|celle-ci|celle-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|:[fe]:[si])
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggFemSing(\-1)  # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
+
+    ([elle|celle|celle-ci|celle-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[pm]¬:(?:G|W|V0|:[fe]:[si])
+        <<- /ppas/ morph(\2, ":[123]s") --1>> =suggFemSing(\-1)         # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
+
+    laquelle  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|:[fe]:[si])
+        <<- /ppas/ not morph(<1, ":R|>de/") --1>> =suggFemSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
 TEST: Elle se sait plus {{fortes}} qu’eux tous.
 TEST: elle se vit {{abandonné}}
-
-
-__[i]/ppas(ppas_elle_qui_se_verbe)__
-    (c?elle +qui) +(?:ne +|)se +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False)
-        and (morphex(\3, ":[NAQ].*:p", ":[GWsi]") or morphex(\3, ":[NAQ].*:m", ":[GWYfe]"))
-    -3>> =suggFemSing(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au féminin singulier.
-
 TEST: à celle qui se révélera {{attentif}} à tous ces problèmes.
+TEST: laquelle ne se sentit {{légitimes}} malgré ses compétences dans ce domaine.
 
 
-__[i]/ppas(ppas_nous_nous_verbe)__
-    nous +(?:ne +|)nous +((?:s[eauû]|montr|pens|rév|v[oiîe])\w*ons) +({w_2})  @@w,$
-    <<- morph(\1, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False) and morphex(\2, ":[NAQ].*:s", ":[GWpi]")
-    -2>> =suggPlur(@)                                                        # Accord avec le sujet « nous » : « \2 » devrait être au pluriel.
+__ppas_1pl_nous_verbe__
+    nous  ?[ne|n’]¿  nous  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:s¬:(?:[GWpi]|V0)
+        <<- /ppas/ morph(\1, ":1p") --1>> =suggPlur(\-1)                # Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
 
 TEST: nous nous pensions {{invincible}} jusqu’au jour où tout a basculé.
 
 
-__[i]/ppas(ppas_ils_se_verbe)__
-    (ils|c?eux +qui|ceux-ci|ceux-là|lesquels) +(?:ne +|)se +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False)
-        and (morphex(\3, ":[NAQ].*:s", ":[GWpi]") or morphex(\3, ":[NAQ].*:f", ":[GWYme]"))
-        and (not re.search("^(?:ceux-(?:ci|là)|lesquels)$", \1) or not morph(word(-1), ":R", False, False))
-    -3>> =suggMasPlur(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au masculin pluriel.
+__ppas_3pl_mas_se_verbe__
+    ils  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+        <<- /ppas/ --1>> =suggMasPlur(\-1)                              # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    [ceux-ci|ceux-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggMasPlur(\-1)  # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    ([eux|ceux|ceux-ci|ceux-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+        <<- /ppas/ morph(\2, ":3p") --1>> =suggMasPlur(\-1)             # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    lesquels  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+        <<- /ppas/ not morph(<1, ":R") --1>> =suggMasPlur(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
 TEST: ils se montrent {{exigeantes}}
+TEST: ceux-ci se surent {{espionné}} par les agents secrets de l’ennemi.
+TEST: agissons eux qui se montrent tellement {{arrogantes}} qu’ils méritent une petite leçon.
+TEST: lesquels se pensent encore {{anonyme}}
 
 
-__[i]/ppas(ppas_elles_se_verbe)__
-    (elles|c?elles +qui|celles-(?:ci|là)|lesquelles) +(?:ne +|)se +((?:s[eauû]|montr|pens|rév|v[oiîe])\w+) +({w_2})  @@0,w,$
-    <<- morph(\2, ">(?:montrer|penser|révéler|savoir|sentir|voir|vouloir)/", False)
-        and (morphex(\3, ":[NAQ].*:s", ":[GWpi]") or morphex(\3, ":[NAQ].*:m", ":[GWYfe]"))
-        and (not re.search("^(?:elles|celles-(?:ci|là)|lesquelles)$", \1) or not morph(word(-1), ":R", False, False))
-    -3>> =suggFemPlur(@)                                                     # Accord avec le sujet « \1 » : « \3 » devrait être au féminin pluriel.
+__ppas_3pl_fem_se_verbe__
+    [elles|celles-ci|celles-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|:[fe]:[pi])
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggFemPlur(\-1)  # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
+
+    ([elles|celles|celles-ci|celles-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[sm]¬:(?:G|W|V0|:[fe]:[pi])
+        <<- /ppas/ morph(\2, ":3p") --1>> =suggFemPlur(\-1)             # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
+
+    lesquelles  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|:[fe]:[pi])
+        <<- /ppas/ not morph(<1, ":R|>de/") --1>> =suggFemPlur(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
 TEST: elles se sentent {{perdu}}
+TEST: contre celles qui se veulent {{ignorante}} des réalités.
+TEST: Lesquelles s’y montraient {{dure}}.
 
 
-__[i]/ppas(ppas_le_verbe_pensée)__
-    le ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[esx])  @@w,$
-    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà)/", False) and morphex(\2, ":[AQ].*:(?:[me]:p|f)", ":(?:G|Y|[AQ].*:m:[is])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -2>> =suggMasSing(@)                                                     # Accord avec le COD “le” : « \2 » doit être au masculin singulier.
-__[i]/ppas(ppas_la_verbe_pensée)__
-    la ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[uiéesx])  @@w,$
-    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà)/", False) and morphex(\2, ":[AQ].*:(?:[fe]:p|m)", ":(?:G|Y|[AQ]:f:[is])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -2>> =suggFemSing(@)                                                     # Accord avec le COD “la” : « \2 » doit être au féminin singulier.
-__[i]/ppas(ppas_les_verbe_pensée)__
-    les ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2})  @@w,$
-    <<- morph(\1, ">(?:trouver|considérer|croire|rendre|voilà)/", False) and morphex(\2, ":[AQ].*:s", ":(?:G|Y|[AQ].*:[ip])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -2>> =suggPlur(@)                                                        # Accord avec le COD “les” : « \2 » doit être au pluriel.
-__[i]/ppas(ppas_me_te_verbe_pensée)__
-    ([mt]e) ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2}[sx])  @@0,w,$
-    <<- morph(\2, ">(?:trouver|considérer|croire|rendre|voilà)/", False) and morphex(\3, ":[AQ].*:p", ":(?:G|Y|[AQ].*:[is])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -3>> =suggSing(@)                                                        # Accord avec le pronom “\1” : « \3 » doit être au singulier.
-__[i]/ppas(ppas_se_verbe_pensée)__
-    se ((?:trouv|consid[éè]r|cr[ouû]|rend)\w*) +({w_3})  @@w,$
-    <<- morph(\1, ">(?:trouver|considérer|croire|rendre)/.*:3s", False) and morphex(\2, ":[AQ].*:p", ":(?:G|Y|[AQ].*:[is])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -2>> =suggSing(@)                                                        # Accord avec le pronom “se” (le verbe étant au singulier) : « \2 » doit être au singulier.
-    <<- __else__ and morph(\1, ">(?:trouver|considérer|croire|rendre)/.*:3p", False) and morphex(\2, ":[AQ].*:s", ":(?:G|Y|[AQ].*:[ip])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -2>> =suggPlur(@)                                                        # Accord avec le pronom “se” (le verbe étant au pluriel) : « \2 » doit être au pluriel.
-__[i]/ppas(ppas_nous_verbe_pensée)__
-    nous ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2})  @@w,$
-    <<- ( morphex(\1, ">(?:trouver|considérer|croire|rendre|voilà)/", ":1p")
-        or (morph(\1, ">(?:trouver|considérer|croire)/.*:1p", False) and before(r"\bn(?:ous|e) +$")) )
-        and morphex(\2, ":[AQ].*:s", ":(?:G|Y|[AQ].*:[ip])")
-        and not (morph(\1, ":Y", False) and morph(\2, ":3s", False))
-    -2>> =suggPlur(@)                                                        # Accord avec le pronom “nous” : « \2 » doit être au pluriel.
-#__[i]/ppas(ppas_vous_verbe)__
-#    vous ((?:trouv|consid[éè]r|cr[ouû]|rend|voilà)\w*) +({w_2})  @@w,$
-#    <<- ( morphex(\1, ">(?:trouver|considérer|croire|rendre|voilà)/", ":2p")
-#    or (morph(\1, ">(?:trouver|considérer|croire)/.*:2p", False) and before(r"\b(?:vous|ne) +$")) )
-#    and morphex(\2, ":[AQ].*:s", ":(?:G|[AQ].*:[ip])")
-#    -2>> =suggPlur(@)                                                        # Accord avec le pronom “vous” : « \2 » doit être au pluriel.
+__ppas_le_verbe_pensée__
+    le [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+        <<- /ppas/ morph(\3, ":[AQ].*:(?:[me]:p|f)", ":(?:G|Y|V0|[AQ].*:m:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        -3>> =suggMasSing(\3)                                                       # Accord avec le COD “le” : « \3 » doit être au masculin singulier.
+
+__ppas_la_verbe_pensée__
+    la [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+        <<- /ppas/ morph(\3, ":[AQ].*:(?:[fe]:p|m)", ":(?:G|Y|V0|[AQ]:f:[is])") and not (morph(\2, ":Y") and morph(\2, ":3s"))
+        -3>> =suggFemSing(\3)                                                       # Accord avec le COD “la” : « \2 » doit être au féminin singulier.
+
+__ppas_les_verbe_pensée__
+    les [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+        <<- /ppas/ morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        -3>> =suggPlur(\3)                                                          # Accord avec le COD “les” : « \2 » doit être au pluriel.
+
+__ppas_me_te_verbe_pensée__
+    [me|te] [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+        <<- /ppas/ morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|[AQ].*:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        -3>> =suggSing(\3)                                                          # Accord avec le pronom “\1” : « \3 » doit être au singulier.
+
+__ppas_se_verbe_pensée__
+    se [>trouver|>considérer|>croire|>rendre]  *WORD
+        <<- /ppas/ morph(\2, ":3s") and morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|[AQ].*:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        -3>> =suggSing(\3)                                                          # Accord avec le pronom “se” (le verbe étant au singulier) : « \3 » doit être au singulier.
+        <<- /ppas/ __else__ and morph(\2, ":3p") and morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        -3>> =suggPlur(\3)                                                          # Accord avec le pronom “se” (le verbe étant au pluriel) : « \3 » doit être au pluriel.
+
+__ppas_nous_verbe_pensée__
+    nous [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+        <<- /ppas/ ( not morph(\2, ":1p") or (morph(\2, ":1p") and value(<1, "|nous|ne|")) )
+            and morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        -3>> =suggPlur(\3)                                                          # Accord avec le pronom “nous” : « \3 » doit être au pluriel.
 
 TEST: ces hommes le rendent {{dingues}}
 TEST: Il me considère {{stupides}}
@@ -14005,155 +14001,170 @@ TEST: nous considérer ainsi fait le lit de la haine…
 
 !!
 !!
-!!!! Avoir + participes passés                                                                    !!
+!!!! Participes passés après “avoir”                                                              !!
 !!
 !!
 
-#__[i]/conj__  fait(s|e|es) ({w1}) <<- morph(\2, ":V") and not morph(\2, ":Y")
-#   ->> fait \1                      # Le participe passé de faire reste au masculin singulier s’il est suivi par un verbe à l’infinitif.
+__immu_les_avoir_fait_vinfi__
+    les >avoir fait ?[me|m’|te|t’|se|s’|nous|vous|leur]¿ @:Y
+        <<- %3>>
 
-__[i](p_les_avoir_fait_vinfi)__
-    les ({avoir}) +(fait) +(?:[mts](?:e +|’)|)({infi}) @@w,w,$ <<- morph(\1, ">avoir/", False) and morph(\3, ":Y", False) ~2>> _
 
-__[i]/ppas(ppas_pronom_avoir)__
-    (?:j’|je |tu |ils? |elles? |on |et )(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \2) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|))/", False, True)
-        and morph(\1, ":V0a", False) and not \2.isupper() and morphex(\2, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    -2>> =suggMasSing(@)
+__ppas_pronom_avoir__
+    [je|j’|tu|il|elle|on|ils|elles|et]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+    <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+        and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+    --1>> =suggMasSing(\-1)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ils leur avaient {{donnés}} du fil à retordre.
 TEST: il a {{affronte}} une bande de voleurs de bétail
 TEST: J’ai {{mettrai}} du sel.                                                    ->> mis
 TEST: J’ai {{lut}} son journal.                                                   ->> lu
-TEST: Ils avaient barre sur lui.
 TEST: Si j’avais {{sut}}.
+TEST: Il a {{prit}} le train.
+TEST: Il a {{donner}} sa vie pour elle.                                           ->> donné
+TEST: Ils leur ont {{données}} un cadeau.
+TEST: ils avaient, en ce temps-là, déjà {{perdus}} leurs illusions
+TEST: Elle avait {{pose}} son tricot                                              ->> posé
+TEST: Ils avaient barre sur lui.
 
 
-__[i]/ppas(ppas_nous_vous_avoir)__
-    ([nv]ous) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,$
-    <<- morph(\1, ":Os", False)
-        and not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \3) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|))/", False, True)
-        and morph(\2, ":V0a", False) and not \3.isupper() and morphex(\3, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    -3>> =suggMasSing(@)
+__ppas_nous_vous_avoir__
+    [nous|vous]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+    <<- /ppas/ morph(\1, ":Os")
+        and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+        and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+    --1>> =suggMasSing(\-1)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Nous avons {{donne}} tout notre potentiel.
 TEST: mais nous avons {{était}} surpris par cette annonce.
+TEST: Nous lui avons {{donnée}} un cadeau.
+TEST: Vous lui avez {{donnés}} un cadeau.
+TEST: nous avions quelque peu {{tempérés}} leurs ardeurs
 TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 
-__[i]/ppas(ppas_det_nom_avoir)__
-    (l(?:’|es? |a |eurs )|ce(?:s|tte|t|rtaine?s|) |des |quelques |[mts](?:es|on|a) |[nv]o(?:s|tre) ) *({w_2}) +(?:ne +|n’|l(?:ui|eur) +|)({avoir}) +({w_2})  @@0,w,w,$
-    <<- not re.search("(?i)^(?:barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \4) and morph(word(-1), ">(?:comme|et|lorsque?|mais|o[uù]|puisque?|qu(?:oique?|i|and)|si(?:non|))/", False, True)
-        and not morph(\2, ":G", False) and morph(\3, ":V0a", False) and not \4.isupper() and morphex(\4, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-        and not (\3 == "avions" and morph(\4, ":3[sp]", False))
-    -4>> =suggMasSing(@)
+__ppas_det_nom_avoir__
+    [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+    <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+        and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+        and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
+    --1>> =suggMasSing(\-1)
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Les femmes lui avait {{conseillées}} de se taire.
 TEST: le mur avait {{était}} détruit
 TEST: Lorsque les femmes ont {{apprit}} la nouvelle…
+TEST: Les élèves lui ont {{données}}.
+TEST: Les élèves lui ont {{donnés}} une réponse.
+TEST: Les élèves leur ont {{donnée}} ça.
+TEST: Le maire a {{créée}} un risque.
 TEST: Certains les ont d’abord jugés trop lents.
 
 
-__[i]/ppas(ppas_les_avoir)__
-    les +({avoir}) +({w_1}(?:[éiut]e?|is|se))  @@w,$
-    <<- morph(\1, ":V0a", False) and morphex(\2, ":V[0-3]..t.*:Q.*:s", ":[GWpi]")
-    -2>> =suggPlur(@)
-    # Accord avec le COD “les” : Le participe passé « \2 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+__ppas_les_avoir__
+    les  >avoir  @:V[0-3]..t.*:Q.*:s¬:[GWpi]
+        <<- /ppas/ morph(\2, ":V0a") -3>> =suggPlur(\3)
+        # Accord avec le COD “les” : Le participe passé “\2” devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: je les avais {{trompé}} avec mon baratin.
+TEST: les avoirs reçus ne couvrent pas toutes les dépenses.
+TEST: Mes joueurs, je les ai fait reposer
+TEST: Mes joueurs, je les ai fait se reposer
 
 
-__[i]/ppas(ppas_nous_avoir)__
-    nous +({avoir}) +({w_1}(?:[éiut]e?|se)) @@w,$
-    <<- isRealEnd() and morph(\1, ":V0a", False) and morphex(\2, ":V[0-3]..t_.*:Q.*:s", ":[GWpi]") and morphex(word(-1), ":(?:M|Os|N)", ":R") and not before(r"\bque? +\w[\w-]+ +$")
-    -2>> =suggPlur(@)
-    # Accord avec le COD “nous” : Le participe passé « \2 » devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+__ppas_nous_avoir__
+    nous  >avoir  *WORD  <end>
+        <<- /ppas/ morph(\2, ":V0a", ":1p") and morph(\3, ":V[0-3]..t_.*:Q.*:s", ":[GWpi]") and morph(<1, ":(?:M|Os|N)", ":R") and not value(<2, "|que|qu’|qu|")
+        -3>> =suggPlur(\3)
+        # Accord avec le COD “nous” : Le participe passé “\3” devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Ces maisons nous avaient {{subjugué}}.
+TEST: Alexandre aujourd’hui nous a {{quitté}}
 TEST: C’est mot pour mot un script qu’on nous a filé.
+TEST: Nous avons donné.
+TEST: ces cons nous ont donnés.
+TEST: ils nous ont vendus.
+TEST: elles nous ont dit : “c’est la fin”.
+TEST: Il nous avait dit que…
 
 
-__[i]/ppas(ppas_l_avoir)__
-    l’({avoir}) +({w_1}s)  @@2,$
-    <<- morph(\1, ":V0a", False) and morphex(\2, ":V[0-3]..t.*:Q.*:p", ":[GWsi]")
-    -2>> =\2[:-1]
-    # Accord avec le COD « l’ » : Le participe passé « \2 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+__ppas_l_avoir__
+    l’ >avoir @:V[0-3]..t.*:Q.*:p¬:[GWsi]
+        <<- /ppas/ -3>> =suggSing(\3)
+        # Accord avec “l’” : le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ils l’avaient {{retrouvés}}.
-
-
-__[i]/ppas(ppas_m_t_avoir)__
-    ([mt])’({avoir}) +({w_1}s)  @@0,w,$
-    <<- morph(\2, ":V0a", False) and morphex(\3, ":V[0-3]..t_.*:Q.*:p", ":[GWsi]") and not before(r"\bque? ")
-    -3>> =\3[:-1]
-    # Accord avec « \1’ ». Le participe passé « \3 » devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
-
-
-__[i]/ppas(ppas_qui_avoir)__
-    qui +(?:n’|l(?:ui|eur) |ne l(?:ui|eur) |ne +|)({avoir}) +({w_2}[es])  @@w,$
-    <<- morph(\1, ">avoir/", False) and morphex(\2, ":Q.*:(?:f|m:p)", ":m:[si]")
-    -2>> =suggMasSing(@)
-    # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du bien.
-
-
-__[i]/ppas(ppas_avoir_ppas_mas_sing)__
-    avoir +({w_2})  @@$
-    <<- not re.search("(?i)^(?:confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours)$", \1)
-        and morphex(\1, ":Q.*:(?:f|m:p)", ":m:[si]") and before("(?i)(?:après +$|sans +$|pour +$|que? +$|quand +$|, +$|^ *$)")
-    -1>> =suggMasSing(@)
-    # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: Il a {{prit}} le train.
-TEST: Les élèves lui ont {{données}}.
-TEST: Les élèves lui ont {{donnés}}.
-TEST: Les élèves lui ont {{donnée}}.
-TEST: Nous lui avons {{donnée}} un cadeau.
-TEST: Vous lui avez {{donnés}} un cadeau.
-TEST: Ils leur ont {{données}} un cadeau.
-TEST: ils avaient, en ce temps-là, déjà {{perdus}} leurs illusions
+TEST: Vous l’avez {{trouvez}}.                                                    ->> trouvé
 TEST: Nous l’avons {{mangés}}.
 TEST: Nous l’avons {{mangées}}.
 TEST: Ils ne me l’ont pas {{donnés}}
+
+
+__ppas_m_t_avoir__
+    [m’|t’] >avoir @:V[0-3]..t_.*:Q.*:p¬:[GWsi]
+        <<- /ppas/ not before(r"\bque? ") -3>> =suggSing(\3)
+        # Accord avec “\1”. S’il s’agit d’un COD, le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
 TEST: Les élèves m’ont {{écoutés}}.
 TEST: Les élèves t’ont de temps en temps {{écoutées}}.
 TEST: Les élèves ne m’ont pas {{écoutés}}.
 TEST: Les élèves ne m’ont pas {{écoutées}}.
 TEST: Nous ne t’avons pas {{écoutés}}.
 TEST: Nous ne t’avons pas {{écoutées}}.
+
+
+__ppas_qui_avoir__
+    qui  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:Q.*:(?:f|m:p)¬:m:[si]
+        <<- /ppas/ --1>> =suggMasSing(\-1)                  # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du bien.
+
+
+__ppas_avoir_ppas_mas_sing__
+    [<start>|,|après|pour|pourquoi|quand|que|qu’|qu|sans]  avoir  @:Q.*:[fp]¬:m:[si]
+        <<- /ppas/ not value(\3, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        -3>> =suggMasSing(\3)                               # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
 TEST: Avoir {{instruite}} notre mère
 TEST: Après avoir {{baissés}} nos tarifs
 TEST: Je viendrai, après avoir vraiment {{écoutée}} le prof.
-TEST: Alexandre aujourd’hui nous a {{quitté}}
-TEST: Mes joueurs, je les ai fait reposer
-TEST: Mes joueurs, je les ai fait se reposer
-TEST: Il nous avait dit que…
-TEST: Elle avait {{pose}} son tricot                                              ->> posé
-TEST: Vous l’avez {{trouvez}}.                                                    ->> trouvé
-TEST: Il a {{donner}} sa vie pour elle.                                           ->> donné
-TEST: Le maire a {{créée}} un risque.
-TEST: nous avions quelque peu {{tempérés}} leurs ardeurs
 
 
 ## avoir avec participe passé
-__[i]/ppas(ppas_m_t_l_avoir)__
-    [lmt]’(?:en +|y +|)({avoir}) +({w_3}) @@2,$
-    <<- morph(\1, ">avoir/", False) and morphex(\2, ":(?:Y|[123][sp])", ":[QGWMX]")
-        and not re.search(r"(?i)^t’as +envie", \0)
-    -2>> =suggVerbPpas(@, ":m:s")                                                                   # Confusion : employez un participe passé.
+__ppas_m_t_l_avoir__
+    [l’|m’]  ?[en|y]¿  >avoir  @:(?:Y|[123][sp])¬:[QGWMX]
+        <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")         # Confusion : employez un participe passé.
+
+    t’  ?[en|y]¿  >avoir  @:(?:Y|[123][sp])¬:[QGWMX]
+        <<- /ppas/ not value(\-1, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        --1>> =suggVerbPpas(\-1, ":m:s")                    # Confusion : employez un participe passé.
 
 TEST: m’avoir {{terminer}}.
 TEST: il m’a {{souffler}} la bonne réponse.
 TEST: elle t’en a {{parle}}.
 TEST: c’est vous qui m’avez {{convertit}}.
 TEST: parce que t’as envie que je le fasse
+TEST: t’avais confiance
+TEST: t’en as envie ?
 
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@
 
 
 !!
@@ -15102,8 +15113,18 @@ TEST: quiconque issu de la gauche n’a aucune chance.
 
 __[i]/conj(conj_ce)__
     (ce) +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:N|A|3s|P|Q|G|V0e.*:3p)")
+    <<- morphex(\2, ">(?:devoir|pouvoir|vouloir|savoir|être)/:V", ":(?:N|A|3s|P|Q|G|V0e.*:3p)")
     -2>> =suggVerb(@, ":3s")                                 # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 3ᵉ personne du singulier.
+
+TEST: Ce peut être un chien ou un chat.
+TEST: ce ne peut être aussi stupide.
+TEST: ce dut être un cauchemar.
+TEST: ce devra être un véritable expert pour accomplir une tâche aussi difficile.
+TEST: ce voudrait être le plus grand bal de tous les temps.
+TEST: ce ne pourrait être une chose aussi banale.
+TEST: ce serait une honte d’échouer une fois de plus à un test aussi élémentaire.
+TEST: ce ne saurait être cet homme…
+
 
 __[i]/conj(conj_celui_celle_qui)__
     (ce(?:lui|lle|) +qui) +({w_1})  @@0,$
