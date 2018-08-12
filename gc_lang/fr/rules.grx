@@ -12642,15 +12642,14 @@ __purge_syntagme_verbal__
     /VCint  [pas|point|rien|bien|ensemble]
         <<- ~2>> *
 
-    que >sembler [le|l’] [penser|croire|présumer|supposer|envisager|imaginer]
+    que >sembler [le|l’] [penser|croire|présumer|supposer|envisager|imaginer|supposer]
         <<- ~3:4>> *
 
     que l’ on
         <<- ~2>> *
 
-    >risquer d’ être
-        <<- ~2>> *
-
+    >risquer ?[pas|point|rien|bien|ensemble|jamais|guère]¿ (d’) être
+        <<- ~1>> *
 
 ### Simplification des groupes nominaux
 __purge_pronoms__
@@ -13163,6 +13162,30 @@ TEST: Si t’es pas contente, t’achètes pas.
 TEST: t’étais vraiment cinglé à cette époque.
 
 
+## se rendre compte
+__ppas_s_être_rendu_compte__
+    >être  rendu  compte
+        <<- %2:3>>
+        <<- ~2:3>> _
+
+    /VCint  rendu  compte
+        <<- morphVC(\1, ">être/") %2:3>>
+        <<- ~2:3>> _
+
+    >être  [rendue|rendus|rendues]  compte
+        <<- /ppas/ -2>> rendu                                                                       # Accord erroné : dans l’expression “se rendre compte”, “rendu” est invariable.
+        <<- ~2:3>> _
+
+    /VCint  [rendue|rendus|rendues]  compte
+        <<- /ppas/ morphVC(\1, ">être/") -2>> rendu                                                 # Accord erroné : dans l’expression “se rendre compte”, “rendu” est invariable.
+        <<- ~2:3>> _
+
+TEST: Elles se sont {{rendues}} compte
+TEST: La puissance publique s’en est-elle rendu compte ?
+TEST: Elle s’est rendu compte qu’il s’était moqué d’elle une fois de plus.
+
+
+
 !!
 !!
 !!!! Participes passés: se +laisser +adjectif                                                     !!
@@ -13269,33 +13292,61 @@ __ppas_3sg_mas_verbe_état__
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ --1>> =suggMasSing(\-1)                                  # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [lui|ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >être [devenu|redevenu|resté]                                                   [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >être [devenu|redevenu|resté]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || être [devenu|redevenu|resté]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggMasSing(\-1)      # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là] qui ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre] [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là] qui ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là] qui ?[ne|n’]¿ ?[en|y]¿ >être [devenu|redevenu|resté]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là] qui ?[ne|n’]¿ ?[en|y]¿
+    lui [ne|n’|en|y] [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|en|y] >avoir [été|semblé|paru]                                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|en|y] >être [devenu|redevenu|resté]                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|en|y]
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là] qui ?[ne|n’]¿ ?[en|y]¿
+    lui [ne|n’|en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || être [devenu|redevenu|resté]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là] qui ?[ne|n’]¿ ?[en|y]¿
+    lui [ne|n’|en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ --1>> =suggMasSing(\-1)                                  # Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggMasSing(\-1)      # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    lui n’ [en|y] [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y] >avoir [été|semblé|paru]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y] >être [devenu|redevenu|resté]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y]
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y]
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu|redevenu|resté]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y]
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") --1>> =suggMasSing(\-1)      # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]) [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>être) [devenu|redevenu|resté]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
+        || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || être [devenu|redevenu|resté]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        <<- /ppas/ morph(\2, ":[123]s") --1>> =suggMasSing(\-1)             # Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
 
     lequel ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                                              [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lequel ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -13435,7 +13486,7 @@ __ppas_3pl_mas_verbe_état__
     ils ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ --1>> =suggMasPlur(\-1)                                                          # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not value(\-1, "|légion|") --1>> =suggMasPlur(\-1)                               # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])                               [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
     ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                       [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
@@ -13449,7 +13500,8 @@ __ppas_3pl_mas_verbe_état__
     ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not morph(<1, ":[RV]|>de/") and morph(\2, ":3p") --1>> =suggMasPlur(\-1)         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") and morph(\2, ":3p") and not value(\-1, "|légion|")
+        --1>> =suggMasPlur(\-1)                                                                     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])                      [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
     ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                              [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
@@ -13463,7 +13515,7 @@ __ppas_3pl_mas_verbe_état__
     ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ morph(\2, ":3p") --1>> =suggMasPlur(\-1)                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ morph(\2, ":3p") and not value(\-1, "|légion|") --1>> =suggMasPlur(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     lesquels ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                                            [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
     lesquels ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                    [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
@@ -13477,7 +13529,7 @@ __ppas_3pl_mas_verbe_état__
     lesquels ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not morph(<1, ":R") --1>> =suggMasPlur(\-1)                                      # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|") --1>> =suggMasPlur(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
 TEST: ils sont {{parti}}.                                                         ->> partis
 TEST: ils sont {{parties}}.                                                       ->> partis
@@ -13507,7 +13559,8 @@ __ppas_3pl_fem_verbe_état__
     ([elles|celles-ci|celles-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ not morph(<1, ":[RV]|>de/") and morph(\2, ":3p") --1>> =suggFemPlur(\-1)         # Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
+        <<- /ppas/ not morph(<1, ":[RV]|>de/") and morph(\2, ":3p") and not value(\-1, "|légion|")
+        --1>> =suggFemPlur(\-1)                                                                     # Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
     ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])                [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
     ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                        [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
@@ -13521,7 +13574,7 @@ __ppas_3pl_fem_verbe_état__
     ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ morph(\2, ":3p") --1>> =suggFemPlur(\-1)                                         # Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
+        <<- /ppas/ morph(\2, ":3p") and not value(\-1, "|légion|") --1>> =suggFemPlur(\-1)          # Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
 
     lesquelles ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
     lesquelles ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                  [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
@@ -13535,7 +13588,7 @@ __ppas_3pl_fem_verbe_état__
     lesquelles ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ not morph(<1, ":R") --1>> =suggFemPlur(\-1)                                      # Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
+        <<- /ppas/ not morph(<1, ":R") and not value(\-1, "|légion|") --1>> =suggFemPlur(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au masculin pluriel.
 
 TEST: elles n’ont tout de même pas été {{attaqué}}                                ->> attaquées
 TEST: Elles sont {{affamé}}.                                                      ->> affamées
@@ -13574,41 +13627,65 @@ TEST: Partir aurait été assurer sa survie.
 
 
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-@@@@
-@@@@
-@@@@
-
-
-
 !!!! Participes passés: accord en nombre avec la conjugaison de « être »                          !!
 
-## Contrôle de l’
-__[i]/ppas(ppas_être_accord_singulier)__
-    ({w_2}) +(?:qui +|)(?:ne +|n’|)(?:est|était|f[uû]t|sera(?:it|)|a(?:vait|ura|urait|it|) +été|e[uû]t +été) +({w_2})  @@0,$
-    <<- morphex(\2, ":[NAQ].*:p", ":[GMWYsi]") and not morph(\1, ":G", False)
-    -2>> =suggSing(@)                                                        # Accord avec « être » : « \2 » devrait être au singulier.
+__ppas_être_accord_sing__
+    (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([est|était|fut|sera|serait|fût])                @:[NA].*:p¬:[GMWYsi]
+        <<- /ppas/ not morph(\1, ":G") --1>> =suggSing(\-1)                         # Accord avec “\2” : “\-1” devrait être au singulier.
 
-__[i]/ppas(ppas_être_accord_pluriel)__
-    ({w_2}) +(?:qui +|)(?:ne +|n’|)(?:sont|étaient|fu(?:r|ss)ent|ser(?:ont|aient)|soient|ont +été|a(?:vaient|uront|uraient|ient) +été|eu(?:r|ss)ent +été) +({w_2})  @@0,$
-    <<- not re.search("(?i)^légion$", \2) and morphex(\2, ":[NAQ].*:s", ":[GWYpi]") and not morph(\1, ":G", False)
-    -2>> =suggPlur(@)                                                        # Accord avec « être » : « \2 » devrait être au pluriel.
+    (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([a|avait|eut|aura|aurait|ait|eût]) été          @:[NA].*:p¬:[GMWYsi]
+        <<- /ppas/ not morph(\1, ":G") --1>> =suggSing(\-1)                         # Accord avec “\2 été” : “\-1” devrait être au singulier.
+
+    [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([est|était|fut|sera|serait|fût])            @:[NA].*:p¬:[GMWYsi]
+        <<- /ppas/ --1>> =suggSing(\-1)                                             # Accord avec “\1” : “\-1” devrait être au singulier.
+
+    [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([a|avait|eut|aura|aurait|ait|eût]) été      @:[NA].*:p¬:[GMWYsi]
+        <<- /ppas/ --1>> =suggSing(\-1)                                             # Accord avec “\1 été” : “\-1” devrait être au singulier.
+
+TEST: ces emmerdeurs, qui ne sont toujours pas {{parti}}, ont encore eu une idée pour nous pourrir la vie.
+TEST: cette petite chienne avait été longtemps {{malades}}.
+
+
+__ppas_être_accord_plur__
+    (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([sont|étaient|furent|seront|seraient|soient|fussent|étions|fûmes|serons|serions|soyons|fussions])               @:[NA].*:s¬:[GMWYpi]|>légion/
+        <<- /ppas/ not morph(\1, ":G") --1>> =suggPlur(\-1)                         # Accord avec “\2” : “\-1” devrait être au pluriel.
+
+    (*WORD)  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([ont|avaient|eurent|auront|auraient|aient|eussent|avons|avions|eûmes|aurons|aurions|ayons|eussions]) été        @:[NA].*:s¬:[GMWYpi]|>légion/
+        <<- /ppas/ not morph(\1, ":G") --1>> =suggPlur(\-1)                         # Accord avec “\2 été” : “\-1” devrait être au pluriel.
+
+    [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([sont|étaient|furent|seront|seraient|soient|fussent|étions|fûmes|serons|serions|soyons|fussions])           @:[NA].*:s¬:[GMWYpi]|>légion/
+        <<- /ppas/ --1>> =suggPlur(\-1)                                             # Accord avec “\1” : “\-1” devrait être au pluriel.
+
+    [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([ont|avaient|eurent|auront|auraient|aient|eussent|avons|avions|eûmes|aurons|aurions|ayons|eussions]) été    @:[NA].*:s¬:[GMWYpi]|>légion/
+        <<- /ppas/ --1>> =suggPlur(\-1)                                             # Accord avec “\1 été” : “\-1” devrait être au pluriel.
+
+TEST: ces atouts sont très {{favorable}}
+TEST: qui furent {{balayé}} au premier coup de vent.
+
 
 
 !!!! Participes passés: accord en genre avec le substantif précédent                              !!
 
-__[i]/ppas(ppas_sujet_être_accord_genre)__
-    (?<![dD]’)(une? |les? |la |l’|ce(?:s|t|tte|) |[mts](?:on|a|es) |[nv]os |leurs? ) *({w_2}) +(?:qui +|)(?:ne +|n’|)(?:est|étai(?:en|)t|f[uû]t|sera(?:i(?:en|)t|)|soi(?:en|)t|s(?:er|)ont|fu(?:r|ss)ent) +({w_2})  @@0,w,$
-    <<- not re.search("(?i)^légion$", \3)
-        and ((morphex(\3, ":[AQ].*:f", ":[GWme]") and morphex(\2, ":m", ":[Gfe]")) or (morphex(\3, ":[AQ].*:m", ":[GWfe]") and morphex(\2, ":f", ":[Gme]")))
-        and not ( morph(\3, ":p", False) and morph(\2, ":s", False) )
-        and not morph(word(-1), ":(?:R|P|Q|Y|[123][sp])", False, False) and not before(r"\b(?:et|ou|de) +$")
-    -3>> =switchGender(@)                                                   # Accord erroné : « \2 » et « \3 » ne sont pas accordés en genre.
+__ppas_sujet_être_accord_genre__
+    [<start>|,|@:Cs]  [un|le|son|ce|cet]                *WORD  ?qui¿  ?[ne|n’]¿  [est|était|fut|sera|serait|fût]        *WORD
+    [<start>|,|@:Cs]  [un|le|son|ce|cet]                *WORD  ?qui¿  ?[ne|n’]¿  [a|avait|eut|aura|aurait|ait|eût] été  *WORD
+        <<- /ppas/ morph(\3, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]")
+        --1>> =switchGender(\-1)                                                                    # Accord erroné : “\3” et “\-1” ne sont pas accordés en genre.
+
+    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           *WORD  ?qui¿  ?[ne|n’]¿  [est|était|fut|sera|serait|fût]        *WORD
+    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           *WORD  ?qui¿  ?[ne|n’]¿  [a|avait|eut|aura|aurait|ait|eût] été  *WORD
+        <<- /ppas/ morph(\3, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")
+        --1>> =switchGender(\-1)                                                                    # Accord erroné : “\3” et “\-1” ne sont pas accordés en genre.
+
+    [<start>|,|@:Cs]  [l’|ton|son|notre|votre|leur]     *WORD  ?qui¿  ?[ne|n’]¿  [est|était|fut|sera|serait|fût]        *WORD
+    [<start>|,|@:Cs]  [l’|ton|son|notre|votre|leur]     *WORD  ?qui¿  ?[ne|n’]¿  [a|avait|eut|aura|aurait|ait|eût] été  *WORD
+        <<- /ppas/ (morph(\3, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\3, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))
+        --1>> =switchGender(\-1)                                                                    # Accord erroné : “\3” et “\-1” ne sont pas accordés en genre.
+
+    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]    *WORD  ?qui¿  ?[ne|n’]¿  [sont|étaient|furent|seront|seraient|soient|fussent]    *WORD
+    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]    *WORD  ?qui¿  ?[ne|n’]¿  [ont|avaient|eurent|auront|auraient|aient|eussent] été  *WORD
+        <<- /ppas/ (morph(\3, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\3, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))
+        --1>> =switchGender(\-1)                                                                    # Accord erroné : “\3” et “\-1” ne sont pas accordés en genre.
 
 TEST: la danse est {{fini}}…
 TEST: Un orage est {{annoncée}}.
@@ -13622,12 +13699,11 @@ TEST: l’avenir de la région était {{suspendue}}
 TEST: il prétendait que les banques universelles « à la française » s’{{était}} très honorablement comportées
 
 
-__[s]/ppas(ppas_nom_propre_être_accord_genre)__
-    (?<![dD]’)([A-ZÉÈ]{w_2}) +(?:qui +|)(?:ne +|n’|)(?:est|étai(?:en|)t|f[uû]t|sera(?:i(?:en|)t|)|soi(?:en|)t|s(?:er|)ont|fu(?:r|ss)ent|a(?:vait|ura|urait|it|) +été|e[uû]t +été) +({w_2})  @@0,$
-    <<- not re.search("(?i)^légion$", \2)
-        and ((morphex(\1, ":M[1P].*:f", ":[GWme]") and morphex(\2, ":m", ":[GWfe]")) or (morphex(\1, ":M[1P].*:m", ":[GWfe]") and morphex(\2, ":f", ":[GWme]")))
-        and not morph(word(-1), ":(?:R|P|Q|Y|[123][sp])", False, False) and not before(r"\b(?:et|ou|de) +$")
-    -2>> =switchGender(@)                                                   # Accord erroné : « \1 » et « \2 » ne sont pas accordés en genre.
+__ppas_nom_propre_être_accord_genre__
+    [<start>|,|@:Cs]  @M[1P]  ?qui¿  ?[ne|n’]¿  [est|était|fut|sera|serait|fût]        *WORD
+    [<start>|,|@:Cs]  @M[1P]  ?qui¿  ?[ne|n’]¿  [a|avait|eut|aura|aurait|ait|eût] été  *WORD
+        <<- /ppas/ (morph(\2, ":M[1P].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\2, ":M[1P].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))
+        --1>> =switchGender(\-1)                                                                    # Accord erroné : “\2” et “\-1” ne sont pas accordés en genre.
 
 TEST: Antoine est {{mariée}}.
 TEST: Antoine n’est pas {{mariés}}.
@@ -13643,35 +13719,35 @@ TEST: Pierre est {{dominée}} par son adversaire.
 
 !!!! Accords avec l’adjectif précédant le pronom                                                  !!
 
-__[i]/ppas(ppas_adj_accord_je_tu)__
-    ^ *({w_2}s),? (je?|tu)  @@*,$
-    <<- morphex(\1, ":A.*:p", ":(?:G|E|M1|W|s|i)")
-    -1>> =suggSing(@)                                                       # Si cet adjectif se réfère au pronom « \2 », l’adjectif devrait être au singulier (et accordé en genre).
+__ppas_adj_accord_je_tu__
+    <start>  *WORD  ?,¿  [je|j’|tu]
+        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWsi]")
+        -2>> =suggSing(\2)                                                      # Si cet adjectif se réfère au pronom « \-1 », l’adjectif devrait être au singulier (et accordé en genre).
 
 TEST: {{Découragés}}, je suis parti.
 
 
-__[i]/ppas(ppas_adj_accord_il)__
-    ^ *({w_2}[es]),? il  @@*
-    <<- morphex(\1, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])") and not after("^ y a")
-    -1>> =suggMasSing(@)                                                    # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
+__ppas_adj_accord_il__
+    <start>  *WORD  ?,¿  il
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])") and not after("^ y a")
+        -2>> =suggMasSing(\2)                                                   # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
 
 TEST: — {{Déçue}}, il s’en est allé.
 TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
 
 
-__[i]/ppas(ppas_adj_accord_elle)__
-    ^ *({w_2}[éuitsx]),? elle  @@*
-    <<- morphex(\1, ":A.*:[mp]", ":(?:G|E|M1|W|f:[si])|>(?:désoler|pire)/")
-    -1>> =suggFemSing(@)                                                    # Si cet adjectif se réfère au pronom « elle », l’adjectif devrait être au féminin singulier.
+__ppas_adj_accord_elle__
+    <start>  *WORD  ?,¿  elle
+        <<- /ppas/ morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|f:[si])|>(?:désoler|pire)/")
+        -2>> =suggFemSing(\2)                                                   # Si cet adjectif se réfère au pronom « elle », l’adjectif devrait être au féminin singulier.
 
 TEST: — {{Déçu}}, elle s’en est allée.
 
 
-__[i]/ppas(ppas_adj_accord_ils)__
-    ^ *({w_2}[eiuéts]),? ils  @@*
-    <<- morphex(\1, ":A.*:[fs]", ":(?:G|E|M1|W|m:[pi])|>(?:désoler|pire)/")
-    -1>> =suggMasPlur(@)                                                    # Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
+__ppas_adj_accord_ils__
+    <start>  *WORD  ?,¿  ils
+        <<- /ppas/ morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|m:[pi])|>(?:désoler|pire)/")
+        -2>> =suggMasPlur(\2)                                                   # Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
 
 TEST: Très vite, ils sont partis
 TEST: Une fois terminé, ils sont revenus.
@@ -13680,24 +13756,12 @@ TEST: Désolé, ils ne viendront pas.
 TEST: Pire, ils piétinent parfois les droits humains.
 
 
-__[i]/ppas(ppas_adj_accord_elles)__
-    ^ *({w_2}[eiuétsx]),? elles  @@*
-    <<- morphex(\1, ":A.*:[ms]", ":(?:G|E|M1|W|f:[pi])|>(?:désoler|pire)/")
-    -1>> =suggFemPlur(@)                                                    # Si cet adjectif se réfère au pronom « elles », l’adjectif devrait être au féminin pluriel.
+__ppas_adj_accord_elles__
+    <start>  *WORD  ?,¿  elles
+        <<- /ppas/ morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|f:[pi])|>(?:désoler|pire)/")
+        -2>> =suggFemPlur(\2)                                                   # Si cet adjectif se réfère au pronom « elles », l’adjectif devrait être au féminin pluriel.
 
 TEST: Absolument {{heureux}}, elles exultèrent de joie.
-
-
-
-## se rendre compte
-__[i]/ppas(ppas_être_rendu_compte)__
-    ({etre})(?:-(?:ils?|elles?|on|je|tu|[ns]ous)|) +((rendue?s?) compte)  @@0,$,w
-    <<- morph(\1, "V0e", False) and \3 != "rendu" -3>> rendu                # Accord erroné : dans l’expression « se rendre compte », « rendu » est invariable.
-    <<- ~2>> _
-
-TEST: Elles se sont {{rendues}} compte
-TEST: La puissance publique s’en est-elle rendu compte ?
-
 
 
 !!
@@ -13705,34 +13769,47 @@ TEST: La puissance publique s’en est-elle rendu compte ?
 !!!! Inversion verbe/sujet                                                                        !!
 !!
 !!
-__[i]/ppas(ppas_inversion_être_je)__
-    (?:s[ou]is|étais|fus(?:sé|)|serais?)-je +({w_2})  @@$
-    <<- morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:p)", ":[GWsi]")
-    -1>> =suggSing(@)                                                        # Accord avec le sujet « je » : « \1 » devrait être au singulier.
-__[i]/ppas(ppas_inversion_être_tu)__
-    (?:es|étais|fus(?:ses|)|serai?s)-tu +({w_2})  @@$
-    <<- morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:p)", ":[GWsi]")
-    -1>> =suggSing(@)                                                        # Accord avec le sujet « tu » : « \1 » devrait être au singulier.
-__[i]/ppas(ppas_inversion_être_il_ce)__
-    (?:est|était|f[uû]t|sera(?:-t|it))-(il|ce) +({w_2})  @@*,$
-    <<- morphex(\2, ":(?:[123][sp]|Y|[NAQ].*:[pf])", ":(?:G|W|[me]:[si])|question/") and not (\1 == "ce" and morph(\2, ":Y", False))
-    -2>> =suggMasSing(@)                                                     # Accord avec le sujet « il » : « \2 » devrait être au masculin singulier.
-__[i]/ppas(ppas_inversion_être_elle)__
-    (?:est|était|f[uû]t|sera(?:-t|it))-elle +({w_2})  @@$
-    <<- morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:[pm])", ":(?:G|W|[fe]:[si])")
-    -1>> =suggFemSing(@)                                                     # Accord avec le sujet « elle » : « \1 » devrait être au féminin singulier.
-__[i]/ppas(ppas_inversion_être_nous)__
-    (?:sommes|étions|fûmes|fussions|seri?ons)-nous +({w_2})  @@$
-    <<- morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:s)", ":[GWpi]|>dire/")
-    -1>> =suggPlur(@)                                                        # Accord avec le sujet « nous » : « \1 » devrait être au pluriel.
-__[i]/ppas(ppas_inversion_être_ils)__
-    (?:sont|étaient|fu(?:r|ss)ent|ser(?:o|aie)nt)-ils +({w_2})  @@$
-    <<- not re.search("(?i)^légion$", \1) and (morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:s)", ":[GWpi]|>dire/") or morphex(\1, ":(?:[123][sp]|[AQ].*:f)", ":[GWme]|>dire/"))
-    -1>> =suggMasPlur(@)                                                     # Accord avec « ils » : « \1 » devrait être au masculin pluriel.
-__[i]/ppas(ppas_inversion_être_elles)__
-    (?:sont|étaient|fu(?:r|ss)ent|ser(?:o|aie)nt)-elles +({w_2})  @@$
-    <<- not re.search("(?i)^légion$", \1) and (morphex(\1, ":(?:[123][sp]|Y|[NAQ].*:s)", ":[GWpi]|>dire/") or morphex(\1, ":(?:[123][sp]|[AQ].*:m)", ":[GWfe]|>dire/"))
-    -1>> =suggFemPlur(@)                                                     # Accord avec « elles » : « \1 » devrait être au féminin pluriel.
+
+__ppas_inversion_être_je__
+    /-je  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggSing(\2)               # Accord avec le sujet “je” : “\2” devrait être au singulier.
+
+__ppas_inversion_être_tu__
+    /-tu  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggSing(\2)               # Accord avec le sujet “tu” : “\2” devrait être au singulier.
+
+__ppas_inversion_être_il__
+    /-il  @:(?:[123][sp]|Y|[NA].*:[pf])¬:(?:G|W|[me]:[si])|question/
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggMasSing(\2)            # Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
+
+__ppas_inversion_être_ce__
+    /-ce  @:(?:[123][sp]|[NA].*:[pf])¬:(?:G|W|Y|[me]:[si])
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggMasSing(\2)            # Accord avec le sujet “ce” : “\2” devrait être au masculin singulier.
+
+__ppas_inversion_être_elle__
+    /-elle  @:(?:[123][sp]|Y|[NA].*:[pm])¬:(?:G|W|[fe]:[si])
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggFemSing(\2)            # Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
+
+__ppas_inversion_être_il__
+    /-on  @:(?:[123][sp]|Y)¬:(?:G|W)
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggVerbPpas(\2)           # Accord avec le sujet “on”.
+
+__ppas_inversion_être_nous__
+    /-nous  @:(?:[123][sp]|Y|[NA].*:s)¬:[GWpi]|>(?:dire|légion)/
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggPlur(\2)               # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
+
+__ppas_inversion_être_il__
+    /-vous  @:(?:[123][sp]|Y)¬:(?:G|W)
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ":V0e")
+        -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
+
+__ppas_inversion_être_ils__
+    /-ils  @:(?:[123][sp]|Y|[NA].*:[sf])¬:(?:G|W|[me]:[pi])|>(?:dire|légion)/
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggMasPlur(\2)            # Accord avec “ils” : “\2” devrait être au masculin pluriel.
+
+__ppas_inversion_être_elles__
+    /-elles  @:(?:[123][sp]|Y|[NA].*:[sm])¬:(?:G|W|[fe]:[pi])|>(?:dire|légion)/
+        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggFemPlur(\2)            # Accord avec “elles” : “\2” devrait être au féminin pluriel.
 
 TEST: serais-je {{fâchés}} contre vous ?
 TEST: Est-elle {{arriver}} ?
@@ -13751,12 +13828,24 @@ TEST: Était-elle {{fatiguer}} ?
 TEST: Ne sont-elles pas {{aveugle}}
 TEST: N’est-il pas {{aveugles}}
 TEST: Sont-ils vraiment {{aveugle}}
+TEST: est-on déjà {{passer}} de ce côté-là
+TEST: Est-il souvent {{arrivait}} de se tromper ?
 TEST: Ne sommes-nous pas {{aveugle}}
 TEST: Que se sont-ils dit ?
+TEST: Ton rendez-vous arrive bientôt.
 TEST: Est-il question de ceci ou de cela ?
 TEST: Est-ce former de futurs travailleurs ou bien des citoyens
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@
 
 ## Accord et incohérences
 __[i]/ppas(ppas_sont)__
@@ -15942,9 +16031,14 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 
 
 @@@@
-@@@@END_GRAPH
 @@@@
-
+@@@@
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@
 
 
 !!
