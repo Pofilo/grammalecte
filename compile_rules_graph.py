@@ -16,7 +16,7 @@ dFUNCNAME = {}
 
 
 def createFunction (sType, sActionId, sCode, bStartWithEqual=False):
-    "create a function (stored in dFUNCTIONS) and return function name"
+    "create a function (stored in <dFUNCTIONS>) and return function name"
     sCode = prepareFunction(sCode)
     if sType not in dFUNCNAME:
         dFUNCNAME[sType] = {}
@@ -25,6 +25,19 @@ def createFunction (sType, sActionId, sCode, bStartWithEqual=False):
     sFuncName = "_g_" + sType + "_" + str(dFUNCNAME[sType][sCode])
     dFUNCTIONS[sFuncName] = sCode
     return sFuncName  if not bStartWithEqual  else "="+sFuncName
+
+
+def storeAction (sActionId, aAction):
+    "store <aAction> in <dACTIONS> avoiding duplicates"
+    nVar = 0
+    while True:
+        sActionName = sActionId + str(nVar)
+        if sActionName not in dACTIONS:
+            dACTIONS[sActionName] = aAction
+            return sActionName
+        elif aAction == dACTIONS[sActionName]:
+            return sActionName
+        nVar += 1
 
 
 def prepareFunction (sCode):
@@ -137,12 +150,12 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         for iAction, sAction in enumerate(sActions.split(" <<- ")):
             sAction = sAction.strip()
             if sAction:
-                sActionId = sRuleName + "__b" + str(iActionBlock) + "_l" + str(iLine) + "_a" + str(iAction) + "_" + str(len(lToken))
+                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
                 aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
                 if aAction:
-                    dACTIONS[sActionId] = aAction
+                    sActionName = storeAction(sActionId, aAction)
                     lResult = list(lToken)
-                    lResult.extend(["##"+str(iLine), sActionId])
+                    lResult.extend(["##"+str(iLine), sActionName])
                     #if iLine == 13341:
                     #    print("  ".join(lToken))
                     #    print(sActionId, aAction)
