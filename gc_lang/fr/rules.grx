@@ -3819,6 +3819,62 @@ TEST: Ce couple va donner à la France sa très importante collection qui rejoin
 
 
 
+!!!
+!!!
+!!! Conjugaison                                                                                   !!
+!!!
+!!!
+
+## 1pl
+__conj_nous_verbe__
+    <start>  nous  @:V¬:(?:G|Y|P|1p|3[sp])
+        <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
+        -3>> =suggVerb(\3, ":1p")                                               # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
+
+    [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]         @:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]  @:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:1p
+        <<- /conj/ --1>> =suggVerb(\-1, ":1p")                                  # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+TEST: Nous {{arriverez}} demain.
+TEST: Et, nous laissant étonnés d’être encore là sans y avoir rien compris,
+
+
+## 2pl
+__conj_vous_verbe__
+    <start>  vous  @:V¬:(?:G|Y|P|2p|3[sp])
+        <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
+        -3>> =suggVerb(\3, ":2p")                                               # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+    [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]         @:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]  @:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:2p
+        <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                  # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+TEST: Vous {{arrivais}} trop tard.
+TEST: vous ne l’{{avait}} pas vu.
+TEST: je crois, vous m’{{avais}} trompé…
+
+
+## se + incohérence
+__conj_se_incohérence__
+    [se|s’]  ?[le|la|l’|les|en|y]¿  @:V¬:(?:3[sp]|P)
+        <<- /conj/ morph(\-1, ":[12]s") --1>> =suggVerb(\-1, ":3s")             # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 1ʳᵉ ou 2ᵉ personne du singulier.
+        <<- /conj/ __else__ and morph(\-1, ":1p") --1>> =suggVerb(\-1, ":3p")   # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 1ʳᵉ personne du pluriel.
+        <<- /conj/ __else__ and morph(\-1, ":2p") --1>> =suggVerbInfi(\-1)      # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 2ᵉ personne du pluriel.
+
+TEST: se {{considérez}} comme un génie…
+TEST: se {{rencontrerons}} demain grands et petits.
+TEST: se {{crois}} élu par Dieu…
+TEST: avec ceux se trouvant sur leur chemin
+TEST: s’y adonnant à cœur-joie.
+
+
+
 !!
 !!
 !!!! Confusions générales                                                                         !!
@@ -12790,9 +12846,6 @@ __purge_autre__
     en tant que >telle
         <<- ~>> *
 
-    fois que
-        <<- ~1>> _
-
     [<start>|,] nul doute [que|qu’|qu]
         <<- ~2:0>> *
 
@@ -12888,6 +12941,18 @@ TEST: __ocr__ la longueur de la circonférence étant égale à…
 
 
 !!!! Confusions                                                                                   !!
+
+## ou / où
+__conf_det_nom_où_pronom__
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [je|j’|tu|il|on|ils]
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [elle|nous|vous|elles]
+        || [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|lui|nous|vous|leur]
+        <<- /ppas/ morph(\3, ":[NA]", ":G")
+        -4>> où                                             # Confusion probable. Pour évoquer un lieu ou un moment, écrivez “où”.|http://fr.wiktionary.org/wiki/o%C3%B9
+
+TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
+TEST: une chambre {{ou}} nous n’avons rien trouvé
+
 
 ## soit / soie / soi
 __conf_aller_de_soi__
@@ -14155,6 +14220,157 @@ TEST: t’avais confiance
 TEST: t’en as envie ?
 
 
+!!
+!!
+!!!! COD précédant que                                                                            !!
+!!
+!!
+
+__ppas_det_plur_COD_que_avoir__
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  [que|qu’|qu]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:s¬:[GWpi]
+        <<- /ppas/ morph(\2, ":[NA]") and not morph(>1, ":(?:Y|Oo|D)") and not value(>1, "|m’|t’|s’|l’|")
+            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
+        --1>> =suggPlur(\-1, \2)
+        # Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: Les documents qu’ils ont {{acheté}}.
+TEST: les flacons qu’ils ont réussi à acquérir
+TEST: ça faisait des années que j’avais délaissé ce lieu
+TEST: Les électeurs de Donald que l’on avait rencontrés jusque-là boivent l’eau d’une seule fontaine : Fox News et les sites et radios conservateurs.
+TEST: des choses que j’aurais oublié d’aborder.
+
+
+__ppas_det_mas_sing_COD_que_avoir__
+    [un|le|l’|ce|cet|mon|ton|son]  *WORD  [que|qu’|qu]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|[me]:[si])
+        <<- /ppas/ morph(\2, ":[NA].*:m") --1>> =suggMasSing(\-1)
+        # Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: Le document qu’ils ont de temps en temps {{achetés}}.
+TEST: L’homme que j’ai {{aidée}}.
+TEST: L’homme qu’ils ont beaucoup {{aidée}}.
+TEST: L’homme que nous avons un peu {{aidée}}.
+TEST: le flacon qu’ils ont réussi à acquérir
+
+
+__ppas_det_fem_sing_COD_que_avoir__
+    [une|la|l’|cette|ma|ta|sa|mon|ton|son]  *WORD  [que|qu’|qu]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|[fe]:[si])
+        <<- /ppas/ morph(\2, ":[NA].*:f") and not morph(>1, ":(?:Y|Oo|D)|>que?") and not value(>1, "|m’|t’|s’|l’|")
+            and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
+        --1>> =suggFemSing(\-1)
+        # Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: La femme que j’ai {{aidé}}.
+TEST: La femme que j’ai beaucoup {{aidé}}.
+TEST: La femme que j’ai un peu {{aidé}}.
+TEST: la danse qu’ils ont réussi à faire
+
+
+__ppas_ce_que_pronom_avoir__
+    ce  [que|qu’|qu]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|[me]:[si])
+        <<- /ppas/ --1>> =suggMasSing(\-1)
+        # Accord avec le COD “ce”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+TEST: ce que ça a {{donnée}}
+TEST: ce qu’il leur a {{données}}
+
+
+__ppas_avoir_conf_infi__
+    >avoir  ~e[rz]$
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence avec “\1” : “\2” n’est pas un participe passé.
+        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
+        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez :
+
+TEST: Avoir {{marcher}} toute la journée m’a épuisée.
+TEST: Avez-vous {{signez}} le contrat ?
+TEST: Ont-ils {{signer}} le contrat ?
+TEST: Ai-je déjà {{signez}} le contrat ?
+TEST: A-t-il déjà {{signer}} le contrat ?
+TEST: nous avons vu des avions voler haut dans le ciel.
+
+
+
+!!!! du / dû                                                                                      !!
+
+__ppas_avoir_dû_vinfi__
+    >avoir  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|@:Y]
+        <<- /ppas/ -2>> dû                                      # Participe passé de devoir : “dû”.
+
+    /VCint  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|@:Y]
+        <<- /ppas/ -2>> dû                                      # Participe passé de devoir : “dû”.
+
+TEST: Il a {{du}} leur prendre.
+TEST: J’ai {{du}} lui donner.
+TEST: J’ai {{du}} leur prendre.
+TEST: A-t-il {{du}} se résoudre à céder ?
+TEST: Aurait-il {{du}} {{prendre}} son repas plus tôt ?
+
+
+__ppas_qui_être_dû__
+    qui  ?[ne|n’]¿  [me|m’|te|t’|lui|nous|vous|leur]  >être  du
+        <<- /ppas/ --1>> dû                                     # Confusion. Ce qui est dû.
+
+TEST: Voici ce qui t’est {{du}}.
+TEST: Voici ce qui me sera {{du}}.
+TEST: Voici ce qui vous est {{du}}.
+
+
+__ppas_dû_du__
+    du  [à|a|au|aux]
+        <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
+
+    [mon|notre|votre]  du
+        <<- /ppas/ -2>> dû                                      # Confusion. Ce qui est dû.
+
+    [ton|son|leur]  du
+        <<- /ppas/ not morph(>1, ":[NA].*:[me]") -2>> dû        # Confusion. Ce qui est dû.
+
+TEST: L’échec {{du}} à une erreur de calcul
+TEST: L’échec est {{du}} en partie à un manque de préparation.
+TEST: que ça vous plaise ou non, c’est notre {{du}}.
+TEST: Il veut qu’on lui rende son {{du}}.
+TEST: Tu as reçu ton {{du}} pour ton travail.
+
+
+!!
+!!
+!!!! Participes passés avec formes interrogatives                                                 !!
+!!
+!!
+
+__ppas_avoir_pronom__
+    *WORD  /VCint  *WORD
+        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and \3 != "prise"
+            and not morph(\1, ">(?:les|[nv]ous|en)|:[NA].*:[fp]") and not before(r"(?i)\b(?:quel(?:le|)s?|combien) ")
+        -3>> =suggMasSing(\3)                               # Avec “avoir”, il faut un participe passé au masculin singulier, sauf si un COD précède.
+
+    <start>  ?n’¿  (/VCint)  *WORD
+        <<- /ppas/ morphVC(\1, ":V0a") and morph(\-1, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and \-1 != "prise"
+        --1>> =suggMasSing(\-1)                             # Avec “avoir”, il faut un participe passé au masculin singulier, sauf si un COD précède.
+
+__ppas_l_m_t_avoir_pronom__
+    [l’|m’|t’]  /VCint  *WORD
+        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:p)", ":[GWsi]")
+        -3>> =suggMasSing(\3)                               # Accord avec le COD “\1” : le participe passé “\3” devrait être au singulier (et accordé en genre).
+
+__ppas_les_avoir_pronom__
+    les  /VCint  *WORD
+        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:s)", ":[GWpi]")
+        -3>> =suggPlur(\3)                                  # Accord avec le COD “les” : le participe passé “\3” devrait être au pluriel (et accordé en genre).
+
+TEST: Avais-je {{laissés}} ces notes sur la table ?
+TEST: l’avait-il {{regardés}} longtemps ?
+TEST: les avais-tu {{acheté}} là-bas ?
+TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
+TEST: les ont-ils {{détecté}} ?
+TEST: les avaient-ils {{détectez}} ?
+TEST: l’a-t-il {{finis}} ?
+TEST: m’as-tu {{entendus}} ?
+TEST: N’avais-tu pas crainte de tout perdre ?
+TEST: Combien de bêtes n’as-tu pas déjà massacrées
+TEST: Combien de bêtes as-tu déjà massacrées
+
+
 
 @@@@
 @@@@
@@ -14165,221 +14381,6 @@ TEST: t’en as envie ?
 @@@@
 @@@@
 @@@@
-
-
-!!
-!!
-!!!! COD précédant que                                                                            !!
-!!
-!!
-
-__[i]/ppas(ppas_det_plur_COD_que_avoir)__
-    ([ldmtsc]es) +({w_2}) +que? +(?:j’|tu |ils? |[nv]ous |elles? |on ) *(?:ne +|n’|)({avoir}) +({w_2}[éiust]e?)(?! [mts]’)  @@0,w,w,$
-    <<- morph(\3, ":V0a", False)
-        and not ((re.search("^(?:décidé|essayé|tenté|oublié)$", \4) and after(" +d(?:e |’)")) or (re.search("^réussi$", \4) and after(" +à")))
-        and morph(\2, ":[NAQ]", False) and morphex(\4, ":V[0-3]..t.*:Q.*:s", ":[GWpi]")
-        and not morph(word(1), ":(?:Y|Oo|D)", False)
-    -4>> =suggPlur(@, \2)
-    # Si « \1 \2… » est bien le COD du participe passé « \4 », celui-ci devrait être au pluriel (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: Les documents qu’ils ont {{acheté}}.
-TEST: les flacons qu’ils ont réussi à acquérir
-TEST: ça faisait des années que j’avais délaissé ce lieu
-TEST: Les électeurs de Donald que l’on avait rencontrés jusque-là boivent l’eau d’une seule fontaine : Fox News et les sites et radios conservateurs.
-TEST: des choses que j’aurais oublié d’aborder.
-
-
-__[i]/ppas(ppas_det_mas_sing_COD_que_avoir)__
-    (le |l’|cet? |[mts]on |un ) *({w_2}) +que? +(?:j’|tu |ils? |[nv]ous |elles? |on ) *(?:ne +|n’|)({avoir}) +({w_2}[es])  @@0,w,w,$
-    <<- morph(\3, ":V0a", False)
-        and morph(\2, ":[NAQ].*:m", False)
-        and (morphex(\4, ":V[0-3]..t.*:Q.*:f", ":[GWme]") or morphex(\4, ":V[0-3]..t.*:Q.*:p", ":[GWsi]"))
-    -4>> =suggMasSing(@)
-    # Si « \1 \2… » est bien le COD du participe passé « \4 », celui-ci devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: Le document qu’ils ont de temps en temps {{achetés}}.
-TEST: L’homme que j’ai {{aidée}}.
-TEST: L’homme qu’ils ont beaucoup {{aidée}}.
-TEST: L’homme que nous avons un peu {{aidée}}.
-TEST: le flacon qu’ils ont réussi à acquérir
-
-
-__[i]/ppas(ppas_det_fem_sing_COD_que_avoir)__
-    (la |l’|cette |[mts]a |mon |une ) *({w_2}) +que? +(?:j’|tu |ils? |[nv]ous |elles? |on ) *(?:ne +|n’|)({avoir}) +({w_2}[éiust])(?! [mts]’)
-    @@0,w,w,$
-    <<- morph(\3, ":V0a", False)
-        and not ((re.search("^(?:décidé|essayé|tenté)$", \4) and after(" +d(?:e |’)")) or (re.search("^réussi$", \4) and after(" +à")))
-        and morph(\2, ":[NAQ].*:f", False)
-        and (morphex(\4, ":V[0-3]..t.*:Q.*:m", ":[GWfe]") or morphex(\4, ":V[0-3]..t.*:Q.*:p", ":[GWsi]"))
-        and not morph(word(1), ":(?:Y|Oo)|>que?", False)
-    -4>> =suggFemSing(@)
-    # Si « \1 \2… » est bien le COD du participe passé « \4 », celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: La femme que j’ai {{aidé}}.
-TEST: La femme que j’ai beaucoup {{aidé}}.
-TEST: La femme que j’ai un peu {{aidé}}.
-TEST: la danse qu’ils ont réussi à faire
-
-
-__[i]/ppas(ppas_ce_que_pronom_avoir)__
-    ce +que? +(?:j’|tu |ils? |[nv]ous |elles? |on |ça |ce(?:la|ci) ) *(?:ne +|n’|)({avoir}) +({w_2}[es])  @@w,$
-    <<- morph(\1, ":V0a", False)
-        and (morphex(\2, ":V[0-3]..t.*:Q.*:f", ":[GWme]") or morphex(\2, ":V[0-3]..t.*:Q.*:p", ":[GWsi]"))
-    -2>> =suggMasSing(@)
-    # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
-
-TEST: ce que ça a {{donnée}}
-
-
-__[i]/ppas(ppas_avoir_conf_infi)__
-    ({avoir}) +({w_2}e[rz])  @@0,$
-    <<- not re.search("^(?:A|avions)$", \1) and morph(\1, ":V0a", False) and morph(\2, ":V.+:(?:Y|2p)", False)
-    -2>> =suggVerbPpas(@, ":m:s")                                                                   # Incohérence avec « \1 » : « \2 » n’est pas un participe passé.
-    <<- __also__ and \1 == "a" and \2.endswith("r") and not before(r"(?i)\b(?:[mtn]’|il +|on +|elle +)$")
-    -1>> à                                                                                          # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez :
-
-TEST: Avoir {{marcher}} toute la journée m’a épuisée.
-
-
-
-!!!! du / dû                                                                                      !!
-
-__[i]/ppas(ppas_avoir_dû_vinfi)__
-    ({avoir}) +(due?s?) +(?:[mts]’|)({w_2})  @@0,w,$
-    <<- morph(\1, ":V0a", False) and (morph(\3, ":Y") or re.search("^(?:[mtsn]e|[nv]ous|leur|lui)$", \3))
-    -2>> dû                                                                                         # Participe passé de devoir : « dû ».
-
-__[i]/ppas(ppas_avoir_pronom_du_vinfi)__
-    ({avoir})-(?:t-|)(?:je|tu|ils?|elles?|nous|vous) +(due?s?) +(?:[mts]’|)({w_2})  @@0,w,$
-    <<- morph(\1, ":V0a", False) and (morph(\3, ":Y") or re.search("^(?:[mtsn]e|[nv]ous|leur|lui)$", \3))
-    -2>> dû                                                                                         # Participe passé de devoir : « dû ».
-
-__[i]/ppas(ppas_dû_à_au)__
-    (du) +(?:à|a|aux?) @@0 <<- -1>> dû                                                              # Confusion. Ce qui est dû.
-__[i]/ppas(ppas_mon_votre_notre_dû)__
-    (?:mon|notre|votre) (du) @@$ <<- -1>> dû                                                        # Confusion. Ce qui est dû.
-__[i]/ppas(ppas_ton_son_dû)__
-    [ts]on (du) @@4 <<- not morph(word(1), ":[NAQ].*:[me]", False) -1>> dû                          # Confusion. Ce qui est dû.
-
-__[i]/ppas(ppas_qui_être_dû)__
-    qui +(?:ne +|)(?:[mt](?:’|e +)|l(?:eur|ui) +|[nv]ous +)([eésf]\w+) (du)  @@w,$
-    <<- morph(\1, ":V0e", False) -2>> dû                                                            # Confusion. Ce qui est dû.
-
-TEST: A-t-il {{du}} se résoudre à céder ?
-TEST: L’échec est {{du}} à une erreur de calcul
-TEST: L’échec est {{du}} en partie à un manque de préparation.
-TEST: Tu as reçu ton {{du}} pour ton travail.
-TEST: J’ai {{du}} lui donner.
-TEST: J’ai {{du}} leur prendre.
-TEST: que ça vous plaise ou non, c’est notre {{du}}.
-TEST: Il a {{du}} leur prendre.
-TEST: Voici ce qui t’est {{du}}.
-TEST: Voici ce qui me sera {{du}}.
-TEST: Voici ce qui vous est {{du}}.
-TEST: Il veut qu’on lui rende son {{du}}.
-TEST: Aurait-il {{du}} {{prendre}} son repas plus tôt ?
-TEST: Avez-vous {{signez}} le contrat ?
-TEST: Ont-ils {{signer}} le contrat ?
-TEST: Ai-je déjà {{signez}} le contrat ?
-TEST: A-t-il déjà {{signer}} le contrat ?
-
-
-!!
-!!
-!!!! Participes passés avec formes interrogatives                                                 !!
-!!
-!!
-
-__[i]/ppas(ppas_avoir_pronom1)__
-    (?<![ltm]’)({avoir})[- ](?:je|tu|ils?|elles?|t-(?:ils?|elles?|on)|on) +({w2})  @@0,$
-    <<- morph(\1, ":V0a", False) and morphex(\2, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and \2 != "prise"
-        and not morph(word(-1), ">(?:les|[nv]ous|en)|:[NAQ].*:[fp]", False) and not before(r"(?i)\b(?:quel(?:le|)s?|combien) ")
-    -2>> =suggMasSing(@)
-    # Avec « avoir », il faut un participe passé au masculin singulier.
-
-__[i]/ppas(ppas_avoir_pronom2)__
-    (?<![ltm]’)({avoir})-(?:[nv]ous) +({w2})  @@0,$
-    <<- morph(\1, ":V0a", False) and morphex(\2, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and \2 != "prise"
-        and not morph(word(-1), ">(?:les|[nv]ous|en)|:[NAQ].*:[fp]", False) and not before(r"(?i)\b(?:quel(?:le|)s?|combien) ")
-    -2>> =suggMasSing(@)
-    # Avec « avoir », il faut un participe passé au masculin singulier.
-
-__[i]/ppas(ppas_l_m_t_avoir_pronom)__
-    ([ltm]’)({avoir})[- ](?:je|tu|ils?|elles?|t-(?:ils?|elles?|on)|[nv]ous|on) +({w2}s)  @@0,2,$
-    <<- morph(\2, ":V0a", False) and morphex(\3, ":(?:Y|2p|Q.*:p)", ":[si]")
-    -3>> =suggMasSing(@)
-    # Accord avec le COD « \1 » : e participe passé « \2 » devrait être au singulier (et accordé en genre).
-
-__[i]/ppas(ppas_les_avoir_pronom)__
-    les +({avoir})-(?:je|tu|ils?|elles?|t-(?:ils?|elles?|on)|[nv]ous|on) +({w_1}(?:[éiut]e?|is|se))  @@w,$
-    <<- morph(\1, ":V0a", False) and morphex(\2, ":V[123]..t.*:Q.*:s", ":[GWpi]")
-    -2>> =suggPlur(@)
-    # Accord avec le COD “les” : le participe passé « \2 » devrait être au pluriel (et accordé en genre).
-
-TEST: Avais-je {{laissés}} ces notes sur la table ?
-TEST: l’avait-il {{regardés}} longtemps ?
-TEST: les avais-tu {{acheté}} là-bas ?
-TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
-TEST: Combien de bêtes n’as-tu pas déjà massacrées
-TEST: Combien de bêtes as-tu déjà massacrées
-TEST: les ont-ils {{détecté}} ?
-TEST: l’a-t-il {{finis}} ?
-TEST: m’as-tu {{entendus}} ?
-
-
-## 1pl
-__[i]/conj(conj_nous_verbe)__
-    ^ *nous +({w2})  @@$
-    <<- morphex(\1, ":V", ":(?:G|Y|P|1p|3[sp])") and not after("^ +(?:je|tu|ils?|elles?|on|[vn]ous) ")
-    -1>> =suggVerb(@, ":1p")
-    # Conjugaison erronée. Accord avec « nous ». Le verbe devrait être à la 1ʳᵉ personne du pluriel.
-
-TEST: Nous {{arriverez}} demain.
-TEST: Et, nous laissant étonnés d’être encore là sans y avoir rien compris,
-
-
-## 2pl
-__[i]/conj(conj_vous_verbe1)__
-    ^ *vous +({w3})  @@$
-    <<- morphex(\1, ":V", ":(?:G|Y|P|2p|3[sp])") and not after("^ +(?:je|ils?|elles?|on|[vn]ous) ")
-    -1>> =suggVerb(@, ":2p")
-    # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
-
-TEST: Vous {{arrivais}} trop tard.
-
-
-__[i]/conj(conj_vous_verbe2)__
-    vous [nm](?:e +(?:les? |l’|la |[nv]ous |)|’)({w_3})  @@$
-    <<- morphex(\1, ":V", ":2p") and isStart() -1>> =suggVerb(@, ":2p")         # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
-
-TEST: vous ne l’{{avait}} pas vu.
-TEST: je crois, vous m’{{avais}} trompé…
-
-
-## se + incohérence
-__[i]/conj(conj_se_incohérence)__
-    s(?:e +(?:les? +|la +|)|’(?:en +|y +|))({w_2}(?:e[zs]|ons|is|us))  @@$
-    <<- morphex(\1, ":2s", ":3[sp]") -1>> =suggVerb(@, ":3s")                   # Incohérence. Avec le pronom “se”, le verbe ne peut être à la deuxième personne du pluriel.
-    <<- __else__ and morphex(\1, ":1p", ":3[sp]") -1>> =suggVerb(@, ":3p")      # Incohérence. Avec le pronom “se”, le verbe ne peut être à la deuxième personne du pluriel.
-    <<- __else__ and morphex(\1, ":2p", ":3[sp]") -1>> =suggVerbInfi(@)         # Incohérence. Avec le pronom “se”, le verbe ne peut être à la deuxième personne du pluriel.
-
-TEST: se {{considérez}} comme un génie…
-TEST: se {{rencontrerons}} demain grands et petits.
-TEST: se {{crois}} élu par Dieu…
-TEST: avec ceux se trouvant sur leur chemin
-
-
-
-!!!! Confusions ou/où                                                                             !!
-
-__[i]/conf(conf_det_nom_où_pronom)__
-    ^ *(?:l(?:es? +|a +|’)|[nv]o(?:s|tre) +|ce(?:t|tte|s|) +|[mts](?:es|on|a) +|des +)({w_2}) +(ou) +(?:je|tu|ils?|elles? +> +\w+|[nv]ous +> +\w+)  @@w,w
-    <<- morphex(\1, ":[NAQ]", ":G")
-    -2>> où                                                                         # Confusion probable. Pour évoquer un lieu ou un moment, écrivez :|http://fr.wiktionary.org/wiki/o%C3%B9
-
-TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
-
-
 
 
 !!!
@@ -14426,6 +14427,11 @@ TEST: Ne manquer de rien.
 TEST: Ne jamais miser sur ces tocards.
 TEST: Ne m’en rien laisser.
 
+
+# [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿
+# [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]
+# [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]
+# [ne|n’]  [lui|leur]                     en
 
 !!
 !!
