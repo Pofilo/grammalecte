@@ -112,8 +112,10 @@ def suggVerbTense (sFlex, sTense, sWho):
     return ""
 
 
-def suggVerbImpe (sFlex):
+def suggVerbImpe (sFlex, bVC=False):
     "change <sFlex> to a verb at imperative form"
+    if bVC:
+        sFlex, sSfx = splitVerb(sFlex)
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
@@ -125,6 +127,8 @@ def suggVerbImpe (sFlex):
             if conj._hasConjWithTags(tTags, ":E", ":2p"):
                 aSugg.add(conj._getConjWithTags(sStem, tTags, ":E", ":2p"))
     if aSugg:
+        if bVC:
+            aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
         return "|".join(aSugg)
     return ""
 
