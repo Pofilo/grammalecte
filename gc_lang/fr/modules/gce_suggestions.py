@@ -7,8 +7,22 @@ from . import phonet
 
 ## Verbs
 
-def suggVerb (sFlex, sWho, funcSugg2=None):
+def splitVerb (sVerb):
+    "renvoie le verbe et les pronoms séparément"
+    iRight = sVerb.rfind("-")
+    sSuffix = sVerb[iRight:]
+    sVerb = sVerb[:iRight]
+    if sVerb.endswith(("-t", "-le", "-la", "-les")):
+        iRight = sVerb.rfind("-")
+        sSuffix = sVerb[iRight:] + sSuffix
+        sVerb = sVerb[:iRight]
+    return sVerb, sSuffix
+
+
+def suggVerb (sFlex, sWho, funcSugg2=None, bVC=False):
     "change <sFlex> conjugation according to <sWho>"
+    if bVC:
+        sFlex, sSfx = splitVerb(sFlex)
     aSugg = set()
     for sStem in _oSpellChecker.getLemma(sFlex):
         tTags = conj._getTags(sStem)
@@ -37,6 +51,8 @@ def suggVerb (sFlex, sWho, funcSugg2=None):
         if aSugg2:
             aSugg.add(aSugg2)
     if aSugg:
+        if bVC:
+            aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
         return "|".join(aSugg)
     return ""
 
@@ -379,13 +395,17 @@ def hasSimil (sWord, sPattern=None):
     return phonet.hasSimil(sWord, sPattern)
 
 
-def suggSimil (sWord, sPattern=None, bSubst=False):
+def suggSimil (sWord, sPattern=None, bSubst=False, bVC=False):
     "return list of words phonetically similar to sWord and whom POS is matching sPattern"
+    if bVC:
+        sWord, sSfx = splitVerb(sWord)
     aSugg = phonet.selectSimil(sWord, sPattern)
     for sMorph in _oSpellChecker.getMorph(sWord):
         aSugg.update(conj.getSimil(sWord, sMorph, bSubst))
         break
     if aSugg:
+        if bVC:
+            aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
         return "|".join(aSugg)
     return ""
 
