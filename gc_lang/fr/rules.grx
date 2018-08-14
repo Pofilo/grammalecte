@@ -2185,7 +2185,7 @@ __da_le_la_les_leur__
         <<- =>> select(\1, ":D")
 
     l’   @:N¬*
-        <<- =>> define(\1, ":D:e:s")
+        <<- =>> define(\1, [":D:e:s"])
 
 
 __da_nous_vous__
@@ -2290,48 +2290,48 @@ TEST: c’est à n’y plus rien comprendre.
 
 __inte_verbes_composés_interrogatifs__
     ~\w-[jJ]e$
-        <<- /inte/ morphVC(\1, ":V", ":1[sśŝ]") -1>> =suggVerb(\1, ":1ś", None, True)               # Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
-        <<- /inte/ __else__ and not morphVC(\1, ":V") -1>> =suggSimil(\1, ":1[sśŝ]", False, True)   # Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":V", ":1[sśŝ]") ->> =suggVerb(\1, ":1ś", None, True)                # Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
+        <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":1[sśŝ]", False, True)    # Forme interrogative. Désaccord avec “je”. Le verbe n’est pas à la 1ʳᵉ personne du singulier.
         <<- />> -je|VCint
 
     ~\w-[tT]u$
-        <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") -1>> =suggVerb(\1, ":2s", None, True)           # Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
-        <<- /inte/ __else__ and not morphVC(\1, ":V") -1>> =suggSimil(\1, ":2s", False, True)       # Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":V", ":[ISK].*:2s") ->> =suggVerb(\1, ":2s", None, True)            # Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
+        <<- /inte/ __else__ and not morphVC(\1, ":V") ->> =suggSimil(\1, ":2s", False, True)        # Forme interrogative. Désaccord avec “tu”. Le verbe n’est pas à la 2ᵉ personne du singulier.
         <<- />> -tu|VCint
 
     ~\w-[iI]l$
-        <<- /inte/ morphVC(\1, ":3p", ":3s") -1>> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"             # Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") -1>> =suggVerb(\1, ":3s", None, True)                # Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:t|voilà)/") -1>> =suggSimil(\1, ":3s", False, True)  # Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"              # Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)                 # Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:t|voilà)/") ->> =suggSimil(\1, ":3s", False, True)   # Forme interrogative. Désaccord avec “il”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -il|VCint
 
     ~\w-[eE]lle$
-        <<- /inte/ morphVC(\1, ":3p", ":3s") -1>> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"   # Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") -1>> =suggVerb(\1, ":3s", None, True)      # Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") -1>> =suggSimil(\1, ":3s", False, True)  # Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":3p", ":3s") ->> =suggVerb(\1, ":3s", None, True) + "|" + \1+"s"    # Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)       # Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   # Forme interrogative. Désaccord avec “elle”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -elle|VCint
 
     ~\w-[oO]n$
-        <<- /inte/ morphVC(\1, ":V", ":3s") -1>> =suggVerb(\1, ":3s", None, True)                   # Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") -1>> =suggSimil(\1, ":3s", False, True)  # Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ morphVC(\1, ":V", ":3s") ->> =suggVerb(\1, ":3s", None, True)                    # Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3s", False, True)   # Forme interrogative. Désaccord avec “on”. Le verbe n’est pas à la 3ᵉ personne du singulier.
         <<- />> -on|VCint
 
     ~\w-[cCs]e$
         <<- /inte/ morphVC(\1, ":V", ":(?:3s|V0e.*:3p)")
-        -1>> =suggVerb(\1, ":3s", None, True)               # Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+        ->> =suggVerb(\1, ":3s", None, True)                # Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- /inte/ __else__ and morphVC(\1, ":", ":V")
-        -1>> =suggSimil(\1, ":3s", False, True)             # Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
-        <<- /conf/ \1.endswith("se") -1>> =\1[:-2]+"ce"     # Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+        ->> =suggSimil(\1, ":3s", False, True)              # Forme interrogative. Désaccord avec “ce”. Le verbe n’est pas à la 3ᵉ personne du singulier.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
+        <<- /conf/ \1.endswith("se") ->> =\1[:-2]+"ce"      # Forme interrogative. Confusion.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4132
         <<- />> -ce|VCint
 
     ~\w-[iI]ls$
-        <<- /inte/ morphVC(\1, ":V", ":3p") -1>> =suggVerb(\1, ":3p", None, True)                   # Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") -1>> =suggSimil(\1, ":3p", False, True)  # Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    # Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   # Forme interrogative. Désaccord avec “ils”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -ils|VCint
 
     ~\w-[eE]lles$
-        <<- /inte/ morphVC(\1, ":V", ":3p") -1>> =suggVerb(\1, ":3p", None, True)                   # Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") -1>> =suggSimil(\1, ":3p", False, True)  # Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":3p") ->> =suggVerb(\1, ":3p", None, True)                    # Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>t/") ->> =suggSimil(\1, ":3p", False, True)   # Forme interrogative. Désaccord avec “elles”. Le verbe n’est pas à la 3ᵉ personne du pluriel.
         <<- />> -elles|VCint
 
 TEST: {{Vas-je}}                                            ->> Vais-je
@@ -2356,13 +2356,13 @@ TEST: {{prendrons-elles}} un verre avec moi ?
 
 __inte_verbes_composés_interrogatifs_impératifs__
     ~\w-[nN]ous$
-        <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") -1>> =suggVerb(\1, ":1p", None, True)          # Forme interrogative ou impérative incorrecte.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") -1>> =suggSimil(\1, ":1p", False, True)  # Forme interrogative ou impérative incorrecte.
+        <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", None, True)          # Forme interrogative ou impérative incorrecte.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":1p", False, True)  # Forme interrogative ou impérative incorrecte.
         <<- />> -nous|VCint
 
     ~\w-[vV]ous$
-        <<- /inte/ morphVC(\1, ":V", ":2p") -1>> =suggVerb(\1, ":2p", None, True)                      # Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") -1>> =suggSimil(\1, ":2p", False, True)  # Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
+        <<- /inte/ morphVC(\1, ":V", ":2p") ->> =suggVerb(\1, ":2p", None, True)                      # Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":2p", False, True)  # Forme interrogative ou impérative. Désaccord avec “vous”. Le verbe n’est pas à la 2ᵉ personne du pluriel.
         <<- />> -vous|VCint
 
 TEST: {{Prendront-nous}}                                    ->> Prendrons-nous
@@ -2384,28 +2384,57 @@ __inte_rendez_vous__
 
 __inte_verbes_composés_impératifs__
     ~\w-l(?:es?|a)-(?:[mt]oi|nous|leur)$
+    ~\w-(?:[nv]ous|lui|leur)-en$
+    ~\w-[mt]’en$
+    ~\w-[mt]’y$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
         <<- />> -COD-COI|VCimp
 
     ~\w-le$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
         <<- />> -le|-COD|VCimp
 
     ~\w-les$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
         <<- />> -les|-COD|VCimp
 
     ~\w-la$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
         <<- />> -la|-COD|VCimp
 
-    ~\w-moi$
+    ~\w\w\w\w-moi$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)   # Ceci n’est pas une forme verbale impérative.
         <<- />> -moi|-COI|VCimp
 
-    ~\w-toi$
+    ~\w\w\w\w-toi$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)   # Ceci n’est pas une forme verbale impérative.
         <<- />> -toi|-COI|VCimp
 
-    ~\w-lui$
+    ~\w\w\w\w-lui$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
         <<- />> -lui|-COI|VCimp
 
-    ~\w-leur$
+    ~\w\w\w\w-leur$
+        <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
+        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
         <<- />> -leur|-COI|VCimp
+
+    ~\w-leurs$
+        <<- /imp/ ->> =\1[:-1]                              # Le pronom personnel objet ne prend pas de “s” ; “leurs” est un déterminant (exemple : leurs affaires).
+        <<- />> -leur|-COI|VCimp
+
+TEST: {{prend-m’en}} trois, s’il te plaît.
+TEST: {{Sert-toi}} d’eux autant que tu le peux, puis casse-toi.
+TEST: {{explique-leurs}} de quoi il est question.
+TEST: c’est mon chez-moi
+TEST: c’est ton chez-toi
 
 
 !!!! Noms composés                                                                                !!
@@ -14644,20 +14673,7 @@ __[i]/imp(imp_aie)__
 TEST: {{Ait}} la foi !
 
 
-# Contrôle
-__[i]/imp(imp_verbe_lui_le_la_les_leur)__
-    ({w2})-(l(?:ui|es?|a|eurs?))  @@0,$
-    <<- not morph(\1, ":E|>chez", False) and spell(\1)
-    -1>> =suggVerbImpe(\1)                                  # Ceci n’est pas une forme impérative.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-    <<- \2 == "leurs" -2>> leur                             # Le pronom personnel objet ne prend pas de “s”, “leurs” est un déterminants (exemple : leurs affaires).
 
-__[i]/imp(imp_verbe_moi_toi_m_t_en)__
-    ({w2})-[tm](?:oi|’en)  @@0
-    <<- not morph(\1, ":E|>chez", False) and spell(\1)
-    -1>> =suggVerbTense(\1, ":E", ":2s")                    # Ceci n’est pas une forme impérative.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-
-TEST: {{prend}}-m’en trois, s’il te plaît.
-TEST: {{Sert}}-toi d’eux autant que tu le peux, puis casse-toi.
 TEST: — {{Abandonnes}}.
 TEST: Ne {{donnes}} pas autant.
 TEST: N’{{insistes}} pas.
@@ -14675,7 +14691,7 @@ TEST: {{Sert}} le plat.
 TEST: {{Attend}} la correction.
 TEST: {{Vas}} au diable !
 TEST: {{Écartes}} de moi cette coupe.
-TEST: explique-{{leurs}} de quoi il est question.
+
 
 
 !!
