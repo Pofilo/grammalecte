@@ -580,16 +580,18 @@ class TextParser:
         self.dError = {}
 
     def __str__ (self):
-        s = "TEXT ==========\n"
+        s = "===== TEXT =====\n"
         s += "sentence: " + self.sSentence0 + "\n"
         s += "now:      " + self.sSentence  + "\n"
         for dToken in self.lToken:
-            s += f'{dToken["nStart"]}\t{dToken["nEnd"]}\t{dToken["sValue"]}'
+            s += f'#{dToken["i"]}\t{dToken["nStart"]}:{dToken["nEnd"]}\t{dToken["sValue"]}\t{dToken["sType"]}'
             if "lMorph" in dToken:
                 s += "\t" + str(dToken["lMorph"])
+            if "tags" in dToken:
+                s += "\t" + str(dToken["tags"])
             s += "\n"
-        for nPos, dToken in self.dTokenPos.items():
-            s += f"{nPos}\t{dToken}\n"
+        #for nPos, dToken in self.dTokenPos.items():
+        #    s += f"{nPos}\t{dToken}\n"
         return s
 
     def update (self, sSentence, bDebug=False):
@@ -772,12 +774,13 @@ class TextParser:
             for sRuleId in dGraph[nextNodeKey]:
                 try:
                     if bDebug:
-                        print("  TRY:", sRuleId)
+                        print("   >TRY:", sRuleId)
                     sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
-                    # Sentence Tag  [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
+                    # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
+                    # Immunity      [ option, condition, "%", "",                            iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
                         bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
@@ -794,29 +797,28 @@ class TextParser:
                                         self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, "notype", bContext)
                                         dPriority[nErrorStart] = nPriority
                                         if bDebug:
-                                            print("  NEW_ERROR:", self.dError[nErrorStart], "\n  ", dRule[sRuleId])
+                                            print("    NEW_ERROR:  ", sRuleId, sLineId, ": ", self.dError[nErrorStart])
                             elif cActionType == "~":
                                 # text processor
-                                if bDebug:
-                                    print("  TAG_PREPARE:\n  ", dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
                                 bChange = True
+                                if bDebug:
+                                    print("    TEXT_PROCESSOR:  ", sRuleId, sLineId)
+                                    print("      ", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"], " >", sWhat)
                             elif cActionType == "=":
                                 # disambiguation
-                                if bDebug:
-                                    print("  DISAMBIGUATOR:\n  ", dRule[sRuleId])
                                 globals()[sWhat](self.lToken, nTokenOffset, nLastToken)
+                                if bDebug:
+                                    print("    DISAMBIGUATOR:  ", sRuleId, sLineId, "("+sWhat+")", self.lToken[nTokenOffset+1]["sValue"], ":", self.lToken[nLastToken]["sValue"])
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    print("  COND_OK: ", sRuleId)
+                                    print("    COND_OK:  ", sRuleId, sLineId)
                                 pass
                             elif cActionType == "/":
                                 # Tag
-                                if bDebug:
-                                    print("  TAG:\n  ", dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 for i in range(nTokenStart, nTokenEnd+1):
@@ -824,6 +826,9 @@ class TextParser:
                                         self.lToken[i]["tags"].update(sWhat.split("|"))
                                     else:
                                         self.lToken[i]["tags"] = set(sWhat.split("|"))
+                                if bDebug:
+                                    print("    TAG:  ", sRuleId, sLineId)
+                                    print("      ", sWhat, " >", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"])
                                 if sWhat not in self.dTags:
                                     self.dTags[sWhat] = [nTokenStart, nTokenStart]
                                 else:
@@ -832,7 +837,7 @@ class TextParser:
                             elif cActionType == "%":
                                 # immunity
                                 if bDebug:
-                                    print("  IMMUNITY:\n  ", dRule[sRuleId])
+                                    print("    IMMUNITY:\n  ", dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
@@ -850,7 +855,7 @@ class TextParser:
                                 print("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
                             if bDebug:
-                                print("  COND_BREAK")
+                                print("    COND_BREAK:  ", sRuleId, sLineId)
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
