@@ -31,7 +31,7 @@ def storeAction (sActionId, aAction):
     "store <aAction> in <dACTIONS> avoiding duplicates"
     nVar = 0
     while True:
-        sActionName = sActionId + str(nVar)
+        sActionName = sActionId + "_" + str(nVar)
         if sActionName not in dACTIONS:
             dACTIONS[sActionName] = aAction
             return sActionName
@@ -66,6 +66,7 @@ def prepareFunction (sCode):
     sCode = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                 # after(sCode)
     sCode = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', sCode)        # before0(sCode)
     sCode = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                # after0(sCode)
+    sCode = re.sub(r"analyseWord[(]", 'analyse(', sCode)
     sCode = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', sCode)
     sCode = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', sCode)
     return sCode
