@@ -8075,7 +8075,7 @@ __purge_locutions__
     de pied ferme
     de plein [droit|fouet]
     de plus [belle|près]
-    de premier [ordre|plan]
+    de premier [choix|ordre|plan]
     de première [catégorie|main|nécessité]
     de prime abord
     de proche en proche
@@ -9139,6 +9139,7 @@ __simplication_substantifs__
     preuves suffisantes du contraire
     prix de revient
     quelqu’un d’ autre
+    >rapport de force
     [réglé|réglée|réglés|réglées] comme du papier à musique
     [remis|remise|remises] à plat
     >requête en nullité
@@ -9638,14 +9639,16 @@ __purge_locutions_verbales__
     >mourir jeune
     [>paraître|>paraitre] jeune
     >porte [atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
+    >poser problème
     >prendre ?[ça|cela|ceci]¿ à la légère
-    >prendre [congé|conscience|contact|ombrage|racine|soin|vie]
+    >prendre [congé|conscience|contact|ombrage|peur|racine|soin|vie]
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre de court
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
     >prendre par surprise
     >prêter main-forte
+    >rendre visite
     >rester lettre morte
     >rester lettres mortes
     >suivre ?[ça|cela|ceci]¿ de près
@@ -14916,35 +14919,35 @@ __purge_préverbes1__
     lui   @:(?:[123][sp]|P|Y)¬:3s
         <<- not morph(<1, ":R") ~2>> *
 
-    [je|j’|tu|il|on]  le   @:(?:[123][sp]|P|Y)
+    [je|j’|il|on]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
 
-    [je|j’|tu|il|on]  la   @:(?:[123][sp]|P|Y)
+    [je|j’|il|on]  la   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
 
-    [je|j’|tu|il|on]  [l’|leur]   @:(?:[123][sp]|P|Y)
+    [je|j’|il|on]  [l’|leur]   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[si]") ~2>> *
 
-    [je|j’|tu|il|on]  les  @:(?:[123][sp]|P|Y)
+    [je|j’|il|on]  les  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[pi]") ~2>> *
 
-    [je|j’|tu|il|on]  en  @:(?:[123][sp]|P|Y)
+    [je|j’|il|on]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":[123]s") or not morph(\3, ":[NA]") ~2>> *
 
-    ils  le   @:(?:[123][sp]|P|Y)
-        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+    tu  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
 
-    ils  la   @:(?:[123][sp]|P|Y)
-        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+    tu  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
 
-    ils  [l’|leur]   @:(?:[123][sp]|P|Y)
-        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[si]") ~2>> *
+    tu  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[si]") ~2>> *
 
-    ils  les  @:(?:[123][sp]|P|Y)
-        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[pi]") ~2>> *
+    tu  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":N.*:[pi]") ~2>> *
 
-    ils  en  @:(?:[123][sp]|P|Y)
-        <<- not morph(<1, ":3p") or not morph(\3, ":[NA]") ~2>> *
+    tu  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:[123]s|V0)") or not morph(\3, ":[NA]") ~2>> *
 
     [lui|celui-là|celui-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
@@ -15006,6 +15009,36 @@ __purge_préverbes1__
     vous  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":[NA]") ~2>> *
 
+    ils  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    ils  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    ils  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    ils  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    ils  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":[NA]") ~2>> *
+
+    [eux|ceux-là|ceux-ci]  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    [eux|ceux-là|ceux-ci]  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    [eux|ceux-là|ceux-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    [eux|ceux-là|ceux-ci]  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    [eux|ceux-là|ceux-ci]  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":[NA]") ~2>> *
+
     [elles|celles-là|celles-ci]  le   @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
 
@@ -15021,8 +15054,11 @@ __purge_préverbes1__
     [elles|celles-là|celles-ci]  en  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":[NA]") ~2>> *
 
-    [je|j’|tu|il|on|ils]  [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [je|j’|il|on|ils]  [nous|vous|lui]  @:(?:[123][sp]|P|Y)
         <<- ~2>> *
+
+    tu  [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":V0") ~2>> *
 
     [lui|celui-là|celui-ci]     [nous|vous|lui]  @:(?:[123][sp]|P|Y)
     [elle|celle-là|celle-ci]    [nous|vous|lui]  @:(?:[123][sp]|P|Y)
