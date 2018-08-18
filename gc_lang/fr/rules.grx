@@ -2198,16 +2198,25 @@ __da_nous_vous__
 
 __da_préverbes_verbes__
     ne  ?[le|la|l’|les|nous|vous|lui|leur]¿  (@:¬:[OX])
-    ne  [nous|vous]     [le|la|l’|les|en|y]  (@:¬:[OX])
-    ne  [le|la|l’|les]  [lui|leur|en|y]      (@:¬:[OX])
+    ne  [nous|vous]     [le|la|l’|les|en]    (@:¬:[OX])
+    ne  [le|la|l’|les]  [lui|leur|en]        (@:¬:[OX])
     ne  [lui|leur]      en                   (@:¬:[OX])
         <<- =>> select(\1, ":V")
 
-    [n’|m’|t’|s’]  ?[en|y]¿  (@:¬:[OX])
+    [me|m’|te|se|s’]  ?[le|la|l’|les]¿  (@:¬:[OX])
         <<- =>> select(\1, ":V")
 
-    [me|te|se]  ?[le|la|l’|les]¿  (@:¬:[OX])
+    [n’|m’|s’]  ?[en|y]¿  (@:¬:[OX])
         <<- =>> select(\1, ":V")
+
+    t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
+        <<- =>> select(\3, ":(?:[123][sp]|P|Y)")
+
+    t’  @:¬:X|>(?:rien|ils?|elles?|on)/
+        <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
+
+    y  @:¬:[OX]
+        <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
     [je|j’|il|ils|on]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  (@:¬:[OX])
     [je|j’|il|ils|on]  [nous|vous]     [le|la|l’|les|en|y]       (@:¬:[OX])
@@ -2219,7 +2228,18 @@ __da_préverbes_verbes__
     tu  [nous|vous]   [le|la|l’|les|en|y]         (@:¬:[OX])
     tu  [le|la|l’|les]  [lui|leur|en|y]           (@:¬:[OX])
     tu  [lui|leur]      en                        (@:¬:[OX])
-        <<- morph(<1, ":Cs|<start>") =>> select(\1, ":[123][sp]")
+        <<- not morph(<1, ":V0") =>> select(\1, ":[123][sp]")
+
+    lui  [la|le|l’|les]  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
+
+    [nous|vous]     [le|la|l’|les|en]  @:¬:[OX]
+    lui             en                 @:¬:[OX]
+        <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
+
+    [le|la|l’|les]  [lui|leur|en]      @:¬:[OX]
+    leur            en                 @:¬:[OX]
+        <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
     @:M  @:[123]s¬:Q
         <<- \2.islower() and morph(<1, ":Cs|<start>") =>> select(\2, ":[123][sp]")
@@ -8019,6 +8039,7 @@ __purge_locutions__
     de [gaieté|gaîté|gaité] de cœur
     de gauche à droite
     de gauche comme de droite
+    de génération en génération
     de grande [taille|envergure]
     de gré ou de force
     de guerre lasse
@@ -14554,7 +14575,7 @@ TEST: {{Enseignait nous}}.                              ->> Enseignez-nous
 
 
 # être
-__imp_sois__
+__imp_être__
     <start>  [ne|n’]  ?[le|l’|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  soit
     <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|l’|en|y]          soit
     <start>  [ne|n’]  [le|l’]                  [lui|leur|en|y]       soit
@@ -14572,7 +14593,7 @@ TEST: Ne {{soit}} pas en retard !
 
 
 # avoir
-__imp_aie__
+__imp_avoir__
     <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  [ai|ait|aies]
     <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|la|l’|les|en|y]          [ai|ait|aies]
     <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              [ai|ait|aies]
@@ -14613,13 +14634,8 @@ TEST: {{Vas}} lui mettre une branlée.
 TEST: {{Vas}} au diable !
 TEST: N’y {{vas}} pas
 
-# <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿
-# <start>  [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]
-# <start>  [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]
-# <start>  [ne|n’]  [lui|leur]                     en
 
-
-# verbes du 1er et du 3ᵉ groupe en -e
+# verbes du 1ᵉʳ et du 3ᵉ groupe en -e
 __imp_verbe_groupe1__
     <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~\w\w+es$
     <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+es$
@@ -14770,7 +14786,6 @@ TEST: Allons le questionner encore une fois.
 TEST: Sois le pire des salopards.
 
 
-
 __imp_laisser_le_la_les_infi__
     >laisser  [le|la|les]  *WORD
         <<- /imp/ space_after(\1, 1, 1) and morph(\1, ":E") and morph(\3, ":(?:Y|X|Oo)", ":[NAB]")
@@ -14852,66 +14867,21 @@ __imp_union_aller_y!5__
     [va|vas] [y|z-y|z’y]
         <<- /imp/ space_after(\1, 1, 1) and not morph(>1, ":Y") ->> vas-y           # Il manque un trait d’union.
 
-__imp_union_convenir_en__
-    [conviens|convenez|convenons] en
-        <<- /imp/ space_after(\1, 1, 1) and not value(>1, "|partie|") ->> \1-\2     # Il manque un trait d’union.
-
 TEST: {{allons y}}
 TEST: {{vas y}}
-TEST: c’est une belle affaire malgré son prix élevé, {{convenez en}}…
 TEST: {{Viens y}}.
 TEST: Viens y faire un test.
 
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@END_GRAPH                                                                                      _
-@@@@
-@@@@
-@@@@
-@@@@
+__imp_union_convenir_en__
+    [conviens|convenez|convenons] en
+        <<- /imp/ space_after(\1, 1, 1) and not value(>1, "|partie|") ->> \1-\2     # Il manque un trait d’union.
 
 
-!!!
-!!!
-!!! Processeur avant impératif                                                                    !!
-!!!
-!!!
-
-__<i>(p_n_importe_qui_quoi)__       n(’)importe quo?i @@1 <<- ~1>> `
+TEST: c’est une belle affaire malgré son prix élevé, {{convenez en}}…
 
 
-__<i](p_premier_ne_pro_per_obj1)__
-    ^( *ne l(?:es?|a) l(?:ui|eur)) ({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- ~1>> *
-__<i](p_premier_ne_pro_per_obj2)__
-    ^( *ne (?:[mt]’|l(?:ui|eur) )en) ({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- not morph(\1, ":X|>rien/", False) ~1>> *
-__<i](p_premier_ne_pro_per_obj3)__
-    ^( *ne (?:[mt]e|[nv]ous) (?:les?|la|en)) ({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- ~1>> *
-__<i](p_premier_ne_pro_per_obj4)__
-    ^( *ne +(?:l(?:es?|a|’(?:en|y))|[mt](?:e|’(?:en|y))|[nv]ous)) ({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- ~1>> *
-__<i>(p_premier_ne_pro_per_obj5)__
-    ^( *n’(?:en |y |))({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- not morph(\1, ":X|>rien/", False) ~1>> *
-__<i>(p_premier_ne_pro_per_obj6)__
-    ^( *ne l’)({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- ~1>> *
-__<i>(p_premier_ne_pro_per_obj7)__
-    ^( *ne) ({w_2})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P)", False) =>> select(\2,":(?:[123][sp]|P)")
-    <<- not morph(\2, ":X|>rien/", False) ~1>> *
-
+# Autres tests
 TEST: Ne rien céder.
 TEST: Ne pas manger.
 TEST: Ne manquer de rien.
@@ -14926,146 +14896,177 @@ TEST: Ne m’en rien laisser.
 !!!
 !!!
 
-# Brainfuck (ici, prudence !)
-__[i](p_pro_per_obj01)__
-    (ne +(?:l(?:ui|eur|a|es?)|[mts]e|[nv]ous) +(?:l(?:a|es?|ui|eur)|en|y)) +({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i](p_pro_per_obj02)__
-    (ne +(?:[mts](?:e|’(?:en|y))|[nv]ous|l(?:es?|a|ui|eur|’(?:en|y)))) +({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i](p_pro_per_obj03)__
-    ([mts]e +l(?:a|es?)) +({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i](p_pro_per_obj04)__
-    ([nmsl]’(?:en|y)) +({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i](p_pro_per_obj05)__
-    (l(?:a|es?) +(?:lui|en)) +({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i](p_pro_per_obj06)__
-    (lui +(?:la|les?|en|y)) +({w_1})  @@0,$
-    <<- not morph(word(-1), ":R", False, True) ~1>> *
-    <<- __also__ and morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj07)__
-    (leur +(?:en|y)) +({w_1})  @@0,$
-    <<- not morph(word(-1), ":R", False, False) ~1>> *
-    <<- __also__ and morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj08)__
-    (?:je|tu|ils?|on) ([nv]ous(?: la| les?|)|lui) +({w_1})  @@*,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-__[i](p_pro_per_obj09)__
-    (?:je|tu|ils?|on) (l(?:es?|a)) ({w_1}) @@w,$
-    <<- (\1 == "le" and not morph(\2, ":N.*:[me]:[si]"))
-        or (\1 == "la" and not morph(\2, ":N.*:[fe]:[si]"))
-        or (\1 == "les" and not morph(\2, ":N.*:.:[pi]")) ~1>> *
-    <<- __also__ and morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj10)__
-    (?:elles?|[nv]ous) ([nv]ous(?: la| les?|)|l(?:es?|ui|a)) +({w_1})  @@*,$
-    <<- not morph(word(-1), ":R", False, False) ~1>> *
-    <<- __also__ and morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj11)__
-    ce(?:ux|lles?|lui|la|) qui ([nv]ous(?: la| les?|)|l(?:es?|ui|a)) +({w_1})  @@*,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-__[i](p_pro_per_obj12)__
-    (?<!’)(en) ({w_2}) @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)") ~1>> *
-__[i](p_pro_per_obj13)__
-    (?:tu|il|on) (en) +({w_1})  @@w,$
-    <<- not morph(word(-1), ":[123]s", False, False) ~1>> *
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj14)__
-    (?<!’)elle (en) +({w_1})  @@w,$
-    <<- not morph(word(-1), ":(?:[123]s|R)", False, False) ~1>> *
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj15)__
-    (?<!’)elles (en) +({w_1})  @@w,$
-    <<- not morph(word(-1), ":(?:[123]p|R)", False, False) ~1>> *
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj16)__
-    ils (en) +({w_1})  @@4,$
-    <<- not morph(word(-1), ":3p", False, False) ~1>> *
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj17)__
-    (?<!’)(y) ({w_2}) @@0,2
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) ~1>> *
-    <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj18)__
-    (le) ({w_2}) @@0,3
-    <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:[NAQ].*:[me]:[si]|G|M)") ~1>> *
-    <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj19)__
-    (la) ({w_2}) @@0,3
-    <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:[NAQ].*:[fe]:[si]|G|M)") ~1>> *
-    <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj20)__
-    (l’)({w_2}) @@0,2
-    <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:[NAQ].*:[si]|G|M)") ~1>> *
-    <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[i](p_pro_per_obj21)__
-    (leur) {1,3}({w_2}) @@0,5
-    <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:[NAQ].*:[si]|G|M)") ~1>> *
-    <<- __also__ =>> select(\2, ":(?:[123][sp]|P|Y)")
-__[s](p_pro_per_obj22)__
-    [lL]’(a) @@$
-    <<- =>> select(\1, ":V")
-    <<- ~>> "  a"
-__[i](p_pro_per_obj23)__
-    (nous) {1,3}({w_2}) @@0,5
-    <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:A|G|M|1p)") =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-__[i](p_pro_per_obj24)__
-    (vous) {1,3}({w_2}) @@0,5
-    <<- morphex(\2, ":(?:[123][sp]|P|Y)", ":(?:A|G|M|2p)") =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-__[i](p_pro_per_obj25)__
-    (?:à|de) ([nv]ous|lui|les?|en) (?!qui)({w_2}) @@w,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i](p_pro_per_obj26)__
-    (s’)({w4}) @@0,2
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-__[i](p_pro_per_obj27)__
-    (?:je|tu|ils?|elles?|on) (l’|l(?:es?|a|ui|eur) +|[nv]ous +)({w_2}) @@*,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- isStart() ~1>> *
-__[i](p_pro_per_obj28)__
-    (?:je|tu|ils?|elles?|on|[nv]ous|ce(?:ux|elles?|lui|la|) qui) (l’)({w4}) @@*,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-__[i](p_pro_per_obj29)__
-    (t’(?:en|y)) {1,3}({w_2}) @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- not morph(\2, ":2s", False) or before(r"(?i)\b(?:je|tu|on|ils?|elles?|nous) +$") ~1>> *
-__[i](p_pro_per_obj30)__
-    (t’)({w_2}) @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- not morph(\2, ":2s|>(ils?|elles?|on)/", False) or before(r"(?i)\b(?:je|tu|on|ils?|elles?|nous) +$") ~1>> *
-__[i>(p_pro_per_obj31)__
-    (ne +[mtsl]’)({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i>(p_pro_per_obj32)__
-    ([mts]e +l’)({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- ~1>> *
-__[i>(p_pro_per_obj33)__
-    [nm]’({w_1})  @@2
-    <<- morph(\1, ":(?:[123][sp]|P|Y)", False) =>> select(\1, ":(?:[123][sp]|P|Y)")
-    <<- ~>> "  \1"
-__[i](p_pro_per_obj34)__
-    ([nmts]e +)({w_1})  @@0,$
-    <<- morph(\2, ":(?:[123][sp]|P|Y)", False) =>> select(\2, ":(?:[123][sp]|P|Y)")
-    <<- __also__ ~1>> *
-# Fin du Brainfuck
+__purge_préverbes1__
+    [ne|n’|me|m’|te|se|s’|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
+        <<- ~1>> *
 
+    t’  @:(?:[123][sp]|P|Y)¬:(?:X|2s)|>(?:rien|ils?|elles?|on)/
+        <<- ~1>> *
+
+    le    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[me]:[si]|G|M)
+    la    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[fe]:[si]|G|M)
+    l’    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[si]|G|M)
+    les   @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[pi]|G|M)
+    en    @:(?:[123][sp]|P|Y)¬:[NA]
+    nous  @:(?:[123][sp]|P|Y)¬:1p
+    vous  @:(?:[123][sp]|P|Y)¬:2p
+    leur  @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[si]|G|M)
+        <<- \2.islower() ~1>> *
+
+    lui   @:(?:[123][sp]|P|Y)¬:3s
+        <<- not morph(<1, ":R") ~2>> *
+
+    [je|j’|tu|il|on]  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    [je|j’|tu|il|on]  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    [je|j’|tu|il|on]  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    [je|j’|tu|il|on]  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":[123]s") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    [je|j’|tu|il|on]  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":[123]s") or not morph(\3, ":[NA]") ~2>> *
+
+    ils  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    ils  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    ils  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    ils  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    ils  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":3p") or not morph(\3, ":[NA]") ~2>> *
+
+    [lui|celui-là|celui-ci]  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    [lui|celui-là|celui-ci]  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    [lui|celui-là|celui-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    [lui|celui-là|celui-ci]  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    [lui|celui-là|celui-ci]  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":[NA]") ~2>> *
+
+    [elle|celle-là|celle-ci]  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    [elle|celle-là|celle-ci]  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    [elle|celle-là|celle-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    [elle|celle-là|celle-ci]  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    [elle|celle-là|celle-ci]  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3s|R)") or not morph(\3, ":[NA]") ~2>> *
+
+    nous  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    nous  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    nous  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    nous  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    nous  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:1p|R)") or not morph(\3, ":[NA]") ~2>> *
+
+    vous  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    vous  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    vous  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    vous  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    vous  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:2p|R)") or not morph(\3, ":[NA]") ~2>> *
+
+    [elles|celles-là|celles-ci]  le   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[me]:[si]") ~2>> *
+
+    [elles|celles-là|celles-ci]  la   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[fe]:[si]") ~2>> *
+
+    [elles|celles-là|celles-ci]  [l’|leur]   @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[si]") ~2>> *
+
+    [elles|celles-là|celles-ci]  les  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":N.*:[pi]") ~2>> *
+
+    [elles|celles-là|celles-ci]  en  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":(?:3p|R)") or not morph(\3, ":[NA]") ~2>> *
+
+    [je|j’|tu|il|on|ils]  [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+        <<- ~2>> *
+
+    [lui|celui-là|celui-ci]     [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [elle|celle-là|celle-ci]    [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [nous|vous]                 [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [eux|ceux-là|ceux-ci]       [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+    [elles|celles-là|celles-ci] [nous|vous|lui]  @:(?:[123][sp]|P|Y)
+        <<- not morph(<1, ":R") ~2>> *
+
+
+__purge_préverbes2__
+    [me|m’|te|se|s’]  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
+    nous              [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:(?:X|1p)|>rien/
+    vous              [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:(?:X|2p)|>rien/
+    [le|la|l’|les]    [lui|leur|en|y]      @:(?:[123][sp]|P|Y)¬:X|>rien/
+    leur              en                   @:(?:[123][sp]|P|Y)¬:X|>rien/
+        <<- ~1:2>> *
+
+    lui                         en                   @:(?:[123][sp]|P|Y)¬:X|>rien/
+        <<- not morph(<1, ":(?:R|3s)") ~1:2>> *
+
+    t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
+        <<- not morph(\3, ":2s") or value(<1, "|je|j’|tu|il|elle|on|nous|vous|ils|elles|") ~1:2>> *
+        <<- ~2>> *
+
+__purge_préverbes_négation__
+    [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:(?:[123][sp]|P|Y)¬:X|>rien/
+    [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]            @:(?:[123][sp]|P|Y)¬:X|>rien/
+    [ne|n’]  [lui|leur]                     en                         @:(?:[123][sp]|P|Y)¬:X|>rien/
+        <<- ~1:-2>> *
+
+
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@END_GRAPH                                                                                      _
+@@@@
+@@@@
+@@@@
+@@@@
+
+
+__<i>(p_n_importe_qui_quoi)__       n(’)importe quo?i @@1 <<- ~1>> `
 
 
 !!
