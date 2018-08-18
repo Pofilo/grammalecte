@@ -639,25 +639,26 @@ class TextParser:
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
         # regex value arcs
-        if "<re_value>" in dNode:
-            for sRegex in dNode["<re_value>"]:
-                if "¬" not in sRegex:
-                    # no anti-pattern
-                    if re.search(sRegex, dToken["sValue"]):
-                        if bDebug:
-                            print("  MATCH: ~" + sRegex)
-                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
-                        bTokenFound = True
-                else:
-                    # there is an anti-pattern
-                    sPattern, sNegPattern = sRegex.split("¬", 1)
-                    if sNegPattern and re.search(sNegPattern, dToken["sValue"]):
-                        continue
-                    if not sPattern or re.search(sPattern, dToken["sValue"]):
-                        if bDebug:
-                            print("  MATCH: ~" + sRegex)
-                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
-                        bTokenFound = True
+        if dToken["sType"] not in frozenset(["INFO", "PUNC", "SIGN"]):
+            if "<re_value>" in dNode:
+                for sRegex in dNode["<re_value>"]:
+                    if "¬" not in sRegex:
+                        # no anti-pattern
+                        if re.search(sRegex, dToken["sValue"]):
+                            if bDebug:
+                                print("  MATCH: ~" + sRegex)
+                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                            bTokenFound = True
+                    else:
+                        # there is an anti-pattern
+                        sPattern, sNegPattern = sRegex.split("¬", 1)
+                        if sNegPattern and re.search(sNegPattern, dToken["sValue"]):
+                            continue
+                        if not sPattern or re.search(sPattern, dToken["sValue"]):
+                            if bDebug:
+                                print("  MATCH: ~" + sRegex)
+                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                            bTokenFound = True
         # analysable tokens
         if dToken["sType"][0:4] == "WORD":
             # token lemmas
