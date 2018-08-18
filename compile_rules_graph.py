@@ -396,6 +396,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     # processing rules
     print("  preparing rules...")
     for sGraphName, lRuleLine in dAllGraph.items():
+        print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
             for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):

@@ -17,7 +17,7 @@ class DARG:
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
 
     def __init__ (self, lRule, sLangCode):
-        print(" > Direct Acyclic Rule Graph (DARG)", end=" ")
+        print(" > DARG", end="")
 
         # Preparing DARG
         self.sLangCode = sLangCode
