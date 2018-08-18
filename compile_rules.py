@@ -492,7 +492,7 @@ def make (spLang, sLang, bJavaScript):
             # rules graph call
             m = re.match(r"@@@@GRAPH: *(\w+)", sLine.strip())
             if m:
-                printBookmark(1, "____ GRAPH: " + m.group(1) + " ____", i)
+                printBookmark(0, "GRAPH: " + m.group(1), i)
                 lRuleLine.append([i, "@@@@"+m.group(1)])
                 bGraph = True
             lGraphRule.append([i, sLine])
