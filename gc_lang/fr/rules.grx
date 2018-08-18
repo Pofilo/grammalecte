@@ -2206,7 +2206,7 @@ __da_préverbes_verbes__
     [n’|m’|t’|s’]  ?[en|y]¿  (@:¬:[OX])
         <<- =>> select(\1, ":V")
 
-    [me|te|se]  ?[le|la|l’|les]¿  (*WORD)
+    [me|te|se]  ?[le|la|l’|les]¿  (@:¬:[OX])
         <<- =>> select(\1, ":V")
 
     [je|j’|il|ils|on]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  (@:¬:[OX])
@@ -2370,6 +2370,8 @@ TEST: {{Attendront-nous}} le train                          ->> Attendrons-nous
 TEST: {{Attaquait-vous}}                                    ->> Attaquiez-vous
 TEST: Elle a de nombreux rendez-vous ce matin.
 TEST: êtes-vous là ?
+TEST: C’est notre chez-nous.
+TEST: Dans votre chez-vous, faites comme bon vous semble.
 
 
 __inte_rendez_vous__
@@ -2388,42 +2390,42 @@ __inte_verbes_composés_impératifs__
     ~\w-[mt]’en$
     ~\w-[mt]’y$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -COD-COI|VCimp
 
     ~\w-le$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -le|-COD|VCimp
 
     ~\w-les$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -les|-COD|VCimp
 
     ~\w-la$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -la|-COD|VCimp
 
     ~\w\w\w\w-moi$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)   # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)  # Ceci n’est pas une forme verbale impérative.
         <<- />> -moi|-COI|VCimp
 
     ~\w\w\w\w-toi$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)   # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)  # Ceci n’est pas une forme verbale impérative.
         <<- />> -toi|-COI|VCimp
 
     ~\w\w\w\w-lui$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)  # Ceci n’est pas une forme verbale impérative.
         <<- />> -lui|-COI|VCimp
 
     ~\w\w\w\w-leur$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":" ":V") ->> =suggSimil(\1, ":E", False, True)          # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -leur|-COI|VCimp
 
     ~\w-leurs$
@@ -2701,7 +2703,7 @@ TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
 !!
 
 __inte_union_je__
-    ~.[éèe]$  je
+    ~..[éèe]$  je
         <<- /inte/ space_after(\1, 1, 1) and morph(\1, ":V.*:1[sŝś]", ":[GNW]") and not value(<1, "|je|j’|il|elle|") and morph(>1, ":|<end>|,", ":(?:Oo|X|1s)")
         ->> =\1[:-1]+"é-je"                                                                         # Forme interrogative ? Mettez un trait d’union.
 
@@ -2730,7 +2732,7 @@ __inte_union_nous__
         ->> \1-nous                                                                                 # Forme interrogative ? Mettez un trait d’union.
 
 __inte_union_vous__
-    ~e[zs]$  vous
+    ~..e[zs]$  vous
         <<- /inte/ space_after(\1, 1, 1) and morph(\1, ":V.*:2p", ":[GNW]|>vouloir/.*:E:2p") and not morph(<1, ":Os") and morph(>1, ":|<end>|,", ":(?:Y|Oo|X|2p)|>aussi/")
         ->> \1-vous                                                                                 # Forme interrogative ? Mettez un trait d’union.
 
@@ -2754,6 +2756,8 @@ TEST: {{retrouverons nous}} enfin la tranquilité ?
 TEST: Mais {{soutiendrez vous}} cette proposition ?
 TEST: {{Viendront ils}} demain ?
 TEST: comment {{êtes vous}} arrivées là ?
+TEST: {{ai je}} enfin trouvé la réponse à mes questions ?
+TEST: et toi, {{as tu}} découvert le secret de l’immortalité ?
 TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que personne ne parlait de celui qui avait fait ça.
 TEST: Veuillez vous instruire avant de contester ces mesures.
 TEST: C’était elle qui avait pris le contrôle.
@@ -6600,7 +6604,8 @@ TEST: Quoi qu’il en soit
 
 
 __conf_soit_soi_soie__
-    [<start>|,]  [soi|sois|>soie]  @:[OC]¬:R
+    [<start>|,]  sois  @:(?:Os|C)¬:R
+    [<start>|,]  [soi|>soie]  @:[OC]¬:R
     [<start>|,]  [soi|sois|>soie]  [j’|t’|c’|ç’]
         <<- /conf/ -2>> soit                                    # Confusion probable : pour évoquer une option, écrivez “soit”.|https://fr.wiktionary.org/wiki/soit#Conjonction
 
@@ -6610,6 +6615,7 @@ __conf_soit_soi_soie__
 TEST: {{soi}} je vais au cinéma, {{soi}} je m’abstiens.
 TEST: {{soie}} t’arrives avant tout le monde.
 TEST: Quels que {{soi}} les problèmes, on peut les surmonter.
+TEST: Sois le plus efficace possible.
 
 
 # son / sont
@@ -14596,10 +14602,10 @@ TEST: Allées pavées et bordées de fleurs innombrables.
 TEST: Allées qu’on nettoyait tous les jours.
 
 
-    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  vas
-    <start>  [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]          vas
-    <start>  [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]              vas
-    <start>  [ne|n’]  [lui|leur]                     en                           vas
+    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  vas
+    <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|la|l’|les|en|y]          vas
+    <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              vas
+    <start>  [ne|n’]  [lui|leur]               en                           vas
     <start>  vas
         <<- /imp/ not value(>1, "|tu|") --1>> va                                   # S’il s’agit d’un impératif, pas de “s”.
 
@@ -14615,10 +14621,13 @@ TEST: N’y {{vas}} pas
 
 # verbes du 1er et du 3ᵉ groupe en -e
 __imp_verbe_groupe1__
-    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~\w\w+es$
-    <start>  [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+es$
-    <start>  [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]              ~\w\w+es$
-    <start>  [ne|n’]  [lui|leur]                     en                           ~\w\w+es$
+    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~\w\w+es$
+    <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+es$
+    <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              ~\w\w+es$
+    <start>  [ne|n’]  [lui|leur]               en                           ~\w\w+es$
+        <<- /imp/ morph(\-1, ":V[13].*:Ip.*:2s", ":G") and not value(>1, "|tu|")
+        --1>> =\-1[:-1]                                                             # S’il s’agit d’un impératif, pas de “s”.
+
     <start>  ~\w\w+es$
         <<- /imp/ morph(\-1, ":V[13].*:Ip.*:2s", ":[GNAM]") and not value(>1, "|tu|")
         --1>> =\-1[:-1]                                                             # S’il s’agit d’un impératif, pas de “s”.
@@ -14636,10 +14645,15 @@ TEST: Limoges aussi.
 
 # verbes du 2ᵉ et du 3ᵉ groupe en -t
 __imp_verbe_groupe2_groupe3_t__
-    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~\w\w+t$
-    <start>  [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+t$
-    <start>  [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]              ~\w\w+t$
-    <start>  [ne|n’]  [lui|leur]                     en                           ~\w\w+t$
+    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~\w\w+t$
+    <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+t$
+    <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              ~\w\w+t$
+    <start>  [ne|n’]  [lui|leur]               en                           ~\w\w+t$
+        <<- /imp/ not value(>1, "|il|elle|on|ils|elles|")
+            and not (value(\-1, "|vient|dit|surgit|survient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s", False)
+        --1>> =\-1[:-1]+"s"                                                         # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
+
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|")
             and not (value(\-1, "|vient|dit|surgit|survient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
@@ -14664,10 +14678,15 @@ TEST: À son bord vient d’embarquer un nouvel équipage
 
 # verbes du 3ᵉ groupe en -d
 __imp_verbe_groupe3_d__
-    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~\w\w+d$
-    <start>  [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+d$
-    <start>  [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]              ~\w\w+d$
-    <start>  [ne|n’]  [lui|leur]                     en                           ~\w\w+d$
+    <start>  [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~\w\w+d$
+    <start>  [ne|n’]  [me|m’|te|t’|nous|vous]  [le|la|l’|les|en|y]          ~\w\w+d$
+    <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              ~\w\w+d$
+    <start>  [ne|n’]  [lui|leur]               en                           ~\w\w+d$
+        <<- /imp/ not value(>1, "|il|elle|on|")
+            and not ( value(\-1, "|répond|") and (morph(>1, ":[MD]|>[A-Z]/") or value(>1, "|l’|d’|")) )
+            and morph(\-1, ":V3.*:Ip.*:3s", ":G")
+        --1>> \-1s                                                                  # S’il s’agit d’un impératif, ajoutez un “s”.
+
     <start>  ~\w\w+d$
         <<- /imp/ not value(>1, "|il|elle|on|")
             and not ( value(\-1, "|répond|") and (morph(>1, ":[MD]|>[A-Z]/") or value(>1, "|l’|d’|")) )
@@ -14693,7 +14712,7 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 __imp_union_moi__
     *WORD  moi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, "V[123]...n:E", ":[GM]") and not morph(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
+            and morph(\1, ":E", ":[GM]") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Apportez moi}} ce dictionnaire
@@ -14703,7 +14722,7 @@ TEST: Viens moi je m’ennuie.
 __imp_union_toi__
     *WORD  toi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, "V[123]...n:E:2s", ":[GM]") and not morph(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
+            and morph(\1, ":E:2s", ":[GM]") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne toi}} du temps.
@@ -14712,7 +14731,7 @@ TEST: {{Donne toi}} du temps.
 __imp_union_nous_vous_lui_y__
     *WORD  [nous|vous|lui|y]
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, "V[123]...n:E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne nous}} du café.
@@ -14721,19 +14740,21 @@ TEST: {{Donne nous}} du café.
 __imp_union_les__
     *WORD  les
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, "V[123]...n:E", ":[GM]") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))") and morph(<1, ":Cc|<start>|>,")
         ->> \1-les                                      # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{chante les}} avec conviction
 TEST: Veut les en convaincre.
 TEST: Invite les plus intelligents…
 TEST: Prenez les 5 ou 6 revues les plus connues.
+TEST: Allez les chercher.
+TEST: Soyez les plus gentils qu’on puisse imaginer.
 
 
 __imp_union_le_la_leur__
     *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":V[123]...n:E", ":[GM]") and morph(<1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
@@ -14744,6 +14765,10 @@ TEST: « C’est ainsi », résume la cyptologue (erreur orthographique délib
 TEST: Notez le peu de cas qui en est fait en général dans les médias
 TEST: deux fois par an, souligne le Dr Assouline
 TEST: Pesons le pour et le contre.
+TEST: Va la demander au concierge.
+TEST: Allons le questionner encore une fois.
+TEST: Sois le pire des salopards.
+
 
 
 __imp_laisser_le_la_les_infi__
@@ -14765,7 +14790,7 @@ __imp_apostrophe_m_en__
     m-en
         <<- /imp/ ->> m’en                              # Ici, “me” est abrégé, c’est une forme élidée. Il faut mettre une apostrophe et non un trait d’union.
 
-TEST: donne{{-m-en}} encore
+TEST: {{donne-m-en}} encore
 
 
 __imp_apostrophe_t_en__
@@ -14777,7 +14802,7 @@ __imp_apostrophe_t_en__
         <<- /imp/ not (value(<1, "|va|") and value(>1, "|guerre|"))
         ->> t’en                                        # Ici, “te” est abrégé, c’est une forme élidée. Il faut mettre une apostrophe et non un trait d’union.
 
-TEST: accorde{{-t-en}} plus.
+TEST: {{accorde-t-en}} plus.
 
 
 __imp_union_m_t_en_y__
@@ -14820,14 +14845,16 @@ TEST: {{Donnez-nous en}}.
 TEST: Alors, {{parais y}} grande et lumineuse.
 
 
-#__[i]/imp(imp_union_aller_y)!5__
-#    (?:v(?:iens|enez|enons)|all(?:ons|ez)) y
-#    <<- not morph(word(1), ":Y", False, False) ->> =\0.replace(" ", "-")                            # Il manque un trait d’union.
-#__[i]/imp(imp_union_vas_y)!5__
-#    vas? y
-#    <<- isStart() and not morph(word(1), ":Y", False, False) ->> vas-y                              # Il manque un trait d’union.
-#__[i]/imp(imp_union_convenir_en)__
-#    conv(?:iens|enez|enons) en(?! partie) <<- ->> =\0.replace(" ", "-")                             # Il manque un trait d’union.
+__imp_union_aller_y!5__
+    [viens|venez|venons|allons|allez] y
+        <<- /imp/ space_after(\1, 1, 1) and not morph(>1, ":Y") ->> \1-\2           # Il manque un trait d’union.
+
+    [va|vas] [y|z-y|z’y]
+        <<- /imp/ space_after(\1, 1, 1) and not morph(>1, ":Y") ->> vas-y           # Il manque un trait d’union.
+
+__imp_union_convenir_en__
+    [conviens|convenez|convenons] en
+        <<- /imp/ space_after(\1, 1, 1) and not value(>1, "|partie|") ->> \1-\2     # Il manque un trait d’union.
 
 TEST: {{allons y}}
 TEST: {{vas y}}
