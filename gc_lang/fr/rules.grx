@@ -4028,6 +4028,42 @@ TEST: Ce couple va donner à la France sa très importante collection qui rejoin
 !!!
 !!!
 
+## 1sg
+__conj_je__
+    je  *WORD
+        <<- /conj/ morph(\-1, ":V", ":(?:1s|G)") and not (morph(\-1, ":[PQ]") and morph(<1, ":V0.*:1s")) >>>
+        <<- /conj/ \-1 == "est" or \-1 == "es" -2>> ai|aie|suis     # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
+        <<- /conj/ __else__ --1>> =suggVerb(\-1, ":1s")             # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
+
+    j’                                                                            *WORD
+    j’       [en|y]                                                               *WORD
+    [je|j’]  [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]            *WORD
+    [je|j’]  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  *WORD
+    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        *WORD
+    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            *WORD
+    [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         *WORD
+        <<- /conj/ morph(\-1, ":V", ":(?:1s|G)") >>>
+        <<- /conj/ \-1 == "est" or \-1 == "es" --1>> ai|aie|suis    # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
+        <<- /conj/ __else__ --1>> =suggVerb(\-1, ":1s")             # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
+
+TEST: je l’{{est}} perdu de vue.                                ->> ai|aie|suis
+TEST: je {{donnerait}} tout pour y parvenir.
+TEST: Je le lui {{prend}}.
+TEST: Je l’{{apprend}}.
+TEST: Je les {{contre-attaques}}.
+TEST: Je maudis celui d’entre nous qui {{mens}}.
+TEST: J’y {{vient}}.
+TEST: J’en {{revient}}.
+TEST: je {{donner}}.
+TEST: Je ne leur en {{veut}} pas.
+TEST: Je ne le lui {{achèterait}} pas.
+TEST: Je ne l’y {{aie}} pas vu.
+TEST: Je ne t’{{attend}} pas.
+TEST: J’{{arrivait}} en retard.
+TEST: J’m’la {{fumerait}} bien, cette clope.
+TEST: J’leur en {{veut}} pas, à ces crétins.
+
+
 ## 1pl
 __conj_nous_verbe__
     <start>  nous  @:V¬:(?:G|Y|P|1p|3[sp])
@@ -7996,6 +8032,7 @@ __purge_locutions__
     d’ hier ?[matin|soir|après-midi]¿
     d’ ici ?[là|peu]¿
     d’ ici peu de temps
+    d’ ici quelques [secondes|minutes|heures|jours|mois|trimestres|semestres|années|décennies|siècles|millénaires]
     d’ ordinaire
     d’ origine [inconnue|douteuse|plébéienne|aristocratique]
     d’ ordre général
@@ -8041,7 +8078,7 @@ __purge_locutions__
     de gauche à droite
     de gauche comme de droite
     de génération en génération
-    de grande [taille|envergure]
+    de grande [taille|envergure|valeur]
     de gré ou de force
     de guerre lasse
     de haut en bas
@@ -8242,6 +8279,7 @@ __purge_locutions__
     en tête à tête
     en temps et en heure
     en temps [normal|opportun|ordinaire|utile|voulu]
+    en terrain découvert
     en termes choisis
     en toile de fond
     en tous les cas
@@ -9615,8 +9653,10 @@ __purge_tous_deux_trois__
 __purge_locutions_verbales__
     >arriver à échéance
     >arriver à point nommé
+    >battre en [brèche|retraite]
+    >demander [audience|conseil]
     [>donner|>redonner] sens
-    >faire [allusion|assaut|chaud|confiance|compliqué|copain-copain|débat|défaut|demi-tour|envie|figure|froid|halte|honte|illusion|mouche|office|part|peur|plaisir|rage|scandale|sens|signe|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|débat|défaut|demi-tour|envie|figure|froid|halte|honte|illusion|mouche|office|part|peur|plaisir|rage|scandale|sens|signe|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bonne figure
@@ -15346,42 +15386,12 @@ TEST: Ne pas aimer n’est pas oublier l’autre.
 !!
 
 ## 1sg
-__[i]/conj(conj_j)__
-    j’({w_1})  @@2
-    <<- morphex(\1, ":V", ":1s|>(?:en|y)/") >>>
-    <<- \1 == "est" or \1 == "es" -1>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-    <<- __else__ -1>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « je ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-__[i]/conj(conj_je)__
-    (je) +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:1s|G)") and not (morph(\2, ":[PQ]", False) and morph(word(-1), ":V0.*:1s", False, False)) >>>
-    <<- \2 == "est" or \2 == "es" -2>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-    <<- __else__ -2>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-__[i]/conj(conj_j_en_y)__
-    (j’(?:y|en)) +({w_1})  @@0,$
-    <<- morphex(\2, ":V", ":(?:1s|G|1p)") >>>
-    <<- \2 == "est" or \2 == "es" -2>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-    <<- __else__ -2>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
 __[i]/conj(conj_moi_qui)__
     (moi +qui) +({w_1})  @@0,$
     <<- morphex(\2, ":V", ":(?:1s|G|1p|3p!)") >>>
     <<- \2 == "est" or \2 == "es" -2>> ai|aie|suis          # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
     <<- __else__ -2>> =suggVerb(@, ":1s")                   # Conjugaison erronée. Accord avec « \1 ». Le verbe devrait être à la 1ʳᵉ personne du singulier.
-
-TEST: je l’{{est}} perdu de vue.                                ->> ai|aie|suis
-TEST: je {{donnerait}} tout pour y parvenir.
-TEST: Je le lui {{prend}}.
-TEST: Je l’{{apprend}}.
-TEST: Je les {{contre-attaques}}.
 TEST: C’est moi qui {{donnes}} des maux de têtes !
-TEST: Je maudis celui d’entre nous qui {{mens}}.
-TEST: J’y {{vient}}.
-TEST: J’en {{revient}}.
-TEST: je {{donner}}.
-TEST: Je ne leur en {{veut}} pas.
-TEST: Je ne le lui {{achèterait}} pas.
-TEST: Je ne l’y {{aie}} pas vu.
-TEST: Je ne t’{{attend}} pas.
-TEST: J’{{arrivait}} en retard.
 
 
 ## 2sg
