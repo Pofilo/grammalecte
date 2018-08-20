@@ -2428,22 +2428,22 @@ __inte_verbes_composés_impératifs__
         <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -la|-COD|VCimp
 
-    ~\w\w\w\w-moi$
+    ~\w-moi$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
         <<- /imp/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)  # Ceci n’est pas une forme verbale impérative.
         <<- />> -moi|-COI|VCimp
 
-    ~\w\w\w\w-toi$
+    ~\w-toi$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
         <<- /imp/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)  # Ceci n’est pas une forme verbale impérative.
         <<- />> -toi|-COI|VCimp
 
-    ~\w\w\w\w-lui$
+    ~\w-lui$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
         <<- /imp/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":E", False, True)  # Ceci n’est pas une forme verbale impérative.
         <<- />> -lui|-COI|VCimp
 
-    ~\w\w\w\w-leur$
+    ~\w-leur$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
         <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
         <<- />> -leur|-COI|VCimp
@@ -4126,13 +4126,13 @@ TEST: on ne se {{bougent}} pas suffisamment
 
 
 __conj_ce__
-    ce  @>(?:devoir|pouvoir|vouloir|savoir)/:V¬:(?:N|A|3s|P|Q|G)
-    ce  [ne|n’]  @>(?:devoir|pouvoir|vouloir|savoir)/:V¬:(?:3s|P|G)
+    ce  @>(?:devoir|devenir|pouvoir|vouloir|savoir)/:V¬:(?:N|A|3s|P|Q|G)
+    ce  [ne|n’]  @>(?:devoir|devenir|pouvoir|vouloir|savoir)/:V¬:(?:3s|P|G)
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [ce|c’]  @>être/:V¬:(?:N|A|3[sp]|P|Q|G)
-    ce  [le|l’]  @>être/:V¬:(?:N|A|3s|P|Q|G)
-    ce  [ne|n’]  ?[le|l’]¿  @>être/:V¬:(?:3[sp]|P|Q|G)
+    [ce|c’]  [le|l’|en]  @>être/:V¬:(?:N|A|3s|P|Q|G)
+    [ce|c’]  [ne|n’]  ?[le|l’|en]¿  @>être/:V¬:(?:3[sp]|P|Q|G)
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: pour toi qui sais tout, ce ne le {{fus}} pas
@@ -4149,12 +4149,13 @@ TEST: ce ne saurait être cet homme…
 
 __conj_c_en__
     c’ en  *WORD
-        <<- /conj/ morph(\3, ">(?:être|devoir|pouvoir|vouloir|savoir)/:V", ":3s")
+        <<- /conj/ morph(\3, ">(?:être|devoir|devenir|pouvoir|vouloir|savoir)/:V", ":3s")
         -3>> =suggVerb(\3, ":3s")                                               # Conjugaison erronée. Accord avec “c’en”. Le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- /conf/ morph(\3, ":[YP]") -3>> s’en                                 # Confusion : “c’en” est la forme élidée de “ça en”. Pour la forme pronominale “se”, écrivez “s’en”.
+        <<- /conf/ morph(\3, ":[YP]") or morph(\3, ":V", ">(?:être|devoir|devenir|pouvoir|vouloir|savoir)/")
+        -1:2>> s’en                                                             # Confusion : “c’en” est la forme élidée de “ça en”. Pour la forme pronominale “se”, écrivez “s’en”.
 
 TEST: tu vois, c’en {{étais}} trop pour elles.
-TEST: cet homme, perdu dans ses pensées, allait {{c’en}} {{faire}} du souci.
+TEST: cet homme, perdu dans ses pensées, allait {{c’en}} faire du souci.
 TEST: C’en était malsain.
 TEST: C’en devenait trop.
 TEST: C’en pouvait être effrayant.
@@ -5341,6 +5342,7 @@ __conf_à_a_après_verbes__
 TEST: Vient-on {{a}} la maison demain ?
 TEST: Arrivait-elle {{a}} le manger ?
 TEST: Dis-moi {{a}} quelle heure on mange.
+TEST: Offrez-nous {{a}} Dieu et taisez-vous.
 TEST: elle croit que dans tous les cas de figure il pense {{a}} sa fille.
 TEST: Ce que je mange a un goût de surgelé.
 
@@ -12813,7 +12815,7 @@ __infi_à_verbe__
     à  ?[ne|n’]¿  [lui|leur]                     en                         (@:V¬:Y)
         <<- /infi/ -1>> =suggVerbInfi(\1)                                               # Après le pronom “à”, le verbe devrait être à l’infinitif.
 
-    à  @:V¬:[YNQ]|>(?:lui|plus)/
+    à  @:V¬:[YNQO]|>(?:lui|plus)/
         <<- /infi/ not \2[0:1].isupper() -2>> =suggVerbInfi(\2)                         # Le verbe devrait être à l’infinitif.
 
 TEST: à en {{parlé}} sans cesse
@@ -15360,9 +15362,9 @@ TEST: un devoir corrigé par plusieurs professeurs.
 
 
 __infi_falloir__
-    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  @:V¬:[YM]
-    il  [faut|fallait|fallut|faudra|faudrait]               @:V¬:[YM]
-    il  [aurait|aurai|aurais|aurez]  fallu                  @:V¬:[YM]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  @:V¬:[YMW]
+    il  [faut|fallait|fallut|faudra|faudrait]               @:V¬:[YMW]
+    il  [aurait|aurai|aurais|aurez]  fallu                  @:V¬:[YMW]
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “falloir”, le verbe doit être à l’infinitif.
 
 TEST: faut-il {{pensé}} à ces choses-là encore et encore ?
@@ -15370,9 +15372,9 @@ TEST: il faut {{estimé}} au mieux la valeur de nos idéologies.
 
 
 __infi_suffire__
-    [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  [de|d’]  @:V¬:[YMN]
-    il  [suffit|suffisait|suffira|suffirait]            [de|d’]  @:V¬:[YMN]
-    il  [aurait|aurai|aurais|aurez]  suffi              [de|d’]  @:V¬:[YMN]
+    [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  [de|d’]  @:V¬:[YMNW]
+    il  [suffit|suffisait|suffira|suffirait]            [de|d’]  @:V¬:[YMNW]
+    il  [aurait|aurai|aurais|aurez]  suffi              [de|d’]  @:V¬:[YMNW]
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “suffire”, le verbe doit être à l’infinitif.
 
 TEST: il suffit de {{mangé}} sain pour aller mieux.
@@ -15429,17 +15431,17 @@ TEST: impossible d’{{échappé}} à cette horreur.
 
 
 __infi_divers__
-    de quoi     ~..(?:ée?s?|ez)$
-    à faire     ~..(?:ée?s?|ez)$
-    à quoi bon  ~..(?:ée?s?|ez)$
-    avec qui    ~..(?:ée?s?|ez)$
-    du mal à    ~..(?:ée?s?|ez)$
-    intérêt à   ~..(?:ée?s?|ez)$
-    comment     ~..(?:ée?s?|ez)$
-    pourquoi    ~..(?:ée?s?|ez)$
-    quand       ~..(?:ée?s?|ez)$
-    où          ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\2, ":V", ":M") and not (\2.endswith("ez") and value(>1, "|vous|"))
+    de [qui|quoi]           ~..(?:ée?s?|ez)$
+    à faire                 ~..(?:ée?s?|ez)$
+    à quoi bon              ~..(?:ée?s?|ez)$
+    avec [qui|quoi]         ~..(?:ée?s?|ez)$
+    du mal à                ~..(?:ée?s?|ez)$
+    intérêt à               ~..(?:ée?s?|ez)$
+    comment                 ~..(?:ée?s?|ez)$
+    pourquoi                ~..(?:ée?s?|ez)$
+    quand                   ~..(?:ée?s?|ez)$
+    où                      ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: Quand {{mangez}}
@@ -15447,6 +15449,7 @@ TEST: pourquoi m’{{étonnez}} de ces idioties…
 TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les jours.
 TEST: Comment {{pensé}} à ces choses sans perdre l’esprit.
 TEST: comment {{abandonnez}} au début du match sans passer pour un lâcheur
+TEST: Avec quoi {{fabriqué}} un arc ?
 
 
 __infi_par_pour_sans__
