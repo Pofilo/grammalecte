@@ -713,10 +713,10 @@ class TextParser:
         if "<meta>" in dNode:
             for sMeta in dNode["<meta>"]:
                 # no regex here, we just search if <dNode["sType"]> exists within <sMeta>
-                if sMeta == "*":
+                if sMeta == "*" or dToken["sType"] == sMeta:
                     if bDebug:
                         print("  MATCH: *" + sMeta)
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"]["*"]] }
+                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                     bTokenFound = True
                 elif "¬" in sMeta:
                     if dToken["sType"] not in sMeta:
@@ -724,11 +724,6 @@ class TextParser:
                             print("  MATCH: *" + sMeta)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                         bTokenFound = True
-                elif dToken["sType"] == sMeta:
-                    if bDebug:
-                        print("  MATCH: *" + sMeta)
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
-                    bTokenFound = True
         if "bKeep" in dPointer and not bTokenFound:
             yield dPointer
         # JUMP
