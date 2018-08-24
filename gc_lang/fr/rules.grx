@@ -1268,277 +1268,6 @@ TEST: __ocr__ des chiffrements{{ 7}} Paul n’en sait rien.
 TEST: __ocr__ veux-tu en parler{{ 7}}
 
 
-# virgules
-__[s>/ocr(ocr_virgules)__
-    (?:[iI]l|l(?:es?|a)|[dnmtsDNMTS]e|[àÀ]|[cC]e(?:te|t|)|[mM](?:on|a)|[TS]a|[qQ]uelques?|[aA]ux?),
-    <<- not /0.endswith("…") ->> =\0[:-1]                                                           # Erreur de numérisation ? Virgule superflue ?
-
-TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
-TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
-
-
-# Nombres
-__[s]/ocr(ocr_nombres)__
-    [\dOI][\dOI]+
-    <<- \0 == "II" ->> 11|Il                                                                        # Erreur de numérisation ?
-    <<- __else__ and not \0.isdigit() ->> =\0.replace("O", "0").replace("I", "1")                   # Erreur de numérisation ?
-
-TEST: __ocr__ {{II}} pleut tout le temps.
-TEST: __ocr__ En l’an {{2OO1}}, tout commença.
-
-
-# âge / age
-__[i]/ocr(ocr_age)__        ages? <<- ->> =\0.replace("a", "â").replace("A", "Â")                   # Erreur de numérisation ?
-
-TEST: __ocr__ À son {{age}}, on ne sait plus ce qu’on fait.
-
-
-# autre / antre
-__[i]/ocr(ocr_autre)__      antres? <<- ->> =\0.replace("n", "u")                                   # Erreur de numérisation ?
-
-TEST: __ocr__ cet {{antre}} gars lui semblait bien louche.
-
-
-# avec / aven / arec
-__[i]/ocr(ocr_avec)__       a(?:rec|ven) <<- ->> avec                                               # Erreur de numérisation ?
-
-TEST: __ocr__ Elle s’en alla {{arec}} eux sans un regard en arrière.
-
-# avaient / avalent
-__[i]/ocr(ocr_avaient)__    avalent <<- ->> avaient                                                 # Erreur de numérisation ?
-
-TEST: __ocr__ Ils {{avalent}} très faim.
-
-
-# avais / avals / axais
-__[i]/ocr(ocr_avis)__       a(?:val|xai)s <<- ->> avais                                             # Erreur de numérisation ?
-
-TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais à ce point
-
-
-# car dans / cardans
-__[i]/ocr(ocr_car_dans)__   cardans <<- ->> car dans                                                # Erreur de numérisation ?
-
-TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.
-
-
-# chère / obère
-__[i]/ocr(ocr_chère)__      obère <<- not before(r"(?i)\b([jnlmts]’|il |on |elle )$") ->> chère     # Erreur de numérisation ?
-
-TEST: __ocr__ cette femme {{obère}} à notre cœur.
-
-
-# celui / celai
-__[i]/ocr(ocr_celui)__      celai <<- not before(r"(?i)\b[jn]e +$") ->> celui                       # Erreur de numérisation ?
-
-TEST: __ocr__ je suis déjà venu et {{celai}} qui viendra encore.
-
-
-# ces / cos
-__[i]/ocr(ocr_ces)__        cos <<- ->> ces                                                         # Erreur de numérisation ?
-
-TEST: __ocr__ {{cos}} problèmes sont insolubles.
-
-
-# C’était / Celait
-__[i]/ocr(ocr_c_était)__    celait <<- ->> c’était                                                  # Erreur de numérisation ?
-
-TEST: __ocr__ {{celait}} perdu d’avance.
-
-
-# cette / celte
-__[i]/ocr(ocr_cette1)__     (cel[tl]e) ({w_2})  @@0,$ <<- morph(\2, ":N.*:f:s", False) -1>> cette   # Erreur de numérisation ?
-
-TEST: __ocr__ mais {{celte}} femme semblait savoir ce qu’elle faisait.
-TEST: __ocr__ avec {{celle}} tentative d’humour, il pensait nous faire rire.
-
-
-# cette / cotte
-__[i]/ocr(ocr_cette2)__     cotte <<- not morph(word(-1), ":D.*:f:[si]") ->> cette                  # Erreur de numérisation ?
-
-TEST: __ocr__ on poirautait, {{cotte}} mariée n’arrivait pas à se décider.
-
-
-# Comme / Gomme
-__[s]/ocr(ocr_comme)__      Gomme <<- not morph(word(1), ">(?:et|o[uù])/") ->> Comme                # Erreur de numérisation ?
-
-TEST: __ocr__ {{Gomme}} il était sage à cette époque-là !
-
-
-# Comment / Gomment
-__[s]/ocr(ocr_comment)__    Gomment <<- ->> Comment                                                 # Erreur de numérisation ?
-
-TEST: __ocr__ {{Gomment}} s’en sortir avec tous ces retards qui s’accumulent ?
-
-
-# contre / coutre / contra
-__[i]/ocr(ocr_contre)__     co[un]tr[ea] <<- not re.search("(?i)^contre$", \0) ->> contre           # Erreur de numérisation ?
-
-TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.
-
-
-# de / da
-__[i]/ocr(ocr_de)__         da <<- ->> de                                                           # Erreur de numérisation ?
-
-TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
-
-
-# dans / bans / clans
-__[i]/ocr(ocr_dans1)__      bans <<- not morph(word(-1), ":D.*:p", False, False) ->> dans           # Erreur de numérisation ?
-__[s]/ocr(ocr_dans2)__
-    (clans) (?:les?|la|ce(?:tte|t|s|)|des?|[mts](?:on|a|es)|leurs?|[nv]os|cha(?:que|cun)|tou(?:tes?|s|t))  @@0
-    <<- not morph(word(-1), ":D.*:p", False, False) -1>> dans                                       # Erreur de numérisation ?
-
-TEST: __ocr__ Mais {{bans}} cette ferme, tout était bien organisé.
-TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.
-
-
-# dame / darne
-__[i]/ocr(ocr_dame)__
-    darnes
-    <<- ->> =\0.replace("rn", "m")                                                                  # Erreur de numérisation ?
-
-TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
-
-
-# dé / de / dés / des / dès
-__[i]/ocr(ocr_de_des1)__
-    dés?
-    <<- \0.endswith("é") and not morph(word(-1), ":D.*:m:[si]", False, False) ->> de                # Erreur de numérisation ?
-    <<- \0.endswith("s") and not morph(word(-1), ":D.*:m:p", False, False) ->> des|dès              # Erreur de numérisation ?
-
-TEST: __ocr__ {{dés}} fois, ça ne passe pas
-TEST: __ocr__ {{dé}} gros camions circulaient toute la journée
-
-
-# de / dos
-__[i]/ocr(ocr_de_des2)__
-    dos?
-    <<- \0.endswith("o") ->> de                                                                     # Erreur de numérisation ?
-    <<- __else__ and not morph(word(-1), ":D.*:[me]", False, False) ->> des|dès                     # Erreur de numérisation ?
-
-TEST: __ocr__ {{dos}} camions cabossés à n’en plus finir
-
-
-# de la / delà
-__[i]/ocr(ocr_de_la)__      delà <<- not before(r"(?i)\bau ") ->> de la|de là                       # Erreur de numérisation ?
-
-TEST: __ocr__ la peinture {{delà}} maison s’écaillait
-
-
-# doute / cloute
-__[i]/ocr(ocr_doute)__      cloute <<- ->> doute                                                    # Erreur de numérisation ?
-
-TEST: __ocr__ Sans aucun {{cloute}}.
-
-
-# du / dû
-__[i]/ocr(ocr_du)__
-    (dû) +({w_3}) @@0,$
-    <<- morph(\2, ":[NA]:[me]:[si]", ":Y") -1>> du                                                  # Erreur de numérisation ?
-
-TEST: __ocr__ prendre {{dû}} bon temps
-TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
-
-
-# elle / elfe
-__[s]/ocr(ocr_elle)__
-    [eE]lfes?
-    <<- \0.endswith("e") and ( morph(word(-1), ":R", False, True) or isNextVerb() ) ->> elle        # Erreur de numérisation ?
-    <<- \0.endswith("s") and ( morph(word(-1), ":R", False, True) or isNextVerb() ) ->> elles       # Erreur de numérisation ?
-
-TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.
-
-
-# est / ost
-__[i]/ocr(ocr_est)__        ost <<- ->> est                                                         # Erreur de numérisation ?
-
-TEST: __ocr__ Le cheval {{ost}} attaché.
-
-
-# et / cl
-__[i]/ocr(ocr_et)__         [cE][l1] <<- not before("[0-9] +$") ->> et                              # Erreur de numérisation ?
-
-TEST: __ocr__ elle {{cl}} lui, c’était pour la vie.
-TEST: __ocr__ {{El}} il faisait froid là-haut
-
-
-# état / étal
-__[i]/ocr(ocr_état)__
-    étals?
-    <<- \0.endswith("l") ->> état                                                                   # Erreur de numérisation ?
-    <<- __else__ ->> étais|états                                                                    # Erreur de numérisation ?
-
-TEST: __ocr__ Quels {{étals}} sont venus ?
-
-
-# étaient / étalent
-__[i]/ocr(ocr_étaient)__    étalent <<- ->> étaient                                                 # Erreur de numérisation ?
-
-TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.
-
-
-# fille / tille
-__[i]/ocr(ocr_fille)__      tille <<- ->> fille                                                     # Erreur de numérisation ?
-
-TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
-
-
-# fut / rut
-__[i]/ocr(ocr_fut)__        rut <<- ->> fut                                                         # Erreur de numérisation ?
-
-TEST: __ocr__ ce petit {{rut}} traité comme un chien
-
-# il / n
-__[s]/ocr(ocr_il)__
-    (n )([bcdfghjklmnpqrstvwxz][\w-]+)  @@0,$
-    <<- isStart() and morph(\2, ":(?:O[on]|3s)", False) -1>> "il "                                  # Erreur de numérisation ?
-
-TEST: __ocr__ {{n }}contient trop de soufre.
-
-
-# il / ils / U / Us
-__[s]/ocr(ocr_il_ils2)__
-    Us?
-    <<- \0.endswith("s") ->> Ils|ils                                                                # Erreur de numérisation ?
-    <<- __else__ ->> Il|il                                                                          # Erreur de numérisation ?
-
-TEST: __ocr__ {{Us}} arrive demain.
-
-
-# il / i1 / if / 11
-__[s]/ocr(ocr_il_ils3)__
-    [iI1][1f]s?
-    <<- not \0.endswith("s") ->> Il|il                                                              # Erreur de numérisation ?
-    <<- __else__ ->> Ils|ils                                                                        # Erreur de numérisation ?
-
-TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
-
-
-# fa / la
-__[i]/ocr(ocr_la)__         fa <<- ->> la                                                           # Erreur de numérisation ?
-
-TEST: __ocr__ dans {{fa}} demeure
-
-
-# large / largo
-__[i]/ocr(ocr_large)__      largos? <<- ->> =\0.replace("o", "e")                                   # Erreur de numérisation ?
-
-TEST: __ocr__ elle pense {{largo}}
-
-
-# l’ / j’ / Y / I
-__[s]/ocr(ocr_lj1)__
-    (Y[ ’'])([aâeéèêëiîïoôuy][\w-]+) @@0,2
-    <<- before(r"(?i)\w") or not morph(\2, ":Y", False) -1>> l’|L’|j’|J’                            # Erreur de numérisation ?
-__[s]/ocr(ocr_lj2)__
-    ([Ii1][ ’'])([aâeéèêëiîïoôuy][\w-]+) @@0,2
-    <<-  -1>> l’|L’|j’|J’                                                                           # Erreur de numérisation ?
-
-TEST: __ocr__ {{Y’}}arrive demain.
-TEST: __ocr__ {{I’}}arrive demain.
-
-
 # !
 __<s]/ocr(ocr_exclamation1)__
     [  ]I(?![ ’'][aâeéèêëiîïoôuy])
@@ -1553,297 +1282,13 @@ TEST: __ocr__ Ça prendra 1 h.
 TEST: __ocr__ Valeur : 1 KHz.
 
 
-# l’ / V / P
-__[s]/ocr(ocr_lv)__
-    V({w_2}) @@1
-    <<- \0.istitle() and before(r"(?i)\w") and morphex(\0, ":", ":M") >>>
-    <<- spell(\1) ->> v\1|l’\1                                                                      # Erreur de numérisation ?
-    <<- __else__ ->> v\1                                                                            # Erreur de numérisation ?
-__[s]/ocr(ocr_lp)__
-    P([aâeéêèiîïoôuy]{w_1}) @@1
-    <<- before(r"(?i)\w") and morphex(\0, ":", ":M") and spell(\1) ->> l’\1|p\1                     # Erreur de numérisation ?
-
-TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.
-TEST: __ocr__ avec {{Vagile}} méthode de notre amie Virginie, tout est possible.
-TEST: __ocr__ Viens demain.
-TEST: __ocr__ Ce jour où Valérie eut sa licence de droit.
-TEST: __ocr__ Il scrute Pierre, {{Pair}} maussade.
-TEST: __ocr__ Une grosse vague arrivait et {{Peau}} remplit.
-TEST: __ocr__ selon toute logique, Paris sera épargné.
-
-
-# l’était / Tétait
-__[s]/ocr(ocr_l_était)__
-    Tétait
-    <<- before(r"(?i)\w") ->> l’était                                                               # Erreur de numérisation ?
-
-TEST: __ocr__ perdu, cet homme {{Tétait}}
-
-
-# le les / lé / lés
-__[i]/ocr(ocr_le_les)__
-    lés?
-    <<- ->> =\0.replace("é", "e").replace("É", "E")                                                 # Erreur de numérisation ?
-
-TEST: __ocr__ il s’agit de {{lés}} observer.
-
-
-__[i]/ocr(ocr_le_la)__
-    1[easrnxiocuwàéè]
-    <<- \0.endswith("e") ->> le                                                                     # Erreur de numérisation ?
-    <<- __else__ and \0.endswith("a") ->> la                                                        # Erreur de numérisation ?
-    <<- __else__ and \0.endswith("à") ->> la|là                                                     # Erreur de numérisation ?
-    <<- __else__ ->> le|la                                                                          # Erreur de numérisation ?
-
-TEST: __ocr__ avec {{1e}} chien du policier
-TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
-TEST: __ocr__ {{1c}} chat du voinsin est idiot
-
-
-# les / lai / lei
-__[i]/ocr(ocr_lui_les)__    l[ae]i <<- ->> lui|les                                                  # Erreur de numérisation ?
-
-TEST: __ocr__ {{lai}} gros sont mal vus.
-
-
-# le / la / tu / lu
-__[s]/ocr(ocr_tu_le_la)__   lu <<- not morph(word(-1), ":(?:V0|N.*:m:[si])", False, False) ->> tu|le|la     # Erreur de numérisation ?
-
-TEST: __ocr__ {{lu}} as si bien réussi
-
-
-# M. / Mr / M
-__[s>/ocr(ocr_mr)__         (M(?:, | ))[A-ZÉÈ] @@0 <<- -1>> "Mr |M. "                               # Erreur de numérisation ?
-
-TEST: __ocr__ {{M, }}Patrick nous a oubliés.
-
-
-# Mais / Hais / Mats / niais
-__[u]/ocr(ocr_mais1)__      Hais <<- ->> Mais                                                       # Erreur de numérisation ?
-__[i]/ocr(ocr_mais2)__      mats <<- not morph(word(-1), ":D:[me]:p", False, False) ->> mais        # Erreur de numérisation ?
-__[i]/ocr(ocr_mais3)__      maïs <<- not morph(word(-1), ":D:(?:m:s|e:p)", False, False) ->> mais   # Erreur de numérisation ?
-__[s]/ocr(ocr_mais4)__
-    niais <<- not morph(word(-1), ">(?:homme|ce|quel|être)/", False, False) ->> mais                # Erreur de numérisation ?
-
-TEST: __ocr__ {{Hais}} il en sait trop.
-TEST: __ocr__ c’était bien, {{mats}} quelle journée
-TEST: __ocr__ c’est bien, {{niais}} trop subtil.
-TEST: __ocr__ c’est parfait, {{maïs}} trop subtil.
-
-
-# même / même / mème / mémo / môme
-__[i]/ocr(ocr_même1)__      mômes?
-    <<- \0.endswith("e") and not morph(word(-1), ":D.*:[me]:[si]", False, False) ->> même           # Erreur de numérisation ?
-    <<- \0.endswith("s") and not morph(word(-1), ":D.*:[me]:[pi]", False, False) ->> mêmes          # Erreur de numérisation ?
-__[i]/ocr(ocr_même2)__      mèmes? <<- ->> =\0.replace("è", "ê").replace("È", "Ê")                  # Erreur de numérisation ?
-__[i]/ocr(ocr_même3)__      mémos? <<- ->> =\0.replace("é", "ê").replace("É", "Ê")                  # Erreur de numérisation ?
-
-TEST: __ocr__ J’en ai assez {{môme}} si ça ne se voit pas.
-TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
-TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
-
-
-# mot / mol / moi
-__[i]/ocr(ocr_mot)__
-    mols?
-    <<- ->> =\0.replace("l", "t").replace("L", "T")+"|"+\0.replace("l", "i").replace("L", "I")      # Erreur de numérisation ?
-
-TEST: __ocr__ c’est un {{mol}} très dur.
-
-
-# mon / won
-__[i]/ocr(ocr_mon)__        won <<- ->> mon                                                         # Erreur de numérisation ?
-
-TEST: __ocr__ c’est {{won}} ami
-
-
-# ne / na / no / rie
-__[i]/ocr(ocr_ne1)__        n[oa] <<- ->> ne                                                        # Erreur de numérisation ?
-__[s]/ocr(ocr_ne2)__        rie <<- ->> ne                                                          # Erreur de numérisation ?
-
-TEST: __ocr__ {{no}} fais rien que tu pourrais regretter
-TEST: __ocr__ elle avance, mais {{rie}} prend jamais de risque inconsidéré.
-
-
-# nous / noue / noua
-__[i]/ocr(ocr_nous)__       nou[ea] <<- ->> nous                                                    # Erreur de numérisation ?
-
-TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.
-
-
-# par / paf / pan / pat
-__[i]/ocr(ocr_par)__        pa[fnt] <<- ->> par                                                     # Erreur de numérisation ?
-
-TEST: __ocr__ Une seule action {{paf}} jour
-
-
-# par le / par la / par les / parle / parla / parles
-__[i]/ocr(ocr_par_le)__
-    (parle) ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(?:ne|il|on|elle|je) +$") and morph(\2, ":[NA].*:[me]:[si]", False) -1>> par le  # Erreur de numérisation ?
-__[i]/ocr(ocr_par_la)__
-    (parla) ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(?:ne|il|on|elle) +$") and morph(\2, ":[NA].*:[fe]:[si]", False) -1>> par la     # Erreur de numérisation ?
-__[i]/ocr(ocr_par_les)__
-    (parles) ({w_2})  @@0,$
-    <<- not before(r"(?i)\b(?:ne|tu) +$") and morph(\2, ":[NA].*:[pi]", False) -1>> par les                 # Erreur de numérisation ?
-
-TEST: __ocr__ {{parle}} glaive et le mensonge, l’Église s’imposa.
-TEST: __ocr__ {{parla}} force, on peut réussir
-TEST: __ocr__ tu fus trompée {{parles}} mensonges permanents de son beau-père.
-
-
-# pendant / pondant
-__[i]/ocr(ocr_pendant)__    pondant <<- ->> pendant                                                 # Erreur de numérisation ?
-
-TEST: __ocr__ {{pondant}} qu’elle travaille, il se prélasse.
-
-
-# peu / peut / peux / pou
-__[i]/ocr(ocr_peu_peux_peut)__
-    poux?
-    <<- \0.endswith("u") and not morph(word(-1), ":D.*:m:s", False, False) ->> peu                  # Erreur de numérisation ?
-    <<- \0.endswith("x") and not morph(word(-1), ":D.*:m:p", False, False) ->> peux|peut|pour       # Erreur de numérisation ?
-
-TEST: __ocr__ il est {{pou}} probable qu’il y parvienne.
-
-
-# plus / pins
-__[i]/ocr(ocr_plus)__       pins <<- ->> plus                                                       # Erreur de numérisation ?
-
-TEST: __ocr__ ils sont {{pins}} instruits qu’il n’y paraît.
-
-
-# puis / pois
-__[i]/ocr(ocr_puis)__       pois <<- not morph(word(-1), ":D.*:m:p", False, False) ->> puis         # Erreur de numérisation ?
-
-TEST: __ocr__ elles sont venues, {{pois}} elles sont parties.
-
-
-# pour / pouf
-__[i]/ocr(ocr_pour)__       pouf <<- not morph(word(-1), ":D.*:f:s", False, False) ->> pour         # Erreur de numérisation ?
-
-TEST: __ocr__ {{pouf}} elle, il était prêt à tout.
-
-
-# près / prés
-__[i]/ocr(ocr_près)__       prés <<- not morph(word(-1), ":D.*:[me]:p", False, False) ->> près      # Erreur de numérisation ?
-
-TEST: __ocr__ ils sont arrivés {{prés}} de la tombe.
-
-
-# que / quo
-__[i]/ocr(ocr_que)__
-    qu[oa]
-    <<- \0.endswith("a") and not before("sine +$") ->> que                                          # Erreur de numérisation ?
-    <<- \0.endswith("o") and not before("statu +$") ->> que                                         # Erreur de numérisation ?
-
-TEST: __ocr__ elles ne savent pas {{quo}} faire
-TEST: __ocr__ {{Quo}} penser de tout ceci ?
-TEST: __ocr__ pour elle, c’est une condition sine qua non.
-
-
-# qu’importe
-__[i]/ocr(ocr_qu_importe)__
-    qu’(importé)  @@3
-    <<- -1>> importe                                                                                # Erreur de numérisation ?
-
-TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
-
-
-# qui / gui
-__[i]/ocr(ocr_qui)__        gui <<- not morph(word(-1), ":D.*:m:s", False, False) ->> qui           # Erreur de numérisation ?
-
-TEST: __ocr__ avec {{gui}} faire alliance ?
-
-
-# s’il / sil
-__[i]/ocr(ocr_s_il)__
-    sils?
-    <<- \0.endswith("s") ->> s’ils                                                                  # Erreur de numérisation ?
-    <<- __else__ ->> s’il                                                                           # Erreur de numérisation ?
-
-TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.
-
-
-# sur / sar
-__[i]/ocr(ocr_sur)__        sar <<- ->> sur                                                         # Erreur de numérisation ?
-
-TEST: __ocr__ il ne savait rien {{sar}} eux.
-
-
-# tard / lard
-__[s]/ocr(ocr_tard)__       lard <<- not before(r"(?i)\b(?:ce|[mts]on|du|un|le) $") ->> tard        # Erreur de numérisation ?
-
-TEST: __ocr__ elles seront là tôt ou {{lard}}.
-
-
-# tandis que / taudis
-__[i]/ocr(ocr_tandis)__     (taudis) que? @@0 <<- -1>> tandis                                       # Erreur de numérisation ?
-
-TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’amoncelaient.
-
-
-# l’est / Test
-__[i]/ocr(ocr_l_est)__
-    Test
-    <<- before(r"(?i)\w") ->> l’est                                                                 # Erreur de numérisation ?
-
-TEST: __ocr__ ça {{Test}} à leurs yeux.
-
-
-# tête / tète
-__[i]/ocr(ocr_tête)__       tète
-    <<- not before(r"(?i)\b(?:je|il|elle|on|ne) $")
-    ->> =\0.replace("è", "ê").replace("È", "Ê")                                                     # Erreur de numérisation ?
-
-TEST: __ocr__ cette forte {{tète}} n’écoute jamais personne.
-
-
-# tin / fin / un
-__[i]/ocr(ocr_fin_un)__     tin <<- ->> fin|un                                                      # Erreur de numérisation ?
-
-TEST: __ocr__ c’était {{tin}} marchand vaniteux.
-
-
-# ton / tan
-__[i]/ocr(ocr_ton)__        tans? <<- ->> =\0.replace("a", "o").replace("A", "O")                   # Erreur de numérisation ?
-
-TEST: __ocr__ pour {{tan}} propre bien.
-
-
-# toute / tonte
-__[i]/ocr(ocr_toute)__      tontes? <<- ->> =\0.replace("n", "u").replace("N", "U")                 # Erreur de numérisation ?
-
-TEST: __ocr__ à {{tonte}} fin utile
-
-
-# tu es / tues
-__[i]/ocr(ocr_tu_es)__      tues
-    <<- not morph(word(-1), ":(?:N.*:f:p|V0e.*:3p)", False, False) ->> tu es                        # Erreur de numérisation ?
-
-TEST: __ocr__ dans tous les cas, {{tues}} foutue.
-TEST: __ocr__ ses actions tues.
-
-
-# un / vin
-__[i]/ocr(ocr_un)__         vin <<- not before(r"(?i)\b(?:ce|d[eu]|un|quel|leur|le) +") ->> un      # Erreur de numérisation ?
-
-TEST: __ocr__ {{vin}} mathématicien hors du commun.
-
-
-# une / ure / vine
-__[i]/ocr(ocr_une1)__       ure <<- ->> une                                                         # Erreur de numérisation ?
-__[i]/ocr(ocr_une2)__       vine <<- ->> une                                                        # Erreur de numérisation ?
-
-TEST: __ocr__ il avait {{ure}} femme élégante et silencieuse
-TEST: __ocr__ c’est pour {{vine}} amie
-
-
-# vous / voua / voue
-__[i]/ocr(ocr_vous)__       vou[ae] <<- ->> vous                                                    # Erreur de numérisation ?
-
-TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
+# virgules
+__[s>/ocr(ocr_virgules)__
+    (?:[iI]l|l(?:es?|a)|[dnmtsDNMTS]e|[àÀ]|[cC]e(?:te|t|)|[mM](?:on|a)|[TS]a|[qQ]uelques?|[aA]ux?),
+    <<- not /0.endswith("…") ->> =\0[:-1]                                                           # Erreur de numérisation ? Virgule superflue ?
+
+TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
+TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
 
 
 ## Casse
@@ -2546,6 +1991,685 @@ __n_importe_qui_quoi__
         <<- %2>>
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: ocr                                                                                     _
+@@@@
+@@@@
+@@@@
+@@@@
+
+# This graph is parsed only if option <ocr> is activated.
+
+# Nombres
+__ocr_nombres__
+    ~[\dOI][\dOI]$
+        <<- \1 == "II" ->> 11|Il                                                                    # Erreur de numérisation ?
+        <<- __else__ and not \1.isdigit() ->> =\1.replace("O", "0").replace("I", "1")               # Erreur de numérisation ?
+
+TEST: __ocr__ {{II}} pleut tout le temps.
+TEST: __ocr__ En l’an {{2OO1}}, tout commença.
+
+
+# âge / age
+__ocr_age__
+    >age
+        <<- ->> =\1.replace("a", "â").replace("A", "Â")                                             # Erreur de numérisation ?
+
+TEST: __ocr__ À son {{age}}, on ne sait plus ce qu’on fait.
+
+
+# autre / antre
+__ocr_autre__
+    >antre
+        <<- ->> =\1.replace("n", "u")                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ cet {{antre}} gars lui semblait bien louche.
+
+
+# avec / aven / arec
+__ocr_avec__
+    [arec|aven]
+        <<- ->> avec                                                                                # Erreur de numérisation ?
+
+TEST: __ocr__ Elle s’en alla {{arec}} eux sans un regard en arrière.
+
+# avaient / avalent
+__ocr_avaient__
+    avalent
+        <<- ->> avaient                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ Ils {{avalent}} très faim.
+
+
+# avais / avals / axais
+__ocr_avis__
+    [avals|axais]
+        <<- ->> avais                                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais à ce point
+
+
+# car dans / cardans
+__ocr_car_dans__
+    cardans
+        <<- ->> car dans                                                                            # Erreur de numérisation ?
+
+TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.
+
+
+# chère / obère
+__ocr_chère__
+    obère
+        <<- not value(<1, "|j’|n’|l’|m’|t’|s’|il|on|elle|ça|cela|ceci|") ->> chère                  # Erreur de numérisation ?
+
+TEST: __ocr__ cette femme {{obère}} à notre cœur.
+
+
+# celui / celai
+__ocr_celui__
+    celai
+        <<- not value(<1, "|je|ne|le|la|les|") ->> celui                                            # Erreur de numérisation ?
+
+TEST: __ocr__ je suis déjà venu et {{celai}} qui viendra encore.
+
+
+# ces / cos
+__ocr_ces__
+    cos
+        <<- ->> ces                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ {{cos}} problèmes sont insolubles.
+
+
+# C’était / Celait
+__ocr_c_était__
+    celait
+        <<- ->> c’était                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ {{celait}} perdu d’avance.
+
+
+# cette / celte / cotte
+__ocr_cette__
+    [celte|celle]  @:N.*:f:s
+        <<- -1>> cette                                                                              # Erreur de numérisation ?
+
+    cotte
+        <<- not morph(<1, ":D.*:f:[si]") ->> cette                                                  # Erreur de numérisation ?
+
+TEST: __ocr__ mais {{celte}} femme semblait savoir ce qu’elle faisait.
+TEST: __ocr__ avec {{celle}} tentative d’humour, il pensait nous faire rire.
+TEST: __ocr__ on poirautait, {{cotte}} mariée n’arrivait pas à se décider.
+
+
+# Comme / Gomme
+__ocr_comme__
+    Gomme
+        <<- not value(<1, "|et|ou|où|") ->> Comme                                                   # Erreur de numérisation ?
+
+TEST: __ocr__ {{Gomme}} il était sage à cette époque-là !
+
+
+# Comment / Gomment
+__ocr_comment__
+    Gomment
+        <<- ->> Comment                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ {{Gomment}} s’en sortir avec tous ces retards qui s’accumulent ?
+
+
+# contre / coutre / contra
+__ocr_contre__
+    [contra|coutre|coutra]
+        <<- ->> contre                                                                              # Erreur de numérisation ?
+
+TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.
+
+
+# de / da
+__ocr_de__
+    da
+        <<- ->> de                                                                                  # Erreur de numérisation ?
+
+TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
+
+
+# dans / bans / clans
+__ocr_dans__
+    bans
+        <<- not morph(<1, ":D.*:p") ->> dans                                                        # Erreur de numérisation ?
+
+    clans  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|chaque|chacun|plusieurs|quelques|maints|maintes|tout|tous|toute|toutes|certains|certaines|nombre]
+        <<- not morph(<1, ":D.*:p") -1>> dans                                                       # Erreur de numérisation ?
+
+TEST: __ocr__ Mais {{bans}} cette ferme, tout était bien organisé.
+TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.
+
+
+# dame / darne
+__ocr_dame__
+    >darne
+        <<- ->> =\1.replace("rn", "m")                                                              # Erreur de numérisation ?
+
+TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
+
+
+# dé / de / dés / des / dès / dos
+__ocr_de_des__
+    dé
+        <<- not morph(<1, ":D.*:m:[si]") ->> de                                                     # Erreur de numérisation ?
+
+    dés
+        <<- not morph(<1, ":D.*:m:p") ->> des|dès                                                   # Erreur de numérisation ?
+
+    do
+        <<- ->> de                                                                                  # Erreur de numérisation ?
+
+    dos
+        <<- not morph(<1, ":D.*:[me]") ->> des|dès                                                  # Erreur de numérisation ?
+
+TEST: __ocr__ {{dés}} fois, ça ne passe pas
+TEST: __ocr__ {{dé}} gros camions circulaient toute la journée
+TEST: __ocr__ {{do}} bon matin.
+TEST: __ocr__ {{dos}} camions cabossés à n’en plus finir
+
+
+# de la / delà
+__ocr_de_la__
+    delà
+        <<- not value(<1, "|au|") ->> de la|de là                                                   # Erreur de numérisation ?
+
+TEST: __ocr__ la peinture {{delà}} maison s’écaillait
+
+
+# doute / cloute
+__ocr_doute__
+    cloute
+        <<- ->> doute                                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ Sans aucun {{cloute}}.
+
+
+# du / dû
+__ocr_du__
+    dû  @:[NA]:[me]:[si]¬:Y
+        <<- -1>> du                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ prendre {{dû}} bon temps
+TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
+
+
+# elle / elfe
+__ocr_elle__
+    elfe
+        <<- morph(<1, ":R|<start>|>,") or isNextVerb() ->> elle                                     # Erreur de numérisation ?
+
+    elfes
+        <<- morph(<1, ":R|<start>|>,") or isNextVerb() ->> elles                                    # Erreur de numérisation ?
+
+TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.
+
+
+# est / ost
+__ocr_est__
+    ost
+        <<- ->> est                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ Le cheval {{ost}} attaché.
+
+
+# et / cl
+__ocr_et__
+    [cl|c1|e1|el]
+        <<- not before("[0-9] +$") ->> et                                                           # Erreur de numérisation ?
+
+TEST: __ocr__ elle {{cl}} lui, c’était pour la vie.
+TEST: __ocr__ {{El}} il faisait froid là-haut
+
+
+# état / étal
+__ocr_état_étais_étaient__
+    étal
+        <<- ->> état                                                                                # Erreur de numérisation ?
+
+    [étals|étale]
+        <<- ->> étais|états                                                                         # Erreur de numérisation ?
+
+    étalent
+        <<- ->> étaient                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ Quels {{étals}} sont venus ?
+TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.
+
+
+# fille / tille
+__ocr_fille__
+    tille
+        <<- ->> fille                                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
+
+
+# fut / rut
+__ocr_fut__
+    rut
+        <<- ->> fut                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ ce petit {{rut}} traité comme un chien
+
+# il / n / ils / U / Us / i1 / if / 11
+__ocr_il__
+    [<start>|,]  n  ~[bcdfghjklmnpqrstvwxz]
+        <<- morph(\3, ":(?:O[on]|3s)") -2>> il                                                      # Erreur de numérisation ?
+
+    U
+        <<- ->> Il|il                                                                               # Erreur de numérisation ?
+
+    Us
+        <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
+
+    [i1|if|11|1f]
+        <<- ->> Il|il                                                                               # Erreur de numérisation ?
+
+    [i1s|ifs|11s|1fs]
+        <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ {{n }}contient trop de soufre.
+TEST: __ocr__ {{Us}} arrive demain.
+TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
+
+
+# fa / la
+__ocr_la__
+    fa
+        <<- ->> la                                                                                  # Erreur de numérisation ?
+
+TEST: __ocr__ dans {{fa}} demeure
+
+
+# large / largo
+__ocr_large__
+    >largo
+        <<- ->> =\1.replace("o", "e")                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ elle pense {{largo}}
+
+
+# l’ / j’ / Y / I
+__ocr_lj1__
+    ~^Y’[aâeéèêëiîïoôuyh]
+        <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
+
+    Y  ~^[aâeéèêëiîïoôuyh]
+        <<- before(r"\w") and not morph(\2, ":Y") ->> l’\2|L’\2|j’\2|J’\2                           # Erreur de numérisation ?
+
+    ~^[Ii1]’[aâeéèêëiîïoôuyh]
+        <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
+
+    [I|i|1]  ~^[aâeéèêëiîïoôuy]
+        <<- ->> l’\2|L’\2|j’\2|J’\2                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ {{Y’}}arrive demain.
+TEST: __ocr__ {{I’}}arrive demain.
+
+
+# l’ / V / P
+__ocr_l__
+    ~^V.
+        <<- \1.istitle() and before(r"\w") and morph(\1, ":", ":M") >>>
+        <<- spell(\1[1:]) ->> ="v"+\1[1:] + "|l’"+\1[1:]                                            # Erreur de numérisation ?
+        <<- __else__ ->> ="v"+\1[1:]                                                                # Erreur de numérisation ?
+
+    ~^P[aâeéêèiîïoôuy]
+        <<- before(r"\w") and morph(\1, ":", ":M") and spell(\1) ->> ="l’"+\1[1:] + "|p"+\1[1:]     # Erreur de numérisation ?
+
+TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.
+TEST: __ocr__ avec {{Vagile}} méthode de notre amie Virginie, tout est possible.
+TEST: __ocr__ Viens demain.
+TEST: __ocr__ Ce jour où Valérie eut sa licence de droit.
+TEST: __ocr__ Il scrute Pierre, {{Pair}} maussade.
+TEST: __ocr__ Une grosse vague arrivait et {{Peau}} remplit.
+TEST: __ocr__ selon toute logique, Paris sera épargné.
+
+
+# l’était / Tétait
+__ocr_l_était__
+    Tétait
+        <<- ->> l’était|t’était|T’était                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ perdu, cet homme {{Tétait}}
+
+
+# le / les / lé / lés / lui / lai / lei / la / tu / lu
+__ocr_le_la_les__
+    >lé
+        <<- ->> =\1.replace("é", "e").replace("É", "E")                                             # Erreur de numérisation ?
+
+    ~^1[easrnxiocuwàéè]$
+        <<- \1.endswith("e") ->> le                                                                 # Erreur de numérisation ?
+        <<- __else__ and \1.endswith("a") ->> la                                                    # Erreur de numérisation ?
+        <<- __else__ and \1.endswith("à") ->> la|là                                                 # Erreur de numérisation ?
+        <<- __else__ ->> le|la                                                                      # Erreur de numérisation ?
+
+    [1es|1as]
+        <<- ->> les                                                                                 # Erreur de numérisation ?
+
+    [lai|lei]
+        <<- ->> lui|les                                                                             # Erreur de numérisation ?
+
+    lu
+        <<- not morph(<1, ":(?:V0|N.*:m:[si])") ->> tu|le|la                                        # Erreur de numérisation ?
+
+TEST: __ocr__ il s’agit de {{lés}} observer.
+TEST: __ocr__ avec {{1e}} chien du policier
+TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
+TEST: __ocr__ {{1c}} chat du voinsin est idiot
+TEST: __ocr__ {{lai}} gros sont mal vus.
+TEST: __ocr__ {{lu}} as si bien réussi
+
+
+# M. / Mr / M
+__ocr_mr__
+    M ,  ~^[A-ZÉÈ]
+        <<- -1:2>> "Mr |M. "                                                                        # Erreur de numérisation ?
+
+    M  ~^[A-ZÉÈ]
+        <<- -1>> "Mr |M. "                                                                          # Erreur de numérisation ?
+
+TEST: __ocr__ {{M, }}Patrick nous a oubliés.
+
+
+# Mais / Hais / Mats / niais
+__ocr_mais__
+    Hais
+        <<- ->> Mais                                                                                # Erreur de numérisation ?
+
+    mats
+        <<- not morph(<1, ":D:[me]:p") ->> mais                                                     # Erreur de numérisation ?
+
+    maïs
+        <<- not morph(<1, ":D:(?:m:s|e:p)") ->> mais                                                # Erreur de numérisation ?
+
+    niais
+        <<- not morph(<1, ">(?:homme|ce|quel|être)/") ->> mais                                      # Erreur de numérisation ?
+
+TEST: __ocr__ {{Hais}} il en sait trop.
+TEST: __ocr__ c’était bien, {{mats}} quelle journée
+TEST: __ocr__ c’est bien, {{niais}} trop subtil.
+TEST: __ocr__ c’est parfait, {{maïs}} trop subtil.
+
+
+# même / même / mème / mémo / môme
+__ocr_même__
+    >môme
+        <<- ->> =\1.replace("ô", "ê").replace("Ô", "Ê")                                             # Erreur de numérisation ?
+
+    >mème
+        <<- ->> =\1.replace("è", "ê").replace("È", "Ê")                                             # Erreur de numérisation ?
+
+    >mémo
+        <<- ->> =\1.replace("é", "ê").replace("É", "Ê")                                             # Erreur de numérisation ?
+
+TEST: __ocr__ J’en ai assez {{môme}} si ça ne se voit pas.
+TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
+TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
+
+
+# mot / mol / moi
+__ocr_mot__
+    [mol|mols]
+        <<- ->> =\1.replace("l", "t").replace("L", "T")+"|"+\1.replace("l", "i").replace("L", "I")  # Erreur de numérisation ?
+
+TEST: __ocr__ c’est un {{mol}} très dur.
+
+
+# mon / won
+__ocr_mon__
+    won
+        <<- ->> mon                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ c’est {{won}} ami
+
+
+# ne / na / no / rie
+__ocr_ne__
+    [no|na|rie]
+        <<- ->> ne                                                                                  # Erreur de numérisation ?
+
+TEST: __ocr__ {{no}} fais rien que tu pourrais regretter
+TEST: __ocr__ elle avance, mais {{rie}} prend jamais de risque inconsidéré.
+
+
+# nous / noue / noua
+__ocr_nous__
+    [noue|noua]
+        <<- ->> nous                                                                                # Erreur de numérisation ?
+
+TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.
+
+
+# par / paf / pan / pat
+__ocr_par__
+    [paf|pat]
+        <<- ->> par                                                                                 # Erreur de numérisation ?
+
+    pan
+        <<- ->> par|peu                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ Une seule action {{paf}} jour
+
+
+# par le / par la / par les / parle / parla / parles
+__ocr_par_le_la_les__
+    parle  @:[NA].*:[me]:[si]
+        <<- not value(<1, "|ne|il|on|elle|je|") -1>> par le                                         # Erreur de numérisation ?
+
+    parla  @:[NA].*:[fe]:[si]
+        <<- not value(<1, "|ne|il|on|elle|") -1>> par la                                            # Erreur de numérisation ?
+
+    parles  @:[NA].*:[pi]
+        <<- not value(<1, "|ne|tu|") -1>> par les                                                   # Erreur de numérisation ?
+
+TEST: __ocr__ {{parle}} glaive et le mensonge, l’Église s’imposa.
+TEST: __ocr__ {{parla}} force, on peut réussir
+TEST: __ocr__ tu fus trompée {{parles}} mensonges permanents de son beau-père.
+
+
+# pendant / pondant
+__ocr_pendant__
+    pondant
+        <<- ->> pendant                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ {{pondant}} qu’elle travaille, il se prélasse.
+
+
+# peu / peut / peux / pou
+__ocr_peu_peux_peut__
+    pou
+        <<- not morph(<1, ":D.*:m:s") ->> peu                                                       # Erreur de numérisation ?
+
+    poux
+        <<- not morph(<1, ":D.*:m:p") ->> peux|peut|pour                                            # Erreur de numérisation ?
+
+TEST: __ocr__ il est {{pou}} probable qu’il y parvienne.
+
+
+# plus / pins
+__ocr_plus__
+    pins
+        <<- ->> plus                                                                                # Erreur de numérisation ?
+
+TEST: __ocr__ ils sont {{pins}} instruits qu’il n’y paraît.
+
+
+# puis / pois
+__ocr_puis__
+    pois
+        <<- not morph(<1, ":D.*:m:p") ->> puis                                                      # Erreur de numérisation ?
+
+TEST: __ocr__ elles sont venues, {{pois}} elles sont parties.
+
+
+# pour / pouf
+__ocr_pour__
+    pouf
+        <<- not morph(<1, ":D.*:f:s") ->> pour                                                      # Erreur de numérisation ?
+
+TEST: __ocr__ {{pouf}} elle, il était prêt à tout.
+
+
+# près / prés
+__ocr_près__
+    prés
+        <<- not morph(<1, ":D.*:[me]:p") ->> près                                                   # Erreur de numérisation ?
+
+TEST: __ocr__ ils sont arrivés {{prés}} de la tombe.
+
+
+# que / quo
+__ocr_que__
+    qua
+        <<- not value(<1, "|sine|") ->> que                                                         # Erreur de numérisation ?
+
+    quo
+        <<- not value(<1, "|statu|") ->> que                                                        # Erreur de numérisation ?
+
+TEST: __ocr__ elles ne savent pas {{quo}} faire
+TEST: __ocr__ {{Quo}} penser de tout ceci ?
+TEST: __ocr__ pour elle, c’est une condition sine qua non.
+
+
+# qu’importe
+__ocr_qu_importe__
+    qu’ importé
+        <<- -2>> importe                                                                            # Erreur de numérisation ?
+
+TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
+
+
+# qui / gui
+__ocr_qui__
+    gui
+        <<- not morph(<1, ":D.*:m:s") ->> qui                                                       # Erreur de numérisation ?
+
+TEST: __ocr__ avec {{gui}} faire alliance ?
+
+
+# s’il / sil
+__ocr_s_il__
+    sil
+        <<- ->> s’il                                                                                # Erreur de numérisation ?
+
+    sils
+        <<- ->> s’ils                                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.
+
+
+# sur / sar
+__ocr_sur__
+    sar
+        <<- ->> sur                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ il ne savait rien {{sar}} eux.
+
+
+# tard / lard
+__ocr_tard__
+    lard
+        <<- not value(<1, "|le|ce|mon|ton|son|du|un|") ->> tard                                     # Erreur de numérisation ?
+
+TEST: __ocr__ elles seront là tôt ou {{lard}}.
+
+
+# tandis que / taudis
+__ocr_tandis__
+    taudis [que|qu’|qu]
+         <<- -1>> tandis                                                                             # Erreur de numérisation ?
+
+TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’amoncelaient.
+
+
+# l’est / Test
+__ocr_l_est__
+    Test
+        <<- before(r"\w") ->> l’est                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ ça {{Test}} à leurs yeux.
+
+
+# tête / tète
+__ocr_tête__
+    tète
+        <<- not value(<1, "|je|il|elle|on|ne|ça|") ->> =\1.replace("è", "ê").replace("È", "Ê")      # Erreur de numérisation ?
+
+TEST: __ocr__ cette forte {{tète}} n’écoute jamais personne.
+
+
+# tin / fin / un
+__ocr_fin_un__
+    tin
+        <<- ->> fin|un                                                                              # Erreur de numérisation ?
+
+TEST: __ocr__ c’était {{tin}} marchand vaniteux.
+
+
+# ton / tan
+__ocr_ton__
+    >tan
+        <<- ->> =\1.replace("a", "o").replace("A", "O")                                             # Erreur de numérisation ?
+
+TEST: __ocr__ pour {{tan}} propre bien.
+
+
+# toute / tonte
+__ocr_toute__
+    >tonte
+        <<- ->> =\1.replace("n", "u").replace("N", "U")                                             # Erreur de numérisation ?
+
+TEST: __ocr__ à {{tonte}} fin utile
+
+
+# tu es / tues
+__ocr_tu_es__
+    tues
+        <<- not morph(<1, ":(?:N.*:f:p|V0e.*:3p)|>(?:tu|ne)/") ->> tu es                            # Erreur de numérisation ?
+
+TEST: __ocr__ dans tous les cas, {{tues}} foutue.
+TEST: __ocr__ ses actions tues.
+
+
+# un / vin
+__ocr_un__
+    vin
+        <<- not value(<1, "|ce|de|du|un|quel|leur|le|") ->> un                                      # Erreur de numérisation ?
+
+TEST: __ocr__ {{vin}} mathématicien hors du commun.
+
+
+# une / ure / vine
+__ocr_une__
+    ure
+        <<- ->> une                                                                                 # Erreur de numérisation ?
+
+    vine
+        <<- ->> une                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ il avait {{ure}} femme élégante et silencieuse
+TEST: __ocr__ c’est pour {{vine}} amie
+
+
+# vous / voua / voue
+__ocr_vous__
+    [vous|voua]
+        <<- ->> vous                                                                                # Erreur de numérisation ?
+
+TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
+
+
 
 @@@@
 @@@@
@@ -2651,7 +2775,7 @@ __typo_ordinaux_chiffres_incorrects__
         <<- /typo/ ->> \1ᵉˢ         # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     ~^\d+(?:è|i?[èe]me)s?$
-        <<- /typo/ \0.endswith("s")
+        <<- /typo/ \1.endswith("s")
         ->> =\1.replace("mes", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉˢ"    # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
         <<- /typo/ __else__
         ->> =\1.replace("me", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉ"      # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
@@ -2740,7 +2864,7 @@ __typo_ordinaux_chiffres_romains_incorrects__
 
     ~^[IVXLCM]{1,10}(?:è|i?[èe]me)s?$
         <<- /typo/ not morph(\1, ":G") >>>
-        <<- \0.endswith("s")
+        <<- \1.endswith("s")
         ->> =\1.replace("mes", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉˢ" # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
         <<- __else__
         ->> =\1.replace("me", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉ"   # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
