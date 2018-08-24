@@ -162,11 +162,12 @@ def _proofread (oSentence, s, sx, nOffset, bParagraph, dErrors, dPriority, sCoun
                 oSentence.update(s, bDebug)
                 bSentenceChange = False
             for sGraphName, sLineId in lRuleGroup:
-                if bDebug:
-                    print("\n>>>> GRAPH:", sGraphName, sLineId)
-                bParagraphChange, s = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
-                dErrors.update(oSentence.dError)
-                dTokenPos = oSentence.dTokenPos
+                if sGraphName not in dOptions or dOptions[sGraphName]:
+                    if bDebug:
+                        print("\n>>>> GRAPH:", sGraphName, sLineId)
+                    bParagraphChange, s = oSentence.parse(dAllGraph[sGraphName], dPriority, sCountry, dOptions, bShowRuleId, bDebug, bContext)
+                    dErrors.update(oSentence.dError)
+                    dTokenPos = oSentence.dTokenPos
         elif not sOption or dOptions.get(sOption, False):
             # regex rules
             for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
