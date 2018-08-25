@@ -948,7 +948,6 @@ class TextParser:
             bUppercase = bCaseSvty and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
                 # one token
-                sWhat = sWhat + " " * (len(self.lToken[nTokenRewriteStart]["sValue"])-len(sWhat))
                 if bUppercase:
                     sWhat = sWhat[0:1].upper() + sWhat[1:]
                 self.lToken[nTokenRewriteStart]["sNewValue"] = sWhat
