@@ -2262,7 +2262,7 @@ TEST: __ocr__ ce petit {{rut}} traité comme un chien
 
 # il / n / ils / U / Us / i1 / if / 11
 __ocr_il__
-    [<start>|,]  n  ~[bcdfghjklmnpqrstvwxz]
+    [<start>|,]  [n|h|d]  ~[bcdfghjklmnpqrstvwxz]
         <<- morph(\3, ":(?:O[on]|3s)") -2>> il                                                      # Erreur de numérisation ?
 
     U
@@ -2277,7 +2277,7 @@ __ocr_il__
     [i1s|ifs|11s|1fs]
         <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
 
-TEST: __ocr__ {{n }}contient trop de soufre.
+TEST: __ocr__ {{n}} contient trop de soufre.
 TEST: __ocr__ {{Us}} arrive demain.
 TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
 
@@ -2312,8 +2312,8 @@ __ocr_lj1__
     [I|i|1]  ~^[aâeéèêëiîïoôuy]
         <<- ->> l’\2|L’\2|j’\2|J’\2                                                                 # Erreur de numérisation ?
 
-TEST: __ocr__ {{Y’}}arrive demain.
-TEST: __ocr__ {{I’}}arrive demain.
+TEST: __ocr__ {{Y’arrive}} demain.
+TEST: __ocr__ {{I’arrive}} demain.
 
 
 # l’ / V / P
@@ -2368,6 +2368,7 @@ TEST: __ocr__ avec {{1e}} chien du policier
 TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
 TEST: __ocr__ {{1c}} chat du voinsin est idiot
 TEST: __ocr__ {{lai}} gros sont mal vus.
+TEST: __ocr__ {{1es}} jours clairs
 TEST: __ocr__ {{lu}} as si bien réussi
 
 
@@ -2379,7 +2380,7 @@ __ocr_mr__
     M  ~^[A-ZÉÈ]
         <<- -1>> "Mr |M. "                                                                          # Erreur de numérisation ?
 
-TEST: __ocr__ {{M, }}Patrick nous a oubliés.
+TEST: __ocr__ {{M,}} Patrick nous a oubliés.
 
 
 # Mais / Hais / Mats / niais
@@ -2544,7 +2545,7 @@ TEST: __ocr__ pour elle, c’est une condition sine qua non.
 
 # qu’importe
 __ocr_qu_importe__
-    qu’ importé
+    [qu’|qu] [importé|importa]
         <<- -2>> importe                                                                            # Erreur de numérisation ?
 
 TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
@@ -2664,7 +2665,7 @@ TEST: __ocr__ c’est pour {{vine}} amie
 
 # vous / voua / voue
 __ocr_vous__
-    [vous|voua]
+    [voue|voua]
         <<- ->> vous                                                                                # Erreur de numérisation ?
 
 TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
@@ -9174,7 +9175,7 @@ __p_dét_plur_nombre_nom__
 
 __mot_composé_avec_là__
     ~-[lL][àÀ]$
-        <<- morph(\1, ":[NAQ]", ":G", 0, -3) ~>> =\1[:-3]
+        <<- morph(\1, ":[NA]", ":G", 0, -3) ~>> =\1[:-3]
 
 TEST: cette femme-là {{étaient}} partout.
 
