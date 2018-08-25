@@ -15885,8 +15885,9 @@ TEST: nulle partie du corps ne peut être considérée comme le siège de l’â
 
 
 __conj_vinfi_suj__
-    [<start>|,]  @:Y  @:V¬:(?:3s|P|Q.*:m:[si]|Y|3p!)
-        <<- /conj/ -3>> =suggVerb(\3, ":3s")                            # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+    [<start>|,]  @:Y  @:V¬:(?:3s|P|Q.*:[me]:[si]|Y|3p!)
+        <<- /conj/ not (value(\2, "|être|") and morph(\3, ":A"))
+        -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: manger {{fais}} grossir.
 TEST: boire immodérément {{nuis}} à la santé
