@@ -298,13 +298,13 @@ class Dictionnaire:
         echo(' * Dictionnaire >> [ {}.dic ] ({})'.format(dTplVars['asciiName'], dTplVars['subDicts']))
         nEntry = 0
         for oEntry in self.lEntry:
-            if oEntry.di in dTplVars['subDicts']:
+            if oEntry.di in dTplVars['subDicts'] and " " not in oEntry.lemma:
                 nEntry += 1
         with open(spDst+'/'+dTplVars['asciiName']+'.dic', 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(str(nEntry)+"\n")
             for oEntry in self.lEntry:
-                if oEntry.di in dTplVars['subDicts']:
-                    hDst.write(oEntry.getEntryLine(self, nMode, bSimplified))
+                if oEntry.di in dTplVars['subDicts'] and " " not in oEntry.lemma:
+                    hDst.write(oEntry.getHunspellLine(self, nMode, bSimplified))
 
     def writeAffixes (self, spDst, dTplVars, nMode, bSimplified):
         "Écrire le fichier des affixes (.aff)"
@@ -867,7 +867,7 @@ class Entree:
     def keyTriNum (self):
         return (self.lemma, self.flags, self.po)
 
-    def getEntryLine (self, oDict, nMode, bSimplified=False):
+    def getHunspellLine (self, oDict, nMode, bSimplified=False):
         sLine = self.lemma.replace("’", "'")
         if self.flags:
             sLine += '/'
@@ -1501,7 +1501,6 @@ class StatsLex:
 
 
 def main ():
-
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-v", "--verdic", help="set dictionary version, i.e. 5.4", type=str, default="X.Y.z")
     xParser.add_argument("-m", "--mode", help="0: no tags,  1: Hunspell tags (default),  2: All tags", type=int, choices=[0, 1, 2], default=1)
