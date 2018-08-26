@@ -1216,7 +1216,7 @@ class Flexion:
         "detpos": ":Dp", "detdem": ":Dd", "detind": ":Di", "detneg": ":Dn", "detex": ":De", "det": ":D",
         "advint": ":U",
         "prodem": ":Od", "proind": ":Oi", "proint": ":Ot", "proneg": ":On", "prorel": ":Or", "proadv": ":Ow",
-        "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3", "preverb": "Oo",
+        "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3", "preverb": "Ov",
         "cjco": ":Cc", "cjsub": ":Cs", "cj": ":C", "loc.cj": ":Ĉ", "loc.cjsub": ":Ĉs",
         "prn": ":M1", "patr": ":M2", "loc.patr": ":Ḿ2", "npr": ":MP", "nompr": ":NM",
         "pfx": ":Zp", "sfx": ":Zs",
