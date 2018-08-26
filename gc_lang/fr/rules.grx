@@ -4347,15 +4347,23 @@ TEST: ce serait une honte d’échouer une fois de plus à un test aussi éléme
 TEST: ce ne saurait être cet homme…
 
 
-__conj_c_en__
+__conj_c_en!6__
     c’ en  *WORD
         <<- /conj/ morph(\3, ">(?:être|devoir|devenir|pouvoir|vouloir|savoir)/:V", ":3s")
         -3>> =suggVerb(\3, ":3s")                                               # Conjugaison erronée. Accord avec “c’en”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conf/ morph(\3, ":[YP]") or morph(\3, ":V", ">(?:être|devoir|devenir|pouvoir|vouloir|savoir)/")
         -1:2>> s’en                                                             # Confusion : “c’en” est la forme élidée de “ça en”. Pour la forme pronominale “se”, écrivez “s’en”.
 
+    [il|ils|on]  c’
+        <<- /conj/ -2>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”.
+
+    [<start>|,]  [elle|elles]  c’
+        <<- /conj/ -3>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”.
+
 TEST: tu vois, c’en {{étais}} trop pour elles.
 TEST: cet homme, perdu dans ses pensées, allait {{c’en}} faire du souci.
+TEST: il {{s’}}accoutumait à sa nouvelle fonction.
+TEST: elle {{c’}}anime dès qu’on fait du bruit.
 TEST: C’en était malsain.
 TEST: C’en devenait trop.
 TEST: C’en pouvait être effrayant.
@@ -5988,6 +5996,23 @@ TEST: J’en veux un différent.
 TEST: Il en veut des différents.
 TEST: dans ses différents ouvrages
 TEST: dans ses différents postes gouvernementaux
+
+
+# dû / du
+__ppas_dû_du__
+    du  [à|a|au|aux]
+        <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
+
+    [mon|notre|votre]  du
+        <<- /ppas/ -2>> dû                                      # Confusion. Ce qui est dû.
+
+    [ton|son|leur]  du
+        <<- /ppas/ not morph(>1, ":[NA].*:[me]") -2>> dû        # Confusion. Ce qui est dû.
+
+TEST: L’échec {{du}} à une erreur de calcul
+TEST: que ça vous plaise ou non, c’est notre {{du}}.
+TEST: Il veut qu’on lui rende son {{du}}.
+TEST: Tu as reçu ton {{du}} pour ton travail.
 
 
 # eh bien, hé bien / et bien
@@ -9953,7 +9978,7 @@ __purge_locutions_verbales__
     >battre en [brèche|retraite]
     >compter à rebours
     >couler à ?grands¿ flots
-    >demander [audience|conseil|pardon]
+    >demander [assistance|audience|conseil|pardon]
     [>donner|>redonner] sens
     >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|débat|défaut|demi-tour|envie|erreur|figure|froid|halte|honte|illusion|mouche|office|part|peur|plaisir|preuve|rage|scandale|sens|signe|volte-face]
     >faire amende honorable
@@ -12385,6 +12410,14 @@ TEST: Avec quel {{en train}}, ils nous ont mené jusque là-haut.
 TEST: Son manque d’{{en train}} était contagieux.
 TEST: c’est l’{{en train}} de cette jeune femme qui force l’admiration de tout le monde.
 TEST: Elles travaillaient avec entrain, conscientes que la fin était proche.
+
+
+# dû / du
+__ppas_dû_du2__
+    du  [à|a|au|aux]
+        <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
+
+TEST: L’échec est {{du}} en partie à un manque de préparation.
 
 
 # envi / envie
@@ -14903,22 +14936,6 @@ TEST: Voici ce qui me sera {{du}}.
 TEST: Voici ce qui vous est {{du}}.
 
 
-__ppas_dû_du__
-    du  [à|a|au|aux]
-        <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
-
-    [mon|notre|votre]  du
-        <<- /ppas/ -2>> dû                                      # Confusion. Ce qui est dû.
-
-    [ton|son|leur]  du
-        <<- /ppas/ not morph(>1, ":[NA].*:[me]") -2>> dû        # Confusion. Ce qui est dû.
-
-TEST: L’échec {{du}} à une erreur de calcul
-TEST: L’échec est {{du}} en partie à un manque de préparation.
-TEST: que ça vous plaise ou non, c’est notre {{du}}.
-TEST: Il veut qu’on lui rende son {{du}}.
-TEST: Tu as reçu ton {{du}} pour ton travail.
-
 
 !!
 !!
@@ -16012,7 +16029,7 @@ TEST: je vous donnais votre dû, vous payais mieux que quiconque et vous me fait
 
 ## 3pl
 __conj_elles__
-    elles  @:V¬:(?:3p|P|G)
+    elles  @:V¬:(?:3p|P|G|A.*:f:p)
         <<- /conj/ not morph(<1, ":R") and not value(<1, "|d’|") and not (morph(\2, ":Q") and morph(<1, ":V0.*:3p"))
         -2>> =suggVerb(\2, ":3p")                                       # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __also__ and morph(\2, ":3s") -1>> elle              # Accord avec “\2”.
