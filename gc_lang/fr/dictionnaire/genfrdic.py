@@ -818,17 +818,17 @@ class Entree:
         if (re.match(r"S[*.]", self.flags) and re.search("[sxz]$", self.lemma)) or (re.match(r"X[*.]", self.flags) and not re.search("[ul]$", self.lemma)):
             sErr += 'drapeau inutile'
         if self.iz == '' and re.match(r"[SXAI](?!=)", self.flags) and self.po:
-            sErr += '[is]'
+            sErr += '[is] vide'
         if re.match(r"pl|sg|inv", self.iz):
-            sErr += '[is]'
+            sErr += '[is] incomplet'
         if re.match(r"[FW]", self.flags) and re.search(r"epi|mas|fem|inv|sg|pl", self.iz):
-            sErr += '[is]'
+            sErr += '[is] incohérent'
         if re.match(r"[FW]", self.flags) and re.search(r"[^eë]$", self.lemma):
             sErr += "fin de lemme inapproprié"
         if re.match(r".\*", self.flags) and re.match(r"[bcdfgjklmnpqrstvwxz]", self.lemma):
             sErr += 'drapeau pour lemme commençant par une voyelle'
         if re.search(r"pl|sg|inv", self.iz) and re.match(r"[SXAIFW](?!=)", self.flags):
-            sErr += '[is]'
+            sErr += '[is] incohérent'
         if re.search(r"nom|adj", self.po) and re.match(r"(?i)[aâàäáeéèêëiîïíìoôöóòuûüúù]", self.lemma) and re.match("[SFWXAI][.]", self.flags) \
            and "pel" not in self.lx:
             sErr += 'le drapeau derait finir avec *'
@@ -1216,7 +1216,7 @@ class Flexion:
         "detpos": ":Dp", "detdem": ":Dd", "detind": ":Di", "detneg": ":Dn", "detex": ":De", "det": ":D",
         "advint": ":U",
         "prodem": ":Od", "proind": ":Oi", "proint": ":Ot", "proneg": ":On", "prorel": ":Or", "proadv": ":Ow",
-        "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3",
+        "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3", "preverb": "Oo",
         "cjco": ":Cc", "cjsub": ":Cs", "cj": ":C", "loc.cj": ":Ĉ", "loc.cjsub": ":Ĉs",
         "prn": ":M1", "patr": ":M2", "loc.patr": ":Ḿ2", "npr": ":MP", "nompr": ":NM",
         "pfx": ":Zp", "sfx": ":Zs",
