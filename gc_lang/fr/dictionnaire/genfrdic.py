@@ -748,7 +748,7 @@ class Entree:
             sLine, comment = sLine.split('#', 1)
             self.comment = comment.strip()
         # éléments de la ligne
-        elems = sLine.split()
+        elems = sLine.split("\t")
         nElems = len(elems)
         # lemme et drapeaux
         firstElems = elems[0].split('/')
