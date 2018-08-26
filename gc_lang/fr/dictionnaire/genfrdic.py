@@ -25,7 +25,7 @@ import metaphone2
 
 # Dictionnaire des caractères pour le tri naturel.
 # Ordre souhaitable, mais pose problème pour la recherche, car engendre des égalités de lemmes différents.
-# Il faut donc travailler sur un dictionnaire trié *numériquement* et le sauvegarder selon le tri *naturel*             
+# Il faut donc travailler sur un dictionnaire trié *numériquement* et le sauvegarder selon le tri *naturel*
 CHARMAP = str.maketrans({ 'à': 'a',  'À': 'A',  'â': 'a',  'Â': 'A',  'ä': 'a',  'Ä': 'A',  'å': 'a',  'Å': 'A',  'ā': 'a',  'Ā': 'A',
                           'ç': 'c',  'Ç': 'C',
                           'é': 'e',  'É': 'E',  'è': 'e',  'È': 'E',  'ê': 'e',  'Ê': 'E',  'ë': 'e',  'Ë': 'E',  'ē': 'e',  'Ē': 'E',
@@ -219,11 +219,11 @@ class Dictionnaire:
         self.dAM = collections.OrderedDict() # étiquettes morphologiques
         self.dAF = collections.OrderedDict() # étiquettes drapeaux
         # Flexions
-        self.lFlexions = []           # liste des flexions avec lemme, morphologie et occurrences 
+        self.lFlexions = []           # liste des flexions avec lemme, morphologie et occurrences
         self.lStatsLex = []
         self.nTotOccurRecognizedWords = 0
         self.aFlexions = None
-    
+
     def readDictionary (self, spf):
         "Lecture du dictionnaire"
         echo('Dictionnaire << [ {} ]'.format(spf), end=' ')
@@ -282,7 +282,7 @@ class Dictionnaire:
 
         lAF = sorted(dAF.items(), key = lambda x: (x[1], x[0]), reverse=True)
         lAM = sorted(dAM.items(), key = lambda x: (x[1], x[0]), reverse=True)
-        
+
         with open(spDst, 'a', encoding='utf-8', newline="\n") as hDst:
             hDst.write("\n\nDrapeaux :\n")
             for nAF, elem in enumerate(lAF, 1):
@@ -305,7 +305,7 @@ class Dictionnaire:
             for oEntry in self.lEntry:
                 if oEntry.di in dTplVars['subDicts']:
                     hDst.write(oEntry.getEntryLine(self, nMode, bSimplified))
-    
+
     def writeAffixes (self, spDst, dTplVars, nMode, bSimplified):
         "Écrire le fichier des affixes (.aff)"
         echo(' * Dictionnaire >> [ {}.aff ]'.format(dTplVars['asciiName']))
@@ -316,7 +316,7 @@ class Dictionnaire:
                "# par Olivier R. -- licence MPL 2.0\n" + \
                "# Généré le " + time.strftime("%d-%m-%Y à %H:%M") + "\n" \
                "# Pour améliorer le dictionnaire, allez sur http://www.dicollecte.org/\n\n"
-               
+
         with open(spDst+'/'+dTplVars['asciiName']+'.aff', 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(info)
             hDst.write(self.sSettings + "\n")
@@ -338,7 +338,7 @@ class Dictionnaire:
 
     def sortEntriesNumerical (self):
         echo(' * Dictionnaire - Tri numérique des entrées...')
-        self.lEntry = sorted(self.lEntry, key=Entree.keyTriNum)        
+        self.lEntry = sorted(self.lEntry, key=Entree.keyTriNum)
 
     def sortLexiconByFlexion (self):
         echo(' * Dictionnaire - tri du lexique (par flexion)...')
@@ -376,7 +376,7 @@ class Dictionnaire:
         for oFlex in self.lFlexions:
             oFlex.lMulti.remove(oFlex.oEntry)
             oFlex.nMulti -= 1
-        
+
     def setTagsFrom (self, other):
         echo(' * Dictionnaire - copie des tags...')
         for i in range(self.nEntry):
@@ -396,7 +396,7 @@ class Dictionnaire:
             for oFlex in self.lFlexions:
                 oFlex.calcOccur()
                 self.nTotOccurRecognizedWords += oFlex.nOccur
-            
+
             # Report des occurrences
             echo("   report des occurrences des formes fléchies multiples...")
             hDst.write("Report des occurrences des formes fléchies multiples :\n")
@@ -410,14 +410,14 @@ class Dictionnaire:
                 oEntry.calcAverageKnownOccurrence()
                 oEntry.solveOccurMultipleFlexions(hDst, oStatsLex)
                 oEntry.calcOccurFromFlexions()
-            
+
             # Fréquences
             echo("   calcul des fréquences et indices de fréquence...")
             for oFlex in self.lFlexions:
                 oFlex.calcFreq(self.nTotOccurRecognizedWords)
             for oEntry in self.lEntry:
                 oEntry.calcFreq(self.nTotOccurRecognizedWords)
-            
+
             # Entrées, statistiques
             echo("   statistiques...")
             hDst.write("\n\nNatures grammaticales :\n")
@@ -427,7 +427,7 @@ class Dictionnaire:
                 d[po] = d.get(po, 0) + 1
             for e in sorted(d.items(), key = lambda x: (x[1], x[0]), reverse=True):
                 hDst.write(" * {0[1]:<15} : {0[0]}\n".format(e))
-            
+
             hDst.write("\n\nVentilation des entrées par indice de fréquence :\n")
             d1 = {}
             d2 = {}
@@ -436,14 +436,14 @@ class Dictionnaire:
                 d2[oEntry.fq] = d2.get(oEntry.fq, 0) + oEntry.fFreq
             for k in sorted(d1.keys()):
                 hDst.write(" * {} : {} entrées ({:.2f} %)  → {:.9f} %\n".format(k, d1[k], (d1[k]*100)/self.nEntry, d2[k]))
-                    
+
             hDst.write("\n\nRépartition des entrées par sous-dictionnaire :\n")
             d = {}
             for oEntry in self.lEntry:
                 d[oEntry.di] = d.get(oEntry.di, 0) + 1
             for sKey, nVal in d.items():
                 hDst.write(" * {0:<15} : {1} entrées ({2:.2f} %)\n".format(dSUBDIC[sKey], nVal, (nVal*100)/self.nEntry))
-            
+
             # Occurrences des lettres
             echo("   occurrences des lettres...")
             d = {}
@@ -476,12 +476,12 @@ class Dictionnaire:
         echo(" * Lexique - Metagraphe")
         for oFlex in self.lFlexions:
             oFlex.calcMetagraphe()
-    
+
     def calcMetaphone2 (self):
         echo(" * Lexique - Metaphone 2")
         for oFlex in self.lFlexions:
             oFlex.calcMetaphone2()
-    
+
     def createNgrams (self, spDest, n):
         echo(" * Lexique - Ngrams " + str(n))
         if n < 2:
@@ -564,7 +564,7 @@ class Dictionnaire:
         #file_util.copy_file('_templates/ooo/dictionaries.xcu.tpl.xml', spExt)
         copyTemplate('_templates/ooo', spExt, 'package-description.txt', dTplVars)
         for dVars in lDictVars:
-            dicPath = spBuild + '/' + PREFIX_DICT_PATH + self.sVersion 
+            dicPath = spBuild + '/' + PREFIX_DICT_PATH + self.sVersion
             file_util.copy_file(dicPath+'/'+dVars['asciiName']+'.dic', spExt+'/dictionaries/'+dVars['asciiName']+'.dic')
             file_util.copy_file(dicPath+'/'+dVars['asciiName']+'.aff', spExt+'/dictionaries/'+dVars['asciiName']+'.aff')
         copyTemplate('orthographe', spExt+'/dictionaries', 'README_dict_fr.txt', dTplVars)
@@ -585,7 +585,7 @@ class Dictionnaire:
         if spDestGL:
             echo("   extension copiée dans Grammalecte...")
             dir_util.copy_tree(spExt+'/dictionaries', spDestGL)
-    
+
     def createMozillaExtensions (self, spBuild, dTplVars, lDictVars, spDestGL=""):
         # Mozilla extension 1
         echo(" * Dictionnaire >> extension pour Mozilla")
@@ -605,7 +605,7 @@ class Dictionnaire:
             for dVars in lDictVars:
                 file_util.copy_file(spDict+'/'+dVars['asciiName']+'.dic', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.dic')
                 file_util.copy_file(spDict+'/'+dVars['asciiName']+'.aff', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.aff')
-    
+
     def createFileIfqForDB (self, spBuild):
         echo(" * Dictionnaire >> indices de fréquence pour la DB...")
         with open(spBuild+'/dictIdxIfq-'+self.sVersion+'.diff.txt', 'w', encoding='utf-8', newline="\n") as hDiff, \
@@ -614,7 +614,7 @@ class Dictionnaire:
                 if oEntry.fq != oEntry.oldFq:
                     hDiff.write("{0.iD}\t{0.fq}\n".format(oEntry))
                     hNotes.write("{0.lemma}/{0.flags}\t{0.oldFq} > {0.fq}\n".format(oEntry))
-        
+
     def createLexiconPackages (self, spBuild, version, oStatsLex, spDestGL=""):
         sLexName = LEX_PREFIX + version
         spLex = spBuild + '/' + sLexName
@@ -741,7 +741,7 @@ class Entree:
         self.nAKO = -1   # Average known occurrences
         self.fFreq = 0
         self.oldFq = ''
-        
+
         sLine = sLine.rstrip(" \n")
         # commentaire
         if '#' in sLine:
@@ -801,7 +801,7 @@ class Entree:
         if self.err:
             echo("\n## Erreur dans le dictionnaire : {}".format(self.err))
             echo("   dans : " + self.lemma)
-                
+
     def __str__ (self):
         return "{0.lemma}/{0.flags} {1}".format(self, self.getMorph(2))
 
@@ -867,8 +867,8 @@ class Entree:
     def keyTriNum (self):
         return (self.lemma, self.flags, self.po)
 
-    def getEntryLine (self, oDict, nMode, bSimplified=False):    
-        sLine = self.lemma
+    def getEntryLine (self, oDict, nMode, bSimplified=False):
+        sLine = self.lemma.replace("’", "'")
         if self.flags:
             sLine += '/'
             sLine += self.flags  if not oDict.bShortenTags or bSimplified  else oDict.dAF[self.flags]
@@ -930,7 +930,7 @@ class Entree:
             # recherche de la forme masculine
             for t in lTuples:
                 sMorph = self.clean(t[1])
-                if sMorph.endswith('mas') or sMorph.endswith('mas sg') or sMorph.endswith('mas inv'): 
+                if sMorph.endswith('mas') or sMorph.endswith('mas sg') or sMorph.endswith('mas inv'):
                     self.sRadical = t[0]
         else:
             self.sRadical = self.lemma
@@ -975,7 +975,7 @@ class Entree:
                                 flexion = (self.lemma.replace(oRule.cut, oRule.add, 1), ruleMorph+morph, oRule.di)
                                 if oFlag.bMix:
                                     lFlexPrefix.append(flexion)
-                                    for flex in lFlexSuffix: 
+                                    for flex in lFlexSuffix:
                                         lFlexions.append( (flex[0].replace(oRule.cut, oRule.add, 1), flex[1]+ruleMorph) )
                                 else:
                                     lFlexions.append(flexion)
@@ -1062,7 +1062,7 @@ class Entree:
 
     def calcAverageKnownOccurrence (self):
         # nous calculons la moyenne des occurrences des formes fléchies
-        # qui n’ont pas d’équivalent dans les autres entrées (nMulti = 0) 
+        # qui n’ont pas d’équivalent dans les autres entrées (nMulti = 0)
         nOccur = 0
         nFlex = 0
         for oFlex in self.lFlexions:
@@ -1071,7 +1071,7 @@ class Entree:
                 nFlex += 1
         # moyenne des formes fléchies sans équivalent ou -1
         self.nAKO = math.ceil(nOccur / nFlex)  if nFlex > 0  else -1
-    
+
     def solveOccurMultipleFlexions (self, hDst, oStatsLex):
         sBlank = "           "
         if self.nAKO >= 0:
@@ -1085,7 +1085,7 @@ class Entree:
                             lEntWithAKO.append(oEntry)
                         else:
                             lEntNoAKO.append(oEntry)
-                    
+
                     if lEntNoAKO:
                         # on calcule la différence totale occasionnée par du passage des flexions appartenant à des entrées avec AKO au niveau AKO
                         nDiff = (oFlex.nOccur - self.nAKO) * oFlex.nDup
@@ -1121,7 +1121,7 @@ class Entree:
                         nTotAKO = self.nAKO
                         for oEnt in oFlex.lMulti:
                             nTotAKO += oEnt.nAKO
-                        
+
                         hDst.write(" = {0.sFlexion}\n".format(oFlex))
                         hDst.write("       moyennes connues\n")
                         for oFlexD in self.lFlexions:
@@ -1135,7 +1135,7 @@ class Entree:
                                     nNewOccur = math.ceil((nFlexOccur * (oEntry.nAKO / nTotAKO)) / oFlexM.nDup)  if nTotAKO  else 0
                                     hDst.write(sBlank + "{2:<30} {0.sMorph:<30}  {0.nOccur:>10}  %> {1:>10}\n".format(oFlexM, nNewOccur, oEntry.getShortDescr()))
                                     oFlexM.setOccurAndBlock(nNewOccur)
-        
+
     def calcFreq (self, nTot):
         self.fFreq = (self.nOccur * 100) / nTot
         self.oldFq = self.fq
@@ -1158,7 +1158,7 @@ class Flexion:
         self.cFq     = ''
         self.metagfx = ''   # métagraphe
         self.metaph2 = ''   # métaphone 2
-    
+
     def setOccur (self, n):
         self.nOccur = n
 
@@ -1168,11 +1168,11 @@ class Flexion:
 
     def calcOccur (self):
         self.nOccur = math.ceil((self.nOccur / (self.nMulti+1)) / self.nDup)
-    
+
     def calcFreq (self, nTot):
         self.fFreq = (self.nOccur * 100) / nTot
         self.cFq = getIfq(self.fFreq)
-    
+
     def calcMetagraphe (self):
         t = metagraphe.getMetagraphe(self.sFlexion, self.sMorph)
         self.metagfx = t[0]  if not t[1]  else t[0]+"/"+t[1]
@@ -1262,7 +1262,7 @@ class Flexion:
 
     def keyOcc (self):
         return (self.nOccur, self.oEntry.sRadical, self.sFlexion)
-        
+
     def keyIdx (self):
         return self.oEntry.iD
 
@@ -1279,7 +1279,7 @@ class Flag:
         self.lRules = []
         self.nRules = 0
         self.nOccur = 0
-        
+
     def addAffixRule (self, line):
         "ajoute une règle au drapeau"
         oRule = AffixRule(line)
@@ -1335,7 +1335,7 @@ class AffixRule:
         self.err = ''
         # autres champs
         self.nOccur = 0
-        
+
         sLine = sLine.rstrip(" \n")
         # commentaire
         if '#' in sLine:
@@ -1393,7 +1393,7 @@ class AffixRule:
                     echo('Champ inconnu: {}  dans  {}'.format(fields[0], self.sFlagName))
             else:
                 echo("  # Erreur affixe : {}".format(line))
-    
+
     def isReplicationRule (self):
         "is this rule used for replication of a virtual lemma"
         return self.flags == "" and ((self.cut == "0" and self.add == "") or self.cut == self.add)
@@ -1413,7 +1413,7 @@ class AffixRule:
             if sMorph:
                 sLine += sMorph  if not oDict.bShortenTags or bSimplified  else ' ' + oDict.dAM[sMorph.strip()]
         return sLine + "\n"
-    
+
     def getMorph (self, nMode):
         # morphology for Hunspell
         txt = ''
@@ -1452,7 +1452,7 @@ class StatsLex:
         echo("Lexique statistique")
         self.dFlexions = { oFlex.sFlexion: []  for oFlex in oDict.lFlexions }
         self.lLex = []
-        
+
     def addLexFromFile (self, sPathFile, cLexID, sLexName):
         if not os.path.isfile(sPathFile):
             echo(' * Lexique statistique - fichier {} introuvable'.format(sPathFile))
@@ -1520,21 +1520,21 @@ def main ():
     echo("Simplify: " + str(xArgs.simplify))
     echo("Mode: " + str(xArgs.mode))
     echo("Compression: " + str(not(xArgs.uncompress)))
-    
+
     ### création du répertoire
     spBuild = BUILD_PATH + '/' + xArgs.verdic
     dir_util.mkpath(spBuild)
-    
+
     ### Lecture des fichiers et création du dictionnaire
     oFrenchDict = Dictionnaire(xArgs.verdic, "French dictionary")
     for sFile in ['orthographe/FRANCAIS.dic']:
         oFrenchDict.readDictionary(sFile)
     oFrenchDict.readAffixes('orthographe/FRANCAIS_5.aff')
-    
+
     ### Contrôle
     oFrenchDict.sortEntriesNatural()
     oFrenchDict.checkEntries()
-    
+
     ### Lexique
     oFrenchDict.generateFlexions()
     oFrenchDict.calcMetagraphe()
@@ -1553,7 +1553,7 @@ def main ():
     oStatsLex.addLexFromFile('lexique/corpus_data/stats_litterature.txt', 'L', 'Littérature')
     oStatsLex.write(spBuild+'/test_lex.txt')
     oFrenchDict.calculateStats(oStatsLex, spfStats)
-    
+
     ### écriture des paquets
     echo("Création des paquets...")
 
