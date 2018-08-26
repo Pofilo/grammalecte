@@ -736,7 +736,7 @@ class Entree:
         self.err = ''
         self.nFlexions = 0
         self.lFlexions = []
-        self.sRadical = ''
+        self.sStem = ''
         self.nOccur = 0
         self.nAKO = -1   # Average known occurrences
         self.fFreq = 0
@@ -926,14 +926,17 @@ class Entree:
                     #echo(sFlex + " " + sMorph + ", ")
                     pass
         # Drapeaux dont le lemme féminin doit être remplacé par le masculin dans la gestion des formes fléchies
-        if self.flags.startswith(("F.", "F*", "W.", "W*")):
-            # recherche de la forme masculine
-            for t in lTuples:
-                sMorph = self.clean(t[1])
-                if sMorph.endswith('mas') or sMorph.endswith('mas sg') or sMorph.endswith('mas inv'):
-                    self.sRadical = t[0]
+        if self.st:
+            self.sStem = self.st
         else:
-            self.sRadical = self.lemma
+            if self.flags.startswith(("F.", "F*", "W.", "W*")):
+                # recherche de la forme masculine
+                for t in lTuples:
+                    sMorph = self.clean(t[1])
+                    if sMorph.endswith(('mas', 'mas sg', 'mas inv')):
+                        self.sStem = t[0]
+            else:
+                self.sStem = self.lemma
         # Tag duplicates
         d = {}
         for oFlex in self.lFlexions:
@@ -1192,7 +1195,7 @@ class Flexion:
         sOccurs = ''
         for v in oStatsLex.dFlexions[self.sFlexion]:
             sOccurs += str(v) + "\t"
-        return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sRadical}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
+        return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sStem}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
 
     @classmethod
     def simpleHeader (cls):
@@ -1258,10 +1261,10 @@ class Flexion:
         return (self.sFlexion.translate(CHARMAP), self.sMorph)
 
     def keyFreq (self):
-        return (100-self.fFreq, self.oEntry.sRadical, self.sFlexion)
+        return (100-self.fFreq, self.oEntry.sStem, self.sFlexion)
 
     def keyOcc (self):
-        return (self.nOccur, self.oEntry.sRadical, self.sFlexion)
+        return (self.nOccur, self.oEntry.sStem, self.sFlexion)
 
     def keyIdx (self):
         return self.oEntry.iD
