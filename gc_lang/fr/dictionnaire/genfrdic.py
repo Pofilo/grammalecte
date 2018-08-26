@@ -1561,7 +1561,7 @@ def main ():
 
     spLexiconDestGL = "../../../lexicons"  if xArgs.grammalecte  else ""
     spLibreOfficeExtDestGL = "../oxt/Dictionnaires/dictionaries"  if xArgs.grammalecte  else ""
-    spMozillaExtDestGL = "../xpi/data/dictionaries"  if xArgs.grammalecte  else ""
+    spMozillaExtDestGL = ""  if xArgs.grammalecte  else "" # no more Hunspell dictionaries in Mozilla extensions for now
     spDataDestGL = "../data"  if xArgs.grammalecte  else ""
 
     if not xArgs.uncompress:
