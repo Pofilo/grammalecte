@@ -1004,58 +1004,6 @@ TEST: J’en ai '''marre''' (syntaxe wiki).
 
 !!
 !!
-!!!! Élisions                                                                                     !!
-!!
-!!
-
-__[i]/typo(typo_élision_déterminants)__
-    (l[ea] |de )([aâeéêiîoôu]\w+)  @@0,$
-    <<- not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not \2.isupper() and not morph(\2, ":G", False)
-    -1>> =\1[0]+"’"                                         # Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
-
-__[i]/typo(typo_élision_si)__    (si )ils?  @@0 <<- -1>> s’                      # Il faut élider « si » et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
-__[i]/typo(typo_élision_que)__   (que )(?:ils?|elles?|on)  @@0 <<- -1>> qu’      # Il faut élider « que » et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
-
-TEST: {{le }}amour                                                        ->> l’
-TEST: {{la }}imagination                                                  ->> l’
-TEST: {{de }}amour                                                        ->> d’
-TEST: {{de }}est                                                          ->> d’
-TEST: je crois que {{si }}ils viennent, ils seront mécontents
-TEST: {{Que }}ils soient heureux
-TEST: J’ai passé une journée de ouf.
-
-
-# presque : élision
-__[i>/typo(typo_presque)__
-    presqu[’'](?![îi]le)
-    <<- ->> "presque "                                                          # Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
-
-TEST: {{Presqu’}}exclusivement bâtie en pierre.
-TEST: C’est une presqu’île.
-TEST: Cette presqu’ile est particulièrement venteuse.
-
-
-# quelque : élision
-__[i>/typo(typo_quelque)__
-    quelqu[’'](?!une?)
-    <<- ->> "quelque "                                                          # Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
-
-TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
-TEST: quelqu’un vient.
-TEST: elle s’en est allée avec quelqu’une…
-
-
-# ce -> cet
-__[i]/typo(typo_euphonie_cet)__
-    (ce) ([aâeéêiîoôu]\w+)  @@0,$
-    <<- not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[me]")
-    -1>> cet                                                # Euphonie : « ce » devient « cet » devant un mot commençant par une voyelle.
-
-TEST: {{ce}} animal est dangereux
-
-
-!!
-!!
 !!!! Divers                                                                                       !!
 !!
 !!
@@ -1576,6 +1524,32 @@ TEST: arrive-t-elle ce matin ?
 TEST: y aura-t-il du poulet au dîner ?
 
 
+!!
+!!
+!!!! Élisions                                                                                     !!
+!!
+!!
+
+# presque : élision
+__[i>/typo(typo_presque)__
+    (presqu[’'])(?![îi]le)
+        <<- -1>> "presque "                                             # Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+
+TEST: {{Presqu’}}exclusivement bâtie en pierre.
+TEST: C’est une presqu’île.
+TEST: Cette presqu’ile est particulièrement venteuse.
+
+
+# quelque : élision
+__[i>/typo(typo_quelque)__
+    (quelqu[’'])(?!une?)
+        <<- -1>> "quelque "                                             # Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+
+TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
+TEST: quelqu’un vient.
+TEST: elle s’en est allée avec quelqu’une…
+
+
 
 @@@@
 @@@@
@@ -1646,17 +1620,17 @@ __da_nous_vous__
 
 
 __da_préverbes_verbes__
-    ne  ?[le|la|l’|les|nous|vous|lui|leur]¿  (@:¬:[OX])
-    ne  [nous|vous]     [le|la|l’|les|en]    (@:¬:[OX])
-    ne  [le|la|l’|les]  [lui|leur|en]        (@:¬:[OX])
-    ne  [lui|leur]      en                   (@:¬:[OX])
-        <<- =>> select(\1, ":V")
+    ne  ?[le|la|l’|les|nous|vous|lui|leur]¿  @:¬:[OX]
+    ne  [nous|vous]     [le|la|l’|les|en]    @:¬:[OX]
+    ne  [le|la|l’|les]  [lui|leur|en]        @:¬:[OX]
+    ne  [lui|leur]      en                   @:¬:[OX]
+        <<- =>> select(\-1, ":V")
 
-    [me|m’|te|se|s’]  ?[le|la|l’|les]¿  (@:¬:[OX])
-        <<- =>> select(\1, ":V")
+    [me|m’|te|se|s’]  ?[le|la|l’|les]¿  @:¬:[OX]
+        <<- =>> select(\-1, ":V")
 
-    [n’|m’|s’]  ?[en|y]¿  (@:¬:[OX])
-        <<- =>> select(\1, ":V")
+    [n’|m’|s’]  ?[en|y]¿  @:¬:[OX]
+        <<- =>> select(\-1, ":V")
 
     t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
         <<- =>> select(\3, ":(?:[123][sp]|P|Y)")
@@ -1667,17 +1641,17 @@ __da_préverbes_verbes__
     y  @:¬:[OX]
         <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
-    [je|j’|il|ils|on]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  (@:¬:[OX])
-    [je|j’|il|ils|on]  [nous|vous]     [le|la|l’|les|en|y]       (@:¬:[OX])
-    [je|j’|il|ils|on]  [le|la|l’|les]  [lui|leur|en|y]           (@:¬:[OX])
-    [je|j’|il|ils|on]  [lui|leur]      en                        (@:¬:[OX])
-        <<- =>> select(\1, ":[123][sp]")
+    [je|j’|il|ils|on]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  @:¬:[OX]
+    [je|j’|il|ils|on]  [nous|vous]     [le|la|l’|les|en|y]       @:¬:[OX]
+    [je|j’|il|ils|on]  [le|la|l’|les]  [lui|leur|en|y]           @:¬:[OX]
+    [je|j’|il|ils|on]  [lui|leur]      en                        @:¬:[OX]
+        <<- =>> select(\-1, ":[123][sp]")
 
-    tu  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  (@:¬:[OX])
-    tu  [nous|vous]   [le|la|l’|les|en|y]         (@:¬:[OX])
-    tu  [le|la|l’|les]  [lui|leur|en|y]           (@:¬:[OX])
-    tu  [lui|leur]      en                        (@:¬:[OX])
-        <<- not morph(<1, ":V0") =>> select(\1, ":[123][sp]")
+    tu  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  @:¬:[OX]
+    tu  [nous|vous]   [le|la|l’|les|en|y]         @:¬:[OX]
+    tu  [le|la|l’|les]  [lui|leur|en|y]           @:¬:[OX]
+    tu  [lui|leur]      en                        @:¬:[OX]
+        <<- not morph(<1, ":V0") =>> select(\-1, ":[123][sp]")
 
     lui  [la|le|l’|les]  @:(?:[123][sp]|P|Y)
         <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
@@ -1696,8 +1670,8 @@ __da_préverbes_verbes__
     <start> @:M  @:(?:[123]s|Oo)|>ne/¬:A
         <<- =>> =select(\2, ":M")
 
-    [que|qu’|combien|pourquoi]  ?[en|y]¿  (*WORD)
-        <<- =>> exclude(\1, ":E")
+    [que|qu’|combien|pourquoi]  ?[en|y]¿  *WORD
+        <<- =>> exclude(\-1, ":E")
 
 __da_été__
     >avoir été
@@ -2701,9 +2675,47 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 #TEST: Il y a un {{doublon doublon}}.
 
 
+!!
+!!
+!!!! Élisions                                                                                     !!
+!!
+!!
+
+__typo_élisions_manquantes__
+    [le|la|de]  ~^[aâeéêiîoôu].
+        <<- space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
+        -1:.2>> =\1[0:1]+"’"                                                # Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
+
+    si [il|ils]
+        <<- /typo/ space_after(\1, 1, 1) -1:.2>> s’                         # Il faut élider “si” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
+
+    que [il|ils|elle|elles|on]
+        <<- /typo/ space_after(\1, 1, 1) -1:.2>> qu’                        # Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
+
+TEST: {{le }}amour                                                        ->> l’
+TEST: {{la }}imagination                                                  ->> l’
+TEST: {{de }}amour                                                        ->> d’
+TEST: {{de }}est                                                          ->> d’
+TEST: je crois que {{si }}ils viennent, ils seront mécontents
+TEST: {{Que }}ils soient heureux
+TEST: J’ai passé une journée de ouf.
 
 
+# ce -> cet
+__typo_euphonie_cet__
+    ce  ~^[aâeéêiîoôu]
+        <<- /typo/ not re.search("(?i)^(?:onz|énième|ouf|énième|ouistiti|one-?step|I(?:I|V|X|er|ᵉʳ))", \2) and morph(\2, ":[NA].*:[me]")
+        -1>> cet                                                                # Euphonie : “ce” devient “cet” devant un mot commençant par une voyelle.
+
+TEST: {{ce}} animal est dangereux
+
+
+
+!!
+!!
 !!!! Nombres ordinaux                                                                             !!
+!!
+!!
 
 __typo_ordinaux_chiffres_exposants__
     1er
@@ -4362,7 +4374,7 @@ __conj_c_en!6__
 
 TEST: tu vois, c’en {{étais}} trop pour elles.
 TEST: cet homme, perdu dans ses pensées, allait {{c’en}} faire du souci.
-TEST: il {{s’}}accoutumait à sa nouvelle fonction.
+TEST: il {{c’}}accoutumait à sa nouvelle fonction.
 TEST: elle {{c’}}anime dès qu’on fait du bruit.
 TEST: C’en était malsain.
 TEST: C’en devenait trop.
