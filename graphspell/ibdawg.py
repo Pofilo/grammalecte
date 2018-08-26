@@ -249,8 +249,8 @@ class IBDAWG:
         "checks if <sWord> is valid (different casing tested if the first letter is a capital)"
         if not sWord:
             return None
-        if "’" in sWord: # ugly hack
-            sWord = sWord.replace("’", "'")
+        if "'" in sWord: # ugly hack
+            sWord = sWord.replace("'", "’")
         if self.lookup(sWord):
             return True
         if sWord[0:1].isupper():

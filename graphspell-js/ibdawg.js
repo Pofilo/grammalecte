@@ -226,7 +226,7 @@ class IBDAWG {
             if (sToken.gl_count("-") > 4) {
                 return true;
             }
-            return sToken.split("-").every(sWord  =>  this.isValid(sWord)); 
+            return sToken.split("-").every(sWord  =>  this.isValid(sWord));
         }
         if (sToken.includes(".") || sToken.includes("·")) {
             return true;
@@ -239,8 +239,8 @@ class IBDAWG {
         if (!sWord) {
             return null;
         }
-        if (sWord.includes("’")) { // ugly hack
-            sWord = sWord.replace("’", "'");
+        if (sWord.includes("'")) { // ugly hack
+            sWord = sWord.replace("'", "’");
         }
         if (this.lookup(sWord)) {
             return true;
@@ -484,7 +484,7 @@ class IBDAWG {
                 }
             }
         }
-    }            
+    }
 
     _morph1 (sWord) {
         // returns morphologies of sWord
@@ -506,7 +506,7 @@ class IBDAWG {
                 nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
                 let nArc = nRawArc & this._arcMask;
                 if (nArc > this.nChar) {
-                    // This value is not a char, this is a stemming code 
+                    // This value is not a char, this is a stemming code
                     let sStem = ">" + this.funcStemming(sWord, this.lArcVal[nArc]);
                     // Now , we go to the next node and retrieve all following arcs values, all of them are tags
                     let iAddr2 = this._convBytesToInteger(this.byDic.slice(iEndArcAddr, iEndArcAddr+this.nBytesNodeAddress));
@@ -545,7 +545,7 @@ class IBDAWG {
                 nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
                 let nArc = nRawArc & this._arcMask;
                 if (nArc > this.nChar) {
-                    // This value is not a char, this is a stemming code 
+                    // This value is not a char, this is a stemming code
                     l.push(this.funcStemming(sWord, this.lArcVal[nArc]));
                 }
                 iAddr = iEndArcAddr + this.nBytesNodeAddress;
@@ -561,7 +561,7 @@ class IBDAWG {
             let iEndArcAddr = iAddr+this.nBytesArc;
             let nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
             if (nVal == (nRawArc & this._arcMask)) {
-                // the value we are looking for 
+                // the value we are looking for
                 // we return the address of the next node
                 return this._convBytesToInteger(this.byDic.slice(iEndArcAddr, iEndArcAddr+this.nBytesNodeAddress));
             }
