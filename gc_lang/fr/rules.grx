@@ -1311,6 +1311,42 @@ TEST: __ocr__ elle s’{{avance*}} sur le seuil
 TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
 
 
+## Mélange chiffres/lettres
+__[i]/ocr(ocr_le_la_les_regex)__
+    1[easrnxiocuwàéè]
+        <<- \0.endswith("e") ->> le                                                                 # Erreur de numérisation ?
+        <<- __else__ and \0.endswith("a") ->> la                                                    # Erreur de numérisation ?
+        <<- __else__ and \0.endswith("à") ->> la|là                                                 # Erreur de numérisation ?
+        <<- __else__ ->> le|la                                                                      # Erreur de numérisation ?
+
+TEST: __ocr__ avec {{1e}} chien du policier
+TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
+TEST: __ocr__ {{1c}} chat du voinsin est idiot
+
+
+__[i]/ocr(ocr_les)__
+    1[ea]s
+        <<- ->> les                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ {{1es}} jours clairs
+
+
+__[i]/ocr(ocr_l_regex)__
+    (1’)[aâeéèêëiîïoôuyh][\w-]*  @@0
+        <<- -1>> l’|L’|j’|J’                                                                        # Erreur de numérisation ?
+
+TEST: __ocr__ {{1’}}année s’annonce agitée.
+
+
+__[i]/ocr(ocr_il_regex)__
+    [i1][1f]s?
+        <<- \0.endswith("s") ->> Ils|ils                                                            # Erreur de numérisation ?
+        <<- __else__ ->> Il|il                                                                      # Erreur de numérisation ?
+
+TEST: __ocr__ {{1fs}} s’en sortent comme ils peuvent.
+TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
+
+
 
 !!!
 !!!
@@ -2243,6 +2279,7 @@ __ocr_fut__
 
 TEST: __ocr__ ce petit {{rut}} traité comme un chien
 
+
 # il / n / ils / U / Us / i1 / if / 11
 __ocr_il__
     [<start>|,]  [n|h|d]  ~[bcdfghjklmnpqrstvwxz]
@@ -2254,15 +2291,8 @@ __ocr_il__
     Us
         <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
 
-    [i1|if|11|1f]
-        <<- ->> Il|il                                                                               # Erreur de numérisation ?
-
-    [i1s|ifs|11s|1fs]
-        <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
-
 TEST: __ocr__ {{n}} contient trop de soufre.
 TEST: __ocr__ {{Us}} arrive demain.
-TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
 
 
 # fa / la
@@ -2289,7 +2319,7 @@ __ocr_lj1__
     Y  ~^[aâeéèêëiîïoôuyh]
         <<- before(r"\w") and not morph(\2, ":Y") ->> l’\2|L’\2|j’\2|J’\2                           # Erreur de numérisation ?
 
-    ~^[Ii1]’[aâeéèêëiîïoôuyh]
+    ~^[Ii]’[aâeéèêëiîïoôuyh]
         <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
 
     [I|i|1]  ~^[aâeéèêëiîïoôuy]
@@ -2331,15 +2361,6 @@ __ocr_le_la_les__
     >lé
         <<- ->> =\1.replace("é", "e").replace("É", "E")                                             # Erreur de numérisation ?
 
-    ~^1[easrnxiocuwàéè]$
-        <<- \1.endswith("e") ->> le                                                                 # Erreur de numérisation ?
-        <<- __else__ and \1.endswith("a") ->> la                                                    # Erreur de numérisation ?
-        <<- __else__ and \1.endswith("à") ->> la|là                                                 # Erreur de numérisation ?
-        <<- __else__ ->> le|la                                                                      # Erreur de numérisation ?
-
-    [1es|1as]
-        <<- ->> les                                                                                 # Erreur de numérisation ?
-
     [lai|lei]
         <<- ->> lui|les                                                                             # Erreur de numérisation ?
 
@@ -2347,11 +2368,7 @@ __ocr_le_la_les__
         <<- not morph(<1, ":(?:V0|N.*:m:[si])") ->> tu|le|la                                        # Erreur de numérisation ?
 
 TEST: __ocr__ il s’agit de {{lés}} observer.
-TEST: __ocr__ avec {{1e}} chien du policier
-TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
-TEST: __ocr__ {{1c}} chat du voinsin est idiot
 TEST: __ocr__ {{lai}} gros sont mal vus.
-TEST: __ocr__ {{1es}} jours clairs
 TEST: __ocr__ {{lu}} as si bien réussi
 
 
@@ -2748,14 +2765,14 @@ __typo_ordinaux_chiffres_exposants__
         <<- /typo/ sContext != "Writer" ->> 2ᵈᵉˢ    # Nombre ordinal. Second : 2ᵈ. Seconde : 2ᵈᵉ. Seconds : 2ᵈˢ. Secondes : 2ᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     ~^\d+e$
-        <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ \1 != "1e" and sContext != "Writer" ->> =\1[:-1]+"ᵉ"         # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     ~^\d+es$
-        <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ \1 != "1es" and sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"       # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: le {{1er}} qui m’emmerde, je le fusille       ->> 1ᵉʳ
 TEST: c’est le {{2e}}                               ->> 2ᵉ
-
+TEST: les {{2es}} vont en cours.                    ->> 2ᵉˢ
 
 __typo_ordinaux_chiffres_incorrects__
     1 [ier|er]
