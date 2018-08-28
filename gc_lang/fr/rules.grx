@@ -1241,6 +1241,16 @@ TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
 TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
 
 
+# Nombres
+__[i]/ocr(ocr_nombres)__
+    [\dOI][\dOI]+
+        <<- \0 == "II" ->> 11|Il                                                                    # Erreur de numérisation ?
+        <<- __else__ and not \0.isdigit() ->> =\0.replace("O", "0").replace("I", "1")               # Erreur de numérisation ?
+
+TEST: __ocr__ {{II}} pleut tout le temps.
+TEST: __ocr__ En l’an {{2OO1}}, tout commença.
+
+
 ## Casse
 __[s]/ocr(ocr_casse1)__
     [A-ZÉÈÂÊÎÔ]{w_1}
@@ -1309,8 +1319,8 @@ TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
 !!!
 
 # Trait d’union conditionnel (u00AD)
-__<i>(p_trait_union_conditionnel1)__    \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑", "")
-__<i>(p_trait_union_conditionnel2)__    \w+‑\w+ <<- ~>> =\0.replace("‑", "")
+__[i](p_trait_union_conditionnel1)__    \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑", "")+"  "
+__[i](p_trait_union_conditionnel2)__    \w+‑\w+ <<- ~>> =\0.replace("‑", "")+" "
 
 # empêcher la scission en fin de dialogue
 __<s>(p_fin_dialogue1)__    ([?!…][?!…  ]*)[ "'”» ]*,  @@0 <<- ~1>> *
@@ -1984,15 +1994,6 @@ __jusqu_à__
 @@@@
 
 # This graph is parsed only if option <ocr> is activated.
-
-# Nombres
-__ocr_nombres__
-    ~[\dOI][\dOI]$
-        <<- \1 == "II" ->> 11|Il                                                                    # Erreur de numérisation ?
-        <<- __else__ and not \1.isdigit() ->> =\1.replace("O", "0").replace("I", "1")               # Erreur de numérisation ?
-
-TEST: __ocr__ {{II}} pleut tout le temps.
-TEST: __ocr__ En l’an {{2OO1}}, tout commença.
 
 
 # âge / age
@@ -8774,7 +8775,7 @@ __purge_locutions__
     quant à présent
     par [à-coups|ailleurs|avance|chance|conséquent|curiosité|contre|défaut|définition|endroits|essence|excellence|exemple|hasard|ici|inadvertance|là|moments|nature|principe|terre]
     par acquit de conscience
-    par beau temps
+    par [beau|mauvais] temps
     par bien des [aspects|côtés]
     par bonté de cœur
     par ce biais
