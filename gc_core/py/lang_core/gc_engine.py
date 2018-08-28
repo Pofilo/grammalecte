@@ -585,7 +585,7 @@ class TextParser:
         s += "sentence: " + self.sSentence0 + "\n"
         s += "now:      " + self.sSentence  + "\n"
         for dToken in self.lToken:
-            s += f'#{dToken["i"]}\t{dToken["nStart"]}:{dToken["nEnd"]}\t{dToken["sValue"]}\t{dToken["sType"]}'
+            s += '#{i}\t{nStart}:{nEnd}\t{sValue}\t{sType}'.format(**dToken)
             if "lMorph" in dToken:
                 s += "\t" + str(dToken["lMorph"])
             if "tags" in dToken:
