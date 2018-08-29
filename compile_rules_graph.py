@@ -308,7 +308,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
     elif cAction == "=":
         ## disambiguator
-        if "define(" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
+        if "define(" in sAction and not re.search(r"define\(\\-?\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
         sAction = createFunction("da", sActionId, sAction)
         return [sOption, sCondition, cAction, sAction]
