@@ -1368,6 +1368,8 @@ TEST: “Parce que… ?” finit par demander Paul.
 TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 
 
+
+
 !!
 !!
 !!
@@ -1462,9 +1464,6 @@ __[i](d_typo_écriture_épicène_singulier)__
 # fin de phrase
 __<s>(p_fin_de_phrase)__        [.?!:;…][ .?!… »”")]*$  <<- ~>> *
 
-# début de phrase
-__<s>(p_début_de_phrase)__      ^ *[-–—] <<- ~>> *
-
 # Guillemets et exposants
 __<s>(p_guillemets_exposants)__ [«»“”"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
 
@@ -1486,11 +1485,6 @@ __[i](p_pas_assez)__            pas assez ({w_2}) @@$ <<- morph(\1, ":A", False)
 __[i](p_de_chez_à_chez_pronom)__    de chez \w+ (?:à|jusqu à) chez (?:moi|toi|lui|elles?|eux|nous|vous) <<- ~>> *
 __[i](p_de_chez)__                  (jusqu à|de) chez @@0 <<- ~1>> *
 
-# faux positifs
-__[i](p_en_tout_et_pour_tout)__ en tout et pour tout <<- ~>> *
-__[i](p_au_sortir_de)__         au (sortir) de?s?  @@3 <<- ~1>> *
-__[i](p_au_revoir)__            au revoir <<- ~>> au_revoir
-
 # singletons entre parenthèses / crochets / accolades
 __<s>(p_singleton_parenthèses)__    [(]\w+[)] <js>\([a-zA-Z]+\)</js> <<- ~>> *
 __<s>(p_singleton_accolades)__      [{]\w+[}] <js>\{[a-zA-Z]+\}</js> <<- ~>> *
@@ -1499,14 +1493,9 @@ __<s>(p_singleton_crochets)__       [\[]\w+[\]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
 # Avocats
 __[s](p_Me_nom_propre)__        (Me) [A-ZÉÂÔÈ][\w-]+ @@0 <<- ~1>> *
 
-# Évènements
-__[s](p_Mai_68)__               Mai 68 <<- ~>> Mai-68
-
 # Rois, reines, papes et vaniteux du même acabit
 __[s](p_titres_et_ordinaux)__   [A-ZÉÂÔÈ]\w+ ([XVI]+|I(?:er|ᵉʳ)) @@$ <<- \1 != "I" ~1>> *
 
-# Marques
-__[i](p_Peugeot)__              Peugeot (\d0\d\d?) @@$ <<- ~1>> *
 
 # alors que / dès lors que (éviter d’accorder un participe passé avec un pseudo-COD antérieur)
 __[i](p_alors_dès_lors_que)__   (alors|dès lors) que  @@0 <<- ~1>> _
@@ -1840,6 +1829,12 @@ __tag_ni__
         <<- />> ni
 
 
+__tag_tiret1__
+    <start>  [-|–|—]
+        <<- />> tiret1
+        <<- ~>> *
+
+
 !!
 !!
 !!!! Verbes composés                                                                              !!
@@ -1933,13 +1928,13 @@ TEST: Dans votre chez-vous, faites comme bon vous semble.
 
 
 __inte_rendez_vous__
-    ne [le|la|les] [lui|leur]   (rendez-vous)
-    ne me [le|la|les]           (rendez-vous)
-    ne [lui|leur] en            (rendez-vous)
-    ne [le|la|les|lui|leur]     (rendez-vous)
-    [me|ne|nous|vous|lui]       (rendez-vous)
-        <<- =>> define(\1, [":VCi1:2p"])
-        <<- %1>>
+    ne [le|la|les] [lui|leur]   rendez-vous
+    ne me [le|la|les]           rendez-vous
+    ne [lui|leur] en            rendez-vous
+    ne [le|la|les|lui|leur]     rendez-vous
+    [me|ne|nous|vous|lui]       rendez-vous
+        <<- =>> define(\-1, [":VCi1:2p"])
+        <<- %-1>>
 
 
 __inte_verbes_composés_impératifs__
@@ -2009,11 +2004,30 @@ __tag_noms__
 
 !!!! Fusions et immunités                                                                         !!
 
-__n_importe_qui_quoi__
+__fusions__
+    au revoir
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:m:i"])
+
     n’ importe [qui|quoi]
         <<- ~1:2>> ␣
 
-__jusqu_à__
+    Peugeot  ~^\d0\d\d?$
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:e:i"])
+
+    Mai 68
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:m:i"])
+
+
+__immunités__
+    au sortir [de|des|du|d’]
+        <<- ~2>> *
+
+    en tout et pour tout
+        <<- %-1>>
+
     jusqu’ à
         <<- %2>>
 
@@ -10052,7 +10066,6 @@ __purge_locutions_verbales__
     >mettre au [point|pas]
     >mettre en [avant|bouche|demeure|garde|jeu|lumière|œuvre|place|scène|terre]
     >mourir jeune
-    [>paraître|>paraitre] jeune
     >perdre [connaissance|conscience|raison]
     >perdre d’ avance
     >porter [atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
