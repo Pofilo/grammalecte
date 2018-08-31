@@ -1121,7 +1121,7 @@ def g_tag_after (dToken, dTags, sTag):
 
 
 def g_tag (dToken, sTag):
-    return "tags" in dToken and sTag in dTags["tags"]
+    return "tags" in dToken and sTag in dToken["tags"]
 
 
 def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):

@@ -15591,6 +15591,12 @@ __tag_verbe_infinitif_sujet__
         <<- /2>> suj_vinfi
 
 
+__se_douter__
+    [me|te|se]  >douter  [que|qu’]
+    nous nous  >douter  [que|qu’]
+    vous vous  >douter  [que|qu’]
+        <<- /-1>> no_subj
+
 
 @@@@
 @@@@
@@ -16510,7 +16516,8 @@ __vmode_qqch_que_subjonctif1__
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
-        <<- /vmode/ morph(\1, ":V", ":N") -4>> =suggVerbMode(\4, ":S", \3)                          # Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ not tag(\2, "no_subj") and morph(\1, ":V", ":N")
+        -4>> =suggVerbMode(\4, ":S", \3)                                                            # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     il est possible  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Après “\1 \2 \3”, ce verbe devrait être au subjonctif.
