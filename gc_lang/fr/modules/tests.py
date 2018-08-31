@@ -132,6 +132,7 @@ class TestGrammarChecking (unittest.TestCase):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
         spHere, spfThisFile = os.path.split(__file__)
         with open(os.path.join(spHere, "gc_test.txt"), "r", encoding="utf-8") as hSrc:
+            nError = 0
             for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
                 sLineNum = sLine[:10].strip()
                 sLine = sLine[10:].strip()
@@ -157,6 +158,7 @@ class TestGrammarChecking (unittest.TestCase):
                           "\n  expected: " + sExpectedErrors + \
                           "\n  found:    " + sFoundErrors + \
                           "\n  errors:   \n" + sListErr)
+                    nError += 1
                 elif sExceptedSuggs:
                     if sExceptedSuggs != sFoundSuggs:
                         print("\n# Line num: " + sLineNum + \
@@ -164,6 +166,9 @@ class TestGrammarChecking (unittest.TestCase):
                               "\n  expected: " + sExceptedSuggs + \
                               "\n  found:    " + sFoundSuggs + \
                               "\n  errors:   \n" + sListErr)
+                        nError += 1
+            if nError:
+                print("Unexpected errors:", nError)
         # untested rules
         i = 0
         for sOpt, sLineId, sRuleId in gce.listRules():
