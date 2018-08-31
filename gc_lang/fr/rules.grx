@@ -452,10 +452,10 @@ __[s>(p_Mr_Mgr_Mme_point)__
 # Patronyme réduit à une seule lettre
 __[s](p_prénom_lettre_point_patronyme)__
     ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.][  ]([A-ZÉÈÂ][\w-]+)) @@0,$,$
-    <<- morph(\1, ":M[12]", False) and (morph(\3, ":(?:M[12]|V)", False) or not spell(\3)) ~2>> *
+    <<- morph(\1, ":M[12]") and (morph(\3, ":(?:M[12]|V)") or not spell(\3)) ~2>> *
 __[s>(p_prénom_lettre_point)__
     ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.]) @@0,$
-    <<- morph(\1, ":M[12]", False) and after("^\W+[a-zéèêîïâ]") ~2>> *
+    <<- morph(\1, ":M[12]") and after("^\W+[a-zéèêîïâ]") ~2>> *
 
 # Patronymes composés avec Le/La/Les
 __[s](p_patronyme_composé_avec_le_la_les)__
@@ -486,7 +486,7 @@ __[s](p_points_suspension_entre_crochets)__
 __[s](p_mot_entre_crochets)__
     \[({w_1})\] @@1
     <<- \1.isdigit() ~>> *
-    <<- __else__ and morph(\1, ":G", False) ~>> =" " + \1 + " "
+    <<- __else__ and morph(\1, ":G") ~>> =" " + \1 + " "
     <<- __else__ and \1.isalpha() ~>> " _"
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
@@ -665,7 +665,7 @@ TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
 __[s]/maj(majuscule_après_point)__
     ({w_2})[.] ([a-zéàèîçô]\w*)  @@0,$
     <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
-        and morph(\1, ":", False) and morph(\2, ":", False)
+        and morph(\1, ":") and morph(\2, ":")
     -2>> =\2.capitalize()                                                                           # Après un point, une majuscule est généralement requise.
 
 TEST: Je suis là. {{viens}}.                                              ->> Viens
@@ -688,15 +688,15 @@ TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 __[i>/virg(virgule_manquante_avant_etc)__   {w_1}( etc[.])  @@$ <<- -1>> , etc.                     # Avant « etc. », il faut mettre une virgule.
 __[i>/virg(virgule_manquante_avant_car)__
     ({w_1})( car)(?= (?:j[e’]|tu|ils?|nous|vous|elles?|on|les?|l[a’]|ces?|des?|cette|[mts](?:on|a|es))\b)  @@0,$
-    <<- not morph(\1, ":[DR]", False) -2>> , car
+    <<- not morph(\1, ":[DR]") -2>> , car
     # Si « car » est la conjonction de coordination, une virgule est peut-être souhaitable.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3447
 __[i>/virg(virgule_manquante_avant_mais)__
     ({w_1})( mais)(?= (?:j[e’]|tu|ils?|nous|vous|elles?|on)\b)  @@0,$
-    <<- not morph(\1, ">(?:[mtscl]es|[nv]os|quels)/", False) -2>> , mais
+    <<- not morph(\1, ">(?:[mtscl]es|[nv]os|quels)/") -2>> , mais
     # Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
 __[i>/virg(virgule_manquante_avant_donc)__
     ({w_1})( donc)(?= (?:j[e’]|tu|ils?|elles?|on)\b)  @@0,$
-    <<- not morph(\1, ":V", False) -2>> , donc
+    <<- not morph(\1, ":V") -2>> , donc
     # Si « donc » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
 
 TEST: Un chien, un chat{{ etc.}}                                            ->> , etc.
@@ -942,7 +942,7 @@ __[i>/typo(typo_apostrophe_manquante_prudence1)!8__
     ne ([mtsl] )([aeéiouhyîèêôû][\w-]*)  @@3,$  <<- -1>> =\1[:-1]+"’"                               # Il manque une apostrophe.
 __[i>/typo(typo_apostrophe_manquante_prudence2)!8__
     (?:je|tu|ils?|nous|vous|on|ça|elles?) ([nmtsl] )([aeéiouhyîèêôû][\w-]*)  @@*,$
-    <<- not option("mapos") and morph(\2, ":V", False) -1>> =\1[:-1]+"’"                            # Il manque probablement une apostrophe.
+    <<- not option("mapos") and morph(\2, ":V") -1>> =\1[:-1]+"’"                                   # Il manque probablement une apostrophe.
 # Solution audacieuse :
 __[s>/typo(typo_apostrophe_manquante_audace1)!8__
     ([ldsncjmtç] )[aeéiouhAEÉIOUHyîèêôûYÎÈÊÔÛ]  @@0
@@ -1095,12 +1095,12 @@ __[s]/unit(unit_nbsp_avant_unités1)__
     # Avec une unité de mesure, mettez un espace insécable.
 __[s]/unit(unit_nbsp_avant_unités2)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
-    <<- morphex(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3)
+    <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3)
     -1>> "\2 "
     # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 __[s]/unit(unit_nbsp_avant_unités3)__
     ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
-    <<- (\2.__len__() > 4 and not spell(\3)) or morphex(\3, ";S", ":[VCR]") or mbUnit(\3)
+    <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3)
     -1>> "\2 "
     # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
@@ -1138,7 +1138,7 @@ __[s]/num(num_grand_nombre_soudé)__
 
 __[s]/num(num_nombre_quatre_chiffres)__
     (?<!,)(\d\d\d\d)[  ]([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*) @@0,$
-    <<- morphex(\2, ";S", ":[VCR]") or mbUnit(\2) -1>> =formatNumber(\1)                            # Formatage des grands nombres
+    <<- morph(\2, ";S", ":[VCR]") or mbUnit(\2) -1>> =formatNumber(\1)                              # Formatage des grands nombres
 
 TEST: {{12345}}                                 ->> 12 345
 TEST: {{123456}}                                ->> 123 456
@@ -1194,7 +1194,7 @@ TEST: 12-12-2012
 !!
 __[i]/redon1(redondances_paragraphe)__
     ({w_4})[  ,.;!?:].*[  ](\1)  @@0,$
-    <<- not morph(\1, ":(?:G|V0)|>(?:t(?:antôt|emps|rès)|loin|souvent|parfois|quelquefois|côte|petit|même)/", False) and not \1[0].isupper()
+    <<- not morph(\1, ":(?:G|V0)|>(?:t(?:antôt|emps|rès)|loin|souvent|parfois|quelquefois|côte|petit|même)/") and not \1[0].isupper()
     -2>> _                                                      # Dans ce paragraphe, répétition de « \1 » (à gauche).
     <<- __also__ -1>> _                                         # Dans ce paragraphe, répétition de « \1 » (à droite).
 
@@ -1224,7 +1224,7 @@ __<s]/ocr(ocr_exclamation1)__
     <<- ->> " !"                                                                                    # Erreur de numérisation ?
 __<s]/ocr(ocr_exclamation2)__
     [  ]1(?= [A-ZÉÈÂÎ])
-    <<- not morph(word(1), ";S", False) and not morph(word(-1), ":R", False) ->> " !"               # Erreur de numérisation ?
+    <<- not morph(word(1), ";S") and not morph(word(-1), ":R") ->> " !"                             # Erreur de numérisation ?
 
 TEST: __ocr__ Oh{{ I}} c’est pas formidable ?
 TEST: __ocr__ Vraiment{{ 1}} Paul n’en savait rien.
@@ -1255,8 +1255,8 @@ TEST: __ocr__ En l’an {{2OO1}}, tout commença.
 __[s]/ocr(ocr_casse1)__
     [A-ZÉÈÂÊÎÔ]{w_1}
     <<- \0.istitle() and before(r"(?i)\w") >>>
-    <<- morphex(\0, ":G", ":M") ->> =\0.lower()                                                     # Erreur de numérisation ? Casse improbable.
-    <<- __else__ and morphex(\0, ":[123][sp]", ":[MNA]|>Est/") ->> =\0.lower()                      # Erreur de numérisation ? Casse improbable.
+    <<- morph(\0, ":G", ":M") ->> =\0.lower()                                                       # Erreur de numérisation ? Casse improbable.
+    <<- __else__ and morph(\0, ":[123][sp]", ":[MNA]|>Est/") ->> =\0.lower()                        # Erreur de numérisation ? Casse improbable.
 
 TEST: __ocr__ votre ami la regarde, {{Vous}} ne l’avez pas achetée
 TEST: __ocr__ pour accommoder son regard, {{La}} lourde forme demeure
@@ -1428,7 +1428,7 @@ TEST: Il y a un {{doublon doublon}}.
 ### Traits d’union douteux
 __[i]/tu(tu_trait_union_douteux)__
     ({w1})(?:--|—|–)({w1})  @@0,$
-    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":", False) ->> \1-\2                               # Trait d’union : un tiret simple suffit.
+    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":") ->> \1-\2                                      # Trait d’union : un tiret simple suffit.
 
 TEST: Nous préparons une {{contre–attaque}}.
 
@@ -1448,11 +1448,11 @@ TEST: {{3O}} (chiffre avec un O).                                         ->> 30
 
 __[i](d_typo_écriture_épicène_pluriel)__
     ({w_1}[éuitsrn])_(?:[nt]|)e_s  @@0
-    <<- morphex(\1, ":[NAQ]", ":G") =>> define(\1, [":N:A:Q:e:p"])
+    <<- morph(\1, ":[NAQ]", ":G") =>> define(\1, [":N:A:Q:e:p"])
 
 __[i](d_typo_écriture_épicène_singulier)__
     ({w_2}[éuitsrn])_e  @@0
-    <<- morph(\1, ":[NAQ]", False) =>> define(\1, [":N:A:Q:e:s"])
+    <<- morph(\1, ":[NAQ]") =>> define(\1, [":N:A:Q:e:s"])
 
 
 !!!
@@ -1475,11 +1475,11 @@ __[i>(p_le_ou_les)__            l[ea] ou les {w_2}([(]s[)]) @@$ <<- ~1>> s
 __[i](p_le_ou_la)__             l(e ou la|a ou le) {w_2} @@1 <<- ~1>> ’
 
 # les références aux notes
-__[i](p_références_aux_notes)__ [a-zéèâàôîù][a-zéèâàôîù-]+(\d+) @@$ <<- not morph(\0, ":", False) ~1>> *
+__[i](p_références_aux_notes)__ [a-zéèâàôîù][a-zéèâàôîù-]+(\d+) @@$ <<- not morph(\0, ":") ~1>> *
 
 # faux positifs avec adverbes de négation
-__[i](p_pas_mal)__              pas mal <<- not morph(word(-1), ":D", False) ~>> *
-__[i](p_pas_assez)__            pas assez ({w_2}) @@$ <<- morph(\1, ":A", False) and not morph(word(-1), ":D", False) ~>> *
+__[i](p_pas_mal)__              pas mal <<- not morph(word(-1), ":D") ~>> *
+__[i](p_pas_assez)__            pas assez ({w_2}) @@$ <<- morph(\1, ":A") and not morph(word(-1), ":D") ~>> *
 
 # faux positifs avec «à chez»
 __[i](p_de_chez_à_chez_pronom)__    de chez \w+ (?:à|jusqu à) chez (?:moi|toi|lui|elles?|eux|nous|vous) <<- ~>> *
@@ -10247,7 +10247,7 @@ TEST: elle seules les femmes la font craquer
 
 __[i]/redon2(redondances_phrase)__
     ({w_4})[ ,].* (\1)  @@0,$
-        <<- not morph(\1, ":(?:G|V0)|>même/", False) -2>> _             # Dans cette phrase, répétition de « \1 » (à gauche).
+        <<- not morph(\1, ":(?:G|V0)|>même/") -2>> _                    # Dans cette phrase, répétition de « \1 » (à gauche).
         <<- __also__ -1>> _                                             # Dans cette phrase, répétition de « \1 » (à droite).
 
 TEST: __redon2__ Quelle {{imposture}}, c’est d’un ennui, c’est une {{imposture}}.
@@ -10262,11 +10262,11 @@ TEST: __redon2__ Les mêmes causes produisent/produisant les mêmes effets. (ré
 __[i]/mc(mc_mot_composé)__
     ({w2})-({w2})  @@0,$
         <<- not \1.isdigit() and not \2.isdigit()
-            and not morph(\0, ":", False) and not morph(\2, ":G", False) and spell(\1+\2)
+            and not morph(\0, ":") and not morph(\2, ":G") and spell(\1+\2)
         ->> \1\2                                                                                    # Vous pouvez ôter le trait d’union.
         <<- \2 != "là" and not re.search("(?i)^(?:ex|mi|quasi|semi|non|demi|pro|anti|multi|pseudo|proto|extra)$", \1)
-            and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G", False)
-            and not morph(\0, ":", False) and not spell(\1+\2)
+            and not \1.isdigit() and not \2.isdigit() and not morph(\2, ":G")
+            and not morph(\0, ":") and not spell(\1+\2)
         ->> _                                                                                       # Mot inconnu du dictionnaire.|http://www.dicollecte.org/dictionary.php?prj=fr&unknownword=on
 
 TEST: __mc__ des {{portes-avions}}.
@@ -13706,7 +13706,7 @@ TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas c
 
 #__[i]/infi(infi_faire)__
 #    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-#    <<- morph(\1, ">faire/", False) and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morphex(\2, ":V", ":M")
+#    <<- morph(\1, ">faire/") and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morph(\2, ":V", ":M")
 #        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
 #        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
 #    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.

@@ -397,20 +397,7 @@ def displayInfo (dTokenPos, tWord):
     return True
 
 
-def morph (dTokenPos, tWord, sPattern, bStrict=True, bNoWord=False):
-    "analyse a tuple (position, word), return True if sPattern in morphologies (disambiguation on)"
-    if not tWord:
-        return bNoWord
-    lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
-    if not lMorph:
-        return False
-    zPattern = re.compile(sPattern)
-    if bStrict:
-        return bool(lMorph) and all(zPattern.search(s)  for s in lMorph)
-    return any(zPattern.search(s)  for s in lMorph)
-
-
-def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
+def morph (dTokenPos, tWord, sPattern, sNegPattern="", bNoWord=False):
     "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
     if not tWord:
         return bNoWord
@@ -418,34 +405,34 @@ def morphex (dTokenPos, tWord, sPattern, sNegPattern, bNoWord=False):
     if not lMorph:
         return False
     # check negative condition
-    zNegPattern = re.compile(sNegPattern)
-    if any(zNegPattern.search(s)  for s in lMorph):
-        return False
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(s)  for s in lMorph):
+                return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(s)  for s in lMorph)
 
 
-def analyse (sWord, sPattern, bStrict=True):
-    "analyse a word, return True if sPattern in morphologies (disambiguation off)"
-    lMorph = _oSpellChecker.getMorph(sWord)
-    if not lMorph:
-        return False
-    zPattern = re.compile(sPattern)
-    if bStrict:
-        return bool(lMorph) and all(zPattern.search(s)  for s in lMorph)
-    return any(zPattern.search(s)  for s in lMorph)
-
-
-def analysex (sWord, sPattern, sNegPattern):
+def analyse (sWord, sPattern, sNegPattern=""):
     "analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)"
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph:
         return False
     # check negative condition
-    zNegPattern = re.compile(sNegPattern)
-    if any(zNegPattern.search(s)  for s in lMorph):
-        return False
+    if sNegPattern:
+        if sNegPattern == "*":
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(s)  for s in lMorph):
+                return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(s)  for s in lMorph)
@@ -1055,8 +1042,6 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemoriz
     if sNegPattern:
         if sNegPattern == "*":
             # all morph must match sPattern
-            if not lMorph:
-                return False
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
         else:
@@ -1082,8 +1067,6 @@ def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemor
     if sNegPattern:
         if sNegPattern == "*":
             # all morph must match sPattern
-            if not lMorph:
-                return False
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
         else:
@@ -1104,8 +1087,6 @@ def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetM
     if sNegPattern:
         if sNegPattern == "*":
             # all morph must match sPattern
-            if not lMorph:
-                return False
             zPattern = re.compile(sPattern)
             bResult = all(zPattern.search(sMorph)  for sMorph in lMorph)
             if bResult and bSetMorph:
