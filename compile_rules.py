@@ -499,6 +499,7 @@ def make (spLang, sLang, bJavaScript):
             bGraph = True
         elif sLine.startswith("@@@@END_GRAPH"):
             #lGraphRule.append([i, sLine])
+            printBookmark(0, "ENDGRAPH", i)
             bGraph = False
         elif re.match("@@@@ *$", sLine):
             pass
