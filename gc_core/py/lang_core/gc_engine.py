@@ -262,9 +262,9 @@ def _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase
         dErr["aSuggestions"] = lSugg
         dErr["URL"] = sURL  if sURL  else ""
         if bContext:
-            dErr['sUnderlined'] = self.sSentence0[nStart:nEnd]
-            dErr['sBefore'] = self.sSentence0[max(0,nStart-80):nStart]
-            dErr['sAfter'] = self.sSentence0[nEnd:nEnd+80]
+            dErr['sUnderlined'] = sx[nStart:nEnd]
+            dErr['sBefore'] = sx[max(0,nStart-80):nStart]
+            dErr['sAfter'] = sx[nEnd:nEnd+80]
         return dErr
 
 
@@ -778,7 +778,7 @@ class TextParser:
                                     nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lToken[nTokenErrorStart]["nEnd"])
                                     nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lToken[nTokenErrorEnd]["nStart"])
                                     if nErrorStart not in self.dError or nPriority > dPriority.get(nErrorStart, -1):
-                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, "notype", bContext)
+                                        self.dError[nErrorStart] = self._createError(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext)
                                         dPriority[nErrorStart] = nPriority
                                         if bDebug:
                                             print("    NEW_ERROR:  ", sRuleId, sLineId, ": ", self.dError[nErrorStart])
