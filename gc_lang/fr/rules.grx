@@ -2386,6 +2386,9 @@ __ocr_le_la_les__
     [lai|lei]
         <<- ->> lui|les                                                                             # Erreur de numérisation ?
 
+    los
+        <<- ->> les                                                                                 # Erreur de numérisation ?
+
     lu
         <<- not morph(<1, ":(?:V0|N.*:m:[si])") ->> tu|le|la                                        # Erreur de numérisation ?
 
@@ -7017,9 +7020,10 @@ TEST: Méfiez-vous de cette {{soi disant}} sorcière.
 
 
 __conf_soi_soit_soie__
-    [chez|sur|avec|pour] (soit)
-    don de (soit)
-        <<- /conf/ not after(" soit ") -1>> soi                                                     # Confusion probable.
+    [chez|sur|avec|pour] soit
+    don de soit
+    estime de soit
+        <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.
 
     en soit
         <<- /conf/ morph(>1, ":[GY]|<end>") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
@@ -13491,8 +13495,6 @@ __purge_autre__
     y compris
         <<- not value(<1, "|j’|n’|tu|il|on|") ~>> *
 
-    [me|te|se|nous|vous]  >douter  [que|qu’]
-        <<- /3>> no_subj
 
 
 @@@@
@@ -14940,7 +14942,7 @@ TEST: le flacon qu’ils ont réussi à acquérir
 
 __ppas_det_fem_sing_COD_que_avoir__
     [une|la|l’|cette|ma|ta|sa|mon|ton|son]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morph(\2, ":[NA].*:f") and not morph(>1, ":(?:Y|Oo|D)|>que") and not value(>1, "|m’|t’|s’|l’|")
+        <<- /ppas/ morph(\2, ":[NA].*:f") and not morph(>1, ":(?:Y|Oo|D)|>qu[e’]/") and not value(>1, "|m’|t’|s’|l’|")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggFemSing(\-1)
         # Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -15050,15 +15052,19 @@ TEST: Combien de bêtes as-tu déjà massacrées
 # Confusions
 __imp_confusion_2e_pers_pluriel__
     [<start>|,]  *WORD  moi
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:3s)")
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-moi"                                             # Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,]  *WORD  [les|la|leur]  *WORD
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:3s)") and morph(\4, ":[OR]", ":[NA]")
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]")
+        -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
+
+    [<start>|,]  *WORD  [lui|nous|vous]  *WORD
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORCD]", ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,]  *WORD  [les|la|lui|nous|vous|leur]  [<end>|,]
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:3s)")
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance                         ->> Donnez-moi
@@ -15223,7 +15229,7 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 __imp_union_moi__
     *WORD  moi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Apportez moi}} ce dictionnaire
@@ -15233,14 +15239,23 @@ TEST: Viens moi je m’ennuie.
 __imp_union_toi__
     *WORD  toi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E:2s", ":[GM]") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
+            and morph(\1, ":E:2s", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne toi}} du temps.
 
 
-__imp_union_nous_vous_lui_y__
-    *WORD  [nous|vous|lui|y]
+__imp_union_nous_vous_lui__
+    *WORD  [nous|vous|lui]
+        <<- /imp/ space_after(\1, 1, 1)
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
+        ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
+TEST: {{Donne nous}} du café.
+
+
+__imp_union_y__
+    *WORD  y
         <<- /imp/ space_after(\1, 1, 1)
             and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
@@ -15251,7 +15266,7 @@ TEST: {{Donne nous}} du café.
 __imp_union_les__
     *WORD  les
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))") and morph(<1, ":Cc|<start>|>,")
         ->> \1-les                                      # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{chante les}} avec conviction
@@ -15265,7 +15280,7 @@ TEST: Soyez les plus gentils qu’on puisse imaginer.
 __imp_union_le_la_leur__
     *WORD  [le|la|leur|en]
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
@@ -15592,10 +15607,18 @@ __tag_verbe_infinitif_sujet__
 
 
 __se_douter__
-    [me|te|se]  >douter  [que|qu’]
-    nous nous  >douter  [que|qu’]
-    vous vous  >douter  [que|qu’]
-        <<- /-1>> no_subj
+    [me|te|se]  >douter
+    nous nous  >douter
+    vous vous  >douter
+        <<- /-1>> upron
+
+
+__se_vouloir__
+    [me|te|se]  >vouloir
+    nous nous >vouloir
+    vous vous >vouloir
+        <<- /-1>> upron
+
 
 
 @@@@
@@ -15680,8 +15703,16 @@ TEST: Veillez votre mari qui est malade.
 !!
 
 __infi_devoir_pouvoir_vouloir__
-    [>devoir|>pouvoir|>vouloir]  ~..(?:ée?s?|ez)$
+    >devoir  ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
+
+    >pouvoir  ~..(?:ée?s?|ez)$
         <<- /infi/ not value(\1, "|puis|") and morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
+
+    >vouloir  ~..(?:ée?s?|ez)$
+        <<- /infi/ not tag(\1, "upron") and morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: il devait {{utilisé}} son temps à bon escient.
@@ -16516,7 +16547,7 @@ __vmode_qqch_que_subjonctif1__
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
-        <<- /vmode/ not tag(\2, "no_subj") and morph(\1, ":V", ":N")
+        <<- /vmode/ not tag(\1, "upron") and morph(\1, ":V", ":N")
         -4>> =suggVerbMode(\4, ":S", \3)                                                            # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     il est possible  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
