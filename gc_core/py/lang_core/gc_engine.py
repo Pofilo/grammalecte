@@ -240,13 +240,9 @@ def _createError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase
         xErr.aRuleIdentifier = sRuleId
         xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
         xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
-        if bShowRuleId:
-            xErr.aShortComment += "  " + sLineId + " # " + sRuleId
         xErr.aSuggestions = tuple(lSugg)
         if sURL:
-            xProperty = PropertyValue()
-            xProperty.Name = "FullCommentURL"
-            xProperty.Value = sURL
+            xProperty = PropertyValue(Name="FullCommentURL", Value=sURL)
             xErr.aProperties = (xProperty,)
         else:
             xErr.aProperties = ()
@@ -868,15 +864,13 @@ class TextParser:
             xErr.nErrorType = PROOFREADING
             xErr.aRuleIdentifier = sRuleId
             xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
-            xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
-            if bShowRuleId:
-                xErr.aShortComment += "  " + sLineId + " # " + sRuleId
+            xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
             xErr.aSuggestions = tuple(lSugg)
+            #xPropertyLineType = PropertyValue(Name="LineType", Value=5) # DASH or WAVE
+            #xPropertyLineColor = PropertyValue(Name="LineColor", Value=getRGB("FFAA00"))
             if sURL:
-                xProperty = PropertyValue()
-                xProperty.Name = "FullCommentURL"
-                xProperty.Value = sURL
-                xErr.aProperties = (xProperty,)
+                xPropertyURL = PropertyValue(Name="FullCommentURL", Value=sURL)
+                xErr.aProperties = (xPropertyURL,)
             else:
                 xErr.aProperties = ()
             return xErr
@@ -1193,6 +1187,7 @@ def g_define_from (dToken, nLeft=None, nRight=None):
     else:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
     return True
+
 
 
 #### GRAMMAR CHECKER PLUGINS
