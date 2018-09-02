@@ -22,6 +22,19 @@ sWORDLIMITLEFT  = r"(?<![\w.,–-])"   # r"(?<![-.,—])\b"  seems slower
 sWORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
 
 
+def _rgb (r, g, b):
+    return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
+
+
+def getRGB (sHex):
+    if sHex:
+        r = int(sHex[:2], 16)
+        g = int(sHex[2:4], 16)
+        b = int(sHex[4:], 16)
+        return _rgb(r, g, b)
+    return _rgb(0, 0, 0)
+
+
 def prepareFunction (s):
     "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
