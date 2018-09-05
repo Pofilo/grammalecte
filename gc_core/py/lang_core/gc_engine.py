@@ -15,8 +15,6 @@ from ..graphspell.tokenizer import Tokenizer
 from ..graphspell.echo import echo
 from . import gc_options
 
-from .gc_rules_graph import dAllGraph, dRule
-
 try:
     # LibreOffice / OpenOffice
     from com.sun.star.linguistic2 import SingleProofreadingError
@@ -45,8 +43,9 @@ author = "${author}"
 
 # Modules
 _rules = None                               # module gc_rules
+_rules_graph = None                         # module gc_rules_graph
 
-# data
+# Data
 _sAppContext = ""                           # what software is running
 _dOptions = None
 _oSpellChecker = None
@@ -87,8 +86,11 @@ def _getRules (bParagraph):
 
 def _loadRules ():
     from . import gc_rules
+    from . import gc_rules_graph
     global _rules
+    global _rules_graph
     _rules = gc_rules
+    _rules_graph = gc_rules_graph
     # compile rules regex
     for sOption, lRuleGroup in chain(_rules.lParagraphRules, _rules.lSentenceRules):
         if sOption != "@@@@":
@@ -284,7 +286,7 @@ class TextParser:
                     if sGraphName not in dOptions or dOptions[sGraphName]:
                         if bDebug:
                             print("\n>>>> GRAPH:", sGraphName, sLineId)
-                        sText = self.parseGraph(dAllGraph[sGraphName], sCountry, dOptions, bShowRuleId, bDebug, bContext)
+                        sText = self.parseGraph(_rules_graph.dAllGraph[sGraphName], sCountry, dOptions, bShowRuleId, bDebug, bContext)
             elif not sOption or dOptions.get(sOption, False):
                 # regex rules
                 for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
@@ -507,7 +509,7 @@ class TextParser:
                 try:
                     if bDebug:
                         print("   >TRY:", sRuleId)
-                    sOption, sFuncCond, cActionType, sWhat, *eAct = dRule[sRuleId]
+                    sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
@@ -569,7 +571,7 @@ class TextParser:
                             elif cActionType == "%":
                                 # immunity
                                 if bDebug:
-                                    print("    IMMUNITY:\n  ", dRule[sRuleId])
+                                    print("    IMMUNITY:\n  ", _rules_graph.dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
