@@ -102,24 +102,7 @@ def _loadRules ():
                     aRule[0] = "(?i)<Grammalecte>"
 
 
-#### Parsing
-
-_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
-_zBeginOfParagraph = re.compile(r"^\W*")
-_zEndOfParagraph = re.compile(r"\W*$")
-
-def _getSentenceBoundaries (sText):
-    iStart = _zBeginOfParagraph.match(sText).end()
-    for m in _zEndOfSentence.finditer(sText):
-        yield (iStart, m.end())
-        iStart = m.end()
-
-
-def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
-    "init point to analyze a text"
-    oText = TextParser(sText)
-    return oText.parse(sCountry, bDebug, dOptions, bContext)
-
+#### Rules and options
 
 def ignoreRule (sRuleId):
     "disable rule <sRuleId>"
@@ -204,6 +187,24 @@ def getSpellChecker ():
     return _oSpellChecker
 
 
+#### Parsing
+
+_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
+_zBeginOfParagraph = re.compile(r"^\W*")
+_zEndOfParagraph = re.compile(r"\W*$")
+
+def _getSentenceBoundaries (sText):
+    iStart = _zBeginOfParagraph.match(sText).end()
+    for m in _zEndOfSentence.finditer(sText):
+        yield (iStart, m.end())
+        iStart = m.end()
+
+
+def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
+    "init point to analyze a text"
+    oText = TextParser(sText)
+    return oText.parse(sCountry, bDebug, dOptions, bContext)
+
 
 #### TEXT PARSER
 
@@ -285,7 +286,7 @@ class TextParser:
                 for sGraphName, sLineId in lRuleGroup:
                     if sGraphName not in dOptions or dOptions[sGraphName]:
                         if bDebug:
-                            echo("\n>>>> GRAPH:", sGraphName, sLineId)
+                            echo("\n>>>> GRAPH: " + sGraphName + " " + sLineId)
                         sText = self.parseGraph(_rules_graph.dAllGraph[sGraphName], sCountry, dOptions, bShowRuleId, bDebug, bContext)
             elif not sOption or dOptions.get(sOption, False):
                 # regex rules
@@ -299,7 +300,7 @@ class TextParser:
                                     bCondMemo = not sFuncCond or globals()[sFuncCond](sText, sText0, m, self.dTokenPos, sCountry, bCondMemo)
                                     if bCondMemo:
                                         if bDebug:
-                                            echo("RULE:", sLineId)
+                                            echo("RULE: " + sLineId)
                                         if cActionType == "-":
                                             # grammar error
                                             nErrorStart = nOffset + m.start(eAct[0])
@@ -354,27 +355,27 @@ class TextParser:
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
-                echo("  MATCH:", dToken["sValue"])
+                echo("  MATCH: " + dToken["sValue"])
             yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] }
             bTokenFound = True
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
-                    echo("  MATCH:", sValue)
+                    echo("  MATCH: " + sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
-                    echo("  MATCH:", sValue)
+                    echo("  MATCH: " + sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
                 if bDebug:
-                    echo("  MATCH:", sValue)
+                    echo("  MATCH: " + sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
         # regex value arcs
@@ -478,7 +479,7 @@ class TextParser:
         bTagAndRewrite = False
         for iToken, dToken in enumerate(self.lToken):
             if bDebug:
-                echo("TOKEN:", dToken["sValue"])
+                echo("TOKEN: " + dToken["sValue"])
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
@@ -508,7 +509,7 @@ class TextParser:
             for sRuleId in dGraph[nextNodeKey]:
                 try:
                     if bDebug:
-                        echo("   >TRY:", sRuleId)
+                        echo("   >TRY: " + sRuleId)
                     sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
@@ -531,7 +532,7 @@ class TextParser:
                                         self.dError[nErrorStart] = self._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext)
                                         self.dErrorPriority[nErrorStart] = nPriority
                                         if bDebug:
-                                            echo("    NEW_ERROR:  ", sRuleId, sLineId, ": ", self.dError[nErrorStart])
+                                            echo("    NEW_ERROR:  {}  {}:  {}".format(sRuleId, sLineId, self.dError[nErrorStart]))
                             elif cActionType == "~":
                                 # text processor
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
@@ -539,17 +540,17 @@ class TextParser:
                                 self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
                                 bChange = True
                                 if bDebug:
-                                    echo("    TEXT_PROCESSOR:  ", sRuleId, sLineId)
-                                    echo("      ", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"], " >", sWhat)
+                                    echo("    TEXT_PROCESSOR:  " + sRuleId + " " + sLineId)
+                                    echo("       " + self.lToken[nTokenStart]["sValue"] + " : " + self.lToken[nTokenEnd]["sValue"] + "  > ", sWhat)
                             elif cActionType == "=":
                                 # disambiguation
                                 globals()[sWhat](self.lToken, nTokenOffset, nLastToken)
                                 if bDebug:
-                                    echo("    DISAMBIGUATOR:  ", sRuleId, sLineId, "("+sWhat+")", self.lToken[nTokenOffset+1]["sValue"], ":", self.lToken[nLastToken]["sValue"])
+                                    echo("    DISAMBIGUATOR:  {} {} ({})  {}:{}".format(sRuleId, sLineId, sWhat, self.lToken[nTokenOffset+1]["sValue"], self.lToken[nLastToken]["sValue"]))
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    echo("    COND_OK:  ", sRuleId, sLineId)
+                                    echo("    COND_OK:  " + sRuleId + " " + sLineId)
                                 pass
                             elif cActionType == "/":
                                 # Tag
@@ -561,8 +562,8 @@ class TextParser:
                                     else:
                                         self.lToken[i]["tags"] = set(sWhat.split("|"))
                                 if bDebug:
-                                    echo("    TAG:  ", sRuleId, sLineId)
-                                    echo("      ", sWhat, " >", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"])
+                                    echo("    TAG:  " + sRuleId + " " + sLineId)
+                                    echo("       " + sWhat + " > " + self.lToken[nTokenStart]["sValue"] + " : " + self.lToken[nTokenEnd]["sValue"])
                                 if sWhat not in self.dTags:
                                     self.dTags[sWhat] = [nTokenStart, nTokenStart]
                                 else:
@@ -571,7 +572,7 @@ class TextParser:
                             elif cActionType == "%":
                                 # immunity
                                 if bDebug:
-                                    echo("    IMMUNITY:\n  ", _rules_graph.dRule[sRuleId])
+                                    echo("    IMMUNITY:\n      " + _rules_graph.dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
@@ -589,7 +590,7 @@ class TextParser:
                                 echo("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
                             if bDebug:
-                                echo("    COND_BREAK:  ", sRuleId, sLineId)
+                                echo("    COND_BREAK:  " + sRuleId + " " + sLineId)
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
@@ -675,13 +676,11 @@ class TextParser:
         return dErr
 
     def _expand (self, sText, nTokenOffset, nLastToken):
-        #echo("*", sText)
         for m in re.finditer(r"\\(-?[0-9]+)", sText):
             if m.group(1)[0:1] == "-":
                 sText = sText.replace(m.group(0), self.lToken[nLastToken+int(m.group(1))+1]["sValue"])
             else:
                 sText = sText.replace(m.group(0), self.lToken[nTokenOffset+int(m.group(1))]["sValue"])
-        #echo(">", sText)
         return sText
 
     def rewriteText (self, sText, sRepl, iGroup, m, bUppercase):
@@ -704,7 +703,7 @@ class TextParser:
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
         if bDebug:
-            echo("   START:", nTokenRewriteStart, "END:", nTokenRewriteEnd)
+            echo("   START: {} - END: {}  ".format(nTokenRewriteStart, nTokenRewriteEnd))
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -761,7 +760,7 @@ class TextParser:
                     dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
                     dTokenMerger["nEnd"] = dToken["nEnd"]
                     if bDebug:
-                        echo("  MERGED TOKEN:", dTokenMerger["sValue"])
+                        echo("  MERGED TOKEN: " + dTokenMerger["sValue"])
                     bKeepToken = False
                 if "nMergeUntil" in dToken:
                     if iToken > nMergeUntil: # this token is not already merged with a previous token
@@ -771,7 +770,7 @@ class TextParser:
                     del dToken["nMergeUntil"]
                 elif "bToRemove" in dToken:
                     if bDebug:
-                        echo("  REMOVED:", dToken["sValue"])
+                        echo("  REMOVED: " + dToken["sValue"])
                     self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
                     bKeepToken = False
             #
@@ -780,7 +779,7 @@ class TextParser:
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
                     if bDebug:
-                        echo(dToken["sValue"], "->", dToken["sNewValue"])
+                        echo(dToken["sValue"] + " -> " + dToken["sNewValue"])
                     dToken["sRealValue"] = dToken["sValue"]
                     dToken["sValue"] = dToken["sNewValue"]
                     nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"])
@@ -795,7 +794,7 @@ class TextParser:
                     echo(dToken)
                     exit()
         if bDebug:
-            echo("  TEXT REWRITED:", self.sSentence)
+            echo("  TEXT REWRITED: " + self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
 
