@@ -285,7 +285,7 @@ class TextParser:
                 for sGraphName, sLineId in lRuleGroup:
                     if sGraphName not in dOptions or dOptions[sGraphName]:
                         if bDebug:
-                            print("\n>>>> GRAPH:", sGraphName, sLineId)
+                            echo("\n>>>> GRAPH:", sGraphName, sLineId)
                         sText = self.parseGraph(_rules_graph.dAllGraph[sGraphName], sCountry, dOptions, bShowRuleId, bDebug, bContext)
             elif not sOption or dOptions.get(sOption, False):
                 # regex rules
@@ -299,7 +299,7 @@ class TextParser:
                                     bCondMemo = not sFuncCond or globals()[sFuncCond](sText, sText0, m, self.dTokenPos, sCountry, bCondMemo)
                                     if bCondMemo:
                                         if bDebug:
-                                            print("RULE:", sLineId)
+                                            echo("RULE:", sLineId)
                                         if cActionType == "-":
                                             # grammar error
                                             nErrorStart = nOffset + m.start(eAct[0])
@@ -343,8 +343,8 @@ class TextParser:
         self.lToken = lNewToken
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
         if bDebug:
-            print("UPDATE:")
-            print(self)
+            echo("UPDATE:")
+            echo(self)
 
     def _getNextPointers (self, dToken, dGraph, dPointer, bDebug=False):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
@@ -354,27 +354,27 @@ class TextParser:
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
-                print("  MATCH:", dToken["sValue"])
+                echo("  MATCH:", dToken["sValue"])
             yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] }
             bTokenFound = True
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
-                    print("  MATCH:", sValue)
+                    echo("  MATCH:", sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
-                    print("  MATCH:", sValue)
+                    echo("  MATCH:", sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
                 if bDebug:
-                    print("  MATCH:", sValue)
+                    echo("  MATCH:", sValue)
                 yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
                 bTokenFound = True
         # regex value arcs
@@ -385,7 +385,7 @@ class TextParser:
                         # no anti-pattern
                         if re.search(sRegex, dToken["sValue"]):
                             if bDebug:
-                                print("  MATCH: ~" + sRegex)
+                                echo("  MATCH: ~" + sRegex)
                             yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
                             bTokenFound = True
                     else:
@@ -395,7 +395,7 @@ class TextParser:
                             continue
                         if not sPattern or re.search(sPattern, dToken["sValue"]):
                             if bDebug:
-                                print("  MATCH: ~" + sRegex)
+                                echo("  MATCH: ~" + sRegex)
                             yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
                             bTokenFound = True
         # analysable tokens
@@ -405,7 +405,7 @@ class TextParser:
                 for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
                     if sLemma in dNode["<lemmas>"]:
                         if bDebug:
-                            print("  MATCH: >" + sLemma)
+                            echo("  MATCH: >" + sLemma)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<lemmas>"][sLemma]] }
                         bTokenFound = True
             # regex morph arcs
@@ -416,7 +416,7 @@ class TextParser:
                         lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                         if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
                             if bDebug:
-                                print("  MATCH: @" + sRegex)
+                                echo("  MATCH: @" + sRegex)
                             yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                             bTokenFound = True
                     else:
@@ -428,7 +428,7 @@ class TextParser:
                                 lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                                 if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                     if bDebug:
-                                        print("  MATCH: @" + sRegex)
+                                        echo("  MATCH: @" + sRegex)
                                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                                     bTokenFound = True
                         else:
@@ -437,7 +437,7 @@ class TextParser:
                                 continue
                             if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                 if bDebug:
-                                    print("  MATCH: @" + sRegex)
+                                    echo("  MATCH: @" + sRegex)
                                 yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                                 bTokenFound = True
         # token tags
@@ -445,7 +445,7 @@ class TextParser:
             for sTag in dToken["tags"]:
                 if sTag in dNode["<tags>"]:
                     if bDebug:
-                        print("  MATCH: /" + sTag)
+                        echo("  MATCH: /" + sTag)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<tags>"][sTag]] }
                     bTokenFound = True
         # meta arc (for token type)
@@ -454,13 +454,13 @@ class TextParser:
                 # no regex here, we just search if <dNode["sType"]> exists within <sMeta>
                 if sMeta == "*" or dToken["sType"] == sMeta:
                     if bDebug:
-                        print("  MATCH: *" + sMeta)
+                        echo("  MATCH: *" + sMeta)
                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                     bTokenFound = True
                 elif "¬" in sMeta:
                     if dToken["sType"] not in sMeta:
                         if bDebug:
-                            print("  MATCH: *" + sMeta)
+                            echo("  MATCH: *" + sMeta)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                         bTokenFound = True
         if "bKeep" in dPointer and not bTokenFound:
@@ -478,7 +478,7 @@ class TextParser:
         bTagAndRewrite = False
         for iToken, dToken in enumerate(self.lToken):
             if bDebug:
-                print("TOKEN:", dToken["sValue"])
+                echo("TOKEN:", dToken["sValue"])
             # check arcs for each existing pointer
             lNextPointer = []
             for dPointer in lPointer:
@@ -489,7 +489,7 @@ class TextParser:
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:
-                #    print("+", dPointer)
+                #    echo("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
                     bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOpt, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
@@ -497,7 +497,7 @@ class TextParser:
         if bTagAndRewrite:
             self.rewriteFromTags(bDebug)
         if bDebug:
-            print(self)
+            echo(self)
         return self.sSentence
 
     def _executeActions (self, dGraph, dNode, nTokenOffset, nLastToken, dOptions, sCountry, bShowRuleId, bDebug, bContext):
@@ -508,7 +508,7 @@ class TextParser:
             for sRuleId in dGraph[nextNodeKey]:
                 try:
                     if bDebug:
-                        print("   >TRY:", sRuleId)
+                        echo("   >TRY:", sRuleId)
                     sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
@@ -531,7 +531,7 @@ class TextParser:
                                         self.dError[nErrorStart] = self._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext)
                                         self.dErrorPriority[nErrorStart] = nPriority
                                         if bDebug:
-                                            print("    NEW_ERROR:  ", sRuleId, sLineId, ": ", self.dError[nErrorStart])
+                                            echo("    NEW_ERROR:  ", sRuleId, sLineId, ": ", self.dError[nErrorStart])
                             elif cActionType == "~":
                                 # text processor
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
@@ -539,17 +539,17 @@ class TextParser:
                                 self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
                                 bChange = True
                                 if bDebug:
-                                    print("    TEXT_PROCESSOR:  ", sRuleId, sLineId)
-                                    print("      ", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"], " >", sWhat)
+                                    echo("    TEXT_PROCESSOR:  ", sRuleId, sLineId)
+                                    echo("      ", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"], " >", sWhat)
                             elif cActionType == "=":
                                 # disambiguation
                                 globals()[sWhat](self.lToken, nTokenOffset, nLastToken)
                                 if bDebug:
-                                    print("    DISAMBIGUATOR:  ", sRuleId, sLineId, "("+sWhat+")", self.lToken[nTokenOffset+1]["sValue"], ":", self.lToken[nLastToken]["sValue"])
+                                    echo("    DISAMBIGUATOR:  ", sRuleId, sLineId, "("+sWhat+")", self.lToken[nTokenOffset+1]["sValue"], ":", self.lToken[nLastToken]["sValue"])
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    print("    COND_OK:  ", sRuleId, sLineId)
+                                    echo("    COND_OK:  ", sRuleId, sLineId)
                                 pass
                             elif cActionType == "/":
                                 # Tag
@@ -561,8 +561,8 @@ class TextParser:
                                     else:
                                         self.lToken[i]["tags"] = set(sWhat.split("|"))
                                 if bDebug:
-                                    print("    TAG:  ", sRuleId, sLineId)
-                                    print("      ", sWhat, " >", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"])
+                                    echo("    TAG:  ", sRuleId, sLineId)
+                                    echo("      ", sWhat, " >", self.lToken[nTokenStart]["sValue"], ":", self.lToken[nTokenEnd]["sValue"])
                                 if sWhat not in self.dTags:
                                     self.dTags[sWhat] = [nTokenStart, nTokenStart]
                                 else:
@@ -571,7 +571,7 @@ class TextParser:
                             elif cActionType == "%":
                                 # immunity
                                 if bDebug:
-                                    print("    IMMUNITY:\n  ", _rules_graph.dRule[sRuleId])
+                                    echo("    IMMUNITY:\n  ", _rules_graph.dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
@@ -586,10 +586,10 @@ class TextParser:
                                         if nErrorStart in self.dError:
                                             del self.dError[nErrorStart]
                             else:
-                                print("# error: unknown action at " + sLineId)
+                                echo("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
                             if bDebug:
-                                print("    COND_BREAK:  ", sRuleId, sLineId)
+                                echo("    COND_BREAK:  ", sRuleId, sLineId)
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
@@ -675,13 +675,13 @@ class TextParser:
         return dErr
 
     def _expand (self, sText, nTokenOffset, nLastToken):
-        #print("*", sText)
+        #echo("*", sText)
         for m in re.finditer(r"\\(-?[0-9]+)", sText):
             if m.group(1)[0:1] == "-":
                 sText = sText.replace(m.group(0), self.lToken[nLastToken+int(m.group(1))+1]["sValue"])
             else:
                 sText = sText.replace(m.group(0), self.lToken[nTokenOffset+int(m.group(1))]["sValue"])
-        #print(">", sText)
+        #echo(">", sText)
         return sText
 
     def rewriteText (self, sText, sRepl, iGroup, m, bUppercase):
@@ -704,7 +704,7 @@ class TextParser:
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
         if bDebug:
-            print("   START:", nTokenRewriteStart, "END:", nTokenRewriteEnd)
+            echo("   START:", nTokenRewriteStart, "END:", nTokenRewriteEnd)
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -737,7 +737,7 @@ class TextParser:
                 # several tokens
                 lTokenValue = sWhat.split("|")
                 if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
-                    print("Error. Text processor: number of replacements != number of tokens.")
+                    echo("Error. Text processor: number of replacements != number of tokens.")
                     return
                 for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
                     if not sValue or sValue == "*":
@@ -750,7 +750,7 @@ class TextParser:
     def rewriteFromTags (self, bDebug=False):
         "rewrite the sentence, modify tokens, purge the token list"
         if bDebug:
-            print("REWRITE")
+            echo("REWRITE")
         lNewToken = []
         nMergeUntil = 0
         dTokenMerger = None
@@ -761,7 +761,7 @@ class TextParser:
                     dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
                     dTokenMerger["nEnd"] = dToken["nEnd"]
                     if bDebug:
-                        print("  MERGED TOKEN:", dTokenMerger["sValue"])
+                        echo("  MERGED TOKEN:", dTokenMerger["sValue"])
                     bKeepToken = False
                 if "nMergeUntil" in dToken:
                     if iToken > nMergeUntil: # this token is not already merged with a previous token
@@ -771,7 +771,7 @@ class TextParser:
                     del dToken["nMergeUntil"]
                 elif "bToRemove" in dToken:
                     if bDebug:
-                        print("  REMOVED:", dToken["sValue"])
+                        echo("  REMOVED:", dToken["sValue"])
                     self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
                     bKeepToken = False
             #
@@ -780,7 +780,7 @@ class TextParser:
                 if "sNewValue" in dToken:
                     # rewrite token and sentence
                     if bDebug:
-                        print(dToken["sValue"], "->", dToken["sNewValue"])
+                        echo(dToken["sValue"], "->", dToken["sNewValue"])
                     dToken["sRealValue"] = dToken["sValue"]
                     dToken["sValue"] = dToken["sNewValue"]
                     nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"])
@@ -791,11 +791,11 @@ class TextParser:
                 try:
                     del self.dTokenPos[dToken["nStart"]]
                 except:
-                    print(self)
-                    print(dToken)
+                    echo(self)
+                    echo(dToken)
                     exit()
         if bDebug:
-            print("  TEXT REWRITED:", self.sSentence)
+            echo("  TEXT REWRITED:", self.sSentence)
         self.lToken.clear()
         self.lToken = lNewToken
 
@@ -881,7 +881,7 @@ def displayInfo (dTokenPos, tWord):
     if not lMorph:
         echo("> not in dictionary")
         return True
-    print("TOKENS:", dTokenPos)
+    echo("TOKENS:", dTokenPos)
     if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]:
         echo("DA: " + str(dTokenPos[tWord[0]]["lMorph"]))
     echo("FSA: " + str(lMorph))
@@ -1072,7 +1072,7 @@ def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     if not sWord:
         return True
     if nPos not in dTokenPos:
-        print("Error. There should be a token at this position: ", nPos)
+        echo("Error. There should be a token at this position: ", nPos)
         return True
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph or len(lMorph) == 1:
@@ -1091,7 +1091,7 @@ def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
     if not sWord:
         return True
     if nPos not in dTokenPos:
-        print("Error. There should be a token at this position: ", nPos)
+        echo("Error. There should be a token at this position: ", nPos)
         return True
     lMorph = _oSpellChecker.getMorph(sWord)
     if not lMorph or len(lMorph) == 1:
@@ -1108,7 +1108,7 @@ def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
 def define (dTokenPos, nPos, lMorph):
     "Disambiguation: set morphologies of token at <nPos> with <lMorph>"
     if nPos not in dTokenPos:
-        print("Error. There should be a token at this position: ", nPos)
+        echo("Error. There should be a token at this position: ", nPos)
         return True
     dTokenPos[nPos]["lMorph"] = lMorph
     return True
@@ -1122,7 +1122,7 @@ def g_select (dToken, sPattern, lDefault=None):
     if not lMorph or len(lMorph) == 1:
         if lDefault:
             dToken["lMorph"] = lDefault
-            #print("DA:", dToken["sValue"], dToken["lMorph"])
+            #echo("DA:", dToken["sValue"], dToken["lMorph"])
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
     if lSelect:
@@ -1130,7 +1130,7 @@ def g_select (dToken, sPattern, lDefault=None):
             dToken["lMorph"] = lSelect
     elif lDefault:
         dToken["lMorph"] = lDefault
-    #print("DA:", dToken["sValue"], dToken["lMorph"])
+    #echo("DA:", dToken["sValue"], dToken["lMorph"])
     return True
 
 
@@ -1140,7 +1140,7 @@ def g_exclude (dToken, sPattern, lDefault=None):
     if not lMorph or len(lMorph) == 1:
         if lDefault:
             dToken["lMorph"] = lDefault
-            #print("DA:", dToken["sValue"], dToken["lMorph"])
+            #echo("DA:", dToken["sValue"], dToken["lMorph"])
         return True
     lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect:
@@ -1148,14 +1148,14 @@ def g_exclude (dToken, sPattern, lDefault=None):
             dToken["lMorph"] = lSelect
     elif lDefault:
         dToken["lMorph"] = lDefault
-    #print("DA:", dToken["sValue"], dToken["lMorph"])
+    #echo("DA:", dToken["sValue"], dToken["lMorph"])
     return True
 
 
 def g_define (dToken, lMorph):
     "set morphologies of <dToken>, always return True"
     dToken["lMorph"] = lMorph
-    #print("DA:", dToken["sValue"], lMorph)
+    #echo("DA:", dToken["sValue"], lMorph)
     return True
 
 
