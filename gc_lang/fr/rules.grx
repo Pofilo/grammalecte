@@ -443,19 +443,19 @@ __<s>(p_points_suspension)__
 
 # Mr et MM
 __[s>(p_M_point)__
-    (M[.]) (?:[A-ZÉÈÎ]\w+|l[e'’])  @@0 <<- ~1>> Mr
+    (M[.]) (?:[A-ZÉÈÎ]\w*|l[e'’])  @@0 <<- ~1>> Mr
 __[s>(p_MM_point)__
     MM[.] <<- ~>> "MM "
 __[s>(p_Mr_Mgr_Mme_point)__
-    M(?:r|gr|me|[.]) [A-ZÉ]([.])(?=\W+[a-zéèêâîïû]) @@$ <<- ~1>> *
+    M(?:r|gr|me) [A-ZÉ]([.])(?=\W+[a-zéèêâîïû]) @@$ <<- ~1>> *
 
 # Patronyme réduit à une seule lettre
 __[s](p_prénom_lettre_point_patronyme)__
-    ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.][  ]([A-ZÉÈÂ][\w-]+)) @@0,$,$
+    ([A-ZÉÈÂÎ][\w-]+)[  ][A-ZÉÈÂ]([.])[  ]([A-ZÉÈÂ][\w-]+) @@0,$,$
     <<- morph(\1, ":M[12]") and (morph(\3, ":(?:M[12]|V)") or not spell(\3)) ~2>> *
 __[s>(p_prénom_lettre_point)__
-    ([A-ZÉÈÂÎ][\w-]+)[  ]([A-ZÉÈÂ][.]) @@0,$
-    <<- morph(\1, ":M[12]") and after("^\W+[a-zéèêîïâ]") ~2>> *
+    ([A-ZÉÈÂÎ][\w-]+)[  ][A-ZÉÈÂ]([.]) @@0,$
+    <<- morph(\1, ":M[12]") and after("^\W+[a-zéèêîïâ]") ~2>> _
 
 # Patronymes composés avec Le/La/Les
 __[s](p_patronyme_composé_avec_le_la_les)__
@@ -492,13 +492,6 @@ __[s](points_suspension_entre_parenthèses)__
     \(…\)
     <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
     <<- ~>> *
-
-# Divers
-__[i](p_FranceTV)__
-    France ([23450O]) @@$ <<- ~>> France_\1
-__[u](p_CAC40)__
-    cac 40 <<- ~>> CAC40
-
 
 TEST: par {{O.R.}}                                          ->> OR|O. R.
 TEST: l’{{A.N.P.E.}} n’existe plus
@@ -1493,10 +1486,6 @@ __<s>(p_singleton_crochets)__       [\[]\w+[\]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
 # Avocats
 __[s](p_Me_nom_propre)__        (Me) [A-ZÉÂÔÈ][\w-]+ @@0 <<- ~1>> *
 
-# Rois, reines, papes et vaniteux du même acabit
-__[s](p_titres_et_ordinaux)__   [A-ZÉÂÔÈ]\w+ ([XVI]+|I(?:er|ᵉʳ)) @@$ <<- \1 != "I" ~1>> *
-
-
 # alors que / dès lors que (éviter d’accorder un participe passé avec un pseudo-COD antérieur)
 __[i](p_alors_dès_lors_que)__   (alors|dès lors) que  @@0 <<- ~1>> _
 __[i](p_alors_dès_lors_que2)__  (alors|dès lors) qu’  @@0 <<- ~1>> _
@@ -2015,13 +2004,21 @@ __tag_noms__
 
 !!!! Fusions et immunités                                                                         !!
 
-__fusions__
+__fusions_noms_communs__
     au revoir
         <<- ~>> ␣
         <<- =>> define(\1, [":N:m:i"])
 
     n’ importe [qui|quoi]
         <<- ~1:2>> ␣
+
+
+__fusions_noms_propres__
+    cac  40
+        <<- ~>> ␣
+
+    France [2|3|4|5|0|O]
+        <<- ~>> ␣
 
     Peugeot  ~^\d0\d\d?$
         <<- ~>> ␣
@@ -2030,6 +2027,9 @@ __fusions__
     Mai 68
         <<- ~>> ␣
         <<- =>> define(\1, [":N:m:i"])
+
+    ~^[A-ZÂÉÈÎ].  ~^[A-ZÂÉÈÎ]
+        <<- analyse_with_next(\1, " ", ":") ~>> ␣
 
 
 __immunités__
@@ -2042,6 +2042,8 @@ __immunités__
     jusqu’ à
         <<- %2>>
 
+    [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  @:Y  @:M
+        <<- morph(\1, ":V") %-2>>
 
 
 @@@@
@@ -3613,11 +3615,12 @@ TEST: Tape-toi Patrick.
 
 __virg_après_verbe_COD__
     [le|la|l’|les]  @:Y  @:M
-        <<- /virg/ not value(<1, "|à|") -2>> \2,                                                    # Une virgule est probablement souhaitable.
+        <<- /virg/ -2>> \2,                                                                         # Une virgule est probablement souhaitable.
 
 TEST: Tu vas les {{donner}} Rachel.
 TEST: Il va la {{tuer}} Paul.
 TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
+TEST: Cependant les promesses n’engagent que ceux qui les croient, comme s’évertuait à le dire Jacques Chirac.
 TEST: Avancez comme sait le faire Patrick.
 
 
@@ -9611,6 +9614,9 @@ __simplification_noms_propres__
         <<- ~2:0>> *
 
     @:M[12]  *WORD
+        <<- \2.istitle() or re.search("^[MDCLXVI]+$", \2) ~2:0>> *
+
+    @:M[12]  [Ier|Iᵉʳ]
         <<- \2.istitle() ~2:0>> *
 
     @:M[12]  [Le|La|von|van|Mac|Mc|De|Du|D’]  *WORD
