@@ -115,6 +115,7 @@ class DARG:
                 print("Error. Double node… same id: ", sHashId)
                 print(str(oNode.getNodeAsDict()))
         dGraph = self._rewriteKeysOfDARG(dGraph)
+        self._sortActions(dGraph)
         self._checkRegexes(dGraph)
         return dGraph
 
@@ -136,6 +137,15 @@ class DARG:
                     for sArc, nKey in val.items():
                         val[sArc] = dKeyTrans[nKey]
         return dNewGraph
+
+    def _sortActions (self, dGraph):
+        "when a pattern is found, several actions may be launched, and it must be performed in a certain order"
+        for nKey, dVal in dGraph.items():
+            if "<rules>" in dVal:
+                for sLineId, nKey in dVal["<rules>"].items():
+                    # we change the dictionary of actions in a list of actions (values of dictionary all points to the final node)
+                    if isinstance(dGraph[nKey], dict):
+                        dGraph[nKey] = sorted(dGraph[nKey].keys())
 
     def _checkRegexes (self, dGraph):
         "check validity of regexes"
