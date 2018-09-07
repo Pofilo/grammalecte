@@ -673,9 +673,9 @@ class TextParser:
             "URL": sURL
         }
         if bContext:
-            dErr['sUnderlined'] = self.sSentence0[nStart:nEnd]
-            dErr['sBefore'] = self.sSentence0[max(0,nStart-80):nStart]
-            dErr['sAfter'] = self.sSentence0[nEnd:nEnd+80]
+            dErr['sUnderlined'] = self.sText0[nStart:nEnd]
+            dErr['sBefore'] = self.sText0[max(0,nStart-80):nStart]
+            dErr['sAfter'] = self.sText0[nEnd:nEnd+80]
         return dErr
 
     def _expand (self, sText, nTokenOffset, nLastToken):
@@ -905,11 +905,11 @@ def morph (dTokenPos, tWord, sPattern, sNegPattern="", bNoWord=False):
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
         else:
             zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(s)  for s in lMorph):
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
                 return False
     # search sPattern
     zPattern = re.compile(sPattern)
-    return any(zPattern.search(s)  for s in lMorph)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
 def analyse (sWord, sPattern, sNegPattern=""):
@@ -924,11 +924,11 @@ def analyse (sWord, sPattern, sNegPattern=""):
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
         else:
             zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(s)  for s in lMorph):
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
                 return False
     # search sPattern
     zPattern = re.compile(sPattern)
-    return any(zPattern.search(s)  for s in lMorph)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
 
 
 #### Analyse tokens for graph rules
