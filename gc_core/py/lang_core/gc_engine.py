@@ -72,6 +72,13 @@ def load (sContext="Python"):
         traceback.print_exc()
 
 
+def getSpellChecker ():
+    "return the spellchecker object"
+    return _oSpellChecker
+
+
+#### Rules
+
 def _getRules (bParagraph):
     try:
         if not bParagraph:
@@ -101,8 +108,6 @@ def _loadRules ():
                     echo("Bad regular expression in # " + str(aRule[2]))
                     aRule[0] = "(?i)<Grammalecte>"
 
-
-#### Rules and options
 
 def ignoreRule (sRuleId):
     "disable rule <sRuleId>"
@@ -140,6 +145,8 @@ def displayRules (sFilter=None):
     for sOption, sLineId, sRuleId in listRegexRules(sFilter):
         echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
 
+
+#### Options
 
 def setOption (sOpt, bVal):
     "set option <sOpt> with <bVal> if it exists"
@@ -180,11 +187,6 @@ def resetOptions ():
     "set options to default values"
     global _dOptions
     _dOptions = dict(gc_options.getOptions(_sAppContext))
-
-
-def getSpellChecker ():
-    "return the spellchecker object"
-    return _oSpellChecker
 
 
 #### Parsing
@@ -241,7 +243,7 @@ class TextParser:
     def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
         "analyses the paragraph sText and returns list of errors"
         #sText = unicodedata.normalize("NFC", sText)
-        dOpt = _dOptions  if not dOptions  else dOptions
+        dOpt = dOptions or _dOptions
         bShowRuleId = option('idrule')
 
         # parse paragraph
@@ -341,6 +343,8 @@ class TextParser:
         for dToken in lNewToken:
             if "lMorph" in self.dTokenPos.get(dToken["nStart"], {}):
                 dToken["lMorph"] = self.dTokenPos[dToken["nStart"]]["lMorph"]
+            if "tags" in self.dTokenPos.get(dToken["nStart"], {}):
+                dToken["tags"] = self.dTokenPos[dToken["nStart"]]["tags"]
         self.lToken = lNewToken
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
         if bDebug:
@@ -464,7 +468,7 @@ class TextParser:
                             echo("  MATCH: *" + sMeta)
                         yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
                         bTokenFound = True
-        if "bKeep" in dPointer and not bTokenFound:
+        if not bTokenFound and "bKeep" in dPointer:
             yield dPointer
         # JUMP
         # Warning! Recurssion!
@@ -474,7 +478,6 @@ class TextParser:
 
     def parseGraph (self, dGraph, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
         "parse graph with tokens from the text and execute actions encountered"
-        dOpt = _dOptions  if not dOptions  else dOptions
         lPointer = []
         bTagAndRewrite = False
         for iToken, dToken in enumerate(self.lToken):
@@ -492,7 +495,7 @@ class TextParser:
                 #if bDebug:
                 #    echo("+", dPointer)
                 if "<rules>" in dPointer["dNode"]:
-                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOpt, sCountry, bShowRuleId, bDebug, bContext)
+                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
                         bTagAndRewrite = True
         if bTagAndRewrite:
