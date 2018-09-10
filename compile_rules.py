@@ -567,7 +567,7 @@ def make (spLang, sLang, bJavaScript):
     # creating file with all functions callable by rules
     print("  creating callables...")
     sPyCallables = "# generated code, do not edit\n"
-    sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
+    sJSCallables = ""
     for sFuncName, sReturn in lFUNCTIONS:
         if sFuncName.startswith("_c_"): # condition
             sParams = "s, sx, m, dTokenPos, sCountry, bCondMemo"
@@ -582,12 +582,13 @@ def make (spLang, sLang, bJavaScript):
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue
+        # Python
         sPyCallables += "def {} ({}):\n".format(sFuncName, sParams)
         sPyCallables += "    return " + sReturn + "\n"
+        # JavaScript
         sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
         sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         sJSCallables += "    },\n"
-    sJSCallables += "}\n"
 
     displayStats(lParagraphRules, lSentenceRules)
 

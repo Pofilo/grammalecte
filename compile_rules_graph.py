@@ -8,6 +8,7 @@ import traceback
 import json
 
 import darg
+import compile_rules_js_convert as jsconv
 
 
 dACTIONS = {}
@@ -418,7 +419,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     # creating file with all functions callable by rules
     print("  creating callables...")
     sPyCallables = "# generated code, do not edit\n"
-    #sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
+    sJSCallables = ""
     for sFuncName, sReturn in dFUNCTIONS.items():
         if sFuncName.startswith("_g_cond_"): # condition
             sParams = "lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, dTags, sSentence, sSentence0"
@@ -433,12 +434,13 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue
+        # Python
         sPyCallables += "def {} ({}):\n".format(sFuncName, sParams)
         sPyCallables += "    return " + sReturn + "\n"
-        #sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
-        #sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
-        #sJSCallables += "    },\n"
-    #sJSCallables += "}\n"
+        # JavaScript
+        sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
+        sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
+        sJSCallables += "    },\n"
 
     # Debugging
     if False:
@@ -451,6 +453,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     # Result
     return {
         "graph_callables": sPyCallables,
+        "graph_callablesJS": sJSCallables,
         "rules_graphs": dAllGraph,
         "rules_actions": dACTIONS
     }
