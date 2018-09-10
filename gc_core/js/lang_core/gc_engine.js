@@ -1362,10 +1362,11 @@ function g_define_from (dToken, nLeft=null, nRight=null) {
 ${pluginsJS}
 
 
-${callablesJS}
-
-
-${graph_callablesJS}
+// generated code, do not edit
+const oEvalFunc = {
+    ${callablesJS}
+    ${graph_callablesJS}
+}
 
 
 if (typeof(exports) !== 'undefined') {
@@ -1375,24 +1376,26 @@ if (typeof(exports) !== 'undefined') {
     exports.name = gc_engine.name;
     exports.version = gc_engine.version;
     exports.author = gc_engine.author;
-    exports.parse = gc_engine.parse;
+    // init
+    exports.load = gc_engine.load;
+    exports.getSpellChecker = gc_engine.getSpellChecker;
+    // sentence
     exports._zEndOfSentence = gc_engine._zEndOfSentence;
     exports._zBeginOfParagraph = gc_engine._zBeginOfParagraph;
     exports._zEndOfParagraph = gc_engine._zEndOfParagraph;
-    exports._getSentenceBoundaries = gc_engine._getSentenceBoundaries;
-    exports._proofread = gc_engine._proofread;
-    exports._createError = gc_engine._createError;
-    exports.rewriteText = gc_engine.rewriteText;
+    exports.getSentenceBoundaries = gc_engine.getSentenceBoundaries;
+    // rules
     exports.ignoreRule = gc_engine.ignoreRule;
     exports.resetIgnoreRules = gc_engine.resetIgnoreRules;
     exports.reactivateRule = gc_engine.reactivateRule;
     exports.listRules = gc_engine.listRules;
     exports.getRules = gc_engine.getRules;
-    exports.load = gc_engine.load;
-    exports.getSpellChecker = gc_engine.getSpellChecker;
+    // options
     exports.setOption = gc_engine.setOption;
     exports.setOptions = gc_engine.setOptions;
     exports.getOptions = gc_engine.getOptions;
     exports.getDefaultOptions = gc_engine.getDefaultOptions;
     exports.resetOptions = gc_engine.resetOptions;
+    // other
+    exports.TextParser = TextParser;
 }
