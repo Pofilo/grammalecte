@@ -945,7 +945,7 @@ def g_value (dToken, sValues, nLeft=None, nRight=None):
         #if sValue.lower() in sValues:
         #    return True
         sValue = "|"+sValue[1:].capitalize()
-        if sValue.capitalize() in sValues:
+        if sValue in sValues:
             return True
     return False
 
