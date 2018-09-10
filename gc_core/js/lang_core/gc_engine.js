@@ -1063,6 +1063,7 @@ function morph (dTokenPos, aWord, sPattern, sNegPattern, bNoWord=false) {
         else {
             if (lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
                 return false;
+            }
         }
     }
     // search sPattern
@@ -1084,6 +1085,7 @@ function analyse (sWord, sPattern, sNegPattern) {
         else {
             if (lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
                 return false;
+            }
         }
     }
     // search sPattern
@@ -1372,8 +1374,11 @@ ${pluginsJS}
 
 // generated code, do not edit
 const oEvalFunc = {
-    ${callablesJS}
-    ${graph_callablesJS}
+    // callables for regex rules
+${callablesJS}
+
+    // callables for graph rules
+${graph_callablesJS}
 }
 
 
