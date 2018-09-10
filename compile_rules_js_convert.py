@@ -156,7 +156,7 @@ def writeRulesToJSArray (lRules):
         else:
             sArray += '  ["' + sOption + '", [\n'
             for sGraphName, sLineId in aRuleGroup:
-                sArray += '    ["' + sGraphName + '", "' + sLineId + '"],\n"'
+                sArray += '    ["' + sGraphName + '", "' + sLineId + '"],\n'
             sArray += "  ]],\n"
     sArray += "]"
     return sArray
