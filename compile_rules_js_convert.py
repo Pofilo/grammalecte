@@ -57,6 +57,8 @@ def py2js (sCode):
     sCode = sCode.replace("[:m.start()]", ".slice(0,m.index)")
     sCode = sCode.replace("[m.end():]", ".slice(m.end[0])")
     sCode = sCode.replace("[m.start():m.end()]", ".slice(m.index, m.end[0])")
+    sCode = sCode.replace('[lToken[nLastToken]["nEnd"]:]', '.slice(lToken[nLastToken]["nEnd"])')
+    sCode = sCode.replace('[:lToken[1+nTokenOffset]["nStart"]]', '.slice(0,lToken[1+nTokenOffset]["nStart"])')
     sCode = re.sub("\\[(-?\\d+):(-?\\d+)\\]", ".slice(\\1,\\2)", sCode)
     sCode = re.sub("\\[(-?\\d+):\\]", ".slice(\\1)", sCode)
     sCode = re.sub("\\[:(-?\\d+)\\]", ".slice(0,\\1)", sCode)
