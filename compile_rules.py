@@ -565,8 +565,8 @@ def make (spLang, sLang, bJavaScript):
                         lSentenceRulesJS.append(jsconv.pyRuleToJS(aRule, dJSREGEXES, sWORDLIMITLEFT))
 
     # creating file with all functions callable by rules
-    print("  creating callables...")
-    sPyCallables = "# generated code, do not edit\n"
+    print("  creating callables for regex rules...")
+    sPyCallables = ""
     sJSCallables = ""
     for sFuncName, sReturn in lFUNCTIONS:
         if sFuncName.startswith("_c_"): # condition

@@ -417,8 +417,8 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
                 print(k, "\t", v)
 
     # creating file with all functions callable by rules
-    print("  creating callables...")
-    sPyCallables = "# generated code, do not edit\n"
+    print("  creating callables for graph rules...")
+    sPyCallables = ""
     sJSCallables = ""
     for sFuncName, sReturn in dFUNCTIONS.items():
         if sFuncName.startswith("_g_cond_"): # condition
