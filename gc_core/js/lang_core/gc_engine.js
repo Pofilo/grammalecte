@@ -355,7 +355,7 @@ class TextParser {
         }
     }
 
-    _getNextPointers (self, dToken, dGraph, dPointer, bDebug=false) {
+    * _getNextPointers (self, dToken, dGraph, dPointer, bDebug=false) {
         // generator: return nodes where <dToken> “values” match <dNode> arcs
         let dNode = dPointer["dNode"];
         let iNode1 = dPointer["iNode1"];
@@ -402,12 +402,13 @@ class TextParser {
                 for (let sRegex in dNode["<re_value>"]) {
                     if (!sRegex.includes("¬")) {
                         // no anti-pattern
-                        if (dToken["sValue"].search(sRegex) !== -1):
+                        if (dToken["sValue"].search(sRegex) !== -1) {
                             if (bDebug) {
                                 console.log("  MATCH: ~" + sRegex);
                             }
                             yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] };
                             bTokenFound = true;
+                        }
                     } else {
                         // there is an anti-pattern
                         let [sPattern, sNegPattern] = sRegex.split("¬", 1);
@@ -486,7 +487,7 @@ class TextParser {
         }
         // token tags
         if (dToken.hasOwnProperty("tags") && dNode.hasOwnProperty("<tags>")) {
-            for (dToken["tags"].has(sTag)) {
+            for (let sTag in dToken["tags"]) {
                 if (dNode["<tags>"].hasOwnProperty(sTag)) {
                     if (bDebug) {
                         console.log("  MATCH: /" + sTag);
@@ -500,7 +501,7 @@ class TextParser {
         if (dNode.hasOwnProperty("<meta>")) {
             for (let sMeta in dNode["<meta>"]) {
                 // no regex here, we just search if <dNode["sType"]> exists within <sMeta>
-                if (sMeta == "*" or dToken["sType"] == sMeta) {
+                if (sMeta == "*" || dToken["sType"] == sMeta) {
                     if (bDebug) {
                         console.log("  MATCH: *" + sMeta);
                     }
@@ -523,7 +524,7 @@ class TextParser {
         }
         // JUMP
         // Warning! Recurssion!
-        if (dNode.has("<>")) {
+        if (dNode.hasOwnPropertys("<>")) {
             let dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": True };
             yield* this._getNextPointers(dToken, dGraph, dPointer2, bDebug);
         }
@@ -533,7 +534,7 @@ class TextParser {
         // parse graph with tokens from the text and execute actions encountered
         let lPointer = [];
         let bTagAndRewrite = false;
-        for let [iToken, dToken] in this.lToken.entries():
+        for (let [iToken, dToken] in this.lToken.entries()) {
             if (bDebug) {
                 console.log("TOKEN: " + dToken["sValue"]);
             }
@@ -549,13 +550,14 @@ class TextParser {
             for (let dPointer of lPointer) {
                 //if bDebug:
                 //    console.log("+", dPointer);
-                if ("<rules>" in dPointer["dNode"]) {
+                if (dPointer["dNode"].hasOwnProperty("<rules>")) {
                     let bChange = this._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOpt, sCountry, bShowRuleId, bDebug, bContext);
                     if (bChange) {
                         bTagAndRewrite = true;
                     }
                 }
             }
+        }
         if (bTagAndRewrite) {
             this.rewriteFromTags(bDebug);
         }
@@ -570,7 +572,7 @@ class TextParser {
         let bChange = false;
         for (let [sLineId, nextNodeKey] of Object.entries(dNode)) {
             let bCondMemo = null;
-            for sRuleId in dGraph[nextNodeKey]:
+            for (let sRuleId in dGraph[nextNodeKey]) {
                 try {
                     if (bDebug) {
                         console.log("   >TRY: " + sRuleId);
@@ -644,7 +646,7 @@ class TextParser {
                                 if (!this.dTags.has(sWhat)) {
                                     this.dTags.set(sWhat, [nTokenStart, nTokenStart]);
                                 } else {
-                                    this.dTags.set(sWhat, [min(nTokenStart, this.dTags.get(sWhat)[0], max(nTokenEnd, this.dTags.get(sWhat)[1]]);
+                                    this.dTags.set(sWhat, [Math.min(nTokenStart, this.dTags.get(sWhat)[0]), Math.max(nTokenEnd, this.dTags.get(sWhat)[1])]);
                                 }
                             }
                             else if (cActionType == "%") {
@@ -652,8 +654,8 @@ class TextParser {
                                 if (bDebug) {
                                     console.log("    IMMUNITY:\n      " + _rules_graph.dRule[sRuleId]);;
                                 }
-                                nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : else nLastToken + eAct[0];
-                                nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : else nLastToken + eAct[1];
+                                nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
+                                nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 if (nTokenEnd - nTokenStart == 0) {
                                     this.lToken[nTokenStart]["bImmune"] = True
                                     let nErrorStart = this.nOffsetWithinParagraph + this.lToken[nTokenStart]["nStart"];
@@ -664,7 +666,7 @@ class TextParser {
                                     for (let i = nTokenStart;  i <= nTokenEnd;  i++) {
                                         this.lToken[i]["bImmune"] = true;
                                         let nErrorStart = this.nOffsetWithinParagraph + this.lToken[i]["nStart"];
-                                        if (nErrorStart in this.dError) {
+                                        if (this.dError.has(nErrorStart)) {
                                             this.dError.delete(nErrorStart);
                                         }
                                     }
@@ -685,6 +687,7 @@ class TextParser {
                     console.log("Error: ", sLineId, sRuleId, this.sSentence);
                     console.error(e);
                 }
+            }
         }
         return bChange;
     }
@@ -743,7 +746,7 @@ class TextParser {
             "nEnd": nEnd,
             "sLineId": sLineId,
             "sRuleId": sRuleId,
-            "sType": sOption  if sOption  else "notype",
+            "sType": sOption || "notype",
             "sMessage": sMessage,
             "aSuggestions": lSugg,
             "URL": sURL
@@ -759,7 +762,7 @@ class TextParser {
     _expand (sText, nTokenOffset, nLastToken) {
         let m;
         while ((m = /\\(-?[0-9]+)/.exec(sText)) !== null) {
-            if (m[1][0:1] == "-") {
+            if (m[1].slice(0,1) == "-") {
                 sText = sText.replace(m[0], self.lToken[nLastToken+parseInt(m[1],10)+1]["sValue"]);
             } else {
                 sText = sText.replace(m[0], self.lToken[nTokenOffset+parseInt(m[1],10)]["sValue"]);
@@ -774,11 +777,14 @@ class TextParser {
         let sNew = "";
         if (sRepl === "*") {
             sNew = " ".repeat(ln);
-        } else if (sRepl === ">" || sRepl === "_" || sRepl === "~") {
+        }
+        else if (sRepl === ">" || sRepl === "_" || sRepl === "~") {
             sNew = sRepl + " ".repeat(ln-1);
-        } else if (sRepl === "@") {
+        }
+        else if (sRepl === "@") {
             sNew = "@".repeat(ln);
-        } else if (sRepl.slice(0,1) === "=") {
+        }
+        else if (sRepl.slice(0,1) === "=") {
             sNew = oEvalFunc[sRepl.slice(1)](sText, m);
             sNew = sNew + " ".repeat(ln-sNew.length);
             if (bUppercase && m[iGroup].slice(0,1).gl_isUpperCase()) {
@@ -905,9 +911,9 @@ class TextParser {
                     }
                     dToken["sRealValue"] = dToken["sValue"];
                     dToken["sValue"] = dToken["sNewValue"];
-                    nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"]);
-                    sNewRepl = (nDiffLen >= 0) ? (dToken["sNewValue"] + " ".repeat(nDiffLen) : dToken["sNewValue"].slice(0, len(dToken["sRealValue"]));
-                    this.sSentence = this.sSentence[:dToken["nStart"]] + sNewRepl + this.sSentence[dToken["nEnd"]:];
+                    nDiffLen = dToken["sRealValue"].length - dToken["sNewValue"].length;
+                    sNewRepl = (nDiffLen >= 0) ? dToken["sNewValue"] + " ".repeat(nDiffLen) : dToken["sNewValue"].slice(0, dToken["sRealValue"].length);
+                    this.sSentence = this.sSentence.slice(0,dToken["nStart"]) + sNewRepl + this.sSentence.slice(dToken["nEnd"]);
                     delete dToken["sNewValue"];
                 }
             }
@@ -1053,6 +1059,7 @@ function morph (dTokenPos, aWord, sPattern, sNegPattern, bNoWord=false) {
         if (sNegPattern === "*") {
             // all morph must match sPattern
             return lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1));
+        }
         else {
             if (lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
                 return false;
@@ -1073,6 +1080,7 @@ function analyse (sWord, sPattern, sNegPattern) {
         if (sNegPattern === "*") {
             // all morph must match sPattern
             return lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1));
+        }
         else {
             if (lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
                 return false;
@@ -1099,7 +1107,7 @@ function g_value (dToken, sValues, nLeft=null, nRight=null) {
     else if (dToken["sValue"].gl_isUpperCase()) {
         //if sValue.lower() in sValues:
         //    return true;
-        sValue = "|"+sValue[1:].gl_toCapitalize();
+        sValue = "|"+sValue.slice(1).gl_toCapitalize();
         if (sValues.includes(sValue)) {
             return true;
         }
