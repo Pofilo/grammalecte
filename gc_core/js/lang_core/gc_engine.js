@@ -183,7 +183,7 @@ class TextParser {
         s += "sentence: " + this.sSentence0 + "\n";
         s += "now:      " + this.sSentence  + "\n";
         for (let dToken of this.lToken) {
-            s += '#${dToken["i"]}\t${dToken["nStart"]}:{$dToken["nEnd"]}\t${dToken["sValue"]}\t${dToken["sType"]}';
+            s += `#${dToken["i"]}\t${dToken["nStart"]}:${dToken["nEnd"]}\t${dToken["sValue"]}\t${dToken["sType"]}`;
             if (dToken.hasOwnProperty("lMorph")) {
                 s += "\t" + dToken["lMorph"].toString();
             }
@@ -195,12 +195,13 @@ class TextParser {
         return s;
     }
 
-    parse (sText, sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false) {
+    parse (sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false) {
         // analyses the paragraph sText and returns list of errors
         let dOpt = dOptions || _dOptions;
+        let bShowRuleId = option('idrule');
         // parse paragraph
         try {
-            this.parseText(this.sText, this.sText0, true, 0, sCountry, dOpt, bDebug, bContext);
+            this.parseText(this.sText, this.sText0, true, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext);
         }
         catch (e) {
             console.error(e);
@@ -233,7 +234,7 @@ class TextParser {
                         this.dTokenPos.set(dToken["nStart"], dToken);
                     }
                 }
-                this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bDebug, bContext);
+                this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext);
             }
             catch (e) {
                 console.error(e);
@@ -242,9 +243,8 @@ class TextParser {
         return Array.from(this.dError.values());
     }
 
-    parseText (sText, sText0, bParagraph, nOffset, sCountry, dOptions, bDebug, bContext) {
+    parseText (sText, sText0, bParagraph, nOffset, sCountry, dOptions, bShowRuleId, bDebug, bContext) {
         let bChange = false;
-        let bIdRule = option('idrule');
         let m;
 
         for (let [sOption, lRuleGroup] of gc_engine.getRules(bParagraph)) {
@@ -257,9 +257,9 @@ class TextParser {
                 for (let [sGraphName, sLineId] of lRuleGroup) {
                     if (!dOptions.has(sGraphName) || dOptions.get(sGraphName)) {
                         if (bDebug) {
-                            console.log("\n>>>> GRAPH: " + sGraphName + " " + sLineId);
+                            console.log(">>>> GRAPH: " + sGraphName + " " + sLineId);
                         }
-                        sText = this.parseGraph(gc_rules_graph.dAllGraph[sGraphName] , sCountry, dOptions, bDebug, bContext);
+                        sText = this.parseGraph(gc_rules_graph.dAllGraph[sGraphName], sCountry, dOptions, bShowRuleId, bDebug, bContext);
                     }
                 }
             }
@@ -279,7 +279,7 @@ class TextParser {
                                                 //console.log("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
                                                 let nErrorStart = nOffset + m.start[eAct[0]];
                                                 if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart)) {
-                                                    this.dError.set(nErrorStart, this._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext));
+                                                    this.dError.set(nErrorStart, this._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext));
                                                     this.dErrorPriority.set(nErrorStart, nPriority);
                                                 }
                                                 break;
@@ -327,7 +327,7 @@ class TextParser {
             if (bParagraph) {
                 this.sText = sText;
             } else {
-                this.sSentence = sText
+                this.sSentence = sText;
             }
         }
     }
@@ -593,7 +593,7 @@ class TextParser {
                                 // grammar error
                                 let [iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL] = eAct;
                                 let nTokenErrorStart = (iTokenStart > 0) ? nTokenOffset + iTokenStart : nLastToken + iTokenStart;
-                                if (this.lToken[nTokenErrorStart].hasOwnProperty("bImmune")) {
+                                if (!this.lToken[nTokenErrorStart].hasOwnProperty("bImmune")) {
                                     let nTokenErrorEnd = (iTokenEnd > 0) ? nTokenOffset + iTokenEnd : nLastToken + iTokenEnd;
                                     let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lToken[nTokenErrorStart]["nStart"] : this.lToken[nTokenErrorStart]["nEnd"]);
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lToken[nTokenErrorEnd]["nEnd"] : this.lToken[nTokenErrorEnd]["nStart"]);
@@ -796,7 +796,7 @@ class TextParser {
             sNew = sRepl.gl_expand(m);
             sNew = sNew + " ".repeat(ln-sNew.length);
         }
-        //console.log("\n"+sText+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup])
+        //console.log(sText+"\nstart: "+m.start[iGroup]+" end:"+m.end[iGroup]);
         return sText.slice(0, m.start[iGroup]) + sNew + sText.slice(m.end[iGroup]);
     }
 
