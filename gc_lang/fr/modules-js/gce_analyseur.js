@@ -1,6 +1,14 @@
 //// GRAMMAR CHECKING ENGINE PLUGIN: Parsing functions for French language
 /*jslint esversion: 6*/
 
+function g_morphVC (dToken, sPattern, sNegPattern="") {
+    let nEnd = dToken["sValue"].lastIndexOf("-");
+    if (dToken["sValue"].includes("-t-")) {
+        nEnd = nEnd - 2;
+    }
+    return g_morph(dToken, sPattern, sNegPattern, 0, nEnd, false);
+}
+
 function rewriteSubject (s1, s2) {
     // s1 is supposed to be prn/patr/npr (M[12P])
     if (s2 == "lui") {
@@ -116,59 +124,6 @@ function mbUnit (s) {
         return true;
     }
     if (s.length > 1 && s.length < 16 && s.slice(0, 1).gl_isLowerCase() && (!s.slice(1).gl_isLowerCase() || /[0-9]/.test(s))) {
-        return true;
-    }
-    return false;
-}
-
-
-//// Syntagmes
-
-const _zEndOfNG1 = new RegExp ("^ *$|^ +(?:, +|)(?:n(?:’|e |o(?:u?s|tre) )|l(?:’|e(?:urs?|s|) |a )|j(?:’|e )|m(?:’|es? |a |on )|t(?:’|es? |a |u )|s(?:’|es? |a )|c(?:’|e(?:t|tte|s|) )|ç(?:a |’)|ils? |vo(?:u?s|tre) )");
-const _zEndOfNG2 = new RegExp ("^ +([a-zà-öA-Zø-ÿÀ-Ö0-9_Ø-ßĀ-ʯ][a-zà-öA-Zø-ÿÀ-Ö0-9_Ø-ßĀ-ʯ-]+)");
-const _zEndOfNG3 = new RegExp ("^ *, +([a-zà-öA-Zø-ÿÀ-Ö0-9_Ø-ßĀ-ʯ][a-zà-öA-Zø-ÿÀ-Ö0-9_Ø-ßĀ-ʯ-]+)");
-
-function isEndOfNG (dDA, s, iOffset) {
-    if (_zEndOfNG1.test(s)) {
-        return true;
-    }
-    let m = _zEndOfNG2.gl_exec2(s, ["$"]);
-    if (m && morphex(dDA, [iOffset+m.start[1], m[1]], ":[VR]", ":[NAQP]")) {
-        return true;
-    }
-    m = _zEndOfNG3.gl_exec2(s, ["$"]);
-    if (m && !morph(dDA, [iOffset+m.start[1], m[1]], ":[NA]", false)) {
-        return true;
-    }
-    return false;
-}
-
-
-const _zNextIsNotCOD1 = new RegExp ("^ *,");
-const _zNextIsNotCOD2 = new RegExp ("^ +(?:[mtsnj](e +|’)|[nv]ous |tu |ils? |elles? )");
-const _zNextIsNotCOD3 = new RegExp ("^ +([a-zéèî][a-zà-öA-Zø-ÿÀ-ÖØ-ßĀ-ʯ-]+)");
-
-function isNextNotCOD (dDA, s, iOffset) {
-    if (_zNextIsNotCOD1.test(s) || _zNextIsNotCOD2.test(s)) {
-        return true;
-    }
-    let m = _zNextIsNotCOD3.gl_exec2(s, ["$"]);
-    if (m && morphex(dDA, [iOffset+m.start[1], m[1]], ":[123][sp]", ":[DM]")) {
-        return true;
-    }
-    return false;
-}
-
-
-const _zNextIsVerb1 = new RegExp ("^ +[nmts](?:e |’)");
-const _zNextIsVerb2 = new RegExp ("^ +([a-zà-öA-Zø-ÿÀ-Ö0-9_Ø-ßĀ-ʯ][a-zà-öA-Zø-ÿÀ-Ö0-9_Ø-ßĀ-ʯ-]+)");
-
-function isNextVerb (dDA, s, iOffset) {
-    if (_zNextIsVerb1.test(s)) {
-        return true;
-    }
-    let m = _zNextIsVerb2.gl_exec2(s, ["$"]);
-    if (m && morph(dDA, [iOffset+m.start[1], m[1]], ":[123][sp]", false)) {
         return true;
     }
     return false;
