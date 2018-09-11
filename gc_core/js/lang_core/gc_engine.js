@@ -12,6 +12,7 @@ ${map}
 if (typeof(require) !== 'undefined') {
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
+    var gc_rules_graph = require("resource://grammalecte/${lang}/gc_rules_graph.js");
     var cregex = require("resource://grammalecte/${lang}/cregex.js");
     var text = require("resource://grammalecte/text.js");
 }
