@@ -108,21 +108,6 @@ def mbUnit (s):
     return False
 
 
-#### Syntagmes
-
-_zNextIsVerb1 = re.compile(" +[nmts](?:e |’)")
-_zNextIsVerb2 = re.compile(r" +(\w[\w-]+)")
-
-def isNextVerb (dDA, s, iOffset):
-    "returns True if next word is a verb"
-    if _zNextIsVerb1.match(s):
-        return True
-    m = _zNextIsVerb2.match(s)
-    if m and morph(dDA, (iOffset+m.start(1), m.group(1)), ":[123][sp]", False):
-        return True
-    return False
-
-
 #### Exceptions
 
 aREGULARPLURAL = frozenset(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café", \
