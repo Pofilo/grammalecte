@@ -415,10 +415,10 @@ class TextParser:
                         bTokenFound = True
             # regex morph arcs
             if "<re_morph>" in dNode:
+                lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                 for sRegex in dNode["<re_morph>"]:
                     if "¬" not in sRegex:
                         # no anti-pattern
-                        lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                         if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
                             if bDebug:
                                 echo("  MATCH: @" + sRegex)
@@ -430,14 +430,12 @@ class TextParser:
                         if sNegPattern == "*":
                             # all morphologies must match with <sPattern>
                             if sPattern:
-                                lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                                 if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
                                     if bDebug:
                                         echo("  MATCH: @" + sRegex)
                                     yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                                     bTokenFound = True
                         else:
-                            lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
                             if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
                                 continue
                             if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
