@@ -455,7 +455,7 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
         "graph_callables": sPyCallables,
         "graph_callablesJS": sJSCallables,
         "rules_graphs": dAllGraph,
-        "rules_graphsJS": json.dumps(dAllGraph, ensure_ascii=False),
+        "rules_graphsJS": str(dAllGraph).replace("True", "true").replace("False", "false"),
         "rules_actions": dACTIONS,
-        "rules_actionsJS": json.dumps(dACTIONS, ensure_ascii=False)
+        "rules_actionsJS": str(dACTIONS).replace("True", "true").replace("False", "false")
     }
