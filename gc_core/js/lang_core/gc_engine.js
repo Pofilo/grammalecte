@@ -184,10 +184,10 @@ class TextParser {
         s += "now:      " + this.sSentence  + "\n";
         for (let dToken of this.lToken) {
             s += '#${dToken["i"]}\t${dToken["nStart"]}:{$dToken["nEnd"]}\t${dToken["sValue"]}\t${dToken["sType"]}';
-            if (dToken.has("lMorph")) {
+            if (dToken.hasOwnProperty("lMorph")) {
                 s += "\t" + dToken["lMorph"].toString();
             }
-            if (dToken.has("tags")) {
+            if (dToken.hasOwnProperty("tags")) {
                 s += "\t" + dToken["tags"].toString();
             }
             s += "\n";
@@ -259,7 +259,7 @@ class TextParser {
                         if (bDebug) {
                             console.log("\n>>>> GRAPH: " + sGraphName + " " + sLineId);
                         }
-                        sText = this.parseGraph(gc_rules_graph.dAllGraph.get(sGraphName), sCountry, dOptions, bDebug, bContext);
+                        sText = this.parseGraph(gc_rules_graph.dAllGraph[sGraphName] , sCountry, dOptions, bDebug, bContext);
                     }
                 }
             }
@@ -295,7 +295,7 @@ class TextParser {
                                             case "=":
                                                 // disambiguation
                                                 //console.log("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
-                                                oEvalFunc[sWhat](sText, m, dDA);
+                                                oEvalFunc[sWhat](sText, m, this.dTokenPos);
                                                 if (bDebug) {
                                                     console.log("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
                                                 }
@@ -597,7 +597,7 @@ class TextParser {
                                     let nTokenErrorEnd = (iTokenEnd > 0) ? nTokenOffset + iTokenEnd : nLastToken + iTokenEnd;
                                     let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lToken[nTokenErrorStart]["nStart"] : this.lToken[nTokenErrorStart]["nEnd"]);
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lToken[nTokenErrorEnd]["nEnd"] : this.lToken[nTokenErrorEnd]["nStart"]);
-                                    if (this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart, -1)) {
+                                    if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart, -1)) {
                                         this.dError[nErrorStart] = this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext);
                                         this.dErrorPriority[nErrorStart] = nPriority;
                                         if (bDebug) {
@@ -1052,7 +1052,7 @@ function morph (dTokenPos, aWord, sPattern, sNegPattern, bNoWord=false) {
     if (!aWord) {
         return bNoWord;
     }
-    let lMorph = (dTokenPos.has(aWord[0])  &&  dTokenPos.get(aWord[0])).has("lMorph") ? dTokenPos.get(aWord[0])["lMorph"] : _oSpellChecker.getMorph(aWord[1]);
+    let lMorph = (dTokenPos.has(aWord[0])  &&  dTokenPos.get(aWord[0]))["lMorph"] ? dTokenPos.get(aWord[0])["lMorph"] : _oSpellChecker.getMorph(aWord[1]);
     if (lMorph.length === 0) {
         return false;
     }
