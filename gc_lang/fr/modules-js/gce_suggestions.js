@@ -11,7 +11,24 @@ if (typeof(require) !== 'undefined') {
 
 //// verbs
 
-function suggVerb (sFlex, sWho, funcSugg2=null) {
+function splitVerb (sVerb) {
+    // renvoie le verbe et les pronoms séparément
+    let iRight = sVerb.lastIndexOf("-");
+    let sSuffix = sVerb.slice(iRight);
+    sVerb = sVerb.slice(0, iRight);
+    if (sVerb.endsWith("-t") || sVerb.endsWith("-le") || sVerb.endsWith("-la") || sVerb.endsWith("-les")) {
+        iRight = sVerb.lastIndexOf("-");
+        sSuffix = sVerb.slice(iRight) + sSuffix;
+        sVerb = sVerb.slice(0, iRight);
+    }
+    return [sVerb, sSuffix];
+}
+
+function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
+    let sSfx;
+    if (bVC) {
+        [sFlex, sSfx] = splitVerb(sFlex);
+    }
     let aSugg = new Set();
     for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
@@ -53,6 +70,9 @@ function suggVerb (sFlex, sWho, funcSugg2=null) {
         }
     }
     if (aSugg.size > 0) {
+        if (bVC) {
+            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+        }
         return Array.from(aSugg).join("|");
     }
     return "";
@@ -121,7 +141,11 @@ function suggVerbTense (sFlex, sTense, sWho) {
     return "";
 }
 
-function suggVerbImpe (sFlex) {
+function suggVerbImpe (sFlex, bVC=false) {
+    let sSfx;
+    if (bVC) {
+        [sFlex, sSfx] = splitVerb(sFlex);
+    }
     let aSugg = new Set();
     for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
@@ -138,6 +162,9 @@ function suggVerbImpe (sFlex) {
         }
     }
     if (aSugg.size > 0) {
+        if (bVC) {
+            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+        }
         return Array.from(aSugg).join("|");
     }
     return "";
@@ -468,7 +495,7 @@ function switchGender (sFlex, bPlur=null) {
 
 function switchPlural (sFlex) {
     let aSugg = new Set();
-    for (let sMorph of _oSpellChecker.getMorph(sFlex)) { 
+    for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
         if (sMorph.includes(":s")) {
             aSugg.add(suggPlur(sFlex));
         } else if (sMorph.includes(":p")) {
@@ -485,8 +512,12 @@ function hasSimil (sWord, sPattern=null) {
     return phonet.hasSimil(sWord, sPattern);
 }
 
-function suggSimil (sWord, sPattern=null, bSubst=false) {
+function suggSimil (sWord, sPattern=null, bSubst=false, bVC=false) {
     // return list of words phonetically similar to sWord and whom POS is matching sPattern
+    let sSfx;
+    if (bVC) {
+        [sWord, sSfx] = splitVerb(sWord);
+    }
     let aSugg = phonet.selectSimil(sWord, sPattern);
     for (let sMorph of _oSpellChecker.getMorph(sWord)) {
         for (let e of conj.getSimil(sWord, sMorph, bSubst)) {
@@ -494,6 +525,9 @@ function suggSimil (sWord, sPattern=null, bSubst=false) {
         }
     }
     if (aSugg.size > 0) {
+        if (bVC) {
+            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+        }
         return Array.from(aSugg).join("|");
     }
     return "";
