@@ -6,11 +6,6 @@
 "use strict";
 
 
-if (typeof(require) !== 'undefined') {
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
-}
-
-
 const aTkzPatterns = {
     // All regexps must start with ^.
     "default":
@@ -62,27 +57,37 @@ class Tokenizer {
         this.aRules = aTkzPatterns[this.sLang];
     }
 
-    * genTokens (sText) {
+    * genTokens (sText, bStartEndToken=false, bWithSpaces=false) {
         let m;
+        let iToken;
         let iNext = 0;
+        let iEnd = sText.length;
+        if (bStartEndToken) {
+            yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0, "lMorph": ["<start>"] };
+        }
         while (sText) {
             let iCut = 1;
             let iToken = 0;
             for (let [zRegex, sType] of this.aRules) {
-                try {
-                    if ((m = zRegex.exec(sText)) !== null) {
-                        iToken += 1;
-                        yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length }
-                        iCut = m[0].length;
-                        break;
+                if (sType !== "SPACE"  ||  bWithSpaces) {
+                    try {
+                        if ((m = zRegex.exec(sText)) !== null) {
+                            iToken += 1;
+                            yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length }
+                            iCut = m[0].length;
+                            break;
+                        }
                     }
-                }
-                catch (e) {
-                    helpers.logerror(e);
+                    catch (e) {
+                        console.error(e);
+                    }
                 }
             }
             iNext += iCut;
             sText = sText.slice(iCut);
+        }
+        if (bStartEndToken) {
+            yield { "i": iToken+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, "lMorph": ["<end>"] };
         }
     }
 }
