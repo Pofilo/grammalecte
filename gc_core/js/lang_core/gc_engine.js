@@ -197,7 +197,7 @@ class TextParser {
 
     parse (sText, sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false) {
         // analyses the paragraph sText and returns list of errors
-        let dOpt = dOptions || gc_engine.dOptions;
+        let dOpt = dOptions || _dOptions;
         // parse paragraph
         try {
             this.parseText(this.sText, this.sText0, true, 0, sCountry, dOpt, bDebug, bContext);
@@ -245,6 +245,7 @@ class TextParser {
     parseText (sText, sText0, bParagraph, nOffset, sCountry, dOptions, bDebug, bContext) {
         let bChange = false;
         let bIdRule = option('idrule');
+        let m;
 
         for (let [sOption, lRuleGroup] of gc_engine.getRules(bParagraph)) {
             if (sOption == "@@@@") {
@@ -266,17 +267,17 @@ class TextParser {
                 for (let [zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions, lGroups, lNegLookBefore] of lRuleGroup) {
                     if (!_aIgnoredRules.has(sRuleId)) {
                         while ((m = zRegex.gl_exec2(sText, lGroups, lNegLookBefore)) !== null) {
-                            bCondMemo = null;
+                            let bCondMemo = null;
                             for (let [sFuncCond, cActionType, sWhat, ...eAct] of lActions) {
                                 // action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
                                 try {
-                                    bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](sText, sText0, m, dDA, sCountry, bCondMemo));
+                                    bCondMemo = (!sFuncCond || oEvalFunc[sFuncCond](sText, sText0, m, this.dTokenPos, sCountry, bCondMemo));
                                     if (bCondMemo) {
                                         switch (cActionType) {
                                             case "-":
                                                 // grammar error
                                                 //console.log("-> error detected in " + sLineId + "\nzRegex: " + zRegex.source);
-                                                nErrorStart = nOffset + m.start[eAct[0]];
+                                                let nErrorStart = nOffset + m.start[eAct[0]];
                                                 if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart)) {
                                                     this.dError.set(nErrorStart, this._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext));
                                                     this.dErrorPriority.set(nErrorStart, nPriority);
@@ -312,7 +313,7 @@ class TextParser {
                                     }
                                 }
                                 catch (e) {
-                                    console.log(s);
+                                    console.log(sText);
                                     console.log("# line id: " + sLineId + "\n# rule id: " + sRuleId);
                                     console.error(e);
                                 }
@@ -336,11 +337,11 @@ class TextParser {
         this.sSentence = sSentence;
         let lNewToken = Array.from(_oTokenizer.genTokens(sSentence, true));
         for (let dToken of lNewToken) {
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).has("lMorph")) {
-                dToken["lMorph"] = this.dTokenPos.gl_get(dToken["nStart"], {}).get("lMorph");
+            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("lMorph")) {
+                dToken["lMorph"] = this.dTokenPos.get(dToken["nStart"])["lMorph"];
             }
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).has("tags")) {
-                dToken["tags"] = this.dTokenPos.gl_get(dToken["nStart"], {}).get("tags");
+            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("tags")) {
+                dToken["tags"] = this.dTokenPos.get(dToken["nStart"])["tags"];
             }
         }
         this.lToken = lNewToken;
@@ -694,8 +695,8 @@ class TextParser {
     }
 
     _createErrorFromRegex (sText, sText0, sSugg, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext) {
-        let nStart = nOffset + m.start(iGroup);
-        let nEnd = nOffset + m.end(iGroup);
+        let nStart = nOffset + m.start[iGroup];
+        let nEnd = nOffset + m.end[iGroup];
         // suggestions
         let lSugg = [];
         if (sSugg.startsWith("=")) {
@@ -742,7 +743,7 @@ class TextParser {
     }
 
     _createError (nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext) {
-        oErr = {
+        let oErr = {
             "nStart": nStart,
             "nEnd": nEnd,
             "sLineId": sLineId,
