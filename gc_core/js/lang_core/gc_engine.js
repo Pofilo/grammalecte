@@ -526,7 +526,7 @@ class TextParser {
             // JUMP
             // Warning! Recurssion!
             if (dNode.hasOwnProperty("<>")) {
-                let dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": True };
+                let dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": true };
                 yield* this._getNextPointers(dToken, dGraph, dPointer2, bDebug);
             }
         }
@@ -606,7 +606,7 @@ class TextParser {
                                         this.dError[nErrorStart] = this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext);
                                         this.dErrorPriority[nErrorStart] = nPriority;
                                         if (bDebug) {
-                                            console.log("    NEW_ERROR:  {}  {}:  {}".format(sRuleId, sLineId, this.dError[nErrorStart]));
+                                            console.log(`    NEW_ERROR:  ${sRuleId}  ${sLineId}:  ${this.dError[nErrorStart]}`);
                                         }
                                     }
                                 }
@@ -618,21 +618,21 @@ class TextParser {
                                 this._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug);
                                 bChange = true;
                                 if (bDebug) {
-                                    console.log("    TEXT_PROCESSOR:  " + sRuleId + " " + sLineId);
-                                    console.log("       " + this.lToken[nTokenStart]["sValue"] + " : " + this.lToken[nTokenEnd]["sValue"] + "  > ", sWhat);
+                                    console.log(`    TEXT_PROCESSOR:  ${sRuleId} ${sLineId}`);
+                                    console.log(`      ${this.lToken[nTokenStart]["sValue"]} : ${this.lToken[nTokenEnd]["sValue"]}  > ${sWhat}`);
                                 }
                             }
                             else if (cActionType == "=") {
                                 // disambiguation
                                 oEvalFunc[sWhat](this.lToken, nTokenOffset, nLastToken);
                                 if (bDebug) {
-                                    console.log("    DISAMBIGUATOR:  {} {} ({})  {}:{}".format(sRuleId, sLineId, sWhat, this.lToken[nTokenOffset+1]["sValue"], this.lToken[nLastToken]["sValue"]));
+                                    console.log(`    DISAMBIGUATOR:  ${sRuleId} ${sLineId} (${sWhat})  ${this.lToken[nTokenOffset+1]["sValue"]}:${this.lToken[nLastToken]["sValue"]}`);
                                 }
                             }
                             else if (cActionType == ">") {
                                 // we do nothing, this test is just a condition to apply all following actions
                                 if (bDebug) {
-                                    console.log("    COND_OK:  " + sRuleId + " " + sLineId);
+                                    console.log(`    COND_OK:  ${sRuleId} ${sLineId}`);
                                 }
                             }
                             else if (cActionType == "/") {
@@ -647,8 +647,8 @@ class TextParser {
                                     }
                                 }
                                 if (bDebug) {
-                                    console.log("    TAG:  " + sRuleId + " " + sLineId);
-                                    console.log("       " + sWhat + " > " + this.lToken[nTokenStart]["sValue"] + " : " + this.lToken[nTokenEnd]["sValue"]);
+                                    console.log(`    TAG:  ${sRuleId} ${sLineId}`);
+                                    console.log(`      ${sWhat} > ${this.lToken[nTokenStart]["sValue"]} : ${this.lToken[nTokenEnd]["sValue"]}`);
                                 }
                                 if (!this.dTags.has(sWhat)) {
                                     this.dTags.set(sWhat, [nTokenStart, nTokenStart]);
@@ -659,14 +659,14 @@ class TextParser {
                             else if (cActionType == "%") {
                                 // immunity
                                 if (bDebug) {
-                                    console.log("    IMMUNITY:\n      " + _rules_graph.dRule[sRuleId]);;
+                                    console.log("    IMMUNITY:\n      " + _rules_graph.dRule[sRuleId]);
                                 }
                                 nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 if (nTokenEnd - nTokenStart == 0) {
-                                    this.lToken[nTokenStart]["bImmune"] = True
+                                    this.lToken[nTokenStart]["bImmune"] = true;
                                     let nErrorStart = this.nOffsetWithinParagraph + this.lToken[nTokenStart]["nStart"];
-                                    if (nErrorStart in this.dError) {
+                                    if (this.dError.has(nErrorStart)) {
                                         this.dError.delete(nErrorStart);
                                     }
                                 } else {
@@ -684,7 +684,7 @@ class TextParser {
                         }
                         else if (cActionType == ">") {
                             if (bDebug) {
-                                console.log("    COND_BREAK:  " + sRuleId + " " + sLineId);
+                                console.log(`    COND_BREAK:  ${sRuleId} ${sLineId}`);
                             }
                             break;
                         }
@@ -735,7 +735,7 @@ class TextParser {
         } else {
             lSugg = this._expand(sSugg, nTokenOffset, nLastToken).split("|");
         }
-        if (bCaseSvty && lSugg.length > 0 && this.lToken[iFirstToken]["sValue"].slice(0,1).isupper()) {
+        if (bCaseSvty && lSugg.length > 0 && this.lToken[iFirstToken]["sValue"].slice(0,1).gl_isUpperCase()) {
             lSugg = capitalizeArray(lSugg);
         }
         // Message
@@ -840,7 +840,7 @@ class TextParser {
             } else {
                 sWhat = this._expand(sWhat, nTokenOffset, nLastToken);
             }
-            let bUppercase = bCaseSvty && this.lToken[nTokenRewriteStart]["sValue"].slice(0,1).isupper();
+            let bUppercase = bCaseSvty && this.lToken[nTokenRewriteStart]["sValue"].slice(0,1).gl_isUpperCase();
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
                 // one token
                 if (bUppercase) {
@@ -937,10 +937,9 @@ class TextParser {
         if (bDebug) {
             console.log("  TEXT REWRITED: " + this.sSentence);
         }
-        this.lToken.clear();
+        this.lToken.length = 0;
         this.lToken = lNewToken;
     }
-
 };
 
 
