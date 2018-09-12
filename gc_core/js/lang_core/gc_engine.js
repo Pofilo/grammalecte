@@ -187,8 +187,8 @@ class TextParser {
             if (dToken.hasOwnProperty("lMorph")) {
                 s += "\t" + dToken["lMorph"].toString();
             }
-            if (dToken.hasOwnProperty("tags")) {
-                s += "\t" + dToken["tags"].toString();
+            if (dToken.hasOwnProperty("aTags")) {
+                s += "\t" + dToken["aTags"].toString();
             }
             s += "\n";
         }
@@ -340,8 +340,8 @@ class TextParser {
             if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("lMorph")) {
                 dToken["lMorph"] = this.dTokenPos.get(dToken["nStart"])["lMorph"];
             }
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("tags")) {
-                dToken["tags"] = this.dTokenPos.get(dToken["nStart"])["tags"];
+            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("aTags")) {
+                dToken["aTags"] = this.dTokenPos.get(dToken["nStart"])["aTags"];
             }
         }
         this.lToken = lNewToken;
@@ -487,8 +487,8 @@ class TextParser {
                 }
             }
             // token tags
-            if (dToken.hasOwnProperty("tags") && dNode.hasOwnProperty("<tags>")) {
-                for (let sTag in dToken["tags"]) {
+            if (dToken.hasOwnProperty("aTags") && dNode.hasOwnProperty("<tags>")) {
+                for (let sTag in dToken["aTags"]) {
                     if (dNode["<tags>"].hasOwnProperty(sTag)) {
                         if (bDebug) {
                             console.log("  MATCH: /" + sTag);
@@ -639,10 +639,10 @@ class TextParser {
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 for (let i = nTokenStart; i <= nTokenEnd; i++) {
-                                    if (this.lToken[i].hasOwnProperty("tags")) {
-                                        this.lToken[i]["tags"].add(...sWhat.split("|"))
+                                    if (this.lToken[i].hasOwnProperty("aTags")) {
+                                        this.lToken[i]["aTags"].add(...sWhat.split("|"))
                                     } else {
-                                        this.lToken[i]["tags"] = new Set(sWhat.split("|"));
+                                        this.lToken[i]["aTags"] = new Set(sWhat.split("|"));
                                     }
                                 }
                                 if (bDebug) {
@@ -1250,7 +1250,7 @@ function g_tag_after (dToken, dTags, sTag) {
 }
 
 function g_tag (dToken, sTag) {
-    return dToken.hasOwnProperty("tags") && dToken["tags"].has(sTag);
+    return dToken.hasOwnProperty("aTags") && dToken["aTags"].has(sTag);
 }
 
 function g_space_between_tokens (dToken1, dToken2, nMin, nMax=null) {

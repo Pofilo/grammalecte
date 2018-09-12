@@ -233,8 +233,8 @@ class TextParser:
             s += '#{i}\t{nStart}:{nEnd}\t{sValue}\t{sType}'.format(**dToken)
             if "lMorph" in dToken:
                 s += "\t" + str(dToken["lMorph"])
-            if "tags" in dToken:
-                s += "\t" + str(dToken["tags"])
+            if "aTags" in dToken:
+                s += "\t" + str(dToken["aTags"])
             s += "\n"
         #for nPos, dToken in self.dTokenPos.items():
         #    s += "{}\t{}\n".format(nPos, dToken)
@@ -343,8 +343,8 @@ class TextParser:
         for dToken in lNewToken:
             if "lMorph" in self.dTokenPos.get(dToken["nStart"], {}):
                 dToken["lMorph"] = self.dTokenPos[dToken["nStart"]]["lMorph"]
-            if "tags" in self.dTokenPos.get(dToken["nStart"], {}):
-                dToken["tags"] = self.dTokenPos[dToken["nStart"]]["tags"]
+            if "aTags" in self.dTokenPos.get(dToken["nStart"], {}):
+                dToken["aTags"] = self.dTokenPos[dToken["nStart"]]["aTags"]
         self.lToken = lNewToken
         self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
         if bDebug:
@@ -444,8 +444,8 @@ class TextParser:
                                 yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
                                 bTokenFound = True
         # token tags
-        if "tags" in dToken and "<tags>" in dNode:
-            for sTag in dToken["tags"]:
+        if "aTags" in dToken and "<tags>" in dNode:
+            for sTag in dToken["aTags"]:
                 if sTag in dNode["<tags>"]:
                     if bDebug:
                         echo("  MATCH: /" + sTag)
@@ -557,10 +557,10 @@ class TextParser:
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 for i in range(nTokenStart, nTokenEnd+1):
-                                    if "tags" in self.lToken[i]:
-                                        self.lToken[i]["tags"].update(sWhat.split("|"))
+                                    if "aTags" in self.lToken[i]:
+                                        self.lToken[i]["aTags"].update(sWhat.split("|"))
                                     else:
-                                        self.lToken[i]["tags"] = set(sWhat.split("|"))
+                                        self.lToken[i]["aTags"] = set(sWhat.split("|"))
                                 if bDebug:
                                     echo("    TAG: {} >  [{}:{}]".format(sWhat, self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"]))
                                 if sWhat not in self.dTags:
@@ -1039,7 +1039,7 @@ def g_tag_after (dToken, dTags, sTag):
 
 
 def g_tag (dToken, sTag):
-    return "tags" in dToken and sTag in dToken["tags"]
+    return "aTags" in dToken and sTag in dToken["aTags"]
 
 
 def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
