@@ -414,7 +414,7 @@ class TextParser {
                             }
                         } else {
                             // there is an anti-pattern
-                            let [sPattern, sNegPattern] = sRegex.split("¬", 1);
+                            let [sPattern, sNegPattern] = sRegex.split("¬", 2);
                             if (sNegPattern && dToken["sValue"].search(sNegPattern) !== -1) {
                                 continue;
                             }
@@ -458,7 +458,7 @@ class TextParser {
                             }
                         } else {
                             // there is an anti-pattern
-                            let [sPattern, sNegPattern] = sRegex.split("¬", 1);
+                            let [sPattern, sNegPattern] = sRegex.split("¬", 2);
                             if (sNegPattern == "*") {
                                 // all morphologies must match with <sPattern>
                                 if (sPattern) {
@@ -602,11 +602,11 @@ class TextParser {
                                     let nTokenErrorEnd = (iTokenEnd > 0) ? nTokenOffset + iTokenEnd : nLastToken + iTokenEnd;
                                     let nErrorStart = this.nOffsetWithinParagraph + ((cStartLimit == "<") ? this.lToken[nTokenErrorStart]["nStart"] : this.lToken[nTokenErrorStart]["nEnd"]);
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lToken[nTokenErrorEnd]["nEnd"] : this.lToken[nTokenErrorEnd]["nStart"]);
-                                    if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart, -1)) {
-                                        this.dError[nErrorStart] = this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext);
+                                    if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.gl_get(nErrorStart, -1)) {
+                                        this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext));
                                         this.dErrorPriority[nErrorStart] = nPriority;
                                         if (bDebug) {
-                                            console.log("    NEW_ERROR: ",  this.dError[nErrorStart]);
+                                            console.log("    NEW_ERROR: ",  this.dError.get(nErrorStart));
                                         }
                                     }
                                 }
