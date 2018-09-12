@@ -510,7 +510,7 @@ class TextParser:
             for sRuleId in dGraph[nextNodeKey]:
                 try:
                     if bDebug:
-                        echo("   >TRY: " + sRuleId)
+                        echo("   >TRY: " + sRuleId + " " + sLineId)
                     sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
@@ -533,7 +533,7 @@ class TextParser:
                                         self.dError[nErrorStart] = self._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext)
                                         self.dErrorPriority[nErrorStart] = nPriority
                                         if bDebug:
-                                            echo("    NEW_ERROR:  {}  {}:  {}".format(sRuleId, sLineId, self.dError[nErrorStart]))
+                                            echo("    NEW_ERROR: {}".format(self.dError[nErrorStart]))
                             elif cActionType == "~":
                                 # text processor
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
@@ -541,17 +541,16 @@ class TextParser:
                                 self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
                                 bChange = True
                                 if bDebug:
-                                    echo("    TEXT_PROCESSOR:  " + sRuleId + " " + sLineId)
-                                    echo("       " + self.lToken[nTokenStart]["sValue"] + " : " + self.lToken[nTokenEnd]["sValue"] + "  > ", sWhat)
+                                    echo("    TEXT_PROCESSOR: [{}:{}]  > {}".format(self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"], sWhat))
                             elif cActionType == "=":
                                 # disambiguation
                                 globals()[sWhat](self.lToken, nTokenOffset, nLastToken)
                                 if bDebug:
-                                    echo("    DISAMBIGUATOR:  {} {} ({})  {}:{}".format(sRuleId, sLineId, sWhat, self.lToken[nTokenOffset+1]["sValue"], self.lToken[nLastToken]["sValue"]))
+                                    echo("    DISAMBIGUATOR: ({})  [{}:{}]".format(sWhat, self.lToken[nTokenOffset+1]["sValue"], self.lToken[nLastToken]["sValue"]))
                             elif cActionType == ">":
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
-                                    echo("    COND_OK:  " + sRuleId + " " + sLineId)
+                                    echo("    COND_OK")
                                 pass
                             elif cActionType == "/":
                                 # Tag
@@ -563,8 +562,7 @@ class TextParser:
                                     else:
                                         self.lToken[i]["tags"] = set(sWhat.split("|"))
                                 if bDebug:
-                                    echo("    TAG:  " + sRuleId + " " + sLineId)
-                                    echo("       " + sWhat + " > " + self.lToken[nTokenStart]["sValue"] + " : " + self.lToken[nTokenEnd]["sValue"])
+                                    echo("    TAG: {} >  [{}:{}]".format(sWhat, self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"]))
                                 if sWhat not in self.dTags:
                                     self.dTags[sWhat] = [nTokenStart, nTokenStart]
                                 else:
@@ -573,7 +571,7 @@ class TextParser:
                             elif cActionType == "%":
                                 # immunity
                                 if bDebug:
-                                    echo("    IMMUNITY:\n      " + _rules_graph.dRule[sRuleId])
+                                    echo("    IMMUNITY: " + _rules_graph.dRule[sRuleId])
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
@@ -591,7 +589,7 @@ class TextParser:
                                 echo("# error: unknown action at " + sLineId)
                         elif cActionType == ">":
                             if bDebug:
-                                echo("    COND_BREAK:  " + sRuleId + " " + sLineId)
+                                echo("    COND_BREAK")
                             break
                 except Exception as e:
                     raise Exception(str(e), sLineId, sRuleId, self.sSentence)
@@ -703,8 +701,6 @@ class TextParser:
 
     def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug):
         "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
-        if bDebug:
-            echo("   START: {} - END: {}  ".format(nTokenRewriteStart, nTokenRewriteEnd))
         if sWhat == "*":
             # purge text
             if nTokenRewriteEnd - nTokenRewriteStart == 0:
@@ -855,7 +851,7 @@ def look (s, sPattern, sNegPattern=None):
     return False
 
 
-def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=None):
+def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=""):
     "returns True if s has pattern sPattern and m.group(1) has pattern sPatternGroup1"
     m = re.search(sPattern, s)
     if not m:
@@ -865,9 +861,8 @@ def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup
         nPos = m.start(1) + nOffset
     except:
         return False
-    if sNegPatternGroup1:
-        return morphex(dTokenPos, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
-    return morph(dTokenPos, (nPos, sWord), sPatternGroup1, False)
+    return morph(dTokenPos, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
+
 
 
 #### Analyse groups for regex rules
