@@ -1033,10 +1033,7 @@ function look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPattern
     try {
         let sWord = m[1];
         let nPos = m.start[1] + nOffset;
-        if (sNegPatternGroup1) {
-            return morph(dTokenPos, [nPos, sWord], sPatternGroup1, sNegPatternGroup1);
-        }
-        return morph(dTokenPos, [nPos, sWord], sPatternGroup1, false);
+        return morph(dTokenPos, [nPos, sWord], sPatternGroup1, sNegPatternGroup1);
     }
     catch (e) {
         console.error(e);
