@@ -24,6 +24,7 @@ def py2js (sCode):
     # boolean
     sCode = sCode.replace("False", "false")
     sCode = sCode.replace("True", "true")
+    sCode = sCode.replace("None", "null")
     sCode = sCode.replace("bool", "Boolean")
     # methods
     sCode = sCode.replace(".__len__()", ".length")
