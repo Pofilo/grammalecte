@@ -46,12 +46,12 @@ def py2js (sCode):
     sCode = sCode.replace('.replace("..."', r".replace(/\.\.\./g")
     sCode = re.sub(r'.replace\("([^"]+)" ?,', ".replace(/\\1/g,", sCode)
     # regex
-    sCode = re.sub('re.search\\("([^"]+)", *(m.group\\(\\d\\))\\)', "(\\2.search(/\\1/) >= 0)", sCode)
-    sCode = re.sub(".search\\(/\\(\\?i\\)([^/]+)/\\) >= 0\\)", ".search(/\\1/i) >= 0)", sCode)
-    sCode = re.sub('(look\\(sx?[][.a-z:()]*), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = re.sub('(look\\(sx?[][.a-z:()]*), "([^"]+)"', "\\1, /\\2/", sCode)
-    sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "([^"]+)"', "\\1, /\\2/i", sCode)
+    #sCode = re.sub('re.search\\("([^"]+)", *(m.group\\(\\d\\))\\)', "(\\2.search(/\\1/) >= 0)", sCode)
+    #sCode = re.sub(".search\\(/\\(\\?i\\)([^/]+)/\\) >= 0\\)", ".search(/\\1/i) >= 0)", sCode)
+    #sCode = re.sub('(look\\(sx?[][.a-z:()]*), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
+    #sCode = re.sub('(look\\(sx?[][.a-z:()]*), "([^"]+)"', "\\1, /\\2/", sCode)
+    #sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
+    #sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "([^"]+)"', "\\1, /\\2/i", sCode)
     sCode = re.sub('m\\.group\\((\\d+)\\) +in +(a[a-zA-Z]+)', "\\2.has(m[\\1])", sCode)
     sCode = sCode.replace("(?<!-)", "")  # todo
     # slices

@@ -582,7 +582,7 @@ class TextParser {
             for (let sRuleId of dGraph[nextNodeKey]) {
                 try {
                     if (bDebug) {
-                        console.log("   >TRY: " + sRuleId);
+                        console.log("   >TRY: " + sRuleId + " " + sLineId);
                     }
                     let [sOption, sFuncCond, cActionType, sWhat, ...eAct] = gc_rules_graph.dRule[sRuleId];
                     // Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
@@ -606,7 +606,7 @@ class TextParser {
                                         this.dError[nErrorStart] = this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext);
                                         this.dErrorPriority[nErrorStart] = nPriority;
                                         if (bDebug) {
-                                            console.log(`    NEW_ERROR:  ${sRuleId}  ${sLineId}:  ${this.dError[nErrorStart]}`);
+                                            console.log("    NEW_ERROR: ",  this.dError[nErrorStart]);
                                         }
                                     }
                                 }
@@ -618,21 +618,20 @@ class TextParser {
                                 this._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug);
                                 bChange = true;
                                 if (bDebug) {
-                                    console.log(`    TEXT_PROCESSOR:  ${sRuleId} ${sLineId}`);
-                                    console.log(`      [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]  > ${sWhat}`);
+                                    console.log(`    TEXT_PROCESSOR: [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]  > ${sWhat}`);
                                 }
                             }
                             else if (cActionType == "=") {
                                 // disambiguation
                                 oEvalFunc[sWhat](this.lToken, nTokenOffset, nLastToken);
                                 if (bDebug) {
-                                    console.log(`    DISAMBIGUATOR:  ${sRuleId} ${sLineId} (${sWhat})  ${this.lToken[nTokenOffset+1]["sValue"]}:${this.lToken[nLastToken]["sValue"]}`);
+                                    console.log(`    DISAMBIGUATOR: (${sWhat})  [${this.lToken[nTokenOffset+1]["sValue"]}:${this.lToken[nLastToken]["sValue"]}]`);
                                 }
                             }
                             else if (cActionType == ">") {
                                 // we do nothing, this test is just a condition to apply all following actions
                                 if (bDebug) {
-                                    console.log(`    COND_OK:  ${sRuleId} ${sLineId}`);
+                                    console.log("    COND_OK");
                                 }
                             }
                             else if (cActionType == "/") {
@@ -647,8 +646,7 @@ class TextParser {
                                     }
                                 }
                                 if (bDebug) {
-                                    console.log(`    TAG:  ${sRuleId} ${sLineId}`);
-                                    console.log(`      ${sWhat} > ${this.lToken[nTokenStart]["sValue"]} : ${this.lToken[nTokenEnd]["sValue"]}`);
+                                    console.log(`    TAG:  ${sWhat} > [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]`);
                                 }
                                 if (!this.dTags.has(sWhat)) {
                                     this.dTags.set(sWhat, [nTokenStart, nTokenStart]);
@@ -659,10 +657,10 @@ class TextParser {
                             else if (cActionType == "%") {
                                 // immunity
                                 if (bDebug) {
-                                    console.log("    IMMUNITY:\n      " + _rules_graph.dRule[sRuleId]);
+                                    console.log("    IMMUNITY: " + _rules_graph.dRule[sRuleId]);
                                 }
-                                nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
-                                nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
+                                let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
+                                let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
                                 if (nTokenEnd - nTokenStart == 0) {
                                     this.lToken[nTokenStart]["bImmune"] = true;
                                     let nErrorStart = this.nOffsetWithinParagraph + this.lToken[nTokenStart]["nStart"];
@@ -684,7 +682,7 @@ class TextParser {
                         }
                         else if (cActionType == ">") {
                             if (bDebug) {
-                                console.log(`    COND_BREAK:  ${sRuleId} ${sLineId}`);
+                                console.log("    COND_BREAK");
                             }
                             break;
                         }
@@ -915,8 +913,8 @@ class TextParser {
                     }
                     dToken["sRealValue"] = dToken["sValue"];
                     dToken["sValue"] = dToken["sNewValue"];
-                    nDiffLen = dToken["sRealValue"].length - dToken["sNewValue"].length;
-                    sNewRepl = (nDiffLen >= 0) ? dToken["sNewValue"] + " ".repeat(nDiffLen) : dToken["sNewValue"].slice(0, dToken["sRealValue"].length);
+                    let nDiffLen = dToken["sRealValue"].length - dToken["sNewValue"].length;
+                    let sNewRepl = (nDiffLen >= 0) ? dToken["sNewValue"] + " ".repeat(nDiffLen) : dToken["sNewValue"].slice(0, dToken["sRealValue"].length);
                     this.sSentence = this.sSentence.slice(0,dToken["nStart"]) + sNewRepl + this.sSentence.slice(dToken["nEnd"]);
                     delete dToken["sNewValue"];
                 }
@@ -945,6 +943,24 @@ class TextParser {
 function option (sOpt) {
     // return true if option sOpt is active
     return _dOptions.get(sOpt);
+}
+
+var re = {
+    search: function (sRegex, sText) {
+        if (sRegex.startsWith("(?i)")) {
+            return sText.search(new RegExp(sRegex.slice(4), "i")) !== -1;
+        } else {
+            return sText.search(sRegex) !== -1;
+        }
+    },
+
+    createRegExp: function (sRegex) {
+        if (sRegex.startsWith("(?i)")) {
+            return new RegExp(sRegex.slice(4), "i");
+        } else {
+            return new RegExp(sRegex);
+        }
+    }
 }
 
 
@@ -993,13 +1009,13 @@ function prevword1 (s, iEnd) {
     return [m.index, m[1]];
 }
 
-function look (s, zPattern, zNegPattern=null) {
-    // seek zPattern in s (before/after/fulltext), if antipattern zNegPattern not in s
+function look (s, sPattern, sNegPattern=null) {
+    // seek sPattern in s (before/after/fulltext), if antipattern sNegPattern not in s
     try {
-        if (zNegPattern && zNegPattern.test(s)) {
+        if (sNegPattern && re.search(sNegPattern, s)) {
             return false;
         }
-        return zPattern.test(s);
+        return re.search(sPattern, s);
     }
     catch (e) {
         console.error(e);
@@ -1007,8 +1023,9 @@ function look (s, zPattern, zNegPattern=null) {
     return false;
 }
 
-function look_chk1 (dDA, s, nOffset, zPattern, sPatternGroup1, sNegPatternGroup1=null) {
-    // returns True if s has pattern zPattern and m.group(1) has pattern sPatternGroup1
+function look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1="") {
+    // returns True if s has pattern sPattern and m.group(1) has pattern sPatternGroup1
+    let zPattern = createRegExp(sPattern);
     let m = zPattern.gl_exec2(s, null);
     if (!m) {
         return false;
@@ -1017,9 +1034,9 @@ function look_chk1 (dDA, s, nOffset, zPattern, sPatternGroup1, sNegPatternGroup1
         let sWord = m[1];
         let nPos = m.start[1] + nOffset;
         if (sNegPatternGroup1) {
-            return morphex(dDA, [nPos, sWord], sPatternGroup1, sNegPatternGroup1);
+            return morph(dTokenPos, [nPos, sWord], sPatternGroup1, sNegPatternGroup1);
         }
-        return morph(dDA, [nPos, sWord], sPatternGroup1, false);
+        return morph(dTokenPos, [nPos, sWord], sPatternGroup1, false);
     }
     catch (e) {
         console.error(e);
@@ -1216,7 +1233,7 @@ function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", 
 }
 
 function g_tag_before (dToken, dTags, sTag) {
-    if (dTags.has(sTag)) {
+    if (!dTags.has(sTag)) {
         return false;
     }
     if (dToken["i"] > dTags.get(sTag)[0]) {
@@ -1226,7 +1243,7 @@ function g_tag_before (dToken, dTags, sTag) {
 }
 
 function g_tag_after (dToken, dTags, sTag) {
-    if (dTags.has(sTag)) {
+    if (!dTags.has(sTag)) {
         return false;
     }
     if (dToken["i"] < dTags.get(sTag)[1]) {
