@@ -619,7 +619,7 @@ class TextParser {
                                 bChange = true;
                                 if (bDebug) {
                                     console.log(`    TEXT_PROCESSOR:  ${sRuleId} ${sLineId}`);
-                                    console.log(`      ${this.lToken[nTokenStart]["sValue"]} : ${this.lToken[nTokenEnd]["sValue"]}  > ${sWhat}`);
+                                    console.log(`      [${this.lToken[nTokenStart]["sValue"]}:${this.lToken[nTokenEnd]["sValue"]}]  > ${sWhat}`);
                                 }
                             }
                             else if (cActionType == "=") {
@@ -807,9 +807,6 @@ class TextParser {
 
     _tagAndPrepareTokenForRewriting (sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug) {
         // text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position
-        if (bDebug) {
-            console.log("     START: ${nTokenRewriteStart} - END: ${nTokenRewriteEnd}  ");
-        }
         if (sWhat === "*") {
             // purge text
             if (nTokenRewriteEnd - nTokenRewriteStart == 0) {
@@ -880,7 +877,7 @@ class TextParser {
         let lNewToken = [];
         let nMergeUntil = 0;
         let dTokenMerger = null;
-        for (let [iToken, dToken] in this.lToken.entries()) {
+        for (let [iToken, dToken] of this.lToken.entries()) {
             let bKeepToken = true;
             if (dToken["sType"] != "INFO") {
                 if (nMergeUntil && iToken <= nMergeUntil) {
@@ -1160,6 +1157,7 @@ function g_morph (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
 
 function g_analyse (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
+    let lMorph;
     if (nLeft !== null) {
         lMorph = _oSpellChecker.getMorph(dToken["sValue"].slice(nLeft, nRight));
         if (bMemorizeMorph) {
@@ -1221,7 +1219,7 @@ function g_tag_before (dToken, dTags, sTag) {
     if (dTags.has(sTag)) {
         return false;
     }
-    if (dToken["i"] > dTags[sTag][0]) {
+    if (dToken["i"] > dTags.get(sTag)[0]) {
         return true;
     }
     return false;
@@ -1231,7 +1229,7 @@ function g_tag_after (dToken, dTags, sTag) {
     if (dTags.has(sTag)) {
         return false;
     }
-    if (dToken["i"] < dTags[sTag][1]) {
+    if (dToken["i"] < dTags.get(sTag)[1]) {
         return true;
     }
     return false;
