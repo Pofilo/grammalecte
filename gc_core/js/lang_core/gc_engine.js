@@ -1115,7 +1115,7 @@ function analyse (sWord, sPattern, sNegPattern) {
 function g_value (dToken, sValues, nLeft=null, nRight=null) {
     // test if <dToken['sValue']> is in sValues (each value should be separated with |)
     let sValue = (nLeft === null) ? "|"+dToken["sValue"]+"|" : "|"+dToken["sValue"].slice(nLeft, nRight)+"|";
-    if (sValues.includes(sValues)) {
+    if (sValues.includes(sValue)) {
         return true;
     }
     if (dToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
