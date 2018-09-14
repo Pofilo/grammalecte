@@ -59,7 +59,7 @@ class Tokenizer {
 
     * genTokens (sText, bStartEndToken=false, bWithSpaces=false) {
         let m;
-        let iToken;
+        let iToken = 0;
         let iNext = 0;
         let iEnd = sText.length;
         if (bStartEndToken) {
@@ -67,7 +67,6 @@ class Tokenizer {
         }
         while (sText) {
             let iCut = 1;
-            let iToken = 0;
             for (let [zRegex, sType] of this.aRules) {
                 if (sType !== "SPACE"  ||  bWithSpaces) {
                     try {
