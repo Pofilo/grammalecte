@@ -52,17 +52,17 @@ def prepareFunction (s):
     s = re.sub(r"(morph|morphex|displayInfo)[(][\\](\d+)", '\\1((m.start(\\2), m.group(\\2))', s)
     s = re.sub(r"(morph|morphex|displayInfo)[(]", '\\1(dTokenPos, ', s)
     s = re.sub(r"(sugg\w+|switch\w+)\(@", '\\1(m.group(i[4])', s)
-    s = re.sub(r"word\(\s*1\b", 'nextword1(s, m.end()', s)                                  # word(1)
-    s = re.sub(r"word\(\s*-1\b", 'prevword1(s, m.start()', s)                               # word(-1)
-    s = re.sub(r"word\(\s*(\d)", 'nextword(s, m.end(), \\1', s)                             # word(n)
-    s = re.sub(r"word\(\s*-(\d)", 'prevword(s, m.start(), \\1', s)                          # word(-n)
-    s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
-    s = re.sub(r"after\(\s*", 'look(s[m.end():], ', s)                                      # after(s)
-    s = re.sub(r"textarea\(\s*", 'look(s, ', s)                                             # textarea(s)
-    s = re.sub(r"/0", 'sx[m.start():m.end()]', s)                                           # /0
-    s = re.sub(r"before0\(\s*", 'look(sx[:m.start()], ', s)                                 # before0(s)
-    s = re.sub(r"after0\(\s*", 'look(sx[m.end():], ', s)                                    # after0(s)
-    s = re.sub(r"textarea0\(\s*", 'look(sx, ', s)                                           # textarea0(s)
+    s = re.sub(r"word\(\s*1\b", 'nextword1(sSentence, m.end()', s)                                  # word(1)
+    s = re.sub(r"word\(\s*-1\b", 'prevword1(sSentence, m.start()', s)                               # word(-1)
+    s = re.sub(r"word\(\s*(\d)", 'nextword(sSentence, m.end(), \\1', s)                             # word(n)
+    s = re.sub(r"word\(\s*-(\d)", 'prevword(sSentence, m.start(), \\1', s)                          # word(-n)
+    s = re.sub(r"before\(\s*", 'look(sSentence[:m.start()], ', s)                                   # before(sSentence)
+    s = re.sub(r"after\(\s*", 'look(sSentence[m.end():], ', s)                                      # after(sSentence)
+    s = re.sub(r"textarea\(\s*", 'look(sSentence, ', s)                                             # textarea(sSentence)
+    s = re.sub(r"/0", 'sSentence0[m.start():m.end()]', s)                                           # /0
+    s = re.sub(r"before0\(\s*", 'look(sSentence0[:m.start()], ', s)                                 # before0(sSentence)
+    s = re.sub(r"after0\(\s*", 'look(sSentence0[m.end():], ', s)                                    # after0(sSentence)
+    s = re.sub(r"textarea0\(\s*", 'look(sSentence0, ', s)                                           # textarea0(sSentence)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'm.group(\\1)', s)
     return s
@@ -561,15 +561,15 @@ def make (spLang, sLang, bJavaScript):
     sJSCallables = ""
     for sFuncName, sReturn in lFUNCTIONS:
         if sFuncName.startswith("_c_"): # condition
-            sParams = "s, sx, m, dTokenPos, sCountry, bCondMemo"
+            sParams = "sSentence, sSentence0, m, dTokenPos, sCountry, bCondMemo"
         elif sFuncName.startswith("_m_"): # message
-            sParams = "s, m"
+            sParams = "sSentence, m"
         elif sFuncName.startswith("_s_"): # suggestion
-            sParams = "s, m"
+            sParams = "sSentence, m"
         elif sFuncName.startswith("_p_"): # preprocessor
-            sParams = "s, m"
+            sParams = "sSentence, m"
         elif sFuncName.startswith("_d_"): # disambiguator
-            sParams = "s, m, dTokenPos"
+            sParams = "sSentence, m, dTokenPos"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue
