@@ -429,7 +429,7 @@ __<s>(p_sigle1)__
     ([A-Z][.][A-Z][.](?:[A-Z][.])*) +[A-ZÉÀÂÊÎÈÔ]  @@0  <<- ~1>> =\1.replace(".", "")+"."
 __[s>(p_sigle2)__
     [a-zA-Z][.][a-zA-Z][.](?:[a-zA-Z][.])*
-    <<- not re.search(r"(?i)^(?:i\.e\.|s\.[tv]\.p\.|e\.g\.|a\.k\.a\.|c\.q\.f\.d\.|b\.a\.|n\.b\.)$", \0) >>>
+    <<- not re.search("(?i)^(?:i\\.e\\.|s\\.[tv]\\.p\\.|e\\.g\\.|a\\.k\\.a\\.|c\\.q\\.f\\.d\\.|b\\.a\\.|n\\.b\\.)$", \0) >>>
     <<- \0.__len__() == 4 ->> =\0.replace(".", "").upper() + "|" + \0[0:2] + " " + \0[2:4]
     # Sigle. Il est recommandé d’ôter les points pour les sigles. (S’il s’agit d’un prénom et d’un nom, mettez un espace.)|https://fr.wikipedia.org/wiki/Sigle#Typographie
     <<- __else__ ->> =\0.replace(".", "").upper()                                                   # Sigle. Il est recommandé d’ôter les points pour les sigles.|https://fr.wikipedia.org/wiki/Sigle#Typographie
@@ -455,7 +455,7 @@ __[s](p_prénom_lettre_point_patronyme)__
     <<- morph(\1, ":M[12]") and (morph(\3, ":(?:M[12]|V)") or not spell(\3)) ~2>> *
 __[s>(p_prénom_lettre_point)__
     ([A-ZÉÈÂÎ][\w-]+)[  ][A-ZÉÈÂ]([.]) @@0,$
-    <<- morph(\1, ":M[12]") and after("^\W+[a-zéèêîïâ]") ~2>> _
+    <<- morph(\1, ":M[12]") and after("^\\W+[a-zéèêîïâ]") ~2>> _
 
 # Patronymes composés avec Le/La/Les
 __[s](p_patronyme_composé_avec_le_la_les)__
@@ -666,7 +666,7 @@ TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
 __[s]/maj(majuscule_en_début_phrase)__
     ^ *([a-zéèâàô][\w-]+)  @@$
-    <<- after("\w\w[.] +\w+") -1>> =\1.capitalize()                                                 # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+    <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                                 # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
 
@@ -725,7 +725,7 @@ TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|
 
 # Fin de paragraphe
 #__<i>/typo__  ({w_2}) *$   @@0
-#    <<- before("[a-zéàùèê][.] ") and not before(r"^(?:\d|\w[.])")
+#    <<- before("[a-zéàùèê][.] ") and not before("^(?:\\d|\w[.])")
 #    -1>> \1.|\1…|\1 !|\1 ?|\1 :|\1 ;|\1,                                               # Il manque une ponctuation finale.
 
 
@@ -961,7 +961,7 @@ TEST: Je {{n }}ai pas retrouvé l’ambiance de mes années de lycée.          
 
 __<s>/typo(typo_guillemets_typographiques_doubles_ouvrants)__
     "(?=\w)
-    <<- not before(r"[a-zA-Zéïîùàâäôö]$") ->> « |“                                                  # Guillemets typographiques ouvrants.
+    <<- not before("[a-zA-Zéïîùàâäôö]$") ->> « |“                                                   # Guillemets typographiques ouvrants.
 __<s>/typo(typo_guillemets_typographiques_doubles_fermants)__
     [\w.?!…,](")(?!\w)  @@*
     <<- -1>> " »|”"                                                                                 # Guillemets typographiques fermants.
@@ -1026,12 +1026,12 @@ TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
 
 __<s>/typo(typo_cohérence_guillemets_chevrons_ouvrants)__
     («)[^»“]+?(”)  @@0,$
-    <<- not before(r"\w$") -1>> “                                                                   # Guillemet ouvrant différent du guillemet fermant (”).
-    <<- not after(r"^\w") -2>> " »"                                                                 # Guillemet fermant différent du guillemet ouvrant («).
+    <<- not before("\\w$") -1>> “                                                                   # Guillemet ouvrant différent du guillemet fermant (”).
+    <<- not after("^\\w") -2>> " »"                                                                 # Guillemet fermant différent du guillemet ouvrant («).
 __<s>/typo(typo_cohérence_guillemets_chevrons_fermants)__
     (“)[^”«]+?(»)  @@0,$
-    <<- not before(r"\w$") -1>> "« "                                                                # Guillemet ouvrant différent du guillemet fermant (»).
-    <<- not after(r"^\w") -2>> ”                                                                    # Guillemet fermant différent du guillemet ouvrant (“).
+    <<- not before("\\w$") -1>> "« "                                                                # Guillemet ouvrant différent du guillemet fermant (»).
+    <<- not after("^\\w") -2>> ”                                                                    # Guillemet fermant différent du guillemet ouvrant (“).
 
 TEST: C’est {{«}}stupide{{”}}.
 TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
@@ -1039,12 +1039,12 @@ TEST: Quel {{“}}emmerdeur{{»}}, ce gars-là.
 
 __<s>/typo(typo_cohérence_guillemets_doubles_ouvrants)__
     (“)[^”’“«]+?(’)(?!\w)  @@0,$
-    <<- not before(r"\w$") -1>> "‘"                                                                 # Guillemet ouvrant différent du guillemet fermant (’).
+    <<- not before("\\w$") -1>> "‘"                                                                 # Guillemet ouvrant différent du guillemet fermant (’).
     <<- -2>> ”                                                                                      # Guillemet fermant différent du guillemet ouvrant (“).
 __<s>/typo(typo_cohérence_guillemets_doubles_fermants)__
     (‘)[^’“«]+?(”)  @@0,$
-    <<- not before(r"\w$") -1>> "“"                                                                 # Guillemet ouvrant différent du guillemet fermant (”).
-    <<- not after(r"^\w") -2>> ’                                                                    # Guillemet fermant différent du guillemet ouvrant (‘).
+    <<- not before("\\w$") -1>> "“"                                                                 # Guillemet ouvrant différent du guillemet fermant (”).
+    <<- not after("^\\w") -2>> ’                                                                    # Guillemet fermant différent du guillemet ouvrant (‘).
 
 TEST: Tu sais, {{‘}}ton ami{{”}} est venu.
 TEST: Oui, je vois, mais c’est quand même un {{“}}salopard{{’}}.
@@ -1063,7 +1063,7 @@ TEST: C’est {{“}}compliqué.
 
 __[i]/typo(typo_guillemet_simple_ouvrant_non_fermé)__
     (‘)\w\w[^’']+$  @@0
-    <<- before(r" $") or isStart() -1>> _                                                           # Guillemet fermant introuvable dans la suite du paragraphe.
+    <<- before(" $") or isStart() -1>> _                                                            # Guillemet fermant introuvable dans la suite du paragraphe.
 __[i]/typo(typo_guillemet_simple_fermant_non_ouvert)__
     ^[^‘']+\w\w(’)  @@$
     <<- after("^ ") or isEnd() -1>> _                                                               # Guillemet ouvrant introuvable dans ce paragraphe.
@@ -1125,8 +1125,8 @@ __[s]/num(num_grand_nombre_soudé)__
     <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *$") >>>
     <<- \0.__len__() > 4 ->> =formatNumber(\0)                                                      # Formatage des grands nombres.
     <<- __else__
-        and after("^(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])")
-        or after(r"^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\w’'])")
+        and after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])")
+        or after("^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])")
     ->> =formatNumber(\0)                                                                           # Formatage des grands nombres.
 
 __[s]/num(num_nombre_quatre_chiffres)__
@@ -1170,7 +1170,7 @@ TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 !!
 __[i]/date(date_nombres)__
     (?<!\d[ /.-])(\d\d?)[ /.-](\d\d?)[ /.-](\d\d\d+)(?![ /.-]\d)  @@0,w,$
-    <<- not checkDate(\1, \2, \3) and not before(r"(?i)\bversions? +$") ->> _                       # Cette date est invalide.
+    <<- not checkDate(\1, \2, \3) and not before("(?i)\\bversions? +$") ->> _                       # Cette date est invalide.
     <<- ~>> =\0.replace(".", "-").replace(" ", "-").replace("\/", "-")
 
 TEST: le {{29 02 2011}}
@@ -1247,7 +1247,7 @@ TEST: __ocr__ En l’an {{2OO1}}, tout commença.
 ## Casse
 __[s]/ocr(ocr_casse1)__
     [A-ZÉÈÂÊÎÔ]{w_1}
-    <<- \0.istitle() and before(r"(?i)\w") >>>
+    <<- \0.istitle() and before("\\w") >>>
     <<- morph(\0, ":G", ":M") ->> =\0.lower()                                                       # Erreur de numérisation ? Casse improbable.
     <<- __else__ and morph(\0, ":[123][sp]", ":[MNA]|>Est/") ->> =\0.lower()                        # Erreur de numérisation ? Casse improbable.
 
@@ -1275,7 +1275,7 @@ TEST: __ocr__ Quelques-{{Uns}} sont incapables d’y parvenir.
 
 __[s>/ocr(ocr_casse3)__
     [LDNMTSCÇ]’
-    <<- before(r"(?i)\w") ->> =\0.lower()                                                           # Erreur de numérisation ? Casse douteuse.
+    <<- before("\\w") ->> =\0.lower()                                                               # Erreur de numérisation ? Casse douteuse.
 
 TEST: __ocr__ regarde dans l’obscurité de {{L’}}entrepôt
 
@@ -1284,7 +1284,7 @@ TEST: __ocr__ regarde dans l’obscurité de {{L’}}entrepôt
 # Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
 __[s]/ocr(ocr_lettres_isolées)!2__
     \w(?!’)
-    <<- not re.search("[0-9aàAÀyYdlnmtsjcçDLNMTSJCÇ_]", \0) and not before(r"\d[   ]+$") and not (\0.isupper() and after0(r"^\."))
+    <<- not re.search("[0-9aàAÀyYdlnmtsjcçDLNMTSJCÇ_]", \0) and not before("\\d[   ]+$") and not (\0.isupper() and after0(r"^\."))
     ->> _           # Lettre isolée : erreur de numérisation ?
 
 TEST: __ocr__ des verres luisent sur {{i}} le bureau blanc.
@@ -2346,7 +2346,7 @@ __ocr_lj1__
         <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
 
     Y  ~^[aâeéèêëiîïoôuyh]
-        <<- before(r"\w") and not morph(\2, ":Y") ->> l’\2|L’\2|j’\2|J’\2                           # Erreur de numérisation ?
+        <<- before("\\w") and not morph(\2, ":Y") ->> l’\2|L’\2|j’\2|J’\2                           # Erreur de numérisation ?
 
     ~^[Ii]’[aâeéèêëiîïoôuyh]
         <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
@@ -2361,12 +2361,12 @@ TEST: __ocr__ {{I’arrive}} demain.
 # l’ / V / P
 __ocr_l__
     ~^V.
-        <<- \1.istitle() and before(r"\w") and morph(\1, ":", ":M") >>>
+        <<- \1.istitle() and before("\\w") and morph(\1, ":", ":M") >>>
         <<- spell(\1[1:]) ->> ="v"+\1[1:] + "|l’"+\1[1:]                                            # Erreur de numérisation ?
         <<- __else__ ->> ="v"+\1[1:]                                                                # Erreur de numérisation ?
 
     ~^P[aâeéêèiîïoôuy]
-        <<- before(r"\w") and morph(\1, ":", ":M") and spell(\1) ->> ="l’"+\1[1:] + "|p"+\1[1:]     # Erreur de numérisation ?
+        <<- before("\\w") and morph(\1, ":", ":M") and spell(\1) ->> ="l’"+\1[1:] + "|p"+\1[1:]     # Erreur de numérisation ?
 
 TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.
 TEST: __ocr__ avec {{Vagile}} méthode de notre amie Virginie, tout est possible.
@@ -2629,7 +2629,7 @@ TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’a
 # l’est / Test
 __ocr_l_est__
     Test
-        <<- before(r"\w") ->> l’est                                                                 # Erreur de numérisation ?
+        <<- before("\\w") ->> l’est                                                                 # Erreur de numérisation ?
 
 TEST: __ocr__ ça {{Test}} à leurs yeux.
 
@@ -2967,11 +2967,11 @@ TEST: {{29 février 2011}}
 
 __date_journée_jour_mois_année__
     ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$) - (~^\d\d?$) - (~^\d{2,5}$)
-        <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
+        <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
         -1>> =getDay(\2, \3, \4)                                                                            # Le jour de la date suivante est incorrect.
 
     ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$)  ([janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre])  (~^\d{2,5}$)
-        <<- /date/ not after(r"^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
+        <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
         -1>> =getDayWithString(\2, \3, \4)                                                          # Le jour de la date suivante est incorrect.
 
 TEST: {{samedi}}, le 10-06-2014                                           ->> mardi
@@ -3872,11 +3872,11 @@ TEST: les méfaits de la {{vidéoprotection}}
 
 __bs_malgré_que__
     malgré que
-        <<- /bs/ not after(r" en (?:a|aie|aies|ait|eut|eût|aura|aurait|avait)\b")
+        <<- /bs/ not after(" en (?:a|aie|aies|ait|eut|eût|aura|aurait|avait)\\b")
         ->> bien que|quoique                                                                        # “Malgré que” est une tournure populaire. Utilisez “bien que” ou “quoique”.
 
     malgré qu’
-        <<- /bs/ not after(r" en (?:a|aie|aies|ait|eut|eût|aura|aurait|avait)\b")
+        <<- /bs/ not after(" en (?:a|aie|aies|ait|eut|eût|aura|aurait|avait)\\b")
         ->> bien qu’|quoiqu’                                                                        # “Malgré que” est une tournure populaire. Utilisez “bien que” ou “quoique”.
 
 TEST: {{Malgré que}} je sois fou.
@@ -4571,7 +4571,7 @@ __conj_xxxai__sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     ~ai$
-        <<- /conj/ not value(>1, "|je|") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s")
+        <<- /conj/ not value(>1, "|je|") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
 
@@ -4591,7 +4591,7 @@ __conj_xxxas_xxxes__sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~[ae]s$
-        <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "2s")
+        <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
 
@@ -4613,12 +4613,12 @@ __conj_xxxxxs_sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     étais
-        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0(r"\w")) and not morph(<1, ":[DA].*:p")
+        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0("\\w")) and not morph(<1, ":[DA].*:p")
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     ~[iudnrtpcï]s$
-        <<- /conj/ not value(>1, "|je|tu|") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0(r"\w"))
+        <<- /conj/ not value(>1, "|je|tu|") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0("\\w"))
             and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
@@ -4638,12 +4638,12 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     vaux
-        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
             and not morph(<1, ":(?:R|D.*:p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [peux|veux|équivaux|prévaux]
-        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
 
@@ -4662,12 +4662,12 @@ TEST: pour ne justement pas donner l’impression de s’être trompé.
 ## Incohérences avec formes verbales 1pl et 2pl sans sujet
 __conj_xxxons_sans_sujet!3__
     @:1p¬:[EGMNAJ]
-        <<- /conj/ not value(>1, "|nous|") and not (\1.istitle() and before0(r"\w")) and not tag_before(\1, "1p")
+        <<- /conj/ not value(>1, "|nous|") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1p")
         -1>> =suggVerb(\1, ":3p")     # Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
 
 __conj_xxxez_sans_sujet!3__
     @:2p¬:[EGMNAJ]
-        <<- /conj/ not value(>1, "|vous|") and not (\1.istitle() and before0(r"\w")) and not tag_before(\2, "2p")
+        <<- /conj/ not value(>1, "|vous|") and not (\1.istitle() and before0("\\w")) and not tag_before(\2, "2p")
         -1>> =suggVerb(\1, ":3p")     # Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
 
 TEST: les hommes et les femmes, qui sans un bruit, sans une parole amère, {{continuerons}} leur tâche n’en seront pas plus récompensés.
@@ -4746,7 +4746,7 @@ __conf_déterminant_mas_sing_verbe__
         -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \2 » : « \3 » est un verbe.
 
     un  @:(?:Y|[123][sp])¬:[GNA]
-        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|") and not before(r"(?i)\bun à +$")
+        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|") and not before("(?i)\\bun à +$")
         -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
 
 TEST: un {{maintient}} difficile.
@@ -5115,7 +5115,7 @@ __conf_à_a_infinitif__
     a  [ne|n’|me|m’|te|t’|se|s’|en|y|lui|nous|vous]  @:Y
     a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] @:Y
     a  [le|la|l’|les|leur]  @:Y¬:N
-        <<- /conf/ not value(<1, "|il|elle|on|n’|m’|t’|") and not before(r"(?i)\bqu[e’] |n’(?:en|y) +$")
+        <<- /conf/ not value(<1, "|il|elle|on|n’|m’|t’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
         -1>> à                                                      # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: scrupuleux {{a}} n’en toucher qu’une part infime.
@@ -5419,7 +5419,7 @@ __conf_à_a_locutions__
     a vue d’ œil
     a y [réfléchir|songer|penser]
     a y regarder de plus près
-        <<- /conf/ not before(r"(?i)[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$")
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     a [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
@@ -5429,7 +5429,7 @@ __conf_à_a_locutions__
     a [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
     a [mes|tes|ses|nos|vos|leurs] risques et périls
-        <<- /conf/ not before(r"(?i)(?:\bqu[e’] |[ln]’$|(?<!-)\b(?:il|elle|on|y|n’en) +$)")
+        <<- /conf/ not value(<1, "|que|qu’|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
@@ -5679,7 +5679,7 @@ __conf_ça_çà_sa__
         <<- /conf/ -1>> ça                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     çà
-        <<- /conf/ not before(r"\b(?:[oO]h|[aA]h) +$") and not after("^ +et là")
+        <<- /conf/ not value(<1, "|oh|ah|") and not after("^ +et là")
         ->> ça                                          # Confusion : « çà » ne s’emploie plus guère que dans l’expression « çà et là ».
 
     ça et là
@@ -6624,7 +6624,7 @@ __conf_peu_peut_peux!6__
         <<- /conf/ -2>> peu                                                 # Confusion : « \2 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
 
     un  [peux|peut]
-        <<- /conf/ not before("(?i)(?:(?:quelqu|l|d)’|sauf +)") -2>> peu    # Confusion : « \2 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
+        <<- /conf/ not value(<1, "|quelqu’|l’|d’|sauf|") -2>> peu           # Confusion : « \2 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
 
     [il|on] ?[ne|n’]¿ peu
         <<- /conf/ --1>> peut                                               # Confusion : « peu » signifie « pas beaucoup ».
@@ -6709,10 +6709,11 @@ __conf_pré_près_prêt__
         <<- /conf/ -2>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
 
     près à @:Y|>(?:tout|les?|la)/
-        <<- /conf/ not before(r"(?i)\b(?:peu|de|au plus) $") -1>> prêt|p    # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+        <<- /conf/ not value(<1, "|peu|de|") and not before("(?i)\\bau plus $")
+        -1>> prêt|prêts                                                     # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     >prêt [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
-        <<- /conf/ not before(r"(?i)\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+        <<- /conf/ not before("(?i)\\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     >prêt [de|d’] la [lui|leur|@:Y]
         <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
@@ -7053,7 +7054,7 @@ __conf_son_sont__
         <<- /conf/ -2>> son     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ morph(<1, ":V", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[nmts]e)/") and not before(r"(?i)\bce qu[e’] |[mts]’en +$")
+        <<- /conf/ morph(<1, ":V", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[nmts]e)/") and not before("(?i)\\bce qu[e’] |[mts]’en +$")
         -1>> son                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     [à|chez|dès|par] sont
@@ -7061,7 +7062,7 @@ __conf_son_sont__
         <<- /conf/ -2>> son     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     en sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ not before(r"(?i)\b(?:ce qu[e’] |ils|elles|leur|lui|nous|vous|[mtsl]’)$")
+        <<- /conf/ not value(<1, "|ils|elles|leur|lui|nous|vous|m’|t’|s’|l’|") and not before("(?i)\\bce qu[e’] $")
         -2>> son                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
 TEST: ne leur {{son}} pas odieux.
@@ -7265,7 +7266,7 @@ __conf_voir_voire__
 
     voir  @:A¬:[NGM]
         <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de)/")
-            and not before(r"(?i)\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
+            and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
         -1>> voir                       # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez :|https://fr.wiktionary.org/wiki/voire
 
     [comme|lorque|puisque|quand|que|quoique|si]     (voire)
@@ -9364,7 +9365,7 @@ __purge_conditionnelle__
         <<- not morph(<1, ":D") ~>> *
 
     hélas
-        <<- not morph(<1, ":(?:X|Oo)") and not before(r"(?i)\bt(?:u|oi qui)[ ,]") ~>> *
+        <<- not morph(<1, ":(?:X|Oo)") and not tag_before(\1, "2s") ~>> *
 
     nécessité fait loi
         <<- not morph(<1, ":D.*:f:[si]") ~>> *
@@ -9679,7 +9680,7 @@ __simplification_noms_propres__
         <<- ~2>> *
 
     @:Cs  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
-        <<- morph(\2, ":M") and not before(r"\b(?:plus|moins|aussi) .* que +$")
+        <<- morph(\2, ":M") and not before("\\b(?:plus|moins|aussi) .* que +$")
         ~2:4>> =rewriteSubject(\2,\4) + "||"
 
     <start>  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
@@ -10014,7 +10015,7 @@ __purge_tous_deux_trois__
         <<- ~2:0>> *
 
     >faire tous
-        <<- morph(\1, ":[123]p") or (\1 == "fait" and before(r"(?i)\bon ")) ~2>> *
+        <<- morph(\1, ":[123]p") or (\1 == "fait" and value(<1, "|on|")) ~2>> *
 
 
 
@@ -10952,7 +10953,7 @@ __gn_det_plur_3m__
     [ces|mes|tes|ses|nos|vos|leurs|quels|quelles|aux]       *WORD  *WORD  *WORD
     [plusieurs|quelques|certains|certaines|moult]           *WORD  *WORD  *WORD
     [lesdits|lesdites|desdits|desdites|auxdits|auxdites]    *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before(r"(?i)\bune? de +$")
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces petites sottes {{déjantée}}
@@ -11732,7 +11733,7 @@ __sgpl_pied__
         <<- /sgpl/ -2>> pied                                        # Locution “\1 pied” : écrivez “pied” au singulier.
 
     à pieds
-        <<- /sgpl/ not before(r"(?i)\b(?:lit|fauteuil|armoire|commode|guéridon|tabouret|chaise)s?\b") and not morph(>1, ">sculpter/")
+        <<- /sgpl/ not before("(?i)\\b(?:lit|fauteuil|armoire|commode|guéridon|tabouret|chaise)s?\\b") and not morph(>1, ">sculpter/")
         -2>> pied                                                   # Location “à pied” : écrivez “pied” au singulier.|https://fr.wiktionary.org/wiki/%C3%A0_pied
 
     [à|aux] >pied >levée
@@ -13143,7 +13144,7 @@ __infi_de_verbe__
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper()
-            and not before(r"(?i)\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: d’en {{parlé}} sans cesse
@@ -13548,9 +13549,9 @@ TEST: sans qu’on ait à le lui ordonner
 __ocr_être_participe_passé__
     >être  ~es?$
         <<- /ocr/ not value(\1, "|êtres|") >>>
-        <<- /ocr/ \2.endswith("e") and morph(\2, ":V1.*:Ip.*:[13]s", ":[GMA]") and not before(r"(?i)\belle +(?:ne +|n’|)$")
+        <<- /ocr/ \2.endswith("e") and morph(\2, ":V1.*:Ip.*:[13]s", ":[GMA]") and not before("(?i)\\belle +(?:ne +|n’|)$")
         -2>> =suggVerbPpas(\2, ":m:s")                                                              # Erreur de numérisation ?
-        <<- /ocr/ __else__ and \2.endswith("s") and morph(\2, ":V1.*:Ip.*:2s", ":[GMA]") and not before(r"(?i)\belles +(?:ne +|n’|)$")
+        <<- /ocr/ __else__ and \2.endswith("s") and morph(\2, ":V1.*:Ip.*:2s", ":[GMA]") and not before("(?i)\\belles +(?:ne +|n’|)$")
         -2>> =suggVerbPpas(\2, ":m:p")                                                              # Erreur de numérisation ?
 
 __ocr_avoir_participe_passé__
@@ -13710,7 +13711,7 @@ TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas c
 
 #__[i]/infi(infi_faire)__
 #    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-#    <<- morph(\1, ">faire/") and not before(r"(?i)\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morph(\2, ":V", ":M")
+#    <<- morph(\1, ">faire/") and not before("(?i)\\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morph(\2, ":V", ":M")
 #        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
 #        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
 #    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
@@ -13891,13 +13892,13 @@ __ppas_se_être__
     [me|m’|te|se|s’]  ?[y|en]¿  (>être)  (*WORD)
     t’  [y|en]  (>être)  (*WORD)
         <<- /ppas/ morph(\2, ":(?:Y|[123][sp])", ":Q") -2>> =suggVerbPpas(\2)                       # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\1, ":[123]s") and morph(\2, ":Q.*:p") and not before(r"(?i)\bqu[e’][, ]|\bon (?:ne |)$")
+        <<- /ppas/ __else__ and morph(\1, ":[123]s") and morph(\2, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
         -2>> =suggSing(\2)                                                                          # Le participe passé devrait être au singulier.
 
     t’  >être  *WORD
         <<- /ppas/ not value(\2, "|es|étais|") >>>
         <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":Q") -3>> =suggVerbPpas(\3)                       # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\2, ":[123]s") and morph(\3, ":Q.*:p") and not before(r"(?i)\bqu[e’][, ]|\bon (?:ne |)$")
+        <<- /ppas/ __else__ and morph(\2, ":[123]s") and morph(\3, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
         -3>> =suggSing(\3)                                                                          # Le participe passé devrait être au singulier.
 
 TEST: s’être {{donner}} le mot.
@@ -14859,7 +14860,7 @@ TEST: Ils ne me l’ont pas {{donnés}}
 
 __ppas_m_t_avoir__
     [m’|t’] >avoir @:V[0-3]..t_.*:Q.*:p¬:[GWsi]
-        <<- /ppas/ not before(r"\bqu[e’]") -3>> =suggSing(\3)
+        <<- /ppas/ not before("(?i)\\bqu(?:e |’)") -3>> =suggSing(\3)
         # Accord avec “\1”. S’il s’agit d’un COD, le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
@@ -15012,7 +15013,7 @@ TEST: Voici ce qui vous est {{du}}.
 __ppas_avoir_pronom__
     *WORD  /VCint  *WORD
         <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and \3 != "prise"
-            and not morph(\1, ">(?:les|[nv]ous|en)|:[NA].*:[fp]") and not before(r"(?i)\b(?:quel(?:le|)s?|combien) ")
+            and not morph(\1, ">(?:les|[nv]ous|en)|:[NA].*:[fp]") and not before("(?i)\\b(?:quel(?:le|)s?|combien) ")
         -3>> =suggMasSing(\3)                               # Avec “avoir”, il faut un participe passé au masculin singulier, sauf si un COD précède.
 
     <start>  ?n’¿  (/VCint)  *WORD
@@ -15083,7 +15084,7 @@ __imp_être__
         <<- /imp/ --1>> sois                                                        # S’il s’agit d’un impératif, écrivez “sois”.
 
     <start>  soit  @:A¬:G
-        <<- /imp/ not after(r"\bsoit\b") -2>> sois                                  # S’il s’agit d’un impératif, écrivez “sois”.
+        <<- /imp/ not after(" soit ") -2>> sois                                     # S’il s’agit d’un impératif, écrivez “sois”.
 
 TEST: ne lui {{soit}} pas odieux.
 TEST: {{Soit}} cohérent avec toi-même.
@@ -16370,14 +16371,14 @@ TEST: si tu persévères, certaine deviendra la réussite.
 __conj_det_plur_nom__
     [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]  @:V¬:(?:[13]p|P|Y|G|A.*:e:[pi])
         <<- /conj/ morph(<1, ":C|<start>|>,")
-            and not( morph(\3, ":3s") and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
+            and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3) -3>> =suggVerb(\3, ":3p") # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
         -3>> =suggVerb(\3, ":3p", suggPlur)                             # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
     [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G|A.*:e:[pi])
         <<- /conj/ morph(<1, ":C|<start>|>,")
-            and not( morph(\4, ":3s") and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+            and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Ses « chiens » {{coure}} sur ma pelouse.
@@ -16391,7 +16392,7 @@ TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouva
 __conj_det_plur_nom_confusion__
     les  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|A.*:e:[pi])
         <<- /conj/ morph(<1, ":C|<start>|>,")
-            and not( morph(\3, ":3s") and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
+            and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and isVeryAmbiguousAndWrong(\2, \3, ":p", ":3p", value(<1, "|<start>|,|"))
@@ -16399,7 +16400,7 @@ __conj_det_plur_nom_confusion__
 
     [certains|certaines]  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|A.*:e:[pi])
         <<- /conj/ morph(<1, ":C|<start>|>,")
-            and not( morph(\3, ":3s") and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
+            and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and isVeryAmbiguousAndWrong(\2, \3, ":m:p", ":3p", value(<1, "|<start>|,|"))
@@ -16409,13 +16410,13 @@ __conj_det_plur_nom_confusion__
 
     plusieurs  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|A.*:e:[pi])
         <<- /conj/ morph(<1, ":C|<start>|>,")
-            and not( morph(\3, ":3s") and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+            and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [les|certains|certaines|plusieurs]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G)
         <<- /conj/ morph(<1, ":C|<start>|>,")
-            and not( morph(\4, ":3s") and before(r"(?i)\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
+            and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Les abstentions {{est}} présumée manifester un défaut d’opinion marquée
@@ -16471,9 +16472,9 @@ TEST: des femmes qui {{conduise}} la marche du monde.
 # 3sg
 __conj_nom_propre__
     ~^[A-ZÉÈ]  @:[123][sp]¬:(?:G|3s|3p!|P|M|A.*:[si]|N.*:m:s)
-        <<- /conj/ not before(r"\b[dD]e l’ *$") and morph(\1, ":M")
-            and not morph(<1, ":[VRD]|>(?:ni|et|ou)/") and not before(r"([A-ZÉÈ][\w-]+), +([A-ZÉÈ][\w-]+), +$")
-            and not ( morph(\2, ":3p") and before(r"\w") )
+        <<- /conj/ not before("\\b[dD]e l’ *$") and morph(\1, ":M")
+            and not morph(<1, ":[VRD]|>(?:ni|et|ou)/") and not before("([A-ZÉÈ][\\w-]+), +([A-ZÉÈ][\\w-]+), +$")
+            and not ( morph(\2, ":3p") and before("\\w") )
         -2>> =suggVerb(\2, ":3s")                                                                   # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: Marc {{arrives}} demain.
