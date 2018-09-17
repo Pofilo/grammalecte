@@ -970,7 +970,7 @@ var re = {
 
 function nextword (s, iStart, n) {
     // get the nth word of the input string or empty string
-    let z = new RegExp("^(?: +[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+){" + (n-1).toString() + "} +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+)", "ig");
+    let z = new RegExp("^(?: +[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ%_-]+){" + (n-1).toString() + "} +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ%_-]+)", "ig");
     let m = z.exec(s.slice(iStart));
     if (!m) {
         return null;
@@ -980,7 +980,7 @@ function nextword (s, iStart, n) {
 
 function prevword (s, iEnd, n) {
     // get the (-)nth word of the input string or empty string
-    let z = new RegExp("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+) +(?:[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ%_-]+ +){" + (n-1).toString() + "}$", "i");
+    let z = new RegExp("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ%_-]+) +(?:[a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ%_-]+ +){" + (n-1).toString() + "}$", "i");
     let m = z.exec(s.slice(0, iEnd));
     if (!m) {
         return null;
@@ -990,7 +990,7 @@ function prevword (s, iEnd, n) {
 
 function nextword1 (s, iStart) {
     // get next word (optimization)
-    let _zNextWord = new RegExp ("^ +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_-]*)", "ig");
+    let _zNextWord = new RegExp ("^ +([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_-]*)", "ig");
     let m = _zNextWord.exec(s.slice(iStart));
     if (!m) {
         return null;
@@ -998,7 +998,7 @@ function nextword1 (s, iStart) {
     return [iStart + _zNextWord.lastIndex - m[1].length, m[1]];
 }
 
-const _zPrevWord = new RegExp ("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆ_-]*) +$", "i");
+const _zPrevWord = new RegExp ("([a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_][a-zà-öA-Zø-ÿÀ-Ö0-9Ø-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_-]*) +$", "i");
 
 function prevword1 (s, iEnd) {
     // get previous word (optimization)
@@ -1021,24 +1021,6 @@ function look (s, sPattern, sNegPattern=null) {
         console.error(e);
     }
     return false;
-}
-
-function look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1="") {
-    // returns True if s has pattern sPattern and m.group(1) has pattern sPatternGroup1
-    let zPattern = createRegExp(sPattern);
-    let m = zPattern.gl_exec2(s, null);
-    if (!m) {
-        return false;
-    }
-    try {
-        let sWord = m[1];
-        let nPos = m.start[1] + nOffset;
-        return morph(dTokenPos, [nPos, sWord], sPatternGroup1, sNegPatternGroup1);
-    }
-    catch (e) {
-        console.error(e);
-        return false;
-    }
 }
 
 
