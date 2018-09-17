@@ -604,7 +604,7 @@ class TextParser {
                                     let nErrorEnd = this.nOffsetWithinParagraph + ((cEndLimit == ">") ? this.lToken[nTokenErrorEnd]["nEnd"] : this.lToken[nTokenErrorEnd]["nStart"]);
                                     if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.gl_get(nErrorStart, -1)) {
                                         this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext));
-                                        this.dErrorPriority[nErrorStart] = nPriority;
+                                        this.dErrorPriority.set(nErrorStart, nPriority);
                                         if (bDebug) {
                                             console.log("    NEW_ERROR: ",  this.dError.get(nErrorStart));
                                         }
