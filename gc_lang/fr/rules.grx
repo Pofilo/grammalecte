@@ -10778,7 +10778,7 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 __gn_det_sing_3m__
     [ledit|ladite|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|au|quel|quelle|dudit]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[si]", False) and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: un gros connard {{pathétiques}}
@@ -10890,7 +10890,7 @@ __gn_det_epi_plur_2m__
             and not apposition(\3, \4)
         -4>> =switchGender(\4, True)                                                                # Accord de genre erroné entre « \3 » et « \4 ».
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =switchGender(\3, True)                           # Accord de genre erroné avec « \4 ».
-        <<- /gn/ morph(\3, ":[NA].*:[pi]", False) and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        <<- /gn/ morph(\3, ":[NA].*:[pi]") and morph(\4, ":[NA].*:s", "*") and not apposition(\3, \4) and not (value(>1, "|et|,|") and morph(>2, ":A"))
             and not (\1.startswith("de") and value(<1, "|un|une|"))
         -4>> =suggPlur(\4)                                                                          # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
@@ -11839,7 +11839,7 @@ TEST: Cette place est en vacance.
 # vites
 __sgpl_vite__
     vites
-        <<- /sgpl/ not morph(<1, ":V0e.*:3p", False, False) or morph(>1, ":[AQ]")
+        <<- /sgpl/ not morph(<1, ":V0e.*:3p") or morph(>1, ":[AQ]")
         ->> vite                                                    # Adverbe “vite” invariable. (La forme adjective est désuète.)
 
 TEST: ils mangent {{vites}}.
@@ -15168,13 +15168,13 @@ __imp_verbe_groupe2_groupe3_t__
     <start>  [ne|n’]  [lui|leur]               en                           ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|")
             and not (value(\-1, "|vient|dit|surgit|survient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
-            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s", False)
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|")
             and not (value(\-1, "|vient|dit|surgit|survient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
-            and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s", False)
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
 TEST: {{Finit}} ton assiette.                                           ->> Finis
