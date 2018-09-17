@@ -1263,7 +1263,8 @@ function select (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
     if (!sWord) {
         return true;
     }
-    if (dTokenPos.has(nPos)) {
+    if (!dTokenPos.has(nPos)) {
+        console.log("Error. There should be a token at this position: ", nPos);
         return true;
     }
     let lMorph = _oSpellChecker.getMorph(sWord);
@@ -1285,7 +1286,8 @@ function exclude (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
     if (!sWord) {
         return true;
     }
-    if (dTokenPos.has(nPos)) {
+    if (!dTokenPos.has(nPos)) {
+        console.log("Error. There should be a token at this position: ", nPos);
         return true;
     }
     let lMorph = _oSpellChecker.getMorph(sWord);
@@ -1321,7 +1323,7 @@ function g_select (dToken, sPattern, lDefault=null) {
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
-    if (lSelect) {
+    if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
             dToken["lMorph"] = lSelect;
         }
@@ -1341,7 +1343,7 @@ function g_exclude (dToken, sPattern, lDefault=null) {
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
-    if (lSelect) {
+    if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
             dToken["lMorph"] = lSelect;
         }
