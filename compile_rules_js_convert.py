@@ -51,7 +51,7 @@ def py2js (sCode):
     #sCode = re.sub('(look\\(sSentence0?[][.a-z0-9:()"+-]*), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
     #sCode = re.sub('(look\\(sSentence0?[][.a-z0-9:()"+-]*), "([^"]+)"', "\\1, /\\2/", sCode)
     sCode = re.sub('m\\.group\\((\\d+)\\) +in +(a[a-zA-Z]+)', "\\2.has(m[\\1])", sCode)
-    sCode = sCode.replace("(?<!-)", "")  # todo
+    sCode = re.sub('(lToken\\S+) +in +(a[a-zA-Z]+)', "\\2.has(\\1)", sCode)
     # slices
     sCode = sCode.replace("[:m.start()]", ".slice(0,m.index)")
     sCode = sCode.replace("[m.end():]", ".slice(m.end[0])")
@@ -70,10 +70,8 @@ def py2js (sCode):
     # tuples -> lists
     sCode = re.sub("\\((m\\.start\\[\\d+\\], m\\[\\d+\\])\\)", "[\\1]", sCode)
     # regex
-    sCode = sCode.replace(r"\w[\w-]+", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+")
-    sCode = sCode.replace(r"/\w/", "/[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]/")
-    sCode = sCode.replace(r"[\w-]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]")
-    sCode = sCode.replace(r"[\w,]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ,]")
+    sCode = sCode.replace(r"[\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ")
+    sCode = sCode.replace(r"\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ]")
     return sCode
 
 
