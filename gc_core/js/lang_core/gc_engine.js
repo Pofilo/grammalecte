@@ -569,7 +569,7 @@ class TextParser {
             this.rewriteFromTags(bDebug);
         }
         if (bDebug) {
-            console.log(this);
+            console.log(this.asString());
         }
         return this.sSentence;
     }
