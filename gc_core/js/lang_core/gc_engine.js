@@ -488,7 +488,7 @@ class TextParser {
             }
             // token tags
             if (dToken.hasOwnProperty("aTags") && dNode.hasOwnProperty("<tags>")) {
-                for (let sTag in dToken["aTags"]) {
+                for (let sTag of dToken["aTags"]) {
                     if (dNode["<tags>"].hasOwnProperty(sTag)) {
                         if (bDebug) {
                             console.log("  MATCH: /" + sTag);
