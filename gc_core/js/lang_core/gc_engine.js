@@ -1360,11 +1360,11 @@ function g_define (dToken, lMorph) {
 }
 
 function g_define_from (dToken, nLeft=null, nRight=null) {
+    let sValue = dToken["sValue"];
     if (nLeft !== null) {
-        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"].slice(nLeft, nRight));
-    } else {
-        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"]);
+        sValue = (nRight !== null) ? sValue.slice(nLeft, nRight) : sValue.slice(nLeft);
     }
+    dToken["lMorph"] = _oSpellChecker.getMorph(sValue);
     return true;
 }
 
