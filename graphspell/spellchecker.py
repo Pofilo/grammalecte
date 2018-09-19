@@ -121,7 +121,7 @@ class SpellChecker ():
     def loadSuggestions (self, sLangCode):
         "load default suggestion module for <sLangCode>"
         try:
-            suggest = importlib.import_module("."+sLangCode, "graphspell")
+            suggest = importlib.import_module("."+sLangCode, "grammalecte.graphspell")
         except ImportError:
             print("No suggestion module for language <"+sLangCode+">")
             return
