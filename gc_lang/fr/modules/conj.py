@@ -1,4 +1,7 @@
-# Grammalecte - Conjugueur
+"""
+Grammalecte - Conjugueur
+"""
+
 # License: GPL 3
 
 import re
@@ -29,6 +32,7 @@ _dTenseIdx = { ":PQ": 0, ":Ip": 1, ":Iq": 2, ":Is": 3, ":If": 4, ":K": 5, ":Sp":
 
 
 def isVerb (sVerb):
+    "return True if it’s a existing verb"
     return sVerb in _dVerb
 
 
@@ -56,9 +60,10 @@ def getVtyp (sVerb):
 
 
 def getSimil (sWord, sMorph, bSubst=False):
+    "returns a set of verbal forms similar to <sWord>, according to <sMorph>"
     if ":V" not in sMorph:
         return set()
-    sInfi = sMorph[1:sMorph.find(" ")]
+    sInfi = sMorph[1:sMorph.find("/")]
     aSugg = set()
     tTags = _getTags(sInfi)
     if tTags:
@@ -100,6 +105,7 @@ def getSimil (sWord, sMorph, bSubst=False):
 
 
 def getConjSimilInfiV1 (sInfi):
+    "returns verbal forms phonetically similar to infinitive form (for verb in group 1)"
     if sInfi not in _dVerb:
         return set()
     aSugg = set()
@@ -142,12 +148,14 @@ def _modifyStringWithSuffixCode (sWord, sSfx):
         return sWord
     try:
         return sWord[:-(ord(sSfx[0])-48)] + sSfx[1:]  if sSfx[0] != '0'  else  sWord + sSfx[1:]  # 48 is the ASCII code for "0"
-    except:
+    except (IndexError, TypeError):
         return "## erreur, code : " + str(sSfx) + " ##"
-        
+
 
 
 class Verb ():
+    "Verb and its conjugation"
+
     def __init__ (self, sVerb, sVerbPattern=""):
         # conjugate a unknown verb with rules from sVerbPattern
         if not isinstance(sVerb, str):
@@ -167,7 +175,7 @@ class Verb ():
         if not self._tTags:
             raise ValueError("Unknown verb.")
         self._tTagsAux = _getTags(self.sVerbAux)
-        self.cGroup = self._sRawInfo[0];
+        self.cGroup = self._sRawInfo[0]
         self.dConj = {
             ":Y": {
                 "label": "Infinitif",
@@ -291,6 +299,7 @@ class Verb ():
             return "# erreur"
 
     def infinitif (self, bPro, bNeg, bTpsCo, bInt, bFem):
+        "returns string (conjugaison à l’infinitif)"
         try:
             if bTpsCo:
                 sInfi = self.sVerbAux  if not bPro  else  "être"
@@ -313,6 +322,7 @@ class Verb ():
             return "# erreur"
 
     def participePasse (self, sWho):
+        "returns past participle according to <sWho>"
         try:
             return self.dConj[":Q"][sWho]
         except:
@@ -320,6 +330,7 @@ class Verb ():
             return "# erreur"
 
     def participePresent (self, bPro, bNeg, bTpsCo, bInt, bFem):
+        "returns string (conjugaison du participe présent)"
         try:
             if not self.dConj[":P"][":"]:
                 return ""
@@ -350,6 +361,7 @@ class Verb ():
             return "# erreur"
 
     def conjugue (self, sTemps, sWho, bPro, bNeg, bTpsCo, bInt, bFem):
+        "returns string (conjugue le verbe au temps <sTemps> pour <sWho>) "
         try:
             if not self.dConj[sTemps][sWho]:
                 return ""
@@ -372,12 +384,12 @@ class Verb ():
             if bInt:
                 if sWho == ":3s" and not _zNeedTeuph.search(sConj):
                     sConj += "-t"
-                sConj += "-" + self._getPronom(sWho, bFem)
+                sConj += "-" + self._getPronomSujet(sWho, bFem)
             else:
                 if sWho == ":1s" and bEli and not bNeg and not bPro:
                     sConj = "j’" + sConj
                 else:
-                    sConj = self._getPronom(sWho, bFem) + " " + sConj
+                    sConj = self._getPronomSujet(sWho, bFem) + " " + sConj
             if bNeg:
                 sConj += " pas"
             if bTpsCo:
@@ -389,7 +401,7 @@ class Verb ():
             traceback.print_exc()
             return "# erreur"
 
-    def _getPronom (self, sWho, bFem):
+    def _getPronomSujet (self, sWho, bFem):
         try:
             if sWho == ":3s":
                 if self._sRawInfo[5] == "r":
@@ -404,6 +416,7 @@ class Verb ():
             return "# erreur"
 
     def imperatif (self, sWho, bPro, bNeg, bTpsCo, bFem):
+        "returns string (conjugaison à l’impératif)"
         try:
             if not self.dConj[":E"][sWho]:
                 return ""

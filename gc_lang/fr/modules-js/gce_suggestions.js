@@ -11,17 +11,33 @@ if (typeof(require) !== 'undefined') {
 
 //// verbs
 
-function suggVerb (sFlex, sWho, funcSugg2=null) {
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
+function splitVerb (sVerb) {
+    // renvoie le verbe et les pronoms séparément
+    let iRight = sVerb.lastIndexOf("-");
+    let sSuffix = sVerb.slice(iRight);
+    sVerb = sVerb.slice(0, iRight);
+    if (sVerb.endsWith("-t") || sVerb.endsWith("-le") || sVerb.endsWith("-la") || sVerb.endsWith("-les")) {
+        iRight = sVerb.lastIndexOf("-");
+        sSuffix = sVerb.slice(iRight) + sSuffix;
+        sVerb = sVerb.slice(0, iRight);
+    }
+    return [sVerb, sSuffix];
+}
+
+function suggVerb (sFlex, sWho, funcSugg2=null, bVC=false) {
+    let sSfx;
+    if (bVC) {
+        [sFlex, sSfx] = splitVerb(sFlex);
+    }
     let aSugg = new Set();
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
         if (tTags) {
             // we get the tense
             let aTense = new Set();
-            for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+            for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
                 let m;
-                let zVerb = new RegExp (">"+sStem+" .*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
+                let zVerb = new RegExp (">"+sStem+"/.*?(:(?:Y|I[pqsf]|S[pq]|K))", "g");
                 while ((m = zVerb.exec(sMorph)) !== null) {
                     // stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if (m) {
@@ -54,6 +70,9 @@ function suggVerb (sFlex, sWho, funcSugg2=null) {
         }
     }
     if (aSugg.size > 0) {
+        if (bVC) {
+            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+        }
         return Array.from(aSugg).join("|");
     }
     return "";
@@ -61,7 +80,7 @@ function suggVerb (sFlex, sWho, funcSugg2=null) {
 
 function suggVerbPpas (sFlex, sWhat=null) {
     let aSugg = new Set();
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
         if (tTags) {
             if (!sWhat) {
@@ -111,7 +130,7 @@ function suggVerbPpas (sFlex, sWhat=null) {
 
 function suggVerbTense (sFlex, sTense, sWho) {
     let aSugg = new Set();
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         if (conj.hasConj(sStem, sTense, sWho)) {
             aSugg.add(conj.getConj(sStem, sTense, sWho));
         }
@@ -122,9 +141,13 @@ function suggVerbTense (sFlex, sTense, sWho) {
     return "";
 }
 
-function suggVerbImpe (sFlex) {
+function suggVerbImpe (sFlex, bVC=false) {
+    let sSfx;
+    if (bVC) {
+        [sFlex, sSfx] = splitVerb(sFlex);
+    }
     let aSugg = new Set();
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
         if (tTags) {
             if (conj._hasConjWithTags(tTags, ":E", ":2s")) {
@@ -139,13 +162,16 @@ function suggVerbImpe (sFlex) {
         }
     }
     if (aSugg.size > 0) {
+        if (bVC) {
+            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+        }
         return Array.from(aSugg).join("|");
     }
     return "";
 }
 
 function suggVerbInfi (sFlex) {
-    return stem(sFlex).filter(sStem => conj.isVerb(sStem)).join("|");
+    return _oSpellChecker.getLemma(sFlex).filter(sStem => conj.isVerb(sStem)).join("|");
 }
 
 
@@ -176,7 +202,7 @@ function suggVerbMode (sFlex, cMode, sSuj) {
         sWho = ":3s";
     }
     let aSugg = new Set();
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         let tTags = conj._getTags(sStem);
         if (tTags) {
             for (let sTense of lMode) {
@@ -197,10 +223,11 @@ function suggVerbMode (sFlex, cMode, sSuj) {
 function suggPlur (sFlex, sWordToAgree=null) {
     // returns plural forms assuming sFlex is singular
     if (sWordToAgree) {
-        if (!_dAnalyses.has(sWordToAgree) && !_storeMorphFromFSA(sWordToAgree)) {
+        let lMorph = _oSpellChecker.getMorph(sWordToAgree);
+        if (lMorph.length === 0) {
             return "";
         }
-        let sGender = cregex.getGender(_dAnalyses.gl_get(sWordToAgree, []));
+        let sGender = cregex.getGender(lMorph);
         if (sGender == ":m") {
             return suggMasPlur(sFlex);
         } else if (sGender == ":f") {
@@ -258,9 +285,8 @@ function suggSing (sFlex) {
 
 function suggMasSing (sFlex, bSuggSimil=false) {
     // returns masculine singular forms
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+    for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
@@ -294,9 +320,8 @@ function suggMasSing (sFlex, bSuggSimil=false) {
 
 function suggMasPlur (sFlex, bSuggSimil=false) {
     // returns masculine plural forms
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+    for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":m") || sMorph.includes(":e")) {
@@ -335,9 +360,8 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
 
 function suggFemSing (sFlex, bSuggSimil=false) {
     // returns feminine singular forms
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+    for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
@@ -369,9 +393,8 @@ function suggFemSing (sFlex, bSuggSimil=false) {
 
 function suggFemPlur (sFlex, bSuggSimil=false) {
     // returns feminine plural forms
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+    for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
         if (!sMorph.includes(":V")) {
             // not a verb
             if (sMorph.includes(":f") || sMorph.includes(":e")) {
@@ -402,7 +425,7 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
 }
 
 function hasFemForm (sFlex) {
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         if (mfsp.isFemForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q3")) {
             return true;
         }
@@ -414,7 +437,7 @@ function hasFemForm (sFlex) {
 }
 
 function hasMasForm (sFlex) {
-    for (let sStem of stem(sFlex)) {
+    for (let sStem of _oSpellChecker.getLemma(sFlex)) {
         if (mfsp.isFemForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q1")) {
             // what has a feminine form also has a masculine form
             return true;
@@ -427,10 +450,9 @@ function hasMasForm (sFlex) {
 }
 
 function switchGender (sFlex, bPlur=null) {
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
     let aSugg = new Set();
     if (bPlur === null) {
-        for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+        for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
             if (sMorph.includes(":f")) {
                 if (sMorph.includes(":s")) {
                     aSugg.add(suggMasSing(sFlex));
@@ -449,7 +471,7 @@ function switchGender (sFlex, bPlur=null) {
             }
         }
     } else if (bPlur) {
-        for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+        for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
             if (sMorph.includes(":f")) {
                 aSugg.add(suggMasPlur(sFlex));
             } else if (sMorph.includes(":m")) {
@@ -457,7 +479,7 @@ function switchGender (sFlex, bPlur=null) {
             }
         }
     } else {
-        for (let sMorph of _dAnalyses.gl_get(sFlex, [])) {
+        for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
             if (sMorph.includes(":f")) {
                 aSugg.add(suggMasSing(sFlex));
             } else if (sMorph.includes(":m")) {
@@ -473,7 +495,7 @@ function switchGender (sFlex, bPlur=null) {
 
 function switchPlural (sFlex) {
     let aSugg = new Set();
-    for (let sMorph of _dAnalyses.gl_get(sFlex, [])) { // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
+    for (let sMorph of _oSpellChecker.getMorph(sFlex)) {
         if (sMorph.includes(":s")) {
             aSugg.add(suggPlur(sFlex));
         } else if (sMorph.includes(":p")) {
@@ -490,15 +512,22 @@ function hasSimil (sWord, sPattern=null) {
     return phonet.hasSimil(sWord, sPattern);
 }
 
-function suggSimil (sWord, sPattern=null, bSubst=false) {
+function suggSimil (sWord, sPattern=null, bSubst=false, bVC=false) {
     // return list of words phonetically similar to sWord and whom POS is matching sPattern
+    let sSfx;
+    if (bVC) {
+        [sWord, sSfx] = splitVerb(sWord);
+    }
     let aSugg = phonet.selectSimil(sWord, sPattern);
-    for (let sMorph of _dAnalyses.gl_get(sWord, [])) {
+    for (let sMorph of _oSpellChecker.getMorph(sWord)) {
         for (let e of conj.getSimil(sWord, sMorph, bSubst)) {
             aSugg.add(e);
         }
     }
     if (aSugg.size > 0) {
+        if (bVC) {
+            return Array.from(aSugg).map((sSugg) => { return sSugg + sSfx; }).join("|");
+        }
         return Array.from(aSugg).join("|");
     }
     return "";
@@ -515,8 +544,7 @@ function suggCeOrCet (sWord) {
 }
 
 function suggLesLa (sWord) {
-    // we don’t check if word exists in _dAnalyses, for it is assumed it has been done before
-    if (_dAnalyses.gl_get(sWord, []).some(s  =>  s.includes(":p"))) {
+    if (_oSpellChecker.getMorph(sWord).some(s  =>  s.includes(":p"))) {
         return "les|la";
     }
     return "la";

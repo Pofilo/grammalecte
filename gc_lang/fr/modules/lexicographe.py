@@ -1,4 +1,7 @@
-# Grammalecte - Lexicographe
+"""
+Grammalecte - Lexicographe
+"""
+
 # License: MPL 2
 
 
@@ -6,7 +9,7 @@ import re
 import traceback
 
 
-_dTAGS = {  
+_dTAGS = {
     ':N': (" nom,", "Nom"),
     ':A': (" adjectif,", "Adjectif"),
     ':M1': (" prénom,", "Prénom"),
@@ -80,7 +83,7 @@ _dTAGS = {
     ':Cc': (" conjonction de coordination,", "Conjonction de coordination"),
     ':Cs': (" conjonction de subordination,", "Conjonction de subordination"),
     ':Ĉs': (" conjonction de subordination (él.),", "Conjonction de subordination (élément)"),
-    
+
     ':Ñ': (" locution nominale (él.),", "Locution nominale (élément)"),
     ':Â': (" locution adjectivale (él.),", "Locution adjectivale (élément)"),
     ':Ṽ': (" locution verbale (él.),", "Locution verbale (élément)"),
@@ -127,14 +130,14 @@ _dAD = {
     'vous': " pronom personnel sujet/objet, 2ᵉ pers. plur.",
     'ils': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
     'elles': " pronom personnel sujet, 3ᵉ pers. masc. plur.",
-    
+
     "là": " particule démonstrative",
     "ci": " particule démonstrative",
-    
+
     'le': " COD, masc. sing.",
     'la': " COD, fém. sing.",
     'les': " COD, plur.",
-        
+
     'moi': " COI (à moi), sing.",
     'toi': " COI (à toi), sing.",
     'lui': " COI (à lui ou à elle), sing.",
@@ -155,6 +158,7 @@ _dAD = {
 
 
 class Lexicographe:
+    "Lexicographer - word analyzer"
 
     def __init__ (self, oSpellChecker):
         self.oSpellChecker = oSpellChecker
@@ -163,6 +167,7 @@ class Lexicographe:
         self._zTag = re.compile("[:;/][\\w*][^:;/]*")
 
     def analyzeWord (self, sWord):
+        "returns a tuple (a list of morphologies, a set of verb at infinitive form)"
         try:
             if not sWord:
                 return (None, None)
@@ -194,13 +199,14 @@ class Lexicographe:
             if m2:
                 aMorph.append( "-{} : {}".format(m2.group(2), self._formatSuffix(m2.group(2).lower())) )
             # Verbes
-            aVerb = set([ s[1:s.find(" ")]  for s in lMorph  if ":V" in s ])
+            aVerb = set([ s[1:s.find("/")]  for s in lMorph  if ":V" in s ])
             return (aMorph, aVerb)
         except:
             traceback.print_exc()
             return (["#erreur"], None)
 
     def formatTags (self, sTags):
+        "returns string: readable tags"
         sRes = ""
         sTags = re.sub("(?<=V[1-3])[itpqnmr_eaxz]+", "", sTags)
         sTags = re.sub("(?<=V0[ea])[itpqnmr_eaxz]+", "", sTags)

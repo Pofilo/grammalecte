@@ -73,6 +73,7 @@ const _dTag = new Map([
     [':Ot', [" pronom interrogatif,", "Pronom interrogatif"]],
     [':Or', [" pronom relatif,", "Pronom relatif"]],
     [':Ow', [" pronom adverbial,", "Pronom adverbial"]],
+    [':Ov', ["", ""]],
     [':Os', [" pronom personnel sujet,", "Pronom personnel sujet"]],
     [':Oo', [" pronom personnel objet,", "Pronom personnel objet"]],
     [':O1', [" 1ʳᵉ pers.,", "Pronom : 1ʳᵉ personne"]],
@@ -187,7 +188,7 @@ const _dPronoms = new Map([
     ["s'en", " (se) pronom personnel objet + (en) pronom adverbial"]
 ]);
 
-const _dSeparator = new Map([
+const _dChar = new Map([
     ['.', "point"],
     ['·', "point médian"],
     ['…', "points de suspension"],
@@ -211,12 +212,17 @@ const _dSeparator = new Map([
     ['”', "guillemet fermant double"],
     ['‘', "guillemet ouvrant"],
     ['’', "guillemet fermant"],
+    ['"', "guillemets droits (déconseillé en typographie)"],
     ['/', "signe de la division"],
     ['+', "signe de l’addition"],
     ['*', "signe de la multiplication"],
     ['=', "signe de l’égalité"],
     ['<', "inférieur à"],
     ['>', "supérieur à"],
+    ['⩽', "inférieur ou égal à"],
+    ['⩾', "supérieur ou égal à"],
+    ['%', "signe de pourcentage"],
+    ['‰', "signe pour mille"],
 ]);
 
 
@@ -241,10 +247,11 @@ class Lexicographe {
         try {
             switch (oToken.sType) {
                 case 'SEPARATOR':
+                case 'SIGN':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
-                        aLabel: [_dSeparator.gl_get(oToken.sValue, "caractère indéterminé")]
+                        aLabel: [_dChar.gl_get(oToken.sValue, "caractère indéterminé")]
                     };
                     break;
                 case 'NUM':
@@ -261,12 +268,19 @@ class Lexicographe {
                         aLabel: ["hyperlien"]
                     };
                     break;
-                case 'ELPFX':
+                case 'WORD_ELIDED':
                     let sTemp = oToken.sValue.replace("’", "").replace("'", "").replace("`", "").toLowerCase();
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
                         aLabel: [_dElidedPrefix.gl_get(sTemp, "préfixe élidé inconnu")]
+                    };
+                    break;
+                case 'WORD_ORDINAL':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["nombre ordinal"]
                     };
                     break;
                 case 'FOLDERUNIX':
@@ -283,7 +297,7 @@ class Lexicographe {
                         aLabel: ["dossier Windows"]
                     };
                     break;
-                case 'ACRONYM':
+                case 'WORD_ACRONYM':
                     return {
                         sType: oToken.sType,
                         sValue: oToken.sValue,
@@ -377,7 +391,7 @@ class Lexicographe {
             sRes += _dTag.get(m[0])[0];
         }
         if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
-            sRes += " [" + sTags.slice(1, sTags.indexOf(" ")) + "]";
+            sRes += " [" + sTags.slice(1, sTags.indexOf("/")) + "]";
         }
         if (!sRes) {
             return "#Erreur. Étiquette inconnue : [" + sTags + "]";
@@ -452,7 +466,7 @@ class Lexicographe {
             let oToken = aTokenList[iKey];
             let sMorphLoc = '';
             let aTokenTempList = [oToken];
-            if (oToken.sType == "WORD" || oToken.sType == "ELPFX"){
+            if (oToken.sType == "WORD" || oToken.sType == "WORD_ELIDED"){
                 let iKeyTree = iKey + 1;
                 let oLocNode = this.oLocGraph[oToken.sValue.toLowerCase()];
                 while (oLocNode) {

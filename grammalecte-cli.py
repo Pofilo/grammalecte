@@ -1,5 +1,9 @@
 #!/usr/bin/env python3
 
+"""
+Grammalecte CLI (command line interface)
+"""
+
 import sys
 import os.path
 import argparse
@@ -73,6 +77,7 @@ def generateParagraphFromFile (spf, bConcatLines=False):
 
 
 def output (sText, hDst=None):
+    "write in the console or in a file if <hDst> not null"
     if not hDst:
         echo(sText, end="")
     else:
@@ -94,6 +99,7 @@ def loadDictionary (spf):
 
 
 def main ():
+    "launch the CLI (command line interface)"
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-f", "--file", help="parse file (UTF-8 required!) [on Windows, -f is similar to -ff]", type=str)
     xParser.add_argument("-ff", "--file_to_file", help="parse file (UTF-8 required!) and create a result file (*.res.txt)", type=str)
@@ -234,10 +240,10 @@ def main ():
                     oGrammarChecker.gce.reactivateRule(sRule)
                 echo("done")
             elif sText == "/debug" or sText == "/d":
-                xArgs.debug = not(xArgs.debug)
+                xArgs.debug = not xArgs.debug
                 echo("debug mode on"  if xArgs.debug  else "debug mode off")
             elif sText == "/textformatter" or sText == "/tf":
-                xArgs.textformatter = not(xArgs.textformatter)
+                xArgs.textformatter = not xArgs.textformatter
                 echo("textformatter on"  if xArgs.debug  else "textformatter off")
             elif sText == "/help" or sText == "/h":
                 echo(_HELP)
@@ -255,8 +261,8 @@ def main ():
             else:
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
-                        sText = oTextFormatter.formatText(sText)
-                    sRes = oGrammarChecker.generateParagraph(sText, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width, bDebug=xArgs.debug)
+                        sText = oTextFormatter.formatText(sParagraph)
+                    sRes = oGrammarChecker.generateParagraph(sParagraph, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width, bDebug=xArgs.debug)
                     if sRes:
                         echo("\n" + sRes)
                     else:

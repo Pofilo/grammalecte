@@ -1,9 +1,11 @@
-# Grammalecte - Compiled regular expressions
+"""
+Grammalecte - Compiled regular expressions
+"""
 
 import re
 
 #### Lemme
-Lemma = re.compile("^>(\w[\w-]*)")
+Lemma = re.compile(r"^>(\w[\w-]*)")
 
 #### Analyses
 Gender = re.compile(":[mfe]")
@@ -80,9 +82,11 @@ NPe = re.compile(":(?:M[12P]|T):e")
 #### FONCTIONS
 
 def getLemmaOfMorph (s):
+    "return lemma in morphology <s>"
     return Lemma.search(s).group(1)
 
 def checkAgreement (l1, l2):
+    "returns True if agreement in gender and number is possible between morphologies <l1> and <l2>"
     # check number agreement
     if not mbInv(l1) and not mbInv(l2):
         if mbSg(l1) and not mbSg(l2):
@@ -99,6 +103,7 @@ def checkAgreement (l1, l2):
     return True
 
 def checkConjVerb (lMorph, sReqConj):
+    "returns True if <sReqConj> in <lMorph>"
     return any(sReqConj in s  for s in lMorph)
 
 def getGender (lMorph):
@@ -117,7 +122,7 @@ def getNumber (lMorph):
     "returns number of word (':s', ':p', ':i' or empty string)."
     sNumber = ""
     for sMorph in lMorph:
-        m = Number.search(sWord)
+        m = Number.search(sMorph)
         if m:
             if not sNumber:
                 sNumber = m.group(0)
@@ -131,96 +136,124 @@ def getNumber (lMorph):
 ## isXXX = it’s certain
 
 def isNom (lMorph):
+    "returns True if all morphologies are “nom”"
     return all(":N" in s  for s in lMorph)
 
 def isNomNotAdj (lMorph):
+    "returns True if all morphologies are “nom”, but not “adjectif”"
     return all(NnotA.search(s)  for s in lMorph)
 
 def isAdj (lMorph):
+    "returns True if all morphologies are “adjectif”"
     return all(":A" in s  for s in lMorph)
 
 def isNomAdj (lMorph):
+    "returns True if all morphologies are “nom” or “adjectif”"
     return all(NA.search(s)  for s in lMorph)
 
 def isNomVconj (lMorph):
+    "returns True if all morphologies are “nom” or “verbe conjugué”"
     return all(NVconj.search(s)  for s in lMorph)
 
 def isInv (lMorph):
+    "returns True if all morphologies are “invariable”"
     return all(":i" in s  for s in lMorph)
 
 def isSg (lMorph):
+    "returns True if all morphologies are “singulier”"
     return all(":s" in s  for s in lMorph)
 
 def isPl (lMorph):
+    "returns True if all morphologies are “pluriel”"
     return all(":p" in s  for s in lMorph)
 
 def isEpi (lMorph):
+    "returns True if all morphologies are “épicène”"
     return all(":e" in s  for s in lMorph)
 
 def isMas (lMorph):
+    "returns True if all morphologies are “masculin”"
     return all(":m" in s  for s in lMorph)
 
 def isFem (lMorph):
+    "returns True if all morphologies are “féminin”"
     return all(":f" in s  for s in lMorph)
 
 
 ## mbXXX = MAYBE XXX
 
 def mbNom (lMorph):
+    "returns True if one morphology is “nom”"
     return any(":N" in s  for s in lMorph)
 
 def mbAdj (lMorph):
+    "returns True if one morphology is “adjectif”"
     return any(":A" in s  for s in lMorph)
 
 def mbAdjNb (lMorph):
+    "returns True if one morphology is “adjectif” or “nombre”"
     return any(AD.search(s)  for s in lMorph)
 
 def mbNomAdj (lMorph):
+    "returns True if one morphology is “nom” or “adjectif”"
     return any(NA.search(s)  for s in lMorph)
 
 def mbNomNotAdj (lMorph):
-    b = False
+    "returns True if one morphology is “nom”, but not “adjectif”"
+    bResult = False
     for s in lMorph:
         if ":A" in s:
             return False
         if ":N" in s:
-            b = True
-    return b
+            bResult = True
+    return bResult
 
 def mbPpasNomNotAdj (lMorph):
+    "returns True if one morphology is “nom” or “participe passé”, but not “adjectif”"
     return any(PNnotA.search(s)  for s in lMorph)
 
 def mbVconj (lMorph):
+    "returns True if one morphology is “nom” or “verbe conjugué”"
     return any(Vconj.search(s)  for s in lMorph)
 
 def mbVconj123 (lMorph):
+    "returns True if one morphology is “nom” or “verbe conjugué” (but not “avoir” or “être”)"
     return any(Vconj123.search(s)  for s in lMorph)
 
 def mbMG (lMorph):
+    "returns True if one morphology is “mot grammatical”"
     return any(":G" in s  for s in lMorph)
 
 def mbInv (lMorph):
+    "returns True if one morphology is “invariable”"
     return any(":i" in s  for s in lMorph)
 
 def mbSg (lMorph):
+    "returns True if one morphology is “singulier”"
     return any(":s" in s  for s in lMorph)
 
 def mbPl (lMorph):
+    "returns True if one morphology is “pluriel”"
     return any(":p" in s  for s in lMorph)
 
 def mbEpi (lMorph):
+    "returns True if one morphology is “épicène”"
     return any(":e" in s  for s in lMorph)
 
 def mbMas (lMorph):
+    "returns True if one morphology is “masculin”"
     return any(":m" in s  for s in lMorph)
 
 def mbFem (lMorph):
+    "returns True if one morphology is “féminin”"
     return any(":f" in s  for s in lMorph)
 
 def mbNpr (lMorph):
+    "returns True if one morphology is “nom propre” or “titre de civilité”"
     return any(NP.search(s)  for s in lMorph)
 
 def mbNprMasNotFem (lMorph):
+    "returns True if one morphology is “nom propre masculin” but not “féminin”"
     if any(NPf.search(s)  for s in lMorph):
         return False
     return any(NPm.search(s)  for s in lMorph)

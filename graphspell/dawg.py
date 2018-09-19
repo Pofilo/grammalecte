@@ -1,13 +1,14 @@
 #!python3
 
-# FSA DICTIONARY BUILDER
-#
-# by Olivier R.
-# License: MPL 2
-#
-# This tool encodes lexicon into an indexable binary dictionary 
-# Input files MUST be encoded in UTF-8.
+"""
+FSA DICTIONARY BUILDER
 
+by Olivier R.
+License: MPL 2
+
+This tool encodes lexicon into an indexable binary dictionary
+Input files MUST be encoded in UTF-8.
+"""
 
 import sys
 import os
@@ -23,6 +24,7 @@ from .progressbar import ProgressBar
 
 
 def readFile (spf):
+    "generator: read file <spf> and return for each line a list of elements separated by a tabulation."
     print(" < Read lexicon: " + spf)
     if os.path.isfile(spf):
         with open(spf, "r", encoding="utf-8") as hSrc:
@@ -99,19 +101,19 @@ class DAWG:
                 aEntry.add((sFlex, dAff[sAff], dTag[sTag]))
         if not aEntry:
             raise ValueError("# Error. Empty lexicon")
-        
+
         # Preparing DAWG
         print(" > Preparing list of words")
         print(" Filter: " + (sSelectFilterRegex or "[None]"))
         lVal = lChar + lAff + lTag
         lWord = [ [dChar[c] for c in sFlex] + [iAff+nChar] + [iTag+nChar+nAff]  for sFlex, iAff, iTag in aEntry ]
         aEntry = None
-        
+
         # Dictionary of arc values occurrency, to sort arcs of each node
         dValOccur = dict( [ (dChar[c], dCharOccur[c])  for c in dChar ] \
                         + [ (dAff[aff]+nChar, dAffOccur[aff]) for aff in dAff ] \
                         + [ (dTag[tag]+nChar+nAff, dTagOccur[tag]) for tag in dTag ] )
-        
+
         self.sFileName = src  if type(src) is str  else "[None]"
         self.sLangCode = sLangCode
         self.sLangName = sLangName
@@ -134,11 +136,11 @@ class DAWG:
         self.cStemming = cStemming
         if cStemming == "A":
             self.funcStemming = st.changeWordWithAffixCode
-        elif cStemming == "S":    
+        elif cStemming == "S":
             self.funcStemming = st.changeWordWithSuffixCode
         else:
             self.funcStemming = st.noStemming
-        
+
         # build
         lWord.sort()
         oProgBar = ProgressBar(0, len(lWord))
@@ -149,16 +151,17 @@ class DAWG:
         self.finish()
         self.countNodes()
         self.countArcs()
-        self.sortNodes()         # version 2 and 3 
+        self.sortNodes()         # version 2 and 3
         self.sortNodeArcs(dValOccur)
         #self.sortNodeArcs2 (self.oRoot, "")
         self.displayInfo()
 
     # BUILD DAWG
     def insert (self, aEntry):
+        "insert a new entry (insertion must be made in alphabetical order)."
         if aEntry < self.aPreviousEntry:
             sys.exit("# Error: Words must be inserted in alphabetical order.")
-        
+
         # find common prefix between word and previous word
         nCommonPrefix = 0
         for i in range(min(len(aEntry), len(self.aPreviousEntry))):
@@ -181,7 +184,7 @@ class DAWG:
             oNextNode = DawgNode()
             oNode.arcs[c] = oNextNode
             self.lUncheckedNodes.append((oNode, c, oNextNode))
-            if iChar == (len(aEntry) - 2): 
+            if iChar == (len(aEntry) - 2):
                 oNode.final = True
             iChar += 1
             oNode = oNextNode
@@ -205,20 +208,24 @@ class DAWG:
             self.lUncheckedNodes.pop()
 
     def countNodes (self):
+        "count the number of nodes of the whole word graph"
         self.nNode = len(self.lMinimizedNodes)
 
     def countArcs (self):
+        "count the number of arcs in the whole word graph"
         self.nArc = 0
         for oNode in self.lMinimizedNodes:
             self.nArc += len(oNode.arcs)
-    
+
     def sortNodeArcs (self, dValOccur):
+        "sort arcs of each node according to <dValOccur>"
         print(" > Sort node arcs")
         self.oRoot.sortArcs(dValOccur)
         for oNode in self.lMinimizedNodes:
             oNode.sortArcs(dValOccur)
-    
+
     def sortNodeArcs2 (self, oNode, cPrevious=""):
+        "sort arcs of each node depending on the previous char"
         # recursive function
         dCharOccur = getCharOrderAfterChar(cPrevious)
         if dCharOccur:
@@ -227,10 +234,11 @@ class DAWG:
             self.sortNodeArcs2(oNextNode, self.lArcVal[nArcVal])
 
     def sortNodes (self):
+        "sort nodes"
         print(" > Sort nodes")
         for oNode in self.oRoot.arcs.values():
             self._parseNodes(oNode)
-    
+
     def _parseNodes (self, oNode):
         # Warning: recursive method
         if oNode.pos > 0:
@@ -238,9 +246,10 @@ class DAWG:
         oNode.setPos()
         self.lSortedNodes.append(oNode)
         for oNextNode in oNode.arcs.values():
-             self._parseNodes(oNextNode)
-        
+            self._parseNodes(oNextNode)
+
     def lookup (self, sWord):
+        "return True if <sWord> is within the word graph (debugging)"
         oNode = self.oRoot
         for c in sWord:
             if self.dChar.get(c, '') not in oNode.arcs:
@@ -249,6 +258,7 @@ class DAWG:
         return oNode.final
 
     def morph (self, sWord):
+        "return a string of the morphologies of <sWord> (debugging)"
         oNode = self.oRoot
         for c in sWord:
             if self.dChar.get(c, '') not in oNode.arcs:
@@ -267,6 +277,7 @@ class DAWG:
         return ''
 
     def displayInfo (self):
+        "display informations about the word graph"
         print(" * {:<12} {:>16,}".format("Entries:", self.nEntry))
         print(" * {:<12} {:>16,}".format("Characters:", self.nChar))
         print(" * {:<12} {:>16,}".format("Affixes:", self.nAff))
@@ -277,6 +288,7 @@ class DAWG:
         print(" * {:<12} {:>16}".format("Stemming:", self.cStemming + "FX"))
 
     def getArcStats (self):
+        "return a string with statistics about nodes and arcs"
         d = {}
         for oNode in self.lMinimizedNodes:
             n = len(oNode.arcs)
@@ -287,6 +299,7 @@ class DAWG:
         return s
 
     def writeInfo (self, sPathFile):
+        "write informations in file <sPathFile>"
         print(" > Write informations")
         with open(sPathFile, 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(self.getArcStats())
@@ -396,6 +409,7 @@ class DAWG:
                     bEnd = False
 
     def getBinaryAsJSON (self, nCompressionMethod=1, bBinaryDictAsHexString=True):
+        "return a JSON string containing all necessary data of the dictionary (compressed as a binary string)"
         self._calculateBinary(nCompressionMethod)
         byDic = b""
         if nCompressionMethod == 1:
@@ -438,6 +452,7 @@ class DAWG:
         }
 
     def writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
+        "write a file (JSON or JS module) with all the necessary data"
         if not spfDst.endswith(".json"):
             spfDst += "."+str(nCompressionMethod)+".json"
         with open(spfDst, "w", encoding="utf-8", newline="\n") as hDst:
@@ -449,13 +464,15 @@ class DAWG:
 
     def writeBinary (self, sPathFile, nCompressionMethod, bDebug=False):
         """
+        Save as a binary file.
+
         Format of the binary indexable dictionary:
         Each section is separated with 4 bytes of \0
-        
+
         - Section Header:
             /grammalecte-fsa/[compression method]
                 * compression method is an ASCII string
-        
+
         - Section Informations:
             /[lang code]
             /[lang name]
@@ -474,10 +491,10 @@ class DAWG:
                   "A" means they are generated by /affix_code/
                   See defineSuffixCode() and defineAffixCode() for details.
                   "N" means no stemming
-        
+
         - Section Values:
                 * a list of strings encoded in binary from utf-8, each value separated with a tabulation
-        
+
         - Section Word Graph (nodes / arcs)
                 * A list of nodes which are a list of arcs with an address of the next node.
                   See DawgNode.convToBytes() for details.
@@ -522,26 +539,28 @@ class DAWG:
         print(" > Write nodes")
         with open(sPathFile+".nodes."+str(nCompressionMethod)+".txt", 'w', encoding='utf-8', newline="\n") as hDst:
             if nCompressionMethod == 1:
-                hDst.write(self.oRoot.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
+                hDst.write(self.oRoot.getTxtRepr1(self.nBytesArc, self.lArcVal)+"\n")
                 #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes1(self.nBytesArc, self.nBytesNodeAddress) ] ).strip() )
                 for oNode in self.lMinimizedNodes:
-                    hDst.write(oNode.getTxtRepr1(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
+                    hDst.write(oNode.getTxtRepr1(self.nBytesArc, self.lArcVal)+"\n")
             if nCompressionMethod == 2:
-                hDst.write(self.oRoot.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
+                hDst.write(self.oRoot.getTxtRepr2(self.nBytesArc, self.lArcVal)+"\n")
                 for oNode in self.lSortedNodes:
-                    hDst.write(oNode.getTxtRepr2(self.nBytesArc, self.nBytesNodeAddress, self.lArcVal)+"\n")
+                    hDst.write(oNode.getTxtRepr2(self.nBytesArc, self.lArcVal)+"\n")
             if nCompressionMethod == 3:
-                hDst.write(self.oRoot.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
+                hDst.write(self.oRoot.getTxtRepr3(self.nBytesArc, self.nBytesOffset, self.lArcVal)+"\n")
                 #hDst.write( ''.join( [ "%02X " %  z  for z in self.oRoot.convToBytes3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset) ] ).strip() )
                 for oNode in self.lSortedNodes:
-                    hDst.write(oNode.getTxtRepr3(self.nBytesArc, self.nBytesNodeAddress, self.nBytesOffset, self.lArcVal)+"\n")
+                    hDst.write(oNode.getTxtRepr3(self.nBytesArc, self.nBytesOffset, self.lArcVal)+"\n")
 
 
 
 class DawgNode:
+    """Node of the word graph"""
+
     NextId = 0
     NextPos = 1 # (version 2)
-    
+
     def __init__ (self):
         self.i = DawgNode.NextId
         DawgNode.NextId += 1
@@ -553,15 +572,17 @@ class DawgNode:
 
     @classmethod
     def resetNextId (cls):
+        "set NextId to 0 "
         cls.NextId = 0
 
     def setPos (self): # version 2
+        "define a position for node (version 2)"
         self.pos = DawgNode.NextPos
         DawgNode.NextPos += 1
 
     def __str__ (self):
         # Caution! this function is used for hashing and comparison!
-        sFinalChar = "1"  if self.final  else "0";
+        sFinalChar = "1"  if self.final  else "0"
         l = [sFinalChar]
         for (key, node) in self.arcs.items():
             l.append(str(key))
@@ -578,32 +599,36 @@ class DawgNode:
         return self.__str__() == other.__str__()
 
     def sortArcs (self, dValOccur):
+        "sort arcs of node according to <dValOccur>"
         self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur.get(t[0], 0), reverse=True))
 
     def sortArcs2 (self, dValOccur, lArcVal):
+        "sort arcs of each node depending on the previous char"
         self.arcs = collections.OrderedDict(sorted(self.arcs.items(), key=lambda t: dValOccur.get(lArcVal[t[0]], 0), reverse=True))
 
     # VERSION 1 =====================================================================================================
     def convToBytes1 (self, nBytesArc, nBytesNodeAddress):
         """
+        Convert to bytes (method 1).
+
         Node scheme:
         - Arc length is defined by nBytesArc
         - Address length is defined by nBytesNodeAddress
-                                       
+
         |                Arc                |                         Address of next node                          |
         |                                   |                                                                       |
-         /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
-         | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-         \---------------/ \---------------/ \---------------/ \---------------/ \---------------/ \---------------/
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
          [...]
-         /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
-         | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-         \---------------/ \---------------/ \---------------/ \---------------/ \---------------/ \---------------/
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
           ^ ^
-          | |
-          | |
-          |  \___ if 1, last arc of this node
-           \_____ if 1, this node is final (only on the first arc)
+          ┃ ┃
+          ┃ ┃
+          ┃ ┗━━━ if 1, last arc of this node
+          ┗━━━━━ if 1, this node is final (only on the first arc)
         """
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
@@ -623,8 +648,9 @@ class DawgNode:
             by += val.to_bytes(nBytesArc, byteorder='big')
             by += self.arcs[arc].addr.to_bytes(nBytesNodeAddress, byteorder='big')
         return by
-        
-    def getTxtRepr1 (self, nBytesArc, nBytesNodeAddress, lVal):
+
+    def getTxtRepr1 (self, nBytesArc, lVal):
+        "return representation as string of node (method 1)"
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
@@ -644,24 +670,26 @@ class DawgNode:
     # VERSION 2 =====================================================================================================
     def convToBytes2 (self, nBytesArc, nBytesNodeAddress):
         """
+        Convert to bytes (method 2).
+
         Node scheme:
         - Arc length is defined by nBytesArc
         - Address length is defined by nBytesNodeAddress
-                                       
+
         |                Arc                |                         Address of next node                          |
         |                                   |                                                                       |
-         /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
-         | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-         \---------------/ \---------------/ \---------------/ \---------------/ \---------------/ \---------------/
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
          [...]
-         /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
-         | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-         \---------------/ \---------------/ \---------------/ \---------------/ \---------------/ \---------------/
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
           ^ ^ ^
-          | | |
-          | |  \_ if 1, caution, no address: next node is the following node
-          |  \___ if 1, last arc of this node
-           \_____ if 1, this node is final (only on the first arc)
+          ┃ ┃ ┃
+          ┃ ┃ ┗━━ if 1, caution, no address: next node is the following node
+          ┃ ┗━━━━ if 1, last arc of this node
+          ┗━━━━━━ if 1, this node is final (only on the first arc)
         """
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
@@ -686,8 +714,9 @@ class DawgNode:
                 by += val.to_bytes(nBytesArc, byteorder='big')
                 by += self.arcs[arc].addr.to_bytes(nBytesNodeAddress, byteorder='big')
         return by
-        
-    def getTxtRepr2 (self, nBytesArc, nBytesNodeAddress, lVal):
+
+    def getTxtRepr2 (self, nBytesArc, lVal):
+        "return representation as string of node (method 2)"
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
@@ -704,7 +733,7 @@ class DawgNode:
                 val = val | nFinalArcMask
             if (self.pos + 1) == self.arcs[arc].pos  and self.i != 0:
                 val = val | nNextNodeMask
-                s += "  {:<20}  {:0>16}\n".format(lVal[arc], bin(val)[2:], "")
+                s += "  {:<20}  {:0>16}\n".format(lVal[arc], bin(val)[2:])
             else:
                 s += "  {:<20}  {:0>16}  i{:_>10}   #{:_>10}\n".format(lVal[arc], bin(val)[2:], self.arcs[arc].i, self.arcs[arc].addr)
         return s
@@ -712,29 +741,31 @@ class DawgNode:
     # VERSION 3 =====================================================================================================
     def convToBytes3 (self, nBytesArc, nBytesNodeAddress, nBytesOffset):
         """
+        Convert to bytes (method 3).
+
         Node scheme:
         - Arc length is defined by nBytesArc
         - Address length is defined by nBytesNodeAddress
         - Offset length is defined by nBytesOffset
-                                       
+
         |                Arc                |            Address of next node  or  offset to next node              |
         |                                   |                                                                       |
-         /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
-         |1|0|0| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-         \---------------/ \---------------/ \---------------/ \---------------/ \---------------/ \---------------/
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃1┃0┃0┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
          [...]
-         /---------------\ /---------------\ /---------------\
-         |0|0|1| | | | | | | | | | | | | | | | | | | | | | | |     Offsets are shorter than addresses
-         \---------------/ \---------------/ \---------------/ 
-         /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
-         |0|1|0| | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | |
-         \---------------/ \---------------/ \---------------/ \---------------/ \---------------/ \---------------/
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃0┃0┃1┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃     Offsets are shorter than addresses
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
+         ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓ ┏━━━━━━━━━━━━━━━┓
+         ┃0┃1┃0┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃ ┃
+         ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛ ┗━━━━━━━━━━━━━━━┛
 
           ^ ^ ^
-          | | |
-          | |  \_ if 1, offset instead of address of next node
-          |  \___ if 1, last arc of this node
-           \_____ if 1, this node is final (only on the first arc)
+          ┃ ┃ ┃
+          ┃ ┃ ┗━━ if 1, offset instead of address of next node
+          ┃ ┗━━━━ if 1, last arc of this node
+          ┗━━━━━━ if 1, this node is final (only on the first arc)
         """
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
@@ -761,8 +792,9 @@ class DawgNode:
                 by += val.to_bytes(nBytesArc, byteorder='big')
                 by += self.arcs[arc].addr.to_bytes(nBytesNodeAddress, byteorder='big')
         return by
-        
-    def getTxtRepr3 (self, nBytesArc, nBytesNodeAddress, nBytesOffset, lVal):
+
+    def getTxtRepr3 (self, nBytesArc, nBytesOffset, lVal):
+        "return representation as string of node (method 3)"
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
@@ -796,6 +828,7 @@ _dCharOrder = {
 
 
 def addWordToCharDict (sWord):
+    "for each character of <sWord>, count how many times it appears after the previous character, and store result in a <_dCharOrder>"
     cPrevious = ""
     for cChar in sWord:
         if cPrevious not in _dCharOrder:
@@ -805,9 +838,11 @@ def addWordToCharDict (sWord):
 
 
 def getCharOrderAfterChar (cChar):
+    "return a dictionary of chars with number of times it appears after character <cChar>"
     return _dCharOrder.get(cChar, None)
 
 
 def displayCharOrder ():
+    "display how many times each character appear after another one"
     for key, value in _dCharOrder.items():
         print("[" + key + "]: ", ", ".join([ c+":"+str(n)  for c, n  in  sorted(value.items(), key=lambda t: t[1], reverse=True) ]))

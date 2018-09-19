@@ -1,5 +1,7 @@
-# list of similar chars
-# useful for suggestion mechanism
+"""
+List of similar chars
+useful for suggestion mechanism
+"""
 
 import re
 import unicodedata
@@ -10,6 +12,7 @@ _xTransCharsForSpelling = str.maketrans({
 })
 
 def spellingNormalization (sWord):
+    "nomalization NFC and removing ligatures"
     return unicodedata.normalize("NFC", sWord.translate(_xTransCharsForSpelling))
 
 
@@ -21,7 +24,7 @@ _xTransCharsForSimplification = str.maketrans({
     'ā': 'a',  'ē': 'e',  'ī': 'i',  'ō': 'o',  'ū': 'u',  'ȳ': 'i',
     'ç': 'c',  'ñ': 'n',  'k': 'q',  'w': 'v',
     'œ': 'oe',  'æ': 'ae',
-    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st', 
+    'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st',
 })
 
 def simplifyWord (sWord):
@@ -94,7 +97,7 @@ d1to1 = {
 
     "g": "gGjJĵĴ",
     "G": "GgJjĴĵ",
-    
+
     "h": "hH",
     "H": "Hh",
 
@@ -239,6 +242,7 @@ d1toX = {
 
 
 def get1toXReplacement (cPrev, cCur, cNext):
+    "return tuple of replacements for <cCur>"
     if cCur in aConsonant  and  (cPrev in aConsonant  or  cNext in aConsonant):
         return ()
     return d1toX.get(cCur, ())

@@ -1,5 +1,8 @@
 #! python3
-# coding: UTF-8
+
+"""
+Grammar checker tests for French language
+"""
 
 import unittest
 import os
@@ -129,6 +132,7 @@ class TestGrammarChecking (unittest.TestCase):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
         spHere, spfThisFile = os.path.split(__file__)
         with open(os.path.join(spHere, "gc_test.txt"), "r", encoding="utf-8") as hSrc:
+            nError = 0
             for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
                 sLineNum = sLine[:10].strip()
                 sLine = sLine[10:].strip()
@@ -147,19 +151,29 @@ class TestGrammarChecking (unittest.TestCase):
                 sExpectedErrors = self._getExpectedErrors(sErrorText)
                 sTextToCheck = sErrorText.replace("}}", "").replace("{{", "")
                 sFoundErrors, sListErr, sFoundSuggs = self._getFoundErrors(sTextToCheck, sOption)
-                self.assertEqual(sExpectedErrors, sFoundErrors, \
-                                 "\n# Line num: " + sLineNum + \
-                                 "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
-                                 "\n  expected: " + sExpectedErrors + \
-                                 "\n  found:    " + sFoundErrors + \
-                                 "\n  errors:   \n" + sListErr)
-                if sExceptedSuggs:
-                    self.assertEqual(sExceptedSuggs, sFoundSuggs, "\n# Line num: " + sLineNum + "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + "\n  errors:   \n" + sListErr)
+                # tests
+                if sExpectedErrors != sFoundErrors:
+                    print("\n# Line num: " + sLineNum + \
+                          "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
+                          "\n  expected: " + sExpectedErrors + \
+                          "\n  found:    " + sFoundErrors + \
+                          "\n  errors:   \n" + sListErr)
+                    nError += 1
+                elif sExceptedSuggs:
+                    if sExceptedSuggs != sFoundSuggs:
+                        print("\n# Line num: " + sLineNum + \
+                              "\n> to check: " + _fuckBackslashUTF8(sTextToCheck) + \
+                              "\n  expected: " + sExceptedSuggs + \
+                              "\n  found:    " + sFoundSuggs + \
+                              "\n  errors:   \n" + sListErr)
+                        nError += 1
+            if nError:
+                print("Unexpected errors:", nError)
         # untested rules
         i = 0
         for sOpt, sLineId, sRuleId in gce.listRules():
-            if sLineId not in self._aRuleTested and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
-                echo(sRuleId, end= ", ")
+            if sOpt != "@@@@" and sLineId not in self._aRuleTested and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
+                echo(sLineId + "/" + sRuleId, end= ", ")
                 i += 1
         if i:
             echo("\n[{} untested rules]".format(i))

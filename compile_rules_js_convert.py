@@ -1,4 +1,6 @@
-# Convert Python code to JavaScript code
+"""
+Convert Python code and regexes to JavaScript code
+"""
 
 import copy
 import re
@@ -18,10 +20,11 @@ def py2js (sCode):
     sCode = sCode.replace(" and ", " && ")
     sCode = sCode.replace(" or ", " || ")
     sCode = re.sub("\\bnot\\b", "!", sCode)
-    sCode = re.sub("(.+) if (.+) else (.+)", "(\\2) ? \\1 : \\3", sCode)
+    #sCode = re.sub("(.+) if (.+) else (.+)", "(\\2) ? \\1 : \\3", sCode)
     # boolean
     sCode = sCode.replace("False", "false")
     sCode = sCode.replace("True", "true")
+    sCode = sCode.replace("None", "null")
     sCode = sCode.replace("bool", "Boolean")
     # methods
     sCode = sCode.replace(".__len__()", ".length")
@@ -43,18 +46,14 @@ def py2js (sCode):
     sCode = sCode.replace('.replace("..."', r".replace(/\.\.\./g")
     sCode = re.sub(r'.replace\("([^"]+)" ?,', ".replace(/\\1/g,", sCode)
     # regex
-    sCode = re.sub('re.search\\("([^"]+)", *(m.group\\(\\d\\))\\)', "(\\2.search(/\\1/) >= 0)", sCode)
-    sCode = re.sub(".search\\(/\\(\\?i\\)([^/]+)/\\) >= 0\\)", ".search(/\\1/i) >= 0)", sCode)
-    sCode = re.sub('(look\\(sx?[][.a-z:()]*), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = re.sub('(look\\(sx?[][.a-z:()]*), "([^"]+)"', "\\1, /\\2/", sCode)
-    sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "\\(\\?i\\)([^"]+)"', "\\1, /\\2/i", sCode)
-    sCode = re.sub('(look_chk1\\(dDA, sx?[][.a-z:()]*, [0-9a-z.()]+), "([^"]+)"', "\\1, /\\2/i", sCode)
     sCode = re.sub('m\\.group\\((\\d+)\\) +in +(a[a-zA-Z]+)', "\\2.has(m[\\1])", sCode)
-    sCode = sCode.replace("(?<!-)", "")  # todo
+    sCode = re.sub('(lToken\\S+) +in +(a[a-zA-Z]+)', "\\2.has(\\1)", sCode)
     # slices
     sCode = sCode.replace("[:m.start()]", ".slice(0,m.index)")
     sCode = sCode.replace("[m.end():]", ".slice(m.end[0])")
     sCode = sCode.replace("[m.start():m.end()]", ".slice(m.index, m.end[0])")
+    sCode = sCode.replace('[lToken[nLastToken]["nEnd"]:]', '.slice(lToken[nLastToken]["nEnd"])')
+    sCode = sCode.replace('[:lToken[1+nTokenOffset]["nStart"]]', '.slice(0,lToken[1+nTokenOffset]["nStart"])')
     sCode = re.sub("\\[(-?\\d+):(-?\\d+)\\]", ".slice(\\1,\\2)", sCode)
     sCode = re.sub("\\[(-?\\d+):\\]", ".slice(\\1)", sCode)
     sCode = re.sub("\\[:(-?\\d+)\\]", ".slice(0,\\1)", sCode)
@@ -67,10 +66,8 @@ def py2js (sCode):
     # tuples -> lists
     sCode = re.sub("\\((m\\.start\\[\\d+\\], m\\[\\d+\\])\\)", "[\\1]", sCode)
     # regex
-    sCode = sCode.replace(r"\w[\w-]+", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+")
-    sCode = sCode.replace(r"/\w/", "/[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ]/")
-    sCode = sCode.replace(r"[\w-]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]")
-    sCode = sCode.replace(r"[\w,]", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆ,]")
+    sCode = sCode.replace(r"[\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ")
+    sCode = sCode.replace(r"\\w", "[a-zA-Zà-öÀ-Ö0-9_ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ]")
     return sCode
 
 
@@ -118,7 +115,11 @@ def regex2js (sRegex, sWORDLIMITLEFT):
 
 
 def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
+    "modify Python rules -> JS rules"
     lRuleJS = copy.deepcopy(lRule)
+    # graph rules
+    if lRuleJS[0] == "@@@@":
+        return lRuleJS
     del lRule[-1] # tGroups positioning codes are useless for Python
     # error messages
     for aAction in lRuleJS[6]:
@@ -132,24 +133,32 @@ def pyRuleToJS (lRule, dJSREGEXES, sWORDLIMITLEFT):
 
 
 def writeRulesToJSArray (lRules):
+    "create rules as a string of arrays (to be bundled in a JSON string)"
     sArray = "[\n"
     for sOption, aRuleGroup in lRules:
-        sArray += '  ["' + sOption + '", [\n'  if sOption  else  "  [false, [\n"
-        for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
-            sArray += '    [' + sRegex + ", "
-            sArray += "true, " if bCaseInsensitive  else "false, "
-            sArray += '"' + sLineId + '", '
-            sArray += '"' + sRuleId + '", '
-            sArray += str(nPriority) + ", "
-            sArray += json.dumps(lActions, ensure_ascii=False) + ", "
-            sArray += json.dumps(aGroups, ensure_ascii=False) + ", "
-            sArray += json.dumps(aNegLookBehindRegex, ensure_ascii=False) + "],\n"
-        sArray += "  ]],\n"
+        if sOption != "@@@@":
+            sArray += '  ["' + sOption + '", [\n'  if sOption  else  "  [false, [\n"
+            for sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, aGroups, aNegLookBehindRegex in aRuleGroup:
+                sArray += '    [' + sRegex + ", "
+                sArray += "true, " if bCaseInsensitive  else "false, "
+                sArray += '"' + sLineId + '", '
+                sArray += '"' + sRuleId + '", '
+                sArray += str(nPriority) + ", "
+                sArray += json.dumps(lActions, ensure_ascii=False) + ", "
+                sArray += json.dumps(aGroups, ensure_ascii=False) + ", "
+                sArray += json.dumps(aNegLookBehindRegex, ensure_ascii=False) + "],\n"
+            sArray += "  ]],\n"
+        else:
+            sArray += '  ["' + sOption + '", [\n'
+            for sGraphName, sLineId in aRuleGroup:
+                sArray += '    ["' + sGraphName + '", "' + sLineId + '"],\n'
+            sArray += "  ]],\n"
     sArray += "]"
     return sArray
 
 
 def groupsPositioningCodeToList (sGroupsPositioningCode):
+    "convert <sGroupsPositioningCode> to a list of codes (numbers or strings)"
     if not sGroupsPositioningCode:
         return None
     return [ int(sCode)  if sCode.isdigit() or (sCode[0:1] == "-" and sCode[1:].isdigit())  else sCode \

@@ -1,4 +1,7 @@
-# Grammalecte - Suggestion phonétique
+"""
+Grammalecte - Suggestion phonétique
+"""
+
 # License: GPL 3
 
 import re

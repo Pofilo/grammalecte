@@ -1,9 +1,13 @@
+"""
+Grammalecte: compile rules
+"""
 
 import re
 import traceback
 import json
 
 import compile_rules_js_convert as jsconv
+import compile_rules_graph as crg
 
 
 dDEF = {}
@@ -18,7 +22,21 @@ sWORDLIMITLEFT  = r"(?<![\w.,–-])"   # r"(?<![-.,—])\b"  seems slower
 sWORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
 
 
+def _rgb (r, g, b):
+    return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
+
+
+def getRGB (sHex):
+    if sHex:
+        r = int(sHex[:2], 16)
+        g = int(sHex[2:4], 16)
+        b = int(sHex[4:], 16)
+        return _rgb(r, g, b)
+    return _rgb(0, 0, 0)
+
+
 def prepareFunction (s):
+    "convert simple rule syntax to a string of Python code"
     s = s.replace("__also__", "bCondMemo")
     s = s.replace("__else__", "not bCondMemo")
     s = re.sub(r"isStart *\(\)", 'before("^ *$|, *$")', s)
@@ -29,31 +47,22 @@ def prepareFunction (s):
     s = re.sub(r"isRealEnd *\(\)", 'after("^ *$")', s)
     s = re.sub(r"isEnd0 *\(\)", 'after0("^ *$|^,")', s)
     s = re.sub(r"isRealEnd0 *\(\)", 'after0("^ *$")', s)
-    s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(dDA, m.start(\\2), m.group(\\2)', s)
-    s = re.sub(r"define[(][\\](\d+)", 'define(dDA, m.start(\\1)', s)
+    s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(dTokenPos, m.start(\\2), m.group(\\2)', s)
+    s = re.sub(r"define[(][\\](\d+)", 'define(dTokenPos, m.start(\\1)', s)
     s = re.sub(r"(morph|morphex|displayInfo)[(][\\](\d+)", '\\1((m.start(\\2), m.group(\\2))', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(]", '\\1(dDA, ', s)
+    s = re.sub(r"(morph|morphex|displayInfo)[(]", '\\1(dTokenPos, ', s)
     s = re.sub(r"(sugg\w+|switch\w+)\(@", '\\1(m.group(i[4])', s)
-    s = re.sub(r"word\(\s*1\b", 'nextword1(s, m.end()', s)                                  # word(1)
-    s = re.sub(r"word\(\s*-1\b", 'prevword1(s, m.start()', s)                               # word(-1)
-    s = re.sub(r"word\(\s*(\d)", 'nextword(s, m.end(), \\1', s)                             # word(n)
-    s = re.sub(r"word\(\s*-(\d)", 'prevword(s, m.start(), \\1', s)                          # word(-n)
-    s = re.sub(r"before\(\s*", 'look(s[:m.start()], ', s)                                   # before(s)
-    s = re.sub(r"after\(\s*", 'look(s[m.end():], ', s)                                      # after(s)
-    s = re.sub(r"textarea\(\s*", 'look(s, ', s)                                             # textarea(s)
-    s = re.sub(r"before_chk1\(\s*", 'look_chk1(dDA, s[:m.start()], 0, ', s)                 # before_chk1(s)
-    s = re.sub(r"after_chk1\(\s*", 'look_chk1(dDA, s[m.end():], m.end(), ', s)              # after_chk1(s)
-    s = re.sub(r"textarea_chk1\(\s*", 'look_chk1(dDA, s, 0, ', s)                           # textarea_chk1(s)
-    s = re.sub(r"/0", 'sx[m.start():m.end()]', s)                                           # /0
-    s = re.sub(r"before0\(\s*", 'look(sx[:m.start()], ', s)                                 # before0(s)
-    s = re.sub(r"after0\(\s*", 'look(sx[m.end():], ', s)                                    # after0(s)
-    s = re.sub(r"textarea0\(\s*", 'look(sx, ', s)                                           # textarea0(s)
-    s = re.sub(r"before0_chk1\(\s*", 'look_chk1(dDA, sx[:m.start()], 0, ', s)               # before0_chk1(s)
-    s = re.sub(r"after0_chk1\(\s*", 'look_chk1(dDA, sx[m.end():], m.end(), ', s)            # after0_chk1(s)
-    s = re.sub(r"textarea0_chk1\(\s*", 'look_chk1(dDA, sx, 0, ', s)                         # textarea0_chk1(s)
-    s = re.sub(r"isEndOfNG\(\s*\)", 'isEndOfNG(dDA, s[m.end():], m.end())', s)              # isEndOfNG(s)
-    s = re.sub(r"isNextNotCOD\(\s*\)", 'isNextNotCOD(dDA, s[m.end():], m.end())', s)        # isNextNotCOD(s)
-    s = re.sub(r"isNextVerb\(\s*\)", 'isNextVerb(dDA, s[m.end():], m.end())', s)            # isNextVerb(s)
+    s = re.sub(r"word\(\s*1\b", 'nextword1(sSentence, m.end()', s)                                  # word(1)
+    s = re.sub(r"word\(\s*-1\b", 'prevword1(sSentence, m.start()', s)                               # word(-1)
+    s = re.sub(r"word\(\s*(\d)", 'nextword(sSentence, m.end(), \\1', s)                             # word(n)
+    s = re.sub(r"word\(\s*-(\d)", 'prevword(sSentence, m.start(), \\1', s)                          # word(-n)
+    s = re.sub(r"before\(\s*", 'look(sSentence[:m.start()], ', s)                                   # before(sSentence)
+    s = re.sub(r"after\(\s*", 'look(sSentence[m.end():], ', s)                                      # after(sSentence)
+    s = re.sub(r"textarea\(\s*", 'look(sSentence, ', s)                                             # textarea(sSentence)
+    s = re.sub(r"/0", 'sSentence0[m.start():m.end()]', s)                                           # /0
+    s = re.sub(r"before0\(\s*", 'look(sSentence0[:m.start()], ', s)                                 # before0(sSentence)
+    s = re.sub(r"after0\(\s*", 'look(sSentence0[m.end():], ', s)                                    # after0(sSentence)
+    s = re.sub(r"textarea0\(\s*", 'look(sSentence0, ', s)                                           # textarea0(sSentence)
     s = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', s)
     s = re.sub(r"[\\](\d+)", 'm.group(\\1)', s)
     return s
@@ -99,6 +108,7 @@ def uppercase (s, sLang):
 
 
 def countGroupInRegex (sRegex):
+    "returns the number of groups in <sRegex>"
     try:
         return re.compile(sRegex).groups
     except:
@@ -112,16 +122,24 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     global dJSREGEXES
     global nRULEWITHOUTNAME
 
-    #### OPTIONS
     sLineId = str(nIdLine) + ("p" if bParagraph else "s")
     sRuleId = sLineId
+
+    #### GRAPH CALL
+    if s.startswith("@@@@"):
+        if bParagraph:
+            print("Error. Graph call can be made only after the first pass (sentence by sentence)")
+            exit()
+        return ["@@@@", s[4:], sLineId]
+
+    #### OPTIONS
     sOption = False         # False or [a-z0-9]+ name
     nPriority = 4           # Default is 4, value must be between 0 and 9
     tGroups = None          # code for groups positioning (only useful for JavaScript)
     cCaseMode = 'i'         # i: case insensitive,  s: case sensitive,  u: uppercasing allowed
     cWordLimitLeft = '['    # [: word limit, <: no specific limit
     cWordLimitRight = ']'   # ]: word limit, >: no specific limit
-    m = re.match("^__(?P<borders_and_case>[[<]\\w[]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\)|)(?P<priority>![0-9]|)__ *", s)
+    m = re.match("^__(?P<borders_and_case>[\\[<]\\w[\\]>])(?P<option>/[a-zA-Z0-9]+|)(?P<ruleid>\\(\\w+\\)|)(?P<priority>![0-9]|)__ *", s)
     if m:
         cWordLimitLeft = m.group('borders_and_case')[0]
         cCaseMode = m.group('borders_and_case')[1]
@@ -204,14 +222,14 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
 
     ## check regex
     try:
-        z = re.compile(sRegex)
+        re.compile(sRegex)
     except:
         print("# Regex error at line ", nIdLine)
         print(sRegex)
         traceback.print_exc()
         return None
     ## groups in non grouping parenthesis
-    for x in re.finditer("\(\?:[^)]*\([[\w -]", sRegex):
+    for x in re.finditer(r"\(\?:[^)]*\([\[\w -]", sRegex):
         print("# Warning: groups inside non grouping parenthesis in regex at line " + sLineId)
 
     #### PARSE ACTIONS
@@ -228,10 +246,23 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     return [sOption, sRegex, bCaseInsensitive, sLineId, sRuleId, nPriority, lActions, tGroups]
 
 
+def checkReferenceNumbers (sText, sActionId, nToken):
+    "check if token references in <sText> greater than <nToken> (debugging)"
+    for x in re.finditer(r"\\(\d+)", sText):
+        if int(x.group(1)) > nToken:
+            print("# Error in token index at line " + sActionId + " ("+str(nToken)+" tokens only)")
+            print(sText)
+
+
+def checkIfThereIsCode (sText, sActionId):
+    "check if there is code in <sText> (debugging)"
+    if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
+        print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
+        print(sText)
+
+
 def createAction (sIdAction, sAction, nGroup):
     "returns an action to perform as a tuple (condition, action type, action[, iGroup [, message, URL ]])"
-    global lFUNCTIONS
-
     m = re.search(r"([-~=>])(\d*|)>>", sAction)
     if not m:
         print("# No action at line " + sIdAction)
@@ -241,13 +272,11 @@ def createAction (sIdAction, sAction, nGroup):
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = prepareFunction(sCondition)
-        lFUNCTIONS.append(("c_"+sIdAction, sCondition))
-        for x in re.finditer("[.](?:group|start|end)[(](\d+)[)]", sCondition):
-            if int(x.group(1)) > nGroup:
-                print("# Error in groups in condition at line " + sIdAction + " ("+str(nGroup)+" groups only)")
+        lFUNCTIONS.append(("_c_"+sIdAction, sCondition))
+        checkReferenceNumbers(sCondition, sIdAction, nGroup)
         if ".match" in sCondition:
             print("# Error. JS compatibility. Don't use .match() in condition, use .search()")
-        sCondition = "c_"+sIdAction
+        sCondition = "_c_"+sIdAction
     else:
         sCondition = None
 
@@ -274,42 +303,34 @@ def createAction (sIdAction, sAction, nGroup):
             if mURL:
                 sURL = mURL.group(1).strip()
                 sMsg = sMsg[:mURL.start(0)].strip()
+            checkReferenceNumbers(sMsg, sIdAction, nGroup)
             if sMsg[0:1] == "=":
                 sMsg = prepareFunction(sMsg[1:])
-                lFUNCTIONS.append(("m_"+sIdAction, sMsg))
-                for x in re.finditer("group[(](\d+)[)]", sMsg):
-                    if int(x.group(1)) > nGroup:
-                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-                sMsg = "=m_"+sIdAction
+                lFUNCTIONS.append(("_m_"+sIdAction, sMsg))
+                sMsg = "=_m_"+sIdAction
             else:
-                for x in re.finditer(r"\\(\d+)", sMsg):
-                    if int(x.group(1)) > nGroup:
-                        print("# Error in groups in message at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-                if re.search("[.]\\w+[(]", sMsg):
-                    print("# Error in message at line " + sIdAction + ":  This message looks like code. Line should begin with =")
+                checkIfThereIsCode(sMsg, sIdAction)
 
+    checkReferenceNumbers(sAction, sIdAction, nGroup)
     if sAction[0:1] == "=" or cAction == "=":
-        if "define" in sAction and not re.search(r"define\(\\\d+ *, *\[.*\] *\)", sAction):
-            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
         sAction = prepareFunction(sAction)
         sAction = sAction.replace("m.group(i[4])", "m.group("+str(iGroup)+")")
-        for x in re.finditer("group[(](\d+)[)]", sAction):
-            if int(x.group(1)) > nGroup:
-                print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
     else:
-        for x in re.finditer(r"\\(\d+)", sAction):
-            if int(x.group(1)) > nGroup:
-                print("# Error in groups in replacement at line " + sIdAction + " ("+str(nGroup)+" groups only)")
-        if re.search("[.]\\w+[(]|sugg\\w+[(]", sAction):
-            print("# Error in action at line " + sIdAction + ":  This action looks like code. Line should begin with =")
+        checkIfThereIsCode(sAction, sIdAction)
+
+    if cAction == ">":
+        ## no action, break loop if condition is False
+        return [sCondition, cAction, ""]
+
+    if not sAction:
+        print("# Error in action at line " + sIdAction + ":  This action is empty.")
+        return None
 
     if cAction == "-":
         ## error detected --> suggestion
-        if not sAction:
-            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("s_"+sIdAction, sAction[1:]))
-            sAction = "=s_"+sIdAction
+            lFUNCTIONS.append(("_s_"+sIdAction, sAction[1:]))
+            sAction = "=_s_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
@@ -317,11 +338,9 @@ def createAction (sIdAction, sAction, nGroup):
         return [sCondition, cAction, sAction, iGroup, sMsg, sURL]
     elif cAction == "~":
         ## text processor
-        if not sAction:
-            print("# Error in action at line " + sIdAction + ":  This action is empty.")
         if sAction[0:1] == "=":
-            lFUNCTIONS.append(("p_"+sIdAction, sAction[1:]))
-            sAction = "=p_"+sIdAction
+            lFUNCTIONS.append(("_p_"+sIdAction, sAction[1:]))
+            sAction = "=_p_"+sIdAction
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sCondition, cAction, sAction, iGroup]
@@ -329,28 +348,29 @@ def createAction (sIdAction, sAction, nGroup):
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
-        if not sAction:
-            print("# Error in action at line " + sIdAction + ":  This action is empty.")
-        lFUNCTIONS.append(("d_"+sIdAction, sAction))
-        sAction = "d_"+sIdAction
+        if "define" in sAction and not re.search(r"define\(dTokenPos, *m\.start.*, \[.*\] *\)", sAction):
+            print("# Error in action at line " + sIdAction + ": second argument for define must be a list of strings")
+            print(sAction)
+        lFUNCTIONS.append(("_d_"+sIdAction, sAction))
+        sAction = "_d_"+sIdAction
         return [sCondition, cAction, sAction]
-    elif cAction == ">":
-        ## no action, break loop if condition is False
-        return [sCondition, cAction, ""]
     else:
         print("# Unknown action at line " + sIdAction)
         return None
 
 
 def _calcRulesStats (lRules):
+    "count rules and actions"
     d = {'=':0, '~': 0, '-': 0, '>': 0}
     for aRule in lRules:
-        for aAction in aRule[6]:
-            d[aAction[1]] = d[aAction[1]] + 1
+        if aRule[0] != "@@@@":
+            for aAction in aRule[6]:
+                d[aAction[1]] = d[aAction[1]] + 1
     return (d, len(lRules))
 
 
 def displayStats (lParagraphRules, lSentenceRules):
+    "display rules numbers"
     print("  {:>18} {:>18} {:>18} {:>18}".format("DISAMBIGUATOR", "TEXT PROCESSOR", "GRAMMAR CHECKING", "REGEX"))
     d, nRule = _calcRulesStats(lParagraphRules)
     print("§ {:>10} actions {:>10} actions {:>10} actions  in {:>8} rules".format(d['='], d['~'], d['-'], nRule))
@@ -393,7 +413,7 @@ def prepareOptions (lOptionLines):
         elif sLine.startswith("OPT/"):
             m = re.match("OPT/([a-z0-9]+):(.+)$", sLine)
             for i, sOpt in enumerate(m.group(2).split()):
-                lOpt[i][1][m.group(1)] =  eval(sOpt)
+                lOpt[i][1][m.group(1)] = eval(sOpt)
         elif sLine.startswith("OPTPRIORITY/"):
             m = re.match("OPTPRIORITY/([a-z0-9]+): *([0-9])$", sLine)
             dOptPriority[m.group(1)] = int(m.group(2))
@@ -417,6 +437,7 @@ def prepareOptions (lOptionLines):
 
 
 def printBookmark (nLevel, sComment, nLine):
+    "print bookmark within the rules file"
     print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
 
 
@@ -433,26 +454,22 @@ def make (spLang, sLang, bJavaScript):
 
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
-    global dDEF
-    lLine = []
     lRuleLine = []
     lTest = []
     lOpt = []
-    zBookmark = re.compile("^!!+")
-    zGraphLink = re.compile(r"^@@@@GRAPHLINK>(\w+)@@@@")
+    bGraph = False
+    lGraphRule = []
 
     for i, sLine in enumerate(lRules, 1):
         if sLine.startswith('#END'):
+            # arbitrary end
             printBookmark(0, "BREAK BY #END", i)
             break
         elif sLine.startswith("#"):
+            # comment
             pass
-        elif sLine.startswith("@@@@"):
-            m = re.match(r"^@@@@GRAPHLINK>(\w+)@@@@", sLine.strip())
-            if m:
-                #lRuleLine.append(["@GRAPHLINK", m.group(1)])
-                printBookmark(1, "@GRAPHLINK: " + m.group(1), i)
         elif sLine.startswith("DEF:"):
+            # definition
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
             if m:
                 dDEF["{"+m.group(1)+"}"] = m.group(2)
@@ -460,21 +477,47 @@ def make (spLang, sLang, bJavaScript):
                 print("Error in definition: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
+            # test
             lTest.append("{:<8}".format(i) + "  " + sLine[5:].strip())
         elif sLine.startswith("TODO:"):
+            # todo
             pass
         elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
+            # options
             lOpt.append(sLine)
-        elif re.match("[  \t]*$", sLine):
-            pass
         elif sLine.startswith("!!"):
-            m = zBookmark.search(sLine)
+            # bookmark
+            m = re.match("!!+", sLine)
             nExMk = len(m.group(0))
             if sLine[nExMk:].strip():
                 printBookmark(nExMk-2, sLine[nExMk:-3].strip(), i)
+        # Graph rules
+        elif sLine.startswith("@@@@GRAPH:"):
+            # rules graph call
+            m = re.match(r"@@@@GRAPH: *(\w+)", sLine.strip())
+            if m:
+                printBookmark(0, "GRAPH: " + m.group(1), i)
+                lRuleLine.append([i, "@@@@"+m.group(1)])
+                bGraph = True
+            lGraphRule.append([i, sLine])
+            bGraph = True
+        elif sLine.startswith("@@@@END_GRAPH"):
+            #lGraphRule.append([i, sLine])
+            printBookmark(0, "ENDGRAPH", i)
+            bGraph = False
+        elif re.match("@@@@ *$", sLine):
+            pass
+        elif bGraph:
+            lGraphRule.append([i, sLine])
+        # Regex rules
+        elif re.match("[  \t]*$", sLine):
+            # empty line
+            pass
         elif sLine.startswith(("    ", "\t")):
-            lRuleLine[len(lRuleLine)-1][1] += " " + sLine.strip()
+            # rule (continuation)
+            lRuleLine[-1][1] += " " + sLine.strip()
         else:
+            # new rule
             lRuleLine.append([i, sLine.strip()])
 
     # generating options files
@@ -513,43 +556,47 @@ def make (spLang, sLang, bJavaScript):
                         lSentenceRulesJS.append(jsconv.pyRuleToJS(aRule, dJSREGEXES, sWORDLIMITLEFT))
 
     # creating file with all functions callable by rules
-    print("  creating callables...")
-    sPyCallables = "# generated code, do not edit\n"
-    sJSCallables = "// generated code, do not edit\nconst oEvalFunc = {\n"
+    print("  creating callables for regex rules...")
+    sPyCallables = ""
+    sJSCallables = ""
     for sFuncName, sReturn in lFUNCTIONS:
-        cType = sFuncName[0:1]
-        if cType == "c": # condition
-            sParams = "s, sx, m, dDA, sCountry, bCondMemo"
-        elif cType == "m": # message
-            sParams = "s, m"
-        elif cType == "s": # suggestion
-            sParams = "s, m"
-        elif cType == "p": # preprocessor
-            sParams = "s, m"
-        elif cType == "d": # disambiguator
-            sParams = "s, m, dDA"
+        if sFuncName.startswith("_c_"): # condition
+            sParams = "sSentence, sSentence0, m, dTokenPos, sCountry, bCondMemo"
+        elif sFuncName.startswith("_m_"): # message
+            sParams = "sSentence, m"
+        elif sFuncName.startswith("_s_"): # suggestion
+            sParams = "sSentence, m"
+        elif sFuncName.startswith("_p_"): # preprocessor
+            sParams = "sSentence, m"
+        elif sFuncName.startswith("_d_"): # disambiguator
+            sParams = "sSentence, m, dTokenPos"
         else:
             print("# Unknown function type in [" + sFuncName + "]")
             continue
+        # Python
         sPyCallables += "def {} ({}):\n".format(sFuncName, sParams)
         sPyCallables += "    return " + sReturn + "\n"
+        # JavaScript
         sJSCallables += "    {}: function ({})".format(sFuncName, sParams) + " {\n"
         sJSCallables += "        return " + jsconv.py2js(sReturn) + ";\n"
         sJSCallables += "    },\n"
-    sJSCallables += "}\n"
 
     displayStats(lParagraphRules, lSentenceRules)
 
     print("Unnamed rules: " + str(nRULEWITHOUTNAME))
 
-    d = { "callables": sPyCallables,
-          "callablesJS": sJSCallables,
-          "gctests": sGCTests,
-          "gctestsJS": sGCTestsJS,
-          "paragraph_rules": mergeRulesByOption(lParagraphRules),
-          "sentence_rules": mergeRulesByOption(lSentenceRules),
-          "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
-          "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
-    d.update(dOptions)
+    dVars = {   "callables": sPyCallables,
+                "callablesJS": sJSCallables,
+                "gctests": sGCTests,
+                "gctestsJS": sGCTestsJS,
+                "paragraph_rules": mergeRulesByOption(lParagraphRules),
+                "sentence_rules": mergeRulesByOption(lSentenceRules),
+                "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
+                "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
+    dVars.update(dOptions)
 
-    return d
+    # compile graph rules
+    dVars2 = crg.make(lGraphRule, dDEF, sLang, dOptPriority, bJavaScript)
+    dVars.update(dVars2)
+
+    return dVars

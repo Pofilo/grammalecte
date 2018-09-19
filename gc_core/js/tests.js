@@ -84,8 +84,8 @@ class TestGrammarChecking {
         if (bShowUntested) {
             i = 0;
             for (let [sOpt, sLineId, sRuleId] of this.gce.listRules()) {
-                if (!this._aRuleTested.has(sLineId) && !/^[0-9]+[sp]$|^[pd]_/.test(sRuleId)) {
-                    sUntestedRules += sRuleId + ", ";
+                if (sOpt !== "@@@@" && !this._aRuleTested.has(sLineId) && !/^[0-9]+[sp]$|^[pd]_/.test(sRuleId)) {
+                    sUntestedRules += sLineId + "/" + sRuleId + ", ";
                     i += 1;
                 }
             }

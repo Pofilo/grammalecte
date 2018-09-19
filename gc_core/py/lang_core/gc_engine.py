@@ -1,5 +1,7 @@
-# Grammalecte
-# Grammar checker engine
+"""
+Grammalecte
+Grammar checker engine
+"""
 
 import re
 import sys
@@ -9,8 +11,19 @@ import traceback
 from itertools import chain
 
 from ..graphspell.spellchecker import SpellChecker
+from ..graphspell.tokenizer import Tokenizer
 from ..graphspell.echo import echo
 from . import gc_options
+
+try:
+    # LibreOffice / OpenOffice
+    from com.sun.star.linguistic2 import SingleProofreadingError
+    from com.sun.star.text.TextMarkupType import PROOFREADING
+    from com.sun.star.beans import PropertyValue
+    #import lightproof_handler_${implname} as opt
+    _bWriterError = True
+except ImportError:
+    _bWriterError = False
 
 
 __all__ = [ "lang", "locales", "pkg", "name", "version", "author", \
@@ -28,314 +41,43 @@ name = "${name}"
 version = "${version}"
 author = "${author}"
 
+# Modules
 _rules = None                               # module gc_rules
+_rules_graph = None                         # module gc_rules_graph
 
-# data
+# Data
 _sAppContext = ""                           # what software is running
 _dOptions = None
-_aIgnoredRules = set()
 _oSpellChecker = None
-_dAnalyses = {}                             # cache for data from dictionary
+_oTokenizer = None
+_aIgnoredRules = set()
 
 
 
-#### Parsing
-
-def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
-    "analyses the paragraph sText and returns list of errors"
-    #sText = unicodedata.normalize("NFC", sText)
-    aErrors = None
-    sAlt = sText
-    dDA = {}        # Disambiguisator. Key = position; value = list of morphologies
-    dPriority = {}  # Key = position; value = priority
-    dOpt = _dOptions  if not dOptions  else dOptions
-
-    # parse paragraph
-    try:
-        sNew, aErrors = _proofread(sText, sAlt, 0, True, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
-        if sNew:
-            sText = sNew
-    except:
-        raise
-
-    # cleanup
-    if " " in sText:
-        sText = sText.replace(" ", ' ') # nbsp
-    if " " in sText:
-        sText = sText.replace(" ", ' ') # nnbsp
-    if "'" in sText:
-        sText = sText.replace("'", "’")
-    if "‑" in sText:
-        sText = sText.replace("‑", "-") # nobreakdash
-
-    # parse sentences
-    for iStart, iEnd in _getSentenceBoundaries(sText):
-        if 4 < (iEnd - iStart) < 2000:
-            dDA.clear()
-            try:
-                _, errs = _proofread(sText[iStart:iEnd], sAlt[iStart:iEnd], iStart, False, dDA, dPriority, sCountry, dOpt, bDebug, bContext)
-                aErrors.update(errs)
-            except:
-                raise
-    return aErrors.values() # this is a view (iterable)
-
-
-def _getSentenceBoundaries (sText):
-    iStart = _zBeginOfParagraph.match(sText).end()
-    for m in _zEndOfSentence.finditer(sText):
-        yield (iStart, m.end())
-        iStart = m.end()
-
-
-def _proofread (s, sx, nOffset, bParagraph, dDA, dPriority, sCountry, dOptions, bDebug, bContext):
-    dErrs = {}
-    bChange = False
-    bIdRule = option('idrule')
-
-    for sOption, lRuleGroup in _getRules(bParagraph):
-        if not sOption or dOptions.get(sOption, False):
-            for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
-                if sRuleId not in _aIgnoredRules:
-                    for m in zRegex.finditer(s):
-                        bCondMemo = None
-                        for sFuncCond, cActionType, sWhat, *eAct in lActions:
-                            # action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
-                            try:
-                                bCondMemo = not sFuncCond or globals()[sFuncCond](s, sx, m, dDA, sCountry, bCondMemo)
-                                if bCondMemo:
-                                    if cActionType == "-":
-                                        # grammar error
-                                        nErrorStart = nOffset + m.start(eAct[0])
-                                        if nErrorStart not in dErrs or nPriority > dPriority[nErrorStart]:
-                                            dErrs[nErrorStart] = _createError(s, sx, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bIdRule, sOption, bContext)
-                                            dPriority[nErrorStart] = nPriority
-                                    elif cActionType == "~":
-                                        # text processor
-                                        s = _rewrite(s, sWhat, eAct[0], m, bUppercase)
-                                        bChange = True
-                                        if bDebug:
-                                            echo("~ " + s + "  -- " + m.group(eAct[0]) + "  # " + sLineId)
-                                    elif cActionType == "=":
-                                        # disambiguation
-                                        globals()[sWhat](s, m, dDA)
-                                        if bDebug:
-                                            echo("= " + m.group(0) + "  # " + sLineId + "\nDA: " + str(dDA))
-                                    elif cActionType == ">":
-                                        # we do nothing, this test is just a condition to apply all following actions
-                                        pass
-                                    else:
-                                        echo("# error: unknown action at " + sLineId)
-                                elif cActionType == ">":
-                                    break
-                            except Exception as e:
-                                raise Exception(str(e), "# " + sLineId + " # " + sRuleId)
-    if bChange:
-        return (s, dErrs)
-    return (False, dErrs)
-
-
-def _createWriterError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
-    "error for Writer (LO/OO)"
-    xErr = SingleProofreadingError()
-    #xErr = uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
-    xErr.nErrorStart = nOffset + m.start(iGroup)
-    xErr.nErrorLength = m.end(iGroup) - m.start(iGroup)
-    xErr.nErrorType = PROOFREADING
-    xErr.aRuleIdentifier = sRuleId
-    # suggestions
-    if sRepl[0:1] == "=":
-        sugg = globals()[sRepl[1:]](s, m)
-        if sugg:
-            if bUppercase and m.group(iGroup)[0:1].isupper():
-                xErr.aSuggestions = tuple(map(str.capitalize, sugg.split("|")))
-            else:
-                xErr.aSuggestions = tuple(sugg.split("|"))
-        else:
-            xErr.aSuggestions = ()
-    elif sRepl == "_":
-        xErr.aSuggestions = ()
-    else:
-        if bUppercase and m.group(iGroup)[0:1].isupper():
-            xErr.aSuggestions = tuple(map(str.capitalize, m.expand(sRepl).split("|")))
-        else:
-            xErr.aSuggestions = tuple(m.expand(sRepl).split("|"))
-    # Message
-    if sMsg[0:1] == "=":
-        sMessage = globals()[sMsg[1:]](s, m)
-    else:
-        sMessage = m.expand(sMsg)
-    xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
-    xErr.aFullComment = sMessage   # sMessage.split("|")[-1]    # in dialog
-    if bIdRule:
-        xErr.aShortComment += "  # " + sLineId + " # " + sRuleId
-    # URL
-    if sURL:
-        p = PropertyValue()
-        p.Name = "FullCommentURL"
-        p.Value = sURL
-        xErr.aProperties = (p,)
-    else:
-        xErr.aProperties = ()
-    return xErr
-
-
-def _createDictError (s, sx, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bIdRule, sOption, bContext):
-    "error as a dictionary"
-    dErr = {}
-    dErr["nStart"] = nOffset + m.start(iGroup)
-    dErr["nEnd"] = nOffset + m.end(iGroup)
-    dErr["sLineId"] = sLineId
-    dErr["sRuleId"] = sRuleId
-    dErr["sType"] = sOption  if sOption  else "notype"
-    # suggestions
-    if sRepl[0:1] == "=":
-        sugg = globals()[sRepl[1:]](s, m)
-        if sugg:
-            if bUppercase and m.group(iGroup)[0:1].isupper():
-                dErr["aSuggestions"] = list(map(str.capitalize, sugg.split("|")))
-            else:
-                dErr["aSuggestions"] = sugg.split("|")
-        else:
-            dErr["aSuggestions"] = ()
-    elif sRepl == "_":
-        dErr["aSuggestions"] = ()
-    else:
-        if bUppercase and m.group(iGroup)[0:1].isupper():
-            dErr["aSuggestions"] = list(map(str.capitalize, m.expand(sRepl).split("|")))
-        else:
-            dErr["aSuggestions"] = m.expand(sRepl).split("|")
-    # Message
-    if sMsg[0:1] == "=":
-        sMessage = globals()[sMsg[1:]](s, m)
-    else:
-        sMessage = m.expand(sMsg)
-    dErr["sMessage"] = sMessage
-    if bIdRule:
-        dErr["sMessage"] += "  # " + sLineId + " # " + sRuleId
-    # URL
-    dErr["URL"] = sURL  if sURL  else ""
-    # Context
-    if bContext:
-        dErr['sUnderlined'] = sx[m.start(iGroup):m.end(iGroup)]
-        dErr['sBefore'] = sx[max(0,m.start(iGroup)-80):m.start(iGroup)]
-        dErr['sAfter'] = sx[m.end(iGroup):m.end(iGroup)+80]
-    return dErr
-
-
-def _rewrite (s, sRepl, iGroup, m, bUppercase):
-    "text processor: write sRepl in s at iGroup position"
-    nLen = m.end(iGroup) - m.start(iGroup)
-    if sRepl == "*":
-        sNew = " " * nLen
-    elif sRepl == ">" or sRepl == "_" or sRepl == "~":
-        sNew = sRepl + " " * (nLen-1)
-    elif sRepl == "@":
-        sNew = "@" * nLen
-    elif sRepl[0:1] == "=":
-        sNew = globals()[sRepl[1:]](s, m)
-        sNew = sNew + " " * (nLen-len(sNew))
-        if bUppercase and m.group(iGroup)[0:1].isupper():
-            sNew = sNew.capitalize()
-    else:
-        sNew = m.expand(sRepl)
-        sNew = sNew + " " * (nLen-len(sNew))
-    return s[0:m.start(iGroup)] + sNew + s[m.end(iGroup):]
-
-
-def ignoreRule (sRuleId):
-    _aIgnoredRules.add(sRuleId)
-
-
-def resetIgnoreRules ():
-    _aIgnoredRules.clear()
-
-
-def reactivateRule (sRuleId):
-    _aIgnoredRules.discard(sRuleId)
-
-
-def listRules (sFilter=None):
-    "generator: returns typle (sOption, sLineId, sRuleId)"
-    if sFilter:
-        try:
-            zFilter = re.compile(sFilter)
-        except:
-            echo("# Error. List rules: wrong regex.")
-            sFilter = None
-    for sOption, lRuleGroup in chain(_getRules(True), _getRules(False)):
-        for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
-            if not sFilter or zFilter.search(sRuleId):
-                yield (sOption, sLineId, sRuleId)
-
-
-def displayRules (sFilter=None):
-    echo("List of rules. Filter: << " + str(sFilter) + " >>")
-    for sOption, sLineId, sRuleId in listRules(sFilter):
-        echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
-
-
-#### init
-
-try:
-    # LibreOffice / OpenOffice
-    from com.sun.star.linguistic2 import SingleProofreadingError
-    from com.sun.star.text.TextMarkupType import PROOFREADING
-    from com.sun.star.beans import PropertyValue
-    #import lightproof_handler_${implname} as opt
-    _createError = _createWriterError
-except ImportError:
-    _createError = _createDictError
-
+#### Initialization
 
 def load (sContext="Python"):
+    "initialization of the grammar checker"
     global _oSpellChecker
     global _sAppContext
     global _dOptions
+    global _oTokenizer
     try:
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
+        _oTokenizer = _oSpellChecker.getTokenizer()
+        _oSpellChecker.activateStorage()
     except:
         traceback.print_exc()
 
 
-def setOption (sOpt, bVal):
-    if sOpt in _dOptions:
-        _dOptions[sOpt] = bVal
-
-
-def setOptions (dOpt):
-    for sKey, bVal in dOpt.items():
-        if sKey in _dOptions:
-            _dOptions[sKey] = bVal
-
-
-def getOptions ():
-    return _dOptions
-
-
-def getDefaultOptions ():
-    return dict(gc_options.getOptions(_sAppContext))
-
-
-def getOptionsLabels (sLang):
-    return gc_options.getUI(sLang)
-
-
-def displayOptions (sLang):
-    echo("List of options")
-    echo("\n".join( [ k+":\t"+str(v)+"\t"+gc_options.getUI(sLang).get(k, ("?", ""))[0]  for k, v  in sorted(_dOptions.items()) ] ))
-    echo("")
-
-
-def resetOptions ():
-    global _dOptions
-    _dOptions = dict(gc_options.getOptions(_sAppContext))
-
-
 def getSpellChecker ():
+    "return the spellchecker object"
     return _oSpellChecker
 
+
+#### Rules
 
 def _getRules (bParagraph):
     try:
@@ -351,127 +93,722 @@ def _getRules (bParagraph):
 
 def _loadRules ():
     from . import gc_rules
+    from . import gc_rules_graph
     global _rules
+    global _rules_graph
     _rules = gc_rules
+    _rules_graph = gc_rules_graph
     # compile rules regex
-    for lRuleGroup in chain(_rules.lParagraphRules, _rules.lSentenceRules):
-        for rule in lRuleGroup[1]:
-            try:
-                rule[0] = re.compile(rule[0])
-            except:
-                echo("Bad regular expression in # " + str(rule[2]))
-                rule[0] = "(?i)<Grammalecte>"
+    for sOption, lRuleGroup in chain(_rules.lParagraphRules, _rules.lSentenceRules):
+        if sOption != "@@@@":
+            for aRule in lRuleGroup:
+                try:
+                    aRule[0] = re.compile(aRule[0])
+                except:
+                    echo("Bad regular expression in # " + str(aRule[2]))
+                    aRule[0] = "(?i)<Grammalecte>"
 
 
-def _getPath ():
-    return os.path.join(os.path.dirname(sys.modules[__name__].__file__), __name__ + ".py")
+def ignoreRule (sRuleId):
+    "disable rule <sRuleId>"
+    _aIgnoredRules.add(sRuleId)
 
+
+def resetIgnoreRules ():
+    "clear all ignored rules"
+    _aIgnoredRules.clear()
+
+
+def reactivateRule (sRuleId):
+    "(re)activate rule <sRuleId>"
+    _aIgnoredRules.discard(sRuleId)
+
+
+def listRules (sFilter=None):
+    "generator: returns typle (sOption, sLineId, sRuleId)"
+    if sFilter:
+        try:
+            zFilter = re.compile(sFilter)
+        except:
+            echo("# Error. List rules: wrong regex.")
+            sFilter = None
+    for sOption, lRuleGroup in chain(_getRules(True), _getRules(False)):
+        if sOption != "@@@@":
+            for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
+                if not sFilter or zFilter.search(sRuleId):
+                    yield (sOption, sLineId, sRuleId)
+
+
+def displayRules (sFilter=None):
+    "display the name of rules, with the filter <sFilter>"
+    echo("List of rules. Filter: << " + str(sFilter) + " >>")
+    for sOption, sLineId, sRuleId in listRegexRules(sFilter):
+        echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
+
+
+#### Options
+
+def setOption (sOpt, bVal):
+    "set option <sOpt> with <bVal> if it exists"
+    if sOpt in _dOptions:
+        _dOptions[sOpt] = bVal
+
+
+def setOptions (dOpt):
+    "update the dictionary of options with <dOpt>"
+    for sKey, bVal in dOpt.items():
+        if sKey in _dOptions:
+            _dOptions[sKey] = bVal
+
+
+def getOptions ():
+    "return the dictionary of current options"
+    return _dOptions
+
+
+def getDefaultOptions ():
+    "return the dictionary of default options"
+    return dict(gc_options.getOptions(_sAppContext))
+
+
+def getOptionsLabels (sLang):
+    "return options labels"
+    return gc_options.getUI(sLang)
+
+
+def displayOptions (sLang):
+    "display the list of grammar checking options"
+    echo("List of options")
+    echo("\n".join( [ k+":\t"+str(v)+"\t"+gc_options.getUI(sLang).get(k, ("?", ""))[0]  for k, v  in sorted(_dOptions.items()) ] ))
+    echo("")
+
+
+def resetOptions ():
+    "set options to default values"
+    global _dOptions
+    _dOptions = dict(gc_options.getOptions(_sAppContext))
+
+
+#### Parsing
+
+_zEndOfSentence = re.compile(r'([.?!:;…][ .?!… »”")]*|.$)')
+_zBeginOfParagraph = re.compile(r"^\W*")
+_zEndOfParagraph = re.compile(r"\W*$")
+
+def _getSentenceBoundaries (sText):
+    iStart = _zBeginOfParagraph.match(sText).end()
+    for m in _zEndOfSentence.finditer(sText):
+        yield (iStart, m.end())
+        iStart = m.end()
+
+
+def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
+    "init point to analyze a text"
+    oText = TextParser(sText)
+    return oText.parse(sCountry, bDebug, dOptions, bContext)
+
+
+#### TEXT PARSER
+
+class TextParser:
+    "Text parser"
+
+    def __init__ (self, sText):
+        self.sText = sText
+        self.sText0 = sText
+        self.sSentence = ""
+        self.sSentence0 = ""
+        self.nOffsetWithinParagraph = 0
+        self.lToken = []
+        self.dTokenPos = {}
+        self.dTags = {}
+        self.dError = {}
+        self.dErrorPriority = {}  # Key = position; value = priority
+
+    def __str__ (self):
+        s = "===== TEXT =====\n"
+        s += "sentence: " + self.sSentence0 + "\n"
+        s += "now:      " + self.sSentence  + "\n"
+        for dToken in self.lToken:
+            s += '#{i}\t{nStart}:{nEnd}\t{sValue}\t{sType}'.format(**dToken)
+            if "lMorph" in dToken:
+                s += "\t" + str(dToken["lMorph"])
+            if "aTags" in dToken:
+                s += "\t" + str(dToken["aTags"])
+            s += "\n"
+        #for nPos, dToken in self.dTokenPos.items():
+        #    s += "{}\t{}\n".format(nPos, dToken)
+        return s
+
+    def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
+        "analyses the paragraph sText and returns list of errors"
+        #sText = unicodedata.normalize("NFC", sText)
+        dOpt = dOptions or _dOptions
+        bShowRuleId = option('idrule')
+
+        # parse paragraph
+        try:
+            self.parseText(self.sText, self.sText0, True, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+        except:
+            raise
+
+        # cleanup
+        sText = self.sText
+        if " " in sText:
+            sText = sText.replace(" ", ' ') # nbsp
+        if " " in sText:
+            sText = sText.replace(" ", ' ') # nnbsp
+        if "'" in sText:
+            sText = sText.replace("'", "’")
+        if "‑" in sText:
+            sText = sText.replace("‑", "-") # nobreakdash
+
+        # parse sentences
+        for iStart, iEnd in _getSentenceBoundaries(sText):
+            if 4 < (iEnd - iStart) < 2000:
+                try:
+                    self.sSentence = sText[iStart:iEnd]
+                    self.sSentence0 = self.sText0[iStart:iEnd]
+                    self.nOffsetWithinParagraph = iStart
+                    self.lToken = list(_oTokenizer.genTokens(self.sSentence, True))
+                    self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+                    self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                except:
+                    raise
+        return self.dError.values() # this is a view (iterable)
+
+    def parseText (self, sText, sText0, bParagraph, nOffset, sCountry, dOptions, bShowRuleId, bDebug, bContext):
+        bChange = False
+        for sOption, lRuleGroup in _getRules(bParagraph):
+            if sOption == "@@@@":
+                # graph rules
+                if not bParagraph and bChange:
+                    self.update(sText, bDebug)
+                    bChange = False
+                for sGraphName, sLineId in lRuleGroup:
+                    if sGraphName not in dOptions or dOptions[sGraphName]:
+                        if bDebug:
+                            echo("\n>>>> GRAPH: " + sGraphName + " " + sLineId)
+                        sText = self.parseGraph(_rules_graph.dAllGraph[sGraphName], sCountry, dOptions, bShowRuleId, bDebug, bContext)
+            elif not sOption or dOptions.get(sOption, False):
+                # regex rules
+                for zRegex, bUppercase, sLineId, sRuleId, nPriority, lActions in lRuleGroup:
+                    if sRuleId not in _aIgnoredRules:
+                        for m in zRegex.finditer(sText):
+                            bCondMemo = None
+                            for sFuncCond, cActionType, sWhat, *eAct in lActions:
+                                # action in lActions: [ condition, action type, replacement/suggestion/action[, iGroup[, message, URL]] ]
+                                try:
+                                    bCondMemo = not sFuncCond or globals()[sFuncCond](sText, sText0, m, self.dTokenPos, sCountry, bCondMemo)
+                                    if bCondMemo:
+                                        if bDebug:
+                                            echo("RULE: " + sLineId)
+                                        if cActionType == "-":
+                                            # grammar error
+                                            nErrorStart = nOffset + m.start(eAct[0])
+                                            if nErrorStart not in self.dError or nPriority > self.dErrorPriority.get(nErrorStart, -1):
+                                                self.dError[nErrorStart] = self._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
+                                                self.dErrorPriority[nErrorStart] = nPriority
+                                        elif cActionType == "~":
+                                            # text processor
+                                            sText = self.rewriteText(sText, sWhat, eAct[0], m, bUppercase)
+                                            bChange = True
+                                            if bDebug:
+                                                echo("~ " + sText + "  -- " + m.group(eAct[0]) + "  # " + sLineId)
+                                        elif cActionType == "=":
+                                            # disambiguation
+                                            if not bParagraph:
+                                                globals()[sWhat](sText, m, self.dTokenPos)
+                                                if bDebug:
+                                                    echo("= " + m.group(0) + "  # " + sLineId)
+                                        elif cActionType == ">":
+                                            # we do nothing, this test is just a condition to apply all following actions
+                                            pass
+                                        else:
+                                            echo("# error: unknown action at " + sLineId)
+                                    elif cActionType == ">":
+                                        break
+                                except Exception as e:
+                                    raise Exception(str(e), "# " + sLineId + " # " + sRuleId)
+        if bChange:
+            if bParagraph:
+                self.sText = sText
+            else:
+                self.sSentence = sText
+
+    def update (self, sSentence, bDebug=False):
+        "update <sSentence> and retokenize"
+        self.sSentence = sSentence
+        lNewToken = list(_oTokenizer.genTokens(sSentence, True))
+        for dToken in lNewToken:
+            if "lMorph" in self.dTokenPos.get(dToken["nStart"], {}):
+                dToken["lMorph"] = self.dTokenPos[dToken["nStart"]]["lMorph"]
+            if "aTags" in self.dTokenPos.get(dToken["nStart"], {}):
+                dToken["aTags"] = self.dTokenPos[dToken["nStart"]]["aTags"]
+        self.lToken = lNewToken
+        self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+        if bDebug:
+            echo("UPDATE:")
+            echo(self)
+
+    def _getNextPointers (self, dToken, dGraph, dPointer, bDebug=False):
+        "generator: return nodes where <dToken> “values” match <dNode> arcs"
+        dNode = dPointer["dNode"]
+        iNode1 = dPointer["iNode1"]
+        bTokenFound = False
+        # token value
+        if dToken["sValue"] in dNode:
+            if bDebug:
+                echo("  MATCH: " + dToken["sValue"])
+            yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] }
+            bTokenFound = True
+        if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+            sValue = dToken["sValue"].lower()
+            if sValue in dNode:
+                if bDebug:
+                    echo("  MATCH: " + sValue)
+                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                bTokenFound = True
+        elif dToken["sValue"].isupper():
+            sValue = dToken["sValue"].lower()
+            if sValue in dNode:
+                if bDebug:
+                    echo("  MATCH: " + sValue)
+                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                bTokenFound = True
+            sValue = dToken["sValue"].capitalize()
+            if sValue in dNode:
+                if bDebug:
+                    echo("  MATCH: " + sValue)
+                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                bTokenFound = True
+        # regex value arcs
+        if dToken["sType"] not in frozenset(["INFO", "PUNC", "SIGN"]):
+            if "<re_value>" in dNode:
+                for sRegex in dNode["<re_value>"]:
+                    if "¬" not in sRegex:
+                        # no anti-pattern
+                        if re.search(sRegex, dToken["sValue"]):
+                            if bDebug:
+                                echo("  MATCH: ~" + sRegex)
+                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                            bTokenFound = True
+                    else:
+                        # there is an anti-pattern
+                        sPattern, sNegPattern = sRegex.split("¬", 1)
+                        if sNegPattern and re.search(sNegPattern, dToken["sValue"]):
+                            continue
+                        if not sPattern or re.search(sPattern, dToken["sValue"]):
+                            if bDebug:
+                                echo("  MATCH: ~" + sRegex)
+                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                            bTokenFound = True
+        # analysable tokens
+        if dToken["sType"][0:4] == "WORD":
+            # token lemmas
+            if "<lemmas>" in dNode:
+                for sLemma in _oSpellChecker.getLemma(dToken["sValue"]):
+                    if sLemma in dNode["<lemmas>"]:
+                        if bDebug:
+                            echo("  MATCH: >" + sLemma)
+                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<lemmas>"][sLemma]] }
+                        bTokenFound = True
+            # regex morph arcs
+            if "<re_morph>" in dNode:
+                lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
+                for sRegex in dNode["<re_morph>"]:
+                    if "¬" not in sRegex:
+                        # no anti-pattern
+                        if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
+                            if bDebug:
+                                echo("  MATCH: @" + sRegex)
+                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                            bTokenFound = True
+                    else:
+                        # there is an anti-pattern
+                        sPattern, sNegPattern = sRegex.split("¬", 1)
+                        if sNegPattern == "*":
+                            # all morphologies must match with <sPattern>
+                            if sPattern:
+                                if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                    if bDebug:
+                                        echo("  MATCH: @" + sRegex)
+                                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                                    bTokenFound = True
+                        else:
+                            if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
+                                continue
+                            if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                if bDebug:
+                                    echo("  MATCH: @" + sRegex)
+                                yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                                bTokenFound = True
+        # token tags
+        if "aTags" in dToken and "<tags>" in dNode:
+            for sTag in dToken["aTags"]:
+                if sTag in dNode["<tags>"]:
+                    if bDebug:
+                        echo("  MATCH: /" + sTag)
+                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<tags>"][sTag]] }
+                    bTokenFound = True
+        # meta arc (for token type)
+        if "<meta>" in dNode:
+            for sMeta in dNode["<meta>"]:
+                # no regex here, we just search if <dNode["sType"]> exists within <sMeta>
+                if sMeta == "*" or dToken["sType"] == sMeta:
+                    if bDebug:
+                        echo("  MATCH: *" + sMeta)
+                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
+                    bTokenFound = True
+                elif "¬" in sMeta:
+                    if dToken["sType"] not in sMeta:
+                        if bDebug:
+                            echo("  MATCH: *" + sMeta)
+                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
+                        bTokenFound = True
+        if not bTokenFound and "bKeep" in dPointer:
+            yield dPointer
+        # JUMP
+        # Warning! Recurssion!
+        if "<>" in dNode:
+            dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": True }
+            yield from self._getNextPointers(dToken, dGraph, dPointer2, bDebug)
+
+    def parseGraph (self, dGraph, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
+        "parse graph with tokens from the text and execute actions encountered"
+        lPointer = []
+        bTagAndRewrite = False
+        for iToken, dToken in enumerate(self.lToken):
+            if bDebug:
+                echo("TOKEN: " + dToken["sValue"])
+            # check arcs for each existing pointer
+            lNextPointer = []
+            for dPointer in lPointer:
+                lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer, bDebug))
+            lPointer = lNextPointer
+            # check arcs of first nodes
+            lPointer.extend(self._getNextPointers(dToken, dGraph, { "iNode1": iToken, "dNode": dGraph[0] }, bDebug))
+            # check if there is rules to check for each pointer
+            for dPointer in lPointer:
+                #if bDebug:
+                #    echo("+", dPointer)
+                if "<rules>" in dPointer["dNode"]:
+                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext)
+                    if bChange:
+                        bTagAndRewrite = True
+        if bTagAndRewrite:
+            self.rewriteFromTags(bDebug)
+        if bDebug:
+            echo(self)
+        return self.sSentence
+
+    def _executeActions (self, dGraph, dNode, nTokenOffset, nLastToken, dOptions, sCountry, bShowRuleId, bDebug, bContext):
+        "execute actions found in the DARG"
+        bChange = False
+        for sLineId, nextNodeKey in dNode.items():
+            bCondMemo = None
+            for sRuleId in dGraph[nextNodeKey]:
+                try:
+                    if bDebug:
+                        echo("   >TRY: " + sRuleId + " " + sLineId)
+                    sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
+                    # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
+                    # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
+                    # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
+                    # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
+                    # Immunity      [ option, condition, "%", "",                            iTokenStart, iTokenEnd ]
+                    # Test          [ option, condition, ">", "" ]
+                    if not sOption or dOptions.get(sOption, False):
+                        bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
+                        if bCondMemo:
+                            if cActionType == "-":
+                                # grammar error
+                                iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL = eAct
+                                nTokenErrorStart = nTokenOffset + iTokenStart  if iTokenStart > 0  else nLastToken + iTokenStart
+                                if "bImmune" not in self.lToken[nTokenErrorStart]:
+                                    nTokenErrorEnd = nTokenOffset + iTokenEnd  if iTokenEnd > 0  else nLastToken + iTokenEnd
+                                    nErrorStart = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorStart]["nStart"] if cStartLimit == "<"  else self.lToken[nTokenErrorStart]["nEnd"])
+                                    nErrorEnd = self.nOffsetWithinParagraph + (self.lToken[nTokenErrorEnd]["nEnd"] if cEndLimit == ">"  else self.lToken[nTokenErrorEnd]["nStart"])
+                                    if nErrorStart not in self.dError or nPriority > self.dErrorPriority.get(nErrorStart, -1):
+                                        self.dError[nErrorStart] = self._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext)
+                                        self.dErrorPriority[nErrorStart] = nPriority
+                                        if bDebug:
+                                            echo("    NEW_ERROR: {}".format(self.dError[nErrorStart]))
+                            elif cActionType == "~":
+                                # text processor
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                self._tagAndPrepareTokenForRewriting(sWhat, nTokenStart, nTokenEnd, nTokenOffset, nLastToken, eAct[2], bDebug)
+                                bChange = True
+                                if bDebug:
+                                    echo("    TEXT_PROCESSOR: [{}:{}]  > {}".format(self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"], sWhat))
+                            elif cActionType == "=":
+                                # disambiguation
+                                globals()[sWhat](self.lToken, nTokenOffset, nLastToken)
+                                if bDebug:
+                                    echo("    DISAMBIGUATOR: ({})  [{}:{}]".format(sWhat, self.lToken[nTokenOffset+1]["sValue"], self.lToken[nLastToken]["sValue"]))
+                            elif cActionType == ">":
+                                # we do nothing, this test is just a condition to apply all following actions
+                                if bDebug:
+                                    echo("    COND_OK")
+                                pass
+                            elif cActionType == "/":
+                                # Tag
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                for i in range(nTokenStart, nTokenEnd+1):
+                                    if "aTags" in self.lToken[i]:
+                                        self.lToken[i]["aTags"].update(sWhat.split("|"))
+                                    else:
+                                        self.lToken[i]["aTags"] = set(sWhat.split("|"))
+                                if bDebug:
+                                    echo("    TAG: {} >  [{}:{}]".format(sWhat, self.lToken[nTokenStart]["sValue"], self.lToken[nTokenEnd]["sValue"]))
+                                if sWhat not in self.dTags:
+                                    self.dTags[sWhat] = [nTokenStart, nTokenStart]
+                                else:
+                                    self.dTags[sWhat][0] = min(nTokenStart, self.dTags[sWhat][0])
+                                    self.dTags[sWhat][1] = max(nTokenEnd, self.dTags[sWhat][1])
+                            elif cActionType == "%":
+                                # immunity
+                                if bDebug:
+                                    echo("    IMMUNITY: " + _rules_graph.dRule[sRuleId])
+                                nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
+                                nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
+                                if nTokenEnd - nTokenStart == 0:
+                                    self.lToken[nTokenStart]["bImmune"] = True
+                                    nErrorStart = self.nOffsetWithinParagraph + self.lToken[nTokenStart]["nStart"]
+                                    if nErrorStart in self.dError:
+                                        del self.dError[nErrorStart]
+                                else:
+                                    for i in range(nTokenStart, nTokenEnd+1):
+                                        self.lToken[i]["bImmune"] = True
+                                        nErrorStart = self.nOffsetWithinParagraph + self.lToken[i]["nStart"]
+                                        if nErrorStart in self.dError:
+                                            del self.dError[nErrorStart]
+                            else:
+                                echo("# error: unknown action at " + sLineId)
+                        elif cActionType == ">":
+                            if bDebug:
+                                echo("    COND_BREAK")
+                            break
+                except Exception as e:
+                    raise Exception(str(e), sLineId, sRuleId, self.sSentence)
+        return bChange
+
+    def _createErrorFromRegex (self, sText, sText0, sRepl, nOffset, m, iGroup, sLineId, sRuleId, bUppercase, sMsg, sURL, bShowRuleId, sOption, bContext):
+        nStart = nOffset + m.start(iGroup)
+        nEnd = nOffset + m.end(iGroup)
+        # suggestions
+        if sRepl[0:1] == "=":
+            sSugg = globals()[sRepl[1:]](sText, m)
+            lSugg = sSugg.split("|")  if sSugg  else []
+        elif sRepl == "_":
+            lSugg = []
+        else:
+            lSugg = m.expand(sRepl).split("|")
+        if bUppercase and lSugg and m.group(iGroup)[0:1].isupper():
+            lSugg = list(map(str.capitalize, lSugg))
+        # Message
+        sMessage = globals()[sMsg[1:]](sText, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
+        if bShowRuleId:
+            sMessage += "  # " + sLineId + " # " + sRuleId
+        #
+        if _bWriterError:
+            return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sMessage, lSugg, sURL)
+        else:
+            return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
+
+    def _createErrorFromTokens (self, sSugg, nTokenOffset, nLastToken, iFirstToken, nStart, nEnd, sLineId, sRuleId, bCaseSvty, sMsg, sURL, bShowRuleId, sOption, bContext):
+        # suggestions
+        if sSugg[0:1] == "=":
+            sSugg = globals()[sSugg[1:]](self.lToken, nTokenOffset, nLastToken)
+            lSugg = sSugg.split("|")  if sSugg  else []
+        elif sSugg == "_":
+            lSugg = []
+        else:
+            lSugg = self._expand(sSugg, nTokenOffset, nLastToken).split("|")
+        if bCaseSvty and lSugg and self.lToken[iFirstToken]["sValue"][0:1].isupper():
+            lSugg = list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
+        # Message
+        sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
+        if bShowRuleId:
+            sMessage += "  " + sLineId + " # " + sRuleId
+        #
+        if _bWriterError:
+            return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sMessage, lSugg, sURL)
+        else:
+            return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
+
+    def _createErrorForWriter (self, nStart, nLen, sRuleId, sMessage, lSugg, sURL):
+        xErr = SingleProofreadingError()    # uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
+        xErr.nErrorStart = nStart
+        xErr.nErrorLength = nLen
+        xErr.nErrorType = PROOFREADING
+        xErr.aRuleIdentifier = sRuleId
+        xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
+        xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
+        xErr.aSuggestions = tuple(lSugg)
+        #xPropertyLineType = PropertyValue(Name="LineType", Value=5) # DASH or WAVE
+        #xPropertyLineColor = PropertyValue(Name="LineColor", Value=getRGB("FFAA00"))
+        if sURL:
+            xPropertyURL = PropertyValue(Name="FullCommentURL", Value=sURL)
+            xErr.aProperties = (xPropertyURL,)
+        else:
+            xErr.aProperties = ()
+        return xErr
+
+    def _createErrorAsDict (self, nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext):
+        dErr = {
+            "nStart": nStart,
+            "nEnd": nEnd,
+            "sLineId": sLineId,
+            "sRuleId": sRuleId,
+            "sType": sOption  if sOption  else "notype",
+            "sMessage": sMessage,
+            "aSuggestions": lSugg,
+            "URL": sURL
+        }
+        if bContext:
+            dErr['sUnderlined'] = self.sText0[nStart:nEnd]
+            dErr['sBefore'] = self.sText0[max(0,nStart-80):nStart]
+            dErr['sAfter'] = self.sText0[nEnd:nEnd+80]
+        return dErr
+
+    def _expand (self, sText, nTokenOffset, nLastToken):
+        for m in re.finditer(r"\\(-?[0-9]+)", sText):
+            if m.group(1)[0:1] == "-":
+                sText = sText.replace(m.group(0), self.lToken[nLastToken+int(m.group(1))+1]["sValue"])
+            else:
+                sText = sText.replace(m.group(0), self.lToken[nTokenOffset+int(m.group(1))]["sValue"])
+        return sText
+
+    def rewriteText (self, sText, sRepl, iGroup, m, bUppercase):
+        "text processor: write <sRepl> in <sText> at <iGroup> position"
+        nLen = m.end(iGroup) - m.start(iGroup)
+        if sRepl == "*":
+            sNew = " " * nLen
+        elif sRepl == "_":
+            sNew = sRepl + " " * (nLen-1)
+        elif sRepl[0:1] == "=":
+            sNew = globals()[sRepl[1:]](sText, m)
+            sNew = sNew + " " * (nLen-len(sNew))
+            if bUppercase and m.group(iGroup)[0:1].isupper():
+                sNew = sNew.capitalize()
+        else:
+            sNew = m.expand(sRepl)
+            sNew = sNew + " " * (nLen-len(sNew))
+        return sText[0:m.start(iGroup)] + sNew + sText[m.end(iGroup):]
+
+    def _tagAndPrepareTokenForRewriting (self, sWhat, nTokenRewriteStart, nTokenRewriteEnd, nTokenOffset, nLastToken, bCaseSvty, bDebug):
+        "text processor: rewrite tokens between <nTokenRewriteStart> and <nTokenRewriteEnd> position"
+        if sWhat == "*":
+            # purge text
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                self.lToken[nTokenRewriteStart]["bToRemove"] = True
+            else:
+                for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
+                    self.lToken[i]["bToRemove"] = True
+        elif sWhat == "␣":
+            # merge tokens
+            self.lToken[nTokenRewriteStart]["nMergeUntil"] = nTokenRewriteEnd
+        elif sWhat == "_":
+            # neutralized token
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                self.lToken[nTokenRewriteStart]["sNewValue"] = "_"
+            else:
+                for i in range(nTokenRewriteStart, nTokenRewriteEnd+1):
+                    self.lToken[i]["sNewValue"] = "_"
+        else:
+            if sWhat.startswith("="):
+                sWhat = globals()[sWhat[1:]](self.lToken, nTokenOffset, nLastToken)
+            else:
+                sWhat = self._expand(sWhat, nTokenOffset, nLastToken)
+            bUppercase = bCaseSvty and self.lToken[nTokenRewriteStart]["sValue"][0:1].isupper()
+            if nTokenRewriteEnd - nTokenRewriteStart == 0:
+                # one token
+                if bUppercase:
+                    sWhat = sWhat[0:1].upper() + sWhat[1:]
+                self.lToken[nTokenRewriteStart]["sNewValue"] = sWhat
+            else:
+                # several tokens
+                lTokenValue = sWhat.split("|")
+                if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
+                    echo("Error. Text processor: number of replacements != number of tokens.")
+                    return
+                for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
+                    if not sValue or sValue == "*":
+                        self.lToken[i]["bToRemove"] = True
+                    else:
+                        if bUppercase:
+                            sValue = sValue[0:1].upper() + sValue[1:]
+                        self.lToken[i]["sNewValue"] = sValue
+
+    def rewriteFromTags (self, bDebug=False):
+        "rewrite the sentence, modify tokens, purge the token list"
+        if bDebug:
+            echo("REWRITE")
+        lNewToken = []
+        nMergeUntil = 0
+        dTokenMerger = None
+        for iToken, dToken in enumerate(self.lToken):
+            bKeepToken = True
+            if dToken["sType"] != "INFO":
+                if nMergeUntil and iToken <= nMergeUntil:
+                    dTokenMerger["sValue"] += " " * (dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"]
+                    dTokenMerger["nEnd"] = dToken["nEnd"]
+                    if bDebug:
+                        echo("  MERGED TOKEN: " + dTokenMerger["sValue"])
+                    bKeepToken = False
+                if "nMergeUntil" in dToken:
+                    if iToken > nMergeUntil: # this token is not already merged with a previous token
+                        dTokenMerger = dToken
+                    if dToken["nMergeUntil"] > nMergeUntil:
+                        nMergeUntil = dToken["nMergeUntil"]
+                    del dToken["nMergeUntil"]
+                elif "bToRemove" in dToken:
+                    if bDebug:
+                        echo("  REMOVED: " + dToken["sValue"])
+                    self.sSentence = self.sSentence[:dToken["nStart"]] + " " * (dToken["nEnd"] - dToken["nStart"]) + self.sSentence[dToken["nEnd"]:]
+                    bKeepToken = False
+            #
+            if bKeepToken:
+                lNewToken.append(dToken)
+                if "sNewValue" in dToken:
+                    # rewrite token and sentence
+                    if bDebug:
+                        echo(dToken["sValue"] + " -> " + dToken["sNewValue"])
+                    dToken["sRealValue"] = dToken["sValue"]
+                    dToken["sValue"] = dToken["sNewValue"]
+                    nDiffLen = len(dToken["sRealValue"]) - len(dToken["sNewValue"])
+                    sNewRepl = (dToken["sNewValue"] + " " * nDiffLen)  if nDiffLen >= 0  else dToken["sNewValue"][:len(dToken["sRealValue"])]
+                    self.sSentence = self.sSentence[:dToken["nStart"]] + sNewRepl + self.sSentence[dToken["nEnd"]:]
+                    del dToken["sNewValue"]
+            else:
+                try:
+                    del self.dTokenPos[dToken["nStart"]]
+                except:
+                    echo(self)
+                    echo(dToken)
+                    exit()
+        if bDebug:
+            echo("  TEXT REWRITED: " + self.sSentence)
+        self.lToken.clear()
+        self.lToken = lNewToken
 
 
 #### common functions
 
-# common regexes
-_zEndOfSentence = re.compile('([.?!:;…][ .?!… »”")]*|.$)')
-_zBeginOfParagraph = re.compile("^\W*")
-_zEndOfParagraph = re.compile("\W*$")
-_zNextWord = re.compile(" +(\w[\w-]*)")
-_zPrevWord = re.compile("(\w[\w-]*) +$")
-
-
 def option (sOpt):
-    "return True if option sOpt is active"
+    "return True if option <sOpt> is active"
     return _dOptions.get(sOpt, False)
 
 
-def displayInfo (dDA, tWord):
-    "for debugging: retrieve info of word"
-    if not tWord:
-        echo("> nothing to find")
-        return True
-    if tWord[1] not in _dAnalyses and not _storeMorphFromFSA(tWord[1]):
-        echo("> not in FSA")
-        return True
-    if tWord[0] in dDA:
-        echo("DA: " + str(dDA[tWord[0]]))
-    echo("FSA: " + str(_dAnalyses[tWord[1]]))
-    return True
-
-
-def _storeMorphFromFSA (sWord):
-    "retrieves morphologies list from _oSpellChecker -> _dAnalyses"
-    global _dAnalyses
-    _dAnalyses[sWord] = _oSpellChecker.getMorph(sWord)
-    return True  if _dAnalyses[sWord]  else False
-
-
-def morph (dDA, tWord, sPattern, bStrict=True, bNoWord=False):
-    "analyse a tuple (position, word), return True if sPattern in morphologies (disambiguation on)"
-    if not tWord:
-        return bNoWord
-    if tWord[1] not in _dAnalyses and not _storeMorphFromFSA(tWord[1]):
-        return False
-    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _dAnalyses[tWord[1]]
-    if not lMorph:
-        return False
-    p = re.compile(sPattern)
-    if bStrict:
-        return all(p.search(s)  for s in lMorph)
-    return any(p.search(s)  for s in lMorph)
-
-
-def morphex (dDA, tWord, sPattern, sNegPattern, bNoWord=False):
-    "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
-    if not tWord:
-        return bNoWord
-    if tWord[1] not in _dAnalyses and not _storeMorphFromFSA(tWord[1]):
-        return False
-    lMorph = dDA[tWord[0]]  if tWord[0] in dDA  else _dAnalyses[tWord[1]]
-    # check negative condition
-    np = re.compile(sNegPattern)
-    if any(np.search(s)  for s in lMorph):
-        return False
-    # search sPattern
-    p = re.compile(sPattern)
-    return any(p.search(s)  for s in lMorph)
-
-
-def analyse (sWord, sPattern, bStrict=True):
-    "analyse a word, return True if sPattern in morphologies (disambiguation off)"
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
-        return False
-    if not _dAnalyses[sWord]:
-        return False
-    p = re.compile(sPattern)
-    if bStrict:
-        return all(p.search(s)  for s in _dAnalyses[sWord])
-    return any(p.search(s)  for s in _dAnalyses[sWord])
-
-
-def analysex (sWord, sPattern, sNegPattern):
-    "analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)"
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
-        return False
-    # check negative condition
-    np = re.compile(sNegPattern)
-    if any(np.search(s)  for s in _dAnalyses[sWord]):
-        return False
-    # search sPattern
-    p = re.compile(sPattern)
-    return any(p.search(s)  for s in _dAnalyses[sWord])
-
-
-def stem (sWord):
-    "returns a list of sWord's stems"
-    if not sWord:
-        return []
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
-        return []
-    return [ s[1:s.find(" ")]  for s in _dAnalyses[sWord] ]
-
-
-## functions to get text outside pattern scope
+#### Functions to get text outside pattern scope
 
 # warning: check compile_rules.py to understand how it works
+
+_zNextWord = re.compile(r" +(\w[\w-]*)")
+_zPrevWord = re.compile(r"(\w[\w-]*) +$")
 
 def nextword (s, iStart, n):
     "get the nth word of the input string or empty string"
@@ -514,7 +851,7 @@ def look (s, sPattern, sNegPattern=None):
     return False
 
 
-def look_chk1 (dDA, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=None):
+def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=""):
     "returns True if s has pattern sPattern and m.group(1) has pattern sPatternGroup1"
     m = re.search(sPattern, s)
     if not m:
@@ -524,57 +861,306 @@ def look_chk1 (dDA, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup1=None
         nPos = m.start(1) + nOffset
     except:
         return False
-    if sNegPatternGroup1:
-        return morphex(dDA, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
-    return morph(dDA, (nPos, sWord), sPatternGroup1, False)
+    return morph(dTokenPos, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
 
 
-#### Disambiguator
 
-def select (dDA, nPos, sWord, sPattern, lDefault=None):
+#### Analyse groups for regex rules
+
+def displayInfo (dTokenPos, tWord):
+    "for debugging: retrieve info of word"
+    if not tWord:
+        echo("> nothing to find")
+        return True
+    lMorph = _oSpellChecker.getMorph(tWord[1])
+    if not lMorph:
+        echo("> not in dictionary")
+        return True
+    echo("TOKENS:", dTokenPos)
+    if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]:
+        echo("DA: " + str(dTokenPos[tWord[0]]["lMorph"]))
+    echo("FSA: " + str(lMorph))
+    return True
+
+
+def morph (dTokenPos, tWord, sPattern, sNegPattern="", bNoWord=False):
+    "analyse a tuple (position, word), returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation on)"
+    if not tWord:
+        return bNoWord
+    lMorph = dTokenPos[tWord[0]]["lMorph"]  if tWord[0] in dTokenPos and "lMorph" in dTokenPos[tWord[0]]  else _oSpellChecker.getMorph(tWord[1])
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
+
+def analyse (sWord, sPattern, sNegPattern=""):
+    "analyse a word, returns True if not sNegPattern in word morphologies and sPattern in word morphologies (disambiguation off)"
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
+
+#### Analyse tokens for graph rules
+
+def g_value (dToken, sValues, nLeft=None, nRight=None):
+    "test if <dToken['sValue']> is in sValues (each value should be separated with |)"
+    sValue = "|"+dToken["sValue"]+"|"  if nLeft is None  else "|"+dToken["sValue"][slice(nLeft, nRight)]+"|"
+    if sValue in sValues:
+        return True
+    if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+        if sValue.lower() in sValues:
+            return True
+    elif dToken["sValue"].isupper():
+        #if sValue.lower() in sValues:
+        #    return True
+        sValue = "|"+sValue[1:].capitalize()
+        if sValue in sValues:
+            return True
+    return False
+
+
+def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
+    "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies"
+    if "lMorph" in dToken:
+        lMorph = dToken["lMorph"]
+    else:
+        if nLeft is not None:
+            lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
+            if bMemorizeMorph:
+                dToken["lMorph"] = lMorph
+        else:
+            lMorph = _oSpellChecker.getMorph(dToken["sValue"])
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
+
+def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemorizeMorph=True):
+    "analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
+    if nLeft is not None:
+        lMorph = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
+        if bMemorizeMorph:
+            dToken["lMorph"] = lMorph
+    else:
+        lMorph = _oSpellChecker.getMorph(dToken["sValue"])
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            return all(zPattern.search(sMorph)  for sMorph in lMorph)
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    return any(zPattern.search(sMorph)  for sMorph in lMorph)
+
+
+def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=True):
+    "merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)"
+    lMorph = _oSpellChecker.getMorph(dToken1["sValue"] + cMerger + dToken2["sValue"])
+    if not lMorph:
+        return False
+    # check negative condition
+    if sNegPattern:
+        if sNegPattern == "*":
+            # all morph must match sPattern
+            zPattern = re.compile(sPattern)
+            bResult = all(zPattern.search(sMorph)  for sMorph in lMorph)
+            if bResult and bSetMorph:
+                dToken1["lMorph"] = lMorph
+            return bResult
+        else:
+            zNegPattern = re.compile(sNegPattern)
+            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+                return False
+    # search sPattern
+    zPattern = re.compile(sPattern)
+    bResult = any(zPattern.search(sMorph)  for sMorph in lMorph)
+    if bResult and bSetMorph:
+        dToken1["lMorph"] = lMorph
+    return bResult
+
+
+def g_tag_before (dToken, dTags, sTag):
+    if sTag not in dTags:
+        return False
+    if dToken["i"] > dTags[sTag][0]:
+        return True
+    return False
+
+
+def g_tag_after (dToken, dTags, sTag):
+    if sTag not in dTags:
+        return False
+    if dToken["i"] < dTags[sTag][1]:
+        return True
+    return False
+
+
+def g_tag (dToken, sTag):
+    return "aTags" in dToken and sTag in dToken["aTags"]
+
+
+def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
+    nSpace = dToken2["nStart"] - dToken1["nEnd"]
+    if nSpace < nMin:
+        return False
+    if nMax is not None and nSpace > nMax:
+        return False
+    return True
+
+
+def g_token (lToken, i):
+    if i < 0:
+        return lToken[0]
+    if i >= len(lToken):
+        return lToken[-1]
+    return lToken[i]
+
+
+
+#### Disambiguator for regex rules
+
+def select (dTokenPos, nPos, sWord, sPattern, lDefault=None):
+    "Disambiguation: select morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
-    if nPos in dDA:
+    if nPos not in dTokenPos:
+        echo("Error. There should be a token at this position: ", nPos)
         return True
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph or len(lMorph) == 1:
         return True
-    if len(_dAnalyses[sWord]) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in _dAnalyses[sWord]  if re.search(sPattern, sMorph) ]
+    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
     if lSelect:
-        if len(lSelect) != len(_dAnalyses[sWord]):
-            dDA[nPos] = lSelect
-            #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
+        if len(lSelect) != len(lMorph):
+            dTokenPos[nPos]["lMorph"] = lSelect
     elif lDefault:
-        dDA[nPos] = lDefault
-        #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
+        dTokenPos[nPos]["lMorph"] = lDefault
     return True
 
 
-def exclude (dDA, nPos, sWord, sPattern, lDefault=None):
+def exclude (dTokenPos, nPos, sWord, sPattern, lDefault=None):
+    "Disambiguation: exclude morphologies of <sWord> matching <sPattern>"
     if not sWord:
         return True
-    if nPos in dDA:
+    if nPos not in dTokenPos:
+        echo("Error. There should be a token at this position: ", nPos)
         return True
-    if sWord not in _dAnalyses and not _storeMorphFromFSA(sWord):
+    lMorph = _oSpellChecker.getMorph(sWord)
+    if not lMorph or len(lMorph) == 1:
         return True
-    if len(_dAnalyses[sWord]) == 1:
-        return True
-    lSelect = [ sMorph  for sMorph in _dAnalyses[sWord]  if not re.search(sPattern, sMorph) ]
+    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
     if lSelect:
-        if len(lSelect) != len(_dAnalyses[sWord]):
-            dDA[nPos] = lSelect
-            #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
+        if len(lSelect) != len(lMorph):
+            dTokenPos[nPos]["lMorph"] = lSelect
     elif lDefault:
-        dDA[nPos] = lDefault
-        #echo("= "+sWord+" "+str(dDA.get(nPos, "null")))
+        dTokenPos[nPos]["lMorph"] = lDefault
     return True
 
 
-def define (dDA, nPos, lMorph):
-    dDA[nPos] = lMorph
-    #echo("= "+str(nPos)+" "+str(dDA[nPos]))
+def define (dTokenPos, nPos, lMorph):
+    "Disambiguation: set morphologies of token at <nPos> with <lMorph>"
+    if nPos not in dTokenPos:
+        echo("Error. There should be a token at this position: ", nPos)
+        return True
+    dTokenPos[nPos]["lMorph"] = lMorph
     return True
+
+
+#### Disambiguation for graph rules
+
+def g_select (dToken, sPattern, lDefault=None):
+    "select morphologies for <dToken> according to <sPattern>, always return True"
+    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
+    if not lMorph or len(lMorph) == 1:
+        if lDefault:
+            dToken["lMorph"] = lDefault
+            #echo("DA:", dToken["sValue"], dToken["lMorph"])
+        return True
+    lSelect = [ sMorph  for sMorph in lMorph  if re.search(sPattern, sMorph) ]
+    if lSelect:
+        if len(lSelect) != len(lMorph):
+            dToken["lMorph"] = lSelect
+    elif lDefault:
+        dToken["lMorph"] = lDefault
+    #echo("DA:", dToken["sValue"], dToken["lMorph"])
+    return True
+
+
+def g_exclude (dToken, sPattern, lDefault=None):
+    "select morphologies for <dToken> according to <sPattern>, always return True"
+    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
+    if not lMorph or len(lMorph) == 1:
+        if lDefault:
+            dToken["lMorph"] = lDefault
+            #echo("DA:", dToken["sValue"], dToken["lMorph"])
+        return True
+    lSelect = [ sMorph  for sMorph in lMorph  if not re.search(sPattern, sMorph) ]
+    if lSelect:
+        if len(lSelect) != len(lMorph):
+            dToken["lMorph"] = lSelect
+    elif lDefault:
+        dToken["lMorph"] = lDefault
+    #echo("DA:", dToken["sValue"], dToken["lMorph"])
+    return True
+
+
+def g_define (dToken, lMorph):
+    "set morphologies of <dToken>, always return True"
+    dToken["lMorph"] = lMorph
+    #echo("DA:", dToken["sValue"], lMorph)
+    return True
+
+
+def g_define_from (dToken, nLeft=None, nRight=None):
+    if nLeft is not None:
+        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
+    else:
+        dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
+    return True
+
 
 
 #### GRAMMAR CHECKER PLUGINS
@@ -582,4 +1168,11 @@ def define (dDA, nPos, lMorph):
 ${plugins}
 
 
+#### CALLABLES FOR REGEX RULES (generated code)
+
 ${callables}
+
+
+#### CALLABLES FOR GRAPH RULES (generated code)
+
+${graph_callables}

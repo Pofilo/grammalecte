@@ -1,5 +1,9 @@
 #!python3
 
+"""
+Text tools
+"""
+
 import textwrap
 from itertools import chain
 
@@ -43,14 +47,14 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
     nOffset = 0
     for sLine in wrap(sParagraph, nWidth): # textwrap.wrap(sParagraph, nWidth, drop_whitespace=False)
         sText += sLine + "\n"
-        ln = len(sLine)
+        nLineLen = len(sLine)
         sErrLine = ""
         nLenErrLine = 0
         nGrammErr = 0
         nSpellErr = 0
         for dErr in lGrammErrs:
             nStart = dErr["nStart"] - nOffset
-            if nStart < ln:
+            if nStart < nLineLen:
                 nGrammErr += 1
                 if nStart >= nLenErrLine:
                     sErrLine += " " * (nStart - nLenErrLine) + "^" * (dErr["nEnd"] - dErr["nStart"])
@@ -59,7 +63,7 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
                 break
         for dErr in lSpellErrs:
             nStart = dErr['nStart'] - nOffset
-            if nStart < ln:
+            if nStart < nLineLen:
                 nSpellErr += 1
                 nEnd = dErr['nEnd'] - nOffset
                 if nEnd > len(sErrLine):
@@ -75,7 +79,7 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
         if nSpellErr:
             sText += getReadableErrors(lSpellErrs[:nSpellErr], nWidth, True)
             del lSpellErrs[0:nSpellErr]
-        nOffset += ln
+        nOffset += nLineLen
     return sText
 
 
@@ -97,15 +101,15 @@ def getReadableError (dErr, bSpell=False):
     "Returns an error dErr as a readable error"
     try:
         if bSpell:
-            s = u"* {nStart}:{nEnd}  # {sValue}:".format(**dErr)
+            sText = u"* {nStart}:{nEnd}  # {sValue}:".format(**dErr)
         else:
-            s = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
-            s += "  " + dErr.get("sMessage", "# error : message not found")
+            sText = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
+            sText += "  " + dErr.get("sMessage", "# error : message not found")
         if dErr.get("aSuggestions", None):
-            s += "\n  > Suggestions : " + " | ".join(dErr.get("aSuggestions", "# error : suggestions not found"))
+            sText += "\n  > Suggestions : " + " | ".join(dErr.get("aSuggestions", "# error : suggestions not found"))
         if dErr.get("URL", None):
-            s += "\n  > URL: " + dErr["URL"]
-        return s
+            sText += "\n  > URL: " + dErr["URL"]
+        return sText
     except KeyError:
         return u"* Non-compliant error: {}".format(dErr)
 

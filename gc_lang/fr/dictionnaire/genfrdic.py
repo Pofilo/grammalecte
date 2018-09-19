@@ -298,13 +298,13 @@ class Dictionnaire:
         echo(' * Dictionnaire >> [ {}.dic ] ({})'.format(dTplVars['asciiName'], dTplVars['subDicts']))
         nEntry = 0
         for oEntry in self.lEntry:
-            if oEntry.di in dTplVars['subDicts']:
+            if oEntry.di in dTplVars['subDicts'] and " " not in oEntry.lemma:
                 nEntry += 1
         with open(spDst+'/'+dTplVars['asciiName']+'.dic', 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(str(nEntry)+"\n")
             for oEntry in self.lEntry:
-                if oEntry.di in dTplVars['subDicts']:
-                    hDst.write(oEntry.getEntryLine(self, nMode, bSimplified))
+                if oEntry.di in dTplVars['subDicts'] and " " not in oEntry.lemma:
+                    hDst.write(oEntry.getHunspellLine(self, nMode, bSimplified))
 
     def writeAffixes (self, spDst, dTplVars, nMode, bSimplified):
         "Écrire le fichier des affixes (.aff)"
@@ -736,7 +736,7 @@ class Entree:
         self.err = ''
         self.nFlexions = 0
         self.lFlexions = []
-        self.sRadical = ''
+        self.sStem = ''
         self.nOccur = 0
         self.nAKO = -1   # Average known occurrences
         self.fFreq = 0
@@ -748,7 +748,7 @@ class Entree:
             sLine, comment = sLine.split('#', 1)
             self.comment = comment.strip()
         # éléments de la ligne
-        elems = sLine.split()
+        elems = sLine.split("\t")
         nElems = len(elems)
         # lemme et drapeaux
         firstElems = elems[0].split('/')
@@ -818,17 +818,17 @@ class Entree:
         if (re.match(r"S[*.]", self.flags) and re.search("[sxz]$", self.lemma)) or (re.match(r"X[*.]", self.flags) and not re.search("[ul]$", self.lemma)):
             sErr += 'drapeau inutile'
         if self.iz == '' and re.match(r"[SXAI](?!=)", self.flags) and self.po:
-            sErr += '[is]'
+            sErr += '[is] vide'
         if re.match(r"pl|sg|inv", self.iz):
-            sErr += '[is]'
+            sErr += '[is] incomplet'
         if re.match(r"[FW]", self.flags) and re.search(r"epi|mas|fem|inv|sg|pl", self.iz):
-            sErr += '[is]'
+            sErr += '[is] incohérent'
         if re.match(r"[FW]", self.flags) and re.search(r"[^eë]$", self.lemma):
             sErr += "fin de lemme inapproprié"
         if re.match(r".\*", self.flags) and re.match(r"[bcdfgjklmnpqrstvwxz]", self.lemma):
             sErr += 'drapeau pour lemme commençant par une voyelle'
         if re.search(r"pl|sg|inv", self.iz) and re.match(r"[SXAIFW](?!=)", self.flags):
-            sErr += '[is]'
+            sErr += '[is] incohérent'
         if re.search(r"nom|adj", self.po) and re.match(r"(?i)[aâàäáeéèêëiîïíìoôöóòuûüúù]", self.lemma) and re.match("[SFWXAI][.]", self.flags) \
            and "pel" not in self.lx:
             sErr += 'le drapeau derait finir avec *'
@@ -867,8 +867,8 @@ class Entree:
     def keyTriNum (self):
         return (self.lemma, self.flags, self.po)
 
-    def getEntryLine (self, oDict, nMode, bSimplified=False):
-        sLine = self.lemma
+    def getHunspellLine (self, oDict, nMode, bSimplified=False):
+        sLine = self.lemma.replace("’", "'")
         if self.flags:
             sLine += '/'
             sLine += self.flags  if not oDict.bShortenTags or bSimplified  else oDict.dAF[self.flags]
@@ -926,14 +926,17 @@ class Entree:
                     #echo(sFlex + " " + sMorph + ", ")
                     pass
         # Drapeaux dont le lemme féminin doit être remplacé par le masculin dans la gestion des formes fléchies
-        if self.flags.startswith(("F.", "F*", "W.", "W*")):
-            # recherche de la forme masculine
-            for t in lTuples:
-                sMorph = self.clean(t[1])
-                if sMorph.endswith('mas') or sMorph.endswith('mas sg') or sMorph.endswith('mas inv'):
-                    self.sRadical = t[0]
+        if self.st:
+            self.sStem = self.st
         else:
-            self.sRadical = self.lemma
+            if self.flags.startswith(("F.", "F*", "W.", "W*")):
+                # recherche de la forme masculine
+                for t in lTuples:
+                    sMorph = self.clean(t[1])
+                    if sMorph.endswith(('mas', 'mas sg', 'mas inv')):
+                        self.sStem = t[0]
+            else:
+                self.sStem = self.lemma
         # Tag duplicates
         d = {}
         for oFlex in self.lFlexions:
@@ -1192,7 +1195,7 @@ class Flexion:
         sOccurs = ''
         for v in oStatsLex.dFlexions[self.sFlexion]:
             sOccurs += str(v) + "\t"
-        return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sRadical}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
+        return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sStem}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
 
     @classmethod
     def simpleHeader (cls):
@@ -1216,7 +1219,7 @@ class Flexion:
         "detpos": ":Dp", "detdem": ":Dd", "detind": ":Di", "detneg": ":Dn", "detex": ":De", "det": ":D",
         "advint": ":U",
         "prodem": ":Od", "proind": ":Oi", "proint": ":Ot", "proneg": ":On", "prorel": ":Or", "proadv": ":Ow",
-        "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3",
+        "properobj": ":Oo", "propersuj": ":Os", "1pe": ":O1", "2pe": ":O2", "3pe": ":O3", "preverb": ":Ov",
         "cjco": ":Cc", "cjsub": ":Cs", "cj": ":C", "loc.cj": ":Ĉ", "loc.cjsub": ":Ĉs",
         "prn": ":M1", "patr": ":M2", "loc.patr": ":Ḿ2", "npr": ":MP", "nompr": ":NM",
         "pfx": ":Zp", "sfx": ":Zs",
@@ -1258,10 +1261,10 @@ class Flexion:
         return (self.sFlexion.translate(CHARMAP), self.sMorph)
 
     def keyFreq (self):
-        return (100-self.fFreq, self.oEntry.sRadical, self.sFlexion)
+        return (100-self.fFreq, self.oEntry.sStem, self.sFlexion)
 
     def keyOcc (self):
-        return (self.nOccur, self.oEntry.sRadical, self.sFlexion)
+        return (self.nOccur, self.oEntry.sStem, self.sFlexion)
 
     def keyIdx (self):
         return self.oEntry.iD
@@ -1501,7 +1504,6 @@ class StatsLex:
 
 
 def main ():
-
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-v", "--verdic", help="set dictionary version, i.e. 5.4", type=str, default="X.Y.z")
     xParser.add_argument("-m", "--mode", help="0: no tags,  1: Hunspell tags (default),  2: All tags", type=int, choices=[0, 1, 2], default=1)
@@ -1559,7 +1561,7 @@ def main ():
 
     spLexiconDestGL = "../../../lexicons"  if xArgs.grammalecte  else ""
     spLibreOfficeExtDestGL = "../oxt/Dictionnaires/dictionaries"  if xArgs.grammalecte  else ""
-    spMozillaExtDestGL = ""  # les dictionnaires pour Hunspell ne sont plus utilisés pour l’instant dans Firefox / Thunderbird
+    spMozillaExtDestGL = ""  if xArgs.grammalecte  else "" # no more Hunspell dictionaries in Mozilla extensions for now
     spDataDestGL = "../data"  if xArgs.grammalecte  else ""
 
     if not xArgs.uncompress:

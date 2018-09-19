@@ -13,34 +13,36 @@ const aTkzPatterns = {
             [/^[   \t]+/, 'SPACE'],
             [/^\/(?:~|bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERUNIX'],
             [/^[a-zA-Z]:\\(?:Program Files(?: \(x86\)|)|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ.()]+)(?:\\[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERWIN'],
-            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]+/, 'SEPARATOR'],
-            [/^[A-Z][.][A-Z][.](?:[A-Z][.])*/, 'ACRONYM'],
+            [/^[,.;:!?…«»“”‘’"(){}\[\]·–—]/, 'SEPARATOR'],
+            [/^[A-Z][.][A-Z][.](?:[A-Z][.])*/, 'WORD_ACRONYM'],
             [/^(?:https?:\/\/|www[.]|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+[@.][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]{2,}[@.])[a-zA-Z0-9][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.\/?&!%=+*"'@$#-]+/, 'LINK'],
             [/^[#@][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+/, 'TAG'],
             [/^<[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+.*?>|<\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+ *>/, 'HTML'],
             [/^\[\/?[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+\]/, 'PSEUDOHTML'],
             [/^&\w+;(?:\w+;|)/, 'HTMLENTITY'],
             [/^\d\d?h\d\d\b/, 'HOUR'],
-            [/^-?\d+(?:[.,]\d+|)/, 'NUM'],
-            [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)*/, 'WORD']
+            [/^\d+(?:[.,]\d+|)/, 'NUM'],
+            [/^[%‰+=*/<>⩾⩽-]/, 'SIGN'],
+            [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_]+)*/, 'WORD']
         ],
     "fr":
         [
             [/^[   \t]+/, 'SPACE'],
             [/^\/(?:~|bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERUNIX'],
             [/^[a-zA-Z]:\\(?:Program Files(?: \(x86\)|)|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ.()]+)(?:\\[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.()-]+)*/, 'FOLDERWIN'],
-            [/^[,.;:!?…«»“”‘’"(){}\[\]/·–—]+/, 'SEPARATOR'],
-            [/^[A-Z][.][A-Z][.](?:[A-Z][.])*/, 'ACRONYM'],
+            [/^[,.;:!?…«»“”‘’"(){}\[\]·–—]/, 'SEPARATOR'],
+            [/^[A-Z][.][A-Z][.](?:[A-Z][.])*/, 'WORD_ACRONYM'],
             [/^(?:https?:\/\/|www[.]|[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+[@.][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]{2,}[@.])[a-zA-Z0-9][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_.\/?&!%=+*"'@$#-]+/, 'LINK'],
             [/^[#@][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ_-]+/, 'TAG'],
             [/^<[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+.*?>|<\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+ *>/, 'HTML'],
             [/^\[\/?[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+\]/, 'PSEUDOHTML'],
             [/^&\w+;(?:\w+;|)/, 'HTMLENTITY'],
-            [/^(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`]/i, 'ELPFX'],
+            [/^(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`]/i, 'WORD_ELIDED'],
             [/^\d\d?[hm]\d\d\b/, 'HOUR'],
-            [/^\d+(?:er|nd|e|de|ième|ème|eme)s?\b/, 'ORDINAL'],
-            [/^-?\d+(?:[.,]\d+|)/, 'NUM'],
-            [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+)*/, 'WORD']
+            [/^\d+(?:ers?\b|nds?\b|es?\b|des?\b|ièmes?\b|èmes?\b|emes?\b|ᵉʳˢ?|ⁿᵈˢ?|ᵉˢ?|ᵈᵉˢ?)/, 'WORD_ORDINAL'],
+            [/^\d+(?:[.,]\d+|)/, 'NUM'],
+            [/^[%‰+=*/<>⩾⩽-]/, 'SIGN'],
+            [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_]+)*/, 'WORD']
         ]
 };
 
@@ -55,31 +57,36 @@ class Tokenizer {
         this.aRules = aTkzPatterns[this.sLang];
     }
 
-    * genTokens (sText) {
+    * genTokens (sText, bStartEndToken=false, bWithSpaces=false) {
         let m;
-        let i = 0;
+        let iToken = 0;
+        let iNext = 0;
+        let iEnd = sText.length;
+        if (bStartEndToken) {
+            yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0, "lMorph": ["<start>"] };
+        }
         while (sText) {
-            let nCut = 1;
+            let iCut = 1;
             for (let [zRegex, sType] of this.aRules) {
-                try {
-                    if ((m = zRegex.exec(sText)) !== null) {
-                        if (sType == 'SEPARATOR') {
-                            for (let c of m[0]) {
-                                yield { "sType": sType, "sValue": c, "nStart": i, "nEnd": i + m[0].length }
-                            }
-                        } else {
-                            yield { "sType": sType, "sValue": m[0], "nStart": i, "nEnd": i + m[0].length }
+                if (sType !== "SPACE"  ||  bWithSpaces) {
+                    try {
+                        if ((m = zRegex.exec(sText)) !== null) {
+                            iToken += 1;
+                            yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length }
+                            iCut = m[0].length;
+                            break;
                         }
-                        nCut = m[0].length;
-                        break;
+                    }
+                    catch (e) {
+                        console.error(e);
                     }
                 }
-                catch (e) {
-                    console.error(e);
-                }
             }
-            i += nCut;
-            sText = sText.slice(nCut);
+            iNext += iCut;
+            sText = sText.slice(iCut);
+        }
+        if (bStartEndToken) {
+            yield { "i": iToken+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, "lMorph": ["<end>"] };
         }
     }
 }

@@ -1,4 +1,7 @@
-# Very simple tokenizer
+"""
+Very simple tokenizer
+using regular expressions
+"""
 
 import re
 
@@ -7,36 +10,39 @@ _PATTERNS = {
         (
             r'(?P<FOLDERUNIX>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()-]+)*)',
             r'(?P<FOLDERWIN>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()-]+)*)',
-            r'(?P<PUNC>[.,?!:;…«»“”"()/·]+)',
-            r'(?P<ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
+            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}·–—])',
+            r'(?P<WORD_ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w\w+[@.])\w[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
             r'(?P<HTML><\w+.*?>|</\w+ *>)',
             r'(?P<PSEUDOHTML>\[/?\w+\])',
             r'(?P<HOUR>\d\d?h\d\d\b)',
-            r'(?P<NUM>-?\d+(?:[.,]\d+))',
+            r'(?P<NUM>\d+(?:[.,]\d+))',
+            r'(?P<SIGN>[%‰+=*/<>⩾⩽-])',
             r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
         ),
     "fr":
         (
             r'(?P<FOLDERUNIX>/(?:bin|boot|dev|etc|home|lib|mnt|opt|root|sbin|tmp|usr|var|Bureau|Documents|Images|Musique|Public|Téléchargements|Vidéos)(?:/[\w.()-]+)*)',
             r'(?P<FOLDERWIN>[a-zA-Z]:\\(?:Program Files(?: [(]x86[)]|)|[\w.()]+)(?:\\[\w.()-]+)*)',
-            r'(?P<PUNC>[.,?!:;…«»“”"()/·]+)',
-            r'(?P<ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
+            r'(?P<PUNC>[][,.;:!?…«»“”‘’"(){}·–—])',
+            r'(?P<WORD_ACRONYM>[A-Z][.][A-Z][.](?:[A-Z][.])*)',
             r'(?P<LINK>(?:https?://|www[.]|\w+[@.]\w\w+[@.])\w[\w./?&!%=+*"\'@$#-]+)',
             r'(?P<HASHTAG>[#@][\w-]+)',
             r'(?P<HTML><\w+.*?>|</\w+ *>)',
             r'(?P<PSEUDOHTML>\[/?\w+\])',
-            r"(?P<ELPFX>(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`])",
-            r'(?P<ORDINAL>\d+(?:er|nd|e|de|ième|ème|eme)\b)',
+            r"(?P<WORD_ELIDED>(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`])",
+            r'(?P<WORD_ORDINAL>\d+(?:ers?|nds?|es?|des?|ièmes?|èmes?|emes?|ᵉʳˢ?|ⁿᵈˢ?|ᵉˢ?|ᵈᵉˢ?)\b)',
             r'(?P<HOUR>\d\d?h\d\d\b)',
-            r'(?P<NUM>-?\d+(?:[.,]\d+|))',
+            r'(?P<NUM>\d+(?:[.,]\d+|))',
+            r'(?P<SIGN>[%‰+=*/<>⩾⩽-])',
             r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
         )
 }
 
 
 class Tokenizer:
+    "Tokenizer: transforms a text in a list of tokens"
 
     def __init__ (self, sLang):
         self.sLang = sLang
@@ -44,6 +50,13 @@ class Tokenizer:
             self.sLang = "default"
         self.zToken = re.compile( "(?i)" + '|'.join(sRegex for sRegex in _PATTERNS[sLang]) )
 
-    def genTokens (self, sText):
-        for m in self.zToken.finditer(sText):
-            yield { "sType": m.lastgroup, "sValue": m.group(), "nStart": m.start(), "nEnd": m.end() }
+    def genTokens (self, sText, bStartEndToken=False):
+        "generator: tokenize <sText>"
+        i = 0
+        if bStartEndToken:
+            yield { "i": 0, "sType": "INFO", "sValue": "<start>", "nStart": 0, "nEnd": 0, "lMorph": ["<start>"] }
+        for i, m in enumerate(self.zToken.finditer(sText), 1):
+            yield { "i": i, "sType": m.lastgroup, "sValue": m.group(), "nStart": m.start(), "nEnd": m.end() }
+        if bStartEndToken:
+            iEnd = len(sText)
+            yield { "i": i+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, "lMorph": ["<end>"] }
