@@ -4,14 +4,11 @@ Grammar checker engine
 """
 
 import re
-import sys
-import os
 import traceback
 #import unicodedata
 from itertools import chain
 
 from ..graphspell.spellchecker import SpellChecker
-from ..graphspell.tokenizer import Tokenizer
 from ..graphspell.echo import echo
 from . import gc_options
 
