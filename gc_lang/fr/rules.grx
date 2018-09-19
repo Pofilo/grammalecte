@@ -5708,6 +5708,14 @@ __conf_canne_cane__
 TEST: Voici ma {{cane}} à pêche.
 
 
+# cap / cap
+__conf_cap_cape__
+    de >pied en >cape
+        <<- /conf/ ->> de pied en cap                   # Confusion : la cape est un vêtement.|https://fr.wiktionary.org/wiki/de_pied_en_cap
+
+TEST: rhabillée {{de pied en cape}}.
+
+
 # ce / se / ceux
 __conf_ce_ceux_se!6__
     ce  @:V[123].*:(?:Y|[123][sp])¬:[NAGM]|>(?:devoir|pouvoir|sembler|vouloir)/
@@ -12982,7 +12990,7 @@ TEST: Je suis {{septique}} !
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
 __conf_tache_tâche__
-    >tâche  [de|d’]  @:N¬:[GMY]|>(?:fonds?|envergure|ampleur|importance|départ|surveillance)/
+    >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision)/
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
