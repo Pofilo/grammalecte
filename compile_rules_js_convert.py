@@ -20,7 +20,7 @@ def py2js (sCode):
     sCode = sCode.replace(" and ", " && ")
     sCode = sCode.replace(" or ", " || ")
     sCode = re.sub("\\bnot\\b", "!", sCode)
-    sCode = re.sub("(.+) if (.+) else (.+)", "(\\2) ? \\1 : \\3", sCode)
+    #sCode = re.sub("(.+) if (.+) else (.+)", "(\\2) ? \\1 : \\3", sCode)
     # boolean
     sCode = sCode.replace("False", "false")
     sCode = sCode.replace("True", "true")
