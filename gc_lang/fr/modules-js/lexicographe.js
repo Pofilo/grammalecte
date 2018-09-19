@@ -77,6 +77,7 @@ const _dTag = new Map([
     [':Ot', [" pronom interrogatif,", "Pronom interrogatif"]],
     [':Or', [" pronom relatif,", "Pronom relatif"]],
     [':Ow', [" pronom adverbial,", "Pronom adverbial"]],
+    [':Ov', ["", ""]],
     [':Os', [" pronom personnel sujet,", "Pronom personnel sujet"]],
     [':Oo', [" pronom personnel objet,", "Pronom personnel objet"]],
     [':O1', [" 1ʳᵉ pers.,", "Pronom : 1ʳᵉ personne"]],
@@ -394,7 +395,7 @@ class Lexicographe {
             sRes += _dTag.get(m[0])[0];
         }
         if (sRes.startsWith(" verbe") && !sRes.includes("infinitif")) {
-            sRes += " [" + sTags.slice(1, sTags.indexOf(" ")) + "]";
+            sRes += " [" + sTags.slice(1, sTags.indexOf("/")) + "]";
         }
         if (!sRes) {
             return "#Erreur. Étiquette inconnue : [" + sTags + "]";
