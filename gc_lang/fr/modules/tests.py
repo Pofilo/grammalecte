@@ -172,8 +172,8 @@ class TestGrammarChecking (unittest.TestCase):
         # untested rules
         i = 0
         for sOpt, sLineId, sRuleId in gce.listRules():
-            if sLineId not in self._aRuleTested and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
-                echo(sRuleId, end= ", ")
+            if sOpt != "@@@@" and sLineId not in self._aRuleTested and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
+                echo(sLineId + "/" + sRuleId, end= ", ")
                 i += 1
         if i:
             echo("\n[{} untested rules]".format(i))
