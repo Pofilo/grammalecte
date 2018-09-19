@@ -1124,7 +1124,8 @@ function g_morph (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     }
     else {
         if (nLeft !== null) {
-            lMorph = _oSpellChecker.getMorph(dToken["sValue"].slice(nLeft, nRight));
+            let sValue = (nRight !== null) ? dToken["sValue"].slice(nLeft, nRight) : dToken["sValue"].slice(nLeft);
+            lMorph = _oSpellChecker.getMorph(sValue);
             if (bMemorizeMorph) {
                 dToken["lMorph"] = lMorph;
             }
@@ -1155,7 +1156,8 @@ function g_analyse (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, b
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (nLeft !== null) {
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"].slice(nLeft, nRight));
+        let sValue = (nRight !== null) ? dToken["sValue"].slice(nLeft, nRight) : dToken["sValue"].slice(nLeft);
+        lMorph = _oSpellChecker.getMorph(sValue);
         if (bMemorizeMorph) {
             dToken["lMorph"] = lMorph;
         }
