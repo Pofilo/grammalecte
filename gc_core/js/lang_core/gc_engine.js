@@ -297,7 +297,7 @@ class TextParser {
                                                 //console.log("-> disambiguation by " + sLineId + "\nzRegex: " + zRegex.source);
                                                 oEvalFunc[sWhat](sText, m, this.dTokenPos);
                                                 if (bDebug) {
-                                                    console.log("= " + m[0] + "  # " + sLineId + "\nDA: " + dDA.gl_toString());
+                                                    console.log("= " + m[0] + "  # " + sLineId, "\nDA:", this.dTokenPos);
                                                 }
                                                 break;
                                             case ">":
@@ -1276,10 +1276,10 @@ function select (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
-            dTokenPos.set(nPos, lSelect);
+            dTokenPos.get(nPos)["lMorph"] = lSelect;
         }
     } else if (lDefault) {
-        dTokenPos.set(nPos, lDefaul);
+        dTokenPos.get(nPos)["lMorph"] = lDefault;
     }
     return true;
 }
@@ -1299,16 +1299,16 @@ function exclude (dTokenPos, nPos, sWord, sPattern, lDefault=null) {
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
-            dTokenPos.set(nPos, lSelect);
+            dTokenPos.get(nPos)["lMorph"] = lSelect;
         }
     } else if (lDefault) {
-        dTokenPos.set(nPos, lDefault);
+        dTokenPos.get(nPos)["lMorph"] = lDefault;
     }
     return true;
 }
 
 function define (dTokenPos, nPos, lMorph) {
-    dTokenPos.set(nPos, lMorph);
+    dTokenPos.get(nPos)["lMorph"] = lMorph;
     return true;
 }
 
