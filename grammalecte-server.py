@@ -1,11 +1,9 @@
  #!/usr/bin/env python3
 
 import sys
-import os.path
 import argparse
 import json
 import traceback
-import configparser
 import time
 
 from grammalecte.bottle import Bottle, run, request, response, template, static_file
