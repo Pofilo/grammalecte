@@ -1395,6 +1395,7 @@ if (typeof(exports) !== 'undefined') {
     exports.author = gc_engine.author;
     // init
     exports.load = gc_engine.load;
+    exports.parse = gc_engine.parse;
     exports.getSpellChecker = gc_engine.getSpellChecker;
     // sentence
     exports._zEndOfSentence = gc_engine._zEndOfSentence;
