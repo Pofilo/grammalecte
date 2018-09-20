@@ -213,7 +213,7 @@ class Lexicographe:
         for m in self._zTag.finditer(sTags):
             sRes += _dTAGS.get(m.group(0), " [{}]".format(m.group(0)))[0]
         if sRes.startswith(" verbe") and not sRes.endswith("infinitif"):
-            sRes += " [{}]".format(sTags[1:sTags.find(" ")])
+            sRes += " [{}]".format(sTags[1:sTags.find("/")])
         return sRes.rstrip(",")
 
     def _formatSuffix (self, s):
