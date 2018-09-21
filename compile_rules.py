@@ -401,6 +401,7 @@ def prepareOptions (lOptionLines):
     sDefaultUILang = ""
     lStructOpt = []
     lOpt = []
+    lOptColor = []
     dOptLabel = {}
     dOptPriority = {}
     for sLine in lOptionLines:
@@ -414,6 +415,12 @@ def prepareOptions (lOptionLines):
             m = re.match("OPT/([a-z0-9]+):(.+)$", sLine)
             for i, sOpt in enumerate(m.group(2).split()):
                 lOpt[i][1][m.group(1)] = eval(sOpt)
+        elif sLine.startswith("OPTCOLORSOFTWARE:"):
+            lOptColor = [ [s, {}]  for s in sLine[17:].strip().split() ]  # don’t use tuples (s, {}), because unknown to JS
+        elif sLine.startswith("OPTCOLOR/"):
+            m = re.match("OPTCOLOR/([a-z0-9]+):(.+)$", sLine)
+            for i, sOpt in enumerate(m.group(2).split()):
+                lOptColor[i][1][m.group(1)] = [ int(s)  for s in sOpt.split(",") ]
         elif sLine.startswith("OPTPRIORITY/"):
             m = re.match("OPTPRIORITY/([a-z0-9]+): *([0-9])$", sLine)
             dOptPriority[m.group(1)] = int(m.group(2))
@@ -431,6 +438,7 @@ def prepareOptions (lOptionLines):
             print("# Error. Wrong option line in:\n  ")
             print(sLine)
     print("  options defined for: " + ", ".join([ t[0] for t in lOpt ]))
+    print(lOptColor)
     dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel, "sDefaultUILang": sDefaultUILang }
     dOptions.update({ "dOpt"+k: v  for k, v in lOpt })
     return dOptions, dOptPriority
@@ -482,7 +490,10 @@ def make (spLang, sLang, bJavaScript):
         elif sLine.startswith("TODO:"):
             # todo
             pass
-        elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", "OPTLANG/", "OPTDEFAULTUILANG:", "OPTLABEL/", "OPTPRIORITY/")):
+        elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", \
+                                "OPTCOLORSOFTWARE:", "OPTCOLOR/", \
+                                "OPTLANG/", "OPTDEFAULTUILANG:", \
+                                "OPTLABEL/", "OPTPRIORITY/")):
             # options
             lOpt.append(sLine)
         elif sLine.startswith("!!"):

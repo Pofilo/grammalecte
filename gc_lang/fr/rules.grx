@@ -102,6 +102,44 @@ OPTPRIORITY/tu:     7
 OPTPRIORITY/conf:   5
 OPTPRIORITY/ocr:    3
 
+# COLORS are must be described with the HSL format (0-360, 0-100 %, 0-100 %) [don’t write the sign %]
+OPTCOLORSOFTWARE:   Python      Server      Writer      JavaScript  Firefox     Thunderbird
+OPTCOLOR/typo:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/apos:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/esp:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/tab:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/nbsp:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/tu:        0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/maj:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/num:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/virg:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/unit:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/nf:        0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/liga:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/mapos:     0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/chim:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/ocr:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/conf:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/sgpl:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/gn:        0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/infi:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/conj:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/ppas:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/imp:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/inte:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/vmode:     0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/bs:        0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/pleo:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/redon1:    0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/redon2:    0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/neg:       0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/date:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/mc:        0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/idrule:    0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/html:      0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+OPTCOLOR/latex:     0,50,50     0,50,50     240,90,50   0,50,50     0,50,50     0,50,50
+
+
 OPTDEFAULTUILANG: fr_FR
 
 # Labels
@@ -5003,8 +5041,6 @@ TEST: il était très {{habille}}
 
 
 
-
-
 !!
 !!
 !!!! Confusions spécifiques                                                                       !!
@@ -5812,7 +5848,7 @@ __conf_ces_ses_c_est__
     [ses|ces] [l’|d’]
     [ses|ces] {pronom_obj}
     [ses|ces] @:[WX]¬:N:.*:[pi]  @:[RD]|>pire/
-        <<- /conf/ not \1.isupper() -1>> c’est                  # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
+        <<- /conf/ not \1.isupper() and \2 != "quelques" -1>> c’est         # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
 
     c’ est  @:N.*:p¬:(?:G|W|M|A.*:[si])
         <<- /conf/ -1:2>> ces|ses                               # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
@@ -5825,6 +5861,7 @@ TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
+TEST: Avec ces quelques mots, que veux-tu dire ?
 
 
 # collet monté
