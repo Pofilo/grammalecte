@@ -5040,6 +5040,30 @@ TEST: très {{suivit}} par ce détective
 TEST: il était très {{habille}}
 
 
+#### Aussi +adj que soit +sujet
+
+__conf_aussi_adj_que_soit__
+    aussi  *WORD  [que|qu’]  [soi|>être|>soie]  [un|une|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines]
+    aussi  *WORD  [que|qu’]  [soi|>être|>soie]  @:M
+        <<- /conf/ morph(\2, ":V1.*:Y", ":[AW]") -2>> =suggVerbPpas(\2)     # Confusion probable. Dans l’expression “aussi <X> que soit quelque chose ou quelqu’un”, <X> doit être un adjectif.
+        <<- /conf/ \4 == "soie" or \4 == "soies" -4>> soit|soient           # Confusion. La soie est une matière filamenteuse produite par les chenilles et utilisée pour le textile.
+        <<- /conj/ morph(\4, ":V", ":3[sp]") -4>> soit|soient               # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
+
+TEST: Aussi {{borner}} que soit son père, il l’écoute toujours.
+TEST: aussi stupides que {{soies}} ses réflexions, il n’en démordra jamais.
+TEST: tu sais, aussi délirantes que {{sois}} ses déclarations, je suis persuadé qu’il y a un fond de vérité.
+
+
+__conj_aussi_adj_que_soit__
+    aussi  *WORD  [que|qu’]  [est|soit|était|sera|serait|fut|fût]
+        <<- /conj/ morph(\2, ":A.*:p", ":[is]") -2>> =suggSing(\2)          # Accord avec “\4” : l’adjectif doit être au singulier.
+
+    aussi  *WORD  [que|qu’]  [sont|soient|étaient|seront|seraient|furent|fussent]
+        <<- /conj/ morph(\2, ":A.*:s", ":[ip]") -2>> =suggPlur(\2)          # Accord avec “\4” : l’adjectif doit être au pluriel.
+
+TEST: Aussi {{absurdes}} que soit cette remarque, nous sommes tenus d’y répondre.
+TEST: Aussi {{désobligeante}} que furent ces réponses, il fallut trouver un terrain d’entente.
+
 
 !!
 !!
