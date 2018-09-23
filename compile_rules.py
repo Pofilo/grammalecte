@@ -5,6 +5,7 @@ Grammalecte: compile rules
 import re
 import traceback
 import json
+import colorsys
 
 import compile_rules_js_convert as jsconv
 import compile_rules_graph as crg
@@ -22,17 +23,26 @@ sWORDLIMITLEFT  = r"(?<![\w.,–-])"   # r"(?<![-.,—])\b"  seems slower
 sWORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
 
 
-def _rgb (r, g, b):
+def convertRGBToInteger (r, g, b):
     return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
 
 
-def getRGB (sHex):
-    if sHex:
-        r = int(sHex[:2], 16)
-        g = int(sHex[2:4], 16)
-        b = int(sHex[4:], 16)
-        return _rgb(r, g, b)
-    return _rgb(0, 0, 0)
+def convertHSLToInteger (h, s, l):
+    r, g, b = colorsys.hls_to_rgb(h/360, l/100, s/100)
+    return convertRGBToInteger(round(r*255), round(g*255), round(b*255))
+
+
+def createColors (lOptColor):
+    dAppColor = {}
+    for sApp, dOptColor in lOptColor:
+        if sApp == "Writer":
+            dAppColor["dOptColor"+sApp] = { sKey: convertHSLToInteger(*aColor)  for sKey, aColor in dOptColor.items() }
+        elif sApp in ("Firefox", "Thunderbird"):
+            dAppColor["dOptColor"+sApp] = { sKey: "hsl({}, {}%, {}%)".format(*aColor)  for sKey, aColor in dOptColor.items() }
+        else:
+            dAppColor["dOptColor"+sApp] = dOptColor
+    #print(dAppColor)
+    return dAppColor
 
 
 def prepareFunction (s):
@@ -419,8 +429,8 @@ def prepareOptions (lOptionLines):
             lOptColor = [ [s, {}]  for s in sLine[17:].strip().split() ]  # don’t use tuples (s, {}), because unknown to JS
         elif sLine.startswith("OPTCOLOR/"):
             m = re.match("OPTCOLOR/([a-z0-9]+):(.+)$", sLine)
-            for i, sOpt in enumerate(m.group(2).split()):
-                lOptColor[i][1][m.group(1)] = [ int(s)  for s in sOpt.split(",") ]
+            for i, sColor in enumerate(m.group(2).split()):
+                lOptColor[i][1][m.group(1)] = [ int(s) for s in sColor.split(",") ]
         elif sLine.startswith("OPTPRIORITY/"):
             m = re.match("OPTPRIORITY/([a-z0-9]+): *([0-9])$", sLine)
             dOptPriority[m.group(1)] = int(m.group(2))
@@ -438,9 +448,9 @@ def prepareOptions (lOptionLines):
             print("# Error. Wrong option line in:\n  ")
             print(sLine)
     print("  options defined for: " + ", ".join([ t[0] for t in lOpt ]))
-    print(lOptColor)
     dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel, "sDefaultUILang": sDefaultUILang }
     dOptions.update({ "dOpt"+k: v  for k, v in lOpt })
+    dOptions.update(createColors(lOptColor))
     return dOptions, dOptPriority
 
 

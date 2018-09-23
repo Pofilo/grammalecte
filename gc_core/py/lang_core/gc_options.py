@@ -18,6 +18,13 @@ def getOptions (sContext="Python"):
     return dOpt["Python"]
 
 
+def getOptionsColors (sContext="Python"):
+    "returns dictionary of options"
+    if sContext in dOptColor:
+        return dOptColor[sContext]
+    return dOptColor["Python"]
+
+
 lStructOpt = ${lStructOpt}
 
 
@@ -27,5 +34,10 @@ dOpt = {
     "Writer": ${dOptWriter}
 }
 
+dOptColor = {
+    "Python": ${dOptColorPython},
+    "Server": ${dOptColorServer},
+    "Writer": ${dOptColorWriter}
+}
 
 _dOptLabel = ${dOptLabel}
