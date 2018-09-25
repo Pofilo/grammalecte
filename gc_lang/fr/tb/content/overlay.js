@@ -224,8 +224,9 @@ var oGrammarChecker = {
                     xParagraphNode.appendChild(document.createTextNode(this._purgeTags(sParagraph.slice(nEndLastErr, nStart))));
                     let xNodeError = document.createElement("b");
                     if (dErr['sType'] !== 'WORD') {
-                        xNodeError.setAttribute("class", "error " + dErr["sType"]);
+                        xNodeError.setAttribute("class", "error");
                         xNodeError.textContent = oConverterToExponent.convert(nError.toString()) + sParagraph.slice(nStart, nEnd);
+                        xNodeError.style.backgroundColor = dErr["aColor"];
                         xParagraphNode.appendChild(xNodeError);
                         lNodeError.push(this._createNodeGCErrorDescription(xEditor, nError, dErr, iParagraph));
                     }

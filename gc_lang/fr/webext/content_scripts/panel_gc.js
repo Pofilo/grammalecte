@@ -188,7 +188,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
             xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
         }
-        xNodeErr.className = (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "grammalecte_error_ignored" : "grammalecte_error grammalecte_error_" + oErr['sType'];
+        xNodeErr.className = (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "grammalecte_error_ignored" : "grammalecte_error";
+        xNodeErr.style.backgroundColor = (oErr['sType'] === "WORD") ? "hsl(0, 50%, 50%)" : oErr["aColor"];
         return xNodeErr;
     }
 

@@ -63,7 +63,7 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
             tkz = require("resource://grammalecte/graphspell/tokenizer.js");
             //lxg = require("resource://grammalecte/fr/lexicographe.js");
             oTokenizer = new tkz.Tokenizer("fr");
-            gce.load(sContext);
+            gce.load(sContext, "sCSS");
             oSpellChecker = gce.getSpellChecker();
             if (sGCOptions !== "") {
                 gce.setOptions(helpers.objectToMap(JSON.parse(sGCOptions)));

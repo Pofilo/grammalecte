@@ -31,6 +31,7 @@ function capitalizeArray (aArray) {
 // data
 let _sAppContext = "";                                  // what software is running
 let _dOptions = null;
+let _dOptionsColors = null;
 let _oSpellChecker = null;
 let _oTokenizer = null;
 let _aIgnoredRules = new Set();
@@ -50,7 +51,7 @@ var gc_engine = {
 
     //// Initialization
 
-    load: function (sContext="JavaScript", sPath="") {
+    load: function (sContext="JavaScript", sColorType="aRGB", sPath="") {
         try {
             if (typeof(require) !== 'undefined') {
                 var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
@@ -60,6 +61,7 @@ var gc_engine = {
             }
             _sAppContext = sContext;
             _dOptions = gc_options.getOptions(sContext).gl_shallowCopy();     // duplication necessary, to be able to reset to default
+            _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType);
             _oTokenizer = _oSpellChecker.getTokenizer();
             _oSpellChecker.activateStorage();
         }
@@ -752,6 +754,7 @@ class TextParser {
             "sLineId": sLineId,
             "sRuleId": sRuleId,
             "sType": sOption || "notype",
+            "aColor": _dOptionsColors[sOption],
             "sMessage": sMessage,
             "aSuggestions": lSugg,
             "URL": sURL

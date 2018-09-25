@@ -14,14 +14,13 @@ var gc_options = {
     },
 
     getOptionsColors: function (sTheme="Default", sColorType="aRGB") {
-        let dOptColor = (this.dOptColor.hasOwnProperty()) ? this.dOptColor[sTheme] : this.dOptColor["Default"];
+        let dOptColor = (this.dOptColor.hasOwnProperty(sTheme)) ? this.dOptColor[sTheme] : this.dOptColor["Default"];
         let dColorType = (this.dColorType.hasOwnProperty(sColorType)) ? this.dColorType[sColorType] : this.dColorType["aRGB"];
         let dColor = {};
         try {
-            for (let [sOpt, sColor] of Object.entries(this.dOptColor)) {
+            for (let [sOpt, sColor] of Object.entries(dOptColor)) {
                 dColor[sOpt] = dColorType[sColor];
             }
-            console.log(dColor);
             return dColor;
         }
         catch (e) {

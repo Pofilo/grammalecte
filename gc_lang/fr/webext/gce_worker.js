@@ -168,7 +168,7 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
             phonet.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/phonet_data.json"));
             mfsp.init(helpers.loadFile(sExtensionPath + "/grammalecte/fr/mfsp_data.json"));
             //console.log("[Worker] Modules have been initialized…");
-            gc_engine.load(sContext, sExtensionPath+"grammalecte/graphspell/_dictionaries");
+            gc_engine.load(sContext, "sCSS", sExtensionPath+"grammalecte/graphspell/_dictionaries");
             oSpellChecker = gc_engine.getSpellChecker();
             oTest = new TestGrammarChecking(gc_engine, sExtensionPath+"/grammalecte/fr/tests_data.json");
             oTokenizer = new Tokenizer("fr");
