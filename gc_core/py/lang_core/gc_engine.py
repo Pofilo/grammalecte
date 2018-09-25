@@ -664,7 +664,7 @@ class TextParser:
             "sLineId": sLineId,
             "sRuleId": sRuleId,
             "sType": sOption  if sOption  else "notype",
-            "aColor": _dOptionsColors.get(sOption, [100, 100, 255]),
+            "aColor": _dOptionsColors.get(sOption, None),
             "sMessage": sMessage,
             "aSuggestions": lSugg,
             "URL": sURL
