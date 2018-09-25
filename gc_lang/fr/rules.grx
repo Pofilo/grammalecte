@@ -112,37 +112,37 @@ COLOR/grey:         0,50,50
 
 # COLORS are must be described with the HSL format (0-360, 0-100 %, 0-100 %) [don’t write the sign %]
 OPTCOLORTHEME:      Default     Writer
-OPTCOLOR/typo:      grey        orange
-OPTCOLOR/apos:      grey        orange2
-OPTCOLOR/esp:       grey        orange
-OPTCOLOR/tab:       grey        orange
-OPTCOLOR/nbsp:      grey        orange
-OPTCOLOR/tu:        grey        orange
-OPTCOLOR/maj:       grey        orange
-OPTCOLOR/num:       grey        orange
-OPTCOLOR/virg:      grey        orange
-OPTCOLOR/unit:      grey        orange
-OPTCOLOR/nf:        grey        orange
-OPTCOLOR/liga:      grey        orange
-OPTCOLOR/mapos:     grey        orange
-OPTCOLOR/chim:      grey        orange
-OPTCOLOR/ocr:       grey        violet
-OPTCOLOR/conf:      grey        violet
-OPTCOLOR/sgpl:      grey        blue
-OPTCOLOR/gn:        grey        blue
-OPTCOLOR/infi:      grey        fuschia
-OPTCOLOR/conj:      grey        fuschia
-OPTCOLOR/ppas:      grey        fuschia
-OPTCOLOR/imp:       grey        fuschia
-OPTCOLOR/inte:      grey        fuschia
-OPTCOLOR/vmode:     grey        fuschia
-OPTCOLOR/bs:        grey        cyan
-OPTCOLOR/pleo:      grey        cyan
-OPTCOLOR/redon1:    grey        cyan
-OPTCOLOR/redon2:    grey        cyan
-OPTCOLOR/neg:       grey        cyan
-OPTCOLOR/date:      grey        cyan
-OPTCOLOR/mc:        grey        cyan
+OPTCOLOR/typo:      orange      orange
+OPTCOLOR/apos:      orange2     orange2
+OPTCOLOR/esp:       orange      orange
+OPTCOLOR/tab:       orange      orange
+OPTCOLOR/nbsp:      orange      orange
+OPTCOLOR/tu:        orange      orange
+OPTCOLOR/maj:       orange      orange
+OPTCOLOR/num:       orange      orange
+OPTCOLOR/virg:      orange      orange
+OPTCOLOR/unit:      orange      orange
+OPTCOLOR/nf:        orange      orange
+OPTCOLOR/liga:      orange      orange
+OPTCOLOR/mapos:     orange      orange
+OPTCOLOR/chim:      orange      orange
+OPTCOLOR/ocr:       violet      violet
+OPTCOLOR/conf:      violet      violet
+OPTCOLOR/sgpl:      blue        blue
+OPTCOLOR/gn:        blue        blue
+OPTCOLOR/infi:      fuschia     fuschia
+OPTCOLOR/conj:      fuschia     fuschia
+OPTCOLOR/ppas:      fuschia     fuschia
+OPTCOLOR/imp:       fuschia     fuschia
+OPTCOLOR/inte:      fuschia     fuschia
+OPTCOLOR/vmode:     fuschia     fuschia
+OPTCOLOR/bs:        cyan        cyan
+OPTCOLOR/pleo:      cyan        cyan
+OPTCOLOR/redon1:    cyan        cyan
+OPTCOLOR/redon2:    cyan        cyan
+OPTCOLOR/neg:       cyan        cyan
+OPTCOLOR/date:      cyan        cyan
+OPTCOLOR/mc:        cyan        cyan
 
 
 OPTDEFAULTUILANG: fr_FR
@@ -2789,7 +2789,7 @@ TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 
 __typo_élisions_manquantes__
     [le|la|de]  ~^[aâeéêiîoôu].
-        <<- space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
+        <<- /typo/ space_after(\1, 1, 1) and not re.search("(?i)^(?:onz[ei]|énième|iourte|ouistiti|ouate|one-?step|ouf|Ouagadougou|I(?:I|V|X|er|ᵉʳ|ʳᵉ|è?re))", \2) and not morph(\2, ":G")
         -1:.2>> =\1[0:1]+"’"                                                # Élision de l’article devant un mot commençant par une voyelle.|http://fr.wikipedia.org/wiki/Élision
 
     si [il|ils]
@@ -2987,9 +2987,9 @@ __typo_ordinaux_chiffres_romains_incorrects__
 
     ~^[IVXLCM]{1,10}(?:è|i?[èe]me)s?$
         <<- /typo/ not morph(\1, ":G") >>>
-        <<- \1.endswith("s")
+        <<- /typo/ \1.endswith("s")
         ->> =\1.replace("mes", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉˢ" # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
-        <<- __else__
+        <<- /typo/ __else__
         ->> =\1.replace("me", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉ"   # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: François {{Iier}}                         ->> Iᵉʳ
@@ -3731,7 +3731,7 @@ TEST: Le budget de l’{{Etat}}.
 ### double négation
 __double_négation__
     pas [personne|aucun|aucune|jamais]
-        <<- not morph(<1, ":D.*:[me]") ->> \1|pas, \1
+        <<- /conf/ not morph(<1, ":D.*:[me]") ->> \1|pas, \1
         # Double négation : les mots « pas \1 » ne devraient pas se succéder. Si ces mots appartiennent à des propositions distinctes, une virgule est peut-être préférable.
 
 TEST: Ce que tu ne fais {{pas jamais}}.
@@ -4764,9 +4764,9 @@ __conf_déterminant_fem_sing_verbe__
 
     sa  @:(?:Y|[123][sp])¬:(?:N.*:[fe]|A|W)
         <<- /conf/ \2.islower() >>>
-        <<- morph(\2, "V.....[pqx]") -1>> ça|se                                                     # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
-        <<- __else__ -1>> ça                                                                        # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
-        <<- hasSimil(\2) -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                               # Incohérence avec « \1 » : « \2 » est un verbe.
+        <<- /conf/ morph(\2, "V.....[pqx]") -1>> ça|se                                              # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
+        <<- /conf/ __else__ -1>> ça                                                                 # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
+        <<- /conf/ hasSimil(\2) -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                        # Incohérence avec « \1 » : « \2 » est un verbe.
 
 TEST: Cette {{pèle}} est trop fragile.
 TEST: {{sa}} devient difficile.
@@ -4849,8 +4849,8 @@ __conf_de_dès_par_vconj__
 
     de  la  *WORD
         <<- /conf/ morph(\3, ":[123][sp]", ":[NAQ]") and not \3.istitle() >>>
-        <<- morph(\3, ":V1.*:(?:Iq|Ip:2p)", ":1p") -3>> =suggVerbInfi(\3)               # Incohérence avec “\1 \2” : mettez le verbe à l’infinitif (à moins qu’il y ait confusion avec un nom féminin).
-        <<- __else__ -3>> =suggSimil(\3, ":(?:[NA]:[fe]:[si])", False)                  # Incohérence avec “\1 \2” : “\3” est un verbe.
+        <<- /conf/ morph(\3, ":V1.*:(?:Iq|Ip:2p)", ":1p") -3>> =suggVerbInfi(\3)                # Incohérence avec “\1 \2” : mettez le verbe à l’infinitif (à moins qu’il y ait confusion avec un nom féminin).
+        <<- /conf/ __else__ -3>> =suggSimil(\3, ":(?:[NA]:[fe]:[si])", False)                   # Incohérence avec “\1 \2” : “\3” est un verbe.
 
 TEST: les petits esprits de la {{pensait}} religieuse
 TEST: {{de le}} vin                                           ->> du
@@ -4995,8 +4995,8 @@ __conf_en_participes_présents__
 
     en   n’  @:[123][sp]¬:[PY]
         <<- /conf/ not value(\3, "|importe|") >>>
-        <<- morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                               # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
-        <<- -1:2>> "n’en "                                                                          # Incohérence : vouliez-vous écrire « \2’en » ?
+        <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
+        <<- /conf/ -1:2>> "n’en "                                                                   # Incohérence : vouliez-vous écrire « \2’en » ?
 
 TEST: {{en t’}}ait donné tant.                          ->> "t’en "
 TEST: {{en n’}}{{envoient}} que peu.
@@ -5140,13 +5140,13 @@ __conf_a_à_verbe!6__
 
     à  *WORD
         <<- /conf/ \2.islower() and not value(\2, "|coté|") >>>
-        <<- morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a                    # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
-        <<- __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
-        -2>> =suggVerbInfi(\2)                                                                       # Le verbe devrait être à l’infinitif.
-        <<- __else__ and morph(\2, ":[123][sp]", "*") and not value(\2, "|tord|tords|") >>>
-        <<- morph(\2, ":V2.*:Ip:3s", "*") -2>> =suggVerbPpas(\2, ":m:s")                            # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
-        <<- __also__ -1>> a                                                                         # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
-        <<- __else__ -2>> _                                                                         # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
+        <<- /conf/ morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
+        <<- /conf/ __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
+        -2>> =suggVerbInfi(\2)                                                                      # Le verbe devrait être à l’infinitif.
+        <<- /conf/ __else__ and morph(\2, ":[123][sp]", "*") and not value(\2, "|tord|tords|") >>>
+        <<- /conf/ morph(\2, ":V2.*:Ip:3s", "*") -2>> =suggVerbPpas(\2, ":m:s")                     # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
+        <<- /conf/ __also__ -1>> a                                                                  # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
+        <<- /conf/ __else__ -2>> _                                                                  # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
 
 TEST: Ce fâcheux, comme à son habitude, les {{à}} ennuyés à mourir.
 TEST: Lui l’{{à}} pris par surprise.
@@ -5224,7 +5224,7 @@ __conf_à_a__
 
     a [moi|toi|eux|elles]
     a [lui|elle|nous|vous]  <end>
-        <<- not morph(<1, ":Oo|>(?:il|elle)") and not value(<1, "|n’|m’|t’|")
+        <<- /conf/ not morph(<1, ":Oo|>(?:il|elle)") and not value(<1, "|n’|m’|t’|")
         -1>> à                                                      # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
 
 TEST: Je le donne {{a}} toi.
@@ -6558,7 +6558,7 @@ TEST: il se sentait à nouveau homme
 # nulle part
 __conf_nulle_part__
     nul part
-        <<- not morph(<1, ":D.*:m") ->> nulle part                             # Confusion : pour dire “en aucun lieu”, écrivez “nulle part”.
+        <<- /conf/ not morph(<1, ":D.*:m") ->> nulle part           # Confusion : pour dire “en aucun lieu”, écrivez “nulle part”.
 
 TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration
 
@@ -7979,7 +7979,7 @@ TEST: c’est donc la cinquième en 50 ans
 
 __purge_un_nombre__
     un  *NUM  @:A.*:s¬:G
-        <<-  ~2>> *
+        <<- ~2>> *
 
 TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
 
@@ -10421,14 +10421,14 @@ __gn_le_1m__
 
     *WORD  le  *WORD
         <<- /gn/ morph(\2, ":D") >>>
-        <<- morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)")
+        <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)")
             or ( morph(\3, ":[NA].*:f", ":[me]") and morph(\1, ":R", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -2>> =suggLesLa(\2)                                                                         # Accord de genre erroné : « \3 » est féminin.
-        <<- __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                                 # Accord de genre erroné : « \2 » est un déterminant masculin.
-        <<- __else__ and morph(\3, ":[NA].*:p", "*")
+        <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            # Accord de genre erroné : « \2 » est un déterminant masculin.
+        <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
             or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -3>> =suggMasSing(\3)                                                                       # Accord de nombre erroné : « \3 » devrait être au singulier.
-        <<- __also__ -2>> les                                                                       # Accord de nombre erroné : « \3 » est au pluriel.
+        <<- /gn/ __also__ -2>> les                                                                  # Accord de nombre erroné : « \3 » est au pluriel.
 
     <start>  le  *WORD
         <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|Y)") -2>> =suggLesLa(\2)                     # Accord de genre erroné : « \3 » est féminin.
@@ -12392,7 +12392,7 @@ __conf_content_comptant__
         <<- /conf/ -1>> content                             # Confusion. Avoir (tout) son content…|https://fr.wiktionary.org/wiki/content#Nom_commun
 
     argent [content|contant]
-        <<- morph(<1, ":[VR]") -2>> comptant                # Confusion probable.|https://fr.wiktionary.org/wiki/argent_comptant
+        <<- /conf/ morph(<1, ":[VR]") -2>> comptant         # Confusion probable.|https://fr.wiktionary.org/wiki/argent_comptant
 
 TEST: Elle a déjà eu tout son {{comptant}} de problèmes.
 TEST: On paye toujours argent {{content}}.
@@ -13718,7 +13718,7 @@ TEST: après avoir mis à jour sont {{profile}}.
 # fort
 __sgpl_verbe_fort__
     forts
-        <<- morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q)|>(?:affirmer|trouver|croire|désirer|estime|préférer|penser|imaginer|voir|vouloir|aimer|adorer|souhaiter)/")
+        <<- /sgpl/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q)|>(?:affirmer|trouver|croire|désirer|estime|préférer|penser|imaginer|voir|vouloir|aimer|adorer|souhaiter)/")
             and not morph(>1, ":A.*:[me]:[pi]")
         ->> fort                                                # Confusion probable. S’il s’agit ici de l’adverbe “fort” (équivalent de “fortement”), écrivez-le au singulier.
 
@@ -13735,7 +13735,7 @@ TEST: Avec le même nombre de bulletins, les xénophobes apparaîtront plus fort
 # bien
 __sgpl_verbe_bien__
     biens
-        <<- morph(<1, ":V", ":D.*:p|:A.*:p") ->> bien           # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
+        <<- /sgpl/ morph(<1, ":V", ":D.*:p|:A.*:p") ->> bien    # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
 
 TEST: Ils vont {{biens}}.
 TEST: Elles travaillaient vraiment {{biens}}.
@@ -16096,12 +16096,12 @@ __conj_elle__
     elle  @:V¬:(?:3s|P|G)
         <<- /conj/ not morph(<1, ":R|>(?:et|ou)") and not (morph(\2, ":Q") and morph(<1, ":V0.*:3s"))
         -2>> =suggVerb(\2, ":3s")                               # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- __also__ and morph(\2, ":3p") -1>> elles            # Accord avec “\2”.
+        <<- /conj/ __also__ and morph(\2, ":3p") -1>> elles     # Accord avec “\2”.
 
     elle  qui  @:V¬:(?:3s|P|G)
         <<- /conj/ not morph(<1, ":R|>(?:et|ou)")
         -3>> =suggVerb(\3, ":3s")                               # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- __also__ and morph(\3, ":3p") -1>> elles            # Accord avec “\3”.
+        <<- /conj/ __also__ and morph(\3, ":3p") -1>> elles     # Accord avec “\3”.
 
 TEST: Elle {{conquis}}.
 TEST: Elle {{finis}}.
@@ -16607,7 +16607,7 @@ __conf_ont!6__
         <<- /conf/ --1>> ont                                    # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “on”.
 
     [elles|ceux-ci|ceux-là|celles-ci|celles-là]  on
-        <<- not morph(<1, ":[RV]") -2>> ont                     # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “on”.
+        <<- /conf/ not morph(<1, ":[RV]") -2>> ont              # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “on”.
 
 TEST: celles-là {{on}} {{vraiment}} un problème avec la religion.
 TEST: j’ai, tu as, ils ont, elles {{on}}
