@@ -34,7 +34,7 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         self.locales = tuple(self.locales)
         xCurCtx = uno.getComponentContext()
         # init
-        gce.load("Writer")
+        gce.load("Writer", "nInt")
         # GC options
         # opt_handler.load(xCurCtx)
         dOpt = Options.load(xCurCtx)
@@ -118,7 +118,7 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
                     self.nRes = self.nMaxRes
                 self.lLastRes.append(nHashedVal)
             # END OF WORKAROUND
-            
+
         except Exception as e:
             if sys.version_info.major == 3:
                 traceback.print_exc()
