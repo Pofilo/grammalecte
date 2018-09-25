@@ -13,11 +13,21 @@ var gc_options = {
         return this.dOpt["JavaScript"];
     },
 
-    getOptionsColors: function (sContext="JavaScript") {
-        if (this.dOptColor.hasOwnProperty(sContext)) {
-            return this.dOptColor[sContext];
+    getOptionsColors: function (sTheme="Default", sColorType="aRGB") {
+        let dOptColor = (this.dOptColor.hasOwnProperty()) ? this.dOptColor[sTheme] : this.dOptColor["Default"];
+        let dColorType = (this.dColorType.hasOwnProperty(sColorType)) ? this.dColorType[sColorType] : this.dColorType["aRGB"];
+        let dColor = {};
+        try {
+            for (let [sOpt, sColor] of Object.entries(this.dOptColor)) {
+                dColor[sOpt] = dColorType[sColor];
+            }
+            console.log(dColor);
+            return dColor;
         }
-        return this.dOptColor["JavaScript"];
+        catch (e) {
+            console.error(e);
+            return {}
+        }
     },
 
     lStructOpt: ${lStructOpt},
@@ -28,11 +38,9 @@ var gc_options = {
         "Thunderbird": new Map (${dOptThunderbird}),
     },
 
-    dOptColor: {
-        "JavaScript": new Map (${dOptColorJavaScript}),
-        "Firefox": new Map (${dOptColorFirefox}),
-        "Thunderbird": new Map (${dOptColorThunderbird}),
-    },
+    dColorType: ${dColorType},
+
+    dOptColor: ${dOptColor},
 
     dOptLabel: ${dOptLabel}
 }
@@ -43,6 +51,7 @@ if (typeof(exports) !== 'undefined') {
     exports.getOptionsColors = gc_options.getOptionsColors;
 	exports.lStructOpt = gc_options.lStructOpt;
     exports.dOpt = gc_options.dOpt;
+    exports.dColorType = gc_options.dColorType;
     exports.dOptColor = gc_options.dOptColor;
 	exports.dOptLabel = gc_options.dOptLabel;
 }

@@ -45,6 +45,7 @@ _rules_graph = None                         # module gc_rules_graph
 # Data
 _sAppContext = ""                           # what software is running
 _dOptions = None
+_dOptionsColors = None
 _oSpellChecker = None
 _oTokenizer = None
 _aIgnoredRules = set()
@@ -53,16 +54,18 @@ _aIgnoredRules = set()
 
 #### Initialization
 
-def load (sContext="Python"):
+def load (sContext="Python", sColorType="aRGB"):
     "initialization of the grammar checker"
     global _oSpellChecker
     global _sAppContext
     global _dOptions
+    global _dOptionsColors
     global _oTokenizer
     try:
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
+        _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType)
         _oTokenizer = _oSpellChecker.getTokenizer()
         _oSpellChecker.activateStorage()
     except:
@@ -611,7 +614,7 @@ class TextParser:
             sMessage += "  # " + sLineId + " # " + sRuleId
         #
         if _bWriterError:
-            return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sMessage, lSugg, sURL)
+            return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sOption, sMessage, lSugg, sURL)
         else:
             return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
 
@@ -632,11 +635,11 @@ class TextParser:
             sMessage += "  " + sLineId + " # " + sRuleId
         #
         if _bWriterError:
-            return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sMessage, lSugg, sURL)
+            return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sOption, sMessage, lSugg, sURL)
         else:
             return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
 
-    def _createErrorForWriter (self, nStart, nLen, sRuleId, sMessage, lSugg, sURL):
+    def _createErrorForWriter (self, nStart, nLen, sRuleId, sOption, sMessage, lSugg, sURL):
         xErr = SingleProofreadingError()    # uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
         xErr.nErrorStart = nStart
         xErr.nErrorLength = nLen
@@ -646,12 +649,12 @@ class TextParser:
         xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
         xErr.aSuggestions = tuple(lSugg)
         #xPropertyLineType = PropertyValue(Name="LineType", Value=5) # DASH or WAVE
-        #xPropertyLineColor = PropertyValue(Name="LineColor", Value=getRGB("FFAA00"))
+        xPropertyLineColor = PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023))
         if sURL:
             xPropertyURL = PropertyValue(Name="FullCommentURL", Value=sURL)
-            xErr.aProperties = (xPropertyURL,)
+            xErr.aProperties = (xPropertyURL, xPropertyLineColor)
         else:
-            xErr.aProperties = ()
+            xErr.aProperties = (xPropertyLineColor,)
         return xErr
 
     def _createErrorAsDict (self, nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext):
@@ -661,6 +664,7 @@ class TextParser:
             "sLineId": sLineId,
             "sRuleId": sRuleId,
             "sType": sOption  if sOption  else "notype",
+            "aColor": _dOptionsColors.get(sOption, [100, 100, 255]),
             "sMessage": sMessage,
             "aSuggestions": lSugg,
             "URL": sURL

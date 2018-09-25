@@ -27,22 +27,22 @@ def convertRGBToInteger (r, g, b):
     return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
 
 
-def convertHSLToInteger (h, s, l):
+def convertHSLToRBG (h, s, l):
     r, g, b = colorsys.hls_to_rgb(h/360, l/100, s/100)
-    return convertRGBToInteger(round(r*255), round(g*255), round(b*255))
+    return [round(r*255), round(g*255), round(b*255)]
 
 
-def createColors (lOptColor):
-    dAppColor = {}
-    for sApp, dOptColor in lOptColor:
-        if sApp == "Writer":
-            dAppColor["dOptColor"+sApp] = { sKey: convertHSLToInteger(*aColor)  for sKey, aColor in dOptColor.items() }
-        elif sApp in ("Firefox", "Thunderbird"):
-            dAppColor["dOptColor"+sApp] = { sKey: "hsl({}, {}%, {}%)".format(*aColor)  for sKey, aColor in dOptColor.items() }
-        else:
-            dAppColor["dOptColor"+sApp] = dOptColor
-    #print(dAppColor)
-    return dAppColor
+def createColors (dColor):
+    dColorType = {
+        "sCSS": {},     # dictionary of colors as strings for HTML/CSS (example: hsl(0, 50%, 50%))
+        "aRGB": {},     # dictionary of colors as RGB tuple
+        "nInt": {}      # dictionary of colors as integer values (for Writer)
+    }
+    for sKey, aHSL in dColor.items():
+        dColorType["sCSS"][sKey] = "hsl({}, {}%, {}%)".format(*aHSL)
+        dColorType["aRGB"][sKey] = convertHSLToRBG(*aHSL)
+        dColorType["nInt"][sKey] = convertRGBToInteger(*dColorType["aRGB"][sKey])
+    return dColorType
 
 
 def prepareFunction (s):
@@ -412,6 +412,7 @@ def prepareOptions (lOptionLines):
     lStructOpt = []
     lOpt = []
     lOptColor = []
+    dColor = {}
     dOptLabel = {}
     dOptPriority = {}
     for sLine in lOptionLines:
@@ -425,12 +426,15 @@ def prepareOptions (lOptionLines):
             m = re.match("OPT/([a-z0-9]+):(.+)$", sLine)
             for i, sOpt in enumerate(m.group(2).split()):
                 lOpt[i][1][m.group(1)] = eval(sOpt)
-        elif sLine.startswith("OPTCOLORSOFTWARE:"):
-            lOptColor = [ [s, {}]  for s in sLine[17:].strip().split() ]  # don’t use tuples (s, {}), because unknown to JS
+        elif sLine.startswith("OPTCOLORTHEME:"):
+            lOptColor = [ [s, {}]  for s in sLine[14:].strip().split() ]  # don’t use tuples (s, {}), because unknown to JS
         elif sLine.startswith("OPTCOLOR/"):
             m = re.match("OPTCOLOR/([a-z0-9]+):(.+)$", sLine)
             for i, sColor in enumerate(m.group(2).split()):
-                lOptColor[i][1][m.group(1)] = [ int(s) for s in sColor.split(",") ]
+                lOptColor[i][1][m.group(1)] = sColor
+        elif sLine.startswith("COLOR/"):
+            m = re.match("COLOR/([a-z0-9]+):(.+)$", sLine)
+            dColor[m.group(1)] = [ int(s) for s in m.group(2).strip().split(",") ]
         elif sLine.startswith("OPTPRIORITY/"):
             m = re.match("OPTPRIORITY/([a-z0-9]+): *([0-9])$", sLine)
             dOptPriority[m.group(1)] = int(m.group(2))
@@ -448,9 +452,11 @@ def prepareOptions (lOptionLines):
             print("# Error. Wrong option line in:\n  ")
             print(sLine)
     print("  options defined for: " + ", ".join([ t[0] for t in lOpt ]))
-    dOptions = { "lStructOpt": lStructOpt, "dOptLabel": dOptLabel, "sDefaultUILang": sDefaultUILang }
+    dOptions = {
+        "lStructOpt": lStructOpt, "dOptLabel": dOptLabel, "sDefaultUILang": sDefaultUILang, \
+        "dColorType": createColors(dColor), "dOptColor": { s: d  for s, d in lOptColor }
+    }
     dOptions.update({ "dOpt"+k: v  for k, v in lOpt })
-    dOptions.update(createColors(lOptColor))
     return dOptions, dOptPriority
 
 
@@ -501,7 +507,7 @@ def make (spLang, sLang, bJavaScript):
             # todo
             pass
         elif sLine.startswith(("OPTGROUP/", "OPTSOFTWARE:", "OPT/", \
-                                "OPTCOLORSOFTWARE:", "OPTCOLOR/", \
+                                "COLOR/", "OPTCOLORTHEME:", "OPTCOLOR/", \
                                 "OPTLANG/", "OPTDEFAULTUILANG:", \
                                 "OPTLABEL/", "OPTPRIORITY/")):
             # options
