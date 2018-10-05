@@ -8,6 +8,14 @@
 
 var str_transform = {
 
+    getNgrams: function (sWord, n=2) {
+        let lNgrams = [];
+        for (let i=0;  i <= sWord.length - n;  i++) {
+            lNgrams.push(sWord.slice(i, i+n));
+        }
+        return lNgrams;
+    },
+
     longestCommonSubstring: function (string1, string2) {
         // https://en.wikibooks.org/wiki/Algorithm_Implementation/Strings/Longest_common_substring
         // untested

@@ -1,10 +1,15 @@
-#!python3
-
 """
 Operations on strings:
 - calculate distance between two strings
 - transform strings with transformation codes
 """
+
+#### Ngrams
+
+def getNgrams (sWord, n=2):
+    "return a list of Ngrams strings"
+    return [ sWord[i:i+n]  for i in range(len(sWord)-n+1) ]
+
 
 
 #### DISTANCE CALCULATIONS
