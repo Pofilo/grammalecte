@@ -48,7 +48,7 @@ class SuggResult {
                 if (nDist < this.nMinDist) {
                     this.nMinDist = nDist;
                 }
-                this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+2);
+                this.nDistLimit = Math.min(this.nDistLimit, this.nMinDist+1);
             }
         }
     }
@@ -139,6 +139,7 @@ class IBDAWG {
         // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         this.dChar = helpers.objectToMap(this.dChar);
         this.dCharVal = this.dChar.gl_reverse();
+        this.a2grams = new Set(this.l2grams);
 
         if (this.cStemming == "S") {
             this.funcStemming = str_transform.changeWordWithSuffixCode;
@@ -214,7 +215,8 @@ class IBDAWG {
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,
-            "sByDic": this.sByDic    // binary word graph
+            "sByDic": this.sByDic,  // binary word graph
+            "l2grams": this.l2grams
         };
         return oJSON;
     }
@@ -351,7 +353,7 @@ class IBDAWG {
                 this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, jAddr, sNewWord+cChar);
             }
             else if (!bAvoidLoop) {
-                if (nMaxHardRepl) {
+                if (nMaxHardRepl  &&  this.isNgramsOK(cChar+sRemain.slice(1,2))) {
                     this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, true);
                 }
                 if (nMaxJump) {
@@ -367,11 +369,11 @@ class IBDAWG {
                 }
                 else {
                     // switching chars
-                    if (nMaxSwitch > 0) {
+                    if (nMaxSwitch > 0  &&  this.isNgramsOK(sNewWord.slice(-1)+sRemain.slice(1,2))  &&  this.isNgramsOK(sRemain.slice(1,2)+sRemain.slice(0,1))) {
                         this._suggest(oSuggResult, sRemain.slice(1, 2)+sRemain.slice(0, 1)+sRemain.slice(2), nMaxSwitch-1, nMaxDel, nMaxHardRepl, nMaxJump, nDist+1, nDeep+1, iAddr, sNewWord, true);
                     }
                     // delete char
-                    if (nMaxDel > 0) {
+                    if (nMaxDel > 0  &&  this.isNgramsOK(sNewWord.slice(-1)+sRemain.slice(1,2))) {
                         this._suggest(oSuggResult, sRemain.slice(1), nMaxSwitch, nMaxDel-1, nMaxHardRepl, nMaxJump, nDist+1, nDeep+1, iAddr, sNewWord, true);
                     }
                 }
@@ -396,6 +398,13 @@ class IBDAWG {
                 }
             }
         }
+    }
+
+    isNgramsOK (sChars) {
+        if (sChars.length != 2) {
+            return true;
+        }
+        return this.a2grams.has(sChars);
     }
 
     * _getCharArcs (iAddr) {

@@ -63,6 +63,8 @@ class DAWG:
         lTag  = [];   dTag  = {}; nTag  = 0; dTagOccur = {}
         nErr = 0
 
+        self.a2grams = set()
+
         try:
             zFilter = re.compile(sSelectFilterRegex)  if sSelectFilterRegex  else None
         except:
@@ -77,6 +79,7 @@ class DAWG:
             iterable = src
         for sFlex, sStem, sTag in iterable:
             if not zFilter or zFilter.search(sTag):
+                self.a2grams.update(st.getNgrams(sFlex))
                 addWordToCharDict(sFlex)
                 # chars
                 for c in sFlex:
@@ -285,6 +288,7 @@ class DAWG:
         print(" * {:<12} {:>16,}".format("Arc values:", self.nArcVal))
         print(" * {:<12} {:>16,}".format("Nodes:", self.nNode))
         print(" * {:<12} {:>16,}".format("Arcs:", self.nArc))
+        print(" * {:<12} {:>16,}".format("2grams:", len(self.a2grams)))
         print(" * {:<12} {:>16}".format("Stemming:", self.cStemming + "FX"))
 
     def getArcStats (self):
@@ -448,7 +452,8 @@ class DAWG:
             # Mozilla’s JS parser don’t like file bigger than 4 Mb!
             # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
             # https://github.com/mozilla/addons-linter/issues/1361
-            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ]
+            "sByDic": byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in byDic ],
+            "l2grams": list(self.a2grams)
         }
 
     def writeAsJSObject (self, spfDst, nCompressionMethod, bInJSModule=False, bBinaryDictAsHexString=True):
@@ -498,6 +503,9 @@ class DAWG:
         - Section Word Graph (nodes / arcs)
                 * A list of nodes which are a list of arcs with an address of the next node.
                   See DawgNode.convToBytes() for details.
+
+        - Section 2grams:
+                * A list of 2grams (as strings: 2 chars) encoded in binary from utf-8, each value separated with a tabulation
         """
         self._calculateBinary(nCompressionMethod)
         if not sPathFile.endswith(".bdic"):
@@ -514,6 +522,9 @@ class DAWG:
             hDst.write(b"\0\0\0\0")
             # lArcVal
             hDst.write("\t".join(self.lArcVal).encode("utf-8"))
+            hDst.write(b"\0\0\0\0")
+            # 2grams
+            hDst.write("\t".join(self.a2grams).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # DAWG: nodes / arcs
             if nCompressionMethod == 1:

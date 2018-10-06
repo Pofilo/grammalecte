@@ -62,7 +62,7 @@ class SuggResult:
                 self.aSugg.add(sSugg)
                 if nDist < self.nMinDist:
                     self.nMinDist = nDist
-                self.nDistLimit = min(self.nDistLimit, self.nMinDist+2)
+                self.nDistLimit = min(self.nDistLimit, self.nMinDist+1)
 
     def getSuggestions (self, nSuggLimit=10):
         "return a list of suggestions"
@@ -153,17 +153,18 @@ class IBDAWG:
         if not(self.by[17:18] == b"1" or self.by[17:18] == b"2" or self.by[17:18] == b"3"):
             raise ValueError("# Error. Unknown dictionary version: {}".format(self.by[17:18]))
         try:
-            header, info, values, bdic = self.by.split(b"\0\0\0\0", 3)
+            byHeader, byInfo, byValues, by2grams, byDic = self.by.split(b"\0\0\0\0", 4)
         except Exception:
             raise Exception
 
         self.nCompressionMethod = int(self.by[17:18].decode("utf-8"))
-        self.sHeader = header.decode("utf-8")
-        self.lArcVal = values.decode("utf-8").split("\t")
+        self.sHeader = byHeader.decode("utf-8")
+        self.lArcVal = byValues.decode("utf-8").split("\t")
         self.nArcVal = len(self.lArcVal)
-        self.byDic = bdic
+        self.byDic = byDic
+        self.a2grams = set(by2grams.decode("utf-8").split("\t"))
 
-        l = info.decode("utf-8").split("//")
+        l = byInfo.decode("utf-8").split("//")
         self.sLangCode = l.pop(0)
         self.sLangName = l.pop(0)
         self.sDicName = l.pop(0)
@@ -189,6 +190,7 @@ class IBDAWG:
         self.__dict__.update(oJSON)
         self.byDic = binascii.unhexlify(self.sByDic)
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
+        self.a2grams = set(self.l2grams)
 
     def getInfo (self):
         "return string about the IBDAWG"
@@ -227,7 +229,8 @@ class IBDAWG:
                 # JavaScript is a pile of shit, so Mozilla’s JS parser don’t like file bigger than 4 Mb!
                 # So, if necessary, we use an hexadecimal string, that we will convert later in Firefox’s extension.
                 # https://github.com/mozilla/addons-linter/issues/1361
-                "sByDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ]
+                "sByDic": self.byDic.hex()  if bBinaryDictAsHexString  else [ e  for e in self.byDic ],
+                "l2grams": list(self.a2grams)
             }, ensure_ascii=False))
             if bInJSModule:
                 hDst.write(";\n\nexports.dictionary = dictionary;\n")
@@ -323,7 +326,7 @@ class IBDAWG:
             if cChar in cp.d1to1.get(cCurrent, cCurrent):
                 self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, jAddr, sNewWord+cChar)
             elif not bAvoidLoop:
-                if nMaxHardRepl:
+                if nMaxHardRepl and self.isNgramsOK(cChar+sRemain[1:2]):
                     self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl-1, nMaxJump, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True)
                 if nMaxJump:
                     self._suggest(oSuggResult, sRemain, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump-1, nDist+1, nDeep+1, jAddr, sNewWord+cChar, True)
@@ -334,10 +337,10 @@ class IBDAWG:
                     self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord)
                 else:
                     # switching chars
-                    if nMaxSwitch:
+                    if nMaxSwitch and self.isNgramsOK(sNewWord[-1:]+sRemain[1:2]) and self.isNgramsOK(sRemain[1:2]+sRemain[0:1]):
                         self._suggest(oSuggResult, sRemain[1:2]+sRemain[0:1]+sRemain[2:], nMaxSwitch-1, nMaxDel, nMaxHardRepl, nMaxJump, nDist+1, nDeep+1, iAddr, sNewWord, True)
                     # delete char
-                    if nMaxDel:
+                    if nMaxDel and self.isNgramsOK(sNewWord[-1:]+sRemain[1:2]):
                         self._suggest(oSuggResult, sRemain[1:], nMaxSwitch, nMaxDel-1, nMaxHardRepl, nMaxJump, nDist+1, nDeep+1, iAddr, sNewWord, True)
                 # Phonetic replacements
                 for sRepl in cp.get1toXReplacement(sNewWord[-1:], cCurrent, sRemain[1:2]):
@@ -352,6 +355,11 @@ class IBDAWG:
                 self._suggest(oSuggResult, "", nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, True) # remove last char and go on
                 for sRepl in cp.dFinal1.get(sRemain, ()):
                     self._suggest(oSuggResult, sRepl, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump, nDist, nDeep+1, iAddr, sNewWord, True)
+
+    def isNgramsOK (self, sChars):
+        if len(sChars) != 2:
+            return True
+        return sChars in self.a2grams
 
     #@timethis
     def suggest2 (self, sWord, nSuggLimit=10):

@@ -5,7 +5,7 @@
 // by Olivier R.
 // License: MPL 2
 //
-// This tool encodes lexicon into an indexable binary dictionary 
+// This tool encodes lexicon into an indexable binary dictionary
 // Input files MUST be encoded in UTF-8.
 
 "use strict";
@@ -41,15 +41,20 @@ class DAWG {
             default:
                 throw "Error. Unknown stemming code: " + cStemming;
         }
-        
+
         let lEntry = [];
         let lChar = [''],  dChar = new Map(),  nChar = 1,  dCharOccur = new Map();
         let lAff  = [],    dAff  = new Map(),  nAff  = 0,  dAffOccur = new Map();
         let lTag  = [],    dTag  = new Map(),  nTag  = 0,  dTagOccur = new Map();
         let nErr = 0;
-        
+
+        this.a2grams = new Set();
+
         // read lexicon
         for (let [sFlex, sStem, sTag] of lEntrySrc) {
+            for (let s2grams of str_transform.getNgrams(sFlex)) {
+                this.a2grams.add(s2grams);
+            }
             addWordToCharDict(sFlex);
             // chars
             for (let c of sFlex) {
@@ -84,7 +89,7 @@ class DAWG {
         lEntry = [...new Set(lEntry.map(e => JSON.stringify(e)))].map(s => JSON.parse(s));
         // Set can’t distinguish similar lists, so we transform list item in string given to the Set
         // then we transform items in list a new.
-        
+
         // Preparing DAWG
         console.log(" > Preparing list of words");
         let lVal = lChar.concat(lAff).concat(lTag);
@@ -99,7 +104,7 @@ class DAWG {
             lWord.push(lTemp);
         }
         lEntry.length = 0; // clear the array
-        
+
         // Dictionary of arc values occurrency, to sort arcs of each node
         let lKeyVal = [];
         for (let c of dChar.keys()) { lKeyVal.push([dChar.get(c), dCharOccur.get(c)]); }
@@ -133,7 +138,7 @@ class DAWG {
         } else {
             this.funcStemming = str_transform.noStemming;
         }
-        
+
         // build
         lWord.sort();
         if (xProgressBarNode) {
@@ -222,7 +227,7 @@ class DAWG {
             this.nArc += oNode.arcs.size;
         }
     }
-    
+
     sortNodeArcs (dValOccur) {
         console.log(" > Sort node arcs");
         this.oRoot.sortArcs(dValOccur);
@@ -275,6 +280,7 @@ class DAWG {
         console.log("Arc values: " + this.nArcVal);
         console.log("Nodes: " + this.nNode);
         console.log("Arcs: " + this.nArc);
+        console.log("2grams: " + this.a2grams.size);
         console.log("Stemming: " + this.cStemming + "FX");
     }
 
@@ -396,7 +402,8 @@ class DAWG {
             "nBytesArc": this.nBytesArc,
             "nBytesNodeAddress": this.nBytesNodeAddress,
             "nBytesOffset": this.nBytesOffset,
-            "sByDic": sByDic    // binary word graph
+            "sByDic": sByDic,    // binary word graph
+            "l2grams": Array.from(this.a2grams)
         };
         return oJSON;
     }
@@ -488,7 +495,7 @@ class DawgNode {
             Node scheme:
             - Arc length is defined by nBytesArc
             - Address length is defined by nBytesNodeAddress
-                                           
+
             |                Arc                |                         Address of next node                          |
             |                                   |                                                                       |
              /---------------\ /---------------\ /---------------\ /---------------\ /---------------\ /---------------\
