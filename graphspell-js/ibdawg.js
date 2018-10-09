@@ -140,7 +140,6 @@ class IBDAWG {
         this.dChar = helpers.objectToMap(this.dChar);
         this.dCharVal = this.dChar.gl_reverse();
         this.a2grams = new Set(this.l2grams);
-        //console.log(this.l2grams);
 
         if (this.cStemming == "S") {
             this.funcStemming = str_transform.changeWordWithSuffixCode;
@@ -408,8 +407,7 @@ class IBDAWG {
         if (sChars.length != 2) {
             return true;
         }
-        return this.a2grams.has(sChars); //slower than indexOf in an Array?
-        //return this.l2grams.indexOf(sChars) !== false;
+        return this.a2grams.has(sChars);
     }
 
     * _getCharArcs (iAddr) {
