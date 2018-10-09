@@ -140,6 +140,7 @@ class IBDAWG {
         this.dChar = helpers.objectToMap(this.dChar);
         this.dCharVal = this.dChar.gl_reverse();
         this.a2grams = new Set(this.l2grams);
+        //console.log(this.l2grams);
 
         if (this.cStemming == "S") {
             this.funcStemming = str_transform.changeWordWithSuffixCode;
@@ -313,6 +314,7 @@ class IBDAWG {
 
     suggest (sWord, nSuggLimit=10) {
         // returns a array of suggestions for <sWord>
+        //const t0 = Date.now();
         sWord = char_player.spellingNormalization(sWord)
         let sPfx = "";
         let sSfx = "";
@@ -328,6 +330,8 @@ class IBDAWG {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx } );
         }
+        //const t1 = Date.now();
+        //console.log("Suggestions for " + sWord + " in " + ((t1-t0)/1000).toString() + " s");
         return aSugg;
     }
 
@@ -404,7 +408,8 @@ class IBDAWG {
         if (sChars.length != 2) {
             return true;
         }
-        return this.a2grams.has(sChars);
+        return this.a2grams.has(sChars); //slower than indexOf in an Array?
+        //return this.l2grams.indexOf(sChars) !== false;
     }
 
     * _getCharArcs (iAddr) {
