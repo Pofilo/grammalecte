@@ -1,6 +1,8 @@
 // JavaScript
-/*jslint esversion: 6*/
-/*global require,exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console */
 
 "use strict";
 
@@ -59,7 +61,7 @@ var text = {
 };
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
     exports.getParagraph = text.getParagraph;
     exports.wrap = text.wrap;
     exports.getReadableError = text.getReadableError;

@@ -1,6 +1,8 @@
 // Options for Grammalecte
-/*jslint esversion: 6*/
-/*global exports*/
+
+/* jshint esversion:6 */
+/* jslint esversion:6 */
+/* global exports */
 
 ${map}
 
@@ -25,7 +27,7 @@ var gc_options = {
         }
         catch (e) {
             console.error(e);
-            return {}
+            return {};
         }
     },
 
@@ -42,15 +44,15 @@ var gc_options = {
     dOptColor: ${dOptColor},
 
     dOptLabel: ${dOptLabel}
-}
+};
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
 	exports.getOptions = gc_options.getOptions;
-    exports.getOptionsColors = gc_options.getOptionsColors;
+	exports.getOptionsColors = gc_options.getOptionsColors;
 	exports.lStructOpt = gc_options.lStructOpt;
-    exports.dOpt = gc_options.dOpt;
-    exports.dColorType = gc_options.dColorType;
-    exports.dOptColor = gc_options.dOptColor;
+	exports.dOpt = gc_options.dOpt;
+	exports.dColorType = gc_options.dColorType;
+	exports.dOptColor = gc_options.dOptColor;
 	exports.dOptLabel = gc_options.dOptLabel;
 }

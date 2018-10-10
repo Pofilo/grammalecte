@@ -1,5 +1,7 @@
-//// GRAMMAR CHECKING ENGINE PLUGIN: Parsing functions for French language
-/*jslint esversion: 6*/
+// GRAMMAR CHECKING ENGINE PLUGIN: Parsing functions for French language
+
+/* jshint esversion:6 */
+/* jslint esversion:6 */
 
 function g_morphVC (dToken, sPattern, sNegPattern="") {
     let nEnd = dToken["sValue"].lastIndexOf("-");
@@ -130,7 +132,7 @@ function mbUnit (s) {
 }
 
 
-//// Exceptions
+// Exceptions
 
 const aREGULARPLURAL = new Set(["abricot", "amarante", "aubergine", "acajou", "anthracite", "brique", "caca", "café",
                                 "carotte", "cerise", "chataigne", "corail", "citron", "crème", "grave", "groseille",

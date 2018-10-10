@@ -2,7 +2,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global require, exports, console*/
+/* global require, exports, console, __dirname */
 
 "use strict";
 
@@ -101,7 +101,12 @@ class IBDAWG {
         try {
             let oData = null;
             if (typeof(param1) == "string") {
-                let sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
+                let sURL;
+                if(typeof process !== 'undefined') {
+                    sURL = (sPath !== "") ? sPath + "/" + param1 : __dirname + "/_dictionaries/"+param1;
+                } else {
+                    sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
+                }
                 oData = JSON.parse(helpers.loadFile(sURL));
             } else {
                 oData = param1;

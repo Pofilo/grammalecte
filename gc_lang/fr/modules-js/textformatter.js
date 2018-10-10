@@ -1,6 +1,8 @@
 // Grammalecte - text formatter
-/*jslint esversion: 6*/
-/*global exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global exports */
 
 "use strict";
 
@@ -85,7 +87,7 @@ const oReplTable = {
     "ts_ellipsis":                [ [/\.\.\./g, "…"],
                                     [/…\.\./g, "……"],
                                     [/…\.(?!\.)/g, "…"] ],
-    "ts_n_dash_middle":           [ [/ [-—] /g, " – "], 
+    "ts_n_dash_middle":           [ [/ [-—] /g, " – "],
                                     [/ [-—],/g, " –,"] ],
     "ts_m_dash_middle":           [ [/ [-–] /g, " — "],
                                     [/ [-–],/g, " —,"] ],
@@ -287,7 +289,7 @@ class TextFormatter {
 }
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
     exports.TextFormatter = TextFormatter;
     exports.oReplTable = oReplTable;
 }
