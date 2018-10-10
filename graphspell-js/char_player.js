@@ -1,6 +1,9 @@
 // list of similar chars
 // useful for suggestion mechanism
 
+/* jshint esversion:6 */
+/* jslint esversion:6 */
+
 ${map}
 
 
@@ -25,7 +28,7 @@ var char_player = {
         ['á', 'a'],  ['ë', 'e'],  ['ì', 'i'],  ['ò', 'o'],  ['ú', 'u'],  ['ỳ', 'i'],
         ['ā', 'a'],  ['ē', 'e'],  ['ī', 'i'],  ['ō', 'o'],  ['ū', 'u'],  ['ȳ', 'i'],
         ['ç', 'c'],  ['ñ', 'n'],  ['k', 'q'],  ['w', 'v'],
-        ['œ', 'oe'], ['æ', 'ae'], 
+        ['œ', 'oe'], ['æ', 'ae'],
         ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st']
     ]),
 
@@ -104,7 +107,7 @@ var char_player = {
 
         ["g", "gGjJĵĴ"],
         ["G", "GgJjĴĵ"],
-        
+
         ["h", "hH"],
         ["H", "Hh"],
 
@@ -382,10 +385,10 @@ var char_player = {
         return aSugg.filter((sSugg) => { return !sSugg.endsWith("è") && !sSugg.endsWith("È"); });
     }
 
-}
+};
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
     exports._xTransCharsForSpelling = char_player._xTransCharsForSpelling;
     exports.spellingNormalization = char_player.spellingNormalization;
     exports._xTransCharsForSimplification = char_player._xTransCharsForSimplification;

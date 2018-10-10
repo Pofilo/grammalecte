@@ -1,16 +1,20 @@
-//// IBDAWG
-/*jslint esversion: 6*/
-/*global console,require,exports*/
+// IBDAWG
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console*/
 
 "use strict";
 
-
-if (typeof(require) !== 'undefined') {
-    var str_transform = require("resource://grammalecte/graphspell/str_transform.js");
-    var helpers = require("resource://grammalecte/graphspell/helpers.js");
-    var char_player = require("resource://grammalecte/graphspell/char_player.js");
+if(typeof process !== 'undefined') {
+    var str_transform = require('./str_transform.js');
+    var helpers = require('./helpers.js');
+    var char_player = require('./char_player.js');
+} else if (typeof require !== 'undefined') {
+    var str_transform = require('resource://grammalecte/graphspell/str_transform.js');
+    var helpers = require('resource://grammalecte/graphspell/helpers.js');
+    var char_player = require('resource://grammalecte/graphspell/char_player.js');
 }
-
 
 // Don’t remove <string>. Necessary in TB.
 ${string}
@@ -223,7 +227,7 @@ class IBDAWG {
 
     isValidToken (sToken) {
         // checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)
-        sToken = char_player.spellingNormalization(sToken)
+        sToken = char_player.spellingNormalization(sToken);
         if (this.isValid(sToken)) {
             return true;
         }
@@ -300,7 +304,7 @@ class IBDAWG {
 
     getMorph (sWord) {
         // retrieves morphologies list, different casing allowed
-        sWord = char_player.spellingNormalization(sWord)
+        sWord = char_player.spellingNormalization(sWord);
         let l = this.morph(sWord);
         if (sWord[0].gl_isUpperCase()) {
             l.push(...this.morph(sWord.toLowerCase()));
@@ -313,8 +317,8 @@ class IBDAWG {
 
     suggest (sWord, nSuggLimit=10) {
         // returns a array of suggestions for <sWord>
-        //const t0 = Date.now();
-        sWord = char_player.spellingNormalization(sWord)
+	//console.time("Suggestions for " + sWord + ");
+        sWord = char_player.spellingNormalization(sWord);
         let sPfx = "";
         let sSfx = "";
         [sPfx, sWord, sSfx] = char_player.cut(sWord);
@@ -327,10 +331,9 @@ class IBDAWG {
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
         if (sSfx || sPfx) {
             // we add what we removed
-            return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx } );
+            return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx; } );
         }
-        //const t1 = Date.now();
-        //console.log("Suggestions for " + sWord + " in " + ((t1-t0)/1000).toString() + " s");
+	//console.timeEnd("Suggestions for " + sWord + ");
         return aSugg;
     }
 
@@ -591,7 +594,7 @@ class IBDAWG {
     }
 
     * _getArcs1 (iAddr) {
-        "generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)"
+        // generator: return all arcs at <iAddr> as tuples of (nVal, iAddr)
         while (true) {
             let iEndArcAddr = iAddr+this.nBytesArc;
             let nRawArc = this._convBytesToInteger(this.byDic.slice(iAddr, iEndArcAddr));
@@ -632,6 +635,6 @@ class IBDAWG {
 }
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
     exports.IBDAWG = IBDAWG;
 }

@@ -8,13 +8,17 @@
 // This tool encodes lexicon into an indexable binary dictionary
 // Input files MUST be encoded in UTF-8.
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console, helpers */
+
 "use strict";
 
-
-if (typeof(require) !== 'undefined') {
-    var str_transform = require("resource://grammalecte/graphspell/str_transform.js");
+if(typeof process !== 'undefined') {
+    var str_transform = require('./str_transform.js');
+} else if (typeof require !== 'undefined') {
+    var str_transform = require('resource://grammalecte/graphspell/str_transform.js');
 }
-
 
 ${map}
 
@@ -100,7 +104,7 @@ class DAWG {
                 lTemp.push(dChar.get(c));
             }
             lTemp.push(iAff+nChar);
-            lTemp.push(iTag+nChar+nAff)
+            lTemp.push(iTag+nChar+nAff);
             lWord.push(lTemp);
         }
         lEntry.length = 0; // clear the array
@@ -430,7 +434,7 @@ const oNodeCounter = {
     reset: function () {
         this.nNextId = 0;
     }
-}
+};
 
 
 class DawgNode {
@@ -544,7 +548,7 @@ class DawgNode {
         if (sHexVal.length < (nByte*2)) {
             return "0".repeat((nByte*2) - sHexVal.length) + sHexVal;
         } else if (sHexVal.length == (nByte*2)) {
-            return sHexVal
+            return sHexVal;
         } else {
             throw "Conversion to byte string: value bigger than allowed.";
         }

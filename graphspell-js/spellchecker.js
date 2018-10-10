@@ -8,15 +8,19 @@
 // - the community dictionary, added by an organization
 // - the personal dictionary, created by the user for its own convenience
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console, IBDAWG, Tokenizer */
 
 "use strict";
 
-
-if (typeof(require) !== 'undefined') {
-    var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
-    var tokenizer = require("resource://grammalecte/graphspell/tokenizer.js");
+if(typeof process !== 'undefined') {
+    var ibdawg = require('./ibdawg.js');
+    var tokenizer = require('./tokenizer.js');
+} else if (typeof require !== 'undefined') {
+    var ibdawg = require('resource://grammalecte/graphspell/ibdawg.js');
+    var tokenizer = require('resource://grammalecte/graphspell/tokenizer.js');
 }
-
 
 ${map}
 
@@ -66,7 +70,7 @@ class SpellChecker {
             if (bNecessary) {
                 throw "Error: <" + sfDictionary + "> not loaded. " + e.message;
             }
-            console.log("Error: <" + sfDictionary + "> not loaded.")
+            console.log("Error: <" + sfDictionary + "> not loaded.");
             console.log(e.message);
             return null;
         }
@@ -197,7 +201,7 @@ class SpellChecker {
         if (this.bExtendedDic && this.oExtendedDic.isValid(sWord)) {
             return true;
         }
-        if (this.bCommunityDic && this.oCommunityDic.isValid(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.isValid(sWord)) {
             return true;
         }
         if (this.bPersonalDic && this.oPersonalDic.isValid(sWord)) {
@@ -214,7 +218,7 @@ class SpellChecker {
         if (this.bExtendedDic && this.oExtendedDic.lookup(sWord)) {
             return true;
         }
-        if (this.bCommunityDic && this.oCommunityDic.lookup(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.lookup(sWord)) {
             return true;
         }
         if (this.bPersonalDic && this.oPersonalDic.lookup(sWord)) {
@@ -273,7 +277,7 @@ class SpellChecker {
 
     * select (sFlexPattern="", sTagsPattern="") {
         // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
-        yield* this.oMainDic.select(sFlexPattern, sTagsPattern)
+        yield* this.oMainDic.select(sFlexPattern, sTagsPattern);
         if (this.bExtendedDic) {
             yield* this.oExtendedDic.select(sFlexPattern, sTagsPattern);
         }
@@ -301,6 +305,6 @@ class SpellChecker {
     }
 }
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
     exports.SpellChecker = SpellChecker;
 }
