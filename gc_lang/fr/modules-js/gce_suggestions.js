@@ -4,14 +4,14 @@
 /* jslint esversion:6 */
 /* global require */
 
-if(typeof process !== 'undefined') {
-    var conj = require('./conj.js');
-    var mfsp = require('./mfsp.js');
-    var phonet = require('./phonet.js');
-} else if (typeof require !== 'undefined') {
-    var conj = require('resource://grammalecte/fr/conj.js');
-    var mfsp = require('resource://grammalecte/fr/mfsp.js');
-    var phonet = require('resource://grammalecte/fr/phonet.js');
+if(typeof(process) !== 'undefined') {
+    var conj = require("./conj.js");
+    var mfsp = require("./mfsp.js");
+    var phonet = require("./phonet.js");
+} else if (typeof(require) !== 'undefined') {
+    var conj = require("resource://grammalecte/fr/conj.js");
+    var mfsp = require("resource://grammalecte/fr/mfsp.js");
+    var phonet = require("resource://grammalecte/fr/phonet.js");
 }
 
 

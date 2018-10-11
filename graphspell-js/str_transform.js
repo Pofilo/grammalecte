@@ -223,7 +223,7 @@ var str_transform = {
 };
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.longestCommonSubstring = str_transform.longestCommonSubstring;
     exports.distanceDamerauLevenshtein = str_transform.distanceDamerauLevenshtein;
     exports.distanceDamerauLevenshtein2 = str_transform.distanceDamerauLevenshtein2;

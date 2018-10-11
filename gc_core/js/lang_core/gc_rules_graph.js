@@ -6,7 +6,7 @@
 
 "use strict";
 
-//${string}
+${string}
 
 
 var gc_rules_graph = {
@@ -16,7 +16,7 @@ var gc_rules_graph = {
 };
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.dAllGraph = gc_rules_graph.dAllGraph;
     exports.dRule = gc_rules_graph.dRule;
 }

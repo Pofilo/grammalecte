@@ -388,7 +388,7 @@ var char_player = {
 };
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports._xTransCharsForSpelling = char_player._xTransCharsForSpelling;
     exports.spellingNormalization = char_player.spellingNormalization;
     exports._xTransCharsForSimplification = char_player._xTransCharsForSimplification;

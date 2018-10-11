@@ -47,12 +47,12 @@ var gc_options = {
 };
 
 
-if (typeof exports !== 'undefined') {
-	exports.getOptions = gc_options.getOptions;
-	exports.getOptionsColors = gc_options.getOptionsColors;
-	exports.lStructOpt = gc_options.lStructOpt;
-	exports.dOpt = gc_options.dOpt;
-	exports.dColorType = gc_options.dColorType;
-	exports.dOptColor = gc_options.dOptColor;
-	exports.dOptLabel = gc_options.dOptLabel;
+if (typeof(exports) !== 'undefined') {
+    exports.getOptions = gc_options.getOptions;
+    exports.getOptionsColors = gc_options.getOptionsColors;
+    exports.lStructOpt = gc_options.lStructOpt;
+    exports.dOpt = gc_options.dOpt;
+    exports.dColorType = gc_options.dColorType;
+    exports.dOptColor = gc_options.dOptColor;
+    exports.dOptLabel = gc_options.dOptLabel;
 }

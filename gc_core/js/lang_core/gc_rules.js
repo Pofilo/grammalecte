@@ -16,7 +16,7 @@ var gc_rules = {
 };
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.lParagraphRules = gc_rules.lParagraphRules;
     exports.lSentenceRules = gc_rules.lSentenceRules;
 }

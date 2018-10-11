@@ -269,7 +269,7 @@ var cregex = {
 };
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports._zLemma = cregex._zLemma;
     exports._zGender = cregex._zGender;
     exports._zNumber = cregex._zNumber;

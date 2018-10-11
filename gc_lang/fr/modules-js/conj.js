@@ -7,13 +7,13 @@
 
 "use strict";
 
-//${map}
+${map}
 
 
-if(typeof process !== 'undefined') {
-    var helpers = require('../graphspell/helpers.js');
-} else if (typeof require !== 'undefined') {
-    var helpers = require('resource://grammalecte/graphspell/helpers.js');
+if(typeof(process) !== 'undefined') {
+    var helpers = require("../graphspell/helpers.js");
+} else if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
 var conj = {
@@ -500,19 +500,19 @@ class Verb {
 
 
 // Initialization
-if(!conj.bInit && typeof process !== 'undefined') {
+if(!conj.bInit && typeof(process) !== 'undefined') {
     // Work with nodejs
-    conj.init(helpers.loadFile(__dirname+'/conj_data.json'));
+    conj.init(helpers.loadFile(__dirname+"/conj_data.json"));
 } else if (!conj.bInit && typeof(browser) !== 'undefined') {
     // WebExtension Standard (but not in Worker)
-    conj.init(helpers.loadFile(browser.extension.getURL('grammalecte/fr/conj_data.json')));
-} else if (!conj.bInit && typeof chrome !== 'undefined') {
+    conj.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/conj_data.json")));
+} else if (!conj.bInit && typeof(chrome) !== 'undefined') {
     // WebExtension Chrome (but not in Worker)
-    conj.init(helpers.loadFile(chrome.extension.getURL('grammalecte/fr/conj_data.json')));
-} else if (!conj.bInit && typeof require !== 'undefined') {
+    conj.init(helpers.loadFile(chrome.extension.getURL("grammalecte/fr/conj_data.json")));
+} else if (!conj.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
-    conj.init(helpers.loadFile('resource://grammalecte/fr/conj_data.json'));
-} else if (!conj.bInit && typeof self !== 'undefined' && typeof self.port !== 'undefined' && typeof self.port.on !== 'undefined') {
+    conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
+} else if (!conj.bInit && typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== 'undefined') {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
     self.port.on('provideConjData', function (sJSONData) {
@@ -525,7 +525,7 @@ if(!conj.bInit && typeof process !== 'undefined') {
 }
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports._lVtyp = conj._lVtyp;
     exports._lTags = conj._lTags;
     exports._dPatternConj = conj._dPatternConj;

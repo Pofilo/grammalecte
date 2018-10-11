@@ -4,9 +4,9 @@
 /* jslint esversion:6 */
 /* global __dirname */
 
-if(typeof process !== 'undefined') {
+if(typeof(process) !== 'undefined') {
     var helpers = require("../graphspell/helpers.js");
-} else if (typeof require  !== 'undefined') {
+} else if (typeof(require)  !== 'undefined') {
     var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
@@ -89,23 +89,23 @@ var phonet = {
 
 
 // Initialization
-if (!phonet.bInit && typeof process !== 'undefined') {
+if (!phonet.bInit && typeof(process) !== 'undefined') {
     //Nodejs
-    phonet.init(helpers.loadFile(__dirname+'/phonet_data.json'));
-} else if (!phonet.bInit && typeof browser !== 'undefined') {
+    phonet.init(helpers.loadFile(__dirname+"/phonet_data.json"));
+} else if (!phonet.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
-    phonet.init(helpers.loadFile(browser.extension.getURL('grammalecte/fr/phonet_data.json')));
-} else if (!phonet.bInit && typeof require !== 'undefined') {
+    phonet.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/phonet_data.json")));
+} else if (!phonet.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
-    phonet.init(helpers.loadFile('resource://grammalecte/fr/phonet_data.json'));
+    phonet.init(helpers.loadFile("resource://grammalecte/fr/phonet_data.json"));
 } else if (phonet.bInit){
-    console.log('Module phonet déjà initialisé');
+    console.log("Module phonet déjà initialisé");
 } else {
     //console.log('Module phonet non initialisé');
 }
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports._dWord = phonet._dWord;
     exports._lSet = phonet._lSet;
     exports._dMorph = phonet._dMorph;

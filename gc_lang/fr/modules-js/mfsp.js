@@ -7,10 +7,10 @@
 "use strict";
 
 
-if(typeof process !== 'undefined') {
-    var helpers = require('../graphspell/helpers.js');
-} else if (typeof require !== 'undefined') {
-    var helpers = require('resource://grammalecte/graphspell/helpers.js');
+if(typeof(process) !== 'undefined') {
+    var helpers = require("../graphspell/helpers.js");
+} else if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
 
@@ -108,7 +108,7 @@ var mfsp = {
 
 
 // Initialization
-if(!mfsp.bInit && typeof process !== 'undefined') {
+if(!mfsp.bInit && typeof(process) !== 'undefined') {
     //Nodejs
     mfsp.init(helpers.loadFile(__dirname+'/mfsp_data.json'));
 } else if (!mfsp.bInit && typeof(browser) !== 'undefined') {
@@ -124,7 +124,7 @@ if(!mfsp.bInit && typeof process !== 'undefined') {
 }
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports._lTagMiscPlur = mfsp._lTagMiscPlur;
     exports._lTagMasForm = mfsp._lTagMasForm;
     exports._dMiscPlur = mfsp._dMiscPlur;

@@ -94,6 +94,6 @@ class Tokenizer {
 }
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.Tokenizer = Tokenizer;
 }
