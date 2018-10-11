@@ -61,7 +61,7 @@ var text = {
 };
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.getParagraph = text.getParagraph;
     exports.wrap = text.wrap;
     exports.getReadableError = text.getReadableError;

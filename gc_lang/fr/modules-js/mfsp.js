@@ -110,17 +110,17 @@ var mfsp = {
 // Initialization
 if(!mfsp.bInit && typeof(process) !== 'undefined') {
     //Nodejs
-    mfsp.init(helpers.loadFile(__dirname+'/mfsp_data.json'));
+    mfsp.init(helpers.loadFile(__dirname+"/mfsp_data.json"));
 } else if (!mfsp.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
-    mfsp.init(helpers.loadFile(browser.extension.getURL('grammalecte/fr/mfsp_data.json')));
+    mfsp.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/mfsp_data.json")));
 } else if (!mfsp.bInit && typeof(require) !== 'undefined') {
     // Add-on SDK and Thunderbird
-    mfsp.init(helpers.loadFile('resource://grammalecte/fr/mfsp_data.json'));
+    mfsp.init(helpers.loadFile("resource://grammalecte/fr/mfsp_data.json"));
 } else if (mfsp.bInit){
-    console.log('Module mfsp déjà initialisé');
+    console.log("Module mfsp déjà initialisé");
 } else {
-    //console.log('Module mfsp non initialisé');
+    //console.log("Module mfsp non initialisé");
 }
 
 

@@ -7,10 +7,10 @@
 "use strict";
 
 
-if(typeof process !== 'undefined') {
-    var helpers = require('./graphspell/helpers.js');
-} else if (typeof require !== 'undefined') {
-    var helpers = require('resource://grammalecte/graphspell/helpers.js');
+if(typeof(process) !== 'undefined') {
+    var helpers = require("./graphspell/helpers.js");
+} else if (typeof(require) !== 'undefined') {
+    var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
 
@@ -25,7 +25,7 @@ class TestGrammarChecking {
     * testParse (bDebug=false) {
         const t0 = Date.now();
         let sURL;
-        if(typeof process !== 'undefined') {
+        if(typeof(process) !== 'undefined') {
             sURL = (this.spfTests !== "") ? this.spfTests : "./"+this.gce.lang+"/tests_data.json";
         } else {
             sURL = (this.spfTests !== "") ? this.spfTests : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
@@ -162,6 +162,6 @@ class TestGrammarChecking {
 }
 
 
-if (typeof exports !== 'undefined') {
+if (typeof(exports) !== 'undefined') {
     exports.TestGrammarChecking = TestGrammarChecking;
 }

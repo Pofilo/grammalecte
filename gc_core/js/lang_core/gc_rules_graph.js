@@ -2,7 +2,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/*global exports*/
+/* global exports */
 
 "use strict";
 

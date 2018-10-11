@@ -101,7 +101,7 @@ if (!phonet.bInit && typeof(process) !== 'undefined') {
 } else if (phonet.bInit){
     console.log("Module phonet déjà initialisé");
 } else {
-    //console.log('Module phonet non initialisé');
+    //console.log("Module phonet non initialisé");
 }
 
 

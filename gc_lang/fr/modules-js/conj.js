@@ -3,7 +3,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/*global require, exports, console, self, browser, chrome, __dirname */
+/* global require, exports, console, self, browser, chrome, __dirname */
 
 "use strict";
 
@@ -515,11 +515,11 @@ if(!conj.bInit && typeof(process) !== 'undefined') {
 } else if (!conj.bInit && typeof(self) !== 'undefined' && typeof(self.port) !== 'undefined' && typeof(self.port.on) !== 'undefined') {
     // used within Firefox content script (conjugation panel).
     // can’t load JSON from here, so we do it in ui.js and send it here.
-    self.port.on('provideConjData', function (sJSONData) {
+    self.port.on("provideConjData", function (sJSONData) {
         conj.init(sJSONData);
     });
 } else if (conj.bInit){
-    console.log('Module conj déjà initialisé');
+    console.log("Module conj déjà initialisé");
 } else {
     //console.log("Module conj non initialisé");
 }

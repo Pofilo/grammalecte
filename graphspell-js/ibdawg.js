@@ -102,7 +102,7 @@ class IBDAWG {
             let oData = null;
             if (typeof(param1) == "string") {
                 let sURL;
-                if(typeof process !== 'undefined') {
+                if(typeof(process) !== 'undefined') {
                     sURL = (sPath !== "") ? sPath + "/" + param1 : __dirname + "/_dictionaries/"+param1;
                 } else {
                     sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;

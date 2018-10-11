@@ -28,7 +28,7 @@ var helpers = {
                 let fs = require("fs");
                 return fs.readFileSync(spf, "utf8");
             } else {
-                //console.log('loadFile: ' + spf);
+                console.log("loadFile: " + spf);
                 let xRequest;
                 xRequest = new XMLHttpRequest();
                 xRequest.open('GET', spf, false); // 3rd arg is false for synchronous, sync is acceptable in workers
