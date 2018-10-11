@@ -100,7 +100,7 @@ class DAWG {
                 lTemp.push(dChar.get(c));
             }
             lTemp.push(iAff+nChar);
-            lTemp.push(iTag+nChar+nAff)
+            lTemp.push(iTag+nChar+nAff);
             lWord.push(lTemp);
         }
         lEntry.length = 0; // clear the array
@@ -430,7 +430,7 @@ const oNodeCounter = {
     reset: function () {
         this.nNextId = 0;
     }
-}
+};
 
 
 class DawgNode {
@@ -544,7 +544,7 @@ class DawgNode {
         if (sHexVal.length < (nByte*2)) {
             return "0".repeat((nByte*2) - sHexVal.length) + sHexVal;
         } else if (sHexVal.length == (nByte*2)) {
-            return sHexVal
+            return sHexVal;
         } else {
             throw "Conversion to byte string: value bigger than allowed.";
         }

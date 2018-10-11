@@ -197,7 +197,7 @@ class SpellChecker {
         if (this.bExtendedDic && this.oExtendedDic.isValid(sWord)) {
             return true;
         }
-        if (this.bCommunityDic && this.oCommunityDic.isValid(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.isValid(sWord)) {
             return true;
         }
         if (this.bPersonalDic && this.oPersonalDic.isValid(sWord)) {
@@ -214,7 +214,7 @@ class SpellChecker {
         if (this.bExtendedDic && this.oExtendedDic.lookup(sWord)) {
             return true;
         }
-        if (this.bCommunityDic && this.oCommunityDic.lookup(sToken)) {
+        if (this.bCommunityDic && this.oCommunityDic.lookup(sWord)) {
             return true;
         }
         if (this.bPersonalDic && this.oPersonalDic.lookup(sWord)) {
@@ -273,7 +273,7 @@ class SpellChecker {
 
     * select (sFlexPattern="", sTagsPattern="") {
         // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
-        yield* this.oMainDic.select(sFlexPattern, sTagsPattern)
+        yield* this.oMainDic.select(sFlexPattern, sTagsPattern);
         if (this.bExtendedDic) {
             yield* this.oExtendedDic.select(sFlexPattern, sTagsPattern);
         }

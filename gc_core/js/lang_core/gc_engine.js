@@ -181,7 +181,7 @@ class TextParser {
     }
 
     asString () {
-        let s = "===== TEXT =====\n"
+        let s = "===== TEXT =====\n";
         s += "sentence: " + this.sSentence0 + "\n";
         s += "now:      " + this.sSentence  + "\n";
         for (let dToken of this.lToken) {

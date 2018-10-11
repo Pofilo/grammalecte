@@ -11,7 +11,7 @@ var gc_rules_graph = {
     dAllGraph: ${rules_graphsJS},
 
     dRule: ${rules_actionsJS}
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {

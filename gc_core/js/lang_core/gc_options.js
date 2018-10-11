@@ -25,7 +25,7 @@ var gc_options = {
         }
         catch (e) {
             console.error(e);
-            return {}
+            return {};
         }
     },
 
@@ -42,15 +42,15 @@ var gc_options = {
     dOptColor: ${dOptColor},
 
     dOptLabel: ${dOptLabel}
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {
-	exports.getOptions = gc_options.getOptions;
+    exports.getOptions = gc_options.getOptions;
     exports.getOptionsColors = gc_options.getOptionsColors;
-	exports.lStructOpt = gc_options.lStructOpt;
+    exports.lStructOpt = gc_options.lStructOpt;
     exports.dOpt = gc_options.dOpt;
     exports.dColorType = gc_options.dColorType;
     exports.dOptColor = gc_options.dOptColor;
-	exports.dOptLabel = gc_options.dOptLabel;
+    exports.dOptLabel = gc_options.dOptLabel;
 }
