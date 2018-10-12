@@ -186,7 +186,7 @@ def copyGrammalectePyPackageInZipFile (hZip, spLangPack, sAddPath=""):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
 
 
-def create (sLang, xConfig, bInstallOXT, bJavaScript):
+def create (sLang, xConfig, bInstallOXT, bJavaScript, bUseCache):
     "make Grammalecte for project <sLang>"
     oNow = datetime.datetime.now()
     print("============== MAKE GRAMMALECTE [{0}] at {1.hour:>2} h {1.minute:>2} min {1.second:>2} s ==============".format(sLang, oNow))
@@ -200,7 +200,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript):
     dVars['loc'] = str(dict([ [s, [s[0:2], s[3:5], ""]] for s in dVars["locales"].split(" ") ]))
 
     ## COMPILE RULES
-    dResult = compile_rules.make(spLang, dVars['lang'], bJavaScript)
+    dResult = compile_rules.make(spLang, dVars['lang'], bUseCache)
     dVars.update(dResult)
 
     ## READ GRAMMAR CHECKER PLUGINS
@@ -375,6 +375,7 @@ def main ():
     print("Python: " + sys.version)
     xParser = argparse.ArgumentParser()
     xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
+    xParser.add_argument("-uc", "--use_cache", help="use data cache instead of rebuilding rules", action="store_true")
     xParser.add_argument("-b", "--build_data", help="launch build_data.py (part 1 and 2)", action="store_true")
     xParser.add_argument("-bb", "--build_data_before", help="launch build_data.py (only part 1: before dictionary building)", action="store_true")
     xParser.add_argument("-ba", "--build_data_after", help="launch build_data.py (only part 2: before dictionary building)", action="store_true")
@@ -398,7 +399,7 @@ def main ():
         xArgs.build_data_before = True
         xArgs.build_data_after = True
 
-    dir_util.mkpath("_build")
+    dir_util.mkpath("_build/cache")
     dir_util.mkpath("grammalecte")
     if xArgs.javascript:
         dir_util.mkpath("grammalecte-js")
@@ -442,7 +443,7 @@ def main ():
             copyGraphspellDictionaries(dVars, xArgs.javascript, xArgs.add_extended_dictionary, xArgs.add_community_dictionary, xArgs.add_personal_dictionary)
 
             # make
-            sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, )
+            sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, xArgs.use_cache)
 
             # tests
             if xArgs.tests or xArgs.perf or xArgs.perf_memo:

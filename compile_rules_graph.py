@@ -318,7 +318,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         return None
 
 
-def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
+def make (lRule, dDef, sLang, dOptPriority):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
@@ -454,8 +454,8 @@ def make (lRule, dDef, sLang, dOptPriority, bJavaScript):
     return {
         "graph_callables": sPyCallables,
         "graph_callablesJS": sJSCallables,
-        "rules_graphs": dAllGraph,
+        "rules_graphs": str(dAllGraph),
         "rules_graphsJS": str(dAllGraph).replace("True", "true").replace("False", "false"),
-        "rules_actions": dACTIONS,
+        "rules_actions": str(dACTIONS),
         "rules_actionsJS": str(dACTIONS).replace("True", "true").replace("False", "false")
     }
