@@ -3,9 +3,11 @@ Grammalecte: compile rules
 """
 
 import re
+import os
 import traceback
 import json
 import colorsys
+import time
 
 import compile_rules_js_convert as jsconv
 import compile_rules_graph as crg
@@ -419,7 +421,7 @@ def prepareOptions (lOptionLines):
         sLine = sLine.strip()
         if sLine.startswith("OPTGROUP/"):
             m = re.match("OPTGROUP/([a-z0-9]+):(.+)$", sLine)
-            lStructOpt.append( (m.group(1), list(map(str.split, m.group(2).split(",")))) )
+            lStructOpt.append( [m.group(1), list(map(str.split, m.group(2).split(",")))] )
         elif sLine.startswith("OPTSOFTWARE:"):
             lOpt = [ [s, {}]  for s in sLine[12:].strip().split() ]  # don’t use tuples (s, {}), because unknown to JS
         elif sLine.startswith("OPT/"):
@@ -465,9 +467,18 @@ def printBookmark (nLevel, sComment, nLine):
     print("  {:>6}:  {}".format(nLine, "  " * nLevel + sComment))
 
 
-def make (spLang, sLang, bJavaScript):
+def make (spLang, sLang, bUseCache=False):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
+
+    if bUseCache and os.path.isfile("_build/data_cache.json"):
+        print("> don’t rebuild rules, use cache...")
+        sJSON = open("_build/data_cache.json", "r", encoding="utf-8").read()
+        dCacheVars = json.loads(sJSON)
+        print("  build made at: " + time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime(dCacheVars.get("fBuildTime", 0))))
+        return dCacheVars
+
+    fBuildTime = time.time()
 
     print("> read rules file...")
     try:
@@ -612,18 +623,23 @@ def make (spLang, sLang, bJavaScript):
 
     print("Unnamed rules: " + str(nRULEWITHOUTNAME))
 
-    dVars = {   "callables": sPyCallables,
-                "callablesJS": sJSCallables,
-                "gctests": sGCTests,
-                "gctestsJS": sGCTestsJS,
-                "paragraph_rules": mergeRulesByOption(lParagraphRules),
-                "sentence_rules": mergeRulesByOption(lSentenceRules),
-                "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
-                "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS)) }
+    dVars = {
+        "fBuildTime": fBuildTime,
+        "callables": sPyCallables,
+        "callablesJS": sJSCallables,
+        "gctests": sGCTests,
+        "gctestsJS": sGCTestsJS,
+        "paragraph_rules": mergeRulesByOption(lParagraphRules),
+        "sentence_rules": mergeRulesByOption(lSentenceRules),
+        "paragraph_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lParagraphRulesJS)),
+        "sentence_rules_JS": jsconv.writeRulesToJSArray(mergeRulesByOption(lSentenceRulesJS))
+    }
     dVars.update(dOptions)
 
     # compile graph rules
-    dVars2 = crg.make(lGraphRule, dDEF, sLang, dOptPriority, bJavaScript)
+    dVars2 = crg.make(lGraphRule, dDEF, sLang, dOptPriority)
     dVars.update(dVars2)
 
+    with open("_build/data_cache.json", "w", encoding="utf-8") as hDst:
+        hDst.write(json.dumps(dVars, ensure_ascii=False))
     return dVars
