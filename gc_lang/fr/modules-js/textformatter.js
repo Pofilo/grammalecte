@@ -2,11 +2,11 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global exports */
+/* global exports, console */
 
 "use strict";
 
-${map}
+//!${map}
 
 
 // Latin letters: http://unicode-table.com/fr/
@@ -265,8 +265,9 @@ const dTFOptions = dTFDefaultOptions.gl_shallowCopy();
 
 class TextFormatter {
 
-    constructor () {
+    constructor (bDebug=false) {
         this.sLang = "fr";
+        this.bDebug = bDebug;
     }
 
     formatText (sText, dOpt=null) {
@@ -281,6 +282,46 @@ class TextFormatter {
             }
         }
         return sText;
+    }
+
+    formatTextCount (sText, dOpt=null) {
+        let nCount = 0;
+        if (dOpt !== null) {
+            dTFOptions.gl_updateOnlyExistingKeys(dOpt);
+        }
+        for (let [sOptName, bVal] of dTFOptions) {
+            if (bVal && oReplTable[sOptName]) {
+                for (let [zRgx, sRep] of oReplTable[sOptName]) {
+                    nCount += (sText.match(zRgx) || []).length;
+                    sText = sText.replace(zRgx, sRep);
+                }
+            }
+        }
+        return [sText, nCount];
+    }
+
+    formatTextRule (sText, sRuleName) {
+        if (oReplTable[sRuleName]) {
+            for (let [zRgx, sRep] of oReplTable[sRuleName]) {
+                sText = sText.replace(zRgx, sRep);
+            }
+        } else if (this.bDebug){
+            console.log("# Error. TF: there is no option “" + sRuleName+ "”.");
+        }
+        return sText;
+    }
+
+    formatTextRuleCount (sText, sRuleName) {
+        let nCount = 0;
+        if (oReplTable[sRuleName]) {
+            for (let [zRgx, sRep] of oReplTable[sRuleName]) {
+                nCount += (sText.match(zRgx) || []).length;
+                sText = sText.replace(zRgx, sRep);
+            }
+        } else if (this.bDebug){
+            console.log("# Error. TF: there is no option “" + sRuleName+ "”.");
+        }
+        return [sText, nCount];
     }
 
     getDefaultOptions () {
