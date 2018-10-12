@@ -11,6 +11,9 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         this.xTFNode = this._createTextFormatter();
         this.xPanelContent.appendChild(this.xTFNode);
         this.xTextArea = null;
+
+        this.TextFormatter = new TextFormatter();
+        this.formatText = this.TextFormatter.formatTextRuleCount;
     }
 
     _createTextFormatter () {
@@ -159,7 +162,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         xLine.appendChild(oGrammalecte.createNode("div", {id: "res_"+"o_ordinals_no_exponant", className: "grammalecte_tf_result", textContent: "·"}));
         return xLine;
     }
-    
+
     /*
         Actions
     */
@@ -260,7 +263,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             let sText = this.xTextArea.value.normalize("NFC");
             document.getElementById('grammalecte_tf_progressbar').max = 7;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
-            
+
             // Restructuration
             if (this.isSelected("o_group_struct")) {
                 if (this.isSelected("o_remove_hyphens_at_end_of_paragraphs")) {
@@ -508,24 +511,6 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         catch (e) {
             showError(e);
         }
-    }
-
-    formatText (sText, sOptName) {
-        let nCount = 0;
-        try {
-            if (!oReplTable.hasOwnProperty(sOptName)) {
-                console.log("# Error. TF: there is no option “" + sOptName+ "”.");
-                return [sText, nCount];
-            }
-            for (let [zRgx, sRep] of oReplTable[sOptName]) {
-                nCount += (sText.match(zRgx) || []).length;
-                sText = sText.replace(zRgx, sRep);
-            }
-        }
-        catch (e) {
-            showError(e);
-        }
-        return [sText, nCount];
     }
 
     removeHyphenAtEndOfParagraphs (sText) {
