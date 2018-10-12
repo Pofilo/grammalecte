@@ -260,21 +260,22 @@ const dTFDefaultOptions = new Map ([
     ["ma_1letter_uppercase", false]
 ]);
 
-const dTFOptions = dTFDefaultOptions.gl_shallowCopy();
-
 
 class TextFormatter {
 
     constructor (bDebug=false) {
         this.sLang = "fr";
         this.bDebug = bDebug;
+        //don't change this in external ;)
+        this._optionsUsed = dTFDefaultOptions.gl_shallowCopy();
     }
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
-            dTFOptions.gl_updateOnlyExistingKeys(dOpt);
+            this._optionsUsed.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of dTFOptions) {
+        for (let [sOptName, bVal] of this._optionsUsed) {
+            //console.log(oReplTable);
             if (bVal && oReplTable[sOptName]) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     sText = sText.replace(zRgx, sRep);
@@ -287,9 +288,9 @@ class TextFormatter {
     formatTextCount (sText, dOpt=null) {
         let nCount = 0;
         if (dOpt !== null) {
-            dTFOptions.gl_updateOnlyExistingKeys(dOpt);
+            this._optionsUsed.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of dTFOptions) {
+        for (let [sOptName, bVal] of this._optionsUsed) {
             if (bVal && oReplTable[sOptName]) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     nCount += (sText.match(zRgx) || []).length;
@@ -325,12 +326,30 @@ class TextFormatter {
     }
 
     getDefaultOptions () {
-        return dTFDefaultOptions;
+        //we return a copy to make sure they are no modification in external
+        return dTFDefaultOptions.gl_shallowCopy();
+    }
+
+    getUsedOptions () {
+        //we return a copy to make sure they are no modification in external
+        return this._optionsUsed.gl_shallowCopy();
+    }
+
+    setUsedOptions (dOpt=null) {
+        if (dOpt !== null) {
+            this._optionsUsed.gl_updateOnlyExistingKeys(dOpt);
+        } else if (this.bDebug){
+            console.log("# Error. TF: no option to change.");
+        }
+    }
+
+    getReplTable(){
+        return oReplTable;
     }
 }
 
 
-if (typeof(exports) !== 'undefined') {
+if (typeof exports !== 'undefined') {
     exports.TextFormatter = TextFormatter;
     exports.oReplTable = oReplTable;
 }
