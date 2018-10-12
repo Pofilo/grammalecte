@@ -274,7 +274,7 @@ class TextFormatter {
             dTFOptions.gl_updateOnlyExistingKeys(dOpt);
         }
         for (let [sOptName, bVal] of dTFOptions) {
-            if (bVal && oReplTable.has(sOptName)) {
+            if (bVal && oReplTable[sOptName]) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     sText = sText.replace(zRgx, sRep);
                 }
