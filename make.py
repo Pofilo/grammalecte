@@ -399,7 +399,7 @@ def main ():
         xArgs.build_data_before = True
         xArgs.build_data_after = True
 
-    dir_util.mkpath("_build/cache")
+    dir_util.mkpath("_build")
     dir_util.mkpath("grammalecte")
     if xArgs.javascript:
         dir_util.mkpath("grammalecte-js")
