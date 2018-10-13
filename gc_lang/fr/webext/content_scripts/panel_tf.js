@@ -14,6 +14,9 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
         this.TextFormatter = new TextFormatter();
         this.formatText = this.TextFormatter.formatTextRuleCount;
+        this.removeHyphenAtEndOfParagraphs = this.TextFormatter.removeHyphenAtEndOfParagraphsCount;
+        this.mergeContiguousParagraphs = this.TextFormatter.mergeContiguousParagraphsCount;
+        this.getParagraph = this.TextFormatter.getParagraph;
     }
 
     _createTextFormatter () {
@@ -511,39 +514,6 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         catch (e) {
             showError(e);
         }
-    }
-
-    removeHyphenAtEndOfParagraphs (sText) {
-        let nCount = (sText.match(/-[  ]*\n/gm) || []).length;
-        sText = sText.replace(/-[  ]*\n/gm, "");
-        return [sText, nCount];
-    }
-
-    mergeContiguousParagraphs (sText) {
-        let nCount = 0;
-        sText = sText.replace(/^[  ]+$/gm, ""); // clear empty paragraphs
-        let s = "";
-        for (let sParagraph of this.getParagraph(sText)) {
-            if (sParagraph === "") {
-                s += "\n";
-            } else {
-                s += sParagraph + " ";
-                nCount += 1;
-            }
-        }
-        s = s.replace(/  +/gm, " ").replace(/ $/gm, "");
-        return [s, nCount];
-    }
-
-    * getParagraph (sText) {
-        // generator: returns paragraphs of text
-        let iStart = 0;
-        let iEnd = 0;
-        while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
-            yield sText.slice(iStart, iEnd);
-            iStart = iEnd + 1;
-        }
-        yield sText.slice(iStart);
     }
 
     getTimeRes (n) {

@@ -325,6 +325,58 @@ class TextFormatter {
         return [sText, nCount];
     }
 
+    removeHyphenAtEndOfParagraphs (sText) {
+        sText = sText.replace(/-[  ]*\n/gm, "");
+        return sText;
+    }
+
+    removeHyphenAtEndOfParagraphsCount (sText) {
+        let nCount = (sText.match(/-[  ]*\n/gm) || []).length;
+        sText = sText.replace(/-[  ]*\n/gm, "");
+        return [sText, nCount];
+    }
+
+    mergeContiguousParagraphs (sText) {
+        sText = sText.replace(/^[  ]+$/gm, ""); // clear empty paragraphs
+        let s = "";
+        for (let sParagraph of this.getParagraph(sText)) {
+            if (sParagraph === "") {
+                s += "\n";
+            } else {
+                s += sParagraph + " ";
+            }
+        }
+        s = s.replace(/  +/gm, " ").replace(/ $/gm, "");
+        return s;
+    }
+
+    mergeContiguousParagraphsCount (sText) {
+        let nCount = 0;
+        sText = sText.replace(/^[  ]+$/gm, ""); // clear empty paragraphs
+        let s = "";
+        for (let sParagraph of this.getParagraph(sText)) {
+            if (sParagraph === "") {
+                s += "\n";
+            } else {
+                s += sParagraph + " ";
+                nCount += 1;
+            }
+        }
+        s = s.replace(/  +/gm, " ").replace(/ $/gm, "");
+        return [s, nCount];
+    }
+
+    * getParagraph (sText, sSep="\n") {
+        // generator: returns paragraphs of text
+        let iStart = 0;
+        let iEnd = 0;
+        while ((iEnd = sText.indexOf(sSep, iStart)) !== -1) {
+            yield sText.slice(iStart, iEnd);
+            iStart = iEnd + 1;
+        }
+        yield sText.slice(iStart);
+    }
+
     getDefaultOptions () {
         //we return a copy to make sure they are no modification in external
         return dTFDefaultOptions.gl_shallowCopy();
