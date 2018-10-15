@@ -17,11 +17,18 @@ https://stackoverflow.com/questions/41058569/what-is-the-difference-between-cons
 const argCmd = require("../lib/minimist.js")(process.argv.slice(2));
 const { performance } = require("perf_hooks");
 
+//Initialisation des messages
+const msgStart = "\x1b[31mBienvenu sur Grammalecte pour NodeJS!!!\x1b[0m\n";
+const msgPrompt = "\x1b[36mGrammaJS\x1b[33m>\x1b[0m ";
+const msgSuite = "\x1b[33m…\x1b[0m ";
+const msgEnd = "\x1b[31m\x1b[5m\x1b[5mBye bye!\x1b[0m";
+
 var repJson = false;
 var repPerf = false;
 
 var sBufferConsole = "";
 var sCmdToExec = "";
+var sText = "";
 
 var cmdAction = {
     help: {
@@ -282,7 +289,6 @@ function repToText(oRep) {
         }
     }
 
-
     if ("help" in oRep) {
         let colorNum = 31;
         for (const action of oRep.help) {
@@ -302,16 +308,15 @@ function repToText(oRep) {
     return repText.trim("\n");
 }
 
-var sWord = "";
-var actionToExec = function(aArg) {
+function actionToExec(aArg) {
     let repAction = {};
     let tStart, tEnd;
 
     if (!isBool(aArg.text)) {
-        sWord = aArg.text;
+        sText = aArg.text;
     }
 
-    repAction["text"] = sWord;
+    repAction["text"] = sText;
 
     if (getArg(aArg, ["json"])) {
         repJson = getArgVal(aArg, ["json"]);
@@ -328,7 +333,7 @@ var actionToExec = function(aArg) {
     }
 
     if (getArg(aArg, ["gceoption"])) {
-        let sOpt = sWord.split(" ");
+        let sOpt = sText.split(" ");
         if (sOpt[0] == "reset") {
             oGrammarChecker.resetGceOptions();
             repAction["GceOption"] = "reset";
@@ -343,7 +348,7 @@ var actionToExec = function(aArg) {
         if (cmdAction[action] && cmdAction[action].execute !== "") {
             if (!isBool(aArg[action]) && aArg[action] !== "") {
                 repAction.text = aArg[action];
-                sWord = repAction.text;
+                sText = repAction.text;
             }
             if (!isBool(repAction.text)) {
                 repAction[action] = oGrammarChecker[cmdAction[action].execute](repAction.text);
@@ -390,7 +395,7 @@ var actionToExec = function(aArg) {
     } else {
         return repToText(repAction);
     }
-};
+}
 
 function argToExec(aCommand, aText, rl, resetCmd = true){
     let execAct = {};
@@ -410,7 +415,7 @@ function argToExec(aCommand, aText, rl, resetCmd = true){
     }
 
     if (typeof(rl) !== "undefined"){
-        rl.setPrompt("\x1b[36mGrammaJS\x1b[33m>\x1b[0m ");
+        rl.setPrompt(msgPrompt);
     }
 }
 
@@ -422,6 +427,7 @@ function completer(line) {
     });
     return [hits && hits.length ? hits : cmdAll, line];
 }
+
 
 if (process.argv.length <= 2) {
     console.log(actionToExec({help:true}));
@@ -478,41 +484,37 @@ if (process.argv.length <= 2) {
         server.listen(argCmd.port || 2212);
         console.log("Server started on http://127.0.0.1:" + (argCmd.port || 2212) + "/");
     } else if (getArg(argCmd, ["i", "interactive"])) {
-        const readline = require("readline");
-        const reg = /(.*?) (.*)/gm;
-
         process.stdin.setEncoding("utf8");
 
+        const readline = require("readline");
         const rl = readline.createInterface({
             crlfDelay: Infinity,
             input: process.stdin,
             output: process.stdout,
             completer: completer,
-            prompt: "\x1b[36mGrammaJS\x1b[33m>\x1b[0m "
+            prompt: msgPrompt
         });
+
         //console.log( process.stdin.isTTY );
-        process.stdout.write("\x1b[31mBienvenu sur Grammalecte pour NodeJS!!!\x1b[0m\n");
+        console.log(msgStart);
         rl.prompt();
         rl.on("line", sBuffer => {
             //process.stdout.write
             if (sBuffer == "exit") {
-                console.log("\x1b[31m\x1b[5m\x1b[5mBye bye!\x1b[0m");
+                console.log(msgEnd);
                 process.exit(0);
             }
 
             let lg = sBuffer.toLowerCase().trim();
             let bSpace = lg.indexOf(" ") > -1;
-            //sBufferConsole
-            //console.log("\""+sBuffer+"\"");
             if (!bSpace) {
-                //console.log("=> ", lg.slice(0, lg.length-1), cmdAll.indexOf( lg.slice(-1) ));
                 if (cmdOne.indexOf(lg) > -1){
                     argToExec(lg, sBuffer, rl, true);
                 } else if (cmdAll.indexOf(lg) > -1) {
                     sBufferConsole = "";
                     sCmdToExec = lg;
                     //Prompt simple pour distinguer que c"est une suite d"une commande
-                    rl.setPrompt("\x1b[33m>\x1b[0m ");
+                    rl.setPrompt(msgSuite);
                 } else if (lg.slice(1) == sCmdToExec) {
                     argToExec(sCmdToExec, sBufferConsole, rl, true);
                 } else if (cmdAll.indexOf(lg.slice(0, lg.length - 1)) > -1) {
@@ -532,7 +534,7 @@ if (process.argv.length <= 2) {
 
             rl.prompt();
         }).on("close", () => {
-            console.log("\n\x1b[31m\x1b[5mBye bye!\x1b[0m");
+            console.log(msgEnd);
             process.exit(0);
         });
     } else {
