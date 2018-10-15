@@ -1,0 +1,1 @@
+@node gramma-cli.js %*
