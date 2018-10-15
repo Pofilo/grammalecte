@@ -1,12 +1,18 @@
 # Client/Serveur de Grammalecte pour NodeJS
 
-## Aide
+## Informations
 
 Il y a trois modes de fonctionnement: client / client intératif / serveur.
 
 * Client intéractif: «gramma-cli -i».
 * Client: «gramma-cli --command \"mot/texte\"».
 * Serveur: lancé avec la commande «gramma-cli --server --port NumPort».
+
+## Installation
+
+```
+npm install grammalecte-cli -g
+```
 
 ## Commandes
 
@@ -49,6 +55,7 @@ GrammaJS> exit
 ```
 
 Exemple pour les vérifications portant sur un texte:
+
 ```
 CMD> gramma-cli -i
 Bienvenu sur Grammalecte pour NodeJS!!!
@@ -65,10 +72,10 @@ GrammaJS> exit
 **Note : Vous pouvez vérifier tout un fichier avec pour chaque ligne ayant une commande :**
 **cat script.verf | gramma-cli -i**
 
-
 ## Client
 
 Exemple simple:
+
 ```
 CMD> gramma-cli --spell saluti
 Le mot saluti innexistant
@@ -77,6 +84,7 @@ CMD>
 ```
 
 Exemple faisant plusiseurs action:
+
 ```
 CMD> gramma-cli --lemma --morph --suggest --text salut
 Morph possible de: salut
@@ -102,6 +110,8 @@ CMD>
 
 Le serveur supporte les requêtes POST et GET...
 
+Par défaut le port d'écoute est le 2212.
+
 ## Les fichiers
 
 grammalecte/*   : Tout le contennu de Grammalecte pour javascript
@@ -120,7 +130,6 @@ script.verf     : Exemple de script pour faire des vérifications automatiques
 
 * (sous widows) type script.verf | gramma-cli -i
 * (sous linux) cat script.verf | gramma-cli -i
-
 
 ## Utilisation d'une librairie (incluse)
 

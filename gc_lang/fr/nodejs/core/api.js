@@ -11,13 +11,13 @@
 
 class GrammarChecker {
 
-    constructor(aInit, sPathRoot = "", sLangCode = "fr", sContext = "Javascript") {
+    constructor(aInit, sLangCode = "fr", sContext = "Javascript") {
         this.sLangCode = sLangCode;
-        this.sPathRoot = sPathRoot;
         this.sContext = sContext;
 
         //Importation des fichiers nécessaire
-        this._helpers = require(sPathRoot + "/graphspell/helpers.js");
+        this.sPathRoot = __dirname + "/grammalecte";
+        this._helpers = require(this.sPathRoot + "/graphspell/helpers.js");
 
         this.isInit = {
             Grammalecte: false,

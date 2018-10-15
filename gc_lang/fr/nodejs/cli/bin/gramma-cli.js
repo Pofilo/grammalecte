@@ -1,3 +1,6 @@
+#! /usr/bin/env node
+// -*- js -*-
+
 // Gramma-Cli
 // Grammalect client pour node
 
@@ -11,7 +14,7 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Dest
 https://stackoverflow.com/questions/41058569/what-is-the-difference-between-const-and-const-in-javascript
 */
 
-const argCmd = require("./minimist.js")(process.argv.slice(2));
+const argCmd = require("../lib/minimist.js")(process.argv.slice(2));
 const { performance } = require("perf_hooks");
 
 var repJson = false;
@@ -423,10 +426,11 @@ function completer(line) {
 if (process.argv.length <= 2) {
     console.log(actionToExec({help:true}));
 } else {
-    var GrammarChecker = require("./api.js");
+    //var GrammarChecker = require("./api.js");
+    //console.log(module.paths);
+    var GrammarChecker = require("grammalecte");
     var oGrammarChecker = new GrammarChecker.GrammarChecker(
         ["Grammalecte", "Graphspell", "TextFormatter", "Lexicographer", "Tokenizer"],
-        __dirname + "/grammalecte/",
         "fr"
     );
 
