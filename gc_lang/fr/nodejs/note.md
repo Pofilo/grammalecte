@@ -1,6 +1,6 @@
 # Note pour le dévellepement pour NodeJS
 
-## Commande pour définir l'utilisation d'un packetage local
+## Commande pour définir l'utilisation d'un paquetage local
 
 ```
 cd core
@@ -8,11 +8,11 @@ npm link
 cd ..
 cd cli
 npm link grammalecte
-npm install
+npm install --global
 cd ..
 ```
 
-## Commande désintaller le packetage local et son utilisation
+## Commande désinstaller le paquetage local et son utilisation
 
 ```
 npm rm grammalecte --global

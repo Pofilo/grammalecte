@@ -2,24 +2,22 @@
 
 ## Informations
 
-Il y a trois modes de fonctionnement: client / client intératif / serveur.
+Il y a trois modes de fonctionnement: client / client interactif / serveur.
 
-* Client intéractif: «gramma-cli -i».
-* Client: «gramma-cli --command \"mot/texte\"».
-* Serveur: lancé avec la commande «gramma-cli --server --port NumPort».
+* Client interactif: `gramma-cli -i`.
+* Client: `gramma-cli --command \"mot/texte\"`.
+* Serveur: lancé avec la commande `gramma-cli --server --port NumPort`.
 
 ## Installation
 
-```
-npm install grammalecte-cli -g
-```
+> npm install grammalecte-cli -g
 
 ## Commandes
 
-* help           : Affichie les informations que vous lisez ;)
+* help           : Affiche les informations que vous lisez ;)
 * perf           : Permet d'afficher le temps d'exécution des commandes.
 * json           : Réponse en format format json.
-* exit           : Client intéractif: Permet de le quitter.
+* exit           : Client interactif: Permet de le quitter.
 * format         : Permet de mettre en forme le texte.
 * check          : Vérifie la grammaire et l'orthographe d'un texte.
 * lexique        : Affiche le lexique du texte.
@@ -30,9 +28,9 @@ npm install grammalecte-cli -g
 * text           : Client / Server: Définir un texte pour plusieurs actions.
 * gceoption      : Défini une option a utilisé par le correcteur de grammaire.
 
-## Client intéractif
+## Client interactif
 
-Pour le lancé vous devez saisir «gramma-cli -i», il est un mode question/réponse.
+Le mode interactif est un mode question/réponse. Pour le lancer vous devez saisir `gramma-cli -i`.
 
 Exemple pour les vérifications portant sur un mot:
 
@@ -69,9 +67,6 @@ vous allez bien ?
 GrammaJS> exit
 ```
 
-**Note : Vous pouvez vérifier tout un fichier avec pour chaque ligne ayant une commande :**
-**cat script.verf | gramma-cli -i**
-
 ## Client
 
 Exemple simple:
@@ -83,7 +78,7 @@ Le mot saluti innexistant
 CMD>
 ```
 
-Exemple faisant plusiseurs action:
+Exemple faisant plusieurs actions:
 
 ```
 CMD> gramma-cli --lemma --morph --suggest --text salut
@@ -110,26 +105,18 @@ CMD>
 
 Le serveur supporte les requêtes POST et GET...
 
-Par défaut le port d'écoute est le 2212.
+Par défaut le port d'écoute est le 2212, pour le changer il suffit d'ajouter l'argument `--port` lors du lancement.
 
 ## Les fichiers
 
-grammalecte/*   : Tout le contennu de Grammalecte pour javascript
-
-api.js          : Un warper pour simplifié l'utilisation de Grammalecte
-
-gramma-cli.bat  : Fait juste un appel «node gramma-cli.js .argument(s)»
-
-gramma-cli.js   : Le code principale pour la console
-
-minimist.js     : Une librairie pour simplifier le parssage des arguments
-
-readme.md       : Le fichier que vous lisez (ou pas) actuellement ;)
-
-script.verf     : Exemple de script pour faire des vérifications automatiques
-
-* (sous widows) type script.verf | gramma-cli -i
-* (sous linux) cat script.verf | gramma-cli -i
+* bin/gramma-cli.bat  : Fait juste un appel `node gramma-cli.js argument(s)`
+* bin/gramma-cli.js   : Le code principale pour la console
+* data/script.gramma  : Exemple de script pour faire des vérifications automatiques
+  * (sous widows) `type script.gramma | gramma-cli -i`
+  * (sous linux)  `cat script.gramma  | gramma-cli -i`
+* lib/minimist.js     : Une librairie pour simplifier la gestion des arguments
+* package.json        : Fichier d'information pour npm
+* readme.md           : Le fichier que vous lisez (ou pas) actuellement ;)
 
 ## Utilisation d'une librairie (incluse)
 

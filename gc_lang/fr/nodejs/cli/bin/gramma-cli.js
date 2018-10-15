@@ -26,7 +26,7 @@ var sCmdToExec = "";
 var cmdAction = {
     help: {
         short: "",
-        description: "Affichie les informations que vous lisez ;)",
+        description: "Affiche les informations que vous lisez ;)",
         execute: ""
     },
     perf: {

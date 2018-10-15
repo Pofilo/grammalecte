@@ -9,6 +9,11 @@ Site Internet : https://www.dicollecte.org/
 
 Dans votre répertoire de dévellepement :
 
-```
-npm install grammalecte
-```
+> npm install grammalecte
+
+## Les fichiers
+
+* grammalecte/*       : Tout le contenu de Grammalecte pour JavaScript
+* api.js              : Une api pour simplifié l'utilisation de Grammalecte
+* package.json        : Fichier d'information pour npm
+* readme.md           : Le fichier que vous lisez (ou pas) actuellement ;)
