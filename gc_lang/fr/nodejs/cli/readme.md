@@ -14,19 +14,22 @@ Il y a trois modes de fonctionnement: client / client interactif / serveur.
 
 ## Commandes
 
-* help           : Affiche les informations que vous lisez ;)
-* perf           : Permet d'afficher le temps d'exécution des commandes.
-* json           : Réponse en format format json.
-* exit           : Client interactif: Permet de le quitter.
-* format         : Permet de mettre en forme le texte.
-* check          : Vérifie la grammaire et l'orthographe d'un texte.
-* lexique        : Affiche le lexique du texte.
-* spell          : Vérifie l'existence d'un mot.
-* suggest        : Suggestion des orthographes possible d'un mot.
-* morph          : Affiche les informations pour un mot.
-* lemma          : Donne le lemme d'un mot.
-* text           : Client / Server: Définir un texte pour plusieurs actions.
-* gceoption      : Défini une option a utilisé par le correcteur de grammaire.
+| Commande  | Argument | Description                                                   |
+| --------- | -------- | ------------------------------------------------------------- |
+| help      |          | Affiche les informations que vous lisez ;)                    |
+| perf      | on/off   | Permet d'afficher le temps d'exécution des commandes.         |
+| json      | on/off   | Réponse en format format json.                                |
+| exit      |          | Client interactif: Permet de le quitter.                      |
+| text      | texte    | Client / Server: Définir un texte pour plusieurs actions.     |
+| format    | texte    | Permet de mettre en forme le texte.                           |
+| check     | texte    | Vérifie la grammaire et l'orthographe d'un texte.             |
+| lexique   | texte    | Affiche le lexique du texte.                                  |
+| spell     | mot      | Vérifie l'existence d'un mot.                                 |
+| suggest   | mot      | Suggestion des orthographes possible d'un mot.                |
+| morph     | mot      | Affiche les informations pour un mot.                         |
+| lemma     | mot      | Donne le lemme d'un mot.                                      |
+| gceoption | +/-name  | Défini les options à utiliser par le correcteur de grammaire. |
+| tfoption  | +/-name  | Défini les options à utiliser par le formateur de texte.      |
 
 ## Client interactif
 

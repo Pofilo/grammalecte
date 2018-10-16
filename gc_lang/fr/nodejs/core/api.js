@@ -132,9 +132,10 @@ class GrammarChecker {
             this._oGce.setOption(sOptName, bValue);
             return this._helpers.mapToObject(this._oGce.getOptions());
         }
+        return false;
     }
 
-    resetOptions () {
+    resetGceOptions () {
         if (!this.isInit.Grammalecte) {
             this.load(["Grammalecte"]);
         }
@@ -233,6 +234,35 @@ class GrammarChecker {
             this.load(["TextFormatter"]);
         }
         return this.oTextFormatter.formatText(sText);
+    }
+
+    setTfOptions(dOptions) {
+        if (!this.isInit.TextFormatter) {
+            this.load(["TextFormatter"]);
+        }
+        this.oTextFormatter.setUsedOptions(dOptions);
+        return this._helpers.mapToObject(this.oTextFormatter.getUsedOptions());
+    }
+
+    setTfOption(sOptName, bValue) {
+        if (!this.isInit.TextFormatter) {
+            this.load(["TextFormatter"]);
+        }
+        if (sOptName) {
+            let optionsTF = this.oTextFormatter.getUsedOptions();
+            optionsTF.set(sOptName, bValue);
+            return this._helpers.mapToObject(this.oTextFormatter.getUsedOptions());
+        }
+        return false;
+    }
+
+    resetTfOptions() {
+        if (!this.isInit.TextFormatter) {
+            this.load(["TextFormatter"]);
+        }
+        let optionsTF = this.oTextFormatter.getDefaultOptions();
+        this.oTextFormatter.setUsedOptions(optionsTF);
+        return this._helpers.mapToObject(this.oTextFormatter.getUsedOptions());
     }
 
     //fonctions concernant plussieurs parties

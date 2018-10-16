@@ -23,8 +23,10 @@ const msgPrompt = "\x1b[36mGrammaJS\x1b[33m>\x1b[0m ";
 const msgSuite = "\x1b[33m…\x1b[0m ";
 const msgEnd = "\x1b[31m\x1b[5m\x1b[5mBye bye!\x1b[0m";
 
-var repJson = false;
-var repPerf = false;
+var repPreference = {
+    json: false,
+    perf: false
+};
 
 var sBufferConsole = "";
 var sCmdToExec = "";
@@ -33,68 +35,87 @@ var sText = "";
 var cmdAction = {
     help: {
         short: "",
+        arg: "",
         description: "Affiche les informations que vous lisez ;)",
         execute: ""
     },
     perf: {
         short: "",
-        description: "(on/off) Permet d'afficher le temps d'exécution des commandes.",
+        arg: "on/off",
+        description: "Permet d'afficher le temps d'exécution des commandes.",
         execute: ""
     },
     json: {
         short: "",
-        description: "(on/off) Réponse en format format json.",
+        arg: "on/off",
+        description: "Réponse en format format json.",
         execute: ""
     },
     exit: {
         short: "",
-        description: "Client intéractif: Permet de le quitter.",
+        arg: "",
+        description: "Client interactif: Permet de le quitter.",
         execute: ""
     },
     text: {
         short: "",
+        arg: "texte",
         description: "Client / Server: Définir un texte pour plusieurs actions.",
-        execute: ""
-    },
-    gceoption: {
-        short: "",
-        description: "Défini une option a utilisé par le correcteur de grammaire.",
         execute: ""
     },
     format: {
         short: "",
+        arg: "texte",
         description: "Permet de mettre en forme le texte.",
         execute: "formatText"
     },
     check: {
         short: "",
+        arg: "texte",
         description: "Vérifie la grammaire et l'orthographe d'un texte.",
         execute: "verifParagraph"
     },
     lexique: {
         short: "",
+        arg: "texte",
         description: "Affiche le lexique du texte.",
         execute: "lexique"
     },
     spell: {
         short: "",
+        arg: "mot",
         description: "Vérifie l'existence d'un mot.",
         execute: "spell"
     },
     suggest: {
         short: "",
+        arg: "mot",
         description: "Suggestion des orthographes possible d'un mot.",
         execute: "suggest"
     },
     morph: {
         short: "",
+        arg: "mot",
         description: "Affiche les informations pour un mot.",
         execute: "morph"
     },
     lemma: {
         short: "",
+        arg: "mot",
         description: "Donne le lemme d'un mot.",
         execute: "lemma"
+    },
+    gceoption: {
+        short: "",
+        arg: "+/-name",
+        description: "Défini les options à utiliser par le correcteur de grammaire.",
+        execute: ""
+    },
+    tfoption: {
+        short: "",
+        arg: "+/-name",
+        description: "Défini les options à utiliser par le formateur de texte.",
+        execute: ""
     }
 };
 
@@ -140,7 +161,7 @@ function toTitle(aStr) {
 function repToText(oRep) {
     //console.log(oRep);
     let repText = "";
-    for (const action of ["Json", "Perf", "GceOption"]) {
+    for (const action of ["json", "perf", "gceoption", "tfoption"]) {
         if (action in oRep) {
             repText += toTitle(action) + " " + oRep[action];
         }
@@ -318,29 +339,32 @@ function actionToExec(aArg) {
 
     repAction["text"] = sText;
 
-    if (getArg(aArg, ["json"])) {
-        repJson = getArgVal(aArg, ["json"]);
-        repAction["Json"] = repJson ? "ON" : "OFF";
+    for (const action of ["json", "perf"]) {
+        if (getArg(aArg, [action])) {
+            repPreference[action] = getArgVal(aArg, [action]);
+            repAction[action] = repPreference[action] ? "ON" : "OFF";
+        }
     }
 
-    if (getArg(aArg, ["perf"])) {
-        repPerf = getArgVal(aArg, ["perf"]);
-        repAction["Perf"] = repPerf ? "ON" : "OFF";
-    }
-
-    if (repPerf) {
+    if (repPreference.perf) {
         tStart = performance.now();
     }
 
-    if (getArg(aArg, ["gceoption"])) {
-        let sOpt = sText.split(" ");
-        if (sOpt[0] == "reset") {
-            oGrammarChecker.resetGceOptions();
-            repAction["GceOption"] = "reset";
-        } else {
-            let bOptVal = toBool(sOpt[1]);
-            oGrammarChecker.setGceOption(sOpt[0], bOptVal);
-            repAction["GceOption"] = sOpt[0] + " " + (bOptVal ? "ON" : "OFF");
+    for (const action of ["gceoption", "tfoption"]) {
+        if (getArg(aArg, [action])) {
+            let sFonction = action == "gceoption" ? "GceOption" : "TfOption";
+            let sOpt = sText.split(" ");
+            if (sOpt[0] == "reset") {
+                oGrammarChecker["reset"+sFonction+"s"]();
+                repAction[action] = "reset";
+            } else {
+                for (const optAction of sOpt) {
+                    let bOptVal = optAction[0] == '+' ? true : false;
+                    let sOptName = optAction.slice(1, optAction.length);
+                    oGrammarChecker["set"+sFonction](sOptName, bOptVal);
+                    repAction[action] = sText;
+                }
+            }
         }
     }
 
@@ -373,7 +397,7 @@ function actionToExec(aArg) {
         repAction["help"].push("========================= Les commandes/arguments: ========================");
         repAction["help"].push("");
         for (const action in cmdAction) {
-            repAction["help"].push(action.padEnd(15, ' ') + ': ' + cmdAction[action].description);
+            repAction["help"].push(action.padEnd(10, ' ') + ': ' + cmdAction[action].arg.padEnd(8, ' ') + ': ' + cmdAction[action].description);
         }
         repAction["help"].push("");
         repAction["help"].push("================================== Note: ==================================");
@@ -384,13 +408,13 @@ function actionToExec(aArg) {
         repAction["help"].push("  terminer la saisie du texte et exécuter la commande taper /\"commande\"");
     }
 
-    if (repPerf) {
+    if (repPreference.perf) {
         tEnd = performance.now();
         //On ajoute l"information au résultat
         repAction["time"] = (Math.round((tEnd - tStart) * 1000) / 1000).toString();
     }
 
-    if (repJson) {
+    if (repPreference.json) {
         return JSON.stringify(repAction);
     } else {
         return repToText(repAction);
