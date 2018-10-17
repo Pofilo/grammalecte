@@ -169,143 +169,174 @@ function repToText(oRep) {
 
     for (const action of ["morph", "lemma"]) {
         if (action in oRep) {
-            if (oRep[action] == "NoText") {
-                repText += "\n" + toTitle(action) + ": Pas de texte à vérifier.";
-            } else {
-                if (oRep[action].length == 0) {
-                    repText += "\nAuncun " + toTitle(action) + " existant pour: " + oRep.text;
+            for (const toAff of oRep[action]) {
+                if (toAff.text == "NoText") {
+                    repText += "\n" + toTitle(action) + ": Pas de texte à vérifier.";
                 } else {
-                    let ascii = "├";
-                    let numRep = 0;
-                    repText += "\n" + toTitle(action) + " possible de: " + oRep.text;
-                    for (let reponse of oRep[action]) {
-                        numRep++;
-                        if (numRep == oRep[action].length) {
-                            ascii = "└";
+                    if (toAff.reponse.length == 0) {
+                        repText += "\nAuncun " + toTitle(action) + " existant pour: «" + toAff.text + "»";
+                    } else {
+                        let ascii = "├";
+                        let numRep = 0;
+                        repText += "\n" + toTitle(action) + " possible de: «" + toAff.text + "»";
+                        for (let reponse of toAff.reponse) {
+                            numRep++;
+                            if (numRep == toAff.reponse.length) {
+                                ascii = "└";
+                            }
+                            repText += "\n " + ascii + " " + reponse;
                         }
-                        repText += "\n " + ascii + " " + reponse;
                     }
+                    repText += affPerf(toAff.time);
                 }
             }
         }
     }
 
     if ("spell" in oRep) {
-        if (oRep.spell == "NoText") {
-            repText += "\nSpell: Pas de texte à vérifier.";
-        } else {
-            repText += "\nLe mot " + (oRep.spell || oRep.text) + " " + (oRep.spell ? "existe" : "innexistant");
-        }
-    }
-
-    if ("format" in oRep) {
-        if (oRep.spell == "NoText") {
-            repText += "\nPas de texte à formatter.";
-        } else {
-            repText += "\nMise en forme:\n" + (oRep.format || oRep.text);
+        for (const toAff of oRep.spell) {
+            if (toAff.text == "NoText") {
+                repText += "\nSpell: Pas de texte à vérifier.";
+            } else {
+                repText += "\nLe mot «" + toAff.text + "» " + (toAff.reponse ? "existe" : "innexistant");
+                repText += affPerf(toAff.time);
+            }
         }
     }
 
     if ("suggest" in oRep) {
-        if (oRep.suggest == "NoText") {
-            repText += "\nSuggest : Pas de texte à vérifier.";
-        } else {
-            //let numgroup = 0;
-            if (oRep.suggest.length == 0) {
-                repText += "\nAucune suggestion possible pour: " + oRep.text;
+        for (const toAff of oRep.suggest) {
+            if (toAff.text == "NoText") {
+                repText += "\nSuggest : Pas de texte à vérifier.";
             } else {
-                repText += "\nSuggestion possible de: " + oRep.text;
-                let ascii = "├";
-                let numRep = 0;
-                for (let reponse of oRep.suggest) {
-                    numRep++;
-                    if (numRep == oRep.suggest.length) {
-                        ascii = "└";
+                //let numgroup = 0;
+                if (toAff.reponse.length == 0) {
+                    repText += "\nAucune suggestion possible pour: «" + toAff.text + "»";
+                } else {
+                    repText += "\nSuggestion possible de: «" + toAff.text + "»";
+                    let ascii = "├";
+                    let numRep = 0;
+                    for (let reponse of toAff.reponse) {
+                        numRep++;
+                        if (numRep == toAff.reponse.length) {
+                            ascii = "└";
+                        }
+                        repText += "\n " + ascii + " " + reponse;
                     }
-                    repText += "\n " + ascii + " " + reponse;
                 }
+                repText += affPerf(toAff.time);
+            }
+        }
+    }
+
+    if ("format" in oRep) {
+        for (const toAff of oRep.format) {
+            if (toAff.text == "NoText") {
+                repText += "\nPas de texte à formatter.";
+            } else {
+                repText += "\nMise en forme:\n" + toAff.reponse;
+                repText += affPerf(toAff.time);
             }
         }
     }
 
     if ("lexique" in oRep) {
-        if (oRep.lexique == "NoText") {
-            repText += "\nLexique: Pas de texte à vérifier.";
-        } else {
-            repText += "\nLexique:";
-            for (let reponse of oRep.lexique) {
-                repText += "\n" + reponse.sValue;
-                let ascii = "├";
-                let numRep = 0;
-                for (let label of reponse.aLabel) {
-                    numRep++;
-                    if (numRep == reponse.aLabel.length) {
-                        ascii = "└";
+        for (const toAff of oRep.lexique) {
+            if (toAff.text == "NoText") {
+                repText += "\nLexique: Pas de texte à vérifier.";
+            } else {
+                repText += "\nLexique:";
+
+                let ascii1, ascii1a, numRep1, ascii2, numRep2, replength;
+
+                ascii1 = "├";
+                ascii1a = "│";
+                numRep1 = 0;
+
+                replength = toAff.reponse.length;
+                for (let reponse of toAff.reponse) {
+                    numRep1++;
+                    if (numRep1 == replength) {
+                        ascii1 = "└";
+                        ascii1a = " ";
                     }
-                    repText += "\n " + ascii + " " + label;
+                    repText += "\n  " + ascii1 + " " + reponse.sValue;
+                    let ascii = "├";
+                    let numRep = 0;
+                    for (let label of reponse.aLabel) {
+                        numRep++;
+                        if (numRep == reponse.aLabel.length) {
+                            ascii = "└";
+                        }
+                        repText += "\n  " + ascii1a + " " + ascii + " " + label.trim();
+                    }
                 }
+                repText += affPerf(toAff.time);
             }
         }
     }
 
     if ("check" in oRep) {
-        if (oRep.check == "NoText") {
-            repText += "\nCheck: Pas de texte à vérifier.";
-        } else {
-            let ascii1, ascii1a, numRep1, ascii2, numRep2, replength;
-
-            ascii1 = "├";
-            ascii1a = "│";
-            numRep1 = 0;
-            replength = Object.keys(oRep.check.lGrammarErrors).length;
-            if (replength == 0) {
-                repText += "\nPas de faute de grammaire";
+        for (const toAff of oRep.check) {
+            if (toAff.text == "NoText") {
+                repText += "\nCheck: Pas de texte à vérifier.";
             } else {
-                repText += "\nFaute(s) de grammaire";
-                for (let gramma of oRep.check.lGrammarErrors) {
-                    numRep1++;
-                    if (numRep1 == replength) {
-                        ascii1 = "└";
-                        ascii1a = " ";
-                    }
-                    repText += "\n " + ascii1 + " " + gramma.nStart + "->" + gramma.nEnd + " " + gramma.sMessage;
-                    ascii2 = "├";
-                    numRep2 = 0;
-                    for (let suggestion of gramma.aSuggestions) {
-                        numRep2++;
-                        if (numRep2 == gramma.aSuggestions.length) {
-                            ascii2 = "└";
+                let ascii1, ascii1a, numRep1, ascii2, numRep2, replength;
+
+                ascii1 = "├";
+                ascii1a = "│";
+                numRep1 = 0;
+                replength = Object.keys(toAff.reponse.lGrammarErrors).length;
+                if (replength == 0) {
+                    repText += "\nPas de faute de grammaire";
+                } else {
+                    repText += "\nFaute(s) de grammaire";
+                    for (let gramma of toAff.reponse.lGrammarErrors) {
+                        numRep1++;
+                        if (numRep1 == replength) {
+                            ascii1 = "└";
+                            ascii1a = " ";
                         }
-                        repText += "\n " + ascii1a + "  " + ascii2 + ' "' + suggestion + '"';
+                        repText += "\n " + ascii1 + " " + gramma.nStart + "->" + gramma.nEnd + " " + gramma.sMessage;
+                        ascii2 = "├";
+                        numRep2 = 0;
+                        for (let suggestion of gramma.aSuggestions) {
+                            numRep2++;
+                            if (numRep2 == gramma.aSuggestions.length) {
+                                ascii2 = "└";
+                            }
+                            repText += "\n " + ascii1a + "  " + ascii2 + ' "' + suggestion + '"';
+                        }
                     }
                 }
-            }
 
-            ascii1 = "├";
-            ascii1a = "│";
-            numRep1 = 0;
-            replength = Object.keys(oRep.check.lSpellingErrors).length;
-            if (replength == 0) {
-                repText += "\nPas de faute d'orthographe";
-            } else {
-                repText += "\nFaute(s) d'orthographe";
-                for (let ortho of oRep.check.lSpellingErrors) {
-                    numRep1++;
-                    if (numRep1 == replength) {
-                        ascii1 = "└";
-                        ascii1a = " ";
-                    }
-                    repText += "\n " + ascii1 + " " + ortho.nStart + "->" + ortho.nEnd + " " + ortho.sValue;
-                    ascii2 = "├";
-                    numRep2 = 0;
-                    for (let suggestion of ortho.aSuggestions) {
-                        numRep2++;
-                        if (numRep2 == ortho.aSuggestions.length) {
-                            ascii2 = "└";
+                ascii1 = "├";
+                ascii1a = "│";
+                numRep1 = 0;
+                replength = Object.keys(toAff.reponse.lSpellingErrors).length;
+                if (replength == 0) {
+                    repText += "\nPas de faute d'orthographe";
+                } else {
+                    repText += "\nFaute(s) d'orthographe";
+                    for (let ortho of toAff.reponse.lSpellingErrors) {
+                        numRep1++;
+                        if (numRep1 == replength) {
+                            ascii1 = "└";
+                            ascii1a = " ";
                         }
-                        repText += "\n " + ascii1a + "  " + ascii2 + ' "' + suggestion + '"';
+                        repText += "\n " + ascii1 + " " + ortho.nStart + "->" + ortho.nEnd + " " + ortho.sValue;
+                        ascii2 = "├";
+                        numRep2 = 0;
+                        for (let suggestion of ortho.aSuggestions) {
+                            numRep2++;
+                            if (numRep2 == ortho.aSuggestions.length) {
+                                ascii2 = "└";
+                            }
+                            repText += "\n " + ascii1a + "  " + ascii2 + ' "' + suggestion + '"';
+                        }
                     }
                 }
+                repText += affPerf(toAff.time);
             }
         }
     }
@@ -314,8 +345,8 @@ function repToText(oRep) {
         let colorNum = 31;
         for (const action of oRep.help) {
             //Uniquement pour le fun on met de la couleur ;)
-            if(action.indexOf('===')>-1){
-                console.log("\x1b["+colorNum+"m"+action+"\x1b[0m");
+            if (action.indexOf("===") > -1) {
+                console.log("\x1b[" + colorNum + "m" + action + "\x1b[0m");
                 colorNum = colorNum + 2;
             } else {
                 console.log(action);
@@ -323,21 +354,54 @@ function repToText(oRep) {
         }
     }
 
-    if (oRep.time) {
-        repText += "\nExécuté en: " + oRep.time + " ms";
-    }
     return repText.trim("\n");
+}
+
+function affPerf(aTime) {
+    if (aTime == "NA") {
+        return "";
+    }
+    return "\nExécuté en: " + aTime + " ms";
+}
+
+function actionGramma(repPreference, action, aAction) {
+    let tStart, tEnd;
+    let tmpRep = {
+        text: "",
+        reponse: "",
+        time: "NA"
+    };
+
+    if (!isBool(aAction) && aAction !== "") {
+        tmpRep.text = aAction;
+        sText = aAction;
+    } else if (!isBool(sText)) {
+        //Utilisation du dernier texte connu
+        tmpRep.text = sText;
+    } else {
+        tmpRep.text = "NoText";
+    }
+
+    if (repPreference.perf) {
+        tStart = performance.now();
+    }
+
+    tmpRep.reponse = oGrammarChecker[cmdAction[action].execute](tmpRep.text);
+
+    if (repPreference.perf) {
+        tEnd = performance.now();
+        tmpRep["time"] = (Math.round((tEnd - tStart) * 1000) / 1000).toString();
+    }
+
+    return tmpRep;
 }
 
 function actionToExec(aArg) {
     let repAction = {};
-    let tStart, tEnd;
 
     if (!isBool(aArg.text)) {
         sText = aArg.text;
     }
-
-    repAction["text"] = sText;
 
     for (const action of ["json", "perf"]) {
         if (getArg(aArg, [action])) {
@@ -346,22 +410,18 @@ function actionToExec(aArg) {
         }
     }
 
-    if (repPreference.perf) {
-        tStart = performance.now();
-    }
-
     for (const action of ["gceoption", "tfoption"]) {
         if (getArg(aArg, [action])) {
             let sFonction = action == "gceoption" ? "GceOption" : "TfOption";
             let sOpt = sText.split(" ");
             if (sOpt[0] == "reset") {
-                oGrammarChecker["reset"+sFonction+"s"]();
+                oGrammarChecker["reset" + sFonction + "s"]();
                 repAction[action] = "reset";
             } else {
                 for (const optAction of sOpt) {
-                    let bOptVal = optAction[0] == '+' ? true : false;
+                    let bOptVal = optAction[0] == "+" ? true : false;
                     let sOptName = optAction.slice(1, optAction.length);
-                    oGrammarChecker["set"+sFonction](sOptName, bOptVal);
+                    oGrammarChecker["set" + sFonction](sOptName, bOptVal);
                     repAction[action] = sText;
                 }
             }
@@ -370,14 +430,19 @@ function actionToExec(aArg) {
 
     for (const action in aArg) {
         if (cmdAction[action] && cmdAction[action].execute !== "") {
-            if (!isBool(aArg[action]) && aArg[action] !== "") {
-                repAction.text = aArg[action];
-                sText = repAction.text;
+            //console.log(aArg, aArg[action], !isBool(aArg[action]), !isBool(repAction.text));
+            if (!repAction[action]) {
+                repAction[action] = [];
             }
-            if (!isBool(repAction.text)) {
-                repAction[action] = oGrammarChecker[cmdAction[action].execute](repAction.text);
+
+            if (typeof aArg[action] === "object") {
+                for (const valAction of aArg[action]) {
+                    tmpRep = actionGramma(repPreference, action, valAction);
+                    repAction[action].push(tmpRep);
+                }
             } else {
-                repAction[action] = "NoText";
+                tmpRep = actionGramma(repPreference, action, aArg[action]);
+                repAction[action].push(tmpRep);
             }
         }
     }
@@ -390,14 +455,14 @@ function actionToExec(aArg) {
         repAction["help"].push("Il y a trois modes de fonctionnement: client / client intératif / serveur.");
 
         repAction["help"].push(" * le client intéractif: «gramma-cli -i».");
-        repAction["help"].push(" * pour le client exemple: «gramma-cli --command \"mot/texte\"».");
+        repAction["help"].push(' * pour le client exemple: «gramma-cli --command "mot/texte"».');
         repAction["help"].push(" * le serveur se lance avec la commande «gramma-cli --server --port 8085».");
 
         repAction["help"].push("");
         repAction["help"].push("========================= Les commandes/arguments: ========================");
         repAction["help"].push("");
         for (const action in cmdAction) {
-            repAction["help"].push(action.padEnd(10, ' ') + ': ' + cmdAction[action].arg.padEnd(8, ' ') + ': ' + cmdAction[action].description);
+            repAction["help"].push(action.padEnd(10, " ") + ": " + cmdAction[action].arg.padEnd(8, " ") + ": " + cmdAction[action].description);
         }
         repAction["help"].push("");
         repAction["help"].push("================================== Note: ==================================");
@@ -405,13 +470,7 @@ function actionToExec(aArg) {
         repAction["help"].push("En mode client: les arguments sont de la forme «--argument» !");
         repAction["help"].push("En mode client intéractif: pour les commandes concernant un texte, vous");
         repAction["help"].push("  pouvez taper la commande puis entrer (pour saisir le texte) pour ");
-        repAction["help"].push("  terminer la saisie du texte et exécuter la commande taper /\"commande\"");
-    }
-
-    if (repPreference.perf) {
-        tEnd = performance.now();
-        //On ajoute l"information au résultat
-        repAction["time"] = (Math.round((tEnd - tStart) * 1000) / 1000).toString();
+        repAction["help"].push('  terminer la saisie du texte et exécuter la commande taper /"commande"');
     }
 
     if (repPreference.json) {
@@ -421,7 +480,7 @@ function actionToExec(aArg) {
     }
 }
 
-function argToExec(aCommand, aText, rl, resetCmd = true){
+function argToExec(aCommand, aText, rl, resetCmd = true) {
     let execAct = {};
     aCommand = aCommand.toLowerCase();
 
@@ -434,11 +493,11 @@ function argToExec(aCommand, aText, rl, resetCmd = true){
 
     console.log(actionToExec(execAct));
     //sBufferConsole = "";
-    if (resetCmd){
+    if (resetCmd) {
         sCmdToExec = "";
     }
 
-    if (typeof(rl) !== "undefined"){
+    if (typeof rl !== "undefined") {
         rl.setPrompt(msgPrompt);
     }
 }
@@ -452,17 +511,13 @@ function completer(line) {
     return [hits && hits.length ? hits : cmdAll, line];
 }
 
-
 if (process.argv.length <= 2) {
-    console.log(actionToExec({help:true}));
+    console.log(actionToExec({ help: true }));
 } else {
     //var GrammarChecker = require("./api.js");
     //console.log(module.paths);
     var GrammarChecker = require("grammalecte");
-    var oGrammarChecker = new GrammarChecker.GrammarChecker(
-        ["Grammalecte", "Graphspell", "TextFormatter", "Lexicographer", "Tokenizer"],
-        "fr"
-    );
+    var oGrammarChecker = new GrammarChecker.GrammarChecker(["Grammalecte", "Graphspell", "TextFormatter", "Lexicographer", "Tokenizer"], "fr");
 
     if (argCmd.server) {
         var http = require("http");
@@ -532,7 +587,7 @@ if (process.argv.length <= 2) {
             let lg = sBuffer.toLowerCase().trim();
             let bSpace = lg.indexOf(" ") > -1;
             if (!bSpace) {
-                if (cmdOne.indexOf(lg) > -1){
+                if (cmdOne.indexOf(lg) > -1) {
                     argToExec(lg, sBuffer, rl, true);
                 } else if (cmdAll.indexOf(lg) > -1) {
                     sBufferConsole = "";
@@ -562,6 +617,16 @@ if (process.argv.length <= 2) {
             process.exit(0);
         });
     } else {
-        console.log(actionToExec(argCmd));
+        if (
+            typeof argCmd.text !== "object" &&
+            typeof argCmd.json !== "object" &&
+            typeof argCmd.perf !== "object" &&
+            typeof argCmd.gceoption !== "object" &&
+            typeof argCmd.tfoption !== "object"
+        ) {
+            console.log(actionToExec(argCmd));
+        } else {
+            console.log("Votre demmande est confuse.");
+        }
     }
 }
