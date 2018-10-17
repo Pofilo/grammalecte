@@ -104,6 +104,12 @@ Suggestion possible de: salut
 CMD>
 ```
 
+Note :
+
+Il ne peut pas y avoir plusieurs fois les arguments text, json, perf, gceoption et tfoption.
+
+Il est cependant possible de vérifier par exemple plusieurs morph en faisant: `gramma-cli --morph mot1 --morph mot2`
+
 ## Serveur
 
 Le serveur supporte les requêtes POST et GET...
