@@ -1,6 +1,8 @@
 // Options for Grammalecte
-/*jslint esversion: 6*/
-/*global exports*/
+
+/* jshint esversion:6 */
+/* jslint esversion:6 */
+/* global exports */
 
 ${map}
 

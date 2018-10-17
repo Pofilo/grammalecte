@@ -1,16 +1,20 @@
-//// IBDAWG
-/*jslint esversion: 6*/
-/*global console,require,exports*/
+// IBDAWG
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console, __dirname */
 
 "use strict";
 
-
-if (typeof(require) !== 'undefined') {
+if(typeof(process) !== 'undefined') {
+    var str_transform = require("./str_transform.js");
+    var helpers = require("./helpers.js");
+    var char_player = require("./char_player.js");
+} else if (typeof(require) !== 'undefined') {
     var str_transform = require("resource://grammalecte/graphspell/str_transform.js");
     var helpers = require("resource://grammalecte/graphspell/helpers.js");
     var char_player = require("resource://grammalecte/graphspell/char_player.js");
 }
-
 
 // Don’t remove <string>. Necessary in TB.
 ${string}
@@ -97,7 +101,12 @@ class IBDAWG {
         try {
             let oData = null;
             if (typeof(param1) == "string") {
-                let sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
+                let sURL;
+                if(typeof(process) !== 'undefined') {
+                    sURL = (sPath !== "") ? sPath + "/" + param1 : __dirname + "/_dictionaries/"+param1;
+                } else {
+                    sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
+                }
                 oData = JSON.parse(helpers.loadFile(sURL));
             } else {
                 oData = param1;
@@ -313,7 +322,7 @@ class IBDAWG {
 
     suggest (sWord, nSuggLimit=10) {
         // returns a array of suggestions for <sWord>
-        //const t0 = Date.now();
+        //console.time("Suggestions for " + sWord);
         sWord = char_player.spellingNormalization(sWord);
         let sPfx = "";
         let sSfx = "";
@@ -327,10 +336,9 @@ class IBDAWG {
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
         if (sSfx || sPfx) {
             // we add what we removed
-            return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx } );
+            return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx; } );
         }
-        //const t1 = Date.now();
-        //console.log("Suggestions for " + sWord + " in " + ((t1-t0)/1000).toString() + " s");
+        //console.timeEnd("Suggestions for " + sWord);
         return aSugg;
     }
 

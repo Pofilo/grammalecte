@@ -1,9 +1,11 @@
 //  JavaScript
 
-/*
-    Conjugation generator
-    beta stage, unfinished, the root for a new way to generate flexions…
-*/
+//    Conjugation generator
+//    beta stage, unfinished, the root for a new way to generate flexions…
+
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
 
 "use strict";
 
@@ -139,7 +141,7 @@ var conj_generator = {
             [2,     "issons",       ":E:1p/*",          false],
             [2,     "issez",        ":E:2p/*",          false]
         ],
-        
+
         // premier groupe (bien plus irrégulier que prétendu)
         "V1": {
             // a

@@ -8,13 +8,17 @@
 // This tool encodes lexicon into an indexable binary dictionary
 // Input files MUST be encoded in UTF-8.
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console, helpers */
+
 "use strict";
 
-
-if (typeof(require) !== 'undefined') {
+if(typeof(process) !== 'undefined') {
+    var str_transform = require("./str_transform.js");
+} else if (typeof(require) !== 'undefined') {
     var str_transform = require("resource://grammalecte/graphspell/str_transform.js");
 }
-
 
 ${map}
 

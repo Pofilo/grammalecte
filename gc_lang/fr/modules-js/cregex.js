@@ -1,5 +1,7 @@
-//// Grammalecte - Compiled regular expressions
-/*jslint esversion: 6*/
+// Grammalecte - Compiled regular expressions
+
+/* jshint esversion:6 */
+/* jslint esversion:6 */
 
 
 var cregex = {

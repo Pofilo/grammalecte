@@ -1,5 +1,7 @@
 // Grammar checker rules
-/*jslint esversion: 6*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
 /*global exports*/
 
 "use strict";
@@ -11,7 +13,7 @@ var gc_rules = {
     lParagraphRules: ${paragraph_rules_JS},
 
     lSentenceRules: ${sentence_rules_JS}
-}
+};
 
 
 if (typeof(exports) !== 'undefined') {

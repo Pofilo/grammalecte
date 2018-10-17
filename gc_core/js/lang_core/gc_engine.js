@@ -1,6 +1,8 @@
 // Grammar checker engine
-/*jslint esversion: 6*/
-/*global console,require,exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console */
 
 "use strict";
 
@@ -9,7 +11,13 @@ ${regex}
 ${map}
 
 
-if (typeof(require) !== 'undefined') {
+if(typeof(process) !== 'undefined') {
+    var gc_options = require("./gc_options.js");
+    var gc_rules = require("./gc_rules.js");
+    var gc_rules_graph = require("./gc_rules_graph.js");
+    var cregex = require("./cregex.js");
+    var text = require("../text.js");
+} else if (typeof(require) !== 'undefined') {
     var gc_options = require("resource://grammalecte/${lang}/gc_options.js");
     var gc_rules = require("resource://grammalecte/${lang}/gc_rules.js");
     var gc_rules_graph = require("resource://grammalecte/${lang}/gc_rules_graph.js");
@@ -53,7 +61,10 @@ var gc_engine = {
 
     load: function (sContext="JavaScript", sColorType="aRGB", sPath="") {
         try {
-            if (typeof(require) !== 'undefined') {
+            if(typeof(process) !== 'undefined') {
+                var spellchecker = require("../graphspell/spellchecker.js");
+                _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
+            } else if (typeof(require) !== 'undefined') {
                 var spellchecker = require("resource://grammalecte/graphspell/spellchecker.js");
                 _oSpellChecker = new spellchecker.SpellChecker("${lang}", "", "${dic_main_filename_js}", "${dic_extended_filename_js}", "${dic_community_filename_js}", "${dic_personal_filename_js}");
             } else {

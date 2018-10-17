@@ -1,10 +1,12 @@
 // Grammalecte - text formatter
-/*jslint esversion: 6*/
-/*global exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global exports, console */
 
 "use strict";
 
-${map}
+//!${map}
 
 
 // Latin letters: http://unicode-table.com/fr/
@@ -85,7 +87,7 @@ const oReplTable = {
     "ts_ellipsis":                [ [/\.\.\./g, "…"],
                                     [/…\.\./g, "……"],
                                     [/…\.(?!\.)/g, "…"] ],
-    "ts_n_dash_middle":           [ [/ [-—] /g, " – "], 
+    "ts_n_dash_middle":           [ [/ [-—] /g, " – "],
                                     [/ [-—],/g, " –,"] ],
     "ts_m_dash_middle":           [ [/ [-–] /g, " — "],
                                     [/ [-–],/g, " —,"] ],
@@ -258,21 +260,23 @@ const dTFDefaultOptions = new Map ([
     ["ma_1letter_uppercase", false]
 ]);
 
-const dTFOptions = dTFDefaultOptions.gl_shallowCopy();
-
 
 class TextFormatter {
 
-    constructor () {
+    constructor (bDebug=false) {
         this.sLang = "fr";
+        this.bDebug = bDebug;
+        //don't change this in external ;)
+        this.dOptions = dTFDefaultOptions.gl_shallowCopy();
     }
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
-            dTFOptions.gl_updateOnlyExistingKeys(dOpt);
+            this.dOptions.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of dTFOptions) {
-            if (bVal && oReplTable.has(sOptName)) {
+        for (let [sOptName, bVal] of this.dOptions) {
+            //console.log(oReplTable);
+            if (bVal && oReplTable[sOptName]) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     sText = sText.replace(zRgx, sRep);
                 }
@@ -281,13 +285,118 @@ class TextFormatter {
         return sText;
     }
 
+    formatTextCount (sText, dOpt=null) {
+        let nCount = 0;
+        if (dOpt !== null) {
+            this.dOptions.gl_updateOnlyExistingKeys(dOpt);
+        }
+        for (let [sOptName, bVal] of this.dOptions) {
+            if (bVal && oReplTable[sOptName]) {
+                for (let [zRgx, sRep] of oReplTable[sOptName]) {
+                    nCount += (sText.match(zRgx) || []).length;
+                    sText = sText.replace(zRgx, sRep);
+                }
+            }
+        }
+        return [sText, nCount];
+    }
+
+    formatTextRule (sText, sRuleName) {
+        if (oReplTable[sRuleName]) {
+            for (let [zRgx, sRep] of oReplTable[sRuleName]) {
+                sText = sText.replace(zRgx, sRep);
+            }
+        } else if (this.bDebug){
+            console.log("# Error. TF: there is no option “" + sRuleName+ "”.");
+        }
+        return sText;
+    }
+
+    formatTextRuleCount (sText, sRuleName) {
+        let nCount = 0;
+        if (oReplTable[sRuleName]) {
+            for (let [zRgx, sRep] of oReplTable[sRuleName]) {
+                nCount += (sText.match(zRgx) || []).length;
+                sText = sText.replace(zRgx, sRep);
+            }
+        } else if (this.bDebug){
+            console.log("# Error. TF: there is no option “" + sRuleName+ "”.");
+        }
+        return [sText, nCount];
+    }
+
+    removeHyphenAtEndOfParagraphs (sText) {
+        sText = sText.replace(/-[  ]*\n/gm, "");
+        return sText;
+    }
+
+    removeHyphenAtEndOfParagraphsCount (sText) {
+        let nCount = (sText.match(/-[  ]*\n/gm) || []).length;
+        sText = sText.replace(/-[  ]*\n/gm, "");
+        return [sText, nCount];
+    }
+
+    mergeContiguousParagraphs (sText) {
+        sText = sText.replace(/^[  ]+$/gm, ""); // clear empty paragraphs
+        let s = "";
+        for (let sParagraph of this.getParagraph(sText)) {
+            if (sParagraph === "") {
+                s += "\n";
+            } else {
+                s += sParagraph + " ";
+            }
+        }
+        s = s.replace(/  +/gm, " ").replace(/ $/gm, "");
+        return s;
+    }
+
+    mergeContiguousParagraphsCount (sText) {
+        let nCount = 0;
+        sText = sText.replace(/^[  ]+$/gm, ""); // clear empty paragraphs
+        let s = "";
+        for (let sParagraph of this.getParagraph(sText)) {
+            if (sParagraph === "") {
+                s += "\n";
+            } else {
+                s += sParagraph + " ";
+                nCount += 1;
+            }
+        }
+        s = s.replace(/  +/gm, " ").replace(/ $/gm, "");
+        return [s, nCount];
+    }
+
+    * getParagraph (sText, sSep="\n") {
+        // generator: returns paragraphs of text
+        let iStart = 0;
+        let iEnd = 0;
+        while ((iEnd = sText.indexOf(sSep, iStart)) !== -1) {
+            yield sText.slice(iStart, iEnd);
+            iStart = iEnd + 1;
+        }
+        yield sText.slice(iStart);
+    }
+
     getDefaultOptions () {
-        return dTFDefaultOptions;
+        //we return a copy to make sure they are no modification in external
+        return dTFDefaultOptions.gl_shallowCopy();
+    }
+
+    getOptions () {
+        //we return a copy to make sure they are no modification in external
+        return this.dOptions.gl_shallowCopy();
+    }
+
+    setOptions (dOpt=null) {
+        if (dOpt !== null) {
+            this.dOptions.gl_updateOnlyExistingKeys(dOpt);
+        } else if (this.bDebug){
+            console.log("# Error. TF: no option to change.");
+        }
     }
 }
 
 
 if (typeof(exports) !== 'undefined') {
     exports.TextFormatter = TextFormatter;
-    exports.oReplTable = oReplTable;
 }

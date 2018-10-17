@@ -11,6 +11,12 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         this.xTFNode = this._createTextFormatter();
         this.xPanelContent.appendChild(this.xTFNode);
         this.xTextArea = null;
+
+        this.TextFormatter = new TextFormatter();
+        this.formatText = this.TextFormatter.formatTextRuleCount;
+        this.removeHyphenAtEndOfParagraphs = this.TextFormatter.removeHyphenAtEndOfParagraphsCount;
+        this.mergeContiguousParagraphs = this.TextFormatter.mergeContiguousParagraphsCount;
+        this.getParagraph = this.TextFormatter.getParagraph;
     }
 
     _createTextFormatter () {
@@ -159,7 +165,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         xLine.appendChild(oGrammalecte.createNode("div", {id: "res_"+"o_ordinals_no_exponant", className: "grammalecte_tf_result", textContent: "·"}));
         return xLine;
     }
-    
+
     /*
         Actions
     */
@@ -260,7 +266,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             let sText = this.xTextArea.value.normalize("NFC");
             document.getElementById('grammalecte_tf_progressbar').max = 7;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
-            
+
             // Restructuration
             if (this.isSelected("o_group_struct")) {
                 if (this.isSelected("o_remove_hyphens_at_end_of_paragraphs")) {
@@ -508,57 +514,6 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         catch (e) {
             showError(e);
         }
-    }
-
-    formatText (sText, sOptName) {
-        let nCount = 0;
-        try {
-            if (!oReplTable.hasOwnProperty(sOptName)) {
-                console.log("# Error. TF: there is no option “" + sOptName+ "”.");
-                return [sText, nCount];
-            }
-            for (let [zRgx, sRep] of oReplTable[sOptName]) {
-                nCount += (sText.match(zRgx) || []).length;
-                sText = sText.replace(zRgx, sRep);
-            }
-        }
-        catch (e) {
-            showError(e);
-        }
-        return [sText, nCount];
-    }
-
-    removeHyphenAtEndOfParagraphs (sText) {
-        let nCount = (sText.match(/-[  ]*\n/gm) || []).length;
-        sText = sText.replace(/-[  ]*\n/gm, "");
-        return [sText, nCount];
-    }
-
-    mergeContiguousParagraphs (sText) {
-        let nCount = 0;
-        sText = sText.replace(/^[  ]+$/gm, ""); // clear empty paragraphs
-        let s = "";
-        for (let sParagraph of this.getParagraph(sText)) {
-            if (sParagraph === "") {
-                s += "\n";
-            } else {
-                s += sParagraph + " ";
-                nCount += 1;
-            }
-        }
-        s = s.replace(/  +/gm, " ").replace(/ $/gm, "");
-        return [s, nCount];
-    }
-
-    * getParagraph (sText) {
-        // generator: returns paragraphs of text
-        let iStart = 0;
-        let iEnd = 0;
-        while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
-            yield sText.slice(iStart, iEnd);
-            iStart = iEnd + 1;
-        }
-        yield sText.slice(iStart);
     }
 
     getTimeRes (n) {

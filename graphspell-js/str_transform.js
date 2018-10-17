@@ -1,5 +1,8 @@
-//// STRING TRANSFORMATION
-/*jslint esversion: 6*/
+// STRING TRANSFORMATION
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global exports, console */
 
 "use strict";
 

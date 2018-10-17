@@ -1,7 +1,9 @@
 // JavaScript
 // Very simple tokenizer
-/*jslint esversion: 6*/
-/*global require,exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/*global require, exports, console*/
 
 "use strict";
 
@@ -72,7 +74,7 @@ class Tokenizer {
                     try {
                         if ((m = zRegex.exec(sText)) !== null) {
                             iToken += 1;
-                            yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length }
+                            yield { "i": iToken, "sType": sType, "sValue": m[0], "nStart": iNext, "nEnd": iNext + m[0].length };
                             iCut = m[0].length;
                             break;
                         }

@@ -1,7 +1,12 @@
 // Grammalecte - Suggestion phonétique
-/*jslint esversion: 6*/
 
-if (typeof(require) !== 'undefined') {
+/* jshint esversion:6 */
+/* jslint esversion:6 */
+/* global __dirname */
+
+if(typeof(process) !== 'undefined') {
+    var helpers = require("../graphspell/helpers.js");
+} else if (typeof(require)  !== 'undefined') {
     var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
@@ -84,7 +89,10 @@ var phonet = {
 
 
 // Initialization
-if (!phonet.bInit && typeof(browser) !== 'undefined') {
+if (!phonet.bInit && typeof(process) !== 'undefined') {
+    //Nodejs
+    phonet.init(helpers.loadFile(__dirname+"/phonet_data.json"));
+} else if (!phonet.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
     phonet.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/phonet_data.json")));
 } else if (!phonet.bInit && typeof(require) !== 'undefined') {

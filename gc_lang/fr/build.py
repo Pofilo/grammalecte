@@ -12,6 +12,7 @@ def build (sLang, dVars, spLangPack):
     "complementary build launched from make.py"
     createWebExtension(sLang, dVars)
     createThunderbirdExtension(sLang, dVars, spLangPack)
+    createNodeJSPackage(sLang)
 
 
 def createWebExtension (sLang, dVars):
@@ -87,3 +88,9 @@ def _copyGrammalecteJSPackageInZipFile (hZip, spLangPack, sAddPath=""):
     for sf in os.listdir(spLangPack):
         if not os.path.isdir(spLangPack+"/"+sf):
             hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
+
+
+def createNodeJSPackage (sLang):
+    helpers.createCleanFolder("_build/nodejs/"+sLang)
+    dir_util.copy_tree("gc_lang/"+sLang+"/nodejs/", "_build/nodejs/"+sLang)
+    dir_util.copy_tree("grammalecte-js", "_build/nodejs/"+sLang+"/core/grammalecte")

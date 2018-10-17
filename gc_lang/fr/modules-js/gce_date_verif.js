@@ -1,9 +1,10 @@
-//// GRAMMAR CHECKING ENGINE PLUGIN
-/*jslint esversion: 6*/
+// GRAMMAR CHECKING ENGINE PLUGIN
 
 // Check date validity
-
 // WARNING: when creating a Date, month must be between 0 and 11
+
+/* jshint esversion:6 */
+/* jslint esversion:6 */
 
 
 const _lDay = ["dimanche", "lundi", "mardi", "mercredi", "jeudi", "vendredi", "samedi"];

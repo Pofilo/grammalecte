@@ -1,11 +1,15 @@
 // JavaScript
-/*jslint esversion: 6*/
-/*global console,require,exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console */
 
 "use strict";
 
 
-if (typeof(require) !== 'undefined') {
+if(typeof(process) !== 'undefined') {
+    var helpers = require("./graphspell/helpers.js");
+} else if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
@@ -20,7 +24,12 @@ class TestGrammarChecking {
 
     * testParse (bDebug=false) {
         const t0 = Date.now();
-        let sURL = (this.spfTests !== "") ? this.spfTests : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
+        let sURL;
+        if(typeof(process) !== 'undefined') {
+            sURL = (this.spfTests !== "") ? this.spfTests : "./"+this.gce.lang+"/tests_data.json";
+        } else {
+            sURL = (this.spfTests !== "") ? this.spfTests : "resource://grammalecte/"+this.gce.lang+"/tests_data.json";
+        }
         const aData = JSON.parse(helpers.loadFile(sURL)).aData;
         let nInvalid = 0;
         let nTotal = 0;

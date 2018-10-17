@@ -8,15 +8,19 @@
 // - the community dictionary, added by an organization
 // - the personal dictionary, created by the user for its own convenience
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console, IBDAWG, Tokenizer */
 
 "use strict";
 
-
-if (typeof(require) !== 'undefined') {
+if(typeof(process) !== 'undefined') {
+    var ibdawg = require("./ibdawg.js");
+    var tokenizer = require("./tokenizer.js");
+} else if (typeof(require) !== 'undefined') {
     var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
     var tokenizer = require("resource://grammalecte/graphspell/tokenizer.js");
 }
-
 
 ${map}
 
@@ -66,7 +70,7 @@ class SpellChecker {
             if (bNecessary) {
                 throw "Error: <" + sfDictionary + "> not loaded. " + e.message;
             }
-            console.log("Error: <" + sfDictionary + "> not loaded.")
+            console.log("Error: <" + sfDictionary + "> not loaded.");
             console.log(e.message);
             return null;
         }

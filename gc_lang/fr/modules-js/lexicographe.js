@@ -1,7 +1,9 @@
 // Grammalecte - Lexicographe
 // License: MPL 2
-/*jslint esversion: 6*/
-/*global require,exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console */
 
 "use strict";
 

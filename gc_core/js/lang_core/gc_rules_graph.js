@@ -1,6 +1,8 @@
 // Grammar checker graph rules
-/*jslint esversion: 6*/
-/*global exports*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global exports */
 
 "use strict";
 

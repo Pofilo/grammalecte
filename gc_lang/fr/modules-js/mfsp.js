@@ -1,11 +1,15 @@
 // Grammalecte
-/*jslint esversion: 6*/
-/*global console,require,exports,browser*/
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global require, exports, console, browser,__dirname */
 
 "use strict";
 
 
-if (typeof(require) !== 'undefined') {
+if(typeof(process) !== 'undefined') {
+    var helpers = require("../graphspell/helpers.js");
+} else if (typeof(require) !== 'undefined') {
     var helpers = require("resource://grammalecte/graphspell/helpers.js");
 }
 
@@ -104,7 +108,10 @@ var mfsp = {
 
 
 // Initialization
-if (!mfsp.bInit && typeof(browser) !== 'undefined') {
+if(!mfsp.bInit && typeof(process) !== 'undefined') {
+    //Nodejs
+    mfsp.init(helpers.loadFile(__dirname+"/mfsp_data.json"));
+} else if (!mfsp.bInit && typeof(browser) !== 'undefined') {
     // WebExtension
     mfsp.init(helpers.loadFile(browser.extension.getURL("grammalecte/fr/mfsp_data.json")));
 } else if (!mfsp.bInit && typeof(require) !== 'undefined') {
