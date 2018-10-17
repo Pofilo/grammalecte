@@ -1,4 +1,4 @@
-# Note pour le dévellepement pour NodeJS
+# Note pour le développement pour NodeJS
 
 ## Commande pour définir l’utilisation d’un paquetage local
 

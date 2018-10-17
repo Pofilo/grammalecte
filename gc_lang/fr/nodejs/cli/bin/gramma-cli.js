@@ -42,19 +42,19 @@ var cmdAction = {
     perf: {
         short: "",
         arg: "on/off",
-        description: "Permet d’afficher le temps d’exécution des commandes.",
+        description: "Affiche le temps d’exécution des commandes.",
         execute: ""
     },
     json: {
         short: "",
         arg: "on/off",
-        description: "Réponse en format format json.",
+        description: "Réponse au format JSON.",
         execute: ""
     },
     exit: {
         short: "",
         arg: "",
-        description: "Client interactif: Permet de le quitter.",
+        description: "Client interactif: Quitter.",
         execute: ""
     },
     text: {
@@ -66,19 +66,19 @@ var cmdAction = {
     format: {
         short: "",
         arg: "texte",
-        description: "Permet de mettre en forme le texte.",
+        description: "Corrige la typographie du texte.",
         execute: "formatText"
     },
     check: {
         short: "",
         arg: "texte",
-        description: "Vérifie la grammaire et l’orthographe d'un texte.",
+        description: "Vérifie la grammaire et l’orthographe du texte.",
         execute: "verifParagraph"
     },
     lexique: {
         short: "",
         arg: "texte",
-        description: "Affiche le lexique du texte.",
+        description: "Affiche les données lexicales de chaque mot du texte.",
         execute: "lexique"
     },
     spell: {
@@ -96,13 +96,13 @@ var cmdAction = {
     morph: {
         short: "",
         arg: "mot",
-        description: "Affiche les informations pour un mot.",
+        description: "Affiche les données grammaticales (et éventuellement autres) du mot.",
         execute: "morph"
     },
     lemma: {
         short: "",
         arg: "mot",
-        description: "Donne le lemme d’un mot.",
+        description: "Donne le(s) lemme(s) d’un mot.",
         execute: "lemma"
     },
     gceoption: {
@@ -174,7 +174,7 @@ function repToText(oRep) {
                     repText += "\n" + toTitle(action) + ": Pas de texte à vérifier.";
                 } else {
                     if (toAff.reponse.length == 0) {
-                        repText += "\nAuncun " + toTitle(action) + " existant pour: «" + toAff.text + "»";
+                        repText += "\nAucun " + toTitle(action) + " existant pour: «" + toAff.text + "»";
                     } else {
                         let ascii = "├";
                         let numRep = 0;
@@ -198,7 +198,7 @@ function repToText(oRep) {
             if (toAff.text == "NoText") {
                 repText += "\nSpell: Pas de texte à vérifier.";
             } else {
-                repText += "\nLe mot «" + toAff.text + "» " + (toAff.reponse ? "existe" : "innexistant");
+                repText += "\nLe mot «" + toAff.text + "» " + (toAff.reponse ? "existe" : "inexistant");
                 repText += affPerf(toAff.time);
             }
         }
@@ -232,7 +232,7 @@ function repToText(oRep) {
     if ("format" in oRep) {
         for (const toAff of oRep.format) {
             if (toAff.text == "NoText") {
-                repText += "\nPas de texte à formatter.";
+                repText += "\nPas de texte à formater.";
             } else {
                 repText += "\nMise en forme:\n" + toAff.reponse;
                 repText += affPerf(toAff.time);
@@ -288,9 +288,9 @@ function repToText(oRep) {
                 numRep1 = 0;
                 replength = Object.keys(toAff.reponse.lGrammarErrors).length;
                 if (replength == 0) {
-                    repText += "\nPas de faute de grammaire";
+                    repText += "\nPas d’erreurs grammaticales trouvées";
                 } else {
-                    repText += "\nFaute(s) de grammaire";
+                    repText += "\nErreur(s) grammaticale(s)";
                     for (let gramma of toAff.reponse.lGrammarErrors) {
                         numRep1++;
                         if (numRep1 == replength) {
@@ -315,9 +315,9 @@ function repToText(oRep) {
                 numRep1 = 0;
                 replength = Object.keys(toAff.reponse.lSpellingErrors).length;
                 if (replength == 0) {
-                    repText += "\nPas de faute d'orthographe";
+                    repText += "\nPas d’erreurs orthographiques trouvées";
                 } else {
-                    repText += "\nFaute(s) d'orthographe";
+                    repText += "\nErreur(s) orthographique(s)";
                     for (let ortho of toAff.reponse.lSpellingErrors) {
                         numRep1++;
                         if (numRep1 == replength) {
