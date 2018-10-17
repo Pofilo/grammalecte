@@ -18,7 +18,7 @@ const argCmd = require("../lib/minimist.js")(process.argv.slice(2));
 const { performance } = require("perf_hooks");
 
 //Initialisation des messages
-const msgStart = "\x1b[31mBienvenu sur Grammalecte pour NodeJS!!!\x1b[0m\n";
+const msgStart = "\x1b[31mBienvenue sur Grammalecte pour NodeJS!!!\x1b[0m\n";
 const msgPrompt = "\x1b[36mGrammaJS\x1b[33m>\x1b[0m ";
 const msgSuite = "\x1b[33m…\x1b[0m ";
 const msgEnd = "\x1b[31m\x1b[5m\x1b[5mBye bye!\x1b[0m";
@@ -42,7 +42,7 @@ var cmdAction = {
     perf: {
         short: "",
         arg: "on/off",
-        description: "Permet d'afficher le temps d'exécution des commandes.",
+        description: "Permet d’afficher le temps d’exécution des commandes.",
         execute: ""
     },
     json: {
@@ -72,7 +72,7 @@ var cmdAction = {
     check: {
         short: "",
         arg: "texte",
-        description: "Vérifie la grammaire et l'orthographe d'un texte.",
+        description: "Vérifie la grammaire et l’orthographe d'un texte.",
         execute: "verifParagraph"
     },
     lexique: {
@@ -84,13 +84,13 @@ var cmdAction = {
     spell: {
         short: "",
         arg: "mot",
-        description: "Vérifie l'existence d'un mot.",
+        description: "Vérifie l’existence d’un mot.",
         execute: "spell"
     },
     suggest: {
         short: "",
         arg: "mot",
-        description: "Suggestion des orthographes possible d'un mot.",
+        description: "Suggestion des graphies proches d’un mot.",
         execute: "suggest"
     },
     morph: {
@@ -102,19 +102,19 @@ var cmdAction = {
     lemma: {
         short: "",
         arg: "mot",
-        description: "Donne le lemme d'un mot.",
+        description: "Donne le lemme d’un mot.",
         execute: "lemma"
     },
     gceoption: {
         short: "",
         arg: "+/-name",
-        description: "Défini les options à utiliser par le correcteur de grammaire.",
+        description: "Définit les options à utiliser par le correcteur grammatical.",
         execute: ""
     },
     tfoption: {
         short: "",
         arg: "+/-name",
-        description: "Défini les options à utiliser par le formateur de texte.",
+        description: "Définit les options à utiliser par le formateur de texte.",
         execute: ""
     }
 };
@@ -469,7 +469,7 @@ function actionToExec(aArg) {
         repAction["help"].push("");
         repAction["help"].push("En mode client: les arguments sont de la forme «--argument» !");
         repAction["help"].push("En mode client intéractif: pour les commandes concernant un texte, vous");
-        repAction["help"].push("  pouvez taper la commande puis entrer (pour saisir le texte) pour ");
+        repAction["help"].push("  pouvez taper la commande puis Entrée (pour saisir le texte) pour ");
         repAction["help"].push('  terminer la saisie du texte et exécuter la commande taper /"commande"');
     }
 

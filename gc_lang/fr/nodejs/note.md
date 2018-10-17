@@ -1,6 +1,6 @@
 # Note pour le dévellepement pour NodeJS
 
-## Commande pour définir l'utilisation d'un paquetage local
+## Commande pour définir l’utilisation d’un paquetage local
 
 ```
 cd core
