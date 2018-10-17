@@ -267,14 +267,14 @@ class TextFormatter {
         this.sLang = "fr";
         this.bDebug = bDebug;
         //don't change this in external ;)
-        this._optionsUsed = dTFDefaultOptions.gl_shallowCopy();
+        this.dOptions = dTFDefaultOptions.gl_shallowCopy();
     }
 
     formatText (sText, dOpt=null) {
         if (dOpt !== null) {
-            this._optionsUsed.gl_updateOnlyExistingKeys(dOpt);
+            this.dOptions.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of this._optionsUsed) {
+        for (let [sOptName, bVal] of this.dOptions) {
             //console.log(oReplTable);
             if (bVal && oReplTable[sOptName]) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
@@ -288,9 +288,9 @@ class TextFormatter {
     formatTextCount (sText, dOpt=null) {
         let nCount = 0;
         if (dOpt !== null) {
-            this._optionsUsed.gl_updateOnlyExistingKeys(dOpt);
+            this.dOptions.gl_updateOnlyExistingKeys(dOpt);
         }
-        for (let [sOptName, bVal] of this._optionsUsed) {
+        for (let [sOptName, bVal] of this.dOptions) {
             if (bVal && oReplTable[sOptName]) {
                 for (let [zRgx, sRep] of oReplTable[sOptName]) {
                     nCount += (sText.match(zRgx) || []).length;
@@ -382,21 +382,17 @@ class TextFormatter {
         return dTFDefaultOptions.gl_shallowCopy();
     }
 
-    getUsedOptions () {
+    getOptions () {
         //we return a copy to make sure they are no modification in external
-        return this._optionsUsed.gl_shallowCopy();
+        return this.dOptions.gl_shallowCopy();
     }
 
-    setUsedOptions (dOpt=null) {
+    setOptions (dOpt=null) {
         if (dOpt !== null) {
-            this._optionsUsed.gl_updateOnlyExistingKeys(dOpt);
+            this.dOptions.gl_updateOnlyExistingKeys(dOpt);
         } else if (this.bDebug){
             console.log("# Error. TF: no option to change.");
         }
-    }
-
-    getReplTable(){
-        return oReplTable;
     }
 }
 
