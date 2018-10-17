@@ -322,7 +322,7 @@ class IBDAWG {
 
     suggest (sWord, nSuggLimit=10) {
         // returns a array of suggestions for <sWord>
-	//console.time("Suggestions for " + sWord + ");
+        //console.time("Suggestions for " + sWord);
         sWord = char_player.spellingNormalization(sWord);
         let sPfx = "";
         let sSfx = "";
@@ -338,7 +338,7 @@ class IBDAWG {
             // we add what we removed
             return aSugg.map( (sSugg) => { return sPfx + sSugg + sSfx; } );
         }
-	//console.timeEnd("Suggestions for " + sWord + ");
+        //console.timeEnd("Suggestions for " + sWord);
         return aSugg;
     }
 
