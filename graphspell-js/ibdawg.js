@@ -148,7 +148,7 @@ class IBDAWG {
         // <dChar> to get the value of an arc, <dCharVal> to get the char of an arc with its value
         this.dChar = helpers.objectToMap(this.dChar);
         this.dCharVal = this.dChar.gl_reverse();
-        this.a2grams = new Set(this.l2grams);
+        this.a2grams = (this.l2grams) ? new Set(this.l2grams) : null;
 
         if (this.cStemming == "S") {
             this.funcStemming = str_transform.changeWordWithSuffixCode;
@@ -413,6 +413,9 @@ class IBDAWG {
 
     isNgramsOK (sChars) {
         if (sChars.length != 2) {
+            return true;
+        }
+        if (!this.a2grams) {
             return true;
         }
         return this.a2grams.has(sChars);

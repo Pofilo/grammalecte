@@ -190,7 +190,7 @@ class IBDAWG:
         self.__dict__.update(oJSON)
         self.byDic = binascii.unhexlify(self.sByDic)
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
-        self.a2grams = set(self.l2grams)
+        self.a2grams = set(self.l2grams)  if hasattr(self, 'l2grams')  else None
 
     def getInfo (self):
         "return string about the IBDAWG"
@@ -358,6 +358,8 @@ class IBDAWG:
 
     def isNgramsOK (self, sChars):
         if len(sChars) != 2:
+            return True
+        if not self.a2grams:
             return True
         return sChars in self.a2grams
 
