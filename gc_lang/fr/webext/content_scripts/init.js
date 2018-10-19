@@ -142,7 +142,9 @@ const oGrammalecte = {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
-            this.oTFPanel.adjustHeight();
+            window.setTimeout(function(self){
+                self.oTFPanel.adjustHeight();
+            }, 1, this);
         }
     },
 
