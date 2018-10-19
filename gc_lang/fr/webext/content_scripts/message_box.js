@@ -10,9 +10,8 @@
 
 class GrammalecteMessageBox {
 
-    constructor (sUrl, sId, sTitle) {
+    constructor (sId, sTitle) {
         this.sId = sId;
-        this.sUrl = sUrl;
 
         this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
         if (this.bShadow){
@@ -67,10 +66,10 @@ class GrammalecteMessageBox {
     insertIntoPage () {
         if (this.bShadow){
             this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: this.sUrl+"content_scripts/panel.css"})
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel.css"})
             );
             this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: this.sUrl+"content_scripts/message_box.css"})
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/message_box.css"})
             );
             this.oShadow.appendChild(this.xMessageBox);
             document.body.appendChild(this.oShadowPanel);

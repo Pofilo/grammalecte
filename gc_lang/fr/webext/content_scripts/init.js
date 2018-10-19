@@ -139,7 +139,7 @@ const oGrammalecte = {
 
     createTFPanel: function () {
         if (this.oTFPanel === null) {
-            this.oTFPanel = new GrammalecteTextFormatter(this.sExtensionUrl, "grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
+            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
             this.oTFPanel.adjustHeight();
@@ -148,21 +148,21 @@ const oGrammalecte = {
 
     createLxgPanel: function () {
         if (this.oLxgPanel === null) {
-            this.oLxgPanel = new GrammalecteLexicographer(this.sExtensionUrl, "grammalecte_lxg_panel", "Lexicographe", 500, 700);
+            this.oLxgPanel = new GrammalecteLexicographer("grammalecte_lxg_panel", "Lexicographe", 500, 700);
             this.oLxgPanel.insertIntoPage();
         }
     },
 
     createGCPanel: function () {
         if (this.oGCPanel === null) {
-            this.oGCPanel = new GrammalecteGrammarChecker(this.sExtensionUrl, "grammalecte_gc_panel", "Grammalecte", 500, 700);
+            this.oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
             this.oGCPanel.insertIntoPage();
         }
     },
 
     createMessageBox: function () {
         if (this.oMessageBox === null) {
-            this.oMessageBox = new GrammalecteMessageBox(this.sExtensionUrl, "grammalecte_message_box", "Grammalecte");
+            this.oMessageBox = new GrammalecteMessageBox("grammalecte_message_box", "Grammalecte");
             this.oMessageBox.insertIntoPage();
         }
     },

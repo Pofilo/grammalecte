@@ -10,9 +10,8 @@
 
 class GrammalectePanel {
 
-    constructor (sUrl, sId, sTitle, nWidth, nHeight, bFlexible=true) {
+    constructor (sId, sTitle, nWidth, nHeight, bFlexible=true) {
         this.sId = sId;
-        this.sUrl = sUrl;
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
@@ -100,16 +99,16 @@ class GrammalectePanel {
     insertIntoPage () {
         if (this.bShadow){
             this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: this.sUrl+"content_scripts/panel.css"})
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel.css"})
             );
             this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: this.sUrl+"content_scripts/panel_gc.css"})
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel_gc.css"})
             );
             this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: this.sUrl+"content_scripts/panel_lxg.css"})
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel_lxg.css"})
             );
             this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: this.sUrl+"content_scripts/panel_tf.css"})
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel_tf.css"})
             );
             this.oShadow.appendChild(this.xPanel);
             document.body.appendChild(this.oShadowPanel);
