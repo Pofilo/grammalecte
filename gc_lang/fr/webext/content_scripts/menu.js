@@ -1,5 +1,9 @@
 // JavaScript
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global oGrammalecte, xGrammalectePort, showError, window, document */
+
 "use strict";
 
 
@@ -8,6 +12,7 @@ class GrammalecteMenu {
     constructor (nMenu, xNode) {
         this.xNode = xNode;
         this.sMenuId = "grammalecte_menu" + nMenu;
+        this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
         this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => { this.switchMenu(); };
         this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
@@ -21,8 +26,26 @@ class GrammalecteMenu {
             xNodeInsertAfter = this.xNode.parentNode;
         }
 
-        this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
-        this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
+        if (this.bShadow){
+            this.oShadowBtn = oGrammalecte.createNode("div", {className: "grammalecte_abs", style: "width:16px;height:16px;"});
+            this.oShadowBtnNode = this.oShadowBtn.attachShadow({mode: "open"});
+            this.oShadowBtnNode.appendChild(
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
+            );
+            this.oShadowBtnNode.appendChild(this.xButton);
+            this._insertAfter(this.oShadowBtn, xNodeInsertAfter, nMarginTop);
+
+            this.oShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", className: "grammalecte_abs", style: "width:0;height:0;"});
+            this.oShadowMenuNode = this.oShadowMenu.attachShadow({mode: "open"});
+            this.oShadowMenuNode.appendChild(
+                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
+            );
+            this.oShadowMenuNode.appendChild(this.xMenu);
+            this._insertAfter(this.oShadowMenu, xNodeInsertAfter, nMarginTop + 8);
+        } else {
+            this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
+            this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
+        }
         this._createListeners();
     }
 
@@ -33,6 +56,9 @@ class GrammalecteMenu {
 
     _createListeners () {
         this.xNode.addEventListener('focus', (e) => {
+            if (this.bShadow){
+                this.oShadowBtn.style.display = "block";
+            }
             this.xButton.style.display = "block";
         });
         /*this.xNode.addEventListener('blur', (e) => {
@@ -49,6 +75,9 @@ class GrammalecteMenu {
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
             xCloseButton.onclick = () => {
+                if (this.bShadow){
+                    this.oShadowBtn.style.display = "none";
+                }
                 this.xButton.style.display = "none";
                 this.switchMenu();
             }
@@ -115,11 +144,19 @@ class GrammalecteMenu {
     }
 
     deleteNodes () {
-        this.xMenu.parentNode.removeChild(this.xMenu);
-        this.xButton.parentNode.removeChild(this.xButton);
+        if (this.bShadow){
+            this.oShadowMenu.parentNode.removeChild(this.oShadowMenu);
+            this.oShadowBtn.parentNode.removeChild(this.oShadowBtn);
+        } else {
+            this.xMenu.parentNode.removeChild(this.xMenu);
+            this.xButton.parentNode.removeChild(this.xButton);
+        }
     }
 
     switchMenu () {
+        if (this.bShadow){
+            this.oShadowMenu.style.display = (this.oShadowMenu.style.display == "block") ? "none" : "block";
+        }
         this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
     }
 }
