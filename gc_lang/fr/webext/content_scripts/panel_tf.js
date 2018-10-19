@@ -1,6 +1,10 @@
 // JavaScript
 // Text formatter
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, oGrammalecte, TextFormatter, bChrome, browser, showError, document, console */
+
 "use strict";
 
 
@@ -182,16 +186,16 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     switchGroup (sOptName) {
-        if (document.getElementById(sOptName).dataset.selected == "true") {
-            document.getElementById(sOptName.slice(2)).style.opacity = 1;
+        if (this.oParent.getElementById(sOptName).dataset.selected == "true") {
+            this.oParent.getElementById(sOptName.slice(2)).style.opacity = 1;
         } else {
-            document.getElementById(sOptName.slice(2)).style.opacity = 0.3;
+            this.oParent.getElementById(sOptName.slice(2)).style.opacity = 0.3;
         }
         this.resetProgressBar();
     }
 
     switchOption (sOptName) {
-        let xOption = document.getElementById(sOptName);
+        let xOption = this.oParent.getElementById(sOptName);
         if (xOption.dataset.linked_ids === "") {
             xOption.dataset.selected = (xOption.dataset.selected == "true") ? "false" : "true";
             xOption.className = (xOption.dataset.selected == "true") ? xOption.className.replace("_off", "_on") : xOption.className.replace("_on", "_off");
@@ -204,14 +208,16 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     setOption (sOptName, bValue) {
-        let xOption = document.getElementById(sOptName);
+        let xOption = this.oParent.getElementById(sOptName);
         xOption.dataset.selected = bValue;
         xOption.className = (xOption.dataset.selected == "true") ? xOption.className.replace("_off", "_on") : xOption.className.replace("_on", "_off");
     }
 
     reset () {
         this.resetProgressBar();
-        for (let xOption of document.getElementsByClassName("grammalecte_tf_option")) {
+        //on Shadow DOM getElementsByClassName don't work directly ;)
+        let elmOpt = this.oParent.getElementById('grammalecte_tf_options');
+        for (let xOption of elmOpt.getElementsByClassName("grammalecte_tf_option")) {
             xOption.dataset.selected = xOption.dataset.default;
             xOption.className = (xOption.dataset.selected == "true") ? xOption.className.replace("_off", "_on") : xOption.className.replace("_on", "_off");
             if (xOption.id.startsWith("o_group_")) {
@@ -221,20 +227,21 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     resetProgressBar () {
-        document.getElementById('grammalecte_tf_progressbar').value = 0;
-        document.getElementById('grammalecte_tf_time_res').textContent = "";
+        this.oParent.getElementById('grammalecte_tf_progressbar').value = 0;
+        this.oParent.getElementById('grammalecte_tf_time_res').textContent = "";
     }
 
     setOptions (oOptions) {
         if (oOptions.hasOwnProperty("tf_options")) {
             oOptions = oOptions.tf_options;
         }
-        for (let xOption of document.getElementsByClassName("grammalecte_tf_option")) {
+        let elmOpt = this.oParent.getElementById('grammalecte_tf_options');
+        for (let xOption of elmOpt.getElementsByClassName("grammalecte_tf_option")) {
             //console.log(xOption.id + " > " + oOptions.hasOwnProperty(xOption.id) + ": " + oOptions[xOption.id] + " [" + xOption.dataset.default + "]");
             xOption.dataset.selected = (oOptions.hasOwnProperty(xOption.id)) ? oOptions[xOption.id] : xOption.dataset.default;
             xOption.className = (xOption.dataset.selected == "true") ? xOption.className.replace("_off", "_on") : xOption.className.replace("_on", "_off");
-            if (document.getElementById("res_"+xOption.id) !== null) {
-                document.getElementById("res_"+xOption.id).textContent = "";
+            if (this.oParent.getElementById("res_"+xOption.id) !== null) {
+                this.oParent.getElementById("res_"+xOption.id).textContent = "";
             }
             if (xOption.id.startsWith("o_group_")) {
                 this.switchGroup(xOption.id);
@@ -244,7 +251,8 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
     saveOptions () {
         let oOptions = {};
-        for (let xOption of document.getElementsByClassName("grammalecte_tf_option")) {
+        let elmOpt = this.oParent.getElementById('grammalecte_tf_options');
+        for (let xOption of elmOpt.getElementsByClassName("grammalecte_tf_option")) {
             oOptions[xOption.id] = (xOption.dataset.selected == "true");
             //console.log(xOption.id + ": " + xOption.checked);
         }
@@ -252,8 +260,8 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     }
 
     isSelected (sOptName) {
-        if (document.getElementById(sOptName)) {
-            return (document.getElementById(sOptName).dataset.selected === "true");
+        if (this.oParent.getElementById(sOptName)) {
+            return (this.oParent.getElementById(sOptName).dataset.selected === "true");
         }
         return false;
     }
@@ -264,133 +272,133 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             //window.setCursor("wait"); // change pointer
             this.resetProgressBar();
             let sText = this.xTextArea.value.normalize("NFC");
-            document.getElementById('grammalecte_tf_progressbar').max = 7;
+            this.oParent.getElementById('grammalecte_tf_progressbar').max = 7;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
 
             // Restructuration
             if (this.isSelected("o_group_struct")) {
                 if (this.isSelected("o_remove_hyphens_at_end_of_paragraphs")) {
                     [sText, n1] = this.removeHyphenAtEndOfParagraphs(sText);
-                    document.getElementById('res_o_remove_hyphens_at_end_of_paragraphs').textContent = n1;
+                    this.oParent.getElementById('res_o_remove_hyphens_at_end_of_paragraphs').textContent = n1;
                 }
                 if (this.isSelected("o_merge_contiguous_paragraphs")) {
                     [sText, n1] = this.mergeContiguousParagraphs(sText);
-                    document.getElementById('res_o_merge_contiguous_paragraphs').textContent = n1;
+                    this.oParent.getElementById('res_o_merge_contiguous_paragraphs').textContent = n1;
                 }
                 this.setOption("o_group_struct", false);
                 this.switchGroup("o_group_struct");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = 1;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = 1;
 
             // espaces surnuméraires
             if (this.isSelected("o_group_ssp")) {
                 if (this.isSelected("o_end_of_paragraph")) {
                     [sText, n1] = this.formatText(sText, "end_of_paragraph");
-                    document.getElementById('res_o_end_of_paragraph').textContent = n1;
+                    this.oParent.getElementById('res_o_end_of_paragraph').textContent = n1;
                 }
                 if (this.isSelected("o_between_words")) {
                     [sText, n1] = this.formatText(sText, "between_words");
-                    document.getElementById('res_o_between_words').textContent = n1;
+                    this.oParent.getElementById('res_o_between_words').textContent = n1;
                 }
                 if (this.isSelected("o_start_of_paragraph")) {
                     [sText, n1] = this.formatText(sText, "start_of_paragraph");
-                    document.getElementById('res_o_start_of_paragraph').textContent = n1;
+                    this.oParent.getElementById('res_o_start_of_paragraph').textContent = n1;
                 }
                 if (this.isSelected("o_before_punctuation")) {
                     [sText, n1] = this.formatText(sText, "before_punctuation");
-                    document.getElementById('res_o_before_punctuation').textContent = n1;
+                    this.oParent.getElementById('res_o_before_punctuation').textContent = n1;
                 }
                 if (this.isSelected("o_within_parenthesis")) {
                     [sText, n1] = this.formatText(sText, "within_parenthesis");
-                    document.getElementById('res_o_within_parenthesis').textContent = n1;
+                    this.oParent.getElementById('res_o_within_parenthesis').textContent = n1;
                 }
                 if (this.isSelected("o_within_square_brackets")) {
                     [sText, n1] = this.formatText(sText, "within_square_brackets");
-                    document.getElementById('res_o_within_square_brackets').textContent = n1;
+                    this.oParent.getElementById('res_o_within_square_brackets').textContent = n1;
                 }
                 if (this.isSelected("o_within_quotation_marks")) {
                     [sText, n1] = this.formatText(sText, "within_quotation_marks");
-                    document.getElementById('res_o_within_quotation_marks').textContent = n1;
+                    this.oParent.getElementById('res_o_within_quotation_marks').textContent = n1;
                 }
                 this.setOption("o_group_ssp", false);
                 this.switchGroup("o_group_ssp");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = 2;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = 2;
 
             // espaces insécables
             if (this.isSelected("o_group_nbsp")) {
                 if (this.isSelected("o_nbsp_before_punctuation")) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_punctuation");
                     [sText, n2] = this.formatText(sText, "nbsp_repair");
-                    document.getElementById('res_o_nbsp_before_punctuation').textContent = n1 - n2;
+                    this.oParent.getElementById('res_o_nbsp_before_punctuation').textContent = n1 - n2;
                 }
                 if (this.isSelected("o_nbsp_within_quotation_marks")) {
                     [sText, n1] = this.formatText(sText, "nbsp_within_quotation_marks");
-                    document.getElementById('res_o_nbsp_within_quotation_marks').textContent = n1;
+                    this.oParent.getElementById('res_o_nbsp_within_quotation_marks').textContent = n1;
                 }
                 if (this.isSelected("o_nbsp_before_symbol")) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_symbol");
-                    document.getElementById('res_o_nbsp_before_symbol').textContent = n1;
+                    this.oParent.getElementById('res_o_nbsp_before_symbol').textContent = n1;
                 }
                 if (this.isSelected("o_nbsp_within_numbers")) {
                     [sText, n1] = this.formatText(sText, "nbsp_within_numbers");
-                    document.getElementById('res_o_nbsp_within_numbers').textContent = n1;
+                    this.oParent.getElementById('res_o_nbsp_within_numbers').textContent = n1;
                 }
                 if (this.isSelected("o_nbsp_before_units")) {
                     [sText, n1] = this.formatText(sText, "nbsp_before_units");
-                    document.getElementById('res_o_nbsp_before_units').textContent = n1;
+                    this.oParent.getElementById('res_o_nbsp_before_units').textContent = n1;
                 }
                 if (this.isSelected("o_nbsp_titles")) {
                     [sText, n1] = this.formatText(sText, "nbsp_titles");
-                    document.getElementById('res_o_nbsp_titles').textContent = n1;
+                    this.oParent.getElementById('res_o_nbsp_titles').textContent = n1;
                 }
                 this.setOption("o_group_nbsp", false);
                 this.switchGroup("o_group_nbsp");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = 3;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = 3;
 
             // espaces manquants
             if (this.isSelected("o_group_typo")) {
                 if (this.isSelected("o_ts_units")) {
                     [sText, n1] = this.formatText(sText, "ts_units");
-                    document.getElementById('res_o_ts_units').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_units').textContent = n1;
                 }
             }
             if (this.isSelected("o_group_space")) {
                 if (this.isSelected("o_add_space_after_punctuation")) {
                     [sText, n1] = this.formatText(sText, "add_space_after_punctuation");
                     [sText, n2] = this.formatText(sText, "add_space_repair");
-                    document.getElementById('res_o_add_space_after_punctuation').textContent = n1 - n2;
+                    this.oParent.getElementById('res_o_add_space_after_punctuation').textContent = n1 - n2;
                 }
                 if (this.isSelected("o_add_space_around_hyphens")) {
                     [sText, n1] = this.formatText(sText, "add_space_around_hyphens");
-                    document.getElementById('res_o_add_space_around_hyphens').textContent = n1;
+                    this.oParent.getElementById('res_o_add_space_around_hyphens').textContent = n1;
                 }
                 this.setOption("o_group_space", false);
                 this.switchGroup("o_group_space");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = 4;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = 4;
 
             // suppression
             if (this.isSelected("o_group_delete")) {
                 if (this.isSelected("o_erase_non_breaking_hyphens")) {
                     [sText, n1] = this.formatText(sText, "erase_non_breaking_hyphens");
-                    document.getElementById('res_o_erase_non_breaking_hyphens').textContent = n1;
+                    this.oParent.getElementById('res_o_erase_non_breaking_hyphens').textContent = n1;
                 }
                 this.setOption("o_group_delete", false);
                 this.switchGroup("o_group_delete");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = 5;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = 5;
 
             // signes typographiques
             if (this.isSelected("o_group_typo")) {
                 if (this.isSelected("o_ts_apostrophe")) {
                     [sText, n1] = this.formatText(sText, "ts_apostrophe");
-                    document.getElementById('res_o_ts_apostrophe').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_apostrophe').textContent = n1;
                 }
                 if (this.isSelected("o_ts_ellipsis")) {
                     [sText, n1] = this.formatText(sText, "ts_ellipsis");
-                    document.getElementById('res_o_ts_ellipsis').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_ellipsis').textContent = n1;
                 }
                 if (this.isSelected("o_ts_dash_start")) {
                     if (this.isSelected("o_ts_m_dash_start")) {
@@ -398,7 +406,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                     } else {
                         [sText, n1] = this.formatText(sText, "ts_n_dash_start");
                     }
-                    document.getElementById('res_o_ts_dash_start').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_dash_start').textContent = n1;
                 }
                 if (this.isSelected("o_ts_dash_middle")) {
                     if (this.isSelected("o_ts_m_dash_middle")) {
@@ -406,15 +414,15 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                     } else {
                         [sText, n1] = this.formatText(sText, "ts_n_dash_middle");
                     }
-                    document.getElementById('res_o_ts_dash_middle').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_dash_middle').textContent = n1;
                 }
                 if (this.isSelected("o_ts_quotation_marks")) {
                     [sText, n1] = this.formatText(sText, "ts_quotation_marks");
-                    document.getElementById('res_o_ts_quotation_marks').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_quotation_marks').textContent = n1;
                 }
                 if (this.isSelected("o_ts_spell")) {
                     [sText, n1] = this.formatText(sText, "ts_spell");
-                    document.getElementById('res_o_ts_spell').textContent = n1;
+                    this.oParent.getElementById('res_o_ts_spell').textContent = n1;
                 }
                 if (this.isSelected("o_ts_ligature")) {
                     // ligatures typographiques : fi, fl, ff, ffi, ffl, ft, st
@@ -464,12 +472,12 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                             [sText, n7] = this.formatText(sText, "ts_ligature_st_undo");
                         }
                     }
-                    document.getElementById('res_o_ts_ligature').textContent = n1 + n2 + n3 + n4 + n5 + n6 + n7;
+                    this.oParent.getElementById('res_o_ts_ligature').textContent = n1 + n2 + n3 + n4 + n5 + n6 + n7;
                 }
                 this.setOption("o_group_typo", false);
                 this.switchGroup("o_group_typo");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = 6;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = 6;
 
             // divers
             if (this.isSelected("o_group_misc")) {
@@ -479,15 +487,15 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                     } else {
                         [sText, n1] = this.formatText(sText, "ordinals_no_exponant");
                     }
-                    document.getElementById('res_o_ordinals_no_exponant').textContent = n1;
+                    this.oParent.getElementById('res_o_ordinals_no_exponant').textContent = n1;
                 }
                 if (this.isSelected("o_etc")) {
                     [sText, n1] = this.formatText(sText, "etc");
-                    document.getElementById('res_o_etc').textContent = n1;
+                    this.oParent.getElementById('res_o_etc').textContent = n1;
                 }
                 if (this.isSelected("o_missing_hyphens")) {
                     [sText, n1] = this.formatText(sText, "missing_hyphens");
-                    document.getElementById('res_o_missing_hyphens').textContent = n1;
+                    this.oParent.getElementById('res_o_missing_hyphens').textContent = n1;
                 }
                 if (this.isSelected("o_ma_word")) {
                     [sText, n1] = this.formatText(sText, "ma_word");
@@ -497,18 +505,18 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                             [sText, n1] = this.formatText(sText, "ma_1letter_uppercase");
                         }
                     }
-                    document.getElementById('res_o_ma_word').textContent = n1;
+                    this.oParent.getElementById('res_o_ma_word').textContent = n1;
                 }
                 this.setOption("o_group_misc", false);
                 this.switchGroup("o_group_misc");
             }
-            document.getElementById('grammalecte_tf_progressbar').value = document.getElementById('grammalecte_tf_progressbar').max;
+            this.oParent.getElementById('grammalecte_tf_progressbar').value = this.oParent.getElementById('grammalecte_tf_progressbar').max;
             // end of processing
 
             //window.setCursor("auto"); // restore pointer
 
             const t1 = Date.now();
-            document.getElementById('grammalecte_tf_time_res').textContent = this.getTimeRes((t1-t0)/1000);
+            this.oParent.getElementById('grammalecte_tf_time_res').textContent = this.getTimeRes((t1-t0)/1000);
             this.xTextArea.value = sText;
         }
         catch (e) {

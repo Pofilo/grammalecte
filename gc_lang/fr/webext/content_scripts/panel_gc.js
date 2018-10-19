@@ -1,5 +1,9 @@
 // JavaScript
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, oGrammalecte, xGrammalectePort, showError, window, document, console */
+
 "use strict";
 
 function onGrammalecteGCPanelClick (xEvent) {
@@ -50,7 +54,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xParagraphList = oGrammalecte.createNode("div", {id: "grammalecte_paragraph_list"});
         this.xContentNode.appendChild(this.xParagraphList);
         this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
-        this.oTooltip = new GrammalecteTooltip(this.xContentNode);
+        this.oTooltip = new GrammalecteTooltip(this.oParent, this.xContentNode);
         this.xPanelContent.appendChild(this.xContentNode);
         this.oNodeControl = new GrammalecteNodeControl();
     }
@@ -108,7 +112,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     recheckParagraph (iParaNum) {
         let sParagraphId = "grammalecte_paragraph" + iParaNum;
-        let xParagraph = document.getElementById(sParagraphId);
+        let xParagraph = this.oParent.getElementById(sParagraphId);
         this.blockParagraph(xParagraph);
         let sText = this.purgeText(xParagraph.textContent);
         xGrammalectePort.postMessage({
@@ -122,7 +126,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     refreshParagraph (sParagraphId, oResult) {
         try {
-            let xParagraph = document.getElementById(sParagraphId);
+            let xParagraph = this.oParent.getElementById(sParagraphId);
             xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
             xParagraph.textContent = "";
             this._tagParagraph(xParagraph, oResult.sParagraph, sParagraphId.slice(21), oResult.aGrammErr, oResult.aSpellErr);
@@ -195,24 +199,24 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     blockParagraph (xParagraph) {
         xParagraph.contentEditable = "false";
-        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Analyse…";
-        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
-        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 100%, 50%, .2)";
+        this.oParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Analyse…";
+        this.oParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
+        this.oParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 100%, 50%, .2)";
     }
 
     freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
-        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Réanalyser";
-        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(120, 30%, 50%)";
-        document.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "none";
+        this.oParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Réanalyser";
+        this.oParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(120, 30%, 50%)";
+        this.oParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "none";
     }
 
     applySuggestion (sNodeSuggId) { // sugg
         try {
-            let sErrorId = document.getElementById(sNodeSuggId).dataset.error_id;
+            let sErrorId = this.oParent.getElementById(sNodeSuggId).dataset.error_id;
             //let sParaNum = sErrorId.slice(0, sErrorId.indexOf("-"));
-            let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
-            xNodeErr.textContent = document.getElementById(sNodeSuggId).textContent;
+            let xNodeErr = this.oParent.getElementById("grammalecte_err" + sErrorId);
+            xNodeErr.textContent = this.oParent.getElementById(sNodeSuggId).textContent;
             xNodeErr.className = "grammalecte_error_corrected";
             xNodeErr.removeAttribute("style");
             this.oTooltip.hide();
@@ -225,8 +229,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     ignoreError (sIgnoreButtonId) {  // ignore
         try {
-            let sErrorId = document.getElementById(sIgnoreButtonId).dataset.error_id;
-            let xNodeErr = document.getElementById("grammalecte_err" + sErrorId);
+            let sErrorId = this.oParent.getElementById(sIgnoreButtonId).dataset.error_id;
+            let xNodeErr = this.oParent.getElementById("grammalecte_err" + sErrorId);
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "grammalecte_error_ignored";
             this.oTooltip.hide();
@@ -256,7 +260,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xEvent.stopImmediatePropagation();
             xEvent.preventDefault();
             xEvent.clipboardData.setData("text/plain", sText);
-        };
+        }
 
         document.addEventListener("copy", setClipboardData, true);
         document.execCommand("copy");
@@ -265,10 +269,10 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     copyTextToClipboard () {
         this.startWaitIcon();
         try {
-            let xClipboardButton = document.getElementById("grammalecte_clipboard_button");
+            let xClipboardButton = this.oParent.getElementById("grammalecte_clipboard_button");
             xClipboardButton.textContent = "->>";
             let sText = "";
-            for (let xNode of document.getElementsByClassName("grammalecte_paragraph")) {
+            for (let xNode of this.oParent.getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
             this._copyToClipboard(sText);
@@ -285,7 +289,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
 class GrammalecteTooltip {
 
-    constructor (xContentNode) {
+    constructor (oParent, xContentNode) {
+        this.oParent = oParent;
         this.sErrorId = null;
         this.bDebug = false;
         this.xTooltip = oGrammalecte.createNode("div", {id: "grammalecte_tooltip"});
@@ -316,7 +321,7 @@ class GrammalecteTooltip {
 
     show (sNodeErrorId) {  // err
         try {
-            let xNodeErr = document.getElementById(sNodeErrorId);
+            let xNodeErr = this.oParent.getElementById(sNodeErrorId);
             this.sErrorId = xNodeErr.dataset.error_id; // we store error_id here to know if spell_suggestions are given to the right word.
             let nTooltipLeftLimit = oGrammalecte.oGCPanel.getWidth() - 330; // paragraph width - tooltip width
             let nArrowLimit = oGrammalecte.oGCPanel.getWidth() - 20;
@@ -327,27 +332,27 @@ class GrammalecteTooltip {
             this.xTooltip.style.left = (xNodeErr.offsetLeft > nTooltipLeftLimit) ? nTooltipLeftLimit + "px" : xNodeErr.offsetLeft + "px";
             if (xNodeErr.dataset.error_type === "grammar") {
                 // grammar error
-                document.getElementById("grammalecte_tooltip_db_search").style.display = "none";
+                this.oParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 if (xNodeErr.dataset.gc_message.includes(" ##")) {
                     this.bDebug = true;
                     // display rule id
                     let n = xNodeErr.dataset.gc_message.indexOf(" ##");
-                    document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
-                    document.getElementById("grammalecte_tooltip_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
-                    document.getElementById("grammalecte_tooltip_rule_id").style.display = "block";
+                    this.oParent.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message.slice(0, n);
+                    this.oParent.getElementById("grammalecte_tooltip_rule_id").textContent = "Règle : " + xNodeErr.dataset.gc_message.slice(n+2);
+                    this.oParent.getElementById("grammalecte_tooltip_rule_id").style.display = "block";
                 } else {
                     this.bDebug = false;
-                    document.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message;
-                    document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
+                    this.oParent.getElementById("grammalecte_tooltip_message").textContent = xNodeErr.dataset.gc_message;
+                    this.oParent.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
                 }
                 if (xNodeErr.dataset.gc_url != "") {
-                    document.getElementById("grammalecte_tooltip_url").dataset.url = xNodeErr.dataset.gc_url;
-                    document.getElementById("grammalecte_tooltip_url").style.display = "inline";
+                    this.oParent.getElementById("grammalecte_tooltip_url").dataset.url = xNodeErr.dataset.gc_url;
+                    this.oParent.getElementById("grammalecte_tooltip_url").style.display = "inline";
                 } else {
-                    document.getElementById("grammalecte_tooltip_url").dataset.url = "";
-                    document.getElementById("grammalecte_tooltip_url").style.display = "none";
+                    this.oParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
+                    this.oParent.getElementById("grammalecte_tooltip_url").style.display = "none";
                 }
-                document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                this.oParent.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
                 let iSugg = 0;
                 this.clearSuggestionBlock();
                 if (xNodeErr.dataset.suggestions.length > 0) {
@@ -362,16 +367,16 @@ class GrammalecteTooltip {
             }
             if (xNodeErr.dataset.error_type === "spelling") {
                 // spelling mistake
-                document.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
-                document.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
-                document.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
-                document.getElementById("grammalecte_tooltip_url").dataset.url = "";
-                document.getElementById("grammalecte_tooltip_url").style.display = "none";
+                this.oParent.getElementById("grammalecte_tooltip_message").textContent = "Mot inconnu du dictionnaire.";
+                this.oParent.getElementById("grammalecte_tooltip_ignore").dataset.error_id = xNodeErr.dataset.error_id;
+                this.oParent.getElementById("grammalecte_tooltip_rule_id").style.display = "none";
+                this.oParent.getElementById("grammalecte_tooltip_url").dataset.url = "";
+                this.oParent.getElementById("grammalecte_tooltip_url").style.display = "none";
                 if (this.bDebug) {
-                    document.getElementById("grammalecte_tooltip_db_search").style.display = "inline";
-                    document.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://www.dicollecte.org/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
+                    this.oParent.getElementById("grammalecte_tooltip_db_search").style.display = "inline";
+                    this.oParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://www.dicollecte.org/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
                 } else {
-                    document.getElementById("grammalecte_tooltip_db_search").style.display = "none";
+                    this.oParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 }
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
@@ -417,7 +422,7 @@ class GrammalecteTooltip {
         // spell checking suggestions
         try {
             if (sErrorId === this.sErrorId) {
-                let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
+                let xSuggBlock = this.oParent.getElementById("grammalecte_tooltip_sugg_block");
                 if (iSuggBlock == 0) {
                     xSuggBlock.textContent = "";
                 }
@@ -439,7 +444,7 @@ class GrammalecteTooltip {
             }
         }
         catch (e) {
-            let xSuggBlock = document.getElementById("grammalecte_tooltip_sugg_block");
+            let xSuggBlock = this.oParent.getElementById("grammalecte_tooltip_sugg_block");
             xSuggBlock.appendChild(document.createTextNode("# Oups. Le mécanisme de suggestion orthographique a rencontré un bug… (Ce module est encore en phase β.)"));
             showError(e);
         }

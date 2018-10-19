@@ -1,5 +1,9 @@
 // Modify page
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, GrammalecteMenu, GrammalecteTextFormatter, GrammalecteLexicographer, GrammalecteGrammarChecker, GrammalecteMessageBox, showError, MutationObserver, chrome, document, console */
+
 /*
     JS sucks (again, and again, and again, and again…)
     Not possible to load content from within the extension:
@@ -53,6 +57,8 @@ const oGrammalecte = {
     xRightClickedNode: null,
 
     xObserver: null,
+
+    sExtensionUrl: null,
 
     listenRightClick: function () {
         // Node where a right click is done
@@ -133,7 +139,7 @@ const oGrammalecte = {
 
     createTFPanel: function () {
         if (this.oTFPanel === null) {
-            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
+            this.oTFPanel = new GrammalecteTextFormatter(this.sExtensionUrl, "grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
             this.oTFPanel.adjustHeight();
@@ -142,21 +148,21 @@ const oGrammalecte = {
 
     createLxgPanel: function () {
         if (this.oLxgPanel === null) {
-            this.oLxgPanel = new GrammalecteLexicographer("grammalecte_lxg_panel", "Lexicographe", 500, 700);
+            this.oLxgPanel = new GrammalecteLexicographer(this.sExtensionUrl, "grammalecte_lxg_panel", "Lexicographe", 500, 700);
             this.oLxgPanel.insertIntoPage();
         }
     },
 
     createGCPanel: function () {
         if (this.oGCPanel === null) {
-            this.oGCPanel = new GrammalecteGrammarChecker("grammalecte_gc_panel", "Grammalecte", 500, 700);
+            this.oGCPanel = new GrammalecteGrammarChecker(this.sExtensionUrl, "grammalecte_gc_panel", "Grammalecte", 500, 700);
             this.oGCPanel.insertIntoPage();
         }
     },
 
     createMessageBox: function () {
         if (this.oMessageBox === null) {
-            this.oMessageBox = new GrammalecteMessageBox("grammalecte_message_box", "Grammalecte");
+            this.oMessageBox = new GrammalecteMessageBox(this.sExtensionUrl, "grammalecte_message_box", "Grammalecte");
             this.oMessageBox.insertIntoPage();
         }
     },
@@ -210,7 +216,7 @@ const oGrammalecte = {
             showError(e);
         }
     }
-}
+};
 
 
 /*
@@ -222,6 +228,9 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
     let sText = "";
     switch (sActionDone) {
+        case "init":
+            oGrammalecte.sExtensionUrl = oMessage.sUrl;
+            break;
         case "parseAndSpellcheck":
             if (!bEnd) {
                 oGrammalecte.oGCPanel.addParagraphResult(result);

@@ -1,4 +1,8 @@
-// Background 
+// Background
+
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, oGrammalecte, helpers, showError, Worker, chrome, console */
 
 "use strict";
 
@@ -252,6 +256,7 @@ function handleConnexion (xPort) {
         }
     });
     //xPort.postMessage({sActionDone: "newId", result: iPortId});
+    xPort.postMessage({sActionDone: "init", sUrl: browser.extension.getURL("")});
 }
 
 browser.runtime.onConnect.addListener(handleConnexion);
@@ -329,7 +334,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             console.log("[Background] Unknown menu id: " + xInfo.menuItemId);
             console.log(xInfo);
             console.log(xTab);
-    }    
+    }
 });
 
 
