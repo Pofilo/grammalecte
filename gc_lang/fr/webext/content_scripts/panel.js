@@ -113,6 +113,20 @@ class GrammalectePanel {
             this.oShadow.appendChild(this.xPanel);
             document.body.appendChild(this.oShadowPanel);
         } else {
+            if (!document.getElementById("grammalecte_csspanel")){
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {id: "grammalecte_csspanel", rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel.css"})
+                );
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel_gc.css"})
+                );
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel_lxg.css"})
+                );
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel_tf.css"})
+                );
+            }
             document.body.appendChild(this.xPanel);
         }
     }

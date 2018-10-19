@@ -12,22 +12,22 @@ class GrammalecteMenu {
     constructor (nMenu, xNode) {
         this.xNode = xNode;
         this.sMenuId = "grammalecte_menu" + nMenu;
-        this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
         this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => { this.switchMenu(); };
         this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
         this.xMenu = this._createMenu();
 
         let xStyle = window.getComputedStyle(this.xNode);
-        let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
 
         let xNodeInsertAfter = this.xNode;
         if (document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')) {
             xNodeInsertAfter = this.xNode.parentNode;
         }
 
+        this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
         if (this.bShadow){
-            this.oShadowBtn = oGrammalecte.createNode("div", {className: "grammalecte_abs", style: "width:16px;height:16px;"});
+            let nMarginTop = -1 * (parseInt(xStyle.marginBottom.replace('px', ''), 10));
+            this.oShadowBtn = oGrammalecte.createNode("div", {style: "display:none;position:absolute;width:0;height:0;"});
             this.oShadowBtnNode = this.oShadowBtn.attachShadow({mode: "open"});
             this.oShadowBtnNode.appendChild(
                 oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
@@ -35,7 +35,7 @@ class GrammalecteMenu {
             this.oShadowBtnNode.appendChild(this.xButton);
             this._insertAfter(this.oShadowBtn, xNodeInsertAfter, nMarginTop);
 
-            this.oShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", className: "grammalecte_abs", style: "width:0;height:0;"});
+            this.oShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", style: "display:none;position:absolute;width:0;height:0;"});
             this.oShadowMenuNode = this.oShadowMenu.attachShadow({mode: "open"});
             this.oShadowMenuNode.appendChild(
                 oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
@@ -43,6 +43,12 @@ class GrammalecteMenu {
             this.oShadowMenuNode.appendChild(this.xMenu);
             this._insertAfter(this.oShadowMenu, xNodeInsertAfter, nMarginTop + 8);
         } else {
+            let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
+            if (!document.getElementById("grammalecte_cssmenu")){
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {id: "grammalecte_cssmenu", rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
+                );
+            }
             this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
             this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
         }

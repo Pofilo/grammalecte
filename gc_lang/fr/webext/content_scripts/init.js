@@ -139,12 +139,12 @@ const oGrammalecte = {
 
     createTFPanel: function () {
         if (this.oTFPanel === null) {
-            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
+            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 615, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
             window.setTimeout(function(self){
                 self.oTFPanel.adjustHeight();
-            }, 1, this);
+            }, 50, this);
         }
     },
 
@@ -232,6 +232,10 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
     switch (sActionDone) {
         case "init":
             oGrammalecte.sExtensionUrl = oMessage.sUrl;
+            // Start
+            oGrammalecte.listenRightClick();
+            oGrammalecte.createMenus();
+            oGrammalecte.observePage();
             break;
         case "parseAndSpellcheck":
             if (!bEnd) {
@@ -329,11 +333,3 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
-
-
-/*
-    Start
-*/
-oGrammalecte.listenRightClick();
-oGrammalecte.createMenus();
-oGrammalecte.observePage();

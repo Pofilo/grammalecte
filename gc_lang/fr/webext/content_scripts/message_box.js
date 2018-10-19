@@ -74,6 +74,14 @@ class GrammalecteMessageBox {
             this.oShadow.appendChild(this.xMessageBox);
             document.body.appendChild(this.oShadowPanel);
         } else {
+            if (!document.getElementById("grammalecte_cssmsg")){
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel.css"})
+                );
+                document.head.appendChild(
+                    oGrammalecte.createNode("link", {id: "grammalecte_cssmsg", rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/message_box.css"})
+                );
+            }
             document.body.appendChild(this.xMessageBox);
         }
     }
