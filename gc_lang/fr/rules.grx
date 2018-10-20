@@ -11154,12 +11154,20 @@ __gn_quels_quelles_accord_être__
         -1>> =\1[:-1]                                                                       # Accord de nombre erroné avec “\2”.
 
 __gn_quel_accord_être_sujet__
-    quel  [est|était|seras|sera|serais|serait|fut|fût|fus]  [la|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD
+    quel  [est|était|seras|sera|serais|serait|fut|fût|fus]  [la|cette|ma|ta|sa]  *WORD
+        <<- /gn/ not value(<1, "|tel|telle|") and morph(\4, ":[NA].*:[fe]", ":m")
+        -1>> quelle                                                                         # Accord de genre erroné avec « \3 \4 ».
+
+    quel  [est|était|seras|sera|serais|serait|fut|fût|fus]  [mon|ton|son|notre|votre|leur]  *WORD
         <<- /gn/ not value(<1, "|tel|telle|") and morph(\4, ":[NA].*:f", ":[me]")
         -1>> quelle                                                                         # Accord de genre erroné avec « \3 \4 ».
 
 __gn_quelle_accord_être_sujet__
-    quelle  [est|était|seras|sera|serais|serait|fut|fût|fus]  [le|ce|cet|mon|ton|son|notre|votre|leur]  *WORD
+    quelle  [est|était|seras|sera|serais|serait|fut|fût|fus]  [le|ce|cet]  *WORD
+        <<- /gn/ not value(<1, "|tel|telle|") and morph(\4, ":[NA].*:[me]", ":f")
+        -1>> quel                                                                           # Accord de genre erroné avec « \3 \4 ».
+
+    quelle  [est|était|seras|sera|serais|serait|fut|fût|fus]  [mon|ton|son|notre|votre|leur]  *WORD
         <<- /gn/ not value(<1, "|tel|telle|") and morph(\4, ":[NA].*:m", ":[fe]")
         -1>> quel                                                                           # Accord de genre erroné avec « \3 \4 ».
 
@@ -11179,6 +11187,8 @@ TEST: {{Quelle}} est mon animal favori ?                      ->> Quel
 TEST: {{Quels}} sont ces femmes ?                             ->> Quelles
 TEST: {{Quelles}} est cette imbécillité ?                     ->> Quelle
 TEST: {{Quelles}} sont ces hommes ?                           ->> Quels
+TEST: {{Quel}} est la politique ?                             ->> Quelle
+TEST: {{Quelle}} est le politique ?                           ->> Quel
 TEST: Il s’agit de définir quelle est notre propre orientation.
 
 
