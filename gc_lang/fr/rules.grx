@@ -7363,7 +7363,7 @@ __conf_voir_voire__
         <<- %2>>
 
     voir  @:A¬:[NGM]
-        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de)/")
+        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de|à)/")
             and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
         -1>> voir                       # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez :|https://fr.wiktionary.org/wiki/voire
 
@@ -7391,6 +7391,7 @@ TEST: elles sont pas mal ainsi, voire élégantes pourrait-on dire.
 TEST: il y en a peu, voire très peu.
 TEST: car elles pénètrent dans les poumons voire le système sanguin.
 TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux clowns un peu flippants.
+TEST: les membres de l’équipage commencent à voir flou
 
 
 # vieil / vieux
@@ -12115,8 +12116,12 @@ __conf_air_aire_ère__
     l’ [aire|ère] du temps
         <<- /conf/ -2>> air         # Confusion probable. Locution “l’air du temps”.|https://fr.wiktionary.org/wiki/%C3%AAtre_dans_l%E2%80%99air_du_temps
 
+    >avoir l’ [aire|ère] [de|d’]
+        <<- /conf/ -3>> air         # Confusion probable. La locution “avoir l’air de” signifie “sembler”, “paraître”…|https://fr.wiktionary.org/wiki/avoir_l%E2%80%99air
+
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
 TEST: Ce sera un jour dans l’{{ère}} du temps
+TEST: il a l’{{aire}} d’un plouc.
 
 
 # auspice / hospice
