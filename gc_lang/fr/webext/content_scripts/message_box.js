@@ -65,22 +65,14 @@ class GrammalecteMessageBox {
 
     insertIntoPage () {
         if (this.bShadow){
-            this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel.css"})
-            );
-            this.oShadow.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/message_box.css"})
-            );
+            oGrammalecte.createStyle("content_scripts/panel.css", null, this.oShadow);
+            oGrammalecte.createStyle("content_scripts/message_box.css", null, this.oShadow);
             this.oShadow.appendChild(this.xMessageBox);
             document.body.appendChild(this.oShadowPanel);
         } else {
             if (!document.getElementById("grammalecte_cssmsg")){
-                document.head.appendChild(
-                    oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/panel.css"})
-                );
-                document.head.appendChild(
-                    oGrammalecte.createNode("link", {id: "grammalecte_cssmsg", rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/message_box.css"})
-                );
+                oGrammalecte.createStyle("content_scripts/panel.css", null, document.head);
+                oGrammalecte.createStyle("content_scripts/message_box.css", "grammalecte_cssmsg", document.head);
             }
             document.body.appendChild(this.xMessageBox);
         }

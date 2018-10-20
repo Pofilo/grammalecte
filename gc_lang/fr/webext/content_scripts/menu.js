@@ -29,25 +29,19 @@ class GrammalecteMenu {
             let nMarginTop = -1 * (parseInt(xStyle.marginBottom.replace('px', ''), 10));
             this.oShadowBtn = oGrammalecte.createNode("div", {style: "display:none;position:absolute;width:0;height:0;"});
             this.oShadowBtnNode = this.oShadowBtn.attachShadow({mode: "open"});
-            this.oShadowBtnNode.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
-            );
+            oGrammalecte.createStyle("content_scripts/menu.css", null, this.oShadowBtnNode);
             this.oShadowBtnNode.appendChild(this.xButton);
             this._insertAfter(this.oShadowBtn, xNodeInsertAfter, nMarginTop);
 
             this.oShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", style: "display:none;position:absolute;width:0;height:0;"});
             this.oShadowMenuNode = this.oShadowMenu.attachShadow({mode: "open"});
-            this.oShadowMenuNode.appendChild(
-                oGrammalecte.createNode("link", {rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
-            );
+            oGrammalecte.createStyle("content_scripts/menu.css", null, this.oShadowMenuNode);
             this.oShadowMenuNode.appendChild(this.xMenu);
             this._insertAfter(this.oShadowMenu, xNodeInsertAfter, nMarginTop + 8);
         } else {
             let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
             if (!document.getElementById("grammalecte_cssmenu")){
-                document.head.appendChild(
-                    oGrammalecte.createNode("link", {id: "grammalecte_cssmenu", rel: "stylesheet", type: "text/css", media: "all", href: oGrammalecte.sExtensionUrl + "content_scripts/menu.css"})
-                );
+                oGrammalecte.createStyle("content_scripts/menu.css", "grammalecte_cssmenu", document.head);
             }
             this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
             this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);

@@ -217,6 +217,28 @@ const oGrammalecte = {
         catch (e) {
             showError(e);
         }
+    },
+
+    createStyle: function (sLinkCss, sLinkId=null, oAppend=null) {
+        try {
+            let xNode = document.createElement("link");
+            Object.assign(xNode, {
+                rel: "stylesheet",
+                type: "text/css",
+                media: "all",
+                href: this.sExtensionUrl + sLinkCss
+            });
+            if (sLinkId) {
+                Object.assign(xNode, {id: sLinkId});
+            }
+            if (oAppend) {
+                oAppend.appendChild(xNode);
+            }
+            return xNode;
+        }
+        catch (e) {
+            showError(e);
+        }
     }
 };
 
