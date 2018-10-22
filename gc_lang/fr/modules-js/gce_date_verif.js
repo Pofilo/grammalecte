@@ -17,6 +17,22 @@ const _dDaysInMonth = new Map ([
     [8, 31], [8, 31], [9, 30], [10, 31], [11, 30], [12, 31]
 ]);
 
+// Dans Python, datetime.weekday() envoie le résultat comme si nous étions dans un calendrier grégorien universal.
+// https://fr.wikipedia.org/wiki/Passage_du_calendrier_julien_au_calendrier_gr%C3%A9gorien
+// Selon Grégoire, le jeudi 4 octobre 1582 est immédiatement suivi par le vendredi 15 octobre.
+// En France, la bascule eut lieu le 9 décembre 1582 qui fut suivi par le 20 décembre 1582.
+// C’est la date retenue pour la bascule dans Grammalecte, mais le calendrier grégorien fut adopté dans le monde diversement.
+// Il fallut des siècles pour qu’il soit adopté par l’Occident et une grande partie du reste du monde.
+const _dGregorianToJulian = new Map ([
+    ["lundi",    "jeudi"],
+    ["mardi",    "vendredi"],
+    ["mercredi", "samedi"],
+    ["jeudi",    "dimanche"],
+    ["vendredi", "lundi"],
+    ["samedi",   "mardi"],
+    ["dimanche", "mercredi"]
+]);
+
 function _checkDate (nDay, nMonth, nYear) {
     // returns true or false
     if (nMonth > 12 || nMonth < 1 || nDay > 31 || nDay < 1) {
@@ -33,47 +49,58 @@ function _checkDate (nDay, nMonth, nYear) {
 }
 
 function checkDate (sDay, sMonth, sYear) {
-    // to use if sMonth is a number
-    return _checkDate(parseInt(sDay, 10), parseInt(sMonth, 10), parseInt(sYear, 10));
-}
-
-function checkDateWithString (sDay, sMonth, sYear) {
-    // to use if sMonth is a noun
-    return _checkDate(parseInt(sDay, 10), _dMonth.get(sMonth.toLowerCase()), parseInt(sYear, 10));
+    // return True if the date is valid
+    if (!sMonth.gl_isDigit()) {
+        sMonth = _dMonth.get(sMonth.toLowerCase());
+    }
+    if (_checkDate(parseInt(sDay, 10), parseInt(sMonth, 10), parseInt(sYear, 10))) {
+        return new Date(parseInt(sYear, 10), parseInt(sMonth, 10)-1, parseInt(sDay, 10));
+    }
+    return false;
 }
 
 function checkDay (sWeekday, sDay, sMonth, sYear) {
-    // to use if sMonth is a number
-    if (checkDate(sDay, sMonth, sYear)) {
-        let oDate = new Date(parseInt(sYear, 10), parseInt(sMonth, 10)-1, parseInt(sDay, 10));
-        if (_lDay[oDate.getDay()] != sWeekday.toLowerCase()) {
-            return false;
-        }
-        return true;
+    // return True if sWeekday is valid according to the given date
+    let xDate = checkDate(sDay, sMonth, sYear);
+    if (xDate  &&  _getDay(xDate) != sWeekday.toLowerCase()) {
+        return false;
     }
-    return false;
-}
-
-function checkDayWithString (sWeekday, sDay, sMonth, sYear) {
-    // to use if sMonth is a noun
-    if (checkDateWithString(sDay, sMonth, sYear)) {
-        let oDate = new Date(parseInt(sYear, 10), _dMonth.get(sMonth.toLowerCase())-1, parseInt(sDay, 10));
-        if (_lDay[oDate.getDay()] != sWeekday.toLowerCase()) {
-            return false;
-        }
-        return true;
-    }
-    return false;
+    // if the date isn’t valid, any day is valid.
+    return true;
 }
 
 function getDay (sDay, sMonth, sYear) {
-    // to use if sMonth is a number
-    let oDate = new Date(parseInt(sYear, 10), parseInt(sMonth, 10)-1, parseInt(sDay, 10));
-    return _lDay[oDate.getDay()];
+    // return the day of the date (in Gregorian calendar after 1582-12-20, in Julian calendar before 1582-12-09)
+    let xDate = checkDate(sDay, sMonth, sYear);
+    if (xDate) {
+        return _getDay(xDate);
+    }
+    return ""
 }
 
-function getDayWithString (sDay, sMonth, sYear) {
-    // to use if sMonth is a noun
-    let oDate = new Date(parseInt(sYear, 10), _dMonth.get(sMonth.toLowerCase())-1, parseInt(sDay, 10));
-    return _lDay[oDate.getDay()];
+function _getDay (xDate) {
+    // return the day of the date (in Gregorian calendar after 1582-12-20, in Julian calendar before 1582-12-09)
+    if (xDate.getFullYear() > 1582) {
+        // Calendrier grégorien
+        return _lDay[xDate.getDay()];
+    }
+    if (xDate.getFullYear() < 1582) {
+        // Calendrier julien
+        let sGregorianDay = _lDay[xDate.getDay()];
+        return _dGregorianToJulian.get(sGregorianDay, "Erreur: jour inconnu")
+    }
+    // 1582
+    if ((xDate.getMonth()+1) < 12  || xDate.getDate() <= 9) {
+        // Calendrier julien
+        let sGregorianDay = _lDay[xDate.getDay()];
+        return _dGregorianToJulian.get(sGregorianDay, "Erreur: jour inconnu");
+    }
+    else if (xDate.getDate() >= 20) {
+        // Calendrier grégorien
+        return _lDay[xDate.getDay()];
+    }
+    else {
+        // 10 - 19 décembre 1582: jours inexistants en France.
+        return "";
+    }
 }

@@ -3010,7 +3010,7 @@ __date_jour_mois_année__
         <<- /date/ space_after(\1, 1, 1) ->> 28 février|29 février                                  # Cette date est invalide. Il n’y a que 28 ou 29 jours en février.
 
     ~^\d\d?$  [janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre]  ~^\d{2,5}$
-        <<- /date/ not checkDateWithString(\1, \2, \3) ->> _                                        # Cette date est invalide.
+        <<- /date/ not checkDate(\1, \2, \3) ->> _                                                  # Cette date est invalide.
 
 TEST: le {{31 avril}}
 TEST: le {{30 février}}
@@ -3019,19 +3019,18 @@ TEST: {{29 février 2011}}
 
 __date_journée_jour_mois_année__
     ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$) - (~^\d\d?$) - (~^\d{2,5}$)
-        <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
-        -1>> =getDay(\2, \3, \4)                                                                            # Le jour de la date suivante est incorrect.
-
     ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$)  ([janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre])  (~^\d{2,5}$)
-        <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDayWithString(\1, \2, \3, \4)
-        -1>> =getDayWithString(\2, \3, \4)                                                          # Le jour de la date suivante est incorrect.
+        <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
+        -1>> =getDay(\2, \3, \4)
+        # Le jour de la date suivante est incorrect (selon le calendrier grégorien).|https://fr.wikipedia.org/wiki/Passage_du_calendrier_julien_au_calendrier_gr%C3%A9gorien
 
 TEST: {{samedi}}, le 10-06-2014                                           ->> mardi
 TEST: {{mercredi}}, le 10 juin 2014                                       ->> mardi
 TEST: {{lundi}}, 18 août 1912                                             ->> dimanche
 TEST: {{jeudi}} 17 aout 1912                                              ->> samedi
 TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
-
+TEST: {{jeudi}}, 18 août 1563 : mort de La Boétie (calendrier julien)     ->> mercredi
+TEST: mercredi, 18 août 1563 : mort de La Boétie (calendrier julien)
 
 
 !!
