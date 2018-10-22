@@ -5542,6 +5542,7 @@ __conf_à_substantifs__
     >machine a >remonter le temps
     >moule a [>gaufre|>gâteau|brioche|manqué|savarin|charlotte]
     >papier a [>lettre|musique]
+    >passage a tabac
     >punk a >chienne
     >rouge a >lèvre
     >sac a [dos|main|langer|merde|foutre]
@@ -7121,6 +7122,13 @@ TEST: À moins qu’elle n’en soit la victime.
 TEST: Je doute qu’il s’en soit sorti si aisément.
 TEST: Je refuse, quoi qu’il en soit.
 
+__conf_soie_soi_soit__
+    [>drap|>chemise|>robe|>mouchoir] [en|de] soi
+        <<- /conf/ -3>> soie                                    # Confusion probable. Pour la matière utilisée dans le textile, ércivez “soie”.
+
+TEST: elle portait une robe en {{soi}}.
+TEST: je n’aime que les draps de {{soi}}.
+
 
 __conf_soit_soi_soie__
     [<start>|,]  sois  @:(?:Os|C)¬:R
@@ -8159,6 +8167,7 @@ __purge_locutions__
     à couper le souffle
     à court terme
     à courte [échéance|portée]
+    à couteaux tirés
     à des kilomètres à la ronde
     à défaut d’autre chose
     à dose homéopathique
@@ -8681,6 +8690,7 @@ __purge_locutions__
     en bonne santé ?[physique|mentale|psychique]¿
     en bout de course
     en cas [de|d’] [besoin|doute|urgence]
+    en cas [de|d’] nécessité ?absoluẻ¿
     en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
     en chair et en os
     en chute libre
@@ -8901,6 +8911,7 @@ __purge_locutions__
     par bonté de cœur
     par ce biais
     par certains [aspects|côtés]
+    par gros temps
     par la même occasion
     par la suite
     par le passé
@@ -9645,6 +9656,7 @@ __simplication_substantifs__
     >noire comme une nuit sans lune
     >papier à [>lettre|musique]
     >partie de jambes en l’ air
+    >passage à tabac
     >passation de pouvoir
     >pièce de [théâtre|monnaie]
     >pièce de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
@@ -9661,6 +9673,7 @@ __simplication_substantifs__
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
     >requête en non révocation de sursis
+    >roman à l’ eau de rose
     >roue [avant|arrière]
     >rouge à lèvres
     >roulement à billes
@@ -9700,7 +9713,7 @@ __purge_locutions_adjectivales__
     basse consommation
     bon [enfant|marché|teint]
     bon chic ?,¿ bon genre
-    [clé|clef] en [main|mains]
+    [>clé|>clef] en >main
     dernier cri
     fleur bleue
     grand [public|luxe|maximum]
@@ -10134,6 +10147,7 @@ __purge_tous_deux_trois__
 @@@@
 
 __purge_locutions_verbales__
+    >aller bon train
     >arriver à échéance
     >arriver à point nommé
     >battre en [brèche|retraite]
@@ -10170,6 +10184,7 @@ __purge_locutions_verbales__
     >mettre au [point|pas]
     >mettre en [avant|bouche|demeure|garde|jeu|lumière|œuvre|place|scène|terre]
     >mourir jeune
+    >percer à jour
     >perdre [connaissance|conscience|raison]
     >perdre d’ avance
     >porter [atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
@@ -10186,6 +10201,7 @@ __purge_locutions_verbales__
     >rendre [hommage|visite]
     >rester lettre morte
     >rester lettres mortes
+    >saigner à blanc
     >suivre ?[ça|cela|ceci]¿ de près
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
     >tenir compte
@@ -10210,7 +10226,9 @@ __conf_locutions_verbales__
     >arriver a point nommé
     >mettre a [bas|>jour|>niveau|>nu|>nue|>plat|>terre]
     >mettre a l’ [écart|épreuve]
+    >percer a jour
     >prendre a la légère
+    >saigner a blanc
     >tenir a distance
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
@@ -12005,6 +12023,22 @@ TEST: cet homme {{à}} faim
 TEST: Votre réaction à froid ?
 
 
+__conf_tomber_à_terre__
+    [>tomber|>chuter] a terre
+        <<- /conf/ -2>> à                       # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+TEST: tombé {{a}} terre, il crut ne jamais pouvoir se relever.
+
+
+__conf_faire_bande_à_part__
+    >faire >bande a [>part|pare|pares|par]
+    >faire >bande à [parts|pare|pares|par]
+        <<- -2:0>> bande à part                 # Confusion. Locution “faire bande à part”.|https://fr.wiktionary.org/wiki/faire_bande_%C3%A0_part
+
+TEST: Cessez donc de faire {{bandes a pare}}.
+TEST: Elles ont fait {{bandes à parts}}.
+
+
 # abuser / abusé / abusif
 __conf_abusif__
     [c’|cela|ceci]  est  abusé
@@ -12197,7 +12231,7 @@ __conf_ban_banc__
     >mettre au banc
         <<- /conf/ not after("^ +des accusés") -3>> ban                 # Confusion : “mettre au ban” signifie “faire déchoir”.|https://fr.wiktionary.org/wiki/mettre_au_ban
 
-    [>publier|>publication] [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] bancs
+    [>publier|>convoquer|>publication] [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] bancs
         <<- /conf/ -3>> bans                                            # Confusion. Publication des bans.|https://fr.wikipedia.org/wiki/Publication_des_bans
 
 TEST: Convoquons le ban et l’{{arrière-banc}}.
@@ -12226,6 +12260,20 @@ __conf_bât_bas_bat__
         <<- /conf/ -2>> bât                                             # Confusion : là où le bât blesse.|http://fr.wiktionary.org/wiki/b%C3%A2t
 
 TEST: C’est là que le {{bas}} blesse.
+
+
+# beauté / botté
+__conf_beauté__
+    [>finir|>terminer|>achever|>conclure|>croître|>croitre|>grandir|>refaire] en [botter|botté|bootés|bottée|bottées]
+    >refaire une [botter|botté|bootés|bottée|bottées]
+    [canon|concours|grain|institut|pigeon|produit|salon]  de  [botter|botté|bootés|bottée|bottées]
+    de toute [botter|botté|bootés|bottée|bottées]
+        <<- /conf/ -3>> beauté                                          # Confusion probable. Écrivez “beauté”.|https://fr.wiktionary.org/wiki/beaut%C3%A9
+
+    quark [botter|botté|bootés|bottée|bottées]
+        <<- /conf/ -2>> beauté                                          # Confusion probable. Écrivez “beauté”.|https://fr.wiktionary.org/wiki/beaut%C3%A9
+
+TEST: cette fois, on va finir en {{bottée}}.
 
 
 # bel et bien
@@ -12901,6 +12949,14 @@ TEST: Les éléments {{mi}} en évidence suffisent à le désigner comme coupabl
 TEST: Ils étaient partis au restaurant après avoir {{mi}} à jour son profil.
 TEST: elles ont dansé, {{mie}} à jour leur carnet et sont parties.
 TEST: après avoir {{mi}} ses souliers tenir
+
+
+# tomber des nues
+__conf_tomber_des_nues__
+    >tomber des nus
+        <<- /conf/ -3>> nues                                    # Confusion. Écrivez “nues” (ancien terme pour “nuages”).|https://fr.wiktionary.org/wiki/tomber_des_nues
+
+TEST: Elle en est tombée des {{nus}}.
 
 
 # numérique / digital
