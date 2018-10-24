@@ -15813,6 +15813,10 @@ __enumérations__
         || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] *WORD
         <<- morph(\2, ":[NAM]") and morph(\5, ":[NAM]") and morph(\8, ":[NAM]") />> enum
 
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] *WORD
+        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] *WORD
+        <<- morph(\3, ":[NAM]") and morph(\6, ":[NAM]") />> enum
+
 
 @@@@
 @@@@
@@ -16397,6 +16401,8 @@ TEST: L’électricité, l’hydrogène, l’air comprimé n’existent pas…
 TEST: la Syrie, l’Irak, la Mésopotamie tombaient.
 TEST: des ruisselets, des arbres, une tonnelle qui rappelaient le temps.
 TEST: son assurance, sa grâce, son sex-appeal nous permettent de passer sans encombre liquides et rasoirs.
+TEST: Son courage, son ardeur étaient immenses,
+TEST: Le sentiment d’humiliation, la colère nous indiquent que…
 
 
 __conj_un_une_des__
