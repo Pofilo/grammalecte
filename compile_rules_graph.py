@@ -140,7 +140,7 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
         # Calculate positions
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
-        #if iLine == 3971: # debug
+        #if iLine == 15818: # debug
         #    print(" ".join(lToken))
         for i, sToken in enumerate(lToken):
             if sToken.startswith("(") and sToken.endswith(")"):
@@ -169,8 +169,10 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
 
 def changeReferenceToken (sText, dPos):
     "change group reference in <sText> with values in <dPos>"
+    if "\\" not in sText:
+        return sText
     for i in range(len(dPos), 0, -1):
-        sText = sText.replace("\\"+str(i), "\\"+str(dPos[i]))
+        sText = re.sub("\\\\"+str(i)+"(?![0-9])", "\\\\"+str(dPos[i]), sText)
     return sText
 
 
