@@ -5325,6 +5325,7 @@ TEST: Elle mord la vie {{à plaine dent}}.
 
 __conf_à_a_locutions__
     a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
+    a connotation sexuelle
     a côté [de|d’]
     a l’ heure actuelle
     a l’ heure qu’ il est
@@ -8159,6 +8160,7 @@ __purge_locutions__
     à chaque [fois|instant]
     à chaudes larmes
     à cœur [joie|ouvert|perdu]
+    à connotation sexuelle
     à corps perdu
     à côté  [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
     à couilles rabattues
@@ -8333,7 +8335,6 @@ __purge_locutions__
     advienne que pourra
     ah
     ailleurs
-    ainsi
     alentour
     alors
     après [moi|toi|soi|lui|eux]
@@ -9181,6 +9182,9 @@ __gestion_mots_grammaticaux__
     à grand renfort     [de|d’]
     à grands coups      [de|d’]
         <<- ~2:3>> *
+
+    ainsi
+        <<- not value(>1, "|que|qu’|") ~>> *
 
     au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu] [de|des|du]
         <<- ~2>> *
@@ -15807,15 +15811,20 @@ __se_vouloir__
         <<- /-1>> upron
 
 
-__enumérations__
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] *WORD
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] *WORD
-        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] *WORD
-        <<- morph(\2, ":[NAM]") and morph(\5, ":[NAM]") and morph(\8, ":[NAM]") />> enum
+__énumérations__
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
+        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
+        || ?,¿ ainsi [que|qu’] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
+        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") and morph(\3, ":[NAM]") />> enum
 
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] *WORD
-        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] *WORD
-        <<- morph(\3, ":[NAM]") and morph(\6, ":[NAM]") />> enum
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
+        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
+        || ?,¿ ainsi [que|qu’] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
+        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> enum
 
 
 @@@@
@@ -16731,7 +16740,7 @@ TEST: Or parmi celles-ci on trouve typiquement d’un côté les structures
 
 __conj_que_où_comment_verbe_sujet_sing__
     [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD
-        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "enum") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
         -2>> =suggVerb(\2, ":3s")                                                   # Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: les possibilités qu’{{offrent}} le chien
@@ -16743,7 +16752,7 @@ TEST: en proportion des efforts que requièrent son entretien et son exploitatio
 TEST: une crainte aussi que renforcent son éloignement et le protocole compliqué
 TEST: à l’époque de Mansur que grandissent la place et le rôle de…
 TEST: où vivent la majorité des immigrés et des enfants d’immigrés
-
+TEST: Que deviennent la vitesse, le courant, ainsi que le rendement ?
 
 __conj_lxquel_verbe_sujet_sing__
     [lequel|laquelle|lesquels|lesquelles]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD
