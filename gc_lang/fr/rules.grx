@@ -6717,6 +6717,14 @@ TEST: Il passa {{pardessus}} les collines.
 TEST: Mets ton pardessus ce matin.
 
 
+# gilet pare-balle
+__conf_pare_balle__
+    >gilet par >balle
+        <<- /conf/ -2:3>> pare-balles                                       # Un gilet pare-balles, c’est-à-dire qui pare les balles.
+
+TEST: Elle a enfilé son gilet {{par balle}}.
+
+
 # peu / peux / peut
 __conf_peu_peut_peux!6__
     peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
@@ -10209,6 +10217,7 @@ __purge_locutions_verbales__
     >faire salle comble
     >faire table rase
     >faire ce que bon [me|te|lui|nous|vous|leur] semble
+    >foutre en l’ air
     >jouer franc jeu
     >lâcher prise
     >laisser pour compte
@@ -11494,7 +11503,7 @@ TEST: De {{mauvaises}} {{hommes}}
 TEST: Ces produits sont de {{belle}} {{qualités}}.
 
 
-__gn_pfx_de_sur_avec_après_2m__
+__gn_pfx_sur_avec_après_2m__
     [sur|avec|après]  @:[NA]¬V0  @:[NA]¬*
         <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) )
             and not apposition(\2, \3) and morph(<1, ":[VRX]|<start>")
@@ -11517,6 +11526,21 @@ __gn_de_manière_façon_1m__
 
 TEST: il fit cela tans de fois et avec brio de manière {{élégant}}.
 TEST: elle s’y prit avec cet individu de façon {{charmant}}.
+
+
+## Conjonctions
+__gn_pfx_conj_2m__
+    [que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’]  (@:[NA]¬Y)  (@:[NA]¬*)
+        <<- /gn/ ( (morph(\1, ":m", ":[fe]") and morph(\2, ":f", "*")) or (morph(\1, ":f", ":[me]") and morph(\2, ":m", "*")) )
+            and not apposition(\1, \2)
+        -2>> =switchGender(\2)                                                                      # Accord de genre erroné avec “\1”.
+        <<- /gn/ __also__ and hasFemForm(\1) -1>> =switchGender(\1)                                 # Accord de genre erroné avec “\2”.
+        <<- /gn/ ( (morph(\1, ":p", ":[si]") and morph(\2, ":s", "*")) or (morph(\1, ":s", ":[pi]") and morph(\2, ":p", "*")) )
+            and not apposition(\1, \2)
+        -2>> =switchPlural(\2)                                                                      # Accord de nombre erroné avec “\1”.
+        <<- /gn/ __also__ -1>> =switchPlural(\1)                                                    # Accord de nombre erroné avec “\2”.
+
+TEST: en tant que dictionnaire {{personnelle}}.
 
 
 !!
@@ -15196,22 +15220,6 @@ TEST: ce que ça a {{donnée}}
 TEST: ce qu’il leur a {{données}}
 
 
-__ppas_avoir_conf_infi__
-    >avoir  ~e[rz]$
-        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence avec “\1” : “\2” n’est pas un participe passé.
-        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
-        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez :
-
-TEST: Avoir {{marcher}} toute la journée m’a épuisée.
-TEST: Avez-vous {{signez}} le contrat ?
-TEST: Ont-ils {{signer}} le contrat ?
-TEST: Ai-je déjà {{signez}} le contrat ?
-TEST: A-t-il déjà {{signer}} le contrat ?
-TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
-TEST: nous avons vu des avions voler haut dans le ciel.
-
-
 
 !!!! du / dû                                                                                      !!
 
@@ -15662,6 +15670,29 @@ TEST: Ne pas manger.
 TEST: Ne manquer de rien.
 TEST: Ne jamais miser sur ces tocards.
 TEST: Ne m’en rien laisser.
+
+
+#### PARTICIPES PASSÉS APRÈS AVOIR
+
+__ppas_avoir__
+    >avoir  ~..e[rz]$
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence avec “\1” : “\2” n’est pas un participe passé.
+        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
+        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
+
+    >avoir  ~..it$
+        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":Ip.*:3s", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence avec “\1” : “\2” n’est pas un participe passé.
+
+TEST: Avoir {{marcher}} toute la journée m’a épuisée.
+TEST: Avez-vous {{signez}} le contrat ?
+TEST: Ont-ils {{signer}} le contrat ?
+TEST: Ai-je déjà {{signez}} le contrat ?
+TEST: A-t-il déjà {{signer}} le contrat ?
+TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
+TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
+TEST: nous avons vu des avions voler haut dans le ciel.
 
 
 
@@ -16234,21 +16265,34 @@ TEST: pour s’y {{donnait}} le plus souvent.
 TEST: Il faut être sans préjugés.
 
 
-#### PAS D’INFINITIF
+#### PARTICIPES PASSÉS APRÈS ÊTRE
 
 __ppas_être__
     >être  ~..er$
-        <<- /infi/ morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
+        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
             and not morph(<1, ":Y|>ce") and not value(<1, "|c’|")
             and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
         -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être à l’infinitif.
 
+    >être  ~..ez$
+        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":2p", ":[NAQ]")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjuguer à la 2ᵉ personne du pluriel.
+
+    >être  ~..it$
+        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":Ip.*:3s", ":[NAQ]")
+            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjuguer à la 3ᵉ personne du singulier.
+
 TEST: ils sont {{tromper}} par tous ces hypocrites.
 TEST: Je suis {{emporter}} par la vague.
+TEST: Je suis {{emportez}} par la vague.
+TEST: il était {{sortit}} avec enthousiasme.
 TEST: Jeûner n’est pas seulement cesser de manger.
 TEST: Ne pas aimer n’est pas oublier l’autre.
 TEST: Dire la vérité, c’eût été manquer à sa parole.
 TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
+TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
+
 
 
 !!
@@ -16797,10 +16841,10 @@ TEST: Samantha et Eva leur {{décrive}} une leçon.
 __conf_ont!6__
     ils  on
     [eux|ceux|elles|celles]  qui  on
-        <<- /conf/ --1>> ont                                    # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “on”.
+        <<- /conf/ --1>> ont                                    # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “ont”.
 
     [elles|ceux-ci|ceux-là|celles-ci|celles-là]  on
-        <<- /conf/ not morph(<1, ":[RV]") -2>> ont              # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “on”.
+        <<- /conf/ not morph(<1, ":[RV]") -2>> ont              # Confusion probable : “on” est un pronom personnel. Pour la conjugaison du verbe “avoir”, écrivez “ont”.
 
 TEST: celles-là {{on}} {{vraiment}} un problème avec la religion.
 TEST: j’ai, tu as, ils ont, elles {{on}}
@@ -16875,7 +16919,7 @@ TEST: {{puisses}} notre ennemi trembler de peur devant notre courage.           
 !!
 
 __conj_que_où_comment_verbe_sans_sujet!3__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi|lequel|laquelle|lesquels|lesquelles]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
+    [que|qu’|où|comment|combien|dont|quand|pourquoi|lequel|laquelle|lesquels|lesquelles|si]  @:[12][sp]¬:(?:G|W|3[sp]|Y|P|Q|N|A|M|VC)
         <<- /conj/ morph(\2, ":[12]s") and not value(>1, "|je|tu|") -2>> =suggVerb(\2, ":3s")                           # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
         <<- /conj/ __else__ and morph(\2, ":[12]p") and not value(>1, "|nous|vous|") -2>> =suggVerb(\2, ":3p")          # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
 
@@ -17231,6 +17275,7 @@ TEST: le général n’en aura cure
 TEST: n’en avoir cure et faire comme si de rien n’était.
 TEST: Comme d’habitude, ils ont tout fait à l’arrache.
 TEST: tout un système pour justifier que “nous” avons toujours raison et que nous ne pouvons jamais avoir tort.
+TEST: Daignez le lui permettre.
 
 
 !!! Tests historiques                                                                             !!
