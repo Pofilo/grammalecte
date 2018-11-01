@@ -10834,6 +10834,7 @@ __gn_det_mas_sing_2m__
 
 TEST: cet outil {{terribles}} qu’il a dans les mains
 TEST: J’aimerais connaître de quel parti {{gauchistes}} on parle.
+TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
 
 
 __gn_mon_ton_son_1m__
@@ -14559,6 +14560,7 @@ TEST: ils sont très loin d’être {{idiot}}.
 TEST: ils croient être {{perdu}}
 TEST: ceux-ci ne peuvent pas être devenus aussi {{grossier}}
 TEST: lesquels pensent avoir paru {{faible}} devant leurs pairs.
+TEST: Ils sont de manière si étonnante et si admirable {{arrivé}} à ce résultat…
 
 
 __ppas_3pl_fem_verbe_état__
@@ -15036,6 +15038,7 @@ TEST: Il a {{prit}} le train.
 TEST: Il a {{donner}} sa vie pour elle.                                           ->> donné
 TEST: Ils leur ont {{données}} un cadeau.
 TEST: ils avaient, en ce temps-là, déjà {{perdus}} leurs illusions
+TEST: Ils ont à plusieurs reprises {{perdus}} leur sang-froid.
 TEST: Elle avait {{pose}} son tricot                                              ->> posé
 TEST: Ils avaient barre sur lui.
 TEST: qui ont {{refuse}} de se soumettre                                          ->> refusé
@@ -16477,6 +16480,7 @@ __conj_vinfi_suj__
 
 TEST: manger {{fais}} grossir.
 TEST: boire immodérément {{nuis}} à la santé
+TEST: Réfléchir à tête reposée {{prends}} du temps.
 TEST: Manger salé, c’est mauvais pour la santé.
 
 
@@ -16520,6 +16524,7 @@ TEST: la chatte {{finis}}
 TEST: le chat {{finis}}
 TEST: une crise {{violent}}
 TEST: un cri {{violes}}
+TEST: L’homme sur le bateau de Patrick {{viens}} de temps en temps {{mangé}} chez moi.
 TEST: L’hypothétique nouveau président
 TEST: une majorité de garçons voient mal comment faire
 TEST: un tas de choses pouvaient aller de travers.
@@ -16544,7 +16549,6 @@ __conj_un_une_des__
     [un|une]  des  *WORD  qui  @:V¬:(?:3[sp]|P|G)
         <<- /conj/ morph(<1, ":C|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du singulier ou du pluriel.
-
 
 TEST: un des ingénieurs {{vinrent}} nous dire quoi faire.
 TEST: un des membres présents au conseil {{demandent}} un vote à bulletin secret
@@ -16726,6 +16730,8 @@ TEST: mes filles {{passe}} ce matin
 TEST: vos filles {{passes}} ce matin
 TEST: ces travaux qui {{demande}} tant d’efforts.
 TEST: vos questions ne {{réclame}} aucune réflexion.
+TEST: Ces attaques à main armée {{donne}} la chair de poule.
+TEST: Ces marchands {{passe}} leur temps à se quereller.
 TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
 
 
@@ -16786,6 +16792,7 @@ TEST: les marchandes {{paie}}
 TEST: les marchandes {{marchande}}
 TEST: les chattes {{finis}}
 TEST: les chattes {{manges}}
+TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.
 TEST: les chattes {{danse}}
 TEST: certains hommes {{marchandes}} sans cesse
 TEST: certaines femmes {{danse}} beaucoup
@@ -17111,6 +17118,39 @@ TEST: quand elle {{rencontrât}} son créateur
 TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 
 
+
+!!
+!!
+!!!! Incohérence ponctuation/mode verbal                                                          !!
+!!
+!!
+
+__conj_nom_propre_virgule__
+    <start>  @:M  ,  @:3s¬:[NAGE]
+        <<- /conj/ space_after(\2, 0) -2:3>> \2                         # Soit la virgule est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
+        <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")        # Soit la virgule après “\2” est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
+
+TEST: {{Paul,}} {{vient}} voir ce qui se passe.
+TEST: Maria, avance devant toi.
+
+
+__conj_det_nom_sing_virgule__
+    <start>  [un|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa]  @:[NA]  ,  @:3s¬:[NAGE]
+        <<- /conj/ space_after(\3, 0) -2:4>> \2                         # Soit la virgule est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
+        <<- /conj/ __also__ -5>> =suggVerbTense(\5, ":E", ":2s")        # Soit la virgule après “\2 \3” est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
+
+TEST: {{l’homme,}} {{devient}} difficile.
+TEST: ce matin, viens me voir.
+
+
+__conj_det_nom_plur_virgule__
+    <start>  [les|ces|mes|tes|ses|plusieurs|quelques]  @:[NA]  ,  @:3p¬:[NAGE]
+        <<- /conj/ space_after(\3, 0) -2:4>> \2                         # La virgule est superflue (on ne sépare pas le verbe du sujet).
+
+TEST: {{les hommes,}} deviennent plus en plus arrogant.
+
+
+
 @@@@
 @@@@
 @@@@
@@ -17166,21 +17206,12 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 !!
 
 !!! À trier                                                                                       !!
-TEST: L’homme sur le bateau de Patrick {{viens}} de temps en temps {{mangé}} chez moi.
-TEST: Ces marchands {{passe}} leur temps à se quereller.
-TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
-TEST: Ils sont de manière si étonnante et si admirable {{arrivé}} à ce résultat…
-TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.
-TEST: Ils ont à plusieurs reprises {{perdus}} leur sang-froid.
-TEST: Ces attaques à main armée {{donne}} la chair de poule.
-TEST: Réfléchir à tête reposée {{prends}} du temps.
 
 TODO: Il faut au préalable avoir {{définit}} un protocole.
 TODO: Il y a quatre cents {{mot}} dans la phrase.
 TODO: Ma mémoire a aussi été {{effacé}}.
 TODO: à condition qu’elle l’{{est}} jamais été
 TODO: Vous la {{voulait}}
-
 TODO: un délire systématisé de persécution basé sur des interprétations
 TODO: Soudain, surgit l’un des ouvriers…
 TODO: Ainsi périt l’inconstant.
