@@ -7002,6 +7002,7 @@ TEST: Quelles ont été les annonces faites ?
 TEST: Elle cache qu’elle a été en prison.
 TEST: Elle avait été accueillie avec joie.
 TEST: Quelle va être l’attitude de Geoffroy ?
+TEST: Quelle pourrait être la teneur de leur entretien.
 
 
 # quoi que / quoique
@@ -11755,6 +11756,15 @@ TEST: 12 fois par {{jours}}, ça suffit.
 TEST: Deux fois par mois…
 
 
+#### lundi, mardi, mercredi, jeudi, vendredi, samedi, dimanche / matin, soir
+__sgpl_jour_matin_soir__
+    [>lundi|>mardi|>mercredi|>jeudi|>vendredi|>samedi|>dimanche] [matins|soirs|après-midis]
+        <<- /sgpl/ -2>> =\2[:-1]                                        # Ici, comme adverbe, ces mots sont invariables. Exemple : les mardis soir (les mardi au soir).
+
+TEST: Tous les lundis {{soirs}}.
+TEST: Les mardis soir.
+
+
 #### Locutions
 
 # à
@@ -15458,7 +15468,13 @@ __imp_union_moi__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
+    ,  *WORD  moi
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-moi"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
 TEST: {{Apportez moi}} ce dictionnaire
+TEST: tu me dois bien ça, {{Achèves moi}}, je t’en prie.
+TEST: explique ça mieux, {{Définit moi}} ça en termes intelligibles.
 TEST: Viens moi je m’ennuie.
 
 
@@ -15468,7 +15484,12 @@ __imp_union_toi__
             and morph(\1, ":E:2s", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
+    ,  *WORD  toi
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-toi"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
 TEST: {{Donne toi}} du temps.
+TEST: j’en ai marre, {{instruit toi}} avant de parler.
 
 
 __imp_union_nous_vous_lui__
@@ -15477,7 +15498,12 @@ __imp_union_nous_vous_lui__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
+    ,  *WORD  [nous|vous|lui]
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
 TEST: {{Donne nous}} du café.
+TEST: si ça se peut, {{apprend nous}} à réussir.
 
 
 __imp_union_y__
@@ -15486,7 +15512,7 @@ __imp_union_y__
             and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-TEST: {{Donne nous}} du café.
+TEST: {{Donne y}} du tien.
 
 
 __imp_union_les__
@@ -15495,7 +15521,13 @@ __imp_union_les__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))") and morph(<1, ":Cc|<start>|>,")
         ->> \1-les                                      # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
+    ,  *WORD  les
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-les"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
 TEST: {{chante les}} avec conviction
+TEST: tu dois finir, {{finit les}}.
 TEST: Veut les en convaincre.
 TEST: Invite les plus intelligents…
 TEST: Prenez les 5 ou 6 revues les plus connues.
@@ -15509,9 +15541,15 @@ __imp_union_le_la_leur__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
+    ,  *WORD  [le|la|leur|en]
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
 TEST: {{Prends le}} avec toi.
 TEST: {{Dites leur}} que nous sommes là.
 TEST: {{restons en}} là.
+TEST: j’en ai plus qu’assez, {{apprend le}}.
 TEST: un sujet si extrêmement politique et polémique lui a donné un accès
 TEST: Les États d’ores et déjà très affaiblis le seraient encore plus
 TEST: « C’est ainsi », résume la cyptologue (erreur orthographique délibérée sur “cyptologue” pour empêcher certains faux positifs)
