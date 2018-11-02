@@ -58,9 +58,8 @@ class GrammalecteMenu {
         this.xNode.addEventListener('focus', (e) => {
             if (this.bShadow) {
                 this.xShadowBtn.style.display = "block";
-            } else {
-                this.xButton.style.display = "block";
             }
+            this.xButton.style.display = "block";
         });
         /*this.xNode.addEventListener('blur', (e) => {
             window.setTimeout(() => {this.xButton.style.display = "none";}, 300);
@@ -157,8 +156,7 @@ class GrammalecteMenu {
     switchMenu () {
         if (this.bShadow) {
             this.xShadowMenu.style.display = (this.xShadowMenu.style.display == "block") ? "none" : "block";
-        } else {
-            this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
         }
+        this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
     }
 }
