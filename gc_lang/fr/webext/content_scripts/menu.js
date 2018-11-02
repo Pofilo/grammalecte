@@ -25,22 +25,22 @@ class GrammalecteMenu {
         }
 
         this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
-        if (this.bShadow){
+        if (this.bShadow) {
             let nMarginTop = -1 * (parseInt(xStyle.marginBottom.replace('px', ''), 10));
-            this.oShadowBtn = oGrammalecte.createNode("div", {style: "display:none;position:absolute;width:0;height:0;"});
-            this.oShadowBtnNode = this.oShadowBtn.attachShadow({mode: "open"});
-            oGrammalecte.createStyle("content_scripts/menu.css", null, this.oShadowBtnNode);
-            this.oShadowBtnNode.appendChild(this.xButton);
-            this._insertAfter(this.oShadowBtn, xNodeInsertAfter, nMarginTop);
+            this.xShadowBtn = oGrammalecte.createNode("div", {style: "display:none;position:absolute;width:0;height:0;"});
+            this.xShadowBtnNode = this.xShadowBtn.attachShadow({mode: "open"});
+            oGrammalecte.createStyle("content_scripts/menu.css", null, this.xShadowBtnNode);
+            this.xShadowBtnNode.appendChild(this.xButton);
+            this._insertAfter(this.xShadowBtn, xNodeInsertAfter, nMarginTop);
 
-            this.oShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", style: "display:none;position:absolute;width:0;height:0;"});
-            this.oShadowMenuNode = this.oShadowMenu.attachShadow({mode: "open"});
-            oGrammalecte.createStyle("content_scripts/menu.css", null, this.oShadowMenuNode);
-            this.oShadowMenuNode.appendChild(this.xMenu);
-            this._insertAfter(this.oShadowMenu, xNodeInsertAfter, nMarginTop + 8);
+            this.xShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", style: "display:none;position:absolute;width:0;height:0;"});
+            this.xShadowMenuNode = this.xShadowMenu.attachShadow({mode: "open"});
+            oGrammalecte.createStyle("content_scripts/menu.css", null, this.xShadowMenuNode);
+            this.xShadowMenuNode.appendChild(this.xMenu);
+            this._insertAfter(this.xShadowMenu, xNodeInsertAfter, nMarginTop + 8);
         } else {
             let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
-            if (!document.getElementById("grammalecte_cssmenu")){
+            if (!document.getElementById("grammalecte_cssmenu")) {
                 oGrammalecte.createStyle("content_scripts/menu.css", "grammalecte_cssmenu", document.head);
             }
             this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
@@ -56,10 +56,11 @@ class GrammalecteMenu {
 
     _createListeners () {
         this.xNode.addEventListener('focus', (e) => {
-            if (this.bShadow){
-                this.oShadowBtn.style.display = "block";
+            if (this.bShadow) {
+                this.xShadowBtn.style.display = "block";
+            } else {
+                this.xButton.style.display = "block";
             }
-            this.xButton.style.display = "block";
         });
         /*this.xNode.addEventListener('blur', (e) => {
             window.setTimeout(() => {this.xButton.style.display = "none";}, 300);
@@ -76,7 +77,7 @@ class GrammalecteMenu {
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
             xCloseButton.onclick = () => {
                 if (this.bShadow){
-                    this.oShadowBtn.style.display = "none";
+                    this.xShadowBtn.style.display = "none";
                 }
                 this.xButton.style.display = "none";
                 this.switchMenu();
@@ -144,9 +145,9 @@ class GrammalecteMenu {
     }
 
     deleteNodes () {
-        if (this.bShadow){
-            this.oShadowMenu.parentNode.removeChild(this.oShadowMenu);
-            this.oShadowBtn.parentNode.removeChild(this.oShadowBtn);
+        if (this.bShadow) {
+            this.xShadowMenu.parentNode.removeChild(this.xShadowMenu);
+            this.xShadowBtn.parentNode.removeChild(this.xShadowBtn);
         } else {
             this.xMenu.parentNode.removeChild(this.xMenu);
             this.xButton.parentNode.removeChild(this.xButton);
@@ -154,9 +155,10 @@ class GrammalecteMenu {
     }
 
     switchMenu () {
-        if (this.bShadow){
-            this.oShadowMenu.style.display = (this.oShadowMenu.style.display == "block") ? "none" : "block";
+        if (this.bShadow) {
+            this.xShadowMenu.style.display = (this.xShadowMenu.style.display == "block") ? "none" : "block";
+        } else {
+            this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
         }
-        this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
     }
 }

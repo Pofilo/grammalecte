@@ -219,7 +219,7 @@ const oGrammalecte = {
         }
     },
 
-    createStyle: function (sLinkCss, sLinkId=null, oAppend=null) {
+    createStyle: function (sLinkCss, sLinkId=null, xNodeToAppendTo=null) {
         try {
             let xNode = document.createElement("link");
             Object.assign(xNode, {
@@ -231,8 +231,8 @@ const oGrammalecte = {
             if (sLinkId) {
                 Object.assign(xNode, {id: sLinkId});
             }
-            if (oAppend) {
-                oAppend.appendChild(xNode);
+            if (xNodeToAppendTo) {
+                xNodeToAppendTo.appendChild(xNode);
             }
             return xNode;
         }

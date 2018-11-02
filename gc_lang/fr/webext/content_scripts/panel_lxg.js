@@ -89,8 +89,8 @@ class GrammalecteLexicographer extends GrammalectePanel {
     }
 
     setHidden (sClass, bHidden) {
-        let elmOpt = this.oParent.getElementById('grammalecte_panel_content');
-        for (let xNode of elmOpt.getElementsByClassName(sClass)) {
+        let xPanelContent = this.xParent.getElementById('grammalecte_panel_content');
+        for (let xNode of xPanelContent.getElementsByClassName(sClass)) {
             xNode.hidden = bHidden;
         }
     }
