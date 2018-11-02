@@ -315,7 +315,7 @@ class Dictionnaire:
                "# AFFIXES DU {} v{}\n".format(dTplVars['name'], self.sVersion) + \
                "# par Olivier R. -- licence MPL 2.0\n" + \
                "# Généré le " + time.strftime("%d-%m-%Y à %H:%M") + "\n" \
-               "# Pour améliorer le dictionnaire, allez sur http://www.dicollecte.org/\n\n"
+               "# Pour améliorer le dictionnaire, allez sur https://grammalecte.net/\n\n"
 
         with open(spDst+'/'+dTplVars['asciiName']+'.aff', 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(info)

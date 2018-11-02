@@ -3,7 +3,7 @@
 ## Informations
 
 Grammalecte est un correcteur grammatical open source dédié à la langue française.
-Site Internet : https://www.dicollecte.org/
+Site Internet : https://grammalecte.net/
 
 ## Installation
 

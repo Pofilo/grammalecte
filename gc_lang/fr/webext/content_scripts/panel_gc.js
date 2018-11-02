@@ -374,7 +374,7 @@ class GrammalecteTooltip {
                 this.xParent.getElementById("grammalecte_tooltip_url").style.display = "none";
                 if (this.bDebug) {
                     this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "inline";
-                    this.xParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://www.dicollecte.org/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
+                    this.xParent.getElementById("grammalecte_tooltip_db_search").dataset.url = "https://grammalecte.net/dictionary.php?prj=fr&lemma="+xNodeErr.textContent;
                 } else {
                     this.xParent.getElementById("grammalecte_tooltip_db_search").style.display = "none";
                 }

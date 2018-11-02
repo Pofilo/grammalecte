@@ -4,7 +4,7 @@
 French grammar checker
 By Olivier R. (olivier /at/ grammalecte /dot/ net)
 
-Website: http://www.dicollecte.org/grammalecte
+Website: https://grammalecte.net/
 
 License: GPL 3 -- http://www.gnu.org/copyleft/gpl.html
 
