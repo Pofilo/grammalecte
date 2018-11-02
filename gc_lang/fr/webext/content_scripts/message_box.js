@@ -1,6 +1,10 @@
 // JavaScript
 // Panel creator
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global oGrammalecte, xGrammalectePort, showError, window, document, console */
+
 "use strict";
 
 
@@ -8,6 +12,16 @@ class GrammalecteMessageBox {
 
     constructor (sId, sTitle) {
         this.sId = sId;
+
+        this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
+        if (this.bShadow) {
+            this.xShadowPanel = oGrammalecte.createNode("div", {id: this.sId+"_shadow", style: "width:0;height:0;"});
+            this.xShadow = this.xShadowPanel.attachShadow({mode: "open"});
+            this.xParent = this.xShadow;
+        } else {
+            this.xParent = document;
+        }
+
         this.xMessageBoxBar = oGrammalecte.createNode("div", {className: "grammalecte_message_box_bar"});
         this.xMessageBoxContent = oGrammalecte.createNode("div", {className: "grammalecte_message_box_content"});
         this.xMessageBox = this._createPanel(sTitle);
@@ -50,7 +64,18 @@ class GrammalecteMessageBox {
     }
 
     insertIntoPage () {
-        document.body.appendChild(this.xMessageBox);
+        if (this.bShadow){
+            oGrammalecte.createStyle("content_scripts/panel.css", null, this.xShadow);
+            oGrammalecte.createStyle("content_scripts/message_box.css", null, this.xShadow);
+            this.xShadow.appendChild(this.xMessageBox);
+            document.body.appendChild(this.xShadowPanel);
+        } else {
+            if (!document.getElementById("grammalecte_cssmsg")){
+                oGrammalecte.createStyle("content_scripts/panel.css", null, document.head);
+                oGrammalecte.createStyle("content_scripts/message_box.css", "grammalecte_cssmsg", document.head);
+            }
+            document.body.appendChild(this.xMessageBox);
+        }
     }
 
     show () {

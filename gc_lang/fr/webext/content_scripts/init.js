@@ -1,5 +1,9 @@
 // Modify page
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, GrammalecteMenu, GrammalecteTextFormatter, GrammalecteLexicographer, GrammalecteGrammarChecker, GrammalecteMessageBox, showError, MutationObserver, chrome, document, console */
+
 /*
     JS sucks (again, and again, and again, and again…)
     Not possible to load content from within the extension:
@@ -53,6 +57,8 @@ const oGrammalecte = {
     xRightClickedNode: null,
 
     xObserver: null,
+
+    sExtensionUrl: null,
 
     listenRightClick: function () {
         // Node where a right click is done
@@ -133,10 +139,12 @@ const oGrammalecte = {
 
     createTFPanel: function () {
         if (this.oTFPanel === null) {
-            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
+            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 615, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
-            this.oTFPanel.adjustHeight();
+            window.setTimeout(function(self){
+                self.oTFPanel.adjustHeight();
+            }, 50, this);
         }
     },
 
@@ -209,8 +217,30 @@ const oGrammalecte = {
         catch (e) {
             showError(e);
         }
+    },
+
+    createStyle: function (sLinkCss, sLinkId=null, xNodeToAppendTo=null) {
+        try {
+            let xNode = document.createElement("link");
+            Object.assign(xNode, {
+                rel: "stylesheet",
+                type: "text/css",
+                media: "all",
+                href: this.sExtensionUrl + sLinkCss
+            });
+            if (sLinkId) {
+                Object.assign(xNode, {id: sLinkId});
+            }
+            if (xNodeToAppendTo) {
+                xNodeToAppendTo.appendChild(xNode);
+            }
+            return xNode;
+        }
+        catch (e) {
+            showError(e);
+        }
     }
-}
+};
 
 
 /*
@@ -222,6 +252,13 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
     let sText = "";
     switch (sActionDone) {
+        case "init":
+            oGrammalecte.sExtensionUrl = oMessage.sUrl;
+            // Start
+            oGrammalecte.listenRightClick();
+            oGrammalecte.createMenus();
+            oGrammalecte.observePage();
+            break;
         case "parseAndSpellcheck":
             if (!bEnd) {
                 oGrammalecte.oGCPanel.addParagraphResult(result);
@@ -318,11 +355,3 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
-
-
-/*
-    Start
-*/
-oGrammalecte.listenRightClick();
-oGrammalecte.createMenus();
-oGrammalecte.observePage();

@@ -1,5 +1,9 @@
 // JavaScript
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, oGrammalecte, showError, console */
+
 "use strict";
 
 
@@ -85,7 +89,8 @@ class GrammalecteLexicographer extends GrammalectePanel {
     }
 
     setHidden (sClass, bHidden) {
-        for (let xNode of document.getElementsByClassName(sClass)) {
+        let xPanelContent = this.xParent.getElementById('grammalecte_panel_content');
+        for (let xNode of xPanelContent.getElementsByClassName(sClass)) {
             xNode.hidden = bHidden;
         }
     }

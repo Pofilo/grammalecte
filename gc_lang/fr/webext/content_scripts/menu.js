@@ -1,5 +1,9 @@
 // JavaScript
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global oGrammalecte, xGrammalectePort, showError, window, document */
+
 "use strict";
 
 
@@ -14,15 +18,34 @@ class GrammalecteMenu {
         this.xMenu = this._createMenu();
 
         let xStyle = window.getComputedStyle(this.xNode);
-        let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
 
         let xNodeInsertAfter = this.xNode;
         if (document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')) {
             xNodeInsertAfter = this.xNode.parentNode;
         }
 
-        this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
-        this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
+        this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
+        if (this.bShadow) {
+            let nMarginTop = -1 * (parseInt(xStyle.marginBottom.replace('px', ''), 10));
+            this.xShadowBtn = oGrammalecte.createNode("div", {style: "display:none;position:absolute;width:0;height:0;"});
+            this.xShadowBtnNode = this.xShadowBtn.attachShadow({mode: "open"});
+            oGrammalecte.createStyle("content_scripts/menu.css", null, this.xShadowBtnNode);
+            this.xShadowBtnNode.appendChild(this.xButton);
+            this._insertAfter(this.xShadowBtn, xNodeInsertAfter, nMarginTop);
+
+            this.xShadowMenu = oGrammalecte.createNode("div", {id: this.sMenuId+"_shadow", style: "display:none;position:absolute;width:0;height:0;"});
+            this.xShadowMenuNode = this.xShadowMenu.attachShadow({mode: "open"});
+            oGrammalecte.createStyle("content_scripts/menu.css", null, this.xShadowMenuNode);
+            this.xShadowMenuNode.appendChild(this.xMenu);
+            this._insertAfter(this.xShadowMenu, xNodeInsertAfter, nMarginTop + 8);
+        } else {
+            let nMarginTop = -1 * (8 + parseInt(xStyle.marginBottom.replace('px', ''), 10));
+            if (!document.getElementById("grammalecte_cssmenu")) {
+                oGrammalecte.createStyle("content_scripts/menu.css", "grammalecte_cssmenu", document.head);
+            }
+            this._insertAfter(this.xButton, xNodeInsertAfter, nMarginTop);
+            this._insertAfter(this.xMenu, xNodeInsertAfter, nMarginTop + 8);
+        }
         this._createListeners();
     }
 
@@ -33,6 +56,9 @@ class GrammalecteMenu {
 
     _createListeners () {
         this.xNode.addEventListener('focus', (e) => {
+            if (this.bShadow) {
+                this.xShadowBtn.style.display = "block";
+            }
             this.xButton.style.display = "block";
         });
         /*this.xNode.addEventListener('blur', (e) => {
@@ -49,6 +75,9 @@ class GrammalecteMenu {
             let xMenu = oGrammalecte.createNode("div", {id: this.sMenuId, className: "grammalecte_menu"});
             let xCloseButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_close_button", textContent: "×"} );
             xCloseButton.onclick = () => {
+                if (this.bShadow){
+                    this.xShadowBtn.style.display = "none";
+                }
                 this.xButton.style.display = "none";
                 this.switchMenu();
             }
@@ -115,11 +144,19 @@ class GrammalecteMenu {
     }
 
     deleteNodes () {
-        this.xMenu.parentNode.removeChild(this.xMenu);
-        this.xButton.parentNode.removeChild(this.xButton);
+        if (this.bShadow) {
+            this.xShadowMenu.parentNode.removeChild(this.xShadowMenu);
+            this.xShadowBtn.parentNode.removeChild(this.xShadowBtn);
+        } else {
+            this.xMenu.parentNode.removeChild(this.xMenu);
+            this.xButton.parentNode.removeChild(this.xButton);
+        }
     }
 
     switchMenu () {
+        if (this.bShadow) {
+            this.xShadowMenu.style.display = (this.xShadowMenu.style.display == "block") ? "none" : "block";
+        }
         this.xMenu.style.display = (this.xMenu.style.display == "block") ? "none" : "block";
     }
 }

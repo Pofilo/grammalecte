@@ -1,6 +1,10 @@
 // JavaScript
 // Panel creator
 
+/* jshint esversion:6, -W097 */
+/* jslint esversion:6 */
+/* global GrammalectePanel, oGrammalecte, xGrammalectePort, showError, window, document, console */
+
 "use strict";
 
 
@@ -11,6 +15,16 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
+
+        this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
+        if (this.bShadow) {
+            this.xShadowPanel = oGrammalecte.createNode("div", {id: this.sId+"_shadow", style: "width:0;height:0;"});
+            this.xShadow = this.xShadowPanel.attachShadow({mode: "open"});
+            this.xParent = this.xShadow;
+        } else {
+            this.xParent = document;
+        }
+
         this.xPanelBar = oGrammalecte.createNode("div", {className: "grammalecte_panel_bar"});
         this.xPanelContent = oGrammalecte.createNode("div", {className: "grammalecte_panel_content"});
         this.xWaitIcon = this._createWaitIcon();
@@ -83,7 +97,22 @@ class GrammalectePanel {
     }
 
     insertIntoPage () {
-        document.body.appendChild(this.xPanel);
+        if (this.bShadow) {
+            oGrammalecte.createStyle("content_scripts/panel.css", null, this.xShadow);
+            oGrammalecte.createStyle("content_scripts/panel_gc.css", null, this.xShadow);
+            oGrammalecte.createStyle("content_scripts/panel_lxg.css", null, this.xShadow);
+            oGrammalecte.createStyle("content_scripts/panel_tf.css", null, this.xShadow);
+            this.xShadow.appendChild(this.xPanel);
+            document.body.appendChild(this.xShadowPanel);
+        } else {
+            if (!document.getElementById("grammalecte_csspanel")) {
+                oGrammalecte.createStyle("content_scripts/panel.css", "grammalecte_csspanel", document.head);
+                oGrammalecte.createStyle("content_scripts/panel_gc.css", null, document.head);
+                oGrammalecte.createStyle("content_scripts/panel_lxg.css", null, document.head);
+                oGrammalecte.createStyle("content_scripts/panel_tf.css", null, document.head);
+            }
+            document.body.appendChild(this.xPanel);
+        }
     }
 
     show () {
@@ -139,7 +168,7 @@ class GrammalectePanel {
         // for debugging
         console.log(this.xPanel.innerHTML);
     }
-    
+
     startWaitIcon () {
         this.xWaitIcon.style.visibility = "visible";
     }
