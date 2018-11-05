@@ -13179,6 +13179,20 @@ TEST: Réussir peut parfois être la pire chose possible.
 TEST: Peut vraiment être violent en cas d’humiliation.
 
 
+# prendre son mal en patience
+__conf_prendre_son_mal_en_patience__
+    >prendre [mon|ton|son|notre|votre|leur|leurs] >mâle en [>patience|patiente|patientes]
+    >prendre [mon|ton|son|notre|votre|leur|leurs] mal en [patiente|patientes]
+        <<- /conf/ -3:0>> mal en patience                       # Confusion. Locution “prendre son mal en patience”.|https://fr.wiktionary.org/wiki/prendre_son_mal_en_patience
+
+    [prie|pries] [mon|ton|son|notre|votre|leur|leurs] [>mâle|mal] en [>patience|patiente|patientes]
+        <<- /conf/ -1>> prit                                    # Confusion. Locution “prendre son mal en patience”.|https://fr.wiktionary.org/wiki/prendre_son_mal_en_patience
+
+TEST: Il prit son {{mâle en patience}}
+TEST: Elle prend son {{mal en patiente}}.
+TEST: Il {{prie}} une fois de plus son mal en patience.
+
+
 # pu / pus
 __conf_pu_pus__
     >avoir  [pus|pue|pues]
@@ -14824,7 +14838,7 @@ __ppas_inversion_être_elle__
     /-elle  @:(?:[123][sp]|Y|[NA].*:[pm])¬:(?:G|W|[fe]:[si])
         <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggFemSing(\2)            # Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
 
-__ppas_inversion_être_il__
+__ppas_inversion_être_on__
     /-on  @:(?:[123][sp]|Y)¬:(?:G|W)
         <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggVerbPpas(\2)           # Accord avec le sujet “on”.
 
@@ -14832,7 +14846,7 @@ __ppas_inversion_être_nous__
     /-nous  @:(?:[123][sp]|Y|[NA].*:s)¬:[GWpi]|>(?:dire|légion)/
         <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggPlur(\2)               # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
 
-__ppas_inversion_être_il__
+__ppas_inversion_être_vous__
     /-vous  @:(?:[123][sp]|Y)¬:(?:G|W)
         <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ":V0e")
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
@@ -14865,6 +14879,10 @@ TEST: Sont-ils vraiment {{aveugle}}
 TEST: est-on déjà {{passer}} de ce côté-là
 TEST: Est-il souvent {{arrivait}} de se tromper ?
 TEST: Ne sommes-nous pas {{aveugle}}
+TEST: Était-il {{prit}} dans la tourmente ?
+TEST: Serait-il {{reconnut}} dans la tourmente ?
+TEST: Aurait-on déjà {{finit}} notre tour du monde ?
+TEST: Êtes-vous {{connut}} en ce milieu ?
 TEST: Que se sont-ils dit ?
 TEST: Ton rendez-vous arrive bientôt.
 TEST: Est-il question de ceci ou de cela ?
