@@ -9743,6 +9743,7 @@ __simplication_substantifs__
     >vache à lait
     >vectrice [>accélération|>position|>rotation|>vitesse]
     >vente à domicile
+    >vente aux enchères
     vernis à ongles
     >voie de [recours|perdition]
     >vol à l’étalage
@@ -9772,6 +9773,7 @@ __purge_locutions_adjectivales__
     open source
     Créative Commons
     pair à pair
+    plein les yeux
     pur [sucre|jus]
     terre à terre
     vieille école
@@ -10239,7 +10241,7 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre bonne note
     >prendre [congé|conscience|contact|ombrage|peur|possession|racine|soin|vie]
-    >prendre de court
+    >prendre de [court|vitesse]
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
     >prendre par surprise
@@ -10394,6 +10396,7 @@ TEST: elle seule peut y arriver
 TEST: elle seules les femmes la font craquer
 TEST: À certains égards, la décence ordinaire apparaît donc comme un pendant à la banalité du mal théorisée par Hannah Arendt.
 TEST: cette région un temps florissante grâce aux mines de charbon
+TEST: des étoiles plein les yeux.
 
 
 
@@ -12771,8 +12774,12 @@ __conf_faim_fin__
     [>rester|>demeurer] sur [ma|ta|sa|notre|votre|leur|leurs] (>fin)
         <<- /conf/ -1>> faim                                                # Confusion. Pour évoquer l’envie de se sustenter, écrivez “faim”.
 
+    >prendre >faim
+        <<- /conf/ -2>> fin                                                 # Confusion. Écrivez “prendre fin” pour évoquer ce qui se termine.
+
 TEST: avec ça, cet emmerdeur restera sur sa {{fin}}
 TEST: Elle avait {{fin}}
+TEST: Ton ère va bientôt prendre {{faim}}.
 
 
 # faite / faîte / fait
@@ -13131,7 +13138,6 @@ __conf_pâte_patte_pat__
     [>patte|pat] [d’|de] [>amande|>amende|>fruit]
         <<- /conf/ -1>> pâte|pâtes                              # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
-
     >mettre ?[pas|jamais]¿ la main à la [>patte|pat]
     >coq en [>patte|pat]
         <<- /conf/ --1>> pâte                                   # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
@@ -13153,6 +13159,9 @@ TEST: Elle n’a jamais mis la main à la {{patte}}.
 __conf_peut_peux_peu2__
     [peux|peut]  [de|d’]  @:[NA]¬*
         <<- /conf/ space_after(\1, 1, 3) -1>> peu               # Confusion probable : “\1” est une forme conjuguée de “pouvoir”, écrivez “peu” pour dire “pas beaucoup”.
+
+TEST: {{peut}} d’hommes savent comment s’y prendre
+TEST: peu d’argent
 
 
 # peut-être / peut être
@@ -15254,11 +15263,7 @@ TEST: Voici ce qui vous est {{du}}.
 
 
 
-!!
-!!
-!!!! Participes passés avec formes interrogatives                                                 !!
-!!
-!!
+!!!! Participes passés avec “avoir” (formes interrogatives)
 
 __ppas_avoir_pronom__
     *WORD  /VCint  *WORD
@@ -15291,6 +15296,61 @@ TEST: m’as-tu {{entendus}} ?
 TEST: N’avais-tu pas crainte de tout perdre ?
 TEST: Combien de bêtes n’as-tu pas déjà massacrées
 TEST: Combien de bêtes as-tu déjà massacrées
+
+
+!!
+!!
+!!!! Participes passés génériques                                                                 !!
+!!
+!!
+
+__ppas_avoir__
+    >avoir  ~..e[rz]$
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
+        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
+
+    >avoir  ~..it$
+        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
+    >avoir  ~.ut$
+        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
+TEST: Avoir {{marcher}} toute la journée m’a épuisée.
+TEST: Avez-vous {{signez}} le contrat ?
+TEST: Ont-ils {{signer}} le contrat ?
+TEST: Ai-je déjà {{signez}} le contrat ?
+TEST: A-t-il déjà {{signer}} le contrat ?
+TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
+TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
+TEST: Ils ont {{put}} trouver la solution.
+TEST: nous avons vu des avions voler haut dans le ciel.
+
+
+__ppas_avoir_interrogatif__
+    /VCint  ~..e[rz]$
+        <<- /ppas/ morphVC(\1, ":V0a") and not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
+        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
+
+    /VCint  ~..it$
+        <<- /ppas/ morphVC(\1, ":V0a") and not value(\1, "|A|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
+    /VCint  ~.ut$
+        <<- /ppas/ morphVC(\1, ":V0a") and not value(\1, "|A|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
+TEST: Avait-il {{marcher}} seul ?
+TEST: Avez-vous {{signez}} le contrat ?
+TEST: Ont-ils {{finit}} le travail ?
+TEST: Ai-je déjà {{reconnut}} mes torts ?
+
+
 
 
 !!
@@ -15679,36 +15739,12 @@ TEST: Ne jamais miser sur ces tocards.
 TEST: Ne m’en rien laisser.
 
 
-#### PARTICIPES PASSÉS APRÈS AVOIR
-
-__ppas_avoir__
-    >avoir  ~..e[rz]$
-        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence avec “\1” : “\2” n’est pas un participe passé.
-        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
-        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
-
-    >avoir  ~..it$
-        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":Ip.*:3s", ":[NAQ]")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence avec “\1” : “\2” n’est pas un participe passé.
-
-TEST: Avoir {{marcher}} toute la journée m’a épuisée.
-TEST: Avez-vous {{signez}} le contrat ?
-TEST: Ont-ils {{signer}} le contrat ?
-TEST: Ai-je déjà {{signez}} le contrat ?
-TEST: A-t-il déjà {{signer}} le contrat ?
-TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
-TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
-TEST: nous avons vu des avions voler haut dans le ciel.
-
-
 
 !!!
 !!!
 !!! Processeur: purge des préverbes                                                               !!
 !!!
 !!!
-
 
 __purge_préverbes1__
     [ne|n’|me|m’|te|se|s’|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
@@ -16283,17 +16319,23 @@ __ppas_être__
 
     >être  ~..ez$
         <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":2p", ":[NAQ]")
-        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjuguer à la 2ᵉ personne du pluriel.
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 2ᵉ personne du pluriel.
 
-    >être  ~..it$
-        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":Ip.*:3s", ":[NAQ]")
+    >être  ~.it$
+        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
             and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
-        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjuguer à la 3ᵉ personne du singulier.
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
+
+    >être  ~.ut$
+        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
 
 TEST: ils sont {{tromper}} par tous ces hypocrites.
 TEST: Je suis {{emporter}} par la vague.
 TEST: Je suis {{emportez}} par la vague.
 TEST: il était {{sortit}} avec enthousiasme.
+TEST: ils ont été {{reconnut}} par leurs pairs
 TEST: Jeûner n’est pas seulement cesser de manger.
 TEST: Ne pas aimer n’est pas oublier l’autre.
 TEST: Dire la vérité, c’eût été manquer à sa parole.
