@@ -5696,6 +5696,22 @@ TEST: par {{acquis}} de conscience
 TEST: tout ce qu’on fait par acquit de conscience
 
 
+# acétique / ascétique
+__conf_acétique_ascétique__
+    [>acide|>aldéhyde|>anhydride|>bactérie|>éther|>ferment|>fermentation|>indole|>piqûre|>piqure|>silicone|voix] >ascétique
+        <<- /conf/ \2.endswith("s") -2>> acétiques      # Confusion probable : “ascétique” se rapporte à l’ascétisme. Pour l’acide, écrivez “acétique”.|https://fr.wiktionary.org/wiki/ac%C3%A9tique
+        <<- /conf/ __else__ -2>> acétique               # Confusion probable : “ascétique” se rapporte à l’ascétisme. Pour l’acide, écrivez “acétique”.|https://fr.wiktionary.org/wiki/ac%C3%A9tique
+
+    [>autrice|>auteure|>démarche|>conduite|>hédonisme|>littérature|>philosophe|>pratique|>privation|>rigueur|>tradition|>théologie|>vie|idéal|idéaux] >acétique
+        <<- /conf/ \2.endswith("s") -2>> ascétiques
+        # Confusion probable : “acétique” est le terme utilisé pour désigner un acide. Pour évoquer l’ascétisme, écrivez “ascétique”.|https://fr.wiktionary.org/wiki/asc%C3%A9tique
+        <<- /conf/ __else__ -2>> ascétique
+        # Confusion probable : “acétique” est le terme utilisé pour désigner un acide. Pour évoquer l’ascétisme, écrivez “ascétique”.|https://fr.wiktionary.org/wiki/asc%C3%A9tique
+
+TEST: Mener une vie {{acétique}}.
+TEST: un acide {{ascétique}}.
+
+
 # âge / age
 __conf_âge_age__
     en bas age
@@ -5948,7 +5964,7 @@ __conf_compte__
     [comte|comtes|>conte] des opérations
         <<- /conf/ -1>> compte|comptes                          # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
 
-    [<start>|,] comte tenu
+    [<start>|,] [comte|comtes|>conte] [tenu|tenus]
         <<- /conf/ -2>> compte                                  # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
 
     en [>fin|>faim] de [comte|comtes|>conte]
@@ -5972,6 +5988,7 @@ __conf_compte__
 
     tout [comte|>conte] fait
         <<- /conf/ -2>> compte                                  # Confusion. Locution “tout compte fait”.|https://fr.wiktionary.org/wiki/tout_compte_fait
+
 
 TEST: il s’en est tiré à bon {{conte}}.
 TEST: à ce {{conte-là}}, il ne va pas faire long feu.
@@ -6248,6 +6265,22 @@ TEST: faut l’emmener chez le docteur.
 TEST: Faut Linux, sinon ça marchera jamais.
 
 
+# filtre / philtre
+__conf_filtre_philtre__
+    >filtre d’ [amour|illusion|enchantement|endormissement]
+    >filtre de [confusion|guérison|fidélité|longévité|mort|vision]
+    >filtre [>aphrodisiaque|empoisonné|empoisonnés|>léthargique|>magique|>narcotique]
+        <<- /conf/ -1>> philtre|philtres
+        # Confusion probable. Un filtre est un intrument de filtrage, un philtre est une boisson (magique) procurant des effets sur le buveur.|https://fr.wiktionary.org/wiki/philtre
+
+    >philtre à café
+        <<- /conf/ -1>> filtre|filtres
+        # Confusion probable. Un filtre est un intrument de filtrage, un philtre est une boisson (magique) procurant des effets sur le buveur.|https://fr.wiktionary.org/wiki/filtre
+
+TEST: Elle prépara un {{filtre}} magique.
+TEST: un {{philtre}} à café
+
+
 # flan / flanc
 __conf_flanc_flan__
     >flanc [pâtissier|pâtissiers]
@@ -6274,7 +6307,6 @@ __conf_flanc_flan__
     [>attaquer|>allonger|>blesser|>coucher|>étendre|>toucher]  sur  [les|mes|tes|ses|nos|vos|leurs]     flans
         <<- /conf/ -4>> flancs                                              # Confusion probable. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
 
-
     [>tirer|>tir]  au  flan
         <<- /conf/ -3>> flanc                                               # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
 
@@ -6285,12 +6317,20 @@ __conf_flanc_flan__
     tir-aux-flans
     tir-au-flans
     tir-au-flan
+    tire-aux-flan
+    tire-aux-flans
+    tire-au-flans
+    tire-au-flan
         <<- /conf/ ->> tir-au-flanc                                         # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
 
     tirs-aux-flan
     tirs-aux-flans
     tirs-au-flans
     tirs-au-flan
+    tires-aux-flan
+    tires-aux-flans
+    tires-au-flans
+    tires-au-flan
         <<- /conf/ ->> tirs-au-flanc                                        # Confusion. Le flan est une pâtisserie.|https://fr.wiktionary.org/wiki/flanc
 
 TEST: encore un {{flanc}} au chocolat.
@@ -6314,13 +6354,40 @@ TEST: En mon {{fort intérieur}}, je le crois.
 TEST: Dans son {{fort intérieur}}, je le crois.
 
 
+# fausse / fosse
+__conf_fausse_fosse__
+    [fausse|fausses] [Calypso|Nansei-Shoto]
+    [fausse|fausses] de [conservation|subduction|Bougainville|Cedros|Java|Puerto|Ryukyu|Tuscarora]
+    [fausse|fausses] des [musiciens|Aléoutiennes|Kermadec|Kouriles|Mariannes|Tonga|Philippines]
+    [fausse|fausses] des îles [aléoutiennes|caïmans|Kouriles|Tonga]
+    [fausse|fausses] du [Chili|Japon|Pérou|Pérou-Chili]
+    [fausse|fausses] d’ [aisance|orchestre|Amérique|Atacama|Izu-Bonin|Izu-Ogasawara]
+    [fausse|fausses] de l’ orchestre
+    [fausse|fausses] à [>compost|>déchet|>lisier|>fumier|>plongeon|>plongée|>purin|>merde|>ordure]
+    [fausse|fausses] [au|aux|des] [>caïman|>crocodile|>charognard|>lionne|>loup|>louve|ours|>serpent|>cobra|>diable]
+    [fausse|fausses] [>abyssale|>canine|>béante|>commune|>océanique|>sous-marine|>septique|>immense|>profonde|>nasale|>iliaque|>temporale]
+        <<- /conf/ -1>> =\1.replace("au", "o").replace("AU", "O")           # Confusion probable : “fausse” est l’adjectif féminin de “faux”. Pour évoquer une profondeur, écrivez “fosse”.
+
+    au bord de la fausse
+        <<- /conf/ -5>> fosse                                               # Confusion probable : “fausse” est l’adjectif féminin de “faux”. Pour évoquer une profondeur, écrivez “fosse”.
+
+TEST: la {{fausse}} Calypso.
+TEST: La {{fausse}} des Mariannes.
+TEST: La {{fausse}} d’aisance.
+TEST: La {{fausse}} à lisier.
+TEST: Une {{fausse}} commune.
+TEST: La {{fausse}} du Chili.
+TEST: Nous sommes tombés dans la {{fausse}} aux lions.
+TEST: Elles sont arrivées au bord de la {{fausse}}.
+
+
 # golf / golfe
 __conf_golf_golfe__
     [>championne|>championnat|>club|>joueuse|parcours|>sac|>balle|>terrain|>tournoi|>compétition|>passionnée|>école|>professeure|>partie|>professionnelle|>amateure|>stage|>journée|après-midi|>matinée|>heure|>fédération|>fan] de golfe
         <<- /conf/ -3>> golf                                                # Confusion. Le golfe est une zone de mer ou d’un lac avancée dans les terres. Ex : Le golfe Persique.
 
-    golf persique
-    golf [de|du|d’] [Bengale|Botnie|Gascogne|Gabès|Guinée|Lion|Morbihan|Mexique|Porto|Saint-Laurent|Thaïlande|Tonkin|Tunis|Winam|Aden|Ajaccio|Alaska|Hammamet]
+    >golf persique
+    >golf [de|du|d’] [Bengale|Botnie|Gascogne|Gabès|Guinée|Lion|Morbihan|Mexique|Porto|Saint-Laurent|Thaïlande|Tonkin|Tunis|Winam|Aden|Ajaccio|Alaska|Hammamet]
         <<- /conf/ -1>> golfe                                               # Confusion. Le golf est un sport.
 
     [>guerre|>émir|>monarchie] du golf
@@ -6617,6 +6684,20 @@ __conf_nulle_part__
 TEST: car {{nul part}} ailleurs, on n’en trouve une telle concentration
 
 
+# oc / hoc
+__conf_oc_hoc__
+    ad oc
+        <<- /conf/ ->> ad hoc                                       # Confusion. La locution latine, signifiant “idoine” ou “adapté”, s’écrit “ad hoc”.|https://fr.wiktionary.org/wiki/ad_hoc
+
+    >langue d’ hoc
+        <<- /conf/ -3>> oc                                          # Confusion. Écrivez “langue d’oc”.|https://fr.wiktionary.org/wiki/langue_d%E2%80%99oc
+
+TEST: Les bonnes théories n’ont pas d’explication {{ad oc}}.
+TEST: Je ne connais pas la langue d’{{hoc}}.
+TEST: Ne t’insurge donc pas à la pensée que quelques instants puissent t’être nécessaires pour apprendre à lire la langue d’oc.
+TEST: Toutes les agences évaluent de façon ad hoc la satisfaction de leur clientèle à l’endroit de leur produit
+
+
 # on / ont
 __conf_on_ont__
     on  @:W¬:3s
@@ -6748,9 +6829,34 @@ TEST: Mets ton pardessus ce matin.
 # gilet pare-balle
 __conf_pare_balle__
     >gilet par >balle
-        <<- /conf/ -2:3>> pare-balles                                       # Un gilet pare-balles, c’est-à-dire qui pare les balles.
+        <<- /conf/ -2:3>> pare-balles                                       # Confusion. Un gilet pare-balles, c’est-à-dire qui pare les balles.
 
 TEST: Elle a enfilé son gilet {{par balle}}.
+
+
+# pause /pose
+__conf_pause_pose__
+    >pose [gourmande|café|carrière|crédit|déjeuner|détente|dîner|pipi|repas|thé]
+    >pose du [matin|soir]
+    >pose de midi
+    >pose de l’ après-midi
+        <<- /conf/ -1>> =\1.replace("o", "au").replace("O", "AU")           # Confusion probable. Une pose consiste à poser quelque chose, tandis qu’une pause est un laps de temps de repos.
+
+    >pause [de|du] [>cable|>carrelage|>dallage|>lino|>linoléum|>marbre|>panneau|>papier|>parquet|>prélart|>revêtement|>stérilet|tapis|>tapisserie|>vernis|>vitrage]
+    >pause des [ardoises|agrafes|bollards|briques|câbles|carreaux|carrelages|dalles|fenêtres|panneaux|parquets|pavés|plaques|plinthes|tapis|tapisseries|tuiles|vitres|vitrages]
+    >pause de la [charpente|couronne|dalle|fenêtre|moquette|prothèse|tapisserie|toiture|vitre]
+    >pause de la [première|1ʳᵉ|1re|1ère] [brique|couche|pierre]
+        <<- /conf/ -1>> =\1.replace("au", "o").replace("AU", "O")           # Confusion probable. Une pose consiste à poser quelque chose, tandis qu’une pause est un laps de temps de repos.
+
+TEST: Nous assistons à la {{pause}} de la première brique.
+TEST: c’est la {{pose}} du matin.
+TEST: Faire une {{pose}} café.
+TEST: Faire des {{poses}} café.
+TEST: La {{pose}} de midi.
+TEST: La {{pause}} du carrelage.
+TEST: La {{pause}} des ardoises.
+TEST: La {{pause}} de la tapisserie.
+TEST: La {{pause}} de la première pierre.
 
 
 # péché / pêcher
@@ -7090,10 +7196,16 @@ TEST: Nous allons le {{résonner}}.
 
 # ris / riz
 __conf_ris_de_veau_agneau__
-    [ri|riz] [de|d’] [>veau|>agneau]
+    [ri|riz] [de|d’] [>veau|agneau|agneaux|chasse]
         <<- /conf/ -1>> ris                                     # Confusion.|http://fr.wiktionary.org/wiki/ris
 
+    [ri|ris] au lait
+    [ri|ris] [arborio|basmati|blanc|brun|cantonais|carnaroli|complet|semi-complet|incollable|OGM|pilaf|soufflé]
+        <<- /conf/ -1>> riz                                     # Confusion. Pour évoquer la céréale, écrivez “riz”.|https://fr.wiktionary.org/wiki/riz
+
 TEST: Elles ont préparé un {{riz}} de veau.
+TEST: Elle adore le {{ri}} au lait.
+TEST: Tous adorent le {{ri}} basmati.
 
 
 # saint / sain / sein / seing
@@ -7241,28 +7353,31 @@ TEST: Sois le plus efficace possible.
 # son / sont
 __conf_son_sont__
     [ne|me|te|se] son
-        <<- /conf/ -2>> sont    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+        <<- /conf/ -2>> sont                                    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
     ne [le|leur|leurs|lui|nous|vous] son
-        <<- /conf/ -3>> sont    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+        <<- /conf/ -3>> sont                                    # Confusion : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
     [qui|que|comment|pourquoi|lorsque|quand] son [,|@:[DR]]
-        <<- /conf/ -2>> sont    # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
+        <<- /conf/ -2>> sont                                    # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
     [<start>|,] sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ -2>> son     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+        <<- /conf/ -2>> son                                     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
         <<- /conf/ morph(<1, ":V", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[nmts]e)/") and not before("(?i)\\bce qu[e’] |[mts]’en +$")
-        -1>> son                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+        -1>> son                                                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     [à|chez|dès|par] sont
     [avec|contre|devant|derrière|pour|sans|sur] sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ -2>> son     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+        <<- /conf/ -2>> son                                     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     en sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
         <<- /conf/ not value(<1, "|ils|elles|leur|lui|nous|vous|m’|t’|s’|l’|") and not before("(?i)\\bce qu[e’] $")
-        -2>> son                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+        -2>> son                                                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
+
+    son [ceux|celles]
+        <<- /conf/ not morph(<1, ":D.*:m:s") -1>> sont          # Confusion probable : “son” est un déterminant ou un nom masculin. Le verbe “être” à la 3ᵉ personne du pluriel s’écrit “sont”.
 
 TEST: ne leur {{son}} pas odieux.
 TEST: Ces chiens me {{son}} odieux.
@@ -7274,6 +7389,29 @@ TEST: elles s’en sont mal portées
 TEST: ils en sont reconnaissants
 TEST: sont loin, ces gens…
 TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
+TEST: avec le mur du son ceux qui l’entendent.
+
+
+# sot / sceau / seau
+__conf_sot_seau_sceau__
+    [>sceau|sot|sots] d’ [acier|avoine|eau]
+    [>sceau|sot|sots] [d’|de] [bois|boue|ciment|glace|>glaçon|>gravat|>gravier|>gravillon|plage|lait|maçon|nettoyage|peinture|sable]
+    [>sceau|sot|sots] à [glace|champagne|>glaçon]
+    [>sceau|sot|sots] en [acier|bois|cuivre|fer|inox|métal|plastique|polypropylène|zinc]
+    [>sceau|sot|sots] [rempli|remplie|percé|percés|>vide|troué|troués|renversé|renversés|plein|pleins]
+        <<- /conf/ -1>> seau|seaux                  # Confusion probable. Pour désigner un récipient, écrivez “seau”.|https://fr.wiktionary.org/wiki/seau
+
+    dans @:D [>sceau|sot|sots]
+        <<- /conf/ -3>> seau|seaux                  # Confusion probable. Pour désigner un récipient, écrivez “seau”.|https://fr.wiktionary.org/wiki/seau
+
+    [>seau|sot|sots] du [roi|secret|ministre|ministère|duc|baron|cardinal|pape]
+    [>seau|sot|sots] de la [reine|ministre|duchesse|baronne]
+    [>seau|sot|sots] de l’ [État|évêque|université|académie]
+        <<- /conf/ -1>> sceau|sceaux                # Confusion probable. Pour désigner un cachet par lequel on scelle quelque chose, écrivez “sceau”.|https://fr.wiktionary.org/wiki/sceau
+
+TEST: amène-moi un {{sceau}} de ciment
+TEST: dans un {{sot}} en plastique
+TEST: Sur l’enveloppe était apposé le {{seau}} de la reine.
 
 
 # statue / statut / statu
@@ -11096,8 +11234,8 @@ __gn_ces_aux_pluriel_1m__
             or \2 in aREGULARPLURAL
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
         <<- /gn/ __also__ and morph(\2, ">[bcdfglklmnpqrstvwxz].*:m", ":f") >>>
-        <<- /gn/ \1.endswith("x") or \1.endswith("X") -1>> au                               # Accord de nombre erroné : « \2 » est au pluriel.
-        <<- /gn/ __else__ -1>> ce                                                           # Accord de nombre erroné : « \2 » est au pluriel.
+        <<- /gn/ \1.endswith("x") or \1.endswith("X") -1>> au                               # Accord de nombre erroné : « \2 » est au singulier.
+        <<- /gn/ __else__ -1>> ce                                                           # Accord de nombre erroné : « \2 » est au singulier.
 
 TEST: {{ces}} {{détournement}} de fonds et ces vols
 TEST: ces {{étudiant}} sont légion.
@@ -12631,8 +12769,11 @@ TEST: Je reste à ses {{cotés}}.
 # cote / côte / cotte
 __conf_côte_cote_cotte__
     [>cote|>cotte] [de|d’] [>bœuf|>porc|>veau|Bretagne|>agneau|>albâtre|>Armor|>azur|>ivoire|>or|>opale|>émeraude]
-    [>cote|>cotte] [>brisée|>cassée|>fêlée|>fracturées|>surnuméraire|>rocheuse|>adriatique|>américaine|>californienne|>atlantique|>basque|>bretonne|>landaise|>normande|>française|>belge|>espagnole|>italienne|>portugaise|>africaine|>méditerranéenne|>pacifique|>raide|>occidentale|>fractale|nord|sud|ouest]
-    <<- /conf/ -1>> =\1.replace("o", "ô").replace("tt", "t")        # Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
+    [>cote|>cotte] [>surnuméraire|>rocheuse|>adriatique|>américaine|>californienne|>atlantique|>basque|>bretonne|>landaise|>normande|>française|>belge|>espagnole|>italienne|>portugaise|>africaine|>méditerranéenne|>pacifique|>raide|>occidentale|>fractale|nord|sud|ouest]
+        <<- /conf/ -1>> =\1.replace("o", "ô").replace("tt", "t")                    # Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
+
+    [>cote|>cotte] [>briser|>casser|>fêler|>fracturer]
+        <<- /conf/ morph(\2, ":A") -1>> =\1.replace("o", "ô").replace("tt", "t")    # Confusion : écrivez “côtes” pour les os du thorax et les rivages.|https://fr.wiktionary.org/wiki/c%C3%B4te
 
     [>fracture|>radiographie] des [>cote|>cotte]
         <<- /conf/ -3>> côtes                                       # Confusion : écrivez “côtes” pour les os du thorax.|https://fr.wiktionary.org/wiki/c%C3%B4te
@@ -12645,6 +12786,7 @@ __conf_côte_cote_cotte__
         <<- /conf/ -1>> =\1.replace("ô", "o").replace("t", "tt")    # Confusion : écrivez « cotte » pour la cotte de mailles.|https://fr.wiktionary.org/wiki/cotte_de_mailles
 
     >avoir la côte
+    >avoir la cotte [@:[RCO]|,|<end>]
         <<- /conf/ -3>> cote                                        # Confusion probable : utilisez “cote” (cotation).|http://fr.wiktionary.org/wiki/cote
 
     [>côte|>cotte|>cote]  [à|a|á]  [>côte|>cotte|>cote]
@@ -12653,6 +12795,7 @@ __conf_côte_cote_cotte__
 
 TEST: Rien ne vaut une bonne {{cote}} de bœuf.
 TEST: Elles ont passé une radiographie des {{cottes}}.
+TEST: Elle avait les {{cotes}} cassées.
 TEST: Quelle est sa {{côte}} de popularité
 TEST: il a réussi à percer sa {{cote}} de mailles.
 TEST: Il a la {{côte}} auprès de ses collègues
@@ -12877,6 +13020,26 @@ TEST: Vous {{faîtes}} mal !
 TEST: {{en faite}}, on en voit partout, ça grouille.
 TEST: ils sont {{en faîtes}} partis à la montagne.
 TEST: Aujourd’hui, n’en faites pas trop.
+
+
+# filtre / philtre
+__conf_filtre_philtre2__
+    >boire @:D >filtre
+        <<- /conf/ -3>> philtre|philtres
+        # Confusion probable. Un filtre est un intrument de filtrage, un philtre est une boisson (magique) procurant des effets sur le buveur.|https://fr.wiktionary.org/wiki/philtre
+
+TEST: il but un {{filtre}}.
+
+
+# flanc / flan
+__conf_flanc_flan2__
+    >blesser au flan
+    [>attaquer|>contre-attaquer] ?[sur|sous|à|contre]¿ @:D >flan
+        <<- /conf/ \-1.endswith("s") --1>> flancs                           # Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
+        <<- /conf/ __else__ --1>> flanc                                     # Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
+
+TEST: Il avait été blessé au {{flan}}.
+TEST: Elle lança une contre-attaque sur son {{flan}}.
 
 
 # flamant rose
@@ -13288,7 +13451,7 @@ __conf_prendre_son_mal_en_patience__
         <<- /conf/ -3:0>> mal en patience                       # Confusion. Locution “prendre son mal en patience”.|https://fr.wiktionary.org/wiki/prendre_son_mal_en_patience
 
     [prie|pries] [mon|ton|son|notre|votre|leur|leurs] [>mâle|mal] en [>patience|patiente|patientes]
-        <<- /conf/ -1>> prit                                    # Confusion. Locution “prendre son mal en patience”.|https://fr.wiktionary.org/wiki/prendre_son_mal_en_patience
+        <<- /conf/ -1>> pris|prit                               # Confusion. Locution “prendre son mal en patience”.|https://fr.wiktionary.org/wiki/prendre_son_mal_en_patience
 
 TEST: Il prit son {{mâle en patience}}
 TEST: Elle prend son {{mal en patiente}}.
@@ -13348,6 +13511,14 @@ __conf_sens_dessus_dessous__
         <<- /conf/ ->> sens dessus dessous                          # Confusion. Locution adverbiale : « sens dessus dessous ».|https://fr.wiktionary.org/wiki/sens_dessus_dessous
 
 TEST: Tout est {{sans dessus dessous}}.
+
+
+# aller sans dire
+__conf_aller_sans_dire__
+    [il|ça|cela|ceci] >aller s’ en dire
+        <<- /conf/ -3:4>> sans                                      # Confusion. Locution “aller sans dire”.|https://fr.wiktionary.org/wiki/cela_va_sans_dire#fr
+
+TEST: Évidemment, cela va {{s’en}} dire.
 
 
 # sceptique / septique
@@ -15622,6 +15793,9 @@ TEST: Suffit de s’en servir.
 TEST: Et ne doit pas être rejeté dans les limbes.
 TEST: Vient s’ajouter à ce contexte la perception, partagée par beaucoup, du caractère fortement menaçant de l’environnement économique et géopolitique.
 TEST: À son bord vient d’embarquer un nouvel équipage
+TEST: Vient ensuite Christelle, qui ignore comment se sortir d’affaire.
+TEST: Vient ensuite l’emménagement dans une maison isolée.
+TEST: Surgit ensuite la violence physique et verbale.
 
 
 # verbes du 3ᵉ groupe en -d
@@ -16705,6 +16879,7 @@ TEST: des ruisselets, des arbres, une tonnelle qui rappelaient le temps.
 TEST: son assurance, sa grâce, son sex-appeal nous permettent de passer sans encombre liquides et rasoirs.
 TEST: Son courage, son ardeur étaient immenses,
 TEST: Le sentiment d’humiliation, la colère nous indiquent que…
+TEST: la majorité survenaient sous la contrainte
 
 
 __conj_un_une_des__
