@@ -2082,6 +2082,10 @@ __fusions_noms_propres__
     ~^[A-ZÂÉÈÎ].  ~^[A-ZÂÉÈÎ]
         <<- analyse_with_next(\1, " ", ":") ~>> ␣
 
+    notre père
+        <<- morph(<1, ":D.*:[mp]") ~>> ␣
+        <<- __also__ =>> define(\1, [":N:m:i"])
+
 
 __immunités__
     à l’ arrache
@@ -4641,7 +4645,7 @@ __conj_xxxas_xxxes__sans_sujet!3__
         <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
-    ~[ae]s$
+    ~..[ae]s$
         <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
@@ -6062,17 +6066,11 @@ TEST: Dents de la mer.
 
 # date / datte
 __conf_date_datte__
-    [>confiture|>crème|>gâteau|>mélasse|>noyau|>pâte|>recette|>sirop]  de >date
-    [moelleux|>gâteau|>fondant|>cake] [au|aux]  >date
-        <<- /conf/ -3>> dattes                                                      # Confusion probable : le fruit s’écrit avec deux “t”.
+    >datte du *NUM [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre]
+        <<- /conf/ \1.endswith("s") -1>> dates                # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
+        <<- /conf/ __else__ -1>> date                         # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
 
-    >date [>fraîche|>fraiche|>dénoyautée|>fourrée|>sèche|>séchée|>cultivée|produite|produites|>muscade|medjool|hamraya|deglet-nour|kenta|allig|khouat]
-        <<- /conf/ -1>> =\1.replace("ate", "atte").replace("ATE", "ATTE")           # Confusion probable : le fruit s’écrit avec deux “t”.
-
-TEST: il va faire un cake aux {{dates}}.
-TEST: elle a fait de la confiture de {{dates}}
-TEST: Elles étaient à cette date cultivées à l’air libre.
-TEST: De fraîche date…
+TEST: {{datte}} du 25 janvier
 
 
 # davantage / d’avantage
@@ -6116,6 +6114,70 @@ TEST: il en faut {{d’avantages}}.
 TEST: tout ce qu’il apporte d’avantages pécuniaires.
 TEST: un certain nombre d’avantages sociaux.
 TEST: ils ont tant d’avantages.
+
+
+# dés / dès / des
+__conf_dès_des_dés__
+    dés [que|qu’|un|une|le|la|l’|les|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|ce|cet|cette|ces|lors|après|maintenant|toujours|midi|minuit|aujourd’hui|hier|demain|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|Pâques|Noël]
+        <<- /conf/ not value(<1, "|un|une|de|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
+        -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    des [que|qu’|lors|après|maintenant|toujours|midi|minuit|aujourd’hui|hier|demain|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|Pâques|Noël]
+    des [un|une|le|la|l’|les|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|ce|cet|cette|ces] @:[NA]
+        <<- /conf/ not value(<1, "|un|une|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
+        -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    [dés|des] [à|a] présent
+        <<- /conf/ not morph(<1, ":D.*:p") -1>> dès                                                 # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    des ~\d{2,5}  [<end>|,]
+    des ~\d{2,5}  @:¬:[NA].*:[ip]
+        <<- /conf/ -1>> dès                                                                         # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    [dés|des] *NUM [ans|heures]
+    [dés|des] @:B [ans|heures]
+    [dés|des] [un|une] [an|heure]
+        <<- /conf/ not morph(<1, ">(?:approcher|anniversaire|cap|occasion|programme|terme|classe)/") and not value(>1, "|de|du|des|d’|")
+        -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    [des|ces|mes|tes|ses|nos|vos|quelques|aux] [dès|des]
+        <<- /conf/ -2>> dés                                                                         # Confusion probable. Pour la couture ou les jeux, écrivez “dé”.|https://fr.wiktionary.org/wiki/d%C3%A9
+
+    leurs dès
+        <<- /conf/ not value(<1, "|les|des|") -2>> dés                                              # Confusion probable. Pour la couture ou les jeux, écrivez “dé”.|https://fr.wiktionary.org/wiki/d%C3%A9
+
+    les dès
+        <<- /conf/ not morph(<1, ":E") -2>> dés                                                     # Confusion probable. Pour la couture ou les jeux, écrivez “dé”.|https://fr.wiktionary.org/wiki/d%C3%A9
+
+TEST: il faut {{des}} à présent s’en souvenir.
+TEST: {{Des}} à présent
+TEST: {{Dés}} à présent
+TEST: {{dés}} qu’il fait beau, je sors.
+TEST: Jette quelques {{des}} sur la table et voyons.
+TEST: j’en ai marre de ces {{dès}}.
+TEST: Les {{dès}} {{sont}} jetés.
+TEST: J’ai acheté des {{dès}} à jouer.
+TEST: Dieu ne joue pas aux {{dès}}.
+TEST: J’apporte mes {{dès}}.
+TEST: {{Des}} 1980, le pays était en crise.
+TEST: {{Des}} dix-huit ans.
+TEST: {{Des}} 4 ans.
+TEST: Les dés sont jetés.
+TEST: C’est un des leurs.
+TEST: Plusieurs dès qu’on en saura plus.
+TEST: Dès 1980, le pays était en crise.
+TEST: Des 2000 participants, seuls 1000 sont venus.
+TEST: Des 2000 invités, seuls 1000 sont venus.
+TEST: Dieu ne joue pas aux dés.
+TEST: Dès dix-huit ans.
+TEST: L’anniversaire des 30 ans de la libération.
+TEST: Le cap des 35 ans.
+TEST: Elle approche des cinquante ans.
+TEST: À l’occasion des vingt ans du groupe.
+TEST: Le congrès des 20 ans de l’association.
+TEST: L’album des 15 ans du groupe.
+TEST: Dès à présent
+TEST: Donne-moi tes dés à présent.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -12871,6 +12933,42 @@ TEST: le jugement en cour d’assises
 TEST: ils vont passer prochainement en cour martiale.
 
 
+# date / datte
+__conf_date_datte2__
+    [>confiture|>crème|>gâteau|>mélasse|>noyau|>pâte|>recette|>sirop] de >date
+    [moelleux|>gâteau|>fondant|>cake] [au|aux]  >date
+        <<- /conf/ -3>> dattes                                # Confusion probable. Pour parler du fruit, écrivez “datte”.|https://fr.wiktionary.org/wiki/datte
+
+    >date [>muscade|medjool|hamraya|deglet-nour|kenta|allig|khouat]
+        <<- /conf/ \1.endswith("s") -1>> dattes               # Confusion probable. Pour parler du fruit, écrivez “datte”.|https://fr.wiktionary.org/wiki/datte
+        <<- /conf/ __else__ -1>> datte                        # Confusion probable. Pour parler du fruit, écrivez “datte”.|https://fr.wiktionary.org/wiki/datte
+
+    >date [>fraîche|>fraiche|>dénoyauter|>fourrer|>sèche|>sécher|>cultiver|>produire]
+        <<- /conf/ morph(\2, ":A.*:f") >>>
+        <<- /conf/ \1.endswith("s") -1>> dattes               # Confusion probable. Pour parler du fruit, écrivez “datte”.|https://fr.wiktionary.org/wiki/datte
+        <<- /conf/ __else__ -1>> datte                        # Confusion probable. Pour parler du fruit, écrivez “datte”.|https://fr.wiktionary.org/wiki/datte
+
+    >datte [du|de|des] [>bac|>baptême|>brevet|>calendrier|>carême|>carnaval|>concert|>début|>dépôt|>demande|>dernière|>diffusion|>document|>fermeture|>fin|>jour|>journal|>lancement|>livraison|mise|mises|>mariage|>message|>mort|>naissance|>parution|>pentecôte|>péremption|>post|>prélèvement|première|>prise|>prochaine|>publication|>ramadan|>rapport|>réception|>référendum|>règlement|>retraite|>réunion|>séminaire|>show|>sortie|>spectacle|>terme|>tirage|>tournage|>trajet|>vente|>virement|>vol|>vote|>voyage|>lundi|>mardi|>mercredi|>jeudi|>vendredi|>samedi|>dimanche|congrès|décès|permis|procès]
+    >datte d’ [accouchement|actualisation|achat|adhésion|anniversaire|apparition|échéance|édition|émission|engagement|entrée|envoi|examen|exécution|expédition|expiration|immatriculation|imputation|inscription|origine|ouverture|ovulation|aujourd’hui|Halloween]
+    >datte de l’ [accouchement|actualisation|achat|adhésion|anniversaire|apparition|échéance|édition|émission|engagement|entrée|envoi|examen|exécution|expédition|expiration|immatriculation|imputation|inscription|origine|ouverture|ovulation]
+    >datte du /NUM [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre]
+        <<- /conf/ \1.endswith("s") -1>> dates                # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
+        <<- /conf/ __else__ -1>> date                         # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
+
+    >dernière en >datte
+        <<- /conf/ -3>> date                                  # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
+
+TEST: Des {{dates}} fraîches.
+TEST: des {{dates}} dénoyautées.
+TEST: il va faire un cake aux {{dates}}.
+TEST: elle a fait de la confiture de {{dates}}
+TEST: c’est la dernière en {{datte}}.
+TEST: quelle est la {{datte}} de l’accouchement
+TEST: Quelle est la {{datte}} du décès.
+TEST: Elles étaient à cette date cultivées à l’air libre.
+TEST: De fraîche date…
+
+
 # dés / dès
 __conf_dès_des__
     dés [le|la|l’|les|que|qu’|lors|avant|demain]
@@ -18510,21 +18608,7 @@ TEST: Il a confessé tous ses péchés.
 TEST: Les péchés capitaux
 TEST: Manger est mon péché mignon.
 TEST: Péchés de jeunesse
-TEST: C’est un des leurs.
-TEST: Les dés les plus courants.
-TEST: Dès à présent
 TEST: J’ai acheté des dés à jouer.
-TEST: Dès à présent
-TEST: Plusieurs des caractéristiques.
-TEST: Dès 1980, le pays était en crise.
-TEST: Des 2000 participants, seuls 1000 sont venus.
-TEST: Des 2000 invités, seuls 1000 sont venus.
-TEST: Dès dix-huit ans.
-TEST: L’anniversaire des 30 ans de la libération.
-TEST: Le cap des 35 ans.
-TEST: Elle approche des cinquante ans.
-TEST: À l’occasion des vingt ans du groupe.
-TEST: Le congrès des 20 ans de l’association.
 TEST: A priori, il devrait arriver à l’heure.
 TEST: Je ne pouvais pas le croire a priori.
 TEST: La grève généralisée a paralysé tout le pays.
