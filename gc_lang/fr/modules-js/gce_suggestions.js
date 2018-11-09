@@ -525,9 +525,11 @@ function suggSimil (sWord, sPattern=null, bSubst=false, bVC=false) {
         [sWord, sSfx] = splitVerb(sWord);
     }
     let aSugg = phonet.selectSimil(sWord, sPattern);
-    for (let sMorph of _oSpellChecker.getMorph(sWord)) {
-        for (let e of conj.getSimil(sWord, sMorph, bSubst)) {
-            aSugg.add(e);
+    if (aSugg.size === 0 || !bSubst) {
+        for (let sMorph of _oSpellChecker.getMorph(sWord)) {
+            for (let e of conj.getSimil(sWord, sMorph, bSubst)) {
+                aSugg.add(e);
+            }
         }
     }
     if (aSugg.size > 0) {

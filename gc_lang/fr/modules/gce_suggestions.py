@@ -404,9 +404,10 @@ def suggSimil (sWord, sPattern=None, bSubst=False, bVC=False):
     if bVC:
         sWord, sSfx = splitVerb(sWord)
     aSugg = phonet.selectSimil(sWord, sPattern)
-    for sMorph in _oSpellChecker.getMorph(sWord):
-        aSugg.update(conj.getSimil(sWord, sMorph, bSubst))
-        break
+    if not aSugg or not bSubst:
+        for sMorph in _oSpellChecker.getMorph(sWord):
+            aSugg.update(conj.getSimil(sWord, sMorph, bSubst))
+            break
     if aSugg:
         if bVC:
             aSugg = list(map(lambda sSug: sSug + sSfx, aSugg))
