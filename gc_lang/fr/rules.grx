@@ -16132,6 +16132,51 @@ TEST: Ne m’en rien laisser.
 
 
 
+!!
+!!
+!!!! Incohérence verbe/nom                                                                        !!
+!!
+!!
+
+__conf_det_verbe_nom!6__
+    <start> le      @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    <start> le      @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[si]")
+        -3>> =suggSimil(\3, ":[NA].*:[me]:[si]", True)          # Confusion probable : “\3” est une forme verbale conjuguée. Après si “\1” est un déterminant, il faut plutôt placer un nom.
+
+    <start> la      @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    <start> la      @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[si]")
+        -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)          # Confusion probable : “\3” est une forme verbale conjuguée. Après si “\1” est un déterminant, il faut plutôt placer un nom.
+
+    <start> l’      @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    <start> l’      @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
+        -3>> =suggSimil(\3, ":[NA].*:[si]", True)               # Confusion probable : “\3” est une forme verbale conjuguée. Après si “\1” est un déterminant, il faut plutôt placer un nom.
+
+    <start> leur    @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    <start> leur    @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
+        -3>> =suggSimil(\3, ":[NA].*:[si]", True)               # Confusion probable : “\3” est une forme verbale conjuguée. Après si “\1” est un déterminant, il faut plutôt placer un nom.
+
+    <start> les     @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    <start> les     @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[pi]")
+        -3>> =suggSimil(\3, ":[NA].*:[pi]", True)               # Confusion probable : “\3” est une forme verbale conjuguée. Après si “\1” est un déterminant, il faut plutôt placer un nom.
+
+TEST: Le {{défit}} ne l’enthousiasmait pas.                     ->> défi
+TEST: Le {{défie}} ne l’enthousiasmait pas.                     ->> défi
+TEST: Les {{connections}} étaient défaillantes.                 ->> connexions
+TEST: l’{{accueille}} se révéla ennuyeux.                       ->> accueil
+TEST: La {{sert}} était cassée                                  ->> serre
+TEST: Leur {{dépare}} m’attristait.                             ->> départ
+TEST: Les amener n’apportait que des problèmes.
+TEST: Le prendre par surprise était difficile.
+TEST: La consigner devenait une obligation.
+TEST: Les reconnaître semblait nécessaire.
+
+
+
 !!!
 !!!
 !!! Processeur: purge des préverbes                                                               !!
