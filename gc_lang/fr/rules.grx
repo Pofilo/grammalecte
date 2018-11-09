@@ -5749,9 +5749,23 @@ TEST: c’est le bel {{age}}.
 __conf_aux_dépens__
     au [dépend|dépends|dépens]
     aux [dépend|dépends]
-        <<- /conf/ ->> aux dépens           # Locution prépositive : « aux dépens de ».|https://fr.wiktionary.org/wiki/aux_d%C3%A9pens_de
+        <<- /conf/ ->> aux dépens                       # Locution prépositive : « aux dépens de ».|https://fr.wiktionary.org/wiki/aux_d%C3%A9pens_de
 
 TEST: Ce sont des clichés {{au dépend}} d’un grand chef. Tout ça pour faire du buzz et exister médiatiquement.
+
+
+# arrivé / arrivée
+__conf_arrivée_arrivé__
+    [mon|ton|son|notre|votre|leur|une|cet]  arrivé
+    [des|les|nos|vos|leurs|ces|mes|tes|ses|aux] arrivés
+    [l’|d’] [arrivé|arrivés]
+        <<- /conf/ -2>> =\2.replace("é", "ée").replace("É", "ÉE")               # Confusion. Une arrivée est un nom féminin.
+
+TEST: l’{{arrivé}} est pour bientôt.
+TEST: Son {{arrivé}} m’a fait plaisir.
+TEST: Leurs {{arrivés}} m’ont fait plaisir.
+TEST: {{Cette}} {{arrivé}} était de trop.
+TEST: Vous connaissez le nouvel arrivé ?
 
 
 # au temps / autant
@@ -7163,9 +7177,17 @@ __conf_quelquefois_quelques_fois__
         <<- /conf/ ->> quelquefois|quelques fois
         # Confusion. Utilisez “quelquefois” si vous voulez dire “parfois”. Utilisez “quelques fois” pour évoquer ce qui est advenu ou adviendra plusieurs fois.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4334
 
+    les quelquefois [ou|où|que|qu’]
+        <<- /conf/ -2>> quelques fois                                       # Confusion : “quelquefois” signifie “parfois”.|https://fr.wiktionary.org/wiki/quelquefois
+
+    >être  quelques fois  ?@:W¿  @:A  [de|d’]
+        <<- /conf/ -2:3>> quelquefois                                       # Confusion possible. Si vous voulez dire “parfois”, écrivez “quelquefois”.
+
 TEST: {{Quelles que fois}}, on y comprend plus rien.
 TEST: {{Qu’elle que fois}}, on y comprend plus rien.
 TEST: Il y va {{quelque fois}} par an.
+TEST: les {{quelquefois}} où nous y sommes allés, nous avons été très mal reçus.
+TEST: c’est {{quelques fois}} vraiment difficile de savoir quoi faire.
 
 
 # quoique / quoi que
@@ -12740,10 +12762,10 @@ TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu
 
 # coûter cher
 __conf_coûter_cher__
-    [>coûter|>payer] chers
+    [>coûter|>payer|>prendre] [chers|chère|chères]
         <<- /conf/ -2>> cher                                        # Ici, « cher » est un adverbe, invariable.
 
-    [>coûter|>payer] [chère|chères|>chair|>chaire]
+    [>coûter|>payer|>prendre] [>chair|>chaire]
         <<- /conf/ -2>> cher                                        # Confusion. Pour parler de la cherté, écrivez “cher”.
 
 TEST: ces saloperies coûtent vraiment {{chères}} !
@@ -13322,30 +13344,57 @@ __conf_lieux_lieues_lieus__
     [>assurance|>état|>visite|>maîtresse|>maitresse|>seigneur|>magie|>chef|>cheffe|>responsable|respect|entretien|propreté|>propriétaire|tranquillité|dans|vers|>plan] des [lieues|lieus]
         <<- /conf/ -3>> lieux                                   # Confusion probable. Pour désigner un endroit, écrivez “lieux”.|http://fr.wiktionary.org/wiki/lieu
 
-    [>lieue|lieus] [>aménagé|>abandonné|>accueillant|>insolite|>accessible|>inaccessible|>inexploré|>éloignée|>lointaine|>louche|>réservé|>proche|>touristique|saint|saints|>sacrée|>connu|>inconnue|>méconnue|>privilégié|>mythique|>publique|>privée|prestigieux|>romantique|>stratégique|>historique|où|>humide|sec|secs]
-    [>lieue|lieus] de [>communication|>contemplation|>culte|>chasse|>détente|>détention|>départ|>méditation|>mémoire|>pouvoir|>prière|>prostitution|>sépulture|>repos|>refuge|>stockage|>travail|>vacance|>spectacle|>conférence|>rassemblement|>stationnement|>rencontre|>villégiature]
+    [>lieue|lieus] [>insolite|>accessible|>accueillante|>inaccessible|>inexplorée|>lointaine|>louche|>proche|>touristique|saint|saints|>connu|>inconnue|>mythique|>publique|prestigieux|>romantique|>stratégique|>historique|où|>humide|sec|secs]
+    [>lieue|lieus] de [>communication|>concert|>conférence|>contemplation|>culte|>chasse|>détente|>détention|>départ|>méditation|>mémoire|>pouvoir|>prière|>prostitution|>sépulture|repos|>refuge|>stockage|>travail|>vacance|>spectacle|>conférence|>rassemblement|>sortie|>stationnement|>rencontre|>vacance|>villégiature]
         <<- /conf/ -1>> lieu|lieux                              # Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
 
-    [>être|>habiter|>trouver|>situer|>rester|>demeurer|>demeure]  à  [quelques|des|*NUM|@:B]  [lieux|lieus]
+    [>lieue|lieus] [>aménager|>abandonner|>insolite|>éloigner|>réserver|>sacrer|>connaître|>méconnaître|>privilégier|>priver]
+        <<- /conf/ morph(\2, ":Q") -1>> lieu|lieux              # Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
+
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|des|*NUM|@:B]  [lieux|lieus]
         <<- /conf/ -4>> lieues                                  # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
-    >avoir ?[eu|eus|eue|eues]¿ ([>lieue|lieux|lieus])
-        <<- /conf/ -1>> lieu                                    # Confusion. Dans l’expression « avoir lieu », “lieu” est invariable.
+    20000 (>lieu) sous [la|les] >mer
+    vingt mille (>lieu) sous [la|les] >mer
+        <<- /conf/ -1>> lieues                                  # Confusion. Pour désigner une distance, écrivez “lieue(s)”.|http://fr.wiktionary.org/wiki/lieue
+
+    [lieux|>lieue] [>jaune|>noire|>mordre]
+        <<- /conf/ -1>> lieu|lieus                              # Confusion probable. Si vous parlez du poisson, écrivez “lieu(s)”.|http://fr.wiktionary.org/wiki/lieu
+
+    >pêche [aux|des] [lieux|lieues]
+    >chair des [lieux|lieues]
+        <<- /conf/ -3>> lieu|lieus                              # Confusion. Si vous parlez du poisson, écrivez “lieu(s)”.|http://fr.wiktionary.org/wiki/lieu
 
 TEST: qui est le responsable des {{lieues}} ?
 TEST: ce sont des {{lieus}} mythiques.
+TEST: Des {{lieus}} historiques.
 TEST: co sont des {{lieues}} de rencontre pour les jeunes.
 TEST: elle habitait à quelques {{lieux}} d’ici
 TEST: Cette réunion ayant eu {{lieue}} loin d’ici
+TEST: Les {{lieux}} mordent à notre leurre.
+TEST: Techniques de traîne pour les {{lieux}} jaunes.
+TEST: Faire un état des {{lieus}}.
+TEST: Faire un état des lieux.
+TEST: Les lieus mordent à notre leurre.
+TEST: Les lieux historiques.
+TEST: J’étais à mille lieues d’imaginer que c’était lui.
+TEST: As-tu lu 20 000 lieues sous les mers ?
+TEST: Techniques de traîne pour les lieus jaunes.
+TEST: Ils pêchent des lieus.
+TEST: Faire un état des lieux.
+TEST: Les lieux de prière.
 
 
 # avoir/donner lieu
 __conf_avoir_donner_lieu__
     [>avoir|>donner]  lieux
-        <<- /conf/ -2>> lieu                                        # « Donner lieu » : “lieu” est invariable dans cette locution verbale.
+    >avoir ?[eu|eus|eue|eues]¿ lieux
+        <<- /conf/ -2>> lieu                                            # Donner lieu, avoir lieu : “lieu” est invariable dans ces locutions verbales.
 
     [>avoir|>donner]  [>lieue|lieus]
-        <<- /conf/ -2>> lieu                                        # Confusion. La lieue est une unité de distance. Les lieus sont des poissons.
+    >avoir ?[eu|eus|eue|eues]¿ [>lieue|lieus]
+        <<- /conf/ --1>> lieu                                           # Confusion. La lieue est une unité de distance. Les lieus sont des poissons.
+
 
 TEST: ces conneries donneront {{lieux}} à une enquête approfondie.
 TEST: Tout ce qui a {{lieue}} hors de ce pays est ignoré.
@@ -13642,19 +13691,58 @@ __conf_tache_tâche__
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
-    >tâche  [>indélébile|>rouge|>verte|>noire|>bleue|>jaune|>grise|>blanche|>brune|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre]
-        <<- /conf/ -1>> =\1.replace("â", "a")
+    >tâche  [>indélébile|>rouge|>verte|>noire|>bleue|>jaune|>grise|>blanche|>brune|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire]
+        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
+        # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+
+    >tâche sur @:D [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
+        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
+        # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+
+    >tâcher  @:D  [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
+        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
 TEST: une {{tâche}} de chocolat                                             ->> tache
 TEST: une {{tâche}} vraiment indélébile
 TEST: une {{tâche}} rouge.
+TEST: Une {{tâche}} sur ma chemise.
+TEST: J’ai {{tâché}} ma chemise.
 TEST: en tâche de fond
 TEST: la tâche de la justice
 TEST: c’est une tâche de grande envergure
 TEST: déléguer des tâches de sécurité publique à des machines autonomes
 TEST: tirer bénéfice de nouvelles données en fonction de la tâche de départ qui leur a été assignée
 TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’autres tâches de surveillance, notamment au sein de la nouvelle brigade anti-insécurité.
+
+
+__conf_tâche_tache__
+    >tache [>ingrate|>dévalorisante|>valorisante]
+        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
+        # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
+
+    [>abstenir|>accepter|>accomplir|>affecter|>effectuer|>entreprendre|>exécuter|>finir|>partager|>refaire|>refuser|>terminer]  @:D  >tache
+    à la tache
+        <<- /conf/ -3>> =\3.replace("a", "â").replace("A", "Â")
+        # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
+
+    >tacher  [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
+    >tacher  [de|d’]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  @:Y
+    >tacher  [de|d’]  [nous|vous]     [le|la|l’|les|en|y]       @:Y
+    >tacher  [de|d’]  [le|la|l’|les]  [lui|leur|en|y]           @:Y
+    >tacher  [de|d’]  [lui|leur]      en                        @:Y
+        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
+        # Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.
+
+TEST: Quelle {{tache}} ingrate.
+TEST: Une {{tache}} ingrate.
+TEST: Elle se tue à la {{tache}}.
+TEST: Il a accompli la {{tache}} facilement.
+TEST: {{Tache}} de partir tôt.
+TEST: {{Tachez}} d’arriver à l’heure.
+TEST: {{Tache}} de ne pas faire trop de bruit.
+TEST: une tâche dévalorisante.
+TEST: peiner à la tâche.
 
 
 # taule / tôle
@@ -16253,7 +16341,7 @@ TEST: elle relève une fois de plus le {{défie}}.                ->> défi
 TEST: il gère l’{{accueille}}                                   ->> accueil
 TEST: nous racontons le {{dépare}} des peuples vers les étoiles ->> départ
 TEST: Les hommes resteront en {{contacte}}                      ->> contact
-
+TEST: Le parquet demande le {{maintient}} en détention          ->> maintien
 
 
 !!!
@@ -18946,14 +19034,6 @@ TEST: Les grenouilles mâles coassent.
 TEST: Les coassements inquiétants des crapauds.
 TEST: Les corbeaux croassent.
 TEST: Les croassements inquiétants des corbeaux.
-TEST: J’étais à mille lieues d’imaginer que c’était lui.
-TEST: As-tu lu 20 000 lieues sous les mers ?
-TEST: Les lieus mordent à notre leurre.
-TEST: Techniques de traîne pour les lieus jaunes.
-TEST: Ils pêchent des lieus.
-TEST: Faire un état des lieux.
-TEST: Les lieux de prière.
-TEST: Les lieux historiques.
 TEST: J’étais quelques fois absent.
 TEST: Les quelques fois où je l’ai croisé.
 TEST: Les quelques fois que nous nous sommes rencontrés.
