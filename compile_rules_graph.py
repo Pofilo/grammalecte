@@ -78,6 +78,9 @@ def genTokenLines (sTokenLine, dDef):
     lToken = sTokenLine.split()
     lTokenLines = None
     for sToken in lToken:
+        # replace merger characters by spaces
+        if "␣" in sToken:
+            sToken = sToken.replace("␣", " ")
         # optional token?
         bNullPossible = sToken.startswith("?") and sToken.endswith("¿")
         if bNullPossible:
