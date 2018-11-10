@@ -10336,7 +10336,7 @@ __purge_avant_adjectifs_adverbes__
         <<- not value(<1, "|un|le|ce|du|mon|ton|son|notre|votre|leur|") ~1>> *
 
     si  @:[AW]
-        <<- not (\2 == "bien" and value(>1, "|que|")) ~1>> *
+        <<- not (\2 == "bien" and value(>1, "|que|qu’|")) and not (\2 == "tant" and value(>1, "|est|")) ~1>> *
 
     un [brin|chouia|chouïa|rien|minimum|soupçon|tantinet]  ?trop¿
         <<- morph(>1, ":A", ":G") ~>> *
@@ -13346,7 +13346,7 @@ TEST: dans la {{glaciaire}}
 
 
 # gène / gêne
-__conf_sans_gêne__
+__conf_gène_gêne__
     sans >gène
     sans-gènes
     sans-gène
@@ -16476,9 +16476,11 @@ __purge_préverbes1__
     la    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[fe]:[si]|G|M)
     l’    @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[si]|G|M)
     les   @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[pi]|G|M)
-    en    @:(?:[123][sp]|P|Y)¬:[NA]
     leur  @:(?:[123][sp]|P|Y)¬:(?:[NA].*:[si]|G|M)
         <<- \2.islower() ~1>> *
+
+    en    @:(?:[123][sp]|P|Y)¬:[NA]
+        <<- \2.islower() and not (\2 == "admettant" and value(>1, "|que|qu’|")) ~1>> *
 
     nous  @:(?:[123][sp]|P|Y)¬:1p
         <<- \2.islower() and not (morph(<1, ":1p") and not value(<1, "|sachons|veuillons|allons|venons|partons|") and value(<2, "|<start>|,|")) ~1>> *
@@ -17789,18 +17791,37 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 
 
 # verbe que + subjonctif
-__vmode_qqch_que_subjonctif1__
-    [>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-    [afin|avant|pour|quoi|sans]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+__vmode_qqch_que_subjonctif__
+    [quoique|quoiqu’]  @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -3>> =suggVerbMode(\3, ":S", \2)                                                # Après “quoique”, ce verbe devrait être au subjonctif.
+
+    [>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>suffire]    [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+    [afin|avant|malgré|pour|pourvu|quoi|sans]                                       [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
         <<- /vmode/ not tag(\1, "upron") and morph(\1, ":V", ":N")
         -4>> =suggVerbMode(\4, ":S", \3)                                                            # Après “\1 que”, ce verbe devrait être au subjonctif.
 
-    il est possible  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+    [il|ça|cela]    peut                            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "upron") -5>> =suggVerbMode(\5, ":S", \4)                               # Ce verbe devrait être au subjonctif.
+
+    à               [condition|moins|supposer]      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    pour            peu                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    [il|ça|cela]    peut                            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    de              [crainte|façon|manière|peur]    [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    [<start>|,]     non                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Ce verbe devrait être au subjonctif.
+
+    [<start>|,]     en          admettant           [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Si “en admettant que” indique que la suite est une hypothèse, le verbe doit être au subjonctif.
+
+    il          est         possible            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    jusqu’      à           ce                  [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    si          tant        est                 [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Après “\1 \2 \3”, ce verbe devrait être au subjonctif.
 
+TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
 TEST: Il suffit qu’il {{court}} plus
 TEST: Je veux qu’il {{finit}} son repas.
 TEST: quoi qu’il en {{conclut}}
@@ -17808,32 +17829,60 @@ TEST: Je ne veux pas que tu {{es}} des ennuis
 TEST: Avant que tu {{pars}}, je voudrais qu’on discute.
 TEST: Sans qu’elle {{prend}} le temps d’analyser le problème.
 TEST: il est possible qu’il {{vient}} demain.
-TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
-TEST: Je ne doute pas qu’ils réussiront leur mission.
-TEST: Je me doutais bien qu’Apple pourrait marcher
-TEST: il ne fait aucun doute qu’Amazon le sait.
-TEST: quoi que nous autres hommes ayons pu faire
-TEST: Je me doutais bien qu’elle me détestait
-
-
-__vmode_qqch_que_subjonctif2__
-    à       condition   [que|qu’]    @:(?:Os|M)      @:I¬:[GYS]
-    pour    peu         [que|qu’]    @:(?:Os|M)      @:I¬:[GYS]
-    il      peut        [que|qu’]    @:(?:Os|M)      @:I¬:[GYS]
-        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Ce verbe devrait être au subjonctif.
-
+TEST: à condition que tu {{réussis}}
+TEST: Pourvu qu’elle {{réussit}}.
+TEST: en admettant que tu {{deviens}} plus talentueuse qu’elle, qu’est-ce que tu feras ?
+TEST: afin que je {{prends}} des mesures
 TEST: à condition qu’il {{finit}} son boulot.
 TEST: pour peu qu’il {{prend}} son devoir sérieux…
 TEST: il se peut que nous {{avons}} tort.
+TEST: Nous œuvrons silencieusement de crainte qu’il nous {{entend}}.
+TEST: En admettant qu’il {{devient}} juste.
+TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.
+TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
+TEST: Je ne doute pas qu’ils réussiront leur mission.
+TEST: Je me doutais bien qu’Apple pourrait marcher
+TEST: Tu vivras plus sereinement en admettant que tu ne peux pas être la meilleure en toutes choses.
+TEST: il ne fait aucun doute qu’Amazon le sait.
+TEST: quoi que nous autres hommes ayons pu faire
+TEST: Je me doutais bien qu’elle me détestait
+TEST: Nous irons là-bas, si tant est qu’on veuille encore de nous.
+TEST: Quoi que je fasse, il fait la gueule.
+TEST: Quoique tu fasses, il te le reprochera.
+TEST: Demander jusqu’à ce qu’il réponde.
+TEST: Je vous appelle pour que vous me donniez des renseignements.
+TEST: À condition que tu réussisses.
+TEST: Je veux que tu sois prudent.
+TEST: Je souhaitais que tu fusses présent.
+TEST: Je souhaite qu’il apprenne le français.
+TEST: Je ne permets pas que tu sois imprudent.
+TEST: Je n’exige pas que vous soyez ponctuels.
+TEST: C’est le seul ami qui me comprenne.
+TEST: À condition que tu réussisses.
+TEST: À condition que tu me prennes.
+TEST: Pourvu que tu réussisses
+TEST: Il est arrivé après que je fus parti.
+TEST: Je vous appelle pour que vous me donniez des renseignements.
+TEST: Bien que tu aies passé l’examen
+TEST: Je sais bien que tu reviendras.
+TEST: Je travaille de façon que nous puissions vivre.
+TEST: Je travaille de façon qu’il puisse vivre.
+TEST: En admettant qu’il soit allé
+TEST: Demander jusqu’à ce qu’il réponde.
+TEST: Demander jusqu’à ce qu’il me réponde.
+TEST: J’irai si tant est que je puisse.
+TEST: J’irai si tant est que je le puisse.
+TEST: Quoique je dise.
+TEST: Quoique je te dise.
 
 
 # Bien que + subjonctif
 __vmode_bien_que_subjonctif__
-    [<start>|,]  bien  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0a)|>(?:hériter|recevoir|donner|offrir)/
-        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \1)                                                # Après « bien que », le verbe s’emploie au subjonctif.
+    [<start>|,]  [bien|encore]  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0a)|>(?:hériter|recevoir|donner|offrir)/
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \1)                                                # Après « \2 que », le verbe s’emploie au subjonctif.
 
-    [<start>|,]  bien  [que|qu’]  @:(?:Os|M)  >avoir  @:[QYG]¬>(?:hériter|recevoir|donner|offrir)/
-        <<- /vmode/ morph(\5, ":I", ":S") -5>> =suggVerbMode(\5, ":S", \1)                          # Après « bien que », le verbe s’emploie au subjonctif.
+    [<start>|,]  [bien|encore]  [que|qu’]  @:(?:Os|M)  >avoir  @:[QYG]¬>(?:hériter|recevoir|donner|offrir)/
+        <<- /vmode/ morph(\5, ":I", ":S") -5>> =suggVerbMode(\5, ":S", \1)                          # Après « \2 que », le verbe s’emploie au subjonctif.
 
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
 TEST: Bien que je {{prends}} mon mal en patience.
@@ -20060,28 +20109,6 @@ TEST: Et si tu avais gagné
 TEST: Si tu mourais
 TEST: Si j’avais gagné
 TEST: S’ils avaient gagné
-TEST: Je veux que tu sois prudent.
-TEST: Je souhaitais que tu fusses présent.
-TEST: Je souhaite qu’il apprenne le français.
-TEST: Je ne permets pas que tu sois imprudent.
-TEST: Je n’exige pas que vous soyez ponctuels.
-TEST: C’est le seul ami qui me comprenne.
-TEST: À condition que tu réussisses.
-TEST: À condition que tu me prennes.
-TEST: Pourvu que tu réussisses
-TEST: Il est arrivé après que je fus parti.
-TEST: Je vous appelle pour que vous me donniez des renseignements.
-TEST: Bien que tu aies passé l’examen
-TEST: Je sais bien que tu reviendras.
-TEST: Je travaille de façon que nous puissions vivre.
-TEST: Je travaille de façon qu’il puisse vivre.
-TEST: En admettant qu’il soit allé
-TEST: Demander jusqu’à ce qu’il réponde.
-TEST: Demander jusqu’à ce qu’il me réponde.
-TEST: J’irai si tant est que je puisse.
-TEST: J’irai si tant est que je le puisse.
-TEST: Quoique je dise.
-TEST: Quoique je te dise.
 TEST: Elle est certaine que vous êtes un espion.
 TEST: Je n’ai pas compris.
 TEST: Tu n’as pas compris.
