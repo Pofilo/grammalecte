@@ -2091,6 +2091,12 @@ __immunités__
     à l’ arrache
         <<- %3>>
 
+    au  [bas|bras|côté|milieu|sein|sommet|faîte] [duquel|desquels|desquelles]
+    au  [bas|bras|côté|milieu|sein|sommet|faîte] de laquelle
+    aux [côtés] [duquel|desquels|desquelles]
+    aux [côtés] de laquelle
+        <<- %3>>
+
     au sortir [de|des|du|d’]
         <<- ~2>> *
 
@@ -3800,6 +3806,14 @@ TEST: {{la quelle}} trouveron-nous
 TEST: {{la quels}} sont vos intentions
 TEST: et {{la quel}} ordinateur fonctionne encore ?
 TEST: {{la quelles}} sont nos options ?
+
+
+__conf_de_puis__
+    de puis
+        <<- /conf/ \2.islower() ->> depuis                                                          # Confusion. La préposition “depuis” s’écrit en un seul mot.|https://fr.wiktionary.org/wiki/depuis
+
+TEST: Elles sont parties {{de puis}} au moins trois heures.
+TEST: Depuis le temps que ça existe, tu devrais être au courant.
 
 
 __incohérence_au_qqch__
@@ -11714,6 +11728,7 @@ __gn_trouver_ça_adj__
 TEST: ils trouvent ça de plus en plus {{idiots}}              ->> idiot
 
 
+
 !!
 !!
 !!!! Groupe nominal (sans déterminant)                                                            !!
@@ -11894,6 +11909,83 @@ __gn_de_telle_sorte__
 
 TEST: {{de telles sorte}}
 TEST: tu vas faire {{de telles sortes}} qu’on ne nous retrouve jamais.
+
+
+!!
+!!
+!!!! Groupe nominal (accord avec déterminant suivant le groupe)                                   !!
+!!
+!!
+
+__gn_lequel_laquelle_lesquels_lesquelles__
+    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]          @:N.*:m:[si]  @:R¬>à/   [laquelle|lesquels|lesquelles]
+        <<- /conf/ --1>> lequel                                                                     # Accord avec “\2 \3” : utilisez le masculin singulier.
+
+    <start> [la|l’|une|cette|ma|ta|sa|notre|votre|leur]             @:N.*:f:[si]  @:R¬>à/   [lequel|lesquels|lesquelles]
+        <<- /conf/ --1>> laquelle                                                                   # Accord avec “\2 \3” : utilisez le féminin singulier.
+
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certains]   @:N.*:m:[pi]  @:R¬>à/   [lequel|laquelle|lesquelles]
+        <<- /conf/ --1>> lesquels                                                                   # Accord avec “\2 \3” : utilisez le pluriel masculin.
+
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines]  @:N.*:f:[pi]  @:R¬>à/   [lequel|laquelle|lesquels]
+        <<- /conf/ --1>> lesquelles                                                                 # Accord avec “\2 \3” : utilisez le pluriel féminin.
+
+TEST: L’homme pour {{laquelle}} tu te plies en quatre ne le mérite pas.                 ->> lequel
+TEST: Une femme contre {{lequel}} je me suis battu bec et ongles.                       ->> laquelle
+TEST: ces idiots avec {{lesquelles}} j’ai commis la bêtise de partir                    ->> lesquels
+TEST: plusieurs femmes avec {{lesquels}} nous avons parlé                               ->> lesquelles
+TEST: La femme avec laquelle tu parles
+TEST: La faux avec laquelle on fauche.
+TEST: Une distance au-delà de laquelle il devient difficile de voir.
+
+
+__gn_auquel_à_laquelle_auxquels_auxquelles__
+    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]          @:N.*:m:[si]    [auxquels|auxquelles]
+        <<- /conf/ --1>> auquel                                                                     # Accord avec “\2 \3” : utilisez le masculin singulier.
+
+    <start> [le|l’|un|ce|cet|mon|ton|son|notre|votre|leur]          @:N.*:m:[si]    à laquelle
+        <<- /conf/ --2:-1>> auquel                                                                  # Accord avec “\2 \3” : utilisez le masculin singulier.
+
+    <start> [la|l’|une|cette|ma|ta|sa|notre|votre|leur]             @:N.*:f:[si]    [auquel|auxquels|auxquelles]
+        <<- /conf/ --1>> à laquelle                                                                 # Accord avec “\2 \3” : utilisez le féminin singulier.
+
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certains]   @:N.*:m:[pi]    [auquel|auxquelles]
+        <<- /conf/ --1>> auxquels                                                                   # Accord avec “\2 \3” : utilisez le pluriel masculin.
+
+    <start> [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines]  @:N.*:f:[pi]    [auquel|auxquels]
+        <<- /conf/ --1>> auxquelles                                                                 # Accord avec “\2 \3” : utilisez le pluriel féminin.
+
+TEST: le délire {{à laquelle}} nous avons dû faire face.                                ->> auquel
+TEST: le chien {{auxquels}} ils ont apporté à manger avait disparu                      ->> auquel
+TEST: la mission {{auquel}} nous avons consacré tant de temps a finalement été annulée  ->> à laquelle
+TEST: les femmes {{auxquels}} j’ai confié cette mission se sont rebellées.              ->> auxquelles
+TEST: les hommes {{auxquelles}} nous avons fait confiance nous sont trahis.             ->> auxquels
+TEST: Les femmes auxquelles tu parles
+
+
+__gn_duquel_de_laquelle_desquels_desquelles__
+# Nous présumons qu’au singulier, la différence sonore prévient toute confusion possible (les faux positifs possibles sont nombreux).
+    [<start>|,]  @:R  [les|des|ces|mes|tes|ses|quelques|plusieurs|certains]   @:N.*:m:[pi]    desquelles
+        <<- /conf/ --1>> desquels                                                                   # Si “\-1” se rapporte à “\3 \4” : utilisez le pluriel masculin.
+
+    [<start>|,]  @:R  [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines]  @:N.*:f:[pi]    desquels
+        <<- /conf/ --1>> desquelles                                                                 # Si “\-1” se rapporte à “\3 \4” : utilisez le pluriel féminin.
+
+
+    <start>  [les|des|ces|mes|tes|ses|quelques|plusieurs|certains|aux]        @:N.*:m:[pi]    desquelles
+        <<- /conf/ --1>> desquels                                                                   # Si “\-1” se rapporte à “\2 \3” : utilisez le pluriel masculin.
+
+    <start>  [les|des|ces|mes|tes|ses|quelques|plusieurs|certaines|aux]       @:N.*:f:[pi]    desquels
+        <<- /conf/ --1>> desquelles                                                                 # Si “\-1” se rapporte à “\2 \3” : utilisez le pluriel féminin.
+
+TEST: par ces idées {{desquels}} il fut possible de bâtir notre empire                  ->> desquelles
+TEST: aux ressources {{desquels}} nous avons tiré notre richesse.                       ->> desquelles
+TEST: C’était une Église, parmi tant d’autres, au milieu de laquelle prospéraient les hypocrites.
+TEST: au nombre desquels on compte les vaisseaux de l’Invincible Armada.
+TEST: à l’ombre desquels jaillissent de nombreuses sources fraîches et limpides
+TEST: Les édifices desquels vous êtes propriétaire
+TEST: on lui fait des piqûres à la suite desquelles la paupière se soulève
+TEST: les argiles et les marnes jouent le rôle d’isolants enfermant les masses à l’intérieur desquelles s’est effectuée la fermentation du sapropel.
 
 
 !!
@@ -13055,6 +13147,29 @@ __ppas_dû_du2__
         <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
 
 TEST: L’échec est {{du}} en partie à un manque de préparation.
+
+
+# éminent / imminent
+__conf_éminent_imminent__
+    >imminente [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logue$|~iste]
+        <<- /conf/ -1>> =\1.replace("imm", "ém").replace("Imm", "Ém")
+        # Confusion probable. Si “\1” se rapporte à “\2”, alors vous voulez probablement dire “éminent” ; “imminent” signifie “qui va survenir prochainement”.|https://fr.wiktionary.org/wiki/%C3%A9minent
+
+    [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logue$|~iste] >imminente
+        <<- /conf/ -2>> =\2.replace("imm", "ém").replace("Imm", "Ém")
+        # Confusion probable. Si “\2” se rapporte à “\1”, alors vous voulez probablement dire “éminent” ; “imminent” signifie “qui va survenir prochainement”.|https://fr.wiktionary.org/wiki/%C3%A9minent
+
+    [>accouchement|>accord|>arrivée|>assaut|>attaque|>atterrissage|>cataclysme|>catastrophe|>changement|>conflit|>crash|>danger|>décollage|>départ|>désarmement|>déclenchement|>effondrement|>éruption|>fin|>guerre|>lancement|>orage|>ouragan|>péril|>remaniement|>réponse|>résultat|>retour|>séisme|>tempête|>tsunami|>verdict] ?>être¿ >éminente
+        <<- /conf/ --1>> =\-1.replace("émi", "immi").replace("Émi", "Immi")
+        # Confusion probable. Si “\-1” se rapporte à “\1”, alors vous voulez probablement dire “imminent” ; “éminent” signifie “notable”.|https://fr.wiktionary.org/wiki/%C3%A9minent
+
+TEST: mon {{imminent}} collègue.
+TEST: Les scientifiques les plus {{imminents}}.
+TEST: l’accouchement est {{éminent}}.
+TEST: Mon {{imminent}} collègue.
+TEST: Un paléontologue {{imminent}}.
+TEST: L’arrivée est imminente.
+TEST: Des paléontologues éminents.
 
 
 # envi / envie
@@ -18945,8 +19060,6 @@ TEST: Tu viendras quand même.
 TEST: Tu viendras quand même ?
 TEST: Comme même ses meilleurs amis n’étaient pas venus, il était triste.
 TEST: Mon nom est Robert de Puis.
-TEST: L’arrivée est imminente.
-TEST: Des paléontologues éminents.
 TEST: Une encre sur soie.
 TEST: Un drap en soie.
 TEST: Il n’est pas mauvais en soi.
