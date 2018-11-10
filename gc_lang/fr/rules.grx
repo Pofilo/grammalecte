@@ -15391,21 +15391,37 @@ TEST: Absolument {{heureux}}, elles exultèrent de joie.
 
 !!
 !!
-!!!! Inversion verbe/sujet                                                                        !!
+!!!! Participes passés : inversion verbe/sujet                                                    !!
 !!
 !!
 
 __ppas_inversion_être_je__
     /-je  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggSing(\2)               # Accord avec le sujet “je” : “\2” devrait être au singulier.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggSing(\2)                                              # Accord avec le sujet “je” : “\2” devrait être au singulier.
+
+    /-je  @:(?:[123][sp]|[NA].*:p)¬:[GWYsi]
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggSing(\2)                                              # Accord avec le sujet “je” : “\2” devrait être au singulier.
+
 
 __ppas_inversion_être_tu__
     /-tu  @:(?:[123][sp]|Y|[NA].*:p)¬:[GWsi]
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggSing(\2)               # Accord avec le sujet “tu” : “\2” devrait être au singulier.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggSing(\2)                                              # Accord avec le sujet “tu” : “\2” devrait être au singulier.
+
+    /-tu  @:(?:[123][sp]|[NA].*:p)¬:[GWYsi]
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggSing(\2)                                              # Accord avec le sujet “tu” : “\2” devrait être au singulier.
 
 __ppas_inversion_être_il__
     /-il  @:(?:[123][sp]|Y|[NA].*:[pf])¬:(?:G|W|[me]:[si])|question/
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggMasSing(\2)            # Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggMasSing(\2)                                           # Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
+
+    /-il  @:(?:[123][sp]|[NA].*:[pf])¬:(?:G|W|Y|[me]:[si])|question/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggMasSing(\2)                                           # Accord avec le sujet “il” : “\2” devrait être au masculin singulier.
 
 __ppas_inversion_être_ce__
     /-ce  *WORD
@@ -15416,28 +15432,57 @@ __ppas_inversion_être_ce__
 
 __ppas_inversion_être_elle__
     /-elle  @:(?:[123][sp]|Y|[NA].*:[pm])¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggFemSing(\2)            # Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggFemSing(\2)                                           # Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
+
+    /-elle  @:(?:[123][sp]|[NA].*:[pm])¬:(?:G|W|Y|[fe]:[si])
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggFemSing(\2)                                           # Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
 
 __ppas_inversion_être_on__
-    /-on  @:(?:[123][sp]|Y)¬:(?:G|W)
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggVerbPpas(\2)           # Accord avec le sujet “on”.
+    /-on  @:(?:[123][sp]|Y)¬:[GW]
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “on”.
+
+    /-on  @:[123][sp]¬:[GWY]
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “on”.
 
 __ppas_inversion_être_nous__
     /-nous  @:(?:[123][sp]|Y|[NA].*:s)¬:[GWpi]|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggPlur(\2)               # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggPlur(\2)                                              # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
+
+    /-nous  @:(?:[123][sp]|[NA].*:s)¬:[GWYpi]|>(?:dire|légion)/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggPlur(\2)                                              # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
 
 __ppas_inversion_être_vous__
-    /-vous  @:(?:[123][sp]|Y)¬:(?:G|W)
-        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ":V0e")
+    /-vous  @:(?:[123][sp]|Y)¬:[GW]
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
+
+    /-vous  @:[123][sp]¬:[GWY]
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/")
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
 
 __ppas_inversion_être_ils__
     /-ils  @:(?:[123][sp]|Y|[NA].*:[sf])¬:(?:G|W|[me]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggMasPlur(\2)            # Accord avec “ils” : “\2” devrait être au masculin pluriel.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggMasPlur(\2)                                           # Accord avec “ils” : “\2” devrait être au masculin pluriel.
+
+    /-ils  @:(?:[123][sp]|[NA].*:[sf])¬:(?:G|W|Y|[me]:[pi])|>(?:dire|légion)/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggMasPlur(\2)                                           # Accord avec “ils” : “\2” devrait être au masculin pluriel.
 
 __ppas_inversion_être_elles__
     /-elles  @:(?:[123][sp]|Y|[NA].*:[sm])¬:(?:G|W|[fe]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ":V0e") -2>> =suggFemPlur(\2)            # Accord avec “elles” : “\2” devrait être au féminin pluriel.
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        -2>> =suggFemPlur(\2)                                           # Accord avec “elles” : “\2” devrait être au féminin pluriel.
+
+    /-elles  @:(?:[123][sp]|[NA].*:[sm])¬:(?:G|W|Y|[fe]:[pi])|>(?:dire|légion)/
+        <<- /ppas/ morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
+        -2>> =suggFemPlur(\2)                                           # Accord avec “elles” : “\2” devrait être au féminin pluriel.
 
 TEST: serais-je {{fâchés}} contre vous ?
 TEST: Est-elle {{arriver}} ?
@@ -15463,6 +15508,16 @@ TEST: Était-il {{prit}} dans la tourmente ?
 TEST: Serait-il {{reconnut}} dans la tourmente ?
 TEST: Aurait-on déjà {{finit}} notre tour du monde ?
 TEST: Êtes-vous {{connut}} en ce milieu ?
+TEST: Demeurerais-je {{dingues}} d’elle ?
+TEST: Resteras-tu {{amorphes}} encore longtemps ?
+#TEST: Semblait-il {{fatiguées}} ?
+TEST: Paraissait-elle {{surpris}} ?
+TEST: Deviendrait-on {{meurtrit}} ?
+TEST: Paraissons-nous {{faible}} ?
+TEST: Redeviennent-ils {{incapable}} avec l’âge ?
+TEST: semble-t-il savoir de quoi il parle ?
+TEST: Resterez-vous manger ?
+TEST: Parait-il ennuyer l’assistance ?
 TEST: Que se sont-ils dit ?
 TEST: Ton rendez-vous arrive bientôt.
 TEST: Est-il question de ceci ou de cela ?
