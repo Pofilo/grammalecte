@@ -10570,6 +10570,7 @@ __purge_locutions_verbales__
 __conf_locutions_verbales__
     >arriver a échéance
     >arriver a point nommé
+    >gonfler a bloc
     >mettre a [bas|>jour|>niveau|>nu|>nue|>plat|>terre]
     >mettre a l’ [écart|épreuve]
     >percer a jour
@@ -16384,7 +16385,7 @@ TEST: La consigner devenait une obligation.
 TEST: Les reconnaître semblait nécessaire.
 
 
-__conf_det_suj_verbe_det_verbe_nom!6__
+__conf_suj_verbe_det_verbe_nom!6__
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
@@ -16393,6 +16394,10 @@ __conf_det_suj_verbe_det_verbe_nom!6__
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  le  @:[123][sp]¬:[NA].*:[me]:[si]
         <<- /conf/ hasSimil(\-1, ":[NA].*:[me]:[si]")
         --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                            # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
@@ -16404,6 +16409,10 @@ __conf_det_suj_verbe_det_verbe_nom!6__
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  la  @:[123][sp]¬:[NA].*:[fe]:[si]
         <<- /conf/ hasSimil(\-1, ":[NA].*:[fe]:[si]")
         --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                            # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
@@ -16415,6 +16424,10 @@ __conf_det_suj_verbe_det_verbe_nom!6__
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  l’  @:[123][sp]¬:[NA].*:[si]
         <<- /conf/ hasSimil(\-1, ":[NA].*:[si]")
         --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
@@ -16426,6 +16439,10 @@ __conf_det_suj_verbe_det_verbe_nom!6__
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  leur  @:[123][sp]¬:[NA].*:[si]
         <<- /conf/ hasSimil(\-1, ":[NA].*:[si]")
         --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
@@ -16437,6 +16454,10 @@ __conf_det_suj_verbe_det_verbe_nom!6__
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  les  @:[123][sp]¬:[NA].*:[pi]
         <<- /conf/ hasSimil(\-1, ":[NA].*:[pi]")
         --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
@@ -16448,6 +16469,10 @@ __conf_det_suj_verbe_det_verbe_nom!6__
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  en  @:[123][sp]¬:[NA]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  en  @:[123][sp]¬:[NA]
     [<start>|,]  @:D  @:[NA]                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]  en  @:[123][sp]¬:[NA]
         <<- /conf/ hasSimil(\-1, ":[NA]")
         --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
@@ -16457,6 +16482,9 @@ TEST: il gère l’{{accueille}}                                   ->> accueil
 TEST: nous racontons le {{dépare}} des peuples vers les étoiles ->> départ
 TEST: Les hommes resteront en {{contacte}}                      ->> contact
 TEST: Le parquet demande le {{maintient}} en détention          ->> maintien
+TEST: Mon idée rend leur {{dépare}} nécessaire                  ->> départ
+TEST: tu vois, l’oiseau étend les {{hèles}}                     ->> ailes
+TEST: Lire nous révèle les {{fixions}} du genre                 ->> fictions
 
 
 !!!
