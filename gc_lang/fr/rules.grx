@@ -12313,6 +12313,17 @@ __sgpl_par_intervalles__
 TEST: On va procéder par {{intervalle}}
 
 
+# juste
+__sgpl_juste__
+    justes
+        <<- /sgpl/ \1.islower() and morph(<1, ":V", ":D") and not morph(>1, ":N.*:[pi]")
+        ->> juste                                                   # Si “juste” est ici un adverbe, il est invariable.
+
+TEST: Viser {{justes}}
+TEST: Voir {{justes}}.
+TEST: Penser juste.
+
+
 # pied
 __sgpl_pied__
     [>avoir|>perdre]  pieds
@@ -12385,6 +12396,15 @@ __sgpl_par_souci_de__
 TEST: par {{soucis}} d’équité, chacun aura droit à une part.
 
 
+# sentir bon
+__sgpl_sentir_bon__
+    >sentir bons
+        <<- /sgpl/ -2>> bon                                         # Dans la locution “sentir bon”, “bon” est un adverbe, donc invariable.
+
+TEST: Ces fleurs sentent {{bons}}.
+TEST: Ça sent bon.
+
+
 # termes
 __sgpl_en_termes_de__
     en terme [de|d’]
@@ -12431,6 +12451,16 @@ __sgpl_vite__
 TEST: ils mangent {{vites}}.
 TEST: elles sont {{vites}} parties.
 TEST: elles sont vites.
+
+
+# voir clair
+__sgpl_voir_clair__
+    >voir >claire
+        <<- /sgpl/ \2 != "clair" and \2 != "Claire" -2>> clair      # Dans la locution “voire clair”, “clair” est un adverbe, donc invariable. (Mais peut-être confondez-vous “voire” et “voir” ?)
+
+TEST: Ils y voient {{clairs}}.
+TEST: Il vit Claire au théâtre.
+TEST: J’y vois clair, mec.
 
 
 # vu / vue
@@ -12855,10 +12885,10 @@ TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu
 
 # coûter cher
 __conf_coûter_cher__
-    [>coûter|>payer|>prendre] [chers|chère|chères]
+    [>coûter|>couter|>louer|>payer|>prendre|>valoir|>vendre] [chers|chère|chères]
         <<- /conf/ -2>> cher                                        # Ici, « cher » est un adverbe, invariable.
 
-    [>coûter|>payer|>prendre] [>chair|>chaire]
+    [>coûter|>couter|>louer|>payer|>prendre|>valoir|>vendre] [>chair|>chaire]
         <<- /conf/ -2>> cher                                        # Confusion. Pour parler de la cherté, écrivez “cher”.
 
 TEST: ces saloperies coûtent vraiment {{chères}} !
