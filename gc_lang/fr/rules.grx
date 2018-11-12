@@ -7829,29 +7829,38 @@ TEST: C’est une prérogative de l’{{état-nation}}                        ->
 __maj_gentilés__
     océan Indien
     [îles|iles] Britanniques
-        <<- %2>>
+    à [la|l’] [afghane|albanaise|algérienne|allemande|américaine|andorrane|anglaise|angolaise|arabe|argentine|arménienne|australienne|autrichienne|asiatique|azerbaïdjanaise|bahamienne|bangladaise|bengladeshie|barbadienne|basque|belge|bélizienne|béninoise|bretonne|bhoutanaise|biélorusse|birmane|bolivienne|bosnienne|botswanaiso|brésilienne|britannique|brunéiene|bulgare|burkinabé|burundaise|cambodgienne|camerounaise|canadienne|capverdienne|centrafricaine|chilienne|chinoise|chypriote|colombienne|comorienne|congolaise|nord-coréenne|corse|costaricienne|croate|cubaine|danoise|djiboutienne|dominicaine|égyptienne|émiratie|équatorienne|érythréenne|estonienne|espagnole|étatsunienne|états-unienne|étasunienne|éthiopienne|fidjienne|finlandaise|formosane|française|gabonaise|gambienne|géorgienne|ghanéenne|grecque|grenadienne|guadeloupéenne|guatémaltèque|guinéenne|équato-guinéenne|guyanienne|haïtienne|honduriene|hollandaise|hongroise|indienne|indochinoise|indonésienne|irakienne|italienne|iranienne|irlandaise|islandaise|israélienne|ivoirienne|jamaïcaine|japonaise|jordanienne|kazakhe|kényane|kosovare|koweïtienne|laotienne|lapone|lettone|libanaise|libérienne|libyenne|liechtensteinoise|lituanienne|luxembourgeois|macédonienne|maghrébine|malgache|malaisienne|malawite|maldivienne|malienne|maltaise|maorie|marocaine|martienne|mauricienne|mauritanienne|mexicaine|micronésienne|moldave|monégasque|monténégrine|mongole|mozambicaine|namibiene|népalaise|nicaraguayenne|nigérienne|nigériane|néerlandaise|norvégienne|néo-zélandaise|ougandaise|ouzbèke|pakistanaise|palestinienne|panaméenne|paraguayenne|perse|péruvienne|philippine|polonaise|polynésienne|portugaise|québécoise|qatarie|roumaine|russe|rwandaise|saoudienne|scandinave|salvadorienne|sénégalaise|serbe|singapourienne|slovaque|slovène|somalienne|soudanaise|soviétique|srilankaise|suédoise|suisse|surinamaise|syrienne|sud-africaine|sud-coréenne|américaine|tadjike|tanzanienne|tchadienne|tchèque|thaïlandaise|togolaise|tahitienne|tunisiene|turkmène|turque|taïwanaise|ukrainienne|uruguayenne|vénézuélienne|vietnamienne|yéménite|yougoslave|zaïroise|zambienne|zimbabwéenne]
+        <<- %-1>>
 
-    *WORD [>afghane|>albanaise|>algérienne|>allemande|>américaine|>andorrane|>anglais|>angolaise|>arabe|>argentine|>arménienne|>australienne|>autrichienne|>asiatique|>azerbaïdjanaise|>bahamienne|>bangladaise|>bengladeshie|>barbadienne|>basque|>belge|>bélizienne|>béninoise|>bretonne|>bhoutanaise|>biélorusse|>birmane|>bolivienne|>bosnienne|>botswanaiso|>brésilienne|>britannique|>brunéiene|>bulgare|>burkinabé|>burundaise|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>congolaise|>nord-coréenne|>corse|>costaricienne|>croate|>cubaine|>danoise|>djiboutienne|>dominicaine|>égyptienne|>émiratie|>équatorienne|>érythréenne|>estonienne|>espagnole|>étatsunienne|>états-unienne|>étasunienne|>éthiopienne|>fidjienne|>finlandaise|>formosane|>française|>gabonaise|>gambienne|>géorgienne|>ghanéenne|>grecque|>grenadienne|>guadeloupéenne|>guatémaltèque|>guinéenne|>équato-guinéenne|>guyanienne|>haïtienne|>honduriene|>hollandaise|>hongroise|>indienne|>indochinoise|>indonésienne|>irakienne|>italienne|>iranienne|>irlandaise|>islandaise|>israélienne|>ivoirienne|>jamaïcaine|>japonaise|>jordanienne|>kazakhe|>kényane|>kosovare|>koweïtienne|>laotienne|>lapone|>lettone|>libanaise|>libérienne|>libyenne|>liechtensteinoise|>lituanienne|>luxembourgeois|>macédonienne|>maghrébine|>malgache|>malaisienne|>malawite|>maldivienne|>malienne|>maltaise|>maorie|>marocaine|>martienne|>mauricienne|>mauritanienne|>mexicaine|>micronésienne|>moldave|>monégasque|>monténégrine|>mongole|>mozambicaine|>namibiene|>népalaise|>nicaraguayenne|>nigérienne|>nigériane|>néerlandaise|>norvégienne|>néo-zélandaise|>ougandaise|>ouzbèke|>pakistanaise|>palestinienne|>panaméenne|>paraguayenne|>perse|>péruvienne|>philippine|>polonaise|>polynésienne|>portugaise|>québécoise|>qatarie|>roumaine|>russe|>rwandaise|>saoudienne|>scandinave|>salvadorienne|>sénégalaise|>serbe|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>srilankaise|>suédoise|>suisse|>surinamaise|>syrienne|>sud-africaine|>sud-coréenne|>américaine|>tadjike|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tahitienne|>tunisiene|>turkmène|>turque|>taïwanaise|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
-        <<- /maj/ \2.istitle() and morph(\1, ":N", ":(?:A|V0e|D|R|B)") -2:>> =\2.lower()            # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
-        <<- /maj/ \2.islower() and not \2.startswith("canadienne") and
-            ( value(\1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|") or
-            ( value(\1, "|un|") and not value(<1, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
-        -2>> =\2.capitalize()                                                                       # S’il s’agit d’un gentilé, mettez une majuscule.
+    [>afghane|>albanaise|>algérienne|>allemande|>américaine|>andorrane|>anglaise|>angolaise|>arabe|>argentine|>arménienne|>australienne|>autrichienne|>asiatique|>azerbaïdjanaise|>bahamienne|>bangladaise|>bengladeshie|>barbadienne|>basque|>belge|>bélizienne|>béninoise|>bretonne|>bhoutanaise|>biélorusse|>birmane|>bolivienne|>bosnienne|>botswanaiso|>brésilienne|>britannique|>brunéiene|>bulgare|>burkinabé|>burundaise|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>congolaise|>nord-coréenne|>corse|>costaricienne|>croate|>cubaine|>danoise|>djiboutienne|>dominicaine|>égyptienne|>émiratie|>équatorienne|>érythréenne|>estonienne|>espagnole|>étatsunienne|>états-unienne|>étasunienne|>éthiopienne|>fidjienne|>finlandaise|>formosane|>française|>gabonaise|>gambienne|>géorgienne|>ghanéenne|>grecque|>grenadienne|>guadeloupéenne|>guatémaltèque|>guinéenne|>équato-guinéenne|>guyanienne|>haïtienne|>honduriene|>hollandaise|>hongroise|>indienne|>indochinoise|>indonésienne|>irakienne|>italienne|>iranienne|>irlandaise|>islandaise|>israélienne|>ivoirienne|>jamaïcaine|>japonaise|>jordanienne|>kazakhe|>kényane|>kosovare|>koweïtienne|>laotienne|>lapone|>lettone|>libanaise|>libérienne|>libyenne|>liechtensteinoise|>lituanienne|>luxembourgeois|>macédonienne|>maghrébine|>malgache|>malaisienne|>malawite|>maldivienne|>malienne|>maltaise|>maorie|>marocaine|>martienne|>mauricienne|>mauritanienne|>mexicaine|>micronésienne|>moldave|>monégasque|>monténégrine|>mongole|>mozambicaine|>namibiene|>népalaise|>nicaraguayenne|>nigérienne|>nigériane|>néerlandaise|>norvégienne|>néo-zélandaise|>ougandaise|>ouzbèke|>pakistanaise|>palestinienne|>panaméenne|>paraguayenne|>perse|>péruvienne|>philippine|>polonaise|>polynésienne|>portugaise|>québécoise|>qatarie|>roumaine|>russe|>rwandaise|>saoudienne|>scandinave|>salvadorienne|>sénégalaise|>serbe|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>srilankaise|>suédoise|>suisse|>surinamaise|>syrienne|>sud-africaine|>sud-coréenne|>américaine|>tadjike|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tahitienne|>tunisiene|>turkmène|>turque|>taïwanaise|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
+        <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
+        <<- /maj/ \1.islower() and not \1.startswith("canadienne") and
+            ( value(<1, "|certains|certaines|ce|cet|cette|ces|des|les|nos|vos|leurs|quelques|plusieurs|chaque|une|aux|la|ma|ta|sa|")
+            or ( morph(<1, ":B") and not morph(<2, ">numéro/") )
+            or ( value(<1, "|l’|") and morph(\1, ":N.*:f:[si]") )
+            or ( value(<1, "|de|d’|") and morph(<2, ">(?:beaucoup|énormément|multitude|tant|tellement|poignée|groupe|car|bus|équipe|plus|moins|pas|trop|majorité|millier|million|centaine|dizaine|douzaine|combien|photo|complot|enlèvement|témoignage|viol|meurtre|assassinat|duel|tiers|quart|pourcentage|proportion|génération|portrait|rencontre|reportage|parole|communauté|vie|rassemblement|bataillon|armée|émigration|immigration|invasion|trio|couple|famille|descendante|action|attente|désir|souhait|vote|volonté)/") )
+            or ( value(<1, "|un|") and not value(<2, "|dans|numéro|") and not after("(?:approximatif|correct|courant|parfait|facile|aisé|impeccable|incompréhensible)") ) )
+        -1>> =\1.capitalize()                                                                       # S’il s’agit d’un gentilé, mettez une majuscule.
 
-    [un|une|certains|certaines|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européenne|>parisienne|>lyonnaise|>marseillaise|>lilloise|>toulousaine|>nantaise|>strasbourgeoise|>montpelliéraine|>bordelaise|>bruxelloise|>montréalaise|>londonienne|>genévoise|>zurichoise|>bâloise|>berlinoise|>romaine]
+    [un|une|certains|certaines|ce|cet|cette|ces|le|la|les|l’|des|quelques|plusieurs|chaque] [>européenne|>parisienne|>lyonnaise|>marseillaise|>lilloise|>toulousaine|>nantaise|>strasbourgeoise|>montpelliéraine|>bordelaise|>bruxelloise|>montréalaise|>londonienne|>genévoise|>zurichoise|>bâloise|>berlinoise|>romaine|>californienne]
         <<- /maj/ \2.islower() -2>> =\2.capitalize()                                                # S’il s’agit d’un gentilé, mettez une majuscule.
 
+TEST: deux {{français}}                                                 ->> Français
 TEST: des {{français}} sont arrivés                                     ->> Français
 TEST: c’est de conception {{Allemande}}                                 ->> allemande
 TEST: une référence aux {{israéliens}}
 TEST: une {{érythréenne}}
+TEST: c’est la volonté d’{{anglais}} fâchés
 TEST: et des {{soudanaises}}.
 TEST: des {{parisiens}} en vacances
+TEST: Beaucoup de {{suisses}} partent en vacances à l’étranger
+TEST: L’{{américaine}} est arrivée hier.
 TEST: les Îles Britanniques.
 TEST: Allemands contre Grecs, Grecs contre Allemands
 TEST: sept Français sur dix
 TEST: l’océan Indien
 TEST: Je leur explique dans un anglais que la fatigue m’empêche de bien prononcer.
+TEST: des jardins à l’anglaise.
 
 
 # les langues
@@ -12213,7 +12222,7 @@ __sgpl_débit_de_boissons__
 TEST: ils ont ouvert un débit de {{boisson}} à Paris.
 
 
-# demi-heure, heure et demie
+# demi-heure, heure et demie, à demi
 __sgpl_demi_heure__
     demie-heure
     demie heure
@@ -12229,12 +12238,29 @@ __sgpl_demi_heure__
     demis-heures
         <<- /sgpl/ ->> demi-heures                      # La moitié d’une heure s’écrit “demi-heure” (“demi-heures” au pluriel).
 
-__sgpl_heure_et_demie__
-    >heure et [demi|demis|demies]
-        <<- /sgpl/ -3>> demie                           # « Une heure et demie », « deux heures et demie », etc.
-
 TEST: L’entretien dure environ une {{demie heure}}.
+TEST: Une demi-heure d’ennui profond.
+
+__sgpl_demi_demie__
+    [>année|>semaine|>journée|>heure|>minute|>seconde|>bouteille|>caisse|>cuillère|>page|>remorque|>tasse|>tonne] et [demi|demis|demies]
+        <<- /sgpl/ -3>> demie                           # « Une et demie », « deux et demie », etc.
+
+    [>millénaire|>siècle|>an|>jour|>degré|>kilo|>litre|>mètre|>wagon] et [demie|demis|demies]
+        <<- /sgpl/ -3>> demi                            # « Un et demi », « deux et demi », etc.
+
+    [>demie] [>douzaine|>cercle|>litre|>millénaire|>siècle|>journée|>heure|>sœur|>frère|>fin|>sel|>finale|>centre|>million|>pension|>portion|>mot|>morte|>longueur|>page|>mesure|>écrémer|>tour|>teinte]
+        <<- /sgpl/ ->> demi-\2                          # Pour la moitié de “\2”, écrivez “demi-\2”.
+
 TEST: nous avons rendez-vous dans une heure et {{demi}}
+TEST: Deux mètre et {{demis}}.
+TEST: achète une {{demie douzaine}} d’œufs.
+
+__sgpl_à_demi__
+    [à|a] [demis|demie|demies]
+        <<- /sgpl/ ->> à demi                           # Pour la locution adverbiale signifiant “à moitié” ou “en partie”, écrivez “à demi”.|https://fr.wiktionary.org/wiki/%C3%A0_demi
+
+TEST: Elle est {{à demie}} consciente de ce qui se passe en face de chez elle.
+TEST: Il est {{à demis}} cuit.
 
 
 # dévolu
@@ -13599,6 +13625,31 @@ __numérique_digital__
 
 TEST: une économie {{digitale}} ou rien
 TEST: Dans l’ère du {{digital}}, tout va plus vite.
+
+
+# panser / penser
+__conf_panser_penser__
+    >penser  *WORD  [>animal|>blessure|>blessée|bras|>chatte|>cheval|>chienne|>cheville|>cœur|>crâne|>cuisse|>doigt|>épaule|>jambe|>main|>malade|>patte|>pied|>plaie|>poignet|>tête]
+        <<- /conf/ morph(\2, ":D", ">de/") -1>> =\1.replace("en", "an").replace("EN", "AN")
+        # Confusion probable. Pour évoquer les soins prodigués, écrivez “panser”.|https://fr.wiktionary.org/wiki/panser
+
+    >panser à @:D [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
+    >panser [au|aux] [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
+    >panser à [dieu|moi|toi|lui|elle|nous|vous|eux|elles|@:M]
+    >panser à [ne|n’|me|m’|te|t’|se|s’]
+    >panser à [le|la|l’|les|en|lui|leur|y]      @:Y
+    >panser à [le|la|l’|les]  [lui|leur|en|y]   @:Y
+    >panser à [lui|leur]      en                @:Y
+        <<- /conf/ -1>> =\1.replace("an", "en").replace("AN", "EN")
+        # Confusion probable. Pour évoquer les pensées qu’on a pour quelqu’un ou quelque chose, écrivez “penser”.|https://fr.wiktionary.org/wiki/penser
+
+TEST: J’ai {{pensé}} les blessés.
+TEST: Il a {{pensé}} mon cœur solitaire.
+TEST: j’ai {{pansé}} à lui
+TEST: Elle {{panse}} à Dieu sans raison.
+TEST: Tu {{panses}} à lui donner raison.
+TEST: {{Panse}} à tes amis
+TEST: Il pense à son héritage futur.
 
 
 # pain / pin
@@ -17999,7 +18050,8 @@ __vmode_qqch_que_subjonctif__
     à               [condition|moins|supposer]      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     pour            peu                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     [il|ça|cela]    peut                            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-    de              [crainte|façon|manière|peur]    [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    de              [crainte|peur]                  [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    de              [façon|manière]                 [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GYS]|Iq)
     [<start>|,]     non                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Ce verbe devrait être au subjonctif.
 
@@ -19461,7 +19513,6 @@ TEST: 1 fois.
 TEST: J’ai quatre enfants.
 TEST: Il est né le quatre janvier.
 TEST: On estimait à seize mille les fusils de son armée.
-TEST: Le patron du numéro deux allemand a démissionné.
 TEST: Une Peugeot 208 fabriquée en France.
 TEST: Ils ont tous les trois été tués par balle.
 TEST: Les trois kanji.
