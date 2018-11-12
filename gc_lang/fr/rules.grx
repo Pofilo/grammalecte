@@ -14286,8 +14286,13 @@ __purge_syntagmes_nominaux__
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
         <<- ~1:3>> *
 
-    [le|la|l’|les|leur|ce|ton|son|certains|certaines] *WORD *WORD
+    [le|la|les|leur|ce|ton|son|certains|certaines] *WORD *WORD
         <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
+    l’ *WORD *WORD
+        <<- \2 != "air" and morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
@@ -15249,6 +15254,78 @@ TEST: C’eût été foncer tête baissée dans la gueule du loup.
 TEST: Leur passe-temps, ça a été faire n’importe quoi.
 TEST: Ne pas ressortir le livre le plus remarqué de la collaboration aurait été faire acte de censure.
 TEST: Partir aurait été assurer sa survie.
+
+
+#### AVOIR L’AIR
+__ppas_avoir_l_air__
+    il  >avoir  l’  air  @:A¬(?::A.*:[me]:[si]|:G)
+        <<- /ppas/ --1>> =suggMasSing(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    ils  >avoir  l’  air  @:A¬(?::A.*:[me]|:G)
+        <<- /ppas/ --1>> =suggMasPlur(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    elle  >avoir  l’  air  @:A¬(?::A.*:[si]|:G)
+        <<- /ppas/ --1>> =suggFemSing(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    elles  >avoir  l’  air  @:A¬(?::A.*:(?:m:[si]|[fe]:[pi])|:G)
+        <<- /ppas/ --1>> =suggFemPlur(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    >avoir  l’  air  @:A¬(?::A.*:[me]:[si]|:G)
+        <<- /ppas/ morph(\1, ":V0a.*:[123]s") and morph(\-1, ":A.*:p") and not value(<1, "|on|")
+        --1>> =suggSing(\-1)                                                    # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+        <<- /ppas/ morph(\1, ":V0a.*:[123]p") and morph(\-1, ":A.*:s")
+        --1>> =suggPlur(\-1)                                                    # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    [/-je|/-tu]  l’  air  @:A¬(?::A.*:[si]|:G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggSing(\-1)                     # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    [/-nous]  l’  air  @:A¬(?::A.*:(?:m:[si]|p)|:G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggPlur(\-1)                     # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    /-il  l’  air  @:A¬(?::A.*:[me]:[si]|:G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasSing(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    /-ils  l’  air  @:A¬(?::A.*:[me]|:G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasPlur(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    /-elle  l’  air  @:A¬(?::A.*:[si]|:G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggFemSing(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    /-elles  l’  air  @:A¬(?::A.*:(?:m:[si]|[fe]:[pi])|:G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggFemPlur(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+TEST: avait l’air {{sinistres}} des mauvais jours.                      ->> sinistre
+TEST: avaient l’air {{ignorante}} du danger                             ->> ignorantes
+TEST: il avait l’air {{heureuse}}                                       ->> heureux
+TEST: ils avaient l’air {{perdues}}                                     ->> perdus
+TEST: Elle avait l’air {{grossières}}                                   ->> grossière
+TEST: Elles avaient l’air tellement {{furieuse}}.                       ->> furieuses
+TEST: Avais-je l’air {{perdues}}                                        ->> perdue
+TEST: Avais-tu l’air {{folles}}                                         ->> folle
+TEST: Avait-il l’air {{grosse}}                                         ->> gros
+TEST: Avait-elle l’air {{grosses}}                                      ->> grosse
+TEST: Avions-nous l’air {{perdue}}                                      ->> perdues
+TEST: Avaient-ils l’air {{ignorantes}} ?                                ->> ignorants 
+TEST: Avaient-elles l’air {{triomphants}} ?                             ->> triomphantes 
+TEST: Avais-je l’air égarée ?
+TEST: Avais-tu l’air folle ?
+TEST: Avait-il l’air serein ?
+TEST: Avait-elle l’air absente ?
+TEST: Avions-nous l’air ignorantes ?
+TEST: Avaient-ils l’air ignorants ?
+TEST: Avaient-elles l’air triomphantes ?
+TEST: Ils avaient l’air sombre.
+TEST: On avait l’air crevés.
+TEST: Il a l’air stupide, il a même l’air con.
+TEST: A-t-il l’air stupide…
+TEST: Françoise n’avait pas l’air particulièrement surprise.
+TEST: Ils ont l’air contents de cette nouvelle.
+TEST: Ces suggestions ont l’air intéressantes.
+TEST: Ces maisons auraient l’air plus chaleureuses si elles étaient mieux entretenues.
+TEST: Elle n’avait pas l’air inquiet et troublé des personnes préoccupées.
+TEST: Ses enfants ont l’air espiègle que leur père avait à leur âge.
+TEST: Sa robe a l’air élégant des créations des grands couturiers.
+TEST: Ses amies ont l’air distant, mais l’âme généreuse.
 
 
 
