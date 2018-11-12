@@ -4554,30 +4554,33 @@ __m_enfin__
 
 
 __non_verbe_après_préverbes__
-    [ne|n’]     [le|la|l’|les]      [lui|leur|en|y]         @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)
-    [ne|n’]     [lui|leur]          en                      @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)
+    [ne|n’]     [le|la|l’|les]      [lui|leur|en|y]         @:¬:(?:[123][sp]|Y|P|Ov|X)
+    [ne|n’]     [lui|leur]          en                      @:¬:(?:[123][sp]|Y|P|Ov|X)
         <<- /conf/ -4>> =suggSimil(\4, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 \3 » : « \4 » devrait être un verbe.
 
-    [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    n’          [en|y]                                      @:[NAQ]¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’|se|s’]   [le|la|l’|les|en|y]               @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    n’          [en|y]                                      @:¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’|se|s’]   [le|la|l’|les|en]                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’|se|s’]   y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
         <<- /conf/ -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [nous|vous]           [le|la|l’|les|en|y]               @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [nous|vous]           [le|la|l’|les|en]                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [ne|n’]                                                 @:[NAQ]¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:[mtsl]|même|pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’|se]                                        @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus)/
-    [s’]                                                    @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)|>ils?/
+    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:[mtsl]|même|pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
+    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus|que?)/
+    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:ils?|que?)/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
-    [c’|ç’]                                                 @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)|>que/
+    [c’|ç’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>que/
         <<- /conf/ -2>> =suggSimil(\2, ":3s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
-    j’          [en|y]                                      @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)
+    j’          [en|y]                                      @:¬:(?:[123][sp]|Y|P|Ov|X)
         <<- /conf/ -3>> =suggSimil(\3, ":1s", False)                                                # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    j’                                                      @:[NAQ]¬:(?:[123][sp]|Y|P|Ov|X)
+    j’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)
         <<- /conf/ -2>> =suggSimil(\2, ":1s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne l’{{oubli}} pas
@@ -4598,6 +4601,7 @@ TEST: s’y {{accordez}}
 TEST: s’en {{approché}}
 TEST: m’y {{attaché}}
 TEST: je t’en {{parlé}}
+TEST: Ne {{dix}} rien.
 TEST: j’ai peur qu’il ne leur {{face}} quelque chose de mal
 TEST: M’enfin, c’est absurde
 TEST: il est normal de ne presque pas payer des gens qui effectuent un travail
