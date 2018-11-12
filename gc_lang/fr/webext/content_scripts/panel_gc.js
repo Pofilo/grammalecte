@@ -272,7 +272,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             let xClipboardButton = this.xParent.getElementById("grammalecte_clipboard_button");
             xClipboardButton.textContent = "->>";
             let sText = "";
-            for (let xNode of this.xParent.getElementsByClassName("grammalecte_paragraph")) {
+            // Quand c'est dans un shadow "this.xParent.getElementsByClassName" n'existe pas.
+            let xElem = this.xParent.getElementById("grammalecte_gc_panel");
+            for (let xNode of xElem.getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
             this._copyToClipboard(sText);
