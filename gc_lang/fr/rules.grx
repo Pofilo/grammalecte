@@ -5747,16 +5747,14 @@ __conf_âge_age__
     en bas age
         <<- /conf/ -3>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
 
-    quel age /VCint
-        <<- /conf/ morphVC(\3, ">avoir") -2>> âge       # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
-
-    quel [es|est|étais|était|seras|sera|serais|serait] [mon|ton|son] age
+    quel [es|est|étais|était|seras|sera|serais|serait] [mon|ton|son|notre|votre|leur] age
         <<- /conf/ -4>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
 
-    age [tendre|moyen|avancé]
+    age [actif|adulte|aidant|approximatif|avancé|bête|canonique|chaque|critique|dentaire|des|du|ingrat|légal|mental|moyen|mûr|mûre|mur|mure|osseux|où|précoce|préscolaire|pubertaire|respectable|scolaire|tendre|vénérable]
         <<- /conf/ -1>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
 
-    [bel|grand] age
+    [un|cet|mon|ton|son|notre|votre|leur|quel|tout|en] age
+    [bel|bon|certain|grand|jeune|premier|deuxième|troisième|quatrième|cinquième] age
         <<- /conf/ -2>> âge                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
 
 TEST: des enfants morts en bas {{age}}.
@@ -6728,6 +6726,20 @@ __conf_symbole_min__
         <<- /conf/ -2>> min                         # Les unités de mesure abrégées ne prennent pas la marque du pluriel.
 
 TEST: 120 {{Mins}} de bonheur
+
+
+# moi / mois
+__conf_moi_mois__
+    *NUM moi
+    @:B  moi
+        <<- /conf/ --1>> mois                       # Confusion probable. Pour indiquer le douzième d’une année, écrivez “mois”.|https://fr.wiktionary.org/wiki/mois
+
+    moi  [de|d’]  {mois}
+        <<- /conf/ -1>> mois                        # Confusion probable. Pour indiquer le douzième d’une année, écrivez “mois”.|https://fr.wiktionary.org/wiki/mois
+
+TEST: au {{moi}} d’avril
+TEST: être en repos pour trois {{moi}}.
+TEST: 3 {{moi}} de vacances.
 
 
 # n’est-ce pas - ai / es / est
@@ -9506,6 +9518,7 @@ __purge_locutions__
     ventre à terre
     vers nulle part
     vite
+    vite fait ?,¿ bien fait
     volontiers
         <<- ~>> *
 
@@ -12805,9 +12818,19 @@ __conf_bitte__
     >bite du quai
     >bite sur le quai
     >bite d’ amarrage
-        <<- /conf/ -1>> =\1.replace("ite", "itte")                      # Bitte d’amarrage.
+        <<- /conf/ -1>> =\1.replace("ite", "itte")                      # Confusion. Bitte d’amarrage.
+
+    [ma|ta|sa|notre|votre|nos|vos|leur|leurs|grosse|grosses|petite|petites|longue|longues|>énorme|>minuscule|>sale] >bitte
+    >être [une|des] >bitte
+    [>aimer|>adorer|>astiquer|>avaler|>bouffer|>branler|>fourrer|>lécher|>mettre|>mordre|>pomper|>sucer] @:D >bitte
+        <<- /conf/ --1>> =\-1.replace("itte", "ite")                    # Confusion probable. Si vous parlez de pénis, écrivez “bite” (terme argotique).|https://fr.wiktionary.org/wiki/bite
+
+    >bitte [>circoncise|>dégueulasse|>dure|molle|molles|>puante|>répugnante|>sale]
+        <<- /conf/ -1>> =\1.replace("itte", "ite")                      # Confusion probable. Si vous parlez de pénis, écrivez “bite” (terme argotique).|https://fr.wiktionary.org/wiki/bite
 
 TEST: les mouettes sur les {{bites}} d’amarrage.
+TEST: on se fout de savoir ce qu’ils font avec leurs {{bittes}}.
+TEST: il m’a mis sous le nez sa {{bitte}} répugnante.
 
 
 # bonne et due forme / bonnet difforme / bon uniforme
@@ -12914,6 +12937,29 @@ TEST: grâce à quoi, {{se}} put être fait dans les règles.
 TEST: {{se}} serait les pires vacances de sa vie
 TEST: des pans entiers de l’univers — pour reprendre l’expression d’Orwell — se sont d’ores et déjà volatilisés
 TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu progressivement leurs corps se rapprocher.
+
+
+# coli / colis
+    [>affranchir|>attendre|>dédouaner|>dédouanement|>délivrer|>déposer|>égarer|>emballage|>emballer|>envoyer|>envoi|>expédier|>réexpédier|>expédition|>réexpédition|>fermer|>refermer|>livrer|>livraison|>ouvrir|>rouvrir|>ouverture|>réouverture|>perdre|>perte|>pesage|>peser|>porter|>réception|>recevoir|>transporter|>transport|>suivre|dans] @:D coli
+    à l’ intérieur [du|des] coli
+        <<- /conf/ --1>> colis                          # Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
+
+    coli [>délivrer|>égarer|>envoyer|>livrer|>oublier|>suspecte|>piéger|>neutraliser]
+        <<- /conf/ morph(\2, ":A") -1>> colis           # Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
+
+TEST: on va expédier ce {{coli}} vite fait bien fait.
+TEST: Regarde ce qu’il y a à l’intérieur du {{coli}}
+TEST: un {{coli}} oublié à la gare.
+
+
+# courant / courent
+__conf_courant_courent__
+    courent [alternatif|>atmosphérique|>continue|>électrique|>équatoriale|marin|marins|>océanique|>triphasée]
+    courent [d’|de] [>air|>eau|Foucault|>marée|>surface]
+        <<- /conf/ not value(<1, "|ils|elles|ne|eux|") -1>> courant     # Confusion probable. Écrivez “courant”.|https://fr.wiktionary.org/wiki/courant
+
+TEST: Un fort {{courent}} électrique
+TEST: il y a un {{courent}} d’air dans cette salle.
 
 
 # coûter cher
@@ -13236,6 +13282,25 @@ TEST: L’arrivée est imminente.
 TEST: Des paléontologues éminents.
 
 
+# enduire / induire
+__conf_enduire_induire__
+    >enduire en [>erreur|>tentation]
+        <<- /conf/ -1>> =\1.replace("end", "ind").replace("End", "Ind").replace("END", "IND")       # Confusion probable. “Enduire” signifie “appliquer un enduit”.|https://fr.wiktionary.org/wiki/induire
+
+    en >avoir enduit [que|qu’]
+        <<- /conf/ -3>> =\3.replace("end", "ind").replace("End", "Ind").replace("END", "IND")       # Confusion probable. “Enduire” signifie “appliquer un enduit”.|https://fr.wiktionary.org/wiki/induire
+
+    >induire @:D¬>de/ [bras|>façade|>cuisse|>fond|>jambe|>lèvre|>main|>mollet|>mur|>ongle|>paroi|>peau|>pied|>plafond|>porte|>sol|>toit|>tuile|>verre|>visage]
+    >induire [de|le|ce|cet] [beurre|caramel|ciment|chocolat|gel|goudron|miel|mortier|nutella|plâtre|rouge|téflon|sang|savon|suif|vernis]
+    >induire [de|la|cette] [boue|chaux|cire|colle|crême|couche|glu|graisse|lotion|pâte|peinture|pommade|résine|salive|vaseline]
+        <<- /conf/ -1>> =\1.replace("ind", "end").replace("Ind", "End").replace("IND", "END")       # Confusion probable. Pour “appliquer un enduit”, écrivez “enduire”.|https://fr.wiktionary.org/wiki/induire
+
+TEST: Il l’avait {{enduit}} en erreur par des affirmations calomnieuses.    ->> induit
+TEST: Elle en avait {{enduit}} qu’il y avait anguille sous roche.           ->> induit
+TEST: Nous avons {{induit}} la façade.                                      ->> enduit
+TEST: il faut {{induire}} cette boue sur son visage.                        ->> enduire
+
+
 # envi / envie
 __conf_à_l_envi__
     à l’ envie
@@ -13461,29 +13526,24 @@ TEST: tu sais, les {{goutes}} de pluie, ça mouille.
 
 # gré / grès
 __conf_à_leur_gré_grès__
-    à [mon|ton|son|notre|votre|leur] grès
-        <<- /conf/ -3>> gré                                     # Confusion probable. Le grès est une roche détritique.
-
-    bon grès ?,¿ mal grès
+    bon grès ?[,|ou]¿ mal grès
         <<- /conf/ ->> bon gré, mal gré|bon gré mal gré         # Confusion. Le grès est une roche détritique.
 
-    au grès [de|des|du]
+    au grès [de|du|d’|des]
         <<- /conf/ -2>> gré                                     # Confusion probable. Le grès est une roche détritique.
 
     de grès ou de force
         <<- /conf/ -2>> gré                                     # Confusion. Le grès est une roche détritique.
 
-    de [bon|mauvais] grès
-        <<- /conf/ -3>> gré                                     # Confusion. Le grès est une roche détritique.
-
+    de [bon|mauvais|plein] grès
     de [mon|ton|son|notre|votre|leur] plein grès
-        <<- /conf/ -4>> gré                                     # Confusion. Le grès est une roche détritique.
+        <<- /conf/ --1>> gré                                    # Confusion. Le grès est une roche détritique.
 
-    contre [mon|ton|son|notre|votre|leur] grès
+    [à|contre|selon] [mon|ton|son|notre|votre|leur] grès
         <<- /conf/ -3>> gré                                     # Confusion probable. Le grès est une roche détritique.
 
-#savoir gré à quelqu’un « lui être reconnaissant »
-#au gré de quelqu’un, « selon son goût, son désir »
+    >savoir [grès|grés]
+        <<- /conf/ -2>> gré                                     # Confusion. Locution “savoir gré” pour manifester sa satisfaction.|https://fr.wiktionary.org/wiki/savoir_gr%C3%A9
 
 TEST: il en sera fait à votre {{grès}}
 TEST: Il est venu contre son {{grès}}.
