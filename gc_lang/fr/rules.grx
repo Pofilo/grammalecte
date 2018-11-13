@@ -4364,7 +4364,7 @@ __conj_il__
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3s|Ov)
     il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3s|Ov)
     il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3s|Ov)
-    il  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:3s|Ov)
+    il  ?[ne|n’]¿  [lui|leur|y]                   en                         @:V¬:(?:3s|Ov)
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conj/ morph(\-1, ":3p") -1>> ils                               # Accord avec “\-1”.
 
@@ -4380,6 +4380,7 @@ TEST: Il {{mues}}.
 TEST: {{il}} ne {{pensent}} à rien.
 TEST: il ne la lui {{donné}} pas souvent
 TEST: il n’y {{aurais}} plus rien à attendre de la religion et de la politique.
+TEST: il y en {{as}}.
 
 
 __conj_on__
@@ -13353,21 +13354,31 @@ __conf_flamant_rose__
 TEST: j’ai vu un {{flamand}} rose.
 
 
-# foi / fois
+# foi / fois / foie
 __conf_foi_fois__
-    mauvaise fois
+    [de|la|cette|une] mauvaise [fois|>foie]
+    [ma|ta|sa] fois
+        <<- /conf/ --1>> foi                                                # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+
+    sans [fois|>foie] ni >loi
         <<- /conf/ -2>> foi                                                 # Confusion probable.|http://fr.wiktionary.org/wiki/foi
 
-    bonne fois
+    bonne [fois|>foie]
         <<- /conf/ not (value(<1, "|une|") and after("(?i)^ +pour toute") )
         -2>> foi                                                            # Confusion probable.|http://fr.wiktionary.org/wiki/foi
 
-    [>faire|>perdre|>donner|>avoir]  (fois)
-    >avoir  la  (fois)
-        <<- /conf/ -1>> foi                                                 # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+    [>faire|>perdre|>donner|>avoir]  [fois|>foie]
+    >avoir  la  [fois|>foie]
+        <<- /conf/ --1>> foi                                                # Confusion probable.|http://fr.wiktionary.org/wiki/foi
 
+    [>huile|>terrine|>pâté] de >foi
+        <<- /conf/ --1>> foie                                               # Confusion probable. L’organe s’écrit “foie”.|http://fr.wiktionary.org/wiki/foie
+
+TEST: ces gens sont de mauvaise {{fois}}
 TEST: C’est une personne de bonne {{fois}}.
 TEST: Mais il a perdu {{fois}} en l’avenir.
+TEST: sans {{fois}} ni loi
+TEST: J’ai préparé du pâté de {{fois}}
 
 
 # fond / fonds / fonts
@@ -14470,6 +14481,14 @@ __purge_autre__
         <<- not value(<1, "|j’|n’|tu|il|on|") ~>> *
 
 
+__énumérations_noms_propres__
+    *WORD  ,  *WORD  ,  *WORD
+        <<- morph(\1, ":M") and morph(\3, ":M") and morph(\3, ":M") />> enum
+
+    <start>  *WORD  ,  *WORD
+        <<- morph(\2, ":M") and morph(\4, ":M") />> enum
+
+
 
 @@@@
 @@@@
@@ -15027,19 +15046,20 @@ __ppas_3sg_mas_verbe_état__
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)                                # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >être [devenu|redevenu|resté]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
+    [ça|ceci|cela|celui-ci|celui-là|@:M.*:m] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là|@:M.*:m] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là|@:M.*:m] ?[ne|n’]¿ ?[en|y]¿ >être [devenu|redevenu|resté]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là|@:M.*:m] ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
+    [ça|ceci|cela|celui-ci|celui-là|@:M.*:m] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || être [devenu|redevenu|resté]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
+    [ça|ceci|cela|celui-ci|celui-là|@:M.*:m] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not tag(\1, "enum") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        --1>> =suggMasSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     lui [ne|n’|en|y] [>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui [ne|n’|en|y] >avoir [été|semblé|paru]                                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -15126,19 +15146,19 @@ TEST: De cela a toujours été faite notre vie
 
 
 __ppas_3sg_fem_verbe_état__
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿ (>être) [devenue|redevenue|restée]                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿
+    ([elle|celle-ci|celle-là|@:M1.*:f]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|@:M1.*:f]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|@:M1.*:f]) ?[ne|n’]¿ ?[en|y]¿ (>être) [devenue|redevenue|restée]                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle-ci|celle-là|@:M1.*:f]) ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿
+    ([elle|celle-ci|celle-là|@:M1.*:f]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenue|redevenue|restée]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿
+    ([elle|celle-ci|celle-là|@:M1.*:f]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":[123]s") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not tag(\1, "enum") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":[123]s") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
         --1>> =suggFemSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
     ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])                   [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
@@ -16958,7 +16978,7 @@ __se_peut__
         <<- /-1>> upron
 
 
-__énumérations__
+__énumérations_substantifs__
     [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
         || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
         || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
