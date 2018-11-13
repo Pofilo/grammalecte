@@ -1666,16 +1666,16 @@ __da_le_la_les_leur__
         <<- =>> select(\2, ":Oo")
 
     le   @:N¬*
-        <<- =>> select(\1, ":D")
+        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
     la   @:N¬*
-        <<- =>> select(\1, ":D")
+        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
     les  @:N¬*
-        <<- =>> select(\1, ":D")
+        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
     l’   @:N¬*
-        <<- =>> define(\1, [":D:e:s"])
+        <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> define(\1, [":D:e:s"])
 
 
 __da_nous_vous__
@@ -4568,7 +4568,7 @@ __non_verbe_après_préverbes__
     [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mts]’|l’|même|pas|presque|jamais|rien|guère|point|plus)/
+    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
     se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|qu[e’])/
     s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|ils?|qu[e’])/
