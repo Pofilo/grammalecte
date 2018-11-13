@@ -1766,7 +1766,7 @@ __da_prépositions__
 
     y compris
         <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
-        <<- =>> define(\1, [":G:R"])
+        <<- __also__ =>> define(\1, [":G:R"])
 
 __da_puis__
     puis
@@ -4559,7 +4559,7 @@ __non_verbe_après_préverbes__
         <<- /conf/ -4>> =suggSimil(\4, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 \3 » : « \4 » devrait être un verbe.
 
     [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    n’          [en|y]                                      @:¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    n’          [en|y]                                      @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’|se|s’]   [le|la|l’|les]                    @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’|se|s’]   [en|y]                            @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
         <<- /conf/ -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
@@ -4568,10 +4568,10 @@ __non_verbe_après_préverbes__
     [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:[mtsl]|même|pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
-    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus|que?)/
-    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|ils?|que?)/
+    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mts]’|l’|même|pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
+    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|qu[e’])/
+    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|ils?|qu[e’])/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
     [c’|ç’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>que/
@@ -4584,6 +4584,8 @@ __non_verbe_après_préverbes__
         <<- /conf/ -2>> =suggSimil(\2, ":1s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne l’{{oubli}} pas
+TEST: ça ne s’{{oubli}} pas.
+TEST: elle ne m’{{oubli}} pas.
 TEST: elle ne la {{croix}} pas
 TEST: ils me les {{laissés}}.
 TEST: ne {{pensée}} rien, jamais
@@ -13611,19 +13613,21 @@ TEST: après avoir {{mi}} ses souliers tenir
 
 # mûr / mur
 __conf_mûr_mur__
-    [abcès|>âge|>avocat|>banane|>blé|>brugnon|corps|>enfant|>esprit|>femme|>figue|>fraise|>fruit|>homme|>melon|>personne|>poire|>pomme|>prune|>papaye|>pêche|>raisin|>tomate] >mure
-    [>amandine|>brioche|>charlotte|>cheesecake|>chausson|clafoutis|>confiture|>crème|>crêpe|>croustade|>croustillante|>crumble|>cueillette|>dessert|>far|>flan|jus|>gelée|>glace|>gourmandise|>lapin|>liqueur|>macaron|>milkshake|>milk-shake|>millefeuille|>>mille-feuille|>mousse|>muffin|>pancake|>pavlova|>recette|>récolte|>sauce|>soufflé|>smoothie|>sirop|>tarte|>tartelette|>tiramisu|>yaourt|>yoghourt|coulis|>gâteau|>kilo] [de|aux] >mure
-    [>être|>sembler|>paraître|>paraitre|>rester]  >mure
+    [>amandine|>brioche|>charlotte|>cheesecake|>chausson|clafoutis|>confiture|>crème|>crêpe|>croustade|>croustillante|>crumble|>cueillette|>dessert|>far|>flan|jus|>gelée|>glace|>gourmandise|>lapin|>liqueur|>macaron|>milkshake|>milk-shake|>millefeuille|>mille-feuille|>mousse|>muffin|>pancake|>pavlova|>recette|>récolte|>sauce|>soufflé|>smoothie|>sirop|>tarte|>tartelette|>tiramisu|>yaourt|>yoghourt|coulis|>gâteau|>kilo] [de|aux] [mur|mure|murs|mures]
+        <<- /conf/ --1>> mûres                                              # Confusion. Le fruit s’écrit “mûre”.|https://fr.wiktionary.org/wiki/m%C3%BBr
+
+    [trop|assez|abcès|>âge|>avocate|>banane|>blé|>brugnon|corps|>enfant|>esprit|>femme|>figue|>fraise|>fruit|>homme|>melon|>personne|>poire|>pomme|>prune|>papaye|>pêche|>raisin|>tomate] [mur|mure|murs|mures]
+    [>être|>sembler|>paraître|>paraitre|>rester]  [mur|mure|murs|mures]
         <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")           # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
-    des vertes et des pas >mure
+    des vertes et des pas [mur|mure|murs|mures]
         <<- /conf/ --1>> mûres                                              # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
-    >mure [>délibération|>réflexion]
+    [mur|mure|murs|mures] [>délibération|>réflexion]
         <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")             # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
 TEST: cet avocat trop {{mur}} pour être mangé.
-TEST: Un pankake aux {{murs}}
+TEST: Un pancake aux {{murs}}.
 TEST: Ça semble bien assez {{mur}}.
 TEST: elle en a vu des vertes et des pas {{murs}}
 TEST: Après de {{murs}} délibérations
@@ -16949,6 +16953,11 @@ __se_vouloir__
         <<- /-1>> upron
 
 
+__se_peut__
+    se >pouvoir
+        <<- /-1>> upron
+
+
 __énumérations__
     [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
         || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
@@ -18073,7 +18082,6 @@ __vmode_qqch_que_subjonctif__
 
     à               [condition|moins|supposer]      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     pour            peu                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-    [il|ça|cela]    peut                            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     de              [crainte|peur]                  [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     de              [façon|manière]                 [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GYS]|Iq)
     [<start>|,]     non                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
