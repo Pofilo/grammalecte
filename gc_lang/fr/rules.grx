@@ -4560,8 +4560,8 @@ __non_verbe_après_préverbes__
 
     [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     n’          [en|y]                                      @:¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’|se|s’]   [le|la|l’|les|en]                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’|se|s’]   y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
+    [me|m’|te|t’|se|s’]   [le|la|l’|les]                    @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [me|m’|te|t’|se|s’]   [en|y]                            @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
         <<- /conf/ -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     [nous|vous]           [le|la|l’|les|en]                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
@@ -4571,7 +4571,7 @@ __non_verbe_après_préverbes__
     [ne|n’]                                                 @:¬:(?:[123][sp]|Y|W|P|Ov|X)|>(?:[mtsl]|même|pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
     se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|pas|presque|jamais|rien|guère|point|plus|que?)/
-    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:ils?|que?)/
+    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l|ils?|que?)/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
     [c’|ç’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>que/
@@ -13607,6 +13607,26 @@ TEST: Les éléments {{mi}} en évidence suffisent à le désigner comme coupabl
 TEST: Ils étaient partis au restaurant après avoir {{mi}} à jour son profil.
 TEST: elles ont dansé, {{mie}} à jour leur carnet et sont parties.
 TEST: après avoir {{mi}} ses souliers tenir
+
+
+# mûr / mur
+__conf_mûr_mur__
+    [abcès|>âge|>avocat|>banane|>blé|>brugnon|corps|>enfant|>esprit|>femme|>figue|>fraise|>fruit|>homme|>melon|>personne|>poire|>pomme|>prune|>papaye|>pêche|>raisin|>tomate] >mure
+    [>amandine|>brioche|>charlotte|>cheesecake|>chausson|clafoutis|>confiture|>crème|>crêpe|>croustade|>croustillante|>crumble|>cueillette|>dessert|>far|>flan|jus|>gelée|>glace|>gourmandise|>lapin|>liqueur|>macaron|>milkshake|>milk-shake|>millefeuille|>>mille-feuille|>mousse|>muffin|>pancake|>pavlova|>recette|>récolte|>sauce|>soufflé|>smoothie|>sirop|>tarte|>tartelette|>tiramisu|>yaourt|>yoghourt|coulis|>gâteau|>kilo] [de|aux] >mure
+    [>être|>sembler|>paraître|>paraitre|>rester]  >mure
+        <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")           # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
+
+    des vertes et des pas >mure
+        <<- /conf/ --1>> mûres                                              # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
+
+    >mure [>délibération|>réflexion]
+        <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")             # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
+
+TEST: cet avocat trop {{mur}} pour être mangé.
+TEST: Un pankake aux {{murs}}
+TEST: Ça semble bien assez {{mur}}.
+TEST: elle en a vu des vertes et des pas {{murs}}
+TEST: Après de {{murs}} délibérations
 
 
 # tomber des nues
