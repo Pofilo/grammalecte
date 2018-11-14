@@ -1797,8 +1797,11 @@ __da_groupe_nominal__
     d’ [un|une]  *WORD
         <<- =>> exclude(\3, ":V")
 
-    [des|chaque|quelque|quelques|cet|cette|mon|ma|ta|sa|mes|au|aux|nos|vos|aucun|aucune]  *WORD
+    [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
+
+    [des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
+        <<- =>> select(\2, ":N")
 
     de  [la|l’]  @:¬:Y
         <<- =>> exclude(\3, ":V")
@@ -11172,6 +11175,8 @@ __gn_au_1m__
         <<- /gn/ __also__ -1>> aux                                                          # Accord de nombre erroné : « \2 » est au pluriel.
 
 TEST: {{au}} {{États-Unis}}
+TEST: Téléphone {{au}} personne qui ont donné leur accord.
+TEST: au chien, au chat, au poulet
 
 
 __gn_det_mas_sing_2m__
@@ -11396,6 +11401,7 @@ TEST: {{ces}} {{détournement}} de fonds et ces vols
 TEST: ces {{étudiant}} sont légion.
 TEST: je vais {{aux}} {{cinéma}}
 TEST: il l’a donné aux {{étudiant}}
+TEST: aux {{personne}}
 
 
 __gn_det_epi_plur_2m__
