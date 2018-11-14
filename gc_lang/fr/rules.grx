@@ -3057,15 +3057,20 @@ TEST: mercredi, 18 août 1563 : mort de La Boétie (calendrier julien)
 !!
 
 ### ce / cet / cette / ces + nom + là
-__tu_ce_cette_ces_nom_là__
-    [ce|cet|cette|ces] *WORD là
+__tu_ce_cette_ces_nom_là_ci__
+    [ce|cet|cette|ces] *WORD [là|ci]
         <<- /tu/ morph(\2, ":[NB]") and not value(>1, "|où|") -2:3>> \2-là      # Il manque probablement un trait d’union.
 
     [ce|cet|cette|ces] *WORD la [<end>|,]
         <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-là                                # Il manque probablement un trait d’union.
 
+    [ce|cet|cette|ces] *WORD si [<end>|,]
+        <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-ci                                # Il manque probablement un trait d’union.
+
 TEST: Ces {{trois là}} sont incollables.
 TEST: Je connais bien cette {{sensation là}}.
+TEST: Cette {{voiture si}}, c’est celle-là que je veux.
+TEST: ce que je veux c’est ce {{véhicule ci}}
 TEST: Laisse ce chiot là où il est !
 
 
@@ -5853,6 +5858,26 @@ TEST: avec sa presque belle-mère
 TEST: sa toute nouvelle application de synchronisation de fichiers
 
 
+# Campagne / compagne
+__conf_campagne_compagne__
+    >compagne [>électorale|>présidentielle|>législative|>publicitaire|marketing|>militaire|>mondiale|>politique|>économique|>virale|Facebook|Twitter]
+    >compagne de [boycott|candidature|charité|communication|crowdfunding|dépistage|diffamation|>don|financement|marketing|mobilisation|pêche|presse|prévention|promotion|propagande|pub|publicité|recrutement|santé|sensibilisation|solidarité|vaccination]
+        <<- /conf/ -1>> =\1.replace("o", "a").replace("O", "A")     # Confusion probable. Une compagne est un compagnon de sexe féminin.|https://fr.wiktionary.org/wiki/campagne
+
+    en rase compagne
+        <<- /conf/ -3>> campagne                                    # Confusion probable. Une compagne est un compagnon de sexe féminin.|https://fr.wiktionary.org/wiki/campagne
+
+    à la compagne [<end>|,]
+        <<- /conf/ -3>> campagne                                    # Confusion probable. Une compagne est un compagnon de sexe féminin.|https://fr.wiktionary.org/wiki/campagne
+
+TEST: La {{compagne}} électorale tourne à la guerre.
+TEST: Lançons une {{compagne}} de communication
+TEST: en rase {{compagne}}
+TEST: Allons à la {{compagne}}
+TEST: Perdus en rase campagne
+
+
+# Canne / cane
 __conf_canne_cane__
     >cane [a|à] [>pêche|>sucre]
         <<- /conf/ -1>> =\1.replace("ane", "anne")      # Confusion : la cane est la femelle du canard.|https://fr.wiktionary.org/wiki/canne
@@ -7789,6 +7814,22 @@ TEST: c’est un {{vieux}} imbécile.
 TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 
+# vu de ses yeux vu
+__sgpl_vu_de_ses_yeux_vu__
+    [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
+        <<- /sgpl/ \1.lower() != \-1.lower() --1>> \1                                               # Accord avec “\1”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4532
+
+    [vu|vue|vus|vues]  ,  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]  [,|<end>]
+        <<- /sgpl/ \1.lower() != \-2.lower() --2>> \1                                               # Accord avec “\1”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4532
+
+TEST: Elles les ont vues de ses yeux {{vue}}
+TEST: Il l’a vue, de ses yeux {{vu}}.
+TEST: Je suis sûr de l’avoir vu, de mes yeux vu.
+TEST: Je suis sûr de l’avoir vue, de mes yeux vue.
+TEST: Je suis sûr de les avoir vus, de mes yeux vus.
+TEST: Je suis sûr de les avoir vus de mes yeux vus.
+
+
 
 !!
 !!
@@ -9104,6 +9145,7 @@ __purge_locutions__
     en grand nombre
     en grende [difficulté|majorité|partie|pompe]
     en haut lieu
+    en haute [estime|mer]
     en l’occurrence
     en lieu sûr
     en ligne de [compte|mire]
@@ -9352,6 +9394,7 @@ __purge_locutions__
     pendant ce temps-là
     pendant plusieurs [heures|minutes|secondes|mois|semaines|jours|années|siècles|millénaires|décennies]
     pendant quelque temps
+    pendant qu’ il en est ?encore¿ temps
     petit à petit
     peu de temps auparavant
     peu ou prou
@@ -12572,7 +12615,6 @@ TEST: de mon point de {{vues}}
 !!
 !!
 
-
 # a / à
 __conf_pronom_à_l_air__
     [tout|ça|ceci|cela]  à  l’  air  @:[AR]|>libre/
@@ -12790,8 +12832,8 @@ __conf_ban_banc__
     [arrière-banc|arrière-bancs]
         <<- /conf/ ->> =\1.replace("c", "").replace("C", "")            # Confusion. L’arrière-ban est une assemblée de nobles feudataires.|https://fr.wiktionary.org/wiki/arri%C3%A8re-ban
 
-    au banc de l’ [empire|église|état|entreprise|humanité|institution|université]
-    au banc de [la|l’] [cité|communauté|faculté|monarchie|principauté|province|région|république|société|ville]
+    au banc de l’ [empire|église|état|entreprise|humanité|institution|islam|université]
+    au banc de la [cité|communauté|faculté|monarchie|principauté|province|région|république|société|ville]
     au banc du royaume
     au banc des nations
         <<- /conf/ -2>> ban                                             # Confusion. Pour dire “être banni ou déchu”, on écrit “être au ban”.|https://fr.wiktionary.org/wiki/mettre_au_ban
@@ -12816,7 +12858,7 @@ TEST: Il a été mis au {{banc}}.
 TEST: ces gens resteront à jamais au {{banc}} de l’empire
 
 
-    sur [le|les|ce|ces|mon|ton|son|mes|tes|ses|notre|votre|nos|vos|leur|leurs|plusieurs|quelques|quel|quels] >ban
+    sur [un|le|les|ce|ces|mon|ton|son|mes|tes|ses|notre|votre|nos|vos|leur|leurs|plusieurs|quelques|quel|quels] >ban
         <<- /conf/ -3>> =\3.replace("an", "anc").replace("AN", "ANC")   # Confusion probable.|https://fr.wiktionary.org/wiki/banc
 
     >ban [de|d’] [>roche|>sable|>neige|>moule|>baleine|>dauphin|>hareng|>thon|>poisson|>piranha|>sardine|>méduse|>calibration|>musculation|>coupe|>scie|anchois|>huître|>huitre|>essai|>étalonnage]
@@ -13244,6 +13286,19 @@ TEST: Elles étaient à cette date cultivées à l’air libre.
 TEST: De fraîche date…
 
 
+# dénué / dénudé
+__conf_dénué_dénudé__
+    >dénuder  [de|d’]  ?[tout|tous|toute|toutes]¿  [>âme|>apitoiement|>ambiguïté|>ambition|>amour|>beauté|>cause|>charme|>charisme|>clarté|>compassion|>compétence|>confort|>connaissance|>conscience|>consistance|>constance|>contenu|>contrepartie|>crainte|>créativité|>culture|>cynisme|>défaut|>difficulté|>discrimination|>envergure|>intérêt|>émotion|>envergure|>esthétique|>éthique|>enjeu|>expertise|>faiblesse|>fantaisie|>finesse|foi|>fondement|>force|>gentillesse|>goût|>gout|>grâce|>grandeur|>haine|>honnêteté|>humanité|>idée|>imagination|>inspiration|>intelligence|>intention|>inventivité|>justice|>légitimité|>logique|>objectivité|>maturité|>méchanceté|>mérite|>motif|>moyenne|paix|>piété|>plan|>pertinence|>peur|>plaisir|>politesse|>préjugé|>principe|>professionnalisme|>psychologie|>qualité|>raison|>rancœur|>réalisme|>remord|>respect|>revendication|>rigueur|>risque|>sagesse|>savoir|>sens|>sentiment|>science|>scrupule|>soupçon|>stress|>subtilité|>sympathie|>tact|>talent|>tendresse|>toxicité|>tromperie|>valeur|>vertu|>vigueur|>violence|>vision]
+        <<- /conf/ -1>> =\1.replace("nud", "nu").replace("NUD", "NU")
+        # Confusion probable. Pour évoquer quelque chose “privé de \-1”, il faut employer le verbe “dénuer”.|https://fr.wiktionary.org/wiki/d%C3%A9nuer
+
+TEST: C’est un homme {{dénudé}} de charme.
+TEST: Un film {{dénudé}} de tout intérêt.
+TEST: Une personne {{dénudée}} de toute compassion.
+TEST: Une histoire {{dénudée}} d’intérêt.
+TEST: Des hommes {{dénudés}} de compassion.
+
+
 # dés / dès
 __conf_dès_des__
     dés [le|la|l’|les|que|qu’|lors|avant|demain]
@@ -13522,7 +13577,7 @@ __conf_glacière_glaciaire__
         <<- /conf/ morph(<1, ":D.*:(?:f|e:p)")
         ->> =\1.replace("iai", "iè")                # Confusion : “glaciaire” est un adjectif. Le contenant préservant le froid s’écrit “glacière”.
 
-    >ère >glacière
+    [>accumulation|>âge|>age|>aire|>alluvion|amas|>amphithéâtre|>auge|>calotte|>cirque|>cycle|>dépôt|>dynamique|>écoulement|>ère|>érosion|>faune|>formation|>géologie|>grotte|>lac|>moraine|>obturation|>origine|>période|>rando|>randonnée|>relief|>retrait|>régression|>sédimentation|>séisme|>spéléo|>spéléologie|>strie|temps|>vallée|>verrou] >glacière
         <<- /conf/ -2>> =\1.replace("iè", "iai")    # Confusion : une glacière est un contenant préservant le froid. L’adjectif s’écrit “glaciaire”.
 
 TEST: Passe-moi la glacière, s’il te plaît.
@@ -20037,10 +20092,6 @@ TEST: Dominique les a renseignés.
 TEST: Dominique les a renseignées.
 TEST: Il nous a montré le chemin.
 TEST: Il nous a donné du pain.
-TEST: Je suis sûr de l’avoir vu, de mes yeux vu.
-TEST: Je suis sûr de l’avoir vue, de mes yeux vue.
-TEST: Je suis sûr de les avoir vus, de mes yeux vus.
-TEST: Je suis sûr de les avoir vus de mes yeux vus.
 TEST: Un orage peut être observé.
 TEST: Il peut être observé.
 TEST: La peine de mort devrait être abolie.
