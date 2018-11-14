@@ -2091,6 +2091,10 @@ __immunités__
     à l’ arrache
         <<- %3>>
 
+    à ce point
+    en tout point
+        <<- %3>>
+
     au  [bas|bras|côté|milieu|sein|sommet|faîte] [duquel|desquels|desquelles]
     au  [bas|bras|côté|milieu|sein|sommet|faîte] de laquelle
     aux [côtés] [duquel|desquels|desquelles]
@@ -6533,6 +6537,20 @@ TEST: Hors nous, personne ne sait ce qui s’est passé là-bas.
 TEST: Le peuple se sent hors jeu.
 
 
+# huis / huit
+__conf_huit_huis__
+    huis {mois}
+    huis [>an|mois|>heure|>cent|>mille|>million|>milliard|>dollar|>euro|€|>franc|>centime|divisé|multiplié|plus|moins|>dixième|>centième|>millième]
+        <<- /conf/ -1>> huit                                # Confusion probable. L’huis est l’ancien terme pour porte. Pour le nombre, écrivez “huit”.|https://fr.wiktionary.org/wiki/huit
+
+    huit clos
+        <<- /conf/ -1>> huis                                # Confusion probable. L’huis est l’ancien terme pour porte.|https://fr.wiktionary.org/wiki/huis_clos
+
+TEST: elle a {{huis}} ans.
+TEST: C’est un {{huit}} clos terrifiant.
+TEST: Un procès à huis clos.
+
+
 # l’issue
 __conf_l_issue__
     l’ issu
@@ -9909,6 +9927,10 @@ __purge_conditionnelle__
     un temps @:A¬:A.*:[me]:[si]
         <<- ~1:2>> *
 
+    [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
+    [vu|vue|vus|vues]  ,  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]  ,
+        <<- ~2:0>> *
+
 # END OF NG
 #<end>
 #@:[VR]¬[NAP]
@@ -12397,6 +12419,24 @@ TEST: Je connais {{pleins}} de gens
 TEST: Les avocats sont pleins de nutriments.
 
 
+# point / poing
+__conf_poing_point__
+    [>arme|>coup|>oiseau] de >point
+    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] @:D >point
+        <<- /conf/ -3>> =\3.replace("t", "g").replace("T", "G")             # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
+
+    >point [américain|américains|>serrer|>desserrer|>lever|>casser|>lier]
+        <<- /conf/ morph(\2, ":A") and morph(<1, ":D")
+        -1>> =\1.replace("t", "g").replace("T", "G")                        # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
+
+TEST: une arme de {{point}}
+TEST: Elles ont tapé du {{point}} sur la table.
+TEST: les {{points}} serrés
+TEST: Tu contres son coup de poing.
+TEST: Il m’a donné un coup de poing.
+TEST: Les poings serrés.
+
+
 # possible
 __sgpl_autant_que_possible__
     autant  que  possibles
@@ -13532,10 +13572,10 @@ __conf_à_leur_gré_grès__
     au grès [de|du|d’|des]
         <<- /conf/ -2>> gré                                     # Confusion probable. Le grès est une roche détritique.
 
-    de grès ou de force
+    de [grès|grés] ou de force
         <<- /conf/ -2>> gré                                     # Confusion. Le grès est une roche détritique.
 
-    de [bon|mauvais|plein] grès
+    de [bon|mauvais|plein] [grès|grés]
     de [mon|ton|son|notre|votre|leur] plein grès
         <<- /conf/ --1>> gré                                    # Confusion. Le grès est une roche détritique.
 
@@ -13545,6 +13585,9 @@ __conf_à_leur_gré_grès__
     >savoir [grès|grés]
         <<- /conf/ -2>> gré                                     # Confusion. Locution “savoir gré” pour manifester sa satisfaction.|https://fr.wiktionary.org/wiki/savoir_gr%C3%A9
 
+    >prendre en [grès|grés]
+        <<- /conf/ -3>> gré                                     # Confusion. Locution “prendre en gré” pour dire “recevoir avec résignation”.|https://fr.wiktionary.org/wiki/prendre_en_gr%C3%A9
+
 TEST: il en sera fait à votre {{grès}}
 TEST: Il est venu contre son {{grès}}.
 TEST: Il viendra de bon {{grès}} ou de mauvais {{grès}}.
@@ -13552,6 +13595,7 @@ TEST: Errer au {{grès}} des vents.
 TEST: Errer au {{grès}} du vent.
 TEST: Il acceptera de {{grès}} ou de force.
 TEST: nous vaincrons, {{bon grès mal grès}}
+TEST: Il faut prendre en {{grès}} les afflictions que Dieu nous envoie.
 
 
 # jeune / jeûne
@@ -13732,6 +13776,7 @@ __conf_panser_penser__
         <<- /conf/ morph(\2, ":D", ">de/") -1>> =\1.replace("en", "an").replace("EN", "AN")
         # Confusion probable. Pour évoquer les soins prodigués, écrivez “panser”.|https://fr.wiktionary.org/wiki/panser
 
+    >panser à autre chose
     >panser à @:D [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
     >panser [au|aux] [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
     >panser à [dieu|moi|toi|lui|elle|nous|vous|eux|elles|@:M]
@@ -19508,7 +19553,6 @@ TEST: Ton seau est percé.
 TEST: Le sceau du secret.
 TEST: Elles sont contre cette idée.
 TEST: Dans la ville de Contres.
-TEST: Tu contres son coup de poing.
 TEST: Quel est votre diagnostic ?
 TEST: On le diagnostique tôt.
 TEST: L’équipe m’a demandé mon pronostic pour le match de demain.
@@ -19557,13 +19601,10 @@ TEST: C’est quelquefois pénible de surveiller les enfants.
 TEST: C’est quelquefois assez pénible de surveiller les enfants.
 TEST: Noir comme jais.
 TEST: Le cri du geai.
-TEST: Il m’a donné un coup de poing.
-TEST: Les poings serrés.
 TEST: Il a été libéré sans contrepartie.
 TEST: Il a été libéré sans contre-partie.
 TEST: Quelles sont les contreparties ?
 TEST: Il ne me reste que huit centimes.
-TEST: Un procès à huis clos.
 TEST: Elle est enceinte de trois mois.
 TEST: Elle est enceinte de 3 mois.
 TEST: Le mois de mai a été froid.
