@@ -4835,27 +4835,27 @@ TEST: {{sa}} va                                                               ->
 __conf_déterminant_mas_sing_verbe__
     [du|cet|ledit|dudit]  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower()
-        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\1” : “\2” est un verbe.
 
     au  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower() and not value(\2, "|sortir|")
-        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\1” : “\2” est un verbe.
 
     ce  @:V.*:(?:Y|[123][sp])¬:[NAQ]:.:[si]
         <<- /conf/ \2.islower()
             and not value(\2, "|faire|sont|soit|fut|fût|serait|sera|seront|soient|furent|fussent|seraient|peut|pouvait|put|pût|pourrait|pourra|doit|dut|dût|devait|devrait|devra|") and hasSimil(\2)
-        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\1” : “\2” est un verbe.
 
     mon  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower()
-        -2>> =suggSimil(\2, ":[NA]:.:[si]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
+        -2>> =suggSimil(\2, ":[NA]:.:[si]", True)                                                   # Incohérence avec “\1” : “\2” est un verbe.
 
     [<start>|,]  [ton|son|audit]  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \3.islower()
-        -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \2 » : « \3 » est un verbe.
+        -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\2” : “\3” est un verbe.
 
-    [un|une]  @:(?:Y|[123][sp])¬:[GNA]
-        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|") and not before("(?i)\\bun à +$")
+    [un|une]  @:(?:Y|[123][sp])¬:[GNA]  ?@:W¿  @:A¬:[GM]
+        <<- /conf/ not value(<1, "|dont|l’|d’|sauf|excepté|") and not before("(?i)\\bun à +$")
         -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
 
 TEST: un {{maintient}} difficile.
@@ -16925,36 +16925,38 @@ TEST: Ne m’en rien laisser.
 !!
 
 __conf_le_la_leur_les_verbe_nom!6__
-    [<start>|,] le      @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] le      @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] [le|un]     @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] [le|un]     @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[me]:[si]", True)                              # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] la      @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] la      @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,]  [la|une]   @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,]  [la|une]   @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)                              # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] l’      @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] l’      @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] l’          @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] l’          @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[si]", True)                                   # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] leur    @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] leur    @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] leur        @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] leur        @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[si]", True)                                   # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] les     @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] les     @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] les         @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] les         @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[pi]", True)                                   # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
+TEST: Un {{défie}} se définit par la difficulté                 ->> défi
 TEST: Le {{défit}} ne l’enthousiasmait pas.                     ->> défi
 TEST: Le {{défie}} ne l’enthousiasmait pas.                     ->> défi
 TEST: Les {{connections}} étaient défaillantes.                 ->> connexions
 TEST: l’{{accueille}} se révéla ennuyeux.                       ->> accueil
 TEST: La {{sert}} était cassée                                  ->> serre
+TEST: Une {{croie}} serait plus appropriée.                     ->> croix
 TEST: Leur {{dépare}} m’attristait.                             ->> départ
 TEST: Les amener n’apportait que des problèmes.
 TEST: Le prendre par surprise était difficile.
@@ -18022,6 +18024,25 @@ TEST: son assurance, sa grâce, son sex-appeal nous permettent de passer sans en
 TEST: Son courage, son ardeur étaient immenses,
 TEST: Le sentiment d’humiliation, la colère nous indiquent que…
 TEST: la majorité survenaient sous la contrainte
+
+
+__conj_un_une__
+    [un|une]  @:V¬:(?:3s|P|G|Q|[NA].*:[si])
+        <<- /conj/ morph(<1, ":C|<start>|>(?:,|dont)", ":(?:Y|P|Q|[123][sp]|R)̉|>(?:sauf|excepté|et|ou)/")
+        --1>> =suggVerb(\-1, ":3s")                             # Conjugaison erronée. Accord avec “\1…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    [un|une]  qui  @:V¬:(?:3s|P|G|Q|[NA].*:[si])
+        <<- /conj/ morph(<1, "<start>|>(?:,|dont)/|:R")
+        --1>> =suggVerb(\-1, ":3s")                             # Conjugaison erronée. Accord avec “\2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+TEST: il y en a beaucoup, tu vois, même si un {{seras}} mieux pensé que les autres.
+TEST: tu vois, il y en a dix dont un {{seras}} mieux pensé que les autres.
+TEST: tu sais, il y en a quelques-unes dont une qui {{deviendras}} meilleure que tu l’imagines.
+TEST: Toutes sauf une iront à l’université.
+TEST: Tous excepté un sauront s’y prendre.
+TEST: Trente et un viennent ce soir.
+TEST: Quarante et une seront là demain.
+TEST: Tous sauf un viendront.
 
 
 __conj_un_une_des__
