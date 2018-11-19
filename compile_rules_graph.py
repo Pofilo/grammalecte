@@ -70,6 +70,8 @@ def prepareFunction (sCode):
     sCode = re.sub(r"analyseWord[(]", 'analyse(', sCode)
     sCode = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', sCode)
     sCode = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', sCode)
+    sCode = re.sub(r">1", 'lToken[nLastToken+1]["sValue"]', sCode)
+    sCode = re.sub(r"<1", 'lToken[nTokenOffset]["sValue"]', sCode)
     return sCode
 
 
