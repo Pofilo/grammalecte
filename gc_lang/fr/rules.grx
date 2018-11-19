@@ -1797,11 +1797,14 @@ __da_groupe_nominal__
     d’ [un|une]  *WORD
         <<- =>> exclude(\3, ":V")
 
+    l’ [un|une]  *WORD
+        <<- =>> select(\3, ":[123][sp]")
+
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
 
     [un|une]  *WORD
-        <<- not value(<1, "|l’|") =>> exclude(\2, ":V")
+        <<- not value(<1, "|l’|") and not value(\2, "|a|fut|fût|") =>> exclude(\2, ":V")
 
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
         <<- =>> select(\-1, ":N")
@@ -3922,13 +3925,13 @@ TEST: ils arrivent {{incessamment sous peu}}.
 # pire
 __bs_pire__
     [moins|aussi|plus] [>pire]
-        <<- /bs/ -2>> mauvais|mauvaise|mauvaises                    # Tournure erronée. Utilisez « mauvais ».|http://www.academie-francaise.fr/plus-pire-moins-pire
+        <<- /bs/ -2>> mauvais|mauvaise|mauvaises                    # Tournure erronée : “\1 \2”. Utilisez “mauvais”.|http://www.academie-francaise.fr/plus-pire-moins-pire
 
     de mal en >pire
-        <<- /bs/ ->> de mal en pis                                  # Tournure erronée. Utilisez « de mal en pis ».
+        <<- /bs/ ->> de mal en pis                                  # Tournure erronée. Écrivez “de mal en pis”.
 
     au pire aller
-        <<- /bs/ ->> au pis aller                                   # Tournure erronée. Utilisez « au pis aller ».
+        <<- /bs/ ->> au pis aller                                   # Tournure erronée. Écrivez “au pis aller”.
 
 TEST: c’est plus {{pire}} que tout.
 TEST: il est moins {{pire}} que l’autre.
@@ -4839,7 +4842,8 @@ __conf_déterminant_mas_sing_verbe__
         -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
 
     ce  @:V.*:(?:Y|[123][sp])¬:[NAQ]:.:[si]
-        <<- /conf/ \2.islower() and not value(\2, "|faire|sont|soit|fut|fût|serait|sera|peut|pouvait|put|pût|pourrait|pourra|doit|dut|dût|devait|devrait|devra|") and hasSimil(\2)
+        <<- /conf/ \2.islower()
+            and not value(\2, "|faire|sont|soit|fut|fût|serait|sera|seront|soient|furent|fussent|seraient|peut|pouvait|put|pût|pourrait|pourra|doit|dut|dût|devait|devrait|devra|") and hasSimil(\2)
         -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
 
     mon  @:(?:Y|[123][sp])¬:[NAQ]
@@ -6943,8 +6947,8 @@ TEST: {{Ont}} ne sait pas comment faire.
 TEST: n’y {{on}} jamais lieu de telles abominations !
 TEST: ces chiens te l’{{on}} {{donné}}
 TEST: {{Ont}} lui avait donné du temps
-TEST: {{Ont}} leur prendra tout
-TEST: Qu’importe, {{ont}} leur prend tout
+TEST: {{Ont}} leur {{prendra}} tout
+TEST: Qu’importe, {{ont}} leur {{prend}} tout
 TEST: Qui {{on}} {{tant}} de malheurs !
 TEST: {{peut-ont}} y arriver avec si peu de moyens ?
 TEST: {{peut ont}} y arriver ?
@@ -9313,6 +9317,7 @@ __purge_locutions__
     jusque-là
     la plupart du temps
     la main dans la main
+    ?de¿ là
     ?de¿ là-bas
     ?de¿ là-haut
     ?de¿ là-dedans
@@ -9419,6 +9424,7 @@ __purge_locutions__
     par-dessus le marché
     par-dessus tout
     par-devant
+    par là
     parfois
     partant de là
     partout
@@ -17033,6 +17039,14 @@ TEST: Sait-elle le {{choie}} qu’il a fait ?                     ->> choix
 TEST: Entreront-ils en {{contacte}} avec eux ?                  ->> contact
 
 
+__conf_vc_int_imp_verbe__
+    [/VCint|/VCimp]  @:[123][sp]¬:[GNAQW]
+        <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") -2>> _          # Incohérence probable : “\1” est une forme verbale conjuguée.
+
+TEST: Annonce-le {{dépare}}.
+TEST: prends-la {{tète}}.
+
+
 __conf_verbes_det_verbe_nom__
     [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  le  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  le  @:[123][sp]¬:[NA].*:[me]:[si]
@@ -17070,7 +17084,7 @@ __conf_verbes_det_verbe_nom__
     [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                  # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est une préposition, il faut placer un nom après.
 
-TEST: arrive le {{dépare}}
+TEST: arrive ainsi le {{dépare}}
 TEST: ne donne pas le {{signale}}
 TEST: ensuite, tu vois, surviennent les {{désires}}.
 TEST: ne leur donne pas le {{choie}}.
