@@ -7853,6 +7853,8 @@ TEST: c’est un {{vieux}} imbécile.
 TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 
+
+
 # vu de ses yeux vu
 __sgpl_vu_de_ses_yeux_vu__
     [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
@@ -7867,6 +7869,16 @@ TEST: Je suis sûr de l’avoir vu, de mes yeux vu.
 TEST: Je suis sûr de l’avoir vue, de mes yeux vue.
 TEST: Je suis sûr de les avoir vus, de mes yeux vus.
 TEST: Je suis sûr de les avoir vus de mes yeux vus.
+
+
+# ni vu ni connu
+__ni_vu_ni_connu__
+    ni [vus|vue|vues] ni [connu|connus|connue|connues]
+    ni vu ni [connus|connue|connues]
+        <<- /sgpl/ ->> ni vu ni connu                                                               # Ni vu ni connu : locution invariable.|https://fr.wiktionary.org/wiki/ni_vu_ni_connu
+
+TEST: {{ni vus ni connus}}, on va s’en occuper.
+TEST: ni vu ni connu, j’t’embrouille.
 
 
 
@@ -10227,12 +10239,12 @@ __purge_couleurs__
     bleu    [ciel|indigo|marine|roi|saphir|turquoise]
     blond   platine
     gris    [acier|anthracite|perle|souris]
-    jaune   sable
+    jaune   [paille|sable]
     noir    [de|d’] [encre|jais]
     noir    et blanc
     rose    [bonbon|chair|corail]
-    rouge   [brique|carmin|écarlate|rubis|sang]
-    vert    [émeraude|olive|pomme]
+    rouge   [brique|carmin|cerise|écarlate|rubis|sang|tomate|vermillon]
+    vert    [émeraude|olive|pistache|pomme]
         <<- morph(<1, ":[NA]", ":D") ~>> *
         <<- __else__ and morph(<1, ":D|>(?:être|devenir|redevenir|rester|sembler|demeurer)") ~>> ␣
         <<- __also__ =>> define(\1, [":A:e:i"])
@@ -12140,6 +12152,64 @@ TEST: à l’ombre desquels jaillissent de nombreuses sources fraîches et limpi
 TEST: Les édifices desquels vous êtes propriétaire
 TEST: on lui fait des piqûres à la suite desquelles la paupière se soulève
 TEST: les argiles et les marnes jouent le rôle d’isolants enfermant les masses à l’intérieur desquelles s’est effectuée la fermentation du sapropel.
+
+
+!!
+!!
+!!!! Couleurs                                                                                     !!
+!!
+!!
+
+__sgpl_couleurs_invariables__
+    [abricots|acajous|anthracites|argents|aubergines|azurs|bistres|briques|bronzes|cachous|caramels|carmins|cerises|chocolats|corails|crèmes|cuivres|ébènes|émeraudes|fraises|garances|grenats|indigos|isabelles|ivoires|lavandes|magentas|marrons|moutardes|nacres|noisettes|ocres|olives|ors|oranges|outremers|pailles|pastels|pervenches|pies|pistaches|pivoines|rouilles|sables|safrans|sépias|tabacs|taupes|tomates|turquoises|vermillons]
+        <<- /sgpl/ morph(<1, ":N", ":[GAVWM]") ->> \1[:-1]
+        # Couleur. Si une couleur représentée par un fruit, un animal, une roche, etc. elle est invariable.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+TEST: Des yeux {{vert}}.
+TEST: Des yeux {{marrons}}.
+TEST: Des créatures marines.
+TEST: Un cageot des premières cerises.
+
+
+__sgpl_couleurs_composées__
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>vive]
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [foncé|foncés|foncée|foncées|irisé|irisés|irisée|irisées]
+        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
+        ->> =suggSing(\1) + " " + suggSing(\2)
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+    >jaune [>paille|>sable]
+    >rose  [>bonbon|>chair|>corail]
+    >rouge [>brique|>carmine|>cerise|>écarlate|rubis|>sang|>tomate|>vermillon]
+        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
+        ->> =suggSing(\1) + " " + suggSing(\2)
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>vive]
+    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [foncé|foncés|foncée|foncées|irisé|irisés|irisée|irisées]
+        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
+        ->> =suggMasSing(\1) + " " + suggSing(\2)
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+    >bleue [>ciel|>indigo|>marine|>roi|>saphir|>turquoise|>verte]
+    >blonde >platine
+    >grise [>acier|>anthracite|>perle|souris]
+    >verte [>émeraude|>olive|>pistache|>pomme]
+        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
+        ->> =suggMasSing(\1) + " " + suggSing(\2)
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+    >noire [de|d’] [encre|jais]
+        <<- /sgpl/ not morph(<1, ":D") -1>> noir
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+TEST: Une jupe {{bleue foncée}}.
+TEST: Des cheveux {{noirs}} de jais.
+TEST: Une jupe bleu foncé.
+TEST: Des yeux vert clair.
+TEST: Des yeux vert olive.
+TEST: Ses cheveux étaient noir de jais.
+
 
 
 !!
@@ -17977,7 +18047,7 @@ TEST: l’un des chants les plus diffusés pendant la Révolution culturelle
 
 ## 1pl
 __conj_nous2__
-    [<start>|,]  nous  @:V¬:(?:1p|3[sp])
+    [<start>|,]  nous  @:V¬:(?:1p|3[sp]|Y)
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
         -3>> =suggVerb(\3, ":1p")                                       # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 
@@ -17991,6 +18061,7 @@ TEST: nous qui {{mourront}} pour toi.
 TEST: nous prendre la tête, c’est son passe-temps favori.
 TEST: Nous avons également sous-estimé l’état désastreux dans lequel se trouvait le pays.
 TEST: Tu nous fais ton baratin, nous prends pour des cons, nous donnes des leçons de morale, nous assènes ta vision comme si c’était une révélation du ciel.
+TEST: NOUS CONTACTER
 
 
 ## 2pl
