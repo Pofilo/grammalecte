@@ -9641,24 +9641,24 @@ __purge_locutions__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|partir|portée|proximité|propos|rebours] [de|des|du]
+    à [bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|partir|portée|proximité|propos|rebours|titre] [de|du|d’|des]
         <<- ~2>> *
 
     à bonne distance [de|des|du]
-    à l’ [affût|affut|arrière|autre bout|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche] [de|des|du]
-    à la [hauteur|portée|suite] [de|des|du]
+    à l’ [affût|affut|arrière|autre bout|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche] [de|du|d’|des]
+    à la [hauteur|portée|suite] [de|des|du|d’]
         <<- ~2:3>> *
 
     à la grande surprise [de|du|d’|des]
         <<- ~2:4>> *
 
-    à l’ autre bout [de|des|du]
+    à l’ autre bout [de|du|d’|des]
         <<- ~2:4>> *
 
-    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures] [de|des|du]
+    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures] [de|du|d’|des]
         <<- ~2:3>> *
 
-    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres] [de|des|du]
+    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres] [de|du|d’|des]
         <<- ~2:5>> *
 
     à [base|force|raison] [de|d’]
@@ -9671,23 +9671,23 @@ __gestion_mots_grammaticaux__
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
 
-    au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu] [de|des|du]
+    au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu] [de|du|d’|des]
         <<- ~2>> *
 
-    au beau milieu      [de|des|du]
-    au fin fond         [de|des|du]
-    au grand dam        [de|des|du]
-    au plus profond     [de|des|du]
+    au beau milieu      [de|du|d’|des]
+    au fin fond         [de|du|d’|des]
+    au grand dam        [de|du|d’|des]
+    au plus profond     [de|du|d’|des]
         <<- ~2:3>> *
 
-    au fur et à mesure  [de|des|du]
-    au vu et au su      [de|des|du]
+    au fur et à mesure  [de|du|d’|des]
+    au vu et au su      [de|du|d’|des]
         <<- ~2:5>> *
 
-    au nez et à la barbe [de|des|du]
+    au nez et à la barbe [de|du|d’|des]
         <<- ~2:6>> *
 
-    aux [abords|dépens] [de|des|du]
+    aux [abords|dépens] [de|du|d’|des]
         <<- ~2>> _
 
     [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles]
@@ -9730,11 +9730,11 @@ __gestion_mots_grammaticaux__
     en lieu et place [de|des|du]
         <<- ~2:4>> *
 
-    en l’ [absence|honneur] [de|des|du]
-    en plein milieu [de|des|du]
+    en l’ [absence|honneur] [de|du|d’|des]
+    en plein milieu [de|du|d’|des]
         <<- ~2:3>> *
 
-    en [arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|présence|raison|sus|termes|vertu] [de|des|du]
+    en [arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|présence|raison|sus|termes|vertu] [de|du|d’|des]
         <<- ~2>> *
 
     en flagrant délit [de|d’]
@@ -9807,7 +9807,7 @@ __gestion_mots_grammaticaux__
     suite [à|au|aux]
         <<- not morph(<1, ">(?:une|la|cette|[mts]a|[nv]otre|de|quelque)/") ~1>> *
 
-    tout au long [de|des|du]
+    tout au long [de|du|d’|des]
         <<- not morph(<1, ":R") ~1>> *
         <<- ~3>> *
 
@@ -9966,6 +9966,9 @@ __purge_conditionnelle__
 
     hélas
         <<- not morph(<1, ":(?:X|Oo)") and not tag_before(\1, "2s") ~>> *
+
+    mais
+        <<- not value(<1, "|des|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|moult|quels|lesdits|desdits|") ~>> *
 
     nécessité fait loi
         <<- not morph(<1, ":D.*:f:[si]") ~>> *
@@ -10187,7 +10190,7 @@ __simplication_substantifs__
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >tête de [déterré|déterrée|déterrés|déterrées]
-    >titre de propriété
+    >titre de [noblesse|propriété|séjour]
     >tour de passe-passe
     >trou à >rat
     >tueuse à gages
@@ -16925,30 +16928,40 @@ TEST: Ne m’en rien laisser.
 !!
 
 __conf_le_la_leur_les_verbe_nom!6__
-    [<start>|,] [le|un]     @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] [le|un]     @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] [le|un]         @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] [le|un]         @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[me]:[si]", True)                              # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,]  [la|une]   @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,]  [la|une]   @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] [la|une]        @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] [la|une]        @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[fe]:[si]", True)                              # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] l’          @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] l’          @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] l’              @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] l’              @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[si]", True)                                   # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] leur        @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] leur        @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] leur            @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] leur            @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[si]")
         -3>> =suggSimil(\3, ":[NA].*:[si]", True)                                   # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,] les         @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
-    [<start>|,] les         @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+    [<start>|,] [les|plusieurs] @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] [les|plusieurs] @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
         <<- /conf/ hasSimil(\3, ":[NA].*:[pi]")
         -3>> =suggSimil(\3, ":[NA].*:[pi]", True)                                   # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
+
+    [<start>|,] certains        @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] certains        @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[me]:[pi]")
+        -3>> =suggSimil(\3, ":[NA].*:[me]:[pi]", True)                              # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
+
+    [<start>|,] certaines       @:V¬:[NAY]  [ne|n’|me|m’|te|s’|se|s’]
+    [<start>|,] certaines       @:V¬:[NAY]  ?[le|la|l’|les|nous|vous|leur]¿  @:[123][sp]
+        <<- /conf/ hasSimil(\3, ":[NA].*:[fe]:[pi]")
+        -3>> =suggSimil(\3, ":[NA].*:[fe]:[pi]", True)                              # Confusion probable : “\3” est une forme verbale conjuguée. Si “\2” est un déterminant, il faut placer un nom après.
 
 TEST: Un {{défie}} se définit par la difficulté                 ->> défi
 TEST: Le {{défit}} ne l’enthousiasmait pas.                     ->> défi
@@ -16958,6 +16971,9 @@ TEST: l’{{accueille}} se révéla ennuyeux.                       ->> accueil
 TEST: La {{sert}} était cassée                                  ->> serre
 TEST: Une {{croie}} serait plus appropriée.                     ->> croix
 TEST: Leur {{dépare}} m’attristait.                             ->> départ
+TEST: Plusieurs {{ennuient}} nous attendaient                   ->> ennuis
+TEST: Certains {{ennuient}} nous attendaient                    ->> ennuis
+TEST: Certaines {{connections}} se préparaient                  ->> connexions
 TEST: Les amener n’apportait que des problèmes.
 TEST: Le prendre par surprise était difficile.
 TEST: La consigner devenait une obligation.
