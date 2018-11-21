@@ -6239,7 +6239,7 @@ __conf_dès_des_dés__
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
     [dés|des] [un|une] [an|heure]
-        <<- /conf/ not morph(<1, ">(?:approcher|anniversaire|cap|occasion|programme|terme|classe)/") and not value(>1, "|de|du|des|d’|")
+        <<- /conf/ not morph(<1, ">(?:approcher|anniversaire|cap|occasion|programme|terme|classe|autour)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [des|ces|mes|tes|ses|nos|vos|quelques|aux] [dès|des]
@@ -6280,6 +6280,7 @@ TEST: Le congrès des 20 ans de l’association.
 TEST: L’album des 15 ans du groupe.
 TEST: Dès à présent
 TEST: Donne-moi tes dés à présent.
+TEST: le diagnostic se pose autour des 20 ans
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6686,7 +6687,7 @@ TEST: il faut en finir avec le {{laissez-aller}}.
 # la / là
 __conf_la_là!7__
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
-    la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?)/
+    la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute)/
         <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
 
     [ce|cet|cette|ces]  /-la
@@ -6699,6 +6700,7 @@ TEST: la peu efficace sensibilité
 TEST: c’est toujours la même histoire
 TEST: c’est la moins habile de toutes
 TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
+TEST: Il fait remonter à la toute première expérience humaine de maîtrise.
 
 
     [celle-la|celles-la|celui-la|ceux-la]
