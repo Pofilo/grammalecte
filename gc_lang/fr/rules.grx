@@ -6239,7 +6239,7 @@ __conf_dès_des_dés__
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
     [dés|des] [un|une] [an|heure]
-        <<- /conf/ not morph(<1, ">(?:approcher|anniversaire|cap|occasion|programme|terme|classe|autour)/") and not value(>1, "|de|du|des|d’|")
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|occasion|programme|terme|classe|autour)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [des|ces|mes|tes|ses|nos|vos|quelques|aux] [dès|des]
@@ -7016,6 +7016,15 @@ TEST: elles sont si {{pales}}.
 TEST: cette {{pale}} imitation d’un chef-d’œuvre
 
 
+# par à-coups
+__conf_par_à_coups__
+    [par|pare|pares|>part] [a|à] [>cou|>coût|>cout|>coup]
+        <<- /conf/ ->> par à-coups                                          # Confusion probable. Locution “par à-coups”.|https://fr.wiktionary.org/wiki/par_%C3%A0-coups
+
+TEST: Il ne frappait que {{pare a coup}}.
+TEST: Elle travaillait par à-coups, après de longues périodes de repos.
+
+
 # par-dessus / pardessus
 __conf_par_dessus__
     pardessus  [bord|@:D]
@@ -7084,6 +7093,19 @@ __conf_pécheur_pêcheur__
 
 TEST: une cabane de {{pécheur}}
 TEST: le bateau des {{pécheurs}}
+
+
+# pêle-mêle
+__conf_pêle_mêle__
+    [pêle|>pelle|pèle|pèles] [mêle|mêles]
+    pèle-mêle
+    pèles-mêles
+    pelle-mêle
+    pelles-mêles
+        <<- /conf/ ->> pêle-mêle                                            # Confusion.|https://fr.wiktionary.org/wiki/p%C3%AAle-m%C3%AAle
+
+TEST: Ça consiste {{pelle mêle}} en diverses choses.
+TEST: habitées par un peuple de prostituées […], vivant là, entassées pêle-mêle avec toutes sortes d’individus plus ou moins suspects, souteneurs et repris de justice pour la plupart.
 
 
 # peu / peux / peut
@@ -7403,6 +7425,39 @@ TEST: Vous {{résonnez}} comme un sot.
 TEST: Nous allons le {{résonner}}.
 
 
+# repère /  repaire
+__conf_repaire_repère__
+    >repère  [dangereux|>sécurisée]
+    >repère  [de|du|d’|des]  [>assassin|>bandit|>brigand|>cambrioleuse|>corsaire|>criminelle|>dragon|>escroc|>fanatique|>filou|>flibustière|>flibuste|>gangster|>lionne|>louve|>mafiosi|>mafioso|>malfaitrice|>malfrat|>maraudeuse|>monstre|>murène|ours|>pick-pocket|>pickpocket|>pillarde|>pirate|>scélérate|>taupe|>tigre|>truande|>voleuse|>voyou|>yéti]
+    >repère  de  @:D         [>assassin|>bandit|>brigand|>cambrioleuse|>corsaire|>criminelle|>dragon|>escroc|>fanatique|>filou|>flibustière|>flibuste|>gangster|>lionne|>louve|>mafiosi|>mafioso|>malfaitrice|>malfrat|>maraudeuse|>monstre|>murène|ours|>pick-pocket|>pickpocket|>pillarde|>pirate|>scélérate|>taupe|>tigre|>truande|>voleuse|>voyou|>yéti]
+        <<- /conf/ morph(<1, ":D") -1>> =\1.replace("è", "ai").replace("È", "AI")
+        # Confusion probable. Un répère est une marque laissée pour retrouver quelque chose. Pour le lieu où se cachent des personnes ou des animaux, écrivez “repaire”.|https://fr.wiktionary.org/wiki/repaire
+
+    [dans|en] [mon|ton|son|notre|votre|leur] repère
+    à l’intérieur de [mon|ton|son|notre|votre|leur] repère
+    à l’intérieur du repère
+        <<- /conf/ --1>> repaire
+        # Confusion probable. Un répère est une marque laissée pour retrouver quelque chose. Pour le lieu où se cachent des personnes ou des animaux, écrivez “repaire”.|https://fr.wiktionary.org/wiki/repaire
+
+    [>écrire|>graver|>tracer|>marquer] [un|le|ce|son|des|les|ces|ses] >repaire
+        <<- /conf/ --1>> =\-1.replace("ai", "è").replace("AI", "È")
+        # Confusion probable. Un repaire est un lieu où se cachent des personnes ou des animaux. Pour une marque laissée pour retrouver quelque chose, écrivez “repère”.|https://fr.wiktionary.org/wiki/repère
+
+    >repaire au [crayon|charbon|sang|stylo]
+    >repaire à la [craie|cendre|plume]
+    >repaire sur [le|l’|ce|un|les] [bois|>carnet|>document|>feuillet|>livre|>livret|>mémoire|>mur|>papier|>rapport|>sable|>sol]
+    >repaire sur [la|l’|cette|une|les] [>écorce|>feuille|>page|>porte]
+    >repaire entre les [feuilles|pages]
+    >repaire dans l’ écorce
+        <<- /conf/ -1>> =\1.replace("ai", "è").replace("AI", "È")
+        # Confusion probable. Un repaire est un lieu où se cachent des personnes ou des animaux. Pour une marque laissée pour retrouver quelque chose, écrivez “repère”.|https://fr.wiktionary.org/wiki/repère
+
+TEST: Le {{repère}} des brigands.
+TEST: Au {{repère}} de la voleuse.
+TEST: Elle traça un {{repaire}}.
+TEST: Elle remarqua un {{repaire}} à la craie.
+
+
 # ris / riz
 __conf_ris_de_veau_agneau__
     [ri|riz] [de|d’] [>veau|agneau|agneaux|chasse]
@@ -7637,26 +7692,32 @@ TEST: Quelle splendide {{statu}}.
 
 # sur / sûr
 __conf_sûr_sur__
+    sur et @¬:R
     sur [que|qu’]
     sur [de|d’] {pronom_obj}
     sur [de|d’] @:M
     sur [de|d’] [ne|n’|me|m’|te|t’|se|s’]
     sur [de|d’] [le|les|mon|ton|son|ma|ta|sa|mes|tes|ses|ce|cet|cette|ces|cela|ceci|ça]
-    sur [de|d’] la @:Y
-        <<- /conf/ -1>> sûr
-        # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
-
+    sur [de|d’] [la|l’] @:Y
     sur [de|d’] @:Y
         <<- /conf/ -1>> sûr
         # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
 
-    en lieu sur
+    [sure|surs|sures] [de|d’|que|qu’]
+        <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")
+        # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+    en >lieu sur
         <<- /conf/ -3>> sûr
         # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
 
-    [sure|surs|sures] [de|d’|que|qu’]
-        <<- /conf/ -1>> =\1.replace("sur", "sûr")
+    en >être >sure
+        <<- /conf/ -3>> =\3.replace("u", "û").replace("U", "Û")
         # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
+
+    à [>coup|>cou] >sure
+        <<- /conf/ not value(<1, "|par|tout|") ->> à coup sûr
+        # Confusion probable. Locution “à coup sûr”, c’est-à-dire “immanquablement”.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
 
 TEST: Je suis {{sur}} de Patrick.
 TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
@@ -7664,7 +7725,11 @@ TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.
 TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.
 TEST: Il est tellement {{sur}} de la trouver.
 TEST: ils sont en lieu {{sur}} et introuvables.
+TEST: Bien sûr, {{À coup sur}}.
+TEST: J’en suis {{sur}} désormais.
+TEST: Il tapait par à-coups sur la table.
 TEST: il s’étendit sur de la mousse à mémoire de forme
+TEST: Elle réussira à coup sûr.
 
 
 # temps / tant / tan
@@ -8410,12 +8475,15 @@ TEST: ne jamais beaucoup bosser, c’est sa devise.
 
 ## guerre / guère
 __conf_préverbes_guère_guerre!5__
-    [ne|n’]   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  *WORD ?plus¿ guerre
-    [ne|n’]   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       *WORD ?plus¿ guerre
-    [ne|n’]   [le|la|l’|les]                  [lui|leur|en|y]           *WORD ?plus¿ guerre
-    [ne|n’]   [lui|leur]                      en                        *WORD ?plus¿ guerre
-    ne ?presque¿ ?plus¿ guerre
+    [ne|n’]   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   [le|la|l’|les]                  [lui|leur|en|y]             *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   [lui|leur|y]                    en                          *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   ?presque¿  ?[plus|jamais]¿  guerre
         <<- /infi/ --1>> guère                                                                      # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
+
+    guerre
+        <<- morph(<1, ":(?:[123][sp]|Y)", "*") ->> guère                                            # Confusion probable. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
 
 TEST: tout ceci ne me rapporte {{guerre}}
 TEST: je ne m’en soucie {{guerre}}
@@ -8425,6 +8493,12 @@ TEST: ne plus {{guerre}} s’en soucier
 TEST: elle ne leur donne plus {{guerre}} que des remontrances.
 TEST: ne {{guerre}} s’en soucier.
 TEST: ne plus {{guerre}} croire en rien.
+TEST: Il ne reste plus {{guerre}} que lui.
+TEST: Je n’aime {{guerre}} le sport.
+TEST: Il n’y en a {{guerre}}.
+TEST: Je n’aime plus {{guerre}} le sport.
+TEST: Il n’y en a plus {{guerre}}.
+TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
 
 
 __imp_ne_infinitif_negadv__
@@ -9532,6 +9606,7 @@ __purge_locutions__
     sans crier gare
     sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans dire mot
+    sans en avoir conscience
     sans faire de vagues
     sans foi ?,¿ ni loi
     sans le faire exprès
@@ -10066,6 +10141,7 @@ __simplication_substantifs__
     [>boîte|>boite] aux lettres
     [>boîte|>boite] à gants
     >bombe à [eau|fragmentation|retardement]
+    >brosse à >dent
     >canne à [pêche|sucre]
     >caisse à >outil
     >chair à [pâté|>canon]
@@ -11107,6 +11183,7 @@ __gn_le_la_leur_3m__
 
 TEST: leur grande passion {{délirantes}} pour le cosplay.
 TEST: non seulement met en péril la logique industrielle mais contribue à détruire peu à peu le substrat sur lequel repose le marché lui-même, à savoir la société des hommes.
+TEST: qu’ils fassent tourner le système économique, assez concrètement, mais sans faire chier avec leurs petits problèmes de gens de rien.
 
 
 __gn_ledit_1m__
@@ -13765,12 +13842,44 @@ TEST: Jouer au golf.
 
 
 # goutte / goûte
-__conf_goutte__
-    [goûte|goûtes|goute|goutes] [de|l’] [lait|liquide|sang|sueur|sperme|semence|salive|javel|bière|miel|mercure|peinture|pluie|rosée|vin|vinaigre|whisky|rhum|folie|alcool|acide|amour|eau|huile|urine]
-        <<- /conf/ -1>> =\1.replace("û", "u").replace("t", "tt")            # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.
+__conf_goûte_goutte__
+    [goûte|goûtes|goute|goutes] [de|d’] [alcool|acide|amour|bière|eau|folie|huile|javel|lait|liquide|mercure|miel|peinture|pluie|rhum|rosée|salive|sang|semence|sperme|sueur|urine|vin|vinaigre|whisky]
+        <<- /conf/ -1>> =\1.replace("û", "u").replace("t", "tt")
+        # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.|https://fr.wiktionary.org/wiki/goutte
 
 TEST: Une {{goûte}} de pluie
 TEST: tu sais, les {{goutes}} de pluie, ça mouille.
+TEST: Des gouttes de pluie.
+
+
+__conf_goûter_goutter_dégoûter_dégoutter__
+    >goutter ?à¿ @:D [>biscuit|>bière|>bon|>bonbon|>breuvage|>burger|>café|>cidre|>cocktail|>chocolat|>crêpe|>cru|>délice|>délicieuse|>délicieuse|>dessert|>fameux|>fameuse|>féculent|>fromage|>fruit|>gâteau|>hamburger|>légume|>nourriture|paradis|>pâte|>pain|>plat|>pâtisserie|>poisson|>poulet|>recette|repas|>sandwich|>soupe|>tarte|>tartelette|>sauce|>succulente|>thé|>viande|>vin|>yaourt|>yoghourt]
+        <<- /conf/ -1>> =\1.replace("outt", "oût").replace("OUTT", "OÛT")
+        # Confusion : “goutter” signifie “couler goutte à goutte”. Pour l’usage du goût, écrivez “goûter”.|https://fr.wiktionary.org/wiki/go%C3%BBter
+
+    [>chiotte|>clim|>climatisation|>chauffe-eau|>douche|>eau|>évier|>lavabo|nez|>motrice|>parapluie|>plafond|>pluie|>robinet|>sang|>sueur|>toilette|>toit|>tuyau|>tuyauterie] ?[ne|n’]¿ [>goûter|>gouter|>dégoûter|>dégouter]
+        <<- /conf/ --1>> =\-1.replace("oût", "outt").replace("OÛT", "OUTT")
+        # Confusion : “goûter” signifie utiliser le sens du goût. Pour ce qui s’écoule goutte à goutte, écrivez “goutter”.|https://fr.wiktionary.org/wiki/goutter
+
+    [me|te|se]                                      >dégoutter
+    [m’|t’|l’|nous|vous|les]                >avoir  >dégoutter
+    [je|tu|il|elle|on|nous|vous|ils|elles]  >être   >dégoutter
+        <<- /conf/ --1>> =\-1.replace("outt", "oût").replace("OUTT", "OÛT")
+        # Confusion probable : “dégoutter” signifie “couler goutte à goutte”. Pour évoquer le dégoût, écrivez “dégoûter”.|https://fr.wiktionary.org/wiki/dégo%C3%BBter
+
+    nous                                            >dégoutter
+        <<- /conf/ not morph(\-1, ":1p") --1>> =\-1.replace("outt", "oût").replace("OUTT", "OÛT")
+        # Confusion probable : “dégoutter” signifie “couler goutte à goutte”. Pour évoquer le dégoût, écrivez “dégoûter”.|https://fr.wiktionary.org/wiki/dégo%C3%BBter
+
+    vous                                            >dégoutter
+        <<- /conf/ not morph(\-1, ":2p") --1>> =\-1.replace("outt", "oût").replace("OUTT", "OÛT")
+        # Confusion probable : “dégoutter” signifie “couler goutte à goutte”. Pour évoquer le dégoût, écrivez “dégoûter”.|https://fr.wiktionary.org/wiki/dégo%C3%BBter
+
+TEST: {{Goutte}} ces sandwichs.
+TEST: Le toit ne {{goûte}} plus.
+TEST: Ça me {{dégoutte}}.
+TEST: Il m’a {{dégoutté}} des maths.
+TEST: Ça l’avait dégoûté à vie.
 
 
 # gré / grès
@@ -14190,6 +14299,16 @@ __conf_quoi_qu_il_en_soit__
 TEST: {{quoiqu’il en soit}}, nous ne nous laisserons pas faire, vous pouvez compter sur nous.
 
 
+# rebooter / rebouter
+__conf_rebooter_rebouter__
+    >rebouter  @:D  [>appareil|>imprimante|iPhone|kernel|>machine|>modem|>noyau|>ordinateur|>ordi|PC|>portable|>programme|>routeur|serveur|serveurs|>système|>tablette|>téléphone|terminal|terminaux]
+    >rebouter  [Android|Linux|iOS|Unix|Windows]
+        <<- /conf/ -1>> =\1.replace("out", "oot").replace("OUT", "OOT")         # Confusion probable. Rebouter est un terme de botanique.
+
+TEST: {{Reboute}} l’ordinateur.
+TEST: On {{reboute}} Windows et ça devrait aller.
+
+
 # sale / salle
 __conf_salle_qqch__
     >sale d’ [>accouchement|>arcade|>attente|>audience|>eau|>escalade|>échographie|>embarquement|>exposition|>hospitalisation|>observation|>opération|>urgence]
@@ -14430,7 +14549,7 @@ __infi_de_verbe__
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’] [ne|n’|en|me|m’|te|t’|se|s’|y]                                       @:V¬:Y|>(?:lui|plus)/
-    [de|d’] [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:V¬:Y|>(?:lui|plus)/
+    [de|d’] [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:Y|>(?:lui|plus)/
     [de|d’] ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:Y
     [de|d’] ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:Y
     [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
@@ -16528,7 +16647,7 @@ TEST: Voici ce qui vous est {{du}}.
 
 
 
-!!!! Participes passés avec “avoir” (formes interrogatives)
+!!!! Participes passés avec “avoir” (formes interrogatives)                                       !!
 
 __ppas_avoir_pronom__
     *WORD  /VCint  *WORD
@@ -16749,7 +16868,7 @@ __imp_verbe_groupe2_groupe3_t__
 
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|")
-            and not (value(\-1, "|vient|dit|surgit|survient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
+            and not (value(\-1, "|vient|dit|surgit|survient|provient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
             and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
@@ -16771,6 +16890,7 @@ TEST: Vient ensuite Christelle, qui ignore comment se sortir d’affaire.
 TEST: Vient ensuite l’emménagement dans une maison isolée.
 TEST: Vient alors son tour de se présenter : « Bonjour, je m’appelle Maryse, et je suis alcoolique. »
 TEST: Surgit ensuite la violence physique et verbale.
+TEST: De là provient, à l’inverse, la joie palpable qui débordait des places occupées
 
 
 # verbes du 3ᵉ groupe en -d
