@@ -12017,17 +12017,13 @@ TEST: en tant que dictionnaire {{personnelle}}.
 !!
 
 __gn_devinette__
-    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [ma|ta|sa|cette|une]  *WORD  *WORD
-        <<- /gn/ morph(\6, ":[NA].*:(?:m|f:p)", ":(?:G|P|[fe]:[is]|V0|3[sp])") and not apposition(\5, \6)
+    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  [la|ma|ta|sa|cette|une]  *WORD  *WORD
+        <<- /gn/ morph(\6, ":[NA].*:(?:m|f:p)", ":(?:G|P|[fe]:[is]|V0|3[sp])") and morph(\5, ":[NA].*:[fe]") and not apposition(\5, \6)
         -6>> =suggFemSing(\6, True)                                                         # Accord erroné : « \6 » devrait être au féminin singulier.
 
-    [la|ma|ta|sa|une|cette]  *WORD  [de|d’]  la  *WORD  *WORD
-        <<- /gn/ morph(\5, ":[NA].*:[fe]") and morph(\6, ":[NA].*:(?:m|f:p)", ":(?:G|P|[fe]:[is]|V0|3[sp])") and not apposition(\5, \6)
-        -6>> =suggFemSing(\6, True)                                                         # Accord erroné : « \6 » devrait être au féminin singulier.
-
-    [le|un|ce|cet]  *WORD  de  [ce|cet|un]  (*WORD)  (*WORD)
+    [le|un|ce|cet]  *WORD  [de|d’]  [ce|cet|un]  (*WORD)  (*WORD)
     [le|un|ce|cet]  *WORD  du  (*WORD)  (*WORD)
-        <<- /gn/ morph(\2, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and not apposition(\1, \2)
+        <<- /gn/ morph(\2, ":[NA].*:(?:f|m:p)", ":(?:G|P|[me]:[is]|V0|3[sp])") and morph(\1, ":[NA].*:[me]") and not apposition(\1, \2)
         -2>> =suggMasSing(\2, True)                                                         # Accord erroné : « \2 » devrait être au masculin singulier.
 
     [le|un|ce|cet]  *WORD  de  [mon|ton|son]  *WORD  *WORD
@@ -12047,7 +12043,7 @@ __gn_devinette__
 
     [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  de [ces|mes|tes|ses|nos|vos|leurs]  (*WORD)  (*WORD)
     [les|ces|mes|tes|ses|nos|vos|leurs|quelques]  *WORD  des  (*WORD)  (*WORD)
-        <<- /gn/ morph(\2, ":[NA].*:s", ":(?:G|P|[me]:[ip]|V0|3[sp])") and not apposition(\1, \2)
+        <<- /gn/ morph(\2, ":[NA].*:s", ":(?:G|P|[me]:[ip]|V0|3[sp])") and morph(\1, ":[NA].*:[pi]") and not apposition(\1, \2)
         -2>> =suggPlur(\2)                                                                  # Accord erroné : « \2 » devrait être au pluriel.
 
 #__[i]/gn__  (?:l[ea]|une?|ce(?:tte|t|)|[mts](?:on|a)|[nv]otre|leur) +{w_2} +d(?:e(?: (?:la|ce(?:tte|t|)|[mts](?:on|a)|[nv]otre|leur) +|’une? +|)|u +)({w_2}) +({w_2})
@@ -12064,6 +12060,8 @@ TEST: Cet homme de mon groupe {{oubliés}}                       ->> oublié
 TEST: Lutter contre le chômage de masse avec les armes des travailleurs reste pour nous une priorité.
 TEST: le meurtre de son ex-petite amie
 TEST: à cette envie de la voir sourire tout le temps
+TEST: sur les raisons de la chute d’un des hommes populaires du pays.
+TEST: sur les raisons de la chute d’une des stars populaires du pays.
 
 
 ## divers
