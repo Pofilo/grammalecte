@@ -3130,13 +3130,21 @@ __tu_préfixe_semi__
 TEST: en {{semi liberté}}
 
 
-__tu_préfixe_xxxo__
-    [franco|américano|anglo|belgo|électro|ferro|hydro|labio|macro|magnéto|médico|micro|nano|néo|neuro|paléo|physico|politico|rétro|rhino|sino|socio|stéréo]  *WORD
-        <<- /tu/ analyse_with_next(\1, "-", ":")
-        ->> \1-\2                                               # S’il s’agit d’un seul mot, il manque un trait d’union.
+__tu_préfixe_gentilés__
+    [afghano|africano|albano|algéro|allemano|américano|andoro|angolo|anglo|anguillo|antartico|arabo|arctico|argentino|armeno|asiatico|atlantico|australo|austro|azéro|bahreïno|banglado|barbado|basco|bélizo|béllarusso|bénino|belgo|bhoutano|birmano|bolivio|bosno|bosniaco|botswano|brésilo|britanno|brunéo|bulgaro|burkanino|burundo|camerouno|canado|chilio|cingalo|colombo|comoro|congolo|coréo|cyprio|costarico|croato|cubano|dano|djibouto|dominico|écosso|égypto|émirato|équato|érythréo|esto|éthiopo|eurasiatico|européano|fidjio|finno|franco|gabono|gallo|gambo|géorgio|ghanéo|britanno|gréco|grenado|guatémalto|guinéo|guyano|hélleno|helvético|hispano|honduro|hungaro|indo|indonéso|italo|irako|irlando|islando|israélo|ivoiro|jamaïco|japono|jordano|khméro|kazakho|kényo|kirghizo|kiribato|koweïto|lao|lésotho|letto|libéro|libyo|liechtenteino|lituano|luxembourgeo|macédono|malgacho|malaiso|malawito|malo|malto|marianno|maroco|marshallo|mauricio|mauritano|mexico|micronésio|moldavo|monégasco|mongolo|monténégrino|mozambico|namibio|nauro|népalo|nicaraguo|nigéro|nigériano|norvégio|néo-zélando|occidentalo|océanio|omano|orientalo|ougando|ouzbéko|pacifico|pakistano|palestino|panaméo|paraguayo|néerlando|hollando|péruvo|philippino|polono|polynésio|luso|qataro|québéco|centrafricano|domenicano|roumano|russo|rwando|sarhao|sahélo|salomono|salvadoro|samoano|santoméo|saskatchéwano|scandinavo|sénégalo|saoudo|sénégambo|serbo|seychello|sierraléono|singapouro|sino|slovaco|somalo|soudano|srilanko|sudafricano|suédo|suisso|surinamo|swazilando|syro|sovieto|tadjiko|tanzano|tchado|tchécoslovavo|tchéco|thaïlando|thraco|tibéto|timoro|togolo|tokélo|tongano|trinidado|tuniso|turkméno|turco|touvalo|tuvalo|ukraino|uruguayo|vaticano|vénézuélo|vietnamo|yéméno|yougoslavo|zaïro|zambio|zimbabwébo]
+        || [>afghane|>africaine|>albanaise|>algérienne|>allemande|>américaine|>andorraise|>anglaise|>arabe|>argentine|>aménienne|>australienne|>autrichienne|>belge|>béninoise|>birmane|>bolivienne|>bosniaque|>brésilienne|>britannique|>bulgare|>burkinabé|>burundaise|>byzantine|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>coréenne|>croate|>cubaine|>danoise|>égyptienne|>équatorienne|>érythréenne|>espagnole|>estonienne|>éthiopienne|>finlandaise|>flamande|>française|>gabonaise|>gambienne|>géorgienne|>germanique|>ghanéenne|>guatémaltèque|>guinéenne|>guyanaise|>haïtienne|>hellénique|>hondurienne|>hongroise|>indienne|>indonésienne|>iranienne|>irakienne|>irlandaise|>islandaise|>israélienne|>italienne|>ivoirienne|>jamaïcaine|>jamaïquaine|>japonaise|>jordanienne|>kenyane|>koweïtienne|>kurde|>laotienne|>lettone|>libanaise|>libérienne|>libyenne|>lituanienne|>luxembourgeoise|>macédonienne|>malaise|>malgache|>malienne|>maltaise|>marocaine|>mauricienne|>mauritanienne|>mexicaine|>moldave|>monégasque|>mongole|>mozambicaine|>namibienne|>néerlandaise|>néo-zélandaise|>népalaise|>nicaraguayenne|>nigeriane|>nigérienne|>nippone|>norvégienne|>omanaise|>ougandaise|>pakistanaise|>panaméenne|>paraguayenne|>péruvienne|>philippine|>polonaise|>portugaise|>provençale|>qatarie|>québécoise|>roumaine|>russe|>rwandaise|>salvadorienne|>sénégalaise|>seychelloise|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>sri-lankaise|>suédoise|>suisse|>surinamienne|>syrienne|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tunisienne|>turque|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
+        <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
 
 TEST: des {{franco américains}}
 TEST: {{franco américaine}}                             ->> franco-américaine
+TEST: l’{{israélo belge}}
+
+
+__tu_préfixe_xxxo__
+    [électro|ferro|hydro|labio|macro|magnéto|médico|micro|nano|néo|neuro|paléo|physico|politico|rétro|rhino|sino|socio|stéréo]  *WORD
+        <<- /tu/ analyse_with_next(\1, "-", ":")
+        ->> \1-\2                                                                                   # S’il s’agit d’un seul mot, il manque un trait d’union.
+
 TEST: {{ferro électrique}}                              ->> ferro-électrique
 TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 
@@ -3253,7 +3261,8 @@ __tu_substantifs__
         <<- /tu/ ->> en contrepoint                             # Soudez.
 
     état major
-        <<- /tu/ ->> état-major                                 # Il manque un trait d’union.
+    états majors
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
     grand chose
         <<- /tu/ ->> grand-chose                                # Il manque un trait d’union.
@@ -3442,17 +3451,11 @@ TEST: c’est ce que nous pensions.
 
 
 __tu_noms_propres__
-    Royaume Uni
-        <<- /tu/ ->> Royaume-Uni                                                                    # Il manque un trait d’union (s’il s’agit de l’État englobant la Grande-Bretagne et l’Irlande du Nord).
-
-    Grande Bretagne
-        <<- /tu/ ->> Grande-Bretagne                                                                # Il manque un trait d’union (s’il s’agit de l’État englobant l’Angleterre, l’Écosse et le pays de Galles).
-
-    [les|des|aux] Pays Bas
-        <<- /tu/ -2:3>> Pays-Bas                                                                    # Il manque un trait d’union.
-
     Aix en Provence
         <<- /tu/ ->> Aix-en-Provence                                                                # Il manque un trait d’union.
+
+    Anne [Catherine|Charlotte|Christine|Claire|Cécile|Flore|Gaëlle|Gaelle|France|Laure|Line|Lise|Lyne|Lyse|Marie|Sophie]
+        <<- /tu/ ->> Anne-\2                                                                        # Il manque un trait d’union.
 
     Bosnie Herzégovine
         <<- /tu/ ->> Bosnie-Herzégovine                                                             # Il manque un trait d’union.
@@ -3472,13 +3475,16 @@ __tu_noms_propres__
     Franche Comté
         <<- /tu/ ->> Franche-Comté                                                                  # Il manque un trait d’union.
 
+    Grande Bretagne
+        <<- /tu/ ->> Grande-Bretagne                                                                # Il manque un trait d’union (s’il s’agit de l’État englobant l’Angleterre, l’Écosse et le pays de Galles).
+
     Haute [Garonne|Loire|Marne|Normandie|Corse|Vienne]
         <<- /tu/ ->> Haute-\1                                                                       # Il manque un trait d’union.
 
     [Île|Ile] de France
         <<- /tu/ ->> Île-de-France                                                                  # Il manque les traits d’union.
 
-    Jean [Baptiste|Claude|François|Jacques|Louis|Luc|Marc|Marie|Michel|Paul|Philippe|Pierre]
+    Jean [Alain|Antoine|André|Baptiste|Benoit|Bernard|Charles|Christophe|Christian|Claude|Damien|Daniel|David|Denis|Dominique|Édouard|Edouard|Emmanuel|Étienne|Éric|Eric|Eudes|Francis|François|Frédéric|Gabriel|Georges|Guillaume|Hugue|Jacques|Joseph|Louis|Laurent|Loup|Luc|Manuel|Marc|Marcel|Marie|Mathieu|Maurice|Max|Michel|Noël|Patrice|Paul|Philippe|Pierre|Rémi|René|Raymond|Robert|Vincent|Yves]
         <<- /tu/ ->> Jean-\2                                                                        # Il manque un trait d’union.
 
     Jésus Christ
@@ -3487,8 +3493,8 @@ __tu_noms_propres__
     Maison Blanche
         <<- /tu/ ->> Maison-Blanche                                                                 # Il manque un trait d’union.
 
-    Marie [Ange|Agnès|Anne|Antoinette|Cécile|Chantal|Charlotte|Christine|Claire|Claude|Dominique|France|Françoise|Hélène|Jeanne|José|Josèphe|Line|Louise|Madeleine|Noëlle|Odile|Paule|Pierre|Rose|Thérèse]
-        <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
+    Marie [Agnès|Alice|Aline|Amélie|Andrée|Ange|Angelle|Anne|Antoinette|Annick|Astrid|Aude|Béatrice|Bénédicte|Bernadette|Camille|Carmen|Caroline|Catherine|Cécile|Céline|Chantal|Charlotte|Christine|Claire|Claude|Dominique|Édith|Edith|Élisabeth|Élise|Émilie|Émmanuelle|Eve|Ève|France|Françoise|Gabrielle|Gaëlle|Geneviève|Jeanne|Joëlle|José|Josée|Josèphe|Julie|Hélène|Isabelle|Laure|Laurence|Line|Lise|Lyne|Lyse|Lou|Louise|Luce|Odile|Madeleine|Martine|Noëlle|Paule|Pascale|Renée|Rose|Sophie|Thérèse|Véronique|Yvonne]
+        <<- /tu/ ->> Marie-\2                                                                       # Il manque un trait d’union.
 
     Moyen Orient
         <<- /tu/ ->> Moyen-Orient                                                                   # Il manque un trait d’union.
@@ -3502,8 +3508,17 @@ __tu_noms_propres__
     Pas de Calais
         <<- /tu/ ->> Pas-de-Calais                                                                  # Il manque les traits d’union.
 
+    [les|des|aux] Pays Bas
+        <<- /tu/ -2:3>> Pays-Bas                                                                    # Il manque un trait d’union.
+
+    Pierre [Adrien|Alain|Alexandre|André|Antoine|Édouard|Edouard|Émmanuel|François|Jean|Henri|Louis|Luc|Marie|Nicolas|Olivier|Yves]
+        <<- /tu/ ->> Pierre-\2                                                                      # Il manque un trait d’union.
+
     Rhône Alpes
         <<- /tu/ ->> Rhône-Alpes                                                                    # Il manque les traits d’union.
+
+    Royaume Uni
+        <<- /tu/ ->> Royaume-Uni                                                                    # Il manque un trait d’union (s’il s’agit de l’État englobant la Grande-Bretagne et l’Irlande du Nord).
 
     Saône et Loire
         <<- /tu/ ->> Saône-et-Loire                                                                 # Il manque un trait d’union.
@@ -3512,6 +3527,7 @@ __tu_noms_propres__
         <<- /tu/ ->> \1-\2
         # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté… S’il s’agit d’une personne, écrivez “saint” ou “sainte” sans majuscule, sans trait d’union.
 
+TEST: J’ai vu {{Anne Marie}}.
 TEST: Émigrer au {{Royaume Uni}}
 TEST: Étudier en {{Grande Bretagne}}
 TEST: Vivre aux {{Pays Bas}}
@@ -6234,7 +6250,7 @@ __conf_dès_des_dés__
 
     des ~\d{2,5}  [<end>|,]
     des ~\d{2,5}  @:¬:[NA].*:[ip]
-        <<- /conf/ -1>> dès                                                                         # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+        <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent)/") -1>> dès           # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
@@ -6281,6 +6297,7 @@ TEST: L’album des 15 ans du groupe.
 TEST: Dès à présent
 TEST: Donne-moi tes dés à présent.
 TEST: le diagnostic se pose autour des 20 ans
+TEST: 98 % des 12 à 17 ans ont aujourd’hui un ordinateur chez eux.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6288,7 +6305,7 @@ __conf_diagnostic_pronostique__
     [ce|un|du|mon|notre|votre|quel] diagnostique
         <<- /conf/ -2>> diagnostic                                                  # Confusion. Le nom s’écrit avec un “c”.
 
-    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs]  diagnostiques
+    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  diagnostiques
         <<- /conf/ -2>> diagnostics                                                 # Confusion. Le nom s’écrit avec un “c”.
 
     [ce|un|du|mon|notre|votre|quel] pronostique
@@ -6297,8 +6314,16 @@ __conf_diagnostic_pronostique__
     [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs]  pronostiques
         <<- /conf/ -2>> pronostics                                                  # Confusion. Le nom s’écrit avec un “c”.
 
+    le pronostique
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> pronostic                           # Confusion probable. Le nom s’écrit avec un “c”.
+
+    les pronostiques
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> pronostics                          # Confusion probable. Le nom s’écrit avec un “c”.
+
+TEST: Quels sont les {{pronostiques}}
 TEST: Ce {{diagnostique}} est absurde.
 TEST: C’est la valse des {{pronostiques}} contradictoires aujourd’hui.
+TEST: Le {{pronostique}} n’est pas bon.
 
 
 # différend / différent
@@ -14556,7 +14581,7 @@ __infi_de_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
-        <<- /infi/ not \2[0:1].isupper()
+        <<- /infi/ not \2[0:1].isupper() and not value(<1, "|en|")
             and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
@@ -14578,6 +14603,7 @@ TEST: elle s’engage de ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: de leur plus grand fils, ils attendent beaucoup.
 TEST: de n’importe quelle manière
+TEST: un libéralisme trop « individualiste » s’est transformé en de supposées demandes de droits spécifiques
 
 
 __infi_y_verbe!3__
