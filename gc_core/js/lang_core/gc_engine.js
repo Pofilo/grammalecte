@@ -30,7 +30,7 @@ function capitalizeArray (aArray) {
     // can’t map on user defined function??
     let aNew = [];
     for (let i = 0; i < aArray.length; i = i + 1) {
-        aNew[i] = aArray[i].gl_toCapitalize();
+        aNew[i] = aArray[i].slice(0,1).toUpperCase() + aArray[i].slice(1);
     }
     return aNew;
 }
