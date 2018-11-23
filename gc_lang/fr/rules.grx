@@ -3279,6 +3279,9 @@ __tu_substantifs__
     là [bas|haut|dessous|dessus|dedans|devant|derrière]
         <<- /tu/ ->> là-\2                                      # Il manque un trait d’union.
 
+    lèse majesté
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
+
     [moi|toi|soi|lui|elle|vous] même
         <<- /tu/ not value(>1, "|si|s’|") ->> \1-même           # Il manque un trait d’union si “même” se rapporte à “\1”.|https://fr.wiktionary.org/wiki/moi-m%C3%AAme
 
@@ -8309,7 +8312,7 @@ __tous_nom__
     de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
         <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        # Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
-    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
+    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|3[sp]|[me]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        # Accord avec “tous” : “\2” devrait être au masculin pluriel.
 
 __toutes_nom__
@@ -8331,6 +8334,7 @@ TEST: les tout débuts du mouvement ouvrier
 TEST: vos tout débuts furent difficiles
 TEST: aux tout débuts, il y eut bien des erreurs
 TEST: comment les inégalités sociales impactent la santé des tout petits
+TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
 
 
 
@@ -11203,12 +11207,13 @@ TEST: ils arrivent et leur arrogance {{insupportables}} nous fatigue tous.
 
 __gn_le_la_leur_3m__
     [le|la|leur]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p")
+        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: leur grande passion {{délirantes}} pour le cosplay.
 TEST: non seulement met en péril la logique industrielle mais contribue à détruire peu à peu le substrat sur lequel repose le marché lui-même, à savoir la société des hommes.
 TEST: qu’ils fassent tourner le système économique, assez concrètement, mais sans faire chier avec leurs petits problèmes de gens de rien.
+TEST: avec le peuple, contre le capitalisme mortifère sous tous ses visages.
 
 
 __gn_ledit_1m__
