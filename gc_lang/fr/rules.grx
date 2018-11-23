@@ -7599,7 +7599,7 @@ __conf_soi_soit_soie__
         <<- /conf/ not after(" soit ") --1>> soi                                                    # Confusion probable.
 
     en soit
-        <<- /conf/ morph(>1, ":[GY]|<end>") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
+        <<- /conf/ morph(>1, ":[GY]|<end>", ">à/") and not value(<1, "|il|on|elle|n’|m’|t’|s’|") and not before("(?i)quel(?:s|les?|) qu[’ ]$") and not after(" soit ")
         -2>> soi                                                                                    # Confusion probable.
 
     [soi|sois|soit|>soie]  >même
@@ -7618,6 +7618,8 @@ TEST: Quoi qu’il en soit
 TEST: À moins qu’elle n’en soit la victime.
 TEST: Je doute qu’il s’en soit sorti si aisément.
 TEST: Je refuse, quoi qu’il en soit.
+TEST: on ne s’étonne plus que le parquet de Paris en soit à agir sous l’effet de quelque urgence médiatique
+
 
 __conf_soie_soi_soit__
     [>drap|>chemise|>robe|>mouchoir] [en|de] soi
@@ -10151,15 +10153,16 @@ __purge_conditionnelle__
 
 __simplication_substantifs__
     >animal de compagnie
+    >appel au secours
     >arc à poulies
     >arme à feu
     >armée de l’air
-    >armée terre
+    >armée de terre
     >armer jusqu aux dents
     >arme de [poing|guerre]
     >arme de destruction massive
     >argent de poche
-    >appel au secours
+    >article de presse
     >attestation sur l’ honneur
     >attendre de pied ferme
     ayants droit
