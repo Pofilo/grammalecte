@@ -303,12 +303,20 @@ class IBDAWG:
         nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
         nMaxJump = max(len(sWord) // 4, 1)
         oSuggResult = SuggResult(sWord)
+        self._splitSuggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
         aSugg = oSuggResult.getSuggestions(nSuggLimit)
         if sSfx or sPfx:
             # we add what we removed
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
         return aSugg
+
+    def _splitSuggest (self, oSuggResult, sWord):
+        for cSplitter in "'’":
+            if cSplitter in sWord:
+                sWord1, sWord2 = sWord.split(cSplitter, 1)
+                if self.isValid(sWord1) and self.isValid(sWord2):
+                    oSuggResult.addSugg(sWord1+" "+sWord2)
 
     def _suggest (self, oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         # recursive function

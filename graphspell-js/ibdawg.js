@@ -332,6 +332,7 @@ class IBDAWG {
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
         let nMaxJump = Math.max(Math.floor(sWord.length / 4), 1);
         let oSuggResult = new SuggResult(sWord);
+        this._splitSuggest(oSuggResult, sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
         if (sSfx || sPfx) {
@@ -340,6 +341,17 @@ class IBDAWG {
         }
         //console.timeEnd("Suggestions for " + sWord);
         return aSugg;
+    }
+
+    _splitSuggest (oSuggResult, sWord) {
+        for (let cSplitter of "'’") {
+            if (sWord.includes(cSplitter)) {
+                let [sWord1, sWord2] = sWord.split(cSplitter, 2);
+                if (this.isValid(sWord1) && this.isValid(sWord2)) {
+                    oSuggResult.addSugg(sWord1+" "+sWord2);
+                }
+            }
+        }
     }
 
     _suggest (oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
