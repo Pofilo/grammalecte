@@ -18497,14 +18497,25 @@ TEST: Beaucoup leur donneront du fil à retordre.
 TEST: beaucoup d’argent arrive dans nos caisses
 
 
-__conj_certains_tous_plusieurs__
-    [certains|certaines|tous|toutes|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
-    [certains|certaines|tous|toutes|plusieurs]  qui  @:V¬:(?:G|3p|P)
+__conj_certains_plusieurs__
+    [certains|certaines|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
+    [certains|certaines|plusieurs]  qui  @:V¬:(?:G|3p|P)
         <<- /conj/ not morph(<1, ":[VR]")
         --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: certains {{prenne}} leur temps
 TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même trompés.
+
+
+__conj_tous_toutes__
+    [tous|toutes]  @:V¬:(?:G|N|A|3p|P|Q)
+    [tous|toutes]  qui  @:V¬:(?:G|3p|P)
+        <<- /conj/ not morph(<1, ":[VR]|>(?:et|ou)/")
+        --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+TEST: Tous {{venait}} à la fête.
+TEST: Toutes {{ignorait}} ce qu’ils avaient fait.
+TEST: Il faut mettre un coup de grâce et tous monter sur Paris par tous les moyens possibles
 
 
 __conj_certains_certaines__
