@@ -2075,6 +2075,13 @@ __fusions_noms_communs__
     n’ importe [qui|quoi|quel|quelle|quels|quelles]
         <<- ~1:2>> ␣
 
+    [cultural|gender] studies
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:f:p"])
+
+    machine learning
+        <<- ~>> ␣
+        <<- =>> define(\1, [">machine learning/:N:m:s"])
 
 __fusions_noms_propres__
     cac  40
@@ -8033,7 +8040,7 @@ __maj_État__
         <<- /maj/ \1 == "états" -1>> États                          # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
 
 
-    [>affaire|>agent|>administration|>chancellerie|>chef|>cheffe|>conseil|>coup|>diplôme|>doctorat|>emprunt|>lycée|>propriété|>secret|>homme|>femme|>police|>religion|>ministre|>ministère|>subvention|>secrétaire|>secrétariat|>raison|>ressortissante|>université] d’ état
+    [>affaire|>agent|>administration|>chancellerie|>chef|>cheffe|>conseil|>coup|>diplôme|>doctorat|>emprunt|>lycée|>propriété|>secret|>homme|>femme|>police|>religion|>ministre|>ministère|>subvention|>secrétaire|secret|secrets|>secrétariat|>raison|>ressortissante|>université] d’ état
         <<- /maj/ \3 == "état" -3>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
 
     [>défense|>sûreté|>sureté|>agent|>budget|>caisse|>capitale|>constitution|>charge|>chef|>dirigeante|>denier|>finance|>fonction|>fonctionnement|>frontière|>institution|>propriété|>monopole|>pouvoir|>rouage|>ressource|>service|>subvention|>suprême] de l’ état
@@ -10557,6 +10564,7 @@ __purge_après_avoir__
 
 __purge_après_verbe__
     @:V  ?pas¿  jour et nuit
+    @:V  ?pas¿  nuit et jour
     @:V  quand même pas
     @:V  [moi|toi|lui|elle|nous|vous|eux|elles]  aussi
     @:V  même
@@ -10958,6 +10966,7 @@ TEST: elle seules les femmes la font craquer
 TEST: À certains égards, la décence ordinaire apparaît donc comme un pendant à la banalité du mal théorisée par Hannah Arendt.
 TEST: cette région un temps florissante grâce aux mines de charbon
 TEST: des étoiles plein les yeux.
+TEST: Ces maires sont nuit et jour aux côtés des Françaises et des Français, en prise directe avec leurs difficultés, leurs doléances et leurs espoirs.
 
 
 
@@ -16997,11 +17006,12 @@ __imp_union_nous_vous_lui__
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  [nous|vous|lui]
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)") and not morph(>1, ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne nous}} du café.
 TEST: si ça se peut, {{apprend nous}} à réussir.
+TEST: Ce que Jeanne, femme de Patrick, veut vous dire de sa vie.
 
 
 __imp_union_y__
