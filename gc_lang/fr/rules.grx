@@ -3655,6 +3655,9 @@ __tu_pas_de_trait_d_union__
     ~^[pP]arce-qu’
         <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
 
+    par-là
+        <<- /tu/ not before("[Pp]ar[ -]ci ?,? *$") ->> par là                                                     # Pas de trait d’union.
+
     ~\w-(?:ç[aà]|aussi|donc)$
         <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
 
@@ -7331,10 +7334,18 @@ TEST: Elle veut savoir combien même si ça ne lui est d’aucune utilité immé
 __conf_quel_que_soit__
     >quelque [soi|sois|soit|soient]
     >quelque >soie @:D
-        <<- /conf/ -1:2>> quel que soit|quelle que soit|quels que soient|quelles que soient         # Confusion.|https://fr.wiktionary.org/wiki/quel_que_soit
+        <<- /conf/ -1:2>> quel que soit|quelle que soit|quels que soient|quelles que soient         # Confusion : “quelque” est un déterminant.|https://fr.wiktionary.org/wiki/quel_que_soit
 
 TEST: {{quelques soient}} les avantages d’un correcteur…
 
+
+# quel que puisse
+__quel_que_puisse__
+    >quelque [puisse|puisses|put|pût]
+        <<- /conf/ -1>> quel que|quelle que                                 # Confusion : “quelque” est un déterminant.
+
+    >quelque [puissent|pussent]
+        <<- /conf/ -1>> quels que|quelles que                               # Confusion : “quelque” est un déterminant.
 
 # quelque part
 __conf_quelque_part__
@@ -9118,7 +9129,8 @@ __purge_locutions__
     de *NUM %
     de [cesse|conserve|facto|fait|guingois|luxe|nouveau|permanence|partout|préférence|profundis|rechange|routine|surcroît|surcroit|visu]
     de A à Z
-    de bas (?:en haut|étage)
+    de bas en haut
+    de bas étage
     de basse [condition|extraction]
     de bon [aloi|cœur|gré|matin|sens|ton]
     de bonne [facture|famille|foi|heure|humeur|grâce|qualité|compagnie]
@@ -10029,12 +10041,25 @@ __purge_conditionnelle__
     bien entendu
         <<- morph(<1, ":[NAQR]|>que/") ~>> *
 
-    comme [moi|toi|lui|elle|nous|vous|eux|elles|ça|cela]
-    comme [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]
+    comme [moi|toi]
+        <<- morph(<1, ":[NA]", ":V0") ~>> *
+
+    comme [lui|elle|ça|cela]
+    comme [celui-ci|celui-là|celle-ci|celle-là]
     comme le [mien|tien|sien|nôtre|vôtre|leur]
     comme la [mienne|tienne|sienne|nôtre|vôtre|leur]
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:3s)") ~>> *
+
+    comme nous
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:1p)") ~>> *
+
+    comme vous
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:2p)") ~>> *
+
+    comme [eux|elles]
+    comme [celui-ci|celui-là|celle-ci|celle-là]
     comme les [miens|tiens|siens|miennes|tiennes|siennes|nôtres|vôtres|leurs]
-        <<- morph(<1, ":[NA]", ":V0") ~>> *
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:3p)") ~>> *
 
     dans la grande majorité des cas     @¬:A:[me]:[pi]
         <<- ~1:6>> *
@@ -10967,6 +10992,8 @@ TEST: À certains égards, la décence ordinaire apparaît donc comme un pendant
 TEST: cette région un temps florissante grâce aux mines de charbon
 TEST: des étoiles plein les yeux.
 TEST: Ces maires sont nuit et jour aux côtés des Françaises et des Français, en prise directe avec leurs difficultés, leurs doléances et leurs espoirs.
+TEST: le clitoris comme vous ne l’avez jamais vu
+
 
 
 
@@ -12995,7 +13022,9 @@ __conf_amande_amende__
     >mettre à l’ amande
         <<- /conf/ -4>> amende                          # Confusion. L’amande est un fruit.
 
-    >pâte d’ >amende
+    [>biscuit|>brioche|>brownie|>bûche|>canard|>cookie|>crumble|>fondant|>gâteau|>meringue|>poulet|>mi-cuit|>pain|>tarte|>tartelette|>tuile] aux amendes
+    [>biscuit|>brioche|>brownie|>bûche|>canard|>cookie|>crumble|>fondant|>gâteau|>meringue|>poulet|>mi-cuit|>pain|>tarte|>tartelette|>tuile] à l’ amende
+    [>crème|>pâte|>purée] d’ >amende
         <<- /conf/ -3>> amandes                         # Confusion. Une amende est une peine. Le fruit s’écrit “amande”.
 
     >faire >amande >honorable
@@ -13134,7 +13163,19 @@ __conf_bât_bas_bat__
     le [bas|bat] >blesser
         <<- /conf/ -2>> bât                                             # Confusion : là où le bât blesse.|http://fr.wiktionary.org/wiki/b%C3%A2t
 
+    [>âne|>cheval|>mule|>mulet|>jument|>sacoche] de [bas|>bat]
+        <<- /conf/ -3>> bât                                             # Confusion probable.|https://fr.wiktionary.org/wiki/b%C3%A2t
+
+    [bas|>bât] de l’ aile
+        <<- /conf/ -1>> bat                                             # Confusion probable.|https://fr.wiktionary.org/wiki/battre_de_l%E2%80%99aile
+
+    [bas|>bât] [son|leur] plein
+        <<- /conf/ -1>> bat                                             # Confusion probable.|https://fr.wiktionary.org/wiki/battre_son_plein
+
 TEST: C’est là que le {{bas}} blesse.
+TEST: Sur son cheval de {{bas}}.
+TEST: ça {{bât}} de l’aile, cette histoire.
+TEST: La fête {{bât}} son plein.
 
 
 # beauté / botté
@@ -14188,7 +14229,7 @@ __conf_pâle_pale2!6__
         <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
-    [>air|>lumière|>lueur|>teinte|coloris|>couleur|>peau|>visage|>bleue|>rouge|>jaune|>verte|gris|>orange|>violette|>pourpre]  >pale
+    [>air|>lumière|>lueur|>teinte|coloris|>couleur|>peau|>visage|>bleue|>rouge|>fuschia|>jaune|>verte|gris|>orange|>violette|>pourpre]  >pale
         <<- /conf/ -2>> =\2.replace("pal", "pâl")
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
@@ -17134,7 +17175,7 @@ __imp_union_verbe_pronom_en_y_leur__
         <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    [/-lui|/-nous|/-nous|/-leur]  [en|y]
+    [/-lui|/-nous|/-vous|/-leur]  [en|y]
         <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 

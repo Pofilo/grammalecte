@@ -44,7 +44,7 @@ var char_player = {
             }
             i++;
         }
-        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "ê").replace(/ei/g, "ê").replace(/ph/g, "f");
+        return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "ẽ").replace(/ei/g, "ẽ").replace(/ph/g, "f");
     },
 
     aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),

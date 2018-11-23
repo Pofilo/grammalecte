@@ -34,7 +34,7 @@ def simplifyWord (sWord):
     for i, c in enumerate(sWord, 1):
         if c == 'e' or c != sWord[i:i+1]:  # exception for <e> to avoid confusion between crée / créai
             sNewWord += c
-    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "ê").replace("ei", "ê").replace("ph", "f")
+    return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "ẽ").replace("ei", "ẽ").replace("ph", "f")
 
 
 aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")
