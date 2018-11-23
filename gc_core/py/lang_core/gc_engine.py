@@ -607,7 +607,7 @@ class TextParser:
         else:
             lSugg = m.expand(sRepl).split("|")
         if bUppercase and lSugg and m.group(iGroup)[0:1].isupper():
-            lSugg = list(map(str.capitalize, lSugg))
+            lSugg = list(map(lambda s: s[0:1].upper()+s[1:], lSugg))
         # Message
         sMessage = globals()[sMsg[1:]](sText, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
         if bShowRuleId:
