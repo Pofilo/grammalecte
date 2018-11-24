@@ -618,7 +618,7 @@ TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux
 
 
 __[u](typo_écriture_épicène_pluriel_eur_divers)__
-    ({w_2})eur[.(/·–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·–—-]?s  @@0,**
+    ({w_2})eurs?[.(/·–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·–—-]?s  @@0,**
     <<- option("typo") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs                           # Écriture épicène dystypographique et imprononçable.
     <<- option("typo") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs                       # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
@@ -644,7 +644,7 @@ TEST: {{locaux·ales}}                                                   ->> loc
 
 
 __[u](typo_écriture_épicène_pluriel_er_ère)__
-    ({w_2})er[.(/·–—-]i?è?re[.)/·–—-]?s  @@0
+    ({w_2})ers?[.(/·–—-]i?è?re[.)/·–—-]?s  @@0
     <<- option("typo") ->> \1ers et \1ères|\1ères et \1ers                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -652,7 +652,7 @@ TEST: les {{conseiller.ière.s}}                                         ->> con
 
 
 __[u](typo_écriture_épicène_pluriel_if_ive)__
-    ({w_2})if[.(/·–—-][std]?i?ve[.)/·–—-]?s  @@0
+    ({w_2})ifs?[.(/·–—-][std]?i?ve[.)/·–—-]?s  @@0
     <<- option("typo") ->> \1ifs et \1ives|\1ives et \1ifs                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -10015,6 +10015,9 @@ __purge_des_nombres__
 
 
 __purge_conditionnelle__
+    [>avoir|>être] ?[pas|jamais]¿ au moins @:Q
+        <<- ~-3:-2>> *
+
     au  moins  @¬:[AQ].*:[me]:[si]
         <<- ~1:2>> *
 
@@ -10993,6 +10996,7 @@ TEST: cette région un temps florissante grâce aux mines de charbon
 TEST: des étoiles plein les yeux.
 TEST: Ces maires sont nuit et jour aux côtés des Françaises et des Français, en prise directe avec leurs difficultés, leurs doléances et leurs espoirs.
 TEST: le clitoris comme vous ne l’avez jamais vu
+TEST: J’ai vécu plusieurs agressions, et toutes ont au moins été facilitées par mon état physique.
 
 
 
@@ -12307,8 +12311,8 @@ TEST: les argiles et les marnes jouent le rôle d’isolants enfermant les masse
 
 __sgpl_couleurs_invariables__
     [abricots|acajous|anthracites|argents|aubergines|azurs|bistres|briques|bronzes|cachous|caramels|carmins|cerises|chocolats|corails|crèmes|cuivres|ébènes|émeraudes|fraises|garances|grenats|indigos|isabelles|ivoires|lavandes|magentas|marrons|moutardes|nacres|noisettes|ocres|olives|ors|oranges|outremers|pailles|pastels|pervenches|pies|pistaches|pivoines|rouilles|sables|safrans|sépias|tabacs|taupes|tomates|turquoises|vermillons]
-        <<- /sgpl/ morph(<1, ":N", ":[GAVWM]") ->> \1[:-1]
-        # Couleur. Si une couleur représentée par un fruit, un animal, une roche, etc. elle est invariable.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+        <<- /sgpl/ morph(<1, ":N", ":[GAVWM]") ->> =\1[:-1]
+        # Couleur. Si une couleur est représentée par un fruit, un animal, une roche… elle est (en général) invariable.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
 TEST: Des yeux {{vert}}.
 TEST: Des yeux {{marrons}}.
