@@ -5070,19 +5070,22 @@ TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
 
 
 __conf_en_participes_présents__
-    en   [ne|me|m’|te|t’|t’]  @:[123][sp]¬:[PY]
+    en   [ne|me|m’|te|t’|s’]  @:[123][sp]¬:[PY]
+        <<- /conf/ not \1.isupper() >>>
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
         <<- /conf/ value(\2, "|m’|t’|s’|") -1:2>> "\2en "                                           # Incohérence : vouliez-vous écrire « \2’en » ?
-        <<- /conf/ __else__ -1:2>> =\2[0:1] + "’en"                                                 # Incohérence : vouliez-vous écrire « \2’en » ?
+        <<- /conf/ __else__ -1:2>> =\2[0:1] + "’en"                                                 # Incohérence.
 
     en   se  @:[123][sp]¬:[PY]
+        <<- /conf/ not \1.isupper() >>>
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
-        <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en "                                            # Incohérence : vouliez-vous écrire « \2’en » ?
+        <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en "                                            # Incohérence : vouliez-vous écrire « s’en » ?
 
     en   n’  @:[123][sp]¬:[PY]
+        <<- /conf/ not \1.isupper() >>>
         <<- /conf/ not value(\3, "|importe|") >>>
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
-        <<- /conf/ -1:2>> "n’en "                                                                   # Incohérence : vouliez-vous écrire « \2’en » ?
+        <<- /conf/ -1:2>> "n’en "                                                                   # Incohérence : vouliez-vous écrire « n’en » ?
 
 TEST: {{en t’}}ait donné tant.                          ->> "t’en "
 TEST: {{en n’}}{{envoient}} que peu.
@@ -6263,7 +6266,7 @@ __conf_dès_des_dés__
 
     des ~\d{2,5}  [<end>|,]
     des ~\d{2,5}  @:¬:[NA].*:[ip]
-        <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent)/") -1>> dès           # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+        <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent|barre)/") -1>> dès     # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
@@ -6311,6 +6314,7 @@ TEST: Dès à présent
 TEST: Donne-moi tes dés à présent.
 TEST: le diagnostic se pose autour des 20 ans
 TEST: 98 % des 12 à 17 ans ont aujourd’hui un ordinateur chez eux.
+TEST: sous la barre des 500
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -12710,12 +12714,13 @@ TEST: On va procéder par {{intervalle}}
 # juste
 __sgpl_juste__
     justes
-        <<- /sgpl/ \1.islower() and morph(<1, ":V", ":D") and not morph(>1, ":N.*:[pi]")
+        <<- /sgpl/ \1.islower() and morph(<1, ":V", ":[DA]") and not morph(>1, ":N.*:[pi]")
         ->> juste                                                   # Si “juste” est ici un adverbe, il est invariable.
 
 TEST: Viser {{justes}}
 TEST: Voir {{justes}}.
 TEST: Penser juste.
+TEST: Dures mais justes.
 
 
 # pied
@@ -14229,7 +14234,15 @@ __conf_aller_de_pair__
     >aller de [pairs|paire|paires|pers|perd|perds|>père]
         <<- /conf/ -3>> pair                                    # Confusion. On écrit « aller de pair ».
 
+    hors [paire|pairs|paires]
+        <<- /conf/ --1>> pair                                    # Confusion. La locution “hors pair” est invariable.|https://fr.wiktionary.org/wiki/hors_pair
+
+    hors de [paire|pairs|paires]
+        <<- /conf/ --1>> pair                                    # Confusion. La locution “hors de pair” est invariable.|https://fr.wiktionary.org/wiki/hors_de_pair
+
 TEST: Ils vont de {{paires}}.
+TEST: Des personnes hors {{paires}}.
+TEST: Elles sont hors de {{paires}}.
 
 
 # pâle / pale
@@ -16095,40 +16108,55 @@ TEST: Pierre est {{dominée}} par son adversaire.
 !!!! Participes passés: avoir l’air                                                               !!
 
 __ppas_avoir_l_air__
-    il  ?[ne|n’]¿  >avoir  l’  air  @:A¬(?::A.*:[me]:[si]|:G)
+    il  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ --1>> =suggMasSing(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    ils  ?[ne|n’]¿  >avoir  l’  air  @:A¬(?::A.*:[me]|:G)
+    elle  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[si]|G)
+        <<- /ppas/ not morph(<1, ":R|>(?:et|ou)/") --1>> =suggFemSing(\-1)      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    <start>  [le|un|ce|cet|mon|ton|son|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+        <<- /ppas/ morph(\3, ":[NA].*:[me]", ":f") --1>> =suggMasSing(\-1)      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    <start>  [la|une|cette|ma|ta|sa|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[si]|G)
+        <<- /ppas/ morph(\3, ":[NA].:[fe]", ":m") --1>> =suggFemSing(\-1)       # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    [<start>]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:m:[si]|G)
+        <<- /ppas/ morph(\2, ":M.*:m", ":M.*:[fe]") --1>> =suggMasSing(\-1)     # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    ils  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]|G)
         <<- /ppas/ --1>> =suggMasPlur(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    elle  ?[ne|n’]¿  >avoir  l’  air  @:A¬(?::A.*:[si]|:G)
-        <<- /ppas/ --1>> =suggFemSing(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+    elles  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:(?:m:[si]|[fe]:[pi])|G)
+        <<- /ppas/ not morph(<1, ":R|>(?:et|ou)/") --1>> =suggFemPlur(\-1)      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    elles  ?[ne|n’]¿  >avoir  l’  air  @:A¬(?::A.*:(?:m:[si]|[fe]:[pi])|:G)
-        <<- /ppas/ --1>> =suggFemPlur(\-1)                                      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+    <start>  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
+        <<- /ppas/ morph(\3, ":[NA].*:m:[pi]", ":[fe]") and morph(\-1, ":[NA].*:f")
+        --1>> =suggMasPlur(\-1)                                                 # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+        <<- /ppas/ morph(\3, ":[NA].*:f:[pi]", ":[me]") and morph(\-1, ":[NA].*:(?:m:p|f:s)")
+        --1>> =suggFemPlur(\-1)                                                 # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    >avoir  l’  air  @:A¬(?::A.*:[me]:[si]|:G)
+    >avoir  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morph(\1, ":V0a.*:[123]s") and morph(\-1, ":A.*:p") and not value(<1, "|on|")
         --1>> =suggSing(\-1)                                                    # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
         <<- /ppas/ morph(\1, ":V0a.*:[123]p") and morph(\-1, ":A.*:s")
         --1>> =suggPlur(\-1)                                                    # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [/-je|/-tu]  l’  air  @:A¬(?::A.*:[si]|:G)
+    [/-je|/-tu]  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggSing(\-1)                     # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    [/-nous]  l’  air  @:A¬(?::A.*:(?:m:[si]|p)|:G)
+    [/-nous]  l’  air  @:A¬:(?:A.*:(?:m:[si]|p)|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggPlur(\-1)                     # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-il  l’  air  @:A¬(?::A.*:[me]:[si]|:G)
+    /-il  l’  air  @:A¬:(?:A.*:[me]:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasSing(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-ils  l’  air  @:A¬(?::A.*:[me]|:G)
-        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasPlur(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
-
-    /-elle  l’  air  @:A¬(?::A.*:[si]|:G)
+    /-elle  l’  air  @:A¬:(?:A.*:[si]|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggFemSing(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
-    /-elles  l’  air  @:A¬(?::A.*:(?:m:[si]|[fe]:[pi])|:G)
+    /-ils  l’  air  @:A¬:(?:A.*:[me]|G)
+        <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggMasPlur(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+
+    /-elles  l’  air  @:A¬:(?:A.*:(?:m:[si]|[fe]:[pi])|G)
         <<- /ppas/ morphVC(\1, ":V0a") --1>> =suggFemPlur(\-1)                  # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
 TEST: avait l’air {{sinistres}} des mauvais jours.                      ->> sinistre
@@ -16142,8 +16170,13 @@ TEST: Avais-tu l’air {{folles}}                                         ->> fo
 TEST: Avait-il l’air {{grosse}}                                         ->> gros
 TEST: Avait-elle l’air {{grosses}}                                      ->> grosse
 TEST: Avions-nous l’air {{perdue}}                                      ->> perdues
-TEST: Avaient-ils l’air {{ignorantes}} ?                                ->> ignorants 
-TEST: Avaient-elles l’air {{triomphants}} ?                             ->> triomphantes 
+TEST: Avaient-ils l’air {{ignorantes}} ?                                ->> ignorants
+TEST: Avaient-elles l’air {{triomphants}} ?                             ->> triomphantes
+TEST: Paul avait l’air {{perdue}}                                       ->> perdu
+TEST: la voiture avait l’air {{foutues}}                                ->> foutue
+TEST: Le chien a l’air {{idiote}}                                       ->> idiot
+TEST: Les écoles avaient l’air {{fermés}}                               ->> fermées
+TEST: Nos voisins auront l’air {{perdues}}                              ->> perdus
 TEST: Avais-je l’air égarée ?
 TEST: Avais-tu l’air folle ?
 TEST: Avait-il l’air serein ?
@@ -17747,14 +17780,18 @@ __énumérations_substantifs__
 
 #### a / à
 __conf_pronom_verbe_à__
-    [<start>|,]  [je|j’|tu|il|on|ils|elles]  @:V  a
-    [<start>|,]  [nous|vous]  @:V¬:Y  a
-        <<- /conf/ \4 != "A" -4>> à                                 # Confusion probable : “a” est une conjugaison du verbe “avoir”. Utilisez la préposition “à”.
+    [<start>|,]  [je|j’|tu|il|elle|on|ils|elles]    @:V        a
+    [<start>|,]  [nous|vous]                        @:V¬:Y     a
+    [<start>|,]  c’                                 >être      a
+    [<start>|,]  [cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  @:(?:[123][sp]|P)  a
+        <<- /conf/ \-1 != "A" --1>> à                               # Confusion probable : “a” est une conjugaison du verbe “avoir”. Utilisez la préposition “à”.
 
 TEST: Il vient {{a}} la maison.
 TEST: tu ne donnes rien {{a}} ces hommes.
 TEST: Nous les donnons {{a}} ces gens.
 TEST: j’arrive {{a}} la gare
+TEST: Cela venait {{a}} la maison régulièrement.
+TEST: C’est {{a}} des années-lumière de réussir.
 TEST: vous examiner a eu des conséquences imprévues.
 
 
