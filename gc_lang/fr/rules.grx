@@ -2128,7 +2128,7 @@ __immunités__
         <<- %3>>
 
     au sortir [de|des|du|d’]
-        <<- ~2>> *
+        <<- ~2>> _
 
     en tout et pour tout
         <<- %-1>>
@@ -3165,11 +3165,15 @@ TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 
 __tu_préfixe_divers__
     [anti|auto|arrière|avant|demi|extra|intra|multi|post]  *WORD
-        <<- /tu/ analyse_with_next(\1, "-", ":") and (morph(<1, ":D|<start>") or value(<1, "|l’|d’|"))
+        <<- /tu/ (morph(<1, ":D|<start>") or value(<1, "|l’|d’|")) and analyse_with_next(\1, "-", ":")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
-    [non|sans|sous]  *WORD
-        <<- /tu/ analyse_with_next(\1, "-", ":") and morph(<1, ":D")
+    [non|sans]  *WORD
+        <<- /tu/ morph(<1, ":D") and analyse_with_next(\1, "-", ":")
+        ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
+
+    sous  *WORD
+        <<- /tu/ not(\2 == "forme" and value(>1, "|de|d’|")) and morph(<1, ":D") and analyse_with_next(\1, "-", ":")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
 TEST: il a pris une balle dans l’{{arrière train}}.
@@ -11700,6 +11704,7 @@ TEST: ces {{beaux}} {{institutions}}
 TEST: de vos défauts {{terrible}}, je connais presque tout.
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
 TEST: Une des pierres veinée de rouge…
+TEST: Pour maintenir le potentiel de membrane qui lui permet de communiquer avec ses voisins sous forme d’influx nerveux, un neurone a besoin d’énergie.
 
 
 __gn_des_2m__
@@ -14959,13 +14964,18 @@ __purge_syntagmes_nominaux__
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
         <<- ~1:3>> *
 
-    [le|la|les|leur|ce|ton|son|certains|certaines] *WORD *WORD
+    [ce|ton|son] *WORD *WORD
         <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
+    [le|la|les|leur|certains|certaines] *WORD *WORD
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- __else__ ~3>> *
+
     l’ *WORD *WORD
-        <<- \2 != "air" and morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y)|>air") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
@@ -19249,6 +19259,9 @@ TEST: n’en avoir cure et faire comme si de rien n’était.
 TEST: Comme d’habitude, ils ont tout fait à l’arrache.
 TEST: tout un système pour justifier que “nous” avons toujours raison et que nous ne pouvons jamais avoir tort.
 TEST: Daignez le lui permettre.
+TEST: Renvoyer quelqu’un sans l’avoir examiné peut être un grand danger.
+TEST: En 1944, au sortir des deux guerres ayant ravagé l’Europe, le CNR (conseil national de la résistance) avait bien mesuré les tenants et les aboutissants, c’est-à-dire les causes et les conséquences du ravage des inégalités et du jusqu’au boutisme de l’auto-défense d’une caste pour préserver ses acquis.
+
 
 
 !!! Tests historiques                                                                             !!
