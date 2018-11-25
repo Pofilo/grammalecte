@@ -462,7 +462,7 @@ def make (lRule, dDef, sLang, dOptPriority):
         "graph_callables": sPyCallables,
         "graph_callablesJS": sJSCallables,
         "rules_graphs": str(dAllGraph),
-        "rules_graphsJS": str(dAllGraph).replace("True", "true").replace("False", "false"),
+        "rules_graphsJS": str(dAllGraph),
         "rules_actions": str(dACTIONS),
-        "rules_actionsJS": str(dACTIONS).replace("True", "true").replace("False", "false")
+        "rules_actionsJS": jsconv.pyActionsToString(dACTIONS)
     }

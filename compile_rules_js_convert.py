@@ -163,3 +163,11 @@ def groupsPositioningCodeToList (sGroupsPositioningCode):
         return None
     return [ int(sCode)  if sCode.isdigit() or (sCode[0:1] == "-" and sCode[1:].isdigit())  else sCode \
              for sCode in sGroupsPositioningCode.split(",") ]
+
+
+def pyActionsToString (dActions):
+    for sKey, aValue in dActions.items():
+        if aValue[2] == "-":
+            aValue[3] = aValue[3].replace(" ", " ") # nbsp --> nnbsp
+            aValue[10] = aValue[10].replace("« ", "« ").replace(" »", " »").replace(" :", " :").replace(" :", " :")
+    return str(dActions).replace("True", "true").replace("False", "false");
