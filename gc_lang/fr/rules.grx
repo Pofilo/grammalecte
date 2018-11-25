@@ -1886,6 +1886,9 @@ __tag_prop_sub__
     ce [que|qu’]
         <<- />> ce_que
 
+    [que|qu’]
+        <<- />> que
+
 
 __tag_ni__
     ni
@@ -2082,6 +2085,10 @@ __fusions_noms_communs__
     machine learning
         <<- ~>> ␣
         <<- =>> define(\1, [">machine learning/:N:m:s"])
+
+    standing >ovation
+        <<- ~>> ␣
+        <<- =>> define(\1, [">standing ovation/:N:f:i"])
 
 __fusions_noms_propres__
     cac  40
@@ -4902,7 +4909,7 @@ __conf_déterminant_plur_verbe__
         -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
 
     quelques  @:V.*:(?:Y|[123][sp])¬:[NA]
-        <<- /conf/ \2.islower() and not value(\2, "|soient|soit|sois|")
+        <<- /conf/ \2.islower() and not value(\2, "|soient|soit|sois|puisse|puisses|puissent|")
         -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
 
     [auxdits|lesdits|desdits]  @:V.*:(?:Y|[123][sp])¬:[NA]
@@ -7351,14 +7358,20 @@ __quel_que_puisse__
     >quelque [puissent|pussent]
         <<- /conf/ -1>> quels que|quelles que                               # Confusion : “quelque” est un déterminant.
 
+TEST: {{quelque}} puisse être la vérité, nous finirons par la découvrir.
+TEST: {{quelques}} puissent être les raisons de son acte, il faut pardonner.
+
+
 # quelque part
 __conf_quelque_part__
-    [quel|quels|quelle|quelles] que [par|pars|>part]
-    [quelque|quelques] [pare|pares|par|pars]
+    [quel|quels|quelle|quelles] que [pare|pares|par|pars|>part]
+    [quelque|quelques] [pare|pares|par|pars|parts]
+    quelques part
         <<- /conf/ ->> quelque part                                         # Confusion probable.|https://fr.wiktionary.org/wiki/quelque_part
 
 TEST: Il faut bien aller {{quelle que part}}.
 TEST: Je les ai oubliés {{quelque pars}}.
+TEST: Elles sont forcément {{quelque parts}} ici.
 
 
 # quelques fois / quelquefois
@@ -15940,7 +15953,8 @@ __ppas_être_accord_sing__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      @:[NA].*:p¬:[GMWYsi]
-        <<- /ppas/ not morph(\1, ":G") and morph(\2, ":[123]s", ":C") --1>> =suggSing(\-1)          # Accord avec la forme verbale précédente (être ou équivalent) : “\-1” devrait être au singulier.
+        <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[123]s", ":C")
+        --1>> =suggSing(\-1)                                                                        # Accord avec la forme verbale précédente (être ou équivalent) : “\-1” devrait être au singulier.
 
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])         @:[NA].*:p¬:[GMWYsi]
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                 @:[NA].*:p¬:[GMWYsi]
@@ -15964,6 +15978,7 @@ TEST: Cet animal qui souhaite redevenir {{amnésiques}}.
 TEST: Qui semble être devenu {{malades}} ?
 TEST: ce jour, et surtout cette soirée, semble devenir {{interminables}}.
 TEST: C’est le crime qui se vante, qui adore avoir semblé {{légitimes}}.
+TEST: Les tortures que ce journaliste pense être “normales”.
 
 
 __ppas_être_accord_plur__
@@ -15979,7 +15994,8 @@ __ppas_être_accord_plur__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      @:[NA].*:s¬:[GMWYpi]|>légion/
-        <<- /ppas/ not morph(\1, ":G") and morph(\2, ":[13]p") --1>> =suggPlur(\-1)                 # Accord avec la forme verbale précédente (être ou équivalent) : “\-1” devrait être au pluriel.
+        <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[13]p")
+        --1>> =suggPlur(\-1)                                                                        # Accord avec la forme verbale précédente (être ou équivalent) : “\-1” devrait être au pluriel.
 
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])         @:[NA].*:s¬:[GMWYpi]|>légion/
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                 @:[NA].*:s¬:[GMWYpi]|>légion/
@@ -16000,6 +16016,7 @@ TEST: qui furent {{balayé}} au premier coup de vent.
 TEST: Mais ces hommes affirment être redevenus {{humble}}.
 TEST: ces femmes affirment avoir été {{courtoise}}.
 TEST: Qui adorerait être redevenu {{sains}}.
+TEST: ce que les journalistes estiment être normal.
 
 
 
@@ -17970,7 +17987,7 @@ TEST: {{viennent elles}} souvent ?
 
 __infi_devoir_pouvoir_vouloir__
     >devoir  ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        <<- /infi/ morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\2, ":N"))
         -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
     >pouvoir  ~..(?:ée?s?|ez)$
@@ -17986,6 +18003,7 @@ TEST: tu dois {{mangé}}
 TEST: on va devoir {{mangé}} tout ça.
 TEST: Le devoir transcendé par l’amour de son pays.
 TEST: un devoir corrigé par plusieurs professeurs.
+TEST: Ce n’est plus le chef de l’État qui s’exprime devant députés et sénateurs, mais le chef de la majorité.
 
 
 __infi_falloir__
