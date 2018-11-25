@@ -1126,6 +1126,10 @@ function g_value (dToken, sValues, nLeft=null, nRight=null) {
         if (sValues.includes(sValue)) {
             return true;
         }
+        sValue = sValue.toLowerCase();
+        if (sValues.includes(sValue)) {
+            return true;
+        }
     }
     return false;
 }
