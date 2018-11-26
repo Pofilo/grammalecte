@@ -5240,12 +5240,12 @@ __conf_a_à_verbe!6__
 
     à  *WORD
         <<- /conf/ \2.islower() and not value(\2, "|coté|") >>>
-        <<- /conf/ morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
+        <<- /conf/ morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
         <<- /conf/ __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
         -2>> =suggVerbInfi(\2)                                                                      # Le verbe devrait être à l’infinitif.
         <<- /conf/ __else__ and morph(\2, ":[123][sp]", "*") and not value(\2, "|tord|tords|") >>>
         <<- /conf/ morph(\2, ":V2.*:Ip:3s", "*") -2>> =suggVerbPpas(\2, ":m:s")                     # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
-        <<- /conf/ __also__ -1>> a                                                                  # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez :
+        <<- /conf/ __also__ -1>> a                                                                  # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
         <<- /conf/ __else__ -2>> _                                                                  # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
 
 TEST: Ce fâcheux, comme à son habitude, les {{à}} ennuyés à mourir.
@@ -5903,7 +5903,7 @@ __conf_ça_çà_sa__
         <<- /conf/ not morph(<1, ":R") ->> çà et là     # Confusion : « ça » équivaut à « cela ». Dans l’expression « çà et là », « çà » équivaut à « ici ».
 
     sa  <end>
-        <<- /conf/ -1>> ça                              # Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez :
+        <<- /conf/ -1>> ça                              # Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez “ça”.
 
 TEST: Je prends {{sa}}…
 TEST: {{ça}} patrie, il la détestait
@@ -6470,7 +6470,7 @@ __conf_faux_faut__
     faut  @:¬(?:Y|Oo|X|M)
     faut  <end>
         <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|<start>|")
-        -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez :
+        -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
 
 TEST: un homme {{faut}}
 TEST: c’est {{faut}}
@@ -6505,7 +6505,7 @@ __conf_flanc_flan__
     >flanc [au|aux] [>caramel|>café|>citron|>chocolat|>four|>lait|>lard|noix|>pomme|>pruneau|>œuf|>raisin]
     >flanc [de|d’] [or|argent|cuivre]
     >flanc à la [crème|coco|noix]
-        <<- /conf/ -1>> =\1.replace("c", "").replace("C", "")               # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez :|https://fr.wiktionary.org/wiki/flan
+        <<- /conf/ -1>> =\1.replace("c", "").replace("C", "")               # Confusion. S’il s’agit d’une pâtisserie (ou d’une pièce de métal), écrivez “flan”.|https://fr.wiktionary.org/wiki/flan
 
     c’ [est|était] ?[que|tout]¿ du (flanc)
     c’ [est|était] rien que du (flanc)
@@ -7164,7 +7164,7 @@ TEST: habitées par un peuple de prostituées […], vivant là, entassées pêl
 # peu / peux / peut
 __conf_peu_peut_peux!6__
     peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
-        <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)") -1>> peut         # Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez :
+        <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)") -1>> peut         # Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
 
     [peux|peut|peu] a [peux|peut|peu]
     [peux|peut|peu] à [peux|peut]
@@ -7947,7 +7947,7 @@ __conf_voir_voire__
     voir  @:A¬:[NGM]
         <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de|à)/")
             and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
-        -1>> voir                       # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez :|https://fr.wiktionary.org/wiki/voire
+        -1>> voire                      # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez “voire”.|https://fr.wiktionary.org/wiki/voire
 
     [comme|lorque|puisque|quand|que|quoique|si]     (voire)
     [ni|et|par|pour|sans]                           (voire)
@@ -8574,7 +8574,7 @@ TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
 
 __imp_ne_infinitif_negadv__
     [<start>|,]  [ne|n’]  @:V1.*:Y  [pas|plus|jamais]
-        <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                              # Confusion probable : “\1” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
+        <<- /imp/ -3>> =suggVerbTense(\3, ":E", ":2p")                                              # Confusion probable : “\3” est un verbe à l’infinitif. Si vous vouliez utiliser l’impératif, écrivez :
 
 TEST: Non, ne {{manger}} pas ça.                                    ->> mangez
 TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
@@ -12941,10 +12941,10 @@ TEST: Tout à la benne.
 
 __conf_a_à_faim_peur_honte_soif_chaud_froid__
     à [faim|peur|honte|soif]
-        <<- /conf/ -1>> a                       # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
+        <<- /conf/ -1>> a                       # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     <start> elle à [chaud|froid]
-         <<- /conf/ -3>> a                      # Avoir “\1”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez :
+         <<- /conf/ -3>> a                      # Avoir “\4”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
 TEST: Elle {{à}} chaud.
 TEST: Elle {{à}} froid.
@@ -13648,10 +13648,10 @@ TEST: Des hommes {{dénudés}} de compassion.
 __conf_dès_des__
     dés [le|la|l’|les|que|qu’|lors|avant|demain]
         <<- /conf/ not value(<1, "|les|des|de|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs|")
-        -1>> dès                # Confusion probable. Les dés sont des polyèdres ou des protège-doigts pour la couture. Pour signifier “à partir de/du/des”, écrivez :|https://fr.wiktionary.org/wiki/d%C3%A9
+        -1>> dès                # Confusion probable. Les dés sont des polyèdres ou des protège-doigts pour la couture. Pour signifier “à partir de/du/des”, écrivez “dès”.|https://fr.wiktionary.org/wiki/d%C3%A9
 
     des [le|la|l’|les|que|qu’|lors|demain]
-        <<- /conf/ -1>> dès     # Confusion probable : “des” est un déterminant pluriel. Pour signifier “à partir de/du/des”, écrivez :|https://fr.wiktionary.org/wiki/d%C3%A9
+        <<- /conf/ -1>> dès     # Confusion probable : “des” est un déterminant pluriel. Pour signifier “à partir de/du/des”, écrivez “dès”.|https://fr.wiktionary.org/wiki/d%C3%A9
 
 TEST: {{dés}} que nous sommes partis, il a piqué une crise
 TEST: {{des}} {{les}} premiers symptômes, appelez-moi
@@ -14151,11 +14151,11 @@ __conf_mis_mi_mie__
         <<- /conf/ -2>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez “mis”.
 
     [mi|>mie] en [>abyme|>bouteille|>cause|>demeure|>évidence|>examen|>fut|>fût|>image|>liquidation|>mémoire|>musique|>œuvre|>paiement|>place|>pièce|>quarantaine|>scène|>tonneau|>service|>valeur]
-        <<- /conf/ -1>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez :
+        <<- /conf/ -1>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez “mis”.
 
     [mi|>mie] à [>jour|>pied|>disposition|>part|mal|>nu|>nue|>contribution|mort]
     [mi|>mie] à rude épreuve
-        <<- /conf/ -1>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez :
+        <<- /conf/ -1>> mis                                     # Confusion. Pour le participe passé de mettre, écrivez “mis”.
 
 TEST: Elle a {{mie}} son plus bel ensemble.
 TEST: Les éléments {{mi}} en évidence suffisent à le désigner comme coupable.
@@ -14442,7 +14442,7 @@ __conf_salle_qqch__
     >sale d’ [>accouchement|>arcade|>attente|>audience|>eau|>escalade|>échographie|>embarquement|>exposition|>hospitalisation|>observation|>opération|>urgence]
     >sale [de|des|du] [>bain|>bal|>banquet|>billard|>bloc|>cinéma|>classe|>colle|>commandement|>concert|>conférence|>conseil|>consultation|cours|>culture|>danse|>départ|>fête|>formation|>garde|>gym|>gymnastique|>infirmière|>lecture|>machine|>malade|>mammographie|>marché|>mariage|>musculation|>musique|>ordinateur|>presse|>prière|>prof|>professeure|>projection|>radio|>radiographie|>réanimation|>réception|>rédaction|>rééducation|>restaurant|>réunion|>réveil|>séjour|>shoot|>soin|>spectacle|>sport|>stockage|>théâtre|>tir|>toilette|>torture|>trading|>travail|>vente|fitness|>jeu|>repos|>urgence]
     >sale à manger
-        <<- /conf/ -1>> =\1.replace("sale", "salle")                # Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez :
+        <<- /conf/ -1>> =\1.replace("ale", "alle")                  # Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez “salle”.
 
     >être  >salle
         <<- /conf/ -2>> =\2.replace("salle", "sale")                # Confusion. Une salle est une pièce. Pour la malpropreté, écrivez “sale”.
@@ -18351,7 +18351,7 @@ TEST: nulle partie du corps ne peut être considérée comme le siège de l’â
 __conj_vinfi_suj__
     [<start>|,]  @:Y  @:V¬:(?:3s|P|Q.*:[me]:[si]|Y|G|3p!|M)
         <<- /conj/ not (value(\2, "|être|devenir|redevenir|voir|sembler|paraître|paraitre|") and morph(\3, ":A"))
-        -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: manger {{fais}} grossir.
 TEST: boire immodérément {{nuis}} à la santé
