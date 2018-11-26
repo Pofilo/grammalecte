@@ -126,7 +126,7 @@ class TestGrammarChecking (unittest.TestCase):
     def setUpClass (cls):
         gce.load()
         cls._zError = re.compile(r"\{\{.*?\}\}")
-        cls._aRuleTested = set()
+        cls._aTestedRules = set()
 
     def test_parse (self):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
@@ -172,7 +172,7 @@ class TestGrammarChecking (unittest.TestCase):
         # untested rules
         i = 0
         for sOpt, sLineId, sRuleId in gce.listRules():
-            if sOpt != "@@@@" and sLineId not in self._aRuleTested and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
+            if sOpt != "@@@@" and sLineId not in self._aTestedRules and not re.search("^[0-9]+[sp]$|^[pd]_", sRuleId):
                 echo(sLineId + "/" + sRuleId, end= ", ")
                 i += 1
         if i:
@@ -196,7 +196,12 @@ class TestGrammarChecking (unittest.TestCase):
             sRes = sRes[:dErr["nStart"]] + "~" * (dErr["nEnd"] - dErr["nStart"]) + sRes[dErr["nEnd"]:]
             sListErr += "    * {sLineId} / {sRuleId}  at  {nStart}:{nEnd}\n".format(**dErr)
             lAllSugg.append("|".join(dErr["aSuggestions"]))
-            self._aRuleTested.add(dErr["sLineId"])
+            self._aTestedRules.add(dErr["sLineId"])
+            # test messages
+            if "<start>" in dErr["sMessage"] or "<end>" in dErr["sMessage"]:
+                print("\n# Line num : " + dErr["sLineId"] + \
+                      "\n  rule name: " + dErr["sRuleId"] + \
+                      "\n  message  : " + dErr["sMessage"])
         return sRes, sListErr, "|||".join(lAllSugg)
 
     def _getExpectedErrors (self, sLine):
