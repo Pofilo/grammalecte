@@ -16581,22 +16581,23 @@ __ppas_pronom_avoir__
     <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
         and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    --1>> =suggMasSing(\-1)
+    --1>> =suggVerbPpas(\-1, ":m:s")
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-TEST: ils leur avaient {{donnés}} du fil à retordre.
-TEST: il a {{affronte}} une bande de voleurs de bétail
-TEST: J’ai {{mettrai}} du sel.                                                    ->> mis
-TEST: J’ai {{lut}} son journal.                                                   ->> lu
-TEST: Si j’avais {{sut}}.
-TEST: Il a {{prit}} le train.
-TEST: Il a {{donner}} sa vie pour elle.                                           ->> donné
-TEST: Ils leur ont {{données}} un cadeau.
-TEST: ils avaient, en ce temps-là, déjà {{perdus}} leurs illusions
-TEST: Ils ont à plusieurs reprises {{perdus}} leur sang-froid.
-TEST: Elle avait {{pose}} son tricot                                              ->> posé
+TEST: ils leur avaient {{donnés}} du fil à retordre.                                ->> donné
+TEST: il a {{affronte}} une bande de voleurs de bétail                              ->> affronté
+TEST: J’ai {{mettrai}} du sel.                                                      ->> mis
+TEST: J’ai {{lut}} son journal.                                                     ->> lu
+TEST: Si j’avais {{sut}}.                                                           ->> su
+TEST: Il a {{prit}} le train.                                                       ->> pris
+TEST: Il a {{donner}} sa vie pour elle.                                             ->> donné
+TEST: Ils leur ont {{données}} un cadeau.                                           ->> donné
+TEST: ils avaient, en ce temps-là, déjà {{perdus}} leurs illusions                  ->> perdu
+TEST: Ils ont à plusieurs reprises {{perdus}} leur sang-froid.                      ->> perdu
+TEST: Elle avait {{pose}} son tricot                                                ->> posé
+TEST: qui ont {{refuse}} de se soumettre                                            ->> refusé
+TEST: il a {{suffit}} de le pousser un peu                                          ->> suffi
 TEST: Ils avaient barre sur lui.
-TEST: qui ont {{refuse}} de se soumettre                                          ->> refusé
 
 
 __ppas_nous_vous_avoir__
@@ -16605,7 +16606,7 @@ __ppas_nous_vous_avoir__
         and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
         and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    --1>> =suggMasSing(\-1)
+    --1>> =suggVerbPpas(\-1, ":m:s")
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Nous avons {{donne}} tout notre potentiel.
@@ -16622,7 +16623,7 @@ __ppas_det_nom_avoir__
         and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
         and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
-    --1>> =suggMasSing(\-1)
+    --1>> =suggVerbPpas(\-1, ":m:s")
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Les femmes lui avait {{conseillées}} de se taire.
