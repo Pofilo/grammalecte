@@ -1889,6 +1889,9 @@ __tag_prop_sub__
     [que|qu’]
         <<- />> que
 
+    qui
+        <<- />> qui
+
 
 __tag_ni__
     ni
@@ -5737,11 +5740,11 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 
 
 __conf_à_a_après_verbes__
-    @:V¬:[YGNAWM]  a
-        <<- /conf/ \2 != "A" and not tag_before(\1, "ce_que") and not tag_before(\1, "dont")
+    @:V¬:[YGNAWM]  ?@:W¿  a
+        <<- /conf/ \2 != "A" and not tag_before(\1, "que") and not tag_before(\1, "dont") and not tag_before(\1, "qui") and not morph(>1, ":Q")
         -2>> à                                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
-    [/VCint|/VCimp]  a
+    [/VCint|/VCimp]  ?@:W¿  a
         <<- /conf/ -2>> à                       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Vient-on {{a}} la maison demain ?
@@ -5751,7 +5754,7 @@ TEST: Offrez-nous {{a}} Dieu et taisez-vous.
 TEST: elle croit que dans tous les cas de figure il pense {{a}} sa fille.
 TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
 TEST: Ce que je mange a un goût de surgelé.
-
+TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
 
 
 __conf_celui_celle_à_qui__
@@ -11174,7 +11177,7 @@ __gn_le_2m__
 
     [et|ou]  le  *WORD  *WORD
         <<- /gn/ morph(\2, ":D") and not morph(<1, ":[NA]") and not \4.startswith("seul") >>>
-        <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f") and not apposition(\3, \4)
+        <<- /gn/ morph(\3, ":[NA].*:[me]", ":(?:B|G|V0|f)") and morph(\4, ":[NA].*:f", ":[GWme]") and not apposition(\3, \4)
         -4>> =suggMasSing(\4, True)                                                                 # Accord de genre erroné : « \2 \3 » est masculin, « \4 » est féminin.
         <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\4, \4)
         -4>> =suggMasSing(\4)                                                                       # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
@@ -11183,6 +11186,7 @@ TEST: le test très {{cons}} qu’on a passé hier.
 TEST: c’était le chien {{perdue}} des voisins.
 TEST: viens vite ou le pari {{imperdables}} sera moins facile…
 TEST: Le bruit {{perçus}} par les voisins.
+TEST: si le premier film est un triomphe, le deuxième est un demi-succès, et le troisième une déception.
 
 
 __gn_la_1m__
@@ -18365,7 +18369,7 @@ TEST: nulle partie du corps ne peut être considérée comme le siège de l’â
 
 __conj_vinfi_suj__
     [<start>|,]  @:Y  @:V¬:(?:3s|P|Q.*:[me]:[si]|Y|G|3p!|M)
-        <<- /conj/ not (value(\2, "|être|devenir|redevenir|voir|sembler|paraître|paraitre|") and morph(\3, ":A"))
+        <<- /conj/ not (value(\2, "|croire|être|devenir|redevenir|voir|sembler|paraître|paraitre|sentir|") and morph(\3, ":A"))
         -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: manger {{fais}} grossir.
