@@ -1798,7 +1798,7 @@ __da_groupe_nominal__
         <<- =>> exclude(\3, ":V")
 
     l’ [un|une]  *WORD
-        <<- =>> select(\3, ":[123][sp]")
+        <<- not value(\3, "|plus|") =>> select(\3, ":[123][sp]")
 
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
@@ -4709,18 +4709,20 @@ __conj_xxxai__sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~ai$)
-        <<- /conj/ not value(>1, "|je|") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+        <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~ai$)
     [le|la|l’|les]              [lui|leur|en|y]         (~ai$)
     [lui|leur]                  en                      (~ai$)
-        <<- /conj/ not value(>1, "|je|") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])") and not tag_before(\1, "1s")
+        <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     ~ai$
-        <<- /conj/ not value(>1, "|je|") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1s")
+        <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+
+TEST: Lui, quand il y pensait, en {{arrivai}} à chaque fois à la même conclusion.
 
 
 __conj_xxxas_xxxes__sans_sujet!3__
@@ -4729,17 +4731,17 @@ __conj_xxxas_xxxes__sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[ae]s$)
-        <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[ae]s$)
     [le|la|l’|les]              [lui|leur|en|y]         (~[ae]s$)
     [lui|leur]                  en                      (~[ae]s$)
-        <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~..[ae]s$
-        <<- /conj/ not value(>1, "|tu|") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
 
@@ -4749,26 +4751,31 @@ __conj_xxxxxs_sans_sujet!3__
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[iudnrtpcï]s$)
-        <<- /conj/ not value(>1, "|je|tu|") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-            and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)
     [le|la|l’|les]              [lui|leur|en|y]         (~[iudnrtpcï]s$)
     [lui|leur]                  en                      (~[iudnrtpcï]s$)
-        <<- /conj/ not value(>1, "|je|tu|") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-            and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     étais
-        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0("\\w")) and not morph(<1, ":[DA].*:p")
-            and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w")) and not morph(<1, ":[DA].*:p")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     ~[iudnrtpcï]s$
-        <<- /conj/ not value(>1, "|je|tu|") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0("\\w"))
-            and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+TEST: Caroline, quand l’heure viendra, {{décideras}} de la conduite à tenir.
+TEST: ceux-là, dans tous les cas de figure et dans tous les coups ratés, {{comprenais}} mal pourquoi on leur en voulait.
+TEST: {{j'}}ai signalé que {{j'}}essayais de regrouper les paragraphes. (Tests avec apostrophe droite.)
+TEST: je me questionne, {{exiges}} des réponses mais n’en obtiens pas…
+TEST: lorsque deux sujets politiques voisins se présentent sur le marché, l’un plus flou et l’autre plus caricatural
+TEST: dans tous les cas de figure imaginés par cette bande de nuls, il n’y en a pas un qui les sauvera.
+TEST: ces gens qui vont par monts et par vaux.
+TEST: pour ne justement pas donner l’impression de s’être trompé.
 
 
 __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
@@ -4776,35 +4783,26 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
         <<- /conj/ -1>> =suggVerb(\1, ":3s")                                                        # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ([peux|veux|vaux|équivaux|prévaux])
-        <<- /conj/ not value(>1, "|je|tu|") and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   ([peux|veux|vaux|équivaux|prévaux])
     [le|la|l’|les]              [lui|leur|en|y]         ([peux|veux|vaux|équivaux|prévaux])
     [lui|leur]                  en                      ([peux|veux|vaux|équivaux|prévaux])
-        <<- /conj/ not value(>1, "|je|tu|") and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     vaux
-        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w"))
             and not morph(<1, ":(?:R|D.*:p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [peux|veux|équivaux|prévaux]
-        <<- /conj/ not value(>1, "|je|tu|") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-
-TEST: Caroline, quand l’heure viendra, {{décideras}} de la conduite à tenir.
-TEST: ceux-là, dans tous les cas de figure et dans tous les coups ratés, {{comprenais}} mal pourquoi on leur en voulait.
-TEST: Lui, quand il y pensait, en {{arrivai}} à chaque fois à la même conclusion.
 TEST: Elle, ici et dans tous les cas de figure, {{veux}} toujours en faire plus.
 TEST: Le total de cette opération, contrairement à ce qu’on pense, {{équivaux}} à au moins trois d’entre eux.
-TEST: {{j'}}ai signalé que {{j'}}essayais de regrouper les paragraphes. (Tests avec apostrophe droite.)
-TEST: je me questionne, {{exiges}} des réponses mais n’en obtiens pas…
-TEST: dans tous les cas de figure imaginés par cette bande de nuls, il n’y en a pas un qui les sauvera.
-TEST: ces gens qui vont par monts et par vaux.
-TEST: pour ne justement pas donner l’impression de s’être trompé.
 
 
 ## Incohérences avec formes verbales 1pl et 2pl sans sujet
@@ -6331,6 +6329,7 @@ TEST: le diagnostic se pose autour des 20 ans
 TEST: 98 % des 12 à 17 ans ont aujourd’hui un ordinateur chez eux.
 TEST: sous la barre des 500
 TEST: En plus des 400 à 500 euros mensuels que touche une personne
+TEST: les moins de 20 ans peuvent ne pas connaître le premier album du groupe
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6472,7 +6471,7 @@ TEST: Œuvrez à des {{faims}} funestes.
 
 # faut / faux
 __conf_faux_faut__
-    faut  @:¬(?:Y|Oo|X|M)
+    faut  @:¬(?:Y|Oo|X|M|W)
     faut  <end>
         <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|<start>|")
         -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
@@ -6486,6 +6485,8 @@ TEST: il ne faut pas se leurrer.
 TEST: y faut pas qu’elle l’entende.
 TEST: faut l’emmener chez le docteur.
 TEST: Faut Linux, sinon ça marchera jamais.
+TEST: Les tests ne sont pas toujours indispensables mais faut bien que t’apprennes
+TEST: Mais faut absolument que tu voies ça.
 
 
 # filtre / philtre
@@ -9214,6 +9215,8 @@ __purge_locutions__
     de près ou de loin
     de par le monde ?entier¿
     de part et d’autre
+    de ?presque¿ partout
+    d’un peu partout
     de petite taille
     de pied ferme
     de plein [droit|fouet]
