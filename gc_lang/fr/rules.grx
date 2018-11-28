@@ -6043,7 +6043,7 @@ __conf_ces_ses_c_est__
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  [que|qu’]
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  [l’|d’]
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  {pronom_obj}
-    [ses|ces] @:D
+    [ses|ces] @:D¬:W
     [ses|ces] [que|qu’]
     [ses|ces] [l’|d’]
     [ses|ces] {pronom_obj}
@@ -6062,6 +6062,7 @@ TEST: {{c’est}} {{délires}} nous ennuient
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
 TEST: Avec ces quelques mots, que veux-tu dire ?
+TEST: Avec ces quelque 70 millions d’euros de cash disponible
 
 
 # chœur / cœur
@@ -6456,6 +6457,28 @@ __conf_en_général__
 TEST: On n’en sait {{en générale}} pas assez.
 
 
+# évidement / évidemment
+__conf_forcément_forcement__
+    [/VCint|/VCimp]  ?[pas|plus|jamais|guère]¿  évidement
+    [pas|plus] évidement
+        <<- /conf/ --1>> évidemment                         # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
+
+    sans évidement [@:Y|ne|n’|me|m’|te|t’|se|s’]
+        <<- /conf/ -2>> évidemment                          # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
+
+    évidement
+        <<- /conf/ morph(<1, ":V", ":A") ->> évidemment     # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
+
+    [un|l’|cet]  évidemment  [<end>|,]
+    [un|l’|cet]  évidemment  @:¬:A
+        <<- /conf/ -2>> évidement                           # Confusion probable : “évidemment” est un adverbe. L’action de “vider” s’écrit “évidement”.|https://fr.wiktionary.org/wiki/évidement
+
+TEST: Donne-moi {{évidement}} ça.
+TEST: Elle sera {{évidement}} déçue de cette minable prestation de sa part.
+TEST: Un homme pas {{évidement}} intelligible.
+TEST: L’{{évidemment}} du sanglier ne sera pas si facile.
+
+
 # faim / fin
 __conf_fin_faim__
     >grève de la fin
@@ -6606,6 +6629,28 @@ TEST: Une {{fausse}} commune.
 TEST: La {{fausse}} du Chili.
 TEST: Nous sommes tombés dans la {{fausse}} aux lions.
 TEST: Elles sont arrivées au bord de la {{fausse}}.
+
+
+# forcement / forcément
+__conf_forcément_forcement__
+    [/VCint|/VCimp]  ?[pas|plus|jamais|guère]¿  forcement
+    [pas|plus] forcement
+        <<- /conf/ --1>> forcément                          # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
+
+    sans forcement [@:Y|ne|n’|me|m’|te|t’|se|s’]
+        <<- /conf/ -2>> forcément                           # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
+
+    forcement
+        <<- /conf/ morph(<1, ":V", ":A") ->> forcément      # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
+
+    [un|le|ce|au]  forcément  [<end>|,]
+    [un|le|ce|au]  forcément  @:¬:A
+        <<- /conf/ -2>> forcement                           # Confusion probable : “forcément” est un adverbe. L’action de “forcer” s’écrit “forcement”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
+
+TEST: Viendra-t-il {{forcement}} demain.
+TEST: Elle sera {{forcement}} déçue de cette minable prestation de sa part.
+TEST: Un homme pas {{forcement}} mauvais.
+TEST: Le {{forcément}} du coffre ne sera pas si facile.
 
 
 # golf / golfe
@@ -14680,7 +14725,7 @@ __infi_à_verbe__
     à  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après le pronom “à”, le verbe devrait être à l’infinitif.
 
-    à  @:V¬:[YNQO]|>(?:lui|plus)/
+    à  @:V¬:[YNPQO]|>(?:lui|plus)/
         <<- /infi/ not \2[0:1].isupper() -2>> =suggVerbInfi(\2)                         # Le verbe devrait être à l’infinitif.
 
 TEST: à en {{parlé}} sans cesse
@@ -14691,6 +14736,7 @@ TEST: Avoir à {{parlait}} toute la journée, c’est plus que difficile, c’es
 TEST: elle s’engage à ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste à la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: à leur plus grand fils, ils ont offert une voiture.
+TEST: ça va d’autonome à hautement dépendant
 
 
 __infi_de_verbe__
@@ -14821,11 +14867,11 @@ TEST: sa tournée, elle la finit par Rodez.
 
 __infi_verbe_de_verbe__
     [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  *WORD
-        <<- /infi/ analyse(\-1, ":(?:V1.*:(?:Q|2p)|[123][sp])", ":(?:M|Oo)")
+        <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":(?:V1.*:(?:Q|2p)|[123][sp])", ":(?:M|Oo)")
         --1>> =suggVerbInfi(\-1)                                                        # Le verbe devrait être à l’infinitif.
 
 TEST: cessez d’{{anesthésié}} ces gens !
-
+TEST: Le menu Format contient de nombreuses commandes de mise en forme.
 
 
 ## INFINITIFS ERRONÉS
@@ -17531,40 +17577,40 @@ TEST: prends-la {{tète}}.
 
 
 __conf_verbes_det_verbe_nom__
-    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAG]  le     @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAG]  le     @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAG]  le     @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAG]  le     @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAGM]  le     @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAGM]  le     @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAGM]  le     @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAGM]  le     @:[123][sp]¬:[NA].*:[me]:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)             # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAG]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAG]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAG]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAG]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAGM]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAGM]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAGM]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAGM]  la     @:[123][sp]¬:[NA].*:[fe]:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)             # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAG]  l’     @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAG]  l’     @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAG]  l’     @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAG]  l’     @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAGM]  l’     @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAGM]  l’     @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAGM]  l’     @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAGM]  l’     @:[123][sp]¬:[NA].*:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                  # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAG]  leur   @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAG]  leur   @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAG]  leur   @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAG]  leur   @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAGM]  leur   @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAGM]  leur   @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAGM]  leur   @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAGM]  leur   @:[123][sp]¬:[NA].*:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                  # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAG]  les    @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAG]  les    @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAG]  les    @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAG]  les    @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAGM]  les    @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAGM]  les    @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAGM]  les    @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAGM]  les    @:[123][sp]¬:[NA].*:[pi]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                  # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
-    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAG]  en     @:[123][sp]¬:[NA]
-    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAG]  en     @:[123][sp]¬:[NA]
-    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAG]  en     @:[123][sp]¬:[NA]
-    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAG]  en     @:[123][sp]¬:[NA]
+    [<start>|,]  ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NAGM]  en     @:[123][sp]¬:[NA]
+    [<start>|,]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NAGM]  en     @:[123][sp]¬:[NA]
+    [<start>|,]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NAGM]  en     @:[123][sp]¬:[NA]
+    [<start>|,]  ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NAGM]  en     @:[123][sp]¬:[NA]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                  # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est une préposition, il faut placer un nom après.
 
 TEST: arrive ainsi le {{dépare}}
@@ -17573,6 +17619,7 @@ TEST: ensuite, tu vois, surviennent les {{désires}}.
 TEST: ne leur donne pas le {{choie}}.
 TEST: ne gère pas l’{{accueille}} comme il faut.
 TEST: cela le rend malade
+TEST: Marie Desplechin en savait quelque chose
 
 
 
@@ -17874,7 +17921,7 @@ TEST: tout est peine perdue.
 
 #### veillez / veuillez
 __conf_veillez__
-    [<start>|,]  veuillez  à  [ne|n’|@:Y]
+    [<start>|,]  veuillez  à  [ne|n’|me|m’|nous|@:Y]
         <<- /conf/ -2>> veillez                                     # Confusion probable : “veuillez” est une forme conjuguée du verbe “vouloir”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1939
 
 TEST: {{Veuillez}} à ne pas tomber dans ce piège.
@@ -17886,7 +17933,7 @@ TEST: Veillez à bien fermer les fenêtres.
 
 
 __conf_veuillez__
-    [<start>|,]  veillez  [ne|n’|@:Y]
+    [<start>|,]  veillez  [ne|n’|me|m’|nous|@:Y]
         <<- /conf/ -2>> veuillez
         # Confusion probable : “veiller” signifie “prendre garde” ou “être vigilant”. Pour inviter à faire quelque chose, écrivez “veuillez”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1939
 
