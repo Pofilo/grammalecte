@@ -2841,12 +2841,17 @@ __typo_élisions_manquantes__
     que [il|ils|elle|elles|on]
         <<- /typo/ space_after(\1, 1, 1) -1:.2>> qu’                        # Il faut élider “que” et l’accoler au pronom.|http://fr.wikipedia.org/wiki/Élision
 
+    se  ~^[aâeéêiîoôu].
+        <<- /typo/ \1 != "SE" and space_after(\1, 1, 1) and morph(\2, ":V", ":Q")
+        -1:.2>> s’                                                          # Il faut élider le pronom “se” et l’accoler au verbe.|http://fr.wikipedia.org/wiki/Élision
+
 TEST: {{le }}amour                                                        ->> l’
 TEST: {{la }}imagination                                                  ->> l’
 TEST: {{de }}amour                                                        ->> d’
 TEST: {{de }}est                                                          ->> d’
 TEST: je crois que {{si }}ils viennent, ils seront mécontents
 TEST: {{Que }}ils soient heureux
+TEST: Il {{se }}avançait parmi eux.
 TEST: J’ai passé une journée de ouf.
 
 
