@@ -10870,6 +10870,9 @@ __purge_locutions_potentielles__
     de nombreux [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
         <<- ~1:3>> *
 
+    pour partie  @:¬:A.*:f:s
+        <<- ~1:2>> *
+
     un [instant|moment|jour]  @¬:A.*:[me]:[si]
         <<- ~1:2>> *
 
@@ -11100,6 +11103,7 @@ TEST: Les réussites d’alors l’auront installé à un sommet qu’aura ensui
 TEST: mais un prince dont le règne s’était déjà achevé.
 TEST: Elles sont dans ce cas moins dangereuses que des données individuelles.
 TEST: celles qui veulent des participant·e·s qui sont libres d’innover
+TEST: Une dizaine de militants, pour partie issus du collectif XYZ, se sont réunis
 
 
 
@@ -15128,7 +15132,16 @@ __purge_syntagmes_nominaux__
 
 __purge_autre__
     [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  ,
-    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [je|j’|tu|il|elle|on|ç’|c’|nous|vous|ils|elles|ne|n’|me|m’|te|t’|se|s’]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [je|j’|tu|il|elle|on|ç’|c’|ils|elles]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:[123][sp]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       @:[123][sp]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]           @:[123][sp]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [ne|n’]  [lui|leur|y]                    en                        @:[123][sp]
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [me|m’|te|t’|se|s’|nous|vous]            ?[le|la|l’|les|en|y]¿     @:[123][sp]¬:G
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [le|la|l’|les]                           [lui|leur|en|y]           @:[123][sp]¬:G
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [lui|leur|y]                             en                        @:[123][sp]¬:G
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [lui|y]                                                            @:[123][sp]¬:G
+    [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  [le|la|l’|les|leur|en]                                             @:[123][sp]¬:[NAG]
     [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  @:[123][sp]¬:[DM]
         <<- ~1:2>> *
 
@@ -17867,22 +17880,10 @@ __tag_verbe_infinitif_sujet__
         <<- /2>> suj_vinfi
 
 
-__se_douter__
-    [me|te|se]  >douter
-    nous nous  >douter
-    vous vous  >douter
-        <<- /-1>> upron
-
-
-__se_vouloir__
-    [me|te|se]  >vouloir
-    nous nous >vouloir
-    vous vous >vouloir
-        <<- /-1>> upron
-
-
-__se_peut__
-    se >pouvoir
+__tag_usage_pronominal__
+    [me|m’|te|t’|se|s’]  ?[le|la|l’|les|en|y]¿  @:V¬:G
+    nous nous            ?[le|la|l’|les|en|y]¿  @:V¬:G
+    vous vous            ?[le|la|l’|les|en|y]¿  @:V¬:G
         <<- /-1>> upron
 
 
@@ -18243,7 +18244,7 @@ __ppas_être__
         <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         # Après “ne \2 être”, il faut un participe passé.
 
     >être  ~..er$
-        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
+        <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
             and not morph(<1, ":Y|>ce") and not value(<1, "|c’|")
             and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
         -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être à l’infinitif.
@@ -18276,6 +18277,8 @@ TEST: Ne pas aimer n’est pas oublier l’autre.
 TEST: Dire la vérité, c’eût été manquer à sa parole.
 TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
 TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
+TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
+TEST: la grande crainte du maire est de voir arriver d’autres immigrés
 
 
 
