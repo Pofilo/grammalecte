@@ -602,7 +602,7 @@ TEST: __html__  des [b]{{femme}}[/b]
 # La désambiguïsation est faite lors de la deuxième passe
 
 __[i](typo_écriture_épicène_tous_toutes)__
-    tous?[.(/·–—-]te[.)/·–—-]?s
+    tous?[.(/·⋅–—-]te[.)/·⋅–—-]?s
     <<- option("typo") ->> tous et toutes|toutes et tous                                            # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -610,7 +610,7 @@ TEST: {{tou.tes}} sont là.                                              ->> tou
 
 
 __[i](typo_écriture_épicène_ceux_celles)__
-    c[./·–—-]?eux?[./·–—-]elles
+    c[./·⋅–—-]?eux?[./·⋅–—-]elles
     <<- option("typo") ->> ceux et celles|celles et ceux                                            # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -618,7 +618,7 @@ TEST: avec {{ceux.elles}} qui viendront                                 ->> ceux
 
 
 __[u](typo_écriture_épicène_pluriel_eur_divers)__
-    ({w_2})eurs?[.(/·–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·–—-]?s  @@0,**
+    ({w_2})eurs?[.(/·⋅–—-][tdp]?(rice|euse|se|[oe]resse)[.)/·⋅–—-]?s  @@0,**
     <<- option("typo") and \2 != "se" ->> \1eurs et \1\2s|\1\2s et \1eurs                           # Écriture épicène dystypographique et imprononçable.
     <<- option("typo") and \2 == "se" ->> \1eurs et \1euses|\1euses et \1eurs                       # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
@@ -628,7 +628,7 @@ TEST: La communauté des {{développeur·se·s}} open source                    
 
 
 __[u](typo_écriture_épicène_pluriel_eux_euses)__
-    ({w_2})eux[.(/·–—-](?:[tdsi]?euse|se)[.)/·–—-]?s  @@0
+    ({w_2})eux[.(/·⋅–—-](?:[tdsi]?euse|se)[.)/·⋅–—-]?s  @@0
     <<- option("typo") ->> \1eux et \1euses|\1euses et \1eux                                        # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -636,7 +636,7 @@ TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   -
 
 
 __[u](typo_écriture_épicène_pluriel_aux_ales)__
-    ({w_2})aux[.(/·–—-][tnmcpb]?ale[.)/·–—-]?s  @@0
+    ({w_2})aux[.(/·⋅–—-][tnmcpb]?ale[.)/·⋅–—-]?s  @@0
     <<- option("typo") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                                 # Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -644,7 +644,7 @@ TEST: {{locaux·ales}}                                                   ->> loc
 
 
 __[u](typo_écriture_épicène_pluriel_er_ère)__
-    ({w_2})ers?[.(/·–—-]i?è?re[.)/·–—-]?s  @@0
+    ({w_2})ers?[.(/·⋅–—-]i?è?re[.)/·⋅–—-]?s  @@0
     <<- option("typo") ->> \1ers et \1ères|\1ères et \1ers                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -652,7 +652,7 @@ TEST: les {{conseiller.ière.s}}                                         ->> con
 
 
 __[u](typo_écriture_épicène_pluriel_if_ive)__
-    ({w_2})ifs?[.(/·–—-][std]?i?ve[.)/·–—-]?s  @@0
+    ({w_2})ifs?[.(/·⋅–—-][std]?i?ve[.)/·⋅–—-]?s  @@0
     <<- option("typo") ->> \1ifs et \1ives|\1ives et \1ifs                                          # Écriture épicène dystypographique et imprononçable.
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -661,7 +661,7 @@ TEST: {{offensif.ve.s}}                                                 ->> offe
 
 
 __[u](typo_écriture_épicène_pluriel_e)__
-    ({w_1}[éuitsrnldf])[-·–—.(/]([ntlf]?e)[-·–—.)/]?s  @@0,**
+    ({w_1}[éuitsrnldf])[-·–—.⋅(/]([ntlf]?e)[-·–—.⋅)/]?s  @@0,**
     <<- ~>> =normalizeInclusiveWriting(\0)
     <<- option("typo") and not \0.endswith("les") >>>
     <<- \1.endswith("s") and not \0.endswith("·e·s")
@@ -682,7 +682,7 @@ TEST: chez les {{immortel.le.s}}
 
 
 __[i](typo_écriture_épicène_singulier)__
-    ({w_1}[éuitsrn])(?:[-·–—./]e|[(]e[)])  @@0
+    ({w_1}[éuitsrn])(?:[-·–—.⋅/]e|[(]e[)])  @@0
     <<- option("typo") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
     <<- __else__ and option("typo") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène. Utilisez un point médian.
     <<- ~>> \1-e
@@ -3343,6 +3343,9 @@ __tu_substantifs__
     [plate|plates] >forme
         <<- /tu/ ->> plate-forme|plates-formes|plateforme|plateformes       # Il manque un trait d’union. Vous pouvez aussi souder les deux mots.
 
+    presque [>île|>ile]
+        <<- /tu/ ->> presqu’\2                                  # Une presqu’île, en un seul mot.|https://fr.wiktionary.org/wiki/presqu%E2%80%99%C3%AEle
+
     quelques [un|uns|une|unes]
         <<- /tu/ ->> quelques-\2                                # Il manque un trait d’union.
 
@@ -3372,7 +3375,7 @@ __tu_substantifs__
     [le|de|ce|les|des|ces|un|mon|leur|leurs|nos|vos|notre|votre|quel|quels] [va|vas] et [vient|viens]
         <<- /tu/ -2:0>> va-et-vient                             # Il manque les traits d’union.
 
-    vice [>présidente|>roi|>reine|>chancelière]
+    vice [>amirale|>présidente|>roi|>reine|>chancelière]
         <<- /tu/ ->> vice-\1                                    # Il manque un trait d’union.
 
     vis [à|a] vis
@@ -10152,6 +10155,9 @@ __purge_conditionnelle__
     comme les [miens|tiens|siens|miennes|tiennes|siennes|nôtres|vôtres|leurs]
         <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:3p)") ~>> *
 
+    dans ce cas                         @¬:A:[me]:[pi]
+        <<- ~1:3>> *
+
     dans la grande majorité des cas     @¬:A:[me]:[pi]
         <<- ~1:6>> *
 
@@ -11091,6 +11097,8 @@ TEST: le clitoris comme vous ne l’avez jamais vu
 TEST: J’ai vécu plusieurs agressions, et toutes ont au moins été facilitées par mon état physique.
 TEST: Les réussites d’alors l’auront installé à un sommet qu’aura ensuite un moment éclairé l’or des neuf statues récoltées par un visionnaire qui jamais ne fut empereur
 TEST: mais un prince dont le règne s’était déjà achevé.
+TEST: Elles sont dans ce cas moins dangereuses que des données individuelles.
+TEST: celles qui veulent des participant·e·s qui sont libres d’innover
 
 
 
