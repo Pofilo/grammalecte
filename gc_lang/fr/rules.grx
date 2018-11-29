@@ -1728,18 +1728,18 @@ __da_préverbes_verbes__
     tu  [lui|leur]      en                        @:¬:[OX]
         <<- not morph(<1, ":V0") =>> select(\-1, ":[123][sp]")
 
-    lui  [la|le|l’|les]  @:(?:[123][sp]|P|Y)
+    lui  [la|le|l’|les]  @:(?:[123][sp]|P|Y)¬:W
         <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
 
-    [nous|vous]     [le|la|l’|les|en]  @:¬:[OX]
-    lui             en                 @:¬:[OX]
+    [nous|vous]     [le|la|l’|les|en]  @:¬:[OXW]
+    lui             en                 @:¬:[OXW]
         <<- not morph(<1, ":R") =>> select(\3, ":(?:[123][sp]|P|Y)")
 
-    [le|la|l’|les]  [lui|leur|en]      @:¬:[OX]
-    leur            en                 @:¬:[OX]
+    [le|la|l’|les]  [lui|leur|en]      @:¬:[OXW]
+    leur            en                 @:¬:[OXW]
         <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
-    @:M  @:[123]s¬:Q
+    @:M  @:[123]s¬:[QW]
         <<- \2.islower() and morph(<1, ":Cs|<start>") =>> select(\2, ":[123][sp]")
 
     <start> @:M  @:(?:[123]s|Oo)|>ne/¬:A
@@ -4787,6 +4787,7 @@ TEST: lorsque deux sujets politiques voisins se présentent sur le marché, l’
 TEST: dans tous les cas de figure imaginés par cette bande de nuls, il n’y en a pas un qui les sauvera.
 TEST: ces gens qui vont par monts et par vaux.
 TEST: pour ne justement pas donner l’impression de s’être trompé.
+TEST: C’était lui le plus jeune président.
 
 
 __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
@@ -11664,11 +11665,17 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 __gn_det_sing_3m__
     [ledit|ladite|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|au|quel|quelle|dudit]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
+        -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
+
+    [le|la|leur]  *WORD  *WORD  *WORD
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]", ":[123][sp]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: un gros connard {{pathétiques}}
+TEST: La petite fille {{devenues}} infirmière.
 TEST: le jour venu prises par surprise elles durent s’enfuir.
+TEST: servi pas un style et une exigence historique remarquables
 
 
 ## Pluriels
@@ -11844,7 +11851,12 @@ __gn_det_plur_3m__
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
+    [les|leurs]    *WORD  *WORD  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", "[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$")
+        -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
+
 TEST: ces petites sottes {{déjantée}}
+TEST: Les grandes volontés {{dépassée}} par les évènements
 
 
 ## certains / certaines
