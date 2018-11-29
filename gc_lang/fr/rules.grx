@@ -9857,7 +9857,7 @@ __purge_locutions__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|cause|contre-courant|côté|court|défaut|droite|gauche|hauteur|partir|portée|proximité|propos|rebours|titre] [de|du|d’|des]
+    à [bord|cause|contre-courant|côté|court|défaut|destination|droite|gauche|hauteur|partir|portée|proximité|propos|rebours|titre] [de|du|d’|des]
         <<- ~2>> *
 
     à bonne distance [de|des|du]
@@ -11669,17 +11669,18 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 __gn_det_sing_3m__
     [ledit|ladite|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|au|quel|quelle|dudit]  *WORD  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
     [le|la|leur]  *WORD  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]", ":[123][sp]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]", ":[123][sp]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*")
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: un gros connard {{pathétiques}}
 TEST: La petite fille {{devenues}} infirmière.
 TEST: le jour venu prises par surprise elles durent s’enfuir.
 TEST: servi pas un style et une exigence historique remarquables
+TEST: sous la forme d’un baromètre comparant différents moyens pour alléger ses émissions
 
 
 ## Pluriels
