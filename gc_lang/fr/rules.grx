@@ -2130,6 +2130,9 @@ __immunités__
     aux [côtés] de laquelle
         <<- %3>>
 
+    au lieu des
+        <<- %3>>
+
     au sortir [de|des|du|d’]
         <<- ~2>> _
 
@@ -5103,17 +5106,17 @@ __conf_en_participes_présents__
         <<- /conf/ not morph(\3, ":[NA]") -1:2>> "s’en "                                            # Incohérence : vouliez-vous écrire « s’en » ?
 
     en   n’  @:[123][sp]¬:[PY]
-        <<- /conf/ not \1.isupper() >>>
-        <<- /conf/ not value(\3, "|importe|") >>>
+        <<- /conf/ not \1.isupper() and not value(\3, "|importe|") >>>
         <<- /conf/ morph(\3, ":3p") -3>> =suggVerb(\3, ":P")                                        # Incohérence : « en \1 \2 »… Vouliez-vous écrire le verbe au participe présent ?
-        <<- /conf/ -1:2>> "n’en "                                                                   # Incohérence : vouliez-vous écrire « n’en » ?
+        <<- /conf/ not value(<1, "|n’|") -1:2>> "n’en "                                             # Incohérence : vouliez-vous écrire « n’en » ?
+        <<- /conf/ __else__ -1:2>> "en "                                                            # Double négation :  “n’” est une graphie élidée de “ne”. Il est inutile de la mettre deux fois. L’accord euphonique se fait en prononçant le “n” de “en” avec la première voyelle de “\3”.
 
 TEST: {{en t’}}ait donné tant.                          ->> "t’en "
 TEST: {{en n’}}{{envoient}} que peu.
 TEST: il {{en me}} donne beaucoup.                      ->> m’en
 TEST: {{en n’}}{{abordent}} la côte, nous vîmes le désastre.
+TEST: elle n’{{en n’}}avait plus pour longtemps.        ->> "en "
 TEST: toute chose pourrait finalement advenir indifféremment en n’importe quel point du globe
-
 
 
 __conf_presque_vconj__
@@ -6343,6 +6346,7 @@ TEST: 98 % des 12 à 17 ans ont aujourd’hui un ordinateur chez eux.
 TEST: sous la barre des 500
 TEST: En plus des 400 à 500 euros mensuels que touche une personne
 TEST: les moins de 20 ans peuvent ne pas connaître le premier album du groupe
+TEST: au lieu des 20 heures réglementaires.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6768,11 +6772,17 @@ TEST: elle ne {{l’a}} leur donne pas sans condition.
 TEST: elle se {{l’a}} {{réserve}} pour elle-même.
 
 
-    [il|elle|on]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+    [il|on]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
         <<- /conf/ -2>> l’a                                                     # Confusion probable : “\3” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 
-    [il|elle|on]  [nous|vous]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+    elle  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+        <<- /conf/ not morph(<1, ":R") -2>> l’a                                 # Confusion probable : “\3” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+    [il|on]  [nous|vous]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
         <<- /conf/ -3>> l’a                                                     # Confusion probable : “\4” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
+
+    elle  [nous|vous]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
+        <<- /conf/ not morph(<1, ":R") -3>> l’a                                 # Confusion probable : “\4” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
 
     [ne|me|te]  la  @:Q¬:(?:[123][sp]|V[123]......e)|>lui/
         <<- /conf/ -2>> l’a                                                     # Confusion probable : “\3” est un participe passé. Il faut donc employer l’auxiliaire “avoir”.
@@ -6783,6 +6793,7 @@ TEST: elle se {{l’a}} {{réserve}} pour elle-même.
 TEST: il {{la}} {{donnée}}.
 TEST: ne {{la}} {{donné}} que contraint et forcé…
 TEST: celle-là, il me {{la}} {{commandée}} ?
+TEST: au fur et à mesure que les molécules du nuage se dirigent vers le centre, sa densité augmente et avec elle la gravité qu’il génère.
 
 
 # laissez-passer / laissez-faire
@@ -7630,7 +7641,7 @@ TEST: {{blanc-sein}}
 
 
 # ne pas être sans savoir
-__ne_pas_être_sans_savoir__
+__conf_ne_pas_être_sans_savoir__
     >être [pas|plus|jamais|guère] sans >ignorer
         <<- /conf/ -4>> savoir          # Confusion : vous écrivez l’inverse de ce que vous voulez dire.|http://fr.wiktionary.org/wiki/vous_n%E2%80%99%C3%AAtes_pas_sans_savoir
 
@@ -7657,7 +7668,7 @@ TEST: elles sans grandes convictions
 
 
 # sans coup férir
-__sans_coup_férir__
+__conf_sans_coup_férir__
     [>sang|sens|sent|>cent] [>cou|>coût|>cout|>coup|coud|couds] férir
     [sans|>sang|sens|sent|>cent] [>cou|>coût|>cout|coud|couds] férir
     [sans|>sang|sens|sent|>cent] [>cou|>coût|>cout|>coup|coud|couds] [fait|fais|>fée] rire
@@ -8853,6 +8864,7 @@ __purge_locutions__
     à coup sûr
     à couper le souffle
     à court terme
+    à court [et|ou] long terme.
     à courte [échéance|portée]
     à couteaux tirés
     à des kilomètres à la ronde
@@ -8915,6 +8927,7 @@ __purge_locutions__
     à la surprise générale
     à la virgule près
     à long terme
+    à long [et|ou] court terme.
     à longue [distance|échéance|portée]
     à longueur [de|d’] [temps|journée|année]
     à loyer modéré
@@ -11104,6 +11117,7 @@ TEST: mais un prince dont le règne s’était déjà achevé.
 TEST: Elles sont dans ce cas moins dangereuses que des données individuelles.
 TEST: celles qui veulent des participant·e·s qui sont libres d’innover
 TEST: Une dizaine de militants, pour partie issus du collectif XYZ, se sont réunis
+TEST: Rien ne va dans cette fête qu’est Noël.
 
 
 
@@ -14100,7 +14114,7 @@ TEST: Ça l’avait dégoûté à vie.
 
 
 # gré / grès
-__conf_à_leur_gré_grès__
+__conf_gré_grès__
     bon grès ?[,|ou]¿ mal grès
         <<- /conf/ ->> bon gré, mal gré|bon gré mal gré         # Confusion. Le grès est une roche détritique.
 
@@ -14242,6 +14256,41 @@ TEST: j’en ai {{mare}} de tout ça.
 TEST: en avoir vraiment {{mare}} de ces conneries.
 
 
+# mat / mât
+__conf_mat_mât__
+    >échec et >mât
+        <<- /conf/ -3>> mat                                         # Confusion. Un mât est un poteau portant des voiles ou un drapeau.|https://fr.wiktionary.org/wiki/mat
+
+    [grand|grands] [mat|mats|mas]
+        <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")     # Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
+
+    [mat|mats|mas] [de|d’] [artimon|beaupré|cocagne|fortune|hune|misaine|perroquet|perruche]
+    [mat|mats|mas] en [>acier|>alu|>aluminium|bois|>carbone|>époxy|>fibre|>résine]
+    [mat|mats|mas] du [battage|bateau|branchement|catamaran|goélette|navire|trimaran|vaisseau|voilier]
+        <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")     # Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
+
+TEST: Échec et {{mât}}
+TEST: {{Mat}} de misaine
+
+
+# mâter / mater
+__conf_mater_mâter__
+    >mâter  @:D  [>adversaire|>armée|>cavalière|>cheval|>chienne|>conne|>connard|>connasse|>cul|>dame|>enfoirée|>emmerdeuse|>enfant|>ennemie|>enculée|>femme|>fesse|>fille|fils|>folle|>foule|>gamine|>garçonne|>homme|>horde|>incendie|>insurrection|>jument|>lionne|>nation|>peuple|>pion|>pute|>rebelle|>rebellion|>reine|>roi|>sein|>salope|>tigresse|>tour|>troupe]
+        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
+        # Confusion. “Mâter” signifie “dresser un mât”. Si vous voulez dire “dompter” (ou argotiquement “regarder”), écrivez “mater”.|https://fr.wiktionary.org/wiki/mater
+
+    >mâter en [*NUM|@B] coups
+        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
+        # Confusion. “Mâter” signifie “dresser un mât”. Si vous voulez dire “dompter” ou “mettre en échec”, écrivez “mater”.|https://fr.wiktionary.org/wiki/mater
+
+    >mater  @:D  [>aviron|>bateau|>canot|>catamaran|>goélette|>navire|>trimaran|>vaisseau|>voilier]
+        <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
+        # Confusion. “Mater” signifie “dompter” ou (argotiquement) “regarder”. Si vous voulez dire “dresser un mât”, écrivez “mâter”.|https://fr.wiktionary.org/wiki/mâter
+
+TEST: Elle va {{mâter}} ces emmerdeurs en moins de temps qu’il ne faut pour le dire.
+TEST: On va bientôt {{mater}} l’navire, p’tit.
+
+
 # mi / mis / mie
 __conf_mis_mi_mie__
     >avoir [mi|>mie]
@@ -14292,7 +14341,7 @@ TEST: Elle en est tombée des {{nus}}.
 
 
 # numérique / digital
-__numérique_digital__
+__conf_numérique_digital__
     [>stratégie|>appareil|>transition|>transformation|>caméra|>télévision|>banque|>connexion|>prise|>présence|>entreprise|>compagnie|>communication|>agence|>expérience|>solution|>identité|>économie|>ère|>service] >digitale
         <<- /conf/ -2>> numérique|numériques
         # Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Écrivez “numérique”.
@@ -14782,7 +14831,7 @@ __infi_de_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
-        <<- /infi/ not \2[0:1].isupper() and not value(<1, "|en|")
+        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
             and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
@@ -14806,6 +14855,7 @@ TEST: de leur plus grand fils, ils attendent beaucoup.
 TEST: de n’importe quelle manière
 TEST: un libéralisme trop « individualiste » s’est transformé en de supposées demandes de droits spécifiques
 TEST: soit 40 % de plus comparé au quinquennat précédent
+TEST: On passe de sophistiqué à classique.
 
 
 __infi_y_verbe!3__
@@ -15476,11 +15526,11 @@ __conj_conf_se_être_avoir__
 
     [<start>|,]  nous  nous  ?[en|y]¿  >avoir
         <<- /conj/ --1>> sommes|étions|serons|serions                   # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-        <<- /conj/ -2>> nous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
+        <<- /conj/ -2>> nous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer du sujet les personnes que vous désignez.
 
     [<start>|,]  vous  vous  ?[en|y]¿  >avoir
         <<- /conj/ --1>> êtes|étiez|serez|seriez                        # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-        <<- /conj/ -2>> vous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer les personnes que vous désignez du sujet.
+        <<- /conj/ -2>> vous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer du sujet les personnes que vous désignez.
 
     s’  ?[en|y]¿  (>avoir)
         <<- /conj/ morph(\1, ":3p") -1>> sont|étaient|seront|seraient   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
@@ -18202,10 +18252,15 @@ __infi_qqch_de__
     [>intention|>volonté]   [de|d’]  ~..ée?s?$
         <<- /infi/ morph(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                  # Le verbe devrait être à l’infinitif.
 
+    force est               [de|d’]  ~..ée?s?$
+        <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and morph(\-1, ":Q", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Le verbe devrait être à l’infinitif.
+
 TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
 TEST: en train de {{demandées}}
 TEST: elle est en train de {{mangée}}
 TEST: impossible d’{{échappé}} à cette horreur.
+TEST: Force est d’{{imaginé}} que nous allons y arriver avec seulement nos bonnes intentions.
 
 
 __infi_divers__
@@ -18887,8 +18942,13 @@ TEST: Or parmi celles-ci on trouve typiquement d’un côté les structures
 !!
 
 __conj_que_où_comment_verbe_sujet_sing__
-    [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD
+    [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
         <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "enum") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+        -2>> =suggVerb(\2, ":3s")                                                   # Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "enum") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+            and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)"))
         -2>> =suggVerb(\2, ":3s")                                                   # Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: les possibilités qu’{{offrent}} le chien
@@ -18901,6 +18961,7 @@ TEST: une crainte aussi que renforcent son éloignement et le protocole compliqu
 TEST: à l’époque de Mansur que grandissent la place et le rôle de…
 TEST: où vivent la majorité des immigrés et des enfants d’immigrés
 TEST: Que deviennent la vitesse, le courant, ainsi que le rendement ?
+TEST: Le complexe argilo-humique est mieux hydraté que ne pourraient l’être les micelles d’argile ou humiques
 
 
 __conj_lxquel_verbe_sujet_sing__
