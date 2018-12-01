@@ -6838,7 +6838,7 @@ TEST: Il fait remonter à la toute première expérience humaine de maîtrise.
 
     /-là
         <<- /conf/ morph(\1, ":V", ":[NA]", 0, -3)
-        -1>> \1-la|\1 là                                            # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
+        -1>> =\1[:-2]+"-la|" + \1[:-2]+" là"                        # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 
     /-la
         <<- /conf/ morph(\1, ":[NA]", ":[123][sp]", 0, -3)
@@ -12156,7 +12156,7 @@ __gn_nombre_chiffres_1m__
         <<- /gn/ not value(\2, "|Rois|Corinthiens|Thessaloniciens|") -2>> =suggSing(\2)     # Accord de nombre erroné : « \1 » devrait être au singulier.
 
     *NUM  *WORD
-        <<- /gn/ not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1)
+        <<- /gn/ not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
             and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
             or \1 in aREGULARPLURAL )
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
@@ -14264,9 +14264,10 @@ __conf_mat_mât__
     [grand|grands] [mat|mats|mas]
         <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")     # Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
 
-    [mat|mats|mas] [de|d’] [artimon|beaupré|cocagne|fortune|hune|misaine|perroquet|perruche]
+    [mat|mats|mas] [de|d’] [artimon|beaupré|branchement|cocagne|battage|fortune|hune|misaine|perroquet|perruche]
     [mat|mats|mas] en [>acier|>alu|>aluminium|bois|>carbone|>époxy|>fibre|>résine]
-    [mat|mats|mas] du [battage|bateau|branchement|catamaran|goélette|navire|trimaran|vaisseau|voilier]
+    [mat|mats|mas] du [bateau|catamaran|navire|trimaran|vaisseau|voilier]
+    [mat|mats|mas] de la goélette
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")     # Confusion. Pour évoquer un poteau portant des voiles, écrive “mât”.|https://fr.wiktionary.org/wiki/mât
 
 TEST: Échec et {{mât}}
@@ -14952,6 +14953,7 @@ __infi_verbe_de_verbe__
 
 TEST: cessez d’{{anesthésié}} ces gens !
 TEST: Le menu Format contient de nombreuses commandes de mise en forme.
+TEST: Le commandant de zone…
 
 
 ## INFINITIFS ERRONÉS
@@ -16127,7 +16129,7 @@ __ppas_être_accord_sing__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      @:[NA].*:p¬:[GMWYsi]
-        <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[123]s", ":C")
+        <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
         --1>> =suggSing(\-1)                                                                        # Accord avec la forme verbale précédente (être ou équivalent) : “\-1” devrait être au singulier.
 
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>redevenir|>paraître|>paraitre])         @:[NA].*:p¬:[GMWYsi]
@@ -16153,6 +16155,7 @@ TEST: Qui semble être devenu {{malades}} ?
 TEST: ce jour, et surtout cette soirée, semble devenir {{interminables}}.
 TEST: C’est le crime qui se vante, qui adore avoir semblé {{légitimes}}.
 TEST: Les tortures que ce journaliste pense être “normales”.
+TEST: les plus anciens restes trouvés à ce jour proviennent de ce site
 
 
 __ppas_être_accord_plur__
