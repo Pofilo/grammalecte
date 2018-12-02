@@ -455,7 +455,7 @@ class IBDAWG:
         lResult = []
         for sSimilar in self.suggest(sWord, nSuggLimit):
             for sMorph in self.getMorph(sSimilar):
-                nCut = sMorph.find(" ")
+                nCut = sMorph.find("/")
                 lResult.append( (sSimilar, sMorph[1:nCut], sMorph[nCut+1:]) )
         return lResult
 

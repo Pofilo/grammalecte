@@ -481,7 +481,7 @@ class IBDAWG {
         let lResult = [];
         for (let sSimilar of this.suggest(sWord, nSuggLimit)) {
             for (let sMorph of this.getMorph(sSimilar)) {
-                let nCut = sMorph.indexOf(" ");
+                let nCut = sMorph.indexOf("/");
                 lResult.push( [sSimilar, sMorph.slice(1, nCut), sMorph.slice(nCut+1)] );
             }
         }
