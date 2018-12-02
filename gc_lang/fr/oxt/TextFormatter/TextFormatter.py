@@ -30,7 +30,7 @@ from com.sun.star.awt.MessageBoxType import INFOBOX # MESSAGEBOX, INFOBOX, WARNI
 
 def MessageBox (xParentWin, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
     ctx = uno.getComponentContext()
-    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx) 
+    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
     xMsgBox = xToolkit.createMessageBox(xParentWin, nBoxType, nBoxButtons, sTitle, sMsg)
     return xMsgBox.execute()
 
@@ -67,38 +67,42 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
 
         ## dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
-        self.xDialog.Width = 320
+        self.xDialog.Width = 310
         self.xDialog.Title = self.dUI.get('title', "#title#")
 
+        ## fonts
         xFD1 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFD1.Height = 12
         xFD1.Name = "Verdana"
-        
+
         xFD2 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFD2.Height = 10
         xFD2.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFD2.Name = "Verdana"
-        
+
         xFDsmall = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDsmall.Height = 6
         xFDsmall.Name = "Verdana"
 
-        ## widgets
-        nGroupBoxWith = (self.xDialog.Width - 15) // 2
-        nWidth = nGroupBoxWith-10
+        ## widgets position
+        x = 10
+        x2 = 160
+        nRightLimit1 = 150
+        nRightLimit2 = 300
+        nWidth = 140
         nWidthHalf = (nWidth // 2) - 10
         nHeight = 10
         nColor = 0xAA2200
-        
+
         # close or apply
         self.bClose = False
 
         # group box // surnumerary spaces
-        x = 10; y = 5
-        nPosRes = nGroupBoxWith - 22
-        gbm1 = self._addWidget('groupbox1', 'GroupBox', x-5, y, nGroupBoxWith, 90, Label = "  " * len(self.dUI.get('ssp', "#err")), FontDescriptor = xFD1)
+        y = 10
+        nPosRes = nRightLimit1 - 20
         self.ssp = self._addWidget('ssp', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('ssp', "#err"), FontDescriptor = xFD1, \
                                    FontRelief = 1, TextColor = nColor, State = True)
+        self._addWidget("section1", 'FixedLine', nRightLimit1-(nWidth//5), y, nWidth//5, nHeight)
         self.ssp1 = self._addWidget('ssp1', 'CheckBox', x, y+15, nWidth, nHeight, Label = self.dUI.get('ssp1', "#err"), State = True)
         self.ssp2 = self._addWidget('ssp2', 'CheckBox', x, y+25, nWidth, nHeight, Label = self.dUI.get('ssp2', "#err"), State = True)
         self.ssp3 = self._addWidget('ssp3', 'CheckBox', x, y+35, nWidth, nHeight, Label = self.dUI.get('ssp3', "#err"), State = True)
@@ -115,20 +119,20 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.ssp7_res = self._addWidget('ssp7_res', 'FixedText', nPosRes, y+75, 20, nHeight, Label = "", Align = 2)
 
         # group box // missing spaces
-        x = 10; y = 100
-        gbm2 = self._addWidget('groupbox2', 'GroupBox', x-5, y, nGroupBoxWith, 40, Label = "  " * len(self.dUI.get('space', "#err")), FontDescriptor = xFD1)
+        y = y + 85
         self.space = self._addWidget('space', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('space', "#err"), FontDescriptor = xFD1, \
                                      FontRelief = 1, TextColor = nColor, State = True)
+        self._addWidget("section2", 'FixedLine', nRightLimit1-(nWidth//3), y, nWidth//3, nHeight)
         self.space1 = self._addWidget('space1', 'CheckBox', x, y+15, nWidth, nHeight, Label = self.dUI.get('space1', "#err"), State = True)
         self.space2 = self._addWidget('space2', 'CheckBox', x, y+25, nWidth, nHeight, Label = self.dUI.get('space2', "#err"), State = True)
         self.space1_res = self._addWidget('space1_res', 'FixedText', nPosRes, y+15, 20, nHeight, Label = "", Align = 2)
         self.space2_res = self._addWidget('space2_res', 'FixedText', nPosRes, y+25, 20, nHeight, Label = "", Align = 2)
-        
+
         # group box // non-breaking spaces
-        x = 10; y = 145
-        gbm3 = self._addWidget('groupbox3', 'GroupBox', x-5, y, nGroupBoxWith, 80, Label = "  " * len(self.dUI.get('nbsp', "#err")), FontDescriptor = xFD1)
+        y = y + 35
         self.nbsp = self._addWidget('nbsp', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('nbsp', "#err"), FontDescriptor = xFD1, \
                                     FontRelief = 1, TextColor = nColor, State = True)
+        self._addWidget("section3", 'FixedLine', nRightLimit1-(nWidth//3), y, nWidth//3, nHeight)
         self.nbsp1 = self._addWidget('nbsp1', 'CheckBox', x, y+15, 85, nHeight, Label = self.dUI.get('nbsp1', "#err"), State = True)
         self.nbsp2 = self._addWidget('nbsp2', 'CheckBox', x, y+25, 85, nHeight, Label = self.dUI.get('nbsp2', "#err"), State = True)
         self.nbsp3 = self._addWidget('nbsp3', 'CheckBox', x, y+35, nWidth, nHeight, Label = self.dUI.get('nbsp3', "#err"), State = True)
@@ -144,12 +148,12 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.nbsp4_res = self._addWidget('nbsp4_res', 'FixedText', nPosRes, y+45, 20, nHeight, Label = "", Align = 2)
         self.nbsp5_res = self._addWidget('nbsp5_res', 'FixedText', nPosRes, y+55, 20, nHeight, Label = "", Align = 2)
         self.nbsp6_res = self._addWidget('nbsp6_res', 'FixedText', nPosRes, y+65, 20, nHeight, Label = "", Align = 2)
-        
+
         # group box // deletion
-        x = 10; y = 230
-        gbm7 = self._addWidget('groupbox7', 'GroupBox', x-5, y, nGroupBoxWith, 50, Label = "  " * len(self.dUI.get('delete', "#err")), FontDescriptor = xFD1)
+        y = y + 75
         self.delete = self._addWidget('delete', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('delete', "#err"), FontDescriptor = xFD1, \
                                       FontRelief = 1, TextColor = nColor, State = True)
+        self._addWidget("section7", 'FixedLine', nRightLimit1-(nWidth//2), y, nWidth//2, nHeight)
         self.delete1 = self._addWidget('delete1', 'CheckBox', x, y+15, nWidth, nHeight, Label = self.dUI.get('delete1', "#err"), State = True)
         self.delete2 = self._addWidget('delete2', 'CheckBox', x, y+25, nWidth, nHeight, Label = self.dUI.get('delete2', "#err"), State = True)
         self.delete2a = self._addWidget('delete2a', 'RadioButton', x+10, y+35, 50, nHeight, Label = self.dUI.get('delete2a', "#"))
@@ -160,33 +164,33 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.delete2_res = self._addWidget('delete2_res', 'FixedText', nPosRes, y+25, 20, nHeight, Label = "", Align = 2)
 
         # group box // typographical marks
-        x = 168; y = 5
-        nPosRes = x + nGroupBoxWith - 32
-        gbm4 = self._addWidget('groupbox4', 'GroupBox', x-5, y, nGroupBoxWith, 130, Label = "  " * len(self.dUI.get('typo', "#err")), FontDescriptor = xFD1)
-        self.typo = self._addWidget('typo', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('typo', "#err"), FontDescriptor = xFD1, \
+        y = 10
+        nPosRes = nRightLimit2 - 20
+        self.typo = self._addWidget('typo', 'CheckBox', x2, y+2, nWidth, nHeight, Label = self.dUI.get('typo', "#err"), FontDescriptor = xFD1, \
                                     FontRelief = 1, TextColor = nColor, State = True)
-        self.typo1 = self._addWidget('typo1', 'CheckBox', x, y+15, nWidth, nHeight, Label = self.dUI.get('typo1', "#err"), State = True)
-        self.typo2 = self._addWidget('typo2', 'CheckBox', x, y+25, nWidth, nHeight, Label = self.dUI.get('typo2', "#err"), State = True)
-        self.typo3 = self._addWidget('typo3', 'CheckBox', x, y+35, nWidth, nHeight, Label = self.dUI.get('typo3', "#err"), State = True)
-        self.typo3a = self._addWidget('typo3a', 'RadioButton', x+10, y+45, nWidthHalf, nHeight, Label = self.dUI.get('emdash', "#err"))
-        self.typo3b = self._addWidget('typo3b', 'RadioButton', x+70, y+45, nWidthHalf, nHeight, Label = self.dUI.get('endash', "#err"), State = True)
-        self.typo4 = self._addWidget('typo4', 'CheckBox', x, y+55, nWidth, nHeight, Label = self.dUI.get('typo4', "#err"), State = True)
-        self.typo4a = self._addWidget('typo4a', 'RadioButton', x+10, y+65, nWidthHalf, nHeight, Label = self.dUI.get('emdash', "#err"), State = True)
-        self.typo4b = self._addWidget('typo4b', 'RadioButton', x+70, y+65, nWidthHalf, nHeight, Label = self.dUI.get('endash', "#err"))
-        self.typo5 = self._addWidget('typo5', 'CheckBox', x, y+75, nWidth, nHeight, Label = self.dUI.get('typo5', "#err"), State = True)
-        self.typo6 = self._addWidget('typo6', 'CheckBox', x, y+85, nWidth, nHeight, Label = self.dUI.get('typo6', "#err"), State = True)
-        self.typo7 = self._addWidget('typo7', 'CheckBox', x, y+95, nWidth, nHeight, Label = self.dUI.get('typo7', "#err"), State = True)
-        self.typo8 = self._addWidget('typo8', 'CheckBox', x, y+105, 35, nHeight, Label = self.dUI.get('typo8', "#err"), \
+        self._addWidget("section4", 'FixedLine', nRightLimit2-(nWidth//5), y, nWidth//5, nHeight)
+        self.typo1 = self._addWidget('typo1', 'CheckBox', x2, y+15, nWidth, nHeight, Label = self.dUI.get('typo1', "#err"), State = True)
+        self.typo2 = self._addWidget('typo2', 'CheckBox', x2, y+25, nWidth, nHeight, Label = self.dUI.get('typo2', "#err"), State = True)
+        self.typo3 = self._addWidget('typo3', 'CheckBox', x2, y+35, nWidth, nHeight, Label = self.dUI.get('typo3', "#err"), State = True)
+        self.typo3a = self._addWidget('typo3a', 'RadioButton', x2+10, y+45, nWidthHalf, nHeight, Label = self.dUI.get('emdash', "#err"))
+        self.typo3b = self._addWidget('typo3b', 'RadioButton', x2+70, y+45, nWidthHalf, nHeight, Label = self.dUI.get('endash', "#err"), State = True)
+        self.typo4 = self._addWidget('typo4', 'CheckBox', x2, y+55, nWidth, nHeight, Label = self.dUI.get('typo4', "#err"), State = True)
+        self.typo4a = self._addWidget('typo4a', 'RadioButton', x2+10, y+65, nWidthHalf, nHeight, Label = self.dUI.get('emdash', "#err"), State = True)
+        self.typo4b = self._addWidget('typo4b', 'RadioButton', x2+70, y+65, nWidthHalf, nHeight, Label = self.dUI.get('endash', "#err"))
+        self.typo5 = self._addWidget('typo5', 'CheckBox', x2, y+75, nWidth, nHeight, Label = self.dUI.get('typo5', "#err"), State = True)
+        self.typo6 = self._addWidget('typo6', 'CheckBox', x2, y+85, nWidth, nHeight, Label = self.dUI.get('typo6', "#err"), State = True)
+        self.typo7 = self._addWidget('typo7', 'CheckBox', x2, y+95, nWidth, nHeight, Label = self.dUI.get('typo7', "#err"), State = True)
+        self.typo8 = self._addWidget('typo8', 'CheckBox', x2, y+105, 35, nHeight, Label = self.dUI.get('typo8', "#err"), \
                                      HelpText = self.dUI.get('typo8_help', "#err"), State = True)
-        self.typo8a = self._addWidget('typo8a', 'RadioButton', x+45, y+105, 30, nHeight, Label = self.dUI.get('typo8a', "#err"))
-        self.typo8b = self._addWidget('typo8b', 'RadioButton', x+75, y+105, 35, nHeight, Label = self.dUI.get('typo8b', "#err"), State = True)
-        self.typo_ff = self._addWidget('typo_ff', 'CheckBox', x+10, y+115, 18, nHeight, Label = self.dUI.get('typo_ff', "#err"), State = True)
-        self.typo_fi = self._addWidget('typo_fi', 'CheckBox', x+28, y+115, 18, nHeight, Label = self.dUI.get('typo_fi', "#err"), State = True)
-        self.typo_ffi = self._addWidget('typo_ffi', 'CheckBox', x+46, y+115, 20, nHeight, Label = self.dUI.get('typo_ffi', "#err"), State = True)
-        self.typo_fl = self._addWidget('typo_fl', 'CheckBox', x+66, y+115, 18, nHeight, Label = self.dUI.get('typo_fl', "#err"), State = True)
-        self.typo_ffl = self._addWidget('typo_ffl', 'CheckBox', x+84, y+115, 20, nHeight, Label = self.dUI.get('typo_ffl', "#err"), State = True)
-        self.typo_ft = self._addWidget('typo_ft', 'CheckBox', x+104, y+115, 18, nHeight, Label = self.dUI.get('typo_ft', "#err"), State = True)
-        self.typo_st = self._addWidget('typo_st', 'CheckBox', x+122, y+115, 18, nHeight, Label = self.dUI.get('typo_st', "#err"), State = True)
+        self.typo8a = self._addWidget('typo8a', 'RadioButton', x2+45, y+105, 30, nHeight, Label = self.dUI.get('typo8a', "#err"))
+        self.typo8b = self._addWidget('typo8b', 'RadioButton', x2+75, y+105, 35, nHeight, Label = self.dUI.get('typo8b', "#err"), State = True)
+        self.typo_ff = self._addWidget('typo_ff', 'CheckBox', x2+10, y+115, 18, nHeight, Label = self.dUI.get('typo_ff', "#err"), State = True)
+        self.typo_fi = self._addWidget('typo_fi', 'CheckBox', x2+28, y+115, 18, nHeight, Label = self.dUI.get('typo_fi', "#err"), State = True)
+        self.typo_ffi = self._addWidget('typo_ffi', 'CheckBox', x2+46, y+115, 20, nHeight, Label = self.dUI.get('typo_ffi', "#err"), State = True)
+        self.typo_fl = self._addWidget('typo_fl', 'CheckBox', x2+66, y+115, 18, nHeight, Label = self.dUI.get('typo_fl', "#err"), State = True)
+        self.typo_ffl = self._addWidget('typo_ffl', 'CheckBox', x2+84, y+115, 20, nHeight, Label = self.dUI.get('typo_ffl', "#err"), State = True)
+        self.typo_ft = self._addWidget('typo_ft', 'CheckBox', x2+104, y+115, 18, nHeight, Label = self.dUI.get('typo_ft', "#err"), State = True)
+        self.typo_st = self._addWidget('typo_st', 'CheckBox', x2+122, y+115, 18, nHeight, Label = self.dUI.get('typo_st', "#err"), State = True)
         self.typo1_res = self._addWidget('typo1_res', 'FixedText', nPosRes, y+15, 20, nHeight, Label = "", Align = 2)
         self.typo2_res = self._addWidget('typo2_res', 'FixedText', nPosRes, y+25, 20, nHeight, Label = "", Align = 2)
         self.typo3_res = self._addWidget('typo3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
@@ -195,41 +199,41 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         self.typo6_res = self._addWidget('typo6_res', 'FixedText', nPosRes, y+85, 20, nHeight, Label = "", Align = 2)
         self.typo7_res = self._addWidget('typo7_res', 'FixedText', nPosRes, y+95, 20, nHeight, Label = "", Align = 2)
         self.typo8_res = self._addWidget('typo8_res', 'FixedText', nPosRes, y+105, 20, nHeight, Label = "", Align = 2)
-        
+
         # group box // misc.
-        x = 168; y = 140
-        gbm5 = self._addWidget('groupbox5', 'GroupBox', x-5, y, nGroupBoxWith, 70, Label = "  " * len(self.dUI.get('misc', "#err")), FontDescriptor = xFD1)
-        self.misc = self._addWidget('misc', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('misc', "#err"), FontDescriptor = xFD1, \
+        y = y + 125
+        self.misc = self._addWidget('misc', 'CheckBox', x2, y+2, nWidth, nHeight, Label = self.dUI.get('misc', "#err"), FontDescriptor = xFD1, \
                                     FontRelief = 1, TextColor = nColor, State = True)
-        self.misc1 = self._addWidget('misc1', 'CheckBox', x, y+15, 80, nHeight, Label = self.dUI.get('misc1', "#err"), State = True)
-        self.misc1a = self._addWidget('misc1a', 'CheckBox', x+80, y+15, 30, nHeight, Label = self.dUI.get('misc1a', "#err"), State = True)
-        self.misc2 = self._addWidget('misc2', 'CheckBox', x, y+25, nWidth, nHeight, Label = self.dUI.get('misc2', "#err"), State = True)
-        self.misc3 = self._addWidget('misc3', 'CheckBox', x, y+35, nWidth, nHeight, Label = self.dUI.get('misc3', "#err"), State = True)
-        #self.misc4 = self._addWidget('misc4', 'CheckBox', x, y+45, nWidth, nHeight, Label = self.dUI.get('misc4', "#err"), State = True)
-        self.misc5 = self._addWidget('misc5', 'CheckBox', x, y+45, nWidth, nHeight, Label = self.dUI.get('misc5', "#err"), State = True)
-        self.misc5b = self._addWidget('misc5b', 'CheckBox', x+10, y+55, nWidth-40, nHeight, Label = self.dUI.get('misc5b', "#err"), State = False)
-        self.misc5c = self._addWidget('misc5c', 'CheckBox', x+nWidth-25, y+55, 30, nHeight, Label = self.dUI.get('misc5c', "#err"), State = False)
+        self._addWidget("section5", 'FixedLine', nRightLimit2-(nWidth//2), y, nWidth//2, nHeight)
+        self.misc1 = self._addWidget('misc1', 'CheckBox', x2, y+15, 80, nHeight, Label = self.dUI.get('misc1', "#err"), State = True)
+        self.misc1a = self._addWidget('misc1a', 'CheckBox', x2+80, y+15, 30, nHeight, Label = self.dUI.get('misc1a', "#err"), State = True)
+        self.misc2 = self._addWidget('misc2', 'CheckBox', x2, y+25, nWidth, nHeight, Label = self.dUI.get('misc2', "#err"), State = True)
+        self.misc3 = self._addWidget('misc3', 'CheckBox', x2, y+35, nWidth, nHeight, Label = self.dUI.get('misc3', "#err"), State = True)
+        #self.misc4 = self._addWidget('misc4', 'CheckBox', x2, y+45, nWidth, nHeight, Label = self.dUI.get('misc4', "#err"), State = True)
+        self.misc5 = self._addWidget('misc5', 'CheckBox', x2, y+45, nWidth, nHeight, Label = self.dUI.get('misc5', "#err"), State = True)
+        self.misc5b = self._addWidget('misc5b', 'CheckBox', x2+10, y+55, nWidth-40, nHeight, Label = self.dUI.get('misc5b', "#err"), State = False)
+        self.misc5c = self._addWidget('misc5c', 'CheckBox', x2+nWidth-25, y+55, 30, nHeight, Label = self.dUI.get('misc5c', "#err"), State = False)
         self.misc1_res = self._addWidget('misc1_res', 'FixedText', nPosRes, y+15, 20, nHeight, Label = "", Align = 2)
         self.misc2_res = self._addWidget('misc2_res', 'FixedText', nPosRes, y+25, 20, nHeight, Label = "", Align = 2)
         self.misc3_res = self._addWidget('misc3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
         #self.misc4_res = self._addWidget('misc4_res', 'FixedText', nPosRes, y+45, 20, nHeight, Label = "", Align = 2)
         self.misc5_res = self._addWidget('misc5_res', 'FixedText', nPosRes, y+45, 20, nHeight, Label = "", Align = 2)
-        
+
         # group box // restructuration
-        x = 168; y = 215
-        gbm6 = self._addWidget('groupbox6', 'GroupBox', x-5, y, nGroupBoxWith, 50, Label = "  " * len(self.dUI.get('struct', "#err")), FontDescriptor = xFD1)
-        self.struct = self._addWidget('struct', 'CheckBox', x, y+2, nWidth, nHeight, Label = self.dUI.get('struct', "#err"), FontDescriptor = xFD1, \
+        y = y + 65
+        self.struct = self._addWidget('struct', 'CheckBox', x2, y+2, nWidth, nHeight, Label = self.dUI.get('struct', "#err"), FontDescriptor = xFD1, \
                                       FontRelief = 1, TextColor = nColor, HelpText = self.dUI.get('struct_help', "#err"), State = False)
-        self.struct1 = self._addWidget('struct1', 'CheckBox', x, y+15, nWidth, nHeight, Label = self.dUI.get('struct1', "#err"), State = True, Enabled = False)
-        self.struct2 = self._addWidget('struct2', 'CheckBox', x, y+25, nWidth, nHeight, Label = self.dUI.get('struct2', "#err"), State = True, Enabled = False)
-        self.struct3 = self._addWidget('struct3', 'CheckBox', x, y+35, nWidth, nHeight, Label = self.dUI.get('struct3', "#err"), \
+        self._addWidget("section6", 'FixedLine', nRightLimit2-(nWidth//3), y, nWidth//3, nHeight)
+        self.struct1 = self._addWidget('struct1', 'CheckBox', x2, y+15, nWidth, nHeight, Label = self.dUI.get('struct1', "#err"), State = True, Enabled = False)
+        self.struct2 = self._addWidget('struct2', 'CheckBox', x2, y+25, nWidth, nHeight, Label = self.dUI.get('struct2', "#err"), State = True, Enabled = False)
+        self.struct3 = self._addWidget('struct3', 'CheckBox', x2, y+35, nWidth, nHeight, Label = self.dUI.get('struct3', "#err"), \
                                        HelpText = self.dUI.get('struct3_help', "#err"), State = False, Enabled = False)
         self.struct1_res = self._addWidget('struct1_res', 'FixedText', nPosRes, y+15, 20, nHeight, Label = "", Align = 2)
         self.struct2_res = self._addWidget('struct2_res', 'FixedText', nPosRes, y+25, 20, nHeight, Label = "", Align = 2)
         self.struct3_res = self._addWidget('struct3_res', 'FixedText', nPosRes, y+35, 20, nHeight, Label = "", Align = 2)
-        
+
         # dialog height
-        self.xDialog.Height = 302
+        self.xDialog.Height = 272
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
         self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
@@ -243,7 +247,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             "typo":     [self.typo1, self.typo2, self.typo3, self.typo3a, self.typo3b, self.typo4, self.typo4a, self.typo4b, self.typo5, self.typo6, \
                          self.typo7, self.typo8, self.typo8a, self.typo8b, self.typo_ff, self.typo_fi, self.typo_ffi, self.typo_fl, self.typo_ffl, \
                          self.typo_ft, self.typo_st],
-            "misc":     [self.misc1, self.misc2, self.misc3, self.misc5, self.misc1a, self.misc5b, self.misc5c], #self.misc4, 
+            "misc":     [self.misc1, self.misc2, self.misc3, self.misc5, self.misc1a, self.misc5b, self.misc5c], #self.misc4,
             "struct":   [self.struct1, self.struct2, self.struct3]
         }
 
@@ -257,7 +261,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         # buttons
         self.bdefault = self._addWidget('default', 'Button', 5, self.xDialog.Height-19, 15, 15, Label = self.dUI.get('default', "#err"), \
                                         HelpText = self.dUI.get('default_help', "#err"), FontDescriptor = xFD2, TextColor = 0x444444)
-        #self.bsel = self._addWidget('bsel', 'CheckBox', x, self.xDialog.Height-40, nWidth-55, nHeight, Label = self.dUI.get('bsel', "#err"))        
+        #self.bsel = self._addWidget('bsel', 'CheckBox', x2, self.xDialog.Height-40, nWidth-55, nHeight, Label = self.dUI.get('bsel', "#err"))
         self.bapply = self._addWidget('apply', 'Button', self.xDialog.Width-55, self.xDialog.Height-19, 50, 15, Label = self.dUI.get('apply', "#err"), \
                                       FontDescriptor = xFD2, TextColor = 0x004400)
         self.binfo = self._addWidget('info', 'Button', self.xDialog.Width-15, 0, 10, 9, Label = self.dUI.get('info', "#err"), \
@@ -293,7 +297,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
         self.xContainer.execute()
-    
+
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
@@ -311,7 +315,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                         self._replaceAll(xElem)
                     else:
                         # modify selected text only
-                        pass    
+                        pass
                         #xSelecList = xDoc.getCurrentSelection()
                         #xSel = xSelecList.getByIndex(0)
 
@@ -727,7 +731,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         return n
 
     def _mergeContiguousParagraphs (self, xDoc):
-        self._replaceText(xDoc, "^[  ]+$", "", True) # clear empty paragraphs    
+        self._replaceText(xDoc, "^[  ]+$", "", True) # clear empty paragraphs
         n = 0
         try:
             xCursor = xDoc.Text.createTextCursor()
