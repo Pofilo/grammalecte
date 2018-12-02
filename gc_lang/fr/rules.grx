@@ -5237,7 +5237,7 @@ __conf_a_à_verbe!6__
         -1>> 3                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     à été
-        <<- /conf/ -1>> à                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ -1>> a                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     qui  à  @:Q¬:M
         <<- /conf/ \3.islower() -2>> a                              # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
@@ -5248,15 +5248,15 @@ __conf_a_à_verbe!6__
 
     à  le  @:[NAQ].*:[me]¬:(?:Y|Oo)
         <<- /conf/ -1:2>> a le|au
-        # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “au”. Exemple : _à_ midi, il _a_ pris son déjeuner _au_ restaurant.
+        # Confusion. Ou vous confondez “à” (préposition) avec “a” (avoir), ou vous devez employer “au”. Exemple : _à_ midi, il _a_ pris son déjeuner _au_ restaurant.
 
     à  le  @:[NAQ].*:f¬:(?:Y|Oo)
         <<- /conf/ -1:2>> à la|a la
-        # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “a la”. Exemple : _à_ midi, elle _a_ pris son déjeuner _a_ la cantine.
+        # Confusion. Ou vous confondez “à” (préposition) avec “a” (avoir), ou vous devez employer “a la”. Exemple : _à_ midi, elle _a_ pris son déjeuner _a_ la cantine.
 
     à  les  @:[NAQ]¬:(?:Y|Oo)
         <<- /conf/ -1:2>> a les|aux
-        # Confusion. Ou vous confondez “a” (préposition) avec “a” (avoir), ou vous devez employer “aux”. Exemple : Elle _a_ donné du travail _aux_ employés _à_ profusion.
+        # Confusion. Ou vous confondez “à” (préposition) avec “a” (avoir), ou vous devez employer “aux”. Exemple : Elle _a_ donné du travail _aux_ employés _à_ profusion.
 
     à  *WORD
         <<- /conf/ \2.islower() and not value(\2, "|coté|") >>>
@@ -6059,7 +6059,7 @@ __conf_ces_ses_c_est__
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  [que|qu’]
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  [l’|d’]
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  {pronom_obj}
-    [ses|ces] @:D¬:W
+    [ses|ces] @:D¬:[WA]
     [ses|ces] [que|qu’]
     [ses|ces] [l’|d’]
     [ses|ces] {pronom_obj}
@@ -6079,6 +6079,7 @@ TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
 TEST: Avec ces quelques mots, que veux-tu dire ?
 TEST: Avec ces quelque 70 millions d’euros de cash disponible
+TEST: négocier séparément avec ces divers sous-groupes
 
 
 # chœur / cœur
