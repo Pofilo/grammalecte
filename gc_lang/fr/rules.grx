@@ -6080,6 +6080,7 @@ TEST: Ses pas de danse.
 TEST: Avec ces quelques mots, que veux-tu dire ?
 TEST: Avec ces quelque 70 millions d’euros de cash disponible
 TEST: négocier séparément avec ces divers sous-groupes
+TEST: L’ensemble de ces divers points de vue émergeant de plusieurs horizons permettaient de construire un projet, riche et acceptable par toutes les parties prenantes.
 
 
 # chœur / cœur
@@ -8924,7 +8925,7 @@ __purge_locutions__
     à l’ évidence
     à l’ œil nu
     à l’ [un|une] des leurs
-    à la [bourre|con|dérive|dérobée|diable|fois|leur|longue|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
+    à la [bourre|con|dérobée|diable|fois|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
     à la bonne franquette
     à la limite du supportable
     à la lumière de tout [ceci|cela|ça]
@@ -10832,6 +10833,12 @@ __purge_locutions_potentielles__
     à la dernière [minute|seconde]  @¬:A.*:[fe]:[si]
         <<- ~1:4>> *
 
+    à la longue  @¬:N.*:[fe]:[si]
+        <<- ~1:3>> *
+
+    à la dérive  @¬:A.*:[fe]:[si]
+        <<- ~1:3>> *
+
     à l’ époque  @¬:A.*:[fe]:[si]
         <<- ~1:3>> *
 
@@ -11134,6 +11141,7 @@ TEST: celles qui veulent des participant·e·s qui sont libres d’innover
 TEST: Une dizaine de militants, pour partie issus du collectif XYZ, se sont réunis
 TEST: Rien ne va dans cette fête qu’est Noël.
 TEST: Nous foncions vers notre perte à vitesse grand V, pied au plancher, sans intention de ralentir une seule seconde.
+TEST: faire un embrago sur les armes suite à la dérive totalitaire du régime.
 
 
 
@@ -13758,6 +13766,18 @@ TEST: Elles étaient à cette date cultivées à l’air libre.
 TEST: De fraîche date…
 
 
+# délacer / délasser
+__conf_délacer_délasser__
+    >délasser  @:D  [>basket|>camisole|>chaussure|>corsage|>corset|>godasse|>godillot|>grolle|>jupe|>pompe|>lacet|>ranger|>robe|>soulier|>voile]
+        <<- /conf/ -1>> =\1.replace("ssa", "ça").replace("ss", "c")                                 # Confusion probable. Pour défaire des lacets, des nœuds, etc., écrivez “délacer”.
+
+    [>basket|>camisole|>chaussure|>corsage|>corset|>godasse|>godillot|>grolle|>jupe|>pompe|>lacet|>ranger|>robe|>soulier|>voile]  >délasser
+        <<- /conf/ morph(\-1, ":Q") --1>> =\1.replace("ssa", "ça").replace("ss", "c")               # Confusion probable. Pour défaire des lacets, des nœuds, etc., écrivez “délacer”.
+
+TEST: Bon sang, il faut que tu {{délasses}} tes chaussures avant d’essayer de les enlever.
+TEST: Ses souliers {{délassés}} la firent tomber.
+
+
 # dénué / dénudé
 __conf_dénué_dénudé__
     >dénuder  [de|d’]  ?[tout|tous|toute|toutes]¿  [>âme|>apitoiement|>ambiguïté|>ambition|>amour|>beauté|>cause|>charme|>charisme|>clarté|>compassion|>compétence|>confort|>connaissance|>conscience|>consistance|>constance|>contenu|>contrepartie|>crainte|>créativité|>culture|>cynisme|>défaut|>difficulté|>discrimination|>envergure|>intérêt|>émotion|>envergure|>esthétique|>éthique|>enjeu|>expertise|>faiblesse|>fantaisie|>finesse|foi|>fondement|>force|>gentillesse|>goût|>gout|>grâce|>grandeur|>haine|>honnêteté|>humanité|>idée|>imagination|>inspiration|>intelligence|>intention|>inventivité|>justice|>légitimité|>logique|>objectivité|>maturité|>méchanceté|>mérite|>motif|>moyenne|paix|>piété|>plan|>pertinence|>peur|>plaisir|>politesse|>préjugé|>principe|>professionnalisme|>psychologie|>qualité|>raison|>rancœur|>réalisme|>remord|>respect|>revendication|>rigueur|>risque|>sagesse|>savoir|>sens|>sentiment|>science|>scrupule|>soupçon|>stress|>subtilité|>sympathie|>tact|>talent|>tendresse|>toxicité|>tromperie|>valeur|>vertu|>vigueur|>violence|>vision]
@@ -14966,12 +14986,15 @@ TEST: sa tournée, elle la finit par Rodez.
 
 __infi_verbe_de_verbe__
     [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  *WORD
-        <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":(?:V1.*:(?:Q|2p)|[123][sp])", ":(?:M|Oo)")
+        <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
         --1>> =suggVerbInfi(\-1)                                                        # Le verbe devrait être à l’infinitif.
 
 TEST: cessez d’{{anesthésié}} ces gens !
 TEST: Le menu Format contient de nombreuses commandes de mise en forme.
 TEST: Le commandant de zone…
+TEST: À quoi rime de décider de mesures écologiques d’en haut
+TEST: L’accès au cannabis thérapeutique où à ses dérivés permettrait de plus aux autorités de santé d’apporter aux malades les garanties nécessaires quant à la qualité, aux concentrations, ainsi qu’aux modalités d’obtention et d’utilisation optimale.
+TEST: l’industrie est également touchée, avec « des pertes de commandes de véhicules chez Renault et chez Peugeot »
 
 
 ## INFINITIFS ERRONÉS
