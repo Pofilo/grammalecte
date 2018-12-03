@@ -4001,7 +4001,7 @@ TEST: {{Au pire aller}}, on s’en passera.
 __bs_pour_ne_pas_que__
     pour ne pas [que|qu’]
         <<- /bs/ ->> _
-        # Tournure familière. Écrivez “pour qu’il ne vienne pas” plutôt que “pour ne pas qu’il vienne.”|http://www.academie-francaise.fr/pour-pas-que-au-lieu-de-pour-que-ne-pas
+        # Tournure familière. Par exemple, écrivez “pour qu’il ne vienne pas” plutôt que “pour ne pas qu’il vienne.”|http://www.academie-francaise.fr/pour-pas-que-au-lieu-de-pour-que-ne-pas
 
 TEST: Nous y sommes allés {{pour ne pas qu’}}elle se sente seule.
 
@@ -6221,7 +6221,7 @@ TEST: Quelle dure {{a}} {{cuir}}, celle-là.
 # dans / d’en
 __conf_dans_dan_d_en__
     d’ en [le|la|l’|les|de|d’|des|du|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces]
-        <<- /conf/ -1:2>> dans                                                      # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
+        <<- /conf/ not (\3 == "ce" and value(>1, "|moment|")) -1:2>> dans           # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
 
     <start>  [>dent|dan]  [le|la|l’|les|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces]
         <<- /conf/ -2>> dans                                                        # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
@@ -6230,6 +6230,7 @@ TEST: {{dan}} la voiture
 TEST: ils sont partis {{d’en}} une direction différente
 TEST: {{dents}} les montagnes au loin.
 TEST: Dents de la mer.
+TEST: Un pauvre, ça doit consommer, bosser, et bien fermer sa gueule. Tout l’inverse d’en ce moment.
 
 
 # date / datte
@@ -6426,7 +6427,7 @@ TEST: dans ses différents postes gouvernementaux
 # dû / du
 __ppas_dû_du__
     du  [à|a|au|aux]
-        <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
+        <<- /ppas/ \2.islower() -1>> dû                         # Confusion. Ce qui est dû.
 
     [mon|notre|votre]  du
         <<- /ppas/ -2>> dû                                      # Confusion. Ce qui est dû.
@@ -6438,6 +6439,7 @@ TEST: L’échec {{du}} à une erreur de calcul
 TEST: que ça vous plaise ou non, c’est notre {{du}}.
 TEST: Il veut qu’on lui rende son {{du}}.
 TEST: Tu as reçu ton {{du}} pour ton travail.
+TEST: Plusieurs murs ont été recouverts du « A » anarchiste
 
 
 # eh bien, hé bien / et bien
@@ -8025,7 +8027,7 @@ __conf_voir_voire__
         <<- %2>>
 
     voir  @:A¬:[NGM]
-        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|de|à)/")
+        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|vouloir|préférer|de|à)/")
             and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
         -1>> voire                      # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez “voire”.|https://fr.wiktionary.org/wiki/voire
 
@@ -8054,6 +8056,7 @@ TEST: il y en a peu, voire très peu.
 TEST: car elles pénètrent dans les poumons voire le système sanguin.
 TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux clowns un peu flippants.
 TEST: les membres de l’équipage commencent à voir flou
+TEST: un travail qu’il préfère voir effectué par un spécialiste plutôt que par lui-même
 
 
 # vieil / vieux
@@ -8931,6 +8934,7 @@ __purge_locutions__
     à la queue leu leu
     à la surprise générale
     à la virgule près
+    à [un|cet|l’] instant t
     à long terme
     à long [et|ou] court terme.
     à longue [distance|échéance|portée]
@@ -9069,6 +9073,7 @@ __purge_locutions__
     au grand [complet|jamais]
     au hasard
     au jour et à l’ heure dits
+    au jour j
     au jugé
     au le jour
     au leur
@@ -9441,6 +9446,7 @@ __purge_locutions__
     en nombre suffisant
     en nombre plus que suffisant
     en partant de zéro
+    en partie ou en totalité
     en plein [air|cœur|jour]
     en pleine [gueule|figure|forme|poire|nuit|tronche]
     en perte de vitesse
@@ -9469,6 +9475,7 @@ __purge_locutions__
     en terrain découvert
     en termes choisis
     en toile de fond
+    en totalité ou en partie
     en tous les cas
     en tous les sens
     en tout bien tout honneur
@@ -10891,9 +10898,11 @@ __purge_locutions_potentielles__
     pour partie  @:¬:A.*:f:s
         <<- ~1:2>> *
 
-    un [instant|moment|jour]  @¬:A.*:[me]:[si]
-        <<- ~1:2>> *
+    ?à¿ un [instant|moment]  @¬:A.*:[me]:[si]
+        <<- not morph(<1, ":R|>d’/") ~1:-2>> *
 
+    un jour  @¬:A.*:[me]:[si]
+        <<- not morph(<1, ":R|>d’/") ~1:2>> *
 
 __purge_tous_deux_trois__
     >faire tous [deux|trois]
@@ -13020,7 +13029,7 @@ TEST: elles sont vites.
 # voir clair
 __sgpl_voir_clair__
     >voir >claire
-        <<- /sgpl/ \2 != "clair" and \2 != "Claire" -2>> clair      # Dans la locution “voire clair”, “clair” est un adverbe, donc invariable. (Mais peut-être confondez-vous “voire” et “voir” ?)
+        <<- /sgpl/ \2 != "clair" and \2 != "Claire" -2>> clair      # Dans la locution “voir clair”, “clair” est un adverbe, donc invariable. (Mais peut-être confondez-vous “voire” et “voir” ?)
 
 TEST: Ils y voient {{clairs}}.
 TEST: Il vit Claire au théâtre.
@@ -13816,7 +13825,7 @@ TEST: Elles travaillaient avec entrain, conscientes que la fin était proche.
 # dû / du
 __ppas_dû_du2__
     du  [à|a|au|aux]
-        <<- /ppas/ -1>> dû                                      # Confusion. Ce qui est dû.
+        <<- /ppas/ \2.islower() -1>> dû                     # Confusion. Ce qui est dû.
 
 TEST: L’échec est {{du}} en partie à un manque de préparation.
 
@@ -14812,7 +14821,7 @@ __infi_à_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après le pronom “à”, le verbe devrait être à l’infinitif.
 
     à  @:V¬:[YNPQO]|>(?:lui|plus)/
-        <<- /infi/ not \2[0:1].isupper() -2>> =suggVerbInfi(\2)                         # Le verbe devrait être à l’infinitif.
+        <<- /infi/ not \2[0:1].isupper() -2>> =suggVerbInfi(\2)                         # Après “à”, le verbe devrait être à l’infinitif.
 
 TEST: à en {{parlé}} sans cesse
 TEST: cela suffit à les {{aimait}}
@@ -14823,6 +14832,7 @@ TEST: elle s’engage à ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste à la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: à leur plus grand fils, ils ont offert une voiture.
 TEST: ça va d’autonome à hautement dépendant
+TEST: la pression entre les membres à un moment devient trop importante
 
 
 __infi_de_verbe__
@@ -15515,7 +15525,7 @@ __infi_lui_verbe__
         <<- /infi/ morph(\2, ":Q") -2>> =suggVerbInfi(\2)           # Le verbe ne devrait probablement pas être un participe passé.
 
 TEST: lui {{mangée}} beaucoup.
-
+TEST: L’homme qui s’approchait de lui voulait le surprendre.
 
 
 !!
@@ -19201,10 +19211,10 @@ TEST: Quoique je te dise.
 # Bien que + subjonctif
 __vmode_bien_que_subjonctif__
     [<start>|,]  [bien|encore]  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GSK]|If|V0a)|>(?:hériter|recevoir|donner|offrir)/
-        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \1)                                                # Après « \2 que », le verbe s’emploie au subjonctif.
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Après « \2 que », le verbe s’emploie au subjonctif.
 
     [<start>|,]  [bien|encore]  [que|qu’]  @:(?:Os|M)  >avoir  @:[QYG]¬>(?:hériter|recevoir|donner|offrir)/
-        <<- /vmode/ morph(\5, ":I", ":S") -5>> =suggVerbMode(\5, ":S", \1)                          # Après « \2 que », le verbe s’emploie au subjonctif.
+        <<- /vmode/ morph(\5, ":I", ":S") -5>> =suggVerbMode(\5, ":S", \4)                          # Après « \2 que », le verbe s’emploie au subjonctif.
 
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
 TEST: Bien que je {{prends}} mon mal en patience.
