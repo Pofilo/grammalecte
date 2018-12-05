@@ -4420,7 +4420,7 @@ TEST: je t’en {{parlé}}
 __conf_je_non_verbe__
     je  @:¬:(?:V|Ov)
         <<- /conf/ not value(\2, "|soussigné|soussignée|") and not morph(<1, ":1s")
-        -2>> =suggSimil(\2, ":(?:1s|Oo)", False)                                                    # Incohérence avec “je” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+        -2>> =suggSimil(\2, ":(?:1s|Ov)", False)                                                    # Incohérence avec “je” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
     j’       ?[en|y]¿                                                             @:¬:(?:V|Ov)
     [je|j’]  [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]            @:¬:(?:V|Ov)
@@ -4503,7 +4503,7 @@ TEST: il y en {{as}}.
 __conf_il_non_verbe__
     il  @:¬:(?:V|Ov)|>ou/
         <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
-        -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+        -2>> =suggSimil(\2, ":(?:3s|Ov)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
@@ -4511,7 +4511,7 @@ __conf_il_non_verbe__
     il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
     il  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
         <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
-        --1>> =suggSimil(\-1, ":(?:3s|Oo)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+        --1>> =suggSimil(\-1, ":(?:3s|Ov)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: il {{et}} parti.
 TEST: il nous {{et}} indispensable.
@@ -4550,7 +4550,7 @@ __conf_on_non_verbe__
     on  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
     on  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
         <<- /conf/ not morph(<1, ":3s") and not value(<1, "|n’|m’|t’|s’|")
-        --1>> =suggSimil(\-1, ":(?:3s|Oo)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+        --1>> =suggSimil(\-1, ":(?:3s|Ov)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: il {{et}} parti.
 TEST: il nous {{et}} indispensable.
@@ -4702,7 +4702,7 @@ TEST: j’ai peur qu’il ne leur {{face}} quelque chose de mal
 __conf_ils_non_verbe__
     ils  @:¬:(?:V|Ov)|>ou/
         <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
-        -2>> =suggSimil(\2, ":(?:3p|Oo)", False)                                                    # Incohérence avec “ils” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+        -2>> =suggSimil(\2, ":(?:3p|Ov)", False)                                                    # Incohérence avec “ils” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
     ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
@@ -4710,7 +4710,7 @@ __conf_ils_non_verbe__
     ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
     ils  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
         <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
-        -3>> =suggSimil(\3, ":(?:3p|Oo)", False)                                                    # Incohérence avec “ils” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+        -3>> =suggSimil(\3, ":(?:3p|Ov)", False)                                                    # Incohérence avec “ils” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: ils {{son}} du même bois.
 TEST: Ils {{étai}} partie au {{restaurent}}
