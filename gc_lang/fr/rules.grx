@@ -636,7 +636,7 @@ TEST: {{nombreux·ses}} sont les profs qui s’indignent de cette situation.   -
 
 
 __[u](typo_écriture_épicène_pluriel_aux_ales)__
-    ({w_2})aux[.(/·⋅–—-][tnmcpb]?ale[.)/·⋅–—-]?s  @@0
+    ({w_2})aux[.(/·⋅–—-][tnmcpbd]?ale[.)/·⋅–—-]?s  @@0
     <<- option("typo") ->> \1aux et \1ales|\1ales et \1aux|\1al·e·s                                 # Écriture épicène dystypographique et imprononçable. Pour ce cas, il peut être intéressant de faire comme si le pluriel masculin était régulier, ce qui rend l’ensemble prononçable…
     <<- ~>> =normalizeInclusiveWriting(\0)
 
@@ -682,7 +682,7 @@ TEST: chez les {{immortel.le.s}}
 
 
 __[i](typo_écriture_épicène_singulier)__
-    ({w_1}[éuitsrn])(?:[-·–—.⋅/]e|[(]e[)])  @@0
+    ({w_1}[éuitsrnldf])(?:[-·–—.⋅/]e|[(]e[)])  @@0
     <<- option("typo") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
     <<- __else__ and option("typo") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène. Utilisez un point médian.
     <<- ~>> \1-e
@@ -784,7 +784,7 @@ __<s>/typo(typo_espace_manquant_après2)__
     [?!;%‰‱˚»}]({w_1})  @@$  <<- -1>> " \1"                                                       # Il manque un espace.
 __<s]/typo(typo_espace_manquant_après3)__
     {w_1}[.]({w_1})  @@$
-    <<- (\1.__len__() > 1 and not \1.isdigit() and spell(\1)) or after("^’") -1>> " \1"          # Il manque un espace.
+    <<- (\1.__len__() > 1 and not \1[0:1].isdigit() and spell(\1)) or after("^’") -1>> " \1"        # Il manque un espace.
 
 TEST: J’en ai marre,{{ça}} suffit.
 TEST: elle est délirante.{{Devine}} ce qu’elle a dit.
@@ -1218,8 +1218,8 @@ TEST: Il a perdu {{20 000}} euros à la Bourse en un seul mois.
 !!
 !!
 __[i]/date(date_nombres)__
-    (?<!\d[ /.-])(\d\d?)[ /.-](\d\d?)[ /.-](\d\d\d+)(?![ /.-]\d)  @@0,w,$
-    <<- not checkDate(\1, \2, \3) and not before("(?i)\\bversions? +$") ->> _                       # Cette date est invalide.
+    (?<!\d[ /.-])(\d\d?)([ /.-])(\d\d?)([ /.-])(\d\d\d+)(?![ /.-]\d)  @@0,*,w,**,$
+    <<- \2 == \4 and not checkDate(\1, \3, \5) and not before("(?i)\\b(?:version|article)s? +$") ->> _                       # Cette date est invalide.
     <<- ~>> =\0.replace(".", "-").replace(" ", "-").replace("\/", "-")
 
 TEST: le {{29 02 2011}}
@@ -1227,6 +1227,7 @@ TEST: le {{40-02-2011}}
 TEST: le {{32.03.2018}}
 TEST: le {{81/01/2012}}
 TEST: 12-12-2012
+TEST: Articles 32.17-918 et 98.17-761
 
 
 !!
@@ -4387,8 +4388,7 @@ __conj_je__
         <<- /conj/ \-1 == "est" or \-1 == "es" -2>> ai|aie|suis     # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
         <<- /conj/ __else__ --1>> =suggVerb(\-1, ":1s")             # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
 
-    j’                                                                            @:V¬:(?:1s|Ov)
-    j’       [en|y]                                                               @:V¬:(?:1s|Ov)
+    j’       ?[en|y]¿                                                             @:V¬:(?:1s|Ov)
     [je|j’]  [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]            @:V¬:(?:1s|Ov)
     [je|j’]  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:1s|Ov)
     [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:1s|Ov)
@@ -4396,6 +4396,7 @@ __conj_je__
     [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:1s|Ov)
         <<- /conj/ \-1 == "est" or \-1 == "es" --1>> ai|aie|suis    # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
         <<- /conj/ __else__ --1>> =suggVerb(\-1, ":1s")             # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
+
 
 TEST: je l’{{est}} perdu de vue.                                ->> ai|aie|suis
 TEST: je {{donnerait}} tout pour y parvenir.
@@ -4413,6 +4414,28 @@ TEST: Je ne t’{{attend}} pas.
 TEST: J’{{arrivait}} en retard.
 TEST: J’m’la {{fumerait}} bien, cette clope.
 TEST: J’leur en {{veut}} pas, à ces crétins.
+TEST: je t’en {{parlé}}
+
+
+__conf_je_non_verbe__
+    je  @:¬:(?:V|Ov)
+        <<- /conf/ not value(\2, "|soussigné|soussignée|") and not morph(<1, ":1s")
+        -2>> =suggSimil(\2, ":(?:1s|Oo)", False)                                                    # Incohérence avec “je” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    j’       ?[en|y]¿                                                             @:¬:(?:V|Ov)
+    [je|j’]  [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]            @:¬:(?:V|Ov)
+    [je|j’]  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
+    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
+    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
+    [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+        <<- /conf/ --1>> =suggSimil(\-1, ":(?:1s|Ov)", False)                                       # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: Je ne le {{croix}} pas
+TEST: Je {{travail}}.                                       ->> travaille
+TEST: Je vous {{tellement}} reconnaissant.
+TEST: Je m’en {{fou}}.
+TEST: Je soussigné, M. X., déclare que…
+TEST: j’ai l’impression de ne même pas savoir ce qu’est un « juif français ».
 
 
 ## 2sg
@@ -4423,7 +4446,7 @@ __conj_tu__
     tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:Ov|P|[ISK].*:2s)
     tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:Ov|P|[ISK].*:2s)
     tu  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:Ov|P|[ISK].*:2s)
-        <<- /conj/ not morph(<1, ":V0") --1>> =suggVerb(\-1, ":2s")    # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 2ᵉ personne du singulier.
+        <<- /conj/ not morph(<1, ":V0") --1>> =suggVerb(\-1, ":2s")                                 # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 2ᵉ personne du singulier.
 
 TEST: Tu ne {{ment}} jamais.
 TEST: Tu {{a}} mal ?
@@ -4433,20 +4456,34 @@ TEST: Jusqu’ici, on a tu le nom de la créature.
 TEST: il s’est tu les jours après son agression.
 
 
+__conf_tu_non_verbe__
+    tu                                                                       @:¬:(?:V|Ov)
+    tu  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
+    tu  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
+    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
+    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
+    tu  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+        <<- /conf/ not morph(<1, ":(?:2s|V0|R)") --1>> =suggSimil(\-1, ":(?:2s|Ov)", False)         # Incohérence avec “tu” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
+TEST: tu la {{croix}} idiote ?
+TEST: Elles sont à tu et à toi.
+
+
 ## 3sg
 __conj_il__
     il  @:V¬:(?:3s|Ov)
         <<- /conj/ not (morph(\2, ":[PQ]") and morph(<1, ":V0.*:3s"))
-        -2>> =suggVerb(\2, ":3s")                                           # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- /conj/ __also__ and morph(\2, ":3p") -1>> ils                   # Accord avec “\2”.
+        -2>> =suggVerb(\2, ":3s")                                                                   # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ __also__ and morph(\2, ":3p") -1>> ils                                           # Accord avec “\2”.
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3s|Ov)
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3s|Ov)
     il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3s|Ov)
     il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3s|Ov)
     il  ?[ne|n’]¿  [lui|leur|y]                   en                         @:V¬:(?:3s|Ov)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- /conj/ morph(\-1, ":3p") -1>> ils                               # Accord avec “\-1”.
+        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ morph(\-1, ":3p") -1>> ils                                                       # Accord avec “\-1”.
 
 TEST: {{Il}} {{accusent}}.
 TEST: il {{bus}} du vin.
@@ -4463,32 +4500,79 @@ TEST: il n’y {{aurais}} plus rien à attendre de la religion et de la politiqu
 TEST: il y en {{as}}.
 
 
+__conf_il_non_verbe__
+    il  @:¬:(?:V|Ov)|>ou/
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
+        -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
+    il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
+    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
+    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
+    il  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
+        --1>> =suggSimil(\-1, ":(?:3s|Oo)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: il {{et}} parti.
+TEST: il nous {{et}} indispensable.
+TEST: Il ne {{travail}} pas le week-end.
+TEST: il m’{{arête}} encore une fois avec une impudence insupportable.
+TEST: il n’y {{pas}} beaucoup d’entente entre eux.
+TEST: il est normal de ne presque pas payer des gens qui effectuent un travail
+TEST: il s’en va.
+
+
 __conj_on__
     on  @:V¬:(?:3s|Ov)
         <<- /conj/ not (morph(\2, ":[PQ]") and morph(<1, ":V0.*:3s"))
-        --1>> =suggVerb(\-1, ":3s")                                         # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     on  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3s|P|Ov)
     on  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3s|P|Ov)
     on  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3s|P|Ov)
     on  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3s|P|Ov)
     on  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:3s|P|Ov)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: on {{remué}} beaucoup.
 TEST: on {{refuses}} tout cela
 TEST: on ne se {{bougent}} pas suffisamment
 
 
+__conf_on_non_verbe__
+    on  @:¬:(?:V|Ov)|>ou/
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|n’|m’|t’|s’|")
+        -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    on  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
+    on  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
+    on  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
+    on  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
+    on  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|n’|m’|t’|s’|")
+        --1>> =suggSimil(\-1, ":(?:3s|Oo)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: il {{et}} parti.
+TEST: il nous {{et}} indispensable.
+TEST: Il ne {{travail}} pas le week-end.
+TEST: il m’{{arête}} encore une fois avec une impudence insupportable.
+TEST: il n’y {{pas}} beaucoup d’entente entre eux.
+TEST: il est normal de ne presque pas payer des gens qui effectuent un travail
+TEST: il s’en va.
+
+
 __conj_ce__
     [ce|c’]             @>(?:devoir|devenir|pouvoir|vouloir|savoir)/:V¬:(?:N|A|3s|P|Q|Ov)
     [ce|c’]  [ne|n’]    @>(?:devoir|devenir|pouvoir|vouloir|savoir)/:V¬:(?:3s|P|Ov)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [ce|c’]                         @>être/:V¬:(?:N|A|3[sp]|P|Q|Ov)
     [ce|c’]  [le|l’|en]             @>être/:V¬:(?:N|A|3s|P|Q|Ov)
     [ce|c’]  [ne|n’]  ?[le|l’|en]¿  @>être/:V¬:(?:3[sp]|P|Q|Ov)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                              # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    [c’|ç’]                         @:¬:(?:[123][sp]|Y|P|Ov|X)|>que/
+        <<- /conf/ -2>> =suggSimil(\2, ":3s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: pour toi qui sais tout, ce ne le {{fus}} pas
 TEST: ce secret tu, ce {{devais}} être un cauchemar.
@@ -4500,14 +4584,16 @@ TEST: ce voudrait être le plus grand bal de tous les temps.
 TEST: ce ne pourrait être une chose aussi banale.
 TEST: ce serait une honte d’échouer une fois de plus à un test aussi élémentaire.
 TEST: ce ne saurait être cet homme…
+TEST: C’en est trop !
+TEST: C’que j’comprends, c’est qu’il y a des limites à ce qu’on peut supporter.
 
 
 __conj_c_en!6__
     c’ en  *WORD
         <<- /conj/ morph(\3, ">(?:être|devoir|devenir|pouvoir|vouloir|savoir)/:V", ":3s")
-        -3>> =suggVerb(\3, ":3s")                                               # Conjugaison erronée. Accord avec “c’en”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        -3>> =suggVerb(\3, ":3s")                                                                   # Conjugaison erronée. Accord avec “c’en”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conf/ morph(\3, ":[YP]") or morph(\3, ":V", ">(?:être|devoir|devenir|pouvoir|vouloir|savoir)/")
-        -1>> s’                                                                 # Confusion : “c’en” est la forme élidée de “ça en”. Pour la forme pronominale “se”, écrivez “s’en”.
+        -1>> s’                                                                                     # Confusion : “c’en” est la forme élidée de “ça en”. Pour la forme pronominale “se”, écrivez “s’en”.
 
 TEST: tu vois, c’en {{étais}} trop pour elles.
 TEST: {{c’}}en prendre.
@@ -4543,7 +4629,7 @@ TEST: c’était merveilleux.
 
 __conj_mieux_vaut__
     mieux  ?[ne|n’]¿  [vaux|valais|valus|vaudras|vaudrais]
-        <<- /conj/ --1>> =\-1[:-1]+"t"                                          # Conjugaison erronée. Accord avec “mieux” : utilisez la 3ᵉ personne du singulier.
+        <<- /conj/ --1>> =\-1[:-1]+"t"                                                              # Conjugaison erronée. Accord avec “mieux” : utilisez la 3ᵉ personne du singulier.
 
 TEST: avec toi qui ne sais rien de rien, mieux {{vaux}} ne rien dire.
 TEST: Mais là-bas mieux {{valais}} ouvrir sa gueule que se taire.
@@ -4553,32 +4639,33 @@ TEST: Mais là-bas mieux {{valais}} ouvrir sa gueule que se taire.
 __conj_nous__
     <start>  nous  @:V¬:(?:G|Y|P|1p|3[sp])
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":1p")                                               # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
+        -3>> =suggVerb(\3, ":1p")                                                                   # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 
-    [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]         @:V¬:1p
-    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]  @:V¬:1p
+    [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:1p
-        <<- /conj/ --1>> =suggVerb(\-1, ":1p")                                  # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+        <<- /conj/ --1>> =suggVerb(\-1, ":1p")                                                      # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: Nous {{arriverez}} demain.
 TEST: Nous {{travaillez}}.
 TEST: Et, nous laissant étonnés d’être encore là sans y avoir rien compris,
+TEST: Nous y voilà enfin.
 
 
 ## 2pl
 __conj_vous__
     <start>  vous  @:V¬:(?:G|Y|P|2p|3[sp])
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":2p")                                               # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+        -3>> =suggVerb(\3, ":2p")                                                                   # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
-    [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]         @:V¬:2p
-    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]  @:V¬:2p
+    [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:2p
-        <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                  # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+        <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                                      # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: Vous {{arrivais}} trop tard.
 TEST: vous ne l’{{avait}} pas vu.
@@ -4591,16 +4678,16 @@ TEST: Vous {{travaillons}}.
 __conj_ils__
     ils  @:V¬:(?:3p|Ov)
         <<- /conj/ not (morph(\2, ":[PQ]") and morph(<1, ":V0.*:3p"))
-        -2>> =suggVerb(\2, ":3p")                                               # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
-        <<- /conj/ __also__ and morph(\2, ":3s") -1>> il                        # Accord avec “\2”.
+        -2>> =suggVerb(\2, ":3p")                                                                   # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ __also__ and morph(\2, ":3s") -1>> il                                            # Accord avec “\2”.
 
     ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3p|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3p|Ov)
     ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3p|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3p|Ov)
     ils  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:3p|Ov)
-        <<- /conj/ --1>> =suggVerb(\-1, ":3p")                                  # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
-        <<- /conj/ morph(\-1, ":3s") -1>> il                                    # Accord avec “\-1”.
+        <<- /conj/ --1>> =suggVerb(\-1, ":3p")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ morph(\-1, ":3s") -1>> il                                                        # Accord avec “\-1”.
 
 TEST: {{Ils}} {{vienne}} souvent.
 TEST: Ils ne m’{{attends}} pas.
@@ -4608,14 +4695,34 @@ TEST: {{Ils}} vous le {{donne}}.
 TEST: {{Ils}} {{faut}} venir.
 TEST: {{ils}} le lui {{donne}}
 TEST: {{ils}} ne leur en {{veut}} pas.
+TEST: ils me les {{laissés}}.
+TEST: j’ai peur qu’il ne leur {{face}} quelque chose de mal
+
+
+__conf_ils_non_verbe__
+    ils  @:¬:(?:V|Ov)|>ou/
+        <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
+        -2>> =suggSimil(\2, ":(?:3p|Oo)", False)                                                    # Incohérence avec “ils” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+    ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
+    ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
+    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
+    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
+    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+        <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
+        -3>> =suggSimil(\3, ":(?:3p|Oo)", False)                                                    # Incohérence avec “ils” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
+
+TEST: ils {{son}} du même bois.
+TEST: Ils {{étai}} partie au {{restaurent}}
+TEST: ils leur {{étai}} indifférent
 
 
 ## se + incohérence
 __conj_se_incohérence__
     [se|s’]  ?[le|la|l’|les|en|y]¿  @:V¬:(?:3[sp]|P)
-        <<- /conj/ morph(\-1, ":[12]s") --1>> =suggVerb(\-1, ":3s")             # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 1ʳᵉ ou 2ᵉ personne du singulier.
-        <<- /conj/ __else__ and morph(\-1, ":1p") --1>> =suggVerb(\-1, ":3p")   # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 1ʳᵉ personne du pluriel.
-        <<- /conj/ __else__ and morph(\-1, ":2p") --1>> =suggVerbInfi(\-1)      # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 2ᵉ personne du pluriel.
+        <<- /conj/ morph(\-1, ":[12]s") --1>> =suggVerb(\-1, ":3s")                                 # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 1ʳᵉ ou 2ᵉ personne du singulier.
+        <<- /conj/ __else__ and morph(\-1, ":1p") --1>> =suggVerb(\-1, ":3p")                       # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 1ʳᵉ personne du pluriel.
+        <<- /conj/ __else__ and morph(\-1, ":2p") --1>> =suggVerbInfi(\-1)                          # Conjugaison erronée. Avec le pronom “se”, le verbe ne peut être à la 2ᵉ personne du pluriel.
 
 TEST: se {{considérez}} comme un génie…
 TEST: se {{rencontrerons}} demain grands et petits.
@@ -4656,26 +4763,10 @@ __non_verbe_après_préverbes__
     s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|ils?|qu[e’])/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
-    [c’|ç’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>que/
-        <<- /conf/ -2>> =suggSimil(\2, ":3s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-
-    j’          [en|y]                                      @:¬:(?:[123][sp]|Y|P|Ov|X)
-        <<- /conf/ -3>> =suggSimil(\3, ":1s", False)                                                # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
-
-    j’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)
-        <<- /conf/ -2>> =suggSimil(\2, ":1s", False)                                                # Incohérence avec « \1 » : « \2 » devrait être un verbe.
-
 TEST: ne l’{{oubli}} pas
-TEST: ça ne s’{{oubli}} pas.
-TEST: elle ne m’{{oubli}} pas.
-TEST: elle ne la {{croix}} pas
-TEST: ils me les {{laissés}}.
 TEST: ne {{pensée}} rien, jamais
 TEST: n’en {{laissée}} que des miettes
 TEST: s’y {{intéressé}}
-TEST: Il ne {{travail}} pas le week-end.
-TEST: Je m’en {{fou}}.
-TEST: il m’{{arête}} encore une fois avec une impudence insupportable.
 TEST: J’y {{travail}}.
 TEST: ç’{{avé}} été dur.
 TEST: me {{pronostic}} un cancer dans les trois mois.
@@ -4684,19 +4775,14 @@ TEST: te {{mangé}}
 TEST: s’y {{accordez}}
 TEST: s’en {{approché}}
 TEST: m’y {{attaché}}
-TEST: je t’en {{parlé}}
 TEST: Ne {{dix}} rien.
-TEST: j’ai peur qu’il ne leur {{face}} quelque chose de mal
+TEST: ça ne s’{{oubli}} pas.
+TEST: elle ne m’{{oubli}} pas.
+TEST: elle ne la {{croix}} pas
 TEST: M’enfin, c’est absurde
-TEST: il est normal de ne presque pas payer des gens qui effectuent un travail
-TEST: j’ai l’impression de ne même pas savoir ce qu’est un « juif français ».
-TEST: C’que j’comprends, c’est qu’il y a des limites à ce qu’on peut supporter.
 TEST: la tentation pour certains médias de ne tout simplement pas rémunérer notre travail si celui-ci n’est finalement pas publié.
 TEST: Ne parfois pas être celui qui sabote l’ambiance.
-TEST: il s’en va.
-TEST: C’en est trop !
 TEST: T’y viendras, comme tout le monde.
-TEST: Nous y voilà enfin.
 TEST: T’y voilà propulsé.
 TEST: t’en voilà débarrassée.
 TEST: N’oublient-ils pas ce qu’ils étaient autrefois…
@@ -4990,54 +5076,6 @@ TEST: Le mari répète à l’envi qu’il a découvert la France à travers les
 
 TEST: malgré l’{{arrête}} qui interdisait le port
 TEST: malgré les deux précédentes erreurs
-
-
-__conf_je_non_verbe__
-    je  @:¬:(?:[123][sp]|O[onw]|X)
-        <<- /conf/ not value(\2, "|soussigné|soussignée|") and not morph(<1, ":1s")
-        -2>> =suggSimil(\2, ":(?:1s|Oo)", False)                                                    # Incohérence avec “je” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-    je  [le|la|l’|les|leur|lui|nous|vous]  @:¬:(?:[123][sp]|O[onw]|X)
-        <<- /conf/ not morph(<1, ":1s") -3>> =suggSimil(\3, ":(?:1s|Oo)", False)                    # Incohérence avec “je” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: Je {{travail}}.
-TEST: Je soussigné, M. X., déclare que…
-
-
-__conf_tu_non_verbe__
-    tu  ?[le|la|l’|les|leur|lui|nous|vous]¿  (@:¬:(?:[123][sp]|O[onw]|X))
-        <<- /conf/ not morph(<1, ":(?:2s|V0|R)") -1>> =suggSimil(\1, ":(?:2s|Oo)", False)           # Incohérence avec “tu” : “\1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
-TEST: tu la {{croix}} idiote ?
-TEST: Elles sont à tu et à toi.
-
-
-__conf_il_on_non_verbe__
-    [il|on]  @:¬:(?:[123][sp]|O[onw]|X)|>ou/
-        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
-        -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-    [il|on]  [le|la|l’|les|leur|lui|nous|vous]  @:¬:(?:[123][sp]|O[onw]|X)
-        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
-        -3>> =suggSimil(\3, ":(?:3s|Oo)", False)                                                    # Incohérence avec “\1” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: il {{et}} parti.
-TEST: il nous {{et}} indispensable.
-
-
-__conf_ils_non_verbe__
-    ils  @:¬:(?:[123][sp]|O[onw]|X)|>ou/
-        <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
-        -2>> =suggSimil(\2, ":(?:3p|Oo)", False)                                                    # Incohérence avec “ils” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-    ils  [le|la|l’|les|leur|lui|nous|vous]  @:¬:(?:[123][sp]|O[onw]|X)
-        <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
-        -3>> =suggSimil(\3, ":(?:3p|Oo)", False)                                                    # Incohérence avec “ils” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
-
-TEST: ils {{son}} du même bois.
-TEST: Ils {{étai}} partie au {{restaurent}}
-TEST: ils leur {{étai}} indifférent
 
 
 __conf_préverbes__
@@ -7063,7 +7101,7 @@ __conf_ont_on__
         -1>> on                                                     # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
     qui on
-        <<- /conf/ not morph(<1, ":[VR]|<start>") and not morph(>1, ":(?:3s|Oo|X)")
+        <<- /conf/ not morph(<1, ":[VR]|<start>") and not morph(>1, ":(?:3s|Ov)")
         -2>> ont                                                    # Confusion probable. Exemples : « on y va », « ils ont faim ».
 
     ~-ont$
@@ -7079,7 +7117,7 @@ TEST: {{Ont}} ne sait jamais quoi faire
 TEST: si {{ont}} donne à ces gens, ça n’en finit plus.
 TEST: {{Ont}} viens !
 TEST: {{Ont}} ne sait pas comment faire.
-TEST: n’y {{on}} jamais lieu de telles abominations !
+TEST: n’y {{on}} {{jamais}} lieu de telles abominations !
 TEST: ces chiens te l’{{on}} {{donné}}
 TEST: {{Ont}} lui avait donné du temps
 TEST: {{Ont}} leur {{prendra}} tout
@@ -11062,7 +11100,7 @@ TEST: en passant par les “séjours humanitaires” clé en main
 TEST: qui sont en majorité moins attentifs à la qualité de la prestation qu’ils proposent aux clients
 TEST: Il a une tête de déterré.
 TEST: Malgré quelques envolées un brin trop solennelles, tout ce que j’ai dit était très sincère.
-TEST: Je constate également qu’il n’y pas beaucoup d’entente entre eux.
+TEST: Je constate également qu’il n’y a pas beaucoup d’entente entre eux.
 TEST: cet appareil supersonique a été conçu pour mener des frappes longue distance
 TEST: C’est à mes yeux totalement secondaire.
 TEST: les femmes se révoltèrent alors, elles aussi désespérées par ces injonctions contradictoires.
@@ -12194,6 +12232,7 @@ TEST: 00 heure, 01 heure
 TEST: il a adopté 1 {{chiens}}.
 TEST: 22 {{heure}}
 TEST: 3 {{heure}}
+TEST: les élèves sont inquiets après une année 2018 compliquée et riche en réformes.
 
 
 ##  trouver ça/ceci/cela + adj
