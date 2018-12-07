@@ -4788,6 +4788,7 @@ TEST: t’en voilà débarrassée.
 TEST: N’oublient-ils pas ce qu’ils étaient autrefois…
 TEST: Ne presque jamais réussir un plat aussi simple, c’est de l’incompétence pure et simple.
 TEST: c’est vous les journalistes qui l’avez écrit
+TEST: C’est nous les patrons
 
 
 __loc_notre_père_qui_es_au_cieux__
@@ -10373,6 +10374,7 @@ __simplication_substantifs__
     >caisse à >outil
     >chair à [pâté|>canon]
     >chambre [de|d’] [agriculture|hôte|hôtes|commerce|compensation|décompression|dégrisement]
+    >chasse à courre
     >chemin de [traverse|fer]
     >chili con carne
     >claire comme de l’ eau de [boudin|roche|source]
@@ -10383,7 +10385,7 @@ __simplication_substantifs__
     >conne comme la lune
     >conne comme un balai
     >conne comme une valise sans >poignée
-    >coup [de|d’] [balai|bol|cœur|foudre|fil|grâce|jarnac|théâtre|coude|genou|main|patte|pied|poing|poker|pouce|tête|avance|éclat|État|œil|épaule]
+    >coup [de|d’] [balai|bol|cœur|couteau|foudre|fil|grâce|jarnac|théâtre|coude|genou|main|patte|pied|poing|poker|pouce|tête|avance|éclat|État|œil|épaule]
     >coup du sort
     >course contre la montre
     [cousu|cousue|cousus|cousues] [main]
@@ -10881,6 +10883,9 @@ __purge_locutions_potentielles__
     à l’ époque  @¬:A.*:[fe]:[si]
         <<- ~1:3>> *
 
+    à répétition  @¬:A.*:[fe]:[si]
+        <<- ~1:2>> *
+
     au départ  @:¬:A.*:[me]:[si]
         <<- ~1:2>> *
 
@@ -11183,6 +11188,7 @@ TEST: Nous foncions vers notre perte à vitesse grand V, pied au plancher, sans 
 TEST: faire un embrago sur les armes suite à la dérive totalitaire du régime.
 TEST: En colère, les ambulanciers une nouvelle fois mobilisés contre une réforme qui met en péril leur activité
 TEST: Au-delà des réponses qu’a tenté d’apporter cette semaine le président, le mouvement des “gilets jaunes” marque un tournant dans la vie politique et sociale de la France.
+TEST: S’y inventent de nouvelles solidarités, s’y expérimentent des joies politiques dont on avait perdu le goût et la découverte qu’on peut désobéir ensemble.
 
 
 
@@ -13708,7 +13714,7 @@ TEST: Elles avançaient côte à côte.
 
 # cou / coup / coût
 __conf_coup_cout_cou__
-    [>cou|>coût|>cout] [de|d’] [>baguette|>bâton|>barre|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>gueule|>grâce|>griffe|>grisou|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>rein|>rabot|>savate|>sang|>sabot|>sifflet|>soleil|>surin|>tête|>théâtre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>surin|>tête|>théâtre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
     [>cou|>coût|>cout] [dur|durs]
         <<- /conf/ -1>> coup|coups      # Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
@@ -15596,6 +15602,32 @@ TEST: lui {{mangée}} beaucoup.
 TEST: L’homme qui s’approchait de lui voulait le surprendre.
 
 
+__infi_se_laisser_vinf__
+    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [<end>|,]
+    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [dans|avec]
+    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ -3>> =suggVerbInfi(\3)                               # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [le|la|l’|les] >laisser @:V1.*:Q  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [le|la|l’|les] >laisser @:V1.*:Q  [<end>|,]
+    [le|la|l’|les] >laisser @:V1.*:Q  [dans|avec]
+    [le|la|l’|les] >laisser @:V1.*:Q  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ not morph(\2, ":N") -3>> =suggVerbInfi(\3)           # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [/-le|/-la|/-les]  @:V1.*:Q  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [/-le|/-la|/-les]  @:V1.*:Q  [<end>|,]
+    [/-le|/-la|/-les]  @:V1.*:Q  [dans|avec]
+    [/-le|/-la|/-les]  @:V1.*:Q  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morphVC(\1, ">laisser") -2>> =suggVerbInfi(\2)       # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+TEST: Il se laisse trop {{allé}}, ce petit.
+TEST: Nous nous laissions {{allé}} dans le plus complet abandon.
+TEST: Je le laissais {{mangé}} autant qu’il le voulut.
+TEST: Laisse-la {{abandonné}} ses études, si c’est ce qu’elle veut.
+
+
+
 !!
 !!
 !!!! Usage pronominal avec “avoir” au lieu d’“être”                                               !!
@@ -16518,11 +16550,12 @@ TEST: {{Découragés}}, je suis parti.
 
 __ppas_adj_accord_il__
     <start>  *WORD  ?,¿  il
-        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])") and not after("^ +y a")
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir)[, .]")
         -2>> =suggMasSing(\2)                                                   # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
 
 TEST: — {{Déçue}}, il s’en est allé.
 TEST: Lancés il y a plus de 13 ans, le 14 février 2001, ces outils
+TEST: Si délégués il doit y avoir, ce sera uniquement des gens choisis parmi nous.
 
 
 __ppas_adj_accord_elle__
@@ -16538,12 +16571,13 @@ __ppas_adj_accord_ils__
         <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|m:[pi])")
         -2>> =suggMasPlur(\2)                                                   # Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
 
+TEST: Vraiment {{soucieuse}}, ils sont.
 TEST: Très vite, ils sont partis
 TEST: Une fois terminé, ils sont revenus.
-TEST: Vraiment {{soucieuse}}, ils sont.
 TEST: Désolé, ils ne viendront pas.
 TEST: Pire, ils piétinent parfois les droits humains.
 TEST: Bref, ils veulent des services publics là où ces derniers font de plus en plus défaut.
+
 
 
 __ppas_adj_accord_elles__
@@ -18965,11 +18999,7 @@ TEST: les récompenses distribuées à parts égales {{était}}…
 TEST: Les États-Unis d’Amérique se {{compose}} de 50 états.
 TEST: Les enfants en {{manges}}.
 TEST: Les ombres la {{donnes}}
-TEST: Les grands hommes politiques
-TEST: les charmantes petites mines de toutes les jeunes filles
-TEST: Les pauvres petites dames sont folles
 TEST: Les entrepreneurs ont {{cherchaient}} la reconnaissance sociale
-TEST: l’écart entre les riches et les pauvres n’était pas si grand.
 TEST: les grands {{danse}}
 TEST: les filles {{passes}} ce matin
 TEST: les marchands {{marche}}
@@ -18986,9 +19016,15 @@ TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.
 TEST: les chattes {{danse}}
 TEST: certains hommes {{marchandes}} sans cesse
 TEST: certaines femmes {{danse}} beaucoup
+TEST: l’écart entre les riches et les pauvres n’était pas si grand.
+TEST: Les grands hommes politiques
+TEST: les charmantes petites mines de toutes les jeunes filles
+TEST: Les pauvres petites dames sont folles
 TEST: Sauf que l’un comme l’autre avaient dû y renoncer.
 TEST: L’un comme l’autre devaient y renoncer.
 TEST: Les écrivaines Marie Darrieussecq et Annie Ernaux
+TEST: Les femmes candidates à ce poste doivent se présenter cet après-midi.
+TEST: Toutes les personnes candidates seront évaluées plusieurs fois.
 
 
 __conj_des_nom__
