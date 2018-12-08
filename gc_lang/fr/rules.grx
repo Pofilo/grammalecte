@@ -2,7 +2,7 @@
 #   RÈGLES DE GRAMMAIRE FRANÇAISE POUR GRAMMALECTE
 #   par Olivier R.
 #
-#   Copyright © 2011-2017.
+#   Copyright © 2011-2018.
 #
 #   This file is part of Grammalecte.
 #
@@ -9158,7 +9158,7 @@ __purge_locutions__
     avant Jésus-Christ
     avant d’ en arriver là
     avant de faire quoi que ce soit
-    avant de faire quoi que ce soit [de|d’] ?@:W¿ [stupide|crétin|con|idiot]
+    avant de faire quoi que ce soit [de|d’] ?@:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
     avant qu’ il ne soit trop tard
     avant un bon bout de temps
     avec [brio|joie|légèreté|insistance|peine]
@@ -9219,8 +9219,9 @@ __purge_locutions__
     dans ces cas [précis|particuliers]
     dans l’ [idéal|immédiat]
     dans la mesure du possible
+    dans leur globalité
     dans les années ~^\d{2,5}$
-    dans les [jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] à venir
+    dans les [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] à venir
     dans peu de temps
     dans tout [cela|ça|ceci]
     dans très peu de temps
@@ -9572,13 +9573,13 @@ __purge_locutions__
     ici et [là|maintenant]
     ici même
     ici-bas
-    il y a ?très¿ longtemps
-    il y a ?très¿ peu de temps
-    il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a moins de [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    il y a quelque temps
-    il n’y a pas ?si¿ longtemps
+    ?d’¿ il y a ?très¿ longtemps
+    ?d’¿ il y a ?très¿ peu de temps
+    ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    ?d’¿ il y a moins de [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    ?d’¿ il y a [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    ?d’¿ il y a quelque temps
+    ?d’¿ il n’y a pas ?si¿ longtemps
     illico ?presto¿
     jadis
     j’ en passe et des [meilleurs|meilleures]
@@ -10028,6 +10029,9 @@ __gestion_mots_grammaticaux__
     en matière [de|d’]
         <<- ~2>> *
 
+    en phase avec
+        <<- ~1:2>> *
+
     en proie à
         <<- ~1:2>> *
 
@@ -10270,6 +10274,12 @@ __purge_conditionnelle__
 
     hélas
         <<- not morph(<1, ":(?:X|Oo)") and not tag_before(\1, "2s") ~>> *
+
+    le [plus|moins] @:W possible
+        <<- ~>> *
+
+    les [moins|plus] @:A.*:[pi] possible
+        <<- ~-1>> *
 
     mais
         <<- not morph(<1, ":(?:D.*:p|N)") ~>> *
@@ -11189,6 +11199,7 @@ TEST: faire un embrago sur les armes suite à la dérive totalitaire du régime.
 TEST: En colère, les ambulanciers une nouvelle fois mobilisés contre une réforme qui met en péril leur activité
 TEST: Au-delà des réponses qu’a tenté d’apporter cette semaine le président, le mouvement des “gilets jaunes” marque un tournant dans la vie politique et sociale de la France.
 TEST: S’y inventent de nouvelles solidarités, s’y expérimentent des joies politiques dont on avait perdu le goût et la découverte qu’on peut désobéir ensemble.
+TEST: Les femmes, quant à elles, ont aussi tendance à sous-estimer le harcèlement dont elles sont dans leur globalité victimes
 
 
 
@@ -11817,6 +11828,7 @@ __gn_les_2m__
 TEST: les pitres {{imbécile}}
 TEST: il faut en convenir et les femmes {{oubliés}} seront satisfaites.
 TEST: et les femmes {{retrouvés}} seront emmenées à l’hôpital.
+TEST: les moins éloignées possible
 
 
 __gn_leurs_1m__
@@ -14944,6 +14956,7 @@ TEST: de n’importe quelle manière
 TEST: un libéralisme trop « individualiste » s’est transformé en de supposées demandes de droits spécifiques
 TEST: soit 40 % de plus comparé au quinquennat précédent
 TEST: On passe de sophistiqué à classique.
+TEST: Les « événements » d’il y a cinquante ans n’ont sans doute « rien à voir » avec le mouvement des « gilets jaunes »
 
 
 __infi_y_verbe!3__
@@ -18634,7 +18647,7 @@ __conj_personne_aucun_rien__
         <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-    rien  @:V¬:(?:3s|P|G)
+    rien  @:V¬:(?:3s|P|Y|G)
         <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
             and not(morph(\2, ":Y") and value(<1, "|ne|"))
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
@@ -18650,6 +18663,7 @@ TEST: Rien, en ce qui le concernait, ne {{pouvais}} le ramener à la raison.
 TEST: personne n’en {{parlent}}
 TEST: aucun d’entre nous n’{{as}} donné
 TEST: aucun ne {{vas}} là-bas
+TEST: il ne faut rien faire ou rien dire contre les manifestants
 
 
 __conj_nul_nulle__
