@@ -126,12 +126,10 @@ function initSCOptions (dSavedOptions) {
             community: true,
             personal: true
         }});
-        setDictionaryOnOff("extended", true);
         setDictionaryOnOff("community", true);
         setDictionaryOnOff("personal", true);
     } else {
         let dOptions = dSavedOptions.sc_options;
-        setDictionaryOnOff("extended", dOptions["extended"]);
         setDictionaryOnOff("community", dOptions["community"]);
         setDictionaryOnOff("personal", dOptions["personal"]);
     }
@@ -146,9 +144,6 @@ function setDictionary (sDictionary, oDictionary) {
 }
 
 function setSpellingDictionary (dSavedDictionary) {
-    if (dSavedDictionary.hasOwnProperty("oExtendedDictionary")) {
-        setDictionary("extended", dSavedDictionary["oExtendedDictionary"]);
-    }
     if (dSavedDictionary.hasOwnProperty("oCommunityDictionary")) {
         setDictionary("community", dSavedDictionary["oCommunityDictionary"]);
     }
@@ -161,7 +156,6 @@ function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
         browser.storage.local.get("ui_options", initUIOptions);
-        browser.storage.local.get("oExtendedDictionary", setSpellingDictionary);
         browser.storage.local.get("oCommunityDictionary", setSpellingDictionary);
         browser.storage.local.get("oPersonalDictionary", setSpellingDictionary);
         browser.storage.local.get("sc_options", initSCOptions);
@@ -169,7 +163,6 @@ function init () {
     }
     browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
     browser.storage.local.get("ui_options").then(initUIOptions, showError);
-    browser.storage.local.get("oExtendedDictionary").then(setSpellingDictionary, showError);
     browser.storage.local.get("oCommunityDictionary").then(setSpellingDictionary, showError);
     browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionary, showError);
     browser.storage.local.get("sc_options").then(initSCOptions, showError);
