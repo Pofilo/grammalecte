@@ -119,8 +119,8 @@ function setDictionaryOnOff (sDictionary, bActivate) {
     });
 }
 
-function initSCOptions (dSavedOptions) {
-    if (!dSavedOptions.hasOwnProperty("sc_options")) {
+function initSCOptions (oData) {
+    if (!oData.hasOwnProperty("sc_options")) {
         browser.storage.local.set({"sc_options": {
             extended: true,
             community: true,
@@ -129,9 +129,8 @@ function initSCOptions (dSavedOptions) {
         setDictionaryOnOff("community", true);
         setDictionaryOnOff("personal", true);
     } else {
-        let dOptions = dSavedOptions.sc_options;
-        setDictionaryOnOff("community", dOptions["community"]);
-        setDictionaryOnOff("personal", dOptions["personal"]);
+        setDictionaryOnOff("community", oData.sc_options["community"]);
+        setDictionaryOnOff("personal", oData.sc_options["personal"]);
     }
 }
 
@@ -143,12 +142,21 @@ function setDictionary (sDictionary, oDictionary) {
     });
 }
 
-function setSpellingDictionary (dSavedDictionary) {
-    if (dSavedDictionary.hasOwnProperty("oCommunityDictionary")) {
-        setDictionary("community", dSavedDictionary["oCommunityDictionary"]);
+function setSpellingDictionaries (oData) {
+    if (oData.hasOwnProperty("oPersonalDictionary")) {
+        // deprecated
+        console.log("personal dictionary migration");
+        browser.storage.local.set({ "oDictionaries": { "__personal__": oData["oPersonalDictionary"] } });
+        setDictionary("personal", oData["oPersonalDictionary"]);
+        browser.storage.local.remove("oPersonalDictionary");
     }
-    if (dSavedDictionary.hasOwnProperty("oPersonalDictionary")) {
-        setDictionary("personal", dSavedDictionary["oPersonalDictionary"]);
+    if (oData.hasOwnProperty("oDictionaries")) {
+        if (oData.oDictionaries.hasOwnProperty("__personal__")) {
+            setDictionary("personal", oData.oDictionaries["__personal__"]);
+        }
+        if (oData.oDictionaries.hasOwnProperty("__community__")) {
+            setDictionary("personal", oData.oDictionaries["__community__"]);
+        }
     }
 }
 
@@ -156,15 +164,15 @@ function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
         browser.storage.local.get("ui_options", initUIOptions);
-        browser.storage.local.get("oCommunityDictionary", setSpellingDictionary);
-        browser.storage.local.get("oPersonalDictionary", setSpellingDictionary);
+        browser.storage.local.get("oDictionaries", setSpellingDictionaries);
+        browser.storage.local.get("oPersonalDictionary", setSpellingDictionaries); // deprecated
         browser.storage.local.get("sc_options", initSCOptions);
         return;
     }
     browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
     browser.storage.local.get("ui_options").then(initUIOptions, showError);
-    browser.storage.local.get("oCommunityDictionary").then(setSpellingDictionary, showError);
-    browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionary, showError);
+    browser.storage.local.get("oDictionaries").then(setSpellingDictionaries, showError);
+    browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionaries, showError); // deprecated
     browser.storage.local.get("sc_options").then(initSCOptions, showError);
 }
 

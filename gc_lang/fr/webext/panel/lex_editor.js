@@ -492,35 +492,69 @@ const oGenerator = {
     }
 }
 
+const oDictHandler = {
+    oDictionaries: null,
 
-const oBinaryDict = {
-    
-    oIBDAWG: null,
-
-    load: function () {
+    loadDictionaries: function () {
         if (bChrome) {
-            browser.storage.local.get("oPersonalDictionary", this._load.bind(this));
+            browser.storage.local.get("oDictionaries", this._loadDictionaries.bind(this));
             return;
         }
-        let xPromise = browser.storage.local.get("oPersonalDictionary");
-        xPromise.then(this._load.bind(this), showError);
+        let xPromise = browser.storage.local.get("oDictionaries");
+        xPromise.then(this._loadDictionaries.bind(this), showError);
     },
 
-    _load: function (oResult) {
-        if (!oResult.hasOwnProperty("oPersonalDictionary")) {
-            hideElement("export_button");
+    _loadDictionaries: function (oResult) {
+        if (!oResult.hasOwnProperty("oDictionaries")) {
             return;
         }
-        let oJSON = oResult.oPersonalDictionary;
+        this.oDictionaries = oResult.oDictionaries;
+        oBinaryDict.load("__personal__");
+    },
+
+    getDictionary: function (sName) {
+        console.log("load "+sName);
+        if (this.oDictionaries  &&  this.oDictionaries.hasOwnProperty(sName)) {
+            console.log(this.oDictionaries[sName]);
+            return this.oDictionaries[sName];
+        }
+        return null;
+    },
+
+    saveDictionary: function (sName, oJSON) {
+        this.oDictionaries[sName] = oJSON;
+        if (sName == "__personal__") {
+            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
+        } else {
+            // rebuild now?
+            //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "community", oDict: oJSON}, dInfo: {} });
+        }
+        this.storeDictionaries();
+    },
+
+    storeDictionaries: function () {
+        browser.storage.local.set({ "oDictionaries": this.oDictionaries });
+    }
+}
+
+const oBinaryDict = {
+
+    oIBDAWG: null,
+    sName: null,
+
+    load: function (sName="__personal__") {
+        this.sName = sName;
+        let oJSON = oDictHandler.getDictionary(sName);
         if (oJSON) {
-            this.__load(oJSON);
+            console.log("parse");
+            this.parseDict(oJSON);
         } else {
             oLexiconTable.clear();
             this.setDictData(0, "[néant]");
         }
     },
 
-    __load: function (oJSON) {
+    parseDict: function (oJSON) {
         try {
             this.oIBDAWG = new IBDAWG(oJSON);
         }
@@ -532,26 +566,21 @@ const oBinaryDict = {
         let lEntry = [];
         for (let aRes of this.oIBDAWG.select()) {
             lEntry.push(aRes);
-        }        
+        }
         oLexiconTable.fill(lEntry);
         this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
     },
 
-    save: function (oJSON) {
-        browser.storage.local.set({ "oPersonalDictionary": oJSON });
-        browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
-    },
-
     import: function () {
-        let xInput = document.getElementById("import_input"); 
+        let xInput = document.getElementById("import_input");
         let xFile = xInput.files[0];
         let xURL = URL.createObjectURL(xFile);
         let sJSON = helpers.loadFile(xURL);
         if (sJSON) {
             try {
                 let oJSON = JSON.parse(sJSON);
-                this.__load(oJSON);
-                this.save(oJSON);
+                this.parseDict(oJSON);
+                oDictHandler.saveDictionary(this.sName, oJSON);
             }
             catch (e) {
                 console.error(e);
@@ -560,7 +589,7 @@ const oBinaryDict = {
             }
         } else {
             this.setDictData(0, "[néant]");
-            this.save(null);
+            oDictHandler.saveDictionary(this.sName, null);
         }
     },
 
@@ -586,20 +615,20 @@ const oBinaryDict = {
         if (lEntry.length > 0) {
             let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
-            this.save(oJSON);
+            oDictHandler.saveDictionary(this.sName, oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
         } else {
+            oDictHandler.saveDictionary(this.sName, null);
             this.setDictData(0, "[néant]");
-            this.save(null);
         }
         hideElement("save_button");
     },
 
     export: function () {
-        let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'}); 
+        let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'});
         let sURL = URL.createObjectURL(xBlob);
-        browser.downloads.download({ filename: "fr.personal.json", url: sURL, saveAs: true });
+        browser.downloads.download({ filename: "fr."+this.sName+".json", url: sURL, saveAs: true });
     }
 }
 
@@ -666,7 +695,7 @@ const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], "wai
 
 oTagsInfo.load();
 oSearch.load();
-oBinaryDict.load();
+oDictHandler.loadDictionaries();
 oBinaryDict.listen();
 oGenerator.listen();
 oTabulations.listen();
