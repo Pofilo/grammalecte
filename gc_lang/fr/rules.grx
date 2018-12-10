@@ -3446,6 +3446,7 @@ TEST: {{eux mêmes}}.                                  ->> eux-mêmes
 TEST: un {{va et vient}} incessant me casse la tête
 TEST: Le {{moto club}} était sur le point de faire faillite.
 TEST: J’ai beaucoup de {{déjà vu}}.
+TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants se poursuit devant l’hôtel de ville à Bordeaux depuis environ 1h30.
 TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
 
 
@@ -5948,7 +5949,7 @@ __conf_ça_çà_sa__
         <<- /conf/ -1>> sa                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque)/|:[NAQ].*:f
-        <<- /conf/ -1>> ça                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+        <<- /conf/ not (\2 == "ou" and value(>1, "|son|ses|")) -1>> ça          # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa [n’|m’|t’|s’|j’|l’|d’|qu’|lorsqu’|puisqu’|quoiqu’]
         <<- /conf/ -1>> ça                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
@@ -5974,6 +5975,7 @@ TEST: il faut s’y prendre comme {{sa}}
 TEST: on fait {{sa}} lorsqu’on a tout perdu
 TEST: avec sa presque belle-mère
 TEST: sa toute nouvelle application de synchronisation de fichiers
+TEST: communiquer avec sa ou son partenaire.
 
 
 # Campagne / compagne
@@ -6344,7 +6346,7 @@ __conf_dès_des_dés__
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
     [dés|des] [un|une] [an|heure]
-        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|occasion|programme|terme|classe|autour)/") and not value(>1, "|de|du|des|d’|")
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|occasion|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [des|ces|mes|tes|ses|nos|vos|quelques|aux] [dès|des]
@@ -6391,6 +6393,7 @@ TEST: sous la barre des 500
 TEST: En plus des 400 à 500 euros mensuels que touche une personne
 TEST: les moins de 20 ans peuvent ne pas connaître le premier album du groupe
 TEST: au lieu des 20 heures réglementaires.
+TEST: celle des 20 ans.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -8474,8 +8477,8 @@ __toute_nom__
         <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
 
 __tous_nom__
-    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|G|M|[me]:[ip])
-    de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip])
+    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|G|M|[me]:[ip]|3p)
+    de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip]|3[sp])
         <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        # Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
     tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|3[sp]|[me]:[ip])
@@ -8501,6 +8504,7 @@ TEST: vos tout débuts furent difficiles
 TEST: aux tout débuts, il y eut bien des erreurs
 TEST: comment les inégalités sociales impactent la santé des tout petits
 TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
+TEST: la survie de tous est plus importante que les profits de quelques-uns
 
 
 
