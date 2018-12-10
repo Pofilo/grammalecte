@@ -218,6 +218,12 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "openURL":
             browser.tabs.create({url: dParam.sURL});
             break;
+        case "openConjugueurTab":
+            openConjugueurTab();
+            break;
+        case "openLexiconEditor":
+            openLexiconEditor(dParam["dictionary"]);
+            break;
         default:
             console.log("[background] Unknown command: " + sCommand);
             console.log(oRequest);
@@ -229,6 +235,7 @@ browser.runtime.onMessage.addListener(handleMessage);
 
 
 function handleConnexion (xPort) {
+    // Messages from tabs
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
     dConnx.set(iPortId, xPort);
     xPort.onMessage.addListener(function (oRequest) {
@@ -351,8 +358,20 @@ browser.commands.onCommand.addListener(function (sCommand) {
             openConjugueurWindow();
             break;
         case "lex_editor":
-            openLexEditor();
+            openLexiconEditor();
             break;
+    }
+});
+
+
+/*
+    Lexicon editor tab
+*/
+let nTabLexiconEditor = null;
+
+browser.tabs.onRemoved.addListener(function (nTabId, xRemoveInfo) {
+    if (nTabId === nTabLexiconEditor) {
+        nTabLexiconEditor = null;
     }
 });
 
@@ -373,17 +392,24 @@ function sendCommandToTab (sCommand, iTab) {
     xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
 }
 
-function openLexEditor () {
-    if (bChrome) {
-        browser.tabs.create({
+function openLexiconEditor (sName="__personal__") {
+    if (nTabLexiconEditor === null) {
+        if (bChrome) {
+            browser.tabs.create({
+                url: browser.extension.getURL("panel/lex_editor.html")
+            }, onLexiconEditorOpened);
+            return;
+        }
+        let xLexEditor = browser.tabs.create({
             url: browser.extension.getURL("panel/lex_editor.html")
         });
-        return;
+        xLexEditor.then(onLexiconEditorOpened, onError);
     }
-    let xLexEditor = browser.tabs.create({
-        url: browser.extension.getURL("panel/lex_editor.html")
-    });
-    xLexEditor.then(onCreated, onError);
+}
+
+function onLexiconEditorOpened (xTab) {
+    //console.log(xTab);
+    nTabLexiconEditor = xTab.id;
 }
 
 function openConjugueurTab () {
@@ -424,5 +450,5 @@ function onCreated (xWindowInfo) {
 }
 
 function onError (error) {
-    console.log(`Error: ${error}`);
+    console.log(error);
 }
