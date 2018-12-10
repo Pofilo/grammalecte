@@ -146,16 +146,16 @@ function setSpellingDictionaries (oData) {
     if (oData.hasOwnProperty("oPersonalDictionary")) {
         // deprecated
         console.log("personal dictionary migration");
-        browser.storage.local.set({ "oDictionaries": { "__personal__": oData["oPersonalDictionary"] } });
+        browser.storage.local.set({ "dictionaries": { "__personal__": oData["oPersonalDictionary"] } });
         setDictionary("personal", oData["oPersonalDictionary"]);
         browser.storage.local.remove("oPersonalDictionary");
     }
-    if (oData.hasOwnProperty("oDictionaries")) {
-        if (oData.oDictionaries.hasOwnProperty("__personal__")) {
-            setDictionary("personal", oData.oDictionaries["__personal__"]);
+    if (oData.hasOwnProperty("dictionaries")) {
+        if (oData.dictionaries.hasOwnProperty("__personal__")) {
+            setDictionary("personal", oData.dictionaries["__personal__"]);
         }
-        if (oData.oDictionaries.hasOwnProperty("__community__")) {
-            setDictionary("personal", oData.oDictionaries["__community__"]);
+        if (oData.dictionaries.hasOwnProperty("__community__")) {
+            setDictionary("personal", oData.dictionaries["__community__"]);
         }
     }
 }
@@ -164,14 +164,14 @@ function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
         browser.storage.local.get("ui_options", initUIOptions);
-        browser.storage.local.get("oDictionaries", setSpellingDictionaries);
+        browser.storage.local.get("dictionaries", setSpellingDictionaries);
         browser.storage.local.get("oPersonalDictionary", setSpellingDictionaries); // deprecated
         browser.storage.local.get("sc_options", initSCOptions);
         return;
     }
     browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
     browser.storage.local.get("ui_options").then(initUIOptions, showError);
-    browser.storage.local.get("oDictionaries").then(setSpellingDictionaries, showError);
+    browser.storage.local.get("dictionaries").then(setSpellingDictionaries, showError);
     browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionaries, showError); // deprecated
     browser.storage.local.get("sc_options").then(initSCOptions, showError);
 }

@@ -127,8 +127,11 @@ class Table {
         while (this.xTable.firstChild) {
             this.xTable.removeChild(this.xTable.firstChild);
         }
+        this.lEntry = [];
+        this.nEntry = 0;
         this.iEntryIndex = 0;
         this._createHeader();
+        this.showEntryNumber();
     }
 
     fill (lFlex) {
@@ -497,25 +500,24 @@ const oDictHandler = {
 
     loadDictionaries: function () {
         if (bChrome) {
-            browser.storage.local.get("oDictionaries", this._loadDictionaries.bind(this));
+            browser.storage.local.get("dictionaries", this._loadDictionaries.bind(this));
             return;
         }
-        let xPromise = browser.storage.local.get("oDictionaries");
+        let xPromise = browser.storage.local.get("dictionaries");
         xPromise.then(this._loadDictionaries.bind(this), showError);
     },
 
     _loadDictionaries: function (oResult) {
-        if (!oResult.hasOwnProperty("oDictionaries")) {
+        if (!oResult.hasOwnProperty("dictionaries")) {
             return;
         }
-        this.oDictionaries = oResult.oDictionaries;
+        this.oDictionaries = oResult.dictionaries;
         oBinaryDict.load("__personal__");
     },
 
     getDictionary: function (sName) {
-        console.log("load "+sName);
         if (this.oDictionaries  &&  this.oDictionaries.hasOwnProperty(sName)) {
-            console.log(this.oDictionaries[sName]);
+            //console.log(this.oDictionaries[sName]);
             return this.oDictionaries[sName];
         }
         return null;
@@ -525,15 +527,18 @@ const oDictHandler = {
         this.oDictionaries[sName] = oJSON;
         if (sName == "__personal__") {
             browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
-        } else {
-            // rebuild now?
-            //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "community", oDict: oJSON}, dInfo: {} });
+        }
+        else if (sName == "__community__") {
+            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "community", oDict: oJSON}, dInfo: {} });
+        }
+        else {
+            // TODO: merge sub-dictionaries
         }
         this.storeDictionaries();
     },
 
     storeDictionaries: function () {
-        browser.storage.local.set({ "oDictionaries": this.oDictionaries });
+        browser.storage.local.set({ "dictionaries": this.oDictionaries });
     }
 }
 
@@ -542,11 +547,11 @@ const oBinaryDict = {
     oIBDAWG: null,
     sName: null,
 
-    load: function (sName="__personal__") {
+    load: function (sName) {
+        console.log("lexicon editor, load: " + sName);
         this.sName = sName;
         let oJSON = oDictHandler.getDictionary(sName);
         if (oJSON) {
-            console.log("parse");
             this.parseDict(oJSON);
         } else {
             oLexiconTable.clear();
@@ -604,6 +609,7 @@ const oBinaryDict = {
     },
 
     listen: function () {
+        document.getElementById("dic_selector").addEventListener("change", () => {this.load(document.getElementById("dic_selector").value)}, false);
         document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_input").addEventListener("change", () => { this.import(); }, false);
@@ -613,7 +619,7 @@ const oBinaryDict = {
         let xProgressNode = document.getElementById("wait_progress");
         let lEntry = oLexiconTable.getEntries();
         if (lEntry.length > 0) {
-            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
+            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", this.sName, xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
             oDictHandler.saveDictionary(this.sName, oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
