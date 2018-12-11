@@ -224,6 +224,8 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "openLexiconEditor":
             openLexiconEditor(dParam["dictionary"]);
             break;
+        case "openDictionaries":
+            openDictionaries();
         default:
             console.log("[background] Unknown command: " + sCommand);
             console.log(oRequest);
@@ -365,13 +367,17 @@ browser.commands.onCommand.addListener(function (sCommand) {
 
 
 /*
-    Lexicon editor tab
+    Tabs
 */
 let nTabLexiconEditor = null;
+let nTabDictionaries = null;
 
 browser.tabs.onRemoved.addListener(function (nTabId, xRemoveInfo) {
     if (nTabId === nTabLexiconEditor) {
         nTabLexiconEditor = null;
+    }
+    else if (nTabId === nTabDictionaries) {
+        nTabDictionaries = null;
     }
 });
 
@@ -410,6 +416,26 @@ function openLexiconEditor (sName="__personal__") {
 function onLexiconEditorOpened (xTab) {
     //console.log(xTab);
     nTabLexiconEditor = xTab.id;
+}
+
+function openDictionaries () {
+    if (nTabDictionaries === null) {
+        if (bChrome) {
+            browser.tabs.create({
+                url: browser.extension.getURL("panel/dictionaries.html")
+            }, onDictionariesOpened);
+            return;
+        }
+        let xLexEditor = browser.tabs.create({
+            url: browser.extension.getURL("panel/dictionaries.html")
+        });
+        xLexEditor.then(onDictionariesOpened, onError);
+    }
+}
+
+function onDictionariesOpened (xTab) {
+    //console.log(xTab);
+    nTabDictionaries = xTab.id;
 }
 
 function openConjugueurTab () {

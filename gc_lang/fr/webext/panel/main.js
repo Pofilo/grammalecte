@@ -78,6 +78,13 @@ window.addEventListener(
                     dInfo: {}
                 });
             }
+            else if (xElem.id == "dictionaries_button") {
+                browser.runtime.sendMessage({
+                    sCommand: "openDictionaries",
+                    dParam: { "dictionary": "__community__"},
+                    dInfo: {}
+                });
+            }
             else if (xElem.id == "dic_community_button") {
                 browser.runtime.sendMessage({
                     sCommand: "openLexiconEditor",
@@ -228,8 +235,8 @@ function displaySCOptions (dOptions) {
         return;
     }
     dOptions = dOptions.sc_options;
-    //document.getElementById("extended_dic").checked = dOptions.extended_dic;
-    document.getElementById("community_dic").checked = dOptions.community_dic;
+    //document.getElementById("extended_dic").checked = dOptions.extended;
+    document.getElementById("community_dic").checked = dOptions.community;
     document.getElementById("personal_dic").checked = dOptions.personal;
 }
 
