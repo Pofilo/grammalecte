@@ -7415,6 +7415,41 @@ TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
 
 
+# puits / puis
+__conf_puits_puis__
+    [des|ces|mes|tes|ses|nos|vos|leurs|quelques|ce|mon|du] puis
+        <<- /conf/ -2>> puits
+        # Confusion. Si vous parlez d’un trou fait pour puiser quelque chose (ou pour amener quelque chose), écrivez “puits”.|https://fr.wiktionary.org/wiki/puits
+
+    puis [de|d’] [lumière|gaz|pétrole|science|ventilation]
+        <<- /conf/ morph(<1, ":D.*:[pm]") -1>> puits
+        # Confusion. Si vous parlez d’un trou fait pour puiser quelque chose (ou pour amener quelque chose), écrivez “puits”.|https://fr.wiktionary.org/wiki/puits
+
+    puis artésien
+        <<- /conf/ morph(<1, ":D.*:[mp]|<start>") -1>> puits
+        # Confusion. Le puits artésien.|https://fr.wiktionary.org/wiki/puits_art%C3%A9sien
+
+    puis >quantique
+        <<- /conf/ morph(<1, ":D.*:[mp]|<start>") -1>> puits
+        # Confusion. Puits quantique : zone de l’espace dans laquelle le potentiel ressenti par une particule quantique atteint un minimum.|https://fr.wikipedia.org/wiki/Puits_quantique
+
+    puis de >potentielle [fini|finie|finis|finies|>carrée|>harmonique]
+    puis de >potentielle @:¬:[NA]
+        <<- /conf/ morph(<1, ":D.*:[mp]|<start>") -1:3>> puits de potentiel
+        # Confusion probable. Un puits de potentiel désigne, en physique, le voisinage d'un minimum local d'énergie potentielle.|https://fr.wikipedia.org/wiki/Puits_de_potentiel
+
+TEST: Tombée au fond du {{puis}}, le désespoir la gagnait.
+TEST: Des {{puis}}, tu en as combien ?
+TEST: J’ai plusieurs {{puis}} de pétrole.
+TEST: quel {{puis}} artésien ?
+TEST: de quel {{puis}} quantique parles-tu ?
+TEST: {{Puis de potentiel}} harmonique
+TEST: Beaucoup d’abord, ensuite plusieurs puis quelques-uns seulement.
+TEST: Il faut discrètement en creuser plusieurs puis arrêter aussitôt.
+TEST: Il vient tel quel puis semble avoir des doutes.
+TEST: avec un puis plusieurs autres.
+
+
 # quand / quant / qu’en
 __conf_quand_quant_qu_en__
     quand à
@@ -9168,7 +9203,7 @@ __purge_locutions__
     avant de faire quoi que ce soit [de|d’] ?@:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
     avant qu’ il ne soit trop tard
     avant un bon bout de temps
-    avec [brio|joie|légèreté|insistance|peine]
+    avec [brio|constance|joie|légèreté|insistance|peine]
     avec autre chose
     avec le plus grand soin
     avec pertes et fracas
@@ -11229,6 +11264,7 @@ TEST: En colère, les ambulanciers une nouvelle fois mobilisés contre une réfo
 TEST: Au-delà des réponses qu’a tenté d’apporter cette semaine le président, le mouvement des “gilets jaunes” marque un tournant dans la vie politique et sociale de la France.
 TEST: S’y inventent de nouvelles solidarités, s’y expérimentent des joies politiques dont on avait perdu le goût et la découverte qu’on peut désobéir ensemble.
 TEST: Les femmes, quant à elles, ont aussi tendance à sous-estimer le harcèlement dont elles sont dans leur globalité victimes
+TEST: Elles ont avec constance démontré l’inanité de leur politique.
 
 
 
@@ -14680,6 +14716,17 @@ TEST: Ils étaient partis au restaurant après avoir {{pue}} dire un mot.       
 TEST: avoir {{pus}} réussir
 TEST: ce qu’ils ont {{pue}}
 TEST: il a {{pues}} partir
+
+
+# puits / puis
+__conf_puits_puis2__
+    [>creuser|>forer]   [un|ce|mon|ton|son|notre|votre|leur]  puis
+    >forage             [de|d’] [un|ce|mon|ton|son|notre|votre|leur]  puis
+        <<- /conf/ --1>> puits
+        # Confusion. Si vous parlez d’un trou fait pour puiser quelque chose (ou pour amener quelque chose), écrivez “puits”.|https://fr.wiktionary.org/wiki/puits
+
+TEST: Forage de son {{puis}} prévu demain
+TEST: Creuser un {{puis}}, pas si compliqué
 
 
 # quand même / comme même
