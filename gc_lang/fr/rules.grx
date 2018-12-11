@@ -5795,18 +5795,19 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 
 __conf_à_a_après_verbes__
     @:V¬:[YGNAWM]  ?@:W¿  a
-        <<- /conf/ \2 != "A" and not tag_before(\1, "que") and not tag_before(\1, "dont") and not tag_before(\1, "qui") and not morph(>1, ":Q")
-        -2>> à                                  # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ \-1 != "A" and not tag_before(\1, "que") and not tag_before(\1, "dont") and not tag_before(\1, "qui") and not morph(>1, ":Q")
+        --1>> à                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     [/VCint|/VCimp]  ?@:W¿  a
-        <<- /conf/ -2>> à                       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ --1>> à                      # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Vient-on {{a}} la maison demain ?
 TEST: Arrivait-elle {{a}} le manger ?
 TEST: Dis-moi {{a}} quelle heure on mange.
-TEST: Offrez-nous {{a}} Dieu et taisez-vous.
-TEST: dans tous les cas de figure il pense {{a}} sa fille.
+TEST: Offrez-vous {{a}} Dieu et taisez-vous.
+TEST: dans tous les cas de figure il pense souvent {{a}} sa fille.
 TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
+TEST: cet homme mange bien {{a}} la maison ?
 TEST: Ce que je mange a un goût de surgelé.
 TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
 
@@ -10723,18 +10724,29 @@ __purge_après_avoir__
     >avoir  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morph(>1, ":[QY]") ~2:0>> *
 
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
-    >avoir  ?[pas|jamais|plus|guère|point]¿  bon dos
-    >avoir  ?[pas|jamais|plus|guère|point]¿  bon pied ?,¿ bon œil
-    >avoir  ?[pas|jamais|plus|guère|point]¿  carte blanche
-    >avoir  ?[pas|jamais|plus|guère|point]¿  forme humaine
-    >avoir  ?[pas|jamais|plus|guère|point]¿  partie [gagnée|liée]
-    >avoir  ?[pas|jamais|plus|guère|point]¿  voix au chapitre
-        <<- ~2:0>> *
+    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    >avoir  bon dos
+    >avoir  bon pied ?,¿ bon œil
+    >avoir  carte blanche
+    >avoir  forme humaine
+    >avoir  partie [gagnée|liée]
+    >avoir  voix au chapitre
+        <<- ~2:0>> ␣
+        <<- =>> define(\2, [":LV"])
+
+    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    >avoir  [pas|jamais|plus|guère|point]  bon dos
+    >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
+    >avoir  [pas|jamais|plus|guère|point]  carte blanche
+    >avoir  [pas|jamais|plus|guère|point]  forme humaine
+    >avoir  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
+    >avoir  [pas|jamais|plus|guère|point]  voix au chapitre
+        <<- ~3:0>> ␣
+        <<- =>> define(\3, [":LV"])
 
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
-        <<- ~2:4>> *
+        <<- ~2:-2>> *
 
     /VCint  [pas|jamais|plus|guère|point]
     /VCint  ?[pas|jamais|plus|guère|point]¿  en partie
@@ -10755,18 +10767,29 @@ __purge_après_avoir__
     /VCint  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morphVC(\1, ":V0a") and morph(>1, ":[QY]") ~2:0>> *
 
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
-    /VCint  ?[pas|jamais|plus|guère|point]¿  bon dos
-    /VCint  ?[pas|jamais|plus|guère|point]¿  bon pied ?,¿ bon œil
-    /VCint  ?[pas|jamais|plus|guère|point]¿  carte blanche
-    /VCint  ?[pas|jamais|plus|guère|point]¿  forme humaine
-    /VCint  ?[pas|jamais|plus|guère|point]¿  partie [gagnée|liée]
-    /VCint  ?[pas|jamais|plus|guère|point]¿  voix au chapitre
-        <<- morphVC(\1, ":V0a") ~2:0>> *
+    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    /VCint  bon dos
+    /VCint  bon pied ?,¿ bon œil
+    /VCint  carte blanche
+    /VCint  forme humaine
+    /VCint  partie [gagnée|liée]
+    /VCint  voix au chapitre
+        <<- morphVC(\1, ":V0a") ~2:0>> ␣
+        <<- __also__ =>> define(\2, [":LV"])
+
+    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    /VCint  [pas|jamais|plus|guère|point]  bon dos
+    /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
+    /VCint  [pas|jamais|plus|guère|point]  carte blanche
+    /VCint  [pas|jamais|plus|guère|point]  forme humaine
+    /VCint  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
+    /VCint  [pas|jamais|plus|guère|point]  voix au chapitre
+        <<- morphVC(\1, ":V0a") ~3:0>> ␣
+        <<- __also__ =>> define(\3, [":LV"])
 
     /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
     /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
-        <<- morphVC(\1, ":V0a") ~2:4>> *
+        <<- morphVC(\1, ":V0a") ~2:-2>> *
 
 
 __purge_après_verbe__
@@ -16964,6 +16987,7 @@ TEST: Les élèves leur ont {{donnée}} ça.
 TEST: Le maire a {{créée}} un risque.
 TEST: le général n’a pas encore {{finit}} sa sieste.
 TEST: Certains les ont d’abord jugés trop lents.
+TEST: les timides ou les personnes n’ayant pas confiance en elles vont avoir tendance à éviter de regarder dans les yeux.
 
 
 __ppas_les_avoir__
