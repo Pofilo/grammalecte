@@ -33,9 +33,9 @@ function createNode  (sType, oAttr, oDataset=null) {
     }
 }
 
-function showElement (sElemId) {
+function showElement (sElemId, sDisplay="block") {
     if (document.getElementById(sElemId)) {
-        document.getElementById(sElemId).style.display = "block";
+        document.getElementById(sElemId).style.display = sDisplay;
     } else {
         console.log("HTML node named <" + sElemId + "> not found.")
     }
@@ -205,7 +205,7 @@ class Table {
         this.nEntry -= 1;
         this.showEntryNumber();
         if (this.sNodeId == "lexicon_table") {
-            showElement("save_button");
+            showElement("save_button", "inline-block");
         }
     }
 
@@ -485,7 +485,7 @@ const oGenerator = {
             document.getElementById("lemma").focus();
             this.hideAllSections();
             hideElement("editor");
-            showElement("save_button");
+            showElement("save_button", "inline-block");
             this.clear();
             this.cMainTag = "";
         }
