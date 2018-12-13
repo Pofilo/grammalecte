@@ -556,6 +556,7 @@ const oBinaryDict = {
         } else {
             oLexiconTable.clear();
             this.setDictData(0, "[néant]");
+            hideElement("save_button");
         }
     },
 
@@ -574,6 +575,7 @@ const oBinaryDict = {
         }
         oLexiconTable.fill(lEntry);
         this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
+        hideElement("save_button");
     },
 
     import: function () {

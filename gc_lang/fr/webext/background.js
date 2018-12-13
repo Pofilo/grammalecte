@@ -226,6 +226,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
             break;
         case "openDictionaries":
             openDictionaries();
+            break;
         default:
             console.log("[background] Unknown command: " + sCommand);
             console.log(oRequest);
@@ -289,9 +290,11 @@ browser.contextMenus.create({ id: "separator_editable",         type: "separator
 browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["all"] }); // on all parts, due to unwanted selection
 browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["all"] });
 browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["all"] });
-// Conjugueur
+// Tools
 browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
+browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
+browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
 // Rescan page
 browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });
 browser.contextMenus.create({ id: "rescanPage",                 title: "Rechercher à nouveau les zones de texte",   contexts: ["editable"] });
@@ -335,6 +338,12 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
         case "conjugueur_tab":
             openConjugueurTab();
             break;
+        case "lexicon_editor":
+            openLexiconEditor();
+            break;
+        case "dictionaries":
+            openDictionaries();
+            break;
         // rescan page
         case "rescanPage":
             let xPort = dConnx.get(xTab.id);
@@ -359,8 +368,11 @@ browser.commands.onCommand.addListener(function (sCommand) {
         case "conjugueur_window":
             openConjugueurWindow();
             break;
-        case "lex_editor":
+        case "lexicon_editor":
             openLexiconEditor();
+            break;
+        case "dictionaries":
+            openDictionaries();
             break;
     }
 });
