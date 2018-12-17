@@ -48,6 +48,7 @@ class Table {
         this.iEntryIndex = 0;
         this.lEntry = [];
         this.nEntry = 0;
+        this.aSelectedDict = new Map();
         this.bDeleteButtons = bDeleteButtons;
         this.bActionButtons = bActionButtons;
         this._createHeader();
@@ -112,11 +113,14 @@ class Table {
         if (this.bDeleteButtons) {
             xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: this.iEntryIndex }));
         }
-        for (let data of lData) {
-            xRowNode.appendChild(createNode("td", { textContent: data }));
-        }
+        let [nDicId, sName, sOwner, nEntry, sDescription, ...data] = lData;
+        xRowNode.appendChild(createNode("td", { textContent: nDicId }));
+        xRowNode.appendChild(createNode("td", { textContent: sName }));
+        xRowNode.appendChild(createNode("td", { textContent: sOwner }));
+        xRowNode.appendChild(createNode("td", { textContent: nEntry }));
+        xRowNode.appendChild(createNode("td", { textContent: sDescription }));
         if (this.bActionButtons) {
-            xRowNode.appendChild(createNode("td", { textContent: "+", className: "select_entry", title: "Sélectionner/Désélectionner cette entrée" }, { id_entry: this.iEntryIndex }));
+            xRowNode.appendChild(createNode("td", { textContent: "+", className: "select_entry", title: "Sélectionner/Désélectionner cette entrée" }, { id_entry: this.iEntryIndex, dict_name: sName }));
         }
         this.xTable.appendChild(xRowNode);
         this.iEntryIndex += 1;
@@ -133,8 +137,8 @@ class Table {
             let xElem = xEvent.target;
             if (xElem.className) {
                 switch (xElem.className) {
-                    case "delete_entry": this.deleteRow(xElem.dataset.id_entry); break;
-                    case "select_entry": this.selectEntry(xElem.dataset.id_entry); break;
+                    case "delete_entry": this.deleteRow(xElem.dataset.id_entry, xElem.dataset.dict_name); break;
+                    case "select_entry": this.selectEntry(xElem.dataset.id_entry, xElem.dataset.dict_name); break;
                 }
             }
         }
@@ -155,23 +159,59 @@ class Table {
         }
     }
 
-    selectEntry (iEntry) {
-        let sRowId = this.sNodeId + "_row_" + iEntry;
-        document.getElementById(sRowId).style.backgroundColor = "hsl(120, 50%, 90%)";
+    selectEntry (nEntryId, sDicName) {
+        let sRowId = this.sNodeId + "_row_" + nEntryId;
+        if (!this.aSelectedDict.has(sDicName)) {
+            this.aSelectedDict.set(sDicName, nEntryId);
+            document.getElementById(sRowId).style.backgroundColor = "hsl(120, 50%, 90%)";
+        }
+        else {
+            this.aSelectedDict.delete(sDicName);
+            document.getElementById(sRowId).style.backgroundColor = "";
+        }
+        this.showSelectedDict();
     }
 
-    getEntries () {
-        return this.lEntry.filter((e) => e !== null);
+    clearSelectedDict () {
+        let xDicList = document.getElementById("dictionaries_list");
+        while (xDicList.firstChild) {
+            xDicList.removeChild(xDicList.firstChild);
+        }
+    }
+
+    showSelectedDict () {
+        this.clearSelectedDict();
+        let xDicList = document.getElementById("dictionaries_list");
+        if (this.aSelectedDict.size === 0) {
+            xDicList.textContent = "[Aucun]";
+            return;
+        }
+        for (let [sName, nDicId] of this.aSelectedDict) {
+            xDicList.appendChild(this.createDictLabel(nDicId, sName));
+        }
+    }
+
+    createDictLabel (nDicId, sLabel) {
+        let xLabel = createNode("div", {className: "dic_button"});
+        let xCloseButton = createNode("div", {className: "dic_button_close", textContent: "×"}, {id_entry: nDicId});
+        xCloseButton.addEventListener("click", () => {
+            this.aSelectedDict.delete(sLabel);
+            document.getElementById(this.sNodeId+"_row_"+nDicId).style.backgroundColor = "";
+            xLabel.style.display = "none";
+        });
+        xLabel.appendChild(xCloseButton);
+        xLabel.appendChild(createNode("div", {className: "dic_button_label", textContent: sLabel}));
+        return xLabel;
     }
 }
 
 
-const oDicTable = new Table("dictionaries_table", ["Nom", "Créé par", "Entrées", "Description"], "wait_progress", "", false, true);
+const oDicTable = new Table("dictionaries_table", ["Id", "Nom", "par", "Entrées", "Description"], "wait_progress", "num_dic", false, true);
 
 oDicTable.fill([
-    ["Ambre", "Inconnu", "240", "Univers des Princes d’Ambre (de Roger Zelazny)"],
-    ["Malaz", "Inconnu", "2340", "Univers du Livre des Martyrs (de Steven Erikson)"],
-    ["Pudlard", "Inconnu", "1440", "Univers d’Harry Potter de XXXX"],
-    ["Dune", "Inconnu", "2359", "Univers de Dune (de Frank Herbert)"],
-    ["StarWars", "Inconnu", "4359", "Univers de Star Wars (de George Lucas)"]
+    [1, "Ambre", "Inconnu", "240", "Univers des Princes d’Ambre (de Roger Zelazny)"],
+    [2, "Malaz", "Inconnu", "2340", "Univers du Livre des Martyrs (de Steven Erikson)"],
+    [3, "Poudlard", "Inconnu", "1440", "Univers d’Harry Potter (de J. K. Rowlings)"],
+    [4, "Dune", "Inconnu", "2359", "Univers de Dune (de Frank Herbert)"],
+    [5, "StarWars", "Inconnu", "4359", "Univers de Star Wars (de George Lucas)"]
 ]);
