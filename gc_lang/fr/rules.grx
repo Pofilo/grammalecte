@@ -3203,12 +3203,17 @@ TEST: elle connaissait de {{cet}} pseudo-prêtresse uniquement de nom.
 
 
 __tu_mots_composés_verbe_nom__
-    [attrape|garde|porte|brise|cache|casse|chauffe|contre|coupe|cure|croque|entre|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
-        <<- /tu/ not (morph(\1, ":G") and morph(\2, ":[GYB]")) and morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
+    [contre|entre]  *WORD
+        <<- /tu/ not morph(\2, ":[GYB]") and morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
+        ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
+
+    [arrière|attrape|garde|porte|brise|cache|casse|chauffe|coupe|cure|croque|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
+        <<- /tu/ morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
 TEST: ce sont des {{lève tard}}.
 TEST: un {{brise glace}}
+TEST: l’{{arrière pensée}}
 TEST: entre deux chaises…
 
 
@@ -5353,6 +5358,7 @@ __conf_à_a_infinitif__
 TEST: scrupuleux {{a}} n’en toucher qu’une part infime.
 TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
 TEST: Sébastien {{a}} {{demander}} des conseils.
+TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
 
 
 __conf_à_a__
@@ -5630,6 +5636,8 @@ __conf_à_a_locutions__
     a quelque distance
     a quelques exceptions près
     a ras >bord
+    a ras de terre
+    a ras [du|le] sol
     a rude épreuve
     a tel point
     a temps [plein|partiel|complet]
@@ -6324,6 +6332,18 @@ TEST: il en faut {{d’avantages}}.
 TEST: tout ce qu’il apporte d’avantages pécuniaires.
 TEST: un certain nombre d’avantages sociaux.
 TEST: ils ont tant d’avantages.
+
+
+# de temps à autre
+__conf_de_temps_à_autre__
+    [de|d’] [>tan|tant] [à|a] >autre
+    [de|d’] [>tan|tant|temps] a >autre
+    [de|d’] [>tan|tant|temps] [à|a] autres
+        <<- /conf/ ->> de temps à autre                                             # Confusion. Locution “de temps à autre”.|https://fr.wiktionary.org/wiki/de_temps_%C3%A0_autre
+
+TEST: Il continuait son travail, mâchonnant de temps à autre une grosse chique qui tour à tour lui gonflait chaque joue.
+TEST: Il venait {{de temps à autres}}.
+TEST: {{de tan à autre}}, c’était correct de venir par ici.
 
 
 # dés / dès / des
@@ -7404,8 +7424,14 @@ __conf_pré_près_prêt__
     si [>prêt|>pré] du but
         <<- /conf/ -2>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
+    >raser de ?très¿ [>prêt|>pré]
+        <<- /conf/ --1>> près                                               # Confusion probable. Raser de près.
+
     à la virgule [>prêt|>pré]
         <<- /conf/ -4>> près                                                # Confusion probable. Locution “à la virgule près”.
+
+    à quelques exceptions [>prêt|>pré]
+        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à quelques exceptions près”.
 
 TEST: depuis {{prêt}} de 15 ans
 TEST: ils se sont approchés très {{prêts}}.
@@ -7413,6 +7439,7 @@ TEST: Je suis si {{prêt}} d’y arriver.
 TEST: Elle est si {{prêt}} de la trouver.
 TEST: Il est {{près}} à les aider
 TEST: Elle va regarder ça de plus {{prêt}}.
+TEST: Il était rasé de {{prés}}
 TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
 
@@ -7756,6 +7783,13 @@ TEST: elle sans vergogne
 TEST: elle sans la condamner
 TEST: elles sans un sou en poche
 TEST: elles sans grandes convictions
+
+
+__conf_sensé_censé__
+    très >censée
+        <<- /conf/ -2>> =\2.replace("sens", "cens").replace("Cens", "Sens").replace("CENS", "SENS")  # Confusion probable. Ce qui est “sensé” (de “bon sens”) et ce que chacun est “censé” accomplir.
+
+TEST: Des personnes très {{censées}} qui perdent parfois la tête.
 
 
 # sans coup férir
@@ -9081,7 +9115,9 @@ __purge_locutions__
     à quelques [exceptions|nuances] près
     à quelques-uns d’ entre [nous|vous|eux]
     à quelques-unes d’ entre [nous|vous|elles]
+    à ras de terre
     à ras [bord|bords]
+    à ras [le|du] sol
     à rude épreuve
     à s’ y méprendre
     à somme nulle
@@ -9952,7 +9988,7 @@ __purge_locutions__
     un peu plus [tôt|tard] que prévu
     un tant soit peu
     une à une
-    une [autre|nouvelle] fois
+    une [autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième] fois
     une bonne fois pour toutes
     une dernière fois
     une fois de plus
@@ -10599,7 +10635,7 @@ __purge_locutions_adjectivales__
 
 
 __purge_couleurs__
-    [beige|blanc|bleu|brun|châtain|cyan|gris|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sombre|tendre|vif]
+    [beige|blanc|bleu|brun|châtain|cyan|gris|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sombre|tendre|terne|vif]
         <<- morph(<1, ":[NAQ]") ~>> *
 
     bleu    [ciel|indigo|marine|roi|saphir|turquoise]
@@ -12623,7 +12659,7 @@ TEST: Un cageot des premières cerises.
 
 
 __sgpl_couleurs_composées__
-    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>vive]
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>vive]
     [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [foncé|foncés|foncée|foncées|irisé|irisés|irisée|irisées]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggSing(\1) + " " + suggSing(\2)
@@ -12636,7 +12672,7 @@ __sgpl_couleurs_composées__
         ->> =suggSing(\1) + " " + suggSing(\2)
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
-    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>vive]
+    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>vive]
     [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [foncé|foncés|foncée|foncées|irisé|irisés|irisée|irisées]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggMasSing(\1) + " " + suggSing(\2)
@@ -13707,7 +13743,7 @@ __conf_censé_sensé__
     >être >sensée @:Y
     >être >sensée ne [pas|plus|jamais|rien|guère|point]
         <<- /conf/ not value(<1, "|l’|un|les|des|ces|")
-        -2>> =\2.replace("sens", "cens")                    # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez “censé”.
+        -2>> =\2.replace("sens", "cens").replace("Cens", "Sens").replace("CENS", "SENS")            # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez “censé”.
 
 TEST: Ils sont {{sensés}} y parvenir.
 TEST: Elles étaient {{sensés}} m’y conduire
@@ -13715,7 +13751,7 @@ TEST: il est {{sensé}} prendre l’avion demain
 TEST: Un être sensé ne ferait jamais ça.
 
     >censée  <end>
-        <<- /conf/ -1>> =\1.replace("cen", "sen").replace("Cen", "Sen").replace("CEN", "SEN")  # Confusion probable. Ce qui est “sensé” (de “bon sens”) et ce que chacun est “censé” accomplir.
+        <<- /conf/ -1>> =\1.replace("sens", "cens").replace("Cens", "Sens").replace("CENS", "SENS")  # Confusion probable. Ce qui est “sensé” (de “bon sens”) et ce que chacun est “censé” accomplir.
 
 TEST: Ce sont pourtant des gens si {{censés}}
 
@@ -17221,35 +17257,41 @@ TEST: Voici ce qui vous est {{du}}.
 
 __ppas_avoir_pronom__
     *WORD  /VCint  *WORD
-        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and not value(\3, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:[fp]|3[sp])", ":m:[si]") and not value(\3, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
             and not morph(\1, ">(?:les|[nv]ous|en)/|:[NA].*:[fp]") and not before("(?i)\\b(?:quel(?:le|)s?|combien) ")
         -3>> =suggVerbPpas(\3, ":m:s")                      # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
     <start>  ?n’¿  (/VCint)  *WORD
-        <<- /ppas/ morphVC(\1, ":V0a") and morph(\-1, ":(?:Y|2p|Q.*:[fp])", ":m:[si]") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        <<- /ppas/ morphVC(\1, ":V0a") and morph(\-1, ":(?:Y|2p|Q.*:[fp]|3[sp])", ":m:[si]") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
-__ppas_l_m_t_avoir_pronom__
-    [l’|m’|t’]  /VCint  *WORD
-        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:p)", ":[GWsi]")
-        -3>> =suggVerbPpas(\3, ":m:s")                      # Accord avec le COD “\1” : le participe passé “\3” devrait être au singulier (et accordé en genre).
-
-__ppas_les_avoir_pronom__
-    les  /VCint  *WORD
-        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:s)", ":[GWpi]")
-        -3>> =suggVerbPpas(\3, ":p")                        # Accord avec le COD “les” : le participe passé “\3” devrait être au pluriel (et accordé en genre).
-
-TEST: Avais-je {{laissés}} ces notes sur la table ?
-TEST: l’avait-il {{regardés}} longtemps ?
-TEST: les avais-tu {{acheté}} là-bas ?
-TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
-TEST: les ont-ils {{détecté}} ?
-TEST: les avaient-ils {{détectez}} ?
-TEST: l’a-t-il {{finis}} ?
-TEST: m’as-tu {{entendus}} ?
+TEST: Avais-je {{laissés}} ces notes sur la table ?                             ->> laissé
+TEST: Aurait-elle {{suffit}}                                                    ->> suffi
 TEST: N’avais-tu pas crainte de tout perdre ?
 TEST: Combien de bêtes n’as-tu pas déjà massacrées
 TEST: Combien de bêtes as-tu déjà massacrées
+
+
+__ppas_l_m_t_avoir_pronom__
+    [l’|m’|t’]  /VCint  *WORD
+        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:p|3[sp])", ":[GWsi]")
+        -3>> =suggVerbPpas(\3, ":m:s")                      # Accord avec le COD “\1” : le participe passé “\3” devrait être au singulier (et accordé en genre).
+
+TEST: l’avait-il {{regardés}} longtemps ?                                       ->> regardé
+TEST: l’a-t-il {{finis}} ?                                                      ->> fini
+TEST: m’as-tu {{entendus}} ?                                                    ->> entendu
+
+
+__ppas_les_avoir_pronom__
+    les  /VCint  *WORD
+        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:s|3[sp])", ":[GWpi]")
+        -3>> =suggVerbPpas(\3, ":p")                        # Accord avec le COD “les” : le participe passé “\3” devrait être au pluriel (et accordé en genre).
+
+TEST: les avais-tu {{acheté}} là-bas ?
+TEST: les ont-ils {{détecté}} ?
+TEST: les avaient-ils {{détectez}} ?
+
+
 
 
 !!
@@ -17917,7 +17959,9 @@ TEST: Entreront-ils en {{contacte}} avec eux ?                  ->> contact
 
 __conf_vc_int_imp_verbe__
     [/VCint|/VCimp]  @:[123][sp]¬:[GNAQW]
-        <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") -2>> _          # Incohérence probable : “\1” est une forme verbale conjuguée.
+        <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") >>>
+        <<- /conf/ morphVC(\1, ":V0") -2>> =suggVerbPpas(\2)                    # Incohérence probable : “\2” est une forme verbale conjuguée.
+        <<- __else__ -2>> _                                                     # Incohérence probable : “\2” est une forme verbale conjuguée.
 
 TEST: Annonce-le {{dépare}}.
 TEST: prends-la {{tète}}.
