@@ -383,13 +383,13 @@ browser.commands.onCommand.addListener(function (sCommand) {
 */
 let nTabLexiconEditor = null;
 let nTabDictionaries = null;
+let nTabConjugueur = null;
 
 browser.tabs.onRemoved.addListener(function (nTabId, xRemoveInfo) {
-    if (nTabId === nTabLexiconEditor) {
-        nTabLexiconEditor = null;
-    }
-    else if (nTabId === nTabDictionaries) {
-        nTabDictionaries = null;
+    switch (nTabId) {
+        case nTabLexiconEditor: nTabLexiconEditor = null; break;
+        case nTabDictionaries:  nTabDictionaries = null; break;
+        case nTabConjugueur:    nTabConjugueur = null; break;
     }
 });
 
@@ -423,10 +423,12 @@ function openLexiconEditor (sName="__personal__") {
         });
         xLexEditor.then(onLexiconEditorOpened, onError);
     }
+    else {
+        browser.tabs.update(nTabLexiconEditor, {active: true});
+    }
 }
 
 function onLexiconEditorOpened (xTab) {
-    //console.log(xTab);
     nTabLexiconEditor = xTab.id;
 }
 
@@ -443,24 +445,35 @@ function openDictionaries () {
         });
         xLexEditor.then(onDictionariesOpened, onError);
     }
+    else {
+        browser.tabs.update(nTabDictionaries, {active: true});
+    }
 }
 
 function onDictionariesOpened (xTab) {
-    //console.log(xTab);
     nTabDictionaries = xTab.id;
 }
 
 function openConjugueurTab () {
-    if (bChrome) {
-        browser.tabs.create({
+    if (nTabDictionaries === null) {
+        if (bChrome) {
+            browser.tabs.create({
+                url: browser.extension.getURL("panel/conjugueur.html")
+            }, onConjugueurOpened);
+            return;
+        }
+        let xConjTab = browser.tabs.create({
             url: browser.extension.getURL("panel/conjugueur.html")
         });
-        return;
+        xConjTab.then(onConjugueurOpened, onError);
     }
-    let xConjTab = browser.tabs.create({
-        url: browser.extension.getURL("panel/conjugueur.html")
-    });
-    xConjTab.then(onCreated, onError);
+    else {
+        browser.tabs.update(nTabConjugueur, {active: true});
+    }
+}
+
+function onConjugueurOpened (xTab) {
+    nTabConjugueur = xTab.id;
 }
 
 function openConjugueurWindow () {
@@ -479,14 +492,9 @@ function openConjugueurWindow () {
         width: 710,
         height: 980
     });
-    xConjWindow.then(onCreated, onError);
 }
 
 
-function onCreated (xWindowInfo) {
-    //console.log(`Created window: ${xWindowInfo.id}`);
-}
-
-function onError (error) {
-    console.log(error);
+function onError (e) {
+    console.error(e);
 }
