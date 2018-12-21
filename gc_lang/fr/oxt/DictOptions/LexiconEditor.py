@@ -32,7 +32,7 @@ from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX # MESSAGEBOX, INFO
 def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
     xParentWin = xDocument.CurrentController.Frame.ContainerWindow
     ctx = uno.getComponentContext()
-    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx) 
+    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
     xMsgBox = xToolkit.createMessageBox(xParentWin, nBoxType, nBoxButtons, sTitle, sMsg)
     return xMsgBox.execute()
 
@@ -115,8 +115,8 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
-        self.xDialog.Width = 570
-        self.xDialog.Height = 305
+        self.xDialog.Width = 550
+        self.xDialog.Height = 290
         self.xDialog.Title = self.dUI.get('title', "#title#")
         xWindowSize = helpers.getWindowSize()
         self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
@@ -127,15 +127,15 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         xFDTitle.Height = 9
         xFDTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDTitle.Name = "Verdana"
-        
+
         xFDSubTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDSubTitle.Height = 8
         xFDSubTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDSubTitle.Name = "Verdana"
 
         # widget
-        nX1 = 10
-        nX2 = 20
+        nX1 = 5
+        nX2 = 15
 
         nY0 = 5
         nY1 = nY0 + 13
@@ -145,25 +145,25 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         nY5 = nY4 + 68 # adverbe
         nY6 = nY5 + 13 # autre
 
-        nXB = nX1 + 185
+        nXB = nX1 + 175
         nXC = nXB + 165
 
         nHeight = 10
 
         #### Dictionary section
-        self._addWidget("dictionary_section", 'FixedLine', nX1, nY0, 180, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle, TextColor = 0x000088)
+        self._addWidget("dictionary_section", 'FixedLine', nX1, nY0, 170, nHeight, Label = self.dUI.get("dictionary_section", "#err"), FontDescriptor = xFDTitle, TextColor = 0x000088)
         self._addWidget("save_date_label", 'FixedText', nXB, nY0+2, 80, nHeight, Label = self.dUI.get("save_date_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self._addWidget("num_of_entries_label2", 'FixedText', nXC, nY0+2, 65, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xDateDic = self._addWidget("save_date", 'FixedText', nXB+85, nY0+2, 75, nHeight, Label = self.dUI.get("void", "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xNumDic = self._addWidget("num_of_entries2", 'FixedText', nXC+70, nY0+2, 45, nHeight, Label = "0", FontDescriptor = xFDSubTitle, TextColor = 0x000088)
         self.xImport = self._addWidget('import_button', 'Button', self.xDialog.Width-90, nY0, 40, 12, Label = self.dUI.get('import_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
-        self.xExport = self._addWidget('export_button', 'Button', self.xDialog.Width-50, nY0, 40, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
+        self.xExport = self._addWidget('export_button', 'Button', self.xDialog.Width-45, nY0, 40, 12, Label = self.dUI.get('export_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x000055)
 
         #### Add word
-        self._addWidget("add_section", 'FixedLine', nX1, nY1, 180, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
-        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 110, 14, FontDescriptor = xFDTitle)
-        self._addWidget('search_button', 'Button', nX1+115, nY1+11, 45, 12, Label = self.dUI.get('search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
-        self._addWidget('information_button', 'Button', nX1+165, nY1+11, 15, 12, Label = self.dUI.get('information_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
+        self._addWidget("add_section", 'FixedLine', nX1, nY1, 170, nHeight, Label = self.dUI.get("add_section", "#err"), FontDescriptor = xFDTitle)
+        self.xLemma = self._addWidget('lemma', 'Edit', nX1, nY1+10, 100, 14, FontDescriptor = xFDTitle)
+        self._addWidget('search_button', 'Button', nX1+105, nY1+11, 45, 12, Label = self.dUI.get('search_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
+        self._addWidget('information_button', 'Button', nX1+155, nY1+11, 15, 12, Label = self.dUI.get('information_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x555500)
 
         # Radio buttons: main POS tag
         # Note: the only way to group RadioButtons is to create them successively
@@ -176,39 +176,39 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xV = self._addWidget('verb', 'RadioButton', nX1, nY4+2, 35, nHeight, Label = self.dUI.get("verb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":V")
         self.xW = self._addWidget('adv', 'RadioButton', nX1, nY5+2, 35, nHeight, Label = self.dUI.get("adverb", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":W")
         self.xX = self._addWidget('other', 'RadioButton', nX1, nY6+2, 35, nHeight, Label = self.dUI.get("other", "#err"), FontDescriptor = xFDSubTitle, HelpText = ":X")
-        
+
         # Nom, adjectif
-        self._addWidget("fl_nom_adj", 'FixedLine', nX1, nY2, 180, nHeight, Label = self.dUI.get("common_name", "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_nom_adj", 'FixedLine', nX1, nY2, 170, nHeight, Label = self.dUI.get("common_name", "#err"), FontDescriptor = xFDSubTitle)
         self.xSepi = self._addWidget('Sepi', 'RadioButton', nX1+65, nY2+12, 50, nHeight, Label = self.dUI.get("epi", "#err"), HelpText = ":e")
         self.xSmas = self._addWidget('Smas', 'RadioButton', nX1+65, nY2+22, 50, nHeight, Label = self.dUI.get("mas", "#err"), HelpText = ":m")
         self.xSfem = self._addWidget('Sfem', 'RadioButton', nX1+65, nY2+32, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
         self._addWidget("fl_sep1", 'FixedLine', nX1, nY2, 1, nHeight)
-        self.xSs = self._addWidget('Ss', 'RadioButton', nX1+120, nY2+12, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
-        self.xSx = self._addWidget('Sx', 'RadioButton', nX1+120, nY2+22, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
-        self.xSinv = self._addWidget('Sinv', 'RadioButton', nX1+120, nY2+32, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
+        self.xSs = self._addWidget('Ss', 'RadioButton', nX1+115, nY2+12, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
+        self.xSx = self._addWidget('Sx', 'RadioButton', nX1+115, nY2+22, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
+        self.xSinv = self._addWidget('Sinv', 'RadioButton', nX1+115, nY2+32, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
 
-        self._addWidget("alt_lemma_label", 'FixedLine', nX1+10, nY2+42, 170, nHeight, Label = self.dUI.get("alt_lemma", "#err"))
+        self._addWidget("alt_lemma_label", 'FixedLine', nX1+10, nY2+42, 160, nHeight, Label = self.dUI.get("alt_lemma", "#err"))
         self.xAltLemma = self._addWidget('alt_lemma', 'Edit', nX1+10, nY2+52, 110, nHeight)
         self.xNA2 = self._addWidget('nom_adj2', 'RadioButton', nX1+10, nY2+65, 60, nHeight, Label = self.dUI.get("nom_adj", "#err"), HelpText = ":N:A")
         self.xN2 = self._addWidget('nom2', 'RadioButton', nX1+10, nY2+75, 60, nHeight, Label = self.dUI.get("nom", "#err"), HelpText = ":N")
         self.xA2 = self._addWidget('adj2', 'RadioButton', nX1+10, nY2+85, 60, nHeight, Label = self.dUI.get("adj", "#err"), HelpText = ":A")
         self._addWidget("fl_sep2", 'FixedLine', nX1, nY2, 1, nHeight)
-        self.xSepi2 = self._addWidget('Sepi2', 'RadioButton', nX1+75, nY2+65, 50, nHeight, Label = self.dUI.get("epi", "#err"), HelpText = ":e")
-        self.xSmas2 = self._addWidget('Smas2', 'RadioButton', nX1+75, nY2+75, 50, nHeight, Label = self.dUI.get("mas", "#err"), HelpText = ":m")
-        self.xSfem2 = self._addWidget('Sfem2', 'RadioButton', nX1+75, nY2+85, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
+        self.xSepi2 = self._addWidget('Sepi2', 'RadioButton', nX1+70, nY2+65, 50, nHeight, Label = self.dUI.get("epi", "#err"), HelpText = ":e")
+        self.xSmas2 = self._addWidget('Smas2', 'RadioButton', nX1+70, nY2+75, 50, nHeight, Label = self.dUI.get("mas", "#err"), HelpText = ":m")
+        self.xSfem2 = self._addWidget('Sfem2', 'RadioButton', nX1+70, nY2+85, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
         self._addWidget("fl_sep3", 'FixedLine', nX1, nY2, 1, nHeight)
-        self.xSs2 = self._addWidget('Ss2', 'RadioButton', nX1+130, nY2+65, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
-        self.xSx2 = self._addWidget('Sx2', 'RadioButton', nX1+130, nY2+75, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
-        self.xSinv2 = self._addWidget('Sinv2', 'RadioButton', nX1+130, nY2+85, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
+        self.xSs2 = self._addWidget('Ss2', 'RadioButton', nX1+120, nY2+65, 50, nHeight, Label = self.dUI.get("-s", "#err"), HelpText = "·s")
+        self.xSx2 = self._addWidget('Sx2', 'RadioButton', nX1+120, nY2+75, 50, nHeight, Label = self.dUI.get("-x", "#err"), HelpText = "·x")
+        self.xSinv2 = self._addWidget('Sinv2', 'RadioButton', nX1+120, nY2+85, 50, nHeight, Label = self.dUI.get("inv", "#err"), HelpText = ":i")
 
         # Nom propre
-        self._addWidget("fl_M", 'FixedLine', nX1, nY3, 180, nHeight, Label = self.dUI.get("proper_name", "#err"), FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_M", 'FixedLine', nX1, nY3, 170, nHeight, Label = self.dUI.get("proper_name", "#err"), FontDescriptor = xFDSubTitle)
         self.xMepi = self._addWidget('Mepi', 'RadioButton', nX1+65, nY3+12, 50, nHeight, Label = self.dUI.get("epi", "#err"), HelpText = ":e")
         self.xMmas = self._addWidget('Mmas', 'RadioButton', nX1+65, nY3+22, 50, nHeight, Label = self.dUI.get("mas", "#err"), HelpText = ":m")
         self.xMfem = self._addWidget('Mfem', 'RadioButton', nX1+65, nY3+32, 50, nHeight, Label = self.dUI.get("fem", "#err"), HelpText = ":f")
 
         # Verbe
-        self._addWidget("fl_verb", 'FixedLine', nX2+30, nY4, 140, nHeight, FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_verb", 'FixedLine', nX2+30, nY4, 130, nHeight, FontDescriptor = xFDSubTitle)
         self.xV_i = self._addWidget('v_i', 'CheckBox', nX2, nY4+12, 60, nHeight, Label = self.dUI.get("v_i", "#err"))
         self.xV_t = self._addWidget('v_t', 'CheckBox', nX2, nY4+20, 60, nHeight, Label = self.dUI.get("v_t", "#err"))
         self.xV_n = self._addWidget('v_n', 'CheckBox', nX2, nY4+28, 60, nHeight, Label = self.dUI.get("v_n", "#err"))
@@ -221,39 +221,39 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
         self.xV_pp = self._addWidget('v_pp', 'CheckBox', nX2+75, nY4+44, 90, nHeight, Label = self.dUI.get("v_pp", "#err"))
 
-        self._addWidget('v_pattern_label', 'FixedText', nX2, nY4+56, 80, nHeight, Label = self.dUI.get('v_pattern', "#err"), Align = 2)
-        self.xVpattern = self._addWidget('v_pattern', 'Edit', nX2+85, nY4+56, 80, nHeight)
+        self._addWidget('v_pattern_label', 'FixedText', nX2, nY4+56, 75, nHeight, Label = self.dUI.get('v_pattern', "#err"), Align = 2)
+        self.xVpattern = self._addWidget('v_pattern', 'Edit', nX2+80, nY4+56, 80, nHeight)
 
         # Adverbe
-        self._addWidget("fl_adv", 'FixedLine', nX2+30, nY5, 140, nHeight, FontDescriptor = xFDSubTitle)
+        self._addWidget("fl_adv", 'FixedLine', nX2+30, nY5, 130, nHeight, FontDescriptor = xFDSubTitle)
 
         # Autre
-        self._addWidget("fl_other", 'FixedLine', nX2+30, nY6, 140, nHeight, FontDescriptor = xFDSubTitle)
-        self._addWidget('flexion_label', 'FixedText', nX2, nY6+11, 35, nHeight, Label = self.dUI.get('flexion', "#err"))
-        self.xFlexion = self._addWidget('flexion', 'Edit', nX2+40, nY6+10, 100, nHeight)
-        self._addWidget('tags_label', 'FixedText', nX2, nY6+23, 35, nHeight, Label = self.dUI.get('tags', "#err"))
-        self.xTags = self._addWidget('tags', 'Edit', nX2+40, nY6+22, 100, nHeight)
+        self._addWidget("fl_other", 'FixedLine', nX2+30, nY6, 130, nHeight, FontDescriptor = xFDSubTitle)
+        self._addWidget('flexion_label', 'FixedText', nX2, nY6+11, 22, nHeight, Label = self.dUI.get('flexion', "#err"), Align = 2)
+        self.xFlexion = self._addWidget('flexion', 'Edit', nX2+25, nY6+10, 50, nHeight)
+        self._addWidget('tags_label', 'FixedText', nX2+80, nY6+11, 27, nHeight, Label = self.dUI.get('tags', "#err"), Align = 2)
+        self.xTags = self._addWidget('tags', 'Edit', nX2+110, nY6+10, 50, nHeight)
 
         #### Generated words
         self._addWidget("gwords_section", 'FixedLine', nXB, nY1, 160, nHeight, Label = self.dUI.get("new_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGridModelNew = self._addGrid("list_grid_gwords", nXB, nY1+10, 160, 255, [
+        self.xGridModelNew = self._addGrid("list_grid_gwords", nXB, nY1+10, 160, 240, [
             {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 80},
             {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 80}
         ], SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI"))
-        self.xAdd = self._addWidget('add_button', 'Button', nXB, nY1+270, 75, 12, Label = self.dUI.get('add_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500, Enabled = False)
-        self.xDelete = self._addWidget('delete_button', 'Button', nXB+80, nY1+270, 80, 12, Label = self.dUI.get('delete_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self.xAdd = self._addWidget('add_button', 'Button', nXB, nY1+255, 75, 12, Label = self.dUI.get('add_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500, Enabled = False)
+        self.xDelete = self._addWidget('delete_button', 'Button', nXB+80, nY1+255, 80, 12, Label = self.dUI.get('delete_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
 
         #### Lexicon section
         self._addWidget("lexicon_section", 'FixedLine', nXC, nY1, 200, nHeight, Label = self.dUI.get("lexicon_section", "#err"), FontDescriptor = xFDTitle)
-        self.xGridModelLex = self._addGrid("list_grid_lexicon", nXC, nY1+10, 200, 255, [
+        self.xGridModelLex = self._addGrid("list_grid_lexicon", nXC, nY1+10, 200, 240, [
             {"Title": self.dUI.get("lex_flex", "#err"), "ColumnWidth": 65},
             {"Title": self.dUI.get("lex_lemma", "#err"), "ColumnWidth": 50},
             {"Title": self.dUI.get("lex_tags", "#err"), "ColumnWidth": 65}
         ], SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI"))
-        self._addWidget("num_of_entries_label1", 'FixedText', nXC, nY1+272, 60, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle)
-        self.xNumLex = self._addWidget("num_of_entries1", 'FixedText', nXC+65, nY1+272, 40, nHeight, Label = "0", FontDescriptor = xFDSubTitle)
-        self.xSave = self._addWidget('save_button', 'Button', nXC+110, nY1+270, 45, 12, Label = self.dUI.get('save_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
-        self._addWidget('close_button', 'Button', nXC+160, nY1+270, 40, 12, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
+        self._addWidget("num_of_entries_label1", 'FixedText', nXC, nY1+257, 60, nHeight, Label = self.dUI.get("num_of_entries_label", "#err"), FontDescriptor = xFDSubTitle)
+        self.xNumLex = self._addWidget("num_of_entries1", 'FixedText', nXC+65, nY1+257, 40, nHeight, Label = "0", FontDescriptor = xFDSubTitle)
+        self.xSave = self._addWidget('save_button', 'Button', nXC+110, nY1+255, 45, 12, Label = self.dUI.get('save_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x005500)
+        self._addWidget('close_button', 'Button', nXC+160, nY1+255, 40, 12, Label = self.dUI.get('close_button', "#err"), FontDescriptor = xFDSubTitle, TextColor = 0x550000)
 
         self.loadLexicon()
 
@@ -323,7 +323,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 self.xContainer.endExecute()
         except:
             traceback.print_exc()
-    
+
     # XKeyListener
     def keyPressed (self, xKeyEvent):
         pass
@@ -352,7 +352,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
     def loadLexicon (self):
         xGridDataModel = self.xGridModelLex.GridDataModel
         xGridDataModel.removeAllRows()
-        sJSON = self.xOptionNode.getPropertyValue("personal_dic")        
+        sJSON = self.xOptionNode.getPropertyValue("personal_dic")
         if sJSON:
             try:
                 self.oPersonalDicJSON = json.loads(sJSON)
@@ -396,7 +396,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
                 except:
                     sMessage = self.dUI.get('wrong_json', "#err_msg: %s") % spfImported
                     MessageBox(self.xDocument, sMessage, self.dUI.get('import_title', "#err"), ERRORBOX)
-                else:            
+                else:
                     self.xOptionNode.setPropertyValue("personal_dic", sJSON)
                     self.xSettingNode.commitChanges()
                     self.loadLexicon()
