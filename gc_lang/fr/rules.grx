@@ -13043,13 +13043,16 @@ TEST: On va procéder par {{intervalle}}
 # juste
 __sgpl_juste__
     justes
-        <<- /sgpl/ \1.islower() and morph(<1, ":V", ":[DA]") and not morph(>1, ":N.*:[pi]")
-        ->> juste                                                   # Si “juste” est ici un adverbe, il est invariable.
+        <<- /sgpl/ \1.islower() and morph(<1, ":V", ":[DA]") and not morph(>1, ":[NA].*:[pi]")
+            and not (morph(<1, ">(?:être|sembler|devenir|rester|demeurer|redevenir|para[îi]tre)/.*:[123]p") and value(>1, "|<end>|,|"))
+        ->> juste                                                   # Si “juste” est un adverbe, il est invariable.
 
 TEST: Viser {{justes}}
 TEST: Voir {{justes}}.
 TEST: Penser juste.
 TEST: Dures mais justes.
+TEST: J’ai retrouvé tout mon ressenti, tous les mots sont justes.
+TEST: Nos chiffres sont justes, et nous vous le prouverons.
 
 
 # pied
