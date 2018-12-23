@@ -6579,7 +6579,7 @@ TEST: Œuvrez à des {{faims}} funestes.
 
 # faut / faux
 __conf_faux_faut__
-    faut  @:¬(?:Y|Oo|X|M|W)
+    faut  @:¬(?:Y|Oo|X|M|W)|>qu[e’]/
     faut  <end>
         <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|<start>|")
         -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
@@ -6595,6 +6595,8 @@ TEST: faut l’emmener chez le docteur.
 TEST: Faut Linux, sinon ça marchera jamais.
 TEST: Les tests ne sont pas toujours indispensables mais faut bien que t’apprennes
 TEST: Mais faut absolument que tu voies ça.
+TEST: Faut que tu sois forte, ma fille.
+TEST: Bon, et oui, faut qu’on parle sérieusement de la fin de notre chronique.
 
 
 # filtre / philtre
@@ -7408,18 +7410,23 @@ __conf_pré_près_prêt__
     très [>prêt|>pré]
         <<- /conf/ -2>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
 
-    près à @:Y|>(?:tout|les?|la)/
+    près à [ne|n’|me|m’|te|t’|se|s’]
+    près à ?[le|la|l’|les|en|nous|vous|lui|leur|y|tout]¿ @:Y
+    près à [nous|vous]     [le|la|l’|les|en|y]           @:Y
+    près à [le|la|l’|les]  [lui|leur|en|y]               @:Y
+    près à [lui|leur|y]    en                            @:Y
         <<- /conf/ not value(<1, "|peu|de|") and not before("(?i)\\bau plus $")
         -1>> prêt|prêts                                                     # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
+    >prêt [de|d’] [ne|n’|me|m’|te|t’|se|s’]
+    >prêt [de|d’] ?[le|la|l’|les|en|nous|vous|lui|leur|y|tout]¿ @:Y
+    >prêt [de|d’] [nous|vous]     [le|la|l’|les|en|y]           @:Y
+    >prêt [de|d’] [le|la|l’|les]  [lui|leur|en|y]               @:Y
+    >prêt [de|d’] [lui|leur|y]    en                            @:Y
+        <<- /conf/ -1>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+
     >prêt [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
         <<- /conf/ not before("(?i)\\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
-
-    >prêt [de|d’] la [lui|leur|@:Y]
-        <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
-
-    >prêt [de|d’] [le|l’|les|me|m’|te|t’|se|s’|ne|n’|en|y|@:Y]
-        <<- /conf/ \3.islower() -1>> près                                   # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     si [>prêt|>pré] du but
         <<- /conf/ -2>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
@@ -7433,6 +7440,12 @@ __conf_pré_près_prêt__
     à quelques exceptions [>prêt|>pré]
         <<- /conf/ -4>> près                                                # Confusion probable. Locution “à quelques exceptions près”.
 
+    à la >seconde [>prêt|>pré]
+        <<- /conf/ -3>> près                                                # Confusion probable. Locution “à la \2 près”.
+
+    au >mètre [>prêt|>pré]
+        <<- /conf/ -3>> près                                                # Confusion probable. Locution “au \2 près”.
+
 TEST: depuis {{prêt}} de 15 ans
 TEST: ils se sont approchés très {{prêts}}.
 TEST: Je suis si {{prêt}} d’y arriver.
@@ -7442,6 +7455,7 @@ TEST: Elle va regarder ça de plus {{prêt}}.
 TEST: Il était rasé de {{prés}}
 TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
+TEST: collait au millimètre près à la réalité
 
 
 # puits / puis
@@ -7626,7 +7640,7 @@ __conf_qu_elle_quelle__
         <<- /conf/ not (value(\2, "|en|ne|") and morph(>1, ":V0e")) -1>> qu’elles                   # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
     quelles @:V¬:[NA].*:[fe]|>(?:être|plus)
-        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and value(>1, "|été|"))
         -1>> qu’elles                                                                               # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
     quelle  >être   @:[QA]¬:G
@@ -7662,6 +7676,7 @@ TEST: Elle avait été accueillie avec joie.
 TEST: Quelle va être l’attitude de Geoffroy ?
 TEST: Quelle pourrait être la teneur de leur entretien.
 TEST: Quelle ne fut pas ma surprise
+TEST: Quelles ont été, pour vous, les plus gros mensonges ?
 
 
 # quoi que / quoique
