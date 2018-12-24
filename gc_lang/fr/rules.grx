@@ -19578,7 +19578,7 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 !!
 
 __conj_nom_propre_virgule__
-    <start>  @:M  ,  @:3s¬:[NAGE]
+    <start>  @:M  ,  @:3s¬:[NAGEM]
         <<- /conj/ space_after(\2, 0, 0) and space_after(\4, 1, 10) -2:3>> \2   # Soit la virgule est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
         <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")                # Soit la virgule après “\2” est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
 
@@ -19587,16 +19587,17 @@ TEST: Maria, avance devant toi.
 
 
 __conj_det_nom_sing_virgule__
-    <start>  [un|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa]  @:[NA]  ,  @:3s¬:[NAGE]
+    <start>  [un|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa]  @:[NA]  ,  @:3s¬:[NAGEM]
         <<- /conj/ space_after(\3, 0, 0) and space_after(\4, 1, 10) -3:4>> \3   # Soit la virgule est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
         <<- /conj/ __also__ -5>> =suggVerbTense(\5, ":E", ":2s")                # Soit la virgule après “\2 \3” est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
 
 TEST: l’{{homme,}} {{devient}} difficile.                               ->> homme|||deviens
 TEST: ce matin, viens me voir.
+TEST: l’Angola, Cuba et l’Afrique du Sud signent à New York, sous l’égide des Soviétiques et des Américains, un accord aboutissant au retrait des troupes cubaines d’Angola.
 
 
 __conj_det_nom_plur_virgule__
-    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]  ,  @:3p¬:[NAGE]
+    <start>  [les|ces|mes|tes|ses|plusieurs|quelques|certains|certaines]  @:[NA].*:[pi]  ,  @:3p¬:[NAGEM]
         <<- /conj/ space_after(\3, 0, 0) and space_after(\4, 1, 10)
         -3:4>> \3                                                               # La virgule est probablement superflue (on ne sépare pas le verbe du sujet).
 
