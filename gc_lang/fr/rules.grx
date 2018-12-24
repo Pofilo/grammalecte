@@ -6361,8 +6361,8 @@ __conf_dès_des_dés__
         <<- /conf/ not morph(<1, ":D.*:p") -1>> dès                                                 # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     des ~\d{2,5}  [<end>|,]
-    des ~\d{2,5}  @:¬:[NA].*:[ip]|>à/
-        <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent|barre)/") -1>> dès     # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+    des ~\d{2,5}  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
+        <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent|barre|seuil)/") -1>> dès     # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
@@ -6415,6 +6415,8 @@ TEST: En plus des 400 à 500 euros mensuels que touche une personne
 TEST: les moins de 20 ans peuvent ne pas connaître le premier album du groupe
 TEST: au lieu des 20 heures réglementaires.
 TEST: celle des 20 ans.
+TEST: sous le seuil des 10 %
+TEST: notre revue des 24 et 25 décembre
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -9531,7 +9533,7 @@ __purge_locutions__
     du tout au tout
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville|vitesse]
+    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
     en aucun cas
     en aucune [circonstance|façon|manière]
     en bas âge
@@ -9629,6 +9631,7 @@ __purge_locutions__
     en un rien de temps
     en une autre occasion
     en vase clos
+    en vitesse ?[subsonique|supersonique|subluminique|superluminique]¿
     en voie de développement
     en y réfléchissant bien
     en [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre] dernier
@@ -18833,7 +18836,7 @@ TEST: nulle partie du corps ne peut être considérée comme le siège de l’â
 
 __conj_vinfi_suj__
     [<start>|,]  @:Y  @:V¬:(?:3s|P|Q.*:[me]:[si]|Y|G|3p!|M)
-        <<- /conj/ not (value(\2, "|croire|être|devenir|redevenir|voir|sembler|paraître|paraitre|sentir|") and morph(\3, ":A"))
+        <<- /conj/ not (value(\2, "|croire|être|devenir|redevenir|voir|sembler|paraître|paraitre|sentir|retrouver|") and morph(\3, ":A"))
         -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: manger {{fais}} grossir.
@@ -18841,6 +18844,7 @@ TEST: boire immodérément {{nuis}} à la santé
 TEST: Réfléchir à tête reposée {{prends}} du temps.
 TEST: Manger salé, c’est mauvais pour la santé.
 TEST: Lire plus de 400 livres
+TEST: mais aussi se retrouver flanqués d’un grand débat national avec son lot de questionnements parachutés
 
 
 __conj_det_sing_nom__
