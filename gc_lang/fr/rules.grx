@@ -2989,11 +2989,18 @@ __typo_ordinaux_chiffres_romains_exposants__
     ~^[IVXLCM]{2,10}e$
         <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
+    [Ie|Ve|Xe]
+        <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
     ~^[IVXLCM]{2,10}es$
+        <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+
+    [Ies|Ves|Xes]
         <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: François {{Ier}}                          ->> Iᵉʳ
 TEST: c’est le {{IIe}} siècle                   ->> IIᵉ
+TEST: La {{Ve}} République                      ->> Vᵉ
 
 
 __typo_ordinaux_chiffres_romains_incorrects__
