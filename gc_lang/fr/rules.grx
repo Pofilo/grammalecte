@@ -12940,6 +12940,14 @@ TEST: Allez-vous faire {{affaires}} avec ces connards ?
 TEST: Faire {{affaire}} à Paris.
 
 
+# armes
+__sgpl_d_armes__
+    [>compagnon|>frère|>sœur] d’ arme
+        <<- /sgpl/ -3>> armes                                               # Les compagnons d’armes.|https://fr.wiktionary.org/wiki/compagnon_d%E2%80%99armes
+
+TEST: mes frères d’{{arme}}
+
+
 # boisson
 __sgpl_débit_de_boissons__
     >débit de boisson
@@ -17954,7 +17962,7 @@ TEST: elle relève une fois de plus le {{défie}}.                ->> défi
 TEST: il gère l’{{accueille}}                                   ->> accueil
 TEST: nous racontons le {{dépare}} des peuples vers les étoiles ->> départ
 TEST: Les hommes resteront en {{contacte}}                      ->> contact
-TEST: Le parquet ne demande pas le {{maintient}} en détention          ->> maintien
+TEST: Le parquet ne demande pas le {{maintient}} en détention   ->> maintien
 TEST: Mon idée rend leur {{dépare}} nécessaire                  ->> départ
 TEST: tu vois, l’oiseau étend les {{hèles}}                     ->> ailes
 TEST: Lire nous révèle les {{fixions}} du genre                 ->> fictions
@@ -18042,6 +18050,33 @@ TEST: ne gère pas l’{{accueille}} comme il faut.
 TEST: cela le rend malade
 TEST: Marie Desplechin en savait quelque chose
 TEST: qui les aiment, les étudient, les protègent mais aussi les exploitent, les chassent, les mangent
+
+
+__conf_vinfi_adj__
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [ne|n’|me|m’|te|t’|se|s’]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \3 != "verbe" and \4.islower() -4>> =suggVerbPpas(\4, ":m:s")    # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [ne|n’|me|m’|te|t’|se|s’]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \4.islower() -4>> =suggVerbPpas(\4, ":m:f")                      # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [ne|n’|me|m’|te|t’|se|s’]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \4.islower() -4>> =suggVerbPpas(\4, ":p")                        # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+
+TEST: mon pantalon {{repriser}} me grattait.
+TEST: la petite {{penser}} ne cessait de tourner dans son cerveau enfiévré.
+TEST: les hommes nouvellement {{arriver}} ne nous dirent rien de ce qu’ils avaient vu.
 
 
 
