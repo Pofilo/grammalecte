@@ -577,7 +577,8 @@ __<i>/html(p_html_amp_xxx)__            &amp;[a-zA-Z]+; <<- ~>> _
 __<i>/html(p_html_lt)__                 &lt; <<- ~>> "   <"
 __<i>/html(p_html_gt)__                 &gt; <<- ~>> >
 __<i>/html(p_html_amp)__                &amp; <<- ~>> &
-__<i>/html(p_html_nbsp)__               &nbsp; <<- ~>> *
+__<i>/html(p_html_nbsp)__               &nbsp; <<- ~>> @
+__<i>/html(p_html_nbsp2)__              &#160; <<- ~>> @
 __<i>/html(p_html_pseudo_balise)__      \[/?\w+\] <<- ~>> *
 
 
@@ -589,6 +590,7 @@ __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumera
 
 TEST: __html__  des <b>{{homme}}</b>
 TEST: __html__  des [b]{{femme}}[/b]
+TEST: __html__  il est venu&nbsp;: c’était bien…
 
 
 
@@ -3981,6 +3983,15 @@ TEST: mettre {{a date}}
 TEST: {{jusqu’à date}}
 
 
+# de sorte que
+__bs_de_sorte_que__
+    de sorte à ce [que|qu’]
+        <<- /bs/ -1:4>> de sorte                                    # Tournure impropre. La locution conjonctive appropriée est “de sorte que”.|https://fr.wiktionary.org/wiki/de_sorte_que
+
+TEST: elle s’était apprêtée {{de sorte à ce}} qu’elle fût remarquée.
+TEST: il était si imbu de lui-même, {{de sorte à ce}} que ses collègues le méprisaient.
+
+
 # incessamment sous peu
 __bs_incessamment_sous_peu__
     incessamment >sou [peu|peux|peut]
@@ -6292,6 +6303,9 @@ TEST: Un pauvre, ça doit consommer, bosser, et bien fermer sa gueule. Tout l’
 # date / datte
 __conf_date_datte__
     >datte du *NUM [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre]
+    >datte [>butoir|>buttoir]
+    >datte des [congés|vacances]
+    >datte de [mes|tes|ses|nos|vos|leurs] [congés|vacances]
         <<- /conf/ \1.endswith("s") -1>> dates                # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
         <<- /conf/ __else__ -1>> date                         # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
 
@@ -7437,7 +7451,7 @@ __conf_pré_près_prêt__
     >prêt [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
         <<- /conf/ not before("(?i)\\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    si [>prêt|>pré] du but
+    si [>prêt|>pré] [du|de|d’|des]
         <<- /conf/ -2>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     >raser de ?très¿ [>prêt|>pré]
