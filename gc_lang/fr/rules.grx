@@ -5188,6 +5188,21 @@ TEST: elle n’{{en n’}}avait plus pour longtemps.        ->> "en "
 TEST: toute chose pourrait finalement advenir indifféremment en n’importe quel point du globe
 
 
+#### Divers
+__ppas_lui_verbe__
+    lui  ~é(?:es?|s)$
+        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":V0a")
+        -2>> =suggVerbInfi(\2)+"|"+suggVerbPpas(\2, ":m:s")                                         # Incohérence probable. Soit il faut un participe passé masculin singulier, soit un verbe à l’infinitif.
+
+    lui aussi ~é(?:es?|s)$
+        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":V0a") -2>> =suggVerbPpas(\2, ":m:s")         # Incohérence probable. Il faut vraisemblement un participe passé masculin singulier.
+
+TEST: lui {{mangée}} beaucoup.
+TEST: L’homme qui s’approchait de lui voulait le surprendre.
+TEST: avec Paul, lui aussi éliminé.
+TEST: les études qu’il a lui terminées avec bien du mal.
+
+
 __conf_presque_vconj__
     presque  @:[123][sp]¬:[GNAQWM]
         <<- /conf/ not tag_before(\1, "ce_que") and not value(<1, "|ou|") -2>> _                    # Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
@@ -15787,14 +15802,6 @@ __infi_il_faut_verbe__
 TEST: il faut sans cesse {{persévéré}}
 TEST: Il faudrait l’{{essayé}}.
 TEST: Il faudra ne {{touché}} qu’aux extrémités.
-
-
-__infi_lui_verbe__
-    lui  ~ée?s?$
-        <<- /infi/ morph(\2, ":Q") -2>> =suggVerbInfi(\2)           # Le verbe ne devrait probablement pas être un participe passé.
-
-TEST: lui {{mangée}} beaucoup.
-TEST: L’homme qui s’approchait de lui voulait le surprendre.
 
 
 __infi_se_laisser_vinf__
