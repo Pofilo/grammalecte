@@ -1830,6 +1830,9 @@ __da_groupe_nominal__
     par  *WORD
         <<- =>> exclude(\2, ":V[123]")
 
+    plein  [de|d’]  @:[AN]
+        <<- not morph(<1, ":V0e") =>> =define(\1, [":G"])
+
     très  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
 
@@ -3387,9 +3390,11 @@ __tu_substantifs__
     sous [jacent|jacente|jacents|jacentes]
         <<- /tu/ ->> sous-\2                                    # Il manque un trait d’union.
 
-    du sur mesures
-    du sur mesure
-        <<- -2:0>> sur-mesures                                  # Il manque un trait d’union.
+    du sur >mesure
+        <<- /tu/ -2:0>> sur-mesures                             # Il manque un trait d’union.
+
+    [un|le|ce|du|mon|ton|son|notre|votre|leur] terre plein
+        <<- /tu/ not value(>1, "|de|d’|") -2:3>> terre-plein    # Il manque probablement un trait d’union.|https://fr.wiktionary.org/wiki/terre-plein
 
     [le|de|ce|les|des|ces|un|mon|leur|leurs|nos|vos|notre|votre|quel|quels] [va|vas] et [vient|viens]
         <<- /tu/ -2:0>> va-et-vient                             # Il manque les traits d’union.
@@ -3462,7 +3467,7 @@ TEST: Le {{moto club}} était sur le point de faire faillite.
 TEST: J’ai beaucoup de {{déjà vu}}.
 TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants se poursuit devant l’hôtel de ville à Bordeaux depuis environ 1h30.
 TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
-
+TEST: Ils versent dans leur terre plein de poisons.
 
 __tu_va_t_en__
     va t en
@@ -10980,13 +10985,6 @@ __purge_adverbes__
         <<- morph(\1, ":W", ":(?:3p|N)") ~>> *
 
 
-# tous / tout / toute / toutes
-__purge_tout_tout_tous_toutes__
-    tout            [le|ce|cet|mon|ton|son]
-    toute           [la|cette|ma|ta|sa]
-    [tous|toutes]   [les|des|mes|tes|ses|ces|nos|vos|leurs]
-        <<- ~1>> *
-
 
 @@@@
 @@@@
@@ -11059,6 +11057,9 @@ __purge_locutions_potentielles__
     dans l’ ensemble  @¬:A.*:[me]:[si]
         <<- ~1:3>> *
 
+    dans tous les cas  @:A¬:A.*:[me]:[pi]
+        <<- ~1:4>> *
+
     de ce fait  @¬:A.*:[me]:[si]
         <<- ~1:3>> *
 
@@ -11107,12 +11108,21 @@ __purge_locutions_potentielles__
     un jour  @¬:A.*:[me]:[si]
         <<- not morph(<1, ":R|>d’/") ~1:2>> *
 
+
 __purge_tous_deux_trois__
     >faire tous [deux|trois]
         <<- ~2:0>> *
 
     >faire tous
         <<- morph(\1, ":[123]p") or (\1 == "fait" and value(<1, "|on|")) ~2>> *
+
+
+# tous / tout / toute / toutes
+__purge_tout_tout_tous_toutes__
+    tout            [le|ce|cet|mon|ton|son]
+    toute           [la|cette|ma|ta|sa]
+    [tous|toutes]   [les|des|mes|tes|ses|ces|nos|vos|leurs]
+        <<- ~1>> *
 
 
 
@@ -11349,6 +11359,7 @@ TEST: S’y inventent de nouvelles solidarités, s’y expérimentent des joies 
 TEST: Les femmes, quant à elles, ont aussi tendance à sous-estimer le harcèlement dont elles sont dans leur globalité victimes
 TEST: Elles ont avec constance démontré l’inanité de leur politique.
 TEST: On l’a mauvaise, j’peux vous l’dire.
+TEST: Défigurée, travestie, dans tous les cas contestée.
 
 
 
