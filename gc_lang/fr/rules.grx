@@ -5480,6 +5480,49 @@ TEST: Elles hurlèrent {{à corps et à cris}}.
 TEST: manifester sa colère à cor et à cri.
 
 
+DEF: humain [administrateur|baron|chevalier|comte|contrôleur|dieu|duc|émir|époux|frère|grand-père|homme|maître|maitre|mari|ministre|monsieur|neveu|oncle|patron|père|président|prince|prophète|roi|sultan|tsar|vice-président]
+DEF: humaine [administratrice|baronne|chevalière|comtesse|contrôleuse|déesse|duchesse|épouse|femme|fille|grand-mère|madame|maîtresse|maitresse|mère|ministre|nièce|patronne|présidente|petite-fille|princesse|prophétesse|reine|sœur|sultane|tante|tsarine|vice-présidente]
+
+__conf_a_l_attention_de_prn__
+    à l’ intention de @:M[12]
+    à l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire]
+    à l’ intention du {humain}
+    à l’ intention de la {humaine}
+    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
+    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humaine}
+        <<- /conf/ not morph(<1, ">(?:cadeau|offrande|présent)") -3>> attention
+        # Confusion probable. On a/attire/obtient l’attention de quelqu’un ou on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
+
+    >porter à l’ intention [de|d’|,]
+    >porter à [mon|ton|son|notre|votre|leur] intention
+        <<- /conf/ -4>> attention
+        # Confusion probable. On a/attire/obtient l’attention de quelqu’un ou on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
+
+    [>attirer|>obtenir] [l’|mon|ton|son|notre|votre|leur] intention
+    >avoir [mon|ton|son|notre|votre|leur] intention
+    >avoir l’ intention de @:M[12]
+    >avoir l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire|Dieu]
+    >avoir l’ intention du {humain}
+    >avoir l’ intention de la {humaine}
+    >avoir l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
+    >avoir l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humaine}
+        <<- /conf/ -3>> attention
+        # Confusion probable. On a/attire/obtient l’attention de quelqu’un ou on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
+
+    [>connaître|>connaitre] [l’|mon|ton|son|notre|votre|leur] attention
+    [>connaître|>connaitre] [les|mes|tes|ses|nos|vos|leurs] attentions
+        <<- /conf/ -3>> intention
+        # Confusion probable. L’attention est la vigilance. Si vous voulez évoquer les volontés ou les desseins d’une personne, écrivez “intentions”.|https://fr.wiktionary.org/wiki/intention
+
+TEST: Elle attirait son {{intention}}
+TEST: Il faut porter à mon {{intention}} ces problèmes.
+TEST: Il faut connaitre leurs {{attentions}} pour préparer notre riposte.
+TEST: il faut porter ces méfaits à l’{{intention}} du prince.
+TEST: nous avons l’{{intention}} de la reine
+TEST: Ils ont l’intention de nous nuire
+TEST: Elles avaient bien l’intention d’en parler.
+
+
 __conf_à_moindre_cout__
     [a|à] >moindre [>cou|>coup]
         <<- /conf/ ->> à moindre coût                                       # Confusion. Pour évoquer des dépenses, écrivez “coût”.
