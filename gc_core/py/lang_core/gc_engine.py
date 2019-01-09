@@ -262,6 +262,8 @@ class TextParser:
             sText = sText.replace("'", "’")
         if "‑" in sText:
             sText = sText.replace("‑", "-") # nobreakdash
+        if "@@" in sText:
+            sText = re.sub("@@+", "", sText)
 
         # parse sentences
         for iStart, iEnd in _getSentenceBoundaries(sText):
@@ -689,7 +691,9 @@ class TextParser:
         if sRepl == "*":
             sNew = " " * nLen
         elif sRepl == "_":
-            sNew = sRepl + " " * (nLen-1)
+            sNew = "_" * nLen
+        elif sRepl == "@":
+            sNew = "@" * nLen
         elif sRepl[0:1] == "=":
             sNew = globals()[sRepl[1:]](sText, m)
             sNew = sNew + " " * (nLen-len(sNew))

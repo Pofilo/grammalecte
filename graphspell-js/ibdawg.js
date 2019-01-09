@@ -208,6 +208,7 @@ class IBDAWG {
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,
+            "sDescription": this.sDescription,
             "sFileName": this.sFileName,
             "sDate": this.sDate,
             "nEntry": this.nEntry,
@@ -357,14 +358,17 @@ class IBDAWG {
     _suggest (oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=false) {
         // returns a set of suggestions
         // recursive function
-        if (sRemain == "") {
-            if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
+        if (this._convBytesToInteger(this.byDic.slice(iAddr, iAddr+this.nBytesArc)) & this._finalNodeMask) {
+            if (sRemain == "") {
                 oSuggResult.addSugg(sNewWord);
+                for (let sTail of this._getTails(iAddr)) {
+                    oSuggResult.addSugg(sNewWord+sTail);
+                }
+                return;
             }
-            for (let sTail of this._getTails(iAddr)) {
-                oSuggResult.addSugg(sNewWord+sTail);
+            else if (this.isValid(sRemain)) {
+                oSuggResult.addSugg(sNewWord+" "+sRemain);
             }
-            return;
         }
         if (nDist > oSuggResult.nDistLimit) {
             return;

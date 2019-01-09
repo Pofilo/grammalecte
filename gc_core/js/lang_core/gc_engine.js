@@ -233,6 +233,9 @@ class TextParser {
         if (this.sText.includes("‑")) {
             this.sText = this.sText.replace(/‑/g, "-"); // nobreakdash
         }
+        if (this.sText.includes("@@")) {
+            this.sText = this.sText.replace(/@@+/g, "");
+        }
 
         // parse sentence
         for (let [iStart, iEnd] of gc_engine.getSentenceBoundaries(this.sText)) {
@@ -797,8 +800,8 @@ class TextParser {
         if (sRepl === "*") {
             sNew = " ".repeat(ln);
         }
-        else if (sRepl === ">" || sRepl === "_" || sRepl === "~") {
-            sNew = sRepl + " ".repeat(ln-1);
+        else if (sRepl === "_") {
+            sNew = "_".repeat(ln);
         }
         else if (sRepl === "@") {
             sNew = "@".repeat(ln);

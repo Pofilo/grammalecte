@@ -168,6 +168,7 @@ class IBDAWG:
         self.sLangCode = l.pop(0)
         self.sLangName = l.pop(0)
         self.sDicName = l.pop(0)
+        self.sDescription = l.pop(0)
         self.sDate = l.pop(0)
         self.nChar = int(l.pop(0))
         self.nBytesArc = int(l.pop(0))
@@ -210,6 +211,7 @@ class IBDAWG:
                 "sLangCode": self.sLangCode,
                 "sLangName": self.sLangName,
                 "sDicName": self.sDicName,
+                "sDescription": self.sDescription,
                 "sFileName": self.sFileName,
                 "sDate": self.sDate,
                 "nEntry": self.nEntry,
@@ -321,12 +323,14 @@ class IBDAWG:
     def _suggest (self, oSuggResult, sRemain, nMaxSwitch=0, nMaxDel=0, nMaxHardRepl=0, nMaxJump=0, nDist=0, nDeep=0, iAddr=0, sNewWord="", bAvoidLoop=False):
         # recursive function
         #logging.info((nDeep * "  ") + sNewWord + ":" + sRemain)
-        if not sRemain:
-            if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+        if int.from_bytes(self.byDic[iAddr:iAddr+self.nBytesArc], byteorder='big') & self._finalNodeMask:
+            if not sRemain:
                 oSuggResult.addSugg(sNewWord, nDeep)
-            for sTail in self._getTails(iAddr):
-                oSuggResult.addSugg(sNewWord+sTail, nDeep)
-            return
+                for sTail in self._getTails(iAddr):
+                    oSuggResult.addSugg(sNewWord+sTail, nDeep)
+                return
+            elif self.isValid(sRemain):
+                oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return
         cCurrent = sRemain[0:1]
