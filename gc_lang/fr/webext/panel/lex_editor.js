@@ -494,7 +494,7 @@ const oGenerator = {
 
 
 const oBinaryDict = {
-    
+
     oIBDAWG: null,
 
     load: function () {
@@ -532,7 +532,7 @@ const oBinaryDict = {
         let lEntry = [];
         for (let aRes of this.oIBDAWG.select()) {
             lEntry.push(aRes);
-        }        
+        }
         oLexiconTable.fill(lEntry);
         this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
     },
@@ -543,7 +543,7 @@ const oBinaryDict = {
     },
 
     import: function () {
-        let xInput = document.getElementById("import_input"); 
+        let xInput = document.getElementById("import_input");
         let xFile = xInput.files[0];
         let xURL = URL.createObjectURL(xFile);
         let sJSON = helpers.loadFile(xURL);
@@ -584,7 +584,7 @@ const oBinaryDict = {
         let xProgressNode = document.getElementById("wait_progress");
         let lEntry = oLexiconTable.getEntries();
         if (lEntry.length > 0) {
-            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
+            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "fr.personal", xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
             this.save(oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
@@ -597,7 +597,7 @@ const oBinaryDict = {
     },
 
     export: function () {
-        let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'}); 
+        let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'});
         let sURL = URL.createObjectURL(xBlob);
         browser.downloads.download({ filename: "fr.personal.json", url: sURL, saveAs: true });
     }

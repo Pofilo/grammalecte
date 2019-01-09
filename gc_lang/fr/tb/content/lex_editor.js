@@ -478,7 +478,7 @@ const oBinaryDict = {
         let xProgressNode = document.getElementById("wait_progress");
         let lEntry = oLexiconTable.getEntries();
         if (lEntry.length > 0) {
-            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel", xProgressNode);
+            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "fr.personal", xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
             oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
             this.oIBDAWG = new IBDAWG(oJSON);

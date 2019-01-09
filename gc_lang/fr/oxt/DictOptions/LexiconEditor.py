@@ -411,7 +411,7 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         for i in range(xGridDataModel.RowCount):
             lEntry.append(xGridDataModel.getRowData(i))
         if lEntry:
-            oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "Dictionnaire personnel")
+            oDAWG = dawg.DAWG(lEntry, "S", "fr", "Français", "fr.personal")
             self.oPersonalDicJSON = oDAWG.getBinaryAsJSON()
             self.xOptionNode.setPropertyValue("personal_dic", json.dumps(self.oPersonalDicJSON, ensure_ascii=False))
             self.xSettingNode.commitChanges()

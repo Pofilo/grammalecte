@@ -45,7 +45,7 @@ class DAWG:
     # Each arc is an index in self.lArcVal, where are stored characters, suffix/affix codes for stemming and tags.
     # Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
 
-    def __init__ (self, src, cStemming, sLangCode, sLangName="", sDicName="", sSelectFilterRegex=""):
+    def __init__ (self, src, cStemming, sLangCode, sLangName="", sDicName="", sDescription="", sSelectFilterRegex=""):
         print("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====")
         cStemming = cStemming.upper()
         if cStemming == "A":
@@ -121,6 +121,7 @@ class DAWG:
         self.sLangCode = sLangCode
         self.sLangName = sLangName
         self.sDicName = sDicName
+        self.sDescription = sDescription
         self.nEntry = len(lWord)
         self.aPreviousEntry = []
         DawgNode.resetNextId()
@@ -433,6 +434,7 @@ class DAWG:
             "sLangCode": self.sLangCode,
             "sLangName": self.sLangName,
             "sDicName": self.sDicName,
+            "sDescription": self.sDescription,
             "sFileName": self.sFileName,
             "sDate": self._getDate(),
             "nEntry": self.nEntry,
@@ -515,9 +517,9 @@ class DAWG:
             hDst.write("/grammalecte-fsa/{}/".format(nCompressionMethod).encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # infos
-            sInfo = "{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//".format(self.sLangCode, self.sLangName, self.sDicName, self._getDate(), \
-                                                                              self.nChar, self.nBytesArc, self.nBytesNodeAddress, \
-                                                                              self.nEntry, self.nNode, self.nArc, self.nAff, self.cStemming)
+            sInfo = "{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}//{}".format(self.sLangCode, self.sLangName, self.sDicName, self.sDescription, self._getDate(), \
+                                                                                self.nChar, self.nBytesArc, self.nBytesNodeAddress, \
+                                                                                self.nEntry, self.nNode, self.nArc, self.nAff, self.cStemming)
             hDst.write(sInfo.encode("utf-8"))
             hDst.write(b"\0\0\0\0")
             # lArcVal

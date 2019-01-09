@@ -208,6 +208,7 @@ class IBDAWG {
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,
+            "sDescription": this.sDescription,
             "sFileName": this.sFileName,
             "sDate": this.sDate,
             "nEntry": this.nEntry,

@@ -32,7 +32,7 @@ class DAWG {
         Important: As usual, the last node (after ‘iTags’) is tagged final, AND the node after ‘cN’ is ALSO tagged final.
     */
 
-    constructor (lEntrySrc, cStemming, sLangCode, sLangName="", sDicName="", xProgressBarNode=null) {
+    constructor (lEntrySrc, cStemming, sLangCode, sLangName="", sDicName="", sDescription="", xProgressBarNode=null) {
         console.log("===== Direct Acyclic Word Graph - Minimal Acyclic Finite State Automaton =====");
         let funcStemmingGen = null;
         switch (cStemming.toUpperCase()) {
@@ -120,6 +120,7 @@ class DAWG {
         this.sLangCode = sLangCode;
         this.sLangName = sLangName;
         this.sDicName = sDicName;
+        this.sDescription = sDescription;
         this.nEntry = lWord.length;
         this.aPreviousEntry = [];
         oNodeCounter.reset();
@@ -390,6 +391,7 @@ class DAWG {
             "sLangCode": this.sLangCode,
             "sLangName": this.sLangName,
             "sDicName": this.sDicName,
+            "sDescription": this.sDescription,
             "sFileName": "[none]",
             "sDate": this._getDate(),
             "nEntry": this.nEntry,

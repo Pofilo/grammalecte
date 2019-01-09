@@ -168,6 +168,7 @@ class IBDAWG:
         self.sLangCode = l.pop(0)
         self.sLangName = l.pop(0)
         self.sDicName = l.pop(0)
+        self.sDescription = l.pop(0)
         self.sDate = l.pop(0)
         self.nChar = int(l.pop(0))
         self.nBytesArc = int(l.pop(0))
@@ -210,6 +211,7 @@ class IBDAWG:
                 "sLangCode": self.sLangCode,
                 "sLangName": self.sLangName,
                 "sDicName": self.sDicName,
+                "sDescription": self.sDescription,
                 "sFileName": self.sFileName,
                 "sDate": self.sDate,
                 "nEntry": self.nEntry,
