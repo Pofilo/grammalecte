@@ -11585,7 +11585,7 @@ __gn_la_1m__
             or ( morph(\3, ":[NA].*:m", ":[fe]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
         -2>> le                                                                             # Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
-        <<- /gn/ __else__ and morph(\3, ":[NA].*:p")
+        <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
             or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -3>> =suggFemSing(\3)                                                               # Accord de nombre erroné : « \3 » devrait être au singulier.
 
@@ -11603,6 +11603,8 @@ TEST: de {{la}} vin                                           ->> le
 TEST: {{la}} {{véhicule}}
 TEST: {{La}} {{pris}}
 TEST: la force de la {{formes}} parfaite
+TEST: à ne plus se laisser faire la fois d’après
+TEST: il pense à la fois où nous avons eu cet accident idiot.
 
 
 __gn_la_2m__
