@@ -9,9 +9,9 @@ import graphspell.dawg as fsa
 from graphspell.ibdawg import IBDAWG
 
 
-def build (spfSrc, sLangCode, sLangName, sfDict, bJSON=False, sDicName="", sFilter="", cStemmingMethod="S", nCompressMethod=1):
+def build (spfSrc, sLangCode, sLangName, sfDict, bJSON=False, sDicName="", sDescription="", sFilter="", cStemmingMethod="S", nCompressMethod=1):
     "transform a text lexicon as a binary indexable dictionary"
-    oDAWG = fsa.DAWG(spfSrc, cStemmingMethod, sLangCode, sLangName, sDicName, sFilter)
+    oDAWG = fsa.DAWG(spfSrc, cStemmingMethod, sLangCode, sLangName, sDicName, sDescription, sFilter)
     dir_util.mkpath("graphspell/_dictionaries")
     oDAWG.writeInfo("graphspell/_dictionaries/" + sfDict + ".info.txt")
     oDAWG.writeBinary("graphspell/_dictionaries/" + sfDict + ".bdic", int(nCompressMethod))
@@ -32,7 +32,7 @@ def main ():
     xParser.add_argument("-c", "--compress", help="compression method: 1, 2 (beta), 3, (beta)", type=int, choices=[1, 2, 3], default=1)
     xArgs = xParser.parse_args()
     build(xArgs.src_lexicon, xArgs.lang_code, xArgs.lang_name, xArgs.dic_filename, xArgs.json)
-    
+
 
 if __name__ == '__main__':
     main()

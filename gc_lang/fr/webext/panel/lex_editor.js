@@ -545,7 +545,8 @@ const oDictHandler = {
 const oBinaryDict = {
 
     oIBDAWG: null,
-    sName: null,
+    sName: "",
+    sDescription: "",
 
     load: function (sName) {
         console.log("lexicon editor, load: " + sName);
@@ -621,7 +622,7 @@ const oBinaryDict = {
         let xProgressNode = document.getElementById("wait_progress");
         let lEntry = oLexiconTable.getEntries();
         if (lEntry.length > 0) {
-            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", this.sName, xProgressNode);
+            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", this.sName, this.sDescription, xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
             oDictHandler.saveDictionary(this.sName, oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
