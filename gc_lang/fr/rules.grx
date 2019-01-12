@@ -8644,19 +8644,19 @@ __tout_nom__
         <<- /gn/ morph(<1, ":R", ":D.*:p") -2>> =suggMasSing(\2, True)                              # Accord avec “tout” : “\2” devrait être au masculin singulier.
 
 __toute_nom__
-    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|G|M|[fe]:[is])
-    de          toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
+    de          toute  @:[NA].*:[mp]¬:(?:W|P|G|M|Y|[fe]:[is])
         <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulie
 
-    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|P|[fe]:[is])
         <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
 
 __tous_nom__
-    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|G|M|[me]:[ip]|3p)
-    de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip]|3[sp])
+    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|P|G|M|[me]:[ip]|3p)
+    de          tous  @:[NA].*:[fs]¬:(?:W|P|G|M|Y|[me]:[ip]|3[sp])
         <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        # Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
-    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|3[sp]|[me]:[ip])
+    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|P|3[sp]|[me]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        # Accord avec “tous” : “\2” devrait être au masculin pluriel.
 
 __toutes_nom__
@@ -8664,7 +8664,7 @@ __toutes_nom__
     de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
         <<- /gn/ -3>> =suggFemPlur(\3, True)                                                        # Accord avec “toutes” : “\3” devrait être au féminin pluriel.
 
-    toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
+    toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|P|[fe]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggFemPlur(\2, True)                                        # Accord avec “toutes” : “\2” devrait être au féminin pluriel.
 
 TEST: Tout {{hommes}}
@@ -8680,6 +8680,7 @@ TEST: aux tout débuts, il y eut bien des erreurs
 TEST: comment les inégalités sociales impactent la santé des tout petits
 TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
 TEST: la survie de tous est plus importante que les profits de quelques-uns
+TEST: tous ayant souffert du supplice de séjourner derrière les barreaux
 
 
 
