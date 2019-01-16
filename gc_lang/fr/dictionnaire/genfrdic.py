@@ -526,11 +526,6 @@ class Dictionnaire:
         with open(spfDst[:-4]+".lex", 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(MPLHEADER)
             hDst.write("# Lexique simplifié pour Grammalecte v{}\n# Licence : MPL v2.0\n\n".format(version))
-            hDst.write("## LangCode: fr\n")
-            hDst.write("## LangName: Français\n")
-            hDst.write("## DicName: fr.commun\n")
-            hDst.write("## Description: Français commun (toutes variantes)\n")
-            hDst.write("## Author: Olivier R.\n\n")
             hDst.write(Flexion.simpleHeader())
             for oFlex in self.lFlexions:
                 hDst.write(oFlex.getGrammarCheckerRepr())

@@ -23,15 +23,25 @@ from .progressbar import ProgressBar
 
 
 
+dLexiconData = {}
+
 def readFile (spf):
     "generator: read file <spf> and return for each line a list of elements separated by a tabulation."
     print(" < Read lexicon: " + spf)
     if os.path.isfile(spf):
+        dLexiconData.clear()
         with open(spf, "r", encoding="utf-8") as hSrc:
             for sLine in hSrc:
                 sLine = sLine.strip()
-                if sLine and not sLine.startswith("#"):
+                if sLine.startswith("##") :
+                    m = re.match("## *(\\w+) *:(.*)$", sLine)
+                    if m:
+                        dLexiconData[m.group(1)] = m.group(2).strip()
+                elif sLine and not sLine.startswith("#"):
                     yield sLine.split("\t")
+        if dLexiconData:
+            print("Data from dictionary:")
+            print(dLexiconData)
     else:
         raise OSError("# Error. File not found or not loadable: " + spf)
 
@@ -122,6 +132,11 @@ class DAWG:
         self.sLangName = sLangName
         self.sDicName = sDicName
         self.sDescription = sDescription
+        if dLexiconData:
+            self.sLangCode = dLexiconData.get("LangCode", self.sLangCode)
+            self.sLangName = dLexiconData.get("LangName", self.sLangName)
+            self.sDicName = dLexiconData.get("DicName", self.sDicName)
+            self.sDescription = dLexiconData.get("Description", self.sDescription)
         self.nEntry = len(lWord)
         self.aPreviousEntry = []
         DawgNode.resetNextId()
