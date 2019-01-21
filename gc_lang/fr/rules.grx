@@ -53,7 +53,7 @@
 !!
 !!
 
-OPTGROUP/basic: typo apos, esp tab, nbsp unit, tu maj, num virg, nf chim, ocr mapos, liga
+OPTGROUP/basic: typo apos, esp tab, nbsp unit, tu maj, num virg, nf poncfin, ocr chim, liga mapos
 OPTGROUP/gramm: conf sgpl gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
 OPTGROUP/style: bs pleo, redon1 redon2, neg
@@ -71,6 +71,7 @@ OPT/tu:             True        True        True        True        True        
 OPT/maj:            True        True        True        True        True        True
 OPT/num:            True        True        True        True        True        True
 OPT/virg:           True        True        True        True        True        True
+OPT/poncfin:        False       False       False       False       False       False
 OPT/unit:           True        True        True        False       False       False
 OPT/nf:             True        True        True        True        True        True
 OPT/liga:           False       False       False       False       False       False
@@ -121,6 +122,7 @@ OPTCOLOR/tu:        orange      orange
 OPTCOLOR/maj:       orange      orange
 OPTCOLOR/num:       orange      orange
 OPTCOLOR/virg:      orange      orange
+OPTCOLOR/poncfin:   orange      orange
 OPTCOLOR/unit:      orange      orange
 OPTCOLOR/nf:        orange      orange
 OPTCOLOR/liga:      orange      orange
@@ -157,6 +159,7 @@ OPTLABEL/tab:       Tabulations surnuméraires|Signale les tabulations inutiles 
 OPTLABEL/nbsp:      Espaces insécables|Vérifie les espaces insécables avec les ponctuations « ! ? : ; » (à désactiver si vous utilisez une police Graphite)
 OPTLABEL/maj:       Majuscules|Vérifie l’utilisation des majuscules et des minuscules (par exemple, « la raison d’État », « les Européens »).
 OPTLABEL/virg:      Virgules|Virgules manquantes avant “mais”, “car” et “etc.”.
+OPTLABEL/poncfin:   Ponctuation finale [!]|Vérifie s’il manque une ponctuation finale au paragraphe (seulement pour les paragraphes constitués de plusieurs phrases).
 OPTLABEL/tu:        Traits d’union|Cherche les traits d’union manquants ou inutiles.
 OPTLABEL/num:       Nombres|Espaces insécables sur les grands nombres (> 10 000). Vérifie la présence de « O » au lieu de « 0 ».
 OPTLABEL/unit:      Espaces insécables avant unités de mesure
@@ -203,6 +206,7 @@ OPTLABEL/tab:       Useless tabulations|Checks tabulations at the beginning and 
 OPTLABEL/nbsp:      Non-breakable spaces|Checks the use of non-breakable spaces with the following punctuation marks: « ! ? : ; » (deactivate it if you use a Graphite font).
 OPTLABEL/maj:       Capitals|Checks the use of uppercase and lowercase letters (i.e. « la raison d’État », « les Européens »).
 OPTLABEL/virg:      Commas|Missing commas before “mais”, “car” and “etc.”.
+OPTLABEL/poncfin:   Ending punctuation [!]|Checks if an ending punctuation is missing on paragraphs (only for multi-sentences paragraphs).
 OPTLABEL/tu:        Hyphens|Checks missing or useless hyphens.
 OPTLABEL/num:       Numbers|Large numbers and « O » instead of « 0 ».
 OPTLABEL/unit:      Non-breaking spaces before units of measurement
@@ -711,9 +715,24 @@ TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
 __[s]/maj(majuscule_en_début_phrase)__
     ^ *([a-zéèâàô][\w-]+)  @@$
-    <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                                 # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+    <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                              # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
+
+
+!!
+!!
+!!!! Ponctuation de fin de paragraphe                                                             !!
+!!
+!!
+
+__[i>/poncfin__
+    ({w_1}) *$  @@0
+    <<- before("\\w+(?:[.]|[   ][!?]) +([A-ZÉÈÎ]\w+|[ÀÔ])") -1>> \1.|\1 !|\1 ?                      # Il semble manquer une ponctuation finale (s’il s’agit d’un titre, le point final n’est pas requis).
+
+TEST: __poncfin__ Vraiment. Quel {{ennui}}
+TEST: Internet : le nouvel eldorado
+TEST: OMC-FMI : Les nouveaux maîtres du monde
 
 
 !!
