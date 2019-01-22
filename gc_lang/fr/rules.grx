@@ -17751,19 +17751,18 @@ TEST: Soyez les plus gentils qu’on puisse imaginer.
 
 
 __imp_union_le_la_leur__
-    *WORD  [le|la|leur|en]
+    *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  [le|la|leur|en]
+    ,  *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
 TEST: {{Dites leur}} que nous sommes là.
-TEST: {{restons en}} là.
 TEST: j’en ai plus qu’assez, {{apprend le}}.
 TEST: un sujet si extrêmement politique et polémique lui a donné un accès
 TEST: Les États d’ores et déjà très affaiblis le seraient encore plus
@@ -17774,6 +17773,21 @@ TEST: Pesons le pour et le contre.
 TEST: Va la demander au concierge.
 TEST: Allons le questionner encore une fois.
 TEST: Sois le pire des salopards.
+
+
+__imp_union_le_la_leur__
+    *WORD  en
+        <<- /imp/ space_after(\1, 1, 1)
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+        ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
+    ,  *WORD  en
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|D|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
+TEST: {{restons en}} là.
+TEST: Intercède en ma faveur
 
 
 __imp_laisser_le_la_les_infi__
