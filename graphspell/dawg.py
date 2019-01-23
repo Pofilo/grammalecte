@@ -560,7 +560,7 @@ class DAWG:
             self._writeNodes(sPathFile, nCompressionMethod)
 
     def _getDate (self):
-        return time.strftime("%Y.%m.%d, %H:%M")
+        return time.strftime("%Y-%m-%d %H:%M:%S")
 
     def _writeNodes (self, sPathFile, nCompressionMethod):
         "for debugging only"

@@ -420,7 +420,8 @@ class DAWG {
         let sDay = (oDate.getDate()).toString().padStart(2, "0");
         let sHours = (oDate.getHours()).toString().padStart(2, "0");
         let sMinutes = (oDate.getMinutes()).toString().padStart(2, "0");
-        return `${oDate.getFullYear()}-${sMonth}-${sDay}, ${sHours}:${sMinutes}`;
+        let sSeconds = (oDate.getSeconds()).toString().padStart(2, "0");
+        return `${oDate.getFullYear()}-${sMonth}-${sDay} ${sHours}:${sMinutes}:${sSeconds}`;
     }
 }
 
