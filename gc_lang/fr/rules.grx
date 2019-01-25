@@ -4395,21 +4395,10 @@ TEST: {{reporter à plus tard}}                  ->> reporter
 !!
 !!
 
-__faire_plaisir__
-    >faire plaisirs
-        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
-        <<- ~2>> *
-
-TEST: Ça me fait {{plaisirs}}.
 
 
-# ayants droit
-__sgpl_ayants_droit__
-    [les|des|ces|ses|nos|vos|leurs] ayant [droit|droits]
-        <<- /gn/ -2:3>> ayants droit                                        # Au singulier : « un ayant droit ». Au pluriel : « des ayants droit ».
 
-TEST: Comment lutter contre la cupidité des {{ayant droits}}
-# Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
+
 
 
 # Mon, ton, son : euphonie
@@ -8313,6 +8302,38 @@ TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 
 
+# ayants droit
+__sgpl_ayants_droit__
+    [les|des|ces|ses|nos|vos|leurs] ayant [droit|droits]
+        <<- /sgpl/ -2:3>> ayants droit                              # Au singulier : “un ayant droit”. Au pluriel : “des ayants droit”.
+
+TEST: Comment lutter contre la cupidité des {{ayant droits}}
+# Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
+
+
+# termes
+__sgpl_en_termes_de__
+    en terme [de|d’]
+        <<- /sgpl/ -2>> termes                                      # Dans la locution “en termes de”, mettez “terme” au pluriel.
+
+TEST: en {{terme}} de communication, c’est une véritable catastrophe
+
+
+# tous / tout / toutes
+__sgpl_tous_azimuts__
+    tout [azimut|azimuts]
+        <<- /sgpl/ ->> tous azimuts                                 # « Tous azimuts » signifie « dans toutes les directions ».
+
+__sgpl_une_bonne_fois_pour_toutes__
+    une fois pour (toute)
+    une bonne fois pour (toute)
+        <<- /sgpl/ -1>> toutes                                      # Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
+
+TEST: ils lancent des attaques {{tout azimut}}.
+TEST: une bonne fois pour {{toute}}
+TEST: ce sera réglé une fois pour {{toute}} quand il sera capturé.
+
+
 # vu de ses yeux vu
 __sgpl_vu_de_ses_yeux_vu__
     [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
@@ -11305,6 +11326,10 @@ __conf_locutions_verbales__
     >venir a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
+    >faire plaisirs
+        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
+        <<- ~2>> *
+
     >laisser pour [comte|comtes|>conte]
         <<- /conf/ -3>> compte          # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
@@ -11334,6 +11359,7 @@ TEST: il faut tenir {{comtes}} des aléas de la météo.
 TEST: Elle est restée {{jeûne}}.
 TEST: Mourir {{jeûne}} ne lui faisait pas peur.
 TEST: Elles semblent {{jeûnes}}.
+TEST: Ça me fait {{plaisirs}}.
 
 
 # Autres tests contre les faux positifs
@@ -13113,7 +13139,6 @@ __sgpl_leur_dévolu__
 TEST: Ces gens qui jettent {{leurs dévolus}} sur n’importe qui, c’est d’une indécence.
 
 
-
 # escalier
 __sgpl_cage_d_escalier__
     >cage d’ escaliers
@@ -13301,28 +13326,6 @@ __sgpl_sentir_bon__
 
 TEST: Ces fleurs sentent {{bons}}.
 TEST: Ça sent bon.
-
-
-# termes
-__sgpl_en_termes_de__
-    en terme [de|d’]
-        <<- /sgpl/ -2>> termes                                      # Dans la locution “en termes de”, mettez “terme” au pluriel.
-
-TEST: en {{terme}} de communication, c’est une véritable catastrophe
-
-
-# tous / tout / toutes
-__sgpl_tous_azimuts__
-    tout [azimut|azimuts]
-        <<- /sgpl/ ->> tous azimuts                                 # « Tous azimuts » signifie « dans toutes les directions ».
-
-__sgpl_une_bonne_fois_pour_toutes__
-    une fois pour (toute)
-    une bonne fois pour (toute)
-        <<- /sgpl/ -1>> toutes                                      # Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
-
-TEST: ils lancent des attaques {{tout azimut}}.
-TEST: une bonne fois pour {{toute}}
 
 
 # vacances
