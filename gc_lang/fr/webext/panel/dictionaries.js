@@ -36,6 +36,7 @@ function createNode  (sType, oAttr, oDataset=null) {
 
 
 
+
 class Table {
 
     constructor (sNodeId, lColumn, sProgressBarId, sResultId="", bDeleteButtons=true, bActionButtons) {
@@ -48,7 +49,8 @@ class Table {
         this.iEntryIndex = 0;
         this.lEntry = [];
         this.nEntry = 0;
-        this.aSelectedDict = new Map();
+        this.dSelectedDict = new Map();
+        this.dDict = new Map();
         this.bDeleteButtons = bDeleteButtons;
         this.bActionButtons = bActionButtons;
         this._createHeader();
@@ -102,6 +104,52 @@ class Table {
         this.showEntryNumber();
     }
 
+    getDictionarieslist () {
+        fetch("http://localhost/dictionaries/")
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                return null;
+            }
+        })
+        .then((response) => {
+            if (response) {
+                this.fill(response);
+            } else {
+                // todo
+            }
+        })
+        .catch((e) => {
+            showError(e);
+        });
+    }
+
+    getDictionary (sId, sName) {
+        console.log("get: "+sName);
+        fetch("http://localhost/download/"+sName)
+        .then((response) => {
+            if (response.ok) {
+                return response.json();
+            } else {
+                console.log("dictionary not loaded: " + sName);
+                return null;
+            }
+        })
+        .then((response) => {
+            if (response) {
+                this.selectEntry(sId, sName);
+                this.dDict.set(sName, response);
+                browser.storage.local.set({ "stored_dictionaries": this.dDict });
+            } else {
+                //
+            }
+        })
+        .catch((e) => {
+            showError(e);
+        });
+    }
+
     showEntryNumber () {
         if (this.xNumEntry) {
             this.xNumEntry.textContent = this.nEntry;
@@ -137,8 +185,12 @@ class Table {
             let xElem = xEvent.target;
             if (xElem.className) {
                 switch (xElem.className) {
-                    case "delete_entry": this.deleteRow(xElem.dataset.id_entry, xElem.dataset.dict_name); break;
-                    case "select_entry": this.selectEntry(xElem.dataset.id_entry, xElem.dataset.dict_name); break;
+                    case "delete_entry":
+                        this.deleteRow(xElem.dataset.id_entry, xElem.dataset.dict_name);
+                        break;
+                    case "select_entry":
+                        this.getDictionary(xElem.dataset.id_entry, xElem.dataset.dict_name);
+                        break;
                 }
             }
         }
@@ -161,12 +213,12 @@ class Table {
 
     selectEntry (nEntryId, sDicName) {
         let sRowId = this.sNodeId + "_row_" + nEntryId;
-        if (!this.aSelectedDict.has(sDicName)) {
-            this.aSelectedDict.set(sDicName, nEntryId);
+        if (!this.dSelectedDict.has(sDicName)) {
+            this.dSelectedDict.set(sDicName, nEntryId);
             document.getElementById(sRowId).style.backgroundColor = "hsl(120, 50%, 90%)";
         }
         else {
-            this.aSelectedDict.delete(sDicName);
+            this.dSelectedDict.delete(sDicName);
             document.getElementById(sRowId).style.backgroundColor = "";
         }
         this.showSelectedDict();
@@ -182,11 +234,11 @@ class Table {
     showSelectedDict () {
         this.clearSelectedDict();
         let xDicList = document.getElementById("dictionaries_list");
-        if (this.aSelectedDict.size === 0) {
+        if (this.dSelectedDict.size === 0) {
             xDicList.textContent = "[Aucun]";
             return;
         }
-        for (let [sName, nDicId] of this.aSelectedDict) {
+        for (let [sName, nDicId] of this.dSelectedDict) {
             xDicList.appendChild(this.createDictLabel(nDicId, sName));
         }
     }
@@ -195,7 +247,7 @@ class Table {
         let xLabel = createNode("div", {className: "dic_button"});
         let xCloseButton = createNode("div", {className: "dic_button_close", textContent: "×"}, {id_entry: nDicId});
         xCloseButton.addEventListener("click", () => {
-            this.aSelectedDict.delete(sLabel);
+            this.dSelectedDict.delete(sLabel);
             document.getElementById(this.sNodeId+"_row_"+nDicId).style.backgroundColor = "";
             xLabel.style.display = "none";
         });
@@ -208,10 +260,4 @@ class Table {
 
 const oDicTable = new Table("dictionaries_table", ["Id", "Nom", "par", "Entrées", "Description"], "wait_progress", "num_dic", false, true);
 
-oDicTable.fill([
-    [1, "Ambre", "Inconnu", "240", "Univers des Princes d’Ambre (de Roger Zelazny)"],
-    [2, "Malaz", "Inconnu", "2340", "Univers du Livre des Martyrs (de Steven Erikson)"],
-    [3, "Poudlard", "Inconnu", "1440", "Univers d’Harry Potter (de J. K. Rowlings)"],
-    [4, "Dune", "Inconnu", "2359", "Univers de Dune (de Frank Herbert)"],
-    [5, "StarWars", "Inconnu", "4359", "Univers de Star Wars (de George Lucas)"]
-]);
+oDicTable.getDictionarieslist();

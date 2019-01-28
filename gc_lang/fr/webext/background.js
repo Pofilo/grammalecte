@@ -155,7 +155,7 @@ function setSpellingDictionaries (oData) {
             setDictionary("personal", oData.dictionaries["__personal__"]);
         }
         if (oData.dictionaries.hasOwnProperty("__community__")) {
-            setDictionary("personal", oData.dictionaries["__community__"]);
+            setDictionary("community", oData.dictionaries["__community__"]);
         }
     }
 }
