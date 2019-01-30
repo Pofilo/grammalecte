@@ -497,26 +497,35 @@ const oGenerator = {
 
 const oDictHandler = {
     oDictionaries: null,
+    oPersonalDictionary: null,
 
     loadDictionaries: function () {
         if (bChrome) {
-            browser.storage.local.get("dictionaries", this._loadDictionaries.bind(this));
+            browser.storage.local.get("shared_dictionaries", this._loadDictionaries.bind(this));
+            browser.storage.local.get("personal_dictionary", this._loadDictionaries.bind(this));
             return;
         }
-        let xPromise = browser.storage.local.get("dictionaries");
+        let xPromise = browser.storage.local.get("shared_dictionaries");
         xPromise.then(this._loadDictionaries.bind(this), showError);
+        let xPromise2 = browser.storage.local.get("personal_dictionary");
+        xPromise2.then(this._loadDictionaries.bind(this), showError);
     },
 
     _loadDictionaries: function (oResult) {
-        if (!oResult.hasOwnProperty("dictionaries")) {
-            return;
+        if (oResult.hasOwnProperty("shared_dictionaries")) {
+            this.oDictionaries = oResult.shared_dictionaries;
         }
-        this.oDictionaries = oResult.dictionaries;
-        oBinaryDict.load("__personal__");
+        if (oResult.hasOwnProperty("personal_dictionary")) {
+            this.oPersonalDictionary = oResult.personal_dictionary;
+            oBinaryDict.load("__personal__");
+        }
     },
 
     getDictionary: function (sName) {
-        if (this.oDictionaries  &&  this.oDictionaries.hasOwnProperty(sName)) {
+        if (sName == "__personal__") {
+            return this.oPersonalDictionary;
+        }
+        else if (this.oDictionaries  &&  this.oDictionaries.hasOwnProperty(sName)) {
             //console.log(this.oDictionaries[sName]);
             return this.oDictionaries[sName];
         }
@@ -524,21 +533,15 @@ const oDictHandler = {
     },
 
     saveDictionary: function (sName, oJSON) {
-        this.oDictionaries[sName] = oJSON;
+        console.log(sName);
         if (sName == "__personal__") {
             browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
-        }
-        else if (sName == "__community__") {
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "community", oDict: oJSON}, dInfo: {} });
+            browser.storage.local.set({ "personal_dictionary": oJSON });
         }
         else {
-            // TODO: merge sub-dictionaries
+            this.oDictionaries[sName] = oJSON;
+            browser.storage.local.set({ "shared_dictionaries": this.oDictionaries });
         }
-        this.storeDictionaries();
-    },
-
-    storeDictionaries: function () {
-        browser.storage.local.set({ "dictionaries": this.oDictionaries });
     }
 }
 

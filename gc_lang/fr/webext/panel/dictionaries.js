@@ -34,6 +34,21 @@ function createNode  (sType, oAttr, oDataset=null) {
     }
 }
 
+function showElement (sElemId, sDisplay="block") {
+    if (document.getElementById(sElemId)) {
+        document.getElementById(sElemId).style.display = sDisplay;
+    } else {
+        console.log("HTML node named <" + sElemId + "> not found.")
+    }
+}
+
+function hideElement (sElemId) {
+    if (document.getElementById(sElemId)) {
+        document.getElementById(sElemId).style.display = "none";
+    } else {
+        console.log("HTML node named <" + sElemId + "> not found.")
+    }
+}
 
 
 
@@ -42,6 +57,7 @@ class Table {
     constructor (sNodeId, lColumn, sProgressBarId, sResultId="", bDeleteButtons=true, bActionButtons) {
         this.sNodeId = sNodeId;
         this.xTable = document.getElementById(sNodeId);
+        this.xApply = document.getElementById("apply");
         this.nColumn = lColumn.length;
         this.lColumn = lColumn;
         this.xProgressBar = document.getElementById(sProgressBarId);
@@ -178,6 +194,7 @@ class Table {
         if (this.bDeleteButtons || this.bActionButtons) {
             this.xTable.addEventListener("click", (xEvent) => { this.onTableClick(xEvent); }, false);
         }
+        this.xApply.addEventListener("click", (xEvent) => { this.generateCommunityDictionary(xEvent); }, false);
     }
 
     onTableClick (xEvent) {
@@ -209,18 +226,20 @@ class Table {
         if (this.sNodeId == "lexicon_table") {
             showElement("save_button", "inline-block");
         }
+        showElement("apply");
     }
 
     selectEntry (nEntryId, sDicName) {
         let sRowId = this.sNodeId + "_row_" + nEntryId;
         if (!this.dSelectedDict.has(sDicName)) {
             this.dSelectedDict.set(sDicName, nEntryId);
-            document.getElementById(sRowId).style.backgroundColor = "hsl(120, 50%, 90%)";
+            document.getElementById(sRowId).style.backgroundColor = "hsl(210, 50%, 90%)";
         }
         else {
             this.dSelectedDict.delete(sDicName);
             document.getElementById(sRowId).style.backgroundColor = "";
         }
+        showElement("apply");
         this.showSelectedDict();
     }
 
@@ -250,13 +269,24 @@ class Table {
             this.dSelectedDict.delete(sLabel);
             document.getElementById(this.sNodeId+"_row_"+nDicId).style.backgroundColor = "";
             xLabel.style.display = "none";
+            showElement("apply");
         });
         xLabel.appendChild(xCloseButton);
         xLabel.appendChild(createNode("div", {className: "dic_button_label", textContent: sLabel}));
         return xLabel;
     }
-}
 
+    generateCommunityDictionary (xEvent) {
+        hideElement("apply");
+        let lDict = [];
+        for (let sName of this.dSelectedDict.keys()) {
+            lDict.push(this.dDict.get(sName));
+        }
+        let oDict = dic_merger.merge(lDict, "S", "fr", "Français", "fr.community", "Dictionnaire communautaire (personnalisé)", this.xProgressBar);
+        console.log(oDict);
+        browser.storage.local.set({ "community_dictionary": oDict });
+    }
+}
 
 const oDicTable = new Table("dictionaries_table", ["Id", "Nom", "par", "Entrées", "Description"], "wait_progress", "num_dic", false, true);
 
