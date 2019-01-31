@@ -6452,8 +6452,8 @@ __conf_dès_des_dés__
     [dés|des] [à|a] présent
         <<- /conf/ not morph(<1, ":D.*:p") -1>> dès                                                 # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    des ~\d{2,5}  [<end>|,]
-    des ~\d{2,5}  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
+    des ~^\d{2,5}$  [<end>|,]
+    des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
         <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent|barre|seuil)/") -1>> dès     # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM [ans|heures]
@@ -6509,6 +6509,7 @@ TEST: au lieu des 20 heures réglementaires.
 TEST: celle des 20 ans.
 TEST: sous le seuil des 10 %
 TEST: notre revue des 24 et 25 décembre
+TEST: J’ai des X230.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
