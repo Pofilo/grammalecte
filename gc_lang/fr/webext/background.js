@@ -362,6 +362,15 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
 */
 browser.commands.onCommand.addListener(function (sCommand) {
     switch (sCommand) {
+        case "lexicographer":
+            sendCommandToCurrentTab("shortcutLexicographer");
+            break;
+        case "text_formatter":
+            sendCommandToCurrentTab("shortcutTextFormatter");
+            break;
+        case "grammar_checker":
+            sendCommandToCurrentTab("shortcutGrammarChecker");
+            break;
         case "conjugueur_tab":
             openConjugueurTab();
             break;
@@ -408,6 +417,25 @@ function storeGCOptions (dOptions) {
 function sendCommandToTab (sCommand, iTab) {
     let xTabPort = dConnx.get(iTab);
     xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
+}
+
+function sendCommandToCurrentTab (sCommand) {
+    console.log(sCommand);
+    if (bChrome) {
+        browser.tabs.query({ currentWindow: true, active: true }, (lTabs) => {
+            for (let xTab of lTabs) {
+                console.log(xTab);
+                browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
+            }
+        });
+        return;
+    }
+    browser.tabs.query({ currentWindow: true, active: true }).then((lTabs) => {
+        for (let xTab of lTabs) {
+            console.log(xTab);
+            browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
+        }
+    }, onError);
 }
 
 function openLexiconEditor (sName="__personal__") {
