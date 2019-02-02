@@ -49,6 +49,16 @@ function hideElement (sElemId) {
     }
 }
 
+function switchDisplay (sElemId, sDisplay="block") {
+    if (document.getElementById(sElemId)) {
+        if (document.getElementById(sElemId).style.display != "none") {
+            document.getElementById(sElemId).style.display = "none";
+        } else {
+            document.getElementById(sElemId).style.display = sDisplay;
+        }
+    }
+}
+
 
 const oTabulations = {
 
@@ -533,13 +543,15 @@ const oDictHandler = {
     },
 
     saveDictionary: function (sName, oJSON) {
-        console.log(sName);
         if (sName == "__personal__") {
             browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
             browser.storage.local.set({ "personal_dictionary": oJSON });
         }
         else {
             this.oDictionaries[sName] = oJSON;
+            if (oJSON === null) {
+                delete this.oDictionaries[sName];
+            }
             browser.storage.local.set({ "shared_dictionaries": this.oDictionaries });
         }
     }
@@ -619,6 +631,8 @@ const oBinaryDict = {
         document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_input").addEventListener("change", () => { this.import(); }, false);
+        document.getElementById("new_dictionary_button").addEventListener("click", () => { switchDisplay("new_dictionary_section"); }, false);
+        document.getElementById("delete_dictionary_button").addEventListener("click", () => { this.delete() }, false);
     },
 
     build: function () {
@@ -635,6 +649,17 @@ const oBinaryDict = {
             this.setDictData(0, "[néant]");
         }
         hideElement("save_button");
+    },
+
+    delete: function () {
+        if (confirm("Voulez-vous effacer le dictionnaire “"+this.sName+"” ?")) {
+            oLexiconTable.clear();
+            oDictHandler.saveDictionary(this.sName, null);
+            this.setDictData(0, "[néant]");
+            if (this.sName != "__personal__") {
+                this.load("__personal__");
+            }
+        }
     },
 
     export: function () {
