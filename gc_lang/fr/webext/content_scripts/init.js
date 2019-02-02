@@ -101,9 +101,7 @@ const oGrammalecte = {
     },
 
     observePage: function () {
-        /*
-            When a textarea is added via jascript we add the menu :)
-        */
+        //    When a textarea is added via jascript we add the menu
         this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
@@ -287,7 +285,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rightClickGCEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
                 oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
-                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
+                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA" || oGrammalecte.xRightClickedNode.tagName == "INPUT") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
                 xGrammalectePort.postMessage({
                     sCommand: "parseAndSpellcheck",
                     dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
@@ -313,7 +311,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rightClickLxgEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
                 oGrammalecte.startLxgPanel();
-                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
+                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA" || oGrammalecte.xRightClickedNode.tagName == "INPUT") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
                 xGrammalectePort.postMessage({
                     sCommand: "getListOfTokens",
                     dParam: {sText: sText},
@@ -338,7 +336,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Text formatter command
         case "rightClickTFEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
-                if (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") {
+                if (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA" || oGrammalecte.xRightClickedNode.tagName == "INPUT") {
                     oGrammalecte.startFTPanel(oGrammalecte.xRightClickedNode);
                 } else {
                     oGrammalecte.showMessage("Cette zone de texte n’est pas réellement un champ de formulaire, mais un node HTML éditable. Le formateur de texte n’est pas disponible pour ce type de champ de saisie.");
