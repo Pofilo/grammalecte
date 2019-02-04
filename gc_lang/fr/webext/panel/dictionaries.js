@@ -180,7 +180,6 @@ class Table {
         let [nDicId, sName, sOwner, nEntry, sDescription, ...data] = lData;
         xRowNode.appendChild(createNode("td", { textContent: nDicId }));
         xRowNode.appendChild(createNode("td", { textContent: sName }));
-        xRowNode.appendChild(createNode("td", { textContent: sOwner }));
         xRowNode.appendChild(createNode("td", { textContent: nEntry }));
         xRowNode.appendChild(createNode("td", { textContent: sDescription }));
         if (this.bActionButtons) {
@@ -285,6 +284,7 @@ class Table {
         let oDict = dic_merger.merge(lDict, "S", "fr", "Français", "fr.community", "Dictionnaire communautaire (personnalisé)", this.xProgressBar);
         console.log(oDict);
         browser.storage.local.set({ "community_dictionary": oDict });
+        browser.storage.local.set({ "selected_dictionaries_list": this.dSelectedDict.keys() });
     }
 }
 

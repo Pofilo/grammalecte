@@ -19,7 +19,7 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
-function createNode  (sType, oAttr, oDataset=null) {
+function createNode (sType, oAttr, oDataset=null) {
     try {
         let xNode = document.createElement(sType);
         Object.assign(xNode, oAttr);
@@ -506,19 +506,24 @@ const oGenerator = {
 }
 
 const oDictHandler = {
-    oDictionaries: null,
+    oDictionaries: {},
     oPersonalDictionary: null,
+    lCreatedDictionaries: [],
+    xDicSelector: document.getElementById("dic_selector"),
 
     loadDictionaries: function () {
         if (bChrome) {
             browser.storage.local.get("shared_dictionaries", this._loadDictionaries.bind(this));
             browser.storage.local.get("personal_dictionary", this._loadDictionaries.bind(this));
+            browser.storage.local.get("created_dictionaries_list", this._loadDictionaries.bind(this));
             return;
         }
         let xPromise = browser.storage.local.get("shared_dictionaries");
         xPromise.then(this._loadDictionaries.bind(this), showError);
         let xPromise2 = browser.storage.local.get("personal_dictionary");
         xPromise2.then(this._loadDictionaries.bind(this), showError);
+        let xPromise3 = browser.storage.local.get("created_dictionaries_list");
+        xPromise3.then(this._loadDictionaries.bind(this), showError);
     },
 
     _loadDictionaries: function (oResult) {
@@ -527,6 +532,41 @@ const oDictHandler = {
         }
         if (oResult.hasOwnProperty("personal_dictionary")) {
             this.oPersonalDictionary = oResult.personal_dictionary;
+            oBinaryDict.load("__personal__");
+        }
+        if (oResult.hasOwnProperty("created_dictionaries_list")) {
+            this.lCreatedDictionaries = oResult.created_dictionaries_list;
+            for (let sDicName of this.lCreatedDictionaries) {
+                let xOption = createNode("option", {value: sDicName, textContent: sDicName});
+                this.xDicSelector.appendChild(xOption);
+            }
+        }
+    },
+
+    addDictionary: function (sDicName) {
+        if (!this.oDictionaries.hasOwnProperty(sDicName)) {
+            let xOption = createNode("option", {value: sDicName, textContent: sDicName});
+            this.xDicSelector.appendChild(xOption);
+            this.xDicSelector.selectedIndex = this.xDicSelector.options.length-1;
+            this.lCreatedDictionaries.push(sDicName);
+            browser.storage.local.set({ "created_dictionaries_list": this.lCreatedDictionaries });
+        }
+    },
+
+    deleteDictionary: function (sDicName) {
+        this.saveDictionary(sDicName, null);
+        if (sDicName != "__personal__") {
+            let iDict = this.lCreatedDictionaries.indexOf(sDicName);
+            if (iDict > -1) {
+                this.lCreatedDictionaries.splice(iDict, 1);
+            }
+            browser.storage.local.set({ "created_dictionaries_list": this.lCreatedDictionaries });
+            for (let xNode of this.xDicSelector.childNodes) {
+                if (xNode.value == sDicName) {
+                    this.xDicSelector.removeChild(xNode);
+                }
+            }
+            this.xDicSelector.selectedIndex = 0;
             oBinaryDict.load("__personal__");
         }
     },
@@ -574,6 +614,19 @@ const oBinaryDict = {
             this.setDictData(0, "[néant]");
             hideElement("save_button");
         }
+    },
+
+    newDictionary: function () {
+        this.oIBDAWG = null;
+        this.sName = document.getElementById("new_dictionary_name").value;
+        this.sDescription = document.getElementById("new_dictionary_description").value;
+        oDictHandler.addDictionary(this.sName);
+        oLexiconTable.clear();
+        this.setDictData(0, "[néant]");
+        hideElement("save_button");
+        document.getElementById("new_dictionary_name").value = "";
+        document.getElementById("new_dictionary_description").value = "";
+        hideElement("new_dictionary_section")
     },
 
     parseDict: function (oJSON) {
@@ -632,7 +685,8 @@ const oBinaryDict = {
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_input").addEventListener("change", () => { this.import(); }, false);
         document.getElementById("new_dictionary_button").addEventListener("click", () => { switchDisplay("new_dictionary_section"); }, false);
-        document.getElementById("delete_dictionary_button").addEventListener("click", () => { this.delete() }, false);
+        document.getElementById("delete_dictionary_button").addEventListener("click", () => { this.delete(); }, false);
+        document.getElementById("create_dictionary_button").addEventListener("click", () => { this.newDictionary(); }, false);
     },
 
     build: function () {
@@ -654,11 +708,8 @@ const oBinaryDict = {
     delete: function () {
         if (confirm("Voulez-vous effacer le dictionnaire “"+this.sName+"” ?")) {
             oLexiconTable.clear();
-            oDictHandler.saveDictionary(this.sName, null);
             this.setDictData(0, "[néant]");
-            if (this.sName != "__personal__") {
-                this.load("__personal__");
-            }
+            oDictHandler.deleteDictionary(this.sName);
         }
     },
 
