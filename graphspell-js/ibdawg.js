@@ -366,7 +366,7 @@ class IBDAWG {
                 }
                 return;
             }
-            else if (this.isValid(sRemain)) {
+            else if (this.isValid(sRemain) && oSuggResult.sWord.startsWith(sNewWord)) {
                 oSuggResult.addSugg(sNewWord+" "+sRemain);
             }
         }

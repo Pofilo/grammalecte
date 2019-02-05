@@ -53,7 +53,7 @@
 !!
 !!
 
-OPTGROUP/basic: typo apos, esp tab, nbsp unit, tu maj, num virg, nf chim, ocr mapos, liga
+OPTGROUP/basic: typo apos, esp tab, nbsp unit, tu maj, num virg, nf poncfin, ocr chim, liga mapos
 OPTGROUP/gramm: conf sgpl gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
 OPTGROUP/style: bs pleo, redon1 redon2, neg
@@ -71,6 +71,7 @@ OPT/tu:             True        True        True        True        True        
 OPT/maj:            True        True        True        True        True        True
 OPT/num:            True        True        True        True        True        True
 OPT/virg:           True        True        True        True        True        True
+OPT/poncfin:        False       False       False       False       False       False
 OPT/unit:           True        True        True        False       False       False
 OPT/nf:             True        True        True        True        True        True
 OPT/liga:           False       False       False       False       False       False
@@ -121,6 +122,7 @@ OPTCOLOR/tu:        orange      orange
 OPTCOLOR/maj:       orange      orange
 OPTCOLOR/num:       orange      orange
 OPTCOLOR/virg:      orange      orange
+OPTCOLOR/poncfin:   orange      orange
 OPTCOLOR/unit:      orange      orange
 OPTCOLOR/nf:        orange      orange
 OPTCOLOR/liga:      orange      orange
@@ -157,6 +159,7 @@ OPTLABEL/tab:       Tabulations surnuméraires|Signale les tabulations inutiles 
 OPTLABEL/nbsp:      Espaces insécables|Vérifie les espaces insécables avec les ponctuations « ! ? : ; » (à désactiver si vous utilisez une police Graphite)
 OPTLABEL/maj:       Majuscules|Vérifie l’utilisation des majuscules et des minuscules (par exemple, « la raison d’État », « les Européens »).
 OPTLABEL/virg:      Virgules|Virgules manquantes avant “mais”, “car” et “etc.”.
+OPTLABEL/poncfin:   Ponctuation finale [!]|Vérifie s’il manque une ponctuation finale au paragraphe (seulement pour les paragraphes constitués de plusieurs phrases).
 OPTLABEL/tu:        Traits d’union|Cherche les traits d’union manquants ou inutiles.
 OPTLABEL/num:       Nombres|Espaces insécables sur les grands nombres (> 10 000). Vérifie la présence de « O » au lieu de « 0 ».
 OPTLABEL/unit:      Espaces insécables avant unités de mesure
@@ -203,6 +206,7 @@ OPTLABEL/tab:       Useless tabulations|Checks tabulations at the beginning and 
 OPTLABEL/nbsp:      Non-breakable spaces|Checks the use of non-breakable spaces with the following punctuation marks: « ! ? : ; » (deactivate it if you use a Graphite font).
 OPTLABEL/maj:       Capitals|Checks the use of uppercase and lowercase letters (i.e. « la raison d’État », « les Européens »).
 OPTLABEL/virg:      Commas|Missing commas before “mais”, “car” and “etc.”.
+OPTLABEL/poncfin:   Ending punctuation [!]|Checks if an ending punctuation is missing on paragraphs (only for multi-sentences paragraphs).
 OPTLABEL/tu:        Hyphens|Checks missing or useless hyphens.
 OPTLABEL/num:       Numbers|Large numbers and « O » instead of « 0 ».
 OPTLABEL/unit:      Non-breaking spaces before units of measurement
@@ -711,9 +715,24 @@ TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
 __[s]/maj(majuscule_en_début_phrase)__
     ^ *([a-zéèâàô][\w-]+)  @@$
-    <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                                 # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
+    <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                              # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
+
+
+!!
+!!
+!!!! Ponctuation de fin de paragraphe                                                             !!
+!!
+!!
+
+__[i>/poncfin__
+    ({w_1}) *$  @@0
+    <<- before("\\w+(?:[.]|[   ][!?]) +([A-ZÉÈÎ]\w+|[ÀÔ])") -1>> \1.|\1 !|\1 ?                      # Il semble manquer une ponctuation finale (s’il s’agit d’un titre, le point final n’est pas requis).
+
+TEST: __poncfin__ Vraiment. Quel {{ennui}}
+TEST: Internet : le nouvel eldorado
+TEST: OMC-FMI : Les nouveaux maîtres du monde
 
 
 !!
@@ -4376,21 +4395,10 @@ TEST: {{reporter à plus tard}}                  ->> reporter
 !!
 !!
 
-__faire_plaisir__
-    >faire plaisirs
-        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
-        <<- ~2>> *
-
-TEST: Ça me fait {{plaisirs}}.
 
 
-# ayants droit
-__sgpl_ayants_droit__
-    [les|des|ces|ses|nos|vos|leurs] ayant [droit|droits]
-        <<- /gn/ -2:3>> ayants droit                                        # Au singulier : « un ayant droit ». Au pluriel : « des ayants droit ».
 
-TEST: Comment lutter contre la cupidité des {{ayant droits}}
-# Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
+
 
 
 # Mon, ton, son : euphonie
@@ -6444,8 +6452,8 @@ __conf_dès_des_dés__
     [dés|des] [à|a] présent
         <<- /conf/ not morph(<1, ":D.*:p") -1>> dès                                                 # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    des ~\d{2,5}  [<end>|,]
-    des ~\d{2,5}  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
+    des ~^\d{2,5}$  [<end>|,]
+    des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
         <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent|barre|seuil)/") -1>> dès     # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM [ans|heures]
@@ -6501,6 +6509,7 @@ TEST: au lieu des 20 heures réglementaires.
 TEST: celle des 20 ans.
 TEST: sous le seuil des 10 %
 TEST: notre revue des 24 et 25 décembre
+TEST: J’ai des X230.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6995,7 +7004,7 @@ TEST: Il fait remonter à la toute première expérience humaine de maîtrise.
 
     /-là
         <<- /conf/ morph(\1, ":V", ":[NA]", 0, -3)
-        -1>> =\1[:-2]+"-la|" + \1[:-2]+" là"                        # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
+        -1>> =\1[:-3]+"-la|" + \1[:-3]+" là"                        # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 
     /-la
         <<- /conf/ morph(\1, ":[NA]", ":[123][sp]", 0, -3)
@@ -7240,6 +7249,7 @@ TEST: Qui {{on}} {{tant}} de malheurs !
 TEST: {{peut-ont}} y arriver avec si peu de moyens ?
 TEST: {{peut ont}} y arriver ?
 TEST: comme ce que l’{{ont}} {{voit}} dans le lien entre polygynie et guerre.
+TEST: Tout à fait, {{ont}} peut même dire qu’à l’adolescence, ce sont les problèmes de l’enfance qui ressortent.
 TEST: les politiques de l’offre ont échoué.
 TEST: qui on blâme, ce soir ?
 TEST: qui n’ont somme toute que le désir de vivre paisiblement
@@ -8293,6 +8303,38 @@ TEST: Le {{vieux}} homme était parti.                         ->> vieil
 
 
 
+# ayants droit
+__sgpl_ayants_droit__
+    [les|des|ces|ses|nos|vos|leurs] ayant [droit|droits]
+        <<- /sgpl/ -2:3>> ayants droit                              # Au singulier : “un ayant droit”. Au pluriel : “des ayants droit”.
+
+TEST: Comment lutter contre la cupidité des {{ayant droits}}
+# Note: À supprimer? Graphie qui tend vers la soudure et le pluriel régulier (ayant-droit(s))
+
+
+# termes
+__sgpl_en_termes_de__
+    en terme [de|d’]
+        <<- /sgpl/ -2>> termes                                      # Dans la locution “en termes de”, mettez “terme” au pluriel.
+
+TEST: en {{terme}} de communication, c’est une véritable catastrophe
+
+
+# tous / tout / toutes
+__sgpl_tous_azimuts__
+    tout [azimut|azimuts]
+        <<- /sgpl/ ->> tous azimuts                                 # « Tous azimuts » signifie « dans toutes les directions ».
+
+__sgpl_une_bonne_fois_pour_toutes__
+    une fois pour (toute)
+    une bonne fois pour (toute)
+        <<- /sgpl/ -1>> toutes                                      # Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
+
+TEST: ils lancent des attaques {{tout azimut}}.
+TEST: une bonne fois pour {{toute}}
+TEST: ce sera réglé une fois pour {{toute}} quand il sera capturé.
+
+
 # vu de ses yeux vu
 __sgpl_vu_de_ses_yeux_vu__
     [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
@@ -8644,19 +8686,19 @@ __tout_nom__
         <<- /gn/ morph(<1, ":R", ":D.*:p") -2>> =suggMasSing(\2, True)                              # Accord avec “tout” : “\2” devrait être au masculin singulier.
 
 __toute_nom__
-    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|G|M|[fe]:[is])
-    de          toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
+    de          toute  @:[NA].*:[mp]¬:(?:W|P|G|M|Y|[fe]:[is])
         <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulie
 
-    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|[fe]:[is])
+    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|P|[fe]:[is])
         <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
 
 __tous_nom__
-    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|G|M|[me]:[ip]|3p)
-    de          tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|[me]:[ip]|3[sp])
+    [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|P|G|M|[me]:[ip]|3p)
+    de          tous  @:[NA].*:[fs]¬:(?:W|P|G|M|Y|[me]:[ip]|3[sp])
         <<- /gn/ -3>> =suggMasPlur(\3, True)                                                        # Accord avec “tous” : “\3” devrait être au masculin pluriel.
 
-    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|3[sp]|[me]:[ip])
+    tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|P|3[sp]|[me]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        # Accord avec “tous” : “\2” devrait être au masculin pluriel.
 
 __toutes_nom__
@@ -8664,7 +8706,7 @@ __toutes_nom__
     de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
         <<- /gn/ -3>> =suggFemPlur(\3, True)                                                        # Accord avec “toutes” : “\3” devrait être au féminin pluriel.
 
-    toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
+    toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|P|[fe]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggFemPlur(\2, True)                                        # Accord avec “toutes” : “\2” devrait être au féminin pluriel.
 
 TEST: Tout {{hommes}}
@@ -8680,6 +8722,7 @@ TEST: aux tout débuts, il y eut bien des erreurs
 TEST: comment les inégalités sociales impactent la santé des tout petits
 TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
 TEST: la survie de tous est plus importante que les profits de quelques-uns
+TEST: tous ayant souffert du supplice de séjourner derrière les barreaux
 
 
 
@@ -11284,6 +11327,10 @@ __conf_locutions_verbales__
     >venir a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
+    >faire plaisirs
+        <<- /sgpl/ -2>> plaisir                                                                     # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
+        <<- ~2>> *
+
     >laisser pour [comte|comtes|>conte]
         <<- /conf/ -3>> compte          # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
@@ -11313,6 +11360,7 @@ TEST: il faut tenir {{comtes}} des aléas de la météo.
 TEST: Elle est restée {{jeûne}}.
 TEST: Mourir {{jeûne}} ne lui faisait pas peur.
 TEST: Elles semblent {{jeûnes}}.
+TEST: Ça me fait {{plaisirs}}.
 
 
 # Autres tests contre les faux positifs
@@ -11585,7 +11633,7 @@ __gn_la_1m__
             or ( morph(\3, ":[NA].*:m", ":[fe]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
         -2>> le                                                                             # Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
-        <<- /gn/ __else__ and morph(\3, ":[NA].*:p")
+        <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
             or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -3>> =suggFemSing(\3)                                                               # Accord de nombre erroné : « \3 » devrait être au singulier.
 
@@ -11603,6 +11651,8 @@ TEST: de {{la}} vin                                           ->> le
 TEST: {{la}} {{véhicule}}
 TEST: {{La}} {{pris}}
 TEST: la force de la {{formes}} parfaite
+TEST: à ne plus se laisser faire la fois d’après
+TEST: il pense à la fois où nous avons eu cet accident idiot.
 
 
 __gn_la_2m__
@@ -13090,7 +13140,6 @@ __sgpl_leur_dévolu__
 TEST: Ces gens qui jettent {{leurs dévolus}} sur n’importe qui, c’est d’une indécence.
 
 
-
 # escalier
 __sgpl_cage_d_escalier__
     >cage d’ escaliers
@@ -13278,28 +13327,6 @@ __sgpl_sentir_bon__
 
 TEST: Ces fleurs sentent {{bons}}.
 TEST: Ça sent bon.
-
-
-# termes
-__sgpl_en_termes_de__
-    en terme [de|d’]
-        <<- /sgpl/ -2>> termes                                      # Dans la locution “en termes de”, mettez “terme” au pluriel.
-
-TEST: en {{terme}} de communication, c’est une véritable catastrophe
-
-
-# tous / tout / toutes
-__sgpl_tous_azimuts__
-    tout [azimut|azimuts]
-        <<- /sgpl/ ->> tous azimuts                                 # « Tous azimuts » signifie « dans toutes les directions ».
-
-__sgpl_une_bonne_fois_pour_toutes__
-    une fois pour (toute)
-    une bonne fois pour (toute)
-        <<- /sgpl/ -1>> toutes                                      # Mettez “toute” au pluriel. Sous-entendu : une fois pour toutes les autres fois.
-
-TEST: ils lancent des attaques {{tout azimut}}.
-TEST: une bonne fois pour {{toute}}
 
 
 # vacances
@@ -17728,19 +17755,18 @@ TEST: Soyez les plus gentils qu’on puisse imaginer.
 
 
 __imp_union_le_la_leur__
-    *WORD  [le|la|leur|en]
+    *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1)
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  [le|la|leur|en]
+    ,  *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
 TEST: {{Dites leur}} que nous sommes là.
-TEST: {{restons en}} là.
 TEST: j’en ai plus qu’assez, {{apprend le}}.
 TEST: un sujet si extrêmement politique et polémique lui a donné un accès
 TEST: Les États d’ores et déjà très affaiblis le seraient encore plus
@@ -17751,6 +17777,21 @@ TEST: Pesons le pour et le contre.
 TEST: Va la demander au concierge.
 TEST: Allons le questionner encore une fois.
 TEST: Sois le pire des salopards.
+
+
+__imp_union_le_la_leur__
+    *WORD  en
+        <<- /imp/ space_after(\1, 1, 1)
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+        ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
+    ,  *WORD  en
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|D|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+        -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
+
+TEST: {{restons en}} là.
+TEST: Intercède en ma faveur
 
 
 __imp_laisser_le_la_les_infi__
@@ -19710,8 +19751,8 @@ TEST: Maria, avance devant toi.
 
 __conj_det_nom_sing_virgule__
     <start>  [un|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa]  @:[NA]  ,  @:3s¬:[NAGEM]
-        <<- /conj/ space_after(\3, 0, 0) and space_after(\4, 1, 10) -3:4>> \3   # Soit la virgule est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
-        <<- /conj/ __also__ -5>> =suggVerbTense(\5, ":E", ":2s")                # Soit la virgule après “\2 \3” est superflue (on ne sépare pas le verbe du sujet), soit “\4” devrait être à l’impératif.
+        <<- /conj/ space_after(\3, 0, 0) and space_after(\4, 1, 10) -3:4>> \3   # Soit la virgule est superflue (on ne sépare pas le verbe du sujet), soit “\5” devrait être à l’impératif.
+        <<- /conj/ __also__ -5>> =suggVerbTense(\5, ":E", ":2s")                # Soit la virgule après “\2 \3” est superflue (on ne sépare pas le verbe du sujet), soit “\5” devrait être à l’impératif.
 
 TEST: l’{{homme,}} {{devient}} difficile.                               ->> homme|||deviens
 TEST: ce matin, viens me voir.
