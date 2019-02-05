@@ -307,6 +307,7 @@ class Table {
         console.log(oDict);
         browser.storage.local.set({ "community_dictionary": oDict });
         browser.storage.local.set({ "selected_dictionaries_list": Array.from(this.dSelectedDictionaries.keys()) });
+        browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "community", oDict: oDict}, dInfo: {} });
     }
 }
 
