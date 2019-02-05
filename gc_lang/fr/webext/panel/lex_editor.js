@@ -59,6 +59,10 @@ function switchDisplay (sElemId, sDisplay="block") {
     }
 }
 
+function showMessage (sMessage) {
+    console.log(sMessage);
+}
+
 
 const oTabulations = {
 
@@ -505,6 +509,7 @@ const oGenerator = {
     }
 }
 
+
 const oDictHandler = {
     oDictionaries: {},
     oPersonalDictionary: null,
@@ -593,9 +598,58 @@ const oDictHandler = {
                 delete this.oDictionaries[sName];
             }
             browser.storage.local.set({ "shared_dictionaries": this.oDictionaries });
+            this.sendDictionaryOnline(oJSON);
         }
+    },
+
+    sendDictionaryOnline: function (oJSON) {
+        let sJSON = "";
+        try {
+            sJSON = JSON.stringify(oJSON);
+        }
+        catch (e) {
+            showError(e);
+            return e.message;
+        }
+        console.log("Send online dictionary: " + oJSON.sDicName);
+        fetch("http://localhost/receive/", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            //mode: "cors", // no-cors, cors, *same-origin
+            //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "include", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",  // text/plain, application/json
+                "Content-Length": sJSON.length
+            },
+            redirect: "follow", // manual, *follow, error
+            referrer: "no-referrer", // no-referrer, *client
+            body: sJSON, // body data type must match "Content-Type" header
+        })
+        .then((response) => {
+            if (response.ok) {
+                for (let param in response) {
+                    console.log(param, response[param]);
+                }
+                console.log(response);
+                return response.json();
+            } else {
+                console.log("Error: dictionary not sent: " + oJSON.sDicName);
+                return null;
+            }
+        })
+        .then((response) => {
+            if (response) {
+                console.log(response);
+            } else {
+                //
+            }
+        })
+        .catch((e) => {
+            showError(e);
+        });
     }
 }
+
 
 const oBinaryDict = {
 
