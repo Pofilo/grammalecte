@@ -62,10 +62,10 @@ class Table {
         this.lColumn = lColumn;
         this.xProgressBar = document.getElementById(sProgressBarId);
         this.xNumEntry = document.getElementById(sResultId);
-        this.iEntryIndex = 0;
         this.lEntry = [];
         this.nEntry = 0;
-        this.dSelectedDict = new Map();
+        this.dSelectedDictionaries = new Map();
+        this.lSelectedDictionaries = [];
         this.dDict = new Map();
         this.bDeleteButtons = bDeleteButtons;
         this.bActionButtons = bActionButtons;
@@ -90,7 +90,6 @@ class Table {
         }
         this.lEntry = [];
         this.nEntry = 0;
-        this.iEntryIndex = 0;
         this._createHeader();
         this.showEntryNumber();
     }
@@ -120,6 +119,23 @@ class Table {
         this.showEntryNumber();
     }
 
+    init () {
+        if (bChrome) {
+            browser.storage.local.get("selected_dictionaries_list", this._init.bind(this));
+            return;
+        }
+        let xPromise = browser.storage.local.get("selected_dictionaries_list");
+        xPromise.then(this._init.bind(this), showError);
+    }
+
+    _init (oResult) {
+        if (oResult.hasOwnProperty("selected_dictionaries_list")) {
+            this.lSelectedDictionaries = oResult.selected_dictionaries_list;
+            console.log(this.lSelectedDictionaries);
+        }
+        this.getDictionarieslist();
+    }
+
     getDictionarieslist () {
         fetch("http://localhost/dictionaries/")
         .then((response) => {
@@ -132,6 +148,7 @@ class Table {
         .then((response) => {
             if (response) {
                 this.fill(response);
+                this.showSelectedDictionaries(true);
             } else {
                 // todo
             }
@@ -173,20 +190,22 @@ class Table {
     }
 
     _addRow (lData) {
-        let xRowNode = createNode("tr", { id: this.sNodeId + "_row_" + this.iEntryIndex });
+        let [nDicId, sName, nEntry, sDescription, sLastUpdate, ...data] = lData;
+        let xRowNode = createNode("tr", { id: this.sNodeId + "_row_" + nDicId });
         if (this.bDeleteButtons) {
-            xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: this.iEntryIndex }));
+            xRowNode.appendChild(createNode("td", { textContent: "×", className: "delete_entry", title: "Effacer cette entrée" }, { id_entry: nDicId }));
         }
-        let [nDicId, sName, sOwner, nEntry, sDescription, ...data] = lData;
-        xRowNode.appendChild(createNode("td", { textContent: nDicId }));
         xRowNode.appendChild(createNode("td", { textContent: sName }));
         xRowNode.appendChild(createNode("td", { textContent: nEntry }));
         xRowNode.appendChild(createNode("td", { textContent: sDescription }));
+        xRowNode.appendChild(createNode("td", { textContent: sLastUpdate }));
         if (this.bActionButtons) {
-            xRowNode.appendChild(createNode("td", { textContent: "+", className: "select_entry", title: "Sélectionner/Désélectionner cette entrée" }, { id_entry: this.iEntryIndex, dict_name: sName }));
+            xRowNode.appendChild(createNode("td", { textContent: "+", className: "select_entry", title: "Sélectionner/Désélectionner cette entrée" }, { id_entry: nDicId, dict_name: sName }));
         }
         this.xTable.appendChild(xRowNode);
-        this.iEntryIndex += 1;
+        if (this.lSelectedDictionaries.includes(sName)) {
+            this.dSelectedDictionaries.set(sName, nDicId);
+        }
     }
 
     listen () {
@@ -230,16 +249,16 @@ class Table {
 
     selectEntry (nEntryId, sDicName) {
         let sRowId = this.sNodeId + "_row_" + nEntryId;
-        if (!this.dSelectedDict.has(sDicName)) {
-            this.dSelectedDict.set(sDicName, nEntryId);
+        if (!this.dSelectedDictionaries.has(sDicName)) {
+            this.dSelectedDictionaries.set(sDicName, nEntryId);
             document.getElementById(sRowId).style.backgroundColor = "hsl(210, 50%, 90%)";
         }
         else {
-            this.dSelectedDict.delete(sDicName);
+            this.dSelectedDictionaries.delete(sDicName);
             document.getElementById(sRowId).style.backgroundColor = "";
         }
         showElement("apply");
-        this.showSelectedDict();
+        this.showSelectedDictionaries();
     }
 
     clearSelectedDict () {
@@ -249,23 +268,26 @@ class Table {
         }
     }
 
-    showSelectedDict () {
+    showSelectedDictionaries (bUpdateTable=false) {
         this.clearSelectedDict();
         let xDicList = document.getElementById("dictionaries_list");
-        if (this.dSelectedDict.size === 0) {
+        if (this.dSelectedDictionaries.size === 0) {
             xDicList.textContent = "[Aucun]";
             return;
         }
-        for (let [sName, nDicId] of this.dSelectedDict) {
-            xDicList.appendChild(this.createDictLabel(nDicId, sName));
+        for (let [sName, nDicId] of this.dSelectedDictionaries) {
+            xDicList.appendChild(this._createDictLabel(nDicId, sName));
+            if (bUpdateTable) {
+                document.getElementById(this.sNodeId + "_row_" + nDicId).style.backgroundColor = "hsl(210, 50%, 90%)";
+            }
         }
     }
 
-    createDictLabel (nDicId, sLabel) {
+    _createDictLabel (nDicId, sLabel) {
         let xLabel = createNode("div", {className: "dic_button"});
         let xCloseButton = createNode("div", {className: "dic_button_close", textContent: "×"}, {id_entry: nDicId});
         xCloseButton.addEventListener("click", () => {
-            this.dSelectedDict.delete(sLabel);
+            this.dSelectedDictionaries.delete(sLabel);
             document.getElementById(this.sNodeId+"_row_"+nDicId).style.backgroundColor = "";
             xLabel.style.display = "none";
             showElement("apply");
@@ -278,16 +300,16 @@ class Table {
     generateCommunityDictionary (xEvent) {
         hideElement("apply");
         let lDict = [];
-        for (let sName of this.dSelectedDict.keys()) {
+        for (let sName of this.dSelectedDictionaries.keys()) {
             lDict.push(this.dDict.get(sName));
         }
         let oDict = dic_merger.merge(lDict, "S", "fr", "Français", "fr.community", "Dictionnaire communautaire (personnalisé)", this.xProgressBar);
         console.log(oDict);
         browser.storage.local.set({ "community_dictionary": oDict });
-        browser.storage.local.set({ "selected_dictionaries_list": this.dSelectedDict.keys() });
+        browser.storage.local.set({ "selected_dictionaries_list": Array.from(this.dSelectedDictionaries.keys()) });
     }
 }
 
-const oDicTable = new Table("dictionaries_table", ["Id", "Nom", "par", "Entrées", "Description"], "wait_progress", "num_dic", false, true);
+const oDicTable = new Table("dictionaries_table", ["Nom", "Entrées", "Description", "Date"], "wait_progress", "num_dic", false, true);
 
-oDicTable.getDictionarieslist();
+oDicTable.init();
