@@ -190,7 +190,7 @@ class IBDAWG {
                 throw ValueError("# Error: unknown code: " + this.nCompressionMethod);
         }
         //console.log(this.getInfo());
-        this.bAcronymValid = false;
+        this.bAcronymValid = true;
         this.bNumAtLastValid = false;
     }
 
@@ -366,7 +366,7 @@ class IBDAWG {
                 }
                 return;
             }
-            else if (this.isValid(sRemain) && oSuggResult.sWord.startsWith(sNewWord)) {
+            else if (this.isValid(sRemain) && oSuggResult.sWord.toLowerCase().startsWith(sNewWord.toLowerCase())) {
                 oSuggResult.addSugg(sNewWord+" "+sRemain);
             }
         }
