@@ -50,6 +50,48 @@ function hideElement (sElemId) {
     }
 }
 
+async function hashText (sText, sAlgorithm = 'SHA-256') {
+    let msgBuffer = new TextEncoder('utf-8').encode(sText);
+    let hashBuffer = await crypto.subtle.digest(sAlgorithm, msgBuffer);
+    let hashArray = Array.from(new Uint8Array(hashBuffer));
+    return hashArray.map(b => ('00' + b.toString(16)).slice(-2)).join('');
+}
+
+
+oConnect = {
+    bConnected: false,
+
+    init: function () {
+        if (bChrome) {
+            browser.storage.local.get("credentials", this._init().bind(this));
+            return;
+        }
+        let xPromise = browser.storage.local.get("credentials");
+        xPromise.then(this._init.bind(this), showError);
+    },
+
+    _init: function (oData) {
+        if (oData.hasOwnProperty("credentials")) {
+            hideElement("connect_form");
+            showElement("connect_info");
+            this.bConnected = true;
+        }
+        else {
+            hideElement("connect_form");
+            showElement("connect_info");
+        }
+    },
+
+    listen: function () {
+        document.getElementById("submit_button").addEventListener("click", (xEvent) => { this.connect() });
+    },
+
+    connect: function () {
+        let sEmail = document.getElementById("email").value;
+        let sPassword = document.getElementById("password").value;
+        console.log(sEmail, sPassword);
+    }
+}
 
 
 class Table {
@@ -314,3 +356,6 @@ class Table {
 const oDicTable = new Table("dictionaries_table", ["Nom", "Entrées", "Description", "Date"], "wait_progress", "num_dic", false, true);
 
 oDicTable.init();
+
+oConnect.init();
+oConnect.listen();
