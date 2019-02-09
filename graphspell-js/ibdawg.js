@@ -190,7 +190,7 @@ class IBDAWG {
                 throw ValueError("# Error: unknown code: " + this.nCompressionMethod);
         }
         //console.log(this.getInfo());
-        this.bAcronymValid = false;
+        this.bAcronymValid = true;
         this.bNumAtLastValid = false;
     }
 
