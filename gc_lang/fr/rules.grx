@@ -12459,7 +12459,7 @@ TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 __gn_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques]  [>centaine|>millier|>million|>milliard|>dizaine|>douzaine|>multitude|>horde]  [de|d’]  *WORD
         <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/") or \4 in aREGULARPLURAL
-        -4>> =suggPlur(\4)                                                                  # Avec des « \2 \3 \4 », mettre au pluriel.
+        -4>> =suggPlur(\4)                                                                  # Avec \1 « \2 \3 \4 », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
 TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
 TEST: une multitude d’{{homme}}                                     ->> hommes
@@ -18197,6 +18197,27 @@ TEST: la petite {{penser}} ne cessait de tourner dans son cerveau enfiévré.
 TEST: les hommes nouvellement {{arriver}} ne nous dirent rien de ce qu’ils avaient vu.
 
 
+__conf_quel_être_nom_verbe__
+    [quel|quels|quelle|quelles]  >être  [le|mon|ton|son|ce|cet]  @:V¬:[NA]
+    [quel|quels|quelle|quelles]  >pouvoir être  [le|mon|ton|son|ce|cet]  @:V¬:[NA]
+        <<- /conf/ morph(\2, ":[123][sp]") --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)     # Confusion probable : “\-1”  est un forme verbale conjuguée, alors qu’il faudrait probablement un substantif.
+
+    [quel|quels|quelle|quelles]  >être  [la|ma|ta|sa|cette]  @:V¬:[NA]
+    [quel|quels|quelle|quelles]  >pouvoir être  [la|ma|ta|sa|cette]  @:V¬:[NA]
+        <<- /conf/ morph(\2, ":[123][sp]") --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)     # Confusion probable : “\-1”  est un forme verbale conjuguée, alors qu’il faudrait probablement un substantif.
+
+    [quel|quels|quelle|quelles]  >être  [l’|notre|votre|leur]  @:V¬:[NA]
+    [quel|quels|quelle|quelles]  >pouvoir être  [l’|notre|votre|leur]  @:V¬:[NA]
+        <<- /conf/ morph(\2, ":[123][sp]") --1>> =suggSimil(\-1, ":[NA].*:[si]", True)          # Confusion probable : “\-1”  est un forme verbale conjuguée, alors qu’il faudrait probablement un substantif.
+
+    [quel|quels|quelle|quelles]  >être  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs]  @:V¬:[NA]
+    [quel|quels|quelle|quelles]  >pouvoir être  [les|ces|mes|tes|ses|nos|vos|leurs|plusieurs]  @:V¬:[NA]
+        <<- /conf/ morph(\2, ":[123][sp]") --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)          # Confusion probable : “\-1”  est un forme verbale conjuguée, alors qu’il faudrait probablement un substantif.
+
+TEST: Quel serait leur {{impacte}} sur la population.                               ->> impact
+TEST: Quels étaient les {{ennuient}} avec ces gens                                  ->> ennuis
+
+
 
 !!!
 !!!
@@ -19929,6 +19950,7 @@ TEST: En 1944, au sortir des deux guerres ayant ravagé l’Europe, le CNR (cons
 TEST: Ceux de l’Université sont plus perfectionnés
 TEST: Celles de l’Institut sont plus perfectionnées
 TEST: Judith A. Allan a aussi constaté que les études sur les crises de la masculinité ne proposent pas ou que très rarement d’indicateurs pour déterminer si une société est (trop) féminisée et si les hommes sont (réellement) en crise.
+TEST: une procédure abusive pour fermer la porte qu’elles ont essayé d’ouvrir
 
 
 
