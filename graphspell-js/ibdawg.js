@@ -366,7 +366,7 @@ class IBDAWG {
                 }
                 return;
             }
-            else if (this.isValid(sRemain) && oSuggResult.sWord.startsWith(sNewWord)) {
+            else if (this.isValid(sRemain) && oSuggResult.sWord.toLowerCase().startsWith(sNewWord.toLowerCase())) {
                 oSuggResult.addSugg(sNewWord+" "+sRemain);
             }
         }
