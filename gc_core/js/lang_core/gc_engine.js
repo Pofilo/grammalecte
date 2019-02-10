@@ -45,6 +45,11 @@ let _oTokenizer = null;
 let _aIgnoredRules = new Set();
 
 
+function echo (x) {
+    console.log(x);
+    return true;
+}
+
 
 var gc_engine = {
 
