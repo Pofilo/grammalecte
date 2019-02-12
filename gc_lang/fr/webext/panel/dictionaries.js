@@ -58,38 +58,94 @@ async function hashText (sText, sAlgorithm = 'SHA-256') {
 }
 
 
-oConnect = {
+const oMessage = {
+    show: function (sMessage, nDelay=10000) {
+        document.getElementById("message").textContent = sMessage;
+        showElement("message_box");
+        window.setTimeout(this.close, nDelay);
+    },
+
+    listen: function () {
+        document.getElementById("message_close_button").addEventListener("click", (xEvent) => { this.close(); });
+    },
+
+    close: function () {
+        hideElement("message_box");
+    }
+}
+
+
+const oConnect = {
     bConnected: false,
 
     init: function () {
         if (bChrome) {
-            browser.storage.local.get("credentials", this._init().bind(this));
+            browser.cookies.getAll({ domain: "localhost" }, this._init.bind(this));
             return;
         }
-        let xPromise = browser.storage.local.get("credentials");
+        let xPromise = browser.cookies.getAll({ domain: "localhost" });
         xPromise.then(this._init.bind(this), showError);
     },
 
-    _init: function (oData) {
-        if (oData.hasOwnProperty("credentials")) {
-            hideElement("connect_form");
-            showElement("connect_info");
+    _init: function (lData) {
+        for (let xCookie of lData) {
+            console.log(xCookie.name, xCookie.value);
             this.bConnected = true;
         }
-        else {
+        if (this.bConnected) {
             hideElement("connect_form");
             showElement("connect_info");
+        }
+        else {
+            showElement("connect_form");
+            hideElement("connect_info");
         }
     },
 
     listen: function () {
-        document.getElementById("submit_button").addEventListener("click", (xEvent) => { this.connect() });
+        document.getElementById("submit_button").addEventListener("click", (xEvent) => { this.connect(); });
     },
 
     connect: function () {
-        let sEmail = document.getElementById("email").value;
-        let sPassword = document.getElementById("password").value;
-        console.log(sEmail, sPassword);
+        let xForm = new FormData(document.getElementById('connect_form'));
+        for (let [k, v] of xForm.entries()) {
+            console.log("* ", k, v);
+        }
+        oMessage.show("TEST");
+        fetch("http://localhost/connect/", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            //mode: "cors", // no-cors, cors, *same-origin
+            //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            /*headers: {
+                "Content-Type": "multipart/form-data",  // text/plain, application/json
+            },*/
+            credentials: "omit", // include, *same-origin, omit
+            body: xForm
+        })
+        .then((response) => {
+            if (response.ok) {
+                for (let param in response) {
+                    console.log(param, response[param]);
+                }
+                console.log(response.body);
+                return response.json();
+            } else {
+                for (let param in response) {
+                    console.log(param, response[param]);
+                }
+                return null;
+            }
+        })
+        .then((response) => {
+            if (response) {
+                console.log(response);
+            } else {
+                console.log(response);
+            }
+        })
+        .catch((e) => {
+            showError(e);
+        });
     }
 }
 
@@ -356,6 +412,8 @@ class Table {
 const oDicTable = new Table("dictionaries_table", ["Nom", "Entrées", "Description", "Date"], "wait_progress", "num_dic", false, true);
 
 oDicTable.init();
+
+oMessage.listen();
 
 oConnect.init();
 oConnect.listen();

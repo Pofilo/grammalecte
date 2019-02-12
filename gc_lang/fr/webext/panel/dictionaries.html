@@ -8,38 +8,40 @@
 
   <body>
 
-    <div class="inbox">
-
-      <h1>Dictionnaires communautaires</h1>
-
-        <div id="connect_panel">
-            <div id="connect_form">
-                <div>Inscription</div>
-                <p>Vous n’êtes pas identifié.</p>
-                <p>
-                    <label value="E-mail"><input type="text" name="email"></label>
-                    <label value="Mot de passe"><input type="password" name="pw"></label>
-                    <div id="submit_button">Envoyer</div>
-                </p>
-            </div>
-            <div id="connect_info">
-                <p>
-                    Identifiants : <span id="login_label"> </span>, <span id="email_label"> </span>
-                </p>
-            </div>
-        </div>
-
-        <div id="apply" class="apply">Appliquer les modifications</div>
-        <h2>Dictionnaires sélectionnés</h2>
-        <p id="dictionaries_list">[Aucun]<p>
-
-
-        <h2><span id="num_dic">0</span> dictionnaires disponibles</h2>
-        <progress id="wait_progress" value="0"></progress>
-        <table id="dictionaries_table">
-        </table>
-
+    <div id="message_box">
+      <div id="message">[néant]</div><div id="message_close_button">×</div>
     </div>
+
+    <div class="inbox">
+      <h1>Grammalecte · Dictionnaires communautaires</h1>
+
+      <div id="connect_panel">
+        <form id="connect_form" method="post" enctype="multipart/form-data">
+          <p>
+            Non connecté.
+            <label for="email">E-mail : </label> <input type="text" id="email" name="email" />
+            <label for="password">Mot de passe : </label> <input type="password" id="pw" name="pw" />
+            <span id="submit_button">Se connecter</span>
+            |
+            <a href="http://dic.grammalecte.net" target="_blank">Inscription</a>
+          </p>
+        </form>
+        <div id="connect_info">
+          <p>
+            Connecté. Identifiants : <span id="login_label"> </span>, <span id="email_label"> </span>
+          </p>
+        </div>
+      </div>
+
+      <h2>Dictionnaires sélectionnés</h2>
+      <p id="dictionaries_list">[Aucun]<p>
+
+      <div id="apply" class="apply">Appliquer les modifications</div>
+      <h2><span id="num_dic">0</span> dictionnaires disponibles</h2>
+      <progress id="wait_progress" value="0"></progress>
+      <table id="dictionaries_table">
+      </table>
+    </div> <!-- inbox -->
 
 
     <script src="../grammalecte/graphspell/helpers.js"></script>
