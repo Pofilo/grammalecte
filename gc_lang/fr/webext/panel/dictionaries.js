@@ -107,45 +107,67 @@ const oConnect = {
     },
 
     connect: function () {
+        if (!this.checkValues()) {
+            oMessage.show("Les valeurs des champs du formulaire ne sont pas conformes.");
+            return;
+        }
         let xForm = new FormData(document.getElementById('connect_form'));
         for (let [k, v] of xForm.entries()) {
             console.log("* ", k, v);
         }
-        oMessage.show("TEST");
         fetch("http://localhost/connect/", {
             method: "POST", // *GET, POST, PUT, DELETE, etc.
             //mode: "cors", // no-cors, cors, *same-origin
             //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
-            /*headers: {
-                "Content-Type": "multipart/form-data",  // text/plain, application/json
-            },*/
+            headers: {
+                "Accept-Charset": "utf-8"
+                //"Content-Type": "multipart/form-data",  // text/plain, application/json
+            },
             credentials: "omit", // include, *same-origin, omit
             body: xForm
         })
         .then((response) => {
             if (response.ok) {
+                if (response.status == 204) {
+                    oMessage.show("Échec d’identification. Vérifiez l’e-mail et le mot de passe envoyés…");
+                    return null;
+                }
                 for (let param in response) {
                     console.log(param, response[param]);
                 }
                 console.log(response.body);
                 return response.json();
             } else {
-                for (let param in response) {
-                    console.log(param, response[param]);
-                }
+                oMessage.show("Erreur. Le serveur ne semble pas en état de répondre. Veuillez réessayer ultérieurement.");
                 return null;
             }
         })
         .then((response) => {
             if (response) {
-                console.log(response);
-            } else {
-                console.log(response);
+                console.log("response: ", response);
             }
         })
         .catch((e) => {
             showError(e);
         });
+    },
+
+    checkValues () {
+        if (document.getElementById("email").value === "") {
+            return false;
+        }
+        let sEmail = document.getElementById("email").value;
+        if (sEmail.search(/^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$/) === -1) {
+            return false;
+        }
+        return true;
+    },
+
+    showId (sLogin, sEmail) {
+        document.getElementById("login_label").textContent = sLogin;
+        document.getElementById("email_label").textContent = sEmail;
+        hideElement("connect_form");
+        showElement("connect_info");
     }
 }
 
