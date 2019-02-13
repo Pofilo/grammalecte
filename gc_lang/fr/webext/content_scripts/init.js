@@ -60,6 +60,8 @@ const oGrammalecte = {
 
     sExtensionUrl: null,
 
+    oOptions: null,
+
     listenRightClick: function () {
         // Node where a right click is done
         // Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
@@ -80,10 +82,10 @@ const oGrammalecte = {
         browser.storage.local.get("ui_options").then(this._createMenus.bind(this), showError);
     },
 
-    _createMenus: function (dOptions) {
-        if (dOptions.hasOwnProperty("ui_options")) {
-            dOptions = dOptions.ui_options;
-            if (dOptions.textarea) {
+    _createMenus: function (oOptions) {
+        if (oOptions.hasOwnProperty("ui_options")) {
+            this.oOptions = oOptions.ui_options;
+            if (this.oOptions.textarea) {
                 for (let xNode of document.getElementsByTagName("textarea")) {
                     if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
                         this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
@@ -91,7 +93,7 @@ const oGrammalecte = {
                     }
                 }
             }
-            if (dOptions.editablenode) {
+            if (this.oOptions.editablenode) {
                 for (let xNode of document.querySelectorAll("[contenteditable]")) {
                     this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
                     this.nMenu += 1;
@@ -106,12 +108,16 @@ const oGrammalecte = {
             mutations.forEach(function (mutation) {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
                     if (mutation.addedNodes[i].tagName == "TEXTAREA") {
-                        oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
-                        oGrammalecte.nMenu += 1;
-                    } else if (mutation.addedNodes[i].getElementsByTagName) {
-                        for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
-                            oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
+                        if (this.oOptions === null || this.oOptions.textarea) {
+                            oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
                             oGrammalecte.nMenu += 1;
+                        }
+                    } else if (mutation.addedNodes[i].getElementsByTagName) {
+                        if (this.oOptions === null || this.oOptions.textarea) {
+                            for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
+                                oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
+                                oGrammalecte.nMenu += 1;
+                            }
                         }
                     }
                 }
