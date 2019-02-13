@@ -15015,7 +15015,7 @@ __conf_tache_tâche__
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
-    >tâche  [>indélébile|>rouge|>verte|>noire|>bleue|>jaune|>grise|>blanche|>brune|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire]
+    >tâche  [>indélébile|>rouge|>verte|>noire|>bleue|>jaune|>grise|>blanche|>brune|>pourpre|>chocolat|>mauve|>fushia|>violette|>rose|>claire|>sombre|>solaire|>cuivrée]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
@@ -15041,13 +15041,16 @@ TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’aut
 
 
 __conf_tâche_tache__
-    >tache [>ingrate|>dévalorisante|>valorisante]
+    tache [accomplie|dévalorisante|difforme|épuisante|exécutée|exténuante|fatigante|ingrate|menée|valorisante]
+    taches [accomplies|dévalorisantes|difformes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|menées|valorisantes]
+    >tache consistant à
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
 
-    [>abstenir|>accepter|>accomplir|>affecter|>effectuer|>entreprendre|>exécuter|>finir|>partager|>refaire|>refuser|>terminer]  @:D  >tache
+    [>abstenir|>accepter|>accomplir|>achever|>affecter|>effectuer|>entreprendre|>exécuter|>faciliter|>finir|>interrompre|>partager|>refaire|>refuser|>simplifier|>terminer]  @:D  >tache
     à la tache
-        <<- /conf/ -3>> =\3.replace("a", "â").replace("A", "Â")
+    [à|a] la hauteur de la tache
+        <<- /conf/ --1>> =\3.replace("a", "â").replace("A", "Â")
         # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
 
     >tacher  [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
@@ -15059,7 +15062,7 @@ __conf_tâche_tache__
         # Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.
 
 TEST: Quelle {{tache}} ingrate.
-TEST: Une {{tache}} ingrate.
+TEST: Une {{tache}} valorisante.
 TEST: Elle se tue à la {{tache}}.
 TEST: Il a accompli la {{tache}} facilement.
 TEST: {{Tache}} de partir tôt.
