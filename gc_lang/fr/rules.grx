@@ -19315,14 +19315,14 @@ TEST: si tu persévères, certaine deviendra la réussite.
 
 __conj_det_plur_nom__
     [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
-        <<- /conj/ morph(<1, ":C|<start>|>,")
+        <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3) -3>> =suggVerb(\3, ":3p") # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and isAmbiguousAndWrong(\2, \3, ":p", ":3p")
         -3>> =suggVerb(\3, ":3p", suggPlur)                             # Accord avec « \1 \2… » incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
     [ces|mes|tes|ses|nos|vos|leurs|quelques]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G|M|A.*:e:[pi])
-        <<- /conj/ morph(<1, ":C|<start>|>,")
+        <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
@@ -19334,11 +19334,12 @@ TEST: vos questions ne {{réclame}} aucune réflexion.
 TEST: Ces attaques à main armée {{donne}} la chair de poule.
 TEST: Ces marchands {{passe}} leur temps à se quereller.
 TEST: le lien entre les agences de renseignement et ces mêmes entreprises pouvait reposer sur des activités de surveillance à proprement parler.
+TEST: trier les cons et les connes expose à un violent coup de boomerang
 
 
 __conj_det_plur_nom_confusion__
     les  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
-        <<- /conj/ morph(<1, ":C|<start>|>,")
+        <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -19346,7 +19347,7 @@ __conj_det_plur_nom_confusion__
         -3>> =suggVerb(\3, ":3p", suggPlur)                             # Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
     [certains|certaines]  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
-        <<- /conj/ morph(<1, ":C|<start>|>,")
+        <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -19356,13 +19357,13 @@ __conj_det_plur_nom_confusion__
         -3>> =suggVerb(\3, ":3p", suggFemPlur)                          # Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
     plusieurs  @:[NA].*:[pi]  @:V¬:(?:3p|P|Y|G|M|A.*:e:[pi])
-        <<- /conj/ morph(<1, ":C|<start>|>,")
+        <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\3, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
             and not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     [les|certains|certaines|plusieurs]  @:[NA].*:[pi]  qui  @:V¬:(?:[13]p|P|Y|G|M)
-        <<- /conj/ morph(<1, ":C|<start>|>,")
+        <<- /conj/ morph(<1, ":Cs|<start>|>,")
             and not( morph(\4, ":3s") and before("(?i)\\b(?:l[ea] |l’|une? |ce(?:tte|t|) |[mts](?:on|a) |[nv]otre ).+ entre .+ et ") )
         -4>> =suggVerb(\4, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
