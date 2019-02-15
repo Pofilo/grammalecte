@@ -372,11 +372,14 @@ TEST: voici des (parenthèses{{ )}}, n’est-ce pas ?                        ->
 
 
 # Parenthèses collées
-__<s>/typo(typo_parenthese_fermante_collée)__    [)]\b(?![s¹²³⁴⁵⁶⁷⁸⁹⁰]\b) <<- ->> ") "              # Il manque un espace après la parenthèse.
-__<s>/typo(typo_parenthese_ouvrante_collée)__    \b[(](?=[^)][^)][^)]) <<- ->> " ("                 # Il manque un espace avant la parenthèse.
+__<s>/typo(typo_parenthèse_fermante_collée)__
+    [)]\b(?![s¹²³⁴⁵⁶⁷⁸⁹⁰]\b) <<- not before("\\([rR]e$") ->> ") "                                   # Il manque un espace après la parenthèse.
+__<s>/typo(typo_parenthèse_ouvrante_collée)__
+    \b[(](?=[^)][^)][^)]) <<- ->> " ("                                                              # Il manque un espace avant la parenthèse.
 
 TEST: C’est au fond du couloir{{(}}celui du deuxième étage{{)}}qu’il se trouve.
 TEST: (a + b)²
+TEST: il faut (re)former tout ça.
 
 
 # Points et espaces
@@ -535,10 +538,15 @@ __[s](p_mot_entre_crochets)__
     <<- \1.isdigit() ~>> *
     <<- __else__ and morph(\1, ":G") ~>> =" " + \1 + " "
     <<- __else__ and \1.isalpha() ~>> " _"
+
+# parenthèses
 __[s](points_suspension_entre_parenthèses)__
     \(…\)
     <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
     <<- ~>> *
+__<i>(p_préfixes_entre_parenthèses)__
+    " (\(re\))\w+"  @@1
+        <<- ~1>> *
 
 TEST: par {{O.R.}}                                          ->> OR|O. R.
 TEST: l’{{A.N.P.E.}} n’existe plus
@@ -565,6 +573,7 @@ TEST: C’est dans le dossier D:\Data
 TEST: Dossier C:\Program Files (x86)\LibreOffice
 TEST: [1] Dossier à revoir.
 TEST: jusqu’à 12h47
+TEST: Allons (re)voir ce film
 
 
 
