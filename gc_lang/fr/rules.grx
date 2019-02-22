@@ -5172,11 +5172,12 @@ __conf_participes_présents__
         <<- /conf/ morph(\2, ":", ":P") -2>> _                                                      # Incohérence : « \2 » n’est pas un participe présent.
 
     [nous|vous|lui]  ~\want$
-        <<- /conf/ morph(\2, ":[NAQ]", ":[PG]") -2>> _                                              # Incohérence : « \2 » n’est pas un participe présent.
+        <<- /conf/ not morph(<1, ":R") and morph(\2, ":[NAQ]", ":[PG]") -2>> _                      # Incohérence : « \2 » n’est pas un participe présent.
 
 TEST: ne {{convaincant}} que les convaincus.
 TEST: une tension lui {{provocant}} un ulcère
 TEST: comme des nuages ou des coteaux se reﬂétant dans l’eau (ligature ﬂ)
+TEST: ces hommes qui avaient abusé de lui enfant.
 
 
 __conf_en_participes_présents__
