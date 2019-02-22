@@ -14879,13 +14879,17 @@ TEST: Elle n’a jamais mis la main à la {{patte}}.
 # péché / pêcher
 __conf_péché_pêcher__
     >pêcher par excès [de|d’]
-    >pêcher par [insuffisance|omission]
+    >pêcher par [insuffisance|omission|orgueil]
     >pêcher [à|a] la ligne
     >pêcher @:D [>poisson|>crabe|>langouste|>crevette|>thon|>huître|>huitre|>moule]
         <<- /conf/ -1>> pécher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
     [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] @:D ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
     >repentir de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
+        <<- /conf/ \1.endswith("s") -1>> péchés                 # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
+        <<- /conf/ __else__ -1>> péché                          # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
+
+    [pécher|pêcher|pêchers|pêché|pêchée|pêchés|pêchées] [>capitale|mignon|mignons|>mortelle|>originelle|>vénielle]
         <<- /conf/ \1.endswith("s") -1>> péchés                 # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
         <<- /conf/ __else__ -1>> péché                          # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
 
@@ -14897,6 +14901,9 @@ TEST: Il {{pêche}} par excès de confiance.
 TEST: commettre un {{pêcher}}.
 TEST: Elle voulut expier ses {{pêchés}}.
 TEST: {{pécher}} à la ligne
+TEST: C’est mon {{pêché}} mignon
+TEST: Les {{pêchers}} capitaux
+TEST: Des {{pêchés}} véniels
 
 
 # peu / peux / peut
