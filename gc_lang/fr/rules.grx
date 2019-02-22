@@ -14902,10 +14902,11 @@ TEST: {{pécher}} à la ligne
 # peu / peux / peut
 __conf_peut_peux_peu2__
     [peux|peut]  [de|d’]  @:[NA]¬*
-        <<- /conf/ space_after(\1, 1, 3) -1>> peu               # Confusion probable : “\1” est une forme conjuguée de “pouvoir”, écrivez “peu” pour dire “pas beaucoup”.
+        <<- /conf/ not value(<1, "|je|tu|il|elle|on|ne|n’|") and space_after(\1, 1, 3) -1>> peu     # Confusion probable : “\1” est une forme conjuguée de “pouvoir”, écrivez “peu” pour dire “pas beaucoup”.
 
 TEST: {{peut}} d’hommes savent comment s’y prendre
 TEST: peu d’argent
+TEST: il peut de façon crédible avancer qu’il veut tout faire sauter
 
 
 # peut-être / peut être
