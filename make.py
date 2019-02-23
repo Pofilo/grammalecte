@@ -478,7 +478,7 @@ def main ():
                     else:
                         # Firefox Nightly edition
                         spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
-                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console --firefox-profile=debug')
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')
                     # https://github.com/mozilla/web-ext/issues/932
                     # os.system(r'web-ext run --firefox="' + spfFirefox + r'" --browser-console --firefox-profile=C:\Users\EAK\AppData\Roaming\Mozilla\Firefox\Profiles\e26559tw.debug --keep-profile-changes')
 
