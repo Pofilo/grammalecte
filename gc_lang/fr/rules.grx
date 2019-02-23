@@ -15809,7 +15809,7 @@ TEST: Ce sont des biens de peu de valeur.
 
 __infi_faire_verbe__
     >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|en|de|") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:s"))
+        <<- /infi/ not value(<1, "|en|de|") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
         -2>> =suggVerbInfi(\2)                                  # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
 
 TEST: elle fit peu {{mangé}} les enfants
@@ -15820,6 +15820,7 @@ TEST: ce sont des faits constestés.
 TEST: c’est un fait reconnu.
 TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
+TEST: il y a quand même quelques faits caractérisés permettant de faire le raccord
 
 #__[i]/infi(infi_faire)__
 #    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
@@ -20021,6 +20022,7 @@ TEST: Celles de l’Institut sont plus perfectionnées
 TEST: Judith A. Allan a aussi constaté que les études sur les crises de la masculinité ne proposent pas ou que très rarement d’indicateurs pour déterminer si une société est (trop) féminisée et si les hommes sont (réellement) en crise.
 TEST: une procédure abusive pour fermer la porte qu’elles ont essayé d’ouvrir
 TEST: En France, les hauts fonctionnaires gagnent en moyenne 7850 euros net
+TEST: Il faut avoir du pouvoir et des ressources
 
 
 
