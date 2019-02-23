@@ -26,7 +26,7 @@ HOMEPAGE = """
         <h2>INFORMATIONS</h1>
 
         <h3>Analyser du texte</h3>
-        <p>[adresse_serveur]:8080/gc_text/fr (POST)</p>
+        <p>[adresse_serveur]:{SERVER_PORT}/gc_text/fr (POST)</p>
         <p>Paramètres :</p>
         <ul>
             <li>"text" (text)&nbsp;: texte à analyser.</li>
@@ -35,10 +35,10 @@ HOMEPAGE = """
         </ul>
 
         <h3>Lister les options</h3>
-        <p>[adresse_serveur]:8080/get_options/fr (GET)</p>
+        <p>[adresse_serveur]:{SERVER_PORT}/get_options/fr (GET)</p>
 
         <h3>Définir ses options</h3>
-        <p>[adresse_serveur]:8080/set_options/fr (POST)</p>
+        <p>[adresse_serveur]:{SERVER_PORT}/set_options/fr (POST)</p>
         <p>Les options seront enregistrées et réutilisées pour toute requête envoyée avec le cookie comportant l’identifiant attribué.</p>
         <p>Paramètres :</p>
         <ul>
@@ -46,7 +46,7 @@ HOMEPAGE = """
         </ul>
 
         <h3>Remise à zéro de ses options</h3>
-        <p>[adresse_serveur]:8080/reset_options/fr (POST)</p>
+        <p>[adresse_serveur]:{SERVER_PORT}/reset_options/fr (POST)</p>
 
         <h2>TEST</h2>
 
@@ -208,9 +208,11 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
     # start server
     global dGCOptions
     global TESTPAGE
+    global HOMEPAGE
 
     if bTestPage:
         TESTPAGE = True
+        HOMEPAGE = HOMEPAGE.replace("{SERVER_PORT}", str(nPort))
     if dOptions:
         oGrammarChecker.gce.setOptions(dOptions)
         dGCOptions = gce.getOptions()
@@ -219,7 +221,6 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
     echo("Grammalecte v{}".format(gce.version))
     echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dGCOptions.items()) ]))
     run(app, host=sHost, port=nPort)
-
 
 
 if __name__ == '__main__':

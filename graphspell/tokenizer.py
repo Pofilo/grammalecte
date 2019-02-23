@@ -18,7 +18,7 @@ _PATTERNS = {
             r'(?P<PSEUDOHTML>\[/?\w+\])',
             r'(?P<HOUR>\d\d?h\d\d\b)',
             r'(?P<NUM>\d+(?:[.,]\d+))',
-            r'(?P<SIGN>[%‰+=*/<>⩾⩽-])',
+            r'(?P<SIGN>[%‰€$+=*/<>⩾⩽#-])',
             r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
         ),
     "fr":
@@ -35,7 +35,7 @@ _PATTERNS = {
             r'(?P<WORD_ORDINAL>\d+(?:ers?|nds?|es?|des?|ièmes?|èmes?|emes?|ᵉʳˢ?|ⁿᵈˢ?|ᵉˢ?|ᵈᵉˢ?)\b)',
             r'(?P<HOUR>\d\d?h\d\d\b)',
             r'(?P<NUM>\d+(?:[.,]\d+|))',
-            r'(?P<SIGN>[%‰+=*/<>⩾⩽-])',
+            r'(?P<SIGN>[%‰€$+=*/<>⩾⩽#-])',
             r"(?P<WORD>\w+(?:[’'`-]\w+)*)"
         )
 }
