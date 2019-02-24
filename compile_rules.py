@@ -435,7 +435,7 @@ def prepareOptions (lOptionLines):
             for i, sColor in enumerate(m.group(2).split()):
                 lOptColor[i][1][m.group(1)] = sColor
         elif sLine.startswith("COLOR/"):
-            m = re.match("COLOR/([a-z0-9]+):(.+)$", sLine)
+            m = re.match("COLOR/([a-zA-Z0-9_]+):(.+)$", sLine)
             dColor[m.group(1)] = [ int(s) for s in m.group(2).strip().split(",") ]
         elif sLine.startswith("OPTPRIORITY/"):
             m = re.match("OPTPRIORITY/([a-z0-9]+): *([0-9])$", sLine)
