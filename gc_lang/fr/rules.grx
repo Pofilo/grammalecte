@@ -5331,7 +5331,7 @@ __conf_a_à_verbe!6__
         <<- /conf/ -2>> a                                           # Confusion probable : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     [l’|les|en] à
-        <<- /conf/ not \1.isupper() and not value(>1, "|côté|coup|pic|peu|plat|propos|valoir|")
+        <<- /conf/ not \1.isupper() and not value(>1, "|côté|coup|pic|peine|peu|plat|propos|valoir|")
         -2>> a                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     [il|on]  [nous|vous]  à
@@ -5407,6 +5407,7 @@ TEST: il en a.
 TEST: elle en a.
 TEST: celle qui à contrario nous a foutu dans la merde.
 TEST: ceux qui à Somewhere se sont si mal illustrés.
+TEST: en à peine vingt ans
 
 
 __conf_à_a_infinitif__
@@ -16170,100 +16171,100 @@ __ppas_3sg_mas_verbe_état__
     [ce|ça|ceci|cela|c’|ç’] >être @:[AQ].*:f¬:[GWYme]       @:N.*:f
         <<- %3>>
 
-    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]                                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ morph(\2, ":[123]s") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not tag(\1, "enum") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
         --1>> =suggMasSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿
+    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿
+    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not tag(\2, "enum") --1>> =suggMasSing(\-1)                                                          # Accord avec le sujet “\2” : “\-1” devrait être au masculin singulier.
 
-    lui [ne|n’|en|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|en|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui [ne|n’|en|y] >avoir [été|semblé|paru]                                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui [ne|n’|en|y] [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|en|y] [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui [ne|n’|en|y]
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui [ne|n’|en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui [ne|n’|en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))--1>> =suggMasSing(\-1)      # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    lui n’ [en|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui n’ [en|y] >avoir [été|semblé|paru]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui n’ [en|y] [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui n’ [en|y] [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui n’ [en|y]
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui n’ [en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui n’ [en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]) [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ morph(\2, ":[123]s") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)       # Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
 
-    lequel ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                              [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lequel ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lequel ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lequel ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lequel ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                              [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lequel ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lequel ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu|redevenu|resté|demeuré]                                                                                                     [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lequel ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -16290,6 +16291,7 @@ TEST: il pense avoir été {{volés}}
 TEST: lui qui ne pensait jamais être {{reconnus}}.
 TEST: ça ne semble pas avoir été {{conçus}} pour ça.
 TEST: lequel allait être {{renvoyée}} de l’établissement.
+TEST: tout sera {{dissoute}}
 TEST: C’est donc seules que les deux femmes sont amenées à comparaître
 TEST: C’eût été pure imagination.
 TEST: Je n’arrêtais pas de me répéter que tout cela était peut-être pure imagination
