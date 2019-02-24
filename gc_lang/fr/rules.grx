@@ -16028,13 +16028,13 @@ TEST: sans fin elles se sont succédé
 __ppas_se_être__
     [me|m’|te|se|s’]  ?[y|en]¿  (>être)  (*WORD)
     t’  [y|en]  (>être)  (*WORD)
-        <<- /ppas/ morph(\2, ":(?:Y|[123][sp])", ":Q") -2>> =suggVerbPpas(\2)                       # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ morph(\2, ":(?:Y|[123][sp])", ":[QA]") -2>> =suggVerbPpas(\2)                    # Incohérence. Après « s’être », le verbe doit être un participe passé.
         <<- /ppas/ __else__ and morph(\1, ":[123]s") and morph(\2, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
         -2>> =suggSing(\2)                                                                          # Le participe passé devrait être au singulier.
 
     t’  >être  *WORD
         <<- /ppas/ not value(\2, "|es|étais|") >>>
-        <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":Q") -3>> =suggVerbPpas(\3)                       # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":[QA]") -3>> =suggVerbPpas(\3)                    # Incohérence. Après « s’être », le verbe doit être un participe passé.
         <<- /ppas/ __else__ and morph(\2, ":[123]s") and morph(\3, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
         -3>> =suggSing(\3)                                                                          # Le participe passé devrait être au singulier.
 
@@ -16051,6 +16051,7 @@ TEST: On s’est rencontrées lorsqu’on travaillait là-bas.
 TEST: des soins que je m’étais donnés.
 TEST: Si t’es pas contente, t’achètes pas.
 TEST: t’étais vraiment cinglé à cette époque.
+TEST: il m’était évident que cette mission était à durée déterminée
 
 
 ## se rendre compte
