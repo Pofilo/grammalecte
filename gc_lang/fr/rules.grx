@@ -8312,11 +8312,13 @@ __conf_vieil_vieux_euphonie__
         <<- /conf/ -1>> vieil                                   # Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
     vieux  ~^[aeéiîou]
-        <<- /conf/ morph(\2, ":[NA].*:[me]:s") -1>> vieil       # Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
+        <<- /conf/ morph(\2, ":[NA].*:[me]:s", ":[123][sp]")
+        -1>> vieil                                              # Euphonie. Utilisez “vieil” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
 TEST: ce {{vieux}} homme
 TEST: c’est un {{vieux}} imbécile.
 TEST: Le {{vieux}} homme était parti.                         ->> vieil
+TEST: Diviser les jeunes et les vieux est un peu son fonds de commerce
 
 
 
