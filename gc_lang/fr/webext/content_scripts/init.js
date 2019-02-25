@@ -104,16 +104,17 @@ const oGrammalecte = {
 
     observePage: function () {
         //    When a textarea is added via jascript we add the menu
+        let that = this;
         this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
                     if (mutation.addedNodes[i].tagName == "TEXTAREA") {
-                        if (this.oOptions === null || this.oOptions.textarea) {
+                        if (that.oOptions === null || that.oOptions.textarea) {
                             oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
                             oGrammalecte.nMenu += 1;
                         }
                     } else if (mutation.addedNodes[i].getElementsByTagName) {
-                        if (this.oOptions === null || this.oOptions.textarea) {
+                        if (that.oOptions === null || that.oOptions.textarea) {
                             for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
                                 oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
                                 oGrammalecte.nMenu += 1;
