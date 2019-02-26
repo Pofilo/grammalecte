@@ -3211,8 +3211,12 @@ TEST: l’{{israélo belge}}
 
 
 __tu_préfixe_xxxo__
-    [électro|ferro|hydro|labio|macro|magnéto|médico|micro|nano|néo|neuro|paléo|physico|politico|rétro|rhino|sino|socio|stéréo]  *WORD
+    [macro|magnéto|micro|paléo|rétro|rhino|stéréo]  *WORD
         <<- /tu/ analyse_with_next(\1, "-", ":")
+        ->> \1-\2                                                                                   # S’il s’agit d’un seul mot, il manque un trait d’union.
+
+    [électro|ferro|hydro|labio|médico|nano|néo|neuro|physico|politico|sino|socio]  *WORD
+        <<- /tu/ space_after(\1, 1, 1) and (morph(\2, ":N") or analyse_with_next(\1, "-", ":"))
         ->> \1-\2                                                                                   # S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: {{ferro électrique}}                              ->> ferro-électrique
@@ -11285,7 +11289,7 @@ __purge_locutions_verbales__
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
     [>donner|>redonner] sens
-    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|débat|défaut|demi-tour|envie|erreur|figure|froid|halte|honte|illusion|mouche|office|part|peur|plaisir|preuve|rage|scandale|sens|signe|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|débat|défaut|demi-tour|envie|erreur|figure|froid|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bonne figure
