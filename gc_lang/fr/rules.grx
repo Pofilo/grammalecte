@@ -19439,11 +19439,12 @@ TEST: Macron président, c’est…
 # 3pl
 __conj_nom_propre_et_nom_propre__
     ~^[A-ZÉÈ]  et  ~^[A-ZÉÈ]  @:[123][sp]¬:(?:G|3p|P|Q.*:[pi])
-        <<- /conj/ morph(\1, ":M") and morph(\3, ":M") and not morph(<1, ":R|>(?:des?|du|et|ou|ni)/")
+        <<- /conj/ morph(\1, ":M") and morph(\3, ":M") and not morph(<1, ":[RV]|>(?:des?|du|et|ou|ni)/")
         -4>> =suggVerb(\4, ":3p")                                                                   # Conjugaison erronée. Accord avec “\1 et \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Samantha et Eva {{viennes}} demain.
 TEST: Samantha et Eva leur {{décrive}} une leçon.
+TEST: La relation spéciale qu’entretiennent Donald et Kim met paradoxalement en péril les discussions entre les deux pays.
 
 
 # on / ont
