@@ -532,7 +532,38 @@ Token rules must be defined within a graph.
 Tokens can be defined in several ways:
 
 * Value (meaning the text of the token). Examples: `word`, `<start>`, `<end>`, `,`.
-* Lemma: `>lemma`
-* Rege: `~pattern`
+* Lemma: `>lemma`.
+* Regex: `~pattern`, `~pattern¬antipattern`.
 * Regex on morphologies: `@pattern`, `@pattern¬antipattern`.
-* Metatags: *NAME. Examples: `*WORD`, `*SIGN`, etc.
+* Tags: `/tag`.
+* Metatags: *NAME. Examples: `*WORD`, `*NUM`, `*SIGN`, etc.
+
+Selection of tokens: `[token1|token2|>lemma1|>lemma2|~pattern1|@pattern1|…]`
+
+Conditional token: `?token¿`
+
+Conditional selection of token: `?[token1|token2|…]¿`
+
+## Token references
+
+Positive references are defined by a positive integer `>= 1`. Examples: \1, \2, \3, etc.
+If there is at least one token set between parenthesis, these numbers refer to tokens between parenthesis, ignoring all others.
+If there is no token between parenthesis, these numbers refer to tokens found in order defined by the rule triggered.
+
+Negative references are defined by a negative integer `<= -1`. Examples: \-1, \-2, \-3, etc.
+These numbers refer to the tokens beginning by the last one found by the rule triggered.
+
+Examples:
+
+        tokens:             alpha       beta        gamma       delta       epsilon
+        positive refs:      1           2           3           4           5
+        negative refs:      -5          -4          -3          -2          -1
+
+        tokens:             alpha       (beta)      gamma       (delta)     epsilon
+        positive refs:                  1                       2
+        negative refs:      -5          -4          -3          -2          -1
+
+        tokens:             alpha       (beta)      ?gamma¿     (delta)     epsilon
+        positive refs:                  1                       2
+        negative refs:      (-4/-5)     (-3/-4)     (-3/none)   -2          -1
+
