@@ -1,6 +1,6 @@
 WRITING RULES FOR GRAMMALECTE
 
-Note: This documentation is a draft. Information may be obsolete.
+Note: This documentation is a draft. Information may be obsolete or incomplete.
 
 # Principles #
 
@@ -12,7 +12,7 @@ The command to switch to the second pass is `[++]`.
 
 In each pass, you can write as many rules as you need.
 
-There is two kinds of rules:
+There are two kinds of rules:
 
 * regex rules (triggered by a regular expression)
 * token rules (triggered by a succession of tokens)
@@ -37,22 +37,23 @@ Each graph is defined within the second pass with the command:
 
         @@@@GRAPH: graph_name
 
-A graph ends when another graph is defined or when is defined the command:
+A graph ends when another graph is defined or when is found the command:
 
         @@@@END_GRAPH
 
 There is no limit to the number of actions and the type of actions a rule can
 launch. Each action has its own condition to be triggered.
 
-There are three kind of actions:
+There are several kinds of actions:
 
 * Error warning, with a message, and optionally suggestions, and optionally an URL
 * Text transformation, modifying internally the checked text
 * Disambiguation action, setting tags on a position
+* Tagging
 
 
-The rules file for your language must be named “rules.grx”.
-The settings file must be named “config.ini”.
+The rules file for your language must be named `rules.grx`.
+The settings file must be named `config.ini`.
 
 All these files are simple utf-8 text file.
 UTF-8 is mandatory.
@@ -189,7 +190,7 @@ Example: Recognize double or more spaces and suggests a single space:
 
         __<s>__  "  +" <<- ->> " "      # Extra space(s).
 
-ASCII " characters protect spaces in the pattern and in the replacement text.
+Characters `"` protect spaces in the pattern and in the replacement text.
 
 
 ## Pattern groups and back references ##
@@ -215,11 +216,11 @@ Example. Back reference in messages.
 Repeating pattern matching of a single rule continues after the previous matching, so
 instead of general multiword patterns, like
 
-(\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
+        (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
 
 use
 
-(\w+) <<- some_check(\1, word(1)) ->> \1, # foo
+        (\w+) <<- some_check(\1, word(1)) ->> \1, # foo
 
 
 ## Name definitions ##
@@ -344,11 +345,11 @@ rules.
 
 For example, sentences with the same grammar mistake:
 
-        These “cats” are blacks.
-        These cats are “blacks”.
-        These cats are absolutely blacks.
-        These stupid “cats” are all blacks.
-        These unknown cats are as per usual blacks.
+        These “cats” are black.
+        These cats are “black”.
+        These cats are absolutely black.
+        These stupid “cats” are all black.
+        These unknown cats are as per usual black.
 
 Instead of writting complex rules or several rules to find mistakes for all possible
 cases, you can use the text preprocessor to simplify the text.
@@ -370,11 +371,11 @@ You can also remove a group reference:
 
 With these rules, you get the following sentences:
 
-        These  cats  are blacks.
-        These cats are  blacks .
-        These cats are            blacks.
-        These         cats  are     blacks.
-        These         cats are              blacks.
+        These  cats  are black.
+        These cats are  black .
+        These cats are            black.
+        These         cats  are     black.
+        These         cats are              black.
 
 These grammar mistakes can be detected with one simple rule:
 
@@ -397,7 +398,7 @@ You can also replace any text as you wish.
 
 # Disambiguation #
 
-When Grammalecte analyses a word with morph or morphex, before requesting the
+When Grammalecte analyses a word with morph, before requesting the
 POS tags to the dictionary, it checks if there is a stored marker for the
 position where the word is. If there is a marker, Grammalecte uses the stored
 data and don’t make request to the dictionary.
@@ -415,29 +416,24 @@ There is 3 commands for disambiguation.
 >   stores at position n the POS tags of the word, except those matching the
     pattern.
 
-`define(n, definition)`
+`define(n, [definitions])`
 
->   stores at position n the POS tags in definition.
+>   stores at position n the POS tags in definitions (a list of strings).
 
 Examples:
 
         =>> select(\1, "po:noun is:pl")
         =>> exclude(\1, "po:verb")
-        =>> define(\1, "po:adv")
-        =>> exclude(\1, "po:verb") and define(\2, "po:adv") and select(\3, "po:adv")
+        =>> define(\1, ["po:adv"])
+        =>> exclude(\1, "po:verb") and define(\2, ["po:adv"]) and select(\3, "po:adv")
 
 Note: select, exclude and define ALWAYS return True.
 
 If select and exclude generate an empty list, no marker is set.
 
-With define, you can set a list of POS tags. Example:
+With define, you must set a list of POS tags. Example:
 
-        define(\1, "po:nom is:plur|po:adj is:sing|po:adv")
-
-This will store a list of tags at the position of the first group:
-
-        ["po:nom is:plur", "po:adj is:sing", "po:adv"]
-
+        define(\1, ["po:nom is:plur", "po:adj is:sing", "po:adv"])
 
 
 # Conditions #

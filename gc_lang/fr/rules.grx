@@ -2019,7 +2019,7 @@ TEST: {{prendrons-elles}} un verre avec moi ?
 __inte_verbes_composés_interrogatifs_impératifs__
     ~\w-[nN]ous$
         <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", None, True)          # Forme interrogative ou impérative incorrecte.
-        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>chez/") ->> =suggSimil(\1, ":1p", False, True)  # Forme interrogative ou impérative incorrecte.
+        <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:chez|malgré)/") ->> =suggSimil(\1, ":1p", False, True)  # Forme interrogative ou impérative incorrecte.
         <<- />> -nous|VCint
 
     ~\w-[vV]ous$
@@ -2034,6 +2034,7 @@ TEST: Elle a de nombreux rendez-vous ce matin.
 TEST: êtes-vous là ?
 TEST: C’est notre chez-nous.
 TEST: Dans votre chez-vous, faites comme bon vous semble.
+TEST: Libérée en grande majorité durant l’automne 1945, une partie des « Malgré-nous » passe pourtant plusieurs années supplémentaires en captivité.
 
 
 __inte_rendez_vous__
@@ -2155,6 +2156,10 @@ __fusions_noms_propres__
 
 
 __immunités__
+    il y a
+    il n’ y a
+        <<- %-1>>
+
     à l’ arrache
         <<- %3>>
 
@@ -15265,7 +15270,7 @@ __infi_de_verbe__
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
-            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|point +$|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|rien(?: +[a-zéèêâîûù]+|) +$)")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: d’en {{parlé}} sans cesse
@@ -15290,6 +15295,7 @@ TEST: un libéralisme trop « individualiste » s’est transformé en de supp
 TEST: soit 40 % de plus comparé au quinquennat précédent
 TEST: On passe de sophistiqué à classique.
 TEST: Les « événements » d’il y a cinquante ans n’ont sans doute « rien à voir » avec le mouvement des « gilets jaunes »
+TEST: Quelques points de gagnés avec cette astuce, ne faisons pas la fine bouche.
 
 
 __infi_y_verbe!3__
