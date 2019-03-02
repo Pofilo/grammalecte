@@ -14333,6 +14333,25 @@ TEST: Je veux savoir où et quand, où et pouquoi.
 TEST: où et avec qui ?
 
 
+__conf_été_était__
+    [le|ce|cet|mon|ton|son|notre|votre|leur|du|quel]  *WORD  >été
+        <<- /conf/ morph(\2, ":N.*:m:[si]", ":[AWG]") and morph(<1, ":Cs|<start>|>,") --1>> était
+        # Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
+
+    [la|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]  *WORD  >été
+        <<- /conf/ morph(\2, ":N.*:f:[si]", ":[AWG]") and morph(<1, ":Cs|<start>|>,") --1>> était
+        # Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
+
+    [les|des|ces|mes|tes|ces|nos|vos|leurs|quelques|plusieurs|certains|certaines|quels|quelles]  *WORD  >été
+        <<- /conf/ morph(\2, ":N.*:[pi]", ":[AWG]") and morph(<1, ":Cs|<start>|>,") --1>> étaient
+        # Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “étaient”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
+
+TEST: Ce mec {{été}} un connard fini.                                               ->> était
+TEST: Quelle solution {{été}} à notre portée ?                                      ->> était
+TEST: Les questions {{étés}} incompréhensibles.                                     ->> étaient
+TEST: Le bel été indien que nous avons cette année.
+
+
 # faim / fin
 __conf_faim_fin__
     >avoir (>fin)
