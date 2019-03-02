@@ -5361,9 +5361,11 @@ __conf_a_à_verbe!6__
     qui  à  @:Q¬:M
         <<- /conf/ \3.islower() -2>> a                              # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
-    qui  [lui|leur|nous|vous|y]  à
+    qui  [lui|nous|vous|y]  à
         <<- /conf/ -3>> a                                           # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
+    [leur|leurs] à
+        <<- /conf/ not morph(<1, ":D") --1>> a                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     à  le  @:[NAQ].*:[me]¬:(?:Y|Oo)
         <<- /conf/ -1:2>> a le|au
@@ -5417,6 +5419,7 @@ TEST: Je veux {{à}} {{mangé}}.
 TEST: Ne pas hésiter {{à}} {{demandé}} des conseils.
 TEST: cette femme, dans son délire, {{à}} {{jetez}} son argent à la poubelle.
 TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
+TEST: le peuple leur {{à}} donner tort
 TEST: il en a.
 TEST: elle en a.
 TEST: celle qui à contrario nous a foutu dans la merde.
@@ -7574,6 +7577,10 @@ __conf_pré_près_prêt__
     au >mètre [>prêt|>pré]
         <<- /conf/ -3>> près                                                # Confusion probable. Locution “au \2 près”.
 
+    à [ceci|cela] ([prêt|prêts]) [que|qu’]
+    , à [ceci|cela] ([prêt|prêts]) ,
+        <<- /conf/ -1>> près                                                # Confusion probable. Locution “à \2 près”.|https://fr.wiktionary.org/wiki/%C3%A0_cela_pr%C3%A8s
+
 TEST: depuis {{prêt}} de 15 ans
 TEST: ils se sont approchés très {{prêts}}.
 TEST: Je suis si {{prêt}} d’y arriver.
@@ -7581,6 +7588,7 @@ TEST: Elle est si {{prêt}} de la trouver.
 TEST: Il est {{près}} à les aider
 TEST: Elle va regarder ça de plus {{prêt}}.
 TEST: Il était rasé de {{prés}}
+TEST: Il est un peu fantasque ; mais, à cela {{prêt}}, c’est un aimable homme.
 TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
 TEST: collait au millimètre près à la réalité
@@ -10633,6 +10641,7 @@ __simplication_substantifs__
     >attestation sur l’ honneur
     >attendre de pied ferme
     ayants droit
+    >benne à >ordure
     >billet de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     [>bisphénol|>bisphenol] A
     >blanche comme neige
@@ -10651,7 +10660,9 @@ __simplication_substantifs__
     >claire comme de l’ eau de [boudin|roche|source]
     >claire comme du cristal
     >claire comme jus de [boudin|chaussette|chaussettes|chique]
+    [>clé|>clef] à molette
     >commise d’ office
+    >condamnée à mort
     >convention [récepteur|générateur]
     >conne comme la lune
     >conne comme un balai
@@ -11296,6 +11307,7 @@ __purge_locutions_verbales__
     >battre en [brèche|retraite]
     >chauffer à blanc
     >compter à rebours
+    >condamner à mort
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
     [>donner|>redonner] sens
@@ -12515,7 +12527,7 @@ TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
 __gn_det_groupe_de_1m__
     [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques]  [>centaine|>millier|>million|>milliard|>dizaine|>douzaine|>multitude|>horde]  [de|d’]  *WORD
         <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/") or \4 in aREGULARPLURAL
-        -4>> =suggPlur(\4)                                                                  # Avec \1 « \2 \3 \4 », mettre au pluriel “\4” s’il y en a bien plusieurs.
+        -4>> =suggPlur(\4)                                                                  # Avec \1 « \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
 
 TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
 TEST: une multitude d’{{homme}}                                     ->> hommes
@@ -18831,6 +18843,9 @@ __ppas_être__
     ne [pas|jamais] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
         <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         # Après “ne \2 être”, il faut un participe passé.
 
+    avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
+        <<- /ppas/ not value(<1, "|l’|") and not tag_before("que") --1>> =suggVerbPpas(\-1)         # Après le verbe “être”, il faut un participe passé.
+
     >être  ~..er$
         <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
             and not morph(<1, ":Y|>ce") and not value(<1, "|c’|")
@@ -20054,6 +20069,7 @@ TEST: Judith A. Allan a aussi constaté que les études sur les crises de la mas
 TEST: une procédure abusive pour fermer la porte qu’elles ont essayé d’ouvrir
 TEST: En France, les hauts fonctionnaires gagnent en moyenne 7850 euros net
 TEST: Il faut avoir du pouvoir et des ressources
+TEST: Le con de jadis ne dérangeait personne, maintenant il répand sa haine et son inculture sur les réseaux sociaux.
 
 
 
