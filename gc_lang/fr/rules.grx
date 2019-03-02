@@ -10843,7 +10843,7 @@ __purge_locutions_adjectivales__
 
 
 __purge_couleurs__
-    [beige|blanc|bleu|brun|châtain|cyan|gris|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sombre|tendre|terne|vif]
+    [beige|blanc|bleu|brun|châtain|cyan|gris|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
         <<- morph(<1, ":[NAQ]") ~>> *
 
     bleu    [ciel|indigo|marine|roi|saphir|turquoise]
@@ -15312,7 +15312,7 @@ TEST: la pression entre les membres à un moment devient trop importante
 
 __infi_de_verbe__
     [de|d’] [le|la|l’|leur|les]           @:V¬:[YNAM]|>(?:lui|plus)/
-    [<start>|,]  [de|d’] [nous|vous|lui]  @:V¬[YE]|>(?:lui|plus)/
+    [<start>|,]  [de|d’] [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’] [ne|n’|en|me|m’|te|t’|se|s’|y]                                       @:V¬:Y|>(?:lui|plus)/
@@ -15321,6 +15321,9 @@ __infi_de_verbe__
     [de|d’] ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:Y
     [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
+
+    en  [droit|état|mesure]  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
@@ -15341,6 +15344,7 @@ TEST: ils étaient susceptibles de m’y {{trouvaient}}
 TEST: Il tentait de {{raisonné}} en homme libre
 TEST: sa façon de {{nettoyez}} était inefficace.
 TEST: elle a délibérément omis de les {{inclurent}}.
+TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
 TEST: elle s’engage de ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: de leur plus grand fils, ils attendent beaucoup.
