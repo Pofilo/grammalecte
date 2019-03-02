@@ -4999,7 +4999,8 @@ TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du
 # Confusion futur / conditionnel
 __vmode_je_futur__
     <start>  ([demain|oui|non])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿  <end>
-    <start>  ([demain|oui|non])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿  [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]  *WORD  <end>
+    <start>  ([demain|oui|non])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿
+        || [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs|certains|certaines]  *WORD  <end>
         <<- /vmode/ morph(\2, ":K:1s", ">(?:aimer|vouloir)/") -2>> =\2[:-1]
         # Confusion possible. Le mot “\1” semble indiquer une certitude. Dans ce cas, “\2” devrait être conjugué au futur, non au conditionnel.
 
