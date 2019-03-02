@@ -12153,6 +12153,7 @@ TEST: les pitres {{imbécile}}
 TEST: il faut en convenir et les femmes {{oubliés}} seront satisfaites.
 TEST: et les femmes {{retrouvés}} seront emmenées à l’hôpital.
 TEST: les moins éloignées possible
+TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 
 
 __gn_leurs_1m__
@@ -19451,11 +19452,12 @@ TEST: Macron président, c’est…
 __conj_nom_propre_et_nom_propre__
     ~^[A-ZÉÈ]  et  ~^[A-ZÉÈ]  @:[123][sp]¬:(?:G|3p|P|Q.*:[pi])
         <<- /conj/ morph(\1, ":M") and morph(\3, ":M") and not morph(<1, ":[RV]|>(?:des?|du|et|ou|ni)/")
-        -4>> =suggVerb(\4, ":3p")                                                                   # Conjugaison erronée. Accord avec “\1 et \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        -4>> =suggVerb(\4, ":3p")                                                                   # Conjugaison erronée. Accord avec “\1 et \3”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Samantha et Eva {{viennes}} demain.
 TEST: Samantha et Eva leur {{décrive}} une leçon.
 TEST: La relation spéciale qu’entretiennent Donald et Kim met paradoxalement en péril les discussions entre les deux pays.
+TEST: La menace d’une guerre nucléaire entre Delhi et Islamabad plane toujours
 
 
 # on / ont
