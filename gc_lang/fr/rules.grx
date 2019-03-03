@@ -7284,7 +7284,7 @@ __conf_ont_on__
         <<- /conf/ ->> =\1[:-1]                                     # Incohérence : “ont” est une forme conjuguée du verbe “avoir” (par exemple: “ils ont”). Pour le pronom personnel, écrivez “on”.
 
     [<start>|,]  *WORD  ont
-        <<- /conf/ space_after(\2, 1, 1) and morph(\2, ":3s") -2:3>> \2-on
+        <<- /conf/ space_after(\2, 1, 1) and not value(\2, "|soit|") and morph(\2, ":3s") -2:3>> \2-on
         # Confusion probable : “ont” est une forme conjuguée du verbe “avoir”. Pour le pronom personnel, écrivez “on” et mettez un trait d’union puisqu’il s’agit d’une question.
 
 TEST: {{ont}} m’assure qu’il n’y en a pas.
@@ -7308,6 +7308,7 @@ TEST: qui on blâme, ce soir ?
 TEST: qui n’ont somme toute que le désir de vivre paisiblement
 TEST: ces textes, quoi qu’on en pense, ont force de loi.
 TEST: s’ils n’ont ne serait-ce qu’un peu de jugeotte, on ne les reverra plus.
+TEST: En français, la plupart des noms de métier traditionnellement masculins soit ne disposent pas d’une forme féminine, soit ont des formes féminines anciennes tombées en désuétude.
 
 
 # ou / où
