@@ -335,7 +335,7 @@ class IBDAWG:
                 for sTail in self._getTails(iAddr):
                     oSuggResult.addSugg(sNewWord+sTail, nDeep)
                 return
-            elif self.isValid(sRemain) and oSuggResult.sWord.lower().startswith(sNewWord.lower()):
+            elif (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
                 oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return
