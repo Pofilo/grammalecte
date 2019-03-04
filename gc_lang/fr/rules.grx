@@ -4694,12 +4694,26 @@ TEST: {{s’}}{{avait}} fonctionné
 TEST: c’était merveilleux.
 
 
+__conf_ce_qui_verbe__
+    ce qui  ?[lui|leur|leurs|nous|vous]¿  (et)  ?@:[WX]¿  ?@:[WX]¿  @:(?:[AQD]|V1.*:Y)
+        <<- -1>> est                                                            # Confusion probable : “et” est une conjonction de coordination. Pour le verbe “être”, écrivez “est”.
+
+    ce qui  ?[lui|leur|leurs|nous|vous]¿  (étai)  ?@:[WX]¿  ?@:[WX]¿  @:(?:[AQD]|V1.*:Y)
+        <<- -1>> était                                                          # Confusion probable : “étai” est un nom commun. Pour le verbe “être”, écrivez “était”.
+
+TEST: ce qui {{et}} beau.
+TEST: ce qui {{étai}} notre lot.
+TEST: ce qui lui {{étai}} propre
+TEST: ce qui nous {{et}} pas vraiment utile
+
+
 __conj_mieux_vaut__
     mieux  ?[ne|n’]¿  [vaux|valais|valus|vaudras|vaudrais]
         <<- /conj/ --1>> =\-1[:-1]+"t"                                                              # Conjugaison erronée. Accord avec “mieux” : utilisez la 3ᵉ personne du singulier.
 
 TEST: avec toi qui ne sais rien de rien, mieux {{vaux}} ne rien dire.
 TEST: Mais là-bas mieux {{valais}} ouvrir sa gueule que se taire.
+
 
 
 ## 1pl
