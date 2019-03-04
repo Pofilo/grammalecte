@@ -29,7 +29,8 @@ var char_player = {
         ['ā', 'a'],  ['ē', 'e'],  ['ī', 'i'],  ['ō', 'o'],  ['ū', 'u'],  ['ȳ', 'i'],
         ['ç', 'c'],  ['ñ', 'n'],  ['k', 'q'],  ['w', 'v'],
         ['œ', 'oe'], ['æ', 'ae'],
-        ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st']
+        ['ſ', 's'],  ['ﬃ', 'ffi'],  ['ﬄ', 'ffl'],  ['ﬀ', 'ff'],  ['ﬅ', 'ft'],  ['ﬁ', 'fi'],  ['ﬂ', 'fl'],  ['ﬆ', 'st'],
+        ["⁰", "0"], ["¹", "1"], ["²", "2"], ["³", "3"], ["⁴", "4"], ["⁵", "5"], ["⁶", "6"], ["⁷", "7"], ["⁸", "8"], ["⁹", "9"]
     ]),
 
     simplifyWord: function (sWord) {
@@ -45,6 +46,18 @@ var char_player = {
             i++;
         }
         return sNewWord.replace(/eau/g, "o").replace(/au/g, "o").replace(/ai/g, "ẽ").replace(/ei/g, "ẽ").replace(/ph/g, "f");
+    },
+
+    _xTransNumbersToExponent: new Map([
+        ["0", "⁰"], ["1", "¹"], ["2", "²"], ["3", "³"], ["4", "⁴"], ["5", "⁵"], ["6", "⁶"], ["7", "⁷"], ["8", "⁸"], ["9", "⁹"]
+    ]),
+
+    numbersToExponent: function (sWord) {
+        let sNewWord = "";
+        for (let c of sWord) {
+            sNewWord += this._xTransNumbersToExponent.gl_get(c, c);
+        }
+        return sNewWord;
     },
 
     aVowel: new Set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ"),
