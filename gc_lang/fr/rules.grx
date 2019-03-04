@@ -12630,7 +12630,8 @@ TEST: L’article VII mentionné dans la revue
 
 __gn_nombre_chiffres_1m__
     [0|1|01]  @:[NAQ].*:p¬*
-        <<- /gn/ not value(\2, "|Rois|Corinthiens|Thessaloniciens|") -2>> =suggSing(\2)     # Accord de nombre erroné : « \1 » devrait être au singulier.
+        <<- /gn/ space_after(\1, 1, 1) and not value(\2, "|Rois|Corinthiens|Thessaloniciens|")
+        -2>> =suggSing(\2)                                                                  # Accord de nombre erroné : « \1 » devrait être au singulier.
 
     *NUM  *WORD
         <<- /gn/ not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
@@ -12644,6 +12645,7 @@ TEST: 22 {{heure}}
 TEST: 3 {{heure}}
 TEST: les élèves sont inquiets après une année 2018 compliquée et riche en réformes.
 TEST: ils gagneront 300 € maximum.
+TEST: il revint en 2005 complètement dévoré par la culpabilité.
 
 
 ##  trouver ça/ceci/cela + adj
