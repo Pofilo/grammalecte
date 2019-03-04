@@ -30,10 +30,10 @@ def suggVerb (sFlex, sWho, funcSugg2=None, bVC=False):
             # we get the tense
             aTense = set()
             for sMorph in _oSpellChecker.getMorph(sFlex):
-                for m in re.finditer(">"+sStem+"/.*?(:(?:Y|I[pqsf]|S[pq]|K|P))", sMorph):
+                for m in re.finditer(">"+sStem+"/.*?(:(?:Y|I[pqsf]|S[pq]|K|P|Q))", sMorph):
                     # stem must be used in regex to prevent confusion between different verbs (e.g. sauras has 2 stems: savoir and saurer)
                     if m:
-                        if m.group(1) == ":Y":
+                        if m.group(1) == ":Y" or m.group(1) == ":Q":
                             aTense.add(":Ip")
                             aTense.add(":Iq")
                             aTense.add(":Is")
