@@ -10868,6 +10868,7 @@ __purge_locutions_adjectivales__
     dernier cri
     fleur bleue
     grand [public|luxe|maximum]
+    grande taille
     grandeur nature
     haut de gamme
     hautee [résolution|fidélité|tension]
@@ -10881,6 +10882,7 @@ __purge_locutions_adjectivales__
     open source
     Créative Commons
     pair à pair
+    petite taille
     plein les yeux
     pur [sucre|jus]
     terre à terre
@@ -11603,6 +11605,7 @@ TEST: On ajoutera que si elle n’a que rarement pris la connerie pour objet
 TEST: Les bas résille, le détail qui fait mouche.
 TEST: un vice pour les uns diabolique et pour les autres patriarcal
 TEST: Les gains sont en un sens maigres.
+TEST: Des vêtements grande taille
 
 
 
@@ -15454,7 +15457,7 @@ __infi_nous_vous_verbe__
 TEST: Nous {{intéressé}} à la question ne suffit pas à faire de nous des experts.
 TEST: nous {{ridiculisé}}
 TEST: vous {{mangé}}
-TEST: Sommes nous désespérés à ce point ?
+TEST: Sommes-nous désespérés à ce point ?
 
 
 __infi_devoir_savoir_pouvoir_interrogatif__
@@ -18743,9 +18746,13 @@ TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que pers
 TEST: C’était elle qui avait pris le contrôle.
 
 
-__inte_union_nous__
+__inte_union_nous!6__
     [<start>|,]  ~ons$  nous
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and morph(>1, ":|<end>|,", ":1p")
+        -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
+
+    [<start>|,]  sommes  nous
+        <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~ons$  nous
@@ -18753,6 +18760,7 @@ __inte_union_nous__
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{retrouverons nous}} enfin la tranquilité ?
+TEST: Ne {{sommes nous}} pas des dieux ?
 
 
 __inte_union_vous__
