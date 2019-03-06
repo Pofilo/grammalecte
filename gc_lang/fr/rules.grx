@@ -1841,7 +1841,7 @@ __da_groupe_nominal__
         <<- =>> exclude(\2, ":V")
 
     [un|une]  *WORD
-        <<- not value(<1, "|l’|") and not value(\2, "|a|fut|fût|") =>> exclude(\2, ":V")
+        <<- not value(<1, "|l’|") and not value(\2, "|a|fut|fût|") and not morph(\2, ":P") =>> exclude(\2, ":V")
 
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
         <<- =>> select(\-1, ":N")
@@ -11903,6 +11903,8 @@ __gn_aucun_1m__
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: aucun {{accords}} n’y changera rien.
+TEST: {{aucun}} femme ne réagirait si bêtement
+
 
 __gn_aucune_1m__
     aucune  *WORD
@@ -11911,6 +11913,27 @@ __gn_aucune_1m__
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
 
 TEST: aucune {{passions}} n’est digne qu’on meurt pour elle.
+TEST: {{aucune}} homme ne comprendrait ça
+
+
+__gn_nul_1m__
+    nul  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") -1>> nulle                               # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: nul {{accords}} n’y changera rien.
+TEST: {{nul}} femme ne réagirait si bêtement
+
+
+__gn_nulle_1m__
+    nulle  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:m", ":[efGW]") -1>> nul                                 # Accord de genre erroné : « \2 » est masculin.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: nulle {{passions}} n’est digne qu’on meurt pour elle.
+TEST: {{nulle}} homme ne comprendrait ça
 
 
 __gn_un_1m__
@@ -11949,6 +11972,7 @@ TEST: {{une}} des {{chats}}
 TEST: {{une}} kyste                                           ->> un
 TEST: {{une}} des {{joueurs}}
 TEST: mille et une merveilles
+TEST: Quatorze heures découpées en quatre parties, une sortant en salles chaque semaine
 
 
 ## un / une
