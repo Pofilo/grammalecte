@@ -8412,7 +8412,7 @@ TEST: Comment lutter contre la cupidité des {{ayant droits}}
 # bien
 __sgpl_très_bien__
     très biens
-        <<- /sgpl/ -2>> bien                                                # Adverbe ou adjectif, “bien” est invariable.|https://fr.wiktionary.org/wiki/bien
+        <<- /sgpl/ -2>> bien                                        # Adverbe ou adjectif, “bien” est invariable.|https://fr.wiktionary.org/wiki/bien
 
 TEST: Très {{biens}} connus des services de police, il leur fut difficile de passer entre les mailles du filet.
 
@@ -19167,15 +19167,27 @@ TEST: comme si son pays n’avait rien appris du fascisme ni rien reçu de l’E
 
 
 __conj_nul_nulle__
-    [nul|nulle]  ?qui¿  @:V¬:(?:3s|P|G|N.*:[si])
-        <<- /conj/ morph(<1, ":C", ":(?:Y|P|Q|[123][sp]|R)")
+    [nul|nulle]  ?@:[NA]¿  ?qui¿  @:V¬:(?:3s|P|G|N.*:[si])
+        <<- /conj/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-TEST: nul ne {{sais}} que faire
-TEST: nulle n’{{iras}} là-bas
-TEST: nulle femme ne {{saurais}} le faire
-TEST: nul homme ne {{sauras}} s’y prendre
+TEST: nul ne {{savaient}} que faire
+TEST: nulle n’{{iront}} là-bas
+TEST: nulle femme ne {{sauraient}} le faire
+TEST: nul homme ne {{sauraient}} s’y prendre
 TEST: nulle partie du corps ne peut être considérée comme le siège de l’âme.
+
+
+__conj_aucun_aucune__
+    [aucun|aucune]  ?@:[NA]¿  ?qui¿  @:V¬:(?:3s|P|G|N.*:[si])
+        <<- /conj/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
+        --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+TEST: aucun ne {{savaient}} que faire
+TEST: aucune n’{{iront}} là-bas
+TEST: aucune femme ne {{sauraient}} le faire
+TEST: aucun homme ne {{sauraient}} s’y prendre
+TEST: aucune partie du corps ne peut être considérée comme le siège de l’âme.
 
 
 __conj_vinfi_suj__
