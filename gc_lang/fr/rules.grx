@@ -16823,7 +16823,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]") and morph(\2, ":[123]s")
+        <<- /ppas/ morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":A.*:f", ":[GWme]") and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
@@ -16838,7 +16838,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]") and morph(\2, ":[123]s")
+        <<- /ppas/ morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":A.*:m", ":[GWfe]") and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
@@ -16881,6 +16881,7 @@ TEST: les enfants ne sont pas {{content}}
 TEST: les réunions sans cesse reportées sont {{annulés}}
 TEST: l’avenir de la région était {{suspendue}}
 TEST: il prétendait que les banques universelles « à la française » s’{{était}} très honorablement comportées
+TEST: Ma mémoire a aussi été {{effacé}}.
 
 
 __ppas_nom_propre_être_accord_genre__
@@ -20117,7 +20118,6 @@ TEST: Ces difficultés, songèrent mes amis, allaient les mettre à la torture.
 !!! À trier                                                                                       !!
 
 TODO: Il faut au préalable avoir {{définit}} un protocole.
-TODO: Ma mémoire a aussi été {{effacé}}.
 TODO: Vous la {{voulait}}
 TODO: un délire systématisé de persécution basé sur des interprétations
 TODO: Soudain, surgit l’un des ouvriers…
