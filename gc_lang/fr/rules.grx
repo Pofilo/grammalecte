@@ -3919,8 +3919,8 @@ __incohérences_globales__
         <<- /conf/ not \1.isupper() and not \2.isupper() and not value(<1, "|tels|telles|")
         -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
-    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on]
-        <<- /conf/ not \1.isupper() -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                       # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
+    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on|ceux|celles|celui|celle]
+        <<- /conf/ not \1.isupper() and not \2.isupper() -2>> =suggSimil(\2, ":[NA].*:[pi]", True)  # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
         <<- /conf/ __also__ -1>> de                                                                 # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
 TEST: {{Ces}} {{cette}} canaille qui nous a donné tant de fil à retordre.
