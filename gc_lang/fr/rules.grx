@@ -12671,9 +12671,10 @@ __gn_nombre_lettres_1m__
         <<- /gn/ (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
-TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.
-TEST: Il a abandonné neuf {{enfant}}.
-TEST: On peut trouver mille {{travailleur}} d’un claquement de doigts.
+TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.        ->> idiots
+TEST: Il a abandonné neuf {{enfant}}.                                               ->> enfants
+TEST: On peut trouver mille {{travailleur}} d’un claquement de doigts.              ->> travailleurs
+TEST: Il y a quatre cents {{mot}} dans la phrase.                                   ->> mots
 TEST: un logement neuf bâti par des professionnels.
 TEST: un mille marin.
 TEST: L’article VII mentionné dans la revue
@@ -12685,7 +12686,7 @@ __gn_nombre_chiffres_1m__
         -2>> =suggSing(\2)                                                                  # Accord de nombre erroné : « \1 » devrait être au singulier.
 
     *NUM  *WORD
-        <<- /gn/ not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
+        <<- /gn/ space_after(\1, 1, 1) and not value(<1, "|/|") and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not morph(<1, ":N")
             and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|"))
             or \1 in aREGULARPLURAL )
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
@@ -12697,6 +12698,7 @@ TEST: 3 {{heure}}
 TEST: les élèves sont inquiets après une année 2018 compliquée et riche en réformes.
 TEST: ils gagneront 300 € maximum.
 TEST: il revint en 2005 complètement dévoré par la culpabilité.
+TEST: un jeu de 1980 absolument démodé.
 
 
 ##  trouver ça/ceci/cela + adj
@@ -20115,7 +20117,6 @@ TEST: Ces difficultés, songèrent mes amis, allaient les mettre à la torture.
 !!! À trier                                                                                       !!
 
 TODO: Il faut au préalable avoir {{définit}} un protocole.
-TODO: Il y a quatre cents {{mot}} dans la phrase.
 TODO: Ma mémoire a aussi été {{effacé}}.
 TODO: Vous la {{voulait}}
 TODO: un délire systématisé de persécution basé sur des interprétations
@@ -20125,12 +20126,9 @@ TODO: puis repartit.
 TODO: Les créatures de l’enfer que nous avions rencontrées…
 TODO: Étaient-ils vraiment frère et sœur
 TODO: Cela fait des années qu’elle n’a pas donné signe de vie.
-TODO: Et si je te donne son nom, cela t’aiderait, Dworkin ?
-TODO: cet être que personne n’a vu ni senti à part elle
 TODO: Ce qu’ils sont influence leur regard sur moi.
 TODO: Ils sont âgés de 4 et 1 ans.
 TODO: Mille neuf cent quatre-vingt. (dépend du contexte)
-TODO: Le CAPES de mathématiques.
 TODO: La Mustang est une voiture.
 TODO: Il faut se bien connaître soi-même.
 TODO: C’est lui ou moi qui a gagné.
@@ -20139,7 +20137,6 @@ TODO: Des copains plus vieux que toi qui fumaient.
 TODO: André Juin était un sculpteur français.
 TODO: La bataille de Monte Cassino révèle le génie militaire du général Juin.
 TODO: Les côtes sont dans leur ensemble extrêmement découpées.
-
 
 !!! Indécidable                                                                                   !!
 TEST: Du sable fin grippe les rouages (accord avec ce qui précède).
@@ -20224,6 +20221,10 @@ TEST: Il faut avoir du pouvoir et des ressources
 TEST: Le con de jadis ne dérangeait personne, maintenant il répand sa haine et son inculture sur les réseaux sociaux.
 TEST: Les hommes qui se servaient de lui espéraient l’amadouer…
 TEST: Celui qui se servait de lui voulait lui donner une bonne leçon.
+TEST: Le CAPES de mathématiques.
+TEST: cet être que personne n’a vu ni senti à part elle
+TEST: un délire systématisé de persécution basé sur des interprétations
+TEST: Et si je te donne son nom, cela t’aiderait, Dworkin ?
 
 
 
