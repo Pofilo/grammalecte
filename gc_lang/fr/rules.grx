@@ -768,7 +768,7 @@ __[i>/virg(virgule_manquante_avant_mais)__
     # Si « mais » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3445
 __[i>/virg(virgule_manquante_avant_donc)__
     ({w_1})( donc)(?= (?:j[e’]|tu|ils?|elles?|on)\b)  @@0,$
-    <<- not morph(\1, ":V") -2>> , donc
+    <<- not morph(\1, ":[VG]") -2>> , donc
     # Si « donc » est la conjonction de coordination, une virgule est souhaitable si elle introduit une nouvelle proposition.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=3448
 
 TEST: Un chien, un chat{{ etc.}}                                            ->> , etc.
@@ -776,6 +776,7 @@ TEST: Je suis fatigué{{ car}} ils ont joué toute la nuit.                   ->
 TEST: Je suis fatigué{{ mais}} il a joué toute la nuit.                     ->> , mais
 TEST: il l’a vu de ses propres yeux{{ donc}} il faut y croire.              ->> , donc
 TEST: il s’est donc tu
+TEST: Chacun peut l’entendre d’une manière différente et donc on se demande bien ce qui est mesuré dans les réponses.
 
 
 __<s>/virg(virgule_point_fin_dialogue)__
