@@ -17364,18 +17364,18 @@ __immu_les_avoir_fait_vinfi__
 
 __ppas_pronom_avoir__
     [je|j’|tu|il|elle|on|ils|elles|et|qui]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
-    <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
-        and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    --1>> =suggVerbPpas(\-1, ":m:s")
-    # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|")
+            and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
     [je|j’|tu|il|elle|on|ils|elles|et|qui]  ?[ne|n’]¿  en  >avoir  *WORD
-    <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
-        and \-1.islower() and morph(\-1, ":(?:[123][sp])", ":[GWQ]")
-    --1>> =suggVerbPpas(\-1, ":m:s")
-    # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|")
+            and \-1.islower() and morph(\-1, ":(?:[123][sp])", ":[GWQ]")
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ils leur avaient {{donnés}} du fil à retordre.                                ->> donné
 TEST: il a {{affronte}} une bande de voleurs de bétail                              ->> affronté
