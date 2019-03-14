@@ -5269,16 +5269,17 @@ TEST: toute chose pourrait finalement advenir indifféremment en n’importe que
 #### Divers
 __ppas_lui_verbe__
     lui  ~é(?:es?|s)$
-        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":V0a")
+        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":(?:V0a|R)")
         -2>> =suggVerbInfi(\2)+"|"+suggVerbPpas(\2, ":m:s")                                         # Incohérence probable. Soit il faut un participe passé masculin singulier, soit un verbe à l’infinitif.
 
     lui aussi ~é(?:es?|s)$
-        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":V0a") -2>> =suggVerbPpas(\2, ":m:s")         # Incohérence probable. Il faut vraisemblement un participe passé masculin singulier.
+        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":(?:V0a|R)") -2>> =suggVerbPpas(\2, ":m:s")         # Incohérence probable. Il faut vraisemblement un participe passé masculin singulier.
 
 TEST: lui {{mangée}} beaucoup.
 TEST: L’homme qui s’approchait de lui voulait le surprendre.
 TEST: avec Paul, lui aussi éliminé.
 TEST: les études qu’il a lui terminées avec bien du mal.
+TEST: cette déclaration fut selon lui rédigée par des imbéciles.
 
 
 __conf_presque_vconj__
