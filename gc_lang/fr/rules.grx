@@ -16474,6 +16474,7 @@ TEST: La femme qui faisait ça est partie.
 TEST: De cela a toujours été faite notre vie
 TEST: Ce sont différents types de violences
 TEST: La littérature africaine s’ouvre au monde, parle au monde, tout en étant ancrée dans le continent.
+TEST: pour « faire de la politique avec leur député » sans « faire de travail pour l’Union européenne », mais tout en étant payés par elle.
 
 
 __ppas_3sg_fem_verbe_état__
@@ -19108,21 +19109,33 @@ TEST: quiconque issu de la gauche n’a aucune chance.
 
 
 __conj_ce_celui_celle_qui__
-    [ce|celui|celle]  qui  @:V¬:(?:3s|P|Q|G)
+    [ce|celui]  qui  @:V¬:(?:3s|P|Q|G)
         <<- /conj/ -3>> =suggVerb(\3, ":3s")                    # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    celle  qui  @:V¬:(?:3s|P|Q|G)
+        <<- /conj/ -3>> =suggVerb(\3, ":3s")                    # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ morph(\3, ":[123]p") -1>> celles             # Conjugaison erronée. Accord avec “\3”. Le sujet devrait être au pluriel.
 
 TEST: Ce qui, la plupart du temps, {{donnes}} des maux de tête.
 TEST: Ce qui {{fâchent}} mes amis.
 TEST: celui qui {{pensent}} mal de toute chose
+TEST: {{celle}} qui y {{parviendront}} seront récompensées.
 
 
 __conj_3sg_misc__
-    [ça|chacun|chacune|ceci|cela|celui-ci|celui-là|celle-ci|celle-là|quelqu’un|quelqu’une]  @:V¬:(?:3s|P|Q|G|M|3p!)
-        <<- /conj/ not morph(<1, ":[VR]")
-        -2>> =suggVerb(\2, ":3s")                               # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+    [ça|chacun|chacune|ceci|cela|celui-ci|celui-là|quelqu’un|quelqu’une]  @:V¬:(?:3s|P|Q|G|M|3p!)
+        <<- /conj/ not morph(<1, ":[VR]") -2>> =suggVerb(\2, ":3s")                                 # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-    [ça|chacun|chacune|ceci|cela|celui-ci|celui-là|celle-ci|celle-là|quelqu’un|quelqu’une]  qui  @:V¬:(?:3s|P|Q|G|M|3p!)
-        <<- /conj/ -3>> =suggVerb(\3, ":3s")                    # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+    [celle-ci|celle-là]  @:V¬:(?:3s|P|Q|G|M|3p!)
+        <<- /conj/ not morph(<1, ":[VR]") -2>> =suggVerb(\2, ":3s")                                 # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ __also__ and morph(\2, ":[123]p") -1>> =\1.replace("e-", "es-").replace("E-", "ES-")     # Conjugaison erronée. Accord avec “\2”. Le sujet devrait être au pluriel.
+
+    [ça|chacun|chacune|ceci|cela|celui-ci|celui-là|quelqu’un|quelqu’une]  qui  @:V¬:(?:3s|P|Q|G|M|3p!)
+        <<- /conj/ -3>> =suggVerb(\3, ":3s")                                                        # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    [celle-ci|celle-là]  qui  @:V¬:(?:3s|P|Q|G|M|3p!)
+        <<- /conj/ -3>> =suggVerb(\3, ":3s")                                                        # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+        <<- /conj/ morph(\3, ":[123]p") -1>> =\1.replace("e-", "es-").replace("E-", "ES-")          # Conjugaison erronée. Accord avec “\3”. Le sujet devrait être au pluriel.
 
     l’ [un|une]            @:V¬:(?:3s|P|Q|G|M|3p!)
     quelque chose          @:V¬:(?:3s|P|Q|G|M|3p!)
@@ -19138,6 +19151,7 @@ __conj_3sg_misc__
 TEST: chacun {{fais}} comme il peut
 TEST: quelqu’un {{sauras}}
 TEST: quelqu’une se {{montrent}} désagréable
+TEST: {{celle-ci}} {{deviennent}} plus fortes avec le temps.
 TEST: n’importe quoi {{peux}} réussir
 TEST: n’importe qui {{peux}} y arriver.
 TEST: quelque chose {{sens}} mauvais ici
@@ -19402,22 +19416,34 @@ TEST: eux attaqués par des mécanoïdes, elles attaquées par des insectoïdes.
 
 
 __conj_ceux_celles_qui__
-    [ceux|celles]  qui  @:V¬:(?:3p|P|G)
+    ceux  qui  @:V¬:(?:3p|P|G)
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
+    celles  qui  @:V¬:(?:3p|P|G)
+        <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ morph(\3, ":[123]s") -1>> celle                      # Conjugaison erronée. Accord avec “\3”. Le sujet devrait être au singulier.
+
 TEST: Ceux qui {{chante}} toute la journée…
-TEST: Celles qui {{pense}}.
+TEST: {{Celles}} qui {{pense}}.
 
 
 __conj_ceux_là_celles_ci__
-    [ceux-ci|ceux-là|celles-ci|celles-là]  @:V¬:(?:3p|P|Q|G|M)
+    [ceux-ci|ceux-là]  @:V¬:(?:3p|P|Q|G|M)
         <<- /conj/ not morph(<1, ":[VR]") -2>> =suggVerb(\2, ":3p")     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    [ceux-ci|ceux-là|celles-ci|celles-là]  qui  @:V¬:(?:3p|P|Q|G|M)
+    [celles-ci|celles-là]  @:V¬:(?:3p|P|Q|G|M)
+        <<- /conj/ not morph(<1, ":[VR]") -2>> =suggVerb(\2, ":3p")     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ __also__ and morph(\2, ":[123]s") -1>> =\1.replace("s", "").replace("S", "")     # Conjugaison erronée. Accord avec “\2”. Le sujet devrait être au singulier.
+
+    [ceux-ci|ceux-là]  qui  @:V¬:(?:3p|P|Q|G|M)
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
+    [celles-ci|celles-là]  qui  @:V¬:(?:3p|P|Q|G|M)
+        <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+        <<- /conj/ morph(\3, ":[123]s") -1>> =\1.replace("s", "").replace("S", "")                  # Conjugaison erronée. Accord avec “\3”. Le sujet devrait être au singulier.
+
 TEST: ceux-là {{devienne}} des ratés
-TEST: celles-ci qui {{semble}} avoir tout pour réussir.
+TEST: {{celles-ci}} qui {{semble}} avoir tout pour réussir.
 
 
 __conj_lesquels_lesquelles__
