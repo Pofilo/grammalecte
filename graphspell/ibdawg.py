@@ -314,6 +314,12 @@ class IBDAWG:
         return aSugg
 
     def _splitSuggest (self, oSuggResult, sWord):
+        # split trailing numbers
+        m = re.match(r"(\D+)([0-9]+)$", sWord)
+        if m:
+            print("ok")
+            oSuggResult.addSugg(m.group(1) + " " + cp.numbersToExponent(m.group(2)))
+        # split at apostrophes
         for cSplitter in "'’":
             if cSplitter in sWord:
                 sWord1, sWord2 = sWord.split(cSplitter, 1)
@@ -329,7 +335,7 @@ class IBDAWG:
                 for sTail in self._getTails(iAddr):
                     oSuggResult.addSugg(sNewWord+sTail, nDeep)
                 return
-            elif self.isValid(sRemain) and oSuggResult.sWord.lower().startswith(sNewWord.lower()):
+            elif (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
                 oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return

@@ -345,6 +345,12 @@ class IBDAWG {
     }
 
     _splitSuggest (oSuggResult, sWord) {
+        // split trailing numbers
+        let m = /^([a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)([0-9]+)$/.exec(sWord);
+        if (m) {
+            oSuggResult.addSugg(m[1] + " " + char_player.numbersToExponent(m[2]));
+        }
+        // split at apostrophes
         for (let cSplitter of "'’") {
             if (sWord.includes(cSplitter)) {
                 let [sWord1, sWord2] = sWord.split(cSplitter, 2);
@@ -366,7 +372,7 @@ class IBDAWG {
                 }
                 return;
             }
-            else if (this.isValid(sRemain) && oSuggResult.sWord.toLowerCase().startsWith(sNewWord.toLowerCase())) {
+            else if ( (sNewWord.length + sRemain.length == oSuggResult.sWord.length) && oSuggResult.sWord.toLowerCase().startsWith(sNewWord.toLowerCase()) && this.isValid(sRemain) ) {
                 oSuggResult.addSugg(sNewWord+" "+sRemain);
             }
         }

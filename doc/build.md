@@ -4,11 +4,11 @@
 ## Required ##
 
 * Python 3.6
+* Firefox Developper
 * Firefox Nightly
 * NodeJS
   * npm
-  * jpm : https://developer.mozilla.org/en-US/Add-ons/SDK/Tools/jpm
-  * web-ext : https://developer.mozilla.org/fr/Add-ons/WebExtensions/Getting_started_with_web-ext
+  * web-ext : `https://developer.mozilla.org/fr/Add-ons/WebExtensions/Getting_started_with_web-ext`
 * Thunderbird
 
 
@@ -20,7 +20,6 @@
 
 > Generate the LibreOffice extension and the package folder.
 > LANG is the lang code (ISO 639).
-
 > This script uses the file `config.ini` in the folder `gc_lang/LANG`.
 
 **First build**
@@ -54,13 +53,13 @@
 
 `-fx --firefox`
 
-> Launch Firefox Developper (before Firefox 57).
-> Unit tests can be lanched from Firefox, with CTRL+SHIFT+F12.
+> Launch Firefox Developper.
+> Unit tests can be launched from the menu (Tests section).
 
 `-we --webext`
 
-> Launch Firefox Nightly (Firefox 57+).
-> Unit tests can be lanched from the menu.
+> Launch Firefox Nightly.
+> Unit tests can be launched from the menu (Tests section).
 
 `-tb --thunderbird`
 

@@ -25,6 +25,7 @@ _xTransCharsForSimplification = str.maketrans({
     'ç': 'c',  'ñ': 'n',  'k': 'q',  'w': 'v',
     'œ': 'oe',  'æ': 'ae',
     'ſ': 's',  'ﬃ': 'ffi',  'ﬄ': 'ffl',  'ﬀ': 'ff',  'ﬅ': 'ft',  'ﬁ': 'fi',  'ﬂ': 'fl',  'ﬆ': 'st',
+    "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9"
 })
 
 def simplifyWord (sWord):
@@ -35,6 +36,14 @@ def simplifyWord (sWord):
         if c == 'e' or c != sWord[i:i+1]:  # exception for <e> to avoid confusion between crée / créai
             sNewWord += c
     return sNewWord.replace("eau", "o").replace("au", "o").replace("ai", "ẽ").replace("ei", "ẽ").replace("ph", "f")
+
+
+_xTransNumbersToExponent = str.maketrans({
+    "0": "⁰", "1": "¹", "2": "²", "3": "³", "4": "⁴", "5": "⁵", "6": "⁶", "7": "⁷", "8": "⁸", "9": "⁹"
+})
+
+def numbersToExponent (sWord):
+    return sWord.translate(_xTransNumbersToExponent)
 
 
 aVowel = set("aáàâäāeéèêëēiíìîïīoóòôöōuúùûüūyýỳŷÿȳœæAÁÀÂÄĀEÉÈÊËĒIÍÌÎÏĪOÓÒÔÖŌUÚÙÛÜŪYÝỲŶŸȲŒÆ")

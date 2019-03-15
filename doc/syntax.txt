@@ -1,46 +1,83 @@
 WRITING RULES FOR GRAMMALECTE
 
-Note: This documentation is obsolete right now.
+Note: This documentation is a draft. Information may be obsolete or incomplete.
 
 # Principles #
 
 Grammalecte is a bi-passes grammar checker engine. On the first pass, the
-engine checks the text paragraph by paragraph. On the second passe, the engine
+engine checks the text paragraph by paragraph. On the second pass, the engine
 check the text sentence by sentence.
 
 The command to switch to the second pass is `[++]`.
 
 In each pass, you can write as many rules as you need.
 
-A rule is defined by:
+There are two kinds of rules:
+
+* regex rules (triggered by a regular expression)
+* token rules (triggered by a succession of tokens)
+
+A regex rule is defined by:
 
 * [optional] flags “LCR” for the regex word boundaries and case sensitiveness
 * a regex pattern trigger
-* a list of actions (can’t be empty)
-* [optional] user option name for activating/disactivating the rule
-* [optional] rule name
+* a list of actions
+* [optional] option name (the rule is active only if the option defined by user or config is active)
+* [optional] rule name (named rules can be disabled by user or by config)
+
+A token rules is defined by:
+
+* rule name
+* one or several lists of tokens (triggers)
+* a list of actions (the action is active only if the option defined by user or config is active)
+
+Token rules must be defined within a graph.
+
+Each graph is defined within the second pass with the command:
+
+        @@@@GRAPH: graph_name
+
+A graph ends when another graph is defined or when is found the command:
+
+        @@@@END_GRAPH
 
 There is no limit to the number of actions and the type of actions a rule can
 launch. Each action has its own condition to be triggered.
 
-There are three kind of actions:
+There are several kinds of actions:
 
 * Error warning, with a message, and optionally suggestions, and optionally an URL
 * Text transformation, modifying internally the checked text
 * Disambiguation action, setting tags on a position
+* Tagging
 
 
-The rules file for your language must be named “rules.grx”.
-The settings file must be named “config.ini”.
+The rules file for your language must be named `rules.grx`.
+The settings file must be named `config.ini`.
 
 All these files are simple utf-8 text file.
 UTF-8 is mandatory.
 
 
+# Comments #
 
-# Rule syntax #
+Lines beginning with `#` are comments.
 
-        __LCR/option(rulename)__  pattern
+
+# End of file #
+
+With the command:
+
+        #END
+
+at the beginning of a line, the parser won’t go further.
+Whatever is written after will be considered as comments.
+
+
+# Regex rule syntax #
+
+        __LCR/option(rulename)__
+            pattern
             <<- condition ->> error_suggestions  # message_error|http://awebsite.net...
             <<- condition ~>> text_rewriting
             <<- condition =>> commands_for_disambiguation
@@ -141,26 +178,10 @@ Examples:
             <<- condition ->> replacement
             # message
             <<- condition ->> suggestion # message
-            <<- condition
-            ~>> text_rewriting
+            <<- condition ~>> text_rewriting
             <<- =>> disambiguation
 
         __<s>__ pattern <<- condition ->> replacement # message
-
-
-## Comments ##
-
-Lines beginning with # are comments.
-
-
-## End of file ##
-
-With the command:
-
-        #END
-
-at the beginning of a line, the compiler won’t go further.
-Whatever is written after will be considered as comments.
 
 
 ## Whitespaces at the border of patterns or suggestions ##
@@ -169,7 +190,7 @@ Example: Recognize double or more spaces and suggests a single space:
 
         __<s>__  "  +" <<- ->> " "      # Extra space(s).
 
-ASCII " characters protect spaces in the pattern and in the replacement text.
+Characters `"` protect spaces in the pattern and in the replacement text.
 
 
 ## Pattern groups and back references ##
@@ -188,6 +209,18 @@ Example. Suggest the missing space after the !, ? or . signs:
 Example. Back reference in messages.
 
         (fooo) bar <<- ->> foo      # “\1” should be:
+
+
+## Pattern matching ##
+
+Repeating pattern matching of a single rule continues after the previous matching, so
+instead of general multiword patterns, like
+
+        (\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
+
+use
+
+        (\w+) <<- some_check(\1, word(1)) ->> \1, # foo
 
 
 ## Name definitions ##
@@ -302,10 +335,70 @@ You can also call Python expressions.
         __[s]__ Mr. ([a-z]\w+) <<- ~1>> =\1.upper()
 
 
+# Text preprocessing and multi-passes checking #
+
+On each pass, Lightproof uses rules written in the text preprocessor to modify
+internally the text before checking the text.
+
+The text preprocessor is useful to simplify texts and write simplier checking
+rules.
+
+For example, sentences with the same grammar mistake:
+
+        These “cats” are black.
+        These cats are “black”.
+        These cats are absolutely black.
+        These stupid “cats” are all black.
+        These unknown cats are as per usual black.
+
+Instead of writting complex rules or several rules to find mistakes for all possible
+cases, you can use the text preprocessor to simplify the text.
+
+To remove the chars “”, write:
+
+        [“”] ->> *
+
+The * means: replace text by whitespaces.
+
+Similarly to grammar rules, you can add conditions:
+
+        \w+ly <<- morph(\0, "adverb") ->> *
+
+You can also remove a group reference:
+
+        these (\w+) (\w+) <<- morph(\1, "adjective") and morph(\2, "noun") -1>> *
+        (am|are|is|were|was) (all) <<- -2>> *
+
+With these rules, you get the following sentences:
+
+        These  cats  are black.
+        These cats are  black .
+        These cats are            black.
+        These         cats  are     black.
+        These         cats are              black.
+
+These grammar mistakes can be detected with one simple rule:
+
+        these +(\w+) +are +(\w+s)
+            <<- morph(\1, "noun") and morph(\2, "plural")
+            -2>> _              # Adjectives are invariable.
+
+Instead of replacing text with whitespaces, you can replace text with @.
+
+        https?://\S+ ->> @
+
+This is useful if at first pass you write rules to check successive whitespaces.
+@ are automatically removed at the second pass.
+
+You can also replace any text as you wish.
+
+        Mister <<- ->> Mr
+        (Mrs?)[.] <<- ->> \1
+
 
 # Disambiguation #
 
-When Grammalecte analyses a word with morph or morphex, before requesting the
+When Grammalecte analyses a word with morph, before requesting the
 POS tags to the dictionary, it checks if there is a stored marker for the
 position where the word is. If there is a marker, Grammalecte uses the stored
 data and don’t make request to the dictionary.
@@ -323,29 +416,24 @@ There is 3 commands for disambiguation.
 >   stores at position n the POS tags of the word, except those matching the
     pattern.
 
-`define(n, definition)`
+`define(n, [definitions])`
 
->   stores at position n the POS tags in definition.
+>   stores at position n the POS tags in definitions (a list of strings).
 
 Examples:
 
         =>> select(\1, "po:noun is:pl")
         =>> exclude(\1, "po:verb")
-        =>> define(\1, "po:adv")
-        =>> exclude(\1, "po:verb") and define(\2, "po:adv") and select(\3, "po:adv")
+        =>> define(\1, ["po:adv"])
+        =>> exclude(\1, "po:verb") and define(\2, ["po:adv"]) and select(\3, "po:adv")
 
 Note: select, exclude and define ALWAYS return True.
 
 If select and exclude generate an empty list, no marker is set.
 
-With define, you can set a list of POS tags. Example:
+With define, you must set a list of POS tags. Example:
 
-        define(\1, "po:nom is:plur|po:adj is:sing|po:adv")
-
-This will store a list of tags at the position of the first group:
-
-        ["po:nom is:plur", "po:adj is:sing", "po:adv"]
-
+        define(\1, ["po:nom is:plur", "po:adj is:sing", "po:adv"])
 
 
 # Conditions #
@@ -391,17 +479,18 @@ You can also apply functions to subgroups like:
 
 >    checks if the full text of the checked area (paragraph or sentence) matches the regex.
 
-`morph(n, regex[, strict=True][, noword=False])`
+`morph(n, regex[, neg_regex][, no_word=False])`
 
 >   checks if all tags of the word in group n match the regex.
->   if strict = False, returns True only if one of tags matches the regex.
->   if there is no word at position n, returns the value of noword.
+>   if neg_regex = "*", returns True only if all morphologies match the regex.
+>   if there is no word at position n, returns the value of no_word.
 
-`morphex(n, regex, neg_regex[, noword=False])`
+`analyse(n, regex[, neg_regex][, no_word=False])`
 
->   checks if one of the tags of the word in group n match the regex and
->          if no tags matches the neg_regex.
->   if there is no word at position n, returns the value of noword.
+>   checks if all tags of the word in group n match the regex.
+>   if neg_regex = "*", returns True only if all morphologies match the regex.
+>   if there is no word at position n, returns the value of no_word.
+
 
 `option(option_name)`
 
@@ -410,7 +499,7 @@ You can also apply functions to subgroups like:
 Note: the analysis is done on the preprocessed text.
 
 
-## Default variables ##
+# Default variables #
 
 `sCountry`
 
@@ -422,96 +511,55 @@ Note: the analysis is done on the preprocessed text.
 
 # Expressions in the suggestions #
 
-Suggestions (and warning messages) started by an equal sign are Python string expressions
+Suggestions started by an equal sign are Python string expressions
 extended with possible back references and named definitions:
 
 Example:
 
-        foo\w+ ->> = '"' + \0.upper() + '"'     # With uppercase letters and quoation marks
-
-All words beginning with "foo" will be recognized, and the suggestion is
-the uppercase form of the string with ASCII quoation marks: eg. foom ->> "FOOM".
+        <<- ->> = '"' + \1.upper() + '"'     # With uppercase letters and quotation marks
 
 
+# Token rules
 
+Token rules must be defined within a graph.
 
-//////////////////////////////// OLD ///////////////////////////////////////
+## Tokens
 
-= Text preprocessing and multi-passes checking =
+Tokens can be defined in several ways:
 
-On each pass, Lightproof uses rules written in the text preprocessor to modify
-internally the text before checking the text.
+* Value (meaning the text of the token). Examples: `word`, `<start>`, `<end>`, `,`.
+* Lemma: `>lemma`.
+* Regex: `~pattern`, `~pattern¬antipattern`.
+* Regex on morphologies: `@pattern`, `@pattern¬antipattern`.
+* Tags: `/tag`.
+* Metatags: *NAME. Examples: `*WORD`, `*NUM`, `*SIGN`, etc.
 
-The text preprocessor is useful to simplify texts and write simplier checking
-rules.
+Selection of tokens: `[token1|token2|>lemma1|>lemma2|~pattern1|@pattern1|…]`
 
-For example, sentences with the same grammar mistake:
+Conditional token: `?token¿`
 
-        These “cats” are blacks.
-        These cats are “blacks”.
-        These cats are absolutely blacks.
-        These stupid “cats” are all blacks.
-        These unknown cats are as per usual blacks.
+Conditional selection of token: `?[token1|token2|…]¿`
 
-Instead of writting complex rules or several rules to find mistakes for all possible
-cases, you can use the text preprocessor to simplify the text.
+## Token references
 
-To remove the chars “”, write:
+Positive references are defined by a positive integer `>= 1`. Examples: \1, \2, \3, etc.
+If there is at least one token set between parenthesis, these numbers refer to tokens between parenthesis, ignoring all others.
+If there is no token between parenthesis, these numbers refer to tokens found in order defined by the rule triggered.
 
-        [“”] ->> *
+Negative references are defined by a negative integer `<= -1`. Examples: \-1, \-2, \-3, etc.
+These numbers refer to the tokens beginning by the last one found by the rule triggered.
 
-The * means: replace text by whitespaces.
+Examples:
 
-Similarly to grammar rules, you can add conditions:
+        tokens:             alpha       beta        gamma       delta       epsilon
+        positive refs:      1           2           3           4           5
+        negative refs:      -5          -4          -3          -2          -1
 
-        \w+ly <<- morph(\0, "adverb") ->> *
+        tokens:             alpha       (beta)      gamma       (delta)     epsilon
+        positive refs:                  1                       2
+        negative refs:      -5          -4          -3          -2          -1
 
-You can also remove a group reference:
-
-        these (\w+) (\w+) <<- morph(\1, "adjective") and morph(\2, "noun") -1>> *
-        (am|are|is|were|was) (all) <<- -2>> *
-
-With these rules, you get the following sentences:
-
-        These  cats  are blacks.
-        These cats are  blacks .
-        These cats are            blacks.
-        These         cats  are     blacks.
-        These         cats are              blacks.
-
-These grammar mistakes can be detected with one simple rule:
-
-        these +(\w+) +are +(\w+s)
-            <<- morph(\1, "noun") and morph(\2, "plural")
-            -2>> _              # Adjectives are invariable.
-
-Instead of replacing text with whitespaces, you can replace text with @.
-
-        https?://\S+ ->> @
-
-This is useful if at first pass you write rules to check successive whitespaces.
-@ are automatically removed at the second pass.
-
-You can also replace any text as you wish.
-
-        Mister <<- ->> Mr
-        (Mrs?)[.] <<- ->> \1
-
-
-
-With the multi-passes checking and the text preprocessor, it is advised to
-remove or simplify the text which has been checked on the previous pass.
-
-
-
-== Pattern matching ==
-
-Repeating pattern matching of a single rule continues after the previous matching, so
-instead of general multiword patterns, like
-
-(\w+) (\w+) <<- some_check(\1, \2) ->> \1, \2 # foo
-
-use
-
-(\w+) <<- some_check(\1, word(1)) ->> \1, # foo
+        tokens:             alpha       (beta)      ?gamma¿     (delta)     epsilon
+        positive refs:                  1                       2
+        negative refs:      (-4/-5)     (-3/-4)     (-3/none)   -2          -1
 

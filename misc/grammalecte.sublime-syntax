@@ -50,7 +50,7 @@ contexts:
     - match: '\b(?:True|False|None)\b'
       scope: constant.language
 
-    - match: '\b(?:spell|morph|morphex|morphVC|stem|value|space_after|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|define_from|select|exclude|analyse\w+|tag_\w+|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
+    - match: '\b(?:spell|morph|morphVC|stem|tag|value|space_after|textarea0?\w*|before0?\w*|after0?\w*|word|option|define|define_from|select|exclude|analyse\w*|tag_\w+|apposition|is[A-Z]\w+|rewriteSubject|checkD\w+|getD\w+|has[A-Z]\w+|sugg[A-Z]\w+|switch[A-Z]\w+|ceOrCet|formatN\w+|mbUnit)\b'
       scope: entity.name.function
 
     - match: '\b(?:replace|endswith|startswith|search|upper|lower|capitalize|strip|rstrip|is(?:upper|lower|digit|title))\b'
@@ -84,10 +84,10 @@ contexts:
         1: rule.optionname
 
     # Definitions and options
-    - match: '^OPT(?:GROUP|LANG|PRIORITY)/|^OPTSOFTWARE:'
+    - match: '^OPT(?:GROUP|LANG|PRIORITY)/|^OPT(?:SOFTWARE|COLORTHEME):|^COLOR/'
       scope: options.command
 
-    - match: '^OPT(?:LABEL|)/'
+    - match: '^OPT(?:LABEL|COLOR|)/'
       scope: options.parameter
 
     - match: '^DEF: '
@@ -111,27 +111,27 @@ contexts:
       scope: keyword.condition.green
     - match: '__else__'
       scope: keyword.condition.red
-    - match: '-(\d*\.?(?::\.?\d+|))>>'
+    - match: '-(-?\d*\.?(?::\.?-?\d+|))(?::|)>>'
       scope: keyword.error
       captures:
         1: keyword.error.group
-    - match: '~(\d*(?::\d+|))>>'
+    - match: '~(-?\d*(?::-?\d+|))>>'
       scope: keyword.textprocessor
       captures:
         1: keyword.textprocessor.group
     - match: '=>>'
       scope: keyword.disambiguator
-    - match: '/(\d*(?::\d+|))>>'
+    - match: '/(-?\d*(?::-?\d+|))>>'
       scope: keyword.tag
       captures:
         1: keyword.tag.group
-    - match: '%(\d*)>>'
+    - match: '%(-?\d*(?::-?\d+|))>>'
       scope: keyword.tag
       captures:
         1: keyword.tag.group
 
     # Tokens
-    - match: '(>)\w+'
+    - match: '(>)[\w-]+'
       scope: string.lemma
       captures:
         1: keyword.valid
@@ -152,7 +152,7 @@ contexts:
       captures:
         1: keyword.valid
 
-    - match: '(?<=[\[ |])([*])([^\s¬]+)'
+    - match: '(?<=[^\w])([*][a-zA-Z0-9_]+)'
       scope: string.morph
       captures:
         1: keyword.valid
@@ -171,7 +171,7 @@ contexts:
       scope: string.jumptoken
 
     # Escaped chars
-    - match: '\\(?:\d+|w|d|b|n|s|t)'
+    - match: '\\(?:-?\d+|w|d|b|n|s|t)'
       scope: constant.character.escape
 
     # URL
@@ -202,7 +202,7 @@ contexts:
 
   line_comment:
     - meta_scope: comment.line
-    - match: '\\[0-9]+'
+    - match: '\\-?[0-9]+'
       scope: constant.character.escape
     - match: '\| ?https?://[\w./%?&=#+-]+'
       scope: string.other
