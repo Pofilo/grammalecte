@@ -3432,6 +3432,9 @@ __tu_substantifs__
     ras le-bol
         <<- /tu/ ->> ras-le-bol                                 # Il manque un trait d’union.
 
+    rendez vous
+        <<- /tu/ morph(<1, ":[DR]|<start>|>,") ->> rendez-vous  # Il manque un trait d’union.
+
     rez de >chaussée
         <<- /tu/ ->> rez-de-chaussée                            # Il manque un trait d’union.
 
@@ -3503,6 +3506,8 @@ TEST: Tout ce que nous faisons {{par ci, par là}}.
 TEST: La papesse du {{prêt à porter}} viendra demain.
 TEST: sur cette {{plate forme}}, rien ne fonctionne
 TEST: Un énorme {{plus value}}.
+TEST: des {{rendez vous}}                               ->> rendez-vous
+TEST: un Mars par {{rendez vous}} pris
 TEST: Habiter au {{rez de chaussée}}, quelle horreur.
 TEST: {{Apporte moi}} ce dictionnaire.                  ->> Apporte-moi
 TEST: C’est de la {{science fiction}}.
@@ -3526,6 +3531,7 @@ TEST: J’ai beaucoup de {{déjà vu}}.
 TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants se poursuit devant l’hôtel de ville à Bordeaux depuis environ 1h30.
 TEST: Un autre chantier important, celui si sensible de la préservation des données personnelles des élèves
 TEST: Ils versent dans leur terre plein de poisons.
+
 
 __tu_va_t_en__
     va t en
@@ -17899,7 +17905,7 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 __imp_union_moi__
     *WORD  moi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|te|se|nous|vous|lui|leur|")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  moi
