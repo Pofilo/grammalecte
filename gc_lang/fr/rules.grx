@@ -3507,7 +3507,7 @@ TEST: La papesse du {{prêt à porter}} viendra demain.
 TEST: sur cette {{plate forme}}, rien ne fonctionne
 TEST: Un énorme {{plus value}}.
 TEST: des {{rendez vous}}                               ->> rendez-vous
-TEST: un Mars par {{rendez vous}} pris
+TEST: un Mars par {{rendez vous}}
 TEST: Habiter au {{rez de chaussée}}, quelle horreur.
 TEST: {{Apporte moi}} ce dictionnaire.                  ->> Apporte-moi
 TEST: C’est de la {{science fiction}}.
@@ -7443,6 +7443,18 @@ __conf_pare_balle__
         <<- /conf/ -2:3>> pare-balles                                       # Confusion. Un gilet pare-balles, c’est-à-dire qui pare les balles.
 
 TEST: Elle a enfilé son gilet {{par balle}}.
+
+
+# pas / par
+__conf_pas_par__
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  par  [<end>|,]
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  par  [<end>|,]
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  par  [<end>|,]
+    [ne|n’]  [lui|leur|y]                    en                          *WORD  par  [<end>|,]
+        <<- /conf/ morph(\-3, ":V") --2>> pas                               # Confusion probable. Après “\1 \-3”, il est probable qu’il faille écrire l’adverbe de négation “pas” au lieu de la préposition “par”.
+
+TEST: Il ne le deviendra {{par}}.                                           ->> pas
+TEST: ne viens {{par}}, c’est dangereux.
 
 
 # pause /pose
@@ -15005,6 +15017,18 @@ __conf_pâle_pale2!6__
 
 TEST: Elle est très {{pale}} !
 TEST: Sous une lumière {{pale}},
+
+
+# pas / par
+__conf_pas_par2__
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  par  [<end>|,]
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  par  [<end>|,]
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  par  [<end>|,]
+    [ne|n’]  [lui|leur|y]                    en                          *WORD  par  [<end>|,]
+        <<- /conf/ morph(\-3, ":V") --2>> pas                   # Confusion probable. Après “\1 \-3”, il est probable qu’il faille écrire l’adverbe de négation “pas” au lieu de la préposition “par”.
+
+TEST: Ils ne viendront probablement {{par}}…
+TEST: Elles ne s’en soucient {{par}} vraiment, quoi qu’elles en disent.
 
 
 # parti / partie
