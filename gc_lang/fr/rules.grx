@@ -15460,11 +15460,12 @@ __infi_de_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
     en  [droit|état|mesure]  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
+    >faire  semblant         [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
-            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: d’en {{parlé}} sans cesse
@@ -15491,6 +15492,7 @@ TEST: soit 40 % de plus comparé au quinquennat précédent
 TEST: On passe de sophistiqué à classique.
 TEST: Les « événements » d’il y a cinquante ans n’ont sans doute « rien à voir » avec le mouvement des « gilets jaunes »
 TEST: Quelques points de gagnés avec cette astuce, ne faisons pas la fine bouche.
+TEST: Il n’y a rien de mécanique, ni de prédestiné.
 
 
 __infi_y_verbe!3__
@@ -20305,6 +20307,7 @@ TEST: Le CAPES de mathématiques.
 TEST: cet être que personne n’a vu ni senti à part elle
 TEST: un délire systématisé de persécution basé sur des interprétations
 TEST: Et si je te donne son nom, cela t’aiderait, Dworkin ?
+TEST: il lui semblait que ne plus être serait un grand soulagement.
 
 
 
