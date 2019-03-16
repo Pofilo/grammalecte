@@ -17169,12 +17169,12 @@ __ppas_inversion_être_nous__
         -2>> =suggPlur(\2)                                              # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
 
 __ppas_inversion_être_vous__
-    /-vous  @:(?:[123][sp]|Y)¬:[GW]
+    /-vous  @:(?:[123][sp]|Y)¬:[GWisp]
         <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/")
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
 
-    /-vous  @:[123][sp]¬:[GWY]
-        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/")
+    /-vous  @:[123][sp]¬:[GWYisp]
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:sembler|rester|demeurer|para[îi]tre)/")
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
 
 __ppas_inversion_être_ils__
@@ -17226,6 +17226,7 @@ TEST: Paraissait-elle {{surpris}} ?
 TEST: Deviendrait-on {{meurtrit}} ?
 TEST: Paraissons-nous {{faible}} ?
 TEST: Redeviennent-ils {{incapable}} avec l’âge ?
+TEST: êtes-vous surpris ?
 TEST: semble-t-il savoir de quoi il parle ?
 TEST: Resterez-vous manger ?
 TEST: Parait-il ennuyer l’assistance ?
