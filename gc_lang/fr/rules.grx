@@ -1848,7 +1848,7 @@ __da_groupe_nominal__
         <<- =>> select(\-1, ":N")
 
     de  [la|l’]  @:¬:Y
-        <<- =>> exclude(\3, ":V")
+        <<- not value(<1, "|semblant|") =>> exclude(\3, ":V")
 
     [/VCint|/VCimp] [le|la|l’|leur|les]
         <<- =>> select(\2, ":D")
@@ -8783,27 +8783,28 @@ TEST: car {{toute}} mon savoir vient d’elle
 
 __tous_det_nom__
     [<start>|,]     tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
-    [<start>|,]     tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
+    [<start>|,]     tous    [les]                   @:[NA].*:f¬:(?:3p|[me]|Y)
         <<- /gn/ -2>> toutes                                                                        # Erreur d’accord probable : « \4 » est féminin.
         <<- /gn/ __also__ and hasFemForm(\4) -4>> =suggMasPlur(\4, True)                            # Erreur d’accord probable : « \2 » est masculin.
 
     tous    [des|mes|tes|ses|ces]   @:[NA].*:f¬:[me]
-    tous    [les]                   @:[NA].*:f¬:(?:3p|[me])
+    tous    [les]                   @:[NA].*:f¬:(?:3p|[me]|Y)
         <<- /gn/ morph(<1, ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/") -1>> toutes                 # Erreur d’accord probable : « \3 » est féminin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggMasPlur(\3, True)                            # Erreur d’accord probable : « \1 » est masculin.
 
 TEST: {{tous}} ces {{idiotes}}
 TEST: indubitablement {{tous}} des {{privilégiées}}
+TEST: ça consiste à ne pas tous les lire
 
 
 __toutes_det_nom__
     [<start>|,]     toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
-    [<start>|,]     toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
+    [<start>|,]     toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe]|Y)
         <<- /gn/ -2>> tous                                                                          # Erreur d’accord probable : « \4 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\4) -4>> =suggFemPlur(\4, True)                            # Erreur d’accord probable : « \2 » est féminin.
 
     toutes  [des|mes|tes|ses|ces]   @:[NA].*:m¬:[fe]
-    toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe])
+    toutes  [les]                   @:[NA].*:m¬:(?:3p|[fe]|Y)
         <<- /gn/ morph(<1, ":", ":(?:R|[123][sp]|Q)|>(?:[nv]ous|eux)/") -1>> tous                   # Erreur d’accord probable : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                            # Erreur d’accord probable : « \1 » est féminin.
 
@@ -12803,7 +12804,7 @@ TEST: une femme sans a priori
 
 
 __gn_pfx_de_2m__
-    [de|d’]  @:[NA]¬Y  @:[NA]¬*
+    [de|d’]  @:[NA]¬:Y  @:[NA]¬*
         <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) )
             and not apposition(\2, \3) and not morph(<1, ":[NA]|>(?:et|ou)/")
         -3>> =switchGender(\3)                                                                      # Accord de genre erroné avec « \2 ».
@@ -15422,7 +15423,7 @@ TEST: ce champignon {{venimeux}}.
 
 __infi_à_verbe__
     à  [le|la|l’|leur|les]           @:V¬:[YNAM]|>(?:lui|plus)/
-    [<start>|,]  à  [nous|vous|lui]  @:V¬[YE]|>(?:lui|plus)/
+    [<start>|,]  à  [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
 
     à  [ne|n’|en|me|m’|te|t’|se|s’|y]                                       @:V¬:Y|>(?:lui|plus)/
@@ -15452,16 +15453,18 @@ __infi_de_verbe__
     [<start>|,]  [de|d’] [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
 
-    [de|d’] [ne|n’|en|me|m’|te|t’|se|s’|y]                                       @:V¬:Y|>(?:lui|plus)/
-    [de|d’] [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:Y|>(?:lui|plus)/
+    [de|d’] [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:Y|>(?:lui|plus|point)/
+    [de|d’] [ne|n’|en|me|m’|te|t’|se|s’|y]                                       @:V¬:Y|>(?:lui|plus|point)/
     [de|d’] ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:Y
     [de|d’] ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:Y
     [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
     en  [droit|état|mesure]  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
-    >faire  semblant         [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
-        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Le verbe devrait être à l’infinitif.
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “\1 \2 \3”, le verbe devrait être à l’infinitif.
+
+    >faire  ?[pas|jamais]¿  semblant  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “faire semblant de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
@@ -15483,6 +15486,7 @@ TEST: Il tentait de {{raisonné}} en homme libre
 TEST: sa façon de {{nettoyez}} était inefficace.
 TEST: elle a délibérément omis de les {{inclurent}}.
 TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
+TEST: Ne fais pas semblant de l’{{oubliée}}.
 TEST: elle s’engage de ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: de leur plus grand fils, ils attendent beaucoup.
@@ -15493,6 +15497,7 @@ TEST: On passe de sophistiqué à classique.
 TEST: Les « événements » d’il y a cinquante ans n’ont sans doute « rien à voir » avec le mouvement des « gilets jaunes »
 TEST: Quelques points de gagnés avec cette astuce, ne faisons pas la fine bouche.
 TEST: Il n’y a rien de mécanique, ni de prédestiné.
+TEST: il convient donc de ne point les négliger.
 
 
 __infi_y_verbe!3__
@@ -16854,6 +16859,7 @@ TEST: Mais ces hommes affirment être redevenus {{humble}}.
 TEST: ces femmes affirment avoir été {{courtoise}}.
 TEST: Qui adorerait être redevenu {{sains}}.
 TEST: ce que les journalistes estiment être normal.
+TEST: qui échappe à tout contrôle démocratique et dans lequel les lobbies sont partie prenante est une folie.
 
 
 
