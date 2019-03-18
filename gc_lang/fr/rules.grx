@@ -8545,9 +8545,11 @@ __maj_État__
         <<- %5>>
 
     état [français|belge|suisse|canadien|palestinien|souverain|américain|russe|anglais|allemand|espagnol|italien|mexicain|japonais|chinois|australien|polonais|membre|africain|européen|asiatique|voyou|démocratique|totalitaire|fédéral|fédéré|capitaliste|communiste|providence|nation]
+    état de droit
         <<- /maj/ \1 == "état" -1>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
 
     états [français|>belge|>suisse|canadien|canadiens|palestinien|palestiniens|souverain|souverains|>membre|américain|américains|africain|africains|européen|européens|>asiatique|>voyou|>démocratique|>totalitaire|>fédérale|>fédérée|>capitaliste|>communiste|>providence|>nation]
+    états de droit
         <<- /maj/ \1 == "états" -1>> États                          # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
 
 
@@ -11013,7 +11015,7 @@ __purge_après_être__
     [>être|>devenir|>rester] pieds nus
     [>être|>devenir|>rester] père et mère
         <<- ~2:0>> ␣
-        <<- =>> define(\2, [":LN"])
+        <<- =>> define(\2, [":LV"])
 
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] [bon|meilleur] marché
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] cousin et cousine
@@ -11029,7 +11031,7 @@ __purge_après_être__
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] père et mère
         <<- ~2>> *
         <<- ~3:0>> ␣
-        <<- =>> define(\3, [":LN"])
+        <<- =>> define(\3, [":LV"])
 
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ avant tout
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ du moins
@@ -11055,7 +11057,7 @@ __purge_après_être__
     /VCint pieds nus
     /VCint père et mère
         <<- morphVC(\1, ">(?:être|devenir|rester)") ~2:0>> ␣
-        <<- __also__ =>> define(\2, [":LN"])
+        <<- __also__ =>> define(\2, [":LV"])
 
     /VCint [pas|jamais|plus|guère|point] [bon|meilleur] marché
     /VCint [pas|jamais|plus|guère|point] cousin et cousine
@@ -11071,7 +11073,7 @@ __purge_après_être__
     /VCint [pas|jamais|plus|guère|point] père et mère
         <<- morphVC(\1, ">(?:être|devenir|rester)") ~2>> *
         <<- __also__ ~3:0>> ␣
-        <<- __also__ =>> define(\3, [":LN"])
+        <<- __also__ =>> define(\3, [":LV"])
 
     /VCint ?[pas|jamais|plus|guère|point]¿ avant tout
     /VCint ?[pas|jamais|plus|guère|point]¿ du moins
@@ -14856,6 +14858,7 @@ TEST: Techniques de traîne pour les lieus jaunes.
 TEST: Ils pêchent des lieus.
 TEST: Faire un état des lieux.
 TEST: Les lieux de prière.
+TEST: un immeuble situé à quelques centaines de mètres des lieux de la fusillade
 
 
 # avoir/donner lieu
@@ -19322,7 +19325,7 @@ TEST: nulle partie du corps ne peut être considérée comme le siège de l’â
 
 
 __conj_aucun_aucune__
-    [aucun|aucune]  ?@:[NA]¿  ?qui¿  @:V¬:(?:3s|P|G|N.*:[si])
+    [aucun|aucune]  ?@:[NA]¿  ?qui¿  @:V¬:(?:3s|P|G|[NA].*:[si])
         <<- /conj/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -19331,6 +19334,7 @@ TEST: aucune n’{{iront}} là-bas
 TEST: aucune femme ne {{sauraient}} le faire
 TEST: aucun homme ne {{sauraient}} s’y prendre
 TEST: aucune partie du corps ne peut être considérée comme le siège de l’âme.
+TEST: Aucun terme attesté dans des textes antiques, mésopotamien ou autre, ne sert à désigner la Mésopotamie au sens moderne du terme
 
 
 __conj_vinfi_suj__
