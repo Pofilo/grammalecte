@@ -3457,6 +3457,9 @@ __tu_substantifs__
     [un|le|ce|du|mon|ton|son|notre|votre|leur] terre plein
         <<- /tu/ not value(>1, "|de|d’|") -2:3>> terre-plein    # Il manque probablement un trait d’union.|https://fr.wiktionary.org/wiki/terre-plein
 
+    trompe l’ [œil|oeil]
+        <<- /tu/ morph(<1, ":D") ->> trompe-l’œil               # Il manque un trait d’union.
+
     [le|de|ce|les|des|ces|un|mon|leur|leurs|nos|vos|notre|votre|quel|quels] [va|vas] et [vient|viens]
         <<- /tu/ -2:0>> va-et-vient                             # Il manque les traits d’union.
 
@@ -3513,6 +3516,7 @@ TEST: {{Apporte moi}} ce dictionnaire.                  ->> Apporte-moi
 TEST: C’est de la {{science fiction}}.
 TEST: Tout ce {{soi disant}} esprit religieux
 TEST: {{sous jacent}}                                   ->> sous-jacent
+TEST: {{un}} {{trompe l’œil}}
 TEST: Il a été nommé {{vice président}}
 TEST: Que vas-tu faire {{vis à vis}} d’eux              ->> vis-à-vis
 TEST: un super {{week end}}                             ->> week-end
@@ -14827,8 +14831,11 @@ __conf_lieux_lieues_lieus__
     [>lieue|lieus] [>aménager|>abandonner|>insolite|>éloigner|>réserver|>sacrer|>connaître|>méconnaître|>privilégier|>priver]
         <<- /conf/ morph(\2, ":Q") -1>> lieu|lieux              # Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
 
-    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|des|*NUM|@:B]  [lieux|lieus]
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|@:B]  [lieux|lieus]
         <<- /conf/ -4>> lieues                                  # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
+
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
+        <<- /conf/ space_after(\2, 1, 4) -4>> lieues            # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     20000 (>lieu) sous [la|les] >mer
     vingt mille (>lieu) sous [la|les] >mer
