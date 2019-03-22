@@ -6976,6 +6976,20 @@ __conf_héros__
 TEST: Mon frère, {{ce}} {{héro}} !
 
 
+# heure / heur
+__conf_heure_heur__
+    *NUM heurs
+    @:B  heurs
+        <<- /conf/ --1>> heures                             # Confusion. Pour indiquer la durée de temps, écrivez “heure”.|https://fr.wiktionary.org/wiki/heure
+
+    *NUM heur
+        <<- /conf/ --1>> heure                              # Confusion. Pour indiquer la durée de temps, écrivez “heure”.|https://fr.wiktionary.org/wiki/heure
+
+TEST: 1 {{heur}} de travail et le voilà déjà fatigué.       ->> heure
+TEST: Viens à 3 {{heurs}}.                                  ->> heures
+TEST: Il n’y a que deux {{heurs}} de trajet                 ->> heures
+
+
 # hors / or
 __conf_hors_or__
     <start>  hors  ,
@@ -16080,7 +16094,7 @@ TEST: Ce sont des biens de peu de valeur.
 
 __infi_faire_verbe__
     >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|en|de|") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
+        <<- /infi/ not morph(<1, ">(?:en|de|être)") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
         -2>> =suggVerbInfi(\2)                                  # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
 
 TEST: elle fit peu {{mangé}} les enfants
@@ -16092,13 +16106,7 @@ TEST: c’est un fait reconnu.
 TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
 TEST: il y a quand même quelques faits caractérisés permettant de faire le raccord
-
-#__[i]/infi(infi_faire)__
-#    (f(?:ai|[iî]|er|on)\w+) +({w_2}(?:ée?s?|ez))  @@0,$
-#    <<- morph(\1, ">faire/") and not before("(?i)\\b(?:en|[mtsldc]es?|[nv]ous|un) +$") and morph(\2, ":V", ":M")
-#        and not (re.search("(?i)^fait$", \1) and \2.endswith("é"))
-#        and not (re.search("(?i)^faits$", \1) and \2.endswith("és"))
-#    -2>> =suggVerbInfi(@)                                                                           # Le verbe devrait être à l’infinitif.
+TEST: la tonalité des soutiens traditionnels s’est faite plus nuancée.
 
 
 __infi_me_te_se_faire__
@@ -16435,7 +16443,7 @@ __ppas_3sg_mas_verbe_état__
     [ce|ça|ceci|cela|c’|ç’] >être @:[AQ].*:f¬:[GWYme]       @:N.*:f
         <<- %3>>
 
-    tout en étant @:A
+    tout en [étant|semblant|devenant|restant|demeurant|redevenant|paraissant] @:A
         <<- %4>>
 
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -16567,6 +16575,7 @@ TEST: De cela a toujours été faite notre vie
 TEST: Ce sont différents types de violences
 TEST: La littérature africaine s’ouvre au monde, parle au monde, tout en étant ancrée dans le continent.
 TEST: pour « faire de la politique avec leur député » sans « faire de travail pour l’Union européenne », mais tout en étant payés par elle.
+TEST: le sentiment que la question du chômage, tout en restant importante, est moins intense.
 
 
 __ppas_3sg_fem_verbe_état__
