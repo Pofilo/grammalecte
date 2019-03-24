@@ -7657,7 +7657,8 @@ __conf_pré_près_prêt__
         <<- /conf/ -1>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     >prêt [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
-        <<- /conf/ not before("(?i)\\b(obten|obt[iî])") -1>> près           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+        <<- /conf/ not morph(<1, ":D") and not before("(?i)\\b(obten|obt[iî])")
+        -1>> près                                                           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     si [>prêt|>pré] [du|de|d’|des]
         <<- /conf/ -2>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
@@ -7692,12 +7693,13 @@ TEST: Il est un peu fantasque ; mais, à cela {{prêt}}, c’est un aimable hom
 TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
 TEST: collait au millimètre près à la réalité
+TEST: les prêts de BMW ou de Mercedes pour visiter la ville
 
 
 # puits / puis
 __conf_puits_puis__
     [des|ces|mes|tes|ses|nos|vos|leurs|quelques|ce|mon|du] puis
-        <<- /conf/ -2>> puits
+        <<- /conf/ not \1.isupper() -2>> puits
         # Confusion. Si vous parlez d’un trou fait pour puiser quelque chose (ou pour amener quelque chose), écrivez “puits”.|https://fr.wiktionary.org/wiki/puits
 
     puis [de|d’] [lumière|gaz|pétrole|science|ventilation]
@@ -10819,6 +10821,7 @@ __simplication_substantifs__
     >fille au pair
     fils à [papa|maman]
     >haute comme [trois|3] pommes
+    >histoire avec un [grand|petit] h
     >homme [de|d’] [lettres|loi|main|paille|affaires|armes|exception|État|Église|honneur]
     >homme d’ âge mûr
     >hôtel de ville
