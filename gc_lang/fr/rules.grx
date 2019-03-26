@@ -1069,7 +1069,7 @@ TEST: Le {{“}}grand{{''}} homme.                                              
 
 
 __<s>/typo(typo_guillemets_typographiques_simples_ouvrants)__
-    (?:^|[ –—-])(')(?=\w)  @@*
+    (?:^|[ –—-])(['’])(?=\w)  @@*
     <<- -1>> “|‘|‹                                                                                  # Guillemets typographiques ouvrants.
 __<s>/typo(typo_guillemets_typographiques_simples_fermants)__
     [\w.?!,](')(?![\w'])  @@*
@@ -1078,6 +1078,7 @@ __<s>/typo(typo_guillemets_typographiques_simples_fermants)__
 TEST: {{'}}Ça’ recommence.                                                  ->> “|‘|‹
 TEST: Le {{'}}grand’ homme.                                                 ->> “|‘|‹
 TEST: Le ‘grand{{'}} homme.                                                 ->> ”|’|›
+TEST: dans les {{’}}beaux quartiers{{’}}
 TEST: J’en ai '''marre''' (syntaxe wiki).
 
 
@@ -7103,7 +7104,7 @@ TEST: il faut en finir avec le {{laissez-aller}}.
 # la / là
 __conf_la_là!7__
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
-    la  @:G¬:(?:[NA]:[ef]|W)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute)/
+    la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute)/
         <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
 
     [ce|cet|cette|ces]  /-la
@@ -7117,6 +7118,7 @@ TEST: c’est toujours la même histoire
 TEST: c’est la moins habile de toutes
 TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
 TEST: Il fait remonter à la toute première expérience humaine de maîtrise.
+TEST: l’existence d’un fichage la concernant
 
 
     [celle-la|celles-la|celui-la|ceux-la]
@@ -10898,7 +10900,7 @@ __simplication_substantifs__
     >saine [de|d’] [corps|esprit]
     >saine [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
     >sclérose en plaques
-    >secret défense
+    [secret|secrets] défense
     >silo à [>grains|blé]
     >soue à >cochonne
     >système d’ exploitation
@@ -11711,6 +11713,7 @@ TEST: Les gains sont en un sens maigres.
 TEST: Des vêtements grande taille
 TEST: Il est doté de capacités d’observation, de déduction et de mémorisation à court et à long terme
 TEST: après nous avoir vus
+TEST: les fiches S sont couvertes par le secret défense
 
 
 
@@ -16481,16 +16484,30 @@ __ppas_3sg_mas_verbe_état__
         <<- /ppas/ not tag(\1, "enum") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
         --1>> =suggMasSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿
+    [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                          [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
+    [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                            [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
+    [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                    [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
+    [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                                                  [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
+    [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu|redevenu|resté|demeuré]                                                                                             [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
+    [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                                          [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
+        <<- /ppas/ not tag(\2, "enum") --1>> =suggMasSing(\-1)                                                          # Accord avec le sujet “\2” : “\-1” devrait être au masculin singulier.
+
+    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿
+    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [<start>|,] [@:M.*:m|tout] ?[ne|n’]¿ ?[en|y]¿
+    [<start>|,] @:M.*:m ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not tag(\2, "enum") --1>> =suggMasSing(\-1)                                                          # Accord avec le sujet “\2” : “\-1” devrait être au masculin singulier.
@@ -16582,6 +16599,8 @@ TEST: Ce sont différents types de violences
 TEST: La littérature africaine s’ouvre au monde, parle au monde, tout en étant ancrée dans le continent.
 TEST: pour « faire de la politique avec leur député » sans « faire de travail pour l’Union européenne », mais tout en étant payés par elle.
 TEST: le sentiment que la question du chômage, tout en restant importante, est moins intense.
+TEST: tout est nuances de rouges, de gris et de bleus.
+TEST: tout en restant bien sages
 
 
 __ppas_3sg_fem_verbe_état__
