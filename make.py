@@ -352,7 +352,7 @@ def buildDictionary (dVars, sType, bJavaScript=False):
         lDicName = dVars['dic_name'].split(",")
         lFilter = dVars['dic_filter'].split(",")
         for sfDictDst, sDicName, sFilter in zip(lSfDictDst, lDicName, lFilter):
-            lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, sFilter, dVars['stemming_method'], int(dVars['fsa_method']))
+            lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, "", sFilter, dVars['stemming_method'], int(dVars['fsa_method']))
     else:
         if sType == "extended":
             spfLexSrc = dVars['lexicon_extended_src']
@@ -366,7 +366,7 @@ def buildDictionary (dVars, sType, bJavaScript=False):
             spfLexSrc = dVars['lexicon_personal_src']
             sfDictDst = dVars['dic_personal_filename']
             sDicName = dVars['dic_personal_name']
-        lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, "", dVars['stemming_method'], int(dVars['fsa_method']))
+        lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, "", "", dVars['stemming_method'], int(dVars['fsa_method']))
 
 
 
