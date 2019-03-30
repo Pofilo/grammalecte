@@ -2197,6 +2197,9 @@ __immunités__
     [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  @:Y  @:M
         <<- morph(\1, ":V") %-2>>
 
+    soit pour soit contre
+        <<- %3>>
+
 
 @@@@
 @@@@
@@ -8122,6 +8125,7 @@ TEST: À moins qu’elle n’en soit la victime.
 TEST: Je doute qu’il s’en soit sorti si aisément.
 TEST: Je refuse, quoi qu’il en soit.
 TEST: on ne s’étonne plus que le parquet de Paris en soit à agir sous l’effet de quelque urgence médiatique
+TEST: Vous êtes soit pour soit contre, mais pas les deux en même temps
 
 
 __conf_soie_soi_soit__
@@ -17053,28 +17057,28 @@ TEST: Les tortures que ce journaliste pense être “normales”.
 
 
 __ppas_nom_propre_être_accord_genre__
-    [<start>|,|@:Cs]  (@M)  ?qui¿  ?[ne|n’]¿  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]            *WORD
-    [<start>|,|@:Cs]  (@M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|@:Cs]  (@M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée] *WORD
-    [<start>|,|@:Cs]  (@M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]            *WORD
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée] *WORD
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester]                                                          *WORD
-    [<start>|,|@:Cs]  (@M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
-    [<start>|,|@:Cs]  (@M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    (*WORD)  [que|qu’]  (@M)  ?[ne|n’]¿
+    (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester]                                                          *WORD
-    (*WORD)  [que|qu’]  (@M)  ?[ne|n’]¿
+    (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
-    (*WORD)  [que|qu’]  (@M)  ?[ne|n’]¿
+    (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ checkAgreement(\1, \-1) %-1>>
