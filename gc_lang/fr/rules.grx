@@ -6216,6 +6216,9 @@ __conf_ce_ceux_se!6__
         <<- /conf/ not \1.isupper() and \2.islower()
         -1>> se                                         # Confusion : « \2 » est un verbe. Exemples : ce bâtiment, se perdre.
 
+    [ce|c’] qui ce passe
+        <<- /conf/ -3>> se                              # Confusion : « \4 » est un verbe. Exemples : ce bâtiment, se perdre.
+
     pour se faire ,
     pour se faire @:G¬:[AYD]
         <<- /conf/ -2>> ce                              # Confusion probable. Dans cette locution, il faut employer “ce”.|http://fr.wiktionary.org/wiki/pour_ce_faire
@@ -9673,9 +9676,9 @@ __purge_locutions__
     de A à Z
     de bas en haut
     de bas étage
-    de basse [condition|extraction]
-    de bon [aloi|cœur|gré|matin|sens|ton]
-    de bonne [facture|famille|foi|heure|humeur|grâce|qualité|compagnie]
+    [de|d’] ?assez¿ basse [condition|extraction]
+    [de|d’] ?assez¿ bon [aloi|cœur|gré|matin|sens|ton]
+    [de|d’] ?assez¿ bonne [facture|famille|foi|heure|humeur|grâce|qualité|compagnie]
     de bric et de broc
     de but en blanc
     de ce fait ?[incontestable|irréfutable|même]¿
@@ -9756,7 +9759,7 @@ __purge_locutions__
     de tout [poil|temps]
     de tout à l’ heure
     de tout premier [ordre|plan]
-    de toute [éternité|évidence|façon|urgence]
+    de toute [éternité|évidence|façon|part|urgence]
     de toutes [parts|pièces|sortes]
     de toutes [mes|tes|ses|nos|vos|leurs] forces
     de [mon|ton|son|notre|votre|leur] acabit
@@ -9846,7 +9849,7 @@ __purge_locutions__
     en coupe réglée
     en cours de route
     en d’autres [circonstances|termes|temps]
-    en de telles circonstances
+    en de [semblables|telles] circonstances
     en début [de|d’] [journée|matinée|soirée|après-midi]
     en définitive
     en dehors de ?tout¿ [ça|cela|ceci]
@@ -15852,22 +15855,22 @@ __purge_syntagmes_nominaux__
         <<- ~1:3>> *
 
     [ce|ton|son] *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
     [le|la|les|leur|certains|certaines] *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
     l’ *WORD *WORD
-        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y)|>air") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\2, ":[NA]", ":(?:[123][sp]|P|X|G|Y)|>air") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
     [des|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|au|aux] *WORD *WORD
-        <<- morph(\3, ":[NA]", ":(?:G|[123][sp]|P)") >>>
+        <<- morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
         <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
         <<- __else__ ~3>> *
 
@@ -16916,7 +16919,6 @@ TEST: Cet animal qui souhaite redevenir {{amnésiques}}.
 TEST: Qui semble être devenu {{malades}} ?
 TEST: ce jour, et surtout cette soirée, semble devenir {{interminables}}.
 TEST: C’est le crime qui se vante, qui adore avoir semblé {{légitimes}}.
-TEST: Les tortures que ce journaliste pense être “normales”.
 TEST: les plus anciens restes trouvés à ce jour proviennent de ce site
 TEST: Restes crâniens.
 TEST: Demeures victoriennes.
@@ -17025,6 +17027,17 @@ __ppas_sujet_être_accord_genre__
         <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]p")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
+    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || [être|devenir|redevenir|rester]                                                          *WORD
+    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
+    *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  *WORD
+        <<- /ppas/ checkAgreement(\1, \-1) %-1>>
+
 TEST: la danse est {{fini}}…
 TEST: Un orage est {{annoncée}}.
 TEST: Une averse est {{annoncé}}.
@@ -17036,6 +17049,7 @@ TEST: les réunions sans cesse reportées sont {{annulés}}
 TEST: l’avenir de la région était {{suspendue}}
 TEST: il prétendait que les banques universelles « à la française » s’{{était}} très honorablement comportées
 TEST: Ma mémoire a aussi été {{effacé}}.
+TEST: Les tortures que ce journaliste pense être “normales”.
 
 
 __ppas_nom_propre_être_accord_genre__
@@ -17054,6 +17068,17 @@ __ppas_nom_propre_être_accord_genre__
         <<- /ppas/ ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
+    (*WORD)  [que|qu’]  (@M)  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || [être|devenir|redevenir|rester]                                                          *WORD
+    (*WORD)  [que|qu’]  (@M)  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
+    (*WORD)  [que|qu’]  (@M)  ?[ne|n’]¿
+        || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  *WORD
+        <<- /ppas/ checkAgreement(\1, \-1) %-1>>
+
 TEST: Antoine est {{mariée}}.
 TEST: Antoine n’est pas {{mariés}}.
 TEST: Antoine est peut-être {{fatiguée}}.
@@ -17063,6 +17088,7 @@ TEST: Martine n’est pas {{marié}}.
 TEST: Martine est très {{intelligent}}.
 TEST: Martine n’est pas très {{intelligent}}.
 TEST: Pierre est {{dominée}} par son adversaire.
+TEST: Les travaux que Jeanne pense être achevés depuis longtemps n’ont pas encore commencé.
 
 
 !!!! Participes passés: avoir l’air                                                               !!
@@ -19220,7 +19246,7 @@ TEST: toi qui {{arrive}} toujours en retard, tu es mal placé pour donner des co
 
 ## 3sg
 __conj_elle__
-    elle  @:V¬:(?:3s|P|G|M)
+    elle  @:V¬:(?:3s|P|G|M|f:s)
         <<- /conj/ not morph(<1, ":R|>(?:et|ou)") and not (morph(\2, ":Q") and morph(<1, ":V0.*:3s"))
         -2>> =suggVerb(\2, ":3s")                               # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conj/ __also__ and morph(\2, ":3p") -1>> elles     # Accord avec “\2”.
@@ -19242,6 +19268,7 @@ TEST: elle {{demeures}}
 TEST: elle {{mangeras}}
 TEST: elle {{fus}} partie.
 TEST: elle a appris bien trop jeune à ne faire confiance à personne.
+TEST: Elle, surtout, décomplexée et franche du collier.
 
 
 __conj_quiconque__
@@ -19866,7 +19893,7 @@ TEST: à l’époque de Mansur que grandissent la place et le rôle de…
 TEST: où vivent la majorité des immigrés et des enfants d’immigrés
 TEST: Que deviennent la vitesse, le courant, ainsi que le rendement ?
 TEST: Le complexe argilo-humique est mieux hydraté que ne pourraient l’être les micelles d’argile ou humiques
-TEST: C’est ce qu’avancent l’épidémiologiste britannique Richard Wilkinson et sa consœur, Kate Pickett
+TEST: C’est ce qu’avancent l’épidémiologiste britannique et sa consœur
 
 
 __conj_lxquel_verbe_sujet_sing__
