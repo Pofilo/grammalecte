@@ -17900,7 +17900,11 @@ __imp_confusion_2e_pers_pluriel__
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-moi"                                             # Confusion probable. Pour l’impératif, écrivez :
 
-    [<start>|,]  *WORD  [les|la|leur]  *WORD
+    [<start>|,]  *WORD  la  *WORD
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]|>plupart/")
+        -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
+
+    [<start>|,]  *WORD  [les|leur]  *WORD
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]")
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
@@ -17918,6 +17922,7 @@ TEST: {{avançait moi}} de l’argent                      ->> avancez-moi
 TEST: {{filé moi}} du fric, bon sang !                  ->> filez-moi
 TEST: {{Données lui}} ça.                               ->> Donnez-lui
 TEST: {{Enseignait nous}}.                              ->> Enseignez-nous
+TEST: l’homme a domestiqué les animaux nécessaires à sa survie, éradiqué la plupart de ceux qui lui étaient nuisibles, défriché les forêts
 
 
 # être
@@ -18786,25 +18791,25 @@ __purge_préverbes1__
 
 
 __purge_préverbes2__
-    [me|m’|te|se|s’]  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
-    nous              [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:(?:X|1p)|>rien/
-    vous              [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:(?:X|2p)|>rien/
-    [le|la|l’|les]    [lui|leur|en|y]      @:(?:[123][sp]|P|Y)¬:X|>rien/
-    leur              en                   @:(?:[123][sp]|P|Y)¬:X|>rien/
+    nous              [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:(?:X|1p)
+    vous              [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:(?:X|2p)
+    [me|m’|te|se|s’]  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X
+    [le|la|l’|les]    [lui|leur|en|y]      @:(?:[123][sp]|P|Y)¬:X
+    leur              en                   @:(?:[123][sp]|P|Y)¬:X
         <<- ~1:2>> *
 
-    lui               en                   @:(?:[123][sp]|P|Y)¬:X|>rien/
+    lui               en                   @:(?:[123][sp]|P|Y)¬:X
         <<- not morph(<1, ":(?:R|3s)") ~1:2>> *
 
-    t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
+    t’  [le|la|l’|les|en|y]  @:(?:[123][sp]|P|Y)¬:X
         <<- not morph(\3, ":2s") or value(<1, "|je|j’|tu|il|elle|on|nous|vous|ils|elles|") ~1:2>> *
         <<- ~2>> *
 
 __purge_préverbes_négation__
-    [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:(?:[123][sp]|P|Y)¬:X|>rien/
-    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:(?:[123][sp]|P|Y)¬:X|>rien/
-    [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]            @:(?:[123][sp]|P|Y)¬:X|>rien/
-    [ne|n’]  [lui|leur]                     en                         @:(?:[123][sp]|P|Y)¬:X|>rien/
+    [ne|n’]  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:(?:[123][sp]|P|Y)¬:X
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:(?:[123][sp]|P|Y)¬:X
+    [ne|n’]  [le|la|l’|les]                 [lui|leur|en|y]            @:(?:[123][sp]|P|Y)¬:X
+    [ne|n’]  [lui|leur]                     en                         @:(?:[123][sp]|P|Y)¬:X
         <<- ~1:-2>> *
 
 
