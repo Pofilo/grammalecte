@@ -1896,36 +1896,48 @@ TEST: trois espèces de chauve-souris dont une est éteinte
 
 __tag_sujets__
     [je|j’]
-    [moi|moi-même] qui
-    [moi|moi-même] [seul|seule]
+    [moi|moi-même] ?[seul|seule]¿ ?,¿ qui
         <<- />> 1s
+
+    [moi|moi-même] [seul|seule]
+        <<- not value(<1, "|de|d’|") />> 1s
 
     tu
     t’  @:2s
     t’  [en|y]  @:2s
-    [toi|toi-même] ?,¿ qui
-    [toi|toi-même] [seul|seule]
+    [toi|toi-même] ?[seul|seule]¿ ?,¿ qui
         <<- />> 2s
 
-    nous
-    nous ?,¿ qui
-    nous-même
-    nous-mêmes
-    nous [seul|seuls|seules]
+    [toi|toi-même] [seul|seule]
+        <<- not value(<1, "|de|d’|") />> 2s
+
+    nous ?[seul|seuls|seules]¿ ?,¿ qui
+    nous-même qui
+    nous-mêmes qui
     [et|ou] [moi|moi-même]
     ni [moi|moi-même]
     [moi|moi-même] et
         <<- />> 1p
 
-    vous
-    vous ?,¿ qui
-    vous-même
-    vous-mêmes
-    vous [seul|seule|seuls|seules]
+    nous
+    nous-même
+    nous-mêmes
+    nous [seul|seuls|seules]
+        <<- not value(<1, "|de|d’|") />> 1p
+
+    vous ?[seul|seuls|seules]¿ ?,¿ qui
+    vous-même qui
+    vous-mêmes qui
     [et|ou] [toi|toi-même]
     ni [toi|toi-même]
     [toi|toi-même] et
         <<- />> 2p
+
+    vous
+    vous-même
+    vous-mêmes
+    vous [seul|seule|seuls|seules]
+        <<- not value(<1, "|de|d’|") />> 2p
 
 
 __tag_prop_sub__
