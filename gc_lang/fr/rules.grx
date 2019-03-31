@@ -9231,6 +9231,12 @@ __purge_prépositions_qqn__
     [après|contre|pour|sans|de|d’|en]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
         <<- ~1:2>> *
 
+    [après|contre|pour|sans|de|d’|en] [lui|nous|vous] [<end>|,|@:G¬Ov]
+        <<- ~1:2>> *
+
+    [de|d’] [lui|nous|vous] en @:P
+        <<- ~1:2>> *
+
     par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]    [<end>|,|@:[VXG]¬>qui]
         <<- ~1:4>> *
 
@@ -14581,21 +14587,22 @@ TEST: où et avec qui ?
 
 __conf_été_était__
     [le|ce|cet|mon|ton|son|notre|votre|leur|du|quel]  *WORD  >été
-        <<- /conf/ morph(\2, ":N.*:m:[si]", ":[AWG]") and morph(<1, ":Cs|<start>|>,") --1>> était
+        <<- /conf/ morph(\2, ":N.*:m:[si]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>,") --1>> était
         # Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
     [la|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]  *WORD  >été
-        <<- /conf/ morph(\2, ":N.*:f:[si]", ":[AWG]") and morph(<1, ":Cs|<start>|>,") --1>> était
+        <<- /conf/ morph(\2, ":N.*:f:[si]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>,") --1>> était
         # Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “était”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
     [les|des|ces|mes|tes|ces|nos|vos|leurs|quelques|plusieurs|certains|certaines|quels|quelles]  *WORD  >été
-        <<- /conf/ morph(\2, ":N.*:[pi]", ":[AWG]") and morph(<1, ":Cs|<start>|>,") --1>> étaient
+        <<- /conf/ morph(\2, ":N.*:[pi]", ":(?:[AWG]|V0a)") and morph(<1, ":Cs|<start>|>,") --1>> étaient
         # Confusion possible. Si “\1 \2” est le sujet d’“\3”, écrivez “étaient”. L’été est la saison estivale allant de juin à septembre dans l’hémisphère Nord.
 
 TEST: Ce mec {{été}} un connard fini.                                               ->> était
 TEST: Quelle solution {{été}} à notre portée ?                                      ->> était
 TEST: Les questions {{étés}} incompréhensibles.                                     ->> étaient
 TEST: Le bel été indien que nous avons cette année.
+TEST: Quel a été le déclencheur de cet ouvrage ?
 
 
 # faim / fin
@@ -14871,7 +14878,7 @@ TEST: Faisons des {{levers de fond}}
 
 # lever un lièvre / soulever
 __conf_lever_un_lièvre__
-    >soulever [un|le] lièvre
+    >soulever [un|le|des|les|quelques|plusieurs] >lièvre
         <<- /conf/ -1>> =\1[3:]                                 # Expression impropre. On écrit « lever un lièvre ».|http://fr.wiktionary.org/wiki/lever_le_li%C3%A8vre
 
 TEST: j’ai {{soulevé}} un lièvre, là !
@@ -15605,6 +15612,7 @@ TEST: Les « événements » d’il y a cinquante ans n’ont sans doute « r
 TEST: Quelques points de gagnés avec cette astuce, ne faisons pas la fine bouche.
 TEST: Il n’y a rien de mécanique, ni de prédestiné.
 TEST: il convient donc de ne point les négliger.
+TEST: Il se moque de nous en fournissant de pareilles marchandises frelatées.
 
 
 __infi_y_verbe!3__
@@ -17644,6 +17652,7 @@ TEST: ces cons nous ont donnés.
 TEST: ils nous ont vendus.
 TEST: elles nous ont dit : “c’est la fin”.
 TEST: Il nous avait dit que…
+TEST: c’est la plus belle lettre que le Comité nous a envoyée.
 
 
 __ppas_l_avoir__
