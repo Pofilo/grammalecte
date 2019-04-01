@@ -19834,7 +19834,7 @@ TEST: Toutes les personnes candidates seront évaluées plusieurs fois.
 
 
 __conj_des_nom__
-    [<start>|,]  des  @:[NA].*:[pi]  @:V¬:(?:3p|P|G|Q|A.*:[pi])
+    [<start>|,]  des  @:[NA].*:[pi]  @:V¬:(?:3p|P|G|Q|A.*:[pi]|V[23].*:Y)
         <<- /conj/ morph(>1, ":(?:R|D.*:p)|>au/|<end>|>,") >>>
         <<- /conj/ not morph(\4, ":[NA]") -4>> =suggVerb(\4, ":3p")                                 # Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and not checkAgreement(\3, \4) -4>> =suggVerb(\4, ":3p", suggPlur)      # Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -19845,6 +19845,7 @@ __conj_des_nom__
 TEST: Des hommes {{arrive}}.
 TEST: Des femmes ne {{demande}} rien.
 TEST: des femmes qui {{conduise}} la marche du monde.
+TEST: des démocrates geindre à propos de l’absence pourtant parlante de délégation
 
 
 #### NOMS PROPRES
@@ -20476,6 +20477,7 @@ TEST: cet être que personne n’a vu ni senti à part elle
 TEST: un délire systématisé de persécution basé sur des interprétations
 TEST: Et si je te donne son nom, cela t’aiderait, Dworkin ?
 TEST: il lui semblait que ne plus être serait un grand soulagement.
+TEST: Je me suis habitué à ces samedis.
 
 
 
