@@ -5733,6 +5733,7 @@ __conf_à_a_locutions__
     a court terme
     a courte [échéance|portée]
     a couilles rabattues
+    a >couteau [tiré|tirés]
     a de nombreuses reprises
     a des kilomètres à la ronde
     a dose homéopathique
@@ -8426,7 +8427,7 @@ __conf_voir_voire__
         <<- %2>>
 
     voir  @:A¬:[NGM]
-        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|falloir|pouvoir|savoir|vouloir|préférer|faire|de|à)/")
+        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|aller|falloir|pouvoir|savoir|vouloir|préférer|faire|penser|imaginer|de|à)/")
             and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
         -1>> voire                      # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez “voire”.|https://fr.wiktionary.org/wiki/voire
 
@@ -8457,6 +8458,7 @@ TEST: des enfants malades, qui préfèrent souvent voir Dark Vador que des vieux
 TEST: les membres de l’équipage commencent à voir flou
 TEST: un travail qu’il préfère voir effectué par un spécialiste plutôt que par lui-même
 TEST: médicaments qui me donnent envie de vomir, qui m’abrutissent, qui me font voir flou
+TEST: nous allons voir différentes façons d’utiliser le film pour tourner en dérision sa politique
 
 
 # vieil / vieux
@@ -9081,10 +9083,11 @@ __conf_préverbes_guère_guerre!5__
     [ne|n’]   [le|la|l’|les]                  [lui|leur|en|y]             *WORD  ?[plus|jamais]¿  guerre
     [ne|n’]   [lui|leur|y]                    en                          *WORD  ?[plus|jamais]¿  guerre
     [ne|n’]   ?presque¿  ?[plus|jamais]¿  guerre
-        <<- /infi/ --1>> guère                                                                      # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
+        <<- /conf/ --1>> guère                                                                      # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
 
     guerre
-        <<- morph(<1, ":(?:[123][sp]|Y)", "*") ->> guère                                            # Confusion probable. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
+        <<- /conf/ morph(<1, ":(?:[123][sp]|Y)", "*") and not value(>1, "|civile|commerciale|froide|mondiale|nucléaire|préventive|psychologique|sainte|totale|")
+        ->> guère                                            # Confusion probable. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
 
 TEST: tout ceci ne me rapporte {{guerre}}
 TEST: je ne m’en soucie {{guerre}}
@@ -9100,6 +9103,7 @@ TEST: Il n’y en a {{guerre}}.
 TEST: Je n’aime plus {{guerre}} le sport.
 TEST: Il n’y en a plus {{guerre}}.
 TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
+TEST: ce que nous appelons Guerre psychologique
 
 
 __imp_ne_infinitif_negadv__
@@ -9163,7 +9167,7 @@ __purge_pronom_seul__
     [nous|vous]     [seuls|seules]
     eux             seuls
     elles           seules
-        <<- ~1>> *
+        <<- ~2>> *
 
 
 __purge_début_phrase__
@@ -15248,13 +15252,14 @@ __conf_peut_être2__
         <<- /conf/ space_after(\2, 1, 1) and morph(\1, ":V", ":[NAQGM]") -2:3>> peut-être           # Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
 
     <start> peut être
-        <<- /conf/ space_after(\2, 1, 1) ->> peut-être                                              # Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
+        <<- /conf/ space_after(\2, 1, 1) -2:3>> peut-être                                           # Confusion probable. Pour dire “possiblement”, écrivez “peut-être”.
 
 TEST: {{Peut être}} qu’on en saura plus demain.
 TEST: Ils vont {{peut être}} enfin faire quelque chose de leur misérable existence.
 TEST: L’un peut être réglé immédiatement
 TEST: Réussir peut parfois être la pire chose possible.
 TEST: Peut vraiment être violent en cas d’humiliation.
+TEST: « Oui, sans doute », mais peut être pas pour tout le monde
 
 
 # prendre son mal en patience
@@ -20478,6 +20483,8 @@ TEST: un délire systématisé de persécution basé sur des interprétations
 TEST: Et si je te donne son nom, cela t’aiderait, Dworkin ?
 TEST: il lui semblait que ne plus être serait un grand soulagement.
 TEST: Je me suis habitué à ces samedis.
+TEST: La société Sherlock est spécialisée dans l’investigation.
+TEST: qui aura à elle seule justifié la présence de la gent féminine
 
 
 
