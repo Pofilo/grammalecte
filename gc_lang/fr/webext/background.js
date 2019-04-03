@@ -293,7 +293,7 @@ browser.contextMenus.create({ id: "separator_page",             type: "separator
 // Tools
 browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
-browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
+//browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
 browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
 // Rescan page
 browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });

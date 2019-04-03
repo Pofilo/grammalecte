@@ -81,7 +81,7 @@ window.addEventListener(
             else if (xElem.id == "dictionaries_button") {
                 browser.runtime.sendMessage({
                     sCommand: "openDictionaries",
-                    dParam: { "dictionary": "__community__"},
+                    dParam: {},
                     dInfo: {}
                 });
             }
