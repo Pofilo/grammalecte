@@ -10257,6 +10257,7 @@ __purge_locutions__
     sans y faire attention
     sans y prendre [garde|goût|gout]
     sans états d’ âme
+    sauf >erreur de [ma|ta|sa|notre|votre|leur] part
     secondo
     selon toute vraisemblance
     semblait-il
@@ -10729,6 +10730,9 @@ __purge_conditionnelle__
     [plus|moins|aussi] @:W que prévu
         <<- ~>> *
 
+    plus que tout autre @¬:[AQ].*:m:[si]
+        <<- ~1:4>> *
+
     [plus|moins|aussi]  @:[AW]¬:G   que [les|nous|vous] autres
     [plus|moins|aussi]  @:[AW]¬:G   que l’ autre
     [plus|aussi]        @:[AW]      les [uns|unes] que les autres
@@ -10741,11 +10745,11 @@ __purge_conditionnelle__
     pour  autant  [que|qu’]  [ils|elles]      le  sachent
         <<- ~>> *
 
-    pour  autant  [que|qu’]  [je|il|elle|on]  sache      @¬:Y
-    pour  autant  [que|qu’]  tu               saches     @¬:Y
-    pour  autant  [que|qu’]  nous             sachions   @¬:Y
-    pour  autant  [que|qu’]  vous             sachiez    @¬:Y
-    pour  autant  [que|qu’]  [ils|elles]      sachent    @¬:Y
+    pour  autant  [que|qu’]  [je|il|elle|on]  sache      [,|@¬:Y|<end>]
+    pour  autant  [que|qu’]  tu               saches     [,|@¬:Y|<end>]
+    pour  autant  [que|qu’]  nous             sachions   [,|@¬:Y|<end>]
+    pour  autant  [que|qu’]  vous             sachiez    [,|@¬:Y|<end>]
+    pour  autant  [que|qu’]  [ils|elles]      sachent    [,|@¬:Y|<end>]
         <<- ~1:5>> *
 
     pour cette raison [que|qu’]
@@ -19705,14 +19709,15 @@ TEST: Beaucoup leur donneront du fil à retordre.
 TEST: beaucoup d’argent arrive dans nos caisses
 
 
-__conj_certains_plusieurs__
-    [certains|certaines|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
-    [certains|certaines|plusieurs]  qui  @:V¬:(?:G|3p|P)
+__conj_certains_plusieurs_quelques_uns__
+    [certains|certaines|plusieurs|quelques-uns|quelques-unes]  @:V¬:(?:G|N|A|3p|P|Q)
+    [certains|certaines|plusieurs|quelques-uns|quelques-unes]  qui  @:V¬:(?:G|3p|P)
         <<- /conj/ not morph(<1, ":[VR]")
         --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: certains {{prenne}} leur temps
 TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même trompés.
+TEST: Quelques-unes {{rêve}} d’une meilleure vie.
 
 
 __conj_tous_toutes__
