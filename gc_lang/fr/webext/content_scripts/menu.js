@@ -118,6 +118,13 @@ class GrammalecteMenu {
                 });
             };
             xMenu.appendChild(xGCButton);
+            // Lexicon editor
+            let xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item", textContent: "Éditeur lexical"});
+            xLEButton.onclick = () => {
+                this.switchMenu();
+                xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null});
+            };
+            xMenu.appendChild(xLEButton);
             // Conjugation tool
             let xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_item_block", textContent: "Conjugueur"});
             let xConjButtonTab = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Onglet"});

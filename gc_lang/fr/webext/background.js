@@ -261,6 +261,9 @@ function handleConnexion (xPort) {
             case "openConjugueurWindow":
                 openConjugueurWindow();
                 break;
+            case "openLexiconEditor":
+                openLexiconEditor();
+                break;
             default:
                 console.log("[background] Unknown command: " + sCommand);
                 console.log(oRequest);
