@@ -19710,14 +19710,27 @@ TEST: beaucoup d’argent arrive dans nos caisses
 
 
 __conj_certains_plusieurs_quelques_uns__
-    [certains|certaines|plusieurs|quelques-uns|quelques-unes]  @:V¬:(?:G|N|A|3p|P|Q)
-    [certains|certaines|plusieurs|quelques-uns|quelques-unes]  qui  @:V¬:(?:G|3p|P)
+    [certains|certaines|plusieurs]  @:V¬:(?:G|N|A|3p|P|Q)
+    [certains|certaines|plusieurs]  qui  @:V¬:(?:G|3p|P)
         <<- /conj/ not morph(<1, ":[VR]")
         --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: certains {{prenne}} leur temps
 TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même trompés.
-TEST: Quelques-unes {{rêve}} d’une meilleure vie.
+
+
+__conj_certains_plusieurs_quelques_uns__
+    quelques-uns  @:V¬:(?:G|3p|P|[NAQ].*:m:[pi])
+    quelques-uns  qui  @:V¬:(?:G|3p|P)
+    quelques-unes  @:V¬:(?:G|3p|P|[NAQ].*:f:[pi])
+    quelques-unes  qui  @:V¬:(?:G|3p|P)
+        <<- /conj/ not morph(<1, ":[VR]")
+        --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+
+TEST: quelques-uns {{arrive}} demain
+TEST: Quelques-unes {{imagine}} une autre vie que celle-là.
+TEST: Quelques-unes {{rêve}} d’un autre monde.
+TEST: Quelques-unes lestées de plombe.
 
 
 __conj_tous_toutes__
