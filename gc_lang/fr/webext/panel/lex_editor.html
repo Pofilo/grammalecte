@@ -5,7 +5,7 @@
     <title>Grammalecte · Éditeur lexical</title>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
   </head>
-  
+
   <body>
 
     <div class="inbox">
@@ -14,22 +14,37 @@
 
       <div class="big_block">
         <div class="dic_container">
-          <div><h3>Dictionnaire personnel</h3></div>
-          <div>Enregistré le : <span id="dic_save_date">—</span></div>
+          <div><h3>Dictionnaire</h3></div>
+          <div class="dic_container">
+            <select id="dic_selector">
+              <option value="__personal__">__personnel__</option>
+            </select>
+            <div id="new_dictionary_button" title="Créer un dictionnaire partagé">+</div>
+            <div id="delete_dictionary_button" title="Supprimer ce dictionnaire">−</div>
+          </div>
+
+          <div>[<span id="dic_save_date">—</span>]</div>
           <div><span id="dic_num_entries">0</span> entrées</div>
-          <!--<div id="import_button" class="fright">Importer</div>-->
-          <div class="fright">
+          <div>
             <input type="file" id="import_input" accept=".json" style="display: none;">
             <label id="import_button" for="import_input">Importer</label>
           </div>
-          <div id="export_button" class="fright">Exporter</div>
-
+          <div id="export_button">Exporter</div>
+        </div>
+        <div id="new_dictionary_section" style="display: none;">
+          <div class="dic_container">
+            <div>Nouveau dictionnaire partagé</div>
+            <div>Nom : fr.x.<input type="text" id="new_dictionary_name" required> · Description : <input type="text" id="new_dictionary_description" required></div>
+            <div id="create_dictionary_button">Créer</div>
+          </div>
         </div>
         <progress id="wait_progress" value="0"></progress>
       </div>
 
       <div id="buttons" class="container">
-        <div id="lexicon_button" class="main_button">Lexique</div>
+        <div id="lexicon_button" class="main_button">
+          Lexique · <span id="num_entries">0</span> entrées <span id="save_button">Enregistrer</span>
+        </div>
         <div id="add_button" class="main_button">Ajout</div>
         <div id="search_button" class="main_button">Recherche</div>
         <div id="info_button" class="main_button">Informations</div>
@@ -156,7 +171,7 @@
                         </div>
                       </details>
                     </div>
-                      
+
                     <div class="space_container">
                       <div>
                         <input type="checkbox" id="up_v_aa" value="a" /><label for="up_v_aa"> avoir</label>
@@ -231,11 +246,11 @@
               </div>
             </div>
           </div> <!-- #new_word_generator -->
-          
+
           <div id="generated_words">
             <h2>Mots générés</h2>
             <table id="generated_words_table">
-              
+
             </table>
             <div id="buttonline">
               <div id="add_to_lexicon">Ajouter au lexique</div>
@@ -247,15 +262,8 @@
 
       <div id="lexicon_page">
         <h2>Votre lexique</h2>
-        <div class="big_block">
-          <div id="save_button" class="fright">
-            Enregistrer
-          </div>
-          <p>Nombre d’entrées : <span id="num_entries">0</span>.</p>
-        </div>
-
         <table id="lexicon_table">
-              
+
         </table>
       </div> <!-- #lexicon_page -->
 
@@ -283,7 +291,7 @@
           <div>
             <h2>Résultats</h2>
             <table id="search_table">
-                  
+
             </table>
           </div>
         </div>
@@ -313,7 +321,7 @@
 
           <div>
             <table id="tags_table">
-              
+
             </table>
           </div>
         </div>
@@ -333,5 +341,5 @@
     <script src="../grammalecte/fr/lexicographe.js"></script>
     <script src="lex_editor.js"></script>
   </body>
-  
+
 </html>

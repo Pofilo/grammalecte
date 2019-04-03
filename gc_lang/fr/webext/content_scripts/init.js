@@ -103,9 +103,7 @@ const oGrammalecte = {
     },
 
     observePage: function () {
-        /*
-            When a textarea is added via jascript we add the menu :)
-        */
+        //    When a textarea is added via jascript we add the menu
         let that = this;
         this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
@@ -257,7 +255,6 @@ let xGrammalectePort = browser.runtime.connect({name: "content-script port"});
 
 xGrammalectePort.onMessage.addListener(function (oMessage) {
     let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
-    let sText = "";
     switch (sActionDone) {
         case "init":
             oGrammalecte.sExtensionUrl = oMessage.sUrl;
@@ -293,24 +290,13 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Grammar checker commands
         case "rightClickGCEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
-                oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
-                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
-                xGrammalectePort.postMessage({
-                    sCommand: "parseAndSpellcheck",
-                    dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-                    dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
-                });
+                parseAndSpellcheckEditableNode(oGrammalecte.xRightClickedNode);
             } else {
                 oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
             }
             break;
         case "rightClickGCPage":
-            oGrammalecte.startGCPanel();
-            xGrammalectePort.postMessage({
-                sCommand: "parseAndSpellcheck",
-                dParam: {sText: oGrammalecte.getPageText(), sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {}
-            });
+            parseAndSpellcheckPage();
             break;
         case "rightClickGCSelectedText":
             oGrammalecte.startGCPanel();
@@ -319,24 +305,13 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Lexicographer commands
         case "rightClickLxgEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
-                oGrammalecte.startLxgPanel();
-                sText = (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") ? oGrammalecte.xRightClickedNode.value : oGrammalecte.xRightClickedNode.innerText;
-                xGrammalectePort.postMessage({
-                    sCommand: "getListOfTokens",
-                    dParam: {sText: sText},
-                    dInfo: {sTextAreaId: oGrammalecte.xRightClickedNode.id}
-                });
+                lexicographerEditableNode(oGrammalecte.xRightClickedNode);
             } else {
                 oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à analyser et relancez le lexicographe via le menu contextuel.");
             }
             break;
         case "rightClickLxgPage":
-            oGrammalecte.startLxgPanel();
-            xGrammalectePort.postMessage({
-                sCommand: "getListOfTokens",
-                dParam: {sText: oGrammalecte.getPageText()},
-                dInfo: {}
-            });
+            lexicographerPage();
             break;
         case "rightClickLxgSelectedText":
             oGrammalecte.startLxgPanel();
@@ -345,7 +320,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Text formatter command
         case "rightClickTFEditableNode":
             if (oGrammalecte.xRightClickedNode !== null) {
-                if (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA") {
+                if (oGrammalecte.xRightClickedNode.tagName == "TEXTAREA" || oGrammalecte.xRightClickedNode.tagName == "INPUT") {
                     oGrammalecte.startFTPanel(oGrammalecte.xRightClickedNode);
                 } else {
                     oGrammalecte.showMessage("Cette zone de texte n’est pas réellement un champ de formulaire, mais un node HTML éditable. Le formateur de texte n’est pas disponible pour ce type de champ de saisie.");
@@ -358,7 +333,84 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rescanPage":
             oGrammalecte.rescanPage();
             break;
+
+    }
+});
+
+
+/*
+    Other messages from background
+*/
+browser.runtime.onMessage.addListener(function (oMessage) {
+    let {sActionRequest} = oMessage;
+    let xActiveNode = document.activeElement;
+    switch (sActionRequest) {
+        /*
+            Commands received from the keyboard (shortcuts)
+        */
+        case "shortcutLexicographer":
+            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT")) {
+                lexicographerEditableNode(xActiveNode);
+            } else {
+                lexicographerPage();
+            }
+            break;
+        case "shortcutTextFormatter":
+            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT")) {
+                oGrammalecte.startFTPanel(xActiveNode);
+            }
+            break;
+        case "shortcutGrammarChecker":
+            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT")) {
+                parseAndSpellcheckEditableNode(xActiveNode);
+            } else {
+                parseAndSpellcheckPage();
+            }
+            break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
+
+
+/*
+    Actions
+*/
+
+function parseAndSpellcheckPage () {
+    oGrammalecte.startGCPanel();
+    xGrammalectePort.postMessage({
+        sCommand: "parseAndSpellcheck",
+        dParam: {sText: oGrammalecte.getPageText(), sCountry: "FR", bDebug: false, bContext: false},
+        dInfo: {}
+    });
+}
+
+function parseAndSpellcheckEditableNode (xNode) {
+    oGrammalecte.startGCPanel(xNode);
+    let sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value : xNode.innerText;
+    xGrammalectePort.postMessage({
+        sCommand: "parseAndSpellcheck",
+        dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+        dInfo: {sTextAreaId: xNode.id}
+    });
+}
+
+function lexicographerPage () {
+    oGrammalecte.startLxgPanel();
+    xGrammalectePort.postMessage({
+        sCommand: "getListOfTokens",
+        dParam: {sText: oGrammalecte.getPageText()},
+        dInfo: {}
+    });
+}
+
+function lexicographerEditableNode (xNode) {
+    oGrammalecte.startLxgPanel();
+    let sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value : xNode.innerText;
+    xGrammalectePort.postMessage({
+        sCommand: "getListOfTokens",
+        dParam: {sText: sText},
+        dInfo: {sTextAreaId: xNode.id}
+    });
+}

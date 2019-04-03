@@ -461,23 +461,26 @@ class Lexicographe {
     }
 
     getListOfTokensReduc (sText, bInfo=true) {
-        let aTokenList = this.getListOfTokens(sText.replace("'", "’").trim(), false);
-        let iKey = 0;
+        let lToken = this.getListOfTokens(sText.replace("'", "’").trim(), false);
+        let iToken = 0;
         let aElem = [];
+        if (lToken.length == 0) {
+            return aElem;
+        }
         do {
-            let oToken = aTokenList[iKey];
+            let oToken = lToken[iToken];
             let sMorphLoc = '';
             let aTokenTempList = [oToken];
             if (oToken.sType == "WORD" || oToken.sType == "WORD_ELIDED"){
-                let iKeyTree = iKey + 1;
+                let iLocEnd = iToken + 1;
                 let oLocNode = this.oLocGraph[oToken.sValue.toLowerCase()];
                 while (oLocNode) {
-                    let oTokenNext = aTokenList[iKeyTree];
-                    iKeyTree++;
+                    let oTokenNext = lToken[iLocEnd];
+                    iLocEnd++;
                     if (oTokenNext) {
                         oLocNode = oLocNode[oTokenNext.sValue.toLowerCase()];
                     }
-                    if (oLocNode && iKeyTree <= aTokenList.length) {
+                    if (oLocNode && iLocEnd <= lToken.length) {
                         sMorphLoc = oLocNode["_:_"];
                         aTokenTempList.push(oTokenNext);
                     } else {
@@ -487,6 +490,7 @@ class Lexicographe {
             }
 
             if (sMorphLoc) {
+                // we have a locution
                 let sValue = '';
                 for (let oTokenWord of aTokenTempList) {
                     sValue += oTokenWord.sValue+' ';
@@ -524,8 +528,9 @@ class Lexicographe {
                 } else {
                     aElem.push(oTokenLocution);
                 }
-                iKey = iKey + aTokenTempList.length;
+                iToken = iToken + aTokenTempList.length;
             } else {
+                // No locution, we just add information
                 if (bInfo) {
                     let aRes = this.getInfoForToken(oToken);
                     if (aRes) {
@@ -534,9 +539,9 @@ class Lexicographe {
                 } else {
                     aElem.push(oToken);
                 }
-                iKey++;
+                iToken++;
             }
-        } while (iKey < aTokenList.length);
+        } while (iToken < lToken.length);
         return aElem;
     }
 }

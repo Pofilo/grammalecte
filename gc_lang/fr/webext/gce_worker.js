@@ -320,9 +320,6 @@ function setDictionary (sDictionary, oDict, dInfo) {
         case "main":
             oSpellChecker.setMainDictionary(oDict);
             break;
-        case "extended":
-            oSpellChecker.setExtendedDictionary(oDict);
-            break;
         case "community":
             oSpellChecker.setCommunityDictionary(oDict);
             break;
@@ -342,13 +339,6 @@ function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
     }
     //console.log("setDictionaryOnOff", sDictionary, bActivate);
     switch (sDictionary) {
-        case "extended":
-            if (bActivate) {
-                oSpellChecker.activateExtendedDictionary();
-            } else {
-                oSpellChecker.deactivateExtendedDictionary();
-            }
-            break;
         case "community":
             if (bActivate) {
                 oSpellChecker.activateCommunityDictionary();

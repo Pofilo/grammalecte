@@ -72,7 +72,32 @@ window.addEventListener(
                 browser.tabs.create({url: xElem.dataset.url});
             }
             else if (xElem.id == "conj_button") {
-                openConjugueurTab();
+                browser.runtime.sendMessage({
+                    sCommand: "openConjugueurTab",
+                    dParam: {},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id == "dictionaries_button") {
+                browser.runtime.sendMessage({
+                    sCommand: "openDictionaries",
+                    dParam: { "dictionary": "__community__"},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id == "dic_community_button") {
+                browser.runtime.sendMessage({
+                    sCommand: "openLexiconEditor",
+                    dParam: { "dictionary": "__community__"},
+                    dInfo: {}
+                });
+            }
+            else if (xElem.id == "dic_personal_button") {
+                browser.runtime.sendMessage({
+                    sCommand: "openLexiconEditor",
+                    dParam: { "dictionary": "__personal__"},
+                    dInfo: {}
+                });
             }
         } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
@@ -84,7 +109,7 @@ window.addEventListener(
 );
 
 
-/* 
+/*
     Message sender
     and response handling
 */
@@ -100,7 +125,7 @@ function handleError (error) {
 
 function sendMessageAndWaitResponse (oData) {
     let xPromise = browser.runtime.sendMessage(oData);
-    xPromise.then(handleResponse, handleError);  
+    xPromise.then(handleResponse, handleError);
 }
 
 
@@ -158,32 +183,6 @@ function showTestResult (sText) {
     document.getElementById("tests_result").textContent = sText;
 }
 
-function openConjugueurTab () {
-    if (bChrome) {
-        browser.tabs.create({
-            url: browser.extension.getURL("panel/conjugueur.html")
-        });
-        return;
-    }
-    let xConjTab = browser.tabs.create({
-        url: browser.extension.getURL("panel/conjugueur.html")
-    });
-    xConjTab.then(onCreated, onError);
-}
-
-function openConjugueurTab () {
-    if (bChrome) {
-        browser.tabs.create({
-            url: browser.extension.getURL("panel/conjugueur.html")
-        });
-        return;
-    }
-    let xConjTab = browser.tabs.create({
-        url: browser.extension.getURL("panel/conjugueur.html")
-    });
-    xConjTab.then(onCreated, onError);
-}
-
 
 /*
     UI options
@@ -236,15 +235,15 @@ function displaySCOptions (dOptions) {
         return;
     }
     dOptions = dOptions.sc_options;
-    //document.getElementById("extended_dic").checked = dOptions.extended_dic;
-    //document.getElementById("community_dic").checked = dOptions.community_dic;
+    //document.getElementById("extended_dic").checked = dOptions.extended;
+    document.getElementById("community_dic").checked = dOptions.community;
     document.getElementById("personal_dic").checked = dOptions.personal;
 }
 
 function storeSCOptions () {
     browser.storage.local.set({"sc_options": {
         extended: false,
-        community: false,
+        community: document.getElementById("community_dic").checked,
         personal: document.getElementById("personal_dic").checked
     }});
 }

@@ -64,7 +64,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.clear();
         if (xNode) {
             this.oNodeControl.setNode(xNode);
-            if (xNode.tagName != "TEXTAREA") {
+            if (!(xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT")) {
                 this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Une telle zone de texte est susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             }
         }
@@ -465,7 +465,7 @@ class GrammalecteNodeControl {
     setNode (xNode) {
         this.clear();
         this.xNode = xNode;
-        this.bTextArea = (xNode.tagName == "TEXTAREA");
+        this.bTextArea = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT");
         this.xNode.disabled = true;
         this._loadText();
     }

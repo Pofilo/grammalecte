@@ -6,7 +6,7 @@ def getUI (sLang):
 dStrings = {
     "fr": {
         "title": "Grammalecte · Options orthographiques",
-        
+
         "spelling_section": "Correcteur orthographique",
         "activate_main": "Activer le correcteur orthographique de Grammalecte",
         "activate_main_descr": "Supplante le correcteur orthographique inclus dans LibreOffice (Hunspell).",
@@ -23,8 +23,6 @@ dStrings = {
         "allvars": "Toutes variantes",
         "classic": "Classique",
         "reform": "Réforme 1990",
-        "activate_extended": "Dictionnaire étendu",
-        "activate_extended_descr": "Fonctionnalité à venir",
         "activate_community": "Dictionnaire communautaire",
         "activate_community_descr": "Fonctionnalité à venir",
         "activate_personal": "Dictionnaire personnel",
@@ -37,7 +35,7 @@ dStrings = {
     },
     "en": {
         "title": "Grammalecte · Spelling options",
-        
+
         "spelling_section": "Spell checker",
         "activate_main": "Activate the spell checker from Grammalecte",
         "activate_main_descr": "Overrides the spell checker included in LibreOffice (Hunspell)",
@@ -54,8 +52,6 @@ dStrings = {
         "allvars": "All variants",
         "classic": "Classic",
         "reform": "Reform 1990",
-        "activate_extended": "Extended dictionary",
-        "activate_extended_descr": "Feature to come.",
         "activate_community": "Community dictionary",
         "activate_community_descr": "Feature to come.",
         "activate_personal": "Personal dictionary",

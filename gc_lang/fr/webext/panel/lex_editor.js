@@ -19,7 +19,7 @@ function showError (e) {
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
-function createNode  (sType, oAttr, oDataset=null) {
+function createNode (sType, oAttr, oDataset=null) {
     try {
         let xNode = document.createElement(sType);
         Object.assign(xNode, oAttr);
@@ -33,9 +33,9 @@ function createNode  (sType, oAttr, oDataset=null) {
     }
 }
 
-function showElement (sElemId) {
+function showElement (sElemId, sDisplay="block") {
     if (document.getElementById(sElemId)) {
-        document.getElementById(sElemId).style.display = "block";
+        document.getElementById(sElemId).style.display = sDisplay;
     } else {
         console.log("HTML node named <" + sElemId + "> not found.")
     }
@@ -47,6 +47,20 @@ function hideElement (sElemId) {
     } else {
         console.log("HTML node named <" + sElemId + "> not found.")
     }
+}
+
+function switchDisplay (sElemId, sDisplay="block") {
+    if (document.getElementById(sElemId)) {
+        if (document.getElementById(sElemId).style.display != "none") {
+            document.getElementById(sElemId).style.display = "none";
+        } else {
+            document.getElementById(sElemId).style.display = sDisplay;
+        }
+    }
+}
+
+function showMessage (sMessage) {
+    console.log(sMessage);
 }
 
 
@@ -127,8 +141,11 @@ class Table {
         while (this.xTable.firstChild) {
             this.xTable.removeChild(this.xTable.firstChild);
         }
+        this.lEntry = [];
+        this.nEntry = 0;
         this.iEntryIndex = 0;
         this._createHeader();
+        this.showEntryNumber();
     }
 
     fill (lFlex) {
@@ -202,7 +219,7 @@ class Table {
         this.nEntry -= 1;
         this.showEntryNumber();
         if (this.sNodeId == "lexicon_table") {
-            showElement("save_button");
+            showElement("save_button", "inline-block");
         }
     }
 
@@ -482,7 +499,7 @@ const oGenerator = {
             document.getElementById("lemma").focus();
             this.hideAllSections();
             hideElement("editor");
-            showElement("save_button");
+            showElement("save_button", "inline-block");
             this.clear();
             this.cMainTag = "";
         }
@@ -493,34 +510,180 @@ const oGenerator = {
 }
 
 
+const oDictHandler = {
+    oDictionaries: {},
+    oPersonalDictionary: null,
+    lCreatedDictionaries: [],
+    xDicSelector: document.getElementById("dic_selector"),
+
+    loadDictionaries: function () {
+        if (bChrome) {
+            browser.storage.local.get("shared_dictionaries", this._loadDictionaries.bind(this));
+            browser.storage.local.get("personal_dictionary", this._loadDictionaries.bind(this));
+            browser.storage.local.get("created_dictionaries_list", this._loadDictionaries.bind(this));
+            return;
+        }
+        let xPromise = browser.storage.local.get("shared_dictionaries");
+        xPromise.then(this._loadDictionaries.bind(this), showError);
+        let xPromise2 = browser.storage.local.get("personal_dictionary");
+        xPromise2.then(this._loadDictionaries.bind(this), showError);
+        let xPromise3 = browser.storage.local.get("created_dictionaries_list");
+        xPromise3.then(this._loadDictionaries.bind(this), showError);
+    },
+
+    _loadDictionaries: function (oResult) {
+        if (oResult.hasOwnProperty("shared_dictionaries")) {
+            this.oDictionaries = oResult.shared_dictionaries;
+        }
+        if (oResult.hasOwnProperty("personal_dictionary")) {
+            this.oPersonalDictionary = oResult.personal_dictionary;
+            oBinaryDict.load("__personal__");
+        }
+        if (oResult.hasOwnProperty("created_dictionaries_list")) {
+            this.lCreatedDictionaries = oResult.created_dictionaries_list;
+            for (let sDicName of this.lCreatedDictionaries) {
+                let xOption = createNode("option", {value: sDicName, textContent: sDicName});
+                this.xDicSelector.appendChild(xOption);
+            }
+        }
+    },
+
+    addDictionary: function (sDicName) {
+        if (!this.oDictionaries.hasOwnProperty(sDicName)) {
+            let xOption = createNode("option", {value: sDicName, textContent: sDicName});
+            this.xDicSelector.appendChild(xOption);
+            this.xDicSelector.selectedIndex = this.xDicSelector.options.length-1;
+            this.lCreatedDictionaries.push(sDicName);
+            browser.storage.local.set({ "created_dictionaries_list": this.lCreatedDictionaries });
+        }
+    },
+
+    deleteDictionary: function (sDicName) {
+        this.saveDictionary(sDicName, null);
+        if (sDicName != "__personal__") {
+            let iDict = this.lCreatedDictionaries.indexOf(sDicName);
+            if (iDict > -1) {
+                this.lCreatedDictionaries.splice(iDict, 1);
+            }
+            browser.storage.local.set({ "created_dictionaries_list": this.lCreatedDictionaries });
+            for (let xNode of this.xDicSelector.childNodes) {
+                if (xNode.value == sDicName) {
+                    this.xDicSelector.removeChild(xNode);
+                }
+            }
+            this.xDicSelector.selectedIndex = 0;
+            oBinaryDict.load("__personal__");
+        }
+    },
+
+    getDictionary: function (sName) {
+        if (sName == "__personal__") {
+            return this.oPersonalDictionary;
+        }
+        else if (this.oDictionaries  &&  this.oDictionaries.hasOwnProperty(sName)) {
+            //console.log(this.oDictionaries[sName]);
+            return this.oDictionaries[sName];
+        }
+        return null;
+    },
+
+    saveDictionary: function (sName, oJSON) {
+        if (sName == "__personal__") {
+            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
+            browser.storage.local.set({ "personal_dictionary": oJSON });
+        }
+        else {
+            this.oDictionaries[sName] = oJSON;
+            if (oJSON === null) {
+                delete this.oDictionaries[sName];
+            }
+            browser.storage.local.set({ "shared_dictionaries": this.oDictionaries });
+            this.sendDictionaryOnline(oJSON);
+        }
+    },
+
+    sendDictionaryOnline: function (oJSON) {
+        let sJSON = "";
+        try {
+            sJSON = JSON.stringify(oJSON);
+        }
+        catch (e) {
+            showError(e);
+            return e.message;
+        }
+        console.log("Send online dictionary: " + oJSON.sDicName);
+        fetch("http://localhost/receive/", {
+            method: "POST", // *GET, POST, PUT, DELETE, etc.
+            //mode: "cors", // no-cors, cors, *same-origin
+            //cache: "no-cache", // *default, no-cache, reload, force-cache, only-if-cached
+            credentials: "include", // include, *same-origin, omit
+            headers: {
+                "Content-Type": "application/json",  // text/plain, application/json
+                "Content-Length": sJSON.length
+            },
+            redirect: "follow", // manual, *follow, error
+            referrer: "no-referrer", // no-referrer, *client
+            body: sJSON, // body data type must match "Content-Type" header
+        })
+        .then((response) => {
+            if (response.ok) {
+                for (let param in response) {
+                    console.log(param, response[param]);
+                }
+                console.log(response);
+                return response.json();
+            } else {
+                console.log("Error: dictionary not sent: " + oJSON.sDicName);
+                return null;
+            }
+        })
+        .then((response) => {
+            if (response) {
+                console.log(response);
+            } else {
+                //
+            }
+        })
+        .catch((e) => {
+            showError(e);
+        });
+    }
+}
+
+
 const oBinaryDict = {
 
     oIBDAWG: null,
+    sName: "",
+    sDescription: "",
 
-    load: function () {
-        if (bChrome) {
-            browser.storage.local.get("oPersonalDictionary", this._load.bind(this));
-            return;
-        }
-        let xPromise = browser.storage.local.get("oPersonalDictionary");
-        xPromise.then(this._load.bind(this), showError);
-    },
-
-    _load: function (oResult) {
-        if (!oResult.hasOwnProperty("oPersonalDictionary")) {
-            hideElement("export_button");
-            return;
-        }
-        let oJSON = oResult.oPersonalDictionary;
+    load: function (sName) {
+        console.log("lexicon editor, load: " + sName);
+        this.sName = sName;
+        let oJSON = oDictHandler.getDictionary(sName);
         if (oJSON) {
-            this.__load(oJSON);
+            this.parseDict(oJSON);
         } else {
             oLexiconTable.clear();
             this.setDictData(0, "[néant]");
+            hideElement("save_button");
         }
     },
 
-    __load: function (oJSON) {
+    newDictionary: function () {
+        this.oIBDAWG = null;
+        this.sName = document.getElementById("new_dictionary_name").value;
+        this.sDescription = document.getElementById("new_dictionary_description").value;
+        oDictHandler.addDictionary(this.sName);
+        oLexiconTable.clear();
+        this.setDictData(0, "[néant]");
+        hideElement("save_button");
+        document.getElementById("new_dictionary_name").value = "";
+        document.getElementById("new_dictionary_description").value = "";
+        hideElement("new_dictionary_section")
+    },
+
+    parseDict: function (oJSON) {
         try {
             this.oIBDAWG = new IBDAWG(oJSON);
         }
@@ -535,11 +698,7 @@ const oBinaryDict = {
         }
         oLexiconTable.fill(lEntry);
         this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
-    },
-
-    save: function (oJSON) {
-        browser.storage.local.set({ "oPersonalDictionary": oJSON });
-        browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
+        hideElement("save_button");
     },
 
     import: function () {
@@ -550,8 +709,8 @@ const oBinaryDict = {
         if (sJSON) {
             try {
                 let oJSON = JSON.parse(sJSON);
-                this.__load(oJSON);
-                this.save(oJSON);
+                this.parseDict(oJSON);
+                oDictHandler.saveDictionary(this.sName, oJSON);
             }
             catch (e) {
                 console.error(e);
@@ -560,7 +719,7 @@ const oBinaryDict = {
             }
         } else {
             this.setDictData(0, "[néant]");
-            this.save(null);
+            oDictHandler.saveDictionary(this.sName, null);
         }
     },
 
@@ -575,31 +734,43 @@ const oBinaryDict = {
     },
 
     listen: function () {
+        document.getElementById("dic_selector").addEventListener("change", () => {this.load(document.getElementById("dic_selector").value)}, false);
         document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_input").addEventListener("change", () => { this.import(); }, false);
+        document.getElementById("new_dictionary_button").addEventListener("click", () => { switchDisplay("new_dictionary_section"); }, false);
+        document.getElementById("delete_dictionary_button").addEventListener("click", () => { this.delete(); }, false);
+        document.getElementById("create_dictionary_button").addEventListener("click", () => { this.newDictionary(); }, false);
     },
 
     build: function () {
         let xProgressNode = document.getElementById("wait_progress");
         let lEntry = oLexiconTable.getEntries();
         if (lEntry.length > 0) {
-            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", "fr.personal", xProgressNode);
+            let oDAWG = new DAWG(lEntry, "S", "fr", "Français", this.sName, this.sDescription, xProgressNode);
             let oJSON = oDAWG.createBinaryJSON(1);
-            this.save(oJSON);
+            oDictHandler.saveDictionary(this.sName, oJSON);
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
         } else {
+            oDictHandler.saveDictionary(this.sName, null);
             this.setDictData(0, "[néant]");
-            this.save(null);
         }
         hideElement("save_button");
+    },
+
+    delete: function () {
+        if (confirm("Voulez-vous effacer le dictionnaire “"+this.sName+"” ?")) {
+            oLexiconTable.clear();
+            this.setDictData(0, "[néant]");
+            oDictHandler.deleteDictionary(this.sName);
+        }
     },
 
     export: function () {
         let xBlob = new Blob([ JSON.stringify(this.oIBDAWG.getJSON()) ], {type: 'application/json'});
         let sURL = URL.createObjectURL(xBlob);
-        browser.downloads.download({ filename: "fr.personal.json", url: sURL, saveAs: true });
+        browser.downloads.download({ filename: "fr."+this.sName+".json", url: sURL, saveAs: true });
     }
 }
 
@@ -666,7 +837,7 @@ const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], "wai
 
 oTagsInfo.load();
 oSearch.load();
-oBinaryDict.load();
+oDictHandler.loadDictionaries();
 oBinaryDict.listen();
 oGenerator.listen();
 oTabulations.listen();

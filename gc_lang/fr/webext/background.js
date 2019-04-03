@@ -119,21 +119,18 @@ function setDictionaryOnOff (sDictionary, bActivate) {
     });
 }
 
-function initSCOptions (dSavedOptions) {
-    if (!dSavedOptions.hasOwnProperty("sc_options")) {
+function initSCOptions (oData) {
+    if (!oData.hasOwnProperty("sc_options")) {
         browser.storage.local.set({"sc_options": {
             extended: true,
             community: true,
             personal: true
         }});
-        setDictionaryOnOff("extended", true);
         setDictionaryOnOff("community", true);
         setDictionaryOnOff("personal", true);
     } else {
-        let dOptions = dSavedOptions.sc_options;
-        setDictionaryOnOff("extended", dOptions["extended"]);
-        setDictionaryOnOff("community", dOptions["community"]);
-        setDictionaryOnOff("personal", dOptions["personal"]);
+        setDictionaryOnOff("community", oData.sc_options["community"]);
+        setDictionaryOnOff("personal", oData.sc_options["personal"]);
     }
 }
 
@@ -145,15 +142,19 @@ function setDictionary (sDictionary, oDictionary) {
     });
 }
 
-function setSpellingDictionary (dSavedDictionary) {
-    if (dSavedDictionary.hasOwnProperty("oExtendedDictionary")) {
-        setDictionary("extended", dSavedDictionary["oExtendedDictionary"]);
+function setSpellingDictionaries (oData) {
+    if (oData.hasOwnProperty("oPersonalDictionary")) {
+        // deprecated (to be removed in 2020)
+        console.log("personal dictionary migration");
+        browser.storage.local.set({ "personal_dictionary": oData["oPersonalDictionary"] });
+        setDictionary("personal", oData["oPersonalDictionary"]);
+        browser.storage.local.remove("oPersonalDictionary");
     }
-    if (dSavedDictionary.hasOwnProperty("oCommunityDictionary")) {
-        setDictionary("community", dSavedDictionary["oCommunityDictionary"]);
+    if (oData.hasOwnProperty("personal_dictionary")) {
+        setDictionary("personal", oData["personal_dictionary"]);
     }
-    if (dSavedDictionary.hasOwnProperty("oPersonalDictionary")) {
-        setDictionary("personal", dSavedDictionary["oPersonalDictionary"]);
+    if (oData.hasOwnProperty("community_dictionary")) {
+        setDictionary("community", oData["community_dictionary"]);
     }
 }
 
@@ -161,17 +162,17 @@ function init () {
     if (bChrome) {
         browser.storage.local.get("gc_options", initGrammarChecker);
         browser.storage.local.get("ui_options", initUIOptions);
-        browser.storage.local.get("oExtendedDictionary", setSpellingDictionary);
-        browser.storage.local.get("oCommunityDictionary", setSpellingDictionary);
-        browser.storage.local.get("oPersonalDictionary", setSpellingDictionary);
+        browser.storage.local.get("personal_dictionary", setSpellingDictionaries);
+        browser.storage.local.get("community_dictionary", setSpellingDictionaries);
+        browser.storage.local.get("oPersonalDictionary", setSpellingDictionaries); // deprecated
         browser.storage.local.get("sc_options", initSCOptions);
         return;
     }
     browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
     browser.storage.local.get("ui_options").then(initUIOptions, showError);
-    browser.storage.local.get("oExtendedDictionary").then(setSpellingDictionary, showError);
-    browser.storage.local.get("oCommunityDictionary").then(setSpellingDictionary, showError);
-    browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionary, showError);
+    browser.storage.local.get("personal_dictionary").then(setSpellingDictionaries, showError);
+    browser.storage.local.get("community_dictionary").then(setSpellingDictionaries, showError);
+    browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionaries, showError); // deprecated
     browser.storage.local.get("sc_options").then(initSCOptions, showError);
 }
 
@@ -217,6 +218,15 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "openURL":
             browser.tabs.create({url: dParam.sURL});
             break;
+        case "openConjugueurTab":
+            openConjugueurTab();
+            break;
+        case "openLexiconEditor":
+            openLexiconEditor(dParam["dictionary"]);
+            break;
+        case "openDictionaries":
+            openDictionaries();
+            break;
         default:
             console.log("[background] Unknown command: " + sCommand);
             console.log(oRequest);
@@ -228,6 +238,7 @@ browser.runtime.onMessage.addListener(handleMessage);
 
 
 function handleConnexion (xPort) {
+    // Messages from tabs
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
     dConnx.set(iPortId, xPort);
     xPort.onMessage.addListener(function (oRequest) {
@@ -279,9 +290,11 @@ browser.contextMenus.create({ id: "separator_editable",         type: "separator
 browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["all"] }); // on all parts, due to unwanted selection
 browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["all"] });
 browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["all"] });
-// Conjugueur
+// Tools
 browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
+browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
+browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
 // Rescan page
 browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });
 browser.contextMenus.create({ id: "rescanPage",                 title: "Rechercher à nouveau les zones de texte",   contexts: ["editable"] });
@@ -325,6 +338,12 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
         case "conjugueur_tab":
             openConjugueurTab();
             break;
+        case "lexicon_editor":
+            openLexiconEditor();
+            break;
+        case "dictionaries":
+            openDictionaries();
+            break;
         // rescan page
         case "rescanPage":
             let xPort = dConnx.get(xTab.id);
@@ -343,15 +362,43 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
 */
 browser.commands.onCommand.addListener(function (sCommand) {
     switch (sCommand) {
+        case "lexicographer":
+            sendCommandToCurrentTab("shortcutLexicographer");
+            break;
+        case "text_formatter":
+            sendCommandToCurrentTab("shortcutTextFormatter");
+            break;
+        case "grammar_checker":
+            sendCommandToCurrentTab("shortcutGrammarChecker");
+            break;
         case "conjugueur_tab":
             openConjugueurTab();
             break;
         case "conjugueur_window":
             openConjugueurWindow();
             break;
-        case "lex_editor":
-            openLexEditor();
+        case "lexicon_editor":
+            openLexiconEditor();
             break;
+        case "dictionaries":
+            openDictionaries();
+            break;
+    }
+});
+
+
+/*
+    Tabs
+*/
+let nTabLexiconEditor = null;
+let nTabDictionaries = null;
+let nTabConjugueur = null;
+
+browser.tabs.onRemoved.addListener(function (nTabId, xRemoveInfo) {
+    switch (nTabId) {
+        case nTabLexiconEditor: nTabLexiconEditor = null; break;
+        case nTabDictionaries:  nTabDictionaries = null; break;
+        case nTabConjugueur:    nTabConjugueur = null; break;
     }
 });
 
@@ -372,30 +419,89 @@ function sendCommandToTab (sCommand, iTab) {
     xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
 }
 
-function openLexEditor () {
+function sendCommandToCurrentTab (sCommand) {
+    console.log(sCommand);
     if (bChrome) {
-        browser.tabs.create({
-            url: browser.extension.getURL("panel/lex_editor.html")
+        browser.tabs.query({ currentWindow: true, active: true }, (lTabs) => {
+            for (let xTab of lTabs) {
+                console.log(xTab);
+                browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
+            }
         });
         return;
     }
-    let xLexEditor = browser.tabs.create({
-        url: browser.extension.getURL("panel/lex_editor.html")
-    });
-    xLexEditor.then(onCreated, onError);
+    browser.tabs.query({ currentWindow: true, active: true }).then((lTabs) => {
+        for (let xTab of lTabs) {
+            console.log(xTab);
+            browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
+        }
+    }, onError);
+}
+
+function openLexiconEditor (sName="__personal__") {
+    if (nTabLexiconEditor === null) {
+        if (bChrome) {
+            browser.tabs.create({
+                url: browser.extension.getURL("panel/lex_editor.html")
+            }, onLexiconEditorOpened);
+            return;
+        }
+        let xLexEditor = browser.tabs.create({
+            url: browser.extension.getURL("panel/lex_editor.html")
+        });
+        xLexEditor.then(onLexiconEditorOpened, onError);
+    }
+    else {
+        browser.tabs.update(nTabLexiconEditor, {active: true});
+    }
+}
+
+function onLexiconEditorOpened (xTab) {
+    nTabLexiconEditor = xTab.id;
+}
+
+function openDictionaries () {
+    if (nTabDictionaries === null) {
+        if (bChrome) {
+            browser.tabs.create({
+                url: browser.extension.getURL("panel/dictionaries.html")
+            }, onDictionariesOpened);
+            return;
+        }
+        let xLexEditor = browser.tabs.create({
+            url: browser.extension.getURL("panel/dictionaries.html")
+        });
+        xLexEditor.then(onDictionariesOpened, onError);
+    }
+    else {
+        browser.tabs.update(nTabDictionaries, {active: true});
+    }
+}
+
+function onDictionariesOpened (xTab) {
+    nTabDictionaries = xTab.id;
 }
 
 function openConjugueurTab () {
-    if (bChrome) {
-        browser.tabs.create({
+    if (nTabDictionaries === null) {
+        if (bChrome) {
+            browser.tabs.create({
+                url: browser.extension.getURL("panel/conjugueur.html")
+            }, onConjugueurOpened);
+            return;
+        }
+        let xConjTab = browser.tabs.create({
             url: browser.extension.getURL("panel/conjugueur.html")
         });
-        return;
+        xConjTab.then(onConjugueurOpened, onError);
     }
-    let xConjTab = browser.tabs.create({
-        url: browser.extension.getURL("panel/conjugueur.html")
-    });
-    xConjTab.then(onCreated, onError);
+    else {
+        browser.tabs.update(nTabConjugueur, {active: true});
+    }
+}
+
+function onConjugueurOpened (xTab) {
+    nTabConjugueur = xTab.id;
 }
 
 function openConjugueurWindow () {
@@ -414,14 +520,9 @@ function openConjugueurWindow () {
         width: 710,
         height: 980
     });
-    xConjWindow.then(onCreated, onError);
 }
 
 
-function onCreated (xWindowInfo) {
-    //console.log(`Created window: ${xWindowInfo.id}`);
-}
-
-function onError (error) {
-    console.log(`Error: ${error}`);
+function onError (e) {
+    console.error(e);
 }
