@@ -537,7 +537,6 @@ const oDictHandler = {
         }
         if (oResult.hasOwnProperty("personal_dictionary")) {
             this.oPersonalDictionary = oResult.personal_dictionary;
-            oBinaryDict.load("__personal__");
         }
         if (oResult.hasOwnProperty("created_dictionaries_list")) {
             this.lCreatedDictionaries = oResult.created_dictionaries_list;
@@ -546,6 +545,7 @@ const oDictHandler = {
                 this.xDicSelector.appendChild(xOption);
             }
         }
+        oBinaryDict.load("__personal__");
     },
 
     addDictionary: function (sDicName) {
@@ -588,6 +588,10 @@ const oDictHandler = {
     },
 
     saveDictionary: function (sName, oJSON) {
+        if (!sName) {
+            console.log("Error: name of dictionary to save is empty.")
+            return;
+        }
         if (sName == "__personal__") {
             browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
             browser.storage.local.set({ "personal_dictionary": oJSON });
@@ -657,7 +661,7 @@ const oBinaryDict = {
     sName: "",
     sDescription: "",
 
-    load: function (sName) {
+    load: function (sName="__personal__") {
         console.log("lexicon editor, load: " + sName);
         this.sName = sName;
         let oJSON = oDictHandler.getDictionary(sName);
@@ -738,7 +742,7 @@ const oBinaryDict = {
         document.getElementById("save_button").addEventListener("click", () => { this.build(); }, false);
         document.getElementById("export_button").addEventListener("click", () => { this.export(); }, false);
         document.getElementById("import_input").addEventListener("change", () => { this.import(); }, false);
-        document.getElementById("new_dictionary_button").addEventListener("click", () => { switchDisplay("new_dictionary_section"); }, false);
+        //document.getElementById("new_dictionary_button").addEventListener("click", () => { switchDisplay("new_dictionary_section"); }, false);
         document.getElementById("delete_dictionary_button").addEventListener("click", () => { this.delete(); }, false);
         document.getElementById("create_dictionary_button").addEventListener("click", () => { this.newDictionary(); }, false);
     },
