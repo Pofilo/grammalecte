@@ -233,12 +233,12 @@ class SpellChecker {
 
     * suggest (sWord, nSuggLimit=10) {
         // generator: returns 1, 2 or 3 lists of suggestions
-        yield this.oMainDic.suggest(sWord, nSuggLimit);
+        yield this.oMainDic.suggest(sWord, nSuggLimit, true);
         if (this.bCommunityDic) {
-            yield this.oCommunityDic.suggest(sWord, nSuggLimit);
+            yield this.oCommunityDic.suggest(sWord, Math.floor(nSuggLimit/2)+1);
         }
         if (this.bPersonalDic) {
-            yield this.oPersonalDic.suggest(sWord, nSuggLimit);
+            yield this.oPersonalDic.suggest(sWord, Math.floor(nSuggLimit/2)+1);
         }
     }
 

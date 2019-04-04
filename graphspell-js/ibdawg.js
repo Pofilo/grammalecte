@@ -321,7 +321,7 @@ class IBDAWG {
         return l;
     }
 
-    suggest (sWord, nSuggLimit=10) {
+    suggest (sWord, nSuggLimit=10, bSplitTrailingNumbers=false) {
         // returns a array of suggestions for <sWord>
         //console.time("Suggestions for " + sWord);
         sWord = char_player.spellingNormalization(sWord);
@@ -333,6 +333,9 @@ class IBDAWG {
         let nMaxHardRepl = Math.max(Math.floor((sWord.length - 5) / 4), 1);
         let nMaxJump = Math.max(Math.floor(sWord.length / 4), 1);
         let oSuggResult = new SuggResult(sWord);
+        if (bSplitTrailingNumbers) {
+            this._splitTrailingNumbers(oSuggResult, sWord);
+        }
         this._splitSuggest(oSuggResult, sWord);
         this._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump);
         let aSugg = oSuggResult.getSuggestions(nSuggLimit);
@@ -344,12 +347,14 @@ class IBDAWG {
         return aSugg;
     }
 
-    _splitSuggest (oSuggResult, sWord) {
-        // split trailing numbers
+    _splitTrailingNumbers (oSuggResult, sWord) {
         let m = /^([a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)([0-9]+)$/.exec(sWord);
         if (m) {
             oSuggResult.addSugg(m[1] + " " + char_player.numbersToExponent(m[2]));
         }
+    }
+
+    _splitSuggest (oSuggResult, sWord) {
         // split at apostrophes
         for (let cSplitter of "'’") {
             if (sWord.includes(cSplitter)) {

@@ -295,7 +295,7 @@ class IBDAWG:
         return l
 
     #@timethis
-    def suggest (self, sWord, nSuggLimit=10):
+    def suggest (self, sWord, nSuggLimit=10, bSplitTrailingNumbers=False):
         "returns a set of suggestions for <sWord>"
         sWord = sWord.rstrip(".")   # useful for LibreOffice
         sWord = cp.spellingNormalization(sWord)
@@ -305,6 +305,8 @@ class IBDAWG:
         nMaxHardRepl = max((len(sWord) - 5) // 4, 1)
         nMaxJump = max(len(sWord) // 4, 1)
         oSuggResult = SuggResult(sWord)
+        if bSplitTrailingNumbers:
+            self._splitTrailingNumbers(oSuggResult, sWord)
         self._splitSuggest(oSuggResult, sWord)
         self._suggest(oSuggResult, sWord, nMaxSwitch, nMaxDel, nMaxHardRepl, nMaxJump)
         aSugg = oSuggResult.getSuggestions(nSuggLimit)
@@ -313,12 +315,12 @@ class IBDAWG:
             return list(map(lambda sSug: sPfx + sSug + sSfx, aSugg))
         return aSugg
 
-    def _splitSuggest (self, oSuggResult, sWord):
-        # split trailing numbers
+    def _splitTrailingNumbers (self, oSuggResult, sWord):
         m = re.match(r"(\D+)([0-9]+)$", sWord)
         if m:
-            print("ok")
             oSuggResult.addSugg(m.group(1) + " " + cp.numbersToExponent(m.group(2)))
+
+    def _splitSuggest (self, oSuggResult, sWord):
         # split at apostrophes
         for cSplitter in "'’":
             if cSplitter in sWord:

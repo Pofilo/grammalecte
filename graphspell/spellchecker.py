@@ -225,13 +225,13 @@ class SpellChecker ():
                 lRes = self.dDefaultSugg[sWord.lower()].split("|")
                 yield list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))
             else:
-                yield self.oMainDic.suggest(sWord, nSuggLimit)
+                yield self.oMainDic.suggest(sWord, nSuggLimit, True)
         else:
-            yield self.oMainDic.suggest(sWord, nSuggLimit)
+            yield self.oMainDic.suggest(sWord, nSuggLimit, True)
         if self.bCommunityDic:
-            yield self.oCommunityDic.suggest(sWord, nSuggLimit)
+            yield self.oCommunityDic.suggest(sWord, (nSuggLimit//2)+1)
         if self.bPersonalDic:
-            yield self.oPersonalDic.suggest(sWord, nSuggLimit)
+            yield self.oPersonalDic.suggest(sWord, (nSuggLimit//2)+1)
 
     def select (self, sFlexPattern="", sTagsPattern=""):
         "generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>"
