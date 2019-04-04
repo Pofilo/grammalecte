@@ -66,13 +66,13 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
                     except:
                         print("Graphspell: wrong personal_dic")
                         traceback.print_exc()
-            self.oGraphspell = SpellChecker("fr", "fr-"+sMainDicName+".bdic", "", "", personal_dic)
+            self.oGraphspell = SpellChecker("fr", "fr-"+sMainDicName+".bdic", "", personal_dic)
             self.loadHunspell()
             # print("Graphspell: init done")
         except:
             print("Graphspell: init failed")
             traceback.print_exc()
-    
+
     def loadHunspell (self):
         # Hunspell is a fallback spellchecker
         try:
@@ -108,10 +108,10 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             if aLocale.Language == e.Language and (e.Country == aLocale.Country or e.Country == ""):
                 return True
         return False
-    
+
     def getLocales (self):
         return self.locales
-    
+
     # XSpellChecker
     # http://www.openoffice.org/api/docs/common/ref/com/sun/star/linguistic2/XSpellChecker.html
     def isValid (self, aWord, rLocale, aProperties):
@@ -157,7 +157,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
 
 
 class SpellAlternatives (unohelper.Base, XSpellAlternatives):
-    
+
     def __init__ (self, sWord, lSugg):
         try:
             self.sWord = sWord
@@ -165,15 +165,15 @@ class SpellAlternatives (unohelper.Base, XSpellAlternatives):
             self.xLocale = Locale('fr', 'FR', '')
         except:
             traceback.print_exc()
-    
+
     # XSpellAlternatives
     # http://www.openoffice.org/api/docs/common/ref/com/sun/star/linguistic2/XSpellAlternatives.html
     def getWord (self):
         return self.sWord
-    
+
     def getLocale (self):
         return self.xLocale
-    
+
     def getFailureType (self):
         return 4
         # IS_NEGATIVE_WORD = 2
@@ -183,10 +183,10 @@ class SpellAlternatives (unohelper.Base, XSpellAlternatives):
         # SPELLING_ERROR = 4
         #   The spelling of the word is wrong (or at least not known to be correct).
         # No difference -> red underline
-    
+
     def getAlternativesCount (self):
         return len(self.lSugg)
-    
+
     def getAlternatives (self):
         return self.lSugg
 

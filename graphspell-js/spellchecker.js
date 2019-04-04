@@ -4,8 +4,7 @@
 
 // To avoid iterating over a pile of dictionaries, it is assumed that 3 are enough:
 // - the main dictionary, bundled with the package
-// - the extended dictionary
-// - the community dictionary, added by an organization
+// - the community dictionary, a merge of different external dictionaries
 // - the personal dictionary, created by the user for its own convenience
 
 /* jshint esversion:6, -W097 */
@@ -33,17 +32,15 @@ const dDefaultDictionaries = new Map([
 
 class SpellChecker {
 
-    constructor (sLangCode, sPath="", mainDic="", extentedDic="", communityDic="", personalDic="") {
+    constructor (sLangCode, sPath="", mainDic="", communityDic="", personalDic="") {
         // returns true if the main dictionary is loaded
         this.sLangCode = sLangCode;
         if (!mainDic) {
             mainDic = dDefaultDictionaries.gl_get(sLangCode, "");
         }
         this.oMainDic = this._loadDictionary(mainDic, sPath, true);
-        this.oExtendedDic = this._loadDictionary(extentedDic, sPath);
         this.oCommunityDic = this._loadDictionary(communityDic, sPath);
         this.oPersonalDic = this._loadDictionary(personalDic, sPath);
-        this.bExtendedDic = Boolean(this.oExtendedDic);
         this.bCommunityDic = Boolean(this.oCommunityDic);
         this.bPersonalDic = Boolean(this.oPersonalDic);
         this.oTokenizer = null;
@@ -97,13 +94,6 @@ class SpellChecker {
         return Boolean(this.oMainDic);
     }
 
-    setExtendedDictionary (dictionary, sPath="", bActivate=true) {
-        // returns true if the dictionary is loaded
-        this.oExtendedDic = this._loadDictionary(dictionary, sPath);
-        this.bExtendedDic = (bActivate) ? Boolean(this.oExtendedDic) : false;
-        return Boolean(this.oExtendedDic);
-    }
-
     setCommunityDictionary (dictionary, sPath="", bActivate=true) {
         // returns true if the dictionary is loaded
         this.oCommunityDic = this._loadDictionary(dictionary, sPath);
@@ -118,20 +108,12 @@ class SpellChecker {
         return Boolean(this.oPersonalDic);
     }
 
-    activateExtendedDictionary () {
-        this.bExtendedDic = Boolean(this.oExtendedDic);
-    }
-
     activateCommunityDictionary () {
         this.bCommunityDic = Boolean(this.oCommunityDic);
     }
 
     activatePersonalDictionary () {
         this.bPersonalDic = Boolean(this.oPersonalDic);
-    }
-
-    deactivateExtendedDictionary () {
-        this.bExtendedDic = false;
     }
 
     deactivateCommunityDictionary () {
@@ -181,9 +163,6 @@ class SpellChecker {
         if (this.oMainDic.isValidToken(sToken)) {
             return true;
         }
-        if (this.bExtendedDic && this.oExtendedDic.isValidToken(sToken)) {
-            return true;
-        }
         if (this.bCommunityDic && this.oCommunityDic.isValidToken(sToken)) {
             return true;
         }
@@ -198,9 +177,6 @@ class SpellChecker {
         if (this.oMainDic.isValid(sWord)) {
             return true;
         }
-        if (this.bExtendedDic && this.oExtendedDic.isValid(sWord)) {
-            return true;
-        }
         if (this.bCommunityDic && this.oCommunityDic.isValid(sWord)) {
             return true;
         }
@@ -213,9 +189,6 @@ class SpellChecker {
     lookup (sWord) {
         // checks if sWord is in dictionary as is (strict verification)
         if (this.oMainDic.lookup(sWord)) {
-            return true;
-        }
-        if (this.bExtendedDic && this.oExtendedDic.lookup(sWord)) {
             return true;
         }
         if (this.bCommunityDic && this.oCommunityDic.lookup(sWord)) {
@@ -233,9 +206,6 @@ class SpellChecker {
             return this._dMorphologies.get(sWord);
         }
         let lMorph = this.oMainDic.getMorph(sWord);
-        if (this.bExtendedDic) {
-            lMorph.push(...this.oExtendedDic.getMorph(sWord));
-        }
         if (this.bCommunityDic) {
             lMorph.push(...this.oCommunityDic.getMorph(sWord));
         }
@@ -264,9 +234,6 @@ class SpellChecker {
     * suggest (sWord, nSuggLimit=10) {
         // generator: returns 1, 2 or 3 lists of suggestions
         yield this.oMainDic.suggest(sWord, nSuggLimit);
-        if (this.bExtendedDic) {
-            yield this.oExtendedDic.suggest(sWord, nSuggLimit);
-        }
         if (this.bCommunityDic) {
             yield this.oCommunityDic.suggest(sWord, nSuggLimit);
         }
@@ -278,9 +245,6 @@ class SpellChecker {
     * select (sFlexPattern="", sTagsPattern="") {
         // generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>
         yield* this.oMainDic.select(sFlexPattern, sTagsPattern);
-        if (this.bExtendedDic) {
-            yield* this.oExtendedDic.select(sFlexPattern, sTagsPattern);
-        }
         if (this.bCommunityDic) {
             yield* this.oCommunityDic.select(sFlexPattern, sTagsPattern);
         }
@@ -292,9 +256,6 @@ class SpellChecker {
     getSimilarEntries (sWord, nSuggLimit=10) {
         // return a list of tuples (similar word, stem, morphology)
         let lResult = this.oMainDic.getSimilarEntries(sWord, nSuggLimit);
-        if (this.bExtendedDic) {
-            lResult.push(...this.oExtendedDic.getSimilarEntries(sWord, nSuggLimit));
-        }
         if (this.bCommunityDic) {
             lResult.push(...this.oCommunityDic.getSimilarEntries(sWord, nSuggLimit));
         }

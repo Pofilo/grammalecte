@@ -25,16 +25,14 @@ dDefaultDictionaries = {
 class SpellChecker ():
     "SpellChecker: wrapper for the IBDAWG class"
 
-    def __init__ (self, sLangCode, sfMainDic="", sfExtendedDic="", sfCommunityDic="", sfPersonalDic=""):
+    def __init__ (self, sLangCode, sfMainDic="", sfCommunityDic="", sfPersonalDic=""):
         "returns True if the main dictionary is loaded"
         self.sLangCode = sLangCode
         if not sfMainDic:
             sfMainDic = dDefaultDictionaries.get(sLangCode, "")
         self.oMainDic = self._loadDictionary(sfMainDic, True)
-        self.oExtendedDic = self._loadDictionary(sfExtendedDic)
         self.oCommunityDic = self._loadDictionary(sfCommunityDic)
         self.oPersonalDic = self._loadDictionary(sfPersonalDic)
-        self.bExtendedDic = bool(self.oExtendedDic)
         self.bCommunityDic = bool(self.oCommunityDic)
         self.bPersonalDic = bool(self.oPersonalDic)
         self.oTokenizer = None
@@ -73,12 +71,6 @@ class SpellChecker ():
         self.oMainDic = self._loadDictionary(source, True)
         return bool(self.oMainDic)
 
-    def setExtendedDictionary (self, source, bActivate=True):
-        "returns True if the dictionary is loaded"
-        self.oExtendedDic = self._loadDictionary(source)
-        self.bExtendedDic = False  if not bActivate  else bool(self.oExtendedDic)
-        return bool(self.oExtendedDic)
-
     def setCommunityDictionary (self, source, bActivate=True):
         "returns True if the dictionary is loaded"
         self.oCommunityDic = self._loadDictionary(source)
@@ -91,10 +83,6 @@ class SpellChecker ():
         self.bPersonalDic = False  if not bActivate  else bool(self.oPersonalDic)
         return bool(self.oPersonalDic)
 
-    def activateExtendedDictionary (self):
-        "activate extended dictionary (if available)"
-        self.bExtendedDic = bool(self.oExtendedDic)
-
     def activateCommunityDictionary (self):
         "activate community dictionary (if available)"
         self.bCommunityDic = bool(self.oCommunityDic)
@@ -102,10 +90,6 @@ class SpellChecker ():
     def activatePersonalDictionary (self):
         "activate personal dictionary (if available)"
         self.bPersonalDic = bool(self.oPersonalDic)
-
-    def deactivateExtendedDictionary (self):
-        "deactivate extended dictionary"
-        self.bExtendedDic = False
 
     def deactivateCommunityDictionary (self):
         "deactivate community dictionary"
@@ -184,8 +168,6 @@ class SpellChecker ():
         "checks if sToken is valid (if there is hyphens in sToken, sToken is split, each part is checked)"
         if self.oMainDic.isValidToken(sToken):
             return True
-        if self.bExtendedDic and self.oExtendedDic.isValidToken(sToken):
-            return True
         if self.bCommunityDic and self.oCommunityDic.isValidToken(sToken):
             return True
         if self.bPersonalDic and self.oPersonalDic.isValidToken(sToken):
@@ -196,8 +178,6 @@ class SpellChecker ():
         "checks if sWord is valid (different casing tested if the first letter is a capital)"
         if self.oMainDic.isValid(sWord):
             return True
-        if self.bExtendedDic and self.oExtendedDic.isValid(sWord):
-            return True
         if self.bCommunityDic and self.oCommunityDic.isValid(sWord):
             return True
         if self.bPersonalDic and self.oPersonalDic.isValid(sWord):
@@ -207,8 +187,6 @@ class SpellChecker ():
     def lookup (self, sWord):
         "checks if sWord is in dictionary as is (strict verification)"
         if self.oMainDic.lookup(sWord):
-            return True
-        if self.bExtendedDic and self.oExtendedDic.lookup(sWord):
             return True
         if self.bCommunityDic and self.oCommunityDic.lookup(sWord):
             return True
@@ -221,8 +199,6 @@ class SpellChecker ():
         if self.bStorage and sWord in self._dMorphologies:
             return self._dMorphologies[sWord]
         lMorph = self.oMainDic.getMorph(sWord)
-        if self.bExtendedDic:
-            lMorph.extend(self.oExtendedDic.getMorph(sWord))
         if self.bCommunityDic:
             lMorph.extend(self.oCommunityDic.getMorph(sWord))
         if self.bPersonalDic:
@@ -252,8 +228,6 @@ class SpellChecker ():
                 yield self.oMainDic.suggest(sWord, nSuggLimit)
         else:
             yield self.oMainDic.suggest(sWord, nSuggLimit)
-        if self.bExtendedDic:
-            yield self.oExtendedDic.suggest(sWord, nSuggLimit)
         if self.bCommunityDic:
             yield self.oCommunityDic.suggest(sWord, nSuggLimit)
         if self.bPersonalDic:
@@ -262,8 +236,6 @@ class SpellChecker ():
     def select (self, sFlexPattern="", sTagsPattern=""):
         "generator: returns all entries which flexion fits <sFlexPattern> and morphology fits <sTagsPattern>"
         yield from self.oMainDic.select(sFlexPattern, sTagsPattern)
-        if self.bExtendedDic:
-            yield from self.oExtendedDic.select(sFlexPattern, sTagsPattern)
         if self.bCommunityDic:
             yield from self.oCommunityDic.select(sFlexPattern, sTagsPattern)
         if self.bPersonalDic:
@@ -272,9 +244,6 @@ class SpellChecker ():
     def drawPath (self, sWord):
         "draw the path taken by <sWord> within the word graph: display matching nodes and their arcs"
         self.oMainDic.drawPath(sWord)
-        if self.bExtendedDic:
-            print("-----")
-            self.oExtendedDic.drawPath(sWord)
         if self.bCommunityDic:
             print("-----")
             self.oCommunityDic.drawPath(sWord)
@@ -285,8 +254,6 @@ class SpellChecker ():
     def getSimilarEntries (self, sWord, nSuggLimit=10):
         "return a list of tuples (similar word, stem, morphology)"
         lResult = self.oMainDic.getSimilarEntries(sWord, nSuggLimit)
-        if self.bExtendedDic:
-            lResult.extend(self.oExtendedDic.getSimilarEntries(sWord, nSuggLimit))
         if self.bCommunityDic:
             lResult.extend(self.oCommunityDic.getSimilarEntries(sWord, nSuggLimit))
         if self.bPersonalDic:

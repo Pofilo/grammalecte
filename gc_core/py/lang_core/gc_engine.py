@@ -62,7 +62,7 @@ def load (sContext="Python", sColorType="aRGB"):
     global _dOptionsColors
     global _oTokenizer
     try:
-        _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_extended_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
+        _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
         _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
         _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType)

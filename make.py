@@ -311,19 +311,15 @@ def copyGraphspellCore (bJavaScript=False):
                 helpers.copyAndFileTemplate("graphspell-js/"+sf, "grammalecte-js/graphspell/"+sf, dVars)
 
 
-def copyGraphspellDictionaries (dVars, bJavaScript=False, bExtendedDict=False, bCommunityDict=False, bPersonalDict=False):
+def copyGraphspellDictionaries (dVars, bJavaScript=False, bCommunityDict=False, bPersonalDict=False):
     "copy requested Graphspell dictionaries in Grammalecte package"
     dVars["dic_main_filename_py"] = ""
     dVars["dic_main_filename_js"] = ""
-    dVars["dic_extended_filename_py"] = ""
-    dVars["dic_extended_filename_js"] = ""
     dVars["dic_community_filename_py"] = ""
     dVars["dic_community_filename_js"] = ""
     dVars["dic_personal_filename_py"] = ""
     dVars["dic_personal_filename_js"] = ""
     lDict = [ ("main", s)  for s in dVars['dic_filenames'].split(",") ]
-    if bExtendedDict:
-        lDict.append(("extended", dVars['dic_extended_filename']))
     if bCommunityDict:
         lDict.append(("community", dVars['dic_community_filename']))
     if bPersonalDict:
@@ -355,12 +351,7 @@ def buildDictionary (dVars, sType, bJavaScript=False):
         for sfDictDst, sDicName, sDescription, sFilter in zip(lSfDictDst, lDicName, lDescription, lFilter):
             lex_build.build(spfLexSrc, dVars['lang'], dVars['lang_name'], sfDictDst, bJavaScript, sDicName, sDescription, sFilter, dVars['stemming_method'], int(dVars['fsa_method']))
     else:
-        if sType == "extended":
-            spfLexSrc = dVars['lexicon_extended_src']
-            sfDictDst = dVars['dic_extended_filename']
-            sDicName = dVars['dic_extended_name']
-            sDescription = dVars['dic_extended_description']
-        elif sType == "community":
+        if sType == "community":
             spfLexSrc = dVars['lexicon_community_src']
             sfDictDst = dVars['dic_community_filename']
             sDicName = dVars['dic_community_name']
@@ -387,7 +378,6 @@ def main ():
     xParser.add_argument("-p", "--perf", help="run performance tests", action="store_true")
     xParser.add_argument("-pm", "--perf_memo", help="run performance tests and store results in perf_memo.txt", action="store_true")
     xParser.add_argument("-js", "--javascript", help="JavaScript build for Firefox", action="store_true")
-    xParser.add_argument("-aed", "--add_extended_dictionary", help="add extended dictionary to the build", action="store_true")
     xParser.add_argument("-acd", "--add_community_dictionary", help="add community dictionary to the build", action="store_true")
     xParser.add_argument("-apd", "--add_personal_dictionary", help="add personal dictionary to the build", action="store_true")
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for WebExtension testing", action="store_true")
@@ -414,8 +404,6 @@ def main ():
             xConfig = getConfig(sLang)
             dVars = xConfig._sections['args']
 
-            if not dVars["lexicon_extended_src"]:
-                xArgs.add_extended_dictionary = False
             if not dVars["lexicon_community_src"]:
                 xArgs.add_community_dictionary = False
             if not dVars["lexicon_personal_src"]:
@@ -433,8 +421,6 @@ def main ():
                 databuild.before('gc_lang/'+sLang, dVars, xArgs.javascript)
             if xArgs.dict:
                 buildDictionary(dVars, "main", xArgs.javascript)
-                if xArgs.add_extended_dictionary:
-                    buildDictionary(dVars, "extended", xArgs.javascript)
                 if xArgs.add_community_dictionary:
                     buildDictionary(dVars, "community", xArgs.javascript)
                 if xArgs.add_personal_dictionary:
@@ -443,7 +429,7 @@ def main ():
                 databuild.after('gc_lang/'+sLang, dVars, xArgs.javascript)
 
             # copy dictionaries from Graphspell
-            copyGraphspellDictionaries(dVars, xArgs.javascript, xArgs.add_extended_dictionary, xArgs.add_community_dictionary, xArgs.add_personal_dictionary)
+            copyGraphspellDictionaries(dVars, xArgs.javascript, xArgs.add_community_dictionary, xArgs.add_personal_dictionary)
 
             # make
             sVersion = create(sLang, xConfig, xArgs.install, xArgs.javascript, xArgs.use_cache)
