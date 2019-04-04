@@ -913,15 +913,15 @@ class Entree:
     def generateFlexions (self, dFlags):
         lTuples = self._flechir(dFlags)
         # création des objects flexions
-        self.nFlexions = 0
+        self.nFlexion = 0
         self.lFlexions = []
         sReject = ""
         for sFlex, sMorph, sDic in lTuples:
             if '+' not in sMorph:
                 sMorph = self.clean(sMorph)
                 if not sMorph.endswith((" mas", " fem", " epi")):
-                    self.lFlexions.append( Flexion(self, sFlex, sMorph, sDic) )
-                    self.nFlexions += 1
+                    self.nFlexion += 1
+                    self.lFlexions.append( Flexion(self, sFlex, sMorph, sDic, self.nFlexion) )
                 else:
                     #echo(sFlex + " " + sMorph + ", ")
                     pass
@@ -1147,11 +1147,12 @@ class Entree:
 
 
 class Flexion:
-    def __init__ (self, oEntry, sFlex='', sMorph='', cDic=''):
+    def __init__ (self, oEntry, sFlex='', sMorph='', cDic='', nFlexId=0):
         self.oEntry = oEntry
         self.sFlexion = sFlex
         self.sMorph = sMorph
         self.cDic    = cDic
+        self.nFlexId = nFlexId
         self.nOccur  = 0
         self.bBlocked  = False
         self.nDup    = 0    # duplicates in the same entry
@@ -1189,13 +1190,13 @@ class Flexion:
         sOccurs = ''
         for t in oStatsLex.lLex:
             sOccurs += t[1] + "\t"
-        return "id\tFlexion\tLemme\tÉtiquettes\tMétagraphe (β)\tMetaphone2\tNotes\tSémantique\tÉtymologie\tSous-dictionnaire\t" + sOccurs + "Total occurrences\tDoublons\tMultiples\tFréquence\tIndice de fréquence\n"
+        return "id\tfid\tFlexion\tLemme\tÉtiquettes\tMétagraphe (β)\tMetaphone2\tNotes\tSémantique\tÉtymologie\tSous-dictionnaire\t" + sOccurs + "Total occurrences\tDoublons\tMultiples\tFréquence\tIndice de fréquence\n"
 
     def __str__ (self, oStatsLex):
         sOccurs = ''
         for v in oStatsLex.dFlexions[self.sFlexion]:
             sOccurs += str(v) + "\t"
-        return "{0.oEntry.iD}\t{0.sFlexion}\t{0.oEntry.sStem}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
+        return "{0.oEntry.iD}\t{0.nFlexId}\t{0.sFlexion}\t{0.oEntry.sStem}\t{0.sMorph}\t{0.metagfx}\t{0.metaph2}\t{0.oEntry.lx}\t{0.oEntry.se}\t{0.oEntry.et}\t{0.oEntry.di}{2}\t{1}{0.nOccur}\t{0.nDup}\t{0.nMulti}\t{0.fFreq:.15f}\t{0.cFq}\n".format(self, sOccurs, "/"+self.cDic if self.cDic != "*" else "")
 
     @classmethod
     def simpleHeader (cls):
