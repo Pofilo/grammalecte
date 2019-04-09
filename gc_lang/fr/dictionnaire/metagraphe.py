@@ -5,13 +5,13 @@
 # By Olivier R. - 2013
 
 import re
-import unicodedata
 
-# Dictionnaire des caractères pour la phonétique         
+
+# Dictionnaire des caractères pour la phonétique
 PHMAP = str.maketrans({ 'à': 'a',  'â': 'a',  'ä': 'a',  'å': 'a',  'ā': 'a',
                         'ç': 'S',
                         'é': 'é',  'è': 'é',  'ê': 'é',  'ë': 'é',  'ē': 'é',
-                        'î': 'i',  'ï': 'i',  'ī': 'i', 
+                        'î': 'i',  'ï': 'i',  'ī': 'i',
                         'ñ': 'ni',
                         'ô': 'o',  'ö': 'o',  'ō': 'o',
                         'ù': 'u',  'û': 'u',  'ü': 'u',  'ū': 'u',
@@ -20,10 +20,12 @@ PHMAP = str.maketrans({ 'à': 'a',  'â': 'a',  'ä': 'a',  'å': 'a',  'ā': 'a
 
 def getPhonex (s, sMorph):
     "returns a simplified phonetic string"
-    s = s.lower().translate(PHMAP)
-    if re.match("[A-Z0-9]+$", s) or len(s) == 1:
+    if re.match("[A-Z0-9]{2,}$", s):
         return s
+    elif len(s) == 1:
+        return s.lower().translate(PHMAP)
     else:
+        s = s.lower().translate(PHMAP)
         s = re.sub("sc(?=[eéiy])", "S", s)
         s = re.sub("x[cs](?=[eéiy])", "kS", s)
         s = re.sub("c(?=[eéiy])", "S", s)
@@ -107,7 +109,3 @@ def getGraphix (s):
 
 def getMetagraphe (s, sMorph):
     return (getPhonex(s, sMorph), getGraphix(s))
-
-if __name__ == '__main__':
-    import doctest
-    doctest.testmod()
