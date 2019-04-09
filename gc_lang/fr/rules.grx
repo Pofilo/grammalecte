@@ -15378,7 +15378,7 @@ TEST: Je suis {{septique}} !
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
 __conf_tache_tâche__
-    >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision)/
+    >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision|.+(?:tion|ment))/
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
@@ -15405,6 +15405,7 @@ TEST: c’est une tâche de grande envergure
 TEST: déléguer des tâches de sécurité publique à des machines autonomes
 TEST: tirer bénéfice de nouvelles données en fonction de la tâche de départ qui leur a été assignée
 TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’autres tâches de surveillance, notamment au sein de la nouvelle brigade anti-insécurité.
+TEST: une tâche de sélection des données
 
 
 __conf_tâche_tache__
