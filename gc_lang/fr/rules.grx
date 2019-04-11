@@ -493,10 +493,6 @@ __[s>(p_sigle2)__
 __[s>(p_sigle3)__
     J[.]-[A-Z][.] <<- ~>> =\0.replace(".", "").replace("-","")
 
-# Ne pas scinder la phrase si les points de suspension sont suivis d’une minuscule
-__<s>(p_points_suspension)__
-    ({w1})(…)(?= [a-zéèêàâîô])  @@0,$ <<- not re.search("(?i)^etc", \1) ~2>> ,
-
 # Mr et MM
 __[s>(p_M_point)__
     (M[.]) (?:[A-ZÉÈÎ]\w*|l[e'’])  @@0 <<- ~1>> Mr
@@ -1313,15 +1309,6 @@ TEST: __ocr__ Ça prendra 1 h.
 TEST: __ocr__ Valeur : 1 KHz.
 
 
-# virgules
-__[s>/ocr(ocr_virgules)__
-    (?:[iI]l|l(?:es?|a)|[dnmtsDNMTS]e|[àÀ]|[cC]e(?:te|t|)|[mM](?:on|a)|[TS]a|[qQ]uelques?|[aA]ux?),
-    <<- not /0.endswith("…") ->> =\0[:-1]                                                           # Erreur de numérisation ? Virgule superflue ?
-
-TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
-TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
-
-
 # Nombres
 __[i]/ocr(ocr_nombres)__
     [\dOI][\dOI]+
@@ -1440,8 +1427,7 @@ __[i](p_trait_union_conditionnel1)__    \w+‑\w+‑\w+ <<- ~>> =\0.replace("‑
 __[i](p_trait_union_conditionnel2)__    \w+‑\w+ <<- ~>> =\0.replace("‑", "")
 
 # empêcher la scission en fin de dialogue
-__<s>(p_fin_dialogue1)__    ([?!…][?!…  ]*)[ "'”» ]*,  @@0 <<- ~1>> *
-__<s>(p_fin_dialogue2)__    ([?!…][?!…  ]*)[ "'”» ]*[a-zéèêîô]  @@0 <<- ~1>> ,
+__<s>(p_fin_dialogue)__    ([?!…][?!…  ]*)[ "'”» ]*,  @@0 <<- ~1>> *
 
 TEST: « Je suis donc perdu ? », dit Paul.
 TEST: “C’est bon !”, croit savoir Marie.
@@ -2224,6 +2210,14 @@ __immunités__
 @@@@
 
 # This graph is parsed only if option <ocr> is activated.
+
+# virgules
+__ocr_virgules__
+    [il|le|la|l’|les|de|d’|ne|n’|me|m’|te|t’|se|s’|à|ce|cet|cette|mon|ma|ta|sa|mes|tes|ses|nos|vos|quelque|quelques|au|aux] ,
+        <<- /ocr/ space_after(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1             # Erreur de numérisation ? Virgule superflue ?
+
+TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
+TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
 
 
 # âge / age
@@ -8495,6 +8489,16 @@ __sgpl_très_bien__
 TEST: Très {{biens}} connus des services de police, il leur fut difficile de passer entre les mailles du filet.
 
 
+# entre autres
+__sgpl_entre_autres__
+    entre autre ,
+    entre autre @:(?:[GW]|[NA].*:[pi])
+        <<- /sgpl/ -2>> autres                                      # La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
+
+TEST: Des raisons ? Entre {{autre}} je n’en savais pas plus que lui.
+TEST: il y eut, entre {{autre}}, des erreurs commises.
+
+
 # termes
 __sgpl_en_termes_de__
     en terme [de|d’]
@@ -11784,8 +11788,8 @@ TEST: l’affaire est à mon sens bien plus significative qu’on ne l’imagine
 
 __[i]/redon2(redondances_phrase)__
     ({w_4})[ ,].* (\1)  @@0,$
-        <<- not morph(\1, ":(?:G|V0)|>même/") -2>> _                    # Dans cette phrase, répétition de « \1 » (à gauche).
-        <<- __also__ -1>> _                                             # Dans cette phrase, répétition de « \1 » (à droite).
+        <<- not morph(\1, ":(?:G|V0)|>même/") -2>> _                                                # Dans cette phrase, répétition de “\1” (à gauche).
+        <<- __also__ -1>> _                                                                         # Dans cette phrase, répétition de “\1” (à droite).
 
 TEST: __redon2__ Quelle {{imposture}}, c’est d’un ennui, c’est une {{imposture}}.
 TEST: __redon2__ ils sont là côte à côte.
@@ -15406,6 +15410,7 @@ TEST: déléguer des tâches de sécurité publique à des machines autonomes
 TEST: tirer bénéfice de nouvelles données en fonction de la tâche de départ qui leur a été assignée
 TEST: Les « pervenches » fonctionnaires seraient alors affectées à d’autres tâches de surveillance, notamment au sein de la nouvelle brigade anti-insécurité.
 TEST: une tâche de sélection des données
+TEST: les agents peu nombreux sont accaparés par le court terme et les tâches de gestion
 
 
 __conf_tâche_tache__
