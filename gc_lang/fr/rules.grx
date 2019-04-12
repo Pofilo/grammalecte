@@ -4975,10 +4975,14 @@ __conj_xxxxxs_sans_sujet!3__
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)
-    [le|la|l’|les]              [lui|leur|en|y]         (~[iudnrtpcï]s$)
-    [lui|leur]                  en                      (~[iudnrtpcï]s$)
+    [me|m’|te|t’]       ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)
+    [le|la|l’|les]      [lui|leur|en|y]         (~[iudnrtpcï]s$)
+    [lui|leur]          en                      (~[iudnrtpcï]s$)
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+
+    [nous|vous]         ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)
+        <<- /conj/ not before("d’entre +$") and not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     étais
@@ -4998,6 +5002,7 @@ TEST: dans tous les cas de figure imaginés par cette bande de nuls, il n’y en
 TEST: ces gens qui vont par monts et par vaux.
 TEST: pour ne justement pas donner l’impression de s’être trompé.
 TEST: C’était lui le plus jeune président.
+TEST: Avec la plupart d’entre nous pris en sandwich quelque part entre les deux
 
 
 __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
