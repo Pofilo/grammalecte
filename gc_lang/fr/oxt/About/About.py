@@ -21,7 +21,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
         self.xDialog = None
-        
+
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
         xWidget.Name = name
@@ -46,16 +46,16 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             xWindowSize = helpers.getWindowSize()
             self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
             self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
-            
+
             # xWidgets
             nLblWidth = 140
             nURLcolor = 0x4444FF
-            
+
             xFD0 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
             xFD0.Height = 20
             #xFD0.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
             xFD0.Name = "Verdana"
-            
+
             xFD1 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
             xFD1.Height = 10
             xFD1.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
@@ -69,7 +69,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             xFD3.Height = 12
             xFD3.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
             xFD3.Name = "Verdana"
-            
+
             # logo
             xDefaultContext = self.ctx.ServiceManager.DefaultContext
             xPackageInfoProvider = xDefaultContext.getValueByName("/singletons/com.sun.star.deployment.PackageInformationProvider")
@@ -78,7 +78,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             imgMainLogo = self._addWidget('imgMainLogo', 'ImageControl', 5, 5, 150, 80, ImageURL = sExtPath+"/img/logo120_text.png", Border = 0, ScaleMode = 1)
 
             # Infos
-            #lblTitle = self._addWidget('lblTitle', 'FixedText', 60, 5, 100, 20, Label = dUI.get('title', "#err"), Align = 0, FontDescriptor = xFD0)            
+            #lblTitle = self._addWidget('lblTitle', 'FixedText', 60, 5, 100, 20, Label = dUI.get('title', "#err"), Align = 0, FontDescriptor = xFD0)
             lblVersion = self._addWidget('lblVersion', 'FixedText', 5, 90, nLblWidth, 10, Label = dUI.get('version', "#err"), Align = 1, FontDescriptor = xFD2)
             lblLicense = self._addWidget('lblLicense', 'FixedText', 5, 100, nLblWidth, 10, Label = dUI.get('license', "#err"), Align = 1, FontDescriptor = xFD2)
             lblWebsite = self._addWidget('lblWebsite', 'FixedHyperlink', 5, 110, nLblWidth, 10, Label = dUI.get('website', "#err"), Align = 1, \
@@ -101,10 +101,10 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             imgSponsor2 = self._addWidget('imgSponsor2', 'ImageControl', 5, 245, 150, 50, ImageURL = sExtPath+"/img/Algoo_logo.png", Border = 0, ScaleMode = 1)
             lblURL3 = self._addWidget('lblURL3', 'FixedHyperlink', 10, 300, nLblWidth, 10, Label = dUI.get('link', "#err"), \
                                       Align = 1, URL="http://grammalecte.net/?thanks", FontDescriptor = xFD1, TextColor = nURLcolor)
-            # button            
+            # button
             #button = self._addWidget('close', 'Button', self.xDialog.Width - 25, self.xDialog.Height - 20, 20, 14, \
             #                         Label = dUI.get('close', "#err"), FontDescriptor = xFD1, TextColor = 0x004400)
-            
+
             # container
             self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
             self.xContainer.setModel(self.xDialog)
@@ -115,7 +115,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             self.xContainer.execute()
         except:
             traceback.print_exc()
-    
+
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
