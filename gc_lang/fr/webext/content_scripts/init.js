@@ -349,7 +349,7 @@ browser.runtime.onMessage.addListener(function (oMessage) {
             Commands received from the keyboard (shortcuts)
         */
         case "shortcutLexicographer":
-            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT")) {
+            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT" || xActiveNode.isContentEditable)) {
                 lexicographerEditableNode(xActiveNode);
             } else {
                 lexicographerPage();
@@ -361,7 +361,7 @@ browser.runtime.onMessage.addListener(function (oMessage) {
             }
             break;
         case "shortcutGrammarChecker":
-            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT")) {
+            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT" || xActiveNode.isContentEditable)) {
                 parseAndSpellcheckEditableNode(xActiveNode);
             } else {
                 parseAndSpellcheckPage();
