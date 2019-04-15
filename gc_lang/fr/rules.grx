@@ -109,6 +109,7 @@ COLOR/orange:       30,70,50
 COLOR/orange2:      40,90,50
 COLOR/violet:       270,45,35
 COLOR/bleu:         210,50,50
+COLOR/bleupr:       240,40,60
 COLOR/fuschia:      300,30,40
 COLOR/cyan:         180,50,40
 COLOR/grey:         0,50,50
@@ -118,6 +119,7 @@ COLOR/violet_vif:   270,100,40
 COLOR/bleu_vif:     210,100,30
 COLOR/vert_vif:     120,100,30
 COLOR/cyan_vif:     180,100,40
+COLOR/bleupr_vif:   240,100,60
 
 OPTCOLORTHEME:      Default     Writer
 OPTCOLOR/typo:      orange      orange_vif
@@ -136,7 +138,7 @@ OPTCOLOR/nf:        orange      orange_vif
 OPTCOLOR/liga:      orange      orange_vif
 OPTCOLOR/mapos:     orange      orange_vif
 OPTCOLOR/chim:      orange      orange_vif
-OPTCOLOR/ocr:       violet      violet_vif
+OPTCOLOR/ocr:       bleupr      bleupr_vif
 OPTCOLOR/conf:      violet      violet_vif
 OPTCOLOR/sgpl:      bleu        bleu_vif
 OPTCOLOR/gn:        bleu        bleu_vif
@@ -1324,39 +1326,13 @@ TEST: __ocr__ En l’an {{2OO1}}, tout commença.
 
 
 ## Casse
-__[s]/ocr(ocr_casse1)__
-    [A-ZÉÈÂÊÎÔ]{w_1}
-    <<- \0.istitle() and before("\\w") >>>
-    <<- morph(\0, ":G", ":M") ->> =\0.lower()                                                       # Erreur de numérisation ? Casse improbable.
-    <<- __else__ and morph(\0, ":[123][sp]", ":[MNA]|>Est/") ->> =\0.lower()                        # Erreur de numérisation ? Casse improbable.
-
-TEST: __ocr__ votre ami la regarde, {{Vous}} ne l’avez pas achetée
-TEST: __ocr__ pour accommoder son regard, {{La}} lourde forme demeure
-TEST: __ocr__ parler de Nicole, {{Le}} sommeil ne vient pas.
-TEST: __ocr__ a fait de toi, Charles, {{Tu}} étais beau quand
-TEST: __ocr__ s’habituer à se faire servir, {{Au}} début ça
-TEST: __ocr__ Tu as tué ce petit garçon, Henri, {{Et}} tu le sais.
-TEST: __ocr__ d’un fil de plastique transparent, {{Il}} l’agite
-TEST: __ocr__ sur une glace noire {{Les}} lumières du port
-TEST: __ocr__ le roulis du bateau {{Le}} faisant heurter
-TEST: __ocr__ si vous {{La}} désirez
-TEST: __ocr__ sa main se referme sur {{Je}} livre
-
-
-__[s]/ocr(ocr_casse2)__
+__[s]/ocr(ocr_casse_pronom_vconj)__
     {w2}-(On|Ils?|Elles?|Tu|Je|Nous|Vous|Mêmes?|Ci|Là|Une?s) @@$
     <<- -1>> =\1.lower()                                                                            # Erreur de numérisation ? Casse douteuse.
 
 TEST: __ocr__ Part-{{On}} demain ?
 TEST: __ocr__ À ce compte-{{Ci}}, on n’en viendra jamais à bout.
 TEST: __ocr__ Quelques-{{Uns}} sont incapables d’y parvenir.
-
-
-__[s>/ocr(ocr_casse3)__
-    [LDNMTSCÇ]’
-    <<- before("\\w") ->> =\0.lower()                                                               # Erreur de numérisation ? Casse douteuse.
-
-TEST: __ocr__ regarde dans l’obscurité de {{L’}}entrepôt
 
 
 ## Lettres isolées
@@ -1647,6 +1623,8 @@ __[i>/typo(typo_quelque)__
 TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
 TEST: quelqu’un vient.
 TEST: elle s’en est allée avec quelqu’une…
+
+
 
 
 
@@ -2215,10 +2193,35 @@ __immunités__
 
 # This graph is parsed only if option <ocr> is activated.
 
+## Casse
+__ocr_casse__
+    ~^[A-ZÉÈÂÊÎÔ].
+        <<- \1.istitle() and before("\\w") and (morph(\1, ":G", ":M") or morph(\1, ":[123][sp]", ":[MNA]|>Est/"))
+        -:>> =\1.lower()                                                                            # Erreur de numérisation ? Casse improbable.
+
+    [L’|D’|N’|M’|T’|S’|C’|Ç’]
+        <<- before("\\w") -:>> =\1.lower()                                                          # Erreur de numérisation ? Casse douteuse.
+
+TEST: __ocr__ regarde dans l’obscurité de {{L’}}entrepôt                        ->> l’
+TEST: __ocr__ votre ami la regarde, {{Vous}} ne l’avez pas achetée              ->> vous
+TEST: __ocr__ pour accommoder son regard, {{La}} lourde forme demeure           ->> la
+TEST: __ocr__ parler de Nicole, {{Le}} sommeil ne vient pas.                    ->> le
+TEST: __ocr__ a fait de toi, Charles, {{Tu}} étais beau quand                   ->> tu
+TEST: __ocr__ s’habituer à se faire servir, {{Au}} début ça                     ->> au
+TEST: __ocr__ Tu as tué ce petit garçon, Henri, {{Et}} tu le sais.              ->> et
+TEST: __ocr__ d’un fil de plastique transparent, {{Il}} l’agite                 ->> il
+TEST: __ocr__ sur une glace noire {{Les}} lumières du port                      ->> les
+TEST: __ocr__ le roulis du bateau {{Le}} faisant heurter                        ->> le
+TEST: __ocr__ si vous {{La}} désirez                                            ->> la
+TEST: __ocr__ sa main se referme sur {{Je}} livre                               ->> je
+TEST: __ocr__ Ils étaient portés à croire que Danton et Robespierre ne mettraient aucun obstacle. Le 8 au soir, Robespierre était allé à la section Bonne-Nouvelle, avait invectivé violemment contre la Gironde. Pendant son discours, un des siens, qui l’attendait à la porte, disait qu’on devrait massacrer non les Girondins seulement, mais tous les signataires des fameuses pétitions.
+TEST: __ocr__ Prends cette pelle et creuse.
+
+
 # virgules
 __ocr_virgules__
     [il|le|la|l’|les|de|d’|ne|n’|me|m’|te|t’|se|s’|à|ce|cet|cette|mon|ma|ta|sa|mes|tes|ses|nos|vos|quelque|quelques|au|aux] ,
-        <<- /ocr/ space_after(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1             # Erreur de numérisation ? Virgule superflue ?
+        <<- space_after(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1                   # Erreur de numérisation ? Virgule superflue ?
 
 TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
 TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
@@ -2525,8 +2528,8 @@ TEST: __ocr__ {{I’arrive}} demain.
 __ocr_l__
     ~^V.
         <<- \1.istitle() and before("\\w") and morph(\1, ":", ":M") >>>
-        <<- spell(\1[1:]) ->> ="v"+\1[1:] + "|l’"+\1[1:]                                            # Erreur de numérisation ?
-        <<- __else__ ->> ="v"+\1[1:]                                                                # Erreur de numérisation ?
+        <<- spell(\1[1:]) -:>> ="v"+\1[1:] + "|l’"+\1[1:]                                           # Erreur de numérisation ?
+        <<- __else__ -:>> ="v"+\1[1:]                                                               # Erreur de numérisation ?
 
     ~^P[aâeéêèiîïoôuy]
         <<- before("\\w") and morph(\1, ":", ":M") and spell(\1) ->> ="l’"+\1[1:] + "|p"+\1[1:]     # Erreur de numérisation ?
@@ -3915,7 +3918,8 @@ __maj_accents__
         <<- /maj/ ->> ="É"+\1[1:]                                                                   # Accentuez les majuscules.
         <<- ~>> ="É"+\1[1:]
 
-TEST: Le budget de l’{{Etat}}.
+TEST: Le budget de l’{{Etat}}.                                  ->> État
+
 
 
 
@@ -8743,8 +8747,8 @@ __maj_unités__
     @:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
         <<- /maj/ not \2.isupper() -2:>> =\2.lower()                # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
 
-TEST: J’en veux 3 {{Mètres}}.
-TEST: Elle en prendra vingt {{Grammes}}.
+TEST: J’en veux 3 {{Mètres}}.                           ->> mètres
+TEST: Elle en prendra vingt {{Grammes}}.                ->> grammes
 
 
 
@@ -8773,16 +8777,15 @@ __locutions_invariables__
     comme [prévue|prévus|prévues]
         <<- /sgpl/ -2>> prévu                                                                       # Invariable. Implicitement, comme ce qui était prévu.
 
-
 TEST: il y en a autant que {{prévus}}.
 TEST: elles sont plus nombreuses plus que {{prévues}}
 TEST: il y a moins de bouffe que {{prévue}}
-TEST: comme {{annoncés}}, ils sont arrivés
-TEST: moins loin que {{prévus}}                               ->> prévu
-TEST: plus rapide que {{prévues}}                             ->> prévu
-TEST: autant d’hommes que {{prévus}}                          ->> prévu
-TEST: il y en a moins que {{prévues}}                         ->> prévu
-TEST: comme {{convenus}}                                      ->> convenu
+TEST: comme {{annoncés}}, ils sont arrivés                      ->> annoncé
+TEST: moins loin que {{prévus}}                                 ->> prévu
+TEST: plus rapide que {{prévues}}                               ->> prévu
+TEST: autant d’hommes que {{prévus}}                            ->> prévu
+TEST: il y en a moins que {{prévues}}                           ->> prévu
+TEST: comme {{convenus}}                                        ->> convenu
 
 
 
