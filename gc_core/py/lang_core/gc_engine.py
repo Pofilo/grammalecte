@@ -191,7 +191,7 @@ def resetOptions ():
 
 #### Parsing
 
-_zEndOfSentence = re.compile(r'([.?!:;…][   .?!…»«“”"‘’)]+(?=[A-ZÉÈÎÔ])|.$)')
+_zEndOfSentence = re.compile(r'([.?!:;…]\W+(?=[A-ZÉÈÎÔ])|.$)')
 _zBeginOfParagraph = re.compile(r"^\W*")
 _zEndOfParagraph = re.compile(r"\W*$")
 
