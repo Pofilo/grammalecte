@@ -2199,8 +2199,8 @@ __ocr_casse__
         <<- \1.istitle() and before("\\w") and (morph(\1, ":G", ":M") or morph(\1, ":[123][sp]", ":[MNA]|>Est/"))
         -:>> =\1.lower()                                                                            # Erreur de numérisation ? Casse improbable.
 
-    [L’|D’|N’|M’|T’|S’|C’|Ç’]
-        <<- before("\\w") -:>> =\1.lower()                                                          # Erreur de numérisation ? Casse douteuse.
+    [L’|D’|N’|M’|T’|S’|C’|Ç’]  *WORD
+        <<- before("\\w") and not \2.isupper() -1:>> =\1.lower()                                    # Erreur de numérisation ? Casse douteuse.
 
 TEST: __ocr__ regarde dans l’obscurité de {{L’}}entrepôt                        ->> l’
 TEST: __ocr__ votre ami la regarde, {{Vous}} ne l’avez pas achetée              ->> vous
@@ -2216,6 +2216,8 @@ TEST: __ocr__ si vous {{La}} désirez                                           
 TEST: __ocr__ sa main se referme sur {{Je}} livre                               ->> je
 TEST: __ocr__ Ils étaient portés à croire que Danton et Robespierre ne mettraient aucun obstacle. Le 8 au soir, Robespierre était allé à la section Bonne-Nouvelle, avait invectivé violemment contre la Gironde. Pendant son discours, un des siens, qui l’attendait à la porte, disait qu’on devrait massacrer non les Girondins seulement, mais tous les signataires des fameuses pétitions.
 TEST: __ocr__ Prends cette pelle et creuse.
+TEST: __ocr__ Roland, 87 ans, amoureux depuis cinq ans : « J’ai l’impression que je vais vivre encore longtemps »
+TEST: __ocr__ QUE FAIRE D’APRÈS EUX ?
 
 
 # virgules
@@ -2532,7 +2534,8 @@ __ocr_l__
         <<- __else__ -:>> ="v"+\1[1:]                                                               # Erreur de numérisation ?
 
     ~^P[aâeéêèiîïoôuy]
-        <<- before("\\w") and morph(\1, ":", ":M") and spell(\1) ->> ="l’"+\1[1:] + "|p"+\1[1:]     # Erreur de numérisation ?
+        <<- before("\\w") and morph(\1, ":", ":M") and spell(\1[1:])
+        -:>> ="l’"+\1[1:] + "|p"+\1[1:]                                                             # Erreur de numérisation ?
 
 TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.
 TEST: __ocr__ avec {{Vagile}} méthode de notre amie Virginie, tout est possible.
@@ -2541,12 +2544,13 @@ TEST: __ocr__ Ce jour où Valérie eut sa licence de droit.
 TEST: __ocr__ Il scrute Pierre, {{Pair}} maussade.
 TEST: __ocr__ Une grosse vague arrivait et {{Peau}} remplit.
 TEST: __ocr__ selon toute logique, Paris sera épargné.
+TEST: __ocr__ À l’orée de la semaine de Pâques, l’incendie de la cathédrale Notre-Dame
 
 
 # l’était / Tétait
 __ocr_l_était__
     Tétait
-        <<- ->> l’était|t’était|T’était                                                             # Erreur de numérisation ?
+        <<- -:>> l’était|t’était|T’était                                                            # Erreur de numérisation ?
 
 TEST: __ocr__ perdu, cet homme {{Tétait}}
 
