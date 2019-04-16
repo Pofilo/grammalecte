@@ -165,7 +165,7 @@ var gc_engine = {
         return oText.parse(sCountry, bDebug, dOptions, bContext);
     },
 
-    _zEndOfSentence: new RegExp ('([.?!:;…][   .?!…»”")]+(?=[A-ZÉÈÎÔ])|.$)', "g"),
+    _zEndOfSentence: new RegExp ('([.?!:;…][   .?!…»«“”"‘’)]+(?=[A-ZÉÈÎÔ])|.$)', "g"),
     _zBeginOfParagraph: new RegExp ("^[-  –—.,;?!…]*", "ig"),
     _zEndOfParagraph: new RegExp ("[-  .,;?!…–—]*$", "ig"),
 
