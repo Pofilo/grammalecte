@@ -9153,6 +9153,9 @@ __purge_dates__
     à  la  {mi_mois}    ?~^\d{2,5}$¿
         <<- ~>> *
 
+    [début|fin]  {mois}  ?~^\d{2,5}$¿
+        <<- not morph(<1, ":D") ~>> *
+
     en  ~^\d{2,5}$  [,|<end>]
     en  ~^\d{2,5}$  @:¬:[AN].*:[pi]
     de  ~^\d{2,5}$  @:A.*:s
@@ -9160,6 +9163,7 @@ __purge_dates__
 
 TEST: ils sont depuis le 2 janvier {{parti}} à l’étranger.
 TEST: ils sont depuis le 2 janvier 2012 {{parti}} à l’étranger.
+TEST: profanation de plusieurs églises françaises début février.
 
 
 __purge_saisons__
