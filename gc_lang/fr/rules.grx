@@ -2195,7 +2195,7 @@ __immunités__
 
 ## Casse
 __ocr_casse__
-    ~^[A-ZÉÈÂÊÎÔ].
+    ~^[A-ZÉÈÂÊÎÔ]\w
         <<- \1.istitle() and before("\\w") and (morph(\1, ":G", ":M") or morph(\1, ":[123][sp]", ":[MNA]|>Est/"))
         -:>> =\1.lower()                                                                            # Erreur de numérisation ? Casse improbable.
 
