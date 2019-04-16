@@ -88,12 +88,18 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 let xNodeDiv = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_actions"});
-                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "Réanalyser"}, {para_num: oResult.iParaNum}));
-                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_red", textContent: "×", style: "font-weight: bold;"}));
+                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "A", title: "Réanalyser…"}, {para_num: oResult.iParaNum}));
+                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_red", textContent: "×", title: "Cacher", style: "font-weight: bold;"}));
                 // paragraph
                 let xParagraph = oGrammalecte.createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, className: "grammalecte_paragraph", lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
-                xParagraph.addEventListener("keyup", function (xEvent) {
+                xParagraph.dataset.timer_id = "0";
+                xParagraph.addEventListener("input", function (xEvent) {
+                    window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
+                    xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
+                    let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
+                    xParagraph.dataset.caret_position_start = nStart;
+                    xParagraph.dataset.caret_position_end = nEnd;
                     this.oNodeControl.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
                     this.oNodeControl.write();
                 }.bind(this)
@@ -199,16 +205,22 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     blockParagraph (xParagraph) {
         xParagraph.contentEditable = "false";
-        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Analyse…";
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "!!";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
-        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 100%, 50%, .2)";
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 0%, 50%, .2)";
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "grammalecte-pulse 1s linear infinite";
+
     }
 
     freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
-        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "Réanalyser";
+        let nStart = parseInt(xParagraph.dataset.caret_position_start);
+        let nEnd = parseInt(xParagraph.dataset.caret_position_end);
+        oGrammalecte.setCaretPosition(xParagraph, nStart, nEnd);
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "A";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(120, 30%, 50%)";
-        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "none";
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "";
+        setTimeout(() => { this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = ""; }, 1000);
     }
 
     applySuggestion (sNodeSuggId) { // sugg
@@ -261,7 +273,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xEvent.preventDefault();
             xEvent.clipboardData.setData("text/plain", sText);
         }
-
         document.addEventListener("copy", setClipboardData, true);
         document.execCommand("copy");
     }

@@ -244,6 +244,61 @@ const oGrammalecte = {
         catch (e) {
             showError(e);
         }
+    },
+
+    getCaretPosition (xElement) {
+        // JS awfulness again.
+        // recepie from https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container
+        let nCaretOffsetStart = 0;
+        let nCaretOffsetEnd = 0;
+        let xSelection = window.getSelection();
+        if (xSelection.rangeCount > 0) {
+            let xRange = xSelection.getRangeAt(0);
+            let xPreCaretRange = xRange.cloneRange();
+            xPreCaretRange.selectNodeContents(xElement);
+            xPreCaretRange.setEnd(xRange.endContainer, xRange.endOffset);
+            nCaretOffsetStart = xPreCaretRange.toString().length;
+            nCaretOffsetEnd = nCaretOffsetStart + xRange.toString().length;
+        }
+        return [nCaretOffsetStart, nCaretOffsetEnd];
+        // for later: solution with multilines text
+        // https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container/4812022
+    },
+
+    setCaretPosition (xElement, nCaretOffsetStart, nCaretOffsetEnd) {
+        // JS awfulness again.
+        // recipie from https://stackoverflow.com/questions/6249095/how-to-set-caretcursor-position-in-contenteditable-element-div
+        let iChar = 0;
+        let xRange = document.createRange();
+        xRange.setStart(xElement, 0);
+        xRange.collapse(true);
+
+        let lNode = [xElement];
+        let xNode;
+        let bFoundStart = false;
+        let bStop = false;
+        while (!bStop && (xNode = lNode.pop())) {
+            if (xNode.nodeType == 3) { // Node.TEXT_NODE
+                let iNextChar = iChar + xNode.length;
+                if (!bFoundStart && nCaretOffsetStart >= iChar && nCaretOffsetStart <= iNextChar) {
+                    xRange.setStart(xNode, nCaretOffsetStart - iChar);
+                    bFoundStart = true;
+                }
+                if (bFoundStart && nCaretOffsetEnd >= iChar && nCaretOffsetEnd <= iNextChar) {
+                    xRange.setEnd(xNode, nCaretOffsetEnd - iChar);
+                    bStop = true;
+                }
+                iChar = iNextChar;
+            } else {
+                let i = xNode.childNodes.length;
+                while (i--) {
+                    lNode.push(xNode.childNodes[i]);
+                }
+            }
+        }
+        let xSelection = window.getSelection();
+        xSelection.removeAllRanges();
+        xSelection.addRange(xRange);
     }
 };
 
