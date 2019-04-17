@@ -1390,12 +1390,11 @@ TEST: __ocr__ {{1’}}année s’annonce agitée.
 
 
 __[i]/ocr(ocr_il_regex)__
-    [i1][1f]s?
-        <<- \0.endswith("s") ->> Ils|ils                                                            # Erreur de numérisation ?
-        <<- __else__ ->> Il|il                                                                      # Erreur de numérisation ?
+    1fs?
+        <<- \0.endswith("s") ->> Ils|ils|ifs                                                        # Erreur de numérisation ?
+        <<- __else__ ->> Il|il|if                                                                   # Erreur de numérisation ?
 
 TEST: __ocr__ {{1fs}} s’en sortent comme ils peuvent.
-TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
 
 
 
@@ -2485,14 +2484,22 @@ __ocr_il__
     [<start>|,]  [n|h|d]  ~^[bcdfghjklmnpqrstvwxz]
         <<- morph(\3, ":(?:O[on]|3s)") -2>> il                                                      # Erreur de numérisation ?
 
-    U
+    [U|if|i1]
         <<- ->> Il|il                                                                               # Erreur de numérisation ?
 
-    Us
+    [Us|ifs|i1s]
         <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
+
+    11
+        <<- not morph(>1, ":N", "*")
+        ->> Il|il                                                                                   # Erreur de numérisation ?
 
 TEST: __ocr__ {{n}} contient trop de soufre.
 TEST: __ocr__ {{Us}} arrive demain.
+TEST: __ocr__ {{i1s}} en savent beaucoup trop pour leur propre bien.
+TEST: __ocr__ elle a 11 ans.
+TEST: __ocr__ 11 jours de souffrance
+TEST: __ocr__ nous sommes le 11 septembre
 
 
 # fa / la
@@ -5355,6 +5362,49 @@ __conf_si_vconj__
 TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
 TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
 TEST: Toutes les bifurcations qui auraient été possibles si avaient été pris en compte des critères autre que la captation de valeur ajoutée, l’augmentation des taux de profit, et l’accumulation du capital.
+
+
+__conf_si_x_être__
+    si  *WORD  [/-je|/-tu|/-il|/-elle|/-on|/-nous|/-vous|/-ils|/-elles]
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":(?:Y|[123][sp])", ":[AQ]")
+        -2>> =suggVerbPpas(\2)                                                                      # Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
+
+TEST: si {{frapper}} fussent-ils, rien ne put les mouvoir.
+TEST: si détruit soit-il, on pourra le remettre sur ses pieds.
+
+
+__conj_si_x_être__
+    si  *WORD  [/-je|/-tu]
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:p", ":[si]")
+        -2>> =suggSing(\2)                                                                          # Accord avec “\3” : l’adjectif doit être au singulier.
+
+    si  *WORD  /-il
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[fp]", ":[me]:[si]")
+        -2>> =suggMasSing(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au masculin singulier.
+
+    si  *WORD  /-elle
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[mp]", ":[fe]:[si]")
+        -2>> =suggFemSing(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au féminin singulier.
+
+    si  *WORD  /-nous
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:s", ":[pi]")
+        -2>> =suggPlur(\2)                                                                          # Accord avec “\3” : l’adjectif doit être au pluriel.
+
+    si  *WORD  /-ils
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[sf]", ":[me]:[pi]")
+        -2>> =suggMasPlur(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au masculin pluriel.
+
+    si  *WORD  /-elles
+        <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[sm]", ":[fe]:[pi]")
+        -2>> =suggFemPlur(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au féminin pluriel.
+
+TEST: si {{clairvoyants}} deviendrais-je
+TEST: si {{fragiles}} sois-tu
+TEST: si {{idiote}} semble-t-il
+TEST: si {{riches}} soit-elle
+TEST: si {{grand}} paraissons-nous
+TEST: si {{frappé}} fussent-ils, rien ne put les mouvoir.
+TEST: si {{étonnés}} demeurent-elles
 
 
 __conf_trop_vconj__
@@ -11067,7 +11117,7 @@ __purge_couleurs__
     rouge   [brique|carmin|cerise|écarlate|rubis|sang|tomate|vermillon]
     vert    [émeraude|olive|pistache|pomme]
         <<- morph(<1, ":[NA]", ":D") ~>> *
-        <<- __else__ and morph(<1, ":D|>(?:être|devenir|redevenir|rester|sembler|demeurer)") ~>> ␣
+        <<- __else__ and morph(<1, ":D|>(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)") ~>> ␣
         <<- __also__ =>> define(\1, [":A:e:i"])
 
 
