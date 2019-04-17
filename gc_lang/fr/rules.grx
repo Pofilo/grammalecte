@@ -8153,9 +8153,18 @@ TEST: y arriver {{s’en coup fée rire}}
 # s’ensuivre
 __conf_s_ensuivre__
     s’ en >suivre
-        <<- /conf/ ->> s’en\3                                                                       # Verbe “s’ensuivre”.
+        <<- /conf/ morph(\3, ":(?:[123]s|Q)")
+        ->> s’ensuit|s’ensuivit|s’ensuivait|s’ensuivra|s’ensuivrait                                 # Verbe “s’ensuivre”.|https://fr.wiktionary.org/wiki/s%E2%80%99ensuivre
+        <<- /conf/ __else__ and morph(\3, ":[123]p")
+        ->> s’ensuivent|s’ensuivirent|s’ensuivaient|s’ensuivront|s’ensuivraient                     # Verbe “s’ensuivre”.|https://fr.wiktionary.org/wiki/s%E2%80%99ensuivre
+        <<- /conf/ __else__ and morph(\3, ":Y")
+        ->> s’ensuivre                                                                              # Verbe “s’ensuivre”.|https://fr.wiktionary.org/wiki/s%E2%80%99ensuivre
+        <<- /conf/ __else__ and morph(\3, ":P")
+        ->> s’ensuivant                                                                             # Verbe “s’ensuivre”.|https://fr.wiktionary.org/wiki/s%E2%80%99ensuivre
 
-TEST: {{S’en suivit}} une guerre de tous les instants.
+TEST: il {{s’en suis}} des représailles
+TEST: {{s’en suivi}} des représailles
+TEST: {{S’en suivrons}} une guerre de tous les instants et…
 TEST: {{S’en suivre}}.
 
 
