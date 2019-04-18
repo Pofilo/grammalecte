@@ -218,9 +218,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let nEnd = parseInt(xParagraph.dataset.caret_position_end);
         oGrammalecte.setCaretPosition(xParagraph, nStart, nEnd);
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "A";
-        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(120, 30%, 50%)";
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "";
-        setTimeout(() => { this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = ""; }, 1000);
+        setTimeout(() => { this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = ""; }, 500);
     }
 
     applySuggestion (sNodeSuggId) { // sugg
