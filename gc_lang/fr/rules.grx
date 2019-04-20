@@ -12665,15 +12665,16 @@ __gn_det_plur_3m__
     [ces|mes|tes|ses|nos|vos|leurs|quels|quelles|aux]       *WORD  *WORD  *WORD
     [plusieurs|quelques|certains|certaines|moult]           *WORD  *WORD  *WORD
     [lesdits|lesdites|desdits|desdites|auxdits|auxdites]    *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$")
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
     [les|leurs]    *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[pi]", "[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$")
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", "[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces petites sottes {{déjantée}}
 TEST: Les grandes volontés {{dépassée}} par les évènements
+TEST: Prendre goût aux heures passées seul à marcher
 
 
 ## certains / certaines
