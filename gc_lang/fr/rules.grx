@@ -12890,27 +12890,6 @@ TEST: certaines idioties {{stupide}}
 TEST: je ne sais guère de quelles âneries {{proférés}} on parle.
 
 
-
-## Pluriel des groupes
-__gn_nombre_de_1m__
-    nombre  [de|d’]  *WORD
-        <<- /gn/ (morph(\3, ":[NA].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>", ":[AD]"))
-            or \3 in aREGULARPLURAL
-        -3>> =suggPlur(\3)                                                                  # Ici, « nombre de » devrait probablement être suivi d’un pluriel.
-
-TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
-
-
-__gn_det_groupe_de_1m__
-    [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques]  [>centaine|>millier|>million|>milliard|>dizaine|>douzaine|>multitude|>horde]  [de|d’]  *WORD
-        <<- /gn/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/") or \4 in aREGULARPLURAL
-        -4>> =suggPlur(\4)                                                                  # Avec \1 « \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
-
-TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
-TEST: une multitude d’{{homme}}                                     ->> hommes
-TEST: les 80 milliards de fraude fiscale
-
-
 ## quelque adverbe
 __gn_quelque_adverbe__
     quelques  *NUM
@@ -13440,12 +13419,37 @@ TEST: plus de deux cent quatre-vingt mille personnes
 
 
 #### Groupes, regroupements, collections, etc.
+
+## Pluriel des groupes
+__sgpl_nombre_de_1m__
+    nombre  [de|d’]  *WORD
+        <<- /sgpl/ (morph(\3, ":[NA].*:s", ":[ip]|>o(?:nde|xydation|r)/") and morph(<1, ":(?:G|[123][sp])|<start>", ":[AD]"))
+            or \3 in aREGULARPLURAL
+        -3>> =suggPlur(\3)                                                                  # Ici, « nombre de » devrait probablement être suivi d’un pluriel.
+
+TEST: Je connais nombre d’{{emmerdeur}} et aucun n’est pire que lui.
+
+
+__sgpl_det_groupe_de_1m__
+    [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  [>centaine|>millier|>million|>milliard|>dizaine|>douzaine|>multitude|>horde]  [de|d’]  *WORD
+        <<- /sgpl/ morph(\4, ":[NA].*:s", ":[ip]|>fraude/") or \4 in aREGULARPLURAL
+        -4>> =suggPlur(\4)                                                                  # Avec \1 « \2 \3… », mettre au pluriel “\4” s’il y en a bien plusieurs.
+
+    [un|une|le|la|ce|cette|mon|ton|son|ma|ta|sa|les|ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs] >groupe [d’|de] [écoutes|paroles]
+        <<- /sgpl/ -4>> =suggSing(\4)                                                       # Mettez au singulier.
+
+TEST: des centaines de {{bête}} à cornes passèrent devant nous.     ->> bêtes
+TEST: une multitude d’{{homme}}                                     ->> hommes
+TEST: des groupes de {{paroles}}                                    ->> parole
+TEST: les 80 milliards de fraude fiscale
+
+
 __sgpl_carnet_de__
     >carnet de [chèque|note|timbre|ticket|vacance]
         <<- /sgpl/ -3>> \3s                                             # Il manque un “s”. Il y en a plusieurs dans un carnet.
 
 __sgpl_collectif_de__
-    >collective [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
+    >collective [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
         <<- /sgpl/ morph(<1, ":D|<start>") -3>> \1s                     # Il manque un “s”. Il y en a plusieurs dans un collectif.
 
 __sgpl_collection_de__
@@ -13461,12 +13465,19 @@ __sgpl_confluence_de__
         <<- /sgpl/ -3>> =suggPlur(\3)                                   # Confluence de plusieurs cours d’eau : mettez au pluriel.
 
 __sgpl_groupe_de__
-    [>association|>assemblée|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
+    [>association|>assemblée|>groupe|>rassemblement|>regroupement|>réunion|>troupe] [de|d’] [artiste|agriculteur|agricultrice|architecte|automobiliste|citoyen|citoyenne|con|conne|consommateur|consommatrice|enfant|entreprise|femme|fille|garçon|homme|infirmier|infirmière|jeune|médecin|motard|motarde|musicien|musicienne|passionné|passionnée|prostitué|prostituée|touriste|travailleur|travailleuse|vieille|vieillard|vieillarde]
         <<- /sgpl/ -3>> \3s                                             # Il manque un “s”. Il y en a plusieurs dans un groupe, un rassemblement, une assemblée, etc.
 
 __sgpl_troupeau_de__
     >troupeau [de|d’] [âne|animal|bœuf|buffle|bovin|bison|con|conne|cheval|chèvre|génisse|mouton|mule|mulet|porc|taureau|touriste|vache|veau]
         <<- /sgpl/ -3>> =suggPlur(\3)                                   # Il manque un “s”. Il y en a plusieurs dans un troupeau.
+
+__sgpl_trousseau_de__
+    >trousseau [de|d’] [clé|clef]
+        <<- /sgpl/ -3>> =suggPlur(\3)                                   # Il manque un “s”. Il y en a plusieurs dans un troupeau.
+
+    >trousseau [de|d’] mariages
+        <<- /sgpl/ -3>> =\3[:-1]                                        # Mettez au singulier.
 
 TEST: d’un air compassé, il sortit son carnet de {{chèque}}.
 TEST: Ce collectif d’{{artiste}} est très inventif.
