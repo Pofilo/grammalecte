@@ -5246,7 +5246,7 @@ __conf_préverbes__
         <<- /conf/ not \1.isupper() ->> ne \1|\1                        # Incohérence.
 
     me [me|m’|te|t’|se|s’]
-        <<- /conf/ not \1.isupper() ->> ne                              # Incohérence.
+        <<- /conf/ not \1.isupper() -1>> ne                             # Incohérence. Erreur de frappe ou de numérisation ?
 
     te [me|m’|te|t’|se|s’]
         <<- /conf/ not \1.isupper() ->> \1                              # Incohérence.
@@ -5258,7 +5258,7 @@ __conf_préverbes__
         <<- /conf/ not \1.isupper() and \3.islower() -1:2>> d’          # Incohérence.
 
 TEST: Il {{ne n’}}arrive jamais à l’heure.
-TEST: Ça {{me te}} prend la tête, toutes ces complications vaines.
+TEST: Ça {{me}} te prend la tête, toutes ces complications vaines.
 TEST: il {{se m’}}est difficile d’y parvenir.
 TEST: Ça t’arrive {{de d’}}arriver à l’heure ?
 TEST: Les écrits de d’Alembert.
@@ -11664,7 +11664,9 @@ __purge_locutions_verbales__
     >faire copain copain
     >faire de [mon|ton|son|notre|votre|leur] mieux
     >faire état
+    >faire front
     >faire grand bruit
+    >faire grève
     >faire long feu
     >faire [machine|marche] arrière
     >faire main basse
@@ -11675,6 +11677,7 @@ __purge_locutions_verbales__
     >faire grand [bruit|cas]
     >faire profil bas
     >faire salle comble
+    >faire sens
     >faire table rase
     >faire ce que bon [me|te|lui|nous|vous|leur] semble
     >foutre en l’ air
@@ -11892,6 +11895,7 @@ TEST: il faut sauver les hommes bien sûr.
 TEST: Comme une montagne qui se construit à travers différentes couches de sédiments, la cathédrale évolue selon les ères qu’elle traverse.
 TEST: Sous la coupole bleu et or construite il y a deux siècles, les jurés sont attentifs. Ils écoutent et observent tout.
 TEST: À mes yeux, aucune cathédrale, pyramide, musée, arc de triomphe, Colisée, abbaye, chapelle, temple, synagogue, mosquée, joyaux architecturaux d’hier ou d’avant-hier ne valent la vie d’un être humain, quel qu’il soit, d’où qu’il vienne.
+TEST: Ça fait sens.
 
 
 
@@ -18534,6 +18538,7 @@ TEST: La consigner devenait une obligation.
 TEST: Les reconnaître semblait nécessaire.
 TEST: Son ministre du Budget, Gérald Darmanin, l’avait dit plus crûment sur RTL
 TEST: Certains jouent la carte de la dérision
+TEST: Certains font grève tous les vendredis pour soutenir cette cause.
 
 
 __conf_suj_verbe_det_verbe_nom__
