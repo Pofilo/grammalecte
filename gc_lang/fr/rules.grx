@@ -5242,7 +5242,13 @@ __conf_préverbes__
     ne n’
         <<- /conf/ not \1.isupper() ->> ne m’|n’                        # Incohérence. Double négation.
 
-    [me|te] [ne|n’|me|m’|te|t’|se|s’]
+    [me|te] [ne|n’]
+        <<- /conf/ not \1.isupper() ->> ne \1|\1                        # Incohérence.
+
+    me [me|m’|te|t’|se|s’]
+        <<- /conf/ not \1.isupper() ->> ne                              # Incohérence.
+
+    te [me|m’|te|t’|se|s’]
         <<- /conf/ not \1.isupper() ->> \1                              # Incohérence.
 
     se [me|m’|te|t’|se|s’]
@@ -5993,6 +5999,7 @@ __conf_à_substantifs__
     >sac a [dos|main|langer|merde|foutre]
     >silo a [>grain|blé]
     >soue a >cochonne
+    >tondeuse a gazon
     >trou a >rat
     >tueuse a gages
     >vache a lait
@@ -11074,6 +11081,7 @@ __simplication_substantifs__
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >tête de [déterré|déterrée|déterrés|déterrées]
     >titre de [noblesse|propriété|séjour]
+    >tondeuse à gazon
     >tour de passe-passe
     >trou à >rat
     >tueuse à gages
