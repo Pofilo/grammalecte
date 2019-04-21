@@ -15721,6 +15721,18 @@ TEST: ça va d’autonome à hautement dépendant
 TEST: la pression entre les membres à un moment devient trop importante
 
 
+__infi_loc_à_verbe__
+    de manière à            ~..(?:ée?s?|ez)$
+    du mal à                ~..(?:ée?s?|ez)$
+    intérêt à               ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
+
+TEST: de manière à {{obligé}} ces gens
+TEST: ils ont intérêt à {{obligés}} ces gens
+TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
+
+
 __infi_de_verbe__
     [de|d’] [le|la|l’|leur|les]           @:V¬:[YNAM]|>(?:lui|plus)/
     [<start>|,]  [de|d’] [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
@@ -19338,8 +19350,6 @@ __infi_divers__
     à faire                 ~..(?:ée?s?|ez)$
     à quoi bon              ~..(?:ée?s?|ez)$
     avec [qui|quoi]         ~..(?:ée?s?|ez)$
-    du mal à                ~..(?:ée?s?|ez)$
-    intérêt à               ~..(?:ée?s?|ez)$
     comment                 ~..(?:ée?s?|ez)$
     pourquoi                ~..(?:ée?s?|ez)$
     quand                   ~..(?:ée?s?|ez)$
@@ -19347,6 +19357,9 @@ __infi_divers__
         <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
+TEST: de manière à {{obligé}} ces gens
+TEST: ils ont intérêt à {{obligés}} ces gens
+TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 TEST: Quand {{mangez}}
 TEST: pourquoi m’{{étonnez}} de ces idioties…
 TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les jours.
