@@ -6647,7 +6647,7 @@ __conf_dès_des_dés__
     [dés|des] *NUM [ans|heures]
     [dés|des] @:B [ans|heures]
     [dés|des] [un|une] [an|heure]
-        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|occasion|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [des|ces|mes|tes|ses|nos|vos|quelques|aux] [dès|des]
@@ -8584,8 +8584,13 @@ __sgpl_entre_autres__
     entre autre @:(?:[GW]|[NA].*:[pi])
         <<- /sgpl/ -2>> autres                                      # La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
 
+    entre >autre chose
+        <<- /sgpl/ -2:3>> autres choses                             # Dans la locution “entre autres choses”, “autres choses” doit être au pluriel.|
+
 TEST: Des raisons ? Entre {{autre}} je n’en savais pas plus que lui.
 TEST: il y eut, entre {{autre}}, des erreurs commises.
+TEST: il y aura entre {{autre chose}} des répercussions terribles.
+TEST: il y aura entre {{autre}} choses des répercussions terribles.
 
 
 # termes
