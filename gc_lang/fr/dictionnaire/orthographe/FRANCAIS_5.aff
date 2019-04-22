@@ -826,7 +826,7 @@ SFX F*   uë         us/D'Q'             uë                  is:mas is:pl
 SFX F*   üe         u/D'L'Q'            üe                  is:mas is:sg
 SFX F*   üe         us/D'Q'             üe                  is:mas is:pl
 
-SFX W* Y 10 
+SFX W* Y 10
 SFX W*   0          0/D'L'Q'            e                   is:fem is:sg
 SFX W*   e          es/D'Q'             e                   is:fem is:pl
 SFX W*   ce         x/D'L'Q'            ce                  is:mas is:inv
@@ -927,11 +927,11 @@ PFX U.   0          z                   .
 PFX U.   0          y                   .
 
 
-####################################################################################################################### 
+#######################################################################################################################
 # LES VERBES
 # Les drapeaux commencent par une minuscule.
 # Les adjectifs verbaux (-ant[e][s]) doivent être créés à part (cf. les non-verbes).
-####################################################################################################################### 
+#######################################################################################################################
 
 # élisions diverses avant les verbes ----------------------------------------------------------------------------------
 
@@ -963,7 +963,7 @@ PFX t'   0          t'                  [aàâeèéêiîoôuyhœæ]  dp:te+
 PFX s' Y 1
 PFX s'   0          s'                  [aàâeèéêiîoôuyhœæ]  dp:se+
 
-# formes interrogatives ----------------------------------------------------------------------------------------------- 
+# formes interrogatives -----------------------------------------------------------------------------------------------
 
 #SFX ?1 Y 3
 #SFX ?1   0          -je                 [^e]                ds:+suj1sg
@@ -1171,12 +1171,12 @@ PFX s'   0          s'                  [aàâeèéêiîoôuyhœæ]  dp:se+
 #   m       verbe impersonnel [Imp]
 
 # Limitations de Hunspell #############################################################################################
-# 
+#
 # Deux limitations de Hunspell empêchent de fusionner certains drapeaux en un seul:
 # - http://qa.openoffice.org/issues/show_bug.cgi?id=80145
 #   Impossibilité de soustraire la racine entière  d'un verbe pour la substituer par une
 #   déclinaison sans rapport avec la racine.
-#   Cette limitation ne concerne être, avoir, aller: plusieurs entrées sont nécessaires pour 
+#   Cette limitation ne concerne être, avoir, aller: plusieurs entrées sont nécessaires pour
 #   conjuguer ces verbes. Elle empêche aussi de restreindre les possibilités de certains verbes
 #   pronominaux, par exemple s'ensuivre (le pronom est toujours collé au verbe, sauf pour les
 #   participes passés).
@@ -1195,7 +1195,7 @@ PFX s'   0          s'                  [aàâeèéêiîoôuyhœæ]  dp:se+
 
 # Notes ###############################################################################################################
 #
-# En ce qui concerne les drapeaux inclus dans les règles d’affixation, il est important de bien lire la 
+# En ce qui concerne les drapeaux inclus dans les règles d’affixation, il est important de bien lire la
 # documentation de Hunspell.
 #
 
@@ -1323,7 +1323,7 @@ SFX a0   er         e                       [^y]er              po:ipre po:spre 
 SFX a0   yer        ye                      [^ou]yer            po:ipre po:spre po:1sg po:3sg
 SFX a0   yer        ie                      [aou]yer            po:ipre po:spre po:1sg po:3sg
 SFX a0   er         è                       er                  po:ipre po:1isg                     di:R
-SFX a0   er         es                      [^y]er              po:ipre po:spre po:2sg          
+SFX a0   er         es                      [^y]er              po:ipre po:spre po:2sg
 SFX a0   yer        yes                     [^ou]yer            po:ipre po:spre po:2sg
 SFX a0   yer        ies                     [aou]yer            po:ipre po:spre po:2sg
 SFX a0   er         ons                     [^cg]er             po:ipre po:1pl
@@ -8570,10 +8570,14 @@ SFX pK   cevoir     cevons/n'l'                 cevoir              po:impe po:1
 SFX pK   cevoir     cevez/n'l'm'                cevoir              po:impe po:2pl
 
 # valoir [I,T,P]
+# Participe passé masculin ->> epicène invariable (car le plus souvent intransitif)
 SFX pM N 41
 SFX pM   aloir      aloir                       valoir              po:infi
 SFX pM   aloir      alant                       valoir              po:ppre
 SFX pM   aloir      alu                         valoir              po:ppas is:epi is:inv
+SFX pM   aloir      alus                        valoir              po:ppas is:mas is:pl
+SFX pM   aloir      alue                        valoir              po:ppas is:fem is:sg
+SFX pM   aloir      alues                       valoir              po:ppas is:fem is:pl
 SFX pM   aloir      aux                         valoir              po:ipre po:1sg po:2sg
 SFX pM   aloir      aut                         valoir              po:ipre po:3sg
 SFX pM   aloir      alons                       valoir              po:ipre po:1pl
@@ -8615,7 +8619,7 @@ SFX pM   aloir      alez                        valoir              po:impe po:2
 
 # équivaloir [Ti,P] | prévaloir [I,P]
 SFX pN Y 43
-SFX pN   valoir     valoir/n'q'd'm't's'         valoir              po:infi 
+SFX pN   valoir     valoir/n'q'd'm't's'         valoir              po:infi
 SFX pN   valoir     valant/n'q'm't's'           valoir              po:ppre
 SFX pN   valoir     vaux/n'j'm't'               valoir              po:ipre po:1sg po:2sg
 SFX pN   valoir     vaut/n'm't's'               valoir              po:ipre po:3sg
@@ -8932,7 +8936,7 @@ SFX pU   eoir       ises                    seoir               po:ppas po:adj i
 # seoir [I] {convenir}
 SFX pV N 14
 SFX pV   eoir       eoir                    seoir               po:infi
-SFX pV   eoir       éant                    seoir               po:ppre   
+SFX pV   eoir       éant                    seoir               po:ppre
 SFX pV   eoir       eyant                   seoir               po:ppre
 SFX pV   eoir       is                      seoir               po:ppas is:epi is:inv
 SFX pV   eoir       ied                     seoir               po:ipre po:3sg
@@ -9632,7 +9636,7 @@ SFX vA   ettre      ettez/n'l'm'                mettre              po:impe po:2
 
 # s'entremettre [P]
 SFX vC Y 42
-SFX vC   mettre     mettre/m't's'               mettre              po:infi 
+SFX vC   mettre     mettre/m't's'               mettre              po:infi
 SFX vC   mettre     mettant/m't's'              mettre              po:ppre
 SFX vC   mettre     mis                         mettre              po:ppas po:adj is:mas is:inv
 SFX vC   mettre     mise                        mettre              po:ppas po:adj is:fem is:sg
@@ -10482,7 +10486,7 @@ SFX wV   croitre    crois/n'l'm'                croitre             po:impe po:2
 SFX wV   croitre    croissons/n'l'              croitre             po:impe po:1pl            di:R
 SFX wV   croitre    croissez/n'l'm'             croitre             po:impe po:2pl            di:R
 
-# verbes en -oire, -clure, -ou(r)dre, -vre -------------------------------------------------------------------- 
+# verbes en -oire, -clure, -ou(r)dre, -vre --------------------------------------------------------------------
 
 # croire [I,T,Ti]
 SFX xA N 43
