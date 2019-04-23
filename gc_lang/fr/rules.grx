@@ -6888,7 +6888,7 @@ TEST: Œuvrez à des {{faims}} funestes.
 __conf_faux_faut__
     faut  @:¬(?:Y|Oo|X|M|W)|>qu[e’]/
     faut  <end>
-        <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|<start>|")
+        <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|qui|<start>|")
         -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
 
 TEST: un homme {{faut}}
@@ -10006,7 +10006,7 @@ __purge_locutions__
     en gage [de|d’] bonne foi
     en garde à vue ?prolongée¿
     en grand nombre
-    en grende [difficulté|majorité|partie|pompe]
+    en grande [difficulté|majorité|partie|pompe]
     en haut lieu
     en haute [estime|mer]
     en l’occurrence
@@ -10021,7 +10021,7 @@ __purge_locutions__
     en nombre plus que suffisant
     en partant [de|d’] zéro
     en partie ou en totalité
-    en plein [air|cœur|jour]
+    en plein [air|cœur|essor|marasme|jour]
     en pleine [gueule|figure|forme|poire|nuit|tronche]
     en perte [de|d’] vitesse
     en peu [de|d’] temps
@@ -16066,7 +16066,7 @@ __purge_syntagmes_nominaux__
 
     [le|la|les|leur|certains|certaines] *WORD *WORD
         <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G|Y)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
-        <<- morph(\3, ":N", ":A") and morph(\2, ":A", ":N") ~2>> *
+        <<- morph(\3, ":N", ":A") and morph(\2, ":A") ~2>> *
         <<- __else__ ~3>> *
 
     l’ *WORD *WORD
@@ -17936,7 +17936,7 @@ TEST: le flacon qu’ils ont réussi à acquérir
 
 __ppas_det_fem_sing_COD_que_avoir__
     [une|la|l’|cette|ma|ta|sa|mon|ton|son]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morph(\2, ":[NA].*:f") and not morph(>1, ":(?:Y|Oo|D)|>qu[e’]/") and not value(>1, "|m’|t’|s’|l’|")
+        <<- /ppas/ morph(\2, ":[NA].*:f", ">fois/") and not morph(>1, ":(?:Y|Oo|D)|>qu[e’]/") and not value(>1, "|m’|t’|s’|l’|")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         # Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -17945,6 +17945,7 @@ TEST: La femme que j’ai {{aidé}}.
 TEST: La femme que j’ai beaucoup {{aidé}}.
 TEST: La femme que j’ai un peu {{aidé}}.
 TEST: la danse qu’ils ont réussi à faire
+TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
 
 
 __ppas_ce_que_pronom_avoir__
