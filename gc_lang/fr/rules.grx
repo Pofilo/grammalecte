@@ -3394,6 +3394,9 @@ __tu_substantifs__
     face [a|à] face
         <<- /tu/ morph(<1, ":D") ->> face-à-face                # Si vous employez cette locution comme un nm, mettez des traits d’union.|https://fr.wiktionary.org/wiki/face-%C3%A0-face
 
+    gagne >pain
+        <<- /tu/ not morph(<1, ":O[sv]") ->> gagne-pain         # Il manque un trait d’union.
+
     grand chose
         <<- /tu/ ->> grand-chose                                # Il manque un trait d’union.
 
@@ -6712,7 +6715,7 @@ TEST: sous le seuil des 10 %
 TEST: notre revue des 24 et 25 décembre
 TEST: J’ai des X230.
 TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
-TEST: Mettre fin aux 35 heures.
+TEST: C’est la fin des 35 heures.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6723,10 +6726,16 @@ __conf_diagnostic_pronostique__
     [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  diagnostiques
         <<- /conf/ -2>> diagnostics                                                 # Confusion. Le nom s’écrit avec un “c”.
 
+    le diagnotique
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> diagnostic                          # Confusion probable. Le nom s’écrit avec un “c”.
+
+    les diagnotiques
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> diagnostics                         # Confusion probable. Le nom s’écrit avec un “c”.
+
     [ce|un|du|mon|notre|votre|quel] pronostique
         <<- /conf/ -2>> pronostic                                                   # Confusion. Le nom s’écrit avec un “c”.
 
-    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs]  pronostiques
+    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  pronostiques
         <<- /conf/ -2>> pronostics                                                  # Confusion. Le nom s’écrit avec un “c”.
 
     le pronostique
@@ -18480,12 +18489,15 @@ __imp_union_aller_y!5__
         <<- /imp/ space_after(\1, 1, 1) and not morph(>1, ":Y") ->> \1-\2           # Il manque un trait d’union.
 
     [va|vas] [y|z-y|z’y]
-        <<- /imp/ space_after(\1, 1, 1) and not morph(>1, ":Y") ->> vas-y           # Il manque un trait d’union.
+        <<- /imp/ space_after(\1, 1, 1) and not value(<1, "|tu|il|elle|on|ne|n’|") and not morph(>1, ":Y")
+        ->> vas-y                                                                   # Il manque un trait d’union.
 
 TEST: {{allons y}}
 TEST: {{vas y}}
 TEST: {{Viens y}}.
+TEST: Il va y àvoir des contingents étrangers qui débarquent à Paris. (erroné)
 TEST: Viens y faire un test.
+
 
 
 __imp_union_convenir_en__
