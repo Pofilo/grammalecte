@@ -6648,10 +6648,19 @@ __conf_dès_des_dés__
     des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
         <<- /conf/ not value(<1, "|%|") and not morph(<1, ">(?:pourcent|cent|barre|seuil)/") -1>> dès     # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    [dés|des] *NUM [ans|heures]
-    [dés|des] @:B [ans|heures]
-    [dés|des] [un|une] [an|heure]
+    [dés|des] *NUM ans
+    [dés|des] @:B ans
+    [dés|des] un an
         <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
+        -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    [dés|des] *NUM heures
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|") and \2 != "35"
+        -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+
+    [dés|des] @:B heures
+    [dés|des] une heure
+        <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [des|ces|mes|tes|ses|nos|vos|quelques|aux] [dès|des]
@@ -6703,6 +6712,7 @@ TEST: sous le seuil des 10 %
 TEST: notre revue des 24 et 25 décembre
 TEST: J’ai des X230.
 TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
+TEST: Mettre fin aux 35 heures.
 
 
 # diagnostic / diagnotique // pronostic / pronostique
@@ -6904,6 +6914,7 @@ TEST: Les tests ne sont pas toujours indispensables mais faut bien que t’appre
 TEST: Mais faut absolument que tu voies ça.
 TEST: Faut que tu sois forte, ma fille.
 TEST: Bon, et oui, faut qu’on parle sérieusement de la fin de notre chronique.
+TEST: Qui faut flinguer pour avoir un bon café ?
 
 
 # filtre / philtre
