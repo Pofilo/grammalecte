@@ -414,13 +414,17 @@ TEST: Eh oui{{ ,}} c’est encore moi.
 
 
 # Guillemets et espaces
-__<s>/typo(typo_guillemets_fermants_perdus)__    [  ]”[  ] <<- ->> "” | “"                          # Pas d’espace avant ces guillemets ouvrants.
-__<s>/typo(typo_guillemets_ouvrants_perdus)__    [  ]“[  ]  <<- ->> " “|” "                         # Pas d’espace après ces guillemets ouvrants.
-__<s>/typo(typo_guillemets_perdus)__             [  ](?:"|['‘’]['‘’])[  ]  <<- ->> " « | » | “|” "  # Guillemets isolés.
+__<s>/typo(typo_guillemets_fermants_perdus)__   [  ]”[  ] <<- ->> "” | “"                           # Pas d’espace avant ces guillemets ouvrants.
+__<s>/typo(typo_guillemets_ouvrants_perdus)__   [  ]“[  ]  <<- ->> " “|” "                          # Pas d’espace après ces guillemets ouvrants.
+__<s>/typo(typo_guillemets_perdus)__            [   ](?:"|['‘’]['‘’])[   ]  <<- ->> " « | » | “|” " # Guillemets isolés.
+__<s>/typo(typo_commencement_guillemets)__      ^(?:"|['‘’]['‘’])[   ]  <<- ->> « |“                # Guillemets ouvrants.
+__<s>/typo(typo_guillemets_fin)__           ([   ](?:"|['‘’]['‘’]))(?:$|[.,;?!])  <<- -1>> " »|”"   # Guillemets fermants.
 
 TEST: Bon sang, c’en est trop à présent. Vos prétendues “excuses{{ ” }}ne trompent personne !
 TEST: Bon sang, c’en est trop à présent. Vos prétendues{{ “ }}excuses” ne trompent personne !
 TEST: Encore des guillemets{{ ‘’ }}dont on ne sait que faire.
+TEST: {{" }}Ça suffit. »
+TEST: « Ça suffit{{ "}}
 
 
 __<s>/typo(typo_guillemets_fermants_inverses)__  [  ]”(?=\w) <<- ->> " “"                           # Mettez des guillemets ouvrants plutôt que fermants.
@@ -432,6 +436,7 @@ TEST: « Le grand homme{{«}}
 TEST: « La grande femme{{ «}} !
 TEST: Eux et leurs{{ ”}}amis{{”}} sont finis !
 TEST: Vos {{“}}amis{{“ }}et vous êtes finis !
+TEST: {{" }}Mangez{{ "}}, déclara-t-elle.
 
 
 
@@ -10982,6 +10987,7 @@ __simplication_substantifs__
     >commise d’ office
     >complémentaire santé
     >condamnée à mort
+    >conférence de presse
     >convention [récepteur|générateur]
     >conne comme la lune
     >conne comme un balai
@@ -11700,7 +11706,7 @@ __purge_locutions_verbales__
     >faire [machine|marche] arrière
     >faire main basse
     >faire partie ?intégrante¿
-    >faire fausse route
+    >faire [bonne|fausse] route
     >faire front commun
     >faire grise mine
     >faire grand [bruit|cas]
@@ -18720,13 +18726,14 @@ TEST: Entreront-ils en {{contacte}} avec eux ?                  ->> contact
 
 
 __conf_vc_int_imp_verbe__
-    [/VCint|/VCimp]  @:[123][sp]¬:[GNAQW]
+    [/VCint|/VCimp]  @:[123][sp]¬:[GNAQWM]
         <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") >>>
         <<- /conf/ morphVC(\1, ":V0") -2>> =suggVerbPpas(\2)                    # Incohérence probable : “\2” est une forme verbale conjuguée.
-        <<- __else__ -2>> _                                                     # Incohérence probable : “\2” est une forme verbale conjuguée.
+        <<- /conf/ __else__ -2>> _                                              # Incohérence probable : “\2” est une forme verbale conjuguée.
 
 TEST: Annonce-le {{dépare}}.
 TEST: prends-la {{tète}}.
+TEST: alors rappelons-nous Marie
 
 
 __conf_verbes_det_verbe_nom__
