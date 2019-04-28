@@ -13039,10 +13039,10 @@ TEST: {{Homme}} {{impatients}}.
 
 __gn_start_3m__
     <start>  @:[NA]¬*  @:[NA]¬*  @:[NA]¬*
-        <<- /gn/ morph(\2, ":p") and morph(\3, ":[pi]") and morph(\4, ":s") -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
-        <<- /gn/ morph(\2, ":i") and morph(\3, ":p") and morph(\4, ":s")    -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
-        <<- /gn/ morph(\2, ":s") and morph(\3, ":[si]") and morph(\4, ":p") -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
-        <<- /gn/ morph(\2, ":i") and morph(\3, ":s") and morph(\4, ":p")    -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        <<- /gn/ morph(\2, ":p") and morph(\3, ":[pi]") and morph(\4, ":s") and \4.islower() -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
+        <<- /gn/ morph(\2, ":i") and morph(\3, ":p")    and morph(\4, ":s") and \4.islower() -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
+        <<- /gn/ morph(\2, ":s") and morph(\3, ":[si]") and morph(\4, ":p") and \4.islower() -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
+        <<- /gn/ morph(\2, ":i") and morph(\3, ":s")    and morph(\4, ":p") and \4.islower() -4>> =switchPlural(\4)  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: Grande manifestation {{réprimées}} dans le sang.
 TEST: Super manifestation {{ignorées}} par les médias.
@@ -16207,6 +16207,20 @@ __da_été__
         <<- =>> select(\2, ":Q")
 
 
+__purge_subst_plur_comme_nom_sing__
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿         @:3p
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       [ne|n’]     [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]     @:3p
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:3p
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:3p
+    [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [lui|leur|y]                    en                           @:3p
+        <<- morph(\2, ":[NA].*:[pi]") and morph(\5, ":[NA].*:[si]") ~3:5>> *
+
+
 __purge_ponctuations2__
     ,   ,
     (   )
@@ -16225,6 +16239,7 @@ __purge_ponctuations2__
 
 TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.
 TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs espérances
+TEST: les hommes comme notre protecteur étaient redoutables
 TEST: tandis que d’autres perçoivent le bon goût de la soupe.
 TEST: Je me doute bien que vous avez trouvé la réponse.
 TEST: Nous nous doutons bien qu’il y a une entourloupe derrière cette affaire.
