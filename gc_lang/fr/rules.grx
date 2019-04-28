@@ -2,7 +2,7 @@
 #   RÈGLES DE GRAMMAIRE FRANÇAISE POUR GRAMMALECTE
 #   par Olivier R.
 #
-#   Copyright © 2011-2018.
+#   Copyright © 2011-2019.
 #
 #   This file is part of Grammalecte.
 #
@@ -375,6 +375,28 @@ TEST: «{{  }}Je suis partie. »
 TEST: « Je suis partie.{{  }}»
 
 
+# Espace avant ou après tiret
+__[i]/esp(esp_avant_après_tiret)__
+    ({w_1})( [-–—]|[-–—] )({w_1})  @@0,**,$
+        <<- not \1.endswith("-t") and \3 != "t" >>>
+        <<- (\3 == "je" and morph(\1, ":1s"))
+            or (\3 == "tu" and morph(\1, ":2s"))
+            or (\3 == "il" and morph(\1, ":3s"))
+            or (\3 == "elle" and morph(\1, ":3s"))
+            or (\3 == "on" and morph(\1, ":3s"))
+            or (\3 == "nous" and morph(\1, ":1p"))
+            or (\3 == "vous" and morph(\1, ":2P"))
+            or (\3 == "ils" and morph(\1, ":3p"))
+            or (\3 == "elles" and morph(\1, ":3p"))
+        ->> \1-\3|\1 – \3|\1 — \3           # Espace superflu s’il s’agit bien d’une forme conjuguée interrogative (sinon, il manque un espace à côté du tiret).
+        <<- __else__ -2>> " – | — "         # Il manque un espace à côté du tiret.
+
+TEST: Le {{faut -il}} ?             ->> faut-il|faut – il|faut — il
+TEST: qu’y {{puis -je}} ?           ->> puis-je|puis – je|puis — je
+TEST: Le {{faut -il}} ?             ->> faut-il|faut – il|faut — il
+TEST: qu’y {{puis -je}} ?           ->> puis-je|puis – je|puis — je
+
+
 # Espaces et crochets et parenthèses
 __<s>/typo(typo_espace_après_signe_ouvrant)__    "([\[(]) "  @@0 <<- ->> \1                         # Pas d’espace après ce signe.
 __<s>/typo(typo_espace_avant_signe_fermant)__    " ([\])])"  <js> ([\]\)])</js>  @@1  <<- ->> \1    # Pas d’espace avant ce signe.
@@ -414,11 +436,11 @@ TEST: Eh oui{{ ,}} c’est encore moi.
 
 
 # Guillemets et espaces
-__<s>/typo(typo_guillemets_fermants_perdus)__   [  ]”[  ] <<- ->> "” | “"                           # Pas d’espace avant ces guillemets ouvrants.
+__<s>/typo(typo_guillemets_fermants_perdus)__   [  ]”[  ]  <<- ->> "” | “"                          # Pas d’espace avant ces guillemets ouvrants.
 __<s>/typo(typo_guillemets_ouvrants_perdus)__   [  ]“[  ]  <<- ->> " “|” "                          # Pas d’espace après ces guillemets ouvrants.
 __<s>/typo(typo_guillemets_perdus)__            [   ](?:"|['‘’]['‘’])[   ]  <<- ->> " « | » | “|” " # Guillemets isolés.
 __<s>/typo(typo_commencement_guillemets)__      ^(?:"|['‘’]['‘’])[   ]  <<- ->> « |“                # Guillemets ouvrants.
-__<s>/typo(typo_guillemets_fin)__           ([   ](?:"|['‘’]['‘’]))(?:$|[.,;?!])  <<- -1>> " »|”"   # Guillemets fermants.
+__<s>/typo(typo_guillemets_fin)__       ([   ](?:"|['‘’]['‘’]))(?:$|[.,;?!])  @@0  <<- -1>> " »|”"  # Guillemets fermants.
 
 TEST: Bon sang, c’en est trop à présent. Vos prétendues “excuses{{ ” }}ne trompent personne !
 TEST: Bon sang, c’en est trop à présent. Vos prétendues{{ “ }}excuses” ne trompent personne !
@@ -560,7 +582,7 @@ __[s](points_suspension_entre_parenthèses)__
     <<- ->> […]                 # Pour indiquer une troncature de texte, on utilise usuellement des crochets.
     <<- ~>> *
 __<i>(p_préfixes_entre_parenthèses)__
-    " (\(re\))\w+"  @@1
+    " (\(r[eé]\))\w+"  @@1
         <<- ~1>> *
 
 TEST: par {{O.R.}}                                          ->> OR|O. R.
@@ -16209,15 +16231,15 @@ __da_été__
 
 __purge_subst_plur_comme_nom_sing__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿         @:3p
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿         @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       [ne|n’]     [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]     @:3p
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       [ne|n’]     [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]     @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:3p
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:3p
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [lui|leur|y]                    en                           @:3p
+        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [lui|leur|y]                    en                           @:3p¬:G
         <<- morph(\2, ":[NA].*:[pi]") and morph(\5, ":[NA].*:[si]") ~3:5>> *
 
 
@@ -16237,8 +16259,6 @@ __purge_ponctuations2__
         <<- ~1>> *
 
 
-TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.
-TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs espérances
 TEST: les hommes comme notre protecteur étaient redoutables
 TEST: tandis que d’autres perçoivent le bon goût de la soupe.
 TEST: Je me doute bien que vous avez trouvé la réponse.
@@ -19362,6 +19382,8 @@ TEST: ils viennent bien entendu {{attaqué}} le parlement
 TEST: ils vont par voie de conséquence vraiment {{attaqué}} la banque
 TEST: elles ont pu {{mangé}}
 TEST: Cette affaire ne va rien {{arrangé}}.
+TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.
+TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs espérances
 TEST: Elles étaient venues armées.
 TEST: Il vint déguisé en mousquetaire.
 TEST: D’ailleurs j’irai armé.
