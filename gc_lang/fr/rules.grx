@@ -11083,6 +11083,7 @@ __simplication_substantifs__
     >pièce de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     >plan [A|B|C]
     >pleine aux as
+    >politique spectacle
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
     >pompe à [essence|fric]
     >porte de [service|garage]
@@ -11938,6 +11939,7 @@ TEST: Sous la coupole bleu et or construite il y a deux siècles, les jurés son
 TEST: À mes yeux, aucune cathédrale, pyramide, musée, arc de triomphe, Colisée, abbaye, chapelle, temple, synagogue, mosquée, joyaux architecturaux d’hier ou d’avant-hier ne valent la vie d’un être humain, quel qu’il soit, d’où qu’il vienne.
 TEST: Ça fait sens.
 TEST: il faut recruter des administratrices système
+TEST: Cette politique spctacle est indigne de notre démocratie.
 
 
 
@@ -12194,7 +12196,7 @@ TEST: ils arrivent et leur arrogance {{insupportables}} nous fatigue tous.
 
 __gn_le_la_leur_3m__
     [le|la|leur]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: leur grande passion {{délirantes}} pour le cosplay.
@@ -12530,7 +12532,7 @@ TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 __gn_det_sing_3m__
     [ledit|ladite|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|au|quel|quelle|dudit]  *WORD  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*")
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
     [le|la|leur]  *WORD  *WORD  *WORD
@@ -12709,7 +12711,7 @@ TEST: j’entends ces {{même}} âneries tous les jours
 
 __gn_les_3m__
     les  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*")
+        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and \4.islower()
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: les heureux imbéciles {{payé}} au lance-pierre.
@@ -12719,7 +12721,7 @@ __gn_det_plur_3m__
     [ces|mes|tes|ses|nos|vos|leurs|quels|quelles|aux]       *WORD  *WORD  *WORD
     [plusieurs|quelques|certains|certaines|moult]           *WORD  *WORD  *WORD
     [lesdits|lesdites|desdits|desdites|auxdits|auxdites]    *WORD  *WORD  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:s", "*") and \4.islower() and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
     [les|leurs]    *WORD  *WORD  *WORD
