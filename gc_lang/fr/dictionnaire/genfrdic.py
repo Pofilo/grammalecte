@@ -583,7 +583,7 @@ class Dictionnaire:
         createZipFiles(spExt, spBuild, sExtensionName + '.oxt')
         # copy to Grammalecte Project
         if spDestGL:
-            echo("   extension copiée dans Grammalecte...")
+            echo("   Dictionnaires Hunspell copiés dans Grammalecte pour LibreOffice...")
             dir_util.copy_tree(spExt+'/dictionaries', spDestGL)
 
     def createMozillaExtensions (self, spBuild, dTplVars, lDictVars, spDestGL=""):
@@ -601,7 +601,7 @@ class Dictionnaire:
         createZipFiles(spExt, spBuild, sExtensionName + '.xpi')
         # Grammalecte
         if spDestGL:
-            echo(" * Dictionnaire >> copie des dicos dans Grammalecte")
+            echo("   Dictionnaires Hunspell copiés dans Grammalecte pour Mozilla")
             for dVars in lDictVars:
                 file_util.copy_file(spDict+'/'+dVars['asciiName']+'.dic', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.dic')
                 file_util.copy_file(spDict+'/'+dVars['asciiName']+'.aff', spDestGL+'/'+dVars['mozAsciiName']+"/"+dVars['mozAsciiName']+'.aff')
@@ -1567,11 +1567,11 @@ def main ():
 
     if not xArgs.uncompress:
         oFrenchDict.defineAbreviatedTags(xArgs.mode, spfStats)
-    oFrenchDict.createFiles(spBuild, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], xArgs.mode, xArgs.simplify)
+    oFrenchDict.createFiles(spBuild, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], xArgs.mode, xArgs.simplify)
     oFrenchDict.createLexiconPackages(spBuild, xArgs.verdic, oStatsLex, spLexiconDestGL)
     oFrenchDict.createFileIfqForDB(spBuild)
-    oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], spLibreOfficeExtDestGL)
-    oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dMODERNE, dTOUTESVAR, dCLASSIQUE, dREFORME1990], spMozillaExtDestGL)
+    oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spLibreOfficeExtDestGL)
+    oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spMozillaExtDestGL)
     oFrenchDict.createDictConj(spBuild, spDataDestGL)
     oFrenchDict.createDictDecl(spBuild, spDataDestGL)
 
