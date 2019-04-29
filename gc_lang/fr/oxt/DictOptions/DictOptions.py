@@ -5,7 +5,6 @@
 import unohelper
 import uno
 import traceback
-import time
 
 import helpers
 import do_strings
