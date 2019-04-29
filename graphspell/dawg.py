@@ -232,7 +232,7 @@ class DAWG:
 
     def countArcs (self):
         "count the number of arcs in the whole word graph"
-        self.nArc = 0
+        self.nArc = len(self.oRoot.arcs)
         for oNode in self.lMinimizedNodes:
             self.nArc += len(oNode.arcs)
 
@@ -609,22 +609,30 @@ class DawgNode:
         DawgNode.NextPos += 1
 
     def __str__ (self):
+        s = "Node " + str(self.i) + " @ " + str(self.addr) + (" [final]" if self.final else "") + "\n"
+        for arc, node in self.arcs.items():
+            s += "  " +str(arc)
+            s += " > " + str(node.i)
+            s += " @ " + str(node.addr) + "\n"
+        return s
+
+    def __repr__ (self):
         # Caution! this function is used for hashing and comparison!
         sFinalChar = "1"  if self.final  else "0"
         l = [sFinalChar]
-        for (key, node) in self.arcs.items():
-            l.append(str(key))
+        for arc, node in self.arcs.items():
+            l.append(str(arc))
             l.append(str(node.i))
         return "_".join(l)
 
     def __hash__ (self):
         # Used as a key in a python dictionary.
-        return self.__str__().__hash__()
+        return self.__repr__().__hash__()
 
     def __eq__ (self, other):
         # Used as a key in a python dictionary.
         # Nodes are equivalent if they have identical arcs, and each identical arc leads to identical states.
-        return self.__str__() == other.__str__()
+        return self.__repr__() == other.__repr__()
 
     def sortArcs (self, dValOccur):
         "sort arcs of node according to <dValOccur>"

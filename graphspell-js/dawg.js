@@ -227,7 +227,7 @@ class DAWG {
     }
 
     countArcs () {
-        this.nArc = 0;
+        this.nArc = this.oRoot.arcs.size;
         for (let oNode of this.dMinimizedNodes.values()) {
             this.nArc += oNode.arcs.size;
         }
