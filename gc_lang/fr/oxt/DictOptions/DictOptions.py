@@ -4,6 +4,7 @@
 
 import unohelper
 import uno
+import re
 import traceback
 
 import helpers
@@ -51,7 +52,13 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
 
         self.xDesktop = self.xSvMgr.createInstanceWithContext("com.sun.star.frame.Desktop", self.ctx)
         self.xDocument = self.xDesktop.getCurrentComponent()
-        self.xOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", True)
+        self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", True)
+
+        # what is the current Hunspell dictionary
+        self.xHunspellNode = helpers.getConfigSetting("/org.openoffice.Office.Linguistic/ServiceManager/Dictionaries/HunSpellDic_fr", True)
+        xLocations = self.xHunspellNode.getByName("Locations")
+        m = re.search(r"fr-(\w*)\.(?:dic|aff)", xLocations[0])
+        self.sHunspellCurrentDic = m.group(1)  if m  else ""
 
         # dialog
         self.xDialog = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialogModel', self.ctx)
@@ -130,19 +137,35 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == 'Apply':
-                xChild = self.xOptionNode.getByName("o_fr")
+                # Grammalecte options
+                xChild = self.xGLOptionNode.getByName("o_fr")
                 #xChild.setPropertyValue("use_community_dic", self.xCommunityDic.State)
                 xChild.setPropertyValue("use_personal_dic", self.xPersonalDic.State)
                 xChild.setPropertyValue("use_graphspell_sugg", self.xGraphspellSugg.State)
-                sMainDicName = "classic"
                 if self.xSelClassic.State:
-                    sMainDicName = "classic"
+                    sMainDic = "classic"
+                    sHunspellDic = "classique"
                 elif self.xSelReform.State:
-                    sMainDicName = "reform"
+                    sMainDic = "reform"
+                    sHunspellDic = "reforme1990"
                 elif self.xSelAllvars.State:
-                    sMainDicName = "allvars"
-                xChild.setPropertyValue("main_dic_name", sMainDicName)
-                self.xOptionNode.commitChanges()
+                    sMainDic = "allvars"
+                    sHunspellDic = "toutesvariantes"
+                else:
+                    sMainDic = "classic"
+                    sHunspellDic = "classique"
+                xChild.setPropertyValue("main_dic_name", sMainDic)
+                self.xGLOptionNode.commitChanges()
+
+                # Hunspell options
+                xLocations = self.xHunspellNode.getByName("Locations")
+                v1 = xLocations[0].replace(self.sHunspellCurrentDic, sHunspellDic)
+                v2 = xLocations[1].replace(self.sHunspellCurrentDic, sHunspellDic)
+                #self.xHunspellNode.replaceByName("Locations", xLocations)  # doesn't work, see line below
+                uno.invoke(self.xHunspellNode, "replaceByName", ("Locations", uno.Any("[]string", (v1, v2))))
+                self.xHunspellNode.commitChanges()
+
+                # Close window
                 self.xContainer.endExecute()
             elif xActionEvent.ActionCommand == 'InfoDic':
                 MessageBox(self.xDocument, self.dUI.get('spelling_descr', "#err"), "Orthographe du français", nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK)
@@ -161,7 +184,7 @@ class DictOptions (unohelper.Base, XActionListener, XJobExecutor):
 
     def _loadOptions (self):
         try:
-            xChild = self.xOptionNode.getByName("o_fr")
+            xChild = self.xGLOptionNode.getByName("o_fr")
             #self.xGraphspell.State = xChild.getPropertyValue("use_graphspell")
             self.xGraphspellSugg.State = xChild.getPropertyValue("use_graphspell_sugg")
             #self.xCommunityDic.State = xChild.getPropertyValue("use_community_dic")
