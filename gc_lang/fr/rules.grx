@@ -7967,6 +7967,22 @@ TEST: {{quelque}} puisse être la vérité, nous finirons par la découvrir.
 TEST: {{quelques}} puissent être les raisons de son acte, il faut pardonner.
 
 
+# quel qu’en soit
+__conf_quel_qu_en_soit__
+    qu’ [elle|elles] (quand) [soi|>soie|sois|soit|soient]
+    [quel|quels|quelle|quelles] (quand) [soi|>soie|sois|soit|soient]
+        <<- /conf/ -1>> qu’en                                               # Confusion. Locution “quel qu’en soit le …, quelle qu’en soit la …”.|https://fr.wiktionary.org/wiki/quel_que_soit#fr
+
+    qu’ [elle|elles] qu’ en [soi|>soie|sois|soit]
+        <<- /conf/ ->> quel qu’en soit|quelle qu’en soit                    # Confusion. Locution “quel qu’en soit le …, quelle qu’en soit la …”.|https://fr.wiktionary.org/wiki/quel_que_soit#fr
+
+    qu’ [elle|elles] qu’ en soient
+        <<- /conf/ ->> quels qu’en soient|quelles qu’en soient              # Confusion. Locution “quels qu’en soient les …, quelles qu’en soient les …”.|https://fr.wiktionary.org/wiki/quel_que_soit#fr
+
+TEST: qu’elle {{quand}} soit le résultat                                ->> qu’en
+TEST: {{qu’elle qu’en soi}} la raison, ça ne suffit pas.                ->> quel qu’en soit|quelle qu’en soit
+
+
 # quelque part
 __conf_quelque_part__
     [quel|quels|quelle|quelles] que [pare|pares|par|pars|>part]
@@ -9340,25 +9356,25 @@ __purge_début_phrase__
 
 
 __purge_horaires_et_durée__
-    24  [heures|h]  [sur|/]  24
-    7   [jours|j]   [sur|/]  7
-    sept [jours|j]  [sur|/]  sept
-    vingt-quatre  heures  [sur|/] vingt-quatre
+    24      [heures|h]      [sur|/]  24
+    7       [jours|j]       [sur|/]  7
+    sept    [jours|j]       [sur|/]  sept
+    vingt-quatre  heures    [sur|/] vingt-quatre
         <<- ~>> *
 
-    heure       après   heure
-    minute      après   minute
-    seconde     après   seconde
-    jour        après   jour
-    nuit        après   nuit
-    semaine     après   semaine
-    trimestre   après   trimestre
-    semestre    après   semestre
-    mois        après   mois
-    décennie    après   décennie
-    année       après   année
-    siècle      après   siècle
-    génération  après   génération
+    heure       [après|par]     heure
+    minute      [après|par]     minute
+    seconde     [après|par]     seconde
+    jour        [après|par]     jour
+    nuit        [après|par]     nuit
+    semaine     [après|par]     semaine
+    trimestre   [après|par]     trimestre
+    semestre    [après|par]     semestre
+    mois        [après|par]     mois
+    décennie    [après|par]     décennie
+    année       [après|par]     année
+    siècle      [après|par]     siècle
+    génération  [après|par]     génération
         <<- ~>> *
 
     [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿
@@ -10693,7 +10709,7 @@ __gestion_mots_grammaticaux__
     par l’ entremise [de|des|du]
         <<- ~2:3>> *
 
-    personne  d’ autre [que|qu’]  [moi|toi|lui|elle|elles|nous|vous|eux]
+    personne  d’ autre [que|qu’]  [moi|moi-même|toiô|toi-même|luiô|lui-même|elle-même|elles|elles-mêmes|nous|nous-même|nous-mêmes|vous|vous-même|vous-mêmes|eux-mêmes]
         <<- ~2:0>> *
 
     pour ou contre
@@ -12897,43 +12913,54 @@ TEST: Il s’agit de définir quelle est notre propre orientation.
 
 ## masculin requis
 __gn_quel_que_être_mas_sing__
-    quelle que [soit|soit|sois|soient|fut|fût] [le|ce|cet]      *WORD
-    quelle que [soit|soit|sois|soient|fut|fût] [mon|ton|son]    ~^[bcdfgjklmnpqrstvwxz]
-        <<- /gn/ -1>> quel                                                                  # Accord de genre avec « \4 \5 ». Utilisez le masculin.
+    quelle que    [soit|soit|sois|soient|fut|fût] [le|ce|cet]      *WORD
+    quelle que    [soit|soit|sois|soient|fut|fût] [mon|ton|son]    ~^[bcdfgjklmnpqrstvwxz]
+    quelle qu’ en [soit|soit|sois|soient|fut|fût] [le|ce|cet]      *WORD
+    quelle qu’ en [soit|soit|sois|soient|fut|fût] [mon|ton|son]    ~^[bcdfgjklmnpqrstvwxz]
+        <<- /gn/ -1>> quel                                                                  # Accord de genre avec « \-2 \-1 ». Utilisez le masculin.
 
-    quelle que [soit|soit|sois|soient|fut|fût] [notre|votre|leur]  *WORD
-    quelle que [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
-        <<- /gn/ morph(\5, ":[NA].*:m", ":[fe]") -1>> quel                                  # Accord de genre avec « \4 \5 ». Utilisez le masculin.
+    quelle que    [soit|soit|sois|soient|fut|fût] [notre|votre|leur]  *WORD
+    quelle que    [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
+    quelle qu’ en [soit|soit|sois|soient|fut|fût] [notre|votre|leur]  *WORD
+    quelle qu’ en [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
+        <<- /gn/ morph(\-1, ":[NA].*:m", ":[fe]") -1>> quel                                 # Accord de genre avec « \-2 \-1 ». Utilisez le masculin.
 
 
 __gn_quel_que_être_mas_plur__
     quelles que [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:m¬:[fe]
-        <<- /gn/ -1>> quels                                                                 # Accord de genre avec « \4 \5 ». Utilisez le masculin.
+    quelles qu’ en [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:m¬:[fe]
+        <<- /gn/ -1>> quels                                                                 # Accord de genre avec « \-2 \-1 ». Utilisez le masculin.
 
 TEST: {{quelle}} que soit le chien                            ->> quel
 TEST: {{Quelle}} que soit mon intérêt.                        ->> Quel
+TEST: {{Quelle}} qu’en soit mon intérêt.                      ->> Quel
 TEST: {{Quelles}} que soient ces intérêts                     ->> Quels
 TEST: {{Quelles}} que soient les hommes qui…                  ->> Quels
 
 
 ## féminin requis
 __gn_quelle_que_être_fem_sing__
-    quel que [soit|soit|sois|fut|fût] [la|cette|ma|ta|sa]  *WORD
-        <<- /gn/ -1>> quelle                                                                # Accord de genre avec « \4 \5 ». Utilisez le féminin.
+    quel que    [soit|soit|sois|fut|fût] [la|cette|ma|ta|sa]  *WORD
+    quel qu’ en [soit|soit|sois|fut|fût] [la|cette|ma|ta|sa]  *WORD
+        <<- /gn/ -1>> quelle                                                                # Accord de genre avec « \-2 \-1 ». Utilisez le féminin.
 
-    quel que [soit|soit|sois|soient|fut|fût] [notre|votre|leur]  *WORD
-    quel que [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
-        <<- /gn/ morph(\5, ":[NA].*:f", ":[me]") -1>> quelle                                # Accord de genre avec « \4 \5 ». Utilisez le féminin.
+    quel que    [soit|soit|sois|soient|fut|fût] [notre|votre|leur]  *WORD
+    quel que    [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
+    quel qu’ en [soit|soit|sois|soient|fut|fût] [notre|votre|leur]  *WORD
+    quel qu’ en [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
+        <<- /gn/ morph(\5, ":[NA].*:f", ":[me]") -1>> quelle                                # Accord de genre avec « \-2 \-1 ». Utilisez le féminin.
 
 __gn_quelle_que_être_fem__
-    quels que [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:f¬:[me]
-        <<- /gn/ -1>> quelles                                                               # Accord de genre avec « \4 \5 ». Utilisez le féminin.
+    quels que    [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:f¬:[me]
+    quels qu’ en [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:f¬:[me]
+        <<- /gn/ -1>> quelles                                                               # Accord de genre avec « \-2 \-1 ». Utilisez le féminin.
 
 TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
 TEST: {{Quel}} que soit mon aversion                          ->> Quelle
 TEST: {{Quel}} que soit cette femme                           ->> Quelle
 TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
 TEST: {{Quels}} que soient ces idiotes                        ->> Quelles
+TEST: {{Quels}} qu’en soient les raisons                      ->> Quelles
 
 
 __gn_det_mas_plur_2m__
