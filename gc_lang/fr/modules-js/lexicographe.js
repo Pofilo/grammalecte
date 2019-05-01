@@ -150,6 +150,7 @@ const _dElidedPrefix = new Map([
     ['ç', "(ça), pronom démonstratif, masculin singulier"],
     ['qu', "(que), conjonction de subordination"],
     ['lorsqu', "(lorsque), conjonction de subordination"],
+    ['puisqu', "(lorsque), conjonction de subordination"],
     ['quoiqu', "(quoique), conjonction de subordination"],
     ['jusqu', "(jusque), préposition"]
 ]);
