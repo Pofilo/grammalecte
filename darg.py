@@ -96,7 +96,7 @@ class DARG:
 
     def countArcs (self):
         "count arcs within the whole graph"
-        self.nArc = 0
+        self.nArc = len(self.oRoot.dArcs)
         for oNode in self.lMinimizedNodes:
             self.nArc += len(oNode.dArcs)
 
