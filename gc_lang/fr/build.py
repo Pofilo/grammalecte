@@ -22,6 +22,7 @@ def createWebExtension (sLang, dVars):
     dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
     dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
     dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
+    helpers.copyAndFileTemplate("_build/webext/"+sLang+"/manifest.json", "_build/webext/"+sLang+"/manifest.json", dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/panel/main.html", "_build/webext/"+sLang+"/panel/main.html", dVars)
     with helpers.cd("_build/webext/"+sLang):
         os.system("web-ext build")
