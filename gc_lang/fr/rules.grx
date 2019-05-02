@@ -5644,7 +5644,7 @@ __conf_à_a__
 
     a [moi|toi|eux|elles]
     a [lui|elle|nous|vous]  <end>
-        <<- /conf/ not morph(<1, ":Oo|>(?:il|elle)") and not value(<1, "|n’|m’|t’|")
+        <<- /conf/ not morph(<1, ":Ov|>(?:il|elle)") and not value(<1, "|n’|m’|t’|")
         -1>> à                                                      # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
 
 TEST: Je le donne {{a}} toi.
@@ -5799,7 +5799,7 @@ TEST: une dérive à vau-l’eau.
 
 
 __conf_à_a_locutions__
-    a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
+    a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
     a aucun prix
     a autrui
     a autre chose
@@ -5881,7 +5881,7 @@ __conf_à_a_locutions__
     a la surprise générale
     a la va vite
     a la virgule près
-    a la [manque|ramasse|redresse|renverse]
+    a la [dérobée|manque|ramasse|redresse|renverse]
     a la case départ
     a la grande surprise [de|du|d’|des]
     a [ma|ta|sa|notre|votre|leur] grande surprise
@@ -5986,6 +5986,11 @@ __conf_à_a_locutions__
         <<- /conf/ not value(<1, "|que|qu’|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
+
+     a propos [de|des|du|,|<end>]
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
+        -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
 TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
 TEST: ils viennent nous attaquer {{a}} tout bout de champ
@@ -5997,6 +6002,7 @@ TEST: un machin ennuyeux {{a}} s’en tirer une balle dans la tête.
 TEST: Je sais qu’ils sont {{a}} toi.
 TEST: Attention {{a}} ne pas la réveiller.
 TEST: J’en serai. {{A}} titre personnel.
+TEST: Que faire {{a}} propos de ça ?
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
@@ -6016,6 +6022,7 @@ __conf_à_substantifs__
     >couteau a cran d’ arrêt
     >crayon a [lèvres|sourcils]
     >cuillère a [café|soupe]
+    >épée a deux mains
     >fard a paupières
     [>fille|fils] a [papa|maman]
     >fusil a >pompe
@@ -7969,8 +7976,8 @@ TEST: {{quelques}} puissent être les raisons de son acte, il faut pardonner.
 
 # quel qu’en soit
 __conf_quel_qu_en_soit__
-    qu’ [elle|elles] (quand) [soi|>soie|sois|soit|soient]
-    [quel|quels|quelle|quelles] (quand) [soi|>soie|sois|soit|soient]
+    qu’ [elle|elles] ([quand|quant]) [soi|>soie|sois|soit|soient]
+    [quel|quels|quelle|quelles] ([quand|quant]) [soi|>soie|sois|soit|soient]
         <<- /conf/ -1>> qu’en                                               # Confusion. Locution “quel qu’en soit le …, quelle qu’en soit la …”.|https://fr.wiktionary.org/wiki/quel_que_soit#fr
 
     qu’ [elle|elles] qu’ en [soi|>soie|sois|soit]
@@ -8532,12 +8539,17 @@ __conf_ver_vers_verre_vert__
 
     [>ver|vert|verts] [de|d’] [>bière|>cidre|>contact|>champagne|>chianti|>dégustation|jus|>lait|>limonade|>rosé|>rhum|>sécurité|>thé|>vin|>whisky|>alcool|>absinthe|>eau|>urine]
         <<- /conf/ -1>> verre|verres
-        # Confusion probable. Verre = matière. Vert = couleur. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
+        # Confusion probable. Verre = matière. Vert = couleur. Ver = animal invertébré rampant. Vers = suite de mots rythmés. Vers = préposition (« en direction de »).
+
+    >tirer ?[pas|jamais]¿ les [>verre|verts] du nez
+        <<- /conf/ --3>> vers
+        # Confusion. Verre = matière. Vert = couleur. L’animal s’écrit “ver”.
 
 TEST: en finir avec le {{vert}} qui était dans le fruit.
 TEST: un immonde {{vert}} de terre
 TEST: Un {{ver}} de bière fraîche.
 TEST: ce {{vert}} quoi nous allons, c’est une catastrophe à l’échelle planétaire.
+TEST: On va lui tirer les {{verts}} du nez
 
 
 # voix / voie / vois / voit
@@ -8551,7 +8563,8 @@ __conf_voie_voix_vois_voit__
         <<- /conf/ -2>> voix        # Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
 
     sur la bonne voix
-        <<- /conf/ -4>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
+    en bonne [voix|vois|voit]
+        <<- /conf/ --1>> voie       # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
     >ouvrir la voix [à|au|aux]
         <<- /conf/ -3>> voie        # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
@@ -10336,8 +10349,9 @@ __purge_locutions__
     pour faire bonne mesure
     pour faire simple
     pour la [première|seconde|dernière|~ième$] fois
-    pour la [première|seconde|dernière|~ième$] fois [de|d’] ma vie
-    pour la [première|seconde|dernière|~ième$] fois [de|d’] suite
+    pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?misérable¿
+    pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?misérable¿ existence ?misérable¿
+    pour la [seconde|dernière|~ième$] fois [de|d’] suite
     pour la suite
     pour le [moment|moins]
     pour le meilleur et pour le pire
@@ -11015,6 +11029,8 @@ __simplication_substantifs__
     >attestation sur l’ honneur
     >attendre de pied ferme
     ayants droit
+    >bandit de grand chemin
+    >bandit de grands chemins
     bas résille
     >benne à >ordure
     >billet de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
@@ -11065,6 +11081,7 @@ __simplication_substantifs__
     >eau de [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau de noix de coco
     >espérance de vie
+    >épée à deux mains
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
     >état d’ extrême urgence
     >état de l’ art
@@ -11789,7 +11806,7 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ à la légère
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre bonne note
-    >prendre [congé|conscience|contact|ombrage|peur|possession|racine|soin|vie]
+    >prendre [congé|conscience|contact|ombrage|note|peur|possession|racine|soin|vie]
     >prendre de [court|vitesse]
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
