@@ -15,6 +15,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         this.xTFNode = this._createTextFormatter();
         this.xPanelContent.appendChild(this.xTFNode);
         this.xTextArea = null;
+        this.xPanel.style.zIndex = 2147483647; /* maximum is 2147483647: https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index */
 
         this.TextFormatter = new TextFormatter();
         this.formatText = this.TextFormatter.formatTextRuleCount;
