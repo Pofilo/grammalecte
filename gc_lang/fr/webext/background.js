@@ -279,23 +279,14 @@ browser.runtime.onConnect.addListener(handleConnexion);
 /*
     Context Menu
 */
-
-// Selected text
-browser.contextMenus.create({ id: "rightClickLxgSelectedText",  title: "Lexicographe (sélection)",                  contexts: ["selection"] });
-browser.contextMenus.create({ id: "rightClickGCSelectedText",   title: "Correction grammaticale (sélection)",       contexts: ["selection"] });
-browser.contextMenus.create({ id: "separator_selection",        type: "separator",                                  contexts: ["selection"] });
-// Editable content
-browser.contextMenus.create({ id: "rightClickTFEditableNode",   title: "Formateur de texte (zone de texte)",        contexts: ["editable"] });
-browser.contextMenus.create({ id: "rightClickLxgEditableNode",  title: "Lexicographe (zone de texte)",              contexts: ["editable"] });
-browser.contextMenus.create({ id: "rightClickGCEditableNode",   title: "Correction grammaticale (zone de texte)",   contexts: ["editable"] });
-browser.contextMenus.create({ id: "separator_editable",         type: "separator",                                  contexts: ["editable"] });
-// Page
-browser.contextMenus.create({ id: "rightClickLxgPage",          title: "Lexicographe (page)",                       contexts: ["all"] }); // on all parts, due to unwanted selection
-browser.contextMenus.create({ id: "rightClickGCPage",           title: "Correction grammaticale (page)",            contexts: ["all"] });
-browser.contextMenus.create({ id: "separator_page",             type: "separator",                                  contexts: ["all"] });
+// Analyze
+browser.contextMenus.create({ id: "grammar_checker_editable",   title: "Analyser cette zone de texte",              contexts: ["editable"] });
+browser.contextMenus.create({ id: "grammar_checker_selection",   title: "Analyser la sélection",                     contexts: ["selection"] });
+browser.contextMenus.create({ id: "grammar_checker_page",       title: "Analyser la page",                          contexts: ["all"] });
+browser.contextMenus.create({ id: "separator_tools",            type: "separator",                                  contexts: ["all"] });
 // Tools
-browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugueur [onglet]",                       contexts: ["all"] });
+browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 //browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
 browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
 // Rescan page
@@ -308,33 +299,20 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
     // xTab = https://developer.mozilla.org/en-US/Add-ons/WebExtensions/API/tabs/Tab
     // confusing: no way to get the node where we click?!
     switch (xInfo.menuItemId) {
-        // editable node
-        // page
-        case "rightClickTFEditableNode":
-        case "rightClickLxgEditableNode":
-        case "rightClickGCEditableNode":
-        case "rightClickLxgPage":
-        case "rightClickGCPage":
+        // analyze
+        case "grammar_checker_editable":
+        case "grammar_checker_page":
             sendCommandToTab(xInfo.menuItemId, xTab.id);
             break;
-        // selected text
-        case "rightClickGCSelectedText":
-            sendCommandToTab("rightClickGCSelectedText", xTab.id);
+        case "grammar_checker_selection":
+            sendCommandToTab("grammar_checker_selection", xTab.id);
             xGCEWorker.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
                 dInfo: {iReturnPort: xTab.id}
             });
             break;
-        case "rightClickLxgSelectedText":
-            sendCommandToTab("rightClickLxgSelectedText", xTab.id);
-            xGCEWorker.postMessage({
-                sCommand: "getListOfTokens",
-                dParam: {sText: xInfo.selectionText},
-                dInfo: {iReturnPort: xTab.id}
-            });
-            break;
-        // conjugueur
+        // tools
         case "conjugueur_window":
             openConjugueurWindow();
             break;
@@ -365,20 +343,11 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
 */
 browser.commands.onCommand.addListener(function (sCommand) {
     switch (sCommand) {
-        case "lexicographer":
-            sendCommandToCurrentTab("shortcutLexicographer");
-            break;
-        case "text_formatter":
-            sendCommandToCurrentTab("shortcutTextFormatter");
-            break;
         case "grammar_checker":
             sendCommandToCurrentTab("shortcutGrammarChecker");
             break;
         case "conjugueur_tab":
             openConjugueurTab();
-            break;
-        case "conjugueur_window":
-            openConjugueurWindow();
             break;
         case "lexicon_editor":
             openLexiconEditor();
@@ -423,7 +392,6 @@ function sendCommandToTab (sCommand, iTab) {
 }
 
 function sendCommandToCurrentTab (sCommand) {
-    console.log(sCommand);
     if (bChrome) {
         browser.tabs.query({ currentWindow: true, active: true }, (lTabs) => {
             for (let xTab of lTabs) {
@@ -486,7 +454,7 @@ function onDictionariesOpened (xTab) {
 }
 
 function openConjugueurTab () {
-    if (nTabDictionaries === null) {
+    if (nTabConjugueur === null) {
         if (bChrome) {
             browser.tabs.create({
                 url: browser.extension.getURL("panel/conjugueur.html")

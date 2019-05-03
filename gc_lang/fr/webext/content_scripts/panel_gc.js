@@ -50,24 +50,98 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     constructor (...args) {
         super(...args);
         this.aIgnoredErrors = new Set();
-        this.xContentNode = oGrammalecte.createNode("div", {id: "grammalecte_gc_panel_content"});
+        this.createMenu()
+        // Editor
+        this.xGCPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_gc_panel_content"});
         this.xParagraphList = oGrammalecte.createNode("div", {id: "grammalecte_paragraph_list"});
-        this.xContentNode.appendChild(this.xParagraphList);
+        this.xGCPanelContent.appendChild(this.xParagraphList);
         this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
-        this.oTooltip = new GrammalecteTooltip(this.xParent, this.xContentNode);
-        this.xPanelContent.appendChild(this.xContentNode);
+        this.oTooltip = new GrammalecteTooltip(this.xParent, this.xGCPanelContent);
+        this.xPanelContent.appendChild(this.xGCPanelContent);
+        this.xNode = null;
         this.oNodeControl = new GrammalecteNodeControl();
+        // Lexicographer
+        this.nLxgCount = 0;
+        this.xLxgPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_lxg_panel_content"});
+        this.xPanelContent.appendChild(this.xLxgPanelContent);
+    }
+
+    createMenu () {
+        this.xMenu = oGrammalecte.createNode("div", {className: "grammalecte_panel_menu"});
+        this.xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Formateur de texte"});
+        this.xEditorButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Texte"});
+        this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
+        this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur "});
+        this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical "});
+        this.xTFButton.onclick = () => {
+            oGrammalecte.createTFPanel();
+            if (this.xNode) {
+                oGrammalecte.oTFPanel.start(this.xNode);
+                oGrammalecte.oTFPanel.show();
+                this.start(this.xNode);
+                this.startWaitIcon();
+                xGrammalectePort.postMessage({
+                    sCommand: "parseAndSpellcheck",
+                    dParam: {sText: this.getParsedText(), sCountry: "FR", bDebug: false, bContext: false},
+                    dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
+                });
+            } else {
+                oGrammalecte.showMessage("Aucun node sur lequel appliquer le formatage de texte.")
+            }
+        };
+        this.xEditorButton.onclick = () => {
+            this.showEditor();
+        };
+        this.xLxgButton.onclick = () => {
+            this.showLexicographer();
+            if (true) {
+                this.clearLexicographer();
+                this.startWaitIcon();
+                xGrammalectePort.postMessage({
+                    sCommand: "getListOfTokens",
+                    dParam: {sText: this.getParsedText()},
+                    dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
+                });
+            }
+        };
+        this.xConjButton.onclick = () => { xGrammalectePort.postMessage({sCommand: "openConjugueurTab", dParam: null, dInfo: null}); };
+        this.xLEButton.onclick = () => { xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null}); };
+        this.xMenu.appendChild(this.xTFButton)
+        this.xMenu.appendChild(this.xEditorButton)
+        this.xMenu.appendChild(this.xLxgButton)
+        this.xMenu.appendChild(this.xConjButton)
+        this.xMenu.appendChild(this.xLEButton)
+        this.xPanelBar.appendChild(this.xMenu);
     }
 
     start (xNode=null) {
         this.oTooltip.hide();
         this.clear();
+        this.xNode = xNode;
         if (xNode) {
             this.oNodeControl.setNode(xNode);
             if (!(xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT")) {
                 this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Une telle zone de texte est susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             }
         }
+    }
+
+    getParsedText () {
+        if (this.xNode) {
+            return (this.xNode.tagName == "TEXTAREA") ? this.xNode.value.normalize("NFC") : this.xNode.innerText.normalize("NFC");
+        } else {
+            return oGrammalecte.getPageText();
+        }
+    }
+
+    showEditor () {
+        this.xGCPanelContent.style.display = "block";
+        this.xLxgPanelContent.style.display = "none";
+    }
+
+    showLexicographer () {
+        this.xGCPanelContent.style.display = "none";
+        this.xLxgPanelContent.style.display = "block";
     }
 
     clear () {
@@ -88,7 +162,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 let xNodeDiv = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
                 let xActionsBar = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_actions"});
-                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "A", title: "Réanalyser…"}, {para_num: oResult.iParaNum}));
+                xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_check" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_green", textContent: "↻", title: "Réanalyser…"}, {para_num: oResult.iParaNum}));
                 xActionsBar.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_hide" + oResult.iParaNum, className: "grammalecte_paragraph_button grammalecte_red", textContent: "×", title: "Cacher", style: "font-weight: bold;"}));
                 // paragraph
                 let xParagraph = oGrammalecte.createNode("p", {id: "grammalecte_paragraph"+oResult.iParaNum, className: "grammalecte_paragraph", lang: "fr", contentEditable: "true"}, {para_num: oResult.iParaNum});
@@ -217,7 +291,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let nStart = parseInt(xParagraph.dataset.caret_position_start);
         let nEnd = parseInt(xParagraph.dataset.caret_position_end);
         oGrammalecte.setCaretPosition(xParagraph, nStart, nEnd);
-        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "A";
+        this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "↻";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "";
         setTimeout(() => { this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = ""; }, 500);
@@ -297,12 +371,94 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
         this.stopWaitIcon();
     }
+
+
+    // Lexicographer
+
+    clearLexicographer () {
+        this.nLxgCount = 0;
+        while (this.xLxgPanelContent.firstChild) {
+            this.xLxgPanelContent.removeChild(this.xLxgPanelContent.firstChild);
+        }
+    }
+
+    addLxgSeparator (sText) {
+        if (this.xLxgPanelContent.textContent !== "") {
+            this.xLxgPanelContent.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_separator", textContent: sText}));
+        }
+    }
+
+    addMessage (sMessage) {
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_message", textContent: sMessage});
+        this.xLxgPanelContent.appendChild(xNode);
+    }
+
+    addListOfTokens (lToken) {
+        try {
+            if (lToken) {
+                this.nLxgCount += 1;
+                let xTokenList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_list_of_tokens"});
+                xTokenList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_list_num", textContent: this.nLxgCount}));
+                for (let oToken of lToken) {
+                    xTokenList.appendChild(this._createTokenBlock(oToken));
+                }
+                this.xLxgPanelContent.appendChild(xTokenList);
+            }
+        }
+        catch (e) {
+            showError(e);
+        }
+    }
+
+    _createTokenBlock (oToken) {
+        let xTokenBlock = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_block"});
+        xTokenBlock.appendChild(this._createTokenDescr(oToken));
+        if (oToken.aSubElem) {
+            let xSubBlock = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_subblock"});
+            for (let oSubElem of oToken.aSubElem) {
+                xSubBlock.appendChild(this._createTokenDescr(oSubElem));
+            }
+            xTokenBlock.appendChild(xSubBlock);
+        }
+        return xTokenBlock;
+    }
+
+    _createTokenDescr (oToken) {
+        try {
+            let xTokenDescr = oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_descr"});
+            if (oToken.sType == "LOCP") {
+                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_also", textContent: "possiblement › "}));
+            }
+            xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token grammalecte_lxg_token_" + oToken.sType, textContent: oToken.sValue}));
+            xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_token_colon", textContent: ":"}));
+            if (oToken.aLabel.length === 1) {
+                xTokenDescr.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem_inline", textContent: oToken.aLabel[0]}));
+            } else {
+                let xMorphList = oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_list"});
+                for (let sLabel of oToken.aLabel) {
+                    xMorphList.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_lxg_morph_elem", textContent: "• " + sLabel}));
+                }
+                xTokenDescr.appendChild(xMorphList);
+            }
+            return xTokenDescr;
+        }
+        catch (e) {
+            showError(e);
+        }
+    }
+
+    setHidden (sClass, bHidden) {
+        let xPanelContent = this.xParent.getElementById('grammalecte_panel_content');
+        for (let xNode of xPanelContent.getElementsByClassName(sClass)) {
+            xNode.hidden = bHidden;
+        }
+    }
 }
 
 
 class GrammalecteTooltip {
 
-    constructor (xParent, xContentNode) {
+    constructor (xParent, xGCPanelContent) {
         this.xParent = xParent;
         this.sErrorId = null;
         this.bDebug = false;
@@ -328,8 +484,8 @@ class GrammalecteTooltip {
         xActions.appendChild(oGrammalecte.createNode("div", {id: "grammalecte_tooltip_db_search", textContent: " ››› base de données"}, {url: ""}));
         this.xTooltip.appendChild(xActions);
         // add tooltip to the page
-        xContentNode.appendChild(this.xTooltip);
-        xContentNode.appendChild(this.xTooltipArrow);
+        xGCPanelContent.appendChild(this.xTooltip);
+        xGCPanelContent.appendChild(this.xTooltipArrow);
     }
 
     show (sNodeErrorId) {  // err
