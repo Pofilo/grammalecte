@@ -6603,8 +6603,9 @@ TEST: Un pauvre, ça doit consommer, bosser, et bien fermer sa gueule. Tout l’
 __conf_date_datte__
     >datte du *NUM [janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre]
     >datte [>butoir|>buttoir]
-    >datte des [congés|vacances]
-    >datte de [mes|tes|ses|nos|vos|leurs] [congés|vacances]
+    >datte des [congés|examens|rendez-vous|vacances]
+    >datte de [mes|tes|ses|nos|vos|leurs] [congés|examens|vacances]
+    >datte de [mon|ton|son|notre|votre|leur] rendez-vous
         <<- /conf/ \1.endswith("s") -1>> dates                # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
         <<- /conf/ __else__ -1>> date                         # Confusion probable. La datte est un fruit. Pour évoquer un jour dans l’année, écrivez “date”.
 
@@ -9711,6 +9712,7 @@ __purge_locutions__
     au cours des @:B [dernières|derniers|prochaines|prochains] [années|mois|siècles]
     au demeurant
     au doigt mouillé
+    au doigt et à l’ [œil|oeil]
     au débotté
     au début
     au fil des ans
@@ -11060,6 +11062,7 @@ __simplication_substantifs__
     >conne comme la lune
     >conne comme un balai
     >conne comme une valise sans >poignée
+    >corvéable à merci
     >coup [de|d’] [balai|bol|cœur|couteau|foudre|fil|grâce|jarnac|théâtre|coude|genou|main|patte|pied|poing|poker|pouce|tête|avance|éclat|État|œil|épaule]
     >coup du sort
     >course contre la montre
@@ -11200,6 +11203,10 @@ __simplication_substantifs__
     >vol à l’étalage
     >vol à la [sauvette|tire]
         <<- ~2:0>> *
+
+    [>homme|>femme|>cinéaste|>politicienne|>actrice|>autrice|>sculpteuse|>compositrice|>musicienne|>groupe|>romancière|>peintre|>photographe|>sportive|>philosophe|>intellectuelle|>polémiste] à succès
+    [>homme|>femme] d’ >affaire à succès
+        <<- ~-2:0>> *
 
 
 __purge_locutions_adjectivales__
