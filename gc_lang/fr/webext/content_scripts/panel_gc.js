@@ -69,7 +69,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     createMenu () {
         this.xMenu = oGrammalecte.createNode("div", {className: "grammalecte_panel_menu"});
         this.xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Formateur de texte"});
-        this.xEditorButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Texte"});
+        this.xEditorButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur"});
         this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur "});
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical "});
@@ -137,11 +137,19 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     showEditor () {
         this.xGCPanelContent.style.display = "block";
         this.xLxgPanelContent.style.display = "none";
+        this.xEditorButton.style.textShadow = "2px 0 0 hsla(210, 40%, 35%, .5), -2px 0 0 hsla(210, 40%, 35%, .5), 0 2px 0 hsla(210, 40%, 35%, .5), 0 -2px 0 hsla(210, 40%, 35%, .5), 1px 1px hsla(210, 40%, 35%, .5), -1px -1px 0 hsla(210, 40%, 35%, .5), 1px -1px 0 hsla(210, 40%, 35%, .5), -1px 1px 0 hsla(210, 40%, 35%, .5)";
+        this.xLxgButton.style.textShadow = "";
+        this.xEditorButton.style.backgroundColor = "hsl(210, 60%, 40%)";
+        this.xLxgButton.style.backgroundColor = "";
     }
 
     showLexicographer () {
         this.xGCPanelContent.style.display = "none";
         this.xLxgPanelContent.style.display = "block";
+        this.xEditorButton.style.textShadow = "";
+        this.xLxgButton.style.textShadow = "2px 0 0 hsla(210, 40%, 35%, .5), -2px 0 0 hsla(210, 40%, 35%, .5), 0 2px 0 hsla(210, 40%, 35%, .5), 0 -2px 0 hsla(210, 40%, 35%, .5), 1px 1px hsla(210, 40%, 35%, .5), -1px -1px 0 hsla(210, 40%, 35%, .5), 1px -1px 0 hsla(210, 40%, 35%, .5), -1px 1px 0 hsla(210, 30%, 35%, .5)";
+        this.xEditorButton.style.backgroundColor = "";
+        this.xLxgButton.style.backgroundColor = "hsl(210, 60%, 40%)";
     }
 
     clear () {
