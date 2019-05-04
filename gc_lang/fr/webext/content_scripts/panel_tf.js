@@ -25,11 +25,11 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         this.getParagraph = this.TextFormatter.getParagraph;
 
         this.xCloseButton.onclick = () => {
+            this.hide();
             if (this.bTextChanged) {
                 this.xGCPanel.recheckAll();
                 this.bTextChanged = false;
             }
-            this.hide();
         };
     }
 
