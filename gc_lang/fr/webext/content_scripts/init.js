@@ -49,7 +49,6 @@ const oGrammalecte = {
     lMenu: [],
 
     oTFPanel: null,
-    //oLxgPanel: null,
     oGCPanel: null,
 
     oMessageBox: null,
@@ -398,7 +397,7 @@ function parseAndSpellcheckPage () {
 
 function parseAndSpellcheckEditableNode (xNode) {
     oGrammalecte.startGCPanel(xNode);
-    let sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value : xNode.innerText;
+    let sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value.normalize("NFC") : xNode.innerText.normalize("NFC");
     xGrammalectePort.postMessage({
         sCommand: "parseAndSpellcheck",
         dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
