@@ -28,6 +28,7 @@ class GrammalectePanel {
         this.xPanelBar = oGrammalecte.createNode("div", {className: "grammalecte_panel_bar"});
         this.xPanelContent = oGrammalecte.createNode("div", {className: "grammalecte_panel_content"});
         this.xWaitIcon = this._createWaitIcon();
+        this.xCloseButton = null;
         this.xPanel = this._createPanel(sTitle);
         this.center();
     }
@@ -67,7 +68,8 @@ class GrammalectePanel {
         xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
         xButtonLine.appendChild(this._createMoveButton("stickToRight", "⏵", "Coller à droite"));
         xButtonLine.appendChild(this._createMoveButton("stickToBottom", "⏷", "Coller en bas"));
-        xButtonLine.appendChild(this._createCloseButton());
+        this.xCloseButton = this._createCloseButton();
+        xButtonLine.appendChild(this.xCloseButton);
         return xButtonLine;
     }
 

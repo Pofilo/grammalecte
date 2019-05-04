@@ -2,7 +2,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global GrammalectePanel, GrammalecteMenu, GrammalecteTextFormatter, GrammalecteLexicographer, GrammalecteGrammarChecker, GrammalecteMessageBox, showError, MutationObserver, chrome, document, console */
+/* global GrammalectePanel, GrammalecteButton, GrammalecteTextFormatter, GrammalecteLexicographer, GrammalecteGrammarChecker, GrammalecteMessageBox, showError, MutationObserver, chrome, document, console */
 
 /*
     JS sucks (again, and again, and again, and again…)
@@ -73,28 +73,28 @@ const oGrammalecte = {
         this.xRightClickedNode = null;
     },
 
-    createMenus: function () {
+    createButtons: function () {
         if (bChrome) {
-            browser.storage.local.get("ui_options", this._createMenus.bind(this));
+            browser.storage.local.get("ui_options", this._createButtons.bind(this));
             return;
         }
-        browser.storage.local.get("ui_options").then(this._createMenus.bind(this), showError);
+        browser.storage.local.get("ui_options").then(this._createButtons.bind(this), showError);
     },
 
-    _createMenus: function (oOptions) {
+    _createButtons: function (oOptions) {
         if (oOptions.hasOwnProperty("ui_options")) {
             this.oOptions = oOptions.ui_options;
             if (this.oOptions.textarea) {
                 for (let xNode of document.getElementsByTagName("textarea")) {
                     if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
-                        this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+                        this.lMenu.push(new GrammalecteButton(this.nMenu, xNode));
                         this.nMenu += 1;
                     }
                 }
             }
             if (this.oOptions.editablenode) {
                 for (let xNode of document.querySelectorAll("[contenteditable]")) {
-                    this.lMenu.push(new GrammalecteMenu(this.nMenu, xNode));
+                    this.lMenu.push(new GrammalecteButton(this.nMenu, xNode));
                     this.nMenu += 1;
                 }
             }
@@ -109,13 +109,13 @@ const oGrammalecte = {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
                     if (mutation.addedNodes[i].tagName == "TEXTAREA") {
                         if (that.oOptions === null || that.oOptions.textarea) {
-                            oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, mutation.addedNodes[i]));
+                            oGrammalecte.lMenu.push(new GrammalecteButton(oGrammalecte.nMenu, mutation.addedNodes[i]));
                             oGrammalecte.nMenu += 1;
                         }
                     } else if (mutation.addedNodes[i].getElementsByTagName) {
                         if (that.oOptions === null || that.oOptions.textarea) {
                             for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
-                                oGrammalecte.lMenu.push(new GrammalecteMenu(oGrammalecte.nMenu, xNode));
+                                oGrammalecte.lMenu.push(new GrammalecteButton(oGrammalecte.nMenu, xNode));
                                 oGrammalecte.nMenu += 1;
                             }
                         }
@@ -138,12 +138,12 @@ const oGrammalecte = {
         }
         this.lMenu.length = 0; // to clear an array
         this.listenRightClick();
-        this.createMenus();
+        this.createButtons();
     },
 
     createTFPanel: function () {
         if (this.oTFPanel === null) {
-            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 600, false);
+            this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 595, false);
             //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
             window.setTimeout(function(self){
@@ -173,19 +173,6 @@ const oGrammalecte = {
         this.oGCPanel.showEditor();
         this.oGCPanel.start(xNode);
         this.oGCPanel.startWaitIcon();
-    },
-
-    startLxgPanel: function () {
-        this.createGCPanel();
-        this.oGCPanel.clearLexicographer();
-        this.oGCPanel.showLexicographer();
-        this.oGCPanel.startWaitIcon();
-    },
-
-    startFTPanel: function (xNode=null) {
-        this.createTFPanel();
-        this.oTFPanel.start(xNode);
-        this.oTFPanel.show();
     },
 
     showMessage: function (sMessage) {
@@ -308,7 +295,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.sExtensionUrl = oMessage.sUrl;
             // Start
             oGrammalecte.listenRightClick();
-            oGrammalecte.createMenus();
+            oGrammalecte.createButtons();
             oGrammalecte.observePage();
             break;
         case "parseAndSpellcheck":

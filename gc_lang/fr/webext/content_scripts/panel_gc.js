@@ -75,18 +75,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical "});
         this.xTFButton.onclick = () => {
             oGrammalecte.createTFPanel();
-            if (this.xNode) {
-                oGrammalecte.oTFPanel.start(this.xNode);
+            if (this.xNode  && (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT" || this.xNode.isContentEditable)) {
+                oGrammalecte.oTFPanel.start(this);
                 oGrammalecte.oTFPanel.show();
-                this.start(this.xNode);
-                this.startWaitIcon();
-                xGrammalectePort.postMessage({
-                    sCommand: "parseAndSpellcheck",
-                    dParam: {sText: this.getParsedText(), sCountry: "FR", bDebug: false, bContext: false},
-                    dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
-                });
             } else {
-                oGrammalecte.showMessage("Aucun node sur lequel appliquer le formatage de texte.")
+                oGrammalecte.showMessage("Aucune zone de texte éditable sur laquelle appliquer le formatage de texte.")
             }
         };
         this.xEditorButton.onclick = () => {
@@ -115,9 +108,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     start (xNode=null) {
+        this.xNode = xNode;
         this.oTooltip.hide();
         this.clear();
-        this.xNode = xNode;
         if (xNode) {
             this.oNodeControl.setNode(xNode);
             if (!(xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT")) {
@@ -126,9 +119,20 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
     }
 
+    recheckAll () {
+        this.oTooltip.hide();
+        this.clear();
+        this.startWaitIcon();
+        xGrammalectePort.postMessage({
+            sCommand: "parseAndSpellcheck",
+            dParam: {sText: this.getParsedText(), sCountry: "FR", bDebug: false, bContext: false},
+            dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
+        });
+    }
+
     getParsedText () {
         if (this.xNode) {
-            return (this.xNode.tagName == "TEXTAREA") ? this.xNode.value.normalize("NFC") : this.xNode.innerText.normalize("NFC");
+            return (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT") ? this.xNode.value.normalize("NFC") : this.xNode.innerText.normalize("NFC");
         } else {
             return oGrammalecte.getPageText();
         }

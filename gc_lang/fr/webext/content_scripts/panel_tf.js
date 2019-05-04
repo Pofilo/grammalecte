@@ -14,14 +14,23 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         super(...args);
         this.xTFNode = this._createTextFormatter();
         this.xPanelContent.appendChild(this.xTFNode);
-        this.xTextArea = null;
+        this.xTextNode = null;
         this.xPanel.style.zIndex = 2147483647; /* maximum is 2147483647: https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index */
+        this.bTextChanged = false;
 
         this.TextFormatter = new TextFormatter();
         this.formatText = this.TextFormatter.formatTextRuleCount;
         this.removeHyphenAtEndOfParagraphs = this.TextFormatter.removeHyphenAtEndOfParagraphsCount;
         this.mergeContiguousParagraphs = this.TextFormatter.mergeContiguousParagraphsCount;
         this.getParagraph = this.TextFormatter.getParagraph;
+
+        this.xCloseButton.onclick = () => {
+            if (this.bTextChanged) {
+                // recheck text after modification
+                this.xGCPanel.recheckAll();
+                this.hide();
+            }
+        };
     }
 
     _createTextFormatter () {
@@ -174,9 +183,10 @@ class GrammalecteTextFormatter extends GrammalectePanel {
     /*
         Actions
     */
-    start (xNode) {
-        if (xNode !== null && xNode.tagName == "TEXTAREA") {
-            this.xTextArea = xNode;
+    start (xGCPanel) {
+        if (xGCPanel.xNode !== null && (xGCPanel.xNode.tagName == "TEXTAREA" || xGCPanel.xNode.tagName == "INPUT" || xGCPanel.xNode.isContentEditable)) {
+            this.xTextNode = xGCPanel.xNode;
+            this.xGCPanel = xGCPanel;
             if (bChrome) {
                 browser.storage.local.get("tf_options", this.setOptions.bind(this));
             } else {
@@ -184,6 +194,19 @@ class GrammalecteTextFormatter extends GrammalectePanel {
                 xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
             }
         }
+    }
+
+    getNodeText () {
+        return (this.xTextNode.tagName == "TEXTAREA" || this.xTextNode.tagName == "INPUT") ? this.xTextNode.value.normalize("NFC") : this.xTextNode.innerText.normalize("NFC");
+    }
+
+    setNodeText (sText) {
+        if (this.xTextNode.tagName == "TEXTAREA" || this.xTextNode.tagName == "INPUT") {
+            this.xTextNode.value = sText;
+        } else {
+            this.xTextNode.textContent = sText;
+        }
+        this.bTextChanged = true;
     }
 
     switchGroup (sOptName) {
@@ -272,7 +295,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             const t0 = Date.now();
             //window.setCursor("wait"); // change pointer
             this.resetProgressBar();
-            let sText = this.xTextArea.value.normalize("NFC");
+            let sText = this.getNodeText();
             this.xParent.getElementById('grammalecte_tf_progressbar').max = 7;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
 
@@ -518,7 +541,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
             const t1 = Date.now();
             this.xParent.getElementById('grammalecte_tf_time_res').textContent = this.getTimeRes((t1-t0)/1000);
-            this.xTextArea.value = sText;
+            this.setNodeText(sText);
         }
         catch (e) {
             showError(e);

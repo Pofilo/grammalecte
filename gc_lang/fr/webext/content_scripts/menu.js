@@ -7,7 +7,7 @@
 "use strict";
 
 
-class GrammalecteMenu {
+class GrammalecteButton {
 
     constructor (nMenu, xNode) {
         this.xNode = xNode;
