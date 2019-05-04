@@ -58,7 +58,7 @@ class GrammalecteMessageBox {
     }
 
     _createCloseButton () {
-        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
+        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
         xButton.onclick = function () { this.hide(); }.bind(this);  // better than writing “let that = this;” before the function?
         return xButton;
     }

@@ -62,11 +62,11 @@ class GrammalectePanel {
         if (this.sId === "grammalecte_gc_panel") {
             xButtonLine.appendChild(this._createCopyButton());
         }
-        xButtonLine.appendChild(this._createMoveButton("stickToTop", "¯", "Coller en haut"));
-        xButtonLine.appendChild(this._createMoveButton("stickToLeft", "«", "Coller à gauche"));
+        xButtonLine.appendChild(this._createMoveButton("stickToTop", "⏶", "Coller en haut"));
+        xButtonLine.appendChild(this._createMoveButton("stickToLeft", "⏴", "Coller à gauche"));
         xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
-        xButtonLine.appendChild(this._createMoveButton("stickToRight", "»", "Coller à droite"));
-        xButtonLine.appendChild(this._createMoveButton("stickToBottom", "_", "Coller en bas"));
+        xButtonLine.appendChild(this._createMoveButton("stickToRight", "⏵", "Coller à droite"));
+        xButtonLine.appendChild(this._createMoveButton("stickToBottom", "⏷", "Coller en bas"));
         xButtonLine.appendChild(this._createCloseButton());
         return xButtonLine;
     }
@@ -79,19 +79,19 @@ class GrammalectePanel {
     }
 
     _createCopyButton () {
-        let xButton = oGrammalecte.createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
+        let xButton = oGrammalecte.createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_panel_button grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
         xButton.onclick = function () { this.copyTextToClipboard(); }.bind(this);
         return xButton;
     }
 
     _createMoveButton (sAction, sLabel, sTitle) {
-        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_move_button", textContent: sLabel, title: sTitle});
+        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_move_button", textContent: sLabel, title: sTitle});
         xButton.onclick = function () { this[sAction](); }.bind(this);
         return xButton;
     }
 
     _createCloseButton () {
-        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
+        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
         xButton.onclick = function () { this.hide(); }.bind(this);  // better than writing “let that = this;” before the function?
         return xButton;
     }
