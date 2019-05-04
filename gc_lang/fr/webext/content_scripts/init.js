@@ -64,9 +64,9 @@ const oGrammalecte = {
     listenRightClick: function () {
         // Node where a right click is done
         // Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
-        document.addEventListener('contextmenu', function (xEvent) {
+        document.addEventListener('contextmenu', (xEvent) => {
             this.xRightClickedNode = xEvent.target;
-        }.bind(this), true);
+        }, true);
     },
 
     clearRightClickedNode: function () {

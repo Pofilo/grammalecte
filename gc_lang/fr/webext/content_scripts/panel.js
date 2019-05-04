@@ -73,26 +73,24 @@ class GrammalectePanel {
 
     _createWaitIcon () {
         let xWaitIcon = oGrammalecte.createNode("div", {className: "grammalecte_spinner"});
-        //xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce1"}));
-        //xWaitIcon.appendChild(oGrammalecte.createNode("div", {className: "bounce2"}));
         return xWaitIcon;
     }
 
     _createCopyButton () {
         let xButton = oGrammalecte.createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_panel_button grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
-        xButton.onclick = function () { this.copyTextToClipboard(); }.bind(this);
+        xButton.onclick = () => { this.copyTextToClipboard(); };
         return xButton;
     }
 
     _createMoveButton (sAction, sLabel, sTitle) {
         let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_move_button", textContent: sLabel, title: sTitle});
-        xButton.onclick = function () { this[sAction](); }.bind(this);
+        xButton.onclick = () => { this[sAction](); };
         return xButton;
     }
 
     _createCloseButton () {
         let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
-        xButton.onclick = function () { this.hide(); }.bind(this);  // better than writing “let that = this;” before the function?
+        xButton.onclick = () => { this.hide(); };
         return xButton;
     }
 
