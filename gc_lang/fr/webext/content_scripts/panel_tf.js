@@ -26,10 +26,10 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
         this.xCloseButton.onclick = () => {
             if (this.bTextChanged) {
-                // recheck text after modification
                 this.xGCPanel.recheckAll();
-                this.hide();
+                this.bTextChanged = false;
             }
+            this.hide();
         };
     }
 
