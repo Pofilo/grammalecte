@@ -74,8 +74,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur "});
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical "});
         this.xTFButton.onclick = () => {
-            oGrammalecte.createTFPanel();
             if (this.xNode  && (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT" || this.xNode.isContentEditable)) {
+                oGrammalecte.createTFPanel();
                 oGrammalecte.oTFPanel.start(this);
                 oGrammalecte.oTFPanel.show();
             } else {
