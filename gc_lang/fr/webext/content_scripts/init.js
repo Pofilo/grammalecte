@@ -45,8 +45,8 @@ function loadImage (sContainerClass, sImagePath) {
 
 const oGrammalecte = {
 
-    nMenu: 0,
-    lMenu: [],
+    nButton: 0,
+    lButton: [],
 
     oTFPanel: null,
     oGCPanel: null,
@@ -87,56 +87,52 @@ const oGrammalecte = {
             if (this.oOptions.textarea) {
                 for (let xNode of document.getElementsByTagName("textarea")) {
                     if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
-                        this.lMenu.push(new GrammalecteButton(this.nMenu, xNode));
-                        this.nMenu += 1;
+                        this.lButton.push(new GrammalecteButton(this.nButton, xNode));
+                        this.nButton += 1;
                     }
                 }
             }
             if (this.oOptions.editablenode) {
                 for (let xNode of document.querySelectorAll("[contenteditable]")) {
-                    this.lMenu.push(new GrammalecteButton(this.nMenu, xNode));
-                    this.nMenu += 1;
+                    this.lButton.push(new GrammalecteButton(this.nButton, xNode));
+                    this.nButton += 1;
                 }
             }
         }
     },
 
     observePage: function () {
-        //    When a textarea is added via jascript we add the menu
+        // When a textarea is added via jascript we add the menu
         let that = this;
         this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
                 for (let i = 0;  i < mutation.addedNodes.length;  i++){
                     if (mutation.addedNodes[i].tagName == "TEXTAREA") {
                         if (that.oOptions === null || that.oOptions.textarea) {
-                            oGrammalecte.lMenu.push(new GrammalecteButton(oGrammalecte.nMenu, mutation.addedNodes[i]));
-                            oGrammalecte.nMenu += 1;
+                            oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, mutation.addedNodes[i]));
+                            oGrammalecte.nButton += 1;
                         }
                     } else if (mutation.addedNodes[i].getElementsByTagName) {
                         if (that.oOptions === null || that.oOptions.textarea) {
                             for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
-                                oGrammalecte.lMenu.push(new GrammalecteButton(oGrammalecte.nMenu, xNode));
-                                oGrammalecte.nMenu += 1;
+                                oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
+                                oGrammalecte.nButton += 1;
                             }
                         }
                     }
                 }
             });
         });
-        this.xObserver.observe(document.body, {
-            childList: true,
-            subtree: true
-        });
+        this.xObserver.observe(document.body, { childList: true, subtree: true });
     },
 
     rescanPage: function () {
         if (this.oTFPanel !== null) { this.oTFPanel.hide(); }
-        //if (this.oLxgPanel !== null) { this.oLxgPanel.hide(); }
         if (this.oGCPanel !== null) { this.oGCPanel.hide(); }
-        for (let oMenu of this.lMenu) {
+        for (let oMenu of this.lButton) {
             oMenu.deleteNodes();
         }
-        this.lMenu.length = 0; // to clear an array
+        this.lButton.length = 0; // to clear an array
         this.listenRightClick();
         this.createButtons();
     },
@@ -144,7 +140,6 @@ const oGrammalecte = {
     createTFPanel: function () {
         if (this.oTFPanel === null) {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 595, false);
-            //this.oTFPanel.logInnerHTML();
             this.oTFPanel.insertIntoPage();
             window.setTimeout( () => { this.oTFPanel.adjustHeight(); }, 50);
         }
@@ -339,7 +334,6 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rescanPage":
             oGrammalecte.rescanPage();
             break;
-
     }
 });
 
