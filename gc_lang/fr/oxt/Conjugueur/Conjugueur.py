@@ -248,7 +248,8 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
             elif xActionEvent.ActionCommand == 'New':
                 self._newVerb()
             elif xActionEvent.ActionCommand == 'Change':
-                self._displayResults()
+                if self.oVerb:
+                    self._displayResults(self.oVerb.createConjTable(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State))
             else:
                 print(str(xActionEvent))
         except:
@@ -271,6 +272,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         # request analyzing
         sVerb = self.input.Text.strip().lower().replace(u"’", "'").replace("  ", " ")
         if sVerb:
+            self.oVerb = None
             if sVerb.startswith("ne pas "):
                 self.oneg.State = True
                 sVerb = sVerb[7:]
@@ -288,157 +290,112 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
             else:
                 self.input.TextColor = 0x666666
                 self.oVerb = conj_fr.Verb(sVerb)
-                sRawInfo = conj_fr.getVtyp(sVerb)
                 self.info.Label = self.oVerb.sInfo
-                self.opro.Label = "pronominal"
-                if sRawInfo.endswith("zz"):
+                self.opro.Label = self.oVerb.sProLabel
+                if self.oVerb.bUncomplete:
                     self.opro.State = False
                     self.opro.Enabled = False
                     self.otco.State = False
                     self.otco.Enabled = False
                     self.option_msg.Label = self.sWarning
                 else:
-                    self.option_msg.Label = ""
-                    if sRawInfo[5] == "_":
-                        self.opro.State = False
-                        self.opro.Enabled = False
-                    elif sRawInfo[5] in ["q", "u", "v", "e"]:
+                    self.otco.Enabled = True
+                    if self.oVerb.nPronominable == 0:
                         self.opro.State = False
                         self.opro.Enabled = True
-                    elif sRawInfo[5] == "p" or sRawInfo[5] == "r":
+                    elif self.oVerb.nPronominable == 1:
                         self.opro.State = True
                         self.opro.Enabled = False
-                    elif sRawInfo[5] == "x":
-                        self.opro.Label = "cas particuliers"
+                    else: # -1 or 1 or error
                         self.opro.State = False
                         self.opro.Enabled = False
-                    else:
-                        self.opro.Label = "# erreur #"
-                        self.opro.State = False
-                        self.opro.Enabled = False
-                    self.otco.Enabled = True
-                self._displayResults()
+                    self.option_msg.Label = ""
+                self._displayResults(self.oVerb.createConjTable(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State))
 
-    def _displayResults (self):
+    def _displayResults (self, dConjTable):
         try:
-            self._setTitles()
-            # participes passés
-            self.ppas1.Label = self.oVerb.participePasse(":Q1")
-            self.ppas2.Label = self.oVerb.participePasse(":Q2")
-            self.ppas3.Label = self.oVerb.participePasse(":Q3")
-            self.ppas4.Label = self.oVerb.participePasse(":Q4")
-            # infinitif
-            self.infi.Label = self.oVerb.infinitif(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            # participe présent
-            self.ppre.Label = self.oVerb.participePresent(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            # conjugaisons
-            self.ipre1.Label = self.oVerb.conjugue(":Ip", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipre2.Label = self.oVerb.conjugue(":Ip", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipre3.Label = self.oVerb.conjugue(":Ip", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipre4.Label = self.oVerb.conjugue(":Ip", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipre5.Label = self.oVerb.conjugue(":Ip", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipre6.Label = self.oVerb.conjugue(":Ip", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.iimp1.Label = self.oVerb.conjugue(":Iq", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.iimp2.Label = self.oVerb.conjugue(":Iq", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.iimp3.Label = self.oVerb.conjugue(":Iq", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.iimp4.Label = self.oVerb.conjugue(":Iq", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.iimp5.Label = self.oVerb.conjugue(":Iq", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.iimp6.Label = self.oVerb.conjugue(":Iq", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipsi1.Label = self.oVerb.conjugue(":Is", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipsi2.Label = self.oVerb.conjugue(":Is", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipsi3.Label = self.oVerb.conjugue(":Is", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipsi4.Label = self.oVerb.conjugue(":Is", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipsi5.Label = self.oVerb.conjugue(":Is", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ipsi6.Label = self.oVerb.conjugue(":Is", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ifut1.Label = self.oVerb.conjugue(":If", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ifut2.Label = self.oVerb.conjugue(":If", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ifut3.Label = self.oVerb.conjugue(":If", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ifut4.Label = self.oVerb.conjugue(":If", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ifut5.Label = self.oVerb.conjugue(":If", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.ifut6.Label = self.oVerb.conjugue(":If", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.conda1.Label = self.oVerb.conjugue(":K", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.conda2.Label = self.oVerb.conjugue(":K", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.conda3.Label = self.oVerb.conjugue(":K", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.conda4.Label = self.oVerb.conjugue(":K", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.conda5.Label = self.oVerb.conjugue(":K", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            self.conda6.Label = self.oVerb.conjugue(":K", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            if not self.oint.State:
-                self.spre1.Label = self.oVerb.conjugue(":Sp", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.spre2.Label = self.oVerb.conjugue(":Sp", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.spre3.Label = self.oVerb.conjugue(":Sp", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.spre4.Label = self.oVerb.conjugue(":Sp", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.spre5.Label = self.oVerb.conjugue(":Sp", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.spre6.Label = self.oVerb.conjugue(":Sp", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.simp1.Label = self.oVerb.conjugue(":Sq", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.simp2.Label = self.oVerb.conjugue(":Sq", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.simp3.Label = self.oVerb.conjugue(":Sq", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.simp4.Label = self.oVerb.conjugue(":Sq", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.simp5.Label = self.oVerb.conjugue(":Sq", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.simp6.Label = self.oVerb.conjugue(":Sq", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.impe1.Label = self.oVerb.imperatif(":2s", self.opro.State, self.oneg.State, self.otco.State, self.ofem.State)
-                self.impe2.Label = self.oVerb.imperatif(":1p", self.opro.State, self.oneg.State, self.otco.State, self.ofem.State)
-                self.impe3.Label = self.oVerb.imperatif(":2p", self.opro.State, self.oneg.State, self.otco.State, self.ofem.State)
-            else:
-                self.spre.Label = ""
-                self.spre1.Label = ""
-                self.spre2.Label = ""
-                self.spre3.Label = ""
-                self.spre4.Label = ""
-                self.spre5.Label = ""
-                self.spre6.Label = ""
-                self.simp.Label = ""
-                self.simp1.Label = ""
-                self.simp2.Label = ""
-                self.simp3.Label = ""
-                self.simp4.Label = ""
-                self.simp5.Label = ""
-                self.simp6.Label = ""
-                self.impe.Label = ""
-                self.impe1.Label = ""
-                self.impe2.Label = ""
-                self.impe3.Label = ""
-            if self.otco.State:
-                self.condb1.Label = self.oVerb.conjugue(":Sq", ":1s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.condb2.Label = self.oVerb.conjugue(":Sq", ":2s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.condb3.Label = self.oVerb.conjugue(":Sq", ":3s", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.condb4.Label = self.oVerb.conjugue(":Sq", ":1p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.condb5.Label = self.oVerb.conjugue(":Sq", ":2p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-                self.condb6.Label = self.oVerb.conjugue(":Sq", ":3p", self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
-            else:
-                self.condb1.Label = ""
-                self.condb2.Label = ""
-                self.condb3.Label = ""
-                self.condb4.Label = ""
-                self.condb5.Label = ""
-                self.condb6.Label = ""
             self.input.Text = ""
+            # infinitif
+            self.infi.Label = dConjTable["infi"]
+            # participe présent
+            self.ppre.Label = dConjTable["ppre"]
+            # participes passés
+            self.ppas1.Label = dConjTable["ppas1"]
+            self.ppas2.Label = dConjTable["ppas2"]
+            self.ppas3.Label = dConjTable["ppas3"]
+            self.ppas4.Label = dConjTable["ppas4"]
+            # impératif
+            self.impe.Label = dConjTable["t_impe"]
+            self.impe1.Label = dConjTable["impe1"]
+            self.impe2.Label = dConjTable["impe2"]
+            self.impe3.Label = dConjTable["impe3"]
+            # présent
+            self.ipre.Label = dConjTable["t_ipre"]
+            self.ipre1.Label = dConjTable["ipre1"]
+            self.ipre2.Label = dConjTable["ipre2"]
+            self.ipre3.Label = dConjTable["ipre3"]
+            self.ipre4.Label = dConjTable["ipre4"]
+            self.ipre5.Label = dConjTable["ipre5"]
+            self.ipre6.Label = dConjTable["ipre6"]
+            # imparfait
+            self.iimp.Label = dConjTable["t_iimp"]
+            self.iimp1.Label = dConjTable["iimp1"]
+            self.iimp2.Label = dConjTable["iimp2"]
+            self.iimp3.Label = dConjTable["iimp3"]
+            self.iimp4.Label = dConjTable["iimp4"]
+            self.iimp5.Label = dConjTable["iimp5"]
+            self.iimp6.Label = dConjTable["iimp6"]
+            # passé simple
+            self.ipsi.Label = dConjTable["t_ipsi"]
+            self.ipsi1.Label = dConjTable["ipsi1"]
+            self.ipsi2.Label = dConjTable["ipsi2"]
+            self.ipsi3.Label = dConjTable["ipsi3"]
+            self.ipsi4.Label = dConjTable["ipsi4"]
+            self.ipsi5.Label = dConjTable["ipsi5"]
+            self.ipsi6.Label = dConjTable["ipsi6"]
+            # futur
+            self.ifut.Label = dConjTable["t_ifut"]
+            self.ifut1.Label = dConjTable["ifut1"]
+            self.ifut2.Label = dConjTable["ifut2"]
+            self.ifut3.Label = dConjTable["ifut3"]
+            self.ifut4.Label = dConjTable["ifut4"]
+            self.ifut5.Label = dConjTable["ifut5"]
+            self.ifut6.Label = dConjTable["ifut6"]
+            # Conditionnel
+            self.conda.Label = dConjTable["t_conda"]
+            self.conda1.Label = dConjTable["conda1"]
+            self.conda2.Label = dConjTable["conda2"]
+            self.conda3.Label = dConjTable["conda3"]
+            self.conda4.Label = dConjTable["conda4"]
+            self.conda5.Label = dConjTable["conda5"]
+            self.conda6.Label = dConjTable["conda6"]
+            self.condb.Label = dConjTable["t_condb"]
+            self.condb1.Label = dConjTable["condb1"]
+            self.condb2.Label = dConjTable["condb2"]
+            self.condb3.Label = dConjTable["condb3"]
+            self.condb4.Label = dConjTable["condb4"]
+            self.condb5.Label = dConjTable["condb5"]
+            self.condb6.Label = dConjTable["condb6"]
+            # subjonctif présent
+            self.spre.Label = dConjTable["t_spre"]
+            self.spre1.Label = dConjTable["spre1"]
+            self.spre2.Label = dConjTable["spre2"]
+            self.spre3.Label = dConjTable["spre3"]
+            self.spre4.Label = dConjTable["spre4"]
+            self.spre5.Label = dConjTable["spre5"]
+            self.spre6.Label = dConjTable["spre6"]
+            # subjonctif imparfait
+            self.simp.Label = dConjTable["t_simp"]
+            self.simp1.Label = dConjTable["simp1"]
+            self.simp2.Label = dConjTable["simp2"]
+            self.simp3.Label = dConjTable["simp3"]
+            self.simp4.Label = dConjTable["simp4"]
+            self.simp5.Label = dConjTable["simp5"]
+            self.simp6.Label = dConjTable["simp6"]
             # refresh
             self.xContainer.setVisible(True)
         except:
             traceback.print_exc()
-
-    def _setTitles (self):
-        if not self.otco.State:
-            self.ipre.Label = "Présent"
-            self.ifut.Label = "Futur"
-            self.iimp.Label = "Imparfait"
-            self.ipsi.Label = "Passé simple"
-            self.spre.Label = "Présent"
-            self.simp.Label = "Imparfait"
-            self.conda.Label = "Présent"
-            self.condb.Label = ""
-            self.impe.Label = "Présent"
-        else:
-            self.ipre.Label = "Passé composé"
-            self.ifut.Label = "Futur antérieur"
-            self.iimp.Label = "Plus-que-parfait"
-            self.ipsi.Label = "Passé antérieur"
-            self.spre.Label = "Passé"
-            self.simp.Label = "Plus-que-parfait"
-            self.conda.Label = "Passé (1ʳᵉ forme)"
-            self.condb.Label = "Passé (2ᵉ forme)"
-            self.impe.Label = "Passé"
-
 
 # g_ImplementationHelper = unohelper.ImplementationHelper()
 # g_ImplementationHelper.addImplementation(Conjugueur, 'dicollecte.Conjugueur', ('com.sun.star.task.Job',))

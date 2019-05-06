@@ -176,6 +176,20 @@ class Verb ():
             raise ValueError("Unknown verb.")
         self._tTagsAux = _getTags(self.sVerbAux)
         self.cGroup = self._sRawInfo[0]
+        self.bUncomplete = self._sRawInfo.endswith("zz")
+        self.sProLabel = "pronominal"
+        if self._sRawInfo[5] == "_":
+            self.nPronominable = -1
+        elif self._sRawInfo[5] in ["q", "u", "v", "e"]:
+            self.nPronominable = 0
+        elif self._sRawInfo[5] == "p" or self._sRawInfo[5] == "r":
+            self.nPronominable = 1
+        elif self._sRawInfo[5] == "x":
+            self.sProLabel = "cas particuliers"
+            self.nPronominable = 2
+        else:
+            self.sProLabel = "# erreur #"
+            self.nPronominable = -1
         self.dConj = {
             ":Y": {
                 "label": "Infinitif",
@@ -459,3 +473,81 @@ class Verb ():
         except:
             traceback.print_exc()
             return "# erreur"
+
+    def createConjTable (self, bPro=False, bNeg=False, bTpsCo=False, bInt=False, bFem=False):
+        dConjTable = {
+            "t_infi":   "Infinitif",
+            "infi":     self.infinitif(bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ppre":   "Participe présent",
+            "ppre":     self.participePresent(bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ppas":   "Participes passés",
+            "ppas1":    self.participePasse(":Q1"),
+            "ppas2":    self.participePasse(":Q2"),
+            "ppas3":    self.participePasse(":Q3"),
+            "ppas4":    self.participePasse(":Q4"),
+            "t_imp":    "Impératif",
+            "t_impe":   ""  if bInt  else "Présent"  if not bTpsCo  else "Passé",
+            "impe1":    self.imperatif(":2s", bPro, bNeg, bTpsCo, bFem)  if not bInt  else "",
+            "impe2":    self.imperatif(":1p", bPro, bNeg, bTpsCo, bFem)  if not bInt  else "",
+            "impe3":    self.imperatif(":2p", bPro, bNeg, bTpsCo, bFem)  if not bInt  else "",
+            "t_indi":   "Indicatif",
+            "t_ipre":   "Présent"      if not bTpsCo  else "Passé composé",
+            "ipre1":    self.conjugue(":Ip", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre2":    self.conjugue(":Ip", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre3":    self.conjugue(":Ip", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre4":    self.conjugue(":Ip", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre5":    self.conjugue(":Ip", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre6":    self.conjugue(":Ip", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_iimp":   "Imparfait"    if not bTpsCo  else "Plus-que-parfait",
+            "iimp1":    self.conjugue(":Iq", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp2":    self.conjugue(":Iq", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp3":    self.conjugue(":Iq", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp4":    self.conjugue(":Iq", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp5":    self.conjugue(":Iq", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp6":    self.conjugue(":Iq", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ipsi":   "Passé simple" if not bTpsCo  else "Passé antérieur",
+            "ipsi1":    self.conjugue(":Is", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi2":    self.conjugue(":Is", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi3":    self.conjugue(":Is", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi4":    self.conjugue(":Is", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi5":    self.conjugue(":Is", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi6":    self.conjugue(":Is", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ifut":   "Futur"        if not bTpsCo  else "Futur antérieur",
+            "ifut1":    self.conjugue(":If", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut2":    self.conjugue(":If", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut3":    self.conjugue(":If", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut4":    self.conjugue(":If", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut5":    self.conjugue(":If", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut6":    self.conjugue(":If", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_cond":   "Conditionnel",
+            "t_conda":  "Présent"      if not bTpsCo  else "Passé (1ʳᵉ forme)",
+            "conda1":   self.conjugue(":K", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda2":   self.conjugue(":K", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda3":   self.conjugue(":K", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda4":   self.conjugue(":K", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda5":   self.conjugue(":K", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda6":   self.conjugue(":K", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_condb":  ""             if not bTpsCo  else "Passé (2ᵉ forme)",
+            "condb1":   self.conjugue(":Sq", ":1s", bPro, bNeg, bTpsCo, bInt, bFem)  if bTpsCo  else "",
+            "condb2":   self.conjugue(":Sq", ":2s", bPro, bNeg, bTpsCo, bInt, bFem)  if bTpsCo  else "",
+            "condb3":   self.conjugue(":Sq", ":3s", bPro, bNeg, bTpsCo, bInt, bFem)  if bTpsCo  else "",
+            "condb4":   self.conjugue(":Sq", ":1p", bPro, bNeg, bTpsCo, bInt, bFem)  if bTpsCo  else "",
+            "condb5":   self.conjugue(":Sq", ":2p", bPro, bNeg, bTpsCo, bInt, bFem)  if bTpsCo  else "",
+            "condb6":   self.conjugue(":Sq", ":3p", bPro, bNeg, bTpsCo, bInt, bFem)  if bTpsCo  else "",
+            "t_subj":   "Subjonctif",
+            "t_spre":   ""  if bInt  else "Présent"      if not bTpsCo  else "Passé",
+            "spre1":    self.conjugue(":Sp", ":1s", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "spre2":    self.conjugue(":Sp", ":2s", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "spre3":    self.conjugue(":Sp", ":3s", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "spre4":    self.conjugue(":Sp", ":1p", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "spre5":    self.conjugue(":Sp", ":2p", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "spre6":    self.conjugue(":Sp", ":3p", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "t_simp":   ""  if bInt  else "Imparfait"    if not bTpsCo  else "Plus-que-parfait",
+            "simp1":    self.conjugue(":Sq", ":1s", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "simp2":    self.conjugue(":Sq", ":2s", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "simp3":    self.conjugue(":Sq", ":3s", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "simp4":    self.conjugue(":Sq", ":1p", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "simp5":    self.conjugue(":Sq", ":2p", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else "",
+            "simp6":    self.conjugue(":Sq", ":3p", bPro, bNeg, bTpsCo, bInt, bFem)  if not bInt  else ""
+        }
+        return dConjTable
