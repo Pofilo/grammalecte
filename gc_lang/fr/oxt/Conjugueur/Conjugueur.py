@@ -249,7 +249,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
                 self._newVerb()
             elif xActionEvent.ActionCommand == 'Change':
                 if self.oVerb:
-                    self._displayResults(self.oVerb.createConjTable(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State))
+                    self._displayResults()
             else:
                 print(str(xActionEvent))
         except:
@@ -310,10 +310,11 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
                         self.opro.State = False
                         self.opro.Enabled = False
                     self.option_msg.Label = ""
-                self._displayResults(self.oVerb.createConjTable(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State))
+                self._displayResults()
 
-    def _displayResults (self, dConjTable):
+    def _displayResults (self):
         try:
+            dConjTable = self.oVerb.createConjTable(self.opro.State, self.oneg.State, self.otco.State, self.oint.State, self.ofem.State)
             self.input.Text = ""
             # infinitif
             self.infi.Label = dConjTable["infi"]
