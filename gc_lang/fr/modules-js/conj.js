@@ -205,6 +205,21 @@ class Verb {
         this._tTagsAux = conj._getTags(this.sVerbAux);
         this.bProWithEn = (this._sRawInfo[5] === "e");
         this.cGroup = this._sRawInfo[0];
+        this.bUncomplete = this._sRawInfo.endsWith("zz");
+        this.sProLabel = "pronominal";
+        if (this._sRawInfo[5] == "_") {
+            this.nPronominable = -1;
+        } else if (["q", "u", "v", "e"].includes(this._sRawInfo[5])) {
+            this.nPronominable = 0;
+        } else if (this._sRawInfo[5] == "p" || this._sRawInfo[5] == "r") {
+            this.nPronominable = 1;
+        } else if (this._sRawInfo[5] == "x") {
+            this.sProLabel = "cas particuliers";
+            this.nPronominable = 2;
+        } else {
+            this.sProLabel = "# erreur #";
+            this.nPronominable = -1;
+        }
         this.dConj = new Map ([
             [":Y", new Map ([
                 ["label", "Infinitif"],
@@ -495,6 +510,85 @@ class Verb {
             return (this.dConj.get(":Q").get(":Q3")) ? this.dConj.get(":Q").get(":Q3") : this.dConj.get(":Q").get(":Q1");
         }
         return (this.dConj.get(":Q").get(":Q4")) ? this.dConj.get(":Q").get(":Q4") : this.dConj.get(":Q").get(":Q1");
+    }
+
+    createConjTable (bPro=false, bNeg=false, bTpsCo=false, bInt=false, bFem=false) {
+        let oConjTable = {
+            "t_infi":   "Infinitif",
+            "infi":     this.infinitif(bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ppre":   "Participe présent",
+            "ppre":     this.participePresent(bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ppas":   "Participes passés",
+            "ppas1":    this.participePasse(":Q1"),
+            "ppas2":    this.participePasse(":Q2"),
+            "ppas3":    this.participePasse(":Q3"),
+            "ppas4":    this.participePasse(":Q4"),
+            "t_imp":    "Impératif",
+            "t_impe":   (bInt) ? "" : ((!bTpsCo) ? "Présent" : "Passé"),
+            "impe1":    (!bInt) ? this.imperatif(":2s", bPro, bNeg, bTpsCo, bFem) : "",
+            "impe2":    (!bInt) ? this.imperatif(":1p", bPro, bNeg, bTpsCo, bFem) : "",
+            "impe3":    (!bInt) ? this.imperatif(":2p", bPro, bNeg, bTpsCo, bFem) : "",
+            "t_indi":   "Indicatif",
+            "t_ipre":   (!bTpsCo) ? "Présent"      : "Passé composé",
+            "ipre1":    this.conjugue(":Ip", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre2":    this.conjugue(":Ip", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre3":    this.conjugue(":Ip", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre4":    this.conjugue(":Ip", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre5":    this.conjugue(":Ip", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipre6":    this.conjugue(":Ip", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_iimp":   (!bTpsCo) ? "Imparfait"    : "Plus-que-parfait",
+            "iimp1":    this.conjugue(":Iq", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp2":    this.conjugue(":Iq", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp3":    this.conjugue(":Iq", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp4":    this.conjugue(":Iq", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp5":    this.conjugue(":Iq", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "iimp6":    this.conjugue(":Iq", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ipsi":   (!bTpsCo) ? "Passé simple" : "Passé antérieur",
+            "ipsi1":    this.conjugue(":Is", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi2":    this.conjugue(":Is", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi3":    this.conjugue(":Is", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi4":    this.conjugue(":Is", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi5":    this.conjugue(":Is", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ipsi6":    this.conjugue(":Is", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_ifut":   (!bTpsCo) ? "Futur"        : "Futur antérieur",
+            "ifut1":    this.conjugue(":If", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut2":    this.conjugue(":If", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut3":    this.conjugue(":If", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut4":    this.conjugue(":If", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut5":    this.conjugue(":If", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "ifut6":    this.conjugue(":If", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_cond":   "Conditionnel",
+            "t_conda":  (!bTpsCo) ? "Présent"      : "Passé (1ʳᵉ forme)",
+            "conda1":   this.conjugue(":K", ":1s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda2":   this.conjugue(":K", ":2s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda3":   this.conjugue(":K", ":3s", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda4":   this.conjugue(":K", ":1p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda5":   this.conjugue(":K", ":2p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "conda6":   this.conjugue(":K", ":3p", bPro, bNeg, bTpsCo, bInt, bFem),
+            "t_condb":  (bTpsCo) ? "Passé (2ᵉ forme)" : "",
+            "condb1":   (bTpsCo) ? this.conjugue(":Sq", ":1s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "condb2":   (bTpsCo) ? this.conjugue(":Sq", ":2s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "condb3":   (bTpsCo) ? this.conjugue(":Sq", ":3s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "condb4":   (bTpsCo) ? this.conjugue(":Sq", ":1p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "condb5":   (bTpsCo) ? this.conjugue(":Sq", ":2p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "condb6":   (bTpsCo) ? this.conjugue(":Sq", ":3p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "t_subj":   "Subjonctif",
+            "t_spre":   (bInt) ? "" : ((!bTpsCo) ? "Présent" : "Passé"),
+            "spre1":    (!bInt) ? this.conjugue(":Sp", ":1s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "spre2":    (!bInt) ? this.conjugue(":Sp", ":2s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "spre3":    (!bInt) ? this.conjugue(":Sp", ":3s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "spre4":    (!bInt) ? this.conjugue(":Sp", ":1p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "spre5":    (!bInt) ? this.conjugue(":Sp", ":2p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "spre6":    (!bInt) ? this.conjugue(":Sp", ":3p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "t_simp":   (bInt) ? "" : ((!bTpsCo) ? "Imparfait" : "Plus-que-parfait"),
+            "simp1":    (!bInt) ? this.conjugue(":Sq", ":1s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "simp2":    (!bInt) ? this.conjugue(":Sq", ":2s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "simp3":    (!bInt) ? this.conjugue(":Sq", ":3s", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "simp4":    (!bInt) ? this.conjugue(":Sq", ":1p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "simp5":    (!bInt) ? this.conjugue(":Sq", ":2p", bPro, bNeg, bTpsCo, bInt, bFem) : "",
+            "simp6":    (!bInt) ? this.conjugue(":Sq", ":3p", bPro, bNeg, bTpsCo, bInt, bFem) : ""
+        }
+        return oConjTable;
     }
 }
 

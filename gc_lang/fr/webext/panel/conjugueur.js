@@ -63,10 +63,9 @@ function createVerbAndConjugate (sVerb) {
                 document.getElementById('verb').style = "color: #999999;";
                 document.getElementById('verb').value = "";
                 oVerb = new Verb(sVerb);
-                let sRawInfo = oVerb._sRawInfo;
                 document.getElementById('info').textContent = oVerb.sInfo;
-                document.getElementById('opro').textContent = "pronominal";
-                if (sRawInfo.endsWith("zz")) {
+                document.getElementById('opro').textContent = oVerb.sProLabel;
+                if (oVerb.bUncomplete) {
                     document.getElementById('opro').checked = false;
                     document.getElementById('opro').disabled = true;
                     document.getElementById('opro_lbl').style = "color: #CCC;";
@@ -75,32 +74,22 @@ function createVerbAndConjugate (sVerb) {
                     document.getElementById('otco_lbl').style = "color: #CCC;";
                     document.getElementById('smallnote').textContent = "Ce verbe n’a pas encore été vérifié. C’est pourquoi les options “pronominal” et “temps composés” sont désactivées.";
                 } else {
-                    document.getElementById('smallnote').textContent = "❦";
-                    if (sRawInfo[5] == "_") {
-                        document.getElementById('opro').checked = false;
-                        document.getElementById('opro').disabled = true;
-                        document.getElementById('opro_lbl').style = "color: #CCC;";
-                    } else if (["q", "u", "v", "e"].includes(sRawInfo[5])) {
+                    document.getElementById('otco').disabled = false;
+                    document.getElementById('otco_lbl').style = "color: #000;";
+                    if (oVerb.nPronominable == 0) {
                         document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = false;
                         document.getElementById('opro_lbl').style = "color: #000;";
-                    } else if (sRawInfo[5] == "p" || sRawInfo[5] == "r") {
+                    } else if (oVerb.nPronominable == 1) {
                         document.getElementById('opro').checked = true;
                         document.getElementById('opro').disabled = true;
                         document.getElementById('opro_lbl').style = "color: #CCC;";
-                    } else if (sRawInfo[5] == "x") {
-                        document.getElementById('opro').textContent = "cas particuliers";
-                        document.getElementById('opro').checked = false;
-                        document.getElementById('opro').disabled = true;
-                        document.getElementById('opro_lbl').style = "color: #CCC;";
-                    } else {
-                        document.getElementById('opro').textContent = "# erreur #";
+                    } else { // -1 or 1 or error
                         document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = true;
                         document.getElementById('opro_lbl').style = "color: #CCC;";
                     }
-                    document.getElementById('otco').disabled = false;
-                    document.getElementById('otco_lbl').style = "color: #000;";
+                    document.getElementById('smallnote').textContent = "❦";
                 }
                 _displayResults();
             }
@@ -116,134 +105,90 @@ function _displayResults () {
         return;
     }
     try {
-        let opro = document.getElementById('opro').checked;
-        let oneg = document.getElementById('oneg').checked;
-        let otco = document.getElementById('otco').checked;
-        let oint = document.getElementById('oint').checked;
-        let ofem = document.getElementById('ofem').checked;
-        // titles
-        _setTitles()
-        // participes passés
-        document.getElementById('ppas1').textContent = oVerb.participePasse(":Q1") || " "; // something or nbsp
-        document.getElementById('ppas2').textContent = oVerb.participePasse(":Q2") || " ";
-        document.getElementById('ppas3').textContent = oVerb.participePasse(":Q3") || " ";
-        document.getElementById('ppas4').textContent = oVerb.participePasse(":Q4") || " ";
-        // infinitif
-        document.getElementById('infi').textContent = oVerb.infinitif(opro, oneg, otco, oint, ofem);
-        // participe présent
-        document.getElementById('ppre').textContent = oVerb.participePresent(opro, oneg, otco, oint, ofem) || " ";
-        // conjugaisons
-        document.getElementById('ipre1').textContent = oVerb.conjugue(":Ip", ":1s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipre2').textContent = oVerb.conjugue(":Ip", ":2s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipre3').textContent = oVerb.conjugue(":Ip", ":3s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipre4').textContent = oVerb.conjugue(":Ip", ":1p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipre5').textContent = oVerb.conjugue(":Ip", ":2p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipre6').textContent = oVerb.conjugue(":Ip", ":3p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('iimp1').textContent = oVerb.conjugue(":Iq", ":1s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('iimp2').textContent = oVerb.conjugue(":Iq", ":2s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('iimp3').textContent = oVerb.conjugue(":Iq", ":3s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('iimp4').textContent = oVerb.conjugue(":Iq", ":1p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('iimp5').textContent = oVerb.conjugue(":Iq", ":2p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('iimp6').textContent = oVerb.conjugue(":Iq", ":3p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipsi1').textContent = oVerb.conjugue(":Is", ":1s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipsi2').textContent = oVerb.conjugue(":Is", ":2s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipsi3').textContent = oVerb.conjugue(":Is", ":3s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipsi4').textContent = oVerb.conjugue(":Is", ":1p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipsi5').textContent = oVerb.conjugue(":Is", ":2p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ipsi6').textContent = oVerb.conjugue(":Is", ":3p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ifut1').textContent = oVerb.conjugue(":If", ":1s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ifut2').textContent = oVerb.conjugue(":If", ":2s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ifut3').textContent = oVerb.conjugue(":If", ":3s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ifut4').textContent = oVerb.conjugue(":If", ":1p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ifut5').textContent = oVerb.conjugue(":If", ":2p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('ifut6').textContent = oVerb.conjugue(":If", ":3p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('conda1').textContent = oVerb.conjugue(":K", ":1s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('conda2').textContent = oVerb.conjugue(":K", ":2s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('conda3').textContent = oVerb.conjugue(":K", ":3s", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('conda4').textContent = oVerb.conjugue(":K", ":1p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('conda5').textContent = oVerb.conjugue(":K", ":2p", opro, oneg, otco, oint, ofem) || " ";
-        document.getElementById('conda6').textContent = oVerb.conjugue(":K", ":3p", opro, oneg, otco, oint, ofem) || " ";
-        if (!oint) {
-            document.getElementById('spre1').textContent = oVerb.conjugue(":Sp", ":1s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('spre2').textContent = oVerb.conjugue(":Sp", ":2s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('spre3').textContent = oVerb.conjugue(":Sp", ":3s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('spre4').textContent = oVerb.conjugue(":Sp", ":1p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('spre5').textContent = oVerb.conjugue(":Sp", ":2p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('spre6').textContent = oVerb.conjugue(":Sp", ":3p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('simp1').textContent = oVerb.conjugue(":Sq", ":1s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('simp2').textContent = oVerb.conjugue(":Sq", ":2s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('simp3').textContent = oVerb.conjugue(":Sq", ":3s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('simp4').textContent = oVerb.conjugue(":Sq", ":1p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('simp5').textContent = oVerb.conjugue(":Sq", ":2p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('simp6').textContent = oVerb.conjugue(":Sq", ":3p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('impe1').textContent = oVerb.imperatif(":2s", opro, oneg, otco, ofem) || " ";
-            document.getElementById('impe2').textContent = oVerb.imperatif(":1p", opro, oneg, otco, ofem) || " ";
-            document.getElementById('impe3').textContent = oVerb.imperatif(":2p", opro, oneg, otco, ofem) || " ";
-        } else {
-            document.getElementById('spre_temps').textContent = " ";
-            document.getElementById('spre1').textContent = " ";
-            document.getElementById('spre2').textContent = " ";
-            document.getElementById('spre3').textContent = " ";
-            document.getElementById('spre4').textContent = " ";
-            document.getElementById('spre5').textContent = " ";
-            document.getElementById('spre6').textContent = " ";
-            document.getElementById('simp_temps').textContent = " ";
-            document.getElementById('simp1').textContent = " ";
-            document.getElementById('simp2').textContent = " ";
-            document.getElementById('simp3').textContent = " ";
-            document.getElementById('simp4').textContent = " ";
-            document.getElementById('simp5').textContent = " ";
-            document.getElementById('simp6').textContent = " ";
-            document.getElementById('impe_temps').textContent = " ";
-            document.getElementById('impe1').textContent = " ";
-            document.getElementById('impe2').textContent = " ";
-            document.getElementById('impe3').textContent = " ";
-        }
-        if (otco) {
-            document.getElementById('condb1').textContent = oVerb.conjugue(":Sq", ":1s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('condb2').textContent = oVerb.conjugue(":Sq", ":2s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('condb3').textContent = oVerb.conjugue(":Sq", ":3s", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('condb4').textContent = oVerb.conjugue(":Sq", ":1p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('condb5').textContent = oVerb.conjugue(":Sq", ":2p", opro, oneg, otco, oint, ofem) || " ";
-            document.getElementById('condb6').textContent = oVerb.conjugue(":Sq", ":3p", opro, oneg, otco, oint, ofem) || " ";
-        } else {
-            document.getElementById('condb1').textContent = " ";
-            document.getElementById('condb2').textContent = " ";
-            document.getElementById('condb3').textContent = " ";
-            document.getElementById('condb4').textContent = " ";
-            document.getElementById('condb5').textContent = " ";
-            document.getElementById('condb6').textContent = " ";
-        }
+        let bPro = document.getElementById('opro').checked;
+        let bNeg = document.getElementById('oneg').checked;
+        let bTCo = document.getElementById('otco').checked;
+        let bInt = document.getElementById('oint').checked;
+        let bFem = document.getElementById('ofem').checked;
+        let oConjTable = oVerb.createConjTable(bPro, bNeg, bTCo, bInt, bFem);
         document.getElementById('verb').Text = "";
-    }
-    catch (e) {
-        console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
-    }
-}
-
-function _setTitles () {
-    try {
-        if (!document.getElementById('otco').checked) {
-            document.getElementById('ipre_temps').textContent = "Présent";
-            document.getElementById('ifut_temps').textContent = "Futur";
-            document.getElementById('iimp_temps').textContent = "Imparfait";
-            document.getElementById('ipsi_temps').textContent = "Passé simple";
-            document.getElementById('spre_temps').textContent = "Présent";
-            document.getElementById('simp_temps').textContent = "Imparfait";
-            document.getElementById('conda_temps').textContent = "Présent";
-            document.getElementById('condb_temps').textContent = " ";
-            document.getElementById('impe_temps').textContent = "Présent";
-        } else {
-            document.getElementById('ipre_temps').textContent = "Passé composé";
-            document.getElementById('ifut_temps').textContent = "Futur antérieur";
-            document.getElementById('iimp_temps').textContent = "Plus-que-parfait";
-            document.getElementById('ipsi_temps').textContent = "Passé antérieur";
-            document.getElementById('spre_temps').textContent = "Passé";
-            document.getElementById('simp_temps').textContent = "Plus-que-parfait";
-            document.getElementById('conda_temps').textContent = "Passé (1ʳᵉ forme)";
-            document.getElementById('condb_temps').textContent = "Passé (2ᵉ forme)";
-            document.getElementById('impe_temps').textContent = "Passé";
-        }
+        // infinitif
+        document.getElementById('infi').textContent = oConjTable["infi"] || " "; // something or nbsp
+        // participe présent
+        document.getElementById('ppre').textContent = oConjTable["ppre"] || " ";
+        // participes passés
+        document.getElementById('ppas1').textContent = oConjTable["ppas1"] || " ";
+        document.getElementById('ppas2').textContent = oConjTable["ppas2"] || " ";
+        document.getElementById('ppas3').textContent = oConjTable["ppas3"] || " ";
+        document.getElementById('ppas4').textContent = oConjTable["ppas4"] || " ";
+        // impératif
+        document.getElementById('impe_temps').textContent = oConjTable["t_impe"] || " ";
+        document.getElementById('impe1').textContent = oConjTable["impe1"] || " ";
+        document.getElementById('impe2').textContent = oConjTable["impe2"] || " ";
+        document.getElementById('impe3').textContent = oConjTable["impe3"] || " ";
+        // présent
+        document.getElementById('ipre_temps').textContent = oConjTable["t_ipre"] || " ";
+        document.getElementById('ipre1').textContent = oConjTable["ipre1"] || " ";
+        document.getElementById('ipre2').textContent = oConjTable["ipre2"] || " ";
+        document.getElementById('ipre3').textContent = oConjTable["ipre3"] || " ";
+        document.getElementById('ipre4').textContent = oConjTable["ipre4"] || " ";
+        document.getElementById('ipre5').textContent = oConjTable["ipre5"] || " ";
+        document.getElementById('ipre6').textContent = oConjTable["ipre6"] || " ";
+        // imparfait
+        document.getElementById('iimp_temps').textContent = oConjTable["t_iimp"] || " ";
+        document.getElementById('iimp1').textContent = oConjTable["iimp1"] || " ";
+        document.getElementById('iimp2').textContent = oConjTable["iimp2"] || " ";
+        document.getElementById('iimp3').textContent = oConjTable["iimp3"] || " ";
+        document.getElementById('iimp4').textContent = oConjTable["iimp4"] || " ";
+        document.getElementById('iimp5').textContent = oConjTable["iimp5"] || " ";
+        document.getElementById('iimp6').textContent = oConjTable["iimp6"] || " ";
+        // passé simple
+        document.getElementById('ipsi_temps').textContent = oConjTable["t_ipsi"] || " ";
+        document.getElementById('ipsi1').textContent = oConjTable["ipsi1"] || " ";
+        document.getElementById('ipsi2').textContent = oConjTable["ipsi2"] || " ";
+        document.getElementById('ipsi3').textContent = oConjTable["ipsi3"] || " ";
+        document.getElementById('ipsi4').textContent = oConjTable["ipsi4"] || " ";
+        document.getElementById('ipsi5').textContent = oConjTable["ipsi5"] || " ";
+        document.getElementById('ipsi6').textContent = oConjTable["ipsi6"] || " ";
+        // futur
+        document.getElementById('ifut_temps').textContent = oConjTable["t_ifut"] || " ";
+        document.getElementById('ifut1').textContent = oConjTable["ifut1"] || " ";
+        document.getElementById('ifut2').textContent = oConjTable["ifut2"] || " ";
+        document.getElementById('ifut3').textContent = oConjTable["ifut3"] || " ";
+        document.getElementById('ifut4').textContent = oConjTable["ifut4"] || " ";
+        document.getElementById('ifut5').textContent = oConjTable["ifut5"] || " ";
+        document.getElementById('ifut6').textContent = oConjTable["ifut6"] || " ";
+        // Conditionnel
+        document.getElementById('conda_temps').textContent = oConjTable["t_conda"] || " ";
+        document.getElementById('conda1').textContent = oConjTable["conda1"] || " ";
+        document.getElementById('conda2').textContent = oConjTable["conda2"] || " ";
+        document.getElementById('conda3').textContent = oConjTable["conda3"] || " ";
+        document.getElementById('conda4').textContent = oConjTable["conda4"] || " ";
+        document.getElementById('conda5').textContent = oConjTable["conda5"] || " ";
+        document.getElementById('conda6').textContent = oConjTable["conda6"] || " ";
+        document.getElementById('condb_temps').textContent = oConjTable["t_condb"] || " ";
+        document.getElementById('condb1').textContent = oConjTable["condb1"] || " ";
+        document.getElementById('condb2').textContent = oConjTable["condb2"] || " ";
+        document.getElementById('condb3').textContent = oConjTable["condb3"] || " ";
+        document.getElementById('condb4').textContent = oConjTable["condb4"] || " ";
+        document.getElementById('condb5').textContent = oConjTable["condb5"] || " ";
+        document.getElementById('condb6').textContent = oConjTable["condb6"] || " ";
+        // subjonctif présent
+        document.getElementById('spre_temps').textContent = oConjTable["t_spre"] || " ";
+        document.getElementById('spre1').textContent = oConjTable["spre1"] || " ";
+        document.getElementById('spre2').textContent = oConjTable["spre2"] || " ";
+        document.getElementById('spre3').textContent = oConjTable["spre3"] || " ";
+        document.getElementById('spre4').textContent = oConjTable["spre4"] || " ";
+        document.getElementById('spre5').textContent = oConjTable["spre5"] || " ";
+        document.getElementById('spre6').textContent = oConjTable["spre6"] || " ";
+        // subjonctif imparfait
+        document.getElementById('simp_temps').textContent = oConjTable["t_simp"] || " ";
+        document.getElementById('simp1').textContent = oConjTable["simp1"] || " ";
+        document.getElementById('simp2').textContent = oConjTable["simp2"] || " ";
+        document.getElementById('simp3').textContent = oConjTable["simp3"] || " ";
+        document.getElementById('simp4').textContent = oConjTable["simp4"] || " ";
+        document.getElementById('simp5').textContent = oConjTable["simp5"] || " ";
+        document.getElementById('simp6').textContent = oConjTable["simp6"] || " ";
     }
     catch (e) {
         console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
