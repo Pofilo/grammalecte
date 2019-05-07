@@ -78,7 +78,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xEditorButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur"});
         this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur"});
-        this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical ⮭"});
+        this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
         this.xTFButton.onclick = () => {
             if (this.xNode  && (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT" || this.xNode.isContentEditable)) {
                 oGrammalecte.createTFPanel();
@@ -321,7 +321,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.boxShadow = "0 0 0 3px hsla(0, 0%, 50%, .2)";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "grammalecte-pulse 1s linear infinite";
-
     }
 
     freeParagraph (xParagraph) {
@@ -393,7 +392,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.startWaitIcon();
         try {
             let xClipboardButton = this.xParent.getElementById("grammalecte_clipboard_button");
-            xClipboardButton.textContent = "->>";
+            xClipboardButton.textContent = "⇒ presse-papiers";
             let sText = "";
             // Quand c'est dans un shadow "this.xParent.getElementsByClassName" n'existe pas.
             let xElem = this.xParent.getElementById("grammalecte_gc_panel");
@@ -401,8 +400,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 sText += xNode.textContent + "\n";
             }
             this._copyToClipboard(sText);
-            xClipboardButton.textContent = "⇒ presse-papiers";
-            window.setTimeout(function() { xClipboardButton.textContent = "📋"; } , 2000);
+            window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000);
         }
         catch (e) {
             showError(e);
@@ -520,7 +518,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             this.xParent.getElementById('grammalecte_conj_oint').checked = false;
             this.xParent.getElementById('grammalecte_conj_otco').checked = false;
             this.xParent.getElementById('grammalecte_conj_ofem').checked = false;
-
             // request analyzing
             sVerb = sVerb.trim().toLowerCase().replace(/’/g, "'").replace(/  +/g, " ");
             if (sVerb) {
@@ -559,7 +556,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let bInt = this.xParent.getElementById('grammalecte_conj_oint').checked;
         let bFem = this.xParent.getElementById('grammalecte_conj_ofem').checked;
         if (this.sVerb) {
-            console.log("updateConj send");
             xGrammalectePort.postMessage({
                 sCommand: "getVerb",
                 dParam: {sVerb: this.sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem},
@@ -571,40 +567,40 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     conjugateWith (oVerb, oConjTable) {
         // function called when results come from the Worker
         if (oVerb) {
-            this.xParent.getElementById('grammalecte_conj_verb').style = "color: #999999;";
+            this.xParent.getElementById('grammalecte_conj_verb').style.color = "#999999";
             this.xParent.getElementById('grammalecte_conj_verb').value = "";
             this.xParent.getElementById('grammalecte_conj_verb_title').textContent = oVerb.sVerb;
             this.xParent.getElementById('grammalecte_conj_verb_info').textContent = oVerb.sInfo;
-            this.xParent.getElementById('grammalecte_conj_opro').textContent = oVerb.sProLabel;
+            this.xParent.getElementById('grammalecte_conj_opro_lbl').textContent = oVerb.sProLabel;
             if (oVerb.bUncomplete) {
                 this.xParent.getElementById('grammalecte_conj_opro').checked = false;
                 this.xParent.getElementById('grammalecte_conj_opro').disabled = true;
-                this.xParent.getElementById('grammalecte_conj_opro_lbl').style = "color: #CCC;";
+                this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#CCC";
                 this.xParent.getElementById('grammalecte_conj_otco').checked = false;
                 this.xParent.getElementById('grammalecte_conj_otco').disabled = true;
-                this.xParent.getElementById('grammalecte_conj_otco_lbl').style = "color: #CCC;";
+                this.xParent.getElementById('grammalecte_conj_otco_lbl').style.color = "#CCC";
                 this.xParent.getElementById('grammalecte_conj_note').textContent = "Ce verbe n’a pas encore été vérifié. C’est pourquoi les options “pronominal” et “temps composés” sont désactivées.";
             } else {
                 this.xParent.getElementById('grammalecte_conj_otco').disabled = false;
-                this.xParent.getElementById('grammalecte_conj_otco_lbl').style = "color: #000;";
+                this.xParent.getElementById('grammalecte_conj_otco_lbl').style.color = "#000";
                 if (oVerb.nPronominable == 0) {
                     this.xParent.getElementById('grammalecte_conj_opro').checked = false;
                     this.xParent.getElementById('grammalecte_conj_opro').disabled = false;
-                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style = "color: #000;";
+                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#000";
                 } else if (oVerb.nPronominable == 1) {
                     this.xParent.getElementById('grammalecte_conj_opro').checked = true;
                     this.xParent.getElementById('grammalecte_conj_opro').disabled = true;
-                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style = "color: #CCC;";
+                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#CCC";
                 } else { // -1 or 1 or error
                     this.xParent.getElementById('grammalecte_conj_opro').checked = false;
                     this.xParent.getElementById('grammalecte_conj_opro').disabled = true;
-                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style = "color: #CCC;";
+                    this.xParent.getElementById('grammalecte_conj_opro_lbl').style.color = "#CCC";
                 }
                 this.xParent.getElementById('grammalecte_conj_note').textContent = "❦";
             }
             this._displayConj(oConjTable);
         } else {
-            this.xParent.getElementById('grammalecte_conj_verb').style = "color: #BB4411;";
+            this.xParent.getElementById('grammalecte_conj_verb').style.color = "#BB4411";
         }
     }
 
