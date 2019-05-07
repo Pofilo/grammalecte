@@ -131,6 +131,9 @@ onmessage = function (e) {
         case "getSpellSuggestions":
             getSpellSuggestions(dParam.sWord, dInfo);
             break;
+        case "getVerb":
+            getVerb(dParam.sVerb, dParam.bPro, dParam.bNeg, dParam.bTpsCo, dParam.bInt, dParam.bFem, dInfo);
+            break;
         case "getListOfTokens":
             getListOfTokens(dParam.sText, dInfo);
             break;
@@ -368,6 +371,25 @@ function getSpellSuggestions (sWord, dInfo) {
     for (let aSugg of oSpellChecker.suggest(sWord)) {
         postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg, iSuggBlock: i}, dInfo, true));
         i += 1;
+    }
+}
+
+
+// Conjugueur
+
+function getVerb (sWord, bPro, bNeg, bTpsCo, bInt, bFem, dInfo) {
+    try {
+        let oVerb = null;
+        let oConjTable = null;
+        if (conj.isVerb(sWord)) {
+            oVerb = new Verb(sWord);
+            oConjTable = oVerb.createConjTable(bPro, bNeg, bTpsCo, bInt, bFem);
+        }
+        postMessage(createResponse("getVerb", { oVerb: oVerb, oConjTable: oConjTable }, dInfo, true));
+    }
+    catch (e) {
+        console.error(e);
+        postMessage(createResponse("getVerb", createErrorResult(e, "no verb"), dInfo, true, true));
     }
 }
 

@@ -311,6 +311,9 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "getSpellSuggestions":
             oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
             break;
+        case "getVerb":
+            oGrammalecte.oGCPanel.conjugateWith(result.oVerb, result.oConjTable);
+            break;
         /*
             Commands received from the context menu
             (Context menu are initialized in background)

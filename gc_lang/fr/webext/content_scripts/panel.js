@@ -101,6 +101,7 @@ class GrammalectePanel {
             oGrammalecte.createStyle("content_scripts/panel.css", null, this.xShadow);
             oGrammalecte.createStyle("content_scripts/panel_gc.css", null, this.xShadow);
             oGrammalecte.createStyle("content_scripts/panel_lxg.css", null, this.xShadow);
+            oGrammalecte.createStyle("content_scripts/panel_conj.css", null, this.xShadow);
             oGrammalecte.createStyle("content_scripts/panel_tf.css", null, this.xShadow);
             this.xShadow.appendChild(this.xPanel);
             document.body.appendChild(this.xShadowPanel);
@@ -109,6 +110,7 @@ class GrammalectePanel {
                 oGrammalecte.createStyle("content_scripts/panel.css", "grammalecte_csspanel", document.head);
                 oGrammalecte.createStyle("content_scripts/panel_gc.css", null, document.head);
                 oGrammalecte.createStyle("content_scripts/panel_lxg.css", null, document.head);
+                oGrammalecte.createStyle("content_scripts/panel_conj.css", null, document.head);
                 oGrammalecte.createStyle("content_scripts/panel_tf.css", null, document.head);
             }
             document.body.appendChild(this.xPanel);
