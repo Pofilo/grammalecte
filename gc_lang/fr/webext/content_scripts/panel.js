@@ -79,7 +79,7 @@ class GrammalectePanel {
     }
 
     _createCopyButton () {
-        let xButton = oGrammalecte.createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_panel_button grammalecte_copy_button", textContent: "∑", title: "Copier dans le presse-papiers"});
+        let xButton = oGrammalecte.createNode("div", {id: "grammalecte_clipboard_button", className: "grammalecte_panel_button grammalecte_copy_button", textContent: "📋", title: "Copier dans le presse-papiers"});
         xButton.onclick = () => { this.copyTextToClipboard(); };
         return xButton;
     }

@@ -77,8 +77,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Formateur de texte"});
         this.xEditorButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur"});
         this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
-        this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur "});
-        this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical "});
+        this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur"});
+        this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur lexical ⮭"});
         this.xTFButton.onclick = () => {
             if (this.xNode  && (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT" || this.xNode.isContentEditable)) {
                 oGrammalecte.createTFPanel();
@@ -401,8 +401,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 sText += xNode.textContent + "\n";
             }
             this._copyToClipboard(sText);
-            xClipboardButton.textContent = "OK";
-            window.setTimeout(function() { xClipboardButton.textContent = "∑"; } , 2000);
+            xClipboardButton.textContent = "⇒ presse-papiers";
+            window.setTimeout(function() { xClipboardButton.textContent = "📋"; } , 2000);
         }
         catch (e) {
             showError(e);
