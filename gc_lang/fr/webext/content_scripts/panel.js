@@ -15,6 +15,7 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
+        this.bWorking = false;
 
         this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
         if (this.bShadow) {
@@ -183,10 +184,12 @@ class GrammalectePanel {
     }
 
     startWaitIcon () {
+        this.bWorking = true;
         this.xWaitIcon.style.visibility = "visible";
     }
 
     stopWaitIcon () {
+        this.bWorking = false;
         this.xWaitIcon.style.visibility = "hidden";
     }
 

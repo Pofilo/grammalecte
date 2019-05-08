@@ -80,20 +80,24 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur"});
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
         this.xTFButton.onclick = () => {
-            if (this.xNode  && (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT" || this.xNode.isContentEditable)) {
-                oGrammalecte.createTFPanel();
-                oGrammalecte.oTFPanel.start(this);
-                oGrammalecte.oTFPanel.show();
-            } else {
-                oGrammalecte.showMessage("Aucune zone de texte éditable sur laquelle appliquer le formatage de texte.")
+            if (!this.bWorking) {
+                if (this.xNode && (this.xNode.tagName == "TEXTAREA" || this.xNode.tagName == "INPUT" || this.xNode.isContentEditable)) {
+                    oGrammalecte.createTFPanel();
+                    oGrammalecte.oTFPanel.start(this);
+                    oGrammalecte.oTFPanel.show();
+                } else {
+                    oGrammalecte.showMessage("Aucune zone de texte éditable sur laquelle appliquer le formatage de texte.")
+                }
             }
         };
         this.xEditorButton.onclick = () => {
-            this.showEditor();
+            if (!this.bWorking) {
+                this.showEditor();
+            }
         };
         this.xLxgButton.onclick = () => {
-            this.showLexicographer();
-            if (true) {
+            if (!this.bWorking) {
+                this.showLexicographer();
                 this.clearLexicographer();
                 this.startWaitIcon();
                 xGrammalectePort.postMessage({
@@ -104,7 +108,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
         };
         this.xConjButton.onclick = () => {
-            this.showConjugueur();
+            if (!this.bWorking) {
+                this.showConjugueur();
+            }
         };
         this.xLEButton.onclick = () => {
             xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null});
@@ -120,6 +126,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     start (xNode=null) {
         this.xNode = xNode;
         this.oTooltip.hide();
+        this.bWorking = false;
         this.clear();
         if (xNode) {
             this.oNodeControl.setNode(xNode);
