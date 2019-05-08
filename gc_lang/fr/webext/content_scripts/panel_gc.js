@@ -538,7 +538,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 }
                 if (sVerb) {
                     this.sVerb = sVerb;
-                    this.updateConj();
+                    this.updateConj(true);
                 } else {
                     this.xParent.getElementById('grammalecte_conj_verb').value = "";
                 }
@@ -549,7 +549,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
     }
 
-    updateConj () {
+    updateConj (bStart=false) {
         let bPro = this.xParent.getElementById('grammalecte_conj_opro').checked;
         let bNeg = this.xParent.getElementById('grammalecte_conj_oneg').checked;
         let bTpsCo = this.xParent.getElementById('grammalecte_conj_otco').checked;
@@ -559,7 +559,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xGrammalectePort.postMessage({
                 sCommand: "getVerb",
                 dParam: {sVerb: this.sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem},
-                dInfo: {}
+                dInfo: {bStart: bStart}
             });
         }
     }
@@ -598,13 +598,14 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 }
                 this.xParent.getElementById('grammalecte_conj_note').textContent = "❦";
             }
-            this._displayConj(oConjTable);
+            this.displayConj(oConjTable);
         } else {
             this.xParent.getElementById('grammalecte_conj_verb').style.color = "#BB4411";
         }
     }
 
-    _displayConj (oConjTable) {
+    displayConj (oConjTable) {
+        // function called when results come from the Worker
         if (oConjTable === null) {
             return;
         }

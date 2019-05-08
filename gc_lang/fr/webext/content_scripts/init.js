@@ -312,7 +312,11 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
             break;
         case "getVerb":
-            oGrammalecte.oGCPanel.conjugateWith(result.oVerb, result.oConjTable);
+            if (dInfo.bStart) {
+                oGrammalecte.oGCPanel.conjugateWith(result.oVerb, result.oConjTable);
+            } else {
+                oGrammalecte.oGCPanel.displayConj(result.oConjTable);
+            }
             break;
         /*
             Commands received from the context menu
