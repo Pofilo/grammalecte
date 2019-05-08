@@ -714,7 +714,7 @@ TEST: {{offensif.ve.s}}                                                 ->> offe
 
 __[u](eepi_écriture_épicène_pluriel_e)__
     ({w_1}[éuitsrnldf])[-·–—.•⋅(/]([ntlf]?e)[-·–—.•⋅)/]?s  @@0,**
-    <<- not \0.endswith(".Les") >>>
+    <<- not (\0.endswith(".Les") or \0.endswith(".Tes")) >>>
     <<- ~>> =normalizeInclusiveWriting(\0)
     <<- option("eepi") and not \0.endswith("les") >>>
     <<- \1.endswith("s") and not \0.endswith("·e·s")
@@ -736,12 +736,14 @@ TEST: chez les {{immortel.le.s}}
 
 __[i](eepi_écriture_épicène_singulier)__
     ({w_1}[éuitsrnldf])(?:[-·–—.•⋅/]e|[(]e[)])  @@0
+    <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De")) >>>
     <<- option("eepi") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
     <<- __else__ and option("eepi") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène. Utilisez un point médian.
     <<- ~>> \1-e
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
+
 
 
 !!
@@ -868,6 +870,7 @@ TEST: espace{{!}}{{manquant}}
 TEST: espace.{{Manquant}}                                                   ->> " Manquant"
 TEST: C’est bien.{{Les}} invités seront contents.                           ->> " Les"
 TEST: qui ont refusé.{{de}} se sauver                                       ->> " de"
+TEST: Y parvenir quoi qu’il en soit.{{Le}} sort en est jeté.                ->> " Le"
 TEST: pic.twitter.com/PICNAME
 
 
