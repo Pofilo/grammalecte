@@ -133,6 +133,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             if (!(xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT")) {
                 this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Une telle zone de texte est susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             }
+        } else {
+            this.oNodeControl.clear();
         }
     }
 
@@ -934,12 +936,6 @@ class GrammalecteNodeControl {
                     this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
                     this.xNode.appendChild(document.createElement("br"));
                 });
-                /*
-                this.dParagraph.forEach(function (val, key) {
-                    sText += val + "<br/>";
-                });
-                this.xNode.innerHTML = sText.normalize("NFC");
-                */
             }
         }
     }
