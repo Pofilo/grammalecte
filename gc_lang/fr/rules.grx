@@ -8060,7 +8060,7 @@ __conf_qu_elle_quelle__
         <<- /conf/ not (value(\2, "|en|ne|")  and morph(>1, ":V0e")) -1>> qu’elle                   # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
     quelle  @:V¬:[NA].*:[fe]|>(?:être|plus)
-        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and after("^ +été "))
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and (morph(>1, ":V0e") or morph(>2, ":V0e"))) and not (morph(\2, ":V0a") and after("^ +été "))
         -1>> qu’elle                                                                                # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
     quelles [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
@@ -8104,6 +8104,7 @@ TEST: Quelle va être l’attitude de Geoffroy ?
 TEST: Quelle pourrait être la teneur de leur entretien.
 TEST: Quelle ne fut pas ma surprise
 TEST: Quelles ont été, pour vous, les plus gros mensonges ?
+TEST: Quelle peut encore être l’influence de cet artiste de nos jours ?
 
 
 # quoi que / quoique
@@ -18528,7 +18529,7 @@ TEST: Même l’implacable guerrier-capitaine de la Fédération, James T. Kirk,
 
 __imp_laisser_le_la_les_infi__
     >laisser  [le|la|les]  *WORD
-        <<- /imp/ space_after(\1, 1, 1) and morph(\1, ":E") and morph(\3, ":(?:Y|X|Oo)", ":[NAB]")
+        <<- /imp/ space_after(\1, 1, 1) and morph(\1, ":E") and morph(\3, ":(?:Y|X|Oo)", ":[NAB]") and not morph(<1, ":O[sv]")
         -1:2>> \1-\2                                    # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Laisse les}} entrer…
@@ -18536,6 +18537,8 @@ TEST: {{Laissez la}} venir…
 TEST: Laisse les chiens tranquilles
 TEST: Laissez la peste leur pourrir la vie encore quelque temps.
 TEST: le coût humain de la guerre qu’il a laissé les submerger.
+TEST: je vous laisse les consulter
+TEST: Je les laisse la découvrir !
 
 
 __imp_apostrophe_m_en__
