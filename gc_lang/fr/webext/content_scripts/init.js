@@ -174,6 +174,21 @@ const oGrammalecte = {
         this.oMessageBox.setMessage(sMessage);
     },
 
+    parseAndSpellcheck (xNode=null) {
+        this.startGCPanel(xNode);
+        let sText = "";
+        if (xNode) {
+            sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value.normalize("NFC") : xNode.innerText.normalize("NFC");
+        } else {
+            sText = this.getPageText();
+        }
+        xGrammalectePort.postMessage({
+            sCommand: "parseAndSpellcheck",
+            dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+            dInfo: (xNode) ? {sTextAreaId: xNode.id} : {}
+        });
+    },
+
     getPageText: function () {
         let sPageText = document.body.innerText;
         let nPos = sPageText.indexOf("__grammalecte_panel__");
@@ -325,13 +340,13 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Grammar checker commands
         case "grammar_checker_editable":
             if (oGrammalecte.xRightClickedNode !== null) {
-                parseAndSpellcheckEditableNode(oGrammalecte.xRightClickedNode);
+                oGrammalecte.parseAndSpellcheck(oGrammalecte.xRightClickedNode);
             } else {
                 oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
             }
             break;
         case "grammar_checker_page":
-            parseAndSpellcheckPage();
+            oGrammalecte.parseAndSpellcheck();
             break;
         case "grammar_checker_selection":
             oGrammalecte.startGCPanel();
@@ -357,36 +372,12 @@ browser.runtime.onMessage.addListener(function (oMessage) {
         */
         case "shortcutGrammarChecker":
             if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT" || xActiveNode.isContentEditable)) {
-                parseAndSpellcheckEditableNode(xActiveNode);
+                oGrammalecte.parseAndSpellcheck(xActiveNode);
             } else {
-                parseAndSpellcheckPage();
+                oGrammalecte.parseAndSpellcheck();
             }
             break;
         default:
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
-
-
-/*
-    Actions
-*/
-
-function parseAndSpellcheckPage () {
-    oGrammalecte.startGCPanel();
-    xGrammalectePort.postMessage({
-        sCommand: "parseAndSpellcheck",
-        dParam: {sText: oGrammalecte.getPageText(), sCountry: "FR", bDebug: false, bContext: false},
-        dInfo: {}
-    });
-}
-
-function parseAndSpellcheckEditableNode (xNode) {
-    oGrammalecte.startGCPanel(xNode);
-    let sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value.normalize("NFC") : xNode.innerText.normalize("NFC");
-    xGrammalectePort.postMessage({
-        sCommand: "parseAndSpellcheck",
-        dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-        dInfo: {sTextAreaId: xNode.id}
-    });
-}
