@@ -7839,8 +7839,8 @@ __conf_pré_près_prêt__
     >raser de ?très¿ [>prêt|>pré]
         <<- /conf/ --1>> près                                               # Confusion probable. Raser de près.
 
-    à la virgule [>prêt|>pré]
-        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à la virgule près”.
+    à la [virgule|nanoseconde|milliseconde|seconde|minute] [>prêt|>pré]
+        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à la \3 près”.
 
     à quelques exceptions [>prêt|>pré]
         <<- /conf/ -4>> près                                                # Confusion probable. Locution “à quelques exceptions près”.
@@ -7851,9 +7851,13 @@ __conf_pré_près_prêt__
     au >mètre [>prêt|>pré]
         <<- /conf/ -3>> près                                                # Confusion probable. Locution “au \2 près”.
 
-    à [ceci|cela] ([prêt|prêts]) [que|qu’]
-    , à [ceci|cela] ([prêt|prêts]) ,
-        <<- /conf/ -1>> près                                                # Confusion probable. Locution “à \2 près”.|https://fr.wiktionary.org/wiki/%C3%A0_cela_pr%C3%A8s
+    à ([ceci|cela]) ([prêt|prêts]) [que|qu’]
+    , à ([ceci|cela]) ([prêt|prêts]) ,
+        <<- /conf/ -2>> près                                                # Confusion probable. Locution “à \1 près”.|https://fr.wiktionary.org/wiki/%C3%A0_cela_pr%C3%A8s
+
+    depuis [prêt|prêts] [de|d’] *NUM [secondes|minutes|heures|jours|semaines|mois|ans|années|décennies|siècles|millénaires]
+    depuis [prêt|prêts] [de|d’] @:B  [secondes|minutes|heures|jours|semaines|mois|ans|années|décennies|siècles|millénaires]
+        <<- /conf/ -2>> près                                                # Confusion : “prêt” signifie “être apprêté”. Depuis presque “\4 \5”, donc près de “\4 \5”.
 
 TEST: depuis {{prêt}} de 15 ans
 TEST: ils se sont approchés très {{prêts}}.
@@ -7863,6 +7867,7 @@ TEST: Il est {{près}} à les aider
 TEST: Elle va regarder ça de plus {{prêt}}.
 TEST: Il était rasé de {{prés}}
 TEST: Il est un peu fantasque ; mais, à cela {{prêt}}, c’est un aimable homme.
+TEST: Il nous emmerde depuis {{prêt}} de cinq jours avec son histoire à dormir debout
 TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
 TEST: collait au millimètre près à la réalité
@@ -8060,14 +8065,14 @@ __conf_qu_elle_quelle__
         <<- /conf/ not (value(\2, "|en|ne|")  and morph(>1, ":V0e")) -1>> qu’elle                   # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
     quelle  @:V¬:[NA].*:[fe]|>(?:être|plus)
-        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and (morph(>1, ":V0e") or morph(>2, ":V0e"))) and not (morph(\2, ":V0a") and after("^ +été "))
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and (morph(>1, ":V0e") or morph(>2, ":V0e"))) and not (morph(\2, ":V0a") and value(>1, "|été|"))
         -1>> qu’elle                                                                                # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
     quelles [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
         <<- /conf/ not (value(\2, "|en|ne|") and morph(>1, ":V0e")) -1>> qu’elles                   # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
     quelles @:V¬:[NA].*:[fe]|>(?:être|plus)
-        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and morph(>1, ":V0e")) and not (morph(\2, ":V0a") and value(>1, "|été|"))
+        <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and (morph(>1, ":V0e") or morph(>2, ":V0e"))) and not (morph(\2, ":V0a") and value(>1, "|été|"))
         -1>> qu’elles                                                                               # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
     quelle  >être   @:[QA]¬:G
@@ -9530,6 +9535,7 @@ __purge_locutions__
     à couteaux tirés
     à des kilomètres à la ronde
     à défaut d’ autre chose
+    à dormir debout
     à dose homéopathique
     à durée [déterminée|indéterminée|limitée]
     à *NUM reprises
@@ -9546,6 +9552,8 @@ __purge_locutions__
     à fleur de peau
     à franchement parler
     à géométrie variable
+    à glacer le sang
+    à glacer les sangs
     à grande échelle
     à haut risque
     à hue et à dia
@@ -10577,7 +10585,7 @@ __purge_x_par_après_x__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|droite|gauche|hauteur|partir|portée|proximité|propos|rebours|titre] [de|du|d’|des]
+    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre] [de|du|d’|des]
         <<- ~2>> *
 
     à bonne distance [de|des|du]
@@ -11777,7 +11785,7 @@ __purge_locutions_verbales__
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
     [>donner|>redonner] sens
-    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|envie|erreur|état|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bonne figure
@@ -11814,7 +11822,7 @@ __purge_locutions_verbales__
     >percer à jour
     >perdre [connaissance|conscience|raison]
     >perdre d’ avance
-    >porter [atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
+    >porter [assistance|atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
     >poser problème
     >prendre ?[ça|cela|ceci]¿ à la légère
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
@@ -11832,8 +11840,9 @@ __purge_locutions_verbales__
     >saigner à blanc
     >suivre ?[ça|cela|ceci]¿ de près
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
-    >tenir compte
+    >tenir [compte|compagnie]
     >tenir au courant
+    >tenir en haute estime
     >trier sur le volet
     >trouver refuge
     >tirer [avantage|profit]
