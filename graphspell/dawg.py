@@ -669,7 +669,7 @@ class DawgNode:
         nArc = len(self.arcs)
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
-        if len(self.arcs) == 0:
+        if not nArc:
             val = nFinalNodeMask | nFinalArcMask
             by = val.to_bytes(nBytesArc, byteorder='big')
             by += (0).to_bytes(nBytesNodeAddress, byteorder='big')
@@ -691,7 +691,7 @@ class DawgNode:
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
         s = "i{:_>10} -- #{:_>10}\n".format(self.i, self.addr)
-        if len(self.arcs) == 0:
+        if not nArc:
             s += "  {:<20}  {:0>16}  i{:_>10}   #{:_>10}\n".format("", bin(nFinalNodeMask | nFinalArcMask)[2:], "0", "0")
             return s
         for i, arc in enumerate(self.arcs, 1):
@@ -731,7 +731,7 @@ class DawgNode:
         nFinalNodeMask = 1 << ((nBytesArc*8)-1)
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
         nNextNodeMask = 1 << ((nBytesArc*8)-3)
-        if len(self.arcs) == 0:
+        if not nArc:
             val = nFinalNodeMask | nFinalArcMask
             by = val.to_bytes(nBytesArc, byteorder='big')
             by += (0).to_bytes(nBytesNodeAddress, byteorder='big')
@@ -758,7 +758,7 @@ class DawgNode:
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
         nNextNodeMask = 1 << ((nBytesArc*8)-3)
         s = "i{:_>10} -- #{:_>10}\n".format(self.i, self.addr)
-        if nArc == 0:
+        if not nArc:
             s += "  {:<20}  {:0>16}  i{:_>10}   #{:_>10}\n".format("", bin(nFinalNodeMask | nFinalArcMask)[2:], "0", "0")
             return s
         for i, arc in enumerate(self.arcs, 1):
@@ -808,7 +808,7 @@ class DawgNode:
         nFinalArcMask = 1 << ((nBytesArc*8)-2)
         nNextNodeMask = 1 << ((nBytesArc*8)-3)
         nMaxOffset = (2 ** (nBytesOffset * 8)) - 1
-        if nArc == 0:
+        if not nArc:
             val = nFinalNodeMask | nFinalArcMask
             by = val.to_bytes(nBytesArc, byteorder='big')
             by += (0).to_bytes(nBytesNodeAddress, byteorder='big')
@@ -837,7 +837,7 @@ class DawgNode:
         nNextNodeMask = 1 << ((nBytesArc*8)-3)
         nMaxOffset = (2 ** (nBytesOffset * 8)) - 1
         s = "i{:_>10} -- #{:_>10}  ({})\n".format(self.i, self.addr, self.size)
-        if nArc == 0:
+        if not nArc:
             s += "  {:<20}  {:0>16}  i{:_>10}   #{:_>10}\n".format("", bin(nFinalNodeMask | nFinalArcMask)[2:], "0", "0")
             return s
         for i, arc in enumerate(self.arcs, 1):

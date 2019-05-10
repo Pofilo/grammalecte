@@ -349,7 +349,7 @@ def hasMasForm (sFlex):
 def switchGender (sFlex, bPlur=None):
     "return feminine or masculine form(s) of <sFlex>"
     aSugg = set()
-    if bPlur == None:
+    if bPlur is None:
         for sMorph in _oSpellChecker.getMorph(sFlex):
             if ":f" in sMorph:
                 if ":s" in sMorph:

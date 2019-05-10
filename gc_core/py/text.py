@@ -135,16 +135,18 @@ def convertToXY (aGrammErrs, aSpellErrs, lLineSet):
     """Converts errors position as an y and x position in a text (y is line number, x is row number).
        lLineSet is a list of sets (line_number_y, start_x, end_x) describing how the paragraph is divided."""
     for dErr in chain(aGrammErrs, aSpellErrs):
+        i = 0
         for i, elem in enumerate(lLineSet, 1):
             if dErr['nEnd'] <= elem[2]:
                 dErr['nEndY'] = elem[0]
                 dErr['nEndX'] = dErr['nEnd'] - elem[1]
                 break
-        for elem in reversed(lLineSet[:i]):
-            if dErr['nStart'] >= elem[1]:
-                dErr['nStartY'] = elem[0]
-                dErr['nStartX'] = dErr['nStart'] - elem[1]
-                break
+        if i:
+            for elem in reversed(lLineSet[:i]):
+                if dErr['nStart'] >= elem[1]:
+                    dErr['nStartY'] = elem[0]
+                    dErr['nStartX'] = dErr['nStart'] - elem[1]
+                    break
         del dErr['nStart']
         del dErr['nEnd']
     return aGrammErrs, aSpellErrs

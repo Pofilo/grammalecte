@@ -354,7 +354,7 @@ class Verb ():
                 sPartPre = self.dConj[":P"][":"]
             if not sPartPre:
                 return ""
-            bEli = True  if _zStartVoy.search(sPartPre)  else  False
+            bEli = bool(_zStartVoy.search(sPartPre))
             if bPro:
                 if self.bProWithEn:
                     sPartPre = "s’en " + sPartPre
@@ -387,7 +387,7 @@ class Verb ():
                 sConj = self.dConj[sTemps][sWho]
             if not sConj:
                 return ""
-            bEli = True  if _zStartVoy.search(sConj)  else  False
+            bEli = bool(_zStartVoy.search(sConj))
             if bPro:
                 if not self.bProWithEn:
                     sConj = _dProObjEl[sWho] + sConj  if bEli  else _dProObj[sWho] + sConj
@@ -422,7 +422,7 @@ class Verb ():
                     return "on"
                 elif bFem:
                     return "elle"
-            elif sWho == ":3p" and bFem:
+            if sWho == ":3p" and bFem:
                 return "elles"
             return _dProSuj[sWho]
         except:
@@ -440,7 +440,7 @@ class Verb ():
                 sImpe = self.dConj[":E"][sWho]
             if not sImpe:
                 return ""
-            bEli = True  if _zStartVoy.search(sImpe)  else  False
+            bEli = bool(_zStartVoy.search(sImpe))
             if bNeg:
                 if bPro:
                     if not self.bProWithEn:
@@ -475,6 +475,7 @@ class Verb ():
             return "# erreur"
 
     def createConjTable (self, bPro=False, bNeg=False, bTpsCo=False, bInt=False, bFem=False):
+        "return a dictionary of all conjugations with titles, according to options (used to be displayed as is)"
         dConjTable = {
             "t_infi":   "Infinitif",
             "infi":     self.infinitif(bPro, bNeg, bTpsCo, bInt, bFem),
