@@ -13,7 +13,7 @@ class GrammalecteButton {
         this.xNode = xNode;
         this.xButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_main_button", textContent: " "});
         this.xButton.onclick = () => {
-            oGrammalecte.parseAndSpellcheck(this.xNode);
+            oGrammalecte.startGCPanel(this.xNode);
         };
         this.xButton.style.zIndex = (xNode.style.zIndex.search(/^[0-9]+$/) !== -1) ? (parseInt(xNode.style.zIndex) + 1).toString() : xNode.style.zIndex;
 

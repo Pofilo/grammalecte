@@ -14,20 +14,19 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         super(...args);
         this.xTFNode = this._createTextFormatter();
         this.xPanelContent.appendChild(this.xTFNode);
-        this.xTextNode = null;
         this.xPanel.style.zIndex = 2147483647; /* maximum is 2147483647: https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index */
         this.bTextChanged = false;
 
-        this.TextFormatter = new TextFormatter();
-        this.formatText = this.TextFormatter.formatTextRuleCount;
-        this.removeHyphenAtEndOfParagraphs = this.TextFormatter.removeHyphenAtEndOfParagraphsCount;
-        this.mergeContiguousParagraphs = this.TextFormatter.mergeContiguousParagraphsCount;
-        this.getParagraph = this.TextFormatter.getParagraph;
+        this.oTextFormatter = new TextFormatter();
+        this.formatText = this.oTextFormatter.formatTextRuleCount;
+        this.removeHyphenAtEndOfParagraphs = this.oTextFormatter.removeHyphenAtEndOfParagraphsCount;
+        this.mergeContiguousParagraphs = this.oTextFormatter.mergeContiguousParagraphsCount;
+        this.getParagraph = this.oTextFormatter.getParagraph;
 
         this.xCloseButton.onclick = () => {
             this.hide();
             if (this.bTextChanged) {
-                this.xGCPanel.recheckAll();
+                oGrammalecte.oGCPanel.recheckAll();
                 this.bTextChanged = false;
             }
         };
@@ -180,33 +179,35 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         return xLine;
     }
 
+
     /*
         Actions
     */
-    start (xGCPanel) {
-        if (xGCPanel.xNode !== null && (xGCPanel.xNode.tagName == "TEXTAREA" || xGCPanel.xNode.tagName == "INPUT" || xGCPanel.xNode.isContentEditable)) {
-            this.xTextNode = xGCPanel.xNode;
-            this.xGCPanel = xGCPanel;
-            if (bChrome) {
-                browser.storage.local.get("tf_options", this.setOptions.bind(this));
-            } else {
-                let xPromise = browser.storage.local.get("tf_options");
-                xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+    start () {
+        if (bChrome) {
+            browser.storage.local.get("tf_options", this.setOptions.bind(this));
+        } else {
+            let xPromise = browser.storage.local.get("tf_options");
+            xPromise.then(this.setOptions.bind(this), this.reset.bind(this));
+        }
+    }
+
+    setOptions (oOptions) {
+        if (oOptions.hasOwnProperty("tf_options")) {
+            oOptions = oOptions.tf_options;
+        }
+        let elmOpt = this.xParent.getElementById('grammalecte_tf_options');
+        for (let xOption of elmOpt.getElementsByClassName("grammalecte_tf_option")) {
+            //console.log(xOption.id + " > " + oOptions.hasOwnProperty(xOption.id) + ": " + oOptions[xOption.id] + " [" + xOption.dataset.default + "]");
+            xOption.dataset.selected = (oOptions.hasOwnProperty(xOption.id)) ? oOptions[xOption.id] : xOption.dataset.default;
+            xOption.className = (xOption.dataset.selected == "true") ? xOption.className.replace("_off", "_on") : xOption.className.replace("_on", "_off");
+            if (this.xParent.getElementById("res_"+xOption.id) !== null) {
+                this.xParent.getElementById("res_"+xOption.id).textContent = "";
+            }
+            if (xOption.id.startsWith("o_group_")) {
+                this.switchGroup(xOption.id);
             }
         }
-    }
-
-    getNodeText () {
-        return (this.xTextNode.tagName == "TEXTAREA" || this.xTextNode.tagName == "INPUT") ? this.xTextNode.value.normalize("NFC") : this.xTextNode.innerText.normalize("NFC");
-    }
-
-    setNodeText (sText) {
-        if (this.xTextNode.tagName == "TEXTAREA" || this.xTextNode.tagName == "INPUT") {
-            this.xTextNode.value = sText;
-        } else {
-            this.xTextNode.textContent = sText;
-        }
-        this.bTextChanged = true;
     }
 
     switchGroup (sOptName) {
@@ -255,24 +256,6 @@ class GrammalecteTextFormatter extends GrammalectePanel {
         this.xParent.getElementById('grammalecte_tf_time_res').textContent = "";
     }
 
-    setOptions (oOptions) {
-        if (oOptions.hasOwnProperty("tf_options")) {
-            oOptions = oOptions.tf_options;
-        }
-        let elmOpt = this.xParent.getElementById('grammalecte_tf_options');
-        for (let xOption of elmOpt.getElementsByClassName("grammalecte_tf_option")) {
-            //console.log(xOption.id + " > " + oOptions.hasOwnProperty(xOption.id) + ": " + oOptions[xOption.id] + " [" + xOption.dataset.default + "]");
-            xOption.dataset.selected = (oOptions.hasOwnProperty(xOption.id)) ? oOptions[xOption.id] : xOption.dataset.default;
-            xOption.className = (xOption.dataset.selected == "true") ? xOption.className.replace("_off", "_on") : xOption.className.replace("_on", "_off");
-            if (this.xParent.getElementById("res_"+xOption.id) !== null) {
-                this.xParent.getElementById("res_"+xOption.id).textContent = "";
-            }
-            if (xOption.id.startsWith("o_group_")) {
-                this.switchGroup(xOption.id);
-            }
-        }
-    }
-
     saveOptions () {
         let oOptions = {};
         let elmOpt = this.xParent.getElementById('grammalecte_tf_options');
@@ -295,7 +278,7 @@ class GrammalecteTextFormatter extends GrammalectePanel {
             const t0 = Date.now();
             //window.setCursor("wait"); // change pointer
             this.resetProgressBar();
-            let sText = this.getNodeText();
+            let sText = oGrammalecte.oGCPanel.oTextControl.getText();
             this.xParent.getElementById('grammalecte_tf_progressbar').max = 7;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
 
@@ -541,7 +524,9 @@ class GrammalecteTextFormatter extends GrammalectePanel {
 
             const t1 = Date.now();
             this.xParent.getElementById('grammalecte_tf_time_res').textContent = this.getTimeRes((t1-t0)/1000);
-            this.setNodeText(sText);
+            oGrammalecte.oGCPanel.oTextControl.loadText(sText);
+            oGrammalecte.oGCPanel.oTextControl.write();
+            this.bTextChanged = true;
         }
         catch (e) {
             showError(e);

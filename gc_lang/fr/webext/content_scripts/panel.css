@@ -8,6 +8,12 @@ div.grammalecte_panel {
     padding: 0;
     margin: 0;
     position: fixed;
+    /* flexbox */
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: column;
+    align-items: stretch;
+    /* end flexbox */
     box-sizing: content-box;
     z-index: 2147483641; /* maximum is 2147483647: https://stackoverflow.com/questions/491052/minimum-and-maximum-value-of-z-index */
     border: 2px solid hsl(210, 50%, 50%);
@@ -30,7 +36,7 @@ div.grammalecte_panel img {
 
 div.grammalecte_panel_bar {
     position: sticky;
-    width: 100%;
+    /*width: 100%;*/
     background-color: hsl(210, 50%, 50%);
     border-radius: 10px 10px 0 0;
     border-bottom: 1px solid hsl(210, 20%, 86%);
@@ -112,9 +118,7 @@ div.grammalecte_menu_button:hover {
 
 
 div.grammalecte_panel_content {
-    position: absolute;
-    width: 100%;
-    height: calc(100% - 65px); /* panel height - title_bar */
+    flex-grow: 1;
     overflow: auto;
 }
 

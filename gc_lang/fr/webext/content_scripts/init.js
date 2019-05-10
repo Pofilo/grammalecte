@@ -2,7 +2,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global GrammalectePanel, GrammalecteButton, GrammalecteTextFormatter, GrammalecteLexicographer, GrammalecteGrammarChecker, GrammalecteMessageBox, showError, MutationObserver, chrome, document, console */
+/* global GrammalectePanel, GrammalecteButton, GrammalecteTextFormatter, GrammalecteGrammarChecker, GrammalecteMessageBox, showError, MutationObserver, chrome, document, console */
 
 /*
     JS sucks (again, and again, and again, and again…)
@@ -141,7 +141,6 @@ const oGrammalecte = {
         if (this.oTFPanel === null) {
             this.oTFPanel = new GrammalecteTextFormatter("grammalecte_tf_panel", "Formateur de texte", 760, 595, false);
             this.oTFPanel.insertIntoPage();
-            window.setTimeout( () => { this.oTFPanel.adjustHeight(); }, 50);
         }
     },
 
@@ -159,34 +158,27 @@ const oGrammalecte = {
         }
     },
 
-    startGCPanel: function (xNode=null) {
+    startGCPanel: function (what, bCheckText=true) {
         this.createGCPanel();
         this.oGCPanel.clear();
         this.oGCPanel.show();
         this.oGCPanel.showEditor();
-        this.oGCPanel.start(xNode);
+        this.oGCPanel.start(what);
         this.oGCPanel.startWaitIcon();
+        if (what && bCheckText) {
+            let sText = this.oGCPanel.oTextControl.getText();
+            xGrammalectePort.postMessage({
+                sCommand: "parseAndSpellcheck",
+                dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
+                dInfo: (what.nodeType && what.nodeType === 1) ? {sTextAreaId: what.id} : {}
+            });
+        }
     },
 
     showMessage: function (sMessage) {
         this.createMessageBox();
         this.oMessageBox.show();
         this.oMessageBox.setMessage(sMessage);
-    },
-
-    parseAndSpellcheck (xNode=null) {
-        this.startGCPanel(xNode);
-        let sText = "";
-        if (xNode) {
-            sText = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") ? xNode.value.normalize("NFC") : xNode.innerText.normalize("NFC");
-        } else {
-            sText = this.getPageText();
-        }
-        xGrammalectePort.postMessage({
-            sCommand: "parseAndSpellcheck",
-            dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-            dInfo: (xNode) ? {sTextAreaId: xNode.id} : {}
-        });
     },
 
     getPageText: function () {
@@ -340,16 +332,16 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         // Grammar checker commands
         case "grammar_checker_editable":
             if (oGrammalecte.xRightClickedNode !== null) {
-                oGrammalecte.parseAndSpellcheck(oGrammalecte.xRightClickedNode);
+                oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
             } else {
                 oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
             }
             break;
         case "grammar_checker_page":
-            oGrammalecte.parseAndSpellcheck();
+            oGrammalecte.startGCPanel(oGrammalecte.getPageText());
             break;
         case "grammar_checker_selection":
-            oGrammalecte.startGCPanel();
+            oGrammalecte.startGCPanel(result, false); // result is the selected text
             // selected text is sent to the GC worker in the background script.
             break;
         // rescan page command
@@ -372,9 +364,9 @@ browser.runtime.onMessage.addListener(function (oMessage) {
         */
         case "shortcutGrammarChecker":
             if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT" || xActiveNode.isContentEditable)) {
-                oGrammalecte.parseAndSpellcheck(xActiveNode);
+                oGrammalecte.startGCPanel(xActiveNode);
             } else {
-                oGrammalecte.parseAndSpellcheck();
+                oGrammalecte.startGCPanel(oGrammalecte.getPageText());
             }
             break;
         default:

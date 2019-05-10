@@ -304,10 +304,10 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
         // analyze
         case "grammar_checker_editable":
         case "grammar_checker_page":
-            sendCommandToTab(xInfo.menuItemId, xTab.id);
+            sendCommandToTab(xTab.id, xInfo.menuItemId);
             break;
         case "grammar_checker_selection":
-            sendCommandToTab("grammar_checker_selection", xTab.id);
+            sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
             xGCEWorker.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
@@ -388,9 +388,9 @@ function storeGCOptions (dOptions) {
     browser.storage.local.set({"gc_options": dOptions});
 }
 
-function sendCommandToTab (sCommand, iTab) {
+function sendCommandToTab (iTab, sCommand, result=null) {
     let xTabPort = dConnx.get(iTab);
-    xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
+    xTabPort.postMessage({sActionDone: sCommand, result: result, dInfo: null, bEnd: false, bError: false});
 }
 
 function sendCommandToCurrentTab (sCommand) {

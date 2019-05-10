@@ -130,12 +130,11 @@ class GrammalectePanel {
     }
 
     show () {
-        this.xPanel.style.display = "block";
+        this.xPanel.style.display = "flex";
     }
 
     hide () {
         this.xPanel.style.display = "none";
-        oGrammalecte.clearRightClickedNode();
     }
 
     center () {
@@ -178,11 +177,6 @@ class GrammalectePanel {
 
     reduce () {
         // todo
-    }
-
-    adjustHeight () {
-        this.xPanelContent.style.height = this.xPanelContent.firstChild.offsetHeight + "px"; // xPanelContent has only one child
-        this.xPanel.style.height = this.xPanelBar.offsetHeight + this.xPanelContent.offsetHeight + 10 + "px";
     }
 
     getWidth () {
