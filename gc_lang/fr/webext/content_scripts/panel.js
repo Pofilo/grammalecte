@@ -44,6 +44,8 @@ class GrammalectePanel {
             xTitle.appendChild(oGrammalecte.createNode("div", {className: "grammalecte_panel_label", textContent: sTitle}));
             this.xPanelBar.appendChild(xTitle);
             xPanel.appendChild(this.xPanelBar);
+            this._createMesssageBlock();
+            xPanel.appendChild(this.xPanelMessageBlock);
             xPanel.appendChild(this.xPanelContent);
             return xPanel;
         }
@@ -95,6 +97,15 @@ class GrammalectePanel {
         let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_close_button", textContent: "×", title: "Fermer la fenêtre"});
         xButton.onclick = () => { this.hide(); };
         return xButton;
+    }
+
+    _createMesssageBlock () {
+        this.xPanelMessageBlock = oGrammalecte.createNode("div", {id: "grammalecte_panel_message_block"});
+        let xPanelMessageCloseButton = oGrammalecte.createNode("div", {id: "grammalecte_panel_message_close_button", textContent: "×"});
+        xPanelMessageCloseButton.onclick = () => { this.hideMessage() };
+        this.xPanelMessageBlock.appendChild(xPanelMessageCloseButton);
+        this.xPanelMessage = oGrammalecte.createNode("div", {id: "grammalecte_panel_message"});
+        this.xPanelMessageBlock.appendChild(this.xPanelMessage);
     }
 
     insertIntoPage () {
@@ -191,6 +202,15 @@ class GrammalectePanel {
     stopWaitIcon () {
         this.bWorking = false;
         this.xWaitIcon.style.visibility = "hidden";
+    }
+
+    showMessage (sMessage) {
+        this.xPanelMessageBlock.style.display = "block";
+        this.xPanelMessage.textContent = sMessage;
+    }
+
+    hideMessage () {
+        this.xPanelMessageBlock.style.display = "none";
     }
 
     openURL (sURL) {

@@ -131,7 +131,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         if (xNode) {
             this.oNodeControl.setNode(xNode);
             if (!(xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT")) {
-                this.addMessage("Note : cette zone de texte n’est pas un champ de formulaire “textarea” mais un node HTML éditable. Une telle zone de texte est susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
+                this.showMessage("La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             }
         } else {
             this.oNodeControl.clear();
@@ -380,8 +380,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         // todo
     }
 
-    addMessage (sMessage) {
-        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_message", textContent: sMessage});
+    addMessageToGCPanel (sMessage) {
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_flow_message", textContent: sMessage});
         this.xParagraphList.appendChild(xNode);
     }
 
@@ -433,8 +433,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
     }
 
-    addMessage (sMessage) {
-        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_message", textContent: sMessage});
+    addMessageToLxgPanel (sMessage) {
+        let xNode = oGrammalecte.createNode("div", {className: "grammalecte_panel_flow_message", textContent: sMessage});
         this.xLxgPanelContent.appendChild(xNode);
     }
 
