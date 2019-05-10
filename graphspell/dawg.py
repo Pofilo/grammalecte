@@ -193,7 +193,7 @@ class DAWG:
         self._minimize(nCommonPrefix)
 
         # add the suffix, starting from the correct node mid-way through the graph
-        if len(self.lUncheckedNodes) == 0:
+        if not self.lUncheckedNodes:
             oNode = self.oRoot
         else:
             oNode = self.lUncheckedNodes[-1][2]

@@ -1,4 +1,7 @@
-## generated data (do not edit)
+"""
+Conjugation data
+Generated data (do not edit)
+"""
 
 # Informations about verbs
 lVtyp = ['1_it_q__a', '1__t___zz', '2__t_q_zz', '1_itnq__a', '2__t___zz', '3_it_q__a', '1_it_q_zz', '1_it___zz', '2____p_e_', '1_i____zz', '3__t_q_zz', '1__t_q_zz', '2_it____a', '1_i_n__zz', '2_it_q_zz', '2_i_n___a', '2_i____zz', '1_it____a', '2_it_q__a', '3____p_e_', '3__tnq__a', '1__tnq_zz', '1____p_e_', '1___n___a', '1__t_x__a', '1__tnq__a', '1_itn__zz', '2_it___zz', '3_i_____a', '3__t___zz', '3__t____a', '1__t_q__a', '1___nq_zz', '3__t_q__a', '1_i_n___a', '1__t____a', '1_i__q_zz', '2__t_q__a', '3_i____e_', '1_i_____a', '2_itnq__a', '2_i_____a', '1__tn__zz', '1_i__e_e_', '3_i_n__e_', '3_i______', '3___nq__a', '1_itn___a', '3_itn___a', '1_itnq_zz', '2_it_x__a', '3_i____zz', '1_i____e_', '3_it_x__a', '2__tnq__a', '3__tn___a', '3_itnq__a', '2__t____a', '0ait____a', '1_i___mzz', '3_it____a', '3_i___m_a', '2_i__q_zz', '1_itnx__a', '2___n___a', '3_i_nx__a', '3___n___a', '1____r_e_', '3__t_____', '3__t_e__a', '2_ix____a', '3_i_nq__a', '1___n__zz', '3_i_n___a', '1_i_nq_zz', '1_it_x__a', '3____r_e_', '2____r_e_', '3___nx__a', '0ei_____a', '3__tnqmea', '2__tn__zz', '1__t__mzz', '1_it_q_ea', '3_i__q_e_', '3__tnx__a', '2__t_x__a', '1____q_e_', '3_it__m_a', '3_it_xx_a', '1__t_p__a', '3_i__q__a', '2__tn___a', '1_it__mzz', '3__t_x__a', '3_ixn___a', '2___n__zz', '3_it___ea', '1_i__xxe_', '1_i___m_a', '2_itnx__a', '3_i__e_e_', '3_it_q_ea', '3____pxe_', '1_it___e_', '3_itnx__a']

@@ -4,7 +4,6 @@ Useful to check several dictionaries at once.
 
 To avoid iterating over a pile of dictionaries, it is assumed that 3 are enough:
 - the main dictionary, bundled with the package
-- the extended dictionary
 - the community dictionary, added by an organization
 - the personal dictionary, created by the user for its own convenience
 """
@@ -205,7 +204,7 @@ class SpellChecker ():
             lMorph.extend(self.oPersonalDic.getMorph(sWord))
         if self.bStorage:
             self._dMorphologies[sWord] = lMorph
-            self._dLemmas[sWord] = set([ s[1:s.find("/")]  for s in lMorph ])
+            self._dLemmas[sWord] = { s[1:s.find("/")]  for s in lMorph }
         return lMorph
 
     def getLemma (self, sWord):
@@ -214,7 +213,7 @@ class SpellChecker ():
             if sWord not in self._dLemmas:
                 self.getMorph(sWord)
             return self._dLemmas[sWord]
-        return set([ s[1:s.find("/")]  for s in self.getMorph(sWord) ])
+        return { s[1:s.find("/")]  for s in self.getMorph(sWord) }
 
     def suggest (self, sWord, nSuggLimit=10):
         "generator: returns 1, 2 or 3 lists of suggestions"

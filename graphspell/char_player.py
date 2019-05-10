@@ -43,6 +43,7 @@ _xTransNumbersToExponent = str.maketrans({
 })
 
 def numbersToExponent (sWord):
+    "convert numeral chars to exponant chars"
     return sWord.translate(_xTransNumbersToExponent)
 
 

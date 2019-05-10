@@ -1,4 +1,7 @@
-# generated data (do not edit)
+"""
+Masculins, féminins, singuliers et pluriels
+Generated data (do not edit)
+"""
 
 # list of affix codes
 lTagMiscPlur = ['1ux', '0x', '2i', '0s|2a', '0s|0es', '0s|1i', '0s|1ies', '2ux', '0s|2en', '0es', '0s|2ina', '0s|1ves', '0s|1e']

@@ -227,6 +227,7 @@ def timeblock (label, hDst):
 
 
 def perf (sVersion, hDst=None):
+    "performance tests"
     print("\nPerformance tests")
     gce.load()
     aErrs = gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")

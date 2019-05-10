@@ -24,7 +24,7 @@ def getVerbGroupChar (sVerb):
         return "1"
     if sVerb.endswith("ir"):
         return "2"
-    if sVerb == "être" or sVerb == "avoir":
+    if sVerb in ("être", "avoir"):
         return "0"
     if sVerb.endswith("re"):
         return "3"

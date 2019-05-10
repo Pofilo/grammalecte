@@ -200,7 +200,7 @@ class Lexicographe:
             if m2:
                 aMorph.append( "-{} : {}".format(m2.group(2), self._formatSuffix(m2.group(2).lower())) )
             # Verbes
-            aVerb = set([ s[1:s.find("/")]  for s in lMorph  if ":V" in s ])
+            aVerb = { s[1:s.find("/")]  for s in lMorph  if ":V" in s }
             return (aMorph, aVerb)
         except:
             traceback.print_exc()

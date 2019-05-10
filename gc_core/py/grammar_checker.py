@@ -57,11 +57,9 @@ class GrammarChecker:
 
     def generateText (self, sText, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
         "[todo]"
-        pass
 
     def generateTextAsJSON (self, sText, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, bDebug=False):
         "[todo]"
-        pass
 
     def generateParagraph (self, sText, dOptions=None, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
         "parse text and return a readable text with underline errors"

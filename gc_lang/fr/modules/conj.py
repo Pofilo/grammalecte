@@ -420,7 +420,7 @@ class Verb ():
             if sWho == ":3s":
                 if self._sRawInfo[5] == "r":
                     return "on"
-                elif bFem:
+                if bFem:
                     return "elle"
             if sWho == ":3p" and bFem:
                 return "elles"

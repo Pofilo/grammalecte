@@ -1,5 +1,3 @@
-#!python3
-
 """
 Text formatter
 """
@@ -247,13 +245,14 @@ lOptRepl = [
 
 
 class TextFormatter:
+    "Text Formatter: purge typographic mistakes from text"
 
     def __init__ (self):
         for sOpt, lTup in dReplTable.items():
             for i, t in enumerate(lTup):
                 lTup[i] = (re.compile(t[0]), t[1])
 
-    def formatText (self, sText, **args):
+    def formatText (self, sText):
         for sOptName, bVal in lOptRepl:
             if bVal:
                 for zRgx, sRep in dReplTable[sOptName]:
