@@ -1,12 +1,16 @@
  #!/usr/bin/env python3
 
+"""
+Grammalecte server: grammar checker
+"""
+
 import sys
 import argparse
 import json
 import traceback
 import time
 
-from grammalecte.bottle import Bottle, run, request, response, template, static_file
+from grammalecte.bottle import Bottle, run, request, response #, template, static_file
 
 import grammalecte
 import grammalecte.text as txt
@@ -87,6 +91,7 @@ TESTPAGE = False
 
 
 def genUserId ():
+    "generator: returns id as string for users"
     i = 0
     while True:
         yield str(i)
@@ -98,6 +103,7 @@ app = Bottle()
 # GET
 @app.route("/")
 def mainPage ():
+    "page for testing purpose"
     if TESTPAGE:
         return HOMEPAGE
         #return template("main", {})
@@ -105,6 +111,7 @@ def mainPage ():
 
 @app.route("/get_options/fr")
 def listOptions ():
+    "returns grammar options in a text JSON format"
     sUserId = request.cookies.user_id
     dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dGCOptions
     return '{ "values": ' + json.dumps(dOptions) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
@@ -113,6 +120,7 @@ def listOptions ():
 # POST
 @app.route("/gc_text/fr", method="POST")
 def gcText ():
+    "parse text and returns errors in a JSON text format"
     #if len(lang) != 2 or lang != "fr":
     #    abort(404, "No grammar checker available for lang “" + str(lang) + "”")
     bComma = False
@@ -128,7 +136,7 @@ def gcText ():
         try:
             dOptions = dict(dGCOptions)  if not dOptions  else dict(dOptions)
             dOptions.update(json.loads(request.forms.options))
-        except:
+        except (TypeError, json.JSONDecodeError):
             sError = "request options not used"
     sJSON = '{ "program": "grammalecte-fr", "version": "'+gce.version+'", "lang": "'+gce.lang+'", "error": "'+sError+'", "data" : [\n'
     for i, sText in enumerate(txt.getParagraph(request.forms.text), 1):
@@ -145,6 +153,7 @@ def gcText ():
 
 @app.route("/set_options/fr", method="POST")
 def setOptions ():
+    "set grammar options for current user"
     if request.forms.options:
         sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
         dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dGCOptions)
@@ -153,19 +162,21 @@ def setOptions ():
             dUser[sUserId] = { "time": int(time.time()), "gc_options": dOptions }
             response.set_cookie("user_id", sUserId, path="/", max_age=86400) # 24h
             return json.dumps(dUser[sUserId]["gc_options"])
-        except:
+        except (KeyError, json.JSONDecodeError):
             traceback.print_exc()
             return '{"error": "options not registered"}'
     return '{"error": "no options received"}'
 
 @app.route("/reset_options/fr", method="POST")
 def resetOptions ():
+    "default grammar options"
     if request.cookies.user_id and request.cookies.user_id in dUser:
         del dUser[request.cookies.user_id]
     return "done"
 
 @app.route("/format_text/fr", method="POST")
 def formatText ():
+    "apply the text formatter and returns text"
     return oTextFormatter.formatText(request.forms.text)
 
 #@app.route('/static/<filepath:path>')
@@ -181,7 +192,7 @@ def purgeUsers ():
             if dValue["time"] < nNowMinusNHours:
                 del dUser[nUserId]
         return True
-    except:
+    except KeyError:
         traceback.print_exc()
         return False
 
@@ -189,6 +200,7 @@ def purgeUsers ():
 # ERROR
 @app.error(404)
 def error404 (error):
+    "404 error page"
     return 'Error 404.<br/>' + str(error)
 
 
@@ -205,7 +217,7 @@ userGenerator = genUserId()
 
 
 def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
-    # start server
+    "start server"
     global dGCOptions
     global TESTPAGE
     global HOMEPAGE
@@ -241,6 +253,7 @@ if __name__ == '__main__':
         if xArgs.opt_off:
             dOpt.update({ opt:False  for opt in xArgs.opt_off })
 
-    sHost = xArgs.host  or  "localhost"
-    nPort = xArgs.port  or  8080
-    main(sHost, nPort, dOpt, xArgs.test_page)
+    main(xArgs.host or "localhost", \
+         xArgs.port or 8080, \
+         dOpt,
+         xArgs.test_page)
