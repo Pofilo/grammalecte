@@ -26,15 +26,18 @@ sWORDLIMITRIGHT = r"(?![\w–-])"      # r"\b(?!-—)"       seems slower
 
 
 def convertRGBToInteger (r, g, b):
+    "rbg (int, int, int) -> int"
     return (r & 255) << 16 | (g & 255) << 8 | (b & 255)
 
 
 def convertHSLToRBG (h, s, l):
+    "hsl (int, int, int) -> [int, int, int]"
     r, g, b = colorsys.hls_to_rgb(h/360, l/100, s/100)
     return [round(r*255), round(g*255), round(b*255)]
 
 
 def createColors (dColor):
+    "dictionary of colors {color_name: [h, s, l]} -> returns dictionary of colors as dictionaries of color types"
     dColorType = {
         "sCSS": {},     # dictionary of colors as strings for HTML/CSS (example: hsl(0, 50%, 50%))
         "aRGB": {},     # dictionary of colors as RGB tuple
@@ -80,33 +83,32 @@ def prepareFunction (s):
     return s
 
 
-def uppercase (s, sLang):
+def uppercase (sText, sLang):
     "(flag i is not enough): converts regex to uppercase regex: 'foo' becomes '[Ff][Oo][Oo]', but 'Bar' becomes 'B[Aa][Rr]'."
     sUp = ""
     nState = 0
-    for i in range(0, len(s)):
-        c = s[i]
+    for i, c in enumerate(sText):
         if c == "[":
             nState = 1
         if nState == 1 and c == "]":
             nState = 0
-        if c == "<" and i > 3 and s[i-3:i] == "(?P":
+        if c == "<" and i > 3 and sText[i-3:i] == "(?P":
             nState = 2
         if nState == 2 and c == ">":
             nState = 0
-        if c == "?" and i > 0 and s[i-1:i] == "(" and s[i+1:i+2] != ":":
+        if c == "?" and i > 0 and sText[i-1:i] == "(" and sText[i+1:i+2] != ":":
             nState = 5
         if nState == 5 and c == ")":
             nState = 0
         if c.isalpha() and c.islower() and nState == 0:
-            if c == "i" and (sLang == "tr" or sLang == "az"):
+            if c == "i" and sLang in ("tr", "az"):
                 sUp += "[İ" + c + "]"
             else:
                 sUp += "[" + c.upper() + c + "]"
-        elif c.isalpha() and c.islower() and nState == 1 and s[i+1:i+2] != "-":
-            if s[i-1:i] == "-" and s[i-2:i-1].islower():  # [a-z] -> [a-zA-Z]
-                sUp += c + s[i-2:i-1].upper() + "-" + c.upper()
-            elif c == "i" and (sLang == "tr" or sLang == "az"):
+        elif c.isalpha() and c.islower() and nState == 1 and sText[i+1:i+2] != "-":
+            if sText[i-1:i] == "-" and sText[i-2:i-1].islower():  # [a-z] -> [a-zA-Z]
+                sUp += c + sText[i-2:i-1].upper() + "-" + c.upper()
+            elif c == "i" and sLang in ("tr", "az"):
                 sUp += "İ" + c
             else:
                 sUp += c.upper() + c
@@ -123,7 +125,7 @@ def countGroupInRegex (sRegex):
     "returns the number of groups in <sRegex>"
     try:
         return re.compile(sRegex).groups
-    except:
+    except re.error:
         traceback.print_exc()
         print(sRegex)
     return 0
@@ -235,13 +237,12 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     ## check regex
     try:
         re.compile(sRegex)
-    except:
+    except re.error:
         print("# Regex error at line ", nIdLine)
         print(sRegex)
-        traceback.print_exc()
         return None
     ## groups in non grouping parenthesis
-    for x in re.finditer(r"\(\?:[^)]*\([\[\w -]", sRegex):
+    for _ in re.finditer(r"\(\?:[^)]*\([\[\w -]", sRegex):
         print("# Warning: groups inside non grouping parenthesis in regex at line " + sLineId)
 
     #### PARSE ACTIONS
@@ -348,7 +349,7 @@ def createAction (sIdAction, sAction, nGroup):
         if not sMsg:
             print("# Error in action at line " + sIdAction + ":  the message is empty.")
         return [sCondition, cAction, sAction, iGroup, sMsg, sURL]
-    elif cAction == "~":
+    if cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
             lFUNCTIONS.append(("_p_"+sIdAction, sAction[1:]))
@@ -356,7 +357,7 @@ def createAction (sIdAction, sAction, nGroup):
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sCondition, cAction, sAction, iGroup]
-    elif cAction == "=":
+    if cAction == "=":
         ## disambiguator
         if sAction[0:1] == "=":
             sAction = sAction[1:]
@@ -366,9 +367,8 @@ def createAction (sIdAction, sAction, nGroup):
         lFUNCTIONS.append(("_d_"+sIdAction, sAction))
         sAction = "_d_"+sIdAction
         return [sCondition, cAction, sAction]
-    else:
-        print("# Unknown action at line " + sIdAction)
-        return None
+    print("# Unknown action at line " + sIdAction)
+    return None
 
 
 def _calcRulesStats (lRules):
@@ -397,7 +397,7 @@ def mergeRulesByOption (lRules):
     sOption = None
     for aRule in lRules:
         if aRule[0] != sOption:
-            if sOption != None:
+            if sOption is not None:
                 lFinal.append([sOption, lTemp])
             # new tuple
             sOption = aRule[0]
@@ -427,7 +427,7 @@ def prepareOptions (lOptionLines):
         elif sLine.startswith("OPT/"):
             m = re.match("OPT/([a-z0-9]+):(.+)$", sLine)
             for i, sOpt in enumerate(m.group(2).split()):
-                lOpt[i][1][m.group(1)] = eval(sOpt)
+                lOpt[i][1][m.group(1)] = sOpt in ("True", "true", "Yes", "yes")
         elif sLine.startswith("OPTCOLORTHEME:"):
             lOptColor = [ [s, {}]  for s in sLine[14:].strip().split() ]  # don’t use tuples (s, {}), because unknown to JS
         elif sLine.startswith("OPTCOLOR/"):
@@ -483,7 +483,7 @@ def make (spLang, sLang, bUseCache=False):
     print("> read rules file...")
     try:
         lRules = open(spLang + "/rules.grx", 'r', encoding="utf-8").readlines()
-    except:
+    except OSError:
         print("Error. Rules file in project [" + sLang + "] not found.")
         exit()
 
@@ -560,11 +560,7 @@ def make (spLang, sLang, bUseCache=False):
 
     # generating options files
     print("  parsing options...")
-    try:
-        dOptions, dOptPriority = prepareOptions(lOpt)
-    except:
-        traceback.print_exc()
-        exit()
+    dOptions, dOptPriority = prepareOptions(lOpt)
 
     # tests
     print("  list tests...")
