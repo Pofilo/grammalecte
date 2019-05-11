@@ -4,8 +4,6 @@ Create a Direct Acyclic Rule Graphs (DARGs)
 """
 
 import re
-import traceback
-import json
 
 import darg
 import compile_rules_js_convert as jsconv
@@ -16,7 +14,7 @@ dFUNCTIONS = {}
 dFUNCNAME = {}
 
 
-def createFunction (sType, sActionId, sCode, bStartWithEqual=False):
+def createFunction (sType, sCode, bStartWithEqual=False):
     "create a function (stored in <dFUNCTIONS>) and return function name"
     sCode = prepareFunction(sCode)
     if sType not in dFUNCNAME:
@@ -36,7 +34,7 @@ def storeAction (sActionId, aAction):
         if sActionName not in dACTIONS:
             dACTIONS[sActionName] = aAction
             return sActionName
-        elif aAction == dACTIONS[sActionName]:
+        if aAction == dACTIONS[sActionName]:
             return sActionName
         nVar += 1
 
@@ -78,7 +76,7 @@ def prepareFunction (sCode):
 def genTokenLines (sTokenLine, dDef):
     "tokenize a string and return a list of lines of tokens"
     lToken = sTokenLine.split()
-    lTokenLines = None
+    lTokenLines = []
     for sToken in lToken:
         # replace merger characters by spaces
         if "␣" in sToken:
@@ -217,12 +215,12 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     sCondition = sAction[:m.start()].strip()
     if sCondition:
         sCondition = changeReferenceToken(sCondition, dPos)
-        sCondition = createFunction("cond", sActionId, sCondition)
+        sCondition = createFunction("cond", sCondition)
     else:
         sCondition = ""
 
     # Case sensitivity
-    bCaseSensitivity = False if m.group("casing") == ":" else True
+    bCaseSensitivity = not bool(m.group("casing"))
 
     # Action
     cAction = m.group("action")
@@ -248,14 +246,9 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
                 cEndLimit = "<"
             iEndAction = int(m.group("end").lstrip(":."))
     if dPos and m.group("start"):
-        try:
-            iStartAction = dPos.get(iStartAction, iStartAction)
-            if iEndAction:
-                iEndAction = dPos.get(iEndAction, iEndAction)
-        except:
-            print("# Error. Wrong groups in: " + sActionId)
-            print("  iStartAction:", iStartAction, "iEndAction:", iEndAction)
-            print(" ", dPos)
+        iStartAction = dPos.get(iStartAction, iStartAction)
+        if iEndAction:
+            iEndAction = dPos.get(iEndAction, iEndAction)
     if iStartAction < 0:
         iStartAction += 1
     if iEndAction < 0:
@@ -278,7 +271,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
                 sMsg = sMsg[:mURL.start(0)].strip()
             checkTokenNumbers(sMsg, sActionId, nToken)
             if sMsg[0:1] == "=":
-                sMsg = createFunction("msg", sActionId, sMsg, True)
+                sMsg = createFunction("msg", sMsg, True)
             else:
                 checkIfThereIsCode(sMsg, sActionId)
 
@@ -298,31 +291,30 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if cAction == "-":
         ## error detected --> suggestion
         if sAction[0:1] == "=":
-            sAction = createFunction("sugg", sActionId, sAction, True)
+            sAction = createFunction("sugg", sAction, True)
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
             print("# Error in action at line " + sActionId + ":  The message is empty.")
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, bCaseSensitivity, nPriority, sMsg, sURL]
-    elif cAction == "~":
+    if cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
-            sAction = createFunction("tp", sActionId, sAction, True)
+            sAction = createFunction("tp", sAction, True)
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
-    elif cAction == "%" or cAction == "/":
+    if cAction in "%/":
         ## tags
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
-    elif cAction == "=":
+    if cAction == "=":
         ## disambiguator
         if "define(" in sAction and not re.search(r"define\(\\-?\d+ *, *\[.*\] *\)", sAction):
             print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
-        sAction = createFunction("da", sActionId, sAction)
+        sAction = createFunction("da", sAction)
         return [sOption, sCondition, cAction, sAction]
-    else:
-        print(" # Unknown action.", sActionId)
-        return None
+    print(" # Unknown action.", sActionId)
+    return None
 
 
 def make (lRule, dDef, sLang, dOptPriority):
@@ -407,8 +399,8 @@ def make (lRule, dDef, sLang, dOptPriority):
         print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
-            for lRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
-                lPreparedRule.append(lRule)
+            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
+                lPreparedRule.append(aRule)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)
         dAllGraph[sGraphName] = oDARG.createGraph()
