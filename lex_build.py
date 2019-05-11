@@ -1,6 +1,8 @@
 #!python3
 
-# Lexicon builder
+"""
+Lexicon builder
+"""
 
 import argparse
 from distutils import dir_util
@@ -22,6 +24,7 @@ def build (spfSrc, sLangCode, sLangName, sfDict, bJSON=False, sDicName="", sDesc
 
 
 def main ():
+    "parse args from CLI"
     xParser = argparse.ArgumentParser()
     xParser.add_argument("src_lexicon", type=str, help="path and file name of the source lexicon")
     xParser.add_argument("lang_code", type=str, help="language code")
