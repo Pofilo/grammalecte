@@ -308,7 +308,7 @@ class Verb ():
             if not sInfo:
                 sInfo = "# erreur - code : " + self._sRawInfo
             return sGroup + " · " + sInfo
-        except:
+        except (IndexError, TypeError):
             traceback.print_exc()
             return "# erreur"
 
@@ -331,7 +331,7 @@ class Verb ():
             if bInt:
                 sInfi += " … ?"
             return sInfi
-        except:
+        except (TypeError, IndexError):
             traceback.print_exc()
             return "# erreur"
 
@@ -339,7 +339,7 @@ class Verb ():
         "returns past participle according to <sWho>"
         try:
             return self.dConj[":Q"][sWho]
-        except:
+        except KeyError:
             traceback.print_exc()
             return "# erreur"
 
@@ -370,7 +370,7 @@ class Verb ():
             if bInt:
                 sPartPre += " … ?"
             return sPartPre
-        except:
+        except (KeyError, TypeError, IndexError):
             traceback.print_exc()
             return "# erreur"
 
@@ -411,7 +411,7 @@ class Verb ():
             if bInt:
                 sConj += " … ?"
             return sConj
-        except:
+        except (KeyError, TypeError, IndexError):
             traceback.print_exc()
             return "# erreur"
 
@@ -425,7 +425,7 @@ class Verb ():
             if sWho == ":3p" and bFem:
                 return "elles"
             return _dProSuj[sWho]
-        except:
+        except (KeyError, IndexError):
             traceback.print_exc()
             return "# erreur"
 
@@ -457,7 +457,7 @@ class Verb ():
             if bTpsCo:
                 return sImpe + " " + self._seekPpas(bPro, bFem, sWho.endswith("p") or self._sRawInfo[5] == "r")
             return sImpe
-        except:
+        except (KeyError, TypeError, IndexError):
             traceback.print_exc()
             return "# erreur"
 
@@ -470,7 +470,7 @@ class Verb ():
             if not bPlur:
                 return self.dConj[":Q"][":Q3"]  if self.dConj[":Q"][":Q3"]  else  self.dConj[":Q"][":Q1"]
             return self.dConj[":Q"][":Q4"]  if self.dConj[":Q"][":Q4"]  else  self.dConj[":Q"][":Q1"]
-        except:
+        except KeyError:
             traceback.print_exc()
             return "# erreur"
 
