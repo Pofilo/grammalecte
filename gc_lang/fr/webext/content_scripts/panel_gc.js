@@ -889,7 +889,7 @@ class GrammalecteTextControl {
 
     setText (sText) {
         this.clear();
-        oGrammalecte.oGCPanel.showMessage("Le texte analysé n’appartient pas à un champ textuel défini. Les modifications ne seront pas répercutées sur la zone d’où le texte a été extrait. L’ensemble du texte corrigé est récupérable avec le bouton 📋.");
+        oGrammalecte.oGCPanel.showMessage("Le texte analysé n’appartient à aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
         this.loadText(sText);
     }
 
