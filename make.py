@@ -159,7 +159,7 @@ def createServerOptions (sLang, dOptData):
         hDst.write("html = 1\n")
 
 
-def createPackageZip (sLang, dVars, spLangPack):
+def createPackageZip (dVars, spLangPack):
     "create server zip"
     spfZip = "_build/" + dVars['name'] + "-"+ dVars['lang'] +"-v" + dVars['version'] + '.zip'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
@@ -197,7 +197,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript, bUseCache):
 
     dVars = xConfig._sections['args']
     dVars['locales'] = dVars["locales"].replace("_", "-")
-    dVars['loc'] = str(dict([ [s, [s[0:2], s[3:5], ""]] for s in dVars["locales"].split(" ") ]))
+    dVars['loc'] = str({ s: [s[0:2], s[3:5], ""]  for s in dVars["locales"].split(" ") })
 
     ## COMPILE RULES
     dResult = compile_rules.make(spLang, dVars['lang'], bUseCache)
@@ -242,7 +242,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript, bUseCache):
 
     createOXT(spLang, dVars, xConfig._sections['oxt'], spLangPack, bInstallOXT)
 
-    createPackageZip(sLang, dVars, spLangPack)
+    createPackageZip(dVars, spLangPack)
 
     #### JAVASCRIPT
     if bJavaScript:
@@ -450,12 +450,6 @@ def main ():
                     if xArgs.perf or xArgs.perf_memo:
                         hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if xArgs.perf_memo  else None
                         tests.perf(sVersion, hDst)
-
-            # Firefox (obsolete)
-            #if False:
-            #    with helpers.CD("_build/xpi/"+sLang):
-            #        spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
-            #        os.system('jpm run -b "' + spfFirefox + '"')
 
             if xArgs.web_ext or xArgs.firefox:
                 with helpers.CD("_build/webext/"+sLang):
