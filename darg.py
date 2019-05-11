@@ -8,8 +8,6 @@ RULE GRAPH BUILDER
 # License: MPL 2
 
 import re
-import traceback
-
 
 
 class DARG:
@@ -57,7 +55,7 @@ class DARG:
         self._minimize(nCommonPrefix)
 
         # add the suffix, starting from the correct node mid-way through the graph
-        if len(self.lUncheckedNodes) == 0:
+        if not self.lUncheckedNodes:
             oNode = self.oRoot
         else:
             oNode = self.lUncheckedNodes[-1][2]
@@ -129,20 +127,20 @@ class DARG:
         dNewGraph = {}
         for nKey, dVal in dGraph.items():
             dNewGraph[dKeyTrans[nKey]] = dVal
-        for nKey, dVal in dGraph.items():
+        for _, dVal in dGraph.items():
             for sArc, val in dVal.items():
-                if type(val) is int:
+                if isinstance(val, int):
                     dVal[sArc] = dKeyTrans[val]
                 else:
-                    for sArc, nKey in val.items():
-                        val[sArc] = dKeyTrans[nKey]
+                    for sArc2, nKey in val.items():
+                        val[sArc2] = dKeyTrans[nKey]
         return dNewGraph
 
     def _sortActions (self, dGraph):
         "when a pattern is found, several actions may be launched, and it must be performed in a certain order"
-        for nKey, dVal in dGraph.items():
+        for _, dVal in dGraph.items():
             if "<rules>" in dVal:
-                for sLineId, nKey in dVal["<rules>"].items():
+                for _, nKey in dVal["<rules>"].items():
                     # we change the dictionary of actions in a list of actions (values of dictionary all points to the final node)
                     if isinstance(dGraph[nKey], dict):
                         dGraph[nKey] = sorted(dGraph[nKey].keys())
@@ -150,7 +148,7 @@ class DARG:
     def _checkRegexes (self, dGraph):
         "check validity of regexes"
         aRegex = set()
-        for nKey, dVal in dGraph.items():
+        for _, dVal in dGraph.items():
             if "<re_value>" in dVal:
                 for sRegex in dVal["<re_value>"]:
                     if sRegex not in aRegex:
@@ -173,7 +171,7 @@ class DARG:
                 re.compile(sPattern)
                 if sNegPattern != "*":
                     re.compile(sNegPattern)
-            except:
+            except re.error:
                 print("# Error. Wrong regex:", sRegex)
                 exit()
         else:
@@ -181,7 +179,7 @@ class DARG:
                 if not sRegex:
                     print("# Warning! Empty pattern:", sRegex)
                 re.compile(sRegex)
-            except:
+            except re.error:
                 print("# Error. Wrong regex:", sRegex)
                 exit()
 
