@@ -12,6 +12,7 @@ class cd:
     "Context manager for changing the current working directory"
     def __init__ (self, newPath):
         self.newPath = os.path.expanduser(newPath)
+        self.savedPath = ""
 
     def __enter__ (self):
         self.savedPath = os.getcwd()
@@ -47,7 +48,7 @@ def eraseFolder (sp):
                 os.unlink(spf)
             elif os.path.isdir(spf):
                 shutil.rmtree(spf)
-        except Exception as e:
+        except (OSError, shutil.Error) as e:
             print(e)
 
 
