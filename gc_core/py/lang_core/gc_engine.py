@@ -142,7 +142,7 @@ def listRules (sFilter=None):
 def displayRules (sFilter=None):
     "display the name of rules, with the filter <sFilter>"
     echo("List of rules. Filter: << " + str(sFilter) + " >>")
-    for sOption, sLineId, sRuleId in listRegexRules(sFilter):
+    for sOption, sLineId, sRuleId in listRules(sFilter):
         echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
 
 
