@@ -51,9 +51,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         super(...args);
         this.aIgnoredErrors = new Set();
         this.createMenu()
+        this.xPanelContent.style.marginBottom = "10px";
         // Editor
         this.xGCPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_gc_panel_content"});
-        this.xGCPanelContent.style.marginBottom = "10px";
         this.xParagraphList = oGrammalecte.createNode("div", {id: "grammalecte_paragraph_list"});
         this.xGCPanelContent.appendChild(this.xParagraphList);
         this.xPanelContent.addEventListener("click", onGrammalecteGCPanelClick, false);
@@ -889,7 +889,7 @@ class GrammalecteTextControl {
 
     setText (sText) {
         this.clear();
-        oGrammalecte.oGCPanel.showMessage("Le texte analysé n’appartient pas à un champ textuel défini. Les modifications ne seront pas répercutées sur la zone d’où le texte a été extrait. Vous pouvez néanmoins récupérer l’ensemble du texte corrigé avec le bouton 📋.");
+        oGrammalecte.oGCPanel.showMessage("Le texte analysé n’appartient pas à un champ textuel défini. Les modifications ne seront pas répercutées sur la zone d’où le texte a été extrait. L’ensemble du texte corrigé est récupérable avec le bouton 📋.");
         this.loadText(sText);
     }
 
