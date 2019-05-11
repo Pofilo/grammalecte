@@ -16466,6 +16466,56 @@ TEST: Ce sont des biens de peu de valeur.
 
 !!
 !!
+!!!! Conjugaisons nous / vous (2ᵉ partie)                                                         !!
+!!
+!!
+
+## 1pl
+__conj_nous2__
+    <start>  nous   @:V.*:3p¬:[GPY]
+        <<- /conj/ \3.endswith("ont") and not value(>1, "|ils|elles|")
+            and ( (morph(\3, ":V...t_") and value(>1, "le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|leur")) or morph(\3, ":V..i__") )
+        -3>> =suggVerb(\3, ":1p")                                       # Conjugaison problement erronée si “\2” est bien le sujet de “\3” et non un pronom objet.
+
+    [<start>|,]  nous  @:V¬:(?:1[sp]|2s|3[sp]|Y|P|G)
+        <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
+        -3>> =suggVerb(\3, ":1p")                                       # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
+
+    [<start>|,]  nous  qui  @:V¬:(?:1p|G)
+        <<- /conj/ -4>> =suggVerb(\4, ":1p")                            # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
+
+TEST: nous {{viendront}}.
+TEST: nous {{donné}} trop de considération
+TEST: nous vous {{donnerez}} trop de considération
+TEST: nous qui {{somme}} si savants
+TEST: nous qui {{mourront}} pour toi.
+TEST: nous ont donné tant de fric qu’on ne savait plus qu’en faire.
+TEST: nous prendre la tête, c’est son passe-temps favori.
+TEST: Nous avons également sous-estimé l’état désastreux dans lequel se trouvait le pays.
+TEST: Tu nous fais ton baratin, nous prends pour des cons, nous donnes des leçons de morale, nous assènes ta vision comme si c’était une révélation du ciel.
+TEST: NOUS CONTACTER
+
+
+## 2pl
+__conj_vous2__
+    [<start>|,]  vous  @:V¬:(?:1s|2[sp]|3[sp]|Y|P|G)
+        <<- /conj/ not value(>1, "|je|il|elle|on|nous|vous|ils|elles|")
+        -3>> =suggVerb(\3, ":2p")                                       # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+    [<start>|,]  vous  qui  @:V¬:(?:2p|G)
+        <<- /conj/ -4>> =suggVerb(\4, ":2p")                            # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+TEST: vous {{donné}} du bonheur
+TEST: vous lui {{donner}} du temps
+TEST: vous qui {{avançait}} dans la nuit comme des ombres furtives
+TEST: vous qui {{décider}} de l’avenir du peuple.
+TEST: vous “étaler” sera notre plus grande joie.
+TEST: je vous donnais votre dû, vous payais mieux que quiconque et vous me faites un procès.
+
+
+
+!!
+!!
 !!!! Infinitif                                                                                    !!
 !!
 !!
@@ -19908,42 +19958,6 @@ TEST: Les résultats d’une des membres étaient particulièrement notables.
 TEST: un des hommes qui vient.
 TEST: une des dames qui se sentent mal à l’aise dans cet avion est venue nous trouver.
 TEST: l’un des chants les plus diffusés pendant la Révolution culturelle
-
-
-## 1pl
-__conj_nous2__
-    [<start>|,]  nous  @:V¬:(?:1p|3[sp]|Y)
-        <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":1p")                                       # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
-
-    [<start>|,]  nous  qui  @:V¬:1p
-        <<- /conj/ -4>> =suggVerb(\4, ":1p")                            # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
-
-TEST: nous {{donné}} trop de considération
-TEST: nous vous {{donnerez}} trop de considération
-TEST: nous qui {{somme}} si savants
-TEST: nous qui {{mourront}} pour toi.
-TEST: nous prendre la tête, c’est son passe-temps favori.
-TEST: Nous avons également sous-estimé l’état désastreux dans lequel se trouvait le pays.
-TEST: Tu nous fais ton baratin, nous prends pour des cons, nous donnes des leçons de morale, nous assènes ta vision comme si c’était une révélation du ciel.
-TEST: NOUS CONTACTER
-
-
-## 2pl
-__conj_vous2__
-    [<start>|,]  vous  @:V¬:(?:2p|3[sp])
-        <<- /conj/ not value(>1, "|je|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":2p")                                       # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
-
-    [<start>|,]  vous  qui  @:V¬:2p
-        <<- /conj/ -4>> =suggVerb(\4, ":2p")                            # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
-
-TEST: vous {{donné}} du bonheur
-TEST: vous lui {{donner}} du temps
-TEST: vous qui {{avançait}} dans la nuit comme des ombres furtives
-TEST: vous qui {{décider}} de l’avenir du peuple.
-TEST: vous “étaler” sera notre plus grande joie.
-TEST: je vous donnais votre dû, vous payais mieux que quiconque et vous me faites un procès.
 
 
 ## 3pl
