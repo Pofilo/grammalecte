@@ -85,17 +85,17 @@ def output (sText, hDst=None):
 
 
 def loadDictionary (spf):
+    "returns the dictionary as a dictionary object"
     if os.path.isfile(spf):
         sJSON = open(spf, "r", encoding="utf-8").read()
         try:
             oJSON = json.loads(sJSON)
-        except:
+        except json.JSONDecodeError:
             print("# Error. File <" + spf + " is not a valid JSON file.")
             return None
         return oJSON
-    else:
-        print("# Error: file <" + spf + "> not found.")
-        return None
+    print("# Error: file <" + spf + "> not found.")
+    return None
 
 
 def main ():
@@ -239,21 +239,21 @@ def main ():
                 for sRule in sText[3:].strip().split():
                     oGrammarChecker.gce.reactivateRule(sRule)
                 echo("done")
-            elif sText == "/debug" or sText == "/d":
+            elif sText in ("/debug", "/d"):
                 xArgs.debug = not xArgs.debug
                 echo("debug mode on"  if xArgs.debug  else "debug mode off")
-            elif sText == "/textformatter" or sText == "/tf":
+            elif sText in ("/textformatter", "/tf"):
                 xArgs.textformatter = not xArgs.textformatter
                 echo("textformatter on"  if xArgs.debug  else "textformatter off")
-            elif sText == "/help" or sText == "/h":
+            elif sText in ("/help", "/h"):
                 echo(_HELP)
-            elif sText == "/lopt" or sText == "/lo":
+            elif sText in ("/lopt", "/lo"):
                 oGrammarChecker.gce.displayOptions("fr")
             elif sText.startswith("/lr"):
                 sText = sText.strip()
-                sFilter = sText[sText.find(" "):].strip()  if sText != "/lr" and sText != "/rules"  else None
+                sFilter = sText[sText.find(" "):].strip()  if " " in sText  else None
                 oGrammarChecker.gce.displayRules(sFilter)
-            elif sText == "/quit" or sText == "/q":
+            elif sText in ("/quit", "/q"):
                 break
             elif sText.startswith("/rl"):
                 # reload (todo)
