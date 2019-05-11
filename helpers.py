@@ -1,4 +1,6 @@
-# Useful tools
+"""
+Tools for handling files
+"""
 
 import os
 import shutil
@@ -8,7 +10,7 @@ import zipfile
 from string import Template
 
 
-class cd:
+class CD:
     "Context manager for changing the current working directory"
     def __init__ (self, newPath):
         self.newPath = os.path.expanduser(newPath)
@@ -61,6 +63,7 @@ def createCleanFolder (sp):
 
 
 def copyFolderContent (spSrc, spDst):
+    "copy folder content from src to dst"
     try:
         shutil.copytree(spSrc, spDst)
     except OSError as e:
@@ -82,6 +85,7 @@ def copyAndFileTemplate (spfSrc, spfDst, dVars):
 
 
 def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
+    "add folder content to zip archive and file files with <dVars>"
     # recursive function
     spSrc = spSrc.strip("/ ")
     spDst = spDst.strip("/ ")
@@ -93,8 +97,6 @@ def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
                 addFolderToZipAndFileFile(hZip, spfSrc, spfDst, dVars, bRecursive)
         else:
             if spfSrc.endswith((".py", ".js", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
-                #print(spfSrc + " > " + spfDst)
                 hZip.writestr(spfDst, fileFile(spfSrc, dVars))
             else:
-                #print(spfSrc + " > " + spfDst)
                 hZip.write(spfSrc, spfDst)

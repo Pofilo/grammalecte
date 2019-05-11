@@ -24,7 +24,7 @@ def createWebExtension (sLang, dVars):
     dVars['webextOptionsHTML'] = _createOptionsForWebExtension(dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/manifest.json", "_build/webext/"+sLang+"/manifest.json", dVars)
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/panel/main.html", "_build/webext/"+sLang+"/panel/main.html", dVars)
-    with helpers.cd("_build/webext/"+sLang):
+    with helpers.CD("_build/webext/"+sLang):
         os.system("web-ext build")
 
 

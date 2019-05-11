@@ -453,12 +453,12 @@ def main ():
 
             # Firefox (obsolete)
             #if False:
-            #    with helpers.cd("_build/xpi/"+sLang):
+            #    with helpers.CD("_build/xpi/"+sLang):
             #        spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
             #        os.system('jpm run -b "' + spfFirefox + '"')
 
             if xArgs.web_ext or xArgs.firefox:
-                with helpers.cd("_build/webext/"+sLang):
+                with helpers.CD("_build/webext/"+sLang):
                     if xArgs.lint_web_ext:
                         os.system(r'web-ext lint -o text')
                     if xArgs.firefox:
