@@ -51,7 +51,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         super(...args);
         this.aIgnoredErrors = new Set();
         this.createMenu()
-        this.xPanelContent.style.marginBottom = "10px";
+        this.xPanelContent.style.marginBottom = "6px";
         // Editor
         this.xGCPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_gc_panel_content"});
         this.xParagraphList = oGrammalecte.createNode("div", {id: "grammalecte_paragraph_list"});
