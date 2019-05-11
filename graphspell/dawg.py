@@ -71,19 +71,18 @@ class DAWG:
         lChar = ['']; dChar = {}; nChar = 1; dCharOccur = {}
         lAff  = [];   dAff  = {}; nAff  = 0; dAffOccur = {}
         lTag  = [];   dTag  = {}; nTag  = 0; dTagOccur = {}
-        nErr = 0
 
         self.a2grams = set()
 
         try:
             zFilter = re.compile(sSelectFilterRegex)  if sSelectFilterRegex  else None
-        except:
-            print(" # Error. Wrong filter regex. Filter ignored.")
+        except re.error:
+            print("# Error. Wrong filter regex. Filter ignored: ", zFilter)
             traceback.print_exc()
             zFilter = None
 
         # read lexicon
-        if type(src) is str:
+        if isinstance(src, str):
             iterable = readFile(src)
         else:
             iterable = src
@@ -127,7 +126,7 @@ class DAWG:
                         + [ (dAff[aff]+nChar, dAffOccur[aff]) for aff in dAff ] \
                         + [ (dTag[tag]+nChar+nAff, dTagOccur[tag]) for tag in dTag ] )
 
-        self.sFileName = src  if type(src) is str  else "[None]"
+        self.sFileName = src  if isinstance(src, str)  else "[None]"
         self.sLangCode = sLangCode
         self.sLangName = sLangName
         self.sDicName = sDicName
@@ -334,7 +333,7 @@ class DAWG:
         if sPattern:
             try:
                 zPattern = re.compile(sPattern)
-            except:
+            except re.error:
                 print("# Error in regex pattern")
                 traceback.print_exc()
         yield from self._select(zPattern, self.oRoot, "")
