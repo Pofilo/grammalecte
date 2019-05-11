@@ -25,7 +25,7 @@ def rewriteSubject (s1, s2):
         return "vous"
     if s2 == "eux":
         return "ils"
-    if s2 == "elle" or s2 == "elles":
+    if s2 in ("elle", "elles"):
         if cr.mbNprMasNotFem(_oSpellChecker.getMorph(s1)):
             return "ils"
         # si épicène, indéterminable, mais OSEF, le féminin l’emporte
@@ -50,37 +50,37 @@ def isAmbiguousNAV (sWord):
 
 def isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj):
     "use it if <sWord1> won’t be a verb; <sWord2> is assumed to be True via isAmbiguousNAV"
-    a2 = _oSpellChecker.getMorph(sWord2)
-    if not a2:
+    lMorph2 = _oSpellChecker.getMorph(sWord2)
+    if not lMorph2:
         return False
-    if cr.checkConjVerb(a2, sReqMorphConj):
+    if cr.checkConjVerb(lMorph2, sReqMorphConj):
         # verb word2 is ok
         return False
-    a1 = _oSpellChecker.getMorph(sWord1)
-    if not a1:
+    lMorph1 = _oSpellChecker.getMorph(sWord1)
+    if not lMorph1:
         return False
-    if cr.checkAgreement(a1, a2) and (cr.mbAdj(a2) or cr.mbAdj(a1)):
+    if cr.checkAgreement(lMorph1, lMorph2) and (cr.mbAdj(lMorph2) or cr.mbAdj(lMorph1)):
         return False
     return True
 
 
 def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond):
     "use it if <sWord1> can be also a verb; <sWord2> is assumed to be True via isAmbiguousNAV"
-    a2 = _oSpellChecker.getMorph(sWord2)
-    if not a2:
+    lMorph2 = _oSpellChecker.getMorph(sWord2)
+    if not lMorph2:
         return False
-    if cr.checkConjVerb(a2, sReqMorphConj):
+    if cr.checkConjVerb(lMorph2, sReqMorphConj):
         # verb word2 is ok
         return False
-    a1 = _oSpellChecker.getMorph(sWord1)
-    if not a1:
+    lMorph1 = _oSpellChecker.getMorph(sWord1)
+    if not lMorph1:
         return False
-    if cr.checkAgreement(a1, a2) and (cr.mbAdj(a2) or cr.mbAdjNb(a1)):
+    if cr.checkAgreement(lMorph1, lMorph2) and (cr.mbAdj(lMorph2) or cr.mbAdjNb(lMorph1)):
         return False
     # now, we know there no agreement, and conjugation is also wrong
-    if cr.isNomAdj(a1):
+    if cr.isNomAdj(lMorph1):
         return True
-    #if cr.isNomAdjVerb(a1): # considered True
+    #if cr.isNomAdjVerb(lMorph1): # considered True
     if bLastHopeCond:
         return True
     return False
@@ -88,13 +88,13 @@ def isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHo
 
 def checkAgreement (sWord1, sWord2):
     "check agreement between <sWord1> and <sWord1>"
-    a2 = _oSpellChecker.getMorph(sWord2)
-    if not a2:
+    lMorph2 = _oSpellChecker.getMorph(sWord2)
+    if not lMorph2:
         return True
-    a1 = _oSpellChecker.getMorph(sWord1)
-    if not a1:
+    lMorph1 = _oSpellChecker.getMorph(sWord1)
+    if not lMorph1:
         return True
-    return cr.checkAgreement(a1, a2)
+    return cr.checkAgreement(lMorph1, lMorph2)
 
 
 _zUnitSpecial = re.compile("[µ/⁰¹²³⁴⁵⁶⁷⁸⁹Ωℓ·]")

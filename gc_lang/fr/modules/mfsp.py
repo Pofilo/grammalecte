@@ -45,5 +45,5 @@ def _modifyStringWithSuffixCode (sWord, sSfx):
         return sWord
     try:
         return sWord[:-(ord(sSfx[0])-48)] + sSfx[1:]  if sSfx[0] != '0'  else  sWord + sSfx[1:]  # 48 is the ASCII code for "0"
-    except:
+    except (IndexError, TypeError):
         return "## erreur, code : " + str(sSfx) + " ##"

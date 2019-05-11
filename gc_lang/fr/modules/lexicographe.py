@@ -202,7 +202,7 @@ class Lexicographe:
             # Verbes
             aVerb = { s[1:s.find("/")]  for s in lMorph  if ":V" in s }
             return (aMorph, aVerb)
-        except:
+        except (IndexError, TypeError):
             traceback.print_exc()
             return (["#erreur"], None)
 

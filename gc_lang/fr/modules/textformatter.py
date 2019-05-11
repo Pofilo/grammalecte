@@ -253,6 +253,7 @@ class TextFormatter:
                 lTup[i] = (re.compile(t[0]), t[1])
 
     def formatText (self, sText):
+        "returns formatted text"
         for sOptName, bVal in lOptRepl:
             if bVal:
                 for zRgx, sRep in dReplTable[sOptName]:

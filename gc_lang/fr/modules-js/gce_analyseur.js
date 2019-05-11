@@ -63,19 +63,19 @@ function isAmbiguousNAV (sWord) {
 
 function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
     //// use it if sWord1 won’t be a verb; word2 is assumed to be true via isAmbiguousNAV
-    let a2 = _oSpellChecker.getMorph(sWord2);
-    if (a2.length === 0) {
+    let lMorph2 = _oSpellChecker.getMorph(sWord2);
+    if (lMorph2.length === 0) {
         return false;
     }
-    if (cregex.checkConjVerb(a2, sReqMorphConj)) {
+    if (cregex.checkConjVerb(lMorph2, sReqMorphConj)) {
         // verb word2 is ok
         return false;
     }
-    let a1 = _oSpellChecker.getMorph(sWord1);
-    if (a1.length === 0) {
+    let lMorph1 = _oSpellChecker.getMorph(sWord1);
+    if (lMorph1.length === 0) {
         return false;
     }
-    if (cregex.checkAgreement(a1, a2) && (cregex.mbAdj(a2) || cregex.mbAdj(a1))) {
+    if (cregex.checkAgreement(lMorph1, lMorph2) && (cregex.mbAdj(lMorph2) || cregex.mbAdj(lMorph1))) {
         return false;
     }
     return true;
@@ -83,26 +83,26 @@ function isAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj) {
 
 function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bLastHopeCond) {
     //// use it if sWord1 can be also a verb; word2 is assumed to be true via isAmbiguousNAV
-    let a2 = _oSpellChecker.getMorph(sWord2);
-    if (a2.length === 0) {
+    let lMorph2 = _oSpellChecker.getMorph(sWord2);
+    if (lMorph2.length === 0) {
         return false;
     }
-    if (cregex.checkConjVerb(a2, sReqMorphConj)) {
+    if (cregex.checkConjVerb(lMorph2, sReqMorphConj)) {
         // verb word2 is ok
         return false;
     }
-    let a1 = _oSpellChecker.getMorph(sWord1);
-    if (a1.length === 0) {
+    let lMorph1 = _oSpellChecker.getMorph(sWord1);
+    if (lMorph1.length === 0) {
         return false;
     }
-    if (cregex.checkAgreement(a1, a2) && (cregex.mbAdj(a2) || cregex.mbAdjNb(a1))) {
+    if (cregex.checkAgreement(lMorph1, lMorph2) && (cregex.mbAdj(lMorph2) || cregex.mbAdjNb(lMorph1))) {
         return false;
     }
     // now, we know there no agreement, and conjugation is also wrong
-    if (cregex.isNomAdj(a1)) {
+    if (cregex.isNomAdj(lMorph1)) {
         return true;
     }
-    //if cregex.isNomAdjVerb(a1): # considered true
+    //if cregex.isNomAdjVerb(lMorph1): # considered true
     if (bLastHopeCond) {
         return true;
     }
@@ -110,15 +110,15 @@ function isVeryAmbiguousAndWrong (sWord1, sWord2, sReqMorphNA, sReqMorphConj, bL
 }
 
 function checkAgreement (sWord1, sWord2) {
-    let a2 = _oSpellChecker.getMorph(sWord2);
-    if (a2.length === 0) {
+    let lMorph2 = _oSpellChecker.getMorph(sWord2);
+    if (lMorph2.length === 0) {
         return true;
     }
-    let a1 = _oSpellChecker.getMorph(sWord1);
-    if (a1.length === 0) {
+    let lMorph1 = _oSpellChecker.getMorph(sWord1);
+    if (lMorph1.length === 0) {
         return true;
     }
-    return cregex.checkAgreement(a1, a2);
+    return cregex.checkAgreement(lMorph1, lMorph2);
 }
 
 function mbUnit (s) {
