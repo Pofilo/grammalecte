@@ -19548,7 +19548,7 @@ __ppas_être__
         <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         # Après “ne \2 être”, il faut un participe passé.
 
     avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
-        <<- /ppas/ not value(<1, "|l’|") and not tag_before("que") --1>> =suggVerbPpas(\-1)         # Après le verbe “être”, il faut un participe passé.
+        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "que") --1>> =suggVerbPpas(\-1)     # Après le verbe “être”, il faut un participe passé.
 
     >être  ~..er$
         <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
@@ -19584,6 +19584,7 @@ TEST: Ne pas aimer n’est pas oublier l’autre.
 TEST: Dire la vérité, c’eût été manquer à sa parole.
 TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
 TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
+TEST: ce qu’il avait cru être devenait un rêve lointain et à peine concevable.
 TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
 TEST: la grande crainte du maire est de voir arriver d’autres immigrés
 
