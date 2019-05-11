@@ -104,7 +104,7 @@ def _loadRules ():
             for aRule in lRuleGroup:
                 try:
                     aRule[0] = re.compile(aRule[0])
-                except:
+                except (IndexError, re.error):
                     echo("Bad regular expression in # " + str(aRule[2]))
                     aRule[0] = "(?i)<Grammalecte>"
 
@@ -129,7 +129,7 @@ def listRules (sFilter=None):
     if sFilter:
         try:
             zFilter = re.compile(sFilter)
-        except:
+        except re.error:
             echo("# Error. List rules: wrong regex.")
             sFilter = None
     for sOption, lRuleGroup in chain(_getRules(True), _getRules(False)):
@@ -280,6 +280,7 @@ class TextParser:
         return self.dError.values() # this is a view (iterable)
 
     def parseText (self, sText, sText0, bParagraph, nOffset, sCountry, dOptions, bShowRuleId, bDebug, bContext):
+        "parse the text with rules"
         bChange = False
         for sOption, lRuleGroup in _getRules(bParagraph):
             if sOption == "@@@@":
@@ -617,8 +618,7 @@ class TextParser:
         #
         if _bWriterError:
             return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sOption, sMessage, lSugg, sURL)
-        else:
-            return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
+        return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
 
     def _createErrorFromTokens (self, sSugg, nTokenOffset, nLastToken, iFirstToken, nStart, nEnd, sLineId, sRuleId, bCaseSvty, sMsg, sURL, bShowRuleId, sOption, bContext):
         # suggestions
@@ -638,8 +638,7 @@ class TextParser:
         #
         if _bWriterError:
             return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sOption, sMessage, lSugg, sURL)
-        else:
-            return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
+        return self._createErrorAsDict(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext)
 
     def _createErrorForWriter (self, nStart, nLen, sRuleId, sOption, sMessage, lSugg, sURL):
         xErr = SingleProofreadingError()    # uno.createUnoStruct( "com.sun.star.linguistic2.SingleProofreadingError" )
@@ -754,7 +753,7 @@ class TextParser:
             echo("REWRITE")
         lNewToken = []
         nMergeUntil = 0
-        dTokenMerger = None
+        dTokenMerger = {}
         for iToken, dToken in enumerate(self.lToken):
             bKeepToken = True
             if dToken["sType"] != "INFO":
@@ -791,10 +790,9 @@ class TextParser:
             else:
                 try:
                     del self.dTokenPos[dToken["nStart"]]
-                except:
+                except KeyError:
                     echo(self)
                     echo(dToken)
-                    exit()
         if bDebug:
             echo("  TEXT REWRITED: " + self.sSentence)
         self.lToken.clear()
@@ -864,7 +862,7 @@ def look_chk1 (dTokenPos, s, nOffset, sPattern, sPatternGroup1, sNegPatternGroup
     try:
         sWord = m.group(1)
         nPos = m.start(1) + nOffset
-    except:
+    except IndexError:
         return False
     return morph(dTokenPos, (nPos, sWord), sPatternGroup1, sNegPatternGroup1)
 
@@ -901,10 +899,9 @@ def morph (dTokenPos, tWord, sPattern, sNegPattern="", bNoWord=False):
             # all morph must match sPattern
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        else:
-            zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-                return False
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
@@ -920,10 +917,9 @@ def analyse (sWord, sPattern, sNegPattern=""):
         if sNegPattern == "*":
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        else:
-            zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-                return False
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
@@ -970,10 +966,9 @@ def g_morph (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemoriz
             # all morph must match sPattern
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        else:
-            zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-                return False
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
@@ -995,10 +990,9 @@ def g_analyse (dToken, sPattern, sNegPattern="", nLeft=None, nRight=None, bMemor
             # all morph must match sPattern
             zPattern = re.compile(sPattern)
             return all(zPattern.search(sMorph)  for sMorph in lMorph)
-        else:
-            zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-                return False
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
     # search sPattern
     zPattern = re.compile(sPattern)
     return any(zPattern.search(sMorph)  for sMorph in lMorph)
@@ -1018,10 +1012,9 @@ def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetM
             if bResult and bSetMorph:
                 dToken1["lMorph"] = lMorph
             return bResult
-        else:
-            zNegPattern = re.compile(sNegPattern)
-            if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
-                return False
+        zNegPattern = re.compile(sNegPattern)
+        if any(zNegPattern.search(sMorph)  for sMorph in lMorph):
+            return False
     # search sPattern
     zPattern = re.compile(sPattern)
     bResult = any(zPattern.search(sMorph)  for sMorph in lMorph)

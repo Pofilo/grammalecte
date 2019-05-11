@@ -26,7 +26,7 @@ def getOptionsColors (sTheme="Default", sColorType="aRGB"):
     dColorType = _dColorType[sColorType]  if sColorType in _dColorType  else _dColorType["aRGB"]
     try:
         return {  sOpt: dColorType[sColor] for sOpt, sColor in dOptColor.items() }
-    except:
+    except KeyError:
         traceback.print_exc()
         return {}
 

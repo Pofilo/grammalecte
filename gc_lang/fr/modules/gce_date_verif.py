@@ -33,7 +33,7 @@ def checkDate (sDay, sMonth, sYear):
         return datetime.date(int(sYear), int(sMonth), int(sDay))
     except ValueError:
         return False
-    except:
+    except TypeError:
         return True
 
 
@@ -68,9 +68,8 @@ def _getDay (xDate):
         # Calendrier julien
         sGregorianDay = _lDay[xDate.weekday()]
         return _dGregorianToJulian.get(sGregorianDay, "Erreur: jour inconnu")
-    elif xDate.day >= 20:
+    if xDate.day >= 20:
         # Calendrier grégorien
         return _lDay[xDate.weekday()]
-    else:
-        # 10 - 19 décembre 1582: jours inexistants en France.
-        return ""
+    # 10 - 19 décembre 1582: jours inexistants en France.
+    return ""

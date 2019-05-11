@@ -181,7 +181,7 @@ def suggPlur (sFlex, sWordToAgree=None):
         sGender = cr.getGender(lMorph)
         if sGender == ":m":
             return suggMasPlur(sFlex)
-        elif sGender == ":f":
+        if sGender == ":f":
             return suggFemPlur(sFlex)
     aSugg = set()
     if "-" not in sFlex:
@@ -419,7 +419,7 @@ def suggCeOrCet (sWord):
     "suggest “ce” or “cet” or both according to the first letter of <sWord>"
     if re.match("(?i)[aeéèêiouyâîï]", sWord):
         return "cet"
-    if sWord[0:1] == "h" or sWord[0:1] == "H":
+    if sWord[0:1] in "hH":
         return "ce|cet"
     return "ce"
 
@@ -475,7 +475,7 @@ def formatNF (s):
         if not m:
             return ""
         return "NF " + m.group(1).upper().replace(" ", " ").replace("-", " ") + " " + m.group(2).replace("/", "‑").replace("-", "‑")
-    except:
+    except (re.error, IndexError):
         traceback.print_exc()
         return "# erreur #"
 
@@ -484,17 +484,17 @@ def undoLigature (c):
     "typography: split ligature character <c> in several chars"
     if c == "ﬁ":
         return "fi"
-    elif c == "ﬂ":
+    if c == "ﬂ":
         return "fl"
-    elif c == "ﬀ":
+    if c == "ﬀ":
         return "ff"
-    elif c == "ﬃ":
+    if c == "ﬃ":
         return "ffi"
-    elif c == "ﬄ":
+    if c == "ﬄ":
         return "ffl"
-    elif c == "ﬅ":
+    if c == "ﬅ":
         return "ft"
-    elif c == "ﬆ":
+    if c == "ﬆ":
         return "st"
     return "_"
 
