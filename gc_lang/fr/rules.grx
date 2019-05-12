@@ -737,7 +737,7 @@ TEST: chez les {{immortel.le.s}}
 __[i](eepi_écriture_épicène_singulier)__
     ({w_1}[éuitsrnldf])([-·–—.•⋅/][ntl]?e|[(][ntl]?e[)])  @@0,$
     <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De"))
-        and not (\0.endswith("-le") and morph(\1, ":E")) >>>
+        and not (\0.endswith("-le") and not \1.endswith("l")) >>>
     <<- ~>> =normalizeInclusiveWriting(\0)
     <<- option("eepi") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
     <<- __else__ and option("eepi") and not \0.endswith("·e") ->> =\1+"·"+\2[1:].rstrip(")")        # Écriture épicène. Utilisez un point médian.
