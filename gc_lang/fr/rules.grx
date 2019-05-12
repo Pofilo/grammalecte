@@ -735,14 +735,18 @@ TEST: chez les {{immortel.le.s}}
 
 
 __[i](eepi_écriture_épicène_singulier)__
-    ({w_1}[éuitsrnldf])(?:[-·–—.•⋅/]e|[(]e[)])  @@0
-    <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De")) >>>
+    ({w_1}[éuitsrnldf])([-·–—.•⋅/][ntl]?e|[(][ntl]?e[)])  @@0,$
+    <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De"))
+        and not (\0.endswith("-le") and morph(\1, ":E")) >>>
+    <<- ~>> =normalizeInclusiveWriting(\0)
     <<- option("eepi") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
-    <<- __else__ and option("eepi") and not \0.endswith("·e") ->> \1·e                              # Écriture épicène. Utilisez un point médian.
-    <<- ~>> \1-e
+    <<- __else__ and option("eepi") and not \0.endswith("·e") ->> =\1+"·"+\2[1:].rstrip(")")        # Écriture épicène. Utilisez un point médian.
 
-TEST: je suis {{déconsidéré.e}} par ma hiérarchie.
-TEST: il faut en parler à l’{{auteur(e)}} et à son agent.
+TEST: je suis {{déconsidéré.e}} par ma hiérarchie.                      ->> déconsidéré·e
+TEST: il faut en parler à l’{{auteur(e)}} et à son agent.               ->> auteur·e
+TEST: le ou la {{patron/ne}}                                            ->> patron·ne
+TEST: Totalement {{con(ne)}}                                            ->> con·ne
+TEST: un ou une {{intellectuel.le}}                                     ->> intellectuel·le
 
 
 
