@@ -303,7 +303,7 @@ class Dictionnaire:
         with open(spDst+'/'+dTplVars['asciiName']+'.dic', 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(str(nEntry)+"\n")
             for oEntry in self.lEntry:
-                if oEntry.di in dTplVars['subDicts'] and " " not in oEntry.lemma:
+                if oEntry.di in dTplVars['subDicts'] and re.search(r"^[\w-]+$", oEntry.lemma):
                     hDst.write(oEntry.getHunspellLine(self, nMode, bSimplified))
 
     def writeAffixes (self, spDst, dTplVars, nMode, bSimplified):
@@ -751,7 +751,7 @@ class Entree:
         elems = sLine.split("\t")
         nElems = len(elems)
         # lemme et drapeaux
-        firstElems = elems[0].split('/')
+        firstElems = elems[0].split('/') if elems[0] != "/"  else elems[0]
         self.lemma = firstElems[0]
         self.flags = firstElems[1]  if len(firstElems) > 1  else ''
         # morph
@@ -809,8 +809,8 @@ class Entree:
         sErr = ''
         if self.lemma == '':
             sErr += 'lemme vide'
-        if not re.match(r"[a-zA-ZéÉôÔàâáÂîÎïèÈêÊÜœŒæÆçÇ0-9µåÅΩ&αβγδεζηθικλμνξοπρστυφχψωΔℓΩ_]", self.lemma):
-            sErr += 'premier caractère inconnu: ' + self.lemma[0]
+        if re.match(r"^\s", self.lemma):
+            sErr += 'premier caractère un espace dans <' + self.lemma + '>'
         if re.search(r"\s$", self.lemma):
             sErr += 'espace en fin de lemme'
         if re.match(r"v[0123]", self.po) and not re.match(r"[eas_][ix_][tx_][nx_][pqreuvx_][mx_][ex_z][ax_z]\b", self.po[2:]):
@@ -1216,7 +1216,7 @@ class Flexion:
         "ipre": ":Ip", "iimp": ":Iq", "ipsi": ":Is", "ifut": ":If",
         "spre": ":Sp", "simp": ":Sq", "cond": ":K", "impe": ":E",
         "1sg": ":1s", "1isg": ":1ś", "1jsg": ":1ŝ", "2sg": ":2s", "3sg": ":3s", "1pl": ":1p", "2pl": ":2p", "3pl": ":3p", "3pl!": ":3p!",
-        "prepv": ":Rv", "prep": ":R", "loc.prep": ":Ŕ",
+        "prepv": ":Rv", "prep": ":R", "loc.prep": ":Ŕ", "loc.prepv": "Ŕ",
         "detpos": ":Dp", "detdem": ":Dd", "detind": ":Di", "detneg": ":Dn", "detex": ":De", "det": ":D",
         "advint": ":U",
         "prodem": ":Od", "proind": ":Oi", "proint": ":Ot", "proneg": ":On", "prorel": ":Or", "proadv": ":Ow",
@@ -1225,7 +1225,8 @@ class Flexion:
         "prn": ":M1", "patr": ":M2", "loc.patr": ":Ḿ2", "npr": ":MP", "nompr": ":NM",
         "pfx": ":Zp", "sfx": ":Zs",
         "div": ":H",
-        "err": ":#",
+        "err": ":F",
+        "ponc": ":@p", "sign": ":@s",
         # LEX
         "symb": ";S"
     }
