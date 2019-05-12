@@ -386,18 +386,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xParagraphList.appendChild(xNode);
     }
 
-    _copyToClipboard (sText)  {
-        // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
-        function setClipboardData (xEvent) {
-            document.removeEventListener("copy", setClipboardData, true);
-            xEvent.stopImmediatePropagation();
-            xEvent.preventDefault();
-            xEvent.clipboardData.setData("text/plain", sText);
-        }
-        document.addEventListener("copy", setClipboardData, true);
-        document.execCommand("copy");
-    }
-
     copyTextToClipboard () {
         this.startWaitIcon();
         try {
@@ -409,7 +397,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             for (let xNode of xElem.getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
-            this._copyToClipboard(sText);
+            oGrammalecte.sendTextToClipboard(sText);
             window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000);
         }
         catch (e) {
