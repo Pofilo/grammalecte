@@ -12191,22 +12191,22 @@ TEST: Cela aboutira sur une contractualisation coûteuse pour organiser cette di
 
 __gn_la_1m__
     ,  la  *WORD
-        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|[1-3][sp]|Y)") -2>> le               # Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|M|[1-3][sp]|Y)") -2>> le             # Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p") -3>> =suggFemSing(\3)                  # Accord de nombre erroné : « \3 » devrait être au singulier.
 
     *WORD  la  *WORD
         <<- /gn/ morph(\2, ":D") >>>
-        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|[1-3][sp]|Y)")
-            or ( morph(\3, ":[NA].*:m", ":[fe]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
+        <<- /gn/ morph(\3, ":[NA].*:m", ":(?:e|f|P|G|W|M|[1-3][sp]|Y)")
+            or ( morph(\3, ":[NA].*:m", ":[Mfe]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":(?:Rv|C)") and morph(\3, ":Y")) )
         -2>> le                                                                             # Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
-            or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
+            or ( morph(\3, ":[NA].*:p", ":[Msi]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
         -3>> =suggFemSing(\3)                                                               # Accord de nombre erroné : « \3 » devrait être au singulier.
 
     <start>  la  *WORD
-        <<- /gn/ morph(\3, ":[NA].*:m", ":[efPGWY]") -2>> le                                # Accord de genre erroné : « \3 » est masculin.
+        <<- /gn/ morph(\3, ":[NA].*:m", ":[efPGWMY]") -2>> le                               # Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemSing(\3, True)                    # Accord de genre erroné : « \2 » est un déterminant féminin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggFemSing(\3)       # Accord de nombre erroné : « \3 » devrait être au singulier.
 
@@ -12219,6 +12219,7 @@ TEST: de {{la}} vin                                           ->> le
 TEST: {{la}} {{véhicule}}
 TEST: {{La}} {{pris}}
 TEST: la force de la {{formes}} parfaite
+TEST: à la Richard Nixon Foundation
 TEST: à ne plus se laisser faire la fois d’après
 TEST: il pense à la fois où nous avons eu cet accident idiot.
 
