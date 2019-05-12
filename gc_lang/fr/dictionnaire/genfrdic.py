@@ -303,7 +303,7 @@ class Dictionnaire:
         with open(spDst+'/'+dTplVars['asciiName']+'.dic', 'w', encoding='utf-8', newline="\n") as hDst:
             hDst.write(str(nEntry)+"\n")
             for oEntry in self.lEntry:
-                if oEntry.di in dTplVars['subDicts'] and re.search(r"^[\w-]+$", oEntry.lemma):
+                if oEntry.di in dTplVars['subDicts'] and re.search(r"^[\w’'-]+$", oEntry.lemma):
                     hDst.write(oEntry.getHunspellLine(self, nMode, bSimplified))
 
     def writeAffixes (self, spDst, dTplVars, nMode, bSimplified):
