@@ -4421,6 +4421,9 @@ __pleo_pléonasmes_divers__
     vieilles hardes
         <<- /conf/ ->> hardes                                                               # Pléonasme.
 
+    [et|ou] voire
+        <<- /conf/ ->> voire|\1 voir                                                        # Pléonasme ou confusion.
+
     voire même
         <<- /conf/ ->> voire|même                                                           # Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
 
@@ -8619,14 +8622,18 @@ __conf_voir_voire__
             and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
         -1>> voire                      # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez “voire”.|https://fr.wiktionary.org/wiki/voire
 
-    [comme|lorque|puisque|quand|que|quoique|si]     (voire)
-    [ni|et|par|pour|sans]                           (voire)
-    [>aller|>falloir|>pouvoir|>vouloir]  ?[guère|jamais|pas|plus|point|rien]¿  (voire)
-        <<- /conf/ -1>> voir            # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
+    [comme|lorque|puisque|quand|que|quoique|si]                                 voire
+    [ni|par|pour|sans]                                                          voire
+    [>aller|>falloir|>pouvoir|>vouloir]  ?[guère|jamais|pas|plus|point|rien]¿   voire
+        <<- /conf/ --1>> voir           # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
+
+    [et|ou] voire
+        <<- /conf/ not morph(>1, ":A|>même/")
+        -1>> voir            # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
 
 TEST: Elles sont fatiguées, {{voir}} épuisées.
 TEST: Ce serait pour aider, ainsi que {{voire}} l’avancement du projet.
-TEST: il faut penser juste et {{voire}} vrai.
+TEST: il faut penser juste {{et voire}} vrai.
 TEST: Je ne vais jamais {{voire}} ces gens-là.
 TEST: Elles vont voir rouge en apprenant cet échec.
 TEST: Voir les enfants jouer ne me rend pas nostalgique.
@@ -8647,6 +8654,7 @@ TEST: les membres de l’équipage commencent à voir flou
 TEST: un travail qu’il préfère voir effectué par un spécialiste plutôt que par lui-même
 TEST: médicaments qui me donnent envie de vomir, qui m’abrutissent, qui me font voir flou
 TEST: nous allons voir différentes façons d’utiliser le film pour tourner en dérision sa politique
+TEST: mettre en place des projets à la philosophie différente, voire antagoniste
 
 
 # vieil / vieux
