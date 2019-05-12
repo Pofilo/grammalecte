@@ -12,7 +12,7 @@
 
 
 const sGrammalecteConjugueurHTML = `
-    <div style="float: right; margin: 10px 30px 0 0">
+    <div class="centered_bar">
         <input type="text" id="grammalecte_conj_verb" maxlength="40" value="" placeholder="entrez un verbe" autofocus />
         <div id="grammalecte_conj_button">Conjuguer</div>
     </div>

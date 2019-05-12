@@ -156,18 +156,21 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.switchContentOn(this.xGCPanelContent, this.xEditorButton);
         this.switchContentOff(this.xLxgPanelContent, this.xLxgButton);
         this.switchContentOff(this.xConjPanelContent, this.xConjButton);
+        this.xPanel.style.background = "";
     }
 
     showLexicographer () {
         this.switchContentOff(this.xGCPanelContent, this.xEditorButton);
         this.switchContentOn(this.xLxgPanelContent, this.xLxgButton);
         this.switchContentOff(this.xConjPanelContent, this.xConjButton);
+        this.xPanel.style.background = "";
     }
 
     showConjugueur () {
         this.switchContentOff(this.xGCPanelContent, this.xEditorButton);
         this.switchContentOff(this.xLxgPanelContent, this.xLxgButton);
         this.switchContentOn(this.xConjPanelContent, this.xConjButton);
+        this.xPanel.style.background = "linear-gradient(to bottom, hsla(0,0%,100%,1) 0%, hsla(0,0%,95%,1) 55%, hsla(0,0%,90%,1) 100%)";
         this.listenConj();
         if (!this.sVerb) {
             this.conjugateVerb("être");
