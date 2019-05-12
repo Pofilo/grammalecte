@@ -64,7 +64,7 @@ def load (sContext="Python", sColorType="aRGB"):
     try:
         _oSpellChecker = SpellChecker("${lang}", "${dic_main_filename_py}", "${dic_community_filename_py}", "${dic_personal_filename_py}")
         _sAppContext = sContext
-        _dOptions = dict(gc_options.getOptions(sContext))   # duplication necessary, to be able to reset to default
+        _dOptions = gc_options.getOptions(sContext).copy()   # duplication necessary, to be able to reset to default
         _dOptionsColors = gc_options.getOptionsColors(sContext, sColorType)
         _oTokenizer = _oSpellChecker.getTokenizer()
         _oSpellChecker.activateStorage()
@@ -168,7 +168,7 @@ def getOptions ():
 
 def getDefaultOptions ():
     "return the dictionary of default options"
-    return dict(gc_options.getOptions(_sAppContext))
+    return gc_options.getOptions(_sAppContext).copy()
 
 
 def getOptionsLabels (sLang):
@@ -186,7 +186,7 @@ def displayOptions (sLang):
 def resetOptions ():
     "set options to default values"
     global _dOptions
-    _dOptions = dict(gc_options.getOptions(_sAppContext))
+    _dOptions = getDefaultOptions()
 
 
 #### Parsing
@@ -1024,6 +1024,7 @@ def g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetM
 
 
 def g_tag_before (dToken, dTags, sTag):
+    "returns True if <sTag> is present on tokens before <dToken>"
     if sTag not in dTags:
         return False
     if dToken["i"] > dTags[sTag][0]:
@@ -1032,6 +1033,7 @@ def g_tag_before (dToken, dTags, sTag):
 
 
 def g_tag_after (dToken, dTags, sTag):
+    "returns True if <sTag> is present on tokens after <dToken>"
     if sTag not in dTags:
         return False
     if dToken["i"] < dTags[sTag][1]:
@@ -1040,10 +1042,12 @@ def g_tag_after (dToken, dTags, sTag):
 
 
 def g_tag (dToken, sTag):
+    "returns True if <sTag> is present on token <dToken>"
     return "aTags" in dToken and sTag in dToken["aTags"]
 
 
 def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
+    "checks if spaces between tokens is >= <nMin> and <= <nMax>"
     nSpace = dToken2["nStart"] - dToken1["nEnd"]
     if nSpace < nMin:
         return False
@@ -1053,6 +1057,7 @@ def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
 
 
 def g_token (lToken, i):
+    "return token at index <i> in lToken (or the closest one)"
     if i < 0:
         return lToken[0]
     if i >= len(lToken):
@@ -1156,6 +1161,7 @@ def g_define (dToken, lMorph):
 
 
 def g_define_from (dToken, nLeft=None, nRight=None):
+    "set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
     if nLeft is not None:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
     else:

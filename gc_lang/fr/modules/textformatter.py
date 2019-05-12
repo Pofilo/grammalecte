@@ -187,75 +187,79 @@ dReplTable = {
 }
 
 
-lOptRepl = [
-    ("ts_units", True),
-    ("start_of_paragraph", True),
-    ("end_of_paragraph", True),
-    ("between_words", True),
-    ("before_punctuation", True),
-    ("within_parenthesis", True),
-    ("within_square_brackets", True),
-    ("within_quotation_marks", True),
-    ("nbsp_before_punctuation", True),
-    ("nbsp_within_quotation_marks", True),
-    ("nbsp_within_numbers", True),
-    ("nnbsp_before_punctuation", False),
-    ("nnbsp_within_quotation_marks", False),
-    ("nnbsp_within_numbers", False),
-    ("nbsp_titles", False),
-    ("nbsp_before_symbol", True),
-    ("nbsp_before_units", True),
-    ("nbsp_repair", True),
-    ("add_space_after_punctuation", True),
-    ("add_space_around_hyphens", True),
-    ("add_space_repair", True),
-    ("erase_non_breaking_hyphens", False),
-    ("ts_apostrophe", True),
-    ("ts_ellipsis", True),
-    ("ts_n_dash_middle", True),
-    ("ts_m_dash_middle", False),
-    ("ts_n_dash_start", False),
-    ("ts_m_dash_start", True),
-    ("ts_quotation_marks", True),
-    ("ts_spell", True),
-    ("ts_ligature_ffi_on", False),
-    ("ts_ligature_ffl_on", False),
-    ("ts_ligature_fi_on", False),
-    ("ts_ligature_fl_on", False),
-    ("ts_ligature_ff_on", False),
-    ("ts_ligature_ft_on", False),
-    ("ts_ligature_st_on", False),
-    ("ts_ligature_fi_off", False),
-    ("ts_ligature_fl_off", False),
-    ("ts_ligature_ff_off", False),
-    ("ts_ligature_ffi_off", False),
-    ("ts_ligature_ffl_off", False),
-    ("ts_ligature_ft_off", False),
-    ("ts_ligature_st_off", False),
-    ("ordinals_exponant", False),
-    ("ordinals_no_exponant", True),
-    ("etc", True),
-    ("mh_interrogatives", True),
-    ("mh_numbers", True),
-    ("mh_frequent_words", True),
-    ("ma_word", True),
-    ("ma_1letter_lowercase", False),
-    ("ma_1letter_uppercase", False),
-]
+dDefaultOptions = {
+    "ts_units": True,
+    "start_of_paragraph": True,
+    "end_of_paragraph": True,
+    "between_words": True,
+    "before_punctuation": True,
+    "within_parenthesis": True,
+    "within_square_brackets": True,
+    "within_quotation_marks": True,
+    "nbsp_before_punctuation": True,
+    "nbsp_within_quotation_marks": True,
+    "nbsp_within_numbers": True,
+    "nnbsp_before_punctuation": False,
+    "nnbsp_within_quotation_marks": False,
+    "nnbsp_within_numbers": False,
+    "nbsp_titles": False,
+    "nbsp_before_symbol": True,
+    "nbsp_before_units": True,
+    "nbsp_repair": True,
+    "add_space_after_punctuation": True,
+    "add_space_around_hyphens": True,
+    "add_space_repair": True,
+    "erase_non_breaking_hyphens": False,
+    "ts_apostrophe": True,
+    "ts_ellipsis": True,
+    "ts_n_dash_middle": True,
+    "ts_m_dash_middle": False,
+    "ts_n_dash_start": False,
+    "ts_m_dash_start": True,
+    "ts_quotation_marks": True,
+    "ts_spell": True,
+    "ts_ligature_ffi_on": False,
+    "ts_ligature_ffl_on": False,
+    "ts_ligature_fi_on": False,
+    "ts_ligature_fl_on": False,
+    "ts_ligature_ff_on": False,
+    "ts_ligature_ft_on": False,
+    "ts_ligature_st_on": False,
+    "ts_ligature_fi_off": False,
+    "ts_ligature_fl_off": False,
+    "ts_ligature_ff_off": False,
+    "ts_ligature_ffi_off": False,
+    "ts_ligature_ffl_off": False,
+    "ts_ligature_ft_off": False,
+    "ts_ligature_st_off": False,
+    "ordinals_exponant": False,
+    "ordinals_no_exponant": True,
+    "etc": True,
+    "mh_interrogatives": True,
+    "mh_numbers": True,
+    "mh_frequent_words": True,
+    "ma_word": True,
+    "ma_1letter_lowercase": False,
+    "ma_1letter_uppercase": False
+}
 
 
 class TextFormatter:
     "Text Formatter: purge typographic mistakes from text"
 
     def __init__ (self):
-        for sOpt, lTup in dReplTable.items():
+        for _, lTup in dReplTable.items():
             for i, t in enumerate(lTup):
                 lTup[i] = (re.compile(t[0]), t[1])
 
     def formatText (self, sText):
         "returns formatted text"
-        for sOptName, bVal in lOptRepl:
+        for sOptName, bVal in dDefaultOptions.items():
             if bVal:
                 for zRgx, sRep in dReplTable[sOptName]:
                     sText = zRgx.sub(sRep, sText)
         return sText
+
+    def getDefaultOptions (self):
+        "returns default options"
+        return dDefaultOptions.copy()

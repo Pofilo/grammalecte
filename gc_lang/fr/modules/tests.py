@@ -24,6 +24,7 @@ def _fuckBackslashUTF8 (s):
 
 
 class TestDictionary (unittest.TestCase):
+    "Test du correcteur orthographique"
 
     @classmethod
     def setUpClass (cls):
@@ -47,6 +48,7 @@ class TestDictionary (unittest.TestCase):
 
 
 class TestConjugation (unittest.TestCase):
+    "Tests des conjugaisons"
 
     @classmethod
     def setUpClass (cls):
@@ -70,6 +72,7 @@ class TestConjugation (unittest.TestCase):
 
 
 class TestPhonet (unittest.TestCase):
+    "Tests des équivalences phonétiques"
 
     @classmethod
     def setUpClass (cls):
@@ -106,6 +109,7 @@ class TestPhonet (unittest.TestCase):
 
 
 class TestMasFemSingPlur (unittest.TestCase):
+    "Tests des masculins, féminins, singuliers et pluriels"
 
     @classmethod
     def setUpClass (cls):
@@ -121,6 +125,7 @@ class TestMasFemSingPlur (unittest.TestCase):
 
 
 class TestGrammarChecking (unittest.TestCase):
+    "Tests du correcteur grammatical"
 
     @classmethod
     def setUpClass (cls):
@@ -130,7 +135,7 @@ class TestGrammarChecking (unittest.TestCase):
 
     def test_parse (self):
         zOption = re.compile("^__([a-zA-Z0-9]+)__ ")
-        spHere, spfThisFile = os.path.split(__file__)
+        spHere, _ = os.path.split(__file__)
         with open(os.path.join(spHere, "gc_test.txt"), "r", encoding="utf-8") as hSrc:
             nError = 0
             for sLine in ( s for s in hSrc if not s.startswith("#") and s.strip() ):
@@ -216,6 +221,7 @@ class TestGrammarChecking (unittest.TestCase):
 from contextlib import contextmanager
 @contextmanager
 def timeblock (label, hDst):
+    "performance counter (contextmanager)"
     start = time.perf_counter()
     try:
         yield
@@ -230,20 +236,21 @@ def perf (sVersion, hDst=None):
     "performance tests"
     print("\nPerformance tests")
     gce.load()
-    aErrs = gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")
+    gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")
 
-    spHere, spfThisFile = os.path.split(__file__)
+    spHere, _ = os.path.split(__file__)
     with open(os.path.join(spHere, "perf.txt"), "r", encoding="utf-8") as hSrc:
         if hDst:
             hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
         for sText in ( s.strip() for s in hSrc if not s.startswith("#") and s.strip() ):
             with timeblock(sText[:sText.find(".")], hDst):
-                aErrs = gce.parse(sText)
+                gce.parse(sText)
         if hDst:
             hDst.write("\n")
 
 
 def main():
+    "start function"
     unittest.main()
 
 
