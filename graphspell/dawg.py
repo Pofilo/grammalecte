@@ -159,6 +159,12 @@ class DAWG:
         else:
             self.funcStemming = st.noStemming
 
+        # calculated later
+        self.nBytesNodeAddress = 1
+        self.nBytesArc = 0
+        self.nBytesOffset = 0
+        self.nMaxOffset = 0
+
         # build
         lWord.sort()
         oProgBar = ProgressBar(0, len(lWord))
