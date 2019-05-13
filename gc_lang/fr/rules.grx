@@ -2157,6 +2157,12 @@ __fusions_noms_communs__
     star [system|systems]
         <<- ~>> ␣
 
+    *NUM : *NUM
+        <<- space_after(\1, 0, 0) and space_after(\1, 0, 0) ~>> ␣
+
+    *NUM  ~^h[0-9][0-9]$
+        <<- space_after(\1, 0, 0) ~>> ␣
+
 
 __fusions_noms_propres__
     cac  40
@@ -2216,6 +2222,7 @@ __immunités__
 
     soit pour soit contre
         <<- %3>>
+
 
 
 @@@@
@@ -11575,6 +11582,12 @@ __purge_après_verbe__
         <<- ~2:0>> *
 
 
+    [>pouvoir|>savoir|>vouloir] mieux que personne @:[YG]
+    >avoir mieux que personne @:[QYG]
+    >être mieux que personne @:[QAYG]
+        <<- ~2:5>> *
+
+
 __purge_avant_adjectifs_adverbes__
     le  @:[NAQ].*:[me]¬:G  le  plus  @:A.*:[me]
         <<- ~3:4>> *
@@ -11843,7 +11856,7 @@ __purge_locutions_verbales__
     [>mettre|>remettre] à [bas|dos|flot|jour|niveau|nu|plat|terre]
     [>mettre|>remettre] l’ [écart|épreuve]
     [>mettre|>remettre] au [point|pas]
-    [>mettre|>remettre] en [avant|bouche|demeure|garde|jeu|lumière|œuvre|place|scène|terre]
+    [>mettre|>remettre] en [avant|branle|bouche|demeure|garde|jeu|lumière|mouvement|œuvre|place|scène|terre]
     >mourir jeune
     [>naître|>naitre] sous x
     >percer à jour
@@ -12054,6 +12067,7 @@ TEST: Ça fait sens.
 TEST: il faut recruter des administratrices système
 TEST: Cette politique spctacle est indigne de notre démocratie.
 TEST: Ils sont vent debout contre cette politique de renoncement
+TEST: qui sait mieux que personne orchestrer une campagne de promotion médiatique
 
 
 
@@ -18606,17 +18620,18 @@ TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
 __imp_union_le_la_leur__
     *WORD  en
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  en
         <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|P|B|3[sp]|D|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{restons en}} là.
 TEST: Intercède en ma faveur
 TEST: Même l’implacable guerrier-capitaine de la Fédération, James T. Kirk, apprend en rechignant à enterrer le phaser avec les bâtards Klingons qui ont tué son fils.
+TEST: Terminons en réservant une place de choix à l’un des relais les plus fervents de la pensée
 
 
 __imp_laisser_le_la_les_infi__
