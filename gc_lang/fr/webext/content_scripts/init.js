@@ -228,7 +228,7 @@ const oGrammalecte = {
 
     sendTextToClipboard (sText)  {
         // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
-        // It doesn’t seem to work anymore
+        // It doesn’t seem to work anymore on Firefox. Still OK on Chrome.
         //console.log(sText);
         function setClipboardData (xEvent) {
             document.removeEventListener("copy", setClipboardData, true);
