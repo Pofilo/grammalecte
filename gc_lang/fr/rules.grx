@@ -10502,8 +10502,6 @@ __purge_locutions__
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     secondo
     selon toute vraisemblance
-    semblait-il
-    semble-t-il
     sens dessus dessous
     [seule|seul] à [seule|seul]
     si [bas|haut|longtemps|nécessaire|possible|soudain]
@@ -11818,6 +11816,9 @@ __purge_locutions_potentielles__
     un jour  @¬:A.*:[me]:[si]
         <<- not morph(<1, ":R|>d’/") ~1:2>> *
 
+    semblait-il
+    semble-t-il
+        <<- not value(<1, "|ça|cela|ceci|me|te|lui|nous|vous|leur|") ~>> *
 
 __purge_tous_deux_trois__
     >faire tous [deux|trois]
@@ -12104,6 +12105,7 @@ TEST: qui sait mieux que personne orchestrer une campagne de promotion médiatiq
 TEST: la cathédrale a pour nous cessé d’être cette vague masse architecturale qui se découpe parfois au coin des rues
 TEST: Le très gros problème qui se pose est d’abord celui de la “masse” comme vous dites.
 TEST: la philosophie antique (que j’aime beaucoup par ailleurs), opposant le matériel et le spirituel, le corps et l’esprit, a pour longtemps mal formaté l’esprit humain
+TEST: Cela vous semble-t-il être trop peu de chose ?
 
 
 
@@ -15974,6 +15976,7 @@ __infi_de_verbe__
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
             and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not tag_before(\1, "ce_que")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: d’en {{parlé}} sans cesse
@@ -16005,6 +16008,8 @@ TEST: Il n’y a rien de mécanique, ni de prédestiné.
 TEST: il convient donc de ne point les négliger.
 TEST: Il se moque de nous en fournissant de pareilles marchandises frelatées.
 TEST: qu’y a-t-il de changé, de perturbé, de modifié ?
+TEST: ce qu’ils ont d’obscur, d’exagéré et parfois de sec et de figé
+TEST: ce qu’il y a de compliqué dans ces affaires.
 
 
 __infi_y_verbe!3__
