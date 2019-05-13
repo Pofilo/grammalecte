@@ -749,6 +749,15 @@ TEST: Totalement {{con(ne)}}                                            ->> con�
 TEST: un ou une {{intellectuel.le}}                                     ->> intellectuel·le
 
 
+__[i](typo_écriture_invariable)__
+    ({w_3})([-·–—.•⋅/]s|[(]s[)])  @@0,$
+        <<- ~>> =normalizeInclusiveWriting(\0)
+        <<- option("typo") and option("eepi") and not \0.endswith("·s") ->> \1·s                    # Écriture invariable. Utilisez un point médian.
+
+TEST: la ou les {{fille(s)}}                                            ->> fille·s
+TEST: le ou les patron·s
+
+
 
 !!
 !!
@@ -1872,7 +1881,10 @@ __da_groupe_nominal__
         <<- =>> exclude(\2, ":[123][sp]")
 
     plein  [de|d’]  @:[AN]
-        <<- not morph(<1, ":V0e") =>> =define(\1, [":G"])
+        <<- not morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, [":G"])
+
+    source [de|d’]
+        <<- morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> define(\1, [":LV"])
 
     tout feu ?,¿ tout >flamme
         <<- ~>> ␣
@@ -1890,6 +1902,7 @@ TEST: c’est à n’y plus rien comprendre.
 TEST: Elle était tout feu, tout flamme.
 TEST: Ses rencards finissent par devenir lassants
 TEST: trois espèces de chauve-souris dont une est éteinte
+TEST: Ils sont source de conflits
 
 
 
@@ -2155,6 +2168,7 @@ __fusions_noms_communs__
     machine [learning|learnings]
     standing >ovation
     star [system|systems]
+    black [>bloc|>block]
         <<- ~>> ␣
 
     *NUM : *NUM
@@ -3731,9 +3745,13 @@ __tu_noms_propres__
     Saône et Loire
         <<- /tu/ ->> Saône-et-Loire                                                                 # Il manque un trait d’union.
 
+    [Saint|Sainte] ~^[A-ZÉÈÎ]
+        <<- /tu/ not value(<1, "|<start>|") and morph(\2, ":M") ->> \1-\2
+        # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté, d’un lieu… S’il s’agit d’une personne, écrivez “saint” ou “sainte” sans majuscule, sans trait d’union.
+
     [St|Ste]  ~^[A-ZÉÈÎ]
         <<- /tu/ ->> \1-\2
-        # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté… S’il s’agit d’une personne, écrivez “saint” ou “sainte” sans majuscule, sans trait d’union.
+        # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté, d’un lieu… S’il s’agit d’une personne, écrivez “saint” ou “sainte” sans majuscule, sans trait d’union.
 
 TEST: J’ai vu {{Anne Marie}}.
 TEST: Émigrer au {{Royaume Uni}}
@@ -3759,6 +3777,7 @@ TEST: {{Jésus Christ}}, dernier héros de l’Antiquité
 TEST: Elle a quitté {{Jean Paul}}.
 TEST: {{Marie Hélène}} s’est perdue dans le dédale
 TEST: Elle va prier à {{Ste Catherine}}.
+TEST: La station {{Saint Georges}}
 
 
 __tu_nombres__
@@ -4944,7 +4963,7 @@ __non_verbe_après_préverbes__
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
+    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
     se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|qu[e’])/
     s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|ils?|qu[e’])/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
@@ -4975,6 +4994,7 @@ TEST: N’oublient-ils pas ce qu’ils étaient autrefois…
 TEST: Ne presque jamais réussir un plat aussi simple, c’est de l’incompétence pure et simple.
 TEST: c’est vous les journalistes qui l’avez écrit
 TEST: C’est nous les patrons
+TEST: me revoilà
 
 
 __loc_notre_père_qui_es_au_cieux__
@@ -7294,6 +7314,9 @@ TEST: il faut en finir avec le {{laissez-aller}}.
 
 # la / là
 __conf_la_là!7__
+    la ou les
+        <<- %1>>
+
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
     la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute)/
         <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
@@ -7310,6 +7333,7 @@ TEST: c’est la moins habile de toutes
 TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
 TEST: Il fait remonter à la toute première expérience humaine de maîtrise.
 TEST: l’existence d’un fichage la concernant
+TEST: avec la ou les indications qu’on recontre ici et là.
 
 
     [celle-la|celles-la|celui-la|ceux-la]
@@ -9098,14 +9122,6 @@ __tout_nom__
     tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
         <<- /gn/ morph(<1, ":R", ":D.*:p") -2>> =suggMasSing(\2, True)                              # Accord avec “tout” : “\2” devrait être au masculin singulier.
 
-__toute_nom__
-    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
-    de          toute  @:[NA].*:[mp]¬:(?:W|P|G|M|Y|[fe]:[is])
-        <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulie
-
-    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|P|[fe]:[is])
-        <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
-
 __tous_nom__
     [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|P|G|M|[me]:[ip]|3p)
     de          tous  @:[NA].*:[fs]¬:(?:W|P|G|M|Y|[me]:[ip]|3[sp])
@@ -9114,18 +9130,30 @@ __tous_nom__
     tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|P|3[sp]|[me]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        # Accord avec “tous” : “\2” devrait être au masculin pluriel.
 
+__toute_nom__
+    [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
+    de          toute  @:[NA].*:[mp]¬:(?:W|P|G|M|Y|[fe]:[is])
+        <<- /gn/ -3>> =suggFemSing(\3, True)                                                        # Accord avec “toute” : “\3” devrait être au féminin singulie
+        <<- /gn/ morph(\3, ":[NA].*:f:p") -2>> toutes                                               # Accord avec “\3”.
+
+    toute  @:[NA].*:[mp]¬:(?:W|G|M|Y|P|[fe]:[is])
+        <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
+        <<- /gn/ __also__ and morph(\2, ":[NA].*:f:p") -1>> toutes                                  # Accord avec “\2”.
+
 __toutes_nom__
     [<start>|,] toutes  @:[NA].*:[ms]¬:(?:W|G|M|[fe]:[ip])
     de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
         <<- /gn/ -3>> =suggFemPlur(\3, True)                                                        # Accord avec “toutes” : “\3” devrait être au féminin pluriel.
+        <<- /gn/ morph(\3, ":[NA].*:f:s") -2>> toute                                                # Accord avec “\3”.
 
     toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|P|[fe]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggFemPlur(\2, True)                                        # Accord avec “toutes” : “\2” devrait être au féminin pluriel.
+        <<- /gn/ __also__ and morph(\2, ":[NA].*:f:s") -1>> toute                                   # Accord avec “\2”.
 
 TEST: Tout {{hommes}}
 TEST: De tous {{âge}} !
-TEST: avec toutes {{femme}}                                     ->> femmes
-TEST: sur toutes {{armure}}                                     ->> armures
+TEST: avec {{toutes}} {{femme}}
+TEST: sur {{toutes}} {{armure}}
 TEST: Toute {{époux}} doit faire preuve de bienveillance
 TEST: Il se souvient de toute mon histoire.
 TEST: Tout les sépare.
@@ -10911,18 +10939,18 @@ __purge_conditionnelle__
     comme [celui-ci|celui-là|celle-ci|celle-là]
     comme le [mien|tien|sien|nôtre|vôtre|leur]
     comme la [mienne|tienne|sienne|nôtre|vôtre|leur]
-        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:3s)") ~>> *
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|3s)") ~>> *
 
     comme nous
-        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:1p)") ~>> *
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|1p)") ~>> *
 
     comme vous
-        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:2p)") ~>> *
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|2p)") ~>> *
 
     comme [eux|elles]
     comme [celui-ci|celui-là|celle-ci|celle-là]
     comme les [miens|tiens|siens|miennes|tiennes|siennes|nôtres|vôtres|leurs]
-        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|:3p)") ~>> *
+        <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|3p)") ~>> *
 
     d’ entrée                           @¬:A:[fe]:[si]
         <<- ~1:2>> *
@@ -11583,11 +11611,14 @@ __purge_après_verbe__
     @:[123]  ?pas¿  ?[fort|très|super]¿  [bien|mal]
         <<- ~2:0>> *
 
+    [>pouvoir|>savoir|>vouloir] mieux que personne ?@:W¿ @:[YG]
+    >avoir                      mieux que personne ?@:W¿ @:[QYG]
+    >être                       mieux que personne ?@:W¿ @:[QAYG]
+        <<- ~2:-2>> *
 
-    [>pouvoir|>savoir|>vouloir] mieux que personne @:[YG]
-    >avoir mieux que personne @:[QYG]
-    >être mieux que personne @:[QAYG]
-        <<- ~2:5>> *
+    >avoir  pour [lui|nous|vous|longtemps]  ?@:W¿  @:Q
+    >être   pour [lui|nous|vous|longtemps]  ?@:W¿  @:[QA]
+        <<- ~2:-2>> *
 
 
 __purge_avant_adjectifs_adverbes__
@@ -12070,6 +12101,9 @@ TEST: il faut recruter des administratrices système
 TEST: Cette politique spctacle est indigne de notre démocratie.
 TEST: Ils sont vent debout contre cette politique de renoncement
 TEST: qui sait mieux que personne orchestrer une campagne de promotion médiatique
+TEST: la cathédrale a pour nous cessé d’être cette vague masse architecturale qui se découpe parfois au coin des rues
+TEST: Le très gros problème qui se pose est d’abord celui de la “masse” comme vous dites.
+TEST: la philosophie antique (que j’aime beaucoup par ailleurs), opposant le matériel et le spirituel, le corps et l’esprit, a pour longtemps mal formaté l’esprit humain
 
 
 
@@ -18537,7 +18571,7 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 __imp_union_moi__
     *WORD  moi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|je|j’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  moi
@@ -18548,6 +18582,7 @@ TEST: {{Apportez moi}} ce dictionnaire
 TEST: tu me dois bien ça, {{Achèves moi}}, je t’en prie.
 TEST: explique ça mieux, {{Définit moi}} ça en termes intelligibles.
 TEST: Viens moi je m’ennuie.
+TEST: je suis moi et tu es toi.
 
 
 __imp_union_toi__
@@ -19289,18 +19324,18 @@ __tag_usage_pronominal__
 
 
 __énumérations_substantifs__
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
-        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
-    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
-        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
-        || ?,¿ ainsi [que|qu’] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+    [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+        || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
         <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") and morph(\3, ":[NAM]") />> enum
 
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
-        || [,|et|ou] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
-    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines] (*WORD)
-        || ?,¿ ainsi [que|qu’] [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur] (*WORD)
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+        || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+    <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
+        || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
         <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> enum
 
 
@@ -19391,7 +19426,7 @@ TEST: Veillez votre mari qui est malade.
 !!
 
 __inte_union_je__
-    [<start>|,]  ~..[éèe]$  je
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~..[éèe]$  je
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GW]") and morph(>1, ":|<end>|,", ":1s")
         -2:3>> =\2[:-1]+"é-je"                                                                      # Forme interrogative ? Mettez un trait d’union.
 
@@ -19399,7 +19434,7 @@ __inte_union_je__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1[sŝś]", ":[GNW]") and not value(\1, "|je|j’|il|elle|") and morph(>1, ":|<end>|,", ":1s")
         -2:3>> =\2[:-1]+"é-je"                                                                      # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,]  ~.[is]$  je
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~.[is]$  je
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GW]") and morph(>1, ":|<end>|,", ":1s")
         -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
 
@@ -19413,7 +19448,7 @@ TEST: {{ai je}} enfin trouvé la réponse à mes questions ?
 
 
 __inte_union_tu__
-    [<start>|,]  ~.s$  tu
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~.s$  tu
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GW]") and morph(>1, ":|<end>|,", ":2s")
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
 
@@ -19426,7 +19461,7 @@ TEST: et toi, {{as tu}} découvert le secret de l’immortalité ?
 
 
 __inte_union_il_on__
-    [<start>|,]  ~.[td]$  [il|on]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~.[td]$  [il|on]
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]") and morph(>1, ":|<end>|,", ":3s")
         -2:3>> \2-\3                                                                                   # Forme interrogative ? Mettez un trait d’union.
 
@@ -19440,7 +19475,7 @@ TEST: Pourquoi le message de Jean {{était‐il}} très radical pour son époque
 
 
 __inte_union_elle__
-    [<start>|,]  ~.[td]$  elle
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~.[td]$  elle
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]") and morph(>1, ":|<end>|,", ":3s")
         -2:3>> \2-elle                                                                              # Forme interrogative ? Mettez un trait d’union.
 
@@ -19454,11 +19489,11 @@ TEST: C’était elle qui avait pris le contrôle.
 
 
 __inte_union_nous!6__
-    [<start>|,]  ~ons$  nous
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~ons$  nous
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and morph(>1, ":|<end>|,", ":1p")
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,]  sommes  nous
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  sommes  nous
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
@@ -19471,7 +19506,7 @@ TEST: Ne {{sommes nous}} pas des dieux ?
 
 
 __inte_union_vous__
-    [<start>|,]  ~..e[zs]$  vous
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~..e[zs]$  vous
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and morph(>1, ":|<end>|,", ":2p")
         -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
@@ -19486,11 +19521,11 @@ TEST: Veuillez vous instruire avant de contester ces mesures.
 
 
 __inte_union_ils__
-    [<start>|,]  ~nt$  ils
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~[eo]nt$  ils
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]") and morph(>1, ":|<end>|,", ":3p")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~nt$  ils
+    *WORD  ~[eo]nt$  ils
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|") and morph(>1, ":|<end>|,", ":3p")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
@@ -19498,11 +19533,11 @@ TEST: {{Viendront ils}} demain ?
 
 
 __inte_union_elles__
-    [<start>|,]  ~nt$  elles
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~[eo]nt$  elles
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]") and morph(>1, ":|<end>|,", ":3p")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    *WORD  ~nt$  elles
+    *WORD  ~[eo]nt$  elles
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|") and morph(>1, ":|<end>|,", ":3p")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
@@ -19885,7 +19920,8 @@ TEST: comme si son pays n’avait rien appris du fascisme ni rien reçu de l’E
 
 
 __conj_nul_nulle__
-    [nul|nulle]  ?@:[NA]¿  ?qui¿  @:V¬:(?:3s|P|G|N.*:[si])
+    [nul|nulle]  ?@:[NA]¿       @:V¬:(?:3s|P|G|[NAQ].*:[si])
+    [nul|nulle]  ?@:[NA]¿  qui  @:V¬:(?:3s|P|G|[NA].*:[si])
         <<- /conj/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -19894,10 +19930,12 @@ TEST: nulle n’{{iront}} là-bas
 TEST: nulle femme ne {{sauraient}} le faire
 TEST: nul homme ne {{sauraient}} s’y prendre
 TEST: nulle partie du corps ne peut être considérée comme le siège de l’âme.
+TEST: un silence que nul faste, nulle cagnotte, nul don défiscalisé n’achètera jamais.
 
 
 __conj_aucun_aucune__
-    [aucun|aucune]  ?@:[NA]¿  ?qui¿  @:V¬:(?:3s|P|G|[NA].*:[si])
+    [aucun|aucune]  ?@:[NA]¿       @:V¬:(?:3s|P|G|[NAQ].*:[si])
+    [aucun|aucune]  ?@:[NA]¿  qui  @:V¬:(?:3s|P|G|[NA].*:[si])
         <<- /conj/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -19909,6 +19947,7 @@ TEST: aucune partie du corps ne peut être considérée comme le siège de l’�
 TEST: Aucun terme attesté dans des textes antiques, mésopotamien ou autre, ne sert à désigner la Mésopotamie au sens moderne du terme
 TEST: signalons qu’aucun fait avéré ne correspond à ce qui se propage
 TEST: Aucune solution envisagée n’a engendré de résultat positif.
+TEST: Aucun homme parti à la guerre ne revient
 
 
 __conj_vinfi_suj__
@@ -20269,7 +20308,7 @@ TEST: Toutes les personnes candidates seront évaluées plusieurs fois.
 
 
 __conj_des_nom__
-    [<start>|,]  des  @:[NA].*:[pi]  @:V¬:(?:3p|P|G|Q|A.*:[pi]|V[23].*:Y)
+    [<start>|,]  des  @:[NA].*:[pi]  @:V¬:(?:3p|P|G|Q|Y|A.*:[pi]|V[23].*:Y)
         <<- /conj/ morph(>1, ":(?:R|D.*:p)|>au/|<end>|>,") >>>
         <<- /conj/ not morph(\4, ":[NA]") -4>> =suggVerb(\4, ":3p")                                 # Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ __else__ and not checkAgreement(\3, \4) -4>> =suggVerb(\4, ":3p", suggPlur)      # Conjugaison erronée. Accord avec “\2 \3…”. Le verbe devrait être à la 3ᵉ personne du pluriel.
@@ -20281,6 +20320,7 @@ TEST: Des hommes {{arrive}}.
 TEST: Des femmes ne {{demande}} rien.
 TEST: des femmes qui {{conduise}} la marche du monde.
 TEST: des démocrates geindre à propos de l’absence pourtant parlante de délégation
+TEST: On vit très vite, en quelques jours, les gens installer des jeux d’argent sur les trottoirs, des femmes se prostituer, des commerces illicites…
 
 
 #### NOMS PROPRES
@@ -20360,6 +20400,7 @@ TEST: où vivent la majorité des immigrés et des enfants d’immigrés
 TEST: Que deviennent la vitesse, le courant, ainsi que le rendement ?
 TEST: Le complexe argilo-humique est mieux hydraté que ne pourraient l’être les micelles d’argile ou humiques
 TEST: C’est ce qu’avancent l’épidémiologiste britannique et sa consœur
+TEST: il en va de l’image d’une capitale que peuplent l’égoïsme, la cupidité, les logements vides, la chasse aux pauvres et à l’étranger, les divertissements frivoles.
 
 
 __conj_lxquel_verbe_sujet_sing__
@@ -21090,7 +21131,7 @@ TEST: Nous avons partie gagnée.
 TEST: de a à z
 TEST: de A à Z
 TEST: Le point S′ est sur la droite. (Il s’agit ici du caractère “prime”.)
-TEST: le ou les élément(s).
+TEST: le ou les élément·s.
 
 ## version 0.4.7
 TEST: rien de dérangé
