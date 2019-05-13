@@ -5290,11 +5290,17 @@ __conf_préverbes__
     me [me|m’|te|t’|se|s’]
         <<- /conf/ not \1.isupper() -1>> ne                             # Incohérence. Erreur de frappe ou de numérisation ?
 
-    te [me|m’|te|t’|se|s’]
-        <<- /conf/ not \1.isupper() ->> \1                              # Incohérence.
+    te [me|te|se]
+        <<- /conf/ not \1.isupper() ->> \1|\2                           # Incohérence.
 
-    se [me|m’|te|t’|se|s’]
-        <<- /conf/ not \1.isupper() ->> \1                              # Incohérence.
+    te [m’|t’|s’]
+        <<- /conf/ not \1.isupper() ->> \1 |\2                          # Incohérence.
+
+    se [me|te|se]
+        <<- /conf/ not \1.isupper() ->> \1|\2                           # Incohérence.
+
+    se [m’|t’|s’]
+        <<- /conf/ not \1.isupper() ->> \1 |\2                          # Incohérence.
 
     [de|du] d’ *WORD
         <<- /conf/ not \1.isupper() and \3.islower() -1:2>> d’          # Incohérence.
