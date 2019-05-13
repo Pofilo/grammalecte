@@ -5808,7 +5808,9 @@ TEST: une dérive à vau-l’eau.
 
 
 __conf_à_a_locutions__
+    a ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
+    a armes égales
     a aucun prix
     a autrui
     a autre chose
@@ -6421,8 +6423,13 @@ TEST: à qui ce texte doit tant, à qui ce texte est dédié
 __conf_ce_à_quoi_qui__
     se [à|a] [quoi|koi]
     ce a [quoi|koi]
-    ce à koi
+    ce à [koi]
         <<- /conf/ ->> ce à quoi                                # Confusion.|https://fr.wiktionary.org/wiki/ce_%C3%A0_quoi
+
+    se [à|a] [qui|ki|chi]
+    ce a [qui|ki|chi]
+    ce à [ki|chi]
+        <<- /conf/ ->> ce à qui                                 # Confusion.
 
 TEST: c’est {{se a quoi}} il pensait qui le minait.
 
@@ -9499,7 +9506,9 @@ __purge_locutions__
     , [oui|non] ,
     , entre autres ?choses¿ ,
     à *NUM  %
+    à ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
+    à armes égales
     à aucun prix
     à autre chose
     à bas [cout|coût|prix]
@@ -10265,6 +10274,7 @@ __purge_locutions__
     la mort dans l’ âme
     le cas échéant
     le moins du monde
+    le moment venu
     le [moins|plus] [tôt|tard|souvent]
     le [moins|plus] [de|d’] [temps|monde] possible
     le [moment|jour] venu
@@ -11028,6 +11038,9 @@ __purge_conditionnelle__
 
     un temps @:A¬:A.*:[me]:[si]
         <<- ~1:2>> *
+
+    vent debout
+        <<- not morph(<1, ":D.*:[me]:[si]") ~>> *
 
     [vu|vue|vus|vues]  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]
     [vu|vue|vus|vues]  ,  de  [mes|tes|ses|nos|vos|leurs]  yeux  [vu|vue|vus|vues]  ,
@@ -11835,7 +11848,7 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ à la légère
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
     >prendre bonne note
-    >prendre [congé|conscience|contact|ombrage|note|peur|possession|racine|soin|vie]
+    >prendre [congé|conscience|contact|ombrage|note|peur|position|possession|racine|soin|vie]
     >prendre de [court|vitesse]
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
@@ -12034,6 +12047,7 @@ TEST: À mes yeux, aucune cathédrale, pyramide, musée, arc de triomphe, Colis�
 TEST: Ça fait sens.
 TEST: il faut recruter des administratrices système
 TEST: Cette politique spctacle est indigne de notre démocratie.
+TEST: Ils sont vent debout contre cette politique de renoncement
 
 
 
@@ -16482,7 +16496,7 @@ TEST: Ce sont des biens de peu de valeur.
 __conj_nous2__
     <start>  nous   @:V.*:3p¬:[GPY]
         <<- /conj/ \3.endswith("ont") and not value(>1, "|ils|elles|")
-            and ( (morph(\3, ":V...t_") and value(>1, "le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|leur")) or morph(\3, ":V..i__") )
+            and ( (morph(\3, ":V...t_") and value(>1, "le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|leur") and not tag(>1, "enum")) or morph(\3, ":V..i__") )
         -3>> =suggVerb(\3, ":1p")                                       # Conjugaison problement erronée si “\2” est bien le sujet de “\3” et non un pronom objet.
 
     [<start>|,]  nous  @:V¬:(?:1[sp]|2s|3[sp]|Y|P|G)
@@ -16503,6 +16517,8 @@ TEST: Nous avons également sous-estimé l’état désastreux dans lequel se tr
 TEST: Tu nous fais ton baratin, nous prends pour des cons, nous donnes des leçons de morale, nous assènes ta vision comme si c’était une révélation du ciel.
 TEST: NOUS CONTACTER
 TEST: De ces pensées froides, terribles, implacables, nous viennent les plus sombres rêves imaginables.
+TEST: Alors, nous diront le chien et le chat, vous êtes des tyrans.
+TEST: Ainsi, nous appartiendront les plus belles pièces de cette collection.
 
 
 ## 2pl
