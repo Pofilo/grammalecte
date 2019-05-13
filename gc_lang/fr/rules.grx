@@ -7510,11 +7510,13 @@ TEST: Toutes les agences évaluent de façon ad hoc la satisfaction de leur clie
 
 # on / ont
 __conf_on_ont__
-    on  @:W¬:3s
+    on  @:W¬:(?:3s|Ov)
+    on  [de|d’|du|des|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|plusieurs|certains|certaines]
         <<- /conf/ not morph(<1, ":V.*:3s") and not before0("’$")
         -1>> ont                                                    # Confusion probable : “avoir” à la 3ᵉ personne du pluriel du présent s’écrit “ont”.
 
 TEST: ces gens {{on}} {{souvent}} tort.
+TEST: {{on}} {{des}} drôles de manières
 TEST: Je voulais qu’on soit ensemble.
 
 
@@ -16438,12 +16440,27 @@ TEST: __ocr__ la longueur de la circonférence étant égale à…
 
 !!!! Confusions                                                                                   !!
 
+## on / ont
+__conf_on_ont2__
+    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  *WORD  on  @:[QDRY]¬:(?:Ov|3s)
+        <<- /conf/ morph(\3, ":[NA].*:[pi]", ":G") -4>> ont         # Confusion probable. Accord avec “\2 \3…”. Pour le verbe avoir à la 3ᵉ personne du pluriel, écrivez “ont”.
+
+    <start>  [certains|certaines|ceux-ci|ceux-là|celles-ci|celles-là|plusieurs]  on  @:[QDRY]¬:(?:Ov|3s)
+        <<- /conf/ -3>> ont                                         # Confusion probable. Accord avec “\2”. Pour le verbe avoir à la 3ᵉ personne du pluriel, écrivez “ont”.
+
+TEST: les Allemands {{on}} {{commencé}} la partie.
+TEST: ces emmerdeurs {{on}} {{une}} chance de cocu.
+TEST: ces gens on les connaît de vue.
+TEST: vos chiens {{on}} {{manger}} la pâtée du chat.
+TEST: certaines {{on}} {{mangé}} du lion
+
+
 ## ou / où
 __conf_det_nom_où_pronom__
     <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [je|j’|tu|il|on|ils]
     <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|ton|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs]  *WORD  ou  [elle|nous|vous|elles]
         || [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|lui|nous|vous|leur]
-        <<- /ppas/ morph(\3, ":[NA]", ":G")
+        <<- /conf/ morph(\3, ":[NA]", ":G")
         -4>> où                                             # Confusion probable. Pour évoquer un lieu ou un moment, écrivez “où”.|http://fr.wiktionary.org/wiki/o%C3%B9
 
 TEST: L’hôtel {{ou}} ils sont allés l’été dernier.
