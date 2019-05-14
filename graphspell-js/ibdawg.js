@@ -79,9 +79,11 @@ class SuggResult {
         lRes = char_player.filterSugg(lRes);
         if (this.sWord.gl_isUpperCase()) {
             lRes = lRes.map((sSugg) => { return sSugg.toUpperCase(); });
+            lRes = [...new Set(lRes)];
         }
         else if (this.sWord.slice(0,1).gl_isUpperCase()) {
             lRes = lRes.map((sSugg) => { return sSugg.slice(0,1).toUpperCase() + sSugg.slice(1); });
+            lRes = [...new Set(lRes)];
         }
         return lRes.slice(0, nSuggLimit);
     }
@@ -272,9 +274,8 @@ class IBDAWG {
                     return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord.gl_toCapitalize()));
                 }
                 return !!this.lookup(sWord.slice(0, 1).toLowerCase() + sWord.slice(1));
-            } else {
-                return !!this.lookup(sWord.toLowerCase());
             }
+            return !!this.lookup(sWord.toLowerCase());
         }
         if (sWord.slice(0,1).gl_isDigit()) {
             return true;
@@ -378,6 +379,10 @@ class IBDAWG {
                 return;
             }
             else if ( (sNewWord.length + sRemain.length == oSuggResult.sWord.length) && oSuggResult.sWord.toLowerCase().startsWith(sNewWord.toLowerCase()) && this.isValid(sRemain) ) {
+                if (this.sLangCode == "fr"
+                    && ["l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu"].includes(sNewWord.toLowerCase()) && char_player.aVowel.has(sRemain.slice(0,1))) {
+                    oSuggResult.addSugg(sNewWord+"’"+sRemain);
+                }
                 oSuggResult.addSugg(sNewWord+" "+sRemain);
             }
         }

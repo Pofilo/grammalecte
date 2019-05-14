@@ -13,6 +13,7 @@ from functools import wraps
 import time
 import json
 import binascii
+from collections import OrderedDict
 
 #import logging
 #logging.basicConfig(filename="suggestions.log", level=logging.DEBUG)
@@ -77,9 +78,10 @@ class SuggResult:
                     break
         lRes = list(cp.filterSugg(lRes))
         if self.sWord.isupper():
-            lRes = list(map(lambda sSugg: sSugg.upper(), lRes))
+            lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg.upper(), lRes))) # use dict, when Python 3.6+
         elif self.sWord[0:1].isupper():
-            lRes = list(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))  # dont’ use <.istitle>
+            # dont’ use <.istitle>
+            lRes = list(OrderedDict.fromkeys(map(lambda sSugg: sSugg[0:1].upper()+sSugg[1:], lRes))) # use dict, when Python 3.6+
         return lRes[:nSuggLimit]
 
     def reset (self):
@@ -337,6 +339,8 @@ class IBDAWG:
                     oSuggResult.addSugg(sNewWord+sTail, nDeep)
                 return
             if (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
+                if self.sLangCode == "fr" and sNewWord.lower() in ("l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu") and sRemain[0:1] in cp.aVowel:
+                    oSuggResult.addSugg(sNewWord+"’"+sRemain)
                 oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return
