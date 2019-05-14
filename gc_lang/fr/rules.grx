@@ -9569,6 +9569,7 @@ __purge_locutions_latines__
     ab          [absurdo|initio]
     ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
     ad          vitam æternam
+    de          [facto|jure|profondis]
     ex          [nihilo|cathedra|absurdo|abrupto]
     id          est
     in          [abstracto|extenso|extremis|fine|petto|situ|utero|vitro|vivo]
@@ -9995,7 +9996,7 @@ __purge_locutions__
     d’ une [minute|seconde] à l’ autre
     de-ci ?,¿ de-là
     [de|d’] *NUM %
-    [de|d’] [cesse|conserve|facto|fait|guingois|luxe|nouveau|permanence|partout|préférence|profundis|rechange|routine|surcroît|surcroit|visu]
+    [de|d’] [cesse|conserve|fait|guingois|luxe|nouveau|permanence|partout|préférence|rechange|routine|surcroît|surcroit|visu]
     [de|d’] A à Z
     [de|d’] bas en haut
     [de|d’] bas étage
@@ -20092,8 +20093,8 @@ TEST: Aucun homme parti à la guerre ne revient
 
 
 __conj_vinfi_suj__
-    [<start>|,]  @:Y  @:V¬:(?:3s|P|Q.*:[me]:[si]|Y|G|3p!|M)
-        <<- /conj/ not (value(\2, "|avoir|croire|être|devenir|redevenir|voir|sembler|paraître|paraitre|sentir|rester|retrouver|") and morph(\3, ":A"))
+    [<start>|,]  @:Y  @:V¬:(?:3s|P|Q|Y|G|3p!|M)
+        <<- /conj/ not (value(\2, "|avoir|croire|être|devenir|redevenir|voir|sembler|paraître|paraitre|sentir|rester|retrouver|") and morph(\3, ":[NA]"))
         -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: manger {{fais}} grossir.
@@ -20104,6 +20105,8 @@ TEST: Lire plus de 400 livres
 TEST: mais aussi se retrouver flanqués d’un grand débat national avec son lot de questionnements parachutés
 TEST: avancer, ne pas reculer, rester déterminés.
 TEST: les avoir consultées grâce à une personne y ayant accès sur le plan juridique.
+TEST: Être président d’une association demande beaucoup de temps.
+TEST: Venir vaincue ne lui épargna aucune indignité.
 
 
 __conj_det_sing_nom__
