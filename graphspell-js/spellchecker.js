@@ -252,7 +252,7 @@ class SpellChecker {
         if (this.oDefaultSugg) {
             if (this.oDefaultSugg.hasOwnProperty(sWord)) {
                 yield this.oDefaultSugg[sWord].split("|");
-            } else if (sWord.gl_isTitle() && this.oDefaultSugg.hasOwnProperty(sWord.lower())) {
+            } else if (sWord.gl_isTitle() && this.oDefaultSugg.hasOwnProperty(sWord.toLowerCase())) {
                 let lRes = this.oDefaultSugg[sWord.toLowerCase()].split("|");
                 yield lRes.map((sSugg) => { return sSugg.slice(0,1).toUpperCase() + sSugg.slice(1); });
             } else {
