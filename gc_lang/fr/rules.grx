@@ -410,7 +410,7 @@ TEST: voici des (parenthèses{{ )}}, n’est-ce pas ?                        ->
 
 # Parenthèses collées
 __<s>/typo(typo_parenthèse_fermante_collée)__
-    [)]\b(?![s¹²³⁴⁵⁶⁷⁸⁹⁰]\b) <<- not before("\\([rR]e$") ->> ") "                                   # Il manque un espace après la parenthèse.
+    [)]\b(?![s¹²³⁴⁵⁶⁷⁸⁹⁰]\b) <<- not before("\\([rR][eéEÉ]$") ->> ") "                              # Il manque un espace après la parenthèse.
 __<s>/typo(typo_parenthèse_ouvrante_collée)__
     \b[(](?=[^)][^)][^)]) <<- ->> " ("                                                              # Il manque un espace avant la parenthèse.
 
@@ -464,7 +464,7 @@ TEST: Vos {{“}}amis{{“ }}et vous êtes finis !
 #
 #
 # NOTE
-# Tout contrôle des espaces doit se faire avant ce point.
+# Tout contrôle des espaces existants doit se faire avant ce point.
 # À partir d’ici, toute règle est susceptible de supprimer des caractères et les remplacer par des espaces ou des chaînes de longueur égale.
 #
 #
@@ -865,9 +865,9 @@ TEST: Les chiens, les chats{{.,}} les poules.                             ->> ,|
 __<s>/typo(typo_espace_manquant_après1)__
     ({w1})[,:]({w_1})  @@0,$  <<- not \1.isdigit() -2>> " \2"                                       # Il manque un espace.
 __<s>/typo(typo_espace_manquant_après2)__
-    [?!;%‰‱˚»}]({w_1})  @@$  <<- -1>> " \1"                                                       # Il manque un espace.
+    [?!;%‰‱˚»}]({w_1}|[({[])  @@$  <<- -1>> " \1"                                                 # Il manque un espace.
 __<s]/typo(typo_espace_manquant_après3)__
-    {w_1}[.]({w_1})  @@$
+    {w_1}[.]({w_1}|[({[])  @@$
     <<- (\1.__len__() > 1 and not \1[0:1].isdigit() and spell(\1)) or after("^’") -1>> " \1"        # Il manque un espace.
 
 TEST: J’en ai marre,{{ça}} suffit.
@@ -880,6 +880,7 @@ TEST: espace{{;}}{{manquant}}
 TEST: espace ;{{manquant}}                                                  ->> " manquant"
 TEST: espace{{?}}{{manquant}}
 TEST: espace{{!}}{{manquant}}
+TEST: une espace ?{{(}}oui ou non)
 TEST: espace.{{Manquant}}                                                   ->> " Manquant"
 TEST: C’est bien.{{Les}} invités seront contents.                           ->> " Les"
 TEST: qui ont refusé.{{de}} se sauver                                       ->> " de"
@@ -1374,12 +1375,23 @@ TEST: __ocr__ En l’an {{2OO1}}, tout commença.
 
 ## Casse
 __[s]/ocr(ocr_casse_pronom_vconj)__
-    {w2}-(On|Ils?|Elles?|Tu|Je|Nous|Vous|Mêmes?|Ci|Là|Une?s) @@$
+    {w2}-(On|Ils?|Elles?|Tu|Je|Nous|Vous|Mêmes?|Ci|Là|Une?s|Les?|La|Leur) @@$
     <<- -1>> =\1.lower()                                                                            # Erreur de numérisation ? Casse douteuse.
 
 TEST: __ocr__ Part-{{On}} demain ?
 TEST: __ocr__ À ce compte-{{Ci}}, on n’en viendra jamais à bout.
 TEST: __ocr__ Quelques-{{Uns}} sont incapables d’y parvenir.
+
+
+## Mots inconnus du dictionnaire
+__[s]/ocr(mots_composés_inconnus)__
+    \w+-\w+
+        <<- not spell(\0) and not re.search("(?i)-(?:je|tu|on|nous|vous|ils?|elles?|là|ci|les?|la|leur|une?s)$", \0)
+        ->> _                                                                                       # Erreur de numérisation ? Mot composé inconnu du dictionnaire.
+
+TEST: __ocr__ c’est du {{base-bal}}]
+TEST: __ocr__ cet homme-là est corrompu.
+TEST: __ocr__ cette femme-là est revenue nous dire ce qu’elle pensait de nous.
 
 
 ## Lettres isolées
@@ -1401,14 +1413,20 @@ __<s>/ocr(ocr_caractères_rares)__
     \w*[{}<>&*#£]+\w*
     <<- \0 != "<" and \0 != ">" ->> _                                                               # Erreur de numérisation ? Cette chaîne contient un caractère de fréquence rare.
 
+__<s>/ocr(ocr_doublons_caractères_rares)__
+    [\]\[({}][\]\[({}]+
+        <<- ->> _                                                                                   # Erreur de numérisation ? Succession douteuse de caractères.
+
 TEST: __ocr__ trouve {{l£}} temps
 TEST: __ocr__ elle s’{{avance*}} sur le seuil
 TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
+TEST: __ocr__ {{[[}}voyons celà].
+TEST: __ocr__ {{((}}voyons ceci).
 
 
 ## Mélange chiffres/lettres
 __[i]/ocr(ocr_le_la_les_regex)__
-    1[easrnxiocuwàéè]
+    [1[][easrnxiocuwàéè]
         <<- \0.endswith("e") ->> le                                                                 # Erreur de numérisation ?
         <<- __else__ and \0.endswith("a") ->> la                                                    # Erreur de numérisation ?
         <<- __else__ and \0.endswith("à") ->> la|là                                                 # Erreur de numérisation ?
@@ -1417,20 +1435,23 @@ __[i]/ocr(ocr_le_la_les_regex)__
 TEST: __ocr__ avec {{1e}} chien du policier
 TEST: __ocr__ il le jura sur {{1a}} tête de sa mère
 TEST: __ocr__ {{1c}} chat du voinsin est idiot
+TEST: __ocr__ {{[e}} chien a faim
 
 
 __[i]/ocr(ocr_les)__
-    1[ea]s
+    [1[][ea]s
         <<- ->> les                                                                                 # Erreur de numérisation ?
 
 TEST: __ocr__ {{1es}} jours clairs
+TEST: __ocr__ {{[as}} amis sont présents
 
 
 __[i]/ocr(ocr_l_regex)__
-    (1’)[aâeéèêëiîïoôuyh][\w-]*  @@0
+    ([1[][’'`‘])[aâeéèêëiîïoôuyh][\w-]*  @@0
         <<- -1>> l’|L’|j’|J’                                                                        # Erreur de numérisation ?
 
 TEST: __ocr__ {{1’}}année s’annonce agitée.
+TEST: __ocr__ {{['}}ouverture du championnat est pour bientôt.
 
 
 __[i]/ocr(ocr_il_regex)__
@@ -2272,7 +2293,7 @@ TEST: __ocr__ sur une glace noire {{Les}} lumières du port                     
 TEST: __ocr__ le roulis du bateau {{Le}} faisant heurter                        ->> le
 TEST: __ocr__ si vous {{La}} désirez                                            ->> la
 TEST: __ocr__ sa main se referme sur {{Je}} livre                               ->> je
-TEST: __ocr__ Ils étaient portés à croire que Danton et Robespierre ne mettraient aucun obstacle. Le 8 au soir, Robespierre était allé à la section Bonne-Nouvelle, avait invectivé violemment contre la Gironde. Pendant son discours, un des siens, qui l’attendait à la porte, disait qu’on devrait massacrer non les Girondins seulement, mais tous les signataires des fameuses pétitions.
+TEST: __ocr__ Ils étaient portés à croire que Danton et Robespierre ne mettraient aucun obstacle. Le 8 au soir, Robespierre était allé à la section {{Bonne-Nouvelle}}, avait invectivé violemment contre la Gironde. Pendant son discours, un des siens, qui l’attendait à la porte, disait qu’on devrait massacrer non les Girondins seulement, mais tous les signataires des fameuses pétitions.
 TEST: __ocr__ Prends cette pelle et creuse.
 TEST: __ocr__ Roland, 87 ans, amoureux depuis cinq ans : « J’ai l’impression que je vais vivre encore longtemps »
 TEST: __ocr__ QUE FAIRE D’APRÈS EUX ?
@@ -2525,6 +2546,14 @@ __ocr_fille__
         <<- ->> fille                                                                               # Erreur de numérisation ?
 
 TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
+
+
+# fout / font
+__ocr_font__
+    fout
+        <<- not value(<1, "|il|elle|on|") and not value(<2, "|il|elle|on|") ->> font                # Erreur de numérisation ?
+
+TEST: __ocr__ qui ne {{fout}} rien de leur journée
 
 
 # fut / rut
@@ -2929,6 +2958,14 @@ __ocr_une__
 
 TEST: __ocr__ il avait {{ure}} femme élégante et silencieuse
 TEST: __ocr__ c’est pour {{vine}} amie
+
+
+# vêtement / vêlement
+__ocr_vêtement__
+    >vêlement
+        <<- ->> =\1.replace("l", "t").replace("L", "T")                                             # Erreur de numérisation ?
+
+TEST: __ocr__ il enfila ses {{vêlements}} en hâte.
 
 
 # vous / voua / voue
@@ -3398,6 +3435,9 @@ __tu_substantifs__
 
     [basket|volley] ball
         <<- /tu/ ->> \1-ball                                    # Il manque un trait d’union.
+
+    bas [>côté|coté|cotés]
+        <<- morph(<1 , ":D") ->> bas-côté|bas-côtés             # Il manque un trait d’union.
 
     [les|des|aux] beaux arts
         <<- /tu/ -2:3>> beaux-arts                              # Il manque un trait d’union.
