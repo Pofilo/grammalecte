@@ -16,9 +16,11 @@
 if(typeof(process) !== 'undefined') {
     var ibdawg = require("./ibdawg.js");
     var tokenizer = require("./tokenizer.js");
+    var suggest = require("./suggest.js");
 } else if (typeof(require) !== 'undefined') {
     var ibdawg = require("resource://grammalecte/graphspell/ibdawg.js");
     var tokenizer = require("resource://grammalecte/graphspell/tokenizer.js");
+    var suggest = require("resource://grammalecte/graphspell/suggest.js");
 }
 
 ${map}
@@ -44,6 +46,9 @@ class SpellChecker {
         this.bCommunityDic = Boolean(this.oCommunityDic);
         this.bPersonalDic = Boolean(this.oPersonalDic);
         this.oTokenizer = null;
+        // Default suggestions
+        this.oDefaultSugg = null;
+        this.loadSuggestions(sLangCode)
         // storage
         this.bStorage = false;
         this._dMorphologies = new Map();            // key: flexion, value: list of morphologies
@@ -122,6 +127,17 @@ class SpellChecker {
 
     deactivatePersonalDictionary () {
         this.bPersonalDic = false;
+    }
+
+
+    // Default suggestions
+
+    loadSuggestions (sLangCode) {
+        // load default suggestion module for <sLangCode>
+        // When “import” works everywhere, do like with Python
+        if (suggest && suggest.hasOwnProperty(sLangCode)) {
+            this.oDefaultSugg = suggest[sLangCode];
+        }
     }
 
 
@@ -233,7 +249,18 @@ class SpellChecker {
 
     * suggest (sWord, nSuggLimit=10) {
         // generator: returns 1, 2 or 3 lists of suggestions
-        yield this.oMainDic.suggest(sWord, nSuggLimit, true);
+        if (this.oDefaultSugg) {
+            if (this.oDefaultSugg.hasOwnProperty(sWord)) {
+                yield this.oDefaultSugg[sWord].split("|");
+            } else if (sWord.gl_isTitle() && this.oDefaultSugg.hasOwnProperty(sWord.lower())) {
+                let lRes = this.oDefaultSugg[sWord.toLowerCase()].split("|");
+                yield lRes.map((sSugg) => { return sSugg.slice(0,1).toUpperCase() + sSugg.slice(1); });
+            } else {
+                yield this.oMainDic.suggest(sWord, nSuggLimit, true);
+            }
+        } else {
+            yield this.oMainDic.suggest(sWord, nSuggLimit, true);
+        }
         if (this.bCommunityDic) {
             yield this.oCommunityDic.suggest(sWord, Math.floor(nSuggLimit/2)+1);
         }

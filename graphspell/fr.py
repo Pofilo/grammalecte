@@ -10,6 +10,7 @@ dSugg = {
     "cdlt": "cordialement",
     "construirent": "construire|construisirent|construisent|construiront",
     "càd": "c’est-à-dire",
+    "done": "donc|donne",
     "dc": "de|donc",
     "email": "courriel|e-mail|émail",
     "emails": "courriels|e-mails",
