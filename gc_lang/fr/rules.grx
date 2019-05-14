@@ -11868,6 +11868,18 @@ __purge_tout_tout_tous_toutes__
     [tous|toutes]   [les|des|mes|tes|ses|ces|nos|vos|leurs]
         <<- ~1>> *
 
+    /-on        [tous|toutes]
+    /-nous      [tous|toutes]
+    /-vous      [tous|toutes]
+    /-ils       [tous|toutes]
+    /-elles     [tous|toutes]
+        <<- ~2>> *
+
+    *WORD       [tous|toutes]
+        <<- morph(\1, ":[123]p") ~2>> *
+
+    on  ?[ne|n’]¿  ?[le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ?[le|la|l’|les|en|y|lui|leur]¿  *WORD  [tous|toutes]
+        <<- morph(\-2, ":[123]s") ~-1>> *
 
 
 @@@@
@@ -20334,7 +20346,7 @@ TEST: Quelques-unes lestées de plombe.
 __conj_tous_toutes__
     [tous|toutes]  @:V¬:(?:G|N|A|3p|P|Q)
     [tous|toutes]  qui  @:V¬:(?:G|3p|P)
-        <<- /conj/ not morph(<1, ":[VR]|>(?:et|ou)/") and not ((tag(<1, "VCimp") or tag(<1, "VCint")) and morph(\2, ":Y"))
+        <<- /conj/ not morph(<1, ":[VR]|>(?:et|ou)/")
         --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Tous {{venait}} à la fête.
