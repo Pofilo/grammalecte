@@ -3437,7 +3437,7 @@ __tu_substantifs__
         <<- /tu/ ->> \1-ball                                    # Il manque un trait d’union.
 
     bas [>côté|coté|cotés]
-        <<- morph(<1 , ":D") ->> bas-côté|bas-côtés             # Il manque un trait d’union.
+        <<- /tu/ morph(<1 , ":D") ->> bas-côté|bas-côtés             # Il manque un trait d’union.
 
     [les|des|aux] beaux arts
         <<- /tu/ -2:3>> beaux-arts                              # Il manque un trait d’union.
@@ -6841,36 +6841,28 @@ TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
 TEST: C’est la fin des 35 heures.
 
 
-# diagnostic / diagnotique // pronostic / pronostique
+# diagnostic / diagnotique // pronostic / pronostique // public / publique
 __conf_diagnostic_pronostique__
-    [ce|un|du|mon|notre|votre|quel] diagnostique
-        <<- /conf/ -2>> diagnostic                                                  # Confusion. Le nom s’écrit avec un “c”.
+    [ce|un|du|mon|notre|votre|quel] [diagnostique|pronostique|publique]
+        <<- /conf/ -2>> =\2.replace("qu", "c").replace("QU", "C")                                   # Confusion probable. Le nom s’écrit avec un “c”.
 
-    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  diagnostiques
-        <<- /conf/ -2>> diagnostics                                                 # Confusion. Le nom s’écrit avec un “c”.
+    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  [diagnostiques|pronostiques|publiques]
+        <<- /conf/ -2>> =\2.replace("qu", "c").replace("QU", "C")                                   # Confusion probable. Le nom s’écrit avec un “c”.
 
-    le diagnotique
-        <<- /conf/ not morph(<1, ":O[sv]") -2>> diagnostic                          # Confusion probable. Le nom s’écrit avec un “c”.
+    le [diagnotique|pronostique|publique]
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> =\2.replace("qu", "c").replace("QU", "C")           # Confusion probable. Le nom s’écrit avec un “c”.
 
-    les diagnotiques
-        <<- /conf/ not morph(<1, ":O[sv]") -2>> diagnostics                         # Confusion probable. Le nom s’écrit avec un “c”.
+    les [diagnotiques|pronostiques|publiques]
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> =\2.replace("qu", "c").replace("QU", "C")           # Confusion probable. Le nom s’écrit avec un “c”.
 
-    [ce|un|du|mon|notre|votre|quel] pronostique
-        <<- /conf/ -2>> pronostic                                                   # Confusion. Le nom s’écrit avec un “c”.
-
-    [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  pronostiques
-        <<- /conf/ -2>> pronostics                                                  # Confusion. Le nom s’écrit avec un “c”.
-
-    le pronostique
-        <<- /conf/ not morph(<1, ":O[sv]") -2>> pronostic                           # Confusion probable. Le nom s’écrit avec un “c”.
-
-    les pronostiques
-        <<- /conf/ not morph(<1, ":O[sv]") -2>> pronostics                          # Confusion probable. Le nom s’écrit avec un “c”.
+    en publique
+        <<- /conf/ -2>> public                                                                      # Confusion probable. Le nom s’écrit avec un “c”.
 
 TEST: Quels sont les {{pronostiques}}
 TEST: Ce {{diagnostique}} est absurde.
 TEST: C’est la valse des {{pronostiques}} contradictoires aujourd’hui.
 TEST: Le {{pronostique}} n’est pas bon.
+TEST: ils font ça en {{publique}}.
 
 
 # différend / différent
@@ -19050,6 +19042,111 @@ __conf_vc_int_imp_verbe__
 TEST: Annonce-le {{dépare}}.
 TEST: prends-la {{tète}}.
 TEST: alors rappelons-nous Marie
+
+
+__conf_pronom_sujet_verbe_état_verbe__
+    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]      @:[123][sp]¬:[NAQGM]
+    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                        @:[123][sp]¬:[NAQGM]
+    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                            @:[123][sp]¬:[NAQGM]
+    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  [je|tu] ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1, ":s")                                       # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    <start>  il ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]           @:[123][sp]¬:[NAQGM]
+    <start>  il ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                             @:[123][sp]¬:[NAQGM]
+    <start>  il ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                                 @:[123][sp]¬:[NAQGM]
+    <start>  il ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  il ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  il ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1, ":m:s")                                      # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    <start>  elle ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]         @:[123][sp]¬:[NAQGM]
+    <start>  elle ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                           @:[123][sp]¬:[NAQGM]
+    <start>  elle ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                               @:[123][sp]¬:[NAQGM]
+    <start>  elle ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  elle ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  elle ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1, ":f:s")                                      # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    <start>  nous ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]         @:[123][sp]¬:[NAQGM]
+    <start>  nous ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                           @:[123][sp]¬:[NAQGM]
+    <start>  nous ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                               @:[123][sp]¬:[NAQGM]
+    <start>  nous ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  nous ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  nous ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1, ":p")                                      # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]    @:[123][sp]¬:[NAQGM]
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                      @:[123][sp]¬:[NAQGM]
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                          @:[123][sp]¬:[NAQGM]
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1)                                             # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    <start>  ils ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]          @:[123][sp]¬:[NAQGM]
+    <start>  ils ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            @:[123][sp]¬:[NAQGM]
+    <start>  ils ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                                @:[123][sp]¬:[NAQGM]
+    <start>  ils ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  ils ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  ils ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1, ":m:p")                                      # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+    <start>  elles ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]        @:[123][sp]¬:[NAQGM]
+    <start>  elles ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                          @:[123][sp]¬:[NAQGM]
+    <start>  elles ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                              @:[123][sp]¬:[NAQGM]
+    <start>  elles ?[ne|n’]¿ ?[en|y]¿
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester]                                                                              @:[123][sp]¬:[NAQGM]
+    <start>  elles ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+    <start>  elles ?[ne|n’]¿ ?[en|y]¿
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
+        <<- /conf/ --1>> =suggVerbPpas(\-1, ":f:p")                                      # Accord avec le sujet “\2” : “\-1” devrait être un participe passé singulier.
+
+TEST: je ne parais pas {{épuise}} par mon périple, mais je le suis.
+TEST: j’ai été {{bouleverse}} par ces aveux.
+TEST: elle semble avoir été {{sonne}}
+TEST: elles aiment avoir paru {{oublie}}
 
 
 __conf_verbes_det_verbe_nom__
