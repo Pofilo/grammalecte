@@ -22,7 +22,7 @@ const aTkzPatterns = {
             [/^<[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+.*?>|<\/[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+ *>/, 'HTML'],
             [/^\[\/?[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+\]/, 'PSEUDOHTML'],
             [/^&\w+;(?:\w+;|)/, 'HTMLENTITY'],
-            [/^\d\d?h\d\d\b/, 'HOUR'],
+            [/^\d\d?[h:]\d\d\b/, 'HOUR'],
             [/^\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[&%‰€$+±=*/<>⩾⩽#|×¥£§¢¬÷@-]/, 'SIGN'],
             [/^[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_]+(?:[’'`-][a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆᴀ-ᶿ_]+)*/, 'WORD']
@@ -40,7 +40,7 @@ const aTkzPatterns = {
             [/^\[\/?[a-zA-Zà-öÀ-Ö0-9ø-ÿØ-ßĀ-ʯﬁ-ﬆ]+\]/, 'PSEUDOHTML'],
             [/^&\w+;(?:\w+;|)/, 'HTMLENTITY'],
             [/^(?:l|d|n|m|t|s|j|c|ç|lorsqu|puisqu|jusqu|quoiqu|qu)['’`]/i, 'WORD_ELIDED'],
-            [/^\d\d?[hm]\d\d\b/, 'HOUR'],
+            [/^\d\d?[h:]\d\d\b/, 'HOUR'],
             [/^\d+(?:ers?\b|nds?\b|es?\b|des?\b|ièmes?\b|èmes?\b|emes?\b|ᵉʳˢ?|ⁿᵈˢ?|ᵉˢ?|ᵈᵉˢ?)/, 'WORD_ORDINAL'],
             [/^\d+(?:[.,]\d+|)/, 'NUM'],
             [/^[&%‰€$+±=*/<>⩾⩽#|×¥£§¢¬÷@-]/, 'SIGN'],
