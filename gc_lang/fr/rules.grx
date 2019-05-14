@@ -2167,6 +2167,7 @@ TEST: c’est ton chez-toi
 __tag_noms__
     ~\w-là$
         <<- />> -là
+        <<- =>> =define_from(\1, 0, -3)
 
 #   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
 #   rendez-vous seulement défini comme :N:m:i  dans le dictionnaire
@@ -6483,7 +6484,7 @@ TEST: {{ceux}} train arrive trop vite.
 TEST: {{ceux}} ne doit pas nous faire oublier ce désastre
 TEST: qui {{ce}} donne en spectacle.
 TEST: {{ce}} prennent-ils pour des experts ?
-TEST: {{se}} chemin-là est difficile
+TEST: {{se}} {{chemin-là}} est difficile
 TEST: les expatriés éloignés ou ceux habitant ici
 TEST: les photographies de ceux n’ayant pas dépassé sept sur vingt.
 TEST: Pensez-vous que ceux ne sachant même pas ce qu’est une VHS peuvent y trouver leur compte ?
@@ -9583,7 +9584,7 @@ __purge_locutions__
     , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
+    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|jamais|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
     à armes égales
     à aucun prix
     à autre chose
@@ -20023,6 +20024,7 @@ TEST: tout discours de sortie nourrit immanquablement la sortie
 TEST: Tout vous expliquer est difficile.
 TEST: J’essaie de bien tout vous expliquer.
 TEST: il faut de tout se méfier.
+TEST: Tout écrire ne suffira pas, il faudra témoigner.
 
 
 __conj_lequel_laquelle__
@@ -20331,12 +20333,14 @@ TEST: Quelques-unes lestées de plombe.
 __conj_tous_toutes__
     [tous|toutes]  @:V¬:(?:G|N|A|3p|P|Q)
     [tous|toutes]  qui  @:V¬:(?:G|3p|P)
-        <<- /conj/ not morph(<1, ":[VR]|>(?:et|ou)/")
+        <<- /conj/ not morph(<1, ":[VR]|>(?:et|ou)/") and not ((tag(<1, "VCimp") or tag(<1, "VCint")) and morph(\2, ":Y"))
         --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: Tous {{venait}} à la fête.
 TEST: Toutes {{ignorait}} ce qu’ils avaient fait.
 TEST: Il faut mettre un coup de grâce et tous monter sur Paris par tous les moyens possibles
+TEST: Pourrons-nous tous vaincre.
+TEST: Vous pouvez tous triompher de votre adversaire avec de la ruse.
 
 
 __conj_certains_certaines__
