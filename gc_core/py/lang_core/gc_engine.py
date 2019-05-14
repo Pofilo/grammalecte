@@ -519,7 +519,7 @@ class TextParser:
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     # Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
-                    # Immunity      [ option, condition, "%", "",                            iTokenStart, iTokenEnd ]
+                    # Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
                     # Test          [ option, condition, ">", "" ]
                     if not sOption or dOptions.get(sOption, False):
                         bCondMemo = not sFuncCond or globals()[sFuncCond](self.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, self.dTags, self.sSentence, self.sSentence0)
@@ -571,7 +571,7 @@ class TextParser:
                                 else:
                                     self.dTags[sWhat][0] = min(nTokenStart, self.dTags[sWhat][0])
                                     self.dTags[sWhat][1] = max(nTokenEnd, self.dTags[sWhat][1])
-                            elif cActionType == "%":
+                            elif cActionType == "!":
                                 # immunity
                                 if bDebug:
                                     echo("    IMMUNITY: " + _rules_graph.dRule[sRuleId])

@@ -610,7 +610,7 @@ class TextParser {
                     // TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     // Disambiguator [ option, condition, "=", replacement/suggestion/action ]
                     // Tag           [ option, condition, "/", replacement/suggestion/action, iTokenStart, iTokenEnd ]
-                    // Immunity      [ option, condition, "%", "",                            iTokenStart, iTokenEnd ]
+                    // Immunity      [ option, condition, "!", "",                            iTokenStart, iTokenEnd ]
                     // Test          [ option, condition, ">", "" ]
                     if (!sOption || dOptions.gl_get(sOption, false)) {
                         bCondMemo = !sFuncCond || oEvalFunc[sFuncCond](this.lToken, nTokenOffset, nLastToken, sCountry, bCondMemo, this.dTags, this.sSentence, this.sSentence0);
@@ -675,7 +675,7 @@ class TextParser {
                                     this.dTags.set(sWhat, [Math.min(nTokenStart, this.dTags.get(sWhat)[0]), Math.max(nTokenEnd, this.dTags.get(sWhat)[1])]);
                                 }
                             }
-                            else if (cActionType == "%") {
+                            else if (cActionType == "!") {
                                 // immunity
                                 if (bDebug) {
                                     console.log("    IMMUNITY: " + _rules_graph.dRule[sRuleId]);

@@ -2104,7 +2104,7 @@ __inte_rendez_vous__
     ne [le|la|les|lui|leur]     rendez-vous
     [me|ne|nous|vous|lui]       rendez-vous
         <<- =>> define(\-1, [":VCi1:2p"])
-        <<- %-1>>
+        <<- !-1>>
 
 
 __inte_verbes_composés_impératifs__
@@ -2225,38 +2225,38 @@ __fusions_noms_propres__
 __immunités__
     il y a
     il n’ y a
-        <<- %-1>>
+        <<- !-1>>
 
     à l’ arrache
-        <<- %3>>
+        <<- !3>>
 
     à ce point
     en tout point
-        <<- %3>>
+        <<- !3>>
 
     au  [bas|bras|côté|milieu|sein|sommet|faîte] [duquel|desquels|desquelles]
     au  [bas|bras|côté|milieu|sein|sommet|faîte] de laquelle
     aux [côtés] [duquel|desquels|desquelles]
     aux [côtés] de laquelle
-        <<- %3>>
+        <<- !3>>
 
     au lieu des
-        <<- %3>>
+        <<- !3>>
 
     au sortir [de|des|du|d’]
         <<- ~2>> _
 
     en tout et pour tout
-        <<- %-1>>
+        <<- !-1>>
 
     jusqu’ à
-        <<- %2>>
+        <<- !2>>
 
     [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  @:Y  @:M
-        <<- morph(\1, ":V") %-2>>
+        <<- morph(\1, ":V") !-2>>
 
     soit pour soit contre
-        <<- %3>>
+        <<- !3>>
 
 
 
@@ -4984,7 +4984,7 @@ TEST: s’y adonnant à cœur-joie.
 
 __m_enfin__
     m’ enfin
-        <<- %2>>
+        <<- !2>>
         <<- ~>> *
 
 
@@ -5039,7 +5039,7 @@ TEST: me revoilà
 
 __loc_notre_père_qui_es_au_cieux__
     notre père qui [es|est] aux cieux
-        <<- %4>>
+        <<- !4>>
         <<- ~3:0>> *
 
 
@@ -7347,7 +7347,7 @@ TEST: il faut en finir avec le {{laissez-aller}}.
 # la / là
 __conf_la_là!7__
     la ou les
-        <<- %1>>
+        <<- !1>>
 
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
     la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute)/
@@ -8687,7 +8687,7 @@ TEST: C’est une {{voix}} interdite.
 # voir / voire
 __conf_voir_voire__
     voir [grand|petit|rouge]
-        <<- %2>>
+        <<- !2>>
 
     voir  @:A¬:[NGM]
         <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|aller|falloir|pouvoir|savoir|vouloir|préférer|faire|penser|imaginer|souhaiter|désirer|de|à)/")
@@ -8849,7 +8849,7 @@ TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
 __maj_mois__
     monarchie de Juillet
     révolution d’ Octobre
-        <<- %3>>
+        <<- !3>>
 
     *WORD [Janvier|Février|Avril|Mai|Juin|Juillet|Août|Aout|Septembre|Octobre|Novembre|Décembre|Vendémiaire|Brumaire|Frimaire|Nivôse|Pluviôse|Ventôse|Germinal|Floréal|Prairial|Messidor|Thermidor|Fructidor]
         <<- /maj/ not morph(\1, ":M1") and not \2.isupper() -2:>> =\2.lower()
@@ -8875,7 +8875,7 @@ TEST: VENDREDI 23 NOVEMBRE 2018 À 18:09
 # Les États
 __maj_État__
     en fonction de l’ état
-        <<- %5>>
+        <<- !5>>
 
     état [français|belge|suisse|canadien|palestinien|souverain|américain|russe|anglais|allemand|espagnol|italien|mexicain|japonais|chinois|australien|polonais|membre|africain|européen|asiatique|voyou|démocratique|totalitaire|fédéral|fédéré|capitaliste|communiste|providence|nation]
     état de droit
@@ -8912,7 +8912,7 @@ __maj_gentilés__
     océan Indien
     [îles|iles] Britanniques
     à [la|l’] [afghane|albanaise|algérienne|allemande|américaine|andorrane|anglaise|angolaise|arabe|argentine|arménienne|australienne|autrichienne|asiatique|azerbaïdjanaise|bahamienne|bangladaise|bengladeshie|barbadienne|basque|belge|bélizienne|béninoise|bretonne|bhoutanaise|biélorusse|birmane|bolivienne|bosnienne|botswanaiso|brésilienne|britannique|brunéiene|bulgare|burkinabé|burundaise|cambodgienne|camerounaise|canadienne|capverdienne|centrafricaine|chilienne|chinoise|chypriote|colombienne|comorienne|congolaise|nord-coréenne|corse|costaricienne|croate|cubaine|danoise|djiboutienne|dominicaine|égyptienne|émiratie|équatorienne|érythréenne|estonienne|espagnole|étatsunienne|états-unienne|étasunienne|éthiopienne|fidjienne|finlandaise|formosane|française|gabonaise|gambienne|géorgienne|ghanéenne|grecque|grenadienne|guadeloupéenne|guatémaltèque|guinéenne|équato-guinéenne|guyanienne|haïtienne|honduriene|hollandaise|hongroise|indienne|indochinoise|indonésienne|irakienne|italienne|iranienne|irlandaise|islandaise|israélienne|ivoirienne|jamaïcaine|japonaise|jordanienne|kazakhe|kényane|kosovare|koweïtienne|laotienne|lapone|lettone|libanaise|libérienne|libyenne|liechtensteinoise|lituanienne|luxembourgeois|macédonienne|maghrébine|malgache|malaisienne|malawite|maldivienne|malienne|maltaise|maorie|marocaine|martienne|mauricienne|mauritanienne|mexicaine|micronésienne|moldave|monégasque|monténégrine|mongole|mozambicaine|namibiene|népalaise|nicaraguayenne|nigérienne|nigériane|néerlandaise|norvégienne|néo-zélandaise|ougandaise|ouzbèke|pakistanaise|palestinienne|panaméenne|paraguayenne|perse|péruvienne|philippine|polonaise|polynésienne|portugaise|québécoise|qatarie|roumaine|russe|rwandaise|saoudienne|scandinave|salvadorienne|sénégalaise|serbe|singapourienne|slovaque|slovène|somalienne|soudanaise|soviétique|srilankaise|suédoise|suisse|surinamaise|syrienne|sud-africaine|sud-coréenne|américaine|tadjike|tanzanienne|tchadienne|tchèque|thaïlandaise|togolaise|tahitienne|tunisiene|turkmène|turque|taïwanaise|ukrainienne|uruguayenne|vénézuélienne|vietnamienne|yéménite|yougoslave|zaïroise|zambienne|zimbabwéenne]
-        <<- %-1>>
+        <<- !-1>>
 
     [>afghane|>albanaise|>algérienne|>allemande|>américaine|>andorrane|>anglaise|>angolaise|>arabe|>argentine|>arménienne|>australienne|>autrichienne|>asiatique|>azerbaïdjanaise|>bahamienne|>bangladaise|>bengladeshie|>barbadienne|>basque|>belge|>bélizienne|>béninoise|>bretonne|>bhoutanaise|>biélorusse|>birmane|>bolivienne|>bosnienne|>botswanaiso|>brésilienne|>britannique|>brunéiene|>bulgare|>burkinabé|>burundaise|>cambodgienne|>camerounaise|>canadienne|>capverdienne|>centrafricaine|>chilienne|>chinoise|>chypriote|>colombienne|>comorienne|>congolaise|>nord-coréenne|>corse|>costaricienne|>croate|>cubaine|>danoise|>djiboutienne|>dominicaine|>égyptienne|>émiratie|>équatorienne|>érythréenne|>estonienne|>espagnole|>étatsunienne|>états-unienne|>étasunienne|>éthiopienne|>fidjienne|>finlandaise|>formosane|>française|>gabonaise|>gambienne|>géorgienne|>ghanéenne|>grecque|>grenadienne|>guadeloupéenne|>guatémaltèque|>guinéenne|>équato-guinéenne|>guyanienne|>haïtienne|>honduriene|>hollandaise|>hongroise|>indienne|>indochinoise|>indonésienne|>irakienne|>italienne|>iranienne|>irlandaise|>islandaise|>israélienne|>ivoirienne|>jamaïcaine|>japonaise|>jordanienne|>kazakhe|>kényane|>kosovare|>koweïtienne|>laotienne|>lapone|>lettone|>libanaise|>libérienne|>libyenne|>liechtensteinoise|>lituanienne|>luxembourgeois|>macédonienne|>maghrébine|>malgache|>malaisienne|>malawite|>maldivienne|>malienne|>maltaise|>maorie|>marocaine|>martienne|>mauricienne|>mauritanienne|>mexicaine|>micronésienne|>moldave|>monégasque|>monténégrine|>mongole|>mozambicaine|>namibiene|>népalaise|>nicaraguayenne|>nigérienne|>nigériane|>néerlandaise|>norvégienne|>néo-zélandaise|>ougandaise|>ouzbèke|>pakistanaise|>palestinienne|>panaméenne|>paraguayenne|>perse|>péruvienne|>philippine|>polonaise|>polynésienne|>portugaise|>québécoise|>qatarie|>roumaine|>russe|>rwandaise|>saoudienne|>scandinave|>salvadorienne|>sénégalaise|>serbe|>singapourienne|>slovaque|>slovène|>somalienne|>soudanaise|>soviétique|>srilankaise|>suédoise|>suisse|>surinamaise|>syrienne|>sud-africaine|>sud-coréenne|>américaine|>tadjike|>tanzanienne|>tchadienne|>tchèque|>thaïlandaise|>togolaise|>tahitienne|>tunisiene|>turkmène|>turque|>taïwanaise|>ukrainienne|>uruguayenne|>vénézuélienne|>vietnamienne|>yéménite|>yougoslave|>zaïroise|>zambienne|>zimbabwéenne]
         <<- /maj/ \1.istitle() and morph(<1, ":N", ":(?:A|V0e|D|R|B|X)") -1:>> =\1.lower()          # S’il s’agit d’un adjectif, ne mettez pas de majuscule.
@@ -9564,7 +9564,7 @@ TODO: comme
 __purge_locutions_latines__
     [a|à]       [priori|postériori|posteriori|contrario|cappella|minima]
         <<- ~>> *
-        <<- %1>>
+        <<- !1>>
 
     ab          [absurdo|initio]
     ad          [hoc|hominem|infinitum|nauseam|valorem|patres]
@@ -14752,7 +14752,7 @@ __conf_cour_cours_court_courre__
     en cour martiale
     en cour [de|d’] [cassation|justice]
     en cour d’ [>assise]
-        <<- %1:2>>
+        <<- !1:2>>
 
     en cour
         <<- /conf/ ->> en cours                             # Confusion probable. Une cour… Un cours… Adjectif : court(e).
@@ -16893,11 +16893,11 @@ TEST: il m’était évident que cette mission était à durée déterminée
 ## se rendre compte
 __ppas_s_être_rendu_compte__
     >être  rendu  compte
-        <<- %2:3>>
+        <<- !2:3>>
         <<- ~2:3>> _
 
     /VCint  rendu  compte
-        <<- morphVC(\1, ">être/") %2:3>>
+        <<- morphVC(\1, ">être/") !2:3>>
         <<- ~2:3>> _
 
     >être  [rendue|rendus|rendues]  compte
@@ -17000,14 +17000,14 @@ TEST: je voudrais bien être dans ses souliers
 __ppas_3sg_mas_verbe_état__
     [ce|ça|ceci|cela|c’|ç’] >avoir été >seule               [que|qu’]
     [ce|ça|ceci|cela|c’|ç’] >avoir été @:[AQ].*:f¬:[GWYme]  @:N.*:f
-        <<- %4>>
+        <<- !4>>
 
     [ce|ça|ceci|cela|c’|ç’] >être >seule                    [que|qu’]
     [ce|ça|ceci|cela|c’|ç’] >être @:[AQ].*:f¬:[GWYme]       @:N.*:f
-        <<- %3>>
+        <<- !3>>
 
     tout en [étant|semblant|devenant|restant|demeurant|redevenant|paraissant] @:A
-        <<- %4>>
+        <<- !4>>
 
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -17571,7 +17571,7 @@ __ppas_sujet_être_accord_genre__
     *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
-        <<- /ppas/ checkAgreement(\1, \-1) %-1>>
+        <<- /ppas/ checkAgreement(\1, \-1) !-1>>
 
 TEST: la danse est {{fini}}…
 TEST: Un orage est {{annoncée}}.
@@ -17612,7 +17612,7 @@ __ppas_nom_propre_être_accord_genre__
     (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
-        <<- /ppas/ checkAgreement(\1, \-1) %-1>>
+        <<- /ppas/ checkAgreement(\1, \-1) !-1>>
 
 TEST: Antoine est {{mariée}}.
 TEST: Antoine n’est pas {{mariés}}.
@@ -18066,7 +18066,7 @@ TEST: nous considérer ainsi fait le lit de la haine…
 
 __immu_les_avoir_fait_vinfi__
     les >avoir fait ?[me|m’|te|t’|se|s’|nous|vous|leur]¿ @:Y
-        <<- %3>>
+        <<- !3>>
 
 
 __ppas_pronom_avoir__
