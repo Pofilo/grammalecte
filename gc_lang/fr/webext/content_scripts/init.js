@@ -362,6 +362,8 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "rescanPage":
             oGrammalecte.rescanPage();
             break;
+        default:
+            console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
 
