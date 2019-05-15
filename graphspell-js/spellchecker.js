@@ -47,7 +47,7 @@ class SpellChecker {
         this.bPersonalDic = Boolean(this.oPersonalDic);
         this.oTokenizer = null;
         // Default suggestions
-        this.oDefaultSugg = null;
+        this.dDefaultSugg = null;
         this.loadSuggestions(sLangCode)
         // storage
         this.bStorage = false;
@@ -135,8 +135,13 @@ class SpellChecker {
     loadSuggestions (sLangCode) {
         // load default suggestion module for <sLangCode>
         // When “import” works everywhere, do like with Python
-        if (suggest && suggest.hasOwnProperty(sLangCode)) {
-            this.oDefaultSugg = suggest[sLangCode];
+        try {
+            if (typeof(suggest) !== 'undefined') {
+                this.dDefaultSugg = suggest[sLangCode];
+            }
+        }
+        catch (e) {
+            console.error(e);
         }
     }
 
@@ -249,11 +254,11 @@ class SpellChecker {
 
     * suggest (sWord, nSuggLimit=10) {
         // generator: returns 1, 2 or 3 lists of suggestions
-        if (this.oDefaultSugg) {
-            if (this.oDefaultSugg.hasOwnProperty(sWord)) {
-                yield this.oDefaultSugg[sWord].split("|");
-            } else if (sWord.gl_isTitle() && this.oDefaultSugg.hasOwnProperty(sWord.toLowerCase())) {
-                let lRes = this.oDefaultSugg[sWord.toLowerCase()].split("|");
+        if (this.dDefaultSugg) {
+            if (this.dDefaultSugg.has(sWord)) {
+                yield this.dDefaultSugg.get(sWord).split("|");
+            } else if (sWord.gl_isTitle() && this.dDefaultSugg.has(sWord.toLowerCase())) {
+                let lRes = this.dDefaultSugg.get(sWord.toLowerCase()).split("|");
                 yield lRes.map((sSugg) => { return sSugg.slice(0,1).toUpperCase() + sSugg.slice(1); });
             } else {
                 yield this.oMainDic.suggest(sWord, nSuggLimit, true);
