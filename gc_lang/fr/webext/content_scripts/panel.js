@@ -15,6 +15,10 @@ class GrammalectePanel {
         this.nWidth = nWidth;
         this.nHeight = nHeight;
         this.bFlexible = bFlexible;
+        this.bHorizStrech = false;
+        this.bVertStrech = false;
+        this.nPositionX = 2;
+        this.nPositionY = 2;
         this.bWorking = false;
 
         this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
@@ -66,11 +70,15 @@ class GrammalectePanel {
         if (this.sId === "grammalecte_gc_panel") {
             xButtonLine.appendChild(this._createCopyButton());
         }
-        xButtonLine.appendChild(this._createMoveButton("stickToTop", "⏶", "Coller en haut"));
-        xButtonLine.appendChild(this._createMoveButton("stickToLeft", "⏴", "Coller à gauche"));
+        if (this.bFlexible) {
+            xButtonLine.appendChild(this._createMoveButton("changeWidth", "⭾", "Bascule la largeur"));
+            xButtonLine.appendChild(this._createMoveButton("changeHeight", "⭿", "Bascule la hauteur"));
+        }
+        xButtonLine.appendChild(this._createMoveButton("up", "⏶", "Monter"));
+        xButtonLine.appendChild(this._createMoveButton("left", "⏴", "À gauche"));
         xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
-        xButtonLine.appendChild(this._createMoveButton("stickToRight", "⏵", "Coller à droite"));
-        xButtonLine.appendChild(this._createMoveButton("stickToBottom", "⏷", "Coller en bas"));
+        xButtonLine.appendChild(this._createMoveButton("right", "⏵", "À droite"));
+        xButtonLine.appendChild(this._createMoveButton("down", "⏷", "Descendre"));
         this.xCloseButton = this._createCloseButton();
         xButtonLine.appendChild(this.xCloseButton);
         return xButtonLine;
@@ -138,41 +146,71 @@ class GrammalectePanel {
     }
 
     center () {
-        let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
-        this.setSizeAndPosition(`${this.nWidth}px`, `${nHeight}px`, "50%", "", "", "50%", `-${nHeight/2}px`, `-${this.nWidth/2}px`);
+        this.nPosition = 5;
+        this.setSizeAndPosition();
     }
 
-    stickToLeft () {
-        let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
-        this.setSizeAndPosition(`${this.nWidth}px`, `${nHeight}px`, "50%", "", "", "-2px", `-${nHeight/2}px`, "");
+    left () {
+        if (![1, 4, 7].includes(this.nPosition)) { this.nPosition -= 1 };
+        this.setSizeAndPosition();
     }
 
-    stickToRight () {
-        let nHeight = (this.bFlexible) ? window.innerHeight-100 : this.nHeight;
-        this.setSizeAndPosition(`${this.nWidth}px`, `${nHeight}px`, "50%", "-2px", "", "", `-${nHeight/2}px`, "");
+    right () {
+        if (![3, 6, 9].includes(this.nPosition)) { this.nPosition += 1 };
+        this.setSizeAndPosition();
     }
 
-    stickToTop () {
-        let nWidth = (this.bFlexible) ? Math.floor(window.innerWidth/2) : this.nWidth;
-        let nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
-        this.setSizeAndPosition(`${nWidth}px`, `${nHeight}px`, "-2px", "", "", "50%", "", `-${nWidth/2}px`);
+    up () {
+        if (![7, 8, 9].includes(this.nPosition)) { this.nPosition += 3 };
+        this.setSizeAndPosition();
     }
 
-    stickToBottom () {
-        let nWidth = (this.bFlexible) ? Math.floor(window.innerWidth/2) : this.nWidth;
-        let nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
-        this.setSizeAndPosition(`${nWidth}px`, `${nHeight}px`, "", "", "-2px", "50%", "", `-${nWidth/2}px`);
+    down () {
+        if (![1, 2, 3].includes(this.nPosition)) { this.nPosition -= 3 };
+        this.setSizeAndPosition();
     }
 
-    setSizeAndPosition (sWidth, sHeight, sTop, sRight, sBottom, sLeft, sMarginTop, sMarginLeft) {
-        this.xPanel.style.width = sWidth;
-        this.xPanel.style.height = sHeight;
-        this.xPanel.style.top = sTop;
-        this.xPanel.style.right = sRight;
-        this.xPanel.style.bottom = sBottom;
-        this.xPanel.style.left = sLeft;
-        this.xPanel.style.marginTop = sMarginTop;
-        this.xPanel.style.marginLeft = sMarginLeft;
+    changeWidth () {
+        this.bHorizStrech = !this.bHorizStrech;
+        this.setSizeAndPosition();
+    }
+
+    changeHeight () {
+        this.bVertStrech = !this.bVertStrech;
+        this.setSizeAndPosition();
+    }
+
+    setSizeAndPosition () {
+        // size
+        let nWidth = (this.bFlexible && this.bHorizStrech) ? Math.min(this.nWidth*1.5, window.innerWidth-200) : Math.min(this.nWidth, window.innerWidth-200);
+        let nHeight = this.nHeight;
+        if ([4, 5, 6].includes(this.nPosition)) {
+            nHeight = (this.bFlexible && this.bVertStrech) ? (window.innerHeight-100) : Math.min(window.innerHeight-100, this.nHeight);
+        } else {
+            nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
+        }
+        this.xPanel.style.width = `${nWidth}px`;
+        this.xPanel.style.height = `${nHeight}px`;
+        // position
+        let oPos = null;
+        switch (this.nPosition) {
+            case 1: oPos = { top:"",     right:"",     bottom:"-2px", left:"-2px", marginTop:"",                marginLeft:"" }; break;
+            case 2: oPos = { top:"",     right:"",     bottom:"-2px", left:"50%",  marginTop:"",                marginLeft:`-${nWidth/2}px` }; break;
+            case 3: oPos = { top:"",     right:"-2px", bottom:"-2px", left:"",     marginTop:"",                marginLeft:"" }; break;
+            case 4: oPos = { top:"50%",  right:"",     bottom:"",     left:"-2px", marginTop:`-${nHeight/2}px`, marginLeft:"" }; break;
+            case 5: oPos = { top:"50%",  right:"",     bottom:"",     left:"50%",  marginTop:`-${nHeight/2}px`, marginLeft:`-${nWidth/2}px` }; break;
+            case 6: oPos = { top:"50%",  right:"-2px", bottom:"",     left:"",     marginTop:`-${nHeight/2}px`, marginLeft:"" }; break;
+            case 7: oPos = { top:"-2px", right:"",     bottom:"",     left:"-2px", marginTop:"",                marginLeft:"" }; break;
+            case 8: oPos = { top:"-2px", right:"",     bottom:"",     left:"50%",  marginTop:"",                marginLeft:`-${nWidth/2}px` }; break;
+            case 9: oPos = { top:"-2px", right:"-2px", bottom:"",     left:"",     marginTop:"",                marginLeft:"" }; break;
+        }
+        // change
+        this.xPanel.style.top = oPos.top;
+        this.xPanel.style.right = oPos.right;
+        this.xPanel.style.bottom = oPos.bottom;
+        this.xPanel.style.left = oPos.left;
+        this.xPanel.style.marginTop = oPos.marginTop;
+        this.xPanel.style.marginLeft = oPos.marginLeft;
     }
 
     reduce () {
