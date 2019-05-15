@@ -190,10 +190,11 @@ class IBDAWG:
 
     def _initJSON (self, oJSON):
         "initialize with a JSON text file"
+        self.sByDic = ""  # init to prevent pylint whining
         self.__dict__.update(oJSON)
         self.byDic = binascii.unhexlify(self.sByDic)
         self.dCharVal = { v: k  for k, v in self.dChar.items() }
-        self.a2grams = set(self.l2grams)  if hasattr(self, 'l2grams')  else None
+        self.a2grams = set(getattr(self, 'l2grams'))  if hasattr(self, 'l2grams')  else None
 
     def getInfo (self):
         "return string about the IBDAWG"

@@ -8,7 +8,7 @@ import unittest
 import os
 import re
 import time
-
+from contextlib import contextmanager
 
 from ..graphspell.ibdawg import IBDAWG
 from ..graphspell.echo import echo
@@ -16,6 +16,36 @@ from . import gc_engine as gce
 from . import conj
 from . import phonet
 from . import mfsp
+
+
+@contextmanager
+def timeblock (label, hDst):
+    "performance counter (contextmanager)"
+    start = time.perf_counter()
+    try:
+        yield
+    finally:
+        end = time.perf_counter()
+        print('{} : {}'.format(label, end - start))
+        if hDst:
+            hDst.write("{:<12.6}".format(end-start))
+
+
+def perf (sVersion, hDst=None):
+    "performance tests"
+    print("\nPerformance tests")
+    gce.load()
+    gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")
+
+    spHere, _ = os.path.split(__file__)
+    with open(os.path.join(spHere, "perf.txt"), "r", encoding="utf-8") as hSrc:
+        if hDst:
+            hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
+        for sText in ( s.strip() for s in hSrc if not s.startswith("#") and s.strip() ):
+            with timeblock(sText[:sText.find(".")], hDst):
+                gce.parse(sText)
+        if hDst:
+            hDst.write("\n")
 
 
 def _fuckBackslashUTF8 (s):
@@ -216,37 +246,6 @@ class TestGrammarChecking (unittest.TestCase):
             nEnd = m.end() - (4 * (i+1))
             sRes = sRes[:nStart] + "~" * (nEnd - nStart) + sRes[nEnd:-4]
         return sRes
-
-
-from contextlib import contextmanager
-@contextmanager
-def timeblock (label, hDst):
-    "performance counter (contextmanager)"
-    start = time.perf_counter()
-    try:
-        yield
-    finally:
-        end = time.perf_counter()
-        print('{} : {}'.format(label, end - start))
-        if hDst:
-            hDst.write("{:<12.6}".format(end-start))
-
-
-def perf (sVersion, hDst=None):
-    "performance tests"
-    print("\nPerformance tests")
-    gce.load()
-    gce.parse("Texte sans importance… utile pour la compilation des règles avant le calcul des perfs.")
-
-    spHere, _ = os.path.split(__file__)
-    with open(os.path.join(spHere, "perf.txt"), "r", encoding="utf-8") as hSrc:
-        if hDst:
-            hDst.write("{:<12}{:<20}".format(sVersion, time.strftime("%Y.%m.%d %H:%M")))
-        for sText in ( s.strip() for s in hSrc if not s.startswith("#") and s.strip() ):
-            with timeblock(sText[:sText.find(".")], hDst):
-                gce.parse(sText)
-        if hDst:
-            hDst.write("\n")
 
 
 def main():

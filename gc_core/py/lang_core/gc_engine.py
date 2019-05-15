@@ -554,7 +554,6 @@ class TextParser:
                                 # we do nothing, this test is just a condition to apply all following actions
                                 if bDebug:
                                     echo("    COND_OK")
-                                pass
                             elif cActionType == "/":
                                 # Tag
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]

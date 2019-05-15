@@ -60,3 +60,7 @@ class Tokenizer:
         if bStartEndToken:
             iEnd = len(sText)
             yield { "i": i+1, "sType": "INFO", "sValue": "<end>", "nStart": iEnd, "nEnd": iEnd, "lMorph": ["<end>"] }
+
+    def getTokenTypes (self):
+        "returns list of token types as tuple (token name, regex)"
+        return [ sRegex[4:-1].split(">")  for sRegex in _PATTERNS[self.sLang] ]
