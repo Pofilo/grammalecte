@@ -69,10 +69,11 @@ class SpellChecker {
         }
         catch (e) {
             let sfDictionary = (typeof(dictionary) == "string") ? dictionary : dictionary.sLangName + "/" + dictionary.sFileName;
+            let sErrorMessage = "Error [" + this.sLangCode + "]: <" + sfDictionary + "> not loaded.";
             if (bNecessary) {
-                throw "Error: <" + sfDictionary + "> not loaded. " + e.message;
+                throw sErrorMessage + " | " + e.message;
             }
-            console.log("Error: <" + sfDictionary + "> not loaded.");
+            console.log(sErrorMessage);
             console.log(e.message);
             return null;
         }

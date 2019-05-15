@@ -50,9 +50,10 @@ class SpellChecker ():
         try:
             return ibdawg.IBDAWG(source)
         except Exception as e:
+            sErrorMessage = "Error [" + self.sLangCode + "]: <" + str(source) + "> not loaded."
             if bNecessary:
-                raise Exception(str(e), "Error: <" + str(source) + "> not loaded.")
-            print("Error: <" + str(source) + "> not loaded.")
+                raise Exception(str(e), sErrorMessage)
+            print(sErrorMessage)
             traceback.print_exc()
             return None
 
