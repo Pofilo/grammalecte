@@ -36,7 +36,7 @@ class GrammalecteButton {
     _insert (xNewNode) {
         // insertion
         let xReferenceNode = this.xNode;
-        if (document.location.host == "twitter.com" && this.xNode.classList.contains('rich-editor')) {
+        if (this.xNode.classList.contains('rich-editor')) {
             xReferenceNode = this.xNode.parentNode;
         }
         xReferenceNode.parentNode.insertBefore(xNewNode, xReferenceNode.nextSibling);
