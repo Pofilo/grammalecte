@@ -750,9 +750,10 @@ TEST: un ou une {{intellectuel.le}}                                     ->> inte
 
 
 __[i](typo_écriture_invariable)__
-    ({w_3})([-·–—.•⋅]s|[(]s[)])  @@0,$
+    ({w_3})([-·–—.•⋅/]s|[(]s[)])  @@0,$
         <<- ~>> =normalizeInclusiveWriting(\0)
-        <<- option("typo") and option("eepi") and not \0.endswith("·s") ->> \1·s                    # Écriture invariable. Utilisez un point médian.
+        <<- option("typo") and option("eepi") and not \0.endswith("·s") and not (\0.endswith("/s") and morph(\1, ";S"))
+        ->> \1·s                    # Écriture invariable. Utilisez un point médian.
 
 TEST: la ou les {{fille(s)}}                                            ->> fille·s
 TEST: le ou les patron·s
