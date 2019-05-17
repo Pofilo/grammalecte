@@ -389,16 +389,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     copyTextToClipboard () {
         this.startWaitIcon();
         try {
-            let xClipboardButton = this.xParent.getElementById("grammalecte_clipboard_button");
-            xClipboardButton.textContent = "⇒ presse-papiers";
+
             let sText = "";
-            // Quand c'est dans un shadow "this.xParent.getElementsByClassName" n'existe pas.
+            // Dans un shadow, <this.xParent.getElementsByClassName> n’existe pas.
             let xElem = this.xParent.getElementById("grammalecte_gc_panel");
             for (let xNode of xElem.getElementsByClassName("grammalecte_paragraph")) {
                 sText += xNode.textContent + "\n";
             }
-            oGrammalecte.sendTextToClipboard(sText);
-            window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000);
+            this._sendTextToClipboard(sText);
+
         }
         catch (e) {
             showError(e);
@@ -406,6 +405,38 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.stopWaitIcon();
     }
 
+    _sendTextToClipboard (sText)  {
+        let xClipboardButton = this.xParent.getElementById("grammalecte_clipboard_button");
+        xClipboardButton.textContent = "⇒ presse-papiers";
+        // Firefox 63+, Chrome 66+
+        // Working draft: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
+        navigator.clipboard.writeText(sText)
+        .then(
+            (res) => { window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000); }
+        )
+        .catch(
+            (e) => { console.error(e); this._sendTextToClipboard(sText, xClipboardButton); }
+        );
+    }
+
+    _sendTextToClipboardFallback (sText, xClipboardButton) {
+        try {
+            // Copy to clipboard fallback
+            // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
+            function setClipboardData (xEvent) {
+                document.removeEventListener("copy", setClipboardData, true);
+                xEvent.stopImmediatePropagation();
+                xEvent.preventDefault();
+                xEvent.clipboardData.setData("text/plain", sText);
+            }
+            document.addEventListener("copy", setClipboardData, true);
+            document.execCommand("copy");
+            window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000);
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
 
     // Lexicographer
 

@@ -226,20 +226,6 @@ const oGrammalecte = {
         }
     },
 
-    sendTextToClipboard (sText)  {
-        // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
-        // It doesn’t seem to work anymore on Firefox. Still OK on Chrome.
-        //console.log(sText);
-        function setClipboardData (xEvent) {
-            document.removeEventListener("copy", setClipboardData, true);
-            xEvent.stopImmediatePropagation();
-            xEvent.preventDefault();
-            xEvent.clipboardData.setData("text/plain", sText);
-        }
-        document.addEventListener("copy", setClipboardData, true);
-        document.execCommand("copy");
-    },
-
     getCaretPosition (xElement) {
         // JS awfulness again.
         // recepie from https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container
