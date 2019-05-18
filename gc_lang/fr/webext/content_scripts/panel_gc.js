@@ -903,7 +903,7 @@ class GrammalecteTextControl {
         this.xNode = xNode;
         this.bTextArea = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT");
         if (!this.bTextArea) {
-            oGrammalecte.oGCPanel.showMessage("La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
+            oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
         }
         this.xNode.disabled = true;
         this.loadText((this.bTextArea) ? this.xNode.value : this.xNode.innerText);
@@ -911,7 +911,7 @@ class GrammalecteTextControl {
 
     setText (sText) {
         this.clear();
-        oGrammalecte.oGCPanel.showMessage("Lorsqu’aucun champ textuel n’est défini, les changements ne sont pas répercutés sur la zone d’où le texte a été extrait.");
+        oGrammalecte.oGCPanel.addMessageToGCPanel("Note : Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
         this.loadText(sText);
     }
 
