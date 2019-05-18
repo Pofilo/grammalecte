@@ -74,11 +74,11 @@ class GrammalectePanel {
             xButtonLine.appendChild(this._createMoveButton("changeWidth", "⭾", "Bascule la largeur"));
             xButtonLine.appendChild(this._createMoveButton("changeHeight", "⭿", "Bascule la hauteur"));
         }
-        xButtonLine.appendChild(this._createMoveButton("up", "⏶", "Monter"));
-        xButtonLine.appendChild(this._createMoveButton("left", "⏴", "À gauche"));
+        xButtonLine.appendChild(this._createMoveButton("up", " ", "Monter")); // use char ⏶ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
+        xButtonLine.appendChild(this._createMoveButton("left", " ", "À gauche")); // use char ⏴ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
         xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
-        xButtonLine.appendChild(this._createMoveButton("right", "⏵", "À droite"));
-        xButtonLine.appendChild(this._createMoveButton("down", "⏷", "Descendre"));
+        xButtonLine.appendChild(this._createMoveButton("right", " ", "À droite")); // use char ⏵ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
+        xButtonLine.appendChild(this._createMoveButton("down", " ", "Descendre")); // use char ⏷ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
         this.xCloseButton = this._createCloseButton();
         xButtonLine.appendChild(this.xCloseButton);
         return xButtonLine;
@@ -96,7 +96,7 @@ class GrammalectePanel {
     }
 
     _createMoveButton (sAction, sLabel, sTitle) {
-        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_move_button", textContent: sLabel, title: sTitle});
+        let xButton = oGrammalecte.createNode("div", {className: "grammalecte_panel_button grammalecte_move_button grammalecte_move_button_"+sAction, textContent: sLabel, title: sTitle});
         xButton.onclick = () => { this[sAction](); };
         return xButton;
     }
