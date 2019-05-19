@@ -2473,11 +2473,16 @@ __ocr_dans__
     bans
         <<- not morph(<1, ":D.*:p") ->> dans                                                        # Erreur de numérisation ?
 
-    clans  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|chaque|chacun|plusieurs|quelques|maints|maintes|tout|tous|toute|toutes|certains|certaines|nombre]
+    [clans|dons]  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|chaque|chacun|plusieurs|quelques|maints|maintes|tout|tous|toute|toutes|certains|certaines|nombre]
         <<- not morph(<1, ":D.*:p") -1>> dans                                                       # Erreur de numérisation ?
+
+    dam
+        <<- not (value(<1, "|grand|") and value(<2, "|au|")) ->> dans                               # Erreur de numérisation ?
 
 TEST: __ocr__ Mais {{bans}} cette ferme, tout était bien organisé.
 TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.
+TEST: __ocr__ renvoyons ces chiens {{dam}} leur niche
+TEST: __ocr__ nous avons vaincu, au grand dam de tous ces grands messieurs
 
 
 # dame / darne
@@ -2585,6 +2590,16 @@ __ocr_êtes__
 TEST: vous {{ôtes}} toute envie de résiter
 
 
+# fasse
+__ocr_fasse__
+    >fesse
+    fessent
+        <<- ->> =\1.replace("ess", "ass").replace("ESS", "ASS")                                     # Erreur de numérisation ?
+
+TEST: __ocr__ Quoiqu’ils {{fessent}} ça donne de la merde
+TEST: __ocr__ {{fesse}} que Dieu nous entende
+
+
 # fille / tille
 __ocr_fille__
     tille
@@ -2599,6 +2614,14 @@ __ocr_foi__
         <<- ->> =\1.replace("l", "i").replace("L", "I")                                             # Erreur de numérisation ?
 
 TEST: __ocr__  ils sont quelques {{fols}} battus$
+
+
+# faire
+__ocr_faire__
+    foire
+        <<- ->> faire                                                                               # Erreur de numérisation ?
+
+TEST: __ocr__ j’en vois une {{foire}} l’imbécile.
 
 
 # fout / font
@@ -3101,6 +3124,23 @@ __ocr_vite__
         <<- ->> vite                                                                                # Erreur de numérisation ?
 
 TEST: __ocr__ Elle est {{vile}} débordée par l’ampleur de la tâche.
+
+
+# voilà
+__ocr_voilà__
+    [<start>|,]  ?[me|te|le|la|nous|vous|les]¿  voila
+        <<- --1>> voilà                                                                             # Erreur de numérisationb ?
+
+TEST: __ocr__ nous {{voila}}
+
+
+# voit / volt
+__ocr_voit__
+    volt
+        <<- ->> voit                                                                                # Erreur de numérisation ?
+
+TEST: __ocr__ La femme {{volt}} plus loin
+
 
 # vous / voua / voue
 __ocr_vous__
