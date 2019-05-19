@@ -1388,12 +1388,13 @@ TEST: __ocr__ Quelques-{{Uns}} sont incapables d’y parvenir.
 ## Mots inconnus du dictionnaire
 __[s]/ocr(mots_composés_inconnus)__
     \w+-\w+
-        <<- not spell(\0) and not re.search("(?i)-(?:je|tu|on|nous|vous|ils?|elles?|là|ci|les?|la|leur|une?s)$", \0)
+        <<- not spell(\0) and not re.search("(?i)-(?:je|tu|on|nous|vous|ils?|elles?|ce|là|ci|les?|la|leur|une?s)$", \0)
         ->> _                                                                                       # Erreur de numérisation ? Mot composé inconnu du dictionnaire.
 
 TEST: __ocr__ c’est du {{base-bal}}]
 TEST: __ocr__ cet homme-là est corrompu.
 TEST: __ocr__ cette femme-là est revenue nous dire ce qu’elle pensait de nous.
+TEST: __ocr__ Est-ce le bon moment pour nous ennuyer avec ça ?
 
 
 ## Lettres isolées
@@ -2302,6 +2303,14 @@ TEST: __ocr__ Roland, 87 ans, amoureux depuis cinq ans : « J’ai l’impress
 TEST: __ocr__ QUE FAIRE D’APRÈS EUX ?
 
 
+## lettres isolées
+__ocr_lettres_isolées__
+    [n|m|t|s|j|l|c|ç|d]  *WORD
+        <<- re.search("^[aâeéèêiîouyh]", \2) -1:.2>> \1’                                            # Lettre isolée. Erreur de numérisation ?
+
+TEST: __ocr__ {{J }}arrive demain
+
+
 # virgules
 __ocr_virgules__
     [il|le|la|l’|les|de|d’|ne|n’|me|m’|te|t’|se|s’|à|ce|cet|cette|mon|ma|ta|sa|mes|tes|ses|nos|vos|quelque|quelques|au|aux] ,
@@ -2309,6 +2318,14 @@ __ocr_virgules__
 
 TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
 TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
+
+
+# A
+__ocr_A__
+    À
+        <<- not value(<1, "|<start>|—|–|") ->> A                                                    # Erreur de numérisation ?
+
+TEST: __ocr__ Va jusqu’au point {{À}}
 
 
 # âge / age
@@ -2350,6 +2367,14 @@ __ocr_avis__
 TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais à ce point
 
 
+# brait / bruit
+__ocr_bruit__
+    brait
+        <<- not value(<1, "|il|ne|n’|âne|ânesse|") ->> bruit                                        # Erreur de numérisation ?
+
+TEST: __ocr__ tout ce qui {{brait}} dans la nuit
+
+
 # car dans / cardans
 __ocr_car_dans__
     cardans
@@ -2358,12 +2383,12 @@ __ocr_car_dans__
 TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.
 
 
-# chère / obère
-__ocr_chère__
-    obère
-        <<- not value(<1, "|j’|n’|l’|m’|t’|s’|il|on|elle|ça|cela|ceci|") ->> chère                  # Erreur de numérisation ?
+# cela
+__ocr_cela__
+    gela
+        <<- not value(<1, "|il|") ->> cela                                                          # Erreur de numérisation ?
 
-TEST: __ocr__ cette femme {{obère}} à notre cœur.
+TEST: Gela, on n’en veut plus.
 
 
 # celui / celai
@@ -2401,6 +2426,14 @@ __ocr_cette__
 TEST: __ocr__ mais {{celte}} femme semblait savoir ce qu’elle faisait.
 TEST: __ocr__ avec {{celle}} tentative d’humour, il pensait nous faire rire.
 TEST: __ocr__ on poirautait, {{cotte}} mariée n’arrivait pas à se décider.
+
+
+# chère / obère
+__ocr_chère__
+    obère
+        <<- not value(<1, "|j’|n’|l’|m’|t’|s’|il|on|elle|ça|cela|ceci|") ->> chère                  # Erreur de numérisation ?
+
+TEST: __ocr__ cette femme {{obère}} à notre cœur.
 
 
 # Comme / Gomme
@@ -2449,10 +2482,11 @@ TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.
 
 # dame / darne
 __ocr_dame__
-    >darne
-        <<- ->> =\1.replace("rn", "m")                                                              # Erreur de numérisation ?
+    [>darne|>daine]
+        <<- ->> =\1.replace("rn", "m").replace("in", "m")                                           # Erreur de numérisation ?
 
 TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
+TEST: __ocr__ cette {{daine}} élégamment vêtue.
 
 
 # dé / de / dés / des / dès / dos
@@ -2543,6 +2577,14 @@ TEST: __ocr__ Quels {{étals}} sont venus ?
 TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.
 
 
+# êtes
+__ocr_êtes__
+    ôtes
+        <<- ->> êtes                                                                                # Erreur de numérisation ?
+
+TEST: vous {{ôtes}} toute envie de résiter
+
+
 # fille / tille
 __ocr_fille__
     tille
@@ -2551,12 +2593,22 @@ __ocr_fille__
 TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
 
 
+# fol(s) / foi(s)
+__ocr_foi__
+    [fol|fols]
+        <<- ->> =\1.replace("l", "i").replace("L", "I")                                             # Erreur de numérisation ?
+
+TEST: __ocr__  ils sont quelques {{fols}} battus$
+
+
 # fout / font
 __ocr_font__
     fout
         <<- not value(<1, "|il|elle|on|") and not value(<2, "|il|elle|on|") ->> font                # Erreur de numérisation ?
+        <<- __else__ and morph(>1, ":(?:Ov|Y|W)") ->> faut                                          # Erreur de numérisation ?
 
 TEST: __ocr__ qui ne {{fout}} rien de leur journée
+TEST: __ocr__ il {{fout}} entendre cette voix
 
 
 # fut / rut
@@ -2645,6 +2697,14 @@ TEST: __ocr__ selon toute logique, Paris sera épargné.
 TEST: __ocr__ À l’orée de la semaine de Pâques, l’incendie de la cathédrale Notre-Dame
 
 
+# l’avoir / la voir
+__ocr_l_avoir_la_voir__
+    lavoir
+        <<- not morph(<1, ":D.*:[me]:[si]") ->> l’avoir|la voir                                     # Erreur de numérisation ?
+
+TEST: __ocr__ il faut {{lavoir}} pour le croire.
+
+
 # l’était / Tétait
 __ocr_l_était__
     Tétait
@@ -2703,6 +2763,14 @@ TEST: __ocr__ c’est bien, {{niais}} trop subtil.
 TEST: __ocr__ c’est parfait, {{maïs}} trop subtil.
 
 
+# matin
+__ocr_matin__
+    [mâtin|mâtins]
+        <<- ->> =\1.replace("â", "a").replace("Â", "A")                                             # Erreur de numérisation ?
+
+TEST: __ocr__ ce {{mâtin}}, il y eut une tempête.
+
+
 # même / même / mème / mémo / môme
 __ocr_même__
     >môme
@@ -2719,12 +2787,16 @@ TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
 TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
 
 
-# mot / mol / moi
-__ocr_mot__
-    [mol|mols]
-        <<- ->> =\1.replace("l", "t").replace("L", "T")+"|"+\1.replace("l", "i").replace("L", "I")  # Erreur de numérisation ?
+# mes
+__ocr_mes_m_as__
+    mas
+        <<- ->> mes|m’as                                                                            # Erreur de numérisation ?
 
-TEST: __ocr__ c’est un {{mol}} très dur.
+    nies
+        <<- not value(<1, "|tu|ne|n’|") ->> mes                                                     # Erreur de numérisation ?
+
+TEST: __ocr__ elle est fière de {{mas}} succès
+TEST: __ocr__ Est-ce que tu vas nier {{nies}} réussites
 
 
 # mon / won
@@ -2733,6 +2805,22 @@ __ocr_mon__
         <<- ->> mon                                                                                 # Erreur de numérisation ?
 
 TEST: __ocr__ c’est {{won}} ami
+
+
+# mot / mol / moi
+__ocr_mot__
+    [mol|mols]
+        <<- ->> =\1.replace("l", "t").replace("L", "T")+"|"+\1.replace("l", "i").replace("L", "I")  # Erreur de numérisation ?
+
+TEST: __ocr__ c’est un {{mol}} très dur.
+
+
+# moyen
+__ocr_moyen__
+    >moyeu
+        <<- ->> moyen|moyens                                                                        # Erreur de numérisation ?
+
+TEST: __ocr__ quel {{moyeu}} employer ?
 
 
 # ne / na / no / rie
@@ -2760,7 +2848,11 @@ __ocr_par__
     pan
         <<- ->> par|peu                                                                             # Erreur de numérisation ?
 
+    pur @:[DMT]
+        <<- -1>> par                                                                                # Erreur de numérisation ?
+
 TEST: __ocr__ Une seule action {{paf}} jour
+TEST: __ocr__ {{Pur}} la déesse !
 
 
 # par le / par la / par les / parle / parla / parles
@@ -2851,6 +2943,26 @@ __ocr_qu_importe__
 TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
 
 
+# reine / ruine
+__ocr_reine_ruine__
+    >raine
+        <<- ->> reine|reines|ruine|ruines                                                           # Erreur de numérisation ?
+
+    >rainer
+        <<- ->> =\1.replace("ain", "uin").replace("AIN", "UIN")                                     # Erreur de numérisation ?
+
+TEST: __ocr__ tu vas {{rainer}} notre réputation.
+TEST: __ocr__ des {{raines}} mal aimées.
+
+
+# qu’étant
+__ocr_qu_étant__
+    quêtant
+        <<- ->> qu’étant                                                                            # Erreur de numérisation ?
+
+TEST: __ocr__ {{Quêtant}} la fille d’une déesse, elle n’avait pas à se justifier.
+
+
 # qui / gui
 __ocr_qui__
     gui
@@ -2870,12 +2982,24 @@ __ocr_s_il__
 TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.
 
 
+# son / sou
+__ocr_son__
+    sou
+        <<- ->> son                                                                                 # Erreur de numérisation ?
+
+TEST: __ocr__ ça vient de {{sou}} ami
+
+
 # sur / sar
 __ocr_sur__
     sar
         <<- ->> sur                                                                                 # Erreur de numérisation ?
 
+    sui
+        <<- not value(>1, "|generis|") ->> sur                                                      # Erreur de numérisation ?
+
 TEST: __ocr__ il ne savait rien {{sar}} eux.
+TEST: __ocr__ il en est {{sui}}
 
 
 # tard / lard
@@ -2970,6 +3094,13 @@ __ocr_vêtement__
 
 TEST: __ocr__ il enfila ses {{vêlements}} en hâte.
 
+
+# vite
+__ocr_vite__
+    vile
+        <<- ->> vite                                                                                # Erreur de numérisation ?
+
+TEST: __ocr__ Elle est {{vile}} débordée par l’ampleur de la tâche.
 
 # vous / voua / voue
 __ocr_vous__
@@ -6371,6 +6502,11 @@ __conf_ça_çà_sa__
     sa  <end>
         <<- /conf/ -1>> ça                              # Confusion probable : “sa” est un déterminant féminin singulier. Pour l’équivalent de “cela” ou “ceci”, écrivez “ça”.
 
+    [c’|ç’] [à|a]
+        <<- /conf/ space_after(\1, 0, 0) and not (value(\2, "|a|") and value(>1, "|été|")) >>>
+        <<- /conf/ value(>1, "|été|") -2>> a            # Confusion. Pour le verbe avoir à la 3ᵉ personne du singulier, écrivez “a”.
+        <<- /conf/ __else__ ->> ça|sa                   # Confusion. Si vous voulez dire “cela”, écrivez “ça”. Pour le déterminant possessif, écrivez “sa”.
+
 TEST: Je prends {{sa}}…
 TEST: {{ça}} patrie, il la détestait
 TEST: et {{sa}} par deux fois
@@ -6380,6 +6516,8 @@ TEST: C’est comme {{sa}}.
 TEST: {{sa}} l’ennuierait, ce fils de pute, de dire bonjour ?
 TEST: il faut s’y prendre comme {{sa}}
 TEST: on fait {{sa}} lorsqu’on a tout perdu
+TEST: {{ç’a}} craint, cette histoire
+TEST: ç’a été difficile.
 TEST: Eux, ils appellent ça routine.
 TEST: avec sa presque belle-mère
 TEST: sa toute nouvelle application de synchronisation de fichiers
@@ -15914,29 +16052,34 @@ TEST: il est bien évidemment {{tant}} d’en finir avec ça.
 
 # tort / tord / tore / torr / tors
 __conf_tort_tord_tore__
+    en [tord|tords] [<end>|,]
     à [tord|tords]
         <<- /conf/ -2>> tort                                            # Confusion : “tord” est une conjugaison du verbe tordre.
 
-    à >tore
+    [à|en] >tore
         <<- /conf/ -2>> tort                                            # Confusion : un tore est une forme géométrique annulaire.
 
-    à [tors|torr]
+    [à|en] [tors|torr]
         <<- /conf/ -2>> tort                                            # Confusion.
 
     [>avoir|>donner|>redonner|>faire] [tord|tords]
-        <<- /conf/ -2>> tort                                            # Confusion : “tord” est une conjugaison du verbe tordre.
+    >être [pas|jamais|guère] ?@:W¿ en [tord|tords]
+        <<- /conf/ --1>> tort                                           # Confusion : “tord” est une conjugaison du verbe tordre.
 
-    [>avoir|>donner|>redonner|>faire] [>tore]
-        <<- /conf/ -2>> tort                                            # Confusion : un tore est une forme géométrique annulaire.
+    [>avoir|>donner|>redonner|>faire] >tore
+    >être [pas|jamais|guère] ?@:W¿ en >tore
+        <<- /conf/ --1>> tort                                           # Confusion : un tore est une forme géométrique annulaire.
 
     [>avoir|>donner|>redonner|>faire] [tors|torr]
-        <<- /conf/ -2>> tort                                            # Confusion.
+    >être [pas|jamais|guère] ?@:W¿ en [tors|torr]
+        <<- /conf/ --1>> tort                                           # Confusion.
 
 TEST: elles seront à {{tord}} accusées.
 TEST: ils ont {{tords}}…
 TEST: ils ont {{tord}}.
 TEST: ils n’ont pas {{tord}}.
 TEST: je ne peux pas lui donner {{tord}}.
+TEST: ils sont en {{tord}}
 
 
 # venimeux / vénéneux
