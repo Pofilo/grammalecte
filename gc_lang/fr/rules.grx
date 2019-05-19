@@ -1397,6 +1397,14 @@ TEST: __ocr__ cette femme-là est revenue nous dire ce qu’elle pensait de nous
 TEST: __ocr__ Est-ce le bon moment pour nous ennuyer avec ça ?
 
 
+## Trait d’union conditionnel
+__[i]/ocr(tu_trait_union_conditionnel)__
+    ({w1})‑({w1})  @@0,$
+    <<- ->> \1\2|\1-\2                                                                              # Trait d’union conditionnel. Erreur de numérisation ?
+
+TEST: __ocr__ c’est {{anti-américain}}
+
+
 ## Lettres isolées
 # Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
 __[s]/ocr(ocr_lettres_isolées)!2__
@@ -1544,10 +1552,12 @@ TEST: Il y a un {{doublon doublon}}.
 
 ### Traits d’union douteux
 __[i]/tu(tu_trait_union_douteux)__
-    ({w1})(?:--|—|–)({w1})  @@0,$
+    ({w1})(?:--|—|–|−|⁃)({w1})  @@0,$
     <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":") ->> \1-\2                                      # Trait d’union : un tiret simple suffit.
 
 TEST: Nous préparons une {{contre–attaque}}.
+TEST: Nous préparons une {{contre−attaque}}.
+
 
 
 !!!! Nombres: typographie                                                                         !!
