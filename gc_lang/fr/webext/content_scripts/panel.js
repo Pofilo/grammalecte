@@ -76,7 +76,7 @@ class GrammalectePanel {
         }
         xButtonLine.appendChild(this._createMoveButton("up", " ", "Monter")); // use char ⏶ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
         xButtonLine.appendChild(this._createMoveButton("left", " ", "À gauche")); // use char ⏴ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
-        xButtonLine.appendChild(this._createMoveButton("center", "•", "Centrer"));
+        xButtonLine.appendChild(this._createMoveButton("center", " ", "Centrer")); // char • can be used already
         xButtonLine.appendChild(this._createMoveButton("right", " ", "À droite")); // use char ⏵ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
         xButtonLine.appendChild(this._createMoveButton("down", " ", "Descendre")); // use char ⏷ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
         this.xCloseButton = this._createCloseButton();
