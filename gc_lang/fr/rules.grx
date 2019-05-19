@@ -6781,6 +6781,7 @@ __conf_dès_des_dés__
     [dés|des] @:B ans
     [dés|des] un an
         <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
+            and not before("% +$")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM heures
@@ -6842,6 +6843,7 @@ TEST: notre revue des 24 et 25 décembre
 TEST: J’ai des X230.
 TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
 TEST: C’est la fin des 35 heures.
+TEST: 98 % des 18‑29 ans considéraient cela comme évident
 
 
 # diagnostic / diagnotique // pronostic / pronostique // public / publique
@@ -10296,11 +10298,11 @@ __purge_locutions__
     hors [de|d’] [contrôle|portée|atteinte]
     hors d’ état [de|d’] nuire
     hors du commun
-    ici
-    ici [comme|ou] ailleurs
-    ici et [là|maintenant]
-    ici même
-    ici-bas
+    ?d’¿ ici
+    ?d’¿ ici [comme|ou] ailleurs
+    ?d’¿ ici et [là|maintenant]
+    ?d’¿ ici même
+    ?d’¿ ici-bas
     ?d’¿ il y a ?très¿ longtemps
     ?d’¿ il y a ?très¿ peu [de|d’] temps
     ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
@@ -16112,12 +16114,13 @@ TEST: sans {{dérogez}} aux règles en vigueur dans cet établissement
 
 __infi_nous_vous_verbe__
     [nous|vous]  ~ée?s?$
-        <<- /infi/ morph(\2, ":Q") and not morph(<1, "V0.*[12]p") -2>> _                 # Après “\1”, le verbe ne devrait pas être un participe passé.
+        <<- /infi/ space_after(\1, 1, 3) and morph(\2, ":Q") and not morph(<1, "V0.*[12]p") -2>> _  # Après “\1”, le verbe ne devrait pas être un participe passé.
 
 TEST: Nous {{intéressé}} à la question ne suffit pas à faire de nous des experts.
 TEST: nous {{ridiculisé}}
 TEST: vous {{mangé}}
 TEST: Sommes-nous désespérés à ce point ?
+TEST: Vous d’habitude si réservée.
 
 
 __infi_devoir_savoir_pouvoir_interrogatif__
