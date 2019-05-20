@@ -61,6 +61,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelContent.appendChild(this.xGCPanelContent);
         this.xNode = null;
         this.oTextControl = new GrammalecteTextControl();
+        this.bAutoRefresh = false;
         // Lexicographer
         this.nLxgCount = 0;
         this.xLxgPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_lxg_panel_content"});
@@ -80,6 +81,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur"});
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
+        this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_autorefresh_button", textContent: "AR", title: "Auto-rafraîchissement de la correction grammaticale"})
+        this.xEditorButton.appendChild(this.xAutoRefresh);
         this.xTFButton.onclick = () => {
             if (!this.bWorking) {
                 oGrammalecte.createTFPanel();
@@ -92,6 +95,14 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 this.showEditor();
             }
         };
+        this.xAutoRefresh.onclick = () => {
+            console.log("autor");
+            this.bAutoRefresh = !this.bAutoRefresh;
+            this.xAutoRefresh.style.backgroundColor = (this.bAutoRefresh) ? "hsl(150, 50%, 50%)" : "";
+            this.xAutoRefresh.style.color = (this.bAutoRefresh) ? "hsl(150, 50%, 96%)" : "";
+            this.xAutoRefresh.style.opacity = (this.bAutoRefresh) ? "1" : "";
+            console.log("on");
+        }
         this.xLxgButton.onclick = () => {
             if (!this.bWorking) {
                 this.showLexicographer();
@@ -217,13 +228,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
                 xParagraph.dataset.timer_id = "0";
                 xParagraph.addEventListener("input", function (xEvent) {
-                    // timer for refreshing analysis
-                    window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
-                    xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
-                    // save caret position
-                    let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
-                    xParagraph.dataset.caret_position_start = nStart;
-                    xParagraph.dataset.caret_position_end = nEnd;
+                    if (this.bAutoRefresh) {
+                        // timer for refreshing analysis
+                        window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
+                        xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
+                        // save caret position
+                        let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
+                        xParagraph.dataset.caret_position_start = nStart;
+                        xParagraph.dataset.caret_position_end = nEnd;
+                    }
                     // write text
                     this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
                     this.oTextControl.write();
