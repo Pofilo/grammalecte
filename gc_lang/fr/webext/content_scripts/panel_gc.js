@@ -217,13 +217,26 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xParagraph.setAttribute("spellcheck", "false"); // doesn’t seem possible to use “spellcheck” as a common attribute.
                 xParagraph.dataset.timer_id = "0";
                 xParagraph.addEventListener("input", function (xEvent) {
+                    // timer for refreshing analysis
                     window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
                     xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
+                    // save caret position
                     let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
                     xParagraph.dataset.caret_position_start = nStart;
                     xParagraph.dataset.caret_position_end = nEnd;
+                    // write text
                     this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
                     this.oTextControl.write();
+                }.bind(this)
+                , true);
+                xParagraph.addEventListener("blur", function (xEvent) {
+                    // remove timer for refreshing analysis
+                    window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
+                    // unset caret position
+                    xParagraph.dataset.caret_position_start = "-1";
+                    xParagraph.dataset.caret_position_end = "-1";
+                    // recheck
+                    this.recheckParagraph(oResult.iParaNum);
                 }.bind(this)
                 , true);
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
@@ -335,9 +348,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
-        let nStart = parseInt(xParagraph.dataset.caret_position_start);
-        let nEnd = parseInt(xParagraph.dataset.caret_position_end);
-        oGrammalecte.setCaretPosition(xParagraph, nStart, nEnd);
+        if (xParagraph.dataset.caret_position_start !== "-1") {
+            let nStart = parseInt(xParagraph.dataset.caret_position_start);
+            let nEnd = parseInt(xParagraph.dataset.caret_position_end);
+            oGrammalecte.setCaretPosition(xParagraph, nStart, nEnd);
+        }
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "↻";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "";
@@ -389,7 +404,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     copyTextToClipboard () {
         this.startWaitIcon();
         try {
-
             let sText = "";
             // Dans un shadow, <this.xParent.getElementsByClassName> n’existe pas.
             let xElem = this.xParent.getElementById("grammalecte_gc_panel");
@@ -397,7 +411,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 sText += xNode.textContent + "\n";
             }
             this._sendTextToClipboard(sText);
-
         }
         catch (e) {
             showError(e);
@@ -406,20 +419,23 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     _sendTextToClipboard (sText)  {
-        let xClipboardButton = this.xParent.getElementById("grammalecte_clipboard_button");
-        xClipboardButton.textContent = "⇒ presse-papiers";
+        this.xClipboardButton.textContent = "⇒ presse-papiers";
         // Firefox 63+, Chrome 66+
         // Working draft: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
-        navigator.clipboard.writeText(sText)
-        .then(
-            (res) => { window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000); }
-        )
-        .catch(
-            (e) => { console.error(e); this._sendTextToClipboard(sText, xClipboardButton); }
-        );
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(sText)
+            .then(
+                (res) => { window.setTimeout(() => { this.xClipboardButton.textContent = "📋"; }, 2000); }
+            )
+            .catch(
+                (e) => { console.error(e); this._sendTextToClipboard(sText); }
+            );
+        } else {
+            this._sendTextToClipboardFallback(sText);
+        }
     }
 
-    _sendTextToClipboardFallback (sText, xClipboardButton) {
+    _sendTextToClipboardFallback (sText) {
         try {
             // Copy to clipboard fallback
             // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
@@ -431,7 +447,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
             document.addEventListener("copy", setClipboardData, true);
             document.execCommand("copy");
-            window.setTimeout(() => { xClipboardButton.textContent = "📋"; }, 2000);
+            window.setTimeout(() => { this.xClipboardButton.textContent = "📋"; }, 2000);
         }
         catch (e) {
             console.error(e);

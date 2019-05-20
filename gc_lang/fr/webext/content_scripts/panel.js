@@ -68,11 +68,12 @@ class GrammalectePanel {
         let xButtonLine = oGrammalecte.createNode("div", {className: "grammalecte_panel_commands"});
         xButtonLine.appendChild(this.xWaitIcon);
         if (this.sId === "grammalecte_gc_panel") {
-            xButtonLine.appendChild(this._createCopyButton());
+            this.xClipboardButton = this._createCopyButton();
+            xButtonLine.appendChild(this.xClipboardButton);
         }
         if (this.bFlexible) {
-            this.xWidthButton = this._createMoveButton("changeWidth", "L", "Étendre en largeur");
-            this.xHeightButton = this._createMoveButton("changeHeight", "H", "Étendre en hauteur");
+            this.xWidthButton = this._createMoveButton("changeWidth", " ", "Étendre en largeur");
+            this.xHeightButton = this._createMoveButton("changeHeight", " ", "Étendre en hauteur");
             xButtonLine.appendChild(this.xWidthButton);
             xButtonLine.appendChild(this.xHeightButton);
         }
@@ -185,8 +186,8 @@ class GrammalectePanel {
     setSizeAndPosition () {
         // size
         if (this.xWidthButton && this.xHeightButton) {
-            this.xWidthButton.style.opacity = (this.bHorizStrech) ? .9 : .5;
-            this.xHeightButton.style.opacity = (this.bVertStrech) ? .9 : .5;
+            this.xWidthButton.style.opacity = (this.bHorizStrech) ? ".9" : "";
+            this.xHeightButton.style.opacity = (this.bVertStrech) ? ".9" : "";
         }
         let nWidth = Math.min(this.nWidth, window.innerWidth-200);
         let nHeight = ([4, 5, 6].includes(this.nPosition)) ? Math.min(this.nHeight, window.innerHeight-100) : Math.floor(window.innerHeight*0.45);
