@@ -71,8 +71,10 @@ class GrammalectePanel {
             xButtonLine.appendChild(this._createCopyButton());
         }
         if (this.bFlexible) {
-            xButtonLine.appendChild(this._createMoveButton("changeWidth", "⭾", "Bascule la largeur"));
-            xButtonLine.appendChild(this._createMoveButton("changeHeight", "⭿", "Bascule la hauteur"));
+            this.xWidthButton = this._createMoveButton("changeWidth", "L", "Étendre en largeur");
+            this.xHeightButton = this._createMoveButton("changeHeight", "H", "Étendre en hauteur");
+            xButtonLine.appendChild(this.xWidthButton);
+            xButtonLine.appendChild(this.xHeightButton);
         }
         xButtonLine.appendChild(this._createMoveButton("up", " ", "Monter")); // use char ⏶ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
         xButtonLine.appendChild(this._createMoveButton("left", " ", "À gauche")); // use char ⏴ when Windows 10 be vast majority of OS (Trebuchet MS not updated on other OS)
@@ -182,12 +184,19 @@ class GrammalectePanel {
 
     setSizeAndPosition () {
         // size
-        let nWidth = (this.bFlexible && this.bHorizStrech) ? Math.min(this.nWidth*1.5, window.innerWidth-200) : Math.min(this.nWidth, window.innerWidth-200);
-        let nHeight = this.nHeight;
-        if ([4, 5, 6].includes(this.nPosition)) {
-            nHeight = (this.bFlexible && this.bVertStrech) ? (window.innerHeight-100) : Math.min(window.innerHeight-100, this.nHeight);
-        } else {
-            nHeight = (this.bFlexible) ? Math.floor(window.innerHeight*0.45) : this.nHeight;
+        if (this.xWidthButton && this.xHeightButton) {
+            this.xWidthButton.style.opacity = (this.bHorizStrech) ? .9 : .5;
+            this.xHeightButton.style.opacity = (this.bVertStrech) ? .9 : .5;
+        }
+        let nWidth = Math.min(this.nWidth, window.innerWidth-200);
+        let nHeight = ([4, 5, 6].includes(this.nPosition)) ? Math.min(this.nHeight, window.innerHeight-100) : Math.floor(window.innerHeight*0.45);
+        if (this.bFlexible) {
+            if (this.bHorizStrech) {
+                nWidth = Math.min(this.nWidth*1.33, window.innerWidth-200);
+            }
+            if (this.bVertStrech) {
+                nHeight = ([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-100) : Math.floor(window.innerHeight*0.67);
+            }
         }
         this.xPanel.style.width = `${nWidth}px`;
         this.xPanel.style.height = `${nHeight}px`;
