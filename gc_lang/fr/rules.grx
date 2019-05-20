@@ -7036,16 +7036,16 @@ TEST: 98 % des 18‑29 ans considéraient cela comme évident
 # diagnostic / diagnotique // pronostic / pronostique // public / publique
 __conf_diagnostic_pronostique__
     [ce|un|du|mon|notre|votre|quel] [diagnostique|pronostique|publique]
-        <<- /conf/ -2>> =\2.replace("qu", "c").replace("QU", "C")                                   # Confusion probable. Le nom s’écrit avec un “c”.
+        <<- /conf/ -2>> =\2.replace("que", "c").replace("QUE", "C")                                 # Confusion probable. Le nom s’écrit avec un “c”.
 
     [ces|des|mes|tes|ses|nos|vos|leurs|quels|plusieurs|quelques]  [diagnostiques|pronostiques|publiques]
-        <<- /conf/ -2>> =\2.replace("qu", "c").replace("QU", "C")                                   # Confusion probable. Le nom s’écrit avec un “c”.
+        <<- /conf/ -2>> =\2.replace("que", "c").replace("QUE", "C")                                 # Confusion probable. Le nom s’écrit avec un “c”.
 
     le [diagnotique|pronostique|publique]
-        <<- /conf/ not morph(<1, ":O[sv]") -2>> =\2.replace("qu", "c").replace("QU", "C")           # Confusion probable. Le nom s’écrit avec un “c”.
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> =\2.replace("que", "c").replace("QUE", "C")         # Confusion probable. Le nom s’écrit avec un “c”.
 
     les [diagnotiques|pronostiques|publiques]
-        <<- /conf/ not morph(<1, ":O[sv]") -2>> =\2.replace("qu", "c").replace("QU", "C")           # Confusion probable. Le nom s’écrit avec un “c”.
+        <<- /conf/ not morph(<1, ":O[sv]") -2>> =\2.replace("que", "c").replace("QUE", "C")         # Confusion probable. Le nom s’écrit avec un “c”.
 
     en publique
         <<- /conf/ -2>> public                                                                      # Confusion probable. Le nom s’écrit avec un “c”.
@@ -10517,6 +10517,7 @@ __purge_locutions__
     jusqu’ à la fin [de|d’] [mes|tes|ses|nos|vos|leurs] jours
     jusqu’ à la fin des temps
     jusqu’ à la tombée [de|d’] la nuit
+    jusqu’ à la dernière [minute|seconde]
     jusqu’ à [mon|ton|son|notre|votre|leur] dernier souffle
     jusqu’ à [mon|ton|son|notre|votre|leur] dernier souffle [de|d’] vie
     jusqu’ à ce que mort s’ensuive
@@ -11352,6 +11353,7 @@ __simplication_substantifs__
     >chambre [de|d’] [agriculture|hôte|hôtes|commerce|compensation|décompression|dégrisement]
     >chasse à courre
     >chemin de [traverse|fer]
+    >chèque sans provision
     >chili con carne
     >claire comme de l’ eau de [boudin|roche|source]
     >claire comme du cristal
@@ -11490,6 +11492,7 @@ __simplication_substantifs__
     tas de >ferraille ?rouillée¿
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
+    >témoin à charge
     >tête de [déterré|déterrée|déterrés|déterrées]
     >titre de [noblesse|propriété|séjour]
     >tondeuse à gazon
@@ -12141,6 +12144,7 @@ __purge_locutions_verbales__
     [>mettre|>remettre] en [avant|branle|bouche|demeure|garde|jeu|lumière|mouvement|œuvre|place|scène|terre]
     >mourir jeune
     [>naître|>naitre] sous x
+    >partir en vrille
     >percer à jour
     >perdre [connaissance|conscience|raison]
     >perdre d’ avance
@@ -12170,6 +12174,7 @@ __purge_locutions_verbales__
     >trouver refuge
     >tirer [avantage|profit]
     >tourner court
+    >venir à bout
     [>venir|>revenir] je ne sais ?pas¿ ?trop¿ d’ où
     [>venir|>revenir] on ne sait ?pas¿ ?trop¿ d’ où
         <<- ~2:0>> *
@@ -12188,6 +12193,7 @@ __conf_locutions_verbales__
     >saigner a blanc
     >tenir a distance
     >tomber a [pic|point]
+    >venir a bout
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
