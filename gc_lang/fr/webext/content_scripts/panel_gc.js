@@ -15,13 +15,13 @@ function onGrammalecteGCPanelClick (xEvent) {
             } else if (xElem.id === "grammalecte_tooltip_ignore") {
                 oGrammalecte.oGCPanel.ignoreError(xElem.id);
             } else if (xElem.id.startsWith("grammalecte_check")) {
-                oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.dataset.para_num));
+                oGrammalecte.oGCPanel.recheckParagraph(parseInt(xElem.dataset.para_num, 10));
             } else if (xElem.id.startsWith("grammalecte_hide")) {
                 xElem.parentNode.parentNode.style.display = "none";
             } else if (xElem.id.startsWith("grammalecte_err")
                        && xElem.className !== "grammalecte_error_corrected"
                        && xElem.className !== "grammalecte_error_ignored") {
-                oGrammalecte.oGCPanel.oTooltip.show(xElem.id);
+                oGrammalecte.oGCPanel.oTooltip.show(xElem.parentNode, xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_url"  || xElem.id === "grammalecte_tooltip_db_search") {
                 oGrammalecte.oGCPanel.openURL(xElem.dataset.url);
             } else {
@@ -81,7 +81,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur"});
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
-        this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_autorefresh_button", textContent: "AR", title: "Auto-rafraîchissement de la correction grammaticale"})
+        this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_autorefresh_button", textContent: "AR", title: "Auto-rafraîchissement de la correction grammaticale (3 s après la dernière frappe)"})
         this.xEditorButton.appendChild(this.xAutoRefresh);
         this.xTFButton.onclick = () => {
             if (!this.bWorking) {
@@ -96,12 +96,10 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
         };
         this.xAutoRefresh.onclick = () => {
-            console.log("autor");
             this.bAutoRefresh = !this.bAutoRefresh;
             this.xAutoRefresh.style.backgroundColor = (this.bAutoRefresh) ? "hsl(150, 50%, 50%)" : "";
             this.xAutoRefresh.style.color = (this.bAutoRefresh) ? "hsl(150, 50%, 96%)" : "";
             this.xAutoRefresh.style.opacity = (this.bAutoRefresh) ? "1" : "";
-            console.log("on");
         }
         this.xLxgButton.onclick = () => {
             if (!this.bWorking) {
@@ -230,7 +228,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xParagraph.addEventListener("input", function (xEvent) {
                     if (this.bAutoRefresh) {
                         // timer for refreshing analysis
-                        window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
+                        window.clearTimeout(parseInt(xParagraph.dataset.timer_id, 10));
                         xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
                         // save caret position
                         let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
@@ -238,7 +236,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                         xParagraph.dataset.caret_position_end = nEnd;
                     }
                     // write text
-                    this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num), this.purgeText(xEvent.target.textContent));
+                    this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num, 10), this.purgeText(xEvent.target.textContent));
                     this.oTextControl.write();
                 }.bind(this)
                 , true);
@@ -279,6 +277,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     }
 
     refreshParagraph (sParagraphId, oResult) {
+        // function called when results are sent by the Worker
         try {
             let xParagraph = this.xParent.getElementById(sParagraphId);
             xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
@@ -362,8 +361,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
         if (xParagraph.dataset.caret_position_start !== "-1") {
-            let nStart = parseInt(xParagraph.dataset.caret_position_start);
-            let nEnd = parseInt(xParagraph.dataset.caret_position_end);
+            let nStart = parseInt(xParagraph.dataset.caret_position_start, 10);
+            let nEnd = parseInt(xParagraph.dataset.caret_position_end, 10);
             oGrammalecte.setCaretPosition(xParagraph, nStart, nEnd);
         }
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "↻";
@@ -381,7 +380,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xNodeErr.className = "grammalecte_error_corrected";
             xNodeErr.removeAttribute("style");
             this.oTooltip.hide();
-            this.recheckParagraph(parseInt(sErrorId.slice(0, sErrorId.indexOf("-"))));
+            this.recheckParagraph(parseInt(sErrorId.slice(0, sErrorId.indexOf("-")), 10));
         }
         catch (e) {
             showError(e);
@@ -786,8 +785,11 @@ class GrammalecteTooltip {
         xGCPanelContent.appendChild(this.xTooltipArrow);
     }
 
-    show (sNodeErrorId) {  // err
+    show (xParagraph, sNodeErrorId) {  // err
         try {
+            // we kill autorefresh for safety
+            window.clearTimeout(parseInt(xParagraph.dataset.timer_id, 10));
+            //
             let xNodeErr = this.xParent.getElementById(sNodeErrorId);
             this.sErrorId = xNodeErr.dataset.error_id; // we store error_id here to know if spell_suggestions are given to the right word.
             let nTooltipLeftLimit = oGrammalecte.oGCPanel.getWidth() - 330; // paragraph width - tooltip width
