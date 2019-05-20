@@ -2289,11 +2289,11 @@ __immunités__
 ## Casse
 __ocr_casse__
     ~^[A-ZÉÈÂÊÎÔ]\w
-        <<- \1.istitle() and before("\\w") and (morph(\1, ":G", ":M") or morph(\1, ":[123][sp]", ":[MNA]|>Est/"))
+        <<- /ocr/ \1.istitle() and before("\\w") and (morph(\1, ":G", ":M") or morph(\1, ":[123][sp]", ":[MNA]|>Est/"))
         -:>> =\1.lower()                                                                            # Erreur de numérisation ? Casse improbable.
 
     [L’|D’|N’|M’|T’|S’|C’|Ç’]  *WORD
-        <<- before("\\w") and not \2.isupper() -1:>> =\1.lower()                                    # Erreur de numérisation ? Casse douteuse.
+        <<- /ocr/ before("\\w") and not \2.isupper() -1:>> =\1.lower()                              # Erreur de numérisation ? Casse douteuse.
 
 TEST: __ocr__ regarde dans l’obscurité de {{L’}}entrepôt                        ->> l’
 TEST: __ocr__ votre ami la regarde, {{Vous}} ne l’avez pas achetée              ->> vous
@@ -2316,7 +2316,7 @@ TEST: __ocr__ QUE FAIRE D’APRÈS EUX ?
 ## lettres isolées
 __ocr_lettres_isolées__
     [n|m|t|s|j|l|c|ç|d]  *WORD
-        <<- re.search("^[aâeéèêiîouyh]", \2) -1:.2>> \1’                                            # Lettre isolée. Erreur de numérisation ?
+        <<- /ocr/ re.search("^[aâeéèêiîouyh]", \2) -1:.2>> \1’                                      # Lettre isolée. Erreur de numérisation ?
 
 TEST: __ocr__ {{J }}arrive demain
 
@@ -2324,7 +2324,7 @@ TEST: __ocr__ {{J }}arrive demain
 # virgules
 __ocr_virgules__
     [il|le|la|l’|les|de|d’|ne|n’|me|m’|te|t’|se|s’|à|ce|cet|cette|mon|ma|ta|sa|mes|tes|ses|nos|vos|quelque|quelques|au|aux] ,
-        <<- space_after(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1                   # Erreur de numérisation ? Virgule superflue ?
+        <<- /ocr/ space_after(\1, 0, 0) and not \1.isupper() or value(\1, "|à|") ->> \1             # Erreur de numérisation ? Virgule superflue ?
 
 TEST: __ocr__ Pierre entre pour {{se,}} rapprocher de L
 TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce village, la… comment l’appelle-t-on ?
@@ -2333,7 +2333,7 @@ TEST: __ocr__ je voudrais faire une question ou deux sur une maison de ce villag
 # A
 __ocr_A__
     À
-        <<- not value(<1, "|<start>|—|–|") ->> A                                                    # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|<start>|—|–|") ->> A                                              # Erreur de numérisation ?
 
 TEST: __ocr__ Va jusqu’au point {{À}}
 
@@ -2341,7 +2341,7 @@ TEST: __ocr__ Va jusqu’au point {{À}}
 # âge / age
 __ocr_age__
     >age
-        <<- ->> =\1.replace("a", "â").replace("A", "Â")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("a", "â").replace("A", "Â")                                       # Erreur de numérisation ?
 
 TEST: __ocr__ À son {{age}}, on ne sait plus ce qu’on fait.
 
@@ -2349,7 +2349,7 @@ TEST: __ocr__ À son {{age}}, on ne sait plus ce qu’on fait.
 # autre / antre
 __ocr_autre__
     >antre
-        <<- ->> =\1.replace("n", "u")                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("n", "u")                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ cet {{antre}} gars lui semblait bien louche.
 
@@ -2357,14 +2357,14 @@ TEST: __ocr__ cet {{antre}} gars lui semblait bien louche.
 # avec / aven / arec
 __ocr_avec__
     [arec|aven]
-        <<- ->> avec                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> avec                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ Elle s’en alla {{arec}} eux sans un regard en arrière.
 
 # avaient / avalent
 __ocr_avaient__
     avalent
-        <<- ->> avaient                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> avaient                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ Ils {{avalent}} très faim.
 
@@ -2372,7 +2372,7 @@ TEST: __ocr__ Ils {{avalent}} très faim.
 # avais / avals / axais
 __ocr_avis__
     [avals|axais]
-        <<- ->> avais                                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> avais                                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais à ce point
 
@@ -2380,7 +2380,7 @@ TEST: __ocr__ j’{{axais}} souvent perdu le contrôle de moi-même, mais jamais
 # brait / bruit
 __ocr_bruit__
     brait
-        <<- not value(<1, "|il|ne|n’|âne|ânesse|") ->> bruit                                        # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|il|ne|n’|âne|ânesse|") ->> bruit                                  # Erreur de numérisation ?
 
 TEST: __ocr__ tout ce qui {{brait}} dans la nuit
 
@@ -2388,7 +2388,7 @@ TEST: __ocr__ tout ce qui {{brait}} dans la nuit
 # car dans / cardans
 __ocr_car_dans__
     cardans
-        <<- ->> car dans                                                                            # Erreur de numérisation ?
+        <<- /ocr/ ->> car dans                                                                      # Erreur de numérisation ?
 
 TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.
 
@@ -2396,7 +2396,7 @@ TEST: __ocr__ On se tut tous, {{cardans}} l’armée on apprend à la boucler.
 # cela
 __ocr_cela__
     gela
-        <<- not value(<1, "|il|") ->> cela                                                          # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|il|") ->> cela                                                    # Erreur de numérisation ?
 
 TEST: Gela, on n’en veut plus.
 
@@ -2404,7 +2404,7 @@ TEST: Gela, on n’en veut plus.
 # celui / celai
 __ocr_celui__
     celai
-        <<- not value(<1, "|je|ne|le|la|les|") ->> celui                                            # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|je|ne|le|la|les|") ->> celui                                      # Erreur de numérisation ?
 
 TEST: __ocr__ je suis déjà venu et {{celai}} qui viendra encore.
 
@@ -2412,7 +2412,7 @@ TEST: __ocr__ je suis déjà venu et {{celai}} qui viendra encore.
 # ces / cos
 __ocr_ces__
     cos
-        <<- ->> ces                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> ces                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ {{cos}} problèmes sont insolubles.
 
@@ -2420,7 +2420,7 @@ TEST: __ocr__ {{cos}} problèmes sont insolubles.
 # C’était / Celait
 __ocr_c_était__
     celait
-        <<- ->> c’était                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> c’était                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ {{celait}} perdu d’avance.
 
@@ -2428,10 +2428,10 @@ TEST: __ocr__ {{celait}} perdu d’avance.
 # cette / celte / cotte
 __ocr_cette__
     [celte|celle]  @:N.*:f:s
-        <<- -1>> cette                                                                              # Erreur de numérisation ?
+        <<- /ocr/ -1>> cette                                                                        # Erreur de numérisation ?
 
     cotte
-        <<- not morph(<1, ":D.*:f:[si]") ->> cette                                                  # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:f:[si]") ->> cette                                            # Erreur de numérisation ?
 
 TEST: __ocr__ mais {{celte}} femme semblait savoir ce qu’elle faisait.
 TEST: __ocr__ avec {{celle}} tentative d’humour, il pensait nous faire rire.
@@ -2441,7 +2441,7 @@ TEST: __ocr__ on poirautait, {{cotte}} mariée n’arrivait pas à se décider.
 # chère / obère
 __ocr_chère__
     obère
-        <<- not value(<1, "|j’|n’|l’|m’|t’|s’|il|on|elle|ça|cela|ceci|") ->> chère                  # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|j’|n’|l’|m’|t’|s’|il|on|elle|ça|cela|ceci|") ->> chère            # Erreur de numérisation ?
 
 TEST: __ocr__ cette femme {{obère}} à notre cœur.
 
@@ -2449,7 +2449,7 @@ TEST: __ocr__ cette femme {{obère}} à notre cœur.
 # Comme / Gomme
 __ocr_comme__
     Gomme
-        <<- not value(<1, "|et|ou|où|") ->> Comme                                                   # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|et|ou|où|") ->> Comme                                             # Erreur de numérisation ?
 
 TEST: __ocr__ {{Gomme}} il était sage à cette époque-là !
 
@@ -2457,7 +2457,7 @@ TEST: __ocr__ {{Gomme}} il était sage à cette époque-là !
 # Comment / Gomment
 __ocr_comment__
     Gomment
-        <<- ->> Comment                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> Comment                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ {{Gomment}} s’en sortir avec tous ces retards qui s’accumulent ?
 
@@ -2465,7 +2465,7 @@ TEST: __ocr__ {{Gomment}} s’en sortir avec tous ces retards qui s’accumulent
 # contre / coutre / contra
 __ocr_contre__
     [contra|coutre|coutra]
-        <<- ->> contre                                                                              # Erreur de numérisation ?
+        <<- /ocr/ ->> contre                                                                        # Erreur de numérisation ?
 
 TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.
 
@@ -2473,7 +2473,7 @@ TEST: __ocr__ elle était {{coutre}} cette idée et le serait toujours.
 # de / da
 __ocr_de__
     da
-        <<- ->> de                                                                                  # Erreur de numérisation ?
+        <<- /ocr/ ->> de                                                                            # Erreur de numérisation ?
 
 TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
 
@@ -2481,13 +2481,13 @@ TEST: __ocr__ Le nombre {{da}} personnes endettées augmente sans cesse.
 # dans / bans / clans
 __ocr_dans__
     bans
-        <<- not morph(<1, ":D.*:p") ->> dans                                                        # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:p") ->> dans                                                  # Erreur de numérisation ?
 
     [clans|dons]  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|chaque|chacun|plusieurs|quelques|maints|maintes|tout|tous|toute|toutes|certains|certaines|nombre]
-        <<- not morph(<1, ":D.*:p") -1>> dans                                                       # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:p") -1>> dans                                                 # Erreur de numérisation ?
 
     dam
-        <<- not (value(<1, "|grand|") and value(<2, "|au|")) ->> dans                               # Erreur de numérisation ?
+        <<- /ocr/ not (value(<1, "|grand|") and value(<2, "|au|")) ->> dans                         # Erreur de numérisation ?
 
 TEST: __ocr__ Mais {{bans}} cette ferme, tout était bien organisé.
 TEST: __ocr__ sache que, {{clans}} cette ferme, on ne fait que du bio.
@@ -2498,7 +2498,7 @@ TEST: __ocr__ nous avons vaincu, au grand dam de tous ces grands messieurs
 # dame / darne
 __ocr_dame__
     [>darne|>daine]
-        <<- ->> =\1.replace("rn", "m").replace("in", "m")                                           # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("rn", "m").replace("in", "m")                                     # Erreur de numérisation ?
 
 TEST: __ocr__ ces {{darnes}} arrivèrent avec dix minutes d’avance.
 TEST: __ocr__ cette {{daine}} élégamment vêtue.
@@ -2507,16 +2507,16 @@ TEST: __ocr__ cette {{daine}} élégamment vêtue.
 # dé / de / dés / des / dès / dos
 __ocr_de_des__
     dé
-        <<- not morph(<1, ":D.*:m:[si]") ->> de                                                     # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:m:[si]") ->> de                                               # Erreur de numérisation ?
 
     dés
-        <<- not morph(<1, ":D.*:m:p") ->> des|dès                                                   # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:m:p") ->> des|dès                                             # Erreur de numérisation ?
 
     do
-        <<- ->> de                                                                                  # Erreur de numérisation ?
+        <<- /ocr/ ->> de                                                                            # Erreur de numérisation ?
 
     dos
-        <<- not morph(<1, ":D.*:[me]") ->> des|dès                                                  # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:[me]") ->> des|dès                                            # Erreur de numérisation ?
 
 TEST: __ocr__ {{dés}} fois, ça ne passe pas
 TEST: __ocr__ {{dé}} gros camions circulaient toute la journée
@@ -2527,7 +2527,7 @@ TEST: __ocr__ {{dos}} camions cabossés à n’en plus finir
 # de la / delà
 __ocr_de_la__
     delà
-        <<- not value(<1, "|au|") ->> de la|de là                                                   # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|au|") ->> de la|de là                                             # Erreur de numérisation ?
 
 TEST: __ocr__ la peinture {{delà}} maison s’écaillait
 
@@ -2535,7 +2535,7 @@ TEST: __ocr__ la peinture {{delà}} maison s’écaillait
 # doute / cloute
 __ocr_doute__
     cloute
-        <<- ->> doute                                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> doute                                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ Sans aucun {{cloute}}.
 
@@ -2543,7 +2543,7 @@ TEST: __ocr__ Sans aucun {{cloute}}.
 # du / dû
 __ocr_du__
     dû  @:[NA]:[me]:[si]¬:Y
-        <<- -1>> du                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ -1>> du                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ prendre {{dû}} bon temps
 TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
@@ -2552,10 +2552,10 @@ TEST: __ocr__ Tous eussent dû subir ce supplice raffiné.
 # elle / elfe
 __ocr_elle__
     elfe
-        <<- morph(<1, ":R|<start>|>,") or isNextVerb() ->> elle                                     # Erreur de numérisation ?
+        <<- /ocr/ morph(<1, ":R|<start>|>,") or isNextVerb() ->> elle                               # Erreur de numérisation ?
 
     elfes
-        <<- morph(<1, ":R|<start>|>,") or isNextVerb() ->> elles                                    # Erreur de numérisation ?
+        <<- /ocr/ morph(<1, ":R|<start>|>,") or isNextVerb() ->> elles                              # Erreur de numérisation ?
 
 TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.
 
@@ -2563,7 +2563,7 @@ TEST: __ocr__ {{Elfes}} s’ennuyaient à mourir.
 # est / ost
 __ocr_est__
     ost
-        <<- ->> est                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> est                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ Le cheval {{ost}} attaché.
 
@@ -2571,7 +2571,7 @@ TEST: __ocr__ Le cheval {{ost}} attaché.
 # et / cl
 __ocr_et__
     [cl|c1|e1|el]
-        <<- not before("[0-9] +$") ->> et                                                           # Erreur de numérisation ?
+        <<- /ocr/ not before("[0-9] +$") ->> et                                                     # Erreur de numérisation ?
 
 TEST: __ocr__ elle {{cl}} lui, c’était pour la vie.
 TEST: __ocr__ {{El}} il faisait froid là-haut
@@ -2580,13 +2580,13 @@ TEST: __ocr__ {{El}} il faisait froid là-haut
 # état / étal
 __ocr_état_étais_étaient__
     étal
-        <<- ->> état                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> état                                                                          # Erreur de numérisation ?
 
     [étals|étale]
-        <<- ->> étais|états                                                                         # Erreur de numérisation ?
+        <<- /ocr/ ->> étais|états                                                                   # Erreur de numérisation ?
 
     étalent
-        <<- ->> étaient                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> étaient                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ Quels {{étals}} sont venus ?
 TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.
@@ -2595,7 +2595,7 @@ TEST: __ocr__ Ce qu’ils {{étalent}} vraiment, nul ne le savait.
 # êtes
 __ocr_êtes__
     ôtes
-        <<- ->> êtes                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> êtes                                                                          # Erreur de numérisation ?
 
 TEST: vous {{ôtes}} toute envie de résiter
 
@@ -2604,7 +2604,7 @@ TEST: vous {{ôtes}} toute envie de résiter
 __ocr_fasse__
     >fesse
     fessent
-        <<- ->> =\1.replace("ess", "ass").replace("ESS", "ASS")                                     # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("ess", "ass").replace("ESS", "ASS")                               # Erreur de numérisation ?
 
 TEST: __ocr__ Quoiqu’ils {{fessent}} ça donne de la merde
 TEST: __ocr__ {{fesse}} que Dieu nous entende
@@ -2613,7 +2613,7 @@ TEST: __ocr__ {{fesse}} que Dieu nous entende
 # fille / tille
 __ocr_fille__
     tille
-        <<- ->> fille                                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> fille                                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
 
@@ -2621,7 +2621,7 @@ TEST: __ocr__ Cette {{tille}} n’en avait jamais assez.
 # fol(s) / foi(s)
 __ocr_foi__
     [fol|fols]
-        <<- ->> =\1.replace("l", "i").replace("L", "I")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("l", "i").replace("L", "I")                                       # Erreur de numérisation ?
 
 TEST: __ocr__  ils sont quelques {{fols}} battus$
 
@@ -2629,7 +2629,7 @@ TEST: __ocr__  ils sont quelques {{fols}} battus$
 # faire
 __ocr_faire__
     foire
-        <<- ->> faire                                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> faire                                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ j’en vois une {{foire}} l’imbécile.
 
@@ -2637,8 +2637,8 @@ TEST: __ocr__ j’en vois une {{foire}} l’imbécile.
 # fout / font
 __ocr_font__
     fout
-        <<- not value(<1, "|il|elle|on|") and not value(<2, "|il|elle|on|") ->> font                # Erreur de numérisation ?
-        <<- __else__ and morph(>1, ":(?:Ov|Y|W)") ->> faut                                          # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|il|elle|on|") and not value(<2, "|il|elle|on|") ->> font          # Erreur de numérisation ?
+        <<- /ocr/ __else__ and morph(>1, ":(?:Ov|Y|W)") ->> faut                                    # Erreur de numérisation ?
 
 TEST: __ocr__ qui ne {{fout}} rien de leur journée
 TEST: __ocr__ il {{fout}} entendre cette voix
@@ -2647,7 +2647,7 @@ TEST: __ocr__ il {{fout}} entendre cette voix
 # fut / rut
 __ocr_fut__
     rut
-        <<- ->> fut                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> fut                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ ce petit {{rut}} traité comme un chien
 
@@ -2655,17 +2655,16 @@ TEST: __ocr__ ce petit {{rut}} traité comme un chien
 # il / n / ils / U / Us / i1 / if / 11
 __ocr_il__
     [<start>|,]  [n|h|d]  ~^[bcdfghjklmnpqrstvwxz]
-        <<- morph(\3, ":(?:O[on]|3s)") -2>> il                                                      # Erreur de numérisation ?
+        <<- /ocr/ morph(\3, ":(?:O[on]|3s)") -2>> il                                                # Erreur de numérisation ?
 
     [U|if|i1]
-        <<- ->> Il|il                                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> Il|il                                                                         # Erreur de numérisation ?
 
     [Us|ifs|i1s]
-        <<- ->> Ils|ils                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> Ils|ils                                                                       # Erreur de numérisation ?
 
     11
-        <<- not morph(>1, ":N", "*")
-        ->> Il|il                                                                                   # Erreur de numérisation ?
+        <<- /ocr/ not morph(>1, ":N", "*") ->> Il|il                                                # Erreur de numérisation ?
 
 TEST: __ocr__ {{n}} contient trop de soufre.
 TEST: __ocr__ {{Us}} arrive demain.
@@ -2678,7 +2677,7 @@ TEST: __ocr__ nous sommes le 11 septembre
 # fa / la
 __ocr_la__
     fa
-        <<- ->> la                                                                                  # Erreur de numérisation ?
+        <<- /ocr/ ->> la                                                                            # Erreur de numérisation ?
 
 TEST: __ocr__ dans {{fa}} demeure
 
@@ -2686,7 +2685,7 @@ TEST: __ocr__ dans {{fa}} demeure
 # large / largo
 __ocr_large__
     >largo
-        <<- ->> =\1.replace("o", "e")                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("o", "e")                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ elle pense {{largo}}
 
@@ -2694,16 +2693,16 @@ TEST: __ocr__ elle pense {{largo}}
 # l’ / j’ / Y / I
 __ocr_lj1__
     ~^Y’[aâeéèêëiîïoôuyh]
-        <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
+        <<- /ocr/ ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                     # Erreur de numérisation ?
 
     Y  ~^[aâeéèêëiîïoôuyh]
-        <<- before("\\w") and not morph(\2, ":Y") ->> l’\2|L’\2|j’\2|J’\2                           # Erreur de numérisation ?
+        <<- /ocr/ before("\\w") and not morph(\2, ":Y") ->> l’\2|L’\2|j’\2|J’\2                     # Erreur de numérisation ?
 
     ~^[Ii]’[aâeéèêëiîïoôuyh]
-        <<- ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                           # Erreur de numérisation ?
+        <<- /ocr/ ->> ="l’"+\1[2:] + "|L’"+\1[2:] + "|j’"+\1[2:] + "|J’"+\1[2:]                     # Erreur de numérisation ?
 
     [I|i|1]  ~^[aâeéèêëiîïoôuy]
-        <<- ->> l’\2|L’\2|j’\2|J’\2                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> l’\2|L’\2|j’\2|J’\2                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ {{Y’arrive}} demain.
 TEST: __ocr__ {{I’arrive}} demain.
@@ -2712,12 +2711,12 @@ TEST: __ocr__ {{I’arrive}} demain.
 # l’ / V / P
 __ocr_l__
     ~^V.
-        <<- \1.istitle() and before("\\w") and morph(\1, ":", ":M") >>>
-        <<- spell(\1[1:]) -:>> ="v"+\1[1:] + "|l’"+\1[1:]                                           # Erreur de numérisation ?
-        <<- __else__ -:>> ="v"+\1[1:]                                                               # Erreur de numérisation ?
+        <<- /ocr/ \1.istitle() and before("\\w") and morph(\1, ":", ":M") >>>
+        <<- /ocr/ spell(\1[1:]) -:>> ="v"+\1[1:] + "|l’"+\1[1:]                                     # Erreur de numérisation ?
+        <<- /ocr/ __else__ -:>> ="v"+\1[1:]                                                         # Erreur de numérisation ?
 
     ~^P[aâeéêèiîïoôuy]
-        <<- before("\\w") and morph(\1, ":", ":M") and spell(\1[1:])
+        <<- /ocr/ before("\\w") and morph(\1, ":", ":M") and spell(\1[1:])
         -:>> ="l’"+\1[1:] + "|p"+\1[1:]                                                             # Erreur de numérisation ?
 
 TEST: __ocr__ beaucoup de {{Vélos}} à Versailles.
@@ -2733,7 +2732,7 @@ TEST: __ocr__ À l’orée de la semaine de Pâques, l’incendie de la cathédr
 # l’avoir / la voir
 __ocr_l_avoir_la_voir__
     lavoir
-        <<- not morph(<1, ":D.*:[me]:[si]") ->> l’avoir|la voir                                     # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:[me]:[si]") ->> l’avoir|la voir                               # Erreur de numérisation ?
 
 TEST: __ocr__ il faut {{lavoir}} pour le croire.
 
@@ -2741,7 +2740,7 @@ TEST: __ocr__ il faut {{lavoir}} pour le croire.
 # l’était / Tétait
 __ocr_l_était__
     Tétait
-        <<- -:>> l’était|t’était|T’était                                                            # Erreur de numérisation ?
+        <<- /ocr/ -:>> l’était|t’était|T’était                                                      # Erreur de numérisation ?
 
 TEST: __ocr__ perdu, cet homme {{Tétait}}
 
@@ -2749,16 +2748,16 @@ TEST: __ocr__ perdu, cet homme {{Tétait}}
 # le / les / lé / lés / lui / lai / lei / la / tu / lu
 __ocr_le_la_les__
     >lé
-        <<- ->> =\1.replace("é", "e").replace("É", "E")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("é", "e").replace("É", "E")                                       # Erreur de numérisation ?
 
     [lai|lei]
-        <<- ->> lui|les                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> lui|les                                                                       # Erreur de numérisation ?
 
     los
-        <<- ->> les                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> les                                                                           # Erreur de numérisation ?
 
     lu
-        <<- not morph(<1, ":(?:V0|N.*:m:[si])") ->> tu|le|la                                        # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":(?:V0|N.*:m:[si])") ->> tu|le|la                                  # Erreur de numérisation ?
 
 TEST: __ocr__ il s’agit de {{lés}} observer.
 TEST: __ocr__ {{lai}} gros sont mal vus.
@@ -2768,10 +2767,10 @@ TEST: __ocr__ {{lu}} as si bien réussi
 # M. / Mr / M
 __ocr_mr__
     M ,  ~^[A-ZÉÈ]
-        <<- -1:2>> "Mr |M. "                                                                        # Erreur de numérisation ?
+        <<- /ocr/ -1:2>> "Mr |M. "                                                                  # Erreur de numérisation ?
 
     M  ~^[A-ZÉÈ]
-        <<- -1>> "Mr |M. "                                                                          # Erreur de numérisation ?
+        <<- /ocr/ -1>> "Mr |M. "                                                                    # Erreur de numérisation ?
 
 TEST: __ocr__ {{M,}} Patrick nous a oubliés.
 
@@ -2779,16 +2778,16 @@ TEST: __ocr__ {{M,}} Patrick nous a oubliés.
 # Mais / Hais / Mats / niais
 __ocr_mais__
     Hais
-        <<- ->> Mais                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> Mais                                                                          # Erreur de numérisation ?
 
     mats
-        <<- not morph(<1, ":D:[me]:p") ->> mais                                                     # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D:[me]:p") ->> mais                                               # Erreur de numérisation ?
 
     maïs
-        <<- not morph(<1, ":D:(?:m:s|e:p)") ->> mais                                                # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D:(?:m:s|e:p)") ->> mais                                          # Erreur de numérisation ?
 
     niais
-        <<- not morph(<1, ">(?:homme|ce|quel|être)/") ->> mais                                      # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ">(?:homme|ce|quel|être)/") ->> mais                                # Erreur de numérisation ?
 
 TEST: __ocr__ {{Hais}} il en sait trop.
 TEST: __ocr__ c’était bien, {{mats}} quelle journée
@@ -2799,7 +2798,7 @@ TEST: __ocr__ c’est parfait, {{maïs}} trop subtil.
 # matin
 __ocr_matin__
     [mâtin|mâtins]
-        <<- ->> =\1.replace("â", "a").replace("Â", "A")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("â", "a").replace("Â", "A")                                       # Erreur de numérisation ?
 
 TEST: __ocr__ ce {{mâtin}}, il y eut une tempête.
 
@@ -2807,13 +2806,13 @@ TEST: __ocr__ ce {{mâtin}}, il y eut une tempête.
 # même / même / mème / mémo / môme
 __ocr_même__
     >môme
-        <<- ->> =\1.replace("ô", "ê").replace("Ô", "Ê")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("ô", "ê").replace("Ô", "Ê")                                       # Erreur de numérisation ?
 
     >mème
-        <<- ->> =\1.replace("è", "ê").replace("È", "Ê")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("è", "ê").replace("È", "Ê")                                       # Erreur de numérisation ?
 
     >mémo
-        <<- ->> =\1.replace("é", "ê").replace("É", "Ê").replace("o", "e").replace("O", "E")         # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("é", "ê").replace("É", "Ê").replace("o", "e").replace("O", "E")   # Erreur de numérisation ?
 
 TEST: __ocr__ J’en ai assez {{môme}} si ça ne se voit pas.
 TEST: __ocr__ Ces {{mèmes}} hommes qui nous ont lâchés au pire moment
@@ -2823,10 +2822,10 @@ TEST: __ocr__ C’est l’incessant retour du {{mémo}}.
 # mes
 __ocr_mes_m_as__
     mas
-        <<- ->> mes|m’as                                                                            # Erreur de numérisation ?
+        <<- /ocr/ ->> mes|m’as                                                                      # Erreur de numérisation ?
 
     nies
-        <<- not value(<1, "|tu|ne|n’|") ->> mes                                                     # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|tu|ne|n’|") ->> mes                                               # Erreur de numérisation ?
 
 TEST: __ocr__ elle est fière de {{mas}} succès
 TEST: __ocr__ Est-ce que tu vas nier {{nies}} réussites
@@ -2835,7 +2834,7 @@ TEST: __ocr__ Est-ce que tu vas nier {{nies}} réussites
 # mon / won
 __ocr_mon__
     won
-        <<- ->> mon                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> mon                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ c’est {{won}} ami
 
@@ -2843,7 +2842,7 @@ TEST: __ocr__ c’est {{won}} ami
 # mot / mol / moi
 __ocr_mot__
     [mol|mols]
-        <<- ->> =\1.replace("l", "t").replace("L", "T")+"|"+\1.replace("l", "i").replace("L", "I")  # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("l", "t").replace("L", "T")+"|"+\1.replace("l", "i").replace("L", "I")  # Erreur de numérisation ?
 
 TEST: __ocr__ c’est un {{mol}} très dur.
 
@@ -2851,7 +2850,7 @@ TEST: __ocr__ c’est un {{mol}} très dur.
 # moyen
 __ocr_moyen__
     >moyeu
-        <<- ->> moyen|moyens                                                                        # Erreur de numérisation ?
+        <<- /ocr/ ->> moyen|moyens                                                                  # Erreur de numérisation ?
 
 TEST: __ocr__ quel {{moyeu}} employer ?
 
@@ -2859,7 +2858,7 @@ TEST: __ocr__ quel {{moyeu}} employer ?
 # ne / na / no / rie
 __ocr_ne__
     [no|na|rie]
-        <<- ->> ne                                                                                  # Erreur de numérisation ?
+        <<- /ocr/ ->> ne                                                                            # Erreur de numérisation ?
 
 TEST: __ocr__ {{no}} fais rien que tu pourrais regretter
 TEST: __ocr__ elle avance, mais {{rie}} prend jamais de risque inconsidéré.
@@ -2868,7 +2867,7 @@ TEST: __ocr__ elle avance, mais {{rie}} prend jamais de risque inconsidéré.
 # nous / noue / noua
 __ocr_nous__
     [noue|noua]
-        <<- ->> nous                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> nous                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.
 
@@ -2876,13 +2875,13 @@ TEST: __ocr__ {{noue}} attaquer à eux signerait notre perte.
 # par / paf / pan / pat
 __ocr_par__
     [paf|pat]
-        <<- ->> par                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> par                                                                           # Erreur de numérisation ?
 
     pan
-        <<- ->> par|peu                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> par|peu                                                                       # Erreur de numérisation ?
 
     pur @:[DMT]
-        <<- -1>> par                                                                                # Erreur de numérisation ?
+        <<- /ocr/ -1>> par                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ Une seule action {{paf}} jour
 TEST: __ocr__ {{Pur}} la déesse !
@@ -2891,13 +2890,13 @@ TEST: __ocr__ {{Pur}} la déesse !
 # par le / par la / par les / parle / parla / parles
 __ocr_par_le_la_les__
     parle  @:[NA].*:[me]:[si]
-        <<- not value(<1, "|ne|il|on|elle|je|") -1>> par le                                         # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|ne|il|on|elle|je|") -1>> par le                                   # Erreur de numérisation ?
 
     parla  @:[NA].*:[fe]:[si]
-        <<- not value(<1, "|ne|il|on|elle|") -1>> par la                                            # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|ne|il|on|elle|") -1>> par la                                      # Erreur de numérisation ?
 
     parles  @:[NA].*:[pi]
-        <<- not value(<1, "|ne|tu|") -1>> par les                                                   # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|ne|tu|") -1>> par les                                             # Erreur de numérisation ?
 
 TEST: __ocr__ {{parle}} glaive et le mensonge, l’Église s’imposa.
 TEST: __ocr__ {{parla}} force, on peut réussir
@@ -2907,7 +2906,7 @@ TEST: __ocr__ tu fus trompée {{parles}} mensonges permanents de son beau-père.
 # pendant / pondant
 __ocr_pendant__
     pondant
-        <<- ->> pendant                                                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> pendant                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ {{pondant}} qu’elle travaille, il se prélasse.
 
@@ -2915,10 +2914,10 @@ TEST: __ocr__ {{pondant}} qu’elle travaille, il se prélasse.
 # peu / peut / peux / pou
 __ocr_peu_peux_peut__
     pou
-        <<- not morph(<1, ":D.*:m:s") ->> peu                                                       # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:m:s") ->> peu                                                 # Erreur de numérisation ?
 
     poux
-        <<- not morph(<1, ":D.*:m:p") ->> peux|peut|pour                                            # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:m:p") ->> peux|peut|pour                                      # Erreur de numérisation ?
 
 TEST: __ocr__ il est {{pou}} probable qu’il y parvienne.
 
@@ -2926,7 +2925,7 @@ TEST: __ocr__ il est {{pou}} probable qu’il y parvienne.
 # plus / pins
 __ocr_plus__
     pins
-        <<- ->> plus                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> plus                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ ils sont {{pins}} instruits qu’il n’y paraît.
 
@@ -2934,7 +2933,7 @@ TEST: __ocr__ ils sont {{pins}} instruits qu’il n’y paraît.
 # puis / pois
 __ocr_puis__
     pois
-        <<- not morph(<1, ":D.*:m:p") ->> puis                                                      # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:m:p") ->> puis                                                # Erreur de numérisation ?
 
 TEST: __ocr__ elles sont venues, {{pois}} elles sont parties.
 
@@ -2942,7 +2941,7 @@ TEST: __ocr__ elles sont venues, {{pois}} elles sont parties.
 # pour / pouf
 __ocr_pour__
     pouf
-        <<- not morph(<1, ":D.*:f:s") ->> pour                                                      # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:f:s") ->> pour                                                # Erreur de numérisation ?
 
 TEST: __ocr__ {{pouf}} elle, il était prêt à tout.
 
@@ -2950,7 +2949,7 @@ TEST: __ocr__ {{pouf}} elle, il était prêt à tout.
 # près / prés
 __ocr_près__
     prés
-        <<- not morph(<1, ":D.*:[me]:p") ->> près                                                   # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:[me]:p") ->> près                                             # Erreur de numérisation ?
 
 TEST: __ocr__ ils sont arrivés {{prés}} de la tombe.
 
@@ -2958,10 +2957,10 @@ TEST: __ocr__ ils sont arrivés {{prés}} de la tombe.
 # que / quo
 __ocr_que__
     qua
-        <<- not value(<1, "|sine|") ->> que                                                         # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|sine|") ->> que                                                   # Erreur de numérisation ?
 
     quo
-        <<- not value(<1, "|statu|") ->> que                                                        # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|statu|") ->> que                                                  # Erreur de numérisation ?
 
 TEST: __ocr__ elles ne savent pas {{quo}} faire
 TEST: __ocr__ {{Quo}} penser de tout ceci ?
@@ -2971,7 +2970,7 @@ TEST: __ocr__ pour elle, c’est une condition sine qua non.
 # qu’importe
 __ocr_qu_importe__
     qu’ [importé|importa]
-        <<- -2>> importe                                                                            # Erreur de numérisation ?
+        <<- /ocr/ -2>> importe                                                                      # Erreur de numérisation ?
 
 TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
 
@@ -2979,10 +2978,10 @@ TEST: __ocr__ Qu’{{importé}} le flacon, pourvu qu’on ait l’ivresse.
 # reine / ruine
 __ocr_reine_ruine__
     >raine
-        <<- ->> reine|reines|ruine|ruines                                                           # Erreur de numérisation ?
+        <<- /ocr/ ->> reine|reines|ruine|ruines                                                     # Erreur de numérisation ?
 
     >rainer
-        <<- ->> =\1.replace("ain", "uin").replace("AIN", "UIN")                                     # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("ain", "uin").replace("AIN", "UIN")                               # Erreur de numérisation ?
 
 TEST: __ocr__ tu vas {{rainer}} notre réputation.
 TEST: __ocr__ des {{raines}} mal aimées.
@@ -2991,7 +2990,7 @@ TEST: __ocr__ des {{raines}} mal aimées.
 # qu’étant
 __ocr_qu_étant__
     quêtant
-        <<- ->> qu’étant                                                                            # Erreur de numérisation ?
+        <<- /ocr/ ->> qu’étant                                                                      # Erreur de numérisation ?
 
 TEST: __ocr__ {{Quêtant}} la fille d’une déesse, elle n’avait pas à se justifier.
 
@@ -2999,7 +2998,7 @@ TEST: __ocr__ {{Quêtant}} la fille d’une déesse, elle n’avait pas à se ju
 # qui / gui
 __ocr_qui__
     gui
-        <<- not morph(<1, ":D.*:m:s") ->> qui                                                       # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":D.*:m:s") ->> qui                                                 # Erreur de numérisation ?
 
 TEST: __ocr__ avec {{gui}} faire alliance ?
 
@@ -3007,10 +3006,10 @@ TEST: __ocr__ avec {{gui}} faire alliance ?
 # s’il / sil
 __ocr_s_il__
     sil
-        <<- ->> s’il                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> s’il                                                                          # Erreur de numérisation ?
 
     sils
-        <<- ->> s’ils                                                                               # Erreur de numérisation ?
+        <<- /ocr/ ->> s’ils                                                                         # Erreur de numérisation ?
 
 TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.
 
@@ -3018,7 +3017,7 @@ TEST: __ocr__ {{sil}} avait su, il n’aurait rien tenté de trop audacieux.
 # son / sou
 __ocr_son__
     sou
-        <<- ->> son                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> son                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ ça vient de {{sou}} ami
 
@@ -3026,10 +3025,10 @@ TEST: __ocr__ ça vient de {{sou}} ami
 # sur / sar
 __ocr_sur__
     sar
-        <<- ->> sur                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> sur                                                                           # Erreur de numérisation ?
 
     sui
-        <<- not value(>1, "|generis|") ->> sur                                                      # Erreur de numérisation ?
+        <<- /ocr/ not value(>1, "|generis|") ->> sur                                                # Erreur de numérisation ?
 
 TEST: __ocr__ il ne savait rien {{sar}} eux.
 TEST: __ocr__ il en est {{sui}}
@@ -3038,7 +3037,7 @@ TEST: __ocr__ il en est {{sui}}
 # tard / lard
 __ocr_tard__
     lard
-        <<- not value(<1, "|le|ce|mon|ton|son|du|un|") ->> tard                                     # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|le|ce|mon|ton|son|du|un|") ->> tard                               # Erreur de numérisation ?
 
 TEST: __ocr__ elles seront là tôt ou {{lard}}.
 
@@ -3046,7 +3045,7 @@ TEST: __ocr__ elles seront là tôt ou {{lard}}.
 # tandis que / taudis
 __ocr_tandis__
     taudis [que|qu’]
-         <<- -1>> tandis                                                                             # Erreur de numérisation ?
+         <<- /ocr/ -1>> tandis                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’amoncelaient.
 
@@ -3054,7 +3053,7 @@ TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’a
 # l’est / Test
 __ocr_l_est__
     Test
-        <<- before("\\w") ->> l’est                                                                 # Erreur de numérisation ?
+        <<- /ocr/ before("\\w") ->> l’est                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ ça {{Test}} à leurs yeux.
 
@@ -3062,7 +3061,7 @@ TEST: __ocr__ ça {{Test}} à leurs yeux.
 # tête / tète
 __ocr_tête__
     tète
-        <<- not value(<1, "|je|il|elle|on|ne|ça|") ->> =\1.replace("è", "ê").replace("È", "Ê")      # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|je|il|elle|on|ne|ça|") ->> =\1.replace("è", "ê").replace("È", "Ê")    # Erreur de numérisation ?
 
 TEST: __ocr__ cette forte {{tète}} n’écoute jamais personne.
 
@@ -3070,7 +3069,7 @@ TEST: __ocr__ cette forte {{tète}} n’écoute jamais personne.
 # tin / fin / un
 __ocr_fin_un__
     tin
-        <<- ->> fin|un                                                                              # Erreur de numérisation ?
+        <<- /ocr/ ->> fin|un                                                                        # Erreur de numérisation ?
 
 TEST: __ocr__ c’était {{tin}} marchand vaniteux.
 
@@ -3078,7 +3077,7 @@ TEST: __ocr__ c’était {{tin}} marchand vaniteux.
 # ton / tan
 __ocr_ton__
     >tan
-        <<- ->> =\1.replace("a", "o").replace("A", "O")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("a", "o").replace("A", "O")                                       # Erreur de numérisation ?
 
 TEST: __ocr__ pour {{tan}} propre bien.
 
@@ -3086,7 +3085,7 @@ TEST: __ocr__ pour {{tan}} propre bien.
 # toute / tonte
 __ocr_toute__
     >tonte
-        <<- ->> =\1.replace("n", "u").replace("N", "U")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("n", "u").replace("N", "U")                                       # Erreur de numérisation ?
 
 TEST: __ocr__ à {{tonte}} fin utile
 
@@ -3094,7 +3093,7 @@ TEST: __ocr__ à {{tonte}} fin utile
 # tu es / tues
 __ocr_tu_es__
     tues
-        <<- not morph(<1, ":(?:N.*:f:p|V0e.*:3p)|>(?:tu|ne)/") ->> tu es                            # Erreur de numérisation ?
+        <<- /ocr/ not morph(<1, ":(?:N.*:f:p|V0e.*:3p)|>(?:tu|ne)/") ->> tu es                      # Erreur de numérisation ?
 
 TEST: __ocr__ dans tous les cas, {{tues}} foutue.
 TEST: __ocr__ ses actions tues.
@@ -3103,7 +3102,7 @@ TEST: __ocr__ ses actions tues.
 # un / vin
 __ocr_un__
     vin
-        <<- not value(<1, "|ce|de|du|un|quel|leur|le|") ->> un                                      # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|ce|de|du|un|quel|leur|le|") ->> un                                # Erreur de numérisation ?
 
 TEST: __ocr__ {{vin}} mathématicien hors du commun.
 
@@ -3111,10 +3110,10 @@ TEST: __ocr__ {{vin}} mathématicien hors du commun.
 # une / ure / vine
 __ocr_une__
     ure
-        <<- ->> une                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> une                                                                           # Erreur de numérisation ?
 
     vine
-        <<- ->> une                                                                                 # Erreur de numérisation ?
+        <<- /ocr/ ->> une                                                                           # Erreur de numérisation ?
 
 TEST: __ocr__ il avait {{ure}} femme élégante et silencieuse
 TEST: __ocr__ c’est pour {{vine}} amie
@@ -3123,7 +3122,7 @@ TEST: __ocr__ c’est pour {{vine}} amie
 # vêtement / vêlement
 __ocr_vêtement__
     >vêlement
-        <<- ->> =\1.replace("l", "t").replace("L", "T")                                             # Erreur de numérisation ?
+        <<- /ocr/ ->> =\1.replace("l", "t").replace("L", "T")                                       # Erreur de numérisation ?
 
 TEST: __ocr__ il enfila ses {{vêlements}} en hâte.
 
@@ -3131,7 +3130,7 @@ TEST: __ocr__ il enfila ses {{vêlements}} en hâte.
 # vite
 __ocr_vite__
     vile
-        <<- ->> vite                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> vite                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ Elle est {{vile}} débordée par l’ampleur de la tâche.
 
@@ -3139,7 +3138,7 @@ TEST: __ocr__ Elle est {{vile}} débordée par l’ampleur de la tâche.
 # voilà
 __ocr_voilà__
     [<start>|,]  ?[me|te|le|la|nous|vous|les]¿  voila
-        <<- --1>> voilà                                                                             # Erreur de numérisationb ?
+        <<- /ocr/ --1>> voilà                                                                       # Erreur de numérisationb ?
 
 TEST: __ocr__ nous {{voila}}
 
@@ -3147,7 +3146,7 @@ TEST: __ocr__ nous {{voila}}
 # voit / volt
 __ocr_voit__
     volt
-        <<- ->> voit                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> voit                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ La femme {{volt}} plus loin
 
@@ -3155,7 +3154,7 @@ TEST: __ocr__ La femme {{volt}} plus loin
 # vous / voua / voue
 __ocr_vous__
     [voue|voua]
-        <<- ->> vous                                                                                # Erreur de numérisation ?
+        <<- /ocr/ ->> vous                                                                          # Erreur de numérisation ?
 
 TEST: __ocr__ avec {{voue}}, je n’ai pas confiance.
 
