@@ -432,7 +432,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     _sendTextToClipboard (sText)  {
         this.xClipboardButton.textContent = "⇒ presse-papiers";
-        if (navigator.hasOwnProperty("clipboard") && navigator.clipboard.hasOwnProperty("writeText")) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
             // Firefox 63+, Chrome 66+
             // Working draft: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
             navigator.clipboard.writeText(sText)
@@ -449,6 +449,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     _sendTextToClipboardFallback (sText) {
         try {
+            console.log("send text to clipboard fallback");
             // Copy to clipboard fallback
             // recipe from https://github.com/mdn/webextensions-examples/blob/master/context-menu-copy-link-with-types/clipboard-helper.js
             function setClipboardData (xEvent) {
