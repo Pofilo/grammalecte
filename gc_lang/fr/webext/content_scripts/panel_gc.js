@@ -229,7 +229,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                     this.oTextControl.write();
                 }.bind(this)
                 , true);
-                xParagraph.addEventListener("blur", function (xEvent) {
+                /*xParagraph.addEventListener("blur", function (xEvent) {
                     // remove timer for refreshing analysis
                     window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
                     // unset caret position
@@ -238,7 +238,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                     // recheck
                     this.recheckParagraph(oResult.iParaNum);
                 }.bind(this)
-                , true);
+                , true);*/
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
                 // creation
                 xNodeDiv.appendChild(xActionsBar);
@@ -420,9 +420,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     _sendTextToClipboard (sText)  {
         this.xClipboardButton.textContent = "⇒ presse-papiers";
-        // Firefox 63+, Chrome 66+
-        // Working draft: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
-        if (navigator.clipboard && navigator.clipboard.writeText) {
+        if (navigator.hasOwnProperty("clipboard") && navigator.clipboard.hasOwnProperty("writeText")) {
+            // Firefox 63+, Chrome 66+
+            // Working draft: https://developer.mozilla.org/en-US/docs/Web/API/Clipboard
             navigator.clipboard.writeText(sText)
             .then(
                 (res) => { window.setTimeout(() => { this.xClipboardButton.textContent = "📋"; }, 2000); }
