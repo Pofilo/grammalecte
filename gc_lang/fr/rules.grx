@@ -6293,10 +6293,11 @@ __conf_à_substantifs__
     >fard a paupières
     [>fille|fils] a [papa|maman]
     >fusil a >pompe
-    >gaz a effet de serre
+    >gaz a >effet de serre
     >lime a >ongle
-    >machine a [café|coudre|laver]
+    >machine a [café|coudre|laver|voter]
     >machine a >remonter le temps
+    >matière a >réflexion
     >moule a [>gaufre|>gâteau|brioche|manqué|savarin|charlotte]
     >papier a [>lettre|musique]
     >passage a tabac
@@ -11418,7 +11419,7 @@ __simplication_substantifs__
     >journal de bord
     >lime à >ongle
     >liste d’ attente
-    >machine à [café|coudre|laver]
+    >machine à [café|coudre|laver|voter]
     >machine à remonter le temps
     >main d’ œuvre
     >maison de [passe|retraite]
@@ -11426,6 +11427,7 @@ __simplication_substantifs__
     >marché aux puces
     >maréchale des [logis|logis-chef]
     >marge de >manœuvre
+    >matière à réflexion
     >médecin de garde
     >mère au foyer
     >metteuse en scène
@@ -16863,11 +16865,11 @@ TEST: Ainsi, nous appartiendront les plus belles pièces de cette collection.
 ## 2pl
 __conj_vous2__
     [<start>|,]  vous  @:V¬:(?:1s|2[sp]|3[sp]|Y|P|G)
-        <<- /conj/ not value(>1, "|je|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":2p")                                       # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
+        <<- /conj/ space_after(\2, 1, 7) and not value(>1, "|je|il|elle|on|nous|vous|ils|elles|")
+        -3>> =suggVerb(\3, ":2p")                                       # Conjugaison probablement erronée. Si “\2” est le sujet de “\3”, le verbe devrait être à la 2ᵉ personne du pluriel.
 
     [<start>|,]  vous  qui  @:V¬:(?:2p|G)
-        <<- /conj/ -4>> =suggVerb(\4, ":2p")                            # Conjugaison erronée. Accord avec « vous ». Le verbe devrait être à la 2ᵉ personne du pluriel.
+        <<- /conj/ -4>> =suggVerb(\4, ":2p")                            # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: vous {{donné}} du bonheur
 TEST: vous lui {{donner}} du temps
