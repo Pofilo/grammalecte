@@ -21,16 +21,16 @@ if (String.prototype.grammalecte === undefined) {
         return (this.search(/^[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]+$/) !== -1);
     };
     String.prototype.gl_isAlpha = function () {
-        return (this.search(/^[a-zA-Zà-öÀ-Öø-ÿØ-ßĀ-ʯ]+$/) !== -1);
+        return (this.search(/^[a-zà-öA-Zø-ÿÀ-ÖØ-ßĀ-ʯﬀ-ﬆᴀ-ᶿ]+$/) !== -1);
     };
     String.prototype.gl_isLowerCase = function () {
-        return (this.search(/^[a-zà-öø-ÿ0-9-]+$/) !== -1);
+        return (this.search(/^[a-zà-öø-ÿﬀ-ﬆ0-9-]+$/) !== -1);
     };
     String.prototype.gl_isUpperCase = function () {
         return (this.search(/^[A-ZÀ-ÖØ-ßŒ0-9-]+$/) !== -1);
     };
     String.prototype.gl_isTitle = function () {
-        return (this.search(/^[A-ZÀ-ÖØ-ßŒ][a-zà-öø-ÿ'’-]+$/) !== -1);
+        return (this.search(/^[A-ZÀ-ÖØ-ßŒ][a-zà-öø-ÿﬀ-ﬆ'’-]+$/) !== -1);
     };
     String.prototype.gl_toCapitalize = function () {
         return this.slice(0,1).toUpperCase() + this.slice(1).toLowerCase();
