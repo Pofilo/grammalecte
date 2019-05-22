@@ -18064,7 +18064,7 @@ __ppas_inversion_être_ce__
 
 __ppas_inversion_être_elle__
     /-elle  @:(?:[123][sp]|Y|[NA].*:[pm])¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
         -2>> =suggFemSing(\2)                                           # Accord avec le sujet “elle” : “\2” devrait être au féminin singulier.
 
     /-elle  @:(?:[123][sp]|[NA].*:[pm])¬:(?:G|W|Y|[fe]:[si])
@@ -18073,7 +18073,7 @@ __ppas_inversion_être_elle__
 
 __ppas_inversion_être_on__
     /-on  @:(?:[123][sp]|Y)¬:[GW]
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “on”.
 
     /-on  @:[123][sp]¬:[GWY]
@@ -18082,7 +18082,7 @@ __ppas_inversion_être_on__
 
 __ppas_inversion_être_nous__
     /-nous  @:(?:[123][sp]|Y|[NA].*:s)¬:[GWpi]|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|nous|")
         -2>> =suggPlur(\2)                                              # Accord avec le sujet “nous” : “\2” devrait être au pluriel.
 
     /-nous  @:(?:[123][sp]|[NA].*:s)¬:[GWYpi]|>(?:dire|légion)/
@@ -18091,7 +18091,7 @@ __ppas_inversion_être_nous__
 
 __ppas_inversion_être_vous__
     /-vous  @:(?:[123][sp]|Y)¬:[GWisp]
-        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/")
+        <<- /ppas/ not value(\1, "|rendez-vous|") and morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|vous|")
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
 
     /-vous  @:[123][sp]¬:[GWYisp]
@@ -18100,7 +18100,7 @@ __ppas_inversion_être_vous__
 
 __ppas_inversion_être_ils__
     /-ils  @:(?:[123][sp]|Y|[NA].*:[sf])¬:(?:G|W|[me]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
         -2>> =suggMasPlur(\2)                                           # Accord avec “ils” : “\2” devrait être au masculin pluriel.
 
     /-ils  @:(?:[123][sp]|[NA].*:[sf])¬:(?:G|W|Y|[me]:[pi])|>(?:dire|légion)/
@@ -18109,7 +18109,7 @@ __ppas_inversion_être_ils__
 
 __ppas_inversion_être_elles__
     /-elles  @:(?:[123][sp]|Y|[NA].*:[sm])¬:(?:G|W|[fe]:[pi])|>(?:dire|légion)/
-        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/")
+        <<- /ppas/ morphVC(\1, ">(?:être|devenir|redevenir)/") and not value(<1, "|se|s’|")
         -2>> =suggFemPlur(\2)                                           # Accord avec “elles” : “\2” devrait être au féminin pluriel.
 
     /-elles  @:(?:[123][sp]|[NA].*:[sm])¬:(?:G|W|Y|[fe]:[pi])|>(?:dire|légion)/
@@ -18156,6 +18156,7 @@ TEST: Ton rendez-vous arrive bientôt.
 TEST: Est-il question de ceci ou de cela ?
 TEST: Est-ce former de futurs travailleurs ou bien des citoyens
 TEST: Est-ce peine perdue ?
+TEST: ne se sont-ils pas demandé quelle main les avait frappés
 
 
 !!
