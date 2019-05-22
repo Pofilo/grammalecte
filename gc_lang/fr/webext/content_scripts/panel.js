@@ -190,14 +190,14 @@ class GrammalectePanel {
             this.xHeightButton.style.opacity = (this.bVertStrech) ? ".9" : "";
         }
         let nWidth = Math.min(this.nWidth, window.innerWidth-200);
-        let nHeight = ([4, 5, 6].includes(this.nPosition)) ? Math.min(this.nHeight, window.innerHeight-100) : Math.floor(window.innerHeight*0.45);
+        let nHeight = Math.min(this.nHeight, window.innerHeight-100);
         if (this.bFlexible) {
+            // width
             if (this.bHorizStrech) {
                 nWidth = Math.min(this.nWidth*1.33, window.innerWidth-200);
             }
-            if (this.bVertStrech) {
-                nHeight = ([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-100) : Math.floor(window.innerHeight*0.67);
-            }
+            // height
+            nHeight = (this.bVertStrech) ? (([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-100) : Math.floor(window.innerHeight*0.67)) : Math.floor(window.innerHeight*0.45);
         }
         this.xPanel.style.width = `${nWidth}px`;
         this.xPanel.style.height = `${nHeight}px`;
