@@ -9926,6 +9926,7 @@ __purge_locutions__
     à parler franc
     à part [entière|ça|cela|ceci]
     à parts égales
+    à partir [de|d’]  {pronom_obj}
     à partir [de|d’]  [aujourd’hui|ici|là|maintenant|rien]
     à partir [de|d’]  [demain|hier]  ?[matin|midi|soir]¿
     à pas de [géant|loup|tortue|velours]
@@ -12380,6 +12381,7 @@ TEST: Le très gros problème qui se pose est d’abord celui de la “masse” 
 TEST: la philosophie antique (que j’aime beaucoup par ailleurs), opposant le matériel et le spirituel, le corps et l’esprit, a pour longtemps mal formaté l’esprit humain
 TEST: Cela vous semble-t-il être trop peu de chose ?
 TEST: je me suis sentie à ce moment reliée à toute l’humanité
+TEST: la pratique qui consiste à partir de soi conçoit toute parole et toute action comme une médiation
 
 
 
@@ -20284,8 +20286,12 @@ TEST: Lequel manger ?
 TEST: Une société a vendu un terrain à bâtir à un acquéreur, lequel entreprend des travaux pour y construire un pavillon.
 
 
-__conj_personne_aucun_rien__
-    [personne|aucun]  ?qui¿  @:V¬:(?:3s|P|G)
+__conj_personne_rien__
+    personne  @:V¬:(?:3s|P|G|[QA].*:f:s)
+        <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)")
+        --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
+
+    personne  qui  @:V¬:(?:3s|P|G)
         <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -20308,6 +20314,7 @@ TEST: aucun ne {{vas}} là-bas
 TEST: il ne faut rien faire ou rien dire contre les manifestants
 TEST: qui n’ont rien appris et rien oublié
 TEST: comme si son pays n’avait rien appris du fascisme ni rien reçu de l’Europe
+TEST: en tant que personne qualifiée
 
 
 __conj_nul_nulle__
