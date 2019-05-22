@@ -6283,6 +6283,7 @@ __conf_à_substantifs__
     >arc a >poulie
     >arme a >feu
     >bombe a [eau|fragmentation|retardement]
+    >brosse a [>dent|reluire]
     [>canne|>cane] a [>pêche|>sucre]
     >caisse a >outil
     >chair a [pâté|>canon]
@@ -6291,6 +6292,7 @@ __conf_à_substantifs__
     >cuillère a [café|soupe]
     >épée a deux mains
     >fard a paupières
+    >ferme a >clic
     [>fille|fils] a [papa|maman]
     >fusil a >pompe
     >gaz a >effet de serre
@@ -6303,6 +6305,7 @@ __conf_à_substantifs__
     >passage a tabac
     >presse a >scandale
     >punk a >chienne
+    >revenir a la case départ
     >rouge a >lèvre
     >sac a [dos|main|langer|merde|foutre]
     >silo a [>grain|blé]
@@ -7864,6 +7867,7 @@ TEST: à partir de l’instant {{ou}} elle est venue.
 TEST: depuis l’année {{ou}} nous sommes allés en Bretagne
 TEST: depuis la seconde {{ou}} tu as parlé
 TEST: depuis le jour {{ou}} il a été blessé.
+TEST: je ne sais même pas par {{ou}} commencer
 
 
 # pale / pâle
@@ -8629,7 +8633,7 @@ __conf_son_sont__
         <<- /conf/ -2>> son                                     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ morph(<1, ":V", ":[NA].*:[pi]|>(?:ils|elles|vous|nous|leur|lui|[nmts]e)/") and not before("(?i)\\bce qu[e’] |[mts]’en +$")
+        <<- /conf/ morph(<1, ":(?:V|Cs|R)", ":(?:[NA].*:[pi]|Ov)") and not tag_before(\1, "ce_que")
         -1>> son                                                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     [à|chez|dès|par] sont
@@ -8637,7 +8641,7 @@ __conf_son_sont__
         <<- /conf/ -2>> son                                     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     en sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ not value(<1, "|ils|elles|leur|lui|nous|vous|m’|t’|s’|l’|") and not before("(?i)\\bce qu[e’] $")
+        <<- /conf/ not value(<1, "|ils|elles|leur|lui|nous|vous|m’|t’|s’|l’|") and not tag(<1, "ce_que")
         -2>> son                                                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     son [ceux|celles]
@@ -8654,6 +8658,8 @@ TEST: ils en sont reconnaissants
 TEST: sont loin, ces gens…
 TEST: Il ne sait pas vraiment ce que sont la peur et la souffrance.
 TEST: avec le mur du son ceux qui l’entendent.
+TEST: Que sont nos valeurs profondes ?
+TEST: comment sont la petite et son frère ?
 
 
 # sot / sceau / seau
@@ -11347,7 +11353,8 @@ __simplication_substantifs__
     [>boîte|>boite] aux lettres
     [>boîte|>boite] à gants
     >bombe à [eau|fragmentation|retardement]
-    >brosse à >dent
+    >brosse à [>dent|reluire]
+    >camp [de|d’] [concentration|internement|rééducation]
     >canne à [pêche|sucre]
     >caisse à >outil
     >chair à [pâté|>canon]
@@ -11399,6 +11406,7 @@ __simplication_substantifs__
     >fard à paupières
     >femme [de|d’] [chambre|lettres|loi|ménage|affaires|exception|État|Église|honneur]
     >femme d’ âge mûr
+    >ferme à >clic
     >fiche S
     >ficher S
     >fille à [papa|maman|>soldat]
@@ -12111,7 +12119,7 @@ __purge_locutions_verbales__
     >condamner à mort
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
-    [>donner|>redonner] sens
+    [>donner|>redonner] [sens|suite]
     >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
     >faire amende honorable
     >faire bande à part
@@ -12165,6 +12173,7 @@ __purge_locutions_verbales__
     >rendre [hommage|visite]
     >rester lettre morte
     >rester lettres mortes
+    >revenir à la case départ
     >saigner à blanc
     >suivre ?[ça|cela|ceci]¿ de près
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
