@@ -693,6 +693,8 @@ __[u](eepi_écriture_épicène_pluriel_aux_ales)__
     <<- ~>> =normalizeInclusiveWriting(\0)
 
 TEST: {{locaux·ales}}                                                   ->> locaux et locales|locales et locaux|local·e·s
+TEST: LOCAL·E·S
+TEST: amical·e·s
 
 
 __[u](eepi_écriture_épicène_pluriel_er_ère)__
@@ -716,11 +718,9 @@ __[u](eepi_écriture_épicène_pluriel_e)__
     ({w_1}[éuitsrnldf])[-·–—.•⋅(/]([ntlf]?e)[-·–—.•⋅)/]?s  @@0,**
     <<- not (\0.endswith(".Les") or \0.endswith(".Tes")) >>>
     <<- ~>> =normalizeInclusiveWriting(\0)
-    <<- option("eepi") and not \0.endswith("les") >>>
-    <<- \1.endswith("s") and not \0.endswith("·e·s")
-    ->> \1 et \1\2s|\1\2s et \1|\1·\2·s                                                             # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
-    <<- __else__ and not \0.endswith("e·s")
-    ->> \1s et \1\2s|\1\2s et \1s|\1·\2·s                                                           # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- option("eepi") and not \0.endswith("les") and not \0.endswith("LES") and not re.search("(?i)·[ntlf]?e·s$", \0) >>>
+    <<- \1.endswith("s") or \1.endswith("S") ->> \1 et \1\2s|\1\2s et \1|\1·\2·s                    # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
+    <<- __else__ ->> \1s et \1\2s|\1\2s et \1s|\1·\2·s                                              # Écriture épicène dystypographique. Préférez écrire lisiblement. Sinon, utilisez les points médians.
 
 TEST: nous sommes {{déconsidéré-e-s}}.
 TEST: serons-nous toujours {{perdu.e.s}}.
@@ -732,21 +732,27 @@ TEST: Avec les {{Berlinois.e.s}}                                        ->> Berl
 TEST: la graphie “{{militant(e)s}}”.
 TEST: ces militant·e·s {{acharné}}.
 TEST: chez les {{immortel.le.s}}
+TEST: IMMORTEL·LE·S
+TEST: Berlinois·e·s
+TEST: Iranien·ne·s
 
 
 __[i](eepi_écriture_épicène_singulier)__
     ({w_1}[éuitsrnldf])([-·–—.•⋅/][ntl]?e|[(][ntl]?e[)])  @@0,$
     <<- not (\0.endswith(".Le") or \0.endswith(".Ne") or \0.endswith(".De"))
-        and not (\0.endswith("-le") and not \1.endswith("l")) >>>
+        and not ((\0.endswith("-le") or \0.endswith("-Le") or \0.endswith("-LE")) and not (\1.endswith("l") or \1.endswith("L"))) >>>
     <<- ~>> =normalizeInclusiveWriting(\0)
-    <<- option("eepi") and (\1 == "un" or \1 == "Un") ->> un ou une|une ou un                       # Écriture épicène imprononçable. Préférez écrire lisiblement.
-    <<- __else__ and option("eepi") and not \0.endswith("·e") ->> =\1+"·"+\2[1:].rstrip(")")        # Écriture épicène. Utilisez un point médian.
+    <<- option("eepi") and (\1 == "un" or \1 == "Un" or \1 == "UN") ->> un ou une|une ou un                 # Écriture épicène imprononçable. Préférez écrire lisiblement.
+    <<- __else__ and option("eepi") and not re.search("(?i)·[ntl]?e$", \2) ->> =\1+"·"+\2[1:].rstrip(")")   # Écriture épicène. Utilisez un point médian.
 
 TEST: je suis {{déconsidéré.e}} par ma hiérarchie.                      ->> déconsidéré·e
 TEST: il faut en parler à l’{{auteur(e)}} et à son agent.               ->> auteur·e
 TEST: le ou la {{patron/ne}}                                            ->> patron·ne
 TEST: Totalement {{con(ne)}}                                            ->> con·ne
 TEST: un ou une {{intellectuel.le}}                                     ->> intellectuel·le
+TEST: INTELLECTUEL·LE
+TEST: électricien·ne
+TEST: Épuisé·e
 
 
 __[i](typo_écriture_invariable)__
