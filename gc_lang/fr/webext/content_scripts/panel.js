@@ -197,7 +197,10 @@ class GrammalectePanel {
                 nWidth = Math.min(this.nWidth*1.33, window.innerWidth-200);
             }
             // height
-            nHeight = (this.bVertStrech) ? (([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-100) : Math.floor(window.innerHeight*0.67)) : Math.floor(window.innerHeight*0.45);
+            nHeight = ([4, 5, 6].includes(this.nPosition)) ? nHeight : Math.floor(window.innerHeight*0.45);
+            if (this.bVertStrech) {
+                nHeight = ([4, 5, 6].includes(this.nPosition)) ? (window.innerHeight-100) : Math.floor(window.innerHeight*0.67);
+            }
         }
         this.xPanel.style.width = `${nWidth}px`;
         this.xPanel.style.height = `${nHeight}px`;
