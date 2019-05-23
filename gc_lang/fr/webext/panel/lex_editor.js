@@ -117,7 +117,7 @@ class Table {
         this.nColumn = lColumn.length;
         this.lColumn = lColumn;
         this.xProgressBar = document.getElementById(sProgressBarId);
-        this.xNumEntry = document.getElementById(sResultId);
+        this.xNumEntry = (sResultId) ? document.getElementById(sResultId) : null;
         this.iEntryIndex = 0;
         this.lEntry = [];
         this.nEntry = 0;
@@ -175,7 +175,7 @@ class Table {
 
     showEntryNumber () {
         if (this.xNumEntry) {
-            this.xNumEntry.textContent = this.nEntry;
+            this.xNumEntry.textContent = this.nEntry.toString() + ((this.nEntry > 1) ? " entrées" : " entrée");
         }
     }
 
@@ -728,7 +728,7 @@ const oBinaryDict = {
     },
 
     setDictData: function (nEntries, sDate) {
-        document.getElementById("dic_num_entries").textContent = nEntries;
+        document.getElementById("dic_num_entries").textContent = nEntries.toString() + ((this.nEntry > 1) ? " entrées" : " entrée");
         document.getElementById("dic_save_date").textContent = sDate;
         if (nEntries == 0) {
             hideElement("export_button");
@@ -835,7 +835,7 @@ const oTagsInfo = {
 
 const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], "wait_progress");
 const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "num_entries");
-const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "search_num_entries", false);
+const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], "wait_progress", "", false);
 const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], "wait_progress", "", false);
 
 
