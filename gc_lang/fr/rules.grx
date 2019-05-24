@@ -12121,6 +12121,7 @@ __purge_locutions_verbales__
     >arriver à échéance
     >arriver à point nommé
     >arriver à bon port
+    >battre à plate couture
     >battre en [brèche|retraite]
     >chauffer à blanc
     >compter à rebours
@@ -12206,6 +12207,7 @@ __conf_locutions_verbales__
     >arriver a échéance
     >arriver a point nommé
     >arriver a bon port
+    >battre a plate couture
     >chauffer a blanc
     [>gonfler|>regonfler] a bloc
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>nue|>plat|>terre]
@@ -12455,7 +12457,7 @@ TEST: __mc__ des {{portes-avions}}.
 ## l’
 
 __gn_l_1m__
-    l’  @:[NA].*:p¬:[123][sp]|:[si]
+    l’  @:[NA].*:p¬:(?:[123][sp]|[si])
         <<- /gn/ -2>> =suggSing(\2)                                                                 # Accord de nombre erroné : “\2” devrait être au singulier.
 
 TEST: toute l’importance de l’{{accords}} musical.
@@ -13118,7 +13120,7 @@ TEST: ces religieux inflexibles envers les femmes mais compatissants envers les 
 
 __gn_des_2m__
     des  *WORD  *WORD
-        <<- /gn/ (morph(<1, ":[VRBX]|:Cs|>comme/|<start>", "*") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
+        <<- /gn/ (morph(<1, ":(?:[VRBX]|Cs)|>comme/|<start>", "*") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
         <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                # Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
@@ -13927,7 +13929,7 @@ TEST: par {{cents}} idées différentes.
 # mille
 __sgpl_mille__
     milles
-        <<- /sgpl/ morph(>1, ":B|:N.*:p", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
+        <<- /sgpl/ morph(>1, ":(?:B|N.*:p)", ":[QA]") or (morph(<1, ":B") and morph(>1, ":[NA]"))
         ->> mille                           # “Mille” est invariable s’il s’agit d’un nombre (et non de l’unité de mesure maritime).
 
 TEST: Plus de {{milles}} personnes sont venues.
@@ -16839,7 +16841,7 @@ TEST: Pour leur permettre d’être plus forts face aux maîtres de tous bords, 
 # bien
 __sgpl_verbe_bien__
     biens
-        <<- /sgpl/ morph(<1, ":V", ":D.*:p|:A.*:p") ->> bien    # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
+        <<- /sgpl/ morph(<1, ":V", ":[DA].*:p") ->> bien        # Confusion probable. Ici, “bien” est un adverbe, donc invariable.
 
 TEST: Ils vont {{biens}}.
 TEST: Elles travaillaient vraiment {{biens}}.
@@ -18185,16 +18187,16 @@ TEST: quand tu te montres {{infaillibles}}
 
 
 __ppas_3sg_mas_se_verbe__
-    [il|quiconque]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+    [il|quiconque]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ --1>> =suggMasSing(\-1)                              # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [lui|ça|ceci|cela|celui-ci|celui-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+    [lui|ça|ceci|cela|celui-ci|celui-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggMasSing(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+    ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ morph(\2, ":[123]s") --1>> =suggMasSing(\-1)         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    lequel  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|:[me]:[si])
+    lequel  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pf]¬:(?:G|W|V0|[me]:[si])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggMasSing(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
 TEST: il se révéla totalement {{incapables}} d’y parvenir.
@@ -18204,19 +18206,20 @@ TEST: lequel se veut {{imbattables}} ?
 
 
 __ppas_3sg_fem_se_verbe__
-    [elle|celle-ci|celle-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|:[fe]:[si])
+    [elle|celle-ci|celle-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggFemSing(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    ([elle|celle|celle-ci|celle-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[pm]¬:(?:G|W|V0|:[fe]:[si])
+    ([elle|celle|celle-ci|celle-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
         <<- /ppas/ morph(\2, ":[123]s") --1>> =suggFemSing(\-1)         # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    laquelle  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|:[fe]:[si])
+    laquelle  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[pm]¬:(?:G|W|V0|[fe]:[si])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggFemSing(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
 TEST: Elle se sait plus {{fortes}} qu’eux tous.
 TEST: elle se vit {{abandonné}}
 TEST: à celle qui se révélera {{attentif}} à tous ces problèmes.
 TEST: laquelle ne se sentit {{légitimes}} malgré ses compétences dans ce domaine.
+TEST: elle se sent vide.
 
 
 __ppas_1pl_nous_verbe__
@@ -18227,16 +18230,16 @@ TEST: nous nous pensions {{invincible}} jusqu’au jour où tout a basculé.
 
 
 __ppas_3pl_mas_se_verbe__
-    ils  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+    ils  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ --1>> =suggMasPlur(\-1)                              # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [ceux-ci|ceux-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+    [ceux-ci|ceux-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggMasPlur(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    ([eux|ceux|ceux-ci|ceux-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+    ([eux|ceux|ceux-ci|ceux-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ morph(\2, ":3p") --1>> =suggMasPlur(\-1)             # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    lesquels  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|:[me]:[pi])
+    lesquels  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sf]¬:(?:G|W|V0|[me]:[pi])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggMasPlur(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
 TEST: ils se montrent {{exigeantes}}
@@ -18246,13 +18249,13 @@ TEST: lesquels se pensent encore {{anonyme}}
 
 
 __ppas_3pl_fem_se_verbe__
-    [elles|celles-ci|celles-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|:[fe]:[pi])
+    [elles|celles-ci|celles-là]  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":[RV]") --1>> =suggFemPlur(\-1)       # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    ([elles|celles|celles-ci|celles-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[sm]¬:(?:G|W|V0|:[fe]:[pi])
+    ([elles|celles|celles-ci|celles-là])  qui  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  ([>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir])  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
         <<- /ppas/ morph(\2, ":3p") --1>> =suggFemPlur(\-1)             # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
-    lesquelles  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|:[fe]:[pi])
+    lesquelles  ?[ne|n’]¿  [se|s’]  ?[en|y]¿  [>montrer|>penser|>révéler|>savoir|>sentir|>voir|>vouloir]  @:[NA].*:[sm]¬:(?:G|W|V0|[fe]:[pi])
         <<- /ppas/ not morph(<1, ":R") --1>> =suggFemPlur(\-1)          # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
 TEST: elles se sentent {{perdu}}
@@ -20982,7 +20985,7 @@ TEST: Si j’{{irais}} le faire
 # Dès que + indicatif
 __vmode_dès_que__
     dès  [que|qu’]  @:(?:Os|M)  @:S¬:[IG]
-        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                                                     # Ce verbe ne devrait pas être au subjonctif.
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                                                # Après “dès que”, le verbe ne devrait pas être au subjonctif.
 #        <<- morph(\1, ":(?:Os|M)", False) and morph(\2, ":K", False)        -2>> =suggVerbMode(@, ":If", \1)    # Ce verbe ne devrait pas être au conditionnel.
 
 #TEST: dès que je le {{verrais}}
@@ -20996,7 +20999,8 @@ __vmode_qqch_que_subjonctif__
         <<- /vmode/ -3>> =suggVerbMode(\3, ":S", \2)                                                # Après “quoique”, ce verbe devrait être au subjonctif.
 
     [>permettre|>falloir|>vouloir|>ordonner|>exiger|>désirer|>préférer|>souhaiter|>suffire]  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-    [afin|avant|malgré|pour|pourvu|quoi|sans]                                                [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+    [afin|avant|malgré|pour|pourvu|qui|quoi|sans]                                            [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+    moyennant                                                                                [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
@@ -21004,22 +21008,36 @@ __vmode_qqch_que_subjonctif__
         -4>> =suggVerbMode(\4, ":S", \3)                                                            # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     [il|ça|cela]    peut                            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ tag(\2, "upron") -5>> =suggVerbMode(\5, ":S", \4)                               # Ce verbe devrait être au subjonctif.
+        <<- /vmode/ tag(\2, "upron") -5>> =suggVerbMode(\5, ":S", \4)                               # Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
     à               [condition|moins|supposer]      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     pour            peu                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     de              [crainte|peur]                  [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     de              [façon|manière]                 [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GYS]|Iq)
+    en              sorte                           [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    pour            autant                          [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Après “\1 \2 que”, ce verbe devrait être au subjonctif.
+
+
     [<start>|,]     non                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Ce verbe devrait être au subjonctif.
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Après “non que”, ce verbe devrait probablement être au subjonctif.
 
     [<start>|,]     en          admettant           [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Si “en admettant que” indique que la suite est une hypothèse, le verbe doit être au subjonctif.
 
-    il          est         possible            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-    jusqu’      à           ce                  [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-    si          tant        est                 [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Après “\1 \2 \3”, ce verbe devrait être au subjonctif.
+    [<start>|,]     en          attendant           [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Après “en attendant que”, le verbe devrait être au subjonctif.
+
+    [<start>|,]     si          [bien|peu]          [que|qu’]   @:(?:Os|M)  @:I¬:(?:[GYS]|I[qf]|V0)
+        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Après “\2 \3 que”, ce verbe devrait être au subjonctif.
+
+    il          est         possible                [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    jusqu’      à           ce                      [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+    si          tant        est                     [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -6>> =suggVerbMode(\6, ":S", \5)                                                # Après “\1 \2 \3 que”, ce verbe devrait être au subjonctif.
+
+    peu         [est|était] fallu                   [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ tag(\2, "upron") --1>> =suggVerbMode(\-1, ":S", \-2)                            # Après “peu s’en est fallu que”, ce verbe devrait être au subjonctif.
 
 TEST: Quoiqu’il {{est}} parti il y a longtemps, on pense encore beaucoup à lui.
 TEST: Il suffit qu’il {{court}} plus
@@ -21035,11 +21053,16 @@ TEST: en admettant que tu {{deviens}} plus talentueuse qu’elle, qu’est-ce qu
 TEST: afin que je {{prends}} des mesures
 TEST: à condition qu’il {{finit}} son boulot.
 TEST: pour peu qu’il {{prend}} son devoir sérieux…
+TEST: Fais en sorte qu’elle {{court}} à sa perte
 TEST: il se peut que nous {{avons}} tort.
 TEST: Nous œuvrons silencieusement de crainte qu’il nous {{entend}}.
 TEST: En admettant qu’il {{devient}} juste.
 TEST: ça ira, si tant est que Paul {{comprend}} ce qui se passe.
 TEST: à condition qu’elle l’{{est}} jamais été
+TEST: non qu’il {{prend}} son temps
+TEST: si tant est que nous {{prenons}} notre temps
+TEST: moyennant qu’elle {{vient}} demain
+TEST: peu s’en est fallu qu’il {{devient}} estropié.
 TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
