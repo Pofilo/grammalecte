@@ -605,7 +605,7 @@ class TextParser:
         # Message
         sMessage = globals()[sMsg[1:]](sText, m)  if sMsg[0:1] == "="  else  m.expand(sMsg)
         if bShowRuleId:
-            sMessage += "  # " + sLineId + " # " + sRuleId
+            sMessage += "  #" + sLineId + " / " + sRuleId
         #
         if _bWriterError:
             return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sOption, sMessage, lSugg, sURL)
@@ -625,7 +625,7 @@ class TextParser:
         # Message
         sMessage = globals()[sMsg[1:]](self.lToken, nTokenOffset, nLastToken)  if sMsg[0:1] == "="  else self._expand(sMsg, nTokenOffset, nLastToken)
         if bShowRuleId:
-            sMessage += "  " + sLineId + " # " + sRuleId
+            sMessage += "  #" + sLineId + " / " + sRuleId
         #
         if _bWriterError:
             return self._createErrorForWriter(nStart, nEnd - nStart, sRuleId, sOption, sMessage, lSugg, sURL)

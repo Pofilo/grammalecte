@@ -723,7 +723,7 @@ class TextParser {
         // Message
         let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](sText, m) : sMsg.gl_expand(m);
         if (bShowRuleId) {
-            sMessage += "  ## " + sLineId + " # " + sRuleId;
+            sMessage += "  #" + sLineId + " / " + sRuleId;
         }
         //
         return this._createError(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext);
@@ -746,7 +746,7 @@ class TextParser {
         // Message
         let sMessage = (sMsg.startsWith("=")) ? oEvalFunc[sMsg.slice(1)](this.lToken, nTokenOffset, nLastToken) : this._expand(sMsg, nTokenOffset, nLastToken);
         if (bShowRuleId) {
-            sMessage += " ## " + sLineId + " # " + sRuleId;
+            sMessage += "  #" + sLineId + " / " + sRuleId;
         }
         //
         return this._createError(nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext);

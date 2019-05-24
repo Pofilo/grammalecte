@@ -64,8 +64,8 @@ def prepareFunction (s):
     s = re.sub(r"isRealEnd0 *\(\)", 'after0("^ *$")', s)
     s = re.sub(r"(select|exclude)[(][\\](\d+)", '\\1(dTokenPos, m.start(\\2), m.group(\\2)', s)
     s = re.sub(r"define[(][\\](\d+)", 'define(dTokenPos, m.start(\\1)', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(][\\](\d+)", '\\1((m.start(\\2), m.group(\\2))', s)
-    s = re.sub(r"(morph|morphex|displayInfo)[(]", '\\1(dTokenPos, ', s)
+    s = re.sub(r"(morph|displayInfo)[(][\\](\d+)", '\\1((m.start(\\2), m.group(\\2))', s)
+    s = re.sub(r"(morph|displayInfo)[(]", '\\1(dTokenPos, ', s)
     s = re.sub(r"(sugg\w+|switch\w+)\(@", '\\1(m.group(i[4])', s)
     s = re.sub(r"word\(\s*1\b", 'nextword1(sSentence, m.end()', s)                                  # word(1)
     s = re.sub(r"word\(\s*-1\b", 'prevword1(sSentence, m.start()', s)                               # word(-1)
@@ -136,7 +136,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
     global dJSREGEXES
     global nRULEWITHOUTNAME
 
-    sLineId = str(nIdLine) + ("p" if bParagraph else "s")
+    sLineId = "#" + str(nIdLine) + ("p" if bParagraph else "s")
     sRuleId = sLineId
 
     #### GRAPH CALL
