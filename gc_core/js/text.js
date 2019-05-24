@@ -9,7 +9,7 @@
 
 var text = {
 
-    _zEndOfSentence: new RegExp ('[.?!:;…][   .?!…»«“”"‘’)–—]+(?=[A-ZÉÈÎÔ])', "g"),
+    _zEndOfSentence: new RegExp ('[.?!:;…]+[   ]+[»”’]?(?=[«"“‘]?[A-ZÉÈÎÔ–—])', "g"),
 
     getSentenceBoundaries: function* (sText) {
         // generator: returns start and end of sentences found in <sText>
@@ -20,6 +20,13 @@ var text = {
             iStart = this._zEndOfSentence.lastIndex;
         }
         yield [iStart, sText.length];
+    },
+
+    getSentence: function* (sText) {
+        // generator: returns sentences found in <sText>
+        for (let [iStart, iEnd] of this.getSentenceBoundaries(sText)) {
+            yield sText.slice(iStart, iEnd);
+        }
     },
 
     getParagraph: function* (sText, sSepParagraph = "\n") {

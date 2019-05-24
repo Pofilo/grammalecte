@@ -9,7 +9,7 @@ import textwrap
 from itertools import chain
 
 
-_zEndOfSentence = re.compile(r'[.?!:;…]\W+(?=[A-ZÉÈÎÔ])')
+_zEndOfSentence = re.compile(r'[.?!:;…]+[   ]+[»”’]?(?=[«"“‘]?[A-ZÉÈÎÔ–—])')
 
 def getSentenceBoundaries (sText):
     "generator: returns start and end of sentences found in <sText>"
@@ -18,6 +18,12 @@ def getSentenceBoundaries (sText):
         yield (iStart, m.end())
         iStart = m.end()
     yield (iStart, len(sText))
+
+
+def getSentence (sText):
+    "generator: returns sentences found in <sText>"
+    for iStart, iEnd in getSentenceBoundaries(sText):
+        yield sText[iStart:iEnd]
 
 
 def getParagraph (sText):
