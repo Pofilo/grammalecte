@@ -9,18 +9,17 @@
 
 var text = {
 
-    _zEndOfSentence: new RegExp ('([.?!:;…][   .?!…»«“”"‘’)–—]+(?=[A-ZÉÈÎÔ])|.$)', "g"),
-    _zBeginOfParagraph: new RegExp ("^[-  –—.,;?!…]*", "ig"),
+    _zEndOfSentence: new RegExp ('[.?!:;…][   .?!…»«“”"‘’)–—]+(?=[A-ZÉÈÎÔ])', "g"),
 
     getSentenceBoundaries: function* (sText) {
         // generator: returns start and end of sentences found in <sText>
-        let mBeginOfSentence = this._zBeginOfParagraph.exec(sText);
-        let iStart = this._zBeginOfParagraph.lastIndex;
+        let iStart = 0;
         let m;
         while ((m = this._zEndOfSentence.exec(sText)) !== null) {
             yield [iStart, this._zEndOfSentence.lastIndex];
             iStart = this._zEndOfSentence.lastIndex;
         }
+        yield [iStart, sText.length];
     },
 
     getParagraph: function* (sText, sSepParagraph = "\n") {

@@ -1594,11 +1594,14 @@ __[i](d_eepi_écriture_épicène_singulier)__
 !!!
 !!!
 
+# début de phrase
+__<s>(p_début_de_phrase)__      ^[ .?!:;–—•·… »«‘’“”\"'¿¡-]+  <<- ~>> *
+
 # fin de phrase
-__<s>(p_fin_de_phrase)__        [.?!:;…][ .?!… »”")]*$  <<- ~>> *
+__<s>(p_fin_de_phrase)__        [ .?!:;–—•·… »«‘’“”\"'¿¡-]+$  <<- ~>> *
 
 # Guillemets et exposants
-__<s>(p_guillemets_exposants)__ [«»“”"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
+__<s>(p_guillemets_exposants)__ [«»“”\"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
 
 # Chapitres et références
 __<s>(p_chapitre_référence)__   [\[({][\dIVXLCDM]+, \d+[\])}]   <js>[\[\(\{][\dIVXLCDM]+, \d+[\]\)\}]</js>   <<- ~>> *
