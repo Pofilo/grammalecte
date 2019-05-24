@@ -1545,7 +1545,16 @@ TEST: « Dans quel pays sommes-nous ? » demanda un manifestant.
 
 [++]
 
-#FASTER THAN TOKEN RULE
+
+!!!
+!!!
+!!! Règles par expressions régulières (plus rapides que par tokens)                               !!
+!!!
+!!!
+
+
+!!!! Doublons                                                                                     !!
+
 __[s](doublon)__
     ({w1}) {1,3}\1  @@0
     <<- not re.search("(?i)^([nv]ous|faire|en|la|lui|donnant|œuvre|h[éoa]|hou|olé|joli|Bora|couvent|dément|sapiens|très|vroum|[0-9]+)$", \1)
@@ -1554,16 +1563,6 @@ __[s](doublon)__
     ->> \1   # Doublon.
 
 TEST: Il y a un {{doublon doublon}}.
-
-
-### Traits d’union douteux
-__[i]/tu(tu_trait_union_douteux)__
-    ({w1})(?:--|—|–|−|⁃)({w1})  @@0,$
-    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":") ->> \1-\2                                      # Trait d’union : un tiret simple suffit.
-
-TEST: Nous préparons une {{contre–attaque}}.
-TEST: Nous préparons une {{contre−attaque}}.
-
 
 
 !!!! Nombres: typographie                                                                         !!
@@ -1588,65 +1587,28 @@ __[i](d_eepi_écriture_épicène_singulier)__
     <<- morph(\1, ":[NAQ]") =>> define(\1, [":N:A:Q:e:s"])
 
 
-!!!
-!!!
-!!! Processeur: épuration des signes inutiles et quelques simplifications                         !!
-!!!
-!!!
+!!!! Purge de quelques éléments                                                                   !!
 
-# début de phrase
-__<s>(p_début_de_phrase)__      ^[ .?!:;–—•·… »«‘’“”\"'¿¡-]+  <<- ~>> *
-
-# fin de phrase
-__<s>(p_fin_de_phrase)__        [ .?!:;–—•·… »«‘’“”\"'¿¡-]+$  <<- ~>> *
-
-# Guillemets et exposants
-__<s>(p_guillemets_exposants)__ [«»“”\"„`¹²³⁴⁵⁶⁷⁸⁹⁰]+ <<- ~>> *
-
-# Chapitres et références
-__<s>(p_chapitre_référence)__   [\[({][\dIVXLCDM]+, \d+[\])}]   <js>[\[\(\{][\dIVXLCDM]+, \d+[\]\)\}]</js>   <<- ~>> *
-
-# le, la ou les chose(s)
-__[i>(p_le_ou_les)__            l[ea] ou les {w_2}([(]s[)]) @@$ <<- ~1>> s
-__[i](p_le_ou_la)__             l(e ou la|a ou le) {w_2} @@1 <<- ~1>> ’
+# Exposants
+__<s>(p_exposants)__
+    [¹²³⁴⁵⁶⁷⁸⁹⁰]+
+    <<- ~>> *
 
 # les références aux notes
-__[i](p_références_aux_notes)__ [a-zéèâàôîù][a-zéèâàôîù-]+(\d+) @@$ <<- not morph(\0, ":") ~1>> *
-
-# faux positifs avec adverbes de négation
-__[i](p_pas_mal)__              pas mal <<- not morph(word(-1), ":D") ~>> *
-__[i](p_pas_assez)__            pas assez ({w_2}) @@$ <<- morph(\1, ":A") and not morph(word(-1), ":D") ~>> *
-
-# faux positifs avec «à chez»
-__[i](p_de_chez_à_chez_pronom)__    de chez \w+ (?:à|jusqu à) chez (?:moi|toi|lui|elles?|eux|nous|vous) <<- ~>> *
-__[i](p_de_chez)__                  (jusqu à|de) chez @@0 <<- ~1>> *
-
-# singletons entre parenthèses / crochets / accolades
-__<s>(p_singleton_parenthèses)__    [(]\w+[)] <js>\([a-zA-Z]+\)</js> <<- ~>> *
-__<s>(p_singleton_accolades)__      [{]\w+[}] <js>\{[a-zA-Z]+\}</js> <<- ~>> *
-__<s>(p_singleton_crochets)__       [\[]\w+[\]] <js>\[[a-zA-Z]+\]</js> <<- ~>> *
-
-# Avocats
-__[s](p_Me_nom_propre)__        (Me) [A-ZÉÂÔÈ][\w-]+ @@0 <<- ~1>> *
-
-# alors que / dès lors que (éviter d’accorder un participe passé avec un pseudo-COD antérieur)
-__[i](p_alors_dès_lors_que)__   (alors|dès lors) que  @@0 <<- ~1>> _
-__[i](p_alors_dès_lors_que2)__  (alors|dès lors) qu’  @@0 <<- ~1>> _
-
-# Fusion des mots “multiples” (expérimental)
-__[s](p_fusion_mots_multiples)__
-    [A-Z][a-z]+ [A-Z][a-z]+
-    <<- spell(\0.replace(" ", "_")) ~>> =\0.replace(" ", "_")
+__[i](p_références_aux_notes)__
+    ({w_2})+(\d+)  @@0,$
+    <<- not morph(\0, ":") and morph(\1, ":") ~2>> *
 
 
-TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
-
-
-!!
-!!
 !!!! Traits d’union                                                                               !!
-!!
-!!
+
+__[i]/tu(tu_trait_union_douteux)__
+    ({w1})(?:--|—|–|−|⁃)({w1})  @@0,$
+    <<- spell(\1+"-"+\2) and analyse(\1+"-"+\2, ":") ->> \1-\2                                      # Trait d’union : un tiret simple suffit.
+
+TEST: Nous préparons une {{contre–attaque}}.
+TEST: Nous préparons une {{contre−attaque}}.
+
 
 __<i]/tu(tu_t_euphonique_incorrect)__
     ([-–—− ]t(?:[’' ][-–—−]?|[-–—−][’' ]?))(ils?|elles?|on|tu)  @@0,$
@@ -1688,11 +1650,7 @@ TEST: arrive-t-elle ce matin ?
 TEST: y aura-t-il du poulet au dîner ?
 
 
-!!
-!!
 !!!! Élisions                                                                                     !!
-!!
-!!
 
 # presque : élision
 __[i>/typo(typo_presque)__
@@ -1715,17 +1673,77 @@ TEST: elle s’en est allée avec quelqu’une…
 
 
 
+@@@@
+@@@@
+@@@@
+@@@@
+@@@@GRAPH: purge_tag_disambiguate                                                                  _
+@@@@
+@@@@
+@@@@
+@@@@
+
+!!!
+!!!
+!!! Purge de la phrase                                                                            !!
+!!!
+!!!
+
+__tag_mots_entre_guillemets__
+    « *WORD  »
+        <<- space_after(\1, 0, 1) and space_after(\2, 0, 1) /2>> eg1mot
+
+    « *WORD *WORD
+        <<- space_after(\1, 0, 1) /2:0>> egxmot
+
+    *WORD *WORD »
+        <<- space_after(\2, 0, 1) /1:2>> egxmot
+
+    ["|“]  *WORD  ["|”]
+        <<- space_after(\1, 0, 0) and space_after(\2, 0, 0) /2>> eg1mot
+
+    ["|“]  *WORD  *WORD
+        <<- space_after(\1, 0, 0) /2:0>> egxmot
+
+    *WORD  *WORD  ["|”]
+        <<- space_after(\2, 0, 0) /1:2>> egxmot
 
 
-@@@@
-@@@@
-@@@@
-@@@@
-@@@@GRAPH: tag_and_disambiguate                                                                    _
-@@@@
-@@@@
-@@@@
-@@@@
+__purge_guillemets__
+    [«|»|“|”|"|„|`]
+        <<- ~>> *
+
+
+__purge_début_phrase__
+    <start>  [?|!|:|;|…|‘|’|'|¿|¡]
+        <<- ~2>> *
+
+    <start>  [-|–|—]  ?[-|–|—]¿
+        <<- />> tiret1
+        <<- ~2>> *
+
+    <start>  [•|·|.]
+        <<- />> puce1
+        <<- ~2>> *
+
+
+__purge_fin_phrase__
+    [.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]  ?[.|…|?|!|:|;|–|—|•|·|…|«|»|‘|’|“|”|"|'|¿|¡|-]¿ <end>
+        <<- ~1:-2>> *
+
+
+__purge_mot_nombre_parenthèses_crochets_accolades__
+    (  [*WORD|*NUM]  )
+    [  [*WORD|*NUM]  ]
+    {  [*WORD|*NUM]  }
+        <<- ~>> *
+
+__purge_chapitres_références__
+    (  [*WORD|*NUM]  ,  *NUM  )
+    [  [*WORD|*NUM]  ,  *NUM  ]
+    {  [*WORD|*NUM]  ,  *NUM  }
+        <<- ~>> *
+
 
 !!!
 !!!
@@ -2020,10 +2038,121 @@ __tag_ni__
         <<- />> ni
 
 
-__tag_tiret1__
-    <start>  [-|–|—]
-        <<- />> tiret1
-        <<- ~>> *
+!!!! Fusions et immunités                                                                         !!
+
+__fusions_mots_grammaticaux__
+    le ou la  *WORD
+    la ou le  *WORD
+        <<- morph(\-1, ":[NA]") ~1:3>> ␣
+
+    alors    [que|qu’]
+    dès lors [que|qu’]
+        <<- ~>> ␣
+        <<- =>> define(\1, [":Cs"])
+
+
+__fusions_noms_communs__
+    au revoir
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:m:i"])
+
+    n’ importe [qui|quoi|quel|quelle|quels|quelles]
+        <<- ~1:2>> ␣
+
+    [cultural|gender] studies
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:f:p"])
+
+    machine [learning|learnings]
+    standing >ovation
+    star [system|systems]
+    black [>bloc|>block]
+        <<- ~>> ␣
+
+    *NUM : *NUM
+        <<- space_after(\1, 0, 0) and space_after(\1, 0, 0) ~>> ␣
+
+    *NUM  ~^h[0-9][0-9]$
+        <<- space_after(\1, 0, 0) ~>> ␣
+
+
+__fusions_noms_propres__
+    cac  40
+        <<- ~>> ␣
+
+    France [2|3|4|5|0|O]
+        <<- ~>> ␣
+
+    Peugeot  ~^\d0\d\d?$
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:e:i"])
+
+    Mai 68
+        <<- ~>> ␣
+        <<- =>> define(\1, [":N:m:i"])
+
+    ~^[A-ZÂÉÈÎ].  ~^[A-ZÂÉÈÎ]
+        <<- analyse_with_next(\1, " ", ":") ~>> ␣
+
+    Me  ~^[A-ZÂÉÈÎ].
+        <<- =>> define(\1, [":T"])
+        <<- ~1>> *
+
+    notre père
+        <<- morph(<1, ":D.*:[mp]") ~>> ␣
+        <<- __also__ =>> define(\1, [":N:m:i"])
+
+
+__immunités__
+    il y a
+    il n’ y a
+        <<- !-1>>
+
+    à l’ arrache
+        <<- !3>>
+
+    à ce point
+    en tout point
+        <<- !3>>
+
+    au  [bas|bras|côté|milieu|sein|sommet|faîte] [duquel|desquels|desquelles]
+    au  [bas|bras|côté|milieu|sein|sommet|faîte] de laquelle
+    aux [côtés] [duquel|desquels|desquelles]
+    aux [côtés] de laquelle
+        <<- !-1>>
+
+    au lieu des
+        <<- !3>>
+
+    au sortir [de|des|du|d’]
+        <<- ~2>> _
+
+    de chez *WORD à chez
+        <<- !-2>>
+
+    en tout et pour tout
+        <<- !-1>>
+
+    jusqu’ à
+        <<- !2>>
+
+    [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  @:Y  @:M
+        <<- morph(\1, ":V") !-2>>
+
+    soit pour soit contre
+        <<- !3>>
+
+
+TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
+
+
+!!!! Noms composés                                                                                !!
+
+__tag_noms__
+    ~\w-là$
+        <<- />> -là
+        <<- =>> =define_from(\1, 0, -3)
+
 
 
 !!
@@ -2128,6 +2257,8 @@ __inte_rendez_vous__
         <<- =>> define(\-1, [":VCi1:2p"])
         <<- !-1>>
 
+#   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
+#   rendez-vous seulement défini comme :N:m:i  dans le dictionnaire
 
 __inte_verbes_composés_impératifs__
     ~\w-l(?:es?|a)-(?:[mt]oi|nous|leur)$
@@ -2182,104 +2313,6 @@ TEST: {{Sert-toi}} d’eux autant que tu le peux, puis casse-toi.
 TEST: {{explique-leurs}} de quoi il est question.
 TEST: c’est mon chez-moi
 TEST: c’est ton chez-toi
-
-
-!!!! Noms composés                                                                                !!
-
-__tag_noms__
-    ~\w-là$
-        <<- />> -là
-        <<- =>> =define_from(\1, 0, -3)
-
-#   [un|mon|ton|son|ce|mes|tes|ses|leurs] rendez-vous
-#   rendez-vous seulement défini comme :N:m:i  dans le dictionnaire
-
-
-!!!! Fusions et immunités                                                                         !!
-
-__fusions_noms_communs__
-    au revoir
-        <<- ~>> ␣
-        <<- =>> define(\1, [":N:m:i"])
-
-    n’ importe [qui|quoi|quel|quelle|quels|quelles]
-        <<- ~1:2>> ␣
-
-    [cultural|gender] studies
-        <<- ~>> ␣
-        <<- =>> define(\1, [":N:f:p"])
-
-    machine [learning|learnings]
-    standing >ovation
-    star [system|systems]
-    black [>bloc|>block]
-        <<- ~>> ␣
-
-    *NUM : *NUM
-        <<- space_after(\1, 0, 0) and space_after(\1, 0, 0) ~>> ␣
-
-    *NUM  ~^h[0-9][0-9]$
-        <<- space_after(\1, 0, 0) ~>> ␣
-
-
-__fusions_noms_propres__
-    cac  40
-        <<- ~>> ␣
-
-    France [2|3|4|5|0|O]
-        <<- ~>> ␣
-
-    Peugeot  ~^\d0\d\d?$
-        <<- ~>> ␣
-        <<- =>> define(\1, [":N:e:i"])
-
-    Mai 68
-        <<- ~>> ␣
-        <<- =>> define(\1, [":N:m:i"])
-
-    ~^[A-ZÂÉÈÎ].  ~^[A-ZÂÉÈÎ]
-        <<- analyse_with_next(\1, " ", ":") ~>> ␣
-
-    notre père
-        <<- morph(<1, ":D.*:[mp]") ~>> ␣
-        <<- __also__ =>> define(\1, [":N:m:i"])
-
-
-__immunités__
-    il y a
-    il n’ y a
-        <<- !-1>>
-
-    à l’ arrache
-        <<- !3>>
-
-    à ce point
-    en tout point
-        <<- !3>>
-
-    au  [bas|bras|côté|milieu|sein|sommet|faîte] [duquel|desquels|desquelles]
-    au  [bas|bras|côté|milieu|sein|sommet|faîte] de laquelle
-    aux [côtés] [duquel|desquels|desquelles]
-    aux [côtés] de laquelle
-        <<- !3>>
-
-    au lieu des
-        <<- !3>>
-
-    au sortir [de|des|du|d’]
-        <<- ~2>> _
-
-    en tout et pour tout
-        <<- !-1>>
-
-    jusqu’ à
-        <<- !2>>
-
-    [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  @:Y  @:M
-        <<- morph(\1, ":V") !-2>>
-
-    soit pour soit contre
-        <<- !3>>
 
 
 
@@ -9543,7 +9576,7 @@ __infi_ne_pas_jamais_etc__
     n’ [en|y] ?presque¿ plus ?[jamais|rien|guère]¿ non plus           @:[VNA]¬:(?:Y|W|X|O)
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “ne pas”, “ne jamais”, “ne plus”, “ne rien”… le verbe devrait être à l’infinitif.
 
-    ne [pas|jamais|plus|rien|guère|point] [beaucoup|trop]
+    ne [pas|jamais|plus|rien|guère|point] [beaucoup|trop|assez|mal]
         <<- ~3>> *
 
 TEST: ne jamais les {{cédé}}
@@ -9570,6 +9603,9 @@ TEST: déterminés à ne pas se laisser récupérer
 TEST: de ne pas en élire du tout
 TEST: Mais gare à ne pas non plus trop surestimer la menace
 TEST: ne jamais beaucoup bosser, c’est sa devise.
+TEST: ne pas mal faire, c’est déjà pas si mal
+TEST: ne pas assez faire pour eux, voilà notre tort
+
 
 
 ## guerre / guère
@@ -9766,6 +9802,13 @@ __purge_prépositions_qqn__
 
     quant à [moi|toi|lui|elle|elles|lui|eux|nous|vous]  [<end>|,|@:[VXG]¬>qui]
         <<- ~1:3>> *
+
+    de chez *WORD ?jusqu’¿ à chez [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]
+        <<- ~>> *
+
+    jusqu’ à    chez
+    de          chez
+        <<- ~1:-2>> *
 
 TODO: comme
 
@@ -11265,6 +11308,12 @@ __purge_conditionnelle__
 
     par trop @:A
         <<- ~1:2>> *
+
+    pas mal
+        <<- not morph(<1, ":D") ~>> *
+
+    pas assez *WORD
+        <<- morph(\3, ":[AW]") and not morph(<1, ":D") ~>> *
 
     pêle-mêle
         <<- not morph(<1, ":D.*:[me]") ~>> *
