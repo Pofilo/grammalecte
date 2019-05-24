@@ -4,8 +4,20 @@
 Text tools
 """
 
+import re
 import textwrap
 from itertools import chain
+
+
+_zEndOfSentence = re.compile(r'([.?!:;…]\W+(?=[A-ZÉÈÎÔ])|.$)')
+_zBeginOfParagraph = re.compile(r"^\W*")
+
+def getSentenceBoundaries (sText):
+    "generator: returns start and end of sentences found in <sText>"
+    iStart = _zBeginOfParagraph.match(sText).end()
+    for m in _zEndOfSentence.finditer(sText):
+        yield (iStart, m.end())
+        iStart = m.end()
 
 
 def getParagraph (sText):

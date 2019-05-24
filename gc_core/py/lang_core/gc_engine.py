@@ -10,6 +10,9 @@ from itertools import chain
 
 from ..graphspell.spellchecker import SpellChecker
 from ..graphspell.echo import echo
+
+from .. import text
+
 from . import gc_options
 
 try:
@@ -191,17 +194,6 @@ def resetOptions ():
 
 #### Parsing
 
-_zEndOfSentence = re.compile(r'([.?!:;…]\W+(?=[A-ZÉÈÎÔ])|.$)')
-_zBeginOfParagraph = re.compile(r"^\W*")
-_zEndOfParagraph = re.compile(r"\W*$")
-
-def _getSentenceBoundaries (sText):
-    iStart = _zBeginOfParagraph.match(sText).end()
-    for m in _zEndOfSentence.finditer(sText):
-        yield (iStart, m.end())
-        iStart = m.end()
-
-
 def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
     "init point to analyze a text"
     oText = TextParser(sText)
@@ -266,7 +258,7 @@ class TextParser:
             sText = re.sub("@@+", "", sText)
 
         # parse sentences
-        for iStart, iEnd in _getSentenceBoundaries(sText):
+        for iStart, iEnd in text.getSentenceBoundaries(sText):
             if 4 < (iEnd - iStart) < 2000:
                 try:
                     self.sSentence = sText[iStart:iEnd]

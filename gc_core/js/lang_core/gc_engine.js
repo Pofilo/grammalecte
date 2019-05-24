@@ -163,20 +163,6 @@ var gc_engine = {
     parse: function (sText, sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false) {
         let oText = new TextParser(sText);
         return oText.parse(sCountry, bDebug, dOptions, bContext);
-    },
-
-    _zEndOfSentence: new RegExp ('([.?!:;…][   .?!…»«“”"‘’)–—]+(?=[A-ZÉÈÎÔ])|.$)', "g"),
-    _zBeginOfParagraph: new RegExp ("^[-  –—.,;?!…]*", "ig"),
-    _zEndOfParagraph: new RegExp ("[-  .,;?!…–—]*$", "ig"),
-
-    getSentenceBoundaries: function* (sText) {
-        let mBeginOfSentence = this._zBeginOfParagraph.exec(sText);
-        let iStart = this._zBeginOfParagraph.lastIndex;
-        let m;
-        while ((m = this._zEndOfSentence.exec(sText)) !== null) {
-            yield [iStart, this._zEndOfSentence.lastIndex];
-            iStart = this._zEndOfSentence.lastIndex;
-        }
     }
 };
 
@@ -243,7 +229,7 @@ class TextParser {
         }
 
         // parse sentence
-        for (let [iStart, iEnd] of gc_engine.getSentenceBoundaries(this.sText)) {
+        for (let [iStart, iEnd] of text.getSentenceBoundaries(this.sText)) {
             try {
                 this.sSentence = this.sText.slice(iStart, iEnd);
                 this.sSentence0 = this.sText0.slice(iStart, iEnd);
