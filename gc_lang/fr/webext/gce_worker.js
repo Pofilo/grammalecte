@@ -102,6 +102,7 @@ onmessage = function (e) {
             break;
         case "parseAndSpellcheck1":
             parseAndSpellcheck1(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            break;
         case "getOptions":
             getOptions(dInfo);
             break;
