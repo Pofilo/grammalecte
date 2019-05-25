@@ -260,6 +260,19 @@ def main ():
             elif sText.startswith("/rl"):
                 # reload (todo)
                 pass
+            elif sText.startswith("@@"):
+                for sParagraph in txt.getParagraph(sText):
+                    if xArgs.textformatter:
+                        sText = oTextFormatter.formatText(sParagraph)
+                    for dSentence in oGrammarChecker.gce.parse(sText[2:], bDebug=xArgs.debug, bFullInfo=True):
+                        echo("{nStart}:{nEnd}".format(**dSentence))
+                        echo("   <" + dSentence["sSentence"]+">")
+                        for dToken in dSentence["lToken"]:
+                            print("    {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {0[sValue]:<16} {2:<10}   {3}".format(dToken, \
+                                                                                                            "×" if dToken.get("bToRemove", False) else " ",
+                                                                                                            " ".join(dToken.get("lMorph", "")), \
+                                                                                                            "·".join(dToken.get("aTags", "")) ) )
+                            #print(dToken)
             else:
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
