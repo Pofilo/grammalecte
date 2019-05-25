@@ -25,11 +25,13 @@ _HELP = """
     >word                               draw path of word in the word graph
     =filter                             show all entries whose morphology fits to filter
     /lopt                       /lo     list options
-    /+ option1 [option2] ...            activate grammar checking options
-    /- option1 [option2] ...            deactivate grammar checking options
     /lrules [pattern]           /lr     list rules
-    /--rule1 [rule2] ...                deactivate grammar checking rule
-    /++rule1 [rule2] ...                reactivate grammar checking rule
+    /o+ option1 [option2] ...           activate grammar checking options
+    /o- option1 [option2] ...           deactivate grammar checking options
+    /r+ rule1 [rule2] ...               reactivate grammar checking rule
+    /r- rule1 [rule2] ...               deactivate grammar checking rule
+    /textformatter              /tf     switch on/off the text formatter
+    /debug                      /d      switch on/off the debug mode
     /quit                       /q      exit
 """
 
@@ -225,17 +227,17 @@ def main ():
                     sTagsPattern = ""
                 for aRes in oSpellChecker.select(sFlexPattern, sTagsPattern):
                     echo("\t".join(aRes))
-            elif sText.startswith("/+ "):
+            elif sText.startswith("/o+ "):
                 oGrammarChecker.gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")
-            elif sText.startswith("/- "):
+            elif sText.startswith("/o- "):
                 oGrammarChecker.gce.setOptions({ opt:False  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")
-            elif sText.startswith("/-- "):
+            elif sText.startswith("/r- "):
                 for sRule in sText[3:].strip().split():
                     oGrammarChecker.gce.ignoreRule(sRule)
                 echo("done")
-            elif sText.startswith("/++ "):
+            elif sText.startswith("/r+ "):
                 for sRule in sText[3:].strip().split():
                     oGrammarChecker.gce.reactivateRule(sRule)
                 echo("done")

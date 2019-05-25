@@ -233,31 +233,17 @@ class TextParser:
         return s
 
     def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
-        "analyses the paragraph sText and returns list of errors"
+        "analyses sText and returns an iterable of errors"
         #sText = unicodedata.normalize("NFC", sText)
         dOpt = dOptions or _dOptions
         bShowRuleId = option('idrule')
-
         # parse paragraph
         try:
             self.parseText(self.sText, self.sText0, True, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         except:
             raise
-
-        # cleanup
-        sText = self.sText
-        if " " in sText:
-            sText = sText.replace(" ", ' ') # nbsp
-        if " " in sText:
-            sText = sText.replace(" ", ' ') # nnbsp
-        if "'" in sText:
-            sText = sText.replace("'", "’")
-        if "‑" in sText:
-            sText = sText.replace("‑", "-") # nobreakdash
-        if "@@" in sText:
-            sText = re.sub("@@+", "", sText)
-
         # parse sentences
+        sText = self._getCleanText()
         for iStart, iEnd in text.getSentenceBoundaries(sText):
             if 4 < (iEnd - iStart) < 2000:
                 try:
@@ -270,6 +256,53 @@ class TextParser:
                 except:
                     raise
         return self.dError.values() # this is a view (iterable)
+
+    def parseAndGetSentences (self, sCountry="${country_default}", bDebug=False):
+        "analyses sText and returns a list of sentences with their tokens"
+        #sText = unicodedata.normalize("NFC", sText)
+        # parse paragraph
+        try:
+            self.parseText(self.sText, self.sText0, True, 0, sCountry, dOptions, bShowRuleId, bDebug, bContext)
+        except:
+            raise
+        # parse sentences
+        sText = self._getCleanText()
+        lSentence = []
+        i = 0
+        for iStart, iEnd in text.getSentenceBoundaries(sText):
+            try:
+                self.sSentence = sText[iStart:iEnd]
+                self.sSentence0 = self.sText0[iStart:iEnd]
+                self.nOffsetWithinParagraph = iStart
+                self.lToken = list(_oTokenizer.genTokens(self.sSentence, True))
+                self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+                i += 1
+                lSentence.append({
+                    "i": i,
+                    "iStart": iStart,
+                    "iEnd": iEnd,
+                    "sSentence": self.sSentence,
+                    "sSentence0": self.sSentence0,
+                    "lToken": list(lToken) # this is a copy
+                })
+                self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOptions, False, False, False)
+            except:
+                raise
+        return lSentence
+
+    def _getCleanText (self):
+        sText = self.sText
+        if " " in sText:
+            sText = sText.replace(" ", ' ') # nbsp
+        if " " in sText:
+            sText = sText.replace(" ", ' ') # nnbsp
+        if "'" in sText:
+            sText = sText.replace("'", "’")
+        if "‑" in sText:
+            sText = sText.replace("‑", "-") # nobreakdash
+        if "@@" in sText:
+            sText = re.sub("@@+", "", sText)
+        return sText
 
     def parseText (self, sText, sText0, bParagraph, nOffset, sCountry, dOptions, bShowRuleId, bDebug, bContext):
         "parse the text with rules"
