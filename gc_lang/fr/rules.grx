@@ -6579,7 +6579,7 @@ TEST: autant que faire se peut, il faut éviter la confusion entre ces deux disc
 # ça / çà / sa
 __conf_ça_çà_sa__
     ça  @:[NAQ].*:f¬:(?:G|P|[123][sp])|>seule?s?/
-        <<- /conf/ not morph(<1, ">appeler/") -1>> sa                           # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+        <<- /conf/ not morph(<1, ">(?:appeler|trouver)/") -1>> sa               # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque)/|:[NAQ].*:f
         <<- /conf/ not (\2 == "ou" and value(>1, "|son|ses|")) -1>> ça          # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
@@ -6617,6 +6617,7 @@ TEST: Eux, ils appellent ça routine.
 TEST: avec sa presque belle-mère
 TEST: sa toute nouvelle application de synchronisation de fichiers
 TEST: communiquer avec sa ou son partenaire.
+TEST: Je trouve ça logique.
 
 
 # Campagne / compagne
