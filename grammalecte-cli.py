@@ -24,6 +24,7 @@ _HELP = """
     !word                               suggestion
     >word                               draw path of word in the word graph
     =filter                             show all entries whose morphology fits to filter
+    @@text                              show sentences and tokens of text
     /lopt                       /lo     list options
     /lrules [pattern]           /lr     list rules
     /o+ option1 [option2] ...           activate grammar checking options
@@ -262,9 +263,10 @@ def main ():
                 pass
             elif sText.startswith("@@"):
                 for sParagraph in txt.getParagraph(sText):
+                    sText = sText[2:]
                     if xArgs.textformatter:
                         sText = oTextFormatter.formatText(sParagraph)
-                    for dSentence in oGrammarChecker.gce.parse(sText[2:], bDebug=xArgs.debug, bFullInfo=True):
+                    for dSentence in oGrammarChecker.gce.parse(sText, bDebug=xArgs.debug, bFullInfo=True):
                         echo("{nStart}:{nEnd}".format(**dSentence))
                         echo("   <" + dSentence["sSentence"]+">")
                         for dToken in dSentence["lToken"]:
