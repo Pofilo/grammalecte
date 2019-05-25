@@ -254,7 +254,7 @@ class Lexicographe {
         let m = null;
         try {
             switch (oToken.sType) {
-                case 'SEPARATOR':
+                case 'PUNC':
                 case 'SIGN':
                     return {
                         sType: oToken.sType,
@@ -367,12 +367,18 @@ class Lexicographe {
                         };
                     } else {
                         return {
-                            sType: "UNKNOWN",
+                            sType: "UNKNOWN_WORD",
                             sValue: oToken.sValue,
                             aLabel: ["mot inconnu du dictionnaire"]
                         };
                     }
                     break;
+                default:
+                    return {
+                        sType: "NO_TYPE",
+                        sValue: oToken.sValue,
+                        aLabel: ["token inconnu"]
+                    }
             }
         } catch (e) {
             console.error(e);
