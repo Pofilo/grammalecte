@@ -19,12 +19,16 @@ _EXAMPLE = "Quoi ? Racontes ! Racontes-moi ! Bon sangg, parles ! Oui. Il y a 
            "Quant sera t’il châtiés pour ses mensonge ?             Merde ! J’en aie marre."
 
 _HELP = """
-    /help                       /h      show this text
+Analysis commands:
+    any_text                            grammar checking
     ?word1 [word2] ...                  words analysis
-    !word                               suggestion
+    !word                               spelling suggestion
     >word                               draw path of word in the word graph
-    =filter                             show all entries whose morphology fits to filter
-    @@text                              show sentences and tokens of text
+    =[filter1][=[filter2]]              show entries which fit to filters (filter1 for word, filter2 for morphology)
+    @@some_text                         show sentences and tokens of text
+
+Other commands:
+    /help                       /h      show this text
     /lopt                       /lo     list options
     /lrules [pattern]           /lr     list rules
     /o+ option1 [option2] ...           activate grammar checking options
@@ -227,7 +231,7 @@ def main ():
                     sFlexPattern = sSearch
                     sTagsPattern = ""
                 for aRes in oSpellChecker.select(sFlexPattern, sTagsPattern):
-                    echo("\t".join(aRes))
+                    echo("{:<30} {:<30} {}".format(*aRes))
             elif sText.startswith("/o+ "):
                 oGrammarChecker.gce.setOptions({ opt:True  for opt in sText[3:].strip().split()  if opt in oGrammarChecker.gce.getOptions() })
                 echo("done")
