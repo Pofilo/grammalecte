@@ -970,6 +970,7 @@ class GrammalecteTextControl {
 
     loadText (sText) {
         if (typeof(sText) === "string") {
+            this.dParagraph.clear();
             let i = 0;
             let iStart = 0;
             let iEnd = 0;
