@@ -194,10 +194,10 @@ def resetOptions ():
 
 #### Parsing
 
-def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
-    "init point to analyze a text"
+def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False, bFullInfo=False):
+    "init point to analyse <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors"
     oText = TextParser(sText)
-    return oText.parse(sCountry, bDebug, dOptions, bContext)
+    return oText.parse(sCountry, bDebug, dOptions, bContext, bFullInfo)
 
 
 #### TEXT PARSER
@@ -212,10 +212,11 @@ class TextParser:
         self.sSentence0 = ""
         self.nOffsetWithinParagraph = 0
         self.lToken = []
-        self.dTokenPos = {}
-        self.dTags = {}
-        self.dError = {}
-        self.dErrorPriority = {}  # Key = position; value = priority
+        self.dTokenPos = {}         # {position: token}
+        self.dTags = {}             # {position: tags}
+        self.dError = {}            # {position: error}
+        self.dSentenceError = {}    # {position: error} (for the current sentence only)
+        self.dErrorPriority = {}    # {position: priority of the current error}
 
     def __str__ (self):
         s = "===== TEXT =====\n"
@@ -232,8 +233,8 @@ class TextParser:
         #    s += "{}\t{}\n".format(nPos, dToken)
         return s
 
-    def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False):
-        "analyses sText and returns an iterable of errors"
+    def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False, bFullInfo=False):
+        "analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors"
         #sText = unicodedata.normalize("NFC", sText)
         dOpt = dOptions or _dOptions
         bShowRuleId = option('idrule')
@@ -244,6 +245,7 @@ class TextParser:
             raise
         # parse sentences
         sText = self._getCleanText()
+        lSentences = []
         for iStart, iEnd in text.getSentenceBoundaries(sText):
             if 4 < (iEnd - iStart) < 2000:
                 try:
@@ -252,43 +254,22 @@ class TextParser:
                     self.nOffsetWithinParagraph = iStart
                     self.lToken = list(_oTokenizer.genTokens(self.sSentence, True))
                     self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
+                    if bFullInfo:
+                        dSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": self.sSentence, "lToken": list(self.lToken) }
+                        # the list of tokens is duplicated, to keep all tokens from being deleted when analysis
                     self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext)
+                    if bFullInfo:
+                        dSentence["aGrammarErrors"] = list(self.dSentenceError.values())
+                        lSentences.append(dSentence)
+                        self.dSentenceError.clear()
                 except:
                     raise
-        return self.dError.values() # this is a view (iterable)
-
-    def parseAndGetSentences (self, sCountry="${country_default}", bDebug=False):
-        "analyses sText and returns a list of sentences with their tokens"
-        #sText = unicodedata.normalize("NFC", sText)
-        # parse paragraph
-        try:
-            self.parseText(self.sText, self.sText0, True, 0, sCountry, dOptions, bShowRuleId, bDebug, bContext)
-        except:
-            raise
-        # parse sentences
-        sText = self._getCleanText()
-        lSentence = []
-        i = 0
-        for iStart, iEnd in text.getSentenceBoundaries(sText):
-            try:
-                self.sSentence = sText[iStart:iEnd]
-                self.sSentence0 = self.sText0[iStart:iEnd]
-                self.nOffsetWithinParagraph = iStart
-                self.lToken = list(_oTokenizer.genTokens(self.sSentence, True))
-                self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
-                i += 1
-                lSentence.append({
-                    "i": i,
-                    "iStart": iStart,
-                    "iEnd": iEnd,
-                    "sSentence": self.sSentence,
-                    "sSentence0": self.sSentence0,
-                    "lToken": list(lToken) # this is a copy
-                })
-                self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOptions, False, False, False)
-            except:
-                raise
-        return lSentence
+        if bFullInfo:
+            # Grammar checking and sentence analysis
+            return lSentences
+        else:
+            # Grammar checking only
+            return self.dError.values() # this is a view (iterable)
 
     def _getCleanText (self):
         sText = self.sText
@@ -337,6 +318,7 @@ class TextParser:
                                             if nErrorStart not in self.dError or nPriority > self.dErrorPriority.get(nErrorStart, -1):
                                                 self.dError[nErrorStart] = self._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext)
                                                 self.dErrorPriority[nErrorStart] = nPriority
+                                                self.dSentenceError[nErrorStart] = self.dError[nErrorStart]
                                         elif cActionType == "~":
                                             # text processor
                                             sText = self.rewriteText(sText, sWhat, eAct[0], m, bUppercase)
@@ -560,6 +542,7 @@ class TextParser:
                                     if nErrorStart not in self.dError or nPriority > self.dErrorPriority.get(nErrorStart, -1):
                                         self.dError[nErrorStart] = self._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext)
                                         self.dErrorPriority[nErrorStart] = nPriority
+                                        self.dSentenceError[nErrorStart] = self.dError[nErrorStart]
                                         if bDebug:
                                             echo("    NEW_ERROR: {}".format(self.dError[nErrorStart]))
                             elif cActionType == "~":
