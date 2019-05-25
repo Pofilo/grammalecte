@@ -160,9 +160,10 @@ var gc_engine = {
 
     //// Parsing
 
-    parse: function (sText, sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false) {
+    parse: function (sText, sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false, bFullInfo=false) {
+        // init point to analyse <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors
         let oText = new TextParser(sText);
-        return oText.parse(sCountry, bDebug, dOptions, bContext);
+        return oText.parse(sCountry, bDebug, dOptions, bContext, bFullInfo);
     }
 };
 
@@ -176,10 +177,11 @@ class TextParser {
         this.sSentence0 = "";
         this.nOffsetWithinParagraph = 0;
         this.lToken = [];
-        this.dTokenPos = new Map();
-        this.dTags = new Map();
-        this.dError = new Map();
-        this.dErrorPriority = new Map();  // Key = position; value = priority
+        this.dTokenPos = new Map();         // {position: token}
+        this.dTags = new Map();             // {position: tags}
+        this.dError = new Map();            // {position: error}
+        this.dSentenceError = new Map();    // {position: error} (for the current sentence only)
+        this.dErrorPriority = new Map();    // {position: priority of the current error}
     }
 
     asString () {
@@ -199,8 +201,8 @@ class TextParser {
         return s;
     }
 
-    parse (sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false) {
-        // analyses the paragraph sText and returns list of errors
+    parse (sCountry="${country_default}", bDebug=false, dOptions=null, bContext=false, bFullInfo=false) {
+        // analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors
         let dOpt = dOptions || _dOptions;
         let bShowRuleId = option('idrule');
         // parse paragraph
@@ -210,28 +212,13 @@ class TextParser {
         catch (e) {
             console.error(e);
         }
-
-        // cleanup
-        if (this.sText.includes(" ")) {
-            this.sText = this.sText.replace(/ /g, ' '); // nbsp
-        }
-        if (this.sText.includes(" ")) {
-            this.sText = this.sText.replace(/ /g, ' '); // snbsp
-        }
-        if (this.sText.includes("'")) {
-            this.sText = this.sText.replace(/'/g, "’");
-        }
-        if (this.sText.includes("‑")) {
-            this.sText = this.sText.replace(/‑/g, "-"); // nobreakdash
-        }
-        if (this.sText.includes("@@")) {
-            this.sText = this.sText.replace(/@@+/g, "");
-        }
-
         // parse sentence
-        for (let [iStart, iEnd] of text.getSentenceBoundaries(this.sText)) {
+        let sText = this._getCleanText();
+        let lSentences = [];
+        let oSentence = null;
+        for (let [iStart, iEnd] of text.getSentenceBoundaries(sText)) {
             try {
-                this.sSentence = this.sText.slice(iStart, iEnd);
+                this.sSentence = sText.slice(iStart, iEnd);
                 this.sSentence0 = this.sText0.slice(iStart, iEnd);
                 this.nOffsetWithinParagraph = iStart;
                 this.lToken = Array.from(_oTokenizer.genTokens(this.sSentence, true));
@@ -241,13 +228,48 @@ class TextParser {
                         this.dTokenPos.set(dToken["nStart"], dToken);
                     }
                 }
+                if (bFullInfo) {
+                    oSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": this.sSentence, "lToken": Array.from(this.lToken) };
+                    // the list of tokens is duplicated, to keep all tokens from being deleted when analysis
+                }
                 this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext);
+                if (bFullInfo) {
+                    oSentence["aGrammarErrors"] = Array.from(this.dSentenceError.values());
+                    lSentences.push(oSentence);
+                    this.dSentenceError.clear();
+                }
             }
             catch (e) {
                 console.error(e);
             }
         }
-        return Array.from(this.dError.values());
+        if (bFullInfo) {
+            // Grammar checking and sentence analysis
+            return lSentences;
+        } else {
+            // Grammar checking only
+            return Array.from(this.dError.values());
+        }
+    }
+
+    _getCleanText () {
+        let sText = this.sText;
+        if (sText.includes(" ")) {
+            sText = sText.replace(/ /g, ' '); // nbsp
+        }
+        if (sText.includes(" ")) {
+            sText = sText.replace(/ /g, ' '); // snbsp
+        }
+        if (sText.includes("'")) {
+            sText = sText.replace(/'/g, "’");
+        }
+        if (sText.includes("‑")) {
+            sText = sText.replace(/‑/g, "-"); // nobreakdash
+        }
+        if (sText.includes("@@")) {
+            sText = sText.replace(/@@+/g, "");
+        }
+        return sText;
     }
 
     parseText (sText, sText0, bParagraph, nOffset, sCountry, dOptions, bShowRuleId, bDebug, bContext) {
@@ -288,6 +310,7 @@ class TextParser {
                                                 if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.get(nErrorStart)) {
                                                     this.dError.set(nErrorStart, this._createErrorFromRegex(sText, sText0, sWhat, nOffset, m, eAct[0], sLineId, sRuleId, bUppercase, eAct[1], eAct[2], bShowRuleId, sOption, bContext));
                                                     this.dErrorPriority.set(nErrorStart, nPriority);
+                                                    this.dSentenceError.set(nErrorStart, this.dError.get(nErrorStart));
                                                 }
                                                 break;
                                             case "~":
@@ -612,6 +635,7 @@ class TextParser {
                                     if (!this.dError.has(nErrorStart) || nPriority > this.dErrorPriority.gl_get(nErrorStart, -1)) {
                                         this.dError.set(nErrorStart, this._createErrorFromTokens(sWhat, nTokenOffset, nLastToken, nTokenErrorStart, nErrorStart, nErrorEnd, sLineId, sRuleId, bCaseSvty, sMessage, sURL, bShowRuleId, sOption, bContext));
                                         this.dErrorPriority.set(nErrorStart, nPriority);
+                                        this.dSentenceError.set(nErrorStart, this.dError.get(nErrorStart));
                                         if (bDebug) {
                                             console.log("    NEW_ERROR: ",  this.dError.get(nErrorStart));
                                         }
