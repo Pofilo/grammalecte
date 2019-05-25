@@ -41,6 +41,7 @@ xGCEWorker.onmessage = function (e) {
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
+            case "parseFull":
             case "getListOfTokens":
             case "getSpellSuggestions":
             case "getVerb":
@@ -202,6 +203,7 @@ let dConnx = new Map();
     Messages from the extension (not the Worker)
 */
 function handleMessage (oRequest, xSender, sendResponse) {
+    // message from panels
     //console.log(xSender);
     let {sCommand, dParam, dInfo} = oRequest;
     switch (sCommand) {
@@ -248,6 +250,7 @@ function handleConnexion (xPort) {
             case "parse":
             case "parseAndSpellcheck":
             case "parseAndSpellcheck1":
+            case "parseFull":
             case "getListOfTokens":
             case "getSpellSuggestions":
             case "getVerb":

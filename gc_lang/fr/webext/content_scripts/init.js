@@ -308,6 +308,9 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "parseAndSpellcheck1":
             oGrammalecte.oGCPanel.refreshParagraph(dInfo.sParagraphId, result);
             break;
+        case "parseFull":
+            // TODO
+            break;
         case "getListOfTokens":
             if (!bEnd) {
                 oGrammalecte.oGCPanel.addListOfTokens(result);

@@ -103,6 +103,12 @@ onmessage = function (e) {
         case "parseAndSpellcheck1":
             parseAndSpellcheck1(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
             break;
+        case "parseFull":
+            parseFull(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            break;
+        case "getListOfTokens":
+            getListOfTokens(dParam.sText, dInfo);
+            break;
         case "getOptions":
             getOptions(dInfo);
             break;
@@ -135,9 +141,6 @@ onmessage = function (e) {
             break;
         case "getVerb":
             getVerb(dParam.sVerb, dParam.bPro, dParam.bNeg, dParam.bTpsCo, dParam.bInt, dParam.bFem, dInfo);
-            break;
-        case "getListOfTokens":
-            getListOfTokens(dParam.sText, dInfo);
             break;
         default:
             console.log("[Worker] Unknown command: " + sCommand);
@@ -214,7 +217,7 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
     let i = 0;
     sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
-        let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
+        let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext);
         let aSpellErr = oSpellChecker.parseParagraph(sParagraph);
         postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, iParaNum: i, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
         i += 1;
@@ -224,9 +227,38 @@ function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
 
 function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) {
     sParagraph = sParagraph.replace(/­/g, "").normalize("NFC");
-    let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
+    let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext);
     let aSpellErr = oSpellChecker.parseParagraph(sParagraph);
     postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
+}
+
+function parseFull (sText, sCountry, bDebug, bContext, dInfo={}) {
+    let i = 0;
+    sText = sText.replace(/­/g, "").normalize("NFC");
+    for (let sParagraph of text.getParagraph(sText)) {
+        let lSentence = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext, true);
+        console.log("*", lSentence);
+        postMessage(createResponse("parseFull", {sParagraph: sParagraph, iParaNum: i, lSentence: lSentence}, dInfo, false));
+        i += 1;
+    }
+    postMessage(createResponse("parseFull", null, dInfo, true));
+}
+
+function getListOfTokens (sText, dInfo={}) {
+    // lexicographer
+    try {
+        sText = sText.replace(/­/g, "").normalize("NFC");
+        for (let sParagraph of text.getParagraph(sText)) {
+            if (sParagraph.trim() !== "") {
+                postMessage(createResponse("getListOfTokens", oLxg.getListOfTokensReduc(sParagraph, true), dInfo, false));
+            }
+        }
+        postMessage(createResponse("getListOfTokens", null, dInfo, true));
+    }
+    catch (e) {
+        console.error(e);
+        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true, true));
+    }
 }
 
 function getOptions (dInfo={}) {
@@ -392,24 +424,5 @@ function getVerb (sWord, bPro, bNeg, bTpsCo, bInt, bFem, dInfo) {
     catch (e) {
         console.error(e);
         postMessage(createResponse("getVerb", createErrorResult(e, "no verb"), dInfo, true, true));
-    }
-}
-
-
-// Lexicographer
-
-function getListOfTokens (sText, dInfo={}) {
-    try {
-        sText = sText.replace(/­/g, "").normalize("NFC");
-        for (let sParagraph of text.getParagraph(sText)) {
-            if (sParagraph.trim() !== "") {
-                postMessage(createResponse("getListOfTokens", oLxg.getListOfTokensReduc(sParagraph, true), dInfo, false));
-            }
-        }
-        postMessage(createResponse("getListOfTokens", null, dInfo, true));
-    }
-    catch (e) {
-        console.error(e);
-        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true, true));
     }
 }
