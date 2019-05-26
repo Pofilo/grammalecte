@@ -195,7 +195,7 @@ def resetOptions ():
 #### Parsing
 
 def parse (sText, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False, bFullInfo=False):
-    "init point to analyse <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors"
+    "init point to analyse <sText> and returns an iterable of errors or (with option <bFullInfo>) paragraphs errors and sentences with tokens and errors"
     oText = TextParser(sText)
     return oText.parse(sCountry, bDebug, dOptions, bContext, bFullInfo)
 
@@ -234,7 +234,7 @@ class TextParser:
         return s
 
     def parse (self, sCountry="${country_default}", bDebug=False, dOptions=None, bContext=False, bFullInfo=False):
-        "analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) a list of sentences with tokens and errors"
+        "analyses <sText> and returns an iterable of errors or (with option <bFullInfo>) paragraphs errors and sentences with tokens and errors"
         #sText = unicodedata.normalize("NFC", sText)
         dOpt = dOptions or _dOptions
         bShowRuleId = option('idrule')
@@ -243,9 +243,12 @@ class TextParser:
             self.parseText(self.sText, self.sText0, True, 0, sCountry, dOpt, bShowRuleId, bDebug, bContext)
         except:
             raise
+        if bFullInfo:
+            lParagraphErrors = list(self.dError.values())
+            lSentences = []
+            self.dSentenceError.clear()
         # parse sentences
         sText = self._getCleanText()
-        lSentences = []
         for iStart, iEnd in text.getSentenceBoundaries(sText):
             if 4 < (iEnd - iStart) < 2000:
                 try:
@@ -256,17 +259,20 @@ class TextParser:
                     self.dTokenPos = { dToken["nStart"]: dToken  for dToken in self.lToken  if dToken["sType"] != "INFO" }
                     if bFullInfo:
                         dSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": self.sSentence, "lToken": list(self.lToken) }
+                        for dToken in dSentence["lToken"]:
+                            if dToken["sType"] == "WORD":
+                                dToken["bValidToken"] = _oSpellChecker.isValidToken(dToken["sValue"])
                         # the list of tokens is duplicated, to keep all tokens from being deleted when analysis
                     self.parseText(self.sSentence, self.sSentence0, False, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext)
                     if bFullInfo:
-                        dSentence["aGrammarErrors"] = list(self.dSentenceError.values())
+                        dSentence["lGrammarErrors"] = list(self.dSentenceError.values())
                         lSentences.append(dSentence)
                         self.dSentenceError.clear()
                 except:
                     raise
         if bFullInfo:
             # Grammar checking and sentence analysis
-            return lSentences
+            return lParagraphErrors, lSentences
         else:
             # Grammar checking only
             return self.dError.values() # this is a view (iterable)

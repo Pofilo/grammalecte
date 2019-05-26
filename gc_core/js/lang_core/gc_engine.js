@@ -212,6 +212,11 @@ class TextParser {
         catch (e) {
             console.error(e);
         }
+        let lParagraphErrors = null;
+        if (bFullInfo) {
+            lParagraphErrors = Array.from(this.dError.values());
+            this.dSentenceError.clear();
+        }
         // parse sentence
         let sText = this._getCleanText();
         let lSentences = [];
@@ -230,11 +235,16 @@ class TextParser {
                 }
                 if (bFullInfo) {
                     oSentence = { "nStart": iStart, "nEnd": iEnd, "sSentence": this.sSentence, "lToken": Array.from(this.lToken) };
+                    for (let oToken of oSentence["lToken"]) {
+                        if (oToken["sType"] == "WORD") {
+                            oToken["bValidToken"] = _oSpellChecker.isValidToken(oToken["sValue"]);
+                        }
+                    }
                     // the list of tokens is duplicated, to keep all tokens from being deleted when analysis
                 }
                 this.parseText(this.sSentence, this.sSentence0, false, iStart, sCountry, dOpt, bShowRuleId, bDebug, bContext);
                 if (bFullInfo) {
-                    oSentence["aGrammarErrors"] = Array.from(this.dSentenceError.values());
+                    oSentence["lGrammarErrors"] = Array.from(this.dSentenceError.values());
                     lSentences.push(oSentence);
                     this.dSentenceError.clear();
                 }
@@ -245,7 +255,7 @@ class TextParser {
         }
         if (bFullInfo) {
             // Grammar checking and sentence analysis
-            return lSentences;
+            return [lParagraphErrors, lSentences];
         } else {
             // Grammar checking only
             return Array.from(this.dError.values());
