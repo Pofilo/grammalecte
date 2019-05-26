@@ -25,7 +25,7 @@ Analysis commands:
     !word                               spelling suggestion
     >word                               draw path of word in the word graph
     =[filter1][=[filter2]]              show entries which fit to filters (filter1 for word, filter2 for morphology)
-    >>some_text                         show sentences and tokens of text
+    $some_text                         show sentences and tokens of text
 
 Other commands:
     /help                       /h      show this text
@@ -265,9 +265,9 @@ def main ():
             elif sText.startswith("/rl"):
                 # reload (todo)
                 pass
-            elif sText.startswith(">>"):
+            elif sText.startswith("$"):
                 for sParagraph in txt.getParagraph(sText):
-                    sText = sText[2:]
+                    sText = sText[1:]
                     if xArgs.textformatter:
                         sText = oTextFormatter.formatText(sParagraph)
                     lParagraphErrors, lSentences = oGrammarChecker.gce.parse(sText, bDebug=xArgs.debug, bFullInfo=True)
