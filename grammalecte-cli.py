@@ -25,7 +25,7 @@ Analysis commands:
     !word                               spelling suggestion
     >word                               draw path of word in the word graph
     =[filter1][=[filter2]]              show entries which fit to filters (filter1 for word, filter2 for morphology)
-    @@some_text                         show sentences and tokens of text
+    >>some_text                         show sentences and tokens of text
 
 Other commands:
     /help                       /h      show this text
@@ -265,20 +265,23 @@ def main ():
             elif sText.startswith("/rl"):
                 # reload (todo)
                 pass
-            elif sText.startswith("@@"):
+            elif sText.startswith(">>"):
                 for sParagraph in txt.getParagraph(sText):
                     sText = sText[2:]
                     if xArgs.textformatter:
                         sText = oTextFormatter.formatText(sParagraph)
-                    for dSentence in oGrammarChecker.gce.parse(sText, bDebug=xArgs.debug, bFullInfo=True):
+                    lParagraphErrors, lSentences = oGrammarChecker.gce.parse(sText, bDebug=xArgs.debug, bFullInfo=True)
+                    echo(txt.getReadableErrors(lParagraphErrors, xArgs.width))
+                    for dSentence in lSentences:
                         echo("{nStart}:{nEnd}".format(**dSentence))
                         echo("   <" + dSentence["sSentence"]+">")
                         for dToken in dSentence["lToken"]:
-                            print("    {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {0[sValue]:<16} {2:<10}   {3}".format(dToken, \
+                            echo("    {0[nStart]:>3}:{0[nEnd]:<3} {1} {0[sType]:<14} {2} {0[sValue]:<16} {3:<10}   {4}".format(dToken, \
                                                                                                             "×" if dToken.get("bToRemove", False) else " ",
+                                                                                                            "!" if dToken["sType"] == "WORD" and not dToken.get("bValidToken", False) else " ",
                                                                                                             " ".join(dToken.get("lMorph", "")), \
                                                                                                             "·".join(dToken.get("aTags", "")) ) )
-                            #print(dToken)
+                        echo(txt.getReadableErrors(dSentence["lGrammarErrors"], xArgs.width))
             else:
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
