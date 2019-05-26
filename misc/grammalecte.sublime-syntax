@@ -14,9 +14,19 @@ contexts:
       #push: double_quoted_string
 
     # Comments begin with a '#' and finish at the end of the line
-    - match: '#'
-      scope: punctuation.definition.comment
-      push: line_comment
+    - match: '^#.*'
+      scope: comment
+
+    # Error message
+    - match: '(?<= )#[^|]+'
+      scope: string.message
+      push:
+        - match: '\\-?[0-9]+'
+          scope: string.message.escape
+        - match: '\| ?https?://[\w./%?&=#+-]+'
+          scope: string.other
+        - match: $
+          pop: true
 
     # Numbers
     - match: '\b(-)?[0-9.]+\b'
@@ -24,10 +34,6 @@ contexts:
 
     # Bookmarks
     - match: '^!!.*|^\[\+\+\].*'
-      scope: bookmark
-
-    # Bookmarks
-    - match: '^GRAPH_NAME:.*'
       scope: bookmark
 
     # Graph
@@ -68,14 +74,14 @@ contexts:
       captures:
         1: rule.casing
         2: rule.optionname
-        3: rule.rulename
+        3: rule.rulename_regex
         4: rule.priority
 
     # Graph rules option
     - match: '^__(\w+)(![0-9]|)__'
       scope: rule.options
       captures:
-        1: rule.rulename2
+        1: rule.rulename_graph
         2: rule.priority
 
     - match: '/(\w+)/'
@@ -95,7 +101,10 @@ contexts:
 
     # Tests & TODO
     - match: '^TEST: (?:__[a-zA-Z0-9]+__ |)'
-      scope: test
+      scope: test.header
+
+    - match: '{{.+?}}'
+      scope: test.error
 
     - match: '^TODO: '
       scope: todo
@@ -106,63 +115,63 @@ contexts:
 
     # rule delimiters
     - match: '<<-|>>>'
-      scope: keyword.action
+      scope: entity.action
     - match: '__also__'
-      scope: keyword.condition.green
+      scope: entity.cond.green
     - match: '__else__'
-      scope: keyword.condition.red
+      scope: entity.cond.red
     - match: '-(-?\d*\.?(?::\.?-?\d+|))(?::|)>>'
-      scope: keyword.error
+      scope: entity.error
       captures:
-        1: keyword.error.group
+        1: entity.error.group
     - match: '~(-?\d*(?::-?\d+|))>>'
-      scope: keyword.textprocessor
+      scope: entity.tproc
       captures:
-        1: keyword.textprocessor.group
+        1: entity.tproc.group
     - match: '=>>'
-      scope: keyword.disambiguator
+      scope: entity.disambiguator
     - match: '/(-?\d*(?::-?\d+|))>>'
-      scope: keyword.tag
+      scope: entity.tag
       captures:
-        1: keyword.tag.group
+        1: entity.tag.group
     - match: '!(-?\d*(?::-?\d+|))>>'
-      scope: keyword.tag
+      scope: entity.tag
       captures:
-        1: keyword.tag.group
+        1: entity.tag.group
 
     # Tokens
     - match: '(>)[\w-]+'
       scope: string.lemma
       captures:
-        1: keyword.valid
+        1: entity.valid
 
     - match: '(~)(?!(?:\d+(?::\d+|)|)>>)[^\s¬]*'
       scope: string.regex
       captures:
-        1: keyword.valid
+        1: entity.valid
 
     - match: '(@)([^@\s¬]*)'
       scope: string.morph
       captures:
-        1: keyword.valid
-        2: string.morph.pattern
+        1: entity.valid
+        2: string.morph.regex
 
     - match: '(/)[\w-]+'
       scope: string.tag
       captures:
-        1: keyword.valid
+        1: entity.valid
 
     - match: '(?<=[^\w])([*][a-zA-Z0-9_]+)'
       scope: string.morph
       captures:
-        1: keyword.valid
+        1: entity.valid
         2: string.meta
 
     - match: '(¬)(\S+)'
       scope: string.morph
       captures:
-        1: keyword.invalid
-        2: string.morph.antipattern
+        1: entity.invalid
+        2: string.morph.negregex
 
     - match: '<(?:start|end)>'
       scope: string.token
@@ -178,33 +187,12 @@ contexts:
     - match: '\| ?https?://[\w./%?&=#+-]+'
       scope: string.other
 
-    # Example errors
-    - match: '{{.+?}}'
-      scope: message.error
-
     # special chars
     - match: '[@=*^?¿!:+<>~]'
       scope: keyword.other
 
     - match: '\(\?(?:[:=!]|<!)|[(|)]'
-      scope: keyword.parenthesis
+      scope: entity.parenthesis
 
     - match: '\[|[]{}]'
-      scope: keyword.brackets
-
-#  double_quoted_string:
-#    - meta_scope: string.quoted.double
-#    - match: '\\.'
-#      scope: constant.character.escape
-#    - match: '(?:"|$)'
-#      scope: punctuation.definition.string.end
-#      pop: true
-
-  line_comment:
-    - meta_scope: comment.line
-    - match: '\\-?[0-9]+'
-      scope: constant.character.escape
-    - match: '\| ?https?://[\w./%?&=#+-]+'
-      scope: string.other
-    - match: $
-      pop: true
+      scope: entity.brackets
