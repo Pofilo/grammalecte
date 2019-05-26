@@ -54,7 +54,7 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
                         i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text=sRoot, SubContainer=xSubMenuContainer)
                     else:
                         i = self._addItemToContextMenu(xContextMenu, i, "ActionTrigger", Text="# erreur : {}".format(item))
-                
+
                 # Links to Conjugueur
                 if aVerb:
                     i = self._addItemToContextMenu(xContextMenu, i, "ActionTriggerSeparator", SeparatorType=nUnoConstantLine)
@@ -136,7 +136,7 @@ class JobExecutor (XJob, unohelper.Base):
                 oLexicographe = lxg.Lexicographe(oSpellChecker)
         except:
             traceback.print_exc()
-        
+
     def execute (self, args):
         if not args:
             return
@@ -147,7 +147,7 @@ class JobExecutor (XJob, unohelper.Base):
             sVersion = xSettings.getByName("ooSetupVersion")
             if (sProdName == "LibreOffice" and sVersion < "4") or sProdName == "OpenOffice.org":
                 return
-            
+
             # what event?
             bCorrectEvent = False
             for arg in args:
@@ -169,7 +169,7 @@ class JobExecutor (XJob, unohelper.Base):
                         #print("OFF")
         except:
             traceback.print_exc()
-        
+
 
 g_ImplementationHelper = unohelper.ImplementationHelper()
 g_ImplementationHelper.addImplementation(JobExecutor, "grammalecte.ContextMenuHandler", ("grammalecte.ContextMenuHandler",),)
