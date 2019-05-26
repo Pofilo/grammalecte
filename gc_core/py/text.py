@@ -101,12 +101,12 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
     return sText
 
 
-def getReadableErrors (lErrs, nWidth, bSpell=False):
+def getReadableErrors (lErrs, nWidth, bSpellingError=False):
     "Returns lErrs errors as readable errors"
     sErrors = ""
     for dErr in lErrs:
-        if not bSpell or "aSuggestions" in dErr:
-            sMsg, *others = getReadableError(dErr, bSpell).split("\n")
+        if not bSpellingError or "aSuggestions" in dErr:
+            sMsg, *others = getReadableError(dErr, bSpellingError).split("\n")
             sErrors += "\n".join(textwrap.wrap(sMsg, nWidth, subsequent_indent="  ")) + "\n"
             for arg in others:
                 sErrors += "\n".join(textwrap.wrap(arg, nWidth, subsequent_indent="    ")) + "\n"
@@ -115,10 +115,10 @@ def getReadableErrors (lErrs, nWidth, bSpell=False):
     return sErrors
 
 
-def getReadableError (dErr, bSpell=False):
+def getReadableError (dErr, bSpellingError=False):
     "Returns an error dErr as a readable error"
     try:
-        if bSpell:
+        if bSpellingError:
             sText = u"* {nStart}:{nEnd}  # {sValue}:".format(**dErr)
         else:
             sText = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
