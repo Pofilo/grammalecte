@@ -591,7 +591,7 @@ TEST: ce chien […] ne {{semblez}} pas en forme.
 TEST: ce chat {{(…)}} ne {{ressemblez}} pas aux autres.
 TEST: les tests de la version 3.17.8 {{commence}} demain.
 TEST: ce nouveau moteur de recherche (http://www.cherche-moi-ça.fr/home.php&lang=fr) fonctionne pas mal.
-TEST: l’A.M. Turing Award 2015
+TEST: L’A.M. Turing Award 2015
 TEST: Retrouvez-nous sur le Monde.fr
 TEST: Arthur D. vient chez nous.
 TEST: Arthur D., de toute façon, vient chez nous.
@@ -775,7 +775,7 @@ TEST: combien de rad/s
 
 # Majuscules après un point
 __[s]/maj(majuscule_après_point)__
-    ({w_2})[.] ([a-zéàèîçô]\w*)  @@0,$
+    ({w_2})[.] ([a-zàâéèêîôç]\w*)  @@0,$
     <<- not re.search("(?i)^(?:etc|[A-Z]|chap|cf|fig|hab|litt|circ|coll|r[eé]f|étym|suppl|bibl|bibliogr|cit|op|vol|déc|nov|oct|janv|juil|avr|sept)$", \1)
         and morph(\1, ":") and morph(\2, ":")
     -2>> =\2.capitalize()                                                                           # Après un point, une majuscule est généralement requise.
@@ -783,11 +783,13 @@ __[s]/maj(majuscule_après_point)__
 TEST: Je suis là. {{viens}}.                                              ->> Viens
 TEST: Ils sont devenus idiots. {{c}}’est peine perdue.
 
-__[s]/maj(majuscule_en_début_phrase)__
-    ^ *([a-zéèâàô][\w-]+)  @@$
+__<s>/maj(majuscule_début_paragraphe)__
+    ^ *([a-zàâéèêîôç](?:[\w-]+[’'`‘]?|[’'`‘]))  @@$
     <<- after("\\w\\w[.] +\\w+") -1>> =\1.capitalize()                                              # Majuscule en début de phrase, sauf éventuellement lors d’une énumération.
 
 TEST: {{je}} suis disponible quand tu veux. Mais pas aujourd’hui.
+TEST: {{j’}}arrive. Prépare-toi.
+TEST: {{qu’}}il est grand, ce batiment. Faut voir si on pourra la détruire avec si peu de charges.
 
 
 !!
