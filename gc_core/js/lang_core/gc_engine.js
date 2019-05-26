@@ -1443,11 +1443,6 @@ if (typeof(exports) !== 'undefined') {
     exports.load = gc_engine.load;
     exports.parse = gc_engine.parse;
     exports.getSpellChecker = gc_engine.getSpellChecker;
-    // sentence
-    exports._zEndOfSentence = gc_engine._zEndOfSentence;
-    exports._zBeginOfParagraph = gc_engine._zBeginOfParagraph;
-    exports._zEndOfParagraph = gc_engine._zEndOfParagraph;
-    exports.getSentenceBoundaries = gc_engine.getSentenceBoundaries;
     // rules
     exports.ignoreRule = gc_engine.ignoreRule;
     exports.resetIgnoreRules = gc_engine.resetIgnoreRules;

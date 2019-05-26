@@ -83,6 +83,9 @@ var text = {
 
 
 if (typeof(exports) !== 'undefined') {
+    exports._zEndOfSentence = text._zEndOfSentence;
+    exports.getSentenceBoundaries = text.getSentenceBoundaries;
+    exports.getSentence = text.getSentence;
     exports.getParagraph = text.getParagraph;
     exports.wrap = text.wrap;
     exports.getReadableError = text.getReadableError;
