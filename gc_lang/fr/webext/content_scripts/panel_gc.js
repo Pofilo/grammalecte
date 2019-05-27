@@ -111,11 +111,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                     dParam: {sText: this.oTextControl.getText()},
                     dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
                 });
-                xGrammalectePort.postMessage({
+                /*xGrammalectePort.postMessage({
                     sCommand: "parseFull",
                     dParam: {sText: this.oTextControl.getText(), sCountry: "FR", bDebug: false, bContext: false},
                     dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
-                });
+                });*/
             }
         };
         this.xConjButton.onclick = () => {
