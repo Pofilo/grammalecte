@@ -12,6 +12,7 @@ def build (sLang, dVars, spLangPack):
     "complementary build launched from make.py"
     createWebExtension(sLang, dVars)
     createThunderbirdExtension(sLang, dVars, spLangPack)
+    createMailExtension(sLang, dVars, spLangPack)
     createNodeJSPackage(sLang)
 
 
@@ -40,11 +41,25 @@ def _createOptionsForWebExtension (dVars):
     return sHTML
 
 
+def createMailExtension (sLang, dVars, spLangPack):
+    "create extension for Thunderbird (as MailExtension)"
+    print("Building extension for Thunderbird (MailExtension)")
+    spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.mailext.xpi'
+    hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
+    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack)
+    for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
+        hZip.write(spf)
+    dVars = _createOptionsForThunderbird(dVars)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
+    hZip.close()
+    spBetaExtension = dVars['win_tb_beta_extension_filepath']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_filepath']
+    file_util.copy_file(spfZip, spBetaExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
+
+
 def createThunderbirdExtension (sLang, dVars, spLangPack):
-    "create extension for Thunderbird"
+    "create extension for Thunderbird (as XUL addon)"
     print("Building extension for Thunderbird")
-    sExtensionName = dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
-    spfZip = "_build/" + sExtensionName
+    spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     _copyGrammalecteJSPackageInZipFile(hZip, spLangPack)
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
@@ -54,9 +69,6 @@ def createThunderbirdExtension (sLang, dVars, spLangPack):
     hZip.close()
     spDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
     helpers.unzip(spfZip, spDebugProfile)
-    spfBetaExtension = dVars['win_tb_beta_extension_filepath']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_filepath']
-    #helpers.unzip(spfZip, spBetaProfile)
-    file_util.copy_file(spfZip, spfBetaExtension)
 
 
 def _createOptionsForThunderbird (dVars):
