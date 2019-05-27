@@ -7734,6 +7734,7 @@ __conf_moi_mois__
 TEST: au {{moi}} d’avril
 TEST: être en repos pour trois {{moi}}.
 TEST: 3 {{moi}} de vacances.
+TEST: Dans un délai de quatre {{moi}}.
 
 
 # n’est-ce pas - ai / es / est
@@ -13523,14 +13524,27 @@ __gn_nombre_chiffres_1m__
             or \1 in aREGULARPLURAL )
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
 
+    *NUM  *WORD  *WORD
+        <<- /gn/ not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+            and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">(?:seule|maximum|minimum)/") >>>
+        <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
+            and not apposition(\2, \3)
+        -3>> =switchGender(\3, True)                                                                # Accord de genre erroné entre « \2 » et « \3 ».
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, True)                           # Accord de genre erroné avec « \3 ».
+        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
+
 TEST: 00 heure, 01 heure
 TEST: il a adopté 1 {{chiens}}.
 TEST: 22 {{heure}}
 TEST: 3 {{heure}}
+TEST: Environ 10 essais {{nucléaire}} ont été réalisés
 TEST: les élèves sont inquiets après une année 2018 compliquée et riche en réformes.
 TEST: ils gagneront 300 € maximum.
 TEST: il revint en 2005 complètement dévoré par la culpabilité.
 TEST: un jeu de 1980 absolument démodé.
+TEST: elle fut le 13 janvier décapitée
+TEST: elles furent le 18 janvier décorées
 
 
 ##  trouver ça/ceci/cela + adj
@@ -16603,29 +16617,33 @@ __purge_pronoms__
 
 
 __purge_syntagmes_nominaux__
-    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  <end>
-    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  @:[VR]¬:[NAP]
-    [à|au|aux|avec|en|lors]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  *WORD  ,  @¬:[NA]
+    [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]  <end>
+    [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]   @:[VR]¬:[NAP]
+    [à|au|aux|avec|en|lors|ayant]  [de|d’]  [un|une|la|l’|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]  ,  @¬:[NA]
         <<- ~1:4>> *
 
-    [à|au|aux|avec|en|lors]  [des|du]  *WORD  <end>
-    [à|au|aux|avec|en|lors]  [des|du]  *WORD  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|au|aux|avec|en|lors]  [des|du]  *WORD  @:[VR]¬:[NAP]
-    [à|au|aux|avec|en|lors]  [des|du]  *WORD  , @¬:[NA]
+    [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NAM]  <end>
+    [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NA]   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NA]   @:[VR]¬:[NAP]
+    [à|au|aux|avec|en|lors|ayant]  [des|du]  @:[NAM]  , @¬:[NA]
+        <<- ~1:3>> *
+
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  <end>
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]¬:G   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NA]¬:G   @:[VR]¬:[NAP]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|ayant]
+        || [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
         <<- ~1:3>> *
 
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  <end>
-    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  @:[VR]¬:[NAP]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NA]¬:[GY]   ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NA]¬:[GY]   @:[VR]¬:[NAP]
     [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur|au|aux]  @:[NAM]¬:[GY]  , @¬:[NA]
         <<- ~1:2>> *
-
-    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  <end>
-    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  ?,¿  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
-    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  @:[VR]¬:[NAP]
-    [à|avec|chez|contre|dans|envers|par|pour|selon|sous|sur] [un|une|le|la|l’|les|leur|leurs|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|quelques|certains|certaines]  @:[NAM]¬:G  , @¬:[NA]
-        <<- ~1:3>> *
 
     [ce|ton|son] *WORD *WORD
         <<- morph(\2, ":[NA]", ":(?:[123]p|P|X|G)") and morph(\3, ":[NA]", ":(?:G|[123][sp]|P|M)") >>>
@@ -20031,6 +20049,7 @@ __infi_devoir_pouvoir_vouloir__
 TEST: il devait {{utilisé}} son temps à bon escient.
 TEST: tu dois {{mangé}}
 TEST: on va devoir {{mangé}} tout ça.
+TEST: Il doit pouvoir {{détectez}} ces erreurs.
 TEST: Le devoir transcendé par l’amour de son pays.
 TEST: un devoir corrigé par plusieurs professeurs.
 TEST: Ce n’est plus le chef de l’État qui s’exprime devant députés et sénateurs, mais le chef de la majorité.
