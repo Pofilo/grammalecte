@@ -6078,7 +6078,7 @@ __conf_à_peu_près__
     a [peu|peux|peut] [près|>pré|>prête]
     à [peux|peut] [près|>pré|>prête]
     à peu [>pré|>prête]
-        <<- /conf/ ->> à peu près                                   # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
+        <<- /conf/ ->> à peu près                                           # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_peu_pr%C3%A8s
         <<- ~>> *
 
 TEST: C’est {{à peu prêt}} la même chose.
@@ -6090,16 +6090,42 @@ __conf_à_pleines_dents__
     a [>plaine|>pleine] [>dent|>dan]
     à [>plaine|pleine] [>dent|>dan]
     à pleines [dent|>dan]
-        <<- /conf/ ->> à pleines dents                              # Locution “à pleines dents” (toujours au pluriel).
+        <<- /conf/ ->> à pleines dents                                      # Locution “à pleines dents” (toujours au pluriel).
 
 TEST: Elle mord la vie {{à plaine dent}}.
+
+
+__conf_à_tire_d_aile__
+    à tire d’ >aile
+        <<- /tu/ ->> à tire-d’aile                                          # Trait d’union manquant. Locution “à tire-d’aile”.|https://fr.wiktionary.org/wiki/%C3%A0_tire-d%E2%80%99aile
+
+    [a|à] >tir  d’ [>aile|elle|elles|ail]
+    a     >tire d’ [>aile|elle|elles|ail]
+    [a|à] [tir-d’aile|tirs-d’aile|tir-d’ailes|tirs-d’ailes]
+        <<- /conf/ ->> à tire-d’aile                                        # Confusion. Locution “à tire-d’aile”.|https://fr.wiktionary.org/wiki/%C3%A0_tire-d%E2%80%99aile
+
+TEST: venir {{à tir d’ail}} jusqu’ici
+TEST: Elle arrivait à tire-d’aile.
+
+
+__conf_à_tire_larigot__
+    à tire larigot
+        <<- /tu/ ->> à tire-larigot                                         # Trait d’union manquant. Locution à “à tire-larigot”.|https://fr.wiktionary.org/wiki/%C3%A0_tire-larigot
+
+    [a|à]   >tir >larigot
+    a       >tire >larigot
+        <<- /conf/ ->> à tire-larigot                                       # Confusion. Locution à “à tire-larigot”.|https://fr.wiktionary.org/wiki/%C3%A0_tire-larigot
+
+TEST: il gueulait {{à tir larigot}}
+TEST: Au nom du progrès, les Victoriens en mal de modernisation rasèrent à tire-larigot les églises et les bâtiments jugés trop anciens.
+
 
 
 __conf_à_vau_l_eau__
     [a|à] [volo|vo-lo]
     [à|a] [>veau|>vau|vo|vos] l’ [o|os|au|aux|>eau]
     a [vau-l’eau|vaux-l’eau]
-        <<- /conf/ ->> à vau-l’eau                                  # Confusion. Locution “à vau-l’eau”, qui signifie “au fil de l’eau, sans contrôle”.|https://fr.wiktionary.org/wiki/%C3%A0_vau-l%E2%80%99eau
+        <<- /conf/ ->> à vau-l’eau                          # Confusion. Locution “à vau-l’eau”, qui signifie “au fil de l’eau, sans contrôle”.|https://fr.wiktionary.org/wiki/%C3%A0_vau-l%E2%80%99eau
 
 TEST: tout part {{à veau l’eau}}
 TEST: On décida de tout laisser partir {{à vau l’o}}
@@ -6108,7 +6134,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|gogo|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|tâtons|vélo]
+    a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|gogo|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo]
     a armes égales
     a aucun prix
     a autrui
@@ -6157,6 +6183,7 @@ __conf_à_a_locutions__
     a en perdre haleine
     a en perdre la tête
     a faible [allure|revenu]
+    à faible tirant d’ eau
     a feu et à sang
     a flanc de [colline|montagne]
     a fleur de peau
@@ -6338,8 +6365,10 @@ __conf_à_substantifs__
     >fard a paupières
     >ferme a >clic
     [>fille|fils] a [papa|maman]
+    >fosse a >ordure
     >fusil a >pompe
     >gaz a >effet de serre
+    >lampe a >huile
     >lime a >ongle
     >machine a [café|coudre|laver|voter]
     >machine a >remonter le temps
@@ -8936,7 +8965,7 @@ __conf_voir_voire__
         <<- !2>>
 
     voir  @:A¬:[NGM]
-        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|aller|falloir|pouvoir|savoir|vouloir|préférer|faire|penser|imaginer|souhaiter|désirer|de|à)/")
+        <<- /conf/ not \2.istitle() and not morph(<1, ":O[os]|>(?:[ndmts]e|aller|falloir|pouvoir|savoir|vouloir|préférer|faire|penser|imaginer|souhaiter|désirer|espérer|de|à)/")
             and not before("(?i)\\b[ndmts](?:e |’(?:en |y ))(?:pas |jamais |) *$")
         -1>> voire                      # Confusion probable : “voir” est un verbe concernant la perception visuelle. Pour signifier “et même possiblement”, écrivez “voire”.|https://fr.wiktionary.org/wiki/voire
 
@@ -8974,6 +9003,7 @@ TEST: médicaments qui me donnent envie de vomir, qui m’abrutissent, qui me fo
 TEST: nous allons voir différentes façons d’utiliser le film pour tourner en dérision sa politique
 TEST: mettre en place des projets à la philosophie différente, voire antagoniste
 TEST: ce pouvoir politique de décision que le mouvement souhaitait voir restauré
+TEST: les groupes anti-avortement cherchant à faire adopter des lois qu’ils espèrent voir confirmées par la Cour suprême
 
 
 # vieil / vieux
@@ -9197,7 +9227,7 @@ __maj_langues__
         <<- /maj/ -3:>> =\3.lower()                                                                 # Si vous parlez de la langue, pas de majuscule.
 
     en [Afrikaans|Albanais|Allemand|Alsacien|Anglais|Arabe|Aragonais|Arménien|Asturien|Basque|Bengali|Biélorusse|Birman|Bosniaque|Breton|Bulgare|Cantonais|Catalan|Cherokee|Chinois|Cornique|Coréen|Croate|Danois|Écossais|Espagnol|Espéranto|Estonien|Féroïen|Farsi|Finnois|Flamand|Français|Frison|Galicien|Gallois|Gaulois|Géorgien|Grec|Gujarati|Hakka|Hawaïen|Hébreu|Hindi|Hollandais|Hongrois|Javanais|Ido|Indonésien|Interlingua|Islandais|Italien|Irlandais|Japonais|Kazakh|Khmer|Kurde|Ladino|Laotien|Latin|Ligurien|Limbourgeois|Lituanien|Lombard|Luxembourgeois|Macédonien|Malais|Maldivien|Malgache|Maltais|Mandarin|Maori|Marathi|Marwari|Moldave|Mongol|Napolitain|Néerlandais|Norvégien|Occitan|Ourdou|Ouzbek|Persan|Peul|Piémontais|Polonais|Portugais|Provençal|Quichua|Romanche|Roumain|Russe|Sans[ck]rit|Sarde|Serbe|Sicilien|Sindhi|Slovaque|Slovène|Soudanais|Sorabe|Suédois|Swahili|Tagalog|Tahitien|Tamoul|Tatar|Tchèque|Thaï|Turc|Ukrainien|Vénitien|Vietnamien|Volapük|Wallon|Wou|Wu|Yiddish|Xhosa|Xiang|Zoulou]
-        <<- /maj/ -2:>> =\2.lower()                                                                  # Si vous parlez de la langue, pas de majuscule.
+        <<- /maj/ -2:>> =\2.lower()                                                                 # Si vous parlez de la langue, pas de majuscule.
 
 TEST: il ne parle qu’{{Allemand}}.
 TEST: ta traduction en {{Russe}} est superbe.
@@ -9839,7 +9869,7 @@ __purge_locutions__
     , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|tâtons|tort|tribord|tout-va]
+    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va]
     à armes égales
     à aucun prix
     à autre chose
@@ -9890,12 +9920,13 @@ __purge_locutions__
     à *NUM reprises
     à @:B reprises
     à [plusieurs|quelques|maintes] reprises
-    à de  [nombreuses|multiples]  reprises
+    à [de|d’]  [nombreuses|multiples|innombrables]  reprises
     à double [titre|tranchant]
     à en juger par [mon|ton|son|notre|votre|leur] expérience
     à en perdre haleine
     à en perdre la tête
-    à faible  [allure|revenu]
+    à faible [allure|revenu]
+    à faible tirant d’ eau
     à feu et à sang
     à flanc de [colline|montagne]
     à fleur de peau
@@ -10076,7 +10107,19 @@ __purge_locutions__
     au contraire
     au coude à coude
     au coup par coup
-    au cours des @:B [dernières|derniers|prochaines|prochains] [années|mois|siècles]
+    au cours de l’ [heure|année] ?passée¿
+    au cours de l’ an  ?passé¿
+    au cours de la [seconde|minute|journée|semaine] ?passée¿
+    au cours du [mois|siècle|millénaire] ?passé¿
+    au cours des [secondes|minutes|heures|journées|semaines|années] ?passées¿
+    au cours des [jours|mois|ans|siècles|millénaires] ?passés¿
+    au cours de l’ an [dernier|prochain]
+    au cours de la [dernière|prochaine] [seconde|minute|heure|journée|semaine|année]
+    au cours de la [seconde|minute|heure|journée|semaine|année] [dernière|prochaine]
+    au cours du [dernier|prochain] [mois|siècle|millénaire]
+    au cours du [mois|siècle|millénaire] [dernier|prochain]
+    au cours des ?@:B¿ [dernières|prochaines] [secondes|minutes|heures|journées|semaines|années]
+    au cours des ?@:B¿ [derniers|prochains] [jours|mois|ans|siècles|millénaires]
     au demeurant
     au doigt mouillé
     au doigt et à l’ [œil|oeil]
@@ -10246,6 +10289,7 @@ __purge_locutions__
     d’ un [bout|jour] à l’ autre
     d’ un côté comme [de|d’] l’ autre
     d’ un commun accord
+    d’ un pas [alerte|mesuré]
     d’ une autre trempe
     d’ une [façon|manière] ou d’ une autre
     d’ une certaine [façon|manière]
@@ -10352,9 +10396,10 @@ __purge_locutions__
     [de|d’] [mon|ton|son|notre|votre|leur] mieux
     [de|d’] [mon|ton|son|notre|votre|leur] plein gré
     [de|d’] [mon|ton|son|notre|votre|leur] point [de|d’] vue
-    [de|d’] [mon|ton|son|notre|votre|leur] propre [cru|chef]
+    [de|d’] [mon|ton|son|notre|votre|leur] propre [cru|chef|fait]
     [de|d’] [mon|ton|son|notre|votre|leur] vivant
     [de|d’] [ma|ta|sa|notre|votre|leur] part
+    [de|d’] [ma|ta|sa|notre|votre|leur] propre volonté
     [de|d’] moins en moins
     [de|d’] plus en plus
     [de|d’] mieux en mieux
@@ -10468,13 +10513,15 @@ __purge_locutions__
     en milieu [de|d’] [journée|matinée|soirée|après-midi]
     en nombre suffisant
     en nombre plus que suffisant
+    en ordre dispersé
     en partant [de|d’] zéro
     en partie ou en totalité
+    en pente douce
     en plein [air|cœur|essor|marasme|jour]
     en pleine [gueule|figure|forme|poire|nuit|tronche]
     en perte [de|d’] vitesse
     en ?[assez|très]¿ peu [de|d’] temps
-    en piteux état
+    en ?[assez|très]¿ [piteux|piètre] état
     en point [de|d’] [mire|orgue]
     en position [de|d’] [force|faiblesse]
     en premier lieu
@@ -10497,6 +10544,7 @@ __purge_locutions__
     en temps [normal|opportun|ordinaire|utile|voulu]
     en terrain [découvert|miné]
     en termes choisis
+    en terre battue ?[claire|ocre|jaune|rouge|noire|sombre|humide|sèche|maculée|sale|dégueulasse]¿
     en toile [de|d’] fond
     en totalité ou en partie
     en tous les cas
@@ -10719,8 +10767,8 @@ __purge_locutions__
     pour faire bonne mesure
     pour faire simple
     pour la [première|seconde|dernière|~ième$] fois
-    pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?misérable¿
-    pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?misérable¿ existence ?misérable¿
+    pour la [première|seconde|dernière|~ième$] fois [de|d’] [ma|ta|sa|notre|votre|leur] ?misérable¿ vie ?[misérable|insignifiante|palpitante]¿
+    pour la [première|seconde|dernière|~ième$] fois [de|d’] [mon|ton|son|notre|votre|leur] ?[misérable|insignifiante|palpitante]¿ existence ?[misérable|insignifiante|palpitante]¿
     pour la [seconde|dernière|~ième$] fois [de|d’] suite
     pour la suite
     pour le [moment|moins]
@@ -10789,8 +10837,8 @@ __purge_locutions__
     sans queue ni tête
     sans raison apparente
     sans répit
-    sans s’ en apercevoir
-    sans s’ en rendre compte
+    sans [m’|t’|s’|nous|vous] en apercevoir
+    sans [m’|t’|s’|nous|vous] en rendre compte
     sans y [parvenir|réussir|réfléchir|songer|penser]
     sans y faire attention
     sans y prendre [garde|goût|gout]
@@ -10803,6 +10851,8 @@ __purge_locutions__
     si [bas|haut|longtemps|nécessaire|possible|soudain]
     si [cela|ça|ceci] ne tenait qu’ à [moi|toi|lui|eux|elle|elles|nous|vous]
     si besoin est
+    si le besoin s’en [fait|faisait] sentir
+    si le besoin [doit|devait] s’en faire sentir
     sine die
     sine qua non
     six pieds sous terre
@@ -11483,6 +11533,7 @@ __simplication_substantifs__
     >fille à [papa|maman|>soldat]
     >fille au pair
     fils à [papa|maman]
+    >fosse à >ordure
     >fusil à pompe
     >haute comme [trois|3] pommes
     >histoire avec un [grand|petit] h
@@ -11496,6 +11547,7 @@ __simplication_substantifs__
     >invitée d’ honneur
     >invitée surprise
     >journal de bord
+    >lampe à huile
     >lime à >ongle
     >liste d’ attente
     >machine à [café|coudre|laver|voter]
@@ -11567,6 +11619,7 @@ __simplication_substantifs__
     [secret|secrets] défense
     >serpent à sonnette
     >silo à [>grains|blé]
+    >soldate d’ élite
     >soue à >cochonne
     >système d’ exploitation
     >système D
@@ -11631,9 +11684,10 @@ __purge_locutions_adjectivales__
 __purge_couleurs__
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] et [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent]
+    blanc   argenté
     bleu    [azur|ciel|indigo|marine|roi|saphir|turquoise]
     blond   platine
-    gris    [acier|anthracite|perle|souris]
+    gris    [acier|anthracite|argenté|perle|souris]
     jaune   [paille|sable]
     noir    [de|d’] [encre|jais]
     noir    et blanc
@@ -11829,7 +11883,7 @@ __purge_après_avoir__
     >avoir  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morph(>1, ":[QY]") ~2:0>> *
 
-    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
     >avoir  bon dos
     >avoir  bon pied ?,¿ bon œil
     >avoir  carte blanche
@@ -11839,7 +11893,7 @@ __purge_après_avoir__
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":LV"])
 
-    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
     >avoir  [pas|jamais|plus|guère|point]  bon dos
     >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
@@ -11849,7 +11903,7 @@ __purge_après_avoir__
         <<- ~3:0>> ␣
         <<- =>> define(\3, [":LV"])
 
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
         <<- ~2:-2>> *
 
@@ -11881,7 +11935,7 @@ __purge_après_avoir__
     /VCint  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morphVC(\1, ":V0a") and morph(>1, ":[QY]") ~2:0>> *
 
-    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
     /VCint  bon dos
     /VCint  bon pied ?,¿ bon œil
     /VCint  carte blanche
@@ -11891,7 +11945,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~2:0>> ␣
         <<- __also__ =>> define(\2, [":LV"])
 
-    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
     /VCint  [pas|jamais|plus|guère|point]  bon dos
     /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
@@ -11901,7 +11955,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
         <<- __also__ =>> define(\3, [":LV"])
 
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
     /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
         <<- morphVC(\1, ":V0a") ~2:-2>> *
 
@@ -12202,17 +12256,17 @@ __purge_locutions_verbales__
     >faire chou blanc
     >faire copain copain
     >faire de [mon|ton|son|notre|votre|leur] mieux
-    >faire grand bruit
+    >faire front commun
+    >faire grise mine
+    >faire grand [bruit|cas]
     >faire ?[bonne|grande|mauvaise]¿ impression
     >faire long feu
     >faire [machine|marche] arrière
     >faire main basse
+    >faire office
     >faire partie ?intégrante¿
-    >faire [bonne|fausse] route
-    >faire front commun
-    >faire grise mine
-    >faire grand [bruit|cas]
     >faire profil bas
+    >faire [bonne|fausse] route
     >faire salle comble
     >faire [sens|sensation]
     >faire table rase
@@ -12244,6 +12298,7 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
     >prendre par surprise
+    >prêter main forte
     >prêter main-forte
     >réduire en miettes
     >rendre [hommage|visite]
@@ -16996,7 +17051,7 @@ TEST: Du passé chez votre ami vous parvenaient les meilleurs souvenirs.
 
 __infi_faire_verbe__
     >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ not morph(<1, ">(?:en|de|être)") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
+        <<- /infi/ not morph(<1, ">(?:en|de|être)/") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
         -2>> =suggVerbInfi(\2)                                  # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
 
 TEST: elle fit peu {{mangé}} les enfants
@@ -17009,6 +17064,7 @@ TEST: fait pourtant avéré et corroboré par le même sondage.
 TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
 TEST: il y a quand même quelques faits caractérisés permettant de faire le raccord
 TEST: la tonalité des soutiens traditionnels s’est faite plus nuancée.
+TEST: sa simple présence les a fait reculer
 
 
 __infi_me_te_se_faire__
@@ -18989,6 +19045,7 @@ __imp_union_nous_vous_lui__
 TEST: {{Donne nous}} du café.
 TEST: si ça se peut, {{apprend nous}} à réussir.
 TEST: Ce que Jeanne, femme de Patrick, veut vous dire de sa vie.
+TEST: Daignez le lui permettre
 
 
 __imp_union_y__
