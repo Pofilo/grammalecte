@@ -179,9 +179,9 @@ def getOptionsLabels (sLang):
     return gc_options.getUI(sLang)
 
 
-def displayOptions (sLang):
+def displayOptions (sLang="${lang}"):
     "display the list of grammar checking options"
-    echo("List of options")
+    echo("Options:")
     echo("\n".join( [ k+":\t"+str(v)+"\t"+gc_options.getUI(sLang).get(k, ("?", ""))[0]  for k, v  in sorted(_dOptions.items()) ] ))
     echo("")
 

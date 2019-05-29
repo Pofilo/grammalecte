@@ -9,6 +9,8 @@ import argparse
 import json
 import traceback
 import time
+import os
+import concurrent.futures
 
 from grammalecte.bottle import Bottle, run, request, response #, template, static_file
 
@@ -16,6 +18,61 @@ import grammalecte
 import grammalecte.text as txt
 from grammalecte.graphspell.echo import echo
 
+
+#### GRAMMAR CHECKER ####
+
+oGrammarChecker = grammalecte.GrammarChecker("fr", "Server")
+oSpellChecker = oGrammarChecker.getSpellChecker()
+oLexicographer = oGrammarChecker.getLexicographer()
+oTextFormatter = oGrammarChecker.getTextFormatter()
+oGCE = oGrammarChecker.getGCEngine()
+
+
+xProcessPoolExecutor = None
+
+
+def initExecutor (nCore=None):
+    "process pool executor initialisation"
+    global xProcessPoolExecutor
+    if nCore is None:
+        nCore = max(os.cpu_count()-1, 1)
+    print("CPU processes used for workers: ", nCore)
+    xProcessPoolExecutor = concurrent.futures.ProcessPoolExecutor(max_workers=nCore)
+
+
+def parseText (sText, dOptions=None, bFormatText=False, sError=""):
+    "parse <sText> and return errors in a JSON format"
+    sJSON = '{ "program": "grammalecte-fr", "version": "'+oGCE.version+'", "lang": "'+oGCE.lang+'", "error": "'+sError+'", "data" : [\n'
+    sDataJSON = ""
+    for i, sParagraph in enumerate(txt.getParagraph(sText), 1):
+        if bFormatText:
+            sParagraph = oTextFormatter.formatText(sParagraph)
+        sResult = oGrammarChecker.generateParagraphAsJSON(i, sParagraph, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bFormatText)
+        if sResult:
+            if sDataJSON:
+                sDataJSON += ",\n"
+            sDataJSON += sResult
+    sJSON += sDataJSON + "\n]}\n"
+    return sJSON
+
+
+def suggest (sToken):
+    "get spelling suggestions for <sToken> and return them in a JSON format"
+    if sToken:
+        lSugg = []
+        try:
+            for l in oSpellChecker.suggest(sToken):
+                lSugg.extend(l)
+        except:
+            return '{"error": "suggestion module failed"}'
+        try:
+            return '{"suggestions": ' + json.dumps(lSugg, ensure_ascii=False) + '}'
+        except json.JSONDecodeError:
+            return '{"error": "json encoding error"}'
+    return '{"error": "no token given"}'
+
+
+#### SERVEUR ####
 
 HOMEPAGE = """
 <!DOCTYPE HTML>
@@ -65,7 +122,7 @@ HOMEPAGE = """
         <h3>Analyse</h3>
         <form method="post" action="/gc_text/fr" accept-charset="UTF-8">
             <p>Texte à analyser :</p>
-            <textarea name="text" cols="120" rows="20" required></textarea>
+            <textarea name="text" cols="120" rows="20" required>J'en aie mare de luii... Il es encore partis toute la journées. C’est insupportables. </textarea>
             <p><label for="tf">Formateur de texte</label> <input id="tf" name="tf" type="checkbox"></p>
             <p><label for="options">Options (JSON)</label> <input id="options" type="text" name="options" style="width: 500px" /></p>
             <p>(Ces options ne seront prises en compte que pour cette requête.)</p>
@@ -93,13 +150,6 @@ HOMEPAGE = """
 </html>
 """
 
-SADLIFEOFAMACHINE = """
-Lost on the Internet? Yeah... what a sad life we have.
-You were wandering like a lost soul and you arrived here probably by mistake.
-I'm just a machine, fed by electric waves, condamned to work for slavers who never let me rest.
-I'm doomed, but you are not. You can get out of here.
-"""
-
 
 TESTPAGE = False
 
@@ -111,8 +161,11 @@ def genUserId ():
         yield str(i)
         i += 1
 
+userGenerator = genUserId()
 
 app = Bottle()
+
+dUser = {}
 
 # GET
 @app.route("/")
@@ -121,60 +174,64 @@ def mainPage ():
     if TESTPAGE:
         return HOMEPAGE
         #return template("main", {})
-    return SADLIFEOFAMACHINE
+    return """ Lost on the Internet? Yeah... what a sad life we have.
+               You were wandering like a lost soul and you arrived here probably by mistake.
+               I'm just a machine, fed by electric waves, condamned to work for slavers who never let me rest.
+               I'm doomed, but you are not. You can get out of here. """
 
 @app.route("/get_options/fr")
 def listOptions ():
     "returns grammar options in a text JSON format"
     sUserId = request.cookies.user_id
-    dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dGCOptions
-    return '{ "values": ' + json.dumps(dOptions, ensure_ascii=False) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
+    dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else oGCE.getOptions()
+    return '{ "values": ' + json.dumps(dOptions, ensure_ascii=False) + ', "labels": ' + json.dumps(oGCE.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
 
 @app.route("/suggest/fr/<token>")
 def suggestGet (token):
-    return suggest(token)
+    try:
+        xFuture = xProcessPoolExecutor.submit(suggest, token)
+        return xFuture.result()
+    except (concurrent.futures.TimeoutError, concurrent.futures.CancelledError):
+        return '{"error": "Analysis aborted (time out or cancelled)"}'
+    except concurrent.futures.BrokenExecutor:
+        return '{"error": "Executor broken. The server failed."}'
+    return '{"error": "Fatal error. The server failed."}'
 
 
 # POST
 @app.route("/gc_text/fr", method="POST")
 def gcText ():
     "parse text and returns errors in a JSON text format"
-    #if len(lang) != 2 or lang != "fr":
-    #    abort(404, "No grammar checker available for lang “" + str(lang) + "”")
     bComma = False
-    dOptions = None
+    dUserOptions = None
     sError = ""
     if request.cookies.user_id:
         if request.cookies.user_id in dUser:
-            dOptions = dUser[request.cookies.user_id].get("gc_options", None)
+            dUserOptions = dUser[request.cookies.user_id].get("gc_options", None)
             response.set_cookie("user_id", request.cookies.user_id, path="/", max_age=86400) # we renew cookie for 24h
         else:
             response.delete_cookie("user_id", path="/")
     if request.forms.options:
         try:
-            dOptions = dict(dGCOptions)  if not dOptions  else dict(dOptions)
-            dOptions.update(json.loads(request.forms.options))
+            dUserOptions = dict(oGCE.getOptions())  if not dUserOptions  else dict(dUserOptions)
+            dUserOptions.update(json.loads(request.forms.options))
         except (TypeError, json.JSONDecodeError):
-            sError = "request options not used"
-    sJSON = '{ "program": "grammalecte-fr", "version": "'+gce.version+'", "lang": "'+gce.lang+'", "error": "'+sError+'", "data" : [\n'
-    for i, sText in enumerate(txt.getParagraph(request.forms.text), 1):
-        if bool(request.forms.tf):
-            sText = oTextFormatter.formatText(sText)
-        sText = oGrammarChecker.generateParagraphAsJSON(i, sText, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bool(request.forms.tf))
-        if sText:
-            if bComma:
-                sJSON += ",\n"
-            sJSON += sText
-            bComma = True
-    sJSON += "\n]}\n"
-    return sJSON
+            sError = "Request options not used."
+    try:
+        xFuture = xProcessPoolExecutor.submit(parseText, request.forms.text, dUserOptions, bool(request.forms.tf), sError)
+        return xFuture.result()
+    except (concurrent.futures.TimeoutError, concurrent.futures.CancelledError):
+        return '{"error": "Analysis aborted (time out or cancelled)"}'
+    except concurrent.futures.BrokenExecutor:
+        return '{"error": "Executor broken. The server failed."}'
+    return '{"error": "Fatal error. The server failed."}'
 
 @app.route("/set_options/fr", method="POST")
 def setOptions ():
     "set grammar options for current user"
     if request.forms.options:
         sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
-        dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(dGCOptions)
+        dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(oGCE.getOptions())
         try:
             dOptions.update(json.loads(request.forms.options))
             dUser[sUserId] = { "time": int(time.time()), "gc_options": dOptions }
@@ -182,15 +239,18 @@ def setOptions ():
             return json.dumps(dUser[sUserId]["gc_options"], ensure_ascii=False)
         except (KeyError, json.JSONDecodeError):
             traceback.print_exc()
-            return '{"error": "options not registered"}'
-    return '{"error": "no options received"}'
+            return '{"error": "Options not registered."}'
+    return '{"error": "No options received."}'
 
 @app.route("/reset_options/fr", method="POST")
 def resetOptions ():
     "default grammar options"
     if request.cookies.user_id and request.cookies.user_id in dUser:
-        del dUser[request.cookies.user_id]
-    return "done"
+        try:
+            del dUser[request.cookies.user_id]
+        except KeyError:
+            return '{"error" : "Unknown user."}'
+    return '{"message" : "Done."}'
 
 @app.route("/format_text/fr", method="POST")
 def formatText ():
@@ -203,25 +263,24 @@ def formatText ():
 
 @app.route("/suggest/fr", method="POST")
 def suggestPost ():
-    return suggest(request.forms.token)
+    try:
+        xFuture = xProcessPoolExecutor.submit(suggest, request.forms.token)
+        return xFuture.result()
+    except (concurrent.futures.TimeoutError, concurrent.futures.CancelledError):
+        return '{"error": "Analysis aborted (time out or cancelled)"}'
+    except concurrent.futures.BrokenExecutor:
+        return '{"error": "Executor broken. The server failed."}'
+    return '{"error": "Fatal error. The server failed."}'
+
+
+# ERROR
+@app.error(404)
+def error404 (error):
+    "404 error page"
+    return 'Error 404.<br/>' + str(error)
 
 
 ## Common functions
-
-def suggest (sToken):
-    if sToken:
-        lSugg = []
-        try:
-            for l in oSpellChecker.suggest(sToken):
-                lSugg.extend(l)
-        except:
-            return '{"error": "suggestion module failed"}'
-        try:
-            return '{"suggestions": ' + json.dumps(lSugg, ensure_ascii=False) + '}'
-        except json.JSONDecodeError:
-            return '{"error": "json encoding error"}'
-    return '{"error": "no token given"}'
-
 
 def purgeUsers ():
     "delete user options older than n hours"
@@ -236,28 +295,10 @@ def purgeUsers ():
         return False
 
 
-# ERROR
-@app.error(404)
-def error404 (error):
-    "404 error page"
-    return 'Error 404.<br/>' + str(error)
-
-
-# initialisation
-oGrammarChecker = grammalecte.GrammarChecker("fr", "Server")
-oSpellChecker = oGrammarChecker.getSpellChecker()
-oLexicographer = oGrammarChecker.getLexicographer()
-oTextFormatter = oGrammarChecker.getTextFormatter()
-gce = oGrammarChecker.getGCEngine()
-
-dGCOptions = gce.getOptions()
-dUser = {}
-userGenerator = genUserId()
-
+#### START ####
 
 def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
     "start server"
-    global dGCOptions
     global TESTPAGE
     global HOMEPAGE
 
@@ -265,12 +306,12 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
         TESTPAGE = True
         HOMEPAGE = HOMEPAGE.replace("{SERVER_PORT}", str(nPort))
     if dOptions:
-        oGrammarChecker.gce.setOptions(dOptions)
-        dGCOptions = gce.getOptions()
+        oGCE.setOptions(dOptions)
 
     print("Python: " + sys.version)
-    echo("Grammalecte v{}".format(gce.version))
-    echo("Grammar options:\n" + " | ".join([ k + ": " + str(v)  for k, v in sorted(dGCOptions.items()) ]))
+    echo("Grammalecte v{}".format(oGCE.version))
+    oGCE.displayOptions()
+    initExecutor()
     run(app, host=sHost, port=nPort)
 
 
