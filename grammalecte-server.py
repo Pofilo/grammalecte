@@ -23,7 +23,6 @@ from grammalecte.graphspell.echo import echo
 
 oGrammarChecker = grammalecte.GrammarChecker("fr", "Server")
 oSpellChecker = oGrammarChecker.getSpellChecker()
-oLexicographer = oGrammarChecker.getLexicographer()
 oTextFormatter = oGrammarChecker.getTextFormatter()
 oGCE = oGrammarChecker.getGCEngine()
 
@@ -297,7 +296,7 @@ def purgeUsers ():
 
 #### START ####
 
-def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False):
+def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiProc=None):
     "start server"
     global TESTPAGE
     global HOMEPAGE
@@ -320,6 +319,7 @@ if __name__ == '__main__':
     #xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
     xParser.add_argument("-ht", "--host", help="host (default: localhost)", type=str)
     xParser.add_argument("-p", "--port", help="port (default: 8080)", type=int)
+    xParser.add_argument("-mp", "--multiprocessor", help="define how many processes for the grammar checker", type=int)
     xParser.add_argument("-t", "--test_page", help="page to test the server on /", action="store_true")
     xParser.add_argument("-on", "--opt_on", nargs="+", help="activate options")
     xParser.add_argument("-off", "--opt_off", nargs="+", help="deactivate options")
@@ -333,7 +333,10 @@ if __name__ == '__main__':
         if xArgs.opt_off:
             dOpt.update({ opt:False  for opt in xArgs.opt_off })
 
+    print(xArgs.multiprocessor)
+
     main(xArgs.host or "localhost", \
          xArgs.port or 8080, \
          dOpt,
-         xArgs.test_page)
+         xArgs.test_page,
+         xArgs.multiprocessor)
