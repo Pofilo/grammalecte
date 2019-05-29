@@ -52,6 +52,14 @@ HOMEPAGE = """
         <h3>Remise à zéro de ses options</h3>
         <p>[adresse_serveur]:{SERVER_PORT}/reset_options/fr (POST)</p>
 
+        <h3>Suggestions orthographiques</h3>
+        <p>[adresse_serveur]:{SERVER_PORT}/suggest/fr/&lt;token&gt; (GET)</p>
+        <p>[adresse_serveur]:{SERVER_PORT}/suggest/fr (POST)</p>
+        <p>Paramètres :</p>
+        <ul>
+            <li>"token" (text)&nbsp;: mot pour lequel vous désirez une suggestion orthographique.</li>
+        </ul>
+
         <h2>TEST</h2>
 
         <h3>Analyse</h3>
@@ -72,6 +80,12 @@ HOMEPAGE = """
 
         <h3>Remise à zéro de ses options</h3>
         <form method="post" action="/reset_options/fr" accept-charset="UTF-8">
+            <p><input type="submit" class="button" value="Envoyer" /></p>
+        </form>
+
+        <h3>Suggestion orthographique</h3>
+        <form method="post" action="/suggest/fr" accept-charset="UTF-8">
+            <p><label for="token">Suggérer pour</label> <input id="token" type="text" name="token" style="width: 100px" /></p>
             <p><input type="submit" class="button" value="Envoyer" /></p>
         </form>
 
@@ -114,7 +128,11 @@ def listOptions ():
     "returns grammar options in a text JSON format"
     sUserId = request.cookies.user_id
     dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else dGCOptions
-    return '{ "values": ' + json.dumps(dOptions) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
+    return '{ "values": ' + json.dumps(dOptions, ensure_ascii=False) + ', "labels": ' + json.dumps(gce.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
+
+@app.route("/suggest/fr/<token>")
+def suggestGet (token):
+    return suggest(token)
 
 
 # POST
@@ -161,7 +179,7 @@ def setOptions ():
             dOptions.update(json.loads(request.forms.options))
             dUser[sUserId] = { "time": int(time.time()), "gc_options": dOptions }
             response.set_cookie("user_id", sUserId, path="/", max_age=86400) # 24h
-            return json.dumps(dUser[sUserId]["gc_options"])
+            return json.dumps(dUser[sUserId]["gc_options"], ensure_ascii=False)
         except (KeyError, json.JSONDecodeError):
             traceback.print_exc()
             return '{"error": "options not registered"}'
@@ -182,6 +200,27 @@ def formatText ():
 #@app.route('/static/<filepath:path>')
 #def server_static (filepath):
 #    return static_file(filepath, root='./views/static')
+
+@app.route("/suggest/fr", method="POST")
+def suggestPost ():
+    return suggest(request.forms.token)
+
+
+## Common functions
+
+def suggest (sToken):
+    if sToken:
+        lSugg = []
+        try:
+            for l in oSpellChecker.suggest(sToken):
+                lSugg.extend(l)
+        except:
+            return '{"error": "suggestion module failed"}'
+        try:
+            return '{"suggestions": ' + json.dumps(lSugg, ensure_ascii=False) + '}'
+        except json.JSONDecodeError:
+            return '{"error": "json encoding error"}'
+    return '{"error": "no token given"}'
 
 
 def purgeUsers ():
