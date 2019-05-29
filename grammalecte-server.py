@@ -30,13 +30,14 @@ oGCE = oGrammarChecker.getGCEngine()
 xProcessPoolExecutor = None
 
 
-def initExecutor (nCore=None):
+def initExecutor (nMultiCPU=None):
     "process pool executor initialisation"
     global xProcessPoolExecutor
-    if nCore is None:
-        nCore = max(os.cpu_count()-1, 1)
-    print("CPU processes used for workers: ", nCore)
-    xProcessPoolExecutor = concurrent.futures.ProcessPoolExecutor(max_workers=nCore)
+    nMaxCPU = max(os.cpu_count()-1, 1)
+    if nMultiCPU is None or not (1 <= nMultiCPU <= nMaxCPU):
+        nMultiCPU = nMaxCPU
+    print("CPU processes used for workers: ", nMultiCPU)
+    xProcessPoolExecutor = concurrent.futures.ProcessPoolExecutor(max_workers=nMultiCPU)
 
 
 def parseText (sText, dOptions=None, bFormatText=False, sError=""):
@@ -296,7 +297,7 @@ def purgeUsers ():
 
 #### START ####
 
-def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiProc=None):
+def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiCPU=None):
     "start server"
     global TESTPAGE
     global HOMEPAGE
@@ -307,10 +308,14 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiP
     if dOptions:
         oGCE.setOptions(dOptions)
 
+    # Python version
     print("Python: " + sys.version)
+    # Grammalecte
     echo("Grammalecte v{}".format(oGCE.version))
     oGCE.displayOptions()
-    initExecutor()
+    # Process Pool Executor
+    initExecutor(nMultiCPU)
+    # Server (Bottle)
     run(app, host=sHost, port=nPort)
 
 
@@ -332,8 +337,6 @@ if __name__ == '__main__':
             dOpt = { opt:True  for opt in xArgs.opt_on }
         if xArgs.opt_off:
             dOpt.update({ opt:False  for opt in xArgs.opt_off })
-
-    print(xArgs.multiprocessor)
 
     main(xArgs.host or "localhost", \
          xArgs.port or 8080, \
