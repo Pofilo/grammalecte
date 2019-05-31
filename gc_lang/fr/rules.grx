@@ -6933,6 +6933,44 @@ TEST: elle détestait son nouveau garde du {{cor}}
 TEST: Elle souffla puissamment dans le {{corps}} de chasse.
 
 
+# cour / cours / court
+__conf_cour_cours_court_courre__
+    au [cour|court|courre|courres|courts] [de|d’|des|du]
+        <<- /conf/ -2>> cours                               # Confusion. Locution “au cours de”. Une cour… Un cours… Adjectif : court(e).
+
+    en cour martiale
+    en cour [de|d’] [cassation|justice]
+    en cour d’ [>assise]
+        <<- !1:2>>
+
+    en cour
+        <<- /conf/ ->> en cours                             # Confusion probable. Une cour… Un cours… Adjectif : court(e).
+
+    >couper  ?@:[WX]¿  [cour|cours|courre|courres|courts]
+        <<- /conf/ --1>> court                              # “Couper court” qui signifie écourter. Noms : une cour, un cours… Adjectif : court.
+
+    [>avoir|>donner|>laisser]   ?@:[WX]¿  libre [cour|court|courts|courre|courres]
+        <<- /conf/ --1>> cours                              # Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
+
+    à [cour|cours|courre|courres|courts]  [de|d’]
+        <<- /conf/ -2>> court                               # Confusion probable : écrivez “à court de” pour “manquer de”.
+
+    [à|a] [cour|cours|courre|courres|courts] >terme
+        <<- /conf/ ->> à court terme                        # Confusion. Une cour… Un cours… Adjectif : court(e).
+
+TEST: au {{court}} de cette journée
+TEST: les exercices {{en cour}} se déroulent bien.
+TEST: je vais couper {{cours}} à ces conneries.
+TEST: il faut donner libre {{cour}} à ses envies.
+TEST: Nous allons bientôt être à {{cours}} d’argent.
+TEST: le rendement {{à cours terme}} est excellent.
+TEST: à {{cours}} d’argent
+TEST: porter l’affaire en Cour de justice
+TEST: jusqu’en cour de cassation
+TEST: le jugement en cour d’assises
+TEST: ils vont passer prochainement en cour martiale.
+
+
 # cuir / cuire
 __conf_cuir_cuire__
     >dure [à|a] >cuir
@@ -7024,6 +7062,16 @@ __conf_de_temps_à_autre__
 TEST: Il continuait son travail, mâchonnant de temps à autre une grosse chique qui tour à tour lui gonflait chaque joue.
 TEST: Il venait {{de temps à autres}}.
 TEST: {{de tan à autre}}, c’était correct de venir par ici.
+
+
+# dénué de / dénudé de
+__conf_dénué_de__
+    >dénuder [de|d’] ?tout¿ [amour|argent|courage|entrain]
+    >dénuder [de|d’] ?toute¿ [colère|compassion|faiblesse|foi|force|hypocrisie|intelligence|joie|rage|passion|pitié|tristesse|vie]
+        <<- /conf/ -1>> =\1.replace("nud", "nu").replace("NUD", "NU")
+        # Confusion probable. Pour indiquer une personne manquant de quelque chose, écriver “dénuer” et non “dénuder” (rendre nu).|https://fr.wiktionary.org/wiki/d%C3%A9nuer
+
+TEST: un homme {{dénudé}} de courage                                        ->> dénué
 
 
 # dés / dès / des
@@ -7983,6 +8031,32 @@ TEST: elles sont si {{pales}}.
 TEST: cette {{pale}} imitation d’un chef-d’œuvre
 
 
+# palier / pallier
+__conf_palier_pallier__
+    >voisine de [pallier|pallié|palliés|palliée|palliées]
+    >franchir un [pallier|pallié]
+    [sur|sous] le ?même¿ [pallier|pallié]
+        <<- /conf/ --1>> palier                                             # Confusion.|https://fr.wiktionary.org/wiki/palier
+
+    [pallier|pallié|palliée]  [de|d’] [communication|décompression|imposition]
+        <<- /conf/ -1>> palier                                              # Confusion.|https://fr.wiktionary.org/wiki/palier
+
+    [palliés|palliées]  [de|d’] [communication|décompression|imposition]
+        <<- /conf/ -1>> paliers                                             # Confusion.|https://fr.wiktionary.org/wiki/palier
+
+    [pallier|pallié|palliés|palliée|palliées] par [pallier|pallié|palliés|palliée|palliées]
+        <<- /conf/ ->> palier par palier                                    # Confusion.|https://fr.wiktionary.org/wiki/palier
+
+    de [pallier|pallié|palliés|palliée|palliées] en [pallier|pallié|palliés|palliée|palliées]
+        <<- /conf/ ->> de palier en palier                                  # Confusion.|https://fr.wiktionary.org/wiki/palier
+
+TEST: La voisine de {{pallier}} fait un rafut de tous les diables.
+TEST: Nous avons franchi un {{pallier}}
+TEST: elles progressent {{pallier par pallier}}
+TEST: Attention aux {{palliés}} de décompression
+TEST: {{De pallier en pallier}}, l’horreur la plus noire
+
+
 # par à-coups
 __conf_par_à_coups__
     [par|pare|pares|>part] [a|à] [>cou|>coût|>cout|>coup]
@@ -8880,6 +8954,22 @@ __conf_tain_teint_thym__
 
 TEST: Elle l’a observé par un miroir sans {{teint}}.
 TEST: Elle a acheté un nouveau fond de {{tain}}.
+
+
+# tête / tète
+__conf_tête_tète!6__
+    [tète|tètes] [baissée|baissées|baissé|baissés]
+    [tète|tètes] [haute|hautes|basse|basses]
+        <<- -1>> =\1.replace("è", "ê").replace("È", "Ê")            # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+
+    >hocher ?@:W¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète|tètes]
+    [mal|maux] de [tète|tètes]
+    >tenir ?@:W¿ [tète|tètes]
+        <<- --1>> =\-1.replace("è", "ê").replace("È", "Ê")          # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+
+TEST: Cesse de nous tenir {{tète}}                                  ->> tête
+TEST: impossible, avec mes maux de {{tète}}                         ->> tête
+TEST: Tu avançais avec elle, toutes {{tètes}} baissées              ->> têtes
 
 
 # tour à tour
@@ -10547,6 +10637,7 @@ __purge_locutions__
     en partant [de|d’] zéro
     en partie ou en totalité
     en pente douce
+    en place publique
     en plein [air|cœur|essor|marasme|jour]
     en pleine [gueule|figure|forme|poire|nuit|tronche]
     en perte [de|d’] vitesse
@@ -10561,7 +10652,7 @@ __purge_locutions__
     en quantité plus que suffisante
     en quelque sorte
     en queue [de|d’] peloton
-    en rangs serrés
+    en rangs [dispersés|serrés]
     en rase campagne
     en règle générale
     en roue libre
@@ -10911,6 +11002,7 @@ __purge_locutions__
     séance tenante
     s’ il [te|vous] [plaît|plait]
     tant bien que mal
+    tant de fois
     tant s’ en faut
     tantôt
     tard
@@ -11542,6 +11634,7 @@ __simplication_substantifs__
     [cousu|cousue|cousus|cousues] [main]
     [cousu|cousue|cousus|cousues] de fil blanc
     >crayon à [lèvres|sourcils]
+    >cour d’ assises
     [>coût|>cout] de revient
     >couteau à cran d’ arrêt
     >cuillère à [café|soupe]
@@ -12287,14 +12380,15 @@ __purge_locutions_verbales__
     >arriver à bon port
     >battre à plate couture
     >battre en [brèche|retraite]
+    [>brûler|>bruler] à vif
     >chauffer à blanc
     >compter à rebours
     >condamner à mort
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
-    [>donner|>redonner] [sens|suite]
+    [>donner|>redonner] [sens|suite|vie]
     >élire domicile
-    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -12377,6 +12471,7 @@ __conf_locutions_verbales__
     >arriver a point nommé
     >arriver a bon port
     >battre a plate couture
+    [>brûler|>bruler] a vif
     >chauffer a blanc
     [>gonfler|>regonfler] a bloc
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>nue|>plat|>terre]
@@ -14566,7 +14661,7 @@ TEST: de mon point de {{vues}}
 # a / à
 __conf_pronom_à_l_air__
     [tout|ça|ceci|cela]  à  l’  air  @:[AR]|>libre/
-        <<- /conf/ morph(<1, ":Cs|<start>") -2>> a                  # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
+        <<- /conf/ morph(<1, ":Cs|<start>|>,") -2>> a                # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
 
 TEST: lorsque tout {{à}} l’air fini, c’est trompeur.
 TEST: Tout {{à}} l’air complètement foutu…
@@ -14853,16 +14948,15 @@ TEST: La fête {{bât}} son plein.
 
 # beauté / botté
 __conf_beauté__
-    [>finir|>terminer|>achever|>conclure|>croître|>croitre|>grandir|>refaire] en [botter|botté|bootés|bottée|bottées]
-    >refaire une [botter|botté|bootés|bottée|bottées]
-    [>canon|concours|>grain|>institut|>pigeon|>produit|>salon]  de  [botter|botté|bootés|bottée|bottées]
-    de toute [botter|botté|bootés|bottée|bottées]
-        <<- /conf/ -3>> beauté                                          # Confusion probable. Écrivez “beauté”.|https://fr.wiktionary.org/wiki/beaut%C3%A9
-
-    quark [botter|botté|bootés|bottée|bottées]
-        <<- /conf/ -2>> beauté                                          # Confusion probable. Écrivez “beauté”.|https://fr.wiktionary.org/wiki/beaut%C3%A9
+    [>finir|>terminer|>achever|>conclure|>croître|>croitre|>grandir|>refaire] en    [botter|botté|bootés|bottée|bottées]
+    [>faire|>refaire] une                                                           [botter|botté|bootés|bottée|bottées]
+    [>canon|concours|>grain|>institut|>pigeon|>produit|>salon]  de                  [botter|botté|bootés|bottée|bottées]
+    de toute                                                                        [botter|botté|bootés|bottée|bottées]
+    quark                                                                           [botter|botté|bootés|bottée|bottées]
+        <<- /conf/ --1>> beauté                                         # Confusion probable. Écrivez “beauté”.|https://fr.wiktionary.org/wiki/beaut%C3%A9
 
 TEST: cette fois, on va finir en {{bottée}}.
+TEST: le quark {{botter}}
 
 
 # bel et bien
@@ -15192,43 +15286,6 @@ TEST: Elle a un {{coût}} si gracile.
 
 TEST: Je vais tordre le {{coup}} à toutes ces idées stupides, une par une.
 TEST: Implacable, elle a rendu {{cout pour cout}} sans se départir de son calme.
-
-
-# cour / cours / court
-__conf_cour_cours_court_courre__
-    au [cour|court|courre|courres|courts] [de|d’|des|du]
-        <<- /conf/ -2>> cours                               # Confusion. Locution “au cours de”. Une cour… Un cours… Adjectif : court(e).
-
-    en cour martiale
-    en cour [de|d’] [cassation|justice]
-    en cour d’ [>assise]
-        <<- !1:2>>
-
-    en cour
-        <<- /conf/ ->> en cours                             # Confusion probable. Une cour… Un cours… Adjectif : court(e).
-
-    >couper [cour|cours|courre|courres|courts]
-        <<- /conf/ -2>> court                               # “Couper court” qui signifie écourter. Une cour… Un cours… Adjectif : court(e).
-
-    [>avoir|>donner|>laisser] libre [cour|court|courts|courre|courres]
-        <<- /conf/ -3>> cours                               # Confusion probable. Ce qui a « libre cours ».|https://fr.wiktionary.org/wiki/donner_libre_cours
-
-    à [cour|cours|courre|courres|courts]  [de|d’]
-        <<- /conf/ -2>> court                               # Confusion probable : écrivez “à court de” pour “manquer de”.
-
-    [à|a] [cour|cours|courre|courres|courts] >terme
-        <<- /conf/ ->> à court terme                        # Confusion. Une cour… Un cours… Adjectif : court(e).
-
-TEST: au {{court}} de cette journée
-TEST: les exercices {{en cour}} se déroulent bien.
-TEST: je vais couper {{cours}} à ces conneries.
-TEST: il faut donner libre {{cour}} à ses envies.
-TEST: Nous allons bientôt être à {{cours}} d’argent.
-TEST: le rendement {{à cours terme}} est excellent.
-TEST: porter l’affaire en Cour de justice
-TEST: jusqu’en cour de cassation
-TEST: le jugement en cour d’assises
-TEST: ils vont passer prochainement en cour martiale.
 
 
 # date / datte
@@ -16342,15 +16399,15 @@ __conf_tort_tord_tore__
         <<- /conf/ -2>> tort                                            # Confusion.
 
     [>avoir|>donner|>redonner|>faire] [tord|tords]
-    >être [pas|jamais|guère] ?@:W¿ en [tord|tords]
+    >être ?[pas|jamais|guère]¿ en [tord|tords]
         <<- /conf/ --1>> tort                                           # Confusion : “tord” est une conjugaison du verbe tordre.
 
     [>avoir|>donner|>redonner|>faire] >tore
-    >être [pas|jamais|guère] ?@:W¿ en >tore
+    >être ?[pas|jamais|guère]¿ en >tore
         <<- /conf/ --1>> tort                                           # Confusion : un tore est une forme géométrique annulaire.
 
     [>avoir|>donner|>redonner|>faire] [tors|torr]
-    >être [pas|jamais|guère] ?@:W¿ en [tors|torr]
+    >être ?[pas|jamais|guère]¿ en [tors|torr]
         <<- /conf/ --1>> tort                                           # Confusion.
 
 TEST: elles seront à {{tord}} accusées.
