@@ -662,13 +662,12 @@ class TextParser:
         xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
         xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
         xErr.aSuggestions = tuple(lSugg)
-        #xPropertyLineType = PropertyValue(Name="LineType", Value=5) # DASH or WAVE
-        xPropertyLineColor = PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023))
+        # Properties
+        lProperties = [ PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023)) ]
+        lProperties.append(PropertyValue(Name="LineType", Value=10)) # WAVE: 10, DASH: 5, BOLD: 12, BOLDWAVE: 18 https://api.libreoffice.org/docs/idl/ref/FontUnderline_8idl.html
         if sURL:
-            xPropertyURL = PropertyValue(Name="FullCommentURL", Value=sURL)
-            xErr.aProperties = (xPropertyURL, xPropertyLineColor)
-        else:
-            xErr.aProperties = (xPropertyLineColor,)
+            lProperties.append(PropertyValue(Name="FullCommentURL", Value=sURL))
+        xErr.aProperties = lProperties
         return xErr
 
     def _createErrorAsDict (self, nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext):
