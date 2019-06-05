@@ -663,8 +663,10 @@ class TextParser:
         xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
         xErr.aSuggestions = tuple(lSugg)
         # Properties
-        lProperties = [ PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023)) ]
-        lProperties.append(PropertyValue(Name="LineType", Value=10)) # WAVE: 10, DASH: 5, BOLD: 12, BOLDWAVE: 18 https://api.libreoffice.org/docs/idl/ref/FontUnderline_8idl.html
+        lProperties = [
+            PropertyValue(Name="LineType", Value=18) # WAVE: 10, DASH: 5, BOLD: 12, BOLDWAVE: 18 https://api.libreoffice.org/docs/idl/ref/FontUnderline_8idl.html
+            PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023)),
+        ]
         if sURL:
             lProperties.append(PropertyValue(Name="FullCommentURL", Value=sURL))
         xErr.aProperties = lProperties
