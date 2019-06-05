@@ -4849,7 +4849,6 @@ __conj_je__
         <<- /conj/ \-1 == "est" or \-1 == "es" --1>> ai|aie|suis    # Conjugaison erronée. Confusion probable entre “être” et “avoir”. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
         <<- /conj/ __else__ --1>> =suggVerb(\-1, ":1s")             # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 1ʳᵉ personne du singulier.
 
-
 TEST: je l’{{est}} perdu de vue.                                ->> ai|aie|suis
 TEST: je {{donnerait}} tout pour y parvenir.
 TEST: Je le lui {{prend}}.
@@ -5673,7 +5672,7 @@ __ppas_lui_verbe__
         -2>> =suggVerbInfi(\2)+"|"+suggVerbPpas(\2, ":m:s")                                         # Incohérence probable. Soit il faut un participe passé masculin singulier, soit un verbe à l’infinitif.
 
     lui aussi ~é(?:es?|s)$
-        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":(?:V0a|R)") -2>> =suggVerbPpas(\2, ":m:s")         # Incohérence probable. Il faut vraisemblement un participe passé masculin singulier.
+        <<- /ppas/ morph(\2, ":Q") and not morph(<1, ":(?:V0a|R)") -2>> =suggVerbPpas(\2, ":m:s")   # Incohérence probable. Il faut vraisemblement un participe passé masculin singulier.
 
 TEST: lui {{mangée}} beaucoup.
 TEST: L’homme qui s’approchait de lui voulait le surprendre.
@@ -6013,9 +6012,8 @@ __conf_a_l_attention_de_prn__
     à l’ intention de @:M[12]
     à l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire]
     à l’ intention du {humain}
-    à l’ intention de la {humaine}
     à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humain}
-    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur] {humaine}
+    à l’ intention de [l’|mon|ton|son|ma|ta|sa|notre|votre|leur|la] {humaine}
         <<- /conf/ not morph(<1, ">(?:cadeau|offrande|présent)") -3>> attention
         # Confusion probable. On a/attire/obtient l’attention de quelqu’un ou on porte à l’attention de quelqu’un.|https://fr.wiktionary.org/wiki/attention
 
