@@ -635,7 +635,7 @@ function undoLigature (c) {
 
 const _dNormalizedCharsForInclusiveWriting = new Map([
     ['(', '_'],  [')', '_'],
-    ['.', '_'],  ['·', '_'],
+    ['.', '_'],  ['·', '_'],  ['•', '_'],
     ['–', '_'],  ['—', '_'],
     ['/', '_']
 ]);

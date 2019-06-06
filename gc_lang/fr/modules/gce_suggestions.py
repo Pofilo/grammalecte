@@ -503,7 +503,7 @@ def undoLigature (c):
 
 _xNormalizedCharsForInclusiveWriting = str.maketrans({
     '(': '_',  ')': '_',
-    '.': '_',  '·': '_',
+    '.': '_',  '·': '_',  '•': '_',
     '–': '_',  '—': '_',
     '/': '_'
 })
