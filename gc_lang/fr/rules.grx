@@ -7776,11 +7776,14 @@ TEST: Et les intellectuels ? En France comme ailleurs, tous n’ont pas, loin s
 # m’a / ma
 __conf_m_a!6__
     [<start>|,]  tu         ma
-        <<- --1>> m’as                              # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 2ᵉ personne précédé du pronom personnel ”me”, écrivez “m’as”.
+        <<- /conf/ --1>> m’as                       # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 2ᵉ personne précédé du pronom personnel ”me”, écrivez “m’as”.
 
-    [<start>|,]  [il|ils]   ma
+    [il|ils]   ma
+        <<- /conf/ morph(<1, "<start>|:C|>,/")
+        --1>> m’a                                   # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
+
     ne                      ma
-        <<- --1>> m’a                               # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
+        <<- /conf/ --1>> m’a                        # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
 
 TEST: tu {{ma}} prise par surprise                          ->> m’as
 TEST: il {{ma}} tuée                                        ->> m’a
@@ -7789,7 +7792,10 @@ TEST: cette femme ne {{ma}} prise que deux fois             ->> m’a
 
 # m’ont / mon
 __conf_m_ont!6__
-    [<start>|,]  [il|ils]   mon
+    [il|ils]   mon
+        <<- /conf/ morph(<1, "<start>|:C|>,/")
+        --1>> m’ont                                 # Confusion : “mon” est un déterminant possessif. Pour le verbe “avoir” à la 3ᵉ personne du pluriel précédé du pronom personnel ”me”, écrivez “m’ont”.
+
     ne                      mon
         <<- /conf/ --1>> m’ont                      # Confusion : “mon” est un déterminant possessif. Pour le verbe “avoir” à la 3ᵉ personne du pluriel précédé du pronom personnel ”me”, écrivez “m’ont”.
 
@@ -9754,6 +9760,13 @@ TEST: ne pas mal faire, c’est déjà pas si mal
 TEST: ne pas assez faire pour eux, voilà notre tort
 
 
+## de bon ton de Vinfi
+__infi_de_bon_ton__
+    il [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] de bon ton [de|d’] ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  ~..é?es?$
+        <<- /infi/ analyse(\-1, ":V1.*:Q") --1>> =suggVerbInfi(\-1)                                 # Incohérence. Après “il \2 de bon ton de [faire quelque chose]”, le verbe doit être à l’infinitif.
+
+TEST: il est de bon ton de {{pensée}} calmement à ces choses avant de s’engager tête baissée.
+
 
 ## guerre / guère
 __conf_préverbes_guère_guerre!5__
@@ -10626,6 +10639,7 @@ __purge_locutions__
     en l’occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
+    en main propre
     en mains propres
     en ?[assez|très]¿ mauvais état
     en ?[assez|très]¿ mauvaise [posture|santé]
@@ -11555,6 +11569,9 @@ __purge_conditionnelle__
 
     pas  tant  que  ça  @¬:(?:3s|X|Oo)
         <<- ~1:4>> *
+
+    un petit peu  @:[NAYG]¬:A.*:[me]:[si]
+        <<- ~1:3>> *
 
     un temps @:A¬:A.*:[me]:[si]
         <<- ~1:2>> *
@@ -16156,6 +16173,59 @@ __conf_peut_peux_peu2__
 TEST: {{peut}} d’hommes savent comment s’y prendre
 TEST: peu d’argent
 TEST: il peut de façon crédible avancer qu’il veut tout faire sauter
+
+
+__conf_peu_peut_préverbe_vinfi__
+    [<start>|,]  [un|le|ce|cet|une|la|cette|ma|ta|sa|l’|mon|ton|son|notre|votre|leur]     *WORD     peu   [ne|n’|me|m’|te|t’|se|s’|nous|vous|lui|leur|le|la|l’|y]
+        <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir” où “\2 \3” est le sujet du syntagme verbal.
+
+    [<start>|,]  [un|le|ce|cet|une|la|cette|ma|ta|sa|l’|mon|ton|son|notre|votre|leur]     *WORD  *WORD  peu   [ne|n’|me|m’|te|t’|se|s’|nous|vous|lui|leur|le|la|l’|y]
+        <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
+        --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir” où “\2 \3 \4” est le sujet du syntagme verbal.
+
+TEST: Cette athlète {{peu}} y parvenir.
+TEST: l’anecdote {{peu}} nous nuire.
+TEST: un petit peu nous surprendre
+
+
+__conf_peu_peut_vinfi__
+    [<start>|,]  [un|le|ce|cet]                     *WORD           peu  @:Y
+        <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
+        <<- /conf/ __also__ and morph(\-1, ":V1..t")
+        --1>> =suggVerbPpas(\-1, ":m:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
+
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD           peu  @:Y
+        <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
+        <<- /conf/ __also__ and morph(\-1, ":V1..t")
+        --1>> =suggVerbPpas(\-1, ":f:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
+
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           peu  @:Y
+        <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
+        <<- /conf/ __also__ and morph(\-1, ":V1..t")
+        --1>> =suggVerbPpas(\-1, ":s")                  # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
+
+    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  @:Y
+        <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
+        --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
+        <<- /conf/ __also__ and morph(\-1, ":V1..t")
+        --1>> =suggVerbPpas(\-1, ":m:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
+
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  @:Y
+        <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
+        --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
+        <<- /conf/ __also__ and morph(\-1, ":V1..t")
+        --1>> =suggVerbPpas(\-1, ":f:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
+
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  @:Y
+        <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
+        --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
+        <<- /conf/ __also__ and morph(\-1, ":V1..t")
+        --1>> =suggVerbPpas(\-1, ":s")                  # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
+
+TEST: cet homme {{peu}} aller et venir ici comme bon lui semble
+TEST: cette amie {{peu}} sembler distance, mais elle nous a toujours soutenus
+TEST: notre mère {{peu}} prendre ses airs, ça ne change rien.
+TEST: l’école primaire {{peu}} {{espérer}} recevoir de nouveaux moyens cette année
 
 
 # peut-être / peut être
