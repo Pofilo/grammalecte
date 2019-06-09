@@ -4874,9 +4874,9 @@ __conf_je_non_verbe__
     j’       ?[en|y]¿                                                             @:¬:(?:V|Ov)
     [je|j’]  [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]            @:¬:(?:V|Ov)
     [je|j’]  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
-    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
-    [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
+    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
+    [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
         <<- /conf/ --1>> =suggSimil(\-1, ":(?:1s|Ov)", False)                                       # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: Je ne le {{croix}} pas
@@ -4892,9 +4892,9 @@ __conj_tu__
     tu                                                                       @:V¬:(?:Ov|P|[ISK].*:2s)
     tu  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:Ov|P|[ISK].*:2s)
     tu  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:Ov|P|[ISK].*:2s)
-    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:Ov|P|[ISK].*:2s)
-    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:Ov|P|[ISK].*:2s)
-    tu  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:Ov|P|[ISK].*:2s)
+    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:P|[ISK].*:2s)
+    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:P|[ISK].*:2s)
+    tu  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:P|[ISK].*:2s)
         <<- /conj/ not morph(<1, ":V0") --1>> =suggVerb(\-1, ":2s")                                 # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 2ᵉ personne du singulier.
 
 TEST: Tu ne {{ment}} jamais.
@@ -4909,9 +4909,9 @@ __conf_tu_non_verbe__
     tu                                                                       @:¬:(?:V|Ov)
     tu  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     tu  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
-    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
-    tu  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
+    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
+    tu  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
         <<- /conf/ not morph(<1, ":(?:2s|V0|R)") --1>> =suggSimil(\-1, ":(?:2s|Ov)", False)         # Incohérence avec “tu” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
@@ -4928,9 +4928,9 @@ __conj_il__
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3s|Ov)
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3s|Ov)
-    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3s|Ov)
-    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3s|Ov)
-    il  ?[ne|n’]¿  [lui|leur|y]                   en                         @:V¬:(?:3s|Ov)
+    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:3s
+    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:3s
+    il  ?[ne|n’]¿  [lui|leur|y]                   en                         @:V¬:3s
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conj/ morph(\-1, ":3p") -1>> ils                                                       # Accord avec “\-1”.
 
@@ -4956,9 +4956,9 @@ __conf_il_non_verbe__
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
-    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
-    il  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
+    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
+    il  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
         <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|")
         --1>> =suggSimil(\-1, ":(?:3s|Ov)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
@@ -4978,9 +4978,9 @@ __conj_on__
 
     on  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3s|P|Ov)
     on  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3s|P|Ov)
-    on  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3s|P|Ov)
-    on  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3s|P|Ov)
-    on  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:3s|P|Ov)
+    on  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3s|P)
+    on  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3s|P)
+    on  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:3s|P)
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: on {{remué}} beaucoup.
@@ -5105,12 +5105,12 @@ TEST: Mais là-bas mieux {{valais}} ouvrir sa gueule que se taire.
 
 ## 1pl
 __conj_nous__
-    <start>  nous  @:V¬:(?:G|Y|P|1p|3[sp])
+    <start>  nous  @:V¬:(?:G|Y|P|1p|3[sp]|Ov)
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
         -3>> =suggVerb(\3, ":1p")                                                                   # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 
-    [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:1p
-    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:1p
+    [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:(?:1p|Ov)
+    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:(?:1p|Ov)
     [<start>|,]  nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:1p
@@ -5124,12 +5124,12 @@ TEST: Nous y voilà enfin.
 
 ## 2pl
 __conj_vous__
-    <start>  vous  @:V¬:(?:G|Y|P|2p|3[sp])
+    <start>  vous  @:V¬:(?:G|Y|P|2p|3[sp]|Ov)
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
         -3>> =suggVerb(\3, ":2p")                                                                   # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
-    [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:2p
-    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:2p
+    [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:(?:2p|Ov)
+    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:(?:2p|Ov)
     [<start>|,]  vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:2p
@@ -5151,9 +5151,9 @@ __conj_ils__
 
     ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3p|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3p|Ov)
-    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:(?:3p|Ov)
-    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:(?:3p|Ov)
-    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:(?:3p|Ov)
+    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:3p
+    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:3p
+    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:3p
         <<- /conj/ --1>> =suggVerb(\-1, ":3p")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ morph(\-1, ":3s") -1>> il                                                        # Accord avec “\-1”.
 
@@ -5174,9 +5174,9 @@ __conf_ils_non_verbe__
 
     ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:(?:V|Ov)
-    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:(?:V|Ov)
-    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:(?:V|Ov)
+    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
+    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
+    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
         <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
         -3>> =suggSimil(\3, ":(?:3p|Ov)", False)                                                    # Incohérence avec “ils” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
@@ -5226,9 +5226,9 @@ __non_verbe_après_préverbes__
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
-    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|pas|presque|jamais|rien|guère|point|plus|qu[e’])/
-    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:l’|ils?|qu[e’])/
+    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
+    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|qu[e’])/
+    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:ils?|qu[e’])/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne l’{{oubli}} pas
@@ -6788,7 +6788,10 @@ __conf_ces_ses_c_est__
         <<- /conf/ not \1.isupper() and \2 != "quelques" -1>> c’est         # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
 
     c’ est  @:N.*:p¬:(?:G|W|M|A.*:[si])
-        <<- /conf/ -1:2>> ces|ses                               # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
+        <<- /conf/ -1:2>> ces|ses                                           # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
+
+    ses  /-là
+        <<- /conf/ -1>> ces                 # Confusion : “ses” est un déterminant possessif ; si vous voulez désigner des éléments en particulier, vous devriez utiliser le déterminant démonstratif “ces”.
 
 TEST: {{ses}} au-dessus de ses forces.
 TEST: {{ces}} comme la peste
@@ -6796,6 +6799,7 @@ TEST: car {{ses}} d’autre part
 TEST: {{ces}} qu’il y a tant de pertes
 TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
+TEST: {{ses}} gens-là sont des salopards
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
 TEST: Avec ces quelques mots, que veux-tu dire ?
@@ -6820,12 +6824,21 @@ TEST: Cheffe de {{cœur}}.
 TEST: quel beau {{cœur}} musical.
 
 
+# coli / colis
+__conf_colis_coli__
+    à l’ intérieur [du|des] coli
+    à l’ intérieur de [mon|ton|son|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|ces] coli
+        <<- /conf/ --1>> colis                                  # Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
+
+TEST: Regarde ce qu’il y a à l’intérieur du {{coli}}
+
+
 # collet monté
 __conf_collet_monté__
     ~^[cC]oll(?:e[rt]s?|ée?s?)-mont(?:er|ée?s?)$
     [collé|collés|>collée|coller|collets] [>montée|monté|montés|monter]
     collet [>montée|montés|monter]
-        <<- /conf/ ->> collet monté                # « Être collet monté » : dans cette locution, « collet monté » est invariable.
+        <<- /conf/ ->> collet monté                             # « Être collet monté » : dans cette locution, « collet monté » est invariable.
 
 TEST: Elles sont tellement {{collets montées}} !
 
@@ -10025,7 +10038,7 @@ __purge_locutions__
     à bras le corps
     à brève échéance
     à but ?non¿ lucratif
-    à cause [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
+    à cause [de|d’]  [ça|cela|ceci|moi|toi|lui|nous|vous|elle|elles|eux]
     à ce [compte-là|moment-là|titre]
     à cet égard
     à cet instant ?[exact|précis]¿
@@ -10216,6 +10229,7 @@ __purge_locutions__
     à toutes jambes
     à tu et à toi
     à un moment donné
+    à un moment ou à un autre
     à une   heure  [décente|tardive]
     à cette heure matinale
     à usage interne
@@ -10637,7 +10651,7 @@ __purge_locutions__
     en direction du [nord|nord-est|nord-ouest|sud|sud-est|sud-ouest]
     en eaux troubles
     en état [de|d’] choc ?circulatoire¿
-    en état [de|d’] marche
+    en ?parfait¿ état [de|d’] marche
     en état d’ ébriété ?avancée¿
     en excellent état
     en fâcheuse posture
@@ -11005,6 +11019,7 @@ __purge_locutions__
     si besoin est
     si le besoin s’en [fait|faisait] sentir
     si le besoin [doit|devait] s’en faire sentir
+    si tel est le cas
     sine die
     sine qua non
     six pieds sous terre
@@ -11149,7 +11164,7 @@ __gestion_mots_grammaticaux__
         <<- ~2>> *
 
     à bonne distance [de|du|d’|des]
-    à l’ [affût|affut|arrière|autre bout|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche] [de|du|d’|des]
+    à l’ [affût|affut|arrière|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche] [de|du|d’|des]
     à la [hauteur|portée|suite] [de|du|d’|des]
         <<- ~2:3>> *
 
@@ -11308,8 +11323,8 @@ __gestion_mots_grammaticaux__
     pour ou contre
         <<- ~2:0>> *
 
-    qui ce      [jour-là|matin-là|après-midi-là|soir-là]
-    qui cette   [nuit-là|matinée-là|soirée-là]
+    qui ce      [jour-là|matin-là|après-midi-là|soir-là|mois-là|siècle-là|millénaire-là]
+    qui cette   [nanoseconde-là|milliseconde-là|seconde-là|minute-là|heure-là|nuit-là|matinée-là|soirée-là|journée-là|semaine-là|année-là|décennie-là]
         <<- ~2:0>> *
 
     plus avant ~¬^(?:de|d’|que|qu’)$
@@ -11319,7 +11334,7 @@ __gestion_mots_grammaticaux__
         <<- ~2>> *
 
     suite [à|au|aux]
-        <<- not morph(<1, ">(?:une|la|cette|[mts]a|[nv]otre|de|quelque)/") ~1>> *
+        <<- not value(<1, "|une|la|cet|cette|ma|ta|sa|notre|votre|leur|de|quelque|certaine|") ~1>> *
 
     tout au long [de|du|d’|des]
         <<- not morph(<1, ":R") ~1>> *
@@ -11636,6 +11651,7 @@ __simplication_substantifs__
     [>boîte|>boite] à gants
     >bombe à [eau|fragmentation|retardement]
     >brosse à [>dent|reluire]
+    >cabinet de toilette
     >camp [de|d’] [concentration|internement|rééducation]
     >canne à [pêche|sucre]
     >caisse à >outil
@@ -12071,6 +12087,7 @@ __purge_après_avoir__
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
     >avoir  [pas|jamais|plus|guère|point]  forme humaine
     >avoir  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
+    >avoir  [pas|jamais|plus|guère|point]  quartier libre
     >avoir  [pas|jamais|plus|guère|point]  voix au chapitre
         <<- ~3:0>> ␣
         <<- =>> define(\3, [":LV"])
@@ -12123,6 +12140,7 @@ __purge_après_avoir__
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
     /VCint  [pas|jamais|plus|guère|point]  forme humaine
     /VCint  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
+    /VCint  [pas|jamais|plus|guère|point]  quartier libre
     /VCint  [pas|jamais|plus|guère|point]  voix au chapitre
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
         <<- __also__ =>> define(\3, [":LV"])
@@ -12420,6 +12438,7 @@ __purge_locutions_verbales__
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
     [>donner|>redonner] [sens|suite|vie]
+    [>donner|>redonner] quartier libre
     >élire domicile
     >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
     >faire amende honorable
@@ -12449,6 +12468,7 @@ __purge_locutions_verbales__
     >garder contenance
     [>gonfler|>regonfler] à bloc
     >jouer franc jeu
+    >jouer cartes sur table
     >lâcher prise
     >laisser pour compte
     >marcher à rebours
@@ -12478,7 +12498,7 @@ __purge_locutions_verbales__
     >prêter main forte
     >prêter main-forte
     >réduire en miettes
-    >rendre [hommage|visite]
+    >rendre [hommage|service|visite]
     >rester lettre morte
     >rester lettres mortes
     >revenir à la case départ
@@ -14860,7 +14880,7 @@ __conf_air_aire_ère__
     [>air|>aire] [>digitale|>numérique|>industrielle|>glacière|>glaciaire|>géologique|Meiji|>cénozoïque|>moderne|>paléozoïque|>pliocène|>primaire|>secondaire|>tertiaire|>quaternaire]
     [>air|>aire] du [cénozoïque|digital|numérique|paléozoïque|pliocène|pétrole|primaire|secondaire|tertiaire|quaternaire]
     [>air|>aire] du big data
-        <<- /conf/ -1>> ère         # Confusion. L’aire est une surface. L’air est un gaz, une apparence ou une musique. Pour évoquen une époque, écrivez “ère”.
+        <<- /conf/ -1>> ère|ères    # Confusion. L’aire est une surface. L’air est un gaz, une apparence ou une musique. Pour évoquer une époque, écrivez “ère”.
 
     l’ [aire|ère] du temps
         <<- /conf/ -2>> air         # Confusion probable. Locution “l’air du temps”.|https://fr.wiktionary.org/wiki/%C3%AAtre_dans_l%E2%80%99air_du_temps
@@ -14868,9 +14888,13 @@ __conf_air_aire_ère__
     >avoir l’ [aire|ère] [de|d’]
         <<- /conf/ -3>> air         # Confusion probable. La locution “avoir l’air de” signifie “sembler”, “paraître”…|https://fr.wiktionary.org/wiki/avoir_l%E2%80%99air
 
+    [>air|>ère] [de|d’]  [autoroute|repos]
+        <<- /conf/ -1>> aire|aires  # Confusion. Une ère est une époque. L’air est un gaz, une apparence ou une musique. Pour évoquer une surface, écrivez “aire”.
+
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
 TEST: Ce sera un jour dans l’{{ère}} du temps
 TEST: il a l’{{aire}} d’un plouc.
+TEST: on s’arrêtera sur l’{{air}} d’autoroute
 
 
 # auspice / hospice
@@ -15129,14 +15153,12 @@ TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu
 
 # coli / colis
     [>affranchir|>attendre|>dédouaner|>dédouanement|>délivrer|>déposer|>égarer|>emballage|>emballer|>envoyer|>envoi|>expédier|>réexpédier|>expédition|>réexpédition|>fermer|>refermer|>livrer|>livraison|>ouvrir|>rouvrir|>ouverture|>réouverture|>perdre|>perte|>pesage|>peser|>porter|>réception|>recevoir|>transporter|>transport|>suivre|dans] @:D coli
-    à l’ intérieur [du|des] coli
         <<- /conf/ --1>> colis                          # Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
 
     coli [>délivrer|>égarer|>envoyer|>livrer|>oublier|>suspecte|>piéger|>neutraliser]
         <<- /conf/ morph(\2, ":A") -1>> colis           # Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
 
 TEST: on va expédier ce {{coli}} vite fait bien fait.
-TEST: Regarde ce qu’il y a à l’intérieur du {{coli}}
 TEST: un {{coli}} oublié à la gare.
 
 
@@ -18635,34 +18657,34 @@ TEST: les montrer {{inflexible}} nous aidera à les convaincre.                 
 
 
 __ppas_le_verbe_pensée__
-    le [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+    le [>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
         <<- /ppas/ morph(\3, ":[AQ].*:(?:[me]:p|f)", ":(?:G|Y|V0|[AQ].*:m:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggMasSing(\3)                                                       # Accord avec le COD “le” : « \3 » doit être au masculin singulier.
 
 __ppas_la_verbe_pensée__
-    la [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+    la [>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
         <<- /ppas/ morph(\3, ":[AQ].*:(?:[fe]:p|m)", ":(?:G|Y|V0|[AQ]:f:[is])") and not (morph(\2, ":Y") and morph(\2, ":3s"))
         -3>> =suggFemSing(\3)                                                       # Accord avec le COD “la” : « \2 » doit être au féminin singulier.
 
 __ppas_les_verbe_pensée__
-    les [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+    les [>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
         <<- /ppas/ morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggPlur(\3)                                                          # Accord avec le COD “les” : « \2 » doit être au pluriel.
 
 __ppas_me_te_verbe_pensée__
-    [me|te] [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+    [me|m’|te|t’] [>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
         <<- /ppas/ morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|[AQ].*:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggSing(\3)                                                          # Accord avec le pronom “\1” : « \3 » doit être au singulier.
 
 __ppas_se_verbe_pensée__
-    se [>trouver|>considérer|>croire|>rendre]  *WORD
+    [se|s’] [>trouver|>considérer|>croire|>imaginer|>rendre]  *WORD
         <<- /ppas/ morph(\2, ":3s") and morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|[AQ].*:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggSing(\3)                                                          # Accord avec le pronom “se” (le verbe étant au singulier) : « \3 » doit être au singulier.
         <<- /ppas/ __else__ and morph(\2, ":3p") and morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggPlur(\3)                                                          # Accord avec le pronom “se” (le verbe étant au pluriel) : « \3 » doit être au pluriel.
 
 __ppas_nous_verbe_pensée__
-    nous [>trouver|>considérer|>croire|>rendre|voilà]  *WORD
+    nous [>trouver|>considérer|>croire|>imaginer|>rendre|voilà]  *WORD
         <<- /ppas/ ( not morph(\2, ":1p") or (morph(\2, ":1p") and value(<1, "|nous|ne|")) )
             and morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
         -3>> =suggPlur(\3)                                                          # Accord avec le pronom “nous” : « \3 » doit être au pluriel.
@@ -21510,15 +21532,16 @@ TEST: j’en {{aie}} marre
 TEST: j’{{aie}} faim
 
 
-# Après que + indicatif
-__vmode_après_que_indicatif__
-    après  [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
-    après  [que|qu’]  @:(?:Os|M)  @:V0e.*:S
-        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « après que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
+# Après/dès que + indicatif
+__vmode_après_dès_que_indicatif__
+    [après|dès]  [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    [après|dès]  [que|qu’]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « \2 que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
 
 TEST: Après qu’il {{ait}} allé
 TEST: Après que Paul {{ait}} mangé son repas.
 TEST: Après qu’il {{soit}} parti, il plut.
+TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.
 
 
 # Quand/lorsque + indicatif
@@ -21767,6 +21790,9 @@ TEST: qui aura à elle seule justifié la présence de la gent féminine
 TEST: Première & dernière fois
 TEST: Ce que nos éminences grises ont décidé, nul ne le sait.
 TEST: Plusieurs agents doubles ont été démasqués.
+TEST: ni l’un ni l’autre n’était fiable.
+TEST: si l’un ou l’autre s’était trouvé en sa présence, ça aurait bardé.
+TEST: ni l’un ni l’autre n’osait parler.
 
 
 
