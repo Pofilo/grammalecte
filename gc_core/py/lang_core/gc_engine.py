@@ -587,7 +587,7 @@ class TextParser:
                             elif cActionType == "!":
                                 # immunity
                                 if bDebug:
-                                    echo("    IMMUNITY: " + _rules_graph.dRule[sRuleId])
+                                    echo("    IMMUNITY: " + sLineId + " / " + sRuleId)
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:

@@ -698,7 +698,7 @@ class TextParser {
                             else if (cActionType == "!") {
                                 // immunity
                                 if (bDebug) {
-                                    console.log("    IMMUNITY: " + _rules_graph.dRule[sRuleId]);
+                                    console.log("    IMMUNITY: " + sLineId + " / " + sRuleId);
                                 }
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
