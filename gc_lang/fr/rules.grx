@@ -9908,16 +9908,16 @@ __purge_horaires_et_durée__
     jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   [demain|hier]  ?[matin|soir|après-midi]¿
         <<- ~>> *
 
-    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)
-    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [du|ce]  [matin|soir]
-    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  de  l’ après-midi
-    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  cet  après-midi
-    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [demain|hier]  ?[matin|soir|après-midi]¿
-    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)
-    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [du|ce]  [matin|soir]
-    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  de  l’ après-midi
-    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  cet  après-midi
-    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [demain|hier]  ?[matin|soir|après-midi]¿
+    [à|de]      *HOUR
+    [à|de]      *HOUR  [du|ce]  [matin|soir]
+    [à|de]      *HOUR  de  l’ après-midi
+    [à|de]      *HOUR  cet  après-midi
+    [à|de]      *HOUR  [demain|hier]  ?[matin|soir|après-midi]¿
+    jusqu’ à    *HOUR
+    jusqu’ à    *HOUR  [du|ce]  [matin|soir]
+    jusqu’ à    *HOUR  de  l’ après-midi
+    jusqu’ à    *HOUR  cet  après-midi
+    jusqu’ à    *HOUR  [demain|hier]  ?[matin|soir|après-midi]¿
         <<- ~>> *
 
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
