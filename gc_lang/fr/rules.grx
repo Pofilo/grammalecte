@@ -565,10 +565,6 @@ __[i>(p_arborescence_Windows)__
 __[s>(p_chiffres_m)__
     "\d+ (m) "  @@w <<- ~1>> _
 
-# heures
-__[s](p_heures)__
-    (?:de|à|jusqu’à) [012]?\d[h:]\d\d(?:[m:]\d\ds?|) <<- ~>> *
-
 # crochets
 __[s](p_points_suspension_entre_crochets)__
     \[…\] <<- ~>> *
@@ -6134,7 +6130,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|contrecœur|contre-cœur|contretemps|contre-temps|demi-mot|gogo|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo]
+    a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo]
     a armes égales
     a aucun prix
     a autrui
@@ -9900,11 +9896,28 @@ __purge_horaires_et_durée__
     génération  [après|par]     génération
         <<- ~>> *
 
-    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿
-    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   [du|ce]  [matin|soir]
-    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   de  l’ après-midi
-    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   cet  après-midi
-    [à|de]  ~^\d\d?$  h  ?~^\d\d?$¿   demain  [matin|soir|après-midi]
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   [du|ce]  [matin|soir]
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   de  l’ après-midi
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   cet  après-midi
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   [demain|hier]  ?[matin|soir|après-midi]¿
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   [du|ce]  [matin|soir]
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   de  l’ après-midi
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   cet  après-midi
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   [demain|hier]  ?[matin|soir|après-midi]¿
+        <<- ~>> *
+
+    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)
+    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [du|ce]  [matin|soir]
+    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  de  l’ après-midi
+    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  cet  après-midi
+    [à|de]      ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [demain|hier]  ?[matin|soir|après-midi]¿
+    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)
+    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [du|ce]  [matin|soir]
+    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  de  l’ après-midi
+    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  cet  après-midi
+    jusqu’ à    ~^\d\d[h:]\d\d(?:[m:]\d\ds?|)  [demain|hier]  ?[matin|soir|après-midi]¿
         <<- ~>> *
 
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
@@ -10369,6 +10382,7 @@ __purge_locutions__
     dans l’ [idéal|immédiat]
     dans la mesure du possible
     dans leur globalité
+    dans leur grande majorité
     dans les années ~^\d{2,5}$
     dans les [secondes|minutes|heures|jours|semaines|mois|trimestres|semestres|années|décennies|siècles|millénaires] à venir
     dans peu de temps
@@ -11690,6 +11704,7 @@ __simplication_substantifs__
     >homme [de|d’] [lettres|loi|main|paille|affaires|armes|exception|État|Église|honneur]
     >homme d’ âge mûr
     >hôtel de ville
+    >hôtesse d’ accueil
     >garde à vue
     >garde du corps
     gaz à effet de serre
@@ -11753,6 +11768,7 @@ __simplication_substantifs__
     quelqu’un d’ autre
     >rapport de force
     [réglé|réglée|réglés|réglées] comme du papier à musique
+    >règlement de comptes
     [remis|remise|remises] à plat
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
@@ -15184,7 +15200,7 @@ __conf_censé_sensé__
     >être >sensée @:Y
     >être >sensée ne [pas|plus|jamais|rien|guère|point]
         <<- /conf/ not value(<1, "|l’|un|les|des|ces|")
-        -2>> =\2.replace("sens", "cens").replace("Cens", "Sens").replace("CENS", "SENS")            # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez “censé”.
+        -2>> =\2.replace("sens", "cens").replace("Sens", "Cens").replace("SENS", "CENS")            # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez “censé”.
 
 TEST: Ils sont {{sensés}} y parvenir.
 TEST: Elles étaient {{sensés}} m’y conduire
@@ -15192,9 +15208,10 @@ TEST: il est {{sensé}} prendre l’avion demain
 TEST: Un être sensé ne ferait jamais ça.
 
     >censée  <end>
-        <<- /conf/ -1>> =\1.replace("sens", "cens").replace("Cens", "Sens").replace("CENS", "SENS")  # Confusion probable. Ce qui est “sensé” (de “bon sens”) et ce que chacun est “censé” accomplir.
+        <<- /conf/ -1>> =\1.replace("cens", "sens").replace("Cens", "Sens").replace("CENS", "SENS")  # Confusion probable. Ce qui est “sensé” (de “bon sens”) et ce que chacun est “censé” accomplir.
 
 TEST: Ce sont pourtant des gens si {{censés}}
+TEST: Ils n’y voyaient rien de sensé.
 
 
 # chœur / cœur
@@ -16580,7 +16597,7 @@ __infi_de_verbe__
     [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
-    en  [droit|état|mesure]  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
+    en  [droit|état|mesure|train]  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “\1 \2 \3”, le verbe devrait être à l’infinitif.
 
     >faire  ?[pas|jamais]¿  semblant  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
