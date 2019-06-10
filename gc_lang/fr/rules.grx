@@ -1394,13 +1394,14 @@ TEST: __ocr__ Quelques-{{Uns}} sont incapables d’y parvenir.
 ## Mots inconnus du dictionnaire
 __[s]/ocr(mots_composés_inconnus)__
     \w+-\w+
-        <<- not spell(\0) and not re.search("(?i)-(?:je|tu|on|nous|vous|ils?|elles?|ce|là|ci|les?|la|leur|une?s)$", \0)
+        <<- not spell(\0) and not re.search("(?i)-(?:je|tu|on|nous|vous|ils?|elles?|ce|là|ci|les?|la|leur|une?s|moi|toi)$", \0)
         ->> _                                                                                       # Erreur de numérisation ? Mot composé inconnu du dictionnaire.
 
 TEST: __ocr__ c’est du {{base-bal}}]
 TEST: __ocr__ cet homme-là est corrompu.
 TEST: __ocr__ cette femme-là est revenue nous dire ce qu’elle pensait de nous.
 TEST: __ocr__ Est-ce le bon moment pour nous ennuyer avec ça ?
+TEST: __ocr__ Alors, dis-moi, comment triompher de tous les empires de la Terre ?
 
 
 ## Trait d’union conditionnel
