@@ -29,7 +29,7 @@ except ImportError:
 __all__ = [ "lang", "locales", "pkg", "name", "version", "author", \
             "load", "parse", "getSpellChecker", \
             "setOption", "setOptions", "getOptions", "getDefaultOptions", "getOptionsLabels", "resetOptions", "displayOptions", \
-            "ignoreRule", "resetIgnoreRules", "reactivateRule", "listRules", "displayRules" ]
+            "ignoreRule", "resetIgnoreRules", "reactivateRule", "listRules", "displayRules", "setWriterUnderliningStyle" ]
 
 __version__ = "${version}"
 
@@ -53,6 +53,9 @@ _oSpellChecker = None
 _oTokenizer = None
 _aIgnoredRules = set()
 
+# Writer underlining style
+_bMulticolor = True
+_nUnderliningStyle = 0
 
 
 #### Initialization
@@ -190,6 +193,25 @@ def resetOptions ():
     "set options to default values"
     global _dOptions
     _dOptions = getDefaultOptions()
+
+
+def setWriterUnderliningStyle (sStyle="BOLDWAVE", bMulticolor=True):
+    "set underlining style for Writer (WAVE, BOLDWAVE, BOLD)"
+    global _nUnderliningStyle
+    global _bMulticolor
+    # https://api.libreoffice.org/docs/idl/ref/FontUnderline_8idl.html
+    # WAVE: 10, BOLD: 12, BOLDWAVE: 18 DASH: 5
+    if sStyle == "WAVE":
+        _nUnderliningStyle = 0  # 0 for default Writer setting
+    elif sStyle == "BOLDWAVE":
+        _nUnderliningStyle = 18
+    elif sStyle == "BOLD":
+        _nUnderliningStyle = 12
+    elif sStyle == "DASH":
+        _nUnderliningStyle = 5
+    else:
+        _nUnderliningStyle = 0
+    _bMulticolor = bMulticolor
 
 
 #### Parsing
@@ -663,10 +685,11 @@ class TextParser:
         xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
         xErr.aSuggestions = tuple(lSugg)
         # Properties
-        lProperties = [
-            PropertyValue(Name="LineType", Value=18), # WAVE: 10, DASH: 5, BOLD: 12, BOLDWAVE: 18 https://api.libreoffice.org/docs/idl/ref/FontUnderline_8idl.html
-            PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023))
-        ]
+        lProperties = []
+        if _nUnderliningStyle:
+            lProperties.append(PropertyValue(Name="LineType", Value=_nUnderliningStyle))
+        if _bMulticolor:
+            lProperties.append(PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023)))
         if sURL:
             lProperties.append(PropertyValue(Name="FullCommentURL", Value=sURL))
         xErr.aProperties = lProperties

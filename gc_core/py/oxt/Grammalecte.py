@@ -41,6 +41,8 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
         gce.setOptions(dOpt)
         # dictionaries options
         self.loadUserDictionaries()
+        # underlining options
+        self.setWriterUnderliningStyle()
         # store for results of big paragraphs
         self.dResult = {}
         self.nMaxRes = 1500
@@ -148,6 +150,16 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
                 if sJSON:
                     oSpellChecker = gce.getSpellChecker();
                     oSpellChecker.setPersonalDictionary(json.loads(sJSON))
+        except:
+            traceback.print_exc()
+
+    def setWriterUnderliningStyle (self):
+        try:
+            xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
+            xChild = xSettingNode.getByName("o_${lang}")
+            sLineType = xChild.getPropertyValue("line_type")
+            bMulticolor = bool(xChild.getPropertyValue("line_multicolor"))
+            gce.setWriterUnderliningStyle(sLineType, bMulticolor)
         except:
             traceback.print_exc()
 

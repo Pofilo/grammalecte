@@ -66,6 +66,10 @@ class AppLauncher (unohelper.Base, XJobExecutor):
                 import Enumerator
                 xDialog = Enumerator.Enumerator(self.ctx)
                 xDialog.run(self.sLang)
+            elif sCmd == "GO":
+                import GraphicOptions
+                xDialog = GraphicOptions.GraphicOptions(self.ctx)
+                xDialog.run(self.sLang)
             elif sCmd.startswith("FA/"):
                 findAll(sCmd[6:], (sCmd[3:4] == "y"), (sCmd[4:5] == "y"))
             # elif sCmd.startswith("URL/"):
