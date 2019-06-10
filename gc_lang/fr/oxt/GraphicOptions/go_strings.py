@@ -9,7 +9,7 @@ dStrings = {
 
         "graphic_info": "Apparence du soulignement des erreurs grammaticales et typographiques",
 
-        "linetype_section": "Type de ligne",
+        "linetype_section": "Type de ligne (pour LibreOffice 6.3+)",
         "wave_line": "Vaguelette fine (réglage par défaut de Writer)",
         "boldwave_line": "Vaguelette épaisse (réglage par défaut de Grammalecte)",
         "bold_line": "Trait droit et épais",
@@ -30,7 +30,7 @@ dStrings = {
 
         "graphic_info": "Appearance of uderlines for grammar and typographical mistakes",
 
-        "linetype_section": "Line types",
+        "linetype_section": "Line types (for LibreOffice 6.3+)",
         "wave_line": "Thin wave (default setting of Writer)",
         "boldwave_line": "Thick wave (default setting of Grammalecte)",
         "bold_line": "Thick and straight line",
