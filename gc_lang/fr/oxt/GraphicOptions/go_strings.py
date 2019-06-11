@@ -8,17 +8,16 @@ dStrings = {
         "title": "Grammalecte · Options graphiques",
 
         "graphic_info": "Apparence du soulignement des erreurs grammaticales et typographiques",
+        "spell_info": "L’apparence du soulignement des erreurs orthographiques (trait ondulé rouge) n’est pas modifiable",
 
-        "linetype_section": "Type de ligne (pour LibreOffice 6.3+)",
-        "wave_line": "Vaguelette fine (réglage par défaut de Writer)",
-        "boldwave_line": "Vaguelette épaisse (réglage par défaut de Grammalecte)",
-        "bold_line": "Trait droit et épais",
+        "linetype_section": "Style de ligne (pour LibreOffice 6.3+)",
+        "wave_line": "Trait ondulé fin (réglage par défaut de Writer)",
+        "boldwave_line": "Trait ondulé épais (réglage par défaut de Grammalecte)",
+        "bold_line": "Trait droit épais",
 
-        "color_section": "Couleurs",
+        "color_section": "Couleurs (pour LibreOffice 6.2+)",
         "multicolor_line": "Utiliser plusieurs couleurs",
-        "multicolor_descr": "Par défaut, Writer signale les erreurs grammaticales et typographiques avec une vaguelette de couleur bleue. Si cette option est cochée, Grammalecte attribuera des couleurs différentes aux erreurs selon leur type.",
-
-        "spell_info": "L’apparence du soulignement des erreurs orthographiques (vaguelette rouge) n’est pas modifiable",
+        "multicolor_descr": "Par défaut, Writer signale les erreurs grammaticales et typographiques avec un trait ondulé de couleur bleue. Si cette option est cochée, Grammalecte attribuera des couleurs différentes aux erreurs selon leur type.",
 
         "restart": "Le changement ne prendra effet qu’après le redémarrage du logiciel.",
 
@@ -28,18 +27,17 @@ dStrings = {
     "en": {
         "title": "Grammalecte · Graphic options",
 
-        "graphic_info": "Appearance of uderlines for grammar and typographical mistakes",
+        "graphic_info": "Appearance of underlines for grammar and typographical mistakes",
+        "spell_info": "Appearance of underlines for spelling mistakes (red thin wiggly line) can’t be modified",
 
-        "linetype_section": "Line types (for LibreOffice 6.3+)",
-        "wave_line": "Thin wave (default setting of Writer)",
-        "boldwave_line": "Thick wave (default setting of Grammalecte)",
-        "bold_line": "Thick and straight line",
+        "linetype_section": "Line style (for LibreOffice 6.3+)",
+        "wave_line": "Thin wiggly line (default setting of Writer)",
+        "boldwave_line": "Thick wiggly line (default setting of Grammalecte)",
+        "bold_line": "Thick straight line",
 
-        "color_section": "Colors",
+        "color_section": "Colors (for LibreOffice 6.2+)",
         "multicolor_line": "Use several colors",
-        "multicolor_descr": "By default, Writer underlines grammar and typographical mistakes with a blue wave. If this option is activated, Grammalecte uses different colors for mistakes according to the type they belong to.",
-
-        "spell_info": "Appearance of underlines for spelling mistakes (red and thin wave) can’t be modified",
+        "multicolor_descr": "By default, Writer underlines grammar and typographical mistakes with a blue wiggly line. If this option is activated, Grammalecte uses different colors for mistakes according to the type they belong to.",
 
         "restart": "The modification will be effective only after restarting the software.",
 
