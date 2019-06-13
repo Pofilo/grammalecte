@@ -433,38 +433,42 @@ def suggLesLa (sWord):
 
 _zBinary = re.compile("^[01]+$")
 
-def formatNumber (s):
+def formatNumber (sNumber):
     "add spaces or hyphens to big numbers"
-    nLen = len(s)
+    nLen = len(sNumber)
     if nLen < 4:
-        return s
+        return sNumber
     sRes = ""
-    # nombre ordinaire
-    nEnd = nLen
+    if "," not in sNumber:
+        # nombre entier
+        sRes = _formatNumber(sNumber, 3)
+        # binaire
+        if _zBinary.search(sNumber):
+            sRes += "|" + _formatNumber(sNumber, 4)
+        # numéros de téléphone
+        if nLen == 10:
+            if sNumber.startswith("0"):
+                sRes += "|" + _formatNumber(sNumber, 2)                                                                 # téléphone français
+                if sNumber[1] == "4" and (sNumber[2]=="7" or sNumber[2]=="8" or sNumber[2]=="9"):
+                    sRes += "|" + sNumber[0:4] + " " + sNumber[4:6] + " " + sNumber[6:8] + " " + sNumber[8:]            # mobile belge
+                sRes += "|" + sNumber[0:3] + " " + sNumber[3:6] + " " + sNumber[6:8] + " " + sNumber[8:]                # téléphone suisse
+            sRes += "|" + sNumber[0:4] + " " + sNumber[4:7] + "-" + sNumber[7:]                                         # téléphone canadien ou américain
+        elif nLen == 9 and sNumber.startswith("0"):
+            sRes += "|" + sNumber[0:3] + " " + sNumber[3:5] + " " + sNumber[5:7] + " " + sNumber[7:9]                   # fixe belge 1
+            sRes += "|" + sNumber[0:2] + " " + sNumber[2:5] + " " + sNumber[5:7] + " " + sNumber[7:9]                   # fixe belge 2
+    else:
+        # Nombre réel
+        sInt, sFloat = sNumber.split(",", 1)
+        sRes = _formatNumber(sInt, 3) + "," + sFloat
+    return sRes
+
+def _formatNumber (sNumber, nGroup=3):
+    sRes = ""
+    nEnd = len(sNumber)
     while nEnd > 0:
-        nStart = max(nEnd-3, 0)
-        sRes = s[nStart:nEnd] + " " + sRes  if sRes  else s[nStart:nEnd]
-        nEnd = nEnd - 3
-    # binaire
-    if _zBinary.search(s):
-        nEnd = nLen
-        sBin = ""
-        while nEnd > 0:
-            nStart = max(nEnd-4, 0)
-            sBin = s[nStart:nEnd] + " " + sBin  if sBin  else s[nStart:nEnd]
-            nEnd = nEnd - 4
-        sRes += "|" + sBin
-    # numéros de téléphone
-    if nLen == 10:
-        if s.startswith("0"):
-            sRes += "|" + s[0:2] + " " + s[2:4] + " " + s[4:6] + " " + s[6:8] + " " + s[8:] # téléphone français
-            if s[1] == "4" and (s[2]=="7" or s[2]=="8" or s[2]=="9"):
-                sRes += "|" + s[0:4] + " " + s[4:6] + " " + s[6:8] + " " + s[8:]            # mobile belge
-            sRes += "|" + s[0:3] + " " + s[3:6] + " " + s[6:8] + " " + s[8:]                # téléphone suisse
-        sRes += "|" + s[0:4] + " " + s[4:7] + "-" + s[7:]                                   # téléphone canadien ou américain
-    elif nLen == 9 and s.startswith("0"):
-        sRes += "|" + s[0:3] + " " + s[3:5] + " " + s[5:7] + " " + s[7:9]                   # fixe belge 1
-        sRes += "|" + s[0:2] + " " + s[2:5] + " " + s[5:7] + " " + s[7:9]                   # fixe belge 2
+        nStart = max(nEnd-nGroup, 0)
+        sRes = sNumber[nStart:nEnd] + " " + sRes  if sRes  else sNumber[nStart:nEnd]
+        nEnd = nEnd - nGroup
     return sRes
 
 

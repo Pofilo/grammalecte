@@ -1229,18 +1229,20 @@ TEST: « J’en suis “malade”. »
 
 __[s]/unit(unit_nbsp_avant_unités1)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![’'])  @@0,0
-    <<- -1>> "\2 "
-    # Avec une unité de mesure, mettez un espace insécable.
+    <<- option("num") -1>> =formatNumber(\2) + " "              # Avec une unité de mesure, mettez un espace insécable.
+    <<- __else__ -1>> "\2 "                                     # Avec une unité de mesure, mettez un espace insécable.
+
 __[s]/unit(unit_nbsp_avant_unités2)__
     ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])) ?)([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)  @@0,0,$
-    <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3)
-    -1>> "\2 "
-    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- morph(\3, ";S", ":[VCR]") or mbUnit(\3) or not spell(\3) >>>
+    <<- option("num") -1>> =formatNumber(\2) + " "              # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- __else__ -1>> "\2 "                                     # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+
 __[s]/unit(unit_nbsp_avant_unités3)__
     ((\d+) )([a-zA-Zµ][a-zA-Z0-9Ωℓ⁰¹²³⁴⁵⁶⁷⁸⁹/·]*)(?![’'])  @@0,0,$
-    <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3)
-    -1>> "\2 "
-    # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- (\2.__len__() > 4 and not spell(\3)) or morph(\3, ";S", ":[VCR]") or mbUnit(\3) >>>
+    <<- option("num") -1>> =formatNumber(\2) + " "              # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
+    <<- __else__ -1>> "\2 "                                     # Si “\3” est une unité de mesure, il manque un espace insécable. Si le nombre se rapporte au mot suivant, c’est aussi valable.
 
 TEST: Ça a duré {{3}}µs
 TEST: Ça a duré {{3,5 }}µs
