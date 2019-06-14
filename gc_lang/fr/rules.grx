@@ -482,7 +482,6 @@ TEST: Eux et leurs{{ ”}}amis{{”}} sont finis !
 TEST: Vos {{“}}amis{{“ }}et vous êtes finis !
 
 
-
 #
 #
 # NOTE
@@ -1026,7 +1025,7 @@ __<s>/nbsp(nbsp_avant_chevrons_fermants1)__
 __<s>/nbsp(nbsp_avant_chevrons_fermants2)__
     ([].!?)])»  <js>([\].!?\)])»</js>  @@0 <<- ->> "\1 »"   # Il manque un espace insécable.
 __<s>/nbsp(nbsp_après_double_ponctuation)__
-    ([:;!?]) (?=\w)  @@0 <<- ->> "\1 "                      # Pas d’espace insécable après le signe “\1”.
+    ([:;!?]) (?=[\w«“"])  @@0 <<- ->> "\1 "                 # Pas d’espace insécable après le signe “\1”.
 
 TEST: {{«}}Il manque deux espaces insécables. »                             ->> "« "
 TEST: « Il manque deux espaces insécables{{.»}}                             ->> ". »"
@@ -6893,6 +6892,10 @@ __conf_compte__
     [comte|comtes|>conte] des opérations
         <<- /conf/ -1>> compte|comptes                          # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
 
+    [comte|comtes|>compte] de bonne femme
+    [comte|comtes|>compte] de bonnes femmes
+        <<- /conf/ -1>> conte|contes                            # Confusion probable. Un compte est un état chiffré, “comte” est un titre de noblesse. Pour un récit fictif, écrivez “conte”.
+
     [<start>|,] [comte|comtes|>conte] [tenu|tenus]
         <<- /conf/ -2>> compte                                  # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
 
@@ -10353,6 +10356,7 @@ __purge_locutions__
     au saut du lit
     au sens [figuré|large|propre]
     au surplus
+    au [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] siècle
     au ~^[xXvViI]+[eᵉ]$ siècle
     au-delà du descriptible
     au-dessus [de|d’] {pronom_obj}
