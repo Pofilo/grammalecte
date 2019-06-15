@@ -6281,7 +6281,7 @@ __conf_à_a_locutions__
     a part [entière|ça|cela|ceci]
     a partir [de|d’] [demain|là|maintenant|rien|aujourd’hui|hier|ici]
     a parts égales
-    a pas de [géant|loup|tortue|velours]
+    a pas [de|d’] [géant|loup|tortue|velours]
     a personne en danger
     a perte de vue
     a petit feu
@@ -6296,6 +6296,7 @@ __conf_à_a_locutions__
     a pleins poumons
     a plus forte raison
     a plus d’ un titre
+    a poil [court|dur|long|rêche]
     a point nommé
     a portée de main
     a première vue
@@ -10167,7 +10168,7 @@ __purge_locutions__
     à l’ évidence
     à l’ œil nu
     à l’ [un|une] des leurs
-    à la [bourre|con|dérobée|diable|fois|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
+    à la [bourre|con|coule|dérobée|diable|fois|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
     à la bonne franquette
     à la limite du supportable
     à la lumière de tout [ceci|cela|ça]
@@ -10230,6 +10231,7 @@ __purge_locutions__
     à pleins poumons
     à plus forte raison
     à plus d’ un titre
+    à poil [court|dur|long|rêche]
     à point nommé
     à portée de [main|tir|voix]
     à première vue
@@ -11703,13 +11705,16 @@ __simplication_substantifs__
     >blanche comme un linge
     [>boîte|>boite] [aux|à] lettres
     [>boîte|>boite] à gants
-    >bombe à [eau|fragmentation|retardement]
+    >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement]
+    >bombe à rayonnement renforcé
     >brosse à [>dent|reluire]
     >cabinet de toilette
     >camp [de|d’] [concentration|internement|rééducation]
     >canne à [pêche|sucre]
     >caisse à >outil
+    >carton d’ emballage
     >chair à [pâté|>canon]
+    >chair de poule
     >chambre à coucher
     >chambre [de|d’] [agriculture|hôte|hôtes|commerce|compensation|décompression|dégrisement]
     >chasse à courre
@@ -12524,6 +12529,7 @@ __purge_locutions_verbales__
     >foutre en l’ air
     >garder contenance
     [>gonfler|>regonfler] à bloc
+    >jeter à terre
     >jouer franc jeu
     >jouer cartes sur table
     >lâcher prise
@@ -12561,10 +12567,12 @@ __purge_locutions_verbales__
     >revenir à la case départ
     >saigner à blanc
     >suivre ?[ça|cela|ceci]¿ de près
+    >tenir à [carreau|cœur]
     >tenir ?[ça|cela|ceci]¿ à distance ?respectable¿
     >tenir [compte|compagnie]
     >tenir au courant
     >tenir en haute estime
+    >tirer à blanc
     >tomber à [pic|point]
     >trier sur le volet
     >trouver refuge
@@ -12585,12 +12593,14 @@ __conf_locutions_verbales__
     [>brûler|>bruler] a vif
     >chauffer a blanc
     [>gonfler|>regonfler] a bloc
+    >jeter a terre
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>nue|>plat|>terre]
     [>mettre|>remettre] a l’ [écart|épreuve]
     >percer a jour
     >prendre a la légère
     >saigner a blanc
-    >tenir a distance
+    >tenir a [carreau|cœur|distance]
+    >tirer a blanc
     >tomber a [pic|point]
     >tourner a l’ aigre
     >venir a bout
@@ -16327,34 +16337,34 @@ TEST: un petit peu nous surprendre
 
 
 __conf_peu_peut_vinfi__
-    [<start>|,]  [un|le|ce|cet]                     *WORD           peu  @:Y
+    [<start>|,]  [un|le|ce|cet]                     *WORD           peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|@:Y]
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t")
         --1>> =suggVerbPpas(\-1, ":m:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
 
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD           peu  @:Y
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD           peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|@:Y]
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t")
         --1>> =suggVerbPpas(\-1, ":f:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
 
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           peu  @:Y
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|@:Y]
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t")
         --1>> =suggVerbPpas(\-1, ":s")                  # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
 
-    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  @:Y
+    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|@:Y]
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t")
         --1>> =suggVerbPpas(\-1, ":m:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
 
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  @:Y
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|@:Y]
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t")
         --1>> =suggVerbPpas(\-1, ":f:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
 
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  @:Y
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|@:Y]
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t")
