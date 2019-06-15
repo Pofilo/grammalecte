@@ -482,6 +482,7 @@ TEST: Eux et leurs{{ ”}}amis{{”}} sont finis !
 TEST: Vos {{“}}amis{{“ }}et vous êtes finis !
 
 
+
 #
 #
 # NOTE
@@ -15575,27 +15576,34 @@ TEST: il faut {{induire}} cette boue sur son visage.                        ->> 
 
 # entretien / maintien / soutien
 __conf_entretien_maintien_soutien__
-    [<start>|,]  [un|le|ce|cet]                     *WORD           [entretien|maintien|soutien]  [,|@:D]
-        <<- /conf/ morph(\3, ":N", ":[AG]") -4>> \4t                                                # Confusion probable. S’il s’agit d’un verbe, ajoutez un “t” final. Ici, il s’agit du nom commun.
+    [un|le|ce|cet]                     *WORD           [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":N", ":[AG]")
+        -3>> \3t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD           [entretien|maintien|soutien]  [,|@:D]
-        <<- /conf/ morph(\3, ":N.*:[fe]") -4>> \4t                                                  # Confusion probable. S’il s’agit d’un verbe, ajoutez un “t” final. Ici, il s’agit du nom commun.
+    [une|la|cette|ma|ta|sa]            *WORD           [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":N.*:[fe]")
+        -3>> \3t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           [entretien|maintien|soutien]  [,|@:D]
-        <<- /conf/ morph(\3, ":N", ":A.*:[me]:[si]") -4>> \4t                                       # Confusion probable. S’il s’agit d’un verbe, ajoutez un “t” final. Ici, il s’agit du nom commun.
+    [l’|mon|ton|son|notre|votre|leur]  *WORD           [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":N", ":A.*:[me]:[si]")
+        -3>> \3t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
-    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    [entretien|maintien|soutien]  [,|@:D]
-        <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":N", ":[AG]") -5>> \5t                         # Confusion probable. S’il s’agit d’un verbe, ajoutez un “t” final. Ici, il s’agit du nom commun.
+    [un|le|ce|cet]                     *WORD  *WORD    [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":[NA]") and morph(\3, ":N", ":[AG]")
+        -4>> \4t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    [entretien|maintien|soutien]  [,|@:D]
-        <<- /conf/ morph(\3, ":[NA].*:[fe]:[si]") and morph(\4, ":[NA].*:[fe]:[si]") -5>> \5t       # Confusion probable. S’il s’agit d’un verbe, ajoutez un “t” final. Ici, il s’agit du nom commun.
+    [une|la|cette|ma|ta|sa]            *WORD  *WORD    [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":[NA].*:[fe]:[si]") and morph(\3, ":[NA].*:[fe]:[si]")
+        -4>> \4t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    [entretien|maintien|soutien]  [,|@:D]
-        <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":N", ":A.*:[me]:[si]") -5>> \5t                # Confusion probable. S’il s’agit d’un verbe, ajoutez un “t” final. Ici, il s’agit du nom commun.
+    [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":[NA]") and morph(\3, ":N", ":A.*:[me]:[si]")
+        -4>> \4t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
 TEST: la grande {{maintien}} sa version.                        ->> maintient
 TEST: le petit homme {{maintien}} fermement son pantalon        ->> maintient
 TEST: cette femme {{entretien}} sa santé                        ->> entretient
+TEST: ce que le patron {{soutien}}                              ->> soutient
 TEST: le petit entretien le paralysait
 
 
@@ -16486,7 +16494,7 @@ TEST: Je suis {{septique}} !
 
 # tâche / tache (de chocolat / rousseur / vin / sang / café / gras / graisse / huile / etc.)
 __conf_tache_tâche__
-    >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision|.+(?:tion|ment))/
+    >tâche  [de|d’]  @:N¬:[GMY]|>(?:contrôle|fonds?|envergure|ampleur|importance|départ|surveillance|supervision|tri|.+(?:tion|ment))/
         <<- /conf/ not before("[aA]ccompl|[dD]él[éè]gu") -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion probable. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
