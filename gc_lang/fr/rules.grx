@@ -523,7 +523,7 @@ __<i>(p_num_chapitre)__
 __[s>(p_chap_coll_cf)__     [cC](?:f|hap|oll?)([.]) @@$ <<- ~1>> *
 __[s](p_page)__             p[.] ?\d+(?:-\d+|) <<- ~>> *
 __[s](p_pages)__            pp[.] ?\d+-\d+ <<- ~>> *
-__[i](p_figure)__           figure (\d+(?:[.:-]\d+|))  @@0 <<- ~1>> *
+__[i](p_figure)__           figure (\d+(?:[.:-]\d+|))  @@$ <<- ~1>> *
 __[i](p_article)__          art(?:icle|[.]) (1(?:er|ᵉʳ)|\d+(?:[.:-]\w+|)) @@$ <<- ~1>> *
 __[s>(p_av)__               av[.] <<- ~>> av
 
@@ -629,6 +629,7 @@ TEST: Dossier C:\Program Files (x86)\LibreOffice
 TEST: [1] Dossier à revoir.
 TEST: jusqu’à 12h47
 TEST: Allons (re)voir ce film
+TEST: La figure 110 représente…
 
 
 
@@ -9215,6 +9216,14 @@ __sgpl_très_bien__
 TEST: Très {{biens}} connus des services de police, il leur fut difficile de passer entre les mailles du filet.
 
 
+# ensemble
+__sgpl_ensemble__
+    [toutes|tous] ensembles
+        <<- /sgpl/ -2>> ensemble                                    # Ici, “ensemble” est un adverbe, donc invariable.|https://fr.wiktionary.org/wiki/ensemble
+
+TEST: Allons-y toutes {{ensembles}}                             ->> ensemble
+
+
 # entre autres
 __sgpl_entre_autres__
     entre autre ,
@@ -10087,6 +10096,7 @@ __purge_locutions__
     à but ?non¿ lucratif
     à cause [de|d’]  [ça|cela|ceci|moi|toi|lui|nous|vous|elle|elles|eux]
     à ce [compte-là|moment-là|titre]
+    à certains égards
     à cet égard
     à cet instant ?[exact|précis]¿
     à cette [date|occasion]
@@ -10357,6 +10367,7 @@ __purge_locutions__
     au préalable
     au ras des pâquerettes
     au saut du lit
+    au second plan
     au sens [figuré|large|propre]
     au surplus
     au [Ier|Iᵉʳ|IId|Ind|IIᵈ|IIⁿᵈ] siècle
@@ -10735,6 +10746,7 @@ __purge_locutions__
     en partant [de|d’] zéro
     en partie ou en totalité
     en pente douce
+    en ?très¿ petit nombre
     en place publique
     en plein [air|cœur|essor|marasme|jour]
     en pleine [gueule|figure|forme|poire|nuit|tronche]
@@ -11286,7 +11298,7 @@ __gestion_mots_grammaticaux__
         <<- ~1>> *
 
     de [plus|moins] comparé [à|au|aux]
-        <<- ~1:2>> *
+        <<- ~1:3>> *
 
     du moins
         <<- ~>> _
@@ -12137,7 +12149,7 @@ __purge_après_avoir__
     >avoir  bon dos
     >avoir  bon pied ?,¿ bon œil
     >avoir  carte blanche
-    >avoir  forme humaine
+    >avoir  forme [humaine|animale]
     >avoir  partie [gagnée|liée]
     >avoir  voix au chapitre
         <<- ~2:0>> ␣
@@ -12147,7 +12159,7 @@ __purge_après_avoir__
     >avoir  [pas|jamais|plus|guère|point]  bon dos
     >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
-    >avoir  [pas|jamais|plus|guère|point]  forme humaine
+    >avoir  [pas|jamais|plus|guère|point]  forme [humaine|animale]
     >avoir  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
     >avoir  [pas|jamais|plus|guère|point]  quartier libre
     >avoir  [pas|jamais|plus|guère|point]  voix au chapitre
@@ -12190,7 +12202,7 @@ __purge_après_avoir__
     /VCint  bon dos
     /VCint  bon pied ?,¿ bon œil
     /VCint  carte blanche
-    /VCint  forme humaine
+    /VCint  forme [humaine|animale]
     /VCint  partie [gagnée|liée]
     /VCint  voix au chapitre
         <<- morphVC(\1, ":V0a") ~2:0>> ␣
@@ -12200,7 +12212,7 @@ __purge_après_avoir__
     /VCint  [pas|jamais|plus|guère|point]  bon dos
     /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
-    /VCint  [pas|jamais|plus|guère|point]  forme humaine
+    /VCint  [pas|jamais|plus|guère|point]  forme [humaine|animale]
     /VCint  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
     /VCint  [pas|jamais|plus|guère|point]  quartier libre
     /VCint  [pas|jamais|plus|guère|point]  voix au chapitre
@@ -12791,6 +12803,7 @@ TEST: je me suis sentie à ce moment reliée à toute l’humanité
 TEST: la pratique qui consiste à partir de soi conçoit toute parole et toute action comme une médiation
 TEST: ne souhaitent pas faire boîte à lettres commune
 TEST: La mondialisation, admet donc M. Obama, s’est accompagnée d’erreurs et de rapacité.
+TEST: Les démons ont forme animale.
 
 
 
@@ -16390,6 +16403,7 @@ TEST: L’un peut être réglé immédiatement
 TEST: Réussir peut parfois être la pire chose possible.
 TEST: Peut vraiment être violent en cas d’humiliation.
 TEST: « Oui, sans doute », mais peut être pas pour tout le monde
+TEST: La réalisation de composants (injection plastique…) peut être limitée.
 
 
 # prendre son mal en patience
@@ -21904,6 +21918,8 @@ TEST: si l’un ou l’autre s’était trouvé en sa présence, ça aurait bard
 TEST: ni l’un ni l’autre n’osait parler.
 TEST: Ne pense pas à ce sur quoi tu poses les pieds et tout ira bien
 TEST: les nerfs du vieux Paul lâchent
+TEST: Il sortit de sa léthargie, épuisé et trempé
+TEST: Les étrangers étaient à ce point dévisagés qu’ils en devenaient invisibles.
 
 
 
