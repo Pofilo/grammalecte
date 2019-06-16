@@ -21,15 +21,17 @@ var conj = {
     _lTags: [],
     _dPatternConj: {},
     _dVerb: {},
+    _dVerbNames: {},
 
     bInit: false,
     init: function (sJSONData) {
         try {
-            let _oData = JSON.parse(sJSONData);
-            this._lVtyp = _oData.lVtyp;
-            this._lTags = _oData.lTags;
-            this._dPatternConj = _oData.dPatternConj;
-            this._dVerb = _oData.dVerb;
+            let oData = JSON.parse(sJSONData);
+            this._lVtyp = oData.lVtyp;
+            this._lTags = oData.lTags;
+            this._dPatternConj = oData.dPatternConj;
+            this._dVerb = oData.dVerb;
+            this._dVerbNames = oData.dVerbNames;
             this.bInit = true;
         }
         catch (e) {
@@ -121,15 +123,20 @@ var conj = {
                 }
                 aSugg.delete("");
             } else {
-                // we suggest past participles
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q1"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q2"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q3"));
-                aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q4"));
-                aSugg.delete("");
-                // if there is only one past participle (epi inv), unreliable.
-                if (aSugg.size === 1) {
-                    aSugg.clear();
+                if (this._dVerbNames.hasOwnProperty(sInfi)) {
+                    // there are names derivated from the verb
+                    aSugg.update(this._dVerbNames[sInfi]);
+                } else {
+                    // we suggest past participles
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q1"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q2"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q3"));
+                    aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q4"));
+                    aSugg.delete("");
+                    // if there is only one past participle (epi inv), unreliable.
+                    if (aSugg.size === 1) {
+                        aSugg.clear();
+                    }
                 }
             }
         }

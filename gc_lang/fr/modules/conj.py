@@ -11,6 +11,7 @@ from .conj_data import lVtyp as _lVtyp
 from .conj_data import lTags as _lTags
 from .conj_data import dPatternConj as _dPatternConj
 from .conj_data import dVerb as _dVerb
+from .conj_data import dVerbNames as _dVerbNames
 
 
 _zStartVoy = re.compile("^[aeéiouœê]")
@@ -92,15 +93,19 @@ def getSimil (sWord, sMorph, bSubst=False):
                 aSugg.add("était")
             aSugg.discard("")
         else:
-            # we suggest past participles
-            aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q1"))
-            aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q2"))
-            aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q3"))
-            aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q4"))
-            aSugg.discard("")
-            # if there is only one past participle (epi inv), unreliable.
-            if len(aSugg) == 1:
-                aSugg.clear()
+            if sInfi in _dVerbNames:
+                # there are names derivated from the verb
+                aSugg.update(_dVerbNames[sInfi])
+            else:
+                # we suggest past participles
+                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q1"))
+                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q2"))
+                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q3"))
+                aSugg.add(_getConjWithTags(sInfi, tTags, ":PQ", ":Q4"))
+                aSugg.discard("")
+                # if there is only one past participle (epi inv), unreliable.
+                if len(aSugg) == 1:
+                    aSugg.clear()
     return aSugg
 
 
