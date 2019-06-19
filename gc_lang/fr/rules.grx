@@ -1475,7 +1475,7 @@ TEST: __ocr__ {{((}}voyons ceci).
 
 ## Mélange chiffres/lettres
 __[i]/ocr(ocr_le_la_les_regex)__
-    [1[][easrnxiocuwàéè]
+    [1[\]][easrnxiocuwàéè]
         <<- \0.endswith("e") ->> le                                                                 # Erreur de numérisation ?
         <<- __else__ and \0.endswith("a") ->> la                                                    # Erreur de numérisation ?
         <<- __else__ and \0.endswith("à") ->> la|là                                                 # Erreur de numérisation ?
@@ -1488,7 +1488,7 @@ TEST: __ocr__ {{[e}} chien a faim
 
 
 __[i]/ocr(ocr_les)__
-    [1[][ea]s
+    [1[\]][ea]s
         <<- ->> les                                                                                 # Erreur de numérisation ?
 
 TEST: __ocr__ {{1es}} jours clairs
@@ -6078,6 +6078,7 @@ TEST: il faut porter ces méfaits à l’{{intention}} du prince.
 TEST: nous avons l’{{intention}} de la reine
 TEST: Ils ont l’intention de nous nuire
 TEST: Elles avaient bien l’intention d’en parler.
+TEST: J’ai mis ces trésors de côté spécialement à votre intention
 
 
 __conf_à_moindre_cout__
@@ -7102,6 +7103,17 @@ TEST: il en faut {{d’avantages}}.
 TEST: tout ce qu’il apporte d’avantages pécuniaires.
 TEST: un certain nombre d’avantages sociaux.
 TEST: ils ont tant d’avantages.
+
+
+# de part en part
+__conf_de_part_en_part__
+    [de|d’] [par|parts|pare|pares|part] [en|an] [par|parts|pare|pares]
+    [de|d’] [par|parts|pare|pares] [en|an] [par|parts|pare|pares|part]
+    [de|d’] part an part
+        <<- /conf/ ->> de part en part                                              # Confusion. Locution “de part en part”.|https://fr.wiktionary.org/wiki/de_part_en_part
+
+TEST: {{de par en par}}                                             ->> de part en part
+TEST: ils essayèrent tout, de part en part.
 
 
 # de temps à autre
@@ -10077,7 +10089,7 @@ __purge_locutions__
     , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va]
+    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va]
     à armes égales
     à aucun prix
     à autre chose
@@ -10528,7 +10540,7 @@ __purge_locutions__
     [de|d’] bas étage
     [de|d’] ?assez¿ basse [condition|extraction]
     [de|d’] ?assez¿ bon [aloi|cœur|gré|matin|poil|sens|ton]
-    [de|d’] ?assez¿ bonne [facture|famille|foi|heure|humeur|grâce|qualité|compagnie]
+    [de|d’] ?assez¿ bonne [compagnie|facture|famille|foi|grâce|heure|humeur|qualité]
     [de|d’] bric et [de|d’] broc
     [de|d’] but en blanc
     [de|d’] ce fait ?[incontestable|irréfutable|même]¿
@@ -10569,7 +10581,7 @@ __purge_locutions__
     [de|d’] longue [date|durée|haleine]
     [de|d’] main [de|d’] [maître|maitre]
     [de|d’] mauvais [aloi|goût|gout|gré]
-    [de|d’] mauvaise [foi|grâce|humeur]
+    [de|d’] ?assez¿ mauvaise [compagnie|facture|foi|grâce|humeur|qualité]
     [de|d’] mieux en mieux
     [de|d’] millénaire en millénaire
     [de|d’] mois en mois
@@ -10583,6 +10595,7 @@ __purge_locutions__
     [de|d’] près
     [de|d’] près ou de loin
     [de|d’] par le monde ?entier¿
+    [de|d’] part en part
     [de|d’] part et d’ autre
     [de|d’] ?presque¿ partout
     [de|d’] petite taille
@@ -10655,6 +10668,7 @@ __purge_locutions__
     depuis bien longtemps
     depuis [de|d’] ?[assez|très]¿ longues années
     depuis des lustres
+    depuis la [première|dernière|~ième$] fois
     depuis les années ~^\d{2,5}$
     depuis ?[assez|très]¿ longtemps
     depuis lors
@@ -11710,6 +11724,7 @@ __simplication_substantifs__
     >bandit de grands chemins
     bas résille
     >benne à >ordure
+    [>beauté|>belle] à couper le souffle
     >bête à [manger|bouffer] du foin
     >billet de [*NUM|@:B] [>euro|>dollar|>centime|>cent|>livre|>shilling]
     [>bisphénol|>bisphenol] A
@@ -11726,18 +11741,21 @@ __simplication_substantifs__
     >canne à [pêche|sucre]
     >caisse à >outil
     >carton d’ emballage
+    >centne d’ éducation surveillée
     >chair à [pâté|>canon]
     >chair de poule
     >chambre à coucher
     >chambre [de|d’] [agriculture|hôte|hôtes|commerce|compensation|décompression|dégrisement]
     >chasse à courre
+    >chasse d’ eau
     >chemin de [traverse|fer]
     >chèque sans provision
     >chili con carne
     >claire comme de l’ eau de [boudin|roche|source]
     >claire comme du cristal
-    >claire comme jus de [boudin|chaussette|chaussettes|chique]
+    >claire comme jus de [boudin|>chaussette|chique]
     [>clé|>clef] à molette
+    >clin d’ œil
     >commise d’ office
     >complémentaire santé
     >condamnée à mort
@@ -11747,7 +11765,8 @@ __simplication_substantifs__
     >conne comme un balai
     >conne comme une valise sans >poignée
     >corvéable à merci
-    >coup [de|d’] [balai|bol|cœur|couteau|foudre|fil|grâce|jarnac|théâtre|coude|genou|main|patte|pied|poing|poker|pouce|tête|avance|éclat|État|œil|épaule]
+    >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|épée|estoc|État|foudre|fil|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
+    >coup [de|d’] baguette ?magique¿
     >coup du sort
     >coup d’ un soir
     >course contre la montre
@@ -11795,6 +11814,7 @@ __simplication_substantifs__
     >histoire avec un [grand|petit] h
     >homme [de|d’] [lettres|loi|main|paille|affaires|armes|exception|État|Église|honneur]
     >homme d’ âge mûr
+    >homme à tout faire
     >hôtel de ville
     >hôtesse d’ accueil
     >garde à vue
@@ -11809,6 +11829,7 @@ __simplication_substantifs__
     >lampe de chevet
     >lime à >ongle
     >liste d’ attente
+    >livre de poche
     >machine à [café|coudre|laver|voter]
     >machine à remonter le temps
     >main d’ œuvre
@@ -11951,8 +11972,8 @@ __purge_couleurs__
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] et [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent]
     blanc   argenté
-    bleu    [azur|ciel|indigo|marine|roi|saphir|turquoise]
-    blond   platine
+    bleu    [argenté|azur|ciel|indigo|marine|roi|saphir|turquoise]
+    blond   [argenté|platine]
     gris    [acier|anthracite|argenté|fer|perle|souris]
     jaune   [paille|sable]
     noir    [de|d’] [encre|jais]
@@ -12518,7 +12539,7 @@ __purge_locutions_verbales__
     [>donner|>redonner] [sens|suite|vie]
     [>donner|>redonner] quartier libre
     >élire domicile
-    >faire [allusion|assaut|attention|chaud|confiance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -15411,8 +15432,9 @@ TEST: Elles avançaient côte à côte.
 
 # cou / coup / coût
 __conf_coup_cout_cou__
-    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>surin|>tête|>théâtre|>torchon|>trique|>vent|vieux]
+    [>cou|>coût|>cout] [de|d’] [>baguette|>barre|>bâton|>bec|>bélier|blues|>botte|>boule|>boutoir|>bol|>bite|>cœur|>chaud|>coude|>couteau|>dé|>dent|>déprime|>froid|fil|>foudre|>genou|>grâce|>griffe|>grisou|>gueule|>hache|>hanche|Jarnac|jus|>jeune|>klaxon|>main|maître|maitre|>massue|>marteau|>nostalgie|>pied|>poing|>poignard|>pouce|>pute|>queue|>rein|>rabot|>savate|>sang|>sabot|>sabre|>sifflet|>soleil|>surin|>tête|>théâtre|>tonnerre|>torchon|>trique|>vent|vieux]
     [>cou|>coût|>cout] d’ [>éclat|>épée|>état|>épaule|œil|>estoc]
+    [>cou|>coût|>cout] du sort
     [>cou|>coût|>cout] [dur|durs]
         <<- /conf/ -1>> coup|coups      # Confusion probable. Le coût est le prix d’une chose. Le cou est la partie joignant le tronc à la tête. Pour ce qui frappe, écrivez “coup”.
 
@@ -19477,6 +19499,7 @@ __imp_union_le_la_leur__
 TEST: {{Prends le}} avec toi.
 TEST: {{Dites leur}} que nous sommes là.
 TEST: j’en ai plus qu’assez, {{apprend le}}.
+TEST: {{pardonne leur}}, ils ne savent pas ce qu’ils font
 TEST: un sujet si extrêmement politique et polémique lui a donné un accès
 TEST: Les États d’ores et déjà très affaiblis le seraient encore plus
 TEST: « C’est ainsi », résume la cyptologue (erreur orthographique délibérée sur “cyptologue” pour empêcher certains faux positifs)
@@ -20821,7 +20844,7 @@ TEST: Lequel manger ?
 TEST: Une société a vendu un terrain à bâtir à un acquéreur, lequel entreprend des travaux pour y construire un pavillon.
 
 
-__conj_personne_rien__
+__conj_personne__
     personne  @:V¬:(?:3s|P|G|[QA].*:f:s)
         <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
@@ -20830,6 +20853,12 @@ __conj_personne_rien__
         <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
+TEST: Personne ne {{peux}} me le dire.
+TEST: personne n’en {{parlent}}
+TEST: en tant que personne qualifiée
+
+
+__conj_rien__
     rien  @:V¬:(?:3s|P|Y|G)
         <<- /conf/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
             and not(morph(\2, ":Y") and value(<1, "|ne|"))
@@ -20839,17 +20868,13 @@ __conj_personne_rien__
         <<- /conf/ morph(<1, ":C|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
-TEST: Personne ne {{peux}} me le dire.
+
 TEST: Rien ne {{sers}} de courir
 TEST: Rien n’{{arrives}} sans raison
 TEST: Rien, en ce qui le concernait, ne {{pouvais}} le ramener à la raison.
-TEST: personne n’en {{parlent}}
-TEST: aucun d’entre nous n’{{as}} donné
-TEST: aucun ne {{vas}} là-bas
 TEST: il ne faut rien faire ou rien dire contre les manifestants
 TEST: qui n’ont rien appris et rien oublié
 TEST: comme si son pays n’avait rien appris du fascisme ni rien reçu de l’Europe
-TEST: en tant que personne qualifiée
 
 
 __conj_nul_nulle__
@@ -20876,6 +20901,8 @@ TEST: aucun ne {{savaient}} que faire
 TEST: aucune n’{{iront}} là-bas
 TEST: aucune femme ne {{sauraient}} le faire
 TEST: aucun homme ne {{sauraient}} s’y prendre
+TEST: aucun d’entre nous n’{{as}} donné
+TEST: aucun ne {{vas}} là-bas
 TEST: aucune partie du corps ne peut être considérée comme le siège de l’âme.
 TEST: Aucun terme attesté dans des textes antiques, mésopotamien ou autre, ne sert à désigner la Mésopotamie au sens moderne du terme
 TEST: signalons qu’aucun fait avéré ne correspond à ce qui se propage
@@ -21940,6 +21967,9 @@ TEST: J’envoyai l’un des gardiens chercher le dossier de l’incarcéré
 TEST: La distinction entre les défaillances normales et les défaillances fautives peut se fonder sur…
 TEST: Ils sont là pour se faire l’écho des questions posées.
 TEST: Le directeur de cabinet de Madame la rectrice était également présent.
+TEST: Une fois passé la porte, nous nous retrouvons dans une vaste salle
+TEST: Pourquoi aurait-il dû se préoccuper de ça ?
+TEST: Quel est le problème ? Je ne fais que ramener Paul à la raison.
 
 
 
