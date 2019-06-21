@@ -8056,6 +8056,10 @@ __conf_où_ou__
     d’ ou
         <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
+    ou et [comment|que|qui|quand|pourquoi|quel|quels|quelle|quelles]
+    ou et @:R
+        <<- /conf/ -1>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
+
     vers ou
         <<- /conf/ not morph(<1, ":D") -2>> où              # Confusion probable. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
@@ -8395,6 +8399,23 @@ TEST: Il a obtenu un prêt de Patrick
 TEST: Il a obtenu un prêt de Le Drian
 TEST: collait au millimètre près à la réalité
 TEST: les prêts de BMW ou de Mercedes pour visiter la ville
+
+
+# prix / pris
+__conf_prix_pris__
+    [à|a] n’importe quel pris
+    quel est [le|mon|ton|son|notre|votre|leur|leurs] pris
+        <<- /conf/ --1>> prix                                               # Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
+
+    prix par surprise
+    prix entre deux feux
+    prix la main dans le sac
+    prix dans [mes|tes|ses|nos|vos|leurs] bras
+        <<- /conf/ -1>> pris                                                # Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
+
+TEST: réussir à n’importe quel {{pris}}.
+TEST: quel est leur {{pris}} ?
+TEST: {{prix}} par surprise,
 
 
 # puits / puis
@@ -10123,6 +10144,7 @@ __purge_locutions__
     à chaque [fois|instant]
     à chaudes larmes
     à cœur [joie|ouvert|perdu]
+    à compter [de|d’] [demain|aujourd’hui|hier|maintenant]
     à connotation sexuelle
     à corps perdu
     à côté  [de|d’]  [ça|moi|toi|lui|nous|vous|elle|elles|eux]
@@ -10231,6 +10253,7 @@ __purge_locutions__
     à n’ en pas douter
     à n’ en plus finir
     à n’ en point douter
+    à n’ importe quel prix
     à parler franc
     à part [entière|ça|cela|ceci]
     à parts égales
@@ -10717,7 +10740,7 @@ __purge_locutions__
     en chair et en os
     en chute libre
     en comparution immédiate
-    en connaissance [de|d’] cause
+    en ?parfaite¿ connaissance [de|d’] cause
     en coupe réglée
     en cours [de|d’] route
     en d’ autres [circonstances|termes|temps]
@@ -11887,6 +11910,7 @@ __simplication_substantifs__
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
     >requête en non révocation de sursis
+    >responsable qualité
     >retour à la case départ
     >robe de soirée
     >roman à l’ eau de rose
@@ -11905,6 +11929,7 @@ __simplication_substantifs__
     >silo à [>grains|blé]
     >soldate d’ élite
     >soue à >cochonne
+    >sourde comme un pot
     >système d’ exploitation
     >système D
     >taille *NUM
@@ -11912,12 +11937,13 @@ __simplication_substantifs__
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >témoin à charge
-    >tête de [déterré|déterrée|déterrés|déterrées]
+    >tête de [linotte|déterré|déterrée|déterrés|déterrées]
     >têtue comme une [bourrique|mule]
     >têtue comme un [âne|bourriquot|mulet]
     >titre de [noblesse|propriété|séjour]
     >tondeuse à gazon
     >tour de passe-passe
+    >traitement de faveur
     >trou à >rat
     >tueuse à gages
     >turbine à [gaz|vapeur]
@@ -16246,16 +16272,15 @@ TEST: Elles sont hors de {{paires}}.
 
 # pâle / pale
 __conf_pâle_pale2!6__
+    >faire ?[pas|jamais|guère]¿ porter pale
     [>être|>rester|>demeurer|>devenir]  >pale
-        <<- /conf/ -2>> =\2.replace("a", "â").replace("A", "Â")
-        # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
-
     [>air|>lumière|>lueur|>teinte|coloris|>couleur|>peau|>visage|>bleue|>rouge|>fuschia|>jaune|>verte|gris|>orange|>violette|>pourpre]  >pale
-        <<- /conf/ -2>> =\2.replace("pal", "pâl")
+        <<- /conf/ --1>> =\-1.replace("a", "â").replace("A", "Â")
         # Utilisez “pâle” pour évoquer la pâleur… Une pale est, entre autres choses, un élément d’une hélice.|http://fr.wiktionary.org/wiki/pale
 
 TEST: Elle est très {{pale}} !
 TEST: Sous une lumière {{pale}},
+TEST: Se faire porter {{pale}}.
 
 
 # pas / par
@@ -16446,6 +16471,13 @@ __conf_prendre_son_mal_en_patience__
 TEST: Il prit son {{mâle en patience}}
 TEST: Elle prend son {{mal en patiente}}.
 TEST: Il {{prie}} une fois de plus son mal en patience.
+
+
+__conf_pris__
+    >avoir prix
+        <<- /conf/ --1>> pris                                   # Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
+
+TEST: elle ne l’a pas {{prix}} dans ses bras, par dépit.
 
 
 # pu / pus
