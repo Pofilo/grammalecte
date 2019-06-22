@@ -4467,6 +4467,14 @@ TEST: elle s’était apprêtée {{de sorte à ce}} qu’elle fût remarquée.
 TEST: il était si imbu de lui-même, {{de sorte à ce}} que ses collègues le méprisaient.
 
 
+# exception qui confirme la règle
+__bs_exception_qui_confirme_la_règle__
+    >exception ?qui¿ >confirmer la règle
+        <<- /bs/ ->> \1 à la règle|\1 aux règles                    # Cliché (probablement mal employé).|https://en.wikipedia.org/wiki/Exception_that_proves_the_rule
+
+TEST: C’est l’{{exception qui confirme la règle}}.
+
+
 # incessamment sous peu
 __bs_incessamment_sous_peu__
     incessamment >sou [peu|peux|peut]
@@ -6409,11 +6417,12 @@ __conf_à_substantifs__
     >machine a [café|coudre|laver|voter]
     >machine a >remonter le temps
     >matière a >réflexion
-    >moule a [>gaufre|>gâteau|brioche|manqué|savarin|charlotte]
+    >moule a [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >panier a >linge
     >papier a [>lettre|musique]
     >passage a tabac
     >presse a >scandale
+    >pince a linge
     >punk a >chienne
     >revenir a la case départ
     >rouge a >lèvre
@@ -9055,11 +9064,12 @@ TEST: Elle a acheté un nouveau fond de {{tain}}.
 __conf_tête_tète!6__
     [tète|tètes] [baissée|baissées|baissé|baissés]
     [tète|tètes] [haute|hautes|basse|basses]
+    [tète|tètes] de [mule|linotte]
         <<- -1>> =\1.replace("è", "ê").replace("È", "Ê")            # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
-    >hocher ?@:W¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète|tètes]
+    >hocher ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète|tètes]
     [mal|maux] de [tète|tètes]
-    >tenir ?@:W¿ [tète|tètes]
+    >tenir ?@:[WX]¿ [tète|tètes]
         <<- --1>> =\-1.replace("è", "ê").replace("È", "Ê")          # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
 TEST: Cesse de nous tenir {{tète}}                                  ->> tête
@@ -9158,8 +9168,8 @@ __conf_voie_voix_vois_voit__
     voix [abdominales|anales|biliaires|carrossables|communales|expresss|interdites|intramusculaires|intraveineuses|piétonnes|principales|prioritaires|privées|publiques|désertes|romaines|appiennes|flaminiennes|ferrées|ferroviaires|lactées|lacrymales|aériennes|maritimes|fluviales|terrestres|navigables|détournées|déviées|buccales|digestives|urinaires|respiratoires|parallèles|administratives|diplomatiques|gouvernementales|législatives|hiérarchiques|rectilignes|sinueuses|souterraines|urbaines]
         <<- /conf/ -1>> voies       # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
-    >voix de [recours|perdition]
-        <<- -1>> voie|voies         # Confusion probable.|https://fr.wiktionary.org/wiki/voie
+    >voix [de|d’] [recours|perdition]
+        <<- /conf/ -1>> voie|voies  # Confusion probable.|https://fr.wiktionary.org/wiki/voie
 
 TEST: sur la bonne {{voix}}
 TEST: ces patients sont en {{voix}} de guérison.
@@ -9272,7 +9282,25 @@ TEST: il y aura entre {{autre chose}} des répercussions terribles.
 TEST: il y aura entre {{autre}} choses des répercussions terribles.
 
 
-# termes
+# nul et non avenu
+__sgpl_nul_et_non_avenu__
+    nul et non >avenue
+        <<- /sgpl/ not value(\-1, "|avenu|") --1>> avenu            # Accord avec “\1”.
+
+    nulle et non >avenue
+        <<- /sgpl/ not value(\-1, "|avenue|") --1>> avenue          # Accord avec “\1”.
+
+    nuls et non >avenue
+        <<- /sgpl/ not value(\-1, "|avenus|") --1>> avenus          # Accord avec “\1”.
+
+    nulles et non >avenue
+        <<- /sgpl/ not value(\-1, "|avenues|") --1>> avenues        # Accord avec “\1”.
+
+TEST: c’est nul et non {{avenue}}                       ->> avenu
+TEST: des éléments nuls et non {{avenues}}              ->> avenus
+
+
+# en termes de
 __sgpl_en_termes_de__
     en terme [de|d’]
         <<- /sgpl/ -2>> termes                                      # Dans la locution “en termes de”, mettez “terme” au pluriel.
@@ -10586,6 +10614,7 @@ __purge_locutions__
     [de|d’] gauche comme de droite
     [de|d’] génération en génération
     [de|d’] grande [taille|envergure|stature|valeur]
+    [de|d’] gré à gré
     [de|d’] gré ou de force
     [de|d’] guerre lasse
     [de|d’] haut en bas
@@ -10787,7 +10816,7 @@ __purge_locutions__
     en ?très¿ petit nombre
     en place publique
     en plein [air|cœur|essor|marasme|jour]
-    en pleine [gueule|figure|forme|poire|nuit|tronche]
+    en pleine [gueule|figure|forme|nuit|poire|tronche]
     en perte [de|d’] vitesse
     en ?[assez|très]¿ peu [de|d’] temps
     en ?[assez|très]¿ [piteux|piètre] état
@@ -11002,7 +11031,7 @@ __purge_locutions__
     pendant ce temps-là
     pendant plusieurs [heures|minutes|secondes|mois|semaines|jours|années|siècles|millénaires|décennies]
     pendant quelque temps
-    pendant qu’ il en est ?encore¿ temps
+    pendant qu’ il ?en¿ est ?encore¿ temps
     petit à petit
     peu [de|d’] temps auparavant
     peu ou prou
@@ -11855,6 +11884,7 @@ __simplication_substantifs__
     >livre de poche
     >machine à [café|coudre|laver|voter]
     >machine à remonter le temps
+    >maillot de bain
     >main d’ œuvre
     >maison de [passe|retraite]
     >mal de [tête|ventre|mer]
@@ -11873,10 +11903,11 @@ __simplication_substantifs__
     >mot de passe
     >motrice [>essence|>diésel|>diesel]
     >motion de [blâme|censure|défiance]
-    >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte]
+    >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     noix de [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
     >nue comme un ver
     >nue comme des vers
+    >nulle et non >avenue
     >oiseau de [malheur|nuit|proie]
     >oiseau de mauvais augure
     >onde de choc
@@ -11890,6 +11921,7 @@ __simplication_substantifs__
     >passation de pouvoir
     >pièce de [théâtre|monnaie]
     >pièce de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >pince à linge
     >plan [A|B|C]
     >planche de salut
     >pleine aux as
@@ -11937,7 +11969,7 @@ __simplication_substantifs__
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >témoin à charge
-    >tête de [linotte|déterré|déterrée|déterrés|déterrées]
+    >tête de [linotte|déterré|déterrée|déterrés|déterrées|mule]
     >têtue comme une [bourrique|mule]
     >têtue comme un [âne|bourriquot|mulet]
     >titre de [noblesse|propriété|séjour]
@@ -12855,6 +12887,7 @@ TEST: la pratique qui consiste à partir de soi conçoit toute parole et toute a
 TEST: ne souhaitent pas faire boîte à lettres commune
 TEST: La mondialisation, admet donc M. Obama, s’est accompagnée d’erreurs et de rapacité.
 TEST: Les démons ont forme animale.
+TEST: Là n’est pas le problème.
 
 
 
@@ -15968,6 +16001,9 @@ __conf_gré_grès__
     au grès [de|du|d’|des]
         <<- /conf/ -2>> gré                                     # Confusion probable. Le grès est une roche détritique.
 
+    de [grès|grés] [à|a] [grès|grés]
+        <<- /conf/ ->> de gré à gré                             # Confusion. Locution “de gré à gré”.|https://fr.wiktionary.org/wiki/de_gr%C3%A9_%C3%A0_gr%C3%A9
+
     de [grès|grés] ou de force
         <<- /conf/ -2>> gré                                     # Confusion. Le grès est une roche détritique.
 
@@ -15985,8 +16021,8 @@ __conf_gré_grès__
         <<- /conf/ -3>> gré                                     # Confusion. Locution “prendre en gré” pour dire “recevoir avec résignation”.|https://fr.wiktionary.org/wiki/prendre_en_gr%C3%A9
 
     >être [>gré|grès]
-        <<- /conf/ -1>> _                                       # Confusion probable. On dit “savoir gré” et non “être gré”. Ou bien, écrivez “être reconnaissant”.|https://fr.wiktionary.org/wiki/savoir_gr%C3%A9
-        <<- /conf/ -2>> reconnaissant                           # Confusion probable. On dit “savoir gré” et non “être gré”. Ou bien, écrivez “être reconnaissant”.|https://fr.wiktionary.org/wiki/savoir_gr%C3%A9
+        <<- /conf/ -1>> _                           # Confusion probable. On dit “savoir gré” et non “être gré”. Ou bien, écrivez “être reconnaissant”.|https://fr.wiktionary.org/wiki/savoir_gr%C3%A9
+        <<- /conf/ -2>> reconnaissant               # Confusion probable. On dit “savoir gré” et non “être gré”. Ou bien, écrivez “être reconnaissant”.|https://fr.wiktionary.org/wiki/savoir_gr%C3%A9
 
 TEST: il en sera fait à votre {{grès}}
 TEST: Il est venu contre son {{grès}}.
@@ -22002,6 +22038,7 @@ TEST: Le directeur de cabinet de Madame la rectrice était également présent.
 TEST: Une fois passé la porte, nous nous retrouvons dans une vaste salle
 TEST: Pourquoi aurait-il dû se préoccuper de ça ?
 TEST: Quel est le problème ? Je ne fais que ramener Paul à la raison.
+TEST: La voir se fêler ainsi lui noua la gorge.
 
 
 
