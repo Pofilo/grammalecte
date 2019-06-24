@@ -3747,7 +3747,7 @@ __tu_substantifs__
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
     face [a|à] face
-        <<- /tu/ morph(<1, ":D") ->> face-à-face                # Si vous employez cette locution comme un nm, mettez des traits d’union.|https://fr.wiktionary.org/wiki/face-%C3%A0-face
+        <<- /tu/ morph(<1, ":D") ->> face-à-face                # Si vous employez cette locution comme un nom, mettez des traits d’union.|https://fr.wiktionary.org/wiki/face-%C3%A0-face
 
     gagne >pain
         <<- /tu/ not morph(<1, ":O[sv]") ->> gagne-pain         # Il manque un trait d’union.
@@ -3851,6 +3851,9 @@ __tu_substantifs__
 
     [un|le|ce|du|mon|ton|son|notre|votre|leur] terre plein
         <<- /tu/ not value(>1, "|de|d’|") -2:3>> terre-plein    # Il manque probablement un trait d’union.|https://fr.wiktionary.org/wiki/terre-plein
+
+    >tête [à|a] >tête
+        <<- /tu/ morph(<1, ":D") ->> tête-à-tête                # Il manque les traits d’union.
 
     trompe l’ [œil|oeil]
         <<- /tu/ morph(<1, ":D") ->> trompe-l’œil               # Il manque un trait d’union.
@@ -4218,6 +4221,22 @@ __tu_lorsque__
 
 TEST: Elle y arriva {{lors qu’}}elle trouva l’astuce permettant l’ouverture de la porte.
 TEST: Dès lors qu’on sait comment s’y prendre, aucune raison de faillir.
+
+
+__tu_anciennes_graphies__
+    grand’chemin
+    grand’maman
+    grand’mère
+    grand’oncle
+    grand’père
+    grand’papa
+    grand’route
+    grand’rue
+    grand’ville
+        <<- /tu/ ->> =\1.replace("’", "-")                                      # Graphie désuète. Au lieu d’une apostrophe, employez plutôt un trait d’union.
+        <<- ~>> =\1.replace("’", "-")
+
+TEST: je suis allé dans la {{grand’rue}}.                           ->> grand-rue
 
 
 
@@ -5576,7 +5595,8 @@ __conf_de_dès_par_vconj__
         <<- /conf/ not \3.istitle() -3>> =suggSimil(\3, ":[NA]:.:[si]", True)                       # Incohérence avec “\1 \2” : “\3” est une forme verbale conjuguée.
 
     de  le  *WORD
-        <<- /conf/ morph(\3, ":[NAQ].*:[me]", ":[YG]") and not \3.istitle() -1:2>> du               # Incohérence avec “\1 \2” : “\3” est un nom ou un adjectif.
+        <<- /conf/ morph(\3, ":[NAQ].*:[me]", ":[YG]") and not \3.istitle()
+            and not (value(\3, "|mal|") and morph(>1, ":Y")) -1:2>> du                              # Incohérence avec “\1 \2” : “\3” est un nom ou un adjectif.
         <<- /conf/ morph(\3, ":[123][sp]") -3>> =suggVerbInfi(\3)                                   # Incohérence avec “\1 \2” : “\3” est une forme verbale conjuguée.
 
     de  la  *WORD
@@ -6396,6 +6416,7 @@ TEST: les méthodes de l’à-peu-près ne suffisent pas.
 __conf_à_substantifs__
     >arc a >poulie
     >arme a >feu
+    >armoire a >glace
     [>boîte|>boite] a >lettre
     >bombe a [eau|fragmentation|retardement]
     >brosse a [>dent|reluire]
@@ -6417,6 +6438,7 @@ __conf_à_substantifs__
     >machine a [café|coudre|laver|voter]
     >machine a >remonter le temps
     >matière a >réflexion
+    >montre a gousset
     >moule a [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >panier a >linge
     >papier a [>lettre|musique]
@@ -9065,12 +9087,19 @@ __conf_tête_tète!6__
     [tète|tètes] [baissée|baissées|baissé|baissés]
     [tète|tètes] [haute|hautes|basse|basses]
     [tète|tètes] de [mule|linotte]
-        <<- -1>> =\1.replace("è", "ê").replace("È", "Ê")            # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+        <<- /conf/ -1>> =\1.replace("è", "ê").replace("È", "Ê")     # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
     >hocher ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète|tètes]
     [mal|maux] de [tète|tètes]
     >tenir ?@:[WX]¿ [tète|tètes]
-        <<- --1>> =\-1.replace("è", "ê").replace("È", "Ê")          # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+        <<- /conf/ --1>> =\-1.replace("è", "ê").replace("È", "Ê")   # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
+
+    [tète|tètes] [à|a] [tète|tètes]
+    tète-à-tète
+    tètes-à-tètes
+    tète-a-tète
+    tètes-a-tètes
+        <<- /conf/ ->> tête-à-tête                                  # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
 TEST: Cesse de nous tenir {{tète}}                                  ->> tête
 TEST: impossible, avec mes maux de {{tète}}                         ->> tête
@@ -9092,7 +9121,7 @@ __conf_tout_à_coup__
     [tout|toute|toutes] à [>cou|>coût|>cout]
     [tout|toute|toutes] [a|ah|ha] [>cou|>coût|>cout|>coup]
     [tout|toute|toutes] [a|ah|ha] coup
-        <<- ->> tout à coup                                         # Confusion.|https://fr.wiktionary.org/wiki/tout_%C3%A0_coup
+        <<- /conf/ ->> tout à coup                                  # Confusion.|https://fr.wiktionary.org/wiki/tout_%C3%A0_coup
 
 TEST: ils sont {{tout à cous}} figés
 TEST: Mais {{toute a cou}}, plus rien ne fonctionnait.
@@ -9550,10 +9579,10 @@ __locutions_invariables__
     [plus|moins|autant]  que  [prévue|prévus|prévues]
         <<- /sgpl/ -3>> prévu                                                                       # Invariable. Implicitement, \1 que ce qui était prévu.
 
-    [plus|moins|aussi]  **  que  [prévue|prévus|prévues]
+    [plus|moins|aussi]  *WORD  que  [prévue|prévus|prévues]
         <<- /sgpl/ -4>> prévu                                                                       # Invariable. Implicitement, \1 \2 que ce qui était prévu.
 
-    [plus|moins|autant]  [de|d’]  **  que  [prévue|prévus|prévues]
+    [plus|moins|autant]  [de|d’]  *WORD  que  [prévue|prévus|prévues]
         <<- /sgpl/ -5>> prévu                                                                       # Invariable. Implicitement, \1 \2 \3 que ce qui était prévu.
 
     comme [annoncés|annoncée|annoncées]
@@ -9763,21 +9792,14 @@ __neg_ne_manquant__
     [<start>|,]  [ils|elles]    [lui|leur]                      en                      @:3p¬:Ov  [pas|rien|jamais|guère|point]
         <<- /neg/ -3>> ne \3                                                                        # Ne … \6 : il manque l’adverbe de négation.
 
-    [<start>|,]  [je|j’]        @>[aeéiouœ].*:1s¬:Ov              [pas|rien|jamais|guère|point]
-    [<start>|,]  tu             @>[aeéiouœ].*:2s¬:Ov              [pas|rien|jamais|guère|point]
-    [<start>|,]  [il|elle|on]   @>[aeéiouœ].*:3s¬:Ov              [pas|rien|jamais|guère|point]
-    [<start>|,]  nous           @>[aeéiouœ].*:1p¬:Ov              [pas|rien|jamais|guère|point]
-    [<start>|,]  vous           @>[aeéiouœ].*:2p¬:Ov              [pas|rien|jamais|guère|point]
-    [<start>|,]  [ils|elles]    @>[aeéiouœ].*:3p¬:Ov              [pas|rien|jamais|guère|point]
-        <<- /neg/ -3>> n’\3                                                                         # Ne … \4 : il manque l’adverbe de négation.
-
-    [<start>|,]  je             @>[bcdfgjklmnpqrstvwxz].*:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,]  tu             @>[bcdfgjklmnpqrstvwxz].*:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,]  [il|elle|on]   @>[bcdfgjklmnpqrstvwxz].*:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,]  nous           @>[bcdfgjklmnpqrstvwxz].*:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,]  vous           @>[bcdfgjklmnpqrstvwxz].*:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,]  [ils|elles]    @>[bcdfgjklmnpqrstvwxz].*:3p¬:Ov  [pas|rien|jamais|guère|point]
-        <<- /neg/ -3>> ne \3                                                                        # Ne … \4 : il manque l’adverbe de négation.
+    [<start>|,]  [je|j’]        @:1s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,]  tu             @:2s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,]  [il|elle|on]   @:3s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,]  nous           @:1p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,]  vous           @:2p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,]  [ils|elles]    @:3p¬:Ov    [pas|rien|jamais|guère|point]
+        <<- /neg/ morph(\3, ">[aâeéêiîoôuœæ]") -3>> n’\3                                            # Ne … \4 : il manque l’adverbe de négation.
+        <<- /neg/ __else__ -3>> ne \3                                                               # Ne … \4 : il manque l’adverbe de négation.
 
 TEST: __neg__ On {{a}} pas compris.
 TEST: __neg__ Il {{part}} pas encore.
@@ -10578,6 +10600,7 @@ __purge_locutions__
     d’ un commun accord
     d’ un pas [alerte|mesuré]
     d’ un peu partout
+    d’ un peu trop [près|loin]
     d’ une autre trempe
     d’ une [façon|manière] ou d’ une autre
     d’ une certaine [façon|manière]
@@ -11765,6 +11788,7 @@ __simplication_substantifs__
     >armer jusqu aux dents
     >arme de [poing|guerre]
     >arme de destruction massive
+    >armoire à >glace
     >argent de poche
     >arnaque à l’ assurance
     >article de presse
@@ -11898,8 +11922,9 @@ __simplication_substantifs__
     >mineure de moins de *NUM ans
     >mineure de moins de @:B ans
     >miroir aux alouettes
-    >monnaie [de|d’] [échange|réserve|singe]
     >mode de [paiement|scrutin|vie]
+    >monnaie [de|d’] [échange|réserve|singe]
+    >montre à gousset
     >mot de passe
     >motrice [>essence|>diésel|>diesel]
     >motion de [blâme|censure|défiance]
@@ -12620,6 +12645,7 @@ __purge_locutions_verbales__
     >faire [sens|sensation]
     >faire table rase
     >faire ce que bon [me|te|lui|nous|vous|leur] semble
+    >fermer à [clé|clef]
     >finir en eau de boudin
     >foutre en l’ air
     >garder contenance
@@ -12687,6 +12713,7 @@ __conf_locutions_verbales__
     >battre a plate couture
     [>brûler|>bruler] a vif
     >chauffer a blanc
+    >fermer a [>clé|>clef]
     [>gonfler|>regonfler] a bloc
     >jeter a terre
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>nue|>plat|>terre]
@@ -16389,8 +16416,6 @@ TEST: Elle n’a jamais mis la main à la {{patte}}.
 __conf_péché_pêcher__
     >pêcher par excès [de|d’]
     >pêcher par [insuffisance|omission|orgueil]
-    >pêcher [à|a] la ligne
-    >pêcher @:D [>poisson|>crabe|>langouste|>crevette|>thon|>huître|>huitre|>moule]
         <<- /conf/ -1>> pécher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
     [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] @:D ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
@@ -16402,9 +16427,9 @@ __conf_péché_pêcher__
         <<- /conf/ \1.endswith("s") -1>> péchés                 # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
         <<- /conf/ __else__ -1>> péché                          # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
 
-    >pécher [du|d’|de|des|la|le|l’|les|à|au|aux] [>ablette|>oblade|>albacore|>anguille|>baleine|>bar|>barracuda|>blageon|>blennie|>bonite|>bouvière|>brème|>brochet|>bulot|>cabillaud|>cabot|>calamar|>canard|>carassin|>carnassier|>carpe|>chabot|>chevaine|>chevenne|>chevesne|>colin|>congre|>coque|>coquillage|>coquille|>corb|>crabe|>crevette|>crustacé|>dorade|>dauphin|>écrevisse|>éponge|>espadon|>épinoche|>épinochette|>esturgeon|>étrille|>financement|>gardon|>girelle|>gobie|>goujon|>grémille|>grondin|>hareng|>homard|>hotu|>huitre|>huître|>langouste|>langoustine|>leurre|>liche|>loche|>lotte|>marbré|>marsouin|>merlan|>merlu|>mérou|>mollusque|>morue|>mostelle|>mustelle|>mulet|>murène|>omble|>ormeau|>oursin|>pageau|>pagel|>pageot|>palourde|>patelle|>perche|>pétoncle|>moule|>pieuvre|>piranha|>plie|>poisson|>poulpe|>praire|>raie|>rascasse|>requin|>rotengle|>rouget|>sandre|>sardine|>salmonidé|>sar|>saumon|>saupe|>seiche|>silure|>sole|>spirlin|>tanche|>thon|>truite|>turbot|>vairon|>vandoise|>vive|anchois|>barbeau|>bigorneau|black-bass|>couteau|ligne|>maquereau|saint-jacques]
+    >pécher [du|d’|de|des|la|le|l’|les|à|au|aux] [>ablette|>oblade|>albacore|>anguille|>baleine|>bar|>barracuda|>blageon|>blennie|>bonite|>bouvière|>brème|>brochet|>bulot|>cabillaud|>cabot|>calamar|>canard|>carassin|>carnassier|>carpe|>chabot|>chevaine|>chevenne|>chevesne|>colin|>congre|>coque|>coquillage|>coquille|>corb|>crabe|>crevette|>crustacé|>dorade|>dauphin|>écrevisse|>éponge|>espadon|>épinoche|>épinochette|>esturgeon|>étrille|>financement|>gardon|>girelle|>gobie|>goujon|>grémille|>grondin|>hareng|>homard|>hotu|>huitre|>huître|>langouste|>langoustine|>leurre|>liche|>loche|>lotte|>marbré|>marsouin|>merlan|>merlu|>mérou|>mollusque|>morue|>mostelle||>moule|>mustelle|>mulet|>murène|>omble|>ormeau|>oursin|>pageau|>pagel|>pageot|>palourde|>patelle|>perche|>pétoncle|>moule|>pieuvre|>piranha|>plie|>poisson|>poulpe|>praire|>raie|>rascasse|>requin|>rotengle|>rouget|>sandre|>sardine|>salmonidé|>sar|>saumon|>saupe|>seiche|>silure|>sole|>spirlin|>tanche|>thon|>truite|>turbot|>vairon|>vandoise|>vive|anchois|>barbeau|>bigorneau|black-bass|>couteau|ligne|>maquereau|saint-jacques]
     >pécher [de|à] [la|l’] [>ablette|>oblade|>albacore|>anguille|>baleine|>bar|>barracuda|>blageon|>blennie|>bonite|>bouvière|>brème|>brochet|>bulot|>cabillaud|>cabot|>calamar|>canard|>carassin|>carnassier|>carpe|>chabot|>chevaine|>chevenne|>chevesne|>colin|>congre|>coque|>coquillage|>coquille|>corb|>crabe|>crevette|>crustacé|>dorade|>dauphin|>écrevisse|>éponge|>espadon|>épinoche|>épinochette|>esturgeon|>étrille|>financement|>gardon|>girelle|>gobie|>goujon|>grémille|>grondin|>hareng|>homard|>hotu|>huitre|>huître|>langouste|>langoustine|>leurre|>liche|>loche|>lotte|>marbré|>marsouin|>merlan|>merlu|>mérou|>mollusque|>morue|>mostelle|>mustelle|>mulet|>murène|>omble|>ormeau|>oursin|>pageau|>pagel|>pageot|>palourde|>patelle|>perche|>pétoncle|>moule|>pieuvre|>piranha|>plie|>poisson|>poulpe|>praire|>raie|>rascasse|>requin|>rotengle|>rouget|>sandre|>sardine|>salmonidé|>sar|>saumon|>saupe|>seiche|>silure|>sole|>spirlin|>tanche|>thon|>truite|>turbot|>vairon|>vandoise|>vive|anchois|>barbeau|>bigorneau|black-bass|>couteau|ligne|>maquereau|saint-jacques]
-        <<- /conf/ -1>> pécher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
+        <<- /conf/ -1>> pêcher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
 TEST: Il {{pêche}} par excès de confiance.
 TEST: commettre un {{pêcher}}.
@@ -26332,7 +26357,7 @@ TEST: Nos pères, tout grossiers, l’avaient beaucoup meilleur,
 TEST: Et je prise bien moins tout ce que l’on admire,
 TEST: Qu’une vieille chanson que je m’en vais vous dire.
 TEST: Si le roi m’avait donné
-TODO: Paris, {{sa grand’ville}},
+TEST: Paris, sa grand-ville,
 TEST: Et qu’il me fallût quitter
 TEST: L’amour de ma mie,
 TEST: Je dirais au roi Henri :
@@ -26344,7 +26369,7 @@ TEST: Mais ne voyez-vous pas que cela vaut bien mieux
 TEST: Que ces colifichets dont le bon sens murmure,
 TEST: Et que la passion parle là toute pure ?
 TEST: Si le roi m’avait donné
-TODO: Paris, {{sa grand’ville}},
+TEST: Paris, sa grand-ville,
 TEST: Et qu’il me fallût quitter…
 TEST: L’amour de ma mie,
 TEST: Je dirais au roi Henri :
@@ -26929,7 +26954,7 @@ TEST: Pour ne pas prendre bien cet avis profitable,
 TEST: Et pour l’attribuer qu’aux mouvements secrets
 TEST: D’un zèle qui m’attache à tous vos intérêts.
 TEST: CÉLIMÈNE. Madame, j’ai beaucoup de grâces à vous rendre.
-TODO: Un tel avis m’oblige ; et, loin {{de le}} mal prendre,
+TEST: Un tel avis m’oblige ; et, loin de le mal prendre,
 TEST: J’en prétends reconnaître à l’instant la faveur,
 TEST: Par un avis aussi qui touche votre honneur ;
 TEST: Et comme je vous vois vous montrer mon amie,
