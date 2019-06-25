@@ -11023,7 +11023,7 @@ __purge_locutions__
     par acquit [de|d’] conscience
     par [beau|mauvais] temps
     par bien des [aspects|côtés]
-    par bonté [de|d’] cœur
+    par bonté [de|d’] [âme|cœur]
     par ce biais
     par certains [aspects|côtés]
     par gros temps
@@ -16358,6 +16358,15 @@ TEST: Ils ne viendront probablement {{par}}…
 TEST: Elles ne s’en soucient {{par}} vraiment, quoi qu’elles en disent.
 
 
+# par monts et par vaux
+__par_monts_et_par_vaux__
+    [par|pare|pares|>part] [mon|mont|mons|>mont] [et|est|es|ai|ais|aie|aies] [par|pare|pares|>part] [vos|>veau|vaux]
+        <<- /conf/ ->> par monts et par vaux                    # Confusion. Locution “par monts et par vaux”.|https://fr.wiktionary.org/wiki/par_monts_et_par_vaux
+
+TEST: voyager par monts et par vaux.
+TEST: {{pare mont est par veau}}
+
+
 # parti / partie
 __prendre_parti_partie__
     >prendre [>partie|partis]
@@ -16370,7 +16379,7 @@ __prendre_parti_partie__
         <<- /conf/ -2>> partie                                  # Confusion. On écrit « faire partie ».
 
     >juge et >parti
-        <<- /conf/ ->> juge et partie|juges et parties          # Confusion. On écrit « être juge et partie ».
+        <<- /conf/ ->> juge et partie|juges et parties          # Confusion. On écrit « juge et partie ».
 
     >prendre a [>partie|>parti]
     >prendre à [parties|>parti]
@@ -20430,6 +20439,50 @@ TEST: Aller chercher l’air pur à la campagne est peine perdue.
 TEST: tout est peine perdue.
 
 
+#### et / est
+__conf_et_est__
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  @:3p¬:G
+        <<- /conf/ -4>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  *WORD
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        <<- /conf/ morph(\4, ":[123][sp]", ":[NAGW]") -7>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD
+        ||   >avoir  *WORD
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        <<- /conf/ morph(\4, ":(?:[123][sp]|P)") and morph(\5, ":Q") -8>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+    <start>  [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD
+        ||   >être  *WORD
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  est
+        ||   [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quel|quelle|quels|quelles|quelques|certains|certaines|plusieurs]  *WORD  <end>
+        <<- /conf/ morph(\4, ":(?:[123][sp]|P)") and morph(\5, ":[QA]") -8>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+    <start>  *WORD  est  *WORD  @:3p¬:G
+        <<- /conf/ (morph(\2, ":M") and morph(\4, ":M")) or (morph(\2, ":Y") and morph(\4, ":Y")) -3>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+    <start>  [je|tu|il|elle|on|nous|vous|ils|elles]  *WORD  est  [je|tu|il|elle|on|nous|vous|ils|elles]  *WORD
+        <<- /conf/ morph(\3, ":[123][sp]") and morph(\6, ":[123][sp]") -4>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+TEST: la table {{est}} la chaise m’appartiennent.                                   ->> et
+TEST: quelques plats {{est}} plusieurs conserves seront mis à ta disposition.       ->> et
+TEST: les ouvriers commencèrent l’évaluation {{est}} les travaux                    ->> et
+TEST: Paulette {{est}} Pierrette sont incollables sur le sujet.                     ->> et
+TEST: Manger {{est}} dormir demeurent ses occupations favorites.                    ->> et
+TEST: Elle arriva {{est}} ils se mirent à rire                                      ->> et
+TEST: ce matin pluvieux l’ambiance est à présent la pire.
+
+
 #### veillez / veuillez
 __conf_veillez__
     [<start>|,]  veuillez  à  [ne|n’|me|m’|nous|@:Y]
@@ -20481,7 +20534,7 @@ __inte_union_je__
 
     *WORD  ~.[is]$  je
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GNW]") and not value(\1, "|je|j’|tu|") and morph(>1, ":|<end>|,", ":1s")
-        -2:3>> \2-je                                                                                   # Forme interrogative ? Mettez un trait d’union.
+        -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{mangé je}} {{ça}} avec dégoût ?
 TEST: {{viendrais je}} à la fête ?
@@ -20504,11 +20557,11 @@ TEST: et toi, {{as tu}} découvert le secret de l’immortalité ?
 __inte_union_il_on__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand]  ~.[td]$  [il|on]
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]") and morph(>1, ":|<end>|,", ":3s")
-        -2:3>> \2-\3                                                                                   # Forme interrogative ? Mettez un trait d’union.
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~.[td]$  [il|on]
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GNW]") and not value(\1, "|ce|il|elle|on|") and morph(>1, ":|<end>|,", ":3s")
-        -2:3>> \2-\3                                                                                   # Forme interrogative ? Mettez un trait d’union.
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{prend on}} le temps d’y réfléchir ?
 TEST: De quel droit {{vient il}} m’{{ennuyer}} ?
@@ -20711,7 +20764,7 @@ __infi_divers__
     pourquoi                ~..(?:ée?s?|ez)$
     quand                   ~..(?:ée?s?|ez)$
     où                      ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
+        <<- /infi/ morph(\-1, ":(?:Q|2p)", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
 TEST: de manière à {{obligé}} ces gens
@@ -20723,6 +20776,7 @@ TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les 
 TEST: Comment {{pensé}} à ces choses sans perdre l’esprit.
 TEST: comment {{abandonnez}} au début du match sans passer pour un lâcheur
 TEST: Avec quoi {{fabriqué}} un arc ?
+TEST: des espaces différents de ceux où se crée le chiffre d’affaires et où elles extraient les données
 
 
 __infi_par_pour_sans__
