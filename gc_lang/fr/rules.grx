@@ -4543,8 +4543,8 @@ TEST: Je l’aime {{très beaucoup}}.
 __bs_vidéoprotection__
     >vidéoprotection
     >vidéo-protection
-        <<- /bs/ ->> vidéosurveillance|télésurveillance|surveillance des populations
-        # Novlangue. Double pensée. Utilisez un terme plus approprié.|http://fr.wikipedia.org/wiki/Doublepens%C3%A9e
+        <<- /bs/ ->> surveillance des populations|surveillance des lieux publics|vidéosurveillance|télésurveillance
+        # Novlangue. Terme imaginé par le gouvernement français pour donner une image positive de la vidéosurveillance.|http://fr.wikipedia.org/wiki/Doublepens%C3%A9e
 
 TEST: les méfaits de la {{vidéoprotection}}
 
@@ -17444,7 +17444,7 @@ TEST: après avoir mis à jour sont {{profile}}.
 # fort
 __sgpl_verbe_fort__
     forts
-        <<- /sgpl/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q|Y)|>(?:affirmer|trouver|croire|désirer|estime|préférer|penser|imaginer|voir|vouloir|aimer|adorer|souhaiter)/")
+        <<- /sgpl/ morph(<1, ":V", ":[AN].*:[me]:[pi]|>(?:être|sembler|devenir|re(?:ster|devenir)|para[îi]tre|appara[îi]tre)/.*:(?:[123]p|P|Q|Y)|>(?:affirmer|trouver|croire|désirer|estimer|préférer|penser|imaginer|voir|vouloir|aimer|adorer|rendre|souhaiter)/")
             and not morph(>1, ":A.*:[me]:[pi]")
         ->> fort                                                # Confusion probable. S’il s’agit ici de l’adverbe “fort” (équivalent de “fortement”), écrivez-le au singulier.
 
@@ -17457,6 +17457,7 @@ TEST: elles les veulent forts et astucieux.
 TEST: les écarts ont été plus forts en une génération
 TEST: Avec le même nombre de bulletins, les xénophobes apparaîtront plus forts.
 TEST: Pour leur permettre d’être plus forts face aux maîtres de tous bords, patrons, maris ou bureaucrates.
+TEST: Il nous rend forts.
 
 
 # bien
@@ -20474,12 +20475,22 @@ __conf_et_est__
         <<- /conf/ morph(\3, ":[123][sp]") and morph(\6, ":[123][sp]") -4>> et
         # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
 
+    <start>  [je|tu|il|elle|on|nous|vous|ils|elles]  >être  *WORD  est
+        <<- /conf/ morph(\-2, ":[QA]") --1>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
+    <start>  [je|tu|il|elle|on|nous|vous|ils|elles]  >avoir  *WORD  est
+        <<- /conf/ morph(\-2, ":Q") --1>> et
+        # Confusion probable : “est” une forme conjuguée du verbe “être”. Pour la conjonction de coordination, écrivez “et”.|https://fr.wiktionary.org/wiki/et
+
 TEST: la table {{est}} la chaise m’appartiennent.                                   ->> et
 TEST: quelques plats {{est}} plusieurs conserves seront mis à ta disposition.       ->> et
 TEST: les ouvriers commencèrent l’évaluation {{est}} les travaux                    ->> et
 TEST: Paulette {{est}} Pierrette sont incollables sur le sujet.                     ->> et
 TEST: Manger {{est}} dormir demeurent ses occupations favorites.                    ->> et
 TEST: Elle arriva {{est}} ils se mirent à rire                                      ->> et
+TEST: ils sont finis {{est}} on ne les reverra plus                                 ->> et
+TEST: Elles avaient vendu {{est}} donné beaucoup de leurs vieux livres              ->> et
 TEST: ce matin pluvieux l’ambiance est à présent la pire.
 
 
