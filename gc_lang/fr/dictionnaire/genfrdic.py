@@ -1502,16 +1502,17 @@ class StatsLex:
 
 
 def createThesaurusPackage (spBuild, sVersion, spCopy=""):
-    print("Création du thésaurus")
+    print(" * Création du thésaurus")
     spThesaurus = spBuild+"/thesaurus-v"+sVersion
     dir_util.mkpath(spThesaurus)
     thes_build.build("thesaurus/thes_fr.dat", "thesaurus/synsets_fr.dat", spThesaurus)
     file_util.copy_file('thesaurus/README_thes_fr.txt', spThesaurus)
     if spCopy:
         # copy in libreoffice extension package
-        file_util.copy_file(spThesaurus+'/thes_fr.dat', spCopy)
-        file_util.copy_file(spThesaurus+'/thes_fr.idx', spCopy)
-        file_util.copy_file(spThesaurus+'/README_thes_fr.txt', spCopy)
+        print("   Copie du thésaurus dans:", spCopy)
+        print(file_util.copy_file(spThesaurus+'/thes_fr.dat', spCopy))
+        print(file_util.copy_file(spThesaurus+'/thes_fr.idx', spCopy))
+        print(file_util.copy_file(spThesaurus+'/README_thes_fr.txt', spCopy))
 
 
 def main ():
@@ -1581,7 +1582,7 @@ def main ():
     oFrenchDict.createFiles(spBuild, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], xArgs.mode, xArgs.simplify)
     oFrenchDict.createLexiconPackages(spBuild, xArgs.verdic, oStatsLex, spLexiconDestGL)
     oFrenchDict.createFileIfqForDB(spBuild)
-    createThesaurusPackage(spBuild, xArgs.verdic, spLibreOfficeExtDestGL)
+    createThesaurusPackage(spBuild, "2.4", spLibreOfficeExtDestGL)
     oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spLibreOfficeExtDestGL)
     oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spMozillaExtDestGL)
     oFrenchDict.createDictConj(spBuild, spDataDestGL)
