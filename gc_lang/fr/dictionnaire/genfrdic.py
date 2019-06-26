@@ -1510,9 +1510,9 @@ def createThesaurusPackage (spBuild, sVersion, spCopy=""):
     if spCopy:
         # copy in libreoffice extension package
         print("   Copie du thésaurus dans:", spCopy)
-        print(file_util.copy_file(spThesaurus+'/thes_fr.dat', spCopy))
-        print(file_util.copy_file(spThesaurus+'/thes_fr.idx', spCopy))
-        print(file_util.copy_file(spThesaurus+'/README_thes_fr.txt', spCopy))
+        file_util.copy_file(spThesaurus+'/thes_fr.dat', spCopy)
+        file_util.copy_file(spThesaurus+'/thes_fr.idx', spCopy)
+        file_util.copy_file(spThesaurus+'/README_thes_fr.txt', spCopy)
 
 
 def main ():
