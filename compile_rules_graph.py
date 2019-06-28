@@ -75,9 +75,8 @@ def prepareFunction (sCode):
 
 def genTokenLines (sTokenLine, dDef):
     "tokenize a string and return a list of lines of tokens"
-    lToken = sTokenLine.split()
     lTokenLines = []
-    for sToken in lToken:
+    for sToken in sTokenLine.split():
         # replace merger characters by spaces
         if "␣" in sToken:
             sToken = sToken.replace("␣", " ")
@@ -206,7 +205,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         nPriority = dOptPriority.get(sOption, 4)
 
     # valid action?
-    m = re.search(r"(?P<action>[-~=/!>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
+    m = re.search(r"(?P<action>[-=~/!>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
     if not m:
         print(" # Error. No action found at: ", sActionId)
         return None
@@ -363,7 +362,7 @@ def make (lRule, dDef, sLang, dOptPriority):
                 print("Syntax error in rule group: ", sLine, " -- line:", i)
                 exit()
         elif re.search("^    +<<- ", sLine) or (sLine.startswith("        ") and not sLine.startswith("        ||")) \
-                or re.search("^    +#", sLine) or re.search(r"[-~=>/!](?:-?\d\.?(?::\.?-?\d+|)|)>> ", sLine) :
+                or re.search("^    +#", sLine) or re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|)>> ", sLine) :
             # actions
             sActions += " " + sLine.strip()
         elif re.match("[  ]*$", sLine):
