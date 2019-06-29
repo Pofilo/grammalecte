@@ -1721,13 +1721,13 @@ TEST: elle s’en est allée avec quelqu’une…
 !!!
 
 __tag_mots_entre_guillemets__
-    « *WORD  »
+    «  *WORD  »
         <<- space_after(\1, 0, 1) and space_after(\2, 0, 1) /2>> eg1mot
 
-    « *WORD *WORD
+    «  *WORD  *WORD
         <<- space_after(\1, 0, 1) /2:0>> egxmot
 
-    *WORD *WORD »
+    *WORD  *WORD  »
         <<- space_after(\2, 0, 1) /1:2>> egxmot
 
     ["|“]  *WORD  ["|”]
@@ -1784,31 +1784,31 @@ __purge_chapitres_références__
 
 __da_le_la_les_leur__
     je [le|la|les|leur]
-        <<- not morph(<1, ":1s") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":1s") =>> select(\2, ":Ov")
 
     tu [le|la|les|leur]
-        <<- not morph(<1, ":(?:2s|V0)") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":(?:2s|V0)") =>> select(\2, ":Ov")
 
     [il|on] [le|la|les|leur]
-        <<- not morph(<1, ":3s") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":3s") =>> select(\2, ":Ov")
 
     elle [le|la|les|leur]
-        <<- not morph(<1, ":(?:3s|R)") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":(?:3s|R)") =>> select(\2, ":Ov")
 
     nous [le|la|les|leur]
-        <<- not morph(<1, ":(?:1p|R)") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":(?:1p|R)") =>> select(\2, ":Ov")
 
     vous [le|la|les|leur]
-        <<- not morph(<1, ":(?:2p|R)") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":(?:2p|R)") =>> select(\2, ":Ov")
 
     ils [le|la|les|leur]
-        <<- not morph(<1, ":3p") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":3p") =>> select(\2, ":Ov")
 
     elles [le|la|les|leur]
-        <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Oo")
+        <<- not morph(<1, ":(?:3p|R)") =>> select(\2, ":Ov")
 
     [ne|n’|me|m’|te|t’|se|s’] [le|la|les|leur]
-        <<- =>> select(\2, ":Oo")
+        <<- =>> select(\2, ":Ov")
 
     le   @:N¬*
         <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
@@ -15757,17 +15757,17 @@ TEST: On ne s’intéresse pas à l’école ni à l’âge, mais aux compétenc
 
 # et / est
 __conf_est_et__
-    <start>  [le|la|l’|ce|cet|cette|mon|ma|ta|sa|notre|votre|leur|quel|quel]  *WORD  et  *WORD  <end>
-        <<- /conf/ morph(\3, ":[NA].*:[is]", ":G") and morph(\5, ":[QA]", ":M") and \5.islower()
-        -4>> est                                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
+    <start>  [le|la|l’|ce|cet|cette|mon|ma|ta|sa|notre|votre|leur|quel|quelle]  *WORD  ?[lui|leur|nous|vous]¿  et  *WORD  <end>
+        <<- /conf/ morph(\3, ":[NA].*:[is]", ":G") and morph(\-2, ":[QA]", ":M") and \-2.islower()
+        --3>> est                               # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
-    <start>  [son|ton]  *WORD  et  *WORD  <end>
-        <<- /conf/ morph(\3, ":N.*:[is]", ":[GA]") and morph(\5, ":[QA]", ":M") and \5.islower()
-        -4>> est                                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
+    <start>  [son|ton]  *WORD  ?[lui|leur|nous|vous]¿  et  *WORD  <end>
+        <<- /conf/ morph(\3, ":N.*:[is]", ":[GA]") and morph(\-2, ":[QA]", ":M") and \-2.islower()
+        --3>> est                               # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
-    <start>  *WORD  et  *WORD  <end>
-        <<- /conf/ morph(\2, ":M", ":[GA]") and morph(\4, ":[QA]", ":M") and \4.islower()
-        -3>> est                                # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
+    <start>  *WORD  ?[lui|leur|nous|vous]¿  et  *WORD  <end>
+        <<- /conf/ morph(\2, ":M", ":[GA]") and morph(\-2, ":[QA]", ":M") and \-2.islower()
+        --3>> est                               # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
 TEST: ce chien {{et}} malade.
 TEST: ton chat {{et}} cinglé.
@@ -15785,13 +15785,14 @@ __conf_où_est__
         <<- /conf/ -2>> est                             # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
     où  et
-        <<- /conf/ not value(>1, "|quand|pourquoi|comment|quel|quels|quelle|quelles|de|") and morph(>1, ":D", ":R")
+        <<- /conf/ morph(>1, ":D", ":R|>(?:quell?e?s?|de)/")
         -2>> est                                        # Confusion probable : “et” est une conjonction de coordination. Pour le verbe être à la 3ᵉ personne du singulier, écrivez “est”.
 
 TEST: où {{et}} cet ennemi ?
 TEST: où {{et}} l’homme qui est passé ce matin ?
 TEST: Je veux savoir où et quand, où et pouquoi.
 TEST: où et avec qui ?
+TEST: je veux savoir où et lequel je dois flinguer
 
 
 __conf_été_était__
