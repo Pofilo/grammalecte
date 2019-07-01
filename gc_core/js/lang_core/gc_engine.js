@@ -376,19 +376,19 @@ class TextParser {
         // update <sSentence> and retokenize
         this.sSentence = sSentence;
         let lNewToken = Array.from(_oTokenizer.genTokens(sSentence, true));
-        for (let dToken of lNewToken) {
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("lMorph")) {
-                dToken["lMorph"] = this.dTokenPos.get(dToken["nStart"])["lMorph"];
+        for (let oToken of lNewToken) {
+            if (this.dTokenPos.gl_get(oToken["nStart"], {}).hasOwnProperty("lMorph")) {
+                oToken["lMorph"] = this.dTokenPos.get(oToken["nStart"])["lMorph"];
             }
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("aTags")) {
-                dToken["aTags"] = this.dTokenPos.get(dToken["nStart"])["aTags"];
+            if (this.dTokenPos.gl_get(oToken["nStart"], {}).hasOwnProperty("aTags")) {
+                oToken["aTags"] = this.dTokenPos.get(oToken["nStart"])["aTags"];
             }
         }
         this.lToken = lNewToken;
         this.dTokenPos.clear();
-        for (let dToken of this.lToken) {
-            if (dToken["sType"] != "INFO") {
-                this.dTokenPos.set(dToken["nStart"], dToken);
+        for (let oToken of this.lToken) {
+            if (oToken["sType"] != "INFO") {
+                this.dTokenPos.set(oToken["nStart"], oToken);
             }
         }
         if (bDebug) {
@@ -397,22 +397,22 @@ class TextParser {
         }
     }
 
-    * _getNextPointers (dToken, oGraph, oPointer, bDebug=false) {
-        // generator: return nodes where <dToken> “values” match <oNode> arcs
+    * _getNextPointers (oToken, oGraph, oPointer, bDebug=false) {
+        // generator: return nodes where <oToken> “values” match <oNode> arcs
         try {
             let oNode = oGraph[oPointer["iNode"]];
             let iToken1 = oPointer["iToken1"];
             let bTokenFound = false;
             // token value
-            if (oNode.hasOwnProperty(dToken["sValue"])) {
+            if (oNode.hasOwnProperty(oToken["sValue"])) {
                 if (bDebug) {
-                    console.log("  MATCH: " + dToken["sValue"]);
+                    console.log("  MATCH: " + oToken["sValue"]);
                 }
-                yield { "iToken1": iToken1, "iNode": oNode[dToken["sValue"]] };
+                yield { "iToken1": iToken1, "iNode": oNode[oToken["sValue"]] };
                 bTokenFound = true;
             }
-            if (dToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
-                let sValue = dToken["sValue"].toLowerCase();
+            if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+                let sValue = oToken["sValue"].toLowerCase();
                 if (oNode.hasOwnProperty(sValue)) {
                     if (bDebug) {
                         console.log("  MATCH: " + sValue);
@@ -421,8 +421,8 @@ class TextParser {
                     bTokenFound = true;
                 }
             }
-            else if (dToken["sValue"].gl_isUpperCase()) {
-                let sValue = dToken["sValue"].toLowerCase();
+            else if (oToken["sValue"].gl_isUpperCase()) {
+                let sValue = oToken["sValue"].toLowerCase();
                 if (oNode.hasOwnProperty(sValue)) {
                     if (bDebug) {
                         console.log("  MATCH: " + sValue);
@@ -430,7 +430,7 @@ class TextParser {
                     yield { "iToken1": iToken1, "iNode": oNode[sValue] };
                     bTokenFound = true;
                 }
-                sValue = dToken["sValue"].gl_toCapitalize();
+                sValue = oToken["sValue"].gl_toCapitalize();
                 if (oNode.hasOwnProperty(sValue)) {
                     if (bDebug) {
                         console.log("  MATCH: " + sValue);
@@ -440,12 +440,12 @@ class TextParser {
                 }
             }
             // regex value arcs
-            if (dToken["sType"] != "INFO"  &&  dToken["sType"] != "PUNC"  &&  dToken["sType"] != "SIGN") {
+            if (oToken["sType"] != "INFO"  &&  oToken["sType"] != "PUNC"  &&  oToken["sType"] != "SIGN") {
                 if (oNode.hasOwnProperty("<re_value>")) {
                     for (let sRegex in oNode["<re_value>"]) {
                         if (!sRegex.includes("¬")) {
                             // no anti-pattern
-                            if (dToken["sValue"].search(sRegex) !== -1) {
+                            if (oToken["sValue"].search(sRegex) !== -1) {
                                 if (bDebug) {
                                     console.log("  MATCH: ~" + sRegex);
                                 }
@@ -455,10 +455,10 @@ class TextParser {
                         } else {
                             // there is an anti-pattern
                             let [sPattern, sNegPattern] = sRegex.split("¬", 2);
-                            if (sNegPattern && dToken["sValue"].search(sNegPattern) !== -1) {
+                            if (sNegPattern && oToken["sValue"].search(sNegPattern) !== -1) {
                                 continue;
                             }
-                            if (!sPattern || dToken["sValue"].search(sPattern) !== -1) {
+                            if (!sPattern || oToken["sValue"].search(sPattern) !== -1) {
                                 if (bDebug) {
                                     console.log("  MATCH: ~" + sRegex);
                                 }
@@ -470,10 +470,10 @@ class TextParser {
                 }
             }
             // analysable tokens
-            if (dToken["sType"].slice(0,4) == "WORD") {
+            if (oToken["sType"].slice(0,4) == "WORD") {
                 // token lemmas
                 if (oNode.hasOwnProperty("<lemmas>")) {
-                    for (let sLemma of _oSpellChecker.getLemma(dToken["sValue"])) {
+                    for (let sLemma of _oSpellChecker.getLemma(oToken["sValue"])) {
                         if (oNode["<lemmas>"].hasOwnProperty(sLemma)) {
                             if (bDebug) {
                                 console.log("  MATCH: >" + sLemma);
@@ -485,7 +485,7 @@ class TextParser {
                 }
                 // regex morph arcs
                 if (oNode.hasOwnProperty("<re_morph>")) {
-                    let lMorph = (dToken.hasOwnProperty("lMorph")) ? dToken["lMorph"] : _oSpellChecker.getMorph(dToken["sValue"]);
+                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
                     if (lMorph.length > 0) {
                         for (let sRegex in oNode["<re_morph>"]) {
                             if (!sRegex.includes("¬")) {
@@ -529,8 +529,8 @@ class TextParser {
                 }
             }
             // token tags
-            if (dToken.hasOwnProperty("aTags") && oNode.hasOwnProperty("<tags>")) {
-                for (let sTag of dToken["aTags"]) {
+            if (oToken.hasOwnProperty("aTags") && oNode.hasOwnProperty("<tags>")) {
+                for (let sTag of oToken["aTags"]) {
                     if (oNode["<tags>"].hasOwnProperty(sTag)) {
                         if (bDebug) {
                             console.log("  MATCH: /" + sTag);
@@ -544,7 +544,7 @@ class TextParser {
             if (oNode.hasOwnProperty("<meta>")) {
                 for (let sMeta in oNode["<meta>"]) {
                     // no regex here, we just search if <oNode["sType"]> exists within <sMeta>
-                    if (sMeta == "*" || dToken["sType"] == sMeta) {
+                    if (sMeta == "*" || oToken["sType"] == sMeta) {
                         if (bDebug) {
                             console.log("  MATCH: *" + sMeta);
                         }
@@ -552,7 +552,7 @@ class TextParser {
                         bTokenFound = true;
                     }
                     else if (sMeta.includes("¬")) {
-                        if (!sMeta.includes(dToken["sType"])) {
+                        if (!sMeta.includes(oToken["sType"])) {
                             if (bDebug) {
                                 console.log("  MATCH: *" + sMeta);
                             }
@@ -569,7 +569,7 @@ class TextParser {
             // Warning! Recurssion!
             if (oNode.hasOwnProperty("<>")) {
                 let oPointer2 = { "iToken1": iToken1, "iNode": oNode["<>"], "bKeep": true };
-                yield* this._getNextPointers(dToken, oGraph, oPointer2, bDebug);
+                yield* this._getNextPointers(oToken, oGraph, oPointer2, bDebug);
             }
         }
         catch (e) {
@@ -582,18 +582,18 @@ class TextParser {
         let lPointer = [];
         let bTagAndRewrite = false;
         try {
-            for (let [iToken, dToken] of this.lToken.entries()) {
+            for (let [iToken, oToken] of this.lToken.entries()) {
                 if (bDebug) {
-                    console.log("TOKEN: " + dToken["sValue"]);
+                    console.log("TOKEN: " + oToken["sValue"]);
                 }
                 // check arcs for each existing pointer
                 let lNextPointer = [];
                 for (let oPointer of lPointer) {
-                    lNextPointer.push(...this._getNextPointers(dToken, oGraph, oPointer, bDebug));
+                    lNextPointer.push(...this._getNextPointers(oToken, oGraph, oPointer, bDebug));
                 }
                 lPointer = lNextPointer;
                 // check arcs of first nodes
-                lPointer.push(...this._getNextPointers(dToken, oGraph, { "iToken1": iToken, "iNode": 0 }, bDebug));
+                lPointer.push(...this._getNextPointers(oToken, oGraph, { "iToken1": iToken, "iNode": 0 }, bDebug));
                 // check if there is rules to check for each pointer
                 for (let oPointer of lPointer) {
                     if (oGraph[oPointer["iNode"]].hasOwnProperty("<rules>")) {
