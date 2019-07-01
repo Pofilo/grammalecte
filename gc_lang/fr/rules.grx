@@ -1890,7 +1890,7 @@ __da_préverbes_verbes__
     <start> @:M  @:(?:[123]s|Oo)|>ne/¬:A
         <<- =>> =select(\2, ":M")
 
-    [que|qu’|combien|pourquoi]  ?[en|y]¿  *WORD
+    [que|qu’|combien|pourquoi|qui|quand|où]  ?[en|y]¿  *WORD
         <<- =>> exclude(\-1, ":E")
 
     [<start>|,]  quelqu’un  *WORD
@@ -5601,8 +5601,10 @@ __conf_de_dès_par_vconj__
 
     de  la  *WORD
         <<- /conf/ morph(\3, ":[123][sp]", ":[NAQ]") and not \3.istitle() >>>
-        <<- /conf/ morph(\3, ":V1.*:(?:Iq|Ip:2p)", ":1p") -3>> =suggVerbInfi(\3)                # Incohérence avec “\1 \2” : mettez le verbe à l’infinitif (à moins qu’il y ait confusion avec un nom féminin).
-        <<- /conf/ __else__ -3>> =suggSimil(\3, ":(?:[NA]:[fe]:[si])", False)                   # Incohérence avec “\1 \2” : “\3” est un verbe.
+        <<- /conf/ morph(\3, ":V1.*:(?:Iq|Ip:2p)", ":1p") -3>> =suggVerbInfi(\3)            # Incohérence avec “\1 \2” : mettez le verbe à l’infinitif (à moins qu’il y ait confusion avec un nom féminin).
+        <<- __else__ >>>
+        <<- /conf/ hasSimil(\3, ":(?:[NA]:[fe]:[si])") -3>> =suggSimil(\3, ":(?:[NA]:[fe]:[si])", True)    # Incohérence avec “\1 \2” : “\3” est un verbe.
+        <<- /conf/ __else__ -2>> là                                                                 # Incohérence probable.
 
 TEST: les petits esprits de la {{pensait}} religieuse
 TEST: {{de le}} vin                                           ->> du
@@ -26172,7 +26174,7 @@ TEST: Je prends tout doucement les hommes comme ils sont ;
 TEST: J’accoutume mon âme à souffrir ce qu’ils font,
 TEST: Et je crois qu’à la cour, de même qu’à la ville,
 TEST: Mon flegme est philosophe autant que votre bile.
-TEST: ALCESTE. Mais ce flegme, Monsieur, qui raisonnez si bien,
+TODO: ALCESTE. Mais ce flegme, Monsieur, qui raisonnez si bien,
 TEST: Ce flegme pourra-t-il ne s’échauffer de rien ?
 TEST: Et s’il faut, par hasard, qu’un ami vous trahisse,
 TEST: Que, pour avoir vos biens, on dresse un artifice,
