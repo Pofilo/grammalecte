@@ -918,58 +918,58 @@ class TextParser {
         }
         let lNewToken = [];
         let nMergeUntil = 0;
-        let dTokenMerger = null;
-        for (let [iToken, dToken] of this.lToken.entries()) {
+        let oMergingToken = null;
+        for (let [iToken, oToken] of this.lToken.entries()) {
             let bKeepToken = true;
-            if (dToken["sType"] != "INFO") {
+            if (oToken["sType"] != "INFO") {
                 if (nMergeUntil && iToken <= nMergeUntil) {
-                    dTokenMerger["sValue"] += " ".repeat(dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"];
-                    dTokenMerger["nEnd"] = dToken["nEnd"];
+                    oMergingToken["sValue"] += " ".repeat(oToken["nStart"] - oMergingToken["nEnd"]) + oToken["sValue"];
+                    oMergingToken["nEnd"] = oToken["nEnd"];
                     if (bDebug) {
-                        console.log("  MERGED TOKEN: " + dTokenMerger["sValue"]);
+                        console.log("  MERGED TOKEN: " + oMergingToken["sValue"]);
                     }
                     bKeepToken = false;
                 }
-                if (dToken.hasOwnProperty("nMergeUntil")) {
+                if (oToken.hasOwnProperty("nMergeUntil")) {
                     if (iToken > nMergeUntil) { // this token is not already merged with a previous token
-                        dTokenMerger = dToken;
+                        oMergingToken = oToken;
                     }
-                    if (dToken["nMergeUntil"] > nMergeUntil) {
-                        nMergeUntil = dToken["nMergeUntil"];
+                    if (oToken["nMergeUntil"] > nMergeUntil) {
+                        nMergeUntil = oToken["nMergeUntil"];
                     }
-                    delete dToken["nMergeUntil"];
+                    delete oToken["nMergeUntil"];
                 }
-                else if (dToken.hasOwnProperty("bToRemove")) {
+                else if (oToken.hasOwnProperty("bToRemove")) {
                     if (bDebug) {
-                        console.log("  REMOVED: " + dToken["sValue"]);
+                        console.log("  REMOVED: " + oToken["sValue"]);
                     }
-                    this.sSentence = this.sSentence.slice(0, dToken["nStart"]) + " ".repeat(dToken["nEnd"] - dToken["nStart"]) + this.sSentence.slice(dToken["nEnd"]);
+                    this.sSentence = this.sSentence.slice(0, oToken["nStart"]) + " ".repeat(oToken["nEnd"] - oToken["nStart"]) + this.sSentence.slice(oToken["nEnd"]);
                     bKeepToken = false;
                 }
             }
             //
             if (bKeepToken) {
-                lNewToken.push(dToken);
-                if (dToken.hasOwnProperty("sNewValue")) {
+                lNewToken.push(oToken);
+                if (oToken.hasOwnProperty("sNewValue")) {
                     // rewrite token and sentence
                     if (bDebug) {
-                        console.log(dToken["sValue"] + " -> " + dToken["sNewValue"]);
+                        console.log(oToken["sValue"] + " -> " + oToken["sNewValue"]);
                     }
-                    dToken["sRealValue"] = dToken["sValue"];
-                    dToken["sValue"] = dToken["sNewValue"];
-                    let nDiffLen = dToken["sRealValue"].length - dToken["sNewValue"].length;
-                    let sNewRepl = (nDiffLen >= 0) ? dToken["sNewValue"] + " ".repeat(nDiffLen) : dToken["sNewValue"].slice(0, dToken["sRealValue"].length);
-                    this.sSentence = this.sSentence.slice(0,dToken["nStart"]) + sNewRepl + this.sSentence.slice(dToken["nEnd"]);
-                    delete dToken["sNewValue"];
+                    oToken["sRealValue"] = oToken["sValue"];
+                    oToken["sValue"] = oToken["sNewValue"];
+                    let nDiffLen = oToken["sRealValue"].length - oToken["sNewValue"].length;
+                    let sNewRepl = (nDiffLen >= 0) ? oToken["sNewValue"] + " ".repeat(nDiffLen) : oToken["sNewValue"].slice(0, oToken["sRealValue"].length);
+                    this.sSentence = this.sSentence.slice(0,oToken["nStart"]) + sNewRepl + this.sSentence.slice(oToken["nEnd"]);
+                    delete oToken["sNewValue"];
                 }
             }
             else {
                 try {
-                    this.dTokenPos.delete(dToken["nStart"]);
+                    this.dTokenPos.delete(oToken["nStart"]);
                 }
                 catch (e) {
                     console.log(this.asString());
-                    console.log(dToken);
+                    console.log(oToken);
                 }
             }
         }
@@ -1138,18 +1138,18 @@ function analyse (sWord, sPattern, sNegPattern) {
 
 //// Analyse tokens for graph rules
 
-function g_value (dToken, sValues, nLeft=null, nRight=null) {
-    // test if <dToken['sValue']> is in sValues (each value should be separated with |)
-    let sValue = (nLeft === null) ? "|"+dToken["sValue"]+"|" : "|"+dToken["sValue"].slice(nLeft, nRight)+"|";
+function g_value (oToken, sValues, nLeft=null, nRight=null) {
+    // test if <oToken['sValue']> is in sValues (each value should be separated with |)
+    let sValue = (nLeft === null) ? "|"+oToken["sValue"]+"|" : "|"+oToken["sValue"].slice(nLeft, nRight)+"|";
     if (sValues.includes(sValue)) {
         return true;
     }
-    if (dToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+    if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
         if (sValues.includes(sValue.toLowerCase())) {
             return true;
         }
     }
-    else if (dToken["sValue"].gl_isUpperCase()) {
+    else if (oToken["sValue"].gl_isUpperCase()) {
         //if sValue.lower() in sValues:
         //    return true;
         sValue = "|"+sValue.slice(1).gl_toCapitalize();
@@ -1164,21 +1164,21 @@ function g_value (dToken, sValues, nLeft=null, nRight=null) {
     return false;
 }
 
-function g_morph (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
-    if (dToken.hasOwnProperty("lMorph")) {
-        lMorph = dToken["lMorph"];
+    if (oToken.hasOwnProperty("lMorph")) {
+        lMorph = oToken["lMorph"];
     }
     else {
         if (nLeft !== null) {
-            let sValue = (nRight !== null) ? dToken["sValue"].slice(nLeft, nRight) : dToken["sValue"].slice(nLeft);
+            let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
             lMorph = _oSpellChecker.getMorph(sValue);
             if (bMemorizeMorph) {
-                dToken["lMorph"] = lMorph;
+                oToken["lMorph"] = lMorph;
             }
         } else {
-            lMorph = _oSpellChecker.getMorph(dToken["sValue"]);
+            lMorph = _oSpellChecker.getMorph(oToken["sValue"]);
         }
     }
     if (lMorph.length == 0) {
@@ -1200,17 +1200,17 @@ function g_morph (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_analyse (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_analyse (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (nLeft !== null) {
-        let sValue = (nRight !== null) ? dToken["sValue"].slice(nLeft, nRight) : dToken["sValue"].slice(nLeft);
+        let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
         lMorph = _oSpellChecker.getMorph(sValue);
         if (bMemorizeMorph) {
-            dToken["lMorph"] = lMorph;
+            oToken["lMorph"] = lMorph;
         }
     } else {
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"]);
+        lMorph = _oSpellChecker.getMorph(oToken["sValue"]);
     }
     if (lMorph.length == 0) {
         return false;
@@ -1231,9 +1231,9 @@ function g_analyse (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, b
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
+function g_merged_analyse (oToken1, oToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
     // merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)
-    let lMorph = _oSpellChecker.getMorph(dToken1["sValue"] + cMerger + dToken2["sValue"]);
+    let lMorph = _oSpellChecker.getMorph(oToken1["sValue"] + cMerger + oToken2["sValue"]);
     if (lMorph.length == 0) {
         return false;
     }
@@ -1243,7 +1243,7 @@ function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", 
             // all morph must match sPattern
             let bResult = lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1));
             if (bResult && bSetMorph) {
-                dToken1["lMorph"] = lMorph;
+                oToken1["lMorph"] = lMorph;
             }
             return bResult;
         }
@@ -1256,37 +1256,37 @@ function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", 
     // search sPattern
     let bResult = lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
     if (bResult && bSetMorph) {
-        dToken1["lMorph"] = lMorph;
+        oToken1["lMorph"] = lMorph;
     }
     return bResult;
 }
 
-function g_tag_before (dToken, dTags, sTag) {
+function g_tag_before (oToken, dTags, sTag) {
     if (!dTags.has(sTag)) {
         return false;
     }
-    if (dToken["i"] > dTags.get(sTag)[0]) {
+    if (oToken["i"] > dTags.get(sTag)[0]) {
         return true;
     }
     return false;
 }
 
-function g_tag_after (dToken, dTags, sTag) {
+function g_tag_after (oToken, dTags, sTag) {
     if (!dTags.has(sTag)) {
         return false;
     }
-    if (dToken["i"] < dTags.get(sTag)[1]) {
+    if (oToken["i"] < dTags.get(sTag)[1]) {
         return true;
     }
     return false;
 }
 
-function g_tag (dToken, sTag) {
-    return dToken.hasOwnProperty("aTags") && dToken["aTags"].has(sTag);
+function g_tag (oToken, sTag) {
+    return oToken.hasOwnProperty("aTags") && oToken["aTags"].has(sTag);
 }
 
-function g_space_between_tokens (dToken1, dToken2, nMin, nMax=null) {
-    let nSpace = dToken2["nStart"] - dToken1["nEnd"]
+function g_space_between_tokens (oToken1, oToken2, nMin, nMax=null) {
+    let nSpace = oToken2["nStart"] - oToken1["nEnd"]
     if (nSpace < nMin) {
         return false;
     }
@@ -1363,58 +1363,58 @@ function define (dTokenPos, nPos, lMorph) {
 
 //// Disambiguation for graph rules
 
-function g_select (dToken, sPattern, lDefault=null) {
-    // select morphologies for <dToken> according to <sPattern>, always return true
-    let lMorph = (dToken.hasOwnProperty("lMorph")) ? dToken["lMorph"] : _oSpellChecker.getMorph(dToken["sValue"]);
+function g_select (oToken, sPattern, lDefault=null) {
+    // select morphologies for <oToken> according to <sPattern>, always return true
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         if (lDefault) {
-            dToken["lMorph"] = lDefault;
+            oToken["lMorph"] = lDefault;
         }
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
-            dToken["lMorph"] = lSelect;
+            oToken["lMorph"] = lSelect;
         }
     } else if (lDefault) {
-        dToken["lMorph"] = lDefault;
+        oToken["lMorph"] = lDefault;
     }
     return true;
 }
 
-function g_exclude (dToken, sPattern, lDefault=null) {
-    // select morphologies for <dToken> according to <sPattern>, always return true
-    let lMorph = (dToken.hasOwnProperty("lMorph")) ? dToken["lMorph"] : _oSpellChecker.getMorph(dToken["sValue"]);
+function g_exclude (oToken, sPattern, lDefault=null) {
+    // select morphologies for <oToken> according to <sPattern>, always return true
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         if (lDefault) {
-            dToken["lMorph"] = lDefault;
+            oToken["lMorph"] = lDefault;
         }
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
-            dToken["lMorph"] = lSelect;
+            oToken["lMorph"] = lSelect;
         }
     } else if (lDefault) {
-        dToken["lMorph"] = lDefault;
+        oToken["lMorph"] = lDefault;
     }
     return true;
 }
 
-function g_define (dToken, lMorph) {
-    // set morphologies of <dToken>, always return true
-    dToken["lMorph"] = lMorph;
+function g_define (oToken, lMorph) {
+    // set morphologies of <oToken>, always return true
+    oToken["lMorph"] = lMorph;
     return true;
 }
 
-function g_define_from (dToken, nLeft=null, nRight=null) {
-    let sValue = dToken["sValue"];
+function g_define_from (oToken, nLeft=null, nRight=null) {
+    let sValue = oToken["sValue"];
     if (nLeft !== null) {
         sValue = (nRight !== null) ? sValue.slice(nLeft, nRight) : sValue.slice(nLeft);
     }
-    dToken["lMorph"] = _oSpellChecker.getMorph(sValue);
+    oToken["lMorph"] = _oSpellChecker.getMorph(sValue);
     return true;
 }
 
