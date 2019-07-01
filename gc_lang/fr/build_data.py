@@ -183,7 +183,7 @@ def makeConj (sp, bJS=False):
             hDst.write('    "lVtyp": ' + json.dumps(lVinfo, ensure_ascii=False) + ",\n")
             hDst.write('    "lTags": ' + json.dumps(lTags, ensure_ascii=False) + ",\n")
             hDst.write('    "dPatternConj": ' + json.dumps(dPatternList, ensure_ascii=False) + ",\n")
-            hDst.write('    "dVerb": ' + json.dumps(dVerb, ensure_ascii=False) + "\n")
+            hDst.write('    "dVerb": ' + json.dumps(dVerb, ensure_ascii=False) + ",\n")
             hDst.write('    "dVerbNames": ' + json.dumps(dVerbNames, ensure_ascii=False) + "\n")
             hDst.write("}\n")
 
