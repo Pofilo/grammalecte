@@ -8,6 +8,7 @@
 "use strict";
 
 ${map}
+${set}
 
 
 if(typeof(process) !== 'undefined') {
@@ -125,7 +126,7 @@ var conj = {
             } else {
                 if (this._dVerbNames.hasOwnProperty(sInfi)) {
                     // there are names derivated from the verb
-                    aSugg.update(this._dVerbNames[sInfi]);
+                    aSugg.gl_update(this._dVerbNames[sInfi]);
                 } else {
                     // we suggest past participles
                     aSugg.add(this._getConjWithTags(sInfi, tTags, ":PQ", ":Q1"));
