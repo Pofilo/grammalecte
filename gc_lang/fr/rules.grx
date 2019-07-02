@@ -6197,6 +6197,7 @@ TEST: une dérive à vau-l’eau.
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
+    a air comprimé
     a armes égales
     a aucun prix
     a autrui
@@ -6343,6 +6344,7 @@ __conf_à_a_locutions__
     a ras de terre
     a ras [du|le] sol
     a rude épreuve
+    a >seule [>fin|>faim] [de|d’]
     a tel point
     a temps [plein|partiel|complet]
     a tête reposée
@@ -6437,7 +6439,7 @@ __conf_à_substantifs__
     >gaz a >effet de serre
     >lampe a [>huile|>pétrole]
     >lime a >ongle
-    >machine a [café|coudre|laver|voter]
+    >machine a [café|coudre|écrire|laver|voter]
     >machine a >remonter le temps
     >matière a >réflexion
     >montre a gousset
@@ -6445,6 +6447,7 @@ __conf_à_substantifs__
     >panier a >linge
     >papier a [>lettre|musique]
     >passage a tabac
+    >planche a repasser
     >presse a >scandale
     >pince a linge
     >punk a >chienne
@@ -6454,6 +6457,8 @@ __conf_à_substantifs__
     >serpent a >sonnette
     >silo a [>grain|blé]
     >soue a >cochonne
+    >table a repasser
+    >tigre a >dent de >sabre
     >tondeuse a gazon
     >trou a >rat
     >tueuse a gages
@@ -6927,6 +6932,7 @@ __conf_compte__
     [comte|comtes|>conte] à [rebours|découvert|terme]
     [comte|comtes|>conte] [>bancaire|rendu|rendus|joint|joints|courant|courants|>chèques]
     [comte|comtes|>conte] des opérations
+    [comte|comtes|>conte] en banque
         <<- /conf/ -1>> compte|comptes                          # Confusion probable. Un conte est un récit fictif, “comte” est un titre de noblesse. Pour un état chiffré, un calcul… écrivez “compte”.
 
     [comte|comtes|>compte] de bonne femme
@@ -7060,8 +7066,8 @@ TEST: ils vont passer prochainement en cour martiale.
 # cuir / cuire
 __conf_cuir_cuire__
     >dure [à|a] >cuir
-        <<- /conf/ -3>> cuire               # Confusion. Locution “dur à cuire” Le cuir est le nom qu’on donne à la peau animale. Pour évoquer la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
-        <<- /conf/ \2 == "a" -2>> à         # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -3>> cuire           # Confusion. Locution “dur à cuire” Le cuir est le nom qu’on donne à la peau animale. Pour évoquer la cuisson, écrivez “cuire”.|https://fr.wiktionary.org/wiki/cuire
+        <<- /conf/ \2 == "a" -2>> à     # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
 TEST: ce sont des durs à {{cuir}}
 TEST: Quelle dure {{a}} {{cuir}}, celle-là.
@@ -7429,6 +7435,9 @@ __conf_fin_faim__
 
     à des faims
         <<- /conf/ -3>> fins                                    # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
+
+    [à|a] >seule faim [de|d’]
+        <<- /conf/ -3>> fin                                     # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
 TEST: Elle manifestait son désaccord par une grève de la {{fin}}.
 TEST: ces enfants avaient une {{fin}} de loup
@@ -9424,6 +9433,14 @@ TEST: le comité d’éthique qui statuera dans les meilleurs délais sur la sit
 TEST: VENDREDI 23 NOVEMBRE 2018 À 18:09
 
 
+# Assemblée
+__maj_Assemblée_nationale__
+    assemblée nationale
+        <<- \1 == "assemblée" ->> Assemblée                         # Majuscule manquante.
+
+TEST: l’{{assemblée}} nationale                                         ->> Assemblée
+
+
 # Les États
 __maj_État__
     en fonction de l’ état
@@ -10163,6 +10180,7 @@ __purge_locutions__
     à *NUM  %
     à ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
+    à air comprimé
     à armes égales
     à aucun prix
     à autre chose
@@ -10249,6 +10267,7 @@ __purge_locutions__
     à l’ aveuglette
     à l’ emporte-pièce
     à l’ en croire
+    à l’ état pur
     à l’ exclusion de toute autre chose
     à l’ heure actuelle
     à l’ heure qu’ il est
@@ -10302,9 +10321,8 @@ __purge_locutions__
     à [mon|ton|son|notre|votre|leur] [avis|détriment|encontre|égard|insu|sujet|tour]
     à [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
     à [mon|ton|son|notre|votre|leur] grand [désarroi|soulagement]
-    à n’ en pas douter
+    à n’ en [pas|point] douter
     à n’ en plus finir
-    à n’ en point douter
     à n’ importe quel prix
     à parler franc
     à part [entière|ça|cela|ceci]
@@ -10985,8 +11003,12 @@ __purge_locutions__
     le [moment|jour] venu
     les [uns|unes] des autres
     les [uns|unes] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] les autres
+    les [uns|unes] près des autres
+    les [uns|unes] par rapport à l’ autre
+    les [uns|unes] par rapport aux autres
     l’ [un|une] [après|avec|chez|contre|de|derrière|devant|envers|malgré|pour|sans|sous|sur] l’ autre
-    l’ [un|une] près de l’autre
+    l’ [un|une] près de l’ autre
+    l’ [un|une] par rapport à l’ autre
     loin
     loin [de|d’] là
     loin [de|d’] tout [ça|cela|ceci]
@@ -10999,7 +11021,7 @@ __purge_locutions__
     manu militari
     mieux [vaut|valait] tard que jamais
     moins que [nécessaire|prévu]
-    moitié ** ?,¿ moitié **
+    moitié *WORD ?,¿ moitié *WORD
     mot pour mot
     mouais
     naguère
@@ -11142,6 +11164,9 @@ __purge_locutions__
     sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans dire mot
     sans en avoir conscience
+    sans [m’|t’|s’|nous|vous] en apercevoir
+    sans [m’|t’|s’|nous|vous] en rendre compte
+    sans [m’|t’|s’|nous|vous] faire [avoir|comprendre|désirer|prier|remarquer]
     sans faire [de|d’] vagues
     sans foi ?,¿ ni loi
     sans le faire exprès
@@ -11162,8 +11187,6 @@ __purge_locutions__
     sans queue ni tête
     sans raison apparente
     sans répit
-    sans [m’|t’|s’|nous|vous] en apercevoir
-    sans [m’|t’|s’|nous|vous] en rendre compte
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer de respect
     sans y [parvenir|réussir|réfléchir|songer|penser]
     sans y [réfléchir|songer|penser] à [deux|2] fois
@@ -11174,7 +11197,7 @@ __purge_locutions__
     secondo
     selon toute vraisemblance
     sens dessus dessous
-    [seule|seul] à [seule|seul]
+    >seule à >seule
     si [bas|haut|longtemps|nécessaire|possible|soudain]
     si [cela|ça|ceci] ne tenait qu’ à [moi|toi|lui|eux|elle|elles|nous|vous]
     si besoin est
@@ -11346,6 +11369,7 @@ __gestion_mots_grammaticaux__
 
     à grand renfort     [de|d’]
     à grands coups      [de|d’]
+    à seule fin         [de|d’]
         <<- ~2:3>> *
 
     à travers @:D
@@ -11786,9 +11810,9 @@ __simplication_substantifs__
     >appel au secours
     >arc à poulies
     >arme à feu
-    >armée de l’air
+    >armée de l’ air
     >armée de terre
-    >armer jusqu aux dents
+    >armer jusqu’ aux dents
     >arme de [poing|guerre]
     >arme de destruction massive
     >armoire à >glace
@@ -11811,9 +11835,11 @@ __simplication_substantifs__
     >blanche comme de la craie
     >blanche comme un linge
     [>boîte|>boite] [aux|à] lettres
-    [>boîte|>boite] à gants
+    [>boîte|>boite] à [gants|outils]
     >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement]
     >bombe à rayonnement renforcé
+    >bonnet de nuit
+    >boucle d’ >oreille
     >brosse à [>dent|reluire]
     >cabinet de toilette
     >camp [de|d’] [concentration|internement|rééducation]
@@ -11824,8 +11850,9 @@ __simplication_substantifs__
     >chair à [pâté|>canon]
     >chair de poule
     >chambre à coucher
-    >chambre [de|d’] [agriculture|hôte|hôtes|commerce|compensation|décompression|dégrisement]
+    >chambre [de|d’] [agriculture|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
     >chasse à courre
+    >chasse à l’ homme
     >chasse d’ eau
     >chemin de [traverse|fer]
     >chèque sans provision
@@ -11838,7 +11865,7 @@ __simplication_substantifs__
     >commise d’ office
     >complémentaire santé
     >condamnée à mort
-    >conférence de presse
+    >conférence [de|d’] presse
     >convention [récepteur|générateur]
     >conne comme la lune
     >conne comme un balai
@@ -11869,6 +11896,7 @@ __simplication_substantifs__
     >eau de noix de coco
     >enterrement de vie de garçon
     >enterrement de vie de jeune fille
+    >entrée de service
     >espérance de vie
     >épée à deux mains
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
@@ -11888,6 +11916,8 @@ __simplication_substantifs__
     fils à [papa|maman]
     fils de pute
     >fosse à >ordure
+    >frayeur de tous les diables
+    >frousse de tous les diables
     >fusil à pompe
     >haute comme [trois|3] pommes
     >histoire avec un [grand|petit] h
@@ -11898,11 +11928,12 @@ __simplication_substantifs__
     >hôtesse d’ accueil
     >garde à vue
     >garde du corps
-    gaz à effet de serre
+    gaz à >effet de serre
     >infirmière de garde
     >invitée d’ honneur
     >invitée surprise
     >journal de bord
+    >juge d’ instruction
     >liaison sans lendemain
     >lampe à [huile|pétrole]
     >lampe de chevet
@@ -11910,7 +11941,7 @@ __simplication_substantifs__
     >liste d’ attente
     >lit de camp
     >livre de poche
-    >machine à [café|coudre|laver|voter]
+    >machine à [café|coudre|écrire|laver|voter]
     >machine à remonter le temps
     >maillot de bain
     >main d’ œuvre
@@ -11948,11 +11979,13 @@ __simplication_substantifs__
     >partie de jambes en l’ air
     >passage à tabac
     >passation de pouvoir
+    >peur de tous les diables
     >pièce de [théâtre|monnaie]
     >pièce de *NUM [>euro|>dollar|>centime|>cent|>livre|>shilling]
     >pince à linge
     >plan [A|B|C]
     >planche de salut
+    >planche à repasser
     >pleine aux as
     >politique spectacle
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
@@ -11975,6 +12008,7 @@ __simplication_substantifs__
     >retour à la case départ
     >robe de soirée
     >roman à l’ eau de rose
+    >robe de chambre
     >roue [avant|arrière]
     >rouge à lèvres
     >roulement à billes
@@ -11989,18 +12023,22 @@ __simplication_substantifs__
     >serpent à sonnette
     >silo à [>grains|blé]
     >soldate d’ élite
+    >sortie de secours
     >soue à >cochonne
     >sourde comme un pot
     >système d’ exploitation
     >système D
+    >table à repasser
     >taille *NUM
     tas de >ferraille ?rouillée¿
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >témoin à charge
+    >ténor du barreau
     >tête de [linotte|déterré|déterrée|déterrés|déterrées|mule]
     >têtue comme une [bourrique|mule]
     >têtue comme un [âne|bourriquot|mulet]
+    >tigre à dents de sabre
     >titre de [noblesse|propriété|séjour]
     >tondeuse à gazon
     >tour de passe-passe
@@ -12015,7 +12053,7 @@ __simplication_substantifs__
     >vente aux enchères
     vernis à ongles
     >voie de [recours|perdition]
-    >vol à l’étalage
+    >vol à l’ étalage
     >vol à la [sauvette|tire]
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
@@ -12634,7 +12672,7 @@ __purge_locutions_verbales__
     >faire front commun
     >faire grise mine
     >faire grand [bruit|cas]
-    >faire ?[bonne|grande|mauvaise]¿ impression
+    >faire ?[bonne|excellente|grande|mauvaise]¿ impression
     >faire long feu
     >faire [machine|marche] arrière
     >faire main basse
@@ -12663,6 +12701,7 @@ __purge_locutions_verbales__
     [>mettre|>remettre] l’ [écart|épreuve]
     [>mettre|>remettre] au [point|pas]
     [>mettre|>remettre] en [avant|branle|bouche|demeure|garde|jeu|lumière|mouvement|œuvre|place|scène|terre]
+    [>mettre|>remettre] de côté
     >mourir jeune
     [>naître|>naitre] de la dernière pluie
     [>naître|>naitre] sous x
