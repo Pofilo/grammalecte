@@ -5337,19 +5337,19 @@ __loc_notre_père_qui_es_au_cieux__
 ## Incohérences avec formes verbales 1sg et 2sg sans sujet
 
 __conj_xxxai__sans_sujet!3__
-    [se|s’]  ?[en|y|le|la|l’|les]¿  (~ai$)
+    [se|s’]  ?[en|y|le|la|l’|les]¿  ~ai$
         <<- /conj/ morph(\1, ":1s", ":(?:G|W|M|J|3[sp])")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~ai$)
-        <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~ai$
+        <<- /conj/ not tag_before(\1, "1s") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
-    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~ai$)
-    [le|la|l’|les]              [lui|leur|en|y]         (~ai$)
-    [lui|leur]                  en                      (~ai$)
-        <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp])")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   ~ai$
+    [le|la|l’|les]              [lui|leur|en|y]         ~ai$
+    [lui|leur]                  en                      ~ai$
+        <<- /conj/ not tag_before(\1, "1s") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     ~ai$
         <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0("\\w"))
@@ -5359,19 +5359,19 @@ TEST: Lui, quand il y pensait, en {{arrivai}} à chaque fois à la même conclus
 
 
 __conj_xxxas_xxxes__sans_sujet!3__
-    [se|s’]  ?[en|y|le|la|l’|les]¿  (~[ae]s$)
+    [se|s’]  ?[en|y|le|la|l’|les]¿  ~[ae]s$
         <<- /conj/ morph(\1, ":2s", ":(?:G|W|M|J|3[sp])")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[ae]s$)
-        <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~[ae]s$
+        <<- /conj/ not tag_before(\1, "2s") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
-    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   (~[ae]s$)
-    [le|la|l’|les]              [lui|leur|en|y]         (~[ae]s$)
-    [lui|leur]                  en                      (~[ae]s$)
-        <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   ~[ae]s$
+    [le|la|l’|les]              [lui|leur|en|y]         ~[ae]s$
+    [lui|leur]                  en                      ~[ae]s$
+        <<- /conj/ not tag_before(\-1, "2s") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~..[ae]s$
         <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w"))
@@ -5379,23 +5379,23 @@ __conj_xxxas_xxxes__sans_sujet!3__
 
 
 __conj_xxxxxs_sans_sujet!3__
-    [se|s’]  ?[en|y|le|la|l’|les]¿  (~[iudnrtpcï]s$)
-        <<- /conj/ morph(\1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+    [se|s’]  ?[en|y|le|la|l’|les]¿  ~[iudnrtpcï]s$
+        <<- /conj/ morph(\-1, ":[12]s", ":(?:G|W|M|J|3[sp]|2p|1p)")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  (~[iudnrtpcï]s$)
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~[iudnrtpcï]s$
+        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [me|m’|te|t’]       ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)
-    [le|la|l’|les]      [lui|leur|en|y]         (~[iudnrtpcï]s$)
-    [lui|leur]          en                      (~[iudnrtpcï]s$)
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+    [me|m’|te|t’]       ?[le|la|l’|les|en|y]¿   ~[iudnrtpcï]s$
+    [le|la|l’|les]      [lui|leur|en|y]         ~[iudnrtpcï]s$
+    [lui|leur]          en                      ~[iudnrtpcï]s$
+        <<- /conj/ not tag_before(\-1, "1s") and not tag_before(\-1, "2s") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [nous|vous]         ?[le|la|l’|les|en|y]¿   (~[iudnrtpcï]s$)
-        <<- /conj/ not before("d’entre +$") and not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+    [nous|vous]         ?[le|la|l’|les|en|y]¿   ~[iudnrtpcï]s$
+        <<- /conj/ not before("d’entre +$") and not tag_before(\-1, "1s") and not tag_before(\-1, "2s") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     étais
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w")) and not morph(<1, ":[DA].*:p")
@@ -5418,18 +5418,18 @@ TEST: Avec la plupart d’entre nous pris en sandwich quelque part entre les deu
 
 
 __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
-    [se|s’]  ?[en|y|le|la|l’|les]¿  ([peux|veux|vaux|équivaux|prévaux])
-        <<- /conj/ -1>> =suggVerb(\1, ":3s")                                                        # Incohérence. Le sujet de cette forme verbale est introuvable.
+    [se|s’]  ?[en|y|le|la|l’|les]¿  [peux|veux|vaux|équivaux|prévaux]
+        <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ([peux|veux|vaux|équivaux|prévaux])
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  [peux|veux|vaux|équivaux|prévaux]
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   ([peux|veux|vaux|équivaux|prévaux])
-    [le|la|l’|les]              [lui|leur|en|y]         ([peux|veux|vaux|équivaux|prévaux])
-    [lui|leur]                  en                      ([peux|veux|vaux|équivaux|prévaux])
+    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   [peux|veux|vaux|équivaux|prévaux]
+    [le|la|l’|les]              [lui|leur|en|y]         [peux|veux|vaux|équivaux|prévaux]
+    [lui|leur]                  en                      [peux|veux|vaux|équivaux|prévaux]
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
-        -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
+        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     vaux
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w"))
@@ -9436,7 +9436,7 @@ TEST: VENDREDI 23 NOVEMBRE 2018 À 18:09
 # Assemblée
 __maj_Assemblée_nationale__
     assemblée nationale
-        <<- \1 == "assemblée" ->> Assemblée                         # Majuscule manquante.
+        <<- \1 == "assemblée" -1>> Assemblée                        # Majuscule manquante.
 
 TEST: l’{{assemblée}} nationale                                         ->> Assemblée
 
@@ -10593,7 +10593,7 @@ __purge_locutions__
     d’ âge mûr
     d’ emblée
     d’ empoigne
-    d’ en [dessous|face]
+    d’ en [bas|dessous|face|haut]
     d’ entre [nous|vous|eux|elles]
     d’ entrée de jeu
     d’ est en ouest
@@ -11987,6 +11987,7 @@ __simplication_substantifs__
     >planche de salut
     >planche à repasser
     >pleine aux as
+    >police [de|d’] [caractères|écriture]
     >politique spectacle
     >pomme [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
     >pompe à [essence|fric]
@@ -12720,6 +12721,7 @@ __purge_locutions_verbales__
     >prendre ?[ça|cela|ceci]¿ en charge
     >prendre ?[ça|cela|ceci]¿ pour argent comptant
     >prendre par surprise
+    >prêter à confusion
     >prêter main forte
     >prêter main-forte
     >réduire en miettes
@@ -12761,6 +12763,7 @@ __conf_locutions_verbales__
     [>mettre|>remettre] a l’ [écart|épreuve]
     >percer a jour
     >prendre a la légère
+    >prêter a >confusion
     >saigner a blanc
     >tenir a [carreau|cœur|distance]
     >tirer a blanc
@@ -17656,28 +17659,31 @@ TEST: Il faudra ne {{touché}} qu’aux extrémités.
 
 
 __infi_se_laisser_vinf__
-    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [<end>|,]
-    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [dans|avec]
-    [me|m’|te|t’|nous|vous|se|s’] >laisser @:V1.*:Q  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ -3>> =suggVerbInfi(\3)                               # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [<end>|,]
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [dans|avec]
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morph(\3, ":V1.*:Q", ">désemparer/") -3>> =suggVerbInfi(\3)          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
-    [le|la|l’|les] >laisser @:V1.*:Q  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [le|la|l’|les] >laisser @:V1.*:Q  [<end>|,]
-    [le|la|l’|les] >laisser @:V1.*:Q  [dans|avec]
-    [le|la|l’|les] >laisser @:V1.*:Q  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ not morph(\2, ":N") -3>> =suggVerbInfi(\3)           # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+    [le|la|l’|les]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [le|la|l’|les]  >laisser  *WORD  [<end>|,]
+    [le|la|l’|les]  >laisser  *WORD  [dans|avec]
+    [le|la|l’|les]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ not morph(\2, ":N") and morph(\3, ":V1.*:Q", ">désemparer/")
+        -3>> =suggVerbInfi(\3)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
-    [/-le|/-la|/-les]  @:V1.*:Q  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [/-le|/-la|/-les]  @:V1.*:Q  [<end>|,]
-    [/-le|/-la|/-les]  @:V1.*:Q  [dans|avec]
-    [/-le|/-la|/-les]  @:V1.*:Q  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ morphVC(\1, ">laisser") -2>> =suggVerbInfi(\2)       # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+    [/-le|/-la|/-les]  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [/-le|/-la|/-les]  *WORD  [<end>|,]
+    [/-le|/-la|/-les]  *WORD  [dans|avec]
+    [/-le|/-la|/-les]  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morphVC(\1, ">laisser") and morph(\2, ":V1.*:Q", ">désemparer/")
+        -2>> =suggVerbInfi(\2)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
 TEST: Il se laisse trop {{allé}}, ce petit.
 TEST: Nous nous laissions {{allé}} dans le plus complet abandon.
 TEST: Je le laissais {{mangé}} autant qu’il le voulut.
 TEST: Laisse-la {{abandonné}} ses études, si c’est ce qu’elle veut.
+TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse désemparé
 
 
 
