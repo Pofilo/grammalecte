@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # Grammalecte - Lexicographe
 # by Olivier R. License: MPL 2
 
@@ -97,7 +96,6 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
             xMenuItem.setPropertyValue(k, v)
             #print("> ", k, v, xMenuItem)
         xContextMenu.insertByIndex(i, xMenuItem)
-
         return i + 1
 
     def _getWord (self):

@@ -9,6 +9,17 @@ from com.sun.star.beans import PropertyValue
 from com.sun.star.uno import RuntimeException as _rtex
 
 
+def apso_console ():
+    try:
+        ctx = uno.getComponentContext()
+        ctx.ServiceManager.createInstance("apso.python.script.organizer.impl")
+        # now we can import apso_utils library
+        from apso_utils import console
+        console()
+    except:
+        traceback.print_exc()
+
+
 def xray (myObject):
     "XRay - API explorer"
     try:
