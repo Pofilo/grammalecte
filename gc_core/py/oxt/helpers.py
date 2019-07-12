@@ -13,16 +13,16 @@ from com.sun.star.uno import RuntimeException as _rtex
 def start_console ():
     "open console from APSO extension"
     try:
-        ctx = uno.getComponentContext()
-        ctx.ServiceManager.createInstance("apso.python.script.organizer.impl")
+        xContext = uno.getComponentContext()
+        xContext.ServiceManager.createInstance("apso.python.script.organizer.impl")
         # now we can import apso_utils library
         from apso_utils import console
         console()
     except:
         try:
-            ctx = uno.getComponentContext()
-            xSvMgr = ctx.getServiceManager()
-            xPathSettings = xSvMgr.createInstanceWithContext("com.sun.star.util.PathSettings", ctx)
+            xContext = uno.getComponentContext()
+            xSvMgr = xContext.getServiceManager()
+            xPathSettings = xSvMgr.createInstanceWithContext("com.sun.star.util.PathSettings", xContext)
             spPyInstallion = uno.fileUrlToSystemPath(xPathSettings.Module)
             subprocess.Popen(spPyInstallion + os.sep + "python")  # Start Python interactive Shell
         except:
@@ -32,21 +32,22 @@ def start_console ():
 def xray (xObject):
     "XRay - API explorer"
     try:
-        sm = uno.getComponentContext().ServiceManager
-        mspf = sm.createInstanceWithContext("com.sun.star.script.provider.MasterScriptProviderFactory", uno.getComponentContext())
-        scriptPro = mspf.createScriptProvider("")
-        xScript = scriptPro.getScript("vnd.sun.star.script:XrayTool._Main.Xray?language=Basic&location=application")
+        xSvMgr = uno.getComponentContext().ServiceManager
+        xMSPF = xSvMgr.createInstanceWithContext("com.sun.star.script.provider.MasterScriptProviderFactory", uno.getComponentContext())
+        xScriptProvider = xMSPF.createScriptProvider("")
+        xScript = xScriptProvider.getScript("vnd.sun.star.script:XrayTool._Main.Xray?language=Basic&location=application")
         xScript.invoke((xObject,), (), ())
         return
     except:
         raise _rtex("\nBasic library Xray is not installed", uno.getComponentContext())
 
 
-def mri (ctx, xTarget):
+def mri (xObject):
     "MRI - API Explorer"
     try:
-        xMri = ctx.ServiceManager.createInstanceWithContext("mytools.Mri", ctx)
-        xMri.inspect(xTarget)
+        xContext = uno.getComponentContext()
+        xMri = xContext.ServiceManager.createInstanceWithContext("mytools.Mri", xContext)
+        xMri.inspect(xObject)
     except:
         raise _rtex("\nPython extension MRI is not installed", uno.getComponentContext())
 
@@ -73,8 +74,8 @@ def printServices (o):
 
 def getWindowSize ():
     "return main window size"
-    xCurCtx = uno.getComponentContext()
-    xDesktop = xCurCtx.getServiceManager().createInstanceWithContext('com.sun.star.frame.Desktop', xCurCtx)
+    xContext = uno.getComponentContext()
+    xDesktop = xContext.getServiceManager().createInstanceWithContext('com.sun.star.frame.Desktop', xContext)
     xContainerWindow = xDesktop.getCurrentComponent().CurrentController.Frame.ContainerWindow
     xWindowSize = xContainerWindow.convertSizeToLogic(xContainerWindow.Size, uno.getConstantByName("com.sun.star.util.MeasureUnit.POINT"))
     #print(xContainerWindow.Size.Width, ">", xWindowSize.Width)
