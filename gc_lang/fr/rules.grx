@@ -10900,6 +10900,7 @@ __purge_locutions__
     en toute connaissance [de|d’] cause
     en toute [circonstance|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité]
     en toutes circonstances
+    en un claquement de doigts
     en un clin d’ œil
     en un rien [de|d’] temps
     en une autre occasion
@@ -15781,10 +15782,14 @@ __conf_entretien_maintien_soutien__
         <<- /conf/ morph(<1, "<start>|:C||>,/") and morph(\2, ":[NA]") and morph(\3, ":N", ":A.*:[me]:[si]")
         -4>> \4t                                                                            # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
 
+    qui [entretien|maintien|soutien]  [<end>|,|@:[DR]]
+        <<- /conf/ -2>> \2t                                                                 # Confusion probable : “\-2” est un nom commun. Pour la forme verbale (3ᵉ pers. au présent), écrivez “\-2t”.
+
 TEST: la grande {{maintien}} sa version.                        ->> maintient
 TEST: le petit homme {{maintien}} fermement son pantalon        ->> maintient
 TEST: cette femme {{entretien}} sa santé                        ->> entretient
 TEST: ce que le patron {{soutien}}                              ->> soutient
+TEST: c’est un homme qui {{entretien}} sa forme                 ->> entretient
 TEST: le petit entretien le paralysait
 
 
