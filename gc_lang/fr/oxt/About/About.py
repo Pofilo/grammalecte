@@ -51,11 +51,6 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             nLblWidth = 140
             nURLcolor = 0x4444FF
 
-            xFD0 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
-            xFD0.Height = 20
-            #xFD0.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
-            xFD0.Name = "Verdana"
-
             xFD1 = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
             xFD1.Height = 10
             xFD1.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
@@ -74,44 +69,42 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             xDefaultContext = self.ctx.ServiceManager.DefaultContext
             xPackageInfoProvider = xDefaultContext.getValueByName("/singletons/com.sun.star.deployment.PackageInformationProvider")
             sExtPath = xPackageInfoProvider.getPackageLocation("French.linguistic.resources.from.Dicollecte.by.OlivierR")
-            #imgLogo = self._addWidget('imgLogo', 'ImageControl', 5, 5, 50, 50, ImageURL = sExtPath+"/img/logo100.png", Border = 0, ScaleMode = 1)
-            imgMainLogo = self._addWidget('imgMainLogo', 'ImageControl', 5, 5, 150, 80, ImageURL = sExtPath+"/img/logo120_text.png", Border = 0, ScaleMode = 1)
+            self._addWidget('imgMainLogo', 'ImageControl', 5, 5, 150, 80, ImageURL = sExtPath+"/img/logo120_text.png", Border = 0, ScaleMode = 1)
 
             # Infos
-            #lblTitle = self._addWidget('lblTitle', 'FixedText', 60, 5, 100, 20, Label = dUI.get('title', "#err"), Align = 0, FontDescriptor = xFD0)
-            lblVersion = self._addWidget('lblVersion', 'FixedText', 5, 90, nLblWidth, 10, Label = dUI.get('version', "#err"), Align = 1, FontDescriptor = xFD2)
-            lblLicense = self._addWidget('lblLicense', 'FixedText', 5, 100, nLblWidth, 10, Label = dUI.get('license', "#err"), Align = 1, FontDescriptor = xFD2)
-            lblWebsite = self._addWidget('lblWebsite', 'FixedHyperlink', 5, 110, nLblWidth, 10, Label = dUI.get('website', "#err"), Align = 1, \
-                                         URL="https://grammalecte.net/?from=grammalecte-lo", FontDescriptor = xFD1, TextColor = nURLcolor)
+            self._addWidget('lblVersion', 'FixedText', 10, 90, nLblWidth, 10, Label = dUI.get('version', "#err"), Align = 1, FontDescriptor = xFD2)
+            self._addWidget('lblLicence', 'FixedText', 10, 100, nLblWidth, 10, Label = dUI.get('license', "#err"), Align = 1, FontDescriptor = xFD2)
+            self._addWidget('lblWebsite', 'FixedHyperlink', 10, 110, nLblWidth, 10, Label = dUI.get('website', "#err"), Align = 1, \
+                            URL="https://grammalecte.net/?from=grammalecte-lo", FontDescriptor = xFD1, TextColor = nURLcolor)
 
-            # Python version
-            self._addWidget('lblpython', 'FixedText', 10, 125, nLblWidth, 10, Align = 1, TextColor = 0x888888, FontDescriptor = xFD2, \
+            # Python
+            self._addWidget('lblpython', 'FixedText', 10, 125, nLblWidth-50, 10, Align = 1, TextColor = 0x666666, FontDescriptor = xFD2, \
                             Label = dUI.get('pythonver', "#err") + "{0[0]}.{0[1]}.{0[2]}".format(sys.version_info))
+            xConsoleButton = self._addWidget('console_button', 'Button', nLblWidth-30, 124, 40, 10, \
+                                             Label = dUI.get('console', "#err"), FontDescriptor = xFD2, TextColor = 0x666666)
 
             # other
-            line = self._addWidget('line', 'FixedLine', 10, 140, nLblWidth, 10)
+            self._addWidget('line', 'FixedLine', 10, 140, nLblWidth, 10)
 
             # sponsors
-            lblMsg = self._addWidget('lblMsg', 'FixedText', 10, 155, nLblWidth, 10, Label = dUI.get('message', "#err"), FontDescriptor = xFD2, Align = 1)
-            lblURL1 = self._addWidget('lblURL1', 'FixedHyperlink', 10, 170, nLblWidth, 10, Label = dUI.get('sponsor', "#err"), \
-                                      Align = 1, URL="http://lamouette.org/?from=grammalecte-lo", FontDescriptor = xFD3, TextColor = nURLcolor)
-            imgSponsor = self._addWidget('imgSponsor', 'ImageControl', 5, 180, 150, 50, ImageURL = sExtPath+"/img/LaMouette_small.png", Border = 0, ScaleMode = 1)
-            lblURL2 = self._addWidget('lblURL2', 'FixedHyperlink', 10, 235, nLblWidth, 10, Label = dUI.get('sponsor2', "#err"), \
-                                      Align = 1, URL="https://www.algoo.fr/?from=grammalecte-lo", FontDescriptor = xFD3, TextColor = nURLcolor)
-            imgSponsor2 = self._addWidget('imgSponsor2', 'ImageControl', 5, 245, 150, 50, ImageURL = sExtPath+"/img/Algoo_logo.png", Border = 0, ScaleMode = 1)
-            lblURL3 = self._addWidget('lblURL3', 'FixedHyperlink', 10, 300, nLblWidth, 10, Label = dUI.get('link', "#err"), \
-                                      Align = 1, URL="https://grammalecte.net/#thanks", FontDescriptor = xFD1, TextColor = nURLcolor)
-            # button
-            #button = self._addWidget('close', 'Button', self.xDialog.Width - 25, self.xDialog.Height - 20, 20, 14, \
-            #                         Label = dUI.get('close', "#err"), FontDescriptor = xFD1, TextColor = 0x004400)
+            self._addWidget('lblMsg', 'FixedText', 10, 155, nLblWidth, 10, Label = dUI.get('message', "#err"), FontDescriptor = xFD2, Align = 1)
+            self._addWidget('lblURL1', 'FixedHyperlink', 10, 170, nLblWidth, 10, Label = dUI.get('sponsor', "#err"), \
+                            Align = 1, URL="http://lamouette.org/?from=grammalecte-lo", FontDescriptor = xFD3, TextColor = nURLcolor)
+            self._addWidget('imgSponsor', 'ImageControl', 5, 180, 150, 50, ImageURL = sExtPath+"/img/LaMouette_small.png", Border = 0, ScaleMode = 1)
+            self._addWidget('lblURL2', 'FixedHyperlink', 10, 235, nLblWidth, 10, Label = dUI.get('sponsor2', "#err"), \
+                            Align = 1, URL="https://www.algoo.fr/?from=grammalecte-lo", FontDescriptor = xFD3, TextColor = nURLcolor)
+            self._addWidget('imgSponsor2', 'ImageControl', 5, 245, 150, 50, ImageURL = sExtPath+"/img/Algoo_logo.png", Border = 0, ScaleMode = 1)
+            self._addWidget('lblURL3', 'FixedHyperlink', 10, 300, nLblWidth, 10, Label = dUI.get('link', "#err"), \
+                            Align = 1, URL="https://grammalecte.net/#thanks", FontDescriptor = xFD1, TextColor = nURLcolor)
 
             # container
             self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
             self.xContainer.setModel(self.xDialog)
-            #self.xContainer.getControl('close').addActionListener(self)
+            self.xContainer.getControl('console_button').addActionListener(self)
+            self.xContainer.getControl('console_button').setActionCommand('Console')
             self.xContainer.setVisible(False)
-            toolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
-            self.xContainer.createPeer(toolkit, None)
+            xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
+            self.xContainer.createPeer(xToolkit, None)
             self.xContainer.execute()
         except:
             traceback.print_exc()
@@ -119,6 +112,9 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
-            self.xContainer.endExecute()
+            if xActionEvent.ActionCommand == 'Console':
+                helpers.start_console()
+            else:
+                self.xContainer.endExecute()
         except:
             traceback.print_exc()

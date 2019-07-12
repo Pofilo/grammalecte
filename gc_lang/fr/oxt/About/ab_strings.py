@@ -13,7 +13,8 @@ dStrings = {
             "license": "Licence : GPL 3",
             "website": "Site web",
 
-            "pythonver": "Machine virtuelle Python : v",
+            "pythonver": "Machine Python : v",
+            "console": "Console",
 
             "message": "Avec le soutien de",
             "sponsor": "La Mouette…",
@@ -29,7 +30,8 @@ dStrings = {
             "license": "License: GPL 3",
             "website": "Web site",
 
-            "pythonver": "Python virtual machine: v",
+            "pythonver": "Python machine: v",
+            "console": "Console",
 
             "message": "With the support of",
             "sponsor": "La Mouette…",

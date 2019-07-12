@@ -2,6 +2,7 @@
 
 import os
 import traceback
+import subprocess
 
 import uno
 
@@ -9,7 +10,8 @@ from com.sun.star.beans import PropertyValue
 from com.sun.star.uno import RuntimeException as _rtex
 
 
-def apso_console ():
+def start_console ():
+    "open console from APSO extension"
     try:
         ctx = uno.getComponentContext()
         ctx.ServiceManager.createInstance("apso.python.script.organizer.impl")
@@ -17,17 +19,24 @@ def apso_console ():
         from apso_utils import console
         console()
     except:
-        traceback.print_exc()
+        try:
+            ctx = uno.getComponentContext()
+            xSvMgr = ctx.getServiceManager()
+            xPathSettings = xSvMgr.createInstanceWithContext("com.sun.star.util.PathSettings", ctx)
+            spPyInstallion = uno.fileUrlToSystemPath(xPathSettings.Module)
+            subprocess.Popen(spPyInstallion + os.sep + "python")  # Start Python interactive Shell
+        except:
+            traceback.print_exc()
 
 
-def xray (myObject):
+def xray (xObject):
     "XRay - API explorer"
     try:
         sm = uno.getComponentContext().ServiceManager
         mspf = sm.createInstanceWithContext("com.sun.star.script.provider.MasterScriptProviderFactory", uno.getComponentContext())
         scriptPro = mspf.createScriptProvider("")
         xScript = scriptPro.getScript("vnd.sun.star.script:XrayTool._Main.Xray?language=Basic&location=application")
-        xScript.invoke((myObject,), (), ())
+        xScript.invoke((xObject,), (), ())
         return
     except:
         raise _rtex("\nBasic library Xray is not installed", uno.getComponentContext())
