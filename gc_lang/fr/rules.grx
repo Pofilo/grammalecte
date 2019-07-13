@@ -16749,11 +16749,16 @@ __conf_tache_tâche__
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
+    [>nettoyer|>laver|>essuyer|>gratter]  @:D  >tâche
+        <<- /conf/ --1>> =\-1.replace("â", "a").replace("Â", "A")
+        # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
+
 TEST: une {{tâche}} de chocolat                                             ->> tache
 TEST: une {{tâche}} vraiment indélébile
 TEST: une {{tâche}} rouge.
 TEST: Une {{tâche}} sur ma chemise.
 TEST: J’ai {{tâché}} ma chemise.
+TEST: Nettoie cette {{tâche}}
 TEST: en tâche de fond
 TEST: la tâche de la justice
 TEST: c’est une tâche de grande envergure
