@@ -32,12 +32,12 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             l = gce.locales[i]
             self.locales.append(Locale(l[0], l[1], l[2]))
         self.locales = tuple(self.locales)
-        xCurCtx = uno.getComponentContext()
+        xContext = uno.getComponentContext()
         # init
         gce.load("Writer", "nInt")
         # GC options
-        # opt_handler.load(xCurCtx)
-        dOpt = Options.load(xCurCtx)
+        # opt_handler.load(xContext)
+        dOpt = Options.load(xContext)
         gce.setOptions(dOpt)
         # dictionaries options
         self.loadUserDictionaries()
