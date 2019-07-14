@@ -6464,11 +6464,13 @@ __conf_à_substantifs__
     >cuillère a [café|soupe]
     >épée a deux mains
     >fard a >paupière
+    >femme a tout faire
     >ferme a >clic
     [>fille|fils] a [papa|maman]
     >fosse a >ordure
     >fusil a >pompe
     >gaz a >effet de serre
+    >homme a tout faire
     >lampe a [>huile|>pétrole]
     >lime a >ongle
     >machine a [café|coudre|écrire|laver|voter]
@@ -11444,7 +11446,7 @@ __gestion_mots_grammaticaux__
     compte tenu [de|des|du]
         <<- ~1:2>> avec
 
-    depuis ,
+    depuis [,|<end>]
         <<- ~1>> *
 
     de [plus|moins] comparé [à|au|aux]
@@ -11874,6 +11876,7 @@ __simplication_substantifs__
     >bombe à rayonnement renforcé
     >bonnet de nuit
     >boucle d’ >oreille
+    >brave ?d’¿ entre les braves
     >brosse à [>dent|reluire]
     >cabinet de toilette
     >camp [de|d’] [concentration|internement|rééducation]
@@ -11943,6 +11946,7 @@ __simplication_substantifs__
     >fard à paupières
     >femme [de|d’] [chambre|lettres|loi|ménage|affaires|exception|État|Église|honneur]
     >femme d’ âge mûr
+    >femme à tout faire
     >ferme à >clic
     >fiche S
     >ficher S
@@ -12114,7 +12118,7 @@ __purge_locutions_adjectivales__
     grande taille
     grandeur nature
     haut de gamme
-    hautee [résolution|fidélité|tension]
+    haute [résolution|fidélité|tension]
     longue [distance|portée|durée]
     meilleur marché
     numéro un
@@ -12134,7 +12138,7 @@ __purge_locutions_adjectivales__
 
 
 __purge_couleurs__
-    [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] [brillant|clair|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
+    [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] [brillant|clair|criard|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] et [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent]
     blanc   argenté
     bleu    [argenté|azur|ciel|indigo|marine|roi|saphir|turquoise]
@@ -12624,6 +12628,7 @@ __purge_locutions_potentielles__
         <<- ~1:2>> *
 
     ?à¿ un [instant|moment]  @¬:A.*:[me]:[si]
+    un seul [instant|moment]  @¬:A.*:[me]:[si]
         <<- not morph(<1, ":R|>d’/") ~1:-2>> *
 
     un jour  @¬:A.*:[me]:[si]
@@ -12697,7 +12702,7 @@ __purge_locutions_verbales__
     >condamner à mort
     >couler à ?grands¿ flots
     >demander [assistance|audience|conseil|pardon]
-    [>donner|>redonner] [sens|suite|vie]
+    [>donner|>redonner] [naissance|sens|suite|vie]
     [>donner|>redonner] quartier libre
     >élire domicile
     >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|froid|front|grève|halte|honte|illusion|mouche|office|part|peur|polémique|plaisir|preuve|rage|scandale|sens|signe|usage|volte-face]
@@ -12746,7 +12751,7 @@ __purge_locutions_verbales__
     [>naître|>naitre] sous x
     >partir en vrille
     >percer à jour
-    >perdre [connaissance|conscience|raison]
+    >perdre [connaissance|conscience|patience|raison]
     >perdre d’ avance
     >piquer au vif
     >porter [assistance|atteinte|bonheur|caution|chance|malheur|plainte|préjudice|secours]
@@ -12811,17 +12816,17 @@ __conf_locutions_verbales__
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
-    >faire plaisirs
+    >faire ?[guère|jamais|pas]¿ plaisirs
         <<- /sgpl/ -2>> plaisir         # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
         <<- ~2>> *
 
     >laisser pour [comte|comtes|>conte]
         <<- /conf/ -3>> compte          # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
-    [>mourir|>paraître|>paraitre|>rester|>sembler] >jeûne
+    [>mourir|>paraître|>paraitre|>rester|>sembler] ?[guère|jamais|pas]¿ >jeûne
         <<- /conf/ -2>> jeune           # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 
-    >partir en >couille
+    >partir ?[guère|jamais|pas]¿ en >couille
         <<- -3>> quenouille|vrille      # Confusion. La locution “partir en couille” est un barbarisme. Locution authentique : “partir/tomber en quenouille”. Peut-être voulez-vous dire “partir en vrille” ?|https://fr.wiktionary.org/wiki/partir_en_quenouille
 
     >rendre ?bon¿ ([comte|comtes|>conte|comptes])
@@ -12830,19 +12835,19 @@ __conf_locutions_verbales__
     >suivre ?[ça|cela|ceci]¿ de ([>prêt|>pré])
         <<- /conf/ -1>> près            # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    >tenir [comte|comtes|>conte|comptes]
+    >tenir ?[guère|jamais|pas]¿ [comte|comtes|>conte|comptes]
         <<- /conf/ -2>> compte          # Confusion. Locution “tenir compte”.|https://fr.wiktionary.org/wiki/tenir_compte
 
-    >tourner [coure|courre|cour|cours]
+    >tourner ?[guère|jamais|pas]¿ [coure|courre|cour|cours]
         <<- /conf/ -2>> court           # Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
 
-    [s’|m’|t’]          en  >laisser  [compter|compté|comptés|comptée|comptées|>comté]
-    nous nous           en  >laisser  [compter|compté|comptés|comptée|comptées|>comté]
-    vous vous           en  >laisser  [compter|compté|comptés|comptée|comptées|>comté]
+    [s’|m’|t’]          en  >laisser  ?[guère|jamais|pas]¿  [compter|compté|comptés|comptée|comptées|>comté]
+    nous nous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté|comptés|comptée|comptées|>comté]
+    vous vous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté|comptés|comptée|comptées|>comté]
     ne pas [nous|vous]  en  laisser   [compter|compté|comptés|comptée|comptées|>comté]
         <<- /conf/ --1>> conter         # Confusion. Locution “s’en laisser conter”, c’est-à-dire se laisser raconter des histoires.|https://fr.wiktionary.org/wiki/ne_pas_s%E2%80%99en_laisser_conter
 
-    >compter fleurette
+    >compter ?[guère|jamais|pas]¿ fleurette
         <<- /conf/ -1>> =\1.replace("omp", "on").replace("OMP", "ON")   # Confusion. Locution “conter fleurette”.|https://fr.wiktionary.org/wiki/conter_fleurette
 
 TEST: ce contrat arrive {{a}} échéance.
@@ -13000,6 +13005,7 @@ TEST: Là n’est pas le problème.
 TEST: Une robe sans manches plutôt sympathique.
 TEST: une émancipation des usagers, refusant de se laisser guider par des « machines à sous » les incitant insidieusement à rester en ligne.
 TEST: Les pompes à chaleur sont moins rentables.
+TEST: Ce qui rend les pompes à chaleur moins rentables.
 
 
 
@@ -15682,7 +15688,7 @@ TEST: Ses souliers {{délassés}} la firent tomber.
 
 # dénué / dénudé
 __conf_dénué_dénudé__
-    >dénuder  [de|d’]  ?[tout|tous|toute|toutes]¿  [>âme|>apitoiement|>ambiguïté|>ambition|>amour|>beauté|>cause|>charme|>charisme|>clarté|>compassion|>compétence|>confort|>connaissance|>conscience|>consistance|>constance|>contenu|>contrepartie|>crainte|>créativité|>culture|>cynisme|>défaut|>difficulté|>discrimination|>envergure|>intérêt|>émotion|>envergure|>esthétique|>éthique|>enjeu|>expertise|>faiblesse|>fantaisie|>finesse|foi|>fondement|>force|>gentillesse|>goût|>gout|>grâce|>grandeur|>haine|>honnêteté|>humanité|>idée|>imagination|>inspiration|>intelligence|>intention|>inventivité|>justice|>légitimité|>logique|>objectivité|>maturité|>méchanceté|>mérite|>motif|>moyenne|paix|>piété|>plan|>pertinence|>peur|>plaisir|>politesse|>préjugé|>principe|>professionnalisme|>psychologie|>qualité|>raison|>rancœur|>réalisme|>remord|>respect|>revendication|>rigueur|>risque|>sagesse|>savoir|>sens|>sentiment|>science|>scrupule|>soupçon|>stress|>subtilité|>sympathie|>tact|>talent|>tendresse|>toxicité|>tromperie|>valeur|>vertu|>vigueur|>violence|>vision]
+    >dénuder  [de|d’]  ?[tout|tous|toute|toutes]¿  [>âme|>apitoiement|>ambiguïté|>ambition|>amour|>beauté|>cause|>charme|>charisme|>clarté|>compassion|>compétence|>confort|>connaissance|>conscience|>consistance|>constance|>contenu|>contrepartie|>crainte|>créativité|>culture|>cynisme|>défaut|>difficulté|>discrimination|>envergure|>intérêt|>émotion|>envergure|>esthétique|>éthique|>enjeu|>expertise|>expression|>faiblesse|>fantaisie|>finesse|foi|>fondement|>force|>gentillesse|>goût|>gout|>grâce|>grandeur|>haine|>honnêteté|>humanité|>idée|>imagination|>inspiration|>intelligence|>intention|>inventivité|>justice|>légitimité|>logique|>objectivité|>maturité|>méchanceté|>mérite|>motif|>moyenne|paix|>piété|>plan|>pertinence|>peur|>plaisir|>politesse|>préjugé|>principe|>professionnalisme|>psychologie|>qualité|>raison|>rancœur|>réalisme|>remord|>respect|>revendication|>rigueur|>risque|>sagesse|>savoir|>sens|>sentiment|>science|>scrupule|>soupçon|>stress|>subtilité|>sympathie|>tact|>talent|>tendresse|>toxicité|>tromperie|>valeur|>vertu|>vigueur|>violence|>vision]
         <<- /conf/ -1>> =\1.replace("nud", "nu").replace("NUD", "NU")
         # Confusion probable. Pour évoquer quelque chose “privé de \-1”, il faut employer le verbe “dénuer”.|https://fr.wiktionary.org/wiki/d%C3%A9nuer
 
