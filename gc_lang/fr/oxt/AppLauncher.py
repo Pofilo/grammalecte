@@ -49,10 +49,6 @@ class AppLauncher (unohelper.Base, XJobExecutor):
                 import LexiconEditor
                 xDialog = LexiconEditor.LexiconEditor(self.ctx)
                 xDialog.run(self.sLang)
-            elif sCmd == "DS":
-                import DictionarySwitcher
-                xDialog = DictionarySwitcher.FrenchDictionarySwitcher(self.ctx)
-                xDialog.run(self.sLang)
             elif sCmd == "MA":
                 import Author
                 xDialog = Author.Author(self.ctx)
