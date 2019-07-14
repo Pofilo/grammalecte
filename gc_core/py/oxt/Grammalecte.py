@@ -33,6 +33,8 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             self.locales.append(Locale(l[0], l[1], l[2]))
         self.locales = tuple(self.locales)
         xContext = uno.getComponentContext()
+        # debug
+        #helpers.startConsole()
         # init
         gce.load("Writer", "nInt")
         # GC options

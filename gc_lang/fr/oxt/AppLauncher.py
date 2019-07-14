@@ -22,11 +22,6 @@ class AppLauncher (unohelper.Base, XJobExecutor):
         xSettings = helpers.getConfigSetting("/org.openoffice.Setup/L10N", False)
         sLocale = xSettings.getByName("ooLocale")  # Note: look at ooSetupSystemLocale value?
         self.sLang = sLocale[0:2]
-        # console
-        xSettings = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
-        xChild = xSettings.getByName("o_fr")
-        if xChild.getPropertyValue("start_console"):
-            helpers.startConsole()
 
     # XJobExecutor
     def trigger (self, sCmd):

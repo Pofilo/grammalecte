@@ -15,8 +15,6 @@ dStrings = {
 
             "pythonver": "Python v",
             "console": "Console",
-            "autoconsole": "Auto",
-            "autoconsole_descr": "Lance la console au démarrage de LibreOffice",
 
             "message": "Avec le soutien de",
             "sponsor": "La Mouette…",
@@ -34,8 +32,6 @@ dStrings = {
 
             "pythonver": "Python v",
             "console": "Console",
-            "autoconsole": "Auto",
-            "autoconsole_descr": "Launch the console at the start of LibreOffice",
 
             "message": "With the support of",
             "sponsor": "La Mouette…",

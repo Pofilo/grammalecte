@@ -79,12 +79,10 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
                             URL="https://grammalecte.net/?from=grammalecte-lo", FontDescriptor = xFD1, TextColor = nURLcolor)
 
             # Python
-            self._addWidget('lblpython', 'FixedText', 10, 125, 60, 10, Align = 1, TextColor = 0x666666, FontDescriptor = xFD2, \
+            self._addWidget('lblpython', 'FixedText', 10, 125, nLblWidth//2, 10, Align = 1, TextColor = 0x666666, FontDescriptor = xFD2, \
                             Label = dUI.get('pythonver', "#err") + "{0[0]}.{0[1]}.{0[2]}".format(sys.version_info))
-            self._addWidget('console_button', 'Button', 70, 124, 40, 10, \
+            self._addWidget('console_button', 'Button', nLblWidth-40, 124, 40, 10, \
                             Label = dUI.get('console', "#err"), FontDescriptor = xFD2, TextColor = 0x666666)
-            self.xAutoConsole = self._addWidget('autoconsole', 'CheckBox', 120, 125, 40, 10, \
-                                                Label = dUI.get('autoconsole', "#err"), HelpText = dUI.get("autoconsole_descr", "#err"))
 
             # other
             self._addWidget('line', 'FixedLine', 10, 140, nLblWidth, 10)
@@ -100,15 +98,11 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
             self._addWidget('lblURL3', 'FixedHyperlink', 10, 300, nLblWidth, 10, Label = dUI.get('link', "#err"), \
                             Align = 1, URL="https://grammalecte.net/#thanks", FontDescriptor = xFD1, TextColor = nURLcolor)
 
-            self._loadOptions()
-
             # container
             self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
             self.xContainer.setModel(self.xDialog)
             self.xContainer.getControl('console_button').addActionListener(self)
             self.xContainer.getControl('console_button').setActionCommand('Console')
-            self.xContainer.getControl('autoconsole').addActionListener(self)
-            self.xContainer.getControl('autoconsole').setActionCommand('AutoConsole')
             self.xContainer.setVisible(False)
             xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
             self.xContainer.createPeer(xToolkit, None)
@@ -121,18 +115,7 @@ class AboutGrammalecte (unohelper.Base, XActionListener):
         try:
             if xActionEvent.ActionCommand == 'Console':
                 helpers.startConsole()
-            elif xActionEvent.ActionCommand == "AutoConsole":
-                xChild = self.xGLOptionNode.getByName("o_fr")
-                xChild.setPropertyValue("start_console", self.xAutoConsole.State)
-                self.xGLOptionNode.commitChanges()
             else:
                 self.xContainer.endExecute()
-        except:
-            traceback.print_exc()
-
-    def _loadOptions (self):
-        try:
-            xChild = self.xGLOptionNode.getByName("o_fr")
-            self.xAutoConsole.State = xChild.getPropertyValue("start_console")
         except:
             traceback.print_exc()
