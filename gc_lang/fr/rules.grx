@@ -18379,16 +18379,18 @@ TEST: celles-là imaginent être devenues légion
 __ppas_avoir_été__
     >avoir  été  *WORD
         <<- /ppas/ morph(\3, ":[123]s", ":[GNAQWY]") -3>> =suggVerbPpas(\3)          # Après “avoir été”, il faut un participe passé.
-        <<- /ppas/ not before("[çcCÇ]’$|[cC]e n’$|[çÇ]a (?:n’|)$") and not before("(?i)^ *ne pas ") and not morph(<1, ":Y") >>>
+        <<- /ppas/ not before("[çcCÇ]’$|[cC][eE] n’$|[çÇ][aA] (?:[nN]’|)$") and not before("(?i)^ *ne pas ") and not morph(<1, ":Y") >>>
         <<- /ppas/ morph(\3, ":Y", ":[AN]") -1:2>> _                                 # Tournure familière. Utilisez “être allé” plutôt que “avoir été”.
-        <<- /ppas/ morph(\3, ":V1..t.*:Y", ":[AN]") -3>> =suggVerbPpas(\3)           # Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
+        <<- /ppas/ morph(\3, ":V1..t.*:Y", ":[AN]") and not morph(>1, ":D")
+        -3>> =suggVerbPpas(\3)                                                       # Incohérence. Après “avoir été”, il faut un participe passé (à moins que “avoir été” signifie ici “être allé”).
 
 TEST: j’ai été {{instruis}} par elle
 TEST: avoir été {{prit}} par surprise
 TEST: Ils {{ont été}} {{réaliser}} à partir d’éléments naturels.
 TEST: J’{{ai été}} camper dans les Alpes.
 TEST: Tu {{as été}} prendre du bois.
-TEST: J’{{ai été}} {{chercher}} du pain.
+TEST: J’{{ai été}} chercher du pain.
+TEST: J’{{ai alors été}} mesurer les débits sur chacun des diffuseurs.
 TEST: Mon grand-père aurait été fier.
 TEST: Ç’eût été prendre des vessies pour des lanternes.
 TEST: C’eût été foncer tête baissée dans la gueule du loup.
