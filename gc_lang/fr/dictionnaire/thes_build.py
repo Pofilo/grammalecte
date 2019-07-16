@@ -32,6 +32,8 @@ class ThesaurusBuilder ():
             self.dSynset[i] = lSynset
             for sWord in lSynset:
                 if not sWord.endswith("*"):
+                    if "(" in sWord:
+                        sWord = re.sub("\\(.*\\)", "", sWord).strip()
                     if sWord not in self.dSynEntry:
                         self.dSynEntry[sWord] = [ (sPOS, i) ]
                     else:
