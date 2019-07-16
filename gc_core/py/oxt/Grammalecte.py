@@ -32,14 +32,14 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
             l = gce.locales[i]
             self.locales.append(Locale(l[0], l[1], l[2]))
         self.locales = tuple(self.locales)
-        xContext = uno.getComponentContext()
         # debug
         #helpers.startConsole()
         # init
         gce.load("Writer", "nInt")
         # GC options
-        # opt_handler.load(xContext)
-        dOpt = Options.load(xContext)
+        #xContext = uno.getComponentContext()
+        #opt_handler.load(xContext)
+        dOpt = Options.loadOptions("${lang}")
         gce.setOptions(dOpt)
         # dictionaries options
         self.loadUserDictionaries()
@@ -112,7 +112,6 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
 
         try:
             xRes.aErrors = tuple(gce.parse(rText, rLocale.Country))
-
             # ->>> WORKAROUND
             if xRes.nStartOfNextSentencePosition > 3000:
                 self.dResult[nHashedVal] = xRes
@@ -122,11 +121,8 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
                     self.nRes = self.nMaxRes
                 self.lLastRes.append(nHashedVal)
             # END OF WORKAROUND
-
-        except Exception as e:
-            if sys.version_info.major == 3:
-                traceback.print_exc()
-
+        except:
+            traceback.print_exc()
         return xRes
 
     def ignoreRule (self, rid, aLocale):
@@ -145,7 +141,7 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
 
     def loadUserDictionaries (self):
         try:
-            xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
+            xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", False)
             xChild = xSettingNode.getByName("o_${lang}")
             if xChild.getPropertyValue("use_personal_dic"):
                 sJSON = xChild.getPropertyValue("personal_dic")
@@ -157,7 +153,7 @@ class Grammalecte (unohelper.Base, XProofreader, XServiceInfo, XServiceName, XSe
 
     def setWriterUnderliningStyle (self):
         try:
-            xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Other/", False)
+            xSettingNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", False)
             xChild = xSettingNode.getByName("o_${lang}")
             sLineType = xChild.getPropertyValue("line_type")
             bMulticolor = bool(xChild.getPropertyValue("line_multicolor"))

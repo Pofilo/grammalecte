@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # Options Dialog
 # by Olivier R.
 # License: MPL 2
@@ -19,27 +18,42 @@ except:
     traceback.print_exc()
 
 
-options = {}
-
-
-def load (ctx):
+def loadOptions (sLang):
+    "load options from Grammalecte and change them according to LibreOffice settings, returns a dictionary {option_name: boolean}"
     try:
-        oGCO = GC_Options(ctx)
-        oGCO.load("${lang}")
+        xNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Leaves", False)
+        xChild = xNode.getByName(sLang)
+        dOpt = gce.gc_options.getOptions("Writer")
+        for sKey in dOpt:
+            sValue = xChild.getPropertyValue(sKey)
+            if sValue != '':
+                dOpt[sKey] = bool(int(sValue))
+        return dOpt
     except:
-        print("# Error. Unable to load options of language: ${lang}")
-    return options
+        print("# Error. Unable to load options of language:", sLang)
+        traceback.print_exc()
+        return gce.gc_options.getOptions("Writer")
+
+
+def saveOptions (sLang, dOpt):
+    "save options in LibreOffice profile"
+    try:
+        xNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Leaves", True)
+        xChild = xNode.getByName(sLang)
+        for sKey, value in dOpt.items():
+            xChild.setPropertyValue(sKey, value)
+        xNode.commitChanges()
+    except:
+        traceback.print_exc()
 
 
 class GC_Options (unohelper.Base, XActionListener):
+
     def __init__ (self, ctx):
         self.ctx = ctx
         self.xSvMgr = self.ctx.ServiceManager
         self.xContainer = None
-        #self.xNode = helpers.getConfigSetting("/org.openoffice.Lightproof_%s/Leaves"%pkg, True)
-        self.xNode = helpers.getConfigSetting("/org.openoffice.Lightproof_grammalecte/Leaves", True)
-        self.nSecret = 0
-        
+
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
         xWidget.Name = name
@@ -55,7 +69,7 @@ class GC_Options (unohelper.Base, XActionListener):
     def run (self, sUI):
         try:
             dUI = op_strings.getUI(sUI)
-            dUI2 = gce.gc_options.getUI(sUI)
+            dOptionUI = gce.gc_options.getUI(sUI)
 
             # fonts
             xFDTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
@@ -78,36 +92,39 @@ class GC_Options (unohelper.Base, XActionListener):
             y = 0
             nWidth = self.xDialog.Width - 20
             nHeight = 10
-            
-            self.lxOptions = []
+
+            self.lOptionWidgets = []
 
             for t in gce.gc_options.lStructOpt:
                 x = 10
                 y += 10
-                self._addWidget(t[0], 'FixedLine', x, y, nWidth, nHeight, Label = dUI2.get(t[0], "#err")[0], FontDescriptor= xFDTitle)
+                self._addWidget(t[0], 'FixedLine', x, y, nWidth, nHeight, Label = dOptionUI.get(t[0], "#err")[0], FontDescriptor= xFDTitle)
                 y += 3
                 for lOptLine in t[1]:
                     x = 15
                     y += 10
                     n = len(lOptLine)
                     for sOpt in lOptLine:
-                        w = self._addWidget(sOpt, 'CheckBox', x, y, nWidth/n, nHeight, State = options.get(sOpt, False), \
-                                            Label = dUI2.get(sOpt, "#err")[0], HelpText = dUI2.get(sOpt, "#err")[1])
-                        self.lxOptions.append(w)
+                        w = self._addWidget(sOpt, 'CheckBox', x, y, nWidth/n, nHeight, \
+                                            Label = dOptionUI.get(sOpt, "#err")[0], HelpText = dOptionUI.get(sOpt, "#err")[1])
+                        self.lOptionWidgets.append(w)
                         x += nWidth / n
-            
+
             self.xDialog.Height = y + 40
 
             xWindowSize = helpers.getWindowSize()
             self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
             self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
 
-            but0 = self._addWidget('default', 'Button', 10, self.xDialog.Height-20, 50, 14, \
-                                   Label = dUI.get('default', "#err"), FontDescriptor = xFDBut, TextColor = 0x000044)
-            but1 = self._addWidget('apply', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, \
-                                   Label = dUI.get('apply', "#err"), FontDescriptor = xFDBut, TextColor = 0x004400)
-            but2 = self._addWidget('cancel', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14,
-                                   Label = dUI.get('cancel', "#err"), FontDescriptor = xFDBut, TextColor = 0x440000)
+            self._addWidget('default', 'Button', 10, self.xDialog.Height-20, 50, 14, \
+                            Label = dUI.get('default', "#err"), FontDescriptor = xFDBut, TextColor = 0x000044)
+            self._addWidget('apply', 'Button', self.xDialog.Width-115, self.xDialog.Height-20, 50, 14, \
+                            Label = dUI.get('apply', "#err"), FontDescriptor = xFDBut, TextColor = 0x004400)
+            self._addWidget('cancel', 'Button', self.xDialog.Width-60, self.xDialog.Height-20, 50, 14,
+                            Label = dUI.get('cancel', "#err"), FontDescriptor = xFDBut, TextColor = 0x440000)
+
+            dOpt = loadOptions("${lang}")
+            self._setWidgets(dOpt)
 
             # container
             self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -129,9 +146,9 @@ class GC_Options (unohelper.Base, XActionListener):
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == 'Default':
-                self._setDefault()
+                self._setWidgets(gce.gc_options.getOptions("Writer"))
             elif xActionEvent.ActionCommand == 'Apply':
-                self._save("fr")
+                self._save("${lang}")
                 self.xContainer.endExecute()
             elif xActionEvent.ActionCommand == 'Cancel':
                 self.xContainer.endExecute()
@@ -140,35 +157,14 @@ class GC_Options (unohelper.Base, XActionListener):
         except:
             traceback.print_exc()
 
-    def _setDefault (self):
-        dOpt = gce.gc_options.getOptions("Writer")
-        for w in self.lxOptions:
+    # Other
+    def _setWidgets (self, dOpt):
+        for w in self.lOptionWidgets:
             w.State = dOpt.get(w.Name, False)
-
-    def load (self, sLang):
-        try:
-            xChild = self.xNode.getByName(sLang)
-            dOpt = gce.gc_options.getOptions("Writer")
-            for sKey in dOpt:
-                sValue = xChild.getPropertyValue(sKey)
-                if sValue == '':
-                    if dOpt[sKey]:
-                        sValue = 1
-                    else:
-                        sValue = 0
-                options[sKey] = bool(int(sValue))
-        except:
-            traceback.print_exc()
 
     def _save (self, sLang):
         try:
-            xChild = self.xNode.getByName(sLang)
-            for w in self.lxOptions:
-                sKey = w.Name
-                bValue = w.State
-                xChild.setPropertyValue(sKey, str(bValue))
-                options[sKey] = bValue
-                gce.setOptions(options)
-            self.xNode.commitChanges()
+            saveOptions(sLang, { w.Name: str(w.State)  for w in self.lOptionWidgets })
+            gce.setOptions({ w.Name: bool(w.State)  for w in self.lOptionWidgets })
         except:
             traceback.print_exc()
