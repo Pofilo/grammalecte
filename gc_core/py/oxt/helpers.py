@@ -93,3 +93,11 @@ def getAbsolutePathOf (sPath=""):
         sPath = "/" + sPath
     sFullPath = sFullPath[8:] + sPath
     return os.path.abspath(sFullPath)
+
+
+def getProductNameAndVersion ():
+    "returns tuple of software name and version"
+    xSettings = getConfigSetting("org.openoffice.Setup/Product", False)
+    sProdName = xSettings.getByName("ooName")
+    sVersion = xSettings.getByName("ooSetupVersion")
+    return (sProdName, sVersion)

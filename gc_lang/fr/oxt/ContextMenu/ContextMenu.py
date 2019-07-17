@@ -139,10 +139,7 @@ class JobExecutor (XJob, unohelper.Base):
         if not args:
             return
         try:
-            # what version of the software?
-            xSettings = helpers.getConfigSetting("org.openoffice.Setup/Product", False)
-            sProdName = xSettings.getByName("ooName")
-            sVersion = xSettings.getByName("ooSetupVersion")
+            sProdName, sVersion = helpers.getProductNameAndVersion()
             if (sProdName == "LibreOffice" and sVersion < "4") or sProdName == "OpenOffice.org":
                 return
 
