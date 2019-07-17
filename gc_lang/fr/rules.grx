@@ -19197,7 +19197,7 @@ TEST: il faillit agir, mais l’ayant {{remarqués}}, il passa son chemin.
 
 __ppas_m_t_avoir__
     [m’|t’] >avoir @:V[0-3]..t_.*:Q.*:p¬:[GWsi]
-        <<- /ppas/ not before("(?i)\\bqu(?:e |’)") -3>> =suggSing(\3)
+        <<- /ppas/ not tag_before(\1, "que") -3>> =suggSing(\3)
         # Accord avec “\1”. S’il s’agit d’un COD, le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
@@ -19217,13 +19217,14 @@ TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du b
 
 
 __ppas_avoir_ppas_mas_sing__
-    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans]  avoir  @:Q.*:[fp]¬:m:[si]
-        <<- /ppas/ not value(\3, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-        -3>> =suggVerbPpas(\3, ":m:s")                      # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  ?[m’|t’]¿  avoir  @:Q.*:[fp]¬:m:[si]
+        <<- /ppas/ not value(\-1, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        --1>> =suggVerbPpas(\-1, ":m:s")                      # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Avoir {{instruite}} notre mère
 TEST: Après avoir {{baissés}} nos tarifs
 TEST: Je viendrai, après avoir vraiment {{écoutée}} le prof.
+TEST: Merci de m’avoir {{lus}}                                      ->> lu
 
 
 ## avoir avec participe passé
