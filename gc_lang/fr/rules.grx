@@ -20660,6 +20660,10 @@ __inte_union_je__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GW]")
         -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
 
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [ai|avais|eus|eussé|eusse|suis|étais|fus|fussé|fusse]  je
+        <<- /inte/ space_after(\2, 1, 1)
+        -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
+
     *WORD  ~.[is]$  je  [<end>|,]
     *WORD  ~.[is]$  je  @:¬:1s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GNW]") and not value(\1, "|je|j’|tu|")
@@ -20674,6 +20678,10 @@ __inte_union_tu__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.s$  tu  [<end>|,]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.s$  tu  @:¬:2s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GW]")
+        -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [as|avais|eus|eusses|es|étais|fus|fusses]  tu
+        <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~.s$  tu  [<end>|,]
@@ -20691,7 +20699,7 @@ __inte_union_il_on__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [avait|était|est]   [il|on]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [avait|eut|eût|est|était|fut|fût]   [il|on]
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
@@ -20706,9 +20714,9 @@ TEST: Pourquoi le message de Jean {{était‐il}} très radical pour son époque
 
 
 __inte_union_ce__
-    [<start>|,] [était|étaient] ce ?pas¿ [le|la|les|l’|un|une|de|des|d’|ce|cet|cette|ces|quelques|plusieurs|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs]
-    [<start>|,] [était|étaient] ce ?pas¿ @:G¬:[NA].*:[me]:[si]
-    [<start>|,] [était|étaient] ce [ton|son] @:N¬:A.*:[me]:[si]
+    [<start>|,] [est|était|étaient] ce ?pas¿ [le|la|les|l’|un|une|de|des|d’|ce|cet|cette|ces|quelques|plusieurs|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs]
+    [<start>|,] [est|était|étaient] ce ?pas¿ @:G¬:[NA].*:[me]:[si]|>(?:qu[ei’]|pourquoi)/
+    [<start>|,] [est|était|étaient] ce [ton|son] @:N¬:A.*:[me]:[si]
         <<- /inte/ space_after(\2, 1, 1) -2:3>> \2-\3                                               # Forme interrogative ? Mettez un trait d’union.
 
 TEST: N’{{était ce}} pas le bon moment pour y songer.                   ->> était-ce
@@ -20720,7 +20728,7 @@ __inte_union_elle__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3s", ":[GW]")
         -2:3>> \2-elle                                                                              # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [avait|était|est]   elle
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [avait|eut|eût|est|était|fut|fût]   elle
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-elle                                                                              # Forme interrogative ? Mettez un trait d’union.
 
@@ -20740,7 +20748,7 @@ __inte_union_nous!6__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]")
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [sommes|étions|avions]  nous
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [sommes|étions|fûmes|fussions|avons|avions|eûmes|eussions]  nous
         <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
@@ -20757,6 +20765,10 @@ __inte_union_vous__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..e[zs]$  vous  [<end>|,]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..e[zs]$  vous  @:¬:2p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]")
+        -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
+
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [sommes|étiez|fûtes|fussiez|avez|aviez|eûtes|eussiez]  vous
+        <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~..e[zs]$  vous  [<end>|,]
@@ -20776,6 +20788,10 @@ __inte_union_ils__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [ont|avaient|eurent|eussent|sont|étaient|furent|fussent]  ils
+        <<- /inte/ space_after(\2, 1, 1)
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
     *WORD  ~[eo]nt$  ils  [<end>|,]
     *WORD  ~[eo]nt$  ils  @:¬:3p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GNW]") and not value(\1, "|ce|ils|elles|")
@@ -20788,6 +20804,10 @@ __inte_union_elles__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  elles  [<end>|,]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~[eo]nt$  elles  @:¬:3p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:3p", ":[GW]")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [ont|avaient|eurent|eussent|sont|étaient|furent|fussent]  elles
+        <<- /inte/ space_after(\2, 1, 1)
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
     *WORD  ~[eo]nt$  elles  [<end>|,]
