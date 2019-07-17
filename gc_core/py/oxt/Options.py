@@ -55,7 +55,10 @@ class GC_Options (unohelper.Base, XActionListener):
         self.xContainer = None
 
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
-        xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
+        if wtype.startswith("com."):
+            xWidget = self.xDialog.createInstance(wtype)
+        else:
+            xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
         xWidget.Name = name
         xWidget.PositionX = x
         xWidget.PositionY = y
@@ -95,22 +98,34 @@ class GC_Options (unohelper.Base, XActionListener):
 
             self.lOptionWidgets = []
 
-            for t in gce.gc_options.lStructOpt:
-                x = 10
-                y += 10
-                self._addWidget(t[0], 'FixedLine', x, y, nWidth, nHeight, Label = dOptionUI.get(t[0], "#err")[0], FontDescriptor= xFDTitle)
-                y += 3
-                for lOptLine in t[1]:
-                    x = 15
+            sProdName, sVersion = helpers.getProductNameAndVersion()
+            if True:
+                # no tab available (bug)
+                for sOptionType, lOptions in gce.gc_options.lStructOpt:
+                    x = 10
                     y += 10
-                    n = len(lOptLine)
-                    for sOpt in lOptLine:
-                        w = self._addWidget(sOpt, 'CheckBox', x, y, nWidth/n, nHeight, \
-                                            Label = dOptionUI.get(sOpt, "#err")[0], HelpText = dOptionUI.get(sOpt, "#err")[1])
-                        self.lOptionWidgets.append(w)
-                        x += nWidth / n
-
-            self.xDialog.Height = y + 40
+                    self._addWidget(sOptionType, 'FixedLine', x, y, nWidth, nHeight, Label = dOptionUI.get(sOptionType, "#err")[0], FontDescriptor= xFDTitle)
+                    y += 3
+                    for lOptLine in lOptions:
+                        x = 15
+                        y += 10
+                        n = len(lOptLine)
+                        for sOpt in lOptLine:
+                            sLabel, sHelpText = dOptionUI.get(sOpt, "#err")
+                            xOpt = self._addWidget(sOpt, 'CheckBox', x, y, nWidth/n, nHeight, Label = sLabel, HelpText = sHelpText)
+                            self.lOptionWidgets.append(xOpt)
+                            x += nWidth / n
+                self.xDialog.Height = y + 40
+            else:
+                # we can use tabs
+                xTabPageContainer = self._addWidget("tabs", "com.sun.star.awt.tab.UnoControlTabPageContainerModel", 10, 10, nWidth, 100)
+                xTabPage1 = xTabPageContainer.createTabPage(0);
+                xTabPage1.Title = "Page 1"
+                xTabPage2 = xTabPageContainer.createTabPage(1);
+                xTabPage2.Title = "Page 2"
+                xTabPageContainer.insertByIndex(0, xTabPage1);
+                xTabPageContainer.insertByIndex(1, xTabPage2);
+                self.xDialog.Height = 300
 
             xWindowSize = helpers.getWindowSize()
             self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
