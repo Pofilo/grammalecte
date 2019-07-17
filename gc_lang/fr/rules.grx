@@ -5531,7 +5531,7 @@ __conf_usage_impropre__
         <<- /conf/ not \1.isupper() and \2.islower() -1>> à                 # Usage impropre. Avec un nom féminin, utilisez la préposition “à”. (Ex : Je vais à la gare, je vais au stade.)
 
     au  l’
-        <<- /conf/ \2 == "l’" -1>> à                                        # Usage impropre. Ex : Elle va à l’opéra. Elle va au bal.
+        <<- /conf/ \2 == "l’" -1>> à                                        # Usage impropre. Exemple : Elle va à l’opéra. Elle va au bal.
 
 TEST: {{au le}} chien
 TEST: {{au les}} armoires
@@ -5544,10 +5544,13 @@ __conf_déterminant_fem_sing_verbe__
         <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                        # Incohérence avec « \1 » : « \2 » est un verbe.
 
     sa  @:(?:Y|[123][sp])¬:(?:N.*:[fe]|A|W)
-        <<- /conf/ \2.islower() >>>
+        <<- /conf/ not \1.isupper() and \2.islower() >>>
         <<- /conf/ morph(\2, "V.....[pqx]") -1>> ça|se                                              # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
         <<- /conf/ __else__ -1>> ça                                                                 # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient.
         <<- /conf/ hasSimil(\2) -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                        # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    sa  a
+        <<- /conf/ not \1.isupper() -1>> ça                                                         # Confusion. Si vous voulez dire “cela”, écrivez “ça”.
 
 TEST: Cette {{pèle}} est trop fragile.
 TEST: {{sa}} devient difficile.
@@ -5555,6 +5558,7 @@ TEST: il me tendit {{sa}} {{pèche}}.
 TEST: {{sa}} prend du temps.                                                  ->> ça|se
 TEST: {{çà}} va                                                               ->> ça
 TEST: {{sa}} va                                                               ->> ça
+TEST: {{sa}} a tout changé                                                    ->> ça
 
 
 __conf_déterminant_mas_sing_verbe__
@@ -6707,11 +6711,11 @@ TEST: Je me suis trompé. {{Au tan}} pour moi.
 
 
 __conf_autant_que_faire_se_peut!7__
-    [au|aux] [temps|tant|>tan] que [faire|ferre|>fer] [se|ce] [peu|peut|peux]
-    >autan que [faire|ferre|>fer] [se|ce] [peu|peut|peux]
-    autant que [ferre|>fer] [se|ce] [peu|peut|peux]
-    autant que [faire|ferre|>fer] ce [peu|peut|peux]
-    autant que [faire|ferre|>fer] [se|ce] [peu|peux]
+    [au|aux] [temps|tant|>tan] [que|qu’] [faire|ferre|>fer] [se|ce] [peu|peut|peux]
+    >autan [que|qu’] [faire|ferre|>fer] [se|ce] [peu|peut|peux]
+    autant [que|qu’] [ferre|>fer] [se|ce] [peu|peut|peux]
+    autant [que|qu’] [faire|ferre|>fer] ce [peu|peut|peux]
+    autant [que|qu’] [faire|ferre|>fer] [se|ce] [peu|peux]
         <<- /conf/ ->> autant que faire se peut         # Locution adverbiale : « autant que faire se peut ».|https://fr.wiktionary.org/wiki/autant_que_faire_se_peut
 
 TEST: on va y arriver, {{au temps que faire se peu}}…
@@ -19217,7 +19221,7 @@ TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du b
 
 
 __ppas_avoir_ppas_mas_sing__
-    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  ?[m’|t’]¿  avoir  @:Q.*:[fp]¬:m:[si]
+    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  ?[m’|t’|lui|leur]¿  avoir  @:Q.*:[fp]¬:m:[si]
         <<- /ppas/ not value(\-1, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         --1>> =suggVerbPpas(\-1, ":m:s")                      # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
