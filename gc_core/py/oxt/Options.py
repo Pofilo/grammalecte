@@ -112,24 +112,27 @@ class GC_Options (unohelper.Base, XActionListener):
                         n = len(lOptLine)
                         for sOpt in lOptLine:
                             sLabel, sHelpText = dOptionUI.get(sOpt, "#err")
-                            xOpt = self._addWidget(sOpt, 'CheckBox', x, y, nWidth/n, nHeight, Label = sLabel, HelpText = sHelpText)
+                            xOpt = self._addWidget(sOpt, 'CheckBox', x, y, nWidth//n, nHeight, Label = sLabel, HelpText = sHelpText)
                             self.lOptionWidgets.append(xOpt)
-                            x += nWidth / n
+                            x += nWidth // n
                 self.xDialog.Height = y + 40
             else:
                 # we can use tabs
+                print("1")
                 xTabPageContainer = self._addWidget("tabs", "com.sun.star.awt.tab.UnoControlTabPageContainerModel", 10, 10, nWidth, 100)
-                xTabPage1 = xTabPageContainer.createTabPage(0);
+                xTabPage1 = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.tab.UnoControlTabPageModel', self.ctx)
+                xTabPage2 = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.tab.UnoControlTabPageModel', self.ctx)
+                #xTabPage1 = xTabPageContainer.createTabPage(1)
+                #xTabPage2 = xTabPageContainer.createTabPage(2)
                 xTabPage1.Title = "Page 1"
-                xTabPage2 = xTabPageContainer.createTabPage(1);
                 xTabPage2.Title = "Page 2"
-                xTabPageContainer.insertByIndex(0, xTabPage1);
-                xTabPageContainer.insertByIndex(1, xTabPage2);
+                xTabPageContainer.insertByIndex(0, xTabPage1)
+                xTabPageContainer.insertByIndex(1, xTabPage2)
                 self.xDialog.Height = 300
 
             xWindowSize = helpers.getWindowSize()
-            self.xDialog.PositionX = int((xWindowSize.Width / 2) - (self.xDialog.Width / 2))
-            self.xDialog.PositionY = int((xWindowSize.Height / 2) - (self.xDialog.Height / 2))
+            self.xDialog.PositionX = int((xWindowSize.Width // 2) - (self.xDialog.Width // 2))
+            self.xDialog.PositionY = int((xWindowSize.Height // 2) - (self.xDialog.Height // 2))
 
             self._addWidget('default', 'Button', 10, self.xDialog.Height-20, 50, 14, \
                             Label = dUI.get('default', "#err"), FontDescriptor = xFDBut, TextColor = 0x000044)
