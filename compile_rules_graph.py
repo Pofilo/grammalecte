@@ -12,6 +12,7 @@ import compile_rules_js_convert as jsconv
 dACTIONS = {}
 dFUNCTIONS = {}
 dFUNCNAME = {}
+dDECLENSIONS = {}
 
 
 def createFunction (sType, sCode, bStartWithEqual=False):
@@ -73,44 +74,44 @@ def prepareFunction (sCode):
     return sCode
 
 
-def genTokenLines (sTokenLine, dDef):
+def genTokenLines (sTokenLine, dDef, dDecl):
     "tokenize a string and return a list of lines of tokens"
     lTokenLines = []
-    for sToken in sTokenLine.split():
+    for sTokBlock in sTokenLine.split():
         # replace merger characters by spaces
-        if "␣" in sToken:
-            sToken = sToken.replace("␣", " ")
+        if "␣" in sTokBlock:
+            sTokBlock = sTokBlock.replace("␣", " ")
         # optional token?
-        bNullPossible = sToken.startswith("?") and sToken.endswith("¿")
+        bNullPossible = sTokBlock.startswith("?") and sTokBlock.endswith("¿")
         if bNullPossible:
-            sToken = sToken[1:-1]
+            sTokBlock = sTokBlock[1:-1]
         # token with definition?
-        if sToken.startswith("({") and sToken.endswith("})") and sToken[1:-1] in dDef:
-            sToken = "(" + dDef[sToken[1:-1]] + ")"
-        elif sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
-            sToken = dDef[sToken]
-        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
+        if sTokBlock.startswith("({") and sTokBlock.endswith("})") and sTokBlock[1:-1] in dDef:
+            sTokBlock = "(" + dDef[sTokBlock[1:-1]] + ")"
+        elif sTokBlock.startswith("{") and sTokBlock.endswith("}") and sTokBlock in dDef:
+            sTokBlock = dDef[sTokBlock]
+        if ( (sTokBlock.startswith("[") and sTokBlock.endswith("]")) or (sTokBlock.startswith("([") and sTokBlock.endswith("])")) ):
             # multiple token
-            bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
+            bSelectedGroup = sTokBlock.startswith("(") and sTokBlock.endswith(")")
             if bSelectedGroup:
-                sToken = sToken[1:-1]
-            lNewToken = sToken[1:-1].split("|")
+                sTokBlock = sTokBlock[1:-1]
+            lToken = createTokenList(sTokBlock, dDecl)
             if not lTokenLines:
-                lTokenLines = [ ["("+s+")"]  for s  in lNewToken ]  if bSelectedGroup  else [ [s]  for s  in lNewToken ]
+                lTokenLines = [ ["("+s+")"]  for s  in lToken ]  if bSelectedGroup  else [ [s]  for s  in lToken ]
                 if bNullPossible:
-                    lTokenLines.extend([ []  for i  in range(len(lNewToken)+1) ])
+                    lTokenLines.extend([ []  for i  in range(len(lToken)+1) ])
             else:
                 lNewTemp = []
                 if bNullPossible:
                     for aRule in lTokenLines:
-                        for sElem in lNewToken:
+                        for sElem in lToken:
                             aNewRule = list(aRule)
                             aNewRule.append(sElem)
                             lNewTemp.append(aNewRule)
                 else:
-                    sElem1 = lNewToken.pop(0)
+                    sElem1 = lToken.pop(0)
                     for aRule in lTokenLines:
-                        for sElem in lNewToken:
+                        for sElem in lToken:
                             aNewRule = list(aRule)
                             aNewRule.append("(" + sElem + ")"  if bSelectedGroup  else sElem)
                             lNewTemp.append(aNewRule)
@@ -119,26 +120,46 @@ def genTokenLines (sTokenLine, dDef):
         else:
             # simple token
             if not lTokenLines:
-                lTokenLines = [[sToken], []]  if bNullPossible  else [[sToken]]
+                lTokenLines = [[sTokBlock], []]  if bNullPossible  else [[sTokBlock]]
             else:
                 if bNullPossible:
                     lNewTemp = []
                     for aRule in lTokenLines:
                         lNew = list(aRule)
-                        lNew.append(sToken)
+                        lNew.append(sTokBlock)
                         lNewTemp.append(lNew)
                     lTokenLines.extend(lNewTemp)
                 else:
                     for aRule in lTokenLines:
-                        aRule.append(sToken)
+                        aRule.append(sTokBlock)
     for aRule in lTokenLines:
         yield aRule
 
 
-def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
+def createTokenList (sTokBlock, dDeclensions):
+    "return a list of tokens from a block of tokens"
+    lToken = []
+    for sToken in sTokBlock[1:-1].split("|"):
+        if "+" in sToken and not sToken.startswith("+"):
+            print("\n", sToken)
+            for sCode in dDeclensions:
+                if sToken.endswith(sCode):
+                    sToken = sToken[:-len(sCode)]
+                    lToken.append(sToken)
+                    print(dDeclensions[sCode])
+                    for sSuffix in dDeclensions[sCode]:
+                        lToken.append(sToken+sSuffix)
+                    break
+            print(lToken)
+        else:
+            lToken.append(sToken)
+    return lToken
+
+
+def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
     "generator: create rule as list"
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
-    for lToken in genTokenLines(sTokenLine, dDef):
+    for lToken in genTokenLines(sTokenLine, dDef, dDecl):
         # Calculate positions
         dPos = {}   # key: iGroup, value: iToken
         iGroup = 0
@@ -316,7 +337,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     return None
 
 
-def make (lRule, dDef, sLang, dOptPriority):
+def make (lRule, sLang, dDef, dDecl, dOptPriority):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
@@ -398,7 +419,7 @@ def make (lRule, dDef, sLang, dOptPriority):
         print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
-            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
+            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
                 lPreparedRule.append(aRule)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)

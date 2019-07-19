@@ -292,6 +292,20 @@ DEF: pronom_obj     [moi|toi|soi|lui|elle|nous|vous|eux|elles|moi-même|toi-mêm
 
 !!
 !!
+!! Déclinaisons de tokens                                                                         !!
+!!
+!!
+
+DECL: +s    s
+DECL: +e    e
+DECL: +ses  s e es
+DECL: +es   e es
+DECL: +les  s le les
+DECL: +x    x
+
+
+!!
+!!
 !!
 !!
 !!
@@ -3829,7 +3843,7 @@ __tu_substantifs__
     par ci ?,¿ par là
         <<- /tu/ ->> par-ci par-là|par-ci, par-là               # Trait(s) d’union manquant(s).
 
-    [le|les|du|des|un|ce|ces|mon|ton|son] [prêt|prêts] [à|a] porter
+    [le|les|du|des|un|ce|ces|mon|ton|son] [prêt+s] [à|a] porter
         <<- /tu/ -2:0>> \2-à-porter                             # Il manque les traits d’union.
 
     >pied [à|a] terre
@@ -3873,7 +3887,7 @@ __tu_substantifs__
         <<- /tu/ not ( morph(<1, ":R") and value(>1, "|que|qu’|") )
         ->> soi-disant                                          # Il manque un trait d’union.
 
-    sous [jacent|jacente|jacents|jacentes]
+    sous [jacent+ses]
         <<- /tu/ ->> sous-\2                                    # Il manque un trait d’union.
 
     du sur >mesure
@@ -5312,10 +5326,11 @@ __non_verbe_après_préverbes__
     [ne|n’]     [le|la|l’|les|nous|vous|lui|leur]           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     n’          [en|y]                                      @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’|se|s’]   [le|la|l’|les]                    @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’|se|s’]   [en|y]                            @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
+    [me|m’|te|t’]   [en|y]                                  @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
+    [se|s’]         [en|y]                                  @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
         <<- /conf/ -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|voilà)/
+    [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
     [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|pas|presque|jamais|rien|guère|point|plus)/
@@ -7353,9 +7368,9 @@ __conf_différent_différend__
     les  différents  <end>
         <<- /conf/ -2>> différends                                      # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 
-    >être  ?[pas|si]¿   (>différends)
-    >être  pas  si      (>différends)
-        <<- /conf/ -1>> =\1.replace("nd", "nt")                         # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
+    >être  ?[pas|si]¿   >différends
+    >être  pas  si      >différends
+        <<- /conf/ --1>> =\-1.replace("nd", "nt")                       # Confusion : « différent » est un adjectif, « différend » est le nom qui signifie désaccord.
 
 TEST: Très {{différends}} de nous, ces gens-là !
 TEST: Régler votre {{différent}}.
@@ -7512,7 +7527,7 @@ TEST: Qui faut flinguer pour avoir un bon café ?
 __conf_filtre_philtre__
     >filtre d’ [amour|illusion|enchantement|endormissement]
     >filtre de [confusion|guérison|fidélité|longévité|mort|vision]
-    >filtre [>aphrodisiaque|empoisonné|empoisonnés|>léthargique|>magique|>narcotique]
+    >filtre [>aphrodisiaque|empoisonné+ses|>léthargique|>magique|>narcotique]
         <<- /conf/ -1>> philtre|philtres
         # Confusion probable. Un filtre est un intrument de filtrage, un philtre est une boisson (magique) procurant des effets sur le buveur.|https://fr.wiktionary.org/wiki/philtre
 
@@ -7526,7 +7541,7 @@ TEST: un {{philtre}} à café
 
 # flan / flanc
 __conf_flanc_flan__
-    >flanc [pâtissier|pâtissiers]
+    >flanc [pâtissier+s]
     >flanc [au|aux] [>caramel|>café|>citron|>chocolat|>four|>lait|>lard|noix|>pomme|>pruneau|>œuf|>raisin]
     >flanc [de|d’] [or|argent|cuivre]
     >flanc à la [crème|coco|noix]
@@ -8030,7 +8045,7 @@ __conf_nouvel_nouveau_euphonie__
     [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  homme
         <<- /conf/ -2>> nouvel                                  # Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
-    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  ~^[aeéiîou]
+    [un|le|ce|du|mon|ton|son|notre|votre|leur|quel]  nouveau  ~^[aâeéiîou]
         <<- /conf/ morph(\3, ":[NA].*:[me]:s") -2>> nouvel      # Euphonie. Utilisez “nouvel” pour un nom masculin singulier commençant par une voyelle ou un h.|https://fr.wikipedia.org/wiki/Euphonie
 
 TEST: ce {{nouveau}} homme
@@ -8195,16 +8210,16 @@ __conf_palier_pallier__
     [sur|sous] le ?même¿ [pallier|pallié]
         <<- /conf/ --1>> palier                                             # Confusion.|https://fr.wiktionary.org/wiki/palier
 
-    [pallier|pallié|palliée]  [de|d’] [communication|décompression|imposition]
+    [pallier|pallié+e]  [de|d’] [communication|décompression|imposition]
         <<- /conf/ -1>> palier                                              # Confusion.|https://fr.wiktionary.org/wiki/palier
 
     [palliés|palliées]  [de|d’] [communication|décompression|imposition]
         <<- /conf/ -1>> paliers                                             # Confusion.|https://fr.wiktionary.org/wiki/palier
 
-    [pallier|pallié|palliés|palliée|palliées] par [pallier|pallié|palliés|palliée|palliées]
+    [pallier|pallié+ses] par [pallier|pallié+ses]
         <<- /conf/ ->> palier par palier                                    # Confusion.|https://fr.wiktionary.org/wiki/palier
 
-    de [pallier|pallié|palliés|palliée|palliées] en [pallier|pallié|palliés|palliée|palliées]
+    de [pallier|pallié+ses] en [pallier|pallié+ses]
         <<- /conf/ ->> de palier en palier                                  # Confusion.|https://fr.wiktionary.org/wiki/palier
 
 TEST: La voisine de {{pallier}} fait un rafut de tous les diables.
@@ -8281,13 +8296,13 @@ TEST: La {{pause}} de la première pierre.
 
 # péché / pêcher
 __conf_péché_pêcher__
-    [pécher|>pêcher|pêché|pêchés|pêchée|pêchées] [mignon|>capitale]
-    [pécher|>pêcher|pêché|pêchés|pêchée|pêchées] de jeunesse
+    [pécher|>pêcher|pêché+ses] [mignon|>capitale]
+    [pécher|>pêcher|pêché+ses] de jeunesse
         <<- /conf/ -1>> péché|péchés                                        # Confusion. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
 
-    [>absolution|>rémission] [des|du] ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
-    [>absolution|>rémission] de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
-        <<- /conf/ -1>> péché|péchés                                        # Confusion. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
+    [>absolution|>rémission] [des|du] [pécher|>pêcher|pêché+ses]
+    [>absolution|>rémission] de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] [pécher|>pêcher|pêché+ses]
+        <<- /conf/ --1>> péché|péchés                                       # Confusion. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
 
     >pécheresse [du|d’|de|des|la|le|l’|les|à|au|aux] ([>ablette|>oblade|>albacore|>anguille|>baleine|>bar|>barracuda|>blageon|>blennie|>bonite|>bouvière|>brème|>brochet|>bulot|>cabillaud|>cabot|>calamar|>canard|>carassin|>carnassier|>carpe|>chabot|>chevaine|>chevenne|>chevesne|>colin|>congre|>coque|>coquillage|>coquille|>corb|>crabe|>crevette|>crustacé|>dorade|>dauphin|>écrevisse|>éponge|>espadon|>épinoche|>épinochette|>esturgeon|>étrille|>financement|>gardon|>girelle|>gobie|>goujon|>grémille|>grondin|>hareng|>homard|>hotu|>huitre|>huître|>langouste|>langoustine|>leurre|>liche|>loche|>lotte|>marbré|>marsouin|>merlan|>merlu|>mérou|>mollusque|>morue|>mostelle|>mustelle|>mulet|>murène|>omble|>ormeau|>oursin|>pageau|>pagel|>pageot|>palourde|>patelle|>perche|>pétoncle|>moule|>pieuvre|>piranha|>plie|>poisson|>poulpe|>praire|>raie|>rascasse|>requin|>rotengle|>rouget|>sandre|>sardine|>salmonidé|>sar|>saumon|>saupe|>seiche|>silure|>sole|>spirlin|>tanche|>thon|>truite|>turbot|>vairon|>vandoise|>vive|anchois|>barbeau|>bigorneau|black-bass|>couteau|ligne|>maquereau|saint-jacques])
     >pécheresse [de|à] [la|l’] ([>ablette|>oblade|>albacore|>anguille|>baleine|>bar|>barracuda|>blageon|>blennie|>bonite|>bouvière|>brème|>brochet|>bulot|>cabillaud|>cabot|>calamar|>canard|>carassin|>carnassier|>carpe|>chabot|>chevaine|>chevenne|>chevesne|>colin|>congre|>coque|>coquillage|>coquille|>corb|>crabe|>crevette|>crustacé|>dorade|>dauphin|>écrevisse|>éponge|>espadon|>épinoche|>épinochette|>esturgeon|>étrille|>financement|>gardon|>girelle|>gobie|>goujon|>grémille|>grondin|>hareng|>homard|>hotu|>huitre|>huître|>langouste|>langoustine|>leurre|>liche|>loche|>lotte|>marbré|>marsouin|>merlan|>merlu|>mérou|>mollusque|>morue|>mostelle|>mustelle|>mulet|>murène|>omble|>ormeau|>oursin|>pageau|>pagel|>pageot|>palourde|>patelle|>perche|>pétoncle|>moule|>pieuvre|>piranha|>plie|>poisson|>poulpe|>praire|>raie|>rascasse|>requin|>rotengle|>rouget|>sandre|>sardine|>salmonidé|>sar|>saumon|>saupe|>seiche|>silure|>sole|>spirlin|>tanche|>thon|>truite|>turbot|>vairon|>vandoise|>vive|anchois|>barbeau|>bigorneau|black-bass|>couteau|ligne|>maquereau|saint-jacques])
@@ -8848,9 +8863,9 @@ TEST: ne pas être sans {{ignorer}} la cause de ces phénomènes.
 
 # sens / cens / cent / sans / sang
 __conf_sens_sans_cent_cens__
-    [<start>|,]  [il|ils|on]    [sans|sang|sangs|cens|cent]     @:V
-    [<start>|,]  [elle|elles]   [sang|sangs|cens|cent]          @:V
-    [<start>|,]  [elle|elles]   sans                            @:V¬:(?:[NYDA]|Oo)|>(?:y|en)
+    [<start>|,]  [il|ils|on]    [sans|>sang|cens|>cent]     @:V
+    [<start>|,]  [elle|elles]   [>sang|cens|>cent]          @:V
+    [<start>|,]  [elle|elles]   sans                        @:V¬:(?:[NYDA]|Oo)|>(?:y|en)
         <<- /conf/ -3>> s’en                                                                        # Confusion probable.
 
 TEST: elle {{sang}} était voulu
@@ -8902,13 +8917,13 @@ TEST: {{S’en suivre}}.
 
 # soi / soit
 __conf_soi_disant__
-    [soi|soie|soit|sois] [disants|disante|disantes]
-    [soie|soit|sois] disant
+    soi [disants|disante|disantes]
+    [soie|soit|sois] [disant+ses]
     [soi-disants|soi-disante|soi-disantes]
-    [sois-disant|sois-disants|sois-disante|sois-disantes]
-    [soie-disant|soie-disants|soie-disante|soie-disantes]
-    [soies-disant|soies-disants|soies-disante|soies-disantes]
-    [soit-disant|soit-disants|soit-disante|soit-disantes]
+    [sois-disant+ses]
+    [soie-disant+ses]
+    [soies-disant+ses]
+    [soit-disant+ses]
         <<- /conf/ ->> soi-disant                                                                   # Confusion : “soi-disant” est un adjectif invariable.|http://fr.wiktionary.org/wiki/soi-disant
 
 TEST: Méfiez-vous de cette {{soi-disante}} sorcière.
@@ -9019,7 +9034,7 @@ __conf_sot_seau_sceau__
     [>sceau|sot|sots] [d’|de] [bois|boue|ciment|glace|>glaçon|>gravat|>gravier|>gravillon|plage|lait|maçon|nettoyage|peinture|sable]
     [>sceau|sot|sots] à [glace|champagne|>glaçon]
     [>sceau|sot|sots] en [acier|bois|cuivre|fer|inox|métal|plastique|polypropylène|zinc]
-    [>sceau|sot|sots] [rempli|remplie|percé|percés|>vide|troué|troués|renversé|renversés|plein|pleins]
+    [>sceau|sot|sots] [rempli+ses|percé+ses|>vide|troué+ses|renversé+ses|plein+s]
         <<- /conf/ -1>> seau|seaux                  # Confusion probable. Pour désigner un récipient, écrivez “seau”.|https://fr.wiktionary.org/wiki/seau
 
     dans @:D [>sceau|sot|sots]
@@ -9097,10 +9112,10 @@ __conf_tant_temps_tan_1__
     de [tant|tan|tans] en [tant|tan|tans]
         <<- /conf/ ->> de temps en temps                    # Confusion. Écrivez « de temps en temps ».
 
-    un [temps|tan|tans] [soi|sois|soie|soies|soit] peu
+    un [temps|tan|tans] [soi|sois|>soie|soit] peu
         <<- /conf/ -2>> tant                                # Confusion. Écrivez « un tant soit peu ».
 
-    un [temps|tan|tans|tant] [soi|sois|soie|soies] peu
+    un [temps|tan|tans|tant] [soi|sois|>soie] peu
         <<- /conf/ -3>> soit                                # Confusion. Écrivez « un tant soit peu ».
 
     [après|avec] [temps|tan|tans] [de|d’]
@@ -9492,7 +9507,7 @@ __maj_État__
     état de droit
         <<- /maj/ \1 == "état" -1>> État                            # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
 
-    états [français|>belge|>suisse|canadien|canadiens|palestinien|palestiniens|souverain|souverains|>membre|américain|américains|africain|africains|européen|européens|>asiatique|>voyou|>démocratique|>totalitaire|>fédérale|>fédérée|>capitaliste|>communiste|>providence|>nation]
+    états [français|>belge|>suisse|canadien+s|palestinien+s|souverain+s|>membre|américain+s|africain+s|européen+s|>asiatique|>voyou|>démocratique|>totalitaire|>fédérale|>fédérée|>capitaliste|>communiste|>providence|>nation]
     états de droit
         <<- /maj/ \1 == "états" -1>> États                          # Majuscule manquante : si vous parlez de l’institution dirigeante d’une nation, écrivez “État”.
 
@@ -9619,8 +9634,8 @@ TEST: Dans l’Europe de l’{{ouest}}.
 
 # Unités de mesure
 __maj_unités__
-    *NUM  [Mètre|Watt|Gramme|Seconde|Ampère|Kelvin|Mole|Candela|Candéla|Hertz|Henry|Newton|Pascal|Joule|Coulomb|Volt|Ohm|Farad|Tesla|Weber|Wéber|Radian|Stéradian|Lumen|Lux|Becquerel|Gray|Sievert|Siemens|Katal|Mètres|Watts|Grammes|Secondes|Ampères|Kelvins|Moles|Candelas|Candélas|Hertz|Henrys|Newtons|Pascals|Joules|Coulombs|Volts|Ohms|Farads|Teslas|Webers|Wébers|Radians|Stéradians|Lumens|Becquerels|Grays|Sieverts|Katals]
-    @:B   [Mètre|Watt|Gramme|Seconde|Ampère|Kelvin|Mole|Candela|Candéla|Hertz|Henry|Newton|Pascal|Joule|Coulomb|Volt|Ohm|Farad|Tesla|Weber|Wéber|Radian|Stéradian|Lumen|Lux|Becquerel|Gray|Sievert|Siemens|Katal|Mètres|Watts|Grammes|Secondes|Ampères|Kelvins|Moles|Candelas|Candélas|Hertz|Henrys|Newtons|Pascals|Joules|Coulombs|Volts|Ohms|Farads|Teslas|Webers|Wébers|Radians|Stéradians|Lumens|Becquerels|Grays|Sieverts|Katals]
+    *NUM  [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
+    @:B   [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
     *NUM  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
     @:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
         <<- /maj/ not \2.isupper() -2:>> =\2.lower()                # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
@@ -11931,8 +11946,8 @@ __simplication_substantifs__
     >coup du sort
     >coup d’ un soir
     >course contre la montre
-    [cousu|cousue|cousus|cousues] [main]
-    [cousu|cousue|cousus|cousues] de fil blanc
+    [cousu+ses] [main]
+    [cousu+ses] de fil blanc
     >crayon à [lèvres|sourcils]
     >cour d’ assises
     [>coût|>cout] de revient
@@ -12064,9 +12079,9 @@ __simplication_substantifs__
     prix de revient
     quelqu’un d’ autre
     >rapport de force
-    [réglé|réglée|réglés|réglées] comme du papier à musique
+    [réglé+ses] comme du papier à musique
     >règlement de comptes
-    [remis|remise|remises] à plat
+    [remis+es] à plat
     >requête en nullité
     >requête en non [conciliation|inscription|lieu]
     >requête en non révocation de sursis
@@ -12086,7 +12101,7 @@ __simplication_substantifs__
     >saine [de|d’] [corps|esprit]
     >saine [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
     >sclérose en plaques
-    [secret|secrets] défense
+    [secret+s] défense
     >serpent à sonnette
     >silo à [>grains|blé]
     >soldate d’ élite
@@ -12867,9 +12882,9 @@ __conf_locutions_verbales__
     >tourner ?[guère|jamais|pas]¿ [coure|courre|cour|cours]
         <<- /conf/ -2>> court           # Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
 
-    [s’|m’|t’]          en  >laisser  ?[guère|jamais|pas]¿  [compter|compté|comptés|comptée|comptées|>comté]
-    nous nous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté|comptés|comptée|comptées|>comté]
-    vous vous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté|comptés|comptée|comptées|>comté]
+    [s’|m’|t’]          en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
+    nous nous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
+    vous vous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
     ne pas [nous|vous]  en  laisser   [compter|compté|comptés|comptée|comptées|>comté]
         <<- /conf/ --1>> conter         # Confusion. Locution “s’en laisser conter”, c’est-à-dire se laisser raconter des histoires.|https://fr.wiktionary.org/wiki/ne_pas_s%E2%80%99en_laisser_conter
 
@@ -14435,7 +14450,7 @@ TEST: Un cageot des premières cerises.
 
 __sgpl_couleurs_composées__
     [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>vive]
-    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [foncé|foncés|foncée|foncées|irisé|irisés|irisée|irisées]
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [foncé+ses|irisé+ses]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggSing(\1) + " " + suggSing(\2)
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
@@ -14448,7 +14463,7 @@ __sgpl_couleurs_composées__
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>vive]
-    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [foncé|foncés|foncée|foncées|irisé|irisés|irisée|irisées]
+    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [foncé+ses|irisé+ses]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggMasSing(\1) + " " + suggSing(\2)
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
@@ -14538,7 +14553,7 @@ __sgpl_vingt__
     quatre-vingts-six
     quatre-vingts-sept
     quatre-vingts-huit
-    [quatre-vingts-neuf|quatre-vingts-neufs]
+    [quatre-vingts-neuf+s]
     quatre-vingts-dix
     quatre-vingts-onze
     quatre-vingts-douze
@@ -15325,11 +15340,11 @@ TEST: La fête {{bât}} son plein.
 
 # beauté / botté
 __conf_beauté__
-    [>finir|>terminer|>achever|>conclure|>croître|>croitre|>grandir|>refaire] en    [botter|botté|bootés|bottée|bottées]
-    [>faire|>refaire] une                                                           [botter|botté|bootés|bottée|bottées]
-    [>canon|concours|>grain|>institut|>pigeon|>produit|>salon]  de                  [botter|botté|bootés|bottée|bottées]
-    de toute                                                                        [botter|botté|bootés|bottée|bottées]
-    quark                                                                           [botter|botté|bootés|bottée|bottées]
+    [>finir|>terminer|>achever|>conclure|>croître|>croitre|>grandir|>refaire] en    [botter|botté+ses]
+    [>faire|>refaire] une                                                           [botter|botté+ses]
+    [>canon|concours|>grain|>institut|>pigeon|>produit|>salon]  de                  [botter|botté+ses]
+    de toute                                                                        [botter|botté+ses]
+    quark                                                                           [botter|botté+ses]
         <<- /conf/ --1>> beauté                                         # Confusion probable. Écrivez “beauté”.|https://fr.wiktionary.org/wiki/beaut%C3%A9
 
 TEST: cette fois, on va finir en {{bottée}}.
@@ -15378,7 +15393,7 @@ TEST: remplir son formulaire en bonne et due forme, c’est le minimum pour esp�
 
 ## s’en / c’en
 __conf_c_en_être__
-    s’ en  [es|est|sera|seras|étais|était] [fini|finie|finis|finit|terminé|terminés|terminée|terminées]
+    s’ en  [es|est|sera|seras|étais|était] [fini+ses|finit|terminé+ses]
         <<- /conf/ morph(<1, ":C|<start>") or value(<1, "|,|")
         -1:2>> c’en                                         # Confusion probable. « C’en est… » équivaut à « ça, c’est… ».|http://fr.wiktionary.org/wiki/c%E2%80%99en_est_fait_de
 
@@ -15789,11 +15804,11 @@ TEST: L’échec est {{du}} en partie à un manque de préparation.
 
 # éminent / imminent
 __conf_éminent_imminent__
-    >imminente [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logue$|~iste]
+    >imminente [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logues?$|~istes?$]
         <<- /conf/ -1>> =\1.replace("imm", "ém").replace("Imm", "Ém")
         # Confusion probable. Si “\1” se rapporte à “\2”, alors vous voulez probablement dire “éminent” ; “imminent” signifie “qui va survenir prochainement”.|https://fr.wiktionary.org/wiki/%C3%A9minent
 
-    [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logue$|~iste] >imminente
+    [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logues?$|~istes?$] >imminente
         <<- /conf/ -2>> =\2.replace("imm", "ém").replace("Imm", "Ém")
         # Confusion probable. Si “\2” se rapporte à “\1”, alors vous voulez probablement dire “éminent” ; “imminent” signifie “qui va survenir prochainement”.|https://fr.wiktionary.org/wiki/%C3%A9minent
 
@@ -16286,8 +16301,8 @@ TEST: la répression extrêmement violente des diverses manifestations qui ont e
 
 # mare / marre
 __conf_marre_mare__
-    [la|une|cette|quelle|cette|ma|ta|sa] ?petite¿ (marre)
-        <<- /conf/ -1>> mare                                    # Confusion. Pour parler d’une petite étendue d’eau, écrivez “mare”. En “avoir marre de” = “en avoir assez de”.
+    [la|une|cette|quelle|cette|ma|ta|sa] ?petite¿ marre
+        <<- /conf/ --1>> mare                                   # Confusion. Pour parler d’une petite étendue d’eau, écrivez “mare”. En “avoir marre de” = “en avoir assez de”.
 
     en >avoir mare
         <<- /conf/ -3>> marre                                   # Confusion. Une mare est une petite étendue d’eau.
@@ -16354,17 +16369,17 @@ TEST: après avoir {{mi}} ses souliers tenir
 
 # mûr / mur
 __conf_mûr_mur__
-    [>amandine|>brioche|>charlotte|>cheesecake|>chausson|clafoutis|>confiture|>crème|>crêpe|>croustade|>croustillante|>crumble|>cueillette|>dessert|>far|>flan|jus|>gelée|>glace|>gourmandise|>lapin|>liqueur|>macaron|>milkshake|>milk-shake|>millefeuille|>mille-feuille|>mousse|>muffin|>pancake|>pavlova|>recette|>récolte|>sauce|>soufflé|>smoothie|>sirop|>tarte|>tartelette|>tiramisu|>yaourt|>yoghourt|coulis|>gâteau|>kilo] [de|aux] [mur|mure|murs|mures]
+    [>amandine|>brioche|>charlotte|>cheesecake|>chausson|clafoutis|>confiture|>crème|>crêpe|>croustade|>croustillante|>crumble|>cueillette|>dessert|>far|>flan|jus|>gelée|>glace|>gourmandise|>lapin|>liqueur|>macaron|>milkshake|>milk-shake|>millefeuille|>mille-feuille|>mousse|>muffin|>pancake|>pavlova|>recette|>récolte|>sauce|>soufflé|>smoothie|>sirop|>tarte|>tartelette|>tiramisu|>yaourt|>yoghourt|coulis|>gâteau|>kilo] [de|aux] [mur+ses]
         <<- /conf/ --1>> mûres                                              # Confusion. Le fruit s’écrit “mûre”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
-    [trop|assez|abcès|>âge|>avocate|>banane|>blé|>brugnon|corps|>enfant|>esprit|>femme|>figue|>fraise|>fruit|>homme|>melon|>personne|>poire|>pomme|>prune|>papaye|>pêche|>raisin|>tomate] [mur|mure|murs|mures]
-    [>être|>sembler|>paraître|>paraitre|>rester]  [mur|mure|murs|mures]
+    [trop|assez|abcès|>âge|>avocate|>banane|>blé|>brugnon|corps|>enfant|>esprit|>femme|>figue|>fraise|>fruit|>homme|>melon|>personne|>poire|>pomme|>prune|>papaye|>pêche|>raisin|>tomate] [mur+ses]
+    [>être|>sembler|>paraître|>paraitre|>rester]  [mur+ses]
         <<- /conf/ --1>> =\-1.replace("u", "û").replace("U", "Û")           # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
-    des vertes et des pas [mur|mure|murs|mures]
+    des vertes et des pas [mur+ses]
         <<- /conf/ --1>> mûres                                              # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
-    [mur|mure|murs|mures] [>délibération|>réflexion]
+    [mur+ses] [>délibération|>réflexion]
         <<- /conf/ -1>> =\1.replace("u", "û").replace("U", "Û")             # Confusion. Pour décrire ce qui a atteint la maturité, écrivez “mûr”.|https://fr.wiktionary.org/wiki/m%C3%BBr
 
 TEST: cet avocat trop {{mur}} pour être mangé.
@@ -16550,12 +16565,12 @@ __conf_péché_pêcher__
     >pêcher par [insuffisance|omission|orgueil]
         <<- /conf/ -1>> pécher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
-    [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] @:D ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
-    >repentir de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] ([pécher|>pêcher|pêché|pêchés|pêchée|pêchées])
-        <<- /conf/ \1.endswith("s") -1>> péchés                 # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
-        <<- /conf/ __else__ -1>> péché                          # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
+    [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] @:D [pécher|>pêcher|pêché+ses]
+    >repentir de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] [pécher|pêcher+s|pêché+ses]
+        <<- /conf/ \1.endswith("s") --1>> péchés                # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
+        <<- /conf/ __else__ --1>> péché                         # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
 
-    [pécher|pêcher|pêchers|pêché|pêchée|pêchés|pêchées] [>capitale|mignon|mignons|>mortelle|>originelle|>vénielle]
+    [pécher|pêcher+s|pêché+ses] [>capitale|mignon|mignons|>mortelle|>originelle|>vénielle]
         <<- /conf/ \1.endswith("s") -1>> péchés                 # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
         <<- /conf/ __else__ -1>> péché                          # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
 
@@ -17968,13 +17983,13 @@ TEST: nous laisserons étourdi cet homme.
 __ppas_je_tu_verbe_état__
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                @:[NA].*:p¬:[GWYsi]
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                  @:[NA].*:p¬:[GWYsi]
-    [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|devenue|redevenu|redevenue|resté|restée|demeuré|demeurée]                        @:[NA].*:p¬:[GWYsi]
+    [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu+e|redevenu+e|resté+e|demeuré+e]                                                  @:[NA].*:p¬:[GWYsi]
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        @:[NA].*:p¬:[GWYsi]
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenu|devenue|redevenu|redevenue|resté|restée|demeuré|demeurée]                                                           @:[NA].*:p¬:[GWYsi]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                                     @:[NA].*:p¬:[GWYsi]
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          @:[NA].*:p¬:[GWYsi]
@@ -18433,13 +18448,13 @@ TEST: J’ai été conseiller régional
 __ppas_être_accord_sing__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])           @:[NA].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                             @:[NA].*:p¬:[GMWYsi]
-    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]  @:[NA].*:p¬:[GMWYsi]
+    (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                            @:[NA].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                @:[NA].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                                                   @:[NA].*:p¬:[GMWYsi]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                             @:[NA].*:p¬:[GMWYsi]
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                  @:[NA].*:p¬:[GMWYsi]
@@ -18448,13 +18463,13 @@ __ppas_être_accord_sing__
 
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])           @:[NA].*:p¬:[GMWYsi]
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                             @:[NA].*:p¬:[GMWYsi]
-    [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]  @:[NA].*:p¬:[GMWYsi]
+    [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                            @:[NA].*:p¬:[GMWYsi]
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                @:[NA].*:p¬:[GMWYsi]
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                                                   @:[NA].*:p¬:[GMWYsi]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                             @:[NA].*:p¬:[GMWYsi]
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                  @:[NA].*:p¬:[GMWYsi]
@@ -18518,13 +18533,13 @@ TEST: qui échappe à tout contrôle démocratique et dans lequel les lobbies so
 __ppas_sujet_être_accord_genre__
     [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
     [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]    *WORD
+    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
     [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
     [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                                       *WORD
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                 *WORD
     [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
@@ -18533,13 +18548,13 @@ __ppas_sujet_être_accord_genre__
 
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]    *WORD
+    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                                       *WORD
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                 *WORD
     [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
@@ -18548,13 +18563,13 @@ __ppas_sujet_être_accord_genre__
 
     [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
     [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]    *WORD
+    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
     [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
     [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                                       *WORD
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                 *WORD
     [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
@@ -18581,7 +18596,7 @@ __ppas_sujet_être_accord_genre__
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
     *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
     *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
@@ -18604,13 +18619,13 @@ TEST: Les tortures que ce journaliste pense être “normales”.
 __ppas_nom_propre_être_accord_genre__
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]            *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée] *WORD
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                          *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
@@ -18622,7 +18637,7 @@ __ppas_nom_propre_être_accord_genre__
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
     (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
-        || être [devenu|redevenu|resté|demeuré|devenue|redevenue|restée|demeurée]                   *WORD
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
     (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
