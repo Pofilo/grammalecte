@@ -141,16 +141,13 @@ def createTokenList (sTokBlock, dDeclensions):
     lToken = []
     for sToken in sTokBlock[1:-1].split("|"):
         if "+" in sToken and not sToken.startswith("+"):
-            print("\n", sToken)
             for sCode in dDeclensions:
                 if sToken.endswith(sCode):
                     sToken = sToken[:-len(sCode)]
                     lToken.append(sToken)
-                    print(dDeclensions[sCode])
                     for sSuffix in dDeclensions[sCode]:
                         lToken.append(sToken+sSuffix)
                     break
-            print(lToken)
         else:
             lToken.append(sToken)
     return lToken
