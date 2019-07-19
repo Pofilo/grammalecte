@@ -13,6 +13,7 @@ dACTIONS = {}
 dFUNCTIONS = {}
 dFUNCNAME = {}
 dDECLENSIONS = {}
+dANTIPATTERNS = {}
 
 
 def createFunction (sType, sCode, bStartWithEqual=False):
@@ -156,35 +157,47 @@ def createTokenList (sTokBlock, dDeclensions):
 def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
     "generator: create rule as list"
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
-    for lToken in genTokenLines(sTokenLine, dDef, dDecl):
-        # Calculate positions
-        dPos = {}   # key: iGroup, value: iToken
-        iGroup = 0
-        #if iLine == 15818: # debug
-        #    print(" ".join(lToken))
-        for i, sToken in enumerate(lToken):
-            if sToken.startswith("(") and sToken.endswith(")"):
-                lToken[i] = sToken[1:-1]
-                iGroup += 1
-                dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
+    if sTokenLine.startswith("!!") and sTokenLine.endswith("¡¡"):
+        # antipattern
+        sTokenLine = sTokenLine[2:-2].strip()
+        if sRuleName not in dANTIPATTERNS:
+            dANTIPATTERNS[sRuleName]= []
+        for lToken in genTokenLines(sTokenLine, dDef, dDecl):
+            dANTIPATTERNS[sRuleName].append(lToken)
+    else:
+        # pattern
+        for lToken in genTokenLines(sTokenLine, dDef, dDecl):
+            if sRuleName in dANTIPATTERNS and lToken in dANTIPATTERNS[sRuleName]:
+                # <lToken> matches an antipattern -> discard
+                continue
+            # Calculate positions
+            dPos = {}   # key: iGroup, value: iToken
+            iGroup = 0
+            #if iLine == 15818: # debug
+            #    print(" ".join(lToken))
+            for i, sToken in enumerate(lToken):
+                if sToken.startswith("(") and sToken.endswith(")"):
+                    lToken[i] = sToken[1:-1]
+                    iGroup += 1
+                    dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
-        # Parse actions
-        for iAction, sAction in enumerate(sActions.split(" <<- ")):
-            sAction = sAction.strip()
-            if sAction:
-                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
-                aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
-                if aAction:
-                    sActionName = storeAction(sActionId, aAction)
-                    lResult = list(lToken)
-                    lResult.extend(["##"+str(iLine), sActionName])
-                    #if iLine == 13341:
-                    #    print("  ".join(lToken))
-                    #    print(sActionId, aAction)
-                    yield lResult
-                else:
-                    print(" # Error on action at line:", iLine)
-                    print(sTokenLine, "\n", sActions)
+            # Parse actions
+            for iAction, sAction in enumerate(sActions.split(" <<- ")):
+                sAction = sAction.strip()
+                if sAction:
+                    sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
+                    aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
+                    if aAction:
+                        sActionName = storeAction(sActionId, aAction)
+                        lResult = list(lToken)
+                        lResult.extend(["##"+str(iLine), sActionName])
+                        #if iLine == 13341:
+                        #    print("  ".join(lToken))
+                        #    print(sActionId, aAction)
+                        yield lResult
+                    else:
+                        print(" # Error on action at line:", iLine)
+                        print(sTokenLine, "\n", sActions)
 
 
 def changeReferenceToken (sText, dPos):
