@@ -5,7 +5,7 @@
 
 function g_morphVC (oToken, sPattern, sNegPattern="") {
     let nEnd = oToken["sValue"].lastIndexOf("-");
-    if (oToken["sValue"].count("-") > 1) {
+    if (oToken["sValue"].gl_count("-") > 1) {
         if (oToken["sValue"].includes("-t-")) {
             nEnd = nEnd - 2;
         }
