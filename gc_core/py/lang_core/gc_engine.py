@@ -142,14 +142,19 @@ def listRules (sFilter=None):
         if sOption != "@@@@":
             for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
                 if not sFilter or zFilter.search(sRuleId):
-                    yield (sOption, sLineId, sRuleId)
+                    yield ("RegEx", sOption, sLineId, sRuleId)
+        else:
+            for sRuleName, lActions in _rules_graph.dRule.items():
+                sOption, _, cActionType, *_ = lActions
+                if cActionType == "-":
+                    yield("Tokens", sOption, "", sRuleName)
 
 
 def displayRules (sFilter=None):
     "display the name of rules, with the filter <sFilter>"
     echo("List of rules. Filter: << " + str(sFilter) + " >>")
-    for sOption, sLineId, sRuleId in listRules(sFilter):
-        echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
+    for sOption, sLineId, sRuleId, sType in listRules(sFilter):
+        echo("{:<8} {:<10} {:<10} {}".format(sOption, sLineId, sRuleId, sType))
 
 
 #### Options
