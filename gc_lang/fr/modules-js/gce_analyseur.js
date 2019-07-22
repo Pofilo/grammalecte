@@ -3,12 +3,17 @@
 /* jshint esversion:6 */
 /* jslint esversion:6 */
 
-function g_morphVC (dToken, sPattern, sNegPattern="") {
-    let nEnd = dToken["sValue"].lastIndexOf("-");
-    if (dToken["sValue"].includes("-t-")) {
-        nEnd = nEnd - 2;
+function g_morphVC (oToken, sPattern, sNegPattern="") {
+    let nEnd = oToken["sValue"].lastIndexOf("-");
+    if (oToken["sValue"].count("-") > 1) {
+        if (oToken["sValue"].includes("-t-")) {
+            nEnd = nEnd - 2;
+        }
+        else if (oToken["sValue"].search(/-l(?:es?|a)-(?:[mt]oi|nous|leur)$|(?:[nv]ous|lui|leur)-en$/) != -1) {
+            nEnd = oToken["sValue"].slice(0,nEnd).lastIndexOf("-");
+        }
     }
-    return g_morph(dToken, sPattern, sNegPattern, 0, nEnd, false);
+    return g_morph(oToken, sPattern, sNegPattern, 0, nEnd, false);
 }
 
 function rewriteSubject (s1, s2) {
