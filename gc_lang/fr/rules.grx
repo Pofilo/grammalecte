@@ -1275,7 +1275,7 @@ TEST: « J’en suis “malade”. »
 !!
 
 __[s]/unit(unit_nbsp_avant_unités1)__
-    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![’'])  @@0,0
+    ((\d+(?:,\d+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹]|)) ?)(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|MHz|°C|℃)(?![’'])  @@0,0
     <<- option("num") -1>> =formatNumber(\2) + " "              # Avec une unité de mesure, mettez un espace insécable.
     <<- __else__ -1>> "\2 "                                     # Avec une unité de mesure, mettez un espace insécable.
 
@@ -3355,6 +3355,7 @@ TEST: {{ce}} animal est dangereux
 !!
 
 __typo_ordinaux_chiffres_exposants__
+# Désactivé dans Writer pour éviter la confusion avec le formatage exposant
     1er
         <<- /typo/ sContext != "Writer" ->> 1ᵉʳ     # Nombre ordinal. Premier : 1ᵉʳ. Première : 1ʳᵉ. Premiers : 1ᵉʳˢ. Premières : 1ʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
@@ -3386,8 +3387,16 @@ __typo_ordinaux_chiffres_exposants__
         <<- /typo/ \1 != "1es" and sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"       # Nombre ordinal pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: le {{1er}} qui m’emmerde, je le fusille       ->> 1ᵉʳ
+TEST: les {{1ers}} seront toujours là               ->> 1ᵉʳˢ
+TEST: la {{1re}} classe                             ->> 1ʳᵉ
+TEST: les {{1res}} classes                          ->> 1ʳᵉˢ
+TEST: {{2d}} au classement                          ->> 2ᵈ
+TEST: éternels {{2ds}}                              ->> 2ᵈˢ
+TEST: la {{2de}} fois                               ->> 2ᵈᵉ
+TEST: les {{2des}}                                  ->> 2ᵈᵉˢ
 TEST: c’est le {{2e}}                               ->> 2ᵉ
 TEST: les {{2es}} vont en cours.                    ->> 2ᵉˢ
+
 
 __typo_ordinaux_chiffres_incorrects__
     1 [ier|er]
@@ -3434,12 +3443,18 @@ __typo_ordinaux_chiffres_incorrects__
         <<- /typo/ __else__
         ->> =\1.replace("me", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉ"      # Nombre ordinal singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-TEST: la {{1ière}} fois, c’est la plus dure     ->> 1ʳᵉ
 TEST: le {{1ier}} de chaque semaine             ->> 1ᵉʳ
+TEST: les {{1 iers}}                            ->> 1ᵉʳˢ
+TEST: la {{1ière}} fois, c’est la plus dure     ->> 1ʳᵉ
+TEST: les {{1ières}}                            ->> 1ʳᵉˢ
 TEST: le {{2nd}} du mois                        ->> 2ᵈ
+TEST: les {{2nds}} du mois                      ->> 2ᵈˢ
+TEST: la {{2 nde}} vitesse                      ->> 2ᵈᵉ
+TEST: les {{2ndes}} classes                     ->> 2ᵈᵉˢ
+TEST: Non, la {{2 è}} fois.                     ->> 2ᵉ
+TEST: C’est la {{3 ème}} fois…                  ->> 3ᵉ
+TEST: les {{5 èmes}} classes…                   ->> 5ᵉˢ
 TEST: les {{3ièmes}} années                     ->> 3ᵉˢ
-TEST: C’est la {{3ème}} fois…                   ->> 3ᵉ
-TEST: Non, la {{2è}} fois.                      ->> 2ᵉ
 
 
 __typo_ordinaux_chiffres_romains_exposants__
@@ -3578,8 +3593,9 @@ __date_journée_jour_mois_année__
 TEST: {{samedi}}, le 10-06-2014                                           ->> mardi
 TEST: {{lundi}} le 23-07-2019
 TEST: {{mardi}} 24-07-2019
-TEST: {{mercredi}} 20-07-2019
+TEST: {{mercredi}}, 20-07-2019
 TEST: {{mercredi}} le 10 juin 2014                                        ->> mardi
+TEST: {{mercredi}}, le 10 juin 2014                                       ->> mardi
 TEST: {{lundi}}, 18 août 1912                                             ->> dimanche
 TEST: {{jeudi}} 17 aout 1912                                              ->> samedi
 TEST: lundi, 18 août 1912 avant Jésus-Christ (date imaginaire)
@@ -3718,10 +3734,17 @@ __tu_mots_composés_verbe_nom__
         <<- /tu/ not morph(\2, ":[GYB]") and morph(<1, ":(?:D|V0e)|<start>|>,") and analyse_with_next(\1, "-", ":N")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
+    [m’|t’|s’] entre *WORD
+        <<- /tu/ morph(\3, ":V") and analyse_with_next(\2, "-", ":V")
+        -2:3>> \2-\3                                                                                # Il manque probablement un trait d’union.
+
     [arrière|attrape|garde|porte|brise|cache|casse|chauffe|coupe|cure|croque|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
         <<- /tu/ morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
+TEST: c’est le {{contre exemple}} parfait
+TEST: une {{entre voie}}
+TEST: s’{{entre regarder}}
 TEST: ce sont des {{lève tard}}.
 TEST: un {{brise glace}}
 TEST: l’{{arrière pensée}}
@@ -4212,78 +4235,48 @@ TEST: nous en sommes à l’étape où nous voulons définir ce qu’est ce proj
 TEST: c’est ce que nous pensions.
 
 
-__tu_noms_propres__
-    Aix en Provence
-        <<- /tu/ ->> Aix-en-Provence                                                                # Il manque un trait d’union.
-
+__tu_prénoms__
     Anne [Catherine|Charlotte|Christine|Claire|Cécile|Flore|Gaëlle|Gaelle|France|Laure|Line|Lise|Lyne|Lyse|Marie|Sophie]
-        <<- /tu/ ->> Anne-\2                                                                        # Il manque un trait d’union.
+    Jean [Alain|Antoine|André|Baptiste|Benoit|Bernard|Charles|Christophe|Christian|Claude|Damien|Daniel|David|Denis|Dominique|Édouard|Edouard|Emmanuel|Étienne|Éric|Eric|Eudes|Francis|François|Frédéric|Gabriel|Georges|Guillaume|Hugue|Jacques|Joseph|Louis|Laurent|Loup|Luc|Manuel|Marc|Marcel|Marie|Mathieu|Maurice|Max|Michel|Noël|Patrice|Paul|Philippe|Pierre|Rémi|René|Raymond|Robert|Vincent|Yves]
+    Jésus Christ
+    Marie [Agnès|Alice|Aline|Amélie|Andrée|Ange|Angelle|Anne|Antoinette|Annick|Astrid|Aude|Béatrice|Bénédicte|Bernadette|Camille|Carmen|Caroline|Catherine|Cécile|Céline|Chantal|Charlotte|Christine|Claire|Claude|Dominique|Édith|Edith|Élisabeth|Élise|Émilie|Émmanuelle|Eve|Ève|France|Françoise|Gabrielle|Gaëlle|Geneviève|Jeanne|Joëlle|José|Josée|Josèphe|Julie|Hélène|Isabelle|Laure|Laurence|Line|Lise|Lyne|Lyse|Lou|Louise|Luce|Odile|Madeleine|Martine|Noëlle|Paule|Pascale|Renée|Rose|Sophie|Thérèse|Véronique|Yvonne]
+    Pierre [Adrien|Alain|Alexandre|André|Antoine|Édouard|Edouard|Émmanuel|François|Jean|Henri|Louis|Luc|Marie|Nicolas|Olivier|Yves]
+        <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
+
+TEST: J’ai vu {{Anne Marie}}.
+TEST: Elle a quitté {{Jean Paul}}.
+TEST: {{Jésus Christ}}, dernier héros de l’Antiquité
+TEST: {{Marie Hélène}} s’est perdue dans le dédale
+TEST: {{Pierre Alexandre}} nous prend pour des cons
+
+
+__tu_toponymes__
+    Aix en Provence
+    [Île|Ile] de France
+    Pas de Calais
+    Saône et Loire
+        <<- /tu/ ->> \1-\2-\3                                                                       # Il manque les traits d’union.
 
     Bosnie Herzégovine
-        <<- /tu/ ->> Bosnie-Herzégovine                                                             # Il manque un trait d’union.
-
     Charente Maritime
-        <<- /tu/ ->> Charente-Maritime                                                              # Il manque un trait d’union.
-
     Clermont [Ferrant|Ferrand]
-        <<- /tu/ ->> Clermont-Ferrand                                                               # Il manque un trait d’union.
-
     Colombie Britannique
-        <<- /tu/ ->> Colombie-Britannique                                                           # Il manque un trait d’union.
-
     États Unis
-        <<- /tu/ ->> États-Unis                                                                     # S’il s’agit des USA, il manque un trait d’union.
-
     Franche Comté
-        <<- /tu/ ->> Franche-Comté                                                                  # Il manque un trait d’union.
-
     Grande Bretagne
-        <<- /tu/ ->> Grande-Bretagne                                                                # Il manque un trait d’union (s’il s’agit de l’État englobant l’Angleterre, l’Écosse et le pays de Galles).
-
     Haute [Garonne|Loire|Marne|Normandie|Corse|Vienne]
-        <<- /tu/ ->> Haute-\1                                                                       # Il manque un trait d’union.
-
-    [Île|Ile] de France
-        <<- /tu/ ->> Île-de-France                                                                  # Il manque les traits d’union.
-
-    Jean [Alain|Antoine|André|Baptiste|Benoit|Bernard|Charles|Christophe|Christian|Claude|Damien|Daniel|David|Denis|Dominique|Édouard|Edouard|Emmanuel|Étienne|Éric|Eric|Eudes|Francis|François|Frédéric|Gabriel|Georges|Guillaume|Hugue|Jacques|Joseph|Louis|Laurent|Loup|Luc|Manuel|Marc|Marcel|Marie|Mathieu|Maurice|Max|Michel|Noël|Patrice|Paul|Philippe|Pierre|Rémi|René|Raymond|Robert|Vincent|Yves]
-        <<- /tu/ ->> Jean-\2                                                                        # Il manque un trait d’union.
-
-    Jésus Christ
-        <<- /tu/ ->> Jésus-Christ                                                                   # Il manque un trait d’union.
-
     Maison Blanche
-        <<- /tu/ ->> Maison-Blanche                                                                 # Il manque un trait d’union.
-
-    Marie [Agnès|Alice|Aline|Amélie|Andrée|Ange|Angelle|Anne|Antoinette|Annick|Astrid|Aude|Béatrice|Bénédicte|Bernadette|Camille|Carmen|Caroline|Catherine|Cécile|Céline|Chantal|Charlotte|Christine|Claire|Claude|Dominique|Édith|Edith|Élisabeth|Élise|Émilie|Émmanuelle|Eve|Ève|France|Françoise|Gabrielle|Gaëlle|Geneviève|Jeanne|Joëlle|José|Josée|Josèphe|Julie|Hélène|Isabelle|Laure|Laurence|Line|Lise|Lyne|Lyse|Lou|Louise|Luce|Odile|Madeleine|Martine|Noëlle|Paule|Pascale|Renée|Rose|Sophie|Thérèse|Véronique|Yvonne]
-        <<- /tu/ ->> Marie-\2                                                                       # Il manque un trait d’union.
-
     Moyen Orient
-        <<- /tu/ ->> Moyen-Orient                                                                   # Il manque un trait d’union.
-
     Nouveau Brunswick
-        <<- /tu/ ->> Nouveau-Brunswick                                                              # Il manque un trait d’union.
-
     Nouvelle [Zélande|Calédonie|Orléans]
-        <<- /tu/ ->> Nouvelle-\1                                                                    # Il manque un trait d’union.
-
-    Pas de Calais
-        <<- /tu/ ->> Pas-de-Calais                                                                  # Il manque les traits d’union.
+    Rhône Alpes
+        <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
 
     [les|des|aux] Pays Bas
-        <<- /tu/ -2:3>> Pays-Bas                                                                    # Il manque un trait d’union.
-
-    Pierre [Adrien|Alain|Alexandre|André|Antoine|Édouard|Edouard|Émmanuel|François|Jean|Henri|Louis|Luc|Marie|Nicolas|Olivier|Yves]
-        <<- /tu/ ->> Pierre-\2                                                                      # Il manque un trait d’union.
-
-    Rhône Alpes
-        <<- /tu/ ->> Rhône-Alpes                                                                    # Il manque les traits d’union.
+        <<- /tu/ -2:3>> \2-\3                                                                       # Il manque un trait d’union.
 
     Royaume Uni
         <<- /tu/ ->> Royaume-Uni                                                                    # Il manque un trait d’union (s’il s’agit de l’État englobant la Grande-Bretagne et l’Irlande du Nord).
-
-    Saône et Loire
-        <<- /tu/ ->> Saône-et-Loire                                                                 # Il manque un trait d’union.
 
     [Saint|Sainte] ~^[A-ZÉÈÎ]
         <<- /tu/ not value(<1, "|<start>|") and morph(\2, ":M") ->> \1-\2
@@ -4293,10 +4286,6 @@ __tu_noms_propres__
         <<- /tu/ ->> \1-\2
         # Il manque un trait d’union s’il s’agit d’une église, d’une cité, d’une communauté, d’un lieu… S’il s’agit d’une personne, écrivez “saint” ou “sainte” sans majuscule, sans trait d’union.
 
-TEST: J’ai vu {{Anne Marie}}.
-TEST: Émigrer au {{Royaume Uni}}
-TEST: Étudier en {{Grande Bretagne}}
-TEST: Vivre aux {{Pays Bas}}
 TEST: Il passe par {{Aix en Provence}}
 TEST: Qui se souvient de la {{Bosnie Herzégovine}} ?
 TEST: en {{Charente Maritime}}
@@ -4304,6 +4293,7 @@ TEST: À {{Clermont Ferrand}}
 TEST: habiter la {{Colombie Britannique}}
 TEST: Il fait son stage étudiant aux {{États Unis}}
 TEST: Des fromages délicieux de {{Franche Comté}}
+TEST: Étudier en {{Grande Bretagne}}
 TEST: La {{Haute Garonne}}
 TEST: L’{{Île de France}} est surpeuplée.
 TEST: Un nouveau président à la {{Maison Blanche}}
@@ -4311,26 +4301,27 @@ TEST: La guerre au {{Moyen Orient}}
 TEST: Il ne connaît au {{Nouveau Brunswick}}
 TEST: Elle a visité la {{Nouvelle Orléans}}
 TEST: Vivre dans le {{Pas de Calais}}
+TEST: Vivre aux {{Pays Bas}}
 TEST: Des vacances en {{Rhône Alpes}}
+TEST: Émigrer au {{Royaume Uni}}
 TEST: Elle déménage en {{Saône et Loire}}
-TEST: {{Jésus Christ}}, dernier héros de l’Antiquité
-TEST: Elle a quitté {{Jean Paul}}.
-TEST: {{Marie Hélène}} s’est perdue dans le dédale
-TEST: Elle va prier à {{Ste Catherine}}.
 TEST: La station {{Saint Georges}}
+TEST: Elle va prier à {{Ste Catherine}}.
 
 
 __tu_nombres__
-    [dix|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante] [deux|trois|quatre|cinq|six|sept|huit|neuf]
-    [dix|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante] [>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième]
+    dix                                                                     [sept|huit|neuf]
+    dix                                                                     [>septième|>huitième|>neuvième]
+    [trente|quarante|cinquante|soixante|septante|octante|huitante|nonante]  [deux|trois|quatre|cinq|six|sept|huit|neuf]
+    [trente|quarante|cinquante|soixante|septante|octante|huitante|nonante]  [>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième]
         <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
 
     [vingt|vingts] [deux|trois|quatre|cinq|six|sept|huit|neuf]
     [vingt|vingts] [>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième]
         <<- /tu/ not value(<1, "|quatre|") ->> vingt-\2                                             # Il manque un trait d’union.
 
-    soixante [douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]
-    soixante [>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
+    soixante [dix|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf]
+    soixante [>dixième|>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
         <<- /tu/ ->> \1-\2                                                                          # Trait(s) d’union manquant(s).
 
     quatre [vingt|vingts]
@@ -4344,25 +4335,15 @@ __tu_nombres__
     [quatre-vingt|quatre-vingts] [>unième|>deuxième|>troisième|>quatrième|>cinquième|>sixième|>septième|>huitième|>neuvième|>dixième|>onzième|>douzième|>treizième|>quatorzième|>quinzième|>seizième|>dix-septième|>dix-huitième|>dix-neuvième]
         <<- /tu/ ->> quatre-vingt-\2                                                                # Trait(s) d’union manquant(s).
 
-#    (vingt|trente|quarante|cinquante|soixante|septante|octante|huitante|nonante)[- ](une?|unièmes?)
-#   ->> \1 et \2|\1-et-\2                                      # Il manque « et ». (Si vous suivez la réforme orthographique, utilisez des traits d’union.)
-
-TEST: Il en veut {{vingts}} !                 ->> vingt
-TEST: Y a-t-il {{quarante deux}} pages ?      ->> quarante-deux
-TEST: J’en veux {{quatre-vingt}} !            ->> quatre-vingts
-TEST: Non, {{quatre-vingts deux}} !           ->> quatre-vingt-deux
-TEST: {{Quatre vingts deux}}.                 ->> Quatre-vingt-deux
-TEST: cent {{mot}}                            ->> mots
-TEST: cinquante {{mot}}                       ->> mots
-TEST: mille cinquante {{mot}}                 ->> mots
-TEST: deux {{cents}} trois mots               ->> cent
-TEST: il y a {{cents}} mots                   ->> cent
-TEST: {{cents}} mots                          ->> cent
-TEST: ils mangent {{cents}} têtes             ->> cent
-TEST: deux {{tête}}                           ->> têtes
-TEST: {{soixante quatorze}}, c’est trop
-TEST: Mais {{vingt trois}}, c’est assez
-TEST: La poïesis, en grec, est ce qui permet de faire passer n’importe quoi du non-être à l’être
+TEST: Il en veut {{vingts}} !                   ->> vingt
+TEST: Y a-t-il {{quarante deux}} pages ?        ->> quarante-deux
+TEST: J’en veux {{quatre-vingt}} !              ->> quatre-vingts
+TEST: Non, {{quatre-vingts deux}} !             ->> quatre-vingt-deux
+TEST: {{Quatre vingts deux}}.                   ->> Quatre-vingt-deux
+TEST: {{quatre vingt}} hommes                   ->> quatre-vingt
+TEST: les années {{soixante dix}}               ->> soixante-dix
+TEST: {{soixante quatorze}}, c’est trop         ->> soixante-quatorze
+TEST: Mais {{vingt trois}}, c’est assez         ->> vingt-trois
 
 
 __tu_pas_de_trait_d_union__
@@ -5368,7 +5349,6 @@ __conf_c_s_verbe__
     [il|ils|on|ne|n’]  c’
         <<- /conj/ -2>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
-
     [<start>|,]  [elle|elles|lui|eux]  c’  >être  ?@:W¿  @:Q
         <<- /conj/ -3>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
@@ -5389,7 +5369,9 @@ TEST: elle {{c’}}en était trop vanté
 TEST: cet homme, perdu dans ses pensées, allait {{c’}}en faire du souci.
 TEST: il {{c’}}accoutumait à sa nouvelle fonction.
 TEST: elle {{c’}}anime dès qu’on fait du bruit.
+TEST: eux {{c’}}étaient pris
 TEST: {{s’}}{{avait}} fonctionné
+TEST: {{c’}}y adonne avec passion
 TEST: c’était merveilleux.
 TEST: lui c’est un objet
 
@@ -5897,7 +5879,7 @@ TEST: il n’est pas interdit de le {{pensait}}
 
 TEST: j’étais loin de la {{pensait}} ainsi                      ->> penser
 TEST: ce n’était que de la {{bouillit}}                         ->> bouillie
-TEST: de {{la}} {{venaient}} tous nos problèmes                 ->> là
+TEST: de {{la}} venaient tous nos problèmes                     ->> là
 
 
     d’  [un|une]  @:V.*:[123][sp]¬:[GNA]
@@ -6794,6 +6776,7 @@ __conf_à_substantifs__
     >panier a >linge
     >papier a [>lettre|musique]
     >passage a tabac
+    >pâte a [>pain|>crêpe|>gaufre|>pizza|>tarte|>modeler|>tartiner]
     >planche a repasser
     >presse a >scandale
     >pince a linge
@@ -6817,7 +6800,7 @@ __conf_à_substantifs__
     >vol a [la|l’] [étalage|sauvette|tire]
     >vol a main armée
     >usine a gaz
-        <<- /conf/ -2>> à                   # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+        <<- /conf/ -2>> à                   # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: C’est un arc {{a}} poulies
 TEST: Ceci est une arme {{a}} feu.
@@ -6846,6 +6829,7 @@ TEST: Ventes {{a}} domicile insatisfaisantes
 TEST: Ce n’est que du vernis {{a}} ongles.
 TEST: le vol {{a}} l’étalage est un fléau.
 TEST: Il nous faut une {{voix}} de recours.
+TEST: Marre de cette pâte {{a}} pain.
 TEST: c’est une putain d’usine {{a}} gaz.
 TEST: ce produit est notre vache {{a}} lait
 TEST: ils vont et viennent, toujours {{cotes a cotes}}…
@@ -6907,13 +6891,6 @@ __conf_celui_celle_à_qui__
 
 TEST: Ceux {{a}} qui nous avons notifié le problème sont partis.
 TEST: Il y a qui au dîner ce soir ?
-
-
-__conf_pâte_à_a__
-    >pâte a [>pain|>crêpe|>gaufre|>pizza|>tarte|>modeler|>tartiner]
-        <<- -2>> à                          # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-
-TEST: Marre de cette pâte {{a}} pain.
 
 
 # m’a tuer
@@ -7036,10 +7013,7 @@ __conf_ça_çà_sa__
         <<- /conf/ not morph(<1, ">(?:appeler|considérer|trouver)/") -1>> sa    # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque)/|:[NAQ].*:f
-        <<- /conf/ not (\2 == "ou" and value(>1, "|son|ses|")) -1>> ça          # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
-
-    sa [n’|m’|t’|s’|j’|l’|d’|qu’|lorsqu’|puisqu’|quoiqu’]
-        <<- /conf/ -1>> ça                              # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
+        <<- /conf/ not (value(\2, "|ou|") and value(>1, "|son|ses|")) -1>> ça   # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     çà
         <<- /conf/ not value(<1, "|oh|ah|") and not after("^ +et là")
@@ -7059,13 +7033,15 @@ __conf_ça_çà_sa__
 TEST: Je prends {{sa}}…
 TEST: {{ça}} patrie, il la détestait
 TEST: et {{sa}} par deux fois
-TEST: Il trouva de la nourriture {{ça et là}}.                                ->> çà et là
-TEST: Elle parle comme {{ça}} mère.                                           ->> sa
+TEST: Il trouva de la nourriture {{ça et là}}.                                  ->> çà et là
+TEST: c’est {{çà}}                                                              ->> ça
+TEST: Elle parle comme {{ça}} mère.                                             ->> sa
 TEST: C’est comme {{sa}}.
 TEST: {{sa}} l’ennuierait, ce fils de pute, de dire bonjour ?
 TEST: il faut s’y prendre comme {{sa}}
 TEST: on fait {{sa}} lorsqu’on a tout perdu
 TEST: {{ç’a}} craint, cette histoire
+TEST: ç’{{à}} été dur                                                           ->> a
 TEST: ç’a été difficile.
 TEST: Eux, ils appellent ça routine.
 TEST: avec sa presque belle-mère
@@ -10113,6 +10089,16 @@ __gn_tout_nom__
     tout  @:N.*:[fp]¬:(?:A|W|G|M|Y|[me]:[is]|3s)
         <<- /gn/ morph(<1, ":R", ":D.*:p") -2>> =suggMasSing(\2, True)                              # Accord avec “tout” : “\2” devrait être au masculin singulier.
 
+TEST: Tout {{hommes}}
+TEST: se méfie de tout {{amours}} trop encombrant
+TEST: contre tout {{arrangements}}
+TEST: Tout les sépare.
+TEST: les tout débuts du mouvement ouvrier
+TEST: vos tout débuts furent difficiles
+TEST: aux tout débuts, il y eut bien des erreurs
+TEST: comment les inégalités sociales impactent la santé des tout petits
+
+
 __gn_tous_nom__
     [<start>|,] tous  @:[NA].*:[fs]¬:(?:W|P|G|M|[me]:[ip]|3p)
     de          tous  @:[NA].*:[fs]¬:(?:W|P|G|M|Y|[me]:[ip]|3[sp])
@@ -10120,6 +10106,14 @@ __gn_tous_nom__
 
     tous  @:[NA].*:[fs]¬:(?:W|G|M|Y|P|3[sp]|[me]:[ip])
         <<- /gn/ morph(<1, ":R") -2>> =suggMasPlur(\2, True)                                        # Accord avec “tous” : “\2” devrait être au masculin pluriel.
+
+TEST: tous {{fou}} à lier
+TEST: De tous {{âge}} !
+TEST: par tous {{homme}} capable de comprendre
+TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
+TEST: la survie de tous est plus importante que les profits de quelques-uns
+TEST: tous ayant souffert du supplice de séjourner derrière les barreaux
+
 
 __gn_toute_nom__
     [<start>|,] toute  @:[NA].*:[mp]¬:(?:W|P|G|M|[fe]:[is])
@@ -10131,6 +10125,12 @@ __gn_toute_nom__
         <<- /gn/ morph(<1, ":R") -2>> =suggFemSing(\2, True)                                        # Accord avec “toute” : “\2” devrait être au féminin singulier.
         <<- /gn/ __also__ and morph(\2, ":[NA].*:f:p") -1>> toutes                                  # Accord avec “\2”.
 
+TEST: Toute {{époux}} doit faire preuve de bienveillance
+TEST: de toute {{grand}} entreprise
+TEST: contre toute {{petites}} corruption
+TEST: Il se souvient de toute mon histoire.
+
+
 __gn_toutes_nom__
     [<start>|,] toutes  @:[NA].*:[ms]¬:(?:W|G|M|[fe]:[ip])
     de          toutes  @:[NA].*:[ms]¬:(?:W|G|M|Y|[fe]:[ip])
@@ -10141,20 +10141,9 @@ __gn_toutes_nom__
         <<- /gn/ morph(<1, ":R") -2>> =suggFemPlur(\2, True)                                        # Accord avec “toutes” : “\2” devrait être au féminin pluriel.
         <<- /gn/ __also__ and morph(\2, ":[NA].*:f:s") -1>> toute                                   # Accord avec “\2”.
 
-TEST: Tout {{hommes}}
-TEST: De tous {{âge}} !
+TEST: toutes {{folle}} qu’elles croient être, elles sont aussi raisonnables que quiconque
 TEST: avec {{toutes}} {{femme}}
 TEST: sur {{toutes}} {{armure}}
-TEST: Toute {{époux}} doit faire preuve de bienveillance
-TEST: Il se souvient de toute mon histoire.
-TEST: Tout les sépare.
-TEST: les tout débuts du mouvement ouvrier
-TEST: vos tout débuts furent difficiles
-TEST: aux tout débuts, il y eut bien des erreurs
-TEST: comment les inégalités sociales impactent la santé des tout petits
-TEST: l’existence d’un enseignement supérieur public, peu onéreux et ouvert à tous est d’une importance cruciale.
-TEST: la survie de tous est plus importante que les profits de quelques-uns
-TEST: tous ayant souffert du supplice de séjourner derrière les barreaux
 
 
 
@@ -13391,6 +13380,7 @@ TEST: une émancipation des usagers, refusant de se laisser guider par des « m
 TEST: Les pompes à chaleur sont moins rentables.
 TEST: Ce qui rend les pompes à chaleur moins rentables.
 TEST: l’accusation de lynchage médiatique proférée par François de Rugy à l’encontre de “Mediapart” ne tient pas.
+TEST: La poïesis, en grec, est ce qui permet de faire passer n’importe quoi du non-être à l’être
 
 
 
@@ -13829,13 +13819,6 @@ TEST: les consignes dudit {{présidents}} étaient contratritoires.
 TEST: les consignes {{dudit}} {{présidente}} étaient contratritoires.
 
 
-__gn_cet_1m__
-    cet  *WORD
-        <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") -1>> cette                               # Accord de genre erroné : « \2 » est féminin.
-        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
-        <<- /gn/ morph(\2, ">[bcçdfgjklmnpqrstvwxz].+:[NA].*:m", ":[efGW]") -1>> ce         # Accord de genre correct, mais euphonie non respectée.|http://fr.wikipedia.org/wiki/Euphonie
-        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
-
 __gn_ce_1m__
     ce  *WORD
         <<- /gn/ morph(\2, ":[NA].*:f", ":(?:3s|[GWme])") -1>> cette                        # Accord de genre erroné : « \2 » est féminin.
@@ -13843,18 +13826,32 @@ __gn_ce_1m__
         <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") and morph(\2, ":3s") -1>> cette|se       # Accord de genre erroné : « \2 » est féminin. Ou bien vous confondez le déterminant “ce” avec le pronom “se”.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
 
+TEST: {{Ce}} animal.                                          ->> Cet
+TEST: {{ce}} {{folle}} espoir qui ne la quitte pas
+TEST: ce {{claviers}}
+TEST: {{ce}} {{donne}}
+
+
+__gn_cet_1m__
+    cet  *WORD
+        <<- /gn/ morph(\2, ":[NA].*:f", ":[GWme]") -1>> cette                               # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
+        <<- /gn/ morph(\2, ">[bcçdfgjklmnpqrstvwxz].+:[NA].*:m", ":[efGW]") -1>> ce         # Accord de genre correct, mais euphonie non respectée.|http://fr.wikipedia.org/wiki/Euphonie
+        <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: {{Cet}} {{idiote}}.
+TEST: {{cet}} ballon.                                         ->> ce
+TEST: cet {{oliviers}}
+
+
 __gn_cette_1m__
     cette  *WORD
         <<- /gn/ morph(\2, ":[NA].*:m", ":[efGW]") -1>> =suggCeOrCet(\2)                    # Accord de genre erroné : « \2 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =suggFemSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggFemSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
 
-TEST: {{Cet}} {{idiote}}.
-TEST: {{cet}} ballon.                                         ->> ce
-TEST: {{Ce}} animal.                                          ->> Cet
-TEST: cet {{oliviers}}
-TEST: ce {{claviers}}
 TEST: {{Cette}} {{animal}} mort.
+TEST: cette {{illusions}} que nous voyons plus clair que quiconque
 
 
 __gn_au_1m__
@@ -13866,6 +13863,7 @@ __gn_au_1m__
 
 TEST: {{au}} {{États-Unis}}
 TEST: Téléphone {{au}} personne qui ont donné leur accord.
+TEST: téléphone {{au}} {{boulangère}}
 TEST: au chien, au chat, au poulet
 TEST: à partir de pièces détachées, au départ entièrement venues de l’étranger puis en partie fabriquées sur place
 
@@ -13893,9 +13891,12 @@ TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
 __gn_mon_ton_son_1m__
     [mon|ton|son]  *WORD
         <<- /gn/ morph(\1, ":D") >>>
-        <<- /gn/ morph(\2, ">[bcdfgjklmnpqrstvwxz].*:[NA].*:f", ":[GWme]") -1>> =\1.replace("on", "a")     # Accord de genre erroné : « \2 » est féminin.
+        <<- /gn/ morph(\2, ">[bcdfgjklmnpqrstvwxz].*:[NA].*:f", ":[GWme]") -1>> =\1.replace("on", "a").replace("ON", "A")     # Accord de genre erroné : « \2 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\2) -2>> =suggMasSing(\2, True)                    # Accord de genre erroné : « \1 » est un déterminant masculin.
         <<- /gn/ morph(\2, ":[NA].*:p", ":[siGW]") -2>> =suggMasSing(\2)                    # Accord de nombre erroné : « \2 » devrait être au singulier.
+
+TEST: mon {{excellentes}} mémoire
+TEST: {{ton}} {{belle}} mémoire
 
 
 __gn_mon_ton_son_2m__
@@ -14467,6 +14468,10 @@ TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.    
 TEST: Il a abandonné neuf {{enfant}}.                                               ->> enfants
 TEST: On peut trouver mille {{travailleur}} d’un claquement de doigts.              ->> travailleurs
 TEST: Il y a quatre cents {{mot}} dans la phrase.                                   ->> mots
+TEST: cent {{mot}}                                                                  ->> mots
+TEST: cinquante {{mot}}                                                             ->> mots
+TEST: mille cinquante {{mot}}                                                       ->> mots
+TEST: deux {{tête}}                                                                 ->> têtes
 TEST: un logement neuf bâti par des professionnels.
 TEST: un mille marin.
 TEST: L’article VII mentionné dans la revue
@@ -14533,6 +14538,7 @@ __gn_start_2m__
 
 TEST: {{Femmes}} {{intelligente}}.
 TEST: {{Homme}} {{impatients}}.
+
 
 __gn_start_3m__
     <start>  @:[NA]¬*  @:[NA]¬*  @:[NA]¬*
@@ -14967,6 +14973,10 @@ __sgpl_nombre_cents__
         <<- /sgpl/ morph(<1, ":[VR]|<start>", ":B")
         -1>> cent                           # Nombre cardinal : pas de “s” à “cent” (hormis sur les centaines entières).|http://fr.wiktionary.org/wiki/cent
 
+TEST: deux {{cents}} trois mots                                                         ->> cent
+TEST: il y a {{cents}} mots                                                             ->> cent
+TEST: {{cents}} mots                                                                    ->> cent
+TEST: ils mangent {{cents}} têtes                                                       ->> cent
 TEST: trois {{cent}} marches à gravir.
 TEST: deux {{cents}} quatre tests lancés à chaque itération du processus nouveau
 TEST: par {{cents}} idées différentes.
@@ -15139,7 +15149,9 @@ __sgpl_demi_heure__
         <<- /sgpl/ ->> demi-heures                      # La moitié d’une heure s’écrit “demi-heure” (“demi-heures” au pluriel).
 
 TEST: L’entretien dure environ une {{demie heure}}.
+TEST: les {{demies heures}} les plus longues de ma vie
 TEST: Une demi-heure d’ennui profond.
+
 
 __sgpl_demi_demie__
     [>année|>semaine|>journée|>heure|>minute|>seconde|>bouteille|>caisse|>cuillère|>page|>remorque|>tasse|>tonne] et [demi|demis|demies]
@@ -15959,7 +15971,7 @@ TEST: elles connaissaient par {{chœur}} la chanson.
 
 
 # content / contant / comptant
-__conf_content_comptant__
+__conf_content_comptant!6__
     >avoir ?tout¿ [mon|ton|son|notre|votre|leur] ([comptant|contant])
         <<- /conf/ -1>> content                             # Confusion. Avoir (tout) son content…|https://fr.wiktionary.org/wiki/content#Nom_commun
 
@@ -17419,8 +17431,11 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_de_verbe__
-    [de|d’] [le|la|l’|leur|les]           @:V¬:[YNAM]|>(?:lui|plus)/
+    [de|d’]  [le|l’|leur|les]             @:V¬:[YNAM]|>(?:lui|plus)/
     [<start>|,]  [de|d’] [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
+        <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
+
+    [de|d’] la  @:V[123]..t¬:[YNAM]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’] [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:Y|>(?:lui|plus|point)/
@@ -17450,6 +17465,7 @@ TEST: arrête d’y {{consacré}} autant de temps.
 TEST: je suis certain d’en {{choque}} plusieurs.
 TEST: elle était capable de la {{trouvait}} où qu’elle soit.
 TEST: de me le {{facturez}}
+TEST: suffit de la {{mangeait}} froide
 TEST: Il s’agit de me {{donnait}} tout ça.
 TEST: j’étais incapable de m’{{orientait}} dans la bonne direction.
 TEST: ils étaient susceptibles de m’y {{trouvaient}}
@@ -17920,30 +17936,32 @@ __ocr_être_participe_passé__
         <<- /ocr/ __else__ and \2.endswith("s") and morph(\2, ":V1.*:Ip.*:2s", ":[GMA]") and not before("(?i)\\belles +(?:ne +|n’|)$")
         -2>> =suggVerbPpas(\2, ":m:p")                                                              # Erreur de numérisation ?
 
+TEST: __ocr__ vous serez {{couche}} en terre.
+TEST: __ocr__ nous serons {{presses}} de monter à bord de ce train-ci.
+TEST: __ocr__ Elle était toujours persuadée que B. serait {{acquitte}}
+TEST: __ocr__ Alors il lui est {{remonte}} dessus
+TEST: __ocr__ il n’était pas le seul à être {{remonte}} contre eux.
+TEST: __ocr__ par terre et je suis {{retourne}} sur la tombe.
+TEST: __ocr__ il était sublime.
+TEST: __ocr__ la longueur de la circonférence étant égale à…
+# TEST: __ocr__ vous êtes {{presses}} de monter à bord de ce train-ci.
+# Fonctionne avec nous serons, mais pas nous sommes (bug de JavaScript?)
+
+
 __ocr_avoir_participe_passé__
-    >avoir  ~es?$
+    >avoir  ~..es?$
         <<- /ocr/ not value(\1, "|avoirs|") >>>
         <<- /ocr/ \2.endswith("e") and morph(\2, ":V1.*:Ip.*:[13]s", ":[GM]|>envie/")
         -2>> =suggVerbPpas(\2, ":m:s")                                                              # Erreur de numérisation ?
         <<- /ocr/ __else__ and \2.endswith("s") and morph(\2, ":V1.*:Ip.*:2s", ":[GM]")
         -2>> =suggVerbPpas(\2, ":m:p")                                                              # Erreur de numérisation ?
 
-TEST: __ocr__ vous serez {{couche}} en terre.
-TEST: __ocr__ nous serons {{presses}} de monter à bord de ce train-ci.
-TEST: __ocr__ Elle était toujours persuadée que B. serait {{acquitte}}
 TEST: __ocr__ je reconnais que j’ai pas {{traîne}}
 TEST: __ocr__ elle est fauchée et a {{emprunte}} de l’argent
-TEST: __ocr__ Alors il lui est {{remonte}} dessus
 TEST: __ocr__ quel héros d’avoir {{affronte}} ces salopards de la police
-TEST: __ocr__ il n’était pas le seul à être {{remonte}} contre eux.
-TEST: __ocr__ par terre et je suis {{retourne}} sur la tombe.
 TEST: __ocr__ Après on a {{creuse}} vers le haut.
-TEST: __ocr__ il a {{affronte}} une bande de voleurs de bétail.
-TEST: __ocr__ il était sublime.
+TEST: __ocr__ tu vois, il a {{affrontes}} seul une bande de voleurs de bétail.
 TEST: __ocr__ elle avait envie de s’en sortir enfin.
-TEST: __ocr__ la longueur de la circonférence étant égale à…
-# TEST: __ocr__ vous êtes {{presses}} de monter à bord de ce train-ci.
-# Fonctionne avec nous serons, mais pas nous sommes (bug de JavaScript?)
 
 
 
@@ -18202,8 +18220,7 @@ __conj_conf_se_être_avoir__
         <<- /conj/ -1>> suis|étais|serai|serais                         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
     tu  t’  ?[en|y]¿  (>avoir)
-        <<- /conj/ not morph(<1, ":V0")
-        -1>> es|étais|seras|serais                                      # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ not morph(<1, ":V0") -1>> es|étais|seras|serais      # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
     [<start>|,]  nous  nous  ?[en|y]¿  >avoir
         <<- /conj/ --1>> sommes|étions|serons|serions                   # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
@@ -18219,9 +18236,10 @@ __conj_conf_se_être_avoir__
 
 TEST: je m’y {{avais}} habitué.
 TEST: tu t’{{avais}} donné du temps pour finir ton mémoire.
-TEST: s’en {{ait}} trop
 TEST: {{nous}} nous {{avons}} donné le temps
 TEST: {{vous}} vous {{avez}} perdu toute notion de décence.
+TEST: s’en {{ait}} trop
+TEST: s’en {{aient}} assez
 TEST: Ce qu’il a tu t’a donné la nausée.
 
 
@@ -19365,7 +19383,7 @@ __ppas_inversion_être_elles__
 TEST: Étaient-elles {{arriver}} ?
 TEST: Sont-elles tout à fait {{arriver}} ?
 TEST: Ne sont-elles pas {{aveugle}}
-TEST: demeurent-elles {{présentes}}
+TEST: demeurent-elles {{présente}}
 
 
 
@@ -19538,6 +19556,7 @@ TEST: un accident et nous voilà mal {{barré}}…
 TEST: Le voilà {{perdue}} dans son délire.
 TEST: un peu de maquillage et la voilà {{jolis}} comme un cœur.
 TEST: les voilà pauvrement {{équipé}} pour un tel périple.
+TEST: ils se considèrent {{béni}}
 TEST: une chance pour elle alors qu’il n’a pas choisi
 TEST: elle se révèle d’ailleurs être une alliée de taille
 TEST: mais les considérer uniquement ainsi fait perdre la signification politique de leur geste.
@@ -20521,6 +20540,7 @@ __conf_interrogatif_ou_impératif_det_verbe_nom__
 TEST: Siffle-t-il le {{dépare}} du duel ?                       ->> départ
 TEST: Regardes-tu la {{commette}} ?                             ->> comète
 TEST: Gérons-nous l’{{accueille}} ?                             ->> accueil
+TEST: Connaissent-ils leur {{chaînent}}                         ->> chaîne
 TEST: Écrit-elle les {{fixions}} ?                              ->> fictions
 TEST: Sait-elle le {{choie}} qu’il a fait ?                     ->> choix
 TEST: Entreront-ils en {{contacte}} avec eux ?                  ->> contact
@@ -21160,7 +21180,7 @@ __inte_union_tu__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GNW]") and not value(\1, "|je|j’|tu|")
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
 
-TEST: {{Seras tu}} là ?
+TEST: {{Viendras tu}} là ?
 TEST: et toi, {{as tu}} découvert le secret de l’immortalité ?
 TEST: quelle vie {{connaitras tu}} ?
 
@@ -21214,6 +21234,7 @@ __inte_union_elle__
 
 TEST: {{vient elle}} souvent ?
 TEST: comment {{sait elle}}
+TEST: qui {{était elle}} ?
 TEST: quel travail {{avait elle}} accompli ?
 TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que personne ne parlait de celui qui avait fait ça.
 TEST: C’était elle qui avait pris le contrôle.
@@ -21231,12 +21252,16 @@ __inte_union_nous!6__
 
     *WORD  ~ons$  nous  [<end>|,]
     *WORD  ~ons$  nous  @:¬:(?:Y|1p)
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GNW]") and not morph(\1, ":Os")
+        <<- /inte/ space_after(\2, 1, 1) and
+            ( (value(\2, "|avions|") and not morph(\1, ":A.*:[me]:[sp]") and not morph(\-1, ":(:?3[sp]|Ov)"))
+            or (morph(\2, ":V.*:1p", ":[GNW]") and not morph(\1, ":Os")) )
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
 TEST: {{retrouverons nous}} enfin la tranquilité ?
 TEST: Ne {{sommes nous}} pas des dieux ?
+TEST: quelle force {{prétendons nous}} avoir si…
 TEST: quel exercice {{avions nous}} revu ?
+TEST: les avions nous font rêver.
 
 
 __inte_union_vous__
@@ -21347,6 +21372,7 @@ __infi_suffire__
     il  [aurait|aurai|aurais|aurez]  suffi              [de|d’]  @:V¬:[YMNWG]
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “suffire”, le verbe doit être à l’infinitif.
 
+TEST: il suffit de {{pensé}} à ça pour déprimer.
 TEST: il suffit de {{mangé}} sain pour aller mieux.
 TEST: il ne suffit pas de pensées positives pour calmer son anxiété.
 TEST: il suffit de cela.
@@ -21363,7 +21389,7 @@ __infi_verbes__
 
 TEST: elle préférait {{mangée}} seule.
 TEST: Il venait, comme d’habitude, {{discuté}} avec son ami.
-TEST: Ces types-là venaient {{mangé}} chez moi tous les dimanches.
+TEST: Ces types-lpen venaient {{mangé}} chez moi tous les dimanches.
 TEST: ils viennent bien entendu {{attaqué}} le parlement
 TEST: ils vont par voie de conséquence vraiment {{attaqué}} la banque
 TEST: elles ont pu {{mangé}}
@@ -21938,13 +21964,13 @@ __conj_d_aucuns_la_plupart__
         -3>> =suggVerb(\3, ":3p")                                       # Conjugaison erronée. Accord avec “\1 \2”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
     d’ aucuns   qui  @:V¬:(?:3p|P|G)
-    la plupart  qui  @:V¬:(?:3p|P|G)
-        <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjugaison erronée. Accord avec “\1 \2 \3”. Le verbe devrait être à la 3ᵉ personne du pluriel.
+    la plupart  des  *WORD  qui  @:V¬:(?:3p|P|G)
+        <<- /conj/ --1>> =suggVerb(\-1, ":3p")                          # Conjugaison erronée. Accord avec “\1 \2 \-1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
 TEST: la plupart des hommes {{vienne}}
 TEST: La plupart {{admet}}
 TEST: d’aucuns {{pense}} que c’est faux
-TEST: avec la plupart des femmes qui {{devienne}} mères
+TEST: avec la plupart des femmes qui {{devienne}} mère
 
 
 __conj_certains_certaines_plusieurs__
