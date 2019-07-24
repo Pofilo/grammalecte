@@ -4809,6 +4809,7 @@ __bs_malgré_que__
         ->> bien qu’|quoiqu’                                                                        # “Malgré que” est une tournure populaire. Utilisez “bien que” ou “quoique”.
 
 TEST: {{Malgré que}} je sois fou.
+TEST: {{malgré qu’}}elle soit là.
 
 
 #([mts]e|[nv]ous) (rappel\w+) (de) <<- word(1) != "ne" and not morph(word(1), ":V")
@@ -5278,6 +5279,7 @@ TEST: il nous {{et}} indispensable.
 TEST: Il ne {{travail}} pas le week-end.
 TEST: il m’{{arête}} encore une fois avec une impudence insupportable.
 TEST: il n’y {{pas}} beaucoup d’entente entre eux.
+TEST: Il {{ce}} {{sent}} seul
 TEST: il est normal de ne presque pas payer des gens qui effectuent un travail
 TEST: il s’en va.
 
@@ -7173,13 +7175,14 @@ __conf_se_ceux_ce!6__
     qui  ce  @:V¬:[NAQ].*:[me]
         <<- /conf/ -2>> se                              # Confusion probable. Exemples : ce bâtiment, se perdre.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
 
+TEST: ça {{ce}} prend la tête pour un rien, c’est de la racaille.
+TEST: {{Ce}} promener est relaxant.
+TEST: {{ce}} prennent-ils pour des experts ?
+TEST: {{Ce}} serait-elle compromise ?
+TEST: ce qui {{ce}} passe, c’est que c’est une catastrophe.
 TEST: il ne {{ce}} compte pas parmi eux
 TEST: il ne {{ç’}}avançait jamais sans avoir pesé toutes les conséquences
-TEST: {{Ce}} serait-elle compromise ?
-TEST: {{Ce}} promener est relaxant.
-TEST: Il {{ce}} {{sent}} seul
 TEST: qui {{ce}} donne en spectacle.
-TEST: {{ce}} prennent-ils pour des experts ?
 TEST: […] qui ne peut être si ardente qu’elle ne se doive, ce semble, éteindre par la moindre goutte de sang qui sorte de leurs plaies.
 TEST: à qui ce texte doit tant, à qui ce texte est dédié
 
@@ -12592,6 +12595,7 @@ __purge_après_être__
     [>être|>devenir|>rester] monnaie courante
     [>être|>devenir|>rester] papa et maman
     [>être|>devenir|>rester] partie [intégrante|prenante]
+    [>être|>devenir|>rester] peine perdue
     [>être|>devenir|>rester] pieds et poings liés
     [>être|>devenir|>rester] pieds nus
     [>être|>devenir|>rester] père et mère
@@ -12607,6 +12611,7 @@ __purge_après_être__
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] monnaie courante
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] papa et maman
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] partie [intégrante|prenante]
+    [>être|>devenir|>rester] [pas|jamais|plus|guère|point] peine perdue
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] pieds et poings liés
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] pieds nus
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point] père et mère
@@ -12634,6 +12639,7 @@ __purge_après_être__
     /VCint monnaie courante
     /VCint papa et maman
     /VCint partie [intégrante|prenante]
+    /VCint peine perdue
     /VCint pieds et poings liés
     /VCint pieds nus
     /VCint père et mère
@@ -12649,6 +12655,7 @@ __purge_après_être__
     /VCint [pas|jamais|plus|guère|point] monnaie courante
     /VCint [pas|jamais|plus|guère|point] papa et maman
     /VCint [pas|jamais|plus|guère|point] partie [intégrante|prenante]
+    /VCint [pas|jamais|plus|guère|point] peine perdue
     /VCint [pas|jamais|plus|guère|point] pieds et poings liés
     /VCint [pas|jamais|plus|guère|point] pieds nus
     /VCint [pas|jamais|plus|guère|point] père et mère
@@ -13752,6 +13759,7 @@ TEST: Un {{ballons}}                                          ->> ballon
 TEST: Une {{cinglées}}                                        ->> cinglée
 TEST: {{une}} des {{chats}}
 TEST: {{une}} kyste                                           ->> un
+TEST: {{une}} {{chien}}                                       ->> un|||chienne
 TEST: {{une}} des {{joueurs}}
 TEST: mille et une merveilles
 TEST: Quatorze heures découpées en quatre parties, une sortant en salles chaque semaine
@@ -19246,6 +19254,7 @@ TEST: N’est-il pas {{aveugles}}
 TEST: Est-il souvent {{arrivait}} de se tromper ?
 TEST: Était-il {{prit}} dans la tourmente ?
 TEST: Serait-il {{reconnut}} dans la tourmente ?
+TEST: reste-t-il {{connut}} du grand public
 #TEST: Semblait-il {{fatiguées}} ?
 TEST: semble-t-il savoir de quoi il parle ?
 TEST: Parait-il ennuyer l’assistance ?
@@ -19292,6 +19301,7 @@ __ppas_inversion_être_on__
 TEST: est-on déjà {{passer}} de ce côté-là
 TEST: Aurait-on déjà {{finit}} notre tour du monde ?
 TEST: Deviendrait-on {{meurtrit}} ?
+TEST: parait-on {{désespérait}} à ce point
 
 
 __ppas_inversion_être_nous__
@@ -19319,6 +19329,7 @@ __ppas_inversion_être_vous__
         -2>> =suggVerbPpas(\2)                                          # Accord avec le sujet “vous”.
 
 TEST: Êtes-vous {{connut}} en ce milieu ?
+TEST: semblez-vous {{prit}} par votre travail ?
 TEST: êtes-vous surpris ?
 TEST: Resterez-vous manger ?
 TEST: Ton rendez-vous arrive bientôt.
@@ -19337,6 +19348,7 @@ TEST: Sont-ils {{arriver}} ?
 TEST: Sont-ils déjà {{arriver}} ?
 TEST: Sont-ils vraiment {{aveugle}}
 TEST: Redeviennent-ils {{incapable}} avec l’âge ?
+TEST: semblent-ils {{oublié}}
 TEST: Que se sont-ils dit ?
 TEST: ne se sont-ils pas demandé quelle main les avait frappés
 
@@ -19353,6 +19365,7 @@ __ppas_inversion_être_elles__
 TEST: Étaient-elles {{arriver}} ?
 TEST: Sont-elles tout à fait {{arriver}} ?
 TEST: Ne sont-elles pas {{aveugle}}
+TEST: demeurent-elles {{présentes}}
 
 
 
@@ -22780,6 +22793,7 @@ TEST: Quel est le problème ? Je ne fais que ramener Paul à la raison.
 TEST: La voir se fêler ainsi lui noua la gorge.
 TEST: Quoi de neuf, mec ?
 TEST: T’as enfin trouvé des gens avec qui t’entendre ?
+TEST: ça fait du bien de se l’entendre dire
 
 
 
