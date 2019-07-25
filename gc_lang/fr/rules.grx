@@ -2272,7 +2272,7 @@ TEST: {{Attaques-t-on}}                                     ->> Attaque-t-on
 TEST: {{box-t-on}}
 TEST: {{Prends-elle}}                                       ->> Prend-elle
 TEST: {{Menthe-t-elle}} souvent ?
-TEST: {{demandent-elle}}                                    ->> demantent-elles
+TEST: {{demandent-elle}}                                    ->> demande-elle|demandent-elles
 TEST: {{viennent-il}} demain ?
 TEST: {{prix-t-il}}
 TEST: {{étais-ce}} trop demander                            ->> était-ce
@@ -2346,7 +2346,11 @@ __imp_verbes_composés_impératifs__
 
     ~\w-la$
         <<- /imp/ morphVC(\1, ":V", ":E") ->> =suggVerbImpe(\1, True)                               # Ceci n’est pas une forme impérative correcte.|http://fr.wikipedia.org/wiki/Imp%C3%A9ratif_%28grammaire%29
-        <<- /imp/ __else__ and morphVC(\1, ":", ":V") ->> =suggSimil(\1, ":E", False, True)         # Ceci n’est pas une forme verbale impérative.
+        <<- /imp/ __else__ and morphVC(\1, ":", ":V") >>>
+        <<- /imp/ value(<1, "|ce|cet|cette|ces|") and morphVC(\1, ":[NA]")
+        ->> =\1[:-2]+"là"                                                       # Ceci n’est pas une forme verbale impérative. Ou vous confondez “la” (COD) avec “là” (pour désigner un objet particulier).
+        <<- /imp/ __else__ and not value(\1, "|par-la|de-la|jusque-la|celui-la|celle-la|ceux-la|celles-la|")
+        ->> =suggSimil(\1, ":E", False, True)+"|"+\1[:-3]+" là"                 # Ceci n’est pas une forme verbale impérative. Si ce “la” signifie ici, écrivez “là”.
         <<- />> -la|-COD|VCimp
 
     ~\w-moi$
@@ -2380,6 +2384,7 @@ TEST: {{don-nous-en}}
 TEST: {{bat-le}}
 TEST: {{bluff-le}}
 TEST: {{manges-la}}
+TEST: ce {{soutien-la}}
 TEST: {{soutien-la}}
 TEST: {{combat-les}}
 TEST: {{flic-les}}
@@ -3506,18 +3511,18 @@ __typo_ordinaux_chiffres_romains_exposants__
         <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: François {{Ier}}                          ->> Iᵉʳ
-TEST: {{Iers}}                                  ->> Iᵉʳˢ
-TEST: {{Ire}}                                   ->> Iʳᵉ
-TEST: {{Ires}}                                  ->> Iʳᵉˢ
-TEST: {{IId}}                                   ->> IIᵈ
-TEST: {{IIds}}                                  ->> IIᵈˢ
-TEST: {{IIde}}                                  ->> IIᵈᵉ
-TEST: {{IIdes}}                                 ->> IIᵈᵉˢ
+TEST: les {{Iers}}                              ->> Iᵉʳˢ
+TEST: la {{Ire}}                                ->> Iʳᵉ
+TEST: les {{Ires}}                              ->> Iʳᵉˢ
+TEST: le {{IId}}                                ->> IIᵈ
+TEST: les {{IIds}}                              ->> IIᵈˢ
+TEST: la {{IIde}}                               ->> IIᵈᵉ
+TEST: les {{IIdes}}                             ->> IIᵈᵉˢ
 TEST: c’est le {{IIIe}} siècle                  ->> IIIᵉ
 TEST: La {{Ve}} République                      ->> Vᵉ
 TEST: Le {{Xe}} siècle                          ->> Xᵉ
 TEST: {{XXXIIes}}                               ->> XXXIIᵉˢ
-TEST: {{Ves}} siècles                           ->> Vᵉˢ
+TEST: les {{Ves}} siècles                       ->> Vᵉˢ
 
 
 __typo_ordinaux_chiffres_romains_incorrects__
@@ -4913,7 +4918,7 @@ __pleo_pléonasmes_divers__
         <<- /pleo/ ->> hardes                                                               # Pléonasme.
 
     [et|ou] voire
-        <<- /pleo/ ->> voire|\1 voir                                                        # Pléonasme ou confusion.
+        <<- /pleo/ not morph(>1, ":D") ->> voire|\1 voir                                    # Pléonasme ou confusion.
 
     voire même
         <<- /pleo/ ->> voire|même                                                           # Pléonasme.|https://fr.wiktionary.org/wiki/voire_m%C3%AAme
@@ -5534,6 +5539,7 @@ TEST: c’est ça, me {{demandes}} comment c’est possible
 TEST: je me questionne, {{exiges}} des réponses mais n’en obtiens pas…
 TEST: Caroline, quand l’heure viendra, {{décideras}} de la conduite à tenir.
 TEST: {{arrimeras}} le voilier
+TEST: nous laisserons derrière nous les empires de la Terre.{{}}
 
 
 __conj_xxxxxs_sans_sujet!3__
@@ -5584,13 +5590,10 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
     s’       ?[en|y]¿          [peux|veux|vaux|équivaux|prévaux]
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Incohérence. Le sujet de cette forme verbale est introuvable.
 
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  [peux|veux|vaux|équivaux|prévaux]
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
-        --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
-
-    [me|m’|te|t’|nous|vous]     ?[le|la|l’|les|en|y]¿   [peux|veux|vaux|équivaux|prévaux]
-    [le|la|l’|les]              [lui|leur|en|y]         [peux|veux|vaux|équivaux|prévaux]
-    [lui|leur]                  en                      [peux|veux|vaux|équivaux|prévaux]
+    [ne|n’]                  ?[le|la|l’|les|en|vous|lui|leur|y]¿  [peux|veux|vaux|équivaux|prévaux]
+    [me|m’|te|t’|nous|vous]  ?[le|la|l’|les|en|y]¿                [peux|veux|vaux|équivaux|prévaux]
+    [le|la|l’|les]           [lui|leur|en|y]                      [peux|veux|vaux|équivaux|prévaux]
+    [lui|leur]               en                                   [peux|veux|vaux|équivaux|prévaux]
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
@@ -5603,8 +5606,11 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
         <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
+TEST: tu sais, s’{{équivaux}}, voilà.
+TEST: tu sais, s’en {{veux}} d’avoir raté ça.
 TEST: s’{{peux}} qu’il avait faim, va savoir
 TEST: n’{{équivaux}} pas à ma BMW, cette tire.
+TEST: faut voir, ces hommes, lui, tu sais, l’en peux
 TEST: la lui {{donnais}} sans contrepartie
 TEST: {{vaux}} pas ça, ce truc.
 TEST: ouais, ce serait pas de refus, ouais, {{peux}} peut-être nous aider
@@ -7357,15 +7363,12 @@ __conf_davantage_d_avantages__
     [peu|plein|beaucoup|trop|plus|moins|assez|suffisamment|tellement|>obtention|>régime]  davantage
         <<- /conf/ -2>> d’avantages                                                 # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
-    >être  d’  >avantage  @:[NAQ]¬:G
-        <<- /conf/ -2:3>> davantage                                                 # Confusion possible : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
-
     @:V  d’ >avantage
         <<- /conf/ not morph(\1, ":Q|>(?:profiter|bénéficier|nombre|tant)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
     [/-je|/-tu|/-il|/-on|/-elle|/-nous|/-vous|/-ils|/-elles]  d’  >avantage
-        <<- /conf/ not morphVC(\1, ">(?:profiter|bénéficier)/") and not morph(>1, ">(?:financi[eè]re?|pécuni(?:er|aire)|sociaux)s?/")
+        <<- /conf/ not morphVC(\1, ">(?:profiter|bénéficier)/") and not morph(>1, ">(?:financière|pécuni(?:er|aire)|sociale)/")
         -2:3>> davantage                                                            # Confusion probable : “davantage” signifie “plus” ; un “avantage” signifie “faveur”, “bénéfice”, “profit”…
 
     d’ >avantage [de|d’]
@@ -8035,7 +8038,7 @@ TEST: l’existence d’un fichage la concernant
 TEST: avec la ou les indications qu’on recontre ici et là.
 
 
-    [celle-la|celles-la|celui-la|ceux-la]
+    [par-la|de-la|jusque-la|celui-la|celle-la|ceux-la|celles-la]
         <<- /conf/ ->> =\1[:-2]+"là"                                # Écrivez “là” et non “la”.
 
     [celle|celles|celui|ceux] la
@@ -8045,13 +8048,10 @@ TEST: avec la ou les indications qu’on recontre ici et là.
         <<- /conf/ morph(\1, ":V", ":[NA]", 0, -3)
         -1>> =\1[:-3]+"-la|" + \1[:-3]+" là"                        # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 
-    /-la
-        <<- /conf/ morph(\1, ":[NA]", ":[123][sp]", 0, -3)
-        -1>> =\1[:-2]+"là"                                          # Confusion : “\1” n’est pas un verbe.
-
     [ne|me|te|se] là
         <<- /conf/ -2>> la                                          # Confusion : “là” signifie “ici”.|http://fr.wiktionary.org/wiki/l%C3%A0
 
+TEST: {{jusque-la}}, tout va bien
 TEST: {{ceux la}} sont des idiots, rien à en tirer.
 TEST: {{celle la}} ne vaut pas mieux, laisse-la tomber.
 TEST: {{Apporte-là}} près du feu
@@ -10213,6 +10213,8 @@ TEST: ne plus {{mangées}} fait maigrir
 TEST: ne pas {{allé}}
 TEST: ne jamais plus me les {{montrés}}
 TEST: Ne jamais {{mangez}} de viande !
+TEST: N’en jamais {{cédait}} une seule miette.
+TEST: N’y presque jamais {{trouvé}} rien à redire.
 TEST: ne jamais rien révéler des activités de la maison
 TEST: J’espère ne pas te déranger
 TEST: Ne pas te le donner, ce serait une insulte.
@@ -13757,7 +13759,7 @@ __gn_ce_1m__
 TEST: {{Ce}} animal.                                          ->> Cet
 TEST: {{ce}} {{folle}} espoir qui ne la quitte pas
 TEST: ce {{claviers}}
-TEST: {{ce}} {{donne}}
+TEST: {{ce}} donne
 
 
 __gn_cet_1m__
@@ -16342,8 +16344,7 @@ TEST: il but un {{filtre}}.
 __conf_flanc_flan2__
     >blesser au flan
     [>attaquer|>contre-attaquer] ?[sur|sous|à|contre]¿ @:D >flan
-        <<- /conf/ \-1.endswith("s") --1>> flancs                           # Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
-        <<- /conf/ __else__ --1>> flanc                                     # Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
+        <<- /conf/ --1>> =\-1.replace("n", "nc").replace("N", "NC")         # Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
 
 TEST: Il avait été blessé au {{flan}}.
 TEST: Elle lança une contre-attaque sur son {{flan}}.
@@ -16594,7 +16595,7 @@ __conf_lieux_lieues_lieus__
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|@:B]  [lieux|lieus]
         <<- /conf/ -4>> lieues                                  # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
-    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [des|*NUM|@:B]  [lieux|lieus]
         <<- /conf/ space_after(\2, 1, 4) -4>> lieues            # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     20000 (>lieu) sous [la|les] >mer
@@ -16611,9 +16612,12 @@ __conf_lieux_lieues_lieus__
 TEST: qui est le responsable des {{lieues}} ?
 TEST: ce sont des {{lieus}} mythiques.
 TEST: Des {{lieus}} historiques.
+TEST: {{lieus}} abandonnés
 TEST: co sont des {{lieues}} de rencontre pour les jeunes.
 TEST: elle habitait à quelques {{lieux}} d’ici
 TEST: Cette réunion ayant eu {{lieue}} loin d’ici
+TEST: vingt mille {{lieux}} sous les mers
+TEST: habite à 100 {{lieux}} d’ici
 TEST: Les {{lieux}} mordent à notre leurre.
 TEST: Techniques de traîne pour les {{lieux}} jaunes.
 TEST: Faire un état des {{lieus}}.
@@ -18996,7 +19000,7 @@ TEST: Les tortures que ce journaliste pense être “normales”.
 __ppas_nom_propre_être_accord_genre__
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]            *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                          *WORD
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
@@ -19009,13 +19013,13 @@ __ppas_nom_propre_être_accord_genre__
         <<- /ppas/ ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
+    *WORD  [que|qu’]  @:M  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
-    (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
+    *WORD  [que|qu’]  @:M  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
-    (*WORD)  [que|qu’]  (@:M)  ?[ne|n’]¿
+    *WORD  [que|qu’]  @:M  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ checkAgreement(\1, \-1) !-1>>
@@ -19661,7 +19665,8 @@ TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du b
 
 
 __ppas_avoir_ppas_mas_sing__
-    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  ?[m’|t’|lui|leur]¿  avoir  @:Q.*:[fp]¬:m:[si]
+    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  ?[lui|leur]¿   avoir  @:Q.*:[pf]¬:m:[si]
+    [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  [m’|t’]        avoir  @:Q.*:p¬:[si]
         <<- /ppas/ not value(\-1, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         --1>> =suggVerbPpas(\-1, ":m:s")                      # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
@@ -19669,6 +19674,8 @@ TEST: Avoir {{instruite}} notre mère
 TEST: Après avoir {{baissés}} nos tarifs
 TEST: Je viendrai, après avoir vraiment {{écoutée}} le prof.
 TEST: Merci de m’avoir {{lus}}                                      ->> lu
+TEST: Pourquoi m’avoir {{ignorés}} ainsi ?
+TEST: sans avoir {{ignorée}} le problème.
 
 
 ## avoir avec participe passé
@@ -20209,6 +20216,7 @@ __imp_apostrophe_m_en__
         <<- /imp/ ->> m’en                              # Ici, “me” est abrégé, c’est une forme élidée. Il faut mettre une apostrophe et non un trait d’union.
 
 TEST: {{donne-m-en}} encore
+TEST: viens {{m-en}} donner
 
 
 __imp_apostrophe_t_en__
@@ -20221,6 +20229,7 @@ __imp_apostrophe_t_en__
         ->> t’en                                        # Ici, “te” est abrégé, c’est une forme élidée. Il faut mettre une apostrophe et non un trait d’union.
 
 TEST: {{accorde-t-en}} plus.
+TEST: {{t-en}} lasser, impossible
 
 
 __imp_union_m_t_en_y__
@@ -20258,6 +20267,7 @@ __imp_union_verbe_pronom_en_y_leur__
         <<- /imp/ space_after(\1, 1, 1) and morphVC(\1, ":E") and morph(>1, ":[RC]|<end>|>,", ":[NAY]")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
+TEST: {{donnez-moi en}}
 TEST: {{prends-leur en}}
 TEST: {{Donnez-nous en}}.
 TEST: Alors, {{parais y}} grande et lumineuse.
@@ -21838,6 +21848,7 @@ __conj_elles__
 
 TEST: {{elles}} {{avance}} rapidement sur ce projet
 TEST: {{Elles}} n’y {{comprenne}} rien
+TEST: {{elles}} qui s’{{amuse}} comme des folles
 TEST: L’expérience sensible qu’il nous restera bientôt d’elles est à peu près
 TEST: eux attaqués par des mécanoïdes, elles attaquées par des insectoïdes.
 
