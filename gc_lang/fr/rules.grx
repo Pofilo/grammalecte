@@ -4269,14 +4269,6 @@ __tu_pas_de_trait_d_union__
     en-deçà
         <<- /tu/ ->> =\1.replace("-", " ")                                      # Pas de trait d’union.
 
-    peu-a-peu
-    peu-à-peu
-    peux-à-peux
-    peut-à-peut
-    peux-a-peux
-    peut-a-peut
-        <<- /tu/ ->> peu à peu                                                  # Pas de trait d’union.
-
     s’ il-me-plaît
     s’ il-te-plaît
     s’ il-nous-plaît
@@ -5874,7 +5866,10 @@ __conf_préverbes__
         <<- /conf/ not \1.isupper() and \3.islower() -1:2>> d’          # Incohérence.
 
 TEST: Il {{ne n’}}arrive jamais à l’heure.
+TEST: il {{me ne}} connaît pas
+TEST: elle {{me}} t’arrêtera pas
 TEST: Ça {{me}} te prend la tête, toutes ces complications vaines.
+TEST: ça {{te n’}}arrive pas
 TEST: il {{se m’}}est difficile d’y parvenir.
 TEST: Ça t’arrive {{de d’}}arriver à l’heure ?
 TEST: Les écrits de d’Alembert.
@@ -8532,8 +8527,22 @@ __conf_peu_peut_peux!6__
     peu [pas|donc|jamais|rien|parfois|alors|enfin|rarement|éventuellement]
         <<- /conf/ not morph(<1, ">(?:très|en|un|de|du)") -1>> peut         # Confusion probable : « peu » signifie « pas beaucoup », pour le verbe pouvoir, écrivez “peut”.
 
-    [peux|peut|peu] a [peux|peut|peu]
-    [peux|peut|peu] à [peux|peut]
+    !! peu à peu ¡¡
+    [peux|peut|peu] [a|à|ah|ha|as] [peux|peut|peu]
+    peu-a-peu
+    peu-à-peu
+    peut-a-peu
+    peu-à-peut
+    peux-a-peu
+    peu-à-peux
+    peux-à-peux
+    peut-à-peut
+    peut-à-peux
+    peux-à-peut
+    peux-a-peux
+    peut-a-peut
+    peut-a-peux
+    peux-a-peut
         <<- /conf/ ->> peu à peu                                            # Confusion : « peu à peu » ou « petit à petit ».
 
     [peux|peut] [importent|importe]
@@ -14165,8 +14174,10 @@ __gn_certaines_des_1m__
         <<- /gn/ morph(\3, ":[NA].*:m", ":[efGW]") -1>> certains                            # Accord de genre erroné : « \3 » est masculin.
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =suggFemPlur(\3, True)                    # Accord de genre erroné : « \1 » est un déterminant féminin.
 
+TEST: {{certains}} {{petites}}
 TEST: Certaines {{danse}}
 TEST: Certains {{chien}}
+TEST: {{certaines}} {{petits}}
 TEST: {{certains}} des femmes sont à côté de la plaque.
 TEST: {{certains}} des {{nouvelles}} sont à côté de la plaque.
 TEST: {{certaines}} des hommes
@@ -19826,17 +19837,17 @@ TEST: nous avons vu des avions voler haut dans le ciel.
 
 __ppas_avoir_interrogatif__
     /VCint  ~..e[rz]$
-        <<- /ppas/ morphVC(\1, ":V0a") and not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
+        <<- /ppas/ morphVC(\1, ":V0a") and morph(\2, ":(?:Y|2p)")
         -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
         <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
         -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
 
     /VCint  ~..it$
-        <<- /ppas/ morphVC(\1, ":V0a") and not value(\1, "|A|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+        <<- /ppas/ morphVC(\1, ":V0a") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
         -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
 
     /VCint  ~.ut$
-        <<- /ppas/ morphVC(\1, ":V0a") and not value(\1, "|A|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+        <<- /ppas/ morphVC(\1, ":V0a") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
         -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
 
 TEST: Avait-il {{marcher}} seul ?
@@ -20349,90 +20360,90 @@ __conf_suj_verbe_det_verbe_nom__
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                      # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                      # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        en  @:[123][sp]¬:[NA]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        en  @:[123][sp]¬:[NA]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        en  @:[123][sp]¬:[NA]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]         ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        en  @:[123][sp]¬:[NA]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                      # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est une préposition, il faut placer un nom après.
 
 TEST: je relève le {{défit}}.                                   ->> défi
@@ -20647,7 +20658,7 @@ __conf_vinfi_adj__
     <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
     <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
     <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [lui|leur|y]    en                          @:[123][sp]
-        <<- /conf/ \4.islower() and morph(\3, ":N.*:m:[si]", ":G|>verbe/") and morph(\4, ":V1.*:Y", ":M")
+        <<- /conf/ \4.islower() and morph(\3, ":[NA].*:m:[si]", ":G|>verbe/") and morph(\4, ":V1.*:Y", ":M")
         -4>> =suggVerbPpas(\4, ":m:s")                                      # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
     <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [ne|n’|me|m’|te|t’|se|s’]
@@ -20655,7 +20666,7 @@ __conf_vinfi_adj__
     <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
     <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
     <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [lui|leur|y]    en                          @:[123][sp]
-        <<- /conf/ \4.islower() and morph(\3, ":N.*:f:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
+        <<- /conf/ \4.islower() and morph(\3, ":[NA].*:f:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
         -4>> =suggVerbPpas(\4, ":f:s")                                      # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
     <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [ne|n’|me|m’|te|t’|se|s’]
@@ -20663,7 +20674,7 @@ __conf_vinfi_adj__
     <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
     <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
     <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [lui|leur|y]    en                          @:[123][sp]
-        <<- /conf/ \4.islower() and morph(\3, ":N.*:e:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
+        <<- /conf/ \4.islower() and morph(\3, ":[NA].*:e:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
         -4>> =suggVerbPpas(\4, ":s")                                        # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
     <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [ne|n’|me|m’|te|t’|se|s’]
@@ -22265,6 +22276,7 @@ __conj_que_où_comment_verbe_sans_sujet!3__
 TEST: Qu’est-ce que tu crois que {{deviens}} réellement, immanquablement et subitement cet homme après une telle dérouillée ?
 TEST: peu importe ce que tu crois du lieu où l’{{abandonnerais}} ce salopard…
 TEST: nous savons comment {{arriverons}} ces problèmes…
+TEST: combien {{paraissez}} folles ces augmentations
 TEST: ces sciences, ces religions, ces philosophies ne sont que contes destinés à nous donner l’illusion de la connaissance.
 TEST: Le ministre de l’Intérieur a estimé que Calais avait vécu “un degré de violence jamais connu”.
 TEST: à des règles aussi absurdes que précises
