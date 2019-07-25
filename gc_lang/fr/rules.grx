@@ -13116,11 +13116,11 @@ __conf_locutions_verbales__
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
     >faire ?[guère|jamais|pas]¿ plaisirs
-        <<- /sgpl/ -2>> plaisir         # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
-        <<- ~2>> *
+        <<- /sgpl/ --1>> plaisir        # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
+        <<- ~-1>> *
 
-    >laisser pour [comte|comtes|>conte]
-        <<- /conf/ -3>> compte          # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
+    >laisser pour [comte+s|>conte]
+        <<- /conf/ --1>> compte         # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
     [>mourir|>paraître|>paraitre|>rester|>sembler] ?[guère|jamais|pas]¿ >jeûne
         <<- /conf/ -2>> jeune           # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
@@ -13128,17 +13128,17 @@ __conf_locutions_verbales__
     >partir ?[guère|jamais|pas]¿ en >couille
         <<- -3>> quenouille|vrille      # Confusion. La locution “partir en couille” est un barbarisme. Locution authentique : “partir/tomber en quenouille”. Peut-être voulez-vous dire “partir en vrille” ?|https://fr.wiktionary.org/wiki/partir_en_quenouille
 
-    >rendre ?bon¿ ([comte|comtes|>conte|comptes])
-        <<- /conf/ -1>> compte          # Confusion. Locution “rendre compte”.|https://fr.wiktionary.org/wiki/rendre_compte
+    >rendre ?bon¿ [comte|comtes|>conte|comptes]
+        <<- /conf/ --1>> compte         # Confusion. Locution “rendre compte”.|https://fr.wiktionary.org/wiki/rendre_compte
 
-    >suivre ?[ça|cela|ceci]¿ de ([>prêt|>pré])
-        <<- /conf/ -1>> près            # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+    >suivre ?[ça|cela|ceci]¿ de [>prêt|>pré]
+        <<- /conf/ --1>> près           # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     >tenir ?[guère|jamais|pas]¿ [comte|comtes|>conte|comptes]
-        <<- /conf/ -2>> compte          # Confusion. Locution “tenir compte”.|https://fr.wiktionary.org/wiki/tenir_compte
+        <<- /conf/ --1>> compte         # Confusion. Locution “tenir compte”.|https://fr.wiktionary.org/wiki/tenir_compte
 
     >tourner ?[guère|jamais|pas]¿ [coure|courre|cour|cours]
-        <<- /conf/ -2>> court           # Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
+        <<- /conf/ --1>> court          # Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
 
     [s’|m’|t’]          en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
     nous nous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
@@ -13157,13 +13157,16 @@ TEST: il faut se tenir {{a}} distance de ces gens-là.
 TEST: cette expérience ne va pas tarder à tourner {{cours}}.
 TEST: il faut rendre {{comte}} de la sitation désastreuse dans laquelle nous sommes tombés.
 TEST: il faut tenir {{comtes}} des aléas de la météo.
+TEST: faudra rendre bon {{conte}} de vos actes
 TEST: Elle est restée {{jeûne}}.
 TEST: Mourir {{jeûne}} ne lui faisait pas peur.
+TEST: elle suit ça de {{prêt}}
 TEST: Elles semblent {{jeûnes}}.
 TEST: Ça me fait {{plaisirs}}.
 TEST: C’est parti en {{couille}}
 TEST: je ne m’en laisse {{comté}} que par ma femme
 TEST: ne pas vous en laisser {{compter}}
+TEST: c’est vous qui {{comptez}} fleurette à ma fille ?
 
 
 # Autres tests contre les faux positifs
@@ -17551,40 +17554,6 @@ TEST: L’accès au cannabis thérapeutique où à ses dérivés permettrait de 
 TEST: l’industrie est également touchée, avec « des pertes de commandes de véhicules chez Renault et chez Peugeot »
 
 
-## INFINITIFS ERRONÉS
-
-__infi_infinitifs_erronés__
-    <start>  [le|un|ce|cet|mon|ton|son|quel]  *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
-    <start>  [le|un|ce|cet|mon|ton|son|quel]  *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
-        <<- /infi/ morph(\3, ":N.*:m:[si]", ":G|>verbe/")
-        -4>> =suggVerbPpas(\4, ":m:s")                                                  # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
-
-    <start>  [la|une|cette|ma|ta|sa|quelle]  *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
-    <start>  [la|une|cette|ma|ta|sa|quelle]  *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
-        <<- /infi/ morph(\3, ":N.*:f:[si]", ":G")
-        -4>> =suggVerbPpas(\4, ":f:s")                                                  # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
-
-    <start>  [leur|notre|votre]  *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
-    <start>  [leur|notre|votre]  *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
-        <<- /infi/ morph(\3, ":N.*:[si]", ":G")
-        -4>> =suggVerbPpas(\4, ":s")                                                    # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
-
-TEST: ce tableau {{voler}} coûte très cher.
-TEST: la difficulté {{passer}} t’aidera par la suite
-TEST: leur compte {{épurer}} servira encore.
-TEST: Le vieux cocher avait mission
-TEST: le verbe aller est irrégulier.
-
-
-    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles] *WORD  @:V1.*:Y¬:[NM]  [ne|n’|me|m’|te|t’|se|s’]
-    <start>  [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles] *WORD  @:V1.*:Y¬:[NM]  @:[123][sp]
-        <<- /infi/ morph(\3, ":N.*:[pi]", ":G")
-        -4>> =suggVerbPpas(\4, ":p")                                                    # Confusion probable : “\4” est à verbe à l’infinitif. Pour l’adjectif, écrivez :
-
-TEST: les documents {{photocopier}} ne sont pas lisibles.
-TEST: tes doutes {{remâcher}} deviennent difficiles à vivre.
-
-
 
 !!!! Participes présents                                                                          !!
 
@@ -20673,30 +20642,48 @@ TEST: qui les aiment, les étudient, les protègent mais aussi les exploitent, l
 
 
 __conf_vinfi_adj__
-    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [ne|n’|me|m’|te|t’|se|s’]
-    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
-    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
-    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
-    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur]          @:[NA].*:[me]      @:V1.*:Y    [lui|leur|y]    en                          @:[123][sp]
-        <<- /conf/ \3 != "verbe" and \4.islower() -4>> =suggVerbPpas(\4, ":m:s")    # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [ne|n’|me|m’|te|t’|se|s’]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [le|l’|ce|cet|mon|ton|son|notre|votre|leur|quel]                *WORD      *WORD    [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \4.islower() and morph(\3, ":N.*:m:[si]", ":G|>verbe/") and morph(\4, ":V1.*:Y", ":M")
+        -4>> =suggVerbPpas(\4, ":m:s")                                      # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
-    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [ne|n’|me|m’|te|t’|se|s’]
-    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
-    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
-    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
-    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  @:[NA].*:[fe]      @:V1.*:Y    [lui|leur|y]    en                          @:[123][sp]
-        <<- /conf/ \4.islower() -4>> =suggVerbPpas(\4, ":m:f")                      # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [ne|n’|me|m’|te|t’|se|s’]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [la|l’|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|quelle]      *WORD      *WORD    [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \4.islower() and morph(\3, ":N.*:f:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
+        -4>> =suggVerbPpas(\4, ":f:s")                                      # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [ne|n’|me|m’|te|t’|se|s’]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
-    <start> [les|ces|mes|tes|ses|nos|vos|leurs]                  @:[NA].*:[pi]      @:V1.*:Y    [lui|leur|y]    en                          @:[123][sp]
-        <<- /conf/ \4.islower() -4>> =suggVerbPpas(\4, ":p")                        # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+    <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [ne|n’|me|m’|te|t’|se|s’]
+    <start> [l’|notre|votre|leur]                                           *WORD      *WORD    ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [l’|notre|votre|leur]                                           *WORD      *WORD    [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \4.islower() and morph(\3, ":N.*:e:[si]", ":G") and morph(\4, ":V1.*:Y", ":M")
+        -4>> =suggVerbPpas(\4, ":s")                                        # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
+
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [ne|n’|me|m’|te|t’|se|s’]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿    @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [nous|vous]     [le|la|l’|les|en|y]         @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [le|la|l’|les]  [lui|leur|en|y]             @:[123][sp]
+    <start> [les|ces|mes|tes|ses|nos|vos|leurs|quels|quelles|quelques|plusieurs|certains|certaines]    *WORD      *WORD     [lui|leur|y]    en                          @:[123][sp]
+        <<- /conf/ \4.islower() and morph(\3, ":[NA].*:[pi]", ":G") and morph(\4, ":V1.*:Y", ":M")
+        -4>> =suggVerbPpas(\4, ":p")                                        # Confusion probable : “\4” est un verbe à l’infinitif, alors qu’il faudrait probablement un adjectif se rapportant à “\2 \3”.
 
 TEST: mon pantalon {{repriser}} me grattait.
 TEST: la petite {{penser}} ne cessait de tourner dans son cerveau enfiévré.
 TEST: les hommes nouvellement {{arriver}} ne nous dirent rien de ce qu’ils avaient vu.
+TEST: les documents {{photocopier}} ne sont pas lisibles.
+TEST: tes doutes {{remâcher}} deviennent difficiles à vivre.
+TEST: ce tableau {{voler}} coûte très cher.
+TEST: la difficulté {{passer}} t’aidera par la suite
+TEST: leur compte {{épurer}} servira encore.
+TEST: Le vieux cocher avait mission
+TEST: le verbe aller est irrégulier.
 
 
 __conf_quel_être_nom_verbe__
