@@ -138,16 +138,17 @@ def listRules (sFilter=None):
         except re.error:
             echo("# Error. List rules: wrong regex.")
             sFilter = None
+    # regex rules
     for sOption, lRuleGroup in chain(_getRules(True), _getRules(False)):
         if sOption != "@@@@":
             for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
                 if not sFilter or zFilter.search(sRuleId):
                     yield ("RegEx", sOption, sLineId, sRuleId)
-        else:
-            for sRuleName, lActions in _rules_graph.dRule.items():
-                sOption, _, cActionType, *_ = lActions
-                if cActionType == "-":
-                    yield("Tokens", sOption, "", sRuleName)
+    # tokens rules
+    for sRuleName, lActions in _rules_graph.dRule.items():
+        sOption, _, cActionType, *_ = lActions
+        if cActionType == "-":
+            yield("Tokens", sOption, "", sRuleName)
 
 
 def displayRules (sFilter=None):
