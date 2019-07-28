@@ -4110,7 +4110,7 @@ TEST: des {{stock options}}
 TEST: Tout ce {{soi disant}} esprit religieux
 TEST: implications {{sous jacentes}}                    ->> sous-jacentes
 TEST: c’est du {{sur mesure}}
-TEST: un {{terre plein}}
+TEST: leur {{terre plein}}
 TEST: Ils versent dans leur terre plein de poisons.
 TEST: beaucoup de {{tête à tête}}
 TEST: {{un}} {{trompe l’œil}}
@@ -4195,7 +4195,8 @@ __tu_toponymes__
     Rhône Alpes
         <<- /tu/ ->> \1-\2                                                                          # Il manque un trait d’union.
 
-    [les|des|aux] Pays Bas
+    [les|des|aux]   Pays Bas
+    [<start>|,]     Pays Bas  contre
         <<- /tu/ -2:3>> \2-\3                                                                       # Il manque un trait d’union.
 
     Royaume Uni
@@ -7417,7 +7418,7 @@ TEST: un homme {{dénudé}} de courage                                        ->
 
 # dés / dès / des
 __conf_dès_des_dés__
-    dés [que|qu’|un|une|le|la|l’|les|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|ce|cet|cette|ces|lors|après|maintenant|toujours|midi|minuit|aujourd’hui|hier|demain|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|Pâques|Noël]
+    dés [avant|que|qu’|un|une|le|la|l’|les|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|ce|cet|cette|ces|lors|après|maintenant|toujours|midi|minuit|aujourd’hui|hier|demain|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|Pâques|Noël]
         <<- /conf/ not value(<1, "|un|une|de|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
@@ -7471,6 +7472,8 @@ TEST: J’apporte mes {{dès}}.
 TEST: {{Des}} 1980, le pays était en crise.
 TEST: {{Des}} dix-huit ans.
 TEST: {{Des}} 4 ans.
+TEST: {{dés}} que nous sommes partis, il a piqué une crise
+TEST: {{des}} {{les}} premiers symptômes, appelez-moi
 TEST: Les dés sont jetés.
 TEST: C’est un des leurs.
 TEST: Plusieurs dès qu’on en saura plus.
@@ -8285,19 +8288,14 @@ TEST: qui on blâme, ce soir ?
 
 
 __conf_on_ont__
-    [<start>|,|que|qu’] ?l’¿ (ont) [ne|n’|me|m’|te|se|s’]
-    [<start>|,|que|qu’] ?l’¿ (ont) [lui|nous|vous] @:[123][sp]¬:G
-    [<start>|,|que|qu’] ?l’¿ (ont) [leur|le|la|l’] @:[123][sp]¬:(?:G|[NA].*:[si])
-    [<start>|,|que|qu’] ?l’¿ (ont) @:[123][sp]¬:[GQ]|>(?:envie|peine|affaire|hâte|force|recours|somme)/
+    [<start>|,|@:Cs] ?l’¿ (ont) [ne|n’|me|m’|te|se|s’]
+    [<start>|,|@:Cs] ?l’¿ (ont) [lui|nous|vous] @:[123][sp]¬:G
+    [<start>|,|@:Cs] ?l’¿ (ont) [leur|le|la|l’] @:[123][sp]¬:(?:G|[NA].*:[si])
+    [<start>|,|@:Cs] ?l’¿ (ont) @:[123][sp]¬:[GQ]|>(?:envie|peine|affaire|hâte|force|recours|somme)/
         <<- /conf/ -1>> on                                          # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
-    [<start>|,|que|qu’] ?l’¿ ont t’
+    [<start>|,|@:Cs] ?l’¿ ont t’
         <<- /conf/ not value(>1, "|il|ils|elle|elles|") --2>> on    # Confusion probable : “ont” est une conjugaison du verbe avoir.
-
-    ont *WORD
-        <<- /conf/ morph(<1, ":Cs")
-            and ( value(\2, "|ne|n’|me|m’|te|se|s’|") or morph(\2, ":[123][sp]", ":[QG]|>(?:envie|peine|affaire|hâte|force|recours|somme)/") )
-        -1>> on                                                     # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
     ~-ont$
         <<- /conf/ ->> =\1[:-1]                                     # Incohérence : “ont” est une forme conjuguée du verbe “avoir” (par exemple: “ils ont”). Pour le pronom personnel, écrivez “on”.
@@ -8484,7 +8482,7 @@ TEST: La {{pause}} de la première pierre.
 
 
 # péché / pêcher
-__conf_péché_pêcher__
+__conf_péché_pêcher2__
     [pécher|>pêcher|pêché+ses] [mignon|>capitale]
     [pécher|>pêcher|pêché+ses] de jeunesse
         <<- /conf/ -1>> péché|péchés                                        # Confusion. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
@@ -8715,7 +8713,7 @@ TEST: depuis {{prêt}} de 15 ans
 TEST: approche très {{prêt}}
 TEST: ils se sont approchés très {{prêts}}.
 TEST: Je suis si {{prêt}} d’y arriver.
-TEST: Elle est si {{prêt}} de la trouver.
+TEST: Elle est {{prêt}} de la trouver.
 TEST: Elle va regarder ça de plus {{prêt}}.
 TEST: {{prêt}} de toi, tout va bien
 TEST: Il était rasé de {{prés}}
@@ -9265,6 +9263,7 @@ TEST: {{sont}} {{pain}}
 TEST: en {{sont}} {{absence}}
 TEST: qui {{son}} ces gens ?
 TEST: chez {{sont}} amis
+TEST: il a perdu {{sont}} {{ami}}
 TEST: ces gens {{son}} ceux qui nous mettent constamment dans la merde
 TEST: elles s’en sont mal portées
 TEST: ils en sont reconnaissants
@@ -10080,6 +10079,7 @@ __gn_toute_nom__
 
 TEST: Toute {{époux}} doit faire preuve de bienveillance
 TEST: de toute {{grand}} entreprise
+TEST: {{toute}} {{femmes}}
 TEST: contre {{toute}} {{petites}} corruption
 TEST: Il se souvient de toute mon histoire.
 
@@ -11162,6 +11162,7 @@ __purge_locutions__
     en détention provisoire
     en direction [de|d’] l’ [est|ouest]
     en direction du [nord|nord-est|nord-ouest|sud|sud-est|sud-ouest]
+    en eau ?peu¿ profonde
     en eaux troubles
     en état [de|d’] choc ?circulatoire¿
     en ?parfait¿ état [de|d’] marche
@@ -13475,6 +13476,7 @@ TEST: contre {{le}} {{rois}}
 TEST: {{le}} {{publique}}
 TEST: {{Le}} {{pendue}}
 TEST: {{Le}} personne répond.
+TEST: {{le}} {{quotients}}
 TEST: Comme avec l’Hyperloop, le bus chinois conçu pour passer au-dessus des voitures
 
 
@@ -13523,10 +13525,12 @@ __gn_la_1m__
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggFemSing(\3)       # Accord de nombre erroné : « \3 » devrait être au singulier.
 
 TEST: c’est ennuyeux, la {{parties}} deux est ratée.
+TEST: j’en sais rien, {{la}} {{parti}} est foutu
 TEST: {{La}} Cameroun                                         ->> Le
 TEST: {{La}} mustang est un cheval sauvage.                   ->> Le
 TEST: {{La}} tableau.                                         ->> Le
 TEST: dans la {{parties}}                                     ->> partie
+TEST: je connais {{la}} {{parti}}
 TEST: de {{la}} vin                                           ->> le
 TEST: {{la}} {{véhicule}}
 TEST: {{La}} {{pris}}
@@ -16118,19 +16122,6 @@ TEST: Une histoire {{dénudée}} d’intérêt.
 TEST: Des hommes {{dénudés}} de compassion.
 
 
-# dés / dès
-__conf_dès_des__
-    dés [le|la|l’|les|que|qu’|lors|avant|demain]
-        <<- /conf/ not value(<1, "|les|des|de|ces|mes|tes|ses|nos|vos|leurs|quels|quelques|plusieurs|")
-        -1>> dès                # Confusion probable. Les dés sont des polyèdres ou des protège-doigts pour la couture. Pour signifier “à partir de/du/des”, écrivez “dès”.|https://fr.wiktionary.org/wiki/d%C3%A9
-
-    des [le|la|l’|les|que|qu’|lors|demain]
-        <<- /conf/ -1>> dès     # Confusion probable : “des” est un déterminant pluriel. Pour signifier “à partir de/du/des”, écrivez “dès”.|https://fr.wiktionary.org/wiki/d%C3%A9
-
-TEST: {{dés}} que nous sommes partis, il a piqué une crise
-TEST: {{des}} {{les}} premiers symptômes, appelez-moi
-
-
 # desceller / déceler / desseller
 __erreur_déceler_desseller_desceller__
     [>erreur|>faute|>incohérence|>problème|>bug|>bogue|>faille|>maladie|>défaut|>défaillance|>perturbation|>irrégularité] <> [>desseller|>desceller]
@@ -16961,7 +16952,7 @@ TEST: donne-moi un coup de {{pâte}}
 
 
 # péché / pêcher
-__conf_péché_pêcher__
+__conf_péché_pêcher2__
     >pêcher par excès [de|d’]
     >pêcher par [insuffisance|omission|orgueil]
         <<- /conf/ -1>> pécher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
@@ -17098,7 +17089,7 @@ __conf_pris_prix__
     >avoir prix
         <<- /conf/ --1>> pris                                   # Confusion probable : le participe de prendre s’écrit “pris”.|https://fr.wiktionary.org/wiki/pris
 
-TEST: elle ne l’a pas {{prix}} dans ses bras, par dépit.
+TEST: elle ne l’a pas {{prix}}, par dépit.
 
 
 # pu / pus
@@ -17114,8 +17105,8 @@ TEST: il a {{pues}} partir
 
 # puits / puis
 __conf_puits_puis2__
-    [>creuser|>forer]   [un|ce|mon|ton|son|notre|votre|leur]  puis
-    >forage             [de|d’] [un|ce|mon|ton|son|notre|votre|leur]  puis
+    [>creuser|>forer]   [un|des|ce|ces|mon|ton|son|mes|tes|ses|notre|votre|nos|vos|leur|leurs]  puis
+    >forage             [de|d’] [un|des|ce|ces|mon|ton|son|mes|tes|ses|notre|votre|nos|vos|leur|leurs]  puis
         <<- /conf/ --1>> puits
         # Confusion. Si vous parlez d’un trou fait pour puiser quelque chose (ou pour amener quelque chose), écrivez “puits”.|https://fr.wiktionary.org/wiki/puits
 
@@ -17929,7 +17920,7 @@ TEST: __ocr__ je reconnais que j’ai pas {{traîne}}
 TEST: __ocr__ elle est fauchée et a {{emprunte}} de l’argent
 TEST: __ocr__ quel héros d’avoir {{affronte}} ces salopards de la police
 TEST: __ocr__ tant avoir {{creuse}} vers le haut.
-TEST: __ocr__ tu vois, avoir {{affrontes}} seul une bande de voleurs de bétail.
+TEST: __ocr__ tu devrais le savoir, bordel putain de merde avoir {{affrontes}} ces gens…
 TEST: __ocr__ elle avait envie de s’en sortir enfin.
 
 
@@ -18608,16 +18599,16 @@ __ppas_3sg_fem_verbe_état__
         <<- /ppas/ not tag(\1, "enum") and morph(\2, ":[123]s")
         --1>> =suggFemSing(\-1)                                                                                         # Accord avec le sujet “\2” : “\-1” devrait être au féminin singulier.
 
-    ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                           [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenue|redevenue|restée|demeurée]                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenue|redevenue|restée|demeurée]                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenue|redevenue|restée|demeurée]                                                                                         [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
         <<- /ppas/ morph(\2, ":[123]s") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggFemSing(\-1)       # Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
@@ -18691,31 +18682,31 @@ __ppas_3pl_mas_verbe_état__
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasPlur(\-1) # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                     [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                       [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|redevenus|restés|demeurés]                                           [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
+    ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                 [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
+    ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                   [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
+    ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|redevenus|restés|demeurés]                                       [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
+    ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
+    ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenus|redevenus|restés|demeurés]                                                                                         [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
+    ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":3p") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
         --1>> =suggMasPlur(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])            [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                              [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|redevenus|restés|demeurés]                                  [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])            [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
+    ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                              [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
+    ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenus|redevenus|restés|demeurés]                                  [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
+    ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenus|redevenus|restés|demeurés]                                                                                         [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-    ([ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ morph(\2, ":3p") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
@@ -18739,6 +18730,7 @@ TEST: ils sont {{parti}}.                                                       
 TEST: ils sont {{parties}}.                                                       ->> partis
 TEST: ils restaient {{méfiantes}}                                                 ->> méfiants
 TEST: Ils semblent avoir été {{attaqué}} par des soldats.                         ->> attaqués
+TEST: Ils sont de manière si étonnante et si admirable {{arrivé}} à ce résultat…
 TEST: Ils sont, semble-t-il, {{parti}} à la chasse.
 TEST: Ils sont bel et bien {{mort}}.
 TEST: Ils sont tout à fait {{désœuvré}}.
@@ -18747,8 +18739,14 @@ TEST: ils sont jour après jour plus {{perdu}}
 TEST: ils sont très loin d’être {{idiot}}.
 TEST: ils croient être {{perdu}}
 TEST: ceux-ci ne peuvent pas être devenus aussi {{grossier}}
+TEST: eux semblent devenus particulièrement {{crétin}}
+TEST: ceux-là n’affirment pas avoir été {{attaqué}} par un groupe de skinheads
+TEST: ceux-là n’en semblent pas moins {{contrarié}}
+TEST: ceux qui adorent paraître plus {{instruit}} qu’ils ne sont réellement
+TEST: avec ceux-là qui n’ont pas semblé trop {{con}}
+TEST: contre ceux-ci qui n’en semblent pas plus {{contrarié}} qui quiconque
 TEST: lesquels pensent avoir paru {{faible}} devant leurs pairs.
-TEST: Ils sont de manière si étonnante et si admirable {{arrivé}} à ce résultat…
+
 
 
 __ppas_3pl_fem_verbe_état__
@@ -18767,16 +18765,16 @@ __ppas_3pl_fem_verbe_état__
         <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":3p") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
         --1>> =suggFemPlur(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
-    ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])      [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                        [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenues|redevenues|restées|demeurées]                        [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])    [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                      [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenues|redevenues|restées|demeurées]                      [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
+    ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenues|redevenues|restées|demeurées]                                                                                     [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-    ([celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
+    ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
         <<- /ppas/ morph(\2, ":3p") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
@@ -19010,7 +19008,7 @@ TEST: Les tortures que ce journaliste pense être “normales”.
 
 
 __ppas_nom_propre_être_accord_genre__
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]            *WORD
+    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
     [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
@@ -19041,8 +19039,8 @@ TEST: Antoine n’est pas {{mariés}}.
 TEST: Antoine est peut-être {{fatiguée}}.
 TEST: Éric n’est pas très {{fatiguée}}.
 TEST: Martine est {{marié}}.
-TEST: Martine n’est pas {{marié}}.
-TEST: Martine est très {{intelligent}}.
+TEST: Martine qui n’est pas {{marié}}.
+TEST: Martine qui est très {{intelligent}}.
 TEST: Martine n’est pas très {{intelligent}}.
 TEST: Pierre est {{dominée}} par son adversaire.
 TEST: Les travaux que Jeanne pense être achevés depuis longtemps n’ont pas encore commencé.
@@ -19911,6 +19909,8 @@ __imp_confusion_2e_pers_pluriel__
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance                         ->> Donnez-moi
+TEST: {{donne la}} et oubie-moi.
+TEST: {{prends les}} ou vole-les
 TEST: je vous en prie, {{prenais moi}} avec vous.       ->> prenez-moi
 TEST: {{avançait moi}} de l’argent                      ->> avancez-moi
 TEST: {{filé moi}} du fric, bon sang !                  ->> filez-moi
@@ -20080,11 +20080,11 @@ TEST: — Pour ma part, répond P., je crois que tout va bien.
 __imp_union_moi__
     *WORD  moi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|je|j’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and not value(<1, "|de|d’|le|la|les|l’|je|j’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  moi
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-moi"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Apporte moi}} ce dictionnaire.                                      ->> Apporte-moi
@@ -20098,11 +20098,11 @@ TEST: je suis moi et tu es toi.
 __imp_union_toi__
     *WORD  toi
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E:2s", ":[GM]|>(?:venir|aller|partir)") and not value(<1, "|de|d’|le|la|les|l’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
+            and morph(\1, ":E:2s", ":[GM]|>(?:venir|aller|partir)/") and not value(<1, "|de|d’|le|la|les|l’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  toi
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-toi"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne toi}} du temps.
@@ -20112,11 +20112,11 @@ TEST: j’en ai marre, {{instruit toi}} avant de parler.
 __imp_union_nous_vous_lui__
     *WORD  [nous|vous|lui]
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  [nous|vous|lui]
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)") and not morph(>1, ":Y")
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/") and not morph(>1, ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne nous}} du café.
@@ -20128,7 +20128,7 @@ TEST: Daignez le lui permettre
 __imp_union_y__
     *WORD  y
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne y}} du tien.
@@ -20137,12 +20137,12 @@ TEST: {{Donne y}} du tien.
 __imp_union_les__
     *WORD  les
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-les                                      # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  les
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-les"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{chante les}} avec conviction
@@ -20157,17 +20157,18 @@ TEST: Soyez les plus gentils qu’on puisse imaginer.
 __imp_union_le_la_leur__
     *WORD  [le|la|leur]
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|MP|H|T)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|en|y|une?)/")
+            and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  [le|la|leur]
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|MP|3[sp]|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+    [<start>|,]  *WORD  [le|la|leur]
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|MP|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|une)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
 TEST: {{Dites leur}} que nous sommes là.
-TEST: j’en ai plus qu’assez, {{apprend le}}.
+TEST: c’est ça, {{apprend le}} parce que c’est compliqué.
 TEST: {{pardonne leur}}, ils ne savent pas ce qu’ils font
 TEST: un sujet si extrêmement politique et polémique lui a donné un accès
 TEST: Les États d’ores et déjà très affaiblis le seraient encore plus
@@ -20184,12 +20185,12 @@ TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
 __imp_union_le_la_leur__
     *WORD  en
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     ,  *WORD  en
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|>(?:pour|plus|moins|mieux|peu|trop|très|en|y))")
+        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D)|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{restons en}} là.
@@ -21740,6 +21741,7 @@ TEST: Rien ne {{sers}} de courir
 TEST: Rien n’{{arrives}} sans raison
 TEST: Rien, en ce qui le concernait, ne {{pouvais}} le ramener à la raison.
 TEST: ils ne savent rien qui {{puissent}} les aider
+TEST: rien qui {{soient}} aussi difficile
 TEST: il ne faut rien faire ou rien dire contre les manifestants
 TEST: qui n’ont rien appris et rien oublié
 TEST: comme si son pays n’avait rien appris du fascisme ni rien reçu de l’Europe
@@ -21808,7 +21810,7 @@ __conj_det_sing_nom__
                         or tag_before(\1, "ni") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
-        <<- /conj/ __else__ and isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", value(\1, "|<start>|,|"))
+        <<- /conj/ __else__ and isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", value(<1, "|<start>|,|"))
         -3>> =suggVerb(\3, ":3s", suggSing)                             # Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  qui  @:V¬:(?:3s|P|3p!|G|M)
@@ -21830,6 +21832,7 @@ TEST: Le chien y {{viens}}                                                      
 TEST: L’homme le {{deviens}}                                                                        ->> devient
 TEST: La femme la {{prends}}                                                                        ->> prend
 TEST: Le feu nous {{donnes}} chaud.
+TEST: une petite {{donnes}}
 TEST: tout le monde {{prends}} ses aises                                                            ->> prend
 TEST: J’aimerais aussi que mon problème {{sois}} réglé.                                             ->> soit
 TEST: La proscription de nager {{pourraient}} nous porter préjudice à long terme                    ->> pourrait
