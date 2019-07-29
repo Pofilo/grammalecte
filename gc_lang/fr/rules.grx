@@ -7472,8 +7472,11 @@ TEST: J’apporte mes {{dès}}.
 TEST: {{Des}} 1980, le pays était en crise.
 TEST: {{Des}} dix-huit ans.
 TEST: {{Des}} 4 ans.
+TEST: Viens {{des}} 9 heures
+TEST: c’était {{dés}} trois heures.
 TEST: {{dés}} que nous sommes partis, il a piqué une crise
 TEST: {{des}} {{les}} premiers symptômes, appelez-moi
+TEST: jette leurs {{dès}} sans attendre.
 TEST: Les dés sont jetés.
 TEST: C’est un des leurs.
 TEST: Plusieurs dès qu’on en saura plus.
@@ -13440,7 +13443,7 @@ TEST: L’{{amande}} {{amer}}
 TEST: l’{{amicale}} {{animal}}
 TEST: l’amour {{immortels}}
 TEST: du chien et de l’{{excellente}} {{collier}} qu’il avait autour du cou.
-TEST: du chien et de l’{{étonnante}} {{collier}} qu’il avait autour du cou.
+TEST: du chien et de l’étonnant {{colliers}} qu’il avait autour du cou.
 
 
 __gn_le_1m__
@@ -13531,6 +13534,7 @@ TEST: {{La}} mustang est un cheval sauvage.                   ->> Le
 TEST: {{La}} tableau.                                         ->> Le
 TEST: dans la {{parties}}                                     ->> partie
 TEST: je connais {{la}} {{parti}}
+TEST: la {{vilénies}} des mensonges                           ->> vilénie
 TEST: de {{la}} vin                                           ->> le
 TEST: {{la}} {{véhicule}}
 TEST: {{La}} {{pris}}
@@ -14039,7 +14043,9 @@ __gn_les_2m__
 
 TEST: les pitres {{imbécile}}
 TEST: il faut en convenir et les femmes {{oubliés}} seront satisfaites.
-TEST: et les femmes {{retrouvés}} seront emmenées à l’hôpital.
+TEST: les {{petites}} {{oubliés}}
+TEST: c’est ça, et les femmes {{retrouvés}} seront emmenées à l’hôpital.
+TEST: ça n’en vaut pas la peine, et les éléments {{perdu}} le seront à jamais
 TEST: les moins éloignées possible
 TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 TEST: cette attention de tous les instants portée à la boussole.
@@ -14349,15 +14355,16 @@ __gn_quel_que_être_mas_sing__
     quelle qu’ en [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
         <<- /gn/ morph(\-1, ":[NA].*:m", ":[fe]") -1>> quel                                 # Accord de genre avec « \-2 \-1 ». Utilisez le masculin.
 
+TEST: {{quelle}} que soit le chien                            ->> quel
+TEST: {{Quelle}} que soit mon intérêt.                        ->> Quel
+TEST: {{Quelle}} qu’en soit mon intérêt.                      ->> Quel
+
 
 __gn_quel_que_être_mas_plur__
     quelles que [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:m¬:[fe]
     quelles qu’ en [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:m¬:[fe]
         <<- /gn/ -1>> quels                                                                 # Accord de genre avec « \-2 \-1 ». Utilisez le masculin.
 
-TEST: {{quelle}} que soit le chien                            ->> quel
-TEST: {{Quelle}} que soit mon intérêt.                        ->> Quel
-TEST: {{Quelle}} qu’en soit mon intérêt.                      ->> Quel
 TEST: {{Quelles}} que soient ces intérêts                     ->> Quels
 TEST: {{Quelles}} que soient les hommes qui…                  ->> Quels
 
@@ -14374,15 +14381,17 @@ __gn_quelle_que_être_fem_sing__
     quel qu’ en [soit|soit|sois|soient|fut|fût] [mon|ton|son]       ~^[aeéèhiîoôuy]
         <<- /gn/ morph(\5, ":[NA].*:f", ":[me]") -1>> quelle                                # Accord de genre avec « \-2 \-1 ». Utilisez le féminin.
 
+TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
+TEST: {{Quel}} que soit mon aversion                          ->> Quelle
+TEST: {{Quel}} que soit cette femme                           ->> Quelle
+TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
+
+
 __gn_quelle_que_être_fem__
     quels que    [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:f¬:[me]
     quels qu’ en [soient|furent|fussent] [les|ces|mes|tes|ses|nos|vos|leurs]  @:[NAQ].*:f¬:[me]
         <<- /gn/ -1>> quelles                                                               # Accord de genre avec « \-2 \-1 ». Utilisez le féminin.
 
-TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
-TEST: {{Quel}} que soit mon aversion                          ->> Quelle
-TEST: {{Quel}} que soit cette femme                           ->> Quelle
-TEST: {{Quel}} que soit la force appliquée.                   ->> Quelle
 TEST: {{Quels}} que soient ces idiotes                        ->> Quelles
 TEST: {{Quels}} qu’en soient les raisons                      ->> Quelles
 
@@ -14407,7 +14416,7 @@ TEST: certains claviers {{dégueulasse}}
 TEST: certains hommes {{petite}}
 TEST: quels hommes {{grandes}}
 TEST: elle se rappelle de quels rapports {{désastreuses}} il s’agit.
-TEST: de quels grands {{dames}} s’agit-il ?
+TEST: de quels grands {{fou}} s’agit-il ?
 TEST: chez certains la revue Limite provoque des crises d’hystérie.
 
 
@@ -14499,12 +14508,12 @@ __gn_nombre_chiffres_1m__
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
-TEST: 00 heure, 01 heure
 TEST: il a adopté 1 {{chiens}}.
 TEST: 22 {{heure}}
 TEST: 3 {{heure}}
 TEST: Environ 10 essais {{nucléaire}} ont été réalisés
 TEST: 20 {{grandes}} {{animaux}}
+TEST: 00 heure, 01 heure
 TEST: les élèves sont inquiets après une année 2018 compliquée et riche en réformes.
 TEST: ils gagneront 300 € maximum.
 TEST: il revint en 2005 complètement dévoré par la culpabilité.
@@ -15261,6 +15270,7 @@ TEST: J’ai retrouvé tout mon ressenti, tous les mots sont justes.
 TEST: Nos chiffres sont justes, et nous vous le prouverons.
 TEST: Ces observations sont tellement justes que, dans les années à venir, elles serviront de référence.
 TEST: Les motivations sont justes et évidentes
+TEST: ces théories incomplètes sont suffisamment justes pour prédire la réalité
 
 
 # pied
@@ -17194,8 +17204,8 @@ __conf_aller_de_soi__
     >aller de [sois|>soie]
         <<- /conf/ -3>> soi                                 # Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
 
-    >aller de soit
-        <<- /conf/ not after(" soit ") -3>> soi             # Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
+    >aller ?[pas|jamais|guère]¿ de soit
+        <<- /conf/ not after(" soit ") --1>> soi            # Confusion.|https://fr.wiktionary.org/wiki/aller_de_soi
 
 TEST: ça va de {{soie}}
 TEST: cela ne va pas de {{soit}}.
@@ -17401,10 +17411,13 @@ __infi_à_verbe__
         <<- /infi/ not \2[0:1].isupper() -2>> =suggVerbInfi(\2)                         # Après “à”, le verbe devrait être à l’infinitif.
 
 TEST: à en {{parlé}} sans cesse
+TEST: cette corneille, il pense à la {{dégommée}} avec son fusil
+TEST: à vous {{parlé}} on risque gros
 TEST: cela suffit à les {{aimait}}
 TEST: à ne leur en {{avancé}} que le nécessaire.
 TEST: à l’y {{poussé}}
 TEST: Avoir à {{parlait}} toute la journée, c’est plus que difficile, c’est épuisant.
+TEST: il pense à petit à petit {{amélioré}} sa position
 TEST: elle s’engage à ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste à la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: à leur plus grand fils, ils ont offert une voiture.
@@ -17618,8 +17631,11 @@ __purge_syntagme_verbal__
     guère
         <<- ~>> *
 
-    [pas|point|rien|bien|ensemble]
+    [pas|point|bien|ensemble]
         <<- morph(<1, ":V") ~>> *
+
+    rien
+        <<- morph(<1, ":V") and not value(>1, "|qui|") ~>> *
 
     /VCint  [pas|point|rien|bien|ensemble]
         <<- ~2>> *
@@ -18176,23 +18192,23 @@ TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse 
 !!
 
 __conj_conf_se_être_avoir__
-    je  m’  ?[en|y]¿  (>avoir)
-        <<- /conj/ -1>> suis|étais|serai|serais                         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    je  m’  ?[en|y]¿  >avoir
+        <<- /conj/ --1>> suis|étais|serai|serais                            # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
-    tu  t’  ?[en|y]¿  (>avoir)
-        <<- /conj/ not morph(<1, ":V0") -1>> es|étais|seras|serais      # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    tu  t’  ?[en|y]¿  >avoir
+        <<- /conj/ not morph(<1, ":V0") --1>> es|étais|seras|serais         # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
     [<start>|,]  nous  nous  ?[en|y]¿  >avoir
-        <<- /conj/ --1>> sommes|étions|serons|serions                   # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-        <<- /conj/ -2>> nous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer du sujet les personnes que vous désignez.
+        <<- /conj/ --1>> sommes|étions|serons|serions                       # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ -2>> nous,                                               # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer du sujet les personnes que vous désignez.
 
     [<start>|,]  vous  vous  ?[en|y]¿  >avoir
-        <<- /conj/ --1>> êtes|étiez|serez|seriez                        # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-        <<- /conj/ -2>> vous,                                           # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer du sujet les personnes que vous désignez.
+        <<- /conj/ --1>> êtes|étiez|serez|seriez                            # Confusion possible. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ -2>> vous,                                               # S’il ne s’agit pas d’une locution pronominale, mettez une virgule pour séparer du sujet les personnes que vous désignez.
 
-    s’  ?[en|y]¿  (>avoir)
-        <<- /conj/ morph(\1, ":3p") -1>> sont|étaient|seront|seraient   # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
-        <<- /conj/ __else__ -1>> est|était|sera|serait                  # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+    s’  ?[en|y]¿  >avoir
+        <<- /conj/ morph(\-1, ":[123]p") --1>> sont|étaient|seront|seraient # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
+        <<- /conj/ __else__ --1>> est|était|sera|serait                     # Confusion. Sous sa forme pronominale, un verbe s’emploie avec l’auxilaire “être”, non “avoir”.
 
 TEST: je m’y {{avais}} habitué.
 TEST: tu t’{{avais}} donné du temps pour finir ton mémoire.
@@ -18320,6 +18336,7 @@ __ppas_s_être_rendu_compte__
         <<- ~2:3>> _
 
 TEST: Elles se sont {{rendues}} compte
+TEST: se sont-ils {{rendus}} compte
 TEST: La puissance publique s’en est-elle rendu compte ?
 TEST: Elle s’est rendu compte qu’il s’était moqué d’elle une fois de plus.
 
@@ -18993,17 +19010,24 @@ __ppas_sujet_être_accord_genre__
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ checkAgreement(\1, \-1) !-1>>
 
-TEST: la danse est {{fini}}…
 TEST: Un orage est {{annoncée}}.
-TEST: Une averse est {{annoncé}}.
-TEST: Le chien ne sera pas {{oubliés}}
+TEST: ce chat ne sera pas {{euthanasiés}}
+TEST: Le chien qui ne sera pas {{oubliés}}
+TEST: cet espion qui sera {{jugée}} bientôt
+TEST: la danse n’est pas {{fini}}…
+TEST: Une averse semble être {{annoncé}}.
+TEST: ta fille qui pense avoir été {{trompé}}
+TEST: cette carte qui ne sera jamais {{terminé}} à temps
+TEST: Ma mémoire qui a aussi été {{effacé}}.
+TEST: Sa femme qui ne paraît pas avoir été {{choqué}}
+TEST: l’avenir de la région paraissait {{suspendue}} à ce financement
+TEST: l’idiot affirmait être devenu {{géniale}}
+TEST: Mon ami qui pensait être {{suivie}}
+TEST: l’écolier qui ne croyait pas avoir été {{brillante}}
 TEST: les femmes sont vraiment {{partis}}                                         ->> parties
 TEST: les hommes ne sont pas tout à fait {{fâché}}                                ->> fâchés
-TEST: les enfants ne sont pas {{content}}
-TEST: les réunions sans cesse reportées sont {{annulés}}
-TEST: l’avenir de la région était {{suspendue}}
-TEST: il prétendait que les banques universelles « à la française » s’{{était}} très honorablement comportées
-TEST: Ma mémoire a aussi été {{effacé}}.
+TEST: plusieurs enfants qui ne sont pas {{content}}
+TEST: les réunions sans cesse reportées qui sont {{annulés}}
 TEST: Les tortures que ce journaliste pense être “normales”.
 
 
@@ -19707,6 +19731,32 @@ TEST: t’en as envie ?
 TEST: quand sa mère l’a emmenée voir un hypnothérapeute pour qu’elle se souvienne
 
 
+__ppas_avoir__
+    >avoir  ~..e[rz]$
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
+        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
+
+    >avoir  ~..it$
+        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
+    >avoir  ~.ut$
+        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
+
+TEST: Avoir {{marcher}} toute la journée m’a épuisée.
+TEST: Avez-vous {{signez}} le contrat ?
+TEST: Ont-ils {{signer}} le contrat ?
+TEST: Ai-je déjà {{signez}} le contrat ?
+TEST: A-t-il déjà {{signer}} le contrat ?
+TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
+TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
+TEST: Ils ont {{put}} trouver la solution.
+TEST: nous avons vu des avions voler haut dans le ciel.
+
+
 
 !!
 !!
@@ -19743,7 +19793,7 @@ TEST: le flacon qu’ils ont réussi à acquérir
 
 __ppas_det_fem_sing_COD_que_avoir__
     [une|la|l’|cette|ma|ta|sa|mon|ton|son]  *WORD  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[mp]¬:(?:G|W|[fe]:[si])
-        <<- /ppas/ morph(\2, ":[NA].*:f", ">fois/") and not morph(>1, ":(?:Y|Ov|D|LV)|>qu[e’]/")
+        <<- /ppas/ morph(\2, ":[NA].*:f", ">(?:fois|impression)/") and not morph(>1, ":(?:Y|Ov|D|LV)|>qu[e’]/")
             and not ((value(\-1, "|décidé|essayé|tenté|oublié|imaginé|supplié|") and value(>1, "|de|d’|")) or (value(\-1, "|réussi|pensé|") and value(>1, "|à|")))
         --1>> =suggVerbPpas(\-1, ":f:s")
         # Si “\1 \2…” est bien le COD du participe passé “\-1”, celui-ci devrait être au féminin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -19753,6 +19803,7 @@ TEST: La femme que j’ai beaucoup {{aidé}}.
 TEST: La femme que j’ai un peu {{aidé}}.
 TEST: la danse qu’ils ont réussi à faire
 TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
+TEST: en ayant l’impression qu’il a beaucoup réussi
 
 
 __ppas_ce_que_pronom_avoir__
@@ -19800,8 +19851,8 @@ __ppas_avoir_pronom__
             and not morph(\1, ">(?:les|[nv]ous|en)/|:[NA].*:[fp]") and not before("(?i)\\b(?:quel(?:le|)s?|combien) ")
         -3>> =suggVerbPpas(\3, ":m:s")                      # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
-    <start>  ?n’¿  (/VCint)  *WORD
-        <<- /ppas/ morphVC(\1, ":V0a") and morph(\-1, ":(?:Y|2p|Q.*:[fp]|3[sp])", ":m:[si]") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+    [<start>|,]  ?n’¿  /VCint  *WORD
+        <<- /ppas/ morphVC(\-2, ":V0a") and morph(\-1, ":(?:Y|2p|Q.*:[fp]|3[sp])", ":m:[si]") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
 TEST: Avais-je {{laissés}} ces notes sur la table ?                             ->> laissé
@@ -19829,33 +19880,6 @@ __ppas_les_avoir_pronom__
 TEST: les avais-tu {{acheté}} là-bas ?
 TEST: les ont-ils {{détecté}} ?
 TEST: les avaient-ils {{détectez}} ?
-
-
-__ppas_avoir__
-    >avoir  ~..e[rz]$
-        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":(?:Y|2p)")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
-        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
-        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
-
-    >avoir  ~..it$
-        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
-
-    >avoir  ~.ut$
-        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
-
-TEST: Avoir {{marcher}} toute la journée m’a épuisée.
-TEST: Avez-vous {{signez}} le contrat ?
-TEST: Ont-ils {{signer}} le contrat ?
-TEST: Ai-je déjà {{signez}} le contrat ?
-TEST: A-t-il déjà {{signer}} le contrat ?
-TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
-TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
-TEST: Ils ont {{put}} trouver la solution.
-TEST: nous avons vu des avions voler haut dans le ciel.
-
 
 __ppas_avoir_interrogatif__
     /VCint  ~..e[rz]$
@@ -19890,7 +19914,7 @@ TEST: Ai-je déjà {{reconnut}} mes torts ?
 __imp_confusion_2e_pers_pluriel__
     [<start>|,]  *WORD  moi
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)")
-        -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-moi"                                             # Confusion probable. Pour l’impératif, écrivez :
+        -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
     [<start>|,]  *WORD  la  *WORD
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":(?:V1.*:[YQ]|Iq.*:[123]s)") and morph(\4, ":[ORC]", ":[NA]|>plupart/")
@@ -19909,8 +19933,8 @@ __imp_confusion_2e_pers_pluriel__
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance                         ->> Donnez-moi
-TEST: {{donne la}} et oubie-moi.
-TEST: {{prends les}} ou vole-les
+TEST: {{donnes la}} et oublie-moi.                      ->> là|||donne-la
+TEST: {{prenait les}} ou volez-les                      ->> prenez-les
 TEST: je vous en prie, {{prenais moi}} avec vous.       ->> prenez-moi
 TEST: {{avançait moi}} de l’argent                      ->> avancez-moi
 TEST: {{filé moi}} du fric, bon sang !                  ->> filez-moi
@@ -20516,8 +20540,8 @@ TEST: Entreront-ils en {{contacte}} avec eux ?                  ->> contact
 
 __conf_vc_int_imp_verbe__
     [/VCint|/VCimp]  @:[123][sp]¬:[GNAQWM]
-        <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") >>>
-        <<- /conf/ not morphVC(\1, ":V0") -2>> _                                              # Incohérence probable : “\2” est une forme verbale conjuguée.
+        <<- /conf/ not value(\1, "|rendez-vous|entre-nous|entre-vous|entre-elles|") and not morphVC(\1, ":V0")
+        -2>> _                                                                  # Incohérence probable : “\2” est une forme verbale conjuguée.
 
 TEST: Annonce-le {{dépare}}.
 TEST: prends-la {{tète}}.
@@ -20583,13 +20607,13 @@ __conf_pronom_sujet_verbe_état_verbe__
 
     <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]    @:[123][sp]¬:[NAQGM]
     <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                      @:[123][sp]¬:[NAQGM]
-    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenus|redevenus|restés|demeurés]                          @:[123][sp]¬:[NAQGM]
+    <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu+s|redevenu+s|resté+s|demeuré+s]                      @:[123][sp]¬:[NAQGM]
     <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    @:[123][sp]¬:[NAQGM]
     <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
-        || être [devenus|redevenus|restés|demeurés]                                                                     @:[123][sp]¬:[NAQGM]
+        || être [devenu+s|redevenu+s|resté+s|demeuré+s]                                                                 @:[123][sp]¬:[NAQGM]
     <start>  [on|vous] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                      @:[123][sp]¬:[NAQGM]
@@ -20625,7 +20649,13 @@ __conf_pronom_sujet_verbe_état_verbe__
 
 TEST: je ne parais pas {{épuise}} par mon périple, mais je le suis.
 TEST: j’ai été {{bouleverse}} par ces aveux.
+TEST: il sait être {{désire}}
+TEST: elle imagine être {{désire}}
 TEST: elle semble avoir été {{sonne}}
+TEST: ouais, on adore avoir été {{persécute}} par ces enfoirés
+TEST: nous préférons être restés {{chagrine}} par cette perte
+TEST: on déclare avoir été {{choque}} par ces nouvelles
+TEST: ils semblent être redevenus {{élut}}
 TEST: elles aiment avoir paru {{oublie}}
 
 
@@ -22020,18 +22050,19 @@ TEST: Plusieurs qui {{pense}} que c’est une arnaque se sont quand même tromp�
 
 __conj_certains_certaines__
     [<start>|,]  [certain|certaine]  @:V.*:[123]p¬:[GWMNA]
-        <<- /conj/ -2>> \1s                                             # Mettez au pluriel “\2” si vous désignez plusieurs personnes.
-        <<- /conj/ morph(\3, ":[12]p") ->> =suggVerb(\3, ":3p")         # Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
+        <<- /conj/ -2>> \2s                                             # Mettez au pluriel “\2” si vous désignez plusieurs personnes.
+        <<- /conj/ morph(\3, ":[12]p") -3>> =suggVerb(\3, ":3p")        # Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
 
     [<start>|,]  certain  @:V.*:[123]s¬>(?:être|demeurer|rester|devenir|redevenir).*:3s|:N.*:[me]:[si]
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
-        <<- /conj/ -2>> \1s                                             # Mettez au pluriel “\2” si vous désignez plusieurs personnes.
+        <<- /conj/ -2>> \2s                                             # Mettez au pluriel “\2” si vous désignez plusieurs personnes.
 
     [<start>|,]  certaine  @:V.*:[123]s¬>(?:être|demeurer|rester|devenir|redevenir).*:3s|:N.*:[fe]:[si]
         <<- /conj/ -3>> =suggVerb(\3, ":3p")                            # Conjuguez “\3” à la troisième personne du pluriel, si “\2” est un pronom censé désigner plusieurs personnes.
-        <<- /conj/ -2>> \1s                                             # Mettez au pluriel “\2” si vous désignez plusieurs personnes.
+        <<- /conj/ -2>> \2s                                             # Mettez au pluriel “\2” si vous désignez plusieurs personnes.
 
 TEST: {{certain}} deviennent idiots à cette seule pensée.
+TEST: nous savons, {{certaine}} {{avancerons}} avec enthousiasme
 TEST: nous verrons, certains {{arriverons}} à vaincre
 TEST: mais c’est exact, {{certaine}} perdent leur calme souvent dans les méandres de l’administration.
 TEST: {{certain}} {{donne}} beaucoup.
@@ -22041,12 +22072,12 @@ TEST: si tu persévères, certaine deviendra la réussite.
 
 
 __conj_quelques_uns__
-    quelques-uns  @:V¬:(?:G|3p|P|[NAQ].*:m:[pi])
+    quelques-uns   @:V¬:(?:G|3p|P|[NAQ].*:m:[pi])
     quelques-unes  @:V¬:(?:G|3p|P|[NAQ].*:f:[pi])
         <<- /conj/ not morph(<1, ":[VR]")
         --1>> =suggVerb(\-1, ":3p")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
-    quelques-uns  qui  @:V¬:(?:G|3p|P)
+    quelques-uns   qui  @:V¬:(?:G|3p|P)
     quelques-unes  qui  @:V¬:(?:G|3p|P)
         <<- /conj/ --1>> =suggVerb(\-1, ":3p")                          # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
 
@@ -22143,8 +22174,7 @@ TEST: les grands {{danse}}
 TEST: les filles {{passes}} ce matin
 TEST: les marchands {{marche}}
 TEST: les marchands {{plie}}
-TEST: certaines demandes qui {{donne}} le tournis.
-TEST: plusieurs pressions qui ne {{donne}} pas les résultats attendus.
+TEST: il prétendait que les banques universelles « à la française » s’{{était}} très honorablement comportées
 TEST: les marchands {{paye}}
 TEST: les marchands {{marchande}}
 TEST: les marchandes {{paie}}
@@ -22153,8 +22183,13 @@ TEST: les chattes {{finis}}
 TEST: les chattes {{manges}}
 TEST: Les tests grand public de Jean-Paul {{montre}} des résultats surprenants.
 TEST: les chattes {{danse}}
-TEST: certains hommes {{marchandes}} sans cesse
+TEST: certains hommes {{marchande}} sans cesse
+TEST: tu sais, certains filtres {{donnes}} de mauvais résultats
 TEST: certaines femmes {{danse}} beaucoup
+TEST: tu sais, certaines danses {{dérive}} d’autres
+TEST: certaines demandes qui {{donne}} le tournis.
+TEST: plusieurs personnes {{devienne}} des robots
+TEST: plusieurs pressions qui ne {{donne}} pas les résultats attendus.
 TEST: l’écart entre les riches et les pauvres n’était pas si grand.
 TEST: Les grands hommes politiques
 TEST: les charmantes petites mines de toutes les jeunes filles
