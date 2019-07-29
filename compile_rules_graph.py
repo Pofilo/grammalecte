@@ -385,8 +385,9 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             if m:
                 sRuleName = m.group(1)
                 if sRuleName in aRuleName:
-                    print("Error at line " + i + ". Rule name <" + sRuleName + "> already exists.")
+                    print("Error at line " + str(i) + ". Rule name <" + sRuleName + "> already exists.")
                     exit()
+                aRuleName.add(sRuleName)
                 iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
