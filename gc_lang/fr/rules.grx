@@ -8485,7 +8485,7 @@ TEST: La {{pause}} de la première pierre.
 
 
 # péché / pêcher
-__conf_péché_pêcher2__
+__conf_péché_pêcher1__
     [pécher|>pêcher|pêché+ses] [mignon|>capitale]
     [pécher|>pêcher|pêché+ses] de jeunesse
         <<- /conf/ -1>> péché|péchés                                        # Confusion. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C3%A9ch%C3%A9
@@ -16641,7 +16641,7 @@ __conf_lieux_lieues_lieus__
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|@:B]  [lieux|lieus]
         <<- /conf/ --1>> lieues                                 # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
-    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [des|*NUM|@:B]  [lieux|lieus]
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
         <<- /conf/ space_after(\2, 1, 4) --1>> lieues           # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     *NUM >lieu sous [la|les] >mer
@@ -16659,7 +16659,7 @@ TEST: qui est le responsable des {{lieues}} ?
 TEST: ce sont des {{lieus}} mythiques.
 TEST: Des {{lieus}} historiques.
 TEST: {{lieus}} abandonnés
-TEST: co sont des {{lieues}} de rencontre pour les jeunes.
+TEST: ce sont des {{lieues}} de rencontre pour les jeunes.
 TEST: elle habitait à quelques {{lieux}} d’ici
 TEST: Cette réunion ayant eu {{lieue}} loin d’ici
 TEST: vingt mille {{lieux}} sous les mers
@@ -18289,17 +18289,16 @@ TEST: sans fin elles se sont succédé
 
 
 __ppas_se_être__
-    [me|m’|te|se|s’]  ?[y|en]¿  (>être)  (*WORD)
-    t’  [y|en]  (>être)  (*WORD)
-        <<- /ppas/ morph(\2, ":(?:Y|[123][sp])", ":[QA]") -2>> =suggVerbPpas(\2)                    # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\1, ":[123]s") and morph(\2, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
-        -2>> =suggSing(\2)                                                                          # Le participe passé devrait être au singulier.
+    [me|m’|te|se|s’]  ?[y|en]¿  >être  *WORD
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") --1>> =suggVerbPpas(\-1)                 # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
+        --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
 
-    t’  >être  *WORD
-        <<- /ppas/ not value(\2, "|es|étais|") >>>
-        <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":[QA]") -3>> =suggVerbPpas(\3)                    # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\2, ":[123]s") and morph(\3, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
-        -3>> =suggSing(\3)                                                                          # Le participe passé devrait être au singulier.
+    t’  ?[y|en]¿  >être  *WORD
+        <<- /ppas/ not value(\-2, "|es|étais|seras|serais|") >>>
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") -3>> =suggVerbPpas(\-1)                  # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
+        --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
 
 TEST: s’être {{donner}} le mot.
 TEST: je me suis {{donnés}} à fond
@@ -18679,7 +18678,7 @@ TEST: Nous paraissons avoir été complètement {{prise}} de panique.           
 TEST: Nous devons avoir été bien {{méchant}} pour être traité de la sorte.
 TEST: nous ne pouvons devenir aussi {{perspicace}} avec tout cet alcool ingurgité.
 TEST: nous pensons être {{désiré}}
-TEST: nous ne devons pas être {{instruit}}
+TEST: nous n’y devons pas être {{instruit}}, mais…
 TEST: nous sommes légion.
 TEST: nous ne paraissions pas avoir été légion, mais l’effet eut autant de force que si nous avions été des millions.
 
