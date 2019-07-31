@@ -2110,7 +2110,7 @@ __fusions_noms_communs__
         <<- ~>> ␣
         <<- =>> define(\1, [":N:m:i"])
 
-    n’ importe [qui|quoi|quel|quelle|quels|quelles]
+    n’ importe [qui|quoi|quel|quelle|quels|quelles|où]
         <<- ~1:2>> ␣
 
     [cultural|gender] studies
@@ -2198,6 +2198,8 @@ __immunités__
 
 
 TEST: New York {{étaient}} {{devenue}} la plaque tournante de tous les trafics.
+TEST: de Bordeaux ou de n’importe où
+
 
 
 !!!! Noms composés                                                                                !!
@@ -13621,10 +13623,13 @@ TEST: Que ferons-nous de {{leur}} gros {{grains}}
 
 __gn_le_la_leur_3m__
     [le|la|leur]  *WORD  *WORD  *WORD
-        <<- /gn/ morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
+        <<- /gn/ not value(<1, "|et|ou|") and morph(\1, ":D") and morph(\2, ":[NA].*:[si]", ":(?:[123][sp]|G)") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
+TEST: La petite fille {{devenues}} infirmière.
 TEST: leur grande passion {{délirantes}} pour le cosplay.
+TEST: le jour venu prises par surprise elles durent s’enfuir.
+TEST: sous la forme d’un baromètre comparant différents moyens pour alléger ses émissions
 TEST: non seulement met en péril la logique industrielle mais contribue à détruire peu à peu le substrat sur lequel repose le marché lui-même, à savoir la société des hommes.
 TEST: qu’ils fassent tourner le système économique, assez concrètement, mais sans faire chier avec leurs petits problèmes de gens de rien.
 TEST: avec le peuple, contre le capitalisme mortifère sous tous ses visages.
@@ -13872,6 +13877,7 @@ __gn_det_mas_sing_2m__
 
 TEST: cet outil {{terribles}} qu’il a dans les mains
 TEST: J’aimerais connaître de quel parti {{gauchistes}} on parle.
+TEST: au petit {{publique}}
 TEST: Ils jugeront en toute impartialité de ce cas {{délirante}}.
 
 
@@ -13944,6 +13950,7 @@ __gn_det_fem_sing_2m__
 TEST: quelle belle {{étourdi}}, cette gamine
 TEST: j’en ai assez de cette ville {{stressées}} en permanence.
 TEST: Peut-on imaginer de plus {{beaux}} {{enfant}} ?
+TEST: de ma grande {{ami}}
 TEST: il fut cette fois ulcéré de voir son entreprise une fois de plus ruinée par la malchance.
 
 
@@ -13978,7 +13985,7 @@ __gn_det_epi_sing_2m__
             and not apposition(\3, \4)
         -4>> =switchGender(\4, False)                                                       # Accord de genre erroné entre « \3 » et « \4 ».
         <<- /gn/ __also__ and hasFemForm(\3) -3>> =switchGender(\3, False)                  # Accord de genre erroné avec « \4 ».
-        <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\3, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
+        <<- /gn/ morph(\3, ":[NA].*:[si]", ":G") and morph(\4, ":[NA].*:p", ":[GWsi]") and not apposition(\3, \4)
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au singulier.
 
 TEST: chaque élément {{terrestres}}
@@ -13986,6 +13993,7 @@ TEST: notre {{belle}} {{avenu}}
 TEST: ils viennent de chaque coin {{ignorée}} du pays.
 TEST: que faire de votre {{ennuyeuse}} {{avocat}}
 TEST: de quelque cartable {{vides}}
+TEST: de notre petit {{amis}}
 TEST: Quelque chose tombé dans le puits a souillé l’eau.
 
 
@@ -13994,15 +14002,8 @@ __gn_det_sing_3m__
         <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*") and \4.islower()
         -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
 
-    [le|la|leur]  *WORD  *WORD  *WORD
-        <<- /gn/ not value(<1, "|et|ou|") and morph(\2, ":[NA].*:[si]", ":[123][sp]") and morph(\3, ":[NA].*:[si]", ":(?:[123][sp]|G|P)") and morph(\4, ":[NA].*:p", "*")
-        -4>> =suggSing(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au singulier.
-
 TEST: un gros connard {{pathétiques}}
-TEST: La petite fille {{devenues}} infirmière.
-TEST: le jour venu prises par surprise elles durent s’enfuir.
 TEST: servi pas un style et une exigence historique remarquables
-TEST: sous la forme d’un baromètre comparant différents moyens pour alléger ses émissions
 
 
 ## Pluriels
@@ -14057,7 +14058,8 @@ TEST: les pitres {{imbécile}}
 TEST: il faut en convenir et les femmes {{oubliés}} seront satisfaites.
 TEST: les {{petites}} {{oubliés}}
 TEST: c’est ça, et les femmes {{retrouvés}} seront emmenées à l’hôpital.
-TEST: ça n’en vaut pas la peine, et les éléments {{perdu}} le seront à jamais
+TEST: fais ce que tu peux, ou les {{petites}} {{perdus}} le seront à jamais
+TEST: ça ou les éternels {{imbécile}} du coin
 TEST: les moins éloignées possible
 TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 TEST: cette attention de tous les instants portée à la boussole.
@@ -14123,6 +14125,8 @@ __gn_det_epi_plur_2m__
         -4>> =suggPlur(\4)                                                                          # Accord de nombre erroné avec « \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces {{beaux}} {{institutions}}
+TEST: nos petites {{fille}}
+TEST: de plusieurs {{grands}} {{avocates}}
 TEST: de vos défauts {{terrible}}, je connais presque tout.
 TEST: Les éléments caractéristiques liés à ses valeurs historique et architecturale
 TEST: Une des pierres veinée de rouge…
@@ -14189,13 +14193,13 @@ __gn_det_plur_3m__
             and morph(\4, ":[NA].*:s", "*") and \4.islower() and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
-    [les|leurs]    *WORD  *WORD  *WORD
+    leurs  *WORD  *WORD  *WORD
         <<- /gn/ morph(\2, ":[NA].*:[pi]", "[123][sp]") and morph(\3, ":[NA].*:[pi]", ":(?:[123][sp]|G)")
             and morph(\4, ":[NA].*:s", "*") and not before("(?i)\\bune? de +$") and not \4.startswith("seul")
         -4>> =suggPlur(\4)                                                                  # Accord de nombre erroné avec « \1 \2 \3 » : « \4 » devrait être au pluriel.
 
 TEST: ces petites sottes {{déjantée}}
-TEST: Les grandes volontés {{dépassée}} par les évènements
+TEST: Leurs grands plans {{dépassé}} par les évènements
 TEST: Prendre goût aux heures passées seul à marcher
 
 
@@ -14339,14 +14343,15 @@ __gn_quelles_accord_être_sujet__
         <<- /gn/ not value(<1, "|tels|telles|") and morph(\4, ":[NA].*:m", ":[fe]")
         -1>> quels                                                                          # Accord de genre erroné avec « \3 \4 ».
 
-TEST: {{Quel}} sont ces hommes.                               ->> Quels
-TEST: {{Quel}} est cette force ?                              ->> Quelle
-TEST: {{Quelle}} est mon animal favori ?                      ->> Quel
-TEST: {{Quels}} sont ces femmes ?                             ->> Quelles
-TEST: {{Quelles}} est cette imbécillité ?                     ->> Quelle
-TEST: {{Quelles}} sont ces hommes ?                           ->> Quels
-TEST: {{Quel}} est la politique ?                             ->> Quelle
-TEST: {{Quelle}} est le politique ?                           ->> Quel
+TEST: {{Quel}} sont ces hommes.                                     ->> Quels
+TEST: {{Quel}} est cette force ?                                    ->> Quelle
+TEST: {{Quel}} serait notre peine ?                                 ->> Quelle
+TEST: {{Quel}} est la politique ?                                   ->> Quelle
+TEST: {{Quelle}} est mon animal favori ?                            ->> Quel
+TEST: {{Quelle}} est le politique ?                                 ->> Quel
+TEST: {{Quelles}} est cette imbécillité ?                           ->> Quelle
+TEST: {{Quelles}} sont ces hommes ?                                 ->> Quels
+TEST: {{Quels}} sont ces femmes ?                                   ->> Quelles
 TEST: Il s’agit de définir quelle est notre propre orientation.
 
 
@@ -14452,6 +14457,7 @@ TEST: certaines idioties {{stupide}}
 TEST: quelles grandes {{idiots}}
 TEST: je ne sais guère de quelles âneries {{proférés}} on parle.
 TEST: quelles étonnantes {{petits}}
+TEST: ici ou auxdites lointaines {{contrée}}
 
 
 ## quelque adverbe
@@ -20120,8 +20126,8 @@ __imp_union_moi__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and not value(<1, "|de|d’|le|la|les|l’|je|j’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  moi
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+    [<start>|,]  *WORD  moi
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-moi"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Apporte moi}} ce dictionnaire.                                      ->> Apporte-moi
@@ -20138,8 +20144,8 @@ __imp_union_toi__
             and morph(\1, ":E:2s", ":[GM]|>(?:venir|aller|partir)/") and not value(<1, "|de|d’|le|la|les|l’|me|m’|te|t’|se|s’|nous|vous|lui|leur|")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  toi
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+    [<start>|,]  *WORD  toi
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-toi"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Donne toi}} du temps.
@@ -20152,7 +20158,7 @@ __imp_union_nous_vous_lui__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>", ":(?:Y|3[sp]|Oo)|>(?:en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  [nous|vous|lui]
+    [<start>|,]  *WORD  [nous|vous|lui]
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/") and not morph(>1, ":Y")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -20177,8 +20183,8 @@ __imp_union_les__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)") and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-les                                      # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  les
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+    [<start>|,]  *WORD  les
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-les"   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
@@ -20225,9 +20231,9 @@ __imp_union_en__
             and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
-    ,  *WORD  en
-        <<- /imp/ space_after(\1, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D)|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
+    [<start>|,]  *WORD  en
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|Ov)|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{restons en}} là.
@@ -20235,6 +20241,7 @@ TEST: tu crois ça, {{donnes en}} encore
 TEST: Intercède en ma faveur
 TEST: Même l’implacable guerrier-capitaine de la Fédération, James T. Kirk, apprend en rechignant à enterrer le phaser avec les bâtards Klingons qui ont tué son fils.
 TEST: Terminons en réservant une place de choix à l’un des relais les plus fervents de la pensée
+TEST: Le Souffle puisé à la Parole nous met en synergie avec le Père Qui souffre, souffre en nous sûrement de voir que Sa Parole déjà transmise autrefois peine à être accomplie.
 
 
 __imp_laisser_le_la_les_infi__
