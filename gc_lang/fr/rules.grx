@@ -5624,8 +5624,8 @@ TEST: que vous ou moi ignorions à peu près tout du boson de Higgs n’a pas du
 
 # Confusion futur / conditionnel
 __vmode_je_futur!6__
-    <start>  ([demain|oui|non])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿  <end>
-    <start>  ([demain|oui|non])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿
+    <start>  ([demain|oui|non|certainement|absolument|totalement])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿  <end>
+    <start>  ([demain|oui|non|certainement|absolument|totalement])  ?,¿  [je|j’]  ?[ne|n’]¿  ?y¿  (*WORD)  ?@:[WX]¿  ?@:[WX]¿
         || [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|plusieurs|certains|certaines]  *WORD  <end>
         <<- /vmode/ morph(\2, ":K:1s", ">(?:aimer|vouloir)/") -2>> =\2[:-1]
         # Confusion possible. Le mot “\1” semble indiquer une certitude. Dans ce cas, “\2” devrait être conjugué au futur, non au conditionnel.
@@ -6199,7 +6199,7 @@ TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
         <<- /conf/ __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
         -2>> =suggVerbInfi(\2)                                                                      # Le verbe devrait être à l’infinitif.
         <<- /conf/ __else__ and morph(\2, ":[123][sp]", "*") and not value(\2, "|tord|tords|") >>>
-        <<- /conf/ morph(\2, ":V2.*:Ip:3s", "*") -2>> =suggVerbPpas(\2, ":m:s")                     # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
+        <<- /conf/ morph(\2, ":V2.*:I[ps]:3s", "*") -2>> =suggVerbPpas(\2, ":m:s")                  # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
         <<- /conf/ __also__ -1>> a                                                                  # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
         <<- /conf/ __else__ -2>> _                                                                  # Incohérence : “\1” est une préposition. “\2” est un verbe conjugué.
 
@@ -6210,6 +6210,7 @@ TEST: Je veux {{à}} {{mangé}}.
 TEST: Ne pas hésiter {{à}} {{demandé}} des conseils.
 TEST: cette femme, dans son délire, {{à}} {{jetez}} son argent à la poubelle.
 TEST: Ce que cet homme à {{devient}} aujourd’hui notre problème
+TEST: cet individu {{à}} {{finit}} par comprendre son erreur.
 TEST: il en a.
 TEST: elle en a.
 TEST: celle qui à contrario nous a foutu dans la merde.
@@ -6234,9 +6235,6 @@ TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
 __conf_à_a__
     [<start>|,] a moins [que|qu’]
         <<- /conf/ -2>> à                                           # Confusion probable : « à moins que » pour dire « sauf si ».
-
-    a [>coup|>cout|>coût|>cou] [sur|sûr]
-        <<- /conf/ ->> à coup sûr                                   # Confusion.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
 
     a part @:(?:M[12]|D|Oo)
         <<- /conf/ -1>> à                                           # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
@@ -6263,7 +6261,6 @@ __conf_à_a__
 
 TEST: Je le donne {{a}} toi.
 TEST: Personne {{a}} part Tom ne connaît son adresse
-TEST: ce qu’elles feront alors {{a coup sûr}}, difficile de le devenir.
 TEST: Face {{a}} ces gens, il ne pensait pas pouvoir réussir
 TEST: c’est grâce {{a}} nous que vous y êtes parvenus
 TEST: par rapport {{a}} eux, je me sens parfois dépassé
@@ -6285,21 +6282,6 @@ TEST: Suite {{a}} ces folies, nous rentrâmes chez nous.
 TEST: il s’avère que, suite {{a}} d’horribles complications, nous renonçâmes.
 
 
-__conf_à_a_locutions_de_des_du__
-    a bonne distance                                                                            [de|d’|des|du]
-    a [bord|cause|contre-courant|côté|court|défaut|droite|gauche|partir|portée|propos|rebours]  [de|d’|des|du]
-    a l’ [arrière|écart|égard|extérieur|aune|avant|encontre|insu|instar|intérieur|opposé]       [de|d’|des|du]
-    a l’ autre bout                                                                             [de|d’|des|du]
-    a la [portée|suite]                                                                         [de|d’|des|du]
-        <<- /conf/ -1>> à                                           # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
-
-    a [base|cause] [de|d’|des|du]
-        <<- /conf/ not tag_before(\1, "ce_que") -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
-
-TEST: des planètes {{a}} la portée des nouveaux vaisseaux.
-TEST: Il l’a fait {{a}} cause de toi.
-
-
 __conf_à_cor_et_à_cri__
     !! à cor et à cri ¡¡
     [a|à] [corps|cor+s] [et|est|es|ait|ais|aies|é|è|ei|ai|aient] [à|a] [cri+s|crie+s|crit]
@@ -6307,6 +6289,16 @@ __conf_à_cor_et_à_cri__
 
 TEST: Elles hurlèrent {{à corps et à cris}}.
 TEST: manifester sa colère à cor et à cri.
+
+
+__conf_à_coup_sûr__
+    !! à coup sûr ¡¡
+    [a|à] [coup+s|>cout|>coût|>cou] [>sure|sûr+ses]
+        <<- /conf/ not (value(\3, "|sur|") and value(<1, "|tout|par|") and value(\2, "|coup|"))
+        ->> à coup sûr                                   # Confusion probable. Locution “à coup sûr”, c’est-à-dire “immanquablement”.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
+
+TEST: ce qu’elles feront alors {{a coup sûr}}, difficile de le devenir.
+TEST: Bien sûr, {{À coup sur}}.
 
 
 DEF: humain [administrateur|baron|chevalier|comte|contrôleur|dieu|duc|émir|époux|frère|grand-père|homme|maître|maitre|mari|ministre|monsieur|neveu|oncle|patron|père|président|prince|prophète|roi|sultan|tsar|vice-président]
@@ -6631,11 +6623,14 @@ __conf_à_a_locutions__
     a [ma|ta|sa|notre|votre|leur] [connaissance|disposition|guise|portée]
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
     a [mes|tes|ses|nos|vos|leurs] risques et périls
-        <<- /conf/ not value(<1, "|que|qu’|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
+        <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
-
-     a propos [de|des|du|,|<end>]
+    a bonne distance                                                                                [de|d’|des|du|<end>|,]
+    a [base|bord|cause|contre-courant|côté|court|défaut|droite|gauche|partir|portée|propos|rebours] [de|d’|des|du|<end>|,]
+    a l’ [arrière|écart|égard|extérieur|aune|avant|encontre|insu|instar|intérieur|opposé]           [de|d’|des|du|<end>|,]
+    a l’ autre bout                                                                                 [de|d’|des|du|<end>|,]
+    a la [portée|suite]                                                                             [de|d’|des|du|<end>|,]
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
         -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -6645,12 +6640,13 @@ TEST: ils viennent nous attaquer {{a}} tout bout de champ
 TEST: On s’y fait, d’une manière ou d’une autre, {{a}} notre corps défendant.
 TEST: on fait ça {{a}} la va-vite.
 TEST: elle risque de tout perdre, {{a}} moins qu’un miracle survienne.
-TEST: {{tout a coup}}, il n’y eut plus aucune lumière
 TEST: un machin ennuyeux {{a}} s’en tirer une balle dans la tête.
 TEST: Je sais qu’ils sont {{a}} toi.
 TEST: Attention {{a}} ne pas la réveiller.
 TEST: J’en serai. {{A}} titre personnel.
 TEST: Que faire {{a}} propos de ça ?
+TEST: des planètes {{a}} la portée des nouveaux vaisseaux.
+TEST: Il l’a fait {{a}} cause de toi.
 TEST: Je tenais à le lui faire savoir.
 TEST: il va falloir songer à les leur donner
 TEST: le coût est estimé à au moins 1000 milliards de dollars
@@ -8714,12 +8710,9 @@ __conf_près_prêt_pré__
     ni de [>prêt|>pré] ?,¿ ni de loin
         <<- /conf/ -3>> près                                                # Confusion. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    depuis [>prêt|>pré] [de|d’]
-        <<- /conf/ -2>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
-
-    depuis [>prêt|>pré] [de|d’] *NUM [secondes|minutes|heures|jours|semaines|mois|ans|années|décennies|siècles|millénaires]
-    depuis [>prêt|>pré] [de|d’] @:B  [secondes|minutes|heures|jours|semaines|mois|ans|années|décennies|siècles|millénaires]
-        <<- /conf/ -2>> près                                                # Confusion : “prêt” signifie “être apprêté”. Depuis presque “\4 \5”, donc près de “\4 \5”.
+    depuis [>prêt|>pré] [de|d’] *NUM *WORD
+    depuis [>prêt|>pré] [de|d’] @:B  *WORD
+        <<- /conf/ -2>> près                        # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes. Depuis presque “\4 \5”, donc “près \3 \4 \5”.
 
 TEST: depuis {{prêt}} de 15 ans
 TEST: approche très {{prêt}}
@@ -8747,6 +8740,10 @@ __conf_prix_pris__
     quel est [le|mon|ton|son|notre|votre|leur|leurs] pris
         <<- /conf/ --1>> prix                                               # Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
 
+    prix dans la [tourmente|tempête|tornade]
+    prix dans la coulée de [boue|lave]
+    prix dans l’ [orage|ouragan]
+    prix dans les [flots|vagues|tempêtes|tornades|orages|ouragans]
     prix par surprise
     prix entre deux feux
     prix la main dans le sac
@@ -9345,17 +9342,12 @@ __conf_sûr_sur__
         <<- /conf/ -3>> =\3.replace("u", "û").replace("U", "Û")
         # Confusion probable : “sur” un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
 
-    à [>coup|>cou] >sure
-        <<- /conf/ not value(<1, "|par|tout|") ->> à coup sûr
-        # Confusion probable. Locution “à coup sûr”, c’est-à-dire “immanquablement”.|https://fr.wiktionary.org/wiki/%C3%A0_coup_s%C3%BBr
-
 TEST: Je suis {{sur}} de Patrick.
 TEST: Je suis {{sure}} qu’il ne va pas tarder à venir
 TEST: {{sures}} d’elles-mêmes, elles ne s’en laissent pas conter.
 TEST: {{sur}} de toi et de moi, que peut-il nous arriver, sinon le meilleur.
 TEST: Il est tellement {{sur}} de la trouver.
 TEST: ils sont en lieu {{sur}} et introuvables.
-TEST: Bien sûr, {{À coup sur}}.
 TEST: J’en suis {{sur}} désormais.
 TEST: Il tapait par à-coups sur la table.
 TEST: il s’étendit sur de la mousse à mémoire de forme
@@ -9444,6 +9436,7 @@ __conf_tout_à_coup__
 
 TEST: ils sont {{tout à cous}} figés
 TEST: Mais {{toute a cou}}, plus rien ne fonctionnait.
+TEST: {{tout a coup}}, il n’y eut plus aucune lumière
 TEST: Tout à coup, rien n’alla plus comme avant.
 
 
@@ -13510,6 +13503,7 @@ __gn_le_2m__
 TEST: le test très {{cons}} qu’on a passé hier.
 TEST: c’était le chien {{perdue}} des voisins.
 TEST: viens vite ou le pari {{imperdables}} sera moins facile…
+TEST: connaître et le grand {{perdante}}
 TEST: Le bruit {{perçus}} par les voisins.
 TEST: si le premier film est un triomphe, le deuxième est un demi-succès, et le troisième une déception.
 TEST: Cela aboutira sur une contractualisation coûteuse pour organiser cette divergence d’intérêts, et le gestionnaire aura le dernier mot.
@@ -13570,6 +13564,7 @@ __gn_la_2m__
 
 TEST: La plus grande {{cinglé}}.
 TEST: il imaginait de la pluie {{noir}} tombant sur une terre dévastée.
+TEST: je voyais de la pluie {{noires}}
 
 
 __gn_leur_1m__
@@ -13616,6 +13611,8 @@ __gn_leur_2m__
 
 TEST: leur puissance {{perdues}}
 TEST: leur arbre {{élaguée}}
+TEST: leur {{petit}} {{grosse}}
+TEST: elle se souvenait de leur {{grande}} {{sot}}
 TEST: je me souviens de leur verve {{décalé}}
 TEST: ils arrivent et leur arrogance {{insupportables}} nous fatigue tous.
 TEST: {{leur}} gros {{grains}}
@@ -13762,6 +13759,7 @@ __gn_un_2m__
 TEST: un exercice pas très {{utiles}}.                        ->> utile
 TEST: un homme {{grands}}                                     ->> grand
 TEST: un homme {{futiles}}                                    ->> futile
+TEST: que sais-tu d’un homme {{grande}} comme un arbre
 TEST: je me souviens d’un homme {{arrogants}}
 TEST: C’est pas les quelques vues sur Linux qui vont rattraper un scénario {{bancale}}.
 
@@ -13786,6 +13784,7 @@ TEST: Une grande {{homme}}.
 TEST: une géologue {{intelligents}}
 TEST: Et une femme {{déterminées}}
 TEST: on parle là d’une femme {{inconnu}}
+TEST: on parle d’une Église {{brûlées}}
 TEST: L’or allume le feu d’une cupidité d’une couleur et d’une sorte différentes.
 
 
@@ -13911,6 +13910,7 @@ TEST: il brandissait avec fougue son drapeau {{déchirés}}
 TEST: comment osez-vous médire de mon héritage {{glorieuse}}
 TEST: on parlait de son escapade {{éperdu}} au milieu de la nuit.
 TEST: ton étonnante {{secret}} ne sera pas au programme.
+TEST: elle s’étonnait de ton opposition {{grandissantes}}
 TEST: le ton monte.
 
 
@@ -14893,8 +14893,8 @@ TEST: Ses cheveux étaient noir de jais.
 # attendu, compris, non-compris, y compris, entendu, excepté, ôté, ouï, passé, supposé, vu
 # ! problème avec l’ouïe, ouï retiré de la liste
 __sgpl_prépositions__
-    <start> [comprise|comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
-        <<- /sgpl/ -2>> compris                                                             # Considéré comme préposition, invariable.
+    <start> ?non¿ [comprise|comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
+        <<- /sgpl/ --2>> compris                                                            # Considéré comme préposition, invariable.
 
     <start> [non-comprise|non-comprises] [le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs]
         <<- /sgpl/ -2>> non compris                                                         # Considéré comme préposition, invariable.
@@ -14914,7 +14914,7 @@ __sgpl_prépositions__
 
 TEST: {{comprises}} mes prestations sur place
 TEST: {{non-comprises}} les boissons
-TEST: {{non comprise}}, la remise en état
+TEST: non {{comprise}} la remise en état
 TEST: {{Exceptés}} les petits, tous sont tombes malades.
 TEST: {{Attendues}} qu’on n’en sait rien, impossible de tirer des conclusions définitives.
 TEST: Il viendra, étant {{donnée}} son addiction…
@@ -19291,7 +19291,7 @@ __ppas_inversion_être_ce__
         -2>> =suggMasPlur(\2)                                           # Accord avec le sujet “\1” : “\2” devrait être au masculin pluriel.
 
 TEST: était-ce {{difficiles}}
-TEST: étaient-ce {{dur}}
+TEST: étaient-ce {{grande}} intentions qui nous sauveraient ?
 TEST: Est-ce former de futurs travailleurs ou bien des citoyens
 TEST: Est-ce peine perdue ?
 
