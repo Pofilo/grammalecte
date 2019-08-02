@@ -184,10 +184,12 @@ def listOptions ():
     "returns grammar options in a text JSON format"
     sUserId = request.cookies.user_id
     dOptions = dUser[sUserId]["gc_options"]  if sUserId and sUserId in dUser  else oGCE.getOptions()
+    response.set_header("Content-Type", "application/json; charset=UTF-8")
     return '{ "values": ' + json.dumps(dOptions, ensure_ascii=False) + ', "labels": ' + json.dumps(oGCE.getOptionsLabels("fr"), ensure_ascii=False) + ' }'
 
 @app.route("/suggest/fr/<token>")
 def suggestGet (token):
+    response.set_header("Content-Type", "application/json; charset=UTF-8")
     try:
         xFuture = xProcessPoolExecutor.submit(suggest, token)
         return xFuture.result()
@@ -217,6 +219,7 @@ def gcText ():
             dUserOptions.update(json.loads(request.forms.options))
         except (TypeError, json.JSONDecodeError):
             sError = "Request options not used."
+    response.set_header("Content-Type", "application/json; charset=UTF-8")
     try:
         xFuture = xProcessPoolExecutor.submit(parseText, request.forms.text, dUserOptions, bool(request.forms.tf), sError)
         return xFuture.result()
@@ -229,6 +232,7 @@ def gcText ():
 @app.route("/set_options/fr", method="POST")
 def setOptions ():
     "set grammar options for current user"
+    response.set_header("Content-Type", "application/json; charset=UTF-8")
     if request.forms.options:
         sUserId = request.cookies.user_id  if request.cookies.user_id  else next(userGenerator)
         dOptions = dUser[sUserId]["gc_options"]  if sUserId in dUser  else dict(oGCE.getOptions())
@@ -245,6 +249,7 @@ def setOptions ():
 @app.route("/reset_options/fr", method="POST")
 def resetOptions ():
     "default grammar options"
+    response.set_header("Content-Type", "application/json; charset=UTF-8")
     if request.cookies.user_id and request.cookies.user_id in dUser:
         try:
             del dUser[request.cookies.user_id]
@@ -263,6 +268,7 @@ def formatText ():
 
 @app.route("/suggest/fr", method="POST")
 def suggestPost ():
+    response.set_header("Content-Type", "application/json; charset=UTF-8")
     try:
         xFuture = xProcessPoolExecutor.submit(suggest, request.forms.token)
         return xFuture.result()
