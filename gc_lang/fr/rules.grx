@@ -1914,6 +1914,9 @@ __da_préverbes_verbes__
     [<start>|,]  quelqu’un  *WORD
         <<- =>> exclude(\3, ":N")
 
+    >falloir [>pouvoir|>savoir|>vouloir|>manger|>conseiller]
+        <<- =>> exclude(\2, ":N")
+
 
 __da_été__
     >avoir été
@@ -5329,6 +5332,8 @@ __conj_nous__
 
 TEST: Nous {{arriverez}} demain.
 TEST: Nous {{travaillez}}.
+TEST: nous {{donné}} trop de considération
+TEST: nous {{avancez}}
 TEST: Et, nous laissant étonnés d’être encore là sans y avoir rien compris,
 TEST: Nous y voilà enfin.
 
@@ -5351,6 +5356,8 @@ TEST: vous ne l’{{avait}} pas vu.
 TEST: je crois, vous m’{{avais}} trompé…
 TEST: vous nous {{refuser}} le pardon.
 TEST: Vous {{travaillons}}.
+TEST: vous {{donné}} du bonheur
+TEST: vous {{avançons}}
 
 
 ## 3pl
@@ -6895,6 +6902,15 @@ TEST: c’est l’{{age}} tendre.
 TEST: c’est le bel {{age}}.
 
 
+# au-delà / haut delà
+__conf_au_delà__
+    haut [dela|delà]
+    [haut-dela|haut-delà]
+        <<- /conf/ ->> au-delà                              # Confusion.
+
+TEST: il va dans l’{{haut delà}}
+
+
 # aux dépens
 __conf_aux_dépens__
     au [dépend|dépends|dépens]
@@ -7888,13 +7904,34 @@ TEST: J’ai fait de la voile dans le {{golf}} du Morbihan.
 TEST: Le {{golf}} d’Aden.
 
 
-# haut delà / au-delà
-__conf_au_delà__
-    haut [dela|delà]
-    [haut-dela|haut-delà]
-        <<- /conf/ ->> au-delà                              # Confusion.
+## guerre / guère
+__conf_préverbes_guère_guerre!5__
+    [ne|n’]   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   [le|la|l’|les]                  [lui|leur|en|y]             *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   [lui|leur|y]                    en                          *WORD  ?[plus|jamais]¿  guerre
+    [ne|n’]   ?presque¿  ?[plus|jamais]¿  guerre
+        <<- /conf/ --1>> guère                                                                      # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
 
-TEST: il va dans l’{{haut delà}}
+    guerre
+        <<- /conf/ morph(<1, ":(?:[123][sp]|Y)", "*") and not value(>1, "|civile|commerciale|froide|mondiale|nucléaire|préventive|psychologique|sainte|totale|")
+        ->> guère                                            # Confusion probable. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
+
+TEST: tout ceci ne me rapporte {{guerre}}
+TEST: je ne m’en soucie {{guerre}}
+TEST: Il n’y prête {{guerre}} d’attention.
+TEST: Elle n’en accorde plus {{guerre}}.
+TEST: ne plus {{guerre}} s’en soucier
+TEST: elle ne leur donne plus {{guerre}} que des remontrances.
+TEST: ne {{guerre}} s’en soucier.
+TEST: ne plus {{guerre}} croire en rien.
+TEST: Il ne reste plus {{guerre}} que lui.
+TEST: Je n’aime {{guerre}} le sport.
+TEST: Il n’y en a {{guerre}}.
+TEST: Je n’aime plus {{guerre}} le sport.
+TEST: Il n’y en a plus {{guerre}}.
+TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
+TEST: ce que nous appelons Guerre psychologique
 
 
 # héro / héros
@@ -8463,14 +8500,21 @@ TEST: Elle a enfilé son gilet {{par balle}}.
 
 # pas / par
 __conf_pas_par__
-    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  par  [<end>|,]
-    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  par  [<end>|,]
-    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  par  [<end>|,]
-    [ne|n’]  [lui|leur|y]                    en                          *WORD  par  [<end>|,]
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  [pa|pat]    **
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  [pa|pat]    **
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  [pa|pat]    **
+    [ne|n’]  [lui|leur|y]                    en                          *WORD  [pa|pat]    **
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  par         [<end>|,|sans|avec|sous|sur|en|mais|et|ni|car|puisque|puisqu’|parce]
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  par         [<end>|,|sans|avec|sous|sur|en|mais|et|ni|car|puisque|puisqu’|parce]
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             *WORD  par         [<end>|,|sans|avec|sous|sur|en|mais|et|ni|car|puisque|puisqu’|parce]
+    [ne|n’]  [lui|leur|y]                    en                          *WORD  par         [<end>|,|sans|avec|sous|sur|en|mais|et|ni|car|puisque|puisqu’|parce]
         <<- /conf/ morph(\-3, ":V") --2>> pas                               # Confusion probable. Après “\1 \-3”, il est probable qu’il faille écrire l’adverbe de négation “pas” au lieu de la préposition “par”.
 
+TEST: je ne sais {{pa}}                                                     ->> pas
 TEST: Il ne le deviendra {{par}}.                                           ->> pas
 TEST: ne viens {{par}}, c’est dangereux.
+TEST: il ne tient par contre que grâce à nous
+TEST: elle ne savait par qui passer pour arriver à ses fins.
 
 
 # pause /pose
@@ -10277,42 +10321,15 @@ TEST: ne pas mal faire, c’est déjà pas si mal
 TEST: ne pas assez faire pour eux, voilà notre tort
 
 
-## de bon ton de Vinfi
-__infi_de_bon_ton__
-    il [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] de bon ton [de|d’] ?[le|la|l’|les|leur|lui|nous|vous|me|m’|te|t’|se|s’|en|y]¿  ~..é?es?$
-        <<- /infi/ analyse(\-1, ":V1.*:Q") --1>> =suggVerbInfi(\-1)                                 # Incohérence. Après “il \2 de bon ton de [faire quelque chose]”, le verbe doit être à l’infinitif.
+__infi_de_bon_ton_de__
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿      ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~(?:é?es?|ez|ai[ts]?)$
+    [>être|>rester|>demeurer|>paraître|>paraitre|>sembler] ?[pas|plus|jamais|guère]¿ ?*WORD¿ de bon ton [de|d’] ?[ne|n’]¿   [lui|leur|y]                    en                        ~(?:é?es?|ez|ai[ts]?)$
+        <<- /infi/ analyse(\-1, ":V") --1>> =suggVerbInfi(\-1)                                      # Incohérence. Après “de bon ton de [faire quelque chose]”, le verbe doit être à l’infinitif.
 
-TEST: il est de bon ton de {{pensée}} calmement à ces choses avant de s’engager tête baissée.
-
-
-## guerre / guère
-__conf_préverbes_guère_guerre!5__
-    [ne|n’]   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD  ?[plus|jamais]¿  guerre
-    [ne|n’]   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         *WORD  ?[plus|jamais]¿  guerre
-    [ne|n’]   [le|la|l’|les]                  [lui|leur|en|y]             *WORD  ?[plus|jamais]¿  guerre
-    [ne|n’]   [lui|leur|y]                    en                          *WORD  ?[plus|jamais]¿  guerre
-    [ne|n’]   ?presque¿  ?[plus|jamais]¿  guerre
-        <<- /conf/ --1>> guère                                                                      # Confusion. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
-
-    guerre
-        <<- /conf/ morph(<1, ":(?:[123][sp]|Y)", "*") and not value(>1, "|civile|commerciale|froide|mondiale|nucléaire|préventive|psychologique|sainte|totale|")
-        ->> guère                                            # Confusion probable. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
-
-TEST: tout ceci ne me rapporte {{guerre}}
-TEST: je ne m’en soucie {{guerre}}
-TEST: Il n’y prête {{guerre}} d’attention.
-TEST: Elle n’en accorde plus {{guerre}}.
-TEST: ne plus {{guerre}} s’en soucier
-TEST: elle ne leur donne plus {{guerre}} que des remontrances.
-TEST: ne {{guerre}} s’en soucier.
-TEST: ne plus {{guerre}} croire en rien.
-TEST: Il ne reste plus {{guerre}} que lui.
-TEST: Je n’aime {{guerre}} le sport.
-TEST: Il n’y en a {{guerre}}.
-TEST: Je n’aime plus {{guerre}} le sport.
-TEST: Il n’y en a plus {{guerre}}.
-TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
-TEST: ce que nous appelons Guerre psychologique
+TEST: il est souvent de bon ton de {{pensée}} calmement à ces choses avant de s’engager tête baissée.
 
 
 __imp_ne_infinitif_negadv__
@@ -17466,6 +17483,46 @@ TEST: ils ont intérêt à {{obligés}} ces gens
 TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
+__infi_verbe_de_verbe__
+    [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  *WORD
+        <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
+
+TEST: cessez d’{{anesthésié}} ces gens !
+TEST: Le menu Format contient de nombreuses commandes de mise en forme.
+TEST: Le commandant de zone…
+TEST: À quoi rime de décider de mesures écologiques d’en haut
+TEST: L’accès au cannabis thérapeutique où à ses dérivés permettrait de plus aux autorités de santé d’apporter aux malades les garanties nécessaires quant à la qualité, aux concentrations, ainsi qu’aux modalités d’obtention et d’utilisation optimale.
+TEST: l’industrie est également touchée, avec « des pertes de commandes de véhicules chez Renault et chez Peugeot »
+
+
+__infi_qqch_de__
+    [afin|avant]                                [de|d’]  ~..ée?s?$
+    à même                                      [de|d’]  ~..ée?s?$
+    avant ?même¿                                [de|d’]  ~..ée?s?$
+    en train                                    [de|d’]  ~..ée?s?$
+    en vue                                      [de|d’]  ~..ée?s?$
+    il [est|était|fut|fût|sera|serait] temps    [de|d’]  ~..ée?s?$
+    impossible                                  [de|d’]  ~..ée?s?$
+    marre                                       [de|d’]  ~..ée?s?$
+    [>façon|>manière]                           [de|d’]  ~..ée?s?$
+    [>intention|>volonté]                       [de|d’]  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Le verbe devrait être à l’infinitif.
+
+    force est  [de|d’]  ~..ée?s?$
+        <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après “force est de”, le verbe devrait être à l’infinitif.
+
+TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
+TEST: en train de {{percées}}
+TEST: ils sont à même de {{trouvé}} la bonne réponse
+TEST: elle est en train de {{mangée}}
+TEST: impossible d’{{échappée}} à cette horreur.
+TEST: il serait temps de {{poussée}} la logique jusqu’au bout
+TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
+
+
+
 __infi_de_verbe__
     [de|d’]  [le|l’|leur|les]             @:V¬:[YNAM]|>(?:lui|plus)/
     [<start>|,]  [de|d’] [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
@@ -17510,7 +17567,7 @@ TEST: sa façon de {{nettoyez}} était inefficace.
 TEST: elle a délibérément omis de les {{inclurent}}.
 TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
 TEST: Ne fais pas semblant de l’{{oubliée}}.
-TEST: essaie d’{{mangé}}
+TEST: d’{{mangé}} je ne suis pas capable
 TEST: elle s’engage de ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: de leur plus grand fils, ils attendent beaucoup.
@@ -17536,34 +17593,6 @@ TEST: y {{mangée}} était un supplice
 TEST: j’y crée une nouvelle maison.
 
 
-__infi_pour_verbe__
-    pour ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\2, ":V", ":[NM]") and not morph(<1, ">(?:tenir|passer)/")
-        -2>> =suggVerbInfi(\2)                                                          # Après “pour”, le verbe devrait être à l’infinitif.
-
-    pour  [nous|vous|lui]  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                        # Après “pour”, le verbe devrait être à l’infinitif.
-
-TEST: pour {{mangé}} à sa faim, il faudra chasser.
-TEST: C’est pour {{attaqué}} la journée.
-TEST: pour nous {{chassez}} de chez lui
-TEST: je craignais d’être pour toujours abandonnée
-
-
-__infi_sans_verbe__
-    sans ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\2, ":V1", ":[NM]")
-        -2>> =suggVerbInfi(\2)                                                          # Après “sans”, le verbe devrait être à l’infinitif.
-
-    sans  [nous|vous|lui]  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                        # Après “sans”, le verbe devrait être à l’infinitif.
-
-TEST: sans {{mangé}} à sa faim, il faudra chasser.
-TEST: C’est sans {{attaqué}} la journée.
-TEST: sans nous {{chassez}} de chez lui
-TEST: sans {{dérogez}} aux règles en vigueur dans cet établissement
-
-
 __infi_nous_vous_verbe__
     [nous|vous]  ~ée?s?$
         <<- /infi/ space_after(\1, 1, 3) and morph(\2, ":Q") and not morph(<1, "V0.*[12]p") -2>> _  # Après “\1”, le verbe ne devrait pas être un participe passé.
@@ -17574,7 +17603,43 @@ TEST: Sommes-nous désespérés à ce point ?
 TEST: Vous d’habitude si réservée.
 
 
-__infi_devoir_savoir_pouvoir_interrogatif__
+__infi_devoir_pouvoir_savoir_vouloir__
+    >devoir  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet doit accomplir, le verbe devrait être à l’infinitif.
+
+    >pouvoir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+        <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
+
+    >savoir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
+
+    >vouloir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
+        --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
+
+    de  [devoir|pouvoir|savoir|vouloir]  ~(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
+
+TEST: il devait {{utilisé}} son temps à bon escient.
+TEST: tu dois {{mangé}}
+TEST: on va devoir {{mangé}} tout ça.
+TEST: Il doit pouvoir {{détectez}} ces erreurs.
+TEST: je ne veux pas {{repérez}} les points de convergence.
+TEST: Je suis fatigué de vouloir {{essayé}} d’y remédier.
+TEST: Il faut savoir {{arrêté}} les frais.
+TEST: Le devoir transcendé par l’amour de son pays.
+TEST: un devoir corrigé par plusieurs professeurs.
+TEST: Ce n’est plus le chef de l’État qui s’exprime devant députés et sénateurs, mais le chef de la majorité.
+TEST: un certain nombre de savoirs spécialisés
+TEST: je le savais désiré par de nombreuses personnes.
+TEST: il les savait commandités par ses ennemis.
+
+
+__infi_devoir_pouvoir_savoir_vouloir_interrogatif__
     /VCint  ?[pas|jamais]¿  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
         --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
@@ -17594,17 +17659,12 @@ TEST: Peut-il {{chassé}} ces intrus ?
 TEST: ne veux-tu pas les {{gardés}} ?
 TEST: sait-elle seulement lui en {{donné}} ?
 TEST: Ne veux-tu pas {{gardé}} ton boulot ?
-
-
-__infi_est_ce_que_verbe__
-    est-ce  que  *WORD
-        <<- /infi/ morph(\3, ":(?:V1.*:Q|[13]s|2[sp])", ":[GYWMN]") and not value(<1, "|que|qu’|")
-        -3>> =suggVerbInfi(\3)                                                          # Le verbe devrait être à l’infinitif.
-
-TEST: est-ce que {{rapporté}} ces données nous aidera ?
-TEST: est-ce que {{priait}} est la solution ?
-TEST: Est-ce que Pierre Xazzz va bien ?
-TEST: Qu’est-ce que rapporte réellement Dassault & Co au budget
+TEST: je veux {{changé}}
+TEST: je ne veux pas {{mangé}}
+TEST: je sais {{mangé}}
+TEST: je ne voulais pas {{marché}}
+TEST: Elles ont voulu {{mangé}} de la viande.
+TEST: en voulant {{changé}}
 
 
 __infi_commencer_finir_par__
@@ -17617,58 +17677,126 @@ TEST: enfin la petite finit par {{pleuré}} à chaudes larmes.
 TEST: sa tournée, elle la finit par Rodez.
 
 
-__infi_verbe_de_verbe__
-    [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  *WORD
-        <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
-        --1>> =suggVerbInfi(\-1)                                                        # Le verbe devrait être à l’infinitif.
+__infi_avoir_beau__
+    >avoir beau ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿     ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir beau ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y] ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir beau ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]      ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir beau ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]          ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir beau ?[ne|n’]¿   [lui|leur|y]                    en                       ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1") --1>> =suggVerbInfi(\-1)                                       # Après “avoir beau”, le verbe devrait être à l’infinitif.|http://fr.wiktionary.org/wiki/avoir_beau
 
-TEST: cessez d’{{anesthésié}} ces gens !
-TEST: Le menu Format contient de nombreuses commandes de mise en forme.
-TEST: Le commandant de zone…
-TEST: À quoi rime de décider de mesures écologiques d’en haut
-TEST: L’accès au cannabis thérapeutique où à ses dérivés permettrait de plus aux autorités de santé d’apporter aux malades les garanties nécessaires quant à la qualité, aux concentrations, ainsi qu’aux modalités d’obtention et d’utilisation optimale.
-TEST: l’industrie est également touchée, avec « des pertes de commandes de véhicules chez Renault et chez Peugeot »
+TEST: Ils ont beau {{consacré}} le plus clair de leur temps à ce projet, ça n’avance guère.
 
 
+__infi_est_ce_que__
+    est-ce  que  @:(?:V1.*:Q|[13]s|2[sp])¬:[GYWMN]
+        <<- /infi/ not value(<1, "|que|qu’|") -3>> =suggVerbInfi(\3)                                # Après “est-ce que”, le verbe devrait être à l’infinitif.
 
-__infi_devoir_pouvoir_vouloir__
-    >devoir  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
-        <<- /infi/ morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\2, ":N"))
-        -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
-
-    >pouvoir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(\1, "|puis|") and morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
-        -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
-
-    >vouloir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|") and morph(\2, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
-        -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
-
-TEST: il devait {{utilisé}} son temps à bon escient.
-TEST: tu dois {{mangé}}
-TEST: on va devoir {{mangé}} tout ça.
-TEST: Il doit pouvoir {{détectez}} ces erreurs.
-TEST: je veux {{repérez}} les points de convergence.
-TEST: Le devoir transcendé par l’amour de son pays.
-TEST: un devoir corrigé par plusieurs professeurs.
-TEST: Ce n’est plus le chef de l’État qui s’exprime devant députés et sénateurs, mais le chef de la majorité.
+TEST: est-ce que {{rapporté}} ces données nous aidera ?
+TEST: est-ce que {{priait}} est la solution ?
+TEST: Est-ce que Pierre Xazzz va bien ?
+TEST: Qu’est-ce que rapporte réellement Dassault & Co au budget
 
 
 __infi_falloir__
-    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  ?[pas|plus|point|guère|jamais]¿  @:V¬:[YMWG]
-    il  ?[ne|n’]¿ ?[me|m’|te|t’|nous|vous]¿  [faut|fallait|fallut|faudra|faudrait]    ?[pas|plus|point|guère|jamais]¿  @:V¬:[YMWG]
-    il  ?[ne|n’]¿ ?[me|m’|te|t’|nous|vous]¿  [aurait|aurai|aurais|aurez]  fallu       ?[pas|plus|point|guère|jamais]¿  @:V¬:[YMWG]
-        <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “falloir”, le verbe doit être à l’infinitif.
+    >falloir                                                @:V¬:[YMWG]
+    >avoir    fallu                                         @:V¬:[YMWG]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  @:V¬:[YMWG]
+        <<- /infi/ not (tag_before(\1, "que") and morph(\-1, ":3[sp]"))
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
 
+    >falloir                                                [le|la|leur|les|l’]  @:V¬:[YMWGN]
+    >avoir    fallu                                         [le|la|leur|les|l’]  @:V¬:[YMWGN]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  [le|la|leur|les|l’]  @:V¬:[YMWGN]
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
+
+    >falloir                                                [ne|n’|en|me|m’|te|t’|se|s’|nous|vous|lui|y]                          @:V¬:[YMWG]
+    >falloir                                                ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:[YMWG]
+    >falloir                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       @:V¬:[YMWG]
+    >falloir                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           @:V¬:[YMWG]
+    >falloir                                                ?[ne|n’]¿   [lui|leur]                      en                        @:V¬:[YMWG]
+    >avoir    fallu                                         [ne|n’|en|me|m’|te|t’|se|s’|nous|vous|lui|y]                          @:V¬:[YMWG]
+    >avoir    fallu                                         ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:[YMWG]
+    >avoir    fallu                                         ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       @:V¬:[YMWG]
+    >avoir    fallu                                         ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           @:V¬:[YMWG]
+    >avoir    fallu                                         ?[ne|n’]¿   [lui|leur]                      en                        @:V¬:[YMWG]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  [ne|n’|en|me|m’|te|t’|se|s’|nous|vous|lui|y]                          @:V¬:[YMWG]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:[YMWG]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       @:V¬:[YMWG]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           @:V¬:[YMWG]
+    [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  ?[ne|n’]¿   [lui|leur]                      en                        @:V¬:[YMWG]
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
+
+TEST: il faut sans cesse {{persévéré}}
+TEST: Il faudrait l’{{essayé}}.
+TEST: Il faudra ne {{touché}} qu’aux extrémités.
 TEST: faut-il {{pensé}} à ces choses-là encore et encore ?
-TEST: il faut {{estimé}} au mieux la valeur de nos idéologies.
+TEST: il faut n’{{estimait}} que la valeur de nos actes
 TEST: il fallait bien cela pour nous épargner
 
 
-__infi_suffire__
+__infi_faire__
+    >faire  ~(?:ée?s?|ez)$
+        <<- /infi/ not morph(<1, ">(?:en|de|être)/") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
+        -2>> =suggVerbInfi(\2)                                                                      # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
+
+    [ne|n’|me|m’|te|t’|se|s’]  >faire  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “faire”, le verbe devrait être à l’infinitif.
+
+    de  ?[nous|vous|lui|les|le|la|l’]¿  faire   ~(?:ée?s?|ez)$
+    faire faire                                 ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\-1, ":V", ":M")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
+
+TEST: elle fit peu {{mangé}} les enfants
+TEST: Tu fais {{décoloré}} tes cheveux ?
+TEST: quelqu’un fait {{travaillé}} ces gens en secret.
+TEST: il le fait {{pensé}} à son avenir.
+TEST: me faire constamment {{laminé}} au jeu, ça finit par me fâcher.
+TEST: Je suis fatigué de vouloir {{essayé}} d’y remédier.
+TEST: fatigué de faire {{testé}} des produits de qualité douteuse ?
+TEST: ce sont des faits constestés.
+TEST: c’est un fait reconnu.
+TEST: fait pourtant avéré et corroboré par le même sondage.
+TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
+TEST: il y a quand même quelques faits caractérisés permettant de faire le raccord
+TEST: la tonalité des soutiens traditionnels s’est faite plus nuancée.
+TEST: sa simple présence les a fait reculer
+
+
+__infi_laisser__
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [<end>|,]
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [dans|avec]
+    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morph(\3, ":V1.*:Q", ">désemparer/") -3>> =suggVerbInfi(\3)          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [le|la|l’|les]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [le|la|l’|les]  >laisser  *WORD  [<end>|,]
+    [le|la|l’|les]  >laisser  *WORD  [dans|avec]
+    [le|la|l’|les]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ not morph(\2, ":N") and morph(\3, ":V1.*:Q", ">désemparer/")
+        -3>> =suggVerbInfi(\3)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [/-le|/-la|/-les]  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
+    [/-le|/-la|/-les]  *WORD  [<end>|,]
+    [/-le|/-la|/-les]  *WORD  [dans|avec]
+    [/-le|/-la|/-les]  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morphVC(\1, ">laisser") and morph(\2, ":V1.*:Q", ">désemparer/")
+        -2>> =suggVerbInfi(\2)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+TEST: Il se laisse trop {{allé}}, ce petit.
+TEST: Nous nous laissions {{allé}} dans le plus complet abandon.
+TEST: Je le laissais {{mangé}} autant qu’il le voulut.
+TEST: Laisse-la {{abandonnée}} ses études, si c’est ce qu’elle veut.
+TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse désemparé
+
+
+__infi_suffire_de__
+    [suffit|suffisait|suffira|suffirait]                ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
+    >avoir  suffi                                       ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
     [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
-    il  ?[ne|n’]¿ ?[me|m’|te|t’|nous|vous]¿  [suffit|suffisait|suffira|suffirait]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
-    il  ?[ne|n’]¿ ?[me|m’|te|t’|nous|vous]¿  [aurait|aurai|aurais|aurez]  suffi    ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “suffire”, le verbe doit être à l’infinitif.
 
 TEST: il suffit de {{pensé}} à ça pour déprimer.
@@ -17677,12 +17805,27 @@ TEST: il ne suffit pas de pensées positives pour calmer son anxiété.
 TEST: il suffit de cela.
 
 
+
+__infi_mieux_valoir__
+    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿      ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [lui|leur|y]                    en                        ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[GM]")
+        --1>> =suggVerbInfi(\-1)                                                                    # Après “mieux vaut…”, le verbe devrait être à l’infinitif.
+
+TEST: Mieux vaut {{consacré}} son temps à des occupations utiles.
+TEST: Mieux ne vaut pas {{arrivé}} en retard.
+TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dragon endormi.
+
+
 __infi_verbes__
     [>aimer|>désirer|>espérer|>oser|>préférer|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M")
         -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
-    [>aller|>venir]  ?[pas|plus|point|guère|jamais|rien]¿  ~..(?:ée?s?|ez)$
+    [>aller|>venir|>partir]  ?[pas|plus|point|guère|jamais|rien]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\-1, ":V", ":M|>(?:accompagner|armer|armurer|casquer|déguiser)/")
         --1>> =suggVerbInfi(\2)                                                                     # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
@@ -17702,49 +17845,6 @@ TEST: D’ailleurs j’irai armé.
 TEST: J’irai armé de mon épée.
 TEST: Si possible, venez accompagné.
 TEST: Elle vint accompagnée de son père.
-
-
-__infi_mieux_valoir__
-    mieux  ?[ne|n’]¿  (>valoir)  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ morph(\-1, ":V1.*:(?:Q|[123][sp])", ":[GM]")
-        --1>> =suggVerbInfi(\-1)                                                                    # Après “mieux \1”, le verbe devrait être à l’infinitif.
-
-TEST: Mieux vaut {{consacré}} son temps à des occupations utiles.
-TEST: Mieux ne vaut pas {{arrivé}} en retard.
-TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dragon endormi.
-
-
-__infi_avoir_beau__
-    >avoir  beau  ~..(?:ée?s?|ez|ai[ts]?)$
-        <<- /infi/ morph(\3, ":V1", ":N.*:m") -3>> =suggVerbInfi(\3)                                # Après “avoir beau”, le verbe devrait être à l’infinitif.|http://fr.wiktionary.org/wiki/avoir_beau
-
-TEST: Ils ont beau {{consacré}} le plus clair de leur temps à ce projet, ça n’avance guère.
-
-
-__infi_qqch_de__
-    [afin|avant]                                [de|d’]  ~..ée?s?$
-    à même                                      [de|d’]  ~..ée?s?$
-    avant ?même¿                                [de|d’]  ~..ée?s?$
-    en train                                    [de|d’]  ~..ée?s?$
-    en vue                                      [de|d’]  ~..ée?s?$
-    il [est|était|fut|fût|sera|serait] temps    [de|d’]  ~..ée?s?$
-    impossible                                  [de|d’]  ~..ée?s?$
-    marre                                       [de|d’]  ~..ée?s?$
-    [>façon|>manière]                           [de|d’]  ~..ée?s?$
-    [>intention|>volonté]                       [de|d’]  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Le verbe devrait être à l’infinitif.
-
-    force est  [de|d’]  ~..ée?s?$
-        <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
-        --1>> =suggVerbInfi(\-1)                                                                    # Après “force est de”, le verbe devrait être à l’infinitif.
-
-TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
-TEST: en train de {{percées}}
-TEST: ils sont à même de {{trouvé}} la bonne réponse
-TEST: elle est en train de {{mangée}}
-TEST: impossible d’{{échappée}} à cette horreur.
-TEST: il serait temps de {{poussée}} la logique jusqu’au bout
-TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
 
 
 __infi_divers__
@@ -17785,19 +17885,31 @@ __infi_par_pour_sans__
     [par|pour|sans]  [lui]        en                          ~..(?:ée?s?|ez|ai[st]?)$
         <<- /infi/ morph(\-1, ":V1.*:(?:Q|[12][sp])", ":N") --1>> =suggVerbInfi(\-1)                # Après la préposition “\1”, le verbe devrait probablement être à l’infinitif.
 
+    [par|pour|sans]  [nous|vous|lui]  ~(?:ée?s?|ez)$
+        <<- /infi/ morph(\3, ":V1", ":M") -3>> =suggVerbInfi(\3)                                    # Après la préposition “\1”, le verbe devrait probablement être à l’infinitif.
+
     [par|sans]  ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ morph(\-1, ":V1.*:(?:Q|[123][sp])", ":N") --1>> =suggVerbInfi(\-1)               # Après la préposition “\1”, le verbe devrait être à l’infinitif.
+        <<- /infi/ morph(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]") --1>> =suggVerbInfi(\-1)            # Après la préposition “\1”, le verbe devrait être à l’infinitif.
 
     pour  ~..(?:ée?s?|ez|ai[st]?)$
-        <<- /infi/ not morph(<1, ">tenir/") and morph(\-1, ":V1.*:(?:Q|[123][sp])", ":Y")
+        <<- /infi/ not morph(<1, ">(?:passer|tenir)/") and morph(\-1, ":V1.*:(?:Q|[123][sp])", ":[NM]")
         --1>> =suggVerbInfi(\-1)                                                                    # Après la préposition “\1”, le verbe devrait être à l’infinitif.
 
 TEST: finira sans se {{doutait}} du problème généré
 TEST: par nous en {{douté}}
 TEST: commence par {{commencé}} ton boulot, ça ira peut-être mieux
 TEST: il y va pour s’en {{donnait}} à cœur joie.
+TEST: elle s’en va sans {{donné}} de motif
 TEST: pour {{donnait}} de l’espoir
+TEST: pour {{mangé}} à sa faim, il faudra chasser.
+TEST: C’est pour {{attaqué}} la journée.
+TEST: pour nous {{chassez}} de chez lui
+TEST: sans {{mangé}} à sa faim, il faudra chasser.
+TEST: C’est sans {{attaqué}} la journée.
+TEST: sans nous {{chassez}} de chez lui
+TEST: sans {{dérogez}} aux règles en vigueur dans cet établissement
 TEST: Il faut être sans préjugés.
+TEST: je craignais d’être pour toujours abandonnée
 
 
 
@@ -18222,15 +18334,10 @@ __conj_nous2__
             and ( (morph(\3, ":V...t_") and value(>1, "le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|leur") and not tag(>1, "enum")) or morph(\3, ":V..i__") )
         -3>> =suggVerb(\3, ":1p")                                       # Conjugaison problement erronée si “\2” est bien le sujet de “\3” et non un pronom objet.
 
-    [<start>|,]  nous  @:V¬:(?:1[sp]|2s|3[sp]|Y|P|G)
-        <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":1p")                                       # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
-
     [<start>|,]  nous  qui  @:V¬:(?:1p|G)
         <<- /conj/ -4>> =suggVerb(\4, ":1p")                            # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 
 TEST: nous {{viendront}}.
-TEST: nous {{donné}} trop de considération
 TEST: nous vous {{donnerez}} trop de considération
 TEST: nous qui {{somme}} si savants
 TEST: nous qui {{mourront}} pour toi.
@@ -18246,135 +18353,15 @@ TEST: Ainsi, nous appartiendront les plus belles pièces de cette collection.
 
 ## 2pl
 __conj_vous2__
-    [<start>|,]  vous  @:V¬:(?:1s|2[sp]|3[sp]|Y|P|G)
-        <<- /conj/ space_after(\2, 1, 7) and not value(>1, "|je|il|elle|on|nous|vous|ils|elles|")
-        -3>> =suggVerb(\3, ":2p")                                       # Conjugaison probablement erronée. Si “\2” est le sujet de “\3”, le verbe devrait être à la 2ᵉ personne du pluriel.
-
     [<start>|,]  vous  qui  @:V¬:(?:2p|G)
         <<- /conj/ -4>> =suggVerb(\4, ":2p")                            # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
-TEST: vous {{donné}} du bonheur
 TEST: vous lui {{donner}} du temps
 TEST: vous qui {{avançait}} dans la nuit comme des ombres furtives
 TEST: vous qui {{décider}} de l’avenir du peuple.
 TEST: vous “étaler” sera notre plus grande joie.
 TEST: je vous donnais votre dû, vous payais mieux que quiconque et vous me faites un procès.
 TEST: Du passé chez votre ami vous parvenaient les meilleurs souvenirs.
-
-
-
-!!
-!!
-!!!! Infinitif                                                                                    !!
-!!
-!!
-
-#### devoir / faire / falloir / pouvoir / savoir / vouloir
-
-__infi_faire_verbe__
-    >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ not morph(<1, ">(?:en|de|être)/") and morph(\2, ":V", ":[MG]") and not (morph(\1, ":N") and morph(\2, ":Q.*:m:[sp]"))
-        -2>> =suggVerbInfi(\2)                                  # Après le verbe “faire”, ce verbe devrait être à l’infinitif.
-
-TEST: elle fit peu {{mangé}} les enfants
-TEST: Tu fais {{décoloré}} tes cheveux ?
-TEST: quelqu’un fait {{travaillé}} ces gens en secret.
-TEST: il le fait {{pensé}} à son avenir.
-TEST: ce sont des faits constestés.
-TEST: c’est un fait reconnu.
-TEST: fait pourtant avéré et corroboré par le même sondage.
-TEST: ce fait rapporté par des témoins au-delà de tout soupçon n’est pas contestable.
-TEST: il y a quand même quelques faits caractérisés permettant de faire le raccord
-TEST: la tonalité des soutiens traditionnels s’est faite plus nuancée.
-TEST: sa simple présence les a fait reculer
-
-
-__infi_me_te_se_faire__
-    [me|te|se]  >faire  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\3, ":V", ":M")
-        -3>> =suggVerbInfi(\3)                                  # Après le verbe “faire”, le verbe devrait être à l’infinitif.
-
-TEST: me faire constamment {{laminé}} au jeu, ça finit par me fâcher.
-
-
-__infi_vouloir_verbe__
-    >vouloir  ~(?:ée?s?|ez)$
-        <<- /infi/ not value(<1, "|un|de|des|ces|mes|tes|ses|nos|vos|leurs|me|te|se|nous|vous|les|") and morph(\2, ":V", ":M")
-        -2>> =suggVerbInfi(\2)                                  # Après le verbe “vouloir”, ce verbe devrait être à l’infinitif.
-
-TEST: je veux {{changé}}
-TEST: je ne veux pas {{mangé}}
-TEST: je sais {{mangé}}
-TEST: je ne voulais pas {{marché}}
-TEST: Elles ont voulu {{mangé}} de la viande.
-TEST: en voulant {{changé}}
-
-
-__infi_de_vouloir_faire_verbe__
-    de  [vouloir|faire]  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\3, ":V", ":M")
-        -3>> =suggVerbInfi(\3)                                  # Après le verbe “\2”, ce verbe devrait être à l’infinitif.
-
-TEST: Je suis fatigué de vouloir {{essayé}} d’y remédier.
-
-
-__infi_savoir_verbe__
-    >savoir  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\1, ">savoir/:V") and morph(\2, ":V") and not value(<1, "|me|te|se|nous|vous|le|la|les|un|")
-        -2>> =suggVerbInfi(\2)                                  # Après le verbe “savoir”, ce verbe devrait être à l’infinitif.
-
-TEST: Il faut savoir {{arrêté}} les frais.
-TEST: un certain nombre de savoirs spécialisés
-TEST: je le savais désiré par de nombreuses personnes.
-TEST: il les savait commandités par ses ennemis.
-
-
-__infi_il_faut_verbe__
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":(?:Q|2p)", ":M")
-        --1>> =suggVerbInfi(\-1)                                    # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
-
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  [le|la|leur|les|l’]  ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V", ":N") --1>> =suggVerbInfi(\-1)  # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
-
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  [ne|n’|en|me|m’|te|t’|se|s’|nous|vous|lui|y]                           ~(?:ée?s?|ez)$
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]   ~(?:ée?s?|ez)$
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]        ~(?:ée?s?|ez)$
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]            ~(?:ée?s?|ez)$
-    il  ?ne¿  [faut|faudra|faudrait|fallut]  ?[ne|n’]¿   [lui|leur]                      en                         ~(?:ée?s?|ez)$
-        <<- /infi/ morph(\-1, ":V") --1>> =suggVerbInfi(\-1)        # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
-
-TEST: il faut sans cesse {{persévéré}}
-TEST: Il faudrait l’{{essayé}}.
-TEST: Il faudra ne {{touché}} qu’aux extrémités.
-
-
-__infi_se_laisser_vinf__
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [<end>|,]
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [dans|avec]
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ morph(\3, ":V1.*:Q", ">désemparer/") -3>> =suggVerbInfi(\3)          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
-
-    [le|la|l’|les]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [le|la|l’|les]  >laisser  *WORD  [<end>|,]
-    [le|la|l’|les]  >laisser  *WORD  [dans|avec]
-    [le|la|l’|les]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ not morph(\2, ":N") and morph(\3, ":V1.*:Q", ">désemparer/")
-        -3>> =suggVerbInfi(\3)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
-
-    [/-le|/-la|/-les]  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [/-le|/-la|/-les]  *WORD  [<end>|,]
-    [/-le|/-la|/-les]  *WORD  [dans|avec]
-    [/-le|/-la|/-les]  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ morphVC(\1, ">laisser") and morph(\2, ":V1.*:Q", ">désemparer/")
-        -2>> =suggVerbInfi(\2)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
-
-TEST: Il se laisse trop {{allé}}, ce petit.
-TEST: Nous nous laissions {{allé}} dans le plus complet abandon.
-TEST: Je le laissais {{mangé}} autant qu’il le voulut.
-TEST: Laisse-la {{abandonnée}} ses études, si c’est ce qu’elle veut.
-TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse désemparé
 
 
 
@@ -18487,21 +18474,18 @@ __ppas_se_être__
         <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
         --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
 
-    t’  ?[y|en]¿  >être  *WORD
-        <<- /ppas/ not value(\-2, "|es|étais|seras|serais|") >>>
-        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") -3>> =suggVerbPpas(\-1)                  # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
-        --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
+    tu  t’  ?[y|en]¿  [es|étais|seras|serais|fus|fusses]  *WORD
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") --1>> =suggVerbPpas(\-1)                 # Incohérence. Après « s’être », le verbe doit être un participe passé.
 
 TEST: s’être toujours {{donner}} le mot.
-TEST: je me suis totalement {{donnés}} à cette œuvre
+TEST: je suis venu et me suis totalement {{donnés}} à cette œuvre
 TEST: c’est de ce qui s’est {{passe}}.
-TEST: Ça s’était toujours {{passe}} comme ça avec elle
-TEST: elle s’est {{approche}} de la penderie
+TEST: s’était toujours {{passe}} comme ça avec elle
+TEST: s’est {{approche}} de la penderie
 TEST: terrorisant l’animal qui s’était {{cabre}}.
 TEST: ce qui s’est {{passe}}.
 TEST: s’y était de plus en plus {{consacrer}} avec enthousiasme.
-TEST: il t’en a {{donnes}} à cœur joie.
+TEST: tu t’en es {{foutait}} autant que possible.
 TEST: elles se sont dit : « Allons-y ».
 TEST: On s’est rencontrées lorsqu’on travaillait là-bas.
 TEST: des soins que je m’étais donnés.
@@ -19289,7 +19273,7 @@ __ppas_avoir_l_air__
         <<- /ppas/ morph(\3, ":[NA].*:[me]", ":f") --1>> =suggMasSing(\-1)      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
     <start>  [la|une|cette|ma|ta|sa|notre|votre|leur]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:[si]|G)
-        <<- /ppas/ morph(\3, ":[NA].:[fe]", ":m") --1>> =suggFemSing(\-1)       # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
+        <<- /ppas/ morph(\3, ":[NA].*:[fe]", ":m") --1>> =suggFemSing(\-1)      # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
 
     [<start>]  *WORD  ?[ne|n’]¿  >avoir  l’  air  @:A¬:(?:A.*:m:[si]|G)
         <<- /ppas/ morph(\2, ":M.*:m", ":M.*:[fe]") --1>> =suggMasSing(\-1)     # Dans la locution “avoir l’air”, il faut accorder l’adjectif avec le sujet (si “avoir l’air” signifie “sembler”) ou éventuellement avec le mot “air” si vous évoquez l’allure d’un être vivant.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1728
