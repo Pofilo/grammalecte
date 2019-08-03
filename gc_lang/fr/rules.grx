@@ -19796,7 +19796,7 @@ __ppas_det_nom_avoir__
     [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
     <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
-        and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+        and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Y|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
     --1>> =suggVerbPpas(\-1, ":m:s")
     # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -19924,9 +19924,10 @@ __ppas_avoir__
         -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
 
 TEST: Avoir {{marcher}} toute la journée m’a épuisée.
+TEST: L’homme, voyez-vous, {{a}} réellement {{marcher}} sur la Lune.
 TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
 TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
-TEST: Ils ont {{put}} trouver la solution.
+TEST: ces hommes, n’en doutez pas, auraient {{put}} trouver la solution.
 TEST: nous avons vu des avions voler haut dans le ciel.
 
 
@@ -20018,28 +20019,43 @@ TEST: Voici ce qui vous est {{du}}.
 
 !!!! Participes passés avec “avoir” (formes interrogatives)                                       !!
 
-__ppas_avoir_pronom__
+__ppas_avoir_interrogatif__
     *WORD  /VCint  *WORD
-        <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:[fp]|3[sp])", ":m:[si]") and not value(\3, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-            and not morph(\1, ">(?:les|[nv]ous|en)/|:[NA].*:[fp]") and not before("(?i)\\b(?:quel(?:le|)s?|combien) ")
+        <<- /ppas/ morphVC(\2, ":V0a") and not value(\3, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
+        <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":[QM]")
+        -3>> =suggVerbPpas(\3, ":m:s")                      # Incohérence probable avec “\2”. Après “avoir”, ce verbe devrait être un participe passé.
+        <<- /ppas/ __else__ and not value(\1, "|les|l’|m’|t’|nous|vous|en|") and morph(\3, ":Q.*:[fp]", ":m:[si]")
+            and not morph(\1, ":[NA].*:[fp]") and not before("(?i)\\b(?:quel(?:le|)s?|combien) ")
         -3>> =suggVerbPpas(\3, ":m:s")                      # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
     [<start>|,]  ?n’¿  /VCint  *WORD
-        <<- /ppas/ morphVC(\-2, ":V0a") and morph(\-1, ":(?:Y|2p|Q.*:[fp]|3[sp])", ":m:[si]") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        <<- /ppas/ morphVC(\-2, ":V0a") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QM]")
+        --1>> =suggVerbPpas(\-1, ":m:s")                    # Incohérence probable avec “\-2”. Après “avoir”, ce verbe devrait être un participe passé.
+        <<- /ppas/ __else__ and morph(\-1, ":Q.*:[fp]", ":m:[si]")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
+TEST: cet été ont-ils {{mentionnés}} la sécheresse                              ->> mentionné
+TEST: quand ont-ils {{donner}} satisfaction                                     ->> donné
+TEST: qui a-t-elle {{connut}}                                                   ->> connu
+TEST: qui a-t-on {{reconnue}}                                                   ->> reconnu
 TEST: Avais-je {{laissés}} ces notes sur la table ?                             ->> laissé
 TEST: Aurait-elle {{suffit}}                                                    ->> suffi
 TEST: Avez-vous {{signez}} le contrat ?
 TEST: Ont-ils {{signer}} le contrat ?
 TEST: Ai-je déjà {{signez}} le contrat ?
-TEST: A-t-il déjà {{signer}} le contrat ?
+TEST: A-t-il déjà {{signée}} le contrat ?
+TEST: Avait-il {{marcher}} seul ?
+TEST: Avez-vous {{signez}} le contrat ?
+TEST: Ont-ils {{finit}} le travail ?
+TEST: Ai-je déjà {{reconnut}} mes torts ?
 TEST: N’avais-tu pas crainte de tout perdre ?
 TEST: Combien de bêtes n’as-tu pas déjà massacrées
 TEST: Combien de bêtes as-tu déjà massacrées
+TEST: A-t-il Pierre pour ami ?
 
 
-__ppas_l_m_t_avoir_pronom__
+__ppas_l_m_t_avoir_interrogatif__
     [l’|m’|t’]  /VCint  *WORD
         <<- /ppas/ morphVC(\2, ":V0a") and morph(\3, ":(?:Y|2p|Q.*:p|3[sp])", ":[GWsi]")
         -3>> =suggVerbPpas(\3, ":m:s")                      # Accord avec le COD “\1” : le participe passé “\3” devrait être au singulier (et accordé en genre).
@@ -20057,27 +20073,6 @@ __ppas_les_avoir_pronom__
 TEST: les avais-tu {{acheté}} là-bas ?
 TEST: les ont-ils {{détecté}} ?
 TEST: les avaient-ils {{détectez}} ?
-
-__ppas_avoir_interrogatif__
-    /VCint  ~..e[rz]$
-        <<- /ppas/ morphVC(\1, ":V0a") and morph(\2, ":(?:Y|2p)")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
-        <<- /ppas/ __also__ and \1 == "a" and \2.endswith("r") and not value(<1, "|n’|m’|t’|l’|il|on|elle|")
-        -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
-
-    /VCint  ~..it$
-        <<- /ppas/ morphVC(\1, ":V0a") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
-
-    /VCint  ~.ut$
-        <<- /ppas/ morphVC(\1, ":V0a") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
-        -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
-
-TEST: Avait-il {{marcher}} seul ?
-TEST: Avez-vous {{signez}} le contrat ?
-TEST: Ont-ils {{finit}} le travail ?
-TEST: Ai-je déjà {{reconnut}} mes torts ?
-
 
 
 
@@ -20110,7 +20105,7 @@ __imp_confusion_2e_pers_pluriel__
         -2:3>> =suggVerbTense(\2, ":E", ":2p") + "-" + \3                                           # Confusion probable. Pour l’impératif, écrivez :
 
 TEST: {{Donner moi}} une chance                         ->> Donnez-moi
-TEST: {{donnes la}} et oublie-moi.                      ->> là|||donne-la
+TEST: {{donner la}} et oublie-moi.                      ->> là|||donnez-la
 TEST: {{prenait les}} ou volez-les                      ->> prenez-les
 TEST: je vous en prie, {{prenais moi}} avec vous.       ->> prenez-moi
 TEST: {{avançait moi}} de l’argent                      ->> avancez-moi
@@ -20679,6 +20674,7 @@ TEST: je relève le {{défit}}.                                   ->> défi
 TEST: elle relève une fois de plus le {{défie}}.                ->> défi
 TEST: il gère l’{{accueille}}                                   ->> accueil
 TEST: Elle ne connait pas leur {{recule}}                       ->> recul
+TEST: elle lisait la {{garantit}}                               ->> garantie
 TEST: nous racontons le {{dépare}} des peuples vers les étoiles ->> départ
 TEST: Les hommes resteront en {{contacte}}                      ->> contact
 TEST: Le parquet ne demande pas le {{maintient}} en détention   ->> maintien
@@ -20833,10 +20829,57 @@ TEST: il sait être {{désire}}
 TEST: elle imagine être {{désire}}
 TEST: elle semble avoir été {{sonne}}
 TEST: ouais, on adore avoir été {{persécute}} par ces enfoirés
-TEST: nous préférons être restés {{chagrine}} par cette perte
+TEST: nous préférions être restés {{chagrinait}} par cette perte
 TEST: on déclare avoir été {{choque}} par ces nouvelles
 TEST: ils semblent être redevenus {{élut}}
-TEST: elles aiment avoir paru {{oublie}}
+TEST: elles aiment avoir paru {{murent}}
+
+
+__ppas_être_confusion__
+    ne [pas|jamais] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
+        <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         # Après “ne \2 être”, il faut un participe passé.
+
+    avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
+        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "que") --1>> =suggVerbPpas(\-1)     # Après le verbe “être”, il faut un participe passé.
+
+    >être  ~..er$
+        <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
+            and not morph(<1, ":Y|>ce/") and not value(<1, "|c’|") and not value(<2, "|ce|")
+            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être à l’infinitif.
+
+    >être  ~..ez$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":2p", ":[NAQ]")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 2ᵉ personne du pluriel.
+
+    >être  ~.it$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
+
+    >être  ~.ut$
+        <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
+
+TEST: Ne pas être {{aller}} là-bas est une grave erreur que nous regretterons longtemps.
+TEST: Ne pas être {{arrivez}} à ses fins.
+TEST: Ne pas être {{prit}} au sérieux.
+TEST: Ne pas être {{voulut}}.
+TEST: avoir cru être {{éliminer}} par de tels bouffons…
+TEST: ces hommes sont {{tromper}} par tous ces hypocrites.
+TEST: je me suis trompé, me suis {{laisser}} emporter.
+TEST: c’est être {{emportez}} par la vague.
+TEST: l’homme était {{sortit}} avec enthousiasme.
+TEST: ces femmes-là seront {{reconnut}} par leurs pairs
+TEST: Jeûner n’est pas seulement cesser de manger.
+TEST: Ne pas aimer n’est pas oublier l’autre.
+TEST: Dire la vérité, c’eût été manquer à sa parole.
+TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
+TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
+TEST: ce qu’il avait cru être devenait un rêve lointain et à peine concevable.
+TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
+TEST: la grande crainte du maire est de voir arriver d’autres immigrés
 
 
 __conf_verbes_det_verbe_nom__
@@ -20929,7 +20972,7 @@ TEST: tes doutes {{remâcher}} deviennent difficiles à vivre.
 TEST: ce tableau {{voler}} coûte très cher.
 TEST: la difficulté {{passer}} t’aidera par la suite
 TEST: notre voiture {{décolorer}} avait mauvaise allure
-TEST: leur compte {{épurer}} servira encore.
+TEST: l’activiste {{démasquer}} servira de taupe pour nous.
 TEST: Le vieux cocher avait mission
 TEST: le verbe aller est irrégulier.
 
@@ -21552,55 +21595,6 @@ TEST: quels éléments {{examinèrent elles}} ?
 
 
 
-#### PARTICIPES PASSÉS APRÈS ÊTRE
-
-__ppas_être__
-    ne [pas|jamais] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
-        <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         # Après “ne \2 être”, il faut un participe passé.
-
-    avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
-        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "que") --1>> =suggVerbPpas(\-1)     # Après le verbe “être”, il faut un participe passé.
-
-    >être  ~..er$
-        <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>(?:soit)/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
-            and not morph(<1, ":Y|>ce") and not value(<1, "|c’|")
-            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
-        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être à l’infinitif.
-
-    >être  ~..ez$
-        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":2p", ":[NAQ]")
-        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 2ᵉ personne du pluriel.
-
-    >être  ~.it$
-        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
-            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
-        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
-
-    >être  ~.ut$
-        <<- /ppas/ morph(\1, ":V", ":Q|>(?:soit)/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
-            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
-        -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
-
-TEST: Ne pas être {{aller}} là-bas est une grave erreur que nous regretterons longtemps.
-TEST: Ne pas être {{arrivez}} à ses fins.
-TEST: Ne pas être {{prit}} au sérieux.
-TEST: Ne pas être {{voulut}}.
-TEST: ils sont {{tromper}} par tous ces hypocrites.
-TEST: Je suis {{emporter}} par la vague.
-TEST: Je suis {{emportez}} par la vague.
-TEST: il était {{sortit}} avec enthousiasme.
-TEST: ils ont été {{reconnut}} par leurs pairs
-TEST: Jeûner n’est pas seulement cesser de manger.
-TEST: Ne pas aimer n’est pas oublier l’autre.
-TEST: Dire la vérité, c’eût été manquer à sa parole.
-TEST: C’est soit manquer une opportunité, soit arriver à ses fins de manière douteuse.
-TEST: Nous nous efforçons de comprendre ce qu’être veut dire, ce qu’être signifie.
-TEST: ce qu’il avait cru être devenait un rêve lointain et à peine concevable.
-TEST: la grande crainte du maire est de voir s’effondrer d’autres immeubles
-TEST: la grande crainte du maire est de voir arriver d’autres immigrés
-
-
-
 !!
 !!
 !!!! Conjugaison                                                                                  !!
@@ -21891,6 +21885,7 @@ TEST: L’homme le {{deviens}}                                                  
 TEST: La femme la {{prends}}                                                                        ->> prend
 TEST: Le feu nous {{donnes}} chaud.
 TEST: une petite {{donnes}}
+TEST: tu vois, leur donne {{donnes}} du fil à retordre
 TEST: tout le monde {{prends}} ses aises                                                            ->> prend
 TEST: J’aimerais aussi que mon problème {{sois}} réglé.                                             ->> soit
 TEST: La proscription de nager {{pourraient}} nous porter préjudice à long terme                    ->> pourrait
@@ -22375,7 +22370,7 @@ __conj_quel_quelle_que_3sg__
         -3>> =suggVerb(\3, ":3s")                                                           # Conjugaison erronée. Accord avec “\4 \5”. Mettez “être” à la 3ᵉ personne du singulier.
         <<- /conj/ __also__ -1>> =\1[:-1]                                                   # Accord avec “\4 \5”. Utilisez le singulier.
 
-TEST: Quel que {{sois}} son passe-temps, il y consacre trop de temps.
+TEST: Quel que {{soient}} son passe-temps, il y consacre trop de temps.
 TEST: {{Quels}} que {{soient}} le feu utilisé.
 TEST: {{Quels}} que {{soit}} leur problème, ça n’en finit jamais.
 TEST: {{Quelles}} que {{soit}} leur voiture, elle tombe constamment en panne.
