@@ -3946,14 +3946,17 @@ __tu_substantifs__
     bouche à [bouche|>oreille]
         <<- /tu/ morph(<1, ":D") ->> \1-\2-\3                   # Il manque les traits d’union.
 
+    >centre >ville
+        <<- /tu/ ->> centre-ville|centres-villes                # Il manque un trait d’union.
+
+    [chassé+ses] [croisé+ses]
+        <<- /tu/ ->> chassé-croisé|chassés-croisés              # Il manque un trait d’union.
+
     >chef lieu
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
     >chef d’ œuvre
         <<- /tu/ ->> \1-\2\3                                    # Il manque un trait d’union.
-
-    >centre >ville
-        <<- /tu/ ->> centre-ville|centres-villes                # Il manque un trait d’union.
 
     [auto|moto] >club
         <<- /tu/ ->> \1\2|\1-\2|\2 \1                           # Mettez un trait d’union, fusionnez ou inversez les termes.
@@ -4079,6 +4082,7 @@ TEST: sur le {{bas côté}}
 TEST: les {{beaux arts}}
 TEST: {{le}} {{bouche à oreille}}
 TEST: {{chef lieu}} de ce canton
+TEST: un {{chassé croisé}}
 TEST: ne vois-tu pas que c’est un {{chef d’œuvre}} ?
 TEST: ils sont allés au {{centre ville}}.
 TEST: Le {{moto club}} était sur le point de faire faillite.
@@ -12808,6 +12812,28 @@ __purge_après_verbe__
         <<- ~2:-2>> *
 
 
+__purge_adverbes_de_négation__
+    jamais
+        <<- ~>> *
+
+    guère
+        <<- ~>> *
+
+    [point|plus|bien|ensemble]
+    pas ?[moins|plus]¿
+        <<- morph(<1, ":V") ~>> *
+
+    rien
+        <<- morph(<1, ":V") and not value(>1, "|qui|de|d’|") ~>> *
+
+    /VCint  [pas|point|bien|ensemble]
+    /VCint  pas ?[moins|plus]¿
+        <<- ~2>> *
+
+    /VCint  rien
+        <<- not value(>1, "|qui|de|d’|") ~2>> *
+
+
 __purge_avant_adjectifs_adverbes__
     le  @:[NAQ].*:[me]¬:G  le  plus  @:A.*:[me]
         <<- ~3:4>> *
@@ -12901,95 +12927,125 @@ __purge_ponctuations__
 
 __purge_locutions_potentielles__
     à ce [jour|moment] @¬:A.*:[me]:[si]
+    à ce [jour|moment] [<end>|,]
         <<- ~1:3>> *
 
     à [mon|ton|son|notre|votre|leur] sens @¬:A.*:[me]:[si]
+    à [mon|ton|son|notre|votre|leur] sens [<end>|,]
         <<- ~1:3>> *
 
     à [mes|tes|ses|nos|vos|leurs] yeux  @¬:A.*:[me]:[pi]
+    à [mes|tes|ses|nos|vos|leurs] yeux  [<end>|,]
         <<- ~1:3>> *
 
     à la dernière [minute|seconde]  @¬:A.*:[fe]:[si]
+    à la dernière [minute|seconde]  [<end>|,]
         <<- ~1:4>> *
 
     à la longue  @¬:N.*:[fe]:[si]
+    à la longue  [<end>|,]
     à la dérive  @¬:A.*:[fe]:[si]
+    à la dérive  [<end>|,]
     à l’ époque  @¬:A.*:[fe]:[si]
+    à l’ époque  [<end>|,]
         <<- ~1:3>> *
 
     à répétition  @¬:A.*:[fe]:[si]
+    à répétition  [<end>|,]
         <<- ~1:2>> *
 
     au [départ|quotidien]  @:¬:A.*:[me]:[si]
+    au [départ|quotidien]  [<end>|,]
         <<- ~1:2>> *
 
     au pire  @:A¬:N.*:[me]:[si]
+    au pire  [<end>|,]
         <<- ~1:2>> *
 
     [<start>|,] ben voyons
         <<- ~2:3>> *
 
     chaque [année|semaine|journée|décennie]  @¬:(?:A.*:[fe]:[si]|Oo|[123][sp])
+    chaque [année|semaine|journée|décennie]  [<end>|,]
         <<- ~1:2>> *
 
     chaque [an|jour|mois]  @¬:(?:A.*:[me]:[si]|Oo|[123][sp])
+    chaque [an|jour|mois]  [<end>|,]
         <<- ~1:2>> *
 
     d’ [avance|évidence]  @¬:A.*:[fe]:[si]
+    d’ [avance|évidence]  [<end>|,]
         <<- ~1:2>> *
 
     dans l’ ensemble  @¬:A.*:[me]:[si]
+    dans l’ ensemble  [<end>|,]
         <<- ~1:3>> *
 
     dans tous les cas  @:A¬:A.*:[me]:[pi]
         <<- ~1:4>> *
 
     de ce fait  @¬:A.*:[me]:[si]
+    de ce fait  [<end>|,]
         <<- ~1:3>> *
 
     de ce seul fait  @¬:A.*:[me]:[si]
+    de ce seul fait  [<end>|,]
         <<- ~1:4>> *
 
     des fois  @¬:A.*:[fe]:[pi]
+    des fois  [<end>|,]
         <<- ~1:2>> *
 
     dès le départ  @¬:A.*:[me]:[si]
+    dès le départ  [<end>|,]
         <<- ~1:3>> *
 
     dès les premiers [jours|mois|ans|siècles|trimestres|semestres]  @¬:A.*:[me]:[pi]
+    dès les premiers [jours|mois|ans|siècles|trimestres|semestres]  [<end>|,]
         <<- ~1:4>> *
 
     dès les premières [années|semaines|minutes|secondes|heures|décennies]  @¬:A.*:[fe]:[pi]
+    dès les premières [années|semaines|minutes|secondes|heures|décennies]  [<end>|,]
         <<- ~1:4>> *
 
     en [certaines|quelques|plusieurs] occasions  @¬:A.*:[fe]:[pi]
+    en [certaines|quelques|plusieurs] occasions  [<end>|,]
         <<- ~1:3>> *
 
     en de multiples occasions  @¬:A.*:[fe]:[pi]
+    en de multiples occasions  [<end>|,]
         <<- ~1:4>> *
 
     en un sens  @¬:A.*:[me]:[si]
+    en un sens  [<end>|,]
         <<- ~1:3>> *
 
     entre autres choses  @¬:A.*:[fe]:[pi]
+    entre autres choses  [<end>|,]
         <<- ~1:3>> *
 
     [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
+    [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,]
         <<- ~1:2>> *
 
     de [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
+    de [quelques|plusieurs] [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,]
         <<- ~1:3>> *
 
     de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]  @¬:A.*:[fe]:[pi]
+    de nombreuses [secondes|minutes|heures|journées|semaines|années|décennies]  [<end>|,]
         <<- ~1:3>> *
 
     [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
+    [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  [<end>|,]
         <<- ~1:2>> *
 
     de [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
+    de [quelques|plusieurs] [instants|moments|jours|mois|ans|siècles]  [<end>|,]
         <<- ~1:3>> *
 
     de nombreux [instants|moments|jours|mois|ans|siècles]  @¬:A.*:[me]:[pi]
+    de nombreux [instants|moments|jours|mois|ans|siècles]  [<end>|,]
         <<- ~1:3>> *
 
     [de|d’]  [façon|manière]  ?non¿  @:A.*:[fe]:[si]  et  ?non¿  @:A.*:[fe]:[si]¬:[GM]
@@ -12997,13 +13053,17 @@ __purge_locutions_potentielles__
         <<- ~>> *
 
     pour partie  @:¬:A.*:f:s
+    pour partie  [<end>|,]
         <<- ~1:2>> *
 
     ?à¿ un [instant|moment]  @¬:A.*:[me]:[si]
+    ?à¿ un [instant|moment]  [<end>|,]
     un seul [instant|moment]  @¬:A.*:[me]:[si]
+    un seul [instant|moment]  [<end>|,]
         <<- not morph(<1, ":R|>d’/") ~1:-2>> *
 
-    un jour  @¬:A.*:[me]:[si]
+    un jour  @:¬:A.*:[me]:[si]
+    un jour  [<end>|,]
         <<- not morph(<1, ":R|>d’/") ~1:2>> *
 
     semblait-il
@@ -13189,17 +13249,17 @@ __conf_locutions_verbales__
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
-    >faire ?[guère|jamais|pas]¿ plaisirs
+    >faire plaisirs
         <<- /sgpl/ --1>> plaisir        # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
         <<- ~-1>> *
 
     >laisser pour [comte+s|>conte]
         <<- /conf/ --1>> compte         # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
-    [>mourir|>paraître|>paraitre|>rester|>sembler] ?[guère|jamais|pas]¿ >jeûne
+    [>mourir|>paraître|>paraitre|>rester|>sembler] >jeûne
         <<- /conf/ -2>> jeune           # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 
-    >partir ?[guère|jamais|pas]¿ en >couille
+    >partir en >couille
         <<- /conf/ -3>> quenouille|vrille   # Confusion. La locution “partir en couille” est un barbarisme. Locution authentique : “partir/tomber en quenouille”. Peut-être voulez-vous dire “partir en vrille” ?|https://fr.wiktionary.org/wiki/partir_en_quenouille
 
     >rendre ?bon¿ [comte|comtes|>conte|comptes]
@@ -13208,19 +13268,19 @@ __conf_locutions_verbales__
     >suivre ?[ça|cela|ceci]¿ de [>prêt|>pré]
         <<- /conf/ --1>> près           # Confusion : écrivez “près” pour dire “proche de quelque chose”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    >tenir ?[guère|jamais|pas]¿ [comte|comtes|>conte|comptes]
+    >tenir [comte|comtes|>conte|comptes]
         <<- /conf/ --1>> compte         # Confusion. Locution “tenir compte”.|https://fr.wiktionary.org/wiki/tenir_compte
 
-    >tourner ?[guère|jamais|pas]¿ [coure|courre|cour|cours]
+    >tourner  [coure|courre|cour|cours]
         <<- /conf/ --1>> court          # Confusion. Locution “tourner court”.|https://fr.wiktionary.org/wiki/tourner_court
 
-    [s’|m’|t’]          en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
-    nous nous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
-    vous vous           en  >laisser  ?[guère|jamais|pas]¿  [compter|compté+ses|>comté]
+    [s’|m’|t’]          en  >laisser  [compter|compté+ses|>comté]
+    nous nous           en  >laisser  [compter|compté+ses|>comté]
+    vous vous           en  >laisser  [compter|compté+ses|>comté]
     ne pas [nous|vous]  en  laisser   [compter|compté+ses|>comté]
         <<- /conf/ --1>> conter         # Confusion. Locution “s’en laisser conter”, c’est-à-dire se laisser raconter des histoires.|https://fr.wiktionary.org/wiki/ne_pas_s%E2%80%99en_laisser_conter
 
-    >compter ?[guère|jamais|pas]¿ fleurette
+    >compter fleurette
         <<- /conf/ -1>> =\1.replace("omp", "on").replace("OMP", "ON")   # Confusion. Locution “conter fleurette”.|https://fr.wiktionary.org/wiki/conter_fleurette
 
 TEST: ce contrat arrive {{a}} échéance.
@@ -15668,12 +15728,16 @@ __conf_air_aire_ère__
         <<- /conf/ -3>> air         # Confusion probable. La locution “avoir l’air de” signifie “sembler”, “paraître”…|https://fr.wiktionary.org/wiki/avoir_l%E2%80%99air
 
     [>air|>ère] [de|d’]  [atterrissage|autoroute|repos]
-        <<- /conf/ -1>> aire|aires  # Confusion. Une ère est une époque. L’air est un gaz, une apparence ou une musique. Pour évoquer une surface, écrivez “aire”.
+        <<- /conf/ -1>> aire|aires  # Confusion. Une ère est une époque. L’air est un gaz, une apparence ou une musique. Pour évoquer une surface, écrivez “aire”.|https://fr.wiktionary.org/wiki/aire
+
+    >baptême de l’ [ère|aire]
+        <<- /conf/ --1>> air        # Confusion. Une ère est une époque. L’aire est une surface. Pour parler de l’atmosphère, écrivez “air”.|https://fr.wiktionary.org/wiki/air
 
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
 TEST: Ce sera un jour dans l’{{ère}} du temps
 TEST: il a l’{{aire}} d’un plouc.
 TEST: on s’arrêtera sur l’{{air}} d’autoroute
+TEST: baptême de l’{{aire}}
 
 
 # auspice / hospice
@@ -16403,9 +16467,9 @@ TEST: Ton ère va bientôt prendre {{faim}}.
 
 # faite / faîte / fait
 __conf_faites_faîte_fait__
-    vous [ne|me|leur|lui|nous|vous] (>faîte)
-    vous (>faîte)
-        <<- /conf/ -1>> faites                                              # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
+    vous [ne|me|leur|lui|nous|vous] >faîte
+    vous >faîte
+        <<- /conf/ --1>> faites                                             # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
 
     faîtes vous
         <<- /conf/ not morph(<1, ":D.*:[me]:[sp]") ->> faites-vous          # Confusion. Le faîte (≠ faire) est le point culminant de quelque chose.
@@ -17484,7 +17548,7 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  *WORD
+    [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  [de|d’]  *WORD
         <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
 
@@ -17604,19 +17668,19 @@ TEST: Vous d’habitude si réservée.
 
 
 __infi_devoir_pouvoir_savoir_vouloir__
-    >devoir  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    >devoir  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D")) and not (value(\1, "|devant|") and morph(\-1, ":N"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet doit accomplir, le verbe devrait être à l’infinitif.
 
-    >pouvoir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    >pouvoir ~..(?:ée?s?|ez)$
         <<- /infi/ not value(\1, "|puis|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet peut accomplir, le verbe devrait être à l’infinitif.
 
-    >savoir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    >savoir ~..(?:ée?s?|ez)$
         <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet sait accomplir, le verbe devrait être à l’infinitif.
 
-    >vouloir ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    >vouloir ~..(?:ée?s?|ez)$
         <<- /infi/ not value(<1, "|me|m’|te|t’|se|s’|le|la|l’|les|") and morph(\-1, ":V", ":M") and not (morph(\1, ":N") and morph(<1, ":D"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action que le sujet veut accomplir, le verbe devrait être à l’infinitif.
 
@@ -17640,17 +17704,17 @@ TEST: il les savait commandités par ses ennemis.
 
 
 __infi_devoir_pouvoir_savoir_vouloir_interrogatif__
-    /VCint  ?[pas|jamais]¿  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD
+    /VCint  ?[en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  *WORD
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
         --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
 
-    /VCint  ?[pas|jamais]¿  [le|la|l’|les]  *WORD
+    /VCint  [le|la|l’|les]  *WORD
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYWN]")
         --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
 
-    /VCint  ?[pas|jamais]¿  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]    *WORD
-    /VCint  ?[pas|jamais]¿  [le|la|l’|les]                  [lui|leur|en|y]        *WORD
-    /VCint  ?[pas|jamais]¿  [lui|leur]                      en                     *WORD
+    /VCint  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]    *WORD
+    /VCint  [le|la|l’|les]                  [lui|leur|en|y]        *WORD
+    /VCint  [lui|leur]                      en                     *WORD
         <<- /infi/ morphVC(\1, ">(?:devoir|savoir|pouvoir|vouloir)/") and morph(\-1, ":(?:Q|A|[123][sp])", ":[GYW]")
         --1>> =suggVerbInfi(\-1)                                                        # Après “\1”, le verbe devrait être à l’infinitif.
 
@@ -17668,7 +17732,7 @@ TEST: en voulant {{changé}}
 
 
 __infi_commencer_finir_par__
-    [>commencer|>finir]  ?[pas|plus|point|guère|jamais]¿  par  *WORD
+    [>commencer|>finir]  par  *WORD
         <<- /infi/ morph(\3, ":V", ":[NGMY]") and not \3[0:1].isupper()
         -3>> =suggVerbInfi(\3)                                                          # Le verbe devrait être à l’infinitif.
 
@@ -17794,9 +17858,9 @@ TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse 
 
 
 __infi_suffire_de__
-    [suffit|suffisait|suffira|suffirait]                ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
-    >avoir  suffi                                       ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
-    [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  ?[pas|plus|point|guère|jamais]¿  [de|d’]  @:V¬:[YMNWG]
+    [suffit|suffisait|suffira|suffirait]                [de|d’]  @:V¬:[YMNWG]
+    >avoir  suffi                                       [de|d’]  @:V¬:[YMNWG]
+    [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  [de|d’]  @:V¬:[YMNWG]
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “suffire”, le verbe doit être à l’infinitif.
 
 TEST: il suffit de {{pensé}} à ça pour déprimer.
@@ -17805,13 +17869,12 @@ TEST: il ne suffit pas de pensées positives pour calmer son anxiété.
 TEST: il suffit de cela.
 
 
-
 __infi_mieux_valoir__
-    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿      ~..(?:ée?s?|ez|ai[ts]?)$
-    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ée?s?|ez|ai[ts]?)$
-    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez|ai[ts]?)$
-    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez|ai[ts]?)$
-    mieux  ?[ne|n’]¿  >valoir  ?[pas|plus|point|guère|jamais]¿  ?[ne|n’]¿   [lui|leur|y]                    en                        ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿      ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]       ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]           ~..(?:ée?s?|ez|ai[ts]?)$
+    mieux  ?[ne|n’]¿  >valoir  ?[ne|n’]¿   [lui|leur|y]                    en                        ~..(?:ée?s?|ez|ai[ts]?)$
         <<- /infi/ analyse(\-1, ":V1.*:(?:Q|[123][sp])", ":[GM]")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “mieux vaut…”, le verbe devrait être à l’infinitif.
 
@@ -17935,21 +17998,6 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 __purge_syntagme_verbal__
     ne [lui|leur]
         <<- not value(>1, "|en|") ~2>> *
-
-    jamais
-        <<- ~>> *
-
-    guère
-        <<- ~>> *
-
-    [pas|point|bien|ensemble]
-        <<- morph(<1, ":V") ~>> *
-
-    rien
-        <<- morph(<1, ":V") and not value(>1, "|qui|") ~>> *
-
-    /VCint  [pas|point|rien|bien|ensemble]
-        <<- ~2>> *
 
     que >sembler [le|l’] [penser|croire|présumer|supposer|envisager|imaginer|supposer]
         <<- ~3:4>> *
