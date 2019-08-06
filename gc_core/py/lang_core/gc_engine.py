@@ -457,6 +457,37 @@ class TextParser:
                             echo("  MATCH: >" + sLemma)
                         yield { "iToken1": iToken1, "iNode": dNode["<lemmas>"][sLemma] }
                         bTokenFound = True
+            # morph arcs
+            if "<morph>" in dNode:
+                lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
+                if lMorph:
+                    for sSearch in dNode["<morph>"]:
+                        if "¬" not in sSearch:
+                            # no anti-pattern
+                            if any(sSearch in sMorph  for sMorph in lMorph):
+                                if bDebug:
+                                    echo("  MATCH: $" + sSearch)
+                                yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                bTokenFound = True
+                        else:
+                            # there is an anti-pattern
+                            sPattern, sNegPattern = sSearch.split("¬", 1)
+                            if sNegPattern == "*":
+                                # all morphologies must match with <sPattern>
+                                if sPattern:
+                                    if all(sPattern in sMorph  for sMorph in lMorph):
+                                        if bDebug:
+                                            echo("  MATCH: $" + sSearch)
+                                        yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                        bTokenFound = True
+                            else:
+                                if sNegPattern and any(sNegPattern in sMorph  for sMorph in lMorph):
+                                    continue
+                                if not sPattern or any(sPattern in sMorph  for sMorph in lMorph):
+                                    if bDebug:
+                                        echo("  MATCH: $" + sSearch)
+                                    yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                    bTokenFound = True
             # regex morph arcs
             if "<re_morph>" in dNode:
                 lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))

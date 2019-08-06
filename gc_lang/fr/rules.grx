@@ -1828,16 +1828,16 @@ __da_le_la_les_leur__
     [ne|n’|me|m’|te|t’|se|s’] [le|la|les|leur]
         <<- =>> select(\2, ":Ov")
 
-    le   @:N¬*
+    le   $:N¬*
         <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
-    la   @:N¬*
+    la   $:N¬*
         <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
-    les  @:N¬*
+    les  $:N¬*
         <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> select(\1, ":D")
 
-    l’   @:N¬*
+    l’   $:N¬*
         <<- not value(<1, "|ne|n’|me|m’|te|t’|se|s’|") =>> define(\1, [":D:e:s"])
 
 
@@ -1902,10 +1902,10 @@ __da_préverbes_verbes__
     leur            en                 @:¬:[OXW]
         <<- =>> select(\2, ":(?:[123][sp]|P|Y)")
 
-    @:M  @:[123]s¬:[QW]
+    $:M  @:[123]s¬:[QW]
         <<- \2.islower() and morph(<1, ":Cs|<start>") =>> select(\2, ":[123][sp]")
 
-    <start> @:M  @:(?:[123]s|Oo)|>ne/¬:A
+    <start> $:M  @:(?:[123]s|Oo)|>ne/¬:A
         <<- =>> =select(\2, ":M")
 
     [que|qu’|combien|pourquoi|qui|quand|où]  ?[en|y]¿  *WORD
@@ -1927,7 +1927,7 @@ __da_prépositions__
     dans
         <<- not morph(<1, ":D.*:p|>[a-z]+ième/") =>> select(\1, ":R")
 
-    passé  [<end>|,|@:R]
+    passé  [<end>|,|$:R]
         <<- =>> exclude(\1, ":G")
 
     y compris
@@ -1975,7 +1975,7 @@ __da_groupe_nominal__
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
         <<- =>> select(\-1, ":N")
 
-    de  [la|l’]  @:¬:Y
+    de  [la|l’]  $:¬:Y
         <<- not value(<1, "|semblant|") =>> exclude(\3, ":V")
 
     [/VCint|/VCimp] [le|la|l’|leur|les]
@@ -2037,8 +2037,8 @@ __tag_sujets__
         <<- not value(<1, "|de|d’|par|") />> 1s
 
     tu
-    t’  @:2s
-    t’  [en|y]  @:2s
+    t’  $:2s
+    t’  [en|y]  $:2s
     [toi|toi-même] ?[seul|seule]¿ ?,¿ qui
         <<- />> 2s
 
@@ -2193,7 +2193,7 @@ __immunités__
     jusqu’ à
         <<- !2>>
 
-    [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  @:Y  @:M
+    [comme|que|qu’|lorsque|lorsqu’|puisque|puisqu’|quand|pourquoi|qui|quoi]  ?[ne|n’]¿  ?[se|s’]¿  (*WORD)  ?à¿  [le|la|l’|les]  $:Y  $:M
         <<- morph(\1, ":V") !-2>>
 
     soit pour soit contre
@@ -3657,7 +3657,7 @@ TEST: Laisse ce chiot là où il est !
 
 ### Préfixes
 __tu_préfixe_ex__
-    ex  @:N¬*
+    ex  $:N¬*
         <<- /tu/ not value(\2, "|aequo|nihilo|cathedra|absurdo|abrupto|")
         ->> ex-\2                                                           # S’il s’agit d’un seul mot, il manque un trait d’union.
 
@@ -3669,7 +3669,7 @@ __tu_préfixe_in__
     in [dix-huit|douze|seize|folio|octavo|quarto|plano]
         <<- /tu/ not value(<1, "|drive|plug|sit|") ->> \1-\2                # Il manque un trait d’union.
 
-    in @:N:m¬*
+    in $:N:m¬*
         <<- /tu/ not value(<1, "|drive|plug|sit|") -1>> un                  # Confusion possible : pour le déterminant désignant quelque chose, écrivez “un”.
 
 TEST: Cet {{in folio}} est incroyable.
@@ -3743,7 +3743,7 @@ TEST: une {{sous culture}} passée de mode
 TEST: Sans gêne, il avança parmi nous.
 
 
-    pseudo  @:N¬*
+    pseudo  $:N¬*
         <<- /tu/ ->> pseudo-\2                                                                      # Si vous voulez évoquer le simulacre de “\2”, mettez un trait d’union.
         <<- ~1>> *
 
@@ -4388,7 +4388,7 @@ TEST: je suis allé dans la {{grand’rue}}.                           ->> grand
 !!!! Virgules                                                                                     !!
 
 __virg_dialogue_après_nom_propre__
-    [<start>|,]  @:M¬:G  [/-je|/-tu|/-on|/-nous|/-vous|/-ils|/-elles|/VCimp]
+    [<start>|,]  $:M¬:G  [/-je|/-tu|/-on|/-nous|/-vous|/-ils|/-elles|/VCimp]
         <<- /virg/ -2>> \2,                                                                         # Dialogue ? Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
 TEST: {{Maria}} donnez-vous du temps ?
@@ -4399,13 +4399,13 @@ TEST: Alexandra vient-elle ?
 
 
 __virg_dialogue_avant_nom_propre__
-    /-les  @:M
+    /-les  $:M
         <<- /virg/ morph(\1, ":E", "", 0, -4) -1>> \1,                                              # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
-    [/-le|/-la]  @:M
+    [/-le|/-la]  $:M
         <<- /virg/ morph(\1, ":E", "", 0, -3) -1>> \1,                                              # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
-    /-COD-COI  @:M
+    /-COD-COI  $:M
         <<- /virg/ -1>> \1,                                                                         # Dialogue. Ajoutez une virgule pour mettre en incise la personne à qui s’adresse la réplique.
 
 TEST: {{Oublie-les}} Clara.
@@ -4416,7 +4416,7 @@ TEST: Tape-toi Patrick.
 
 
 __virg_après_verbe_COD__
-    [le|la|l’|les]  @:Y  @:M
+    [le|la|l’|les]  $:Y  $:M
         <<- /virg/ -2>> \2,                                                                         # Une virgule est probablement souhaitable.
 
 TEST: Tu vas les {{donner}} Rachel.
@@ -5090,9 +5090,9 @@ __conf_je_non_verbe__
     j’       ?[en|y]¿                                                             @:¬:(?:V|Ov)
     [je|j’]  [ne|n’|le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]            @:¬:(?:V|Ov)
     [je|j’]  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
-    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
-    [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
+    [je|j’]  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        $:¬:V
+    [je|j’]  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            $:¬:V
+    [je|j’]  ?[ne|n’]¿  [lui|leur]                     en                         $:¬:V
         <<- /conf/ --1>> =suggSimil(\-1, ":(?:1s|Ov)", False)                                       # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: Je ne le {{croix}} pas
@@ -5125,9 +5125,9 @@ __conf_tu_non_verbe__
     tu                                                                       @:¬:(?:V|Ov)
     tu  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     tu  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
-    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
-    tu  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
+    tu  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        $:¬:V
+    tu  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            $:¬:V
+    tu  ?[ne|n’]¿  [lui|leur]                     en                         $:¬:V
         <<- /conf/ not morph(<1, ":(?:2s|V0|R)") --1>> =suggSimil(\-1, ":(?:2s|Ov)", False)         # Incohérence avec “tu” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
 TEST: tu {{croix}} que tu sais quelque chose, mais tu ne sais rien.
@@ -5144,9 +5144,9 @@ __conj_il__
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3s|Ov)
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3s|Ov)
-    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:3s
-    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:3s
-    il  ?[ne|n’]¿  [lui|leur|y]                   en                         @:V¬:3s
+    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        $:V¬:3s
+    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            $:V¬:3s
+    il  ?[ne|n’]¿  [lui|leur|y]                   en                         $:V¬:3s
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conj/ morph(\-1, ":3p") -1>> ils                                                       # Accord avec “\-1”.
 
@@ -5172,9 +5172,9 @@ __conf_il_non_verbe__
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     il  [ne|n’]    [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
-    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
-    il  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
+    il  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        $:¬:V
+    il  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            $:¬:V
+    il  ?[ne|n’]¿  [lui|leur]                     en                         $:¬:V
         <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|") and not value(\-1, "|c’|ce|")
         --1>> =suggSimil(\-1, ":(?:3s|Ov)", False)                                                  # Incohérence avec “\1” : “\-1” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
@@ -5272,10 +5272,10 @@ __conf_c_s_verbe__
     [il|ils|on|ne|n’]  c’
         <<- /conj/ -2>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
-    [<start>|,]  [elle|elles|lui|eux]  c’  ?en¿  >être  ?@:W¿  @:Q
+    [<start>|,]  [elle|elles|lui|eux]  c’  ?en¿  >être  ?$:W¿  $:Q
         <<- /conj/ -3>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
-    [<start>|,]  [elle|elles|lui|eux]  c’  ?en¿  @:V¬>être/
+    [<start>|,]  [elle|elles|lui|eux]  c’  ?en¿  $:V¬:V0e
         <<- /conj/ -3>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
     c’ y
@@ -5329,9 +5329,9 @@ __conj_nous__
 
     [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:(?:1p|Ov)
     [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:(?:1p|Ov)
-    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:1p
-    [<start>|,]  nous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:1p
-    [<start>|,]  nous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  $:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      $:V¬:1p
+    [<start>|,]  nous  ?[ne|n’]¿  [lui|leur]                     en                   $:V¬:1p
         <<- /conj/ --1>> =suggVerb(\-1, ":1p")                                                      # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: Nous {{arriverez}} demain.
@@ -5350,9 +5350,9 @@ __conj_vous__
 
     [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:(?:2p|Ov)
     [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:(?:2p|Ov)
-    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  @:V¬:2p
-    [<start>|,]  vous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      @:V¬:2p
-    [<start>|,]  vous  ?[ne|n’]¿  [lui|leur]                     en                   @:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  $:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      $:V¬:2p
+    [<start>|,]  vous  ?[ne|n’]¿  [lui|leur]                     en                   $:V¬:2p
         <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                                      # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: Vous {{arrivais}} trop tard.
@@ -5373,9 +5373,9 @@ __conj_ils__
 
     ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:V¬:(?:3p|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:V¬:(?:3p|Ov)
-    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:V¬:3p
-    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:V¬:3p
-    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:3p
+    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        $:V¬:3p
+    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            $:V¬:3p
+    ils  ?[ne|n’]¿  [lui|leur]                     en                         $:V¬:3p
         <<- /conj/ --1>> =suggVerb(\-1, ":3p")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du pluriel.
         <<- /conj/ morph(\-1, ":3s") -1>> il                                                        # Accord avec “\-1”.
 
@@ -5396,9 +5396,9 @@ __conf_ils_non_verbe__
 
     ils  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
     ils  ?[ne|n’]¿  [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]  @:¬:(?:V|Ov)
-    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        @:¬:V
-    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            @:¬:V
-    ils  ?[ne|n’]¿  [lui|leur]                     en                         @:¬:V
+    ils  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]        $:¬:V
+    ils  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]            $:¬:V
+    ils  ?[ne|n’]¿  [lui|leur]                     en                         $:¬:V
         <<- /conf/ not morph(<1, ":3p") and not value(<1, "|t’|")
         -3>> =suggSimil(\3, ":(?:3p|Ov)", False)                                                    # Incohérence avec “ils” : “\3” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
@@ -6076,7 +6076,7 @@ TEST: il était très {{habille}}
 
 __conf_aussi_adj_que_soit__
     aussi  *WORD  [que|qu’]  [soi|>être|>soie]  [un|une|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines]
-    aussi  *WORD  [que|qu’]  [soi|>être|>soie]  @:M
+    aussi  *WORD  [que|qu’]  [soi|>être|>soie]  $:M
         <<- /conf/ morph(\2, ":V1.*:Y", ":[AW]") -2>> =suggVerbPpas(\2)     # Confusion probable. Dans l’expression “aussi <X> que soit quelque chose ou quelqu’un”, <X> doit être un adjectif.
         <<- /conf/ \4 == "soie" or \4 == "soies" -4>> soit|soient           # Confusion. La soie est une matière filamenteuse produite par les chenilles et utilisée pour le textile.
         <<- /conj/ morph(\4, ":V", ":3[sp]") -4>> soit|soient               # Conjugaison erronée. Ce verbe devrait être à la 3ᵉ personne.
@@ -6242,10 +6242,10 @@ TEST: en à peine vingt ans
 
 
 __conf_à_a_infinitif__
-    a  @:Y¬:G
-    a  [ne|n’|me|m’|te|t’|se|s’|en|y|lui|nous|vous]  @:Y
-    a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] @:Y
-    a  [le|la|l’|les|leur]  @:Y¬:N
+    a  $:Y¬:G
+    a  [ne|n’|me|m’|te|t’|se|s’|en|y|lui|nous|vous]  $:Y
+    a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] $:Y
+    a  [le|la|l’|les|leur]  $:Y¬:N
         <<- /conf/ not value(<1, "|il|elle|on|n’|m’|t’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
         -1>> à                                                      # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -7131,7 +7131,7 @@ TEST: {{se à qui}} on pense
 
 # ces / ses / c’est
 __conf_ces_ses_c_est__
-    [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  @:D
+    [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  $:D
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  [que|qu’]
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  [l’|d’]
     [ses|ces] [à|au-dessus|avec|au|aux|comme|envers|contre|derrière|devant|par|pour|sans|sur]  {pronom_obj}
@@ -7687,14 +7687,14 @@ __conf_évidemment_évidement__
     [pas|plus] évidement
         <<- /conf/ --1>> évidemment                         # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
 
-    [par|pour|sans] évidement [@:Y|ne|n’|me|m’|te|t’|se|s’]
+    [par|pour|sans] évidement [$:Y|ne|n’|me|m’|te|t’|se|s’]
         <<- /conf/ -2>> évidemment                          # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
 
     évidement
         <<- /conf/ morph(<1, ":V", ":A") ->> évidemment     # Confusion probable : l’évidement est l’action de vider quelque chose. L’adverbe s’écrit “évidemment”.|https://fr.wiktionary.org/wiki/évidemment
 
     [un|l’|cet]  évidemment  [<end>|,]
-    [un|l’|cet]  évidemment  @:¬:A
+    [un|l’|cet]  évidemment  $:¬:A
         <<- /conf/ -2>> évidement                           # Confusion probable : “évidemment” est un adverbe. L’action de “vider” s’écrit “évidement”.|https://fr.wiktionary.org/wiki/évidement
 
 TEST: Donne-moi {{évidement}} ça.
@@ -7872,14 +7872,14 @@ __conf_forcément_forcement__
     [pas|plus] forcement
         <<- /conf/ --1>> forcément                          # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
 
-    [par|pour|sans] forcement [@:Y|ne|n’|me|m’|te|t’|se|s’]
+    [par|pour|sans] forcement [$:Y|ne|n’|me|m’|te|t’|se|s’]
         <<- /conf/ -2>> forcément                           # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
 
     forcement
         <<- /conf/ morph(<1, ":V", ":A") ->> forcément      # Confusion probable : le forcement est l’action de forcer quelque chose. L’adverbe s’écrit “forcément”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
 
     [un|le|ce|au]  forcément  [<end>|,]
-    [un|le|ce|au]  forcément  @:¬:A
+    [un|le|ce|au]  forcément  $:¬:A
         <<- /conf/ -2>> forcement                           # Confusion probable : “forcément” est un adverbe. L’action de “forcer” s’écrit “forcement”.|https://fr.wiktionary.org/wiki/forc%C3%A9ment
 
 TEST: Viendra-t-il {{forcement}} demain.
@@ -8346,13 +8346,13 @@ TEST: qui on blâme, ce soir ?
 
 
 __conf_on_ont__
-    [<start>|,|@:Cs] ?l’¿ (ont) [ne|n’|me|m’|te|se|s’]
-    [<start>|,|@:Cs] ?l’¿ (ont) [lui|nous|vous] @:[123][sp]¬:G
-    [<start>|,|@:Cs] ?l’¿ (ont) [leur|le|la|l’] @:[123][sp]¬:(?:G|[NA].*:[si])
-    [<start>|,|@:Cs] ?l’¿ (ont) @:[123][sp]¬:[GQ]|>(?:envie|peine|affaire|hâte|force|recours|somme)/
+    [<start>|,|$:Cs] ?l’¿ (ont) [ne|n’|me|m’|te|se|s’]
+    [<start>|,|$:Cs] ?l’¿ (ont) [lui|nous|vous] @:[123][sp]¬:G
+    [<start>|,|$:Cs] ?l’¿ (ont) [leur|le|la|l’] @:[123][sp]¬:(?:G|[NA].*:[si])
+    [<start>|,|$:Cs] ?l’¿ (ont) @:[123][sp]¬:[GQ]|>(?:envie|peine|affaire|hâte|force|recours|somme)/
         <<- /conf/ -1>> on                                          # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
-    [<start>|,|@:Cs] ?l’¿ ont t’
+    [<start>|,|$:Cs] ?l’¿ ont t’
         <<- /conf/ not value(>1, "|il|ils|elle|elles|") --2>> on    # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
     ~-ont$
@@ -8397,7 +8397,7 @@ __conf_où_ou__
         <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     ou et [comment|que|qui|quand|pourquoi|quel|quels|quelle|quelles]
-    ou et @:R
+    ou et $:R
         <<- /conf/ -1>> où                                  # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     vers ou
@@ -8485,7 +8485,7 @@ TEST: Elle travaillait par à-coups, après de longues périodes de repos.
 
 # par-dessus / pardessus
 __conf_par_dessus__
-    pardessus  [bord|@:D]
+    pardessus  [bord|$:D]
         <<- /conf/ not morph(<1, ":D.*:[me]|>(?:grande|petite)/")
         -1>> par-dessus                                                     # Confusion probable. Un pardessus est un vêtement. Pour la préposition, écrivez “par-dessus”.
 
@@ -8717,10 +8717,10 @@ TEST: Ils ont découvert le {{poteau rose}}.
 # prêt / près / pré
 __conf_prêt_près_pré__
     près à [ne|n’|me|m’|te|t’|se|s’]
-    près à ?[le|la|l’|les|en|nous|vous|lui|leur|y|tout]¿ @:Y
-    près à [nous|vous]     [le|la|l’|les|en|y]           @:Y
-    près à [le|la|l’|les]  [lui|leur|en|y]               @:Y
-    près à [lui|leur|y]    en                            @:Y
+    près à ?[le|la|l’|les|en|nous|vous|lui|leur|y|tout]¿ $:Y
+    près à [nous|vous]     [le|la|l’|les|en|y]           $:Y
+    près à [le|la|l’|les]  [lui|leur|en|y]               $:Y
+    près à [lui|leur|y]    en                            $:Y
         <<- /conf/ not value(<1, "|peu|de|") and not before("(?i)\\bau plus $")
         -1>> prêt|prêts                                                     # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
@@ -8738,13 +8738,13 @@ __conf_près_prêt_pré__
         <<- /conf/ -2>> près                                                # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes.
 
     >prêt [de|d’] [ne|n’|me|m’|te|t’|se|s’]
-    >prêt [de|d’] ?[le|la|l’|les|en|nous|vous|lui|leur|y|tout]¿ @:Y
-    >prêt [de|d’] [nous|vous]     [le|la|l’|les|en|y]           @:Y
-    >prêt [de|d’] [le|la|l’|les]  [lui|leur|en|y]               @:Y
-    >prêt [de|d’] [lui|leur|y]    en                            @:Y
+    >prêt [de|d’] ?[le|la|l’|les|en|nous|vous|lui|leur|y|tout]¿ $:Y
+    >prêt [de|d’] [nous|vous]     [le|la|l’|les|en|y]           $:Y
+    >prêt [de|d’] [le|la|l’|les]  [lui|leur|en|y]               $:Y
+    >prêt [de|d’] [lui|leur|y]    en                            $:Y
         <<- /conf/ -1>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
-    >prêt [de|d’] [toi|vous|lui|elle|eux|elles|@:M]
+    >prêt [de|d’] [toi|vous|lui|elle|eux|elles|$:M]
         <<- /conf/ not morph(<1, ":D") and not before("(?i)\\b(obten|obt[iî])")
         -1>> près                                                           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
@@ -8918,7 +8918,7 @@ TEST: Elle veut savoir combien même si ça ne lui est d’aucune utilité immé
 # quel que soit
 __conf_quel_que_soit__
     >quelque [soi|sois|soit|soient]
-    >quelque >soie @:D
+    >quelque >soie $:D
         <<- /conf/ -1:2>> quel que soit|quelle que soit|quels que soient|quelles que soient         # Confusion : “quelque” est un déterminant.|https://fr.wiktionary.org/wiki/quel_que_soit
 
 TEST: {{quelques soient}} les avantages d’un correcteur…
@@ -9097,7 +9097,7 @@ TEST: Nous allons le {{résonner}}.
 __conf_repaire_repère__
     >repère  [dangereux|>sécurisée]
     >repère  [de|du|d’|des]  [>assassin|>bandit|>brigand|>cambrioleuse|>corsaire|>criminelle|>dragon|>escroc|>fanatique|>filou|>flibustière|>flibuste|>gangster|>lionne|>louve|>mafiosi|>mafioso|>malfaitrice|>malfrat|>maraudeuse|>monstre|>murène|ours|>pick-pocket|>pickpocket|>pillarde|>pirate|>scélérate|>taupe|>tigre|>truande|>voleuse|>voyou|>yéti]
-    >repère  de  @:D         [>assassin|>bandit|>brigand|>cambrioleuse|>corsaire|>criminelle|>dragon|>escroc|>fanatique|>filou|>flibustière|>flibuste|>gangster|>lionne|>louve|>mafiosi|>mafioso|>malfaitrice|>malfrat|>maraudeuse|>monstre|>murène|ours|>pick-pocket|>pickpocket|>pillarde|>pirate|>scélérate|>taupe|>tigre|>truande|>voleuse|>voyou|>yéti]
+    >repère  de  $:D         [>assassin|>bandit|>brigand|>cambrioleuse|>corsaire|>criminelle|>dragon|>escroc|>fanatique|>filou|>flibustière|>flibuste|>gangster|>lionne|>louve|>mafiosi|>mafioso|>malfaitrice|>malfrat|>maraudeuse|>monstre|>murène|ours|>pick-pocket|>pickpocket|>pillarde|>pirate|>scélérate|>taupe|>tigre|>truande|>voleuse|>voyou|>yéti]
         <<- /conf/ morph(<1, ":D") -1>> =\1.replace("è", "ai").replace("È", "AI")
         # Confusion probable. Un répère est une marque laissée pour retrouver quelque chose. Pour le lieu où se cachent des personnes ou des animaux, écrivez “repaire”.|https://fr.wiktionary.org/wiki/repaire
 
@@ -9145,7 +9145,7 @@ TEST: Tous adorent le {{ri}} basmati.
 
 # saint / sain / sein / seing
 __conf_saint_sain_sein_seing__
-    [sain|sains|>sein]  @:M1
+    [sain|sains|>sein]  $:M1
         <<- /conf/ morph(<1, ":(?:R|[123][sp])|<start>") -1>> saint
         # Confusion : “sain” signifie “en bonne santé”, le sein est un organe thoracique féminin. Pour évoquer ce qui est “sanctifié”, écrivez “saint”.|https://fr.wiktionary.org/wiki/saint
 
@@ -9351,7 +9351,7 @@ __conf_sot_seau_sceau__
     [>sceau|sot|sots] [rempli+ses|percé+ses|>vide|troué+ses|renversé+ses|plein+s]
         <<- /conf/ -1>> seau|seaux                  # Confusion probable. Pour désigner un récipient, écrivez “seau”.|https://fr.wiktionary.org/wiki/seau
 
-    dans @:D [>sceau|sot|sots]
+    dans $:D [>sceau|sot|sots]
         <<- /conf/ -3>> seau|seaux                  # Confusion probable. Pour désigner un récipient, écrivez “seau”.|https://fr.wiktionary.org/wiki/seau
 
     [>seau|sot|sots] du [roi|secret|ministre|ministère|duc|baron|cardinal|pape]
@@ -9382,11 +9382,11 @@ __conf_sûr_sur__
     sur et @¬:R
     sur [que|qu’]
     sur [de|d’] {pronom_obj}
-    sur [de|d’] @:M
+    sur [de|d’] $:M
     sur [de|d’] [ne|n’|me|m’|te|t’|se|s’]
     sur [de|d’] [le|les|mon|ton|son|ma|ta|sa|mes|tes|ses|ce|cet|cette|ces|cela|ceci|ça]
-    sur [de|d’] [la|l’] @:Y
-    sur [de|d’] @:Y
+    sur [de|d’] [la|l’] $:Y
+    sur [de|d’] $:Y
         <<- /conf/ -1>> sûr
         # Confusion probable : “sur” est une préposition ou un adjectif signifiant acide ou aigre ; utilisez “sûr” pour certain, vrai ou sans danger.|http://fr.wiktionary.org/wiki/sur
 
@@ -9608,7 +9608,7 @@ __conf_voir_voire__
     [>aller|>falloir|>pouvoir|>vouloir]  ?[guère|jamais|pas|plus|point|rien]¿   voire
         <<- /conf/ --1>> voir           # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
 
-    [et|ou] voire  @:D
+    [et|ou] voire  $:D
         <<- /conf/ -2>> voir            # Confusion probable : “voire” signifie “et même possiblement”. Pour le verbe, écrivez “voir”.|https://fr.wiktionary.org/wiki/voire
 
 TEST: Elles sont fatiguées, {{voir}} épuisées.
@@ -11556,7 +11556,7 @@ __purge_locutions__
     sans pour autant y prendre [garde|goût|gout]
     sans [que|qu’] je le [sache|susse]
     sans [que|qu’] tu le [saches|susses]
-    sans [que|qu’] [il|elle|on|@:M] le [sache|sût]
+    sans [que|qu’] [il|elle|on|$:M] le [sache|sût]
     sans [que|qu’] nous le [sachions|sussions]
     sans [que|qu’] vous le [sachiez|sussiez]
     sans [que|qu’] [ils|elles] le [sachent|sussent]
@@ -11748,7 +11748,7 @@ __gestion_mots_grammaticaux__
     à seule fin         [de|d’]
         <<- ~2:3>> *
 
-    à travers @:D
+    à travers $:D
     à travers >différente
         <<- ~2>> *
 
@@ -11781,7 +11781,7 @@ __gestion_mots_grammaticaux__
     ceux et [celle|celles] qui
         <<- ~2:3>> *
 
-    comme tant d’ autres  @:R
+    comme tant d’ autres  $:R
         <<- ~1:4>> *
 
     compte tenu [de|des|du]
@@ -12545,17 +12545,17 @@ __simplification_noms_propres__
     @:M[12]  [Le|La|von|van|Mac|Mc|De|Du|D’]  *WORD
         <<- \3.istitle() ~2:0>> *
 
-    [de|d’]  @:M  [et|ou]  [de|d’]  @:M
-    [de|d’]  @:M
+    [de|d’]  $:M  [et|ou]  [de|d’]  $:M
+    [de|d’]  $:M
         <<- ~>> *
 
-    entre  @:M  et  @:M
+    entre  $:M  et  $:M
         <<- ~>> *
 
-    entre  @:N  et  @:N
+    entre  $:N  et  $:N
         <<- \2.istitle() and \4.istitle() ~>> *
 
-    en  @:MP
+    en  $:MP
         <<- ~>> *
 
     [le|ce|du]  [baron|docteur|député|duc|frère|ministre|prince|professeur|président|roi|sénateur|mir]  @:M[12]
@@ -12565,7 +12565,7 @@ __simplification_noms_propres__
     [Mr|Mlle|Mme|Mgr|miss]  ~^[A-ZÉÈÊ]
         <<- ~2>> *
 
-    @:Cs  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
+    $:Cs  ~^[A-ZÉÈÊ]  et  [moi|toi|lui|elle|nous|vous|eux|elles]
         <<- morph(\2, ":M") and not before("\\b(?:plus|moins|aussi) .* que +$")
         ~2:4>> =rewriteSubject(\2,\4) + "||"
 
@@ -12732,17 +12732,17 @@ __purge_après_avoir__
         <<- ~3:0>> ␣
         <<- =>> define(\3, [":LV"])
 
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
         <<- ~2:-2>> *
 
-    n’  >avoir  que  @:Q
+    n’  >avoir  que  $:Q
         <<- ~3>> *
 
-    n’  >avoir  que  @:W  @:Q
+    n’  >avoir  que  $:W  $:Q
         <<- ~3:4>> *
 
-    n’  >avoir  que  [peu|très|trop]  @:W  @:Q
+    n’  >avoir  que  [peu|très|trop]  $:W  $:Q
         <<- ~3:5>> *
 
     /VCint  [pas|jamais|plus|guère|point]
@@ -12791,24 +12791,24 @@ __purge_après_avoir__
 
 
 __purge_après_verbe__
-    @:V  ?pas¿  jour et nuit
-    @:V  ?pas¿  nuit et jour
-    @:V  quand même pas
-    @:V  [moi|toi|lui|elle|nous|vous|eux|elles]  aussi
-    @:V  même
+    $:V  ?pas¿  jour et nuit
+    $:V  ?pas¿  nuit et jour
+    $:V  quand même pas
+    $:V  [moi|toi|lui|elle|nous|vous|eux|elles]  aussi
+    $:V  même
     @:[123]  bien [entendu|sûr]
     @:[123]  ?pas¿  juste
     @:[123]  ?pas¿  ensemble
     @:[123]  ?pas¿  ?[fort|très|super]¿  [bien|mal]
         <<- ~2:0>> *
 
-    [>pouvoir|>savoir|>vouloir] mieux que personne ?@:W¿ @:[YG]
-    >avoir                      mieux que personne ?@:W¿ @:[QYG]
-    >être                       mieux que personne ?@:W¿ @:[QAYG]
+    [>pouvoir|>savoir|>vouloir] mieux que personne ?$:W¿ @:[YG]
+    >avoir                      mieux que personne ?$:W¿ @:[QYG]
+    >être                       mieux que personne ?$:W¿ @:[QAYG]
         <<- ~2:-2>> *
 
-    >avoir  pour [lui|nous|vous|longtemps]  ?@:W¿  @:Q
-    >être   pour [lui|nous|vous|longtemps]  ?@:W¿  @:[QA]
+    >avoir  pour [lui|nous|vous|longtemps]  ?$:W¿  $:Q
+    >être   pour [lui|nous|vous|longtemps]  ?$:W¿  @:[QA]
         <<- ~2:-2>> *
 
 
@@ -12886,7 +12886,7 @@ __purge_adverbes__
     [assez|trop]  ~ment$
         <<- morph(\2, ":W", ":3p") ~>> *
 
-    @:[NAQ]  [le|la]  [plus|moins]  ~.ment$  @:A
+    @:[NAQ]  [le|la]  [plus|moins]  ~.ment$  $:A
         <<- morph(\4, ":W", ":A") ~2:4>> *
 
     complètement
@@ -14571,7 +14571,7 @@ TEST: les quelque 12 000 stations-service
 
 ## Nombres
 __gn_nombre_lettres_1m__
-    @:B:e:p  *WORD
+    $:B:e:p  *WORD
         <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
             or \2 in aREGULARPLURAL) and not re.search("^[IVXLDM]+$", \1)
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
@@ -15417,7 +15417,7 @@ TEST: Les avocats sont pleins de nutriments.
 # point / poing
 __conf_poing_point__
     [>arme|>coup|>oiseau] de >point
-    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] @:D >point
+    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] $:D >point
         <<- /conf/ -3>> =\3.replace("t", "g").replace("T", "G")             # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
 
     >point [américain|américains|>serrer|>desserrer|>lever|>casser|>lier]
@@ -15742,8 +15742,8 @@ TEST: baptême de l’{{aire}}
 
 # auspice / hospice
 __conf_auspices_hospices__
-    sous [les|de|des|ces] ?*WORD¿ (hospices)
-        <<- /conf/ -1>> auspices        # Confusion probable. L’hospice est un centre de soins.|https://fr.wiktionary.org/wiki/auspice
+    sous [les|de|des|ces] ?*WORD¿ hospices
+        <<- /conf/ --1>> auspices       # Confusion probable. L’hospice est un centre de soins.|https://fr.wiktionary.org/wiki/auspice
 
     [>être|>aller|>rester|>demeurer|>partir]  [à|dans|de]  l’ auspice
         <<- /conf/ -4>> hospice         # Confusion. Les auspices sont des présages, des devins ou, au sens moderne, les circonstances.|https://fr.wiktionary.org/wiki/auspice
@@ -15878,7 +15878,7 @@ __conf_bitte_bite__
 
     [ma|ta|sa|notre|votre|nos|vos|leur|leurs|grande+s|grosse+s|petite+s|longue+s|>énorme|>minuscule|>sale] >bitte
     >être [une|des] >bitte
-    [>aimer|>adorer|>astiquer|>avaler|>bouffer|>branler|>fourrer|>lécher|>mettre|>mordre|>pomper|>sucer] @:D >bitte
+    [>aimer|>adorer|>astiquer|>avaler|>bouffer|>branler|>fourrer|>lécher|>mettre|>mordre|>pomper|>sucer] $:D >bitte
         <<- /conf/ --1>> =\-1.replace("itte", "ite")                    # Confusion probable. Si vous parlez de pénis, écrivez “bite” (terme argotique).|https://fr.wiktionary.org/wiki/bite
 
     >bitte [>circoncise|>dégueulasse|>dure|>molle|>puante|>raide|>répugnante|>sale|vidé+ses]
@@ -15981,7 +15981,7 @@ TEST: il s’était des journées entières consacré à son jeu favori.
 # ce / se
 __conf_ce_se_verbe__
     [<start>|,] se [ne|n’] [>être|>devoir|>pouvoir]
-    [<start>|,] se [sera|serait|seraient|sont|seront|fut|fût|furent|fussent] @:D
+    [<start>|,] se [sera|serait|seraient|sont|seront|fut|fût|furent|fussent] $:D
     [<start>|,] se >devoir être
     [<start>|,] se >pouvoir être
         <<- /conf/ -2>> ce                              # Confusion probable. Si vous voulez dire, “ceci”, “cela” ou “ça”, écrivez “c’”.||http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=2440
@@ -15995,7 +15995,7 @@ TEST: À la pause, ils se sont tous les deux assis à l’arrière, et j’ai vu
 
 # coli / colis
 __conf_colis_coli2__
-    [>affranchir|>attendre|>dédouaner|>dédouanement|>délivrer|>déposer|>égarer|>emballage|>emballer|>envoyer|>envoi|>expédier|>réexpédier|>expédition|>réexpédition|>fermer|>refermer|>livrer|>livraison|>ouvrir|>rouvrir|>ouverture|>réouverture|>perdre|>perte|>pesage|>peser|>porter|>réception|>recevoir|>transporter|>transport|>suivre|dans] @:D coli
+    [>affranchir|>attendre|>dédouaner|>dédouanement|>délivrer|>déposer|>égarer|>emballage|>emballer|>envoyer|>envoi|>expédier|>réexpédier|>expédition|>réexpédition|>fermer|>refermer|>livrer|>livraison|>ouvrir|>rouvrir|>ouverture|>réouverture|>perdre|>perte|>pesage|>peser|>porter|>réception|>recevoir|>transporter|>transport|>suivre|dans] $:D coli
         <<- /conf/ --1>> colis                          # Confusion probable. Si vous parlez d’un paquet, écrivez “colis”.|https://fr.wiktionary.org/wiki/colis
 
     coli [>délivrer|>égarer|>envoyer|>livrer|>oublier|>suspecte|>piéger|>neutraliser]
@@ -16060,12 +16060,12 @@ TEST: Il a le cancer du {{colon}}.
 
 # censé / sensé
 __conf_censé_sensé__
-    >être >sensée [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]        @:Y
-    >être >sensée ?[ne|n’]¿ [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    @:Y
-    >être >sensée ?[ne|n’]¿ [me|m’|te|t’|se|s’|nous|vous] [le|la|l’|les|en|y]           @:Y
-    >être >sensée ?[ne|n’]¿ [le|la|l’|les]                [lui|leur|en|y]               @:Y
-    >être >sensée ?[ne|n’]¿ [lui|leur]                    en                            @:Y
-    >être >sensée @:Y
+    >être >sensée [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]        $:Y
+    >être >sensée ?[ne|n’]¿ [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]    $:Y
+    >être >sensée ?[ne|n’]¿ [me|m’|te|t’|se|s’|nous|vous] [le|la|l’|les|en|y]           $:Y
+    >être >sensée ?[ne|n’]¿ [le|la|l’|les]                [lui|leur|en|y]               $:Y
+    >être >sensée ?[ne|n’]¿ [lui|leur]                    en                            $:Y
+    >être >sensée $:Y
     >être >sensée ne [pas|plus|jamais|rien|guère|point]
         <<- /conf/ not value(<1, "|l’|un|les|des|ces|")
         -2>> =\2.replace("sens", "cens").replace("Sens", "Cens").replace("SENS", "CENS")            # Confusion : “sensé” se dit de quelqu’un de “bon sens”. Pour ce qui est attendu, écrivez “censé”.
@@ -16230,7 +16230,7 @@ TEST: De fraîche date…
 
 # délacer / délasser
 __conf_délacer_délasser__
-    >délasser  @:D  [>basket|>camisole|>chaussure|>corsage|>corset|>godasse|>godillot|>grolle|>jupe|>pompe|>lacet|>ranger|>robe|>soulier|>voile]
+    >délasser  $:D  [>basket|>camisole|>chaussure|>corsage|>corset|>godasse|>godillot|>grolle|>jupe|>pompe|>lacet|>ranger|>robe|>soulier|>voile]
         <<- /conf/ -1>> =\1.replace("ssa", "ça").replace("ss", "c")                                 # Confusion probable. Pour défaire des lacets, des nœuds, etc., écrivez “délacer”.
 
     [>basket|>camisole|>chaussure|>corsage|>corset|>godasse|>godillot|>grolle|>jupe|>pompe|>lacet|>ranger|>robe|>soulier|>voile]  >délasser
@@ -16332,7 +16332,7 @@ __conf_enduire_induire__
     en >avoir enduit [que|qu’]
         <<- /conf/ -3>> =\3.replace("end", "ind").replace("End", "Ind").replace("END", "IND")       # Confusion probable. “Enduire” signifie “appliquer un enduit”.|https://fr.wiktionary.org/wiki/induire
 
-    >induire @:D¬>de/ [bras|>façade|>cuisse|>fond|>jambe|>lèvre|>main|>mollet|>mur|>ongle|>paroi|>peau|>pied|>plafond|>porte|>sol|>toit|>tuile|>verre|>visage]
+    >induire $:D¬>de/ [bras|>façade|>cuisse|>fond|>jambe|>lèvre|>main|>mollet|>mur|>ongle|>paroi|>peau|>pied|>plafond|>porte|>sol|>toit|>tuile|>verre|>visage]
     >induire [de|le|ce|cet] [beurre|caramel|ciment|chocolat|gel|goudron|miel|mortier|nutella|plâtre|rouge|téflon|sang|savon|suif|vernis]
     >induire [de|la|cette] [boue|chaux|cire|colle|crême|couche|glu|graisse|lotion|pâte|peinture|pommade|résine|salive|vaseline]
         <<- /conf/ -1>> =\1.replace("ind", "end").replace("Ind", "End").replace("IND", "END")       # Confusion probable. Pour “appliquer un enduit”, écrivez “enduire”.|https://fr.wiktionary.org/wiki/induire
@@ -16494,7 +16494,7 @@ TEST: Aujourd’hui, n’en faites pas trop.
 
 # filtre / philtre
 __conf_filtre_philtre2__
-    >boire @:D >filtre
+    >boire $:D >filtre
         <<- /conf/ -3>> philtre|philtres
         # Confusion probable. Un filtre est un intrument de filtrage, un philtre est une boisson (magique) procurant des effets sur le buveur.|https://fr.wiktionary.org/wiki/philtre
 
@@ -16504,7 +16504,7 @@ TEST: il but un {{filtre}}.
 # flanc / flan
 __conf_flanc_flan2__
     >blesser au flan
-    [>attaquer|>contre-attaquer] ?[sur|sous|à|contre]¿ @:D >flan
+    [>attaquer|>contre-attaquer] ?[sur|sous|à|contre]¿ $:D >flan
         <<- /conf/ --1>> =\-1.replace("n", "nc").replace("N", "NC")         # Confusion probable. Le flan est une pâtisserie. Pour évoquer un côté, une partie latérale, écrivez “flanc”.
 
 TEST: Il avait été blessé au {{flan}}.
@@ -16633,7 +16633,7 @@ TEST: Des gouttes de pluie.
 
 
 __conf_goûter_goutter_dégoûter_dégoutter__
-    >goutter ?à¿ @:D [>biscuit|>bière|>bon|>bonbon|>breuvage|>burger|>café|>cidre|>cocktail|>chocolat|>crêpe|>cru|>délice|>délicieuse|>délicieuse|>dessert|>fameux|>fameuse|>féculent|>fromage|>fruit|>gâteau|>hamburger|>légume|>nourriture|paradis|>pâte|>pain|>plat|>pâtisserie|>poisson|>poulet|>recette|repas|>sandwich|>soupe|>tarte|>tartelette|>sauce|>succulente|>thé|>viande|>vin|>yaourt|>yoghourt]
+    >goutter ?à¿ $:D [>biscuit|>bière|>bon|>bonbon|>breuvage|>burger|>café|>cidre|>cocktail|>chocolat|>crêpe|>cru|>délice|>délicieuse|>délicieuse|>dessert|>fameux|>fameuse|>féculent|>fromage|>fruit|>gâteau|>hamburger|>légume|>nourriture|paradis|>pâte|>pain|>plat|>pâtisserie|>poisson|>poulet|>recette|repas|>sandwich|>soupe|>tarte|>tartelette|>sauce|>succulente|>thé|>viande|>vin|>yaourt|>yoghourt]
         <<- /conf/ -1>> =\1.replace("outt", "oût").replace("OUTT", "OÛT")
         # Confusion : “goutter” signifie “couler goutte à goutte”. Pour l’usage du goût, écrivez “goûter”.|https://fr.wiktionary.org/wiki/go%C3%BBter
 
@@ -16755,14 +16755,14 @@ __conf_lieux_lieues_lieus__
     [>lieue|lieus] [>aménager|>abandonner|>insolite|>éloigner|>réserver|>sacrer|>connaître|>méconnaître|>privilégier|>priver]
         <<- /conf/ morph(\2, ":Q") -1>> lieu|lieux              # Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
 
-    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|@:B]  [lieux|lieus]
+    [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  [quelques|plusieurs|maintes|*NUM|$:B]  [lieux|lieus]
         <<- /conf/ --1>> lieues                                 # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     [>être|>demeurer|>déménager|>habiter|>trouver|>situer|>rester|>demeurer|>demeure|>vivre]  à  des  [lieux|lieus]
         <<- /conf/ space_after(\2, 1, 4) --1>> lieues           # Confusion probable. Pour désigner une distance, écrivez “lieues”.|http://fr.wiktionary.org/wiki/lieue
 
     *NUM >lieu sous [la|les] >mer
-    @:B  >lieu sous [la|les] >mer
+    $:B  >lieu sous [la|les] >mer
         <<- /conf/ -2>> lieues                                  # Confusion. Pour désigner une distance, écrivez “lieue(s)”.|http://fr.wiktionary.org/wiki/lieue
 
     [lieux|>lieue] [>jaune|>noire|>mordre]
@@ -16849,15 +16849,15 @@ TEST: {{Mat}} de misaine
 
 # mâter / mater
 __conf_mater_mâter__
-    >mâter  @:D  [>adversaire|>armée|>cavalière|>cheval|>chienne|>conne|>connard|>connasse|>cul|>dame|>enfoirée|>emmerdeuse|>enfant|>ennemie|>enculée|>femme|>fesse|>fille|fils|>folle|>foule|>gamine|>garçonne|>homme|>horde|>incendie|>insurrection|>jument|>lionne|>nation|>peuple|>pion|>pute|>rebelle|>rebellion|>reine|>roi|>sein|>salope|>tigresse|>tour|>troupe]
+    >mâter  $:D  [>adversaire|>armée|>cavalière|>cheval|>chienne|>conne|>connard|>connasse|>cul|>dame|>enfoirée|>emmerdeuse|>enfant|>ennemie|>enculée|>femme|>fesse|>fille|fils|>folle|>foule|>gamine|>garçonne|>homme|>horde|>incendie|>insurrection|>jument|>lionne|>nation|>peuple|>pion|>pute|>rebelle|>rebellion|>reine|>roi|>sein|>salope|>tigresse|>tour|>troupe]
         <<- /conf/ -1>> =\1.replace("ât", "at").replace("ÂT", "AT")
         # Confusion. “Mâter” signifie “dresser un mât”. Si vous voulez dire “dompter” (ou argotiquement “regarder”), écrivez “mater”.|https://fr.wiktionary.org/wiki/mater
 
-    >mâter en [*NUM|@B] coups
+    >mâter en [*NUM|$B] coups
         <<- /conf/ -1>> =\1.replace("ât", "at").replace("ÂT", "AT")
         # Confusion. “Mâter” signifie “dresser un mât”. Si vous voulez dire “dompter” ou “mettre en échec”, écrivez “mater”.|https://fr.wiktionary.org/wiki/mater
 
-    >mater  @:D  [>aviron|>bateau|>canot|>catamaran|>goélette|>navire|>trimaran|>vaisseau|>voilier]
+    >mater  $:D  [>aviron|>bateau|>canot|>catamaran|>goélette|>navire|>trimaran|>vaisseau|>voilier]
         <<- /conf/ -1>> =\1.replace("ât", "at").replace("ÂT", "AT")
         # Confusion. “Mater” signifie “dompter” ou (argotiquement) “regarder”. Si vous voulez dire “dresser un mât”, écrivez “mâter”.|https://fr.wiktionary.org/wiki/mâter
 
@@ -16936,13 +16936,13 @@ __conf_panser_penser__
         # Confusion probable. Pour évoquer les soins prodigués, écrivez “panser”.|https://fr.wiktionary.org/wiki/panser
 
     >panser à autre chose
-    >panser à @:D [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
+    >panser à $:D [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
     >panser [au|aux] [>amie|>bébé|>chienne|>chatte|>cul|>descendante|>descendance|>enfant|>famille|>femme|>fesse|>fille|>garçon|>héritage|>héritière|>leçon|>mari|>maîtresse|>maitresse|>parent|>voisin]
-    >panser à [dieu|moi|toi|lui|elle|nous|vous|eux|elles|@:M]
+    >panser à [dieu|moi|toi|lui|elle|nous|vous|eux|elles|$:M]
     >panser à [ne|n’|me|m’|te|t’|se|s’]
-    >panser à [le|la|l’|les|en|lui|leur|y]      @:Y
-    >panser à [le|la|l’|les]  [lui|leur|en|y]   @:Y
-    >panser à [lui|leur]      en                @:Y
+    >panser à [le|la|l’|les|en|lui|leur|y]      $:Y
+    >panser à [le|la|l’|les]  [lui|leur|en|y]   $:Y
+    >panser à [lui|leur]      en                $:Y
         <<- /conf/ -1>> =\1.replace("an", "en").replace("AN", "EN")
         # Confusion probable. Pour évoquer les pensées qu’on a pour quelqu’un ou quelque chose, écrivez “penser”.|https://fr.wiktionary.org/wiki/penser
 
@@ -17085,7 +17085,7 @@ __conf_péché_pêcher2__
     >pêcher par [insuffisance|omission|orgueil]
         <<- /conf/ -1>> pécher                                  # Confusion : pêcher (capturer des poissons) ≠ pécher (faire un écart de conduite).|https://fr.wiktionary.org/wiki/p%C3%A9cher
 
-    [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] @:D [pécher|pêcher+s|pêché+ses]
+    [>commettre|>pardonner|>confesser|>absoudre|>avouer|>reconnaître|>reconnaitre|>expier|>effacer] $:D [pécher|pêcher+s|pêché+ses]
     >repentir de [mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs] [pécher|pêcher+s|pêché+ses]
         <<- /conf/ --1>> =\-1.replace("êch", "éch").replace("er", "é").replace("ÊCH", "ÉCH").replace("ER", "É")
         # Confusion : un pêcher est un arbre. Pour désigner un écart de conduite, écrivez “péché”.|https://fr.wiktionary.org/wiki/p%C1%A9ch%C1%A9
@@ -17117,17 +17117,17 @@ __conf_det_1subst_peu_peut_vinfi__
     [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|y]
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
 
-    [<start>|,]  [un|le|ce|cet]                     *WORD           peu  ?en¿  @:Y
+    [<start>|,]  [un|le|ce|cet]                     *WORD           peu  ?en¿  $:Y
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t") and morph(>1, ":(?:Ov|[123][sp]|P)|<end>|>(?:,|par)/")
         --1>> =suggVerbPpas(\-1, ":m:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
 
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD           peu  ?en¿  @:Y
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD           peu  ?en¿  $:Y
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t") and morph(>1, ":(?:Ov|[123][sp]|P)|<end>|>(?:,|par)/")
         --1>> =suggVerbPpas(\-1, ":f:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
 
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           peu  ?en¿  @:Y
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD           peu  ?en¿  $:Y
         <<- /conf/ morph(\3, ":N") --2>> peut           # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t") and morph(>1, ":(?:Ov|[123][sp]|P)|<end>|>(?:,|par)/")
         --1>> =suggVerbPpas(\-1, ":s")                  # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3”, il faut utiliser le participe passé.
@@ -17149,19 +17149,19 @@ __conf_det_2subst_peu_peut_vinfi__
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]", ":V0")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
 
-    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  ?en¿  @:Y
+    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  ?en¿  $:Y
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]", ":V0")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t") and morph(>1, ":(?:Ov|[123][sp]|P)|<end>|>(?:,|par)/")
         --1>> =suggVerbPpas(\-1, ":m:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
 
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  ?en¿  @:Y
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  ?en¿  $:Y
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]", ":V0")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t") and morph(>1, ":(?:Ov|[123][sp]|P)|<end>|>(?:,|par)/")
         --1>> =suggVerbPpas(\-1, ":f:s")                # Confusion probable : “\-1” est un verbe à l’infinitif. Si “\-1” est supposé être un adjectif pour “\2 \3 \4”, il faut utiliser le participe passé.
 
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  ?en¿  @:Y
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  ?en¿  $:Y
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]", ":V0")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
         <<- /conf/ __also__ and morph(\-1, ":V1..t") and morph(>1, ":(?:Ov|[123][sp]|P)|<end>|>(?:,|par)/")
@@ -17257,7 +17257,7 @@ TEST: {{quoiqu’il en soit}}, nous ne nous laisserons pas faire, vous pouvez co
 
 # rebooter / rebouter
 __conf_rebooter_rebouter__
-    >rebouter  @:D  [>appareil|>imprimante|iPhone|kernel|>machine|>modem|>noyau|>ordinateur|>ordi|PC|>portable|>programme|>routeur|serveur|serveurs|>système|>tablette|>téléphone|terminal|terminaux]
+    >rebouter  $:D  [>appareil|>imprimante|iPhone|kernel|>machine|>modem|>noyau|>ordinateur|>ordi|PC|>portable|>programme|>routeur|serveur|serveurs|>système|>tablette|>téléphone|terminal|terminaux]
     >rebouter  [Android|Linux|iOS|Unix|Windows]
         <<- /conf/ -1>> =\1.replace("out", "oot").replace("OUT", "OOT")         # Confusion probable. Rebouter est un terme de botanique.
 
@@ -17333,15 +17333,15 @@ __conf_tache_tâche__
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
-    >tâche sur @:D [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
+    >tâche sur $:D [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
-    >tâcher  @:D  [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
+    >tâcher  $:D  [>bermuda|>blouse|>blouson|bois|bras|>caleçon|>canapé|>carrelage|>chemise|>chemisier|>col|>conscience|corps|>costume|>cravate|>cuir|>culotte|CV|>dent|>doigt|document|dos|>fauteuil|>feuille|>front|>habit|>jambe|>jean|>joue|>jupe|>jupon|>lèvre|>linge|>livre|>livret|>maillot|>main|>marbre|>meuble|>moquette|>mur|>nappe|nez|>ongle|>papier|>parquet|>pantalon|>peau|pénis|>photo|>photographie|>pied|>pull|>réputation|>robe|>sexe|>siège|>slip|>sol|>t-shirt|>teeshirt|>tee-shirt|>tapis|>tête|>tissu|>veste|>vêtement|>visage]
         <<- /conf/ -1>> =\1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
-    [>nettoyer|>laver|>essuyer|>gratter]  @:D  >tâche
+    [>nettoyer|>laver|>essuyer|>gratter]  $:D  >tâche
         <<- /conf/ --1>> =\-1.replace("â", "a").replace("Â", "A")
         # Confusion. Une tâche est un travail à accomplir. Pour une salissure, une altération, une marque, une coloration… employez “tache”.
 
@@ -17369,17 +17369,17 @@ __conf_tâche_tache__
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
 
-    [>abstenir|>accepter|>accomplir|>achever|>affecter|>effectuer|>entreprendre|>exécuter|>faciliter|>finir|>interrompre|>partager|>refaire|>refuser|>simplifier|>terminer]  @:D  >tache
+    [>abstenir|>accepter|>accomplir|>achever|>affecter|>effectuer|>entreprendre|>exécuter|>faciliter|>finir|>interrompre|>partager|>refaire|>refuser|>simplifier|>terminer]  $:D  >tache
     à la tache
     [à|a] la hauteur de la tache
         <<- /conf/ --1>> =\3.replace("a", "â").replace("A", "Â")
         # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
 
     >tacher  [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
-    >tacher  [de|d’]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  @:Y
-    >tacher  [de|d’]  [nous|vous]     [le|la|l’|les|en|y]       @:Y
-    >tacher  [de|d’]  [le|la|l’|les]  [lui|leur|en|y]           @:Y
-    >tacher  [de|d’]  [lui|leur]      en                        @:Y
+    >tacher  [de|d’]  ?[le|la|l’|les|en|nous|vous|lui|leur|y]¿  $:Y
+    >tacher  [de|d’]  [nous|vous]     [le|la|l’|les|en|y]       $:Y
+    >tacher  [de|d’]  [le|la|l’|les]  [lui|leur|en|y]           $:Y
+    >tacher  [de|d’]  [lui|leur]      en                        $:Y
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.
 
@@ -17421,8 +17421,8 @@ __conf_tant_temps_tan__
     il >être [tant|>tan] [de|d’] [ne|me|m’|te|t’|se|s’|en|y]
     il >être [tant|>tan] [de|d’] [la|le|les] [lui|leur]
     il >être [tant|>tan] [de|d’] [nous|vous] [la|le|les|l’]
-    il >être [tant|>tan] [de|d’] [la|le|les|lui|nous|vous|leur|l’] @:Y
-    il >être [tant|>tan] [de|d’] @:Y
+    il >être [tant|>tan] [de|d’] [la|le|les|lui|nous|vous|leur|l’] $:Y
+    il >être [tant|>tan] [de|d’] $:Y
         <<- /conf/ -3>> temps                                       # Confusion. Si vous voulez dire “c’est le moment de”, écrivez “temps”.|https://fr.wiktionary.org/wiki/il_est_temps
 
 TEST: en {{tan}} que meneuse intrépide, elle a toujours fait preuve d’une grande imagination.
@@ -19251,28 +19251,28 @@ TEST: Les tortures que ce journaliste pense être “normales”.
 
 
 __ppas_nom_propre_être_accord_genre__
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
+    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
+    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
+    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
-    [<start>|,|@:Cs]  (@:M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ not tag(\1, "enum") and ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    *WORD  [que|qu’]  @:M  ?[ne|n’]¿
+    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
-    *WORD  [que|qu’]  @:M  ?[ne|n’]¿
+    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
-    *WORD  [que|qu’]  @:M  ?[ne|n’]¿
+    *WORD  [que|qu’]  $:M  ?[ne|n’]¿
         || ([>affirmer|>croire|>déclarer|>désirer|>détester|>dire|>estimer|>imaginer|>penser|>préférer|>savoir|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ checkAgreement(\1, \-1) !-1>>
@@ -19791,7 +19791,7 @@ TEST: nous considérer ainsi fait le lit de la haine…
 !!
 
 __immu_les_avoir_fait_vinfi__
-    les >avoir fait ?[me|m’|te|t’|se|s’|nous|vous|leur]¿ @:Y
+    les >avoir fait ?[me|m’|te|t’|se|s’|nous|vous|leur]¿ $:Y
         <<- !3>>
 
 
@@ -20045,10 +20045,10 @@ TEST: ce qu’il leur a {{données}}
 !!!! du / dû                                                                                      !!
 
 __ppas_avoir_dû_vinfi__
-    >avoir  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|@:Y]
+    >avoir  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|$:Y]
         <<- /ppas/ \3 != "pouvoir" -2>> dû                      # Participe passé de devoir : “dû”.
 
-    /VCint  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|@:Y]
+    /VCint  [du|dus|due|dues]  [le|la|les|l’|me|m’|te|t’|se|lui|s’|nous|vous|leur|$:Y]
         <<- /ppas/ \3 != "pouvoir" -2>> dû                      # Participe passé de devoir : “dû”.
 
 TEST: Il a {{du}} leur prendre.
@@ -20636,90 +20636,90 @@ __conf_suj_verbe_det_verbe_nom__
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [le|un]  @:[123][sp]¬:[NA].*:[me]:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[me]:[si]", True)                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [la|une]  @:[123][sp]¬:[NA].*:[fe]:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[fe]:[si]", True)                 # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [l’|leur]  @:[123][sp]¬:[NA].*:[si]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                      # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        [les|leurs]  @:[123][sp]¬:[NA].*:[pi]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[pi]", True)                      # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est un déterminant, il faut placer un nom après.
 
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        en  @:[123][sp]¬:[NA]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        en  @:[123][sp]¬:[NA]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        en  @:[123][sp]¬:[NA]
     [<start>|,]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|ce|c’]    ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:D¬:Ov              @:[NA]                        ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
     [<start>|,]  [le|la|l’|leur|les]  @:[NA]¬:3[sp]                 ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]¬:[NA]  en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        en  @:[123][sp]¬:[NA]
-    [<start>|,]  @:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]             @:[123][sp]        en  @:[123][sp]¬:[NA]
+    [<start>|,]  $:Y                                                ?[ne|n’]¿   [lui|leur]                      en                          @:[123][sp]        en  @:[123][sp]¬:[NA]
         <<- /conf/ --1>> =suggSimil(\-1, ":[NA].*:[si]", True)                      # Confusion probable : “\-1” est une forme verbale conjuguée. Si “\-2” est une préposition, il faut placer un nom après.
 
 TEST: je relève le {{défit}}.                                   ->> défi
@@ -21261,15 +21261,15 @@ __purge_préverbes_négation__
 
 __tag_verbe_infinitif_sujet__
     [<start>|,]  [ne|n’]  ?[en|y]¿ ?presque¿ [pas|rien|guère|point|jamais|plus]
-    [<start>|,]  [ne|n’]  @:Y
-    [<start>|,]  @:Y
+    [<start>|,]  [ne|n’]  $:Y
+    [<start>|,]  $:Y
         <<- /2>> suj_vinfi
 
 
 __tag_usage_pronominal__
-    [me|m’|te|t’|se|s’]  ?[le|la|l’|les|en|y]¿  @:V¬:G
-    nous nous            ?[le|la|l’|les|en|y]¿  @:V¬:G
-    vous vous            ?[le|la|l’|les|en|y]¿  @:V¬:G
+    [me|m’|te|t’|se|s’]  ?[le|la|l’|les|en|y]¿  $:V¬:G
+    nous nous            ?[le|la|l’|les|en|y]¿  $:V¬:G
+    vous vous            ?[le|la|l’|les|en|y]¿  $:V¬:G
         <<- /-1>> upron
 
 
@@ -21420,7 +21420,7 @@ TEST: ce matin pluvieux l’ambiance est à présent la pire.
 
 #### veillez / veuillez
 __conf_veillez__
-    [<start>|,]  veuillez  à  [ne|n’|me|m’|nous|@:Y]
+    [<start>|,]  veuillez  à  [ne|n’|me|m’|nous|$:Y]
         <<- /conf/ -2>> veillez                                     # Confusion probable : “veuillez” est une forme conjuguée du verbe “vouloir”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1939
 
 TEST: {{Veuillez}} à ne pas tomber dans ce piège.
@@ -21432,7 +21432,7 @@ TEST: Veillez à bien fermer les fenêtres.
 
 
 __conf_veuillez__
-    [<start>|,]  veillez  [ne|n’|me|m’|nous|@:Y]
+    [<start>|,]  veillez  [ne|n’|me|m’|nous|$:Y]
         <<- /conf/ -2>> veuillez
         # Confusion probable : “veiller” signifie “prendre garde” ou “être vigilant”. Pour inviter à faire quelque chose, écrivez “veuillez”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1939
 
@@ -21888,7 +21888,7 @@ TEST: Aucun homme parti à la guerre ne revient
 
 
 __conj_vinfi_suj__
-    [<start>|,]  @:Y  @:V¬:(?:3s|P|Q|Y|G|3p!|M)
+    [<start>|,]  $:Y  @:V¬:(?:3s|P|Q|Y|G|3p!|M)
         <<- /conj/ not (value(\2, "|avoir|croire|être|devenir|redevenir|voir|sembler|paraître|paraitre|sentir|rester|retrouver|") and morph(\3, ":[NA]"))
         -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -22507,7 +22507,7 @@ TEST: Je sais que j’aimerai ça, tout comme lui.
 
 
 __vmode_j_aurais_aimé_que_vinfi__
-    j’  aurai  [aimé|souhaité|préféré|voulu|apprécié|désiré|adoré]  [que|qu’|ne|n’|@:Y]
+    j’  aurai  [aimé|souhaité|préféré|voulu|apprécié|désiré|adoré]  [que|qu’|ne|n’|$:Y]
         <<- /vmode/ -2>> aurais|eusse                                                               # Pour un souhait passé, utilisez le conditionnel passé et non le futur antérieur. Exemple pour le futur antérieur : « quand j’aurai fini… »
 
 TEST: J’{{aurai}} aimé nous offrir ce magnifique cadeau.
@@ -22718,13 +22718,13 @@ TEST: lorsqu’il y {{eût}} du grabuge, nous montâmes tous sur le pont.
 # Règles casse-gueule, prudence…
 
 __conj_nom_propre_virgule__
-    <start>  @:M  ,  @:3s¬:[NAGEM]  [<end>|,]
+    <start>  $:M  ,  @:3s¬:[NAGEM]  [<end>|,]
         <<- /conj/ space_after(\2, 0, 0) -2:3>> \2
         # Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")
         # Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
 
-    <start>  @:M  ,  @:3s¬:[NAGEM]  @:A.*:[si]
+    <start>  $:M  ,  @:3s¬:[NAGEM]  @:A.*:[si]
         <<- /conj/ space_after(\2, 0, 0) and morph(\4, ">(?:être|devenir|redevenir|sembler|para[iî]tre)/") -2:3>> \2
         # Si “\2” est le sujet de “\4”, la virgule est superflue (on ne sépare pas le verbe du sujet). Sinon “\4” devrait être à l’impératif (à moins d’une inversion verbe-sujet).
         <<- /conj/ __also__ -4>> =suggVerbTense(\4, ":E", ":2s")

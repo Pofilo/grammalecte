@@ -483,6 +483,50 @@ class TextParser {
                         }
                     }
                 }
+                // morph arcs
+                if (oNode.hasOwnProperty("<morph>")) {
+                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+                    if (lMorph.length > 0) {
+                        for (let sSearch in oNode["<morph>"]) {
+                            if (!sSearch.includes("¬")) {
+                                // no anti-pattern
+                                if (lMorph.some(sMorph  =>  (sMorph.includes(sSearch)))) {
+                                    if (bDebug) {
+                                        console.log("  MATCH: $" + sSearch);
+                                    }
+                                    yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                    bTokenFound = true;
+                                }
+                            } else {
+                                // there is an anti-pattern
+                                let [sPattern, sNegPattern] = sSearch.split("¬", 2);
+                                if (sNegPattern == "*") {
+                                    // all morphologies must match with <sPattern>
+                                    if (sPattern) {
+                                        if (lMorph.every(sMorph  =>  (sMorph.includes(sPattern)))) {
+                                            if (bDebug) {
+                                                console.log("  MATCH: $" + sSearch);
+                                            }
+                                            yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                            bTokenFound = true;
+                                        }
+                                    }
+                                } else {
+                                    if (sNegPattern  &&  lMorph.some(sMorph  =>  (sMorph.includes(sNegPattern)))) {
+                                        continue;
+                                    }
+                                    if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.includes(sPattern)))) {
+                                        if (bDebug) {
+                                            console.log("  MATCH: $" + sSearch);
+                                        }
+                                        yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                        bTokenFound = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
                 // regex morph arcs
                 if (oNode.hasOwnProperty("<re_morph>")) {
                     let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
