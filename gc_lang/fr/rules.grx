@@ -5233,7 +5233,7 @@ __conj_ce__
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [ce|c’]                         @>être/:V¬:(?:N|A|3[sp]|P|Q|Ov)
-    [ce|c’]  [le|l’|en]             @>être/:V¬:(?:N|A|3s|P|Q|Ov)
+    [ce|c’]  [le|l’]                @>être/:V¬:(?:N|A|3s|P|Q|Ov)
     [ce|c’]  [ne|n’]  ?[le|l’|en]¿  @>être/:V¬:(?:3[sp]|P|Q|Ov)
         <<- /conj/ --1>> =suggVerb(\-1, ":3s")                                                      # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -5272,10 +5272,10 @@ __conf_c_s_verbe__
     [il|ils|on|ne|n’]  c’
         <<- /conj/ -2>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
-    [<start>|,]  [elle|elles|lui|eux]  c’  >être  ?@:W¿  @:Q
+    [<start>|,]  [elle|elles|lui|eux]  c’  ?en¿  >être  ?@:W¿  @:Q
         <<- /conj/ -3>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
-    [<start>|,]  [elle|elles|lui|eux]  c’  @:V¬>être/
+    [<start>|,]  [elle|elles|lui|eux]  c’  ?en¿  @:V¬>être/
         <<- /conj/ -3>> s’                                                      # Confusion. Le pronom personnel objet s’écrit “se”, la graphie élidée “s’”.
 
     c’ y
@@ -5288,7 +5288,7 @@ __conf_c_s_verbe__
 TEST: {{S’en}} était vraiment trop !
 TEST: Car {{s’en}} était vraiment fini !
 TEST: il {{c’}}en est vite lassé.
-TEST: elles {{c’}}en étaient trop vanté
+TEST: elles {{c’}}étaient trop vanté de ses mérites
 TEST: cet homme, perdu dans ses pensées, allait {{c’}}en faire du souci.
 TEST: il {{c’}}accoutumait à sa nouvelle fonction.
 TEST: elle {{c’}}anime dès qu’on fait du bruit.
@@ -17508,8 +17508,12 @@ TEST: ce champignon {{venimeux}}.
 !!
 
 __infi_à_verbe__
-    à  [le|la|l’|leur|les]           @:V¬:[YNAM]|>(?:lui|plus)/
-    [<start>|,]  à  [nous|vous|lui]  @:V¬:[YE]|>(?:lui|plus)/
+    à  le                            @:V¬:[YNM]|>(?:lui|plus)/
+    à  [la|l’|leur]                  @:V¬:[YNM]|>(?:lui|plus)/
+    à  les                           @:V¬:[YNM]|>(?:lui|plus)/
+        <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
+
+    [<start>|,]  à  [nous|vous|lui]  @:V¬:[YEM]|>(?:lui|plus)/
         <<- /infi/ \-1.islower() --1>> =suggVerbInfi(\-1)                               # Erreur probable. Après le pronom “à”, le verbe devrait être à l’infinitif.
 
     à  [ne|n’|en|me|m’|te|t’|se|s’|y]                                       @:V¬:Y|>(?:lui|plus)/
@@ -17519,6 +17523,7 @@ __infi_à_verbe__
     à  ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après le pronom “à”, le verbe devrait être à l’infinitif.
 
+TEST: on ne gagne rien {{à les}} {{poussés}} dans leurs derniers retranchements
 TEST: à en {{parlé}} sans cesse
 TEST: cette corneille, il pense à la {{dégommée}} avec son fusil
 TEST: à vous {{parlé}} on risque gros
@@ -17526,7 +17531,6 @@ TEST: cela suffit à les {{aimait}}
 TEST: à ne leur en {{avancé}} que le nécessaire.
 TEST: à l’y {{poussé}}
 TEST: Avoir à {{parlait}} toute la journée, c’est plus que difficile, c’est épuisant.
-TEST: il pense à petit à petit {{amélioré}} sa position
 TEST: elle s’engage à ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste à la lui donner sans contrepartie et voir ce qu’il en fera.
 TEST: à leur plus grand fils, ils ont offert une voiture.
