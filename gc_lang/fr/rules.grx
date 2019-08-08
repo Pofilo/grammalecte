@@ -7446,11 +7446,13 @@ TEST: un homme {{dénudé}} de courage                                        ->
 # dés / dès / des
 __conf_dès_des_dés__
     dés [avant|que|qu’|un|une|le|la|l’|les|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|ce|cet|cette|ces|lors|après|maintenant|toujours|midi|minuit|aujourd’hui|hier|demain|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|Pâques|Noël]
-        <<- /conf/ not value(<1, "|un|une|de|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
+    dés [à|a] présent
+        <<- /conf/ not morph(<1, ":(?:D.*:p|B)|>de/")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     des [que|qu’|lors|après|maintenant|toujours|midi|minuit|aujourd’hui|hier|demain|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche|Pâques|Noël]
     des [un|une|le|la|l’|les|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|ce|cet|cette|ces] @:[NA]
+    des [à|a] présent
         <<- /conf/ not value(<1, "|un|une|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
@@ -7458,15 +7460,12 @@ __conf_dès_des_dés__
         <<- /conf/ not \1.isupper() and not \2.isupper() -1>> de|dès                                # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
         <<- /conf/ __also__ and hasSimil(\2, ":[NA].*:[pi]") -2>> =suggSimil(\2, ":[NA].*:[pi]", True)      # Confusion probable. Pour la préposition, écrivez “dès” ou “de”.
 
-    [dés|des] [à|a] présent
-        <<- /conf/ not morph(<1, ":D.*:p") -1>> dès                                                 # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
-
     des ~^\d{2,5}$  [<end>|,]
     des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
         <<- /conf/ not value(<1, "|%|") and not morph(<1, ":B|>(?:pourcent|barre|seuil)/") -1>> dès # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM ans
-    [dés|des] @:B ans
+    [dés|des] $:B ans
     [dés|des] un an
         <<- /conf/ not morph(<1, ":R|>(?:approcher|anniversaire|cap|célébration|commémoration|occasion|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
             and not before("% +$")
@@ -7476,7 +7475,7 @@ __conf_dès_des_dés__
         <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|") and \2 != "35"
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    [dés|des] @:B heures
+    [dés|des] $:B heures
     [dés|des] une heure
         <<- /conf/ not morph(<1, ":R|>(?:approcher|cap|passage|programme|terme|classe|autour|celui|ceux|celle|celles)/") and not value(>1, "|de|du|des|d’|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
@@ -7539,6 +7538,7 @@ TEST: J’ai des X230.
 TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
 TEST: C’est la fin des 35 heures.
 TEST: 98 % des 18‑29 ans considéraient cela comme évident
+TEST: Gagnez trois dés lors d’un test
 
 
 # diagnostic / diagnotique // pronostic / pronostique // public / publique
