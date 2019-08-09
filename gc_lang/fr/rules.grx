@@ -6919,6 +6919,35 @@ __conf_au_delà__
 TEST: il va dans l’{{haut delà}}
 
 
+# aile / elle
+__conf_aile_elle__
+    l’ [elle+s]
+    [mon|son|ton|son|notre|votre|leur] [elle+s] [droite|gauche]
+    une [elle+s] [de|d’] [poulet|poule|perdreau|canard|perdrix|pigeon|raie|papillon|voiture|bâtiment|château|manoir|palais]
+        <<- /conf/ -2>> aile
+        # Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
+
+    [des|mes|tes|ses|ces|nos|vos] ([elle+s])
+    les ([elle+s]) [de|des|du|d’]
+    [sous|sur] leurs ([elle+s]) [<end>|,|$:R]
+        <<- /conf/ -1>> ailes
+        # Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
+
+    [elle+s] ?[droite|gauche]¿ du [château|palais|bâtiment|manoir]
+    [elle+s] ?[droite|gauche]¿ [de|d’] la [maison|ferme]
+        <<- /conf/ -1>> aile|ailes
+        # Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
+
+TEST: l’{{elle}} est en feu.
+TEST: sous l’{{elle}} de sa mère, il ne craint rien
+TEST: sur son {{elle}} droite
+TEST: des {{elles}} enduites de pétrole
+TEST: De l’autre côté du mur, dans l’{{elle}} réservée aux femmes, il y a des jeunes filles dont nul n’a parlé
+TEST: vous réfugier sous leurs {{elles}}.
+TEST: les {{elles}} du désir
+TEST: {{elle}} droite du palais du roi
+
+
 # aux dépens
 __conf_aux_dépens__
     au [dépend|dépends|dépens]
@@ -7460,7 +7489,7 @@ __conf_dès_des_dés__
         <<- /conf/ not value(<1, "|un|une|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|")
         -1>> dès                                                                                    # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
-    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|nous|vous|on|ceux|celles|celui|celle]
+    des [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|nous|vous|on|ceux|celles|celui|celle]
         <<- /conf/ not \1.isupper() and not \2.isupper() -1>> de|dès                                # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
         <<- /conf/ __also__ and hasSimil(\2, ":[NA].*:[pi]") -2>> =suggSimil(\2, ":[NA].*:[pi]", True)      # Confusion probable. Pour la préposition, écrivez “dès” ou “de”.
 
