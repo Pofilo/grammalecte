@@ -2,14 +2,10 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global GrammalectePanel, oGrammalecte, helpers, showError, Worker, chrome, console */
+/* global helpers, showError, Worker, chrome, console */
 
 "use strict";
 
-
-function showError (e) {
-    console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
-}
 
 // Chrome don’t follow the W3C specification:
 // https://browserext.github.io/browserext/
@@ -20,167 +16,200 @@ if (typeof(browser) !== "object") {
 }
 
 
-/*
-    Worker (separate thread to avoid freezing Firefox)
-*/
-let xGCEWorker = new Worker("gce_worker.js");
+const oWorkerHandler = {
+    xGCEWorker: null,
 
-xGCEWorker.onmessage = function (e) {
-    // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
-    try {
-        let {sActionDone, result, dInfo, bEnd, bError} = e.data;
-        if (bError) {
-            console.log(result);
-            console.log(dInfo);
+    nLastTimeWorkerResponse: 0,  // milliseconds since 1970-01-01
+
+    oTask: {},
+
+    start: function () {
+        this.xGCEWorker = new Worker("gce_worker.js");
+        this.xGCEWorker.onmessage = function (e) {
+            // Messages received from the Worker
+            // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
+            try {
+                this.nLastTimeWorkerResponse = Date.now();
+                let {sActionDone, result, dInfo, bEnd, bError} = e.data;
+                if (bError) {
+                    console.log(result);
+                    console.log(dInfo);
+                    return;
+                }
+                switch (sActionDone) {
+                    case "init":
+                        storeGCOptions(result);
+                        break;
+                    case "parse":
+                    case "parseAndSpellcheck":
+                    case "parseAndSpellcheck1":
+                    case "parseFull":
+                    case "getListOfTokens":
+                    case "getSpellSuggestions":
+                    case "getVerb":
+                        // send result to content script
+                        if (typeof(dInfo.iReturnPort) === "number") {
+                            let xPort = dConnx.get(dInfo.iReturnPort);
+                            xPort.postMessage(e.data);
+                        } else {
+                            console.log("[background] don’t know where to send results");
+                            console.log(e.data);
+                        }
+                        break;
+                    case "textToTest":
+                    case "fullTests":
+                        // send result to panel
+                        browser.runtime.sendMessage(e.data);
+                        break;
+                    case "getOptions":
+                    case "getDefaultOptions":
+                    case "resetOptions":
+                        // send result to panel
+                        storeGCOptions(result);
+                        browser.runtime.sendMessage(e.data);
+                        break;
+                    case "setOptions":
+                    case "setOption":
+                        storeGCOptions(result);
+                        break;
+                    case "setDictionary":
+                    case "setDictionaryOnOff":
+                        //console.log("[background] " + sActionDone + ": " + result);
+                        break;
+                    default:
+                        console.log("[background] Unknown command: " + sActionDone);
+                        console.log(e.data);
+                }
+            }
+            catch (error) {
+                showError(error);
+                console.log(e.data);
+            }
+        };
+    },
+
+    getTimeSinceLastResponse: function () {
+        // result in seconds
+        return Math.floor((Date.now() - this.nLastTimeWorkerResponse) / 1000);
+    },
+
+    restart: function () {
+        if (this.getTimeSinceLastResponse() <= 5) {
+            return false;
+        }
+        if (this.xGCEWorker) {
+            this.xGCEWorker.terminate();
+        }
+        this.start();
+        oInitHandler.initGrammarChecker();
+        return true;
+    },
+
+    addTask: function () {
+        //
+    },
+
+    closeTask: function () {
+        //
+    }
+}
+
+
+const oInitHandler = {
+
+    initUIOptions: function () {
+        if (bChrome) {
+            browser.storage.local.get("ui_options", this._initUIOptions);
             return;
         }
-        switch (sActionDone) {
-            case "init":
-                storeGCOptions(result);
-                break;
-            case "parse":
-            case "parseAndSpellcheck":
-            case "parseAndSpellcheck1":
-            case "parseFull":
-            case "getListOfTokens":
-            case "getSpellSuggestions":
-            case "getVerb":
-                // send result to content script
-                if (typeof(dInfo.iReturnPort) === "number") {
-                    let xPort = dConnx.get(dInfo.iReturnPort);
-                    xPort.postMessage(e.data);
-                } else {
-                    console.log("[background] don’t know where to send results");
-                    console.log(e.data);
-                }
-                break;
-            case "textToTest":
-            case "fullTests":
-                // send result to panel
-                browser.runtime.sendMessage(e.data);
-                break;
-            case "getOptions":
-            case "getDefaultOptions":
-            case "resetOptions":
-                // send result to panel
-                storeGCOptions(result);
-                browser.runtime.sendMessage(e.data);
-                break;
-            case "setOptions":
-            case "setOption":
-                storeGCOptions(result);
-                break;
-            case "setDictionary":
-            case "setDictionaryOnOff":
-                //console.log("[background] " + sActionDone + ": " + result);
-                break;
-            default:
-                console.log("[background] Unknown command: " + sActionDone);
-                console.log(e.data);
+        browser.storage.local.get("ui_options").then(this._initUIOptions, showError);
+    },
+
+    initGrammarChecker: function () {
+        if (bChrome) {
+            browser.storage.local.get("gc_options", this._initGrammarChecker);
+            browser.storage.local.get("personal_dictionary", this._setSpellingDictionaries);
+            browser.storage.local.get("community_dictionary", this._setSpellingDictionaries);
+            browser.storage.local.get("oPersonalDictionary", this._setSpellingDictionaries); // deprecated
+            browser.storage.local.get("sc_options", this._initSCOptions);
+            return;
+        }
+        browser.storage.local.get("gc_options").then(this._initGrammarChecker, showError);
+        browser.storage.local.get("personal_dictionary").then(this._setSpellingDictionaries, showError);
+        browser.storage.local.get("community_dictionary").then(this._setSpellingDictionaries, showError);
+        browser.storage.local.get("oPersonalDictionary").then(this._setSpellingDictionaries, showError); // deprecated
+        browser.storage.local.get("sc_options").then(this._initSCOptions, showError);
+    },
+
+    _initUIOptions: function (oSavedOptions) {
+        if (!oSavedOptions.hasOwnProperty("ui_options")) {
+            browser.storage.local.set({"ui_options": {
+                textarea: true,
+                editablenode: true
+            }});
+        }
+    },
+
+    _initGrammarChecker: function (oSavedOptions) {
+        try {
+            let dOptions = (oSavedOptions.hasOwnProperty("gc_options")) ? oSavedOptions.gc_options : null;
+            if (dOptions !== null && Object.getOwnPropertyNames(dOptions).length == 0) {
+                console.log("# Error: the saved options was an empty object.");
+                dOptions = null;
+            }
+            oWorkerHandler.xGCEWorker.postMessage({
+                sCommand: "init",
+                dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+                dInfo: {}
+            });
+        }
+        catch (e) {
+            console.log("initGrammarChecker failed");
+            showError(e);
+        }
+    },
+
+    _setSpellingDictionaries: function (oData) {
+        if (oData.hasOwnProperty("oPersonalDictionary")) {
+            // deprecated (to be removed in 2020)
+            console.log("personal dictionary migration");
+            browser.storage.local.set({ "personal_dictionary": oData["oPersonalDictionary"] });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "personal", oDict: oData["oPersonalDictionary"] }, dInfo: {} });
+            browser.storage.local.remove("oPersonalDictionary");
+        }
+        if (oData.hasOwnProperty("community_dictionary")) {
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, dInfo: {} });
+        }
+        if (oData.hasOwnProperty("personal_dictionary")) {
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "personal", oDict: oData["personal_dictionary"] }, dInfo: {} });
+        }
+    },
+
+    _initSCOptions: function (oData) {
+        if (!oData.hasOwnProperty("sc_options")) {
+            browser.storage.local.set({"sc_options": {
+                extended: true,
+                community: true,
+                personal: true
+            }});
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "community", bActivate: true }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "personal", bActivate: true }, dInfo: {} });
+        } else {
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "community", bActivate: oData.sc_options["community"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "personal", bActivate: oData.sc_options["personal"] }, dInfo: {} });
         }
     }
-    catch (error) {
-        showError(error);
-        console.log(e.data);
-    }
-};
-
-function initUIOptions (dSavedOptions) {
-    if (!dSavedOptions.hasOwnProperty("ui_options")) {
-        browser.storage.local.set({"ui_options": {
-            textarea: true,
-            editablenode: true
-        }});
-    }
 }
 
-function initGrammarChecker (dSavedOptions) {
-    try {
-        let dOptions = (dSavedOptions.hasOwnProperty("gc_options")) ? dSavedOptions.gc_options : null;
-        if (dOptions !== null && Object.getOwnPropertyNames(dOptions).length == 0) {
-            console.log("# Error: the saved options was an empty object.");
-            dOptions = null;
-        }
-        xGCEWorker.postMessage({
-            sCommand: "init",
-            dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
-            dInfo: {}
-        });
-    }
-    catch (e) {
-        console.log("initGrammarChecker failed");
-        showError(e);
-    }
-}
+// start the Worker for the GC
+oWorkerHandler.start();
 
-function setDictionaryOnOff (sDictionary, bActivate) {
-    xGCEWorker.postMessage({
-        sCommand: "setDictionaryOnOff",
-        dParam: { sDictionary: sDictionary, bActivate: bActivate },
-        dInfo: {}
-    });
-}
-
-function initSCOptions (oData) {
-    if (!oData.hasOwnProperty("sc_options")) {
-        browser.storage.local.set({"sc_options": {
-            extended: true,
-            community: true,
-            personal: true
-        }});
-        setDictionaryOnOff("community", true);
-        setDictionaryOnOff("personal", true);
-    } else {
-        setDictionaryOnOff("community", oData.sc_options["community"]);
-        setDictionaryOnOff("personal", oData.sc_options["personal"]);
-    }
-}
-
-function setDictionary (sDictionary, oDictionary) {
-    xGCEWorker.postMessage({
-        sCommand: "setDictionary",
-        dParam: { sDictionary: sDictionary, oDict: oDictionary },
-        dInfo: {}
-    });
-}
-
-function setSpellingDictionaries (oData) {
-    if (oData.hasOwnProperty("oPersonalDictionary")) {
-        // deprecated (to be removed in 2020)
-        console.log("personal dictionary migration");
-        browser.storage.local.set({ "personal_dictionary": oData["oPersonalDictionary"] });
-        setDictionary("personal", oData["oPersonalDictionary"]);
-        browser.storage.local.remove("oPersonalDictionary");
-    }
-    if (oData.hasOwnProperty("personal_dictionary")) {
-        setDictionary("personal", oData["personal_dictionary"]);
-    }
-    if (oData.hasOwnProperty("community_dictionary")) {
-        setDictionary("community", oData["community_dictionary"]);
-    }
-}
-
-function init () {
-    if (bChrome) {
-        browser.storage.local.get("gc_options", initGrammarChecker);
-        browser.storage.local.get("ui_options", initUIOptions);
-        browser.storage.local.get("personal_dictionary", setSpellingDictionaries);
-        browser.storage.local.get("community_dictionary", setSpellingDictionaries);
-        browser.storage.local.get("oPersonalDictionary", setSpellingDictionaries); // deprecated
-        browser.storage.local.get("sc_options", initSCOptions);
-        return;
-    }
-    browser.storage.local.get("gc_options").then(initGrammarChecker, showError);
-    browser.storage.local.get("ui_options").then(initUIOptions, showError);
-    browser.storage.local.get("personal_dictionary").then(setSpellingDictionaries, showError);
-    browser.storage.local.get("community_dictionary").then(setSpellingDictionaries, showError);
-    browser.storage.local.get("oPersonalDictionary").then(setSpellingDictionaries, showError); // deprecated
-    browser.storage.local.get("sc_options").then(initSCOptions, showError);
-}
-
-init();
+// init the options stuff and start the GC
+oInitHandler.initUIOptions();
+oInitHandler.initGrammarChecker();
 
 
+// When the extension is installed or updated
 browser.runtime.onInstalled.addListener(function (oDetails) {
     // launched at installation or update
     // https://developer.mozilla.org/fr/Add-ons/WebExtensions/API/runtime/onInstalled
@@ -216,7 +245,7 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "fullTests":
         case "setDictionary":
         case "setDictionaryOnOff":
-            xGCEWorker.postMessage(oRequest);
+            oWorkerHandler.xGCEWorker.postMessage(oRequest);
             break;
         case "openURL":
             browser.tabs.create({url: dParam.sURL});
@@ -255,7 +284,7 @@ function handleConnexion (xPort) {
             case "getSpellSuggestions":
             case "getVerb":
                 oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
-                xGCEWorker.postMessage(oRequest);
+                oWorkerHandler.xGCEWorker.postMessage(oRequest);
                 break;
             case "openURL":
                 browser.tabs.create({url: dParam.sURL});
@@ -311,7 +340,7 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             break;
         case "grammar_checker_selection":
             sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
-            xGCEWorker.postMessage({
+            oWorkerHandler.xGCEWorker.postMessage({
                 sCommand: "parseAndSpellcheck",
                 dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
                 dInfo: {iReturnPort: xTab.id}
@@ -411,7 +440,7 @@ function sendCommandToCurrentTab (sCommand) {
             console.log(xTab);
             browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
         }
-    }, onError);
+    }, showError);
 }
 
 function openLexiconEditor (sName="__personal__") {
@@ -425,7 +454,7 @@ function openLexiconEditor (sName="__personal__") {
         let xLexEditor = browser.tabs.create({
             url: browser.extension.getURL("panel/lex_editor.html")
         });
-        xLexEditor.then(onLexiconEditorOpened, onError);
+        xLexEditor.then(onLexiconEditorOpened, showError);
     }
     else {
         browser.tabs.update(nTabLexiconEditor, {active: true});
@@ -447,7 +476,7 @@ function openDictionaries () {
         let xLexEditor = browser.tabs.create({
             url: browser.extension.getURL("panel/dictionaries.html")
         });
-        xLexEditor.then(onDictionariesOpened, onError);
+        xLexEditor.then(onDictionariesOpened, showError);
     }
     else {
         browser.tabs.update(nTabDictionaries, {active: true});
@@ -469,7 +498,7 @@ function openConjugueurTab () {
         let xConjTab = browser.tabs.create({
             url: browser.extension.getURL("panel/conjugueur.html")
         });
-        xConjTab.then(onConjugueurOpened, onError);
+        xConjTab.then(onConjugueurOpened, showError);
     }
     else {
         browser.tabs.update(nTabConjugueur, {active: true});
@@ -499,6 +528,7 @@ function openConjugueurWindow () {
 }
 
 
-function onError (e) {
+function showError (e) {
     console.error(e);
+    //console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
