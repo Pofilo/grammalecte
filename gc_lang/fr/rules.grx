@@ -2297,7 +2297,7 @@ TEST: Le moteur choisi convient-il ?
 
 
 __inte_verbes_composés_interrogatifs_impératifs__
-    ~^\w+-[nN]ous$
+    ~\w-[nN]ous$
         <<- /inte/ morphVC(\1, ":V", ":(?:1p|E:2[sp])") ->> =suggVerb(\1, ":1p", None, True)          # Forme interrogative ou impérative incorrecte.
         <<- /inte/ __else__ and morphVC(\1, ":", ":V|>(?:chez|malgré)/") ->> =suggSimil(\1, ":1p", False, True)  # Forme interrogative ou impérative incorrecte.
         <<- />> -nous|VCint
