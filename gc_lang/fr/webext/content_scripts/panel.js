@@ -257,7 +257,9 @@ class GrammalectePanel {
         if (sActionMessage) {
             this.xPanelMessageActionButton.textContent = sActionMessage;
             this.xPanelMessageActionButton.style.display = "block";
-            this.xPanelMessageActionButton.onclick = () => { this.executeButtonAction(sActionName); };
+            this.xPanelMessageActionButton.onclick = () => {
+                this.executeButtonAction(sActionName);
+            };
         } else {
             this.xPanelMessageActionButton.style.display = "none";
         }

@@ -333,6 +333,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
         case "workerRestarted":
             oGrammalecte.oGCPanel.stopWaitIcon();
             oGrammalecte.oGCPanel.showMessage("Le serveur grammatical a été arrêté et relancé.");
+            oGrammalecte.oGCPanel.endTimer();
             break;
         /*
             Commands received from the context menu
