@@ -123,9 +123,11 @@ const oInitHandler = {
     initUIOptions: function () {
         if (bChrome) {
             browser.storage.local.get("ui_options", this._initUIOptions);
+            browser.storage.local.get("autorefresh_option", this._initUIOptions);
             return;
         }
         browser.storage.local.get("ui_options").then(this._initUIOptions, showError);
+        browser.storage.local.get("autorefresh_option").then(this._initUIOptions, showError);
     },
 
     initGrammarChecker: function () {
@@ -150,6 +152,9 @@ const oInitHandler = {
                 textarea: true,
                 editablenode: true
             }});
+        }
+        if (!oSavedOptions.hasOwnProperty("autorefresh_option")) {
+            browser.storage.local.set({"autorefresh_option": true});
         }
     },
 
@@ -191,7 +196,6 @@ const oInitHandler = {
     _initSCOptions: function (oData) {
         if (!oData.hasOwnProperty("sc_options")) {
             browser.storage.local.set({"sc_options": {
-                extended: true,
                 community: true,
                 personal: true
             }});

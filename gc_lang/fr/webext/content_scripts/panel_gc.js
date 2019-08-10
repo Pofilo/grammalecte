@@ -61,7 +61,6 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelContent.appendChild(this.xGCPanelContent);
         this.xNode = null;
         this.oTextControl = new GrammalecteTextControl();
-        this.bAutoRefresh = false;
         this.nLastResult = 0
         // Lexicographer
         this.nLxgCount = 0;
@@ -84,6 +83,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
         this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_autorefresh_button", textContent: "AR", title: "Auto-rafraîchissement de la correction grammaticale (3 s après la dernière frappe)"})
         this.xEditorButton.appendChild(this.xAutoRefresh);
+        this.bAutoRefresh = oGrammalecte.bAutoRefresh;
+        this.setAutoRefreshButton();
         this.xTFButton.onclick = () => {
             if (!this.bWorking) {
                 oGrammalecte.createTFPanel();
@@ -98,9 +99,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         };
         this.xAutoRefresh.onclick = () => {
             this.bAutoRefresh = !this.bAutoRefresh;
-            this.xAutoRefresh.style.backgroundColor = (this.bAutoRefresh) ? "hsl(150, 50%, 50%)" : "";
-            this.xAutoRefresh.style.color = (this.bAutoRefresh) ? "hsl(150, 50%, 96%)" : "";
-            this.xAutoRefresh.style.opacity = (this.bAutoRefresh) ? "1" : "";
+            oGrammalecte.bAutoRefresh = this.bAutoRefresh;
+            browser.storage.local.set({"autorefresh_option": this.bAutoRefresh});
+            this.setAutoRefreshButton();
         }
         this.xLxgButton.onclick = () => {
             if (!this.bWorking) {
@@ -127,6 +128,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLEButton.onclick = () => {
             xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null});
         };
+        // Menu, tabs
         this.xMenu.appendChild(this.xTFButton)
         this.xMenu.appendChild(this.xEditorButton)
         this.xMenu.appendChild(this.xLxgButton)
@@ -154,6 +156,12 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             oGrammalecte.oMessageBox.showMessage("[BUG] Analyse d’un élément inconnu…");
             console.log("Grammalecte [bug]:", what);
         }
+    }
+
+    setAutoRefreshButton () {
+        this.xAutoRefresh.style.backgroundColor = (this.bAutoRefresh) ? "hsl(150, 50%, 50%)" : "";
+        this.xAutoRefresh.style.color = (this.bAutoRefresh) ? "hsl(150, 50%, 96%)" : "";
+        this.xAutoRefresh.style.opacity = (this.bAutoRefresh) ? "1" : "";
     }
 
     recheckAll () {
