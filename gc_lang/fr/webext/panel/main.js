@@ -99,6 +99,13 @@ window.addEventListener(
                     dInfo: {}
                 });
             }
+            else if (xElem.id == "restart_worker") {
+                browser.runtime.sendMessage({
+                    sCommand: "restartWorker",
+                    dParam: { "nDelayLimit": 3 },
+                    dInfo: {}
+                });
+            }
         } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
         }/* else if (xElem.tagName === "A") {

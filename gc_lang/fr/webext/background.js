@@ -93,8 +93,9 @@ const oWorkerHandler = {
         return Math.floor((Date.now() - this.nLastTimeWorkerResponse) / 1000);
     },
 
-    restart: function () {
-        if (this.getTimeSinceLastResponse() <= 5) {
+    restart: function (nDelay=5) {
+        if (this.getTimeSinceLastResponse() <= nDelay) {
+            console.log("Worker not restarted. Worked ", nDelay, " seconds ago.");
             return false;
         }
         if (this.xGCEWorker) {
@@ -102,6 +103,8 @@ const oWorkerHandler = {
         }
         this.start();
         oInitHandler.initGrammarChecker();
+        sendCommandToAllTabs("workerRestarted");
+        console.log("Worker restarted.");
         return true;
     },
 
@@ -247,6 +250,9 @@ function handleMessage (oRequest, xSender, sendResponse) {
         case "setDictionaryOnOff":
             oWorkerHandler.xGCEWorker.postMessage(oRequest);
             break;
+        case "restartWorker":
+            oWorkerHandler.restart(dParam["nDelayLimit"]);
+            break;
         case "openURL":
             browser.tabs.create({url: dParam.sURL});
             break;
@@ -285,6 +291,9 @@ function handleConnexion (xPort) {
             case "getVerb":
                 oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
                 oWorkerHandler.xGCEWorker.postMessage(oRequest);
+                break;
+            case "restartWorker":
+                oWorkerHandler.restart(dParam["nDelayLimit"]);
                 break;
             case "openURL":
                 browser.tabs.create({url: dParam.sURL});
@@ -441,6 +450,12 @@ function sendCommandToCurrentTab (sCommand) {
             browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
         }
     }, showError);
+}
+
+function sendCommandToAllTabs (sCommand) {
+    for (let [iTab, xTabPort] of dConnx.entries()) {
+        xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
+    }
 }
 
 function openLexiconEditor (sName="__personal__") {

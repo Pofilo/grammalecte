@@ -62,6 +62,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xNode = null;
         this.oTextControl = new GrammalecteTextControl();
         this.bAutoRefresh = false;
+        this.nLastResult = 0
         // Lexicographer
         this.nLxgCount = 0;
         this.xLxgPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_lxg_panel_content"});
@@ -139,6 +140,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.bWorking = false;
         this.clear();
         this.hideMessage();
+        this.resetTimer();
         if (typeof(what) === "string") {
             // text
             this.xNode = null;
@@ -159,6 +161,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.showEditor();
         this.clear();
         this.startWaitIcon();
+        this.resetTimer();
         xGrammalectePort.postMessage({
             sCommand: "parseAndSpellcheck",
             dParam: {sText: this.oTextControl.getText(), sCountry: "FR", bDebug: false, bContext: false},
@@ -220,6 +223,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     addParagraphResult (oResult) {
         try {
+            this.resetTimer();
             if (oResult && (oResult.sParagraph.trim() !== "" || oResult.aGrammErr.length > 0 || oResult.aSpellErr.length > 0)) {
                 let xNodeDiv = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
@@ -265,6 +269,22 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         catch (e) {
             showError(e);
         }
+    }
+
+    resetTimer () {
+        this.nLastResult = Date.now();
+        window.clearTimeout(this.nTimer);
+        this.nTimer = window.setTimeout(
+            oGrammalecte.oGCPanel.showMessage.bind(this),
+            5000,
+            "Le serveur grammatical semble ne plus répondre.",
+            "Arrêter et relancer le serveur grammatical.",
+            "restartWorker"
+        );
+    }
+
+    endTimer () {
+        window.clearTimeout(this.nTimer);
     }
 
     recheckParagraph (iParaNum) {

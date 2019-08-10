@@ -303,6 +303,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 oGrammalecte.oGCPanel.addParagraphResult(result);
             } else {
                 oGrammalecte.oGCPanel.stopWaitIcon();
+                oGrammalecte.oGCPanel.endTimer();
             }
             break;
         case "parseAndSpellcheck1":
@@ -316,6 +317,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 oGrammalecte.oGCPanel.addListOfTokens(result);
             } else {
                 oGrammalecte.oGCPanel.stopWaitIcon();
+                oGrammalecte.oGCPanel.endTimer();
             }
             break;
         case "getSpellSuggestions":
@@ -327,6 +329,10 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             } else {
                 oGrammalecte.oGCPanel.displayConj(result.oConjTable);
             }
+            break;
+        case "workerRestarted":
+            oGrammalecte.oGCPanel.stopWaitIcon();
+            oGrammalecte.oGCPanel.showMessage("Le serveur grammatical a été arrêté et relancé.");
             break;
         /*
             Commands received from the context menu

@@ -116,7 +116,9 @@ class GrammalectePanel {
         xPanelMessageCloseButton.onclick = () => { this.hideMessage() };
         this.xPanelMessageBlock.appendChild(xPanelMessageCloseButton);
         this.xPanelMessage = oGrammalecte.createNode("div", {id: "grammalecte_panel_message"});
+        this.xPanelMessageActionButton = oGrammalecte.createNode("div", {id: "grammalecte_panel_message_action_button"});
         this.xPanelMessageBlock.appendChild(this.xPanelMessage);
+        this.xPanelMessageBlock.appendChild(this.xPanelMessageActionButton);
     }
 
     insertIntoPage () {
@@ -249,13 +251,38 @@ class GrammalectePanel {
         this.xWaitIcon.style.visibility = "hidden";
     }
 
-    showMessage (sMessage) {
+    showMessage (sMessage, sActionMessage="", sActionName="") {
         this.xPanelMessageBlock.style.display = "block";
         this.xPanelMessage.textContent = sMessage;
+        if (sActionMessage) {
+            this.xPanelMessageActionButton.textContent = sActionMessage;
+            this.xPanelMessageActionButton.style.display = "block";
+            this.xPanelMessageActionButton.onclick = () => { this.executeButtonAction(sActionName); };
+        } else {
+            this.xPanelMessageActionButton.style.display = "none";
+        }
     }
 
     hideMessage () {
         this.xPanelMessageBlock.style.display = "none";
+        this.xPanelMessageActionButton.style.display = "none";
+    }
+
+    executeButtonAction (sActionName) {
+        switch (sActionName) {
+            case "":
+                break;
+            case "restartWorker":
+                xGrammalectePort.postMessage({
+                    sCommand: "restartWorker",
+                    dParam: { "nTimeDelay": 10 },
+                    dInfo: {}
+                });
+                this.stopWaitIcon();
+                break;
+            default:
+                console.log("Action inconnue: ", sAction);
+        }
     }
 
     openURL (sURL) {
