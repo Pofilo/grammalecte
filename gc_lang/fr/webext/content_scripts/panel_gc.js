@@ -239,26 +239,12 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                         // timer for refreshing analysis
                         window.clearTimeout(parseInt(xParagraph.dataset.timer_id, 10));
                         xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
-                        // save caret position
-                        let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
-                        xParagraph.dataset.caret_position_start = nStart;
-                        xParagraph.dataset.caret_position_end = nEnd;
                     }
                     // write text
                     this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num, 10), this.purgeText(xEvent.target.textContent));
                     this.oTextControl.write();
                 }.bind(this)
                 , true);
-                /*xParagraph.addEventListener("blur", function (xEvent) {
-                    // remove timer for refreshing analysis
-                    window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
-                    // unset caret position
-                    xParagraph.dataset.caret_position_start = "-1";
-                    xParagraph.dataset.caret_position_end = "-1";
-                    // recheck
-                    this.recheckParagraph(oResult.iParaNum);
-                }.bind(this)
-                , true);*/
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
                 // creation
                 xNodeDiv.appendChild(xActionsBar);
@@ -290,7 +276,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
     recheckParagraph (iParaNum) {
         let sParagraphId = "grammalecte_paragraph" + iParaNum;
         let xParagraph = this.xParent.getElementById(sParagraphId);
-        this.blockParagraph(xParagraph);
+        this._blockParagraph(xParagraph);
         let sText = this.purgeText(xParagraph.textContent);
         xGrammalectePort.postMessage({
             sCommand: "parseAndSpellcheck1",
@@ -305,10 +291,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         // function called when results are sent by the Worker
         try {
             let xParagraph = this.xParent.getElementById(sParagraphId);
-            xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
+            // save caret position
+            let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
+            xParagraph.dataset.caret_position_start = nStart;
+            xParagraph.dataset.caret_position_end = nEnd;
+            // erase texte
             xParagraph.textContent = "";
+            // recreate and retag
             this._tagParagraph(xParagraph, oResult.sParagraph, sParagraphId.slice(21), oResult.aGrammErr, oResult.aSpellErr);
-            this.freeParagraph(xParagraph);
+            this._freeParagraph(xParagraph);
         }
         catch (e) {
             showError(e);
@@ -375,7 +366,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         return xNodeErr;
     }
 
-    blockParagraph (xParagraph) {
+    _blockParagraph (xParagraph) {
         xParagraph.contentEditable = "false";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "!!";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
@@ -383,7 +374,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "grammalecte-pulse 1s linear infinite";
     }
 
-    freeParagraph (xParagraph) {
+    _freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
         if (xParagraph.dataset.caret_position_start !== "-1") {
             let nStart = parseInt(xParagraph.dataset.caret_position_start, 10);
