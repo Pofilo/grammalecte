@@ -6183,7 +6183,7 @@ TEST: elle nous {{à}} pris par suprise.
 TEST: Cette femme {{à}} été confondue avec une autre.
 
 
-    qui  à  @:Q¬:M
+    qui  à  $:Q¬:M
         <<- /conf/ \3.islower() -2>> a                              # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
 TEST: ce qui {{à}} pris tant de valeur, c’est…
@@ -6459,7 +6459,7 @@ TEST: une dérive à vau-l’eau.
 
 
 __conf_à_a_locutions__
-    a ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
+    a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|distance|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
     a air comprimé
     a armes égales
@@ -7984,7 +7984,7 @@ TEST: Mon frère, {{ce}} {{héro}} !
 # heure / heur
 __conf_heure_heur__
     *NUM heurs
-    @:B  heurs
+    $:B  heurs
         <<- /conf/ --1>> heures                             # Confusion. Pour indiquer la durée de temps, écrivez “heure”.|https://fr.wiktionary.org/wiki/heure
 
     *NUM heur
@@ -8247,7 +8247,7 @@ TEST: ces écarts ne {{mon}} posé aucun problème             ->> m’ont
 
 # mai / mais
 __conf_mai_mais_mes__
-    [<start>|,]  mai  @:Os¬:3s
+    [<start>|,]  mai  $:Os¬:3s
         <<- /conf/ -2>> mais
         # Confusion probable : “mai” est le 5ᵉ mois de l’année. Pour la conjonction de coordination, écrivez “mais”.|https://fr.wiktionary.org/wiki/mais
 
@@ -8274,7 +8274,7 @@ TEST: 120 {{Mins}} de bonheur
 # moi / mois
 __conf_moi_mois__
     *NUM moi
-    @:B  moi
+    $:B  moi
         <<- /conf/ --1>> mois                       # Confusion probable. Pour indiquer le douzième d’une année, écrivez “mois”.|https://fr.wiktionary.org/wiki/mois
 
     moi  [de|d’]  {mois}
@@ -8806,7 +8806,7 @@ __conf_près_prêt_pré__
         <<- /conf/ -3>> près                                                # Confusion. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     depuis [>prêt|>pré] [de|d’] *NUM *WORD
-    depuis [>prêt|>pré] [de|d’] @:B  *WORD
+    depuis [>prêt|>pré] [de|d’] $:B  *WORD
         <<- /conf/ -2>> près                        # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes. Depuis presque “\4 \5”, donc “près \3 \4 \5”.
 
 TEST: depuis {{prêt}} de 15 ans
@@ -8917,7 +8917,7 @@ TEST: Quand à mon tour je réalise l’imposture, c’est trop tard.
 
 
 __conf_qu_en_quand_quant__
-    [quand|quant]   @:P
+    [quand|quant]   $:P
         <<- /conf/ -1>> qu’en                                               # Confusion probable.
 
     [quand|quant] [est|était] il [de|des|du]
@@ -10022,9 +10022,9 @@ TEST: Dans l’Europe de l’{{ouest}}.
 # Unités de mesure
 __maj_unités__
     *NUM  [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
-    @:B   [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
+    $:B   [Mètre+s|Watt+s|Gramme+s|Seconde+s|Ampère+s|Kelvin+s|Mole+s|Candela+s|Candéla+s|Hertz|Henry+s|Newton+s|Pascal+s|Joule+s|Coulomb+s|Volt+s|Ohm+s|Farad+s|Tesla+s|Weber+s|Wéber+s|Radian+s|Stéradian+s|Lumen+s|Lux|Becquerel+s|Gray+s|Sievert+s|Siemens|Katal+s]
     *NUM  ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
-    @:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
+    $:B   ~(?:Exa|P[ée]ta|Téra|Giga|Méga|Kilo|Hecto|Déc[ai]|Centi|Milli|Micro|Nano|Pico|Femto|Atto|Ze(?:pto|tta)|Yo(?:cto|etta))(?:mètre|watt|gramme|seconde|ampère|kelvin|mole|cand[eé]la|hertz|henry|newton|pascal|joule|coulomb|volt|ohm|farad|tesla|w[eé]ber|radian|stéradian|lumen|lux|becquerel|gray|sievert|siemens|katal)s?$
         <<- /maj/ not \2.isupper() -2:>> =\2.lower()                # Pas de majuscule sur les unités de mesure.|https://fr.wikipedia.org/wiki/Unit%C3%A9_de_mesure
 
 TEST: J’en veux 3 {{Mètres}}.                           ->> mètres
@@ -10553,7 +10553,7 @@ __purge_prépositions_qqn__
     [après|contre|pour|sans|de|d’|en] [lui|nous|vous] [<end>|,|@:G¬Ov]
         <<- ~1:2>> *
 
-    [de|d’] [lui|nous|vous] en @:P
+    [de|d’] [lui|nous|vous] en $:P
         <<- ~1:2>> *
 
     par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes]   [<end>|,|@:[VXG]¬>qui]
@@ -10613,7 +10613,7 @@ __purge_locutions__
     , [oui|non] ,
     , entre autres ?choses¿ ,
     à *NUM  %
-    à ?seulement¿ [*NUM|@:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
+    à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
     à air comprimé
     à armes égales
@@ -10666,7 +10666,7 @@ __purge_locutions__
     à dose homéopathique
     à durée [déterminée|indéterminée|limitée]
     à *NUM reprises
-    à @:B reprises
+    à $:B reprises
     à [plusieurs|quelques|maintes] reprises
     à [de|d’]  [nombreuses|multiples|innombrables]  reprises
     à double [titre|tranchant]
@@ -10851,7 +10851,7 @@ __purge_locutions__
     alors
     après [moi|toi|soi|lui|eux]
     après cette date ?fatidique¿
-    après [des|plusieurs|quelques|*NUM|@:B] [semaines|mois|années|décennies|siècles|millénaires] de bons et loyaux services
+    après [des|plusieurs|quelques|*NUM|$:B] [semaines|mois|années|décennies|siècles|millénaires] de bons et loyaux services
     après mûre réflexion
     après tout ,
     après un bon bout de temps
@@ -10878,8 +10878,8 @@ __purge_locutions__
     au cours de la [seconde|minute|heure|journée|semaine|année] [dernière|prochaine]
     au cours du [dernier|prochain] [mois|siècle|millénaire]
     au cours du [mois|siècle|millénaire] [dernier|prochain]
-    au cours des ?@:B¿ [dernières|prochaines] [secondes|minutes|heures|journées|semaines|années]
-    au cours des ?@:B¿ [derniers|prochains] [jours|mois|ans|siècles|millénaires]
+    au cours des ?$:B¿ [dernières|prochaines] [secondes|minutes|heures|journées|semaines|années]
+    au cours des ?$:B¿ [derniers|prochains] [jours|mois|ans|siècles|millénaires]
     au demeurant
     au doigt mouillé
     au doigt et à l’ [œil|oeil]
@@ -11194,7 +11194,7 @@ __purge_locutions__
     dorénavant
     déjà
     désormais
-    depuis @:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
+    depuis $:B [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis *NUM [ans|années|mois|semaines|jours|heures|minutes|secondes]
     depuis belle lurette
     depuis bien longtemps
@@ -11373,7 +11373,7 @@ __purge_locutions__
     été comme hiver
     euh
     face à face
-    @:B fois [de|d’] suite
+    $:B fois [de|d’] suite
     grosso modo
     guère
     ?d’¿ [hier|avant-hier] ?[matin|soir|après-midi]¿
@@ -11388,8 +11388,8 @@ __purge_locutions__
     ?d’¿ il y a ?très¿ longtemps
     ?d’¿ il y a ?très¿ peu [de|d’] temps
     ?d’¿ il y a quelques [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    ?d’¿ il y a moins [de|d’] [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
-    ?d’¿ il y a [*NUM|@:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    ?d’¿ il y a moins [de|d’] [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
+    ?d’¿ il y a [*NUM|$:B] [secondes|minutes|heures|jours|semaines|mois|année|ans|siècles|millénaires]
     ?d’¿ il y a quelque temps
     ?d’¿ il n’y a pas ?si¿ longtemps
     illico ?presto¿
@@ -11500,7 +11500,7 @@ __purge_locutions__
     par tout le monde
     par voie [de|d’] [conséquence|mer|terre]
     par voie d’ exception
-    par @:B fois
+    par $:B fois
     par-ci ?,¿ par-là
     par-derrière
     par-dessus le marché
@@ -12006,11 +12006,11 @@ __p_dét_plur_nombre_nom__
     [les|des|mes|tes|ses|nos|vos|leurs]  ~^\d+$  ou  ~^\d+$  @:[NA].*:[pi]¬:(?:V0|3p|Oo|X)|>(?:janvier|février|mars|avril|mai|juin|juillet|ao[ûu]t|septembre|octobre|novembre|décembre|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor)
         <<- ~2:4>> *
 
-    [les|des]   >numéro  [un|*NUM|@:B]  et  [*NUM|@:B]
+    [les|des]   >numéro  [un|*NUM|$:B]  et  [*NUM|$:B]
         <<- ~3:0>> *
 
     la  >numéro  un
-    la  >numéro  @:B
+    la  >numéro  $:B
     la  >numéro  *NUM
         <<- =>> define(\2, [">numéro/:N:f:s"])
         <<- ~3>> *
@@ -12018,7 +12018,7 @@ __p_dét_plur_nombre_nom__
     le  numéro  un  @:¬:N:[em]:[is]
         <<- ~3>> *
 
-    >numéro  @:B
+    >numéro  $:B
     >numéro  *NUM
     [n°|no]  *NUM
         <<- ~2>> *
@@ -12048,11 +12048,11 @@ __simplification_des_nombres__
 
 
 __purge_des_nombres__
-    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  @:B   @:[NA].*:[pi]¬:(?:G|3p)
+    [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  $:B   @:[NA].*:[pi]¬:(?:G|3p)
     [les|des|ces|mes|tes|ses|nos|vos|leurs]  quelque  *NUM  @:[NA].*:[pi]¬:(?:G|3p)
         <<- ~2:3>> *
 
-    [à|de|d’]  @:B  pour  cent
+    [à|de|d’]  $:B  pour  cent
         <<- ~>> *
 
     [à|de|d’]  une  heure  ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf|vingt|vingt-et-un|vingt-et-une|vingt-deux|vingt-trois|vingt-quatre|vingt-cinq|vingt-six|vingt-sept|vingt-huit|vingt-neuf|trente|trente-et-un|trente-et-une|trente-deux|trente-trois|trente-quatre|trente-cinq|trente-six|trente-sept|trente-huit|trente-neuf|quarante|quarante-et-un|quarante-et-une|quarante-deux|quarante-trois|quarante-quatre|quarante-cinq|quarante-six|quarante-sept|quarante-huit|quarante-neuf|cinquante|cinquante-et-un|cinquante-et-une|cinquante-deux|cinquante-trois|cinquante-quatre|cinquante-cinq|cinquante-six|cinquante-sept|cinquante-huit|cinquante-neuf]¿
@@ -12061,7 +12061,7 @@ __purge_des_nombres__
 
 
 __purge_conditionnelle__
-    [>avoir|>être] ?[pas|jamais]¿ au moins @:Q
+    [>avoir|>être] ?[pas|jamais]¿ au moins $:Q
         <<- ~-3:-2>> *
 
     au  moins  @¬:[AQ].*:[me]:[si]
@@ -12291,7 +12291,7 @@ __simplication_substantifs__
     >benne à >ordure
     [>beauté|>belle] à couper le souffle
     >bête à [manger|bouffer] du foin
-    >billet de [*NUM|@:B] [>euro|>dollar|>centime|>cent|>livre|>shilling]
+    >billet de [*NUM|$:B] [>euro|>dollar|>centime|>cent|>livre|>shilling]
     [>bisphénol|>bisphenol] A
     >blanche comme neige
     >blanche comme de la craie
@@ -12436,7 +12436,7 @@ __simplication_substantifs__
     >mère au foyer
     >metteuse en scène
     >mineure de moins de *NUM ans
-    >mineure de moins de @:B ans
+    >mineure de moins de $:B ans
     >miroir aux alouettes
     >mode de [paiement|scrutin|vie]
     >monnaie [de|d’] [échange|réserve|singe]
@@ -12570,7 +12570,7 @@ __purge_locutions_adjectivales__
     longue [distance|portée|durée]
     meilleur marché
     numéro un
-    numéro @:B
+    numéro $:B
     plein cadre
     top secret
     vieux jeu
@@ -12866,8 +12866,8 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
         <<- __also__ =>> define(\3, [":LV"])
 
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les @:B  @:(?:Q|V1.*:Y)
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
         <<- morphVC(\1, ":V0a") ~2:-2>> *
 
 
@@ -14639,7 +14639,7 @@ __gn_quelque_adverbe__
     quelques  *NUM
         <<- /gn/ -1>> quelque                                                               # Devant un nombre, « quelque » est un adverbe, donc invariable.
 
-    quelques  @:B
+    quelques  $:B
         <<- /gn/ \2 != "cents" -1>> quelque                                                 # Devant un nombre, « quelque » est un adverbe, donc invariable.
 
 TEST: Elle a eu {{quelques}} 300 réponses à sa petite-annonce.
@@ -19247,61 +19247,61 @@ TEST: qui échappe à tout contrôle démocratique et dans lequel les lobbies so
 !!!! Participes passés: accord en genre avec le substantif précédent                              !!
 
 __ppas_sujet_être_accord_genre__
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
+    [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
+    [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
+    [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                 *WORD
-    [<start>|,|@:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
         <<- /ppas/ morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":A.*:f", ":[GWme]") and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                 *WORD
-    [<start>|,|@:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
         <<- /ppas/ morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":A.*:m", ":[GWfe]") and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                               *WORD
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                              *WORD
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                                                 *WORD
-    [<start>|,|@:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
         <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]s")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
-    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
-    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
-    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  *WORD
-    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                                     *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]  *WORD
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                    *WORD
-    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenus|redevenus|restés|demeurés|devenues|redevenues|restées|demeurées]                               *WORD
-    [<start>|,|@:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
         <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]p")
@@ -19340,16 +19340,16 @@ TEST: Les tortures que ce journaliste pense être “normales”.
 
 
 __ppas_nom_propre_être_accord_genre__
-    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
-    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
-    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
-    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])          *WORD
+    [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  (>avoir) [été|semblé|paru]                                                            *WORD
+    [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler])  [devenu+e|redevenu+e|resté+e|demeuré+e]                           *WORD
+    [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                *WORD
-    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             *WORD
-    [<start>|,|@:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
+    [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
         <<- /ppas/ not tag(\1, "enum") and ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":[123]s")
