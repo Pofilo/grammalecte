@@ -33,6 +33,9 @@ xProcessPoolExecutor = None
 def initExecutor (nMultiCPU=None):
     "process pool executor initialisation"
     global xProcessPoolExecutor
+    if xProcessPoolExecutor:
+        # we shutdown the ProcessPoolExecutor which may have been launched previously
+        xProcessPoolExecutor.shutdown(wait=False)
     nMaxCPU = max(os.cpu_count()-1, 1)
     if nMultiCPU is None or not (1 <= nMultiCPU <= nMaxCPU):
         nMultiCPU = nMaxCPU
@@ -320,10 +323,6 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiC
     echo("Grammalecte v{}".format(oGCE.version))
     oGCE.displayOptions()
     # Process Pool Executor
-    if xProcessPoolExecutor:
-        # If the module is imported and main() launched, we must shutdown the ProcessPoolExecutor
-        # which has been launched previously
-        xProcessPoolExecutor.shutdown(wait=False)
     initExecutor(nMultiCPU)
     # Server (Bottle)
     run(app, host=sHost, port=nPort)
