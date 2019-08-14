@@ -10616,6 +10616,7 @@ __purge_locutions__
     à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
     à air comprimé
+    à angle droit
     à armes égales
     à aucun prix
     à autre chose
@@ -12332,6 +12333,7 @@ __simplication_substantifs__
     >compagne de route
     >compagnon de route
     >complémentaire santé
+    >compte à rebours
     >condamnée à mort
     >conférence [de|d’] presse
     >convention [récepteur|générateur]
@@ -12389,6 +12391,7 @@ __simplication_substantifs__
     >fille au pair
     fils à [papa|maman]
     fils de pute
+    >flocon de neige ?électronique¿
     >folle à lier
     >fosse à >ordure
     >frayeur de tous les diables
@@ -12501,7 +12504,7 @@ __simplication_substantifs__
     >sac à [dos|main|langer|merde|foutre]
     >sac de [couchage|sport|voyage]
     >salle à manger
-    >salle [de|d’] [attente|bain|bains|conférence|séjour]
+    >salle [de|d’] [attente|>bain|conférence|lecture|séjour|vente]
     >saine [de|d’] [corps|esprit]
     >saine [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
     >sclérose en plaques
@@ -12588,17 +12591,18 @@ __purge_locutions_adjectivales__
 __purge_couleurs__
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] [brillant|clair|criard|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] et [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent]
-    blanc   argenté
-    bleu    [argenté|azur|ciel|indigo|marine|nuit|roi|saphir|turquoise]
+    blanc   [argenté|cassé|lunaire]
+    bleu    [acier|argenté|azur|céleste|ciel|électrique|givré|indigo|marine|nuit|outremer|outre-mer|persan|pétrole|roi|saphir|turquin|turquoise]
     blond   [argenté|platine]
     gris    [acier|anthracite|argenté|fer|perle|souris]
-    jaune   [doré|paille|sable]
+    jaune   [canari|citron|doré|maïs|paille|sable]
     noir    [de|d’] [encre|jais]
     noir    et blanc
     noir    sur blanc
     rose    [bonbon|chair|corail]
-    rouge   [brique|carmin|cerise|écarlate|incarnat|rubis|sang|tomate|vermillon]
-    vert    [émeraude|olive|pistache|pomme]
+    rouge   [anglais|brique|cardinal|carmin|cerise|coquelicot|écarlate|feu|fraise|grenat|groseille|incarnat|indien|rubis|sang|sanguin|tomate|vermeille|vermillon]
+    vert    [bouteille|céladon|émeraude|épinard|impérial|lichen|olive|perroquet|pistache|poireau|pomme|prairie|printemps|sapin|sauge|tilleul]
+    couleur sable
         <<- morph(<1, ":[NA]", ":D") ~>> *
         <<- __else__ and morph(<1, ":D|>(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)") ~>> ␣
         <<- __also__ =>> define(\1, [":A:e:i"])
@@ -13255,7 +13259,7 @@ __purge_locutions_verbales__
     >laisser pour compte
     >marcher à rebours
     >mener par le bout du nez
-    [>mettre|>remettre] à [bas|dos|flot|jour|niveau|nu|plat|terre]
+    [>mettre|>remettre] à [bas|dos|exécution|flot|jour|niveau|nu|plat|terre]
     [>mettre|>remettre] l’ [écart|épreuve]
     [>mettre|>remettre] au [point|pas]
     [>mettre|>remettre] en [avant|branle|bouche|demeure|garde|jeu|lumière|mouvement|œuvre|place|scène|terre]
@@ -15640,7 +15644,7 @@ TEST: Tout à la benne.
 
 
 __conf_a_à_faim_peur_honte_soif_chaud_froid__
-    à [faim|peur|honte|soif]
+    à [faim|peur|honte|soif|sommeil]
         <<- /conf/ -1>> a                       # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     <start> elle à [chaud|froid]
@@ -18231,6 +18235,18 @@ __purge_syntagmes_nominaux__
     de  [la|l’|leur]  @:[NA]¬:Y  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
     de  [la|l’|leur]  @:[NA]¬:Y  @:[VR]¬:[NAP]
     de  [la|l’|leur]  @:[NA]¬:Y  , @¬:[NA]
+        <<- ~1:3>> *
+
+    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  <end>
+    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  @:[VR]¬:[NAP]
+    $:LR [de|d’]  [la|l’|leur|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs]  @:[NA]  , @¬:[NA]
+        <<- ~1:4>> *
+
+    $:LR [des|du|de|d’] @:[NA] <end>
+    $:LR [des|du|de|d’] @:[NA] ?,¿ [ne|n’|me|m’|te|t’|se|s’|nous|vous|y|c’|ça|ç’|je|j’|tu|il|elle|on|ils|elles|le|la|l’|les|mon|ma|ta|sa|notre|votre|leur|mes|tes|ses|nos|vos|leurs|ce|cet|cette|ces|quel|quels|quelle|quelles]
+    $:LR [des|du|de|d’] @:[NA] @:[VR]¬:[NAP]
+    $:LR [des|du|de|d’] @:[NA] , @¬:[NA]
         <<- ~1:3>> *
 
     en [plein|pleine] @:[NA]  <end>
