@@ -320,6 +320,10 @@ def main (sHost="localhost", nPort=8080, dOptions=None, bTestPage=False, nMultiC
     echo("Grammalecte v{}".format(oGCE.version))
     oGCE.displayOptions()
     # Process Pool Executor
+    if xProcessPoolExecutor:
+        # If the module is imported and main() launched, we must shutdown the ProcessPoolExecutor
+        # which has been launched previously
+        xProcessPoolExecutor.shutdown(wait=False)
     initExecutor(nMultiCPU)
     # Server (Bottle)
     run(app, host=sHost, port=nPort)
@@ -349,3 +353,7 @@ if __name__ == '__main__':
          dOpt,
          xArgs.test_page,
          xArgs.multiprocessor)
+else:
+    # we do it for the server may be used with WSGI (which doesn’t call main())
+    # WSGI servers just import the given file as a module and use an object exported from it (<app> in this case) to run the server.
+    initExecutor()
