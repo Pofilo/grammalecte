@@ -14696,7 +14696,7 @@ __gn_nombre_chiffres_1m__
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné : « \2 » devrait être au pluriel.
 
     *NUM  *WORD  *WORD
-        <<- /gn/ not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
+        <<- /gn/ not value(\2, "|fois|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
             and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">(?:seule|maximum|minimum)/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
@@ -14717,6 +14717,7 @@ TEST: il revint en 2005 complètement dévoré par la culpabilité.
 TEST: un jeu de 1980 absolument démodé.
 TEST: elle fut le 13 janvier décapitée
 TEST: elles furent le 18 janvier décorées
+TEST: en quantité 2 fois moindre
 
 
 ##  trouver ça/ceci/cela + adj
