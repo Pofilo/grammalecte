@@ -5458,19 +5458,19 @@ __non_verbe_après_préverbes__
     [ne|n’]     [lui|leur]          en                      @:¬:(?:[123][sp]|Y|P|Ov|X)
         <<- /conf/ -4>> =suggSimil(\4, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 \3 » : « \4 » devrait être un verbe.
 
-    [ne|n’]              [le|la|l’|les|nous|vous|lui|leur]  @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    n’                   [en|y]                             @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’|se|s’]  [le|la|l’|les]                     @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’]        [en|y]                             @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
-    [se|s’]              [en|y]                             @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus)/
+    [ne|n’]              [le|la|l’|les|nous|vous|lui|leur]  @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère)/
+    n’                   [en|y]                             @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:presque|rien|guère)/
+    [me|m’|te|t’|se|s’]  [le|la|l’|les]                     @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère)/
+    [me|m’|te|t’]        [en|y]                             @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère|voici|revoici|voilà|revoilà)/
+    [se|s’]              [en|y]                             @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère)/
         <<- /conf/ -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
+    [nous|vous]           y                                 @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère|voici|revoici|voilà|revoilà)/
         <<- /conf/ not morph(<1, ":R") -3>> =suggSimil(\3, ":(?:[123][sp]|Y)", False)               # Incohérence avec « \1 \2 » : « \3 » devrait être un verbe.
 
-    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|pas|presque|jamais|rien|guère|point|plus)/
-    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
-    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|qu[ei’])/
+    [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|presque|rien|guère)/
+    [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère|voici|revoici|voilà|revoilà)/
+    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:presque|rien|guère|qu[ei’])/
     s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:ils?|qu[ei’])/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
@@ -8442,6 +8442,7 @@ __conf_où_ou__
     jusqu’ ou
     par ou
     d’ ou
+    vient un temps ou
         <<- /conf/ --1>> où                                 # Confusion. La conjonction “ou” signale une alternative. Pour identifier un lieu ou un temps, écrivez “où”.
 
     ou et [comment|que|qui|quand|pourquoi|quel|quels|quelle|quelles]
@@ -10472,6 +10473,16 @@ TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d�
 
 ## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
 __purge_pronom_seul__
+    [à|de|d’|par]  moi      ?[seul|seule]¿
+    [à|de|d’|par]  toi      ?[seul|seule]¿
+    [à|de|d’|par]  lui      seul
+    [à|de|d’|par]  elle     ?seule¿
+    [à|de|d’|par]  nous     >seule
+    [à|de|d’|par]  vous     >seule
+    [à|de|d’|par]  eux      ?seuls¿
+    [à|de|d’|par]  elles    ?seules¿
+        <<- ~>> *
+
     [moi|toi]       [seul|seule]
     lui             seul
     elle            seule
@@ -11247,7 +11258,8 @@ __purge_locutions__
     du tout au tout
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|réalité|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
+    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
+    en réalité ?virtuelle¿
     en aucun cas
     en aucune [circonstance|façon|manière]
     en ?[assez|très]¿ bas âge
@@ -11280,7 +11292,7 @@ __purge_locutions__
     en eau ?peu¿ profonde
     en eaux troubles
     en état [de|d’] choc ?circulatoire¿
-    en ?parfait¿ état [de|d’] marche
+    en ?[excellent|mauvais|parfait]¿ état [de|d’] marche
     en état d’ ébriété ?avancée¿
     en excellent état ?général¿
     en fâcheuse posture
@@ -11293,7 +11305,7 @@ __purge_locutions__
     en grande [difficulté|majorité|partie|pompe]
     en haut lieu
     en haute [estime|mer]
-    en l’occurrence
+    en l’ occurrence
     en lieu sûr
     en ligne [de|d’] [compte|mire]
     en main propre
@@ -11799,38 +11811,43 @@ __purge_x_par_après_x__
 
 
 __gestion_mots_grammaticaux__
-    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre] [de|du|d’|des]
-        <<- ~1:2>> ␣
+    à [bord|bout|cause|contre-courant|côté|court|défaut|destination|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre]   [de|du|d’|des]
+    à bonne distance                                                                                                                            [de|du|d’|des]
+    à l’ [affût|affut|arrière|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche]                             [de|du|d’|des]
+    à l’ autre bout                                                                                                                             [de|du|d’|des]
+    à la [hauteur|portée|suite]                                                                                                                 [de|du|d’|des]
+    à la grande surprise                                                                                                                        [de|du|d’|des]
+    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures]                                                                        [de|du|d’|des]
+    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres]                                                                 [de|du|d’|des]
+    à [base|force|raison]                                                                                                                       [de|d’]
+    à grand renfort                                                                                                                             [de|d’]
+    à grands coups                                                                                                                              [de|d’]
+    à seule fin                                                                                                                                 [de|d’]
+    au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu]                                                    [de|du|d’|des]
+    au beau milieu                                                                                                                              [de|du|d’|des]
+    au fin fond                                                                                                                                 [de|du|d’|des]
+    au grand dam                                                                                                                                [de|du|d’|des]
+    au plus profond                                                                                                                             [de|du|d’|des]
+    au fur et à mesure                                                                                                                          [de|du|d’|des]
+    au vu et au su                                                                                                                              [de|du|d’|des]
+    au nez et à la barbe                                                                                                                        [de|du|d’|des]
+    aux [abords|dépens]                                                                                                                         [de|du|d’|des]
+    compte tenu                                                                                                                                 [de|du|d’|des]
+    d’ un bout à l’ autre                                                                                                                       [de|du|d’|des]
+    en [arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|présence|provenance|quête|raison|sus|termes|vertu]             [de|du|d’|des]
+    en flagrant délit                                                                                                                           [de|d’]
+    en lieu et place                                                                                                                            [de|des|du]
+    en matière                                                                                                                                  [de|d’]
+    en l’ [absence|honneur]                                                                                                                     [de|du|d’|des]
+    en plein milieu                                                                                                                             [de|du|d’|des]
+    le long                                                                                                                                     [de|du|d’|des]
+    par le biais                                                                                                                                [de|du|d’|des]
+    par l’ entremise                                                                                                                            [de|du|d’|des]
+        <<- ~1:-2>> ␣
         <<- =>> define(\1, [":R:LR"])
 
-    à bonne distance [de|du|d’|des]
-    à l’ [affût|affut|arrière|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche] [de|du|d’|des]
-    à la [hauteur|portée|suite] [de|du|d’|des]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    à la grande surprise [de|du|d’|des]
-    à l’ autre bout [de|du|d’|des]
-        <<- ~1:4>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    à [quelques|plusieurs] [mètres|kilomètres|lieues|pas|minutes|heures] [de|du|d’|des]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    à [quelques|plusieurs] [dizaines|centaines|milliers] de [mètres|kilomètres] [de|du|d’|des]
-        <<- ~1:5>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    à [base|force|raison] [de|d’]
-        <<- ~1:2>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    à grand renfort     [de|d’]
-    à grands coups      [de|d’]
-    à seule fin         [de|d’]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
+    tout au long [de|du|d’|des]
+        <<- not morph(<1, ":R") ~1>> *
 
     à travers $:D
     à travers >différente
@@ -11839,30 +11856,6 @@ __gestion_mots_grammaticaux__
 
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
-
-    au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu] [de|du|d’|des]
-        <<- ~1:2>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    au beau milieu      [de|du|d’|des]
-    au fin fond         [de|du|d’|des]
-    au grand dam        [de|du|d’|des]
-    au plus profond     [de|du|d’|des]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    au fur et à mesure  [de|du|d’|des]
-    au vu et au su      [de|du|d’|des]
-        <<- ~1:5>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    au nez et à la barbe [de|du|d’|des]
-        <<- ~1:6>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    aux [abords|dépens] [de|du|d’|des]
-        <<- ~1:2>> ␣
-        <<- =>> define(\1, [":R:LR"])
 
     [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles]
     [chacun|chacune]            d’ entre [nous|vous|eux|elles]
@@ -11873,9 +11866,6 @@ __gestion_mots_grammaticaux__
 
     comme tant d’ autres  $:R
         <<- ~1:4>> *
-
-    compte tenu [de|des|du]
-        <<- ~1:2>> avec
 
     depuis [,|<end>]
         <<- ~1>> *
@@ -11903,27 +11893,6 @@ __gestion_mots_grammaticaux__
 
     elles aussi  @:W¬:(?:3p|X)  [<end>|@:A:[fe]:p]
         <<- ~1:2>> *
-
-    en lieu et place [de|des|du]
-        <<- ~1:4>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    en l’ [absence|honneur] [de|du|d’|des]
-    en plein milieu [de|du|d’|des]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    en [arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|présence|provenance|raison|sus|termes|vertu] [de|du|d’|des]
-        <<- ~1:2>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    en flagrant délit [de|d’]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
-
-    en matière [de|d’]
-        <<- ~1:2>> ␣
-        <<- =>> define(\1, [":R:LR"])
 
     en phase avec
         <<- ~1:2>> *
@@ -11953,9 +11922,6 @@ __gestion_mots_grammaticaux__
     la [nette|bizarre] impression que
         <<- ~2:3>> _
 
-    le long [de|des|du]
-        <<- ~2>> _
-
     le pour et le contre
         <<- ~>> ␣
         <<- =>> define(\1, [":LN:m:p"])
@@ -11968,11 +11934,6 @@ __gestion_mots_grammaticaux__
 
     pas très
         <<- morph(<1, ":[NV]", ":A:[em]:[is]") ~>> *
-
-    par le biais [de|des|du]
-    par l’ entremise [de|des|du]
-        <<- ~1:3>> ␣
-        <<- =>> define(\1, [":R:LR"])
 
     personne  d’ autre [que|qu’]  [moi|moi-même|toiô|toi-même|luiô|lui-même|elle-même|elles|elles-mêmes|nous|nous-même|nous-mêmes|vous|vous-même|vous-mêmes|eux-mêmes]
         <<- ~2:0>> *
@@ -11994,10 +11955,6 @@ __gestion_mots_grammaticaux__
 
     suite [à|au|aux]
         <<- not value(<1, "|une|la|cet|cette|ma|ta|sa|notre|votre|leur|de|quelque|certaine|") ~1>> *
-
-    tout au long [de|du|d’|des]
-        <<- not morph(<1, ":R") ~1>> *
-        <<- ~3>> _
 
     tout un chacun
         <<- ~1:2>> *
@@ -12124,23 +12081,6 @@ __purge_conditionnelle__
     comme [celui-ci|celui-là|celle-ci|celle-là]
     comme les [miens|tiens|siens|miennes|tiennes|siennes|nôtres|vôtres|leurs]
         <<- morph(<1, ":[NA]", ":V0") and not morph(>1, ":(?:Ov|3p)") ~>> *
-
-    d’ entrée                           @¬:A:[fe]:[si]
-        <<- ~1:2>> *
-
-    dans ce cas                         @¬:A:[me]:[pi]
-        <<- ~1:3>> *
-
-    dans la grande majorité des cas     @¬:A:[me]:[pi]
-        <<- ~1:6>> *
-
-    dans la majorité des cas            @¬:A:[me]:[pi]
-    dans de [très|trop] nombreux cas    @¬:A:[me]:[pi]
-    dans la plupart des cas             @¬:A:[me]:[pi]
-        <<- ~1:5>> *
-
-    dans maints cas                     @¬:A:[me]:[pi]
-        <<- ~1:3>> *
 
     droit au but
     droit dans les yeux
@@ -12316,6 +12256,7 @@ __simplication_substantifs__
     >bombe à [eau|fission|fusion|fragmentation|hydrogène|neutrons|retardement]
     >bombe à rayonnement renforcé
     >bonnet de nuit
+    >bonne à rien
     >boucle d’ >oreille
     >brave ?d’¿ entre les braves
     >brosse à [>dent|reluire]
@@ -12500,6 +12441,7 @@ __simplication_substantifs__
     prix de revient
     quelqu’un d’ autre
     >rapport de force
+    >rat de bibliothèque
     [réglé+ses] comme du papier à musique
     >règlement de comptes
     [remis+es] à plat
@@ -13076,6 +13018,34 @@ __purge_locutions_potentielles__
     d’ [avance|évidence]  [<end>|,]
         <<- ~1:2>> *
 
+    d’ entrée                           @¬:A:[fe]:[si]
+    d’ entrée                           [<end>|,]
+        <<- ~1:2>> *
+
+    dans ce cas                         @¬:A:[me]:[pi]
+    dans ce cas                         [<end>|,]
+        <<- ~1:3>> *
+
+    dans la grande majorité des cas     @¬:A:[me]:[pi]
+    dans la grande majorité des cas     [<end>|,]
+        <<- ~1:6>> *
+
+    dans la majorité des cas            @¬:A:[me]:[pi]
+    dans de [très|trop] nombreux cas    @¬:A:[me]:[pi]
+    dans la plupart des cas             @¬:A:[me]:[pi]
+    dans la majorité des cas            [<end>|,]
+    dans de [très|trop] nombreux cas    [<end>|,]
+    dans la plupart des cas             [<end>|,]
+        <<- ~1:5>> *
+
+    dans les faits                      @¬:A:[me]:[pi]
+    dans les faits                      [<end>|,]
+        <<- ~1:3>> *
+
+    dans maints cas                     @¬:A:[me]:[pi]
+    dans maints cas                     [<end>|,]
+        <<- ~1:3>> *
+
     dans l’ ensemble  @¬:A.*:[me]:[si]
     dans l’ ensemble  [<end>|,]
         <<- ~1:3>> *
@@ -13264,6 +13234,7 @@ __purge_locutions_verbales__
     >fermer à [clé|clef]
     >finir en eau de boudin
     >foutre en l’ air
+    >gagner d’ avance
     >garder contenance
     [>gonfler|>regonfler] à bloc
     >jeter à terre
@@ -15514,24 +15485,6 @@ TEST: Je connais {{pleins}} de gens
 TEST: Les avocats sont pleins de nutriments.
 
 
-# point / poing
-__conf_poing_point__
-    [>arme|>coup|>oiseau] de >point
-    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] $:D >point
-        <<- /conf/ -3>> =\3.replace("t", "g").replace("T", "G")             # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
-
-    >point [américain|américains|>serrer|>desserrer|>lever|>casser|>lier]
-        <<- /conf/ morph(\2, ":A") and morph(<1, ":D")
-        -1>> =\1.replace("t", "g").replace("T", "G")                        # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
-
-TEST: une arme de {{point}}
-TEST: Elles ont tapé du {{point}} sur la table.
-TEST: les {{points}} serrés
-TEST: Tu contres son coup de poing.
-TEST: Il m’a donné un coup de poing.
-TEST: Les poings serrés.
-
-
 # possible
 __sgpl_autant_que_possible__
     autant  que  possibles
@@ -15583,6 +15536,14 @@ __sgpl_points_de_suspension__
         <<- /sgpl/ -3>> suspension                                  # Dans la locution nominale “points de suspension”, le dernier terme est au singulier.
 
 TEST: Arrête de mettre des points de {{suspensions}} partout.
+
+
+# rester en contact
+__sgpl_rester_en_contact__
+    >rester en contacts
+        <<- /sgpl/ --1>> contact                                    # Dans la locution “rester en contact”, “contact” est toujours au singulier.
+
+TEST: rester en {{contacts}}
 
 
 # sentir bon
@@ -17293,6 +17254,24 @@ TEST: « Oui, sans doute », mais peut être pas pour tout le monde
 TEST: La réalisation de composants (injection plastique…) peut être limitée.
 
 
+# point / poing
+__conf_poing_point__
+    [>arme|>coup|>oiseau] de >point
+    [>taper|>fermer|>ouvrir|>blesser|>serrer|>desserrer] $:D >point
+        <<- /conf/ -3>> =\3.replace("t", "g").replace("T", "G")             # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
+
+    >point [américain|américains|>serrer|>desserrer|>lever|>casser|>lier]
+        <<- /conf/ morph(\2, ":A") and morph(<1, ":D")
+        -1>> =\1.replace("t", "g").replace("T", "G")                        # Confusion probable. Une main fermée s’écrit “poing”.|https://fr.wiktionary.org/wiki/poing
+
+TEST: une arme de {{point}}
+TEST: Elles ont tapé du {{point}} sur la table.
+TEST: les {{points}} serrés
+TEST: Tu contres son coup de poing.
+TEST: Il m’a donné un coup de poing.
+TEST: Les poings serrés.
+
+
 # prendre son mal en patience
 __conf_prendre_son_mal_en_patience__
     >prendre [mon|ton|son|notre|votre|leur|leurs] >mâle en [>patience|patiente|patientes]
@@ -17363,6 +17342,15 @@ __conf_rebooter_rebouter__
 
 TEST: {{Reboute}} l’ordinateur.
 TEST: On {{reboute}} Windows et ça devrait aller.
+
+
+# rester en contact
+__conf_rester_en_contact__
+    >rester en [contacte+s]
+        <<- /conf/ --1>> contact                                    # Confusion. Locution “rester en contact”.
+
+TEST: il va rester en {{contacte}} avec eux
+TEST: Restons en contact.
 
 
 # sale / salle
