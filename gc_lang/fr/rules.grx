@@ -5333,17 +5333,23 @@ __conj_nous__
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
         -3>> =suggVerb(\3, ":1p")                                                                   # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 
-    [<start>|,]  nous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:(?:1p|Ov)
+    [<start>|,]  nous  [ne|n’]    ?[le|la|l’|les|en|y]¿                               @:V¬:(?:1p|Ov)
     [<start>|,]  nous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:(?:1p|Ov)
     [<start>|,]  nous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  $:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      $:V¬:1p
     [<start>|,]  nous  ?[ne|n’]¿  [lui|leur]                     en                   $:V¬:1p
-        <<- /conj/ --1>> =suggVerb(\-1, ":1p")                                                      # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+        <<- /conj/ --1>> =suggVerb(\-1, ":1p")                                                      # Conjugaison erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel..
+
+    <start>  nous  [le|la|l’|les|en|y]   @:V[123]..t_._[e_][a_]¬:(?:1p|Ov|Y|P)
+        <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                                      # Conjugaison possiblement erronée. Accord avec “nous”. Le verbe devrait être à la 1ʳᵉ personne du pluriel.
 
 TEST: Nous {{arriverez}} demain.
 TEST: Nous {{travaillez}}.
 TEST: nous {{donné}} trop de considération
 TEST: nous {{avancez}}
+TEST: nous n’{{devancez}} que de quelques points.
+TEST: nous vous {{donnait}} des marques d’affection.
+TEST: nous la {{réuniront}} avec l’ancienne équipe.
 TEST: Et, nous laissant étonnés d’être encore là sans y avoir rien compris,
 TEST: Nous y voilà enfin.
 
@@ -5354,12 +5360,15 @@ __conj_vous__
         <<- /conj/ not value(>1, "|je|tu|il|elle|on|nous|vous|ils|elles|")
         -3>> =suggVerb(\3, ":2p")                                                                   # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
-    [<start>|,]  vous  [ne|n’]    [le|la|l’|les|en|y]                                 @:V¬:(?:2p|Ov)
+    [<start>|,]  vous  [ne|n’]    ?[le|la|l’|les|en|y]¿                               @:V¬:(?:2p|Ov)
     [<start>|,]  vous  ?[ne|n’]¿  [me|m’|nous|vous|lui|leur]                          @:V¬:(?:2p|Ov)
     [<start>|,]  vous  ?[ne|n’]¿  [me|m’|te|t’|se|s’|nous|vous]  [le|la|l’|les|en|y]  $:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [le|la|l’|les]                 [lui|leur|en|y]      $:V¬:2p
     [<start>|,]  vous  ?[ne|n’]¿  [lui|leur]                     en                   $:V¬:2p
         <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                                      # Conjugaison erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
+
+    <start>  vous  [le|la|l’|les|en|y]   @:V[123]..t_._[e_][a_]¬:(?:2p|Ov|Y|P)
+        <<- /conj/ --1>> =suggVerb(\-1, ":2p")                                                      # Conjugaison possiblement erronée. Accord avec “vous”. Le verbe devrait être à la 2ᵉ personne du pluriel.
 
 TEST: Vous {{arrivais}} trop tard.
 TEST: vous ne l’{{avait}} pas vu.
@@ -5368,6 +5377,10 @@ TEST: vous nous {{refuser}} le pardon.
 TEST: Vous {{travaillons}}.
 TEST: vous {{donné}} du bonheur
 TEST: vous {{avançons}}
+TEST: Vous ne la {{voulait}} pas
+TEST: Vous ne {{mangeait}} que des légumes ?
+TEST: vous l’{{accomplissait}}
+TEST: vous la rendait avec bienveillance
 
 
 ## 3pl
@@ -22945,7 +22958,6 @@ TEST: Ces difficultés, songèrent mes amis, allaient les mettre à la torture.
 !!! À trier                                                                                       !!
 
 TODO: Il faut au préalable avoir {{définit}} un protocole.
-TODO: Vous la {{voulait}}
 TODO: un délire systématisé de persécution basé sur des interprétations
 TODO: Soudain, surgit l’un des ouvriers…
 TODO: Ainsi périt l’inconstant.
