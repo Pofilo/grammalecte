@@ -5470,8 +5470,8 @@ __non_verbe_après_préverbes__
 
     [ne|n’]                                                 @:¬:(?:[123][sp]|Y|P|Ov|X|W)|>(?:[mtsl]’|même|pas|presque|jamais|rien|guère|point|plus)/
     [me|m’|te|t’]                                           @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|voici|revoici|voilà|revoilà)/
-    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|qu[e’])/
-    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:ils?|qu[e’])/
+    se                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:pas|presque|jamais|rien|guère|point|plus|qu[ei’])/
+    s’                                                      @:¬:(?:[123][sp]|Y|P|Ov|X)|>(?:ils?|qu[ei’])/
         <<- /conf/ -2>> =suggSimil(\2, ":(?:[123][sp]|Y)", False)                                   # Incohérence avec « \1 » : « \2 » devrait être un verbe.
 
 TEST: ne leur en {{fil}} pas
@@ -5644,13 +5644,13 @@ TEST: Le total de cette opération, contrairement à ce qu’on pense, {{équiva
 
 ## Incohérences avec formes verbales 1pl et 2pl sans sujet
 __conj_xxxons_sans_sujet!3__
-    @:1p¬:[EGMNAJ]
-        <<- /conj/ not value(>1, "|nous|") and not (\1.istitle() and before0("\\w")) and not tag_before(\1, "1p")
+    ~ons$
+        <<- /conj/ morph(\1, ":1p", ":[EGMNAJ]") and not tag_before(\1, "1p") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3p")     # Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
 
 __conj_xxxez_sans_sujet!3__
-    @:2p¬:[EGMNAJ]
-        <<- /conj/ not value(>1, "|vous|") and not (\1.istitle() and before0("\\w")) and not tag_before(\2, "2p")
+    ~ez$
+        <<- /conj/ morph(\1, ":2p", ":[EGMNAJ]") and not tag_before(\2, "2p") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3p")     # Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
 
 TEST: les hommes et les femmes, qui sans un bruit, sans une parole amère, {{continuerons}} leur tâche n’en seront pas plus récompensés.
@@ -11251,7 +11251,7 @@ __purge_locutions__
     en aucun cas
     en aucune [circonstance|façon|manière]
     en ?[assez|très]¿ bas âge
-    en ?[assez|très]¿ bon état
+    en ?[assez|très]¿ bon état ?général¿
     en ?[assez|très]¿ bon état de [fonctionnement|marche]
     en ?[assez|très]¿ bonne [compagnie|posture|voie]
     en bonne et due forme
@@ -11282,7 +11282,7 @@ __purge_locutions__
     en état [de|d’] choc ?circulatoire¿
     en ?parfait¿ état [de|d’] marche
     en état d’ ébriété ?avancée¿
-    en excellent état
+    en excellent état ?général¿
     en fâcheuse posture
     en file indienne
     en fin [de|d’] [compte|journée|matinée|soirée|après-midi]
