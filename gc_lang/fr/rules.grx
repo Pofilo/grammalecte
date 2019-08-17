@@ -6913,6 +6913,7 @@ __conf_âge_age__
     age [actif|adulte|aidant|approximatif|avancé|bête|canonique|chaque|critique|dentaire|des|du|ingrat|légal|mental|moyen|mûr|mûre|mur|mure|osseux|où|précoce|préscolaire|pubertaire|respectable|scolaire|tendre|vénérable]
     age de [la|ma|ta|sa|notre|votre|leur] [mère|tante|grand-tante|grand-mère|sœur|cousine|nièce|fille|petite-fille]
     age de [mon|ton|son|notre|votre|leur] [père|grand-oncle|grand-père|cousin|neveu|enfant|fils|petit-fils]
+    age d’ or
     age du [père|grand-oncle|grand-père|cousin|neveu]
     age des [parents|grands-parents|mères|pères|grands-mères|grands-pères|oncles|tantes|neveux|nièces|cousins|cousines|enfants|petits-enfants|petits-fils|petites-filles]
         <<- /conf/ -1>> âge                                             # L’age est un élément de la charrue. Pour la durée d’existence, écrivez “âge”.
@@ -8750,9 +8751,13 @@ __conf_pomme_paume__
     >pomme de [la|ma|ta|sa|notre|votre|leur] main
         <<- /conf/ -1>> =\1.replace("om", "au").replace("OM", "AU")         # Confusion probable. Si vous évoquez la face intérieure de la main, écrivez “paume”.|https://fr.wiktionary.org/wiki/paume
 
+    >paume [de|d’] [discorde|terre|reinette|pin|Adam|api|amour|ambre|eau|or]
+        <<- /conf/ -1>> =\1.replace("au", "om").replace("AU", "OM")         # Confusion probable. La paume est l’intérieur de la main. Pour évoquer le fruit, écrivez “pomme”.|https://fr.wiktionary.org/wiki/pomme
+
 TEST: elle n’est jamais tombée {{dans les paumes}}
 TEST: le jeu de {{pomme}} est l’ancêtre du tennis
 TEST: dans la {{pomme}} de sa main
+TEST: c’est la {{paume}} de discorde
 
 
 # pot aux roses / poteau rose
@@ -9480,11 +9485,19 @@ __conf_tant_temps_tan_1__
     en [même|mêmes] [tant|>tan]
         <<- /conf/ ->> en même temps                        # Confusion. Pour ce qui est temporel, écrivez “temps”.
 
+    en [temps|>tan] [que|qu’] >telle
+        <<- /conf/ -2>> tant                                # Confusion. Locution “en tant que tel”.
+
+    en [>tan|tant] et en >heure
+        <<- /conf/ -2>> temps                               # Confusion: Locution “en temps et en heure”.|https://fr.wiktionary.org/wiki/en_temps_et_en_heure
+
 TEST: en {{tant}} de guerre, il faut savoir faire face et ne pas faiblir face à l’adversité.
 TEST: ils vont {{de tan en tan}} au restaurant
 TEST: après {{temps}} de souffrance, il faut savoir lâcher prise.
 TEST: il travaille à {{tant}} partiel
 TEST: {{en même tant}}, on s’en moque, de toutes ces histoires ennuyeuses.
+TEST: en {{tan}} que telle, cette méthode n’est pas parfaite, mais avec de l’intuition
+TEST: ce sera fait en {{tant}} et en heure
 TEST: ce qui a commencé en 2011 en tant d’endroits du pourtour méditerranéen
 TEST: elle est allée en tant de lieux qu’il est difficile de suivre son trajet.
 
@@ -10471,27 +10484,6 @@ __purge_un_nombre__
 TEST: l’équipe veut aussi voir dans la lettre le nombre d’or, un symbole d’harmonie, ainsi qu’un 6 retourné.
 
 
-## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
-__purge_pronom_seul__
-    [à|de|d’|par]  moi      ?[seul|seule]¿
-    [à|de|d’|par]  toi      ?[seul|seule]¿
-    [à|de|d’|par]  lui      seul
-    [à|de|d’|par]  elle     ?seule¿
-    [à|de|d’|par]  nous     >seule
-    [à|de|d’|par]  vous     >seule
-    [à|de|d’|par]  eux      ?seuls¿
-    [à|de|d’|par]  elles    ?seules¿
-        <<- ~>> *
-
-    [moi|toi]       [seul|seule]
-    lui             seul
-    elle            seule
-    [nous|vous]     [seuls|seules]
-    eux             seuls
-    elles           seules
-        <<- ~2>> *
-
-
 __purge_début_phrase__
     <start>  car
     <start>  de plus
@@ -11347,6 +11339,7 @@ __purge_locutions__
     en si peu [de|d’] temps
     en situation [irrégulière|régulière]
     en sous-main
+    en tant que >telle
     en tête à tête
     en temps et en heure
     en temps [normal|opportun|ordinaire|utile|voulu]
@@ -11465,7 +11458,7 @@ __purge_locutions__
     le cas échéant
     le moins du monde
     le moment venu
-    le [moins|plus] [tôt|tard|souvent]
+    le [moins|plus] [tôt|tard|souvent] ?possible¿
     le [moins|plus] [de|d’] [temps|monde] possible
     le [moment|jour] venu
     les [uns|unes] des autres
@@ -11813,7 +11806,7 @@ __purge_x_par_après_x__
 __gestion_mots_grammaticaux__
     à [bord|bout|cause|contre-courant|côté|court|défaut|destination|droite|flanc|gauche|hauteur|partir|portée|proximité|propos|rebours|titre]   [de|du|d’|des]
     à bonne distance                                                                                                                            [de|du|d’|des]
-    à l’ [affût|affut|arrière|aune|avant|écart|égard|extérieur|encontre|insu|instar|intérieur|opposé|orée|approche]                             [de|du|d’|des]
+    à l’ [affût|affut|approche|arrière|aune|avant|écart|égard|est|extérieur|encontre|insu|instar|intérieur|opposé|orée|ouest]                   [de|du|d’|des]
     à l’ autre bout                                                                                                                             [de|du|d’|des]
     à la [hauteur|portée|suite]                                                                                                                 [de|du|d’|des]
     à la grande surprise                                                                                                                        [de|du|d’|des]
@@ -11823,7 +11816,7 @@ __gestion_mots_grammaticaux__
     à grand renfort                                                                                                                             [de|d’]
     à grands coups                                                                                                                              [de|d’]
     à seule fin                                                                                                                                 [de|d’]
-    au [bout|courant|cours|détriment|gré|lieu|long|large|milieu|profit|sein|sortir|sujet|vu]                                                    [de|du|d’|des]
+    au [bout|courant|cours|détriment|fond|gré|lieu|long|large|milieu|nord|profit|ras|sein|sommet|sortir|sud|sujet|vu]                           [de|du|d’|des]
     au beau milieu                                                                                                                              [de|du|d’|des]
     au fin fond                                                                                                                                 [de|du|d’|des]
     au grand dam                                                                                                                                [de|du|d’|des]
@@ -11834,9 +11827,11 @@ __gestion_mots_grammaticaux__
     aux [abords|dépens]                                                                                                                         [de|du|d’|des]
     compte tenu                                                                                                                                 [de|du|d’|des]
     d’ un bout à l’ autre                                                                                                                       [de|du|d’|des]
-    en [arrière|attente|amont|aval|cas|cours|dehors|dépit|direction|faveur|guise|présence|provenance|quête|raison|sus|termes|vertu]             [de|du|d’|des]
+    dans l’ attente                                                                                                                             [de|du|d’|des]
+    des [quatre|4] coins                                                                                                                        [de|du|d’|des]
+    en [arrière|attente|amont|aval|bas|cas|cours|dehors|dépit|direction|faveur|guise|haut|présence|provenance|quête|raison|sus|termes|vertu]    [de|du|d’|des]
     en flagrant délit                                                                                                                           [de|d’]
-    en lieu et place                                                                                                                            [de|des|du]
+    en lieu et place                                                                                                                            [de|du|d’|des]
     en matière                                                                                                                                  [de|d’]
     en l’ [absence|honneur]                                                                                                                     [de|du|d’|des]
     en plein milieu                                                                                                                             [de|du|d’|des]
@@ -12320,6 +12315,7 @@ __simplication_substantifs__
     >droite comme un i
     >eau de [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau de noix de coco
+    >élément à charge
     >enterrement de vie de garçon
     >enterrement de vie de jeune fille
     >entrée de service
@@ -12338,6 +12334,7 @@ __simplication_substantifs__
     >femme d’ âge mûr
     >femme à tout faire
     >ferme à >clic
+    >feu d’ artifice
     >feuille de route
     >fiche S
     >ficher S
@@ -12403,6 +12400,7 @@ __simplication_substantifs__
     >motrice [>essence|>diésel|>diesel]
     >motion de [blâme|censure|défiance]
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
+    >moulin à [café|eau|paroles|poivre|prières|vent]
     noix de [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
     >nue comme un ver
     >nue comme des vers
@@ -12433,11 +12431,11 @@ __simplication_substantifs__
     >pompe à [chaleur|essence|fric]
     >porte de [service|garage|sortie]
     >porte d’ entrée
-    >pot de colle
+    >pot de [chambre|colle]
     >poudre aux yeux
     >presse à >scandale
-    preuve suffisante du contraire
-    preuves suffisantes du contraire
+    preuve ?suffisante¿ du contraire
+    preuves ?suffisantes¿ du contraire
     prix de revient
     quelqu’un d’ autre
     >rapport de force
@@ -12526,6 +12524,7 @@ __purge_locutions_adjectivales__
     grandeur nature
     haut de gamme
     haute [résolution|fidélité|tension]
+    hors service
     longue [distance|portée|durée]
     meilleur marché
     numéro un
@@ -13121,9 +13120,17 @@ __purge_locutions_potentielles__
     [de|d’]  [façon|manière]  ?non¿  @:A.*:[fe]:[si]
         <<- ~>> *
 
+    le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps @:¬:A:[me]:[si]|>d[e’]/
+    le plus clair [de|d’] [mon|ton|son|notre|votre|leur] temps [<end>|,]
+        <<- ~1:6>> *
+
     pour partie  @:¬:A.*:f:s
     pour partie  [<end>|,]
         <<- ~1:2>> *
+
+    semblait-il
+    semble-t-il
+        <<- not value(<1, "|ça|cela|ceci|me|te|lui|nous|vous|leur|") ~>> *
 
     ?à¿ un [instant|moment]  @¬:A.*:[me]:[si]
     ?à¿ un [instant|moment]  [<end>|,]
@@ -13135,9 +13142,9 @@ __purge_locutions_potentielles__
     un jour  [<end>|,]
         <<- not morph(<1, ":R|>d’/") ~1:2>> *
 
-    semblait-il
-    semble-t-il
-        <<- not value(<1, "|ça|cela|ceci|me|te|lui|nous|vous|leur|") ~>> *
+    vu les circonstances  @¬:A:[fe]:[pi]
+        <<- ~1:3>> *
+
 
 __purge_tous_deux_trois__
     >faire tous [deux|trois]
@@ -13271,6 +13278,7 @@ __purge_locutions_verbales__
     >prêter main forte
     >prêter main-forte
     >réduire en miettes
+    >remettre en cause
     >rendre [hommage|service|visite]
     >rester lettre morte
     >rester lettres mortes
@@ -18094,7 +18102,6 @@ TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
 !!!
 !!!
 
-
 ### Mots grammaticaux autour des verbes
 __purge_syntagme_verbal__
     ne [lui|leur]
@@ -18166,6 +18173,27 @@ __purge_pronoms__
     [un|une] d’ entre [nous|vous|eux|elles]
     [un|une] des [nôtres|vôtres]
         <<- ~2:0>> *
+
+
+## moi/toi/lui/elle/nous/vous/eux/elles seul·e·s
+__purge_pronom_seul__
+    [à|de|d’|par]  moi      ?[seul|seule]¿
+    [à|de|d’|par]  toi      ?[seul|seule]¿
+    [à|de|d’|par]  lui      seul
+    [à|de|d’|par]  elle     ?seule¿
+    [à|de|d’|par]  nous     >seule
+    [à|de|d’|par]  vous     >seule
+    [à|de|d’|par]  eux      ?seuls¿
+    [à|de|d’|par]  elles    ?seules¿
+        <<- ~>> *
+
+    [moi|toi]       [seul|seule]
+    lui             seul
+    elle            seule
+    [nous|vous]     [seuls|seules]
+    eux             seuls
+    elles           seules
+        <<- ~2>> *
 
 
 __purge_syntagmes_nominaux__
@@ -20842,7 +20870,7 @@ TEST: il gère l’{{accueille}}                                   ->> accueil
 TEST: Elle ne connait pas leur {{recule}}                       ->> recul
 TEST: elle lisait la {{garantit}}                               ->> garantie
 TEST: nous racontons le {{dépare}} des peuples vers les étoiles ->> départ
-TEST: Les hommes resteront en {{contacte}}                      ->> contact
+TEST: Les papiers resteront en {{colorie}} vert                 ->> coloris
 TEST: Le parquet ne demande pas le {{maintient}} en détention   ->> maintien
 TEST: Mon idée rend leur {{dépare}} nécessaire                  ->> départ
 TEST: tu vois, l’oiseau étend les {{hèles}}                     ->> ailes
@@ -23081,6 +23109,7 @@ TEST: Quoi de neuf, mec ?
 TEST: T’as enfin trouvé des gens avec qui t’entendre ?
 TEST: ça fait du bien de se l’entendre dire
 TEST: Laisse tomber, mec ! Pour qui tu te prends ?
+TEST: il y avait souvent foule
 
 
 
