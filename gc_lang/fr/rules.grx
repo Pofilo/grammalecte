@@ -11543,6 +11543,7 @@ __purge_locutions__
     par-devant
     par instants
     par là
+    par [un|le] simple effet du hasard
     parfois
     partant [de|d’] là
     partout
@@ -14714,12 +14715,12 @@ __gn_nombre_chiffres_1m__
 
     *NUM  *WORD  *WORD
         <<- /gn/ not value(\2, "|fois|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|")
-            and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">(?:seule|maximum|minimum)/") >>>
+            and not re.search("^0*[01](?:,[0-9]+|)$", \1) and not value(<1, "|et|ou|de|d’|") and not morph(\3, ">(?:seule|maximum|minimum)/") >>>
         <<- /gn/ ((morph(\2, ":[NA].*:m", ":(?:B|e|G|V0|f)") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":(?:B|e|G|V0|m)") and morph(\3, ":[NA].*:m", "*")))
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                # Accord de genre erroné entre « \2 » et « \3 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, True)                           # Accord de genre erroné avec « \3 ».
-        <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
 TEST: il a adopté 1 {{chiens}}.
@@ -14735,6 +14736,7 @@ TEST: un jeu de 1980 absolument démodé.
 TEST: elle fut le 13 janvier décapitée
 TEST: elles furent le 18 janvier décorées
 TEST: en quantité 2 fois moindre
+TEST: 1 La Mort
 
 
 ##  trouver ça/ceci/cela + adj
@@ -22477,7 +22479,7 @@ TEST: On vit très vite, en quelques jours, les gens installer des jeux d’arge
 __conj_nom_propre__
     ~^[A-ZÉÈ]  @:[123][sp]¬:(?:G|3s|3p!|P|M|A.*:[si]|N.*:m:s)
         <<- /conj/ not before("\\b[dD]e l’ *$") and morph(\1, ":M")
-            and not morph(<1, ":[VRD]|>(?:ni|et|ou)/") and not before("([A-ZÉÈ][\\w-]+), +([A-ZÉÈ][\\w-]+), +$")
+            and not morph(<1, ":[VRDM]|>(?:ni|et|ou)/") and not before("([A-ZÉÈ][\\w-]+), +([A-ZÉÈ][\\w-]+), +$")
             and not ( morph(\2, ":3p") and before("\\w") )
         -2>> =suggVerb(\2, ":3s")                                                                   # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -23145,6 +23147,7 @@ TEST: T’as enfin trouvé des gens avec qui t’entendre ?
 TEST: ça fait du bien de se l’entendre dire
 TEST: Laisse tomber, mec ! Pour qui tu te prends ?
 TEST: il y avait souvent foule
+TEST: 03/07/2019 SANTÉ
 
 
 
