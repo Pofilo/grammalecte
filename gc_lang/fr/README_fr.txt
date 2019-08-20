@@ -2,18 +2,17 @@
     GRAMMALECTE
     Correcteur grammatical pour le français
     version ${version}
+
+    par Olivier R.
+    Site web : https://grammalecte.net/
 _______________________________________________________________________________
 
     Basé sur Lightproof
         de László Németh
         http://numbertext.org/lightproof/
 
-    Modifications de Lightproof et règles grammaticales :
-        Olivier R. - olivier<at>grammalecte<dot>net
-        Site web : https://grammalecte.net/
-
-        Certaines des règles grammaticales sont reprises du correcteur
-        LanguageTool, notamment celles de Dominique Pellé.
+    Certaines des règles grammaticales sont reprises du correcteur
+    LanguageTool, notamment celles de Dominique Pellé.
 
     Licence :
         GPL : GNU General Public License
