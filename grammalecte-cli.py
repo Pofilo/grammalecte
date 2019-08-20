@@ -107,6 +107,9 @@ def loadDictionary (spf):
 
 def main ():
     "launch the CLI (command line interface)"
+
+    print("Python v" + sys.version)
+
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-f", "--file", help="parse file (UTF-8 required!) [on Windows, -f is similar to -ff]", type=str)
     xParser.add_argument("-ff", "--file_to_file", help="parse file (UTF-8 required!) and create a result file (*.res.txt)", type=str)
