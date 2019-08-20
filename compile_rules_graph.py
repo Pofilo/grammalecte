@@ -238,7 +238,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     # valid action?
     m = re.search(r"(?P<action>[-=~/!>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
     if not m:
-        print(" # Error. No action found at: ", sActionId)
+        print("\n# Error. No action found at: ", sActionId)
         return None
 
     # Condition
@@ -264,7 +264,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         iEndAction = 0
     else:
         if cAction != "-" and (m.group("start").endswith(".") or m.group("end").startswith(":.")):
-            print(" # Error. Wrong selection on tokens.", sActionId)
+            print("\n# Error. Wrong selection on tokens.", sActionId)
             return None
         if m.group("start").endswith("."):
             cStartLimit = ">"
@@ -290,7 +290,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         if iMsg == -1:
             sMsg = "# Error. Error message not found."
             sURL = ""
-            print(sMsg + " Action id: " + sActionId)
+            print("\n" + sMsg + " Action id: " + sActionId)
         else:
             sMsg = sAction[iMsg+3:].strip()
             sAction = sAction[:iMsg].strip()
@@ -313,7 +313,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         return [sOption, sCondition, cAction, ""]
 
     if not sAction and cAction != "!":
-        print("# Error in action at line " + sActionId + ":  This action is empty.")
+        print("\n# Error in action at line <" + sActionId + ">:  This action is empty.")
 
     if sAction[0:1] != "=" and cAction != "=":
         checkIfThereIsCode(sAction, sActionId)
@@ -325,7 +325,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
-            print("# Error in action at line " + sActionId + ":  The message is empty.")
+            print("\n# Error in action at line <" + sActionId + ">:  The message is empty.")
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, bCaseSensitivity, nPriority, sMsg, sURL]
     if cAction == "~":
         ## text processor
@@ -333,6 +333,13 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
             sAction = createFunction("tp", sAction, True)
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
+        elif sAction not in "␣*_":
+            nToken = sAction.count("|") + 1
+            if iStartAction > 0 and iEndAction > 0:
+                if (iEndAction - iStartAction + 1) != nToken:
+                    print("\n# Error in action at line <" + sActionId + ">: numbers of modified tokens modified.")
+            elif iStartAction < 0 or iEndAction < 0 and iStartAction != iEndAction:
+                print("\n# Warning in action at line <" + sActionName + ">: rewriting with possible token position modified.")
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
     if cAction in "!/":
         ## tags
@@ -340,10 +347,10 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if cAction == "=":
         ## disambiguator
         if "define(" in sAction and not re.search(r"define\(\\-?\d+ *, *\[.*\] *\)", sAction):
-            print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
+            print("\n# Error in action at line <" + sActionId + ">: second argument for <define> must be a list of strings")
         sAction = createFunction("da", sAction)
         return [sOption, sCondition, cAction, sAction]
-    print(" # Unknown action.", sActionId)
+    print("\n# Unknown action.", sActionId)
     return None
 
 
