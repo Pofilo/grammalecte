@@ -812,7 +812,8 @@ class TextParser:
                 # several tokens
                 lTokenValue = sWhat.split("|")
                 if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
-                    echo("Error. Text processor: number of replacements != number of tokens.")
+                    if (bDebug):
+                        echo("Error. Text processor: number of replacements != number of tokens.")
                     return
                 for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
                     if not sValue or sValue == "*":

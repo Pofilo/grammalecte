@@ -935,7 +935,9 @@ class TextParser {
                 // several tokens
                 let lTokenValue = sWhat.split("|");
                 if (lTokenValue.length != (nTokenRewriteEnd - nTokenRewriteStart + 1)) {
-                    console.log("Error. Text processor: number of replacements != number of tokens.");
+                    if (bDebug) {
+                        console.log("Error. Text processor: number of replacements != number of tokens.");
+                    }
                     return;
                 }
                 let j = 0;
