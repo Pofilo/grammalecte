@@ -6645,7 +6645,7 @@ __conf_à_a_locutions__
     a tribord
     a tu et à toi
     a un moment donné
-    a usage interne
+    a usage [interne|unique]
     a visage [découvert|humain]
     a vitesse grand V
     a vive allure
@@ -6656,7 +6656,7 @@ __conf_à_a_locutions__
     a y [réfléchir|songer|penser]
     a y regarder de plus près
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              # Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     a [mon|ton|son|notre|votre|leur] [cœur|corps] défendant
     a [mon|ton|son|notre|votre|leur] grand désarroi
@@ -6666,7 +6666,7 @@ __conf_à_a_locutions__
     a [mes|tes|ses|nos|vos|leurs] [dépens|côtés]
     a [mes|tes|ses|nos|vos|leurs] risques et périls
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     a bonne distance                                                                                [de|d’|des|du|<end>|,]
     a [base|bord|cause|contre-courant|côté|court|défaut|droite|gauche|partir|portée|propos|rebours] [de|d’|des|du|<end>|,]
@@ -6674,7 +6674,7 @@ __conf_à_a_locutions__
     a l’ autre bout                                                                                 [de|d’|des|du|<end>|,]
     a la [portée|suite]                                                                             [de|d’|des|du|<end>|,]
         <<- /conf/ not value(<1, "|l’|n’|il|elle|on|y|") and not before("(?i)n’en +$")
-        -1>> à              # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        -1>> à              # Confusion probable : “a” est une forme conjugée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Puisqu’on nous méprise, autant y aller {{a}} reculons.
 TEST: Les parties {{a}} nouveau divisées ne se réuniront pas avant longtemps.
@@ -6698,7 +6698,20 @@ TEST: les méthodes de l’à-peu-près ne suffisent pas.
 
 
 ## substantifs
-__conf_à_substantifs__
+
+__conf_substantif_à_substantif!3__
+    *WORD  a  @:N¬*
+        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|faim|peur|raison|soif|") and morph(\1, ":N", "*")
+        -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: les bobos {{a}} trottinette
+TEST: la lettre A est la première lettre de l’alphabet
+TEST: la lettre a est la première lettre de l’alphabet
+TEST: cette femme a raison
+TEST: l’homme a beau se démener, rien n’y fait.
+
+
+__conf_a_à_substantifs__
     >arc a >poulie
     >arme a >feu
     >armoire a [>glace|>pharmacie]
@@ -6761,7 +6774,7 @@ __conf_à_substantifs__
     >vol a [la|l’] [étalage|sauvette|tire]
     >vol a main armée
     >usine a gaz
-        <<- /conf/ -2>> à                   # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                   # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: C’est un arc {{a}} poulies
 TEST: Ceci est une arme {{a}} feu.
@@ -10864,7 +10877,7 @@ __purge_locutions__
     à un moment ou à un autre
     à une   heure  [décente|tardive]
     à cette heure matinale
-    à usage interne
+    à usage [interne|unique]
     à visage [découvert|humain]
     à vitesse grand V
     à vive allure
