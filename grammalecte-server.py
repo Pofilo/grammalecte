@@ -27,22 +27,6 @@ oTextFormatter = oGrammarChecker.getTextFormatter()
 oGCE = oGrammarChecker.getGCEngine()
 
 
-xProcessPoolExecutor = None
-
-
-def initExecutor (nMultiCPU=None):
-    "process pool executor initialisation"
-    global xProcessPoolExecutor
-    if xProcessPoolExecutor:
-        # we shutdown the ProcessPoolExecutor which may have been launched previously
-        xProcessPoolExecutor.shutdown(wait=False)
-    nMaxCPU = max(os.cpu_count()-1, 1)
-    if nMultiCPU is None or not (1 <= nMultiCPU <= nMaxCPU):
-        nMultiCPU = nMaxCPU
-    print("CPU processes used for workers: ", nMultiCPU)
-    xProcessPoolExecutor = concurrent.futures.ProcessPoolExecutor(max_workers=nMultiCPU)
-
-
 def parseText (sText, dOptions=None, bFormatText=False, sError=""):
     "parse <sText> and return errors in a JSON format"
     sJSON = '{ "program": "grammalecte-fr", "version": "'+oGCE.version+'", "lang": "'+oGCE.lang+'", "error": "'+sError+'", "data" : [\n'
@@ -73,6 +57,23 @@ def suggest (sToken):
         except json.JSONDecodeError:
             return '{"error": "json encoding error"}'
     return '{"error": "no token given"}'
+
+
+#### PROCESS POOL EXECUTOR ####
+xProcessPoolExecutor = None
+
+def initExecutor (nMultiCPU=None):
+    "process pool executor initialisation"
+    global xProcessPoolExecutor
+    if xProcessPoolExecutor:
+        # we shutdown the ProcessPoolExecutor which may have been launched previously
+        print("ProcessPoolExecutor shutdown.")
+        xProcessPoolExecutor.shutdown(wait=False)
+    nMaxCPU = max(os.cpu_count()-1, 1)
+    if nMultiCPU is None or not (1 <= nMultiCPU <= nMaxCPU):
+        nMultiCPU = nMaxCPU
+    print("CPU processes used for workers: ", nMultiCPU)
+    xProcessPoolExecutor = concurrent.futures.ProcessPoolExecutor(max_workers=nMultiCPU)
 
 
 #### SERVEUR ####
@@ -353,6 +354,6 @@ if __name__ == '__main__':
          xArgs.test_page,
          xArgs.multiprocessor)
 else:
-    # we do it for the server may be used with WSGI (which doesn’t call main())
+    # Must be launched at start, for WSGI server (which doesn’t call main())
     # WSGI servers just import the given file as a module and use an object exported from it (<app> in this case) to run the server.
     initExecutor()
