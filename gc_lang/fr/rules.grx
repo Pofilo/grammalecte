@@ -6726,6 +6726,7 @@ __conf_à_substantifs__
     >homme a tout faire
     >lampe a [>huile|>pétrole]
     >lime a >ongle
+    >livraison a domicile
     >machine a [café|coudre|écrire|laver|voter]
     >machine a >remonter le temps
     >matière a >réflexion
@@ -12385,13 +12386,15 @@ __simplication_substantifs__
     >invitée surprise
     >journal [de|d’] bord
     >juge d’ instruction
+    >lame de fond
     >lettre [de|d’] recommandation
-    >liaison sans lendemain
     >lampe à [huile|pétrole]
     >lampe [de|d’] chevet
+    >liaison sans lendemain
     >lime à >ongle
     >liste d’ attente
     >lit [de|d’] camp
+    >livraison à domicile
     >livre [de|d’] poche
     >lune [de|d’] miel
     >machine à [café|coudre|écrire|laver|sous|voter]
@@ -14720,7 +14723,7 @@ __gn_nombre_chiffres_1m__
             and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                # Accord de genre erroné entre « \2 » et « \3 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2, True)                           # Accord de genre erroné avec « \3 ».
-        <<- /gn/ morph(\2, ":[NA].*:[pi]", ":G") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
+        <<- /gn/ morph(\2, ":[NA].*:[pi]", "*") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
 
 TEST: il a adopté 1 {{chiens}}.
@@ -14737,6 +14740,7 @@ TEST: elle fut le 13 janvier décapitée
 TEST: elles furent le 18 janvier décorées
 TEST: en quantité 2 fois moindre
 TEST: 1 La Mort
+TEST: L’année 2019 a commencé à le montrer
 
 
 ##  trouver ça/ceci/cela + adj
@@ -17022,7 +17026,7 @@ TEST: Elle en est tombée des {{nus}}.
 
 # numérique / digital
 __conf_numérique_digital__
-    [>stratégie|>appareil|>transition|>transformation|>caméra|>télévision|>banque|>connexion|>prise|>présence|>entreprise|>compagnie|>communication|>agence|>expérience|>solution|>identité|>économie|>ère|>service] >digitale
+    [>agence|>appareil|>banque|>caméra|>communication|>compagnie|>connexion|>économie|>entreprise|>ère|>expérience|>identité|>industrie|>présence|>prise|>service|>solution|>stratégie|>télévision|>transformation|>transition] >digitale
         <<- /conf/ -2>> numérique|numériques
         # Confusion : “digital” est un adjectif se rapportant aux doigts (empreinte digitale, arthrose digitale, etc.). Écrivez “numérique”.
 
