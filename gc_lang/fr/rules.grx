@@ -1319,8 +1319,8 @@ __[s]/num(num_grand_nombre_soudé)__
     <<- not before("NF[  -]?(C|E|P|Q|X|Z|EN(?:[  -]ISO|)) *$") >>>
     <<- \0.__len__() > 4 ->> =formatNumber(\0)                                                      # Formatage des grands nombres.
     <<- __else__
-        and after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])")
-        or after("^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])")
+        and ((after("^(?:,[0-9]+[⁰¹²³⁴⁵⁶⁷⁸⁹]?|[⁰¹²³⁴⁵⁶⁷⁸⁹])") and not (re.search("^[01]+$", \0) and after("^,[01]+\\b")))
+        or after("^[   ]*(?:[kcmµn]?(?:[slgJKΩ]|m[²³]?|Wh?|Hz|dB)|[%‰€$£¥Åℓhj]|min|°C|℃)(?![\\w’'])"))
     ->> =formatNumber(\0)                                                                           # Formatage des grands nombres.
 
 __[s]/num(num_nombre_quatre_chiffres)__
@@ -1339,6 +1339,7 @@ TEST: {{2308393909}}                            ->> 2 308 393 909|2308 393-9
 TEST: {{2024}},9                                ->> 2 024
 TEST: {{4000}} Å                                ->> 4 000
 TEST: {{3240}} µA                               ->> 3 240
+TEST: 1111 0011,01 (binaire)
 
 
 __[s>(num_grand_nombre_avec_points)__
