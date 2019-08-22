@@ -394,7 +394,7 @@ TEST: « Je suis partie.{{  }}»
 # Espace avant ou après tiret
 __[i]/esp(esp_avant_après_tiret)__
     ({w_1})( [-–—]|[-–—] )({w_1})  @@0,**,$
-        <<- not \1.endswith("-t") and \3 != "t" >>>
+        <<- not \1.endswith("-t") and \3 != "t" and not (\2 == " -" and \3.isdigit()) >>>
         <<- (\3 == "je" and morph(\1, ":1s"))
             or (\3 == "tu" and morph(\1, ":2s"))
             or (\3 == "il" and morph(\1, ":3s"))
@@ -411,6 +411,7 @@ TEST: Le {{faut -il}} ?             ->> faut-il|faut – il|faut — il
 TEST: qu’y {{puis -je}} ?           ->> puis-je|puis – je|puis — je
 TEST: Le {{faut -il}} ?             ->> faut-il|faut – il|faut — il
 TEST: qu’y {{puis -je}} ?           ->> puis-je|puis – je|puis — je
+TEST: L’exposant -127, code 0000 0000, est réservé pour zéro
 
 
 # Espaces et crochets et parenthèses
