@@ -13237,8 +13237,24 @@ __da_le_la_les_leur2__
     [<start>|,]  ?[je|tu|il|elle|on|nous|vous|ils|elles]¿  ?[ne|n’]¿  [lui|leur|y]                    en                          *WORD  [le|la|l’|les]  @:[NA]¬:[YG]
         <<- morph(\-3, ":[123][sp]") =>> =select(\-2, ":D") and exclude(\-1, ":[123][sp]")
 
-    [/VCint|/VCimp]  [le|la|l’|les]  @:[NA]¬:[YG]
+    [/VCint|/VCimp]  [le|la|l’|les|leur|leurs]  @:[NA]¬:[YG]
         <<- =>> =select(\-2, ":D") and exclude(\-1, ":[123][sp]")
+
+
+
+__da_substantifs__
+    [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|G)
+        <<- =>> exclude(\3, ":V")
+
+    les  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|G)
+        <<- not before(":O[vs]") =>> exclude(\3, ":V")
+
+    leurs  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|G)
+        <<- not before(":O[vs]") =>> exclude(\3, ":V")
+
+    [plusieurs|certains|certaines]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|G)
+        <<- =>> exclude(\2, ":V") and exclude(\3, ":V")
+
 
 
 __purge_locutions_verbales__
@@ -14775,16 +14791,16 @@ __gn_seul_e_s_det_substantifs_nombre__
         <<- /gn/ -2>> \2s                                                           # Si “\2” se réfère au substantif “\4”, il faut le mettre au pluriel.
 
     [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3s¬:G
-    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [nous|vous]     [le|la|l’|les|en|y]         @:3s¬:G
-    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [le|la|l’|les]  [lui|leur|en|y]             @:3s¬:G
-    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [lui|leur|y]    en                          @:3s¬:G
+    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
+    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
+    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
+    [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         [lui|leur|y]    en                      @:3s¬:G
     [<start>|,]  [seuls|seules]  [ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ledit|ladite]  @:[NA].*:[si]¬:G         @:3s¬*
     [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3s¬:G
-    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [nous|vous]     [le|la|l’|les|en|y]         @:3s¬:G
-    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [le|la|l’|les]  [lui|leur|en|y]             @:3s¬:G
-    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [lui|leur|y]    en                          @:3s¬:G
+    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
+    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
+    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
+    [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  [lui|leur|y]    en                      @:3s¬:G
     [<start>|,]  [seuls|seules]  [le|la|l’]                                                         @:[NA].*:[si]¬:(?:G|3s)  @:3s¬*
         <<- /gn/ -2>> =\2[:-1]                                                      # Si “\2” se réfère au substantif “\4”, il faut le mettre au singulier.
 
@@ -14796,44 +14812,44 @@ TEST: {{seules}} cette chatte sut deviner le piège.
 
 __gn_seul_e_s_det_substantifs_genre__
     [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3s¬:G
-    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [nous|vous]     [le|la|l’|les|en|y]         @:3s¬:G
-    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [le|la|l’|les]  [lui|leur|en|y]             @:3s¬:G
-    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [lui|leur|y]    en                          @:3s¬:G
+    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
+    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
+    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
+    [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        [lui|leur|y]    en                      @:3s¬:G
     [<start>|,]  seul  [cette|mon|ton|son|ma|ta|sa|notre|votre|leur|ladite]  @:[NA].*:f:[si]¬:[Gm]        @:3s¬*
     [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3s¬:G
-    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [nous|vous]     [le|la|l’|les|en|y]         @:3s¬:G
-    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [le|la|l’|les]  [lui|leur|en|y]             @:3s¬:G
-    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [lui|leur|y]    en                          @:3s¬:G
+    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
+    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
+    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
+    [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  [lui|leur|y]    en                      @:3s¬:G
     [<start>|,]  seul  [la|l’]                                               @:[NA].*:f:[si]¬:(?:G|3s|m)  @:3s¬*
         <<- /gn/ -2>> seule                                                         # Si “\2” se réfère au substantif féminin “\4”, il faut le mettre au féminin.
 
     [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3s¬:G
-    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [nous|vous]     [le|la|l’|les|en|y]         @:3s¬:G
-    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [le|la|l’|les]  [lui|leur|en|y]             @:3s¬:G
-    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [lui|leur|y]    en                          @:3s¬:G
+    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
+    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
+    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
+    [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        [lui|leur|y]    en                      @:3s¬:G
     [<start>|,]  seule  [ce|cet|mon|ton|son|notre|votre|leur|ledit]  @:[NA].*:m:[si]¬:[Gf]        @:3s¬*
     [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3s¬:G
-    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [nous|vous]     [le|la|l’|les|en|y]         @:3s¬:G
-    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [le|la|l’|les]  [lui|leur|en|y]             @:3s¬:G
-    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [lui|leur|y]    en                          @:3s¬:G
+    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3s¬:G
+    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [nous|vous]     [le|la|l’|les|en|y]     @:3s¬:G
+    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [le|la|l’|les]  [lui|leur|en|y]         @:3s¬:G
+    [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  [lui|leur|y]    en                      @:3s¬:G
     [<start>|,]  seule  [le|l’]                                      @:[NA].*:m:[si]¬:(?:G|3s|f)  @:3s¬*
         <<- /gn/ -2>> seul                                                          # Si “\2” se réfère au substantif masculin “\4”, il faut le mettre au masculin.
 
     [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3p¬:G
-    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [nous|vous]     [le|la|l’|les|en|y]         @:3p¬:G
-    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [le|la|l’|les]  [lui|leur|en|y]             @:3p¬:G
-    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [lui|leur|y]    en                          @:3p¬:G
+    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p¬:G
+    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [nous|vous]     [le|la|l’|les|en|y]     @:3p¬:G
+    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [le|la|l’|les]  [lui|leur|en|y]         @:3p¬:G
+    [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        [lui|leur|y]    en                      @:3p¬:G
     [<start>|,]  seuls  [ces|des|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines|lesdits|lesdites]  @:[NA].*:f:[pi]¬:[Gm]        @:3p¬*
     [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [le|la|l’|les|en|nous|vous|lui|leur|y]      @:3p¬:G
-    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [nous|vous]     [le|la|l’|les|en|y]         @:3p¬:G
-    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [le|la|l’|les]  [lui|leur|en|y]             @:3p¬:G
-    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [lui|leur|y]    en                          @:3p¬:G
+    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:3p¬:G
+    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [nous|vous]     [le|la|l’|les|en|y]     @:3p¬:G
+    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [le|la|l’|les]  [lui|leur|en|y]         @:3p¬:G
+    [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  [lui|leur|y]    en                      @:3p¬:G
     [<start>|,]  seuls  les                                                                                         @:[NA].*:f:[pi]¬:(?:G|3p|m)  @:3p¬*
         <<- /gn/ -2>> seules                                                        # Si “\2” se réfère au substantif féminin “\4”, il faut le mettre au féminin.
 
