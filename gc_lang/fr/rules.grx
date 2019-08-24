@@ -2152,8 +2152,9 @@ __fusions_noms_propres__
         <<- ~>> ␣
         <<- =>> define(\1, [":N:m:i"])
 
-    ~^[A-ZÂÉÈÎ].  ~^[A-ZÂÉÈÎ]
+    ~^[A-ZÂÉÈÎ].  ~^[A-ZÂÉÈÎ].
         <<- analyse_with_next(\1, " ", ":") ~>> ␣
+        <<- __else__ and morph(\1, ":M") and morph(\2, ":V", ":[GM]") =>> define(\2, [":M2"])
 
     Me  ~^[A-ZÂÉÈÎ].
         <<- =>> define(\1, [":T"])
@@ -12424,6 +12425,7 @@ __simplication_substantifs__
     >main d’ œuvre
     >maison [de|d’] [passe|retraite]
     >mal [de|d’] [tête|ventre|mer]
+    >mandat de dépôt
     >marchande [de|d’] fruits et légumes
     >marché aux puces
     >maréchale des [logis|logis-chef]
@@ -14778,6 +14780,7 @@ TEST: en quantité 2 fois moindre
 TEST: 1 La Mort
 TEST: L’année 2019 a commencé à le montrer
 TEST: La « première génération » d’ordinateurs des années 1950 a déjà largement cédé la place à une deuxième (transistorisée)
+TEST: Au sein du club des pays les plus prospères, la richesse par habitant est néanmoins 52 fois supérieure à celle des pays à faibles revenus, d’après la Banque mondiale.
 
 
 ##  trouver ça/ceci/cela + adj
