@@ -3993,6 +3993,12 @@ __tu_substantifs__
     lèse majesté
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
+    n [ième+s|ieme+s|ème+s|eme+s]
+        <<- /tu/ ->> n-ième|n-ièmes                             # Il manque un trait d’union.
+
+    n [uple+s|uplet+s|>linéaire]
+        <<- /tu/ ->> n-\2                                       # Il manque un trait d’union.
+
     [nord|sud] ouest
         <<- /tu/ ->> \1-ouest                                   # Il manque un trait d’union.
 
@@ -4002,9 +4008,6 @@ __tu_substantifs__
     outre mer
         <<- /tu/ ->> outre-mer                                  # Il manque un trait d’union.
 
-    [le|les|du|des|un|ce|ces|mon|ton|son] [prêt+s] [à|a] porter
-        <<- /tu/ -2:0>> \2-à-porter                             # Il manque les traits d’union.
-
     >pied [à|a] terre
         <<- /tu/ morph(<1, ":D") ->> \1-à-terre                 # Il manque les traits d’union.
 
@@ -4013,6 +4016,9 @@ __tu_substantifs__
 
     presque [>île|>ile]
         <<- /tu/ ->> presqu’\2                                  # Une presqu’île, en un seul mot.|https://fr.wiktionary.org/wiki/presqu%E2%80%99%C3%AEle
+
+    [prêt+s] [à|a] porter
+        <<- /tu/ morph(<1, ":D") ->> \1-à-porter                # Il manque les traits d’union.
 
     quelques [un|uns|une|unes]
         <<- /tu/ ->> quelques-\2                                # Il manque un trait d’union.
@@ -4104,6 +4110,8 @@ TEST: Le {{face à face}} entre les forces de l’ordre et les manifestants se p
 TEST: {{gagne pain}} de merde
 TEST: mes deux {{grands pères}} sont décédés
 TEST: un crime de {{lèse majesté}}
+TEST: pour {{la}} {{n ième}} fois
+TEST: les {{n uplets}}
 TEST: elles sont allées au {{sud ouest}}
 TEST: {{nord est}}
 TEST: ils sont partis {{outre mer}}
