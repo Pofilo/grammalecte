@@ -6845,10 +6845,10 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 __conf_à_a_après_verbes__
     @:V¬:[YGNAWM]  ?@:W¿  a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "que") and not tag_before(\1, "dont") and not tag_before(\1, "qui") and not morph(>1, ":Q")
-        --1>> à                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        --1>> à                                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
     [/VCint|/VCimp]  ?@:W¿  a
-        <<- /conf/ --1>> à                      # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Vient-on {{a}} la maison demain ?
 TEST: Arrivait-elle {{a}} le manger ?
@@ -6859,6 +6859,8 @@ TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
 TEST: cet homme mange bien {{a}} la maison ?
 TEST: Ce que je mange a un goût de surgelé.
 TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
+TEST: Un rendez-vous a bousculé ses plans
+TEST: Maria Butina a également rencontré des républicains tels que Donald Trump
 
 
 __conf_celui_celle_à_qui__
@@ -17788,6 +17790,7 @@ TEST: à leur plus grand fils, ils ont offert une voiture.
 TEST: ça va d’autonome à hautement dépendant
 TEST: à lui donner trop d’importance, on façonne notre ennemi
 TEST: la pression entre les membres à un moment devient trop importante
+TEST: Macron saisit la discorde avec le Brésil pour s’opposer à l’embarrassant accord
 
 
 __infi_loc_à_verbe__
