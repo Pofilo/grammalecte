@@ -3738,7 +3738,7 @@ TEST: {{rétro ingénierie}}.                             ->> rétro-ingénierie
 
 __tu_préfixe_divers__
     [anti|auto|arrière|avant|demi|extra|intra|multi|post]  *WORD
-        <<- /tu/ (morph(<1, ":D|<start>") or value(<1, "|l’|d’|")) and analyse_with_next(\1, "-", ":")
+        <<- /tu/ morph(<1, ":D|<start>|>,") and analyse_with_next(\1, "-", ":")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
     [non|sans]  *WORD
@@ -3775,14 +3775,20 @@ __tu_mots_composés_verbe_nom__
         <<- /tu/ morph(\3, ":V") and analyse_with_next(\2, "-", ":V")
         -2:3>> \2-\3                                                                                # Il manque probablement un trait d’union.
 
-    [arrière|attrape|garde|porte|brise|cache|casse|chauffe|coupe|cure|croque|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
-        <<- /tu/ morph(<1, ":(?:D|V0e)|<start>") and analyse_with_next(\1, "-", ":N")
+    nous nous entre ~on[ts]$
+    vous vous entre ~e[zr]$
+        <<- /tu/ morph(\4, ":V") and analyse_with_next(\3, "-", ":V") and not morph(<1, ":R")
+        -3:4>> \3-\4                                                                                # Il manque probablement un trait d’union.
+
+    [attrape|garde|porte|brise|cache|casse|chauffe|coupe|cure|croque|essuie|lance|lave|lève|marque|pare|passe|perce|pèse|porte|poste|pousse|presse|protège|ramasse|serre|taille|tire|tourne|traîne|traine|vide]  *WORD
+        <<- /tu/ morph(<1, ":(?:D|V0e)|<start>|>,") and analyse_with_next(\1, "-", ":N")
         ->> \1-\2                                                                                   # Il manque probablement un trait d’union.
 
 TEST: c’est le {{contre exemple}} parfait
 TEST: une {{entre voie}}
 TEST: s’{{entre regarder}}
 TEST: ce sont des {{lève tard}}.
+TEST: nous nous {{entre tuions}}
 TEST: un {{brise glace}}
 TEST: l’{{arrière pensée}}
 TEST: entre deux chaises…
