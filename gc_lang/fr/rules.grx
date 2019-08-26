@@ -6515,7 +6515,7 @@ __conf_à_a_locutions__
     a bout [portant|touchant]
     a bras le corps
     a bras ouverts
-    a brève échéance
+    a ?[très|si]¿ brève échéance
     a but non lucratif
     a cause [de|d’] {pronom_obj}
     a ce [compte-là|moment-là|titre]
@@ -6533,11 +6533,11 @@ __conf_à_a_locutions__
     a corps perdu
     a côté [de|d’]
     a couper le souffle
-    a court terme
-    a courte [échéance|portée]
+    a ?[très|si]¿ court terme
+    a ?[très|si]¿ courte [échéance|portée]
     a couilles rabattues
     a >couteau [tiré|tirés]
-    a de nombreuses reprises
+    a de ?[très|si]¿ nombreuses reprises
     a des kilomètres à la ronde
     a dose homéopathique
     a double [titre|tranchant]
@@ -6546,8 +6546,8 @@ __conf_à_a_locutions__
     a en juger par [mon|ton|son|notre|votre|leur] expérience
     a en perdre haleine
     a en perdre la tête
-    a faible [allure|revenu]
-    a faible tirant d’ eau
+    a ?[très|si]¿ faible [allure|revenu]
+    a ?[très|si]¿ faible tirant d’ eau
     a feu et à sang
     a flanc de [colline|montagne]
     a fleur de peau
@@ -6561,7 +6561,7 @@ __conf_à_a_locutions__
     a hue et à dia
     a huis clos
     a intervalles [réguliers|irréguliers]
-    a juste [raison|titre]
+    a ?[très|si]¿ juste [raison|titre]
     a l’ heure actuelle
     a l’ heure qu’ il est
     a l’ [accoutumée|amiable|arrache|avance|avenir|avenant|aveuglette|emporte-pièce|évidence|extérieur|improviste|intérieur|inverse]
@@ -6590,8 +6590,8 @@ __conf_à_a_locutions__
     a la case départ
     a la grande surprise [de|du|d’|des]
     a [ma|ta|sa|notre|votre|leur] grande surprise
-    a long terme
-    a longue [distance|échéance|portée]
+    a ?[très|si]¿ long terme
+    a ?[très|si]¿ longue [distance|échéance|portée]
     a longueur [de|d’] [temps|journée|année]
     a loyer modéré
     a main [armée|droite|gauche|levée]
@@ -6618,9 +6618,9 @@ __conf_à_a_locutions__
     a pas [de|d’] [géant|loup|tortue|velours]
     a personne en danger
     a perte de vue
-    a petit feu
-    a petite [dose|échelle]
-    a peu de >chose près
+    a ?[très|si]¿ petit feu
+    a ?[très|si]¿ petite [dose|échelle]
+    a ?[très|si]¿ peu de >chose près
     a peu près
     a pieds joints
     a pile ou face
@@ -6756,6 +6756,8 @@ __conf_a_à_substantifs__
     >femme a tout faire
     >fer a cheval
     >ferme a >clic
+    >fermeture a glissière
+    >fermoir a [cliquet|levier|ressort]
     [>fille|fils] a [papa|maman]
     >fosse a >ordure
     >fusil a >pompe
@@ -7095,6 +7097,19 @@ TEST: communiquer avec sa ou son partenaire.
 TEST: Je trouve ça logique.
 
 
+# car / quart
+__conf_quart_car__
+    [un|du|ce|quel|mon|ton|son|notre|votre|leur] car d’ heure
+        <<- /conf/ not after("^ +en +heure") -2>> quart             # Confusion. Une heure est composée de quatre “quarts d’heure”.
+
+    trois >car d’ heure
+        <<- /conf/ not after("^ +en +heure") -2>> quarts            # Confusion. Une heure est composée de quatre “quarts d’heure”.
+
+TEST: un {{car}} d’heure
+TEST: trois {{cars}} d’heure.
+TEST: nous attendions un car d’heure en heure.
+
+
 # Campagne / compagne
 __conf_campagne_compagne__
     >compagne [>électorale|>présidentielle|>législative|>publicitaire|marketing|>militaire|>mondiale|>politique|>économique|>virale|Facebook|Twitter]
@@ -7350,7 +7365,7 @@ TEST: on va lui régler son {{conte}}, à cet enculé.
 TEST: tout {{conte}} fait, ça reste un salopard.
 
 
-__conf_conte_de_fée__
+__conf_conte__
     [comte+s|>compte] de bonne+s >femme
     [comte+s|>compte] de >fée
     [comte+s|>compte] [>allégorique|>fantastique|>littéraire|merveilleux|moral|moraux|oral|oraux|>populaire|>satirique|>traditionnelle]
@@ -10693,13 +10708,14 @@ __purge_locutions__
     à belles dents
     à bien des égards
     à bien pire
-    à bon [compte|escient|droit]
+    à ?[très|si]¿ bon [compte|escient|droit]
     à bout de [bras|souffle|force|forces|nerf|nerfs]
     à bout [portant|touchant]
     à bras ouverts
     à bras le corps
-    à brève échéance
+    à ?[très|si]¿ brève échéance
     à but ?non¿ lucratif
+    à canon [court|long|scié]
     à cause [de|d’]  [ça|cela|ceci|moi|toi|lui|nous|vous|elle|elles|eux]
     à ce [compte-là|moment-là|titre]
     à certains égards
@@ -10724,9 +10740,9 @@ __purge_locutions__
     à couilles rabattues
     à coup sûr
     à couper le souffle
-    à court terme
-    à court [et|ou] ?à¿ [long|moyen] terme
-    à courte [échéance|portée]
+    à ?[très|si]¿ court terme
+    à ?[très|si]¿ court [et|ou] ?à¿ ?[très|si]¿ [long|moyen] terme
+    à ?[très|si]¿ courte [échéance|portée]
     à >coussin d’ air
     à couteaux tirés
     à des kilomètres à la ronde
@@ -10742,8 +10758,8 @@ __purge_locutions__
     à en juger par [mon|ton|son|notre|votre|leur] expérience
     à en perdre haleine
     à en perdre la tête
-    à faible [allure|revenu]
-    à faible tirant d’ eau
+    à ?[très|si]¿ faible [allure|revenu]
+    à ?[très|si]¿ faible tirant d’ eau
     à feu et à sang
     à flanc de [colline|montagne]
     à fleur de peau
@@ -10752,10 +10768,10 @@ __purge_locutions__
     à glacer le sang
     à glacer les sangs
     à grande échelle
-    à grands frais
+    à ?[très|si]¿ grands frais
     à haut risque
-    à haute voix
-    à haute et intelligible voix
+    à ?[très|si]¿ haute voix
+    à ?[très|si]¿ haute et intelligible voix
     à hue et à dia
     à huis clos
     à intervalles [irréguliers|réguliers]
@@ -10799,9 +10815,9 @@ __purge_locutions__
     à la surprise générale
     à la virgule près
     à [un|cet|l’] instant t
-    à long terme
-    à long [et|ou] ?à¿ [court|moyen] terme.
-    à longue [distance|échéance|portée]
+    à ?[très|si]¿ long terme
+    à ?[très|si]¿ long [et|ou] ?à¿ ?[très|si]¿ [court|moyen] terme.
+    à ?[très|si]¿ longue [distance|échéance|portée]
     à longueur [de|d’] [temps|journée|année]
     à loyer modéré
     à main [armée|droite|gauche|levée|nue]
@@ -10839,9 +10855,9 @@ __purge_locutions__
     à personne en danger
     à perte de vue
     à petit feu
-    à petite [dose|échelle]
-    à peu de choses près
-    à peu de [distance|frais]
+    à ?[très|si]¿ petite [dose|échelle]
+    à ?[très|si]¿ peu de choses près
+    à ?[très|si]¿ peu de [distance|frais]
     à peu près
     à pieds joints
     à pile ou face
@@ -11303,7 +11319,7 @@ __purge_locutions__
     du tout au tout
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
+    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
     en réalité ?virtuelle¿
     en aucun cas
     en aucune [circonstance|façon|manière]
@@ -11761,7 +11777,7 @@ __purge_locutions__
     tout [de|d’] [suite|go]
     tout [de|d’] même ?[pas|jamais]¿
     tout du long
-    tout feu ?,¿ tout [flamme|flammes]
+    tout feu ?,¿ tout >flamme
     tout le temps
     tout à [fait|coup]
     tout à l’ heure
@@ -11785,6 +11801,8 @@ __purge_locutions__
     un peu moins bien
     un peu partout
     un peu plus [tôt|tard] que prévu
+    un quart d’ heure plus [tôt|tard]
+    trois quarts d’ heure plus [tôt|tard]
     un tant soit peu
     une à une
     une [autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième] fois
@@ -12275,6 +12293,7 @@ __purge_conditionnelle__
 
 __simplication_substantifs__
     >administratrice >système
+    >agence de >voyage
     >aire d’ atterrissage
     >animal [de|d’] compagnie
     >appel au secours
@@ -12315,7 +12334,7 @@ __simplication_substantifs__
     >boucle d’ >oreille
     >brave ?d’¿ entre les braves
     >brosse à [>dent|reluire]
-    >cabinet [de|d’] toilette
+    >cabinet [de|d’] [toilette|travail]
     >camp [de|d’] [concentration|internement|rééducation]
     >canne à [pêche|sucre]
     >caisse à >outil
@@ -12377,6 +12396,7 @@ __simplication_substantifs__
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau [de|d’] noix [de|d’] coco
     >élément à charge
+    >emploi du temps
     >enterrement [de|d’] vie [de|d’] garçon
     >enterrement [de|d’] vie [de|d’] jeune fille
     >entrée [de|d’] service
@@ -12395,8 +12415,11 @@ __simplication_substantifs__
     >femme d’ âge mûr
     >femme à tout faire
     >ferme à >clic
+    >fermeture à glissière
+    >fermoir à [cliquet|levier|ressort]
     >feu d’ artifice
     >feuille [de|d’] route
+    >fibre de verre
     >fiche S
     >ficher S
     >file d’ attente
@@ -12408,9 +12431,11 @@ __simplication_substantifs__
     >folle à lier
     >fosse à >ordure
     >fosse aux lions
+    [>fourgon|>fourgonette] de location
     >frayeur [de|d’] tous les diables
     >frousse [de|d’] tous les diables
     >fusil à pompe
+    >hall d’ entrée
     >haute comme [trois|3] pommes
     >histoire avec un [grand|petit] h
     >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille]
@@ -12540,6 +12565,7 @@ __simplication_substantifs__
     >système d’ exploitation
     >système D
     >table à repasser
+    >table de chevet
     >taille *NUM
     tas [de|d’] >ferraille ?rouillée¿
     >talon >aiguille
@@ -12549,12 +12575,14 @@ __simplication_substantifs__
     >tête [de|d’] [linotte|déterré|déterrée|déterrés|déterrées|mule]
     >têtue comme une [bourrique|mule]
     >têtue comme un [âne|bourriquot|mulet]
+    >terrain à découvert
     >tigre à dents [de|d’] sabre
     >titre [de|d’] [noblesse|propriété|séjour]
     >tondeuse à gazon
     >tour [de|d’] passe-passe
     >train à grande vitesse
     >traitement [de|d’] faveur
+    >transport en commun
     >trou à >rat
     >t-shirt sans >manche
     >tueuse à gages
@@ -12563,6 +12591,7 @@ __simplication_substantifs__
     >usine à gaz
     >vache à lait
     >vectrice [>accélération|>position|>rotation|>vitesse]
+    >véhicule de location
     >vérification de routine
     >vente à domicile
     >vente aux enchères
@@ -12571,6 +12600,7 @@ __simplication_substantifs__
     >vol à l’ étalage
     >vol à la [sauvette|tire]
     >vol à main armée
+    >voiture de location
     >zone [de|d’] confort
     >zone [de|d’] transit ?principal¿
         <<- ~2:0>> *
@@ -13268,7 +13298,6 @@ __da_le_la_les_leur2__
         <<- =>> =select(\-2, ":D") and exclude(\-1, ":[123][sp]")
 
 
-
 __da_substantifs__
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|G)
         <<- =>> exclude(\3, ":V")
@@ -13281,7 +13310,6 @@ __da_substantifs__
 
     [plusieurs|certains|certaines]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|G)
         <<- =>> exclude(\2, ":V") and exclude(\3, ":V")
-
 
 
 __purge_locutions_verbales__
@@ -14318,6 +14346,7 @@ TEST: les {{petites}} {{oubliés}}
 TEST: c’est ça, et les femmes {{retrouvés}} seront emmenées à l’hôpital.
 TEST: fais ce que tu peux, ou les {{petites}} {{perdus}} le seront à jamais
 TEST: ça ou les éternels {{imbécile}} du coin
+TEST: les {{éventuels}} {{fiches}}
 TEST: les moins éloignées possible
 TEST: Les besoins minimums en matière de sommeil sont-ils les mêmes d’un individu à l’autre ?
 TEST: cette attention de tous les instants portée à la boussole.
