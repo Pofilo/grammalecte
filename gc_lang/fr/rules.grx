@@ -3609,7 +3609,7 @@ TEST: les {{CXIèmes}}                           ->> CXIᵉˢ
 !!!! Dates                                                                                        !!
 
 __fusion_date__
-    *NUM  -  ~^\d\d?$  - ~^\d{2,5}$
+    *NUM  -  ~^\d\d?$  -  ~^\d{2,5}$
         <<- \1.isdigit() ~>> ␣
         <<- =>> change_meta(\1, "DATE")
 
@@ -6630,6 +6630,7 @@ __conf_à_a_locutions__
     a ?[très|si]¿ petite [dose|échelle]
     a ?[très|si]¿ peu de >chose près
     a peu près
+    a pied d’ œuvre
     a pieds joints
     a pile ou face
     a plat ventre
@@ -6733,7 +6734,7 @@ TEST: les méthodes de l’à-peu-près ne suffisent pas.
 
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
-        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|peur|raison|recours|soif|tort|vent|") and morph(\1, ":N", "*")
+        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|peur|raison|recours|soif|tendance|tort|vent|") and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: les bobos {{a}} trottinette
@@ -6741,6 +6742,7 @@ TEST: la lettre A est la première lettre de l’alphabet
 TEST: la lettre a est la première lettre de l’alphabet
 TEST: cette femme a raison
 TEST: l’homme a beau se démener, rien n’y fait.
+TEST: elle a tendance à n’en faire qu’à sa tête.
 
 
 __conf_a_à_substantifs__
@@ -8795,7 +8797,7 @@ TEST: Cela {{peut-être}} mortel.
 TEST: cela arrivera {{peux-être}}.
 
 
-# plain / pied
+# de plain pied
 __conf_de_plain_pied__
     [de|au] [>pleine|>plain] >pied
     [de|au] [plein-pied|pleins-pieds|plains-pieds]
@@ -8803,6 +8805,17 @@ __conf_de_plain_pied__
 
 TEST: C’est une maison de {{plein pied}}.
 TEST: de {{plein-pied}}
+
+
+# plant / plan
+__conf_plant_plan__
+    >plan [de|d’] [>aubergine|>betterave|>carotte|>citrouille|>concombre|>cornichon|>courgette|>légume|>melon|>poivron|>potiron|>rubarbe|>tabac|>tomate|>vigne]
+    >plan [de|d’] [petit+s] pois
+    >plan [de|d’] >pomme [de|d’] terre
+    >plan [>maraîchère|>maraichère]
+        <<- /conf/ -1>> =\1.replace("n", "nt").replace("N", "NT")           # Confusion. Pour parler d’une petite pousse végétale, écrivez “plant” (dérivé de “plante”).
+
+TEST: va acheter des {{plans}} de tomate
 
 
 # pôle / pole
@@ -10867,6 +10880,7 @@ __purge_locutions__
     à ?[très|si]¿ peu de choses près
     à ?[très|si]¿ peu de [distance|frais]
     à peu près
+    à pied d’ œuvre
     à pieds joints
     à pile ou face
     à plat ventre
@@ -11439,6 +11453,7 @@ __purge_locutions__
     en toute connaissance [de|d’] cause
     en toute [circonstance|confiance|discrétion|franchise|hâte|impartialité|impunité|innocence|légalité|liberté|logique|sécurité|simplicité]
     en toutes circonstances
+    en travers de la gorge
     en un claquement de doigts
     en un clin d’ œil
     en un rien [de|d’] temps
@@ -13354,7 +13369,7 @@ __purge_locutions_verbales__
     [>donner|>redonner] quartier libre
     >élire domicile
     >étouffer dans l’ œuf
-    >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|froid|front|grève|halte|honte|illusion|mention|mouche|office|part|peur|polémique|plaisir|preuve|rage|rempart|scandale|sens|signe|usage|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|office|part|peur|polémique|plaisir|preuve|rage|rempart|scandale|sens|signe|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -16124,6 +16139,7 @@ TEST: il faut publier les {{bancs}} avant qu’il ne soit trop tard.
 
     >ban [de|d’] [>roche|>sable|>neige|>moule|>baleine|>dauphin|>hareng|>thon|>poisson|>piranha|>sardine|>méduse|>calibration|>musculation|>coupe|>scie|anchois|>huître|>huitre|>essai|>étalonnage]
     >ban [de|d’] l’ école
+    >ban des accusés
         <<- /conf/ -1>> =\1.replace("an", "anc").replace("AN", "ANC")   # Confusion.|https://fr.wiktionary.org/wiki/banc
 
 TEST: sur les {{bans}} de l’école.
@@ -16165,12 +16181,18 @@ TEST: le quark {{botter}}
 
 
 # bel et bien
-__conf_bel_et_bien__
+__conf_bel_belle__
     belle et bien
         <<- /conf/ (morph(>1, ":[AQR]") or morph(<1, ":V", ">être")) and not value(>1, "|que|qu’|sûr|")
         -1>> bel                                                        # Confusion probable. « Bel et bien » est équivalent à « vraiment ».
 
 TEST: ils vont {{belle}} et bien par monts et par vaux.
+
+    l’ >échapper [bel+s|belles]
+    l’ >avoir >échapper [bel+s|belles]
+        <<- /conf/ --1>> belle                                          # Confusion. Locution “l’échapper belle”.|https://fr.wiktionary.org/wiki/l%E2%80%99avoir_%C3%A9chapp%C3%A9_belle
+
+TEST: Ils l’ont échappé {{bel}}
 
 
 # bite / bitte
