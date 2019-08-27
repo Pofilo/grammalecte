@@ -3608,6 +3608,12 @@ TEST: les {{CXIèmes}}                           ->> CXIᵉˢ
 
 !!!! Dates                                                                                        !!
 
+__fusion_date__
+    *NUM  -  ~^\d\d?$  - ~^\d{2,5}$
+        <<- \1.isdigit() ~>> ␣
+        <<- =>> change_meta(\1, "DATE")
+
+
 __date_jour_mois_année__
     31 [avril|juin|septembre|novembre]
         <<- /date/ space_after(\1, 1, 1) ->> 30 \2                                                  # Cette date est invalide. Il n’y a que 30 jours en \2.
@@ -3624,14 +3630,7 @@ TEST: {{29 février 2011}}
 
 
 __date_journée_jour_mois_année__
-    *NUM - *NUM - ~^\d{2,5}$
-        <<- \1.isdigit() and \2.isdigit() ~>> ␣
-
     ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$) - (~^\d\d?$) - (~^\d{2,5}$)
-        <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
-        -1>> =getDay(\2, \3, \4)
-        # Le jour de la date suivante est incorrect (selon le calendrier grégorien).|https://fr.wikipedia.org/wiki/Passage_du_calendrier_julien_au_calendrier_gr%C3%A9gorien
-
     ([lundi|mardi|mercredi|jeudi|vendredi|samedi|dimanche])  ?,¿  ?le¿  (~^\d\d?$)  ([janvier|février|mars|avril|mai|juin|juillet|aout|août|septembre|octobre|novembre|décembre])  (~^\d{2,5}$)
         <<- /date/ not after("^ +av(?:ant|) +J(?:C|ésus-Christ)") and not checkDay(\1, \2, \3, \4)
         -1>> =getDay(\2, \3, \4)

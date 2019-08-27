@@ -1122,6 +1122,11 @@ def g_tag (dToken, sTag):
     return "aTags" in dToken and sTag in dToken["aTags"]
 
 
+def g_meta (dToken, sType):
+    "returns True if <sType> is equal to the token type"
+    return dToken["sType"] == sType
+
+
 def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
     "checks if spaces between tokens is >= <nMin> and <= <nMax>"
     nSpace = dToken2["nStart"] - dToken1["nEnd"]
@@ -1191,6 +1196,7 @@ def define (dTokenPos, nPos, lMorph):
     return True
 
 
+
 #### Disambiguation for graph rules
 
 def g_select (dToken, sPattern, lDefault=None):
@@ -1242,6 +1248,12 @@ def g_define_from (dToken, nLeft=None, nRight=None):
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
     else:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
+    return True
+
+
+def g_change_meta (dToken, sType):
+    "Disambiguation: change type of token"
+    dToken["sType"] = sType
     return True
 
 

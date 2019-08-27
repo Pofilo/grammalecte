@@ -1464,6 +1464,13 @@ function g_define_from (oToken, nLeft=null, nRight=null) {
     return true;
 }
 
+function g_change_meta (oToken, sType) {
+    // Disambiguation: change type of token
+    oToken["sType"] = sType;
+    return true;
+}
+
+
 
 //////// GRAMMAR CHECKER PLUGINS
 
