@@ -241,21 +241,19 @@ function suggPlur (sFlex, sWordToAgree=null) {
         }
     }
     let aSugg = new Set();
-    if (!sFlex.includes("-")) {
-        if (sFlex.endsWith("l")) {
-            if (sFlex.endsWith("al") && sFlex.length > 2 && _oSpellChecker.isValid(sFlex.slice(0,-1)+"ux")) {
-                aSugg.add(sFlex.slice(0,-1)+"ux");
-            }
-            if (sFlex.endsWith("ail") && sFlex.length > 3 && _oSpellChecker.isValid(sFlex.slice(0,-2)+"ux")) {
-                aSugg.add(sFlex.slice(0,-2)+"ux");
-            }
+    if (sFlex.endsWith("l")) {
+        if (sFlex.endsWith("al") && sFlex.length > 2 && _oSpellChecker.isValid(sFlex.slice(0,-1)+"ux")) {
+            aSugg.add(sFlex.slice(0,-1)+"ux");
         }
-        if (_oSpellChecker.isValid(sFlex+"s")) {
-            aSugg.add(sFlex+"s");
+        if (sFlex.endsWith("ail") && sFlex.length > 3 && _oSpellChecker.isValid(sFlex.slice(0,-2)+"ux")) {
+            aSugg.add(sFlex.slice(0,-2)+"ux");
         }
-        if (_oSpellChecker.isValid(sFlex+"x")) {
-            aSugg.add(sFlex+"x");
-        }
+    }
+    if (_oSpellChecker.isValid(sFlex+"s")) {
+        aSugg.add(sFlex+"s");
+    }
+    if (_oSpellChecker.isValid(sFlex+"x")) {
+        aSugg.add(sFlex+"x");
     }
     if (mfsp.hasMiscPlural(sFlex)) {
         mfsp.getMiscPlural(sFlex).forEach(function(x) { aSugg.add(x); });
@@ -268,9 +266,6 @@ function suggPlur (sFlex, sWordToAgree=null) {
 
 function suggSing (sFlex) {
     // returns singular forms assuming sFlex is plural
-    if (sFlex.includes("-")) {
-        return "";
-    }
     let aSugg = new Set();
     if (sFlex.endsWith("ux")) {
         if (_oSpellChecker.isValid(sFlex.slice(0,-2)+"l")) {

@@ -184,16 +184,15 @@ def suggPlur (sFlex, sWordToAgree=None):
         if sGender == ":f":
             return suggFemPlur(sFlex)
     aSugg = set()
-    if "-" not in sFlex:
-        if sFlex.endswith("l"):
-            if sFlex.endswith("al") and len(sFlex) > 2 and _oSpellChecker.isValid(sFlex[:-1]+"ux"):
-                aSugg.add(sFlex[:-1]+"ux")
-            if sFlex.endswith("ail") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"ux"):
-                aSugg.add(sFlex[:-2]+"ux")
-        if _oSpellChecker.isValid(sFlex+"s"):
-            aSugg.add(sFlex+"s")
-        if _oSpellChecker.isValid(sFlex+"x"):
-            aSugg.add(sFlex+"x")
+    if sFlex.endswith("l"):
+        if sFlex.endswith("al") and len(sFlex) > 2 and _oSpellChecker.isValid(sFlex[:-1]+"ux"):
+            aSugg.add(sFlex[:-1]+"ux")
+        if sFlex.endswith("ail") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"ux"):
+            aSugg.add(sFlex[:-2]+"ux")
+    if _oSpellChecker.isValid(sFlex+"s"):
+        aSugg.add(sFlex+"s")
+    if _oSpellChecker.isValid(sFlex+"x"):
+        aSugg.add(sFlex+"x")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
     if aSugg:
@@ -203,8 +202,6 @@ def suggPlur (sFlex, sWordToAgree=None):
 
 def suggSing (sFlex):
     "returns singular forms assuming sFlex is plural"
-    if "-" in sFlex:
-        return ""
     aSugg = set()
     if sFlex.endswith("ux"):
         if _oSpellChecker.isValid(sFlex[:-2]+"l"):
