@@ -411,7 +411,7 @@ TEST: Le {{faut -il}} ?             ->> faut-il|faut – il|faut — il
 TEST: qu’y {{puis -je}} ?           ->> puis-je|puis – je|puis — je
 TEST: Le {{faut -il}} ?             ->> faut-il|faut – il|faut — il
 TEST: qu’y {{puis -je}} ?           ->> puis-je|puis – je|puis — je
-TEST: L’exposant -127, code 0000 0000, est réservé pour zéro
+TEST: L’exposant −127, code 0000 0000, est réservé pour zéro
 
 
 # Espaces et crochets et parenthèses
@@ -1073,6 +1073,13 @@ TEST: {{800 x 600}}                                                         ->> 
 TEST: {{800*600}}                                                           ->> 800 × 600
 TEST: {{800 * 600}}                                                         ->> 800 × 600
 TEST: nombre au format hexadécimal : 0x4407
+
+
+__<s]/typo(typo_signe_moins)__
+    -(\d+)  @@$  <<- not before("\\w$") ->> −\1|– \1|— \1
+    # S’il s’agit de représenter un nombre négatif, utilisez le signe typographique “moins”. S’il s’agit d’une incise, utilisez un tiret demi-cadratin ou un tiret cadratin.
+
+TEST: Résultat : {{-72}}.
 
 
 __<s>/typo(typo_inférieur_ou_égal)__                [\w  ](<=)[\w  ]  @@* <<- -1>> ≤|⩽              # Signe “inférieur ou égal”.
