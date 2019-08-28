@@ -2001,6 +2001,11 @@ __da_groupe_nominal__
     par  *WORD
         <<- =>> exclude(\2, ":[123][sp]")
 
+    nombre  [de|d’|des]  [@:[NA]|<end>|,]
+        <<- not morph(<1, ":D") >>>
+        <<- morph(<1, ":A.*:[me]:[si]") =>> add_morph(\1, [">nombre/:G:D"])
+        <<- __else__ =>> define(\1, [">nombre/:G:D"])
+
     plein  [de|d’]  @:[AN]
         <<- not morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, [":G"])
 
@@ -13332,12 +13337,13 @@ __da_le_la_les_leur2__
 
 __da_substantifs__
     [<start>|,]  $:D  *WORD  *WORD  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,]  $:D  *WORD  *WORD  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)
+    [<start>|,]  $:D  *WORD  *WORD  [en|nous|vous|lui|y]                    @:(?:[123][sp]|P)
+    [<start>|,]  $:D  *WORD  *WORD  [le|la|l’|les|leur]                     @:(?:[123][sp]|P)¬:[NA]
     [<start>|,]  $:D  *WORD  *WORD  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
     [<start>|,]  $:D  *WORD  *WORD  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
     [<start>|,]  $:D  *WORD  *WORD  [lui|leur|y]    en                      @:(?:[123][sp]|P)
-    [<start>|,]  $:D  *WORD  *WORD  @:(?:3[sp]|P)
-        <<- morph(\3, ":[NA]", ":(?:G|V0)") and morph(\4, ":[NA]", ":[PG]") =>> exclude(\4, ":V")
+    [<start>|,]  $:D  *WORD  *WORD  @:(?:3[sp]|P)¬:[GW]
+        <<- morph(\3, ":[NA]", ":(?:G|V0)") and morph(\4, ":[NA]", ":(?:[PG]|V0)") =>> exclude(\4, ":V")
 
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|G)
         <<- =>> exclude(\3, ":V")
@@ -13678,7 +13684,9 @@ TEST: Ce qui rend les pompes à chaleur moins rentables.
 TEST: l’accusation de lynchage médiatique proférée par François de Clermont à l’encontre de “Marianne” ne tient pas.
 TEST: La poïesis, en grec, est ce qui permet de faire passer n’importe quoi du non-être à l’être
 TEST: un moteur nouvelle génération
-
+TEST: La première est la critique dite artiste
+TEST: la critique conduit nombre de protestataires à se replier sur des modalités de défense efficaces dans le passé mais désormais largement inadaptées
+TEST: Tu crois que Microsoft peut contraindre les projets libres à quoi que ce soit ?
 
 
 @@@@
@@ -15848,6 +15856,18 @@ __sgpl_point_de_vue__
 TEST: c’est son point de {{vu}} qui prime.
 TEST: Son point de {{vus}} prévaudra toujours, faites-vous à cette idée ou dégagez.
 TEST: de mon point de {{vues}}
+
+
+__sgpl_verbe__
+    >faire rires
+        <<- /sgpl/ -2>> rire                                        # Faire rire. Rire est un verbe, il ne prend pas la marque du pluriel.
+
+    [>pouvoir|>vouloir|>falloir] [rires|mangers|êtres|avoirs]
+        <<- /sgpl/ morph(\1, ":V") -2>> =\2[:-1]                    # Si “\2” est censé être un verbe, ne mettez pas la marque du pluriel.
+
+
+TEST: On peut {{rires}}, non ?
+TEST: Faire {{rires}}, c’est compliqué.
 
 
 

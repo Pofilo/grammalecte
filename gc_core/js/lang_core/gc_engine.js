@@ -1449,6 +1449,14 @@ function g_exclude (oToken, sPattern, lDefault=null) {
     return true;
 }
 
+function g_add_morph (oToken, lNewMorph) {
+    "Disambiguation: add a morphology to a token"
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    lMorph.push(...lNewMorph);
+    oToken["lMorph"] = lMorph;
+    return true;
+}
+
 function g_define (oToken, lMorph) {
     // set morphologies of <oToken>, always return true
     oToken["lMorph"] = lMorph;

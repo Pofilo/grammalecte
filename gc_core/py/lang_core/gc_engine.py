@@ -1196,11 +1196,10 @@ def define (dTokenPos, nPos, lMorph):
     return True
 
 
-
 #### Disambiguation for graph rules
 
 def g_select (dToken, sPattern, lDefault=None):
-    "select morphologies for <dToken> according to <sPattern>, always return True"
+    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
         if lDefault:
@@ -1218,7 +1217,7 @@ def g_select (dToken, sPattern, lDefault=None):
 
 
 def g_exclude (dToken, sPattern, lDefault=None):
-    "select morphologies for <dToken> according to <sPattern>, always return True"
+    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
         if lDefault:
@@ -1235,15 +1234,23 @@ def g_exclude (dToken, sPattern, lDefault=None):
     return True
 
 
+def g_add_morph (dToken, lNewMorph):
+    "Disambiguation: add a morphology to a token"
+    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
+    lMorph.extend(lNewMorph)
+    dToken["lMorph"] = lMorph
+    return True
+
+
 def g_define (dToken, lMorph):
-    "set morphologies of <dToken>, always return True"
+    "Disambiguation: set morphologies of <dToken>, always return True"
     dToken["lMorph"] = lMorph
     #echo("DA:", dToken["sValue"], lMorph)
     return True
 
 
 def g_define_from (dToken, nLeft=None, nRight=None):
-    "set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
+    "Disambiguation: set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
     if nLeft is not None:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
     else:
