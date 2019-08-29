@@ -1917,7 +1917,7 @@ __da_préverbes_verbes__
     $:M  @:[123]s¬:[QW]
         <<- \2.islower() and morph(<1, ":Cs|<start>") =>> select(\2, ":[123][sp]")
 
-    <start> $:M  @:(?:[123]s|Oo)|>ne/¬:A
+    <start>  $:M  @:(?:[123]s|Ov)¬:A
         <<- =>> =select(\2, ":M")
 
     [que|qu’|combien|pourquoi|qui|quand|où]  ?[en|y]¿  *WORD
@@ -5886,14 +5886,6 @@ TEST: plus d’un ont été traumatisés
 TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 
 
-__conf_dès_vconj__
-    dès  ?[le|la|l’|les]¿  @:[123][sp]¬:[GNA]
-        <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA]", True)                           # Incohérence avec “\1” : “\-1” est une forme verbale conjuguée.
-
-TEST: dès le {{commencent}}, j’ai vu le problème.
-
-
-
 __conf_par_vconj__
     par  ?[le|la|l’|les]¿  @:[123][sp]¬:[GNA]
         <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA]", True)                           # Incohérence avec “\1” : “\-1” est une forme verbale conjuguée.
@@ -5919,10 +5911,12 @@ TEST: Il reste de nombreux militants sincères à la FI.
 
 
     [malgré|dès] [le|la|l’|les|leur|leurs]  @:V¬:[GNAWMB]
-        <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                           # Incohérence : après “\1”, on devrait trouver un groupe nominal.
+        <<- /conf/ not \-1.istitle() -3>> =suggSimil(\3, ":[NA]", True)         # Incohérence : après “\1 \2”, on devrait trouver un groupe nominal.
 
 TEST: malgré l’{{arrête}} qui interdisait le port
+TEST: dès le {{commencent}}, j’ai vu le problème.
 TEST: malgré les deux précédentes erreurs
+
 
 
 __conf_préverbes__
@@ -13699,6 +13693,8 @@ TEST: un moteur nouvelle génération
 TEST: La première est la critique dite artiste
 TEST: la critique conduit nombre de protestataires à se replier sur des modalités de défense efficaces dans le passé mais désormais largement inadaptées
 TEST: Tu crois que Microsoft peut contraindre les projets libres à quoi que ce soit ?
+TEST: « L’école produit la norme en matière de langage »
+
 
 
 @@@@
