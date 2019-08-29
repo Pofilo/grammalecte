@@ -17996,7 +17996,7 @@ __infi_de_verbe__
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
-            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tag_before(\1, "ce_que")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
@@ -18033,6 +18033,7 @@ TEST: Il se moque de nous en fournissant de pareilles marchandises frelatées.
 TEST: qu’y a-t-il de changé, de perturbé, de modifié ?
 TEST: ce qu’ils ont d’obscur, d’exagéré et parfois de sec et de figé
 TEST: ce qu’il y a de compliqué dans ces affaires.
+TEST: Un patient peut avoir autant de satanées maladies qui lui chante.
 
 
 __infi_y_verbe!3__
