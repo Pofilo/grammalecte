@@ -376,19 +376,19 @@ class TextParser {
         // update <sSentence> and retokenize
         this.sSentence = sSentence;
         let lNewToken = Array.from(_oTokenizer.genTokens(sSentence, true));
-        for (let dToken of lNewToken) {
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("lMorph")) {
-                dToken["lMorph"] = this.dTokenPos.get(dToken["nStart"])["lMorph"];
+        for (let oToken of lNewToken) {
+            if (this.dTokenPos.gl_get(oToken["nStart"], {}).hasOwnProperty("lMorph")) {
+                oToken["lMorph"] = this.dTokenPos.get(oToken["nStart"])["lMorph"];
             }
-            if (this.dTokenPos.gl_get(dToken["nStart"], {}).hasOwnProperty("aTags")) {
-                dToken["aTags"] = this.dTokenPos.get(dToken["nStart"])["aTags"];
+            if (this.dTokenPos.gl_get(oToken["nStart"], {}).hasOwnProperty("aTags")) {
+                oToken["aTags"] = this.dTokenPos.get(oToken["nStart"])["aTags"];
             }
         }
         this.lToken = lNewToken;
         this.dTokenPos.clear();
-        for (let dToken of this.lToken) {
-            if (dToken["sType"] != "INFO") {
-                this.dTokenPos.set(dToken["nStart"], dToken);
+        for (let oToken of this.lToken) {
+            if (oToken["sType"] != "INFO") {
+                this.dTokenPos.set(oToken["nStart"], oToken);
             }
         }
         if (bDebug) {
@@ -397,72 +397,72 @@ class TextParser {
         }
     }
 
-    * _getNextPointers (dToken, dGraph, dPointer, bDebug=false) {
-        // generator: return nodes where <dToken> “values” match <dNode> arcs
+    * _getNextPointers (oToken, oGraph, oPointer, bDebug=false) {
+        // generator: return nodes where <oToken> “values” match <oNode> arcs
         try {
-            let dNode = dPointer["dNode"];
-            let iNode1 = dPointer["iNode1"];
+            let oNode = oGraph[oPointer["iNode"]];
+            let iToken1 = oPointer["iToken1"];
             let bTokenFound = false;
             // token value
-            if (dNode.hasOwnProperty(dToken["sValue"])) {
+            if (oNode.hasOwnProperty(oToken["sValue"])) {
                 if (bDebug) {
-                    console.log("  MATCH: " + dToken["sValue"]);
+                    console.log("  MATCH: " + oToken["sValue"]);
                 }
-                yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] };
+                yield { "iToken1": iToken1, "iNode": oNode[oToken["sValue"]] };
                 bTokenFound = true;
             }
-            if (dToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
-                let sValue = dToken["sValue"].toLowerCase();
-                if (dNode.hasOwnProperty(sValue)) {
+            if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+                let sValue = oToken["sValue"].toLowerCase();
+                if (oNode.hasOwnProperty(sValue)) {
                     if (bDebug) {
                         console.log("  MATCH: " + sValue);
                     }
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] };
+                    yield { "iToken1": iToken1, "iNode": oNode[sValue] };
                     bTokenFound = true;
                 }
             }
-            else if (dToken["sValue"].gl_isUpperCase()) {
-                let sValue = dToken["sValue"].toLowerCase();
-                if (dNode.hasOwnProperty(sValue)) {
+            else if (oToken["sValue"].gl_isUpperCase()) {
+                let sValue = oToken["sValue"].toLowerCase();
+                if (oNode.hasOwnProperty(sValue)) {
                     if (bDebug) {
                         console.log("  MATCH: " + sValue);
                     }
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] };
+                    yield { "iToken1": iToken1, "iNode": oNode[sValue] };
                     bTokenFound = true;
                 }
-                sValue = dToken["sValue"].gl_toCapitalize();
-                if (dNode.hasOwnProperty(sValue)) {
+                sValue = oToken["sValue"].gl_toCapitalize();
+                if (oNode.hasOwnProperty(sValue)) {
                     if (bDebug) {
                         console.log("  MATCH: " + sValue);
                     }
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] };
+                    yield { "iToken1": iToken1, "iNode": oNode[sValue] };
                     bTokenFound = true;
                 }
             }
             // regex value arcs
-            if (dToken["sType"] != "INFO"  &&  dToken["sType"] != "PUNC"  &&  dToken["sType"] != "SIGN") {
-                if (dNode.hasOwnProperty("<re_value>")) {
-                    for (let sRegex in dNode["<re_value>"]) {
+            if (oToken["sType"] != "INFO"  &&  oToken["sType"] != "PUNC"  &&  oToken["sType"] != "SIGN") {
+                if (oNode.hasOwnProperty("<re_value>")) {
+                    for (let sRegex in oNode["<re_value>"]) {
                         if (!sRegex.includes("¬")) {
                             // no anti-pattern
-                            if (dToken["sValue"].search(sRegex) !== -1) {
+                            if (oToken["sValue"].search(sRegex) !== -1) {
                                 if (bDebug) {
                                     console.log("  MATCH: ~" + sRegex);
                                 }
-                                yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] };
+                                yield { "iToken1": iToken1, "iNode": oNode["<re_value>"][sRegex] };
                                 bTokenFound = true;
                             }
                         } else {
                             // there is an anti-pattern
                             let [sPattern, sNegPattern] = sRegex.split("¬", 2);
-                            if (sNegPattern && dToken["sValue"].search(sNegPattern) !== -1) {
+                            if (sNegPattern && oToken["sValue"].search(sNegPattern) !== -1) {
                                 continue;
                             }
-                            if (!sPattern || dToken["sValue"].search(sPattern) !== -1) {
+                            if (!sPattern || oToken["sValue"].search(sPattern) !== -1) {
                                 if (bDebug) {
                                     console.log("  MATCH: ~" + sRegex);
                                 }
-                                yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] };
+                                yield { "iToken1": iToken1, "iNode": oNode["<re_value>"][sRegex] };
                                 bTokenFound = true;
                             }
                         }
@@ -470,56 +470,102 @@ class TextParser {
                 }
             }
             // analysable tokens
-            if (dToken["sType"].slice(0,4) == "WORD") {
+            if (oToken["sType"].slice(0,4) == "WORD") {
                 // token lemmas
-                if (dNode.hasOwnProperty("<lemmas>")) {
-                    for (let sLemma of _oSpellChecker.getLemma(dToken["sValue"])) {
-                        if (dNode["<lemmas>"].hasOwnProperty(sLemma)) {
+                if (oNode.hasOwnProperty("<lemmas>")) {
+                    for (let sLemma of _oSpellChecker.getLemma(oToken["sValue"])) {
+                        if (oNode["<lemmas>"].hasOwnProperty(sLemma)) {
                             if (bDebug) {
                                 console.log("  MATCH: >" + sLemma);
                             }
-                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<lemmas>"][sLemma]] };
+                            yield { "iToken1": iToken1, "iNode": oNode["<lemmas>"][sLemma] };
                             bTokenFound = true;
                         }
                     }
                 }
-                // regex morph arcs
-                if (dNode.hasOwnProperty("<re_morph>")) {
-                    let lMorph = (dToken.hasOwnProperty("lMorph")) ? dToken["lMorph"] : _oSpellChecker.getMorph(dToken["sValue"]);
-                    for (let sRegex in dNode["<re_morph>"]) {
-                        if (!sRegex.includes("¬")) {
-                            // no anti-pattern
-                            if (lMorph.some(sMorph  =>  (sMorph.search(sRegex) !== -1))) {
-                                if (bDebug) {
-                                    console.log("  MATCH: @" + sRegex);
+                // morph arcs
+                if (oNode.hasOwnProperty("<morph>")) {
+                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+                    if (lMorph.length > 0) {
+                        for (let sSearch in oNode["<morph>"]) {
+                            if (!sSearch.includes("¬")) {
+                                // no anti-pattern
+                                if (lMorph.some(sMorph  =>  (sMorph.includes(sSearch)))) {
+                                    if (bDebug) {
+                                        console.log("  MATCH: $" + sSearch);
+                                    }
+                                    yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                    bTokenFound = true;
                                 }
-                                yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] };
-                                bTokenFound = true;
-                            }
-                        } else {
-                            // there is an anti-pattern
-                            let [sPattern, sNegPattern] = sRegex.split("¬", 2);
-                            if (sNegPattern == "*") {
-                                // all morphologies must match with <sPattern>
-                                if (sPattern) {
-                                    if (lMorph.length > 0  &&  lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
-                                        if (bDebug) {
-                                            console.log("  MATCH: @" + sRegex);
+                            } else {
+                                // there is an anti-pattern
+                                let [sPattern, sNegPattern] = sSearch.split("¬", 2);
+                                if (sNegPattern == "*") {
+                                    // all morphologies must match with <sPattern>
+                                    if (sPattern) {
+                                        if (lMorph.every(sMorph  =>  (sMorph.includes(sPattern)))) {
+                                            if (bDebug) {
+                                                console.log("  MATCH: $" + sSearch);
+                                            }
+                                            yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
+                                            bTokenFound = true;
                                         }
-                                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] };
+                                    }
+                                } else {
+                                    if (sNegPattern  &&  lMorph.some(sMorph  =>  (sMorph.includes(sNegPattern)))) {
+                                        continue;
+                                    }
+                                    if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.includes(sPattern)))) {
+                                        if (bDebug) {
+                                            console.log("  MATCH: $" + sSearch);
+                                        }
+                                        yield { "iToken1": iToken1, "iNode": oNode["<morph>"][sSearch] };
                                         bTokenFound = true;
                                     }
                                 }
-                            } else {
-                                if (sNegPattern  &&  lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
-                                    continue;
-                                }
-                                if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                            }
+                        }
+                    }
+                }
+                // regex morph arcs
+                if (oNode.hasOwnProperty("<re_morph>")) {
+                    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+                    if (lMorph.length > 0) {
+                        for (let sRegex in oNode["<re_morph>"]) {
+                            if (!sRegex.includes("¬")) {
+                                // no anti-pattern
+                                if (lMorph.some(sMorph  =>  (sMorph.search(sRegex) !== -1))) {
                                     if (bDebug) {
                                         console.log("  MATCH: @" + sRegex);
                                     }
-                                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] };
+                                    yield { "iToken1": iToken1, "iNode": oNode["<re_morph>"][sRegex] };
                                     bTokenFound = true;
+                                }
+                            } else {
+                                // there is an anti-pattern
+                                let [sPattern, sNegPattern] = sRegex.split("¬", 2);
+                                if (sNegPattern == "*") {
+                                    // all morphologies must match with <sPattern>
+                                    if (sPattern) {
+                                        if (lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                                            if (bDebug) {
+                                                console.log("  MATCH: @" + sRegex);
+                                            }
+                                            yield { "iToken1": iToken1, "iNode": oNode["<re_morph>"][sRegex] };
+                                            bTokenFound = true;
+                                        }
+                                    }
+                                } else {
+                                    if (sNegPattern  &&  lMorph.some(sMorph  =>  (sMorph.search(sNegPattern) !== -1))) {
+                                        continue;
+                                    }
+                                    if (!sPattern  ||  lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1))) {
+                                        if (bDebug) {
+                                            console.log("  MATCH: @" + sRegex);
+                                        }
+                                        yield { "iToken1": iToken1, "iNode": oNode["<re_morph>"][sRegex] };
+                                        bTokenFound = true;
+                                    }
                                 }
                             }
                         }
@@ -527,47 +573,47 @@ class TextParser {
                 }
             }
             // token tags
-            if (dToken.hasOwnProperty("aTags") && dNode.hasOwnProperty("<tags>")) {
-                for (let sTag of dToken["aTags"]) {
-                    if (dNode["<tags>"].hasOwnProperty(sTag)) {
+            if (oToken.hasOwnProperty("aTags") && oNode.hasOwnProperty("<tags>")) {
+                for (let sTag of oToken["aTags"]) {
+                    if (oNode["<tags>"].hasOwnProperty(sTag)) {
                         if (bDebug) {
                             console.log("  MATCH: /" + sTag);
                         }
-                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<tags>"][sTag]] };
+                        yield { "iToken1": iToken1, "iNode": oNode["<tags>"][sTag] };
                         bTokenFound = true;
                     }
                 }
             }
             // meta arc (for token type)
-            if (dNode.hasOwnProperty("<meta>")) {
-                for (let sMeta in dNode["<meta>"]) {
-                    // no regex here, we just search if <dNode["sType"]> exists within <sMeta>
-                    if (sMeta == "*" || dToken["sType"] == sMeta) {
+            if (oNode.hasOwnProperty("<meta>")) {
+                for (let sMeta in oNode["<meta>"]) {
+                    // no regex here, we just search if <oNode["sType"]> exists within <sMeta>
+                    if (sMeta == "*" || oToken["sType"] == sMeta) {
                         if (bDebug) {
                             console.log("  MATCH: *" + sMeta);
                         }
-                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] };
+                        yield { "iToken1": iToken1, "iNode": oNode["<meta>"][sMeta] };
                         bTokenFound = true;
                     }
                     else if (sMeta.includes("¬")) {
-                        if (!sMeta.includes(dToken["sType"])) {
+                        if (!sMeta.includes(oToken["sType"])) {
                             if (bDebug) {
                                 console.log("  MATCH: *" + sMeta);
                             }
-                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] };
+                            yield { "iToken1": iToken1, "iNode": oNode["<meta>"][sMeta] };
                             bTokenFound = true;
                         }
                     }
                 }
             }
-            if (!bTokenFound  &&  dPointer.hasOwnProperty("bKeep")) {
-                yield dPointer;
+            if (!bTokenFound  &&  oPointer.hasOwnProperty("bKeep")) {
+                yield oPointer;
             }
             // JUMP
             // Warning! Recurssion!
-            if (dNode.hasOwnProperty("<>")) {
-                let dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": true };
-                yield* this._getNextPointers(dToken, dGraph, dPointer2, bDebug);
+            if (oNode.hasOwnProperty("<>")) {
+                let oPointer2 = { "iToken1": iToken1, "iNode": oNode["<>"], "bKeep": true };
+                yield* this._getNextPointers(oToken, oGraph, oPointer2, bDebug);
             }
         }
         catch (e) {
@@ -575,27 +621,27 @@ class TextParser {
         }
     }
 
-    parseGraph (dGraph, sCountry="${country_default}", dOptions=null, bShowRuleId=false, bDebug=false, bContext=false) {
+    parseGraph (oGraph, sCountry="${country_default}", dOptions=null, bShowRuleId=false, bDebug=false, bContext=false) {
         // parse graph with tokens from the text and execute actions encountered
         let lPointer = [];
         let bTagAndRewrite = false;
         try {
-            for (let [iToken, dToken] of this.lToken.entries()) {
+            for (let [iToken, oToken] of this.lToken.entries()) {
                 if (bDebug) {
-                    console.log("TOKEN: " + dToken["sValue"]);
+                    console.log("TOKEN: " + oToken["sValue"]);
                 }
                 // check arcs for each existing pointer
                 let lNextPointer = [];
-                for (let dPointer of lPointer) {
-                    lNextPointer.push(...this._getNextPointers(dToken, dGraph, dPointer, bDebug));
+                for (let oPointer of lPointer) {
+                    lNextPointer.push(...this._getNextPointers(oToken, oGraph, oPointer, bDebug));
                 }
                 lPointer = lNextPointer;
                 // check arcs of first nodes
-                lPointer.push(...this._getNextPointers(dToken, dGraph, { "iNode1": iToken, "dNode": dGraph[0] }, bDebug));
+                lPointer.push(...this._getNextPointers(oToken, oGraph, { "iToken1": iToken, "iNode": 0 }, bDebug));
                 // check if there is rules to check for each pointer
-                for (let dPointer of lPointer) {
-                    if (dPointer["dNode"].hasOwnProperty("<rules>")) {
-                        let bChange = this._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext);
+                for (let oPointer of lPointer) {
+                    if (oGraph[oPointer["iNode"]].hasOwnProperty("<rules>")) {
+                        let bChange = this._executeActions(oGraph, oGraph[oPointer["iNode"]]["<rules>"], oPointer["iToken1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext);
                         if (bChange) {
                             bTagAndRewrite = true;
                         }
@@ -614,12 +660,12 @@ class TextParser {
         return this.sSentence;
     }
 
-    _executeActions (dGraph, dNode, nTokenOffset, nLastToken, dOptions, sCountry, bShowRuleId, bDebug, bContext) {
+    _executeActions (oGraph, oNode, nTokenOffset, nLastToken, dOptions, sCountry, bShowRuleId, bDebug, bContext) {
         // execute actions found in the DARG
         let bChange = false;
-        for (let [sLineId, nextNodeKey] of Object.entries(dNode)) {
+        for (let [sLineId, nextNodeKey] of Object.entries(oNode)) {
             let bCondMemo = null;
-            for (let sRuleId of dGraph[nextNodeKey]) {
+            for (let sRuleId of oGraph[nextNodeKey]) {
                 try {
                     if (bDebug) {
                         console.log("   >TRY: " + sRuleId + " " + sLineId);
@@ -698,7 +744,7 @@ class TextParser {
                             else if (cActionType == "!") {
                                 // immunity
                                 if (bDebug) {
-                                    console.log("    IMMUNITY: " + _rules_graph.dRule[sRuleId]);
+                                    console.log("    IMMUNITY: " + sLineId + " / " + sRuleId);
                                 }
                                 let nTokenStart = (eAct[0] > 0) ? nTokenOffset + eAct[0] : nLastToken + eAct[0];
                                 let nTokenEnd = (eAct[1] > 0) ? nTokenOffset + eAct[1] : nLastToken + eAct[1];
@@ -889,7 +935,9 @@ class TextParser {
                 // several tokens
                 let lTokenValue = sWhat.split("|");
                 if (lTokenValue.length != (nTokenRewriteEnd - nTokenRewriteStart + 1)) {
-                    console.log("Error. Text processor: number of replacements != number of tokens.");
+                    if (bDebug) {
+                        console.log("Error. Text processor: number of replacements != number of tokens.");
+                    }
                     return;
                 }
                 let j = 0;
@@ -916,58 +964,58 @@ class TextParser {
         }
         let lNewToken = [];
         let nMergeUntil = 0;
-        let dTokenMerger = null;
-        for (let [iToken, dToken] of this.lToken.entries()) {
+        let oMergingToken = null;
+        for (let [iToken, oToken] of this.lToken.entries()) {
             let bKeepToken = true;
-            if (dToken["sType"] != "INFO") {
+            if (oToken["sType"] != "INFO") {
                 if (nMergeUntil && iToken <= nMergeUntil) {
-                    dTokenMerger["sValue"] += " ".repeat(dToken["nStart"] - dTokenMerger["nEnd"]) + dToken["sValue"];
-                    dTokenMerger["nEnd"] = dToken["nEnd"];
+                    oMergingToken["sValue"] += " ".repeat(oToken["nStart"] - oMergingToken["nEnd"]) + oToken["sValue"];
+                    oMergingToken["nEnd"] = oToken["nEnd"];
                     if (bDebug) {
-                        console.log("  MERGED TOKEN: " + dTokenMerger["sValue"]);
+                        console.log("  MERGED TOKEN: " + oMergingToken["sValue"]);
                     }
                     bKeepToken = false;
                 }
-                if (dToken.hasOwnProperty("nMergeUntil")) {
+                if (oToken.hasOwnProperty("nMergeUntil")) {
                     if (iToken > nMergeUntil) { // this token is not already merged with a previous token
-                        dTokenMerger = dToken;
+                        oMergingToken = oToken;
                     }
-                    if (dToken["nMergeUntil"] > nMergeUntil) {
-                        nMergeUntil = dToken["nMergeUntil"];
+                    if (oToken["nMergeUntil"] > nMergeUntil) {
+                        nMergeUntil = oToken["nMergeUntil"];
                     }
-                    delete dToken["nMergeUntil"];
+                    delete oToken["nMergeUntil"];
                 }
-                else if (dToken.hasOwnProperty("bToRemove")) {
+                else if (oToken.hasOwnProperty("bToRemove")) {
                     if (bDebug) {
-                        console.log("  REMOVED: " + dToken["sValue"]);
+                        console.log("  REMOVED: " + oToken["sValue"]);
                     }
-                    this.sSentence = this.sSentence.slice(0, dToken["nStart"]) + " ".repeat(dToken["nEnd"] - dToken["nStart"]) + this.sSentence.slice(dToken["nEnd"]);
+                    this.sSentence = this.sSentence.slice(0, oToken["nStart"]) + " ".repeat(oToken["nEnd"] - oToken["nStart"]) + this.sSentence.slice(oToken["nEnd"]);
                     bKeepToken = false;
                 }
             }
             //
             if (bKeepToken) {
-                lNewToken.push(dToken);
-                if (dToken.hasOwnProperty("sNewValue")) {
+                lNewToken.push(oToken);
+                if (oToken.hasOwnProperty("sNewValue")) {
                     // rewrite token and sentence
                     if (bDebug) {
-                        console.log(dToken["sValue"] + " -> " + dToken["sNewValue"]);
+                        console.log(oToken["sValue"] + " -> " + oToken["sNewValue"]);
                     }
-                    dToken["sRealValue"] = dToken["sValue"];
-                    dToken["sValue"] = dToken["sNewValue"];
-                    let nDiffLen = dToken["sRealValue"].length - dToken["sNewValue"].length;
-                    let sNewRepl = (nDiffLen >= 0) ? dToken["sNewValue"] + " ".repeat(nDiffLen) : dToken["sNewValue"].slice(0, dToken["sRealValue"].length);
-                    this.sSentence = this.sSentence.slice(0,dToken["nStart"]) + sNewRepl + this.sSentence.slice(dToken["nEnd"]);
-                    delete dToken["sNewValue"];
+                    oToken["sRealValue"] = oToken["sValue"];
+                    oToken["sValue"] = oToken["sNewValue"];
+                    let nDiffLen = oToken["sRealValue"].length - oToken["sNewValue"].length;
+                    let sNewRepl = (nDiffLen >= 0) ? oToken["sNewValue"] + " ".repeat(nDiffLen) : oToken["sNewValue"].slice(0, oToken["sRealValue"].length);
+                    this.sSentence = this.sSentence.slice(0,oToken["nStart"]) + sNewRepl + this.sSentence.slice(oToken["nEnd"]);
+                    delete oToken["sNewValue"];
                 }
             }
             else {
                 try {
-                    this.dTokenPos.delete(dToken["nStart"]);
+                    this.dTokenPos.delete(oToken["nStart"]);
                 }
                 catch (e) {
                     console.log(this.asString());
-                    console.log(dToken);
+                    console.log(oToken);
                 }
             }
         }
@@ -1136,18 +1184,18 @@ function analyse (sWord, sPattern, sNegPattern) {
 
 //// Analyse tokens for graph rules
 
-function g_value (dToken, sValues, nLeft=null, nRight=null) {
-    // test if <dToken['sValue']> is in sValues (each value should be separated with |)
-    let sValue = (nLeft === null) ? "|"+dToken["sValue"]+"|" : "|"+dToken["sValue"].slice(nLeft, nRight)+"|";
+function g_value (oToken, sValues, nLeft=null, nRight=null) {
+    // test if <oToken['sValue']> is in sValues (each value should be separated with |)
+    let sValue = (nLeft === null) ? "|"+oToken["sValue"]+"|" : "|"+oToken["sValue"].slice(nLeft, nRight)+"|";
     if (sValues.includes(sValue)) {
         return true;
     }
-    if (dToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
+    if (oToken["sValue"].slice(0,2).gl_isTitle()) { // we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
         if (sValues.includes(sValue.toLowerCase())) {
             return true;
         }
     }
-    else if (dToken["sValue"].gl_isUpperCase()) {
+    else if (oToken["sValue"].gl_isUpperCase()) {
         //if sValue.lower() in sValues:
         //    return true;
         sValue = "|"+sValue.slice(1).gl_toCapitalize();
@@ -1162,21 +1210,21 @@ function g_value (dToken, sValues, nLeft=null, nRight=null) {
     return false;
 }
 
-function g_morph (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_morph (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
-    if (dToken.hasOwnProperty("lMorph")) {
-        lMorph = dToken["lMorph"];
+    if (oToken.hasOwnProperty("lMorph")) {
+        lMorph = oToken["lMorph"];
     }
     else {
         if (nLeft !== null) {
-            let sValue = (nRight !== null) ? dToken["sValue"].slice(nLeft, nRight) : dToken["sValue"].slice(nLeft);
+            let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
             lMorph = _oSpellChecker.getMorph(sValue);
             if (bMemorizeMorph) {
-                dToken["lMorph"] = lMorph;
+                oToken["lMorph"] = lMorph;
             }
         } else {
-            lMorph = _oSpellChecker.getMorph(dToken["sValue"]);
+            lMorph = _oSpellChecker.getMorph(oToken["sValue"]);
         }
     }
     if (lMorph.length == 0) {
@@ -1198,17 +1246,17 @@ function g_morph (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMe
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_analyse (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
+function g_analyse (oToken, sPattern, sNegPattern="", nLeft=null, nRight=null, bMemorizeMorph=true) {
     // analyse a token, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies
     let lMorph;
     if (nLeft !== null) {
-        let sValue = (nRight !== null) ? dToken["sValue"].slice(nLeft, nRight) : dToken["sValue"].slice(nLeft);
+        let sValue = (nRight !== null) ? oToken["sValue"].slice(nLeft, nRight) : oToken["sValue"].slice(nLeft);
         lMorph = _oSpellChecker.getMorph(sValue);
         if (bMemorizeMorph) {
-            dToken["lMorph"] = lMorph;
+            oToken["lMorph"] = lMorph;
         }
     } else {
-        lMorph = _oSpellChecker.getMorph(dToken["sValue"]);
+        lMorph = _oSpellChecker.getMorph(oToken["sValue"]);
     }
     if (lMorph.length == 0) {
         return false;
@@ -1229,9 +1277,9 @@ function g_analyse (dToken, sPattern, sNegPattern="", nLeft=null, nRight=null, b
     return lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
 }
 
-function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
+function g_merged_analyse (oToken1, oToken2, cMerger, sPattern, sNegPattern="", bSetMorph=true) {
     // merge two token values, return True if <sNegPattern> not in morphologies and <sPattern> in morphologies (disambiguation off)
-    let lMorph = _oSpellChecker.getMorph(dToken1["sValue"] + cMerger + dToken2["sValue"]);
+    let lMorph = _oSpellChecker.getMorph(oToken1["sValue"] + cMerger + oToken2["sValue"]);
     if (lMorph.length == 0) {
         return false;
     }
@@ -1241,7 +1289,7 @@ function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", 
             // all morph must match sPattern
             let bResult = lMorph.every(sMorph  =>  (sMorph.search(sPattern) !== -1));
             if (bResult && bSetMorph) {
-                dToken1["lMorph"] = lMorph;
+                oToken1["lMorph"] = lMorph;
             }
             return bResult;
         }
@@ -1254,37 +1302,37 @@ function g_merged_analyse (dToken1, dToken2, cMerger, sPattern, sNegPattern="", 
     // search sPattern
     let bResult = lMorph.some(sMorph  =>  (sMorph.search(sPattern) !== -1));
     if (bResult && bSetMorph) {
-        dToken1["lMorph"] = lMorph;
+        oToken1["lMorph"] = lMorph;
     }
     return bResult;
 }
 
-function g_tag_before (dToken, dTags, sTag) {
+function g_tag_before (oToken, dTags, sTag) {
     if (!dTags.has(sTag)) {
         return false;
     }
-    if (dToken["i"] > dTags.get(sTag)[0]) {
+    if (oToken["i"] > dTags.get(sTag)[0]) {
         return true;
     }
     return false;
 }
 
-function g_tag_after (dToken, dTags, sTag) {
+function g_tag_after (oToken, dTags, sTag) {
     if (!dTags.has(sTag)) {
         return false;
     }
-    if (dToken["i"] < dTags.get(sTag)[1]) {
+    if (oToken["i"] < dTags.get(sTag)[1]) {
         return true;
     }
     return false;
 }
 
-function g_tag (dToken, sTag) {
-    return dToken.hasOwnProperty("aTags") && dToken["aTags"].has(sTag);
+function g_tag (oToken, sTag) {
+    return oToken.hasOwnProperty("aTags") && oToken["aTags"].has(sTag);
 }
 
-function g_space_between_tokens (dToken1, dToken2, nMin, nMax=null) {
-    let nSpace = dToken2["nStart"] - dToken1["nEnd"]
+function g_space_between_tokens (oToken1, oToken2, nMin, nMax=null) {
+    let nSpace = oToken2["nStart"] - oToken1["nEnd"]
     if (nSpace < nMin) {
         return false;
     }
@@ -1361,60 +1409,75 @@ function define (dTokenPos, nPos, lMorph) {
 
 //// Disambiguation for graph rules
 
-function g_select (dToken, sPattern, lDefault=null) {
-    // select morphologies for <dToken> according to <sPattern>, always return true
-    let lMorph = (dToken.hasOwnProperty("lMorph")) ? dToken["lMorph"] : _oSpellChecker.getMorph(dToken["sValue"]);
+function g_select (oToken, sPattern, lDefault=null) {
+    // select morphologies for <oToken> according to <sPattern>, always return true
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         if (lDefault) {
-            dToken["lMorph"] = lDefault;
+            oToken["lMorph"] = lDefault;
         }
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) !== -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
-            dToken["lMorph"] = lSelect;
+            oToken["lMorph"] = lSelect;
         }
     } else if (lDefault) {
-        dToken["lMorph"] = lDefault;
+        oToken["lMorph"] = lDefault;
     }
     return true;
 }
 
-function g_exclude (dToken, sPattern, lDefault=null) {
-    // select morphologies for <dToken> according to <sPattern>, always return true
-    let lMorph = (dToken.hasOwnProperty("lMorph")) ? dToken["lMorph"] : _oSpellChecker.getMorph(dToken["sValue"]);
+function g_exclude (oToken, sPattern, lDefault=null) {
+    // select morphologies for <oToken> according to <sPattern>, always return true
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
     if (lMorph.length === 0  || lMorph.length === 1) {
         if (lDefault) {
-            dToken["lMorph"] = lDefault;
+            oToken["lMorph"] = lDefault;
         }
         return true;
     }
     let lSelect = lMorph.filter( sMorph => sMorph.search(sPattern) === -1 );
     if (lSelect.length > 0) {
         if (lSelect.length != lMorph.length) {
-            dToken["lMorph"] = lSelect;
+            oToken["lMorph"] = lSelect;
         }
     } else if (lDefault) {
-        dToken["lMorph"] = lDefault;
+        oToken["lMorph"] = lDefault;
     }
     return true;
 }
 
-function g_define (dToken, lMorph) {
-    // set morphologies of <dToken>, always return true
-    dToken["lMorph"] = lMorph;
+function g_add_morph (oToken, lNewMorph) {
+    "Disambiguation: add a morphology to a token"
+    let lMorph = (oToken.hasOwnProperty("lMorph")) ? oToken["lMorph"] : _oSpellChecker.getMorph(oToken["sValue"]);
+    lMorph.push(...lNewMorph);
+    oToken["lMorph"] = lMorph;
     return true;
 }
 
-function g_define_from (dToken, nLeft=null, nRight=null) {
-    let sValue = dToken["sValue"];
+function g_define (oToken, lMorph) {
+    // set morphologies of <oToken>, always return true
+    oToken["lMorph"] = lMorph;
+    return true;
+}
+
+function g_define_from (oToken, nLeft=null, nRight=null) {
+    let sValue = oToken["sValue"];
     if (nLeft !== null) {
         sValue = (nRight !== null) ? sValue.slice(nLeft, nRight) : sValue.slice(nLeft);
     }
-    dToken["lMorph"] = _oSpellChecker.getMorph(sValue);
+    oToken["lMorph"] = _oSpellChecker.getMorph(sValue);
     return true;
 }
+
+function g_change_meta (oToken, sType) {
+    // Disambiguation: change type of token
+    oToken["sType"] = sType;
+    return true;
+}
+
 
 
 //////// GRAMMAR CHECKER PLUGINS

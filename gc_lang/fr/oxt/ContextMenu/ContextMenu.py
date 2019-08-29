@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # Grammalecte - Lexicographe
 # by Olivier R. License: MPL 2
 
@@ -97,7 +96,6 @@ class MyContextMenuInterceptor (XContextMenuInterceptor, unohelper.Base):
             xMenuItem.setPropertyValue(k, v)
             #print("> ", k, v, xMenuItem)
         xContextMenu.insertByIndex(i, xMenuItem)
-
         return i + 1
 
     def _getWord (self):
@@ -141,10 +139,7 @@ class JobExecutor (XJob, unohelper.Base):
         if not args:
             return
         try:
-            # what version of the software?
-            xSettings = helpers.getConfigSetting("org.openoffice.Setup/Product", False)
-            sProdName = xSettings.getByName("ooName")
-            sVersion = xSettings.getByName("ooSetupVersion")
+            sProdName, sVersion = helpers.getProductNameAndVersion()
             if (sProdName == "LibreOffice" and sVersion < "4") or sProdName == "OpenOffice.org":
                 return
 

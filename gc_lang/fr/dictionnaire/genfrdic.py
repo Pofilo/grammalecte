@@ -21,6 +21,7 @@ from string import Template
 
 import metagraphe
 import metaphone2
+import thes_build
 
 
 # Dictionnaire des caractères pour le tri naturel.
@@ -568,10 +569,6 @@ class Dictionnaire:
             file_util.copy_file(dicPath+'/'+dVars['asciiName']+'.dic', spExt+'/dictionaries/'+dVars['asciiName']+'.dic')
             file_util.copy_file(dicPath+'/'+dVars['asciiName']+'.aff', spExt+'/dictionaries/'+dVars['asciiName']+'.aff')
         copyTemplate('orthographe', spExt+'/dictionaries', 'README_dict_fr.txt', dTplVars)
-        # thesaurus
-        file_util.copy_file('thesaurus/thes_fr.dat', spExt+'/dictionaries')
-        file_util.copy_file('thesaurus/thes_fr.idx', spExt+'/dictionaries')
-        file_util.copy_file('thesaurus/README_thes_fr.txt', spExt+'/dictionaries')
         # hyphenation
         file_util.copy_file('césures/hyph_fr.dic', spExt+'/dictionaries')
         file_util.copy_file('césures/hyph_fr.iso8859-1.dic', spExt+'/dictionaries')
@@ -1504,6 +1501,19 @@ class StatsLex:
                 hDst.write("{} - {}\n".format(e[0], e[1]))
 
 
+def createThesaurusPackage (spBuild, sVersion, spCopy=""):
+    print(" * Création du thésaurus")
+    spThesaurus = spBuild+"/thesaurus-v"+sVersion
+    dir_util.mkpath(spThesaurus)
+    thes_build.build("thesaurus/thes_fr.dat", "thesaurus/synsets_fr.dat", spThesaurus)
+    file_util.copy_file('thesaurus/README_thes_fr.txt', spThesaurus)
+    if spCopy:
+        # copy in libreoffice extension package
+        print("   Copie du thésaurus dans:", spCopy)
+        file_util.copy_file(spThesaurus+'/thes_fr.dat', spCopy)
+        file_util.copy_file(spThesaurus+'/thes_fr.idx', spCopy)
+        file_util.copy_file(spThesaurus+'/README_thes_fr.txt', spCopy)
+
 
 def main ():
     xParser = argparse.ArgumentParser()
@@ -1558,7 +1568,7 @@ def main ():
     oStatsLex.write(spBuild+'/test_lex.txt')
     oFrenchDict.calculateStats(oStatsLex, spfStats)
 
-    ### écriture des paquets
+    ### Écriture des paquets
     echo("Création des paquets...")
 
     spLexiconDestGL = "../../../lexicons"  if xArgs.grammalecte  else ""
@@ -1566,16 +1576,17 @@ def main ():
     spMozillaExtDestGL = ""  if xArgs.grammalecte  else "" # no more Hunspell dictionaries in Mozilla extensions for now
     spDataDestGL = "../data"  if xArgs.grammalecte  else ""
 
+    ### dictionnaires
     if not xArgs.uncompress:
         oFrenchDict.defineAbreviatedTags(xArgs.mode, spfStats)
     oFrenchDict.createFiles(spBuild, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], xArgs.mode, xArgs.simplify)
     oFrenchDict.createLexiconPackages(spBuild, xArgs.verdic, oStatsLex, spLexiconDestGL)
     oFrenchDict.createFileIfqForDB(spBuild)
+    createThesaurusPackage(spBuild, "2.4", spLibreOfficeExtDestGL)
     oFrenchDict.createLibreOfficeExtension(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spLibreOfficeExtDestGL)
     oFrenchDict.createMozillaExtensions(spBuild, dMOZEXT, [dTOUTESVAR, dCLASSIQUE, dREFORME1990], spMozillaExtDestGL)
     oFrenchDict.createDictConj(spBuild, spDataDestGL)
     oFrenchDict.createDictDecl(spBuild, spDataDestGL)
-
 
 
 if __name__ == '__main__':

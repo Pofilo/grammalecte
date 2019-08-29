@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # Grammalecte AppLauncher
 # by Olivier R.
 # License: MPL 2
@@ -50,10 +49,6 @@ class AppLauncher (unohelper.Base, XJobExecutor):
                 import LexiconEditor
                 xDialog = LexiconEditor.LexiconEditor(self.ctx)
                 xDialog.run(self.sLang)
-            elif sCmd == "DS":
-                import DictionarySwitcher
-                xDialog = DictionarySwitcher.FrenchDictionarySwitcher(self.ctx)
-                xDialog.run(self.sLang)
             elif sCmd == "MA":
                 import Author
                 xDialog = Author.Author(self.ctx)
@@ -65,6 +60,10 @@ class AppLauncher (unohelper.Base, XJobExecutor):
             elif sCmd == "EN":
                 import Enumerator
                 xDialog = Enumerator.Enumerator(self.ctx)
+                xDialog.run(self.sLang)
+            elif sCmd == "GO":
+                import GraphicOptions
+                xDialog = GraphicOptions.GraphicOptions(self.ctx)
                 xDialog.run(self.sLang)
             elif sCmd.startswith("FA/"):
                 findAll(sCmd[6:], (sCmd[3:4] == "y"), (sCmd[4:5] == "y"))

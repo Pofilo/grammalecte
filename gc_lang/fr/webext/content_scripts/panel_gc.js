@@ -61,7 +61,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelContent.appendChild(this.xGCPanelContent);
         this.xNode = null;
         this.oTextControl = new GrammalecteTextControl();
-        this.bAutoRefresh = false;
+        this.nLastResult = 0
         // Lexicographer
         this.nLxgCount = 0;
         this.xLxgPanelContent = oGrammalecte.createNode("div", {id: "grammalecte_lxg_panel_content"});
@@ -83,6 +83,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
         this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_autorefresh_button", textContent: "AR", title: "Auto-rafraîchissement de la correction grammaticale (3 s après la dernière frappe)"})
         this.xEditorButton.appendChild(this.xAutoRefresh);
+        this.bAutoRefresh = oGrammalecte.bAutoRefresh;
+        this.setAutoRefreshButton();
         this.xTFButton.onclick = () => {
             if (!this.bWorking) {
                 oGrammalecte.createTFPanel();
@@ -97,9 +99,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         };
         this.xAutoRefresh.onclick = () => {
             this.bAutoRefresh = !this.bAutoRefresh;
-            this.xAutoRefresh.style.backgroundColor = (this.bAutoRefresh) ? "hsl(150, 50%, 50%)" : "";
-            this.xAutoRefresh.style.color = (this.bAutoRefresh) ? "hsl(150, 50%, 96%)" : "";
-            this.xAutoRefresh.style.opacity = (this.bAutoRefresh) ? "1" : "";
+            oGrammalecte.bAutoRefresh = this.bAutoRefresh;
+            browser.storage.local.set({"autorefresh_option": this.bAutoRefresh});
+            this.setAutoRefreshButton();
         }
         this.xLxgButton.onclick = () => {
             if (!this.bWorking) {
@@ -126,6 +128,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xLEButton.onclick = () => {
             xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null});
         };
+        // Menu, tabs
         this.xMenu.appendChild(this.xTFButton)
         this.xMenu.appendChild(this.xEditorButton)
         this.xMenu.appendChild(this.xLxgButton)
@@ -139,6 +142,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.bWorking = false;
         this.clear();
         this.hideMessage();
+        this.resetTimer();
         if (typeof(what) === "string") {
             // text
             this.xNode = null;
@@ -154,11 +158,18 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
     }
 
+    setAutoRefreshButton () {
+        this.xAutoRefresh.style.backgroundColor = (this.bAutoRefresh) ? "hsl(150, 50%, 50%)" : "";
+        this.xAutoRefresh.style.color = (this.bAutoRefresh) ? "hsl(150, 50%, 96%)" : "";
+        this.xAutoRefresh.style.opacity = (this.bAutoRefresh) ? "1" : "";
+    }
+
     recheckAll () {
         this.oTooltip.hide();
         this.showEditor();
         this.clear();
         this.startWaitIcon();
+        this.resetTimer();
         xGrammalectePort.postMessage({
             sCommand: "parseAndSpellcheck",
             dParam: {sText: this.oTextControl.getText(), sCountry: "FR", bDebug: false, bContext: false},
@@ -220,6 +231,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     addParagraphResult (oResult) {
         try {
+            this.resetTimer();
             if (oResult && (oResult.sParagraph.trim() !== "" || oResult.aGrammErr.length > 0 || oResult.aSpellErr.length > 0)) {
                 let xNodeDiv = oGrammalecte.createNode("div", {className: "grammalecte_paragraph_block"});
                 // actions
@@ -235,26 +247,12 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                         // timer for refreshing analysis
                         window.clearTimeout(parseInt(xParagraph.dataset.timer_id, 10));
                         xParagraph.dataset.timer_id = window.setTimeout(this.recheckParagraph.bind(this), 3000, oResult.iParaNum);
-                        // save caret position
-                        let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
-                        xParagraph.dataset.caret_position_start = nStart;
-                        xParagraph.dataset.caret_position_end = nEnd;
                     }
                     // write text
                     this.oTextControl.setParagraph(parseInt(xEvent.target.dataset.para_num, 10), this.purgeText(xEvent.target.textContent));
                     this.oTextControl.write();
                 }.bind(this)
                 , true);
-                /*xParagraph.addEventListener("blur", function (xEvent) {
-                    // remove timer for refreshing analysis
-                    window.clearTimeout(parseInt(xParagraph.dataset.timer_id));
-                    // unset caret position
-                    xParagraph.dataset.caret_position_start = "-1";
-                    xParagraph.dataset.caret_position_end = "-1";
-                    // recheck
-                    this.recheckParagraph(oResult.iParaNum);
-                }.bind(this)
-                , true);*/
                 this._tagParagraph(xParagraph, oResult.sParagraph, oResult.iParaNum, oResult.aGrammErr, oResult.aSpellErr);
                 // creation
                 xNodeDiv.appendChild(xActionsBar);
@@ -267,10 +265,26 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         }
     }
 
+    resetTimer () {
+        this.nLastResult = Date.now();
+        window.clearTimeout(this.nTimer);
+        this.nTimer = window.setTimeout(
+            oGrammalecte.oGCPanel.showMessage.bind(this),
+            5000,
+            "Le serveur grammatical semble ne plus répondre.",
+            "Arrêter et relancer le serveur grammatical.",
+            "restartWorker"
+        );
+    }
+
+    endTimer () {
+        window.clearTimeout(this.nTimer);
+    }
+
     recheckParagraph (iParaNum) {
         let sParagraphId = "grammalecte_paragraph" + iParaNum;
         let xParagraph = this.xParent.getElementById(sParagraphId);
-        this.blockParagraph(xParagraph);
+        this._blockParagraph(xParagraph);
         let sText = this.purgeText(xParagraph.textContent);
         xGrammalectePort.postMessage({
             sCommand: "parseAndSpellcheck1",
@@ -285,10 +299,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         // function called when results are sent by the Worker
         try {
             let xParagraph = this.xParent.getElementById(sParagraphId);
-            xParagraph.className = (oResult.aGrammErr.length || oResult.aSpellErr.length) ? "grammalecte_paragraph softred" : "grammalecte_paragraph";
+            // save caret position
+            let [nStart, nEnd] = oGrammalecte.getCaretPosition(xParagraph);
+            xParagraph.dataset.caret_position_start = nStart;
+            xParagraph.dataset.caret_position_end = nEnd;
+            // erase texte
             xParagraph.textContent = "";
+            // recreate and retag
             this._tagParagraph(xParagraph, oResult.sParagraph, sParagraphId.slice(21), oResult.aGrammErr, oResult.aSpellErr);
-            this.freeParagraph(xParagraph);
+            this._freeParagraph(xParagraph);
         }
         catch (e) {
             showError(e);
@@ -355,7 +374,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         return xNodeErr;
     }
 
-    blockParagraph (xParagraph) {
+    _blockParagraph (xParagraph) {
         xParagraph.contentEditable = "false";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).textContent = "!!";
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.backgroundColor = "hsl(0, 50%, 50%)";
@@ -363,7 +382,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xParent.getElementById("grammalecte_check"+xParagraph.dataset.para_num).style.animation = "grammalecte-pulse 1s linear infinite";
     }
 
-    freeParagraph (xParagraph) {
+    _freeParagraph (xParagraph) {
         xParagraph.contentEditable = "true";
         if (xParagraph.dataset.caret_position_start !== "-1") {
             let nStart = parseInt(xParagraph.dataset.caret_position_start, 10);

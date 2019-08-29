@@ -18,13 +18,14 @@ contexts:
       scope: comment
 
     # Error message
-    - match: '(?<= )#[^|]+'
+    - match: '(?<= )# '
       scope: string.message
       push:
+        - meta_scope: string.message
         - match: '\\-?[0-9]+'
-          scope: string.message.escape
+          scope: string.message.esc
         - match: '\| ?https?://[\w./%?&=#+-]+'
-          scope: string.other
+          scope: string.message.url
         - match: $
           pop: true
 
@@ -89,6 +90,11 @@ contexts:
       captures:
         1: rule.optionname
 
+    - match: '!!(.+)¡¡'
+      scope: rule.antipattern
+      captures:
+        1: rule.antipattern.token
+
     # Definitions and options
     - match: '^OPT(?:GROUP|LANG|PRIORITY)/|^OPT(?:SOFTWARE|COLORTHEME):|^COLOR/'
       scope: options.command
@@ -151,6 +157,12 @@ contexts:
         1: entity.valid
 
     - match: '(@)([^@\s¬]*)'
+      scope: string.morph
+      captures:
+        1: entity.valid
+        2: string.morph.regex
+
+    - match: '(\$)([^@\s¬]*)'
       scope: string.morph
       captures:
         1: entity.valid

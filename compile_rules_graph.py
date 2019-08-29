@@ -12,6 +12,8 @@ import compile_rules_js_convert as jsconv
 dACTIONS = {}
 dFUNCTIONS = {}
 dFUNCNAME = {}
+dDECLENSIONS = {}
+dANTIPATTERNS = {}
 
 
 def createFunction (sType, sCode, bStartWithEqual=False):
@@ -46,26 +48,26 @@ def prepareFunction (sCode):
     sCode = sCode.replace("__also__", "bCondMemo")
     sCode = sCode.replace("__else__", "not bCondMemo")
     sCode = sCode.replace("sContext", "_sAppContext")
-    sCode = re.sub(r"(morph|morphVC|analyse|value|tag|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
-    sCode = re.sub(r"(morph|morphVC|analyse|value|tag|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
-    sCode = re.sub(r"(select|exclude|define|define_from)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
-    sCode = re.sub(r"(select|exclude|define|define_from)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
-    sCode = re.sub(r"(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', sCode)
-    sCode = re.sub(r"(tag_before|tag_after)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1], dTags', sCode)
-    sCode = re.sub(r"space_after[(][\\](\d+)", 'g_space_between_tokens(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
-    sCode = re.sub(r"space_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
-    sCode = re.sub(r"analyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
-    sCode = re.sub(r"analyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
-    sCode = re.sub(r"(morph|analyse|tag|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                       # next token
-    sCode = re.sub(r"(morph|analyse|tag|value)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                       # previous token
-    sCode = re.sub(r"(morph|analyse|tag|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)        # next token
-    sCode = re.sub(r"(morph|analyse|tag|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)    # previous token
+    sCode = re.sub(r"\b(morph|morphVC|analyse|value|tag|displayInfo)[(]\\(\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
+    sCode = re.sub(r"\b(morph|morphVC|analyse|value|tag|displayInfo)[(]\\-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
+    sCode = re.sub(r"\b(select|exclude|define|define_from|add_morph|change_meta)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2]', sCode)
+    sCode = re.sub(r"\b(select|exclude|define|define_from|add_morph|change_meta)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1]', sCode)
+    sCode = re.sub(r"\b(tag_before|tag_after)[(][\\](\d+)", 'g_\\1(lToken[nTokenOffset+\\2], dTags', sCode)
+    sCode = re.sub(r"\b(tag_before|tag_after)[(][\\]-(\d+)", 'g_\\1(lToken[nLastToken-\\2+1], dTags', sCode)
+    sCode = re.sub(r"\bspace_after[(][\\](\d+)", 'g_space_between_tokens(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
+    sCode = re.sub(r"\bspace_after[(][\\]-(\d+)", 'g_space_between_tokens(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
+    sCode = re.sub(r"\banalyse_with_next[(][\\](\d+)", 'g_merged_analyse(lToken[nTokenOffset+\\1], lToken[nTokenOffset+\\1+1]', sCode)
+    sCode = re.sub(r"\banalyse_with_next[(][\\]-(\d+)", 'g_merged_analyse(lToken[nLastToken-\\1+1], lToken[nLastToken-\\1+2]', sCode)
+    sCode = re.sub(r"\b(morph|analyse|tag|value)\(>1", 'g_\\1(lToken[nLastToken+1]', sCode)                       # next token
+    sCode = re.sub(r"\b(morph|analyse|tag|value)\(<1", 'g_\\1(lToken[nTokenOffset]', sCode)                       # previous token
+    sCode = re.sub(r"\b(morph|analyse|tag|value)\(>(\d+)", 'g_\\1(g_token(lToken, nLastToken+\\2)', sCode)        # next token
+    sCode = re.sub(r"\b(morph|analyse|tag|value)\(<(\d+)", 'g_\\1(g_token(lToken, nTokenOffset+1-\\2)', sCode)    # previous token
     sCode = re.sub(r"\bspell *[(]", '_oSpellChecker.isValid(', sCode)
     sCode = re.sub(r"\bbefore\(\s*", 'look(sSentence[:lToken[1+nTokenOffset]["nStart"]], ', sCode)          # before(sCode)
     sCode = re.sub(r"\bafter\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                 # after(sCode)
     sCode = re.sub(r"\bbefore0\(\s*", 'look(sSentence0[:lToken[1+nTokenOffset]["nStart"]], ', sCode)        # before0(sCode)
     sCode = re.sub(r"\bafter0\(\s*", 'look(sSentence[lToken[nLastToken]["nEnd"]:], ', sCode)                # after0(sCode)
-    sCode = re.sub(r"analyseWord[(]", 'analyse(', sCode)
+    sCode = re.sub(r"\banalyseWord[(]", 'analyse(', sCode)
     sCode = re.sub(r"[\\](\d+)", 'lToken[nTokenOffset+\\1]["sValue"]', sCode)
     sCode = re.sub(r"[\\]-(\d+)", 'lToken[nLastToken-\\1+1]["sValue"]', sCode)
     sCode = re.sub(r">1", 'lToken[nLastToken+1]["sValue"]', sCode)
@@ -73,45 +75,44 @@ def prepareFunction (sCode):
     return sCode
 
 
-def genTokenLines (sTokenLine, dDef):
+def genTokenLines (sTokenLine, dDef, dDecl):
     "tokenize a string and return a list of lines of tokens"
-    lToken = sTokenLine.split()
     lTokenLines = []
-    for sToken in lToken:
+    for sTokBlock in sTokenLine.split():
         # replace merger characters by spaces
-        if "␣" in sToken:
-            sToken = sToken.replace("␣", " ")
+        if "␣" in sTokBlock:
+            sTokBlock = sTokBlock.replace("␣", " ")
         # optional token?
-        bNullPossible = sToken.startswith("?") and sToken.endswith("¿")
+        bNullPossible = sTokBlock.startswith("?") and sTokBlock.endswith("¿")
         if bNullPossible:
-            sToken = sToken[1:-1]
+            sTokBlock = sTokBlock[1:-1]
         # token with definition?
-        if sToken.startswith("({") and sToken.endswith("})") and sToken[1:-1] in dDef:
-            sToken = "(" + dDef[sToken[1:-1]] + ")"
-        elif sToken.startswith("{") and sToken.endswith("}") and sToken in dDef:
-            sToken = dDef[sToken]
-        if ( (sToken.startswith("[") and sToken.endswith("]")) or (sToken.startswith("([") and sToken.endswith("])")) ):
+        if sTokBlock.startswith("({") and sTokBlock.endswith("})") and sTokBlock[1:-1] in dDef:
+            sTokBlock = "(" + dDef[sTokBlock[1:-1]] + ")"
+        elif sTokBlock.startswith("{") and sTokBlock.endswith("}") and sTokBlock in dDef:
+            sTokBlock = dDef[sTokBlock]
+        if ( (sTokBlock.startswith("[") and sTokBlock.endswith("]")) or (sTokBlock.startswith("([") and sTokBlock.endswith("])")) ):
             # multiple token
-            bSelectedGroup = sToken.startswith("(") and sToken.endswith(")")
+            bSelectedGroup = sTokBlock.startswith("(") and sTokBlock.endswith(")")
             if bSelectedGroup:
-                sToken = sToken[1:-1]
-            lNewToken = sToken[1:-1].split("|")
+                sTokBlock = sTokBlock[1:-1]
+            lToken = createTokenList(sTokBlock, dDecl)
             if not lTokenLines:
-                lTokenLines = [ ["("+s+")"]  for s  in lNewToken ]  if bSelectedGroup  else [ [s]  for s  in lNewToken ]
+                lTokenLines = [ ["("+s+")"]  for s  in lToken ]  if bSelectedGroup  else [ [s]  for s  in lToken ]
                 if bNullPossible:
-                    lTokenLines.extend([ []  for i  in range(len(lNewToken)+1) ])
+                    lTokenLines.extend([ []  for i  in range(len(lToken)+1) ])
             else:
                 lNewTemp = []
                 if bNullPossible:
                     for aRule in lTokenLines:
-                        for sElem in lNewToken:
+                        for sElem in lToken:
                             aNewRule = list(aRule)
                             aNewRule.append(sElem)
                             lNewTemp.append(aNewRule)
                 else:
-                    sElem1 = lNewToken.pop(0)
+                    sElem1 = lToken.pop(0)
                     for aRule in lTokenLines:
-                        for sElem in lNewToken:
+                        for sElem in lToken:
                             aNewRule = list(aRule)
                             aNewRule.append("(" + sElem + ")"  if bSelectedGroup  else sElem)
                             lNewTemp.append(aNewRule)
@@ -120,54 +121,83 @@ def genTokenLines (sTokenLine, dDef):
         else:
             # simple token
             if not lTokenLines:
-                lTokenLines = [[sToken], []]  if bNullPossible  else [[sToken]]
+                lTokenLines = [[sTokBlock], []]  if bNullPossible  else [[sTokBlock]]
             else:
                 if bNullPossible:
                     lNewTemp = []
                     for aRule in lTokenLines:
                         lNew = list(aRule)
-                        lNew.append(sToken)
+                        lNew.append(sTokBlock)
                         lNewTemp.append(lNew)
                     lTokenLines.extend(lNewTemp)
                 else:
                     for aRule in lTokenLines:
-                        aRule.append(sToken)
+                        aRule.append(sTokBlock)
     for aRule in lTokenLines:
         yield aRule
 
 
-def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
+def createTokenList (sTokBlock, dDeclensions):
+    "return a list of tokens from a block of tokens"
+    lToken = []
+    for sToken in sTokBlock[1:-1].split("|"):
+        if "+" in sToken and not sToken.startswith("+"):
+            for sCode in dDeclensions:
+                if sToken.endswith(sCode):
+                    sToken = sToken[:-len(sCode)]
+                    lToken.append(sToken)
+                    for sSuffix in dDeclensions[sCode]:
+                        lToken.append(sToken+sSuffix)
+                    break
+        else:
+            lToken.append(sToken)
+    return lToken
+
+
+def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
     "generator: create rule as list"
     # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
-    for lToken in genTokenLines(sTokenLine, dDef):
-        # Calculate positions
-        dPos = {}   # key: iGroup, value: iToken
-        iGroup = 0
-        #if iLine == 15818: # debug
-        #    print(" ".join(lToken))
-        for i, sToken in enumerate(lToken):
-            if sToken.startswith("(") and sToken.endswith(")"):
-                lToken[i] = sToken[1:-1]
-                iGroup += 1
-                dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
+    if sTokenLine.startswith("!!") and sTokenLine.endswith("¡¡"):
+        # antipattern
+        sTokenLine = sTokenLine[2:-2].strip()
+        if sRuleName not in dANTIPATTERNS:
+            dANTIPATTERNS[sRuleName]= []
+        for lToken in genTokenLines(sTokenLine, dDef, dDecl):
+            dANTIPATTERNS[sRuleName].append(lToken)
+    else:
+        # pattern
+        for lToken in genTokenLines(sTokenLine, dDef, dDecl):
+            if sRuleName in dANTIPATTERNS and lToken in dANTIPATTERNS[sRuleName]:
+                # <lToken> matches an antipattern -> discard
+                continue
+            # Calculate positions
+            dPos = {}   # key: iGroup, value: iToken
+            iGroup = 0
+            #if iLine == 15818: # debug
+            #    print(" ".join(lToken))
+            for i, sToken in enumerate(lToken):
+                if sToken.startswith("(") and sToken.endswith(")"):
+                    lToken[i] = sToken[1:-1]
+                    iGroup += 1
+                    dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
-        # Parse actions
-        for iAction, sAction in enumerate(sActions.split(" <<- ")):
-            sAction = sAction.strip()
-            if sAction:
-                sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
-                aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
-                if aAction:
-                    sActionName = storeAction(sActionId, aAction)
-                    lResult = list(lToken)
-                    lResult.extend(["##"+str(iLine), sActionName])
-                    #if iLine == 13341:
-                    #    print("  ".join(lToken))
-                    #    print(sActionId, aAction)
-                    yield lResult
-                else:
-                    print(" # Error on action at line:", iLine)
-                    print(sTokenLine, "\n", sActions)
+            # Parse actions
+            for iAction, sAction in enumerate(sActions.split(" <<- ")):
+                sAction = sAction.strip()
+                if sAction:
+                    sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
+                    aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
+                    if aAction:
+                        sActionName = storeAction(sActionId, aAction)
+                        lResult = list(lToken)
+                        lResult.extend(["##"+str(iLine), sActionName])
+                        #if iLine == 13341:
+                        #    print("  ".join(lToken))
+                        #    print(sActionId, aAction)
+                        yield lResult
+                    else:
+                        print(" # Error on action at line:", iLine)
+                        print(sTokenLine, "\n", sActions)
 
 
 def changeReferenceToken (sText, dPos):
@@ -189,7 +219,7 @@ def checkTokenNumbers (sText, sActionId, nToken):
 
 def checkIfThereIsCode (sText, sActionId):
     "check if there is code in <sText> (debugging)"
-    if re.search("[.]\\w+[(]|sugg\\w+[(]|\\([0-9]|\\[[0-9]", sText):
+    if re.search(r"[.]\w+[(]|sugg\w+[(]|\(\\[0-9]|\[[0-9]", sText):
         print("# Warning at line " + sActionId + ":  This message looks like code. Line should probably begin with =")
         print(sText)
 
@@ -206,9 +236,9 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         nPriority = dOptPriority.get(sOption, 4)
 
     # valid action?
-    m = re.search(r"(?P<action>[-~=/!>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
+    m = re.search(r"(?P<action>[-=~/!>])(?P<start>-?\d+\.?|)(?P<end>:\.?-?\d+|)(?P<casing>:|)>>", sAction)
     if not m:
-        print(" # Error. No action found at: ", sActionId)
+        print("\n# Error. No action found at: ", sActionId)
         return None
 
     # Condition
@@ -234,7 +264,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         iEndAction = 0
     else:
         if cAction != "-" and (m.group("start").endswith(".") or m.group("end").startswith(":.")):
-            print(" # Error. Wrong selection on tokens.", sActionId)
+            print("\n# Error. Wrong selection on tokens.", sActionId)
             return None
         if m.group("start").endswith("."):
             cStartLimit = ">"
@@ -260,7 +290,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         if iMsg == -1:
             sMsg = "# Error. Error message not found."
             sURL = ""
-            print(sMsg + " Action id: " + sActionId)
+            print("\n" + sMsg + " Action id: " + sActionId)
         else:
             sMsg = sAction[iMsg+3:].strip()
             sAction = sAction[:iMsg].strip()
@@ -283,7 +313,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         return [sOption, sCondition, cAction, ""]
 
     if not sAction and cAction != "!":
-        print("# Error in action at line " + sActionId + ":  This action is empty.")
+        print("\n# Error in action at line <" + sActionId + ">:  This action is empty.")
 
     if sAction[0:1] != "=" and cAction != "=":
         checkIfThereIsCode(sAction, sActionId)
@@ -295,7 +325,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
         if not sMsg:
-            print("# Error in action at line " + sActionId + ":  The message is empty.")
+            print("\n# Error in action at line <" + sActionId + ">:  The message is empty.")
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, bCaseSensitivity, nPriority, sMsg, sURL]
     if cAction == "~":
         ## text processor
@@ -303,6 +333,13 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
             sAction = createFunction("tp", sAction, True)
         elif sAction.startswith('"') and sAction.endswith('"'):
             sAction = sAction[1:-1]
+        elif sAction not in "␣*_":
+            nToken = sAction.count("|") + 1
+            if iStartAction > 0 and iEndAction > 0:
+                if (iEndAction - iStartAction + 1) != nToken:
+                    print("\n# Error in action at line <" + sActionId + ">: numbers of modified tokens modified.")
+            elif iStartAction < 0 or iEndAction < 0 and iStartAction != iEndAction:
+                print("\n# Warning in action at line <" + sActionName + ">: rewriting with possible token position modified.")
         return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
     if cAction in "!/":
         ## tags
@@ -310,14 +347,14 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     if cAction == "=":
         ## disambiguator
         if "define(" in sAction and not re.search(r"define\(\\-?\d+ *, *\[.*\] *\)", sAction):
-            print("# Error in action at line " + sActionId + ": second argument for <define> must be a list of strings")
+            print("\n# Error in action at line <" + sActionId + ">: second argument for <define> must be a list of strings")
         sAction = createFunction("da", sAction)
         return [sOption, sCondition, cAction, sAction]
-    print(" # Unknown action.", sActionId)
+    print("\n# Unknown action.", sActionId)
     return None
 
 
-def make (lRule, dDef, sLang, dOptPriority):
+def make (lRule, sLang, dDef, dDecl, dOptPriority):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
 
@@ -355,15 +392,16 @@ def make (lRule, dDef, sLang, dOptPriority):
             if m:
                 sRuleName = m.group(1)
                 if sRuleName in aRuleName:
-                    print("Error at line " + i + ". Rule name <" + sRuleName + "> already exists.")
+                    print("Error at line " + str(i) + ". Rule name <" + sRuleName + "> already exists.")
                     exit()
+                aRuleName.add(sRuleName)
                 iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
                 print("Syntax error in rule group: ", sLine, " -- line:", i)
                 exit()
         elif re.search("^    +<<- ", sLine) or (sLine.startswith("        ") and not sLine.startswith("        ||")) \
-                or re.search("^    +#", sLine) or re.search(r"[-~=>/!](?:-?\d\.?(?::\.?-?\d+|)|)>> ", sLine) :
+                or re.search("^    +#", sLine) or re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|)>> ", sLine) :
             # actions
             sActions += " " + sLine.strip()
         elif re.match("[  ]*$", sLine):
@@ -399,7 +437,7 @@ def make (lRule, dDef, sLang, dOptPriority):
         print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
-            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef):
+            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
                 lPreparedRule.append(aRule)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)

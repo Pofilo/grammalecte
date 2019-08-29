@@ -29,7 +29,7 @@ except ImportError:
 __all__ = [ "lang", "locales", "pkg", "name", "version", "author", \
             "load", "parse", "getSpellChecker", \
             "setOption", "setOptions", "getOptions", "getDefaultOptions", "getOptionsLabels", "resetOptions", "displayOptions", \
-            "ignoreRule", "resetIgnoreRules", "reactivateRule", "listRules", "displayRules" ]
+            "ignoreRule", "resetIgnoreRules", "reactivateRule", "listRules", "displayRules", "setWriterUnderliningStyle" ]
 
 __version__ = "${version}"
 
@@ -53,6 +53,9 @@ _oSpellChecker = None
 _oTokenizer = None
 _aIgnoredRules = set()
 
+# Writer underlining style
+_bMulticolor = True
+_nUnderliningStyle = 0
 
 
 #### Initialization
@@ -135,18 +138,24 @@ def listRules (sFilter=None):
         except re.error:
             echo("# Error. List rules: wrong regex.")
             sFilter = None
+    # regex rules
     for sOption, lRuleGroup in chain(_getRules(True), _getRules(False)):
         if sOption != "@@@@":
             for _, _, sLineId, sRuleId, _, _ in lRuleGroup:
                 if not sFilter or zFilter.search(sRuleId):
-                    yield (sOption, sLineId, sRuleId)
+                    yield ("RegEx", sOption, sLineId, sRuleId)
+    # tokens rules
+    for sRuleName, lActions in _rules_graph.dRule.items():
+        sOption, _, cActionType, *_ = lActions
+        if cActionType == "-":
+            yield("Tokens", sOption, "", sRuleName)
 
 
 def displayRules (sFilter=None):
     "display the name of rules, with the filter <sFilter>"
     echo("List of rules. Filter: << " + str(sFilter) + " >>")
-    for sOption, sLineId, sRuleId in listRules(sFilter):
-        echo("{:<10} {:<10} {}".format(sOption, sLineId, sRuleId))
+    for sOption, sLineId, sRuleId, sType in listRules(sFilter):
+        echo("{:<8} {:<10} {:<10} {}".format(sOption, sLineId, sRuleId, sType))
 
 
 #### Options
@@ -179,9 +188,9 @@ def getOptionsLabels (sLang):
     return gc_options.getUI(sLang)
 
 
-def displayOptions (sLang):
+def displayOptions (sLang="${lang}"):
     "display the list of grammar checking options"
-    echo("List of options")
+    echo("Options:")
     echo("\n".join( [ k+":\t"+str(v)+"\t"+gc_options.getUI(sLang).get(k, ("?", ""))[0]  for k, v  in sorted(_dOptions.items()) ] ))
     echo("")
 
@@ -190,6 +199,25 @@ def resetOptions ():
     "set options to default values"
     global _dOptions
     _dOptions = getDefaultOptions()
+
+
+def setWriterUnderliningStyle (sStyle="BOLDWAVE", bMulticolor=True):
+    "set underlining style for Writer (WAVE, BOLDWAVE, BOLD)"
+    global _nUnderliningStyle
+    global _bMulticolor
+    # https://api.libreoffice.org/docs/idl/ref/FontUnderline_8idl.html
+    # WAVE: 10, BOLD: 12, BOLDWAVE: 18 DASH: 5
+    if sStyle == "WAVE":
+        _nUnderliningStyle = 0  # 0 for default Writer setting
+    elif sStyle == "BOLDWAVE":
+        _nUnderliningStyle = 18
+    elif sStyle == "BOLD":
+        _nUnderliningStyle = 12
+    elif sStyle == "DASH":
+        _nUnderliningStyle = 5
+    else:
+        _nUnderliningStyle = 0
+    _bMulticolor = bMulticolor
 
 
 #### Parsing
@@ -369,34 +397,34 @@ class TextParser:
 
     def _getNextPointers (self, dToken, dGraph, dPointer, bDebug=False):
         "generator: return nodes where <dToken> “values” match <dNode> arcs"
-        dNode = dPointer["dNode"]
-        iNode1 = dPointer["iNode1"]
+        dNode = dGraph[dPointer["iNode"]]
+        iToken1 = dPointer["iToken1"]
         bTokenFound = False
         # token value
         if dToken["sValue"] in dNode:
             if bDebug:
                 echo("  MATCH: " + dToken["sValue"])
-            yield { "iNode1": iNode1, "dNode": dGraph[dNode[dToken["sValue"]]] }
+            yield { "iToken1": iToken1, "iNode": dNode[dToken["sValue"]] }
             bTokenFound = True
         if dToken["sValue"][0:2].istitle(): # we test only 2 first chars, to make valid words such as "Laissez-les", "Passe-partout".
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
                     echo("  MATCH: " + sValue)
-                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                yield { "iToken1": iToken1, "iNode": dNode[sValue] }
                 bTokenFound = True
         elif dToken["sValue"].isupper():
             sValue = dToken["sValue"].lower()
             if sValue in dNode:
                 if bDebug:
                     echo("  MATCH: " + sValue)
-                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                yield { "iToken1": iToken1, "iNode": dNode[sValue] }
                 bTokenFound = True
             sValue = dToken["sValue"].capitalize()
             if sValue in dNode:
                 if bDebug:
                     echo("  MATCH: " + sValue)
-                yield { "iNode1": iNode1, "dNode": dGraph[dNode[sValue]] }
+                yield { "iToken1": iToken1, "iNode": dNode[sValue] }
                 bTokenFound = True
         # regex value arcs
         if dToken["sType"] not in frozenset(["INFO", "PUNC", "SIGN"]):
@@ -407,7 +435,7 @@ class TextParser:
                         if re.search(sRegex, dToken["sValue"]):
                             if bDebug:
                                 echo("  MATCH: ~" + sRegex)
-                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                            yield { "iToken1": iToken1, "iNode": dNode["<re_value>"][sRegex] }
                             bTokenFound = True
                     else:
                         # there is an anti-pattern
@@ -417,7 +445,7 @@ class TextParser:
                         if not sPattern or re.search(sPattern, dToken["sValue"]):
                             if bDebug:
                                 echo("  MATCH: ~" + sRegex)
-                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_value>"][sRegex]] }
+                            yield { "iToken1": iToken1, "iNode": dNode["<re_value>"][sRegex] }
                             bTokenFound = True
         # analysable tokens
         if dToken["sType"][0:4] == "WORD":
@@ -427,45 +455,77 @@ class TextParser:
                     if sLemma in dNode["<lemmas>"]:
                         if bDebug:
                             echo("  MATCH: >" + sLemma)
-                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<lemmas>"][sLemma]] }
+                        yield { "iToken1": iToken1, "iNode": dNode["<lemmas>"][sLemma] }
                         bTokenFound = True
+            # morph arcs
+            if "<morph>" in dNode:
+                lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
+                if lMorph:
+                    for sSearch in dNode["<morph>"]:
+                        if "¬" not in sSearch:
+                            # no anti-pattern
+                            if any(sSearch in sMorph  for sMorph in lMorph):
+                                if bDebug:
+                                    echo("  MATCH: $" + sSearch)
+                                yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                bTokenFound = True
+                        else:
+                            # there is an anti-pattern
+                            sPattern, sNegPattern = sSearch.split("¬", 1)
+                            if sNegPattern == "*":
+                                # all morphologies must match with <sPattern>
+                                if sPattern:
+                                    if all(sPattern in sMorph  for sMorph in lMorph):
+                                        if bDebug:
+                                            echo("  MATCH: $" + sSearch)
+                                        yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                        bTokenFound = True
+                            else:
+                                if sNegPattern and any(sNegPattern in sMorph  for sMorph in lMorph):
+                                    continue
+                                if not sPattern or any(sPattern in sMorph  for sMorph in lMorph):
+                                    if bDebug:
+                                        echo("  MATCH: $" + sSearch)
+                                    yield { "iToken1": iToken1, "iNode": dNode["<morph>"][sSearch] }
+                                    bTokenFound = True
             # regex morph arcs
             if "<re_morph>" in dNode:
                 lMorph = dToken.get("lMorph", _oSpellChecker.getMorph(dToken["sValue"]))
-                for sRegex in dNode["<re_morph>"]:
-                    if "¬" not in sRegex:
-                        # no anti-pattern
-                        if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
-                            if bDebug:
-                                echo("  MATCH: @" + sRegex)
-                            yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
-                            bTokenFound = True
-                    else:
-                        # there is an anti-pattern
-                        sPattern, sNegPattern = sRegex.split("¬", 1)
-                        if sNegPattern == "*":
-                            # all morphologies must match with <sPattern>
-                            if sPattern:
-                                if lMorph and all(re.search(sPattern, sMorph)  for sMorph in lMorph):
-                                    if bDebug:
-                                        echo("  MATCH: @" + sRegex)
-                                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
-                                    bTokenFound = True
-                        else:
-                            if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
-                                continue
-                            if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                if lMorph:
+                    for sRegex in dNode["<re_morph>"]:
+                        if "¬" not in sRegex:
+                            # no anti-pattern
+                            if any(re.search(sRegex, sMorph)  for sMorph in lMorph):
                                 if bDebug:
                                     echo("  MATCH: @" + sRegex)
-                                yield { "iNode1": iNode1, "dNode": dGraph[dNode["<re_morph>"][sRegex]] }
+                                yield { "iToken1": iToken1, "iNode": dNode["<re_morph>"][sRegex] }
                                 bTokenFound = True
+                        else:
+                            # there is an anti-pattern
+                            sPattern, sNegPattern = sRegex.split("¬", 1)
+                            if sNegPattern == "*":
+                                # all morphologies must match with <sPattern>
+                                if sPattern:
+                                    if all(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                        if bDebug:
+                                            echo("  MATCH: @" + sRegex)
+                                        yield { "iToken1": iToken1, "iNode": dNode["<re_morph>"][sRegex] }
+                                        bTokenFound = True
+                            else:
+                                if sNegPattern and any(re.search(sNegPattern, sMorph)  for sMorph in lMorph):
+                                    continue
+                                if not sPattern or any(re.search(sPattern, sMorph)  for sMorph in lMorph):
+                                    if bDebug:
+                                        echo("  MATCH: @" + sRegex)
+                                    yield { "iToken1": iToken1, "iNode": dNode["<re_morph>"][sRegex] }
+                                    bTokenFound = True
         # token tags
         if "aTags" in dToken and "<tags>" in dNode:
             for sTag in dToken["aTags"]:
                 if sTag in dNode["<tags>"]:
                     if bDebug:
                         echo("  MATCH: /" + sTag)
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<tags>"][sTag]] }
+                    yield { "iToken1": iToken1, "iNode": dNode["<tags>"][sTag] }
                     bTokenFound = True
         # meta arc (for token type)
         if "<meta>" in dNode:
@@ -474,20 +534,20 @@ class TextParser:
                 if sMeta == "*" or dToken["sType"] == sMeta:
                     if bDebug:
                         echo("  MATCH: *" + sMeta)
-                    yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
+                    yield { "iToken1": iToken1, "iNode": dNode["<meta>"][sMeta] }
                     bTokenFound = True
                 elif "¬" in sMeta:
                     if dToken["sType"] not in sMeta:
                         if bDebug:
                             echo("  MATCH: *" + sMeta)
-                        yield { "iNode1": iNode1, "dNode": dGraph[dNode["<meta>"][sMeta]] }
+                        yield { "iToken1": iToken1, "iNode": dNode["<meta>"][sMeta] }
                         bTokenFound = True
         if not bTokenFound and "bKeep" in dPointer:
             yield dPointer
         # JUMP
         # Warning! Recurssion!
         if "<>" in dNode:
-            dPointer2 = { "iNode1": iNode1, "dNode": dGraph[dNode["<>"]], "bKeep": True }
+            dPointer2 = { "iToken1": iToken1, "iNode": dNode["<>"], "bKeep": True }
             yield from self._getNextPointers(dToken, dGraph, dPointer2, bDebug)
 
     def parseGraph (self, dGraph, sCountry="${country_default}", dOptions=None, bShowRuleId=False, bDebug=False, bContext=False):
@@ -503,13 +563,13 @@ class TextParser:
                 lNextPointer.extend(self._getNextPointers(dToken, dGraph, dPointer, bDebug))
             lPointer = lNextPointer
             # check arcs of first nodes
-            lPointer.extend(self._getNextPointers(dToken, dGraph, { "iNode1": iToken, "dNode": dGraph[0] }, bDebug))
+            lPointer.extend(self._getNextPointers(dToken, dGraph, { "iToken1": iToken, "iNode": 0 }, bDebug))
             # check if there is rules to check for each pointer
             for dPointer in lPointer:
                 #if bDebug:
                 #    echo("+", dPointer)
-                if "<rules>" in dPointer["dNode"]:
-                    bChange = self._executeActions(dGraph, dPointer["dNode"]["<rules>"], dPointer["iNode1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext)
+                if "<rules>" in dGraph[dPointer["iNode"]]:
+                    bChange = self._executeActions(dGraph, dGraph[dPointer["iNode"]]["<rules>"], dPointer["iToken1"]-1, iToken, dOptions, sCountry, bShowRuleId, bDebug, bContext)
                     if bChange:
                         bTagAndRewrite = True
         if bTagAndRewrite:
@@ -587,7 +647,7 @@ class TextParser:
                             elif cActionType == "!":
                                 # immunity
                                 if bDebug:
-                                    echo("    IMMUNITY: " + _rules_graph.dRule[sRuleId])
+                                    echo("    IMMUNITY: " + sLineId + " / " + sRuleId)
                                 nTokenStart = nTokenOffset + eAct[0]  if eAct[0] > 0  else nLastToken + eAct[0]
                                 nTokenEnd = nTokenOffset + eAct[1]  if eAct[1] > 0  else nLastToken + eAct[1]
                                 if nTokenEnd - nTokenStart == 0:
@@ -662,13 +722,15 @@ class TextParser:
         xErr.aShortComment = sMessage   # sMessage.split("|")[0]     # in context menu
         xErr.aFullComment = sMessage    # sMessage.split("|")[-1]    # in dialog
         xErr.aSuggestions = tuple(lSugg)
-        #xPropertyLineType = PropertyValue(Name="LineType", Value=5) # DASH or WAVE
-        xPropertyLineColor = PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023))
+        # Properties
+        lProperties = []
+        if _nUnderliningStyle:
+            lProperties.append(PropertyValue(Name="LineType", Value=_nUnderliningStyle))
+        if _bMulticolor:
+            lProperties.append(PropertyValue(Name="LineColor", Value=_dOptionsColors.get(sOption, 33023)))
         if sURL:
-            xPropertyURL = PropertyValue(Name="FullCommentURL", Value=sURL)
-            xErr.aProperties = (xPropertyURL, xPropertyLineColor)
-        else:
-            xErr.aProperties = (xPropertyLineColor,)
+            lProperties.append(PropertyValue(Name="FullCommentURL", Value=sURL))
+        xErr.aProperties = lProperties
         return xErr
 
     def _createErrorAsDict (self, nStart, nEnd, sLineId, sRuleId, sOption, sMessage, lSugg, sURL, bContext):
@@ -750,7 +812,8 @@ class TextParser:
                 # several tokens
                 lTokenValue = sWhat.split("|")
                 if len(lTokenValue) != (nTokenRewriteEnd - nTokenRewriteStart + 1):
-                    echo("Error. Text processor: number of replacements != number of tokens.")
+                    if (bDebug):
+                        echo("Error. Text processor: number of replacements != number of tokens.")
                     return
                 for i, sValue in zip(range(nTokenRewriteStart, nTokenRewriteEnd+1), lTokenValue):
                     if not sValue or sValue == "*":
@@ -1059,6 +1122,11 @@ def g_tag (dToken, sTag):
     return "aTags" in dToken and sTag in dToken["aTags"]
 
 
+def g_meta (dToken, sType):
+    "returns True if <sType> is equal to the token type"
+    return dToken["sType"] == sType
+
+
 def g_space_between_tokens (dToken1, dToken2, nMin, nMax=None):
     "checks if spaces between tokens is >= <nMin> and <= <nMax>"
     nSpace = dToken2["nStart"] - dToken1["nEnd"]
@@ -1131,7 +1199,7 @@ def define (dTokenPos, nPos, lMorph):
 #### Disambiguation for graph rules
 
 def g_select (dToken, sPattern, lDefault=None):
-    "select morphologies for <dToken> according to <sPattern>, always return True"
+    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
         if lDefault:
@@ -1149,7 +1217,7 @@ def g_select (dToken, sPattern, lDefault=None):
 
 
 def g_exclude (dToken, sPattern, lDefault=None):
-    "select morphologies for <dToken> according to <sPattern>, always return True"
+    "Disambiguation: select morphologies for <dToken> according to <sPattern>, always return True"
     lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
     if not lMorph or len(lMorph) == 1:
         if lDefault:
@@ -1166,19 +1234,33 @@ def g_exclude (dToken, sPattern, lDefault=None):
     return True
 
 
+def g_add_morph (dToken, lNewMorph):
+    "Disambiguation: add a morphology to a token"
+    lMorph = dToken["lMorph"]  if "lMorph" in dToken  else _oSpellChecker.getMorph(dToken["sValue"])
+    lMorph.extend(lNewMorph)
+    dToken["lMorph"] = lMorph
+    return True
+
+
 def g_define (dToken, lMorph):
-    "set morphologies of <dToken>, always return True"
+    "Disambiguation: set morphologies of <dToken>, always return True"
     dToken["lMorph"] = lMorph
     #echo("DA:", dToken["sValue"], lMorph)
     return True
 
 
 def g_define_from (dToken, nLeft=None, nRight=None):
-    "set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
+    "Disambiguation: set morphologies of <dToken> with slicing its value with <nLeft> and <nRight>"
     if nLeft is not None:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"][slice(nLeft, nRight)])
     else:
         dToken["lMorph"] = _oSpellChecker.getMorph(dToken["sValue"])
+    return True
+
+
+def g_change_meta (dToken, sType):
+    "Disambiguation: change type of token"
+    dToken["sType"] = sType
     return True
 
 

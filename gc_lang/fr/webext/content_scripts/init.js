@@ -61,6 +61,8 @@ const oGrammalecte = {
 
     oOptions: null,
 
+    bAutoRefresh: true,
+
     listenRightClick: function () {
         // Node where a right click is done
         // Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
@@ -283,6 +285,24 @@ const oGrammalecte = {
 };
 
 
+function autoRefreshOption (oSavedOptions=null) {
+    // auto recallable function
+    if (oSavedOptions === null) {
+        if (bChrome) {
+            browser.storage.local.get("autorefresh_option", autoRefreshOption);
+            return;
+        }
+        browser.storage.local.get("autorefresh_option").then(autoRefreshOption, showError);
+    }
+    else if (oSavedOptions.hasOwnProperty("autorefresh_option")) {
+        console.log("autorefresh_option", oSavedOptions["autorefresh_option"]);
+        oGrammalecte.bAutoRefresh = oSavedOptions["autorefresh_option"];
+    }
+}
+
+autoRefreshOption();
+
+
 /*
     Connexion to the background
 */
@@ -293,7 +313,6 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
     switch (sActionDone) {
         case "init":
             oGrammalecte.sExtensionUrl = oMessage.sUrl;
-            // Start
             oGrammalecte.listenRightClick();
             oGrammalecte.createButtons();
             oGrammalecte.observePage();
@@ -303,6 +322,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 oGrammalecte.oGCPanel.addParagraphResult(result);
             } else {
                 oGrammalecte.oGCPanel.stopWaitIcon();
+                oGrammalecte.oGCPanel.endTimer();
             }
             break;
         case "parseAndSpellcheck1":
@@ -316,6 +336,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
                 oGrammalecte.oGCPanel.addListOfTokens(result);
             } else {
                 oGrammalecte.oGCPanel.stopWaitIcon();
+                oGrammalecte.oGCPanel.endTimer();
             }
             break;
         case "getSpellSuggestions":
@@ -327,6 +348,11 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             } else {
                 oGrammalecte.oGCPanel.displayConj(result.oConjTable);
             }
+            break;
+        case "workerRestarted":
+            oGrammalecte.oGCPanel.stopWaitIcon();
+            oGrammalecte.oGCPanel.showMessage("Le serveur grammatical a été arrêté et relancé.");
+            oGrammalecte.oGCPanel.endTimer();
             break;
         /*
             Commands received from the context menu

@@ -2,7 +2,7 @@
 = GRAMMALECTE =
 
 French grammar checker
-By Olivier R. (olivier /at/ grammalecte /dot/ net)
+By Olivier R.
 
 Website: https://grammalecte.net/
 

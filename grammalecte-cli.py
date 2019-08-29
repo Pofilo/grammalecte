@@ -138,6 +138,7 @@ def main ():
             oSpellChecker.setPersonalDictionary(oJSON)
 
     if not xArgs.json:
+        echo("Python v" + sys.version)
         echo("Grammalecte v{}".format(oGrammarChecker.gce.version))
 
     # list options or rules

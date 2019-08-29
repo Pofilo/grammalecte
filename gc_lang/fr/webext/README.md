@@ -1,6 +1,6 @@
 # Grammalecte
 
-**French Grammar Checker**
+**Correcteur grammatical pour le français**
 
 écrit en JavaScript ES6/ES7
 par Olivier R.

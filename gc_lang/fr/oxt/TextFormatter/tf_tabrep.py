@@ -121,10 +121,10 @@ dTableRepl = {
                     ("(?<=[0-9⁰¹²³⁴⁵⁶⁷⁸⁹]) ?([kcmµnd]?(?:[slgJKΩΩℓ]|m[²³]?|Wh?|Hz|dB)|[%‰]|°C)\\b", " $1", True, True)
     ],
     "nbsp6": [
-                    ("\\bM(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M\\.) ", "M$1 ",     True,   True),
-                    ("\\bD(re?s?|ʳᵉ?ˢ?) ",                                  "D$1 ",     True,   True),
-                    ("\\bP(re?s?|ʳᵉ?ˢ?) ",                                  "P$1 ",     True,   True),
-                    ("\\bV(ves?|ᵛᵉˢ?) ",                                    "V$1 ",     True,   True),
+                    ("M(mes?|ᵐᵉˢ?|grs?|ᵍʳˢ?|lles?|ˡˡᵉˢ?|rs?|ʳˢ?|M\\.) ", "M$1 ",     True,   True),
+                    ("D(re?s?|ʳᵉ?ˢ?) ",                                  "D$1 ",     True,   True),
+                    ("P(re?s?|ʳᵉ?ˢ?) ",                                  "P$1 ",     True,   True),
+                    ("V(ves?|ᵛᵉˢ?) ",                                    "V$1 ",     True,   True),
     ],
 
     # espaces manquants
@@ -255,7 +255,7 @@ dTableRepl = {
                     #("\\bJ.kg-1.K-1\\b",                   "J·kg-1·K-1",   True,   True),
                     #("\\bW.m-1.K-1\\b",                    "W·m-1·K-1",    True,   True),
                     #("\\bW.m-2.K-1\\b",                    "W·m-2·K-1",    True,   True),
-                    ("\\b(Y|Z|E|P|T|G|M|k|h|da|d|c|m|µ|n|p|f|a|z|y)Ω\\b", "$1Ω", True, True)
+                    ("(Y|Z|E|P|T|G|M|k|h|da|d|c|m|µ|n|p|f|a|z|y)Ω", "$1Ω", True, True)
     ],
     "typo7": [
                     # ligatures: pas de majuscules
@@ -297,7 +297,8 @@ dTableRepl = {
                     ("\\bDej[aà]\\b",                       "Déjà",         True,   True),
                     ("\\bplutot\\b",                        "plutôt",       True,   True),
                     ("\\bPlutot\\b",                        "Plutôt",       True,   True),
-                    ("\\b([cC]e(?:ux|lles?|lui))-la\\b",    "$1-là",        True,   True),
+                    ("\\b(ce(?:ux|lles?|lui))-la\\b",       "$1-là",        True,   True),
+                    ("\\b(Ce(?:ux|lles?|lui))-la\\b",       "$1-là",        True,   True),
                     ("\\bmalgre\\b",                        "malgré",       True,   True),
                     ("\\bMalgre\\b",                        "Malgré",       True,   True),
                     ("\\betre\\b",                          "être",         True,   True),
@@ -388,17 +389,21 @@ dTableRepl = {
                     (" t-(?=il|elle|on)",                       "-t-",          True,   True),
                     ("[ -]t[’'-](?=ils|elles)",                 "-",            True,   True),
                     ("(?<=[td])-t-(?=il|elle|on)",              "-",            True,   True),
-                    ("(celles?|celui|ceux) (ci|là)\\b",         "$1-$2",        True,   False),
-                    ("\\bdix (sept|huit|neuf)",                 "dix-$1",       True,   False),
+                    (" ce(lles?|lui|ux) (ci|là)\\b",            " ce$1-$2",     True,   True),
+                    ("Ce(lles?|lui|ux) (ci|là)\\b",             "Ce$1-$2",      True,   True),
+                    (" dix (sept|huit|neuf)",                   " dix-$1",      True,   True),
+                    ("Dix (sept|huit|neuf)",                    "Dix-$1",       True,   True),
                     ("quatre vingt",                            "quatre-vingt", False,  True),
-                    ("(soixante|quatre-vingt) dix",             "$1-dix",       True,   False),
-                    ("(vingt|trente|quarante|cinquante|soixante(?:-dix|)|quatre-vingt(?:-dix|)) (deux|trois|quatre|cinq|six|sept|huit|neuf)", "$1-$2", True, False),
-                    ("(?<!-)\\b(ci) (joint|desso?us|contre|devant|avant|après|incluse|g[îi]t|gisent)", "$1-$2", True, False),
-                    ("\\bvis à vis",                            "vis-à-vis",    False,  True),
-                    ("\\bVis à vis",                            "Vis-à-vis",    False,  True),
+                    ("Quatre vingt",                            "Quatre-vingt", False,  True),
+                    ("(soixante|quatre-vingt) (deux|trois|quatre|cinq|six|sept|huit|neuf|dix|onze|douze|treize|quatorze|quinze|seize|dix-sept|dix-huit|dix-neuf)", "$1-$2", True, False),
+                    ("(vingt|trente|quarante|cinquante) (deux|trois|quatre|cinq|six|sept|huit|neuf)", "$1-$2", True, False),
+                    (" ci (joint|desso?us|contre|devant|avant|après|incluse|g[îi]t|gisent)", " ci-$1", True, True),
+                    ("Ci (joint|desso?us|contre|devant|avant|après|incluse|g[îi]t|gisent)", "Ci-$1", True, True),
+                    (" vis à vis\\b",                           "vis-à-vis",    False,  True),
+                    ("Vis à vis\\b",                            "Vis-à-vis",    False,  True),
                     ("week end",                                "week-end",     False,  True),
                     ("Week end",                                "Week-end",     False,  True),
-                    ("(plus|moins) value",                      "$1-value",     True,   False)
+                    ("(plus|moins) value",                      "$1-value",     True,   False),
     ],
     "misc5a": [
                     ("(qu|lorsqu|puisqu|quoiqu|presqu|jusqu|aujourd|entr|quelqu) ", "$1’", True, True),

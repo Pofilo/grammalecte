@@ -16,6 +16,9 @@ from graphspell.str_transform import defineSuffixCode
 import graphspell.tokenizer as tkz
 
 
+oDict = None
+
+
 class cd:
     """Context manager for changing the current working directory"""
     def __init__ (self, newPath):
@@ -42,6 +45,15 @@ def readFile (spf):
         raise OSError("# Error. File not found or not loadable: " + spf)
 
 
+def loadDictionary ():
+    global oDict
+    if not oDict:
+        try:
+            oDict = ibdawg.IBDAWG("fr-allvars.bdic")
+        except:
+            traceback.print_exc()
+
+
 def makeDictionaries (sp, sVersion):
     with cd(sp+"/dictionnaire"):
         os.system("genfrdic.py -s -gl -v "+sVersion)
@@ -51,17 +63,23 @@ def makeConj (sp, bJS=False):
     print("> Conjugaisons ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
     dVerb = {}
-    lVtyp = []; dVtyp = {}; nVtyp = 0
+    lVinfo = []; dVinfo = {}; nVinfo = 0
     lTags = []; dTags = {}; nTags = 0
+    dVerbNames = {}
 
-    dPatternList = { ":PQ": [], ":Ip": [], ":Iq": [], ":Is": [], ":If": [], ":K": [], ":Sp": [], ":Sq": [], ":E": [] }
-    dTrad = {   "infi": ":Y", "ppre": ":PQ", "ppas": ":PQ",
-                "ipre": ":Ip", "iimp": ":Iq", "ipsi": ":Is", "ifut": ":If",
-                "spre": ":Sp", "simp": ":Sq",
-                "cond": ":K", "impe": ":E",
-                "1sg": ":1s", "2sg": ":2s", "3sg": ":3s", "1pl": ":1p", "2pl": ":2p", "3pl": ":3p", "1isg": ":1ś",
-                "mas sg": ":Q1", "mas pl": ":Q2", "mas inv": ":Q1", "fem sg": ":Q3", "fem pl": ":Q4", "epi inv": ":Q1"
-            }
+    dPatternList = {
+        ":PQ": [], ":Ip": [], ":Iq": [], ":Is": [], ":If": [], ":K": [], ":Sp": [], ":Sq": [], ":E": []
+    }
+    dTrad = {
+        "infi": ":Y", "ppre": ":PQ", "ppas": ":PQ",
+        "ipre": ":Ip", "iimp": ":Iq", "ipsi": ":Is", "ifut": ":If",
+        "spre": ":Sp", "simp": ":Sq",
+        "cond": ":K", "impe": ":E",
+        "1sg": ":1s", "2sg": ":2s", "3sg": ":3s", "1pl": ":1p", "2pl": ":2p", "3pl": ":3p", "1isg": ":1ś",
+        "mas sg": ":Q1", "mas pl": ":Q2", "mas inv": ":Q1", "fem sg": ":Q3", "fem pl": ":Q4", "epi inv": ":Q1"
+    }
+
+    loadDictionary()
 
     # read lexicon
     nStop = 0
@@ -69,21 +87,26 @@ def makeConj (sp, bJS=False):
         nTab = sLine.count("\t")
         if nTab == 1:
             # new entry
-            sLemma, sVtyp = sLine.split("\t")
+            sLemma, sVinfo = sLine.split("\t")
             dConj = {   ":PQ": { ":P": "", ":Q1": "", ":Q2": "", ":Q3": "", ":Q4": ""},
                         ":Ip": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
                         ":Iq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
                         ":Is": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
                         ":If": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
-                        ":K": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
+                        ":K":  { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "" },
                         ":Sp": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
                         ":Sq": { ":1s": "", ":2s": "", ":3s": "", ":1p": "", ":2p": "", ":3p": "", ":1ś": "" },
-                        ":E": { ":2s": "", ":1p": "", ":2p": "" }
+                        ":E":  { ":2s": "", ":1p": "", ":2p": "" }
                     }
-            if sVtyp not in lVtyp:
-                dVtyp[sVtyp] = nVtyp
-                lVtyp.append(sVtyp)
-                nVtyp += 1
+            if sVinfo not in lVinfo:
+                dVinfo[sVinfo] = nVinfo
+                lVinfo.append(sVinfo)
+                nVinfo += 1
+            # looking for names derivating from verb
+            for sMorph in oDict.getMorph(sLemma):
+                if ":N" in sMorph:
+                    dVerbNames[sLemma] = { sLemma }
+                    break
         elif nTab == 2:
             # flexion
             _, sTag, sFlex = sLine.split("\t")
@@ -101,7 +124,15 @@ def makeConj (sp, bJS=False):
                         # comment gérer les autres graphies ?
                         pass
                 except:
-                    print(sLemma.encode("utf-8").decode("ascii"), " - ", sTag, " - non géré: ", mode, " / ", g)
+                    echo(sLemma, " - ", sTag, " - non géré: ", mode, " / ", g)
+            # looking for names derivating from verb
+            for sMorph in oDict.getMorph(sFlex):
+                if ":N" in sMorph:
+                    if sLemma not in dVerbNames:
+                        dVerbNames[sLemma] = { sFlex }
+                    else:
+                        dVerbNames[sLemma].add(sFlex)
+                    break
         elif sLine == "$":
             # we store the dictionary of rules for this lemma
             if dConj[":Ip"][":1ś"] == "2è":
@@ -109,69 +140,51 @@ def makeConj (sp, bJS=False):
             elif sLemma == "pouvoir":
                 dConj[":Ip"][":1ś"] = "6uis"
             lConjTags = []
-            for key in [":PQ", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
+            for sTense in [":PQ", ":Ip", ":Iq", ":Is", ":If", ":K", ":Sp", ":Sq", ":E"]:
                 bFound = False
-                for i, d in enumerate(dPatternList[key]):
-                    if dConj[key] == d:
+                for i, d in enumerate(dPatternList[sTense]):
+                    if dConj[sTense] == d:
                         bFound = True
                         lConjTags.append(i)
                         break
                 if not bFound:
-                    lConjTags.append(len(dPatternList[key]))
-                    dPatternList[key].append(dConj[key])
+                    lConjTags.append(len(dPatternList[sTense]))
+                    dPatternList[sTense].append(dConj[sTense])
             tConjTags = tuple(lConjTags)
             if tConjTags not in lTags:
                 dTags[tConjTags] = nTags
                 lTags.append(tConjTags)
                 nTags += 1
-            dVerb[sLemma] = (dVtyp[sVtyp], dTags[tConjTags])
+            dVerb[sLemma] = (dVinfo[sVinfo], dTags[tConjTags])
         else:
-            print("# Error - unknown line #", n)
+            print("# Error - unknown line", n)
 
-    # convert tuples to bytes string
-    # si ça merde, toute la partie conversion peut être supprimée
-    # lBytesTags = []
-    # for t in lTags:
-    #     b = b""
-    #     for n in t:
-    #         if n > 255:
-    #             print("Erreur : l'indice ne peut être supérieur à 256 pour utiliser des chaînes d'octets (bytes strings)")
-    #             exit()
-    #         b += n.to_bytes(1, byteorder="big")
-    #     lBytesTags.append(b)
-    # lTags = lBytesTags
-
-    # for key in dVerb.keys():
-    #     b = b""
-    #     for n in dVerb[key]:
-    #         if n > 255:
-    #             print("Erreur : l'indice ne peut être supérieur à 256 pour utiliser des chaînes d'octets (bytes strings)")
-    #             exit()
-    #         b += n.to_bytes(1, byteorder="big")
-    #     dVerb[key] = b
-    # end conversion
-
+    for sLemma, aNames in dVerbNames.items():
+        dVerbNames[sLemma] = tuple(aNames)  # convert set to tuple
 
     ## write file for Python
     sCode = "## generated data (do not edit)\n\n" + \
             "# Informations about verbs\n" + \
-            "lVtyp = " + str(lVtyp) + "\n\n" + \
+            "lVtyp = " + str(lVinfo) + "\n\n" + \
             "# indexes of tenses in _dPatternConj\n" + \
             "lTags = " + str(lTags) + "\n\n" + \
             "# lists of affix codes to generate inflected forms\n" + \
             "dPatternConj = " + str(dPatternList) + "\n\n" + \
             "# dictionary of verbs : (index of Vtyp, index of Tags)\n" + \
-            "dVerb = " + str(dVerb) + "\n"
+            "dVerb = " + str(dVerb) + "\n\n" + \
+            "# names as derivatives from verbs\n" + \
+            "dVerbNames = " + str(dVerbNames) + "\n"
     open(sp+"/modules/conj_data.py", "w", encoding="utf-8", newline="\n").write(sCode)
 
     if bJS:
         ## write file for JavaScript
         with open(sp+"/modules-js/conj_data.json", "w", encoding="utf-8", newline="\n") as hDst:
             hDst.write("{\n")
-            hDst.write('    "lVtyp": ' + json.dumps(lVtyp, ensure_ascii=False) + ",\n")
+            hDst.write('    "lVtyp": ' + json.dumps(lVinfo, ensure_ascii=False) + ",\n")
             hDst.write('    "lTags": ' + json.dumps(lTags, ensure_ascii=False) + ",\n")
             hDst.write('    "dPatternConj": ' + json.dumps(dPatternList, ensure_ascii=False) + ",\n")
-            hDst.write('    "dVerb": ' + json.dumps(dVerb, ensure_ascii=False) + "\n")
+            hDst.write('    "dVerb": ' + json.dumps(dVerb, ensure_ascii=False) + ",\n")
+            hDst.write('    "dVerbNames": ' + json.dumps(dVerbNames, ensure_ascii=False) + "\n")
             hDst.write("}\n")
 
 
@@ -268,14 +281,10 @@ def makeMfsp (sp, bJS=False):
 def makePhonetTable (sp, bJS=False):
     print("> Correspondances phonétiques ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
-    
+
     import gc_lang.fr.modules.conj as conj
 
-    try:
-        oDict = ibdawg.IBDAWG("fr-allvars.bdic")
-    except:
-        traceback.print_exc()
-        return
+    loadDictionary()
 
     # set of homophonic words
     lSet = []

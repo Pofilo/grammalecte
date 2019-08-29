@@ -6,8 +6,11 @@ from . import cregex as cr
 def g_morphVC (dToken, sPattern, sNegPattern=""):
     "lance la fonction g_morph() sur la première partie d’un verbe composé (ex: vient-il)"
     nEnd = dToken["sValue"].rfind("-")
-    if "-t-" in dToken["sValue"]:
-        nEnd = nEnd - 2
+    if dToken["sValue"].count("-") > 1:
+        if "-t-" in dToken["sValue"]:
+            nEnd = nEnd - 2
+        elif re.search("-l(?:es?|a)-(?:[mt]oi|nous|leur)$|(?:[nv]ous|lui|leur)-en$", dToken["sValue"]):
+            nEnd = dToken["sValue"][0:nEnd].rfind("-")
     return g_morph(dToken, sPattern, sNegPattern, 0, nEnd, False)
 
 

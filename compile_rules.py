@@ -13,7 +13,8 @@ import compile_rules_js_convert as jsconv
 import compile_rules_graph as crg
 
 
-dDEF = {}
+dDEFINITIONS = {}
+dDECLENSIONS = {}
 lFUNCTIONS = []
 
 aRULESET = set()     # set of rule-ids to check if there is several rules with the same id
@@ -201,7 +202,7 @@ def createRule (s, nIdLine, sLang, bParagraph, dOptPriority):
         sRegex = sRegex[1:-1]
 
     ## definitions
-    for sDef, sRepl in dDEF.items():
+    for sDef, sRepl in dDEFINITIONS.items():
         sRegex = sRegex.replace(sDef, sRepl)
 
     ## count number of groups (must be done before modifying the regex)
@@ -507,9 +508,17 @@ def make (spLang, sLang, bUseCache=False):
             # definition
             m = re.match("DEF: +([a-zA-Z_][a-zA-Z_0-9]*) +(.+)$", sLine.strip())
             if m:
-                dDEF["{"+m.group(1)+"}"] = m.group(2)
+                dDEFINITIONS["{"+m.group(1)+"}"] = m.group(2)
             else:
                 print("Error in definition: ", end="")
+                print(sLine.strip())
+        elif sLine.startswith("DECL:"):
+            # declensions
+            m = re.match(r"DECL: +(\+\w+) (.+)$", sLine.strip())
+            if m:
+                dDECLENSIONS[m.group(1)] = m.group(2).strip().split()
+            else:
+                print("Error in declension list: ", end="")
                 print(sLine.strip())
         elif sLine.startswith("TEST:"):
             # test
@@ -536,10 +545,11 @@ def make (spLang, sLang, bUseCache=False):
             if m:
                 printBookmark(0, "GRAPH: " + m.group(1), i)
                 lRuleLine.append([i, "@@@@"+m.group(1)])
+                lGraphRule.append([i, sLine])
                 bGraph = True
-            lGraphRule.append([i, sLine])
-            bGraph = True
-        elif sLine.startswith("@@@@END_GRAPH"):
+            else:
+                print("Graph error at line", i)
+        elif sLine.startswith(("@@@@END_GRAPH", "@@@@ENDGRAPH")):
             #lGraphRule.append([i, sLine])
             printBookmark(0, "ENDGRAPH", i)
             bGraph = False
@@ -633,7 +643,7 @@ def make (spLang, sLang, bUseCache=False):
     dVars.update(dOptions)
 
     # compile graph rules
-    dVars2 = crg.make(lGraphRule, dDEF, sLang, dOptPriority)
+    dVars2 = crg.make(lGraphRule, sLang, dDEFINITIONS, dDECLENSIONS, dOptPriority)
     dVars.update(dVars2)
 
     with open("_build/data_cache.json", "w", encoding="utf-8") as hDst:

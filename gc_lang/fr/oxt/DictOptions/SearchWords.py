@@ -24,7 +24,7 @@ from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX # MESSAGEBOX, INFO
 def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
     xParentWin = xDocument.CurrentController.Frame.ContainerWindow
     ctx = uno.getComponentContext()
-    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx) 
+    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
     xMsgBox = xToolkit.createMessageBox(xParentWin, nBoxType, nBoxButtons, sTitle, sMsg)
     return xMsgBox.execute()
 
@@ -115,7 +115,7 @@ class SearchWords (unohelper.Base, XActionListener):
         xFDTitle.Height = 9
         xFDTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDTitle.Name = "Verdana"
-        
+
         xFDSubTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDSubTitle.Height = 8
         xFDSubTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
@@ -186,7 +186,7 @@ class SearchWords (unohelper.Base, XActionListener):
 
     def initSpellChecker (self):
         if not self.oSpellChecker:
-            self.oSpellChecker = sc.SpellChecker("fr", "fr-allvars.bdic", "", "", self.oPersonalDicJSON)
+            self.oSpellChecker = sc.SpellChecker("fr", "fr-allvars.bdic", "", self.oPersonalDicJSON)
 
     @_waitPointer
     def searchSimilar (self):
