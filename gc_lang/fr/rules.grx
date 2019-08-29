@@ -5877,7 +5877,7 @@ TEST: ce n’était que de la {{bouillit}}                         ->> bouillie
 TEST: de {{la}} venaient tous nos problèmes                     ->> là
 
 
-    d’  [un|une]  @:V.*:[123][sp]¬:[GNA]
+    d’  [un|une]  @:[123][sp]¬:[GNA]
         <<- /conf/ not \3.istitle() and not value(<1, "|plus|moins|")
         -3>> =suggSimil(\3, ":[NA]", True)                                                          # Incohérence avec “\1\2” : “\3” est une forme verbale conjuguée.
 
@@ -5887,7 +5887,7 @@ TEST: Plus d’une sont parties aussi vite qu’elles étaient venues
 
 
 __conf_dès_vconj__
-    dès  ?[le|la|l’|les]¿  @:V.*:[123][sp]¬:[GNA]
+    dès  ?[le|la|l’|les]¿  @:[123][sp]¬:[GNA]
         <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA]", True)                           # Incohérence avec “\1” : “\-1” est une forme verbale conjuguée.
 
 TEST: dès le {{commencent}}, j’ai vu le problème.
@@ -5895,10 +5895,10 @@ TEST: dès le {{commencent}}, j’ai vu le problème.
 
 
 __conf_par_vconj__
-    par  ?[le|la|l’|les]¿  @:V.*:[123][sp]¬:[GNA]
+    par  ?[le|la|l’|les]¿  @:[123][sp]¬:[GNA]
         <<- /conf/ not \-1.istitle() --1>> =suggSimil(\-1, ":[NA]", True)                           # Incohérence avec “\1” : “\-1” est une forme verbale conjuguée.
 
-    par  [un|une]  @:V.*:[123][sp]¬:[GNA]
+    par  [un|une]  @:[123][sp]¬:[GNA]
         <<- /conf/ not \3.istitle() and not value(<1, "|plus|moins|un|une|")
         -3>> =suggSimil(\3, ":[NA]", True)                                                          # Incohérence avec “\1\2” : “\3” est une forme verbale conjuguée.
 
@@ -5909,15 +5909,16 @@ TEST: ce peut être un matériau à part entière pour alimenter discussions et 
 
 
 __conf_préposition_le_la_les_leur__
-    à  [le|la|l’|les|leur|leurs]  @:¬:[GNAWMBYŴ]
+    à  [le|la|l’|les|leur|leurs]  @:V¬:[GNAWMBYŴ]
         <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                           # Incohérence : après “à”, on devrait trouver un groupe nominal (ou un verbe à l’infinitif).
 
 TEST: à leur {{profile}}
 TEST: une référence à l’astuce de base qui permet d’outrepasser ses droits.
 TEST: Le mari répète à l’envi qu’il a découvert la France à travers les mots de sa femme.
+TEST: Il reste de nombreux militants sincères à la FI.
 
 
-    [malgré|dès] [le|la|l’|les|leur|leurs]  @:¬:[GNAWMB]
+    [malgré|dès] [le|la|l’|les|leur|leurs]  @:V¬:[GNAWMB]
         <<- /conf/ -3>> =suggSimil(\3, ":[NA]", True)                           # Incohérence : après “\1”, on devrait trouver un groupe nominal.
 
 TEST: malgré l’{{arrête}} qui interdisait le port
@@ -6038,7 +6039,7 @@ TEST: cette déclaration fut selon lui rédigée par des imbéciles.
 __ppas_elle_verbe__
     elle ?aussi¿ ~é(?:es|s)$
         <<- /ppas/ morph(\-1, ":Q") and not morph(<1, ":(?:V0a|R)") --1>> =suggVerbPpas(\-1, ":f:s")+"|"+suggVerbTense(\-1, ":Iq", ":3s")
-        # Incohérence probable. Après “lui”, il faut un participe passé féminin singulier ou une forme verbale conjuguée (3ᵉ personne du singulier).
+        # Incohérence probable. Après “elle”, il faut un participe passé féminin singulier ou une forme verbale conjuguée (3ᵉ personne du singulier).
 
 TEST: elle {{mangé}}.
 TEST: elle aussi {{mangées}}.
@@ -6073,6 +6074,7 @@ TEST: des personnes si {{désespérer}}
 TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
 TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
 TEST: Toutes les bifurcations qui auraient été possibles si avaient été pris en compte des critères autre que la captation de valeur ajoutée, l’augmentation des taux de profit, et l’accumulation du capital.
+TEST: si venir à la conférence coûte autant, il est préférable de s’abstenir.
 
 
 __conf_si_x_être__
@@ -7867,7 +7869,7 @@ TEST: il s’est donné bien des peines à seule {{faim}} de monter en grade
 __conf_faux_faut__
     faut  @:¬(?:Y|Oo|X|M|W)|>qu[e’]/
     faut  <end>
-        <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|qui|<start>|")
+        <<- /conf/ not value(<1, "|il|ils|ne|en|y|leur|lui|nous|vous|me|te|se|la|le|les|qui|<start>|,|")
         -1>> faux                                                           # Confusion probable : “faut” est une conjugaison de “falloir”. Pour indiquer la fausseté d’une chose, écrivez “faux”.
 
 TEST: un homme {{faut}}
@@ -7884,6 +7886,7 @@ TEST: Mais faut absolument que tu voies ça.
 TEST: Faut que tu sois forte, ma fille.
 TEST: Bon, et oui, faut qu’on parle sérieusement de la fin de notre chronique.
 TEST: Qui faut flinguer pour avoir un bon café ?
+TEST: Sauf que le train pour partir, il doit être préparé, faut du temps…
 
 
 # filtre / philtre
@@ -12537,6 +12540,8 @@ __simplication_substantifs__
     >moule à [>gaufre|>gâteau|brioche|manqué|savarin|charlotte|tarte]
     >moulin à [café|eau|paroles|poivre|prières|vent]
     noix [de|d’] [cajou|pécan|pecan|coco|lavage|muscade|veau|macadamia]
+    >nounou à domicile
+    >nourrice à domicile
     >nue comme un ver
     >nue comme des vers
     >nulle et non >avenue
