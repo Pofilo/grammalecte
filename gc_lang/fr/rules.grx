@@ -1210,13 +1210,6 @@ __[s]/nf(nf_norme_française)__
 TEST: __nf__ Norme française : {{Nf-EN ISO 3892-23}}
 
 
-## Chimie
-__[s]/chim(chim_molécules)__
-    (?:Ca(?:CO3|SO4)|CO2|(?:H2|Na2)(?:CO3|O|SO4)|[HNO]2|HNO3|Fe2O3|KMnO4|NO2|SiO2|SO[23])
-    <<- ->> =\0.replace("2", "₂").replace("3", "₃").replace("4", "₄")                               # Typographie des composés chimiques. [!]
-
-TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
-
 
 !!
 !!
@@ -3617,6 +3610,26 @@ TEST: le {{XXè}} siècle.                        ->> XXᵉ
 TEST: les {{CXIèmes}}                           ->> CXIᵉˢ
 
 
+!!!! Chimie                                                                                       !!
+
+__chim_molécules__
+    [CaCO3|CaSO4]
+    CO2
+    [H2CO3|H2O|H2SO4]
+    [Na2CO3|Na2O|Na2SO4]
+    H2
+    HNO3
+    Fe2O3
+    KMnO4
+    NO2
+    N2
+    O2
+    SiO2
+    [SO2|SO3]
+        <<- /chim/ ->> =\1.replace("2", "₂").replace("3", "₃").replace("4", "₄")                    # Typographie des composés chimiques. [!]
+
+TEST: __chim__ les molécules {{CaCO3}} et {{H2O}}…
+
 
 !!!! Dates                                                                                        !!
 
@@ -5916,7 +5929,6 @@ TEST: Il reste de nombreux militants sincères à la FI.
 TEST: malgré l’{{arrête}} qui interdisait le port
 TEST: dès le {{commencent}}, j’ai vu le problème.
 TEST: malgré les deux précédentes erreurs
-
 
 
 __conf_préverbes__
