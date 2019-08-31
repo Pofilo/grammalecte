@@ -366,7 +366,7 @@ aPfx2 = frozenset([
 ])
 
 
-_zWordPrefixes = re.compile("(?i)^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`]([\\w-]+)")
+_zWordPrefixes = re.compile("(?i)^([ldmtsnjcç]|lorsqu|presqu|jusqu|puisqu|quoiqu|quelqu|qu)[’'‘`ʼ]([\\w-]+)")
 _zWordSuffixes = re.compile("(?i)^(\\w+)(-(?:t-|)(?:ils?|elles?|on|je|tu|nous|vous|ce))$")
 
 def cut (sWord):
