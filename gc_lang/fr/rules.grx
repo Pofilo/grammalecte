@@ -1704,28 +1704,6 @@ TEST: arrive-t-elle ce matin ?
 TEST: y aura-t-il du poulet au dîner ?
 
 
-!!!! Élisions                                                                                     !!
-
-# presque : élision
-__[i>/typo(typo_presque)__
-    (presqu[’'])(?![îi]le)  @@0
-        <<- -1>> "presque "                                             # Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
-
-TEST: {{Presqu’}}exclusivement bâtie en pierre.
-TEST: C’est une presqu’île.
-TEST: Cette presqu’ile est particulièrement venteuse.
-
-
-# quelque : élision
-__[i>/typo(typo_quelque)__
-    (quelqu[’'])(?!une?)  @@0
-        <<- -1>> "quelque "                                             # Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
-
-TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
-TEST: quelqu’un vient.
-TEST: elle s’en est allée avec quelqu’une…
-
-
 
 @@@@
 @@@@
@@ -1916,8 +1894,8 @@ __da_préverbes_verbes__
     [que|qu’|combien|pourquoi|qui|quand|où]  ?[en|y]¿  *WORD
         <<- =>> exclude(\-1, ":E")
 
-    [<start>|,]  quelqu’un  *WORD
-        <<- =>> exclude(\3, ":N")
+    [<start>|,]  quelqu’ un  *WORD
+        <<- =>> exclude(\4, ":N")
 
     >falloir [>pouvoir|>savoir|>vouloir|>manger|>conseiller]
         <<- =>> exclude(\2, ":N")
@@ -1975,7 +1953,7 @@ __da_groupe_nominal__
         <<- =>> exclude(\2, ":V")
 
     [un|une]  *WORD
-        <<- not value(<1, "|l’|") and not value(\2, "|a|fut|fût|est|") and not morph(\2, ":P") =>> exclude(\2, ":V")
+        <<- not value(<1, "|l’|quelqu’|quelqu|") and not value(\2, "|a|fut|fût|est|") and not morph(\2, ":P") =>> exclude(\2, ":V")
 
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
         <<- =>> select(\-1, ":N")
@@ -2124,6 +2102,10 @@ __fusions_mots_grammaticaux__
         <<- ~>> ␣
         <<- =>> define(\1, [":Cs"])
 
+    quelqu’ [un|une]
+        <<- ~>> ␣
+        <<- =>> change_meta(\1, "WORD")
+
 
 __fusions_noms_communs__
     au revoir
@@ -2143,6 +2125,10 @@ __fusions_noms_communs__
     standing >ovation
     star [system+s]
         <<- ~>> ␣
+
+    presqu’ [>ile|>île]
+        <<- ~>> ␣
+        <<- =>> change_meta(\1, "WORD")
 
     *NUM : *NUM
         <<- space_after(\1, 0, 0) and space_after(\1, 0, 0) ~>> ␣
@@ -2230,6 +2216,28 @@ __tag_noms__
     ~\w-là$
         <<- />> -là
         <<- =>> =define_from(\1, 0, -3)
+
+
+!!!! Élisions                                                                                     !!
+
+# presque : élision
+__typo_presque__
+    presqu’  *WORD
+        <<- /typo/ not morph(\2, ">[iî]le/") -1>> "presque "            # Pas d’élision autorisée sur “presque”, sauf avec “presqu’île”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+
+TEST: {{Presqu’}}exclusivement bâtie en pierre.
+TEST: C’est une presqu’île.
+TEST: Cette presqu’ile est particulièrement venteuse.
+
+
+# quelque : élision
+__typo_quelque__
+    quelqu’  *WORD
+        <<- /typo/ not value(\2, "|un|une|") -1>> "quelque "            # Pas d’élision autorisée sur “quelque”, sauf avec “quelqu’un” ou “quelqu’une”.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1745
+
+TEST: {{Quelqu’}}absurde que ce soit, il faut y céder.
+TEST: quelqu’un vient.
+TEST: elle s’en est allée avec quelqu’une…
 
 
 
@@ -3683,7 +3691,7 @@ TEST: mercredi, 18 août 1563 : mort de La Boétie (calendrier julien)
 ### ce / cet / cette / ces + nom + là
 __tu_ce_cette_ces_nom_là_ci__
     [ce|cet|cette|ces] *WORD [là|ci]
-        <<- /tu/ morph(\2, ":[NB]") and not value(>1, "|où|") -2:3>> \2-là      # Il manque probablement un trait d’union.
+        <<- /tu/ morph(\2, ":[NB]", ":V0e") and not value(>1, "|où|") -2:3>> \2-là      # Il manque probablement un trait d’union.
 
     [ce|cet|cette|ces] *WORD la [<end>|,]
         <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-là                                # Il manque probablement un trait d’union.
@@ -3698,6 +3706,7 @@ TEST: Je connais bien cette {{sensation là}}.
 TEST: Cette {{voiture si}}, c’est celle-là que je veux.
 TEST: ce que je veux c’est ce {{véhicule ci}}
 TEST: Laisse ce chiot là où il est !
+TEST: Ce fut là en fait une appellation fautive
 
 
 ### Préfixes
@@ -9185,7 +9194,7 @@ __conf_quelle_qu_elle__
     quelle  [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
         <<- /conf/ not (value(\2, "|en|ne|")  and morph(>1, ":V0e")) -1>> qu’elle                   # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
-    quelle  @:V¬:[NA].*:[fe]|>(?:être|plus)/
+    quelle  @:V¬:[NA].*:[fe]|>(?:être|plus|point)/
         <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and (morph(>1, ":V0e") or morph(>2, ":V0e"))) and not (morph(\2, ":V0a") and value(>1, "|été|"))
         -1>> qu’elle                                                                                # Confusion. Le sujet “elle” doit être séparée de la conjonction “que”.
 
@@ -9200,7 +9209,7 @@ TEST: Je crois {{quelle}} n’en sait pas assez pour nous nuire.
     quelles [ne|n’|me|m’|te|t’|se|s’|nous|vous|le|la|l’|les|lui|leur|en|y]
         <<- /conf/ not (value(\2, "|en|ne|") and morph(>1, ":V0e")) -1>> qu’elles                   # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
-    quelles @:V¬:[NA].*:[fe]|>(?:être|plus)/
+    quelles @:V¬:[NA].*:[fe]|>(?:être|plus|point)/
         <<- /conf/ \2.islower() and not (morph(\2, ">(?:pouvoir|devoir|aller)/") and (morph(>1, ":V0e") or morph(>2, ":V0e"))) and not (morph(\2, ":V0a") and value(>1, "|été|"))
         -1>> qu’elles                                                                               # Confusion. Le sujet “elles” doit être séparée de la conjonction “que”.
 
@@ -10842,6 +10851,7 @@ __purge_locutions__
     à l’ unisson
     à l’ une d’ entre elles
     à l’ échelle [nationale|mondiale|régionale|départementale|cantonale|locale|galactique|universelle]
+    à l’ étouffée
     à l’ évidence
     à l’ œil nu
     à l’ [un|une] des leurs
@@ -11108,6 +11118,7 @@ __purge_locutions__
     comme n’ importe où ?ailleurs¿
     comme par [enchantement|magie]
     comme par un fait exprès
+    comme pas deux
     comme peau de chagrin
     comme promis
     comme qui dirait
@@ -12405,6 +12416,7 @@ __simplication_substantifs__
     >chemise sans >manche
     >chèque sans provision
     >chili con carne
+    >chou à la crème ?[fouettée|diplomate|mousseline|patissière|pralinée]¿
     >claire comme [de|d’] l’ eau [de|d’] [boudin|roche|source]
     >claire comme du cristal
     >claire comme jus [de|d’] [boudin|>chaussette|chique]
@@ -12711,7 +12723,7 @@ __purge_couleurs__
     noir    et blanc
     noir    sur blanc
     rose    [bonbon|chair|corail]
-    rouge   [anglais|brique|cardinal|carmin|cerise|coquelicot|écarlate|feu|fraise|grenat|groseille|incarnat|indien|rubis|sang|sanguin|tomate|vermeille|vermillon]
+    rouge   [anglais|brique|cardinal|carmin|cerise|cochenille|coquelicot|écarlate|feu|fraise|grenat|groseille|incarnat|indien|rubis|sang|sanguin|tomate|vermeille|vermillon]
     vert    [bouteille|céladon|émeraude|épinard|impérial|lichen|olive|perroquet|pistache|poireau|pomme|prairie|printemps|sapin|sauge|tilleul]
     couleur sable
         <<- morph(<1, ":[NA]", ":D") ~>> *
@@ -13401,6 +13413,7 @@ __purge_locutions_verbales__
     >faire chou blanc
     >faire copain copain
     >faire de [mon|ton|son|notre|votre|leur] mieux
+    >faire figure d’ exception
     >faire front commun
     >faire grise mine
     >faire grand [bruit|cas]
@@ -13438,6 +13451,7 @@ __purge_locutions_verbales__
     >mourir jeune
     [>naître|>naitre] de la dernière pluie
     [>naître|>naitre] sous x
+    >parler affaires
     >partir en vrille
     >percer à jour
     >perdre [connaissance|conscience|patience|raison]
@@ -13706,6 +13720,7 @@ TEST: La première est la critique dite artiste
 TEST: la critique conduit nombre de protestataires à se replier sur des modalités de défense efficaces dans le passé mais désormais largement inadaptées
 TEST: Tu crois que Microsoft peut contraindre les projets libres à quoi que ce soit ?
 TEST: « L’école produit la norme en matière de langage »
+TEST: Parler affaires.
 
 
 
@@ -14641,7 +14656,7 @@ TEST: {{Quelle}} {{folles}}
 TEST: {{Quelle}} {{chien}}
 TEST: {{Quelle}} {{chats}}
 TEST: Quelle sale journée…
-
+TEST: On pourrait également rappeler à quel point l’Église catholique fut hostile à la laïcité et la combattit violemment.
 
 __gn_quelles_1m!8__
     quelles  *WORD
@@ -14835,17 +14850,17 @@ TEST: les quelque 12 000 stations-service
 ## Nombres
 __gn_nombre_lettres_1m__
     $:B:e:p  *WORD
-        <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
+        <<- /gn/ not value(\1, "|neuf|mille|") and ( (morph(\2, ":[NA].*:s", "*") and not value(\2, "|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
             or \2 in aREGULARPLURAL) and not re.search("^[IVXLDM]+$", \1)
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     neuf  *WORD
-        <<- /gn/ ( morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
+        <<- /gn/ ( morph(\2, ":[NA].*:s", "*") and not morph(<1, ":N.*:m:[is]") and not value(\2, "|multiplié|divisé|janvier|février|mars|avril|mai|juin|juillet|août|aout|septembre|octobre|novembre|décembre|rue|route|ruelle|place|boulevard|avenue|allée|chemin|sentier|square|impasse|cour|quai|chaussée|côte|vendémiaire|brumaire|frimaire|nivôse|pluviôse|ventôse|germinal|floréal|prairial|messidor|thermidor|fructidor|") )
             or \2 in aREGULARPLURAL
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     mille  *WORD
-        <<- /gn/ (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
+        <<- /gn/ not value (\2, "|multiplié|divisé|") and (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.        ->> idiots
@@ -14859,6 +14874,7 @@ TEST: deux {{tête}}                                                            
 TEST: un logement neuf bâti par des professionnels.
 TEST: un mille marin.
 TEST: L’article VII mentionné dans la revue
+TEST: Le produit de cinq multiplié par trois.
 
 
 __gn_nombre_chiffres_1m__
@@ -17932,6 +17948,7 @@ TEST: à lui donner trop d’importance, on façonne notre ennemi
 TEST: la pression entre les membres à un moment devient trop importante
 TEST: Macron saisit la discorde avec le Brésil pour s’opposer à l’embarrassant accord
 TEST: Je vous renvoie pour cela à l’excellent documentaire
+TEST: cuisiner à l’étouffée
 
 
 __infi_loc_à_verbe__
@@ -18960,7 +18977,7 @@ TEST: sans fin elles se sont succédé
 __ppas_se_être__
     [me|m’|te|se|s’]  ?[y|en]¿  >être  *WORD
         <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") --1>> =suggVerbPpas(\-1)                 # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not before("(?i)\\bqu[e’][, ]|\\bon (?:ne |)$")
+        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not tag_before(\1, "que") and not before("(?i)\\bon (?:ne |)$")
         --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
 
     tu  t’  ?[y|en]¿  [es|étais|seras|serais|fus|fusses]  *WORD
@@ -18981,6 +18998,7 @@ TEST: des soins que je m’étais donnés.
 TEST: Si t’es pas contente, t’achètes pas.
 TEST: t’étais vraiment cinglé à cette époque.
 TEST: il m’était évident que cette mission était à durée déterminée
+TEST: Cela fait un petit temps qu’on ne s’est plus vus.
 
 
 ## se rendre compte
@@ -19608,7 +19626,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":A.*:f", ":[GWme]") and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
+        <<- /ppas/ morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":A.*:f", ":[GWMme]") and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
@@ -19623,7 +19641,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":A.*:m", ":[GWfe]") and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
+        <<- /ppas/ morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":A.*:m", ":[GWMfe]") and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
@@ -19638,7 +19656,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]")))
+        <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWMfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]")))
             and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
@@ -19654,7 +19672,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":(?:[123]p|P)")
+        <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWMfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]"))) and morph(\2, ":(?:[123]p|P)")
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     *WORD  [que|qu’]  [un|le|ce|cet|une|la|ma|ta|sa|cette|l’|mon|ton|son|notre|votre|leur|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  ?[ne|n’]¿
@@ -19688,6 +19706,7 @@ TEST: plusieurs invités qui ne sont pas {{contentes}}
 TEST: les réunions sans cesse reportées qui sont {{annulés}}
 TEST: les hommes croyant être {{instruites}}
 TEST: Les tortures que ce journaliste pense être “normales”.
+TEST: La première était René, le parfumeur, qui s’approcha de Catherine
 
 
 __ppas_nom_propre_être_accord_genre__
@@ -23412,6 +23431,7 @@ TEST: T’as enfin trouvé des gens avec qui t’entendre ?
 TEST: ça fait du bien de se l’entendre dire
 TEST: Laisse tomber, mec ! Pour qui tu te prends ?
 TEST: il y avait souvent foule
+TEST: Cette fille a plus d’un tour dans son sac.
 
 
 
