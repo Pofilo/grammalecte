@@ -287,7 +287,7 @@ def create (sLang, xConfig, bInstallOXT, bJavaScript, bUseCache):
         except ImportError:
             print("# No complementary builder <build.py> in folder gc_lang/"+sLang)
         else:
-            buildjs.build(sLang, dVars, spLangPack)
+            buildjs.build(sLang, dVars)
 
     return dVars['version']
 
