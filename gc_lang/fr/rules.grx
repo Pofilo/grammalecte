@@ -14860,7 +14860,7 @@ __gn_nombre_lettres_1m__
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
     mille  *WORD
-        <<- /gn/ not value (\2, "|multiplié|divisé|") and (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
+        <<- /gn/ not value(\2, "|multiplié|divisé|") and (morph(\2, ":[NA].*:s", "*") or \1 in aREGULARPLURAL) and not value(<1, "|le|un|ce|du|")
         -2>> =suggPlur(\2)                                                                  # Accord de nombre erroné avec « \1 » : « \2 » devrait être au pluriel.
 
 TEST: ce sont trois {{idiot}} pas foutus de trouver leur chemin avec un GPS.        ->> idiots
@@ -17977,30 +17977,39 @@ TEST: l’industrie est également touchée, avec « des pertes de commandes de
 
 
 __infi_qqch_de__
-    [afin|avant]                                [de|d’]  ~..ée?s?$
-    à même                                      [de|d’]  ~..ée?s?$
-    avant ?même¿                                [de|d’]  ~..ée?s?$
-    en train                                    [de|d’]  ~..ée?s?$
-    en vue                                      [de|d’]  ~..ée?s?$
-    il [est|était|fut|fût|sera|serait] temps    [de|d’]  ~..ée?s?$
-    impossible                                  [de|d’]  ~..ée?s?$
-    marre                                       [de|d’]  ~..ée?s?$
-    [>façon|>manière]                           [de|d’]  ~..ée?s?$
-    [>intention|>volonté]                       [de|d’]  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Le verbe devrait être à l’infinitif.
+    [afin|avant]                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    avant ?même¿                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    marre                                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif.
 
-    force est  [de|d’]  ~..ée?s?$
+    à même                                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    en train                                    [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    en vue                                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
+
+    [>façon|>manière]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
+
+    il >être [temps|impossible|indispensable|nécessaire|utile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est \3 de”, le verbe devrait être à l’infinitif.
+
+    [<start>|,] impossible  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “impossible de”, le verbe devrait être à l’infinitif.
+
+    force [est|était]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “force est de”, le verbe devrait être à l’infinitif.
 
-TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
+TEST: afin de leur {{percée}} une ouverture
 TEST: en train de {{percées}}
 TEST: ils sont à même de {{trouvé}} la bonne réponse
+TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
 TEST: elle est en train de {{mangée}}
-TEST: impossible d’{{échappée}} à cette horreur.
+TEST: je déteste sa manière de la {{rabaissée}} en permanence.
 TEST: il serait temps de {{poussée}} la logique jusqu’au bout
+TEST: impossible d’{{échappée}} à cette horreur.
 TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
-
 
 
 __infi_de_verbe__
@@ -18026,7 +18035,7 @@ __infi_de_verbe__
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
-            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tag_before(\1, "ce_que")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
@@ -18064,6 +18073,7 @@ TEST: qu’y a-t-il de changé, de perturbé, de modifié ?
 TEST: ce qu’ils ont d’obscur, d’exagéré et parfois de sec et de figé
 TEST: ce qu’il y a de compliqué dans ces affaires.
 TEST: Un patient peut avoir autant de satanées maladies qui lui chante.
+TEST: C’est toujours ça de gagné.
 
 
 __infi_y_verbe!3__
