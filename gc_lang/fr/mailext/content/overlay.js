@@ -340,8 +340,7 @@ var oGrammarChecker = {
         xNodeDiv.appendChild(xNodeSuggLine);
         return xNodeDiv;
     },
-    loadUI: function() {
-        console.log("loadUI");
+    loadUI: function () {
         this._strings = document.getElementById("grammarchecker-strings");
         let that = this;
         let nsGrammarCommand = {
@@ -360,23 +359,16 @@ var oGrammarChecker = {
         let sButtonId2 = "grammalecte-menu";
         let xNavBar  = document.getElementById("composeToolbar2");
         let lCurSet  = xNavBar.currentSet.split(",");
-        console.log("navBar", lCurSet);
         if (lCurSet.indexOf(sButtonId) == -1) {
             let iPos = lCurSet.indexOf("spellingButton") + 1 || lCurSet.length;
             let aSet = lCurSet.slice(0, iPos).concat(sButtonId).concat(sButtonId2).concat(lCurSet.slice(iPos));
             xNavBar.setAttribute("currentset", aSet.join(","));
-            xNavBar.currentSet = aSet.join(",");
-            //document.persist(xNavBar.id, "currentset");
+            //xNavBar.currentSet = aSet.join(",");
             Services.xulStore.persist(xNavBar, "currentset");
-            try {
-                Ci.BrowserToolboxCustomizeDone(true);
-            }
-            catch (e) {
-                console.error(e);
-            }
+            Ci.BrowserToolboxCustomizeDone(true);
         }
     },
-    clearPreview: function() {
+    clearPreview: function () {
         let xPreview = document.getElementById("grammalecte-errors");
         while (xPreview.firstChild) {
             xPreview.removeChild(xPreview.firstChild);
@@ -481,28 +473,6 @@ var oGrammarChecker = {
         this.openDialog("chrome://grammarchecker/content/about.xul", "", "chrome, dialog, modal, resizable=no");
     }
 };
-
-
-var oDictIgniter = {
-    bDone: false,
-    init: function () {
-        if (!this.bDone) {
-            oSpellControl.init();
-            this._setDictionary('fr-FR-modern', 'bDictModern');
-            this._setDictionary('fr-FR-classic', 'bDictClassic');
-            this._setDictionary('fr-FR-reform', 'bDictReform');
-            this._setDictionary('fr-FR-classic-reform', 'bDictClassicReform');
-        }
-    },
-    _setDictionary: function (sDicName, sOptName) {
-        try {
-            oSpellControl.setExtensionDictFolder(sDicName, prefs.getBoolPref(sOptName));
-        }
-        catch (e) {
-            console.error(e);
-        }
-    }
-}
 
 
 var oTextFormatter = {
@@ -891,7 +861,6 @@ var oTextFormatter = {
 /* EVENTS */
 
 window.addEventListener("load", function (xEvent) {
-    // oDictIgniter.init();
     oGrammarChecker.loadGC();
     //oGrammarChecker.fullTests();
 }, false);

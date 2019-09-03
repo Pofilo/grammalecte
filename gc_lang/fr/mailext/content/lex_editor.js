@@ -66,15 +66,10 @@ class Table {
 
     _createHeader () {
         let xListheadNode = createNode("richlistitem");
-        for (let sColumn of this.lColumn) {
-            xListheadNode.appendChild(createNode("div", { class: "listheader", label: sColumn }));
+        for (let i=0;  i < this.lColumn.length;  i++) {
+            xListheadNode.appendChild(createNode("label", { class: "listheader", value: this.lColumn[i], flex: this.lColumnWidth[i] }));
         }
         this.xTable.appendChild(xListheadNode);
-        let xListcolsNode = createNode("richlistitem");
-        for (let cColumn of this.lColumnWidth) {
-            xListcolsNode.appendChild(createNode("div", { class: "listcol", flex: cColumn }));
-        }
-        this.xTable.appendChild(xListcolsNode);
     }
 
     clear () {
@@ -120,7 +115,7 @@ class Table {
     _addRow (lData) {
         let xRowNode = createNode("richlistitem", { id: this.sNodeId + "_item_" + this.iEntryIndex, value: this.iEntryIndex });
         for (let data of lData) {
-            xRowNode.appendChild(createNode("div", { class:"listcell", label: data }));
+            xRowNode.appendChild(createNode("label", { class:"listcell", label: data }));
         }
         this.xTable.appendChild(xRowNode);
         this.iEntryIndex += 1;
