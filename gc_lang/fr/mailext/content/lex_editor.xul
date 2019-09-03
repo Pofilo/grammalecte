@@ -41,9 +41,9 @@
 
       <!-- NEW WORD -->
       <tabpanel orient="vertical">
-        
+
         <hbox>
-          
+
           <vbox>
             <dialogheader title="Nouveau mot (lemme)" description="Générateur" />
             <textbox id="lemma" value="" />
@@ -100,7 +100,7 @@
                 <radio id="M_mas" class="option" label="masculin" value=":m" />
                 <radio id="M_fem" class="option" label="féminin" value=":f" />
               </radiogroup>
-            </hbox>              
+            </hbox>
 
             <checkbox id="tag_V" class="subsection" label="Verbe" />
             <hbox class="m_left">
@@ -141,7 +141,7 @@
 
           <vbox>
             <dialogheader title="Mots générés" description="" />
-            <listbox id="generated_words_table" seltype="multiple">
+            <richlistbox id="generated_words_table" seltype="multiple">
               <!--
               <listhead>
                 <listheader label="Flexions"/>
@@ -158,8 +158,9 @@
                 <listcell label="House"/>
               </listitem>
               -->
-            </listbox>
-            <progressmeter id="progress_new_words" value="0"/>
+            </richlistbox>
+            <!--<progressmeter id="progress_new_words" value="0"/>-->
+            <html:progress id="progress_new_words" max="100" value="0">
             <hbox>
               <button id="delete_selection" label="Effacer la sélection" />
               <spacer flex="1" />
@@ -181,12 +182,13 @@
             <spacer flex="1" />
             <button id="delete_button" label="Supprimer la sélection" />
             <spacer flex="20" />
-            <progressmeter id="progress_lexicon" value="0"/>
+            <!--<progressmeter id="progress_lexicon" value="0"/>-->
+            <html:progress id="progress_lexicon" max="100" value="0">
             <button id="save_button" label="Enregistrer" />
           </vbox>
 
           <vbox>
-            <listbox id="lexicon_table" seltype="multiple">
+            <richlistbox id="lexicon_table" seltype="multiple">
               <!--
               <listhead>
                 <listheader label="Flexions"/>
@@ -206,7 +208,7 @@
                 <listcell label="House"/>
               </listitem>
               -->
-            </listbox>
+            </richlistbox>
           </vbox>
         </hbox>
       </tabpanel>
@@ -238,8 +240,9 @@
             <description>La recherche par expressions régulières peut générer un nombre gigantesque de résultats. Seules les 2000 premières occurrences trouvées seront affichées. La recherche peut être longue, parce tout le graphe de mots, qui contient 500 000 flexions, sera parcouru si besoin.</description>
 
             <spacer flex="1" />
-            
-            <progressmeter id="progress_search" value="0"/>
+
+            <!--<progressmeter id="progress_search" value="0"/>-->
+            <html:progress id="progress_search" max="100" value="0">
             <hbox>
               <spacer flex="1" />
               <label id="search_num_entries" class="align_right" value="0" />
@@ -248,7 +251,7 @@
           </vbox>
           <vbox>
             <dialogheader title="Résultat" description="" />
-            <listbox id="search_table">
+            <richlistbox id="search_table">
               <!--
               <listhead>
                 <listheader label="Flexions"/>
@@ -268,7 +271,7 @@
                 <listcell label="House"/>
               </listitem>
               -->
-            </listbox>
+            </richlistbox>
           </vbox>
         </hbox>
       </tabpanel>
@@ -291,7 +294,7 @@
           </vbox>
           <vbox>
             <dialogheader title="Signification des étiquettes" description="" />
-            <listbox id="tags_table">
+            <richlistbox id="tags_table">
               <!--
               <listhead>
                 <listheader label="Étiquettes"/>
@@ -308,7 +311,7 @@
                 <listcell label="House"/>
               </listitem>
               -->
-            </listbox>
+            </richlistbox>
           </vbox>
         </hbox>
       </tabpanel>

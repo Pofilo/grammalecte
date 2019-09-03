@@ -4,9 +4,9 @@
 
 // Assuming that Cc, Ci and Cu are already loaded
 
-//const {OS} = ChromeUtils.import("resource://gre/modules/osfile.jsm", {});
+const { OS } = ChromeUtils.import("resource://gre/modules/osfile.jsm", {});
 
-ChromeUtils.import("resource://gre/modules/osfile.jsm")
+//ChromeUtils.import("resource://gre/modules/osfile.jsm")
 
 const oFileHandler = {
     // https://developer.mozilla.org/fr/docs/Mozilla/JavaScript_code_modules/OSFile.jsm/OS.File_for_the_main_thread

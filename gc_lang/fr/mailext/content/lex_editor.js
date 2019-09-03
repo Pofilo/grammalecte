@@ -65,14 +65,14 @@ class Table {
     }
 
     _createHeader () {
-        let xListheadNode = createNode("listhead");
+        let xListheadNode = createNode("richlistitem");
         for (let sColumn of this.lColumn) {
-            xListheadNode.appendChild(createNode("listheader", { label: sColumn }));
+            xListheadNode.appendChild(createNode("div", { class: "listheader", label: sColumn }));
         }
         this.xTable.appendChild(xListheadNode);
-        let xListcolsNode = createNode("listcols");
+        let xListcolsNode = createNode("richlistitem");
         for (let cColumn of this.lColumnWidth) {
-            xListcolsNode.appendChild(createNode("listcol", { flex: cColumn }));
+            xListcolsNode.appendChild(createNode("div", { class: "listcol", flex: cColumn }));
         }
         this.xTable.appendChild(xListcolsNode);
     }
@@ -118,9 +118,9 @@ class Table {
     }
 
     _addRow (lData) {
-        let xRowNode = createNode("listitem", { id: this.sNodeId + "_item_" + this.iEntryIndex, value: this.iEntryIndex });
+        let xRowNode = createNode("richlistitem", { id: this.sNodeId + "_item_" + this.iEntryIndex, value: this.iEntryIndex });
         for (let data of lData) {
-            xRowNode.appendChild(createNode("listcell", { label: data }));
+            xRowNode.appendChild(createNode("div", { class:"listcell", label: data }));
         }
         this.xTable.appendChild(xRowNode);
         this.iEntryIndex += 1;
