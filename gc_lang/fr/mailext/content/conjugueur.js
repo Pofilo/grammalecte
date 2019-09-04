@@ -36,7 +36,6 @@ let oConj = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
         this.conjugate("être");
     },
@@ -85,7 +84,6 @@ let oConj = {
                     document.getElementById('info').textContent = this.oVerb.sInfo;
                     document.getElementById('opro').label = this.oVerb.sProLabel;
                     if (this.oVerb.bUncomplete) {
-                        console.log("uncomplete");
                         document.getElementById('opro').checked = false;
                         document.getElementById('opro').disabled = true;
                         document.getElementById('opro').style = "color: #CCC;";
@@ -94,10 +92,8 @@ let oConj = {
                         document.getElementById('otco').style = "color: #CCC;";
                         document.getElementById('smallnote').hidden = false;
                     } else {
-                        console.log("complete");
                         document.getElementById('otco').disabled = false;
                         document.getElementById('otco').style = "color: #000;";
-                        console.log("pron:", this.oVerb.nPronominable);
                         if (this.oVerb.nPronominable == 0) {
                             document.getElementById('opro').checked = false;
                             document.getElementById('opro').disabled = false;
@@ -119,7 +115,6 @@ let oConj = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
 
@@ -215,10 +210,8 @@ let oConj = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     }
-
 };
 
 conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
