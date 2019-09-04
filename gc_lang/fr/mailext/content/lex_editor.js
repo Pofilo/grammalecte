@@ -65,9 +65,9 @@ class Table {
     }
 
     _createHeader () {
-        let xListheadNode = createNode("richlistitem");
+        let xListheadNode = createNode("richlistitem", { class: "listheader" });
         for (let i=0;  i < this.lColumn.length;  i++) {
-            xListheadNode.appendChild(createNode("label", { class: "listheader", value: this.lColumn[i], flex: this.lColumnWidth[i] }));
+            xListheadNode.appendChild(createNode("label", { value: this.lColumn[i], width: this.lColumnWidth[i] }));
         }
         this.xTable.appendChild(xListheadNode);
     }
@@ -114,8 +114,8 @@ class Table {
 
     _addRow (lData) {
         let xRowNode = createNode("richlistitem", { id: this.sNodeId + "_item_" + this.iEntryIndex, value: this.iEntryIndex });
-        for (let data of lData) {
-            xRowNode.appendChild(createNode("label", { class:"listcell", label: data }));
+        for (let i=0;  i < lData.length;  i++) {
+            xRowNode.appendChild(createNode("label", { class: "listcell", value: lData[i], width: this.lColumnWidth[i] }));
         }
         this.xTable.appendChild(xRowNode);
         this.iEntryIndex += 1;
@@ -544,10 +544,10 @@ const oTagsInfo = {
 }
 
 
-const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], [1, 1], "progress_new_words");
-const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_lexicon", "num_entries");
-const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], [10, 7, 10], "progress_search", "search_num_entries");
-const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], [1, 10], "progress_lexicon");
+const oGenWordsTable = new Table("generated_words_table", ["Flexions", "Étiquettes"], ["125px", "225px"], "progress_new_words");
+const oLexiconTable = new Table("lexicon_table", ["Flexions", "Lemmes", "Étiquettes"], ["190px", "150px", "200px"], "progress_lexicon", "num_entries");
+const oSearchTable = new Table("search_table", ["Flexions", "Lemmes", "Étiquettes"], ["190px", "150px", "200px"], "progress_search", "search_num_entries");
+const oTagsTable = new Table("tags_table", ["Étiquette", "Signification"], ["75px", "475px"], "progress_lexicon");
 
 conj.init(helpers.loadFile("resource://grammalecte/fr/conj_data.json"));
 
