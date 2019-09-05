@@ -21,7 +21,6 @@ var oOptControl = {
         });
     },
     _setDialogOptions: function (bDefaultOptions=false) {
-        console.log("_setDialogOptions");
         try {
             sOptions = bDefaultOptions ? prefs.getCharPref("sGCDefaultOptions") : prefs.getCharPref("sGCOptions");
             this.oOptions = JSON.parse(sOptions);
@@ -36,7 +35,6 @@ var oOptControl = {
         }
     },
     save: function () {
-        console.log("save");
         try {
             for (let xNode of document.getElementsByClassName("option")) {
                 this.oOptions[xNode.id.slice(7)] = xNode.checked;
@@ -48,7 +46,6 @@ var oOptControl = {
         }
     },
     reset: function () {
-        console.log("reset");
         this._setDialogOptions(true);
     }
 }
