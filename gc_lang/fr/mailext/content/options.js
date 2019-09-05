@@ -17,8 +17,14 @@ var oOptControl = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
+        this.listen();
+    },
+
+    listen: function () {
+        document.addEventListener("dialogaccept", (event) => {
+            this.save();
+        });
     },
 
     save: function () {
@@ -27,10 +33,8 @@ var oOptControl = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     }
 }
-
 
 oOptControl.load();
