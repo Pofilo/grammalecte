@@ -10,8 +10,18 @@ var oOptControl = {
     oOptions: null,
     load: function () {
         this._setDialogOptions(false);
+        this.listen();
+    },
+    listen: function () {
+        document.addEventListener("dialogaccept", (event) => {
+            this.save();
+        });
+        document.addEventListener("dialogextra1", (event) => {
+            this.reset();
+        });
     },
     _setDialogOptions: function (bDefaultOptions=false) {
+        console.log("_setDialogOptions");
         try {
             sOptions = bDefaultOptions ? prefs.getCharPref("sGCDefaultOptions") : prefs.getCharPref("sGCOptions");
             this.oOptions = JSON.parse(sOptions);
@@ -23,10 +33,10 @@ var oOptControl = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     save: function () {
+        console.log("save");
         try {
             for (let xNode of document.getElementsByClassName("option")) {
                 this.oOptions[xNode.id.slice(7)] = xNode.checked;
@@ -35,10 +45,10 @@ var oOptControl = {
         }
         catch (e) {
             console.error(e);
-            // Cu.reportError(e);
         }
     },
     reset: function () {
+        console.log("reset");
         this._setDialogOptions(true);
     }
 }
