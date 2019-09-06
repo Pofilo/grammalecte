@@ -448,12 +448,10 @@ const oBinaryDict = {
     },
 
     import: function () {
-        //console.log("import");
         oFileHandler.loadAs(this._import.bind(this));
     },
 
     _import: function (sJSON) {
-        //console.log("_import");
         this._load(sJSON, true);
     },
 

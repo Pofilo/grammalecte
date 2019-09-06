@@ -139,9 +139,9 @@ var oGrammarChecker = {
                 xNodeP.textContent = "Aucune erreur détectée…";
                 document.getElementById("grammalecte-errors").appendChild(xNodeP);
             }
-            this.setInfo("Nombre de paragraphes analysés : " + res);
+            this.setInfo("Nombre de paragraphes analysés : " + nParagraph);
         }
-        catch {
+        catch (e) {
             this.setInfo("Erreur : " + e.message);
             console.error(e);
         }
@@ -160,7 +160,6 @@ var oGrammarChecker = {
             let sParagraph = xEditor.getParagraph(iParagraph);
             let xPromise = this.xGCEWorker.post('parseAndSpellcheck', [sParagraph, "FR", false, false]);
             xPromise.then(function (res) {
-                //console.log("res: " + res);
                 xResultNode.textContent = "";
                 let oRes = JSON.parse(res);
                 if (oRes.aGrammErr.length > 0 || oRes.aSpellErr.length > 0) {
