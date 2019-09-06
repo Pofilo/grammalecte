@@ -2,8 +2,7 @@
 
 "use strict";
 
-console.log("THUNDERBIRD!!! BACKGROUND");
-
+// Draft for later
 
 const oWorkerHandler = {
     xGCEWorker: null,
@@ -118,7 +117,6 @@ const oInitHandler = {
         browser.storage.local.get("gc_options").then(this._initGrammarChecker, showError);
         browser.storage.local.get("personal_dictionary").then(this._setSpellingDictionaries, showError);
         browser.storage.local.get("community_dictionary").then(this._setSpellingDictionaries, showError);
-        browser.storage.local.get("oPersonalDictionary").then(this._setSpellingDictionaries, showError); // deprecated
         browser.storage.local.get("sc_options").then(this._initSCOptions, showError);
     },
 
