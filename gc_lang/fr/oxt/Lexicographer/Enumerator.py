@@ -104,7 +104,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         xFDTitle.Height = 9
         xFDTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDTitle.Name = "Verdana"
-        
+
         xFDSubTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDSubTitle.Height = 8
         xFDSubTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
@@ -131,7 +131,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+65, nY1+210, 30, nHeight, Label = "—")
         self._addWidget('tot_of_entries', 'FixedText', nX+100, nY1+210, 60, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
         self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+165, nY1+210, 30, nHeight, Label = "—")
-        
+
         # Tag
         # Note: the only way to group RadioButtons is to create them successively
         self._addWidget("dformat_section", 'FixedLine', nX, nY2, 90, nHeight, Label = self.dUI.get("dformat_section", "#err"), FontDescriptor = xFDTitle)
@@ -142,7 +142,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xNoAccent = self._addWidget('noaccentuation', 'RadioButton', nX+155, nY2+12, 40, nHeight, Label = self.dUI.get('noaccentuation', "#err"))
 
         self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
-        
+
         # Progress bar
         self.xProgressBar = self._addWidget('progress_bar', 'ProgressBar', nX, self.xDialog.Height-25, 160, 14)
         self.xProgressBar.ProgressValueMin = 0
@@ -165,10 +165,10 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.getControl('tag_button').setActionCommand('Tag')
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
-        self.xContainer.setVisible(False)
+        self.xContainer.setVisible(True)    # True for non modal dialog
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
-        self.xContainer.execute()
+        #self.xContainer.execute()          # Don’t excute for non modal dialog
 
     # XActionListener
     def actionPerformed (self, xActionEvent):
@@ -198,10 +198,11 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                     sAction = "noaccentuation"
                 self.tagText(aWord, sAction)
             elif xActionEvent.ActionCommand == "Close":
-                self.xContainer.endExecute()
+                self.xContainer.dispose()           # Non modal dialog
+                #self.xContainer.endExecute()       # Modal dialog
         except:
             traceback.print_exc()
-    
+
     # XJobExecutor
     def trigger (self, args):
         try:
