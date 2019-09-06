@@ -561,8 +561,8 @@ var oTextFormatter = {
         }
     },
     resetProgressBar: function () {
-        document.getElementById('progressbar').value = 0;
-        document.getElementById('time_res').textContent = "";
+        document.getElementById('textformatter-progressbar').value = 0;
+        document.getElementById('textformatter-timer').textContent = "";
     },
     getTimeRes: function (n) {
         // returns duration in seconds as string
@@ -601,8 +601,8 @@ var oTextFormatter = {
         try {
             const t0 = Date.now();
             //window.setCursor("wait"); // change pointer
-            document.getElementById('progressbar').value = 0;
-            document.getElementById('progressbar').max = 6;
+            document.getElementById('textformatter-progressbar').value = 0;
+            document.getElementById('textformatter-progressbar').max = 6;
             let n1 = 0, n2 = 0, n3 = 0, n4 = 0, n5 = 0, n6 = 0, n7 = 0;
 
             // espaces surnuméraires
@@ -638,7 +638,7 @@ var oTextFormatter = {
                 document.getElementById("o_group_ssp").checked = false;
                 this.switchGroup("o_group_ssp");
             }
-            document.getElementById('progressbar').value = 1;
+            document.getElementById('textformatter-progressbar').value = 1;
 
             // espaces insécables
             if (document.getElementById("o_group_nbsp").checked) {
@@ -670,7 +670,7 @@ var oTextFormatter = {
                 document.getElementById("o_group_nbsp").checked = false;
                 this.switchGroup("o_group_nbsp");
             }
-            document.getElementById('progressbar').value = 2;
+            document.getElementById('textformatter-progressbar').value = 2;
 
             // espaces manquants
             if (document.getElementById("o_group_typo").checked) {
@@ -692,7 +692,7 @@ var oTextFormatter = {
                 document.getElementById("o_group_space").checked = false;
                 this.switchGroup("o_group_space");
             }
-            document.getElementById('progressbar').value = 3;
+            document.getElementById('textformatter-progressbar').value = 3;
 
             // suppression
             if (document.getElementById("o_group_delete").checked) {
@@ -703,7 +703,7 @@ var oTextFormatter = {
                 document.getElementById("o_group_delete").checked = false;
                 this.switchGroup("o_group_delete");
             }
-            document.getElementById('progressbar').value = 4;
+            document.getElementById('textformatter-progressbar').value = 4;
 
             // signes typographiques
             if (document.getElementById("o_group_typo").checked) {
@@ -792,7 +792,7 @@ var oTextFormatter = {
                 document.getElementById("o_group_typo").checked = false;
                 this.switchGroup("o_group_typo");
             }
-            document.getElementById('progressbar').value = 5;
+            document.getElementById('textformatter-progressbar').value = 5;
 
             // divers
             if (document.getElementById("o_group_misc").checked) {
@@ -825,12 +825,13 @@ var oTextFormatter = {
                 document.getElementById("o_group_misc").checked = false;
                 this.switchGroup("o_group_misc");
             }
-            document.getElementById('progressbar').value = document.getElementById('progressbar').max;
+            document.getElementById('textformatter-progressbar').value = document.getElementById('textformatter-progressbar').max;
+            document.getElementById('textformatter-progressbar').value = "Formatage terminé.";
             // end of processing
 
             //window.setCursor("auto"); // restore pointer
             const t1 = Date.now();
-            document.getElementById('time_res').textContent = this.getTimeRes((t1-t0)/1000);
+            document.getElementById('textformatter-timer').textContent = this.getTimeRes((t1-t0)/1000);
         }
         catch (e) {
             console.error(e);
