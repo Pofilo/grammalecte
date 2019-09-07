@@ -1,4 +1,4 @@
- #!/usr/bin/env python3
+#!/usr/bin/env python3
 # coding: UTF-8
 
 """
@@ -126,7 +126,10 @@ def createOXT (spLang, dVars, dOxt, spLangPack, bInstall):
         print(spfSrc, end=", ")
         if os.path.isdir(spLang+'/'+spfSrc):
             for sf in os.listdir(spLang+'/'+spfSrc):
-                hZip.write(spLang+'/'+spfSrc+"/"+sf, spfDst+"/"+sf)
+                if sf.endswith(('.txt', '.py')):
+                    hZip.writestr(spfDst+"/"+sf, helpers.fileFile(spLang+'/'+spfSrc+"/"+sf, dVars))
+                else:
+                    hZip.write(spLang+'/'+spfSrc+"/"+sf, spfDst+"/"+sf)
         else:
             if spfSrc.endswith(('.txt', '.py')):
                 hZip.writestr(spfDst, helpers.fileFile(spLang+'/'+spfSrc, dVars))

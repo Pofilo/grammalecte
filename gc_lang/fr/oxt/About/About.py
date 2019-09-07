@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # About dialog
 # by Olivier R.
 # License: MPL 2
