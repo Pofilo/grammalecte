@@ -11830,6 +11830,7 @@ __purge_locutions__
     selon toute vraisemblance
     sens dessus dessous
     >seule à >seule
+    s’ il le [faut|fallait|faudra|faudrait]
     si [bas|haut|longtemps|nécessaire|possible|soudain]
     si [cela|ça|ceci] ne tenait qu’ à [moi|toi|lui|eux|elle|elles|nous|vous]
     si besoin est
@@ -13584,6 +13585,9 @@ __conf_locutions_verbales__
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
+    >avoir du mal a
+        <<- /conf/ --1>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+
     >faire plaisirs
         <<- /sgpl/ --1>> plaisir        # Faire plaisir : dans cette locution, “plaisir” doit être au singulier.
         <<- ~-1>> *
@@ -13623,6 +13627,7 @@ TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
 TEST: prendre {{a}} la légère ce test serait une erreur.
 TEST: on va suivre ça de {{prêt}}.
 TEST: il faut se tenir {{a}} distance de ces gens-là.
+TEST: J’avais du mal {{a}} l’écouté (double erreur utile pour tester le faux positif)
 TEST: cette expérience ne va pas tarder à tourner {{cours}}.
 TEST: il faut rendre {{comte}} de la sitation désastreuse dans laquelle nous sommes tombés.
 TEST: il faut tenir {{comtes}} des aléas de la météo.
@@ -13798,10 +13803,6 @@ TEST: Parler affaires.
 @@@@
 @@@@
 
-
-#
-# //////////////////////////////////////// RÈGLES DE CONTRÔLE ////////////////////////////////////////
-#
 
 
 !!!! Redondances dans la phrase                                                                   !!
@@ -16736,7 +16737,7 @@ __conf_éminent_imminent__
         # Confusion probable. Si “\1” se rapporte à “\2”, alors vous voulez probablement dire “éminent” ; “imminent” signifie “qui va survenir prochainement”.|https://fr.wiktionary.org/wiki/%C3%A9minent
 
     [>actrice|>confrère|>collègue|>dirigeante|>dissidente|>entrepreneuse|>experte|>défenseuse|>intellectuelle|>mathématicienne|>musicienne|>pédiatre|>personalité|>personnage|>professeur|>physicienne|>rabbin|>représantante|>savante|>chirurgienne|>neurochirurgienne|>scientifique|>service|>spécialiste|~logues?$|~istes?$] >imminente
-        <<- /conf/ -2>> =\2.replace("imm", "ém").replace("Imm", "Ém")
+        <<- /conf/ morph(<1, ":D") -2>> =\2.replace("imm", "ém").replace("Imm", "Ém")
         # Confusion probable. Si “\2” se rapporte à “\1”, alors vous voulez probablement dire “éminent” ; “imminent” signifie “qui va survenir prochainement”.|https://fr.wiktionary.org/wiki/%C3%A9minent
 
     [>accouchement|>accord|>arrivée|>assaut|>attaque|>atterrissage|>cataclysme|>catastrophe|>changement|>conflit|>crash|>danger|>décollage|>départ|>désarmement|>déclenchement|>effondrement|>éruption|>fin|>guerre|>lancement|>orage|>ouragan|>péril|>remaniement|>réponse|>résultat|>retour|>séisme|>tempête|>tsunami|>verdict] ?>être¿ >éminente
@@ -16750,6 +16751,7 @@ TEST: Mon {{imminent}} collègue.
 TEST: Un paléontologue {{imminent}}.
 TEST: L’arrivée est imminente.
 TEST: Des paléontologues éminents.
+TEST: aucune menace terroriste imminente
 
 
 # enduire / induire
@@ -18279,6 +18281,7 @@ TEST: il faut n’{{estimait}} que la valeur de nos actes
 TEST: il fallait bien cela pour nous épargner
 TEST: une faille s’est ouverte sous nos pieds
 TEST: il faut en moyenne 1000 litres d’eau pour produire un kilo de céréales
+TEST: Xi Jinping a réaffirmé en janvier dernier qu’il utiliserait s’il le faut la force militaire
 
 
 __infi_faire__
