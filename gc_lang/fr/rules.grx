@@ -6773,7 +6773,8 @@ TEST: les méthodes de l’à-peu-près ne suffisent pas.
 
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
-        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|lieu|peur|raison|rapport|recours|soif|tendance|tort|vent|") and morph(\1, ":N", "*")
+        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|lieu|peur|raison|rapport|recours|soif|tendance|tort|vent|")
+            and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: les bobos {{a}} trottinette
@@ -8543,7 +8544,7 @@ __conf_on_ont__
     [<start>|,|$:Cs] ?l’¿ (ont) [ne|n’|me|m’|te|se|s’]
     [<start>|,|$:Cs] ?l’¿ (ont) [lui|nous|vous] @:[123][sp]¬:G
     [<start>|,|$:Cs] ?l’¿ (ont) [leur|le|la|l’] @:[123][sp]¬:(?:G|[NA].*:[si])
-    [<start>|,|$:Cs] ?l’¿ (ont) @:[123][sp]¬:[GQ]|>(?:envie|peine|affaire|hâte|force|recours|somme)/
+    [<start>|,|$:Cs] ?l’¿ (ont) @:[123][sp]¬:[GQ]|>(?:envie|charge|peine|affaire|hâte|force|recours|somme)/
         <<- /conf/ -1>> on                                          # Confusion probable : “ont” est une conjugaison du verbe avoir.
 
     [<start>|,|$:Cs] ?l’¿ ont t’
@@ -20350,7 +20351,7 @@ TEST: Ils avaient barre sur lui.
 __ppas_nous_vous_avoir__
     [nous|vous]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
     <<- /ppas/ morph(\1, ":Os")
-        and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        and not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
         and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
     --1>> =suggVerbPpas(\-1, ":m:s")
@@ -20366,7 +20367,7 @@ TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 __ppas_det_nom_avoir__
     [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
-    <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+    <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
         and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Y|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
@@ -20383,6 +20384,7 @@ TEST: Le maire a {{créée}} un risque.
 TEST: le général n’a pas encore {{finit}} sa sieste.
 TEST: Certains les ont d’abord jugés trop lents.
 TEST: les timides ou les personnes n’ayant pas confiance en elles vont avoir tendance à éviter de regarder dans les yeux.
+TEST: Le théâtre, en l’occurrence, a charge de sensibiliser
 
 
 __ppas_les_avoir__
@@ -20450,7 +20452,7 @@ TEST: des hommes, des femmes, des enfants qui ne leur avaient {{faits}} que du b
 __ppas_avoir_ppas_mas_sing__
     [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  ?[lui|leur]¿   avoir  @:Q.*:[pf]¬:m:[si]
     [<start>|,|après|pour|pourquoi|quand|que|qu’|sans|d’|de|qui]  ?[ne|n’]¿  [m’|t’]        avoir  @:Q.*:p¬:[si]
-        <<- /ppas/ not value(\-1, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        <<- /ppas/ not value(\-1, "|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         --1>> =suggVerbPpas(\-1, ":m:s")                      # Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Avoir {{instruite}} notre mère
@@ -20467,7 +20469,7 @@ __ppas_m_t_l_avoir__
         <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")         # Confusion : employez un participe passé.
 
     t’  ?[en|y]¿  >avoir  @:(?:Y|[123][sp])¬:[QGWMX]
-        <<- /ppas/ not value(\-1, "|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+        <<- /ppas/ not value(\-1, "|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Confusion : employez un participe passé.
 
 TEST: m’avoir {{terminer}}.
@@ -20593,7 +20595,7 @@ TEST: Voici ce qui vous est {{du}}.
 
 __ppas_avoir_interrogatif__
     *WORD  /VCint  *WORD
-        <<- /ppas/ morphVC(\2, ":V0a") and not value(\3, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
+        <<- /ppas/ morphVC(\2, ":V0a") and not value(\3, "|barre|charge|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
         <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":[QM]")
         -3>> =suggVerbPpas(\3, ":m:s")                      # Incohérence probable avec “\2”. Après “avoir”, ce verbe devrait être un participe passé.
         <<- /ppas/ __else__ and not value(\1, "|les|l’|m’|t’|nous|vous|en|") and morph(\3, ":Q.*:[fp]", ":m:[si]")
@@ -20601,7 +20603,7 @@ __ppas_avoir_interrogatif__
         -3>> =suggVerbPpas(\3, ":m:s")                      # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
 
     [<start>|,]  ?n’¿  /VCint  *WORD
-        <<- /ppas/ morphVC(\-2, ":V0a") and not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
+        <<- /ppas/ morphVC(\-2, ":V0a") and not value(\-1, "|barre|charge|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
         <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QM]")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Incohérence probable avec “\-2”. Après “avoir”, ce verbe devrait être un participe passé.
         <<- /ppas/ __else__ and morph(\-1, ":Q.*:[fp]", ":m:[si]")
