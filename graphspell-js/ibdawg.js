@@ -380,7 +380,9 @@ class IBDAWG {
                     && ["l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu"].includes(sNewWord.toLowerCase()) && char_player.aVowel.has(sRemain.slice(0,1))) {
                     oSuggResult.addSugg(sNewWord+"’"+sRemain);
                 }
-                oSuggResult.addSugg(sNewWord+" "+sRemain);
+                if ((sNewWord.length > 1 && sRemain.length > 1) || ["a", "à", "y"].includes(sNewWord) || ["a", "à", "y"].includes(sRemain)) {
+                    oSuggResult.addSugg(sNewWord+" "+sRemain);
+                }
             }
         }
         if (nDist > oSuggResult.nDistLimit) {

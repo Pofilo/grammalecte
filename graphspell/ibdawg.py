@@ -340,7 +340,8 @@ class IBDAWG:
             if (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
                 if self.sLangCode == "fr" and sNewWord.lower() in ("l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu") and sRemain[0:1] in cp.aVowel:
                     oSuggResult.addSugg(sNewWord+"’"+sRemain)
-                oSuggResult.addSugg(sNewWord+" "+sRemain)
+                if (len(sNewWord) > 1 and len(sRemain) > 1) or sNewWord in ("a", "à", "y") or sRemain in ("a", "à", "y"):
+                    oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return
         cCurrent = sRemain[0:1]
