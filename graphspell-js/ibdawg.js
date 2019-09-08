@@ -268,10 +268,7 @@ class IBDAWG {
                     return !!this.lookup(sWord.toLowerCase());
                 }
                 if (sWord.gl_isUpperCase()) {
-                    if (this.bAcronymValid) {
-                        return true;
-                    }
-                    return !!(this.lookup(sWord.toLowerCase()) || this.lookup(sWord.gl_toCapitalize()));
+                    return !!(this.bAcronymValid || this.lookup(sWord.toLowerCase()) || this.lookup(sWord.gl_toCapitalize()));
                 }
                 return !!this.lookup(sWord.slice(0, 1).toLowerCase() + sWord.slice(1));
             }

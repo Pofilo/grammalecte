@@ -3,7 +3,7 @@
 """
 INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 Implementation of a spellchecker as a transducer (storing transformation code to get lemma and morphologies)
-and a spell suggestion mechanim
+and a spell suggestion mechanism
 """
 
 import traceback
@@ -266,9 +266,7 @@ class IBDAWG:
                 if sWord.istitle():
                     return self.lookup(sWord.lower())
                 if sWord.isupper():
-                    if self.bAcronymValid:
-                        return True
-                    return self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
+                    return self.bAcronymValid or self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
                 return self.lookup(sWord[:1].lower() + sWord[1:])
             return self.lookup(sWord.lower())
         if sWord[0:1].isdigit():
