@@ -13887,7 +13887,7 @@ TEST: du chien et de l’étonnant {{colliers}} qu’il avait autour du cou.
 
 __gn_le_1m__
     ,  le  *WORD
-        <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -2>> =suggLesLa(\2)           # Accord de genre erroné : « \3 » est féminin.
+        <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)") -2>> =suggLesLa(\3)           # Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            # Accord de genre erroné : « \2 » est un déterminant masculin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggMasSing(\3)               # Accord de nombre erroné : « \3 » devrait être au singulier.
         <<- /gn/ __also__ -2>> les                                                                  # Accord de nombre erroné : « \3 » est au pluriel.
@@ -13896,7 +13896,7 @@ __gn_le_1m__
         <<- /gn/ morph(\2, ":D") >>>
         <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|[123][sp]|Y)")
             or ( morph(\3, ":[NA].*:f", ":[me]") and morph(\1, ":R", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
-        -2>> =suggLesLa(\2)                                                                         # Accord de genre erroné : « \3 » est féminin.
+        -2>> =suggLesLa(\3)                                                                         # Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            # Accord de genre erroné : « \2 » est un déterminant masculin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", "*")
             or ( morph(\3, ":[NA].*:p", ":[si]") and morph(\1, ":[RC]", ">(?:e[tn]|ou)/") and not (morph(\1, ":Rv") and morph(\3, ":Y")) )
@@ -13904,7 +13904,7 @@ __gn_le_1m__
         <<- /gn/ __also__ -2>> les                                                                  # Accord de nombre erroné : « \3 » est au pluriel.
 
     <start>  le  *WORD
-        <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|Y)") -2>> =suggLesLa(\2)                     # Accord de genre erroné : « \3 » est féminin.
+        <<- /gn/ morph(\3, ":[NA].*:f", ":(?:e|m|P|G|W|Y)") -2>> =suggLesLa(\3)                     # Accord de genre erroné : « \3 » est féminin.
         <<- /gn/ __also__ and hasMasForm(\3) -3>> =suggMasSing(\3, True)                            # Accord de genre erroné : « \2 » est un déterminant masculin.
         <<- /gn/ __else__ and morph(\3, ":[NA].*:p", ":[siGW]") -3>> =suggMasSing(\3)               # Accord de nombre erroné : « \3 » devrait être au singulier.
         <<- /gn/ __also__ -2>> les                                                                  # Accord de nombre erroné : « \3 » est au pluriel.
@@ -13913,6 +13913,7 @@ TEST: c’est une catastrophe, {{le}} {{profits}} a baissé ces deux derniers tr
 TEST: j’en ai marre, {{le}} {{passée}} est trop dans les esprits
 TEST: {{Le}} démoralisation.                                  ->> La
 TEST: {{Le}} Guyane française.                                ->> La
+TEST: sur {{le}} {{tables}}                                   ->> les|la|||
 TEST: avec {{le}} {{pile}}
 TEST: contre {{le}} {{rois}}
 TEST: {{le}} {{publique}}
