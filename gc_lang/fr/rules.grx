@@ -4758,6 +4758,15 @@ __bs_pour_ne_pas_que__
 TEST: Nous y sommes allés {{pour ne pas qu’}}elle se sente seule.
 
 
+# silence assourdissant
+__bs_silence_assourdissant__
+    silence assourdissant
+    silences assourdissants
+        <<- /bs/ ->> _                                                                              # Cliché. Locution oxymorique employée à tort et à travers.
+
+TEST: dans un {{silence assourdissant}}
+
+
 # très / trop
 __bs_très_trop_superflu__
     [très|trop] [beaucoup|assez|mieux|pire|meilleur|délicieux|plus|moins]
@@ -6544,7 +6553,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|distance|nouveau|peine|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
+    a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
     a air comprimé
     a armes égales
     a aucun prix
@@ -6767,13 +6776,14 @@ TEST: le coût est estimé à au moins 1000 milliards de dollars
 TEST: elle à qui nous avons donné notre cœur et pour laquelle nous avons tout tenté pour la faire aimer de nos concitoyens.
 TEST: jusqu’à parfois se mettre en danger
 TEST: les méthodes de l’à-peu-près ne suffisent pas.
+TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumière
 
 
 ## substantifs
 
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
-        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|lieu|peur|raison|rapport|recours|soif|tendance|tort|vent|")
+        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|lieu|peine|peur|raison|rapport|recours|soif|tendance|tort|vent|")
             and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -12613,7 +12623,7 @@ __simplication_substantifs__
     >mineure [de|d’] moins [de|d’] *NUM ans
     >mineure [de|d’] moins [de|d’] $:B ans
     >miroir aux alouettes
-    >mode [de|d’] [paiement|scrutin|vie]
+    >mode [de|d’] [emploi|paiement|scrutin|vie]
     >monnaie [de|d’] [échange|réserve|singe]
     >montre à gousset
     >mot [de|d’] passe
@@ -12995,7 +13005,7 @@ __purge_après_avoir__
     >avoir  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morph(>1, ":[QY]") ~2:0>> *
 
-    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
     >avoir  bon dos
     >avoir  bon pied ?,¿ bon œil
     >avoir  carte blanche
@@ -13005,7 +13015,7 @@ __purge_après_avoir__
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":LV"])
 
-    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
     >avoir  [pas|jamais|plus|guère|point]  bon dos
     >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
@@ -13016,7 +13026,7 @@ __purge_après_avoir__
         <<- ~3:0>> ␣
         <<- =>> define(\3, [":LV"])
 
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
         <<- ~2:-2>> *
 
@@ -13048,7 +13058,7 @@ __purge_après_avoir__
     /VCint  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morphVC(\1, ":V0a") and morph(>1, ":[QY]") ~2:0>> *
 
-    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
     /VCint  bon dos
     /VCint  bon pied ?,¿ bon œil
     /VCint  carte blanche
@@ -13058,7 +13068,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~2:0>> ␣
         <<- __also__ =>> define(\2, [":LV"])
 
-    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
     /VCint  [pas|jamais|plus|guère|point]  bon dos
     /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
@@ -13069,7 +13079,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
         <<- __also__ =>> define(\3, [":LV"])
 
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|soif|vent]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
     /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
         <<- morphVC(\1, ":V0a") ~2:-2>> *
 
@@ -15818,7 +15828,7 @@ TEST: On va procéder par {{intervalle}}
 __sgpl_juste__
     justes
         <<- /sgpl/ \1.islower() and morph(<1, ":V", ":[DA]") and not morph(>1, ":[NA].*:[pi]")
-            and not (morph(<1, ">(?:être|sembler|devenir|rester|demeurer|redevenir|para[îi]tre)/.*:[123]p") and morph(>1, ":G|<end>|>,/"))
+            and not (morph(<1, ">(?:être|sembler|devenir|rester|demeurer|redevenir|para[îi]tre|trouver)/.*:[123]p") and morph(>1, ":G|<end>|>,/"))
         ->> juste                                                   # Si “juste” est un adverbe, il est invariable.
 
 TEST: Viser {{justes}}
@@ -15830,6 +15840,7 @@ TEST: Nos chiffres sont justes, et nous vous le prouverons.
 TEST: Ces observations sont tellement justes que, dans les années à venir, elles serviront de référence.
 TEST: Les motivations sont justes et évidentes
 TEST: ces théories incomplètes sont suffisamment justes pour prédire la réalité
+TEST: À vous de trouver les compromis que vous trouvez justes.
 
 
 # pied
