@@ -12742,6 +12742,7 @@ __simplication_substantifs__
     >têtue comme un [âne|bourriquot|mulet]
     >terrain à découvert
     >tigre à dents [de|d’] sabre
+    >tiret d’ incise
     >titre [de|d’] [noblesse|propriété|séjour]
     >tondeuse à gazon
     >tour [de|d’] passe-passe
@@ -18095,12 +18096,21 @@ __infi_qqch_de__
     en vue                                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
 
+    >avoir raison                               [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir raison de”, le verbe devrait être à l’infinitif.
+
+    >avoir raison                               [de|d’]  [l’|la]                   ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “avoir raison de”, le verbe devrait être à l’infinitif.
+
     [>façon|>manière]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
 
     il >être [temps|impossible|indispensable|nécessaire|utile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est \3 de”, le verbe devrait être à l’infinitif.
+
+    il >être hors de question                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est hors de question de”, le verbe devrait être à l’infinitif.
 
     [<start>|,] impossible  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “impossible de”, le verbe devrait être à l’infinitif.
@@ -18113,8 +18123,11 @@ TEST: afin de leur {{percée}} une ouverture
 TEST: en train de {{percées}}
 TEST: ils sont à même de {{trouvé}} la bonne réponse
 TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
+TEST: tu avais raison de {{pensée}} ça
+TEST: avoir raison de la {{considérée}} ainsi
 TEST: elle est en train de {{mangée}}
 TEST: je déteste sa manière de la {{rabaissée}} en permanence.
+TEST: il est hors de question de {{menée}} cette attaque ainsi
 TEST: il serait temps de {{poussée}} la logique jusqu’au bout
 TEST: impossible d’{{échappée}} à cette horreur.
 TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
