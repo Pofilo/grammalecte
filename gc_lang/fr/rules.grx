@@ -11422,6 +11422,7 @@ __purge_locutions__
     depuis bien longtemps
     depuis [de|d’] ?[assez|très]¿ longues années
     depuis des lustres
+    depuis la nuit des temps
     depuis la [première|dernière|~ième$] fois
     depuis les années ~^\d{2,5}$
     depuis ?[assez|très]¿ longtemps
@@ -12623,6 +12624,7 @@ __simplication_substantifs__
     >lit [de|d’] camp
     >livraison à domicile
     >livre [de|d’] poche
+    >longueur d’ avance
     >lune [de|d’] miel
     >machine à [café|coudre|écrire|laver|sous|voter]
     >machine à remonter le temps
@@ -12794,6 +12796,7 @@ __purge_syntagmes_nominaux_matière__
     *WORD  en  pierre
     *WORD  en  pierre de taille
     *WORD  en  soie
+    *WORD  en  terre  ?cuite¿
         <<- morph(\1, ":N") and not morph(>1, ":A.*:[fe]:[si]") ~2:0>> *
 
 TEST: deux câbles en acier situés de part et d’autre du chariot
@@ -18073,11 +18076,13 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>cesser|>décider|>défendre|>suggérer|>commander|>essayer|>tenter|>choisir|>permettre|>interdire]  [de|d’]  *WORD
+    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>suggérer|>tenter]  [de|d’]  *WORD
         <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
 
 TEST: cessez d’{{anesthésié}} ces gens !
+TEST: arrête d’y {{consacré}} autant de temps.
+TEST: Il tentait de {{raisonné}} en homme libre
 TEST: Le menu Format contient de nombreuses commandes de mise en forme.
 TEST: Le commandant de zone…
 TEST: À quoi rime de décider de mesures écologiques d’en haut
@@ -18086,21 +18091,31 @@ TEST: l’industrie est également touchée, avec « des pertes de commandes de
 
 
 __infi_qqch_de__
-    [afin|avant]                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    afin                                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     avant ?même¿                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     marre                                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif.
 
     à même                                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-    en train                                    [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-    en vue                                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
 
-    >avoir raison                               [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+    en  [droit|état|mesure|train|vue]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
+
+    >avoir l’ air                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir l’air de”, le verbe devrait être à l’infinitif.
+
+    >avoir la chance                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir la chance de”, le verbe devrait être à l’infinitif.
+
+    >avoir [besoin|raison]                      [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir raison de”, le verbe devrait être à l’infinitif.
 
-    >avoir raison                               [de|d’]  [l’|la]                   ~..ée?s?$
+    >avoir [besoin|raison]                      [de|d’]  [l’|la]                   ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “avoir raison de”, le verbe devrait être à l’infinitif.
+
+    >faire  semblant                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “faire semblant de”, le verbe devrait être à l’infinitif.
 
     [>façon|>manière]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -18112,17 +18127,21 @@ __infi_qqch_de__
     il >être hors de question                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est hors de question de”, le verbe devrait être à l’infinitif.
 
-    [<start>|,] impossible  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    [<start>|,] impossible                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “impossible de”, le verbe devrait être à l’infinitif.
 
-    force [est|était]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    force [est|était]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “force est de”, le verbe devrait être à l’infinitif.
+
+    sous peine                                  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “sous peine de”, le verbe devrait être à l’infinitif.
 
 TEST: afin de leur {{percée}} une ouverture
 TEST: en train de {{percées}}
 TEST: ils sont à même de {{trouvé}} la bonne réponse
 TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
+TEST: il a l’air de {{pensée}} qu’on est des crétins
 TEST: tu avais raison de {{pensée}} ça
 TEST: avoir raison de la {{considérée}} ainsi
 TEST: elle est en train de {{mangée}}
@@ -18131,6 +18150,9 @@ TEST: il est hors de question de {{menée}} cette attaque ainsi
 TEST: il serait temps de {{poussée}} la logique jusqu’au bout
 TEST: impossible d’{{échappée}} à cette horreur.
 TEST: Force est d’{{pensée}} que nous allons y arriver avec seulement nos bonnes intentions.
+TEST: sous peine de nous {{pesée}} lourd sun l’estomac
+TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
+TEST: Ne fais pas semblant de l’{{oubliée}}.
 
 
 __infi_de_verbe__
@@ -18148,12 +18170,6 @@ __infi_de_verbe__
     [de|d’] ?[ne|n’]¿  [lui|leur]                     en                         @:V¬:Y
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
-    en  [droit|état|mesure|train]  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
-        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “\1 \2 \3”, le verbe devrait être à l’infinitif.
-
-    >faire  ?[pas|jamais|guère]¿  semblant  [de|d’]  ?[nous|vous|le|la|l’|les|leur]¿  @:V1.*:Q
-        <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “faire semblant de”, le verbe devrait être à l’infinitif.
-
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
             and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
@@ -18164,7 +18180,6 @@ TEST: d’en {{parlé}} sans cesse
 TEST: cela suffit de les {{aimait}}
 TEST: de ne leur en {{avancé}} que le nécessaire.
 TEST: de l’y {{poussé}}
-TEST: arrête d’y {{consacré}} autant de temps.
 TEST: je suis certain d’en {{choque}} plusieurs.
 TEST: elle était capable de la {{trouvait}} où qu’elle soit.
 TEST: de me le {{facturez}}
@@ -18172,11 +18187,8 @@ TEST: suffit de {{la}} {{finit}}
 TEST: Il s’agit de me {{donnait}} tout ça.
 TEST: j’étais incapable de m’{{orientait}} dans la bonne direction.
 TEST: ils étaient susceptibles de m’y {{trouvaient}}
-TEST: Il tentait de {{raisonné}} en homme libre
 TEST: sa façon de {{nettoyez}} était inefficace.
 TEST: elle a délibérément omis de les {{inclurent}}.
-TEST: Sont-ils en mesure de nous {{fabriqué}} ces armes ?
-TEST: Ne fais pas semblant de l’{{oubliée}}.
 TEST: d’{{mangé}} je ne suis pas capable
 TEST: elle s’engage de ne les lui donner qu’en dernier recours.
 TEST: l’idée consiste de la lui donner sans contrepartie et voir ce qu’il en fera.
