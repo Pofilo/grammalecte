@@ -5109,7 +5109,6 @@ TEST: {{reporter à plus tard}}                  ->> reporter
 
 
 
-
 !!
 !!
 !!!! Tournures de langage                                                                         !!
@@ -8745,6 +8744,16 @@ TEST: il ne tient par contre que grâce à nous
 TEST: elle ne savait par qui passer pour arriver à ses fins.
 
 
+# par les temps qui courent
+__conf_par_les_temps_qui_courent__
+    !! par les temps qui courent ¡¡
+    [par|>part|pare+s] les [>tan|tant|temps] qui [courent|court+s|>cour|coure+s|courre]
+        <<- /conf/ ->> par les temps qui courent                            # Confusion: Locution “par les temps qui courent”.
+
+TEST: {{part les tan qui court}}
+TEST: par les temps qui courent, impossible de passer inaperçu.
+
+
 # pause /pose
 __conf_pause_pose__
     >pose [gourmande|café|carrière|crédit|déjeuner|détente|dîner|pipi|repas|thé]
@@ -10976,7 +10985,7 @@ __purge_locutions__
     à n’ en [pas|point] douter
     à n’ en plus finir
     à n’ importe quel prix
-    à parler franc
+    à parler [franc|strictement]
     à part [entière|ça|cela|ceci]
     à parts égales
     à partir [de|d’]  {pronom_obj}
@@ -11019,6 +11028,7 @@ __purge_locutions__
     à s’ y méprendre
     à somme nulle
     à spectre ?[très|si]¿ large
+    à strictement parler
     à tarif réduit
     à tarifs réduits
     à tel point
@@ -11961,7 +11971,6 @@ __purge_locutions__
     vaille que vaille
     ventre à terre
     vers nulle part
-    vite
     vite fait ?,¿ bien fait
     [voici|voilà] belle lurette
     volontiers
@@ -12523,6 +12532,7 @@ __simplication_substantifs__
     >compagnon [de|d’] route
     >complémentaire santé
     >compte à rebours
+    concours de beauté
     >condamnée à mort
     >conférence [de|d’] presse
     >convention [récepteur|générateur]
@@ -12628,6 +12638,7 @@ __simplication_substantifs__
     >lit [de|d’] camp
     >livraison à domicile
     >livre [de|d’] poche
+    >livret d’ épargne ?[bancaire|populaire|salariale]¿
     >longueur d’ avance
     >lune [de|d’] miel
     >machine à [café|coudre|écrire|laver|sous|voter]
@@ -13519,6 +13530,11 @@ __da_substantifs__
         <<- =>> exclude(\2, ":V") and exclude(\3, ":V")
 
 
+__purge_vite__
+    vite
+        <<- not (morph(<1, ":V0a") and value(>1, "|fait|")) ~>> *
+
+
 __purge_locutions_verbales__
     >aller bon train
     >arriver à [destination|échéance]
@@ -13605,6 +13621,7 @@ __purge_locutions_verbales__
     >réduire en miettes
     >remettre en cause
     >rendre [hommage|service|visite]
+    >reprendre haleine
     >rester lettre morte
     >rester lettres mortes
     >revenir à la case départ
@@ -17937,7 +17954,6 @@ TEST: Tu as fait de la {{tôle}} ?
 TEST: C’est la {{taule}} galvanisée.
 
 
-
 # tant / temps (2e partie)
 __conf_tant_temps_tan__
     en [temps|>tan] [que|qu’]
@@ -18080,7 +18096,7 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>suggérer|>tenter]  [de|d’]  *WORD
+    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>refuser|>suggérer|>tenter]  [de|d’]  *WORD
         <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
 
@@ -18112,11 +18128,17 @@ __infi_qqch_de__
     >avoir la chance                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir la chance de”, le verbe devrait être à l’infinitif.
 
+    >avoir le droit                             [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir le droit de”, le verbe devrait être à l’infinitif.
+
     >avoir [besoin|raison]                      [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir raison de”, le verbe devrait être à l’infinitif.
 
     >avoir [besoin|raison]                      [de|d’]  [l’|la]                   ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “avoir raison de”, le verbe devrait être à l’infinitif.
+
+    >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
 
     >faire  semblant                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “faire semblant de”, le verbe devrait être à l’infinitif.
@@ -18125,7 +18147,7 @@ __infi_qqch_de__
     [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
 
-    il >être [temps|impossible|indispensable|nécessaire|utile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    il >être [temps|difficile|facile|impossible|indispensable|nécessaire|possible|utile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est \3 de”, le verbe devrait être à l’infinitif.
 
     il >être hors de question                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -18147,7 +18169,10 @@ TEST: ils sont à même de {{trouvé}} la bonne réponse
 TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
 TEST: il a l’air de {{pensée}} qu’on est des crétins
 TEST: tu avais raison de {{pensée}} ça
+TEST: nous eûmes la chance de la {{trouvée}} facilement
 TEST: avoir raison de la {{considérée}} ainsi
+TEST: vous avez le droit de lui {{craché}} à la gueule
+TEST: ils ont vite fait de nous {{poussée}} à bout
 TEST: elle est en train de {{mangée}}
 TEST: je déteste sa manière de la {{rabaissée}} en permanence.
 TEST: il est hors de question de {{menée}} cette attaque ainsi
