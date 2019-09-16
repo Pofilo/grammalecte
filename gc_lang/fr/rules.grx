@@ -20654,7 +20654,7 @@ TEST: Voici ce qui vous est {{du}}.
 __ppas_avoir_interrogatif__
     *WORD  /VCint  *WORD
         <<- /ppas/ morphVC(\2, ":V0a") and not value(\3, "|barre|charge|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
-        <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":[QM]")
+        <<- /ppas/ morph(\3, ":(?:Y|[123][sp])", ":[QMG]")
         -3>> =suggVerbPpas(\3, ":m:s")                      # Incohérence probable avec “\2”. Après “avoir”, ce verbe devrait être un participe passé.
         <<- /ppas/ __else__ and not value(\1, "|les|l’|m’|t’|nous|vous|en|") and morph(\3, ":Q.*:[fp]", ":m:[si]")
             and not morph(\1, ":[NA].*:[fp]") and not before("(?i)\\b(?:quel(?:le|)s?|combien) ")
@@ -20662,7 +20662,7 @@ __ppas_avoir_interrogatif__
 
     [<start>|,]  ?n’¿  /VCint  *WORD
         <<- /ppas/ morphVC(\-2, ":V0a") and not value(\-1, "|barre|charge|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|") >>>
-        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QM]")
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QMG]")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Incohérence probable avec “\-2”. Après “avoir”, ce verbe devrait être un participe passé.
         <<- /ppas/ __else__ and morph(\-1, ":Q.*:[fp]", ":m:[si]")
         --1>> =suggVerbPpas(\-1, ":m:s")                    # Avec “avoir”, il faut un participe passé (au masculin singulier, sauf éventuellement si un COD précède).
@@ -20685,6 +20685,7 @@ TEST: N’avais-tu pas crainte de tout perdre ?
 TEST: Combien de bêtes n’as-tu pas déjà massacrées
 TEST: Combien de bêtes as-tu déjà massacrées
 TEST: A-t-il Pierre pour ami ?
+TEST: Quel lien y a-t-il entre donner et recevoir ?
 
 
 __ppas_l_m_t_avoir_interrogatif__
