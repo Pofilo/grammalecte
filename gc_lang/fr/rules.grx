@@ -6354,6 +6354,14 @@ TEST: Sébastien {{a}} {{demander}} des conseils.
 TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
 
 
+__conf_à_qui_infinitif__
+    *WORD a qui $:Y
+        <<- /conf/ morph(\1, ":N") -2>> à                           # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: il n’y avait personne {{a}} qui parler de nos problèmes       ->> à
+TEST: des gens {{a}} qui offrir ça                                  ->> à
+
+
 __conf_à_a__
     [<start>|,] a moins [que|qu’]
         <<- /conf/ -2>> à                                           # Confusion probable : « à moins que » pour dire « sauf si ».
@@ -14604,7 +14612,7 @@ __gn_des_2m__
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
         <<- /gn/ morph(\2, ":[NA].*:[pi]") and morph(\3, ":[NA].*:s", "*") and not apposition(\2, \3) and not (value(>1, "|et|,|") and morph(>2, ":A"))
         -3>> =suggPlur(\3)                                                                          # Accord de nombre erroné avec « \1 \2 » : « \3 » devrait être au pluriel.
-        <<- checkAgreement(\2, \3) =>> =exclude(\3, ":V")
+        <<- not morph(\3, ":G|>a/") and checkAgreement(\2, \3) =>> =exclude(\3, ":V")
 
 TEST: faire table rase des passions {{inutile}}               ->> inutiles
 TEST: à bonne distance des {{chiens}} {{méchante}}
