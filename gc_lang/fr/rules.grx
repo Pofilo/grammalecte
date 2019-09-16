@@ -6316,7 +6316,7 @@ TEST: Celui qui y croit {{à les}} moyens d’y parvenir.
 
 
     à  *WORD
-        <<- /conf/ \2.islower() and not value(\2, "|coté|") >>>
+        <<- /conf/ \2.islower() and not value(\2, "|coté|sont|") >>>
         <<- /conf/ morph(\2, ":(?:V.......[_z][az].*:Q|V1.*:Ip:2p)", ":[MGWNY]") -1>> a             # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
         <<- /conf/ __also__ and morph(\2, "V1.*:(?:Ip:2p|Q)", "*") and not value(<1, "|il|elle|on|n’|les|l’|m’|t’|s’|d’|en|y|lui|nous|vous|leur|")
         -2>> =suggVerbInfi(\2)                                                                      # Le verbe devrait être à l’infinitif.
@@ -9571,7 +9571,8 @@ TEST: en {{sont}} {{absence}}
 TEST: qui {{son}} ces gens ?
 TEST: chez {{sont}} amis
 TEST: il a perdu {{sont}} {{ami}}
-TEST: ces gens {{son}} ceux qui nous mettent constamment dans la merde
+TEST: ces gens {{son}} ceux qui nous mettent constamment dans la merde          ->> sont
+TEST: à {{sont}} précis de mathématiques                                        ->> son
 TEST: elles s’en sont mal portées
 TEST: ils en sont reconnaissants
 TEST: sont loin, ces gens…
