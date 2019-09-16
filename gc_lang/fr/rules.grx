@@ -6355,8 +6355,8 @@ TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
 
 
 __conf_à_qui_infinitif__
-    *WORD a qui $:Y
-        <<- /conf/ morph(\1, ":N") -2>> à                           # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+    *WORD  a  qui  @:(?:Y|Os)
+        <<- /conf/ morph(\1, ":N", ":Ov") -2>> à                    # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: il n’y avait personne {{a}} qui parler de nos problèmes       ->> à
 TEST: des gens {{a}} qui offrir ça                                  ->> à
@@ -9699,6 +9699,13 @@ TEST: Elle l’a observé par un miroir sans {{teint}}.
 TEST: Elle a acheté un nouveau fond de {{tain}}.
 
 
+__conf_taule_tôle1__
+    [>taule] [de|d’|en] [>acier|>alu|>aluminium|>bardage|>cuivre|>étanchéité|>fer|>festonnage|inox|>laiton|>métal|>trapèze|>zinc|>éverite|>fibrociment|>fibro-ciment|>plastique|>polycarbonate|PVC]
+        <<- /conf/ -1>> =\1.replace("au", "ô").replace("AU", "Ô")   # Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
+
+TEST: une {{taule}} en acier
+
+
 # tête / tète
 __conf_tête_tète!6__
     [tète|tètes] [baissée|baissées|baissé|baissés]
@@ -11565,6 +11572,7 @@ __purge_locutions__
     en un rien [de|d’] temps
     en une autre occasion
     en vase clos
+    en vigueur
     en vitesse ?[subsonique|supersonique|subluminique|superluminique]¿
     en voie [de|d’] développement
     en y réfléchissant bien
@@ -12169,9 +12177,13 @@ __gestion_mots_grammaticaux__
     vent debout contre
         <<- ~1:2>> *
 
-    je      [t’|vous]   en  [prie|supplie]
-    nous    [t’|vous]   en  [prions|supplions]
+    je      [t’|vous]   en  [prie|supplie]  <end>
+    nous    [t’|vous]   en  [prions|supplions]  <end>
         <<- ~>> *
+
+    ,  je      [t’|vous]   en  [prie|supplie]  ,
+    ,  nous    [t’|vous]   en  [prions|supplions]  ,
+        <<- not morph(>1, ":E") ~>> *
 
 
 # Déterminant + nombre
@@ -12770,6 +12782,19 @@ __simplication_substantifs__
     >calibre *NUM [*|×] *NUM ?[mm|in]¿
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
+
+
+__purge_syntagmes_nominaux_matière__
+    *WORD  en  acier  ?[galvanisé|inoxydable|trempé]¿
+    *WORD  en  [alu|aluminium|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox|laiton|lin|coton|métal|nacre|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]
+        <<- morph(\1, ":N") and not morph(>1, ":A.*:[me]:[si]") ~2:0>> *
+
+    *WORD  en  pierre
+    *WORD  en  pierre de taille
+    *WORD  en  soie
+        <<- morph(\1, ":N") and not morph(>1, ":A.*:[fe]:[si]") ~2:0>> *
+
+TEST: deux câbles en acier situés de part et d’autre du chariot
 
 
 __purge_locutions_adjectivales__
@@ -13823,6 +13848,8 @@ TEST: la critique conduit nombre de protestataires à se replier sur des modalit
 TEST: Tu crois que Microsoft peut contraindre les projets libres à quoi que ce soit ?
 TEST: « L’école produit la norme en matière de langage »
 TEST: Parler affaires.
+TEST: Mon Dieu, je vous en prie, faites qu’il ne m’arrive rien
+TEST: Anne, je t’en prie, viens de bonne heure
 
 
 
@@ -17887,7 +17914,7 @@ TEST: peiner à la tâche.
 
 
 # taule / tôle
-__conf_taule_tôle__
+__conf_taule_tôle2__
     >aller en [>tôle|>tole]
     >quitter cette [tôle|tole]
     >faire de la [tôle|tole]
@@ -17896,13 +17923,10 @@ __conf_taule_tôle__
     [>taule] [>boulonner|>cintrer|>émailler|>emboutir|>galvaniser|>gaufrer|>nervurer|>onduler|>perforer|>souder|>translucide]
         <<- /conf/ -1>> =\1.replace("au", "ô").replace("AU", "Ô")   # Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
 
-    [>taule] [de|d’|en] [>acier|>alu|>aluminium|>bardage|>cuivre|>étanchéité|>fer|>festonnage|inox|>laiton|>métal|>trapèze|>zinc|>éverite|>fibrociment|>fibro-ciment|>plastique|>polycarbonate|PVC]
-        <<- /conf/ -1>> =\1.replace("au", "ô").replace("AU", "Ô")   # Confusion. La taule est la forme argotique pour évoquer la prison, le bordel ou toute forme d’habitation.
-
 TEST: Demain, il va aller en {{tôle}}.
 TEST: Tu as fait de la {{tôle}} ?
 TEST: C’est la {{taule}} galvanisée.
-TEST: une {{taule}} en acier
+
 
 
 # tant / temps (2e partie)
