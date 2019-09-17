@@ -12047,7 +12047,6 @@ __gestion_mots_grammaticaux__
     à [base|force|raison]                                                                                                                       [de|d’]
     à grand renfort                                                                                                                             [de|d’]
     à grands coups                                                                                                                              [de|d’]
-    à seule fin                                                                                                                                 [de|d’]
     au [bout|courant|cours|détriment|fond|gré|lieu|long|large|milieu|nord|profit|ras|sein|sommet|sortir|sud|sujet|vu]                           [de|du|d’|des]
     au beau milieu                                                                                                                              [de|du|d’|des]
     au fin fond                                                                                                                                 [de|du|d’|des]
@@ -18098,7 +18097,7 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 __infi_verbe_de_verbe__
     [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>refuser|>suggérer|>tenter]  [de|d’]  *WORD
-        <<- /infi/ not morph(\1, ":N") and analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]")
+        <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]"))
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
 
 TEST: cessez d’{{anesthésié}} ces gens !
@@ -18151,7 +18150,7 @@ __infi_qqch_de__
     [>intention|>volonté]                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif s’il s’agit bien de décrire une action.
 
-    il >être [temps|difficile|facile|impossible|indispensable|nécessaire|possible|utile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    il >être [temps|absurde|contraignant|libérateur|difficile|facile|impossible|indispensable|nécessaire|possible|utile|inutile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est \3 de”, le verbe devrait être à l’infinitif.
 
     il >être hors de question                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -18169,6 +18168,7 @@ __infi_qqch_de__
 
 TEST: afin de leur {{percée}} une ouverture
 TEST: en train de {{percées}}
+TEST: elle tricha à seule fin d’{{allée}} à l’université
 TEST: ils sont à même de {{trouvé}} la bonne réponse
 TEST: Nous étions en train de {{trouvé}} une solution à ces soucis récurrents.
 TEST: il a l’air de {{pensée}} qu’on est des crétins
@@ -18487,7 +18487,8 @@ TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dra
 
 
 __infi_verbes__
-    [>aimer|>désirer|>écouter|>entendre|>espérer|>oser|>préférer|>regarder|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+# regarder, écouter, ouïr
+    [>aimer|>désirer|>entendre|>espérer|>oser|>préférer|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M")
         -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
@@ -26954,7 +26955,7 @@ TEST: » Adolphe Lebon, commis chez Mignaud et fils, dépose que, le jour en qu
 TEST: Quand la porte s’ouvrit, mademoiselle l’Espanaye parut, et lui prit des mains l’un des deux sacs, pendant que la vieille dame le déchargeait de l’autre.
 TEST: Il les salua et partit. Il n’a vu personne dans la rue en ce moment. C’est une rue borgne, très-solitaire.
 TEST: » William Bird, tailleur, dépose qu’il est un de ceux qui se sont introduits dans la maison. Il est Anglais. Il a vécu deux ans à Paris. Il est un des premiers qui ont monté l’escalier.
-TEST: Il a entendu les voix qui se disputaient. La voix rude était celle d’un Français. Il a pu distinguer quelques mots, mais il ne se les rappelle pas. Il a entendu distinctement sacré et mon Dieu.
+TODO: Il a entendu les voix qui se disputaient. La voix rude était celle d’un Français. Il a pu distinguer quelques mots, mais il ne se les rappelle pas. Il a entendu distinctement sacré et mon Dieu.
 TEST: C’était en ce moment un bruit comme de plusieurs personnes qui se battent, – le tapage d’une lutte et d’objets qu’on brise. La voix aiguë était très-forte, plus forte que la voix rude.
 TEST: Il est sûr que ce n’était pas une voix d’Anglais. Elle lui sembla une voix d’Allemand ; peut-être bien une voix de femme. Le témoin ne sait pas l’allemand.
 TEST: » Quatre des témoins ci-dessus mentionnés ont été assignés de nouveau, et ont déposé que la porte de la chambre où fut trouvé le corps de mademoiselle l’Espanaye était fermée en dedans quand ils y arrivèrent.
