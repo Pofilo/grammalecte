@@ -10985,7 +10985,7 @@ __purge_locutions__
     à n’ en [pas|point] douter
     à n’ en plus finir
     à n’ importe quel prix
-    à parler [franc|strictement]
+    à parler [franc|franchement|strictement]
     à part [entière|ça|cela|ceci]
     à parts égales
     à partir [de|d’]  {pronom_obj}
@@ -11201,6 +11201,7 @@ __purge_locutions__
     chaque fois
     ci-dessous
     ci-dessus
+    chose promise ?,¿ chose due
     comme avant
     comme autrefois
     comme d’ habitude
@@ -18116,8 +18117,11 @@ __infi_qqch_de__
     marre                                       [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 de”, le verbe devrait être à l’infinitif.
 
-    à même                                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
+    à [défaut|même]                             [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “à \2 de”, le verbe devrait être à l’infinitif.
+
+    à >seule >fin                               [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “à seule fin de”, le verbe devrait être à l’infinitif.
 
     en  [droit|état|mesure|train|vue]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\1 \2 de”, le verbe devrait être à l’infinitif.
@@ -18483,7 +18487,7 @@ TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dra
 
 
 __infi_verbes__
-    [>aimer|>désirer|>espérer|>oser|>préférer|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    [>aimer|>désirer|>écouter|>entendre|>espérer|>oser|>préférer|>regarder|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M")
         -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
