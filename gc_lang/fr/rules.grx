@@ -5847,7 +5847,7 @@ __conf_déterminant_mas_sing_verbe__
         <<- /conf/ \3.islower()
         -3>> =suggSimil(\3, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\2” : “\3” est un verbe.
 
-    [un|une]  @:(?:Y|[123][sp])¬:[GNA]  ?@:W¿  @:A¬:[GM]
+    [un|une]  @:(?:Y|[123][sp])¬:[GNA]  ?$:W¿  @:A¬:[GM]
         <<- /conf/ not value(<1, "|dont|l’|d’|sauf|excepté|") and not before("(?i)\\bun à +$")
         -2>> =suggSimil(\2, ":[NAQ]:[me]:[si]", True)                                               # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
 
@@ -6937,11 +6937,11 @@ TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
 
 
 __conf_à_a_après_verbes__
-    @:V¬:[YGNAWM]  ?@:W¿  a
+    @:V¬:[YGNAWM]  ?$:W¿  a
         <<- /conf/ \-1 != "A" and not tag_before(\1, "que") and not tag_before(\1, "dont") and not tag_before(\1, "qui") and not morph(>1, ":Q")
         --1>> à                                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
-    [/VCint|/VCimp]  ?@:W¿  a
+    [/VCint|/VCimp]  ?$:W¿  a
         <<- /conf/ not value(\1, "|rendez-vous|") --1>> à       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Vient-on {{a}} la maison demain ?
@@ -9224,7 +9224,7 @@ __conf_quelquefois_quelques_fois__
     les quelquefois [ou|où|que|qu’]
         <<- /conf/ -2>> quelques fois                                       # Confusion : “quelquefois” signifie “parfois”.|https://fr.wiktionary.org/wiki/quelquefois
 
-    >être  quelques fois  ?@:W¿  @:A  [de|d’]
+    >être  quelques fois  ?$:W¿  @:A  [de|d’]
         <<- /conf/ -2:3>> quelquefois                                       # Confusion possible. Si vous voulez dire “parfois”, écrivez “quelquefois”.
 
 TEST: {{Quelles que fois}}, on y comprend plus rien.
@@ -9322,7 +9322,7 @@ TEST: Quelle peut bien être l’influence de cet artiste de nos jours ?
 
 # quoi que / quoique
 __conf_quoique_quoi_que__
-    quoiqu’ il se soit ?@:W¿ passé
+    quoiqu’ il se soit ?$:W¿ passé
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles] en >penser
     [quoique|quoiqu’] [je|j’|tu|il|elle|on|nous|vous|ils|elles] >avoir pu faire
         <<- /conf/ -1>> quoi que|quoi qu’                       # Confusion probable.|https://fr.wiktionary.org/wiki/quoi_que
@@ -11166,7 +11166,7 @@ __purge_locutions__
     avant Jésus-Christ
     avant d’ en arriver là
     avant de faire quoi que ce soit
-    avant de faire quoi que ce soit [de|d’] ?@:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
+    avant de faire quoi que ce soit [de|d’] ?$:W¿ [absurde|stupide|crétin|con|idiot|inconsidéré]
     avant qu’ il ne soit trop tard
     avant un bon bout de temps
     avec [brio|constance|joie|légèreté|insistance|peine]
@@ -12273,10 +12273,10 @@ __purge_conditionnelle__
     au hasard  @:¬:[AQ].*:[me]:[si]
         <<- ~1:2>> *
 
-    aussi @:W que [nécessaire|possible]
+    aussi $:W que [nécessaire|possible]
         <<- ~>> *
 
-    aussi @:W que ce soit [<end>|,]
+    aussi $:W que ce soit [<end>|,]
         <<- ~1:5>> *
 
     au sens le [plus|moins] @:A.*:[me]:[si] du terme
@@ -12351,7 +12351,7 @@ __purge_conditionnelle__
     la lettre [a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z]  @:(?:3s|Ov)
         <<- ~3>> *
 
-    le [plus|moins] @:W possible
+    le [plus|moins] $:W possible
         <<- ~>> *
 
     les [moins|plus] @:A.*:[pi] possible
@@ -12369,7 +12369,7 @@ __purge_conditionnelle__
     non @:A
         <<- not morph(<1, ":D.*:m:[si]") ~1>> *
 
-    par trop @:A
+    par trop $:A
         <<- ~1:2>> *
 
     pas mal
@@ -12384,7 +12384,7 @@ __purge_conditionnelle__
     plein est
         <<- not morph(<1, ":D.*:m:[si]") ~>> *
 
-    [plus|moins|aussi] @:W que prévu
+    [plus|moins|aussi] $:W que prévu
         <<- ~>> *
 
     plus que tout autre @¬:[AQ].*:m:[si]
