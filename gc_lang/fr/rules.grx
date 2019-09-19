@@ -20608,11 +20608,11 @@ __ppas_avoir__
         -1>> à                                                                      # Confusion probable : “a” est une conjugaison du verbe avoir. Pour la préposition, écrivez “à”.
 
     >avoir  ~..it$
-        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
         -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
 
     >avoir  ~.ut$
-        <<- /ppas/ not value(\1, "|A|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
+        <<- /ppas/ not value(\1, "|A|avions|avoirs|") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
         -2>> =suggVerbPpas(\2, ":m:s")                                              # Incohérence probable avec “\1” : “\2” n’est pas un participe passé.
 
 TEST: Avoir {{marcher}} toute la journée m’a épuisée.
@@ -20620,6 +20620,7 @@ TEST: L’homme, voyez-vous, {{a}} réellement {{marcher}} sur la Lune.
 TEST: Je ne lui ai rien {{demander}}, mais il est venu à notre secours au nom de la justice.
 TEST: Avoir {{finit}} son œuvre dans les temps, ce n’est pas toujours suffisant.
 TEST: ces hommes, n’en doutez pas, auraient {{put}} trouver la solution.
+TEST: à celui qui aurait {{déclarer}} une telle horreur
 TEST: nous avons vu des avions voler haut dans le ciel.
 
 
@@ -22224,13 +22225,13 @@ TEST: {{retrouverons nous}} enfin la tranquilité ?
 TEST: Ne {{sommes nous}} pas des dieux ?
 TEST: À quelle autorité {{prétendons nous}} si…
 TEST: quel exercice {{avions nous}} revu ?
-TEST: pourquoi n’en entendons nous jamais parler ?
+TEST: pourquoi n’en {{entendons nous}} jamais parler ?
 TEST: les avions nous font rêver.
 
 
 __inte_union_vous!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..e[zs]$  vous  [<end>|,]
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..e[zs]$  vous  @:¬:2p
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..ez$  vous  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..ez$  vous  @:¬:2p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]")
         -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
