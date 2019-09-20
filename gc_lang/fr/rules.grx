@@ -12453,6 +12453,7 @@ __purge_conditionnelle__
 
 
 __simplication_substantifs__
+    >accusé de reception
     >acte [de|d’] [baptême|caution|cautionnement|cession|contrition|licitation|mariage|naissance|notoriété|propriété|quittance|reconnaissance|répudiation|vente]
     >acte d’ [achat|engagement]
     >acte de gestion ?courante¿
@@ -12474,6 +12475,7 @@ __simplication_substantifs__
     >argent [de|d’] poche
     >arnaque à l’ assurance
     >article [de|d’] presse
+    >assignation à résidence
     >attaque à main armée
     >attestation sur l’ honneur
     >atteinte aux bonnes mœurs
@@ -12754,6 +12756,7 @@ __simplication_substantifs__
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >témoin à charge
     >ténor du barreau
+    >tête à claques
     >tête [de|d’] [linotte|déterré|déterrée|déterrés|déterrées|mule]
     >têtue comme une [bourrique|mule]
     >têtue comme un [âne|bourriquot|mulet]
@@ -15452,14 +15455,14 @@ TEST: Un cageot des premières cerises.
 
 
 __sgpl_couleurs_composées__
-    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne]
-        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
-        ->> =suggSing(\1) + " " + suggSing(\2)
-        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
-
-    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>vive|foncé+ses|irisé+ses]
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>rose|>vermeille] [>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>brillante|>claire|>vive|foncé+ses|irisé+ses]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggSing(\1) + " " + suggMasSing(\2)
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>brillante|>claire|>vive|foncé+ses|irisé+ses]
+        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
+        ->> =suggMasSing(\1) + " " + suggMasSing(\2)
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     >jaune [>paille|>sable]
@@ -15467,12 +15470,6 @@ __sgpl_couleurs_composées__
     >rouge [>brique|>carmine|>cerise|>écarlate|rubis|>sang|>tomate|>vermillon]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":p"))
         ->> =suggSing(\1) + " " + suggSing(\2)
-        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
-
-    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>vive]
-    [>blanche|>bleue|>brune|>grise|>noire|>verte|>violette] [foncé+ses|irisé+ses]
-        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
-        ->> =suggMasSing(\1) + " " + suggSing(\2)
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     >bleue [>ciel|>indigo|>marine|>roi|>saphir|>turquoise|>verte]
@@ -15491,7 +15488,9 @@ TEST: les chapeaux {{rouges clairs}}                                        ->> 
 TEST: des chaussures {{jaunes sables}}                                      ->> jaune sable|||sablent
 TEST: des pantalons {{verts clairs}}                                        ->> vert clair
 TEST: des robes {{bleues indigo}}                                           ->> bleu indigo
+TEST: des voitures {{jaunes fluo}}                                          ->> jaune fluo
 TEST: Une jupe {{bleue foncée}}.                                            ->> bleu foncé
+TEST: boutons {{roses pâles}}                                               ->> rose pâle
 TEST: Il a une queue {{bleue vert}}.                                        ->> bleu vert
 TEST: Il a une queue {{marron claire}}.                                     ->> marron clair
 TEST: Il a une queue {{verte clair}}                                        ->> vert clair
@@ -18505,16 +18504,18 @@ __infi_verbes__
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\-1, ":V", ":M|>(?:accompagner|armer|armurer|casquer|déguiser)/")
         --1>> =suggVerbInfi(\2)                                                                     # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
-TEST: elle préférait {{mangée}} seule.
-TEST: Il venait, comme d’habitude, {{discuté}} avec son ami.
-TEST: Ces types-là venaient {{mangé}} chez moi tous les dimanches.
-TEST: ils viennent bien entendu {{attaqué}} le parlement
-TEST: ils vont par voie de conséquence vraiment {{attaqué}} la banque
-TEST: elles ont pu {{mangé}}
-TEST: Cette affaire ne va rien {{arrangé}}.
-TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.
-TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs espérances
-TEST: croyez-vous qu’ils oseront {{proposé}} des amendements aussi audacieux ?
+TEST: elle préférait {{mangée}} seule.                                                  ->> manger
+TEST: Il venait, comme d’habitude, {{discuté}} avec son ami.                            ->> discuter
+TEST: Ces types-là venaient {{mangé}} chez moi tous les dimanches.                      ->> manger
+TEST: ils viennent bien entendu {{attaqué}} le parlement                                ->> attaquer
+TEST: ils vont par voie de conséquence vraiment {{attaqué}} la banque                   ->> attaquer
+TEST: elles ont pu {{mangé}}                                                            ->> manger
+TEST: Cette affaire ne va rien {{arrangé}}.                                             ->> arranger
+TEST: ils vont de manière non conventionnelle {{fêtée}} leur réussite.                  ->> fêter
+TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs espérances     ->> arriver
+TEST: croyez-vous qu’ils oseront {{proposé}} des amendements aussi audacieux ?          ->> proposer
+TEST: Quelle est cette femme que j’ai entendue {{chanté}} ?                             ->> chanter
+TEST: elles partaient {{prié}} chaque matin                                             ->> prier
 TEST: Elles étaient venues armées.
 TEST: Il vint déguisé en mousquetaire.
 TEST: D’ailleurs j’irai armé.
@@ -23176,7 +23177,7 @@ TEST: Quand j’aurai soif et faim, je m’arrêterai.
 
 
 # Si suivi du conditionnel ou du subjonctif
-__vmode_si_sujet__
+__vmode_si_sujet_conditionnel_subjonctif__
     [<start>|,]  si     [j’|J’|t’|T’]  @:[SK]¬:(?:G|V0|I)
     [<start>|,]  si     @:(?:Os|M)     @:[SK]¬:(?:G|V0|I)
     [<start>|,]  s’     [il|ils]       @:[SK]¬:(?:G|V0|I)
@@ -23185,6 +23186,49 @@ __vmode_si_sujet__
 TEST: Si Pierre {{avancerait}} sa voiture de quelques mètres, ça nous permettrait de passer.
 TEST: s’ils ne {{mangeraient}} pas tous les jours, ils seraient moins gros.
 TEST: Si j’{{irais}} le faire
+
+
+__vmode_si_sujet_conditionnel__
+    <start>  si  [je|j’]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  si  [je|j’]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":1s")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si j’avais perdu, j’aurais recommencé. »
+
+    <start>  si  [tu|t’]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  si  [tu|t’]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":2s")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si tu avais perdu, tu aurais recommencé. »
+
+    <start>  [si|s’]  [il|on|elle]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  [si|s’]  [il|on|elle]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":3s")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « S’il avait perdu, il aurait recommencé. »
+
+    <start>  si  nous  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  si  nous  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":1p")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si nous avions perdu, nous aurions recommencé. »
+
+    <start>  si  vous  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  si  vous  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":2p")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si vous aviez perdu, vous auriez recommencé. »
+
+    <start>  [si|s’]  [ils|elles]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  [si|s’]  [ils|elles]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":3p")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
+
+    <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\5, ":K") -5>> =suggVerbTense(\5, ":Iq", ":3s")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « S’il avait perdu, il aurait recommencé. »
+
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  @:[NA].*:[pi]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+    <start>  si  [les|des|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs|certains|certaines]  @:[NA].*:[pi]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles]  $:K
+        <<- /vmode/ morph(\5, ":K") -5>> =suggVerbTense(\5, ":Iq", ":3p")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
+
+TEST: si j’{{aurais}} perdu, j’aurais recommencé.                                   ->> avais
+TEST: si t’{{aurais}} vu le match, tu aurais compris                                ->> avais
+TEST: si elle {{aurait}} mangé ce truc, elle serait malade                          ->> avait
+TEST: si nous {{aurions}} connu cet homme, on se serait pas trompé                  ->> avions
+TEST: si vous {{auriez}} avancé, ce serait différent                                ->> aviez
+TEST: s’ils {{auraient}} deviné la solution, ils auraient pas demandé               ->> avaient
+TEST: si le patron {{aurait}} pensé la chose, on l’aurait su.                       ->> avait
+TEST: si les femmes {{auraient}} parlé, je l’aurais su.                             ->> avaient
 
 
 # Dès que + indicatif
@@ -23222,7 +23266,6 @@ __vmode_qqch_que_subjonctif__
     pour            peu                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
     pour            autant                          [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Après “\1 \2 que”, ce verbe devrait être au subjonctif.
-
 
     [<start>|,]     non                             [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -5>> =suggVerbMode(\5, ":S", \4)                                                # Après “non que”, ce verbe devrait probablement être au subjonctif.
