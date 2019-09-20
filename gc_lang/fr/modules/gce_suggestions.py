@@ -189,15 +189,20 @@ def suggPlur (sFlex, sWordToAgree=None):
             aSugg.add(sFlex[:-1]+"ux")
         if sFlex.endswith("ail") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"ux"):
             aSugg.add(sFlex[:-2]+"ux")
+    if sFlex.endswith("L"):
+        if sFlex.endswith("AL") and len(sFlex) > 2 and _oSpellChecker.isValid(sFlex[:-1]+"UX"):
+            aSugg.add(sFlex[:-1]+"UX")
+        if sFlex.endswith("AIL") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"UX"):
+            aSugg.add(sFlex[:-2]+"UX")
     if _oSpellChecker.isValid(sFlex+"s"):
         aSugg.add(sFlex+"s")
     if _oSpellChecker.isValid(sFlex+"x"):
         aSugg.add(sFlex+"x")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
-    if aSugg:
-        return "|".join(aSugg)
-    return ""
+    if not aSugg:
+        aSugg.add(sFlex)
+    return "|".join(aSugg)
 
 
 def suggSing (sFlex):

@@ -249,6 +249,14 @@ function suggPlur (sFlex, sWordToAgree=null) {
             aSugg.add(sFlex.slice(0,-2)+"ux");
         }
     }
+    if (sFlex.endsWith("L")) {
+        if (sFlex.endsWith("AL") && sFlex.length > 2 && _oSpellChecker.isValid(sFlex.slice(0,-1)+"UX")) {
+            aSugg.add(sFlex.slice(0,-1)+"UX");
+        }
+        if (sFlex.endsWith("AIL") && sFlex.length > 3 && _oSpellChecker.isValid(sFlex.slice(0,-2)+"UX")) {
+            aSugg.add(sFlex.slice(0,-2)+"UX");
+        }
+    }
     if (_oSpellChecker.isValid(sFlex+"s")) {
         aSugg.add(sFlex+"s");
     }
@@ -258,10 +266,10 @@ function suggPlur (sFlex, sWordToAgree=null) {
     if (mfsp.hasMiscPlural(sFlex)) {
         mfsp.getMiscPlural(sFlex).forEach(function(x) { aSugg.add(x); });
     }
-    if (aSugg.size > 0) {
-        return Array.from(aSugg).join("|");
+    if (aSugg.size == 0) {
+        aSugg.add(sFlex);
     }
-    return "";
+    return Array.from(aSugg).join("|");
 }
 
 function suggSing (sFlex) {
