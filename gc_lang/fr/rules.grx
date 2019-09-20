@@ -12854,7 +12854,7 @@ __purge_couleurs__
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] [brillant|clair|criard|fluo|foncé|irisé|mat|pâle|pastel|sale|sombre|tendre|terne|vif]
     [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent] et [beige|blanc|bleu|brun|châtain|cyan|gris|incarnat|jaune|magenta|marron|orange|pourpre|rose|rouge|vert|violet|or|argent]
     blanc   [argenté|cassé|lunaire]
-    bleu    [acier|argenté|azur|céleste|ciel|électrique|givré|indigo|marine|nuit|outremer|outre-mer|persan|pétrole|roi|saphir|turquin|turquoise]
+    bleu    [acier|argenté|azur|céleste|ciel|électrique|givré|indigo|marine|nuit|outremer|outre-mer|persan|pétrole|roi|saphir|turquin|turquoise|vert]
     blond   [argenté|platine]
     gris    [acier|anthracite|argenté|fer|perle|souris]
     jaune   [canari|citron|doré|maïs|paille|sable]
@@ -15452,10 +15452,14 @@ TEST: Un cageot des premières cerises.
 
 
 __sgpl_couleurs_composées__
-    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne|>vive]
-    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [foncé+ses|irisé+ses]
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>fluo|>mat|>pâle|>pastel|>sombre|>tendre|>terne]
         <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
         ->> =suggSing(\1) + " " + suggSing(\2)
+        # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
+
+    [>beige|>châtain|>cyan|>écarlate|>jaune|>magenta|>marron|>mauve|>orange|>pourpre|>rouge|>vermeille] [>brillante|>claire|>vive|foncé+ses|irisé+ses]
+        <<- /sgpl/ morph(<1, ":N", ":D") and (not morph(\1, ":[me]:[si]") or morph(\2, ":[pf]"))
+        ->> =suggSing(\1) + " " + suggMasSing(\2)
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
     >jaune [>paille|>sable]
@@ -15483,16 +15487,21 @@ __sgpl_couleurs_composées__
         <<- /sgpl/ not morph(<1, ":D") -1>> noir
         # Les couleurs composées de plusieurs termes sont invariables.|https://fr.wikipedia.org/wiki/Accord_des_adjectifs_et_des_noms_de_couleur_en_fran%C3%A7ais
 
-TEST: les chapeaux {{rouges clairs}}
-TEST: des chaussures {{jaunes sables}}
-TEST: des pantalons {{verts clairs}}
-TEST: des robes {{bleues indigo}}
-TEST: Une jupe {{bleue foncée}}.
-TEST: Des cheveux {{noirs}} de jais.
+TEST: les chapeaux {{rouges clairs}}                                        ->> rouge clair
+TEST: des chaussures {{jaunes sables}}                                      ->> jaune sable|||sablent
+TEST: des pantalons {{verts clairs}}                                        ->> vert clair
+TEST: des robes {{bleues indigo}}                                           ->> bleu indigo
+TEST: Une jupe {{bleue foncée}}.                                            ->> bleu foncé
+TEST: Il a une queue {{bleue vert}}.                                        ->> bleu vert
+TEST: Il a une queue {{marron claire}}.                                     ->> marron clair
+TEST: Il a une queue {{verte clair}}                                        ->> vert clair
+TEST: Des cheveux {{noirs}} de jais.                                        ->> noir
 TEST: Une jupe bleu foncé.
 TEST: Des yeux vert clair.
 TEST: Des yeux vert olive.
 TEST: Ses cheveux étaient noir de jais.
+TEST: Il a une queue vert émeraude
+TEST: Il a une queue bleu vert
 
 
 
