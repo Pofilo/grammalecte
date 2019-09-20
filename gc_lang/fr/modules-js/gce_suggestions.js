@@ -275,13 +275,21 @@ function suggSing (sFlex) {
             aSugg.add(sFlex.slice(0,-2)+"il");
         }
     }
-    if (_oSpellChecker.isValid(sFlex.slice(0,-1))) {
+    if (sFlex.endsWith("UX")) {
+        if (_oSpellChecker.isValid(sFlex.slice(0,-2)+"L")) {
+            aSugg.add(sFlex.slice(0,-2)+"L");
+        }
+        if (_oSpellChecker.isValid(sFlex.slice(0,-2)+"IL")) {
+            aSugg.add(sFlex.slice(0,-2)+"IL");
+        }
+    }
+    if ((sFlex.endsWith("s") || sFlex.endsWith("x") || sFlex.endsWith("S") || sFlex.endsWith("X")) && _oSpellChecker.isValid(sFlex.slice(0,-1))) {
         aSugg.add(sFlex.slice(0,-1));
     }
-    if (aSugg.size > 0) {
-        return Array.from(aSugg).join("|");
+    if (aSugg.size == 0) {
+        aSugg.add(sFlex);
     }
-    return "";
+    return Array.from(aSugg).join("|");
 }
 
 function suggMasSing (sFlex, bSuggSimil=false) {

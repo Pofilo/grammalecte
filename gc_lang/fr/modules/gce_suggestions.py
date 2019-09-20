@@ -208,11 +208,16 @@ def suggSing (sFlex):
             aSugg.add(sFlex[:-2]+"l")
         if _oSpellChecker.isValid(sFlex[:-2]+"il"):
             aSugg.add(sFlex[:-2]+"il")
-    if _oSpellChecker.isValid(sFlex[:-1]):
+    if sFlex.endswith("UX"):
+        if _oSpellChecker.isValid(sFlex[:-2]+"L"):
+            aSugg.add(sFlex[:-2]+"L")
+        if _oSpellChecker.isValid(sFlex[:-2]+"IL"):
+            aSugg.add(sFlex[:-2]+"IL")
+    if sFlex.endswith(("s", "x", "S", "X")) and _oSpellChecker.isValid(sFlex[:-1]):
         aSugg.add(sFlex[:-1])
-    if aSugg:
-        return "|".join(aSugg)
-    return ""
+    if not aSugg:
+        aSugg.add(sFlex)
+    return "|".join(aSugg)
 
 
 def suggMasSing (sFlex, bSuggSimil=False):
