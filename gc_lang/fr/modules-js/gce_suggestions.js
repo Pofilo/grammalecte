@@ -226,7 +226,7 @@ function suggVerbMode (sFlex, cMode, sSuj) {
 
 //// Nouns and adjectives
 
-function suggPlur (sFlex, sWordToAgree=null) {
+function suggPlur (sFlex, sWordToAgree=null, bSelfSugg=false) {
     // returns plural forms assuming sFlex is singular
     if (sWordToAgree) {
         let lMorph = _oSpellChecker.getMorph(sWordToAgree);
@@ -266,13 +266,16 @@ function suggPlur (sFlex, sWordToAgree=null) {
     if (mfsp.hasMiscPlural(sFlex)) {
         mfsp.getMiscPlural(sFlex).forEach(function(x) { aSugg.add(x); });
     }
-    if (aSugg.size == 0) {
+    if (aSugg.size == 0 && bSelfSugg && (sFlex.endsWith("s") || sFlex.endsWith("x") || sFlex.endsWith("S") || sFlex.endsWith("X"))) {
         aSugg.add(sFlex);
     }
-    return Array.from(aSugg).join("|");
+    if (aSugg.size > 0) {
+        return Array.from(aSugg).join("|");
+    }
+    return "";
 }
 
-function suggSing (sFlex) {
+function suggSing (sFlex, bSelfSugg=false) {
     // returns singular forms assuming sFlex is plural
     let aSugg = new Set();
     if (sFlex.endsWith("ux")) {
@@ -294,10 +297,13 @@ function suggSing (sFlex) {
     if ((sFlex.endsWith("s") || sFlex.endsWith("x") || sFlex.endsWith("S") || sFlex.endsWith("X")) && _oSpellChecker.isValid(sFlex.slice(0,-1))) {
         aSugg.add(sFlex.slice(0,-1));
     }
-    if (aSugg.size == 0) {
+    if (bSelfSugg && aSugg.size == 0) {
         aSugg.add(sFlex);
     }
-    return Array.from(aSugg).join("|");
+    if (aSugg.size > 0) {
+        return Array.from(aSugg).join("|");
+    }
+    return "";
 }
 
 function suggMasSing (sFlex, bSuggSimil=false) {

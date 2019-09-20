@@ -172,7 +172,7 @@ def suggVerbMode (sFlex, cMode, sSuj):
 
 ## Nouns and adjectives
 
-def suggPlur (sFlex, sWordToAgree=None):
+def suggPlur (sFlex, sWordToAgree=None, bSelfSugg=False):
     "returns plural forms assuming sFlex is singular"
     if sWordToAgree:
         lMorph = _oSpellChecker.getMorph(sFlex)
@@ -200,12 +200,14 @@ def suggPlur (sFlex, sWordToAgree=None):
         aSugg.add(sFlex+"x")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
-    if not aSugg:
+    if not aSugg and bSelfSugg and sFlex.endswith(("s", "x", "S", "X")):
         aSugg.add(sFlex)
-    return "|".join(aSugg)
+    if aSugg:
+        return "|".join(aSugg)
+    return ""
 
 
-def suggSing (sFlex):
+def suggSing (sFlex, bSelfSugg=True):
     "returns singular forms assuming sFlex is plural"
     aSugg = set()
     if sFlex.endswith("ux"):
@@ -220,9 +222,11 @@ def suggSing (sFlex):
             aSugg.add(sFlex[:-2]+"IL")
     if sFlex.endswith(("s", "x", "S", "X")) and _oSpellChecker.isValid(sFlex[:-1]):
         aSugg.add(sFlex[:-1])
-    if not aSugg:
+    if bSelfSugg and not aSugg:
         aSugg.add(sFlex)
-    return "|".join(aSugg)
+    if aSugg:
+        return "|".join(aSugg)
+    return ""
 
 
 def suggMasSing (sFlex, bSuggSimil=False):
