@@ -6561,6 +6561,7 @@ TEST: une dérive à vau-l’eau.
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
+    a [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     a air comprimé
     a armes égales
     a aucun prix
@@ -7333,6 +7334,10 @@ __conf_ces_ses_c_est__
     ses  /-là
         <<- /conf/ -1>> ces                 # Confusion : “ses” est un déterminant possessif ; si vous voulez désigner des éléments en particulier, vous devriez utiliser le déterminant démonstratif “ces”.
 
+    c’ est n’ [est|était]
+    c’ est ne [serait|sera]
+        <<- /conf/ not value(<1, "|que|qu’|") -1:2>> ce                     # Confusion probable.
+
 TEST: {{ses}} au-dessus de ses forces.
 TEST: {{ces}} comme la peste
 TEST: car {{ses}} d’autre part
@@ -7340,6 +7345,7 @@ TEST: {{ces}} qu’il y a tant de pertes
 TEST: {{ces}} jamais une bonne idée.
 TEST: {{c’est}} {{délires}} nous ennuient
 TEST: {{ses}} gens-là sont des salopards
+TEST: {{c’est}} n’est pas ça.                                               ->> ce
 TEST: En 2015, c’est Paris et son agglomération qui…
 TEST: Ses pas de danse.
 TEST: Avec ces quelques mots, que veux-tu dire ?
@@ -10835,6 +10841,7 @@ __purge_locutions__
     à *NUM  %
     à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
     à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
+    à [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     à air comprimé
     à angle droit
     à armes égales
@@ -10985,6 +10992,7 @@ __purge_locutions__
     à n’ en [pas|point] douter
     à n’ en plus finir
     à n’ importe quel prix
+    à n’ importe quelle heure du jour et de la nuit
     à parler [franc|franchement|strictement]
     à part [entière|ça|cela|ceci]
     à parts égales
@@ -12821,6 +12829,7 @@ TEST: deux câbles en acier situés de part et d’autre du chariot
 
 
 __purge_locutions_adjectivales__
+    ancienne formule
     bas de gamme
     basse consommation
     bon [enfant|marché|teint]
@@ -12836,7 +12845,7 @@ __purge_locutions_adjectivales__
     hors service
     longue [conservation|distance|portée|durée]
     meilleur marché
-    nouvelle génération
+    nouvelle [formule|génération]
     numéro un
     numéro $:B
     plein cadre
@@ -12963,7 +12972,7 @@ __purge_après_être__
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ en partie
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ somme toute
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ sous peu
-    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ tous [deux|trois]
+    [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ [tous|toutes] [deux|trois]
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ un jour
     [>être|>devenir|>rester] ?[pas|jamais|plus|guère|point]¿ à jamais
     [>être|>devenir|>rester] [pas|jamais|plus|guère|point]
@@ -13007,7 +13016,7 @@ __purge_après_être__
     /VCint ?[pas|jamais|plus|guère|point]¿ en partie
     /VCint ?[pas|jamais|plus|guère|point]¿ somme toute
     /VCint ?[pas|jamais|plus|guère|point]¿ sous peu
-    /VCint ?[pas|jamais|plus|guère|point]¿ tous [deux|trois]
+    /VCint ?[pas|jamais|plus|guère|point]¿ [tous|toutes] [deux|trois]
     /VCint ?[pas|jamais|plus|guère|point]¿ un jour
     /VCint ?[pas|jamais|plus|guère|point]¿ à jamais
     /VCint [pas|jamais|plus|guère|point]
@@ -13044,7 +13053,7 @@ __purge_après_être__
 __purge_après_avoir__
     >avoir  [pas|jamais|plus|guère|point]
     >avoir  ?[pas|jamais|plus|guère|point]¿  en partie
-    >avoir  ?[pas|jamais|plus|guère|point]¿  tous [deux|trois]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] [deux|trois]
     >avoir  ?[pas|jamais|plus|guère|point]¿  somme toute
         <<- ~2:0>> *
 
@@ -13097,7 +13106,7 @@ __purge_après_avoir__
 
     /VCint  [pas|jamais|plus|guère|point]
     /VCint  ?[pas|jamais|plus|guère|point]¿  en partie
-    /VCint  ?[pas|jamais|plus|guère|point]¿  tous [deux|trois]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] [deux|trois]
     /VCint  ?[pas|jamais|plus|guère|point]¿  somme toute
         <<- morphVC(\1, ":V0a") ~2:0>> *
 
@@ -13460,7 +13469,7 @@ __purge_locutions_potentielles__
 
 
 __purge_tous_deux_trois__
-    >faire tous [deux|trois]
+    >faire [tous|toutes] [deux|trois]
         <<- ~2:0>> *
 
     >faire tous
@@ -13673,6 +13682,8 @@ __conf_locutions_verbales__
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
     >avoir du mal a
+    >avoir vocation a
+    >laisser libre cours a
         <<- /conf/ --1>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
     >faire plaisirs
@@ -13682,7 +13693,7 @@ __conf_locutions_verbales__
     >laisser pour [comte+s|>conte]
         <<- /conf/ --1>> compte         # Confusion. Locution “laisser pour compte”.|https://fr.wiktionary.org/wiki/laisser_pour_compte
 
-    [>mourir|>paraître|>paraitre|>rester|>sembler] >jeûne
+    [>être|>mourir|>paraître|>paraitre|>rester|>sembler] >jeûne
         <<- /conf/ -2>> jeune           # Confusion. Le jeûne est une privation de nourriture.|https://fr.wiktionary.org/wiki/jeune
 
     >partir en >couille
@@ -13879,6 +13890,7 @@ TEST: « L’école produit la norme en matière de langage »
 TEST: Parler affaires.
 TEST: Mon Dieu, je vous en prie, faites qu’il ne m’arrive rien
 TEST: Anne, je t’en prie, viens de bonne heure
+TEST: elles ont toutes deux épluché le contenu de la boîte
 
 
 
@@ -18354,7 +18366,7 @@ TEST: Ils ont beau {{consacré}} le plus clair de leur temps à ce projet, ça n
 
 
 __infi_est_ce_que__
-    est-ce  que  @:(?:V1.*:Q|[13]s|2[sp])¬:[GYWMN]
+    est-ce  [que|qu’]  @:(?:V1.*:Q|[13]s|2[sp])¬:[GYWMN]
         <<- /infi/ not value(<1, "|que|qu’|") -3>> =suggVerbInfi(\3)                                # Après “est-ce que”, le verbe devrait être à l’infinitif.
 
 TEST: est-ce que {{rapporté}} ces données nous aidera ?
@@ -18516,6 +18528,7 @@ TEST: ils vont de manière absurde {{arrivé}} au résultat inverse à leurs esp
 TEST: croyez-vous qu’ils oseront {{proposé}} des amendements aussi audacieux ?          ->> proposer
 TEST: Quelle est cette femme que j’ai entendue {{chanté}} ?                             ->> chanter
 TEST: elles partaient {{prié}} chaque matin                                             ->> prier
+TEST: jamais entendu {{parlé}} de ces choses                                            ->> parler
 TEST: Elles étaient venues armées.
 TEST: Il vint déguisé en mousquetaire.
 TEST: D’ailleurs j’irai armé.
