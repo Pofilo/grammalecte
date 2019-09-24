@@ -4462,6 +4462,43 @@ __tu_anciennes_graphies__
 TEST: je suis allé dans la {{grand’rue}}.                           ->> grand-rue
 
 
+!!!! Trait d’union : formes interrogative (nous/vous)                                             !!
+__inte_union_nous1!7__
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~ons$  nous
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ons$  nous
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ons$  nous
+    [ne|n’]  [lui|leur|y]                    en                          ~ons$  nous
+        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
+
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  @:¬:(?:1p|Y)
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+TEST: n’y {{retrouverons nous}} jamais la tranquilité ?
+TEST: pourquoi n’en {{entendons nous}} jamais parler ?
+TEST: que {{pouvons nous}} dans cette vie
+TEST: Sachons nous conformer à ces restrictions et faisons notre travail.
+
+
+__inte_union_vous1!7__
+    [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿  ~ez$  vous
+    [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ez$  vous
+    [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ez$  vous
+    [ne|n’]  [lui|leur|y]                    en                          ~ez$  vous
+        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
+
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous  @:¬:(?:2p|Y)
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+TEST: ne {{soutiendrez vous}} pas cette proposition ?
+TEST: n’en {{voulez vous}} jamais à ces gens ?
+TEST: comment {{pensez vous}} y parvenir
+TEST: veuillez vous adresser à notre secretaire pour prendre rendez-vous.
+
+
 
 !!!! Virgules                                                                                     !!
 
@@ -8750,6 +8787,15 @@ TEST: il ne tient par contre que grâce à nous
 TEST: elle ne savait par qui passer pour arriver à ses fins.
 
 
+# par le bout du nez
+__conf_par_le_bout_du_nez__
+    !! par le bout du nez ¡¡
+    [par|>part|pare+s] [le|l’] [bout|bous] du [né|nez]
+        <<- /conf/ ->> par le bout du nez                                   # Confusion. Locution “par le bout du nez”.
+
+TEST: se faire mener {{par le bout du né}}.
+
+
 # par les temps qui courent
 __conf_par_les_temps_qui_courent__
     !! par les temps qui courent ¡¡
@@ -11203,6 +11249,7 @@ __purge_locutions__
     cependant
     [cela|ça|ceci] mis à part
     [cela|ça|ceci] va sans dire
+    [cela|ceci] étant dit
     certes
     ces derniers temps
     cette [fois|fois-là|fois-ci]
@@ -11218,7 +11265,7 @@ __purge_locutions__
     comme bon [me|te|lui|leur|nous|vous] semble
     comme au bon vieux temps
     comme cul et chemise
-    comme [frappé|frappée|frappés|frappées] par la foudre
+    comme [frappé+ses] par la foudre
     comme n’ importe où ?ailleurs¿
     comme par [enchantement|magie]
     comme par un fait exprès
@@ -12514,6 +12561,7 @@ __simplication_substantifs__
     >cabinet [de|d’] [toilette|travail]
     >camp [de|d’] [concentration|internement|rééducation|vacances]
     >canne à [pêche|sucre]
+    >canon à eau
     >caisse à >outil
     >carton d’ emballage
     >centre d’ éducation [populaire|surveillée]
@@ -12536,6 +12584,7 @@ __simplication_substantifs__
     >claire comme jus [de|d’] [boudin|>chaussette|chique]
     [>clé|>clef] à molette
     >clin d’ œil
+    >clause de confidentialité
     >code [de|d’] bonne conduite
     >commise d’ office
     >compagne [de|d’] route
@@ -12609,6 +12658,7 @@ __simplication_substantifs__
     fils [de|d’] pute
     >flocon [de|d’] neige ?électronique¿
     >folle à lier
+    >fontaine à eau
     >fosse à >ordure
     >fosse aux lions
     [>fourgon|>fourgonette] de location
@@ -13564,7 +13614,7 @@ __purge_locutions_verbales__
     [>donner|>redonner] quartier libre
     >élire domicile
     >étouffer dans l’ œuf
-    >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|office|part|peur|polémique|plaisir|preuve|rage|rempart|scandale|sens|signe|usage|volte-face]
+    >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|office|part|peur|polémique|plaisir|preuve|rage|rempart|scandale|sens|signe|surface|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -18104,9 +18154,10 @@ TEST: cuisiner à l’étouffée
 
 
 __infi_loc_à_verbe__
-    de manière à            ~..(?:ée?s?|ez)$
-    du mal à                ~..(?:ée?s?|ez)$
-    intérêt à               ~..(?:ée?s?|ez)$
+    de manière à    ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    du mal à        ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    intérêt à       ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    enclin à        ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
@@ -18116,7 +18167,7 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>refuser|>suggérer|>tenter]  [de|d’]  *WORD
+    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>refuser|>suggérer|>tenter]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
         <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]"))
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
 
@@ -22227,7 +22278,7 @@ TEST: je ne comprenais pas pourquoi c’était elle qui était punie et que pers
 TEST: C’était elle qui avait pris le contrôle.
 
 
-__inte_union_nous!7__
+__inte_union_nous2!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  [<end>|,]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  @:¬:1p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]")
@@ -22244,15 +22295,16 @@ __inte_union_nous!7__
             or (morph(\2, ":V.*:1p", ":[GNW]") and not morph(\1, ":Os")) )
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
-TEST: {{retrouverons nous}} enfin la tranquilité ?
-TEST: Ne {{sommes nous}} pas des dieux ?
-TEST: À quelle autorité {{prétendons nous}} si…
+TEST: y {{retrouverons nous}} enfin la tranquilité ?
+TEST: pourquoi {{sommes nous}} réellement des dieux ?
+TEST: À quelle autorité {{prétendons nous}} sur ces gens…
 TEST: quel exercice {{avions nous}} revu ?
-TEST: pourquoi n’en {{entendons nous}} jamais parler ?
+TEST: À quelle autorité {{prétendons nous}} si…
+TEST: pourquoi {{entendons nous}} souvent ces injonctions idiotes ?
 TEST: les avions nous font rêver.
 
 
-__inte_union_vous!7__
+__inte_union_vous2!7__
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..ez$  vous  [<end>|,]
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..ez$  vous  @:¬:2p
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]")
@@ -22269,7 +22321,9 @@ __inte_union_vous!7__
 
 TEST: Mais {{soutiendrez vous}} cette proposition ?
 TEST: comment {{êtes vous}} arrivées là ?
-TEST: quelle tarte {{voulez vous}} ?
+TEST: quel genre de femme {{voulez vous}} réellement ?
+TEST: quel exercice {{avions nous}} réellement ?
+TEST: quel homme {{voulez vous}} qu’il devienne
 TEST: Veuillez vous instruire avant de contester ces mesures.
 
 
