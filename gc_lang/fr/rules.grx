@@ -7945,6 +7945,22 @@ __conf_en_général__
 TEST: On n’en sait {{en générale}} pas assez.
 
 
+# emballé, c’est pesé
+__conf_emballé_c_est_pesé__
+    >emballer [c|sais|sait] >peser
+        <<- /conf/ ->> emballé, c’est pesé      # Confusion. Locution “emballé, c’est pesé”.|https://fr.wiktionary.org/wiki/emball%C3%A9,_c%E2%80%99est_pes%C3%A9
+
+    >emballer ?,¿ c’est >peser
+        <<- /conf/ not (value(\1, "|emballé|") and value(\-1, "|pesé|")) and morph(<1, ":C|<start>|>,")
+        ->> emballé, c’est pesé                 # Confusion. Locution “emballé, c’est pesé”.|https://fr.wiktionary.org/wiki/emball%C3%A9,_c%E2%80%99est_pes%C3%A9
+
+TEST: {{emballait c pesé}}
+TEST: {{emballer c’est peser}}
+TEST: Tu peux emballer, c’est pesé.
+TEST: il faut emballer, c’est pesé
+TEST: c’est emballé, c’est pesé.
+
+
 # évidement / évidemment
 __conf_évidemment_évidement__
     [/VCint|/VCimp]  ?[pas|plus|jamais|guère]¿  évidement
