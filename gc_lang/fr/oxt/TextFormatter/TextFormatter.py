@@ -1,17 +1,13 @@
-# -*- coding: utf8 -*-
 # Text Formatter
 # by Olivier R.
 # License: MPL 2
 
 import unohelper
 import uno
-import sys
-import os
+
 import traceback
 import time
-
-if sys.version_info.major == 3:
-    import imp
+import json
 
 import tf_strings
 import tf_options
@@ -268,7 +264,8 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                                      HelpText = self.dUI.get('infotitle', "#err"), FontDescriptor = xFDsmall, TextColor = 0x444444)
 
         # load configuration
-        self._loadConfig()
+        self.xGLOptionNode = helpers.getConfigSetting("/org.openoffice.Lightproof_${implname}/Other/", True)
+        self._loadConfig("${lang}")
 
         ## container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
@@ -311,7 +308,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
                     # Writer
                     if True:
                         # no selection
-                        self._saveConfig()
+                        self._saveConfig("${lang}")
                         self._replaceAll(xElem)
                     else:
                         # modify selected text only
@@ -362,42 +359,44 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
         except:
             traceback.print_exc()
 
-    def _loadConfig (self):
+    def _loadConfig (self, sLang):
         try:
-            if sys.version_info.major == 3:
-                imp.reload(tf_options)
-            else:
-                reload(tf_options)
-            self._setConfig(tf_options.dOpt)
+            dOpt = tf_options.dDefaultOpt.copy()
+            xChild = self.xGLOptionNode.getByName("o_"+sLang)
+            sTFOptionsJSON = xChild.getPropertyValue("tf_options")
+            if sTFOptionsJSON:
+                dOpt.update(json.loads(sTFOptionsJSON))
+            self._setConfig(dOpt)
         except:
             traceback.print_exc()
+            self._setConfig(tf_options.dDefaultOpt)
 
-    def _setConfig (self, d):
-        try:
-            for key, val in d.items():
-                w = getattr(self, key)
-                w.State = val
-                if key in self.dCheckboxWidgets:
-                    self._switchCheckBox(w)
-        except:
-            raise
+    def _setConfig (self, dOpt):
+        for sKey, val in dOpt.items():
+            try:
+                w = getattr(self, sKey)
+                if w:
+                    w.State = val
+                    if sKey in self.dCheckboxWidgets:
+                        self._switchCheckBox(w)
+            except:
+                traceback.print_exc()
+                print("option", sKey, "not set.")
 
-    def _saveConfig (self):
+    def _saveConfig (self, sLang):
+        "save options in LibreOffice profile"
         try:
             # create options dictionary
             dOpt = {}
-            for key, lWidget in self.dCheckboxWidgets.items():
-                w = getattr(self, key)
+            for sKey, lWidget in self.dCheckboxWidgets.items():
+                w = getattr(self, sKey)
                 dOpt[w.Name] = w.State
                 for w in lWidget:
                     dOpt[w.Name] = w.State
-            # write file
-            sExtPath = helpers.getAbsolutePathOf("/pythonpath/tf_options.py")
-            if os.path.isfile(sExtPath):
-                hOpt = open(sExtPath, "w")
-                hOpt.write("dDefaultOpt = " + str(tf_options.dDefaultOpt) + "\n")
-                hOpt.write("dOpt = " + str(dOpt))
-                hOpt.close()
+            # save option to LO profile as JSON string
+            xChild = self.xGLOptionNode.getByName("o_"+sLang)
+            xChild.setPropertyValue("tf_options", json.dumps(dOpt))
+            self.xGLOptionNode.commitChanges()
         except:
             traceback.print_exc()
 
@@ -688,7 +687,6 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             print("# Error with "+sList)
             traceback.print_exc()
         return n
-
 
     def _replaceText (self, xElem, sPattern, sRepl, bRegex, bCaseSensitive=False):
         try:
