@@ -18099,10 +18099,10 @@ TEST: Faire {{torr}}
 # venimeux / vénéneux
 __conf_venimeux_vénéreux__
     [>serpent|>araignée|>scorpion|>vipère|>cobra|>crapaud|>grenouille|>dendrobate|>poulpe|>guêpe|>abeille|>frelon|>méduse|>morsure|>piqûre|>dard|>dent|>croc|>crochet]  >vénéneuse
-        <<- /conf/ -2>> =\1.replace("énén", "enim")                                    # Confusion : “vénéneux” se dit des plantes, employez “venimeux”.
+        <<- /conf/ -2>> =\1.replace("énén", "enim").replace("ÉNÉN", "ENIM")                         # Confusion : “vénéneux” se dit des plantes, employez “venimeux”.
 
     [>plante|>champignon|>lépiote|>baie|>fruit|>herbe|>fleur|>chair|>moule|humus|>substance|>végétal]  >venimeuse
-        <<- /conf/ -2>> =\1.replace("enim", "énén")                                    # Confusion : pas de venin ici.
+        <<- /conf/ -2>> =\1.replace("enim", "énén").replace("ENIM", "ÉNÉN")                         # Confusion : pas de venin ici.
 
 TEST: ces araignées {{vénéneuses}}.
 TEST: ce champignon {{venimeux}}.
@@ -18227,10 +18227,10 @@ __infi_qqch_de__
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir le droit de”, le verbe devrait être à l’infinitif.
 
     >avoir [besoin|raison]                      [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir raison de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     >avoir [besoin|raison]                      [de|d’]  [l’|la]                   ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “avoir raison de”, le verbe devrait être à l’infinitif.
+        <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
