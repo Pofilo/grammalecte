@@ -7950,7 +7950,7 @@ __conf_emballé_c_est_pesé__
     >emballer [c|sais|sait] >peser
         <<- /conf/ ->> emballé, c’est pesé      # Confusion. Locution “emballé, c’est pesé”.|https://fr.wiktionary.org/wiki/emball%C3%A9,_c%E2%80%99est_pes%C3%A9
 
-    >emballer ?,¿ c’est >peser
+    >emballer ?,¿ c’ est >peser
         <<- /conf/ not (value(\1, "|emballé|") and value(\-1, "|pesé|")) and morph(<1, ":C|<start>|>,")
         ->> emballé, c’est pesé                 # Confusion. Locution “emballé, c’est pesé”.|https://fr.wiktionary.org/wiki/emball%C3%A9,_c%E2%80%99est_pes%C3%A9
 
@@ -11008,6 +11008,7 @@ __purge_locutions__
     à l’ une d’ entre elles
     à l’ échelle [nationale|mondiale|régionale|départementale|cantonale|locale|galactique|universelle]
     à l’ étouffée
+    à l’ exclusion de toute autre chose
     à l’ évidence
     à l’ œil nu
     à l’ [un|une] des leurs
@@ -11619,6 +11620,7 @@ __purge_locutions__
     en position [de|d’] [force|faiblesse]
     en premier lieu
     en première [instance|ligne]
+    en [première|seconde|~ième$] position
     en pure perte
     en quantité suffisante
     en quantité plus que suffisante
@@ -11923,6 +11925,7 @@ __purge_locutions__
     sans difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans dire mot
     sans en avoir conscience
+    sans états d’ âme
     sans [m’|t’|s’|nous|vous] en apercevoir
     sans [m’|t’|s’|nous|vous] en rendre compte
     sans [m’|t’|s’|nous|vous] faire [avoir|comprendre|désirer|prier|remarquer]
@@ -11937,6 +11940,7 @@ __purge_locutions__
     sans pour autant y [parvenir|réussir|réfléchir|songer|penser]
     sans pour autant y faire attention
     sans pour autant y prendre [garde|goût|gout]
+    sans [me|te|lui|nous|vous|leur|y] prêter attention
     sans [que|qu’] je le [sache|susse]
     sans [que|qu’] tu le [saches|susses]
     sans [que|qu’] [il|elle|on|$:M] le [sache|sût]
@@ -11946,12 +11950,12 @@ __purge_locutions__
     sans queue ni tête
     sans raison apparente
     sans répit
+    sans tarder
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer de respect
     sans y [parvenir|réussir|réfléchir|songer|penser]
     sans y [réfléchir|songer|penser] à [deux|2] fois
     sans y faire attention
     sans y prendre [garde|goût|gout|ombrage]
-    sans états d’ âme
     sauf >erreur [de|d’] [ma|ta|sa|notre|votre|leur] part
     secondo
     selon toute vraisemblance
@@ -18183,7 +18187,8 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>refuser|>suggérer|>tenter]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
+    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>prévoir|>refuser|>suggérer|>tenter]
+        || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
         <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]"))
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
 
@@ -18243,8 +18248,8 @@ __infi_qqch_de__
     il >être hors de question                   [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “il est hors de question de”, le verbe devrait être à l’infinitif.
 
-    [<start>|,] impossible                      [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
-        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “impossible de”, le verbe devrait être à l’infinitif.
+    [<start>|,] [>capable|>incapable|impossible|inutile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\2 de”, le verbe devrait être à l’infinitif.
 
     force [est|était]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
@@ -18292,7 +18297,7 @@ __infi_de_verbe__
 
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
-            and not before("(?i)\\b(?:quelqu(?:e chose|’une?)|qu’y a-t-il |(?:l(es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
+            and not before("(?i)(?:quelqu(?:e chose|’une?)|qu’y a-t-il |\\b(?:l(?:es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tag_before(\1, "ce_que")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
@@ -20333,6 +20338,30 @@ TEST: Étaient-elles {{arriver}} ?
 TEST: Sont-elles tout à fait {{arriver}} ?
 TEST: Ne sont-elles pas {{aveugle}}
 TEST: demeurent-elles {{présente}}
+
+
+__ppas_ayant_été_pronom_ppas__
+    ayant  été  lui-même  @:[QA].*:[fp]¬:[me][si]
+        <<- /ppas/ --1>> =suggMasSing(\-1)                              # Accord avec “\3” : “\-1” devrait être au masculin singulier.
+
+    ayant  été  elle-même  @:[QA].*:[mp]¬:[fe][si]
+        <<- /ppas/ --1>> =suggFemSing(\-1)                              # Accord avec “\3” : “\-1” devrait être au féminin singulier.
+
+    ayant  été  [nous-mêmes|vous-mêmes]  @:[QA].*:s¬:[pi]
+        <<- /ppas/ -3>> =\3[:-1]                                        # Accord avec “\-1” : “\3” devrait être au singulier.
+        <<- /ppas/ __also__ --1>> =suggPlur(\-1)                        # Accord avec “\3” : “\-1” devrait être au pluriel.
+
+    ayant  été  eux-mêmes  @:[QA].*:[fs]¬:[me][pi]
+        <<- /ppas/ --1>> =suggMasPlur(\-1)                              # Accord avec “\3” : “\-1” devrait être au masculin pluriel.
+
+    ayant  été  elles-mêmes  @:[QA].*:[ms]¬:[fe][pi]
+        <<- /ppas/ --1>> =suggFemPlur(\-1)                              # Accord avec “\3” : “\-1” devrait être au féminin pluriel.
+
+TEST: ayant été lui-même {{attaquée}}                               ->> attaqué
+TEST: ayant été elle-même {{pris}} dans la tourmente                ->> prise
+TEST: ayant été {{nous-mêmes}} {{blâmé}}                            ->> nous-même|||blâmés
+TEST: ayant été eux-mêmes {{chapitré}}                              ->> chapitrés
+TEST: ayant été elles-mêmes {{ignorés}} par leur hiérarchie         ->> ignorées
 
 
 
