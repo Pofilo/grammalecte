@@ -1953,7 +1953,7 @@ __da_groupe_nominal__
         <<- =>> exclude(\2, ":V")
 
     [un|une]  *WORD
-        <<- not value(<1, "|l’|quelqu’|quelqu|") and not value(\2, "|a|fut|fût|est|") and not morph(\2, ":P") =>> exclude(\2, ":V")
+        <<- not value(<1, "|l’|quelqu’|quelqu|") and not value(\2, "|a|fut|fût|est|fait|") and not morph(\2, ":P") =>> exclude(\2, ":V")
 
     [une|le|la|les|des|chaque|quelque|quelques|cet|cette|ces|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs] personne
         <<- =>> select(\-1, ":N")
@@ -2007,6 +2007,7 @@ TEST: Elle était tout feu, tout flamme.
 TEST: Ses rencards finissent par devenir lassants
 TEST: trois espèces de chauve-souris dont une est éteinte
 TEST: Ils sont source de conflits
+TEST: Votre question fait référence à un fait divers déroutant
 
 
 
