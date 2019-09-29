@@ -6,7 +6,7 @@ def getUI (sLang):
 dStrings = {
     "fr": {
         "title": "Grammalecte · Recenseur de mots",
-        
+
         "list_section": "Énumération des occurrences",
         "count_button": "Compter tout",
         "count2_button": "Compter par lemme",
@@ -22,8 +22,9 @@ dStrings = {
         "charstyle_section": "Style de caractères",
         "underline": "Surligner",
         "nounderline": "Effacer",
-        "accentuation": "Accentuation",
-        "noaccentuation": "Aucun",
+        "emphasis": "Accentuation",
+        "strong_emphasis": "Accentuation forte",
+        "nostyle": "Aucun",
         "tag_button": "Taguer",
 
         "close_button": "Fermer",
@@ -46,8 +47,9 @@ dStrings = {
         "charstyle_section": "Character style",
         "underline": "Underline",
         "nounderline": "Erase",
-        "accentuation": "Accentuation",
-        "noaccentuation": "None",
+        "emphasis": "Emphasis",
+        "strong_emphasis": "Strong emphasis",
+        "nostyle": "None",
         "tag_button": "Tag",
 
         "close_button": "Close",
