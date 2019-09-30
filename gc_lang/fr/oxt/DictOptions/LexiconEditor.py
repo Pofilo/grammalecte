@@ -373,22 +373,24 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     @_waitPointer
     def importDictionary (self):
-        # FilePicker doesn’t work at all…
-        #xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
-        #xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE")]) # seems useless
-        #xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
-        #xFilePicker.setDefaultName("fr.personal.json") # useless, doesn’t work
-        #xFilePicker.setDisplayDirectory("")
-        #xFilePicker.setMultiSelectionMode(False)
-        #nResult = xFilePicker.execute()
-        #if nResult == 1:
-        #    lFile = xFilePicker.getSelectedFiles()
-        #    lFile = xFilePicker.getFiles()
-        #    print(lFile)
-        #    MessageBox(self.xDocument, "File(s): " + str(lFile), "DEBUG", INFOBOX)
-        # workaround
-        spfImported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
-        if os.path.isfile(spfImported):
+        spfImported = ""
+        try:
+            xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
+            xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILEOPEN_SIMPLE")]) # seems useless
+            xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+            xFilePicker.setDefaultName("fr.__personal__.json") # useless, doesn’t work
+            xFilePicker.setDisplayDirectory("")
+            xFilePicker.setMultiSelectionMode(False)
+            nResult = xFilePicker.execute()
+            if nResult == 1:
+                # lFile = xFilePicker.getSelectedFiles()
+                lFile = xFilePicker.getFiles()
+                #print(lFile)
+                #MessageBox(self.xDocument, "File(s): " + str(lFile), "DEBUG", INFOBOX)
+                spfImported = lFile[0][8:] # remove file:///
+        except:
+            spfImported = os.path.join(os.path.expanduser("~"), "fr.personal.json") # workaround
+        if spfImported and os.path.isfile(spfImported):
             with open(spfImported, "r", encoding="utf-8") as hDst:
                 sJSON = hDst.read()
                 try:
@@ -426,15 +428,26 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
 
     def exportDictionary (self):
         try:
-            spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
-            sJSON = self.xOptionNode.getPropertyValue("personal_dic")
-            if sJSON:
-                with open(spfExported, "w", encoding="utf-8") as hDst:
-                    hDst.write(sJSON)
-                sMessage = self.dUI.get('export_message', "#err_msg: %s") % spfExported
-            else:
-                sMessage = self.dUI.get('empty_dictionary', "#err")
-            MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
+            xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
+            xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILESAVE_SIMPLE")]) # seems useless
+            xFilePicker.appendFilter("Supported files", "*.json; *.bdic")
+            xFilePicker.setDefaultName("fr.__personal__.json") # useless, doesn’t work
+            xFilePicker.setDisplayDirectory("")
+            xFilePicker.setMultiSelectionMode(False)
+            nResult = xFilePicker.execute()
+            if nResult == 1:
+                # lFile = xFilePicker.getSelectedFiles()
+                lFile = xFilePicker.getFiles()
+                spfExported = lFile[0][8:] # remove file:///
+                #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
+                sJSON = self.xOptionNode.getPropertyValue("personal_dic")
+                if sJSON:
+                    with open(spfExported, "w", encoding="utf-8") as hDst:
+                        hDst.write(sJSON)
+                    sMessage = self.dUI.get('export_message', "#err_msg: %s") % spfExported
+                else:
+                    sMessage = self.dUI.get('empty_dictionary', "#err")
+                MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"))
         except:
             sMessage = traceback.format_exc()
             MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"), ERRORBOX)

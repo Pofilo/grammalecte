@@ -433,12 +433,14 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
 
     # processing rules
     print("  preparing rules...")
+    nRule = 0
     for sGraphName, lRuleLine in dAllGraph.items():
         print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
         lPreparedRule = []
         for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
             for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
                 lPreparedRule.append(aRule)
+        nRule += len(lRuleLine)
         # Graph creation
         oDARG = darg.DARG(lPreparedRule, sLang)
         dAllGraph[sGraphName] = oDARG.createGraph()
@@ -452,6 +454,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             print("\nGRAPH:", sGraphName)
             for k, v in dAllGraph[sGraphName].items():
                 print(k, "\t", v)
+    print("  Total: ", nRule, "rules")
 
     # creating file with all functions callable by rules
     print("  creating callables for graph rules...")

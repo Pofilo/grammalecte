@@ -172,7 +172,7 @@ def suggVerbMode (sFlex, cMode, sSuj):
 
 ## Nouns and adjectives
 
-def suggPlur (sFlex, sWordToAgree=None):
+def suggPlur (sFlex, sWordToAgree=None, bSelfSugg=False):
     "returns plural forms assuming sFlex is singular"
     if sWordToAgree:
         lMorph = _oSpellChecker.getMorph(sFlex)
@@ -189,18 +189,25 @@ def suggPlur (sFlex, sWordToAgree=None):
             aSugg.add(sFlex[:-1]+"ux")
         if sFlex.endswith("ail") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"ux"):
             aSugg.add(sFlex[:-2]+"ux")
+    if sFlex.endswith("L"):
+        if sFlex.endswith("AL") and len(sFlex) > 2 and _oSpellChecker.isValid(sFlex[:-1]+"UX"):
+            aSugg.add(sFlex[:-1]+"UX")
+        if sFlex.endswith("AIL") and len(sFlex) > 3 and _oSpellChecker.isValid(sFlex[:-2]+"UX"):
+            aSugg.add(sFlex[:-2]+"UX")
     if _oSpellChecker.isValid(sFlex+"s"):
         aSugg.add(sFlex+"s")
     if _oSpellChecker.isValid(sFlex+"x"):
         aSugg.add(sFlex+"x")
     if mfsp.hasMiscPlural(sFlex):
         aSugg.update(mfsp.getMiscPlural(sFlex))
+    if not aSugg and bSelfSugg and sFlex.endswith(("s", "x", "S", "X")):
+        aSugg.add(sFlex)
     if aSugg:
         return "|".join(aSugg)
     return ""
 
 
-def suggSing (sFlex):
+def suggSing (sFlex, bSelfSugg=True):
     "returns singular forms assuming sFlex is plural"
     aSugg = set()
     if sFlex.endswith("ux"):
@@ -208,8 +215,15 @@ def suggSing (sFlex):
             aSugg.add(sFlex[:-2]+"l")
         if _oSpellChecker.isValid(sFlex[:-2]+"il"):
             aSugg.add(sFlex[:-2]+"il")
-    if _oSpellChecker.isValid(sFlex[:-1]):
+    if sFlex.endswith("UX"):
+        if _oSpellChecker.isValid(sFlex[:-2]+"L"):
+            aSugg.add(sFlex[:-2]+"L")
+        if _oSpellChecker.isValid(sFlex[:-2]+"IL"):
+            aSugg.add(sFlex[:-2]+"IL")
+    if sFlex.endswith(("s", "x", "S", "X")) and _oSpellChecker.isValid(sFlex[:-1]):
         aSugg.add(sFlex[:-1])
+    if bSelfSugg and not aSugg:
+        aSugg.add(sFlex)
     if aSugg:
         return "|".join(aSugg)
     return ""

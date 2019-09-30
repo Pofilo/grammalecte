@@ -3,7 +3,7 @@
 """
 INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 Implementation of a spellchecker as a transducer (storing transformation code to get lemma and morphologies)
-and a spell suggestion mechanim
+and a spell suggestion mechanism
 """
 
 import traceback
@@ -266,9 +266,7 @@ class IBDAWG:
                 if sWord.istitle():
                     return self.lookup(sWord.lower())
                 if sWord.isupper():
-                    if self.bAcronymValid:
-                        return True
-                    return self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
+                    return self.bAcronymValid or self.lookup(sWord.lower()) or self.lookup(sWord.capitalize())
                 return self.lookup(sWord[:1].lower() + sWord[1:])
             return self.lookup(sWord.lower())
         if sWord[0:1].isdigit():
@@ -342,7 +340,8 @@ class IBDAWG:
             if (len(sNewWord) + len(sRemain) == len(oSuggResult.sWord)) and oSuggResult.sWord.lower().startswith(sNewWord.lower()) and self.isValid(sRemain):
                 if self.sLangCode == "fr" and sNewWord.lower() in ("l", "d", "n", "m", "t", "s", "c", "j", "qu", "lorsqu", "puisqu", "quoiqu", "jusqu", "quelqu") and sRemain[0:1] in cp.aVowel:
                     oSuggResult.addSugg(sNewWord+"’"+sRemain)
-                oSuggResult.addSugg(sNewWord+" "+sRemain)
+                if (len(sNewWord) > 1 and len(sRemain) > 1) or sNewWord in ("a", "à", "y") or sRemain in ("a", "à", "y"):
+                    oSuggResult.addSugg(sNewWord+" "+sRemain)
         if nDist > oSuggResult.nDistLimit:
             return
         cCurrent = sRemain[0:1]

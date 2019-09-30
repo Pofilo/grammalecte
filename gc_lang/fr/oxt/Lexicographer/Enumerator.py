@@ -104,7 +104,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         xFDTitle.Height = 9
         xFDTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
         xFDTitle.Name = "Verdana"
-        
+
         xFDSubTitle = uno.createUnoStruct("com.sun.star.awt.FontDescriptor")
         xFDSubTitle.Height = 8
         xFDSubTitle.Weight = uno.getConstantByName("com.sun.star.awt.FontWeight.BOLD")
@@ -128,21 +128,20 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI") \
         )
         self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 60, nHeight, Label = self.dUI.get('num_of_entries', "#err"), Align = 2)
-        self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+65, nY1+210, 30, nHeight, Label = "—")
-        self._addWidget('tot_of_entries', 'FixedText', nX+100, nY1+210, 60, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
-        self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+165, nY1+210, 30, nHeight, Label = "—")
-        
+        self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+65, nY1+210, 25, nHeight, Label = "—")
+        self._addWidget('tot_of_entries', 'FixedText', nX+90, nY1+210, 60, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
+        self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+155, nY1+210, 30, nHeight, Label = "—")
+        self.xSearch = self._addWidget('search_button', 'Button', nX+190, nY1+210, 30, nHeight, Label = ">>>", Enabled = False)
+
         # Tag
         # Note: the only way to group RadioButtons is to create them successively
-        self._addWidget("dformat_section", 'FixedLine', nX, nY2, 90, nHeight, Label = self.dUI.get("dformat_section", "#err"), FontDescriptor = xFDTitle)
-        self._addWidget("charstyle_section", 'FixedLine', nX+100, nY2, 90, nHeight, Label = self.dUI.get("charstyle_section", "#err"), FontDescriptor = xFDTitle)
-        self.xUnderline = self._addWidget('underline', 'RadioButton', nX, nY2+12, 40, nHeight, Label = self.dUI.get('underline', "#err"))
-        self.xNoUnderline = self._addWidget('nounderline', 'RadioButton', nX+50, nY2+12, 40, nHeight, Label = self.dUI.get('nounderline', "#err"))
-        self.xAccent = self._addWidget('accentuation', 'RadioButton', nX+100, nY2+12, 50, nHeight, Label = self.dUI.get('accentuation', "#err"))
-        self.xNoAccent = self._addWidget('noaccentuation', 'RadioButton', nX+155, nY2+12, 40, nHeight, Label = self.dUI.get('noaccentuation', "#err"))
+        self._addWidget("charstyle_section", 'FixedLine', nX, nY2, 200, nHeight, Label = self.dUI.get("charstyle_section", "#err"), FontDescriptor = xFDTitle)
+        self.xAccent = self._addWidget('emphasis', 'RadioButton', nX, nY2+12, 55, nHeight, Label = self.dUI.get('emphasis', "#err"))
+        self.xStrongAccent = self._addWidget('strong_emphasis', 'RadioButton', nX+60, nY2+12, 70, nHeight, Label = self.dUI.get('strong_emphasis', "#err"))
+        self.xNoAccent = self._addWidget('nostyle', 'RadioButton', nX+140, nY2+12, 45, nHeight, Label = self.dUI.get('nostyle', "#err"))
 
-        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500)
-        
+        self.xTag = self._addWidget('tag_button', 'Button', self.xDialog.Width-40, nY2+10, 30, 11, Label = self.dUI.get('tag_button', "#err"), FontDescriptor = xFDTitle, TextColor = 0x005500, Enabled=False)
+
         # Progress bar
         self.xProgressBar = self._addWidget('progress_bar', 'ProgressBar', nX, self.xDialog.Height-25, 160, 14)
         self.xProgressBar.ProgressValueMin = 0
@@ -161,14 +160,16 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.getControl('count2_button').setActionCommand('CountByLemma')
         self.xContainer.getControl('unknown_button').addActionListener(self)
         self.xContainer.getControl('unknown_button').setActionCommand('UnknownWords')
+        self.xContainer.getControl('search_button').addActionListener(self)
+        self.xContainer.getControl('search_button').setActionCommand('Search')
         self.xContainer.getControl('tag_button').addActionListener(self)
         self.xContainer.getControl('tag_button').setActionCommand('Tag')
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
-        self.xContainer.setVisible(False)
+        self.xContainer.setVisible(True)    # True for non modal dialog
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
-        self.xContainer.execute()
+        #self.xContainer.execute()          # Don’t excute for non modal dialog
 
     # XActionListener
     def actionPerformed (self, xActionEvent):
@@ -176,32 +177,40 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             if xActionEvent.ActionCommand == "Count":
                 self.count(self.dUI.get("words", "#err"))
                 self.xTag.Enabled = True
+                self.xSearch.Enabled = True
             elif xActionEvent.ActionCommand == "CountByLemma":
                 self.count(self.dUI.get("lemmas", "#err"), bByLemma=True)
                 self.xTag.Enabled = False
+                self.xSearch.Enabled = False
             elif xActionEvent.ActionCommand == "UnknownWords":
                 self.count(self.dUI.get("unknown_words", "#err"), bOnlyUnknownWords=True)
                 self.xTag.Enabled = True
+                self.xSearch.Enabled = True
+            elif xActionEvent.ActionCommand == "Search":
+                if not self.xGridControl.hasSelectedRows():
+                    return
+                lRow = self.xGridControl.getSelectedRows()
+                aWord = set([ self.xGridModel.GridDataModel.getCellData(0, n)  for n in lRow ])
+                self.gotoWord(aWord)
             elif xActionEvent.ActionCommand == "Tag":
                 if not self.xGridControl.hasSelectedRows():
                     return
                 lRow = self.xGridControl.getSelectedRows()
                 aWord = set([ self.xGridModel.GridDataModel.getCellData(0, n)  for n in lRow ])
                 sAction = ""
-                if self.xUnderline.State:
-                    sAction = "underline"
-                elif self.xNoUnderline.State:
-                    sAction = "nounderline"
-                elif self.xAccent.State:
-                    sAction = "accentuation"
+                if self.xAccent.State:
+                    sAction = "emphasis"
+                elif self.xStrongAccent.State:
+                    sAction = "strong_emphasis"
                 elif self.xNoAccent.State:
-                    sAction = "noaccentuation"
+                    sAction = "nostyle"
                 self.tagText(aWord, sAction)
             elif xActionEvent.ActionCommand == "Close":
-                self.xContainer.endExecute()
+                self.xContainer.dispose()           # Non modal dialog
+                #self.xContainer.endExecute()       # Modal dialog
         except:
             traceback.print_exc()
-    
+
     # XJobExecutor
     def trigger (self, args):
         try:
@@ -284,17 +293,71 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                 xCursor.goRight(dToken["nStart"]-nPos, False) # start of token
                 nPos = dToken["nEnd"]
                 xCursor.goRight(nPos-dToken["nStart"], True) # end of token
-                if sAction == "underline":
-                    xCursor.CharBackColor = hexToRBG("AA0000")
-                elif sAction == "nounderline":
-                    xCursor.CharBackColor = hexToRBG("FFFFFF")
-                elif sAction == "accentuation":
+                # if sAction == "underline":
+                #     xCursor.CharBackColor = hexToRBG("AA0000")
+                # elif sAction == "nounderline":
+                #     xCursor.CharBackColor = hexToRBG("FFFFFF")
+                if sAction == "emphasis":
                     xCursor.CharStyleName = "Emphasis"
-                elif sAction == "noaccentuation":
+                elif sAction == "strong_emphasis":
+                    xCursor.CharStyleName = "Strong Emphasis"
+                elif sAction == "nostyle":
                     #xCursor.CharStyleName = "Default Style"     # doesn’t work
                     xCursor.setPropertyToDefault("CharStyleName")
         self.xProgressBar.ProgressValue += 1
 
+    @_waitPointer
+    def gotoWord (self, aWord):
+        try:
+            if not aWord:
+                return
+            if not self.oTokenizer:
+                self.oTokenizer = self.oSpellChecker.getTokenizer()
+            xViewCursor = self.xDocument.CurrentController.ViewCursor
+            if not xViewCursor.isCollapsed():
+                xViewCursor.collapseToEnd()
+            xRange = xViewCursor.getStart()
+            xCursor = self.xDocument.Text.createTextCursor()
+            xCursor.gotoRange(xRange, False)
+            #xCursor.gotoEndOfWord(False)
+            xCursor.gotoEndOfParagraph(True)
+            sParagraph = xCursor.getString()
+            xCursor.gotoRange(xRange, False)
+            tPos = self._searchWordsInText(aWord, sParagraph)
+            if not tPos:
+                while xCursor.gotoNextParagraph(False):
+                    xCursor.gotoEndOfParagraph(True)
+                    sParagraph = xCursor.getString()
+                    xCursor.gotoStartOfParagraph(False)
+                    tPos = self._searchWordsInText(aWord, sParagraph)
+                    if tPos:
+                        break
+            if not tPos:
+                xCursor.gotoStart(False)
+                xCursor.gotoEndOfParagraph(True)
+                sParagraph = xCursor.getString()
+                xCursor.gotoStartOfParagraph(True)
+                tPos = self._searchWordsInText(aWord, sParagraph)
+                while xCursor.gotoNextParagraph(False):
+                    xCursor.gotoEndOfParagraph(True)
+                    sParagraph = xCursor.getString()
+                    xCursor.gotoStartOfParagraph(False)
+                    tPos = self._searchWordsInText(aWord, sParagraph)
+                    if tPos:
+                        break
+            if tPos:
+                xCursor.goRight(tPos[0], False)
+                xRange = xCursor.getStart()
+                xViewCursor.gotoRange(xRange, False)
+                xViewCursor.goRight(tPos[1], True)
+        except:
+            traceback.print_exc()
+
+    def _searchWordsInText (self, aWord, sText):
+        for dToken in self.oTokenizer.genTokens(sText):
+            if dToken["sValue"] in aWord:
+                return (dToken["nStart"], dToken["nEnd"]-dToken["nStart"])
+        return None
 
 #g_ImplementationHelper = unohelper.ImplementationHelper()
 #g_ImplementationHelper.addImplementation(Enumerator, 'net.grammalecte.enumerator', ('com.sun.star.task.Job',))
