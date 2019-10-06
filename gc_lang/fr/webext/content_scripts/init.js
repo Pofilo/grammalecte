@@ -295,7 +295,6 @@ function autoRefreshOption (oSavedOptions=null) {
         browser.storage.local.get("autorefresh_option").then(autoRefreshOption, showError);
     }
     else if (oSavedOptions.hasOwnProperty("autorefresh_option")) {
-        console.log("autorefresh_option", oSavedOptions["autorefresh_option"]);
         oGrammalecte.bAutoRefresh = oSavedOptions["autorefresh_option"];
     }
 }
