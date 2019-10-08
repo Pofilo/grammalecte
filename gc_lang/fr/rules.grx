@@ -10076,7 +10076,7 @@ __sgpl_entre_autres__
         <<- /sgpl/ -2>> autres                                      # La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
 
     entre >autre chose
-        <<- /sgpl/ -2:3>> autres choses                             # Dans la locution “entre autres choses”, “autres choses” doit être au pluriel.
+        <<- /sgpl/ -2:3>> autres choses                             # La locution “entre autres choses”, toujours au pluriel.
 
 TEST: Des raisons ? Entre {{autre}} je n’en savais pas plus que lui.
 TEST: il y eut, entre {{autre}}, des erreurs commises.
@@ -12438,6 +12438,9 @@ __purge_conditionnelle__
 
     en quelques [jours|mois|trimestres|semestres|siècles|millénaires]   @¬:A:[me]:[pi]
         <<- ~1:3>> *
+
+    entre autres  @:¬:N.*:p
+        <<- ~1:2>> *
 
     entre [eux|elles|nous|vous|iels]
         <<- not morph(<1, ":Ov|>(?:il|on|elle)") ~>> *
@@ -19320,12 +19323,12 @@ TEST: sans fin elles se sont succédé
 
 __ppas_se_être__
     [me|m’|te|se|s’]  ?[y|en]¿  >être  *WORD
-        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") --1>> =suggVerbPpas(\-1)                 # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QAG]") --1>> =suggVerbPpas(\-1)                # Incohérence. Après « s’être », le verbe doit être un participe passé.
         <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not tag_before(\1, "que") and not before("(?i)\\bon (?:ne |)$")
         --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
 
     tu  t’  ?[y|en]¿  [es|étais|seras|serais|fus|fusses]  *WORD
-        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QA]") --1>> =suggVerbPpas(\-1)                 # Incohérence. Après « s’être », le verbe doit être un participe passé.
+        <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QAG]") --1>> =suggVerbPpas(\-1)                # Incohérence. Après « s’être », le verbe doit être un participe passé.
 
 TEST: s’être toujours {{donner}} le mot.
 TEST: je suis venu et me suis totalement {{donnés}} à cette œuvre
@@ -19343,6 +19346,7 @@ TEST: Si t’es pas contente, t’achètes pas.
 TEST: t’étais vraiment cinglé à cette époque.
 TEST: il m’était évident que cette mission était à durée déterminée
 TEST: Cela fait un petit temps qu’on ne s’est plus vus.
+TEST: Cela s’est entre autres traduit par l’absence de grandes controverses sur la sécurité des vaccins
 
 
 ## se rendre compte
