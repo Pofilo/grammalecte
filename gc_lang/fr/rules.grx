@@ -5955,12 +5955,13 @@ TEST: de l’{{arrivait}}
 
 
     [de|d’]  le  *WORD
-        <<- /conf/ morph(\3, ":[NAQ].*:[me]", ":[YG]") and not \3.istitle()
+        <<- /conf/ space_after(\1, 0, 1) and morph(\3, ":[NAQ].*:[me]", ":[YG]") and not \3.istitle()
             and not (value(\3, "|mal|") and morph(>1, ":Y")) -1:2>> du                              # Incohérence avec “\1 \2” : “\3” est un nom ou un adjectif.
         <<- /conf/ morph(\3, ":[123][sp]") -3>> =suggVerbInfi(\3)                                   # Incohérence avec “\1 \2” : “\3” est une forme verbale conjuguée.
 
 TEST: {{de le}} vin                                           ->> du
 TEST: il n’est pas interdit de le {{pensait}}
+TEST: que connais-tu de “Le Tambour” ?
 
 
     [de|d’]  la  *WORD
@@ -9835,6 +9836,19 @@ TEST: impossible, avec mes maux de {{tète}}                         ->> tête
 TEST: un {{tète-a-tète}}                                            ->> tête-à-tête
 
 
+# confusion toit / toi
+__conf_toi_toit__
+    [chez|pour|contre|avec] toit
+        <<- /conf/ -2>> toi                         # Confusion. Le toit est constitué d’une toiture. Pour le pronom personnel à la 2ᵉ personne, écrivez “toi”.|https://fr.wiktionary.org/wiki/toi
+
+    [sous|sur] [mon|ton|son|notre|votre|leur] toi
+    [sous|sur] le toi
+        <<- /conf/ -3>> toit                        # Confusion : “toi” est le pronom personnel à la 2ᵉ personne. Pour évoquer le sommet d’un bâtiment, écrivez “toit”.|https://fr.wiktionary.org/wiki/toit
+
+TEST: ce n’est pas contre {{toit}}
+TEST: sous son {{toi}}, c’est sa loi qui prime.
+
+
 # tour à tour
 __conf_tour_à_tour__
     >tourd  [à|a]   >tourd
@@ -12559,6 +12573,7 @@ __purge_conditionnelle__
 
 
 __simplication_substantifs__
+    abus [de|d’] pouvoir
     >accusé de reception
     >acte [de|d’] [baptême|caution|cautionnement|cession|contrition|licitation|mariage|naissance|notoriété|propriété|quittance|reconnaissance|répudiation|vente]
     >acte d’ [achat|engagement]
@@ -12637,7 +12652,8 @@ __simplication_substantifs__
     >claire comme jus [de|d’] [boudin|>chaussette|chique]
     [>clé|>clef] à molette
     >clin d’ œil
-    >clause de confidentialité
+    >clause [de|d’] [confidentialité|non-concurrence]
+    >clause [de|d’] non concurrence
     >code [de|d’] bonne conduite
     >commise d’ office
     >compagne [de|d’] route
@@ -12692,6 +12708,7 @@ __simplication_substantifs__
     >étui à cigarettes
     >expérience [utilisateur|utilisateurs]
     >face [A|B]
+    faits et gestes
     farces et attrapes
     >fard à paupières
     >fer à cheval
@@ -12743,6 +12760,7 @@ __simplication_substantifs__
     >invitée surprise
     >journal [de|d’] bord
     >juge d’ instruction
+    >langue de bois
     >lame de fond
     >lettre [de|d’] recommandation
     >lampe à [huile|pétrole]
@@ -12793,6 +12811,7 @@ __simplication_substantifs__
     >nue comme un ver
     >nue comme des vers
     >nulle et non >avenue
+    >occasion en or ?massif¿
     >oiseau [de|d’] [malheur|nuit|proie]
     >oiseau [de|d’] mauvais augure
     >onde [de|d’] choc
@@ -12801,6 +12820,7 @@ __simplication_substantifs__
     >noire comme une nuit sans lune
     >panier à linge
     >papier à [>lettre|musique]
+    >parole en l’ air
     >partie [de|d’] jambes en l’ air
     >passage à tabac
     >passation [de|d’] pouvoir
@@ -14029,7 +14049,7 @@ TEST: Parler affaires.
 TEST: Mon Dieu, je vous en prie, faites qu’il ne m’arrive rien
 TEST: Anne, je t’en prie, viens de bonne heure
 TEST: elles ont toutes deux épluché le contenu de la boîte
-
+TEST: le flou demeure aujourd’hui éblouissant.
 
 
 @@@@
@@ -16443,7 +16463,7 @@ __conf_air_aire_ère__
     >avoir l’ [aire|ère] [de|d’]
         <<- /conf/ -3>> air         # Confusion probable. La locution “avoir l’air de” signifie “sembler”, “paraître”…|https://fr.wiktionary.org/wiki/avoir_l%E2%80%99air
 
-    [>air|>ère] [de|d’]  [atterrissage|autoroute|repos]
+    [>air|>ère] [de|d’]  [accueil|atterrissage|autoroute|repos]
         <<- /conf/ -1>> aire|aires  # Confusion. Une ère est une époque. L’air est un gaz, une apparence ou une musique. Pour évoquer une surface, écrivez “aire”.|https://fr.wiktionary.org/wiki/aire
 
     >baptême de l’ [ère|aire]
