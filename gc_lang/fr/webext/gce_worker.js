@@ -355,7 +355,7 @@ function setDictionary (sDictionary, oDict, dInfo) {
     //console.log("setDictionary", sDictionary);
     switch (sDictionary) {
         case "main":
-            oSpellChecker.setMainDictionary(oDict);
+            oSpellChecker.setMainDictionary(oDict, dInfo["sExtPath"]+"/grammalecte/graphspell/_dictionaries");
             break;
         case "community":
             oSpellChecker.setCommunityDictionary(oDict);

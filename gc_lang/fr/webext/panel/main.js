@@ -24,6 +24,7 @@ window.addEventListener(
     function (xEvent) {
         let xElem = xEvent.target;
         if (xElem.id) {
+            // tests
             if (xElem.id === "text_to_test_button") {
                 browser.runtime.sendMessage({
                     sCommand: "textToTest",
@@ -39,6 +40,14 @@ window.addEventListener(
                     dInfo: {}
                 });
             }
+            else if (xElem.id == "restart_worker") {
+                browser.runtime.sendMessage({
+                    sCommand: "restartWorker",
+                    dParam: { "nDelayLimit": 3 },
+                    dInfo: {}
+                });
+            }
+            // grammar options
             else if (xElem.id === "default_options_button") {
                 browser.runtime.sendMessage({
                    sCommand: "resetOptions",
@@ -55,6 +64,7 @@ window.addEventListener(
                     });
                 }
             }
+            // dictionaries options
             else if (xElem.id.endsWith("_dic")) {
                 if (xElem.dataset.dictionary) {
                     storeSCOptions();
@@ -65,9 +75,21 @@ window.addEventListener(
                     });
                 }
             }
+            else if (xElem.id.startsWith("spelling_")) {
+                updateSpellingChoiceUI(xElem.id);
+                let sMainDicName = document.getElementById(xElem.id).dataset.dicname;
+                browser.storage.local.set({"main_dic_name": sMainDicName});
+                browser.runtime.sendMessage({
+                    sCommand: "setDictionary",
+                    dParam: { sDictionary: "main", oDict: sMainDicName },
+                    dInfo: { sExtPath: browser.extension.getURL("") }
+                });
+            }
+            // UI options
             else if (xElem.id.startsWith("ui_option_")) {
                 storeUIOptions();
             }
+            //
             else if (xElem.id.startsWith("link_")) {
                 browser.tabs.create({url: xElem.dataset.url});
             }
@@ -99,13 +121,7 @@ window.addEventListener(
                     dInfo: {}
                 });
             }
-            else if (xElem.id == "restart_worker") {
-                browser.runtime.sendMessage({
-                    sCommand: "restartWorker",
-                    dParam: { "nDelayLimit": 3 },
-                    dInfo: {}
-                });
-            }
+        // change UI page
         } else if (xElem.className.startsWith("select")) {
             showPage(xElem.dataset.page);
         }/* else if (xElem.tagName === "A") {
@@ -230,21 +246,27 @@ function storeUIOptions () {
 function displaySCOptionsLoadedFromStorage () {
     if (bChrome) {
         browser.storage.local.get("sc_options", displaySCOptions);
+        browser.storage.local.get("main_dic_name", displaySCOptions);
         return;
     }
-    let xPromise = browser.storage.local.get("sc_options");
-    xPromise.then(displaySCOptions, showError);
+    browser.storage.local.get("sc_options").then(displaySCOptions, showError);
+    browser.storage.local.get("main_dic_name").then(displaySCOptions, showError);
 }
 
 function displaySCOptions (dOptions) {
-    if (!dOptions.hasOwnProperty("sc_options")) {
-        console.log("no sc options found");
-        return;
+    if (dOptions.hasOwnProperty("sc_options")) {
+        document.getElementById("community_dic").checked = dOptions.sc_options.community;
+        document.getElementById("personal_dic").checked = dOptions.sc_options.personal;
     }
-    dOptions = dOptions.sc_options;
-    //document.getElementById("extended_dic").checked = dOptions.extended;
-    document.getElementById("community_dic").checked = dOptions.community;
-    document.getElementById("personal_dic").checked = dOptions.personal;
+    if (dOptions.hasOwnProperty("main_dic_name")) {
+        switch (dOptions.main_dic_name) {
+            case "fr-classic.json":  updateSpellingChoiceUI("spelling_classic"); break;
+            case "fr-reform.json":  updateSpellingChoiceUI("spelling_reform"); break;
+            case "fr-allvars.json":  updateSpellingChoiceUI("spelling_allvars"); break;
+            default:
+                console.log("Unknown dictionary name:", dOptions.main_dic_name);
+        }
+    }
 }
 
 function storeSCOptions () {
@@ -253,6 +275,12 @@ function storeSCOptions () {
         community: document.getElementById("community_dic").checked,
         personal: document.getElementById("personal_dic").checked
     }});
+}
+
+function updateSpellingChoiceUI (sSpellingChoice) {
+    document.getElementById("spelling_classic").className = (sSpellingChoice == "spelling_classic") ? "radiolike selected" : "radiolike";
+    document.getElementById("spelling_reform").className = (sSpellingChoice == "spelling_reform") ? "radiolike selected" : "radiolike";
+    document.getElementById("spelling_allvars").className = (sSpellingChoice == "spelling_allvars") ? "radiolike selected" : "radiolike";
 }
 
 

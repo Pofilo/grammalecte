@@ -56,15 +56,15 @@ class SpellChecker {
     }
 
     _loadDictionary (dictionary, sPath="", bNecessary=false) {
-        // returns an IBDAWG object
+        // <dictionary> can be a filename or a JSON object, returns an IBDAWG object
         if (!dictionary) {
             return null;
         }
         try {
             if (typeof(ibdawg) !== 'undefined') {
-                return new ibdawg.IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
+                return new ibdawg.IBDAWG(dictionary, sPath);
             } else {
-                return new IBDAWG(dictionary, sPath);  // dictionary can be a filename or a JSON object
+                return new IBDAWG(dictionary, sPath);
             }
         }
         catch (e) {

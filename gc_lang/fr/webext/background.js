@@ -133,6 +133,7 @@ const oInitHandler = {
     initGrammarChecker: function () {
         if (bChrome) {
             browser.storage.local.get("gc_options", this._initGrammarChecker);
+            browser.storage.local.get("main_dic_name", this._setSpellingDictionaries);
             browser.storage.local.get("personal_dictionary", this._setSpellingDictionaries);
             browser.storage.local.get("community_dictionary", this._setSpellingDictionaries);
             browser.storage.local.get("oPersonalDictionary", this._setSpellingDictionaries); // deprecated
@@ -140,6 +141,7 @@ const oInitHandler = {
             return;
         }
         browser.storage.local.get("gc_options").then(this._initGrammarChecker, showError);
+        browser.storage.local.get("main_dic_name", this._setSpellingDictionaries);
         browser.storage.local.get("personal_dictionary").then(this._setSpellingDictionaries, showError);
         browser.storage.local.get("community_dictionary").then(this._setSpellingDictionaries, showError);
         browser.storage.local.get("oPersonalDictionary").then(this._setSpellingDictionaries, showError); // deprecated
@@ -184,6 +186,9 @@ const oInitHandler = {
             browser.storage.local.set({ "personal_dictionary": oData["oPersonalDictionary"] });
             oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "personal", oDict: oData["oPersonalDictionary"] }, dInfo: {} });
             browser.storage.local.remove("oPersonalDictionary");
+        }
+        if (oData.hasOwnProperty("main_dic_name")) {
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "main", oDict: oData["main_dic_name"] }, dInfo: {sExtPath: browser.extension.getURL("")} });
         }
         if (oData.hasOwnProperty("community_dictionary")) {
             oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, dInfo: {} });

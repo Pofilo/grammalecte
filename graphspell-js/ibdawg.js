@@ -98,27 +98,27 @@ class SuggResult {
 class IBDAWG {
     // INDEXABLE BINARY DIRECT ACYCLIC WORD GRAPH
 
-    constructor (param1, sPath="") {
-        // param1 can be a filename or a object with all the necessary data.
+    constructor (source, sPath="") {
+        // <source> can be a filename or a object with all the necessary data.
         try {
             let oData = null;
-            if (typeof(param1) == "string") {
+            if (typeof(source) == "string") {
                 let sURL;
-                if(typeof(process) !== 'undefined') {
-                    sURL = (sPath !== "") ? sPath + "/" + param1 : __dirname + "/_dictionaries/"+param1;
+                if (typeof(process) !== 'undefined') {
+                    sURL = (sPath !== "") ? sPath + "/" + source : __dirname + "/_dictionaries/"+source;
                 } else {
-                    sURL = (sPath !== "") ? sPath + "/" + param1 : "resource://grammalecte/graphspell/_dictionaries/"+param1;
+                    sURL = (sPath !== "") ? sPath + "/" + source : "resource://grammalecte/graphspell/_dictionaries/"+source;
                 }
                 oData = JSON.parse(helpers.loadFile(sURL));
             } else {
-                oData = param1;
+                oData = source;
             }
             Object.assign(this, oData);
         }
         catch (e) {
             console.error(e);
             console.log("path: " + sPath);
-            console.log("dic:" + param1.slice(0, 1000));
+            console.log("dic:" + source.slice(0, 1000));
             throw Error("# Error. File not found or not loadable.\n" + e.message + "\n");
         }
         /*
