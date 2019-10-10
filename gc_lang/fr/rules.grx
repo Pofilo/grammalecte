@@ -4491,15 +4491,29 @@ __inte_union_nous1!7__
     [ne|n’]  [lui|leur|y]                    en                          ~ons$  nous
         <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  [<end>|,]
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  @:¬:(?:1p|Y)
+    ,  ~ons$  nous  [<end>|,]
+    ,  ~ons$  nous  @:¬:(?:1p|Y)
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    <start>  ~ons  nous
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|allons|venons|partons|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons  nous
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
 TEST: n’y {{retrouverons nous}} jamais la tranquilité ?
 TEST: pourquoi n’en {{entendons nous}} jamais parler ?
 TEST: que {{pouvons nous}} dans cette vie
+TEST: que {{pouvons nous}} faire ?
+TEST: {{Connaissons nous}} réellement cette langue ?
+TEST: ils sont, {{croyons nous}}, indéfendables
+TEST: nous pensons alors vraiment, allons nous perdre dans les bois
 TEST: Sachons nous conformer à ces restrictions et faisons notre travail.
+TEST: allons nous détendre à la piscine.
+TEST: partons nous détendre à la montagne
 
 
 __inte_union_vous1!7__
@@ -4509,15 +4523,27 @@ __inte_union_vous1!7__
     [ne|n’]  [lui|leur|y]                    en                          ~ez$  vous
         <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
 
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous  [<end>|,]
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous  @:¬:(?:2p|Y)
+    ,  ~ez$  vous  [<end>|,]
+    ,  ~ez$  vous  @:¬:(?:2p|Y)
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    <start>  ~ez$  vous
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|allez|venez|partez|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
         -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
 TEST: ne {{soutiendrez vous}} pas cette proposition ?
 TEST: n’en {{voulez vous}} jamais à ces gens ?
+TEST: je suis, {{penserez vous}}, un imbécile.
+TEST: {{pouvez vous}} réussir ?
 TEST: comment {{pensez vous}} y parvenir
 TEST: veuillez vous adresser à notre secretaire pour prendre rendez-vous.
+TEST: Allez vous faire foutre.
+TEST: Venez vous défouler sur ces connards.
 
 
 
@@ -9957,6 +9983,7 @@ __conf_voie_voix_vois_voit__
 TEST: elles sont là, à portée de {{voie}}
 TEST: ces patients sont en {{voix}} de guérison.
 TEST: à {{voie}} basse
+TEST: écoute cette {{voie}} magnifique
 TEST: sur la bonne {{voix}}
 TEST: c’est en bonne {{voix}}.
 TEST: il faut ouvrir la {{voix}} aux nouveaux venus.
@@ -11355,6 +11382,7 @@ __purge_locutions__
     dans [ma|ta|sa|notre|votre|leur] prime jeunesse
     dans très peu de temps
     dans un cas comme dans l’autre
+    dans un [premier|second] temps
     dans une [certaine|large|moindre] mesure
     début {mois} ~^\d{2,5}$
     au début {mois} ~^\d{2,5}$
@@ -13680,8 +13708,11 @@ __da_substantifs__
     [<start>|,]  $:D  *WORD  *WORD  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
     [<start>|,]  $:D  *WORD  *WORD  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
     [<start>|,]  $:D  *WORD  *WORD  [lui|leur|y]    en                      @:(?:[123][sp]|P)
-    [<start>|,]  $:D  *WORD  *WORD  @:(?:3[sp]|P)¬:[GW]
         <<- morph(\3, ":[NA]", ":(?:G|V0)") and morph(\4, ":[NA]", ":(?:[PG]|V[023])") =>> exclude(\4, ":V")
+
+    [<start>|,]  $:D  *WORD  *WORD  @:(?:3[sp]|P)¬:[GW]
+        <<- morph(\2, ":p") and morph(\3, ":[NA].*:p", ":(?:G|V0)") and morph(\4, ":[NA].*:p", ":(?:[PG]|V[023])") =>> exclude(\4, ":V")
+        <<- morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PG]|V[023])") and not morph(\5, ":A.*:[si]") =>> exclude(\4, ":V")
 
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|G)
         <<- =>> exclude(\3, ":V")
@@ -14050,6 +14081,7 @@ TEST: Mon Dieu, je vous en prie, faites qu’il ne m’arrive rien
 TEST: Anne, je t’en prie, viens de bonne heure
 TEST: elles ont toutes deux épluché le contenu de la boîte
 TEST: le flou demeure aujourd’hui éblouissant.
+TEST: la petite reste fragile
 
 
 @@@@
@@ -22458,10 +22490,18 @@ TEST: C’était elle qui avait pris le contrôle.
 
 
 __inte_union_nous2!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  [<end>|,]
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons$  nous  @:¬:1p
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]")
-        -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
+    ,  ~ons$  nous  [<end>|,]
+    ,  ~ons$  nous  @:¬:(?:1p|Y)
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    <start>  ~ons  nous
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|allons|venons|partons|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ons  nous
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1p", ":[GW]") and not value(\2, "|veuillons|sachons|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [sommes|étions|fûmes|fussions|serons|serions|avons|avions|eûmes|eussions|aurons|aurions]  nous
         <<- /inte/ space_after(\2, 1, 1)
@@ -22474,7 +22514,9 @@ __inte_union_nous2!7__
             or (morph(\2, ":V.*:1p", ":[GNW]") and not morph(\1, ":Os")) )
         -2:3>> \2-nous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
+TEST: Ils savent, réellement {{croyons nous}}, comment résoudre le problème, mais ils n’ont fait que de la merde.
 TEST: y {{retrouverons nous}} enfin la tranquilité ?
+TEST: comment alors {{irons nous}} à la pêche ?
 TEST: pourquoi {{sommes nous}} réellement des dieux ?
 TEST: À quelle autorité {{prétendons nous}} sur ces gens…
 TEST: quel exercice {{avions nous}} revu ?
@@ -22484,10 +22526,18 @@ TEST: les avions nous font rêver.
 
 
 __inte_union_vous2!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..ez$  vous  [<end>|,]
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~..ez$  vous  @:¬:2p
-        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]")
-        -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
+    ,  ~ez$  vous  [<end>|,]
+    ,  ~ez$  vous  @:¬:(?:2p|Y)
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    <start>  ~ez$  vous
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|allez|venez|partez|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
+
+    [comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~ez$  vous
+        <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GW]") and not value(\2, "|veuillez|sachez|")
+        -2:3>> \2-\3                                                                                # Forme interrogative ? Mettez un trait d’union.
 
     [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  [êtes|étiez|fûtes|fussiez|serez|seriez|avez|aviez|eûtes|eussiez|aurez|auriez]  vous
         <<- /inte/ space_after(\2, 1, 1)
@@ -22498,7 +22548,9 @@ __inte_union_vous2!7__
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2p", ":[GNW]") and not value(\2, "|veuillez|") and not morph(\1, ":Os")
         -2:3>> \2-vous                                                                              # Forme interrogative ? Mettez un trait d’union.
 
+TEST: ils seront, me {{direz vous}}, étroitement surveillés, mais rien ne le garantit.
 TEST: Mais {{soutiendrez vous}} cette proposition ?
+TEST: pourquoi ailleurs {{soutenez vous}} ces gens-là ?
 TEST: comment {{êtes vous}} arrivées là ?
 TEST: quel genre de femme {{voulez vous}} réellement ?
 TEST: quel exercice {{avions nous}} réellement ?
