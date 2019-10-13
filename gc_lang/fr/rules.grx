@@ -5341,7 +5341,7 @@ TEST: il y en {{as}}.
 
 __conf_il_non_verbe__
     il  @:¬:(?:V|Ov)
-        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|") and not value(\-1, "|c’|ce|ou|")
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|t’|") and not value(\-1, "|c’|ce|ou|si|")
         -2>> =suggSimil(\2, ":(?:3s|Ov)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
     il  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
@@ -5381,7 +5381,7 @@ TEST: on ne se {{bougent}} pas suffisamment
 
 __conf_on_non_verbe__
     on  @:¬:(?:V|Ov)|>ou/
-        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|n’|m’|t’|s’|") and not value(\-1, "|c’|ce|")
+        <<- /conf/ not morph(<1, ":3s") and not value(<1, "|n’|m’|t’|s’|") and not value(\-1, "|c’|ce|si|")
         -2>> =suggSimil(\2, ":(?:3s|Oo)", False)                                                    # Incohérence avec “\1” : “\2” devrait être un verbe, un pronom objet, un adverbe de négation, etc.
 
     on  [ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]       @:¬:(?:V|Ov)
@@ -6163,7 +6163,6 @@ TEST: elle {{mangé}}.
 TEST: elle aussi {{mangées}}.
 
 
-
 __conf_presque_vconj__
     presque  @:[123][sp]¬:[GNAQWM]
         <<- /conf/ not tag_before(\1, "ce_que") and not value(<1, "|ou|") -2>> _                    # Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
@@ -6178,21 +6177,6 @@ __conf_sur_vconj__
 
 TEST: Toutes les blagues qu’on fera sur {{entreront}} dans l’histoire !
 TEST: Elles se querellent sans cesse sur presque tout.
-
-
-__conf_si_vconj__
-    si  @:(?:[123][sp]|Y)¬:[GAQWMT]  <end>
-        <<- /conf/ -2>> =suggSimil(\2, ":[AWGT]", True)                                             # Incohérence probable avec “si” : “\2” ne devrait pas être une forme verbale conjuguée.
-
-    si  @:[123][sp]¬:[GNAQWMT]  @:¬:D
-        <<- /conf/ not (morph(\2, ":V0") and morph(\3, ":[QY]"))
-        -2>> =suggSimil(\2, ":[AWGT]", True)                                                        # Incohérence probable avec “si” : “\2” ne devrait pas être une forme verbale conjuguée.
-
-TEST: des personnes si {{désespérer}}
-TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
-TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
-TEST: Toutes les bifurcations qui auraient été possibles si avaient été pris en compte des critères autre que la captation de valeur ajoutée, l’augmentation des taux de profit, et l’accumulation du capital.
-TEST: si venir à la conférence coûte autant, il est préférable de s’abstenir.
 
 
 __conf_si_x_être__
@@ -9593,6 +9577,68 @@ TEST: {{S’en suivrons}} une guerre de tous les instants et…
 TEST: {{S’en suivre}}.
 
 
+__conf_si_vconj__
+    si  @:(?:[123][sp]|Y)¬:[GAQWMT]  <end>
+        <<- /conf/ not \1.isupper() and not value(<1, "|ne|il|ils|on|")
+        -2>> =suggSimil(\2, ":[AWGT]", True)                                                        # Incohérence probable avec “si” : “\2” ne devrait pas être une forme verbale conjuguée.
+
+    si  @:[123][sp]¬:[GNAQWMT]  @:¬:D
+        <<- /conf/ not \1.isupper() and not value(<1, "|ne|il|ils|on|") and not (morph(\2, ":V0") and morph(\3, ":[QY]"))
+        -2>> =suggSimil(\2, ":[AWGT]", True)                                                        # Incohérence probable avec “si” : “\2” ne devrait pas être une forme verbale conjuguée.
+
+TEST: des personnes si {{désespérer}}
+TEST: Ces gens sont si {{prit}} par leur travail qu’ils en oublient de vivre.
+TEST: Ça ira mieux demain, surtout si émerge une demande forte de la part des consommateurs.
+TEST: Toutes les bifurcations qui auraient été possibles si avaient été pris en compte des critères autre que la captation de valeur ajoutée, l’augmentation des taux de profit, et l’accumulation du capital.
+TEST: si venir à la conférence coûte autant, il est préférable de s’abstenir.
+
+
+# s’y / si
+__conf_s_y_si__
+    ne  si  @:V
+        <<- /conf/ -2>> s’y # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+    [<start>|,]  *WORD  si  @:[123][sp]¬:[MGA]
+        <<- /conf/ \-2.islower() and morph(\2, ":M")
+        --2>> s’y           # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+    [il|ils|on]  si  @:[123][sp]¬:[MG]
+        <<- /conf/
+        --2>> s’y           # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+    [<start>|,]  [elle|elles|iel|iels]  si  @:[123][sp]¬:[MGA]
+        <<- /conf/
+        --2>> s’y           # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+    [<start>|,]  [un|une|le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  si  @:[123]s¬:A
+        <<- /conf/ morph(\3, ":[NA].*:[si]")
+        --2>> s’y           # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+    [<start>|,]  [des|les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  *WORD  si  @:[23]p¬:A
+        <<- /conf/ morph(\3, ":[NA].*:[pi]")
+        --2>> s’y           # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+    [<start>|,]  [certains|certaines|moult]  *WORD  si  @:[23]p
+        <<- /conf/ morph(\3, ":[NA].*:[pi]", ":3p")
+        --2>> s’y           # Confusion probable entre la conjonction “si” et la contraction du pronom personnel “se” avec “y” (“s’y”) précédant un verbe. Exemple : La montagne, elle s’y plaît, si le temps est clément.
+
+TEST: la politique, ne {{si}} épanouissent que les hypocrites
+TEST: Jérôme {{si}} {{rend}} souvent
+TEST: Mélanie {{si}} {{adonne}} avec passion.
+TEST: il {{si}} croit
+TEST: elle {{si}} {{complait}}
+TEST: une femme {{si}} rend tous les jours
+TEST: les hommes {{si}} rendent tous les jours
+TEST: certaines prisonnières {{si}} {{adonnent}}
+TEST: eux si aigris, elles si violentes
+TEST: le SI sera prêt.
+TEST: perdu si entre lui et moi survient une dissension
+TEST: s’y rendre est indispensable.
+TEST: Paul si dément qu’on allait l’enfermer à l’asile
+TEST: Si exercer des représailles nous procure une satisfaction immédiate, les conséquences à long terme sont souvent désastreuses.
+TEST: plusieurs restent si déments qu’on ne savait plus que faire d’eux.
+
+
 # soi / soit
 __conf_soi_disant__
     soi [disants|disante|disantes]
@@ -9789,7 +9835,7 @@ __conf_tant_temps_tan_1__
         <<- /conf/ ->> de temps en temps                    # Confusion. Écrivez « de temps en temps ».
 
     depuis la [nui|nuit] des [>tan|tant]
-        <<- /conf/ --1>> temps                              # Confusion. Locution “depuis la nuit des temps”.|
+        <<- /conf/ --1>> temps                              # Confusion. Locution “depuis la nuit des temps”.|http://fr.wiktionary.org/wiki/temps
 
     [après|avec] [temps|>tan] [de|d’]
         <<- /conf/ -2>> tant                                # Confusion. Écrivez “tant” pour évoquer une quantité de quelque chose.|http://fr.wiktionary.org/wiki/tant
@@ -12229,6 +12275,9 @@ __gestion_mots_grammaticaux__
     ainsi
         <<- not value(>1, "|que|qu’|") ~>> *
 
+    au moins  @:[DB]
+        <<- ~1:2>> *
+
     [celui|celle|celles|ceux]   d’ entre [nous|vous|eux|elles|iels]
     [chacun|chacune]            d’ entre [nous|vous|eux|elles|iels]
         <<- ~2:0>> *
@@ -12663,7 +12712,7 @@ __simplication_substantifs__
     >centre d’ éducation [populaire|surveillée]
     >chair à [pâté|>canon]
     >chair [de|d’] poule
-    >chambre à coucher
+    >chambre à [coucher|gaz]
     >chambre [de|d’] [agriculture|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
     [>chariot|>charriot] à [bagages|roulettes]
     >chasse à courre
@@ -12766,6 +12815,7 @@ __simplication_substantifs__
     >frousse [de|d’] tous les diables
     >fusil à pompe
     >gilet de sauvetage
+    >grève de la faim
     >groupe de [discussion|parole|prière|pression|travail]
     >hall d’ entrée
     >harcèlement de rue
@@ -12920,6 +12970,7 @@ __simplication_substantifs__
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >témoin à charge
+    tenants et aboutissants
     >ténor du barreau
     >tête à claques
     >tête [de|d’] [linotte|déterré|déterrée|déterrés|déterrées|mule]
@@ -13712,7 +13763,8 @@ __da_substantifs__
 
     [<start>|,]  $:D  *WORD  *WORD  @:(?:3[sp]|P)¬:[GW]
         <<- morph(\2, ":p") and morph(\3, ":[NA].*:p", ":(?:G|V0)") and morph(\4, ":[NA].*:p", ":(?:[PG]|V[023])") =>> exclude(\4, ":V")
-        <<- morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PG]|V[023])") and not morph(\5, ":A.*:[si]") =>> exclude(\4, ":V")
+        <<- __else__ and
+            morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PG]|V[023])") and not morph(\5, ":A.*:[si]") =>> exclude(\4, ":V")
 
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|G)
         <<- =>> exclude(\3, ":V")
@@ -13798,6 +13850,7 @@ __purge_locutions_verbales__
     [>naître|>naitre] sous x
     >parler affaires
     >partir en vrille
+    >passer à tabac
     >percer à jour
     >perdre [connaissance|conscience|patience|raison]
     >perdre d’ avance
@@ -13857,6 +13910,7 @@ __conf_locutions_verbales__
     >jeter a terre
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>nue|>plat|>table|>terre]
     [>mettre|>remettre] a l’ [écart|épreuve]
+    >passer a tabac
     >percer a jour
     >prendre a la légère
     >prêter a >confusion
@@ -14082,6 +14136,8 @@ TEST: Anne, je t’en prie, viens de bonne heure
 TEST: elles ont toutes deux épluché le contenu de la boîte
 TEST: le flou demeure aujourd’hui éblouissant.
 TEST: la petite reste fragile
+TEST: au moins neuf personnes disparues dans le pays et 140 blessés
+TEST: C’en est arrivé là.
 
 
 @@@@
@@ -17394,8 +17450,12 @@ __conf_goûte_goutte__
         <<- /conf/ -1>> =\1.replace("û", "u").replace("t", "tt")
         # Confusion : “goûter” signifie utiliser le sens du goût. Pour une petite quantité de liquide, écrivez “goutte”.|https://fr.wiktionary.org/wiki/goutte
 
+    >passer entre les [goûte+s|goute+s]
+        <<- /conf/ --1>> gouttes                    # Confusion. Une particule de fluide s’écrit “goutte”.|https://fr.wiktionary.org/wiki/goutte
+
 TEST: Une {{goûte}} de pluie
 TEST: tu sais, les {{goutes}} de pluie, ça mouille.
+TEST: ouf, on est passé entre les {{goûtes}}…
 TEST: Des gouttes de pluie.
 
 
@@ -23465,11 +23525,15 @@ __conf_auxiliaire_avoir_être__
     [je|j’|tu|il|elle|on|ils|nous|vous|elle|elles|iel|iels]  >avoir  @:V.......e_.*:Q
         <<- /conf/ -2>> _                                       # Incohérence. La forme verbale “\3” ne peut pas être utilisé avec l’auxiliaire “avoir”, seulement avec l’auxiliaire “être”.
 
+    ce [qui|que|qu’] [ait|aie|aies|ai|ais]
+        <<- /conf/ -3>> est                                     # Confusion probable entre le verbe “avoir” et “être”.
+
 TEST: {{Aient-elles}} {{venues}} à la maison.
 TEST: j’{{ai}} arrivé à finir ce programme
 TEST: {{Ait-il}} arrivé à ses fins ?
 TEST: je n’{{avais}} pas parti avec eux.
 TEST: il {{avait}} parti.
+TEST: ce qui ne l’{{ait}} pas                                                       ->> est
 TEST: Avais-je partie liée avec lui ?
 TEST: il n’y a pas mort d’homme, mais il y a mort de meuf.
 
