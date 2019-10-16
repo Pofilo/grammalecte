@@ -20001,7 +20001,7 @@ __ppas_être_accord_sing__
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                  @:[NA].*:p¬:[GMWYsi]
         <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
-        --1>> =suggSing(\-1)                                                                        # Accord avec la forme verbale “\1” : “\-1” devrait être au singulier.
+        --1>> =suggSing(\-1)                                                                        # Accord avec la forme verbale “\2” : “\-1” devrait être au singulier.
 
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])           @:[NA].*:p¬:[GMWYsi]
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                             @:[NA].*:p¬:[GMWYsi]
@@ -20016,7 +20016,6 @@ __ppas_être_accord_sing__
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                  @:[NA].*:p¬:[GMWYsi]
         <<- /ppas/ morph(\1, ":[123]s", ":(?:C|N.*:p)") --1>> =suggSing(\-1)                        # Accord avec la forme verbale “\1” : “\-1” devrait être au singulier.
-
 
 TEST: cette petite chienne avait été longtemps {{malades}}.
 TEST: Ce mâle qui est resté {{arrogants}} ?
@@ -20047,7 +20046,7 @@ __ppas_être_accord_plur__
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          @:[NA].*:s¬:[GMWYpi]|>légion/
         <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[13]p")
-        --1>> =suggPlur(\-1)                                                                        # Accord avec la forme verbale “\1” : “\-1” devrait être au pluriel.
+        --1>> =suggPlur(\-1)                                                                        # Accord avec la forme verbale “\2” : “\-1” devrait être au pluriel.
 
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   @:[NA].*:s¬:[GMWYpi]|>légion/
     [<start>|,]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  (>avoir) [été|semblé|paru]                                                                     @:[NA].*:s¬:[GMWYpi]|>légion/
