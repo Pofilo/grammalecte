@@ -2701,7 +2701,7 @@ TEST: __ocr__ {{dos}} camions cabossés à n’en plus finir
 # de la / delà
 __ocr_de_la__
     delà
-        <<- /ocr/ not value(<1, "|au|") ->> de la|de là                                             # Erreur de numérisation ?
+        <<- /ocr/ not value(<1, "|au|de|en|par|") ->> de la|de là                                   # Erreur de numérisation ?
 
 TEST: __ocr__ la peinture {{delà}} maison s’écaillait
 
@@ -11074,7 +11074,8 @@ __purge_locutions__
     à [plusieurs|quelques|maintes] reprises
     à [de|d’]  [nombreuses|multiples|innombrables]  reprises
     à double [titre|tranchant]
-    à en juger par [mon|ton|son|notre|votre|leur] expérience
+    à en juger par [mon|ton|son|notre|votre|leur] ?immense¿ expérience
+    à en juger par [ma|ta|sa|notre|votre|leur] [grande|petite] expérience
     à en perdre haleine
     à en perdre la tête
     à ?[très|si]¿ faible [allure|revenu]
@@ -12825,6 +12826,7 @@ __simplication_substantifs__
     >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille]
     >homme d’ âge mûr
     >homme à tout faire
+    >horaire à rallonge
     >hôtel [de|d’] ville
     >hôtesse d’ accueil
     >garde à vue
@@ -18841,6 +18843,9 @@ __infi_divers__
         <<- /infi/ morph(\-1, ":(?:Q|2p)", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
+    >laisser    [tombé+ses]
+        <<- /infi/ -2>> tomber                                                                      # Laisser tomber. Utilisez l’infinitif.
+
 TEST: de manière à {{obligé}} ces gens
 TEST: ils ont intérêt à {{obligés}} ces gens
 TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
@@ -18850,6 +18855,7 @@ TEST: à quoi bon {{allé}} au sport quand il suffit de marcher un peu tous les 
 TEST: Comment {{pensé}} à ces choses sans perdre l’esprit.
 TEST: comment {{abandonnez}} au début du match sans passer pour un lâcheur
 TEST: Avec quoi {{fabriqué}} un arc ?
+TEST: J’ai laissé {{tombé}} ces connards.
 TEST: des espaces différents de ceux où se crée le chiffre d’affaires et où elles extraient les données
 
 
