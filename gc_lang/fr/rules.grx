@@ -6860,7 +6860,7 @@ TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumièr
 
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
-        <<- /conf/ \2.islower() and not value(\3, "|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|lieu|peine|peur|raison|rapport|recours|soif|tendance|tort|vent|")
+        <<- /conf/ \2.islower() and not value(\3, "|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|lieu|peine|peur|raison|rapport|recours|soif|tendance|tort|vent|")
             and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -6872,6 +6872,7 @@ TEST: l’homme a beau se démener, rien n’y fait.
 TEST: elle a tendance à n’en faire qu’à sa tête.
 TEST: Ce travail a lieu dans le désert.
 TEST: cette injonction a force de loi
+TEST: C’est là que la pudeur a bon dos
 
 
 __conf_a_à_substantifs__
@@ -16192,10 +16193,11 @@ TEST: Elles ont accompli l’impossible, et de surcroît {{aux pieds levés}}
 # plein
 __sgpl_plein_de__
     pleins [de|d’]
-        <<- /sgpl/ morph(<1, ":(?:V|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
+        <<- /sgpl/ morph(<1, ":(?:V|R|[NAQ].*:s)", ":(?:[NA].*:[pi]|V0e.*:[123]p)")
         -1>> plein                                                  # S’il s’agit d’une préposition et non d’un adjectif, “plein” doit être au singulier.
 
 TEST: Je connais {{pleins}} de gens
+TEST: un site avec {{pleins}} de pubs
 TEST: Les avocats sont pleins de nutriments.
 
 
