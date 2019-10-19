@@ -4489,7 +4489,8 @@ __inte_union_nous1!7__
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ons$  nous
     [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ons$  nous
     [ne|n’]  [lui|leur|y]                    en                          ~ons$  nous
-        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
+        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") and not tag_before(\1, "1p")
+        --2:-1>> \-2-\-1                                                                            # Forme interrogative ? Mettez un trait d’union.
 
     ,  ~ons$  nous  [<end>|,]
     ,  ~ons$  nous  @:¬:(?:1p|Y)
@@ -4514,6 +4515,7 @@ TEST: nous pensons alors vraiment, allons nous perdre dans les bois
 TEST: Sachons nous conformer à ces restrictions et faisons notre travail.
 TEST: allons nous détendre à la piscine.
 TEST: partons nous détendre à la montagne
+TEST: Nous ne pouvons nous contenter de parler
 
 
 __inte_union_vous1!7__
@@ -4521,7 +4523,8 @@ __inte_union_vous1!7__
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ez$  vous
     [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ez$  vous
     [ne|n’]  [lui|leur|y]                    en                          ~ez$  vous
-        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
+        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") and not tag_before(\1, "2p")
+        --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
 
     ,  ~ez$  vous  [<end>|,]
     ,  ~ez$  vous  @:¬:(?:2p|Y)
@@ -4544,6 +4547,7 @@ TEST: comment {{pensez vous}} y parvenir
 TEST: veuillez vous adresser à notre secretaire pour prendre rendez-vous.
 TEST: Allez vous faire foutre.
 TEST: Venez vous défouler sur ces connards.
+TEST: Vous ne pouvez vous satisfaire de si peu.
 
 
 
@@ -12733,7 +12737,7 @@ __simplication_substantifs__
     >clin d’ œil
     >clause [de|d’] [confidentialité|non-concurrence]
     >clause [de|d’] non concurrence
-    >code [de|d’] bonne conduite
+    >code [de|d’] ?bonne¿ conduite
     >commise d’ office
     >compagne [de|d’] route
     >compagnon [de|d’] route
@@ -20854,6 +20858,7 @@ TEST: le général n’a pas encore {{finit}} sa sieste.
 TEST: Certains les ont d’abord jugés trop lents.
 TEST: les timides ou les personnes n’ayant pas confiance en elles vont avoir tendance à éviter de regarder dans les yeux.
 TEST: Le théâtre, en l’occurrence, a charge de sensibiliser
+TEST: Cet homme a nui à notre existence.
 
 
 __ppas_les_avoir__
