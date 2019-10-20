@@ -18323,6 +18323,15 @@ TEST: être en {{tore}}
 TEST: Faire {{torr}}
 
 
+# valu / fallu
+__conf_valu_fallu__
+    il ?n’¿ aurait mieux [fallut|fallu] [que|qu’]
+        <<- /conf/ --2>> valu                                           # Confusion. Il aurait mieux valu que…
+
+TEST: est-ce qu’il n’aurait pas mieux {{fallu}} que nous                            ->> valu
+TEST: il aurait mieux {{fallu}} que nous trouvions nous-mêmes une solution.         ->> valu
+
+
 # venimeux / vénéneux
 __conf_venimeux_vénéreux__
     [>serpent|>araignée|>scorpion|>vipère|>cobra|>crapaud|>grenouille|>dendrobate|>poulpe|>guêpe|>abeille|>frelon|>méduse|>morsure|>piqûre|>dard|>dent|>croc|>crochet]  >vénéneuse
@@ -19607,19 +19616,19 @@ __ppas_3sg_mas_verbe_état__
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                            [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler] [devenu|redevenu|resté|demeuré]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
-        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler]) [devenu|redevenu|resté|demeuré]                                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿
+        || ([>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    [ça|ceci|cela|celui-ci|celui-là] ?[ne|n’]¿ ?[en|y]¿
-        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+    ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not tag(\1, "enum") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not tag(\1, "enum") and morph(\2, ":3s") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
         --1>> =suggMasSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     [<start>|,] tout ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                          [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
@@ -19703,8 +19712,9 @@ TEST: celui-là semble {{perdus}} dans ses pensées.
 TEST: c’est {{condescendants}}.                                                   ->> condescendant
 TEST: C’est {{finis}}.
 TEST: Ç’avait été {{horribles}}
-TEST: ça semble {{perdus}}
+TEST: ça n’y semblait pas {{pertinents}}
 TEST: cela paraît {{incroyables}}
+TEST: ceci ne paraissait avoir été {{efficaces}}
 TEST: ça peut avoir été {{efficaces}}, mais c’est souvent une putain d’illusion.
 TEST: elle avait accompagné cet homme, lequel était {{revenue}} de l’enfer.
 TEST: Il peut être {{observée}}.
@@ -19734,6 +19744,7 @@ TEST: pour « faire de la politique avec leur député » sans « faire de tr
 TEST: le sentiment que la question du chômage, tout en restant importante, est moins intense.
 TEST: tout est nuances de rouges, de gris et de bleus.
 TEST: tout en restant bien sages
+TEST: Celles et ceux qui n’auront que cela seront vraiment appauvris. D’autres, qui seront plus aisés, iront compléter par de la capitalisation.
 
 
 __ppas_3sg_fem_verbe_état__
