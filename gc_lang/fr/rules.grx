@@ -9839,9 +9839,13 @@ __conf_t_as_ta__
     ta  @:V1.*:Y
         <<- /conf/ not \1.isupper() -1>> t’as               # Confusion : “ta” est un déterminant féminin. Pour l’abréviation de “tu as”, écrivez “t’as”.
 
+    ta  @:Q.*:m:[si] $:D
+        <<- /conf/ not \1.isupper() -1>> t’as               # Confusion possible : “ta” est un déterminant féminin. Pour l’abréviation de “tu as”, écrivez “t’as”.
+
 TEST: {{ta}} combien de fric, mec ?                                                 ->> t’as
 TEST: {{ta}} qu’à bosser plus, feignasse.                                           ->> t’as
 TEST: {{ta}} {{bouffer}} du lion
+TEST: {{ta}} {{manqué}} quelque chose
 TEST: avec ta peu élégante façon de remettre les gens en place, tu te fais plein d’ennemis.
 TEST: ferme ta grande gueule
 TEST: ta vraiment insupportable manière de rire.
@@ -12828,6 +12832,7 @@ __simplication_substantifs__
     >fille au pair
     fils à [papa|maman]
     fils [de|d’] pute
+    >fleuve à sec
     >flocon [de|d’] neige ?électronique¿
     >folle à lier
     >fontaine à eau
@@ -12960,6 +12965,7 @@ __simplication_substantifs__
     >requête en non révocation [de|d’] sursis
     >responsable qualité
     >retour à la case départ
+    >rivière à sec
     >robe [de|d’] [chambre|soirée]
     >robe du soir
     >robe sans >manche
@@ -12967,6 +12973,7 @@ __simplication_substantifs__
     >roue [avant|arrière]
     >rouge à lèvres
     >roulement à billes
+    [>ru|>ruisseau] à sec
     >sac à [dos|main|langer|merde|foutre]
     >sac [de|d’] [couchage|sport|voyage]
     >salle à manger
@@ -13003,9 +13010,11 @@ __simplication_substantifs__
     >terrain à découvert
     >tigre à dents [de|d’] sabre
     >tiret d’ incise
+    >tireuse d’ élite
     >titre [de|d’] [noblesse|propriété|séjour]
     >tondeuse à gazon
     >tour [de|d’] passe-passe
+    >torrent à sec
     >train à grande vitesse
     >traitement [de|d’] faveur
     >transport en commun
@@ -14162,6 +14171,7 @@ TEST: le flou demeure aujourd’hui éblouissant.
 TEST: la petite reste fragile
 TEST: au moins neuf personnes disparues dans le pays et 140 blessés
 TEST: C’en est arrivé là.
+TEST: Madame, des comme vous, j’en vois quatre par jour.
 
 
 @@@@
@@ -18834,7 +18844,7 @@ TEST: il eût mieux valu {{oublié}} cette affaire plutôt que réveiller ce dra
 
 __infi_verbes__
 # regarder, écouter, ouïr
-    [>aimer|>désirer|>entendre|>espérer|>oser|>préférer|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
+    [>aimer|>désirer|>faillir|>entendre|>espérer|>oser|>préférer|>souhaiter]  ?[pas|plus|point|guère|jamais]¿  ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\1, ":", ":[GN]") and morph(\2, ":V", ":M")
         -2>> =suggVerbInfi(\2)                                                                      # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
@@ -19508,8 +19518,8 @@ __ppas_pron_pluriel_se_être_ppas__
 
 TEST: Ils se sont {{échangés}} leurs vœux.                          ->> échangé
 TEST: elles s’étaient {{données}} le mot                            ->> donné
-TEST: elles se seraient {{prises}} la tête                          ->> pris|prisé
 TEST: on se serait {{donnés}} la main, si on avait su.              ->> donné
+TEST: elles se seraient {{prises}} la tête
 TEST: on s’est comportés comme des porcs.
 TEST: nous ne nous sommes pas compris un seul moment
 TEST: vous vous êtes compromis plusieurs fois
@@ -23705,6 +23715,10 @@ __vmode_qqch_que_subjonctif__
     moyennant                                                                                [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après “\1 que”, ce verbe devrait être au subjonctif.
 
+    où                                                                                       [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+        <<- /vmode/ -4>> =suggVerbMode(\4, ":S", \3)                                                # Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ -1>> ou                                                                         # Le verbe “\4” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\4” au subjonctif.
+
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
         <<- /vmode/ not tag(\1, "upron") and morph(\1, ":V", ":N")
         -4>> =suggVerbMode(\4, ":S", \3)                                                            # Après “\1 que”, ce verbe devrait être au subjonctif.
@@ -23767,6 +23781,7 @@ TEST: moyennant qu’elle {{vient}} demain
 TEST: en attendant qu’il {{devient}} plus raisonnable
 TEST: peu s’en est fallu qu’il {{devient}} estropié.
 TEST: si bien qu’il {{devient}} irritable
+TEST: {{où}} qu’il {{est}}, on le trouvera
 TEST: Nul doute qu’elle nourrira à brève échéance la haine de demain à notre égard.
 TEST: Je ne doute pas qu’ils réussiront leur mission.
 TEST: Je me doutais bien qu’Apple pourrait marcher
@@ -23802,6 +23817,7 @@ TEST: J’irai si tant est que je puisse.
 TEST: J’irai si tant est que je le puisse.
 TEST: Quoique je dise.
 TEST: Quoique je te dise.
+TEST: Ça signifie qu’il est parti ou qu’il est mort.
 
 
 # Bien que + subjonctif
