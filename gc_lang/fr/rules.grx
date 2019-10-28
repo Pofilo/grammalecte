@@ -9831,6 +9831,23 @@ TEST: il s’étendit sur de la mousse à mémoire de forme
 TEST: Elle réussira à coup sûr.
 
 
+# ta / t’as
+__conf_t_as_ta__
+    ta  [que|qu’]
+    ta  ?[plein|beaucoup|peu|combien]¿  [de|d’]
+    ta  encore  @:(?:Q|V1.*:Y)
+    ta  @:V1.*:Y
+        <<- /conf/ not \1.isupper() -1>> t’as               # Confusion : “ta” est un déterminant féminin. Pour l’abréviation de “tu as”, écrivez “t’as”.
+
+TEST: {{ta}} combien de fric, mec ?                                                 ->> t’as
+TEST: {{ta}} qu’à bosser plus, feignasse.                                           ->> t’as
+TEST: {{ta}} {{bouffer}} du lion
+TEST: avec ta peu élégante façon de remettre les gens en place, tu te fais plein d’ennemis.
+TEST: ferme ta grande gueule
+TEST: ta vraiment insupportable manière de rire.
+TEST: ta gueule, connard.
+
+
 # temps / tant / tan
 __conf_tant_temps_tan_1__
     en [tant|>tan] [de|d’] [guerre|paix|crise|doute|pluie]
