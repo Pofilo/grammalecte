@@ -6594,12 +6594,14 @@ TEST: Elle mord la vie {{à plaine dent}}.
 
 __conf_à_quel_point!7__
     !! à quel point ¡¡
+    !! à quels points ¡¡
     [a|à] qu’ [elle|elles] [>point|>poing]
     [a|à] [quel|quels|quelle|quelles] point+s
         <<- /conf/ ->> à quel point                                         # Confusion probable. Locution “à quel point”.|https://fr.wiktionary.org/wiki/%C3%A0_quel_point
 
 TEST: imaginez {{à qu’elle point}} j’étais prêt.
 TEST: elle sait jusqu’à quel point elle pouvait se fier à eux.
+TEST: À quels points pensez-vous ?
 
 
 __conf_à_tire_d_aile__
@@ -20401,7 +20403,7 @@ TEST: Ses amies ont l’air distant, mais l’âme généreuse.
 
 __ppas_adj_accord_je_tu__
     <start>  *WORD  ?,¿  [je|j’|tu|iel]
-        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWsi]")
+        <<- /ppas/ morph(\2, ":A.*:p", ":[GEMWPsi]")
         -2>> =suggSing(\2)                                                      # Si cet adjectif se réfère au pronom « \-1 », l’adjectif devrait être au singulier (et accordé en genre).
 
 TEST: {{Découragés}}, je suis parti.
@@ -20409,7 +20411,7 @@ TEST: {{Découragés}}, je suis parti.
 
 __ppas_adj_accord_il__
     <start>  *WORD  ?,¿  il
-        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|E|M1|W|P|m:[si])") and not after("^ +(?:y (?:a|aura|avait|eut)|d(?:ut|oit|evait|evra) y avoir|s’agi(?:ssait|t|ra))[, .]")
         -2>> =suggMasSing(\2)                                                   # Si cet adjectif se réfère au pronom « il », l’adjectif devrait être au masculin singulier.
 
 TEST: — {{Déçue}}, il s’en est allé.
@@ -20420,15 +20422,16 @@ TEST: Étudiante, il s’agissait de s’inventer des parents riches.
 
 __ppas_adj_accord_elle__
     <start>  *WORD  ?,¿  elle
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|f:[si])")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[mp]", ":(?:G|E|M1|W|P|f:[si])")
         -2>> =suggFemSing(\2)                                                   # Si cet adjectif se réfère au pronom « elle », l’adjectif devrait être au féminin singulier.
 
 TEST: — {{Déçu}}, elle s’en est allée.
+TEST: Parlant de réussite, elle se donne bonne conscience en y rajoutant de la bienveillance.
 
 
 __ppas_adj_accord_ils__
     <start>  *WORD  ?,¿  ils
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|m:[pi])")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[fs]", ":(?:G|E|M1|W|P|m:[pi])")
         -2>> =suggMasPlur(\2)                                                   # Si cet adjectif se réfère au pronom « ils », l’adjectif devrait être au masculin pluriel.
 
 TEST: Vraiment {{soucieuse}}, ils sont.
@@ -20441,7 +20444,7 @@ TEST: Bref, ils veulent des services publics là où ces derniers font de plus e
 
 __ppas_adj_accord_elles__
     <start>  *WORD  ?,¿  elles
-        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|f:[pi])")
+        <<- /ppas/ not value(\2, "|bref|désolé|désolée|pire|") and morph(\2, ":A.*:[ms]", ":(?:G|E|M1|W|P|f:[pi])")
         -2>> =suggFemPlur(\2)                                                   # Si cet adjectif se réfère au pronom « elles », l’adjectif devrait être au féminin pluriel.
 
 TEST: Absolument {{heureux}}, elles exultèrent de joie.
