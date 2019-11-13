@@ -20,6 +20,8 @@ var suggest = {
         ["Etiez-vous", "Étiez-vous"],
         ["Etions-vous", "Étions-nous"],
         ["loins", "loin"],
+        ["mn", "min"],
+        ["mns", "min"],
         ["parce-que", "parce que"],
         ["pcq", "parce que"],
         ["pd", "pendant|pédé"],
