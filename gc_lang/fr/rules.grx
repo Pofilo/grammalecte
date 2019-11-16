@@ -12832,6 +12832,7 @@ __simplication_substantifs__
     >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage]
     >femme d’ âge mûr
     >femme à tout faire
+    >fer à repasser
     >ferme à >clic
     >fermeture à glissière
     >fermoir à [cliquet|levier|ressort]
@@ -12849,7 +12850,7 @@ __simplication_substantifs__
     >flocon [de|d’] neige ?électronique¿
     >folle à lier
     >fontaine à eau
-    >fosse à [>ordure|purin]
+    >fosse à [merde|>ordure|purin]
     >fosse aux lions
     [>fourgon|>fourgonette] de location
     >frayeur [de|d’] tous les diables
@@ -16416,6 +16417,46 @@ TEST: Il a de grands biens.
 TEST: Ce sont des biens de peu de valeur.
 
 
+!!
+!!
+!!!! Après celui, celle, ceux, celles                                                             !!
+!!
+!!
+
+__conf_celui_celle_ceux_celles_verbe__
+    celui  ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:s")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    ceux  ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:p")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    celle ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":f:s")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    celles ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":f:p")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    celui  ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":m:s")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    ceux  ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":m:p")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    celle ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":f:s")                     # Confusion. Après “\1”, il faut un adjectif.
+
+    celles ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":f:p")                     # Confusion. Après “\1”, il faut un adjectif.
+
+TEST: Celui {{développer}} par Tim était moins efficace.
+TEST: Celle {{donnez}} à Maria valait la peine
+TEST: ceux {{trouver}} à la cave était très vieux
+TEST: celles {{attaquer}} par la moisissure sont foutues.
+TEST: celui {{attaquait}} par les mites
+TEST: celle {{attaquait}}
+TEST: ceux {{sidérait}}
+TEST: celles {{déjantait}}
+
 
 !!
 !!
@@ -17622,12 +17663,20 @@ __conf_lever_un_lièvre__
 TEST: j’ai {{soulevé}} un lièvre, là !
 
 
+# lâcher la proie pour l’ombre
+__conf_lâcher_la_proie_pour_l_ombre__
+    >chasser la proie pour l’ ombre
+        <<- /conf/ -1>> =\1.lower().replace("cha", "lâ")        # Expression impropre. On écrit « lâcher la proie pour l’ombre ».|https://fr.wiktionary.org/wiki/l%C3%A2cher_la_proie_pour_l%E2%80%99ombre
+
+TEST: il ne faut pas {{chasser}} la proie pour l’ombre.
+
+
 # lieux / lieues / lieus
 __conf_lieux_lieues_lieus__
     [>assurance|>état|>visite|>maîtresse|>maitresse|>seigneur|>magie|>chef|>cheffe|>responsable|respect|entretien|propreté|>propriétaire|tranquillité|dans|vers|>plan] des [lieues|lieus]
         <<- /conf/ --1>> lieux                                  # Confusion probable. Pour désigner un endroit, écrivez “lieux”.|http://fr.wiktionary.org/wiki/lieu
 
-    [>lieue|lieus] [>insolite|>accessible|>accueillante|>inaccessible|>inexplorée|>lointaine|>louche|>proche|>touristique|saint|saints|>connu|>inconnue|>mythique|>publique|prestigieux|>romantique|>stratégique|>historique|où|>humide|sec|secs]
+    [>lieue|lieus] [>insolite|>accessible|>accueillante|>inaccessible|>inexplorée|>lointaine|>louche|>proche|>touristique|saint+s|>connu|>inconnue|>mythique|>publique|prestigieux|>romantique|>stratégique|>historique|où|>humide|sec+s]
     [>lieue|lieus] de [>communication|>concert|>conférence|>contemplation|>culte|>chasse|>détente|>détention|>départ|>méditation|>mémoire|>pouvoir|>prière|>prostitution|>sépulture|repos|>refuge|>stockage|>travail|>vacance|>spectacle|>conférence|>rassemblement|>sortie|>stationnement|>rencontre|>vacance|>villégiature]
         <<- /conf/ -1>> lieu|lieux                              # Confusion probable. Pour désigner un endroit, écrivez “lieu(x)”.|http://fr.wiktionary.org/wiki/lieu
 
@@ -18971,7 +19020,6 @@ __conj_participe_présent__
         <<- /infi/ morph(\2, ":A") -2>> =\2[:-1]                                        # Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
 
 TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
-
 
 
 
@@ -22563,8 +22611,8 @@ TEST: quel amour {{connaîtrai je}} si je juge sans cesse ?
 
 
 __inte_union_tu!7__
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.s$  tu  [<end>|,]
-    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.s$  tu  @:¬:2s
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  [<end>|,]
+    [<start>|,|comment|pourquoi|combien|que|qu’|quoique|quoiqu’|où|puis|quand|qui]  ~.[sx]$  tu  @:¬:2s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:2s", ":[GW]")
         -2:3>> \2-tu                                                                                # Forme interrogative ? Mettez un trait d’union.
 
@@ -22580,6 +22628,7 @@ __inte_union_tu!7__
 TEST: {{Viendras tu}} là ?
 TEST: et toi, {{as tu}} découvert le secret de l’immortalité ?
 TEST: quelle vie {{connaitras tu}} ?
+TEST: Comment {{peux tu}} ?
 
 
 __inte_union_il_on!7__
