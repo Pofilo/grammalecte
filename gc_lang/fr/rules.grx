@@ -7329,7 +7329,7 @@ __conf_ce_ceux_se!6__
     ceux  ne  @:[123]s¬:P
         <<- /conf/ -1>> ce                              # Confusion.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
 
-    ceux  @:N.*:s¬:(?:A.*:[pi]|P|R|G)|>(?:autour|a)/
+    ceux  @:N.*:s¬:[APGV]
         <<- /conf/ -1>> ce                              # Confusion probable.|http://www.intellego.fr/soutien-scolaire-6eme/aide-scolaire-francais/ce-ceux-ou-se/3829
 
 TEST: {{Se}} seraient des histoires.
@@ -7351,6 +7351,7 @@ TEST: les expatriés éloignés ou ceux habitant ici
 TEST: les photographies de ceux n’ayant pas dépassé sept sur vingt.
 TEST: Pensez-vous que ceux ne sachant même pas ce qu’est une VHS peuvent y trouver leur compte ?
 TEST: la réduction de ma liberté intellectuelle et celle de ceux autour de moi
+TEST: ceux autour de vous ne sont pas ce que vous croyez.
 
 
 __conf_se_ceux_ce!6__
@@ -9705,7 +9706,7 @@ TEST: Vous êtes soit pour soit contre, mais pas les deux en même temps
 
 __conf_soie_soi_soit__
     [>drap|>chemise|>robe|>mouchoir] [en|de] soi
-        <<- /conf/ -3>> soie                                    # Confusion probable. Pour la matière utilisée dans le textile, ércivez “soie”.
+        <<- /conf/ -3>> soie                                    # Confusion probable. Pour la matière utilisée dans le textile, écrivez “soie”.
 
 TEST: elle portait une robe en {{soi}}.
 TEST: je n’aime que les draps de {{soi}}.
@@ -11935,7 +11936,9 @@ __purge_locutions__
     malgré [ça|cela|ceci|tout]
     manu militari
     mieux [vaut|valait] tard que jamais
+    moins [près|loin|tôt|tard]
     moins que [nécessaire|prévu]
+    moins longtemps que d’ habitude
     moitié *WORD ?,¿ moitié *WORD
     mot pour mot
     mouais
@@ -12005,13 +12008,15 @@ __purge_locutions__
     plein [nord|sud|ouest]
     plein [de|d’] fois
     plus [près|loin|tôt|tard]
-    plus [près|loin|tôt|tard] que [prévu|nécessaire]
+    plus [près|loin|tôt|tard|longtemps] que [prévu|nécessaire]
+    plus [près|loin|tôt|tard|longtemps] que d’ habitude
     plus bas que terre
     plus du tout
     plus d’ une fois
     plus jamais
     plus ou moins
     plus que [nécessaire|prévu|jamais]
+    plus que d’ habitude
     plus que tout au monde
     plus que toute autre chose
     plusieurs fois
@@ -13817,16 +13822,16 @@ __da_substantifs__
         <<- __else__ and
             morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PG]|V[023])") and not morph(\5, ":A.*:[si]") =>> exclude(\4, ":V")
 
-    [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|G)
+    [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- =>> exclude(\3, ":V")
 
-    les  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|G)
+    les  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- not before(":O[vs]") =>> exclude(\3, ":V")
 
-    leurs  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|G)
+    leurs  @:A.*:[pi]¬:V  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- not before(":O[vs]") =>> exclude(\3, ":V")
 
-    [plusieurs|certains|certaines]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|G)
+    [plusieurs|certains|certaines]  @:A.*:[pi]¬:3[sp]  @:N.*:p¬:(?:3[sp]|Q|G)
         <<- =>> exclude(\2, ":V") and exclude(\3, ":V")
 
 
@@ -15310,6 +15315,47 @@ TEST: {{Quelques}} 120 hommes                                 ->> Quelque
 TEST: {{Quelques}} deux cents hommes.                         ->> Quelque
 TEST: les quelque 2,5 millions d’habitants
 TEST: les quelque 12 000 stations-service
+
+
+## Celui, celle, ceux, celles
+__gn_celui__
+    celui  @:¬:(?:G|W|m:[si])
+        <<- /gn/ morph(\-1, ":A.*:f") --1>> =suggMasSing(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au masculin singulier.
+        <<- /gn/ __else__ and morph(\-1, ":A.*:p") -2>> =suggMasSing(\-1)                   # Accord avec “\1” : cet adjectif devrait être au masculin singulier.
+
+TEST: celui {{envoyés}} là-bas tombera dans un piège
+TEST: celui {{perdue}} aura une pénalité
+TEST: celui pris par surprise sera abattu
+
+
+__gn_celle__
+    celle  @:¬:(?:G|W|f:[si])
+        <<- /gn/ morph(\-1, ":A.*:m") --1>> =suggFemSing(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au féminin singulier.
+        <<- /gn/ __else__ and morph(\-1, ":A.*:p") -2>> =suggFemSing(\-1)                   # Accord avec “\1” : cet adjectif devrait être au féminin singulier.
+
+TEST: celle {{envoyés}} là-bas tombera dans un piège
+TEST: celle {{perdu}} aura une pénalité
+TEST: celle prise par surprise sera abattue
+
+
+__gn_ceux__
+    ceux  @:¬:(?:G|W|m:[pi])
+        <<- /gn/ morph(\-1, ":A.*:f") --1>> =suggMasPlur(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au masculin pluriel.
+        <<- /gn/ __else__ and morph(\-1, ":A.*:s") -2>> =suggMasPlur(\-1)                   # Accord avec “\1” : cet adjectif devrait être au masculin pluriel.
+
+TEST: ceux {{envoyé}} là-bas tombera dans un piège
+TEST: ceux {{perdues}} auront une pénalité
+TEST: ceux perdus dans la neige
+
+
+__gn_celles__
+    celles  @:¬:(?:G|W|f:[pi])
+        <<- /gn/ morph(\-1, ":A.*:m") --1>> =suggFemPlur(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au féminin pluriel.
+        <<- /gn/ __else__ and morph(\-1, ":A.*:s") -2>> =suggFemPlur(\-1)                   # Accord avec “\1” : cet adjectif devrait être au féminin pluriel.
+
+TEST: celles {{envoyés}} là-bas tombera dans un piège
+TEST: celles {{perdue}} aura une pénalité
+TEST: celles venues chanter doivent se rendre là-bas.
 
 
 ## Nombres
