@@ -3774,6 +3774,13 @@ __tu_préfixe_quasi__
 
 TEST: leurs {{quasi indifférences}}
 
+    ~^[Qq]uasi-.+$
+        <<- /tu/ morph(\1, ":[WA]", ":N", 6) ->> ="quasi " + \1[:6]         # Avec le préfixe “quasi”, le trait d’union n’est présent que s’il s’agit d’un nom, pas s’il s’agit d’un adjectif ou d’un adverbe.
+
+TEST: la quasi-totalité des membres.
+TEST: des hommes {{quasi-inféodés}} à leur patron.
+TEST: revenir {{quasi-totalement}} à une existence primitive
+
 
 __tu_préfixe_semi__
     semi @:[NAQ]¬:(?:G|3[sp])
@@ -4481,6 +4488,7 @@ __tu_anciennes_graphies__
         <<- ~>> =\1.replace("’", "-")
 
 TEST: je suis allé dans la {{grand’rue}}.                           ->> grand-rue
+
 
 
 !!!! Trait d’union : formes interrogative (nous/vous)                                             !!
@@ -18549,10 +18557,11 @@ TEST: cuisiner à l’étouffée
 
 
 __infi_loc_à_verbe__
-    de manière à    ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
-    du mal à        ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
-    intérêt à       ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
-    enclin à        ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    >avoir tendance à   ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    de manière à        ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    du mal à            ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    intérêt à           ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
+    enclin à            ?[le|l’|la|leur|les|nous|vous|lui]¿     ~..(?:ée?s?|ez)$
         <<- /infi/ morph(\-1, ":V", ":M") and not (\-1.endswith("ez") and value(>1, "|vous|"))
         --1>> =suggVerbInfi(\-1)                                                                    # S’il s’agit d’une action à accomplir, le verbe devrait être à l’infinitif.
 
