@@ -1,14 +1,17 @@
-# Grammalecte AppLauncher
-# by Olivier R.
+"""
+Grammalecte AppLauncher
+Service to avoid creating a service for each feature (which would slows LO start-up)
+"""
+
 # License: MPL 2
+
+import traceback
 
 import unohelper
 import uno
-import traceback
+from com.sun.star.task import XJobExecutor
 
 import helpers
-
-from com.sun.star.task import XJobExecutor
 
 
 xDesktop = None

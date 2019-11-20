@@ -1,4 +1,3 @@
-# -*- encoding: UTF-8 -*-
 
 def getUI (sLang):
     if sLang in dStrings:

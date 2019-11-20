@@ -1,20 +1,22 @@
-# Graphspell
-#
-# Spellchecker based on a DAWG (Direct Acyclic Word Graph)
+"""
+Graphspell
+Spellchecker based on a DAWG (Direct Acyclic Word Graph)
+"""
 
+# License: MPL 2
 
-import uno
-import unohelper
 import traceback
 import re
 import json
 
-import helpers
-from grammalecte.graphspell import SpellChecker
-
+#import uno
+import unohelper
 from com.sun.star.linguistic2 import XSupportedLocales, XSpellChecker, XSpellAlternatives
 from com.sun.star.lang import XServiceInfo, XServiceName, XServiceDisplayName
 from com.sun.star.lang import Locale
+
+import helpers
+from grammalecte.graphspell import SpellChecker
 
 
 lLocale = {
@@ -45,6 +47,7 @@ zElidedWords = re.compile("(?i)^(?:[ldnmtsjcçy]|qu|lorsqu|quoiqu|puisqu|jusqu)[
 
 
 class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XServiceDisplayName, XSupportedLocales):
+    """Spellchecker class: will be loaded by LibreOffice"""
 
     def __init__ (self, ctx, *args):
         try:
@@ -58,7 +61,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
             self.xOptionNode = self.xSettingNode.getByName("o_fr")
             sMainDicName = self.xOptionNode.getPropertyValue("main_dic_name")
             personal_dic = ""
-            if (self.xOptionNode.getPropertyValue("use_personal_dic")):
+            if self.xOptionNode.getPropertyValue("use_personal_dic"):
                 sPersonalDicJSON = self.xOptionNode.getPropertyValue("personal_dic")
                 if sPersonalDicJSON:
                     try:
@@ -95,7 +98,7 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
         return self.sImplementationName
 
     def supportsService (self, sServiceName):
-        return (sServiceName in self.tSupportedServiceNames)
+        return sServiceName in self.tSupportedServiceNames
 
     def getSupportedServiceNames (self):
         return self.tSupportedServiceNames
@@ -127,13 +130,13 @@ class Graphspell (unohelper.Base, XSpellChecker, XServiceInfo, XServiceName, XSe
         "returns an object SpellAlternatives"
         try:
             if not self.bHunspell:
+                # Graphspell
                 lSugg = []
                 for l in self.oGraphspell.suggest(aWord):
                     lSugg.extend(l)
                 return SpellAlternatives(aWord, tuple(lSugg))
-            else:
-                # fallback dictionary suggestions (Hunspell)
-                return self.xHunspell.spell(aWord, self.xHunspellLocale, aProperties)
+            # fallback dictionary suggestions (Hunspell)
+            return self.xHunspell.spell(aWord, self.xHunspellLocale, aProperties)
         except:
             traceback.print_exc()
         return None

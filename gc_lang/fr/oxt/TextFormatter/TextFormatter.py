@@ -1,9 +1,9 @@
-# Text Formatter
-# by Olivier R.
-# License: MPL 2
+"""
+Text Formatter
+For LibreOffice
+"""
 
-import unohelper
-import uno
+# License: MPL 2
 
 import traceback
 import time
@@ -14,7 +14,8 @@ import tf_options
 import tf_tabrep
 import helpers
 
-
+import unohelper
+import uno
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
 
