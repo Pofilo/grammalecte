@@ -21,7 +21,7 @@ dReplTable = {
                                     ("[  ]”", "”")],
     ## non-breaking spaces
     # espaces insécables
-    "nbsp_before_punctuation":     [("(?<=[]\\w…)»}])([:;?!])[   ]", " \\1 "),
+    "nbsp_before_punctuation":     [("(?<=[]\\w…)»}])([:;?!])[   …]", " \\1 "),
                                     ("(?<=[]\\w…)»}])([:;?!])$", " \\1"),
                                     ("[  ]+([:;?!])", " \\1")],
     "nbsp_within_quotation_marks": [("«(?=\\w)", "« "),
@@ -30,7 +30,7 @@ dReplTable = {
                                     ("[  ]+»", " »")],
     "nbsp_within_numbers":         [("(\\d)[  ](?=\\d)", "\\1 ")],
     # espaces insécables fines
-    "nnbsp_before_punctuation":    [("(?<=[]\\w…)»}])([;?!])[   ]", " \\1 "),
+    "nnbsp_before_punctuation":    [("(?<=[]\\w…)»}])([;?!])[   …]", " \\1 "),
                                     ("(?<=[]\\w…)»}])([;?!])$", " \\1"),
                                     ("[  ]+([;?!])", " \\1"),
                                     ("(?<=[]\\w…)»}]):", " :"),
