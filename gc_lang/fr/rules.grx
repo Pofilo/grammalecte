@@ -21450,14 +21450,14 @@ __imp_verbe_groupe2_groupe3_t__
     <start>  [ne|n’]  [le|la|l’|les]           [lui|leur|en|y]              ~\w\w+t$
     <start>  [ne|n’]  [lui|leur]               en                           ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
-            and not (value(\-1, "|vient|dit|surgit|survient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
-            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
+            and not (value(\-1, "|vient|dit|surgit|survient|provient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":G|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
     <start>  ~\w\w+t$
         <<- /imp/ not value(>1, "|il|elle|on|ils|elles|iel|iels|")
             and not (value(\-1, "|vient|dit|surgit|survient|provient|") and (morph(>1, ":(?:[MD]|Oo)|>[A-Z]/") or value(>1, "|l’|d’|m’|t’|s’|")))
-            and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
+            and morph(\-1, ":V[23].*:Ip.*:3s", ":[GNA]|>(?:devoir|suffire|para[îi]tre)/") and analyseWord(\-1[:-1]+"s", ":E:2s")
         --1>> =\-1[:-1]+"s"                                                         # S’il s’agit d’un impératif, la terminaison est “is”, non “it”.
 
 TEST: {{Finit}} ton assiette.                                           ->> Finis
@@ -21479,6 +21479,7 @@ TEST: Vient ensuite l’emménagement dans une maison isolée.
 TEST: Vient alors son tour de se présenter : « Bonjour, je m’appelle Maryse, et je suis alcoolique. »
 TEST: Surgit ensuite la violence physique et verbale.
 TEST: De là provient, à l’inverse, la joie palpable qui débordait des places occupées
+TEST: Parait que ces gens-là sont riches.
 
 
 # verbes du 3ᵉ groupe en -d
