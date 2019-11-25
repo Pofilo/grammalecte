@@ -6653,7 +6653,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
+    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|genoux|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
     a [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     a air comprimé
     a armes égales
@@ -6672,6 +6672,7 @@ __conf_à_a_locutions__
     a bout [portant|touchant]
     a bras le corps
     a bras ouverts
+    a bride abattue
     a ?[très|si]¿ brève échéance
     a but non lucratif
     a cause [de|d’] {pronom_obj}
@@ -11072,7 +11073,7 @@ __purge_locutions__
     , entre autres ?choses¿ ,
     à *NUM  %
     à ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    à [autrui|bâbord|califourchon|chacun|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
+    à [autrui|bâbord|califourchon|chacun|cheval|confesse|contrecœur|contre-cœur|contretemps|>demi-mot|foison|grand-peine|jamais|genoux|gogo|loisir|merveille|moitié|nouveau|outrance|peine|perpétuité|présent|raison|rallonge|rebrousse-poil|reculons|regret|renverse|risque|sec|tâtons|tire-d’aile|tire-larigot|tort|tribord|tout-va|vif]
     à [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     à air comprimé
     à angle droit
@@ -11091,6 +11092,7 @@ __purge_locutions__
     à bras ouverts
     à bras le corps
     à ?[très|si]¿ brève échéance
+    à bride abattue
     à but ?non¿ lucratif
     à canon [court|long|scié]
     à cause [de|d’]  [ça|cela|ceci|moi|toi|lui|nous|vous|elle|elles|eux|iel|iels]
@@ -13021,6 +13023,7 @@ __simplication_substantifs__
     >saine [de|d’] [corps|esprit] et [de|d’] [corps|esprit]
     >sclérose en plaques
     [secret+s] défense
+    >sel [de|d’] [aluminium|ammonium|mer]
     >serpent à sonnette
     >seuil de tolérance
     >seuil de tolérance à la douleur
@@ -15352,7 +15355,7 @@ __gn_celle__
         <<- /gn/ __else__ and morph(\-1, ":A.*:p") -2>> =suggFemSing(\-1)                   # Accord avec “\1” : cet adjectif devrait être au féminin singulier.
 
 TEST: celle {{envoyés}} là-bas tombera dans un piège
-TEST: celle {{perdu}} aura une pénalité
+TEST: celle {{perdues}} aura une pénalité
 TEST: celle prise par surprise sera abattue
 
 
@@ -15649,20 +15652,20 @@ TEST: elle s’y prit avec cet individu de façon {{charmant}}.
 
 ## Conjonctions
 __gn_pfx_conj_2m__
-    [que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’]  (@:[NA]¬:(?:Y|V0|W|G))  (@:[NA]¬*)
-        <<- /gn/ \2.islower() >>>
-        <<- /gn/ ( (morph(\1, ":m", ":[fe]") and morph(\2, ":f", "*")) or (morph(\1, ":f", ":[me]") and morph(\2, ":m", "*")) )
-            and not apposition(\1, \2)
-        -2>> =switchGender(\2)                                                                      # Accord de genre erroné avec “\1”.
-        <<- /gn/ __also__ and hasFemForm(\1) -1>> =switchGender(\1)                                 # Accord de genre erroné avec “\2”.
-        <<- /gn/ ( (morph(\1, ":p", ":[si]") and morph(\2, ":s", "*")) or (morph(\1, ":s", ":[pi]") and morph(\2, ":p", "*")) )
-            and not apposition(\1, \2)
-        -2>> =switchPlural(\2)                                                                      # Accord de nombre erroné avec “\1”.
-        <<- /gn/ __also__ -1>> =switchPlural(\1)                                                    # Accord de nombre erroné avec “\2”.
+    [que|qu’|lorsque|lorsqu’|puisque|puisqu’|quoique|quoiqu’]  @:[NA]¬:(?:Y|V0|W|G)  @:[NA]¬*
+        <<- /gn/ \3.islower() >>>
+        <<- /gn/ ( (morph(\2, ":m", ":[fe]") and morph(\3, ":f", "*")) or (morph(\2, ":f", ":[me]") and morph(\3, ":m", "*")) )
+            and not apposition(\2, \3)
+        -3>> =switchGender(\3)                                                                      # Accord de genre erroné avec “\2”.
+        <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec “\3”.
+        <<- /gn/ ( (morph(\2, ":p", ":[si]") and morph(\3, ":s", "*")) or (morph(\2, ":s", ":[pi]") and morph(\3, ":p", "*")) )
+            and not apposition(\2, \3)
+        -3>> =switchPlural(\3)                                                                      # Accord de nombre erroné avec “\2”.
+        <<- /gn/ __also__ -2>> =switchPlural(\2)                                                    # Accord de nombre erroné avec “\3”.
 
 TEST: en tant que dictionnaire {{personnelle}}.
 TEST: séducteur invétéré puisque {{belle}} {{homme}} et beau parleur
-TEST: grand est la déception lorsque {{petite}} {{illusions}} tombent
+TEST: grande est la déception lorsque {{petite}} {{illusions}} tombent
 TEST: c’est à Montluçon que fut conçue « la Bourbonnaise », l’une des mères des locomotives en France, surnommée « la bonne à tout faire du réseau ».
 TEST: Ici que fut remisée la dernière motrice à vapeur.
 TEST: Le modèle « post-démocratique européen » ou le triomphe de « l’empire normatif » et alter-libéral qu’est devenue l’Union européenne.
@@ -17365,12 +17368,16 @@ TEST: le petit entretien le paralysait
 
 
 # envi / envie
-__conf_à_l_envi__
+__conf_envie_envi__
     à l’ envie
         <<- /conf/ not morph(<1, ">(?:abandonner|céder|résister)/") and not value(>1, "|de|d’|")
         -3>> envi                                           # Locution adverbiale « à l’envi », signifiant « autant que possible ».
 
+    [>avoir|>donner] [envi+s|envies]
+        <<- /conf/ -2>> envie                               # Confusion : Avoir envie, donner envie.
+
 TEST: Ils s’amusèrent à l’{{envie}} et oublièrent tous leurs soucis.
+TEST: ça donne {{envi}}
 TEST: Je résiste à l’envie de manger du chocolat.
 TEST: On ne s’intéresse pas à l’école ni à l’âge, mais aux compétences et à l’envie de partager.
 
@@ -18596,6 +18603,18 @@ TEST: L’accès au cannabis thérapeutique où à ses dérivés permettrait de 
 TEST: l’industrie est également touchée, avec « des pertes de commandes de véhicules chez Renault et chez Peugeot »
 
 
+__infi_suffire_de__
+    [suffit|suffisait|suffira|suffirait]                [de|d’]  @:V¬:[YMNWG]
+    >avoir  suffi                                       [de|d’]  @:V¬:[YMNWG]
+    [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  [de|d’]  @:V¬:[YMNWG]
+        <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “suffire”, le verbe doit être à l’infinitif.
+
+TEST: il suffit de {{pensé}} à ça pour déprimer.
+TEST: il suffit de {{mangé}} sain pour aller mieux.
+TEST: il ne suffit pas de pensées positives pour calmer son anxiété.
+TEST: il suffit de cela.
+
+
 __infi_qqch_de__
     afin                                        [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
     avant ?même¿                                [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -18836,6 +18855,17 @@ __infi_avoir_beau__
 TEST: Ils ont beau {{consacré}} le plus clair de leur temps à ce projet, ça n’avance guère.
 
 
+__infi_avoir_de_quoi__
+    >avoir de quoi ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿     ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir de quoi ?[ne|n’]¿   [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y] ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir de quoi ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]      ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir de quoi ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]          ~..(?:ée?s?|ez|ai[ts]?)$
+    >avoir de quoi ?[ne|n’]¿   [lui|leur|y]                    en                       ~..(?:ée?s?|ez|ai[ts]?)$
+        <<- /infi/ morph(\-1, ":V1") --1>> =suggVerbInfi(\-1)                                       # Après “avoir beau”, le verbe devrait être à l’infinitif.|http://fr.wiktionary.org/wiki/avoir_beau
+
+TEST: ils n’ont pas de quoi {{pavoisé}}
+
+
 __infi_est_ce_que__
     est-ce  [que|qu’]  @:(?:V1.*:Q|[13]s|2[sp])¬:[GYWMN]
         <<- /infi/ not value(<1, "|que|qu’|") -3>> =suggVerbInfi(\3)                                # Après “est-ce que”, le verbe devrait être à l’infinitif.
@@ -18949,18 +18979,6 @@ TEST: Nous nous laissions {{allé}} dans le plus complet abandon.
 TEST: Je le laissais {{mangé}} autant qu’il le voulut.
 TEST: Laisse-la {{abandonnée}} ses études, si c’est ce qu’elle veut.
 TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse désemparé
-
-
-__infi_suffire_de__
-    [suffit|suffisait|suffira|suffirait]                [de|d’]  @:V¬:[YMNWG]
-    >avoir  suffi                                       [de|d’]  @:V¬:[YMNWG]
-    [suffit-il|suffisait-il|suffira-t-il|suffirait-il]  [de|d’]  @:V¬:[YMNWG]
-        <<- /infi/ --1>> =suggVerbInfi(\-1)                                                         # Après “suffire”, le verbe doit être à l’infinitif.
-
-TEST: il suffit de {{pensé}} à ça pour déprimer.
-TEST: il suffit de {{mangé}} sain pour aller mieux.
-TEST: il ne suffit pas de pensées positives pour calmer son anxiété.
-TEST: il suffit de cela.
 
 
 __infi_mieux_valoir__
@@ -20415,6 +20433,154 @@ TEST: Martine n’est pas très {{intelligent}}.
 TEST: Pierre est {{dominée}} par son adversaire.
 TEST: Louise adorant avoir paru {{éduqué}}
 TEST: Les travaux que Jeanne pense être achevés depuis longtemps n’ont pas encore commencé.
+
+
+__ppas_adj_être_celui_celle_ceux_celles_qui__
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  celui  qui
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   celui  qui
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           celui  qui
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                celui  qui
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             celui  qui
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  celui  qui
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|:m:[si])") and morph(\3, ":[123]s")
+        -2>> =suggMasSing(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au masculin singulier.
+
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  celle  qui
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   celle  qui
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           celle  qui
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                celle  qui
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             celle  qui
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  celle  qui
+        <<- /ppas/ morph(\2, ":A.*:[mp]", ":(?:G|:f:[si])") and morph(\3, ":[123]s")
+        -2>> =suggFemSing(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au féminin singulier.
+
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  ceux  qui
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   ceux  qui
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           ceux  qui
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                ceux  qui
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             ceux  qui
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  ceux  qui
+        <<- /ppas/ morph(\2, ":A.*:[fs]", ":(?:G|:m:[pi])") and morph(\3, ":[123]p")
+        -2>> =suggMasPlur(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au masculin pluriel.
+
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  celles  qui
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   celles  qui
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           celles  qui
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                celles  qui
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             celles  qui
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  celles  qui
+        <<- /ppas/ morph(\2, ":A.*:[ms]", ":(?:G|:f:[pi])") and morph(\3, ":[123]p")
+        -2>> =suggFemPlur(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au féminin pluriel.
+
+TEST: {{vains}} est celui qui croit que sa religion lui accorde le salut.                   ->> vain
+TEST: {{ridiculisé}} fut celle qui lutta d’arrache-pied à faire connaître la vérité.        ->> ridiculisée
+TEST: {{faible}} paraissent avoir été ceux qui ont été vaincus                              ->> faibles
+TEST: {{oublié}} étaient celles qui avaient lutté pour un monde libre.                      ->> oubliées
+
+
+__ppas_adj_être_det_nom__
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  [un|le|ce|cet]  @:[NA].*:[me]:[si]
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   [un|le|ce|cet]  @:[NA].*:[me]:[si]
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           [un|le|ce|cet]  @:[NA].*:[me]:[si]
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                [un|le|ce|cet]  @:[NA].*:[me]:[si]
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             [un|le|ce|cet]  @:[NA].*:[me]:[si]
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  [un|le|ce|cet]  @:[NA].*:[me]:[si]
+        <<- /ppas/ morph(\2, ":A.*:[fp]", ":(?:G|:m:[si])") and morph(\3, ":[123]s")
+        -2>> =suggMasSing(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au masculin singulier.
+
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  [une|la|ma|ta|sa|cette]  @:[NA].*:[fe]:[si]
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   [une|la|ma|ta|sa|cette]  @:[NA].*:[fe]:[si]
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           [une|la|ma|ta|sa|cette]  @:[NA].*:[fe]:[si]
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                [une|la|ma|ta|sa|cette]  @:[NA].*:[fe]:[si]
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             [une|la|ma|ta|sa|cette]  @:[NA].*:[fe]:[si]
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  [une|la|ma|ta|sa|cette]  @:[NA].*:[fe]:[si]
+        <<- /ppas/ morph(\2, ":A.*:[mp]", ":(?:G|:f:[si])") and morph(\3, ":[123]s")
+        -2>> =suggFemSing(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au féminin singulier.
+
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  [l’|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   [l’|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           [l’|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                [l’|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             [l’|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  [l’|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]
+        <<- /ppas/ morph(\2, ":A.*:m", ":[fe]") and morph(\-1, ":[NA]:f", ":[me]")
+        -2>> =suggFemSing(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au féminin singulier.
+        <<- /ppas/ __else__ and morph(\2, ":A.*:f", ":[me]") and morph(\-1, ":[NA]:m", ":[fe]")
+        -2>> =suggMasSing(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au masculin singulier.
+        <<- /ppas/ morph(\2, ":A.*:p", ":[Gsi]") and morph(\3, ":[123]s")
+        -2>> =suggSing(\2)                                                                          # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au singulier.
+
+    [<start>|,]  *WORD  [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  @:[NA].*:[pi]
+    [<start>|,]  *WORD  >avoir  [été|semblé|paru]                                                   [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  @:[NA].*:[pi]
+    [<start>|,]  *WORD  [>être|>sembler]  [devenu|redevenu|resté|demeuré]                           [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  @:[NA].*:[pi]
+    [<start>|,]  *WORD
+        || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  @:[NA].*:[pi]
+    [<start>|,]  *WORD
+        || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
+        || être [devenu+e|redevenu+e|resté+e|demeuré+e]                                             [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  @:[NA].*:[pi]
+    [<start>|,]  *WORD
+        || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
+        || avoir [été|semblé|paru]                                                                  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  @:[NA].*:[pi]
+        <<- /ppas/ morph(\2, ":A.*:m", ":[fe]") and morph(\-1, ":[NA]:f", ":[me]")
+        -2>> =suggFemPlur(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au féminin pluriel.
+        <<- /ppas/ __else__ and morph(\2, ":A.*:f", ":[me]") and morph(\-1, ":[NA]:m", ":[fe]")
+        -2>> =suggMasPlur(\2)                                                                       # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au masculin pluriel.
+        <<- /ppas/ __else__ and morph(\2, ":A.*:s", ":[Gpi]") and morph(\3, ":[123]p")
+        -2>> =suggPlur(\2)                                                                          # Accord erroné avec “\-2 \-1” : cet adjectif devrait être au pluriel.
+
+TEST: {{cachée}} allait devenir ce livre                                            ->> caché
+TEST: {{vain}} fut la destruction de cette base.                                    ->> vaine
+TEST: {{utiles}} a été la perte de notre arrogance                                  ->> utile
+TEST: {{perdu}} serait devenu l’entreprise                                          ->> perdue
+TEST: {{perdue}} allait être l’homme                                                ->> perdu
+TEST: {{ridicule}} paraissent être les gesticulations des prêtres                   ->> ridicules
+TEST: {{perdue}} avaient été les vérités des religions à mystère                    ->> perdues
+TEST: {{perdus}} sont les femmes                                                    ->> perdues
+TEST: {{vérifiées}} semblent avoir été les faits                                    ->> vérifiés
+
 
 
 !!
@@ -23857,7 +24023,7 @@ __vmode_qqch_que_subjonctif__
         <<- /vmode/ -1>> ou                                                                         # Le verbe “\4” est à l’indicatif. Soit vous confondez “où” (localisation spatiale) et “ou” (alternative entre plusieurs possibilités), soit il faut mettre “\4” au subjonctif.
 
     >douter  [que|qu’]  @:(?:Os|M)  @:I¬:(?:[GYSK]|If)
-        <<- /vmode/ not tag(\1, "upron") and morph(\1, ":V", ":N")
+        <<- /vmode/ not tag(\1, "upron") and not tag(\1, "neg") and morph(\1, ":V", ":N")
         -4>> =suggVerbMode(\4, ":S", \3)                                                            # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     [il|ça|cela]    peut                            [que|qu’]   @:(?:Os|M)  @:I¬:[GYS]
@@ -23955,6 +24121,7 @@ TEST: J’irai si tant est que je le puisse.
 TEST: Quoique je dise.
 TEST: Quoique je te dise.
 TEST: Ça signifie qu’il est parti ou qu’il est mort.
+TEST: Ne doute pas qu’il viendra demain.
 
 
 # Bien que + subjonctif
