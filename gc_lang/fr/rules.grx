@@ -8429,7 +8429,7 @@ __conf_la_là!7__
         <<- !1>>
 
     la  [l’|d’|n’|m’|t’|s’|c’|ç’|j’|qu’|lorsqu’|puisqu’|quoiqu’]
-    la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute)/
+    la  @:G¬:(?:[NA]:[ef]|W|V)|>(?:lui|leur|votre|notre|voilà|voici|plupart|quell?e?s?|tout|toute|non)/
         <<- /conf/ not \1.isupper() and not \2.isupper() and not morph(<1, ":E|>le/") -1>> là       # Confusion probable. Écrivez “là” si vous voulez dire “ici”.
 
     [ce|cet|cette|ces]  /-la
@@ -8446,6 +8446,7 @@ TEST: Qui serait la ou le plus à même à occuper ce poste selon vous ?
 TEST: Il fait remonter à la toute première expérience humaine de maîtrise.
 TEST: l’existence d’un fichage la concernant
 TEST: avec la ou les indications qu’on recontre ici et là.
+TEST: de la non moins indispensable défense des libertés, individuelles ou collectives, professionnelles ou locales
 
 
     [par-la|de-la|jusque-la|celui-la|celle-la|ceux-la|celles-la]
@@ -13525,6 +13526,7 @@ __purge_avant_adjectifs_adverbes__
     depuis peu                  @:[AW]
     quelque peu                 @:[AW]
     pas très                    @:[AW]
+    non moins                   @:[AW]
         <<- ~1:2>> *
 
     un ?petit¿  peu ?[plus|moins]¿
@@ -20580,6 +20582,7 @@ TEST: {{ridicule}} paraissent être les gesticulations des prêtres             
 TEST: {{perdue}} avaient été les vérités des religions à mystère                    ->> perdues
 TEST: {{perdus}} sont les femmes                                                    ->> perdues
 TEST: {{vérifiées}} semblent avoir été les faits                                    ->> vérifiés
+TEST: {{libres}} aime avoir été notre fille                                         ->> libre
 
 
 
