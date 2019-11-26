@@ -8,10 +8,11 @@ from distutils import dir_util, file_util
 import helpers
 
 
-def build (sLang, dVars, spLangPack):
+def build (sLang, dVars):
     "complementary build launched from make.py"
     createWebExtension(sLang, dVars)
-    createThunderbirdExtension(sLang, dVars, spLangPack)
+    createThunderbirdExtension(sLang, dVars)
+    createMailExtension(sLang, dVars)
     createNodeJSPackage(sLang)
 
 
@@ -40,23 +41,36 @@ def _createOptionsForWebExtension (dVars):
     return sHTML
 
 
-def createThunderbirdExtension (sLang, dVars, spLangPack):
-    "create extension for Thunderbird"
-    print("Building extension for Thunderbird")
-    sExtensionName = dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
-    spfZip = "_build/" + sExtensionName
+def createMailExtension (sLang, dVars):
+    "create extension for Thunderbird (as MailExtension)"
+    print("Building extension for Thunderbird (MailExtension)")
+    spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.mailext.xpi'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    _copyGrammalecteJSPackageInZipFile(hZip, spLangPack)
+    _copyGrammalecteJSPackageInZipFile(hZip, sLang)
+    for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
+        hZip.write(spf)
+    dVars = _createOptionsForThunderbird(dVars)
+    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
+    hZip.close()
+    spExtension = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
+    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
+    spExtension = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
+    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
+
+
+def createThunderbirdExtension (sLang, dVars):
+    "create extension for Thunderbird (as XUL addon)"
+    print("Building extension for Thunderbird")
+    spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
+    hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
+    _copyGrammalecteJSPackageInZipFile(hZip, sLang)
     for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
         hZip.write(spf)
     dVars = _createOptionsForThunderbird(dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/tb", "", dVars, True)
     hZip.close()
-    spDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
-    helpers.unzip(spfZip, spDebugProfile)
-    spfBetaExtension = dVars['win_tb_beta_extension_filepath']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_filepath']
-    #helpers.unzip(spfZip, spBetaProfile)
-    file_util.copy_file(spfZip, spfBetaExtension)
+    #spDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
+    #helpers.unzip(spfZip, spDebugProfile)
 
 
 def _createOptionsForThunderbird (dVars):
@@ -76,19 +90,19 @@ def _createOptionsForThunderbird (dVars):
     return dVars
 
 
-def _copyGrammalecteJSPackageInZipFile (hZip, spLangPack, sAddPath=""):
+def _copyGrammalecteJSPackageInZipFile (hZip, sLang, sAddPath=""):
     for sf in os.listdir("grammalecte-js"):
         if not os.path.isdir("grammalecte-js/"+sf):
-            hZip.write("grammalecte-js/"+sf, sAddPath+"grammalecte-js/"+sf)
+            hZip.write("grammalecte-js/"+sf, sAddPath+"grammalecte/"+sf)
     for sf in os.listdir("grammalecte-js/graphspell"):
         if not os.path.isdir("grammalecte-js/graphspell/"+sf):
-            hZip.write("grammalecte-js/graphspell/"+sf, sAddPath+"grammalecte-js/graphspell/"+sf)
+            hZip.write("grammalecte-js/graphspell/"+sf, sAddPath+"grammalecte/graphspell/"+sf)
     for sf in os.listdir("grammalecte-js/graphspell/_dictionaries"):
         if not os.path.isdir("grammalecte-js/graphspell/_dictionaries/"+sf):
-            hZip.write("grammalecte-js/graphspell/_dictionaries/"+sf, sAddPath+"grammalecte-js/graphspell/_dictionaries/"+sf)
-    for sf in os.listdir(spLangPack):
-        if not os.path.isdir(spLangPack+"/"+sf):
-            hZip.write(spLangPack+"/"+sf, sAddPath+spLangPack+"/"+sf)
+            hZip.write("grammalecte-js/graphspell/_dictionaries/"+sf, sAddPath+"grammalecte/graphspell/_dictionaries/"+sf)
+    for sf in os.listdir("grammalecte-js/"+sLang):
+        if not os.path.isdir("grammalecte-js/"+sLang+"/"+sf):
+            hZip.write("grammalecte-js/"+sLang+"/"+sf, sAddPath+"grammalecte/"+sLang+"/"+sf)
 
 
 def createNodeJSPackage (sLang):

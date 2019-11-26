@@ -36,7 +36,7 @@ def unzip (spfZip, spDest, bCreatePath=False):
             with zipfile.ZipFile(spfZip) as hZip:
                 hZip.extractall(spDest)
         else:
-            print("# folder not found")
+            print("# folder <" + spDest + "> not found")
     else:
         print("path destination is empty")
 
@@ -96,7 +96,7 @@ def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
             if bRecursive:
                 addFolderToZipAndFileFile(hZip, spfSrc, spfDst, dVars, bRecursive)
         else:
-            if spfSrc.endswith((".py", ".js", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
+            if spfSrc.endswith((".py", ".js", ".json", ".css", ".xcu", ".xul", ".rdf", ".dtd", ".properties")):
                 hZip.writestr(spfDst, fileFile(spfSrc, dVars))
             else:
                 hZip.write(spfSrc, spfDst)
