@@ -21263,8 +21263,8 @@ TEST: il faillit agir, mais l’ayant {{remarqués}}, il passa son chemin.
 
 
 __ppas_m_t_avoir__
-    [m’|t’] >avoir @:V[0-3]..t_.*:Q.*:p¬:[GWsi]
-        <<- /ppas/ not tag_before(\1, "que") -3>> =suggSing(\3)
+    [m’|t’] >avoir @:Q.*:p¬:[GWsi]
+        <<- /ppas/ not tag_before(\1, "que") or morph(\3, ":V[0-3]..t_")  -3>> =suggSing(\3)
         # Accord avec “\1”. S’il s’agit d’un COD, le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
@@ -21274,6 +21274,7 @@ TEST: Les élèves ne m’ont pas {{écoutés}}.
 TEST: Les élèves ne m’ont pas {{écoutées}}.
 TEST: Nous ne t’avons pas {{écoutés}}.
 TEST: Nous ne t’avons pas {{écoutées}}.
+TEST: comme ces informations m’avaient {{manquées}}
 
 
 __ppas_qui_avoir__
