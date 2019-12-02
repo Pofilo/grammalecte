@@ -418,7 +418,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
 
     def _replaceAll (self, xElem):
         try:
-            nStartTime = time.clock()
+            nStartTime = time.perf_counter()
             self.xContainer.setVisible(True)
             # change pointer
             xPointer = self.ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Pointer", self.ctx)
@@ -671,7 +671,7 @@ class TextFormatter (unohelper.Base, XActionListener, XJobExecutor):
             for x in xWindowPeer.Windows:
                 x.setPointer(xPointer)
             self.xContainer.setVisible(True) # seems necessary to refresh the dialog box and text widgets (why?)
-            nEndTime = time.clock()
+            nEndTime = time.perf_counter()
             self.time_res.Label = getTimeRes(nEndTime-nStartTime)
         except:
             traceback.print_exc()
