@@ -13718,8 +13718,7 @@ __purge_locutions_potentielles__
         <<- ~1:3>> *
 
     en sus
-        <<- not value(<1, "|j’|tu|il|elle|on|n’") ->> *
-
+        <<- not value(<1, "|j’|tu|il|elle|on|n’") ~>> *
 
     entre autres choses  @¬:A.*:[fe]:[pi]
     entre autres choses  [<end>|,]
@@ -13846,9 +13845,9 @@ __da_substantifs__
         <<- morph(\3, ":[NA]", ":(?:G|V0)") and morph(\4, ":[NA]", ":(?:[PG]|V[023])") =>> exclude(\4, ":V")
 
     [<start>|,]  $:D  *WORD  *WORD  @:(?:3[sp]|P)¬:[GW]
-        <<- morph(\2, ":p") and morph(\3, ":[NA].*:p", ":(?:G|V0)") and morph(\4, ":[NA].*:p", ":(?:[PG]|V[023])") =>> exclude(\4, ":V")
+        <<- morph(\2, ":p") and morph(\3, ":[NA].*:p", ":(?:G|V0)") and morph(\4, ":[NA].*:p", ":(?:[PGQ]|V[023])") =>> exclude(\4, ":V")
         <<- __else__ and
-            morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PG]|V[023])") and not morph(\5, ":A.*:[si]") =>> exclude(\4, ":V")
+            morph(\2, ":s") and morph(\3, ":[NA].*:s", ":(?:G|V0)") and morph(\4, ":[NA].*:s", ":(?:[PGQ]|V[023])") and not morph(\5, ":A.*:[si]") =>> exclude(\4, ":V")
 
     [des|ces|mes|tes|ses|nos|vos|quelques|lesdits]  @:A.*:[pi]  @:N.*:[pi]¬(?:3[sp]|Q|G)
         <<- =>> exclude(\3, ":V")
@@ -13886,7 +13885,7 @@ __purge_locutions_verbales__
     [>donner|>redonner] quartier libre
     >élire domicile
     >étouffer dans l’ œuf
-    >faire [allusion|assaut|attention|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|office|part|peur|polémique|plaisir|preuve|rage|rempart|scandale|sens|signe|surface|usage|volte-face]
+    >faire [allusion|assaut|attention|barrage|chaud|confiance|connaissance|compliqué|copain-copain|date|débat|défaut|demi-tour|écran|envie|erreur|état|exception|figure|foi|fortune|froid|front|grève|halte|honte|illusion|mention|mouche|office|part|peur|polémique|plaisir|preuve|rage|rempart|scandale|sens|signe|surface|usage|volte-face]
     >faire amende honorable
     >faire bande à part
     >faire bon accueil
@@ -14223,6 +14222,7 @@ TEST: la petite reste fragile
 TEST: au moins neuf personnes disparues dans le pays et 140 blessés
 TEST: C’en est arrivé là.
 TEST: Madame, des comme vous, j’en vois quatre par jour.
+TEST: Un quotidien facilité peut changer, à long terme, la donne dans la satisfaction des professionnels du privé et du public.
 
 
 @@@@
