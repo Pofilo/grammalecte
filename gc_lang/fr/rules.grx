@@ -10291,7 +10291,7 @@ TEST: Je suis sûr de les avoir vus de mes yeux vus.
 
 
 # ni vu ni connu
-__ni_vu_ni_connu__
+__sgpl_ni_vu_ni_connu__
     ni [vus|vue|vues] ni [connu|connus|connue|connues]
     ni vu ni [connus|connue|connues]
         <<- /sgpl/ ->> ni vu ni connu                                                               # Ni vu ni connu : locution invariable.|https://fr.wiktionary.org/wiki/ni_vu_ni_connu
@@ -11465,6 +11465,7 @@ __purge_locutions__
     comme promis
     comme qui dirait
     comme si [de|d’] rien n’ était
+    comme sur des roulettes
     contrairement aux apparences
     contre mauvaise fortune ?,¿ bon cœur
     contre nature
@@ -12793,6 +12794,7 @@ __simplication_substantifs__
     >claire comme [de|d’] l’ eau [de|d’] [boudin|roche|source]
     >claire comme du cristal
     >claire comme jus [de|d’] [boudin|>chaussette|chique]
+    >classement sans suite
     [>clé|>clef] à molette
     >clin d’ œil
     >clause [de|d’] [confidentialité|non-concurrence]
@@ -13813,6 +13815,28 @@ __purge_tout_tout_tous_toutes__
         <<- morph(\-2, ":[123]s") ~-1>> *
 
 
+
+## se rendre compte
+__ppas_s_être_rendu_compte__
+    >être  ?@:[WX]¿  rendu  ?$:W¿  compte
+        <<- !2:3>>
+
+    /VCint  ?@:[WX]¿  rendu  ?$:W¿  compte
+        <<- morphVC(\1, ">être/") !2:3>>
+
+    >être  ?@:[WX]¿  [rendue|rendus|rendues]  ?$:W¿  compte
+        <<- /ppas/ -2>> rendu                                                                       # Accord erroné : dans l’expression “se rendre compte”, “rendu” est invariable.
+
+    /VCint  ?@:[WX]¿  [rendue|rendus|rendues]  ?$:W¿  compte
+        <<- /ppas/ morphVC(\1, ">être/") -2>> rendu                                                 # Accord erroné : dans l’expression “se rendre compte”, “rendu” est invariable.
+
+TEST: Elles se sont {{rendues}} compte
+TEST: se sont-ils {{rendus}} compte
+TEST: La puissance publique s’en est-elle rendu compte ?
+TEST: Elle s’est rendu compte qu’il s’était moqué d’elle une fois de plus.
+
+
+
 @@@@
 @@@@
 @@@@
@@ -13954,7 +13978,7 @@ __purge_locutions_verbales__
     >prêter main-forte
     >réduire en miettes
     >remettre en cause
-    >rendre [hommage|service|visite]
+    >rendre [compte|hommage|service|visite]
     >reprendre haleine
     >rester lettre morte
     >rester lettres mortes
@@ -14223,6 +14247,7 @@ TEST: au moins neuf personnes disparues dans le pays et 140 blessés
 TEST: C’en est arrivé là.
 TEST: Madame, des comme vous, j’en vois quatre par jour.
 TEST: Un quotidien facilité peut changer, à long terme, la donne dans la satisfaction des professionnels du privé et du public.
+TEST: elles sont dans l’incapacité de rendre compte de l’intensité et de la profondeur des traumatismes provoqués
 
 
 @@@@
@@ -19686,30 +19711,6 @@ TEST: elles se sont prises en main.
 TEST: elles s’étaient aimées ce matin.
 
 
-## se rendre compte
-__ppas_s_être_rendu_compte__
-    >être  rendu  compte
-        <<- !2:3>>
-        <<- ~2:3>> _
-
-    /VCint  rendu  compte
-        <<- morphVC(\1, ">être/") !2:3>>
-        <<- ~2:3>> _
-
-    >être  [rendue|rendus|rendues]  compte
-        <<- /ppas/ -2>> rendu                                                                       # Accord erroné : dans l’expression “se rendre compte”, “rendu” est invariable.
-        <<- ~2:3>> _
-
-    /VCint  [rendue|rendus|rendues]  compte
-        <<- /ppas/ morphVC(\1, ">être/") -2>> rendu                                                 # Accord erroné : dans l’expression “se rendre compte”, “rendu” est invariable.
-        <<- ~2:3>> _
-
-TEST: Elles se sont {{rendues}} compte
-TEST: se sont-ils {{rendus}} compte
-TEST: La puissance publique s’en est-elle rendu compte ?
-TEST: Elle s’est rendu compte qu’il s’était moqué d’elle une fois de plus.
-
-
 
 !!
 !!
@@ -24449,6 +24450,7 @@ TEST: Laisse tomber, mec ! Pour qui tu te prends ?
 TEST: il y avait souvent foule
 TEST: Cette fille a plus d’un tour dans son sac.
 TEST: L’homme est également président de l’AFP
+TEST: ils nous ont agenouillés
 
 
 
