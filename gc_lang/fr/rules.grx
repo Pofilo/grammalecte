@@ -4729,7 +4729,7 @@ TEST: Elles sont parties {{de puis}} au moins trois heures.
 TEST: Depuis le temps que ça existe, tu devrais être au courant.
 
 
-__incohérence_au_qqch__
+__conf_au_qqch__
     au  [ces|des|les|mes|ses|tes|nos|vos|ce|cet|cette|ma|ta|sa|mon|je|tu|il|ils|elle|elles|iel|iels|nous|vous|on|parce]
         <<- /conf/ not \1.isupper() and not \2.isupper()
         -2>> =suggSimil(\2, ":[NA].*:[si]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
@@ -4739,9 +4739,10 @@ __incohérence_au_qqch__
         -2>> =suggSimil(\2, ":[NA].*:[pi]", True)                                                   # Incohérence : les mots “\1” et “\2” ne devraient pas se succéder.
 
     [au|aux] [quel|quels|quelle|quelles]
+    [au|aux] qu’ [elle|elles]
         <<- /conf/ ->> auquel|auxquels|auxquelles                                                   # Incohérence. Soudez les deux mots.|https://fr.wiktionary.org/wiki/auquel
 
-    [au|aux] combien  @:[AY]
+    [au|aux] combien  @:[AYW]
         <<- /conf/ -1:2>> ô combien                                                                 # Confusion probable.|https://fr.wiktionary.org/wiki/%C3%B4_combien
 
 TEST: au {{nos}} enfants.
@@ -7059,15 +7060,24 @@ TEST: Maria Butina a également rencontré des républicains tels que Donald Tru
 __conf_à_en_juger_par__
     !! à en juger par ¡¡
     [à|a] [en|>an] [juger|jugé+ses|jugeait|jugeais] [par|pare+s|>part]
-        <<- /conf/ ->> à en juger par       # Confusion : “à en juger par” c’est-à-dire “selon le jugement qu’on se faire avec”.
+        <<- /conf/ ->> à en juger par               # Confusion : “à en juger par” c’est-à-dire “selon le jugement qu’on se faire avec”.
 
 TEST: {{a en jugé part}} cet article, c’est bientôt la fin.
 TEST: ils sont à en juger par leurs résultats les prochains champions.
 
 
+__conf_à_tout_bout_de_champ__
+    !! à tout bout de champ ¡¡
+    [à|a] [tout|tous] [bout|bous|>boue] [de|d’] [champ+s|>chant|>chan]
+        <<- /conf/ ->> à tout bout de champ         # Confusion. Locution “à tout bout de champ”.|https://fr.wiktionary.org/wiki/%C3%A0_tout_bout_de_champ
+
+TEST: il râlait {{à tous bous de chant}}
+TEST: elles chantaient à tout bout de champ.
+
+
 __conf_celui_celle_à_qui__
     [celui|celle|ceux|celles]  a  qui
-        <<- /conf/ -2>> à                   # Confusion. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+        <<- /conf/ -2>> à                           # Confusion. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: Ceux {{a}} qui nous avons notifié le problème sont partis.
 TEST: Il y a qui au dîner ce soir ?
@@ -7984,10 +7994,21 @@ TEST: et Ben est parti.
 
 # en / an
 __être_en_xxxx__
-    [>être|>rester|>demeurer] an [contradiction|désaccord|accord]
+    [>être|>rester|>demeurer] an [contradiction|désaccord|accord|faction]
         <<- /conf/ -2>> en                                                                          # Confusion. Un an = une année. Pour la préposition, écrivez “en”.
 
 TEST: Je suis {{an}} désaccord avec lui.
+
+
+# en dents de scie
+__conf_en_dents_de_scie__
+    !! en dents de scie ¡¡
+    !! en dents d’ scie ¡¡
+    [en|>an]  [>dan|dent+s]  [de|d’] [si|scie+s]
+        <<- /conf/ ->> en dents de scie                         # Confusion. Locution “en dents de scie”.|https://fr.wiktionary.org/wiki/en_dents_de_scie
+
+TEST: des notes {{an dans de si}}                               ->> en dents de scie
+TEST: une carrière en dents de scie
 
 
 # en dessous
@@ -12776,6 +12797,7 @@ __simplication_substantifs__
     >canon à eau
     >caisse à >outil
     >carton d’ emballage
+    >cellule de détention provisoire
     >centre d’ éducation [populaire|surveillée]
     >chair à [pâté|>canon]
     >chair [de|d’] poule
@@ -12970,6 +12992,7 @@ __simplication_substantifs__
     >noire comme une nuit sans lune
     >panier à linge
     >papier à [>lettre|musique]
+    >parc d’ attractions
     >parole en l’ air
     >partie [de|d’] jambes en l’ air
     >passage à tabac
@@ -13018,7 +13041,7 @@ __simplication_substantifs__
     >rouge à lèvres
     >roulement à billes
     [>ru|>ruisseau] à sec
-    >sac à [dos|main|langer|merde|foutre]
+    >sac à [bandoulière|dos|main|langer|merde|foutre]
     >sac [de|d’] [couchage|sport|voyage]
     >salle à manger
     >salle [de|d’] [attente|>bain|conférence|lecture|séjour|vente]
@@ -16747,6 +16770,7 @@ __conf_air_aire_ère__
         <<- /conf/ -1>> aire|aires  # Confusion. Une ère est une époque. L’air est un gaz, une apparence ou une musique. Pour évoquer une surface, écrivez “aire”.|https://fr.wiktionary.org/wiki/aire
 
     >baptême de l’ [ère|aire]
+    >libre comme l’ [ère|aire]
         <<- /conf/ --1>> air        # Confusion. Une ère est une époque. L’aire est une surface. Pour parler de l’atmosphère, écrivez “air”.|https://fr.wiktionary.org/wiki/air
 
 TEST: L’{{aire}} du pétrole n’est pas encore terminée.
@@ -17468,6 +17492,33 @@ TEST: Quelle solution {{été}} à notre portée ?                             
 TEST: Les questions {{étés}} incompréhensibles.                                     ->> étaient
 TEST: Le bel été indien que nous avons cette année.
 TEST: Quel a été le déclencheur de cet ouvrage ?
+
+
+__conf_être_faire__
+    nous            ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferrons      $:Y
+        <<- /conf/ not morph(<1, ":R") --2>> ferons                                                 # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
+
+    nous            ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferrions     $:Y
+        <<- /conf/ not morph(<1, ":R") --2>> ferions                                                # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
+
+    vous            ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferrez       $:Y
+        <<- /conf/ not morph(<1, ":R") --2>> ferez                                                  # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
+
+    vous            ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferriez      $:Y
+        <<- /conf/ not morph(<1, ":R") --2>> ferez                                                  # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
+
+    [ils|elles]     ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferront      $:Y
+        <<- /conf/ not morph(<1, ":R") --2>> feront                                                 # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
+
+    [ils|elles]     ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferraient    $:Y
+        <<- /conf/ not morph(<1, ":R") --2>> feraient                                               # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
+
+TEST: nous vous {{ferrons}} apparaître au générique
+TEST: nous vous {{ferrions}} prendre
+TEST: vous les {{ferrez}} pendre demain
+TEST: vous nous {{ferriez}} mourir de rire
+TEST: ils le {{ferront}} crever à petit feu
+TEST: elles la {{ferraient}} vivre
 
 
 # faim / fin
@@ -18285,6 +18336,14 @@ TEST: Forage de son {{puis}} prévu demain
 TEST: Creuser un {{puis}}, pas si compliqué
 
 
+# qu’à / cas
+__conf_qu_à_cas__
+    [je|tu|il|elle|on|nous|vous|ils|elles|iel|iels] ?n’¿ >avoir  [ca|cas]  @:(?:Ov|Y)
+        <<- /conf/ --2>> qu’à                                   # Confusion. Écrivez “qu’à”, c’est-à-dire la contraction de “que” suivi de la préposition verbale “à”.
+
+TEST: tu n’as {{cas}} prendre le train
+
+
 # quand même / comme même
 __conf_quand_même__
     comme même [<end>|,]
@@ -18683,7 +18742,7 @@ __infi_qqch_de__
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
 
-    >faire  semblant                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    >faire  [semblant|mine]                     [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “faire semblant de”, le verbe devrait être à l’infinitif.
 
     [>façon|>manière]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -18700,7 +18759,7 @@ __infi_qqch_de__
     [<start>|,] [>capable|>incapable|impossible|inutile]  [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “\2 de”, le verbe devrait être à l’infinitif.
 
-    force [est|était]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    force [est|était|fut|serait|sera]           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ not value(<1, "|une|la|cette|ma|ta|sa|notre|votre|leur|quelle|de|d’|") and analyse(\-1, ":Q", ":M")
         --1>> =suggVerbInfi(\-1)                                                                    # Après “force est de”, le verbe devrait être à l’infinitif.
 
