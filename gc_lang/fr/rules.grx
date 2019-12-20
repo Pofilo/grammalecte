@@ -6887,7 +6887,7 @@ TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumièr
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
         <<- /conf/ \2.islower()
-            and not value(\3, "|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|peine|peur|raison|rapport|recours|soif|tendance|tort|vent|")
+            and not value(\3, "|accès|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|peine|peur|raison|rapport|recours|soif|tendance|tort|vent|")
             and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -6901,6 +6901,7 @@ TEST: Ce travail a lieu dans le désert.
 TEST: cette injonction a force de loi
 TEST: C’est là que la pudeur a bon dos
 TEST: Cette décision permettrait de rapprocher le congé paternité des huit semaines pendant lesquelles un employeur a interdiction de faire travailler une mère
+TEST: L’utilisateur a accès à l’ensemble des informations saisies.
 
 
 __conf_a_à_substantifs__
@@ -12884,11 +12885,12 @@ __simplication_substantifs__
     concours de beauté
     >condamnée à mort
     >conférence [de|d’] presse
-    >convention [récepteur|générateur]
     >conne comme la lune
     >conne comme un balai
     >conne comme une valise sans >poignée
+    >conseillère d’ orientation [scolaire|professionnelle]
     >contrôle [de|d’] routine
+    >convention [récepteur|générateur]
     >corvéable à merci
     >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|épée|estoc|État|foudre|fil|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
     >coup [de|d’] baguette ?magique¿
@@ -17439,6 +17441,18 @@ TEST: Il l’avait {{enduit}} en erreur par des affirmations calomnieuses.    ->
 TEST: Elle en avait {{enduit}} qu’il y avait anguille sous roche.           ->> induit
 TEST: Nous avons {{induit}} la façade.                                      ->> enduit
 TEST: il faut {{induire}} cette boue sur son visage.                        ->> enduire
+
+
+# emprunt / prêt
+__conf_emprunt_empreint_prêt__
+    >faire $:D >prêt à la banque
+        <<- /conf/ -3>> emprunt|emprunts            # Confusion. Faire un prêt consiste à prêter quelque chose à quelqu’un. Si vous êtes l’emprunteur, vous faites un emprunt.|https://fr.wiktionary.org/wiki/emprunt
+
+    >faire $:D [empreint+s]
+        <<- /conf/ --1>> emprunt|emprunts           # Confusion. Lorsque vous empruntez quelque chose, vous faites un emprunt.|https://fr.wiktionary.org/wiki/emprunt
+
+TEST: Elle a fait un {{prêt}} à la banque.
+TEST: J’ai fait un {{empreint}} à la bibliothèque.
 
 
 # entretien / maintien / soutien
