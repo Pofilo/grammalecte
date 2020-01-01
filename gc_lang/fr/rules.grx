@@ -6717,6 +6717,7 @@ __conf_à_a_locutions__
     a haut risque
     a haute voix
     a haute et intelligible voix
+    a heure fixe
     a hue et à dia
     a huis clos
     a intervalles [réguliers|irréguliers]
@@ -6810,6 +6811,7 @@ __conf_à_a_locutions__
     a temps [plein|partiel|complet]
     a tête reposée
     a >tarif >réduit
+    a taux [>fixe|>variable]
     a titre [conservatoire|indicatif|informatif|grâcieux|personnel|posthume]
     a titre d’ exemple
     a tombeau ouvert
@@ -11208,6 +11210,7 @@ __purge_locutions__
     à haut risque
     à ?[très|si]¿ haute voix
     à ?[très|si]¿ haute et intelligible voix
+    à heure fixe
     à hue et à dia
     à huis clos
     à intervalles [irréguliers|réguliers]
@@ -11331,6 +11334,7 @@ __purge_locutions__
     à strictement parler
     à tarif réduit
     à tarifs réduits
+    à taux [>fixe|>variable]
     à tel point
     à temps  [plein|partiel|complet]
     à tête reposée
@@ -11776,7 +11780,7 @@ __purge_locutions__
     du tout au tout
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
+    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
     en réalité ?virtuelle¿
     en aucun cas
     en aucune [circonstance|façon|manière]
@@ -13462,7 +13466,7 @@ __purge_après_avoir__
         <<- morph(>1, ":[QY]") ~2:0>> *
 
     >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
-    >avoir  bon dos
+    >avoir  bon [dos|fond]
     >avoir  bon pied ?,¿ bon œil
     >avoir  carte blanche
     >avoir  forme [humaine|animale]
@@ -13472,7 +13476,7 @@ __purge_après_avoir__
         <<- =>> define(\2, [":LV"])
 
     >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
-    >avoir  [pas|jamais|plus|guère|point]  bon dos
+    >avoir  [pas|jamais|plus|guère|point]  bon [dos|fond]
     >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
     >avoir  [pas|jamais|plus|guère|point]  forme [humaine|animale]
@@ -13515,7 +13519,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") and morph(>1, ":[QY]") ~2:0>> *
 
     /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
-    /VCint  bon dos
+    /VCint  bon [dos|fond]
     /VCint  bon pied ?,¿ bon œil
     /VCint  carte blanche
     /VCint  forme [humaine|animale]
@@ -13525,7 +13529,7 @@ __purge_après_avoir__
         <<- __also__ =>> define(\2, [":LV"])
 
     /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
-    /VCint  [pas|jamais|plus|guère|point]  bon dos
+    /VCint  [pas|jamais|plus|guère|point]  bon [dos|fond]
     /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
     /VCint  [pas|jamais|plus|guère|point]  forme [humaine|animale]
@@ -14057,6 +14061,7 @@ __purge_locutions_verbales__
     >prêter à confusion
     >prêter main forte
     >prêter main-forte
+    >réduire à néant
     >réduire en miettes
     >remettre en cause
     >rendre [compte|hommage|service|visite]
@@ -14102,6 +14107,7 @@ __conf_locutions_verbales__
     >percer a jour
     >prendre a la légère
     >prêter a >confusion
+    >réduire a néant
     >saigner a blanc
     >tenir a [carreau|cœur|distance]
     >tirer a blanc
@@ -15978,6 +15984,7 @@ TEST: les chapeaux {{rouges clairs}}                                        ->> 
 TEST: des chaussures {{jaunes sables}}                                      ->> jaune sable|||sablent
 TEST: des pantalons {{verts clairs}}                                        ->> vert clair
 TEST: des robes {{bleues indigo}}                                           ->> bleu indigo
+TEST: grains {{gris foncés}}                                                ->> gris foncé
 TEST: des voitures {{jaunes fluo}}                                          ->> jaune fluo
 TEST: Une jupe {{bleue foncée}}.                                            ->> bleu foncé
 TEST: boutons {{roses pâles}}                                               ->> rose pâle
@@ -17704,7 +17711,7 @@ __conf_fond_fonds_fonts__
     à [fond|fonts] [perdu|perdus|perdue|perdues]
         <<- /conf/ ->> à fonds perdus           # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
 
-    [fond|fonts] [>monétaire|spéculatif|spéculatifs|>internationale]
+    [fond|fonts] [>monétaire|spéculatif+s|>internationale|souverain+s]
     [fond|fonts] [de|d’] [commerce|garantie|roulement|pension|placement|retraite|roulement|solidarité]
     [fond|fonts] d’ [aide|investissement|indemnisation]
         <<- /conf/ -1>> fonds                   # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
@@ -18815,7 +18822,7 @@ __infi_qqch_de__
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
 
-    >faire  [semblant|mine]                     [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+    >faire  [exprès|semblant|mine]              [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “faire semblant de”, le verbe devrait être à l’infinitif.
 
     [>façon|>manière]                           [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
@@ -24583,6 +24590,7 @@ TEST: il y avait souvent foule
 TEST: Cette fille a plus d’un tour dans son sac.
 TEST: L’homme est également président de l’AFP
 TEST: ils nous ont agenouillés
+TEST: C’est pure folie.
 
 
 
