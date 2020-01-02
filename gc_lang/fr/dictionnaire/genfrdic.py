@@ -922,18 +922,8 @@ class Entree:
                 else:
                     #echo(sFlex + " " + sMorph + ", ")
                     pass
-        # Drapeaux dont le lemme féminin doit être remplacé par le masculin dans la gestion des formes fléchies
-        if self.st:
-            self.sStem = self.st
-        else:
-            if self.flags.startswith(("F.", "F*", "W.", "W*")):
-                # recherche de la forme masculine
-                for t in lTuples:
-                    sMorph = self.clean(t[1])
-                    if sMorph.endswith(('mas', 'mas sg', 'mas inv')):
-                        self.sStem = t[0]
-            else:
-                self.sStem = self.lemma
+        # Lemme
+        self.sStem = self.st  if self.st  else self.lemma
         # Tag duplicates
         d = {}
         for oFlex in self.lFlexions:
