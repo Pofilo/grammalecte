@@ -44,6 +44,14 @@ var oGrammarChecker = {
                 function (aVal) {
                     console.log(aVal);
                     prefs.setCharPref("sGCOptions", aVal);
+                    // spelling dictionary
+                    if (prefs.getCharPref("sMainDicName")) {
+                        let sMainDicName = prefs.getCharPref("sMainDicName");
+                        if (sMainDicName == "fr-classic.json" || sMainDicName == "fr-reform.json") {
+                            that.xGCEWorker.post("setDictionary", ["main", sMainDicName]);
+                        }
+                    }
+                    // personal dictionary
                     if (prefs.getBoolPref("bPersonalDictionary")) {
                         let sDicJSON = oFileHandler.loadFile("fr.personal.json");
                         if (sDicJSON) {

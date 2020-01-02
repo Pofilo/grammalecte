@@ -21,8 +21,7 @@ def startConsole ():
     except:
         try:
             xContext = uno.getComponentContext()
-            xSvMgr = xContext.getServiceManager()
-            xPathSettings = xSvMgr.createInstanceWithContext("com.sun.star.util.PathSettings", xContext)
+            xPathSettings = xContext.ServiceManager.createInstanceWithContext("com.sun.star.util.PathSettings", xContext)
             spPyInstallion = uno.fileUrlToSystemPath(xPathSettings.Module)
             subprocess.Popen(spPyInstallion + os.sep + "python")  # Start Python interactive Shell
         except:
