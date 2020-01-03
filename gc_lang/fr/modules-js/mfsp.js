@@ -17,7 +17,7 @@ if(typeof(process) !== 'undefined') {
 var mfsp = {
     // list of affix codes
     _lTagMiscPlur: [],
-    _lTagMasForm: [],
+    _lTagFemForm: [],
     // dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them
     _dMiscPlur: new Map(),
     // dictionary of feminine forms and tags to generate masculine forms (singular and plural)
@@ -28,7 +28,7 @@ var mfsp = {
         try {
             let _oData = JSON.parse(sJSONData);
             this._lTagMiscPlur = _oData.lTagMiscPlur;
-            this._lTagMasForm = _oData.lTagMasForm;
+            this._lTagFemForm = _oData.lTagFemForm;
             this._dMiscPlur = helpers.objectToMap(_oData.dMiscPlur);
             this._dMasForm = helpers.objectToMap(_oData.dMasForm);
             this.bInit = true;
@@ -38,19 +38,19 @@ var mfsp = {
         }
     },
 
-    isFemForm: function (sWord) {
+    isMasForm: function (sWord) {
         // returns True if sWord exists in this._dMasForm
         return this._dMasForm.has(sWord);
     },
 
-    getMasForm: function (sWord, bPlur) {
+    getFemForm: function (sWord, bPlur) {
         // returns masculine form with feminine form
         if (this._dMasForm.has(sWord)) {
-            let aMasForm = [];
-            for (let sTag of this._whatSuffixCode(sWord, bPlur)){
-                aMasForm.push( this._modifyStringWithSuffixCode(sWord, sTag) );
+            let aFemForm = [];
+            for (let sTag of this._whatSuffixCode(sWord, bPlur)) {
+                aFemForm.push( this._modifyStringWithSuffixCode(sWord, sTag) );
             }
-            return aMasForm;
+            return aFemForm;
         }
         return [];
     },
@@ -64,7 +64,7 @@ var mfsp = {
         // returns plural form with singular form
         if (this._dMiscPlur.has(sWord)) {
             let aMiscPlural = [];
-            for (let sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|")){
+            for (let sTag of this._lTagMiscPlur[this._dMiscPlur.get(sWord)].split("|")) {
                 aMiscPlural.push( this._modifyStringWithSuffixCode(sWord, sTag) );
             }
             return aMiscPlural;
@@ -74,14 +74,11 @@ var mfsp = {
 
     _whatSuffixCode: function (sWord, bPlur) {
         // necessary only for dMasFW
-        let sSfx = this._lTagMasForm[this._dMasForm.get(sWord)];
-        if (sSfx.includes("/")) {
-            if (bPlur) {
-                return sSfx.slice(sSfx.indexOf("/")+1).split("|");
-            }
-            return sSfx.slice(0, sSfx.indexOf("/")).split("|");
+        let sSfx = this._lTagFemForm[this._dMasForm.get(sWord)];
+        if (bPlur) {
+            return sSfx.slice(sSfx.indexOf("/")+1).split("|");
         }
-        return sSfx.split("|");
+        return sSfx.slice(0, sSfx.indexOf("/")).split("|");
     },
 
     _modifyStringWithSuffixCode: function (sWord, sSfx) {
@@ -126,7 +123,7 @@ if(!mfsp.bInit && typeof(process) !== 'undefined') {
 
 if (typeof(exports) !== 'undefined') {
     exports._lTagMiscPlur = mfsp._lTagMiscPlur;
-    exports._lTagMasForm = mfsp._lTagMasForm;
+    exports._lTagFemForm = mfsp._lTagFemForm;
     exports._dMiscPlur = mfsp._dMiscPlur;
     exports._dMasForm = mfsp._dMasForm;
     exports.init = mfsp.init;

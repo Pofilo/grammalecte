@@ -316,8 +316,8 @@ function suggMasSing (sFlex, bSuggSimil=false) {
                 aSugg.add(suggSing(sFlex));
             } else {
                 let sStem = cregex.getLemmaOfMorph(sMorph);
-                if (mfsp.isFemForm(sStem)) {
-                    mfsp.getMasForm(sStem, false).forEach(function(x) { aSugg.add(x); });
+                if (mfsp.isMasForm(sStem)) {
+                    aSugg.add(sStem);
                 }
             }
         } else {
@@ -351,8 +351,8 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
                 aSugg.add(suggPlur(sFlex));
             } else {
                 let sStem = cregex.getLemmaOfMorph(sMorph);
-                if (mfsp.isFemForm(sStem)) {
-                    mfsp.getMasForm(sStem, true).forEach(function(x) { aSugg.add(x); });
+                if (mfsp.isMasForm(sStem)) {
+                    aSugg.add(suggPlur(sStem));
                 }
             }
         } else {
@@ -391,8 +391,8 @@ function suggFemSing (sFlex, bSuggSimil=false) {
                 aSugg.add(suggSing(sFlex));
             } else {
                 let sStem = cregex.getLemmaOfMorph(sMorph);
-                if (mfsp.isFemForm(sStem)) {
-                    aSugg.add(sStem);
+                if (mfsp.isMasForm(sStem)) {
+                    mfsp.getFemForm(sStem, false).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
@@ -424,8 +424,8 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
                 aSugg.add(suggPlur(sFlex));
             } else {
                 let sStem = cregex.getLemmaOfMorph(sMorph);
-                if (mfsp.isFemForm(sStem)) {
-                    aSugg.add(sStem+"s");
+                if (mfsp.isMasForm(sStem)) {
+                    mfsp.getFemForm(sStem, true).forEach(function(x) { aSugg.add(x); });
                 }
             }
         } else {
@@ -449,7 +449,7 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
 
 function hasFemForm (sFlex) {
     for (let sStem of _oSpellChecker.getLemma(sFlex)) {
-        if (mfsp.isFemForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q3")) {
+        if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q3")) {
             return true;
         }
     }
@@ -461,7 +461,7 @@ function hasFemForm (sFlex) {
 
 function hasMasForm (sFlex) {
     for (let sStem of _oSpellChecker.getLemma(sFlex)) {
-        if (mfsp.isFemForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q1")) {
+        if (mfsp.isMasForm(sStem) || conj.hasConj(sStem, ":PQ", ":Q1")) {
             // what has a feminine form also has a masculine form
             return true;
         }
