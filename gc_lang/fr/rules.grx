@@ -6811,7 +6811,7 @@ __conf_à_a_locutions__
     a temps [plein|partiel|complet]
     a tête reposée
     a >tarif >réduit
-    a taux [>fixe|>variable]
+    a taux [>fixe|>variable|>zéro|>nulle|nul+s]
     a titre [conservatoire|indicatif|informatif|grâcieux|personnel|posthume]
     a titre d’ exemple
     a tombeau ouvert
@@ -6889,7 +6889,7 @@ TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumièr
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
         <<- /conf/ \2.islower()
-            and not value(\3, "|accès|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|peine|peur|raison|rapport|recours|soif|tendance|tort|vent|")
+            and not value(\3, "|accès|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|")
             and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -6904,6 +6904,7 @@ TEST: cette injonction a force de loi
 TEST: C’est là que la pudeur a bon dos
 TEST: Cette décision permettrait de rapprocher le congé paternité des huit semaines pendant lesquelles un employeur a interdiction de faire travailler une mère
 TEST: L’utilisateur a accès à l’ensemble des informations saisies.
+TEST: Tout le monde à terre !
 
 
 __conf_a_à_substantifs__
@@ -9158,7 +9159,7 @@ __conf_près_prêt_pré__
         <<- /conf/ -1>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     >prêt [de|d’] [toi|vous|lui|elle|eux|elles|iels|$:M]
-        <<- /conf/ not morph(<1, ":D") and not before("(?i)\\b(obten|obt[iî])")
+        <<- /conf/ not morph(<1, ":D") and not morph(<1, ">obtenir/")
         -1>> près                                                           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     si [>prêt|>pré] [du|de|d’|des]
@@ -9170,8 +9171,10 @@ __conf_près_prêt_pré__
     à la [virgule|nanoseconde|milliseconde|seconde|minute] [>prêt|>pré]
         <<- /conf/ -4>> près                                                # Confusion probable. Locution “à la \3 près”.
 
-    à quelques [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière|nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] [>prêt|>pré]
-        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à quelques \3 près”.
+    à [quelques|plusieurs|$:B] [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière|nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] [>prêt|>pré]
+    à un [degré|pourcent|nanomètre|millimètre|centimètre|décimètre|mètre|kilomètre|parsec|jour|mois|siècle|millénaire] [>prêt|>pré]
+    à une [exception|nuance|variation|année-lumière|nanoseconde|milliseconde|seconde|minute|heure|semaine|année|décennie] [>prêt|>pré]
+        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à \2 \3 près”.
 
     au >mètre [>prêt|>pré]
         <<- /conf/ -3>> près                                                # Confusion probable. Locution “au \2 près”.
@@ -11334,7 +11337,7 @@ __purge_locutions__
     à strictement parler
     à tarif réduit
     à tarifs réduits
-    à taux [>fixe|>variable]
+    à taux [>fixe|>variable|zéro|nul+s]
     à tel point
     à temps  [plein|partiel|complet]
     à tête reposée
@@ -11397,7 +11400,7 @@ __purge_locutions__
     au bout d’ un moment
     au cas par cas
     au commencement
-    au contraire
+    ?bien¿ au contraire
     au coude à coude
     au coup par coup
     au cours de l’ [heure|année] ?passée¿
@@ -11780,7 +11783,7 @@ __purge_locutions__
     du tout au tout
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
-    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité|ville]
+    en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité]
     en réalité ?virtuelle¿
     en aucun cas
     en aucune [circonstance|façon|manière]
@@ -12173,7 +12176,7 @@ __purge_locutions__
     sans états d’ âme
     sans [m’|t’|s’|nous|vous] en apercevoir
     sans [m’|t’|s’|nous|vous] en rendre compte
-    sans [m’|t’|s’|nous|vous] faire [avoir|comprendre|désirer|prier|remarquer]
+    sans [me|m’|te|t’|se|s’|nous|vous] faire [attendre|avoir|comprendre|désirer|entendre|prier|remarquer|repérer|surprendre|voir]
     sans faire [de|d’] vagues
     sans foi ?,¿ ni loi
     sans [le|l’] faire exprès
@@ -12814,7 +12817,6 @@ __simplication_substantifs__
     >arme à feu
     >armée [de|d’] l’ air
     >armée [de|d’] terre
-    >armer jusqu’ aux dents
     >arme [de|d’] [poing|guerre]
     >arme [de|d’] destruction massive
     >armoire à [>glace|>pharmacie]
@@ -13049,6 +13051,7 @@ __simplication_substantifs__
     orge [perlé|mondé|carré]
     >noir comme la nuit
     >noir comme une nuit sans lune
+    >nuit de noces
     >panier à linge
     >papier à [>lettre|musique]
     >parc d’ attractions
@@ -13727,6 +13730,9 @@ __purge_locutions_potentielles__
     chaque [an|jour|mois]  [<end>|,]
         <<- ~1:2>> *
 
+    d’ apparat
+        <<- morph(<1, ":N", ":V") ~>> *
+
     d’ [avance|évidence]  @¬:A.*:[fe]:[si]
     d’ [avance|évidence]  [<end>|,]
         <<- ~1:2>> *
@@ -13976,6 +13982,7 @@ __purge_vite__
 
 __purge_locutions_verbales__
     >aller bon train
+    >armer jusqu’ aux dents
     >arriver à [destination|échéance]
     >arriver à point nommé
     >arriver à bon port
@@ -18463,15 +18470,32 @@ TEST: il va rester en {{contacte}} avec eux
 TEST: Restons en contact.
 
 
+# rôder / roder
+__conf_roder_rôder__
+    >rôder $:D [>moteur|>voiture|>auto|>moto|>soupape]
+        <<- /conf/ -1>> =\1.replace("ô", "o").replace("Ô", "O")     # Confusion probable. “Rôder” signifie “errer”. Pour parler du rodage, écrivez “roder”.|https://fr.wiktionary.org/wiki/roder
+
+    >roder dans les parages
+    >roder aux alentours
+    >roder dans $:D [>ville|>cité|>village|>campagne|>champ|>montagne|>colline|>vallée|>forêt|bois|>prairie]
+    >roder en ville
+    >roder autour [de|d’]
+        <<- /conf/ -1>> =\1.replace("od", "ôd").replace("OD", "ÔD") # Confusion probable. “Roder” signifie “user, polir”. Pour parler de l’errance, écrivez “rôder”.|https://fr.wiktionary.org/wiki/rôder
+
+TEST: je {{rodais}} en ville sans but précis                    ->> rôdais
+TEST: elle {{rode}} autour de la maison depuis des semaines     ->> rôde
+TEST: va {{rôder}} ce moteur                                    ->> roder
+
+
 # sale / salle
-__conf_salle_qqch__
+__conf_salle_sale__
     >sale d’ [>accouchement|>arcade|>attente|>audience|>eau|>escalade|>échographie|>embarquement|>exposition|>hospitalisation|>observation|>opération|>urgence]
     >sale [de|des|du] [>bain|>bal|>banquet|>billard|>bloc|>cinéma|>classe|>colle|>commandement|>concert|>conférence|>conseil|>consultation|cours|>culture|>danse|>départ|>fête|>formation|>garde|>gym|>gymnastique|>infirmier|>lecture|>machine|>malade|>mammographie|>marché|>mariage|>musculation|>musique|>ordinateur|>presse|>prière|>prof|>professeur|>projection|>radio|>radiographie|>réanimation|>réception|>rédaction|>rééducation|>restaurant|>réunion|>réveil|>séjour|>shoot|>soin|>spectacle|>sport|>stockage|>théâtre|>tir|>toilette|>torture|>trading|>travail|>vente|fitness|>jeu|>repos|>urgence]
     >sale à manger
         <<- /conf/ -1>> =\1.replace("ale", "alle")                  # Confusion : “sale” signifie “malpropre”. Pour désigner une pièce, écrivez “salle”.
 
     >être  >salle
-        <<- /conf/ -2>> =\2.replace("salle", "sale")                # Confusion. Une salle est une pièce. Pour la malpropreté, écrivez “sale”.
+        <<- /conf/ -2>> =\2.replace("alle", "ale")                  # Confusion. Une salle est une pièce. Pour la malpropreté, écrivez “sale”.
 
 TEST: dans la {{sale}} des professeurs
 TEST: une {{sale}} d’arcade
