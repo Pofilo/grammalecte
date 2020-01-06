@@ -9,6 +9,7 @@ import json
 import os
 import itertools
 import traceback
+import platform
 
 import graphspell.ibdawg as ibdawg
 from graphspell.echo import echo
@@ -56,7 +57,10 @@ def loadDictionary ():
 
 def makeDictionaries (sp, sVersion):
     with cd(sp+"/dictionnaire"):
-        os.system("genfrdic.py -s -gl -v "+sVersion)
+        if platform.system() == "Windows":
+            os.system("genfrdic.py -s -gl -v "+sVersion)
+        else:
+            os.system("python3 ./genfrdic.py -s -gl -v "+sVersion)
 
 
 def makeConj (sp, bJS=False):
