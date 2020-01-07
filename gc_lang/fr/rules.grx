@@ -9636,10 +9636,10 @@ TEST: vaincre sans coup férir
 # sans crier garde
 __sans_crier_gare__
     !! sans crier gare ¡¡
-    sans [crier|crié+ses] [>garde|>gare]
+    sans [crier|crié+ses] [>garde|gare+s]
         <<- /conf/ ->> sans crier gare      # Confusion. Locution “sans crier gare”.|https://fr.wiktionary.org/wiki/sans_crier_gare
 
-TEST: il apparut {{sans crier gare}}.
+TEST: il apparut {{sans crier garde}}.
 TEST: Elle vint sans crier gare.
 
 
@@ -23465,7 +23465,7 @@ TEST: en tant que personne qualifiée
 
 __conj_rien__
     rien  @:V¬:(?:3s|P|Y|G)
-        <<- /conj/ morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
+        <<- /conj/ tag(\2, "neg") and morph(<1, ":Cs|<start>|>,", ":(?:Y|P|Q|[123][sp]|R)")
             and not(morph(\2, ":Y") and value(<1, "|ne|"))
         --1>> =suggVerb(\-1, ":3s")                                     # Conjugaison erronée. Accord avec “\1”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -23481,6 +23481,7 @@ TEST: rien qui {{soient}} aussi difficile
 TEST: il ne faut rien faire ou rien dire contre les manifestants
 TEST: qui n’ont rien appris et rien oublié
 TEST: comme si son pays n’avait rien appris du fascisme ni rien reçu de l’Europe
+TEST: dans un système qui ne leur a pratiquement rien donné, rien transmis
 
 
 __conj_nul_nulle__
