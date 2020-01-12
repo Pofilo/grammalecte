@@ -207,8 +207,8 @@ const _dChar = new Map([
     ['!', "point d’exclamation"],
     ['(', "parenthèse ouvrante"],
     [')', "parenthèse fermante"],
-    ['[', "crochet ouvrante"],
-    [']', "crochet fermante"],
+    ['[', "crochet ouvrant"],
+    [']', "crochet fermant"],
     ['{', "accolade ouvrante"],
     ['}', "accolade fermante"],
     ['-', "tiret"],
@@ -274,6 +274,41 @@ class Lexicographe {
                         sType: oToken.sType,
                         sValue: oToken.sValue.slice(0, 40) + "…",
                         aLabel: ["hyperlien"]
+                    };
+                    break;
+                case 'TAG':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["étiquette (hashtag)"]
+                    };
+                    break;
+                case 'HTML':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue.slice(0, 40) + "…",
+                        aLabel: ["balise HTML"]
+                    };
+                    break;
+                case 'PSEUDOHTML':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["balise pseudo-HTML"]
+                    };
+                    break;
+                case 'HTMLENTITY':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["entité caractère XML/HTML"]
+                    };
+                    break;
+                case 'HOUR':
+                    return {
+                        sType: oToken.sType,
+                        sValue: oToken.sValue,
+                        aLabel: ["heure"]
                     };
                     break;
                 case 'WORD_ELIDED':
@@ -375,7 +410,7 @@ class Lexicographe {
                     break;
                 default:
                     return {
-                        sType: "NO_TYPE",
+                        sType: oToken.sType,
                         sValue: oToken.sValue,
                         aLabel: ["token inconnu"]
                     }
