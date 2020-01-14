@@ -4944,6 +4944,7 @@ __pleo_pléonasmes_divers__
         <<- /pleo/ ->> \1                                                                   # Pléonasme.
 
     au jour d’ aujourd’hui
+    à l’ heure d’ aujourd’hui
         <<- /pleo/ ->> aujourd’hui                                                          # Pléonasme.
 
     >avancer en avant
@@ -4951,9 +4952,6 @@ __pleo_pléonasmes_divers__
 
     >avérer >vrai
         <<- /pleo/ -2>> =\2.replace("vrai", "exact")                                        # Pléonasme.
-
-    [avéré|avérée|avérés|avérées] >vrai
-        <<- /pleo/ ->> \1                                                                   # Pléonasme.
 
     avenir devant [moi|toi|soi|lui|elle|nous|vous|eux|elles]
         <<- /pleo/ morph(<1, ":A|>un") ->> avenir                                           # Pléonasme.
@@ -8299,6 +8297,12 @@ __conf_préverbes_guère_guerre!5__
         <<- /conf/ morph(<1, ":(?:[123][sp]|Y)", "*") and not value(>1, "|civile|commerciale|froide|mondiale|nucléaire|préventive|psychologique|sainte|totale|")
         ->> guère                                            # Confusion probable. La guerre est conflit. Pour l’adverbe signifiant “peu”, écrivez “guère”.
 
+    sur le pied de guère
+        <<- /conf/ --1>> guerre                                 # Confusion. Locution “sur le pied de guerre”.|https://fr.wiktionary.org/wiki/sur_le_pied_de_guerre
+
+    guère [<end>|,]
+        <<- /conf/ morph(<1, ":D.*:f:s") -1>> guerre            # Confusion probable : “guère” signifie “peu”. Si vous évoquez un conflit, écrivez “guerre”.|https://fr.wiktionary.org/wiki/guerre
+
 TEST: tout ceci ne me rapporte {{guerre}}
 TEST: je ne m’en soucie {{guerre}}
 TEST: Il n’y prête {{guerre}} d’attention.
@@ -8313,6 +8317,9 @@ TEST: Il n’y en a {{guerre}}.
 TEST: Je n’aime plus {{guerre}} le sport.
 TEST: Il n’y en a plus {{guerre}}.
 TEST: y peut {{guerre}} réussir quoi que ce soit, cet idiot.
+TEST: elles sont sur le pied de {{guère}} depuis 10 jours.
+TEST: Je hais la {{guère}}.
+TEST: je n’en aimais certains guère.
 TEST: ce que nous appelons Guerre psychologique
 
 
@@ -12259,6 +12266,7 @@ __purge_locutions__
     sur la forme comme sur le fond
     sur la même longueur d’ onde
     sur le [long|moyen|court] terme
+    sur le pied de guerre
     sur le qui-vive
     sur-le-champ
     surtout
@@ -12271,6 +12279,7 @@ __purge_locutions__
     tard
     tertio
     toujours
+    tour à tour
     tous comptes faits
     tous frais payés
     tout [bonnement|simplement]
@@ -14088,6 +14097,7 @@ __purge_locutions_verbales__
     >porter plainte
     >prendre ?[ça|cela|ceci]¿ à la légère
     >prendre ?[ça|cela|ceci]¿ au [dépourvu|sérieux]
+    >prendre ?[ça|cela|ceci]¿ au pied de la lettre
     >prendre bonne note
     >prendre [congé|conscience|contact|ombrage|note|peur|position|possession|racine|soin|vie]
     >prendre de [court|vitesse]
@@ -18827,7 +18837,7 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>arrêter|>cesser|>choisir|>commander|>continuer|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>permettre|>prévoir|>refuser|>suggérer|>tenter]
+    [>arrêter|>cesser|>choisir|>commander|>continuer|>craindre|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>oublier|>permettre|>prévoir|>refuser|>suggérer|>tenter]
         || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
         <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]"))
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
@@ -18881,10 +18891,10 @@ __infi_qqch_de__
     >avoir hâte                                 [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir hâte de”, le verbe devrait être à l’infinitif.
 
-    >avoir [besoin|raison]                      [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
+    >avoir [besoin|peur|raison]                 [de|d’]  ?[le|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
-    >avoir [besoin|raison]                      [de|d’]  [l’|la]                   ~..ée?s?$
+    >avoir [besoin|peur|raison]                 [de|d’]  [l’|la]                   ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":[MN]") --1>> =suggVerbInfi(\-1)                             # Après “avoir \2 de”, le verbe devrait être à l’infinitif.
 
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
