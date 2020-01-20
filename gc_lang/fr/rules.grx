@@ -5041,6 +5041,9 @@ __pleo_pléonasmes_divers__
     >orage >électrique
         <<- /pleo/ ->> \1                                                                   # Pléonasme.
 
+    >oubli >involontaire
+        <<- /pleo/ ->> \1                                                                   # Pléonasme.
+
     >pair de >jumeau
         <<- /pleo/ ->> =suggPlur(\3, "", True)                                              # Pléonasme.
 
@@ -5062,17 +5065,21 @@ __pleo_pléonasmes_divers__
     >futur >projet
         <<- /pleo/ ->> \2                                                                   # Pléonasme.
 
+    >prévenir d’ avance
+    >prévenir à l’ avance
+        <<- /pleo/ ->> \1                                                                   # Pléonasme.
+
     >prototype >expérimental
         <<- /pleo/ ->> \1                                                                   # Pléonasme.
+
+    puis [après|ensuite|alors]
+        <<- /pleo/ ->> puis|après|ensuite|alors                                             # Pléonasme.
 
     >rédiger par écrit
         <<- /pleo/ ->> \1                                                                   # Pléonasme.
 
     [>rénover|>rénovation] à neuf
         <<- /pleo/ ->> \1                                                                   # Pléonasme.
-
-    puis [après|ensuite|alors]
-        <<- /pleo/ ->> puis|après|ensuite|alors                                             # Pléonasme.
 
     >réunir ensemble
         <<- /pleo/  ->> \1                                                                  # Pléonasme.
@@ -5157,10 +5164,12 @@ TEST: {{apanages exclusifs}}                        ->> apanages
 TEST: {{monopole exclusif}}                         ->> monopole
 TEST: {{étapes intermédiaires}}                     ->> étapes
 TEST: {{ajouter en plus}}                           ->> ajouter
+TEST: c’est un {{oubli involontaire}} de sa part    ->> oubli
 TEST: la {{panacée universelle}}                    ->> panacée|remède universel
 TEST: ce sont leurs {{premiers balbutiements}}      ->> balbutiements
 TEST: la {{première priorité}}, c’est…              ->> priorité
 TEST: Un {{futur projet}}                           ->> projet
+TEST: il faut {{prévenir d’avance}} ces gens-là     ->> prévenir
 TEST: ce sont des {{projets futurs}}                ->> projets
 TEST: {{prototypes expérimentaux}}                  ->> prototypes
 TEST: Nous avons {{rénové à neuf}} l’ensemble       ->> rénové
@@ -7326,6 +7335,15 @@ __conf_cap_cape__
         <<- /conf/ ->> de pied en cap                   # Confusion : la cape est un vêtement.|https://fr.wiktionary.org/wiki/de_pied_en_cap
 
 TEST: rhabillée {{de pied en cape}}.
+
+
+# capital / capitale
+__conf_capital_capitale__
+    >augmentation de capitale
+        <<- /conf/ --1>> capital    # Confusion. Une capitale est une ville où se situe le gouvernement d’une nation. Le capital est une richesse, une ressource, un bien, etc.|https://fr.wiktionary.org/wiki/capital
+
+TEST: on va faire une augmentation de {{capitale}}                      ->> capital
+TEST: ce qui est capital dans notre société, c’est l’argent.
 
 
 # ce / se / ceux
@@ -11810,7 +11828,7 @@ __purge_locutions__
     eh bien
     en \d\d+ [ans|années|mois|semaines|jours|heures|minutes|secondes]
     en [aparté|apparence|arrière|avance|avant|cachette|ceci|cela|clair|commun|conséquence|continu|contrebas|contrepartie|dedans|définitive|détail|direct|douce|effet|émoi|filigrane|général|goguette|hâte|majorité|outre|pâmoison|parallèle|partie|particulier|permanence|personne|pratique|prime|privé|principe|priorité|public|retour|revanche|rien|rogne|route|secret|silence|somme|suspens|théorie|trompe-l’œil|vain|vérité]
-    en réalité ?virtuelle¿
+    en réalité ?[augmentée|virtuelle]¿
     en aucun cas
     en aucune [circonstance|façon|manière]
     en ?[assez|très]¿ bas âge
@@ -11821,7 +11839,7 @@ __purge_locutions__
     en bonne santé ?[physique|mentale|psychique]¿
     en bout de course
     en cas [de|d’] [besoin|doute|urgence]
-    en cas [de|d’] nécessité ?absolue¿
+    en cas [de|d’] nécessité ?[absolue|impérieuse]¿
     en [chacun|chacune] [de|d’] [nous|vous|eux|elles]
     en chair et en os
     en chute libre
@@ -12951,9 +12969,11 @@ __simplication_substantifs__
     >digne [de|d’] [confiance|foi]
     >digne [de|d’] ce nom
     >don en nature
+    >dossier [de|d’] presse
     >droit comme un i
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau [de|d’] noix [de|d’] coco
+    >économie de >bout de >chandelle
     >élément à charge
     >emploi du temps
     >enterrement [de|d’] vie [de|d’] garçon
@@ -13055,6 +13075,7 @@ __simplication_substantifs__
     >marchand [de|d’] fruits et légumes
     >marché aux puces
     >maréchal des [logis|logis-chef]
+    >marin d’ eau douce
     >marge [de|d’] >manœuvre
     >marque [de|d’] fabrique
     >masque à [gaz|oxygène]
@@ -13210,6 +13231,9 @@ __simplication_substantifs__
     >zone [de|d’] transit ?principal¿
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
+
+    >mort de trouille
+        <<- ~2:0>> *
 
     [>homme|>femme|>cinéaste|>politicien|>acteur|>auteur|>sculpteur|>compositeur|>musicien|>groupe|>romancier|>peintre|>photographe|>sportif|>philosophe|>intellectuel|>polémiste] à succès
     [>homme|>femme] d’ >affaire à succès
@@ -14123,6 +14147,8 @@ __purge_locutions_verbales__
     >tenir en haute estime
     >tirer à blanc
     >tomber à [pic|point]
+    >trainer en longueur
+    >traîner en longueur
     >trier sur le volet
     >trouver refuge
     >tirer à blanc
@@ -21498,6 +21524,7 @@ TEST: Nous ne t’avons pas {{écoutés}}.
 TEST: Nous ne t’avons pas {{écoutées}}.
 TEST: comme ces informations m’avaient {{manquées}}
 TEST: les notes que tu m’as données sont mal écrites.
+TEST: Garde précieusement les secrets que je t’ai confiés.
 
 
 __ppas_qui_avoir__
