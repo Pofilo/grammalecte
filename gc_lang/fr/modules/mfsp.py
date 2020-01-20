@@ -3,24 +3,27 @@ Masculins, féminins, singuliers et pluriels
 """
 
 from .mfsp_data import lTagMiscPlur as _lTagMiscPlur
-from .mfsp_data import lTagMasForm as _lTagMasForm
+from .mfsp_data import lTagFemForm as _lTagFemForm
 from .mfsp_data import dMiscPlur as _dMiscPlur
 from .mfsp_data import dMasForm as _dMasForm
 
 
-def isFemForm (sWord):
+def isMasForm (sWord):
     "returns True if sWord exists in _dMasForm"
     return sWord in _dMasForm
 
-def getMasForm (sWord, bPlur):
-    "returns masculine form with feminine form"
+
+def getFemForm (sWord, bPlur):
+    "returns feminine forms with masculine form"
     if sWord in _dMasForm:
         return [ _modifyStringWithSuffixCode(sWord, sTag)  for sTag in _whatSuffixCodes(sWord, bPlur) ]
     return []
 
+
 def hasMiscPlural (sWord):
     "returns True if sWord exists in dPlurMisc"
     return sWord in _dMiscPlur
+
 
 def getMiscPlural (sWord):
     "returns plural form with singular form"
@@ -28,14 +31,14 @@ def getMiscPlural (sWord):
         return [ _modifyStringWithSuffixCode(sWord, sTag)  for sTag in _lTagMiscPlur[_dMiscPlur[sWord]].split("|") ]
     return []
 
+
 def _whatSuffixCodes (sWord, bPlur):
     "necessary only for dMasFrom"
-    sSfx = _lTagMasForm[_dMasForm[sWord]]
-    if "/" in sSfx:
-        if bPlur:
-            return sSfx[sSfx.find("/")+1:].split("|")
-        return sSfx[:sSfx.find("/")].split("|")
-    return sSfx.split("|")
+    sSfx = _lTagFemForm[_dMasForm[sWord]]
+    if bPlur:
+        return sSfx[sSfx.find("/")+1:].split("|")
+    return sSfx[:sSfx.find("/")].split("|")
+
 
 def _modifyStringWithSuffixCode (sWord, sSfx):
     "returns sWord modified by sSfx"

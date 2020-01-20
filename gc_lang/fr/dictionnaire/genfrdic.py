@@ -820,8 +820,6 @@ class Entree:
             sErr += '[is] incomplet'
         if re.match(r"[FW]", self.flags) and re.search(r"epi|mas|fem|inv|sg|pl", self.iz):
             sErr += '[is] incohérent'
-        if re.match(r"[FW]", self.flags) and re.search(r"[^eë]$", self.lemma):
-            sErr += "fin de lemme inapproprié"
         if re.match(r".\*", self.flags) and re.match(r"[bcdfgjklmnpqrstvwxz]", self.lemma):
             sErr += 'drapeau pour lemme commençant par une voyelle'
         if re.search(r"pl|sg|inv", self.iz) and re.match(r"[SXAIFW](?!=)", self.flags):

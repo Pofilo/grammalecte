@@ -239,8 +239,8 @@ def suggMasSing (sFlex, bSuggSimil=False):
                 aSugg.add(suggSing(sFlex))
             else:
                 sStem = cr.getLemmaOfMorph(sMorph)
-                if mfsp.isFemForm(sStem):
-                    aSugg.update(mfsp.getMasForm(sStem, False))
+                if mfsp.isMasForm(sStem):
+                    aSugg.add(sStem)
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
@@ -266,8 +266,8 @@ def suggMasPlur (sFlex, bSuggSimil=False):
                 aSugg.add(suggPlur(sFlex))
             else:
                 sStem = cr.getLemmaOfMorph(sMorph)
-                if mfsp.isFemForm(sStem):
-                    aSugg.update(mfsp.getMasForm(sStem, True))
+                if mfsp.isMasForm(sStem):
+                    aSugg.add(suggPlur(sStem))
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
@@ -296,8 +296,8 @@ def suggFemSing (sFlex, bSuggSimil=False):
                 aSugg.add(suggSing(sFlex))
             else:
                 sStem = cr.getLemmaOfMorph(sMorph)
-                if mfsp.isFemForm(sStem):
-                    aSugg.add(sStem)
+                if mfsp.isMasForm(sStem):
+                    aSugg.update(mfsp.getFemForm(sStem, False))
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
@@ -321,8 +321,8 @@ def suggFemPlur (sFlex, bSuggSimil=False):
                 aSugg.add(suggPlur(sFlex))
             else:
                 sStem = cr.getLemmaOfMorph(sMorph)
-                if mfsp.isFemForm(sStem):
-                    aSugg.add(sStem+"s")
+                if mfsp.isMasForm(sStem):
+                    aSugg.update(mfsp.getFemForm(sStem, True))
         else:
             # a verb
             sVerb = cr.getLemmaOfMorph(sMorph)
@@ -339,7 +339,7 @@ def suggFemPlur (sFlex, bSuggSimil=False):
 def hasFemForm (sFlex):
     "return True if there is a feminine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):
-        if mfsp.isFemForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q3"):
+        if mfsp.isMasForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q3"):
             return True
     if phonet.hasSimil(sFlex, ":f"):
         return True
@@ -349,7 +349,7 @@ def hasFemForm (sFlex):
 def hasMasForm (sFlex):
     "return True if there is a masculine form of <sFlex>"
     for sStem in _oSpellChecker.getLemma(sFlex):
-        if mfsp.isFemForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q1"):
+        if mfsp.isMasForm(sStem) or conj.hasConj(sStem, ":PQ", ":Q1"):
             # what has a feminine form also has a masculine form
             return True
     if phonet.hasSimil(sFlex, ":m"):

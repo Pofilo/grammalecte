@@ -9,6 +9,7 @@ import json
 import os
 import itertools
 import traceback
+import platform
 
 import graphspell.ibdawg as ibdawg
 from graphspell.echo import echo
@@ -56,7 +57,10 @@ def loadDictionary ():
 
 def makeDictionaries (sp, sVersion):
     with cd(sp+"/dictionnaire"):
-        os.system("genfrdic.py -s -gl -v "+sVersion)
+        if platform.system() == "Windows":
+            os.system("genfrdic.py -s -gl -v "+sVersion)
+        else:
+            os.system("python3 ./genfrdic.py -s -gl -v "+sVersion)
 
 
 def makeConj (sp, bJS=False):
@@ -191,66 +195,65 @@ def makeConj (sp, bJS=False):
 def makeMfsp (sp, bJS=False):
     print("> Pluriel/singulier/masculin/féminin ", end="")
     print("(Python et JavaScript)"  if bJS  else "(Python seulement)")
-    aPlurS = set()
+    aPlurS = set()      # pluriels en -s
     dTag = {}
-    lTagMasForm = []
-    lTagMiscPlur = []
+    lTagFemForm = []
+    lTagMiscPlur = []   # pluriels spéciaux
     dMiscPlur = {}
     dMasForm = {}
     lTag = []
-    lTagMasPl = []
+    lTagFemPl = []
     for n, sLine in enumerate(readFile(sp+"/data/dictDecl.txt")):
         nTab = sLine.count("\t")
         if nTab == 1:
             # new entry
             lTag.clear()
-            lTagMasPl.clear()
+            lTagFemPl.clear()
             sLemma, sFlags = sLine.split("\t")
             if sFlags.startswith("S"):
-                cType = "s"
+                cType = "sg"
             elif sFlags.startswith("X"):
-                cType = "p"
+                cType = "pl"
             elif sFlags.startswith("A"):
-                cType = "p"
+                cType = "pl"
             elif sFlags.startswith("I"):
-                cType = "p"
+                cType = "pl"
             elif sFlags.startswith("F"):
-                cType = "m"
+                cType = "mf"
             elif sFlags.startswith("W"):
-                cType = "m"
+                cType = "mf"
             else:
                 cType = "?"
                 print(" > inconnu : " + sFlags)
         elif nTab == 2:
-            if cType == "s":
+            if cType == "sg":
+                # nothing to do
                 continue
             _, sFlexTags, sFlex = sLine.split("\t")
-            if cType == "p":
+            if cType == "pl":
                 if sFlexTags.endswith("pl"):
                     lTag.append(defineSuffixCode(sLemma, sFlex))
-            elif cType == "m":
-                if sFlexTags.endswith("mas sg") or sFlexTags.endswith("mas inv"):
+            elif cType == "mf":
+                if sFlexTags.endswith("fem sg"):
                     lTag.append(defineSuffixCode(sLemma, sFlex))
-                if sFlexTags.endswith("mas pl"):
-                    lTagMasPl.append(defineSuffixCode(sLemma, sFlex))
+                if sFlexTags.endswith("fem pl"):
+                    lTagFemPl.append(defineSuffixCode(sLemma, sFlex))
             else:
                 print("erreur: " + cType)
         elif sLine == "$":
-            if cType == "s":
+            if cType == "sg":
                 aPlurS.add(sLemma)
-            elif cType == "p":
+            elif cType == "pl":
                 sTag = "|".join(lTag)
                 if sTag not in dTag:
                     dTag[sTag] = len(lTagMiscPlur)
                     lTagMiscPlur.append(sTag)
                 dMiscPlur[sLemma] = dTag[sTag]
-            elif cType == "m":
-                sTag = "|".join(lTag)
-                if lTagMasPl:
-                    sTag += "/" + "|".join(lTagMasPl)
+            elif cType == "mf":
+                sTag = "|".join(lTag) + "/" + "|".join(lTagFemPl)
                 if sTag not in dTag:
-                    dTag[sTag] = len(lTagMasForm)
-                    lTagMasForm.append(sTag)
+                    dTag[sTag] = len(lTagFemForm)
+                    lTagFemForm.append(sTag)
                 dMasForm[sLemma] = dTag[sTag]
             else:
                 print("unknown tag: " + ctype)
@@ -261,7 +264,7 @@ def makeMfsp (sp, bJS=False):
     sCode = "# generated data (do not edit)\n\n" + \
             "# list of affix codes\n" + \
             "lTagMiscPlur = " + str(lTagMiscPlur) + "\n" + \
-            "lTagMasForm = " + str(lTagMasForm) + "\n\n" + \
+            "lTagFemForm = " + str(lTagFemForm) + "\n\n" + \
             "# dictionary of words with uncommon plurals (-x, -ux, english, latin and italian plurals) and tags to generate them\n" + \
             "dMiscPlur = " + str(dMiscPlur) + "\n\n" + \
             "# dictionary of feminine forms and tags to generate masculine forms (singular and plural)\n" + \
@@ -272,7 +275,7 @@ def makeMfsp (sp, bJS=False):
         ## write file for JavaScript
         sCode = '{\n' + \
                 '    "lTagMiscPlur": ' +  json.dumps(lTagMiscPlur, ensure_ascii=False) + ",\n" + \
-                '    "lTagMasForm": ' +  json.dumps(lTagMasForm, ensure_ascii=False) + ",\n" + \
+                '    "lTagFemForm": ' +  json.dumps(lTagFemForm, ensure_ascii=False) + ",\n" + \
                 '    "dMiscPlur": ' +  json.dumps(dMiscPlur, ensure_ascii=False) + ",\n" + \
                 '    "dMasForm": ' +  json.dumps(dMasForm, ensure_ascii=False) + "\n}"
         open(sp+"/modules-js/mfsp_data.json", "w", encoding="utf-8", newline="\n").write(sCode)
