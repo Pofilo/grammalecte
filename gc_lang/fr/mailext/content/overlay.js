@@ -834,7 +834,6 @@ var oTextFormatter = {
                 this.switchGroup("o_group_misc");
             }
             document.getElementById('textformatter-progressbar').value = document.getElementById('textformatter-progressbar').max;
-            document.getElementById('textformatter-progressbar').value = "Formatage terminé.";
             // end of processing
 
             //window.setCursor("auto"); // restore pointer
