@@ -18,19 +18,17 @@ var oDialogControl = {
             let sMainDicName = prefs.getCharPref('sMainDicName');
             console.log("spelling dictionary:", sMainDicName);
             if (sMainDicName == "fr-classic.json") {
-                console.log("classic");
                 document.getElementById("classic").checked = true;
             }
             else if (sMainDicName == "fr-reform.json") {
-                console.log("reform");
                 document.getElementById("reform").checked = true;
             }
             else if (sMainDicName == "fr-allvars.json") {
-                console.log("allvars");
                 document.getElementById("allvars").checked = true;
             }
             // personal dictionary
             document.getElementById('personal_dic').checked = prefs.getBoolPref('bPersonalDictionary');
+            // listen
             this.listen();
         }
         catch (e) {
@@ -41,21 +39,32 @@ var oDialogControl = {
         document.addEventListener("dialogaccept", (event) => {
             oDialogControl.setDictionaries();
         });
+        document.getElementById("classic").addEventListener("click", (event) => {
+            oDialogControl.changeMainDicUI("classic");
+        });
+        document.getElementById("reform").addEventListener("click", (event) => {
+            oDialogControl.changeMainDicUI("reform");
+        });
+        document.getElementById("allvars").addEventListener("click", (event) => {
+            oDialogControl.changeMainDicUI("allvars");
+        });
+    },
+    changeMainDicUI (sDic) {
+        document.getElementById("classic").checked = ("classic" === sDic);
+        document.getElementById("reform").checked = ("reform" === sDic);
+        document.getElementById("allvars").checked = ("allvars" === sDic);
     },
     setDictionaries: function () {
         //oSpellControl.init();
         // main spelling dictionary
-        let sMainDicName;
+        let sMainDicName = "";
         if (document.getElementById("classic").checked) {
-            console.log("classic");
             sMainDicName = "fr-classic.json";
         }
         else if (document.getElementById("reform").checked) {
-            console.log("reform");
             sMainDicName = "fr-reform.json";
         }
         else if (document.getElementById("allvars").checked) {
-            console.log("allvars");
             sMainDicName = "fr-allvars.json";
         }
         console.log("selected spelling dictionary:", sMainDicName);
