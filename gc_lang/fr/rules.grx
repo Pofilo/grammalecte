@@ -8508,7 +8508,7 @@ TEST: de la non moins indispensable défense des libertés, individuelles ou col
 
     /-là
         <<- /conf/ morph(\1, ":V", ":[NA]", 0, -3) >>>
-        <<- /conf/ morph(\1, ":V..t") -1>> =\1[:-3]+"-la|" + \1[:-3]+" là"                          # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
+        <<- /conf/ morph(\1, ":V...t") -1>> =\1[:-3]+"-la|" + \1[:-3]+" là"                         # Confusion. Pour un COD, utilisez “la”. Ou, si ce “là” signifie “ici”, ne mettez pas de trait d’union.
         <<- /conf/ __else__ -1>> =\1[:-3]+" là"                                                     # Confusion. Si ce “là” signifie “ici”, ne mettez pas de trait d’union.
 
     [ne|me|te|se] là
@@ -8518,6 +8518,7 @@ TEST: {{jusque-la}}, tout va bien
 TEST: {{ceux la}} sont des idiots, rien à en tirer.
 TEST: {{celle la}} ne vaut pas mieux, laisse-la tomber.
 TEST: {{Apporte-là}} près du feu
+TEST: {{arrive-là}}
 TEST: cette {{bête-la}}
 TEST: il ne {{là}} croit pas.
 
@@ -21352,10 +21353,26 @@ __ppas_me_te_verbe_pensée__
         -3>> =suggSing(\3)                                                          # Accord avec le pronom “\1” : « \3 » doit être au singulier.
 
 __ppas_se_verbe_pensée__
+    il [se|s’] [>trouver|>considérer|>croire|>imaginer|>rendre]  *WORD
+        <<- /ppas/ morph(\3, ":3s") and morph(\4, ":[AQ].*:[fp]", ":(?:G|Y|V0|P|[AQ].*:m:[si])")
+        -4>> =suggMasSing(\4)                                                       # Accord avec “il” : « \4 » doit être au masculin singulier.
+
+    elle [se|s’] [>trouver|>considérer|>croire|>imaginer|>rendre]  *WORD
+        <<- /ppas/ morph(\3, ":3s") and morph(\4, ":[AQ].*:[mp]", ":(?:G|Y|V0|P|[AQ].*:f:[si])") and not morph(<1, ":R")
+        -4>> =suggFemSing(\4)                                                       # Accord avec “elle” : « \4 » doit être au féminin singulier.
+
+    ils [se|s’] [>trouver|>considérer|>croire|>imaginer|>rendre]  *WORD
+        <<- /ppas/ morph(\3, ":3p") and morph(\4, ":[AQ].*:[fs]", ":(?:G|Y|V0|P|[AQ].*:m:[pi])")
+        -4>> =suggMasPlur(\4)                                                       # Accord avec “ils” : « \4 » doit être au masculin pluriel.
+
+    elles [se|s’] [>trouver|>considérer|>croire|>imaginer|>rendre]  *WORD
+        <<- /ppas/ morph(\3, ":3p") and morph(\4, ":[AQ].*:[ms]", ":(?:G|Y|V0|P|[AQ].*:f:[pi])") and not morph(<1, ":R")
+        -4>> =suggFemPlur(\4)                                                       # Accord avec “elles” : « \4 » doit être au féminin pluriel.
+
     [se|s’] [>trouver|>considérer|>croire|>imaginer|>rendre]  *WORD
-        <<- /ppas/ morph(\2, ":3s") and morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|P|[AQ].*:[is])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        <<- /ppas/ morph(\2, ":3s") and morph(\3, ":[AQ].*:p", ":(?:G|Y|V0|P|[AQ].*:[si])")
         -3>> =suggSing(\3)                                                          # Accord avec le pronom “se” (le verbe étant au singulier) : « \3 » doit être au singulier.
-        <<- /ppas/ __else__ and morph(\2, ":3p") and morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[ip])") and not (morph(\2, ":Y") and morph(\3, ":3s"))
+        <<- /ppas/ __else__ and morph(\2, ":3p") and morph(\3, ":[AQ].*:s", ":(?:G|Y|V0|[AQ].*:[pi])")
         -3>> =suggPlur(\3)                                                          # Accord avec le pronom “se” (le verbe étant au pluriel) : « \3 » doit être au pluriel.
 
 __ppas_nous_verbe_pensée__
@@ -21365,13 +21382,13 @@ __ppas_nous_verbe_pensée__
         -3>> =suggPlur(\3)                                                          # Accord avec le pronom “nous” : « \3 » doit être au pluriel.
 
 TEST: ces hommes le rendent {{dingues}}
-TEST: Il me considère {{stupides}}
-TEST: Elle nous trouve {{stupide}}
+TEST: Ce con me considère {{stupides}}
+TEST: la commandante nous trouve {{stupide}}
 TEST: Je les crois {{capable}} du pire
 TEST: la voilà {{perdu}}
 TEST: la voilà {{forcé}} à abandonner
 TEST: nous nous crûmes {{perdu}}
-TEST: Elle me rend {{folles}}.
+TEST: Cette femme me rend {{folles}}.
 TEST: l’homme se considère {{instruits}} alors qu’il n’est qu’un aveugle qui tâtonne.
 TEST: Me voilà bien {{avancés}} !
 TEST: avec eux, te voilà {{embarqués}} dans une drôle d’histoire…
@@ -21379,7 +21396,11 @@ TEST: un accident et nous voilà mal {{barré}}…
 TEST: Le voilà {{perdue}} dans son délire.
 TEST: un peu de maquillage et la voilà {{jolis}} comme un cœur.
 TEST: les voilà pauvrement {{équipé}} pour un tel périple.
-TEST: ils se considèrent {{béni}}
+TEST: il se trouve {{laide}}
+TEST: elle s’imagine {{perdu}}
+TEST: ils se rendent {{meilleures}}
+TEST: elles se croient {{meilleurs}}
+TEST: ces gens se considèrent {{béni}}
 TEST: une chance pour elle alors qu’il n’a pas choisi
 TEST: elle se révèle d’ailleurs être une alliée de taille
 TEST: mais les considérer uniquement ainsi fait perdre la signification politique de leur geste.
