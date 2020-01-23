@@ -6432,12 +6432,13 @@ __conf_à_a_infinitif__
     a  [ne|n’|me|m’|te|t’|se|s’|en|y|lui|nous|vous]  $:Y
     a  [n’|m’|t’|s’|l’|les|lui|nous|vous|leur] [en|y] $:Y
     a  [le|la|l’|les|leur]  $:Y¬:N
-        <<- /conf/ not value(<1, "|il|elle|on|n’|m’|t’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
+        <<- /conf/ not value(<1, "|il|elle|iel|on|n’|m’|t’|l’|") and not before("(?i)\\bqu[e’] |n’(?:en|y) +$")
         -1>> à                                                      # Confusion probable : “a” est la conjugaison du verbe “avoir”. Utilisez la préposition “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
 TEST: scrupuleux {{a}} n’en toucher qu’une part infime.
 TEST: Ne pas hésiter {{a}} {{demander}} des conseils.
 TEST: Sébastien {{a}} {{demander}} des conseils.
+TEST: Mélanie l’a {{transformer}}
 TEST: {{A}} vous lire, on ne sait plus que penser de toutes ces histoires
 
 
@@ -6457,7 +6458,7 @@ __conf_à_a__
         <<- /conf/ -1>> à                                           # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     face a
-        <<- /conf/ not morph(<1, ":(D.*:f:s|A.*:[fe]:[si])|>en/")
+        <<- /conf/ not morph(<1, ":(?:D.*:f:s|A.*:[fe]:[si])|>en/")
         -2>> à                                                      # Confusion probable : “a” est une forme conjugée de “avoir”. Pour la préposition, écrivez “à”.
 
     par rapport  a  @:(?:D|Oo|M)
@@ -6473,7 +6474,7 @@ __conf_à_a__
 
     a [moi|toi|eux|elles]
     a [lui|elle|nous|vous]  <end>
-        <<- /conf/ not morph(<1, ":Ov|>(?:il|elle)") and not value(<1, "|n’|m’|t’|")
+        <<- /conf/ not morph(<1, ":Ov|>(?:il|elle)/")
         -1>> à                                                      # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.
 
 TEST: Je le donne {{a}} toi.
@@ -6487,6 +6488,7 @@ TEST: elles se défendront jusqu’{{a}} la mort.
 TEST: elles progressent pas {{a}} pas
 TEST: Elle a eux pour lui donner des conseils.
 TEST: Elle a elle réussi… (Formulation douteuse.)
+TEST: Elle n’a elle que ses études pour s’en sortir.
 TEST: Il a toi pour l’aider.
 TEST: Il t’a toi.
 
@@ -6895,7 +6897,7 @@ TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumièr
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
         <<- /conf/ \2.islower()
-            and not value(\3, "|accès|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|")
+            and not value(\3, "|accès|bon|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|vocation|")
             and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -6911,6 +6913,7 @@ TEST: C’est là que la pudeur a bon dos
 TEST: Cette décision permettrait de rapprocher le congé paternité des huit semaines pendant lesquelles un employeur a interdiction de faire travailler une mère
 TEST: L’utilisateur a accès à l’ensemble des informations saisies.
 TEST: Tout le monde à terre !
+TEST: cet espace a vocation à partager nos ressentis
 
 
 __conf_a_à_substantifs__
@@ -9931,8 +9934,8 @@ TEST: Elle réussira à coup sûr.
 
 
 # ta / t’as
-__conf_t_as_ta__
-    ta  [que|qu’]
+__conf_t_as_ta_t_a__
+    ta  [que|qu’|quel+les]
     ta  ?[plein|beaucoup|peu|combien]¿  [de|d’]
     ta  encore  @:(?:Q|V1.*:Y)
     ta  @:V1.*:Y
@@ -9941,10 +9944,17 @@ __conf_t_as_ta__
     ta  @:Q.*:m:[si] $:D
         <<- /conf/ not \1.isupper() -1>> t’as               # Confusion possible : “ta” est un déterminant féminin. Pour l’abréviation de “tu as”, écrivez “t’as”.
 
+    <start> t’ a  [que|qu’|quel+les]
+    <start> t’ a  ?[plein|beaucoup|peu|combien]¿  [de|d’]
+    <start> t’ a  encore  @:(?:Q|V1.*:Y)
+    <start> t’ a  @:V1.*:Y
+        <<- /conf/ -3>> as                                  # Confusion. Pour l’abréviation de “tu as”, écrivez “t’as”.
+
 TEST: {{ta}} combien de fric, mec ?                                                 ->> t’as
 TEST: {{ta}} qu’à bosser plus, feignasse.                                           ->> t’as
 TEST: {{ta}} {{bouffer}} du lion
 TEST: {{ta}} {{manqué}} quelque chose
+TEST: t’{{a}} quelle prof ?                                                         ->> as
 TEST: avec ta peu élégante façon de remettre les gens en place, tu te fais plein d’ennemis.
 TEST: ferme ta grande gueule
 TEST: ta vraiment insupportable manière de rire.
