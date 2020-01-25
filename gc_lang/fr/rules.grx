@@ -550,7 +550,7 @@ __[s>(p_vs)__
 
 # version
 __[i](p_version_numéro)__
-    versions? ([0-9]+(?:[.][0-9]+[a-z]?)*) @@$ <<- ~1>> *
+    (?:versions?|mises? [àa] jour) ([0-9]+(?:[.][0-9]+[a-z]?)*) @@$ <<- ~1>> *
 
 # sigles
 __<s>(p_sigle1)__
@@ -624,6 +624,7 @@ TEST: ce chien […] ne {{semblez}} pas en forme.
 TEST: ce chat {{(…)}} ne {{ressemblez}} pas aux autres.
 TEST: les tests de la version 3.17.8 {{commence}} demain.
 TEST: ce nouveau moteur de recherche (http://www.cherche-moi-ça.fr/home.php&lang=fr) fonctionne pas mal.
+TEST: La mise à jour 3.3.5 publiée en novembre 2018 marque l’arrivée de la première vraie planète
 TEST: L’A.M. Turing Award 2015
 TEST: Retrouvez-nous sur le Monde.fr
 TEST: Arthur D. vient chez nous.
@@ -3775,7 +3776,7 @@ __tu_préfixe_quasi__
 TEST: leurs {{quasi indifférences}}
 
     ~^[Qq]uasi-.+$
-        <<- /tu/ morph(\1, ":[WA]", ":N", 6) ->> ="quasi " + \1[:6]         # Avec le préfixe “quasi”, le trait d’union n’est présent que s’il s’agit d’un nom, pas s’il s’agit d’un adjectif ou d’un adverbe.
+        <<- /tu/ morph(\1, ":[WA]", ":N", 6) ->> ="quasi " + \1[6:]         # Avec le préfixe “quasi”, le trait d’union n’est présent que s’il s’agit d’un nom, pas s’il s’agit d’un adjectif ou d’un adverbe.
 
 TEST: la quasi-totalité des membres.
 TEST: des hommes {{quasi-inféodés}} à leur patron.
@@ -6572,12 +6573,17 @@ TEST: {{à moindres coups}}
 TEST: tout acheter à moindre coût
 
 
-__conf_à_moindres_frais__
+__conf_à_grands_moindres_frais__
     !! à moindres frais ¡¡
-    [a|à] [moindre+s] [frai+s|>frêt]
+    [a|à] [moindre+s] [frai+s|>fret]
         <<- /conf/ ->> à moindres frais                                     # Pour évoquer des dépenses, écrivez “frais” (pluriel).
 
+    !! à grands frais ¡¡
+    [a|à] [grand+s] [frai+s|>fret]
+        <<- /conf/ ->> à grands frais                                       # Pour évoquer des dépenses, écrivez “frais” (pluriel).
+
 TEST: {{a moindre frais}}
+TEST: {{à grand fret}}
 TEST: S’en sortir à moindres frais, pas si simple.
 
 
@@ -7342,7 +7348,7 @@ TEST: rhabillée {{de pied en cape}}.
 
 # capital / capitale
 __conf_capital_capitale__
-    >augmentation de capitale
+    [>augmentation|>diminution|>réduction] de capitale
         <<- /conf/ --1>> capital    # Confusion. Une capitale est une ville où se situe le gouvernement d’une nation. Le capital est une richesse, une ressource, un bien, etc.|https://fr.wiktionary.org/wiki/capital
 
 TEST: on va faire une augmentation de {{capitale}}                      ->> capital
@@ -7459,10 +7465,10 @@ __conf_ces_ses_c_est__
     [ses|ces] [l’|d’]
     [ses|ces] {pronom_obj}
     [ses|ces] @:[WX]¬:N:.*:[pi]  @:[RD]|>pire/
-        <<- /conf/ not \1.isupper() and \2 != "quelques" -1>> c’est         # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
+        <<- /conf/ not \1.isupper() and not value(\2, "|quelques|") -1>> c’est      # Confusion probable. Écrivez « c’est » pour dire « ceci est… ».
 
     c’ est  @:N.*:p¬:(?:G|W|M|A.*:[si])
-        <<- /conf/ -1:2>> ces|ses                                           # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
+        <<- /conf/ -1:2>> ces|ses                                                   # Confusion. Exemples : c’est facile ; ces chats (désignation) ; ses chats (possession)…
 
     ses  /-là
         <<- /conf/ -1>> ces                 # Confusion : “ses” est un déterminant possessif ; si vous voulez désigner des éléments en particulier, vous devriez utiliser le déterminant démonstratif “ces”.
@@ -9518,6 +9524,19 @@ TEST: Quelle peut encore être l’influence de cet artiste de nos jours ?
 TEST: Quelle peut bien être l’influence de cet artiste de nos jours ?
 
 
+# qui l’eût cru
+__conf_qui_l_eût_cru__
+    qui l’ [eu+ses|eut] [cru+ses]
+        <<- /conj/ -3>> eût                                     # Conjuguaison erronée. Dans la locution “qui l’eût cru ?”, avoir est ici au subjonctif.
+
+    qu’ y l’ [eu+ses|eut|eût] [cru+ses]
+        <<- /conf/ -1:2>> qui                                   # Confusion. Locution “qui l’eût cru ?”.
+
+TEST: Qui l’{{eut}} cru.
+TEST: {{Qu’y}} l’eût cru.
+TEST: Qui l’eût cru ? Cette emmerdeuse nous a tous joués.
+
+
 # quoi que / quoique
 __conf_quoique_quoi_que__
     quoiqu’ il se soit ?$:W¿ passé
@@ -10148,8 +10167,8 @@ TEST: On va lui tirer les {{verts}} du nez
 
 # voix / voie / vois / voit
 __conf_voie_voix_vois_voit__
-    à haute [>voie|vois|voit]
-    à haute et intelligible [>voie|vois|voit]
+    à ?[très|si]¿ haute [>voie|vois|voit]
+    à ?[très|si]¿ haute et intelligible [>voie|vois|voit]
     de vive [>voie|vois|voit]
     à portée de [>voie|vois|voit]
         <<- /conf/ --1>> voix       # Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
@@ -10161,7 +10180,7 @@ __conf_voie_voix_vois_voit__
         <<- /conf/ -3>> voix        # Confusion. Pour évoquer un son humain, animal ou instrumental, écrivez “voix”.|http://fr.wiktionary.org/wiki/voix
 
     sur la bonne voix
-    en bonne [voix|vois|voit]
+    en ?[très|si]¿ bonne [voix|vois|voit]
         <<- /conf/ --1>> voie       # Confusion. La voix est un son humain, animal ou instrumental. Pour évoquer un chemin, écrivez “voie”.|http://fr.wiktionary.org/wiki/voie
 
     >ouvrir ?@:[WX]¿ la voix [à|au|aux|<end>]
@@ -12932,6 +12951,7 @@ __simplication_substantifs__
     >chasse d’ eau
     >chasseur [de|d’] primes
     >chemin [de|d’] [traverse|fer]
+    >chemise de nuit
     >chemise sans >manche
     >chèque sans provision
     >chili con carne
@@ -18314,6 +18334,9 @@ __conf_pâte_patte_pat__
     >coup de [>pâte|pat]
         <<- /conf/ -3>> patte                                   # Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
 
+    >retomber sur [mes|tes|ses|ces|nos|vos|leur|leurs] [>pâte|pat]
+        <<- /conf/ --1>> pattes                                 # Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
+
 TEST: Prépare la {{patte}} à tarte.
 TEST: Ils mangent souvent des {{pattes}} au thon.
 TEST: Des {{pattes}} alimentaires.
@@ -18323,6 +18346,7 @@ TEST: Elle adore la {{patte}} d’amande.
 TEST: Il est comme un coq en {{pattes}} là.
 TEST: Elle n’a jamais mis la main à la {{patte}}.
 TEST: donne-moi un coup de {{pâte}}
+TEST: elle retombe toujours sur ses {{pâtes}}.
 
 
 # péché / pêcher
@@ -19964,6 +19988,28 @@ TEST: vous vous êtes compromis plusieurs fois
 TEST: elles se sont prises en main.
 TEST: elles s’étaient aimées ce matin.
 
+
+!!
+!!
+!!!! Participes passés: s’être fait +infinitif                                                    !!
+!!
+!!
+__ppas_s_être_fait_infi__
+    je [me|m’] >être [faits|faite+s]  $:Y
+    tu [te|t’] >être [faits|faite+s]  $:Y
+    nous nous >être [faits|faite+s]  $:Y
+    vous vous >être [faits|faite+s]  $:Y
+    [s’|se] >être  [faits|faite+s]  $:Y
+        <<- /ppas/ --2>> fait                                               # Dans la forme verbale “s’être fait +verbe”, “fait” est invariable.
+
+TEST: je me suis {{faite}} avoir
+TEST: tu t’es {{faite}} prendre
+TEST: elle s’est {{faite}} emporter
+TEST: nous nous sommes {{faits}} oublier
+TEST: vous vous êtes {{faits}} oublier
+TEST: ils se sont {{faits}} rouler dans la farine.
+TEST: elle s’est faite toute seule.
+TEST: nous nous sommes faits plus grands que nous n’étions réellement.
 
 
 !!
