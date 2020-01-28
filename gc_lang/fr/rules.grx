@@ -6540,7 +6540,7 @@ TEST: Bien sûr, {{À coup sur}}.
 DEF: humain [administrateur|baron|chevalier|comte|contrôleur|dieu|duc|émir|époux|frère|grand-père|homme|maître|maitre|mari|ministre|monsieur|neveu|oncle|patron|père|président|prince|prophète|roi|sultan|tsar|vice-président]
 DEF: humaine [administratrice|baronne|chevalière|comtesse|contrôleuse|déesse|duchesse|épouse|femme|fille|grand-mère|madame|maîtresse|maitresse|mère|ministre|nièce|patronne|présidente|petite-fille|princesse|prophétesse|reine|sœur|sultane|tante|tsarine|vice-présidente]
 
-__conf_a_l_attention_de_prn__
+__conf_à_l_attention_de_prn__
     à l’ intention de @:M[12]
     à l’ intention de [monsieur|Mr|madame|Mme|mademoiselle|Mlle|messieurs|mesdames|mesdemoiselles|sire]
     à l’ intention du {humain}
@@ -6629,6 +6629,14 @@ __conf_à_pleines_dents__
         <<- /conf/ ->> à pleines dents                                      # Locution “à pleines dents” (toujours au pluriel).
 
 TEST: Elle mord la vie {{à plaine dent}}.
+
+
+__conf_à_point_nommé__
+    !! à point nommé ¡¡
+    [a|à] [point+s|>poing] [nommer|nommé+ses]
+        <<- /conf/ ->> à point nommé                                        # Locution “à point nommé”.|https://fr.wiktionary.org/wiki/%C3%A0_point_nomm%C3%A9
+
+TEST: il arriva {{à point nommer}}
 
 
 __conf_à_quel_point!7__
@@ -12020,8 +12028,9 @@ __purge_locutions__
     ensuite
     envers et contre tout
     épaule contre épaule
-    et   ainsi [de|d’] suite
-    et   tutti quanti
+    et ainsi [de|d’] suite
+    et pas qu’ un peu
+    et tutti quanti
     été comme hiver
     euh
     face à face
@@ -15963,6 +15972,19 @@ TEST: le meurtre de son ex-petite amie
 TEST: à cette envie de la voir sourire tout le temps
 TEST: sur les raisons de la chute d’un des hommes populaires du pays.
 TEST: sur les raisons de la chute d’une des stars populaires du pays.
+
+
+__gn_un_une_de_leur_nom__
+    un  [de|d’]  leur  @:N.*:m:s¬:[ip]
+        <<- /gn/ not value(\4, "|bâtiment|collège|corps|culte|établissement|groupe|journal|lycée|pays|régiment|vaisseau|village|")
+        -3:4>> ="leurs " + suggPlur(\4)                                             # Erreur possible. Évoquer un élément parmi d’autres nécessite qu’il y ait plusieurs éléments.
+
+    une  [de|d’]  leur  @:N.*:f:s¬:[ip]
+        <<- /gn/ not value(\4, "|armée|cité|compagnie|entreprise|église|fac|nation|université|planète|promotion|religion|unité|ville|")
+        -3:4>> ="leurs " + suggPlur(\4)                                             # Erreur possible. Évoquer un élément parmi d’autres nécessite qu’il y ait plusieurs éléments.
+
+TEST: un de {{leur délire}}                                     ->> leurs délires
+TEST: une de {{leur soirée}}                                    ->> leurs soirées
 
 
 ## divers
