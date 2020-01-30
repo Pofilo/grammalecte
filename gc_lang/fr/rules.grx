@@ -18454,9 +18454,12 @@ TEST: un petit peu nous surprendre
 
 
 __conf_det_2subst_peu_peut_vinfi__
-    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|y]
-    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|y]
-    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|leur|lui|le|la|l’|les|y]
+    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y]
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y]
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  [ne|n’|me|m’|te|t’|se|s’|nous|vous|y]
+    [<start>|,]  [un|le|ce|cet]                     *WORD  *WORD    peu  [leur|le|la|l’|les]  @:(?:Ov|Y)
+    [<start>|,]  [une|la|cette|ma|ta|sa]            *WORD  *WORD    peu  [leur|le|la|l’|les]  @:(?:Ov|Y)
+    [<start>|,]  [l’|mon|ton|son|notre|votre|leur]  *WORD  *WORD    peu  [leur|le|la|l’|les]  @:(?:Ov|Y)
         <<- /conf/ morph(\3, ":[NA]") and morph(\4, ":[NA]", ":V0")
         --2>> peut                                      # Confusion probable : il semble que vous vouliez dire “peut” au sens de “pouvoir \-1” où “\2 \3 \4” est le sujet du syntagme verbal.
 
@@ -18485,6 +18488,7 @@ TEST: l’école primaire {{peu}} espérer recevoir de nouveaux moyens cette ann
 TEST: un sale voyou {{peu}} {{marquer}}
 TEST: une petite personne {{peu}} {{inspirer}}
 TEST: mon meilleur ami {{peu}} {{remarquer}} par les profs
+TEST: L’ouvrage décrit très peu les divers modes d’actions.
 
 
 # peut-être / peut être
@@ -24848,6 +24852,7 @@ TEST: Cette fille a plus d’un tour dans son sac.
 TEST: L’homme est également président de l’AFP
 TEST: ils nous ont agenouillés
 TEST: C’est pure folie.
+TEST: Du côté de ceux sans qui le cinéma se réduirait à pas grand-chose
 
 
 
