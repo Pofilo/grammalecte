@@ -6005,7 +6005,7 @@ TEST: auxdites {{scelles}}, il ne prêta pas attention.
 
 __conf_de_vconj__
     [de|d’]  @:V.*:[123][sp]¬:[GNA]
-        <<- /conf/ not \2.istitle() -2>> =suggSimil(\2, ":[NA]", True)                              # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
+        <<- /conf/ not \2.istitle() and not value(\2, "|jure|") -2>> =suggSimil(\2, ":[NA]", True)  # Incohérence avec “\1” : “\2” est une forme verbale conjuguée.
 
 TEST: il s’agit de {{mette}} en évidence.
 
@@ -11149,26 +11149,27 @@ __purge_horaires_et_durée__
 
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
 TEST: Le train de 2 h 47 du matin {{arriveraient}} en retard.
+TEST: Le train de 2h47 du matin {{arriveraient}} en retard.
 
 
 __purge_prépositions_qqn__
-    [après|avant|avec|pour|contre|sans|envers|chez|en|malgré|selon] les uns et les autres           [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|en|malgré|selon] les uns et les autres           [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:6>> *
 
-    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|malgré|selon] on ne sait [qui|quoi]        [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|malgré|selon] on ne sait [qui|quoi]        [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:5>> *
 
-    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout un chacun            [<end>|,|@:[VXG]¬>qui]
-    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout le monde             [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout un chacun            [<end>|,|@:[VXG]¬>qui/]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] tout le monde             [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:4>> *
 
-    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré] tout ça                         [<end>|,|@:[VXG]¬>qui]
-    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] [vous|nous] autres        [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré] tout ça                         [<end>|,|@:[VXG]¬>qui/]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon] [vous|nous] autres        [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:3>> *
 
-    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon]  [autrui|quelqu’un|quelqu’une]    [<end>|,|@:[VXG]¬>qui]
-    [avant|avec|envers|chez|malgré|selon]                                  {pronom_obj}                     [<end>|,|@:[VXG]¬>qui]
-    [après|contre|pour|sans|de|d’|en]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]    [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|d’|en|malgré|selon]  [autrui|quelqu’un|quelqu’une]    [<end>|,|@:[VXG]¬>qui/]
+    [avant|avec|envers|chez|malgré|selon]                                  {pronom_obj}                     [<end>|,|@:[VXG]¬>qui/]
+    [après|contre|pour|sans|de|d’|en]   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]    [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:2>> *
 
     [après|contre|pour|sans|de|d’|en] [lui|nous|vous] [<end>|,|@:G¬Ov]
@@ -11177,13 +11178,13 @@ __purge_prépositions_qqn__
     [de|d’] [lui|nous|vous] en $:P
         <<- ~1:2>> *
 
-    par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]   [<end>|,|@:[VXG]¬>qui]
+    par égard pour   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]   [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:4>> *
 
     en   [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]
         <<- ~>> *
 
-    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]        [<end>|,|@:[VXG]¬>qui]
+    [après|avant|avec|pour|contre|sans|envers|chez|de|en|malgré|selon] [celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]        [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:2>> *
 
     entre [moi|toi|lui|elle|elles|nous|vous|eux] et [moi|toi|lui|elle|elles|nous|vous|eux]
@@ -11200,7 +11201,7 @@ __purge_prépositions_qqn__
     par-devers [moi|toi|lui|elle|elles|iel|iels|lui|eux|nous|vous]
         <<- ~>> *
 
-    quant à [moi|toi|lui|elle|elles|iel|iels|lui|eux|nous|vous]  [<end>|,|@:[VXG]¬>qui]
+    quant à [moi|toi|lui|elle|elles|iel|iels|lui|eux|nous|vous]  [<end>|,|@:[VXG]¬>qui/]
         <<- ~1:3>> *
 
     de chez *WORD ?jusqu’¿ à chez [moi|toi|soi|elle|eux|elles|moi-même|toi-même|soi-même|lui-même|elle-même|nous-mêmes|vous-même|vous-mêmes|eux-mêmes|elles-mêmes|iel-même|iels-mêmes]
@@ -12035,6 +12036,9 @@ __purge_locutions__
     et tutti quanti
     été comme hiver
     euh
+    excepté le [mien|tien|sien|nôtre|vôtre|leur]
+    excepté la [mienne|tienne|sienne|nôtre|vôtre|leur]
+    excepté les [miens|miennes|siennes|nôtres|vôtres|leurs]
     face à face
     $:B fois [de|d’] suite
     grosso modo
@@ -17815,7 +17819,7 @@ TEST: j’ai vu un {{flamand}} rose.
 
 
 # foi / fois / foie
-__conf_foi_fois__
+__conf_foi_fois_foie__
     [de|la|cette|une] mauvaise [fois|>foie]
     [ma|ta|sa] fois
         <<- /conf/ --1>> foi                                                # Confusion probable.|http://fr.wiktionary.org/wiki/foi
@@ -17838,6 +17842,9 @@ __conf_foi_fois__
     une bonne foi pour [toute|toutes]
         <<- /conf/ -3>> fois                                                # Confusion probable.|http://fr.wiktionary.org/wiki/fois
 
+    >perdre [fois|>foie]
+        <<- /conf/ --1>> foi                                                # Confusion. Perdre foi, c’est-à-dire perdre sa croyance en quelque chose.|http://fr.wiktionary.org/wiki/foi
+
 TEST: ces gens sont de mauvaise {{fois}}
 TEST: C’est une personne de bonne {{fois}}.
 TEST: Mais il a perdu {{fois}} en l’avenir.
@@ -17845,6 +17852,7 @@ TEST: sans {{fois}} ni loi
 TEST: J’ai préparé du pâté de {{fois}}
 TEST: la prochaine {{foi}}, c’est mon tour.
 TEST: une bonne {{foi}} pour toutes, ça suffit !
+TEST: elle a perdu {{foie}} en Dieu.
 
 
 # fond / fonds / fonts
