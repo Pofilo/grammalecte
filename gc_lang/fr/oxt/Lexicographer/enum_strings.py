@@ -11,8 +11,9 @@ dStrings = {
         "count_button": "Compter tout",
         "count2_button": "Compter par lemme",
         "unknown_button": "Mots inconnus",
-        "num_of_entries": "Nombre d’entrées :",
-        "tot_of_entries": "Total des entrées :",
+        "num_of_entries": "Entrées :",
+        "tot_of_entries": "Total :",
+        "export": "Exporter",
 
         "words": "Mots",
         "lemmas": "Lemmes",
@@ -27,6 +28,8 @@ dStrings = {
         "nostyle": "Aucun",
         "tag_button": "Taguer",
 
+        "export_title": "Exportation des données",
+
         "close_button": "Fermer",
     },
     "en": {
@@ -36,8 +39,9 @@ dStrings = {
         "count_button": "Count all",
         "count2_button": "Count by lemma",
         "unknown_button": "Unknown words",
-        "num_of_entries": "Number of entries:",
-        "tot_of_entries": "Total of words:",
+        "num_of_entries": "Entries:",
+        "tot_of_entries": "Total:",
+        "export": "Export",
 
         "words": "Words",
         "lemmas": "Lemmas",
@@ -51,6 +55,8 @@ dStrings = {
         "strong_emphasis": "Strong emphasis",
         "nostyle": "None",
         "tag_button": "Tag",
+
+        "export_title": "Data export",
 
         "close_button": "Close",
     },

@@ -13,6 +13,18 @@ import grammalecte.graphspell as sc
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
 
+from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
+# BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
+# DEFAULT_BUTTON_OK, DEFAULT_BUTTON_CANCEL, DEFAULT_BUTTON_RETRY, DEFAULT_BUTTON_YES, DEFAULT_BUTTON_NO, DEFAULT_BUTTON_IGNORE
+from com.sun.star.awt.MessageBoxType import INFOBOX, ERRORBOX # MESSAGEBOX, INFOBOX, WARNINGBOX, ERRORBOX, QUERYBOX
+
+def MessageBox (xDocument, sMsg, sTitle, nBoxType=INFOBOX, nBoxButtons=BUTTONS_OK):
+    xParentWin = xDocument.CurrentController.Frame.ContainerWindow
+    ctx = uno.getComponentContext()
+    xToolkit = ctx.ServiceManager.createInstanceWithContext("com.sun.star.awt.Toolkit", ctx)
+    xMsgBox = xToolkit.createMessageBox(xParentWin, nBoxType, nBoxButtons, sTitle, sMsg)
+    return xMsgBox.execute()
+
 
 def hexToRBG (sHexa):
     r = int(sHexa[:2], 16)
@@ -56,6 +68,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xDialog = None
         self.oSpellChecker = None
         self.oTokenizer = None
+        self.dWord = {}
 
     def _addWidget (self, name, wtype, x, y, w, h, **kwargs):
         xWidget = self.xDialog.createInstance('com.sun.star.awt.UnoControl%sModel' % wtype)
@@ -127,11 +140,12 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
             [ {"Title": self.dUI.get("words", "#err"), "ColumnWidth": 175}, {"Title": "Occurrences", "ColumnWidth": 45} ], \
             SelectionModel = uno.Enum("com.sun.star.view.SelectionType", "MULTI") \
         )
-        self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 60, nHeight, Label = self.dUI.get('num_of_entries', "#err"), Align = 2)
-        self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+65, nY1+210, 25, nHeight, Label = "—")
-        self._addWidget('tot_of_entries', 'FixedText', nX+90, nY1+210, 60, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
-        self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+155, nY1+210, 30, nHeight, Label = "—")
-        self.xSearch = self._addWidget('search_button', 'Button', nX+190, nY1+210, 30, nHeight, Label = ">>>", Enabled = False)
+        self._addWidget('num_of_entries', 'FixedText', nX, nY1+210, 30, nHeight, Label = self.dUI.get('num_of_entries', "#err"), Align = 2)
+        self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+35, nY1+210, 25, nHeight, Label = "—")
+        self._addWidget('tot_of_entries', 'FixedText', nX+60, nY1+210, 30, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
+        self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+95, nY1+210, 30, nHeight, Label = "—")
+        self.xSearch = self._addWidget('search_button', 'Button', nX+145, nY1+210, 30, nHeight, Label = ">>>", Enabled = False)
+        self.xExport = self._addWidget('export_button', 'Button', nX+180, nY1+210, 40, nHeight, Label = self.dUI.get('export', "#err"), Enabled = False)
 
         # Tag
         # Note: the only way to group RadioButtons is to create them successively
@@ -162,6 +176,8 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.getControl('unknown_button').setActionCommand('UnknownWords')
         self.xContainer.getControl('search_button').addActionListener(self)
         self.xContainer.getControl('search_button').setActionCommand('Search')
+        self.xContainer.getControl('export_button').addActionListener(self)
+        self.xContainer.getControl('export_button').setActionCommand('Export')
         self.xContainer.getControl('tag_button').addActionListener(self)
         self.xContainer.getControl('tag_button').setActionCommand('Tag')
         self.xContainer.getControl('close_button').addActionListener(self)
@@ -178,20 +194,25 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                 self.count(self.dUI.get("words", "#err"))
                 self.xTag.Enabled = True
                 self.xSearch.Enabled = True
+                self.xExport.Enabled = True
             elif xActionEvent.ActionCommand == "CountByLemma":
                 self.count(self.dUI.get("lemmas", "#err"), bByLemma=True)
                 self.xTag.Enabled = False
                 self.xSearch.Enabled = False
+                self.xExport.Enabled = True
             elif xActionEvent.ActionCommand == "UnknownWords":
                 self.count(self.dUI.get("unknown_words", "#err"), bOnlyUnknownWords=True)
                 self.xTag.Enabled = True
                 self.xSearch.Enabled = True
+                self.xExport.Enabled = True
             elif xActionEvent.ActionCommand == "Search":
                 if not self.xGridControl.hasSelectedRows():
                     return
                 lRow = self.xGridControl.getSelectedRows()
                 aWord = set([ self.xGridModel.GridDataModel.getCellData(0, n)  for n in lRow ])
                 self.gotoWord(aWord)
+            elif xActionEvent.ActionCommand == "Export":
+                self.export()
             elif xActionEvent.ActionCommand == "Tag":
                 if not self.xGridControl.hasSelectedRows():
                     return
@@ -252,21 +273,46 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xProgressBar.ProgressValue = 0
         xGridDataModel = self.xGridModel.GridDataModel
         xGridDataModel.removeAllRows()
-        dWord = {}
+        self.dWord.clear()
         for sParagraph in self._getParagraphsFromText():
-            dWord = self.oSpellChecker.countWordsOccurrences(sParagraph, bByLemma, bOnlyUnknownWords, dWord)
+            self.dWord = self.oSpellChecker.countWordsOccurrences(sParagraph, bByLemma, bOnlyUnknownWords, self.dWord)
             self.xProgressBar.ProgressValue += 1
-        self.xProgressBar.ProgressValueMax += len(dWord)
+        self.xProgressBar.ProgressValueMax += len(self.dWord)
         i = 0
         nTotOccur = 0
-        for k, w in sorted(dWord.items(), key=lambda t: t[1], reverse=True):
-            xGridDataModel.addRow(i, (k, w))
+        for sWord, nOccur in sorted(self.dWord.items(), key=lambda t: t[1], reverse=True):
+            xGridDataModel.addRow(i, (sWord, nOccur))
             self.xProgressBar.ProgressValue += 1
             i += 1
-            nTotOccur += w
+            nTotOccur += nOccur
         self.xProgressBar.ProgressValue = self.xProgressBar.ProgressValueMax
         self.xNumWord.Label = str(i)
         self.xTotWord.Label = nTotOccur
+
+    def export (self):
+        if not self.dWord:
+            return
+        sText = ""
+        for sWord, nOccur in sorted(self.dWord.items(), key=lambda t: t[1], reverse=True):
+            sText += sWord + "\t" + str(nOccur) + "\n"
+        try:
+            xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
+            xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILESAVE_SIMPLE")]) # seems useless
+            xFilePicker.appendFilter("Supported files", "*.txt")
+            xFilePicker.setDefaultName("word_count.txt") # useless, doesn’t work
+            xFilePicker.setDisplayDirectory("")
+            xFilePicker.setMultiSelectionMode(False)
+            nResult = xFilePicker.execute()
+            if nResult == 1:
+                # lFile = xFilePicker.getSelectedFiles()
+                lFile = xFilePicker.getFiles()
+                spfExported = lFile[0][8:] # remove file:///
+                #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
+                with open(spfExported, "w", encoding="utf-8") as hDst:
+                    hDst.write(sText)
+        except:
+            sMessage = traceback.format_exc()
+            MessageBox(self.xDocument, sMessage, self.dUI.get('export_title', "#err"), ERRORBOX)
 
     @_waitPointer
     def tagText (self, aWord, sAction=""):
