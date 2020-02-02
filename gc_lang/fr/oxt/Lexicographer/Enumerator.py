@@ -12,6 +12,7 @@ import grammalecte.graphspell as sc
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
+from com.sun.star.awt import XTopWindowListener
 
 from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
 # BUTTONS_OK, BUTTONS_OK_CANCEL, BUTTONS_YES_NO, BUTTONS_YES_NO_CANCEL, BUTTONS_RETRY_CANCEL, BUTTONS_ABORT_IGNORE_RETRY
@@ -57,7 +58,7 @@ def _waitPointer (funcDecorated):
     return wrapper
 
 
-class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
+class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecutor):
 
     def __init__ (self, ctx):
         self.ctx = ctx
@@ -182,6 +183,7 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.getControl('tag_button').setActionCommand('Tag')
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
+        self.xContainer.addTopWindowListener(self) # listener with XTopWindowListener methods
         self.xContainer.setVisible(True)    # True for non modal dialog
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
@@ -231,6 +233,28 @@ class Enumerator (unohelper.Base, XActionListener, XJobExecutor):
                 #self.xContainer.endExecute()       # Modal dialog
         except:
             traceback.print_exc()
+
+    # XTopWindowListener (useful for non modal dialog only)
+    def windowOpened (self, xEvent):
+        return
+
+    def windowClosing (self, xEvent):
+        self.xContainer.dispose()           # Non modal dialog
+
+    def windowClosed (self, xEvent):
+        return
+
+    def windowMinimized (self, xEvent):
+        return
+
+    def windowNormalized (self, xEvent):
+        return
+
+    def windowActivated (self, xEvent):
+        return
+
+    def windowDeactivated (self, xEvent):
+        return
 
     # XJobExecutor
     def trigger (self, args):
