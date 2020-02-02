@@ -6927,7 +6927,7 @@ TEST: Celui qui a peine à paraître ne doit pas être mis subitement en lumièr
 __conf_substantif_à_substantif!3__
     *WORD  a  @:N¬*
         <<- /conf/ \2.islower()
-            and not value(\3, "|accès|bon|bonne|beau|besoin|charge|confiance|connaissance|conscience|crainte|envie|été|faim|hâte|honte|interdiction|lieu|mauvaise|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|vocation|")
+            and not value(\3, "|accès|bon|bonne|beau|besoin|charge|confiance|connaissance|conscience|crainte|droit|envie|été|faim|hâte|honte|interdiction|lieu|mauvaise|peine|peur|raison|rapport|recours|soif|tendance|terre|tort|vent|vocation|")
             and morph(\1, ":N", "*")
         -2>> à              # Confusion probable : “a” est une forme conjuguée du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
 
@@ -6946,6 +6946,7 @@ TEST: Tout le monde à terre !
 TEST: cet espace a vocation à partager nos ressentis
 TEST: le ciel a mauvaise mine
 TEST: il a bonne mine
+TEST: Catherine la grande a droit à une nouvelle série télévisée.
 
 
 __conf_a_à_substantifs__
@@ -13015,6 +13016,7 @@ __simplication_substantifs__
     >coup [de|d’] baguette ?magique¿
     >coup du sort
     >coup d’ un soir
+    >coureur de >jupon
     >course contre la montre
     [cousu+ses] [main]
     [cousu+ses] [de|d’] fil blanc
@@ -17833,7 +17835,7 @@ __conf_foi_fois_foie__
 
     [>faire|>perdre|>donner|>avoir]  [fois|>foie]
     >avoir  la  [fois|>foie]
-        <<- /conf/ --1>> foi                                                # Confusion probable.|http://fr.wiktionary.org/wiki/foi
+        <<- /conf/ --1>> foi                                                # Confusion probable. Pour évoquer la ferveur religieuse, écrivez “foi”.|http://fr.wiktionary.org/wiki/foi
 
     [>huile|>terrine|>pâté] de >foi
         <<- /conf/ --1>> foie                                               # Confusion probable. L’organe s’écrit “foie”.|http://fr.wiktionary.org/wiki/foie
@@ -17841,9 +17843,6 @@ __conf_foi_fois_foie__
     [la|une|cette] prochaine foi
     une bonne foi pour [toute|toutes]
         <<- /conf/ -3>> fois                                                # Confusion probable.|http://fr.wiktionary.org/wiki/fois
-
-    >perdre [fois|>foie]
-        <<- /conf/ --1>> foi                                                # Confusion. Perdre foi, c’est-à-dire perdre sa croyance en quelque chose.|http://fr.wiktionary.org/wiki/foi
 
 TEST: ces gens sont de mauvaise {{fois}}
 TEST: C’est une personne de bonne {{fois}}.
