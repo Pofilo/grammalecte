@@ -77,16 +77,17 @@ function loadGrammarChecker (sGCOptions="", sContext="JavaScript") {
     }
 }
 
-function setDictionary (sTypeDic, sDicJSON) {
+function setDictionary (sTypeDic, sDictionary) {
     try {
         console.log("set dictionary: " + sTypeDic);
-        let oJSON = JSON.parse(sDicJSON);
         switch (sTypeDic) {
-            case "extended":
+            case "main":
+                oSpellChecker.setMainDictionary(sDictionary);
                 break;
             case "community":
                 break;
             case "personal":
+                let oJSON = JSON.parse(sDictionary);
                 oSpellChecker.setPersonalDictionary(oJSON);
                 break;
             default:
