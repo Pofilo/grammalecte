@@ -76,12 +76,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
 
     createMenu () {
         this.xMenu = oGrammalecte.createNode("div", {className: "grammalecte_panel_menu"});
+        // tabs
         this.xTFButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Formateur de texte"});
         this.xEditorButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Éditeur"});
         this.xLxgButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Lexicographe"});
         this.xConjButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "Conjugueur"});
-        this.xLEButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_button", textContent: "•Éditeur lexical•"});
-        this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_autorefresh_button", textContent: "AR", title: "Auto-rafraîchissement de la correction grammaticale (3 s après la dernière frappe)"})
+        // buttons
+        this.xLexEditButton = oGrammalecte.createNode("div", {className: "grammalecte_menu_subbutton", textContent: "ÉditLex", title: "Ouvrir l’éditeur lexical", style: "background-color: hsl(210, 50%, 40%)"});
+        this.xLxgButton.appendChild(this.xLexEditButton)
+        this.xAutoRefresh = oGrammalecte.createNode("div", {className: "grammalecte_menu_subbutton", textContent: "AutoRafr", title: "Auto-rafraîchissement de la correction grammaticale (3 s après la dernière frappe)"})
         this.xEditorButton.appendChild(this.xAutoRefresh);
         this.bAutoRefresh = oGrammalecte.bAutoRefresh;
         this.setAutoRefreshButton();
@@ -125,15 +128,14 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 this.showConjugueur();
             }
         };
-        this.xLEButton.onclick = () => {
+        this.xLexEditButton.onclick = () => {
             xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null});
         };
-        // Menu, tabs
+        // Add tabs to menu
         this.xMenu.appendChild(this.xTFButton)
         this.xMenu.appendChild(this.xEditorButton)
         this.xMenu.appendChild(this.xLxgButton)
         this.xMenu.appendChild(this.xConjButton)
-        this.xMenu.appendChild(this.xLEButton)
         this.xPanelBar.appendChild(this.xMenu);
     }
 
