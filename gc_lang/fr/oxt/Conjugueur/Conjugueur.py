@@ -1,4 +1,3 @@
-# -*- coding: utf8 -*-
 # Conjugueur
 # by Olivier R.
 # License: GPL 3
@@ -12,9 +11,10 @@ import helpers
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
+from com.sun.star.awt import XTopWindowListener
 
 
-class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
+class Conjugueur (unohelper.Base, XActionListener, XTopWindowListener, XJobExecutor):
     def __init__ (self, ctx):
         self.ctx = ctx
         self.xSvMgr = self.ctx.ServiceManager
@@ -214,7 +214,7 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         ## container
         self.xContainer = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.UnoControlDialog', self.ctx)
         self.xContainer.setModel(self.xDialog)
-        self.xContainer.setVisible(False)
+        self.xContainer.setVisible(True)  # True for non modal dialog
 
         #self.xContainer.getControl('input').addEventListener(self)
         #self.xContainer.getControl('input').addEventCommand('New')
@@ -230,6 +230,8 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         self.xContainer.getControl('otco').setActionCommand('Change')
         self.xContainer.getControl('ofem').addActionListener(self)
         self.xContainer.getControl('ofem').setActionCommand('Change')
+        self.xContainer.addTopWindowListener(self) # listener with XTopWindowListener methods
+        #self.xContainer.execute()  # Modal dialog
 
         ## set verb
         self.input.Text = sArgs  if sArgs  else "être"
@@ -238,13 +240,13 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
         ## mysterious action
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
-        self.xContainer.execute()
 
     # XActionListener
     def actionPerformed (self, xActionEvent):
         try:
             if xActionEvent.ActionCommand == 'Close':
-                self.xContainer.endExecute()
+                self.xContainer.dispose()           # Non modal dialog
+                #self.xContainer.endExecute()       # Modal dialog
             elif xActionEvent.ActionCommand == 'New':
                 self._newVerb()
             elif xActionEvent.ActionCommand == 'Change':
@@ -254,6 +256,28 @@ class Conjugueur (unohelper.Base, XActionListener, XJobExecutor):
                 print(str(xActionEvent))
         except:
             traceback.print_exc()
+
+    # XTopWindowListener (useful for non modal dialog only)
+    def windowOpened (self, xEvent):
+        return
+
+    def windowClosing (self, xEvent):
+        self.xContainer.dispose()           # Non modal dialog
+
+    def windowClosed (self, xEvent):
+        return
+
+    def windowMinimized (self, xEvent):
+        return
+
+    def windowNormalized (self, xEvent):
+        return
+
+    def windowActivated (self, xEvent):
+        return
+
+    def windowDeactivated (self, xEvent):
+        return
 
     # XJobExecutor
     def trigger (self, args):
