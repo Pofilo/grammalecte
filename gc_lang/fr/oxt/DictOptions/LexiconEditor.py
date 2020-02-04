@@ -22,6 +22,7 @@ import TagsInfo
 
 from com.sun.star.task import XJobExecutor
 from com.sun.star.awt import XActionListener
+from com.sun.star.awt import XTopWindowListener
 from com.sun.star.awt import XKeyListener
 
 from com.sun.star.awt.MessageBoxButtons import BUTTONS_OK
@@ -61,7 +62,7 @@ def _waitPointer (funcDecorated):
     return wrapper
 
 
-class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor):
+class LexiconEditor (unohelper.Base, XActionListener, XTopWindowListener, XKeyListener, XJobExecutor):
 
     def __init__ (self, ctx):
         self.ctx = ctx
@@ -284,10 +285,11 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
         self.xContainer.getControl('export_button').setActionCommand('Export')
         self.xContainer.getControl('close_button').addActionListener(self)
         self.xContainer.getControl('close_button').setActionCommand('Close')
-        self.xContainer.setVisible(False)
+        self.xContainer.addTopWindowListener(self) # listener with XTopWindowListener methods
+        self.xContainer.setVisible(True)  # True for non modal dialog
         xToolkit = self.xSvMgr.createInstanceWithContext('com.sun.star.awt.ExtToolkit', self.ctx)
         self.xContainer.createPeer(xToolkit, None)
-        self.xContainer.execute()
+        #self.xContainer.execute()        # For modal dialog
 
     def _createKeyListeners (self, lNames, sAction):
         for sName in lNames:
@@ -320,9 +322,32 @@ class LexiconEditor (unohelper.Base, XActionListener, XKeyListener, XJobExecutor
             elif xActionEvent.ActionCommand == 'Info':
                 pass
             elif xActionEvent.ActionCommand == "Close":
-                self.xContainer.endExecute()
+                self.xContainer.dispose()           # Non modal dialog
+                #self.xContainer.endExecute()       # Modal dialog
         except:
             traceback.print_exc()
+
+    # XTopWindowListener (useful for non modal dialog only)
+    def windowOpened (self, xEvent):
+        return
+
+    def windowClosing (self, xEvent):
+        self.xContainer.dispose()           # Non modal dialog
+
+    def windowClosed (self, xEvent):
+        return
+
+    def windowMinimized (self, xEvent):
+        return
+
+    def windowNormalized (self, xEvent):
+        return
+
+    def windowActivated (self, xEvent):
+        return
+
+    def windowDeactivated (self, xEvent):
+        return
 
     # XKeyListener
     def keyPressed (self, xKeyEvent):
