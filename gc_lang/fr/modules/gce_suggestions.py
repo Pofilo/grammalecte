@@ -202,6 +202,7 @@ def suggPlur (sFlex, sWordToAgree=None, bSelfSugg=False):
         aSugg.update(mfsp.getMiscPlural(sFlex))
     if not aSugg and bSelfSugg and sFlex.endswith(("s", "x", "S", "X")):
         aSugg.add(sFlex)
+    aSugg.discard("")
     if aSugg:
         return "|".join(aSugg)
     return ""
@@ -224,6 +225,7 @@ def suggSing (sFlex, bSelfSugg=True):
         aSugg.add(sFlex[:-1])
     if bSelfSugg and not aSugg:
         aSugg.add(sFlex)
+    aSugg.discard("")
     if aSugg:
         return "|".join(aSugg)
     return ""
@@ -251,6 +253,7 @@ def suggMasSing (sFlex, bSuggSimil=False):
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":m:[si]"):
             aSugg.add(e)
+    aSugg.discard("")
     if aSugg:
         return "|".join(aSugg)
     return ""
@@ -281,6 +284,7 @@ def suggMasPlur (sFlex, bSuggSimil=False):
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":m:[pi]"):
             aSugg.add(e)
+    aSugg.discard("")
     if aSugg:
         return "|".join(aSugg)
     return ""
@@ -306,6 +310,7 @@ def suggFemSing (sFlex, bSuggSimil=False):
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":f:[si]"):
             aSugg.add(e)
+    aSugg.discard("")
     if aSugg:
         return "|".join(aSugg)
     return ""
@@ -331,6 +336,7 @@ def suggFemPlur (sFlex, bSuggSimil=False):
     if bSuggSimil:
         for e in phonet.selectSimil(sFlex, ":f:[pi]"):
             aSugg.add(e)
+    aSugg.discard("")
     if aSugg:
         return "|".join(aSugg)
     return ""

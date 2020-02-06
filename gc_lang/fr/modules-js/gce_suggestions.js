@@ -269,6 +269,7 @@ function suggPlur (sFlex, sWordToAgree=null, bSelfSugg=false) {
     if (aSugg.size == 0 && bSelfSugg && (sFlex.endsWith("s") || sFlex.endsWith("x") || sFlex.endsWith("S") || sFlex.endsWith("X"))) {
         aSugg.add(sFlex);
     }
+    aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
     }
@@ -300,6 +301,7 @@ function suggSing (sFlex, bSelfSugg=false) {
     if (bSelfSugg && aSugg.size == 0) {
         aSugg.add(sFlex);
     }
+    aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
     }
@@ -335,6 +337,7 @@ function suggMasSing (sFlex, bSuggSimil=false) {
             aSugg.add(e);
         }
     }
+    aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
     }
@@ -374,6 +377,7 @@ function suggMasPlur (sFlex, bSuggSimil=false) {
             aSugg.add(e);
         }
     }
+    aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
     }
@@ -408,6 +412,7 @@ function suggFemSing (sFlex, bSuggSimil=false) {
             aSugg.add(e);
         }
     }
+    aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
     }
@@ -441,6 +446,7 @@ function suggFemPlur (sFlex, bSuggSimil=false) {
             aSugg.add(e);
         }
     }
+    aSugg.delete("");
     if (aSugg.size > 0) {
         return Array.from(aSugg).join("|");
     }
