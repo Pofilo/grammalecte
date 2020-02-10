@@ -8623,7 +8623,7 @@ TEST: Et les intellectuels ? En France comme ailleurs, tous n’ont pas, loin s
 
 
 # m’a / ma
-__conf_m_a!6__
+__conf_m_a_ma!6__
     [<start>|,]  tu  ma
         <<- /conf/ --1>> m’as                       # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 2ᵉ personne précédé du pronom personnel ”me”, écrivez “m’as”.
 
@@ -8634,9 +8634,15 @@ __conf_m_a!6__
     [ne|n’]  ma
         <<- /conf/ --1>> m’a                        # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
 
+    ça  ma  *WORD
+        <<- /conf/ morph(<1, "<start>|:C|>,/") and analyse(\-1, ":(?:Q|V1.*:Y)", ":N.*:[fe]")
+        -2>> m’a                                    # Confusion : “ma” est un déterminant possessif féminin. Pour le verbe “avoir” à la 3ᵉ personne précédé du pronom personnel ”me”, écrivez “m’a”.
+
 TEST: tu {{ma}} prise par surprise                          ->> m’as
 TEST: il {{ma}} tuée                                        ->> m’a
 TEST: cette femme ne {{ma}} prise que deux fois             ->> m’a
+TEST: ça {{ma}} {{foutu}} en l’air
+TEST: ça ma grande, c’est mon secret
 
 
 # m’ont / mon
@@ -18736,8 +18742,8 @@ TEST: les agents peu nombreux sont accaparés par le court terme et les tâches 
 
 
 __conf_tâche_tache__
-    tache [accomplie|dévalorisante|difforme|épuisante|exécutée|exténuante|fatigante|ingrate|menée|valorisante]
-    taches [accomplies|dévalorisantes|difformes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|menées|valorisantes]
+    tache [accomplie|dévalorisante|difforme|épuisante|exécutée|exténuante|fatigante|ingrate|menée|ménagère|valorisante]
+    taches [accomplies|dévalorisantes|difformes|épuisantes|exécutées|exténuantes|fatigantes|ingrates|menées|ménagères|valorisantes]
     >tache >insoluble
     >tache consistant à
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
@@ -20044,6 +20050,15 @@ TEST: nous ne nous sommes pas compris un seul moment
 TEST: vous vous êtes compromis plusieurs fois
 TEST: elles se sont prises en main.
 TEST: elles s’étaient aimées ce matin.
+
+
+__ppas_désoler__
+    [<start>|,] désoler [<end>|,]
+    [<start>|,] désoler pour $:D
+        <<- /ppas/ -2>> désolé|désolée          # Confusion. Pour indiquer qu’on est désolé, il faut un participe passé.
+
+TEST: {{Désoler}} pour la soupe froide.
+
 
 
 !!
