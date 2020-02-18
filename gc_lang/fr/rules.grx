@@ -53,7 +53,7 @@
 !!
 !!
 
-OPTGROUP/basic: typo apos eepi, esp tab, nbsp unit, tu maj, num virg, nf poncfin, ocr chim, liga mapos
+OPTGROUP/basic: typo apos eepi, esp tab, nbsp unit, tu maj, num nf, virg poncfin, ocr chim, liga mapos
 OPTGROUP/gramm: conf sgpl gn
 OPTGROUP/verbs: infi conj ppas, imp inte vmode
 OPTGROUP/style: bs pleo, redon1 redon2, neg
@@ -71,6 +71,7 @@ OPT/nbsp:           True        True        True        False       False       
 OPT/tu:             True        True        True        True        True        True
 OPT/maj:            True        True        True        True        True        True
 OPT/num:            True        True        True        True        True        True
+#OPT/romain:         False       False       False       False       False       False
 OPT/virg:           True        True        True        True        True        True
 OPT/poncfin:        False       False       False       False       False       False
 OPT/unit:           True        True        True        False       False       False
@@ -131,6 +132,7 @@ OPTCOLOR/nbsp:      orange      orange_vif
 OPTCOLOR/tu:        orange      orange_vif
 OPTCOLOR/maj:       orange      orange_vif
 OPTCOLOR/num:       orange      orange_vif
+#OPTCOLOR/romain:    orange      orange_vif
 OPTCOLOR/virg:      orange      orange_vif
 OPTCOLOR/poncfin:   orange      orange_vif
 OPTCOLOR/unit:      orange      orange_vif
@@ -175,6 +177,7 @@ OPTLABEL/tab:       Tabulations surnuméraires|Signale les tabulations inutiles 
 OPTLABEL/nbsp:      Espaces insécables|Vérifie les espaces insécables avec les ponctuations « ! ? : ; » (à désactiver si vous utilisez une police Graphite)
 OPTLABEL/maj:       Majuscules|Vérifie l’utilisation des majuscules et des minuscules (par exemple, « la raison d’État », « les Européens »).
 OPTLABEL/virg:      Virgules|Virgules manquantes avant “mais”, “car” et “etc.”.
+#OPTLABEL/romain:    Nombres romains|Utilise les caractères dédiés (petites majuscules) pour les nombres romains.
 OPTLABEL/poncfin:   Ponctuation finale [!]|Vérifie s’il manque une ponctuation finale au paragraphe (seulement pour les paragraphes constitués de plusieurs phrases).
 OPTLABEL/tu:        Traits d’union|Cherche les traits d’union manquants ou inutiles.
 OPTLABEL/num:       Nombres|Espaces insécables sur les grands nombres (> 10 000). Vérifie la présence de « O » au lieu de « 0 ».
@@ -224,8 +227,9 @@ OPTLABEL/nbsp:      Non-breakable spaces|Checks the use of non-breakable spaces 
 OPTLABEL/maj:       Capitals|Checks the use of uppercase and lowercase letters (i.e. « la raison d’État », « les Européens »).
 OPTLABEL/virg:      Commas|Missing commas before “mais”, “car” and “etc.”.
 OPTLABEL/poncfin:   Ending punctuation [!]|Checks if an ending punctuation is missing on paragraphs (only for multi-sentences paragraphs).
+#OPTLABEL/romain:    Roman numerals|Use dedicated characters (small caps) for roman numerals.
 OPTLABEL/tu:        Hyphens|Checks missing or useless hyphens.
-OPTLABEL/num:       Numbers|Large numbers and « O » instead of « 0 ».
+OPTLABEL/num:       Numerals|Large numerals and « O » instead of « 0 ».
 OPTLABEL/unit:      Non-breaking spaces before units of measurement
 OPTLABEL/nf:        French standards
 OPTLABEL/liga:      Report typographical ligatures|Ligatures of fi, fl, ff, ffi, ffl, ft, st.
@@ -3520,43 +3524,70 @@ TEST: les {{5 èmes}} classes…                   ->> 5ᵉˢ
 TEST: les {{3ièmes}} années                     ->> 3ᵉˢ
 
 
+# Chars:ⅠⅤⅩⅬⅭⅮⅯ, plus ⅡⅢⅣⅥⅦⅧⅨⅪⅫ pour les heures
+#__typo_cardinaux_romains__
+#    ~^[IVXLCDM]{2,20}$
+#        <<- /romain/ not value(\1, "|CDI|LCD|VIL|MIX|CID|") ->> =\1.replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ")
+#        # Nombre cardinal romain. Utilisez les caractères dédiés.
+#
+#TEST: __romain__ Charles {{VII}}                    ->> ⅤⅠⅠ
+#TEST: __romain__ Anno {{MXXXIII}}                   ->> ⅯⅩⅩⅩⅠⅠⅠ
+#TEST: __romain__ j’ai eu un CDI.
+#TEST: __romain__ c’est un écran LCD
 
-__typo_ordinaux_chiffres_romains_exposants__
+
+__typo_ordinaux_chiffres_romains_exposants!5__
     Ier
-        <<- /typo/ sContext != "Writer" ->> Iᵉʳ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> Iᵉʳ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> Ⅰᵉʳ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     Iers
-        <<- /typo/ sContext != "Writer" ->> Iᵉʳˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> Iᵉʳˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> Ⅰᵉʳˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     Ire
-        <<- /typo/ sContext != "Writer" ->> Iʳᵉ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> Iʳᵉ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> Ⅰʳᵉ     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     Ires
-        <<- /typo/ sContext != "Writer" ->> Iʳᵉˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> Iʳᵉˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> Ⅰʳᵉˢ    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     IId
-        <<- /typo/ sContext != "Writer" ->> IIᵈ     # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> IIᵈ     # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> ⅠⅠᵈ     # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     IIds
-        <<- /typo/ sContext != "Writer" ->> IIᵈˢ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> IIᵈˢ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> ⅠⅠᵈˢ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     IIde
-        <<- /typo/ sContext != "Writer" ->> IIᵈᵉ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> IIᵈᵉ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> ⅠⅠᵈᵉ    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     IIdes
-        <<- /typo/ sContext != "Writer" ->> IIᵈᵉˢ   # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> IIᵈᵉˢ   # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> ⅠⅠᵈᵉˢ   # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{2,20}e$
-        <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+    ~^[IVXLCDM]{2,20}e$
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> =\1[:-1].replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ")+"ᵉ"
+#        # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     [Ie|Ve|Xe]
-        <<- /typo/ sContext != "Writer" ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> =\1[:-1]+"ᵉ"    # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> =\1[:-1].replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ")+"ᵉ"
+#        # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{2,20}es$
-        <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+    ~^[IVXLCDM]{2,20}es$
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> =\1[:-2].replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ")+"ᵉˢ"
+#        # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     [Ies|Ves|Xes]
-        <<- /typo/ sContext != "Writer" ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ sContext != "Writer" and not option("romain") ->> =\1[:-2]+"ᵉˢ"   # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ ->> =\1[:-2].replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ")+"ᵉˢ"
+#        # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: François {{Ier}}                          ->> Iᵉʳ
 TEST: les {{Iers}}                              ->> Iᵉʳˢ
@@ -3571,53 +3602,84 @@ TEST: La {{Ve}} République                      ->> Vᵉ
 TEST: Le {{Xe}} siècle                          ->> Xᵉ
 TEST: {{XXXIIes}}                               ->> XXXIIᵉˢ
 TEST: les {{Ves}} siècles                       ->> Vᵉˢ
+#TEST: __romain__ François {{Ier}}               ->> Ⅰᵉʳ
+#TEST: __romain__ les {{Iers}}                   ->> Ⅰᵉʳˢ
+#TEST: __romain__ la {{Ire}}                     ->> Ⅰʳᵉ
+#TEST: __romain__ les {{Ires}}                   ->> Ⅰʳᵉˢ
+#TEST: __romain__ le {{IId}}                     ->> ⅠⅠᵈ
+#TEST: __romain__ les {{IIds}}                   ->> ⅠⅠᵈˢ
+#TEST: __romain__ la {{IIde}}                    ->> ⅠⅠᵈᵉ
+#TEST: __romain__ les {{IIdes}}                  ->> ⅠⅠᵈᵉˢ
+#TEST: __romain__ c’est le {{IIIe}} siècle       ->> ⅠⅠⅠᵉ
+#TEST: __romain__ La {{Ve}} République           ->> Ⅴᵉ
+#TEST: __romain__ Le {{Xe}} siècle               ->> Ⅹᵉ
+#TEST: __romain__ {{XXXIIes}}                    ->> ⅩⅩⅩⅠⅠᵉˢ
+#TEST: __romain__ les {{Ves}} siècles            ->> Ⅴᵉˢ
 
 
-__typo_ordinaux_chiffres_romains_incorrects__
+__typo_ordinaux_chiffres_romains_incorrects!5__
     I ier
     Iier
-        <<- /typo/ ->> Iᵉʳ          # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> Iᵉʳ                                  # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> Ⅰᵉʳ                     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     I iers
     Iiers
-        <<- /typo/ ->> Iᵉʳˢ         # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> Iᵉʳˢ                                 # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> Ⅰᵉʳˢ                    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     I ière
     Iière
-        <<- /typo/ ->> Iʳᵉ          # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> Iʳᵉ                                  # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> Ⅰʳᵉ                     # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     I ières
     Iières
-        <<- /typo/ ->> Iʳᵉˢ         # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> Iʳᵉˢ                                 # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> Ⅰʳᵉˢ                    # Nombre ordinal romain. Premier : Iᵉʳ. Première : Iʳᵉ. Premiers : Iᵉʳˢ. Premières : Iʳᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     II nd
     IInd
-        <<- /typo/ ->> IIᵈ          # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> IIᵈ                                  # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> ⅠⅠᵈ                     # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     II nds
     IInds
-        <<- /typo/ ->> IIᵈˢ         # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> IIᵈˢ                                 # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> ⅠⅠᵈˢ                    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     II nde
     IInde
-        <<- /typo/ ->> IIᵈᵉ         # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> IIᵈᵉ                                 # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> ⅠⅠᵈᵉ                    # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
     II ndes
     IIndes
-        <<- /typo/ ->> IIᵈᵉˢ        # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        <<- /typo/ ->> IIᵈᵉˢ                                # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> ⅠⅠᵈᵉˢ                   # Nombre ordinal romain. Second : IIᵈ. Seconde : IIᵈᵉ. Seconds : IIᵈˢ. Secondes : IIᵈᵉˢ.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{1,20}$  [e|è|ième|ieme|ème|eme]
-        <<- /typo/ ->> \1ᵉ          # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+    ~^[IVXLCDM]{1,20}$  [e|è|ième|ieme|ème|eme]
+        <<- /typo/ ->> \1ᵉ                                  # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> =\1.replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ") + "ᵉ"
+#        # Nombre ordinal romain singulier. Exemples : 2ᵉ, 3ᵉ, 4ᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{1,20}$  [es|ès|ièmes|iemes|èmes|emes]
-        <<- /typo/ ->> \1ᵉˢ         # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+    ~^[IVXLCDM]{1,20}$  [es|ès|ièmes|iemes|èmes|emes]
+        <<- /typo/ ->> \1ᵉˢ                                 # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__ ->> =\1.replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ") + "ᵉˢ"
+#        # Nombre ordinal romain pluriel. Exemples : 2ᵉˢ, 3ᵉˢ, 4ᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
-    ~^[IVXLCM]{1,20}(?:è|i?[èe]me)s?$
+    ~^[IVXLCDM]{1,20}(?:è|i?[èe]me)s?$
         <<- /typo/ not morph(\1, ":G") >>>
         <<- /typo/ \1.endswith("s") or \1.endswith("S")
-        ->> =\1.replace("mes", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉˢ" # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        ->> =\1.replace("mes", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉˢ"        # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
         <<- /typo/ __else__
-        ->> =\1.replace("me", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉ"   # Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+        ->> =\1.replace("me", "").replace("è", "").replace("e", "").replace("i", "") + "ᵉ"         #  Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ \1.endswith("s") or \1.endswith("S")
+#        ->> =\1.replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ").replace("mes", "").replace("è", "").replace("e", "").replace("i", "")+"ᵉˢ"
+#        # Nombre ordinal romain pluriel. Exemples : IIᵉˢ, IIIᵉˢ, IVᵉˢ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
+#        <<- /romain/ __else__
+#        ->> =\1.replace("I", "Ⅰ").replace("V", "Ⅴ").replace("X", "Ⅹ").replace("L", "Ⅼ").replace("C", "Ⅽ").replace("D", "Ⅾ").replace("M", "Ⅿ").replace("me", "").replace("è", "").replace("e", "").replace("i", "")+"ᵉ"
+#        #  Nombre ordinal romain singulier. Exemples : IIᵉ, IIIᵉ, IVᵉ…|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4271
 
 TEST: François {{Iier}}                         ->> Iᵉʳ
 TEST: {{Iiers}}                                 ->> Iᵉʳˢ
@@ -3634,6 +3696,21 @@ TEST: Le {{XX ème}} siècle.                     ->> XXᵉ
 TEST: Le {{XXIème}} siècle.                     ->> XXIᵉ
 TEST: le {{XXè}} siècle.                        ->> XXᵉ
 TEST: les {{CXIèmes}}                           ->> CXIᵉˢ
+#TEST: __romain__ François {{Iier}}              ->> Ⅰᵉʳ
+#TEST: __romain__ {{Iiers}}                      ->> Ⅰᵉʳˢ
+#TEST: __romain__ {{I ière}}                     ->> Ⅰʳᵉ
+#TEST: __romain__ {{Iières}}                     ->> Ⅰʳᵉˢ
+#TEST: __romain__ le {{IInd}} siècle             ->> ⅠⅠᵈ
+#TEST: __romain__ {{IInds}}                      ->> ⅠⅠᵈˢ
+#TEST: __romain__ {{II nde}}                     ->> ⅠⅠᵈᵉ
+#TEST: __romain__ {{IIndes}}                     ->> ⅠⅠᵈᵉˢ
+#TEST: __romain__ Le {{XXII ème}} siècle.        ->> ⅩⅩⅠⅠᵉ
+#TEST: __romain__ Les {{XVI èmes}}.              ->> ⅩⅤⅠᵉˢ
+#TEST: __romain__ le {{VIième}} siècle           ->> ⅤⅠᵉ
+#TEST: __romain__ Le {{XX ème}} siècle.          ->> ⅩⅩᵉ
+#TEST: __romain__ Le {{XXIème}} siècle.          ->> ⅩⅩⅠᵉ
+#TEST: __romain__ le {{XXè}} siècle.             ->> ⅩⅩᵉ
+#TEST: __romain__ les {{CXIèmes}}                ->> ⅭⅩⅠᵉˢ
 
 
 !!!! Chimie                                                                                       !!
@@ -3832,15 +3909,21 @@ TEST: une {{sous culture}} passée de mode
 TEST: Sans gêne, il avança parmi nous.
 
 
+__tu_préfixe_pseudo__
     pseudo  $:N¬*
         <<- /tu/ ->> pseudo-\2                                                                      # Si vous voulez évoquer le simulacre de “\2”, mettez un trait d’union.
         <<- ~1>> *
+
+    [une|la|cette|cet|ma|ta|sa]  pseudo  @:N.*:f
+        <<- /tu/ -2:3>> pseudo-\3                                                                   # Si vous voulez évoquer le simulacre de “\2”, mettez un trait d’union.
+        <<- ~2>> *
 
     ~^[pP]seudo-\w+
         <<- =>> define_from(\1, 7)
 
 TEST: il n’avait contracté qu’un {{pseudo mariage}}.
 TEST: elle connaissait de {{cet}} pseudo-prêtresse uniquement de nom.
+TEST: la {{pseudo taxe}} carbone
 
 
 __tu_mots_composés_verbe_nom__
@@ -8800,6 +8883,7 @@ TEST: ces chiens te l’{{on}} {{donné}}
 TEST: Qui {{on}} {{tant}} de malheurs !
 TEST: Je voulais qu’on soit ensemble.
 TEST: qui on blâme, ce soir ?
+TEST: La peur irraisonnée de l’autre est le plus grave danger qu’ont à affronter les civilisations.
 
 
 __conf_on_ont__
@@ -9237,7 +9321,7 @@ __conf_près_prêt_pré__
         <<- /conf/ -1>> près                                                # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     >prêt [de|d’] [toi|vous|lui|elle|eux|elles|iels|$:M]
-        <<- /conf/ not morph(<1, ":D") and not morph(<1, ">obtenir/")
+        <<- /conf/ not morph(<1, ":D") and not morph(<2, ">obtenir/")
         -1>> près                                                           # Confusion probable. Être près de (faire) quelque chose. Prêt à faire quelque chose.
 
     si [>prêt|>pré] [du|de|d’|des]
@@ -9247,26 +9331,26 @@ __conf_près_prêt_pré__
         <<- /conf/ --1>> près                                               # Confusion probable : de près, c’est-à-dire proche de quelque chose ou quelqu’un.
 
     à la [virgule|nanoseconde|milliseconde|seconde|minute] [>prêt|>pré]
-        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à la \3 près”.
+        <<- /conf/ --1>> près                                               # Confusion probable. Locution “à la \3 près”.
 
     à [quelques|plusieurs|$:B] [degrés|exceptions|nuances|pourcents|variations|nanomètres|millimètres|centimètres|décimètres|mètres|kilomètres|parsecs|années-lumière|nanosecondes|millisecondes|secondes|minutes|heures|jours|semaines|mois|années|décennies|siècles|millénaires] [>prêt|>pré]
     à un [degré|pourcent|nanomètre|millimètre|centimètre|décimètre|mètre|kilomètre|parsec|jour|mois|siècle|millénaire] [>prêt|>pré]
     à une [exception|nuance|variation|année-lumière|nanoseconde|milliseconde|seconde|minute|heure|semaine|année|décennie] [>prêt|>pré]
-        <<- /conf/ -4>> près                                                # Confusion probable. Locution “à \2 \3 près”.
+        <<- /conf/ --1>> près                                               # Confusion probable. Locution “à \2 \3 près”.
 
-    au >mètre [>prêt|>pré]
-        <<- /conf/ -3>> près                                                # Confusion probable. Locution “au \2 près”.
+    au [>millimètre|>centimètre|>décimètre|>mètre|>kilomètre] [>prêt|>pré]
+        <<- /conf/ --1>> près                                               # Confusion probable. Locution “au \2 près”.
 
-    à ([ceci|cela]) ([prêt|prêts]) [que|qu’]
-    [<start>|,] à ([ceci|cela]) ([prêt|prêts]) [,|<end>]
-        <<- /conf/ -2>> près                                                # Confusion probable. Locution “à \1 près”.|https://fr.wiktionary.org/wiki/%C3%A0_cela_pr%C3%A8s
+    à [ceci|cela] [prêt|prêts] [que|qu’]
+    [<start>|,] à [ceci|cela] [prêt|prêts] [,|<end>]
+        <<- /conf/ --2>> près                                               # Confusion probable. Locution “à \1 près”.|https://fr.wiktionary.org/wiki/%C3%A0_cela_pr%C3%A8s
 
     ni de [>prêt|>pré] ?,¿ ni de loin
-        <<- /conf/ -3>> près                                                # Confusion. Être près de (faire) quelque chose. Prêt à faire quelque chose.
+        <<- /conf/ -3>> près                                                # Confusion. Locution “ni de près, ni de loin”.|https://fr.wiktionary.org/wiki/de_pr%C3%A8s
 
     depuis [>prêt|>pré] [de|d’] *NUM *WORD
     depuis [>prêt|>pré] [de|d’] $:B  *WORD
-        <<- /conf/ -2>> près                        # Confusion probable. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes. Depuis presque “\4 \5”, donc “près \3 \4 \5”.
+        <<- /conf/ -2>> près                                # Confusion. Être prêt(e) à faire quelque chose. Être près de quelque chose. Le pré est un champ d’herbes. Depuis presque “\4 \5”, donc “près \3 \4 \5”.
 
 TEST: depuis {{prêt}} de 15 ans
 TEST: approche très {{prêt}}
@@ -9294,8 +9378,8 @@ __conf_prix_pris__
     quel est [le|mon|ton|son|notre|votre|leur|leurs] pris
         <<- /conf/ --1>> prix                                               # Confusion : pour évoquer la valeur d’une chose, écrivez “prix”.|https://fr.wiktionary.org/wiki/prix
 
-    prix dans la [tourmente|tempête|tornade]
-    prix dans la coulée de [boue|lave]
+    prix dans [la|une|cette] [tourmente|tempête|tornade]
+    prix dans [la|une|cette] coulée de [boue|lave]
     prix dans l’ [orage|ouragan]
     prix dans les [flots|vagues|tempêtes|tornades|orages|ouragans]
     prix par surprise
@@ -12932,14 +13016,14 @@ __purge_conditionnelle__
 
 __simplication_substantifs__
     abus [de|d’] pouvoir
-    >accusé de reception
+    >accusé [de|d’] reception
     >acte [de|d’] [baptême|caution|cautionnement|cession|contrition|licitation|mariage|naissance|notoriété|propriété|quittance|reconnaissance|répudiation|vente]
     >acte d’ [achat|engagement]
-    >acte de gestion ?courante¿
-    >acte de procédure ?pénale¿
+    >acte [de|d’] gestion ?courante¿
+    >acte [de|d’] procédure ?pénale¿
     >acte d’ état ?civil¿
     >administrateur >système
-    >agence de >voyage
+    >agence [de|d’] >voyage
     >aire d’ atterrissage
     >animal [de|d’] compagnie
     >appel au secours
@@ -12988,7 +13072,7 @@ __simplication_substantifs__
     >canon à eau
     >caisse à >outil
     >carton d’ emballage
-    >cellule de détention provisoire
+    >cellule [de|d’] détention provisoire
     >centre d’ éducation [populaire|surveillée]
     >chair à [pâté|>canon]
     >chair [de|d’] poule
@@ -13000,7 +13084,7 @@ __simplication_substantifs__
     >chasse d’ eau
     >chasseur [de|d’] primes
     >chemin [de|d’] [traverse|fer]
-    >chemise de nuit
+    >chemise [de|d’] nuit
     >chemise sans >manche
     >chèque sans provision
     >chili con carne
@@ -13019,7 +13103,7 @@ __simplication_substantifs__
     >compagnon [de|d’] route
     >complémentaire santé
     >compte à rebours
-    concours de beauté
+    concours [de|d’] beauté
     >condamné à mort
     >conférence [de|d’] presse
     >con comme la lune
@@ -13033,7 +13117,7 @@ __simplication_substantifs__
     >coup [de|d’] baguette ?magique¿
     >coup du sort
     >coup d’ un soir
-    >coureur de >jupon
+    >coureur [de|d’] >jupon
     >course contre la montre
     [cousu+ses] [main]
     [cousu+ses] [de|d’] fil blanc
@@ -13042,7 +13126,7 @@ __simplication_substantifs__
     [>coût|>cout] [de|d’] revient
     >couteau à cran d’ arrêt
     >cuillère à [café|soupe]
-    >cure de [désintoxication|désintox]
+    >cure [de|d’] [désintoxication|désintox]
     >déclaration sur l’ honneur
     >délai [de|d’] [attente|carence|connexion|prescription|préavis|rétraction|rigueur]
     >demande d’ asile
@@ -13055,7 +13139,8 @@ __simplication_substantifs__
     >droit comme un i
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
     >eau [de|d’] noix [de|d’] coco
-    >économie de >bout de >chandelle
+    >économie [de|d’] >bout [de|d’] >chandelle
+    >éditeur [de|d’] presse
     >élément à charge
     >emploi du temps
     >enterrement [de|d’] vie [de|d’] garçon
@@ -13063,7 +13148,7 @@ __simplication_substantifs__
     >entrée [de|d’] service
     >épée à deux mains
     >épingle à cravate
-    >erreur de jugement
+    >erreur [de|d’] jugement
     >espérance [de|d’] vie
     >état [de|d’] [âme|esprit|urgence|conservation|fait]
     >état d’ extrême urgence
@@ -13084,7 +13169,7 @@ __simplication_substantifs__
     >fermoir à [cliquet|levier|ressort]
     >feu d’ artifice
     >feuille [de|d’] route
-    >fibre de verre
+    >fibre [de|d’] verre
     >fiche S
     >file d’ attente
     >fille à [papa|maman|>soldat]
@@ -13097,20 +13182,20 @@ __simplication_substantifs__
     >fontaine à eau
     >fosse à [merde|>ordure|purin]
     >fosse aux lions
-    [>fourgon|>fourgonnette] de location
+    [>fourgon|>fourgonnette] [de|d’] location
     >frayeur [de|d’] tous les diables
     >frousse [de|d’] tous les diables
     >fusil à pompe
     >garde à vue
     >garde du corps
     gaz à >effet [de|d’] serre
-    >gilet de sauvetage
+    >gilet [de|d’] sauvetage
     >grain [de|d’] [blé|maïs|sable]
-    >grève de la faim
-    >groupe de [discussion|parole|prière|pression|travail]
+    >grève [de|d’] la faim
+    >groupe [de|d’] [discussion|parole|prière|pression|travail]
     >guerre éclair
     >hall d’ entrée
-    >harcèlement de rue
+    >harcèlement [de|d’] rue
     >haut comme [trois|3] pommes
     >heure [sup|sup’]
     >histoire à dormir debout
@@ -13123,18 +13208,18 @@ __simplication_substantifs__
     >hôtesse d’ accueil
     >infirmier [de|d’] garde
     >inspection [de|d’] routine
-    >instinct de survie
+    >instinct [de|d’] survie
     >interface [utilisateur+s]
     >invité d’ honneur
     >invité surprise
     >journal [de|d’] bord
     >juge d’ instruction
-    >langue de bois
-    >lame de fond
+    >langue [de|d’] bois
+    >lame [de|d’] fond
     >lettre [de|d’] recommandation
     >lampe à [huile|pétrole]
     >lampe [de|d’] chevet
-    >lavage de cerveau
+    >lavage [de|d’] cerveau
     >liaison sans lendemain
     >lime à >ongle
     >liste d’ attente
@@ -13189,7 +13274,7 @@ __simplication_substantifs__
     orge [perlé|mondé|carré]
     >noir comme la nuit
     >noir comme une nuit sans lune
-    >nuit de noces
+    >nuit [de|d’] noces
     >panier à linge
     >papier à [>lettre|musique]
     >parc d’ attractions
@@ -13221,7 +13306,7 @@ __simplication_substantifs__
     preuves ?suffisantes¿ du contraire
     prix [de|d’] revient
     quelqu’un d’ autre
-    >question de vie ou de mort
+    >question [de|d’] vie ou [de|d’] mort
     >rapport [de|d’] force
     >rat [de|d’] bibliothèque
     >réaction en [chaîne|chaine]
@@ -13252,8 +13337,8 @@ __simplication_substantifs__
     [secret+s] défense
     >sel [de|d’] [aluminium|ammonium|mer]
     >serpent à sonnette
-    >seuil de tolérance
-    >seuil de tolérance à la douleur
+    >seuil [de|d’] tolérance
+    >seuil [de|d’] tolérance à la douleur
     >silo à [>grains|blé]
     >soldat d’ élite
     >sonnette d’ alarme
@@ -13262,9 +13347,9 @@ __simplication_substantifs__
     >sourd comme un pot
     >système d’ exploitation
     >système D
-    >tableau de chasse
+    >tableau [de|d’] chasse
     >table à repasser
-    >table de chevet
+    >table [de|d’] chevet
     >taille *NUM
     tas [de|d’] >ferraille ?rouillée¿
     >talon >aiguille
@@ -13278,7 +13363,7 @@ __simplication_substantifs__
     >têtu comme un [âne|bourriquot|mulet]
     >terrain à découvert
     >tigre à dents [de|d’] sabre
-    >tir de barrage
+    >tir [de|d’] barrage
     >tiret d’ incise
     >tireur d’ élite
     >titre [de|d’] [noblesse|propriété|séjour]
@@ -13298,18 +13383,18 @@ __simplication_substantifs__
     >vache à lait
     >vague à l’ âme
     >vecteur [>accélération|>position|>rotation|>vitesse]
-    >véhicule de location
+    >véhicule [de|d’] location
     >vente à domicile
     >vente aux enchères
-    >vérification de routine
+    >vérification [de|d’] routine
     vernis à ongles
     >verre à pied
     >voie [de|d’] [recours|perdition]
     >vol à l’ étalage
     >vol à la [sauvette|tire]
     >vol à main armée
-    >volée de bois vert
-    >voiture de location
+    >volée [de|d’] bois vert
+    >voiture [de|d’] location
     >zone [de|d’] confort
     >zone [de|d’] transit ?principal¿
         <<- ~2:0>> *
