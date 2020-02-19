@@ -2,7 +2,7 @@
 #   RÈGLES DE GRAMMAIRE FRANÇAISE POUR GRAMMALECTE
 #   par Olivier R.
 #
-#   Copyright © 2011-2019.
+#   Copyright © 2011-2020.
 #
 #   This file is part of Grammalecte.
 #
@@ -20,10 +20,7 @@
 #   along with Grammalecte.  If not, see <http://www.gnu.org/licenses/>
 #
 
-# RÈGLES PAR EXPRESSIONS RÉGULIÈRES
-
 # DOCUMENTATION
-# Expressions régulières en Python : http://docs.python.org/library/re.html
 
 # [++] : séparateur des règles pour le paragraphe et des règles pour la phrase.
 
@@ -32,6 +29,8 @@
 #   ~>> préprocesseur de texte
 #   =>> désambiguïsateur
 
+# RÈGLES PAR EXPRESSIONS RÉGULIÈRES
+# Expressions régulières en Python : http://docs.python.org/library/re.html
 # Groups positioning code for JavaScript:
 # Always begins by @@
 #   0 ... n         left boundary position from left
@@ -42,6 +41,8 @@
 #   >x:_            within group x, _ is group position code within group x
 
 # Fin d’interprétation du fichier avec une ligne commençant par #END
+
+
 
 # ERREURS COURANTES
 # http://fr.wikipedia.org/wiki/Wikip%C3%A9dia:Fautes_d%27orthographe/Courantes
@@ -1469,20 +1470,6 @@ __[i]/ocr(tu_trait_union_conditionnel)__
 TEST: __ocr__ c’est {{anti‑américain}}
 
 
-## Lettres isolées
-# Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
-__[s]/ocr(ocr_lettres_isolées)!2__
-    \w(?!’)
-    <<- not re.search("[0-9aàAÀyYdlnmtsjcçDLNMTSJCÇ_]", \0) and not before("\\d[   ]+$") and not (\0.isupper() and after0(r"^\."))
-    ->> _           # Lettre isolée : erreur de numérisation ?
-
-TEST: __ocr__ des verres luisent sur {{i}} le bureau blanc.
-TEST: __ocr__ la voix, {{e}} est celle de…
-TEST: __ocr__ ressemble {{h}} une fenêtre de serre.
-TEST: __ocr__ Ça a duré 3 h.
-TEST: __ocr__ c’est alors que je suis fort.
-
-
 ## Caractères rares
 __<s>/ocr(ocr_caractères_rares)__
     \w*[{}<>&*#£]+\w*
@@ -1990,7 +1977,7 @@ __da_groupe_nominal__
         <<- __else__ =>> define(\1, [">nombre/:G:D"])
 
     plein  [de|d’]  @:[AN]
-        <<- not morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, [":G"])
+        <<- not morph(<1, ":D.*:m|>(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, [":G"])
 
     source [de|d’]
         <<- morph(<1, ">(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> define(\1, [":LV"])
@@ -2498,6 +2485,21 @@ __ocr_lettres_isolées__
         <<- /ocr/ re.search("^[aâeéèêiîouyh]", \2) -1:.2>> \1’                                      # Lettre isolée. Erreur de numérisation ?
 
 TEST: __ocr__ {{J }}arrive demain
+
+
+# Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
+__ocr_lettres_isolées2!2__
+    [á|â|ä|b|c|ç|d|e|é|è|ê|ë|f|g|h|i|í|ì|î|ï|j|k|l|m|n|o|ó|ò|ô|ö|p|q|r|s|t|u|ú|ù|û|ü|v|w|x|z]
+    <<- not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
+    ->> _           # Lettre isolée : erreur de numérisation ?
+
+TEST: __ocr__ des verres luisent sur {{i}} le bureau blanc.
+TEST: __ocr__ la voix, {{e}} est celle de…
+TEST: __ocr__ ressemble {{h}} une fenêtre de serre.
+TEST: __ocr__ Ça a duré 3 h.
+TEST: __ocr__ c’est alors que je suis fort.
+TEST: __ocr__ X
+TEST: __ocr__ V.
 
 
 # virgules
@@ -12981,6 +12983,9 @@ __purge_conditionnelle__
     [le|un|ce|mon|ton|son]  putain  [de|d’]  @:[NA].*:[me]
         <<- ~2:3>> *
 
+    quand  même  @:[AW]¬:D
+        <<- ~1:2>> *
+
     tambour battant
     tambours battants
         <<- morph(<1, ":(?:V|N:f)", ":G") ~>> *
@@ -13695,7 +13700,7 @@ __purge_après_avoir__
     >avoir  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morph(>1, ":[QY]") ~2:0>> *
 
-    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
+    >avoir  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  bon [dos|fond]
     >avoir  bon pied ?,¿ bon œil
     >avoir  carte blanche
@@ -13705,7 +13710,7 @@ __purge_après_avoir__
         <<- ~2:0>> ␣
         <<- =>> define(\2, [":LV"])
 
-    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
+    >avoir  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  [pas|jamais|plus|guère|point]  bon [dos|fond]
     >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
@@ -13716,7 +13721,7 @@ __purge_après_avoir__
         <<- ~3:0>> ␣
         <<- =>> define(\3, [":LV"])
 
-    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
+    >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     >avoir  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
         <<- ~2:-2>> *
 
@@ -13748,7 +13753,7 @@ __purge_après_avoir__
     /VCint  ?[pas|jamais|plus|guère|point]¿  un tout petit peu
         <<- morphVC(\1, ":V0a") and morph(>1, ":[QY]") ~2:0>> *
 
-    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
+    /VCint  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /VCint  bon [dos|fond]
     /VCint  bon pied ?,¿ bon œil
     /VCint  carte blanche
@@ -13758,7 +13763,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~2:0>> ␣
         <<- __also__ =>> define(\2, [":LV"])
 
-    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
+    /VCint  [pas|jamais|plus|guère|point]  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /VCint  [pas|jamais|plus|guère|point]  bon [dos|fond]
     /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
@@ -13769,7 +13774,7 @@ __purge_après_avoir__
         <<- morphVC(\1, ":V0a") ~3:0>> ␣
         <<- __also__ =>> define(\3, [":LV"])
 
-    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|soif|vent]
+    /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  [besoin|confiance|connaissance|conscience|crainte|envie|faim|honte|peur|peine|pitié|soif|vent]
     /VCint  ?[pas|jamais|plus|guère|point]¿  [tous|toutes] les $:B  @:(?:Q|V1.*:Y)
         <<- morphVC(\1, ":V0a") ~2:-2>> *
 
@@ -19564,6 +19569,13 @@ TEST: Il faut être sans préjugés.
 TEST: je craignais d’être pour toujours abandonnée
 
 
+__infi_locutions__
+    >sentir le vent tourné
+        <<- /infi/ --1>> tourner                                                                    # Locution “sentir le vent tourner ”. Utilisez l’infinitif.
+
+TEST: j’ai senti le vent {{tourné}}
+TEST: elles sentent le vent tourner en leur faveur.
+
 
 !!!! Participes présents                                                                          !!
 
@@ -22285,6 +22297,7 @@ TEST: Va la demander au concierge.
 TEST: Allons le questionner encore une fois.
 TEST: Sois le pire des salopards.
 TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
+TEST: Faites le plein de culture en vous abonnant dès 1 € !
 
 
 __imp_union_en__
