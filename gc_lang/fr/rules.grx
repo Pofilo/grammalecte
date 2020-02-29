@@ -4642,6 +4642,7 @@ TEST: veuillez vous adresser à notre secretaire pour prendre rendez-vous.
 TEST: Allez vous faire foutre.
 TEST: Venez vous défouler sur ces connards.
 TEST: Vous ne pouvez vous satisfaire de si peu.
+#TEST: Osez vous remettre en question.
 
 
 
@@ -11138,6 +11139,48 @@ TEST: Non, ne {{manger}} pas ça.                                    ->> mangez
 TEST: Ne {{donner}} jamais à manger ces saloperies au chat.         ->> donnez
 
 
+!!
+!!
+!!!! Après celui, celle, ceux, celles                                                             !!
+!!
+!!
+
+__conf_celui_celle_ceux_celles_verbe__
+    celui  ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:s")                                 # Confusion. Après “\1”, il faut un adjectif.
+
+    ceux  ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:p")                                 # Confusion. Après “\1”, il faut un adjectif.
+
+    celle ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":f:s")                                 # Confusion. Après “\1”, il faut un adjectif.
+
+    celles ~.e[rz]$
+        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":f:p")                                 # Confusion. Après “\1”, il faut un adjectif.
+
+    celui  ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":V[123].*:Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":m:s")               # Confusion. Après “\1”, il faut un adjectif.
+
+    ceux  ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":V[123].*:Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":m:p")               # Confusion. Après “\1”, il faut un adjectif.
+
+    celle ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":V[123].*:Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":f:s")               # Confusion. Après “\1”, il faut un adjectif.
+
+    celles ~.ai[ts]$
+        <<- /conf/ morph(\-1, ":V[123].*:Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":f:p")               # Confusion. Après “\1”, il faut un adjectif.
+
+TEST: Celui {{développer}} par Tim était moins efficace.
+TEST: Celle {{donnez}} à Maria valait la peine
+TEST: ceux {{trouver}} à la cave était très vieux
+TEST: celles {{attaquer}} par la moisissure sont foutues.
+TEST: celui {{attaquait}} par les mites
+TEST: celle {{attaquait}}
+TEST: ceux {{sidérait}}
+TEST: celles {{déjantait}}
+TEST: celui d’Obéron était différent
+
+
 
 !!!
 !!!
@@ -12439,7 +12482,7 @@ __purge_locutions__
     sous aucun prétexte
     sous bonne [escorte|garde]
     sous coupe réglée
-    sous haute surveillance
+    sous haute [surveillance|tension]
     souvent
     stricto sensu
     sur [mon|ton|son|notre|votre|leur] [trente-et-un|31]
@@ -12628,6 +12671,7 @@ __gestion_mots_grammaticaux__
     le long                                                                                                                                     [de|du|d’|des]
     par le biais                                                                                                                                [de|du|d’|des]
     par l’ entremise                                                                                                                            [de|du|d’|des]
+    par manque                                                                                                                                  [de|d’]
         <<- ~1:-2>> ␣
         <<- =>> define(\1, [":R:LR"])
 
@@ -13120,8 +13164,9 @@ __simplication_substantifs__
     >corvéable à merci
     >coup [de|d’] [avance|balai|barre|bâton|bec|bélier|bite|blues|bol|botte|boule|boutoir|cœur|chaud|coude|couteau|dé|dent|déprime|éclat|épaule|épée|estoc|État|foudre|fil|froid|genou|grâce|>griffe|grisou|gueule|hache|hanche|jarnac|jeune|jus|klaxon|main|maître|maitre|marteau|massue|nostalgie|œil|patte|pied|poignard|poing|poker|pouce|pute|queue|rabot|rein|sabre|sabot|sang|savate|semonce|sifflet|soleil|surin|tête|théâtre|tonnerre|trique|torchon|vent|vieux]
     >coup [de|d’] baguette ?magique¿
-    >coup du sort
+    >coup d’ épée dans l’ eau
     >coup d’ un soir
+    >coup du sort
     >coureur [de|d’] >jupon
     >course contre la montre
     [cousu+ses] [main]
@@ -13356,7 +13401,7 @@ __simplication_substantifs__
     >table à repasser
     >table [de|d’] chevet
     >taille *NUM
-    tas [de|d’] >ferraille ?rouillée¿
+    tas [de|d’] ferraille ?rouillée¿
     >talon >aiguille
     taux [de|d’] [abstention|absorption|alcool|alphabétisation|endettement|inflation|intérêt|imposition|occupation|ouverture|œstrogène|urée|usure|change|cholestérol|cholesterol|glycémie|fécondité|participation|testostérone|TVA]
     >témoin à charge
@@ -13411,6 +13456,10 @@ __simplication_substantifs__
     [>homme|>femme|>cinéaste|>politicien|>acteur|>auteur|>sculpteur|>compositeur|>musicien|>groupe|>romancier|>peintre|>photographe|>sportif|>philosophe|>intellectuel|>polémiste] à succès
     [>homme|>femme] d’ >affaire à succès
         <<- ~-2:0>> *
+
+    [>bébé|fils|>fille|>enfant|>neveu|>nièce|>frère|>sœur] [de|d’] $:B [mois|ans]
+    [>grand-père|>grand-mère|>père|>mère|>papa|>maman|>oncle|>tante|>frère|>sœur|beau-frère|belle-sœur|>nièce|>neveu|>cousin] [de|d’] $:B ans
+        <<- ~2:0>> *
 
     >calibre . *NUM ?[acp|auto|brenneke|browning|british|colt|court|H&K|magnum|mauser|otan|remington|parabellum|russian|S&W|sig|soviet|special|wcf|wsm|winchester]¿
     >calibre . *NUM long rifle
@@ -14277,6 +14326,7 @@ __purge_locutions_verbales__
     [>mettre|>remettre] au [point|pas]
     [>mettre|>remettre] de côté
     [>mettre|>remettre] en [avant|branle|bouche|demeure|évidence|garde|jeu|lumière|marche|mouvement|œuvre|place|route|scène|terre]
+    >monter de toutes pièces
     >mourir jeune
     [>naître|>naitre] de la dernière pluie
     [>naître|>naitre] sous x
@@ -16861,46 +16911,6 @@ TEST: Il a de grands biens.
 TEST: Ce sont des biens de peu de valeur.
 
 
-!!
-!!
-!!!! Après celui, celle, ceux, celles                                                             !!
-!!
-!!
-
-__conf_celui_celle_ceux_celles_verbe__
-    celui  ~.e[rz]$
-        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:s")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    ceux  ~.e[rz]$
-        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":m:p")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    celle ~.e[rz]$
-        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":f:s")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    celles ~.e[rz]$
-        <<- /conf/ morph(\-1, ":V") -2>> =suggVerbPpas(\-1, ":f:p")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    celui  ~.ai[ts]$
-        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":m:s")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    ceux  ~.ai[ts]$
-        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":m:p")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    celle ~.ai[ts]$
-        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":f:s")                     # Confusion. Après “\1”, il faut un adjectif.
-
-    celles ~.ai[ts]$
-        <<- /conf/ morph(\-1, ":Iq.*:[32]s") -2>> =suggVerbPpas(\-1, ":f:p")                     # Confusion. Après “\1”, il faut un adjectif.
-
-TEST: Celui {{développer}} par Tim était moins efficace.
-TEST: Celle {{donnez}} à Maria valait la peine
-TEST: ceux {{trouver}} à la cave était très vieux
-TEST: celles {{attaquer}} par la moisissure sont foutues.
-TEST: celui {{attaquait}} par les mites
-TEST: celle {{attaquait}}
-TEST: ceux {{sidérait}}
-TEST: celles {{déjantait}}
-
 
 !!
 !!
@@ -19057,7 +19067,7 @@ TEST: Tous ceux qui ont du mal à {{obligé}} ces gens
 
 
 __infi_verbe_de_verbe__
-    [>arrêter|>cesser|>choisir|>commander|>continuer|>craindre|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>oublier|>permettre|>prévoir|>refuser|>suggérer|>tenter]
+    [>accuser|>arrêter|>cesser|>choisir|>commander|>continuer|>craindre|>décider|>défendre|>envisager|>essayer|>éviter|>interdire|>omettre|>oublier|>permettre|>prévoir|>refuser|>suggérer|>tenter]
         || [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  *WORD
         <<- /infi/ not morph(\1, ":N") and (analyse(\-1, ":V1.*:Q", ":(?:M|Oo)") or analyse(\-1, ":[123][sp]", ":[MNG]"))
         --1>> =suggVerbInfi(\-1)                                                                    # Après “\1 de”, le verbe devrait être à l’infinitif.
@@ -20330,16 +20340,16 @@ __ppas_3sg_mas_verbe_état__
         || avoir [été|semblé|paru]                                                                                                          [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
         <<- /ppas/ not tag(\2, "enum") --1>> =suggMasSing(\-1)                                                          # Accord avec le sujet “\2” : “\-1” devrait être au masculin singulier.
 
-    lui [ne|n’|en|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui [ne|n’|en|y] >avoir [été|semblé|paru]                                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui [ne|n’|en|y] [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui [ne|n’|en|y]
+    lui [ne|n’|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|y] >avoir [été|semblé|paru]                                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|y] [>être|>sembler] [devenu|redevenu|resté|demeuré]                                                                       [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
+    lui [ne|n’|y]
         || [>aller|>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || [être|devenir|redevenir|rester|paraître|paraitre|sembler]                                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui [ne|n’|en|y]
+    lui [ne|n’|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || être [devenu|redevenu|resté|demeuré]                                                                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-    lui [ne|n’|en|y]
+    lui [ne|n’|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
         <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
@@ -20430,6 +20440,7 @@ TEST: le sentiment que la question du chômage, tout en restant importante, est 
 TEST: tout est nuances de rouges, de gris et de bleus.
 TEST: tout en restant bien sages
 TEST: Celles et ceux qui n’auront que cela seront vraiment appauvris. D’autres, qui seront plus aisés, iront compléter par de la capitalisation.
+TEST: dès que l’occasion lui en fut laissée
 
 
 __ppas_3sg_fem_verbe_état__
