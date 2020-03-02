@@ -150,7 +150,7 @@ class SpellChecker ():
         if not self.oTokenizer:
             self._loadTokenizer()
         for dToken in self.oTokenizer.genTokens(sText):
-            if dToken['sType'] == "WORD":
+            if dToken['sType'].startswith("WORD"):
                 if bOnlyUnknownWords:
                     if not self.isValidToken(dToken['sValue']):
                         dWord[dToken['sValue']] = dWord.get(dToken['sValue'], 0) + 1
