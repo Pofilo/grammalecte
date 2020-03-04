@@ -6013,6 +6013,10 @@ __conf_déterminant_fem_sing_verbe__
     [ma|ta|cette|ladite]  @:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                        # Incohérence avec « \1 » : « \2 » est un verbe.
 
+    quelle  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir)/
+        <<- /conf/ \2.islower() and not value(<1, "|le|la|les|") and hasSimil(\2, ":[NA]:[fe]:[si]")
+        -2>> =suggSimil(\2, ":[NA]:[fe]:[si]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
     sa  @:(?:Y|[123][sp])¬:(?:N.*:[fe]|A|W)
         <<- /conf/ not \1.isupper() and \2.islower() >>>
         <<- /conf/ morph(\2, "V.....[pqx]") -1>> ça|se                                              # Confusion : « \2 » est un verbe. Exemples : sa jambe, ça vient. (Une faute de frappe peut-être ?)
@@ -6029,11 +6033,18 @@ TEST: {{sa}} prend du temps.                                                  ->
 TEST: {{çà}} va                                                               ->> ça
 TEST: {{sa}} va                                                               ->> ça
 TEST: {{sa}} a tout changé                                                    ->> ça
+TEST: {{quelle}} {{camera}} ce serait ?
+TEST: quelle serait la solution ?
+TEST: quelle pourrait être la solution à ce problème ?
 
 
 __conf_déterminant_mas_sing_verbe__
     [du|cet|ledit|dudit]  @:(?:Y|[123][sp])¬:[NAQ]
         <<- /conf/ \2.islower()
+        -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\1” : “\2” est un verbe.
+
+    quel  @:V[123].*:(?:Y|[123][sp])¬:[NAQ]|>(?:pouvoir|vouloir|aller|devoir)/
+        <<- /conf/ \2.islower() and not value(<1, "|le|la|les|")
         -2>> =suggSimil(\2, ":[NA]:[me]:[si]", True)                                                # Incohérence avec “\1” : “\2” est un verbe.
 
     au  @:(?:Y|[123][sp])¬:[NAQ]
@@ -6063,13 +6074,23 @@ TEST: cet {{plaît}} est infectée.
 TEST: {{ce}} {{rappelle}} n’en finit pas.
 TEST: mon {{rackette}} n’a pas porté les fruits espérés.
 TEST: ton {{recèle}} avait été dévoilé
+TEST: quel {{impacte}} cela aura-t-il ?
 TEST: Belle qui tient mon vit captif entre tes doigts.
+TEST: Quel serait l’homme capable d’une telle horreur ?
 
 
 __conf_déterminant_plur_verbe__
     [des|ces|mes|tes|ses|aux|nos|vos]  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower()
         -2>> =suggSimil(\2, ":[NA]:.:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    quels  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
+        <<- /conf/ \2.islower() and not value(<1, "|le|la|les|")
+        -2>> =suggSimil(\2, ":[NA]:[me]:[pi]", True)                                                # Incohérence avec « \1 » : « \2 » est un verbe.
+
+    quelles  @:V[123].*:(?:Y|[123][sp])¬:[NA]|>(?:pouvoir|vouloir|aller|devoir|être)/
+        <<- /conf/ \2.islower() and not value(<1, "|le|la|les|") and hasSimil(\2, ":[NA]:[fe]:[pi]")
+        -2>> =suggSimil(\2, ":[NA]:[fe]:[pi]", True)                                                   # Incohérence avec « \1 » : « \2 » est un verbe.
 
     quelques  @:V.*:(?:Y|[123][sp])¬:[NA]
         <<- /conf/ \2.islower() and not value(\2, "|soient|soit|sois|puisse|puisses|puissent|")
@@ -6087,6 +6108,10 @@ TEST: la crainte des {{attentas}} fait feu de tout bois.
 TEST: Quelques {{axions}} de la sorte suffisent à nous discréditer.
 TEST: elle se rendit auxdits {{jardinais}}
 TEST: auxdites {{scelles}}, il ne prêta pas attention.
+TEST: quels {{afflues}} attendre ?
+TEST: {{quelles}} {{arrêtes}}
+TEST: quels seraient nos avantages ?
+TEST: quelles vont être nos chances ?
 
 
 __conf_de_vconj__
@@ -9608,7 +9633,7 @@ __conf_quelle_qu_elle__
 
 TEST: {{Quelle}} y vienne, on verra ce qu’elle vaut.
 TEST: {{Quelle}} a du répondant, cette gamine !
-TEST: {{Quelle}} partit prendre son repas à la cantine, je n’en avais cure.
+TEST: {{Quelle}} allât prendre son repas à la cantine, je n’en avais cure.
 TEST: Il se plaint {{quelle}} ne nous dit rien.
 TEST: {{Quelle}} l’apprenne un jour, on n’y peut rien.
 TEST: Je crois {{quelle}} n’en sait pas assez pour nous nuire.
@@ -13123,6 +13148,7 @@ __simplication_substantifs__
     >carton d’ emballage
     >cellule [de|d’] détention provisoire
     >centre d’ éducation [populaire|surveillée]
+    >centre [de|d’] rétention ?[préventive|administrative]¿
     >chair à [pâté|>canon]
     >chair [de|d’] poule
     >chambre à [coucher|gaz]
@@ -13552,7 +13578,7 @@ __simplification_noms_propres__
         <<- ~2:0>> *
 
     @:M[12]  *WORD
-        <<- \2.istitle() or re.search("^[MDCLXVI]+$", \2) ~2:0>> *
+        <<- \2.istitle() and space_after(\1, 1, 1) or re.search("^[MDCLXVI]+$", \2) ~2:0>> *
 
     @:M[12]  [Ier|Iᵉʳ]
         <<- \2.istitle() ~2:0>> *
@@ -14629,6 +14655,7 @@ TEST: C’en est arrivé là.
 TEST: Madame, des comme vous, j’en vois quatre par jour.
 TEST: Un quotidien facilité peut changer, à long terme, la donne dans la satisfaction des professionnels du privé et du public.
 TEST: elles sont dans l’incapacité de rendre compte de l’intensité et de la profondeur des traumatismes provoqués
+TEST: Cela nous évoque la fable de Jean de la Fontaine « Les animaux malades de la peste »
 
 
 @@@@
@@ -21668,14 +21695,14 @@ __immu_les_avoir_fait_vinfi__
 
 
 __ppas_pronom_avoir__
-    [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceeux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+    [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
             and value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|")
             and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         --1>> =suggVerbPpas(\-1, ":m:s")
         # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
-    [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceeux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  en  >avoir  *WORD
+    [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  en  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
             and value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|")
             and \-1.islower() and morph(\-1, ":(?:[123][sp])", ":[GWQ]")
