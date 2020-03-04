@@ -1019,7 +1019,6 @@ class GrammalecteTextControl {
 
     write () {
         if (this.xNode !== null) {
-            let sText = "";
             if (this.bTextArea) {
                 this.xNode.value = this.getText();
             } else {
@@ -1028,6 +1027,10 @@ class GrammalecteTextControl {
                     this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
                     this.xNode.appendChild(document.createElement("br"));
                 });
+                const xEvent = new CustomEvent("grammalecteNodeContentUpdated", {
+                    detail: { text: [...this.dParagraph.values()].join("\n").normalize("NFC") }
+                });
+                this.xNode.dispatchEvent(xEvent);
             }
         }
     }
