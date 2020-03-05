@@ -229,6 +229,7 @@ def main ():
         if xArgs.json:
             output("\n]}\n", hDst)
     elif xArgs.interactive_file_to_file:
+        # file processing: interactive mode
         sFile = xArgs.interactive_file_to_file
         hDst = open(sFile[:sFile.rfind(".")]+".res.txt", "w", encoding="utf-8", newline="\n")
         for i, sText, lLineSet in generateParagraphFromFile(sFile, xArgs.concat_lines):
