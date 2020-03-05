@@ -61,6 +61,9 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
         return ""
     lGrammErrs = sorted(aGrammErrs, key=lambda d: d["nStart"])
     lSpellErrs = sorted(aSpellErrs, key=lambda d: d['nStart'])
+    lErrors = sorted(lGrammErrs + lSpellErrs, key=lambda d: d["nStart"])
+    for n, dErr in enumerate(lErrors, 1):
+        dErr["iError"] = n
     sText = ""
     nOffset = 0
     for sLine in wrap(sParagraph, nWidth): # textwrap.wrap(sParagraph, nWidth, drop_whitespace=False)
@@ -98,7 +101,7 @@ def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
             sText += getReadableErrors(lSpellErrs[:nSpellErr], nWidth, True)
             del lSpellErrs[0:nSpellErr]
         nOffset += nLineLen
-    return sText
+    return (sText, lErrors)
 
 
 def getReadableErrors (lErrs, nWidth, bSpellingError=False):
@@ -119,12 +122,12 @@ def getReadableError (dErr, bSpellingError=False):
     "Returns an error dErr as a readable error"
     try:
         if bSpellingError:
-            sText = u"* {nStart}:{nEnd}  # {sValue}:".format(**dErr)
+            sText = u"* {iError} [{nStart}:{nEnd}]  # {sValue}:".format(**dErr)
         else:
-            sText = u"* {nStart}:{nEnd}  # {sLineId} / {sRuleId}:\n".format(**dErr)
+            sText = u"* {iError} [{nStart}:{nEnd}]  # {sLineId} / {sRuleId}:\n".format(**dErr)
             sText += "  " + dErr.get("sMessage", "# error : message not found")
         if dErr.get("aSuggestions", None):
-            sText += "\n  > Suggestions : " + " | ".join(dErr.get("aSuggestions", "# error : suggestions not found"))
+            sText += "\n  > Suggestions : " + " | ".join(dErr["aSuggestions"])
         if dErr.get("URL", None):
             sText += "\n  > URL: " + dErr["URL"]
         return sText

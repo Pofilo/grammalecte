@@ -34,7 +34,7 @@ def parseText (sText, dOptions=None, bFormatText=False, sError=""):
     for i, sParagraph in enumerate(txt.getParagraph(sText), 1):
         if bFormatText:
             sParagraph = oTextFormatter.formatText(sParagraph)
-        sResult = oGrammarChecker.generateParagraphAsJSON(i, sParagraph, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bFormatText)
+        sResult = oGrammarChecker.getParagraphErrorsAsJSON(i, sParagraph, dOptions=dOptions, bEmptyIfNoErrors=True, bReturnText=bFormatText)
         if sResult:
             if sDataJSON:
                 sDataJSON += ",\n"

@@ -55,20 +55,17 @@ class GrammarChecker:
         aSpellErrs = self.oSpellChecker.parseParagraph(sText, bSpellSugg)
         return aGrammErrs, aSpellErrs
 
-    def generateText (self, sText, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
-        "[todo]"
-
-    def generateTextAsJSON (self, sText, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, bDebug=False):
-        "[todo]"
-
-    def generateParagraph (self, sText, dOptions=None, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
+    def getParagraphWithErrors (self, sText, dOptions=None, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
         "parse text and return a readable text with underline errors"
         aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, dOptions, False, bSpellSugg, bDebug)
         if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
             return ""
         return text.generateParagraph(sText, aGrammErrs, aSpellErrs, nWidth)
 
-    def generateParagraphAsJSON (self, iIndex, sText, dOptions=None, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, lLineSet=None, bDebug=False):
+    def getTextWithErrors (self, sText, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
+        "[todo]"
+
+    def getParagraphErrorsAsJSON (self, iIndex, sText, dOptions=None, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, lLineSet=None, bDebug=False):
         "parse text and return errors as a JSON string"
         aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, dOptions, bContext, bSpellSugg, bDebug)
         aGrammErrs = list(aGrammErrs)
@@ -80,3 +77,6 @@ class GrammarChecker:
         if bReturnText:
             return json.dumps({ "iParagraph": iIndex, "sText": sText, "lGrammarErrors": aGrammErrs, "lSpellingErrors": aSpellErrs }, ensure_ascii=False)
         return json.dumps({ "iParagraph": iIndex, "lGrammarErrors": aGrammErrs, "lSpellingErrors": aSpellErrs }, ensure_ascii=False)
+
+    def getTextErrorsAsJSON (self, sText, bContext=False, bEmptyIfNoErrors=False, bSpellSugg=False, bReturnText=False, bDebug=False):
+        "[todo]"

@@ -8,6 +8,8 @@ import sys
 import os.path
 import argparse
 import json
+import re
+import traceback
 
 import grammalecte
 import grammalecte.text as txt
@@ -105,11 +107,32 @@ def loadDictionary (spf):
     return None
 
 
+def getCommand ():
+    while True:
+        print("COMMANDS: [N]ext paragraph  [Q]uit.")
+        print("          [Error number]>[suggestion number]")
+        print("          [Error number] (apply first suggestion)")
+        print("          [Error number]=[replacement]")
+        sCommand = input("        ? ")
+        if sCommand == "q" or sCommand == "Q" or sCommand == "n" or sCommand == "N":
+            return sCommand
+        elif re.match("^([0-9]+)(>[0-9]*|=.*|)$", sCommand):
+            m = re.match("^([0-9]+)(>[0-9]*|=.*|)$", sCommand)
+            nError = int(m.group(1)) - 1
+            cAction = m.group(2)[0:1] or ">"
+            if cAction == ">":
+                vSugg = int(m.group(2)[1:]) - 1  if m.group(2)  else 0
+            else:
+                vSugg = m.group(2)[1:]
+            return (nError, cAction, vSugg)
+
+
 def main ():
     "launch the CLI (command line interface)"
     xParser = argparse.ArgumentParser()
     xParser.add_argument("-f", "--file", help="parse file (UTF-8 required!) [on Windows, -f is similar to -ff]", type=str)
     xParser.add_argument("-ff", "--file_to_file", help="parse file (UTF-8 required!) and create a result file (*.res.txt)", type=str)
+    xParser.add_argument("-iff", "--interactive_file_to_file", help="parse file (UTF-8 required!) and create a result file (*.res.txt)", type=str)
     xParser.add_argument("-owe", "--only_when_errors", help="display results only when there are errors", action="store_true")
     xParser.add_argument("-j", "--json", help="generate list of errors in JSON (only with option --file or --file_to_file)", action="store_true")
     xParser.add_argument("-cl", "--concat_lines", help="concatenate lines not separated by an empty paragraph (only with option --file or --file_to_file)", action="store_true")
@@ -177,9 +200,10 @@ def main ():
         for sRule in xArgs.rule_off:
             oGrammarChecker.gce.ignoreRule(sRule)
 
-    sFile = xArgs.file or xArgs.file_to_file
-    if sFile:
+
+    if xArgs.file or xArgs.file_to_file:
         # file processing
+        sFile = xArgs.file or xArgs.file_to_file
         hDst = open(sFile[:sFile.rfind(".")]+".res.txt", "w", encoding="utf-8", newline="\n")  if xArgs.file_to_file or sys.platform == "win32"  else None
         bComma = False
         if xArgs.json:
@@ -191,10 +215,10 @@ def main ():
                 output(sText, hDst)
                 continue
             if xArgs.json:
-                sText = oGrammarChecker.generateParagraphAsJSON(i, sText, bContext=xArgs.context, bEmptyIfNoErrors=xArgs.only_when_errors, \
+                sText = oGrammarChecker.getParagraphErrorsAsJSON(i, sText, bContext=xArgs.context, bEmptyIfNoErrors=xArgs.only_when_errors, \
                                                                 bSpellSugg=xArgs.with_spell_sugg, bReturnText=xArgs.textformatter, lLineSet=lLineSet)
             else:
-                sText = oGrammarChecker.generateParagraph(sText, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
+                sText, _ = oGrammarChecker.getParagraphWithErrors(sText, bEmptyIfNoErrors=xArgs.only_when_errors, bSpellSugg=xArgs.with_spell_sugg, nWidth=xArgs.width)
             if sText:
                 if xArgs.json and bComma:
                     output(",\n", hDst)
@@ -204,6 +228,39 @@ def main ():
                 echo("§ %d\r" % i, end="", flush=True)
         if xArgs.json:
             output("\n]}\n", hDst)
+    elif xArgs.interactive_file_to_file:
+        sFile = xArgs.interactive_file_to_file
+        hDst = open(sFile[:sFile.rfind(".")]+".res.txt", "w", encoding="utf-8", newline="\n")
+        for i, sText, lLineSet in generateParagraphFromFile(sFile, xArgs.concat_lines):
+            if xArgs.textformatter:
+                sText = oTextFormatter.formatText(sText)
+            while True:
+                sResult, lErrors = oGrammarChecker.getParagraphWithErrors(sText, bEmptyIfNoErrors=False, bSpellSugg=True, nWidth=xArgs.width)
+                print("\n\n============================== Paragraph " + str(i) + " ==============================\n")
+                echo(sResult)
+                print("\n")
+                vCommand = getCommand()
+                if vCommand == "q":
+                    # quit
+                    hDst.close()
+                    exit()
+                elif vCommand == "n":
+                    # next paragraph
+                    hDst.write(sText)
+                    break
+                else:
+                    nError, cAction, vSugg = vCommand
+                    if 0 <= nError <= len(lErrors) - 1:
+                        dErr = lErrors[nError]
+                        if cAction == ">"  and  0 <= vSugg <= len(dErr["aSuggestions"]) - 1:
+                            sSugg = dErr["aSuggestions"][vSugg]
+                            sText = sText[0:dErr["nStart"]] + sSugg + sText[dErr["nEnd"]:]
+                        elif cAction == "=":
+                            sText = sText[0:dErr["nStart"]] + vSugg + sText[dErr["nEnd"]:]
+                        else:
+                            print("Error. Action not possible.")
+                    else:
+                        print("Error. This error doesn’t exist.")
     else:
         # pseudo-console
         sInputText = "\n~==========~ Enter your text [/h /q] ~==========~\n"
@@ -287,7 +344,7 @@ def main ():
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
                         sText = oTextFormatter.formatText(sParagraph)
-                    sRes = oGrammarChecker.generateParagraph(sParagraph, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width, bDebug=xArgs.debug)
+                    sRes, _ = oGrammarChecker.getParagraphWithErrors(sParagraph, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width, bDebug=xArgs.debug)
                     if sRes:
                         echo("\n" + sRes)
                     else:
