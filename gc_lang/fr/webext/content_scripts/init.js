@@ -77,25 +77,41 @@ const oGrammalecte = {
 
     createButtons: function () {
         if (bChrome) {
-            browser.storage.local.get("ui_options", this._createButtons.bind(this));
+            browser.storage.local.get("ui_options", this._prepareButtons.bind(this));
             return;
         }
-        browser.storage.local.get("ui_options").then(this._createButtons.bind(this), showError);
+        browser.storage.local.get("ui_options").then(this._prepareButtons.bind(this), showError);
     },
 
-    _createButtons: function (oOptions) {
+    _prepareButtons: function (oOptions) {
         if (oOptions.hasOwnProperty("ui_options")) {
             this.oOptions = oOptions.ui_options;
-            if (this.oOptions.textarea) {
-                for (let xNode of document.getElementsByTagName("textarea")) {
-                    if (xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
-                        this.lButton.push(new GrammalecteButton(this.nButton, xNode));
-                        this.nButton += 1;
-                    }
+            // textarea
+            for (let xNode of document.getElementsByTagName("textarea")) {
+                if (xNode.dataset.grammalecte_callbutton && document.getElementById(xNode.dataset.grammalecte_callbutton)) {
+                    let xButton = document.getElementById(xNode.dataset.grammalecte_callbutton)
+                    xButton.onclick = () => {
+                        oGrammalecte.startGCPanel(xNode, true, true);
+                    };
+                    this.lButton.push(xButton);
+                    this.nButton += 1;
+                }
+                else if (this.oOptions.textarea  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
+                    this.lButton.push(new GrammalecteButton(this.nButton, xNode));
+                    this.nButton += 1;
                 }
             }
-            if (this.oOptions.editablenode) {
-                for (let xNode of document.querySelectorAll("[contenteditable]")) {
+            // editable nodes
+            for (let xNode of document.querySelectorAll("[contenteditable]")) {
+                if (xNode.dataset.grammalecte_callbutton && document.getElementById(xNode.dataset.grammalecte_callbutton)) {
+                    let xButton = document.getElementById(xNode.dataset.grammalecte_callbutton)
+                    xButton.onclick = () => {
+                        oGrammalecte.startGCPanel(xNode, true, true);
+                    };
+                    this.lButton.push(xButton);
+                    this.nButton += 1;
+                }
+                else if (this.oOptions.editablenode  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
                     this.lButton.push(new GrammalecteButton(this.nButton, xNode));
                     this.nButton += 1;
                 }
@@ -104,7 +120,7 @@ const oGrammalecte = {
     },
 
     observePage: function () {
-        // When a textarea is added via jascript we add the menu
+        // When a textarea is added via jascript we add the buttons
         let that = this;
         this.xObserver = new MutationObserver(function (mutations) {
             mutations.forEach(function (mutation) {
@@ -160,12 +176,12 @@ const oGrammalecte = {
         }
     },
 
-    startGCPanel: function (what, bCheckText=true) {
+    startGCPanel: function (what, bCheckText=true, bResultInEvent=false) {
         this.createGCPanel();
         this.oGCPanel.clear();
         this.oGCPanel.show();
         this.oGCPanel.showEditor();
-        this.oGCPanel.start(what);
+        this.oGCPanel.start(what, bResultInEvent);
         this.oGCPanel.startWaitIcon();
         if (what && bCheckText) {
             let sText = this.oGCPanel.oTextControl.getText();

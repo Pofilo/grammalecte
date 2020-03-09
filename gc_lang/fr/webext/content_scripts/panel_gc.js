@@ -139,9 +139,10 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelBar.appendChild(this.xMenu);
     }
 
-    start (what) {
+    start (what, bResultInEvent=false) {
         this.oTooltip.hide();
         this.bWorking = false;
+        this.oTextControl.bResultInEvent = bResultInEvent;
         this.clear();
         this.hideMessage();
         this.resetTimer();
@@ -954,6 +955,7 @@ class GrammalecteTextControl {
         this.xNode = null;
         this.dParagraph = new Map();
         this.bTextArea = null;
+        this.bResultInEvent = false; // if true, the node content is not modified, but an event is dispatched on the node with the modified text
     }
 
     setNode (xNode) {
@@ -1019,18 +1021,22 @@ class GrammalecteTextControl {
 
     write () {
         if (this.xNode !== null) {
-            if (this.bTextArea) {
+            if (this.bResultInEvent) {
+                const xEvent = new CustomEvent("GrammalecteNodeContentUpdated", {
+                    detail: { text: [...this.dParagraph.values()].join("\n").normalize("NFC") }
+                });
+                this.xNode.dispatchEvent(xEvent);
+                console.log("event", xEvent.detail.text);
+            }
+            else if (this.bTextArea) {
                 this.xNode.value = this.getText();
-            } else {
+            }
+            else {
                 this.eraseNodeContent();
                 this.dParagraph.forEach((val, key) => {
                     this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
                     this.xNode.appendChild(document.createElement("br"));
                 });
-                const xEvent = new CustomEvent("grammalecteNodeContentUpdated", {
-                    detail: { text: [...this.dParagraph.values()].join("\n").normalize("NFC") }
-                });
-                this.xNode.dispatchEvent(xEvent);
             }
         }
     }
