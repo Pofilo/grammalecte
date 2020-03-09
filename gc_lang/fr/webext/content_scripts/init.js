@@ -91,7 +91,7 @@ const oGrammalecte = {
                 if (xNode.dataset.grammalecte_callbutton && document.getElementById(xNode.dataset.grammalecte_callbutton)) {
                     let xButton = document.getElementById(xNode.dataset.grammalecte_callbutton)
                     xButton.onclick = () => {
-                        oGrammalecte.startGCPanel(xNode, true, true);
+                        oGrammalecte.startGCPanel(xNode);
                     };
                     this.lButton.push(xButton);
                     this.nButton += 1;
@@ -106,7 +106,7 @@ const oGrammalecte = {
                 if (xNode.dataset.grammalecte_callbutton && document.getElementById(xNode.dataset.grammalecte_callbutton)) {
                     let xButton = document.getElementById(xNode.dataset.grammalecte_callbutton)
                     xButton.onclick = () => {
-                        oGrammalecte.startGCPanel(xNode, true, true);
+                        oGrammalecte.startGCPanel(xNode);
                     };
                     this.lButton.push(xButton);
                     this.nButton += 1;
@@ -176,12 +176,12 @@ const oGrammalecte = {
         }
     },
 
-    startGCPanel: function (what, bCheckText=true, bResultInEvent=false) {
+    startGCPanel: function (what, bCheckText=true) {
         this.createGCPanel();
         this.oGCPanel.clear();
         this.oGCPanel.show();
         this.oGCPanel.showEditor();
-        this.oGCPanel.start(what, bResultInEvent);
+        this.oGCPanel.start(what);
         this.oGCPanel.startWaitIcon();
         if (what && bCheckText) {
             let sText = this.oGCPanel.oTextControl.getText();

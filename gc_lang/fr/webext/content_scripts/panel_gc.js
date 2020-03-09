@@ -139,10 +139,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelBar.appendChild(this.xMenu);
     }
 
-    start (what, bResultInEvent=false) {
+    start (what) {
         this.oTooltip.hide();
         this.bWorking = false;
-        this.oTextControl.bResultInEvent = bResultInEvent;
         this.clear();
         this.hideMessage();
         this.resetTimer();
@@ -966,6 +965,7 @@ class GrammalecteTextControl {
             oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
         }
         this.xNode.disabled = true;
+        this.bResultInEvent = Boolean(xNode.dataset.grammalecte_callbutton);
         this.loadText((this.bTextArea) ? this.xNode.value : this.xNode.innerText);
     }
 
