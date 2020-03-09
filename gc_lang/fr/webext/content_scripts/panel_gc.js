@@ -1026,7 +1026,7 @@ class GrammalecteTextControl {
                     detail: { text: [...this.dParagraph.values()].join("\n").normalize("NFC") }
                 });
                 this.xNode.dispatchEvent(xEvent);
-                console.log("event", xEvent.detail.text);
+                //console.log("event", xEvent.detail.text);
             }
             else if (this.bTextArea) {
                 this.xNode.value = this.getText();
