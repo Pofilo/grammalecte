@@ -965,14 +965,31 @@ class GrammalecteTextControl {
             oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
         }
         this.xNode.disabled = true;
-        this.bResultInEvent = Boolean(xNode.dataset.grammalecte_callbutton);
-        this.loadText((this.bTextArea) ? this.xNode.value : this.xNode.innerText);
+        this.bResultInEvent = Boolean(xNode.dataset.grammalecte_result_via_event && xNode.dataset.grammalecte_result_via_event == "true");
+        this._loadText((this.bTextArea) ? this.xNode.value : this.xNode.innerText);
     }
 
     setText (sText) {
         this.clear();
         oGrammalecte.oGCPanel.addMessageToGCPanel("Note : Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
-        this.loadText(sText);
+        this._loadText(sText);
+    }
+
+    _loadText (sText) {
+        if (typeof(sText) === "string") {
+            this.dParagraph.clear();
+            let i = 0;
+            let iStart = 0;
+            let iEnd = 0;
+            sText = sText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").normalize("NFC");
+            while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
+                this.dParagraph.set(i, sText.slice(iStart, iEnd));
+                i++;
+                iStart = iEnd+1;
+            }
+            this.dParagraph.set(i, sText.slice(iStart));
+            //console.log("Paragraphs number: " + (i+1));
+        }
     }
 
     clear () {
@@ -996,23 +1013,6 @@ class GrammalecteTextControl {
         this.dParagraph.set(iParagraph, sText);
     }
 
-    loadText (sText) {
-        if (typeof(sText) === "string") {
-            this.dParagraph.clear();
-            let i = 0;
-            let iStart = 0;
-            let iEnd = 0;
-            sText = sText.replace(/\r\n/g, "\n").replace(/\r/g, "\n").normalize("NFC");
-            while ((iEnd = sText.indexOf("\n", iStart)) !== -1) {
-                this.dParagraph.set(i, sText.slice(iStart, iEnd));
-                i++;
-                iStart = iEnd+1;
-            }
-            this.dParagraph.set(i, sText.slice(iStart));
-            //console.log("Paragraphs number: " + (i+1));
-        }
-    }
-
     eraseNodeContent () {
         while (this.xNode.firstChild) {
             this.xNode.removeChild(this.xNode.firstChild);
@@ -1026,7 +1026,7 @@ class GrammalecteTextControl {
                     detail: { text: [...this.dParagraph.values()].join("\n").normalize("NFC") }
                 });
                 this.xNode.dispatchEvent(xEvent);
-                //console.log("event", xEvent.detail.text);
+                console.log("event", xEvent.detail.text);
             }
             else if (this.bTextArea) {
                 this.xNode.value = this.getText();
