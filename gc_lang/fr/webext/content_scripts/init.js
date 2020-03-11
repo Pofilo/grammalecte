@@ -15,6 +15,7 @@
 
 
 function showError (e) {
+    // console can’t display error objects from content scripts
     console.error(e.fileName + "\n" + e.name + "\nline: " + e.lineNumber + "\n" + e.message);
 }
 
@@ -88,30 +89,16 @@ const oGrammalecte = {
             this.oOptions = oOptions.ui_options;
             // textarea
             for (let xNode of document.getElementsByTagName("textarea")) {
-                if (xNode.dataset.grammalecte_callbutton && document.getElementById(xNode.dataset.grammalecte_callbutton)) {
-                    let xButton = document.getElementById(xNode.dataset.grammalecte_callbutton)
-                    xButton.onclick = () => {
-                        oGrammalecte.startGCPanel(xNode);
-                    };
-                    this.lButton.push(xButton);
-                    this.nButton += 1;
-                }
-                else if (this.oOptions.textarea  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false") {
+                if (this.oOptions.textarea  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false"
+                    && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false")) {
                     this.lButton.push(new GrammalecteButton(this.nButton, xNode));
                     this.nButton += 1;
                 }
             }
             // editable nodes
             for (let xNode of document.querySelectorAll("[contenteditable]")) {
-                if (xNode.dataset.grammalecte_callbutton && document.getElementById(xNode.dataset.grammalecte_callbutton)) {
-                    let xButton = document.getElementById(xNode.dataset.grammalecte_callbutton)
-                    xButton.onclick = () => {
-                        oGrammalecte.startGCPanel(xNode);
-                    };
-                    this.lButton.push(xButton);
-                    this.nButton += 1;
-                }
-                else if (this.oOptions.editablenode  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden") {
+                if (this.oOptions.editablenode  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
+                    && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false")) {
                     this.lButton.push(new GrammalecteButton(this.nButton, xNode));
                     this.nButton += 1;
                 }
@@ -388,6 +375,15 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             oGrammalecte.startGCPanel(result, false); // result is the selected text
             // selected text is sent to the GC worker in the background script.
             break;
+        case "grammar_checker_iframe":
+            console.log("[Grammalecte] selected iframe: ", result);
+            if (document.activeElement.tagName == "IFRAME") {
+                //console.log(document.activeElement.id); frameId given by result is different than frame.id
+                oGrammalecte.startGCPanel(document.activeElement.contentWindow.document.body.innerText);
+            } else {
+                oGrammalecte.showMessage("Erreur. Le cadre sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
+            }
+            break;
         // rescan page command
         case "rescanPage":
             oGrammalecte.rescanPage();
@@ -396,6 +392,41 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             console.log("[Content script] Unknown command: " + sActionDone);
     }
 });
+
+
+
+/*
+    Callable API for the webpage.
+    The API script must be injected this way to be callable by the page
+*/
+let xScriptGrammalecteAPI = document.createElement("script");
+xScriptGrammalecteAPI.src = browser.extension.getURL("content_scripts/api.js");
+document.documentElement.appendChild(xScriptGrammalecteAPI);
+
+document.addEventListener("GrammalecteCall", function (xEvent) {
+    // GrammalecteCall events are dispatched by functions in the API
+    try {
+        let oCommand = xEvent.detail;
+        switch (oCommand.sCommand) {
+            case "parseNode":
+                if (oCommand.xNode) {
+                    oGrammalecte.startGCPanel(oCommand.xNode);
+                }
+                break;
+            case "parseText":
+                if (oCommand.sText) {
+                    oGrammalecte.startGCPanel(oCommand.sText);
+                }
+                break;
+            default:
+                console.log("[Grammalecte] Event: Unknown command", oCommand.sCommand);
+        }
+    }
+    catch (e) {
+        showError(e);
+    }
+});
+
 
 
 /*

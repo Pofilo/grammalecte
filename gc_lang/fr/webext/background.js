@@ -333,7 +333,8 @@ browser.runtime.onConnect.addListener(handleConnexion);
 */
 // Analyze
 browser.contextMenus.create({ id: "grammar_checker_editable",   title: "Analyser cette zone de texte",              contexts: ["editable"] });
-browser.contextMenus.create({ id: "grammar_checker_selection",   title: "Analyser la sélection",                     contexts: ["selection"] });
+browser.contextMenus.create({ id: "grammar_checker_selection",  title: "Analyser la sélection",                     contexts: ["selection"] });
+browser.contextMenus.create({ id: "grammar_checker_iframe",     title: "Analyser le contenu de ce cadre",           contexts: ["frame"] });
 browser.contextMenus.create({ id: "grammar_checker_page",       title: "Analyser la page",                          contexts: ["all"] });
 browser.contextMenus.create({ id: "separator_tools",            type: "separator",                                  contexts: ["all"] });
 // Tools
@@ -355,6 +356,9 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
         case "grammar_checker_editable":
         case "grammar_checker_page":
             sendCommandToTab(xTab.id, xInfo.menuItemId);
+            break;
+        case "grammar_checker_iframe":
+            sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.frameId);
             break;
         case "grammar_checker_selection":
             sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
