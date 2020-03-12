@@ -379,7 +379,7 @@ xGrammalectePort.onMessage.addListener(function (oMessage) {
             console.log("[Grammalecte] selected iframe: ", result);
             if (document.activeElement.tagName == "IFRAME") {
                 //console.log(document.activeElement.id); frameId given by result is different than frame.id
-                oGrammalecte.startGCPanel(document.activeElement.contentWindow.document.body.innerText);
+                oGrammalecte.startGCPanel(document.activeElement);
             } else {
                 oGrammalecte.showMessage("Erreur. Le cadre sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
             }
@@ -404,19 +404,25 @@ xScriptGrammalecteAPI.src = browser.extension.getURL("content_scripts/api.js");
 document.documentElement.appendChild(xScriptGrammalecteAPI);
 
 document.addEventListener("GrammalecteCall", function (xEvent) {
-    // GrammalecteCall events are dispatched by functions in the API
+    // GrammalecteCall events are dispatched by functions in the API script
     try {
         let oCommand = xEvent.detail;
         switch (oCommand.sCommand) {
-            case "parseNode":
+            case "openPanelForNode":
                 if (oCommand.xNode) {
                     oGrammalecte.startGCPanel(oCommand.xNode);
                 }
                 break;
-            case "parseText":
+            case "openPanelForText":
                 if (oCommand.sText) {
                     oGrammalecte.startGCPanel(oCommand.sText);
                 }
+                break;
+            case "parseNode":
+                // todo
+                break;
+            case "parseText":
+                // todo
                 break;
             default:
                 console.log("[Grammalecte] Event: Unknown command", oCommand.sCommand);

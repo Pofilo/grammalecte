@@ -149,14 +149,14 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             // text
             this.xNode = null;
             this.oTextControl.setText(what);
-        } else if (what.nodeType && what.nodeType === 1) {
+        } else if (what.nodeType && what.nodeType === 1) { // 1 = Node.ELEMENT_NODE
             // node
             this.xNode = what;
             this.oTextControl.setNode(this.xNode);
         } else {
             // error
             oGrammalecte.oMessageBox.showMessage("[BUG] Analyse d’un élément inconnu…");
-            console.log("Grammalecte [bug]:", what);
+            console.log("[Grammalecte] Unknown element:", what);
         }
     }
 
@@ -953,25 +953,37 @@ class GrammalecteTextControl {
     constructor () {
         this.xNode = null;
         this.dParagraph = new Map();
-        this.bTextArea = null;
+        this.bTextArea = false;
+        this.bIframe = false;
         this.bResultInEvent = false; // if true, the node content is not modified, but an event is dispatched on the node with the modified text
     }
 
     setNode (xNode) {
         this.clear();
         this.xNode = xNode;
-        this.bTextArea = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT");
-        if (!this.bTextArea) {
-            oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
-        }
-        this.xNode.disabled = true;
         this.bResultInEvent = Boolean(xNode.dataset.grammalecte_result_via_event && xNode.dataset.grammalecte_result_via_event == "true");
-        this._loadText((this.bTextArea) ? this.xNode.value : this.xNode.innerText);
+        this.bTextArea = (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT");
+        this.bIframe = (xNode.tagName == "IFRAME");
+        if (this.bTextArea) {
+            this.xNode.disabled = true;
+            this._loadText(this.xNode.value);
+        }
+        else if (this.bIframe) {
+            // iframe
+            let sMessage = (this.bResultInEvent) ? "Note : La zone analysée est un cadre contenant une autre page web (“iframe”)." : "Attention : La zone analysée est un cadre contenant une autre page web (“iframe”). Les changements faits ne seront pas répercutés.";
+            oGrammalecte.oGCPanel.addMessageToGCPanel(sMessage);
+            this._loadText(this.xNode.contentWindow.document.body.innerText);
+        }
+        else {
+            // editable node
+            oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
+            this._loadText(this.xNode.innerText);
+        }
     }
 
     setText (sText) {
         this.clear();
-        oGrammalecte.oGCPanel.addMessageToGCPanel("Note : Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
+        oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
         this._loadText(sText);
     }
 
@@ -996,17 +1008,15 @@ class GrammalecteTextControl {
         if (this.xNode !== null) {
             this.xNode.disabled = false;
             this.bTextArea = false;
+            this.bIframe = false;
+            this.bResultInEvent = false;
             this.xNode = null;
         }
         this.dParagraph.clear();
     }
 
     getText () {
-        let sText = "";
-        this.dParagraph.forEach(function (val, key) {
-            sText += val + "\n";
-        });
-        return sText.slice(0,-1).normalize("NFC");
+        return [...this.dParagraph.values()].join("\n").normalize("NFC");
     }
 
     setParagraph (iParagraph, sText) {
@@ -1023,13 +1033,16 @@ class GrammalecteTextControl {
         if (this.xNode !== null) {
             if (this.bResultInEvent) {
                 const xEvent = new CustomEvent("GrammalecteNodeContentUpdated", {
-                    detail: { text: [...this.dParagraph.values()].join("\n").normalize("NFC") }
+                    detail: { text: this.getText() }
                 });
                 this.xNode.dispatchEvent(xEvent);
-                console.log("event", xEvent.detail.text);
+                console.log("Texte renvoyé via un event :", xEvent.detail.text);
             }
             else if (this.bTextArea) {
                 this.xNode.value = this.getText();
+            }
+            else if (this.bIframe) {
+                //console.log(this.getText());
             }
             else {
                 this.eraseNodeContent();
