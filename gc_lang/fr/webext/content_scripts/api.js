@@ -5,6 +5,7 @@
 
 const oGrammalecteAPI = {
     // functions callable from within pages
+    // to be sent to the content-cript via an event GrammalecteCall
 
     sVersion: "1.0",
 

@@ -970,20 +970,21 @@ class GrammalecteTextControl {
         }
         else if (this.bIframe) {
             // iframe
-            let sMessage = (this.bResultInEvent) ? "Note : La zone analysée est un cadre contenant une autre page web (“iframe”)." : "Attention : La zone analysée est un cadre contenant une autre page web (“iframe”). Les changements faits ne seront pas répercutés.";
-            oGrammalecte.oGCPanel.addMessageToGCPanel(sMessage);
+            if (!this.bResultInEvent) {
+                oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ La zone analysée est un cadre contenant une autre page web (“iframe”). Les changements faits ne peuvent être pas répercutés dans cette zone.");
+            }
             this._loadText(this.xNode.contentWindow.document.body.innerText);
         }
         else {
             // editable node
-            oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
+            oGrammalecte.oGCPanel.addMessageToGCPanel("❗ La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
             this._loadText(this.xNode.innerText);
         }
     }
 
     setText (sText) {
         this.clear();
-        oGrammalecte.oGCPanel.addMessageToGCPanel("Attention : Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
+        oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
         this._loadText(sText);
     }
 
@@ -1032,11 +1033,11 @@ class GrammalecteTextControl {
     write () {
         if (this.xNode !== null) {
             if (this.bResultInEvent) {
-                const xEvent = new CustomEvent("GrammalecteNodeContentUpdated", {
-                    detail: { text: this.getText() }
+                const xEvent = new CustomEvent("GrammalecteResult", {
+                    detail: JSON.stringify({ text: this.getText() })
                 });
                 this.xNode.dispatchEvent(xEvent);
-                console.log("Texte renvoyé via un event :", xEvent.detail.text);
+                //console.log("Text sent via an event :", xEvent.detail);
             }
             else if (this.bTextArea) {
                 this.xNode.value = this.getText();
