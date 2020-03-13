@@ -3,7 +3,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global GrammalectePanel, oGrammalecte, xGrammalectePort, showError, window, document, console */
+/* global GrammalectePanel, oGrammalecte, showError, window, document, console */
 
 "use strict";
 
@@ -272,26 +272,12 @@ class GrammalectePanel {
 
     executeButtonAction (sActionName) {
         switch (sActionName) {
-            case "":
-                break;
             case "restartWorker":
-                xGrammalectePort.postMessage({
-                    sCommand: "restartWorker",
-                    dParam: { "nTimeDelay": 10 },
-                    dInfo: {}
-                });
+                oGrammalecteBackgroundPort.restartWorker();
                 this.stopWaitIcon();
                 break;
             default:
                 console.log("Action inconnue: ", sAction);
         }
-    }
-
-    openURL (sURL) {
-        xGrammalectePort.postMessage({
-            sCommand: "openURL",
-            dParam: {"sURL": sURL},
-            dInfo: {}
-        });
     }
 }

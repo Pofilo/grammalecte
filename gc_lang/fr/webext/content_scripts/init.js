@@ -172,11 +172,7 @@ const oGrammalecte = {
         this.oGCPanel.startWaitIcon();
         if (what && bCheckText) {
             let sText = this.oGCPanel.oTextControl.getText();
-            xGrammalectePort.postMessage({
-                sCommand: "parseAndSpellcheck",
-                dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: (what.nodeType && what.nodeType === 1) ? {sTextAreaId: what.id} : {}
-            });
+            oGrammalecteBackgroundPort.parseAndSpellcheck(sText, "__GrammalectePanel__");
         }
     },
 
@@ -308,90 +304,189 @@ autoRefreshOption();
 /*
     Connexion to the background
 */
-let xGrammalectePort = browser.runtime.connect({name: "content-script port"});
+const oGrammalecteBackgroundPort = {
 
-xGrammalectePort.onMessage.addListener(function (oMessage) {
-    let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
-    switch (sActionDone) {
-        case "init":
-            oGrammalecte.sExtensionUrl = oMessage.sUrl;
-            oGrammalecte.listenRightClick();
-            oGrammalecte.createButtons();
-            oGrammalecte.observePage();
-            break;
-        case "parseAndSpellcheck":
-            if (!bEnd) {
-                oGrammalecte.oGCPanel.addParagraphResult(result);
-            } else {
-                oGrammalecte.oGCPanel.stopWaitIcon();
-                oGrammalecte.oGCPanel.endTimer();
+    xConnect: browser.runtime.connect({name: "content-script port"}),
+
+    /*
+        Send messages to the background
+        object {
+            sCommand: the action to perform
+            dParam: parameters necessary for the execution of the action
+            dInfo: all kind of informations that needs to be sent back (usually to know where to use the result)
+        }
+    */
+    parseAndSpellcheck: function (sText, sDestination) {
+        this.xConnect.postMessage({
+            sCommand: "parseAndSpellcheck",
+            dParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
+            dInfo: { sDestination: sDestination }
+        });
+    },
+
+    parseAndSpellcheck1: function (sText, sDestination, sParagraphId) {
+        this.xConnect.postMessage({
+            sCommand: "parseAndSpellcheck1",
+            dParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
+            dInfo: { sDestination: sDestination, sParagraphId: sParagraphId }
+        });
+    },
+
+    getListOfTokens: function (sText) {
+        this.xConnect.postMessage({ sCommand: "getListOfTokens", dParam: { sText: sText }, dInfo: {} });
+    },
+
+    parseFull: function (sText) {
+        this.xConnect.postMessage({
+            sCommand: "parseFull",
+            dParam: { sText: sTex, sCountry: "FR", bDebug: false, bContext: false },
+            dInfo: {}
+        });
+    },
+
+    getVerb: function (sVerb, bStart=true, bPro=false, bNeg=false, bTpsCo=false, bInt=false, bFem=false) {
+        this.xConnect.postMessage({
+            sCommand: "getVerb",
+            dParam: { sVerb: sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem },
+            dInfo: { bStart: bStart }
+        });
+    },
+
+    getSpellSuggestions: function (sWord, sErrorId) {
+        this.xConnect.postMessage({ sCommand: "getSpellSuggestions", dParam: { sWord: sWord }, dInfo: { sErrorId: sErrorId } });
+    },
+
+    openURL: function (sURL) {
+        this.xConnect.postMessage({ sCommand: "openURL", dParam: { "sURL": sURL }, dInfo: null });
+    },
+
+    openLexiconEditor: function () {
+        this.xConnect.postMessage({ sCommand: "openLexiconEditor", dParam: null, dInfo: null });
+    },
+
+    restartWorker: function (nTimeDelay=10) {
+        this.xConnect.postMessage({ sCommand: "restartWorker", dParam: { "nTimeDelay": nTimeDelay }, dInfo: {} });
+    },
+
+    /*
+        Messages from the background
+    */
+    listen: function () {
+        this.xConnect.onMessage.addListener(function (oMessage) {
+            let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
+            switch (sActionDone) {
+                case "init":
+                    oGrammalecte.sExtensionUrl = oMessage.sUrl;
+                    oGrammalecte.listenRightClick();
+                    oGrammalecte.createButtons();
+                    oGrammalecte.observePage();
+                    break;
+                case "parseAndSpellcheck":
+                    if (dInfo.sDestination == "__GrammalectePanel__") {
+                        if (!bEnd) {
+                            oGrammalecte.oGCPanel.addParagraphResult(result);
+                        } else {
+                            oGrammalecte.oGCPanel.stopWaitIcon();
+                            oGrammalecte.oGCPanel.endTimer();
+                        }
+                    }
+                    break;
+                case "parseAndSpellcheck1":
+                    if (dInfo.sDestination == "__GrammalectePanel__") {
+                        oGrammalecte.oGCPanel.refreshParagraph(dInfo.sParagraphId, result);
+                    }
+                    break;
+                case "parseFull":
+                    // TODO
+                    break;
+                case "getListOfTokens":
+                    if (!bEnd) {
+                        oGrammalecte.oGCPanel.addListOfTokens(result);
+                    } else {
+                        oGrammalecte.oGCPanel.stopWaitIcon();
+                        oGrammalecte.oGCPanel.endTimer();
+                    }
+                    break;
+                case "getSpellSuggestions":
+                    oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
+                    break;
+                case "getVerb":
+                    if (dInfo.bStart) {
+                        oGrammalecte.oGCPanel.conjugateWith(result.oVerb, result.oConjTable);
+                    } else {
+                        oGrammalecte.oGCPanel.displayConj(result.oConjTable);
+                    }
+                    break;
+                case "workerRestarted":
+                    oGrammalecte.oGCPanel.stopWaitIcon();
+                    oGrammalecte.oGCPanel.showMessage("Le serveur grammatical a été arrêté et relancé.");
+                    oGrammalecte.oGCPanel.endTimer();
+                    break;
+                /*
+                    Commands received from the context menu
+                    (Context menu are initialized in background)
+                */
+                // Grammar checker commands
+                case "grammar_checker_editable":
+                    if (oGrammalecte.xRightClickedNode !== null) {
+                        oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
+                    } else {
+                        oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
+                    }
+                    break;
+                case "grammar_checker_page":
+                    oGrammalecte.startGCPanel(oGrammalecte.getPageText());
+                    break;
+                case "grammar_checker_selection":
+                    oGrammalecte.startGCPanel(result, false); // result is the selected text
+                    // selected text is sent to the GC worker in the background script.
+                    break;
+                case "grammar_checker_iframe":
+                    console.log("[Grammalecte] selected iframe: ", result);
+                    if (document.activeElement.tagName == "IFRAME") {
+                        //console.log(document.activeElement.id); frameId given by result is different than frame.id
+                        oGrammalecte.startGCPanel(document.activeElement);
+                    } else {
+                        oGrammalecte.showMessage("Erreur. Le cadre sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
+                    }
+                    break;
+                // rescan page command
+                case "rescanPage":
+                    oGrammalecte.rescanPage();
+                    break;
+                default:
+                    console.log("[Content script] Unknown command: " + sActionDone);
             }
-            break;
-        case "parseAndSpellcheck1":
-            oGrammalecte.oGCPanel.refreshParagraph(dInfo.sParagraphId, result);
-            break;
-        case "parseFull":
-            // TODO
-            break;
-        case "getListOfTokens":
-            if (!bEnd) {
-                oGrammalecte.oGCPanel.addListOfTokens(result);
-            } else {
-                oGrammalecte.oGCPanel.stopWaitIcon();
-                oGrammalecte.oGCPanel.endTimer();
+        });
+    },
+
+    /*
+        Other messages from background
+    */
+    listen2: function () {
+        browser.runtime.onMessage.addListener(function (oMessage) {
+            let {sActionRequest} = oMessage;
+            let xActiveNode = document.activeElement;
+            switch (sActionRequest) {
+                /*
+                    Commands received from the keyboard (shortcuts)
+                */
+                case "shortcutGrammarChecker":
+                    if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT" || xActiveNode.isContentEditable)) {
+                        oGrammalecte.startGCPanel(xActiveNode);
+                    } else {
+                        oGrammalecte.startGCPanel(oGrammalecte.getPageText());
+                    }
+                    break;
+                default:
+                    console.log("[Content script] Unknown command: " + sActionDone);
             }
-            break;
-        case "getSpellSuggestions":
-            oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
-            break;
-        case "getVerb":
-            if (dInfo.bStart) {
-                oGrammalecte.oGCPanel.conjugateWith(result.oVerb, result.oConjTable);
-            } else {
-                oGrammalecte.oGCPanel.displayConj(result.oConjTable);
-            }
-            break;
-        case "workerRestarted":
-            oGrammalecte.oGCPanel.stopWaitIcon();
-            oGrammalecte.oGCPanel.showMessage("Le serveur grammatical a été arrêté et relancé.");
-            oGrammalecte.oGCPanel.endTimer();
-            break;
-        /*
-            Commands received from the context menu
-            (Context menu are initialized in background)
-        */
-        // Grammar checker commands
-        case "grammar_checker_editable":
-            if (oGrammalecte.xRightClickedNode !== null) {
-                oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
-            } else {
-                oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
-            }
-            break;
-        case "grammar_checker_page":
-            oGrammalecte.startGCPanel(oGrammalecte.getPageText());
-            break;
-        case "grammar_checker_selection":
-            oGrammalecte.startGCPanel(result, false); // result is the selected text
-            // selected text is sent to the GC worker in the background script.
-            break;
-        case "grammar_checker_iframe":
-            console.log("[Grammalecte] selected iframe: ", result);
-            if (document.activeElement.tagName == "IFRAME") {
-                //console.log(document.activeElement.id); frameId given by result is different than frame.id
-                oGrammalecte.startGCPanel(document.activeElement);
-            } else {
-                oGrammalecte.showMessage("Erreur. Le cadre sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
-            }
-            break;
-        // rescan page command
-        case "rescanPage":
-            oGrammalecte.rescanPage();
-            break;
-        default:
-            console.log("[Content script] Unknown command: " + sActionDone);
+        });
     }
-});
+}
+
+oGrammalecteBackgroundPort.listen()
+oGrammalecteBackgroundPort.listen2()
 
 
 
@@ -430,29 +525,5 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
     }
     catch (e) {
         showError(e);
-    }
-});
-
-
-
-/*
-    Other messages from background
-*/
-browser.runtime.onMessage.addListener(function (oMessage) {
-    let {sActionRequest} = oMessage;
-    let xActiveNode = document.activeElement;
-    switch (sActionRequest) {
-        /*
-            Commands received from the keyboard (shortcuts)
-        */
-        case "shortcutGrammarChecker":
-            if (xActiveNode && (xActiveNode.tagName == "TEXTAREA" || xActiveNode.tagName == "INPUT" || xActiveNode.isContentEditable)) {
-                oGrammalecte.startGCPanel(xActiveNode);
-            } else {
-                oGrammalecte.startGCPanel(oGrammalecte.getPageText());
-            }
-            break;
-        default:
-            console.log("[Content script] Unknown command: " + sActionDone);
     }
 });

@@ -3,7 +3,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global oGrammalecte, xGrammalectePort, showError, window, document, console */
+/* global oGrammalecte, showError, window, document, console */
 
 "use strict";
 

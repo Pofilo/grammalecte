@@ -2,7 +2,7 @@
 
 /* jshint esversion:6, -W097 */
 /* jslint esversion:6 */
-/* global GrammalectePanel, oGrammalecte, xGrammalectePort, showError, window, document, console */
+/* global GrammalectePanel, oGrammalecte, oGrammalecteBackgroundPort, showError, window, document, console */
 
 "use strict";
 
@@ -23,7 +23,7 @@ function onGrammalecteGCPanelClick (xEvent) {
                        && xElem.className !== "grammalecte_error_ignored") {
                 oGrammalecte.oGCPanel.oTooltip.show(xElem.parentNode, xElem.id);
             } else if (xElem.id === "grammalecte_tooltip_url"  || xElem.id === "grammalecte_tooltip_db_search") {
-                oGrammalecte.oGCPanel.openURL(xElem.dataset.url);
+                oGrammalecteBackgroundPort.openURL(xElem.dataset.url);
             } else {
                 oGrammalecte.oGCPanel.oTooltip.hide();
             }
@@ -111,16 +111,8 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 this.showLexicographer();
                 this.clearLexicographer();
                 this.startWaitIcon();
-                xGrammalectePort.postMessage({
-                    sCommand: "getListOfTokens",
-                    dParam: {sText: this.oTextControl.getText()},
-                    dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
-                });
-                /*xGrammalectePort.postMessage({
-                    sCommand: "parseFull",
-                    dParam: {sText: this.oTextControl.getText(), sCountry: "FR", bDebug: false, bContext: false},
-                    dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
-                });*/
+                oGrammalecteBackgroundPort.getListOfTokens(this.oTextControl.getText());
+                //oGrammalecteBackgroundPort.parseFull(this.oTextControl.getText())
             }
         };
         this.xConjButton.onclick = () => {
@@ -129,7 +121,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
         };
         this.xLexEditButton.onclick = () => {
-            xGrammalectePort.postMessage({sCommand: "openLexiconEditor", dParam: null, dInfo: null});
+            oGrammalecteBackgroundPort.openLexiconEditor();
         };
         // Add tabs to menu
         this.xMenu.appendChild(this.xTFButton)
@@ -172,11 +164,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.clear();
         this.startWaitIcon();
         this.resetTimer();
-        xGrammalectePort.postMessage({
-            sCommand: "parseAndSpellcheck",
-            dParam: {sText: this.oTextControl.getText(), sCountry: "FR", bDebug: false, bContext: false},
-            dInfo: ((this.xNode) ? {sTextAreaId: this.xNode.id} : {})
-        });
+        oGrammalecteBackgroundPort.parseAndSpellcheck(this.oTextControl.getText(), "__GrammalectePanel__");
     }
 
     showEditor () {
@@ -288,11 +276,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let xParagraph = this.xParent.getElementById(sParagraphId);
         this._blockParagraph(xParagraph);
         let sText = this.purgeText(xParagraph.textContent);
-        xGrammalectePort.postMessage({
-            sCommand: "parseAndSpellcheck1",
-            dParam: {sText: sText, sCountry: "FR", bDebug: false, bContext: false},
-            dInfo: {sParagraphId: sParagraphId}
-        });
+        oGrammalecteBackgroundPort.parseAndSpellcheck1(sText, "__GrammalectePanel__", sParagraphId);
         this.oTextControl.setParagraph(iParaNum, sText);
         this.oTextControl.write();
     }
@@ -640,11 +624,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let bInt = this.xParent.getElementById('grammalecte_conj_oint').checked;
         let bFem = this.xParent.getElementById('grammalecte_conj_ofem').checked;
         if (this.sVerb) {
-            xGrammalectePort.postMessage({
-                sCommand: "getVerb",
-                dParam: {sVerb: this.sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem},
-                dInfo: {bStart: bStart}
-            });
+            oGrammalecteBackgroundPort.getVerb(this.sVerb, bStart, bPro, bNeg, bTpsCo, bInt, bFem);
         }
     }
 
@@ -876,11 +856,7 @@ class GrammalecteTooltip {
                 }
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
-                xGrammalectePort.postMessage({
-                    sCommand: "getSpellSuggestions",
-                    dParam: {sWord: xNodeErr.textContent},
-                    dInfo: {sErrorId: xNodeErr.dataset.error_id}
-                });
+                oGrammalecteBackgroundPort.getSpellSuggestions(xNodeErr.textContent, xNodeErr.dataset.error_id);
             }
             this.xTooltipArrow.style.display = "block";
             this.xTooltip.style.display = "block";
@@ -966,29 +942,29 @@ class GrammalecteTextControl {
         this.bIframe = (xNode.tagName == "IFRAME");
         if (this.bTextArea) {
             this.xNode.disabled = true;
-            this._loadText(this.xNode.value);
+            this.loadText(this.xNode.value);
         }
         else if (this.bIframe) {
             // iframe
             if (!this.bResultInEvent) {
                 oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ La zone analysée est un cadre contenant une autre page web (“iframe”). Les changements faits ne peuvent être pas répercutés dans cette zone.");
             }
-            this._loadText(this.xNode.contentWindow.document.body.innerText);
+            this.loadText(this.xNode.contentWindow.document.body.innerText);
         }
         else {
             // editable node
             oGrammalecte.oGCPanel.addMessageToGCPanel("❗ La zone de texte analysée est un champ textuel enrichi susceptible de contenir des éléments non textuels qui seront effacés lors de la correction.");
-            this._loadText(this.xNode.innerText);
+            this.loadText(this.xNode.innerText);
         }
     }
 
     setText (sText) {
         this.clear();
         oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
-        this._loadText(sText);
+        this.loadText(sText);
     }
 
-    _loadText (sText) {
+    loadText (sText) {
         if (typeof(sText) === "string") {
             this.dParagraph.clear();
             let i = 0;
