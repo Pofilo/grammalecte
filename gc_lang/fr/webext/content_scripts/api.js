@@ -55,14 +55,5 @@ const oGrammalecteAPI = {
         } else {
             console.log("[Grammalecte API] Error: parameter is not a HTML node.");
         }
-    },
-
-    parseText: function (sText) {
-        if (typeof(sText) === "string") {
-            let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "parseText", sText: sText} });
-            document.dispatchEvent(xEvent);
-        } else {
-            console.log("[Grammalecte API] Error: parameter is not a text.");
-        }
     }
 }

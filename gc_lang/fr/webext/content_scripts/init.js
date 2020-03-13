@@ -390,6 +390,10 @@ const oGrammalecteBackgroundPort = {
                             oGrammalecte.oGCPanel.endTimer();
                         }
                     }
+                    else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify(result) });
+                        document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
+                    }
                     break;
                 case "parseAndSpellcheck1":
                     if (dInfo.sDestination == "__GrammalectePanel__") {
@@ -514,10 +518,17 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
                 }
                 break;
             case "parseNode":
-                // todo
-                break;
-            case "parseText":
-                // todo
+                if (oCommand.xNode  &&  oCommand.xNode.id) {
+                    if (oCommand.xNode.tagName == "TEXTAREA"  ||  oCommand.xNode.tagName == "INPUT") {
+                        oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.value, oCommand.xNode.id);
+                    }
+                    else if (oCommand.xNode.tagName == "IFRAME") {
+                        oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.contentWindow.document.body.innerText, oCommand.xNode.id);
+                    }
+                    else {
+                        oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.innerText, oCommand.xNode.id);
+                    }
+                }
                 break;
             default:
                 console.log("[Grammalecte] Event: Unknown command", oCommand.sCommand);
@@ -527,3 +538,10 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
         showError(e);
     }
 });
+
+
+/*
+    Note:
+    Initialization starts when the background is connected.
+    See: oGrammalecteBackgroundPort.listen() -> case "init"
+*/
