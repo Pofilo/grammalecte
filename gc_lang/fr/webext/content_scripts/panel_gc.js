@@ -856,7 +856,7 @@ class GrammalecteTooltip {
                 }
                 this.clearSuggestionBlock();
                 this.xTooltipSuggBlock.textContent = "Recherche de graphies possibles…";
-                oGrammalecteBackgroundPort.getSpellSuggestions(xNodeErr.textContent, xNodeErr.dataset.error_id);
+                oGrammalecteBackgroundPort.getSpellSuggestions(xNodeErr.textContent, "__GrammalectePanel__", xNodeErr.dataset.error_id);
             }
             this.xTooltipArrow.style.display = "block";
             this.xTooltip.style.display = "block";

@@ -55,5 +55,14 @@ const oGrammalecteAPI = {
         } else {
             console.log("[Grammalecte API] Error: parameter is not a HTML node.");
         }
+    },
+
+    getSpellSuggestions: function (sWord, sDestination, sErrorId) {
+        if (typeof(sWord) === "string") {
+            let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "getSpellSuggestions", sWord: sWord, sDestination: sDestination, sErrorId: sErrorId} });
+            document.dispatchEvent(xEvent);
+        } else {
+            console.log("[Grammalecte API] Error: parameter is not a text.");
+        }
     }
 }

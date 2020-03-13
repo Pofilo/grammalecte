@@ -352,8 +352,8 @@ const oGrammalecteBackgroundPort = {
         });
     },
 
-    getSpellSuggestions: function (sWord, sErrorId) {
-        this.xConnect.postMessage({ sCommand: "getSpellSuggestions", dParam: { sWord: sWord }, dInfo: { sErrorId: sErrorId } });
+    getSpellSuggestions: function (sWord, sDestination, sErrorId) {
+        this.xConnect.postMessage({ sCommand: "getSpellSuggestions", dParam: { sWord: sWord }, dInfo: { sDestination: sDestination, sErrorId: sErrorId } });
     },
 
     openURL: function (sURL) {
@@ -391,7 +391,7 @@ const oGrammalecteBackgroundPort = {
                         }
                     }
                     else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
-                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify(result) });
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ result: result, info: dInfo }) });
                         document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
                     }
                     break;
@@ -412,7 +412,13 @@ const oGrammalecteBackgroundPort = {
                     }
                     break;
                 case "getSpellSuggestions":
-                    oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
+                    if (dInfo.sDestination == "__GrammalectePanel__") {
+                        oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
+                    }
+                    else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ result: result, info: dInfo }) });
+                        document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
+                    }
                     break;
                 case "getVerb":
                     if (dInfo.bStart) {
@@ -528,6 +534,11 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
                     else {
                         oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.innerText, oCommand.xNode.id);
                     }
+                }
+                break;
+            case "getSpellSuggestions":
+                if (oCommand.sWord) {
+                    oGrammalecteBackgroundPort.getSpellSuggestions(sWord, oCommand.sDestination, oCommand.sErrorId);
                 }
                 break;
             default:
