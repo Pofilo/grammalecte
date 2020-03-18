@@ -476,7 +476,7 @@ const oBinaryDict = {
             oFileHandler.saveFile("fr.personal.json", JSON.stringify(oJSON));
             this.oIBDAWG = new IBDAWG(oJSON);
             this.setDictData(this.oIBDAWG.nEntry, this.oIBDAWG.sDate);
-            //browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sType: "personal", oDict: oJSON}, dInfo: {} });
+            //browser.runtime.sendMessage({ sCommand: "setDictionary", oParam: {sType: "personal", oDict: oJSON}, oInfo: {} });
             enableElement("export_button");
         } else {
             oFileHandler.deleteFile("fr.personal.json");

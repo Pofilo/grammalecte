@@ -30,10 +30,10 @@ const oWorkerHandler = {
             // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
             try {
                 this.nLastTimeWorkerResponse = Date.now();
-                let {sActionDone, result, dInfo, bEnd, bError} = e.data;
+                let {sActionDone, result, oInfo, bEnd, bError} = e.data;
                 if (bError) {
                     console.log(result);
-                    console.log(dInfo);
+                    console.log(oInfo);
                     return;
                 }
                 switch (sActionDone) {
@@ -48,8 +48,8 @@ const oWorkerHandler = {
                     case "getSpellSuggestions":
                     case "getVerb":
                         // send result to content script
-                        if (typeof(dInfo.iReturnPort) === "number") {
-                            let xPort = dConnx.get(dInfo.iReturnPort);
+                        if (typeof(oInfo.iReturnPort) === "number") {
+                            let xPort = dConnx.get(oInfo.iReturnPort);
                             xPort.postMessage(e.data);
                         } else {
                             console.log("[background] don’t know where to send results");
@@ -169,8 +169,8 @@ const oInitHandler = {
             }
             oWorkerHandler.xGCEWorker.postMessage({
                 sCommand: "init",
-                dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
-                dInfo: {}
+                oParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+                oInfo: {}
             });
         }
         catch (e) {
@@ -184,17 +184,17 @@ const oInitHandler = {
             // deprecated (to be removed in 2020)
             console.log("personal dictionary migration");
             browser.storage.local.set({ "personal_dictionary": oData["oPersonalDictionary"] });
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "personal", oDict: oData["oPersonalDictionary"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "personal", oDict: oData["oPersonalDictionary"] }, oInfo: {} });
             browser.storage.local.remove("oPersonalDictionary");
         }
         if (oData.hasOwnProperty("main_dic_name")) {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "main", oDict: oData["main_dic_name"] }, dInfo: {sExtPath: browser.extension.getURL("")} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "main", oDict: oData["main_dic_name"] }, oInfo: {sExtPath: browser.extension.getURL("")} });
         }
         if (oData.hasOwnProperty("community_dictionary")) {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, oInfo: {} });
         }
         if (oData.hasOwnProperty("personal_dictionary")) {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "personal", oDict: oData["personal_dictionary"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "personal", oDict: oData["personal_dictionary"] }, oInfo: {} });
         }
     },
 
@@ -204,11 +204,11 @@ const oInitHandler = {
                 community: true,
                 personal: true
             }});
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "community", bActivate: true }, dInfo: {} });
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "personal", bActivate: true }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "community", bActivate: true }, oInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "personal", bActivate: true }, oInfo: {} });
         } else {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "community", bActivate: oData.sc_options["community"] }, dInfo: {} });
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "personal", bActivate: oData.sc_options["personal"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "community", bActivate: oData.sc_options["community"] }, oInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "personal", bActivate: oData.sc_options["personal"] }, oInfo: {} });
         }
     }
 }
@@ -246,7 +246,7 @@ let dConnx = new Map();
 function handleMessage (oRequest, xSender, sendResponse) {
     // message from panels
     //console.log(xSender);
-    let {sCommand, dParam, dInfo} = oRequest;
+    let {sCommand, oParam, oInfo} = oRequest;
     switch (sCommand) {
         case "getOptions":
         case "getDefaultOptions":
@@ -260,16 +260,16 @@ function handleMessage (oRequest, xSender, sendResponse) {
             oWorkerHandler.xGCEWorker.postMessage(oRequest);
             break;
         case "restartWorker":
-            oWorkerHandler.restart(dParam["nDelayLimit"]);
+            oWorkerHandler.restart(oParam["nDelayLimit"]);
             break;
         case "openURL":
-            browser.tabs.create({url: dParam.sURL});
+            browser.tabs.create({url: oParam.sURL});
             break;
         case "openConjugueurTab":
             openConjugueurTab();
             break;
         case "openLexiconEditor":
-            openLexiconEditor(dParam["dictionary"]);
+            openLexiconEditor(oParam["dictionary"]);
             break;
         case "openDictionaries":
             openDictionaries();
@@ -289,7 +289,7 @@ function handleConnexion (xPort) {
     let iPortId = xPort.sender.tab.id; // identifier for the port: each port can be found at dConnx[iPortId]
     dConnx.set(iPortId, xPort);
     xPort.onMessage.addListener(function (oRequest) {
-        let {sCommand, dParam, dInfo} = oRequest;
+        let {sCommand, oParam, oInfo} = oRequest;
         switch (sCommand) {
             case "parse":
             case "parseAndSpellcheck":
@@ -298,14 +298,14 @@ function handleConnexion (xPort) {
             case "getListOfTokens":
             case "getSpellSuggestions":
             case "getVerb":
-                oRequest.dInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
+                oRequest.oInfo.iReturnPort = iPortId; // we pass the id of the return port to receive answer
                 oWorkerHandler.xGCEWorker.postMessage(oRequest);
                 break;
             case "restartWorker":
-                oWorkerHandler.restart(dParam["nDelayLimit"]);
+                oWorkerHandler.restart(oParam["nDelayLimit"]);
                 break;
             case "openURL":
-                browser.tabs.create({url: dParam.sURL});
+                browser.tabs.create({url: oParam.sURL});
                 break;
             case "openConjugueurTab":
                 openConjugueurTab();
@@ -364,8 +364,8 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
             oWorkerHandler.xGCEWorker.postMessage({
                 sCommand: "parseAndSpellcheck",
-                dParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
-                dInfo: {iReturnPort: xTab.id}
+                oParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
+                oInfo: {iReturnPort: xTab.id}
             });
             break;
         // tools
@@ -444,7 +444,7 @@ function storeGCOptions (dOptions) {
 
 function sendCommandToTab (iTab, sCommand, result=null) {
     let xTabPort = dConnx.get(iTab);
-    xTabPort.postMessage({sActionDone: sCommand, result: result, dInfo: null, bEnd: false, bError: false});
+    xTabPort.postMessage({sActionDone: sCommand, result: result, oInfo: null, bEnd: false, bError: false});
 }
 
 function sendCommandToCurrentTab (sCommand) {
@@ -467,7 +467,7 @@ function sendCommandToCurrentTab (sCommand) {
 
 function sendCommandToAllTabs (sCommand) {
     for (let [iTab, xTabPort] of dConnx.entries()) {
-        xTabPort.postMessage({sActionDone: sCommand, result: null, dInfo: null, bEnd: false, bError: false});
+        xTabPort.postMessage({sActionDone: sCommand, result: null, oInfo: null, bEnd: false, bError: false});
     }
 }
 

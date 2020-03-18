@@ -18,10 +18,10 @@ const oWorkerHandler = {
             // https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
             try {
                 this.nLastTimeWorkerResponse = Date.now();
-                let {sActionDone, result, dInfo, bEnd, bError} = e.data;
+                let {sActionDone, result, oInfo, bEnd, bError} = e.data;
                 if (bError) {
                     console.log(result);
-                    console.log(dInfo);
+                    console.log(oInfo);
                     return;
                 }
                 switch (sActionDone) {
@@ -36,8 +36,8 @@ const oWorkerHandler = {
                     case "getSpellSuggestions":
                     case "getVerb":
                         // send result to content script
-                        if (typeof(dInfo.iReturnPort) === "number") {
-                            let xPort = dConnx.get(dInfo.iReturnPort);
+                        if (typeof(oInfo.iReturnPort) === "number") {
+                            let xPort = dConnx.get(oInfo.iReturnPort);
                             xPort.postMessage(e.data);
                         } else {
                             console.log("[background] don’t know where to send results");
@@ -141,8 +141,8 @@ const oInitHandler = {
             }
             oWorkerHandler.xGCEWorker.postMessage({
                 sCommand: "init",
-                dParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
-                dInfo: {}
+                oParam: {sExtensionPath: browser.extension.getURL(""), dOptions: dOptions, sContext: "Firefox"},
+                oInfo: {}
             });
         }
         catch (e) {
@@ -153,10 +153,10 @@ const oInitHandler = {
 
     _setSpellingDictionaries: function (oData) {
         if (oData.hasOwnProperty("community_dictionary")) {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "community", oDict: oData["community_dictionary"] }, oInfo: {} });
         }
         if (oData.hasOwnProperty("personal_dictionary")) {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", dParam: { sDictionary: "personal", oDict: oData["personal_dictionary"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionary", oParam: { sDictionary: "personal", oDict: oData["personal_dictionary"] }, oInfo: {} });
         }
     },
 
@@ -166,11 +166,11 @@ const oInitHandler = {
                 community: true,
                 personal: true
             }});
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "community", bActivate: true }, dInfo: {} });
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "personal", bActivate: true }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "community", bActivate: true }, oInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "personal", bActivate: true }, oInfo: {} });
         } else {
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "community", bActivate: oData.sc_options["community"] }, dInfo: {} });
-            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", dParam: { sDictionary: "personal", bActivate: oData.sc_options["personal"] }, dInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "community", bActivate: oData.sc_options["community"] }, oInfo: {} });
+            oWorkerHandler.xGCEWorker.postMessage({ sCommand: "setDictionaryOnOff", oParam: { sDictionary: "personal", bActivate: oData.sc_options["personal"] }, oInfo: {} });
         }
     }
 }

@@ -28,39 +28,39 @@ window.addEventListener(
             if (xElem.id === "text_to_test_button") {
                 browser.runtime.sendMessage({
                     sCommand: "textToTest",
-                    dParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: true, bContext: false},
-                    dInfo: {}
+                    oParam: {sText: document.getElementById("text_to_test").value, sCountry: "FR", bDebug: true, bContext: false},
+                    oInfo: {}
                 });
             }
             else if (xElem.id === "fulltests_button") {
                 document.getElementById("tests_result").textContent = "Veuillez patienter…";
                 browser.runtime.sendMessage({
                     sCommand: "fullTests",
-                    dParam: {},
-                    dInfo: {}
+                    oParam: {},
+                    oInfo: {}
                 });
             }
             else if (xElem.id == "restart_worker") {
                 browser.runtime.sendMessage({
                     sCommand: "restartWorker",
-                    dParam: { "nDelayLimit": 3 },
-                    dInfo: {}
+                    oParam: { "nDelayLimit": 3 },
+                    oInfo: {}
                 });
             }
             // grammar options
             else if (xElem.id === "default_options_button") {
                 browser.runtime.sendMessage({
                    sCommand: "resetOptions",
-                   dParam: {},
-                   dInfo: {}
+                   oParam: {},
+                   oInfo: {}
                 });
             }
             else if (xElem.id.startsWith("option_")) {
                 if (xElem.dataset.option) {
                     browser.runtime.sendMessage({
                         sCommand: "setOption",
-                        dParam: {sOptName: xElem.dataset.option, bValue: xElem.checked},
-                        dInfo: {}
+                        oParam: {sOptName: xElem.dataset.option, bValue: xElem.checked},
+                        oInfo: {}
                     });
                 }
             }
@@ -70,8 +70,8 @@ window.addEventListener(
                     storeSCOptions();
                     browser.runtime.sendMessage({
                         sCommand: "setDictionaryOnOff",
-                        dParam: {sDictionary: xElem.dataset.dictionary, bActivate: xElem.checked},
-                        dInfo: {}
+                        oParam: {sDictionary: xElem.dataset.dictionary, bActivate: xElem.checked},
+                        oInfo: {}
                     });
                 }
             }
@@ -81,8 +81,8 @@ window.addEventListener(
                 browser.storage.local.set({"main_dic_name": sMainDicName});
                 browser.runtime.sendMessage({
                     sCommand: "setDictionary",
-                    dParam: { sDictionary: "main", oDict: sMainDicName },
-                    dInfo: { sExtPath: browser.extension.getURL("") }
+                    oParam: { sDictionary: "main", oDict: sMainDicName },
+                    oInfo: { sExtPath: browser.extension.getURL("") }
                 });
             }
             // UI options
@@ -96,29 +96,29 @@ window.addEventListener(
             else if (xElem.id == "conj_button") {
                 browser.runtime.sendMessage({
                     sCommand: "openConjugueurTab",
-                    dParam: {},
-                    dInfo: {}
+                    oParam: {},
+                    oInfo: {}
                 });
             }
             else if (xElem.id == "dictionaries_button") {
                 browser.runtime.sendMessage({
                     sCommand: "openDictionaries",
-                    dParam: {},
-                    dInfo: {}
+                    oParam: {},
+                    oInfo: {}
                 });
             }
             else if (xElem.id == "dic_community_button") {
                 browser.runtime.sendMessage({
                     sCommand: "openLexiconEditor",
-                    dParam: { "dictionary": "__community__"},
-                    dInfo: {}
+                    oParam: { "dictionary": "__community__"},
+                    oInfo: {}
                 });
             }
             else if (xElem.id == "dic_personal_button") {
                 browser.runtime.sendMessage({
                     sCommand: "openLexiconEditor",
-                    dParam: { "dictionary": "__personal__"},
-                    dInfo: {}
+                    oParam: { "dictionary": "__personal__"},
+                    oInfo: {}
                 });
             }
         // change UI page
@@ -156,7 +156,7 @@ function sendMessageAndWaitResponse (oData) {
     Messages received
 */
 function handleMessage (oMessage, xSender, sendResponse) {
-    let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
+    let {sActionDone, result, oInfo, bEnd, bError} = oMessage;
     switch(sActionDone) {
         case "textToTest":
         case "fullTests":

@@ -312,60 +312,60 @@ const oGrammalecteBackgroundPort = {
         Send messages to the background
         object {
             sCommand: the action to perform
-            dParam: parameters necessary for the execution of the action
-            dInfo: all kind of informations that needs to be sent back (usually to know where to use the result)
+            oParam: parameters necessary for the execution of the action
+            oInfo: all kind of informations that needs to be sent back (usually to know where to use the result)
         }
     */
     parseAndSpellcheck: function (sText, sDestination) {
         this.xConnect.postMessage({
             sCommand: "parseAndSpellcheck",
-            dParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
-            dInfo: { sDestination: sDestination }
+            oParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
+            oInfo: { sDestination: sDestination }
         });
     },
 
     parseAndSpellcheck1: function (sText, sDestination, sParagraphId) {
         this.xConnect.postMessage({
             sCommand: "parseAndSpellcheck1",
-            dParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
-            dInfo: { sDestination: sDestination, sParagraphId: sParagraphId }
+            oParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
+            oInfo: { sDestination: sDestination, sParagraphId: sParagraphId }
         });
     },
 
     getListOfTokens: function (sText) {
-        this.xConnect.postMessage({ sCommand: "getListOfTokens", dParam: { sText: sText }, dInfo: {} });
+        this.xConnect.postMessage({ sCommand: "getListOfTokens", oParam: { sText: sText }, oInfo: {} });
     },
 
     parseFull: function (sText) {
         this.xConnect.postMessage({
             sCommand: "parseFull",
-            dParam: { sText: sTex, sCountry: "FR", bDebug: false, bContext: false },
-            dInfo: {}
+            oParam: { sText: sTex, sCountry: "FR", bDebug: false, bContext: false },
+            oInfo: {}
         });
     },
 
     getVerb: function (sVerb, bStart=true, bPro=false, bNeg=false, bTpsCo=false, bInt=false, bFem=false) {
         this.xConnect.postMessage({
             sCommand: "getVerb",
-            dParam: { sVerb: sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem },
-            dInfo: { bStart: bStart }
+            oParam: { sVerb: sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem },
+            oInfo: { bStart: bStart }
         });
     },
 
     getSpellSuggestions: function (sWord, sDestination, sErrorId) {
-        this.xConnect.postMessage({ sCommand: "getSpellSuggestions", dParam: { sWord: sWord }, dInfo: { sDestination: sDestination, sErrorId: sErrorId } });
+        this.xConnect.postMessage({ sCommand: "getSpellSuggestions", oParam: { sWord: sWord }, oInfo: { sDestination: sDestination, sErrorId: sErrorId } });
     },
 
     openURL: function (sURL) {
-        this.xConnect.postMessage({ sCommand: "openURL", dParam: { "sURL": sURL }, dInfo: null });
+        this.xConnect.postMessage({ sCommand: "openURL", oParam: { "sURL": sURL }, oInfo: null });
     },
 
     openLexiconEditor: function () {
-        this.xConnect.postMessage({ sCommand: "openLexiconEditor", dParam: null, dInfo: null });
+        this.xConnect.postMessage({ sCommand: "openLexiconEditor", oParam: null, oInfo: null });
     },
 
     restartWorker: function (nTimeDelay=10) {
-        this.xConnect.postMessage({ sCommand: "restartWorker", dParam: { "nTimeDelay": nTimeDelay }, dInfo: {} });
+        this.xConnect.postMessage({ sCommand: "restartWorker", oParam: { "nTimeDelay": nTimeDelay }, oInfo: {} });
     },
 
     /*
@@ -373,7 +373,7 @@ const oGrammalecteBackgroundPort = {
     */
     listen: function () {
         this.xConnect.onMessage.addListener(function (oMessage) {
-            let {sActionDone, result, dInfo, bEnd, bError} = oMessage;
+            let {sActionDone, result, oInfo, bEnd, bError} = oMessage;
             switch (sActionDone) {
                 case "init":
                     oGrammalecte.sExtensionUrl = oMessage.sUrl;
@@ -382,7 +382,7 @@ const oGrammalecteBackgroundPort = {
                     oGrammalecte.observePage();
                     break;
                 case "parseAndSpellcheck":
-                    if (dInfo.sDestination == "__GrammalectePanel__") {
+                    if (oInfo.sDestination == "__GrammalectePanel__") {
                         if (!bEnd) {
                             oGrammalecte.oGCPanel.addParagraphResult(result);
                         } else {
@@ -390,14 +390,14 @@ const oGrammalecteBackgroundPort = {
                             oGrammalecte.oGCPanel.endTimer();
                         }
                     }
-                    else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
-                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "errors", oResult: result, oInfo: dInfo }) });
-                        document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
+                    else if (oInfo.sDestination  &&  document.getElementById(oInfo.sDestination)) {
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "errors", oResult: result, oInfo: oInfo }) });
+                        document.getElementById(oInfo.sDestination).dispatchEvent(xEvent);
                     }
                     break;
                 case "parseAndSpellcheck1":
-                    if (dInfo.sDestination == "__GrammalectePanel__") {
-                        oGrammalecte.oGCPanel.refreshParagraph(dInfo.sParagraphId, result);
+                    if (oInfo.sDestination == "__GrammalectePanel__") {
+                        oGrammalecte.oGCPanel.refreshParagraph(oInfo.sParagraphId, result);
                     }
                     break;
                 case "parseFull":
@@ -412,16 +412,16 @@ const oGrammalecteBackgroundPort = {
                     }
                     break;
                 case "getSpellSuggestions":
-                    if (dInfo.sDestination == "__GrammalectePanel__") {
-                        oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
+                    if (oInfo.sDestination == "__GrammalectePanel__") {
+                        oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, oInfo.sErrorId);
                     }
-                    else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
-                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "spellsugg", oResult: result, oInfo: dInfo }) });
-                        document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
+                    else if (oInfo.sDestination  &&  document.getElementById(oInfo.sDestination)) {
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "spellsugg", oResult: result, oInfo: oInfo }) });
+                        document.getElementById(oInfo.sDestination).dispatchEvent(xEvent);
                     }
                     break;
                 case "getVerb":
-                    if (dInfo.bStart) {
+                    if (oInfo.bStart) {
                         oGrammalecte.oGCPanel.conjugateWith(result.oVerb, result.oConjTable);
                     } else {
                         oGrammalecte.oGCPanel.displayConj(result.oConjTable);

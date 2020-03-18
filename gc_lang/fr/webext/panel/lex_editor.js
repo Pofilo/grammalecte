@@ -593,7 +593,7 @@ const oDictHandler = {
             return;
         }
         if (sName == "__personal__") {
-            browser.runtime.sendMessage({ sCommand: "setDictionary", dParam: {sDictionary: "personal", oDict: oJSON}, dInfo: {} });
+            browser.runtime.sendMessage({ sCommand: "setDictionary", oParam: {sDictionary: "personal", oDict: oJSON}, oInfo: {} });
             browser.storage.local.set({ "personal_dictionary": oJSON });
         }
         else {

@@ -58,11 +58,11 @@ importScripts("grammalecte/tests.js");
 */
 
 
-function createResponse (sActionDone, result, dInfo, bEnd, bError=false) {
+function createResponse (sActionDone, result, oInfo, bEnd, bError=false) {
     return {
         "sActionDone": sActionDone,
         "result": result, // can be of any type
-        "dInfo": dInfo,
+        "oInfo": oInfo,
         "bEnd": bEnd,
         "bError": bError
     };
@@ -89,58 +89,58 @@ function showData (e) {
     https://developer.mozilla.org/en-US/docs/Web/API/MessageEvent
 */
 onmessage = function (e) {
-    let {sCommand, dParam, dInfo} = e.data;
+    let {sCommand, oParam, oInfo} = e.data;
     switch (sCommand) {
         case "init":
-            init(dParam.sExtensionPath, dParam.dOptions, dParam.sContext, dInfo);
+            init(oParam.sExtensionPath, oParam.dOptions, oParam.sContext, oInfo);
             break;
         case "parse":
-            parse(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            parse(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext, oInfo);
             break;
         case "parseAndSpellcheck":
-            parseAndSpellcheck(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            parseAndSpellcheck(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext, oInfo);
             break;
         case "parseAndSpellcheck1":
-            parseAndSpellcheck1(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            parseAndSpellcheck1(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext, oInfo);
             break;
         case "parseFull":
-            parseFull(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            parseFull(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext, oInfo);
             break;
         case "getListOfTokens":
-            getListOfTokens(dParam.sText, dInfo);
+            getListOfTokens(oParam.sText, oInfo);
             break;
         case "getOptions":
-            getOptions(dInfo);
+            getOptions(oInfo);
             break;
         case "getDefaultOptions":
-            getDefaultOptions(dInfo);
+            getDefaultOptions(oInfo);
             break;
         case "setOptions":
-            setOptions(dParam.sOptions, dInfo);
+            setOptions(oParam.sOptions, oInfo);
             break;
         case "setOption":
-            setOption(dParam.sOptName, dParam.bValue, dInfo);
+            setOption(oParam.sOptName, oParam.bValue, oInfo);
             break;
         case "resetOptions":
-            resetOptions(dInfo);
+            resetOptions(oInfo);
             break;
         case "textToTest":
-            textToTest(dParam.sText, dParam.sCountry, dParam.bDebug, dParam.bContext, dInfo);
+            textToTest(oParam.sText, oParam.sCountry, oParam.bDebug, oParam.bContext, oInfo);
             break;
         case "fullTests":
-            fullTests(dInfo);
+            fullTests(oInfo);
             break;
         case "setDictionary":
-            setDictionary(dParam.sDictionary, dParam.oDict, dInfo);
+            setDictionary(oParam.sDictionary, oParam.oDict, oInfo);
             break;
         case "setDictionaryOnOff":
-            setDictionaryOnOff(dParam.sDictionary, dParam.bActivate, dInfo);
+            setDictionaryOnOff(oParam.sDictionary, oParam.bActivate, oInfo);
             break;
         case "getSpellSuggestions":
-            getSpellSuggestions(dParam.sWord, dInfo);
+            getSpellSuggestions(oParam.sWord, oInfo);
             break;
         case "getVerb":
-            getVerb(dParam.sVerb, dParam.bPro, dParam.bNeg, dParam.bTpsCo, dParam.bInt, dParam.bFem, dInfo);
+            getVerb(oParam.sVerb, oParam.bPro, oParam.bNeg, oParam.bTpsCo, oParam.bInt, oParam.bFem, oInfo);
             break;
         default:
             console.log("[Worker] Unknown command: " + sCommand);
@@ -168,7 +168,7 @@ let oLocution = null;
     by paragraph.
 */
 
-function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
+function init (sExtensionPath, dOptions=null, sContext="JavaScript", oInfo={}) {
     try {
         if (!bInitDone) {
             //console.log("[Worker] Loading… Extension path: " + sExtensionPath);
@@ -195,104 +195,104 @@ function init (sExtensionPath, dOptions=null, sContext="JavaScript", dInfo={}) {
         }
         // we always retrieve options from the gc_engine, for setOptions filters obsolete options
         dOptions = helpers.mapToObject(gc_engine.getOptions());
-        postMessage(createResponse("init", dOptions, dInfo, true));
+        postMessage(createResponse("init", dOptions, oInfo, true));
     }
     catch (e) {
         console.error(e);
-        postMessage(createResponse("init", createErrorResult(e, "init failed"), dInfo, true, true));
+        postMessage(createResponse("init", createErrorResult(e, "init failed"), oInfo, true, true));
     }
 }
 
 
-function parse (sText, sCountry, bDebug, bContext, dInfo={}) {
+function parse (sText, sCountry, bDebug, bContext, oInfo={}) {
     sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, bContext);
-        postMessage(createResponse("parse", aGrammErr, dInfo, false));
+        postMessage(createResponse("parse", aGrammErr, oInfo, false));
     }
-    postMessage(createResponse("parse", null, dInfo, true));
+    postMessage(createResponse("parse", null, oInfo, true));
 }
 
-function parseAndSpellcheck (sText, sCountry, bDebug, bContext, dInfo={}) {
+function parseAndSpellcheck (sText, sCountry, bDebug, bContext, oInfo={}) {
     let i = 0;
     sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext);
         let aSpellErr = oSpellChecker.parseParagraph(sParagraph);
-        postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, iParaNum: i, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, false));
+        postMessage(createResponse("parseAndSpellcheck", {sParagraph: sParagraph, iParaNum: i, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, oInfo, false));
         i += 1;
     }
-    postMessage(createResponse("parseAndSpellcheck", null, dInfo, true));
+    postMessage(createResponse("parseAndSpellcheck", null, oInfo, true));
 }
 
-function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, dInfo={}) {
+function parseAndSpellcheck1 (sParagraph, sCountry, bDebug, bContext, oInfo={}) {
     sParagraph = sParagraph.replace(/­/g, "").normalize("NFC");
     let aGrammErr = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext);
     let aSpellErr = oSpellChecker.parseParagraph(sParagraph);
-    postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, dInfo, true));
+    postMessage(createResponse("parseAndSpellcheck1", {sParagraph: sParagraph, aGrammErr: aGrammErr, aSpellErr: aSpellErr}, oInfo, true));
 }
 
-function parseFull (sText, sCountry, bDebug, bContext, dInfo={}) {
+function parseFull (sText, sCountry, bDebug, bContext, oInfo={}) {
     let i = 0;
     sText = sText.replace(/­/g, "").normalize("NFC");
     for (let sParagraph of text.getParagraph(sText)) {
         let lSentence = gc_engine.parse(sParagraph, sCountry, bDebug, null, bContext, true);
         console.log("*", lSentence);
-        postMessage(createResponse("parseFull", {sParagraph: sParagraph, iParaNum: i, lSentence: lSentence}, dInfo, false));
+        postMessage(createResponse("parseFull", {sParagraph: sParagraph, iParaNum: i, lSentence: lSentence}, oInfo, false));
         i += 1;
     }
-    postMessage(createResponse("parseFull", null, dInfo, true));
+    postMessage(createResponse("parseFull", null, oInfo, true));
 }
 
-function getListOfTokens (sText, dInfo={}) {
+function getListOfTokens (sText, oInfo={}) {
     // lexicographer
     try {
         sText = sText.replace(/­/g, "").normalize("NFC");
         for (let sParagraph of text.getParagraph(sText)) {
             if (sParagraph.trim() !== "") {
-                postMessage(createResponse("getListOfTokens", oLxg.getListOfTokensReduc(sParagraph, true), dInfo, false));
+                postMessage(createResponse("getListOfTokens", oLxg.getListOfTokensReduc(sParagraph, true), oInfo, false));
             }
         }
-        postMessage(createResponse("getListOfTokens", null, dInfo, true));
+        postMessage(createResponse("getListOfTokens", null, oInfo, true));
     }
     catch (e) {
         console.error(e);
-        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), dInfo, true, true));
+        postMessage(createResponse("getListOfTokens", createErrorResult(e, "no tokens"), oInfo, true, true));
     }
 }
 
-function getOptions (dInfo={}) {
+function getOptions (oInfo={}) {
     let dOptions = helpers.mapToObject(gc_engine.getOptions());
-    postMessage(createResponse("getOptions", dOptions, dInfo, true));
+    postMessage(createResponse("getOptions", dOptions, oInfo, true));
 }
 
-function getDefaultOptions (dInfo={}) {
+function getDefaultOptions (oInfo={}) {
     let dOptions = helpers.mapToObject(gc_engine.getDefaultOptions());
-    postMessage(createResponse("getDefaultOptions", dOptions, dInfo, true));
+    postMessage(createResponse("getDefaultOptions", dOptions, oInfo, true));
 }
 
-function setOptions (dOptions, dInfo={}) {
+function setOptions (dOptions, oInfo={}) {
     if (!(dOptions instanceof Map)) {
         dOptions = helpers.objectToMap(dOptions);
     }
     gc_engine.setOptions(dOptions);
     dOptions = helpers.mapToObject(gc_engine.getOptions());
-    postMessage(createResponse("setOptions", dOptions, dInfo, true));
+    postMessage(createResponse("setOptions", dOptions, oInfo, true));
 }
 
-function setOption (sOptName, bValue, dInfo={}) {
+function setOption (sOptName, bValue, oInfo={}) {
     console.log(sOptName+": "+bValue);
     if (sOptName) {
         gc_engine.setOption(sOptName, bValue);
         let dOptions = helpers.mapToObject(gc_engine.getOptions());
-        postMessage(createResponse("setOption", dOptions, dInfo, true));
+        postMessage(createResponse("setOption", dOptions, oInfo, true));
     }
 }
 
-function resetOptions (dInfo={}) {
+function resetOptions (oInfo={}) {
     gc_engine.resetOptions();
     let dOptions = helpers.mapToObject(gc_engine.getOptions());
-    postMessage(createResponse("resetOptions", dOptions, dInfo, true));
+    postMessage(createResponse("resetOptions", dOptions, oInfo, true));
 }
 
 function tests () {
@@ -306,9 +306,9 @@ function tests () {
     }
 }
 
-function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
+function textToTest (sText, sCountry, bDebug, bContext, oInfo={}) {
     if (!gc_engine) {
-        postMessage(createResponse("textToTest", "# Grammar checker not loaded.", dInfo, true));
+        postMessage(createResponse("textToTest", "# Grammar checker not loaded.", oInfo, true));
         return;
     }
     sText = sText.replace(/­/g, "").normalize("NFC");
@@ -320,12 +320,12 @@ function textToTest (sText, sCountry, bDebug, bContext, dInfo={}) {
     if (sMsg == "") {
         sMsg =  "Aucune erreur détectée.";
     }
-    postMessage(createResponse("textToTest", sMsg, dInfo, true));
+    postMessage(createResponse("textToTest", sMsg, oInfo, true));
 }
 
-function fullTests (dInfo={}) {
+function fullTests (oInfo={}) {
     if (!gc_engine) {
-        postMessage(createResponse("fullTests", "# Grammar checker not loaded.", dInfo, true));
+        postMessage(createResponse("fullTests", "# Grammar checker not loaded.", oInfo, true));
         return;
     }
     let dMemoOptions = gc_engine.getOptions();
@@ -341,21 +341,21 @@ function fullTests (dInfo={}) {
         console.log(sRes);
     }
     gc_engine.setOptions(dMemoOptions);
-    postMessage(createResponse("fullTests", sMsg, dInfo, true));
+    postMessage(createResponse("fullTests", sMsg, oInfo, true));
 }
 
 
 // SpellChecker
 
-function setDictionary (sDictionary, oDict, dInfo) {
+function setDictionary (sDictionary, oDict, oInfo) {
     if (!oSpellChecker) {
-        postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
+        postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", oInfo, true));
         return;
     }
     //console.log("setDictionary", sDictionary);
     switch (sDictionary) {
         case "main":
-            oSpellChecker.setMainDictionary(oDict, dInfo["sExtPath"]+"/grammalecte/graphspell/_dictionaries");
+            oSpellChecker.setMainDictionary(oDict, oInfo["sExtPath"]+"/grammalecte/graphspell/_dictionaries");
             break;
         case "community":
             oSpellChecker.setCommunityDictionary(oDict);
@@ -366,12 +366,12 @@ function setDictionary (sDictionary, oDict, dInfo) {
         default:
             console.log("[worker] setDictionary: Unknown dictionary <"+sDictionary+">");
     }
-    postMessage(createResponse("setDictionary", true, dInfo, true));
+    postMessage(createResponse("setDictionary", true, oInfo, true));
 }
 
-function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
+function setDictionaryOnOff (sDictionary, bActivate, oInfo) {
     if (!oSpellChecker) {
-        postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", dInfo, true));
+        postMessage(createResponse("setDictionary", "# Error. SpellChecker not loaded.", oInfo, true));
         return;
     }
     //console.log("setDictionaryOnOff", sDictionary, bActivate);
@@ -393,17 +393,17 @@ function setDictionaryOnOff (sDictionary, bActivate, dInfo) {
         default:
             console.log("[worker] setDictionaryOnOff: Unknown dictionary <"+sDictionary+">");
     }
-    postMessage(createResponse("setDictionaryOnOff", true, dInfo, true));
+    postMessage(createResponse("setDictionaryOnOff", true, oInfo, true));
 }
 
-function getSpellSuggestions (sWord, dInfo) {
+function getSpellSuggestions (sWord, oInfo) {
     if (!oSpellChecker) {
-        postMessage(createResponse("getSpellSuggestions", "# Error. SpellChecker not loaded.", dInfo, true));
+        postMessage(createResponse("getSpellSuggestions", "# Error. SpellChecker not loaded.", oInfo, true));
         return;
     }
     let i = 0;
     for (let aSugg of oSpellChecker.suggest(sWord)) {
-        postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg, iSuggBlock: i}, dInfo, true));
+        postMessage(createResponse("getSpellSuggestions", {sWord: sWord, aSugg: aSugg, iSuggBlock: i}, oInfo, true));
         i += 1;
     }
 }
@@ -411,7 +411,7 @@ function getSpellSuggestions (sWord, dInfo) {
 
 // Conjugueur
 
-function getVerb (sWord, bPro, bNeg, bTpsCo, bInt, bFem, dInfo) {
+function getVerb (sWord, bPro, bNeg, bTpsCo, bInt, bFem, oInfo) {
     try {
         let oVerb = null;
         let oConjTable = null;
@@ -419,10 +419,10 @@ function getVerb (sWord, bPro, bNeg, bTpsCo, bInt, bFem, dInfo) {
             oVerb = new Verb(sWord);
             oConjTable = oVerb.createConjTable(bPro, bNeg, bTpsCo, bInt, bFem);
         }
-        postMessage(createResponse("getVerb", { oVerb: oVerb, oConjTable: oConjTable }, dInfo, true));
+        postMessage(createResponse("getVerb", { oVerb: oVerb, oConjTable: oConjTable }, oInfo, true));
     }
     catch (e) {
         console.error(e);
-        postMessage(createResponse("getVerb", createErrorResult(e, "no verb"), dInfo, true, true));
+        postMessage(createResponse("getVerb", createErrorResult(e, "no verb"), oInfo, true, true));
     }
 }
