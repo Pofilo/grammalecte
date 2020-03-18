@@ -1,0 +1,106 @@
+# API for the web
+
+If Grammalecte is installed by the user on his browser (like Firefox or Chrome), you can call
+several functions for a better integration of grammar checking for your website. This is mostly usefull
+if your use a non-standard textarea.
+
+
+### Detecting if Grammalecte API is here
+
+Every call to the Grammalecte API will be done via an object called `oGrammalecteAPI`.
+
+    if (typeof(oGrammalecteAPI) === "object") {
+        ...
+    }
+
+
+### Disabling the Grammalecte button (the spinning pearl)
+
+By default, Grammalecte inserts a button (a spinning pearl) on each textarea node and editable node (unless the user disabled it).
+You can tell Grammalete not to create these buttons on your text areas with the property: `data-grammalecte_button="false"`.
+
+
+### Open the Grammalecte panel for a node
+
+If you have disabled the spinning buttons, you may launch the Grammalecte panel with your custom button
+
+    oGrammalecteAPI.openPanelForNode("node_id")
+    oGrammalecteAPI.openPanelForNode(node)
+
+The node can be a textarea, an editable node or an iframe.
+If the node is an iframe, the content won’t be modified by Grammalecte.
+
+
+### Open the Grammalecte panel for any text
+
+    oGrammalecteAPI.openPanelForText("your text")
+
+This method won’t send back any result or modified text.
+
+
+### Open Grammalecte panel
+
+    oGrammalecteAPI.openPanel(param)
+
+Depending of what `param` is, this method will call `openPanelForNode()` or `openPanelForText()`.
+
+
+### Prevent Grammalecte to modify the node content
+
+If you don’t want Grammalecte to modify directly the node content, add the property: `data-grammalecte_result_via_event="true"`.
+
+With this property, Grammalecte will send an event to the node each times the text is modified within the panel.
+The text can be retrieved with:
+
+    node.addEventListener("GrammalecteResult", function (event) {
+        if (event.detail.sType  &&  event.detail.sType == "text") {
+            let sText = event.detail.sText;
+            ...
+        }
+    }
+
+
+### Parse a node and get errors
+
+    oGrammalecteAPI.parseNode("node_id")
+    oGrammalecteAPI.parseNode(node)
+
+The node can be a textarea, an editable node or an iframe. The node must have an identifier.
+Results will be sent with a succession of events at the node.
+
+    node.addEventListener("GrammalecteResult", function (event) {
+        if (event.detail.sType  &&  event.detail.sType == "errors") {
+            let oResult = event.detail.oResult; // null when the text parsing is finished
+            ...
+        }
+    }
+
+For the last event, `oResult` will be `null`.
+
+
+### Get spelling suggestions
+
+`oGrammalecteAPI.getSpellingSuggestions(word, destination, error_identifier)`
+
+Parameters:
+
+- word (string)
+
+- destination: node_id (string)
+
+- error_identifier: a custom identifier (string)
+
+Suggestions will be sent within an event at the node identified by `destination`.
+
+    node.addEventListener("GrammalecteResult", function (event) {
+        if (event.detail.sType  &&  event.detail.sType == "spellsugg") {
+            let oResult = event.detail.oResult;
+            let oInfo = event.detail.oInfo; // object containing the destination and the error_identifier
+            ...
+        }
+    }
+
+
+### Version of the Grammalecte Web API
+
+    oGrammalecteAPI.sVersion

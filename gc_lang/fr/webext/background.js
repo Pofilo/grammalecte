@@ -451,7 +451,7 @@ function sendCommandToCurrentTab (sCommand) {
     if (bChrome) {
         browser.tabs.query({ currentWindow: true, active: true }, (lTabs) => {
             for (let xTab of lTabs) {
-                console.log(xTab);
+                //console.log(xTab);
                 browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
             }
         });
@@ -459,7 +459,7 @@ function sendCommandToCurrentTab (sCommand) {
     }
     browser.tabs.query({ currentWindow: true, active: true }).then((lTabs) => {
         for (let xTab of lTabs) {
-            console.log(xTab);
+            //console.log(xTab);
             browser.tabs.sendMessage(xTab.id, {sActionRequest: sCommand});
         }
     }, showError);

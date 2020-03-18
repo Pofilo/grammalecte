@@ -1010,7 +1010,7 @@ class GrammalecteTextControl {
     write () {
         if (this.xNode !== null) {
             if (this.bResultInEvent) {
-                const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ text: this.getText() }) });
+                const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
                 this.xNode.dispatchEvent(xEvent);
                 //console.log("Text sent via an event :", xEvent.detail);
             }

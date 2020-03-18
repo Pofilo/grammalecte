@@ -391,7 +391,7 @@ const oGrammalecteBackgroundPort = {
                         }
                     }
                     else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
-                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ result: result, info: dInfo }) });
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "errors", oResult: result, oInfo: dInfo }) });
                         document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
                     }
                     break;
@@ -416,7 +416,7 @@ const oGrammalecteBackgroundPort = {
                         oGrammalecte.oGCPanel.oTooltip.setSpellSuggestionsFor(result.sWord, result.aSugg, result.iSuggBlock, dInfo.sErrorId);
                     }
                     else if (dInfo.sDestination  &&  document.getElementById(dInfo.sDestination)) {
-                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ result: result, info: dInfo }) });
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "spellsugg", oResult: result, oInfo: dInfo }) });
                         document.getElementById(dInfo.sDestination).dispatchEvent(xEvent);
                     }
                     break;
@@ -538,7 +538,7 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
                 break;
             case "getSpellSuggestions":
                 if (oCommand.sWord) {
-                    oGrammalecteBackgroundPort.getSpellSuggestions(sWord, oCommand.sDestination, oCommand.sErrorId);
+                    oGrammalecteBackgroundPort.getSpellSuggestions(oCommand.sWord, oCommand.sDestination, oCommand.sErrorId);
                 }
                 break;
             default:
