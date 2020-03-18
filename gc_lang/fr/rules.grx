@@ -2105,7 +2105,7 @@ __fusions_noms_communs__
         <<- ~>> ␣
         <<- =>> define(\1, [":N:m:i"])
 
-    n’ importe [qui|quoi|quel|quelle|quels|quelles|où]
+    n’ importe [qui|quoi|quel|quelle|quels|quelles|où|lequel|laquelle]
         <<- ~1:2>> ␣
 
     [cultural|gender] studies
@@ -7085,6 +7085,7 @@ __conf_a_à_substantifs__
     >épée a deux mains
     >étui a >cigarette
     >fard a >paupière
+    >femme a poigne
     >femme a tout faire
     >fer a cheval
     >ferme a >clic
@@ -7095,6 +7096,7 @@ __conf_a_à_substantifs__
     >fusil a >pompe
     >gaz a >effet de serre
     >histoire a dormir debout
+    >homme a poigne
     >homme a tout faire
     >lampe a [>huile|>pétrole]
     >lime a >ongle
@@ -11212,6 +11214,22 @@ TEST: celles {{déjantait}}
 TEST: celui d’Obéron était différent
 
 
+!!
+!!
+!!!! Confusion générale                                                                           !!
+!!
+!!
+
+__infi_qui_la_vinf__
+    qui  la  @:V1.*:Y
+        <<- /infi/ not value(<1, "|n’importe|ce|se|") and not morph(<1, ":R")
+        -2:3>> ="l’a " + suggVerbPpas(\-1, ":m:s") + "|la " + \3[:-2] + "ait"                       # Confusion globale.
+
+TEST: qui {{la transformer}}                                                ->> l’a transformé|la transformait
+TEST: je ne vais pas laisser n’importe qui la souiller
+TEST: avec qui la transformer ?
+
+
 
 !!!
 !!!
@@ -11554,8 +11572,8 @@ __purge_locutions__
     à [mon|ton|son|notre|votre|leur] grand [désarroi|soulagement]
     à n’ en [pas|point] douter
     à n’ en plus finir
-    à n’ importe quel prix
-    à n’ importe quelle heure du jour et de la nuit
+    à n’importe quel prix
+    à n’importe quelle heure du jour et de la nuit
     à parler [franc|franchement|strictement]
     à part [entière|ça|cela|ceci]
     à parts égales
@@ -11700,7 +11718,7 @@ __purge_locutions__
     au loin
     au milieu de nulle part
     au moment opportun
-    au même titre que n’ importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
+    au même titre que n’importe [laquelle|lequel] d’ entre [nous|vous|eux|elles]
     au pas de [charge|course]
     au plus [près|pressé|vite|tôt|tard]
     au plus haut [degré|point]
@@ -11785,7 +11803,7 @@ __purge_locutions__
     comme au bon vieux temps
     comme cul et chemise
     comme [frappé+ses] par la foudre
-    comme n’ importe où ?ailleurs¿
+    comme n’importe où ?ailleurs¿
     comme par [enchantement|magie]
     comme par un fait exprès
     comme pas deux
@@ -12586,14 +12604,14 @@ __purge_prep_pronom_comparaison__
     pour    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] pour   [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels]
     sous    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] sous   [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels]
     sur     [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] sur    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels]
-    à       [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] à      n’ importe qui d’ autre
-    avec    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] avec   n’ importe qui d’ autre
-    contre  [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] contre n’ importe qui d’ autre
-    de      [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] de     n’ importe qui d’ autre
-    par     [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] par    n’ importe qui d’ autre
-    pour    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] pour   n’ importe qui d’ autre
-    sous    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] sous   n’ importe qui d’ autre
-    sur     [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] sur    n’ importe qui d’ autre
+    à       [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] à      n’importe qui d’ autre
+    avec    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] avec   n’importe qui d’ autre
+    contre  [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] contre n’importe qui d’ autre
+    de      [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] de     n’importe qui d’ autre
+    par     [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] par    n’importe qui d’ autre
+    pour    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] pour   n’importe qui d’ autre
+    sous    [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] sous   n’importe qui d’ autre
+    sur     [moi|toi|lui|elle|nous|vous|ils|elles|iel|iels] [autant|plus|moins] [que|qu’] sur    n’importe qui d’ autre
         <<- ~>> *
 
 __purge_x_par_après_x__
@@ -13231,6 +13249,7 @@ __simplication_substantifs__
     >fer à cheval
     >femme [de|d’] [affaires|chambre|confiance|exception|État|Église|honneur|lettres|loi|ménage]
     >femme d’ âge mûr
+    >femme à poigne
     >femme à tout faire
     >fer à repasser
     >ferme à >clic
@@ -13272,6 +13291,7 @@ __simplication_substantifs__
     >histoire avec un [grand|petit] h
     >homme [de|d’] [affaires|armes|confiance|exception|État|Église|honneur|lettres|loi|main|paille]
     >homme d’ âge mûr
+    >homme à poigne
     >homme à tout faire
     >horaire à rallonge
     >hôtel [de|d’] ville
@@ -24746,15 +24766,20 @@ TEST: j’{{aie}} faim
 
 
 # Après/dès que + indicatif
-__vmode_après_dès_que_indicatif__
+__vmode_que_indicatif__
     [après|dès]  [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
     [après|dès]  [que|qu’]  @:(?:Os|M)  @:V0e.*:S
         <<- /vmode/ -4>> =suggVerbMode(\4, ":I", \3)                    # Après « \2 que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif, si l’action s’est déroulée de façon certaine.
+
+    à  mesure    [que|qu’]  @:(?:Os|M)  @:V.*:S¬:[GI]
+    à  mesure    [que|qu’]  @:(?:Os|M)  @:V0e.*:S
+        <<- /vmode/ -5>> =suggVerbMode(\5, ":I", \4)                    # Après « à mesure que », le verbe ne s’emploie pas au subjonctif mais à l’indicatif.
 
 TEST: Après qu’il {{ait}} allé
 TEST: Après que Paul {{ait}} mangé son repas.
 TEST: Après qu’il {{soit}} parti, il plut.
 TEST: Dès qu’il y {{eût}} pensé, il fit ce qu’il fallait pour résoudre le problème.
+TEST: à mesure qu’il {{devienne}} fort
 
 
 # Quand/lorsque + indicatif
