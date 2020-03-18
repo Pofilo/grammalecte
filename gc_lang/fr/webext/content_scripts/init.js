@@ -84,23 +84,30 @@ const oGrammalecte = {
         browser.storage.local.get("ui_options").then(this._prepareButtons.bind(this), showError);
     },
 
+    _isEligibleNode: function (xNode) {
+        return (xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
+               && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false"))
+    },
+
     _prepareButtons: function (oOptions) {
         if (oOptions.hasOwnProperty("ui_options")) {
             this.oOptions = oOptions.ui_options;
             // textarea
-            for (let xNode of document.getElementsByTagName("textarea")) {
-                if (this.oOptions.textarea  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden" && xNode.getAttribute("spellcheck") !== "false"
-                    && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false")) {
-                    this.lButton.push(new GrammalecteButton(this.nButton, xNode));
-                    this.nButton += 1;
+            if (this.oOptions  && this.oOptions.textarea) {
+                for (let xNode of document.getElementsByTagName("textarea")) {
+                    if (this._isEligibleNode(xNode)  &&  xNode.getAttribute("spellcheck") !== "false") {
+                        this.lButton.push(new GrammalecteButton(this.nButton, xNode));
+                        this.nButton += 1;
+                    }
                 }
             }
             // editable nodes
-            for (let xNode of document.querySelectorAll("[contenteditable]")) {
-                if (this.oOptions.editablenode  &&  xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
-                    && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false")) {
-                    this.lButton.push(new GrammalecteButton(this.nButton, xNode));
-                    this.nButton += 1;
+            if (this.oOptions  &&  this.oOptions.editablenode) {
+                for (let xNode of document.querySelectorAll("[contenteditable]")) {
+                    if (this._isEligibleNode(xNode)) {
+                        this.lButton.push(new GrammalecteButton(this.nButton, xNode));
+                        this.nButton += 1;
+                    }
                 }
             }
         }
@@ -109,19 +116,30 @@ const oGrammalecte = {
     observePage: function () {
         // When a textarea is added via jascript we add the buttons
         let that = this;
-        this.xObserver = new MutationObserver(function (mutations) {
-            mutations.forEach(function (mutation) {
-                for (let i = 0;  i < mutation.addedNodes.length;  i++){
-                    if (mutation.addedNodes[i].tagName == "TEXTAREA") {
-                        if (that.oOptions === null || that.oOptions.textarea) {
-                            oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, mutation.addedNodes[i]));
+        this.xObserver = new MutationObserver(function (lMutations) {
+            lMutations.forEach(function (xMutation) {
+                if (that.oOptions) {
+                    for (let i = 0;  i < xMutation.addedNodes.length;  i++) {
+                        let xNode = xMutation.addedNodes[i];
+                        if (((xNode.tagName == "TEXTAREA"  &&  that.oOptions.textarea  &&  xNode.getAttribute("spellcheck") !== "false") || (xNode.isContentEditable  &&  that.oOptions.editablenode))
+                            &&  that._isEligibleNode(xNode)) {
+                            oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
                             oGrammalecte.nButton += 1;
                         }
-                    } else if (mutation.addedNodes[i].getElementsByTagName) {
-                        if (that.oOptions === null || that.oOptions.textarea) {
-                            for (let xNode of mutation.addedNodes[i].getElementsByTagName("textarea")) {
-                                oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
-                                oGrammalecte.nButton += 1;
+                        else if (xNode.getElementsByTagName  &&  that.oOptions.textarea) {
+                            for (let xNode of xNode.getElementsByTagName("textarea")) {
+                                if (that._isEligibleNode(xNode)  &&  xNode.getAttribute("spellcheck") !== "false") {
+                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
+                                    oGrammalecte.nButton += 1;
+                                }
+                            }
+                        }
+                        else if (xNode.querySelectorAll  &&  that.oOptions.editablenode) {
+                            for (let xNode of document.querySelectorAll("[contenteditable]")) {
+                                if (that._isEligibleNode(xNode)) {
+                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
+                                    oGrammalecte.nButton += 1;
+                                }
                             }
                         }
                     }
