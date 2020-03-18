@@ -38,7 +38,7 @@ If the node is an iframe, the content won’t be modified by Grammalecte.
 This method won’t send back any result or modified text.
 
 
-### Open Grammalecte panel
+### Open the Grammalecte panel
 
     oGrammalecteAPI.openPanel(param)
 
