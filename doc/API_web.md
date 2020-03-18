@@ -80,7 +80,7 @@ For the last event, `oResult` will be `null`.
 
 ### Get spelling suggestions
 
-`oGrammalecteAPI.getSpellingSuggestions(word, destination, error_identifier)`
+    oGrammalecteAPI.getSpellingSuggestions(word, destination, error_identifier)
 
 Parameters:
 
