@@ -409,7 +409,7 @@ const oGrammalecteBackgroundPort = {
                         }
                     }
                     else if (oInfo.sDestination  &&  document.getElementById(oInfo.sDestination)) {
-                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "errors", oResult: result, oInfo: oInfo }) });
+                        const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "proofreading", oResult: result, oInfo: oInfo }) });
                         document.getElementById(oInfo.sDestination).dispatchEvent(xEvent);
                     }
                     break;

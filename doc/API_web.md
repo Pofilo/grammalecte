@@ -69,7 +69,7 @@ The node can be a textarea, an editable node or an iframe. The node must have an
 Results will be sent with a succession of events at the node.
 
     node.addEventListener("GrammalecteResult", function (event) {
-        if (event.detail.sType  &&  event.detail.sType == "errors") {
+        if (event.detail.sType  &&  event.detail.sType == "proofreading") {
             let oResult = event.detail.oResult; // null when the text parsing is finished
             ...
         }
