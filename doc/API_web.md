@@ -21,16 +21,23 @@ You can:
 - get spelling suggestions for a wrong word.
 
 
-### Version of the Grammalecte Web API
-
-    oGrammalecteAPI.sVersion
-
-
 ### How it works
 
 Usually, webpage scripts can’t call methods or functions of browser extensions.
 
 The Grammalecte API is injected within your webpage, with methods launching events that Grammalecte is listening. When Grammalecte receives one of these events, it launches the requested tasks. Results may be sent via events on webpage nodes.
+
+For information purpose only, here are the layers of code explaining with you can’t access directly to the grammar checker:
+
+    ·> webpage script
+    <> Grammalecte API (injected by the content-script, callable by the webpage script)
+    <> Content-script (injected by the extension, not callable by the webpage script)
+    <> Background script (extension core)
+    <· Worker running the grammar checker on a different process
+
+### Version of the Grammalecte Web API
+
+    oGrammalecteAPI.sVersion
 
 
 ### Detecting if Grammalecte API is here
