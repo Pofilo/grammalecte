@@ -2,7 +2,7 @@
 
 ## Using the Grammalecte API for the web
 
-**With Grammalecte 1.8+.**
+**With Grammalecte 1.8+.** (beta stage)
 
 If Grammalecte is installed by the user on his browser (like Firefox or Chrome), you can call
 several functions for a better integration of grammar checking for your website. This is mostly usefull
@@ -19,6 +19,11 @@ You can:
 - get raw results (list of errors) of grammar checking and spell checking,
 
 - get spelling suggestions for a wrong word.
+
+
+### Version of the Grammalecte Web API
+
+    oGrammalecteAPI.sVersion
 
 
 ### How it works
@@ -122,8 +127,3 @@ Suggestions will be sent within an event at the node identified by `destination`
             ...
         }
     }
-
-
-### Version of the Grammalecte Web API
-
-    oGrammalecteAPI.sVersion
