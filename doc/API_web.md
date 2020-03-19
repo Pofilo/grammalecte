@@ -116,7 +116,7 @@ For the last event, `oResult` will be `null`.
 
 ### Get spelling suggestions
 
-    oGrammalecteAPI.getSpellingSuggestions(word, destination, error_identifier)
+    oGrammalecteAPI.getSpellingSuggestions(word, destination, request_identifier)
 
 Parameters:
 
@@ -124,14 +124,14 @@ Parameters:
 
 - destination: node_id (string)
 
-- error_identifier: a custom identifier (string)
+- request_identifier: a custom identifier (string) [default = ""]
 
 Suggestions will be sent within an event at the node identified by `destination`.
 
     node.addEventListener("GrammalecteResult", function (event) {
         if (event.detail.sType  &&  event.detail.sType == "spellsugg") {
             let oResult = event.detail.oResult;
-            let oInfo = event.detail.oInfo; // object containing the destination and the error_identifier
+            let oInfo = event.detail.oInfo; // object containing the destination and the request_identifier
             ...
         }
     }

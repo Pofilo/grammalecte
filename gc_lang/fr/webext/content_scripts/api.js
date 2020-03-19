@@ -73,14 +73,14 @@ const oGrammalecteAPI = {
         }
     },
 
-    getSpellSuggestions: function (sWord, sDestination, sErrorId) {
+    getSpellSuggestions: function (sWord, sDestination, sRequestId="") {
         /* parameters:
             - sWord (string)
             - sDestination: HTML identifier (string) -> the result will be sent as an event “GrammalecteResult” to destination node
-            - sErrorId: identifier for the error (string)
+            - sRequestId: custom identifier for the request (string) [default = ""]
         */
-        if (typeof(sWord) === "string"  &&  typeof(sDestination) === "string"  &&  typeof(sErrorId) === "string") {
-            let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "getSpellSuggestions", sWord: sWord, sDestination: sDestination, sErrorId: sErrorId} });
+        if (typeof(sWord) === "string"  &&  typeof(sDestination) === "string"  &&  typeof(sRequestId) === "string") {
+            let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "getSpellSuggestions", sWord: sWord, sDestination: sDestination, sRequestId: sRequestId} });
             document.dispatchEvent(xEvent);
         } else {
             console.log("[Grammalecte API] Error: one or several parameters aren’t string.");
