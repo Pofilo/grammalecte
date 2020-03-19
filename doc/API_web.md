@@ -5,7 +5,7 @@
 **With Grammalecte 1.8+.** (beta stage)
 
 If Grammalecte is installed by the user on his browser (like Firefox or Chrome), you can call
-several functions for a better integration of grammar checking for your website. This is mostly usefull
+several methods for a better integration of grammar checking for your website. This is mostly usefull
 if you use non-standard textareas.
 
 You can:
@@ -35,18 +35,19 @@ For information purpose only, here are the layers of code explaining why you can
     <> Background script (extension core)
     <· Worker running the grammar checker on a different process
 
-### Version of the Grammalecte Web API
 
-    oGrammalecteAPI.sVersion
-
-
-### Detecting if Grammalecte API is here
+### Detecting if the Grammalecte API is here
 
 Every call to the Grammalecte API will be done via an object called `oGrammalecteAPI`.
 
     if (typeof(oGrammalecteAPI) === "object") {
         ...
     }
+
+
+### Version of the Grammalecte API
+
+    oGrammalecteAPI.sVersion
 
 
 ### Disabling the Grammalecte button (the spinning pearl)
