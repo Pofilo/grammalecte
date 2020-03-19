@@ -1,8 +1,31 @@
 # API for the web
 
+## Using the Grammalecte API for the web
+
+**With Grammalecte 1.8+.**
+
 If Grammalecte is installed by the user on his browser (like Firefox or Chrome), you can call
 several functions for a better integration of grammar checking for your website. This is mostly usefull
-if your use a non-standard textarea.
+if you use non-standard textareas.
+
+You can:
+
+- disable the Grammalecte button (spinning pearl),
+
+- launch the Grammalecte panel with custom button (or when you think it’s necessary),
+
+- get the modified text via events (instead of having the node content directly modified),
+
+- get raw results (list of errors) of grammar checking and spell checking,
+
+- get spelling suggestions for a wrong word.
+
+
+### How it works
+
+Usually, webpage scripts can’t call methods or functions of browser extensions.
+
+The Grammalecte API is injected within your webpage, with methods launching events that Grammalecte is listening. When Grammalecte receives one of these events, it launches the requested tasks. Results may be sent via events on webpage nodes.
 
 
 ### Detecting if Grammalecte API is here
@@ -22,7 +45,7 @@ You can tell Grammalete not to create these buttons on your text areas with the 
 
 ### Open the Grammalecte panel for a node
 
-If you have disabled the spinning buttons, you may launch the Grammalecte panel with your custom button
+If you have disabled the spinning button, you can launch the Grammalecte panel with your custom button.
 
     oGrammalecteAPI.openPanelForNode("node_id")
     oGrammalecteAPI.openPanelForNode(node)
@@ -66,7 +89,7 @@ The text can be retrieved with:
     oGrammalecteAPI.parseNode(node)
 
 The node can be a textarea, an editable node or an iframe. The node must have an identifier.
-Results will be sent with a succession of events at the node.
+Results (for each paragraph) will be sent in a succession of events at the node.
 
     node.addEventListener("GrammalecteResult", function (event) {
         if (event.detail.sType  &&  event.detail.sType == "proofreading") {
