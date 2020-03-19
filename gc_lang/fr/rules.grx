@@ -18113,7 +18113,7 @@ TEST: Des gouttes de pluie.
 
 __conf_goûter_goutter_dégoûter_dégoutter__
     >goutter ?à¿ $:D [>biscuit|>bière|>bon|>bonbon|>breuvage|>burger|>café|>cidre|>cocktail|>chocolat|>crêpe|>cru|>délice|>délicieux|>délicieuse|>dessert|>fameux|>féculent|>fromage|>fruit|>gâteau|>hamburger|>légume|>nourriture|paradis|>pâte|>pain|>plat|>pâtisserie|>poisson|>poulet|>recette|repas|>sandwich|>soupe|>tarte|>tartelette|>sauce|>succulent|>thé|>viande|>vin|>yaourt|>yoghourt]
-        <<- /conf/ -1>> =\1.replace("outt", "oût").replace("OUTT", "OÛT")
+        <<- /conf/ not value(\-2, "|de|") -1>> =\1.replace("outt", "oût").replace("OUTT", "OÛT")
         # Confusion : “goutter” signifie “couler goutte à goutte”. Pour l’usage du goût, écrivez “goûter”.|https://fr.wiktionary.org/wiki/go%C3%BBter
 
     [>chiotte|>clim|>climatisation|>chauffe-eau|>douche|>eau|>évier|>lavabo|nez|>motrice|>parapluie|>plafond|>pluie|>robinet|>sang|>sueur|>toilette|>toit|>tuyau|>tuyauterie] ?[ne|n’]¿ [>goûter|>gouter|>dégoûter|>dégouter]
@@ -18142,6 +18142,7 @@ TEST: Il m’a {{dégoutté}} des maths.
 TEST: nous {{dégoutte}}, cette mauvaise foi.
 TEST: vous {{dégouttait}} de continuer.
 TEST: Ça l’avait dégoûté à vie.
+TEST: quelques gouttes de bière par terre
 
 
 # gré / grès
@@ -22370,6 +22371,7 @@ TEST: Allons le questionner encore une fois.
 TEST: Sois le pire des salopards.
 TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
 TEST: Faites le plein de culture en vous abonnant dès 1 € !
+TEST: Fais le plein de vêtements avant de partir en vacances
 
 
 __imp_union_en__
