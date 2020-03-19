@@ -27,7 +27,7 @@ Usually, webpage scripts can’t call methods or functions of browser extensions
 
 The Grammalecte API is injected within your webpage, with methods launching events that Grammalecte is listening. When Grammalecte receives one of these events, it launches the requested tasks. Results may be sent via events on webpage nodes.
 
-For information purpose only, here are the layers of code explaining with you can’t access directly to the grammar checker:
+For information purpose only, here are the layers of code explaining why you can’t access directly to the grammar checker:
 
     ·> webpage script
     <> Grammalecte API (injected by the content-script, callable by the webpage script)
