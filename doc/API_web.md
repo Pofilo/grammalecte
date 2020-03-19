@@ -40,7 +40,7 @@ For information purpose only, here are the layers of code explaining why you can
 
 Every call to the Grammalecte API will be done via an object called `oGrammalecteAPI`.
 
-    if (typeof(oGrammalecteAPI) === "object") {
+    if (typeof(oGrammalecteAPI) === "object"  &&  oGrammalecteAPI !== null) {
         ...
     }
 
