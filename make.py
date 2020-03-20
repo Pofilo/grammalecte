@@ -384,7 +384,7 @@ def main ():
     xParser.add_argument("-acd", "--add_community_dictionary", help="add community dictionary to the build", action="store_true")
     xParser.add_argument("-apd", "--add_personal_dictionary", help="add personal dictionary to the build", action="store_true")
     xParser.add_argument("-fx", "--firefox", help="Launch Firefox Developper for WebExtension testing", action="store_true")
-    xParser.add_argument("-we", "--web_ext", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
+    xParser.add_argument("-fxn", "--firefox_nightly", help="Launch Firefox Nightly for WebExtension testing", action="store_true")
     xParser.add_argument("-l", "--lint_web_ext", help="web-ext lint on the WebExtension", action="store_true")
     xParser.add_argument("-tb", "--thunderbird", help="Launch Thunderbird", action="store_true")
     xParser.add_argument("-tbb", "--thunderbird_beta", help="Launch Thunderbird Beta", action="store_true")
@@ -454,7 +454,7 @@ def main ():
                         hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if xArgs.perf_memo  else None
                         tests.perf(sVersion, hDst)
 
-            if xArgs.web_ext or xArgs.firefox:
+            if xArgs.firefox or xArgs.firefox_nightly:
                 with helpers.CD("_build/webext/"+sLang):
                     if xArgs.lint_web_ext:
                         os.system(r'web-ext lint -o text')
