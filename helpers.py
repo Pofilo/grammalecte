@@ -73,6 +73,20 @@ def copyFolderContent (spSrc, spDst):
             raise
 
 
+def moveFolderContent (spSrc, spDst, sPrefix="", bLog=False):
+    "move folder content from <spSrc> to <spDst>: if files already exist in <spDst>, they are replaced. (not recursive)"
+    try:
+        for sf in os.listdir(spSrc):
+            spfSrc = os.path.join(spSrc, sf)
+            if os.path.isfile(spfSrc):
+                spfDst = os.path.join(spDst, sPrefix + sf)
+                shutil.move(spfSrc, spfDst)
+                if bLog:
+                    print("file <" + spfSrc + "> moved to <"+spfDst+">")
+    except:
+        raise
+
+
 def fileFile (spf, dVars):
     "return file <spf> as a text filed with variables from <dVars>"
     return Template(open(spf, "r", encoding="utf-8").read()).safe_substitute(dVars)

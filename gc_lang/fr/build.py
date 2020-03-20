@@ -27,6 +27,8 @@ def createWebExtension (sLang, dVars):
     helpers.copyAndFileTemplate("_build/webext/"+sLang+"/panel/main.html", "_build/webext/"+sLang+"/panel/main.html", dVars)
     with helpers.CD("_build/webext/"+sLang):
         os.system("web-ext build")
+    # Copy Firefox zip extension to _build
+    helpers.moveFolderContent("_build/webext/"+sLang+"/web-ext-artifacts", "_build", "fx-"+sLang+"-", True)
 
 
 def _createOptionsForWebExtension (dVars):
