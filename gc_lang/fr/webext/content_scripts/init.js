@@ -127,17 +127,17 @@ const oGrammalecte = {
                             oGrammalecte.nButton += 1;
                         }
                         else if (xNode.getElementsByTagName  &&  that.oOptions.textarea) {
-                            for (let xNode of xNode.getElementsByTagName("textarea")) {
-                                if (that._isEligibleNode(xNode)  &&  xNode.getAttribute("spellcheck") !== "false") {
-                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
+                            for (let xSubNode of xNode.getElementsByTagName("textarea")) {
+                                if (that._isEligibleNode(xSubNode)  &&  xSubNode.getAttribute("spellcheck") !== "false") {
+                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xSubNode));
                                     oGrammalecte.nButton += 1;
                                 }
                             }
                         }
                         else if (xNode.querySelectorAll  &&  that.oOptions.editablenode) {
-                            for (let xNode of document.querySelectorAll("[contenteditable]")) {
-                                if (that._isEligibleNode(xNode)) {
-                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
+                            for (let xSubNode of xNode.querySelectorAll("[contenteditable]")) {
+                                if (that._isEligibleNode(xSubNode)) {
+                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xSubNode));
                                     oGrammalecte.nButton += 1;
                                 }
                             }
