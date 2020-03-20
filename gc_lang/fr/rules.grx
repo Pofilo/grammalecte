@@ -6468,8 +6468,12 @@ TEST: Il les y {{à}}.
 TEST: Y {{à}} du poulet
 
 
-    [l’|les|en] à
+    [l’|les] à
         <<- /conf/ not \1.isupper() and not value(>1, "|côté|coup|pic|peine|peu|plat|propos|valoir|")
+        -2>> a                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+
+    en à
+        <<- /conf/ not \1.isupper() and not value(>1, "|côté|coup|pic|peine|peu|plat|propos|valoir|") and not morph(<1, ">venir/")
         -2>> a                                                      # Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
 TEST: Ce fâcheux, comme à son habitude, les {{à}} ennuyés à mourir.
@@ -12214,7 +12218,6 @@ __purge_locutions__
     en ce [moment|temps-là]
     en ce qui [me|te|le|la|les|nous|vous] [concerne|concernait]
     en cet instant
-    encore
     encore une fois
     encore et [encore|toujours]
     enfin
@@ -12777,6 +12780,9 @@ __gestion_mots_grammaticaux__
     elles aussi  @:W¬:(?:3p|X)  [<end>|@:A:[fe]:p]
         <<- ~1:2>> *
 
+    encore
+        <<- not value(>1, "|que|qu’|") ~>> *
+
     en phase avec
         <<- ~1:2>> *
 
@@ -12793,7 +12799,7 @@ __gestion_mots_grammaticaux__
         <<- ~2>> *
 
     jamais
-        <<- not morph(<1, ">ne") ~>> *
+        <<- not value(<1, "|ne|n’|") ~>> *
 
     la une [de|des|du]
         <<- ~2>> _
@@ -22386,16 +22392,17 @@ TEST: Fais le plein de vêtements avant de partir en vacances
 __imp_union_en__
     *WORD  en
         <<- /imp/ space_after(\1, 1, 1)
-            and morph(\1, ":E", ":[GM]|>(?:venir|aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D|Ov)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
+            and morph(\1, ":E", ":[GM]|>(?:aller|partir)/") and morph(>1, ":|<end>|>,", ":(?:N|A|Q|Y|M|P|H|T|D|Ov)|>(?:pour|plus|moins|mieux|peu|plupart|trop|très|une?)/") and morph(<1, ":Cc|<start>|>,")
         ->> \1-\2                                       # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
     [<start>|,|(]  *WORD  en
-        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
+        <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:aller|partir)/")
             and morph(>1, ":|<end>|>,", ":(?:N|A|Y|M|P|B|3[sp]|D|Ov)|>(?:pour|plus|moins|mieux|peu|trop|très|en|y)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{restons en}} là.
 TEST: tu crois ça, {{donnes en}} encore
+TEST: {{Venons en}} à des exemples précis
 TEST: Intercède en ma faveur
 TEST: Même l’implacable guerrier-capitaine de la Fédération, James T. Kirk, apprend en rechignant à enterrer le phaser avec les bâtards Klingons qui ont tué son fils.
 TEST: Terminons en réservant une place de choix à l’un des relais les plus fervents de la pensée
@@ -24644,7 +24651,7 @@ __vmode_verbe_que_subjonctif__
         || [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             # Après “\1 que”, ce verbe devrait être au subjonctif.
 
-    >attendre [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
+    >attendre  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ not morph(\1, ":Q") --1>> =suggVerbMode(\-1, ":S", \-2)                         # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >avoir      envie      [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
@@ -24669,6 +24676,7 @@ __vmode_verbe_que_subjonctif__
         <<- /vmode/ tag(\2, "upron") --1>> =suggVerbMode(\-1, ":S", \-2)                            # Après “\1 se peut que”, le verbe devrait être au subjonctif.
 
 TEST: Il suffit qu’il {{court}} plus
+TEST: j’attends que tu {{viens}}.
 TEST: Je veux qu’il {{finit}} son repas.
 TEST: Je ne veux pas que tu {{es}} des ennuis
 TEST: je doute qu’il {{vient}} demain.
