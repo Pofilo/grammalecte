@@ -3994,6 +3994,13 @@ __tu_locutions__
     [à|a] tout [va|vas]
         <<- /tu/ ->> à tout-va                                  # Il manque un trait d’union.
 
+    [cet|l’|quel|notre|votre|mon|des|les|nos|vos|leurs|quels] après >midi
+        <<- /tu/ -2:3>> \2-\3                                   # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
+
+    un après >midi
+        <<- /tu/ not (value(<1, "|par|") and value(<2, "|un|"))
+        -2:3>> \2-\3                                            # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
+
     après demain
         <<- /tu/ ->> après-demain                               # Il manque un trait d’union.
 
@@ -4046,6 +4053,8 @@ __tu_locutions__
         <<- /tu/ ->> vis-à-vis                                  # Il manque les traits d’union.
 
 TEST: on a fait {{à la va vite}}…
+TEST: cet {{après midi}}, on s’en va.
+TEST: un {{après midi}} comme un autre
 TEST: Ils font des tests {{à tout va}}
 TEST: nous irons là-bas {{après demain}}.
 TEST: Mieux qu’{{avant hier}}.
