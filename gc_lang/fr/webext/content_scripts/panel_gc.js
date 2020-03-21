@@ -131,7 +131,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         this.xPanelBar.appendChild(this.xMenu);
     }
 
-    start (what) {
+    start (what, xResultNode=null) {
         this.oTooltip.hide();
         this.bWorking = false;
         this.clear();
@@ -140,12 +140,15 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         if (typeof(what) === "string") {
             // text
             this.xNode = null;
+            this.oTextControl.setResultNode(xResultNode);
             this.oTextControl.setText(what);
-        } else if (what.nodeType && what.nodeType === 1) { // 1 = Node.ELEMENT_NODE
+        }
+        else if (what.nodeType && what.nodeType === 1) { // 1 = Node.ELEMENT_NODE
             // node
             this.xNode = what;
             this.oTextControl.setNode(this.xNode);
-        } else {
+        }
+        else {
             // error
             oGrammalecte.oMessageBox.showMessage("[BUG] Analyse d’un élément inconnu…");
             console.log("[Grammalecte] Unknown element:", what);
@@ -932,6 +935,7 @@ class GrammalecteTextControl {
         this.bTextArea = false;
         this.bIframe = false;
         this.bResultInEvent = false; // if true, the node content is not modified, but an event is dispatched on the node with the modified text
+        this.xResultNode = null; // only useful if for text analysed without node
     }
 
     setNode (xNode) {
@@ -958,9 +962,18 @@ class GrammalecteTextControl {
         }
     }
 
+    setResultNode (xNode) {
+        if (xNode instanceof HTMLElement) {
+            this.xResultNode = xNode;
+            this.bResultInEvent = true;
+        }
+    }
+
     setText (sText) {
         this.clear();
-        oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
+        if (!this.xResultNode) {
+            oGrammalecte.oGCPanel.addMessageToGCPanel("⛔ Aucun champ textuel défini. Les changements ne seront pas répercutés sur la zone d’où le texte a été extrait.");
+        }
         this.loadText(sText);
     }
 
@@ -989,6 +1002,7 @@ class GrammalecteTextControl {
             this.bIframe = false;
             this.bResultInEvent = false;
             this.xNode = null;
+            this.xResultNode = null;
         }
         this.dParagraph.clear();
     }
@@ -1011,7 +1025,12 @@ class GrammalecteTextControl {
         if (this.xNode !== null) {
             if (this.bResultInEvent) {
                 const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
-                this.xNode.dispatchEvent(xEvent);
+                if (this.xNode) {
+                    this.xNode.dispatchEvent(xEvent);
+                }
+                else if (this.xResultNode) {
+                    this.xResultNode.dispatchEvent(xEvent);
+                }
                 //console.log("Text sent via an event :", xEvent.detail);
             }
             else if (this.bTextArea) {

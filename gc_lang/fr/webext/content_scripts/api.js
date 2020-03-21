@@ -9,28 +9,6 @@ const oGrammalecteAPI = {
 
     sVersion: "1.0",
 
-    openPanel: function (arg1) {
-        //  Parameter: a text, a node, or the identifier of a node.
-        let xNode = null;
-        if (typeof(arg1) === 'string') {
-            if (document.getElementById(arg1)) {
-                xNode = document.getElementById(arg1);
-            } else {
-                this.openPanelForText(arg1);
-            }
-        }
-        else if (arg1 instanceof HTMLElement) {
-            xNode = arg1;
-        }
-        if (xNode) {
-            if (xNode.tagName == "INPUT"  ||  xNode.tagName == "TEXTAREA"  ||  xNode.tagName == "IFRAME"  ||  xNode.isContentEditable) {
-                this.openPanelForNode(xNode);
-            } else {
-                this.openPanelForText(xNode.innerText);
-            }
-        }
-    },
-
     openPanelForNode: function (vNode) {
         //  Parameter: a HTML node or the identifier of a HTML node
         if (vNode instanceof HTMLElement) {
@@ -46,10 +24,17 @@ const oGrammalecteAPI = {
         }
     },
 
-    openPanelForText: function (sText) {
-        //  Parameter: text to analyze
+    openPanelForText: function (sText, vNode=null) {
+        //  Parameter: text to analyze, and optionaly a node to send results to.
         if (typeof(sText) === "string") {
-            let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "openPanelForText", sText: sText} });
+            let xNode = null;
+            if (vNode instanceof HTMLElement) {
+                xNode = vNode;
+            }
+            else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
+                xNode = document.getElementById(vNode);
+            }
+            let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "openPanelForText", sText: sText, xNode: xNode} });
             document.dispatchEvent(xEvent);
         } else {
             console.log("[Grammalecte API] Error: parameter is not a text.");
@@ -70,6 +55,25 @@ const oGrammalecteAPI = {
         }
         else {
             console.log("[Grammalecte API] Error: parameter is not a HTML node or doesn’t have an identifier.");
+        }
+    },
+
+    parseText: function (sText, vNode) {
+        //  Parameter: text to analyze, and a node to send results to.
+        if (typeof(sText) === "string") {
+            if (vNode instanceof HTMLElement  &&  vNode.id) {
+                let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "parseText", sText: sText, xNode: vNode} });
+                document.dispatchEvent(xEvent);
+            }
+            else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
+                let xEvent = new CustomEvent("GrammalecteCall", { detail: {sCommand: "parseText", sText: sText, xNode: document.getElementById(vNode)} });
+                document.dispatchEvent(xEvent);
+            }
+            else {
+                console.log("[Grammalecte API] Error: parameter is not a HTML node or doesn’t have an identifier.");
+            }
+        } else {
+            console.log("[Grammalecte API] Error: parameter is not a text.");
         }
     },
 

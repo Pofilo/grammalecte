@@ -67,20 +67,6 @@ The node can be a textarea, an editable node or an iframe.
 If the node is an iframe, the content won’t be modified by Grammalecte.
 
 
-### Open the Grammalecte panel for any text
-
-    oGrammalecteAPI.openPanelForText("your text")
-
-This method won’t send back any result or modified text.
-
-
-### Open the Grammalecte panel
-
-    oGrammalecteAPI.openPanel(param)
-
-Depending of what `param` is, this method will call `openPanelForNode()` or `openPanelForText()`.
-
-
 ### Prevent Grammalecte to modify the node content
 
 If you don’t want Grammalecte to modify directly the node content, add the property: `data-grammalecte_result_via_event="true"`.
@@ -95,6 +81,15 @@ The text can be retrieved with:
             ...
         }
     }
+
+
+### Open the Grammalecte panel for any text
+
+    oGrammalecteAPI.openPanelForText("your text")
+    oGrammalecteAPI.openPanelForText("your text", "node_id")
+    oGrammalecteAPI.openPanelForText("your text", node)
+
+With the second parameter, Grammalecte will send an event to the node each times the text is modified within the panel.
 
 
 ### Parse a node and get errors

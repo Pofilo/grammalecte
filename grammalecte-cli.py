@@ -325,11 +325,10 @@ def main ():
                 # reload (todo)
                 pass
             elif sText.startswith("$"):
-                for sParagraph in txt.getParagraph(sText):
-                    sText = sText[1:]
+                for sParagraph in txt.getParagraph(sText[1:]):
                     if xArgs.textformatter:
-                        sText = oTextFormatter.formatText(sParagraph)
-                    lParagraphErrors, lSentences = oGrammarChecker.gce.parse(sText, bDebug=xArgs.debug, bFullInfo=True)
+                        sParagraph = oTextFormatter.formatText(sParagraph)
+                    lParagraphErrors, lSentences = oGrammarChecker.gce.parse(sParagraph, bDebug=xArgs.debug, bFullInfo=True)
                     echo(txt.getReadableErrors(lParagraphErrors, xArgs.width))
                     for dSentence in lSentences:
                         echo("{nStart}:{nEnd}".format(**dSentence))
@@ -344,7 +343,7 @@ def main ():
             else:
                 for sParagraph in txt.getParagraph(sText):
                     if xArgs.textformatter:
-                        sText = oTextFormatter.formatText(sParagraph)
+                        sParagraph = oTextFormatter.formatText(sParagraph)
                     sRes, _ = oGrammarChecker.getParagraphWithErrors(sParagraph, bEmptyIfNoErrors=xArgs.only_when_errors, nWidth=xArgs.width, bDebug=xArgs.debug)
                     if sRes:
                         echo("\n" + sRes)

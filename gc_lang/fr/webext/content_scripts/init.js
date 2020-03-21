@@ -186,12 +186,10 @@ const oGrammalecte = {
         this.oGCPanel.clear();
         this.oGCPanel.show();
         this.oGCPanel.showEditor();
-        this.oGCPanel.start(what);
+        this.oGCPanel.start(what, xResultNode);
         this.oGCPanel.startWaitIcon();
-        if (what) {
-            let sText = this.oGCPanel.oTextControl.getText();
-            oGrammalecteBackgroundPort.parseAndSpellcheck(sText, "__GrammalectePanel__");
-        }
+        let sText = this.oGCPanel.oTextControl.getText();
+        oGrammalecteBackgroundPort.parseAndSpellcheck(sText, "__GrammalectePanel__");
     },
 
     showMessage: function (sMessage) {
@@ -534,7 +532,7 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
                 break;
             case "openPanelForText":
                 if (oCommand.sText) {
-                    oGrammalecte.startGCPanel(oCommand.sText);
+                    oGrammalecte.startGCPanel(oCommand.sText, oCommand.xNode);
                 }
                 break;
             case "parseNode":
@@ -548,6 +546,11 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
                     else {
                         oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.innerText, oCommand.xNode.id);
                     }
+                }
+                break;
+            case "parseText":
+                if (oCommand.sText  &&  oCommand.xNode) {
+                    oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.sText, oCommand.xNode.id);
                 }
                 break;
             case "getSpellSuggestions":
