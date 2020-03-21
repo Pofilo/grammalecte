@@ -14449,7 +14449,8 @@ __purge_locutions_verbales__
     >venir à bout
     [>venir|>revenir] je [ne|n’] sais ?pas¿ ?trop¿ d’ où
     [>venir|>revenir] on [ne|n’] sait ?pas¿ ?trop¿ d’ où
-        <<- ~2:0>> *
+        <<- ~2:0>> ␣
+        <<- =>> define(\2, [":LV"])
 
 
 __conf_locutions_verbales__
@@ -15483,7 +15484,7 @@ TEST: le bruit de nos pas étouffé par l’épais tapis.
 
 __gn_des_2m__
     des  *WORD  *WORD
-        <<- /gn/ (morph(<1, ":(?:[VRBX]|Cs)|>comme/|<start>|>,", "*") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
+        <<- /gn/ (morph(<1, ":(?:[VRBX]|Cs|LV)|>comme/|<start>|>,", "*") or morph(\3, ":N", ":[AQ]")) and not \3.startswith("seul") >>>
         <<- /gn/ ( (morph(\2, ":[NA].*:m", ":[fe]") and morph(\3, ":[NA].*:f", "*")) or (morph(\2, ":[NA].*:f", ":[me]") and morph(\3, ":[NA].*:m", "*")) ) and not apposition(\2, \3)
         -3>> =switchGender(\3, True)                                                                # Accord de genre erroné avec « \2 ».
         <<- /gn/ __also__ and hasFemForm(\2) -2>> =switchGender(\2)                                 # Accord de genre erroné avec « \3 ».
@@ -19927,15 +19928,15 @@ __da_été2__
 
 __purge_subst_plur_comme_nom_sing__
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿         @:3p¬:G
+        ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’|le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]¿         @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       [ne|n’]     [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]     @:3p¬:G
+        ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      [ne|n’]     [le|la|l’|les|en|me|m’|te|t’|se|s’|nous|vous|lui|leur|y]     @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:3p¬:G
+        ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’]¿   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]          @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:3p¬:G
+        ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’]¿   [le|la|l’|les]                  [lui|leur|en|y]              @:3p¬:G
     [les|des|ces|mes|tes|ses|nos|vos|leurs|plusieurs|quelques|certains|certaines]  *WORD
-        ||  comme  [le|un|une|ce|mon|ton|son|notre|votre|leur]  *WORD                       ?[ne|n’]¿   [lui|leur|y]                    en                           @:3p¬:G
+        ||  comme  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD      ?[ne|n’]¿   [lui|leur|y]                    en                           @:3p¬:G
         <<- morph(\2, ":[NA].*:[pi]") and morph(\5, ":[NA].*:[si]") ~3:5>> *
 
 
@@ -19962,7 +19963,7 @@ TEST: Nous nous doutons bien qu’il y a une entourloupe derrière cette affaire
 TEST: Notre but n’était pas de devenir célèbres.
 TEST: sans qu’on ait à le lui ordonner
 TEST: Les messages envoyés à toto@toto.fr seront transmis à Roger.
-
+TEST: En outre, les grosses institutions comme l’Éducation Nationale ne développent pas forcément en interne
 
 
 @@@@
@@ -24776,6 +24777,7 @@ TEST: si bien qu’il {{devient}} irritable
 TEST: {{où}} qu’il {{est}}, on le trouvera
 TEST: Il ne le savait pas, bien qu’il en {{avait}} entendu parler.
 TEST: Bien que je {{prends}} mon mal en patience.
+TEST: encore qu’il {{sait}} s’y prendre
 TEST: C’est un joli bien. Bien qu’il a hérité de son oncle, notez bien.
 TEST: Bien qu’il avait donné à ses enfants.
 TEST: si bien que je me suis toujours demandée si cela ne m’avait pas un peu bousillé les yeux
