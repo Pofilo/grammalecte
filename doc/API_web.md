@@ -89,8 +89,9 @@ With this property, Grammalecte will send an event to the node each times the te
 The text can be retrieved with:
 
     node.addEventListener("GrammalecteResult", function (event) {
-        if (event.detail.sType  &&  event.detail.sType == "text") {
-            let sText = event.detail.sText;
+        const detail = (typeof(event.detail) === 'string') && JSON.parse(event.detail);
+        if (detail.sType  &&  detail.sType == "text") {
+            let sText = detail.sText;
             ...
         }
     }
@@ -105,8 +106,9 @@ The node can be a textarea, an editable node or an iframe. The node must have an
 Results (for each paragraph) will be sent in a succession of events at the node.
 
     node.addEventListener("GrammalecteResult", function (event) {
-        if (event.detail.sType  &&  event.detail.sType == "proofreading") {
-            let oResult = event.detail.oResult; // null when the text parsing is finished
+        const detail = (typeof(event.detail) === 'string') && JSON.parse(event.detail);
+        if (detail.sType  &&  detail.sType == "proofreading") {
+            let oResult = detail.oResult; // null when the text parsing is finished
             ...
         }
     }
@@ -129,9 +131,10 @@ Parameters:
 Suggestions will be sent within an event at the node identified by `destination`.
 
     node.addEventListener("GrammalecteResult", function (event) {
-        if (event.detail.sType  &&  event.detail.sType == "spellsugg") {
-            let oResult = event.detail.oResult;
-            let oInfo = event.detail.oInfo; // object containing the destination and the request_identifier
+        const detail = (typeof(event.detail) === 'string') && JSON.parse(event.detail);
+        if (detail.sType  &&  detail.sType == "spellsugg") {
+            let oResult = detail.oResult;
+            let oInfo = detail.oInfo; // object containing the destination and the request_identifier
             ...
         }
     }
