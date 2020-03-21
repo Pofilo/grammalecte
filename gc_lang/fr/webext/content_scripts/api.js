@@ -87,3 +87,9 @@ const oGrammalecteAPI = {
         }
     }
 }
+
+/*
+    Tell to the webpage that the Grammalecte API is ready.
+*/
+document.dispatchEvent(new Event('GrammalecteLoaded'));
+

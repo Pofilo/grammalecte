@@ -520,14 +520,11 @@ oGrammalecteBackgroundPort.listen2()
 
 /*
     Callable API for the webpage.
-    The API script must be injected this way to be callable by the page
-*/
-let xScriptGrammalecteAPI = document.createElement("script");
-xScriptGrammalecteAPI.src = browser.extension.getURL("content_scripts/api.js");
-document.documentElement.appendChild(xScriptGrammalecteAPI);
 
+*/
 document.addEventListener("GrammalecteCall", function (xEvent) {
     // GrammalecteCall events are dispatched by functions in the API script
+    // The script is loaded below.
     try {
         let oCommand = xEvent.detail;
         switch (oCommand.sCommand) {
@@ -567,6 +564,11 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
         showError(e);
     }
 });
+
+// The API script must be injected this way to be callable by the page
+let xScriptGrammalecteAPI = document.createElement("script");
+xScriptGrammalecteAPI.src = browser.extension.getURL("content_scripts/api.js");
+document.documentElement.appendChild(xScriptGrammalecteAPI);
 
 
 /*
