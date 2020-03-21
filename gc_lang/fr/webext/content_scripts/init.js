@@ -181,14 +181,14 @@ const oGrammalecte = {
         }
     },
 
-    startGCPanel: function (what, bCheckText=true) {
+    startGCPanel: function (what, xResultNode=null) {
         this.createGCPanel();
         this.oGCPanel.clear();
         this.oGCPanel.show();
         this.oGCPanel.showEditor();
         this.oGCPanel.start(what);
         this.oGCPanel.startWaitIcon();
-        if (what && bCheckText) {
+        if (what) {
             let sText = this.oGCPanel.oTextControl.getText();
             oGrammalecteBackgroundPort.parseAndSpellcheck(sText, "__GrammalectePanel__");
         }
@@ -466,8 +466,7 @@ const oGrammalecteBackgroundPort = {
                     oGrammalecte.startGCPanel(oGrammalecte.getPageText());
                     break;
                 case "grammar_checker_selection":
-                    oGrammalecte.startGCPanel(result, false); // result is the selected text
-                    // selected text is sent to the GC worker in the background script.
+                    oGrammalecte.startGCPanel(result); // result is the selected text
                     break;
                 case "grammar_checker_iframe":
                     console.log("[Grammalecte] selected iframe: ", result);

@@ -362,11 +362,6 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             break;
         case "grammar_checker_selection":
             sendCommandToTab(xTab.id, xInfo.menuItemId, xInfo.selectionText);
-            oWorkerHandler.xGCEWorker.postMessage({
-                sCommand: "parseAndSpellcheck",
-                oParam: {sText: xInfo.selectionText, sCountry: "FR", bDebug: false, bContext: false},
-                oInfo: {iReturnPort: xTab.id}
-            });
             break;
         // tools
         case "conjugueur_window":
