@@ -58,7 +58,7 @@ def wrap (sText, nWidth=80):
 def generateParagraph (sParagraph, aGrammErrs, aSpellErrs, nWidth=100):
     "Returns a text with readable errors"
     if not sParagraph:
-        return ""
+        return ("", [])
     lGrammErrs = sorted(aGrammErrs, key=lambda d: d["nStart"])
     lSpellErrs = sorted(aSpellErrs, key=lambda d: d['nStart'])
     lErrors = sorted(lGrammErrs + lSpellErrs, key=lambda d: d["nStart"])
