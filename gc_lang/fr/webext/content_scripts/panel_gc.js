@@ -1025,13 +1025,8 @@ class GrammalecteTextControl {
         if (this.xNode !== null) {
             if (this.bResultInEvent) {
                 const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
-                if (this.xNode) {
-                    this.xNode.dispatchEvent(xEvent);
-                }
-                else if (this.xResultNode) {
-                    this.xResultNode.dispatchEvent(xEvent);
-                }
-                //console.log("Text sent via an event :", xEvent.detail);
+                this.xNode.dispatchEvent(xEvent);
+                //console.log("Text to xNode:", xEvent.detail);
             }
             else if (this.bTextArea) {
                 this.xNode.value = this.getText();
@@ -1046,6 +1041,11 @@ class GrammalecteTextControl {
                     this.xNode.appendChild(document.createElement("br"));
                 });
             }
+        }
+        else if (this.xResultNode !== null) {
+            const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
+            this.xResultNode.dispatchEvent(xEvent);
+            //console.log("Text to xResultNode:", xEvent.detail);
         }
     }
 }

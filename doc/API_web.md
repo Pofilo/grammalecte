@@ -111,6 +111,16 @@ Results (for each paragraph) will be sent in a succession of events at the node.
 For the last event, `oResult` will be `null`.
 
 
+### Parse text and get errors
+
+    oGrammalecteAPI.parseText(text, "node_id")
+    oGrammalecteAPI.parseText(text, node)
+
+The node must have an identifier.
+Like with parseNode, results (for each paragraph) will be sent in a succession of events at the node.
+
+
+
 ### Get spelling suggestions
 
     oGrammalecteAPI.getSpellingSuggestions(word, destination, request_identifier)
