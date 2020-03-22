@@ -117,7 +117,7 @@ For the last event, `oResult` will be `null`.
     oGrammalecteAPI.parseText(text, node)
 
 The node must have an identifier.
-Like with parseNode, results (for each paragraph) will be sent in a succession of events at the node.
+Like with `oGrammalecteAPI.parseNode()`, results (for each paragraph) will be sent in a succession of events at the node.
 
 
 
