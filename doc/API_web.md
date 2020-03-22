@@ -44,6 +44,14 @@ Every call to the Grammalecte API will be done via an object called `oGrammalect
         ...
     }
 
+When the Grammalecte API is ready, it sends an event called `GrammalecteLoaded` on the `document` node.
+
+You can detect it with:
+
+    document.addEventListener("GrammalecteLoaded", function (event) {
+        ...
+    });
+
 
 ### Version of the Grammalecte API
 
@@ -53,7 +61,7 @@ Every call to the Grammalecte API will be done via an object called `oGrammalect
 ### Disabling the Grammalecte button (the spinning pearl)
 
 By default, Grammalecte inserts a button (a spinning pearl) on each textarea node and editable node (unless the user disabled it).
-You can tell Grammalete not to create these buttons on your text areas with the property: `data-grammalecte_button="false"`.
+You can tell Grammalecte not to create these buttons on your text areas with the property: `data-grammalecte_button="false"`.
 
 
 ### Open the Grammalecte panel for a node
