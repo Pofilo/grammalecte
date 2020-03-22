@@ -6908,6 +6908,10 @@ __conf_à_a_locutions__
     a l’ une des leurs
     a la [con|dérive|dérobée|diable|fois|mords-moi-le-nœud|papa|rescousse|sauvette|va-vite|volée]
     a la bonne franquette
+    a la fin de l’ an ?[passé|~^[0-9]{2,5}$]¿
+    a la fin de l’ année ?[passée|~^[0-9]{2,5}$]¿
+    a la fin des années ~^[0-9]{2,5}$
+    a la fin du mois [de|d’] {mois} ?[passé|prochain|~^[0-9]{2,5}$]¿
     a la limite du supportable
     a la lumière de tout [ceci|cela|ça]
     a la petite semaine
@@ -11552,6 +11556,10 @@ __purge_locutions__
     à l’ [un|une] des leurs
     à la [bourre|con|coule|dérobée|diable|fois|leur|manque|mords-moi-le-nœud|papa|ramasse|renverse|redresse|rescousse|sauvette|volée]
     à la bonne franquette
+    à la fin de l’ an ?[passé|~^[0-9]{2,5}$]¿
+    à la fin de l’ année ?[passée|~^[0-9]{2,5}$]¿
+    à la fin des années ~^[0-9]{2,5}$
+    à la fin du mois [de|d’] {mois} ?[passé|prochain|~^[0-9]{2,5}$]¿
     à la limite du supportable
     à la lumière de tout [ceci|cela|ça]
     à la mords-moi le nœud
@@ -11724,6 +11732,10 @@ __purge_locutions__
     au doigt et à l’ [œil|oeil]
     au débotté
     au début
+    au [début|cours] de l’ an ?[passé|prochain|~^[0-9]{2,5}$]¿
+    au [début|cours] de l’ année ?[passée|prochaine|~^[0-9]{2,5}$]¿
+    au [début|cours] des années ~^[0-9]{2,5}$
+    au [début|cours] du mois [de|d’] {mois} ?[passé|prochain|~^[0-9]{2,5}$]¿
     au fil des ans
     au fil du temps
     au fur et à mesure
@@ -11907,6 +11919,8 @@ __purge_locutions__
     d’ un pas [alerte|mesuré]
     d’ un peu partout
     d’ un peu trop [près|loin]
+    d’ un revers de main
+    d’ un revers de la main ?[droite|gauche]¿
     d’ une autre trempe
     d’ une [façon|manière] ou d’ une autre
     d’ une certaine [façon|manière]
@@ -12166,6 +12180,7 @@ __purge_locutions__
     en premier lieu
     en première [instance|ligne]
     en [première|seconde|~ième$] position
+    en provenance du monde entier
     en pure perte
     en quantité suffisante
     en quantité plus que suffisante
@@ -12594,12 +12609,13 @@ __purge_locutions__
     un peu mieux
     un peu moins bien
     un peu partout
-    un peu plus [tôt|tard] que prévu
+    un peu [moins|plus] [tôt|tard] que prévu
+    un peu [moins|plus] de [$:B|*NUM] [secondes|minutes|heures|jours|mois|trimestres|semestres|années|décennies|siècles|millénaires] auparavant
     un quart d’ heure plus [tôt|tard]
     trois quarts d’ heure plus [tôt|tard]
     un tant soit peu
     une à une
-    une [autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième] fois
+    une [autre|nouvelle|première|seconde|troisième|quatrième|cinquième|sixième|septième|huitième|neuvième|dixième|onzième|douzième|treizième|quatorzième|quinzième|seizième|dix-septième|dix-huitième|dix-huitième|dix-neuvième|vingtième|centième|millième] fois
     une bonne fois pour toutes
     une dernière fois
     une fois [de|d’] plus
@@ -13513,6 +13529,8 @@ __simplication_substantifs__
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
 
+    [daté+ses] du [1er|1ᵉʳ|1|01|2|02|3|03|4|04|5|05|6|06|7|07|8|08|9|09|10|11|12|13|14|14|15|16|17|18|19|20|21|22|23|24|25|26|27|28|29|30|31] {mois} ?[prochain|passé|dernier|~^[0-9]{2,5}$]¿
+    >fou de rage ?[contenue|retenue]¿
     >mort de trouille
         <<- ~2:0>> *
 
@@ -19875,7 +19893,7 @@ __purge_syntagme_verbal__
     [de|d’]  @:V[123]_i.*:Y¬>(?:devenir|rester|demeurer)/  @:[123][sp]¬:[DM]
         <<- ~1:2>> *
 
-    [de|d’|par|pour|sans]  [l’|le|la|les]  ?[en|y]¿   $:Y
+    [à|de|d’|par|pour|sans]  [l’|le|la|les]  ?[en|y]¿   $:Y
         <<- ~>> *
 
     ne [lui|leur]
