@@ -44,9 +44,7 @@ Every call to the Grammalecte API will be done via an object called `oGrammalect
         ...
     }
 
-When the Grammalecte API is ready, it sends an event called `GrammalecteLoaded` on the `document` node.
-
-You can detect it with:
+Alternatively, when the Grammalecte API is ready, it sends an event called `GrammalecteLoaded` on `document`. You can detect it with:
 
     document.addEventListener("GrammalecteLoaded", function (event) {
         ...
