@@ -119,8 +119,8 @@ For the last event, `oResult` will be `null`.
 
 ### Parse text and get errors
 
-    oGrammalecteAPI.parseText(text, "node_id")
-    oGrammalecteAPI.parseText(text, node)
+    oGrammalecteAPI.parseText("your text", "node_id")
+    oGrammalecteAPI.parseText("your text", node)
 
 The node must have an identifier.
 Like with `oGrammalecteAPI.parseNode()`, results (for each paragraph) will be sent in a succession of events at the node.
@@ -129,6 +129,7 @@ Like with `oGrammalecteAPI.parseNode()`, results (for each paragraph) will be se
 
 ### Get spelling suggestions
 
+    oGrammalecteAPI.getSpellingSuggestions(word, destination)
     oGrammalecteAPI.getSpellingSuggestions(word, destination, request_identifier)
 
 Parameters:
