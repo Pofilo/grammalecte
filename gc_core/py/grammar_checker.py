@@ -59,7 +59,7 @@ class GrammarChecker:
         "parse text and return a readable text with underline errors"
         aGrammErrs, aSpellErrs = self.getParagraphErrors(sText, dOptions, False, bSpellSugg, bDebug)
         if bEmptyIfNoErrors and not aGrammErrs and not aSpellErrs:
-            return ""
+            return ("", [])
         return text.generateParagraph(sText, aGrammErrs, aSpellErrs, nWidth)
 
     def getTextWithErrors (self, sText, bEmptyIfNoErrors=False, bSpellSugg=False, nWidth=100, bDebug=False):
