@@ -3994,12 +3994,6 @@ __tu_locutions__
     [à|a] tout [va|vas]
         <<- /tu/ ->> à tout-va                                  # Il manque un trait d’union.
 
-    [cet|l’|quel|notre|votre|mon|des|les|nos|vos|leurs|quels] après >midi
-        <<- /tu/ -2:3>> \2-\3                                   # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
-
-    un après >midi
-        <<- /tu/ not (value(<1, "|par|") and value(<2, "|un|"))
-        -2:3>> \2-\3                                            # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
 
     après demain
         <<- /tu/ ->> après-demain                               # Il manque un trait d’union.
@@ -4022,6 +4016,9 @@ __tu_locutions__
 
     en porte [à|a] faux
         <<- /tu/ ->> en porte-à-faux                            # Il manque les traits d’union.
+
+    en sous main
+        <<- /tu/ ->> en sous-main                               # Il manque un trait d’union.
 
     grand chose
         <<- /tu/ ->> grand-chose                                # Il manque un trait d’union.
@@ -4053,8 +4050,6 @@ __tu_locutions__
         <<- /tu/ ->> vis-à-vis                                  # Il manque les traits d’union.
 
 TEST: on a fait {{à la va vite}}…
-TEST: cet {{après midi}}, on s’en va.
-TEST: un {{après midi}} comme un autre
 TEST: Ils font des tests {{à tout va}}
 TEST: nous irons là-bas {{après demain}}.
 TEST: Mieux qu’{{avant hier}}.
@@ -4065,6 +4060,7 @@ TEST: elles vont viennent {{de ci, de là}}.
 TEST: {{en contre bas}}
 TEST: {{en contre point}},
 TEST: être {{en porte à faux}}
+TEST: des tractations {{en sous main}}
 TEST: Il ne connaît pas {{grand chose}} à tout ça.
 TEST: {{ici bas}}, n’attends rien de bon, à moins que…
 TEST: {{jusque là}}, tout va bien
@@ -4086,6 +4082,13 @@ __tu_substantifs__
 
     à plat ventrisme
         <<- /tu/ ->> \1-\2-\3                                   # Mettez des traits d’union pour ce nom commun.
+
+    [cet|l’|quel|notre|votre|mon|des|les|nos|vos|leurs|quels] après >midi
+        <<- /tu/ -2:3>> \2-\3                                   # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
+
+    un après >midi
+        <<- /tu/ not (value(<1, "|par|") and value(<2, "|un|"))
+        -2:3>> \2-\3                                            # Il manque un trait d’union s’il s’agit du nom. Exemples : Viens après midi. Oui, cet après-midi.
 
     >aller >retour
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
@@ -4261,6 +4264,8 @@ __tu_substantifs__
         <<- /tu/ ->> week-\2                                    # Il manque un trait d’union.
 
 TEST: l’{{à propos}} n’est pas si facile à acquérir.
+TEST: cet {{après midi}}, on s’en va.
+TEST: un {{après midi}} comme un autre
 TEST: on ne fait que de l’{{à peu près}}
 TEST: concours d’{{à plat ventrisme}} à l’UMP
 TEST: marre de faire des {{allers retours}}
@@ -8229,6 +8234,15 @@ __conf_en_général__
         <<- /conf/ ->> en général                               # Dans cette locution, “général” est toujours au masculin singulier.|https://fr.wiktionary.org/wiki/en_g%C3%A9n%C3%A9ral
 
 TEST: On n’en sait {{en générale}} pas assez.
+
+
+# en roue libre
+__conf_en_roue_libre__
+    en roux libre
+        <<- /conf/ ->> en roue libre                            # Locution “en roue libre”.|https://fr.wiktionary.org/wiki/en_roue_libre
+
+TEST: ces cons sont constamment {{en roux libre}}
+TEST: elle est en roue libre depuis le début.
 
 
 # emballé, c’est pesé
@@ -12201,6 +12215,8 @@ __purge_locutions__
     en si peu [de|d’] temps
     en situation [irrégulière|régulière]
     en sous-main
+    en sous-nombre ?[évident|flagrant]¿
+    en sous nombre ?[évident|flagrant]¿
     en tant que >tel
     en tête à tête
     en temps et en heure
@@ -12412,6 +12428,7 @@ __purge_locutions__
     pas du tout
     pas [le|l’] moins du monde
     pas à pas
+    pas plus [de|d’] [une|$:B] fois
     pendant ?[bien|si|assez|très]¿ longtemps
     pendant ce temps-là
     pendant plusieurs [heures|minutes|secondes|mois|semaines|jours|années|siècles|millénaires|décennies]
@@ -12975,6 +12992,9 @@ __purge_conditionnelle__
 
     bien [entendu|sûr]
         <<- morph(<1, ":[NAQR]|>que/") ~>> *
+
+    bordel de merde
+        <<- not morph(<1, ":D") ~>> *
 
     comme [moi|toi]
         <<- morph(<1, ":[NA]", ":V0") ~>> *
