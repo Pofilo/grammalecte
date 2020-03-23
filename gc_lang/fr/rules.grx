@@ -6858,6 +6858,7 @@ __conf_à_a_locutions__
     a chaque [fois|instant]
     a charge de revanche
     a ?[si|très|trop]¿ chaudes larmes
+    a cheval sur
     a cœur [joie|ouvert|perdu]
     a ciel ouvert
     a connotation sexuelle
@@ -7133,6 +7134,7 @@ __conf_a_à_substantifs__
     >placard a [>balai|>chaussure]
     >planche a repasser
     >presse a >scandale
+    >piano a >queue
     >pince a linge
     >punk a >chienne
     >revenir a la case départ
@@ -8804,7 +8806,7 @@ TEST: ces écarts ne {{mon}} posé aucun problème             ->> m’ont
 
 # mai / mais
 __conf_mai_mais_mes__
-    [<start>|,|(]  mai  $:Os¬:3s
+    [<start>|,|(]  mai  @:(?:Os|M)¬:3s
         <<- /conf/ -2>> mais
         # Confusion probable : “mai” est le 5ᵉ mois de l’année. Pour la conjonction de coordination, écrivez “mais”.|https://fr.wiktionary.org/wiki/mais
 
@@ -8815,6 +8817,7 @@ __conf_mai_mais_mes__
         # Confusion possible : “mes” est un déterminant utilisé pour signaler la possession. Pour la conjonction de coordination, écrivez “mais”.|https://fr.wiktionary.org/wiki/mais
 
 TEST: {{mai}} il y a encore tant à faire.
+TEST: {{mai}} Patrick vient demain.
 TEST: Je viendrai, {{mai}} il faudra avoir tout prévu.
 TEST: {{mes}} que voulez-vous
 TEST: Mai pluvieux.
@@ -10228,17 +10231,17 @@ TEST: une {{taule}} en acier
 
 # tête / tète
 __conf_tête_tète!6__
-    [tète|tètes] [baissée|baissées|baissé|baissés]
-    [tète|tètes] [haute|hautes|basse|basses]
-    [tète|tètes] de [mule|linotte]
+    [tète+s] [baissé+ses]
+    [tète+s] [haute+s|basse+s]
+    [tète+s] de [mule|linotte]
         <<- /conf/ -1>> =\1.replace("è", "ê").replace("È", "Ê")     # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
-    >hocher ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète|tètes]
-    [mal|maux] de [tète|tètes]
-    >tenir ?@:[WX]¿ [tète|tètes]
+    >hocher ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète+s]
+    [mal|maux] de [tète+s]
+    >tenir ?@:[WX]¿ [tète+s]
         <<- /conf/ --1>> =\-1.replace("è", "ê").replace("È", "Ê")   # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
-    [tète|tètes] [à|a] [tète|tètes]
+    [tète+s] [à|a] [tète+s]
     tète-à-tète
     tètes-à-tètes
     tète-a-tète
@@ -11860,6 +11863,8 @@ __purge_locutions__
     dans ces cas [précis|particuliers]
     dans l’ [idéal|immédiat]
     dans la mesure du possible
+    dans le courant de l’ [automne|été|hiver] ?~^[0-9]{2,5}$¿
+    dans le courant du printemps ?~^[0-9]{2,5}$¿
     dans leur globalité
     dans leur grande majorité
     dans les années ~^\d{2,5}$
@@ -13375,7 +13380,7 @@ __simplication_substantifs__
     >marque [de|d’] fabrique
     >masque à [gaz|oxygène]
     >matière à réflexion
-    >médecin [de|d’] garde
+    >médecin [de|d’] [famille|garde]
     >mère au foyer
     >metteur en scène
     >mineur [de|d’] moins [de|d’] *NUM ans
@@ -13404,6 +13409,7 @@ __simplication_substantifs__
     >noir comme une nuit sans lune
     >nuit [de|d’] noces
     >panier à linge
+    >piano à queue
     >papier à [>lettre|musique]
     >parc d’ attractions
     >parole en l’ air
@@ -13850,6 +13856,7 @@ __purge_après_avoir__
     >avoir  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     >avoir  [pas|jamais|plus|guère|point]  carte blanche
     >avoir  [pas|jamais|plus|guère|point]  forme [humaine|animale]
+    >avoir  [pas|jamais|plus|guère|point]  gain de cause
     >avoir  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
     >avoir  [pas|jamais|plus|guère|point]  quartier libre
     >avoir  [pas|jamais|plus|guère|point]  voix au chapitre
@@ -13903,6 +13910,7 @@ __purge_après_avoir__
     /VCint  [pas|jamais|plus|guère|point]  bon pied ?,¿ bon œil
     /VCint  [pas|jamais|plus|guère|point]  carte blanche
     /VCint  [pas|jamais|plus|guère|point]  forme [humaine|animale]
+    /VCint  [pas|jamais|plus|guère|point]  gain de cause
     /VCint  [pas|jamais|plus|guère|point]  partie [gagnée|liée]
     /VCint  [pas|jamais|plus|guère|point]  quartier libre
     /VCint  [pas|jamais|plus|guère|point]  voix au chapitre
@@ -18387,6 +18395,18 @@ __conf_mater_mâter__
 TEST: Elle va {{mâter}} ces emmerdeurs en moins de temps qu’il ne faut pour le dire.
 TEST: il peut {{mâter}} en 3 coups
 TEST: On va bientôt {{mater}} l’navire, p’tit.
+
+
+# (se) mettre martel en tête
+__conf_mettre_martel_en_tête__
+    !! >mettre martel en tête ¡¡
+    >mettre [>mare|marre+s|>marc|mars] [tel|tels|telle|telles|tél] en [>tête|tète+s]
+    >mettre [martel|martelle+s] en [tête+s|tète+s]
+        <<- /conf/ -2:0>> martel en tête                    # Confusion: Locution “(se) mettre martel en tête”.|https://fr.wiktionary.org/wiki/se_mettre_martel_en_t%C3%AAte
+
+TEST: il se met constamment {{martelle en tète}}            ->> martel en tête
+TEST: Ne te mets pas martel en tête
+TEST: Se mettre martel en tête
 
 
 # mi / mis / mie
