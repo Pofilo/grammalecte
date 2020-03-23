@@ -3995,7 +3995,7 @@ __tu_locutions__
         <<- /tu/ ->> à tout-va                                  # Il manque un trait d’union.
 
     [à|a] contre [>cœur|coeur]
-        <<- /tu/ à contre-cœur|à contrecœur                     # Mettez un trait d’union ou soudez.
+        <<- /tu/ ->> à contre-cœur|à contrecœur                 # Mettez un trait d’union ou soudez.
 
     après demain
         <<- /tu/ ->> après-demain                               # Il manque un trait d’union.
@@ -4322,6 +4322,7 @@ TEST: en avoir ras le bol de ces conneries
 TEST: des {{rendez vous}}                               ->> rendez-vous
 TEST: un Mars par {{rendez vous}}
 TEST: Habiter au {{rez de chaussée}}, quelle horreur.
+TEST: J’en ai ma claque de ces {{ronds de cuir}}
 TEST: C’est de la {{science fiction}}.
 TEST: des {{stock options}}
 TEST: Tout ce {{soi disant}} esprit religieux
@@ -19742,6 +19743,31 @@ __conj_participe_présent__
         <<- /infi/ morph(\2, ":A") -2>> =\2[:-1]                                        # Un participe présent est invariable.|http://fr.wiktionary.org/wiki/participe_pr%C3%A9sent
 
 TEST: nous {{épuisants}} à la tâche pour des clopinettes, nous défaillîmes.
+
+
+!!!! Participes passés                                                                            !!
+
+__ppas_censé_être_adj!6__
+    censé  être  @:A.*:[fp]¬:(?:G|[me]:[si])
+        <<- /ppas/ --1>> =suggMasSing(\-1)                                              # Cet adjectif devrait être accordé avec “censé”, au masculin singulier.
+
+    censée  être  @:A.*:[mp]¬:(?:G|[fe]:[si])
+        <<- /ppas/ --1>> =suggFemSing(\-1)                                              # Cet adjectif devrait être accordé avec “censée”, au féminin singulier.
+
+    censés  être  @:A.*:[fs]¬:(?:G|[me]:[pi])
+        <<- /ppas/ --1>> =suggMasPlur(\-1)                                              # Cet adjectif devrait être accordé avec “censés”, au masculin pluriel.
+
+    censées  être  @:A.*:[ms]¬:(?:G|[fe]:[pi])
+        <<- /ppas/ --1>> =suggFemPlur(\-1)                                              # Cet adjectif devrait être accordé avec “censées”, au féminin pluriel.
+
+TEST: un homme censé être {{connus}} de tous                    ->> connu
+TEST: censée être {{doué}}                                      ->> douée
+TEST: censés être {{nourries}} quatre fois par jour             ->> nourris
+TEST: censées être {{nourris}} quatre fois par jour             ->> nourries
+TEST: censés être {{instruites}}                                ->> instruits
+TEST: censées être {{instruits}}                                ->> instruites
+TEST: il est censé être habile
+TEST: censée être la meilleure de son groupe
 
 
 
