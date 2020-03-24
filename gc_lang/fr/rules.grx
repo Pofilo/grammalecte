@@ -99,7 +99,8 @@ OPT/date:           True        True        True        True        True        
 OPT/mc:             False       False       False       False       False       False
 OPT/idrule:         False       False       False       False       False       False
 OPT/html:           False       False       False       True        True        True
-OPT/latex:          False       False       False       False       False       False
+OPT/latex:          True        False       False       False       False       False
+OPT/md:             True        True        False       True        True        False
 
 # Priority: from 0 to 9. Default priority is 4.
 OPTPRIORITY/tu:     7
@@ -511,7 +512,6 @@ TEST: Vos {{“}}amis{{“ }}et vous êtes finis !
 #
 #
 
-
 !!!
 !!!
 !!! Processeur: efface les ponctuations gênantes (URL, sigles, abréviations, IP, heures, etc.)    !!
@@ -653,10 +653,9 @@ TEST: Allons (re)voir ce film
 TEST: La figure 110 représente…
 
 
-
 !!!
 !!!
-!!! Processeur: balises HTML et LaTeX                                                             !!
+!!! Processeur: balises HTML, LaTeX, Markdown                                                     !!
 !!!
 !!!
 
@@ -672,16 +671,22 @@ __<i>/html(p_html_nbsp2)__              &#(?:160|8239); <<- ~>> @
 __<i>/html(p_html_pseudo_balise)__      \[/?\w+\] <<- ~>> *
 
 
-# LATEX
+# LaTeX
 __<i]/latex(p_latex1)__     \\[a-z]+ <<- ~>> *
 __<i>/latex(p_latex2)__     \\[,;/\\] <<- ~>> *
 __<s>/latex(p_latex3)__     \{(?:abstract|align|cases|center|description|enumerate|equation|figure|flush(?:left|right)|gather|minipage|multline|quot(?:ation|e)|SaveVerbatim|table|tabular|thebibliography|[vV]erbatim|verse|wrapfigure)\} <<- ~>> *
 
+# Markdown
+__<s>/md(p_md_span_ouvrant)__   " ([*_]+)\w" @@1 <<- ~1>> *
+__<i>/md(p_md_span_fermant)__   "[a-z0-9àéîïôûüù]([*_]+)[,.;:!?) ]" @@1 <<- ~1>> *
+__<s>/md(p_md_title_start)__    "^#+" <<- ~>> *
+__<s>/md(p_md_title_end)__      "#+ *$" <<- ~>> *
+__<s>/md(p_md_list)__           "^[*+] " <<- ~>> *
 
 TEST: __html__  des <b>{{homme}}</b>
 TEST: __html__  des [b]{{femme}}[/b]
 TEST: __html__  il est venu&nbsp;: c’était bien…
-
+TEST: __md__    ces **{{femme}}**
 
 
 !!
@@ -4860,6 +4865,20 @@ TEST: {{Aux quels}} a-t-il adressé sa requête. ?
 TEST: Des individus {{aux combien}} sensibles aux usages.
 TEST: Au MES, rien de nouveau.
 
+
+__gn_autre_chose__
+    autre choses
+        <<- /gn/ -2>> chose                                                                         # Locution “autre chose”. Accord entre “autre” et “chose”.
+
+    autres chose
+        <<- /gn/ -2>> choses                                                                        # Accord de nombre erroné avec “autres”.
+
+TEST: autre {{choses}}
+TEST: autres {{chose}}
+TEST: Je dis d’autres choses.
+TEST: Je dis autre chose.
+TEST: elle parle des autres choses.
+TEST: d’autres choses sont survenues.
 
 
 !!
@@ -10557,18 +10576,21 @@ TEST: elles arrivent en rangs serrés.
 
 
 # entre autres
-__sgpl_entre_autres__
+__sgpl_entre_autres!6__
     entre autre [<end>|,]
     entre autre @:(?:[GW]|[NA].*:[pi])
         <<- /sgpl/ -2>> autres                                      # La locution “entre autres”, toujours au pluriel.|https://fr.wiktionary.org/wiki/entre_autres
 
-    entre >autre chose
-        <<- /sgpl/ -2:3>> autres choses                             # La locution “entre autres choses”, toujours au pluriel.
+    !! entre autres choses ¡¡
+    entre [autre+s] [chose+s]
+        <<- /sgpl/ not value(<1, "|j’|n’|il|elle|on|")
+        ->> entre autres choses                                     # La locution “entre autres choses”, toujours au pluriel.
 
 TEST: Des raisons ? Entre {{autre}} je n’en savais pas plus que lui.
 TEST: il y eut, entre {{autre}}, des erreurs commises.
-TEST: il y aura entre {{autre chose}} des répercussions terribles.
-TEST: il y aura entre {{autre}} choses des répercussions terribles.
+TEST: il y aura {{entre autre chose}} des répercussions terribles.
+TEST: il y aura {{entre autre choses}} des répercussions terribles.
+TEST: on entre autre chose dans la base pour voir ce que ça donne.
 
 
 # nul et non avenu
@@ -13005,6 +13027,9 @@ __purge_conditionnelle__
 
     <start> bien [entendu|sûr]
         <<- ~2:0>> *
+
+    bec et ongles
+        <<- not morph(<1, ":D") ~>> *
 
     bien [entendu|sûr]
         <<- morph(<1, ":[NAQR]|>que/") ~>> *
