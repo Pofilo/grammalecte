@@ -13495,6 +13495,7 @@ __simplication_substantifs__
     >mineur [de|d’] moins [de|d’] *NUM ans
     >mineur [de|d’] moins [de|d’] $:B ans
     >miroir aux alouettes
+    >mise en danger de la vie d’ autrui
     >mode [de|d’] [emploi|paiement|scrutin|vie]
     >monnaie [de|d’] [échange|réserve|singe]
     >montre à gousset
@@ -17091,6 +17092,16 @@ __sgpl_verbe__
 
 TEST: On peut {{rires}}, non ?
 TEST: Faire {{rires}}, c’est compliqué.
+
+
+__sgpl_rien_de_adj__
+    [<start>|,|(]       rien  [de|d’]  @:A.*:[pf]¬:[me]:[si]
+    n’ ?[en|y]¿ >avoir  rien  [de|d’]  @:A.*:[pf]¬:[me]:[si]
+        <<- /sgpl/ --1>> =suggMasSing(\-1)                          # Avec “rien de” l’adjectif suivant devrait être au masculin singulier. Exemple : il n’y a plus rien de naturel ici, tout est bétonné.
+
+TEST: il n’y a plus rien de {{naturelle}} dans cette bouffe.            ->> naturel
+TEST: rien d’{{interdites}} dans cette mesure                           ->> interdit
+
 
 
 !!!! Adverbes après verbe                                                                         !!
@@ -22576,7 +22587,7 @@ __imp_union_le_la_leur__
 
     [<start>|,|(]  *WORD  [le|la|leur]
         <<- /imp/ space_after(\2, 1, 1) and morph(\2, ":V(?:1.*:Ip.*:2s|[23].*:Ip.*:3s)", ":[GM]|>(?:venir|aller|partir)/")
-            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|MP|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|une)/")
+            and morph(>1, ":|<end>|>,", ":(?:N|A|Y|B|T|MP|3[sp])|>(?:pour|plus|moins|mieux|peu|trop|très|une)/")
         -2:3>> =suggVerbTense(\2, ":E", ":2s")+"-"+\3   # S’il s’agit d’un impératif, mettez un trait d’union.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=4206
 
 TEST: {{Prends le}} avec toi.
@@ -22595,6 +22606,7 @@ TEST: Sois le pire des salopards.
 TEST: L’Astrance brille de mille feux, écrit le Michelin 2010.
 TEST: Faites le plein de culture en vous abonnant dès 1 € !
 TEST: Fais le plein de vêtements avant de partir en vacances
+TEST: on l’attend pour la fin de semaine, prévoit le Dr Bayart.
 
 
 __imp_union_en__
