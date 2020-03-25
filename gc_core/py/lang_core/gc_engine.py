@@ -146,9 +146,9 @@ def listRules (sFilter=None):
                     yield ("RegEx", sOption, sLineId, sRuleId)
     # tokens rules
     for sRuleName, lActions in _rules_graph.dRule.items():
-        sOption, _, cActionType, *_ = lActions
+        sLineId, sOption, _, cActionType, *_ = lActions
         if cActionType == "-":
-            yield("Tokens", sOption, "", sRuleName)
+            yield("Tokens", sOption, sLineId, sRuleName)
 
 
 def displayRules (sFilter=None):
@@ -587,7 +587,7 @@ class TextParser:
                 try:
                     if bDebug:
                         echo("   >TRY: " + sRuleId + " " + sLineId)
-                    sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
+                    _, sOption, sFuncCond, cActionType, sWhat, *eAct = _rules_graph.dRule[sRuleId]
                     # Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     # TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     # Disambiguator [ option, condition, "=", replacement/suggestion/action ]

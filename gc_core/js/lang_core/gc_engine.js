@@ -670,7 +670,7 @@ class TextParser {
                     if (bDebug) {
                         console.log("   >TRY: " + sRuleId + " " + sLineId);
                     }
-                    let [sOption, sFuncCond, cActionType, sWhat, ...eAct] = gc_rules_graph.dRule[sRuleId];
+                    let [_, sOption, sFuncCond, cActionType, sWhat, ...eAct] = gc_rules_graph.dRule[sRuleId];
                     // Suggestion    [ option, condition, "-", replacement/suggestion/action, iTokenStart, iTokenEnd, cStartLimit, cEndLimit, bCaseSvty, nPriority, sMessage, sURL ]
                     // TextProcessor [ option, condition, "~", replacement/suggestion/action, iTokenStart, iTokenEnd, bCaseSvty ]
                     // Disambiguator [ option, condition, "=", replacement/suggestion/action ]

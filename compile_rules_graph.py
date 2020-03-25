@@ -154,9 +154,9 @@ def createTokenList (sTokBlock, dDeclensions):
     return lToken
 
 
-def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
+def createRule (iLine, sRuleName, sTokenLine, iActionBlock, lActions, nPriority, dOptPriority, dDef, dDecl):
     "generator: create rule as list"
-    # print(iLine, "//", sRuleName, "//", sTokenLine, "//", sActions, "//", nPriority)
+    # print(iLine, "//", sRuleName, "//", sTokenLine, "//", lActions, "//", nPriority)
     if sTokenLine.startswith("!!") and sTokenLine.endswith("¡¡"):
         # antipattern
         sTokenLine = sTokenLine[2:-2].strip()
@@ -182,11 +182,11 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                     dPos[iGroup] = i + 1    # we add 1, for we count tokens from 1 to n (not from 0)
 
             # Parse actions
-            for iAction, sAction in enumerate(sActions.split(" <<- ")):
+            for iAction, (iActionLine, sAction) in enumerate(lActions):
                 sAction = sAction.strip()
                 if sAction:
                     sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
-                    aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos)
+                    aAction = createAction(sActionId, sAction, nPriority, dOptPriority, len(lToken), dPos, iActionLine)
                     if aAction:
                         sActionName = storeAction(sActionId, aAction)
                         lResult = list(lToken)
@@ -197,7 +197,9 @@ def createRule (iLine, sRuleName, sTokenLine, iActionBlock, sActions, nPriority,
                         yield lResult
                     else:
                         print(" # Error on action at line:", iLine)
-                        print(sTokenLine, "\n", sActions)
+                        print(sTokenLine, "\n", lActions)
+                else:
+                    print("No action found for ", iActionLine)
 
 
 def changeReferenceToken (sText, dPos):
@@ -224,7 +226,7 @@ def checkIfThereIsCode (sText, sActionId):
         print(sText)
 
 
-def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
+def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos, iActionLine):
     "create action rule as a list"
     # Option
     sOption = False
@@ -308,9 +310,11 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
     # checking consistancy
     checkTokenNumbers(sAction, sActionId, nToken)
 
+    sLineId = "#" + str(iActionLine)
+
     if cAction == ">":
         ## no action, break loop if condition is False
-        return [sOption, sCondition, cAction, ""]
+        return [sLineId, sOption, sCondition, cAction, ""]
 
     if not sAction and cAction != "!":
         print("\n# Error in action at line <" + sActionId + ">:  This action is empty.")
@@ -326,7 +330,7 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
             sAction = sAction[1:-1]
         if not sMsg:
             print("\n# Error in action at line <" + sActionId + ">:  The message is empty.")
-        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, bCaseSensitivity, nPriority, sMsg, sURL]
+        return [sLineId, sOption, sCondition, cAction, sAction, iStartAction, iEndAction, cStartLimit, cEndLimit, bCaseSensitivity, nPriority, sMsg, sURL]
     if cAction == "~":
         ## text processor
         if sAction[0:1] == "=":
@@ -340,16 +344,16 @@ def createAction (sActionId, sAction, nPriority, dOptPriority, nToken, dPos):
                     print("\n# Error in action at line <" + sActionId + ">: numbers of modified tokens modified.")
             elif iStartAction < 0 or iEndAction < 0 and iStartAction != iEndAction:
                 print("\n# Warning in action at line <" + sActionName + ">: rewriting with possible token position modified.")
-        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
+        return [sLineId, sOption, sCondition, cAction, sAction, iStartAction, iEndAction, bCaseSensitivity]
     if cAction in "!/":
         ## tags
-        return [sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
+        return [sLineId, sOption, sCondition, cAction, sAction, iStartAction, iEndAction]
     if cAction == "=":
         ## disambiguator
         if "define(" in sAction and not re.search(r"define\(\\-?\d+ *, *\[.*\] *\)", sAction):
             print("\n# Error in action at line <" + sActionId + ">: second argument for <define> must be a list of strings")
         sAction = createFunction("da", sAction)
-        return [sOption, sCondition, cAction, sAction]
+        return [sLineId, sOption, sCondition, cAction, sAction]
     print("\n# Unknown action.", sActionId)
     return None
 
@@ -361,18 +365,19 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     # removing comments, zeroing empty lines, creating definitions, storing tests, merging rule lines
     print("  parsing rules...")
     lTokenLine = []
-    sActions = ""
+    lActions = []
+    bActionBlock = False
     nPriority = -1
     dAllGraph = {}
     sGraphName = ""
     iActionBlock = 0
     aRuleName = set()
 
-    for i, sLine in lRule:
+    for iLine, sLine in lRule:
         sLine = sLine.rstrip()
         if "\t" in sLine:
             # tabulation not allowed
-            print("Error. Tabulation at line: ", i)
+            print("Error. Tabulation at line: ", iLine)
             exit()
         elif sLine.startswith("@@@@GRAPH: "):
             # rules graph call
@@ -380,11 +385,11 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             if m:
                 sGraphName = m.group(1)
                 if sGraphName in dAllGraph:
-                    print("Error at line " + i + ". Graph name <" + sGraphName + "> already exists.")
+                    print("Error at line " + iLine + ". Graph name <" + sGraphName + "> already exists.")
                     exit()
                 dAllGraph[sGraphName] = []
             else:
-                print("Error. Graph name not found at line", i)
+                print("Error. Graph name not found at line", iLine)
                 exit()
         elif sLine.startswith("__") and sLine.endswith("__"):
             # new rule group
@@ -392,43 +397,54 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             if m:
                 sRuleName = m.group(1)
                 if sRuleName in aRuleName:
-                    print("Error at line " + str(i) + ". Rule name <" + sRuleName + "> already exists.")
+                    print("Error at line " + str(iLine) + ". Rule name <" + sRuleName + "> already exists.")
                     exit()
                 aRuleName.add(sRuleName)
                 iActionBlock = 1
                 nPriority = int(m.group(2)[1:]) if m.group(2)  else -1
             else:
-                print("Syntax error in rule group: ", sLine, " -- line:", i)
+                print("Syntax error in rule group: ", sLine, " -- line:", iLine)
                 exit()
-        elif re.search("^    +<<- ", sLine) or (sLine.startswith("        ") and not sLine.startswith("        ||")) \
-                or re.search("^    +#", sLine) or re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|)>> ", sLine) :
+        elif re.match("    \\S", sLine):
+            # tokens line
+            lTokenLine.append([iLine, sLine.strip()])
+        elif sLine.startswith("        ||"):
+            # tokens line continuation
+            iPrevLine, sPrevLine = lTokenLine[-1]
+            lTokenLine[-1] = [iPrevLine, sPrevLine + " " + sLine.strip()[2:]]
+        elif sLine.startswith("        <<- "):
             # actions
-            sActions += " " + sLine.strip()
+            lActions.append([iLine, sLine[12:].strip()])
+            if not re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
+                bActionBlock = True
+        elif sLine.startswith("        # "):
+            # action message
+            iPrevLine, sPrevLine = lActions[-1]
+            lActions[-1] = [iPrevLine, sPrevLine + sLine]
+        elif sLine.startswith("        ") and bActionBlock:
+            # action line continuation
+            iPrevLine, sPrevLine = lActions[-1]
+            lActions[-1] = [iPrevLine, sPrevLine + " " + sLine.strip()]
+            if re.search(r"[-=~/!>](?:-?\d\.?(?::\.?-?\d+|)|):?>>", sLine):
+                bActionBlock = False
         elif re.match("[  ]*$", sLine):
             # empty line to end merging
             if not lTokenLine:
                 continue
-            if not sActions:
-                print("Error. No action found at line:", i)
+            if bActionBlock or not lActions:
+                print("Error. No action found at line:", iLine)
+                print(bActionBlock, lActions)
                 exit()
             if not sGraphName:
-                print("Error. All rules must belong to a named graph. Line: ", i)
+                print("Error. All rules must belong to a named graph. Line: ", iLine)
                 exit()
             for j, sTokenLine in lTokenLine:
-                dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, iActionBlock, sActions, nPriority))
+                dAllGraph[sGraphName].append((j, sRuleName, sTokenLine, iActionBlock, list(lActions), nPriority))
             lTokenLine.clear()
-            sActions = ""
+            lActions.clear()
             iActionBlock += 1
-        elif sLine.startswith("    "):
-            # tokens
-            sLine = sLine.strip()
-            if sLine.startswith("||"):
-                iPrevLine, sPrevLine = lTokenLine[-1]
-                lTokenLine[-1] = [iPrevLine, sPrevLine + " " + sLine[2:]]
-            else:
-                lTokenLine.append([i, sLine])
         else:
-            print("Unknown line:")
+            print("Unknown line at:", iLine)
             print(sLine)
 
     # processing rules
@@ -437,8 +453,8 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     for sGraphName, lRuleLine in dAllGraph.items():
         print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
         lPreparedRule = []
-        for i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority in lRuleLine:
-            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, sActions, nPriority, dOptPriority, dDef, dDecl):
+        for i, sRuleGroup, sTokenLine, iActionBlock, lActions, nPriority in lRuleLine:
+            for aRule in createRule(i, sRuleGroup, sTokenLine, iActionBlock, lActions, nPriority, dOptPriority, dDef, dDecl):
                 lPreparedRule.append(aRule)
         nRule += len(lRuleLine)
         # Graph creation
@@ -489,6 +505,8 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             print(sActionName, aAction)
         print("\nFunctions:")
         print(sPyCallables)
+
+    print("Nombre d’actions: ", len(dACTIONS))
 
     # Result
     return {

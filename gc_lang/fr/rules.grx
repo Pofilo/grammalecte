@@ -2495,8 +2495,8 @@ TEST: __ocr__ {{J }}arrive demain
 # Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
 __ocr_lettres_isolées2!2__
     [á|â|ä|b|c|ç|d|e|é|è|ê|ë|f|g|h|i|í|ì|î|ï|j|k|l|m|n|o|ó|ò|ô|ö|p|q|r|s|t|u|ú|ù|û|ü|v|w|x|z]
-    <<- not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
-    ->> _           # Lettre isolée : erreur de numérisation ?
+        <<- not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
+        ->> _           # Lettre isolée : erreur de numérisation ?
 
 TEST: __ocr__ des verres luisent sur {{i}} le bureau blanc.
 TEST: __ocr__ la voix, {{e}} est celle de…
@@ -3240,7 +3240,7 @@ TEST: __ocr__ elles seront là tôt ou {{lard}}.
 # tandis que / taudis
 __ocr_tandis__
     taudis [que|qu’]
-         <<- /ocr/ -1>> tandis                                                                       # Erreur de numérisation ?
+        <<- /ocr/ -1>> tandis                                                                       # Erreur de numérisation ?
 
 TEST: __ocr__ mais {{taudis}} qu’elle œuvrait à leur salut, les nuages s’amoncelaient.
 
@@ -17166,7 +17166,7 @@ __conf_a_à_faim_peur_honte_soif_chaud_froid__
         <<- /conf/ -1>> a                       # Avoir “\2”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
     <start> elle à [chaud|froid]
-         <<- /conf/ -3>> a                      # Avoir “\4”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
+        <<- /conf/ -3>> a                       # Avoir “\4”. Confusion : “à” est une préposition. Pour le verbe avoir, écrivez “a”.
 
 TEST: Elle {{à}} chaud.
 TEST: Elle {{à}} froid.
@@ -17547,7 +17547,7 @@ TEST: c’en est assez, ça suffit
 # en butte à / but / bute
 __conf_en_butte_à_au__
     en [>but|>bute]  [à|au|aux]
-         <<- /conf/ -2>> butte                                          # Confusion. Écrivez « en butte \3 ».
+        <<- /conf/ -2>> butte                                           # Confusion. Écrivez « en butte \3 ».
 
 TEST: Et moi toujours en {{but}} à de nouveaux dangers
 
@@ -18249,7 +18249,7 @@ __conf_gène_gêne__
         <<- /conf/ ->> sans-gêne                    # Confusion. Les gènes sont des éléments des chromosomes. Pour le synonyme d’embarras, écrivez “gêne”.
 
     [ces|des|mes|tes|ses|nos|vos|leurs] gênes
-         <<- /conf/ -2>> gènes                      # Confusion probable. La gêne est un embarras. Pour parles des éléments des chromosomes, écrivez “gènes”.
+        <<- /conf/ -2>> gènes                       # Confusion probable. La gêne est un embarras. Pour parles des éléments des chromosomes, écrivez “gènes”.
 
 TEST: Quel {{sans gène}}, celui-là !
 TEST: Il croit que ses {{gênes}} décident de sa santé…
@@ -22007,12 +22007,12 @@ TEST: Ils avaient barre sur lui.
 
 __ppas_nous_vous_avoir__
     [nous|vous]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
-    <<- /ppas/ morph(\1, ":Os")
-        and not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
-        and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-    --1>> =suggVerbPpas(\-1, ":m:s")
-    # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- /ppas/ morph(\1, ":Os")
+            and not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+            and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Nous avons {{donne}} tout notre potentiel.
 TEST: mais nous avons {{était}} surpris par cette annonce.
@@ -22024,12 +22024,12 @@ TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 __ppas_det_nom_avoir__
     [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
-    <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-        and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
-        and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Y|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
-        and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
-    --1>> =suggVerbPpas(\-1, ":m:s")
-    # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+        <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+            and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Y|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+            and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: Les femmes lui avait {{conseillées}} de se taire.
 TEST: le mur avait {{était}} détruit
@@ -23699,8 +23699,8 @@ __inte_union_je!7__
     *WORD  ~.[is]$  je  [<end>|,]
     *WORD  ~.[is]$  je  @:¬:1s
         <<- /inte/ space_after(\2, 1, 1) and morph(\2, ":V.*:1s", ":[GNW]") and not value(\1, "|je|j’|tu|")
-        -2:3>> \2-je
-                                                                                        # Forme interrogative ? Mettez un trait d’union.
+        -2:3>> \2-je                                                                                # Forme interrogative ? Mettez un trait d’union.
+
 TEST: quel animal {{dessine je}}
 TEST: {{mangé je}} {{ça}} avec dégoût ?
 TEST: {{viendrais je}} à la fête ?

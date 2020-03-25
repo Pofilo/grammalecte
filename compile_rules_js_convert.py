@@ -168,7 +168,7 @@ def groupsPositioningCodeToList (sGroupsPositioningCode):
 def pyActionsToString (dActions):
     "returns dictionary as string (nbsp -> nnbsp, True -> true, etc.)"
     for _, aValue in dActions.items():
-        if aValue[2] == "-":
-            aValue[3] = aValue[3].replace(" ", " ") # nbsp --> nnbsp
-            aValue[10] = aValue[10].replace("« ", "« ").replace(" »", " »").replace(" :", " :").replace(" :", " :")
+        if aValue[3] == "-":
+            aValue[4] = aValue[4].replace(" ", " ") # nbsp --> nnbsp
+            aValue[11] = aValue[11].replace("« ", "« ").replace(" »", " »").replace(" :", " :").replace(" :", " :")
     return str(dActions).replace("True", "true").replace("False", "false")
