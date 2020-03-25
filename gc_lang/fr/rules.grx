@@ -8362,10 +8362,14 @@ __conf_fin_faim__
     [à|a] >seul faim [de|d’]
         <<- /conf/ -3>> fin                                     # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
 
+    >faim de non-recevoir
+        <<- /conf/ -1>> =\1.replace("a", "").replace("A", "")   # Confusion. Pour évoquer la finalité de quelque chose, écrivez “fin”.
+
 TEST: Elle manifestait son désaccord par une grève de la {{fin}}.
 TEST: ces enfants avaient une {{fin}} de loup
 TEST: Œuvrez à des {{faims}} funestes.
 TEST: il s’est donné bien des peines à seule {{faim}} de monter en grade
+TEST: Même {{faim}} de non-recevoir.
 
 
 # faut / faux
@@ -19236,10 +19240,30 @@ TEST: ce champignon {{venimeux}}.
 
 __conf_qui_adj_det_subst__
     qui  $:Q  $:D  @:[NA]¬:3[sp]  <end>
+    qui  $:Q  <end>
         <<- /conf/ not morph(\2, ":3[sp]") -2>> =suggVerb(\2, ":3s")                                # Confusion probable entre participe passé et forme verbale conjuguée.
+
+    [celui|celle]  qui  $:Q¬:G   [ne|n’|me|m’|te|t’|se|s’]
+    [celui|celle]  qui  $:Q¬:G   [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)
+    [celui|celle]  qui  $:Q¬:G   [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
+    [celui|celle]  qui  $:Q¬:G   [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
+    [celui|celle]  qui  $:Q¬:G   [lui|leur|y]    en                      @:(?:[123][sp]|P)
+    [celui|celle]  qui  $:Q¬:G   @:(?:[123][sp]|P)
+        <<- /conf/ not morph(\3, ":3[sp]") -3>> =suggVerb(\3, ":3s")                                # Confusion probable entre participe passé et forme verbale conjuguée.
+
+    [ceux|celles]  qui  $:Q¬:G   [ne|n’|me|m’|te|t’|se|s’]
+    [ceux|celles]  qui  $:Q¬:G   [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)
+    [ceux|celles]  qui  $:Q¬:G   [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
+    [ceux|celles]  qui  $:Q¬:G   [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
+    [ceux|celles]  qui  $:Q¬:G   [lui|leur|y]    en                      @:(?:[123][sp]|P)
+    [ceux|celles]  qui  $:Q¬:G   @:(?:[123][sp]|P)
+        <<- /conf/ not morph(\3, ":3[sp]") -3>> =suggVerb(\3, ":3p")                                # Confusion probable entre participe passé et forme verbale conjuguée.
 
 TEST: qu’est-ce qui {{défini}} un attentat ?
 TEST: Qui {{voulu}} la paix ?
+TEST: le prix sera pour celui qui {{réussi}}
+TEST: celui qui {{réussi}} aura la vie éternelle
+TEST: celles qui {{demandées}} viendront demain.
 
 
 !!
