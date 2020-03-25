@@ -7697,6 +7697,36 @@ TEST: négocier séparément avec ces divers sous-groupes
 TEST: L’ensemble de ces divers points de vue émergeant de plusieurs horizons permettaient de construire un projet, riche et acceptable par toutes les parties prenantes.
 
 
+__conf_c_est_chose_faite!7__
+    !! c’ [est|était] chose faite ¡¡
+    !! [c’|ce] [sera|serait|fut|fût] chose faite ¡¡
+    [c’|s’|c|s] [ai|ait|aie|aies|aient|ais|hé|eh|es|haie|haies|hais|hait|est|et] [chose+s] [faite+s|>faîte|>fête]
+        <<- /conf/ ->> c’est chose faite                        # Locution “c’est chose faite”.
+
+    [c’|s’|c|s|ce|se] [serra+s|sera+s] [chose+s] [faite+s|>faîte|>fête]
+        <<- /conf/ ->> ce sera chose faite                      # Locution “c’est chose faite”.
+
+    [c’|s’|c|s|se|ce] [serrai+s|serait|serrait] [chose+s] [faite+s|>faîte|>fête]
+        <<- /conf/ ->> ce serait chose faite                    # Locution “c’est chose faite”.
+
+    [c’|s’|c|s] [>étai|était|>été] [chose+s] [faite+s|>faîte|>fête]
+        <<- /conf/ ->> c’était chose faite                      # Locution “c’est chose faite”.
+
+    [c’|s’|ce|se] [fus|fut|fût] [chose+s] [faite+s|>faîte|>fête]
+        <<- /conf/ ->> ce fut chose faite                       # Locution “c’est chose faite”.
+
+TEST: {{c est chose faites}}
+TEST: {{ce serra chose faite}}
+TEST: {{ce serrait choses faites}}
+TEST: {{s’était chose faite}}
+TEST: {{se fut chose faite}} hier
+TEST: c’est chose faite
+TEST: ce sera chose faite demain
+TEST: c’était chose faite, pensait-il.
+TEST: ce fut chose faite quand elle s’en alla.
+TEST: ce serait chose faite depuis longtemps sans leur incapacité à s’entendre
+
+
 # chœur / cœur
 __conf_choeur_coeur__
     [>enfant|>chef] de >cœur
@@ -10922,9 +10952,12 @@ __purge_tout_tous_toutes__
     [laissez-les|laissez-nous|laissez-vous]     [tous|toutes]
         <<- ~2>> *
 
-    [les|des|mes|tes|ses|ces|nos|vos|leurs|aux]  tout  [débuts|petits]
+    [les|des|mes|tes|ses|ces|nos|vos|leurs|aux]  tout  débuts
     [les|des|mes|tes|ses|ces|nos|vos|leurs|aux]  tout  @:A.*:[pi]
         <<- ~2>> *
+
+    tout petits
+        <<- morph(<1, ":(?:D.*:p|R|C)") ~>> *
 
 
 __gn_tout_det__
@@ -10947,6 +10980,7 @@ TEST: je ne connais pas du tout ceux dont tu parles.
 TEST: Malgré tout ces hommes sont quand même revenus.
 TEST: Les tout premiers hommes.
 TEST: Les tout petits ne sont pas des légumes.
+TEST: Faire des envois par tout petits nombres.
 
 
 __gn_toute_det__
@@ -13299,6 +13333,7 @@ __simplication_substantifs__
     >compagne [de|d’] route
     >compagnon [de|d’] route
     >complémentaire santé
+    [composante+s] alpha
     >compte à rebours
     concours [de|d’] beauté
     >condamné à mort
@@ -13486,6 +13521,7 @@ __simplication_substantifs__
     >partie [de|d’] jambes en l’ air
     >passage à tabac
     >passation [de|d’] pouvoir
+    >pâte à [accras|>beignet|>brioche|choux|>crêpe|donuts|frire|galettes|>gaufre|>gâteau|modeler|nouilles|pain|pizza|sel|tarte|tartiner]
     >pâté en [croute|croûte]
     >peur [de|d’] tous les diables
     >pièce à conviction
@@ -13626,6 +13662,9 @@ __simplication_substantifs__
     >calibre *NUM [*|×] *NUM ?[mm|in]¿
         <<- ~2:0>> *
         <<- =>> =select(\1, ":N")
+
+    une bonne chose de réglée
+        <<- ~-2:0>> *
 
 
 __purge_syntagmes_nominaux_matière__
@@ -14800,6 +14839,13 @@ TEST: Cela nous évoque la fable de Jean de la Fontaine « Les animaux malades 
 TEST: Des actions réunissant jusqu’à plusieurs milliers de signataires, et obtenant parfois même gain de cause à l’arrachée.
 TEST: le bras de fer entre Jules, Elsa et Rose dure depuis plusieurs mois
 TEST: les étrangers coupables tout trouvés de l’épidémie
+TEST: Renvoie la valeur de la composante alpha (transparence) d’une couleur.
+TEST: Une nouvelle série de dix timbres toujours imprimée aux États-Unis sort en 1945.
+TEST: Très rapidement, l’Afghanistan s’impose comme une puissance militaire de premier ordre dirigée par des généraux.
+TEST: Cependant, les romans publiés avec un nouveau héros rencontrent un succès moindre, si bien que l’écrivain transforme à l’occasion certains de ses récits.
+TEST: Ce prénom qui fut d’ailleurs à plusieurs reprises réutilisé.
+TEST: « Ça vient ! »
+TEST: Voilà une bonne chose de réglée !
 
 
 @@@@
