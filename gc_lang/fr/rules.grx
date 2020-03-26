@@ -6856,7 +6856,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|domicile|genoux|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|rallonge|reculons|risque|sec|tâtons|vélo|vif]
+    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|domicile|genoux|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|perte|rallonge|reculons|risque|sec|tâtons|vélo|vif]
     a [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     a air comprimé
     a armes égales
@@ -9886,6 +9886,10 @@ __conf_saint_sain_sein_seing__
         <<- /conf/ -2>> sein
         # Confusion probable : “sain” signifie “en bonne santé”, “saint” évoque ce qui “sanctifié”. Pour évoquer, au sens figuré, ce qui est une partie intime de quelque chose ou quelqu’un, écrivez “sein”.|https://fr.wiktionary.org/wiki/sein
 
+    [>sein|saint+s] d’ esprit
+    [>sein|saint+s] de corps et d’ esprit
+        <<- /conf/ -1>> sain|sains                              # Confusion probable. Pour dire “en bonne santé”, écrivez “sain”.
+
     [blanc-sein+s|blancs-sein+s]
     [blanc-sain+s|blancs-sain+s]
     [blanc-saint+s|blancs-saint+s]
@@ -9895,6 +9899,7 @@ TEST: il priait {{sain}} Anselme de le secourir.
 TEST: Au {{sain}} de l’obscurité, elle se sentait en sécurité.
 TEST: Sur son {{sain}}
 TEST: en son {{saint}}.
+TEST: ils sont {{saints}} de corps et d’esprit
 TEST: {{blanc-sein}}
 
 
@@ -14540,6 +14545,7 @@ __purge_locutions_verbales__
     >mourir jeune
     [>naître|>naitre] de la dernière pluie
     [>naître|>naitre] sous x
+    >naviguer à vue
     >obtenir gain de cause
     >parler affaires
     >partir en vrille
@@ -14607,6 +14613,7 @@ __conf_locutions_verbales__
     [>gonfler|>regonfler] a bloc
     >jeter a terre
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>plat|>table|>terre]
+    >naviguer a [vu+ses]
     [>mettre|>remettre] a l’ [écart|épreuve]
     >passer a tabac
     >percer a jour
@@ -19715,30 +19722,70 @@ TEST: sa simple présence les a fait reculer
 
 
 __infi_laisser__
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [<end>|,]
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [dans|avec]
-    [me|m’|te|t’|nous|vous|se|s’]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ morph(\3, ":V1.*:Q", ">désemparer/") -3>> =suggVerbInfi(\3)          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
-
-    [le|la|l’|les]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [le|la|l’|les]  >laisser  *WORD  [<end>|,]
-    [le|la|l’|les]  >laisser  *WORD  [dans|avec]
-    [le|la|l’|les]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ not morph(\2, ":N") and morph(\3, ":V1.*:Q", ">désemparer/")
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|chaque]
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [<end>|,]
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [dans|avec]
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morph(\3, ":V1.*:(?:Q|Ip.*:2p|Iq.*:[123]s)", ">désemparer/.*:Q")
         -3>> =suggVerbInfi(\3)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
-    [/-le|/-la|/-les]  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques]
-    [/-le|/-la|/-les]  *WORD  [<end>|,]
-    [/-le|/-la|/-les]  *WORD  [dans|avec]
-    [/-le|/-la|/-les]  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
-        <<- /infi/ morphVC(\1, ">laisser") and morph(\2, ":V1.*:Q", ">désemparer/")
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  [le|la|l’|les|leur]                                       *WORD
+        <<- /infi/ morph(\-1, ":V1.*:(?:Q|Ip.*:2p|Iq.*:[123]s)", ">désemparer/.*:Q|:N")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  [en|me|m’|te|t’|se|s’|nous|vous|lui|y]                    *WORD
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  [me|m’|te|t’|se|s’|nous|vous] [le|la|l’|les|en|y]         *WORD
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  [le|la|l’|les]                [lui|leur|en|y][nous|vous]  *WORD
+    [me|m’|te|t’|lui|nous|vous|se|s’]  >laisser  [lui|leur|y]                  en                          *WORD
+        <<- /infi/ morph(\-1, ":V1.*:(?:Q|Ip.*:2p|Iq.*:[123]s)", ">désemparer/.*:Q")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [le|la|l’|les|leur]  >laisser  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|chaque]
+    [le|la|l’|les|leur]  >laisser  *WORD  [<end>|,]
+    [le|la|l’|les|leur]  >laisser  *WORD  [dans|avec]
+    [le|la|l’|les|leur]  >laisser  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ not morph(\2, ":N") and morph(\3, ":V1.*:(?:Q|Ip.*:2p)", ">désemparer/.*:Q")
+        -3>> =suggVerbInfi(\3)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [le|la|l’|les|leur]  >laisser  [le|la|l’|les|leur]                                       *WORD
+        <<- /infi/ not morph(\2, ":N") and morph(\-1, ":V1.*:(?:Q|Ip.*:2p|Iq.*:[123]s)", ">désemparer/.*:Q|:N")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [le|la|l’|les|leur]  >laisser  [en|me|m’|te|t’|se|s’|nous|vous|lui|y]                    *WORD
+    [le|la|l’|les|leur]  >laisser  [me|m’|te|t’|se|s’|nous|vous] [le|la|l’|les|en|y]         *WORD
+    [le|la|l’|les|leur]  >laisser  [le|la|l’|les]                [lui|leur|en|y][nous|vous]  *WORD
+    [le|la|l’|les|leur]  >laisser  [lui|leur|y]                  en                          *WORD
+        <<- /infi/ not morph(\2, ":N") and morph(\-1, ":V1.*:(?:Q|Ip.*:2p|Iq.*:[123]s)", ">désemparer/.*:Q")
+        --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [le|la|l’|les|un|une|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|chaque]
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [<end>|,]
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [dans|avec]
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  *WORD  [autant|que|qu’|lorsque|quand|combien|comment|car|quoi|quoique|quoiqu’|puisque|puisqu’]
+        <<- /infi/ morphVC(\1, ">laisser") and (morph(\2, ":V1.*:(?:Q|Ip.*:2[sp])", ">désemparer/.*:Q") or (not morph(<1, ":D") and morph(\-1, ":V1.*:Iq.*:[123]s", ">désemparer/.*:Q")))
         -2>> =suggVerbInfi(\2)                                                          # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
 
-TEST: Il se laisse trop {{allé}}, ce petit.
-TEST: Nous nous laissions {{allé}} dans le plus complet abandon.
-TEST: Je le laissais {{mangé}} autant qu’il le voulut.
-TEST: Laisse-la {{abandonnée}} ses études, si c’est ce qu’elle veut.
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  [le|la|l’|les|leur]                                       *WORD
+        <<- /infi/ morphVC(\1, ">laisser") and (morph(\-1, ":V1.*:(?:Q|Ip.*:2[sp])", ">désemparer/.*:Q|:N") or (not morph(<1, ":D") and morph(\-1, ":V1.*:Iq.*:[123]s", ">désemparer/.*:Q|:N")))
+        --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  [en|me|m’|te|t’|se|s’|nous|vous|lui|y]                    *WORD
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  [me|m’|te|t’|se|s’|nous|vous] [le|la|l’|les|en|y]         *WORD
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  [le|la|l’|les]                [lui|leur|en|y][nous|vous]  *WORD
+    [/-le|/-la|/-les|/-moi|/-toi|/-lui|/-nous|/-vous|/-leur]  [lui|leur|y]                  en                          *WORD
+        <<- /infi/ morphVC(\1, ">laisser") and (morph(\-1, ":V1.*:(?:Q|Ip.*:2[sp])", ">désemparer/.*:Q") or (not morph(<1, ":D") and morph(\-1, ":V1.*:Iq.*:[123]s", ">désemparer/.*:Q")))
+        --1>> =suggVerbInfi(\-1)                                                        # Après “laisser”, le verbe doit être à l’infinitif. Exemples : Laisser faire, laisser aller, laisser venir, etc.
+
+TEST: Il se laisse trop {{allé}}, ce petit.                                                         ->> aller
+TEST: elle me laisse vous {{aidés}}.                                                                ->> aider
+TEST: nous vous laissons la {{dégorgée}}                                                            ->> dégorger
+TEST: Nous nous laissions {{allé}} dans le plus complet abandon.                                    ->> aller
+TEST: Je le laissais {{mangé}} autant qu’il le voulut.                                              ->> manger
+TEST: on les laisse les {{chantés}} à leur guise                                                    ->> chanter
+TEST: nous la laissons vous en {{donné}}                                                            ->> donner
+TEST: Laisse-la {{abandonnée}} ses études, si c’est ce qu’elle veut.                                ->> abandonner
+TEST: laisse-lui le {{donné}} à ses enfants                                                         ->> donner
+TEST: laissez-moi vous {{expliqués}}                                                                ->> expliquer
 TEST: Cette perplexité à exister qui sans cesse vous tourmente et vous laisse désemparé
 
 
