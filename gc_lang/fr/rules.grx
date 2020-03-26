@@ -11838,9 +11838,9 @@ __purge_locutions__
     au grand [complet|jamais]
     au hasard
     au jour et à l’ heure dits
+    au jour le jour
     au jour j
     au jugé
-    au le jour
     au leur
     au lieu de [cela|ceci|ça|quoi]
     au loin
@@ -19469,7 +19469,7 @@ __infi_de_verbe__
         <<- /infi/ --1>> =suggVerbInfi(\-1)                                             # Après “de”, le verbe devrait être à l’infinitif.
 
     [de|d’]  @:V1.*:Q¬:N
-        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer)/")
+        <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/")
             and not before("(?i)(?:quelqu(?:e chose|’une?)|qu’y a-t-il |\\b(?:l(?:es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
             and not tag_before(\1, "ce_que")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
@@ -19505,6 +19505,7 @@ TEST: ce qu’ils ont d’obscur, d’exagéré et parfois de sec et de figé
 TEST: ce qu’il y a de compliqué dans ces affaires.
 TEST: Un patient peut avoir autant de satanées maladies qui lui chante.
 TEST: C’est toujours ça de gagné.
+TEST: que n’a-t-on pas entendu au sujet de ces revendications, souvent qualifiées de trop désordonnées
 
 
 __infi_y_verbe!3__
