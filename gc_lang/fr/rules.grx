@@ -1899,8 +1899,8 @@ __da_préverbes_verbes__
 
 
 __da_été__
-    >avoir été
-        <<- =>> select(\2, ":Q")
+    >avoir ?@:[WX]¿ été
+        <<- =>> select(\-1, ":Q")
 
 
 __da_prépositions__
@@ -1924,9 +1924,13 @@ __da_son_ton__
         <<- =>> exclude(\2, ":D")
 
 
-__da_quelque_chose__
+__da_autre_chose_quelque_chose__
     quelque chose
         <<- =>> define(\2, [":N:m:s"])
+
+    autre chose
+        <<- not morph(<1, ">entre/|:D") ~>> ␣
+        <<- =>> define(\1, [":G"])
 
 
 __da_groupe_nominal__
@@ -1945,6 +1949,14 @@ __da_groupe_nominal__
 
     l’ [un|une]  *WORD
         <<- not value(\3, "|plus|") =>> select(\3, ":[123][sp]")
+
+    l’ un comme l’ autre
+        <<- ~>> ␣
+        <<- =>> define(\1, [":LN:m:p"])
+
+    l’ une comme l’ autre
+        <<- ~>> ␣
+        <<- =>> define(\1, [":LN:f:p"])
 
     [des|chaque|quelque|quelques|cet|cette|ces|mon|ma|ta|sa|mes|tes|ses|au|aux|notre|votre|nos|vos|leurs|aucun|aucune]  *WORD
         <<- =>> exclude(\2, ":V")
