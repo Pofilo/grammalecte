@@ -361,12 +361,14 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xNodeErr.dataset.rule_id = oErr['sRuleId'];
             }
             xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
-            let sHue = oErr["aColor"][0].toString();
-            let sSat = oErr["aColor"][1].toString();
-            let sLum = oErr["aColor"][2].toString();
-            xNodeErr.style.color = `hsl(${sHue}, ${sSat}%, 15%)`;
-            xNodeErr.style.backgroundColor = `hsl(${sHue}, ${sSat}%, 85%)`;
-            xNodeErr.style.borderBottom = `solid 2px hsl(${sHue}, ${sSat}%, ${sLum}%)`;
+            if (oErr.hasOwnProperty("aColor")) {
+                let sHue = oErr["aColor"][0].toString();
+                let sSat = oErr["aColor"][1].toString();
+                let sLum = oErr["aColor"][2].toString();
+                xNodeErr.style.color = `hsl(${sHue}, ${sSat}%, 15%)`;
+                xNodeErr.style.backgroundColor = `hsl(${sHue}, ${sSat}%, 85%)`;
+                xNodeErr.style.borderBottom = `solid 2px hsl(${sHue}, ${sSat}%, ${sLum}%)`;
+            }
         }
         else {
             xNodeErr.className = "grammalecte_spellerror";
