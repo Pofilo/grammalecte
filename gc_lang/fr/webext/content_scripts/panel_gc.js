@@ -349,7 +349,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         xNodeErr.dataset.error_id = oErr['sErrorId'];
         xNodeErr.dataset.ignored_key = oErr['sIgnoredKey'];
         xNodeErr.dataset.error_type = (oErr['sType'] === "WORD") ? "spelling" : "grammar";
-        if (xNodeErr.dataset.error_type === "grammar") {
+        if (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) {
+            xNodeErr.className = "grammalecte_error_ignored";
+        }
+        else if (xNodeErr.dataset.error_type === "grammar") {
+            xNodeErr.className = "grammalecte_error";
             xNodeErr.dataset.gc_message = oErr['sMessage'];
             xNodeErr.dataset.gc_url = oErr['URL'];
             if (xNodeErr.dataset.gc_message.includes(" #")) {
@@ -357,9 +361,16 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xNodeErr.dataset.rule_id = oErr['sRuleId'];
             }
             xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
+            let sHue = oErr["aColor"][0].toString();
+            let sSat = oErr["aColor"][1].toString();
+            let sLum = oErr["aColor"][2].toString();
+            xNodeErr.style.color = `hsl(${sHue}, ${sSat}%, 15%)`;
+            xNodeErr.style.backgroundColor = `hsl(${sHue}, ${sSat}%, 85%)`;
+            xNodeErr.style.borderBottom = `solid 2px hsl(${sHue}, ${sSat}%, ${sLum}%)`;
         }
-        xNodeErr.className = (this.aIgnoredErrors.has(xNodeErr.dataset.ignored_key)) ? "grammalecte_error_ignored" : "grammalecte_error";
-        xNodeErr.style.backgroundColor = (oErr['sType'] === "WORD") ? "hsl(0, 50%, 50%)" : oErr["aColor"];
+        else {
+            xNodeErr.className = "grammalecte_spellerror";
+        }
         return xNodeErr;
     }
 
@@ -406,6 +417,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             let xNodeErr = this.xParent.getElementById("grammalecte_err" + sErrorId);
             this.aIgnoredErrors.add(xNodeErr.dataset.ignored_key);
             xNodeErr.className = "grammalecte_error_ignored";
+            xNodeErr.removeAttribute("style");
             this.oTooltip.hide();
         }
         catch (e) {

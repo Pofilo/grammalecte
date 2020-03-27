@@ -40,11 +40,13 @@ def convertHSLToRBG (h, s, l):
 def createColors (dColor):
     "dictionary of colors {color_name: [h, s, l]} -> returns dictionary of colors as dictionaries of color types"
     dColorType = {
+        "aHSL": {},     # dictionary of colors as HSL list
         "sCSS": {},     # dictionary of colors as strings for HTML/CSS (example: hsl(0, 50%, 50%))
-        "aRGB": {},     # dictionary of colors as RGB tuple
+        "aRGB": {},     # dictionary of colors as RGB list
         "nInt": {}      # dictionary of colors as integer values (for Writer)
     }
     for sKey, aHSL in dColor.items():
+        dColorType["aHSL"][sKey] = aHSL
         dColorType["sCSS"][sKey] = "hsl({}, {}%, {}%)".format(*aHSL)
         dColorType["aRGB"][sKey] = convertHSLToRBG(*aHSL)
         dColorType["nInt"][sKey] = convertRGBToInteger(*dColorType["aRGB"][sKey])
