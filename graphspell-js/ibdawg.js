@@ -347,7 +347,7 @@ class IBDAWG {
 
     _splitTrailingNumbers (oSuggResult, sWord) {
         let m = /^([a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ][a-zA-Zà-öÀ-Ö_ø-ÿØ-ßĀ-ʯﬁ-ﬆ-]+)([0-9]+)$/.exec(sWord);
-        if (m) {
+        if (m  &&  !m[1].endsWith("-")  &&  !m[1].endsWith("_")) {
             oSuggResult.addSugg(m[1] + " " + char_player.numbersToExponent(m[2]));
         }
     }

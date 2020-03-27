@@ -317,7 +317,7 @@ class IBDAWG:
 
     def _splitTrailingNumbers (self, oSuggResult, sWord):
         m = re.match(r"(\D+)([0-9]+)$", sWord)
-        if m:
+        if m and m.group(1)[-1:].isalpha():
             oSuggResult.addSugg(m.group(1) + " " + cp.numbersToExponent(m.group(2)))
 
     def _splitSuggest (self, oSuggResult, sWord):
