@@ -6854,6 +6854,19 @@ TEST: il gueulait {{à tir larigot}}
 TEST: Au nom du progrès, les Victoriens en mal de modernisation rasèrent à tire-larigot les églises et les bâtiments jugés trop anciens.
 
 
+__conf_à_tue_tête!7__
+    [à|a|as] [tu+ses] [tète+s|tête+s]
+        <<- /conf/ ->> à tue-tête                                           # Confusion. Locution adverbiale “à tue-tête”.|https://fr.wiktionary.org/wiki/%C3%A0_tue-t%C3%AAte
+
+    [à|a|as] ~^tue?s?-t[èêeé]te?s?$
+        <<- /conf/ not (value(\1, "|à|") and value(\2, "|tue-tête|"))
+        ->> à tue-tête                                                      # Confusion. Locution adverbiale “à tue-tête”.|https://fr.wiktionary.org/wiki/%C3%A0_tue-t%C3%AAte
+
+TEST: à tue-tête
+TEST: {{à tue tête}}
+TEST: {{à tu-tête}}
+
+
 __conf_à_vau_l_eau__
     !! à vau-l’eau ¡¡
     [a|à] [volo|vo-lo]
@@ -11578,7 +11591,7 @@ __purge_locutions__
     à air comprimé
     à angle droit
     à armes égales
-    à aucun prix
+    à aucun [moment|prix]
     à autre chose
     à ?[si|très|trop]¿ bas [cout|coût|prix]
     à bâtons rompus
@@ -11791,6 +11804,7 @@ __purge_locutions__
     à toutes fins utiles
     à toutes jambes
     à tu et à toi
+    à tue-tête
     à un moment donné
     à un moment ou à un autre
     à une   heure  [décente|tardive]
@@ -11886,7 +11900,7 @@ __purge_locutions__
     ?tout¿ aussi
     aussitôt
     ?tout¿ au fond [de|d’] {pronom_obj}
-    aux [abois|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
+    aux [abois|aguets|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
     autant que [nécessaire|possible|prévu]
     autant que faire se peut
     autour [de|d’] {pronom_obj}
@@ -12059,6 +12073,7 @@ __purge_locutions__
     [de|d’] courte [durée|vue]
     [de|d’] dernière minute
     [de|d’] demain ?[matin|soir|après-midi]¿
+    [de|d’] deux choses l’ une
     [de|d’] droite à gauche
     [de|d’] droite comme de gauche
     [de|d’] fâcheuse mémoire
@@ -13392,6 +13407,7 @@ __simplication_substantifs__
     >digne [de|d’] [confiance|foi]
     >digne [de|d’] ce nom
     >don en nature
+    >donneur [de|d’] >leçon
     >dossier [de|d’] presse
     >droit comme un i
     >eau [de|d’] [bouleau|bleuet|chaux|coco|javel|jouvence|mer|parfum|pluie|seltz|source|vie]
@@ -13631,6 +13647,7 @@ __simplication_substantifs__
     >têtu comme un [âne|bourriquot|mulet]
     >terrain à découvert
     >tigre à dents [de|d’] sabre
+    >tigre [de|d’] papier ?mâché¿
     >tir [de|d’] barrage
     >tiret d’ incise
     >tireur d’ élite
@@ -13695,7 +13712,8 @@ __simplication_substantifs__
 
 __purge_syntagmes_nominaux_matière__
     *WORD  en  acier  ?[galvanisé|inoxydable|trempé]¿
-    *WORD  en  [alu|aluminium|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox|laiton|lin|coton|métal|nacre|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]
+    *WORD  en  chêne  ?massif¿
+    *WORD  en  [alu|aluminium|bois|contreplaqué|coton|cuir|cuivre|émail|étain|fer|fibrociment|fibro-ciment|inox|laiton|lin|métal|nacre|osier|plastique|plâtre|plomb|polycarbonate|polymère|verre|zinc]
         <<- morph(\1, ":N") and not morph(>1, ":A.*:[me]:[si]") ~2:0>> *
 
     *WORD  en  pierre
@@ -14550,6 +14568,7 @@ __purge_locutions_verbales__
     >jouer cartes sur table
     >lâcher prise
     >laisser pour compte
+    >laisser carte blanche
     >marcher à rebours
     >mener par le bout du nez
     [>mettre|>remettre] à [bas|dos|exécution|flot|jour|niveau|nu|plat|table|terre]
@@ -14610,6 +14629,7 @@ __purge_locutions_verbales__
     >tirer [avantage|profit]
     >tourner à l’ aigre
     >tourner court
+    >vendre à perte
     >venir à bout
     [>venir|>revenir] je [ne|n’] sais ?pas¿ ?trop¿ d’ où
     [>venir|>revenir] on [ne|n’] sait ?pas¿ ?trop¿ d’ où
@@ -14642,6 +14662,7 @@ __conf_locutions_verbales__
     >tomber a [pic|point]
     >tirer a blanc
     >tourner a l’ aigre
+    >vendre a >perte
     >venir a bout
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
@@ -18229,11 +18250,11 @@ TEST: elle a perdu {{foie}} en Dieu.
 
 # fond / fonds / fonts
 __conf_fond_fonds_fonts__
-    [>collecte|>levé|>extorsion|>détournement] de [fond|fonts]
+    [>collecte|>bailleur|>levé|>extorsion|>détournement] de [fond|fonts]
     >collecter des fonts
         <<- /conf/ -3>> fonds                   # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
 
-    à [fond|fonts] [perdu|perdus|perdue|perdues]
+    à [fond|fonts] [perdu+ses]
         <<- /conf/ ->> à fonds perdus           # Confusion : fonds (ce qui constitue une richesse) ≠ fond (partie la plus basse/profonde).
 
     [fond|fonts] [>monétaire|spéculatif+s|>international|souverain+s]
