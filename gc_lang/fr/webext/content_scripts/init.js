@@ -121,11 +121,15 @@ const oGrammalecte = {
                 if (that.oOptions) {
                     for (let i = 0;  i < xMutation.addedNodes.length;  i++) {
                         let xNode = xMutation.addedNodes[i];
-                        if (((xNode.tagName == "TEXTAREA"  &&  that.oOptions.textarea  &&  xNode.getAttribute("spellcheck") !== "false") || (xNode.isContentEditable  &&  that.oOptions.editablenode))
-                            &&  that._isEligibleNode(xNode)) {
+                        if (xNode.tagName == "TEXTAREA"  &&  that.oOptions.textarea  &&  xNode.getAttribute("spellcheck") !== "false" &&  that._isEligibleNode(xNode)) {
                             oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
                             oGrammalecte.nButton += 1;
                         }
+                        /*else if (xNode.isContentEditable  &&  that.oOptions.editablenode  &&  that._isEligibleNode(xNode)) {
+                            // this makes Twitter crash when hitting backspace button
+                            oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
+                            oGrammalecte.nButton += 1;
+                        }*/
                         else if (xNode.getElementsByTagName  &&  that.oOptions.textarea) {
                             for (let xSubNode of xNode.getElementsByTagName("textarea")) {
                                 if (that._isEligibleNode(xSubNode)  &&  xSubNode.getAttribute("spellcheck") !== "false") {
@@ -134,14 +138,14 @@ const oGrammalecte = {
                                 }
                             }
                         }
-                        else if (xNode.querySelectorAll  &&  that.oOptions.editablenode) {
+                        /*else if (xNode.querySelectorAll  &&  that.oOptions.editablenode) {
                             for (let xSubNode of xNode.querySelectorAll("[contenteditable]")) {
                                 if (that._isEligibleNode(xSubNode)) {
                                     oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xSubNode));
                                     oGrammalecte.nButton += 1;
                                 }
                             }
-                        }
+                        }*/
                     }
                 }
             });
