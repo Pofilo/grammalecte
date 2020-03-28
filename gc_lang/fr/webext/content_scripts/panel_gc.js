@@ -361,7 +361,7 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
                 xNodeErr.dataset.rule_id = oErr['sRuleId'];
             }
             xNodeErr.dataset.suggestions = oErr["aSuggestions"].join("|");
-            if (oErr.hasOwnProperty("aColor")) {
+            if (oErr.hasOwnProperty("aColor")  &&  Array.isArray(oErr["aColor"])  &&  oErr["aColor"].length === 3) {
                 let sHue = oErr["aColor"][0].toString();
                 let sSat = oErr["aColor"][1].toString();
                 let sLum = oErr["aColor"][2].toString();
