@@ -1477,8 +1477,8 @@ TEST: __ocr__ c’est {{anti‑américain}}
 
 ## Caractères rares
 __<s>/ocr(ocr_caractères_rares)__
-    \w*[{}<>&*#£]+\w*
-    <<- \0 != "<" and \0 != ">" ->> _                                                               # Erreur de numérisation ? Cette chaîne contient un caractère de fréquence rare.
+    \w*[{}<>&*#£^|]+\w*
+        <<- \0 != "<" and \0 != ">" ->> _                                                           # Erreur de numérisation ? Cette chaîne contient un caractère de fréquence rare.
 
 __<s>/ocr(ocr_doublons_caractères_rares)__
     [\]\[({}][\]\[({}]+
@@ -1486,6 +1486,7 @@ __<s>/ocr(ocr_doublons_caractères_rares)__
 
 TEST: __ocr__ trouve {{l£}} temps
 TEST: __ocr__ elle s’{{avance*}} sur le seuil
+TEST: __ocr__ {{e||e}} vient
 TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
 TEST: __ocr__ {{[[}}voyons celà].
 TEST: __ocr__ {{((}}voyons ceci).
@@ -2507,7 +2508,7 @@ TEST: __ocr__ {{J }}arrive demain
 # Note: l’option “mapos” cherche les apostrophes manquantes après les lettres l, d, n, m, t, s, j, c, ç
 __ocr_lettres_isolées2!2__
     [á|â|ä|b|c|ç|d|e|é|è|ê|ë|f|g|h|i|í|ì|î|ï|j|k|l|m|n|o|ó|ò|ô|ö|p|q|r|s|t|u|ú|ù|û|ü|v|w|x|z]
-        <<- not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
+        <<- /ocr/ not before("\\d[   ]+$") and not (\1.isupper() and value(>1, "|.|<end>|"))
         ->> _           # Lettre isolée : erreur de numérisation ?
 
 TEST: __ocr__ des verres luisent sur {{i}} le bureau blanc.
@@ -16020,7 +16021,7 @@ TEST: les quelque 12 000 stations-service
 
 ## Celui, celle, ceux, celles
 __gn_celui__
-    celui  @:¬:(?:G|W|m:[si])
+    celui  @:¬:(?:G|W|P|m:[si])
         <<- /gn/ morph(\-1, ":A.*:f") --1>> =suggMasSing(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au masculin singulier.
         <<- /gn/ __else__ and morph(\-1, ":A.*:p") -2>> =suggMasSing(\-1)                   # Accord avec “\1” : cet adjectif devrait être au masculin singulier.
 
@@ -16030,7 +16031,7 @@ TEST: celui pris par surprise sera abattu
 
 
 __gn_celle__
-    celle  @:¬:(?:G|W|f:[si])
+    celle  @:¬:(?:G|W|P|f:[si])
         <<- /gn/ morph(\-1, ":A.*:m") --1>> =suggFemSing(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au féminin singulier.
         <<- /gn/ __else__ and morph(\-1, ":A.*:p") -2>> =suggFemSing(\-1)                   # Accord avec “\1” : cet adjectif devrait être au féminin singulier.
 
@@ -16040,17 +16041,18 @@ TEST: celle prise par surprise sera abattue
 
 
 __gn_ceux__
-    ceux  @:¬:(?:G|W|m:[pi])
+    ceux  @:¬:(?:G|W|P|m:[pi])
         <<- /gn/ morph(\-1, ":A.*:f") --1>> =suggMasPlur(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au masculin pluriel.
         <<- /gn/ __else__ and morph(\-1, ":A.*:s") -2>> =suggMasPlur(\-1)                   # Accord avec “\1” : cet adjectif devrait être au masculin pluriel.
 
 TEST: ceux {{envoyé}} là-bas tombera dans un piège
 TEST: ceux {{perdues}} auront une pénalité
 TEST: ceux perdus dans la neige
+TEST: l’approche conseillée, c’est-à-dire celle consistant à réaliser un diagnostic
 
 
 __gn_celles__
-    celles  @:¬:(?:G|W|f:[pi])
+    celles  @:¬:(?:G|W|P|f:[pi])
         <<- /gn/ morph(\-1, ":A.*:m") --1>> =suggFemPlur(\-1, True)                         # Accord avec “\1” : cet adjectif devrait être au féminin pluriel.
         <<- /gn/ __else__ and morph(\-1, ":A.*:s") -2>> =suggFemPlur(\-1)                   # Accord avec “\1” : cet adjectif devrait être au féminin pluriel.
 
