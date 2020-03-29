@@ -11,7 +11,6 @@ import helpers
 def build (sLang, dVars):
     "complementary build launched from make.py"
     createWebExtension(sLang, dVars)
-    createThunderbirdExtension(sLang, dVars)
     createMailExtension(sLang, dVars)
     createNodeJSPackage(sLang)
 
@@ -58,21 +57,6 @@ def createMailExtension (sLang, dVars):
     file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
     spExtension = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
     file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
-
-
-def createThunderbirdExtension (sLang, dVars):
-    "create extension for Thunderbird (as XUL addon)"
-    print("Building extension for Thunderbird")
-    spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.xpi'
-    hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
-    _copyGrammalecteJSPackageInZipFile(hZip, sLang)
-    for spf in ["LICENSE.txt", "LICENSE.fr.txt"]:
-        hZip.write(spf)
-    dVars = _createOptionsForThunderbird(dVars)
-    helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/tb", "", dVars, True)
-    hZip.close()
-    #spDebugProfile = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
-    #helpers.unzip(spfZip, spDebugProfile)
 
 
 def _createOptionsForThunderbird (dVars):
