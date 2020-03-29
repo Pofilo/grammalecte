@@ -9336,7 +9336,11 @@ __conf_peu_peut_peux!6__
     peux-a-peut
         <<- /conf/ ->> peu à peu                                            # Confusion : « peu à peu » ou « petit à petit ».
 
-    [peux|peut] [importent|importe]
+    !! peu ou prou ¡¡
+    [peux|peut|peu] [ou|où] [>proue|prou]
+        <<- /conf/ ->> peu ou prou                                          # Confusion. Locution adverbiale “peu ou prou”.|https://fr.wiktionary.org/wiki/peu_ou_prou
+
+    [peux|peut] [importent|importe+s]
         <<- /conf/ morph(<1, ":C|<start>") -1>> peu                         # Confusion : « \1 » est une conjugaison de “pouvoir”, utilisez “peu” pour dire “pas beaucoup”.
 
     [très|trop|de|quelque|pour|à] [peux|peut]
@@ -9362,6 +9366,7 @@ TEST: {{peu}} rarement y arriver.
 TEST: Il est un {{peut}} comme une forêt
 TEST: cela ne se {{peu}}.
 TEST: des bâtisses {{peu a peu}} abandonnées.
+TEST: voilà {{peut ou proue}} ce qu’on entend
 TEST: aucun pays – ou très peu alors – n’a réussi à faire ça de façon durable
 TEST: Mais {{peut}} importe le rang.
 TEST: homme de {{peut}} de foi, écoute le vent.
@@ -10784,6 +10789,17 @@ __maj_Assemblée_nationale__
 TEST: l’{{assemblée}} nationale                                         ->> Assemblée
 
 
+# Minstères (idée de dominiko)
+__maj_ministères__
+    [>ministre|>ministère] des [affaires|anciens|armées|droits|finances|postes|solidarités|sports|sciences]
+    [>ministre|>ministère] du [bonheur|budget|commerce|logement|travail]
+    [>ministre|>ministère] de l’ [action|agriculture|aménagement|écologie|économie|éducation|emploi|énergie|enseignement|environnement|équipement|industrie|intérieur|outre-mer|urbanisme]
+    [>ministre|>ministère] de la [culture|cohésion|coopération|défense|guerre|jeunesse|justice|mer|recherche|santé|solidarité|transition|ville]
+        <<- /maj/ \-1.islower() --1>> =\-1.title()                  # Majuscule manquante. Les désignations des ministères requièrent une majuscule.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?id=1289
+
+TEST: Le ministre du {{commerce}}                                                   ->> Commerce
+
+
 # Les États
 __maj_État__
     en fonction de l’ état
@@ -11594,7 +11610,7 @@ __purge_locutions__
     à armes égales
     à aucun [moment|prix]
     à autre chose
-    à ?[si|très|trop]¿ bas [cout|coût|prix]
+    à ?[si|très|trop]¿ bas [bruit|cout|coût|prix]
     à bâtons rompus
     à beaucoup près
     à belles dents
@@ -13454,6 +13470,7 @@ __simplication_substantifs__
     >fille au pair
     fils à [papa|maman]
     fils [de|d’] pute
+    >figure de proue
     >fleuve à sec
     >flocon [de|d’] neige ?électronique¿
     >force d’ assaut
@@ -14516,6 +14533,7 @@ __purge_vite__
 
 __purge_locutions_verbales__
     >aller bon train
+    >aller de l’ avant
     >armer jusqu’ aux dents
     >arriver à [destination|échéance]
     >arriver à point nommé
@@ -18157,9 +18175,13 @@ __conf_faim_fin__
     >prendre >faim
         <<- /conf/ -2>> fin                                                 # Confusion. Écrivez “prendre fin” pour évoquer ce qui se termine.
 
+    >parvenir [a|à] [mes|tes|ses|ces|nos|vos|leur|leurs] >faim
+        <<- /conf/ --1>> fins                                               # Confusion. Locution “parvenir à ses fins”, c’est-à-dire aboutir à la finalité désirée.
+
 TEST: avec ça, cet emmerdeur restera sur sa {{fin}}
 TEST: Elle avait {{fin}}
 TEST: Ton ère va bientôt prendre {{faim}}.
+TEST: elle parvient toujours à ses {{faims}}.
 
 
 # faite / faîte / fait
@@ -22063,14 +22085,14 @@ __immu_les_avoir_fait_vinfi__
 __ppas_pronom_avoir__
     [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-            and value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
             and \-1.islower() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         --1>> =suggVerbPpas(\-1, ":m:s")
         # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
     [je|j’|tu|il|elle|on|ils|elles|iel|iels|et|qui|ça|cela|ceci|celui-ci|celui-là|celle-ci|celle-là|ceux-ci|ceux-là|celles-ci|celles-là]  ?[ne|n’]¿  en  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-            and value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
             and \-1.islower() and morph(\-1, ":(?:[123][sp])", ":[GWQ]")
         --1>> =suggVerbPpas(\-1, ":m:s")
         # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -22090,14 +22112,24 @@ TEST: qui ont {{refuse}} de se soumettre                                        
 TEST: il a {{suffit}} de le pousser un peu                                          ->> suffi
 TEST: il en a toujours {{était}} ainsi                                              ->> été
 TEST: celle-ci avait {{tenue}} compte de notre passé                                ->> tenu
+TEST: elle sait que j’ai {{agis}} comme il le fallait                               ->> agi
+TEST: que j’ai {{prit}} le temps de le lui expliquer                                ->> pris
 TEST: Ils avaient barre sur lui.
 
 
 __ppas_nous_vous_avoir__
-    [nous|vous]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
+    nous  ?[ne|n’]¿  ?[lui|leur]¿  [avons|avions|eûmes|aurons|aurions|ayons|eussions]  *WORD
         <<- /ppas/ morph(\1, ":Os")
             and not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-            and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
+            and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
+        --1>> =suggVerbPpas(\-1, ":m:s")
+        # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
+
+    vous  ?[ne|n’]¿  ?[lui|leur]¿  [avez|aviez|eûtes|aurez|auriez|ayez|eussiez]  *WORD
+        <<- /ppas/ morph(\1, ":Os")
+            and not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
             and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
         --1>> =suggVerbPpas(\-1, ":m:s")
         # Ce verbe devrait être un participe passé au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -22107,13 +22139,14 @@ TEST: mais nous avons {{était}} surpris par cette annonce.
 TEST: Nous lui avons {{donnée}} un cadeau.
 TEST: Vous lui avez {{donnés}} un cadeau.
 TEST: nous avions quelque peu {{tempérés}} leurs ardeurs
+TEST: que vous eussiez {{donnés}} des gages de votre fidélité
 TEST: D’un côté, le modèle occidental, […], nous a libérés de […]
 
 
 __ppas_det_nom_avoir__
     [un|une|des|le|la|l’|les|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|certains|certaines|quelques|plusieurs]  *WORD  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  *WORD
         <<- /ppas/ not value(\-1, "|barre|confiance|charge|cours|envie|peine|prise|crainte|cure|affaire|hâte|force|recours|")
-            and value(<1, "|<start>|,|comme|comment|et|lorsque|mais|où|ou|quand|qui|pourquoi|puisque|quoique|si|sinon|")
+            and (value(<1, "|<start>|,|comme|comment|et|lorsque|lorsqu’|mais|où|ou|quand|qui|pourquoi|puisque|puisqu’|quoique|quoiqu’|si|s’|sinon|") or (value(<1, "|que|qu’|") and morph(<2, ":V|<start>", ":[NA]")))
             and morph(\2, ":[NA]", ":G") and not \-1.isupper() and morph(\-1, ":(?:[123][sp]|Y|Q.*:[fp])", ":(?:G|W|Q.*:m:[si])")
             and not (\-2 == "avions" and morph(\-1, ":3[sp]"))
         --1>> =suggVerbPpas(\-1, ":m:s")
