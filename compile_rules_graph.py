@@ -548,14 +548,10 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     print("  processing rules...")
     initProcessPoolExecutor()
     fStartTimer = time.time()
-    nRule = 0
-    dAllActions = {}
-    sPyCallables = ""
-    sJSCallables = ""
+    # build graph
     lResult = []
-    # buid graph
+    nRule = 0
     for sGraphName, lRuleLine in dAllGraph.items():
-        #dGraph, dActions, sPy, sJS = processing(sGraphName, dGraphCode[sGraphName], sLang, lRuleLine, dDef, dDecl, dOptPriority)
         nRule += len(lRuleLine)
         try:
             xFuture = xProcessPoolExecutor.submit(processing, sGraphName, dGraphCode[sGraphName], sLang, lRuleLine, dDef, dDecl, dOptPriority)
@@ -565,13 +561,12 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
         except concurrent.futures.BrokenExecutor:
             return "Executor broken. The server failed."
     # merging results
-    xProcessPoolExecutor.shutdown(wait=True)
+    xProcessPoolExecutor.shutdown(wait=True) # waiting that everything is finished
+    dAllActions = {}
+    sPyCallables = ""
+    sJSCallables = ""
     for xFuture in lResult:
         sGraphName, dGraph, dActions, sPy, sJS = xFuture.result()
-        #print(dGraph)
-        #for k, v in dActions.items():
-        #    print(k, ":", v)
-        #input()
         dAllGraph[sGraphName] = dGraph
         dAllActions.update(dActions)
         sPyCallables += sPy
