@@ -38,10 +38,11 @@ contexts:
       scope: bookmark
 
     # Graph
-    - match: '^@@@@GRAPH: *(\w+) .*$'
+    - match: '^@@@@GRAPH: *(\w+) *\| *(\w+) .*$'
       scope: graphline
       captures:
         1: string.graphname
+        2: string.graphcode
 
     - match: '^@@@@(?:END_GRAPH .*$| *)'
       scope: graphline
