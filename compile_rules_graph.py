@@ -6,13 +6,31 @@ Create a Direct Acyclic Rule Graphs (DARGs)
 import re
 import os
 import time
+import concurrent.futures
 
 import darg
 import compile_rules_js_convert as jsconv
 
 
+#### PROCESS POOL EXECUTOR ####
+xProcessPoolExecutor = None
+
+def initProcessPoolExecutor (nMultiCPU=None):
+    "process pool executor initialisation"
+    global xProcessPoolExecutor
+    if xProcessPoolExecutor:
+        # we shutdown the ProcessPoolExecutor which may have been launched previously
+        print("  ProcessPoolExecutor shutdown.")
+        xProcessPoolExecutor.shutdown(wait=False)
+    nMaxCPU = max(os.cpu_count()-1, 1)
+    if nMultiCPU is None or not (1 <= nMultiCPU <= nMaxCPU):
+        nMultiCPU = nMaxCPU
+    print("  CPU processes used for workers: ", nMultiCPU)
+    xProcessPoolExecutor = concurrent.futures.ProcessPoolExecutor(max_workers=nMultiCPU)
+
+
 def rewriteCode (sCode):
-    "convert simple rule syntax to a string of Python code"
+    "convert simple code syntax to a string of Python code"
     if sCode[0:1] == "=":
         sCode = sCode[1:]
     sCode = sCode.replace("__also__", "bCondMemo")
@@ -72,7 +90,10 @@ def checkIfThereIsCode (sText, sActionId):
 
 class GraphBuilder:
 
-    def __init__ (self, dDef, dDecl, dOptPriority):
+    def __init__ (self, sGraphName, sGraphCode, sLang, dDef, dDecl, dOptPriority):
+        self.sGraphName = sGraphName
+        self.sGraphCode = sGraphCode
+        self.sLang = sLang
         self.dDef = dDef
         self.dDecl = dDecl
         self.dOptPriority = dOptPriority
@@ -158,10 +179,10 @@ class GraphBuilder:
                 lToken.append(sToken)
         return lToken
 
-    def createGraphAndActions (self, sGraphName, lRuleLine, sLang):
+    def createGraphAndActions (self, lRuleLine):
         "create a graph as a dictionary with <lRuleLine>"
         fStartTimer = time.time()
-        print("{:>8,} rules in {:<24} ".format(len(lRuleLine), "<"+sGraphName+">"), end="")
+        print("{:>8,} rules in {:<30} ".format(len(lRuleLine), "<"+self.sGraphName+"|"+self.sGraphCode+">"), end="")
         lPreparedRule = []
         for i, sRuleName, sTokenLine, iActionBlock, lActions, nPriority in lRuleLine:
             for aRule in self.createRule(i, sRuleName, sTokenLine, iActionBlock, lActions, nPriority):
@@ -173,16 +194,17 @@ class GraphBuilder:
                 if e[-2] == "##2211":
                     print(e)
         # Graph creation
-        oDARG = darg.DARG(lPreparedRule, sLang)
+        oDARG = darg.DARG(lPreparedRule, self.sLang)
         dGraph = oDARG.createGraph()
         print(oDARG, end="")
         # debugging
         if False:
-            print("\nGRAPH:", sGraphName)
+            print("\nGRAPH:", self.sGraphName)
             for k, v in dGraph.items():
                 print(k, "\t", v)
         print("\tin {:>8.2f} s".format(time.time()-fStartTimer))
-        return dGraph
+        sPyCallables, sJSCallables = self.createCallables()
+        return dGraph, self.dActions, sPyCallables, sJSCallables
 
     def createRule (self, iLine, sRuleName, sTokenLine, iActionBlock, lActions, nPriority):
         "generator: create rule as list"
@@ -215,7 +237,7 @@ class GraphBuilder:
                 for iAction, (iActionLine, sAction) in enumerate(lActions):
                     sAction = sAction.strip()
                     if sAction:
-                        sActionId = sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
+                        sActionId = self.sGraphCode + "__" + sRuleName + "__b" + str(iActionBlock) + "_a" + str(iAction)
                         aAction = self.createAction(sActionId, sAction, nPriority, len(lToken), dPos, iActionLine)
                         if aAction:
                             sActionName = self.storeAction(sActionId, aAction)
@@ -393,11 +415,10 @@ class GraphBuilder:
             self.dFuncName[sType] = {}
         if sCode not in self.dFuncName[sType]:
             self.dFuncName[sType][sCode] = len(self.dFuncName[sType])+1
-        return "_g_" + sType + "_" + str(self.dFuncName[sType][sCode])
+        return "_g_" + sType + "_" + self.sGraphCode + "_" + str(self.dFuncName[sType][sCode])
 
     def createCallables (self):
         "return callables for Python and JavaScript"
-        print("  creating callables for graph rules...")
         sPyCallables = ""
         sJSCallables = ""
         for sFuncName, sReturn in self.dFunctions.items():
@@ -424,6 +445,13 @@ class GraphBuilder:
         return sPyCallables, sJSCallables
 
 
+def processing (sGraphName, sGraphCode, sLang, lRuleLine, dDef, dDecl, dOptPriority):
+    "to be run in a separate process"
+    oGraphBuilder = GraphBuilder(sGraphName, sGraphCode, sLang, dDef, dDecl, dOptPriority)
+    dGraph, dActions, sPy, sJS = oGraphBuilder.createGraphAndActions(lRuleLine)
+    return (sGraphName, dGraph, dActions, sPy, sJS)
+
+
 def make (lRule, sLang, dDef, dDecl, dOptPriority):
     "compile rules, returns a dictionary of values"
     # for clarity purpose, don’t create any file here
@@ -435,6 +463,7 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
     bActionBlock = False
     nPriority = -1
     dAllGraph = {}
+    dGraphCode = {}
     sGraphName = ""
     iActionBlock = 0
     aRuleName = set()
@@ -447,13 +476,15 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
             exit()
         elif sLine.startswith("@@@@GRAPH: "):
             # rules graph call
-            m = re.match(r"@@@@GRAPH: *(\w+)", sLine.strip())
+            m = re.match(r"@@@@GRAPH: *(\w+) *[|] *(\w+)", sLine.strip())
             if m:
                 sGraphName = m.group(1)
-                if sGraphName in dAllGraph:
-                    print("Error at line " + iLine + ". Graph name <" + sGraphName + "> already exists.")
+                sGraphCode = m.group(2)
+                if sGraphName in dAllGraph or sGraphCode in dGraphCode:
+                    print("Error at line " + iLine + ". Graph name <" + sGraphName + "> or graph code <" + sGraphCode + "> already exists.")
                     exit()
                 dAllGraph[sGraphName] = []
+                dGraphCode[sGraphName] = sGraphCode
             else:
                 print("Error. Graph name not found at line", iLine)
                 exit()
@@ -515,25 +546,45 @@ def make (lRule, sLang, dDef, dDecl, dOptPriority):
 
     # processing rules
     print("  processing rules...")
+    initProcessPoolExecutor()
     fStartTimer = time.time()
     nRule = 0
-    oGraphBuilder = GraphBuilder(dDef, dDecl, dOptPriority)
+    dAllActions = {}
+    sPyCallables = ""
+    sJSCallables = ""
+    lResult = []
+    # buid graph
     for sGraphName, lRuleLine in dAllGraph.items():
+        #dGraph, dActions, sPy, sJS = processing(sGraphName, dGraphCode[sGraphName], sLang, lRuleLine, dDef, dDecl, dOptPriority)
         nRule += len(lRuleLine)
-        dGraph = oGraphBuilder.createGraphAndActions(sGraphName, lRuleLine, sLang)
+        try:
+            xFuture = xProcessPoolExecutor.submit(processing, sGraphName, dGraphCode[sGraphName], sLang, lRuleLine, dDef, dDecl, dOptPriority)
+            lResult.append(xFuture)
+        except (concurrent.futures.TimeoutError, concurrent.futures.CancelledError):
+            return "Analysis aborted (time out or cancelled)"
+        except concurrent.futures.BrokenExecutor:
+            return "Executor broken. The server failed."
+    # merging results
+    xProcessPoolExecutor.shutdown(wait=True)
+    for xFuture in lResult:
+        sGraphName, dGraph, dActions, sPy, sJS = xFuture.result()
+        #print(dGraph)
+        #for k, v in dActions.items():
+        #    print(k, ":", v)
+        #input()
         dAllGraph[sGraphName] = dGraph
-    print("  Total: ", nRule, "rules, ", len(oGraphBuilder.dActions), "actions")
+        dAllActions.update(dActions)
+        sPyCallables += sPy
+        sJSCallables += sJS
+    print("  Total: ", nRule, "rules, ", len(dAllActions), "actions")
     print("  Build time: {:.2f} s".format(time.time() - fStartTimer))
-
-    sPyCallables, sJSCallables = oGraphBuilder.createCallables()
-    #print(sPyCallables)
 
     return {
         # the graphs describe paths of tokens to actions which eventually execute callables
         "rules_graphs": str(dAllGraph),
         "rules_graphsJS": str(dAllGraph),
-        "rules_actions": str(oGraphBuilder.dActions),
-        "rules_actionsJS": jsconv.pyActionsToString(oGraphBuilder.dActions),
+        "rules_actions": str(dAllActions),
+        "rules_actionsJS": jsconv.pyActionsToString(dAllActions),
         "graph_callables": sPyCallables,
         "graph_callablesJS": sJSCallables
     }
