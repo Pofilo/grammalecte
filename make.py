@@ -370,6 +370,9 @@ def buildDictionary (dVars, sType, bJavaScript=False):
 def main ():
     "build Grammalecte with requested options"
     print("Python: " + sys.version)
+    if sys.version < "3.7":
+        print("Python 3.7+ required")
+        return
     xParser = argparse.ArgumentParser()
     xParser.add_argument("lang", type=str, nargs='+', help="lang project to generate (name of folder in /lang)")
     xParser.add_argument("-uc", "--use_cache", help="use data cache instead of rebuilding rules", action="store_true")
