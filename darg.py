@@ -1,5 +1,3 @@
-#!python3
-
 """
 RULE GRAPH BUILDER
 """
@@ -15,8 +13,6 @@ class DARG:
     # This code is inspired from Steve Hanov’s DAWG, 2011. (http://stevehanov.ca/blog/index.php?id=115)
 
     def __init__ (self, lRule, sLangCode):
-        print(" > DARG", end="")
-
         # Preparing DARG
         self.sLangCode = sLangCode
         self.nRule = len(lRule)
@@ -35,7 +31,6 @@ class DARG:
         self.finish()
         self.countNodes()
         self.countArcs()
-        self.displayInfo()
 
     # BUILD DARG
     def insert (self, aRule):
@@ -98,9 +93,9 @@ class DARG:
         for oNode in self.lMinimizedNodes:
             self.nArc += len(oNode.dArcs)
 
-    def displayInfo (self):
+    def __str__ (self):
         "display informations about the rule graph"
-        print(": {:>10,} rules,  {:>10,} nodes,  {:>10,} arcs".format(self.nRule, self.nNode, self.nArc))
+        return " > DARG: {:>10,} rules,  {:>10,} nodes,  {:>10,} arcs".format(self.nRule, self.nNode, self.nArc)
 
     def createGraph (self):
         "create the graph as a dictionary"
