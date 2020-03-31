@@ -4711,19 +4711,30 @@ __virg_dialogue_avant_nom_propre__
 TEST: {{Oublie-les}} Clara.
 TEST: viens et {{donne-le}} Paul.
 TEST: {{donne-le-moi}} Camille.
+TEST: {{écoute-la}} Élodie
 TEST: donne-moi Alice.
 TEST: Tape-toi Patrick.
 
 
 __virg_après_verbe_COD__
     [le|la|l’|les]  $:Y  $:M
-        <<- /virg/ -2>> \2,                                                                         # Une virgule est probablement souhaitable.
+        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "que")
+        -2>> \2,                                                # Une virgule est probablement souhaitable.
+
+    [le|la|l’|les]  *WORD  ?[cher|chère]¿  @:M[12]  <end>
+        <<- /virg/ morph(\2, ":[123][sp]", ">appeler/|:[NA]") and not value(<1, "|que|qu’|")
+            and not (value(<1, "|ne|n’|") and value(<2, "|que|qu’|"))
+        -2>> \2,                                                # Si “\-2” est une personne apostrophée, alors il faut mettre le nom en incise.|http://bdl.oqlf.gouv.qc.ca/bdl/gabarit_bdl.asp?Th=2&t1=&id=3412
 
 TEST: Tu vas les {{donner}} Rachel.
 TEST: Il va la {{tuer}} Paul.
+TEST: je le {{sais}} chère Paula
+TEST: Ma fille, je vais l’appeler Deirdre.
 TEST: Cependant les promesses n’engagent que ceux qui les croient, comme aimait à le dire Jacques Chirac.
 TEST: Cependant les promesses n’engagent que ceux qui les croient, comme s’évertuait à le dire Jacques Chirac.
 TEST: Avancez comme sait le faire Patrick.
+TEST: plus délirant encore que ne l’imaginait Marie.
+TEST: moins corrompu que ne pouvait le croire Marie.
 
 
 
@@ -12643,6 +12654,7 @@ __purge_locutions__
     quoi qu’ il [arrive|arrivât|advienne|advînt]
     quoi qu’ il en [coûte|coûtât|coute|coutât]
     sans ?grand¿ succès
+    sans [déconner|tarder]
     sans [ambages|arrêt|cesse|conteste|doute|encombre|encombres|fin|relâche|répit|trêve|vergogne]
     sans [grande|grosse] difficulté ?[apparente|aucune|financière|majeure|particulière]¿
     sans aucun doute
@@ -12677,8 +12689,6 @@ __purge_locutions__
     sans [que|qu’] [ils|elles] [le|l’] [sachent|sussent]
     sans queue ni tête
     sans raison apparente
-    sans répit
-    sans tarder
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer de respect
     sans y [parvenir|réussir|réfléchir|songer|penser]
     sans y [réfléchir|songer|penser] à [deux|2] fois
@@ -12689,7 +12699,8 @@ __purge_locutions__
     selon toute vraisemblance
     sens dessus dessous
     >seul à >seul
-    s’ il le [faut|fallait|faudra|faudrait]
+    s’ il le [faut|fallait|fallut|faudra|faudrait]
+    s’ il l’ [a|avait|eut|aura|aurait] fallu
     si [bas|haut|longtemps|nécessaire|possible|soudain]
     si [cela|ça|ceci] ne tenait qu’ à [moi|toi|lui|eux|elle|elles|nous|vous|iel|iels]
     si besoin est
@@ -13682,6 +13693,7 @@ __simplication_substantifs__
     >train à grande vitesse
     >traitement [de|d’] faveur
     >transport en commun
+    >travail d’ intérêt général
     >trou à >rat
     >trouble à l’ ordre public
     >t-shirt sans >manche
