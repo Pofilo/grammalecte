@@ -371,7 +371,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             }
         }
         else {
-            xNodeErr.className = "grammalecte_spellerror";
+            if (sUnderlined.search(/^[A-ZÀ-ÖØ-ßŒ][a-zà-öø-ÿﬀ-ﬆ]/) !== -1) {
+                xNodeErr.className = "grammalecte_maybe_spellerror";
+            } else {
+                xNodeErr.className = "grammalecte_spellerror";
+            }
         }
         return xNodeErr;
     }
