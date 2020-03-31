@@ -9,7 +9,7 @@ const Ci = Components.interfaces;
 //const { require } = Cu.import("resource://gre/modules/commonjs/toolkit/require.js", {});
 
 const { BasePromiseWorker } = ChromeUtils.import('resource://gre/modules/PromiseWorker.jsm', {});
-const prefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
+const xGrammalectePrefs = Cc["@mozilla.org/preferences-service;1"].getService(Ci.nsIPrefService).getBranch("extensions.grammarchecker.");
 
 //const text = require("resource://grammalecte/text.js");
 //const tf = require("resource://grammalecte/fr/textformatter.js");
@@ -39,20 +39,20 @@ var oGrammarChecker = {
             console.log('Loading Grammalecte');
             this.xGCEWorker = new BasePromiseWorker('chrome://promiseworker/content/gce_worker.js');
             let that = this;
-            let xPromise = this.xGCEWorker.post('loadGrammarChecker', [prefs.getCharPref("sGCOptions"), "Thunderbird"]);
+            let xPromise = this.xGCEWorker.post('loadGrammarChecker', [xGrammalectePrefs.getCharPref("sGCOptions"), "Thunderbird"]);
             xPromise.then(
                 function (aVal) {
                     console.log(aVal);
-                    prefs.setCharPref("sGCOptions", aVal);
+                    xGrammalectePrefs.setCharPref("sGCOptions", aVal);
                     // spelling dictionary
-                    if (prefs.getCharPref("sMainDicName")) {
-                        let sMainDicName = prefs.getCharPref("sMainDicName");
+                    if (xGrammalectePrefs.getCharPref("sMainDicName")) {
+                        let sMainDicName = xGrammalectePrefs.getCharPref("sMainDicName");
                         if (sMainDicName == "fr-classic.json" || sMainDicName == "fr-reform.json") {
                             that.xGCEWorker.post("setDictionary", ["main", sMainDicName]);
                         }
                     }
                     // personal dictionary
-                    if (prefs.getBoolPref("bPersonalDictionary")) {
+                    if (xGrammalectePrefs.getBoolPref("bPersonalDictionary")) {
                         let sDicJSON = oFileHandler.loadFile("fr.personal.json");
                         if (sDicJSON) {
                             that.xGCEWorker.post('setDictionary', ["personal", sDicJSON]);
@@ -99,11 +99,11 @@ var oGrammarChecker = {
     },
     setOptions: function () {
         console.log('Set options');
-        let xPromise = this.xGCEWorker.post('setOptions', [prefs.getCharPref("sGCOptions")]);
+        let xPromise = this.xGCEWorker.post('setOptions', [xGrammalectePrefs.getCharPref("sGCOptions")]);
         xPromise.then(
             function (aVal) {
                 console.log(aVal);
-                prefs.setCharPref("sGCOptions", aVal);
+                xGrammalectePrefs.setCharPref("sGCOptions", aVal);
             },
             function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
@@ -115,7 +115,7 @@ var oGrammarChecker = {
         xPromise.then(
             function (aVal) {
                 console.log(aVal);
-                prefs.setCharPref("sGCOptions", aVal);
+                xGrammalectePrefs.setCharPref("sGCOptions", aVal);
             },
             function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
@@ -446,7 +446,7 @@ var oGrammarChecker = {
         xPromise.then(
             function (aVal) {
                 console.log(aVal);
-                prefs.setCharPref("sGCDefaultOptions", aVal);
+                xGrammalectePrefs.setCharPref("sGCDefaultOptions", aVal);
             },
             function (aReason) { console.log('Promise rejected', aReason); }
         ).catch(
@@ -487,7 +487,7 @@ var oTextFormatter = {
         try {
             this.closePanel();
             this.listen();
-            let sTFOptions = prefs.getCharPref("sTFOptions");
+            let sTFOptions = xGrammalectePrefs.getCharPref("sTFOptions");
             if (sTFOptions !== "") {
                 this.setOptionsInPanel(JSON.parse(sTFOptions));
                 this.resetProgressBar();
@@ -531,7 +531,7 @@ var oTextFormatter = {
             oOptions[xNode.id] = xNode.checked;
         }
         //console.log("save options: " + JSON.stringify(oOptions));
-        prefs.setCharPref("sTFOptions", JSON.stringify(oOptions));
+        xGrammalectePrefs.setCharPref("sTFOptions", JSON.stringify(oOptions));
     },
     setOptionsInPanel: function (oOptions) {
         for (let sOptName in oOptions) {
