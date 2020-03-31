@@ -344,7 +344,6 @@ browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugue
 browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
 // Rescan page
 browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });
-browser.contextMenus.create({ id: "rescanPage",                 title: "Rechercher à nouveau les zones de texte",   contexts: ["editable"] });
 
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
@@ -375,11 +374,6 @@ browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {
             break;
         case "dictionaries":
             openDictionaries();
-            break;
-        // rescan page
-        case "rescanPage":
-            let xPort = dConnx.get(xTab.id);
-            xPort.postMessage({sActionDone: "rescanPage"});
             break;
         default:
             console.log("[Background] Unknown menu id: " + xInfo.menuItemId);

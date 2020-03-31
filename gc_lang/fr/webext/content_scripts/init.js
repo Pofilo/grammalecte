@@ -420,10 +420,6 @@ const oGrammalecteBackgroundPort = {
                         oGrammalecte.showMessage("Erreur. Le cadre sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
                     }
                     break;
-                // rescan page command
-                case "rescanPage":
-                    oGrammalecte.rescanPage();
-                    break;
                 default:
                     console.log("[Content script] Unknown command: " + sActionDone);
             }
