@@ -7493,7 +7493,7 @@ __conf_ça_çà_sa!7__
     ça  @:[NAQ].*:f¬:(?:G|P|[123][sp])|>seul/
         <<- /conf/ not morph(<1, ">(?:appeler|considérer|trouver)/") -1>> sa    # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
-    sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque)/|:[NAQ].*:f
+    sa  @:G¬>(?:tr(?:ès|op)|peu|bien|plus|moins|toute|presque|non)/|:[NAQ].*:f
         <<- /conf/ not (value(\2, "|ou|") and value(>1, "|son|ses|")) -1>> ça   # Confusion : “sa” (sa maison, sa passion) ≠ “ça” (ça vient, ça heurte).
 
     çà
@@ -7529,6 +7529,7 @@ TEST: avec sa presque belle-mère
 TEST: sa toute nouvelle application de synchronisation de fichiers
 TEST: communiquer avec sa ou son partenaire.
 TEST: Je trouve ça logique.
+TEST: le tout accompagné de sa non moins spectaculaire signature.
 
 
 # car / quart
@@ -11558,7 +11559,8 @@ __purge_prépositions_qqn__
     entre [nous|vous|eux|elles] ?[deux|trois|quatre|cinq|six|sept|huit|neuf|dix]¿
         <<- ~>> *
 
-    ni   [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous] ?,¿ ni [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous]
+    ni   [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous] ?,¿
+        || ni [après|avec|chez|contre|de|d’|derrière|devant|envers|malgré|pour|sans|sous|sur] [moi|toi|lui|elle|elles|iel|iels|eux|nous|vous]
         <<- ~>> *
 
     parmi [nous|vous] ?autres¿
@@ -11576,6 +11578,7 @@ __purge_prépositions_qqn__
 
     jusqu’ à    chez
     de          chez
+    par         chez
         <<- ~1:-2>> *
 
 TODO: comme
@@ -14155,7 +14158,7 @@ __purge_avant_adjectifs_adverbes__
         <<- morph(\1, ":V") ~2:3>> *
 
     bien sûr
-        <<- not morph(>1, "|de|d’|") ~>> *
+        <<- not value(>1, "|de|d’|") ~>> *
 
     à peu près   @:[AW]
         <<- ~1:3>> *
@@ -14915,6 +14918,7 @@ TEST: Ce prénom qui fut d’ailleurs à plusieurs reprises réutilisé.
 TEST: « Ça vient ! »
 TEST: Voilà une bonne chose de réglée !
 TEST: responsable de l’Ordre des pharmaciens dans la région Grand Est
+TEST: D’autres nombreuses actions sont également bien sûr impératives.
 
 
 @@@@
