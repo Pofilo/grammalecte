@@ -25,7 +25,7 @@ class Editor {
                     && (xNode.nodeType == Node.TEXT_NODE || (xNode.nodeType == Node.ELEMENT_NODE && !xNode.textContent.startsWith(">")))
                     && xNode.textContent !== "") {
                     if (xNode.tagName === undefined) {
-                        if (!prefs.getBoolPref("bCheckSignature") && xNode.textContent.startsWith("-- ")) {
+                        if (!xGrammalectePrefs.getBoolPref("bCheckSignature") && xNode.textContent.startsWith("-- ")) {
                             break;
                         }
                         yield xNode;
