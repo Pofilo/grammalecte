@@ -49,6 +49,7 @@ const oGrammalecte = {
     nButton: 0,
     lButton: [],
 
+    oPanelButton: null,
     oTFPanel: null,
     oGCPanel: null,
 
@@ -64,7 +65,15 @@ const oGrammalecte = {
 
     bAutoRefresh: true,
 
-    listenRightClick: function () {
+    listen: function () {
+        document.addEventListener("click", (xEvent) => {
+            //console.log("click", xEvent.target.id);
+            this.oPanelButton.examineNode(xEvent.target);
+        });
+        document.addEventListener("keyup", (xEvent) => {
+            //console.log("keyup", document.activeElement.id);
+            this.oPanelButton.examineNode(document.activeElement);
+        });
         // Node where a right click is done
         // Bug report: https://bugzilla.mozilla.org/show_bug.cgi?id=1325814
         document.addEventListener('contextmenu', (xEvent) => {
@@ -76,92 +85,11 @@ const oGrammalecte = {
         this.xRightClickedNode = null;
     },
 
-    createButtons: function () {
-        if (bChrome) {
-            browser.storage.local.get("ui_options", this._prepareButtons.bind(this));
-            return;
+    createButton: function () {
+        if (this.oPanelButton === null) {
+            this.oPanelButton = new GrammalecteButton();
+            this.oPanelButton.insertIntoPage();
         }
-        browser.storage.local.get("ui_options").then(this._prepareButtons.bind(this), showError);
-    },
-
-    _isEligibleNode: function (xNode) {
-        return (xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
-               && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false"))
-    },
-
-    _prepareButtons: function (oOptions) {
-        if (oOptions.hasOwnProperty("ui_options")) {
-            this.oOptions = oOptions.ui_options;
-            // textarea
-            if (this.oOptions  && this.oOptions.textarea) {
-                for (let xNode of document.getElementsByTagName("textarea")) {
-                    if (this._isEligibleNode(xNode)  &&  xNode.getAttribute("spellcheck") !== "false") {
-                        this.lButton.push(new GrammalecteButton(this.nButton, xNode));
-                        this.nButton += 1;
-                    }
-                }
-            }
-            // editable nodes
-            if (this.oOptions  &&  this.oOptions.editablenode) {
-                for (let xNode of document.querySelectorAll("[contenteditable]")) {
-                    if (this._isEligibleNode(xNode)) {
-                        this.lButton.push(new GrammalecteButton(this.nButton, xNode));
-                        this.nButton += 1;
-                    }
-                }
-            }
-        }
-    },
-
-    observePage: function () {
-        // When a textarea is added via jascript we add the buttons
-        let that = this;
-        this.xObserver = new MutationObserver(function (lMutations) {
-            lMutations.forEach(function (xMutation) {
-                if (that.oOptions) {
-                    for (let i = 0;  i < xMutation.addedNodes.length;  i++) {
-                        let xNode = xMutation.addedNodes[i];
-                        if (xNode.tagName == "TEXTAREA"  &&  that.oOptions.textarea  &&  xNode.getAttribute("spellcheck") !== "false" &&  that._isEligibleNode(xNode)) {
-                            oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
-                            oGrammalecte.nButton += 1;
-                        }
-                        /*else if (xNode.isContentEditable  &&  that.oOptions.editablenode  &&  that._isEligibleNode(xNode)) {
-                            // this makes Twitter crash when hitting backspace button
-                            oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xNode));
-                            oGrammalecte.nButton += 1;
-                        }*/
-                        else if (xNode.getElementsByTagName  &&  that.oOptions.textarea) {
-                            for (let xSubNode of xNode.getElementsByTagName("textarea")) {
-                                if (that._isEligibleNode(xSubNode)  &&  xSubNode.getAttribute("spellcheck") !== "false") {
-                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xSubNode));
-                                    oGrammalecte.nButton += 1;
-                                }
-                            }
-                        }
-                        /*else if (xNode.querySelectorAll  &&  that.oOptions.editablenode) {
-                            for (let xSubNode of xNode.querySelectorAll("[contenteditable]")) {
-                                if (that._isEligibleNode(xSubNode)) {
-                                    oGrammalecte.lButton.push(new GrammalecteButton(oGrammalecte.nButton, xSubNode));
-                                    oGrammalecte.nButton += 1;
-                                }
-                            }
-                        }*/
-                    }
-                }
-            });
-        });
-        this.xObserver.observe(document.body, { childList: true, subtree: true });
-    },
-
-    rescanPage: function () {
-        if (this.oTFPanel !== null) { this.oTFPanel.hide(); }
-        if (this.oGCPanel !== null) { this.oGCPanel.hide(); }
-        for (let oMenu of this.lButton) {
-            oMenu.deleteNodes();
-        }
-        this.lButton.length = 0; // to clear an array
-        this.listenRightClick();
-        this.createButtons();
     },
 
     createTFPanel: function () {
@@ -247,7 +175,7 @@ const oGrammalecte = {
         }
     },
 
-    getCaretPosition (xElement) {
+    getCaretPosition: function (xElement) {
         // JS awfulness again.
         // recepie from https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container
         let nCaretOffsetStart = 0;
@@ -266,7 +194,7 @@ const oGrammalecte = {
         // https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container/4812022
     },
 
-    setCaretPosition (xElement, nCaretOffsetStart, nCaretOffsetEnd) {
+    setCaretPosition: function (xElement, nCaretOffsetStart, nCaretOffsetEnd) {
         // JS awfulness again.
         // recipie from https://stackoverflow.com/questions/6249095/how-to-set-caretcursor-position-in-contenteditable-element-div
         let iChar = 0;
@@ -300,6 +228,20 @@ const oGrammalecte = {
         let xSelection = window.getSelection();
         xSelection.removeAllRanges();
         xSelection.addRange(xRange);
+    },
+
+    getElementCoord: function (xElem) {
+        // https://stackoverflow.com/questions/5598743/finding-elements-position-relative-to-the-document
+        let xBox = xElem.getBoundingClientRect();
+        let scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+        let scrollLeft = document.documentElement.scrollLeft || document.body.scrollLeft;
+        let clientTop = document.documentElement.clientTop || document.body.clientTop || 0;
+        let clientLeft = document.documentElement.clientLeft || document.body.clientLeft || 0;
+        let top  = xBox.top + scrollTop - clientTop;
+        let left = xBox.left + scrollLeft - clientLeft;
+        let bottom = xBox.bottom + scrollTop - clientTop;
+        let right = xBox.right + scrollLeft - clientLeft;
+        return { top: Math.round(top), left: Math.round(left), bottom: Math.round(bottom), right: Math.round(right) };
     }
 };
 
@@ -359,7 +301,7 @@ const oGrammalecteBackgroundPort = {
     parseFull: function (sText) {
         this.xConnect.postMessage({
             sCommand: "parseFull",
-            oParam: { sText: sTex, sCountry: "FR", bDebug: false, bContext: false },
+            oParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
             oInfo: {}
         });
     },
@@ -393,13 +335,12 @@ const oGrammalecteBackgroundPort = {
     */
     listen: function () {
         this.xConnect.onMessage.addListener(function (oMessage) {
-            let {sActionDone, result, oInfo, bEnd, bError} = oMessage;
+            let { sActionDone, result, oInfo, bEnd, bError } = oMessage;
             switch (sActionDone) {
                 case "init":
                     oGrammalecte.sExtensionUrl = oMessage.sUrl;
-                    oGrammalecte.listenRightClick();
-                    oGrammalecte.createButtons();
-                    oGrammalecte.observePage();
+                    oGrammalecte.listen();
+                    oGrammalecte.createButton();
                     break;
                 case "parseAndSpellcheck":
                     if (oInfo.sDestination == "__GrammalectePanel__") {
