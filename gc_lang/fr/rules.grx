@@ -198,7 +198,7 @@ OPTLABEL/gn:        Accords (genre et nombre)|Accords des noms et des adjectifs.
 OPTLABEL/verbs:     Verbes
 OPTLABEL/conj:      Conjugaisons|Accord des verbes avec leur sujet.
 OPTLABEL/infi:      Infinitif|Confusion entre l’infinitif et d’autres formes.
-OPTLABEL/imp:       Impératif|Vérifie notamment la deuxième personne du singulier (par exemple, les erreurs : « vas … », « prend … », « manges … »).
+OPTLABEL/imp:       Impératif|Vérifie notamment la deuxième personne du singulier (par exemple, les erreurs : « vas… », « prend… », « manges… »).
 OPTLABEL/inte:      Interrogatif|Vérifie les formes interrogatives et suggère de lier les pronoms personnels avec les verbes.
 OPTLABEL/ppas:      Participes passés, adjectifs
 OPTLABEL/vmode:     Modes verbaux
@@ -425,7 +425,7 @@ __<s>/typo(typo_espace_après_signe_ouvrant)__    "([\[(]) "  @@0 <<- ->> \1    
 __<s>/typo(typo_espace_avant_signe_fermant)__    " ([\])])"  <js> ([\]\)])</js>  @@1  <<- ->> \1    # Pas d’espace avant ce signe.
 
 TEST: c’est pas trop tôt {{( }}on a failli attendre).
-TEST: blabla … {{[ }}crochets]                                            ->> [
+TEST: blabla… {{[ }}crochets]                                             ->> [
 TEST: {{( }}parenthèses)                                                  ->> (
 TEST: c’est (enfin{{ )}} parti.
 TEST: voici des (parenthèses{{ )}}, n’est-ce pas ?                        ->> )
@@ -450,6 +450,13 @@ __<s>/typo(typo_point_collé_à_mot_suivant)__     [  ][.](?=\w)  <<- ->> ". |.
 
 TEST: Il a fini{{ .}} Va te faire foutre, connard.
 TEST: Merde{{ .}}Ça m’emmerde, ces trucs.
+
+
+# Trois points et espaces
+__<s>/typo(typo_3points_après_espace)__         \w+([  ]…)  @@$ <<- -1>> …                          # Pas d’espace avant le signe “…”.
+
+TEST: J’en ai marre{{ …}} c’est ça.                             ->> …
+TEST: ça va…
 
 
 # Virgules et espaces
@@ -25636,7 +25643,7 @@ TEST: Ces substances ont été, du moins amollies au point de conserver l’empr
 TEST: Cette irrationalité n’est pas si dramatique que semblent le penser les plus rationalistes.
 TEST: 4 SIEMENS
 TEST: Me Assis n’est pas ici.
-TEST: Quelle merde … puante.
+TEST: Quelle merde… puante.
 TEST: Pour savoir qui a tort, qui a raison.
 TEST: Ce matin, j’ai ES et c’est tout.
 TEST: Les étais posés au sol.
@@ -25884,7 +25891,7 @@ TEST: Ce furent les seules nouvelles de moi qui parvinrent.
 TEST: Par petits groupes, qui ne ralliaient pas toujours le camp mais s’agrégeaient en bandes indépendantes.
 TEST: Nous avons rencontré une terre plus grande que l’Europe et l’Afrique réunies.
 TEST: Poétiser est innover, et on n’enseigne pas à innover.
-TEST: En voyant celui-ci serrer soigneusement le paquet …
+TEST: En voyant celui-ci serrer soigneusement le paquet…
 TEST: Les aérothermes ont une prise d’air neuf réglable.
 TEST: Où sont Papa et Maman ?
 TEST: Couper en tout petits morceaux.
@@ -26028,7 +26035,7 @@ TEST: Deux côtés consécutifs d’un carré sont perpendiculaires.
 TEST: Je le sais, fit simplement René.
 TEST: Force nous est de constater…
 TEST: L’un de ceux-là donne aux pauvres.
-TEST: Ceux-ci retenus par …
+TEST: Ceux-ci retenus par…
 TEST: Les vélos avec moteur électrique.
 TEST: Elles sont de la première et de la deuxième générations.
 TEST: Des protections antigel.
@@ -26105,7 +26112,7 @@ TEST: Indiquez vos nom et prénom.
 TEST: Êtes-vous pour ou contre ceci ? (Bug de Python, semble-t-il)
 TEST: Calculer l’allocation logement.
 TEST: Petit souvenir pour René Machin.
-TEST: Au demeurant, ces messieurs … (dictionnaire 4.4)
+TEST: Au demeurant, ces messieurs… (dictionnaire 4.4)
 TEST: Se servant très habilement des menées royalistes (dictionnaire 4.4)
 TEST: Ils sont autre chose que des sauvages incultes. (dictionnaire 4.4)
 TEST: Les hors-la-loi. (dictionnaire 4.4)
@@ -26124,14 +26131,14 @@ TEST: C’était il y a bien longtemps.
 TEST: Le IIᵉ siècle.
 TEST: C’est elle qui me l’a dit.
 TEST: Quelqu’un peut me le dire ?
-TEST: C’est elle qui …
-TEST: Ce sont elles qui …
+TEST: C’est elle qui…
+TEST: Ce sont elles qui…
 TEST: Le nord est de ce côté, le sud est de ce côté.
 TEST: Les cours particuliers.
 TEST: Elle portait plusieurs bagues à ses fins doigts.
 TEST: Il passe en cour martiale.
 TEST: Dans vingt et un jours.
-TEST: Le mille marin est une mesure de longueur …
+TEST: Le mille marin est une mesure de longueur…
 TEST: Il regagna sa chambre seul.
 TEST: Il prenait ses repas seul.
 TEST: « Venez vous asseoir, Pierre », dit Patrick.
