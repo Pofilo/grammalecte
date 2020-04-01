@@ -38,7 +38,7 @@ class GrammalecteButton {
 
     examineNode (xNode) {
         if (xNode && xNode instanceof HTMLElement
-                && ( ((xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT") && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
+                && ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
                     || (xNode.isContentEditable && this._bEditableNode)
                     || (xNode.tagName == "IFRAME" && this._bIframe) )
                 && xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
