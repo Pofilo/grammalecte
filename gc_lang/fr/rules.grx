@@ -925,25 +925,30 @@ __<s>/typo(typo_espace_manquant_après1)__
     ({w1})[,:]({w_1})  @@0,$  <<- not \1.isdigit() -2>> " \2"                                       # Il manque un espace.
 __<s>/typo(typo_espace_manquant_après2)__
     [?!;%‰‱˚»}]({w_1}|[({[])  @@$  <<- -1>> " \1"                                                 # Il manque un espace.
-__<s]/typo(typo_espace_manquant_après3)__
+__[s>/typo(typo_espace_manquant_après3)__
     {w_1}[.]({w_1}|[({[])  @@$
     <<- (\1.__len__() > 1 and not \1[0:1].isdigit() and spell(\1)) or after("^’") -1>> " \1"        # Il manque un espace.
+__[s>/typo(typo_espace_manquant_après4)__
+    {w_2}[…]({w_1}|[({[])  @@$
+    <<- \1.__len__() == 1 or \1[0:1].isupper() -1>> " \1"                                           # Il manque un espace.
 
-TEST: J’en ai marre,{{ça}} suffit.
-TEST: elle est délirante.{{Devine}} ce qu’elle a dit.
+TEST: J’en ai marre,{{ça}} suffit.                                          ->> " ça"
+TEST: elle est délirante.{{Devine}} ce qu’elle a dit.                       ->> " Devine"
 TEST: Voilà,{{il}} manque un espace.                                        ->> " il"
 TEST: Dernier essai.{{Voilà}}, c’est ça.                                    ->> " Voilà"
-TEST: muni de lunettes protectrices et.{{d}}’un casque.
+TEST: muni de lunettes protectrices et.{{d}}’un casque.                     ->> " d"
 TEST: espace:{{manquant}}                                                   ->> " manquant"
 TEST: espace{{;}}{{manquant}}
 TEST: espace ;{{manquant}}                                                  ->> " manquant"
 TEST: espace{{?}}{{manquant}}
 TEST: espace{{!}}{{manquant}}
-TEST: une espace ?{{(}}oui ou non)
+TEST: une espace ?{{(}}oui ou non)                                          ->> " ("
 TEST: espace.{{Manquant}}                                                   ->> " Manquant"
 TEST: C’est bien.{{Les}} invités seront contents.                           ->> " Les"
 TEST: qui ont refusé.{{de}} se sauver                                       ->> " de"
 TEST: Y parvenir quoi qu’il en soit.{{Le}} sort en est jeté.                ->> " Le"
+TEST: merde…{{Ça}} suffit                                                   ->> " Ça"
+TEST: merde…{{(}}je suis fatigué)                                           ->> " ("
 TEST: pic.twitter.com/PICNAME
 
 
@@ -11022,6 +11027,9 @@ __purge_tout_tous_toutes__
     tout petits
         <<- morph(<1, ":(?:D.*:p|R|C)") ~>> *
 
+    ne pas [tous|toutes|tout]
+        <<- ~-1>> *
+
 
 __gn_tout_det__
     [<start>|,|(]  tout [deux|trois]
@@ -11319,6 +11327,7 @@ TEST: Mais gare à ne pas non plus trop surestimer la menace
 TEST: ne jamais beaucoup bosser, c’est sa devise.
 TEST: ne pas mal faire, c’est déjà pas si mal
 TEST: ne pas assez faire pour eux, voilà notre tort
+TEST: Essayez de ne pas tous chanter en même temps.
 
 
 __infi_de_bon_ton_de__
