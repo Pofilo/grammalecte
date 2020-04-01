@@ -3827,14 +3827,17 @@ TEST: mercredi, 18 août 1563 : mort de La Boétie (calendrier julien)
 
 ### ce / cet / cette / ces + nom + là
 __tu_ce_cette_ces_nom_là_ci__
-    [ce|cet|cette|ces] *WORD [là|ci]
-        <<- /tu/ morph(\2, ":[NB]", ":V0e") and not value(>1, "|où|") -2:3>> \2-là      # Il manque probablement un trait d’union.
+    [ce|cet|cette|ces] *WORD là
+        <<- /tu/ morph(\2, ":[NB]", ":V0e") and not value(>1, "|où|") -2:3>> \2-\3      # Il manque probablement un trait d’union.
+
+    [ce|cet|cette|ces] *WORD ci
+        <<- /tu/ morph(\2, ":[NB]", ":V0e") -2:3>> \2-\3                                # Il manque probablement un trait d’union.
 
     [ce|cet|cette|ces] *WORD la [<end>|,]
-        <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-là                                # Il manque probablement un trait d’union.
+        <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-là                                        # Il manque probablement un trait d’union.
 
     [ce|cet|cette|ces] *WORD si [<end>|,]
-        <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-ci                                # Il manque probablement un trait d’union.
+        <<- /tu/ morph(\2, ":[NB]") -2:3>> \2-ci                                        # Il manque probablement un trait d’union.
 
 TEST: à ce {{moment là}}                                                        ->> moment-là
 TEST: Il faisait froid cet {{hiver la}}.                                        ->> hiver-là
@@ -3894,7 +3897,7 @@ TEST: revenir {{quasi-totalement}} à une existence primitive
 
 __tu_préfixe_semi__
     semi @:[NAQ]¬:(?:G|3[sp])
-        <<- /tu/ ->> semi-\2                                    # S’il s’agit d’un seul mot, il manque un trait d’union.
+        <<- /tu/ ->> \1-\2                                      # S’il s’agit d’un seul mot, il manque un trait d’union.
 
 TEST: en {{semi liberté}}
 
@@ -6730,6 +6733,16 @@ TEST: Bien sûr, {{À coup sur}}.
 
 DEF: humain [administrateur|baron|chevalier|comte|contrôleur|dieu|duc|émir|époux|frère|grand-père|homme|maître|maitre|mari|ministre|monsieur|neveu|oncle|patron|père|président|prince|prophète|roi|sultan|tsar|vice-président]
 DEF: humaine [administratrice|baronne|chevalière|comtesse|contrôleuse|déesse|duchesse|épouse|femme|fille|grand-mère|madame|maîtresse|maitresse|mère|ministre|nièce|patronne|présidente|petite-fille|princesse|prophétesse|reine|sœur|sultane|tante|tsarine|vice-présidente]
+
+
+__conf_à_l_accoutumée__
+    !! à l’ accoutumée ¡¡
+    [à|a|as] l’ [accoutumé+ses]
+        <<- /conf/ --1>> accoutumée                     # Confusion. Locution “à l’accoutumée”.|https://fr.wiktionary.org/wiki/%C3%A0_l%E2%80%99accoutum%C3%A9e
+
+TEST: il viendra comme à l’{{accoutumé}} avec son petit air de faux-jeton           ->> accoutumée
+TEST: comme à l’accoutumée, elle ne fait pas grand-chose.
+
 
 __conf_à_l_attention_de_prn__
     à l’ intention de @:M[12]
@@ -12739,6 +12752,7 @@ __purge_locutions__
     sur [mon|ton|son|notre|votre|leur] trente et un
     sur ce ,
     sur ce plan-là
+    sur la défensive
     sur la forme comme sur le fond
     sur la même longueur d’ onde
     sur le [long|moyen|court] terme
