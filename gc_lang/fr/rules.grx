@@ -25032,7 +25032,7 @@ TEST: donnant à entendre qu’il avait l’intention de violer Laura dès qu’
 __vmode_verbe_que_subjonctif__
     [>aimer|>approuver|>craindre|>demander|>déplorer|>défendre|>désirer|>exiger|>falloir|>interdire|>ordonner|>permettre|>préférer|>refuser|>regretter|>souhaiter|>suffire|>vouloir]
         || [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
-        <<- /vmode/ --1>> =suggVerbMode(\-1, ":S", \-2)                                             # Après “\1 que”, ce verbe devrait être au subjonctif.
+        <<- /vmode/ morph(\1, ":V") --1>> =suggVerbMode(\-1, ":S", \-2)                             # Après “\1 que”, ce verbe devrait être au subjonctif.
 
     >attendre  [que|qu’]  @:(?:Os|M)  @:I¬:[GYS]
         <<- /vmode/ not morph(\1, ":Q") --1>> =suggVerbMode(\-1, ":S", \-2)                         # Après “\1 que”, ce verbe devrait être au subjonctif.
@@ -25082,6 +25082,7 @@ TEST: Je n’exige pas que vous soyez ponctuels.
 TEST: il ne fait aucun doute qu’Amazon le sait.
 TEST: Je sais bien que tu reviendras.
 TEST: Ne doute pas qu’il viendra demain.
+TEST: C’est cet interdit qu’il faut lever.
 
 
 __vmode_qqch_que_subjonctif__
