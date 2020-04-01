@@ -10782,10 +10782,11 @@ TEST: ni vu ni connu, j’t’embrouille.
 __maj_jours_semaine__
     [*WORD|*NUM]    [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
     ,               [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
-        <<- /maj/ -2:>> =\2.lower()
+        <<- /maj/ not \2.isupper() -2:>> =\2.lower()
         # Pas de majuscule sur les jours de la semaine.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
 
 TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
+TEST: LA SITUATION CE MERCREDI
 
 
 # Les mois

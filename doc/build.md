@@ -3,7 +3,7 @@
 
 ## Required ##
 
-* Python 3.6
+* Python 3.7+
 * Firefox Developper
 * Firefox Nightly
 * NodeJS
