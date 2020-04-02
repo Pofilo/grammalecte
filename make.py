@@ -457,16 +457,19 @@ def main ():
                         hDst = open("./gc_lang/"+sLang+"/perf_memo.txt", "a", encoding="utf-8", newline="\n")  if xArgs.perf_memo  else None
                         tests.perf(sVersion, hDst)
 
-            if xArgs.firefox or xArgs.firefox_nightly:
+            # JavaScript linter
+            if xArgs.lint_web_ext:
                 with helpers.CD("_build/webext/"+sLang):
-                    if xArgs.lint_web_ext:
-                        os.system(r'web-ext lint -o text')
-                    if xArgs.firefox:
-                        # Firefox Developper edition
-                        spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
-                    else:
-                        # Firefox Nightly edition
-                        spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
+                    os.system(r'web-ext lint -o text')
+
+            # Firefox
+            if xArgs.firefox:           # Firefox Developer edition
+                with helpers.CD("_build/webext/"+sLang):
+                    spfFirefox = dVars['win_fx_dev_path']  if platform.system() == "Windows"  else dVars['linux_fx_dev_path']
+                    os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')
+            if xArgs.firefox_nightly:   # Firefox Nightly edition
+                with helpers.CD("_build/webext/"+sLang):
+                    spfFirefox = dVars['win_fx_nightly_path']  if platform.system() == "Windows"  else dVars['linux_fx_nightly_path']
                     os.system(r'web-ext run --firefox="' + spfFirefox + '" --browser-console')
                     # https://github.com/mozilla/web-ext/issues/932
                     # os.system(r'web-ext run --firefox="' + spfFirefox + r'" --browser-console --firefox-profile=C:\Users\EAK\AppData\Roaming\Mozilla\Firefox\Profiles\e26559tw.debug --keep-profile-changes')
