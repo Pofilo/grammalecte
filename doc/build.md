@@ -4,12 +4,14 @@
 ## Required ##
 
 For building:
+
 * Python 3.7+
 * NodeJS
   * npm
   * web-ext : `https://developer.mozilla.org/fr/Add-ons/WebExtensions/Getting_started_with_web-ext`
 
 For testing:
+
 * Firefox Developper
 * Firefox Nightly
 * Thunderbird
