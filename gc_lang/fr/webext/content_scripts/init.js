@@ -464,38 +464,39 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
     // GrammalecteCall events are dispatched by functions in the API script
     // The script is loaded below.
     try {
-        let oCommand = xEvent.detail;
+        let oCommand = JSON.parse(xEvent.detail);
         switch (oCommand.sCommand) {
             case "openPanelForNode":
-                if (oCommand.xNode) {
-                    oGrammalecte.startGCPanel(oCommand.xNode);
+                if (oCommand.sNodeId && document.getElementById(oCommand.sNodeId)) {
+                    oGrammalecte.startGCPanel(document.getElementById(oCommand.sNodeId));
                 }
                 break;
             case "openPanelForText":
-                if (oCommand.sText) {
-                    oGrammalecte.startGCPanel(oCommand.sText, oCommand.xNode);
+                if (oCommand.sText && oCommand.sNodeId && document.getElementById(oCommand.sNodeId)) {
+                    oGrammalecte.startGCPanel(oCommand.sText, document.getElementById(oCommand.sNodeId));
                 }
                 break;
             case "parseNode":
-                if (oCommand.xNode  &&  oCommand.xNode.id) {
-                    if (oCommand.xNode.tagName == "TEXTAREA"  ||  oCommand.xNode.tagName == "INPUT") {
-                        oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.value, oCommand.xNode.id);
+                if (oCommand.sNodeId && document.getElementById(oCommand.sNodeId)) {
+                    let xNode = document.getElementById(oCommand.sNodeId);
+                    if (xNode.tagName == "TEXTAREA"  ||  xNode.tagName == "INPUT") {
+                        oGrammalecteBackgroundPort.parseAndSpellcheck(xNode.value, oCommand.sNodeId);
                     }
-                    else if (oCommand.xNode.tagName == "IFRAME") {
-                        oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.contentWindow.document.body.innerText, oCommand.xNode.id);
+                    else if (xNode.tagName == "IFRAME") {
+                        oGrammalecteBackgroundPort.parseAndSpellcheck(xNode.contentWindow.document.body.innerText, oCommand.sNodeId);
                     }
                     else {
-                        oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.xNode.innerText, oCommand.xNode.id);
+                        oGrammalecteBackgroundPort.parseAndSpellcheck(xNode.innerText, oCommand.sNodeId);
                     }
                 }
                 break;
             case "parseText":
-                if (oCommand.sText  &&  oCommand.xNode) {
-                    oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.sText, oCommand.xNode.id);
+                if (oCommand.sText && oCommand.sNodeId) {
+                    oGrammalecteBackgroundPort.parseAndSpellcheck(oCommand.sText, oCommand.sNodeId);
                 }
                 break;
             case "getSpellSuggestions":
-                if (oCommand.sWord) {
+                if (oCommand.sWord && oCommand.sDestination) {
                     oGrammalecteBackgroundPort.getSpellSuggestions(oCommand.sWord, oCommand.sDestination, oCommand.sErrorId);
                 }
                 break;
