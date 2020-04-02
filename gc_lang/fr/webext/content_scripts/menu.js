@@ -37,14 +37,18 @@ class GrammalecteButton {
     }
 
     examineNode (xNode) {
-        if (xNode && xNode instanceof HTMLElement
-                && ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
+        if (xNode && xNode instanceof HTMLElement) {
+            if (xNode === this.xTextNode) {
+                return;
+            }
+            if ( ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
                     || (xNode.isContentEditable && this._bEditableNode)
                     || (xNode.tagName == "IFRAME" && this._bIframe) )
-                && xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
-                && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false")) {
-            this.xTextNode = xNode;
-            this.show()
+                    && xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
+                    && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false") ) {
+                this.xTextNode = xNode;
+                this.show()
+            }
         }
         else {
             this.xTextNode = null;
