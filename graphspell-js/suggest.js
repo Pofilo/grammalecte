@@ -11,6 +11,8 @@ var suggest = {
         ["cdlt", "cordialement"],
         ["construirent", "construire|construisirent|construisent|construiront"],
         ["càd", "c’est-à-dire"],
+        ["chui", "j’suis|je suis"],
+        ["chuis", "j’suis|je suis"],
         ["dc", "de|donc"],
         ["done", "donc|donne"],
         ["email", "courriel|e-mail|émail"],
