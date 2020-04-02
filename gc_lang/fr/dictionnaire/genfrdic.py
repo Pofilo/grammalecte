@@ -827,7 +827,7 @@ class Entree:
         if re.search(r"nom|adj", self.po) and re.match(r"(?i)[aâàäáeéèêëiîïíìoôöóòuûüúù]", self.lemma) and re.match("[SFWXAI][.]", self.flags) \
            and "pel" not in self.lx:
             sErr += 'le drapeau derait finir avec *'
-        if not self.flags and self.iz.endswith(("mas", "fem", "epi")):
+        if self.iz.endswith(("mas", "fem", "epi")) and (not self.flags or not self.flags.startswith(("S", "X", "F", "W", "A", "I", "U"))):
             sErr += '[is] incomplet'
         if self.flags.startswith(("a", "b", "c", "d")) and not self.lemma.endswith("er"):
             sErr += "drapeau pour verbe du 1ᵉʳ groupe sur un lemme non conforme"
