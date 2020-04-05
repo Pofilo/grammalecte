@@ -79,7 +79,7 @@ def moveFolderContent (spSrc, spDst, sPrefix="", bLog=False):
         if not os.path.isdir(spSrc):
             print("Folder <"+spSrc+"> not found. Can’t move files.")
             return
-        if not os.path.isdir(spDst)
+        if not os.path.isdir(spDst):
             print("Folder <"+spDst+"> not found. Can’t move files.")
             return
         for sf in os.listdir(spSrc):
