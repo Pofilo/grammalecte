@@ -76,6 +76,12 @@ def copyFolderContent (spSrc, spDst):
 def moveFolderContent (spSrc, spDst, sPrefix="", bLog=False):
     "move folder content from <spSrc> to <spDst>: if files already exist in <spDst>, they are replaced. (not recursive)"
     try:
+        if not os.path.isdir(spSrc):
+            print("Folder <"+spSrc+"> not found. Can’t move files.")
+            return
+        if not os.path.isdir(spDst)
+            print("Folder <"+spDst+"> not found. Can’t move files.")
+            return
         for sf in os.listdir(spSrc):
             spfSrc = os.path.join(spSrc, sf)
             if os.path.isfile(spfSrc):
