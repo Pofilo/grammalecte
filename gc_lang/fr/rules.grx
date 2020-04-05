@@ -8129,7 +8129,8 @@ __conf_dès_des_dés__
 
     des ~^\d{2,5}$  [<end>|,]
     des ~^\d{2,5}$  @:¬:[NA].*:[ip]|>(?:à|et|ou)/
-        <<- /conf/ not value(<1, "|%|") and not morph(<1, ":B|>(?:pourcent|barre|seuil)/") -1>> dès # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
+        <<- /conf/ not value(<1, "|%|") and not morph(<1, ":B|>(?:pourcent|barre|seuil|aucun|plusieurs|certaine?s|une?)/")
+        -1>> dès # Confusion probable. Pour la préposition, écrivez “dès”.|https://fr.wiktionary.org/wiki/pr%C3%A8s
 
     [dés|des] *NUM ans
     [dés|des] $:B ans
@@ -8206,6 +8207,8 @@ TEST: Pour les enfants placés, l’angoisse du passage des 18 ans
 TEST: C’est la fin des 35 heures.
 TEST: 98 % des 18‑29 ans considéraient cela comme évident
 TEST: Gagnez trois dés lors d’un test
+TEST: aucun des 19 peuples concernés n’en veut
+TEST: un des 18 sera bientôt là.
 
 
 # diagnostic / diagnotique // pronostic / pronostique // public / publique
@@ -18903,6 +18906,7 @@ TEST: Il est comme un coq en {{pattes}} là.
 TEST: Elle n’a jamais mis la main à la {{patte}}.
 TEST: donne-moi un coup de {{pâte}}
 TEST: elle retombe toujours sur ses {{pâtes}}.
+TEST: il est court sur {{pâtes}}
 
 
 # péché / pêcher
