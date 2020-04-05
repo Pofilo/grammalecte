@@ -1998,13 +1998,16 @@ __da_groupe_nominal__
     en peine
         <<- =>> exclude(\2, ":V")
 
-    par  *WORD
-        <<- =>> exclude(\2, ":[123][sp]")
+    m’ [dame|sieur]
+        <<- ~>> ␣
 
     nombre  [de|d’|des]  [@:[NA]|<end>|,]
         <<- not morph(<1, ":D") >>>
         <<- morph(<1, ":A.*:[me]:[si]") =>> add_morph(\1, [">nombre/:G:D"])
         <<- __else__ =>> define(\1, [">nombre/:G:D"])
+
+    par  *WORD
+        <<- =>> exclude(\2, ":[123][sp]")
 
     plein  [de|d’]  @:[AN]
         <<- not morph(<1, ":D.*:m|>(?:être|(?:re|)devenir|rester|demeurer|sembler|para[iî]tre)/") =>> =define(\1, [":G"])
@@ -13434,6 +13437,7 @@ __simplication_substantifs__
     >chair [de|d’] poule
     >chambre à [coucher|gaz]
     >chambre [de|d’] [agriculture|hôte|hôtel|hôtes|commerce|compensation|décompression|dégrisement]
+    >chantier [de|d’] construction
     [>chariot|>charriot] à [bagages|roulettes]
     >chasse à courre
     >chasse à l’ homme
