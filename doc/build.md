@@ -6,15 +6,15 @@
 
 For building:
 
-* Python 3.7+ [download](https://www.python.org/)
-* NodeJS [download](https://nodejs.org/)
+* Python 3.7+ > [download](https://www.python.org/)
+* NodeJS > [download](https://nodejs.org/)
   * npm (should be installed with NodeJS)
-  * web-ext [instructions](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/)
+  * web-ext > [instructions](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/)
 
 For testing:
 
-* Firefox Developer [download](https://www.mozilla.org/en-US/firefox/developer/)
-* Thunderbird [download](https://www.thunderbird.net/)
+* Firefox Developer > [download](https://www.mozilla.org/en-US/firefox/developer/)
+* Thunderbird > [download](https://www.thunderbird.net/)
 
 
 ## Commands ##
@@ -61,7 +61,7 @@ For testing:
 > Launch Firefox Developper.
 > Unit tests can be launched from the menu (Tests section).
 
-`-we --webext`
+`-fxn --firefox_nightly`
 
 > Launch Firefox Nightly.
 > Unit tests can be launched from the menu (Tests section).
