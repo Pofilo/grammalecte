@@ -1,3 +1,4 @@
+# Building Grammalecte
 
 # How to build Grammalecte
 
@@ -5,16 +6,15 @@
 
 For building:
 
-* Python 3.7+
-* NodeJS
-  * npm
-  * web-ext : `https://developer.mozilla.org/fr/Add-ons/WebExtensions/Getting_started_with_web-ext`
+* Python 3.7+ (download)[https://www.python.org/]
+* NodeJS (download)[https://nodejs.org/]
+  * npm (should be installed with NodeJS)
+  * web-ext (instructions)[https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/]
 
 For testing:
 
-* Firefox Developper
-* Firefox Nightly
-* Thunderbird
+* Firefox Developer (download)[https://www.mozilla.org/en-US/firefox/developer/]
+* Thunderbird (download)[https://www.thunderbird.net/]
 
 
 ## Commands ##
