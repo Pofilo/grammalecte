@@ -53,10 +53,14 @@ def createMailExtension (sLang, dVars):
     dVars = _createOptionsForThunderbird(dVars)
     helpers.addFolderToZipAndFileFile(hZip, "gc_lang/"+sLang+"/mailext", "", dVars, True)
     hZip.close()
-    spExtension = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
-    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
-    spExtension = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
-    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
+    #spExtension = dVars['win_tb_debug_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_debug_extension_path']
+    #if os.path.isdir(spExtension):
+    #    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
+    #    print(f"TB extension copied in <{spExtension}>")
+    #spExtension = dVars['win_tb_beta_extension_path']  if platform.system() == "Windows"  else dVars['linux_tb_beta_extension_path']
+    #if os.path.isdir(spExtension):
+    #    print(f"TB extension copied in <{spExtension}>")
+    #    file_util.copy_file(spfZip, spExtension + "/" + dVars['tb_identifier']+ ".xpi")  # Filename for TB is just <identifier.xpi>
 
 
 def _createOptionsForThunderbird (dVars):
