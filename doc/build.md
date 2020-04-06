@@ -6,15 +6,15 @@
 
 For building:
 
-* Python 3.7+ (download)[https://www.python.org/]
-* NodeJS (download)[https://nodejs.org/]
+* Python 3.7+ [download](https://www.python.org/)
+* NodeJS [download](https://nodejs.org/)
   * npm (should be installed with NodeJS)
-  * web-ext (instructions)[https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/]
+  * web-ext [instructions](https://extensionworkshop.com/documentation/develop/getting-started-with-web-ext/)
 
 For testing:
 
-* Firefox Developer (download)[https://www.mozilla.org/en-US/firefox/developer/]
-* Thunderbird (download)[https://www.thunderbird.net/]
+* Firefox Developer [download](https://www.mozilla.org/en-US/firefox/developer/)
+* Thunderbird [download](https://www.thunderbird.net/)
 
 
 ## Commands ##
