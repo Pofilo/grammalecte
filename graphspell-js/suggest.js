@@ -30,6 +30,8 @@ var suggest = {
         ["pdq", "pendant que"],
         ["pdt", "pendant"],
         ["pdtq", "pendant que"],
+        ["pécunier", "pécuniaire"],
+        ["pécuniers", "pécuniaires"],
         ["pk", "pourquoi"],
         ["pkoi", "pourquoi"],
         ["pq", "pourquoi|PQ"],
