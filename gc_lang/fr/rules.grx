@@ -8752,7 +8752,7 @@ TEST: Très {{jeûne}}, elle a su qu’elle ne voulait pas d’une vie ordinaire
 
 # la / l’a
 __conf_il_elle_on_la_l_a_vconj__
-    [il|elle|on]  ?[nous|vous]¿  l’  a  ~^[bcdfghjklmnpqrstvwxz]
+    [il|elle|on|iel]  ?[nous|vous]¿  l’  a  ~^[bcdfghjklmnpqrstvwxz]
         <<- /conf/ morph(\-1, ":[123][sp]", ":[GQ]") --3:-2>> la                # Confusion probable. Pour un pronom objet féminin, écrivez “la”.
 
     [ne|me|te|se]  l’ a  ~^[bcdfghjklmnpqrstvwxz]
@@ -9654,6 +9654,9 @@ TEST: Beaucoup d’abord, ensuite plusieurs puis quelques-uns seulement.
 TEST: Il faut discrètement en creuser plusieurs puis arrêter aussitôt.
 TEST: Il vient tel quel puis semble avoir des doutes.
 TEST: avec un puis plusieurs autres.
+
+
+
 
 
 # quand / quant / qu’en
@@ -11225,58 +11228,62 @@ TEST: sur {{toutes}} {{armure}}
 !!
 
 __neg_ne_manquant__
-    [<start>|,|(]  je             [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu             [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on]   [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous           [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous           [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles]    [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  je               [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  tu               [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [il|elle|on|iel] [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  nous             [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  vous             [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [ils|elles|iels] [le|la|l’|les|me|m’|te|t’|se|s’|nous|vous|lui|leur]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
         <<- /neg/ -3>> ne \3                                                                        # Ne … \5 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  [je|j’]        [en|y]                                                  @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu             [en|y]                                                  @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on]   [en|y]                                                  @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous           [en|y]                                                  @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous           [en|y]                                                  @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles]    [en|y]                                                  @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [je|j’]          [en|y]                                                  @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  tu               [en|y]                                                  @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [il|elle|on|iel] [en|y]                                                  @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  nous             [en|y]                                                  @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  vous             [en|y]                                                  @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [ils|elles|iels] [en|y]                                                  @:3p¬:Ov  [pas|rien|jamais|guère|point]
         <<- /neg/ -3>> n’\3                                                                         # Ne … \5 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  je             [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu             [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on]   [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous           [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous           [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles]    [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  je             [le|la|l’|les]                  [lui|leur|en|y]         @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu             [le|la|l’|les]                  [lui|leur|en|y]         @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on]   [le|la|l’|les]                  [lui|leur|en|y]         @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous           [le|la|l’|les]                  [lui|leur|en|y]         @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous           [le|la|l’|les]                  [lui|leur|en|y]         @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles]    [le|la|l’|les]                  [lui|leur|en|y]         @:3p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  je             [lui|leur]                      en                      @:1s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu             [lui|leur]                      en                      @:2s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on]   [lui|leur]                      en                      @:3s¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous           [lui|leur]                      en                      @:1p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous           [lui|leur]                      en                      @:2p¬:Ov  [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles]    [lui|leur]                      en                      @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  je               [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  tu               [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [il|elle|on|iel] [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  nous             [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  vous             [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [ils|elles|iels] [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]     @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  je               [le|la|l’|les]                  [lui|leur|en|y]         @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  tu               [le|la|l’|les]                  [lui|leur|en|y]         @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [il|elle|on|iel] [le|la|l’|les]                  [lui|leur|en|y]         @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  nous             [le|la|l’|les]                  [lui|leur|en|y]         @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  vous             [le|la|l’|les]                  [lui|leur|en|y]         @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [ils|elles|iels] [le|la|l’|les]                  [lui|leur|en|y]         @:3p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  je               [lui|leur]                      en                      @:1s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  tu               [lui|leur]                      en                      @:2s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [il|elle|on|iel] [lui|leur]                      en                      @:3s¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  nous             [lui|leur]                      en                      @:1p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  vous             [lui|leur]                      en                      @:2p¬:Ov  [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [ils|elles|iels] [lui|leur]                      en                      @:3p¬:Ov  [pas|rien|jamais|guère|point]
         <<- /neg/ -3>> ne \3                                                                        # Ne … \6 : il manque l’adverbe de négation.
 
-    [<start>|,|(]  [je|j’]        @:1s¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  tu             @:2s¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [il|elle|on]   @:3s¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  nous           @:1p¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  vous           @:2p¬:Ov    [pas|rien|jamais|guère|point]
-    [<start>|,|(]  [ils|elles]    @:3p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [je|j’]          @:1s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(]  tu               @:2s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [il|elle|on|iel] @:3s¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(]  nous             @:1p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(]  vous             @:2p¬:Ov    [pas|rien|jamais|guère|point]
+    [<start>|,|(]  [ils|elles|iels] @:3p¬:Ov    [pas|rien|jamais|guère|point]
         <<- /neg/ morph(\3, ">[aâeéêiîoôuœæ]") -3>> n’\3                                            # Ne … \4 : il manque l’adverbe de négation.
         <<- /neg/ __else__ -3>> ne \3                                                               # Ne … \4 : il manque l’adverbe de négation.
 
-TEST: __neg__ On {{a}} pas compris.
-TEST: __neg__ Il {{part}} pas encore.
-TEST: __neg__ On {{vous}} a pas compris.
-TEST: __neg__ On {{en}} a pas.
-TEST: __neg__ Il {{y}} a jamais d’eau.
-TEST: __neg__ je {{deviendrai}} pas hargneux.
-TEST: __neg__ il {{le}} lui donne pas souvent.
+    [<start>|,|(]  [je|tu|il|elle|on|iel|nous|vous|ils|elles|iels]  >avoir  qu’  à
+        <<- /neg/ -3>> n’\3                                                                         # Locution “n’avoir qu’à” : il manque l’adverbe de négation.
+
+TEST: __neg__ On {{a}} pas compris.                     ->> n’a
+TEST: __neg__ Il {{part}} pas encore.                   ->> ne part
+TEST: __neg__ On {{vous}} a pas compris.                ->> ne vous
+TEST: __neg__ On {{en}} a pas.                          ->> n’en
+TEST: __neg__ Il {{y}} a jamais d’eau.                  ->> n’y
+TEST: __neg__ je {{deviendrai}} pas hargneux.           ->> ne deviendrai
+TEST: __neg__ il {{le}} lui donne pas souvent.          ->> ne le
+TEST: __neg__ il {{a}} qu’à venir demain                ->> n’a
 
 
 !!
@@ -12124,8 +12131,8 @@ __purge_locutions__
     d’ ordinaire
     d’ origine [inconnue|douteuse|plébéienne|aristocratique]
     d’ ordre général
-    d’ où qu’ [il|elle|on] vienne
-    d’ où qu’ [ils|elles] viennent
+    d’ où qu’ [il|elle|on|iel] vienne
+    d’ où qu’ [ils|elles|iels] viennent
     d’ ouest en est
     d’ [ors|ores] et déjà
     d’ un autre côté
@@ -12524,7 +12531,7 @@ __purge_locutions__
     jusqu’ à ce que tu en saches plus
     jusqu’ à ce que nous en sachions plus
     jusqu’ à ce que vous en sachiez plus
-    jusqu’ à ce que [ils|elles] en sachent plus
+    jusqu’ à ce que [ils|elles|iels] en sachent plus
     jusque-là
     ?[de|d’]¿ là
     ?[de|d’]¿ là-bas
@@ -12696,10 +12703,10 @@ __purge_locutions__
     que [ça|ceci|cela] [me|te|lui|leur|nous|vous] plaise ou non
     que je [le|l’] veuille ou non
     que tu [le|l’] veuilles ou non
-    qu’ [il|elle|on] [le|l’] veuille ou non
+    qu’ [il|elle|on|iel] [le|l’] veuille ou non
     que vous [le|l’] vouliez ou non
     que nous [le|l’] voulions ou non
-    qu’ [ils|elles] [le|l’] veuillent ou non
+    qu’ [ils|elles|iels] [le|l’] veuillent ou non
     qu’ à cela ne tienne
     quel qu’ en soit [le|l’] [moyen|prix|danger]
     quel qu’ en soit [le|l’] risque ?financier¿
@@ -12746,7 +12753,7 @@ __purge_locutions__
     sans [que|qu’] [il|elle|on|$:M] [le|l’] [sache|sût]
     sans [que|qu’] nous [le|l’] [sachions|sussions]
     sans [que|qu’] vous [le|l’] [sachiez|sussiez]
-    sans [que|qu’] [ils|elles] [le|l’] [sachent|sussent]
+    sans [que|qu’] [ils|elles|iels] [le|l’] [sachent|sussent]
     sans queue ni tête
     sans raison apparente
     sans vouloir [me|m’|te|t’|lui|nous|vous|leur] manquer de respect
@@ -13316,14 +13323,14 @@ __purge_conditionnelle__
     pour  autant  [que|qu’]  tu               le  saches
     pour  autant  [que|qu’]  nous             le  sachions
     pour  autant  [que|qu’]  vous             le  sachiez
-    pour  autant  [que|qu’]  [ils|elles]      le  sachent
+    pour  autant  [que|qu’]  [ils|elles|iels]      le  sachent
         <<- ~>> *
 
     pour  autant  [que|qu’]  [je|il|elle|on]  sache      [,|@¬:Y|<end>]
     pour  autant  [que|qu’]  tu               saches     [,|@¬:Y|<end>]
     pour  autant  [que|qu’]  nous             sachions   [,|@¬:Y|<end>]
     pour  autant  [que|qu’]  vous             sachiez    [,|@¬:Y|<end>]
-    pour  autant  [que|qu’]  [ils|elles]      sachent    [,|@¬:Y|<end>]
+    pour  autant  [que|qu’]  [ils|elles|iels]      sachent    [,|@¬:Y|<end>]
         <<- ~1:5>> *
 
     pour cette raison [que|qu’]
@@ -18225,10 +18232,10 @@ __conf_être_faire__
     vous            ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferriez      $:Y
         <<- /conf/ not morph(<1, ":R") --2>> ferez                                                  # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
 
-    [ils|elles]     ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferront      $:Y
+    [ils|elles|iels]     ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferront      $:Y
         <<- /conf/ not morph(<1, ":R") --2>> feront                                                 # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
 
-    [ils|elles]     ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferraient    $:Y
+    [ils|elles|iels]     ?[ne|n’]¿  ?[nous|vous|les|le|la|l’]¿  ferraient    $:Y
         <<- /conf/ not morph(<1, ":R") --2>> feraient                                               # Confusion probable. Vous confondez le verbe “ferrer” avec le verbe “faire”.
 
 TEST: nous vous {{ferrons}} apparaître au générique
@@ -19111,11 +19118,23 @@ TEST: Forage de son {{puis}} prévu demain
 TEST: Creuser un {{puis}}, pas si compliqué
 
 
-# qu’à / cas
+# qu’à / cas / ca
 __conf_qu_à_cas__
-    [je|tu|il|elle|on|nous|vous|ils|elles|iel|iels] ?n’¿ >avoir  [ca|cas]  @:(?:Ov|Y)
-        <<- /conf/ --2>> qu’à                                   # Confusion. Écrivez “qu’à”, c’est-à-dire la contraction de “que” suivi de la préposition verbale “à”.
+    n’  >avoir  [cas|qua|ca]
+        <<- /conf/ --1>> qu’à
+        # Confusion. Locution : “n’avoir qu’à…” équivalente à “il suffit de…”. L’ensemble “qu’à” est la contraction de “que” suivi de la préposition verbale “à”.|https://fr.wiktionary.org/wiki/n%E2%80%99avoir_qu%E2%80%99%C3%A0
 
+    >avoir  [cas|qua|ca]  [ne|n’|me|m’|te|t’|se|s’]
+    >avoir  [cas|qua|ca]  [le|la|l’|les|en|nous|vous|lui|leur|y]  $:Y
+    >avoir  [cas|qua|ca]  [nous|vous]     [le|la|l’|les|en|y]     $:Y
+    >avoir  [cas|qua|ca]  [le|la|l’|les]  [lui|leur|en|y]         $:Y
+    >avoir  [cas|qua|ca]  [lui|leur|y]    en                      $:Y
+    >avoir  [cas|qua|ca]  $:Y
+        <<- /conf/ not value(<1, "|n’|") -2>> qu’à
+        # Confusion. Locution : “n’avoir qu’à…” équivalente à “il suffit de…”. L’ensemble “qu’à” est la contraction de “que” suivi de la préposition verbale “à”.|https://fr.wiktionary.org/wiki/n%E2%80%99avoir_qu%E2%80%99%C3%A0
+
+TEST: elles n’ont {{ca}} nous laisser tranquilles           ->> qu’à
+TEST: ils ont {{qua}} s’en prendre à eux-mêmes              ->> qu’à
 TEST: tu n’as {{cas}} prendre le train
 
 
@@ -25110,8 +25129,8 @@ __vmode_si_sujet_conditionnel__
     <start>  si  vous  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":2p")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si vous aviez perdu, vous auriez recommencé. »
 
-    <start>  [si|s’]  [ils|elles]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
-    <start>  [si|s’]  [ils|elles]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [ils|elles|iels]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
+    <start>  [si|s’]  [ils|elles|iels]  >avoir  $:Q  $:D  $:N  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
         <<- /vmode/ morph(\4, ":K") -4>> =suggVerbTense(\4, ":Iq", ":3p")                           # N’utilisez pas le conditionnel, mais l’imparfait. Exemple : « Si elles avaient perdu, elles auraient recommencé. »
 
     <start>  si  [le|la|l’|un|une|ce|cet|cette|mon|ton|son|notre|votre|leur]  @:[NA].*:[si]  >avoir  $:Q  ?,¿  [je|j’|tu|il|on|elle|nous|ce|vous|ils|elles|iel|iels]  $:K
