@@ -472,8 +472,13 @@ document.addEventListener("GrammalecteCall", function (xEvent) {
                 }
                 break;
             case "openPanelForText":
-                if (oCommand.sText && oCommand.sNodeId && document.getElementById(oCommand.sNodeId)) {
-                    oGrammalecte.startGCPanel(oCommand.sText, document.getElementById(oCommand.sNodeId));
+                if (oCommand.sText) {
+                    if (oCommand.sText && oCommand.sNodeId && document.getElementById(oCommand.sNodeId)) {
+                        oGrammalecte.startGCPanel(oCommand.sText, document.getElementById(oCommand.sNodeId));
+                    }
+                    else {
+                        oGrammalecte.startGCPanel(oCommand.sText);
+                    }
                 }
                 break;
             case "parseNode":
