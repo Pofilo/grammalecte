@@ -18909,12 +18909,15 @@ __conf_pâte_patte_pat__
     [>patte|pat] [d’|de] [>amande|>amende|>fruit]
         <<- /conf/ -1>> pâte|pâtes                              # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
-    >mettre ?[pas|jamais]¿ la main à la [>patte|pat]
+    >mettre la main à [la|cette] [>patte|pat]
     >coq en [>patte|pat]
         <<- /conf/ --1>> pâte                                   # Confusion. La patte est le membre d’un animal (ou d’une table…). La matière pâteuse s’écrit “pâte”.
 
     >coup de [>pâte|pat]
         <<- /conf/ -3>> patte                                   # Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
+
+    >montrer [>pâte|pat] [blanche+s]
+        <<- /conf/ -2:3>> patte blanche                         # Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
 
     >retomber sur [mes|tes|ses|ces|nos|vos|leur|leurs] [>pâte|pat]
         <<- /conf/ --1>> pattes                                 # Confusion. Une pâte est une matière pâteuse. Pour désigner le membre d’un animal, écrivez “patte”.
@@ -18930,9 +18933,11 @@ TEST: La {{patte}} à pizza est plus épaisse que la pâte à crêpes.
 TEST: Elle adore la {{patte}} d’amande.
 TEST: Il est comme un coq en {{pattes}} là.
 TEST: Elle n’a jamais mis la main à la {{patte}}.
+TEST: ne mets jamais la main à la {{patte}}
 TEST: donne-moi un coup de {{pâte}}
 TEST: elle retombe toujours sur ses {{pâtes}}.
 TEST: il est court sur {{pâtes}}
+TEST: elle va montrer {{pâte blanche}} et tout ira bien.
 
 
 # péché / pêcher
@@ -19255,6 +19260,24 @@ __conf_sceptique_septique__
 
 TEST: cette fosse {{sceptique}} est pleine.
 TEST: Je suis {{septique}} !
+
+
+## se / ce
+__conf_ce_se_nom__
+    [de|par|pour|sans]  se  *WORD
+        <<- /conf/ analyse(\3, ":N.*:[me]:[si]", ":Y") -2>> ce                  # Confusion probable. Si “\-1” est bien un nom ou un adjectif, alors écrivez “ce”.
+
+    <start>  se  *WORD  [ne|n’|me|m’|te|t’|se|s’]
+    <start>  se  *WORD  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:[123][sp]|P)¬:G
+    <start>  se  *WORD  [nous|vous]     [le|la|l’|les|en|y]     @:(?:[123][sp]|P)
+    <start>  se  *WORD  [le|la|l’|les]  [lui|leur|en|y]         @:(?:[123][sp]|P)
+    <start>  se  *WORD  [lui|leur|y]    en                      @:(?:[123][sp]|P)
+    <start>  se  *WORD  @:(?:[123][sp]|P)¬:G
+        <<- /conf/ analyse(\3, ":[NA]", ":Y") -2>> ce                           # Confusion probable. Si “\3” est bien un nom ou un adjectif, alors écrivez “ce”.
+
+TEST: que sais-tu de {{se}} {{type}}
+TEST: {{se}} type nous emmerde.                                         ->> ce
+TEST: se doit d’être fort, ce con, sinon c’est la fin pour lui.
 
 
 ## soit / soie / soi
