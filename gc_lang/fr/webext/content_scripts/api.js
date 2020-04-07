@@ -34,6 +34,9 @@ const oGrammalecteAPI = {
             else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
                 sNodeId = vNode;
             }
+            else {
+                console.log("[Grammalecte API] No node identifier. No event, no result will be sent.")
+            }
             let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "openPanelForText", sText: sText, sNodeId: sNodeId}) });
             document.dispatchEvent(xEvent);
         } else {

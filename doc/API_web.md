@@ -69,8 +69,8 @@ If you have disabled the spinning button, you can launch the Grammalecte panel w
     oGrammalecteAPI.openPanelForNode("node_id")
     oGrammalecteAPI.openPanelForNode(node)
 
-The node can be a textarea, an editable node or an iframe.
-If the node is an iframe, the content won’t be modified by Grammalecte.
+The node can be a textarea, an editable node or an iframe. **The node must have an identifier**.
+If the node is an iframe, the content won’t be modified by Grammalecte, but events with results may be received (see below).
 
 
 ### Prevent Grammalecte to modify the node content
@@ -95,7 +95,7 @@ The text can be retrieved with:
     oGrammalecteAPI.openPanelForText("your text", "node_id")
     oGrammalecteAPI.openPanelForText("your text", node)
 
-With the second parameter, Grammalecte will send an event to the node each times the text is modified within the panel.
+With the second parameter, Grammalecte will send an event to the node each times the text is modified within the panel. **The node must have an identifier**.
 
 
 ### Parse a node and get errors
@@ -103,7 +103,7 @@ With the second parameter, Grammalecte will send an event to the node each times
     oGrammalecteAPI.parseNode("node_id")
     oGrammalecteAPI.parseNode(node)
 
-The node can be a textarea, an editable node or an iframe. The node must have an identifier.
+The node can be a textarea, an editable node or an iframe. **The node must have an identifier**.
 Results (for each paragraph) will be sent in a succession of events at the node.
 
     node.addEventListener("GrammalecteResult", function (event) {
@@ -122,8 +122,8 @@ For the last event, `oResult` will be `null`.
     oGrammalecteAPI.parseText("your text", "node_id")
     oGrammalecteAPI.parseText("your text", node)
 
-The node must have an identifier.
 Like with `oGrammalecteAPI.parseNode()`, results (for each paragraph) will be sent in a succession of events at the node.
+**The node must have an identifier**.
 
 
 
