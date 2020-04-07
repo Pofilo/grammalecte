@@ -1492,14 +1492,16 @@ __<s>/ocr(ocr_caractères_rares)__
     \w*[{}<>&*#£^|]+\w*
         <<- \0 != "<" and \0 != ">" ->> _                                                           # Erreur de numérisation ? Cette chaîne contient un caractère de fréquence rare.
 
-__<s>/ocr(ocr_doublons_caractères_rares)__
-    [\]\[({}][\]\[({}]+
-        <<- ->> _                                                                                   # Erreur de numérisation ? Succession douteuse de caractères.
-
 TEST: __ocr__ trouve {{l£}} temps
 TEST: __ocr__ elle s’{{avance*}} sur le seuil
 TEST: __ocr__ {{e||e}} vient
 TEST: __ocr__ par beaucoup d’argent ? {{{Il}} débouche le Jack Daniels
+
+
+__<s>/ocr(ocr_doublons_caractères_rares)__
+    [\]\[({}][\]\[({}]+
+        <<- ->> _                                                                                   # Erreur de numérisation ? Succession douteuse de caractères.
+
 TEST: __ocr__ {{[[}}voyons celà].
 TEST: __ocr__ {{((}}voyons ceci).
 
@@ -4166,7 +4168,7 @@ __tu_substantifs__
         <<- /tu/ ->> arrière-petite-nièce|arrière-petites-nièces    # Mettez des traits d’union.
 
     [basket|volley] ball
-        <<- /tu/ ->> \1-ball                                    # Il manque un trait d’union.
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
     bas [>côté|coté|cotés]
         <<- /tu/ morph(<1 , ":D") ->> bas-côté|bas-côtés        # Il manque un trait d’union.
@@ -4182,6 +4184,18 @@ __tu_substantifs__
 
     [chassé+ses] [croisé+ses]
         <<- /tu/ ->> chassé-croisé|chassés-croisés              # Il manque un trait d’union.
+
+    château fort
+        <<- /tu/ not morph(>1, ":A.*:[me]:[si]") ->> \1-\2      # Il manque un trait d’union.|https://fr.wiktionary.org/wiki/ch%C3%A2teau-fort
+
+    châteaux forts
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.|https://fr.wiktionary.org/wiki/ch%C3%A2teau-fort
+
+    coffre fort
+        <<- /tu/ not morph(>1, ":A.*:[me]:[si]") ->> \1-\2      # Il manque un trait d’union.|https://fr.wiktionary.org/wiki/coffre-fort
+
+    coffres forts
+        <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.|https://fr.wiktionary.org/wiki/coffre-fort
 
     >chef lieu
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
@@ -4206,7 +4220,7 @@ __tu_substantifs__
     gagne >pain
         <<- /tu/ not morph(<1, ":O[sv]") ->> gagne-pain         # Il manque un trait d’union.
 
-    [grand|grands] [>père|>mère]
+    [grand+s] [>père|>mère]
         <<- /tu/ ->> \1-\2                                      # Il manque un trait d’union.
 
     lèse majesté
@@ -4330,6 +4344,10 @@ TEST: {{chef lieu}} de ce canton
 TEST: un {{chassé croisé}}
 TEST: ne vois-tu pas que c’est un {{chef d’œuvre}} ?
 TEST: ils sont allés au {{centre ville}}.
+TEST: un {{château fort}} n’est pas une demeure confortable
+TEST: des {{châteaux forts}}
+TEST: un {{coffre fort}}
+TEST: des {{coffres forts}}
 TEST: Le {{moto club}} était sur le point de faire faillite.
 TEST: J’ai beaucoup de {{déjà vu}}.
 TEST: L’{{état major}} n’a pas encore tranché la question.
@@ -7468,7 +7486,7 @@ __conf_aile_elle__
 
     [elle+s] ?[droite|gauche]¿ du [château|palais|bâtiment|manoir]
     [elle+s] ?[droite|gauche]¿ [de|d’] la [maison|ferme]
-        <<- /conf/ -1>> aile|ailes
+        <<- /conf/ morph(<1, "<start>|,|:D") -1>> aile|ailes
         # Confusion probable : “elle” est un pronom personnel féminin. Pour les oiseaux, les avions ou les parties d’un bâtiment ou d’une armée, écrivez “aile”.|https://fr.wiktionary.org/wiki/aile
 
 TEST: l’{{elle}} est en feu.
@@ -11568,28 +11586,28 @@ __purge_horaires_et_durée__
     génération  [après|par]     génération
         <<- ~>> *
 
-    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿
-    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   [du|ce]  [matin|soir]
-    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   de  l’ après-midi
-    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   cet  après-midi
-    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿   [demain|hier]  ?[matin|soir|après-midi]¿
-    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿
-    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   [du|ce]  [matin|soir]
-    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   de  l’ après-midi
-    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   cet  après-midi
-    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿   [demain|hier]  ?[matin|soir|après-midi]¿
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [du|ce]  [matin|soir]
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   de  l’ après-midi
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   cet  après-midi
+    [à|de]      ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [demain|hier]  ?[matin|soir|après-midi]¿
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [du|ce]  [matin|soir]
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   de  l’ après-midi
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   cet  après-midi
+    jusqu’ à    ~^\d\d?$  h  ?~^\d\d?$¿  ?[tapantes|pétantes]¿   [demain|hier]  ?[matin|soir|après-midi]¿
         <<- ~>> *
 
-    [à|de]      *HOUR
-    [à|de]      *HOUR  [du|ce]  [matin|soir]
-    [à|de]      *HOUR  de  l’ après-midi
-    [à|de]      *HOUR  cet  après-midi
-    [à|de]      *HOUR  [demain|hier]  ?[matin|soir|après-midi]¿
-    jusqu’ à    *HOUR
-    jusqu’ à    *HOUR  [du|ce]  [matin|soir]
-    jusqu’ à    *HOUR  de  l’ après-midi
-    jusqu’ à    *HOUR  cet  après-midi
-    jusqu’ à    *HOUR  [demain|hier]  ?[matin|soir|après-midi]¿
+    [à|de]      *HOUR  ?[tapantes|pétantes]¿
+    [à|de]      *HOUR  ?[tapantes|pétantes]¿  [du|ce]  [matin|soir]
+    [à|de]      *HOUR  ?[tapantes|pétantes]¿  de  l’ après-midi
+    [à|de]      *HOUR  ?[tapantes|pétantes]¿  cet  après-midi
+    [à|de]      *HOUR  ?[tapantes|pétantes]¿  [demain|hier]  ?[matin|soir|après-midi]¿
+    jusqu’ à    *HOUR  ?[tapantes|pétantes]¿
+    jusqu’ à    *HOUR  ?[tapantes|pétantes]¿  [du|ce]  [matin|soir]
+    jusqu’ à    *HOUR  ?[tapantes|pétantes]¿  de  l’ après-midi
+    jusqu’ à    *HOUR  ?[tapantes|pétantes]¿  cet  après-midi
+    jusqu’ à    *HOUR  ?[tapantes|pétantes]¿  [demain|hier]  ?[matin|soir|après-midi]¿
         <<- ~>> *
 
 TEST: Le train de 2 h 47 {{arriveraient}} en retard.
