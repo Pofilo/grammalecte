@@ -9,10 +9,17 @@ const oGrammalecteAPI = {
 
     sVersion: "1.0",
 
+    generateNodeId: function (xNode) {
+        xNode.id = "grammalecte_generated_id_" + Date.now().toString(36) + "_" + (Math.floor(Math.random() * (1000000))).toString(36);
+        console.log("[Grammalecte API] generated id", xNode.id);
+        return xNode.id;
+    },
+
     openPanelForNode: function (vNode) {
         //  Parameter: a HTML node or the identifier of a HTML node
-        if (vNode instanceof HTMLElement && vNode.id) {
-            let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "openPanelForNode", sNodeId: vNode.id}) });
+        if (vNode instanceof HTMLElement) {
+            let sNodeId = vNode.id || this.generateNodeId(vNode);
+            let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "openPanelForNode", sNodeId: sNodeId}) });
             document.dispatchEvent(xEvent);
         }
         else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
@@ -28,8 +35,8 @@ const oGrammalecteAPI = {
         //  Parameter: text to analyze, and optionaly a node to send results to.
         if (typeof(sText) === "string") {
             let sNodeId = "";
-            if (vNode instanceof HTMLElement && vNode.id) {
-                sNodeId = vNode.id;
+            if (vNode instanceof HTMLElement) {
+                sNodeId = vNode.id || this.generateNodeId(vNode);
             }
             else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
                 sNodeId = vNode;
@@ -48,8 +55,9 @@ const oGrammalecteAPI = {
         /*  Parameter: a HTML node (with a identifier) or the identifier of a HTML node.
             The result will be sent as an event “GrammalecteResult” to the node.
         */
-        if (vNode instanceof HTMLElement  &&  vNode.id) {
-            let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "parseNode", sNodeId: vNode.id}) });
+        if (vNode instanceof HTMLElement) {
+            let sNodeId = vNode.id || this.generateNodeId(vNode);
+            let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "parseNode", sNodeId: sNodeId}) });
             document.dispatchEvent(xEvent);
         }
         else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
@@ -64,8 +72,9 @@ const oGrammalecteAPI = {
     parseText: function (sText, vNode) {
         //  Parameter: text to analyze, and a node to send results to.
         if (typeof(sText) === "string") {
-            if (vNode instanceof HTMLElement  &&  vNode.id) {
-                let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "parseText", sText: sText, sNodeId: vNode.id}) });
+            if (vNode instanceof HTMLElement) {
+                let sNodeId = vNode.id || this.generateNodeId(vNode);
+                let xEvent = new CustomEvent("GrammalecteCall", { detail: JSON.stringify({sCommand: "parseText", sText: sText, sNodeId: sNodeId}) });
                 document.dispatchEvent(xEvent);
             }
             else if (typeof(vNode) === "string" && document.getElementById(vNode)) {
