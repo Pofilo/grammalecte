@@ -6,6 +6,7 @@
 
 "use strict";
 
+
 class GrammalecteButton {
 
     constructor () {
@@ -39,6 +40,7 @@ class GrammalecteButton {
     examineNode (xNode) {
         if (xNode && xNode instanceof HTMLElement) {
             if (xNode === this.xTextNode) {
+                this.move();
                 return;
             }
             if ( ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
@@ -48,6 +50,10 @@ class GrammalecteButton {
                     && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false") ) {
                 this.xTextNode = xNode;
                 this.show()
+            }
+            else {
+                this.xTextNode = null;
+                this.hide();
             }
         }
         else {
@@ -59,16 +65,21 @@ class GrammalecteButton {
     show () {
         if (this.xTextNode) {
             this.xButton.style.display = "none"; // we hide it before showing it again to relaunch the animation
-            let oCoord = oGrammalecte.getElementCoord(this.xTextNode);
-            //console.log("top:", oCoord.left, "bottom:", oCoord.top, "left:", oCoord.bottom, "right:", oCoord.right);
-            this.xButton.style.top = `${oCoord.bottom}px`;
-            this.xButton.style.left = `${oCoord.left}px`;
+            this.move();
             this.xButton.style.display = "block";
         }
     }
 
     hide () {
         this.xButton.style.display = "none";
+    }
+
+    move () {
+        if (this.xTextNode) {
+            let oCoord = oGrammalecte.getElementCoord(this.xTextNode);
+            this.xButton.style.top = `${oCoord.bottom}px`;
+            this.xButton.style.left = `${oCoord.left}px`;
+        }
     }
 
     insertIntoPage () {

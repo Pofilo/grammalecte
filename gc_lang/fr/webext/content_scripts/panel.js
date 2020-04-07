@@ -19,6 +19,7 @@ class GrammalectePanel {
         this.bVertStrech = false;
         this.nPositionX = 2;
         this.nPositionY = 2;
+        this.bOpened = false;
         this.bWorking = false;
 
         this.bShadow = document.body.createShadowRoot || document.body.attachShadow;
@@ -144,10 +145,12 @@ class GrammalectePanel {
 
     show () {
         this.xPanel.style.display = "flex";
+        this.bOpened = true;
     }
 
     hide () {
         this.xPanel.style.display = "none";
+        this.bOpened = false;
     }
 
     center () {
