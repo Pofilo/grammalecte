@@ -8031,10 +8031,10 @@ TEST: Quelle dure {{a}} {{cuir}}, celle-là.
 
 # dans / d’en
 __conf_dans_dan_d_en__
-    d’ en [le|la|l’|les|de|d’|des|du|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces]
+    d’ en [le|la|l’|les|de|d’|des|du|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces|chacun|plusieurs|quelques|certains|certaines]
         <<- /conf/ not (\3 == "ce" and value(>1, "|moment|")) -1:2>> dans           # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
 
-    <start>  [>dent|dan]  [le|la|l’|les|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces]
+    <start>  [>dent|dan]  [le|la|l’|les|un|une|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leurs|ce|cet|cette|ces|chacun|plusieurs|quelques|certains|certaines]
         <<- /conf/ -2>> dans                                                        # Confusion. Utilisez “dans” pour dire “à l’intérieur de quelque chose”.
 
 TEST: {{dan}} la voiture
@@ -19354,6 +19354,21 @@ __conf_tâche_tache__
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.
 
+    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    @:(?:Y|V1.*:Q)
+        <<- /conf/ morph(\2, ":D", ":R") -3>> =\3.replace("ach", "âch").replace("ACH", "ÂCH")
+        # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
+
 TEST: Quelle {{tache}} ingrate.
 TEST: Une {{tache}} valorisante.
 TEST: Elle se tue à la {{tache}}.
@@ -19362,6 +19377,8 @@ TEST: {{Tache}} de partir tôt.
 TEST: {{Tachez}} d’arriver à l’heure.
 TEST: {{Tache}} de ne pas faire trop de bruit.
 TEST: se tuer à la {{tache}}
+TEST: leur {{tache}} consiste à obéir et à fermer leur gueule
+TEST: ma {{tache}} est d’accomplir ce que personne d’autre ne peut faire.
 TEST: une tâche dévalorisante.
 TEST: peiner à la tâche.
 
