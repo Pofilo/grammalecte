@@ -3,6 +3,9 @@
 import os
 import platform
 import zipfile
+import shutil
+import json
+import traceback
 from distutils import dir_util, file_util
 
 import helpers
@@ -11,13 +14,14 @@ import helpers
 def build (sLang, dVars):
     "complementary build launched from make.py"
     createWebExtension(sLang, dVars)
+    convertWebExtensionForChrome(sLang, dVars)
     createMailExtension(sLang, dVars)
     createNodeJSPackage(sLang)
 
 
 def createWebExtension (sLang, dVars):
     "create Web-extension"
-    print("Building WebExtension")
+    print("> Building WebExtension for Firefox")
     helpers.createCleanFolder("_build/webext/"+sLang)
     dir_util.copy_tree("gc_lang/"+sLang+"/webext/", "_build/webext/"+sLang)
     dir_util.copy_tree("grammalecte-js", "_build/webext/"+sLang+"/grammalecte")
@@ -27,7 +31,25 @@ def createWebExtension (sLang, dVars):
     with helpers.CD("_build/webext/"+sLang):
         os.system("web-ext build")
     # Copy Firefox zip extension to _build
-    helpers.moveFolderContent("_build/webext/"+sLang+"/web-ext-artifacts", "_build", "fx-"+sLang+"-", True)
+    helpers.moveFolderContent("_build/webext/"+sLang+"/web-ext-artifacts", "_build", "firefox-", True)
+
+
+def convertWebExtensionForChrome (sLang, dVars):
+    "Create the extension for Chrome"
+    print("> Converting WebExtension for Chrome")
+    try:
+        with open(f"_build/webext/{sLang}/manifest.json", "r", encoding="utf-8") as hSrc:
+            dManifest = json.load(hSrc)
+            if "applications" in dManifest:
+                del dManifest["applications"]
+            if "chrome_settings_overrides" in dManifest:
+                del dManifest["chrome_settings_overrides"]
+        with open(f"_build/webext/{sLang}/manifest.json", "w", encoding="utf-8") as hDst:
+            json.dump(dManifest, hDst, ensure_ascii=True, indent=2)
+        shutil.make_archive(f"_build/chrome-grammalecte-{sLang}-v{dVars['version']}", 'zip', "_build/webext/"+sLang)
+    except:
+        traceback.print_exc()
+        print("  Error. Converting the WebExtension for Chrome failed.")
 
 
 def _createOptionsForWebExtension (dVars):
@@ -44,7 +66,7 @@ def _createOptionsForWebExtension (dVars):
 
 def createMailExtension (sLang, dVars):
     "create extension for Thunderbird (as MailExtension)"
-    print("Building extension for Thunderbird (MailExtension)")
+    print("> Building extension for Thunderbird (MailExtension)")
     spfZip = "_build/" + dVars['tb_identifier'] + "-v" + dVars['version'] + '.mailext.xpi'
     hZip = zipfile.ZipFile(spfZip, mode='w', compression=zipfile.ZIP_DEFLATED)
     _copyGrammalecteJSPackageInZipFile(hZip, sLang)

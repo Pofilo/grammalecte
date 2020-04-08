@@ -101,8 +101,8 @@ def fileFile (spf, dVars):
 
 def copyAndFileTemplate (spfSrc, spfDst, dVars):
     "write file <spfSrc> as <spfDst> with variables filed with <dVars>"
-    s = Template(open(spfSrc, "r", encoding="utf-8").read()).safe_substitute(dVars)
-    open(spfDst, "w", encoding="utf-8", newline="\n").write(s)
+    sText = Template(open(spfSrc, "r", encoding="utf-8").read()).safe_substitute(dVars)
+    open(spfDst, "w", encoding="utf-8", newline="\n").write(sText)
 
 
 def addFolderToZipAndFileFile (hZip, spSrc, spDst, dVars, bRecursive):
