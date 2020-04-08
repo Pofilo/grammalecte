@@ -281,10 +281,9 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
         let sParagraphId = "grammalecte_paragraph" + iParaNum;
         let xParagraph = this.xParent.getElementById(sParagraphId);
         this._blockParagraph(xParagraph);
-        let sText = this.purgeText(xParagraph.textContent);
+        //let sText = this.purgeText(xParagraph.textContent);
+        let sText = this.oTextControl.getParagraph(iParaNum);
         oGrammalecteBackgroundPort.parseAndSpellcheck1(sText, "__GrammalectePanel__", sParagraphId);
-        this.oTextControl.setParagraph(iParaNum, sText);
-        this.oTextControl.write();
     }
 
     refreshParagraph (sParagraphId, oResult) {
@@ -411,8 +410,11 @@ class GrammalecteGrammarChecker extends GrammalectePanel {
             xNodeErr.textContent = this.xParent.getElementById(sNodeSuggId).textContent;
             xNodeErr.className = "grammalecte_error_corrected";
             xNodeErr.removeAttribute("style");
+            let iParaNum = parseInt(sErrorId.slice(0, sErrorId.indexOf("-")), 10);
+            this.oTextControl.setParagraph(iParaNum, this.purgeText(this.xParent.getElementById("grammalecte_paragraph" + iParaNum).textContent));
+            this.oTextControl.write();
             this.oTooltip.hide();
-            this.recheckParagraph(parseInt(sErrorId.slice(0, sErrorId.indexOf("-")), 10));
+            this.recheckParagraph(iParaNum);
         }
         catch (e) {
             showError(e);
@@ -1033,6 +1035,10 @@ class GrammalecteTextControl {
 
     setParagraph (iParagraph, sText) {
         this.dParagraph.set(iParagraph, sText);
+    }
+
+    getParagraph (iParaNum) {
+        return this.dParagraph.get(iParaNum);
     }
 
     eraseNodeContent () {

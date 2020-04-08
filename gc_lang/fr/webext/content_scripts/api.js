@@ -11,7 +11,7 @@ const oGrammalecteAPI = {
 
     generateNodeId: function (xNode) {
         xNode.id = "grammalecte_generated_id_" + Date.now().toString(36) + "_" + (Math.floor(Math.random() * (1000000))).toString(36);
-        console.log("[Grammalecte API] generated id", xNode.id);
+        console.log("[Grammalecte API] generated id:", xNode.id);
         return xNode.id;
     },
 
