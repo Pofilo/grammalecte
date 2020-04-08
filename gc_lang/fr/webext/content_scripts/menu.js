@@ -44,7 +44,7 @@ class GrammalecteButton {
                 return;
             }
             if ( ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
-                    || (xNode.isContentEditable && this._bEditableNode)
+                    || ( (xNode.tagName == "P" || xNode.tagName == "DIV") && xNode.isContentEditable && this._bEditableNode )
                     || (xNode.tagName == "IFRAME" && this._bIframe) )
                     && xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
                     && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false") ) {
