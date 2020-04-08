@@ -38,39 +38,49 @@ class GrammalecteButton {
     }
 
     examineNode (xNode) {
-        if (xNode && xNode instanceof HTMLElement) {
-            if (xNode === this.xTextNode) {
-                this.move();
-                return;
-            }
-            if ( ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
-                    || ( (xNode.tagName == "P" || xNode.tagName == "DIV") && xNode.isContentEditable && this._bEditableNode )
-                    || (xNode.tagName == "IFRAME" && this._bIframe) )
-                    && xNode.style.display !== "none" && xNode.style.visibility !== "hidden"
-                    && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false") ) {
-                this.xTextNode = xNode;
-                this.show()
-            }
-            else {
-                this.xTextNode = null;
-                this.hide();
-            }
+        if (!xNode || !xNode instanceof HTMLElement) {
+            // not a node
+            this.reject();
+            return;
         }
-        else {
-            this.xTextNode = null;
-            this.hide();
+        if (xNode === this.xTextNode) {
+            // same node -> possibly click for resizing -> move it
+            this.move();
+            return;
+        }
+        if ( ( (xNode.tagName == "TEXTAREA" && this._bTextArea && xNode.getAttribute("spellcheck") !== "false")
+               || (xNode.tagName == "IFRAME" && this._bIframe) )
+             && !(xNode.dataset.grammalecte_button  &&  xNode.dataset.grammalecte_button == "false") ) {
+            // textarea or iframe
+            this.accept(xNode)
+        }
+        else if (xNode.isContentEditable && this._bEditableNode) {
+            // editable node
+            const findOriginEditableNode = function (xNode) {
+                return (!xNode.parentNode.isContentEditable) ? xNode : findOriginEditableNode(xNode.parentNode);
+            }
+            xNode = findOriginEditableNode(xNode);
+            if ((xNode.tagName == "P" || xNode.tagName == "DIV") && !(xNode.dataset.grammalecte_button && xNode.dataset.grammalecte_button == "false")) {
+                this.accept(xNode);
+            } else {
+                this.reject();
+            }
+        } else {
+            this.reject();
         }
     }
 
-    show () {
-        if (this.xTextNode) {
+    accept (xNode=null) {
+        if (xNode) {
+            this.xTextNode = xNode;
             this.xButton.style.display = "none"; // we hide it before showing it again to relaunch the animation
             this.move();
             this.xButton.style.display = "block";
         }
     }
 
-    hide () {
+    reject () {
+        this.xTextNode = null;
         this.xButton.style.display = "none";
     }
 
