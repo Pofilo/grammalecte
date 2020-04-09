@@ -1052,30 +1052,28 @@ class GrammalecteTextControl {
             if (this.bResultInEvent) {
                 const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
                 this.xNode.dispatchEvent(xEvent);
-                console.log("[Grammalecte debug] Text sent to xNode via event:", xEvent.detail);
+                //console.log("[Grammalecte debug] Text sent to xNode via event:", xEvent.detail);
             }
             else if (this.bTextArea) {
                 this.xNode.value = this.getText();
-                console.log("[Grammalecte debug] text written in textarea:", this.getText());
+                //console.log("[Grammalecte debug] text written in textarea:", this.getText());
             }
             else if (this.bIframe) {
                 //console.log(this.getText());
             }
             else {
-                let sText = "";
                 this.eraseNodeContent();
                 this.dParagraph.forEach((val, key) => {
                     this.xNode.appendChild(document.createTextNode(val.normalize("NFC")));
                     this.xNode.appendChild(document.createElement("br"));
-                    sText += val.normalize("NFC") + "\n";
                 });
-                console.log("[Grammalecte debug] text written in editable node:", sText);
+                //console.log("[Grammalecte debug] text written in editable node:", this.getText());
             }
         }
         else if (this.xResultNode !== null) {
             const xEvent = new CustomEvent("GrammalecteResult", { detail: JSON.stringify({ sType: "text", sText: this.getText() }) });
             this.xResultNode.dispatchEvent(xEvent);
-            console.log("[Grammalecte debug] Text sent to xResultNode via event:", xEvent.detail);
+            //console.log("[Grammalecte debug] Text sent to xResultNode via event:", xEvent.detail);
         }
     }
 }
