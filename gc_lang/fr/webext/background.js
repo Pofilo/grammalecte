@@ -342,8 +342,6 @@ browser.contextMenus.create({ id: "conjugueur_tab",             title: "Conjugue
 browser.contextMenus.create({ id: "conjugueur_window",          title: "Conjugueur [fenêtre]",                      contexts: ["all"] });
 //browser.contextMenus.create({ id: "dictionaries",               title: "Dictionnaires",                             contexts: ["all"] });
 browser.contextMenus.create({ id: "lexicon_editor",             title: "Éditeur lexical",                           contexts: ["all"] });
-// Rescan page
-browser.contextMenus.create({ id: "separator_rescan",           type: "separator",                                  contexts: ["editable"] });
 
 
 browser.contextMenus.onClicked.addListener(function (xInfo, xTab) {

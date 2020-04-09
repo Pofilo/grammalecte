@@ -175,6 +175,19 @@ const oGrammalecte = {
         }
     },
 
+    findOriginEditableNode: function (xNode) {
+        if (!xNode) {
+            return null;
+        }
+        if (xNode.tagName == "TEXTAREA" || xNode.tagName == "INPUT" || xNode.tagName == "IFRAME") {
+            return xNode;
+        }
+        const findNode = function (xNode) {
+            return (!xNode.parentNode.isContentEditable) ? xNode : findNode(xNode.parentNode);
+        }
+        return findNode(xNode);
+    },
+
     getCaretPosition: function (xElement) {
         // JS awfulness again.
         // recepie from https://stackoverflow.com/questions/4811822/get-a-ranges-start-and-end-offsets-relative-to-its-parent-container
@@ -278,6 +291,13 @@ const oGrammalecteBackgroundPort = {
             oInfo: all kind of informations that needs to be sent back (usually to know where to use the result)
         }
     */
+
+    checkConnection: function () {
+        if (!this.xConnect) {
+            this.xConnect = browser.runtime.connect({name: "content-script port"});
+        }
+    },
+
     parseAndSpellcheck: function (sText, sDestination) {
         this.xConnect.postMessage({
             sCommand: "parseAndSpellcheck",
@@ -400,7 +420,8 @@ const oGrammalecteBackgroundPort = {
                 // Grammar checker commands
                 case "grammar_checker_editable":
                     if (oGrammalecte.xRightClickedNode !== null) {
-                        oGrammalecte.startGCPanel(oGrammalecte.xRightClickedNode);
+                        let xNode = oGrammalecte.findOriginEditableNode(oGrammalecte.xRightClickedNode);
+                        oGrammalecte.startGCPanel(xNode);
                     } else {
                         oGrammalecte.showMessage("Erreur. Le node sur lequel vous avez cliqué n’a pas pu être identifié. Sélectionnez le texte à corriger et relancez le correcteur via le menu contextuel.");
                     }
@@ -432,7 +453,7 @@ const oGrammalecteBackgroundPort = {
     listen2: function () {
         browser.runtime.onMessage.addListener(function (oMessage) {
             let {sActionRequest} = oMessage;
-            let xActiveNode = document.activeElement;
+            let xActiveNode = oGrammalecte.findOriginEditableNode(document.activeElement);
             switch (sActionRequest) {
                 /*
                     Commands received from the keyboard (shortcuts)

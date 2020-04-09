@@ -56,10 +56,7 @@ class GrammalecteButton {
         }
         else if (xNode.isContentEditable && this._bEditableNode) {
             // editable node
-            const findOriginEditableNode = function (xNode) {
-                return (!xNode.parentNode.isContentEditable) ? xNode : findOriginEditableNode(xNode.parentNode);
-            }
-            xNode = findOriginEditableNode(xNode);
+            xNode = oGrammalecte.findOriginEditableNode(xNode);
             if ((xNode.tagName == "P" || xNode.tagName == "DIV") && !(xNode.dataset.grammalecte_button && xNode.dataset.grammalecte_button == "false")) {
                 this.accept(xNode);
             } else {
