@@ -292,68 +292,66 @@ const oGrammalecteBackgroundPort = {
         }
     */
 
-    checkConnection: function () {
-        if (!this.xConnect) {
-            this.xConnect = browser.runtime.connect({name: "content-script port"});
+    send: function (sCommand, oParam={}, oInfo={}) {
+        if (this.xConnect) {
+            this.xConnect.postMessage({ sCommand: sCommand, oParam: oParam, oInfo: oInfo });
+        } else {
+            oGrammalecte.showMessage("Erreur. La connexion vers le correcteur grammatical est perdue.");
         }
     },
 
     parseAndSpellcheck: function (sText, sDestination) {
-        this.xConnect.postMessage({
-            sCommand: "parseAndSpellcheck",
-            oParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
-            oInfo: { sDestination: sDestination }
-        });
+        this.send("parseAndSpellcheck", { sText: sText, sCountry: "FR", bDebug: false, bContext: false }, { sDestination: sDestination });
     },
 
     parseAndSpellcheck1: function (sText, sDestination, sParagraphId) {
-        this.xConnect.postMessage({
-            sCommand: "parseAndSpellcheck1",
-            oParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
-            oInfo: { sDestination: sDestination, sParagraphId: sParagraphId }
-        });
+        this.send("parseAndSpellcheck1", { sText: sText, sCountry: "FR", bDebug: false, bContext: false }, { sDestination: sDestination, sParagraphId: sParagraphId });
     },
 
     getListOfTokens: function (sText) {
-        this.xConnect.postMessage({ sCommand: "getListOfTokens", oParam: { sText: sText }, oInfo: {} });
+        this.send("getListOfTokens", { sText: sText }, {});
     },
 
     parseFull: function (sText) {
-        this.xConnect.postMessage({
-            sCommand: "parseFull",
-            oParam: { sText: sText, sCountry: "FR", bDebug: false, bContext: false },
-            oInfo: {}
-        });
+        this.send("parseFull", { sText: sText, sCountry: "FR", bDebug: false, bContext: false }, {});
     },
 
     getVerb: function (sVerb, bStart=true, bPro=false, bNeg=false, bTpsCo=false, bInt=false, bFem=false) {
-        this.xConnect.postMessage({
-            sCommand: "getVerb",
-            oParam: { sVerb: sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem },
-            oInfo: { bStart: bStart }
-        });
+        this.send("getVerb", { sVerb: sVerb, bPro: bPro, bNeg: bNeg, bTpsCo: bTpsCo, bInt: bInt, bFem: bFem }, { bStart: bStart });
     },
 
     getSpellSuggestions: function (sWord, sDestination, sErrorId) {
-        this.xConnect.postMessage({ sCommand: "getSpellSuggestions", oParam: { sWord: sWord }, oInfo: { sDestination: sDestination, sErrorId: sErrorId } });
+        this.send("getSpellSuggestions", { sWord: sWord }, { sDestination: sDestination, sErrorId: sErrorId });
     },
 
     openURL: function (sURL) {
-        this.xConnect.postMessage({ sCommand: "openURL", oParam: { "sURL": sURL }, oInfo: null });
+        this.send("openURL", { "sURL": sURL });
     },
 
     openLexiconEditor: function () {
-        this.xConnect.postMessage({ sCommand: "openLexiconEditor", oParam: null, oInfo: null });
+        this.send("openLexiconEditor");
     },
 
     restartWorker: function (nTimeDelay=10) {
-        this.xConnect.postMessage({ sCommand: "restartWorker", oParam: { "nTimeDelay": nTimeDelay }, oInfo: {} });
+        this.send("restartWorker", { "nTimeDelay": nTimeDelay });
     },
 
     /*
         Messages from the background
     */
     listen: function () {
+        this.xConnect.onDisconnect.addListener(function (xPort) {
+            let sError = "";
+            if (xPort.error) {
+                sError = xPort.error.message;
+            }
+            else if (browser.runtime.lastError) {
+                sError = browser.runtime.lastError.message;
+            }
+            console.log("[Grammalecte] Connection to the background script has been lost. Error :", sError);
+            this.xConnect = browser.runtime.connect({name: "content-script port"});
+            this.listen();
+        }.bind(this));
         this.xConnect.onMessage.addListener(function (oMessage) {
             let { sActionDone, result, oInfo, bEnd, bError } = oMessage;
             switch (sActionDone) {
