@@ -3,7 +3,9 @@
 "use strict";
 
 
-const oGrammalecteAPI = {
+var oGrammalecteAPI = {
+    // Thes script might be reloaded, don’t use const or let.
+
     // functions callable from within pages
     // to be sent to the content-cript via an event “GrammalecteCall”
 
