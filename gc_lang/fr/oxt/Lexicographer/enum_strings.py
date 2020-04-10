@@ -13,6 +13,7 @@ dStrings = {
         "unknown_button": "Mots inconnus",
         "num_of_entries": "Entrées :",
         "tot_of_entries": "Total :",
+        "goto": "Sélectionnez une ou plusieurs entrées, puis cliquez sur ce bouton pour trouver la prochaine occurrence",
         "export": "Exporter",
 
         "words": "Mots",
@@ -41,6 +42,7 @@ dStrings = {
         "unknown_button": "Unknown words",
         "num_of_entries": "Entries:",
         "tot_of_entries": "Total:",
+        "goto": "select one or several entries, then click on this button to find the next occurrence",
         "export": "Export",
 
         "words": "Words",

@@ -146,7 +146,7 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
         self.xNumWord = self._addWidget('num_of_entries_res', 'FixedText', nX+35, nY1+210, 25, nHeight, Label = "—")
         self._addWidget('tot_of_entries', 'FixedText', nX+60, nY1+210, 30, nHeight, Label = self.dUI.get('tot_of_entries', "#err"), Align = 2)
         self.xTotWord = self._addWidget('tot_of_entries_res', 'FixedText', nX+95, nY1+210, 30, nHeight, Label = "—")
-        self.xSearch = self._addWidget('search_button', 'Button', nX+145, nY1+210, 30, nHeight, Label = ">>>", Enabled = False)
+        self.xSearch = self._addWidget('search_button', 'Button', nX+145, nY1+210, 30, nHeight, Label = ">>>", HelpText=self.dUI.get('goto', "#err"), Enabled = False)
         self.xExport = self._addWidget('export_button', 'Button', nX+180, nY1+210, 40, nHeight, Label = self.dUI.get('export', "#err"), Enabled = False)
 
         # Tag
