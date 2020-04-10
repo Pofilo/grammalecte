@@ -5,6 +5,7 @@
 import unohelper
 import uno
 import traceback
+import platform
 
 import helpers
 import enum_strings
@@ -325,14 +326,16 @@ class Enumerator (unohelper.Base, XActionListener, XTopWindowListener, XJobExecu
             xFilePicker = self.xSvMgr.createInstanceWithContext('com.sun.star.ui.dialogs.FilePicker', self.ctx)  # other possibility: com.sun.star.ui.dialogs.SystemFilePicker
             xFilePicker.initialize([uno.getConstantByName("com.sun.star.ui.dialogs.TemplateDescription.FILESAVE_SIMPLE")]) # seems useless
             xFilePicker.appendFilter("Supported files", "*.txt")
-            xFilePicker.setDefaultName("word_count.txt") # useless, doesn’t work
+            xFilePicker.setDefaultName("word_count.txt") # doesn’t work on Windows
             xFilePicker.setDisplayDirectory("")
             xFilePicker.setMultiSelectionMode(False)
             nResult = xFilePicker.execute()
             if nResult == 1:
                 # lFile = xFilePicker.getSelectedFiles()
                 lFile = xFilePicker.getFiles()
-                spfExported = lFile[0][8:] # remove file:///
+                spfExported = lFile[0][5:].lstrip("/") # remove file://
+                if platform.system() != "Windows":
+                    spfExported = "/" + spfExported
                 #spfExported = os.path.join(os.path.expanduser("~"), "fr.personal.json")
                 with open(spfExported, "w", encoding="utf-8") as hDst:
                     hDst.write(sText)
