@@ -1776,11 +1776,11 @@ __purge_punc_début_phrase__
         <<- ~2>> *
 
     <start>  [-|–|—]  ?[-|–|—]¿
-        <<- />> tiret1
+        <<- />> _tiret1_
         <<- ~2>> *
 
     <start>  [•|·|.]
-        <<- />> puce1
+        <<- />> _puce1_
         <<- ~2>> *
 
 
@@ -1925,6 +1925,15 @@ __da_préverbes_verbes__
     >falloir [pouvoir|savoir|vouloir|manger|conseiller]
         <<- =>> exclude(\2, ":N")
 
+    v’nir
+        <<- ~>> venir
+
+    s’ ra
+        <<- ~>> sera
+
+    s’ ras
+        <<- ~>> seras
+
 
 __da_été__
     >avoir ?@:[WX]¿ été
@@ -1941,6 +1950,7 @@ __da_prépositions__
     y compris
         <<- not value(<1, "|n’|j’|tu|t’|m’|s’|") ~>> ␣
         <<- __also__ =>> define(\1, [":G:R"])
+
 
 __da_puis__
     puis
@@ -2060,19 +2070,19 @@ TEST: Votre question fait référence à un fait divers déroutant
 __tag_sujets__
     [je|j’]
     [moi|moi-même] ?[seul|seule]¿ ?,¿ qui
-        <<- />> 1s
+        <<- />> _1s_
 
     [moi|moi-même] [seul|seule]
-        <<- not value(<1, "|de|d’|par|") />> 1s
+        <<- not value(<1, "|de|d’|par|") />> _1s_
 
     tu
     t’  $:2s
     t’  [en|y]  $:2s
     [toi|toi-même] ?[seul|seule]¿ ?,¿ qui
-        <<- />> 2s
+        <<- />> _2s_
 
     [toi|toi-même] [seul|seule]
-        <<- not value(<1, "|de|d’|par|") />> 2s
+        <<- not value(<1, "|de|d’|par|") />> _2s_
 
     nous ?[seul|seuls|seules]¿ ?,¿ qui
     nous-même qui
@@ -2080,14 +2090,14 @@ __tag_sujets__
     [et|ou] [moi|moi-même]
     ni [moi|moi-même]
     [moi|moi-même] et
-        <<- />> 1p
+        <<- />> _1p_
 
     nous
     nous-même
     nous-mêmes
     nous [seul|seuls|seules]
     nous autres
-        <<- not value(<1, "|de|d’|par|") />> 1p
+        <<- not value(<1, "|de|d’|par|") />> _1p_
 
     vous ?[seul|seuls|seules]¿ ?,¿ qui
     vous-même qui
@@ -2095,40 +2105,43 @@ __tag_sujets__
     [et|ou] [toi|toi-même]
     ni [toi|toi-même]
     [toi|toi-même] et
-        <<- />> 2p
+        <<- />> _2p_
 
     vous
     vous-même
     vous-mêmes
     vous [seul|seule|seuls|seules]
     vous autres
-        <<- not value(<1, "|de|d’|par|") />> 2p
+        <<- not value(<1, "|de|d’|par|") />> _2p_
 
 
 __tag_prop_sub__
     dont
-        <<- />> dont
+        <<- />> _dont_|_propsub_
 
     ce [que|qu’]
-        <<- />> ce_que
+        <<- />> _ceque_|_propsub_
 
     [que|qu’]
-        <<- />> que
+        <<- />> _que_|_propsub_
 
     qui
-        <<- />> qui
+        <<- />> _qui_|_propsub_
+
+    [lequel|laquelle|lesquels|lesquelles]
+        <<- morph(<1, ":R") />> _prepquel_|_propsub_
 
     à [qui|quoi]
     auquel
     auxquels
     auxquelles
     à laquelle
-        <<- />> àCOI
+        <<- />> _àCOI_|_propsub_
 
 
 __tag_ni__
     ni
-        <<- />> ni
+        <<- />> _ni_
 
 
 !!!! Fusions et immunités                                                                         !!
@@ -4416,7 +4429,6 @@ TEST: un super {{week end}}                             ->> week-end
 
 __tu_va_t_en__
     va t en
-    va t en
     va t-en
     va-t en
     va-t-en
@@ -4430,9 +4442,10 @@ __tu_va_t_en__
     va t-en >guerre
     vat’en >guerre
     vat-en >guerre
+    vat en >guerre
     va-t-en >guerre
     va-t’en-guerre
-        <<- /tu/ ->> va-t-en-guerre                                                                 # Va-t-en-guerre (invariable) : des traits d’union sont nécessaires.
+        <<- /tu/ ->> va-t-en-guerre                                                                 # Va-t-en-guerre (invariable) : des traits d’union sont nécessaires.|https://fr.wiktionary.org/wiki/va-t-en-guerre
 
 TEST: {{Va-t-en}}, c’en est assez.
 TEST: Un {{va-t’en guerre}}, on ne peut pas lui faire confiance.
@@ -4680,7 +4693,7 @@ __inte_union_nous1!7__
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ons$  nous
     [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ons$  nous
     [ne|n’]  [lui|leur|y]                    en                          ~ons$  nous
-        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") and not tag_before(\1, "1p")
+        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:1p", ":[GW]") and not tag_before(\1, "_1p_")
         --2:-1>> \-2-\-1                                                                            # Forme interrogative ? Mettez un trait d’union.
 
     ,  ~ons$  nous  [<end>|,]
@@ -4714,7 +4727,7 @@ __inte_union_vous1!7__
     [ne|n’]  [me|m’|te|t’|se|s’|nous|vous]   [le|la|l’|les|en|y]         ~ez$  vous
     [ne|n’]  [le|la|l’|les]                  [lui|leur|en|y]             ~ez$  vous
     [ne|n’]  [lui|leur|y]                    en                          ~ez$  vous
-        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") and not tag_before(\1, "2p")
+        <<- /inte/ space_after(\-2, 1, 1) and morph(\-2, ":V.*:2p", ":[GW]") and not tag_before(\1, "_2p_")
         --2:-1>> \-2-\-1       # Forme interrogative ? Mettez un trait d’union.
 
     ,  ~ez$  vous  [<end>|,]
@@ -4776,7 +4789,7 @@ TEST: Tape-toi Patrick.
 
 __virg_après_verbe_COD__
     [le|la|l’|les]  $:Y  $:M
-        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "que")
+        <<- /virg/ not value(\2, "|appeler|") and not tag_before(\1, "_que_")
         -2>> \2,                                                # Une virgule est probablement souhaitable.
 
     [le|la|l’|les]  *WORD  ?[cher|chère]¿  @:M[12]  <end>
@@ -5917,21 +5930,21 @@ __loc_notre_père_qui_es_au_cieux__
 
 __conj_xxxai__sans_sujet!3__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~ai$
-        <<- /conj/ not tag_before(\1, "1s") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
+        <<- /conj/ not tag_before(\1, "_1s_") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [me|m’|te|t’]       ?[le|la|l’|les|en|y]¿   ~ai$
     [le|la|l’|les]      [lui|leur|en|y]         ~ai$
     [lui|leur]          en                      ~ai$
-        <<- /conj/ not tag_before(\1, "1s") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
+        <<- /conj/ not tag_before(\1, "_1s_") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp])")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     [nous|vous]         ?[le|la|l’|les|en|y]¿   ~ai$
-        <<- /conj/ not tag_before(\-1, "1s") and not morph(<1, ":R") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ not tag_before(\-1, "_1s_") and not morph(<1, ":R") and morph(\-1, ":1s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
     ~ai$
-        <<- /conj/ not tag_before(\1, "1s") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ not tag_before(\1, "_1s_") and morph(\1, ":1s", ":(?:E|G|W|M|J|3[sp]|N|A|Q)") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 1ʳᵉ personne du singulier. Sujet (“je” ou “moi qui”) introuvable.
 
 TEST: avançait et s’{{donnai}} en spectacle
@@ -5944,21 +5957,21 @@ TEST: ce qui, dans le meilleur des cas, peut-être, oui, c’est vrai, vous {{do
 
 __conj_xxxas_xxxes__sans_sujet!3__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~[ae]s$
-        <<- /conj/ not tag_before(\1, "2s") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
+        <<- /conj/ not tag_before(\1, "_2s_") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [me|m’|te|t’]       ?[le|la|l’|les|en|y]¿   ~[ae]s$
     [le|la|l’|les]      [lui|leur|en|y]         ~[ae]s$
     [lui|leur]          en                      ~[ae]s$
-        <<- /conj/ not tag_before(\-1, "2s") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
+        <<- /conj/ not tag_before(\-1, "_2s_") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     [nous|vous]         ?[le|la|l’|les|en|y]¿   ~[ae]s$
-        <<- /conj/ not tag_before(\-1, "2s") and not morph(<1, ":R") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ not tag_before(\-1, "_2s_") and not morph(<1, ":R") and morph(\-1, ":2s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
     ~..[ae]s$
-        <<- /conj/ not tag_before(\1, "2s") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ not tag_before(\1, "_2s_") and morph(\1, ":2s", ":(?:E|G|W|M|J|3[sp]|N|A|Q|1p)") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Ceci est un verbe à la 2ᵉ personne du singulier. Sujet (“tu” ou “toi qui”) introuvable.
 
 TEST: se {{demandes}} comment faire
@@ -5973,25 +5986,25 @@ TEST: nous laisserons derrière nous les empires de la Terre.
 
 __conj_xxxxxs_sans_sujet!3__
     [ne|n’]  ?[le|la|l’|les|en|me|m’|te|t’|nous|vous|lui|leur|y]¿  ~[iudnrtpcï]s$
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [me|m’|te|t’]       ?[le|la|l’|les|en|y]¿   ~[iudnrtpcï]s$
     [le|la|l’|les]      [lui|leur|en|y]         ~[iudnrtpcï]s$
     [lui|leur]          en                      ~[iudnrtpcï]s$
-        <<- /conj/ not tag_before(\-1, "1s") and not tag_before(\-1, "2s") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ not tag_before(\-1, "_1s_") and not tag_before(\-1, "_2s_") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [nous|vous]         ?[le|la|l’|les|en|y]¿   ~[iudnrtpcï]s$
-        <<- /conj/ not tag_before(\-1, "1s") and not tag_before(\1, "2s") and not morph(<1, ":R") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
+        <<- /conj/ not tag_before(\-1, "_1s_") and not tag_before(\1, "_2s_") and not morph(<1, ":R") and morph(\-1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p)")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     étais
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w")) and not morph(<1, ":[DA].*:p")
+        <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_") and not (\1.istitle() and before0("\\w")) and not morph(<1, ":[DA].*:p")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     ~[iudnrtpcï]s$
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_") and morph(\1, ":[12]s", ":(?:E|G|W|M|J|3[sp]|2p|1p|V0e|N|A|Q)") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
 TEST: s’{{précipitais}} dans la gueule du loup
@@ -6014,16 +6027,16 @@ __conj_peux_veux_vaux_équivaux_prévaux_sans_sujet!3__
     [me|m’|te|t’|nous|vous]  ?[le|la|l’|les|en|y]¿                [peux|veux|vaux|équivaux|prévaux]
     [le|la|l’|les]           [lui|leur|en|y]                      [peux|veux|vaux|équivaux|prévaux]
     [lui|leur]               en                                   [peux|veux|vaux|équivaux|prévaux]
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s")
+        <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_")
         --1>> =suggVerb(\-1, ":3s")                                                                 # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     vaux
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_") and not (\1.istitle() and before0("\\w"))
             and not morph(<1, ":(?:R|D.*:p)")
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
     [peux|veux|équivaux|prévaux]
-        <<- /conj/ not tag_before(\1, "1s") and not tag_before(\1, "2s") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ not tag_before(\1, "_1s_") and not tag_before(\1, "_2s_") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3s")                                                                   # Incohérence. Le sujet de cette forme verbale est introuvable.
 
 TEST: tu sais, s’{{équivaux}}, voilà.
@@ -6041,12 +6054,12 @@ TEST: Le total de cette opération, contrairement à ce qu’on pense, {{équiva
 ## Incohérences avec formes verbales 1pl et 2pl sans sujet
 __conj_xxxons_sans_sujet!3__
     ~ons$
-        <<- /conj/ morph(\1, ":1p", ":[EGMNAJ]") and not tag_before(\1, "1p") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ morph(\1, ":1p", ":[EGMNAJ]") and not tag_before(\1, "_1p_") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3p")     # Ceci est un verbe à la 1ʳᵉ personne du pluriel. Sujet (“nous” ou équivalent) introuvable.
 
 __conj_xxxez_sans_sujet!3__
     ~ez$
-        <<- /conj/ morph(\1, ":2p", ":[EGMNAJ]") and not tag_before(\2, "2p") and not (\1.istitle() and before0("\\w"))
+        <<- /conj/ morph(\1, ":2p", ":[EGMNAJ]") and not tag_before(\2, "_2p_") and not (\1.istitle() and before0("\\w"))
         -1>> =suggVerb(\1, ":3p")     # Ceci est un verbe à la 2ᵉ personne du pluriel. Sujet (“vous” ou équivalent) introuvable.
 
 TEST: les hommes et les femmes, qui sans un bruit, sans une parole amère, {{continuerons}} leur tâche n’en seront pas plus récompensés.
@@ -6434,7 +6447,7 @@ TEST: elle aussi {{mangées}}.
 
 __conf_presque_vconj__
     presque  @:[123][sp]¬:[GNAQWM]
-        <<- /conf/ not tag_before(\1, "ce_que") and not value(<1, "|ou|") -2>> _                    # Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
+        <<- /conf/ not tag_before(\1, "_ceque_") and not value(<1, "|ou|") -2>> _                    # Incohérence probable avec “presque” : « \2 » n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: presque {{délaissait}} par tout le monde.
 TEST: Tout le monde ou presque déteste ces gens-là.
@@ -6449,7 +6462,7 @@ TEST: Elles se querellent sans cesse sur presque tout.
 
 
 __conf_si_x_être__
-    si  *WORD  [/-je|/-tu|/-il|/-elle|/-on|/-nous|/-vous|/-ils|/-elles|/-iel|/-iels]
+    [aussi|si]  *WORD  [/-je|/-tu|/-il|/-elle|/-on|/-nous|/-vous|/-ils|/-elles|/-iel|/-iels]
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":(?:Y|[123][sp])", ":[AQ]")
         -2>> =suggVerbPpas(\2)                                                                      # Incohérence probable. Ce devrait probablement être un participe passé ou un adjectif.
 
@@ -6458,27 +6471,27 @@ TEST: si détruit soit-il, on pourra le remettre sur ses pieds.
 
 
 __conj_si_x_être__
-    si  *WORD  [/-je|/-tu|/-iel]
+    [aussi|si]  *WORD  [/-je|/-tu|/-iel]
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:p", ":[si]")
         -2>> =suggSing(\2)                                                                          # Accord avec “\3” : l’adjectif doit être au singulier.
 
-    si  *WORD  /-il
+    [aussi|si]  *WORD  /-il
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[fp]", ":[me]:[si]")
         -2>> =suggMasSing(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au masculin singulier.
 
-    si  *WORD  /-elle
+    [aussi|si]  *WORD  /-elle
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[mp]", ":[fe]:[si]")
         -2>> =suggFemSing(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au féminin singulier.
 
-    si  *WORD  [/-nous|/-iels]
+    [aussi|si]  *WORD  [/-nous|/-iels]
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:s", ":[pi]")
         -2>> =suggPlur(\2)                                                                          # Accord avec “\3” : l’adjectif doit être au pluriel.
 
-    si  *WORD  /-ils
+    [aussi|si]  *WORD  /-ils
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[sf]", ":[me]:[pi]")
         -2>> =suggMasPlur(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au masculin pluriel.
 
-    si  *WORD  /-elles
+    [aussi|si]  *WORD  /-elles
         <<- /conf/ morphVC(\3, ">(?:être|devenir|redevenir|rester|sembler|demeurer|para[îi]tre)/") and morph(\2, ":A.*:[sm]", ":[fe]:[pi]")
         -2>> =suggFemPlur(\2)                                                                       # Accord avec “\3” : l’adjectif doit être au féminin pluriel.
 
@@ -6489,11 +6502,21 @@ TEST: si {{riches}} soit-elle
 TEST: si {{grand}} paraissons-nous
 TEST: si {{frappé}} fussent-ils, rien ne put les mouvoir.
 TEST: si {{étonnés}} demeurent-elles
+TEST: si {{malins}} suis-je que je vis le torrent de merde arriver avant tout le monde
+TEST: si {{habiles}} fusses-tu, tu perdis la bataille.
+TEST: aussi {{fous}} fût-il, il ne fit point illusion.
+TEST: si {{belles}} était-elle qu’elle fut enlevée
+TEST: aussi {{pressé}} soyons-nous, ça ne viendra pas plus vite
+TEST: si {{avare}} sont-ils qu’ils ont refusé de payer
+TEST: aussi {{calme}} fussent-elles, elles furent blâmées.
+
+# pour justifiée qu’elle fût
+# [aussi|si] habile qu’il soit
 
 
 __conf_trop_vconj__
     trop  @:[123][sp]¬:(?:[GNAQWM]|3p)
-        <<- /conf/ not tag_before(\1, "ce_que") -2>> _                                              # Incohérence probable avec “trop” : “\2” n’est ni un adjectif, ni un participe passé, ni un adverbe.
+        <<- /conf/ not tag_before(\1, "_ceque_") -2>> _                                              # Incohérence probable avec “trop” : “\2” n’est ni un adjectif, ni un participe passé, ni un adverbe.
 
 TEST: J’ai trop {{mangeais}}.
 TEST: Ce que nous réussissons presque sera considéré comme un échec.
@@ -6961,7 +6984,7 @@ TEST: une dérive à vau-l’eau.
 
 __conf_à_a_locutions__
     a ?seulement¿ [*NUM|$:B|quelques|plusieurs] [millimètres|centimètres|décamètres|mètres|kilomètres|verstes|lieues|UA|parsecs|années-lumière] de distance
-    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|domicile|genoux|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|perte|rallonge|reculons|risque|sec|tâtons|vélo|vif]
+    a [califourchon|cheval|contrecœur|contre-cœur|contrejour|contre-jour|contretemps|contre-temps|demi-mot|domicile|genoux|gogo|distance|nouveau|présent|rebrousse-poil|regret|travers|tout-va|confesse|midi|minuit|perte|rallonge|reculons|risque|sec|tâtons|travers|vélo|vif]
     a [mi-chemin|mi-mandat|mi-mot+s|mi-parcours|mi-temps|mi-voix]
     a air comprimé
     a armes égales
@@ -7033,7 +7056,7 @@ __conf_à_a_locutions__
     a ?[si|très|trop]¿ juste [raison|titre]
     a l’ heure actuelle
     a l’ heure qu’ il est
-    a l’ [accoutumée|amiable|arrache|avance|avenant|avenir|aveuglette|emporte-pièce|évidence|étouffée|extérieur|improviste|intérieur|inverse|occasion|unanimité|unisson]
+    a l’ [accoutumée|amiable|arrache|avance|avenant|avenir|aveuglette|écart|emporte-pièce|évidence|étouffée|extérieur|improviste|intérieur|inverse|occasion|unanimité|unisson]
     a l’ air libre
     a l’ exclusion de toute autre chose
     a l’ ordre du jour
@@ -7359,27 +7382,6 @@ __conf_mener_a_bien__
 TEST: Mener {{a}} bien cette guerre sera plus difficile qu’on le pense.
 TEST: Je peux mener {{a}} bien cette opération.
 TEST: Cette coalition que tu penses mener a bien l’intention de te trahir.
-
-
-__conf_à_a_après_verbes__
-    @:V¬:[YGNAWM]  ?$:W¿  a
-        <<- /conf/ \-1 != "A" and not tag_before(\1, "que") and not tag_before(\1, "dont") and not tag_before(\1, "qui") and not morph(>1, ":Q")
-        --1>> à                                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-
-    [/VCint|/VCimp]  ?$:W¿  a
-        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
-
-TEST: Vient-on {{a}} la maison demain ?
-TEST: Arrivait-elle {{a}} le manger ?
-TEST: Dis-moi {{a}} quelle heure on mange.
-TEST: Offrez-vous {{a}} Dieu et taisez-vous.
-TEST: dans tous les cas de figure il pense souvent {{a}} sa fille.
-TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
-TEST: cet homme mange bien {{a}} la maison ?
-TEST: Ce que je mange a un goût de surgelé.
-TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
-TEST: Un rendez-vous a bousculé ses plans
-TEST: Maria Butina a également rencontré des républicains tels que Donald Trump
 
 
 __conf_à_en_juger_par__
@@ -10320,7 +10322,7 @@ __conf_son_sont__
         <<- /conf/ -2>> son                                     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ morph(<1, ":(?:V|Cs|R)", ":(?:[NA].*:[pi]|Ov)") and not tag_before(\1, "ce_que")
+        <<- /conf/ morph(<1, ":(?:V|Cs|R)", ":(?:[NA].*:[pi]|Ov)") and not tag_before(\1, "_ceque_")
         -1>> son                                                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     [à|chez|dès|par] sont
@@ -10328,7 +10330,7 @@ __conf_son_sont__
         <<- /conf/ -2>> son                                     # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     en sont @:[NA].*:[me]:s|>[aeéiîou].*/:[NA].*:f:s¬:[GW]
-        <<- /conf/ not value(<1, "|ils|elles|iels|leur|lui|nous|vous|m’|t’|s’|l’|") and not tag(<1, "ce_que")
+        <<- /conf/ not value(<1, "|ils|elles|iels|leur|lui|nous|vous|m’|t’|s’|l’|") and not tag(<1, "_ceque_")
         -2>> son                                                # Confusion probable : “sont” est le verbe “être” à la 3ᵉ personne du pluriel. Pour le déterminant, écrivez “son”.
 
     son [ceux|celles]
@@ -10523,6 +10525,7 @@ __conf_tête_tète!6__
 
     >hocher ?@:[WX]¿ [la|ma|ta|sa|notre|votre|leur|nos|vos|leurs] [tète+s]
     [mal|maux] de [tète+s]
+    ni queue ni [tète+s]
     >tenir ?@:[WX]¿ [tète+s]
         <<- /conf/ --1>> =\-1.replace("è", "ê").replace("È", "Ê")   # Confusion : “tète” est une forme conjuguée de “téter”. Pour la partie supérieure d’un corps, écrivez “tête”.
 
@@ -10917,13 +10920,21 @@ TEST: ni vu ni connu, j’t’embrouille.
 
 # Les jours
 __maj_jours_semaine__
-    [*WORD|*NUM]    [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
-    ,               [Lundi|Mardi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
-        <<- /maj/ not \2.isupper() -2:>> =\2.lower()
+    [*WORD|*NUM]    [Lundi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
+    ,               [Lundi|Mercredi|Jeudi|Vendredi|Samedi|Dimanche]
+        <<- /maj/ not \2.isupper() and not value(>1, "|saint|") -2:>> =\2.lower()
+        # Pas de majuscule sur les jours de la semaine.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
+
+    [*WORD|*NUM]    Mardi
+    ,               Mardi
+        <<- /maj/ not \2.isupper() and not value(>1, "|gras|saint|") -2:>> =\2.lower()
         # Pas de majuscule sur les jours de la semaine.|http://www.academie-francaise.fr/la-langue-francaise/questions-de-langue#42_strong-em-jours-de-la-semaine-pluriel-et-majuscules-em-strong
 
 TEST: Nous vous donnons rendez-vous {{Mercredi}} le 18.
+TEST: Viens ce {{Mardi}}.
 TEST: LA SITUATION CE MERCREDI
+TEST: Le Vendredi saint
+TEST: un Mardi gras comme un autre
 
 
 # Les mois
@@ -11598,6 +11609,10 @@ __purge_dates__
     à la fin de l’ année ?[passée|~^\d{2,5}$]¿
     à la fin des années ~^\d{2,5}$
     à la fin du mois [de|d’] {mois} ?[passé|prochain|~^\d{2,5}$]¿
+    à l’ orée de l’ an ?[passé|~^\d{2,5}$]¿
+    à l’ orée de l’ année ?[passée|~^\d{2,5}$]¿
+    à l’ orée des années ~^\d{2,5}$
+    à l’ orée du mois [de|d’] {mois} ?[passé|prochain|~^\d{2,5}$]¿
     jusqu’ en {mois} ~^\d{2,5}$
     jusqu’ à la {mi_mois} ~^\d{2,5}$
     depuis {mois} ?~^\d{2,5}$¿
@@ -12005,6 +12020,7 @@ __purge_locutions__
     à tous points de vue
     à toutes fins utiles
     à toutes jambes
+    à travers terre et mer
     à tu et à toi
     à tue-tête
     à un moment donné
@@ -12099,7 +12115,6 @@ __purge_locutions__
     au-dessus [de|d’] {pronom_obj}
     aujourd’hui
     auparavant
-    ?tout¿ aussi
     aussitôt
     ?tout¿ au fond [de|d’] {pronom_obj}
     aux [abois|aguets|leurs|mien|miens|mienne|miennes|tien|tiens|tienne|tiennes|sien|siens|sienne|siennes|nôtres|vôtres]
@@ -12257,7 +12272,7 @@ __purge_locutions__
     d’ utilité publique
     de-ci ?,¿ de-là
     [de|d’] *NUM %
-    [de|d’] [cesse|conserve|fait|guingois|luxe|nouveau|permanence|partout|préférence|rechange|routine|surcroît|surcroit|visu]
+    [de|d’] [conserve|fait|guingois|luxe|nouveau|permanence|partout|préférence|rechange|routine|surcroît|surcroit|visu]
     [de|d’] A à Z
     [de|d’] bas en haut
     [de|d’] bas étage
@@ -13299,6 +13314,15 @@ __purge_conditionnelle__
     aussi $:W que ce soit [<end>|,]
         <<- ~1:5>> *
 
+    ?tout¿  aussi  [<end>|,|(|)]
+        <<- ~1:-2>>*
+
+    ?tout¿  aussi  *WORD  [<end>|,|(|)]
+        <<- ~1:-3>>*
+
+    ?tout¿  aussi  *WORD  *WORD
+        <<- not morphVC(\-1, ">être/") ~1:-3>> *
+
     au sens le [plus|moins] @:A.*:[me]:[si] du terme
     au sens @:A.*:[me]:[si] du terme
         <<- ~>> *
@@ -13378,7 +13402,7 @@ __purge_conditionnelle__
         <<- not morph(<1, ":D") ~>> *
 
     hélas
-        <<- not morph(<1, ":(?:X|Oo)") and not tag_before(\1, "2s") ~>> *
+        <<- not morph(<1, ":(?:X|Oo)") and not tag_before(\1, "_2s_") ~>> *
 
     la lettre [a|b|c|d|e|f|g|h|i|j|k|l|m|n|o|p|q|r|s|t|u|v|w|x|y|z]  @:(?:3s|Ov)
         <<- ~3>> *
@@ -15034,6 +15058,7 @@ TEST: le flou demeure aujourd’hui éblouissant.
 TEST: la petite reste fragile
 TEST: au moins neuf personnes disparues dans le pays et 140 blessés
 TEST: C’en est arrivé là.
+TEST: C’en est fini.
 TEST: Madame, des comme vous, j’en vois quatre par jour.
 TEST: Un quotidien facilité peut changer, à long terme, la donne dans la satisfaction des professionnels du privé et du public.
 TEST: elles sont dans l’incapacité de rendre compte de l’intensité et de la profondeur des traumatismes provoqués
@@ -15051,6 +15076,7 @@ TEST: Voilà une bonne chose de réglée !
 TEST: responsable de l’Ordre des pharmaciens dans la région Grand Est
 TEST: D’autres nombreuses actions sont également bien sûr impératives.
 TEST: il y a fort à parier qu’on sera encore oublié…
+
 
 
 @@@@
@@ -17352,7 +17378,8 @@ TEST: Ce sont des biens de peu de valeur.
 !!
 
 # a / à
-__conf_a_à__
+__conf_à_a_après_verbes__
+    >avoir a l’ œil
     >arriver a [destination|échéance]
     >arriver a point nommé
     >arriver a bon port
@@ -17366,6 +17393,7 @@ __conf_a_à__
     [>mettre|>remettre] a [bas|>flot|>jour|>niveau|>nu|>plat|>table|>terre]
     >naviguer a [vu+ses]
     [>mettre|>remettre] a l’ [écart|épreuve]
+    >parer a toute éventualité
     >passer a tabac
     >percer a jour
     >prendre a la légère
@@ -17382,21 +17410,60 @@ __conf_a_à__
     [>venir|>revenir] a point
         <<- /conf/ -2>> à               # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
-    >avoir du mal a
+    >appartenir a
+    >appartenir en propre a
     >avoir vocation a
+    >donner suite a
+    enclin a
+    en proie a
     >laisser libre cours a
-        <<- /conf/ --1>> à              # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+    >parvenir a
+        <<- /conf/ not tag_before(\1, "_àCOI_") --1>> à             # Confusion : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
 
+    >avoir du mal a
+    >commencer a
+    >condamner a
+    >mentir a
+    >préparer a
+    >réussir a
+    >viser a
+        <<- /conf/ not tag_before(\1, "_propsub_") and not morph(\1, ":Y")
+        --1>> à                                                     # Confusion probable : “a” est une conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.
+
+    @:V¬:[YGNAWM]  a
+        <<- /conf/ \-1 != "A" and not tag_before(\1, "_propsub_") and not morph(>1, ":Q")
+        --1>> à                                                 # Confusion probable : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+    [/VCint|/VCimp]  a
+        <<- /conf/ not value(\1, "|rendez-vous|") --1>> à       # Confusion : “a” est la conjugaison du verbe “avoir”. Pour la préposition, écrivez “à”.|http://fr.wiktionary.org/wiki/%C3%A0
+
+TEST: en proie {{a}} toutes sortes d’illusions
 TEST: ce contrat arrive {{a}} échéance.
 TEST: il faut tenir {{contes}} des faits au lieu de nos impressions.
 TEST: prendre {{a}} la légère ce test serait une erreur.
 TEST: il faut se tenir {{a}} distance de ces gens-là.
 TEST: J’avais du mal {{a}} l’écouté (double erreur utile pour tester le faux positif)
+TEST: Vient-on {{a}} la maison demain ?
+TEST: Arrivait-elle {{a}} le manger ?
+TEST: Dis-moi {{a}} quelle heure on mange.
+TEST: Offrez-vous {{a}} Dieu et taisez-vous.
+TEST: dans tous les cas de figure il pense souvent {{a}} sa fille.
+TEST: Qu’y a-t-il {{a}} cette place qui mérite que je prenne tant de risques.
+TEST: N’y a-t-il pas {{a}} la table du saucisson ?
+TEST: cet homme mange bien {{a}} la maison ?
+TEST: Ce que je mange a un goût de surgelé.
+TEST: celui qui conduisait a décidé de faire un tour du quartier avec la voiture.
+TEST: Un rendez-vous a bousculé ses plans
+TEST: Maria Butina a également rencontré des républicains tels que Donald Trump
+TEST: l’épée que tu tiens a une longue histoire sanglante.
+TEST: l’appel auquel j’ai donné suite a eu des conséquences désastreuses.
+TEST: le problème avec lequel j’ai du mal a été résolu avec brio par mon rival
+TEST: quand on doute, minutieusement se préparer a des vertus apaisantes
 
 
 __conf_pronom_à_l_air__
     [tout|ça|ceci|cela]  à  l’  air  @:[AR]|>libre/
-        <<- /conf/ morph(<1, ":Cs|<start>|>,") -2>> a                # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
+        <<- /conf/ morph(<1, ":Cs|<start>|>,") -2>> a               # Confusion probable : “à” est une préposition. Pour le verbe “avoir”, écrivez “a”.
 
 TEST: lorsque tout {{à}} l’air fini, c’est trompeur.
 TEST: Tout {{à}} l’air complètement foutu…
@@ -17562,7 +17629,7 @@ TEST: il a bachoté les {{anales}}.
 
 # air / aire / ère
 __conf_air_aire_ère__
-    [>air|>aire] [>digital|>numérique|>industriel|>glacière|>glaciaire|>géologique|Meiji|>cénozoïque|>moderne|>paléozoïque|>pliocène|>primaire|>secondaire|>tertiaire|>quaternaire]
+    [>air|>aire] [>digital|>numérique|>industriel|>glacière|>glaciaire|>géologique|Meiji|>cénozoïque|>moderne|nouvel|nouvelle+s|>paléozoïque|>pliocène|>primaire|>secondaire|>tertiaire|>quaternaire]
     [>air|>aire] du [cénozoïque|digital|numérique|paléozoïque|pliocène|pétrole|primaire|secondaire|tertiaire|quaternaire]
     [>air|>aire] du big data
         <<- /conf/ -1>> ère|ères    # Confusion. L’aire est une surface. L’air est un gaz, une apparence ou une musique. Pour évoquer une époque, écrivez “ère”.
@@ -18417,7 +18484,7 @@ TEST: Vous {{faîtes}} mal !
 
 
     en [faite|>faîte]
-        <<- /conf/ not tag_before(\1, "2p") ->> en fait                     # Confusion probable : « en fait » = « en réalité ».
+        <<- /conf/ not tag_before(\1, "_2p_") ->> en fait                     # Confusion probable : « en fait » = « en réalité ».
 
 TEST: {{en faite}}, on en voit partout, ça grouille.
 TEST: ils sont {{en faîtes}} partis à la montagne.
@@ -19469,18 +19536,24 @@ __conf_tâche_tache__
         <<- /conf/ -1>> =\1.replace("a", "â").replace("A", "Â")
         # Confusion. Tache signifie faire une salissure, une altération, une marque, une coloration… Pour parler de l’accomplissement d’un travail, écrivez “tâcher”.
 
-    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >être       [de|d’]  @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [ne|n’|me|m’|te|t’|se|s’]
-    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
-    [<start>|,|(]  *WORD  >tache  >consister  [à|a]    @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être             [de|d’]  [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >être             [de|d’]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister        [à|a]    [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(]  *WORD  >tache  >consister        [à|a]    [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister        [à|a]    [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister        [à|a]    [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister        [à|a]    [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  >consister        [à|a]    @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [ne|n’|me|m’|te|t’|se|s’]
+    [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [le|la|l’|les|en|nous|vous|lui|leur|y]  @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [nous|vous]     [le|la|l’|les|en|y]     @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [le|la|l’|les]  [lui|leur|en|y]         @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    [lui|leur|y]    en                      @:(?:Y|V1.*:Q)
+    [<start>|,|(]  *WORD  >tache  [se|s’] >résumer  [à|a]    @:(?:Y|V1.*:Q)
         <<- /conf/ morph(\2, ":D", ":R") -3>> =\3.replace("ach", "âch").replace("ACH", "ÂCH")
         # Confusion. Une tache est une salissure, une altération, une marque, une coloration… Pour parler d’un travail à accomplir, écrivez “tâche”.
 
@@ -19494,6 +19567,7 @@ TEST: {{Tache}} de ne pas faire trop de bruit.
 TEST: se tuer à la {{tache}}
 TEST: leur {{tache}} consiste à obéir et à fermer leur gueule
 TEST: ma {{tache}} est d’accomplir ce que personne d’autre ne peut faire.
+TEST: votre {{tache}} se résume à obéir à tout ce qu’on vous dit.
 TEST: une tâche dévalorisante.
 TEST: peiner à la tâche.
 
@@ -19801,6 +19875,9 @@ __infi_qqch_de__
     >avoir vite fait                            [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “avoir vite fait de”, le verbe devrait être à l’infinitif.
 
+    n’ >avoir de cesse                          [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
+        <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “n’avoir de cesse de”, le verbe devrait être à l’infinitif.|https://fr.wiktionary.org/wiki/n%E2%80%99avoir_de_cesse
+
     >faire  [exprès|semblant|mine]              [de|d’]  ?[le|l’|la|leur|les|nous|vous|lui]¿  ~..ée?s?$
         <<- /infi/ analyse(\-1, ":Q", ":M") --1>> =suggVerbInfi(\-1)                                # Après “faire semblant de”, le verbe devrait être à l’infinitif.
 
@@ -19838,6 +19915,7 @@ TEST: avoir raison de la {{considérée}} ainsi
 TEST: vous avez le droit de lui {{craché}} à la gueule
 TEST: ils ont vite fait de nous {{poussée}} à bout
 TEST: elle est en train de {{mangée}}
+TEST: elle n’avait de cesse de la {{poussée}} dans ses derniers retranchements
 TEST: je déteste sa manière de la {{rabaissée}} en permanence.
 TEST: Elle avait hâte de {{dévouée}} sa vie à sa passion
 TEST: il est hors de question de {{menée}} cette attaque ainsi
@@ -19867,7 +19945,7 @@ __infi_de_verbe__
     [de|d’]  @:V1.*:Q¬:N
         <<- /infi/ not \2[0:1].isupper() and not morph(<1, ">(?:en|passer|qualifier)/")
             and not before("(?i)(?:quelqu(?:e chose|’une?)|qu’y a-t-il |\\b(?:l(?:es?|a)|nous|vous|me|te|se) trait|personne|points? +$|autant +$|ça +|rien d(?:e |’)|rien(?: +[a-zéèêâîûù]+|) +$)")
-            and not tag_before(\1, "ce_que")
+            and not tag_before(\1, "_ceque_")
         -2>> =suggVerbInfi(\2)                                                          # Le verbe devrait être à l’infinitif.
 
 TEST: d’en {{parlé}} sans cesse
@@ -20018,7 +20096,7 @@ __infi_avoir_de_quoi__
 TEST: ils n’ont pas de quoi {{pavoisé}}
 
 
-__infi_est_ce_que__
+__infi_est_ceque__
     est-ce  [que|qu’]  @:(?:V1.*:Q|[13]s|2[sp])¬:[GYWMN]
         <<- /infi/ not value(<1, "|que|qu’|") -3>> =suggVerbInfi(\3)                                # Après “est-ce que”, le verbe devrait être à l’infinitif.
 
@@ -20033,7 +20111,7 @@ __infi_falloir__
     il faille                                               @:V¬:[YMWG]
     >avoir    fallu                                         @:V¬:[YMWG]
     [faut-il|fallait-il|fallut-il|faudra-t-il|faudrait-il]  @:V¬:[YMWG]
-        <<- /infi/ not (tag_before(\1, "que") and morph(\-1, ":3[sp]"))
+        <<- /infi/ not (tag_before(\1, "_que_") and morph(\-1, ":3[sp]"))
         --1>> =suggVerbInfi(\-1)                                                                    # Après le verbe “falloir”, le verbe devrait être à l’infinitif.
 
     [faut|fallait|fallut|faudra|faudrait]                   [le|la|leur|les|l’]  @:V¬:[YMWGN]
@@ -20334,6 +20412,13 @@ TEST: il est censé être habile
 TEST: censée être la meilleure de son groupe
 
 
+__conf_adj_de_voir_que__
+    [<start>|,|(]  *WORD  de  [voir|constater]  [que|qu’]
+        <<- /conf/ morph(\2, ":V1.*:Y") -2>> =suggVerbPpas(\2)                          # Confusion probable. Si vous décrivez un état de fait (et non une action), il faut un participe passés.
+
+TEST: {{tétaniser}} de voir que leurs théories grandioses ne valent rien
+
+
 
 !!!
 !!!
@@ -20567,10 +20652,10 @@ __purge_autre__
 
 __énumérations_noms_propres__
     *WORD  ,  *WORD  ,  *WORD
-        <<- morph(\1, ":M") and morph(\3, ":M") and morph(\3, ":M") />> enum
+        <<- morph(\1, ":M") and morph(\3, ":M") and morph(\3, ":M") />> _enum_
 
     <start>  *WORD  ,  *WORD
-        <<- morph(\2, ":M") and morph(\4, ":M") />> enum
+        <<- morph(\2, ":M") and morph(\4, ":M") />> _enum_
 
 
 
@@ -20712,7 +20797,7 @@ TEST: une chambre {{ou}} nous n’avons rien trouvé
 ## Accord et incohérences
 __ppas_sont_adj__
     sont  *WORD
-        <<- /ppas/ morph(\2, ":V", ":(?:N|A|Q|W|G|3p)") and not tag_before(\1, "ce_que")
+        <<- /ppas/ morph(\2, ":V", ":(?:N|A|Q|W|G|3p)") and not tag_before(\1, "_ceque_")
         -2>> =suggVerbPpas(\2, ":m:p")                      # Incohérence : “\2” n’est pas un participe passé.
 
 TEST: après avoir mis à jour sont {{profile}}.
@@ -20729,7 +20814,7 @@ TEST: après avoir mis à jour sont {{profile}}.
 __conj_nous2__
     <start>  nous   ~.ont$
         <<- /conj/ morph(\3, ":V.*:3p", ":[GPY]") and not value(>1, "|ils|elles|iel|iels|")
-            and ( (morph(\3, ":V...t_") and value(>1, "le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|leur") and not tag(>1, "enum")) or morph(\3, ":V..i__") )
+            and ( (morph(\3, ":V...t_") and value(>1, "le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|leur") and not tag(>1, "_enum_")) or morph(\3, ":V..i__") )
         -3>> =suggVerb(\3, ":1p")                                       # Conjugaison problement erronée si “\2” est bien le sujet de “\3” et non un pronom objet.
 
     [<start>|,|(]  nous  qui  @:V¬:(?:1p|G)
@@ -20869,7 +20954,7 @@ TEST: sans fin elles se sont succédé
 __ppas_se_être__
     [me|m’|te|se|s’]  ?[y|en]¿  >être  *WORD
         <<- /ppas/ morph(\-1, ":(?:Y|[123][sp])", ":[QAG]") --1>> =suggVerbPpas(\-1)                # Incohérence. Après « s’être », le verbe doit être un participe passé.
-        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not tag_before(\1, "que") and not before("(?i)\\bon (?:ne |)$")
+        <<- /ppas/ __else__ and morph(\-2, ":[123]s") and morph(\-1, ":Q.*:p") and not tag_before(\1, "_que_") and not before("(?i)\\bon (?:ne |)$")
         --1>> =suggSing(\-1)                                                                        # Le participe passé devrait être au singulier.
 
     tu  t’  ?[y|en]¿  [es|étais|seras|serais|fus|fusses]  *WORD
@@ -20996,7 +21081,7 @@ __ppas_je_tu_verbe_état__
     [je|j’|tu] ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          @:[NA].*:p¬:[GWYsi]
-        <<- /ppas/ not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggSing(\-1)                                   # Accord avec le sujet “\1” : “\-1” devrait être au singulier.
+        <<- /ppas/ not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggSing(\-1)                                   # Accord avec le sujet “\1” : “\-1” devrait être au singulier.
 
 TEST: j’étais {{perdus}}                                                          ->> perdu
 TEST: j’aurais été {{perdus}} sans toi                                            ->> perdu
@@ -21051,7 +21136,7 @@ __ppas_3sg_mas_verbe_état__
     ([il|ce|c’|ç’|quiconque]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                        [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -21065,7 +21150,7 @@ __ppas_3sg_mas_verbe_état__
     ([ça|ceci|cela|celui-ci|celui-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not tag(\1, "enum") and morph(\2, ":3s") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not tag(\1, "_enum_") and morph(\2, ":3s") and not morph(<1, ":[RV]|>(?:et|ou)/") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     [<start>|,|(] tout ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                          [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
@@ -21080,7 +21165,7 @@ __ppas_3sg_mas_verbe_état__
     [<start>|,|(] tout ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:A.*:p¬:[GWYNsi]|@:[AQ].*:f¬:[GWYNme]]
-        <<- /ppas/ not tag(\2, "enum") --1>> =suggMasSing(\-1)                                                          # Accord avec le sujet “\2” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not tag(\2, "_enum_") --1>> =suggMasSing(\-1)                                                          # Accord avec le sujet “\2” : “\-1” devrait être au masculin singulier.
 
     lui [ne|n’|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                             [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui [ne|n’|y] >avoir [été|semblé|paru]                                                                                               [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -21094,7 +21179,7 @@ __ppas_3sg_mas_verbe_état__
     lui [ne|n’|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     lui n’ [en|y] [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                                [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lui n’ [en|y] >avoir [été|semblé|paru]                                                                                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -21108,7 +21193,7 @@ __ppas_3sg_mas_verbe_état__
     lui n’ [en|y]
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not morph(<1, ":[RV]") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1)     # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]) [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                 [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -21122,7 +21207,7 @@ __ppas_3sg_mas_verbe_état__
     ([lui|ça|ceci|cela|ce|c’|ç’|celui|celui-ci|celui-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) # Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasSing(\-1) # Accord avec le sujet “\1 qui” : “\-1” devrait être au masculin singulier.
 
     lequel ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
     lequel ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                      [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:f¬:[GWYme]]
@@ -21198,7 +21283,7 @@ __ppas_3sg_fem_verbe_état__
     ([elle|celle-ci|celle-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ not tag(\1, "enum") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":(?:[123]s|P)") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not tag(\1, "_enum_") and not morph(<1, ":[RV]|>(?:et|ou)/") and morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemSing(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au féminin singulier.
 
     ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
@@ -21213,7 +21298,7 @@ __ppas_3sg_fem_verbe_état__
     ([elle|celle|celle-ci|celle-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggFemSing(\-1) # Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
+        <<- /ppas/ morph(\2, ":(?:[123]s|P)") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggFemSing(\-1) # Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin singulier.
 
     laquelle ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                  [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
     laquelle ?[ne|n’]¿ ?[en|y]¿ >avoir [été|semblé|paru]                                                                                    [@:[NA].*:p¬:[GWYsi]|@:[AQ].*:m¬:[GWYfe]]
@@ -21258,7 +21343,7 @@ __ppas_1pl_verbe_état__
     nous ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          @:[NA].*:s¬:[GWYpi]|>légion
-        <<- /ppas/ not morph(<1, ":[RV]|>(?:ne|nous)/") and morph(\1, ":1p") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not morph(<1, ":[RV]|>(?:ne|nous)/") and morph(\1, ":1p") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggPlur(\-1)                                                                                            # Accord avec le sujet “nous” : “\-1” devrait être au pluriel.
 
 TEST: nous paraissons {{faible}}
@@ -21284,7 +21369,7 @@ __ppas_3pl_mas_verbe_état__
     ils ?[ne|n’]¿ ?[en|y]¿
         || [>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir]
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s")) --1>> =suggMasPlur(\-1) # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
+        <<- /ppas/ not value(\-1, "|légion|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s")) --1>> =suggMasPlur(\-1) # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                 [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
     ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿ (>avoir) [été|semblé|paru]                                                                   [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
@@ -21298,7 +21383,7 @@ __ppas_3pl_mas_verbe_état__
     ([eux|ceux-ci|ceux-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasPlur(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])            [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
@@ -21313,7 +21398,7 @@ __ppas_3pl_mas_verbe_état__
     ([eux|ceux|ceux-ci|ceux-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
-        <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggMasPlur(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au masculin singulier.
 
     lesquels ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                  [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:f¬:[GWYme]]
@@ -21366,7 +21451,7 @@ __ppas_3pl_fem_verbe_état__
     ([elles|celles-ci|celles-là]) ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ not morph(<1, ":[RV]") and morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemPlur(\-1)                                                                                         # Accord avec le sujet “\1” : “\-1” devrait être au féminin pluriel.
 
     ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿ ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])    [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
@@ -21381,7 +21466,7 @@ __ppas_3pl_fem_verbe_état__
     ([elles|celles|celles-ci|celles-là]) qui ?[ne|n’]¿ ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
-        <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "ce_que") and morph(\-1, ":3s"))
+        <<- /ppas/ morph(\2, ":(?:3p|P)") and not value(\-1, "|légion|") and not (tag(<1, "_ceque_") and morph(\-1, ":3s"))
         --1>> =suggFemPlur(\-1)                                                                                         # Accord avec le sujet “\1 qui” : “\-1” devrait être au féminin pluriel.
 
     lesquelles ?[ne|n’]¿ ?[en|y]¿ [>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre]                                [@:[NA].*:s¬:[GWYpi]|@:[AQ].*:m¬:[GWYfe]]
@@ -21455,7 +21540,7 @@ __ppas_être_accord_sing__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                  @:[NA].*:p¬:[GMWYsi]
-        <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
+        <<- /ppas/ not tag_before(\1, "_que_") and not morph(\1, ":G") and morph(\2, ":[123]s", ":(?:C|N.*:p)")
         --1>> =suggSing(\-1)                                                                        # Accord avec la forme verbale “\2” : “\-1” devrait être au singulier.
 
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])           @:[NA].*:p¬:[GMWYsi]
@@ -21500,7 +21585,7 @@ __ppas_être_accord_plur__
     (*WORD)      ?qui¿  ?[ne|n’]¿  ?[en|y]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                                          @:[NA].*:s¬:[GMWYpi]|>légion/
-        <<- /ppas/ not tag_before(\1, "que") and not morph(\1, ":G") and morph(\2, ":[13]p")
+        <<- /ppas/ not tag_before(\1, "_que_") and not morph(\1, ":G") and morph(\2, ":[13]p")
         --1>> =suggPlur(\-1)                                                                        # Accord avec la forme verbale “\2” : “\-1” devrait être au pluriel.
 
     [<start>|,|(]  ?qui¿  ?[ne|n’]¿  ?[en|y]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   @:[NA].*:s¬:[GMWYpi]|>légion/
@@ -21546,7 +21631,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|$:Cs]  [un|le|ce|cet]                    (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":A.*:f", ":[GWMme]") and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
+        <<- /ppas/ morph(\1, ":[NA].*:[me]", ":[GWf]") and morph(\-1, ":A.*:f", ":[GWMme]") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
@@ -21561,7 +21646,7 @@ __ppas_sujet_être_accord_genre__
     [<start>|,|$:Cs]  [une|la|ma|ta|sa|cette]           (*WORD)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
-        <<- /ppas/ morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":A.*:m", ":[GWMfe]") and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
+        <<- /ppas/ morph(\1, ":[NA].*:[fe]", ":[GWm]") and morph(\-1, ":A.*:m", ":[GWMfe]") and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|$:Cs]  [l’|mon|ton|son|notre|votre|leur] (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])             *WORD
@@ -21577,7 +21662,7 @@ __ppas_sujet_être_accord_genre__
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                                      *WORD
         <<- /ppas/ ((morph(\1, ":[NA].*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWMfe]")) or (morph(\1, ":[NA].*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]")))
-            and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
+            and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     [<start>|,|$:Cs]  [les|ces|mes|tes|ses|nos|vos|leurs|quelques|plusieurs]  (*WORD)  ?qui¿  ?[ne|n’]¿  ([>être|>sembler|>devenir|>rester|>demeurer|>redevenir|>paraître|>paraitre])                   *WORD
@@ -21642,8 +21727,8 @@ __ppas_nom_propre_être_accord_genre__
     [<start>|,|$:Cs]  ($:M)  ?qui¿  ?[ne|n’]¿
         || ([>adorer|>affirmer|>aimer|>croire|>déclarer|>désirer|>détester|>devoir|>dire|>estimer|>imaginer|>paraître|>paraitre|>penser|>pouvoir|>préférer|>risquer|>savoir|>sembler|>souhaiter|>vouloir])
         || avoir [été|semblé|paru]                                                                  *WORD
-        <<- /ppas/ not tag(\1, "enum") and ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]")))
-            and (morph(\2, ":[123]s") or (not tag(\1, "enum") and morph(\2, ":P")))
+        <<- /ppas/ not tag(\1, "_enum_") and ((morph(\1, ":M.*:f", ":[GWme]") and morph(\-1, ":A.*:m", ":[GWfe]")) or (morph(\1, ":M.*:m", ":[GWfe]") and morph(\-1, ":A.*:f", ":[GWme]")))
+            and (morph(\2, ":[123]s") or (not tag(\1, "_enum_") and morph(\2, ":P")))
         --1>> =switchGender(\-1)                                                                    # Accord erroné : “\1” et “\-1” ne sont pas accordés en genre.
 
     *WORD  [que|qu’]  $:M  ?[ne|n’]¿
@@ -22548,7 +22633,7 @@ TEST: il faillit agir, mais l’ayant {{remarqués}}, il passa son chemin.
 
 __ppas_m_t_avoir__
     [m’|t’] >avoir @:Q.*:p¬:[GWsi]
-        <<- /ppas/ not tag_before(\1, "que") or morph(\3, ":V[0-3]..t_")  -3>> =suggSing(\3)
+        <<- /ppas/ not tag_before(\1, "_que_") or morph(\3, ":V[0-3]..t_")  -3>> =suggSing(\3)
         # Accord avec “\1”. S’il s’agit d’un COD, le participe passé “\3” devrait être au singulier (et accordé en genre).|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
 
 TEST: ces livres m’avaient {{ennuyés}} au-delà du dicible.
@@ -22677,7 +22762,7 @@ TEST: La dernière fois qu’elle a brûlé, c’était pendant la Commune.
 TEST: en ayant l’impression qu’il a beaucoup réussi
 
 
-__ppas_ce_que_pronom_avoir__
+__ppas_ceque_pronom_avoir__
     ce  [que|qu’]  [je|j’|tu|il|elle|on|nous|vous|ils|elles|iel|iels|ça|cela|ceci]  ?[ne|n’]¿  ?[lui|leur]¿  >avoir  @:V[0-3]..t.*:Q.*:[fp]¬:(?:G|W|[me]:[si])
         <<- /ppas/ --1>> =suggVerbPpas(\-1, ":m:s")
         # Accord avec le COD “ce”. Le participe passé devrait être au masculin singulier.|http://fr.wikipedia.org/wiki/Accord_du_participe_pass%C3%A9_en_fran%C3%A7ais
@@ -23547,12 +23632,12 @@ __ppas_être_confusion__
         <<- /ppas/ --1>> =suggVerbPpas(\-1)                                                         # Après “ne \2 être”, il faut un participe passé.
 
     avoir [pu|cru|pensé|imaginé] être @:(?:V(?:1.*:Y|2.*:Ip.*:3s|3.*:Is.*:3s)|2p)
-        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "que") --1>> =suggVerbPpas(\-1)     # Après le verbe “être”, il faut un participe passé.
+        <<- /ppas/ not value(<1, "|l’|") and not tag_before(\1, "_que_") --1>> =suggVerbPpas(\-1)     # Après le verbe “être”, il faut un participe passé.
 
     >être  ~..er$
         <<- /ppas/ not tag(\2, "upron") and morph(\1, ":V", ":Q|>soit/") and (morph(\2, ":Y", ":[NAQ]") or \2 in aSHOULDBEVERB)
             and not morph(<1, ":Y|>ce/") and not value(<1, "|c’|") and not value(<2, "|ce|")
-            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "suj_vinfi")
         -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être à l’infinitif.
 
     >être  ~..ez$
@@ -23561,12 +23646,12 @@ __ppas_être_confusion__
 
     >être  ~.it$
         <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V(?:2.*:Ip.*:3s|3.*:Is.*:3s)", ":[NAQ]")
-            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "suj_vinfi")
         -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
 
     >être  ~.ut$
         <<- /ppas/ morph(\1, ":V", ":Q|>soit/") and morph(\2, ":V3.*:Is.*:3s", ":[NAQ]")
-            and not tag_before(\1, "ce_que") and not tag_before(\1, "suj_vinfi")
+            and not tag_before(\1, "_ceque_") and not tag_before(\1, "suj_vinfi")
         -2>> =suggVerbPpas(\2)                                                                      # Après “être”, le verbe ne devrait pas être conjugué à la 3ᵉ personne du singulier.
 
 TEST: Ne pas être {{aller}} là-bas est une grave erreur que nous regretterons longtemps.
@@ -24002,13 +24087,13 @@ __énumérations_substantifs__
     [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
         || , [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
         || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") and morph(\3, ":[NAM]") />> enum
+        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") and morph(\3, ":[NAM]") />> _enum_
 
     <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
         || [,|et|ou] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
     <start> [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
         || ?,¿ ainsi [que|qu’] [le|la|l’|les|un|une|des|ce|cet|cette|ces|mon|ton|son|ma|ta|sa|mes|tes|ses|notre|votre|nos|vos|leur|leurs|quelques|certains|certaines|tout|tous|toute|toutes] (*WORD)
-        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> enum
+        <<- morph(\1, ":[NAM]") and morph(\2, ":[NAM]") />> _enum_
 
 
 @@@@
@@ -24048,7 +24133,7 @@ TEST: vous examiner a eu des conséquences imprévues.
 __conf_ait_confiance_été_faim_tort!3__
     [es|est] [confiance|conscience|envie|été|peur|faim|hâte|honte|recours|soif|tort]
     [es|est] peine [à|a]
-        <<- /conf/ not tag_before(\1, "ce_que") and not value(<1, "|tout|d’|l’|")
+        <<- /conf/ not tag_before(\1, "_ceque_") and not value(<1, "|tout|d’|l’|")
         -1>> ait|aie                                                # Confusion probable dans l’expression “avoir \2”. Vous utilisez ici le verbe “être”.
 
 TEST: il est posssible qu’il {{est}} confiance en toi
@@ -24676,18 +24761,18 @@ TEST: y être sans ma femme ni les enfants fait monter en moi une certaine nervo
 
 __conj_det_sing_nom__
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  @:V¬:(?:3s|P|Q|Y|3p!|G|M)
-        <<- /conj/ not tag(\2, "enum") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
+        <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
-                        or tag_before(\1, "ni") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) >>>
+                        or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\3, ":3?p") ) >>>
         <<- /conj/ not checkAgreement(\2, \3)
         -3>> =suggVerb(\3, ":3s")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
         <<- /conj/ __else__ and isVeryAmbiguousAndWrong(\2, \3, ":s", ":3s", value(<1, "|<start>|,|"))
         -3>> =suggVerb(\3, ":3s", suggSing)                             # Accord avec “\1 \2…” incorrect. Conjugaison erronée ou accord nom/adjectif incorrect.
 
     [le|la|l’|un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD  qui  @:V¬:(?:3s|P|3p!|G|M)
-        <<- /conj/ not tag(\2, "enum") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
+        <<- /conj/ not tag(\2, "_enum_") and morph(<1, ":C|<start>|>,", ":[YP]") and morph(\2, ":[NA].*:[si]", ":G")
             and not ( (value(\2, "|dizaine|douzaine|quinzaine|vingtaine|trentaine|quarantaine|cinquantaine|soixantaine|centaine|majorité|minorité|millier|partie|poignée|tas|paquet|moitié|")
-                        or tag_before(\1, "ni") or value(<1, "|et|ou|")) and morph(\4, ":3p") )
+                        or tag_before(\1, "_ni_") or value(<1, "|et|ou|")) and morph(\4, ":3p") )
         -4>> =suggVerb(\4, ":3s")                                       # Conjugaison erronée. Accord avec “\1 \2…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: La {{N.S.A.}} {{espionneras}} toujours tout le monde
@@ -25083,7 +25168,7 @@ TEST: On vit très vite, en quelques jours, les gens installer des jeux d’arge
 # 3sg
 __conj_nom_propre__
     [<start>|,|(]  ~^[A-ZÉÈ]  @:[123][sp]¬:(?:G|3s|3p!|P|M|A.*:[si]|N.*:m:s)
-        <<- /conj/ not tag(\2, "enum") and morph(\2, ":M")
+        <<- /conj/ not tag(\2, "_enum_") and morph(\2, ":M")
         -3>> =suggVerb(\3, ":3s")                                                                   # Conjugaison erronée. Accord avec “\2”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
 TEST: Marc {{arrives}} demain.
@@ -25135,11 +25220,11 @@ TEST: Or parmi celles-ci on trouve typiquement d’un côté les structures
 
 __conj_que_où_comment_verbe_sujet_sing__
     [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [un|une|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre]  *WORD
-        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "enum") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
         -2>> =suggVerb(\2, ":3s")                                                   # Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
     [que|qu’|où|comment|combien|dont|quand|pourquoi]  @:[123][sp]¬:(?:3s|G|W|3p!)  [le|la|l’|leur]  *WORD
-        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "enum") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
+        <<- /conj/ not value(\4, "|plupart|majorité|groupe|") and not tag(\4, "_enum_") and not (value(>1, "|et|ou|") and morph(>2, ":D"))
             and not (morph(\4, ":Y") and morph(\2, ">(?:pouvoir|vouloir|devoir)"))
         -2>> =suggVerb(\2, ":3s")                                                   # Conjugaison erronée. Accord avec “\3 \4…”. Le verbe devrait être à la 3ᵉ personne du singulier.
 
@@ -25204,7 +25289,7 @@ __conj_quel_quelle_que_3sg__
         <<- /conj/ morph(\3, ":V0e", ":3s") -3>> =suggVerb(\3, ":3s")                       # Conjugaison erronée. Accord avec “\4 \5”. Mettez “être” à la 3ᵉ personne du singulier.
 
     [quels|quelles]  [que|qu’]  >être  [le|la|l’|ce|cet|cette|mon|ton|son|ma|ta|sa|notre|votre|leur]  *WORD
-        <<- /conj/ not ( morph(\3, ":3p") and (value(>1, "|et|") or tag(\5, "enum")) )
+        <<- /conj/ not ( morph(\3, ":3p") and (value(>1, "|et|") or tag(\5, "_enum_")) )
         -3>> =suggVerb(\3, ":3s")                                                           # Conjugaison erronée. Accord avec “\4 \5”. Mettez “être” à la 3ᵉ personne du singulier.
         <<- /conj/ __also__ -1>> =\1[:-1]                                                   # Accord avec “\4 \5”. Utilisez le singulier.
 
